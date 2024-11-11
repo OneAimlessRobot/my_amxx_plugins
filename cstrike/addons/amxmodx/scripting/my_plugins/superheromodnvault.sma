@@ -376,6 +376,18 @@
 //Lets includes detect if the core is loading them or a hero
 #define SHCORE
 
+#include "../include/amxmod.inc"
+#include "../include/amxmodx.inc"
+#include "../include/amxmisc.inc"
+#include "../include/hamsandwich.inc"
+#include "../include/fakemeta.inc"
+#include "../include/engine.inc"
+#include "../include/engine_const.inc"
+#include "../include/fun.inc"
+#include "../include/csx.inc"
+#include "../include/cstrike.inc"
+#include "../include/Vexd_Utilities.inc"
+#include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
 
 new const SH_CORE_STR[] =  "SuperHero Core"
@@ -556,7 +568,6 @@ public plugin_init()
 	sh_botsearnxp = register_cvar("sh_botsearnxp", "1")
 	sh_botsminlevel = register_cvar("sh_botsminlevel", "5")
 	sh_botsmaxlevel = register_cvar("sh_botsmaxlevel", "10")
-	sh_botsearnxp = register_cvar("sh_botsearnxp", "1")
 	sh_loadimmediate = register_cvar("sh_loadimmediate", "0")
 	sh_lvllimit = register_cvar("sh_lvllimit", "1")
 	sh_maxbinds = register_cvar("sh_maxbinds", "3")
@@ -1725,7 +1736,7 @@ Float:getMaxSpeed(id, weapon)
 		// If weapon is a zoomed sniper rifle set default speeds
 		case  CSW_SCOUT, CSW_SG550, CSW_AWP, CSW_G3SG1: {
 			if ( gCurrentFOV[id] <= 45 ) {
-				return sh_get_weapon_speed(weapon, true)
+				return sh_get_weapon_speed(weapon,true)
 			}
 		}
 	}

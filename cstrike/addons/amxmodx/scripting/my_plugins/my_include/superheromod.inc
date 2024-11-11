@@ -13,21 +13,21 @@
 
 //Default includes used for shero
 
-#include "../../include/amxmod.inc"
-#include "../../include/amxmodx.inc"
-#include "../../include/amxmisc.inc"
-#include "../../include/hamsandwich.inc"
-#include "../../include/fakemeta.inc"
-#include "../../include/engine.inc"
-#include "../../include/engine_const.inc"
-#include "../../include/fun.inc"
-#include "../../include/csx.inc"
-#include "../../include/cstrike.inc"
-#include "../../include/Vexd_Utilities.inc"
-#include "../my_include/superheroconst.inc"
+#tryinclude "../../include/amxmod.inc"
+#tryinclude "../../include/amxmodx.inc"
+#tryinclude "../../include/amxmisc.inc"
+#tryinclude "../../include/hamsandwich.inc"
+#tryinclude "../../include/fakemeta.inc"
+#tryinclude "../../include/engine.inc"
+#tryinclude "../../include/engine_const.inc"
+#tryinclude "../../include/fun.inc"
+#tryinclude "../../include/csx.inc"
+#tryinclude "../../include/cstrike.inc"
+#tryinclude "../../include/Vexd_Utilities.inc"
+#tryinclude "../my_include/superheroconst.inc"
 
 #if defined SH_BACKCOMPAT
-  #include "../../include/engine.inc"
+  #tryinclude "../../include/engine.inc"
 #endif
 
 //----------------------------------------------------------------------------------------------
