@@ -103,9 +103,9 @@ loadCVARS(){
 	h_val=get_pcvar_float(h_val_cvar_p)
 	i_val=get_pcvar_float(i_val_cvar_p)
 	j_val=get_pcvar_float(j_val_cvar_p)
-	console_print(0,"LEVEL GEN MATH EXPR: %d * pow( %d ,(x * %d)) + %d",floatround(a_val),floatround(b_val),floatround(c_val),floatround(d_val));
-	console_print(0,"LINEAR LEVEL GEN XPGAIN MATH EXPR: %d * x + %d",floatround(e_val),floatround(f_val));
-	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %d * pow( %d ,(x * %d)) + %d",floatround(g_val),floatround(h_val),floatround(i_val),floatround(j_val));
+	console_print(0,"LEVEL GEN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",a_val,b_val,c_val,d_val);
+	console_print(0,"LINEAR LEVEL GEN XPGAIN MATH EXPR: %f * x + %f",e_val,f_val);
+	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
 
 }
 Float:calculate_level_it(Float:it){
@@ -193,19 +193,19 @@ loadConfig()
 }
 
 make_arrs(){
-
-	g_needed[1]=0.0;
-	for(new it=2;it<=num_levels;it++){
+	
+	g_needed[0]=0.0
+	for(new it=1;it<=num_levels;it++){
 	
 		g_needed[it]=calculate_level_it(float(it-1))
 	
 	}
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		g_gained[it]=calculate_exp_xpgain_it(float(it-1))
 	
 	}
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		g_kills[it]=floatround(floatdiv(g_needed[it],g_gained[it]),floatround_ceil)
 	
@@ -218,7 +218,7 @@ make_arrs(){
 make_kill_arr(chosen){
 
 
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		g_kills_custom[it]=floatround(floatdiv(g_needed[it],g_gained[chosen]),floatround_ceil)
 	
@@ -229,15 +229,15 @@ make_kill_arr(chosen){
 make_result(levelsFile){
 
 	fprintf(levelsFile,"NUMLEVELS %d^nLTXPLEVELS ",num_levels)
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 		
 		fprintf(levelsFile,"%.0f ",g_needed[it])
 	
 	
 	
 	}
-	fprintf(levelsFile,"^n^nLTXPGIVEN ")
-	for(new it=1;it<num_levels;it++){
+	fprintf(levelsFile,"^nLTXPGIVEN ")
+	for(new it=0;it<=num_levels;it++){
 		
 		fprintf(levelsFile,"%.0f ",g_gained[it])
 	
@@ -251,7 +251,7 @@ make_result(levelsFile){
 make_levels_csv(levelsCSVFile){
 
 	fprintf(levelsCSVFile,"LEVEL, XPREQUIRED^n");
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		fprintf(levelsCSVFile,"%d, %.0f^n",it,g_needed[it])
 	
@@ -265,7 +265,7 @@ make_xpgain_csv(xpgainCSVFile){
 
 	fprintf(xpgainCSVFile,"LEVEL, XPGAINED^n");
 	
-	for(new it=1;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		fprintf(xpgainCSVFile,"%d, %.0f^n",it,g_gained[it])
 	
@@ -278,7 +278,7 @@ make_kills_needed_csv(levelKillsCSVFile){
 
 
 	fprintf(levelKillsCSVFile,"LEVEL, KILLSNEEDED^n");
-	for(new it=2;it<=num_levels;it++){
+	for(new it=0;it<=num_levels;it++){
 	
 		fprintf(levelKillsCSVFile,"%d, %d^n",it,g_kills[it])
 	
