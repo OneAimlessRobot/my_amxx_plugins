@@ -1,0 +1,77 @@
+
+
+
+
+
+#define PLUGIN_NAME "Level xp generator"
+#define VERSION 1.0
+
+
+
+public plugin_init()
+{
+register_plugin( PLUGIN, VERSION, AUTHOR );
+register_cvar( "bgm_version", VERSION, FCVAR_SERVER | FCVAR_SPONLY );
+
+register_event( "SendAudio", "play_if_possible" , "a");
+
+p_enabled         = register_cvar( "bgm_enabled"        , "1"   );
+p_player_toggle   = register_cvar( "bgm_player_toggle"  , "1"   );
+p_time_ads        = register_cvar( "bgm_time_ads"       , "120" );
+
+if( !p_random_precache )
+{
+register_cvar( "bgm_random_precache", g_sRp_value );
+server_cmd( "restart" );
+}
+
+register_clcmd( "say"       , "cmd_Say" );
+register_clcmd( "say_team"  , "cmd_Say" );
+
+g_msgSayText = get_user_msgid( "SayText" );
+}
+
+
+//----------------------------------------------------------------------------------------------
+setupConfig()
+{
+	// Set Up Config Files
+	get_configsdir(gSHConfigDir, charsmax(gSHConfigDir))
+	add(gSHConfigDir, charsmax(gSHConfigDir), "/shero", 6)
+
+	// Attempt to create directory if it does not exist
+	if ( !dir_exists(gSHConfigDir) ) {
+		mkdir(gSHConfigDir)
+	}
+
+	formatex(gBanFile, charsmax(gBanFile), "%s/nopowers.cfg", gSHConfigDir)
+	formatex(gSHConfig, charsmax(gSHConfig), "%s/shconfig.cfg", gSHConfigDir)
+}
+
+
+//----------------------------------------------------------------------------------------------
+loadConfig()
+{
+	//Load SH Config File
+	if ( file_exists(gSHConfig) ) {
+		//Message Not run thru debug system since people are morons and think it's an error cause it says "DEBUG"
+		static count
+		++count
+		log_amx("Exec: (%d) Loading shconfig.cfg (message should be seen twice)", count)
+
+		server_cmd("exec %s", gSHConfig)
+
+		//Force the server to flush the exec buffer
+		server_exec()
+
+		//Note: I do not believe this is an issue anymore disabling until known otherwise - vittu
+		//Exec the config again due to issues with it not loading all the time
+		//server_cmd("exec %s", gSHConfig)
+	}
+	else {
+		debugMsg(0, 0, "**WARNING** SuperHero Config File not found, correct location: %s", gSHConfig)
+	}
+}
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

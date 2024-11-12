@@ -1,0 +1,17 @@
+﻿<html><head><style type="text/css">html, body {background-color: #000000;font-size: 14px;color: #FFB000;font-family: arial;}</style></head><body><h4>Web 
+page: http://Geo.edza.lv</h4><h4>Before the game:</h4><p>You have to set the Geo key:<br>1.Open Console;<br>2.Write "bind v geo";<br>3.Press enter to set the "v" key as the Geo key.</p><h4>Game as a Terrorist:</h4><p>1. After freeze time set boxes (geo key).<br>2. 
+Carry (pick up) boxes to win faster. (geo key)<br>3. When you carry (pick up) a box time runs faster, but you can be killed (and glow red).</p><h4>Game as a Counter-Terrorist:</h4><p>1. Wait while boxes are set.<br>2. 
+Go and find boxes. Look at the radar (NOT the green circle one!) on the right 
+side middle.<br>3. When boxes are near radar will flash RED.&nbsp; Look around 
+you and see if you can find anything.<br>4. Look for glowing enemies and kill 
+them!</p><h4>Rampage:</h4><p>1. The wining team becomes the hunters (weapons, 
+speed, godmode).<br>2. The losing team has to survive by hiding.<br>3.&nbsp; If 
+anyone from the losing team survives for (~30 sec.) all hunters are killed and 
+the losing team wins!<br>
+<br>
+Special time bonus is awareded to team that wins the rampage in the next round!</p>
+<h4>Who made this?</h4><p>Geo Dev Team. (c) 2009 - 2010. Leader - Eduards V.<br>
+<br>
+See website for full list of all contributors and contact information.</p>
+
+</body></html>
