@@ -129,8 +129,15 @@ public status_hud(id){
 	new client_name[128];
 	new hud_msg[1000];
 	new distance, origin[3], eorigin[3]
+	if(g_teliko_weapon[id]>0)
+	{
+		get_weaponname(g_teliko_weapon[id],weapon_name,127);
+	}
+	else{
 	
-	get_weaponname(g_teliko_weapon[id],weapon_name,127);
+		strcat(weapon_name,"NONE",128)
+	
+	}
 	format(hud_msg,999,"[SH] %s:^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(g_teliko_enemies[id][i]){
