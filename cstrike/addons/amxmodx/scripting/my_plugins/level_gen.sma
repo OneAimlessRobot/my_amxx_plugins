@@ -20,6 +20,9 @@
 #define LEVEL_GEN_CSV_KILLS "level_kills.csv"
 #define LEVEL_GEN_CSV_KILLS_CUSTOM "level_kills_custom.csv"
 
+#define XP_NEEDED_FUNC  calculate_level_poly_it
+#define XP_GAINED_FUNC  calculate_poly_xpgain_it
+
 #include <amxmodx>
 #include <amxmisc>
 
@@ -104,7 +107,9 @@ loadCVARS(){
 	i_val=get_pcvar_float(i_val_cvar_p)
 	j_val=get_pcvar_float(j_val_cvar_p)
 	console_print(0,"LEVEL GEN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",a_val,b_val,c_val,d_val);
+	console_print(0,"LEVEL GEN MATH EXPR POLY: (%f * x * x) + (%f * x) + %f",a_val,b_val,c_val);
 	console_print(0,"LINEAR LEVEL GEN XPGAIN MATH EXPR: %f * x + %f",e_val,f_val);
+	console_print(0,"POLY LEVEL GEN XPGAIN MATH EXPR: (%f * x * x) + (%f * x) + %f",g_val,h_val,i_val);
 	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
 
 }
@@ -112,9 +117,17 @@ Float:calculate_level_it(Float:it){
 
 	return floatadd((floatmul(a_val , floatpower(b_val,floatmul(c_val,it)))), d_val)
 }
+Float:calculate_level_poly_it(Float:it){
+
+	return floatadd(floatadd(floatmul(a_val,floatpower(it,2.0)),floatmul(b_val,it)),c_val)
+}
 Float:calculate_exp_xpgain_it(Float:it){
 
 	return floatadd((floatmul(g_val , floatpower(h_val,floatmul(i_val,it)))), j_val)
+}
+Float:calculate_poly_xpgain_it(Float:it){
+	
+	return floatadd(floatadd(floatmul(g_val,floatpower(it,2.0)),floatmul(h_val,it)),i_val)
 }
 Float:calculate_lin_xpgain_it(Float:it){
 
@@ -197,12 +210,12 @@ make_arrs(){
 	g_needed[0]=0.0
 	for(new it=1;it<=num_levels;it++){
 	
-		g_needed[it]=calculate_level_it(float(it-1))
+		g_needed[it]=XP_NEEDED_FUNC(float(it-1))
 	
 	}
 	for(new it=0;it<=num_levels;it++){
 	
-		g_gained[it]=calculate_exp_xpgain_it(float(it-1))
+		g_gained[it]=XP_GAINED_FUNC(float(it-1))
 	
 	}
 	for(new it=0;it<=num_levels;it++){

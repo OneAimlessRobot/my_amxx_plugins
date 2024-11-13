@@ -1,5 +1,5 @@
-cs_portugal
-cs_portugal
+cs_assault
+cs_assault
 cs_portugal
 cs_portugal
 cs_portugal
