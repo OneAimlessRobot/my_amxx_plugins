@@ -27,7 +27,6 @@ new m_spriteTexture
 new hud_sync
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
 new gHeroLevel
-new base_counter_bullets
 new Float:COUNTER_DMG_Mult,Float:COUNTER_BULLET_PCT,Float:MEGA_COUNTER_STUN_TIME,Float:MEGA_COUNTER_SPEED_DIV,MEGA_COUNTER_EFFECTS_THRESHOLD
 
 //----------------------------------------------------------------------------------------------
@@ -40,7 +39,6 @@ public plugin_init()
 	register_cvar("Teliko_level", "8")
 	register_cvar("Teliko_counter_dmg_mult", "2.0")
 	register_cvar("Teliko_max_bullets", "10")
-	register_cvar("Teliko_base_bullets", "10")
 	register_cvar("Teliko_get_bullet_pct", "0.5")
 	register_cvar("Teliko_max_bullets_per_inc", "5")
 	register_cvar("Teliko_max_plus_lvl_inc", "5")
@@ -101,7 +99,7 @@ public reset_teliko_user(id){
 }
 public update_max_bullets(id){
 	
-	g_max_counter_bullets[id]=min(max_counter_bullets,base_counter_bullets+(max_bullets_p_inc*((sh_get_user_lvl(id)-gHeroLevel)/max_inc_lvl_inc)));
+	g_max_counter_bullets[id]=max_counter_bullets+(max_bullets_p_inc*((sh_get_user_lvl(id)-gHeroLevel)/max_inc_lvl_inc));
 	
 }
 
@@ -174,7 +172,6 @@ public loadCVARS()
 gHeroLevel=get_cvar_num("Teliko_level");
 COUNTER_DMG_Mult=get_cvar_float("Teliko_counter_dmg_mult");
 max_counter_bullets=get_cvar_num("Teliko_max_bullets");
-base_counter_bullets=get_cvar_num("Teliko_base_bullets");
 COUNTER_BULLET_PCT=get_cvar_float("Teliko_get_bullet_pct")
 MEGA_COUNTER_STUN_TIME=get_cvar_float("Teliko_mega_counter_stun_time")
 MEGA_COUNTER_SPEED_DIV=get_cvar_float("Teliko_mega_counter_stun_speed_div")

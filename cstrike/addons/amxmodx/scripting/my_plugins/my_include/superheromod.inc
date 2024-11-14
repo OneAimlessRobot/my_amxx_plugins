@@ -29,7 +29,6 @@
 #if defined SH_BACKCOMPAT
   #tryinclude "../../include/engine.inc"
 #endif
-
 //----------------------------------------------------------------------------------------------
 // IMPORTANT FUNCTIONS - WHAT EVENTS CAN THE SUPERHEROES REGISTER FOR?
 //----------------------------------------------------------------------------------------------
