@@ -96,12 +96,12 @@ public status_hud(id){
 							g_hits[id],
 							g_hits[id] == 1 ? "" : "s", 
 							g_max_hits_player[id]);
-		set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
+		set_hudmessage(255, 0, 0, 1.0, 0.52, 1, 0.0, 0.2)
 	}
 	else{
 		format(hud_msg,999,"[SH] %s: Not in yowai mode.",
 							gHeroName);
-		set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
+		set_hudmessage(50, 0, 0, 1.0, 0.52, 0, 0.0, 0.2)
 	}
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
@@ -180,22 +180,29 @@ new client_name[128];
 new attacker_name[128]
 get_user_name(id,client_name,127);
 get_user_name(attacker,attacker_name,127);
-
+new CsTeams:att_team=CS_TEAM_UNASSIGNED;
+if(attacker>0 && attacker <=SH_MAXSLOTS){
+	att_team=cs_get_user_team(attacker)
+}
 if(gHasYowai[id]&&g_yowai_mode[id]){
 	
+	if(((att_team==cs_get_user_team(id))&&(id!=attacker))){
 	
-	if(damage>=dmg_threshold||(g_hits[id]>=g_max_hits_player[id])){
-	
-		shExtraDamage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
-		
+		return HAM_IGNORED;
 	
 	}
-	else if(damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id])){
+	if((damage>=dmg_threshold||(g_hits[id]>=g_max_hits_player[id]))){
 		
+		shExtraDamage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
+			
+		
+	}
+	else if((damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id]))){
+			
 		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
 		Inc_hits(id)
 		return HAM_SUPERCEDE;
-		
+			
 	}
 	
 }
@@ -230,3 +237,6 @@ g_yowai_mode[id]= true;
 
 return PLUGIN_HANDLED
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

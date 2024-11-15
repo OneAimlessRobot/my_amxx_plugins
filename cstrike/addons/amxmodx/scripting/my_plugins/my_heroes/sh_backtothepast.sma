@@ -1,12 +1,13 @@
 
 
 #include "../my_include/superheromod.inc"
-
+#define BUILDUP_SFX "shmod/jeremy/jeremybuildup.wav"
 #define TASKID 12213
 #define TASKID_PAST 1323
 #define TASKID_COUNT 1324
 #define TASKID_FX 1212
 // GLOBAL VARIABLES
+new gHeroLevel
 new gHeroName[]="Jeremy"
 new gHasJeremyPower[SH_MAXSLOTS+1]
 new gJeremyPowerUsedTimes[SH_MAXSLOTS+1]
@@ -18,6 +19,7 @@ new gGameUseCount,
 	gMaxPerTeam,
 	gMaxPerGame;
 new gCurrCountDown;
+new gCountdown
 new bool:gPowerBeingUsed
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -29,7 +31,8 @@ public plugin_init()
 	register_cvar("jeremy_level", "25")
 	register_cvar("jeremy_maxrounds_player", "2")
 	register_cvar("jeremy_maxrounds_team", "4")
-	register_cvar("jeremy_maxrounds_game", "5")
+	register_cvar("jeremy_maxrounds_game", "10");
+	register_cvar("jeremy_countdown", "10")
 	register_concmd("jeremystats","print_jeremy_stats")
 	
 	register_event( "TeamInfo" , "fw_EvTeamInfo" , "a" );
@@ -54,9 +57,24 @@ public plugin_init()
 public plugin_precache(){
 
 
+	engfunc(EngFunc_PrecacheSound, BUILDUP_SFX)
+	
+}
+//----------------------------------------------------------------------------------------------
+public plugin_cfg()
+{
+	loadCVARS();
+}
 
-	precache_sound("ambience/particle_suck2.wav")
 
+
+//----------------------------------------------------------------------------------------------
+public loadCVARS()
+{
+	gMaxPerPlayer=get_cvar_num("jeremy_maxrounds_player");
+	gMaxPerTeam=get_cvar_num("jeremy_maxrounds_team");
+	gMaxPerGame=get_cvar_num("jeremy_maxrounds_game");
+	gCountdown=get_cvar_num("jeremy_countdown")
 }
 public init_everything(){
 
@@ -65,9 +83,7 @@ public init_everything(){
 	gTeamUseCount[2]=0;
 	gGameUseCount=0;
 	gPowerBeingUsed=false;
-	gMaxPerPlayer=get_cvar_num("jeremy_maxrounds_player");
-	gMaxPerTeam=get_cvar_num("jeremy_maxrounds_team");
-	gMaxPerGame=get_cvar_num("jeremy_maxrounds_game");
+	loadCVARS()
 
 }
 public fw_EvTeamInfo(){
@@ -160,9 +176,8 @@ public return_to_past_fx(id){
 	write_byte (255)
 	write_byte (255)
 	message_end()
-
-	emit_sound(id, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	
+	emit_sound(0, CHAN_AUTO, BUILDUP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 }
 public return_to_past_now(id){
@@ -171,15 +186,11 @@ public return_to_past_now(id){
 	new playerName[256];
 	get_user_name(id,playerName,256)
 	format(message, 1023, "player %s is RETURNING THE SERVER TO THE PAST NOW! IN...",playerName)
-	new players[32],num;
-	get_players(players,num);
-	for(new i=0;i<num;i++){
-		sh_chat_message(players[i],gHeroID,"%s",message);
-	}
-	gCurrCountDown=3;
+	sh_chat_message(0,gHeroID,"%s",message);
+	gCurrCountDown=gCountdown;
 	gPowerBeingUsed=true
 	set_task(0.0,"return_to_past_fx",id+TASKID_FX)
-	set_task(4.0,"force_end",id+TASKID_PAST)
+	set_task(floatadd(float(gCountdown),1.0),"force_end",id+TASKID_PAST)
 	set_task(1.0,"count_down",id+TASKID_COUNT,_,_,"a",gCurrCountDown)
 	gJeremyPowerUsedTimes[id]++
 	gTeamUseCount[gUserTeam[id]]++
