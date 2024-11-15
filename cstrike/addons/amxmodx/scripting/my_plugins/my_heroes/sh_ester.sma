@@ -224,7 +224,6 @@ public ester_loop(id)
 		}
 		else  if(gFinished[id]) {
 	
-			set_user_rendering(id)
 			sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
 			sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
 			remove_task(id+ESTER_REVENGE_TASKID)
@@ -480,6 +479,3 @@ public ester_ku()
 	
 	return PLUGIN_HANDLED
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

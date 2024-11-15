@@ -15,7 +15,7 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #include "../my_include/superheromod.inc"
 
 
-#define MAX_PICKED 0
+#define MAX_PICKED 3
 #define DARK_TASKID 13213
 // GLOBAL VARIABLES
 new HeroName[] = "Dark angel v2"

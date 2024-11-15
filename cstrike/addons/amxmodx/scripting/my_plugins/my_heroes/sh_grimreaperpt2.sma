@@ -128,12 +128,6 @@ if(gScytheSwings[id]&&(weapon==CSW_KNIFE)){
 	sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
 
 }
-else{
-	
-	sh_set_rendering(id)
-
-
-}
 return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -201,7 +195,7 @@ return (!shModActive()||!gHasGreaper[greaper_userid]||!is_user_alive(greaper_use
 
 swing_connected(Att){
 
-new Vic,vic_orig[3],att_orig[3],att_aim[3],Float:vic_orig_f[3],Float:att_orig_f[3],Float:att_aim_f[3]
+new Vic,att_orig[3],att_aim[3],Float:att_orig_f[3],Float:att_aim_f[3]
 
 get_user_origin(Att,att_orig);
 get_user_origin(Att,att_aim,3);
@@ -267,6 +261,3 @@ public death()
 	new id=read_data(2)
 	reset_greaper2_user(id)
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/
