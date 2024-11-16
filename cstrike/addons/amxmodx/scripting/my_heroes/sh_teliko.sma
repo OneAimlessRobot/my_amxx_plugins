@@ -140,7 +140,7 @@ public status_hud(id){
 		strcat(weapon_name,"NONE",128)
 	
 	}
-	format(hud_msg,999,"[SH] %s:^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
+	format(hud_msg,500,"[SH] %s:^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(g_teliko_enemies[id][i]){
 			get_user_name(i,client_name,127)
@@ -149,7 +149,7 @@ public status_hud(id){
 			get_user_origin(i, eorigin)
 			
 			distance = get_distance(eorigin, origin)
-			format(hud_msg,999,"%s%s.^nMega counters from you: %d^nDistance: %d^n",hud_msg,client_name,g_num_mega_counters_enemy[id][i],distance);
+			format(hud_msg,500,"%s%s.^nMega counters from you: %d^nDistance: %d^n",hud_msg,client_name,g_num_mega_counters_enemy[id][i],distance);
 		}
 	}
 	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
@@ -473,3 +473,6 @@ g_teliko_weapon[id]=wpnid;
 
 }
 //----------------------------------------------------------------------------------------------
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

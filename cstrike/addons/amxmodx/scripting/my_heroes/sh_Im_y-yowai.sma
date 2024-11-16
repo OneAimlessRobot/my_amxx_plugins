@@ -4,7 +4,6 @@
 
 
 #define YOWAI_TASKID 21232
-#define YOWAI_RESILIENCE 23232
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -15,7 +14,6 @@ new bool:g_yowai_mode[SH_MAXSLOTS+1]
 new g_max_hits_player[SH_MAXSLOTS+1]
 
 
-new hud_sync
 new gHeroLevel
 new dmg_threshold
 new num_weak_hits
@@ -35,7 +33,6 @@ public plugin_init()
 	register_cvar("Yowai_max_hits_per_inc", "5")
 	register_cvar("Yowai_hits_inc_lvl_gap", "5")
 	register_event("ResetHUD","newRound","b")
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "Meek Maid", "Accumulate hits... and... whatever I guess I dont really know", true, "Yowai_level" )
 	
 	RegisterHam(Ham_TakeDamage, "player", "Yowai_normal_damage");
@@ -62,13 +59,9 @@ public Yowai_init()
 		
 		reset_Yowai_user(id)
 		update_max_hits(id)
-		
-		set_task( 0.2, "Yowai_loop", id+YOWAI_TASKID, "", 0, "b")
 	}
 	else{
 		reset_Yowai_user(id)
-		remove_task(id+YOWAI_TASKID)
-		remove_task(id+YOWAI_RESILIENCE)
 	}
 	
 }
@@ -89,22 +82,14 @@ public update_max_hits(id){
 
 public status_hud(id){
 
-	new hud_msg[1000];
+	new chat_msg[130];
 	if(g_yowai_mode[id]){
-		format(hud_msg,999,"[SH] %s:^n%d hit%s out of %d left until you finally die^n",
-							gHeroName,
+		format(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
 							g_hits[id],
 							g_hits[id] == 1 ? "" : "s", 
 							g_max_hits_player[id]);
-		set_hudmessage(255, 0, 0, 1.0, 0.52, 1, 0.0, 0.2)
 	}
-	else{
-		format(hud_msg,999,"[SH] %s: Not in yowai mode.",
-							gHeroName);
-		set_hudmessage(50, 0, 0, 1.0, 0.52, 0, 0.0, 0.2)
-	}
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
+	sh_chat_message(id,gHeroID,"%s",chat_msg);
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -122,31 +107,6 @@ public loadCVARS()
 	dmg_threshold=get_cvar_num("Yowai_dmg_threshold")
 	num_weak_hits=get_cvar_num("Yowai_num_weak_hits")
 }
-//----------------------------------------------------------------------------------------------
-public Yowai_loop(id)
-{
-id -= YOWAI_TASKID
-
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasYowai[id]){
-	
-	return PLUGIN_HANDLED
-	
-}
-status_hud(id)
-return PLUGIN_HANDLED
-}//----------------------------------------------------------------------------------------------
-public Yowai_resilience(id)
-{
-id -= YOWAI_RESILIENCE
-
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasYowai[id]){
-	
-	return PLUGIN_HANDLED
-	
-}
-sh_add_hp(id,get_user_health(id),get_user_health(id));
-return PLUGIN_HANDLED
-}
 
 public sh_client_spawn(id)
 {
@@ -159,7 +119,6 @@ if ( gHasYowai[id]&&is_user_alive(id) && shModActive() ) {
 	
 	reset_Yowai_user(id)
 	update_max_hits(id)
-	remove_task(id+YOWAI_RESILIENCE)
 }
 return PLUGIN_HANDLED
 
@@ -201,6 +160,7 @@ if(gHasYowai[id]&&g_yowai_mode[id]){
 			
 		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
 		Inc_hits(id)
+		status_hud(id)
 		return HAM_SUPERCEDE;
 			
 	}
@@ -215,8 +175,6 @@ public plugin_precache()
 }
 public death()
 {
-	new id=read_data(2)
-	remove_task(id+YOWAI_RESILIENCE)
 }
 
 
@@ -231,9 +189,10 @@ new id=str_to_num(temp)
 if ( !is_user_alive(id)||!gHasYowai[id]||g_yowai_mode[id] ) {
 	return PLUGIN_HANDLED
 }
-
 g_yowai_mode[id]= true;
 //set_task( 1.0, "Yowai_resilience", id+YOWAI_RESILIENCE, "", 0, "b")
 
+sh_chat_message(id,gHeroID,"Activated yowai mode.")
+		
 return PLUGIN_HANDLED
 }

@@ -2,13 +2,12 @@
 
 #include "../my_include/superheromod.inc"
 
-#define YANDERE_HUD_TASKID 29383
 #define YANDERE_STATS_TASKID 29626
 #define YANDERE_ANGER_TASKID 29333
 #define YANDERE_CRY_TASKID 30333
 
-#define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
 #define YANDERE_WARCRY "shmod/yandere/Yanderu_war_cry.wav"
+#define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -22,6 +21,7 @@ new Float:gNormalDmgMult[SH_MAXSLOTS+1]
 new Float:gNormalHeal[SH_MAXSLOTS+1]
 new Float:gNormalHealRadius[SH_MAXSLOTS+1]
 new Float:gNormalSpeed[SH_MAXSLOTS+1]
+new Float:gBaseSpeed[SH_MAXSLOTS+1]
 
 
 new const yandere_sentences[5][]={
@@ -32,7 +32,6 @@ new const yandere_sentences[5][]={
 	"I want... all your blood. All of it.... and water the graves of my family with it."
 }
 new m_spriteTexture
-new hud_sync
 
 new Float:base_dmg_mult,
 Float:dmg_pct_per_inc,
@@ -47,8 +46,10 @@ new Float:angry_heal,
 Float:angry_speed,
 Float:angry_dmg_mult,
 Float:angry_gravity,
+Float:angry_degen,
 Float:heal_base
 new gHeroLevel
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -72,11 +73,12 @@ public plugin_init()
 	register_cvar("yandere_angry_speed", "1000")
 	register_cvar("yandere_angry_gravity", "0.25")
 	register_cvar("yandere_angry_dmg_mult", "5.0")
+	register_cvar("yandere_angry_degen", "10.0")
 	register_event("ResetHUD","newRound","b")
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Heal alive teamates and avenge dead ones!", false, "yandere_level" )
 	
 	register_event("Damage", "yandere_damage", "b", "2!0")
+	//register_event("CurWeapon", "weaponSpeed", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("yandere_init", "yandere_init")
@@ -95,84 +97,45 @@ public yandere_init()
 	gHasYandere[id]=(hasPowers!=0)
 	if(gHasYandere[id]){
 		
-		gNormalSpeed[id]=base_extra_speed
+		gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
-		set_task( 0.3, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
-		set_task( 1.0, "yandere_hud_loop", id+YANDERE_HUD_TASKID, "", 0, "b")
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
+		set_task( 0.1, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( 3.0, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 	}
 	else{
-		remove_task(id+YANDERE_STATS_TASKID)
 		remove_task(id+YANDERE_ANGER_TASKID)
-		remove_task(id+YANDERE_HUD_TASKID)
 		remove_task(id+YANDERE_CRY_TASKID)
+		remove_task(id+YANDERE_STATS_TASKID)
 	}
 	
 	
 }
-public get_yandere_alive(id){
+public get_yandere_num(id,want_alive,want_all){
 	
-	new ratio=0
-	new CsTeams:user_team= cs_get_user_team(id)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if((i==id)||!is_user_connected(i)){
-			
-			
+	new players[SH_MAXSLOTS]
+	new team_name[32]
+	new player_count;
+	get_user_team(id,team_name,32)
+	if(want_all){
+		if(!want_alive){
+			get_players(players,player_count,"b")
 		}
-		else if(is_user_alive(i)){
-			
-			new CsTeams:other_user_team=cs_get_user_team(i)
-			if((user_team==other_user_team)){
-				
-				ratio++;
-			}
+		else{
+			get_players(players,player_count,"a")
+			player_count--
 		}
-		
-		
 	}
-	return ratio;
-	
-	
-}
-public get_alive_from_team(CsTeams:team){
-	
-	new ratio=0
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if(!is_user_connected(i)){
-			
-			
+	else{
+		if(!want_alive){
+			get_players(players,player_count,"eb",team_name)
 		}
-		else if(is_user_alive(i)){
-			
-			new CsTeams:other_user_team=cs_get_user_team(i)
-			if((team==other_user_team)){
-				
-				ratio++;
-			}
+		else{
+			get_players(players,player_count,"ea",team_name)
+			player_count--
 		}
-		
-		
 	}
-	return ratio;
-	
-	
-}
-public get_total_alive(){
-	
-	new ratio=0
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if(!is_user_connected(i)){
-			
-			
-		}
-		else if(is_user_alive(i)){
-			ratio++;
-		}
-		
-		
-	}
-	return ratio;
+	return player_count;
 	
 	
 }
@@ -199,47 +162,36 @@ public get_first_alive(){
 public yandere_sentence_loop(id){
 	id-=YANDERE_ANGER_TASKID;
 	
-	if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gSuperAngry[id]&&gIdleAngry[id]){
-		sh_chat_message(0,gHeroID,"%s",yandere_sentences[random_num(0,4)])
+	if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gSuperAngry[id]){
+	
+		
+		if(gIdleAngry[id]){
+			
+			new client_name[128]
+			get_user_name(id,client_name,127)
+			sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
+			sh_extra_damage(id,id,floatround(angry_degen,floatround_ceil),"Yandere longing")
+			sh_screen_fade(id, 0.5, 2.5, 255, 0, 0, 50)
+			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
+			sh_set_rendering(id, 255, 0, 0, 255,kRenderFxGlowShell, kRenderTransAlpha)
+		}
+	
 	}
+		
 	
 }
 yandere_update_idle(id){
 	new butnprs
 	
-	gIdleAngry[id] = false
+	gIdleAngry[id] = true
 	butnprs = Entvars_Get_Int(id, EV_INT_button)
 	
-	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) gIdleAngry[id] = true
+	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) gIdleAngry[id] = false
 	
-	if (butnprs&IN_JUMP) gIdleAngry[id]  = true
-	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) gIdleAngry[id] = true
-	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = true
+	if (butnprs&IN_JUMP) gIdleAngry[id]  = false
+	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) gIdleAngry[id] = false
+	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 	
-	
-	
-}
-public get_yandere_dead(id){
-	
-	new ratio=0
-	new CsTeams:user_team= cs_get_user_team(id)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if((i==id)||!is_user_connected(i)){
-			
-			
-		}
-		else if(!is_user_alive(i)){
-			
-			new CsTeams:other_user_team=cs_get_user_team(i)
-			if((user_team==other_user_team)){
-				
-				ratio++;
-			}
-		}
-		
-		
-	}
-	return ratio;
 	
 	
 }
@@ -330,38 +282,26 @@ public heal_players_in_radius(id){
 	
 }
 
-status_hud(id){
+public notify_yanderes_about_team_life(id,alive){
 	
-	new hud_msg[500];
-	new color[4];
-	format(hud_msg,500,"[SH] %s:Super angry? %s^nMates alive: %d^nMates dead: %d^nYour damage mult: %f^nYour heal stat: %f^nYour heal radius: %f^nYour gravity: %f^nYour max speed: %f^n",
-	gHeroName,
-	gSuperAngry[id]? "YES!":"No.",
-	get_yandere_alive(id),
-	get_yandere_dead(id),
-	gNormalDmgMult[id],
-	gNormalHeal[id],
-	gNormalHealRadius[id],
-	get_user_gravity(id),
-	get_user_maxspeed(id));
-	if(gSuperAngry[id]){
+	new CsTeams:user_team= cs_get_user_team(id)
+	for(new i=1;i<=SH_MAXSLOTS;i++){
+		if((i==id)||!is_user_connected(i)){
+			
+			
+		}
+		else if(is_user_alive(i)&&gHasYandere[i]){
+			
+			new CsTeams:other_user_team=cs_get_user_team(i)
+			if((user_team==other_user_team)){
 		
-		color[0]=255;
-		color[1]=0;
-		color[2]=0;
-		color[3]=1;
+				sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
+				
+			}
+		}
+		
 		
 	}
-	//255, 140, 234
-	else{
-		color[0]=255;
-		color[1]=140;
-		color[2]=234;
-		color[3]=0;
-	}
-	
-	set_hudmessage(color[0], color[1], color[2],1.0, 0.7, color[3], 0.0, 1.0,0.0,0.0,3)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	
 }
@@ -380,19 +320,6 @@ public yandere_loop(id){
 	
 	
 }
-public yandere_hud_loop(id){
-	
-	id-=YANDERE_HUD_TASKID;
-	
-	if(gHasYandere[id]){
-		
-		status_hud(id)
-		
-		
-	}
-	
-	
-}
 public yandere_warcry(id){
 	id-=YANDERE_CRY_TASKID
 	
@@ -402,24 +329,24 @@ public yandere_warcry(id){
 		new client_name[128]
 		get_user_name(id,client_name,127)
 		sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
-		emit_sound(0, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
+		emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
 		gToPlaySound[id]=false;
 		gPlayedSound[id]=true
 	}
 }
 public update_normal_stats(id){
 	
-	new mates_dead=get_yandere_dead(id);
-	new mates_alive=get_yandere_alive(id);
+	new mates_dead=get_yandere_num(id,0,0)
+	new mates_alive=get_yandere_num(id,1,0)
 	gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(mates_dead))),angry_dmg_mult);
 	gNormalHeal[id]=floatadd(base_heal,floatmul(heal_pct_per_inc,float(mates_alive)));
 	gNormalHealRadius[id]=floatadd(base_heal_radius,floatmul(heal_radius_inc_per_inc,float(mates_alive)));
 	if(!sh_get_stun(id)){
-		sh_reset_max_speed(id)
 		new Float:maxspeed=get_user_maxspeed(id)
-		set_user_maxspeed(id,floatmax(floatmin(floatadd(gNormalSpeed[id],floatmul(speed_inc_per_inc,float(mates_dead))),angry_speed),maxspeed));
+		gNormalSpeed[id]=floatmax(floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(mates_dead))),angry_speed),maxspeed);
+		set_user_maxspeed(id,gNormalSpeed[id])
 	}
-	gIdleAngry[id]=false;
+	gIdleAngry[id]=true;
 	gToPlaySound[id]=false;
 	sh_reset_min_gravity(id)
 	gSuperAngry[id]= mates_alive>0? false:true
@@ -427,11 +354,12 @@ public update_normal_stats(id){
 }
 public update_angry_stats(id){
 	
-	new mates_alive=get_yandere_alive(id);
+	new mates_alive=get_yandere_num(id,1,0)
 	gNormalDmgMult[id]=angry_dmg_mult
-	gNormalHeal[id]=float(0)
+	gNormalHeal[id]=angry_heal
 	gNormalHealRadius[id]=float(0)
-	set_user_maxspeed(id,angry_speed);
+	gNormalSpeed[id]=angry_speed;
+	set_user_maxspeed(id,gNormalSpeed[id])
 	gToPlaySound[id]=true;
 	set_user_gravity(id,angry_gravity)
 	gSuperAngry[id]= mates_alive>0? false:true
@@ -444,7 +372,6 @@ update_stats(id){
 			
 			yandere_update_idle(id)
 			update_angry_stats(id)
-			sh_set_rendering(id, 255, 0, 0, 255,kRenderFxGlowShell, kRenderTransAlpha)
 			
 		}
 		else{
@@ -480,14 +407,18 @@ public loadCVARS()
 	angry_speed=get_cvar_float("yandere_angry_speed")
 	angry_gravity=get_cvar_float("yandere_angry_gravity")
 	angry_dmg_mult=get_cvar_float("yandere_angry_dmg_mult")
+	angry_degen=get_cvar_float("yandere_angry_degen")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
 	if ( gHasYandere[id]&&is_user_alive(id) && shModActive() ) {
 		gPlayedSound[id]=false
-		gNormalSpeed[id]=base_extra_speed
+		gBaseSpeed[id]=base_extra_speed
+		emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 	}
+	notify_yanderes_about_team_life(id,1)
 	return PLUGIN_HANDLED
 	
 }
@@ -520,11 +451,12 @@ public plugin_precache()
 {
 	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	engfunc(EngFunc_PrecacheSound,YANDERE_WARCRY)
+	engfunc(EngFunc_PrecacheSound,YANDERE_CYCLE)
 	
 }
 public sh_round_end(){
 	
-	new total_alive=get_total_alive()
+	new total_alive=get_yandere_num(0,1,1)
 	
 	if(total_alive!=1){
 		return;
@@ -545,6 +477,8 @@ public death()
 {	
 	new id = read_data(2)
 	new killer= read_data(1)
+	
+	notify_yanderes_about_team_life(id,0)
 	if ( gHasYandere[killer]&&gSuperAngry[killer] )
 	{
 		new origin[3];

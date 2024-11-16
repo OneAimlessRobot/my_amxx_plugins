@@ -48,7 +48,6 @@ public plugin_init()
 	register_cvar("ester_lvls_for_inc", "5")
 	register_cvar("ester_uses_per_map","1")
 	register_cvar("ester_power_cost", "3")
-	register_event("ResetHUD","newRound","b")
 	hud_sync = CreateHudSyncObj()
 	hud_sync_enemies = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST!", "Kill everyone who wronged you!", true, "ester_level" )
@@ -77,80 +76,75 @@ public ester_init()
 	gHasEster[id]=(hasPowers!=0)
 	if(gHasEster[id]){
 		
-		reset_ester_equip(id)
-		
+		gTimesLeft[id]=times_per_map
+		reset_ester_user_round(id)
 		set_task( 1.0, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
 	}
 	else{
-		remove_task(id+ESTER_HUD_TASKID)
-		reset_ester_unequip(id)
+		reset_ester_user_round(id)
+		remove_task(id+ESTER_REVENGE_TASKID)
+	
 	}
 	
 	
-}
-public reset_ester_equip(id){
-	
-	arrayset(gTimesLeft[id],times_per_map,SH_MAXSLOTS+1)
-	reset_change_equip_state(id)
-	
-	update_max_dmg(id)
-	
-	
-	
-}
-public reset_ester_unequip(id){
-	
-	arrayset(gTimesLeft[id],0,SH_MAXSLOTS+1)
-	reset_change_equip_state(id)
-	
-	
-	
-	
-	gEsterDmg[id]=0;
-	
-	
-}
-reset_change_equip_state(id){
-
-	arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-	reset_status(id)
-
 }
 reset_status(id){
 
 
 
-	arrayset(gFinished[id],false,SH_MAXSLOTS+1)
-	arrayset(damage_to_do[id],0,SH_MAXSLOTS+1)
-	arrayset(gPedalIsFloored[id],false,SH_MAXSLOTS+1)
-	arrayset(gUnloading[id],false,SH_MAXSLOTS+1)
 	remove_task(id+ESTER_REVENGE_TASKID)
+	gFinished[id]=false
+	damage_to_do[id]=0
+	gPedalIsFloored[id]=false
+	gUnloading[id]=false
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_WINDUP, 1.0, 0.0,SND_STOP,PITCH_NORM)
+
+}
+count_enemies(id){
+	
+	new count=0;
+	if((gTimesLeft[id]>0)||!gFinished[id]){
+		new players[SH_MAXSLOTS]
+		new player_count
+		get_players(players,player_count)
+		for(new i=0;i<=player_count;i++){
+			
+			count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i]))?1:0;
+		
+		}
+		
+		
+		
+	}
+	return count;
+		
+
+
 
 }
 public reset_ester_user_round(id){
-	if(!gTimesLeft[id]){
-		
-		arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-	
-	}
 	reset_status(id)
+	if(gTimesLeft[id]<=0){
+		arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
+	}
 	update_max_dmg(id)
 	
 	
 	
 }
-
 public status_hud(id){
 
-	new hud_msg[128];
-	format(hud_msg,128,"[SH] %s:^nYour damage: %d^nTimes left: %d^nCharging? %s^nUnloading? %s^nTimes per map %d^nEnemy list:^nDamage to do to enemies: %d^n",
+	new hud_msg[200];
+	format(hud_msg,199,"[SH] %s:^nCharging? %s^nUnloding? %s^nFinished? %s^nYour damage: %d^nTimes left: %d^nDamage to do to enemies: %d^nNumber of enemies: %d^n",
 					gHeroName,
+					gPedalIsFloored[id]?"Yes":"No.",
+					gUnloading[id]?"Yes":"No.",
+					gFinished[id]?"Yes":"No.",
 					gEsterDmg[id],
 					gTimesLeft[id],
-					gPedalIsFloored[id]?"Yes":"No",
-					gUnloading[id]?"Yes":"No",
-					times_per_map,
-					damage_to_do[id]);
+					damage_to_do[id],
+					count_enemies(id));
 	
 	
 	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
@@ -170,14 +164,13 @@ public show_targets(id){
 			format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
 		}
 	} 
-	set_hudmessage(255,50, 255, 0.5, 0.5,      0,       0.0,       4.0,       0.0,     0.0,      2)
+	set_hudmessage(255,50, 255, -1.0, -1.0,      0,       0.0,       4.0,       0.0,     0.0,      1)
 	ShowSyncHudMsg(0, hud_sync_enemies, "%s", hud_msg)
 
 }
 public update_max_dmg(id){
-	
-	gEsterDmg[id]=min(max_dmg,base_dmg_per_it+(dmg_inc_per_inc*((sh_get_user_lvl(id)-gHeroLevel)/num_lvls_for_inc)));
-	
+		gEsterDmg[id]=(gTimesLeft[id]>0)?min(max_dmg,base_dmg_per_it+(dmg_inc_per_inc*((sh_get_user_lvl(id)-gHeroLevel)/num_lvls_for_inc))):0
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -204,7 +197,6 @@ public ester_loop(id)
 	
 	if ( !is_user_connected(id)||!is_user_alive(id)||!gHasEster[id]||!id){
 		
-		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 		return PLUGIN_HANDLED
 		
 	}
@@ -226,7 +218,6 @@ public ester_loop(id)
 	
 			sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
 			sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
-			remove_task(id+ESTER_REVENGE_TASKID)
 			
 	
 		}
@@ -315,6 +306,7 @@ public Ester_revenge_loop(id)
 	userArmor = cs_get_user_armor(id, armorType)
 	if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
 	
+	console_print(id,"UNLOADED")
 	if(gPedalIsFloored[id]){
 		
 		if (power_cost > 0 )
@@ -346,9 +338,11 @@ public Ester_revenge_loop(id)
 		
 		for ( new x=1; x<=SH_MAXSLOTS; x++) 
 		{
-			if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) && x!=id &&(g_ester_enemies[id][x]))
+			console_print(id,"UNLOADED2. Enemies? %s",g_ester_enemies[id][x]?"Yes.":"No.")
+			if ( is_user_alive(x) && (get_user_team(id)!=get_user_team(x)) && x!=id &&(g_ester_enemies[id][x]))
 			{
 				
+				console_print(id,"UNLOADED3")
 				Ester_instant(x, id)
 				sh_set_stun(x,stun_time_at_it, stun_speed_at_it)
 			}
@@ -372,18 +366,18 @@ public Ester_instant(x, id)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
-	if ( gHasEster[id]&&is_user_alive(id) && shModActive() ) {
+	if ( gHasEster[id]&&is_user_alive(id) && sh_is_active() ) {
 		
 		reset_ester_user_round(id)
+		
 	}
-	return PLUGIN_HANDLED
 	
 }
 public ester_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return
+	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id)||!gHasEster[id] ||!gTimesLeft[id]) return
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -396,7 +390,7 @@ public ester_damage(id)
 		return;
 	
 	}
-	if(gHasEster[id]&&!gUnloading[id]&&gTimesLeft[id]){
+	if(!gUnloading[id]){
 		
 		g_ester_enemies[id][attacker]=true;
 		if(gPedalIsFloored[id]){
@@ -418,7 +412,13 @@ public plugin_precache()
 
 public death()
 {
-}
+	new id=read_data(1)
+	
+	if ( !is_user_connected(id)||!gHasEster[id]||!id){
+		return
+	}
+	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
+}	
 
 //----------------------------------------------------------------------------------------------
 public ester_kd()
@@ -427,7 +427,7 @@ public ester_kd()
 	
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	if ( !is_user_alive(id) ) {
+	if ( !is_user_alive(id)||!gHasEster[id]||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 	if(!gTimesLeft[id]){
@@ -463,18 +463,13 @@ public ester_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasEster[id]||!gTimesLeft[id]||!gPedalIsFloored[id]) {
+	if ( !is_user_alive(id) ||!gHasEster[id]||!gTimesLeft[id]||!gPedalIsFloored[id]||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 	gPedalIsFloored[id]=false
 	if(!gFinished[id]){
 		gUnloading[id]=true
 		gTimesLeft[id]--;
-		if(!gTimesLeft[id]&&gFinished[id]){
-			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-	
-		
-		}
 	}
 	
 	return PLUGIN_HANDLED

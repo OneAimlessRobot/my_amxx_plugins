@@ -88,12 +88,12 @@ public reset_greaper2_user(id){
 	
 	
 }
-public status_hud(id){
+status_hud(id){
 	
-	new hud_msg[50];
-	format(hud_msg,49,"[SH] %s:  You have %d swings left!",gHeroName,gScytheSwings[id]);
+	new hud_msg[40];
+	format(hud_msg,39,"[SH] %s:  You have %d swings left!",gHeroName,gScytheSwings[id]);
 	
-	set_hudmessage(255, 255, 255, 1.0, 0.2, 0, 0.0, 0.2)
+	set_hudmessage(255, 255, 255, 1.0, 0.2, 0, 0.0, 0.2,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	
@@ -116,7 +116,7 @@ public greaper2_loop(id)
 {
 id -= GREAPER_TASKID
 
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasGreaper[id]){
+if ( !is_user_connected(id)||!is_user_alive(id)||!gHasGreaper[id]||!((id>0) && (id<=SH_MAXSLOTS))){
 	
 	return PLUGIN_CONTINUE
 	
