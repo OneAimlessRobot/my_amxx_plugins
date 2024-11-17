@@ -8,6 +8,7 @@
 #define COUNTER_SHOT_SFX "shmod/Teliko/counter.wav"
 #define COUNTER_MEGA_SFX "shmod/Teliko/MEGA_counter.wav"
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
+#define PRE_FIRST_BLOOD_SFX "shmod/Teliko/deagle-om.wav"
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Teliko"
@@ -205,14 +206,32 @@ if ( gHasTeliko[id] ) {
 }
 
 }
+public teliko_morph(id){
+
+
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Roger? Teliko here. Ready to go. Over.")
+
+}
+public teliko_unmorph(id){
+
+
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Mission failed. Im down. Come pick me up.")
+
+}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( gHasTeliko[id]&&is_user_alive(id) && shModActive() ) {
+if ( gHasTeliko[id]&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
 	
 	reset_teliko_user(id)
 	update_max_bullets(id)
 	give_start_counters(id)
+	teliko_morph(id)
+	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
 }
 return PLUGIN_HANDLED
 
@@ -350,11 +369,19 @@ m_spriteTexture = precache_model("sprites/laserbeam.spr")
 engfunc(EngFunc_PrecacheSound, COUNTER_SHOT_SFX)
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX)
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX)
+engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX)
+
 
 }
 public death()
 {
 new id = read_data(2)
+if(gHasTeliko[id]){
+
+	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
+	teliko_unmorph(id)
+}
+
 remove_enemy(id)
 }
 /////////////////////

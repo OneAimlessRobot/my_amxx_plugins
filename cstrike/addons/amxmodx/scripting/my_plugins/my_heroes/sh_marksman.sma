@@ -92,7 +92,7 @@ public sh_hero_init(id, heroID, mode)
 	switch(mode) {
 		case SH_HERO_ADD: {
 			gHasMarksman[id] = true
-			set_task( 0.01, "marksman_loop", id+MARKSMAN_TASKID, "", 0, "b")
+			set_task( 0.3, "marksman_loop", id+MARKSMAN_TASKID, "", 0, "b")
 			
 			#if defined GIVE_WEAPON
 			Marksman_weapons(id)
@@ -228,8 +228,7 @@ public Crouch(id,alpha) {
 	entity_get_vector( iPlayer, EV_VEC_origin, fOrigin );
 	
 	if( !(entity_get_int( iPlayer, EV_INT_flags ) & FL_ONGROUND  )){
-		
-		sh_set_rendering(id);
+		sh_set_rendering(iPlayer);
 		return FMRES_IGNORED;
 	
 	
@@ -243,7 +242,6 @@ public Crouch(id,alpha) {
 		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
 	}
 	else{
-			
 		sh_set_rendering(iPlayer);
 		return FMRES_IGNORED;
 		

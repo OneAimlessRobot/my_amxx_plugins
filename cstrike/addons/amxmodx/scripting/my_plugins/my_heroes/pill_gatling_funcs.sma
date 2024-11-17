@@ -16,11 +16,9 @@ register_plugin(PLUGIN, VERSION, AUTHOR);
 
 arrayset(pill_loaded,true,SH_MAXSLOTS+1)
 arrayset(gCurrFX,0,SH_MAXSLOTS+1)
+arrayset(pill_fx,0,MAX_ENTITIES)
 register_forward(FM_PlayerPreThink, "player_prethink_gatling")
 RegisterHam(Ham_TakeDamage, "player", "Pillgatling_damage");
-RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_m249", "shoot_gatling");
-
-	
 }
 
 public plugin_natives(){
@@ -32,6 +30,9 @@ public plugin_natives(){
 	
 	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
 	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
+	
+	register_native("gatling_set_pill_fx_num","_gatling_set_pill_fx_num",0);
+	register_native("gatling_get_pill_fx_num","_gatling_get_pill_fx_num",0);
 	
 	register_native("gatling_set_hero_id","_gatling_set_hero_id",0);
 	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
@@ -45,6 +46,8 @@ public plugin_natives(){
 	register_native( "launch_pill","_launch_pill",0);
 	register_native( "uneffect_user_handler","_uneffect_user_handler",0)
 	register_native( "make_effect","_make_effect",0)
+	register_native( "clear_pills","_clear_pills",0)
+	register_native( "make_effect_direct","_make_effect_direct",0)
 	
 
 
@@ -52,15 +55,10 @@ public plugin_natives(){
 
 public Pillgatling_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
+if(client_isnt_hitter(attacker)) return HAM_IGNORED
 
-if(!(attacker>0 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
-new client_name[128];
-new attacker_name[128]
-get_user_name(id,client_name,127);
-get_user_name(attacker,attacker_name,127);
 new clip, ammo, wpnid = get_user_weapon(attacker,clip,ammo)
-if(gHasYakui[attacker]&&gPillGatlingEngaged[attacker]){
+if(gPillGatlingEngaged[attacker]){
 	
 	if(wpnid==CSW_M249){
 		
@@ -81,6 +79,17 @@ public _make_effect(iPlugin,iParams){
 
 	sh_uneffect_user(vic,gCurrFX[vic],gHeroID)
 	new fx_num=sh_effect_user(vic,attacker,gHeroID)
+	gCurrFX[vic]=fx_num;
+
+}
+public _make_effect_direct(iPlugin,iParams){
+
+	new vic= get_param(1)
+	new attacker= get_param(2)
+	new fx_num= get_param(3)
+
+	sh_uneffect_user(vic,gCurrFX[vic],gHeroID)
+	sh_effect_user_direct(vic,attacker,gHeroID,fx_num)
 	gCurrFX[vic]=fx_num;
 
 }
@@ -131,6 +140,23 @@ public _gatling_set_fx_num(iPlugin,iParams){
 
 }
 
+public _gatling_get_pill_fx_num(iPlugin,iParams){
+
+
+	new pillid= get_param(1)
+	return pill_fx[pillid]
+
+}
+
+public _gatling_set_pill_fx_num(iPlugin,iParams){
+
+
+	new pillid= get_param(1)
+	new value_to_set= get_param(2)
+	pill_fx[pillid]=value_to_set
+
+}
+
 public _gatling_get_hero_id(iPlugin,iParams){
 
 	return gHeroID
@@ -176,11 +202,14 @@ public player_prethink_gatling(id)
 					gHasYakui[id]?"Sim":"Nao"
 					)
 	*/
-	if ((entity_get_int(id, EV_INT_button) & IN_ATTACK2) && (wpnid == CSW_M249) && gHasYakui[id]&&gPillGatlingEngaged[id] )
+	if ( (wpnid == CSW_M249) && gHasYakui[id]&&gPillGatlingEngaged[id] )
 	{
+		if((entity_get_int(id, EV_INT_button) & IN_ATTACK2)){
 		
-		launch_pill(id)
-		return FMRES_IGNORED
+			launch_pill(id)
+			return FMRES_IGNORED
+		}
+		
 	}
 	return FMRES_IGNORED
 }
@@ -189,7 +218,7 @@ public player_prethink_gatling(id)
 return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
 
 }*/
-client_hittable(gatling_user,vic_userid){
+client_hittable(vic_userid){
 
 return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
 
@@ -198,10 +227,19 @@ public _client_isnt_hitter(iPlugin,iParams){
 
 new gatling_user=get_param(1)
 
-return (!shModActive()||!gHasYakui[gatling_user]||!is_user_connected(gatling_user)||!gNumPills[gatling_user]||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
+return (!shModActive()||!gHasYakui[gatling_user]||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
 
 }
 
+public _clear_pills(iPlugin,iParams){
+
+	arrayset(pill_fx,0,MAX_ENTITIES)
+	new grenada = find_ent_by_class(-1, PILL_CLASSNAME)
+	while(grenada) {
+		remove_entity(grenada)
+		grenada = find_ent_by_class(grenada, PILL_CLASSNAME)
+	}
+}
 shooting_aura(id){
 
 	new origin[3]
@@ -247,7 +285,7 @@ public _launch_pill(iPlugin,iParams)
 	if (!Ent) return PLUGIN_HANDLED
 
 	entity_set_string(Ent, EV_SZ_classname, PILL_CLASSNAME)
-	entity_set_model(Ent, "models/grenade.mdl")
+	entity_set_model(Ent, "models/shell.mdl")
 
 	new Float:MinBox[3] = {-1.0, -1.0, -1.0}
 	new Float:MaxBox[3] = {1.0, 1.0, 1.0}
@@ -269,17 +307,23 @@ public _launch_pill(iPlugin,iParams)
 
 	gNumPills[id]--
 
-	new parm[1]
+	new parm[6]
+	new fx_num=sh_gen_effect()
+	pill_fx[Ent]=fx_num
+	new color[4]
+	sh_get_pill_color(Ent,id,color)
 	parm[0] = Ent
-	
+	parm[1] =id
+	parm[2]=color[0]
+	parm[3]=color[1]
+	parm[4]=color[2]
+	parm[5]=color[3]
 	emit_sound(id, CHAN_WEAPON, gunsound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
 	//if(get_cvar_num("veronika_m203trail"))
-	set_task(0.2, "pilltrail",id,parm,1)
+	set_task(0.01, "pilltrail",id,parm,6)
 
 	parm[0] = id
 	set_task(PILL_SHOOT_PERIOD, "pill_reload",id+PILL_RELOAD_TASKID,parm,1)
-	client_print(id, print_center, "Shot a pill 2!!!!!")
 
 	return PLUGIN_CONTINUE
 }
@@ -327,7 +371,7 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 public pilltrail(parm[])
 {
 	new pid = parm[0]
-
+	new attacker = parm[1]
 	if (pid)
 	{
 		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
@@ -336,10 +380,10 @@ public pilltrail(parm[])
 		write_short(m_trail)  // model
 		write_byte( 10 )       // life
 		write_byte( 5 )        // width
-		write_byte( 255 )      // r, g, b
-		write_byte( 255 )    // r, g, b
-		write_byte( 255 )      // r, g, b
-		write_byte( 100 ) // brightness
+		write_byte(parm[2])			// r, g, b
+		write_byte(parm[3])		// r, g, b
+		write_byte(parm[4])			// r, g, b
+		write_byte(parm[5]) // brightness
 
 		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 	}
@@ -369,43 +413,29 @@ public vexd_pfntouch(pToucher, pTouched)
 
 		for ( i = 1; i <= 32; i++)
 		{
-			if(client_hittable(oid,i))
+			if(client_hittable(i))
 			{
 				get_user_origin(i,origin)
 				dist = get_distance(origin,vExplodeAt)
 				if (dist <= damradius)
 				{
-					make_effect(i,oid)
+					make_effect_direct(i,oid,pill_fx[pToucher])
 
 				}
 			}
 		}
 		emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		pill_fx[pToucher]=0;
 		remove_entity(pToucher)
 
 	}
-}
-
-public shoot_gatling(weaponent)
-{
-	
-	
-	new id = get_pdata_cbase(weaponent, 41, 4);
-	if (client_isnt_hitter(id))return HAM_IGNORED
-	new wpnid=cs_get_weapon_id(weaponent);
-	if (gPillGatlingEngaged[id]&&(wpnid==CSW_M249)) 
-	{
-		return HAM_SUPERCEDE
-		
-	}
-	return HAM_IGNORED
 }
 
 public plugin_precache()
 {
 	m_trail = precache_model("sprites/smoke.spr")
 
-	precache_model("models/grenade.mdl")
+	precache_model("models/shell.mdl")
 	precache_model(GATLING_P_MODEL)
 	precache_model(GATLING_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)

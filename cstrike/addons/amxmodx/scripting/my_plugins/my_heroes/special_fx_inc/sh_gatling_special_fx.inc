@@ -3,6 +3,9 @@
 #endif
 #define sh_special_fx
 native sh_effect_user(id,attacker,gHeroID)
+native sh_gen_effect()
+native sh_get_pill_color(pillid,attacker, color[4])
+native sh_effect_user_direct(id,attacker,gHeroID,fx_num)
 native sh_uneffect_user(id,fx_num,gHeroID)
 
 

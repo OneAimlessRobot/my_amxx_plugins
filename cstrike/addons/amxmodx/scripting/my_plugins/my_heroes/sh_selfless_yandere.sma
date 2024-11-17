@@ -24,6 +24,9 @@ new Float:gNormalSpeed[SH_MAXSLOTS+1]
 new Float:gBaseSpeed[SH_MAXSLOTS+1]
 
 
+new gLastWeapon[SH_MAXSLOTS+1]
+new gLastClipCount[SH_MAXSLOTS+1]
+
 new const yandere_sentences[5][]={
 	"Hiss.... Hiss.... Hiss.... Hiss.....",
 	"Where are you... where... are you...",
@@ -83,6 +86,7 @@ public plugin_init()
 	
 	register_srvcmd("yandere_init", "yandere_init")
 	shRegHeroInit(gHeroName, "yandere_init")
+	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 }
 public yandere_init()
 {
@@ -163,7 +167,7 @@ public yandere_sentence_loop(id){
 	id-=YANDERE_ANGER_TASKID;
 	
 	if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gSuperAngry[id]){
-	
+		
 		
 		if(gIdleAngry[id]){
 			
@@ -175,9 +179,9 @@ public yandere_sentence_loop(id){
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
 			sh_set_rendering(id, 255, 0, 0, 255,kRenderFxGlowShell, kRenderTransAlpha)
 		}
-	
-	}
 		
+	}
+	
 	
 }
 yandere_update_idle(id){
@@ -294,7 +298,7 @@ public notify_yanderes_about_team_life(id,alive){
 			
 			new CsTeams:other_user_team=cs_get_user_team(i)
 			if((user_team==other_user_team)){
-		
+				
 				sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
 				
 			}
@@ -348,7 +352,7 @@ public update_normal_stats(id){
 	}
 	gIdleAngry[id]=true;
 	gToPlaySound[id]=false;
-	sh_reset_min_gravity(id)
+	//sh_reset_min_gravity(id)
 	gSuperAngry[id]= mates_alive>0? false:true
 	
 }
@@ -473,6 +477,51 @@ public sh_round_end(){
 	
 	
 }
+
+public fire_weapon(id)
+{
+	
+	if ( !gHasYandere[id] ||!is_user_alive(id)||!gSuperAngry[id]) return PLUGIN_CONTINUE 
+	new wpnid = read_data(2)		// id of the weapon 
+	new ammo = read_data(3)		// ammo left in clip 
+	
+	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
+	
+	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
+	{
+		new vec1[3], vec2[3]
+		get_user_origin(id, vec1, 1) // origin; your camera point.
+		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
+		
+		
+		//BEAMENTPOINTS
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte (0)     //TE_BEAMENTPOINTS 0
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2])
+		write_coord(vec2[0])
+		write_coord(vec2[1])
+		write_coord(vec2[2])
+		write_short( m_spriteTexture )
+		write_byte(1) // framestart
+		write_byte(5) // framerate
+		write_byte(2) // life
+		write_byte(10) // width
+		write_byte(0) // noise
+		write_byte( 255 )     // r, g, b
+		write_byte( 0 )       // r, g, b
+		write_byte( 0)
+		write_byte(255) // brightness
+		write_byte(300) // speed
+		message_end()
+	}
+	gLastClipCount[id] = ammo
+	gLastWeapon[id]=wpnid;
+	return PLUGIN_CONTINUE 
+	
+}
+
 public death()
 {	
 	new id = read_data(2)
@@ -487,3 +536,6 @@ public death()
 	}
 }
 
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
+*/

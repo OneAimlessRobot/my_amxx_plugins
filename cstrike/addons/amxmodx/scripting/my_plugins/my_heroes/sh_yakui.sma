@@ -101,14 +101,6 @@ clear_yakui(id){
 
 
 }
-clear_pills(){
-
-	new grenada = find_ent_by_class(-1, PILL_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, PILL_CLASSNAME)
-	}
-}
 public yakui_weapons(id){
 
 if ( sh_is_active() && is_user_alive(id) && gatling_get_has_yakui(id) ) {
