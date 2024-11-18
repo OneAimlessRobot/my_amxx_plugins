@@ -1,6 +1,6 @@
-#include "../my_include/superheromod.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
+#include "superheromod.inc"
+#include "sh_gatling_special_fx.inc"
+#include "sh_gatling_funcs.inc"
 
 
 #define PLUGIN "Superhero yakui pt2"
@@ -227,7 +227,7 @@ public _client_isnt_hitter(iPlugin,iParams){
 
 new gatling_user=get_param(1)
 
-return (!shModActive()||!gHasYakui[gatling_user]||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
+return (!sh_is_active()||!gHasYakui[gatling_user]||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
 
 }
 
@@ -371,7 +371,6 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 public pilltrail(parm[])
 {
 	new pid = parm[0]
-	new attacker = parm[1]
 	if (pid)
 	{
 		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )

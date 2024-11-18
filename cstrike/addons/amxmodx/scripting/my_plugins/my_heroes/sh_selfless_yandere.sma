@@ -21,7 +21,9 @@ new Float:gNormalDmgMult[SH_MAXSLOTS+1]
 new Float:gNormalHeal[SH_MAXSLOTS+1]
 new Float:gNormalHealRadius[SH_MAXSLOTS+1]
 new Float:gNormalSpeed[SH_MAXSLOTS+1]
+new Float:gNormalGravity[SH_MAXSLOTS+1]
 new Float:gBaseSpeed[SH_MAXSLOTS+1]
+new Float:gBaseGravity[SH_MAXSLOTS+1]
 
 
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -290,7 +292,7 @@ public notify_yanderes_about_team_life(id,alive){
 	
 	new CsTeams:user_team= cs_get_user_team(id)
 	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if((i==id)||!is_user_connected(i)){
+		if(!is_user_connected(i)){
 			
 			
 		}
@@ -299,6 +301,7 @@ public notify_yanderes_about_team_life(id,alive){
 			new CsTeams:other_user_team=cs_get_user_team(i)
 			if((user_team==other_user_team)){
 				
+				sh_reset_min_gravity(id)
 				sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
 				
 			}
@@ -352,7 +355,9 @@ public update_normal_stats(id){
 	}
 	gIdleAngry[id]=true;
 	gToPlaySound[id]=false;
-	//sh_reset_min_gravity(id)
+	new Float:gravity=get_user_gravity(id)
+	gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
+	set_user_gravity(id,gNormalGravity[id])
 	gSuperAngry[id]= mates_alive>0? false:true
 	
 }
@@ -362,10 +367,15 @@ public update_angry_stats(id){
 	gNormalDmgMult[id]=angry_dmg_mult
 	gNormalHeal[id]=angry_heal
 	gNormalHealRadius[id]=float(0)
-	gNormalSpeed[id]=angry_speed;
-	set_user_maxspeed(id,gNormalSpeed[id])
+	if(!sh_get_stun(id)){
+		new Float:maxspeed=get_user_maxspeed(id)
+		gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
+		set_user_maxspeed(id,gNormalSpeed[id])
+	}
+	new Float:gravity=get_user_gravity(id)
+	gNormalGravity[id]=floatmin(angry_gravity,gravity);
+	set_user_gravity(id,gNormalGravity[id])
 	gToPlaySound[id]=true;
-	set_user_gravity(id,angry_gravity)
 	gSuperAngry[id]= mates_alive>0? false:true
 	
 }
@@ -415,14 +425,17 @@ public loadCVARS()
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
-{
-	if ( gHasYandere[id]&&is_user_alive(id) && shModActive() ) {
-		gPlayedSound[id]=false
-		gBaseSpeed[id]=base_extra_speed
-		emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
-		emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
+{	if(is_user_alive(id) && shModActive()){ 
+		notify_yanderes_about_team_life(id,1)
+		if ( gHasYandere[id]) {
+			gSuperAngry[id]=false;
+			gPlayedSound[id]=false
+			gBaseSpeed[id]=base_extra_speed
+			gBaseGravity[id]=1.0
+			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
+		}
 	}
-	notify_yanderes_about_team_life(id,1)
 	return PLUGIN_HANDLED
 	
 }
@@ -527,6 +540,12 @@ public death()
 	new id = read_data(2)
 	new killer= read_data(1)
 	
+	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
+	if(gHasYandere[id]){
+		gSuperAngry[id]=false;
+	
+	
+	}
 	notify_yanderes_about_team_life(id,0)
 	if ( gHasYandere[killer]&&gSuperAngry[killer] )
 	{
@@ -536,6 +555,3 @@ public death()
 	}
 }
 
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
-*/

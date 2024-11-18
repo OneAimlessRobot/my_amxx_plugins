@@ -1,8 +1,8 @@
 
 
-#include "../my_include/superheromod.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
+#include "superheromod.inc"
+#include "sh_gatling_special_fx.inc"
+#include "sh_gatling_funcs.inc"
 
 
 // GLOBAL VARIABLES
