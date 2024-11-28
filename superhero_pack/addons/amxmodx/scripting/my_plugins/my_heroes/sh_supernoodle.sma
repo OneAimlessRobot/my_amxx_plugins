@@ -13,7 +13,6 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 
 #include "../my_include/superheromod.inc"
 
-
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
 new bool:gHasSuperNoodlePower[SH_MAXSLOTS+1]
@@ -50,6 +49,7 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
 }
+
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
@@ -100,11 +100,22 @@ public newSpawn(id)
 
 	}
 }
+public give_m3(id){
+
+	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
+		shGiveWeapon(id,"weapon_m3")
+		new ent = find_ent_by_owner(-1, "weapon_m3", id);
+
+		cs_set_weapon_ammo(ent, 2);
+		cs_set_user_bpammo(id, CSW_M3,16);
+	}
+
+}
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_m3")
+	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
+		give_m3(id)
 		shGiveWeapon(id,"weapon_m249")
 		shGiveWeapon(id,"weapon_elite")
 		shGiveWeapon(id,"weapon_scout")

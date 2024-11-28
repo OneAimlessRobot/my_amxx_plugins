@@ -71,7 +71,7 @@ public CmdStart(id, uc_handle)
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_elite", id);
+	new ent = find_ent_by_owner(-1, "weapon_m249", id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
 	if(weapon==CSW_M249 ){
@@ -369,6 +369,3 @@ if(has_rocket[i] > 0){
 
 }
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
-*/

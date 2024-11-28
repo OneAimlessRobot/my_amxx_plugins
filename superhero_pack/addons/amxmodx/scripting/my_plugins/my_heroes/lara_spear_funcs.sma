@@ -138,6 +138,7 @@ charge_user(id){
 public _spear_uncharge_spear(iPlugin,iParams){
 	new id=get_param(1)
 	uncharge_user(id)
+	spear_loaded[id]=true
 
 
 }
@@ -468,7 +469,4 @@ public _gatling_set_pillgatling(iPlugin,iParams){
 	new value_to_set= get_param(2)
 	gPillGatlingEngaged[id]=value_to_set;
 }
-*/
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
 */
