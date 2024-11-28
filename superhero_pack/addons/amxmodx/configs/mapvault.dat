@@ -1,0 +1,12 @@
+;To use comments simply use ;
+;Do not modify these variables; they are used by the Deagles' Map Manager plugin to save settings
+;If you delete this file, defaults will be restored.
+;If you make an invalid setting, that specific setting will restore to the default
+r 60
+b 4
+m 5
+x 3
+y 5
+p 1
+w 5
+fr 3

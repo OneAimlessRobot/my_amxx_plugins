@@ -1,0 +1,5 @@
+WC3 : Frozen Throne
+Logging of admin commands
+ 
+L 06/08/2024 03:07:%: Cmd: "ThrashBrat<24><STEAM_ID_LAN><CT>" 'wc3_setlevel thr 6'
+L 06/08/2024 03:18:%: Cmd: "ThrashBrat<77><STEAM_ID_LAN><CT>" 'wc3_givexp thr 3361'

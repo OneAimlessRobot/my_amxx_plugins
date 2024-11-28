@@ -1,0 +1,21 @@
+<body bgcolor="#000000">
+<font color="#FFFFFF">
+PREDATOR MODE 1.85 (HELP SECTION)<br><br>
+
+1. say /predcost to know what you need to become a predator<br>
+<br>
+
+2. say /predfrags to know how frags u get for each kill<br> 
+<br>
+
+3. say /predmoney to know how much money u get for each kill<br><br>
+
+4. say /predon to know if predator mode is on or off<br>
+ <br>
+
+5. say /predeveryone to know if everyone mode is on or off<br>
+ <br>
+
+6. use the command dbinds to bind the default keys for plasma and vire (p and mouse3)<br><br>
+
+7. This mode was created by: Haimmaik and using amxmodx 1.60<br><br>
