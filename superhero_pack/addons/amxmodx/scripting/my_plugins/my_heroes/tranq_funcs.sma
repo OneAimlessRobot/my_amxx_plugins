@@ -10,15 +10,21 @@
 #define Struct				enum
 
 new bool:dart_loaded[SH_MAXSLOTS+1]
-
+new Float:dart_launch_pos[MAX_ENTITIES][3];
+new bool:dart_hurts[MAX_ENTITIES];
 new m_trail
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
-	
+	for(new i=0;i<MAX_ENTITIES;i++){
+		
+		arrayset(dart_launch_pos[i],0.0,3);
+		
+	}
 	arrayset(dart_loaded,true,SH_MAXSLOTS+1)
+	arrayset(dart_hurts,false,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	
 }
@@ -97,6 +103,8 @@ public _clear_darts(iPlugin,iParams){
 new grenada = find_ent_by_class(-1, DART_CLASSNAME)
 while(grenada) {
 	remove_entity(grenada)
+	arrayset(dart_launch_pos[grenada],0.0,3);
+	dart_hurts[grenada]=false;
 	grenada = find_ent_by_class(grenada, DART_CLASSNAME)
 }
 }
@@ -137,6 +145,14 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 tranq_dec_num_darts(id)
 
+if(tranq_get_is_max_points(id)){
+
+	dart_hurts[Ent]=true;
+	dart_launch_pos[Ent][0]=Origin[0]
+	dart_launch_pos[Ent][1]=Origin[1]
+	dart_launch_pos[Ent][2]=Origin[2]
+
+}
 new parm[1]
 
 parm[0] = Ent
@@ -163,11 +179,18 @@ write_short(pid) // entity
 write_short(m_trail)  // model
 write_byte( 10 )       // life
 write_byte( 5 )        // width
-write_byte(sleep_color[0])			// r, g, b
-write_byte(sleep_color[1])		// r, g, b
-write_byte(sleep_color[2])			// r, g, b
-write_byte(sleep_color[3]) // brightness
-
+if(!dart_hurts[pid]){
+	write_byte(sleep_color[0])			// r, g, b
+	write_byte(sleep_color[1])		// r, g, b
+	write_byte(sleep_color[2])			// r, g, b
+	write_byte(sleep_color[3]) // brightness
+}
+else {
+	write_byte(rage_sleep_color[0])			// r, g, b
+	write_byte(rage_sleep_color[1])		// r, g, b
+	write_byte(rage_sleep_color[2])			// r, g, b
+	write_byte(rage_sleep_color[3]) // brightness
+}
 message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 }
 }
@@ -189,16 +212,30 @@ new oid = entity_get_edict(pToucher, EV_ENT_owner)
 if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 	if(client_hittable(pTouched))
 	{
+		if(dart_hurts[pToucher]){
+			new Float:vic_origin[3];
+			entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+			new Float:distance=vector_distance(vic_origin,dart_launch_pos[pToucher]);
+			new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
+			sh_extra_damage(pTouched,oid,floatround(DART_DAMAGE-35.0*falloff_coeff),"Rage tranq");
+			
+		
+		}
 		sh_sleep_user(pTouched,oid,tranq_get_hero_id())
 		
 	}
 	remove_entity(pToucher)
+	arrayset(dart_launch_pos[pToucher],0.0,3);
+	dart_hurts[pToucher]=false;
 }
 //entity_get_vector(pTouched, EV_VEC_ORIGIN, origin)
 if(pev(pTouched,pev_solid)==SOLID_BSP){
 	
 		emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		remove_entity(pToucher)
+		remove_entity(pToucher)	
+		arrayset(dart_launch_pos[pToucher],0.0,3);
+		dart_hurts[pToucher]=false;
+
 		}
 
 	}

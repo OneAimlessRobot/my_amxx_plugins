@@ -440,3 +440,6 @@ set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderNormal, 255)
 entity_set_float(id, EV_FL_renderamt, 1.0)
 }
 } 
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

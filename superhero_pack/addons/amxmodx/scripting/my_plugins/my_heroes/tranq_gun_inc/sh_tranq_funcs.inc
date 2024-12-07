@@ -10,6 +10,9 @@
 
 
 
+#define DART_DAMAGE 70.0
+#define DART_DAMAGE_FALLOFF_DIST 2500.0
+
 #define DART_SPEED 3100.0
 
 #define DART_SHOOT_PERIOD 1.5

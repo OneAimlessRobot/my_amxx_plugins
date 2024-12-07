@@ -90,12 +90,19 @@ public plugin_natives(){
 	register_native("tranq_set_hero_id","_tranq_set_hero_id",0);
 	register_native("tranq_get_hero_id","_tranq_get_hero_id",0);
 	
+	register_native("tranq_get_is_max_points","_tranq_get_is_max_points",0);
 	register_native("tranq_get_has_erica","_tranq_get_has_erica",0);
 	register_native("tranq_set_has_erica","_tranq_set_has_erica",0);
 	
 
 }
+public bool:_tranq_get_is_max_points(iPlugin,iParams){
 
+	new id= get_param(1)
+	return g_erica_points[id]==max_er_points;
+
+
+}
 public _tranq_set_has_erica(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set= get_param(2)
