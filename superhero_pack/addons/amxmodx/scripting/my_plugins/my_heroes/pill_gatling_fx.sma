@@ -132,6 +132,7 @@ public Player_TakeDamage(id)
 
 public _get_fx_num(iPlugin,iParams){
 
+	/*
 	new Float:chance=random_float(0.0,1.0)
 	if(chance<0.01){
 	
@@ -188,9 +189,9 @@ public _get_fx_num(iPlugin,iParams){
 		return BATH;
 	
 	}
-	return BATH +1
+	return BATH +1*/
 	
-	//return POISON
+	return RADIOACTIVE
 
 
 
@@ -412,6 +413,7 @@ public _sh_uneffect_user(iPlugin,iParams){
 kill_user(id,attacker){
 	
 	
+	sh_screen_fade(id, 0.1, 0.9, kill_color[0], kill_color[1], kill_color[2], 50)
 	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
 	return 0
 
@@ -512,6 +514,7 @@ unpoison_user(id){
 }
 unstun_user(id){
 
+	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
 	sh_set_stun(id,0.0,1.0)
 	sh_screen_shake(id,0.0,0.0,0.0)
 	return 0
@@ -539,6 +542,7 @@ public radioactive_task(array[],id){
 	sh_set_rendering(id, radioactive_color[0],  radioactive_color[1], radioactive_color[2], radioactive_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, 0.9, radioactive_color[0], radioactive_color[1], radioactive_color[2],  50)
 	aura(id,radioactive_color)
+	detect_user(array[0],id,eorigin);
 	sh_extra_damage(id,array[0],RADIOACTIVE_DAMAGE,"Uranium Pill",0,SH_DMG_NORM)
 	
 	
@@ -578,6 +582,23 @@ public unradioactive_task(id){
 
 }
 
+detect_user(id,enemy,PlayerCoords[3]){
+
+
+            message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
+            write_byte(id)
+            write_byte(enemy)           
+            write_coord(PlayerCoords[0])
+            write_coord(PlayerCoords[1])
+            write_coord(PlayerCoords[2])
+            message_end()
+                                
+            message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
+            write_byte(enemy)
+            message_end()
+
+
+}
 
 aura(id,const color[4]){
 

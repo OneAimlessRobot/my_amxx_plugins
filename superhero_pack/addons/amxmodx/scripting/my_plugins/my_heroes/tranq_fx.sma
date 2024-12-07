@@ -37,7 +37,7 @@ public plugin_natives(){
 
 public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 {
-	if ( !sh_is_active() ) return HAM_IGNORED
+	if ( !sh_is_active()||!is_valid_ent(weapon_ent) ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
 
