@@ -104,7 +104,7 @@ enum
 
 new const kill_color[4]={1, 255, 255, 255}
 new const poison_color[4]={80, 240, 30, 255}
-new const glow_color[4]={100, 8, 100, 255}
+new const glow_color[4]={255, 255, 255, 255}
 new const stun_color[4]={100, 100, 100, 255}
 new const radioactive_color[4]={240, 80, 30,  255}
 new const morphine_color[4]={80, 240, 1, 255}

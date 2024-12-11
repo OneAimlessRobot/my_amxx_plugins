@@ -12,6 +12,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 */
 
 #include "../my_include/superheromod.inc"
+#include "d_barrel_inc/sh_d_barrel.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
@@ -41,56 +42,40 @@ public plugin_init()
 
 	// EVENTS
 	register_event("ResetHUD", "newSpawn","b")
-	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "SuperNoodle_damage", "b", "2!0")
 
 	// Let Server know about SuperNoodle's Variable
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
+	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn");
 }
 
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	precache_model("models/shmod/v_supernoodle_m3.mdl")
-	precache_model("models/shmod/p_supernoodle_m3.mdl")
-}
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_init()
 {
 	// First Argument is an id
 	new temp[6]
 	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
+	new id=str_to_num(temp)
+	
 	read_argv(2,temp,5)
 	new hasPowers = str_to_num(temp)
-
-	if (!is_user_connected(id)) return
-
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-
-	if ( is_user_alive(id) ) {
-		if ( hasPowers ) {
-			SuperNoodle_weapons(id)
-			switchmodel(id)
-		}
-		//This gets run if they had the power but don't anymore
-		else if ( !hasPowers && gHasSuperNoodlePower[id] ) {
-			engclient_cmd(id, "drop", "weapon_m3")
-			engclient_cmd(id, "drop", "weapon_m249")
-			engclient_cmd(id, "drop", "weapon_elite")
-			engclient_cmd(id, "drop", "weapon_scout")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-		}
-	}
-	//Sets this variable to the current status
 	gHasSuperNoodlePower[id] = (hasPowers != 0)
+	if(gHasSuperNoodlePower[id]){
+		
+			SuperNoodle_weapons(id)
+	}
+	//This gets run if they had the power but don't anymore
+	else {
+		d_barrel_unset_d_barrel(id)
+		engclient_cmd(id, "drop", "weapon_m249")
+		engclient_cmd(id, "drop", "weapon_elite")
+		engclient_cmd(id, "drop", "weapon_scout")
+		shRemHealthPower(id)
+		shRemArmorPower(id)
+	}
+	
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -100,54 +85,22 @@ public newSpawn(id)
 
 	}
 }
-public give_m3(id){
+public Ham_respawn(id){
+	if ( shModActive() && gHasSuperNoodlePower[id] && is_user_alive(id) ) {
+		SuperNoodle_weapons(id)
 
-	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
-		shGiveWeapon(id,"weapon_m3")
-		new ent = find_ent_by_owner(-1, "weapon_m3", id);
-
-		cs_set_weapon_ammo(ent, 2);
-		cs_set_user_bpammo(id, CSW_M3,16);
 	}
+
 
 }
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)
 {
 	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
-		give_m3(id)
+		d_barrel_set_d_barrel(id)
 		shGiveWeapon(id,"weapon_m249")
 		shGiveWeapon(id,"weapon_elite")
 		shGiveWeapon(id,"weapon_scout")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) ) return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	if ( wpnid == CSW_M3 ) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/v_SuperNoodle_m3.mdl")
-		Entvars_Set_String(id, EV_SZ_weaponmodel, "models/shmod/p_SuperNoodle_m3.mdl")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public weaponChange(id)
-{
-	if ( !gHasSuperNoodlePower[id] || !shModActive() ) return
-
-	new wpnid = read_data(2)
-	new clip = read_data(3)
-
-	if ( wpnid != CSW_M3 ) return
-
-	switchmodel(id)
-
-	// Never Run Out of Ammo!
-	if ( clip == 0 ) {
-		shReloadAmmo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -161,7 +114,7 @@ public SuperNoodle_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
 
-	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
+	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_XM1014 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_m3mult") - damage)
 		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "super shotgun", headshot)
 	

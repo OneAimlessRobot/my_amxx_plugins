@@ -19,7 +19,7 @@
 #define CSW_QUADBARREL CSW_M3
 #define weapon_quadbarrel "weapon_m3"
 
-#define WEAPON_SECRETCODE 20132014
+#define WEAPON_SECRETCODE 20102014
 #define OLD_W_MODEL "models/w_m3.mdl"
 #define OLD_EVENT "events/m3.sc"
 #define ANIM_EXT "shotgun"

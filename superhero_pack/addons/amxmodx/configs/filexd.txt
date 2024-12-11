@@ -1,51 +1,3 @@
-//To save XP to a nVault file (default)
-superheromodnvault.amxx
-
-//To save XP to the VAULT file (uncomment this and comment out the other core plugin)
-//superheromodvault.amxx
-
-//To save XP to a mysql database (uncomment this and comment out the other core plugin)
-//superheromodmysql.amxx
-
-//Add Heroes Here
-sh_yakuipt2.amxx
-sh_yakui_get_set.amxx
-mine_funcs.amxx
-camera_funcs.amxx debug
-sh_GokuKT.amxx
-sh_phoenix.amxx
-sh_naruto_scj_pub.amxx
-sh_thrashythrash.amxx
-sh_drstrange.amxx
-sh_tracker.amxx
-sh_gohan.amxx
-sh_jaws.amxx
-sh_supernoodle.amxx
-sh_poisonivy.amxx
-sh_insptequila.amxx
-//sh_juggernaut_nonstop_pub.amxx
-sh_shell.amxx
-sh_shangchi.amxx
-sh_marksman.amxx
-sh_thor.amxx
-sh_rattler.amxx
-sh_escapist.amxx
-sh_thetick.amxx
-sh_stungun.amxx
-sh_yoda.amxx
-sh_steel.amxx
-sh_dassassin.amxx
-sh_chikoi.amxx
-sh_cyclone.amxx
-sh_darkpredator.amxx
-//sh_vic15.amxx
-sh_painkiller.amxx
-sh_merchant.amxx
-sh_styropyro.amxx
-sh_electroB00M_(que_consome_ap).amxx
-sh_breaker.amxx
-sh_swat.amxx
-sh_grimreaperpt2.amxx debug
 pill_gatling_fx.amxx
 graciete_jet.amxx debug
 lara_spear_funcs.amxx
@@ -60,7 +12,7 @@ sh_yakuipt2.amxx
 sh_anubis.amxx
 sh_graciete.amxx
 sh_captaina.amxx
-sh_camman.amxx debug
+;sh_camman.amxx debug
 sh_daredevil.amxx
 sh_backtothepast.amxx
 sh_roberto_carlos.amxx
@@ -101,7 +53,7 @@ sh_exodus.amxx
 sh_ctrooper.amxx
 sh_casper.amxx
 sh_monitor.amxx
-sh_bazooka.amxx
+;sh_bazooka.amxx
 sh_chucky.amxx
 sh_frieza.amxx
 sh_masterchief.amxx
