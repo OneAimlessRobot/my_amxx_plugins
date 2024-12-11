@@ -13,12 +13,23 @@ new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 new m_trail
 
 new bool:ball_pickable[MAX_ENTITIES]
+new bool:kicked_ball[SH_MAXSLOTS+1]
+new bool:tagged_by_baller[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 public plugin_init(){
 	
 	arrayset(ball_pickable,false,MAX_ENTITIES)
+	arrayset(kicked_ball,false,SH_MAXSLOTS+1)
+	for(new i=0;i<=SH_MAXSLOTS;i++){
+	
+	
+		arrayset(tagged_by_baller[i],false,SH_MAXSLOTS+1)
+		
+	
+	}
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
+	register_forward(FM_Think, "ball_think")
 	
 	new const szEntity[ ][ ] = {
 		"worldspawn", "func_wall", "func_door",  "func_door_rotating",
@@ -86,93 +97,6 @@ public FwdTouchWorld( Ball, World ) {
 	
 	return PLUGIN_CONTINUE;
 }
-public kick_ball(iPlugin,iParams)
-{
-	
-new id= get_param(1)
-
-if(!roberto_get_has_roberto(id)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
-
-if(!roberto_get_num_balls(id)){
-
-	client_print(id,print_center,"You ran out of balls")
-	return PLUGIN_HANDLED
-
-}
-entity_set_int(id, EV_INT_weaponanim, 3)
-
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
-
-entity_get_vector(id, EV_VEC_origin , Origin)
-entity_get_vector(id, EV_VEC_v_angle, vAngle)
-
-Origin[2]+=50.0
-Ent = create_entity("info_target")
-
-if (!Ent) return PLUGIN_HANDLED
-
-entity_set_string(  Ent, EV_SZ_classname, BALL_CLASSNAME );
-entity_set_int(  Ent , EV_INT_solid, SOLID_TRIGGER);
-entity_set_int( Ent, EV_INT_movetype, MOVETYPE_BOUNCE );
-entity_set_model(  Ent , g_szBallModel );
-entity_set_size(  Ent, Float:{ -15.0, -15.0, 0.0 }, Float:{ 15.0, 15.0, 12.0 } );
-
-entity_set_float(  Ent, EV_FL_framerate, 0.0 );
-entity_set_int(  Ent , EV_INT_sequence, 0 );
-
-entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
-
-entity_set_origin(Ent, Origin)
-entity_set_vector(Ent, EV_VEC_angles, vAngle)
-
-entity_set_edict(Ent, EV_ENT_owner, id)
-
-VelocityByAim(id, floatround(BALL_SPEED) , Velocity)
-/*new Float:fl_Velocity[3], AimVec[3], velOrigin[3]
-
-velOrigin[0] = floatround(vOrigin[0])
-velOrigin[1] = floatround(vOrigin[1])
-velOrigin[2] = floatround(vOrigin[2])
-
-get_user_origin(id, AimVec, 3)
-
-new distance = get_distance(velOrigin, AimVec)
-
-// Stupid Check but lets make sure you don't devide by 0
-if (!distance) distance = 1
-
-new Float:invTime = BALL_SPEED / distance
-fl_Velocity[0] = (AimVec[0] - vOrigin[0]) * invTime
-fl_Velocity[1] = (AimVec[1] - vOrigin[1]) * invTime
-fl_Velocity[2] = (AimVec[2] - vOrigin[2]) * invTime
-
-Entvars_Set_Vector(newEnt, EV_VEC_velocity, fl_Velocity)*/
-
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],10)
-
-client_print(id,print_center,"You have %d balls left!",roberto_get_num_balls(id))
-
-roberto_dec_num_balls(id)
-
-new parm[1]
-parm[0] = Ent
-emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-beam(10,Ent)
-/*
-new args[2]
-
-		// Pass varibles used to guide entity with
-args[0] = id
-args[1] = Ent
-
-set_task(0.1, "curve_ball", Ent+BALL_CURVE_TASKID, args, 2)*/
-
-return PLUGIN_CONTINUE
-}
-
 
 public beam(life,ball) {
 
@@ -248,7 +172,7 @@ public move_enemy(parm[])
 		if ( !is_user_alive(victim) ) return
 		
 		sh_extra_damage(victim, id, damage, "Ball")
-	}
+	}	
 }
 
 public vexd_pfntouch(pToucher, pTouched)
@@ -272,15 +196,20 @@ if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
 			sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
 			ball_pickable[pToucher]=false
+			kicked_ball[oid]=false
 			remove_entity(pToucher);
 				
 		}
-		else if(pTouched!=oid){
-			
-			ball_pickable[pToucher]=true
-			emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			ball_in_the_face(pToucher,oid,pTouched)
-			set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
+		//else if(pTouched!=oid){
+		else if((pTouched!=oid)){
+			if(!tagged_by_baller[oid][pTouched]){
+				ball_pickable[pToucher]=true
+				tagged_by_baller[oid][pTouched]=true
+				ball_in_the_face(pToucher,oid,pTouched)
+				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+				tagged_by_baller[oid][pTouched]=false
+				set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
+			}
 		}
 	}
 }
@@ -297,7 +226,10 @@ public remove_ball(id_ball){
 id_ball-=BALL_REM_TASKID
 
 if(!is_valid_ent(id_ball)) return
+new oid=pev(id_ball,pev_iuser1)
+if(!kicked_ball[oid]) return
 ball_pickable[id_ball]=false
+kicked_ball[oid]=false
 remove_entity(id_ball)
 
 
@@ -321,26 +253,101 @@ stock fm_get_aim_origin(index, Float:origin[3]) {
 
     return 1;
 } 
-//----------------------------------------------------------------------------------------------
-public curve_ball(args[],id)
-{	
-	id-=BALL_CURVE_TASKID
-	new Float:AimVec[3]
-	new Float:fl_origin[3]
-	new iPos[3]
-	new iAimVec[3]
-	new Float:Pos[3]
-	new id = args[0]
-	new ent = args[1]
+public kick_ball(iPlugin,iParams)
+{
 	
-	if ( !is_valid_ent(ent) ) return
+new id= get_param(1)
 
-	if ( !is_user_connected(id) ) {
-		vexd_pfntouch(ent, 0)
+if(!roberto_get_has_roberto(id)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+
+if(!roberto_get_num_balls(id)){
+
+	client_print(id,print_center,"You ran out of balls")
+	return PLUGIN_HANDLED
+
+}
+if(kicked_ball[id]){
+
+	client_print(id,print_center,"Wait for the next ball!")
+	return PLUGIN_HANDLED
+
+}
+entity_set_int(id, EV_INT_weaponanim, 3)
+
+new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+
+entity_get_vector(id, EV_VEC_origin , Origin)
+entity_get_vector(id, EV_VEC_v_angle, vAngle)
+
+Origin[2]+=50.0
+Ent = create_entity("info_target")
+
+if (!Ent){
+	sh_chat_message(id,roberto_get_hero_id(),"Ball failure!");
+	return PLUGIN_HANDLED
+}
+
+arrayset(tagged_by_baller[id],false,SH_MAXSLOTS+1)
+entity_set_string(  Ent, EV_SZ_classname, BALL_CLASSNAME );
+entity_set_int(  Ent , EV_INT_solid, SOLID_TRIGGER);
+entity_set_int( Ent, EV_INT_movetype, MOVETYPE_BOUNCE );
+entity_set_model(  Ent , g_szBallModel );
+entity_set_size(  Ent, Float:{ -15.0, -15.0, 0.0 }, Float:{ 15.0, 15.0, 12.0 } );
+
+entity_set_float(  Ent, EV_FL_framerate, 0.0 );
+entity_set_int(  Ent , EV_INT_sequence, 0 );
+
+
+entity_set_origin(Ent, Origin)
+entity_set_vector(Ent, EV_VEC_angles, vAngle)
+
+entity_set_edict(Ent, EV_ENT_owner, id)
+set_pev(Ent,pev_iuser1, id)
+
+VelocityByAim(id, floatround(BALL_SPEED) , Velocity)
+
+entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+
+set_pev(Ent, pev_vuser1, Velocity)
+
+glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],10)
+
+client_print(id,print_center,"You have %d balls left!",roberto_get_num_balls(id))
+
+roberto_dec_num_balls(id)
+
+emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+kicked_ball[id]=true
+entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
+beam(10,Ent)
+
+return PLUGIN_CONTINUE
+}
+
+//----------------------------------------------------------------------------------------------
+public ball_think(ent)
+{	
+	
+	if(!pev_valid(ent)){
+	
+		return
+	
+	}
+	new szClassName[32]
+	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
+	if(!equal(szClassName, BALL_CLASSNAME))
+	{
+		return;
+	}
+	new id=pev(ent,pev_iuser1)
+	if ( client_isnt_hitter(id )) {
+		set_task(0.1,"remove_ball",ent+BALL_REM_TASKID)
 		return
 	}
-	new Float:velocityVec[ 3 ];
+	new Float:newVelocity[3],Float:velocityVec[ 3 ],Float:fl_origin[3],iAimVec[3],iPos[3],Float:Pos[3],Float:AimVec[3]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
+	entity_get_vector( ent, EV_VEC_velocity, newVelocity );
 	entity_get_vector( ent, EV_VEC_origin, fl_origin );
 	get_user_origin(id,iAimVec,3)
 	get_user_origin(id, iPos)
@@ -357,10 +364,8 @@ public curve_ball(args[],id)
 	AimDirVector[2]=AimVec[2]-Pos[2]
 	
 	
-	
 	new  Float:length
-	length = floatsqroot(AimDirVector[0]*AimDirVector[0] + AimDirVector[1]*AimDirVector[1] + AimDirVector[2]*AimDirVector[2])
-	
+	length = vector_length(AimDirVector)
 	
 	AimDirVector[0]*=(CURVE_APEX_DIST/(length))
 	AimDirVector[1]*=(CURVE_APEX_DIST/(length))
@@ -372,6 +377,43 @@ public curve_ball(args[],id)
 	end_point[1]=Pos[1]+AimDirVector[1]
 	end_point[2]=Pos[2]+AimDirVector[2]
 	
+	
+	
+	//velocityVec[0] = 0
+	//velocityVec[0]=AimVec[0]-origin[0]
+	//velocityVec[0] = velocityVec[0]+(AimVec[0])
+	velocityVec[0] = velocityVec[0]+((AimDirVector[0])/BALL_MASS)
+	velocityVec[1] = velocityVec[1]+((AimDirVector[1])/BALL_MASS)
+
+	length = vector_length(velocityVec)
+	// Stupid Check but lets make sure you don't devide by 0
+	if ( !length ) length = 1.0
+
+	newVelocity[0]= velocityVec[0]*BALL_SPEED/length
+	newVelocity[1] = velocityVec[1]*BALL_SPEED/length
+	newVelocity[2]= velocityVec[2]
+
+
+	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
+	set_pev(ent, pev_vuser1, newVelocity)
+	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
+
+}
+public plugin_precache()
+{
+precache_model( g_szBallModel );
+precache_sound( BALL_BOUNCE_GROUND );
+
+beamspr = precache_model( "sprites/laserbeam.spr" );
+precache_sound(kicked)
+precache_sound(gotball)
+m_trail = precache_model("sprites/laserbeam.spr")
+precache_sound(cheers)
+
+
+}
+public draw_line(Float:Pos[3],Float:end_point[3]){
+
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte (0)     //TE_BEAMENTPOINTS 0
 	write_coord_f(Pos[0])
@@ -392,37 +434,6 @@ public curve_ball(args[],id)
 	write_byte(200) // brightness
 	write_byte(150) // speed
 	message_end()
-	//velocityVec[0] = 0
-	//velocityVec[0]=AimVec[0]-origin[0]
-	//velocityVec[0] = velocityVec[0]+(AimVec[0])
-	velocityVec[1] = velocityVec[1]+((AimVec[1]-fl_origin[1])/BALL_MASS)
-	velocityVec[2] = velocityVec[2]-(AVG_FACTOR*(2.0))
-
-	length = floatsqroot(velocityVec[0]*velocityVec[0] + velocityVec[1]*velocityVec[1] + velocityVec[2]*velocityVec[2])
-	// Stupid Check but lets make sure you don't devide by 0
-	if ( !length ) length = 1.0
-
-	velocityVec[0] = velocityVec[0]*BALL_SPEED/length
-	velocityVec[1] = velocityVec[1]*BALL_SPEED/length
-	velocityVec[2] = velocityVec[2]*BALL_SPEED/length
-
-
-	entity_set_vector(ent, EV_VEC_velocity, velocityVec)
-
-
-	set_task(0.1, "curve_ball", ent, args, 2)
-}
-public plugin_precache()
-{
-precache_model( g_szBallModel );
-precache_sound( BALL_BOUNCE_GROUND );
-
-beamspr = precache_model( "sprites/laserbeam.spr" );
-precache_sound(kicked)
-precache_sound(gotball)
-m_trail = precache_model("sprites/laserbeam.spr")
-precache_sound(cheers)
-
 
 }
 
@@ -440,6 +451,3 @@ set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderNormal, 255)
 entity_set_float(id, EV_FL_renderamt, 1.0)
 }
 } 
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

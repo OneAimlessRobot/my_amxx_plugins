@@ -39,7 +39,13 @@ new Float:gBaseSpeed[SH_MAXSLOTS+1]
 new Float:gBaseGravity[SH_MAXSLOTS+1]
 new bool:gIsPsychosis[SH_MAXSLOTS+1]
 new gPsychosisTime[SH_MAXSLOTS+1]
+enum{
+NO_HEALING=0,
+RADIAL_HEALING,
+GAZE_HEALING
 
+
+}
 new const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 
 new MsgSetFOV
@@ -78,6 +84,7 @@ new hud_sync
 new Float:psychosis_time
 new psychosis_cooldown
 new gHeroLevel
+new heal_mode
 new min_players
 new zoom
 
@@ -93,6 +100,7 @@ public plugin_init()
 	register_cvar("yandere_base_dmg_mult", "1.0")
 	register_cvar("yandere_dmg_pct_per_inc", "0.35")
 	register_cvar("yandere_heal", "1.0")
+	register_cvar("yandere_heal_mode", "1")
 	register_cvar("yandere_heal_pct_per_inc", "0.35")
 	register_cvar("yandere_heal_radius", "100")
 	register_cvar("yandere_heal_base", "50.0")
@@ -151,7 +159,14 @@ public yandere_init()
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
 		set_task( 0.1, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( 3.0, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
-		set_task( 1.0, "heal_players_in_radius", id+YANDERE_HEAL_TASKID, "", 0, "b")
+		if(heal_mode){
+			if(heal_mode==RADIAL_HEALING){	
+				set_task( 1.0, "heal_players_in_radius", id+YANDERE_HEAL_TASKID, "", 0, "b")
+			}
+			else if(heal_mode==GAZE_HEALING){	
+				set_task( 1.0, "heal_player_in_sight", id+YANDERE_HEAL_TASKID, "", 0, "b")
+			}
+		}
 	}
 	else{
 		remove_task(id+YANDERE_ANGER_TASKID)
@@ -382,6 +397,7 @@ write_byte( 8 )				// scroll speed
 message_end()
 
 }
+
 public heal_players_in_radius(id){
 
 id-=YANDERE_HEAL_TASKID
@@ -423,6 +439,60 @@ for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 
 }
 
+
+public heal_player_in_sight(id){
+
+id-=YANDERE_HEAL_TASKID
+if(!sh_is_active()||!is_user_alive(id)) return
+
+new client_origin[3],teamate_origin[3],distance
+get_user_origin(id,client_origin);
+new CsTeams:user_team= cs_get_user_team(id)
+if(!gSuperAngry[id]){
+	
+	
+	// get crosshair aim
+	static iMyAim[3], Float:flMyAim[3];
+	get_user_origin(id, iMyAim, 3);
+	IVecFVec(iMyAim, flMyAim);
+	
+	// set crosshair aim
+	set_tr(TR_vecEndPos, flMyAim);
+	
+	// get ent looking at
+	static i, body;
+	get_user_aiming(id, i, body);
+	
+	if((i==id)||!is_user_connected(i)){
+		
+		
+	}
+	else if(is_user_alive(i)){
+		new CsTeams:other_user_team=cs_get_user_team(i)
+		if((user_team==other_user_team)){
+			get_user_origin(i,teamate_origin)
+			distance=get_distance(client_origin,teamate_origin)
+			if(distance<gNormalHealRadius[id]){
+				new Float:mate_health=float(get_user_health(i))
+				new Float: new_health=floatadd(mate_health,floatmul(gNormalHeal[id],heal_base))
+				set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
+				setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
+				setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)
+				sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)	
+				sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+				set_task(1.0,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)
+				set_task(1.0,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)		
+				heal_stream(id,i)
+				heal_aura(id)
+			}
+		}
+	}
+	
+	
+}
+
+
+}
 public notify_yanderes_about_team_life(id,alive){
 
 new CsTeams:user_team= cs_get_user_team(id)
@@ -564,6 +634,7 @@ public loadCVARS()
 
 gHeroLevel=get_cvar_num("yandere_level")
 base_dmg_mult=get_cvar_float("yandere_base_dmg_mult")
+heal_mode=get_cvar_num("yandere_heal_mode")
 dmg_pct_per_inc=get_cvar_float("yandere_dmg_pct_per_inc")
 base_heal=get_cvar_float("yandere_heal")
 heal_pct_per_inc=get_cvar_float("yandere_heal_pct_per_inc")

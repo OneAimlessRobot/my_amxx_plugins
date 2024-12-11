@@ -27,7 +27,7 @@ new jet_cooldown
 //new Float:berserk_m3_mult
 new Float:land_explosion_radius
 new Float:jet_velocity
-new Float:jet_stomp_fact
+new Float:jet_max_power
 new Float:jet_stomp_grav_mult
 new g_msgFade
 new cmd_forward
@@ -94,7 +94,7 @@ public loadCVARS(){
 	jet_cooldown=get_cvar_num("graciete_jet_cooldown");
 	land_explosion_radius=get_cvar_float("graciete_land_explosion_radius");
 	jet_velocity=get_cvar_float("graciete_jet_velocity");
-	jet_stomp_fact=get_cvar_float("graciete_jet_stomp_fact")
+	jet_max_power=get_cvar_float("graciete_jet_max_power")
 	jet_stomp_grav_mult=get_cvar_float("graciete_jet_stomp_grav_mult")
 }
 
@@ -328,7 +328,7 @@ public charge_task(id){
 	set_user_gravity(id,g_graciete_base_gravity[id]*jet_stomp_grav_mult);
 	
 	new hud_msg[128];
-	g_graciete_land_power[id]=floatmin(GRACIETE_MAX_DAMAGE,floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
+	g_graciete_land_power[id]=floatmin(jet_max_power,floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
 	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
 	);
 	set_hudmessage(graciete_color[0], graciete_color[1], graciete_color[2], -1.0, -1.0, graciete_color[3], 0.0, 0.5,0.0,0.0,1)
@@ -370,6 +370,14 @@ public move_enemy(parm[])
 {
 	new victim = parm[3]
 	
+	new Float:origin[3]
+	
+	pev(victim,pev_origin,origin)
+	
+	origin[2]+=100.0
+	
+	set_pev(victim,pev_origin,origin)
+	
 	new Float:fl_velocity[3]
 	fl_velocity[0] = float(parm[0])
 	fl_velocity[1] = float(parm[1])
@@ -391,15 +399,17 @@ public explosion(ent_id){
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", land_explosion_radius ,entlist, 32);
 	
+	new CsTeams:idTeam = cs_get_user_team(ent_id)
+		
 	for (new i=0; i < numfound; i++)
 	{		
-		new CsTeams:idTeam = cs_get_user_team(ent_id)
-		
 		new pid = entlist[i];
 		
 		sh_screen_shake(ent_id,10.0,3.0,10.0)
 		if(pid!=ent_id){
-			if(cs_get_user_team(pid)==idTeam) continue
+			if(cs_get_user_team(pid)==idTeam){
+				continue
+			}
 		}
 		damage_player(ent_id,pid)
 		
@@ -416,12 +426,23 @@ public damage_player(ent_id,pid){
 	
 	Entvars_Get_Vector(ent_id, EV_VEC_velocity, b_vel)
 	
-	new Float:velocity=vector_length(b_vel)
 	new Float:distance=get_distance_f(vOrig,usOrig);
+	new client_name[128];
+	new attacker_name[128];
+	get_user_name(pid,client_name,127);
+	get_user_name(ent_id,attacker_name,127);
+	new Float:vic_origin[3],Float:mine_origin[3];
+	entity_get_vector(pid,EV_VEC_origin,vic_origin);
+	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
+	distance=vector_distance(vic_origin,mine_origin);
+	new Float:falloff_coeff= floatmin(1.0,distance/land_explosion_radius);
+	new Float:force=g_graciete_land_power[ent_id]-(g_graciete_land_power[ent_id]/2.0)*falloff_coeff
+	new iforce=floatround(force)
+	sh_extra_damage(pid,ent_id,iforce,"Graciete pound");
 	
-	b_vel[0]=((vOrig[0] -usOrig[0]) / distance)*jet_stomp_fact
-	b_vel[1]=((vOrig[1] - usOrig[1]) / distance)*jet_stomp_fact
-	b_vel[2]=(b_vel[2]*velocity)*jet_stomp_fact
+	b_vel[0]=((vOrig[0] -usOrig[0]) / floatabs((vOrig[0] -usOrig[0])) )*force
+	b_vel[1]=((vOrig[1] -usOrig[1]) / floatabs((vOrig[1] -usOrig[1])))*force
+	b_vel[2]=force
 	
 	
 	if(pid!=ent_id){
@@ -435,16 +456,6 @@ public damage_player(ent_id,pid){
 		set_task(0.1, "move_enemy", 0, parm, 4)
 		sh_set_stun(pid,3.0,0.5)
 	}
-	new client_name[128];
-	new attacker_name[128];
-	get_user_name(pid,client_name,127);
-	get_user_name(ent_id,attacker_name,127);
-	new Float:vic_origin[3],Float:mine_origin[3];
-	entity_get_vector(pid,EV_VEC_origin,vic_origin);
-	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
-	distance=vector_distance(vic_origin,mine_origin);
-	new Float:falloff_coeff= floatmin(1.0,distance/land_explosion_radius);
-	sh_extra_damage(pid,ent_id,floatround(g_graciete_land_power[ent_id]-(g_graciete_land_power[ent_id]/2.0)*falloff_coeff),"Graciete pound");
 	sh_screen_shake(pid,10.0,3.0,10.0)
 	unfade_screen_user(pid)
 	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
