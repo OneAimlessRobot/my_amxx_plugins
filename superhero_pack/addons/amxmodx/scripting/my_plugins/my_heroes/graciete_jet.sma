@@ -11,7 +11,6 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-#pragma dynamic 100000
 new g_graciete_jetpack_cooldown[SH_MAXSLOTS+1];
 new Float:g_graciete_base_gravity[SH_MAXSLOTS+1];
 new g_graciete_jetpack_loaded[SH_MAXSLOTS+1];
@@ -440,8 +439,8 @@ public damage_player(ent_id,pid){
 	new iforce=floatround(force)
 	sh_extra_damage(pid,ent_id,iforce,"Graciete pound");
 	
-	b_vel[0]=((vOrig[0] -usOrig[0]) / floatabs((vOrig[0] -usOrig[0])) )*force
-	b_vel[1]=((vOrig[1] -usOrig[1]) / floatabs((vOrig[1] -usOrig[1])))*force
+	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
+	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
 	b_vel[2]=force
 	
 	

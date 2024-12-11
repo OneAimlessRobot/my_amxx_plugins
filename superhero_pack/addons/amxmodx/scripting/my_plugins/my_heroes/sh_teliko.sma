@@ -29,6 +29,7 @@ new m_spriteTexture
 new hud_sync
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
 new gHeroLevel
+new famas_level_diff
 new base_counter_bullets
 new Float:COUNTER_DMG_Mult,Float:COUNTER_BULLET_PCT,Float:MEGA_COUNTER_STUN_TIME,Float:MEGA_COUNTER_SPEED_DIV,MEGA_COUNTER_EFFECTS_THRESHOLD
 new num_chaffs
@@ -44,6 +45,7 @@ public plugin_init()
 	register_cvar("Teliko_num_chaffs", "8")
 	register_cvar("Teliko_counter_dmg_mult", "2.0")
 	register_cvar("Teliko_max_bullets", "10")
+	register_cvar("Teliko_famas_level_diff", "3")
 	register_cvar("Teliko_base_bullets", "10")
 	register_cvar("Teliko_get_bullet_pct", "0.5")
 	register_cvar("Teliko_max_bullets_per_inc", "5")
@@ -146,6 +148,7 @@ public teliko_init()
 		reset_teliko_user(id)
 		remove_task(id+TELIKO_TASKID)
 		sh_drop_weapon(id, CSW_P228, true)
+		sh_drop_weapon(id, CSW_FAMAS, true)
 	}
 	
 }
@@ -230,6 +233,11 @@ if ( sh_is_active() && is_user_alive(id) && gHasTeliko[id] ) {
 	sh_give_weapon(id,CSW_SMOKEGRENADE,false)
 	cs_set_user_bpammo(id, CSW_SMOKEGRENADE,num_chaffs);
 	sh_give_weapon(id, CSW_P228)
+	new level_diff=sh_get_user_lvl(id)-gHeroLevel
+	if(level_diff>=famas_level_diff){
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So you get a FAMAS!",level_diff);
+		sh_give_weapon(id, CSW_FAMAS)
+	}
 }
 }
 //----------------------------------------------------------------------------------------------
@@ -237,6 +245,7 @@ public loadCVARS()
 {
 gHeroLevel=get_cvar_num("Teliko_level");
 num_chaffs=get_cvar_num("Teliko_num_chaffs");
+famas_level_diff=get_cvar_num("Teliko_famas_level_diff");
 COUNTER_DMG_Mult=get_cvar_float("Teliko_counter_dmg_mult");
 max_counter_bullets=get_cvar_num("Teliko_max_bullets");
 base_counter_bullets=get_cvar_num("Teliko_base_bullets");

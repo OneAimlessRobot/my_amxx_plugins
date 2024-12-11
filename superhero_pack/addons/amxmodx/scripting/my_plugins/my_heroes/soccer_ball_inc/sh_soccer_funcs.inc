@@ -6,7 +6,8 @@
 new const BALL_BOUNCE_GROUND[ ] = "kickball/bounce.wav";
 new const g_szBallModel[ ]     = "models/kickball/ball.mdl";
 
-new kicked[] = "shmod/roberto_carlos/kickball/kicked.wav"
+//new kicked[] = "shmod/roberto_carlos/kickball/kicked.wav"
+new kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
 new gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
 
 new beamspr
