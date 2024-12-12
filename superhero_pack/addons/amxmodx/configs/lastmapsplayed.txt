@@ -1,5 +1,5 @@
-starwars
-cs_portugal
+de_damaged
+de_damaged
 starwars
 starwars
 starwars
