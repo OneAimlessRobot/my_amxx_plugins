@@ -19,7 +19,6 @@
 
 #define PILL_REM_TASKID 20399
 #define PILL_REM_TIME 0.01
-#define MAX_ENTITIES 2048
 
 
 

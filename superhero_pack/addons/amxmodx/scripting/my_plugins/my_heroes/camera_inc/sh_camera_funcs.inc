@@ -49,7 +49,6 @@
 #define CAMERA_DISARM_PERIOD 0.1
 #define CAMERA_DISARM_TIMES floatround(floatdiv(min_charge_time,CAMERA_DISARM_PERIOD))
 
-#define MAX_ENTITIES 2048
 #define CAMERA_FRAMERATE 60.0
 
 

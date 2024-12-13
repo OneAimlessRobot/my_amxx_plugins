@@ -413,9 +413,18 @@ public laser_on_player_think(ent){
 	laser_line(ent,vOrigin,vEnd,true)
 	if ( is_user_alive(iHit) ) {
 	
-		sh_effect_user_direct(owner,iHit,camman_get_hero_id(),GLOW)
-		sh_chat_message(owner,camman_get_hero_id(),"Player detetado!");
+		new CsTeams:owner_team=cs_get_user_team(owner)
+		new CsTeams:target_team=cs_get_user_team(iHit)
 	
+		if(owner_team==target_team){
+		
+			sh_chat_message(owner,camman_get_hero_id(),"Teamate detetado!");
+		
+		}
+		else{
+			sh_chat_message(owner,camman_get_hero_id(),"Inimigo detetado!");
+			sh_effect_user_direct(iHit,owner,camman_get_hero_id(),GLOW)
+		}
 	}
 	return
 }

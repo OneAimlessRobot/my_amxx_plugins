@@ -32,7 +32,6 @@
 #define CHAFF_CHARGE_PERIOD 0.1
 #define CHAFF_CHARGE_TIMES floatround(floatdiv(max_charge_time,CHAFF_CHARGE_PERIOD))
 
-#define MAX_ENTITIES 2048
 
 
 

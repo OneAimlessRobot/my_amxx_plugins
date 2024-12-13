@@ -29,8 +29,6 @@ new ballbeam[3] = { 20,50,255 }
 
 #define BALL_REM_TIME 2.0
 
-#define MAX_ENTITIES 2048
-
 #define BALL_MASS 1.8
 
 #define CURVE_APEX_DIST 500

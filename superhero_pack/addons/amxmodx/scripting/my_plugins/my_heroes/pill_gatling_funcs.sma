@@ -22,7 +22,7 @@ public plugin_init(){
 register_plugin(PLUGIN, VERSION, AUTHOR);
 //handle when player presses attack2
 
-arrayset(pill_fx,0,MAX_ENTITIES)
+arrayset(pill_fx,0,sh_max_entities())
 arrayset(pill_loaded,true,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
 }
@@ -117,7 +117,7 @@ return (!gatling_get_has_yakui(gatling_user)||!is_user_connected(gatling_user)||
 
 public _clear_pills(iPlugin,iParams){
 
-	arrayset(pill_fx,0,MAX_ENTITIES)
+	arrayset(pill_fx,0,sh_max_entities())
 	new grenada = find_ent_by_class(-1, PILL_CLASSNAME)
 	while(grenada) {
 		remove_entity(grenada)
@@ -385,4 +385,7 @@ public _gatling_set_pillgatling(iPlugin,iParams){
 	new value_to_set= get_param(2)
 	gPillGatlingEngaged[id]=value_to_set;
 }
+*/
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

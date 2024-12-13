@@ -24,9 +24,6 @@
 
 #define DART_REM_TIME 0.001
 
-#define MAX_ENTITIES 2048
-
-
 
 native clear_darts()
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

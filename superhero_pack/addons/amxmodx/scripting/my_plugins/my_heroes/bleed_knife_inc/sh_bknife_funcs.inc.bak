@@ -21,6 +21,8 @@
 #define DART_RELOAD_TASKID 7218
 
 
+#define MAX_ENTITIES 2048
+
 
 
 native gatling_set_pillgatling(id,value_to_set)

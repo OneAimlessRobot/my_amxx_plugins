@@ -11,6 +11,9 @@
   #pragma loadlib "SuperHero Core"
 #endif
 
+
+#define MAX_ENTITIES 2048
+
 //Default includes used for shero
 
 #tryinclude "../../include/amxmod.inc"
@@ -48,7 +51,7 @@
  * @noreturn
  */
 forward sh_hero_init(id, heroID, mode);
-
+native sh_max_entities()
 native _dropPower(id, const said[],showmenu = 1);
 /**
  * Called when a +/-power is executed.
@@ -503,6 +506,7 @@ stock bool:sh_is_active()
 
 	return (sv_superheros ? (get_pcvar_num(sv_superheros) ? true : false) : false);
 }
+
 
 /**
  * Checks if friendly fire is currently on or off.

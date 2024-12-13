@@ -46,7 +46,6 @@
 #define MINE_DISARM_PERIOD 0.1
 #define MINE_DISARM_TIMES floatround(floatdiv(min_charge_time,MINE_DISARM_PERIOD))
 
-#define MAX_ENTITIES 2048
 
 new const mine_color[4]={255, 255, 255,200}
 

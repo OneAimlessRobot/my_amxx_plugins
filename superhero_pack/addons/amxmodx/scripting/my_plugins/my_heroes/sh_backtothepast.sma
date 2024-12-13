@@ -1,6 +1,8 @@
 
 
 #include "../my_include/superheromod.inc"
+#include <reapi_gamedll.inc>
+
 #define BUILDUP_SFX "shmod/jeremy/jeremybuildup.wav"
 #define TASKID 12213
 #define TASKID_PAST 1323
@@ -274,6 +276,7 @@ public force_end(id)
 		
 		user_silentkill(x);
 		cs_set_user_deaths(x, get_user_deaths(x) - 1);
+
 	}
 	
 }
@@ -285,3 +288,6 @@ public newRound(id){
 	
 
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

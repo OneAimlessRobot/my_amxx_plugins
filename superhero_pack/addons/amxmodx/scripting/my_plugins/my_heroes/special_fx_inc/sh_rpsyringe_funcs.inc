@@ -17,8 +17,6 @@
 #define ROCKET_SPEED 2000.0
 
 
-#define MAX_ENTITIES 2048
-
 
 
 native gatling_set_rockets(id,value_to_set)
