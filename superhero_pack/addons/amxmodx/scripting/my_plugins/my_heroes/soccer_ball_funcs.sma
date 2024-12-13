@@ -76,7 +76,7 @@ public _clear_balls(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, BALL_CLASSNAME)
 	while(grenada) {
-		remove_entity(grenada)
+		remove_ball(grenada+BALL_REM_TASKID)
 		grenada = find_ent_by_class(grenada, BALL_CLASSNAME)
 	}
 }
