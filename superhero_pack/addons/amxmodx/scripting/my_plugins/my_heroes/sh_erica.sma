@@ -379,6 +379,7 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
 		entity_set_string(id, EV_SZ_viewmodel, NAVALHA_V_MODEL)
+		entity_set_string(id, EV_SZ_weaponmodel, NAVALHA_P_MODEL)
 	}
 	if (wpnid == CSW_ELITE) {
 		entity_set_string(id, EV_SZ_viewmodel,TRANQS_V_MODEL)
@@ -492,6 +493,7 @@ public heal_stream(id, x)
 public plugin_precache()
 {
 	precache_model(NAVALHA_V_MODEL)
+	precache_model(NAVALHA_P_MODEL)
 	precache_model(TRANQS_P_MODEL)
 	precache_model(TRANQS_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)

@@ -622,6 +622,8 @@ gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
 if(!gSuperAngry[id]){
 	sh_reset_max_speed(id)
 	sh_chat_message(id,gHeroID,"Demorphing!")
+	yandere_unmorph(id+YANDERE_MORPH_TASKID)
+	yandere_model(id)
 	
 }
 
