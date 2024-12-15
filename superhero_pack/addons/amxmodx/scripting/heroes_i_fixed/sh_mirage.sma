@@ -1,5 +1,4 @@
-#include <amxmod>
-#include <superheromod>
+#include "my_plugins/my_include/superheromod.inc"
 
 // Mirage - made by Mydas
 
@@ -75,6 +74,13 @@ if (gHasMiragePowers[id]&&is_user_alive(id)&&is_user_connected(id))
 return PLUGIN_CONTINUE
 }
 
+public client_disconnected(id){
+
+	if(gHasMiragePowers[id]){
+		remove_task(id+TASKID)
+	}
+
+}
 public turn_invis(parm[])
 {
 	new id=parm[0], step=parm[1]

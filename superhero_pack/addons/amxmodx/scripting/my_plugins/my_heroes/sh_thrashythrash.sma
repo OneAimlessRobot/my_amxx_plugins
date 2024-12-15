@@ -155,15 +155,6 @@ public loadCVARS()
 	get_cvar_string("thrashy_adminflag",a_flags,9)
 	ak_dmgmult=get_cvar_float("thrashy_akmult")
 }
-//----------------------------------------------------------------------------------------------
-public thrashy_tasks(id)
-{
-	set_task(1.0, "thrashy_morph", id+TASKID)
-	if( team_glow_on){
-		set_task(1.0, "thrashy_glow", id+TASKID, "", 0, "b" )
-	}
-
-}
 public fw_CmdStart( id, uc_handle, seed )
 {
 	if( !is_user_alive( id ) ) 
@@ -190,6 +181,15 @@ public fw_CmdStart( id, uc_handle, seed )
 		
 	}
 	return PLUGIN_HANDLED
+}
+//----------------------------------------------------------------------------------------------
+public thrashy_tasks(id)
+{
+	set_task(1.0, "thrashy_morph", id+TASKID)
+	if( team_glow_on){
+		set_task(1.0, "thrashy_glow", id+TASKID, "", 0, "b" )
+	}
+
 }
 //----------------------------------------------------------------------------------------------
 public thrashy_morph(id)

@@ -12,17 +12,15 @@
 #define PAN_P_MODEL "models/shmod/ester/pan/p_knife.mdl"
 #define PAN_V_MODEL  "models/shmod/ester/pan/v_knife.mdl"
 
-#define PAN_HIT_WALL_SOUND "shmod/ester/pan/knife_hitwall1.wav"
-#define PAN_HIT_AIR1_SOUND  "shmod/ester/pan/knife_slash1.wav"
-#define PAN_HIT_AIR2_SOUND  "shmod/ester/pan/knife_slash2.wav"
-#define PAN_STAB_MEAT_SOUND  "shmod/ester/pan/knife_stab.wav"
-#define PAN_HIT_MEAT1_SOUND  "shmod/ester/pan/knife_hit1.wav"
-#define PAN_HIT_MEAT2_SOUND  "shmod/ester/pan/knife_hit2.wav"
-#define PAN_HIT_MEAT3_SOUND  "shmod/ester/pan/knife_hit3.wav"
-#define PAN_HIT_MEAT4_SOUND  "shmod/ester/pan/knife_hit4.wav"
+#define PAN_HIT_WALL_SOUND "weapons/esterpan/knife_hitwall1.wav"
+#define PAN_HIT_AIR1_SOUND  "weapons/esterpan/knife_slash1.wav"
+#define PAN_HIT_AIR2_SOUND  "weapons/esterpan/knife_slash2.wav"
+#define PAN_STAB_MEAT_SOUND  "weapons/esterpan/knife_stab.wav"
+#define PAN_HIT_MEAT1_SOUND  "weapons/esterpan/knife_hit1.wav"
+#define PAN_HIT_MEAT2_SOUND  "weapons/esterpan/knife_hit2.wav"
+#define PAN_HIT_MEAT3_SOUND  "weapons/esterpan/knife_hit3.wav"
+#define PAN_HIT_MEAT4_SOUND  "weapons/esterpan/knife_hit4.wav"
 
-
-new const hitsounds[4][]={PAN_HIT_MEAT1_SOUND,PAN_HIT_MEAT2_SOUND,PAN_HIT_MEAT3_SOUND,PAN_HIT_MEAT4_SOUND}
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -80,7 +78,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ester_kd")
 	register_srvcmd("ester_ku", "ester_ku")
 	shRegKeyUp(gHeroName, "ester_ku")
-	register_forward(FM_EmitSound, "fw_EmitSound");
 }
 public ester_init()
 {
@@ -141,19 +138,6 @@ count_enemies(id){
 
 
 
-}
-public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)
-{
-	if ( !is_user_connected(id) || !gHasEster[id] || !sh_is_active() )
-		return FMRES_IGNORED;
-		
-	if ( sample[0] == 'w' && sample[6] == 's' && sample[8] == 'k' && sample[13] == '_' && sample[14] != 'd' )	//9 sounds dealing with knife, 1 of which not useful
-	{
-		
-		engfunc(EngFunc_EmitSound, id, channel, hitsounds[random_num(0,3)], volume, attn, flags, pitch);
-		return FMRES_SUPERCEDE;
-	}
-	return FMRES_IGNORED;
 }
 
 public weaponChange(id)
@@ -412,6 +396,8 @@ public sh_client_spawn(id)
 {
 	if ( gHasEster[id]&&is_user_alive(id) && sh_is_active() ) {
 		
+		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		reset_ester_user_round(id)
 		
 	}
@@ -469,6 +455,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_AIR1_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_AIR2_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_WALL_SOUND)
+	engfunc(EngFunc_PrecacheSound, PAN_STAB_MEAT_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_MEAT1_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_MEAT2_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_MEAT3_SOUND)
@@ -487,6 +474,8 @@ public death()
 	if ( !is_user_connected(id)||!gHasEster[id]||!id){
 		return
 	}
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
 }	
 
@@ -547,6 +536,3 @@ public ester_ku()
 	
 	return PLUGIN_HANDLED
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

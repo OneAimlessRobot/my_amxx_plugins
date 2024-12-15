@@ -21,6 +21,15 @@ new Float:g_base_er_radius[SH_MAXSLOTS+1]
 new Float:g_normal_er_radius[SH_MAXSLOTS+1]
 
 
+new const erica_knife_sounds[9][]={"weapons/erica_knife/knife_deploy1.wav",
+"weapons/erica_knife/knife_hit1.wav",
+"weapons/erica_knife/knife_hit2.wav",
+"weapons/erica_knife/knife_hit3.wav",
+"weapons/erica_knife/knife_hit4.wav",
+"weapons/erica_knife/knife_hitwall1.wav",
+"weapons/erica_knife/knife_slash1.wav",
+"weapons/erica_knife/knife_slash2.wav",
+"weapons/erica_knife/knife_stab.wav"}
 
 new const redline_color[4]={250, 92, 163,1}
 new m_spriteTexture
@@ -487,6 +496,11 @@ public plugin_precache()
 	precache_model(TRANQS_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
 	m_spriteTexture = precache_model("sprites/laserbeam.spr")
+	for(new i=0;i<sizeof(erica_knife_sounds);i++){
+	
+		engfunc(EngFunc_PrecacheSound,erica_knife_sounds[i] );
+	
+	}
 		
 }
 public death()
@@ -503,6 +517,3 @@ public death()
 	}
 	
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

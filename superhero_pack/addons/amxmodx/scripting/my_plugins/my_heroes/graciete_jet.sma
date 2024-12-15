@@ -105,7 +105,9 @@ public _reset_graciete_user(iPlugin,iParams){
 	g_graciete_land_power[id]=0.0;
 	g_graciete_power_landing[id]=false;
 	g_graciete_leaped[id]=false;
+	remove_task(id+GRACIETE_CHARGE_TASKID)
 	if(is_valid_ent(g_graciete_jetpack[id])){
+		emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		remove_entity(g_graciete_jetpack[id]);
 		g_graciete_jetpack[id]=0;
 	}
