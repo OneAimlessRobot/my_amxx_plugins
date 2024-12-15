@@ -234,7 +234,7 @@ public yowai_model(id)
 public yowai_morph(id)
 {
 	id-=YOWAI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasYowai[id] ) return
 
 	cs_set_user_model(id,"yowai")
 
@@ -245,7 +245,7 @@ public yowai_morph(id)
 public yowai_unmorph(id)
 {
 	id-=YOWAI_MORPH_TASKID
-	if(!is_user_connected(id)||!is_user_alive(id) ||!gHasYowai[id]) return
+	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 
 		cs_reset_user_model(id)
@@ -278,6 +278,3 @@ public yowai_glow(id)
 		}
 	}
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

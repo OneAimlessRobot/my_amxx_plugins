@@ -929,7 +929,7 @@ public yandere_model(id)
 public yandere_morph(id)
 {
 	id-=YANDERE_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasYandere[id] ) return
 	
 	if(!gSuperAngry[id]){
 		cs_set_user_model(id, "yanderu")
@@ -944,7 +944,7 @@ public yandere_morph(id)
 public yandere_unmorph(id)
 {
 	id-=YANDERE_MORPH_TASKID
-	if(!is_user_connected(id)||!is_user_alive(id) ||!gHasYandere[id]) return
+	if(!is_user_connected(id)) return
 	if ( gmorphed[id] ) {
 
 		cs_reset_user_model(id)

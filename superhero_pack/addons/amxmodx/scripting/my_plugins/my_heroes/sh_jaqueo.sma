@@ -320,7 +320,7 @@ public jaqueo_tasks(id)
 public jaqueo_morph(id)
 {
 	id-=JAQUEO_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasJaqueo[id] ) return
 
 	if ( get_user_team(id) == 1 )
 	{
@@ -341,7 +341,7 @@ public jaqueo_morph(id)
 public jaqueo_unmorph(id)
 {
 	id-=JAQUEO_MORPH_TASKID
-	if(!is_user_connected(id)||!is_user_alive(id) ||!gHasJaqueo[id]) return
+	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
 		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
@@ -391,3 +391,6 @@ if ( (weapon != CSW_SCOUT) && (weapon != CSW_AK47)){
 switch_model(id)
 
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
+*/

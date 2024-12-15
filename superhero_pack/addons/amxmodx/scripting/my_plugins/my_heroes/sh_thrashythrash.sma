@@ -195,7 +195,7 @@ public thrashy_tasks(id)
 public thrashy_morph(id)
 {
 	id-=TASKID
-	if ( gmorphed[id] || !is_user_alive(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasThrashyPowers[id] ) return
 
 	cs_set_user_model(id, "thrash")
 
@@ -210,6 +210,7 @@ public thrashy_morph(id)
 public thrashy_unmorph(id)
 {
 	id-=TASKID
+	if ( !is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
 		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
