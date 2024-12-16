@@ -47,7 +47,7 @@ switch_model(id)
 	if ( !sh_is_active() || !is_user_alive(id) || !gHasJaqueo[id]||!is_user_connected(id) ) return
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-
+	
 	if ( wpnid == CSW_SCOUT ) {
 		entity_set_string(id, EV_SZ_viewmodel, JAQUEO_COOL_SCOUT_V_MODEL)
 		entity_set_string(id,EV_SZ_weaponmodel, JAQUEO_COOL_SCOUT_P_MODEL)
@@ -57,23 +57,23 @@ switch_model(id)
 	}
 }
 public plugin_natives(){
-
+	
 	register_native("client_isnt_hitter","_client_isnt_hitter",0);
 	register_native("jaqueo_get_has_jaqueo","_jaqueo_get_has_jaqueo",0);
 	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id",0);
 	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id",0);
 	
-
+	
 }
 public _jaqueo_get_hero_id(iPlugin,iParams){
-
+	
 	return gHeroID;
-
+	
 }
 public _jaqueo_get_has_jaqueo(iPlugin,iParams){
 	new id=get_param(1);
 	return gHasJaqueo[id]
-
+	
 }
 public jaqueo_init()
 {
@@ -114,20 +114,20 @@ public status_hud(id){
 	
 }
 public jaqueo_weapons(id){
-
-	if(client_isnt_hitter(id)) return
+	
+	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_give_weapon(id,CSW_SCOUT)
 	sh_give_weapon(id,CSW_AK47)
-
+	
 }
 public jaqueo_drop_weapons(id){
-
-	if(client_isnt_hitter(id)) return
+	
+	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_drop_weapon(id,CSW_SCOUT,true)
 	sh_drop_weapon(id,CSW_AK47,true)
-
+	
 }
 public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
@@ -140,14 +140,14 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
 			shExtraDamage(this, idattacker, floatround(extraDamage), "Jaqueo scout", headshot)
-				
+			
 		}
 	}
-
+	
 	return HAM_IGNORED
-
-
-
+	
+	
+	
 }
 //----------------------------------------------------------------------------------------------
 public jaqueo_loop(id)
@@ -185,35 +185,36 @@ public _client_isnt_hitter(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(gHasJaqueo[id]&&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
-			reset_jaqueo_user(id)
-			jaqueo_weapons(id)
-			jaqueo_tasks(id)
-	}
+	
+	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	
+	reset_jaqueo_user(id)
+	jaqueo_weapons(id)
+	jaqueo_tasks(id)
 	return PLUGIN_HANDLED
 	
 }
 public sh_client_spawn(id){
 	
-	if(gHasJaqueo[id]&&is_user_alive(id) && shModActive()){
-			reset_jaqueo_user(id)
-			jaqueo_weapons(id)
-			jaqueo_tasks(id)
-	}
+	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	
+	reset_jaqueo_user(id)
+	jaqueo_weapons(id)
+	jaqueo_tasks(id)
 	return PLUGIN_HANDLED
-
-
+	
+	
 }
 public Ham_respawn(id){
-
-	if(gHasJaqueo[id]&&is_user_alive(id) && shModActive()){
-			reset_jaqueo_user(id)
-			jaqueo_weapons(id)
-			jaqueo_tasks(id)
-	}
-	return HAM_IGNORED
-
-
+	
+	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	
+	reset_jaqueo_user(id)
+	jaqueo_weapons(id)
+	jaqueo_tasks(id)
+	return PLUGIN_HANDLED
+	
+	
 }
 
 //----------------------------------------------------------------------------------------------
@@ -228,10 +229,10 @@ public jaqueo_kd()
 		return PLUGIN_CONTINUE
 	}
 	if(shield_deployed(id)){
-			
-			sh_sound_deny(id)
-			sh_chat_message(id, jaqueo_get_hero_id(), "Shield already on!")
-			return PLUGIN_HANDLED
+		
+		sh_sound_deny(id)
+		sh_chat_message(id, jaqueo_get_hero_id(), "Shield already on!")
+		return PLUGIN_HANDLED
 		
 	}
 	shield_charge_user(id)
@@ -266,9 +267,8 @@ public plugin_cfg()
 	
 }
 public sh_round_end(){
-
-	//clear_shields()
-
+	
+	
 }
 public client_disconnected(id){
 	
@@ -290,8 +290,8 @@ public death()
 	}
 }
 public plugin_precache(){
-
-
+	
+	
 	precache_model("models/player/jaqueo/jaqueo.mdl")
 	precache_model("models/player/jaqueot/jaqueot.mdl")
 	precache_model(JAQUEO_AK47_V_MODEL)
@@ -300,11 +300,11 @@ public plugin_precache(){
 	precache_model(JAQUEO_COOL_SCOUT_P_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_W_MODEL)
 	for(new i=0;i<sizeof(jaqueo_cool_scout_sounds);i++){
-	
+		
 		engfunc(EngFunc_PrecacheSound,jaqueo_cool_scout_sounds[i] );
-	
+		
 	}
-
+	
 }
 
 //----------------------------------------------------------------------------------------------
@@ -314,14 +314,14 @@ public jaqueo_tasks(id)
 	if( teamglow_on){
 		set_task(1.0, "jaqueo_glow", id+JAQUEO_MORPH_TASKID, "", 0, "b" )
 	}
-
+	
 }
 //----------------------------------------------------------------------------------------------
 public jaqueo_morph(id)
 {
 	id-=JAQUEO_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasJaqueo[id] ) return
-
+	
 	if ( get_user_team(id) == 1 )
 	{
 		cs_set_user_model(id, "jaqueo")
@@ -333,7 +333,7 @@ public jaqueo_morph(id)
 	// Message
 	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
 	show_hudmessage(id, "M' ready.")
-
+	
 	gmorphed[id] = true
 	
 }
@@ -346,11 +346,11 @@ public jaqueo_unmorph(id)
 		// Message
 		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
 		show_hudmessage(id, "Bros I died")
-
+		
 		cs_reset_user_model(id)
-
+		
 		gmorphed[id] = false
-
+		
 		if ( teamglow_on ) {
 			remove_task(id+JAQUEO_MORPH_TASKID)
 			set_user_rendering(id)
@@ -361,13 +361,13 @@ public jaqueo_unmorph(id)
 public jaqueo_glow(id)
 {
 	id -= JAQUEO_MORPH_TASKID
-
+	
 	if ( !is_user_connected(id) ) {
 		//Don't want any left over residuals
 		remove_task(id+JAQUEO_MORPH_TASKID)
 		return
 	}
-
+	
 	if ( gHasJaqueo[id] && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
@@ -379,18 +379,15 @@ public jaqueo_glow(id)
 }
 public weapon_change(id)
 {
-if ( !sh_is_active() || !gHasJaqueo[id] ) return
-
-new weapon= read_data(2)
-//weaponID = read_data(2)
-if ( (weapon != CSW_SCOUT) && (weapon != CSW_AK47)){
+	if ( !sh_is_active() || !gHasJaqueo[id] ) return
 	
-	return
-
+	new weapon= read_data(2)
+	//weaponID = read_data(2)
+	if ( (weapon != CSW_SCOUT) && (weapon != CSW_AK47)){
+		
+		return
+		
+	}
+	switch_model(id)
+		
 }
-switch_model(id)
-
-}
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
-*/
