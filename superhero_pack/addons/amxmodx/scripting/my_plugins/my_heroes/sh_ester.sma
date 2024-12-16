@@ -22,6 +22,7 @@
 #define PAN_HIT_MEAT4_SOUND  "weapons/esterpan/knife_hit4.wav"
 
 
+#define ESTER_MORPH_TASKID 2182722
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ester"
@@ -32,6 +33,10 @@ new bool:gFinished[SH_MAXSLOTS+1]
 new damage_to_do[SH_MAXSLOTS+1]
 new gEsterDmg[SH_MAXSLOTS+1]
 new gTimesLeft[SH_MAXSLOTS+1]
+
+
+new gmorphed[SH_MAXSLOTS+1]
+new teamglow_on
 
 
 
@@ -58,6 +63,7 @@ public plugin_init()
 	register_cvar("ester_damage", "3")
 	register_cvar("ester_period", "0.1")
 	register_cvar("ester_max_dmg", "20")
+	register_cvar("ester_teamglow_on", "1")
 	register_cvar("ester_dmg_inc_per_inc", "5")
 	register_cvar("ester_lvls_for_inc", "5")
 	register_cvar("ester_uses_per_map","1")
@@ -94,16 +100,83 @@ public ester_init()
 		
 		gTimesLeft[id]=times_per_map
 		reset_ester_user_round(id)
+		ester_model(id)
 		set_task( 1.0, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
 	}
 	else{
 		reset_ester_user_round(id)
+		ester_unmorph(id+ESTER_MORPH_TASKID)
 		remove_task(id+ESTER_REVENGE_TASKID)
 	
 	}
 	
 	
 }
+
+//----------------------------------------------------------------------------------------------
+public ester_model(id)
+{
+	set_task(1.0, "ester_morph", id+ESTER_MORPH_TASKID)
+	if( teamglow_on){
+		set_task(1.0, "ester_glow", id+ESTER_MORPH_TASKID, "", 0, "b" )
+	}
+
+}
+//----------------------------------------------------------------------------------------------
+public ester_morph(id)
+{
+	id-=ESTER_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
+	
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Ready to adult.")
+	cs_set_user_model(id, "ester")
+	
+	gmorphed[id] = true
+	
+}
+//----------------------------------------------------------------------------------------------
+public ester_unmorph(id)
+{
+	id-=ESTER_MORPH_TASKID
+	if(!is_user_connected(id)) return
+	if ( gmorphed[id] ) {
+
+		cs_reset_user_model(id)
+
+		gmorphed[id] = false
+
+		if ( teamglow_on ) {
+			remove_task(id+ESTER_MORPH_TASKID)
+			set_user_rendering(id)
+		}
+		// Message
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Fuck my li- Sigh... Spectating again")
+	}
+}
+//----------------------------------------------------------------------------------------------
+public ester_glow(id)
+{
+	id -= ESTER_MORPH_TASKID
+
+	if ( !is_user_connected(id) ) {
+		//Don't want any left over residuals
+		remove_task(id+ESTER_MORPH_TASKID)
+		return
+	}
+
+	if ( gHasEster[id] && is_user_alive(id)) {
+		if ( get_user_team(id) == 1 ) {
+			shGlow(id, 255, 0, 0)
+		}
+		else {
+			shGlow(id, 0, 0, 255)
+		}
+	}
+}
+
 reset_status(id){
 
 
@@ -220,6 +293,7 @@ public loadCVARS()
 	dmg_inc_per_inc=get_cvar_num("ester_dmg_inc_per_inc")
 	num_lvls_for_inc=get_cvar_num("ester_lvls_for_inc")
 	pan_dmg=get_cvar_float("ester_pan_dmg")
+	teamglow_on=get_cvar_num("ester_teamglow_on")
 }//----------------------------------------------------------------------------------------------
 public ester_loop(id)
 {
@@ -399,6 +473,7 @@ public sh_client_spawn(id)
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		reset_ester_user_round(id)
+		ester_model(id)
 		
 	}
 	
@@ -452,6 +527,8 @@ public plugin_precache()
 {
 	
 	m_spriteTexture = precache_model("sprites/laserbeam.spr")
+	precache_model("models/player/ester/ester.mdl")
+	precache_model("models/player/ester/esterT.mdl")
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_AIR1_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_AIR2_SOUND)
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_WALL_SOUND)
@@ -471,11 +548,12 @@ public death()
 {
 	new id=read_data(1)
 	
+	ester_unmorph(id+ESTER_MORPH_TASKID)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 	if ( !is_user_connected(id)||!gHasEster[id]||!id){
 		return
 	}
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
 }	
 

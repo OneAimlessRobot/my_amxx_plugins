@@ -664,7 +664,9 @@ for(new a = 1; a <= SH_MAXSLOTS; a++) {
 			
 			dRatio = float(distanceBetween) / float(damradius)
 			damage = maxdamage - floatround( maxdamage * dRatio)
-			shExtraDamage(a, id, damage, "Self Destruction")
+			if(damage>=1){
+				shExtraDamage(a, id, damage, "Self Destruction")
+			}
 		} // distance
 	} // alive
 } // loop
@@ -943,6 +945,3 @@ public blood_spray(vic, vicOrigin[3])
 	}
 }
 //----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
-*/

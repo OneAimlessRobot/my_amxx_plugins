@@ -5,8 +5,11 @@
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 
 #define GRACIETE_HUD_TASKID 17282
+#define GRACIETE_MORPH_TASKID 212122
 new gHeroLevel
 new gHasGraciete[SH_MAXSLOTS+1]
+new gmorphed[SH_MAXSLOTS+1]
+new teamglow_on
 new hud_sync
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -20,6 +23,7 @@ public plugin_init()
 	register_cvar("graciete_jet_velocity", "8")
 	register_cvar("graciete_jet_cooldown", "8")
 	register_cvar("graciete_jet_max_power", "8")
+	register_cvar("graciete_teamglow_on", "1")
 	register_cvar("graciete_jet_stomp_grav_mult", "8")
 	register_cvar("graciete_land_explosion_radius", "8")
 	register_cvar("graciete_berserk_m3_mult", "8")
@@ -67,18 +71,83 @@ public graciete_init()
 		
 		reset_graciete_user(id)
 		q_barrel_set_q_barrel(id)
-		graciete_morph(id)
+		graciete_model(id)
 		
 		set_task( 0.2, "graciete_loop", id+GRACIETE_HUD_TASKID, "", 0, "b")
 	}
 	else{
 		reset_graciete_user(id)
-		graciete_unmorph(id)
+		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		q_barrel_unset_q_barrel(id)
 		remove_task(id+GRACIETE_HUD_TASKID)
 	}
 	
 }
+
+//----------------------------------------------------------------------------------------------
+public graciete_model(id)
+{
+	set_task(1.0, "graciete_morph", id+GRACIETE_MORPH_TASKID)
+	if( teamglow_on){
+		set_task(1.0, "graciete_glow", id+GRACIETE_MORPH_TASKID, "", 0, "b" )
+	}
+
+}
+//----------------------------------------------------------------------------------------------
+public graciete_morph(id)
+{
+	id-=GRACIETE_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasGraciete[id] ) return
+	
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Graciete ready.")
+	cs_set_user_model(id, "graciete")
+	
+	gmorphed[id] = true
+	
+}
+//----------------------------------------------------------------------------------------------
+public graciete_unmorph(id)
+{
+	id-=GRACIETE_MORPH_TASKID
+	if(!is_user_connected(id)) return
+	if ( gmorphed[id] ) {
+
+		cs_reset_user_model(id)
+
+		gmorphed[id] = false
+
+		if ( teamglow_on ) {
+			remove_task(id+GRACIETE_MORPH_TASKID)
+			set_user_rendering(id)
+		}
+		// Message
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Mission failed.")
+	}
+}
+//----------------------------------------------------------------------------------------------
+public graciete_glow(id)
+{
+	id -= GRACIETE_MORPH_TASKID
+
+	if ( !is_user_connected(id) ) {
+		//Don't want any left over residuals
+		remove_task(id+GRACIETE_MORPH_TASKID)
+		return
+	}
+
+	if ( gHasGraciete[id] && is_user_alive(id)) {
+		if ( get_user_team(id) == 1 ) {
+			shGlow(id, 255, 0, 0)
+		}
+		else {
+			shGlow(id, 0, 0, 255)
+		}
+	}
+}
+
 public status_hud(id){
 	
 	new hud_msg[1000];
@@ -106,6 +175,7 @@ public graciete_loop(id)
 public loadCVARS()
 {
 	gHeroLevel= get_cvar_num("graciete_level");
+	teamglow_on=get_cvar_num("graciete_teamglow_on")
 	
 }
 public _client_isnt_hitter(iPlugin,iParams){
@@ -119,30 +189,12 @@ public _client_isnt_hitter(iPlugin,iParams){
 	return !gHasGraciete[gatling_user]
 	
 }
-
-public graciete_morph(id){
-	
-	
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Graciete ready.")
-	
-}
-public graciete_unmorph(id){
-	
-	
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Mission failed.")
-	
-}
-
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
 	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
 			reset_graciete_user(id)
-			graciete_morph(id)
+			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -153,7 +205,7 @@ public sh_client_spawn(id){
 	
 	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
-			graciete_morph(id)
+			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -165,7 +217,7 @@ public Ham_respawn(id){
 
 	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
-			graciete_morph(id)
+			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -194,12 +246,20 @@ public client_disconnected(id){
 	return PLUGIN_HANDLED
 	
 }
+public plugin_precache(){
+
+
+	precache_model("models/player/graciete/graciete.mdl")
+}
 public death()
 {
 	new id = read_data(2)
 	if(gHasGraciete[id]){
 		
-		graciete_unmorph(id)
+		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		reset_graciete_user(id)
 	}
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

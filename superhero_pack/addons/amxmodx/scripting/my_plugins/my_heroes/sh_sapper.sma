@@ -6,10 +6,12 @@
 
 
 #define SAPPER_TASKID 12812
+#define SAPPER_MORPH_TASKID 128121
 
 // GLOBAL VARIABLES
 new gHasSapper[SH_MAXSLOTS+1]
 new gNumMines[SH_MAXSLOTS+1]
+new gmorphed[SH_MAXSLOTS+1]
 
 new m_spriteTexture
 
@@ -18,6 +20,7 @@ new gHeroLevel
 new num_mines
 new mine_cooldown
 new disarmable
+new teamglow_on
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -29,6 +32,7 @@ public plugin_init()
 	register_cvar("sapper_level", "8")
 	register_cvar("sapper_mines", "8")
 	register_cvar("sapper_disarmable", "1")
+	register_cvar("sapper_teamglow_on", "1")
 	register_cvar("sapper_mine_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	hud_sync = CreateHudSyncObj()
@@ -121,12 +125,14 @@ public sapper_init()
 		sapper_weapons(id);
 		reset_sapper_user(id)
 		
+		sapper_model(id)
 		set_task( 0.2, "sapper_loop", id+SAPPER_TASKID, "", 0, "b")
 	}
 	else{
 		reset_sapper_user(id)
 		remove_task(id+SAPPER_TASKID)
 		sh_drop_weapon(id, CSW_P90, true)
+		sapper_unmorph(id+SAPPER_MORPH_TASKID)
 	}
 	
 }
@@ -168,6 +174,7 @@ gHeroLevel=get_cvar_num("sapper_level");
 num_mines=get_cvar_num("sapper_mines");
 mine_cooldown=get_cvar_num("sapper_mines");
 disarmable=get_cvar_num("sapper_disarmable");
+teamglow_on=get_cvar_num("sapper_teamglow_on")
 }
 //----------------------------------------------------------------------------------------------
 public sapper_loop(id)
@@ -190,22 +197,6 @@ if ( gHasSapper[id] ) {
 }
 
 }
-public sapper_morph(id){
-
-
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Sapper ready.")
-
-}
-public sapper_unmorph(id){
-
-
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Mission failed.")
-
-}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
@@ -213,7 +204,7 @@ if ( gHasSapper[id]&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
 	
 	reset_sapper_user(id)
 	sapper_weapons(id)
-	sapper_morph(id)
+	sapper_model(id)
 }
 return PLUGIN_HANDLED
 
@@ -228,18 +219,81 @@ public plugin_precache()
 {
 
 
+	precache_model("models/player/sapper/sapper.mdl")
 
 
 }
 public death()
 {
 new id = read_data(2)
+sapper_unmorph(id+SAPPER_MORPH_TASKID)
 if(gHasSapper[id]){
 
-	sapper_unmorph(id)
 	mine_uncharge_mine(id)
 	mine_undisarm_mine(id)
 }
+}
+
+//----------------------------------------------------------------------------------------------
+public sapper_model(id)
+{
+	set_task(1.0, "sapper_morph", id+SAPPER_MORPH_TASKID)
+	if( teamglow_on){
+		set_task(1.0, "sapper_glow", id+SAPPER_MORPH_TASKID, "", 0, "b" )
+	}
+
+}
+//----------------------------------------------------------------------------------------------
+public sapper_morph(id)
+{
+	id-=SAPPER_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasSapper[id] ) return
+	
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Sapper ready.")
+	cs_set_user_model(id, "sapper")
+	
+	gmorphed[id] = true
+	
+}
+//----------------------------------------------------------------------------------------------
+public sapper_unmorph(id)
+{
+	id-=SAPPER_MORPH_TASKID
+	if(!is_user_connected(id)) return
+	if ( gmorphed[id] ) {
+
+		cs_reset_user_model(id)
+
+		gmorphed[id] = false
+
+		if ( teamglow_on ) {
+			remove_task(id+SAPPER_MORPH_TASKID)
+			set_user_rendering(id)
+		}
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Mission failed.")
+	}
+}
+//----------------------------------------------------------------------------------------------
+public sapper_glow(id)
+{
+	id -= SAPPER_MORPH_TASKID
+
+	if ( !is_user_connected(id) ) {
+		//Don't want any left over residuals
+		remove_task(id+SAPPER_MORPH_TASKID)
+		return
+	}
+
+	if ( gHasSapper[id] && is_user_alive(id)) {
+		if ( get_user_team(id) == 1 ) {
+			shGlow(id, 255, 0, 0)
+		}
+		else {
+			shGlow(id, 0, 0, 255)
+		}
+	}
 }
 
 //----------------------------------------------------------------------------------------------

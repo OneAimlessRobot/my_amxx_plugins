@@ -132,7 +132,7 @@ public Player_TakeDamage(id)
 
 public _get_fx_num(iPlugin,iParams){
 
-	/*
+	
 	new Float:chance=random_float(0.0,1.0)
 	if(chance<0.01){
 	
@@ -189,9 +189,9 @@ public _get_fx_num(iPlugin,iParams){
 		return BATH;
 	
 	}
-	return BATH +1*/
+	return BATH +1
 	
-	return RADIOACTIVE
+	//return RADIOACTIVE
 
 
 
