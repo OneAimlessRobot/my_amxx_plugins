@@ -76,7 +76,7 @@ public ev_SendAudio(){
 		
 		
 	} // Draw
-	/*for(new id=0;id<SH_MAXSLOTS+1;id++){
+	for(new id=0;id<SH_MAXSLOTS+1;id++){
 		
 		if(gHasRoberto[id]){
 			player_team=cs_get_user_team(id)
@@ -106,7 +106,7 @@ public ev_SendAudio(){
 				}
 			}
 			
-		}*/
+		}
 			
 		
 }
@@ -284,3 +284,6 @@ public death()
 	get_user_name(killer,killer_name,127)
 	*/
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/
