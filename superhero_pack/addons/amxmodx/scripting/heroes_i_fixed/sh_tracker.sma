@@ -182,3 +182,6 @@ public tracker_loop()
   
   set_task(get_cvar_float("tracker_refreshrate"), "tracker_loop")
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

@@ -46,6 +46,7 @@ public plugin_natives(){
 	register_native("sh_gen_effect","_get_fx_num",0);
 	register_native("sh_effect_user_direct","_sh_effect_user_direct",0);
 	register_native("sh_uneffect_user","_sh_uneffect_user",0);
+	register_native("sh_get_fx_color_name","_sh_get_fx_color_name",0);
 }
 
 
@@ -130,6 +131,103 @@ public Player_TakeDamage(id)
  set_pdata_float(id, fPainShock, 1.0, 5)
 } 
 
+public _sh_get_fx_color_name(iPlugins,iParams){
+	
+	new fx_num=get_param(1)
+	switch(fx_num){
+	
+		case KILL:{
+			
+			set_array(2,kill_color,4)
+			set_array(3,"cyanide",128)
+		
+		
+		}
+		case GLOW:{
+		
+			set_array(2,stun_color,4)
+			set_array(3,"glowstick juice",128)
+		
+		
+		}
+		case STUN:{
+		
+		
+			set_array(2,stun_color,4)
+			set_array(3,"stunner",128)
+		
+		}
+		case POISON:{
+		
+		
+			set_array(2,poison_color,4)
+			set_array(3,"poison",128)
+		
+		}
+		case RADIOACTIVE:{
+		
+		
+			set_array(2,radioactive_color,4)
+			set_array(3,"uranium",128)
+		
+		}
+		case MORPHINE:{
+		
+		
+			set_array(2,morphine_color,4)
+			set_array(3,"morphine",128)
+		
+		}
+		case WEED:{
+		
+		
+			set_array(2,weed_color,4)
+			set_array(3,"weed",128)
+		
+		}
+		case COCAINE:{
+		
+		
+			set_array(2,cocaine_color,4)
+			set_array(3,"cocaine",128)
+		
+		}
+		case BLIND:{
+		
+		
+			set_array(2,blind_color,4)
+			set_array(3,"blindness",128)
+		
+		}
+		case METYLPHENIDATE:{
+		
+		
+			set_array(2,focus_color,4)
+			set_array(3,"metylphenidate",128)
+		
+		}
+		case BATH:{
+		
+		
+			set_array(2,bath_color,4)
+			set_array(3,"bath salts",128)
+		
+		}
+		default:{
+		
+			
+			set_array(2,no_color,4)
+			set_array(3,"no drug",128)
+		}
+	
+	
+	
+	
+	}
+
+
+
+}
 public _get_fx_num(iPlugin,iParams){
 
 	
@@ -201,8 +299,8 @@ public _sh_effect_user_direct(iPlugin,iParams){
 
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	new fx_num=get_param(4)
+	new fx_num=get_param(3)
+	new gHeroID=get_param(4)
 	if(user==attacker){
 	
 		
@@ -305,7 +403,7 @@ public _sh_effect_user(iPlugin,iParams){
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
-	sh_effect_user_direct(user,attacker,gHeroID,fx_num)
+	sh_effect_user_direct(user,attacker,fx_num,gHeroID)
 	return fx_num;
 
 
@@ -523,26 +621,65 @@ unstun_user(id){
 
 }
 
+trail(vec1[3],vec2[3],const color[4],id){
 
+//BEAMENTPOINTS
+		message_begin( MSG_ONE,SVC_TEMPENTITY,{0,0,0}, id)
+		write_byte (0)     //TE_BEAMENTPOINTS 0
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2])
+		write_coord(vec2[0])
+		write_coord(vec2[1])
+		write_coord(vec2[2])
+		write_short( m_spriteTexture )
+		write_byte(1) // framestart
+		write_byte(5) // framerate
+		write_byte(2) // life
+		write_byte(10) // width
+		write_byte(0) // noise
+		write_byte( color[0] )     // r, g, b
+		write_byte( color[1] )       // r, g, b
+		write_byte( color[2])
+		write_byte( color[3]) // brightness
+		write_byte(300) // speed
+		message_end()
+}
 public radioactive_task(array[],id){
 	id-=RADIOACTIVE_TASKID
-	new hud_msg[128]
+	
+	new hud_msg[256]
 	new client_name[128]
-	new distance, origin[3], eorigin[3]
+	new distance, origin[3], eorigin[3],att_origin[3]
 	get_user_name(id,client_name,127)
-	get_user_origin(array[0], origin)
 	
 	get_user_origin(id, eorigin)
+	get_user_origin(array[0], origin)
+	get_user_origin(array[0], att_origin)
 			
 	distance = get_distance(eorigin, origin)
-	format(hud_msg,127,"%s.^nDistance: %d",client_name,distance);
-		
+	format(hud_msg,256,"%s.^nDistance: %d^nNumero de teamates: %d^n",client_name,distance,array[2]);
 	set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
 	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
+	detect_user(array[0],id,eorigin);
+	trail(eorigin,origin,radioactive_color,array[0])
+	for(new i=0;i<array[2];i++){
+		if(array[i+3]==array[0]){
+			continue
+		}
+		get_user_origin(array[i+3], origin)
+			
+		distance = get_distance(eorigin, origin)
+		format(hud_msg,127,"%s.^nDistance: %d",client_name,distance);
+		set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
+		ShowSyncHudMsg(array[i+3],array[1], "%s", hud_msg)
+		detect_user(array[i+3],id,eorigin);
+		trail(eorigin,origin,radioactive_color,array[i+3])
+		
+	}
 	sh_set_rendering(id, radioactive_color[0],  radioactive_color[1], radioactive_color[2], radioactive_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, 0.9, radioactive_color[0], radioactive_color[1], radioactive_color[2],  50)
 	aura(id,radioactive_color)
-	detect_user(array[0],id,eorigin);
 	sh_extra_damage(id,array[0],RADIOACTIVE_DAMAGE,"Uranium Pill",0,SH_DMG_NORM)
 	
 	
@@ -550,9 +687,34 @@ public radioactive_task(array[],id){
 }
 
 radioactive_user(id,attacker){
-	new array[2]
+	new players[SH_MAXSLOTS]
+	new team_name[32]
+	new client_name[128]
+	new team_mate_name[128]
+	new enemy_name[128]
+	new player_count;
+	
+	get_user_name(id,enemy_name,127)
+	get_user_name(attacker,client_name,127)
+	
+	get_user_team(attacker,team_name,32)
+	get_players(players,player_count,"ea",team_name)
+	
+	for(new i=0;i<player_count;i++){
+		
+		get_user_name(players[i],team_mate_name,127)
+		sh_chat_message(players[i],gatling_get_hero_id(),"Your yakui using teamate %s has revealed %s's position in the radar!",client_name,enemy_name)
+		sh_chat_message(attacker,gatling_get_hero_id(),"%s knows!!!",team_mate_name)
+	
+	}
+	new array[3+33]
 	array[0] = attacker
 	array[1] = CreateHudSyncObj()
+	array[2] = player_count
+	for(new i=0;i<player_count;i++){
+	
+		array[3+i]=players[i]
+	}
 	set_task(RADIOACTIVE_PERIOD,"radioactive_task",id+RADIOACTIVE_TASKID,array, sizeof(array),  "a",RADIOACTIVE_TIMES)
 	set_task(floatsub(floatmul(RADIOACTIVE_PERIOD,float(RADIOACTIVE_TIMES)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASKID,"", 0,  "a",1)
 	return 0
@@ -585,17 +747,18 @@ public unradioactive_task(id){
 detect_user(id,enemy,PlayerCoords[3]){
 
 
-            message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-            write_byte(id)
-            write_byte(enemy)           
-            write_coord(PlayerCoords[0])
-            write_coord(PlayerCoords[1])
-            write_coord(PlayerCoords[2])
-            message_end()
-                                
-            message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
-            write_byte(enemy)
-            message_end()
+	
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
+	write_byte(id)
+	write_byte(enemy)           
+	write_coord(PlayerCoords[0])
+	write_coord(PlayerCoords[1])
+	write_coord(PlayerCoords[2])
+	message_end()
+			
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
+	write_byte(enemy)
+	message_end()
 
 
 }
@@ -685,16 +848,16 @@ weed_user(id){
 }
 unweed_user(id){
 	remove_task(id+UNWEED_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+WEED_TASKID)
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_min_gravity(id)
 	return 0
 
 }
 public unweed_task(id){
 	id-=UNWEED_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+WEED_TASKID)
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_min_gravity(id)
 	return 0
 
@@ -716,16 +879,16 @@ cocaine_user(id){
 }
 uncocaine_user(id){
 	remove_task(id+UNCOCAINE_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+COCAINE_TASKID)
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_max_speed(id)
 	return 0
 
 }
 public uncocaine_task(id){
 	id-=UNCOCAINE_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+COCAINE_TASKID)
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_max_speed(id)
 	return 0
 

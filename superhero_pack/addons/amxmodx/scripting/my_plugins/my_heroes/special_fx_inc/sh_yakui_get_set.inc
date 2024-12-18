@@ -8,6 +8,10 @@
 #define GATLING_P_MODEL "models/shmod/yakui/p_m249.mdl"
 
 #define YAKUI_HUD_TASKID 12286
+#define YAKUI_MORPH_TASKID 127186
+
+new gmorphed[SH_MAXSLOTS+1]
+new teamglow_on
 
 new gHeroID
 
@@ -37,7 +41,7 @@ native sh_get_pill_color(fx_num,attacker,color[4])
 
 native make_effect(vic,attacker,gHeroId)
 
-native make_effect_direct(vic,attacker,fx_num,gHeroID)
+native make_effect_direct(vic,attacker,gHeroID,fx_num)
 
 native uneffect_user_handler(id,gHeroID)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

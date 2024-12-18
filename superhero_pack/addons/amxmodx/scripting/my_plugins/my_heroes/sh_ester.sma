@@ -79,7 +79,6 @@ public plugin_init()
 	
 	register_srvcmd("ester_init", "ester_init")
 	shRegHeroInit(gHeroName, "ester_init")
-	
 	register_srvcmd("ester_kd", "ester_kd")
 	shRegKeyDown(gHeroName, "ester_kd")
 	register_srvcmd("ester_ku", "ester_ku")
@@ -98,9 +97,13 @@ public ester_init()
 	gHasEster[id]=(hasPowers!=0)
 	if(gHasEster[id]){
 		
-		gTimesLeft[id]=times_per_map
-		reset_ester_user_round(id)
 		ester_model(id)
+		if(gTimesLeft[id]<=0){
+			reset_status(id)
+			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan tho")
+			return
+		}
+		reset_ester_user_round(id)
 		set_task( 1.0, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
 	}
 	else{
@@ -190,6 +193,12 @@ reset_status(id){
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 
 }
+
+client_hittable(vic_userid){
+
+return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
+
+}
 count_enemies(id){
 	
 	new count=0;
@@ -197,10 +206,10 @@ count_enemies(id){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
-		for(new i=0;i<=player_count;i++){
-			
-			count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i]))?1:0;
-		
+		for(new i=0;i<player_count;i++){
+			if(client_hittable(players[i])){
+				count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i]))?1:0;
+			}
 		}
 		
 		
@@ -261,7 +270,7 @@ public show_targets(id){
 	get_user_name(id,client_name,127)
 	format(hud_msg,500,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
 	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if(g_ester_enemies[id][i]){
+		if(g_ester_enemies[id][i]&&client_hittable(i)){
 			get_user_name(i,client_name,127)
 			format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
 		}
@@ -278,6 +287,7 @@ public update_max_dmg(id){
 public plugin_cfg()
 {
 	loadCVARS();
+	arrayset(gTimesLeft,times_per_map,SH_MAXSLOTS+1)
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()

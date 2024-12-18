@@ -71,7 +71,7 @@ public _make_effect_direct(iPlugin,iParams){
 	new fx_num= get_param(3)
 	new hero_id=get_param(4)
 	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
-	sh_effect_user_direct(vic,attacker,hero_id,fx_num)
+	sh_effect_user_direct(vic,attacker,fx_num,hero_id)
 	gCurrFX[vic]=fx_num;
 
 }

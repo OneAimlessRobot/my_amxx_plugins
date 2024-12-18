@@ -154,7 +154,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 		if (dist <= ROCKET_RADIUS) {
 			
 			
-			make_effect_direct(i,id,rocket_fx[pToucher],gHeroID)
+			make_effect_direct(i,id,rocket_fx[pToucher],gatling_get_hero_id())
 			
 		}
 	}

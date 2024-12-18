@@ -10,11 +10,16 @@
 #define Struct				enum
 
 new bool:pill_loaded[SH_MAXSLOTS+1]
+new bool:gat_wound_up[SH_MAXSLOTS+1]
+new bool:gat_wound_triggered[SH_MAXSLOTS+1]
+new Float:gat_wound_time[SH_MAXSLOTS+1]
 
 new gPillGatlingEngaged[SH_MAXSLOTS+1]
 
 new pill_fx[MAX_ENTITIES]
 new m_trail
+new  hud_sync_windup
+new Float:windup_time
 new const gunsound[] = "shmod/yakui/m249-1.wav";
 public plugin_init(){
 
@@ -24,7 +29,15 @@ register_plugin(PLUGIN, VERSION, AUTHOR);
 
 arrayset(pill_fx,0,sh_max_entities())
 arrayset(pill_loaded,true,SH_MAXSLOTS+1)
+arrayset(gat_wound_up,false,SH_MAXSLOTS+1)
+arrayset(gat_wound_triggered,false,SH_MAXSLOTS+1)
+arrayset(gat_wound_time,0.0,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
+hud_sync_windup=CreateHudSyncObj()
+register_cvar("yakui_windup_time", "2.0")
+register_event("DeathMsg","death","a")
+register_event("ResetHUD","newRound","b")
+register_forward(FM_Think, "pill_think")
 }
 
 public plugin_natives(){
@@ -71,24 +84,59 @@ public CmdStart(id, uc_handle)
 	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	
-	new button = get_uc(uc_handle, UC_Buttons);
+	static button;
+	button= get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, "weapon_m249", id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	
+	new bool:firing=false
 	if(weapon==CSW_M249){
 		if(button & IN_ATTACK)
 		{
+			firing=true
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !gatling_get_pillgatling(id) || !(is_user_alive(id))||!pill_loaded[id]) return FMRES_IGNORED
-			if(gatling_get_num_pills(id) == 0)
+			if( !gatling_get_pillgatling(id) || !(is_user_alive(id))||!pill_loaded[id]){
+			
+			}
+			else if(gatling_get_num_pills(id) == 0)
 			{
 				client_print(id, print_center, "You are out of pills")
-				return FMRES_IGNORED
 			}
-			launch_pill(id)
+			else if(!gat_wound_up[id])
+			{
+				client_print(id, print_center, "You are not wound up!")
+			}
+			else {
+				launch_pill(id)
+			}
 			
 		}
+		if(button & IN_USE){
+		
+		
+			button &= ~IN_USE;
+			set_uc(uc_handle, UC_Buttons, button);
+			if(!gat_wound_triggered[id]){
+				gat_wound_triggered[id]=true
+				gat_wound_time[id]=0.0
+				charge_user(id)
+				
+			}
+		
+		}
+		else if(!firing){
+			
+			uncharge_user(id)
+			gat_wound_time[id]=0.0
+			gat_wound_triggered[id]=false
+			gat_wound_up[id]=false
+		}
+	}
+	else{
+	
+		uncharge_user(id)
+		gat_wound_triggered[id]=false
+		gat_wound_up[id]=false
 	}
 	if(ent)
 	{
@@ -98,6 +146,7 @@ public CmdStart(id, uc_handle)
 	
 	return FMRES_IGNORED;
 }
+
 /*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
 
 return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
@@ -108,13 +157,78 @@ client_hittable(vic_userid){
 return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
 
 }
+
 client_isnt_hitter(gatling_user){
+	new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
+	if(result) return true
+	
+	return !gatling_get_has_yakui(gatling_user)
+	
+}
+
+//----------------------------------------------------------------------------------------------
+public newRound(id)
+{
+	
+if ( is_user_connected(id)&&is_user_alive(id) && shModActive() ) {
+	
+	gat_wound_time[id]=0.0
+	gat_wound_triggered[id]=false
+	gat_wound_up[id]=false
+}
+return PLUGIN_HANDLED
+
+}
+//----------------------------------------------------------------------------------------------
+public plugin_cfg()
+{
+	loadCVARS();
+	
+}
+//----------------------------------------------------------------------------------------------
+public loadCVARS()
+{
+	
+	windup_time=get_cvar_float("yakui_windup_time")
+}
+public charge_task(id){
+	id-=GAT_WINDUP_TASKID
+	new hud_msg[128];
+	gat_wound_time[id]=floatmin(windup_time,floatadd(gat_wound_time[id],GAT_WINDUP_PERIOD))
+	if(gat_wound_time[id]<windup_time){
+		format(hud_msg,127,"[SH]: Curr windup: %0.2f^n",
+						100.0*(gat_wound_time[id]/windup_time)
+						);
+		set_hudmessage(255,255, 255, -1.0, -1.0, 255, 0.0, 0.5,0.0,0.0,1)
+		ShowSyncHudMsg(id, hud_sync_windup, "%s", hud_msg)
+	}
+	else{
+		gat_wound_up[id]=true
+	}
+					
+	
+
+	
 
 
-return (!gatling_get_has_yakui(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
+}
+charge_user(id){
+	set_task(GAT_WINDUP_PERIOD,"charge_task",id+GAT_WINDUP_TASKID,"", 0,  "b")
+	return 0
+
+
 
 }
 
+uncharge_user(id){
+	remove_task(id+UNGAT_WINDUP_TASKID)
+	remove_task(id+GAT_WINDUP_TASKID)
+	gat_wound_triggered[id]=false
+	return 0
+
+
+
+}
 public _clear_pills(iPlugin,iParams){
 
 	arrayset(pill_fx,0,sh_max_entities())
@@ -177,6 +291,7 @@ launch_pill(id)
 	VelocityByAim(id, floatround(PILL_SPEED) , Velocity)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
+	set_pev(Ent, pev_vuser1, Velocity)
 	pill_loaded[id] = false
 
 	gatling_dec_num_pills(id)
@@ -196,12 +311,56 @@ launch_pill(id)
 	//if(get_cvar_num("veronika_m203trail"))
 	set_task(0.01, "pilltrail",id,parm,6)
 
+	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 	parm[0] = id
 	set_task(PILL_SHOOT_PERIOD, "pill_reload",id+PILL_RELOAD_TASKID,parm,1)
 
 	return PLUGIN_CONTINUE
 }
 
+//----------------------------------------------------------------------------------------------
+public pill_think(ent)
+{	
+	
+	if(!pev_valid(ent)){
+		
+		return
+		
+	}
+	new szClassName[32]
+	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
+	if(!equal(szClassName, PILL_CLASSNAME))
+	{
+		return;
+	}
+	new id=pev(ent,pev_owner)
+	if ( client_isnt_hitter(id )) {
+		remove_entity(ent)
+		return
+	}
+	new Float:newVelocity[3],Float:velocityVec[ 3 ]
+	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
+	entity_get_vector( ent, EV_VEC_velocity, newVelocity );
+	
+	
+
+	velocityVec[0] = velocityVec[0]+(random_float(-1.0,1.0)*PILL_MASS)
+	velocityVec[1] = velocityVec[1]+(random_float(-1.0,1.0)*PILL_MASS)
+	
+	new Float:length = vector_length(velocityVec)
+	// Stupid Check but lets make sure you don't devide by 0
+	if ( !length ) length = 1.0
+	
+	newVelocity[0]= velocityVec[0]*PILL_SPEED/length
+	newVelocity[1] = velocityVec[1]*PILL_SPEED/length
+	newVelocity[2]= velocityVec[2]
+	
+	
+	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
+	set_pev(ent, pev_vuser1, newVelocity)
+	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
+	
+}
 public pill_reload(parm[])
 {
 	pill_loaded[parm[0]] = true
@@ -279,7 +438,8 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
-				make_effect_direct(pTouched,oid,pill_fx[pToucher],gHeroID)
+				
+				make_effect_direct(pTouched,oid,pill_fx[pToucher],gatling_get_hero_id())
 				remove_entity(pToucher)
 			}
 		}
@@ -310,82 +470,20 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, gunsound)
 	
 }
-/*
 
-public _gatling_set_num_pills(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumPills[id]=value_to_set;
-}
-public _gatling_set_has_yakui(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasYakui[id]=value_to_set;
-}
-public _gatling_get_has_yakui(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasYakui[id]
-}
-
-public _gatling_get_num_pills(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumPills[id]
-
-}
-
-public _gatling_dec_num_pills(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumPills[id]-= (gNumPills[id]>0)? 1:0
-
-}
-public _gatling_get_fx_num(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gCurrFX[id]
-
-}
-
-public _gatling_set_fx_num(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gCurrFX[id]=value_to_set
-
-}
-
-
-public _gatling_get_hero_id(iPlugin,iParams){
-
-	return gHeroID
-
-}
-
-public _gatling_set_hero_id(iPlugin,iParams){
-
-
-	new value_to_set= get_param(1)
-	gHeroID=value_to_set
-
-}
-
-public _gatling_get_pillgatling(iPlugin,iParams){
-	new id=get_param(1)
-	return gPillGatlingEngaged[id]
+public death()
+{
+	new id = read_data(2)
+	//new killer= read_data(1)
+	
+	if(!is_user_connected(id)||!sh_is_active()||!gatling_get_has_yakui(id)) return
+	
+	uncharge_user(id)
+	gat_wound_time[id]=0.0
+	gat_wound_triggered[id]=false
+	gat_wound_up[id]=false
 	
 }
-public _gatling_set_pillgatling(iPlugin,iParams){
-	
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gPillGatlingEngaged[id]=value_to_set;
-}
-*/
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

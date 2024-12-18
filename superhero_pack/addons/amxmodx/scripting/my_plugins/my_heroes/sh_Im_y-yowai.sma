@@ -162,15 +162,15 @@ if(gHasYowai[id]&&g_yowai_mode[id]){
 	if((damage>=dmg_threshold||(g_hits[id]>=g_max_hits_player[id]))){
 		
 		shExtraDamage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
-			
 		
 	}
 	else if((damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id]))){
 			
 		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
+		damage=0.0
+		SetHamParamFloat(4, damage);
 		Inc_hits(id)
-		status_hud(id)
-		return HAM_SUPERCEDE;
+		status_hud(id);
 			
 	}
 	

@@ -4,6 +4,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
+#include "special_fx_inc/sh_needle_funcs.inc"
 
 
 // GLOBAL VARIABLES
@@ -25,6 +26,7 @@ public plugin_init()
 	register_cvar("yakui_level", "8")
 	register_cvar("yakui_pills","1000")
 	register_cvar("yakui_rockets","5")
+	register_cvar("yakui_teamglow_on","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
 	gatling_set_hero_id(gHeroID)
 	register_forward(FM_PlayerPreThink, "player_prethink_yakui_weapon")
@@ -58,7 +60,18 @@ public player_prethink_yakui_weapon(id)
 		gatling_set_pillgatling(id,!has_pgatling)
 		gatling_set_rockets(id,!has_rockets)
 	}
+	
+	else if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==CSW_KNIFE)){
+		new has_needle=gatling_get_needle(id)
+		gatling_set_needle(id,!has_needle)
+	}
 	return FMRES_IGNORED
+}
+public plugin_precache(){
+
+
+	precache_model("models/player/yakui/yakui.mdl")
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -71,6 +84,7 @@ public loadCVARS()
 	gHeroLevel=get_cvar_num("yakui_level");
 	max_pills=get_cvar_num("yakui_pills")
 	max_rockets=get_cvar_num("yakui_rockets")
+	teamglow_on=get_cvar_num("yakui_teamglow_on")
 }
 public yakui_init()
 {
@@ -85,12 +99,15 @@ public yakui_init()
 	gatling_set_has_yakui(id,(hasPowers!=0))
 	if(gatling_get_has_yakui(id)){
 		init_yakui(id)
+		
+		yakui_tasks(id)
 		set_task(0.1,"yakui_hud_task",id+YAKUI_HUD_TASKID,"",0,"b")
 	}
 	else{
 	
 		clear_yakui(id)
 		remove_task(id+YAKUI_HUD_TASKID)
+		remove_task(id+YAKUI_MORPH_TASKID)
 	}
 	
 	register_forward(FM_SetModel, "forward_setmodel")
@@ -103,6 +120,7 @@ init_yakui(id){
 	gatling_set_num_rockets(id,max_rockets)
 	gatling_set_pillgatling(id,1)
 	gatling_set_rockets(id,0)
+	gatling_set_needle(id,0)
 	sh_chat_message(id,gHeroID,"You equipped pill gatling")
 	yakui_weapons(id)
 
@@ -149,9 +167,9 @@ public yakui_hud_task(id){
 	
 	if(!is_user_alive(id)||!is_user_connected(id)||!gatling_get_has_yakui(id)) return
 	new hud_msg[256]
-	format(hud_msg,255,"[SH] %s:^nPill gatling engaged? %s^nRoquetos engaged? %s^nNum rocketos: %d^nNum pills: %d",gHeroName,gatling_get_pillgatling(id)?"OH HELL YES MY BOY":"Naaaah....",gatling_get_rockets(id)?"AWWWWW MY GAWD":"NAW G..... :|",gatling_get_num_rockets(id),gatling_get_num_pills(id));
+	format(hud_msg,255,"[SH] %s:^nPill gatling engaged? %s^nRoquetos engaged? %s^nWeedle engaged? %s^nNum rocketos: %d^nNum pills: %d",gHeroName,gatling_get_pillgatling(id)?"OH HELL YES MY BOY":"Naaaah....",gatling_get_rockets(id)?"AWWWWW MY GAWD":"NAW G..... :|",gatling_get_needle(id)?"lets end the true drug crisis!":"Nepia bro...",gatling_get_num_rockets(id),gatling_get_num_pills(id));
 		
-	set_hudmessage(80, 240, 100, 0.0, 0.6, 0, 0.0, 1.0)
+	set_hudmessage(80, 240, 100, 0.0, 0.4, 0, 0.0, 1.0)
 	ShowSyncHudMsg(id,hud_sync, "%s", hud_msg)
 
 
@@ -164,6 +182,7 @@ public sh_client_spawn(id)
 	uneffect_user_handler(id,gHeroID)
 	if ( gatling_get_has_yakui(id)) {
 		
+		yakui_tasks(id)
 		sh_chat_message(id,gHeroID,"You spawned with pill gatling")
 		reset_yakui(id)
 		
@@ -172,6 +191,71 @@ public sh_client_spawn(id)
 }
 
 
+//----------------------------------------------------------------------------------------------
+public yakui_tasks(id)
+{
+	set_task(1.0, "yakui_morph", id+YAKUI_MORPH_TASKID)
+	if( teamglow_on){
+		set_task(1.0, "yakui_glow", id+YAKUI_MORPH_TASKID, "", 0, "b" )
+	}
+	
+}
+//----------------------------------------------------------------------------------------------
+public yakui_morph(id)
+{
+	id-=YAKUI_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!gatling_get_has_yakui(id) ) return
+	
+	
+	cs_set_user_model(id, "yakui")
+	
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Ready for a trip?")
+	
+	gmorphed[id] = true
+	
+}
+//----------------------------------------------------------------------------------------------
+public yakui_unmorph(id)
+{
+	id-=YAKUI_MORPH_TASKID
+	if(!is_user_connected(id) ) return
+	if ( gmorphed[id] ) {
+		// Message
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Hmpf...")
+		
+		cs_reset_user_model(id)
+		
+		gmorphed[id] = false
+		
+		if ( teamglow_on ) {
+			remove_task(id+YAKUI_MORPH_TASKID)
+			set_user_rendering(id)
+		}
+	}
+}
+//----------------------------------------------------------------------------------------------
+public yakui_glow(id)
+{
+	id -= YAKUI_MORPH_TASKID
+	
+	if ( !is_user_connected(id) ) {
+		//Don't want any left over residuals
+		remove_task(id+YAKUI_MORPH_TASKID)
+		return
+	}
+	
+	if ( gatling_get_has_yakui(id) && is_user_alive(id)) {
+		if ( get_user_team(id) == 1 ) {
+			shGlow(id, 255, 0, 0)
+		}
+		else {
+			shGlow(id, 0, 0, 255)
+		}
+	}
+}
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
@@ -206,6 +290,7 @@ public death(){
 	if(!sh_is_active()) return
 	
 	uneffect_user_handler(id,gHeroID)
+	yakui_unmorph(id+YAKUI_MORPH_TASKID)
 
 
 }

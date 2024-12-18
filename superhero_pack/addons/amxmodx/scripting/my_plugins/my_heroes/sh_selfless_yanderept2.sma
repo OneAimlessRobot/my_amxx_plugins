@@ -3,112 +3,8 @@
 #include "../my_include/superheromod.inc"
 #include <xs>
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "yandere_inc/sh_yandere_inc.inc"
 
-#define YANDERE_MORPH_TASKID 8562
-#define YANDERE_STATS_TASKID 29626
-#define YANDERE_ANGER_TASKID 29333
-#define YANDERE_CRY_TASKID 30333
-#define YANDERE_HEAL_TASKID 30911
-#define YANDERE_REMOVE_GLOW_TASKID 30112
-
-#define YANDERE_WARCRY "shmod/yandere/Yanderu_war_cry.wav"
-#define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
-#define YANDERE_THELAST "shmod/yandere/Yandere_thelast.wav"
-#define YANDERE_THELAST2 "shmod/yandere/Yandere_thelast2.wav"
-#define YANDERE_THELAST3 "shmod/yandere/Yandere_thelast3.wav"
-#define YANDERE_PAIN "shmod/yandere/Yandere_pain.wav"
-
-#define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
-#define YANDERE_SHOTGUN_W_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
-
-#define YANDERE_KNIFE_V_MODEL "models/shmod/yandere/knife/v_knife.mdl"
-#define YANDERE_KNIFE_P_MODEL "models/shmod/yandere/knife/p_knife.mdl"
-
-#define YANDERE_PSYCHO_KNIFE_V_MODEL "models/shmod/yandere/knife/v_psycho_knife.mdl"
-
-new const yandere_shotgun_sounds[3][]={"weapons/yandere_shotgun/balrog11_draw.wav",
-"weapons/yandere_shotgun/xm1014-1.wav",
-"weapons/yandere_shotgun/xm1014-insert.wav"}
-#define YANDERE_PSYCHOSIS_TASKID 3026
-#define UNPSYCHOSIS_TASKID 1122
-#define PSYCHOSIS_PERIOD 1.0
-#define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
-
-const fPainShock = 108 
-// GLOBAL VARIABLES
-new gHeroID
-new const gHeroName[] = "Yandere Mk.II"
-new bool:gHasYandere[SH_MAXSLOTS+1]
-new bool:gSuperAngry[SH_MAXSLOTS+1]
-new bool:gIdleAngry[SH_MAXSLOTS+1]
-new bool:g_is_cursed[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new gmorphed[SH_MAXSLOTS+1]
-new bool:gToPlaySound[SH_MAXSLOTS+1]
-new bool:gPlayedSound[SH_MAXSLOTS+1]
-new Float:gNormalDmgMult[SH_MAXSLOTS+1]
-new Float:gNormalHeal[SH_MAXSLOTS+1]
-new Float:gNormalHealRadius[SH_MAXSLOTS+1]
-new Float:gNormalSpeed[SH_MAXSLOTS+1]
-new Float:gPrevSpeed[SH_MAXSLOTS+1]
-new Float:gNormalGravity[SH_MAXSLOTS+1]
-new Float:gBaseSpeed[SH_MAXSLOTS+1]
-new Float:gBaseGravity[SH_MAXSLOTS+1]
-new bool:gIsPsychosis[SH_MAXSLOTS+1]
-new gPsychosisTime[SH_MAXSLOTS+1]
-enum{
-NO_HEALING=0,
-RADIAL_HEALING,
-GAZE_HEALING
-
-
-}
-new g_spriteSmoke, g_spriteRing, g_spriteExplosion
-new const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
-
-new MsgSetFOV
-new gLastWeapon[SH_MAXSLOTS+1]
-new gLastClipCount[SH_MAXSLOTS+1]
-
-new const yandere_sentences[5][]={
-	"Hiss.... Hiss.... Hiss.... Hiss.....",
-	"Where are you... where... are you...",
-	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",
-	"I hear their voices... I hear them... Then want... they want... red and black",
-	"I want... all your blood. All of it.... and water the graves of my family with it."
-}
-new m_spriteTexture
-new const love_color[4]={250, 92, 163,50}
-new const red_color[4]={255, 0, 0, 50}
-new const heal_color[4]={250,250,210, 100}
-new Float:base_dmg_mult,
-Float:dmg_pct_per_inc,
-Float:base_heal,
-Float:heal_pct_per_inc,
-Float:base_heal_radius,
-Float:heal_radius_inc_per_inc,
-Float:base_extra_speed,
-Float:speed_inc_per_inc
-
-new Float:angry_heal,
-Float:angry_speed,
-Float:angry_dmg_mult,
-Float:angry_gravity,
-Float:angry_degen,
-Float:angry_hitheal_pct,
-Float:heal_base,
-Float:explode_radius,
-Float:explode_maxdamage,
-Float:curse_pct;
-new hud_sync
-new Float:psychosis_time
-new psychosis_cooldown
-new gHeroLevel
-new heal_mode
-new min_players
-new teamglow_on
-new zoom
-new psychosis_add_ap
-new Float:psychosis_dmg_cushion
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -144,6 +40,8 @@ public plugin_init()
 	register_cvar("yandere_psychosis_add_ap", "5")
 	register_cvar("yandere_psychosis_dmg_cushion", "5")
 	register_cvar("yandere_psychosis_cooldown", "30")
+	register_cvar("yandere_psychosis_cooldown", "30")
+	register_cvar("yandere_psychosis_degen_mult", "30")
 	register_cvar("yandere_min_players", "6")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Heal alive teamates and avenge dead ones!", true, "yandere_level" )
@@ -162,8 +60,57 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	MsgSetFOV = get_user_msgid("SetFOV")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage")
+	register_forward(FM_CmdStart, "CmdStart");
 }
 
+public client_PostThink(id) {
+	
+	if( client_isnt_hitter(id)) { 
+		return
+	}
+	if(g_yandere_leaped[id]){
+		new flags = pev(id, pev_flags)
+		if((flags  & FL_INGROUND2)){
+			g_yandere_leaped[id]=false
+		}
+	}
+}
+//----------------------------------------------------------------------------------------------
+public CmdStart(id, uc_handle)
+{
+	if ( !is_user_alive(id)||!gHasYandere[id]||!gIsPsychosis[id]||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	
+	
+	new flags = pev(id, pev_flags)
+	new button = get_uc(uc_handle, UC_Buttons);
+	
+	if(!g_yandere_leaped[id]){
+		if(button & IN_JUMP)
+		{
+			button &= ~IN_JUMP;
+			new Float:velocity[3]
+			pev(id,pev_velocity,velocity)
+			velocity[2]+=600.0
+			set_pev(id,pev_velocity,velocity)
+			g_yandere_leaped[id]=true
+			
+			
+		}
+	}
+	return FMRES_IGNORED;
+}
+
+
+client_isnt_hitter(gatling_user){
+
+
+if(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS){
+
+	return true
+}
+return !gHasYandere[gatling_user]
+
+}
 public Player_TakeDamage(id)
 {
 	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(gIsPsychosis[id])) return
@@ -227,7 +174,8 @@ if(gHasYandere[attacker]&&!(cs_get_user_team(id)==att_team)&&gSuperAngry[attacke
 }
 if(gHasYandere[id]&&!(cs_get_user_team(id)==att_team)&&gSuperAngry[id]&&gIsPsychosis[id]){
 	
-	sh_add_hp(id,floatround(damage-(damage*psychosis_dmg_cushion)),sh_get_max_hp(id))
+	damage=1.0+damage- (damage*psychosis_dmg_cushion)
+	SetHamParamFloat(4, damage);
 }
 return HAM_IGNORED
 	
@@ -247,16 +195,17 @@ public yandere_init()
 		
 		gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
+		g_yandere_leaped[id]=true
 		yandere_model(id)
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
 		set_task( 0.1, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( 3.0, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 		if(heal_mode){
 			if(heal_mode==RADIAL_HEALING){	
-				set_task( 1.0, "heal_players_in_radius", id+YANDERE_HEAL_TASKID, "", 0, "b")
+				set_task( YANDERE_HEAL_PERIOD, "heal_players_in_radius", id+YANDERE_HEAL_TASKID, "", 0, "b")
 			}
 			else if(heal_mode==GAZE_HEALING){	
-				set_task( 1.0, "heal_player_in_sight", id+YANDERE_HEAL_TASKID, "", 0, "b")
+				set_task( YANDERE_HEAL_PERIOD, "heal_player_in_sight", id+YANDERE_HEAL_TASKID, "", 0, "b")
 			}
 		}
 	}
@@ -413,7 +362,8 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gS
 		new client_name[128]
 		get_user_name(id,client_name,127)
 		sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
-		sh_extra_damage(id,id,floatround(angry_degen,floatround_ceil),"Yandere longing")
+		new Float:degen_dmg_mult= gIsPsychosis[id]?psychosis_degen_mult*2.0:1.0 //'2.0' cuz of psychosis armor
+		sh_extra_damage(id,id,floatround(degen_dmg_mult*angry_degen,floatround_ceil),"Yandere longing")
 		sh_screen_fade(id, 0.5, 2.5, red_color[0], red_color[1], red_color[2], 50)
 		emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
 		if(random_num(0,1)){
@@ -497,6 +447,21 @@ message_end()
 
 }
 
+bool:heal_teamate(id,i){
+	new Float:mate_health=float(get_user_health(i))
+	if(mate_health>=sh_get_max_hp(i)){
+		return false
+	
+	}
+	new Float: new_health=floatadd(mate_health,YANDERE_HEAL_PERIOD*floatmul(gNormalHeal[id],heal_base))
+	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
+	setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
+	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	heal_stream(id,i)
+	return true
+
+}
 public heal_players_in_radius(id){
 
 id-=YANDERE_HEAL_TASKID
@@ -505,6 +470,7 @@ if(!sh_is_active()||!is_user_alive(id)) return
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
 new CsTeams:user_team= cs_get_user_team(id)
+new bool:healed=false
 for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 	
 	if((i==id)||!is_user_connected(i)){
@@ -517,22 +483,21 @@ for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 			get_user_origin(i,teamate_origin)
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<gNormalHealRadius[id]){
-				new Float:mate_health=float(get_user_health(i))
-				new Float: new_health=floatadd(mate_health,floatmul(gNormalHeal[id],heal_base))
-				set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
-				setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-				setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)
-				sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)	
-				sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
-				set_task(1.0,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)
-				set_task(1.0,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)		
-				heal_stream(id,i)
-				heal_aura(id)
+				healed=heal_teamate(id,i)
+				
 			}
 		}
 	}
 	
 	
+}
+if(healed){
+
+	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
+	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	heal_aura(id)
+
 }
 
 
@@ -572,24 +537,13 @@ if(!gSuperAngry[id]){
 			get_user_origin(i,teamate_origin)
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<gNormalHealRadius[id]){
-				new Float:mate_health=float(get_user_health(i))
-				new Float: new_health=floatadd(mate_health,floatmul(gNormalHeal[id],heal_base))
-				set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
-				setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-				setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)
-				sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)	
-				sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
-				set_task(1.0,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)
-				set_task(1.0,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)		
-				heal_stream(id,i)
-				heal_aura(id)
+				heal_teamate(id,i)
 			}
 		}
 	}
 	
 	
 }
-
 
 }
 public notify_yanderes_about_team_life(id,alive){
@@ -765,7 +719,8 @@ curse_pct=get_cvar_float("yandere_angry_curse_pct")
 teamglow_on=get_cvar_num("yandere_teamglow_on")
 zoom=get_cvar_num("yandere_psychosis_zoom")
 psychosis_add_ap=get_cvar_num("yandere_psychosis_add_ap")
-psychosis_dmg_cushion=get_cvar_float("~yandere_psychosis_dmg_cushion")
+psychosis_dmg_cushion=get_cvar_float("yandere_psychosis_dmg_cushion")
+psychosis_degen_mult=get_cvar_float("yandere_psychosis_degen_mult");
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)

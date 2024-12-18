@@ -400,7 +400,6 @@ public laser_on_player_think(ent){
 	
 	if ( !equal(classname, CAMERA_CLASSNAME) ) return
 	new owner=pev(ent,pev_iuser2)
-	if(client_isnt_hitter(owner)||!looking_with_camera[owner]) return
 	
 	static Float:vTrace[3], iHit, tr
 	static Float:vOrigin[3],Float:vEnd[3]
@@ -423,7 +422,7 @@ public laser_on_player_think(ent){
 		}
 		else{
 			sh_chat_message(owner,camman_get_hero_id(),"Inimigo detetado!");
-			sh_effect_user_direct(iHit,owner,camman_get_hero_id(),GLOW)
+			sh_effect_user_direct(iHit,owner,GLOW,camman_get_hero_id())
 		}
 	}
 	return
@@ -842,7 +841,7 @@ public plugin_precache()
 public death()
 {	
 	new id=read_data(2)
-	if(camman_get_has_camman(id)&&!client_isnt_hitter(id)){
+	if(camman_get_has_camman(id)&&is_user_connected(id)){
 		
 		
 		looking_with_camera[id]=0;

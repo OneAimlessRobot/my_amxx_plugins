@@ -20,7 +20,13 @@
 #define PILL_REM_TASKID 20399
 #define PILL_REM_TIME 0.01
 
+#define PILL_MASS 100.0
 
+
+#define GAT_WINDUP_TASKID 728229
+#define UNGAT_WINDUP_TASKID 274490
+#define GAT_WINDUP_PERIOD 0.1
+#define GAT_WINDUP_TIMES floatround(floatdiv(windup_time,GAT_WINDUP_PERIOD))
 
 native gatling_set_pillgatling(id,value_to_set)
 native gatling_get_pillgatling(id)

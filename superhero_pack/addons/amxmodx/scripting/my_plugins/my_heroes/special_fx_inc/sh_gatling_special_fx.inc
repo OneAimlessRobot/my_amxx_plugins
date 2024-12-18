@@ -113,11 +113,13 @@ new const cocaine_color[4]={250, 10, 30, 255}
 new const blind_color[4]={255, 255, 255, 255}
 new const focus_color[4]={10, 10, 10, 255}
 new const bath_color[4]={179, 66, 5, 255}
+new const no_color[4]={0,0,0,0}
 
 native sh_effect_user(id,attacker,gHeroID)
 native sh_gen_effect()
-native sh_effect_user_direct(id,attacker,gHeroID,fx_num)
+native sh_effect_user_direct(id,attacker,fx_num,gHeroID)
 native sh_uneffect_user(id,fx_num,gHeroID)
+native sh_get_fx_color_name(fx_num,fx_arr[4],name[128])
 
 
 
