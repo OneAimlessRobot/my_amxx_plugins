@@ -1,5 +1,5 @@
 starwars
-de_huntic
+starwars
 starwars
 starwars
 starwars

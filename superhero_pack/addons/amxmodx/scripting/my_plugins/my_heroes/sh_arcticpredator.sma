@@ -37,6 +37,7 @@ new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
 new g_spriteBlood, g_spriteBldSpray
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -55,7 +56,7 @@ public plugin_init()
 	register_cvar("arcticPredator_cooldown", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
+	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -64,6 +65,7 @@ public plugin_init()
 	
 	register_touch("pred_disc", "player", "touch_event")
 	
+	register_event("DeathMsg","death","a")
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
 	
@@ -384,8 +386,11 @@ public RunRedNVG(id)
 	//Darkens it a little
 	setScreenFlash(id, 180, 10, 0, 12, 50)
 }
-public sh_client_death(victim, attacker, headshot, const wpnDescription[]){
-	new id = victim
+public death()
+{
+	new id = read_data(2)
+	new attacker=read_data(1)
+	
 	g_huntTimer[id] = 0
 	gPlayerUltimateUsed[id]=false
 	pred_unMorph(id)
@@ -655,7 +660,7 @@ get_user_origin(id,origin)
 explode(origin) // blowup even if dead
 
 for(new a = 1; a <= SH_MAXSLOTS; a++) {
-	if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn) ) {
+	if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn) &&(id!=a)) {
 		
 		get_user_origin(a,origin1)
 		
@@ -664,8 +669,9 @@ for(new a = 1; a <= SH_MAXSLOTS; a++) {
 			
 			dRatio = float(distanceBetween) / float(damradius)
 			damage = maxdamage - floatround( maxdamage * dRatio)
+			sh_chat_message(a,gHeroID,"Damage: %0.2f",damage)
 			if(damage>=1){
-				shExtraDamage(a, id, damage, "Self Destruction")
+				sh_extra_damage(a, id, damage, "Self Destruction")
 			}
 		} // distance
 	} // alive

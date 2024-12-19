@@ -1,8 +1,9 @@
 
 
 #include "../my_include/superheromod.inc"
-#include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
+#include "chaff_grenade_inc/sh_slitter_funcs.inc"
+#include "chaff_grenade_inc/sh_teliko_get_set.inc"
 
 
 #define TELIKO_TASKID 12812
@@ -149,6 +150,7 @@ public teliko_init()
 		remove_task(id+TELIKO_TASKID)
 		sh_drop_weapon(id, CSW_P228, true)
 		sh_drop_weapon(id, CSW_FAMAS, true)
+		slitter_set_slitter(id,0)
 	}
 	
 }
@@ -203,7 +205,8 @@ public status_hud(id){
 		strcat(weapon_name,"NONE",128)
 	
 	}
-	format(hud_msg,500,"[SH] %s:^nNumber of chaffs: %d^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,teliko_get_num_chaffs(id),weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
+	format(hud_msg,500,"[SH] %s:^nSlit kills left: %d^nNumber of chaffs: %d^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,
+			slitter_get_slit_kills(id),teliko_get_num_chaffs(id),weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(g_teliko_enemies[id][i]){
 			
@@ -238,6 +241,7 @@ if ( sh_is_active() && is_user_alive(id) && gHasTeliko[id] ) {
 		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So you get a FAMAS!",level_diff);
 		sh_give_weapon(id, CSW_FAMAS)
 	}
+	slitter_set_slitter(id,1)
 }
 }
 //----------------------------------------------------------------------------------------------

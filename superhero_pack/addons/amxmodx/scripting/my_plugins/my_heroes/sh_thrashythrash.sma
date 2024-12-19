@@ -677,7 +677,7 @@ public thrashy_pickable_check(id)
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);
 		
-		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN!!!!!")
+		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!! Num picked: %d^n",times_picked)
 	}
 }public thrashy_haveable_check(id)
 {
@@ -688,9 +688,6 @@ public thrashy_pickable_check(id)
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);
 		
-		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN!!!!!")
+		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN!!!!!11111")
 	}
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/
