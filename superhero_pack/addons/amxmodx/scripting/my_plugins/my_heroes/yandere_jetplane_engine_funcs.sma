@@ -99,8 +99,7 @@ public OnCmdStart(id)
 	
 	static button; button = entity_get_int(id, EV_INT_button);
 	if((get_user_fuel_ammount(id)> 0.0) && (button & IN_DUCK) && (button & IN_JUMP))
-	{
-		set_pev(jet_get_user_jet(id), pev_movetype, MOVETYPE_FLY) 
+	{ 
 		static Float:Velocity[3]
 		velocity_by_aim(id, floatround(jetplane_speed), Velocity)
 		
@@ -139,7 +138,6 @@ public OnCmdStart(id)
 			set_user_fuel_ammount(id,get_user_fuel_ammount(id)+fuel_spend)
 		}
 		
-		set_pev(jet_get_user_jet(id), pev_movetype, MOVETYPE_TOSS) 
 	}
 	
 }

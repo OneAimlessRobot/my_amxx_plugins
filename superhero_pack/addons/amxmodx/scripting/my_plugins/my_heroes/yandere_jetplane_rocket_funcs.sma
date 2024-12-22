@@ -140,7 +140,6 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	}
 	law[id]=law_id
 	set_pev(law_id,pev_owner,id)
-	set_pev(law_id, pev_movetype, MOVETYPE_NOCLIP) 
 	set_pev(law_id, pev_takedamage, DAMAGE_YES)
 	set_pev(law_id, pev_solid, SOLID_BBOX)
 	set_pev(law_id , pev_classname, JETPLANE_LAW_CLASSNAME)

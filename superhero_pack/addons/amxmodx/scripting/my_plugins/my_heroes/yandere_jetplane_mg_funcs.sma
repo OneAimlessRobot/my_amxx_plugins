@@ -128,7 +128,6 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	}
 	set_pev(jetplane_id, pev_iuser3,mg_id)
 	set_pev(mg_id,pev_owner,id)
-	set_pev(mg_id, pev_movetype, MOVETYPE_NOCLIP) 
 	set_pev(mg_id, pev_takedamage, DAMAGE_YES)
 	set_pev(mg_id, pev_solid, SOLID_BBOX)
 	set_pev(mg_id , pev_classname, JETPLANE_MG_CLASSNAME)

@@ -241,14 +241,16 @@ public jet_deploy_task(parm[],id){
 	set_pev(shield_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=camman_camera_minalpha*/
 	set_pev(jetplane_id, pev_takedamage, DAMAGE_YES)
+	set_pev(jetplane_id, pev_movetype, MOVETYPE_BOUNCE) 
 	set_pev(jetplane_id, pev_solid, SOLID_BBOX)
-	if(get_user_gravity(attacker)>=0.0001){
+	if(get_user_gravity(attacker)>0.0001){
 		set_user_gravity(attacker,0.0001)
+	
 	}
 	new alpha=190
 	set_pev(jetplane_id,pev_renderamt,float(alpha))
-	set_pev(attacker, pev_solid, SOLID_NOT) 
 	set_pev(attacker, pev_takedamage, DAMAGE_NO)
+	set_pev(attacker, pev_solid, SOLID_NOT)
 	reset_jet_fuel(jetplane_id)
 	reset_jet_bombs(jetplane_id)
 	reset_jet_shells(jetplane_id)
@@ -326,6 +328,7 @@ public jet_think(ent)
 		
 		sh_set_rendering(owner,0,0,0,1,kRenderFxGlowShell,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
+		set_pev(owner,pev_velocity,NULL_VECTOR)
 		if(camera[owner]){
 		
 			
@@ -546,9 +549,8 @@ public _jet_destroy(iPlugin,iParams){
 	g_jetplane_deployed[id]=false;
 	if(is_valid_ent(g_jetplane[id])){
 		if(client_hittable(id)){
-			sh_reset_min_gravity(id)
-			set_pev(id, pev_solid, SOLID_SLIDEBOX) 
 			set_pev(id, pev_takedamage, DAMAGE_YES)
+			set_pev(id, pev_solid, SOLID_SLIDEBOX)
 			sh_set_rendering(id);
 			new Float:origin[3],Float:plane_orig[3]
 			pev(id,pev_origin,origin)
