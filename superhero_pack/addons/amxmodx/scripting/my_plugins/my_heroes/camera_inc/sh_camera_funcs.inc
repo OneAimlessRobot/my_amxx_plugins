@@ -63,11 +63,6 @@
 #define PURPLE		6
 #define ORANGE		7
 
-#define ZOOM_INC 2.0
-
-#define MAX_ZOOM 160.0
-
-#define MIN_ZOOM 45.0
 //Color definitions
 new const LineColors[COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
@@ -80,6 +75,11 @@ new const LineColors[COLORS_NUM][3] = {
 	{255, 128, 0}		//Orange
 }
 
+#define ZOOM_INC 2.0
+
+#define MAX_ZOOM 160.0
+
+#define MIN_ZOOM 45.0
 new const camera_color[4]={255,255,255,255};
 native clear_cameras()
 native camera_get_camera_disarmer_on(id)

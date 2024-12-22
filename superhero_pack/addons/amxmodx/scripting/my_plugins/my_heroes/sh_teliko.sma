@@ -387,12 +387,12 @@ public Inc_counters(id){
 }
 public Teliko_damage(id)
 {
-if ( !shModActive() || !is_user_alive(id) ) return
+if ( !shModActive() || !is_user_alive(id)) return
 
 new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 new headshot = bodypart == 1 ? 1 : 0
-if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return
+if (!is_user_connected(attacker)||!is_user_alive(attacker)||attacker==id ) return
 new attacker_name[128];
 new client_name[128];
 new weapon_name[128];

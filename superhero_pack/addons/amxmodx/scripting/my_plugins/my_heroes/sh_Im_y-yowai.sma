@@ -149,7 +149,7 @@ new attacker_name[128]
 get_user_name(id,client_name,127);
 get_user_name(attacker,attacker_name,127);
 new CsTeams:att_team=CS_TEAM_UNASSIGNED;
-if(attacker>0 && attacker <=SH_MAXSLOTS){
+if(is_user_connected(attacker)&&is_user_alive(attacker)){
 	att_team=cs_get_user_team(attacker)
 }
 if(gHasYowai[id]&&g_yowai_mode[id]){

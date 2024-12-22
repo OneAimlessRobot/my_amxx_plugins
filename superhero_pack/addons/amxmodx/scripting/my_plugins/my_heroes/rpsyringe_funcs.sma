@@ -341,6 +341,19 @@ emit_sound(missile, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_N
 RemoveEntity(missile)
 return PLUGIN_CONTINUE
 }
+
+public _clear_missiles(){
+
+
+for (new i=1; i <=SH_MAXSLOTS; i++) {
+if(has_rocket[i] > 0){
+	if(pev_valid(has_rocket[i])){
+		remove_missile(has_rocket[i])
+	}
+}
+
+}
+}
 public plugin_precache()
 {
 m_trail = precache_model("sprites/smoke.spr")
@@ -356,16 +369,6 @@ precache_model(GATLING_P_MODEL)
 precache_model(GATLING_V_MODEL)
 
 }
-
-public _clear_missiles(){
-
-
-for (new i=1; i <=SH_MAXSLOTS; i++) {
-if(has_rocket[i] > 0){
-	if(pev_valid(has_rocket[i])){
-		remove_missile(has_rocket[i])
-	}
-}
-
-}
-}
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

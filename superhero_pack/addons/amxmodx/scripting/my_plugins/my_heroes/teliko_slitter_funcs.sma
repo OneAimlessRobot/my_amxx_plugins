@@ -41,7 +41,6 @@ public plugin_init(){
 	register_cvar("slitter_drag_time", "3")
 	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage")
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_Think, "slitter_think");
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -94,11 +93,14 @@ public plugin_natives(){
 	
 }
 stop_dragging(id){
-
-		set_user_footsteps(id,0)
-		if(client_hittable( g_dragging_who[id][0])&&(g_dragging_who[id][0]>0)){
-			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
-			sh_set_stun(g_dragging_who[id][0],0.0,1.0)
+	
+		remove_task(id+SLITTER_TASKID)
+		if((g_dragging_who[id][0]>=0)){
+			if(client_hittable( g_dragging_who[id][0])){
+				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
+			}
+			sh_reset_max_speed(id)
+			
 		}
 		g_dragging_who[id][1]=0
 		g_dragging_who[id][0]=-1
@@ -108,9 +110,10 @@ stop_dragging(id){
 //----------------------------------------------------------------------------------------------
 public slitter_think(id)
 {
+	id-=SLITTER_TASKID
 	if (client_isnt_hitter(id)){
 	
-	
+		remove_task(id+SLITTER_TASKID)
 		return FMRES_IGNORED
 	
 	}
@@ -118,6 +121,7 @@ public slitter_think(id)
 		
 	
 	
+		remove_task(id+SLITTER_TASKID)
 		return FMRES_IGNORED
 	}
 	if(!(g_dragging_who[id][1])){
@@ -132,28 +136,32 @@ public slitter_think(id)
 	if(wpnid!=CSW_KNIFE){
 		shSwitchWeaponID(id,CSW_KNIFE)
 	}
-	new  Float:gametime
-	static Float:Pos[3],aimvec[3],Float:vAngle[3],Float:vAngles[3],Float:eOrigin[3],Float:vOrigin[3]
-	pev(g_dragging_who[id][0],pev_origin,eOrigin)
+	static Float:aimvec[3],Float:vAngle[3],Float:vAngles[3],Float:eOrigin[3],Float:vOrigin[3]
 	pev(id,pev_origin,vOrigin)
-	//new Float:distance=vector_distance(eOrigin,vOrigin)
-	pev(id, pev_origin, Pos)
-	gametime = get_gametime()
+	pev(g_dragging_who[id][0],pev_origin,eOrigin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	entity_get_vector(id, EV_VEC_angles, vAngles)
-	new viewOrigin[3],  newVec[3], direction[3], Float:fl_Velocity[3], length
+	new Float:direction[3],Float:fl_Velocity[3], Float:length
+	VelocityByAim(id,9999,aimvec)
+	
+	static Float:vTrace[3], tr
+	static Float:vEnd[3],Float:newVec[3]
+	for(new i=0;i<3;i++){
+		vEnd[i]=vOrigin[i]+aimvec[i]
+	}
+	tr = 0
+	engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, id, tr)
+	get_tr2(tr, TR_vecEndPos, vTrace)
+	
+	direction[0] = vTrace[0]-vOrigin[0]
+	direction[1] = vTrace[1]-vOrigin[1]
+	direction[2] = vTrace[2]-vOrigin[2]
 
-	get_user_origin(id, viewOrigin, 1)
-	get_user_origin(id, aimvec, 3)
-	direction[0] = aimvec[0]-viewOrigin[0]
-	direction[1] = aimvec[1]-viewOrigin[1]
-	direction[2] = aimvec[2]-viewOrigin[2]
+	length = vector_distance(aimvec, vOrigin)
+	if (length==0.0) length = 1.0        // avoid division by 0
 
-	length = get_distance(aimvec, viewOrigin)
-	if (!length) length = 1            // avoid division by 0
-
-	newVec[0] = viewOrigin[0]+direction[0]*floatround(slitter_distance)/length
-	newVec[1] = viewOrigin[1]+direction[1]*floatround(slitter_distance)/length
+	newVec[0] = vOrigin[0]+direction[0]*slitter_distance/length
+	newVec[1] = vOrigin[1]+direction[1]*slitter_distance/length
 
 	fl_Velocity[0] = (newVec[0]-eOrigin[0])*DRAG_FORCE
 	fl_Velocity[1] = (newVec[1]-eOrigin[1])*DRAG_FORCE
@@ -162,20 +170,21 @@ public slitter_think(id)
 	entity_set_vector(g_dragging_who[id][0], EV_VEC_velocity, fl_Velocity)
 	
 	orient_user(g_dragging_who[id][0],vAngles,vAngle)
-	sh_set_stun(g_dragging_who[id][0],(SLITTER_DRAG_THINK_PERIOD),0.0)
+	sh_set_stun(g_dragging_who[id][0],2.0,0.1)
 	set_user_maxspeed(id,slitter_drag_speed)
 	
 	set_pev(g_dragging_who[id][0],pev_renderamt,255.0)
 	g_dragging_who[id][1]--;
-	set_pev(id, pev_nextthink, gametime + (SLITTER_DRAG_THINK_PERIOD))
 	return FMRES_IGNORED
 }
 
 public orient_user(id,Float:angles[3],Float:v_angle[3])
 {
 	
+	entity_set_int( id, EV_INT_fixangle, 0 );
 	entity_set_vector(id, EV_VEC_v_angle,v_angle)
 	entity_set_vector(id, EV_VEC_angles,angles)
+	entity_set_int( id, EV_INT_fixangle, 1 );
 	
 	return PLUGIN_CONTINUE
 }
@@ -195,10 +204,10 @@ public CmdStart(attacker, uc_handle)
 			set_pev(attacker, pev_flTimeStepSound, 999)
 		
 		}
-		if((button & IN_USE))
+		if((button & IN_RELOAD))
 		{
 			if((g_dragging_who[attacker][0]<0)){
-				button &= ~IN_USE;
+				button &= ~IN_RELOAD;
 				set_uc(uc_handle, UC_Buttons, button);
 				
 				new Float: vec2LOS[2];
@@ -237,7 +246,9 @@ public CmdStart(attacker, uc_handle)
 						
 						g_dragging_who[attacker][0]=id
 						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
-						set_pev(attacker, pev_nextthink, get_gametime() + (SLITTER_DRAG_THINK_PERIOD))
+						new Float:velocity[3]={1.0,1.0,1.0}
+						entity_set_vector(id, EV_VEC_velocity, velocity)
+						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"b")
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						sh_chat_message(attacker,teliko_get_hero_id(),"Snuck up on %s!",vic_name);
@@ -272,9 +283,10 @@ if(teliko_get_has_teliko(attacker)&&!(cs_get_user_team(id)==att_team)){
 	if(weapon==CSW_KNIFE){
 		new button = pev(attacker, pev_button);
 		new bool:slashing;
-		if(button & IN_ATTACK){
+		if((button & IN_ATTACK)&&(button & IN_DUCK)){
 			
 			button &= ~IN_ATTACK;
+			button &= ~IN_DUCK;
 			slashing=true;
 		}
 		new Float: vec2LOS[2];

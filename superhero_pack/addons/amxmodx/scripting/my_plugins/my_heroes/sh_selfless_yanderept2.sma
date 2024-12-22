@@ -4,6 +4,11 @@
 #include <xs>
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
+#include "jetplane_inc/sh_yandere_get_set.inc"
+#include "jetplane_inc/sh_jetplane_funcs.inc"
+#include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
+#include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
+#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 
 
 //----------------------------------------------------------------------------------------------
@@ -57,11 +62,45 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yandere_init")
 	register_srvcmd("yandere_kd", "yandere_kd")
 	shRegKeyDown(gHeroName, "yandere_kd")
+	register_srvcmd("yandere_ku", "yandere_ku")
+	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	MsgSetFOV = get_user_msgid("SetFOV")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage")
 	register_forward(FM_CmdStart, "CmdStart");
 }
+public plugin_natives(){
+
+
+	
+	register_native("yandere_get_has_yandere","_yandere_get_has_yandere",0);
+	register_native("yandere_get_is_super","_yandere_get_is_super",0);
+	register_native("yandere_get_hero_id","_yandere_get_hero_id",0);
+
+
+
+}
+public _yandere_get_is_super(iPlugin,iParams){
+	new id= get_param(1)
+	
+	return gSuperAngry[id]
+
+
+}
+public _yandere_get_has_yandere(iPlugin,iParams){
+	new id= get_param(1)
+	
+	return gHasYandere[id]
+
+
+}
+
+public _yandere_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
+
+}
+
 
 public client_PostThink(id) {
 	
@@ -81,7 +120,6 @@ public CmdStart(id, uc_handle)
 	if ( !is_user_alive(id)||!gHasYandere[id]||!gIsPsychosis[id]||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	
-	new flags = pev(id, pev_flags)
 	new button = get_uc(uc_handle, UC_Buttons);
 	
 	if(!g_yandere_leaped[id]){
@@ -623,6 +661,7 @@ set_user_gravity(id,gNormalGravity[id])
 gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
 if(gSuperAngry[id]&&is_user_alive(id)&&is_user_connected(id)){
 	
+	jet_destroy(id)
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	BlowUp(id)
@@ -847,27 +886,78 @@ public yandere_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id)||!gHasYandere[id]||!gSuperAngry[id]) return PLUGIN_HANDLED
-	
-	if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
-		sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
-		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!gHasYandere[id]) return PLUGIN_HANDLED
+	if(gSuperAngry[id]){
+		if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
+			sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
+			playSoundDenySelect(id)
+			return PLUGIN_HANDLED
+		}
+		gPsychosisTime[id]=floatround(psychosis_time)
+		ultimateTimer(id, psychosis_cooldown * 1.0)
+		emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, 0, PITCH_NORM)
+		new client_name[128]
+		get_user_name(id,client_name,127)
+		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
+		psychosis_user(id)
 	}
-	gPsychosisTime[id]=floatround(psychosis_time)
-	ultimateTimer(id, psychosis_cooldown * 1.0)
-	emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, 0, PITCH_NORM)
-	new client_name[128]
-	get_user_name(id,client_name,127)
-	sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
-	psychosis_user(id)
+	else{
+	
+	
+		if(jet_deployed(id)){
+			
+			sh_sound_deny(id)
+			sh_chat_message(id, yandere_get_hero_id(), "Jet already on!")
+			return PLUGIN_HANDLED
+			
+		}
+		jet_charge_user(id)
+	
+	
+	}
 	
 	return PLUGIN_HANDLED
 }
+//----------------------------------------------------------------------------------------------
+public yandere_ku()
+{
+	new temp[6]
+	
+	read_argv(1,temp,5)
+	new id=str_to_num(temp)
+	
+	if ( !is_user_alive(id) ||!yandere_get_has_yandere(id)) {
+		return PLUGIN_HANDLED
+	}
+	
+	if(!jet_deployed(id)){
+		sh_chat_message(id,yandere_get_hero_id(),"Jet not deployed. Action interrupted");
+		jet_uncharge_user(id)
+		return PLUGIN_HANDLED
+	}
+	
+	
+	return PLUGIN_HANDLED
+}
+client_hittable(vic_userid){
+	
+	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
+	
+}
 public sh_round_end(){
 	
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+
+		if(client_hittable(i)&& shModActive()){
+			if ( gHasYandere[i]) {
+					jet_destroy(i)
+			}
+		}
+	}
 	new total_alive=get_yandere_num(0,1,1)
-	
+	clear_bombs()
+	clear_shells()
+	clear_rockets()
 	if(total_alive){
 		return;
 		
@@ -879,11 +969,7 @@ public sh_round_end(){
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)
 		
 	}
-	
-	
-	
 }
-
 public fire_weapon(id)
 {
 	
@@ -938,6 +1024,7 @@ public death()
 	
 	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
 	if(gHasYandere[id]){
+		jet_destroy(id)
 		if(gSuperAngry[id]){
 			new origin[3]
 			get_user_origin(id,origin)
