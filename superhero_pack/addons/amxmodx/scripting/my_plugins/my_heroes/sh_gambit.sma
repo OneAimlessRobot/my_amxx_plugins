@@ -36,10 +36,12 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 // GLOBAL VARIABLES
 new gHeroName[]="Gambit"
 new bool:gHasGambitPower[SH_MAXSLOTS+1]
+new bool:gWillHit[SH_MAXSLOTS+1]
+new bool:gPauseEntity[MAX_ENTITIES]
+new bool:gGambitNade[SH_MAXSLOTS+1][MAX_ENTITIES]
 new gGrenTrail
 new gHeroID;
 new Float:gTotalChance
-new bool:gWillHit
 new const HEGRENADE_MODEL[] = "models/w_hegrenade.mdl"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -69,6 +71,7 @@ public plugin_init()
 
 	// FIND THROWN GRENADES
 	register_event("AmmoX", "on_AmmoX", "b")
+	arrayset(gWillHit,false,SH_MAXSLOTS+1)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -91,11 +94,11 @@ public grenade_throw(id, gid, wid)
 {
 	if(gHasGambitPower[id]){
 	if(wid == CSW_HEGRENADE){
-		gWillHit=(random_float(0.0,gTotalChance)<1.0)
+		gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
 		sh_chat_message(id,gHeroID,"GAMBLE IT ALL! You valliant survivor!")
-		if ( gWillHit )
+		if ( gWillHit[id])
 		{
-		
+		gGambitNade[id][gid]=true
 		sh_chat_message(id,gHeroID,"BINGO!!!!!! hope it reaches someone...")
 		}
 	}
@@ -115,7 +118,7 @@ public gambit_init()
 
 	gHasGambitPower[id] = (hasPowers!=0)
 
-	if ( hasPowers && is_user_alive(id) ) {
+	if (gHasGambitPower[id] && is_user_alive(id) ) {
 		gambit_weapons(id)
 	}
 }
@@ -137,26 +140,52 @@ public gambit_weapons(id)
 //----------------------------------------------------------------------------------------------
 public gambit_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !shModActive() || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker == 0 && weapon == 0 && is_user_connected(id) ) {
+		for ( new atkr = 1; atkr <= SH_MAXSLOTS; atkr++ ) {
+			if ( gHasGambitPower[atkr] && is_user_connected(atkr) && !gPlayerUltimateUsed[atkr] ) {
+				for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
+					if ( gGambitNade[atkr][i] ) {
+						if ( is_user_alive(id) ) {
+							// do extra damage
+							new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
+							if (extraDamage > 0&&gWillHit[attacker]) {
+								sh_extra_damage(id, attacker, extraDamage, "gambit super grenade", headshot)
+							}
+						}
 
-	if ( gHasGambitPower[attacker] && weapon == CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] ) {
-		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
-		if (extraDamage > 0&&gWillHit){
-			shExtraDamage(id, attacker, extraDamage, "gambit super grenade", headshot)
-		}
-		else{
-			shExtraDamage(id, attacker, damage, "grenade", headshot)
-		
-		}
+						new parm[2]
+						parm[0] = i
+						parm[1] = atkr
+						// Set the cooldown in x seconds because nades can hurt more then one person
+						set_task(0.2, "cooldown", 0, parm, 2)
 
+						return PLUGIN_CONTINUE
+					}
+				}
+			}
+		}
 	}
+	return PLUGIN_CONTINUE
+}
+//----------------------------------------------------------------------------------------------
+public cooldown(parm[])
+{
+	new grenade = parm[0]
+	new id = parm[1]
+
+	gGambitNade[id][grenade] = false
+
+	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
+
+	// Cooldown will only be set if user hurts someone with a Grenader nade
+	new Float:gambitCooldown = get_cvar_float("gambit_grenadetimer")
+	if (gambitCooldown > 0.0) ultimateTimer(id, gambitCooldown)
 }
 //----------------------------------------------------------------------------------------------
 public on_AmmoX(id)
@@ -171,14 +200,14 @@ public on_AmmoX(id)
 		if (iAmmoCount == 0) {
 			set_task(get_cvar_float("gambit_grenadetimer"), "gambit_weapons", id)
 
-			if ( !gPlayerUltimateUsed[id] && gWillHit) {
+			if ( !gPlayerUltimateUsed[id] && gWillHit[id]) {
 				// Have to Find the current HE grenade
 				new iCurrent = -1
 				while ( ( iCurrent = FindEntity(iCurrent, "grenade") ) > 0 ) {
-					new string[32]
-					Entvars_Get_String(iCurrent, EV_SZ_model, string, 31)
+					new string[128]
+					Entvars_Get_String(iCurrent, EV_SZ_model, string, 127)
 
-					if ( id == Entvars_Get_Edict(iCurrent, EV_ENT_owner) && equali(HEGRENADE_MODEL, string)) {
+					if ( id == Entvars_Get_Edict(iCurrent, EV_ENT_owner) && equal(HEGRENADE_MODEL, string)) {
 
 						new Float:glowColor[3] = {225.0, 0.0, 20.0}
 
@@ -210,6 +239,14 @@ public on_AmmoX(id)
 			// Got a new nade remove the timer
 			remove_task(id)
 		}
+	}
+}
+//----------------------------------------------------------------------------------------------
+public round_start()
+{
+	// Reset any paused entity ids just in case
+	for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
+		gPauseEntity[i] = false
 	}
 }
 //----------------------------------------------------------------------------------------------

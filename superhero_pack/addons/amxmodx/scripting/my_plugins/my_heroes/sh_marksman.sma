@@ -169,7 +169,7 @@ public Marksman_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( !is_user_connected(attacker) ||id==attacker) return
 
 	if ( gHasMarksman[attacker] && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
@@ -374,6 +374,3 @@ if ( read_data(3) == 0 ) {
 }
 #endif
 //----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

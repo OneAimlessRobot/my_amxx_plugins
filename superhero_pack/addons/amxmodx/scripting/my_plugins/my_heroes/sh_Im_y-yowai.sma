@@ -144,6 +144,7 @@ public Yowai_normal_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
 
+if ( (attacker <= 0 || attacker > SH_MAXSLOTS )||!is_user_connected(attacker)) return HAM_IGNORED
 new client_name[128];
 new attacker_name[128]
 get_user_name(id,client_name,127);

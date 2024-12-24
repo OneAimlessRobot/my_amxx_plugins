@@ -106,13 +106,13 @@ public SuperNoodle_weapons(id)
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( !is_user_connected(attacker)||id==attacker ) return HAM_IGNORED
 
 	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_XM1014 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_m3mult") - damage)
@@ -133,6 +133,7 @@ public SuperNoodle_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
 		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "dual pistols", headshot)
 	}
+	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)

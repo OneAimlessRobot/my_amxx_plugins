@@ -4,6 +4,7 @@
 #include <xs>
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 
@@ -184,6 +185,7 @@ public erica_init()
 		if ( is_user_alive(id) ) {
 			sh_drop_weapon(id, CSW_ELITE, true)
 		}
+		hook_set_hook(id,0)
 	}
 	
 	
@@ -213,12 +215,14 @@ erica_hud(id){
 					g_erica_points[id],
 					max_er_points
 					);*/
-	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nKills: %d^nPoints: %d^n",
+	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nKills: %d^nPoints: %d^nHook strikes left: %d^nHas hook: %d^n",
 					gHeroName,
 					g_normal_er_speed[id],
 					gNumDarts[id],
 					g_erica_kills[id],
-					g_erica_points[id]
+					g_erica_points[id],
+					hook_get_hook_kills(id),
+					hook_get_hook(id)
 					);
 	
 	set_hudmessage(redline_color[0], redline_color[1], redline_color[2], 0.5, 0.05, redline_color[3], 0.0, 0.5,0.0,0.0,1)
@@ -396,7 +400,7 @@ public erica_damage(id)
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id  ||!gHasErica[attacker]) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id  ||!gHasErica[attacker]||!is_user_connected(attacker)) return
 	
 	
 	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
@@ -442,6 +446,7 @@ public Erica_weapons(id)
 if ( sh_is_active() && is_user_alive(id) && gHasErica[id] ) {
 	
 	sh_give_weapon(id, CSW_ELITE)
+	hook_set_hook(id,1)
 	
 }
 }
@@ -519,6 +524,3 @@ public death()
 	}
 	
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

@@ -86,8 +86,6 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	precache_model(JETPLANE_MODEL)
 	precache_model(JETPLANE_CAMERA_MODEL)
-	precache_model(P_ROCKET_LAUNCHER_MODEL)
-	precache_model(ROCKET_MODEL)
 	gSpriteLaser = precache_model("sprites/laserbeam.spr")
 	
 	

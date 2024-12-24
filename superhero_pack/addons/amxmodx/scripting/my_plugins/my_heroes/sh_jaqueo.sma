@@ -135,6 +135,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
 	
 	if(weapon==CSW_SCOUT){
 		new Float:extraDamage = damage * scout_mult - damage
@@ -391,6 +392,3 @@ public weapon_change(id)
 	switch_model(id)
 		
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

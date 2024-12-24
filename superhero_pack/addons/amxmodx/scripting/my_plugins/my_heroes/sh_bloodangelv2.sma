@@ -241,8 +241,7 @@ public darkangel_damage(id)
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS )
-		return
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return
 	
 	if ( HasDarkAngel[attacker] && weapon == CSW_M4A1)
 	{

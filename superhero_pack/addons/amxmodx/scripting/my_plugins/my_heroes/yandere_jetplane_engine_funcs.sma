@@ -149,8 +149,6 @@ public plugin_precache()
 	
 	engfunc(EngFunc_PrecacheSound,JETPLANE_FLY_SOUND );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_BLOW_SOUND );
-	/*engfunc(EngFunc_PrecacheSound,JETPLANE_LAW_ROCKET_SOUND );
-	engfunc(EngFunc_PrecacheSound,JETPLANE_LAW_FIRE_SOUND );*/
 	
 }
 //---------------------------------------------------------------------------------------------- 

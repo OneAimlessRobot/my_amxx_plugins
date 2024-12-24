@@ -541,7 +541,7 @@ new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 new headshot = bodypart == 1 ? 1 : 0
 
-if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return PLUGIN_CONTINUE
+if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
 if ( gHasArcPredPowers[attacker] && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
 {

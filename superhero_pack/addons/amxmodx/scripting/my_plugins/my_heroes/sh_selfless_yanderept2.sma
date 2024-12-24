@@ -10,7 +10,7 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 
-
+//#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -151,15 +151,15 @@ return !gHasYandere[gatling_user]
 }
 public Player_TakeDamage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(gIsPsychosis[id])) return
+	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(gIsPsychosis[id])) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
-	
+	return HAM_IGNORED
 }
 public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||(id==attacker)||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
@@ -236,7 +236,7 @@ public yandere_init()
 		g_yandere_leaped[id]=true
 		yandere_model(id)
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
-		set_task( 0.1, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
+		set_task( 0.4, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( 3.0, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 		if(heal_mode){
 			if(heal_mode==RADIAL_HEALING){	
@@ -616,7 +616,10 @@ public yandere_loop(id){
 id-=YANDERE_STATS_TASKID;
 
 if(gHasYandere[id]){
-	
+
+	new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
+	new iMax = global_get(glb_maxEntities) // Get's the limit
+	sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
 	update_stats(id)
 	
 	
@@ -660,7 +663,6 @@ gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 set_user_gravity(id,gNormalGravity[id])
 gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
 if(gSuperAngry[id]&&is_user_alive(id)&&is_user_connected(id)){
-	
 	jet_destroy(id)
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
@@ -699,13 +701,13 @@ if(!gSuperAngry[id]){
 }
 update_stats(id){
 
-if(gHasYandere[id]){
+if(gHasYandere[id]&&client_hittable(id)){
 	if(gSuperAngry[id]){
 		
 		sh_give_weapon(id, CSW_XM1014,true)
 		new ammo,clip,weapon=get_user_weapon(id,ammo,clip)
 		if(weapon!=CSW_XM1014){
-			shGiveWeapon(id,"weapon_xm1014",true)
+			sh_give_weapon(id, CSW_XM1014,true)
 		}
 		yandere_update_idle(id)
 		update_angry_stats(id)
@@ -786,17 +788,17 @@ public newRound(id)
 }
 public yandere_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return
+	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return PLUGIN_CONTINUE
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 	
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	if(cs_get_user_team(id)==att_team){
 		
-		return;
+		return PLUGIN_CONTINUE
 		
 	}
 	if ( gHasYandere[attacker] && is_user_alive(id) ) {
@@ -805,10 +807,10 @@ public yandere_damage(id)
 			
 			new health = get_user_health(id)
 			if(weapon==CSW_XM1014){
-				shExtraDamage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", false)
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", false)
 			}
 			else  {
-				shExtraDamage(id, attacker, floatround(extraDamage), "yandere rage", false)
+				sh_extra_damage(id, attacker, floatround(extraDamage), "yandere rage", false)
 			}
 			if(gSuperAngry[attacker]){
 				new attacker_name[128],client_name[128]
@@ -847,6 +849,7 @@ public yandere_damage(id)
 	
 	
 	}
+	return PLUGIN_CONTINUE
 }
 public plugin_precache()
 {
@@ -1034,9 +1037,12 @@ public death()
 			}
 		}
 		gSuperAngry[id]=false;
-		yandere_unmorph(id+YANDERE_MORPH_TASKID)
-		unpsychosis_user(id)
-		
+		if(gIsPsychosis[id]){
+			unpsychosis_user(id)
+		}
+		else{
+			yandere_unmorph(id+YANDERE_MORPH_TASKID)
+		}
 		
 	}
 	notify_yanderes_about_team_life(id,0)
@@ -1137,8 +1143,8 @@ public BlowUp(id)
 				show_hudmessage(a, "%s LOST IT!!!!!", name)
 
 				dRatio = float(distanceBetween) / explode_radius
-				damage = floatround(explode_maxdamage)- floatround(floatround(explode_maxdamage)* dRatio)
-				shExtraDamage(a, id, damage, "yanderu explosion")
+				damage = floatround(explode_maxdamage)- floatround(explode_maxdamage* dRatio)
+				sh_extra_damage(a, id, damage, "yanderu explosion")
 			}
 		}
 	}
