@@ -9,11 +9,13 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-new g_Had_DB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33]
-new g_HamBot, g_MsgCurWeapon, g_MsgAmmoX, g_Event_DB, g_SmokePuff_Id
+new const WeaponModel[3][] =
+{
+	"models/shmod/supernoodle/dbarrel/v_dbarrel.mdl", // V
+	"models/shmod/supernoodle/dbarrel/p_dbarrel.mdl", // P
+	"models/shmod/supernoodle/dbarrel/w_dbarrel.mdl" // W
+}
 
-// Safety
-new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 new const WeaponSounds[6][] = 
 {
 	"weapons/dbarrel1.wav",
@@ -26,13 +28,58 @@ new const WeaponSounds[6][] =
 
 enum
 {
-	ANIM_IDLE = 0,
-	ANIM_SHOOT1,
-	ANIM_SHOOT2,
-	ANIM_RELOAD,
-	ANIM_DRAW
+	GATLING_ANIM_IDLE = 0,
+	GATLING_ANIM_SHOOT1,
+	GATLING_ANIM_SHOOT2,
+	GATLING_ANIM_RELOAD1,
+	GATLING_ANIM_RELOAD2,
+	GATLING_ANIM_RELOAD3,
+	GATLING_ANIM_DRAW
 }
 
+const PDATA_SAFE = 2
+const OFFSET_LINUX_WEAPONS = 4
+const OFFSET_LINUX_PLAYER = 5
+const OFFSET_WEAPONOWNER = 41
+const m_iClip = 51
+const m_fInReload = 54
+const m_flNextAttack = 83
+const m_szAnimExtention = 492
+
+new g_Volcano, g_OldWeapon[33]
+new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2], g_ham_bot
+
+// Safety
+new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
+
+
+
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR)
+	
+	
+	// Safety
+	Register_SafetyFunc()
+	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
+	
+	register_forward(FM_CmdStart, "fw_CmdStart")
+	register_forward(FM_SetModel, "fw_SetModel")
+	register_forward(FM_UpdateClientData, "fw_UpdateClientData_Post", 1)
+	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
+	
+	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World")
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")		
+	
+	RegisterHam(Ham_Item_Deploy, weapon_gatling, "fw_Item_Deploy_Post", 1)
+	RegisterHam(Ham_Weapon_Reload, weapon_gatling, "fw_Weapon_Reload_Post", 1)
+	RegisterHam(Ham_Item_PostFrame, weapon_gatling, "fw_Item_PostFrame")
+	RegisterHam(Ham_Item_AddToPlayer, weapon_gatling, "fw_Item_AddToPlayer_Post", 1)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack")
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack_Post", 1)
+	
+	register_clcmd("weapon_gatling", "hook_weapon")
+}
 public plugin_natives(){
 	
 	
@@ -42,78 +89,51 @@ public plugin_natives(){
 	
 	
 }
-
-public plugin_init()
-{
-	register_plugin(PLUGIN, VERSION, AUTHOR)
-	
-	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
-	
-	register_event("CurWeapon", "Safety_CurWeapon", "be", "1=1")
-	register_forward(FM_SetModel, "fw_SetModel")
-	register_forward(FM_CmdStart, "fw_CmdStart")
-	register_forward(FM_UpdateClientData, "fw_UpdateClientData_Post", 1)	
-	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
-	
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1)
-	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack")		
-	
-	RegisterHam(Ham_Item_Deploy, weapon_dbarrel, "fw_Item_Deploy_Post", 1)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_dbarrel, "fw_Item_AddToPlayer_Post", 1)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_dbarrel, "fw_Weapon_WeaponIdle_Post", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_dbarrel, "fw_Item_PostFrame")
-	RegisterHam(Ham_Weapon_Reload, weapon_dbarrel, "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_dbarrel, "fw_Weapon_PrimaryAttack")
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_dbarrel, "fw_Weapon_PrimaryAttack_Post", 1)
-	
-	// Cache
-	g_MsgCurWeapon = get_user_msgid("CurWeapon")
-	g_MsgAmmoX = get_user_msgid("AmmoX")
-}
 public _d_barrel_set_d_barrel(iPlugins,iParams){
 	new id=get_param(1);
-	Get_DBarrel(id)
+	get_gatling(id)
 }
 public _d_barrel_unset_d_barrel(iPlugins,iParams){
 	new id=get_param(1);
 
-	Remove_DBarrel(id)
+	remove_gatling(id)
 }
 public plugin_precache()
 {
-	precache_model(MODEL_V)
-	precache_model(MODEL_P)
+	new i
 	
-	for(new i = 0; i < sizeof(WeaponSounds); i++)
-		precache_sound(WeaponSounds[i])
+	for(i = 0; i < sizeof(WeaponModel); i++)
+		engfunc(EngFunc_PrecacheModel, WeaponModel[i])
+	for(i = 0; i < sizeof(WeaponSounds); i++)
+		engfunc(EngFunc_PrecacheSound, WeaponSounds[i])
+	/*
+	for(new i = 0; i < sizeof(WeaponResource); i++)
+	{
+		if(i == 0) engfunc(EngFunc_PrecacheGeneric, WeaponResource[i])
+		else engfunc(EngFunc_PrecacheModel, WeaponResource[i])
+	}*/
+	
+	g_smokepuff_id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")
+	m_iBlood[0] = engfunc(EngFunc_PrecacheModel, "sprites/blood.spr")
+	m_iBlood[1] = engfunc(EngFunc_PrecacheModel, "sprites/bloodspray.spr")		
 	
 	register_forward(FM_PrecacheEvent, "fw_PrecacheEvent_Post", 1)	
-	g_SmokePuff_Id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")	
 }
 
 public fw_PrecacheEvent_Post(type, const name[])
 {
-	if(equal(OLD_EVENT, name))
-		g_Event_DB = get_orig_retval()
+	if(equal(old_event, name))
+		g_gatling_event = get_orig_retval()
 }
 
 public client_putinserver(id)
 {
 	Safety_Connected(id)
-	
-	if(!g_HamBot && is_user_bot(id))
+	if(is_user_bot(id) && !g_ham_bot)
 	{
-		g_HamBot = 1
-		set_task(0.1, "Do_Register_HamBot", id)
+		g_ham_bot = 1
+		set_task(0.1, "Do_Register_Ham", id)
 	}
-}
-
-public Do_Register_HamBot(id) 
-{
-	Register_SafetyFuncBot(id)
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Post", 1)
 }
 
 public client_disconnected(id)
@@ -121,153 +141,204 @@ public client_disconnected(id)
 	Safety_Disconnected(id)
 }
 
-public Get_DBarrel(id)
+public Do_Register_Ham(id)
 {
-	Remove_DBarrel(id)
-	
-	UnSet_BitVar(g_SpecialShot, id)
-	Set_BitVar(g_Had_DB, id)
-	
-	give_item(id, weapon_dbarrel)
-	cs_set_user_bpammo(id, CSW_DBARREL, BPAMMO)
-	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_DBARREL)
-	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, CLIP)
-	
-	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
-	write_byte(1)
-	write_byte(CSW_DBARREL)
-	write_byte(CLIP)
-	message_end()
+	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")	
+	Register_SafetyFuncBot(id)
 }
 
-public Remove_DBarrel(id)
+public Mileage_WeaponGet(id, ItemID)
 {
-	UnSet_BitVar(g_Had_DB, id)
+	if(ItemID == g_Volcano) get_gatling(id)
 }
 
-public Hook_Weapon(id)
+public Mileage_WeaponRefillAmmo(id, ItemID)
 {
-	engclient_cmd(id, weapon_dbarrel)
+	if(ItemID == g_Volcano) 
+	{
+		cs_set_user_bpammo(id, CSW_GATLING, DEFAULT_BPAMMO)
+	}
+}
+
+public Mileage_WeaponRemove(id, ItemID)
+{
+	if(ItemID == g_Volcano) remove_gatling(id)
+}
+
+public get_gatling(id)
+{
+	Set_BitVar(g_Had_Volcano, id)
+	fm_give_item(id, weapon_gatling)
+	
+	// Set Clip
+	static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+	if(pev_valid(ent)) cs_set_weapon_ammo(ent, DEFAULT_CLIP)
+	
+	// Set BpAmmo
+	cs_set_user_bpammo(id, CSW_GATLING, DEFAULT_BPAMMO)
+	
+	// Update Ammo
+	update_ammo(id, CSW_GATLING, DEFAULT_CLIP, DEFAULT_BPAMMO)
+}
+
+public remove_gatling(id)
+{
+	UnSet_BitVar(g_Had_Volcano, id)
+}
+
+public hook_weapon(id)
+{
+	client_cmd(id, weapon_gatling)
 	return PLUGIN_HANDLED
 }
 
 public Event_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
-	
 	static CSWID; CSWID = read_data(2)
+	static SubModel; SubModel = SUBMODEL
 
-	if((CSWID == CSW_DBARREL && g_OldWeapon[id] == CSW_DBARREL) && Get_BitVar(g_Had_DB, id)) 
+	if((CSWID == CSW_GATLING && g_OldWeapon[id] != CSW_GATLING) && Get_BitVar(g_Had_Volcano, id))
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_DBARREL)
-		if(pev_valid(Ent)) 
+		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
+	} else if((CSWID == CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) {
+		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+		if(!pev_valid(Ent))
 		{
-			set_pdata_float(Ent, 46, get_pdata_float(Ent, 46, 4) * SPEED, 4)
-			set_pdata_float(Ent, 47, get_pdata_float(Ent, 46, 4) * SPEED, 4)
+			g_OldWeapon[id] = get_user_weapon(id)
+			return
 		}
+		/*
+		static Float:Delay, Float:Delay2
+		
+		Delay = get_pdata_float(Ent, 46, 4) * SPEED
+		Delay2 = get_pdata_float(Ent, 47, 4) * SPEED
+		
+		if(Delay > 0.0)
+		{*/
+		set_pdata_float(Ent, 46, SPEED, 4)
+		set_pdata_float(Ent, 47, SPEED, 4)
+		//}
+	} else if(CSWID != CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) {
+		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
 	}
 	
-	g_OldWeapon[id] = CSWID
+	g_OldWeapon[id] = get_user_weapon(id)
 }
 
-
-public fw_SetModel(entity, model[])
+public Draw_NewWeapon(id, CSW_ID)
 {
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
-	
-	static Classname[64]
-	pev(entity, pev_classname, Classname, sizeof(Classname))
-	
-	if(!equal(Classname, "weaponbox"))
-		return FMRES_IGNORED
-	
-	static id
-	id = pev(entity, pev_owner)
-	
-	if(equal(model, OLD_W_MODEL))
+	if(CSW_ID == CSW_GATLING)
 	{
-		static weapon
-		weapon = fm_get_user_weapon_entity(entity, CSW_DBARREL)
+		static ent
+		ent = fm_get_user_weapon_entity(id, CSW_GATLING)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED
-		
-		if(Get_BitVar(g_Had_DB, id))
+		if(pev_valid(ent) && Get_BitVar(g_Had_Volcano, id))
 		{
-			set_pev(weapon, pev_impulse, WEAPON_SECRETCODE)
-			
-			Remove_DBarrel(id)
-			
-			return FMRES_SUPERCEDE
+			set_pev(ent, pev_effects, pev(ent, pev_effects) &~ EF_NODRAW) 
+			engfunc(EngFunc_SetModel, ent, WeaponModel[1])	
+			set_pev(ent, pev_body, SUBMODEL)
 		}
+	} else {
+		static ent
+		ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+		
+		if(pev_valid(ent)) set_pev(ent, pev_effects, pev(ent, pev_effects) | EF_NODRAW) 			
 	}
-
-	return FMRES_IGNORED;
 }
 
 public fw_CmdStart(id, uc_handle, seed)
 {
 	if(!is_alive(id))
 		return
-	if(get_player_weapon(id) != CSW_DBARREL || !Get_BitVar(g_Had_DB, id))
-		return
-		
-	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
-	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_DBARREL)
-	if(!pev_valid(Ent)) return
-	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
-	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
-	
-	if(NewButton & IN_ATTACK2)
+	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
+		return 
+
+	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
+
+	if(CurButton & IN_RELOAD)
 	{
-		if(flNextAttack > 0.0) return
+		CurButton &= ~IN_RELOAD
+		set_uc(uc_handle, UC_Buttons, CurButton)
 		
-		for(new i = 0; i < Ammo; i++)
+		static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+		if(!pev_valid(ent)) return
+		
+		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, OFFSET_LINUX_WEAPONS)
+		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+		
+		if (flNextAttack > 0.0)
+			return
+			
+		if (fInReload)
 		{
-			Set_BitVar(g_SpecialShot, id)
-			ExecuteHamB(Ham_Weapon_PrimaryAttack, Ent)
-			UnSet_BitVar(g_SpecialShot, id)
+			set_weapon_anim(id, GATLING_ANIM_IDLE)
+			return
 		}
-	} 
-}
-
-public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
-{
-	if(!is_alive(id))
-		return FMRES_IGNORED	
-	if(get_player_weapon(id) == CSW_DBARREL && Get_BitVar(g_Had_DB, id))
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
-	
-	return FMRES_HANDLED
-}
-
-public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
-{
-	if (!is_connected(invoker))
-		return FMRES_IGNORED		
-	if(get_player_weapon(invoker) == CSW_DBARREL && Get_BitVar(g_Had_DB, invoker) && eventid == g_Event_DB)
-	{
-		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
-
-		Set_WeaponAnim(invoker, ANIM_SHOOT1)
-		emit_sound(invoker, CHAN_WEAPON, WeaponSounds[0], 1.0, ATTN_NORM, 0, PITCH_LOW)	
-
-		return FMRES_SUPERCEDE
+		
+		if(cs_get_weapon_ammo(ent) >= DEFAULT_CLIP)
+		{
+			set_weapon_anim(id, GATLING_ANIM_IDLE)
+			return
+		}
+			
+		fw_Weapon_Reload_Post(ent)
 	}
-	
-	return FMRES_HANDLED
 }
 
-public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
+public fw_SetModel(entity, model[])
 {
-	if(!is_connected(Attacker))
+	if(!pev_valid(entity))
+		return FMRES_IGNORED
+	
+	static szClassName[33]
+	pev(entity, pev_classname, szClassName, charsmax(szClassName))
+	
+	if(!equal(szClassName, "weaponbox"))
+		return FMRES_IGNORED
+	
+	static id
+	id = pev(entity, pev_owner)
+	
+	if(equal(model, DEFAULT_W_MODEL))
+	{
+		static weapon
+		weapon = fm_find_ent_by_owner(-1, weapon_gatling, entity)
+		
+		if(!pev_valid(weapon))
+			return FMRES_IGNORED
+		
+		if(Get_BitVar(g_Had_Volcano, id))
+		{
+			set_pev(weapon, pev_impulse, WEAPON_SECRET_CODE)
+			engfunc(EngFunc_SetModel, entity, WeaponModel[2])
+			set_pev(entity, pev_body, SUBMODEL)
+			
+			remove_gatling(id)
+			
+			return FMRES_SUPERCEDE
+		}
+	}
+
+	return FMRES_IGNORED
+}
+
+public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageType)
+{
+	if(!is_alive(attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_DBARREL || !Get_BitVar(g_Had_DB, Attacker))
+	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+		return HAM_IGNORED
+		
+	SetHamParamFloat(3, float(DAMAGE) / random_float(6.0, 7.0))	
+
+	return HAM_HANDLED
+}
+
+public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageType)
+{
+	if(!is_alive(attacker))
+		return HAM_IGNORED	
+	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -275,244 +346,236 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	get_tr2(ptr, TR_vecEndPos, flEnd)
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
 	
-	if(!is_connected(Ent))
+	make_bullet(attacker, flEnd)
+	//fake_smoke(attacker, ptr)
+		
+	SetHamParamFloat(3, float(DAMAGE) / random_float(6.5, 7.0))	
+
+	return HAM_HANDLED
+}
+
+public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
+{
+	if(!is_alive(id))
+		return FMRES_IGNORED
+	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
+		return FMRES_IGNORED
+		
+	set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
+	
+	return FMRES_HANDLED
+}
+
+public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
+{
+	if(!is_connected(invoker))
+		return FMRES_IGNORED	
+		
+	if(get_player_weapon(invoker) == CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
 	{
-		make_bullet(Attacker, flEnd)
-		//fake_smoke(Attacker, ptr)
+		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
+		Event_Gatling_Shoot(invoker)	
+
+		return FMRES_SUPERCEDE
 	}
 	
-	SetHamParamFloat(3, float(DAMAGE) / 6.0)
-
-	return HAM_HANDLED	
+	return FMRES_HANDLED
 }
 
-public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
+public fw_Item_Deploy_Post(ent)
 {
-	if(!is_connected(Attacker))
-		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_DBARREL || !Get_BitVar(g_Had_DB, Attacker))
-		return HAM_IGNORED
-	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
-		return HAM_IGNORED
+	static id; id = fm_cs_get_weapon_ent_owner(ent)
+	if (!pev_valid(id))
+		return
+	
+	static weaponid
+	weaponid = cs_get_weapon_id(ent)
+	
+	if(weaponid != CSW_GATLING)
+		return
+	if(!Get_BitVar(g_Had_Volcano, id))
+		return
 		
-	if (!(DamageType & DMG_BULLET))
-		return HAM_IGNORED
-	if (Damage <= 0.0 || GetHamReturnStatus() == HAM_SUPERCEDE || get_tr2(ptr, TR_pHit) != Ent)
-		return HAM_IGNORED
+	static SubModel; SubModel = SUBMODEL
 	
-	// Get distance between players
-	static origin1[3], origin2[3]
-	get_user_origin(Ent, origin1)
-	get_user_origin(Attacker, origin2)
-	
-	// Max distance exceeded
-	if (get_distance(origin1, origin2) > 1024)
-		return HAM_IGNORED
+	set_pev(id, pev_viewmodel2, WeaponModel[0])
+	set_pev(id, pev_weaponmodel2, SubModel != -1 ? "" : WeaponModel[1])
 		
-	// Get victim's velocity
-	static Float:velocity[3]
-	pev(Ent, pev_velocity, velocity)
-	
-	// Use damage on knockback calculation
-	xs_vec_mul_scalar(Dir, Damage, Dir)
-	
-	// Use weapon power on knockback calculation
-	xs_vec_mul_scalar(Dir, float(KNOCKPOWER), Dir)
-	
-	// Apply ducking knockback multiplier
-	new ducking = pev(Ent, pev_flags) & (FL_DUCKING | FL_ONGROUND) == (FL_DUCKING | FL_ONGROUND)
-	if (ducking) xs_vec_mul_scalar(Dir, 0.5, Dir)
-	
-	// Add up the new vector
-	xs_vec_add(velocity, Dir, Dir)
-	
-	// Should knockback also affect vertical velocity?
-	Dir[2] = velocity[2]
-	
-	// Set the knockback'd victim's velocity
-	set_pev(Ent, pev_velocity, Dir)
-		
-	return HAM_IGNORED
+	set_weapon_anim(id, GATLING_ANIM_DRAW)
+	//set_pdata_string(id, m_szAnimExtention * 4, WEAPON_ANIMEXT, -1 , 20)
 }
 
-public fw_Item_Deploy_Post(Ent)
+public fw_Weapon_Reload_Post(ent)
 {
-	if(pev_valid(Ent) != 2)
-		return
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
-		return
-	if(!Get_BitVar(g_Had_DB, Id))
-		return
+	static id; id = pev(ent, pev_owner)
 
-	set_pev(Id, pev_viewmodel2, MODEL_V)
-	set_pev(Id, pev_weaponmodel2, MODEL_P)
+	if(Get_BitVar(g_Had_Volcano, id))
+	{
+		static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
+		
+		if(CurBpAmmo  <= 0)
+			return HAM_IGNORED
+
+		set_pdata_int(ent, 55, 0, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(id, 83, RELOAD_TIME, OFFSET_LINUX_PLAYER)
+		set_pdata_float(ent, 48, RELOAD_TIME + 0.5, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(ent, 46, RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(ent, 47, RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
+		set_pdata_int(ent, m_fInReload, 1, OFFSET_LINUX_WEAPONS)
+		
+		set_weapon_anim(id, GATLING_ANIM_RELOAD1)			
+		
+		return HAM_HANDLED
+	}
 	
-	Set_WeaponAnim(Id, ANIM_DRAW)
-	set_pdata_string(Id, (492) * 4, ANIM_EXT, -1 , 20)
+	return HAM_IGNORED	
+}
+
+public fw_Item_PostFrame(ent)
+{
+	static id; id = pev(ent, pev_owner)
+	if(!Get_BitVar(g_Had_Volcano, id)) return
+
+	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, OFFSET_LINUX_PLAYER)
+	static iClip ; iClip = get_pdata_int(ent, m_iClip, OFFSET_LINUX_WEAPONS)
+	static iMaxClip ; iMaxClip = DEFAULT_CLIP
+
+	if(get_pdata_int(ent, m_fInReload, OFFSET_LINUX_WEAPONS) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
+	{
+		static j; j = min(iMaxClip - iClip, iBpAmmo)
+		set_pdata_int(ent, m_iClip, iClip + j, OFFSET_LINUX_WEAPONS)
+		set_pdata_int(id, 381, iBpAmmo-j, OFFSET_LINUX_PLAYER)
+		
+		set_pdata_int(ent, m_fInReload, 0, OFFSET_LINUX_WEAPONS)
+		cs_set_weapon_ammo(ent, DEFAULT_CLIP)
+	
+		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
+	
+		return
+	}
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
-	if(pev(ent, pev_impulse) == WEAPON_SECRETCODE)
-	{
-		Set_BitVar(g_Had_DB, id)
-		set_pev(ent, pev_impulse, 0)
-	}	
-}
-
-public fw_Weapon_WeaponIdle_Post(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_DB, id))
-		return
-	
-	static SpecialReload; SpecialReload = get_pdata_int(iEnt, 55, 4)
-	if(!SpecialReload && get_pdata_float(iEnt, 48, 4) <= 0.25)
-	{
-		Set_WeaponAnim(id, ANIM_IDLE)
-		set_pdata_float(iEnt, 48, 20.0, 4)
-	}	
-}
-
-public fw_Item_PostFrame(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_DB, id))
-		return
-
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, 5)
-	static iClip ; iClip = get_pdata_int(iEnt, 51, 4)
-	static iMaxClip ; iMaxClip = CLIP
-
-	if(get_pdata_int(iEnt, 54, 4) && get_pdata_float(id, 83, 5) <= 0.0)
-	{
-		static j; j = min(iMaxClip - iClip, iBpAmmo)
-		set_pdata_int(iEnt, 51, iClip + j, 4)
-		set_pdata_int(id, 381, iBpAmmo-j, 5)
+	if(!pev_valid(ent))
+		return HAM_IGNORED
 		
-		set_pdata_int(iEnt, 54, 0, 4)
-		if(iBpAmmo > CLIP) cs_set_weapon_ammo(iEnt, min(iBpAmmo, CLIP))
-		else cs_set_weapon_ammo(iEnt, iClip + iBpAmmo)
-	
-		// Update the fucking ammo hud
-		message_begin(MSG_ONE_UNRELIABLE, g_MsgCurWeapon, _, id)
-		write_byte(1)
-		write_byte(CSW_DBARREL)
-		write_byte(CLIP)
-		message_end()
-		
-		message_begin(MSG_ONE_UNRELIABLE, g_MsgAmmoX, _, id)
-		write_byte(3)
-		write_byte(cs_get_user_bpammo(id, CSW_DBARREL))
-		message_end()
-	
-		return
+	if(pev(ent, pev_impulse) == WEAPON_SECRET_CODE)
+	{
+		Set_BitVar(g_Had_Volcano, id)
+		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
 	}
-}
-
-public fw_Weapon_Reload_Post(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_DB, id))
-		return
-
-	static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, CSW_DBARREL)
-	if(CurBpAmmo  <= 0)
-		return
-
-	set_pdata_int(iEnt, 55, 0, 4)
-	set_pdata_float(id, 83, RELOAD_TIME, 5)
-	set_pdata_float(iEnt, 48, RELOAD_TIME + 0.5, 4)
-	set_pdata_float(iEnt, 46, RELOAD_TIME + 0.25, 4)
-	set_pdata_float(iEnt, 47, RELOAD_TIME + 0.25, 4)
-	set_pdata_int(iEnt, 54, 1, 4)
 	
-	Set_WeaponAnim(id, ANIM_RELOAD)
+	/*
+	if(Get_BitVar(g_Had_Volcano, id))
+	{
+		static MSG; if(!MSG) MSG = get_user_msgid("WeaponList")
+		message_begin(MSG_ONE_UNRELIABLE, MSG, _, id)
+		write_string("weapon_gatling")
+		write_byte(5)
+		write_byte(200)
+		write_byte(-1)
+		write_byte(-1)
+		write_byte(0)
+		write_byte(5)
+		write_byte(CSW_GATLING)
+		write_byte(0)
+		message_end()	
+	}*/
+		
+	return HAM_IGNORED
 }
 
-
-public fw_Weapon_PrimaryAttack(iEnt)
+public fw_Weapon_PrimaryAttack(ent)
 {
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_DB, id))
+	static id; id = pev(ent, pev_owner)
+	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		
-	pev(id, pev_punchangle, Recoil[id])
-	
-	return
+	pev(id, pev_punchangle, g_punchangles[id])
 }
 
-public fw_Weapon_PrimaryAttack_Post(iEnt)
+public fw_Weapon_PrimaryAttack_Post(ent)
 {
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_DB, id))
-		return
-	if(!Get_BitVar(g_SpecialShot, id))
+	static id; id = pev(ent, pev_owner)
+	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		
-	static Float:Push[3]
-	pev(id, pev_punchangle, Push)
-	xs_vec_sub(Push, Recoil[id], Push)
+	static Float:push[3]
+	pev(id, pev_punchangle, push)
+	xs_vec_sub(push, g_punchangles[id], push)
 	
-	xs_vec_mul_scalar(Push, 0.25, Push)
-	xs_vec_add(Push, Recoil[id], Push)
-	
-	set_pev(id, pev_punchangle, Push)
-	
-	return
+	xs_vec_mul_scalar(push, RECOIL, push)
+	xs_vec_add(push, g_punchangles[id], push)
+	set_pev(id, pev_punchangle, push)	
 }
 
-public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)
+public update_ammo(id, csw_id, clip, bpammo)
 {
-	static TraceID
-	engfunc(EngFunc_TraceLine, Start, End, DONT_IGNORE_MONSTERS, IgnoreEnt, TraceID)
+	if(!is_user_alive(id))
+		return
+		
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), _, id)
+	write_byte(1)
+	write_byte(csw_id)
+	write_byte(clip)
+	message_end()
 	
-	get_tr2(TraceID, TR_vecEndPos, Result)
-}
-
-stock Set_WeaponAnim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("AmmoX"), _, id)
+	write_byte(3)
+	write_byte(bpammo)
 	message_end()
 }
 
-stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
+public Event_Gatling_Shoot(id)
 {
-	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
-	if(!pev_valid(entwpn)) 
-		return
-		
-	set_pdata_float(entwpn, 46, TimeIdle, 4)
-	set_pdata_float(entwpn, 47, TimeIdle, 4)
-	set_pdata_float(entwpn, 48, TimeIdle + 0.5, 4)
+	set_weapon_anim(id, random_num(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
+	emit_sound(id, CHAN_WEAPON, WeaponSounds[0], 1.0, 0.4, 0, 94 + random_num(0, 15))
 }
 
-stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)
+stock fm_cs_get_weapon_ent_owner(ent)
+{
+	if (pev_valid(ent) != PDATA_SAFE)
+		return -1
+	
+	return get_pdata_cbase(ent, OFFSET_WEAPONOWNER, OFFSET_LINUX_WEAPONS)
+}
+
+stock set_weapon_anim(id, anim)
+{
+	if(!is_user_alive(id))
+		return
+		
+	set_pev(id, pev_weaponanim, anim)
+	
+	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, _, id)
+	write_byte(anim)
+	write_byte(0)
+	message_end()	
+}
+
+stock drop_weapons(id, dropwhat)
+{
+	static weapons[32], num, i, weaponid
+	num = 0
+	get_user_weapons(id, weapons, num)
+	
+	const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_MAC10)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_MAC10)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
+	
+	for (i = 0; i < num; i++)
+	{
+		weaponid = weapons[i]
+		
+		if (dropwhat == 1 && ((1<<weaponid) & PRIMARY_WEAPONS_BIT_SUM))
+		{
+			static wname[32]
+			get_weaponname(weaponid, wname, sizeof wname - 1)
+			engclient_cmd(id, "drop", wname)
+		}
+	}
+}
+
+
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
@@ -548,7 +611,7 @@ stock make_bullet(id, Float:Origin[3])
 	}
 }
 
-stock fake_smoke(id, trace_result)
+public fake_smoke(id, trace_result)
 {
 	static Float:vecSrc[3], Float:vecEnd[3], TE_FLAG
 	
@@ -573,7 +636,7 @@ stock fake_smoke(id, trace_result)
 	engfunc(EngFunc_WriteCoord, vecEnd[0])
 	engfunc(EngFunc_WriteCoord, vecEnd[1])
 	engfunc(EngFunc_WriteCoord, vecEnd[2] - 10.0)
-	write_short(g_SmokePuff_Id)
+	write_short(g_smokepuff_id)
 	write_byte(2)
 	write_byte(50)
 	write_byte(TE_FLAG)
@@ -606,29 +669,21 @@ stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
 	xs_vec_add(fOrigin, fAttack, output)
 }
 
-stock get_position(ent, Float:forw, Float:right, Float:up, Float:vStart[])
+stock create_blood(const Float:origin[3])
 {
-	static Float:vOrigin[3], Float:vAngle[3], Float:vForward[3], Float:vRight[3], Float:vUp[3]
-	
-	pev(ent, pev_origin, vOrigin)
-	pev(ent, pev_view_ofs,vUp) //for player
-	xs_vec_add(vOrigin,vUp,vOrigin)
-	pev(ent, pev_v_angle, vAngle) // if normal entity ,use pev_angles
-	
-	angle_vector(vAngle,ANGLEVECTOR_FORWARD,vForward) //or use EngFunc_AngleVectors
-	angle_vector(vAngle,ANGLEVECTOR_RIGHT,vRight)
-	angle_vector(vAngle,ANGLEVECTOR_UP,vUp)
-	
-	vStart[0] = vOrigin[0] + vForward[0] * forw + vRight[0] * right + vUp[0] * up
-	vStart[1] = vOrigin[1] + vForward[1] * forw + vRight[1] * right + vUp[1] * up
-	vStart[2] = vOrigin[2] + vForward[2] * forw + vRight[2] * right + vUp[2] * up
+	// Show some blood :)
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) 
+	write_byte(TE_BLOODSPRITE)
+	engfunc(EngFunc_WriteCoord, origin[0])
+	engfunc(EngFunc_WriteCoord, origin[1])
+	engfunc(EngFunc_WriteCoord, origin[2])
+	write_short(m_iBlood[1])
+	write_short(m_iBlood[0])
+	write_byte(75)
+	write_byte(5)
+	message_end()
 }
 
-stock PlaySound(id, const sound[])
-{
-	if(equal(sound[strlen(sound)-4], ".mp3")) client_cmd(id, "mp3 play ^"sound/%s^"", sound)
-	else client_cmd(id, "spk ^"%s^"", sound)
-}
 
 /* ===============================
 ------------- SAFETY -------------
@@ -693,7 +748,7 @@ public is_alive(id)
 		return 0
 	if(!Get_BitVar(g_IsAlive, id)) 
 		return 0
-		
+	
 	return 1
 }
 

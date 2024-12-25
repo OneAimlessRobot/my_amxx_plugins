@@ -1,48 +1,91 @@
 
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
-#include "q_barrel_inc/sh_q_barrel.inc"
+#include "h_rifle_inc/sh_h_rifle.inc"
 
 
-#define PLUGIN "Superhero graciete shotty funcs"
-#define VERSION "1.0.0"
+#define PLUGIN "Superhero: Supernoodle hunting rifle"
+#define VERSION "1.0"
 #define AUTHOR "Me"
-#define Struct				enum
 
-new g_Had_QB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33]
-new g_HamBot, g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id
 
-// Safety
-new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
-new const WeaponSounds[5][] = 
+new const WeaponSounds[4][] = 
 {
-	"weapons/qbarrel_shoot.wav",
-	"weapons/qbarrel_draw.wav",
-	"weapons/qbarrel_clipin1.wav",
-	"weapons/qbarrel_clipin2.wav",
-	"weapons/qbarrel_clipout1.wav"
+	"weapons/mosin-1.wav",
+	"weapons/mosin_start_reload.wav",
+	"weapons/mosin_insert.wav",
+	"weapons/mosin_after_reload.wav"
 }
 
 enum
 {
 	ANIM_IDLE = 0,
-	ANIM_SHOOT1,
-	ANIM_SHOOT2,
-	ANIM_RELOAD,
+	ANIM_SHOOT,
+	ANIM_INSERT,
+	ANIM_AFTER_RELOAD,
+	ANIM_START_RELOAD,
 	ANIM_DRAW
 }
 
-public plugin_natives(){
-	
-	
-
-	register_native("q_barrel_set_q_barrel","_q_barrel_set_q_barrel",0);
-	register_native("q_barrel_unset_q_barrel","_q_barrel_unset_q_barrel",0);
-	
-	
+enum
+{
+	EVENT_NONE = 0,
+	EVENT_ATTACK1,
+	EVENT_ATTACK2,
+	EVENT_RELOAD
 }
 
-public plugin_init()
+// Main Vars
+new g_Had_Mosin, g_Old_Weapon[33]
+new g_HamBot, g_Event_MS, g_SmokePuff_Id
+new g_MsgCurWeapon
+
+// Safety
+new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
+
+// Reload Shotgun Style
+
+// Shotgun Reload Style
+const NOCLIP_WPN_BS	= ((1<<CSW_HEGRENADE)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_KNIFE)|(1<<CSW_C4))
+const SHOTGUNS_BS	= ((1<<CSW_M3)|(1<<CSW_XM1014))
+const SILENT_BS	= ((1<<CSW_USP)|(1<<CSW_M4A1))
+
+// weapons offsets
+#define XTRA_OFS_WEAPON			4
+#define m_pPlayer				41
+#define m_iId					43
+#define m_fKnown				44
+#define m_flNextPrimaryAttack		46
+#define m_flNextSecondaryAttack	47
+#define m_flTimeWeaponIdle		48
+#define m_iPrimaryAmmoType		49
+#define m_iClip				51
+#define m_fInReload				54
+#define m_fInSpecialReload		55
+#define m_fSilent				74
+
+// players offsets
+#define XTRA_OFS_PLAYER		5
+#define m_flNextAttack		83
+#define m_rgAmmo_player_Slot0	376
+
+stock const Float:g_fDelay[CSW_P90+1] = {
+	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
+		 2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
+		 0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
+}
+
+new stock const g_iDftMaxClip[CSW_P90+1] = {
+	-1,  13, -1, 10,  1,  7,    1, 30, 30,  1,  30, 
+		20, 25, 30, 35, 25,   12, 20, 10, 30, 100, 
+		8 , 30, 30, 20,  2,    7, 30, 30, -1,  50}
+
+stock const g_iReloadAnims[CSW_P90+1] = {
+	-1,  5, -1, 3, -1,  6,   -1, 1, 1, -1, 14, 
+		4,  2, 3,  1,  1,   13, 7, 4,  1,  3, 
+		6, 11, 1,  3, -1,    4, 1, 1, -1,  1}
+
+public plugin_init() 
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	Register_SafetyFunc()
@@ -54,31 +97,31 @@ public plugin_init()
 	register_forward(FM_UpdateClientData, "fw_UpdateClientData_Post", 1)	
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
+	
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack")		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_quadbarrel, "fw_Item_Deploy_Post", 1)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_quadbarrel, "fw_Item_AddToPlayer_Post", 1)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_quadbarrel, "fw_Weapon_WeaponIdle_Post", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_quadbarrel, "fw_Item_PostFrame")
-	RegisterHam(Ham_Weapon_Reload, weapon_quadbarrel, "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_quadbarrel, "fw_Weapon_PrimaryAttack")
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_quadbarrel, "fw_Weapon_PrimaryAttack_Post", 1)
+	RegisterHam(Ham_Item_Deploy, weapon_mosin, "fw_Item_Deploy_Post", 1)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_mosin, "fw_Item_AddToPlayer_Post", 1)
+	RegisterHam(Ham_Weapon_Reload, weapon_mosin, "fw_Weapon_Reload")
+	RegisterHam(Ham_Item_PostFrame, weapon_mosin, "fw_Item_PostFrame")
+	//RegisterHam(Ham_Weapon_Reload, weapon_railcannon, "fw_Weapon_Reload_Post", 1)
 	
-	// Cache
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
-	g_MsgAmmoX = get_user_msgid("AmmoX")
+	
+	register_clcmd("say /get", "Get_Mosin")
 }
-public _q_barrel_set_q_barrel(iPlugins,iParams){
-	new id=get_param(1);
-	Get_QuadBarrel(id)
-}
-public _q_barrel_unset_q_barrel(iPlugins,iParams){
-	new id=get_param(1);
 
-	Remove_QuadBarrel(id)
+public plugin_natives(){
+	
+	
+
+	register_native("h_rifle_set_h_rifle","_h_rifle_set_h_rifle",0);
+	register_native("h_rifle_unset_h_rifle","_h_rifle_unset_h_rifle",0);
+	
+	
 }
+
 public plugin_precache()
 {
 	precache_model(MODEL_V)
@@ -87,15 +130,16 @@ public plugin_precache()
 	
 	for(new i = 0; i < sizeof(WeaponSounds); i++)
 		precache_sound(WeaponSounds[i])
-	
+		
 	register_forward(FM_PrecacheEvent, "fw_PrecacheEvent_Post", 1)	
+	
 	g_SmokePuff_Id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")	
 }
 
 public fw_PrecacheEvent_Post(type, const name[])
 {
 	if(equal(OLD_EVENT, name))
-		g_Event_QB = get_orig_retval()
+		g_Event_MS = get_orig_retval()
 }
 
 public client_putinserver(id)
@@ -113,7 +157,6 @@ public Do_Register_HamBot(id)
 {
 	Register_SafetyFuncBot(id)
 	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Post", 1)
 }
 
 public client_disconnected(id)
@@ -121,35 +164,37 @@ public client_disconnected(id)
 	Safety_Disconnected(id)
 }
 
-public Get_QuadBarrel(id)
+public _h_rifle_set_h_rifle(iPlugins,iParams){
+	new id=get_param(1);
+	Get_Mosin(id)
+}
+public _h_rifle_unset_h_rifle(iPlugins,iParams){
+	new id=get_param(1);
+
+	Remove_Mosin(id)
+}
+public Get_Mosin(id)
 {
-	Remove_QuadBarrel(id)
+	Remove_Mosin(id)
 	
-	UnSet_BitVar(g_SpecialShot, id)
-	Set_BitVar(g_Had_QB, id)
+	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_quadbarrel)
-	cs_set_user_bpammo(id, CSW_QUADBARREL, BPAMMO)
+	give_item(id, weapon_mosin)
+	cs_set_user_bpammo(id, CSW_MOSIN, BPAMMO)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
+	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
 	write_byte(1)
-	write_byte(CSW_QUADBARREL)
+	write_byte(CSW_MOSIN)
 	write_byte(CLIP)
 	message_end()
 }
 
-public Remove_QuadBarrel(id)
+public Remove_Mosin(id)
 {
-	UnSet_BitVar(g_Had_QB, id)
-}
-
-public Hook_Weapon(id)
-{
-	engclient_cmd(id, weapon_quadbarrel)
-	return PLUGIN_HANDLED
+	UnSet_BitVar(g_Had_Mosin, id)
 }
 
 public Event_CurWeapon(id)
@@ -158,20 +203,31 @@ public Event_CurWeapon(id)
 		return
 	
 	static CSWID; CSWID = read_data(2)
-
-	if((CSWID == CSW_QUADBARREL && g_OldWeapon[id] == CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
+	
+	if((CSWID == CSW_MOSIN && g_Old_Weapon[id] == CSW_MOSIN) && Get_BitVar(g_Had_Mosin, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-		if(pev_valid(Ent)) 
+		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
+		if(!pev_valid(Ent))
 		{
-			set_pdata_float(Ent, 46, get_pdata_float(Ent, 46, 4) * SPEED, 4)
-			set_pdata_float(Ent, 47, get_pdata_float(Ent, 46, 4) * SPEED, 4)
+			g_Old_Weapon[id] = get_user_weapon(id)
+			return
 		}
+		
+		if(cs_get_user_zoom(id) == 1)
+		{
+			set_pev(id, pev_viewmodel2, MODEL_V)
+		} else if(cs_get_user_zoom(id) == 2 || cs_get_user_zoom(id) == 3) {
+			set_pev(id, pev_viewmodel2, "")
+		}
+		
+		static Float:TargetTime; TargetTime = get_pdata_float(Ent, 46, 4) * SPEED
+		
+		set_pdata_float(Ent, 46, TargetTime, 4)
+		set_pdata_float(id, 83, TargetTime, 5)
 	}
 	
-	g_OldWeapon[id] = CSWID
+	g_Old_Weapon[id] = get_user_weapon(id)
 }
-
 
 public fw_SetModel(entity, model[])
 {
@@ -190,17 +246,17 @@ public fw_SetModel(entity, model[])
 	if(equal(model, OLD_W_MODEL))
 	{
 		static weapon
-		weapon = fm_get_user_weapon_entity(entity, CSW_QUADBARREL)
+		weapon = fm_get_user_weapon_entity(entity, CSW_MOSIN)
 		
 		if(!pev_valid(weapon))
 			return FMRES_IGNORED
 		
-		if(Get_BitVar(g_Had_QB, id))
+		if(Get_BitVar(g_Had_Mosin, id))
 		{
 			set_pev(weapon, pev_impulse, WEAPON_SECRETCODE)
 			engfunc(EngFunc_SetModel, entity, MODEL_W)
 			
-			Remove_QuadBarrel(id)
+			Remove_Mosin(id)
 			
 			return FMRES_SUPERCEDE
 		}
@@ -212,36 +268,29 @@ public fw_SetModel(entity, model[])
 public fw_CmdStart(id, uc_handle, seed)
 {
 	if(!is_alive(id))
-		return
-	if(get_player_weapon(id) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, id))
-		return
+		return FMRES_IGNORED
 		
-	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
+	static iEnt; iEnt = fm_get_user_weapon_entity(id, get_user_weapon(id))
+	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-	if(!pev_valid(Ent)) return
-	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
-	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
-	
-	if(NewButton & IN_ATTACK2)
+	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON))
 	{
-		if(flNextAttack > 0.0) return
+		set_uc(uc_handle, UC_Buttons, PressButton & ~IN_RELOAD)
 		
-		for(new i = 0; i < Ammo; i++)
-		{
-			Set_BitVar(g_SpecialShot, id)
-			ExecuteHamB(Ham_Weapon_PrimaryAttack, Ent)
-			UnSet_BitVar(g_SpecialShot, id)
-		}
-	} 
+		cs_set_user_zoom(id, CS_RESET_ZOOM, 1)
+		
+		set_pdata_int(iEnt, m_fInReload, 0, XTRA_OFS_WEAPON)
+		set_pdata_int(iEnt, m_fInSpecialReload, 1, XTRA_OFS_WEAPON)
+	}
+	
+	return FMRES_IGNORED
 }
-
+    
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
 	if(!is_alive(id))
 		return FMRES_IGNORED	
-	if(get_player_weapon(id) == CSW_QUADBARREL && Get_BitVar(g_Had_QB, id))
+	if(get_player_weapon(id) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, id))
 		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
 	
 	return FMRES_HANDLED
@@ -251,13 +300,18 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_connected(invoker))
 		return FMRES_IGNORED		
-	if(get_player_weapon(invoker) == CSW_QUADBARREL && Get_BitVar(g_Had_QB, invoker) && eventid == g_Event_QB)
+	if(get_player_weapon(invoker) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, invoker) && eventid == g_Event_MS)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
-		Set_WeaponAnim(invoker, ANIM_SHOOT1)
-		emit_sound(invoker, CHAN_WEAPON, WeaponSounds[0], 1.0, ATTN_NORM, 0, PITCH_LOW)	
+		Set_WeaponAnim(invoker, ANIM_SHOOT)
+		emit_sound(invoker, CHAN_WEAPON, WeaponSounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)	
 
+		set_pdata_float(invoker, 111, get_gametime() + 0.75)
+		
+		static Ent; Ent = fm_get_user_weapon_entity(invoker, CSW_MOSIN)
+		set_pdata_int(Ent, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+		
 		return FMRES_SUPERCEDE
 	}
 	
@@ -268,72 +322,20 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 {
 	if(!is_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
+	if(get_player_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
-
+		
 	get_tr2(ptr, TR_vecEndPos, flEnd)
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
-	
-	if(!is_connected(Ent))
-	{
-		make_bullet(Attacker, flEnd)
-		//fake_smoke(Attacker, ptr)
-	}
-	
-	SetHamParamFloat(3, float(DAMAGE) / 6.0)
-
+			
+	make_bullet(Attacker, flEnd)
+	fake_smoke(Attacker, ptr)
+		
+	SetHamParamFloat(3, float(DAMAGE))
+		
 	return HAM_HANDLED	
-}
-
-public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
-{
-	if(!is_connected(Attacker))
-		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
-		return HAM_IGNORED
-	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
-		return HAM_IGNORED
-		
-	if (!(DamageType & DMG_BULLET))
-		return HAM_IGNORED
-	if (Damage <= 0.0 || GetHamReturnStatus() == HAM_SUPERCEDE || get_tr2(ptr, TR_pHit) != Ent)
-		return HAM_IGNORED
-	
-	// Get distance between players
-	static origin1[3], origin2[3]
-	get_user_origin(Ent, origin1)
-	get_user_origin(Attacker, origin2)
-	
-	// Max distance exceeded
-	if (get_distance(origin1, origin2) > 1024)
-		return HAM_IGNORED
-		
-	// Get victim's velocity
-	static Float:velocity[3]
-	pev(Ent, pev_velocity, velocity)
-	
-	// Use damage on knockback calculation
-	xs_vec_mul_scalar(Dir, Damage, Dir)
-	
-	// Use weapon power on knockback calculation
-	xs_vec_mul_scalar(Dir, float(KNOCKPOWER), Dir)
-	
-	// Apply ducking knockback multiplier
-	new ducking = pev(Ent, pev_flags) & (FL_DUCKING | FL_ONGROUND) == (FL_DUCKING | FL_ONGROUND)
-	if (ducking) xs_vec_mul_scalar(Dir, 0.5, Dir)
-	
-	// Add up the new vector
-	xs_vec_add(velocity, Dir, Dir)
-	
-	// Should knockback also affect vertical velocity?
-	Dir[2] = velocity[2]
-	
-	// Set the knockback'd victim's velocity
-	set_pev(Ent, pev_velocity, Dir)
-		
-	return HAM_IGNORED
 }
 
 public fw_Item_Deploy_Post(Ent)
@@ -343,153 +345,110 @@ public fw_Item_Deploy_Post(Ent)
 	static Id; Id = get_pdata_cbase(Ent, 41, 4)
 	if(get_pdata_cbase(Id, 373) != Ent)
 		return
-	if(!Get_BitVar(g_Had_QB, Id))
+	if(!Get_BitVar(g_Had_Mosin, Id))
 		return
 
 	set_pev(Id, pev_viewmodel2, MODEL_V)
 	set_pev(Id, pev_weaponmodel2, MODEL_P)
 	
 	Set_WeaponAnim(Id, ANIM_DRAW)
-	set_pdata_string(Id, (492) * 4, ANIM_EXT, -1 , 20)
+	set_pdata_int(Ent, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
 	if(pev(ent, pev_impulse) == WEAPON_SECRETCODE)
 	{
-		Set_BitVar(g_Had_QB, id)
+		Set_BitVar(g_Had_Mosin, id)
 		set_pev(ent, pev_impulse, 0)
-	}	
+	}			
 }
 
-public fw_Weapon_WeaponIdle_Post(iEnt)
+public fw_Weapon_Reload(iEnt)
 {
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_QB, id))
-		return
+	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)
+	if(!is_alive(id))
+		return HAM_IGNORED
+	if(!Get_BitVar(g_Had_Mosin, id))
+		return HAM_IGNORED	
 	
-	static SpecialReload; SpecialReload = get_pdata_int(iEnt, 55, 4)
-	if(!SpecialReload && get_pdata_float(iEnt, 48, 4) <= 0.25)
-	{
-		Set_WeaponAnim(id, ANIM_IDLE)
-		set_pdata_float(iEnt, 48, 20.0, 4)
-	}	
+	set_pdata_int(iEnt, m_fInReload, 0, 4)
+	set_pdata_int(iEnt, m_fInSpecialReload, 1, XTRA_OFS_WEAPON)
+	
+	return HAM_SUPERCEDE
 }
 
-public fw_Item_PostFrame(iEnt)
+public fw_Item_PostFrame( iEnt )
 {
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_QB, id))
+	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)	
+
+	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, XTRA_OFS_PLAYER)
+	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XTRA_OFS_WEAPON)
+
+	if(get_pdata_int(id, m_flNextAttack, XTRA_OFS_PLAYER) > 0.0)
 		return
 
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, 5)
-	static iClip ; iClip = get_pdata_int(iEnt, 51, 4)
-	static iMaxClip ; iMaxClip = CLIP
-
-	if(get_pdata_int(iEnt, 54, 4) && get_pdata_float(id, 83, 5) <= 0.0)
+	switch(get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON) )
 	{
-		static j; j = min(iMaxClip - iClip, iBpAmmo)
-		set_pdata_int(iEnt, 51, iClip + j, 4)
-		set_pdata_int(id, 381, iBpAmmo-j, 5)
-		
-		set_pdata_int(iEnt, 54, 0, 4)
-		if(iBpAmmo > CLIP) cs_set_weapon_ammo(iEnt, min(iBpAmmo, CLIP))
-		else cs_set_weapon_ammo(iEnt, iClip + iBpAmmo)
-	
-		// Update the fucking ammo hud
-		message_begin(MSG_ONE_UNRELIABLE, g_MsgCurWeapon, _, id)
-		write_byte(1)
-		write_byte(CSW_QUADBARREL)
-		write_byte(CLIP)
-		message_end()
-		
-		message_begin(MSG_ONE_UNRELIABLE, g_MsgAmmoX, _, id)
-		write_byte(3)
-		write_byte(cs_get_user_bpammo(id, CSW_QUADBARREL))
-		message_end()
-	
-		return
+		case 1: // Check, Start
+		{
+			if(cs_get_weapon_ammo(iEnt) >= CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
+			{
+				set_pdata_int(iEnt, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+				return
+			}
+			
+			Set_WeaponAnim(id, ANIM_START_RELOAD)
+			
+			set_pdata_float(id, m_flNextAttack, 0.75, 5)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.75, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.75, XTRA_OFS_WEAPON)
+			
+			set_pdata_int(iEnt, m_fInSpecialReload, 2, XTRA_OFS_WEAPON)
+		}
+		case 2: // Insert 
+		{
+			if(cs_get_weapon_ammo(iEnt) >= CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
+			{
+				set_pdata_int(iEnt, m_fInSpecialReload, 4, XTRA_OFS_WEAPON)
+				return
+			} else {
+				set_pdata_int(iEnt, m_fInSpecialReload, 3, XTRA_OFS_WEAPON)
+			}
+			
+			emit_sound(id, CHAN_ITEM, WeaponSounds[2], 1.0, ATTN_NORM, 0, 85 + random_num(0,0x1f))
+			Set_WeaponAnim(id, ANIM_INSERT)
+
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.45, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.45, XTRA_OFS_WEAPON)
+			set_pdata_float(id, m_flNextAttack, 0.45, 5)
+		}
+		case 3: // Done Insert
+		{
+			set_pdata_int(iEnt, m_iClip, iClip + 1, XTRA_OFS_WEAPON)
+			set_pdata_int(id, 381, iBpAmmo-1, XTRA_OFS_PLAYER)
+			cs_set_user_bpammo(id, CSW_MOSIN, cs_get_user_bpammo(id, CSW_MOSIN) - 1)
+			
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.1, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.1, XTRA_OFS_WEAPON)
+			set_pdata_float(id, m_flNextAttack, 0.1, 5)
+			
+			set_pdata_int(iEnt, m_fInSpecialReload, 2, XTRA_OFS_WEAPON)
+		}
+		case 4: // Stop Reload
+		{
+			Set_WeaponAnim(id, ANIM_AFTER_RELOAD)
+
+			set_pdata_int(iEnt, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 1.5, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 1.5, XTRA_OFS_WEAPON)
+			set_pdata_float(id, m_flNextAttack, 1.5, 5)
+		}
 	}
-}
-
-public fw_Weapon_Reload_Post(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_QB, id))
-		return
-
-	static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, CSW_QUADBARREL)
-	if(CurBpAmmo  <= 0)
-		return
-
-	set_pdata_int(iEnt, 55, 0, 4)
-	set_pdata_float(id, 83, RELOAD_TIME, 5)
-	set_pdata_float(iEnt, 48, RELOAD_TIME + 0.5, 4)
-	set_pdata_float(iEnt, 46, RELOAD_TIME + 0.25, 4)
-	set_pdata_float(iEnt, 47, RELOAD_TIME + 0.25, 4)
-	set_pdata_int(iEnt, 54, 1, 4)
-	
-	Set_WeaponAnim(id, ANIM_RELOAD)
-}
-
-
-public fw_Weapon_PrimaryAttack(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_QB, id))
-		return
-		
-	pev(id, pev_punchangle, Recoil[id])
-	
-	return
-}
-
-public fw_Weapon_PrimaryAttack_Post(iEnt)
-{
-	if(pev_valid(iEnt) != 2)
-		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
-		return
-	if(!Get_BitVar(g_Had_QB, id))
-		return
-	if(!Get_BitVar(g_SpecialShot, id))
-		return
-		
-	static Float:Push[3]
-	pev(id, pev_punchangle, Push)
-	xs_vec_sub(Push, Recoil[id], Push)
-	
-	xs_vec_mul_scalar(Push, 0.25, Push)
-	xs_vec_add(Push, Recoil[id], Push)
-	
-	set_pev(id, pev_punchangle, Push)
-	
-	return
-}
-
-public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)
-{
-	static TraceID
-	engfunc(EngFunc_TraceLine, Start, End, DONT_IGNORE_MONSTERS, IgnoreEnt, TraceID)
-	
-	get_tr2(TraceID, TR_vecEndPos, Result)
 }
 
 stock Set_WeaponAnim(id, anim)
@@ -631,6 +590,16 @@ stock PlaySound(id, const sound[])
 	else client_cmd(id, "spk ^"%s^"", sound)
 }
 
+stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
+{
+	static Ent; Ent = get_pdata_cbase(id, 373, 5)
+	if(!pev_valid(Ent))
+		return
+
+        set_pdata_int(Ent, 57, Shell_ModelIndex, 4)
+        set_pdata_float(id, 111, get_gametime() + Time)
+}
+
 /* ===============================
 ------------- SAFETY -------------
 =================================*/
@@ -719,6 +688,3 @@ public get_player_weapon(id)
 /* ===============================
 --------- End of SAFETY ----------
 =================================*/
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

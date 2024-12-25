@@ -5,6 +5,7 @@
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero yandere JETGATLING funcs"

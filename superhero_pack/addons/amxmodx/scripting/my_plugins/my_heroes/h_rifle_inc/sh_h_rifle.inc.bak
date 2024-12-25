@@ -1,0 +1,62 @@
+#if defined sh_h_barrel_funcs
+  #endinput
+#endif
+#define sh_h_barrel_funcs
+
+#define DAMAGE 91 // 191 for Zombie
+
+#define CLIP 5
+#define BPAMMO 45
+
+#define SPEED 1.25
+
+#define MODEL_V "models/v_mosin.mdl"
+#define MODEL_P "models/p_mosin.mdl"
+#define MODEL_W "models/w_mosin.mdl"
+
+new const WeaponSounds[4][] = 
+{
+	"weapons/mosin-1.wav",
+	"weapons/mosin_start_reload.wav",
+	"weapons/mosin_insert.wav",
+	"weapons/mosin_after_reload.wav"
+}
+
+enum
+{
+	ANIM_IDLE = 0,
+	ANIM_SHOOT,
+	ANIM_INSERT,
+	ANIM_AFTER_RELOAD,
+	ANIM_START_RELOAD,
+	ANIM_DRAW
+}
+
+enum
+{
+	EVENT_NONE = 0,
+	EVENT_ATTACK1,
+	EVENT_ATTACK2,
+	EVENT_RELOAD
+}
+
+#define CSW_MOSIN CSW_SCOUT
+#define weapon_mosin "weapon_scout"
+
+#define WEAPON_SECRETCODE 2892014
+#define OLD_W_MODEL "models/w_scout.mdl"
+#define OLD_EVENT "events/scout.sc"
+
+// MACROS
+#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
+#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
+#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
+
+
+
+native h_rifle_set_h_rifle(id)
+native h_rifle_unset_h_rifle(id)
+
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

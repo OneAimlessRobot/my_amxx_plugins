@@ -19,8 +19,25 @@ Swat_m4a1mult 1.5
 swat_knifemult 4.0
 */
 
+#define SWAT_M4_P_MODEL "models/shmod/swatm4/p_m4a1.mdl"
+#define SWAT_M4_V_MODEL "models/shmod/swatm4/v_m4a1.mdl"
+#define SWAT_M4_W_MODEL "models/shmod/swatm4/w_m4a1.mdl"
 
+new const m4_swat_sounds[12][]={"weapons/swatm4/m4a1_silencer_off.wav",
+"weapons/swatm4/m4a1_silencer_on.wav",
+"weapons/swatm4/m4a1-2.wav",
+"weapons/swatm4/m4a1_unsil-1.wav",
+"weapons/swatm4/m4a1-1.wav",
+"weapons/swatm4/m16a1/foley.wav",
+"weapons/swatm4/m16a1/inserting.wav",
+"weapons/swatm4/m16a1/magout.wav",
+"weapons/swatm4/m16a1/magtap.wav",
+"weapons/swatm4/m16a1/m16-1.wav",
+"weapons/swatm4/m16a1/boltpull.wav",
+"weapons/swatm4/m16a1/magin.wav"}
 #include "../my_include/superheromod.inc"
+#include <fakemeta_util>
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #if defined AMX98
@@ -31,10 +48,8 @@ new gHeroName[]="S.W.A.T."
 new bool:g_hasSwatPower[SH_MAXSLOTS+1]
 new has_rocket[33]
 new bool:g_betweenRounds
-new round_delay
 new bool:is_a_swat[33]
-new bool:roundfreeze
-
+new gHeroID
 //new sprite, sprite1, sprite2, sprite3
 //new beam, boom
 new beam, sprite1, sprite2, sprite3
@@ -60,7 +75,7 @@ public plugin_init()
 	register_cvar("Swat_obeygravity", "1")	
 	register_cvar("Swat_effects", "4")
 
-	shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
+	gHeroID=shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
 
 	//EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
@@ -84,25 +99,20 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "Swat_init")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public newRound(id)
 {
 	gPlayerUltimateUsed[id] = false
 	if ( shModActive() && g_hasSwatPower[id] && is_user_alive(id) ) {
 		set_task(0.1, "swat_weapons", id)
 
-		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-		if (wpnid != CSW_M4A1 && wpnid > 0) {
-			new wpn[32]
-			get_weaponname(wpnid, wpn, 31)
-			engclient_cmd(id, wpn)
-		}
 	}
+	return PLUGIN_CONTINUE
 }
 //-----------------------------------------------------------------------------------------------
 public swat_weapons(id)
 {
 	if ( shModActive() && is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_m4a1")
+		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"weapon_knife")
 		shGiveWeapon(id,"item_thighpack")
 		if(!is_a_swat[id]){
@@ -119,9 +129,9 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if ( wpnid == CSW_M4A1 ) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/swat_v_m4a1.mdl")
+		Entvars_Set_String(id, EV_SZ_viewmodel, SWAT_M4_V_MODEL)
 		// Weapon Model change for 3rd person view - vittu
-		Entvars_Set_String(id, EV_SZ_weaponmodel, "models/shmod/swat_p_m4a1.mdl")
+		Entvars_Set_String(id, EV_SZ_weaponmodel, SWAT_M4_P_MODEL)
 	}
 	else if(wpnid == CSW_KNIFE){
 		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/swat_v_knife.mdl")
@@ -136,25 +146,25 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 	new clip = read_data(3)
 
-	if ( wpnid != CSW_M4A1 && wpnid != CSW_KNIFE) return
+	if ( (wpnid != CSW_M4A1) && (wpnid != CSW_KNIFE)) return
 
 	switchmodel(id)
 
 	// Never Run Out of Ammo!
-	if ( clip == 0 ) {
-		shReloadAmmo(id)
+	if ( clip == 1 ) {
+		sh_reload_ammo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public swat_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !shModActive() || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
 	if ( g_hasSwatPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
@@ -166,6 +176,7 @@ public swat_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
 		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "tactical_knife", headshot)
 	}
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public swat_modelReset()
@@ -189,27 +200,24 @@ public Swat_init()
 	new hasPowers = str_to_num(temp)
 	if (!is_user_connected(id)) return
 
+	g_hasSwatPower[id] = (hasPowers != 0)
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
-	if ( is_user_alive(id) ) {
-		if ( hasPowers ) {
-			swat_weapons(id)
-			switchmodel(id)
-		}
-	//This gets run if they had the power but don't anymore
-		else if ( !hasPowers && g_hasSwatPower[id] ) {
-			engclient_cmd(id, "drop", "weapon_m4a1")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			if(is_a_swat[id]){
-				cs_reset_user_model(id)
-				is_a_swat[id] = false
-			}
+	if (g_hasSwatPower[id]) {
+		swat_weapons(id)
+		switchmodel(id)
+	}
+	else {
+		sh_drop_weapon(id,CSW_M4A1,true)
+		shRemHealthPower(id)
+		shRemArmorPower(id)
+		if(is_a_swat[id]){
+			cs_reset_user_model(id)
+			is_a_swat[id] = false
 		}
 	}
-	g_hasSwatPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
@@ -239,10 +247,17 @@ public plugin_precache()
 	precache_model("models/player/swat/swat.mdl")
 	precache_model("models/shmod/swat_v_knife.mdl")
 	precache_model("models/shmod/swat_p_knife.mdl")
-	precache_model("models/shmod/swat_v_m4a1.mdl")
-	precache_model("models/shmod/swat_p_m4a1.mdl")
+	for(new i=0;i<sizeof(m4_swat_sounds);i++){
+	
+		engfunc(EngFunc_PrecacheSound,m4_swat_sounds[i] );
+	
+	}
 	//boom = precache_model("sprites/zerogxplode.spr")
 	//sprite = precache_model("sprites/zbeam6.spr")
+
+	precache_model(SWAT_M4_P_MODEL )
+	precache_model(SWAT_M4_V_MODEL )
+	precache_model(SWAT_M4_W_MODEL )
 	sprite1 = precache_model("sprites/white.spr")
 	sprite2 = precache_model("sprites/zerogxplode.spr")
 	sprite3 = precache_model("sprites/steam1.spr")
@@ -293,52 +308,11 @@ public vexd_pfntouch(pToucher, pTouched) {
 		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
-		new origin[3],dist,i,Float:dRatio,damage
 		if(has_rocket[id] == pToucher)
 		has_rocket[id] = 0
 
-		for ( i = 1; i <= SH_MAXSLOTS; i++) {
-
-			if( !is_user_alive(i) ) continue
-			get_user_origin(i,origin)
-			dist = get_distance(origin,vExplodeAt)
-			if (dist <= damradius) {
-
-				dRatio = floatdiv(float(dist),float(damradius))
-				damage = maxdamage - floatround( maxdamage * dRatio)
-
-				shExtraDamage(i, id, damage, "SWAT ICBM" )
-				sh_screenShake(i, 100, 50, 100)
-				sh_setScreenFlash(i, 255, 0, 0, 100, 50)
-
-				//cannot get this to function properly
-				new Float: force = get_cvar_float("Swat_force")
-				//new Float: force = SwatForce - (SwatForce * dRatio)
-									
-				new Float:fl_vicVelocity[3]
-
-				fl_vicVelocity[0] = 0.0 
-				fl_vicVelocity[1] = 0.0
-				//fl_vicVelocity[2] = 500.0 - (500.0 * dRatio)
-				fl_vicVelocity[2] = force - (force * dRatio)
-
-				set_pev(i, pev_velocity, fl_vicVelocity)
-
-				//client_print(i,print_chat,"%f = %f - ( %f * %f )", force - (force * dRatio) , force , force , dRatio)
-
-			}
-		}
-
-//		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-//		write_byte(3)
-//		write_coord(vExplodeAt[0])
-//		write_coord(vExplodeAt[1])
-//		write_coord(vExplodeAt[2])
-//		write_short(boom)
-//		write_byte(100)
-//		write_byte(15)
-//		write_byte(0)
-//		message_end()
+		explosion(gHeroID,pToucher,float(damradius),float(maxdamage))
+		
 
 		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -347,22 +321,6 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 		RemoveEntity(pToucher)
 
-		if ( is_valid_ent(pTouched) ) {
-			new szClassName2[32]
-			Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
-
-			if(equal(szClassName2, "ICBM_missile")) {
-				remove_task(pTouched)
-				emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				new id2 = Entvars_Get_Edict(pTouched, EV_ENT_owner)
-				AttachView(id2, id2)
-				if(has_rocket[id2] == pTouched){
-					has_rocket[id2] = 0
-				}
-				RemoveEntity(pTouched)
-			}
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -529,60 +487,10 @@ public guide_rocket_comm(args[])
 	if(missile_health < 10000.0)
 		vexd_pfntouch(ent,0)
 }
-
-//----------------------------------------------------------------------------------------------
-//public rocket_fuel_timer(args[]) {
-//	new ent = args[1]
-//	new id = args[0]
-//	remove_task(ent)
-//	if (!is_valid_ent(ent)) return
-//	Entvars_Set_Int(ent, EV_INT_effects, 2)
-//	Entvars_Set_Int(ent, EV_INT_rendermode,0)
-//	Entvars_Set_Float(ent, EV_FL_gravity, 1.0)
-//	Entvars_Set_Int(ent, EV_INT_iuser1, 0)
-//	emit_sound(ent, CHAN_WEAPON, "debris/beamstart8.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM )
-//	emit_sound(ent, CHAN_VOICE, "ambience/rocket_steam1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-//	if(args[11] == 1){
-//		set_hudmessage(250,10,10,-1.0,0.45, 0, 0.0, 1.5, 0.5, 0.15, 54)
-//		show_hudmessage(id,"WARNING: FUEL TANK EMPTY^nCONTROLS DISENGAGED")
-//	}
-//	set_task(0.1,"guide_rocket_comm",ent,args,16,"b")
-//}
-//public client_connect(id)
-//	//no real tasks to set
-//}
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
 	remove_task(id)
-}
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-	gPlayerUltimateUsed[id]=false
-//	RemoveByClass(id)//For some reason, sometimes if you were hit with own missile, entity would not be removed, so that is what this is for
-
-	return PLUGIN_CONTINUE
-}
-//----------------------------------------------------------------------------------------------
-//public RemoveByClass(id)
-//{
-
-//	new missiles = -1
-//	while((missiles = find_ent_by_class(missiles, "ICBM_missile")))
-//		remove_entity(missiles)
-
-//	new ent = 0
-//	do{
-//		ent = find_entity(ent,classname,"ICBM_missile")
-//		if (ent > 0)
-//		RemoveEntity(ent)
-//	}
-//	while (ent)
-//}
-//----------------------------------------------------------------------------------------------
-public roundstart_delay(){
-	round_delay = 0
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -593,7 +501,6 @@ public client_connect(id)
 public round_end(){
 	
         g_betweenRounds = true
-        roundfreeze = false
 
 	new iCurrent
 	while ((iCurrent = FindEntity(-1, "ICBM_missile")) > 0) {
@@ -639,9 +546,6 @@ remove_missile(id,missile){
 public round_start(){
 	
 	g_betweenRounds = false
-	
-	roundfreeze = false
-
 	new iCurrent
 	while ((iCurrent = FindEntity(-1, "ICBM_missile")) > 0) {
 		new id = Entvars_Get_Edict(iCurrent, EV_ENT_owner)

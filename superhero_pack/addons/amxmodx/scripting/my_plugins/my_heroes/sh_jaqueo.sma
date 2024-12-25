@@ -135,9 +135,9 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
+	if ( (idattacker <= 0 || idattacker > SH_MAXSLOTS )|| (idattacker==this)||!is_user_connected(idattacker)) return HAM_IGNORED
 	
-	if(weapon==CSW_SCOUT){
+	if((weapon==CSW_SCOUT)&&gHasJaqueo[idattacker]){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
 			shExtraDamage(this, idattacker, floatround(extraDamage), "Jaqueo scout", headshot)

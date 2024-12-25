@@ -3,25 +3,23 @@
 #endif
 #define sh_d_barrel_funcs
 
-#define DAMAGE 325 // 325 for Zombie / 85 for Human
 
-#define CLIP 2
-#define BPAMMO 16
+#define CSW_GATLING CSW_M3
+#define weapon_gatling "weapon_m3"
+#define WEAPON_ANIMEXT "m249"
+#define DEFAULT_W_MODEL "models/w_m3.mdl"
+#define WEAPON_SECRET_CODE 1942
+#define old_event "events/m3.sc"
 
-#define SPEED 0.35
-#define RELOAD_TIME 1.5
-#define KNOCKPOWER 1000
+#define DAMAGE 85
+#define SPEED 0.15
+#define RECOIL 2.0
+#define RELOAD_TIME 1.75
+#define DEFAULT_CLIP 2
+#define DEFAULT_BPAMMO 64
 
-#define MODEL_V "models/shmod/supernoodle/dbarrel/v_dbarrel.mdl"
-#define MODEL_P "models/shmod/supernoodle/dbarrel/p_dbarrel.mdl"
+#define SUBMODEL -1
 
-#define CSW_DBARREL CSW_M3
-#define weapon_dbarrel "weapon_m3"
-
-#define WEAPON_SECRETCODE 20106014
-#define OLD_W_MODEL "models/w_m3.mdl"
-#define OLD_EVENT "events/m3.sc"
-#define ANIM_EXT "shotgun"
 
 // MACROS
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
@@ -29,6 +27,15 @@
 #define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
 
 
+const PDATA_SAFE = 2
+const OFFSET_LINUX_WEAPONS = 4
+const OFFSET_LINUX_PLAYER = 5
+const OFFSET_WEAPONOWNER = 41
+const m_iClip = 51
+const m_fInReload = 54
+const m_flNextAttack = 83
+const m_szAnimExtention = 492
+const m_szAnimExtention = 492
 
 native d_barrel_set_d_barrel(id)
 native d_barrel_unset_d_barrel(id)

@@ -5,30 +5,6 @@
 
 
 
-
-#define COLORS_NUM 8
-//Colors To Pick From
-#define CUSTOM		0
-#define RED		1
-#define GREEN		2
-#define BLUE		3
-#define LTBLUE		4
-#define YELLOW		5
-#define PURPLE		6
-#define ORANGE		7
-
-//Color definitions
-new const LineColors[COLORS_NUM][3] = {
-	{150, 150, 150},	//Custom
-	{255, 0, 0},		//Red
-	{0, 255, 0},		//Green
-	{0, 0, 255},		//Blue
-	{0, 255, 255},		//Light Blue
-	{255, 255, 0},		//Yellow
-	{255, 0, 255},		//Purple
-	{255, 128, 0}		//Orange
-}
-
 new const love_color[4]={250, 92, 163,50}
 new const red_color[4]={255, 0, 0, 50}
 new const heal_color[4]={250,250,210, 100}

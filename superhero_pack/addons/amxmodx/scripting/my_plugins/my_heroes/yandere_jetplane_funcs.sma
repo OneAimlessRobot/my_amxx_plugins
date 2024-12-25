@@ -5,8 +5,10 @@
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
+#include "jetplane_inc/sh_jetplane_radio_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero yandere jetty funcs"
@@ -61,7 +63,6 @@ public plugin_natives(){
 	register_native("jet_loaded","_jet_loaded",0);
 	register_native("jet_deployed","_jet_deployed",0);
 	register_native("jet_destroy","_jet_destroy",0);
-	register_native("draw_bbox","_draw_bbox",0);
 	register_native("jet_get_user_jet","_jet_get_user_jet",0);
 
 	
@@ -86,7 +87,6 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	precache_model(JETPLANE_MODEL)
 	precache_model(JETPLANE_CAMERA_MODEL)
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
 	
 	
 }
@@ -253,6 +253,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_bombs(jetplane_id)
 	reset_jet_shells(jetplane_id)
 	reset_jet_rockets(jetplane_id)
+	reset_jet_scans(jetplane_id)
 	sh_chat_message(attacker,yandere_get_hero_id(),"jet armed!");
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD)
 	camera[id] = create_entity("info_target")
@@ -351,14 +352,15 @@ public jet_think(ent)
 		
 		}
 		new hud_msg[1024]
-		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^n",
+		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
 					float(pev(ent,pev_health))-1000.0,
 					get_user_fuel_ammount(owner),
 					get_user_jet_bombs(owner),
 					get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
 					get_user_jet_shells(owner),
 					get_user_mg(owner)?(float(pev(get_user_law(owner),pev_health))-1000.0):0.0,
-					get_user_jet_rockets(owner));
+					get_user_jet_rockets(owner),
+					get_user_jet_scans(owner));
 		set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.35, 0.8, 1, 0.0, 0.5,0.0,0.0,1)
 		ShowSyncHudMsg(owner, hud_sync_charge, "%s", hud_msg)
 		draw_bbox(jet_get_user_jet(owner),0)
@@ -367,127 +369,6 @@ public jet_think(ent)
 	return FMRES_IGNORED
 }
 
-//----------------------------------------------------------------------------------------------
-laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
-{
-	if ( !pev_valid(ent_id) ) return
-	
-	static  colors[3]
-	
-	switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
-	{
-		case CS_TEAM_T: colors = LineColors[RED]
-			case CS_TEAM_CT: colors = LineColors[BLUE]
-				default: colors = LineColors[CUSTOM]
-	}
-	//This is a little cleaner but not much
-	if ( killbeam ) {
-		//Kill the Beam
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-		write_byte(TE_KILLBEAM)
-		write_short(ent_id) // entity
-		message_end()
-	}
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-	write_byte (0)     //TE_BEAMENTPOINTS 0
-	write_coord_f(Pos[0])
-	write_coord_f(Pos[1])
-	write_coord_f(Pos[2])		// start entity
-	write_coord_f(vEnd[0])	// end position
-	write_coord_f( vEnd[1])
-	write_coord_f(vEnd[2])
-	write_short(gSpriteLaser)// sprite index
-	write_byte(0)		// starting frame
-	write_byte(0)		// frame rate in 0.1's
-	write_byte(1)		// life in 0.1's
-	write_byte(5)		// line width in 0.1's
-	write_byte(0)		// noise amplitude in 0.01's
-	write_byte(colors[0])	// Red
-	write_byte(colors[1])	// Green
-	write_byte(colors[2])	// Blue
-	write_byte(255)	// brightness
-	write_byte(0)		// scroll speed in 0.1's
-	message_end()
-}
-public _draw_bbox(iPlugin,iParams){
-	new ent_id=get_param(1)
-	new killbeam=get_param(2)
-	new Float:bbox_mins[3],Float:bbox_maxs[3],Float:ent_orig[3]
-		
-	//Example: vex_rld = vex rear left down (z, y, x)
-	//left= min
-	//right= max
-
-	Entvars_Get_Vector(ent_id, EV_VEC_mins,bbox_mins)
-	Entvars_Get_Vector(ent_id, EV_VEC_maxs,bbox_maxs)
-	pev(ent_id,pev_origin,ent_orig)
-	new Float:vex_rld[3],Float:vex_rlu[3],Float:vex_rrd[3],Float:vex_rru[3];
-	new Float:vex_fld[3],Float:vex_flu[3],Float:vex_frd[3],Float:vex_fru[3];
-	
-	// Rear left down
-	vex_rld[0] = ent_orig[0] + bbox_mins[0];
-	vex_rld[1] = ent_orig[1] + bbox_mins[1];
-	vex_rld[2] = ent_orig[2] + bbox_mins[2];
-	
-	// Rear left up
-	vex_rlu[0] = ent_orig[0] + bbox_mins[0];
-	vex_rlu[1] = ent_orig[1] + bbox_mins[1];
-	vex_rlu[2] = ent_orig[2] + bbox_maxs[2];
-	
-	// Rear right down
-	vex_rrd[0] = ent_orig[0] + bbox_maxs[0];
-	vex_rrd[1] = ent_orig[1] + bbox_mins[1];
-	vex_rrd[2] = ent_orig[2] + bbox_mins[2];
-	
-	// Rear right up
-	vex_rru[0] = ent_orig[0] + bbox_maxs[0];
-	vex_rru[1] = ent_orig[1] + bbox_mins[1];
-	vex_rru[2] = ent_orig[2] + bbox_maxs[2];
-	
-	// Front left down
-	vex_fld[0] = ent_orig[0] + bbox_mins[0];
-	vex_fld[1] = ent_orig[1] + bbox_maxs[1];
-	vex_fld[2] = ent_orig[2] + bbox_mins[2];
-	
-	// Front left up
-	vex_flu[0] = ent_orig[0] + bbox_mins[0];
-	vex_flu[1] = ent_orig[1] + bbox_maxs[1];
-	vex_flu[2] = ent_orig[2] + bbox_maxs[2];
-	
-	// Front right down
-	vex_frd[0] = ent_orig[0] + bbox_maxs[0];
-	vex_frd[1] = ent_orig[1] + bbox_maxs[1];
-	vex_frd[2] = ent_orig[2] + bbox_mins[2];
-	
-	// Front right up
-	vex_fru[0] = ent_orig[0] + bbox_maxs[0];
-	vex_fru[1] = ent_orig[1] + bbox_maxs[1];
-	vex_fru[2] = ent_orig[2] + bbox_maxs[2];
-	
-	//draw lines
-	
-	laser_line(ent_id, vex_rld, vex_rrd, killbeam);
-	laser_line(ent_id, vex_rld, vex_rlu, killbeam);
-	laser_line(ent_id, vex_rrd, vex_rru, killbeam);
-	laser_line(ent_id, vex_rlu, vex_rru, killbeam);
-	
-	// Front face
-	laser_line(ent_id, vex_fld, vex_frd, killbeam);
-	laser_line(ent_id, vex_fld, vex_flu, killbeam);
-	laser_line(ent_id, vex_frd, vex_fru, killbeam);
-	laser_line(ent_id, vex_flu, vex_fru, killbeam);
-	
-	// Connecting lines
-	laser_line(ent_id, vex_rld, vex_fld, killbeam);
-	laser_line(ent_id, vex_rlu, vex_flu, killbeam);
-	laser_line(ent_id, vex_rrd, vex_frd, killbeam);
-	laser_line(ent_id, vex_rru, vex_fru, killbeam);
-	
-	
-
-
-}
 public charge_task(parm[],id){
 	id-=JET_CHARGE_TASKID
 	//if(client_isnt_hitter(id)) return

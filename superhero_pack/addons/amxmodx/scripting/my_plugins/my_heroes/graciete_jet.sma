@@ -1,6 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
@@ -115,12 +116,6 @@ public _reset_graciete_user(iPlugin,iParams){
 	
 }
 
-public plugin_end(){
-	
-	
-	unregister_forward(FM_CmdStart,cmd_forward);
-	
-}
 public plugin_precache(){
 	
 	
@@ -135,6 +130,12 @@ public plugin_precache(){
 	
 }
 
+public plugin_end(){
+	
+	
+	unregister_forward(FM_CmdStart,cmd_forward);
+	
+}
 public graciete_cooldown_loop(id){
 	id-=GRACIETE_COOLDOWN_TASKID;
 	//sh_chat_message(id,gHeroID,"Loop running! %d seconds left!",g_graciete_jetpack_cooldown[id]);
@@ -222,7 +223,7 @@ public client_PostThink(id) {
 			g_graciete_leaped[id]=false
 			if(g_graciete_power_landing[id]){
 				
-				explosion(id);
+				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id])
 				g_graciete_land_power[id]=0.0
 				
 			}
@@ -366,181 +367,3 @@ public JetpackJump( id,intensity){
 	set_pev(id, pev_velocity, velocity);
 }
 
-//----------------------------------------------------------------------------------------------
-public move_enemy(parm[])
-{
-	new victim = parm[3]
-	
-	new Float:origin[3]
-	
-	pev(victim,pev_origin,origin)
-	
-	origin[2]+=100.0
-	
-	set_pev(victim,pev_origin,origin)
-	
-	new Float:fl_velocity[3]
-	fl_velocity[0] = float(parm[0])
-	fl_velocity[1] = float(parm[1])
-	fl_velocity[2] = floatabs(float(parm[2]))
-	
-	set_pev(victim, pev_velocity, fl_velocity)
-	
-}
-public explosion(ent_id){
-	new Float:fOrigin[3];
-	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
-	
-	new iOrigin[3];
-	for(new i=0;i<3;i++)
-		iOrigin[i] = floatround(fOrigin[i]);
-	
-	explode_fx(iOrigin)
-	
-	new entlist[33];
-	new numfound = find_sphere_class(ent_id,"player", land_explosion_radius ,entlist, 32);
-	
-	new CsTeams:idTeam = cs_get_user_team(ent_id)
-		
-	for (new i=0; i < numfound; i++)
-	{		
-		new pid = entlist[i];
-		
-		sh_screen_shake(ent_id,10.0,3.0,10.0)
-		if(pid!=ent_id){
-			if(cs_get_user_team(pid)==idTeam){
-				continue
-			}
-		}
-		damage_player(ent_id,pid)
-		
-	}
-}
-public damage_player(ent_id,pid){
-	
-	
-	
-	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
-	
-	Entvars_Get_Vector(pid, EV_VEC_origin, vOrig)
-	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
-	
-	Entvars_Get_Vector(ent_id, EV_VEC_velocity, b_vel)
-	
-	new Float:distance=get_distance_f(vOrig,usOrig);
-	new client_name[128];
-	new attacker_name[128];
-	get_user_name(pid,client_name,127);
-	get_user_name(ent_id,attacker_name,127);
-	new Float:vic_origin[3],Float:mine_origin[3];
-	entity_get_vector(pid,EV_VEC_origin,vic_origin);
-	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
-	distance=vector_distance(vic_origin,mine_origin);
-	new Float:falloff_coeff= floatmin(1.0,distance/land_explosion_radius);
-	new Float:force=g_graciete_land_power[ent_id]-(g_graciete_land_power[ent_id]/2.0)*falloff_coeff
-	new iforce=floatround(force)
-	sh_extra_damage(pid,ent_id,iforce,"Graciete pound");
-	
-	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
-	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
-	b_vel[2]=force
-	
-	
-	if(pid!=ent_id){
-		
-		new parm[4]
-		
-		parm[0] = floatround(b_vel[0])
-		parm[1] = floatround(b_vel[1])
-		parm[2] = floatround(b_vel[2])
-		parm[3] = pid
-		set_task(0.1, "move_enemy", 0, parm, 4)
-		sh_set_stun(pid,3.0,0.5)
-	}
-	sh_screen_shake(pid,10.0,3.0,10.0)
-	unfade_screen_user(pid)
-	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	sh_chat_message(ent_id,graciete_get_hero_id(),"%s was shattered by you!",client_name);
-	sh_chat_message(pid,graciete_get_hero_id(),"%s shattered you!",attacker_name);
-}
-unfade_screen_user(id){
-	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client"  
-	write_short(1<<12); // fade lasts this long duration  
-	write_short(1<<8); // fade lasts this long hold time  
-	write_short(FADE_OUT); // fade type
-	write_byte(0); // fade red  
-	write_byte(0); // fade green  
-	write_byte(0); // fade blue	 
-	write_byte(255); // fade alpha	 
-	message_end();	
-	
-}
-//-----------------------------------------------------------------------------------------------
-public explode_fx( vec1[3] )
-{
-	// blast circles
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 21 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 16)
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 1936)
-	write_short( white )
-	write_byte( 0 ) // startframe
-	write_byte( 0 ) // framerate
-	write_byte( 2 ) // life 2
-	write_byte( 60 ) // width 16
-	write_byte( 0 ) // noise
-	write_byte( 255 ) // r
-	write_byte( 0 ) // g
-	write_byte( 0 ) // b
-	write_byte( 255 ) //brightness
-	write_byte( 0 ) // speed
-	message_end()
-	//Explosion2
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 12 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_byte( 188 ) // byte (scale in 0.1's) 188
-	write_byte( 10 ) // byte (framerate)
-	message_end()
-	
-	//TE_Explosion
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 3 )
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2]+ random_num( -50, 50 ))
-	write_short( fire )
-	write_byte(  random_num(0,20) + 20  ) // byte (scale in 0.1's) 188
-	write_byte( 12 ) // byte (framerate)
-	write_byte( 0 ) // byte flags
-	message_end()
-	
-	//Smoke
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 5 ) // 5
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2] + random_num( -50, 50 ))
-	write_short( smoke )
-	write_byte( 60 )  // 2
-	write_byte( 10 )  // 10
-	message_end()
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(109)		// decal and ricochet sound
-	write_coord(vec1[0])	// pos
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(0)			// I have no idea what thats supposed to be
-	write_byte(28)			// decal
-	message_end()
-}
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

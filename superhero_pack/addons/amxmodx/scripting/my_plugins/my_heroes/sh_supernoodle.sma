@@ -13,6 +13,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 
 #include "../my_include/superheromod.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
+#include "h_rifle_inc/sh_h_rifle.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
@@ -29,7 +30,7 @@ public plugin_init()
 	register_cvar("SuperNoodle_armor", "100")
 	register_cvar("supernoodle_m249mult", "1.5")
 	register_cvar("supernoodle_elitemult", "1.5")
-	register_cvar("SuperNoodle_m3mult", "2.0")
+	register_cvar("SuperNoodle_dbarrel_mult", "2.0")
 	register_cvar("SuperNoodle_scoutmult", "2.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -68,7 +69,7 @@ public SuperNoodle_init()
 	}
 	//This gets run if they had the power but don't anymore
 	else {
-		d_barrel_unset_d_barrel(id)
+		h_rifle_unset_h_rifle(id)
 		engclient_cmd(id, "drop", "weapon_m249")
 		engclient_cmd(id, "drop", "weapon_elite")
 		engclient_cmd(id, "drop", "weapon_scout")
@@ -98,6 +99,7 @@ public SuperNoodle_weapons(id)
 {
 	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
 		d_barrel_set_d_barrel(id)
+		h_rifle_set_h_rifle(id)
 		shGiveWeapon(id,"weapon_m249")
 		shGiveWeapon(id,"weapon_elite")
 		shGiveWeapon(id,"weapon_scout")
@@ -114,8 +116,8 @@ public SuperNoodle_damage(id)
 
 	if ( !is_user_connected(attacker)||id==attacker ) return HAM_IGNORED
 
-	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_XM1014 && is_user_alive(id) ) {
-		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_m3mult") - damage)
+	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
+		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "super shotgun", headshot)
 	
 	}
@@ -141,3 +143,6 @@ public client_connect(id)
 	gHasSuperNoodlePower[id] = false
 }
 //----------------------------------------------------------------------------------------------
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/
