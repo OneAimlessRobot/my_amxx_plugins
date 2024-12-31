@@ -52,7 +52,7 @@ new bool:is_a_swat[33]
 new gHeroID
 //new sprite, sprite1, sprite2, sprite3
 //new beam, boom
-new beam, sprite1, sprite2, sprite3
+new beam,sprite2, sprite3
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -113,7 +113,6 @@ public swat_weapons(id)
 {
 	if ( shModActive() && is_user_alive(id) ) {
 		sh_give_weapon(id,CSW_M4A1,true)
-		shGiveWeapon(id,"weapon_knife")
 		shGiveWeapon(id,"item_thighpack")
 		if(!is_a_swat[id]){
 			cs_set_user_model(id, "swat")
@@ -252,15 +251,11 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,m4_swat_sounds[i] );
 	
 	}
-	//boom = precache_model("sprites/zerogxplode.spr")
-	//sprite = precache_model("sprites/zbeam6.spr")
 
 	precache_model(SWAT_M4_P_MODEL )
 	precache_model(SWAT_M4_V_MODEL )
 	precache_model(SWAT_M4_W_MODEL )
-	sprite1 = precache_model("sprites/white.spr")
-	sprite2 = precache_model("sprites/zerogxplode.spr")
-	sprite3 = precache_model("sprites/steam1.spr")
+	precache_explosion_fx()
 
 	precache_model("models/rpgrocket.mdl")
 

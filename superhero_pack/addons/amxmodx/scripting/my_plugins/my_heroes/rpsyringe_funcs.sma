@@ -2,6 +2,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 pt4"
@@ -12,8 +13,6 @@
 new gRocketsEngaged[SH_MAXSLOTS+1]
 new has_rocket[SH_MAXSLOTS+1]
 new rocket_fx[MAX_ENTITIES]
-new m_trail,sprite1,blood1,blood2
-new const gunsound[] = "shmod/yakui/m249-1.wav";
 public plugin_init(){
 	
 	
@@ -109,16 +108,6 @@ public CmdStart(id, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
-
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
-
-}*/
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
 public client_isnt_hitter(gatling_user){
 
 
@@ -163,7 +152,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new color[4]
 	sh_get_pill_color(rocket_fx[pToucher],id,color)
-	make_shockwave(vExplodeAt,color)
+	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
 	RemoveEntity(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
@@ -238,64 +227,8 @@ make_trail(NewEnt,color)
 Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
 return PLUGIN_HANDLED
 }
-public make_shockwave(point[3],color[4]){
-
-
-
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte( 21 )
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(ROCKET_RADIUS))
-write_short( sprite1 )
-write_byte( 0 )
-write_byte(1)		// frame rate in 0.1's
-write_byte(6)		// life in 0.1's
-write_byte(8)		// line width in 0.1's
-write_byte(1)		// noise amplitude in 0.01's
-write_byte( color[0])
-write_byte( color[1] )
-write_byte( color[2] )
-write_byte( color[3] )
-write_byte( 0 )
-message_end()
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_LAVASPLASH);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_BLOODSPRITE);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(ROCKET_RADIUS))
-write_short(blood2);
-write_short(blood1);
-write_byte(255);
-write_byte(30);
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_DLIGHT);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2])
-write_byte( color[0])
-write_byte( color[1] )
-write_byte( color[2] )
-write_byte( color[3] )
-write_byte(8);
-write_byte(60);
-message_end();
-
-}
 //----------------------------------------------------------------------------------------------
-public client_disconnect(id)
+public client_disconnected(id)
 {
 has_rocket[id] = 0
 }
@@ -356,14 +289,9 @@ if(has_rocket[i] > 0){
 }
 public plugin_precache()
 {
-m_trail = precache_model("sprites/smoke.spr")
-
 precache_sound(ROCKET_EXPLODE_SFX)
 precache_sound("ambience/particle_suck2.wav")
-precache_model("models/w_smokegrenade.mdl")
-blood1 = precache_model("sprites/blood.spr");
-blood2 = precache_model("sprites/bloodspray.spr");
-sprite1 = precache_model("sprites/white.spr")
+precache_explosion_fx()
 
 precache_model(GATLING_P_MODEL)
 precache_model(GATLING_V_MODEL)

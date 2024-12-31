@@ -3,6 +3,7 @@
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero teliko slitter"
@@ -15,7 +16,6 @@ new slitter_on[SH_MAXSLOTS+1]
 new g_dragging_who[SH_MAXSLOTS+1][2]
 new g_slit_kills[SH_MAXSLOTS+1]
 
-new m_trail
 new Float:slitter_distance
 new Float:slitter_drag_time
 new slitter_level_difference
@@ -390,12 +390,6 @@ return !teliko_get_has_teliko(gatling_user)
 
 }
 
-client_hittable(gatling_user){
-new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-return result
-
-
-}
 
 
 public plugin_precache()
@@ -419,6 +413,3 @@ public death()
 	}
 	
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang3076\\ f0\\ fs16 \n\\ par }
-*/

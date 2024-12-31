@@ -248,7 +248,6 @@ public loadCVARS()
 
 public disarm_task(param[],id){
 	id-=MINE_DISARM_TASKID
-	new mine_id=param[0]
 	new hud_msg[128];
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
 	format(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
@@ -470,6 +469,3 @@ set_rendering(id, kRenderFxNone, r, g, b,  kRenderNormal, 255)
 entity_set_float(id, EV_FL_renderamt, 1.0)
 }
 } 
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

@@ -33,7 +33,7 @@
 
 
 
-new const bleed_color[4]={255, 1, 1,255}
+stock const bleed_color[4]={255, 1, 1,255}
 
 native sh_bleed_user(id,attacker,gHeroID)
 native sh_ultrableed_user(id,attacker,gHeroID)

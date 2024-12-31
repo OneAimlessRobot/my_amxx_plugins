@@ -4,7 +4,7 @@
 #define sh_get_set_graciete
 
 
-new const graciete_color[4]={50, 205, 50, 100}
+stock const graciete_color[4]={50, 205, 50, 100}
 
 new gHeroID
 new const gHeroName[] = "Graciete"

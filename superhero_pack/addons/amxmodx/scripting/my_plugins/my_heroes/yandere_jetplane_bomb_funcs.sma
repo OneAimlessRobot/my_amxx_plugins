@@ -17,9 +17,6 @@ new has_bomb[SH_MAXSLOTS+1]
 new Float:jetplane_bomb_radius,
 Float:jetplane_bomb_dmg;
 new jetplane_bomb_ammo;
-new sprite_blast
-
-new m_trail,sprite1,blood1,blood2
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -94,11 +91,6 @@ public _reset_user_jet_bombs(iPlugins,iParams){
 	
 	new id=get_param(1)
 	return reset_jet_bombs(jet_get_user_jet(id))
-
-}
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
 
 }
 public CmdStart(id, uc_handle)
@@ -221,8 +213,7 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 	
 	
 	emit_sound(pToucher, CHAN_VOICE, BOMB_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	new color[4]
-	make_shockwave(vExplodeAt)
+	make_shockwave(vExplodeAt,jetplane_bomb_radius,love_color)
 	RemoveEntity(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
@@ -236,74 +227,14 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 	}
 }
 }
-public make_shockwave(point[3]){
-
-
-
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte( 21 )
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(jetplane_bomb_radius))
-write_short( sprite1 )
-write_byte( 0 )
-write_byte(1)		// frame rate in 0.1's
-write_byte(6)		// life in 0.1's
-write_byte(8)		// line width in 0.1's
-write_byte(1)		// noise amplitude in 0.01's
-write_byte( love_color[0])
-write_byte( love_color[1] )
-write_byte( love_color[2] )
-write_byte( love_color[3] )
-write_byte( 0 )
-message_end()
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_LAVASPLASH);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_BLOODSPRITE);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(jetplane_bomb_radius))
-write_short(blood2);
-write_short(blood1);
-write_byte(255);
-write_byte(30);
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_DLIGHT);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2])
-write_byte( love_color[0])
-write_byte( love_color[1] )
-write_byte( love_color[2] )
-write_byte( love_color[3] )
-write_byte(8);
-write_byte(60);
-message_end();
-
-}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
 
 	precache_model( BOMB_MODEL );
 		
-	sprite_blast = precache_model("sprites/dexplo.spr");
-	
-	blood1 = precache_model("sprites/blood.spr");
-	blood2 = precache_model("sprites/bloodspray.spr");
+	precache_explosion_fx()
 	precache_sound("ambience/particle_suck2.wav")
-	sprite1 = precache_model("sprites/white.spr")
 	engfunc(EngFunc_PrecacheSound,BOMB_EXPLODE_SOUND)
 	
 }

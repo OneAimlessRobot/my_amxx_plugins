@@ -29,7 +29,7 @@
 
 
 
-new const chaff_color[4]={255, 255, 255,200}
+stock const chaff_color[4]={255, 255, 255,200}
 
 native sh_chaff_user(id,attacker,gHeroID)
 native sh_unchaff_user(id)

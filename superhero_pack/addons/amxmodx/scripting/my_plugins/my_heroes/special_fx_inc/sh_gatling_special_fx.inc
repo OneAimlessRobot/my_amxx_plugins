@@ -102,18 +102,18 @@ enum
 	BATH,
 }
 
-new const kill_color[4]={1, 255, 255, 255}
-new const poison_color[4]={80, 240, 30, 255}
-new const glow_color[4]={255, 255, 255, 255}
-new const stun_color[4]={100, 100, 100, 255}
-new const radioactive_color[4]={240, 80, 30,  255}
-new const morphine_color[4]={80, 240, 1, 255}
-new const weed_color[4]={80, 240, 90, 255}
-new const cocaine_color[4]={250, 10, 30, 255}
-new const blind_color[4]={255, 255, 255, 255}
-new const focus_color[4]={10, 10, 10, 255}
-new const bath_color[4]={179, 66, 5, 255}
-new const no_color[4]={0,0,0,0}
+stock const kill_color[4]={1, 255, 255, 255}
+stock const poison_color[4]={80, 240, 30, 255}
+stock const glow_color[4]={255, 255, 255, 255}
+stock const stun_color[4]={100, 100, 100, 255}
+stock const radioactive_color[4]={240, 80, 30,  255}
+stock const morphine_color[4]={80, 240, 1, 255}
+stock const weed_color[4]={80, 240, 90, 255}
+stock const cocaine_color[4]={250, 10, 30, 255}
+stock const blind_color[4]={255, 255, 255, 255}
+stock const focus_color[4]={10, 10, 10, 255}
+stock const bath_color[4]={179, 66, 5, 255}
+stock const no_color[4]={0,0,0,0}
 
 native sh_effect_user(id,attacker,gHeroID)
 native sh_gen_effect()

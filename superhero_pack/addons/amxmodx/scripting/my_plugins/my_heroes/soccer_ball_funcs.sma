@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include <xs>
 
 #define PLUGIN "Superhero roberto mk2 pt2"
@@ -10,8 +11,6 @@
 
 
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
-new m_trail,sprite1;
-
 new bool:ball_pickable[MAX_ENTITIES]
 new bool:kicked_ball[SH_MAXSLOTS+1]
 new bool:tagged_by_baller[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -50,21 +49,6 @@ public plugin_natives(){
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-}
-client_hittable(vic_userid){
-	
-	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-	
-}
 client_isnt_hitter(gatling_user){
 	
 	
@@ -152,29 +136,6 @@ public ball_in_the_face(ball,id,vic)
 		set_task(0.1, "move_enemy", 0, parm, 5)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public move_enemy(parm[])
-{
-	new victim = parm[3]
-	new id = parm[4]
-	
-	new Float:fl_velocity[3]
-	fl_velocity[0] = float(parm[0])
-	fl_velocity[1] = float(parm[1])
-	fl_velocity[2] = float(parm[2])
-	
-	set_pev(victim, pev_velocity, fl_velocity)
-	
-	// do some damage
-	new damage = BALL_DMG
-	if ( damage > 0 ) {
-		
-		if ( !is_user_alive(victim) ) return
-		
-		sh_extra_damage(victim, id, damage, "Ball")
-	}	
-}
-
 public vexd_pfntouch(pToucher, pTouched)
 {
 	
@@ -234,25 +195,6 @@ public remove_ball(id_ball){
 	
 	
 }
-// ported from AMXX's core get_user_origin(..., 3) (suggested by Greenberet)
-stock fm_get_aim_origin(index, Float:origin[3]) {
-	new Float:start[3], Float:view_ofs[3];
-	pev(index, pev_origin, start);
-	pev(index, pev_view_ofs, view_ofs);
-	xs_vec_add(start, view_ofs, start);
-	
-	new Float:dest[3];
-	pev(index, pev_v_angle, dest);
-	engfunc(EngFunc_MakeVectors, dest);
-	global_get(glb_v_forward, dest);
-	xs_vec_mul_scalar(dest, 9999.0, dest);
-	xs_vec_add(start, dest, dest);
-	
-	engfunc(EngFunc_TraceLine, start, dest, 0, index, 0);
-	get_tr2(0, TR_vecEndPos, origin);
-	
-	return 1;
-} 
 public kick_ball(iPlugin,iParams)
 {
 	
@@ -407,13 +349,12 @@ public plugin_precache()
 	beamspr = precache_model( "sprites/laserbeam.spr" );
 	precache_sound(kicked)
 	precache_sound(gotball)
-	m_trail = precache_model("sprites/laserbeam.spr")
 	precache_sound(cheers)
-	sprite1 = precache_model("sprites/white.spr")
+	precache_explosion_fx()
 	
 	
 }
-public shoteffects(Float:Pos[3],ent){
+stock shoteffects(Float:Pos[3],ent){
 	if(client_isnt_hitter(ent)) return
 	new Float:vOrigin[3]
 	pev(ent, pev_origin, vOrigin)
@@ -454,32 +395,8 @@ public shoteffects(Float:Pos[3],ent){
 	message_end()
 	
 }
-public draw_line(Float:Pos[3],Float:end_point[3]){
-	
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte (0)     //TE_BEAMENTPOINTS 0
-	write_coord_f(Pos[0])
-	write_coord_f(Pos[1])
-	write_coord_f(Pos[2])
-	write_coord_f(end_point[0])
-	write_coord_f(end_point[1])
-	write_coord_f(end_point[2])
-	write_short( m_trail )
-	write_byte(1) // framestart
-	write_byte(5) // framerate
-	write_byte(5) // life
-	write_byte(10) // width
-	write_byte(0) // noise
-	write_byte( 255 )     // r, g, b
-	write_byte( 200 )       // r, g, b
-	write_byte( 200 )
-	write_byte(200) // brightness
-	write_byte(150) // speed
-	message_end()
-	
-}
 
-public glow(id, r, g, b, on) {
+stock glow(id, r, g, b, on) {
 	if(on == 1) {
 		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderNormal, 255)
 		entity_set_float(id, EV_FL_renderamt, 1.0)

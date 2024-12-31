@@ -9,34 +9,11 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-new smoke, white, fire
-new m_trail
-new gSpriteLaser,blood1,blood2,sprite1;
-new g_msgFade
+stock smoke, white, fire
+stock m_trail
+stock gSpriteLaser,blood1,blood2,sprite1;
+stock g_msgFade
 
-//----------------------------------------------------------------------------------------------
-public plugin_init()
-{
-	// Plugin Info
-	register_plugin(PLUGIN, VERSION, AUTHOR)
-	g_msgFade = get_user_msgid("ScreenFade");
-	
-	
-	// Add your code here...
-}
-
-public plugin_natives(){
-
-	register_native("explosion_player","_explosion_player",0);
-	register_native("explosion","_explosion",0);
-	register_native("track_user","_track_user",0);
-	register_native("unradioactive_user","_unradioactive_user",0);
-	register_native("make_shockwave","_make_shockwave",0)
-	register_native("draw_bbox","_draw_bbox",0);
-
-	
-
-}
 
 trail(vec1[3],vec2[3],const color[4],id){
 
@@ -637,3 +614,11 @@ public plugin_precache(){
 	
 }
 
+public bool:_client_hittable(iPlugin,iParams){
+new vic_userid=get_param(1)
+return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
+
+}
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

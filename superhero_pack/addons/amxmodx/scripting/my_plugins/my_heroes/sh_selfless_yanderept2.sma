@@ -4,11 +4,12 @@
 #include <xs>
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
-#include "jetplane_inc/sh_yandere_get_set.inc"
+#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
+#include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
-#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 //#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
@@ -54,7 +55,6 @@ public plugin_init()
 	register_event("Damage", "yandere_damage", "b", "2!0")
 	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	//register_event("CurWeapon", "weaponSpeed", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	hud_sync=CreateHudSyncObj()
 	
@@ -149,9 +149,10 @@ if(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user 
 return !gHasYandere[gatling_user]
 
 }
+
 public Player_TakeDamage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(gIsPsychosis[id])) return HAM_IGNORED
+	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(gIsPsychosis[id])||!client_hittable(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -494,8 +495,7 @@ bool:heal_teamate(id,i){
 	new Float: new_health=floatadd(mate_health,YANDERE_HEAL_PERIOD*floatmul(gNormalHeal[id],heal_base))
 	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
 	setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)	
 	heal_stream(id,i)
 	return true
 
@@ -503,7 +503,7 @@ bool:heal_teamate(id,i){
 public heal_players_in_radius(id){
 
 id-=YANDERE_HEAL_TASKID
-if(!sh_is_active()||!is_user_alive(id)) return
+if(!sh_is_active()||!client_hittable(id)) return
 
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
@@ -511,8 +511,8 @@ new CsTeams:user_team= cs_get_user_team(id)
 new bool:healed=false
 for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 	
-	if((i==id)||!is_user_connected(i)){
-		
+	if((i==id)||!client_hittable(i)){
+		return
 		
 	}
 	else if(is_user_alive(i)){
@@ -522,6 +522,7 @@ for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<gNormalHealRadius[id]){
 				healed=heal_teamate(id,i)
+				set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)
 				
 			}
 		}
@@ -545,16 +546,17 @@ if(healed){
 public heal_player_in_sight(id){
 
 id-=YANDERE_HEAL_TASKID
-if(!sh_is_active()||!is_user_alive(id)) return
+if(!sh_is_active()||!client_hittable(id)) return
 
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
 new CsTeams:user_team= cs_get_user_team(id)
+new bool:healed=false
 if(!gSuperAngry[id]){
 	
 	
 	// get crosshair aim
-	static iMyAim[3], Float:flMyAim[3];
+	new iMyAim[3], Float:flMyAim[3];
 	get_user_origin(id, iMyAim, 3);
 	IVecFVec(iMyAim, flMyAim);
 	
@@ -562,12 +564,11 @@ if(!gSuperAngry[id]){
 	set_tr(TR_vecEndPos, flMyAim);
 	
 	// get ent looking at
-	static i, body;
+	new i, body;
 	get_user_aiming(id, i, body);
 	
-	if((i==id)||!is_user_connected(i)){
-		
-		
+	if((i==id)||!client_hittable(i)){
+		return
 	}
 	else if(is_user_alive(i)){
 		new CsTeams:other_user_team=cs_get_user_team(i)
@@ -575,16 +576,26 @@ if(!gSuperAngry[id]){
 			get_user_origin(i,teamate_origin)
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<gNormalHealRadius[id]){
-				heal_teamate(id,i)
+				healed=heal_teamate(id,i)
 			}
 		}
 	}
 	
 	
 }
+if(healed){
+
+	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
+	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	heal_aura(id)
+
+}
 
 }
 public notify_yanderes_about_team_life(id,alive){
+
+if(!sh_is_active()||!is_user_connected(id)) return
 
 new CsTeams:user_team= cs_get_user_team(id)
 for(new i=1;i<=SH_MAXSLOTS;i++){
@@ -615,7 +626,7 @@ public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
 
-if(gHasYandere[id]){
+if(gHasYandere[id]&&client_hittable(id)){
 
 	/*new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	new iMax = global_get(glb_maxEntities) // Get's the limit
@@ -663,10 +674,11 @@ gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 set_user_gravity(id,gNormalGravity[id])
 gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
 if(gSuperAngry[id]&&is_user_alive(id)&&is_user_connected(id)){
-	jet_destroy(id)
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	BlowUp(id)
+	jet_destroy(id)
+	sh_give_weapon(id, CSW_XM1014,true)
 
 }
 
@@ -695,6 +707,7 @@ if(!gSuperAngry[id]){
 	sh_chat_message(id,gHeroID,"Demorphing!")
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
+	sh_drop_weapon(id, CSW_XM1014,true)
 	
 }
 
@@ -704,17 +717,11 @@ update_stats(id){
 if(gHasYandere[id]&&client_hittable(id)){
 	if(gSuperAngry[id]){
 		
-		sh_give_weapon(id, CSW_XM1014,true)
-		new ammo,clip,weapon=get_user_weapon(id,ammo,clip)
-		if(weapon!=CSW_XM1014){
-			sh_give_weapon(id, CSW_XM1014,true)
-		}
 		yandere_update_idle(id)
 		update_angry_stats(id)
 		
 	}
 	else{
-		sh_drop_weapon(id, CSW_XM1014,true)
 		update_normal_stats(id)
 		
 	}
@@ -792,7 +799,7 @@ public yandere_damage(id)
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!client_hittable(attacker)) return PLUGIN_CONTINUE
 	
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
@@ -878,6 +885,7 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,yandere_shotgun_sounds[i] );
 	
 	}
+	precache_explosion_fx()
 	
 }
 
@@ -921,6 +929,33 @@ public yandere_kd()
 	
 	return PLUGIN_HANDLED
 }
+/*
+public yandere_kd()
+{
+	new temp[6]
+	
+	// First Argument is an id with colussus Powers!
+	read_argv(1,temp,5)
+	new id=str_to_num(temp)
+	
+	if ( !is_user_alive(id)||!gHasYandere[id]) return PLUGIN_HANDLED
+	if(gSuperAngry[id]){
+		if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
+			sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
+			playSoundDenySelect(id)
+			return PLUGIN_HANDLED
+		}
+		gPsychosisTime[id]=floatround(psychosis_time)
+		ultimateTimer(id, psychosis_cooldown * 1.0)
+		emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, 0, PITCH_NORM)
+		new client_name[128]
+		get_user_name(id,client_name,127)
+		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
+		psychosis_user(id)
+	}
+	
+	return PLUGIN_HANDLED
+}*/
 //----------------------------------------------------------------------------------------------
 public yandere_ku()
 {
@@ -942,25 +977,26 @@ public yandere_ku()
 	
 	return PLUGIN_HANDLED
 }
-client_hittable(vic_userid){
-	
-	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-	
-}
 public sh_round_end(){
 	
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-
-		if(client_hittable(i)&& shModActive()){
-			if ( gHasYandere[i]) {
-					jet_destroy(i)
-			}
+	
+		//if(yandere_get_has_yandere(i)&&jet_deployed(i)&&client_hittable(i)){
+		if(yandere_get_has_yandere(i)&&client_hittable(i)){
+		
+			
+			sh_drop_weapon(i, CSW_XM1014,true)
+			jet_destroy(i)
 		}
+	
 	}
+	
 	new total_alive=get_yandere_num(0,1,1)
+	
 	clear_bombs()
 	clear_shells()
 	clear_rockets()
+	
 	if(total_alive){
 		return;
 		
@@ -1027,7 +1063,6 @@ public death()
 	
 	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
 	if(gHasYandere[id]){
-		jet_destroy(id)
 		if(gSuperAngry[id]){
 			new origin[3]
 			get_user_origin(id,origin)
@@ -1211,7 +1246,7 @@ public explode_effect(vec1[3], dmgRadius)
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!gHasYandere[id] ||!gSuperAngry[id]||!shModActive()) return PLUGIN_CONTINUE
+	if ( !client_hittable(id)||!gHasYandere[id] ||!gSuperAngry[id]||!shModActive()) return
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_XM1014) {
@@ -1227,8 +1262,7 @@ public weaponChange(id)
 			entity_set_string(id, EV_SZ_viewmodel, YANDERE_KNIFE_V_MODEL)
 		
 		}
-		entity_set_string(id, EV_SZ_weaponmodel, YANDERE_KNIFE_P_MODEL)
+		//entity_set_string(id, EV_SZ_weaponmodel, YANDERE_KNIFE_P_MODEL)
 	}
-	return PLUGIN_CONTINUE
 
 }

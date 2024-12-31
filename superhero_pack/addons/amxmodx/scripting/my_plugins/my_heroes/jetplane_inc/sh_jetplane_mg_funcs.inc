@@ -22,8 +22,8 @@
 
 #define MG_SHELL_REM_TIME 0.001
 
-new Float:jetplane_mg_min_dims[3]={-30.0,-30.0,-30.0}
-new Float:jetplane_mg_max_dims[3]={30.0,30.0,30.0}
+stock Float:jetplane_mg_min_dims[3]={-30.0,-30.0,-30.0}
+stock Float:jetplane_mg_max_dims[3]={30.0,30.0,30.0}
 
 
 native get_jet_shells(jet_id)

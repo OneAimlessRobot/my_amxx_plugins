@@ -18,7 +18,6 @@ new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
 new shell_loaded[SH_MAXSLOTS+1]
 new jetplane_mg_ammo;
-new m_trail
 public plugin_init(){
 	
 	
@@ -98,15 +97,15 @@ public _get_user_mg(iPlugins,iParams){
 	new result=is_user_connected(id)
 	if(result){
 	new result2=pev_valid(jet_get_user_jet(id))
-		if(result2){
+	if(result2){
 			
 		
-			return pev(jet_get_user_jet(id),pev_iuser3)
-		}
-		else{
-			return 0
+		return pev(jet_get_user_jet(id),pev_iuser3)
+	}
+	else{
+		return 0
 		
-		}
+	}
 	}
 	return 0
 
@@ -148,11 +147,6 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	jetplane_orig[2]+=jetplane_origin_mg_offsets[2]
 	set_pev(mg_id,pev_origin,jetplane_orig)
 	set_pev(mg_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD*2)
-}
-client_hittable(vic_userid){
-	
-	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-	
 }
 public CmdStart(id, uc_handle)
 {
@@ -355,7 +349,8 @@ remove_entity(pToucher)
 }
 public plugin_precache()
 {
-m_trail = precache_model("sprites/smoke.spr")
+
+precache_explosion_fx()
 
 precache_model( "models/metalgibs.mdl" );
 engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );

@@ -19,8 +19,6 @@ new g_graciete_jetpack[SH_MAXSLOTS+1];
 new Float:g_graciete_land_power[SH_MAXSLOTS+1];
 new bool:g_graciete_power_landing[SH_MAXSLOTS+1];
 new bool:g_graciete_leaped[SH_MAXSLOTS+1];
-new smoke, white, fire
-new m_trail
 //const FL_INGROUND2 = (FL_CONVEYOR|FL_ONGROUND|FL_PARTIALGROUND|FL_INWATER|FL_FLOAT)
 const FL_INGROUND2=TOUCHING_GROUND
 new jet_cooldown
@@ -29,7 +27,6 @@ new Float:land_explosion_radius
 new Float:jet_velocity
 new Float:jet_max_power
 new Float:jet_stomp_grav_mult
-new g_msgFade
 new cmd_forward
 new hud_sync_charge
 //----------------------------------------------------------------------------------------------
@@ -44,11 +41,11 @@ public plugin_init()
 	arrayset(g_graciete_land_power,0.0,SH_MAXSLOTS+1)
 	arrayset(g_graciete_power_landing,false,SH_MAXSLOTS+1)
 	arrayset(g_graciete_leaped,false,SH_MAXSLOTS+1)
+	register_event("DeathMsg","death","a")
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	
 	hud_sync_charge=CreateHudSyncObj()
-	g_msgFade = get_user_msgid("ScreenFade");
 	
 	// Add your code here...
 }
@@ -119,13 +116,11 @@ public _reset_graciete_user(iPlugin,iParams){
 public plugin_precache(){
 	
 	
-	white = precache_model("sprites/shockwave.spr")
-	fire = precache_model("sprites/zerogxplode.spr")
 	m_trail = precache_model("sprites/smoke.spr")
 	precache_model(jp_mdl)
 	engfunc(EngFunc_PrecacheSound,  jp_jump)
 	engfunc(EngFunc_PrecacheSound,  jp_fly)
-	engfunc(EngFunc_PrecacheSound,  crush_stunned)
+	precache_explosion_fx()
 	
 	
 }
@@ -367,3 +362,11 @@ public JetpackJump( id,intensity){
 	set_pev(id, pev_velocity, velocity);
 }
 
+
+public death()
+{
+	new id = read_data(2)
+	if(!is_user_connected(id)||!sh_is_active()||!graciete_get_has_graciete(id)) return
+	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	
+}

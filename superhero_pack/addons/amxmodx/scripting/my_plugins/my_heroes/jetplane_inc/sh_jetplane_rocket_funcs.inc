@@ -30,8 +30,8 @@
 
 #define ROCKET_SPEED 2000.0
 
-new Float:jetplane_law_min_dims[3]={-20.0,-5.0,-5.0}
-new Float:jetplane_law_max_dims[3]={20.0,5.0,5.0}
+stock Float:jetplane_law_min_dims[3]={-20.0,-5.0,-5.0}
+stock Float:jetplane_law_max_dims[3]={20.0,5.0,5.0}
 
 native get_jet_rockets(jet_id)
 native set_jet_rockets(jet_id,num_rockets)

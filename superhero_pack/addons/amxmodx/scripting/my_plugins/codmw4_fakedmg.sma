@@ -1,16 +1,16 @@
-#include "../../include/nvault.inc"
-#include "../../include/amxmod.inc"
-#include "../../include/amxmodx.inc"
-#include "../../include/amxmisc.inc"
-#include "../../include/hamsandwich.inc"
-#include "../../include/fakemeta.inc"
-#include "../../include/fakemeta_util.inc"
-#include "../../include/colorchat.inc"
-#include "../../include/engine.inc"
-#include "../../include/fun.inc"
-#include "../../include/csx.inc"
-#include "../../include/cstrike.inc"
-#include "../../include/Vexd_Utilities.inc"
+#include "../include/nvault.inc"
+#include "../include/amxmod.inc"
+#include "../include/amxmodx.inc"
+#include "../include/amxmisc.inc"
+#include "../include/hamsandwich.inc"
+#include "../include/fakemeta.inc"
+#include "../include/fakemeta_util.inc"
+#include "../include/colorchat.inc"
+#include "../include/engine.inc"
+#include "../include/fun.inc"
+#include "../include/csx.inc"
+#include "../include/cstrike.inc"
+#include "../include/Vexd_Utilities.inc"
 #include "my_include/codmw4_fakedmg.inc"
 
 
@@ -163,6 +163,3 @@ set_keyvalue(entity, key[], data[], const classname[])
 	set_kvd(0, KV_fHandled, 0)
 	dllfunc(DLLFunc_KeyValue, entity, 0)
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang10266\\ f0\\ fs16 \n\\ par }
-*/

@@ -26,7 +26,6 @@ new camera[SH_MAXSLOTS+1]
 
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
-new gSpriteLaser;
 new hud_sync_charge
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -45,7 +44,8 @@ public plugin_init()
 	register_forward(FM_Think, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage")
 	
-	// Add your code here...
+	
+	
 }
 
 
@@ -72,12 +72,6 @@ public loadCVARS(){
 	jetplane_cooldown=get_cvar_float("yandere_jetplane_cooldown");
 	jetplane_hp=get_cvar_float("yandere_jetplane_hp")
 }
-client_hittable(vic_userid){
-	
-	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-	
-}
-
 public plugin_precache(){
 
 
@@ -87,6 +81,7 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	precache_model(JETPLANE_MODEL)
 	precache_model(JETPLANE_CAMERA_MODEL)
+	precache_explosion_fx()
 	
 	
 }
@@ -255,7 +250,6 @@ public jet_deploy_task(parm[],id){
 	reset_jet_rockets(jetplane_id)
 	reset_jet_scans(jetplane_id)
 	sh_chat_message(attacker,yandere_get_hero_id(),"jet armed!");
-	set_pev(jetplane_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD)
 	camera[id] = create_entity("info_target")
 	new Float:origin[3]
 	new Float:angles[3]
@@ -281,6 +275,7 @@ public jet_deploy_task(parm[],id){
 	}
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
+	set_pev(jetplane_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD)
 }
 public load_jet(id){
 	id-=JET_LOAD_TASKID

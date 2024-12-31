@@ -457,8 +457,6 @@ public darkpred_fire(id)
 			show_hudmessage(id, message)
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1
-		set_hudmessage(0, 255, 0, -1.0, -1.0)
-		show_hudmessage(id, "<Hudmessage>")
 		}
 		
 		gLastClipCount[id] = ammo
@@ -577,6 +575,3 @@ public darkpred_haveable_check(id)
 		sh_chat_message(id, gHeroID, "You are not an admin. No acess was granted")
 	}
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

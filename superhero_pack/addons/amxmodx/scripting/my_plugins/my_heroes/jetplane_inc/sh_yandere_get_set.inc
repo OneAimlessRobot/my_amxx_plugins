@@ -5,14 +5,14 @@
 
 
 
-new const love_color[4]={250, 92, 163,50}
-new const red_color[4]={255, 0, 0, 50}
-new const heal_color[4]={250,250,210, 100}
+stock const love_color[4]={250, 92, 163,50}
+stock const red_color[4]={255, 0, 0, 50}
+stock const heal_color[4]={250,250,210, 100}
 
-new const yandere_shotgun_sounds[3][]={"weapons/yandere_shotgun/balrog11_draw.wav",
+stock const yandere_shotgun_sounds[3][]={"weapons/yandere_shotgun/balrog11_draw.wav",
 "weapons/yandere_shotgun/xm1014-1.wav",
 "weapons/yandere_shotgun/xm1014-insert.wav"}
-new const yandere_sentences[5][]={
+stock const yandere_sentences[5][]={
 	"Hiss.... Hiss.... Hiss.... Hiss.....",
 	"Where are you... where... are you...",
 	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",

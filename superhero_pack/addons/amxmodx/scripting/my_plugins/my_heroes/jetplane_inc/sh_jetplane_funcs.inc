@@ -32,12 +32,12 @@
 #define JET_CHARGE_RATE 1000.0
 
 #define CAMERA_DIST 500.0
-new Float:jetplane_min_dims[3]={-100.0,-100.0,-30.0}
-new Float:jetplane_max_dims[3]={100.0,100.0,30.0}
-new const jetplane_color[4]={100,100,100,50}
+stock Float:jetplane_min_dims[3]={-100.0,-100.0,-30.0}
+stock Float:jetplane_max_dims[3]={100.0,100.0,30.0}
+stock const jetplane_color[4]={100,100,100,50}
 
-new const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}
-new const Float:jetplane_origin_law_offsets[3]={0.0,0.0,30.0}
+stock const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}
+stock const Float:jetplane_origin_law_offsets[3]={0.0,0.0,30.0}
 native clear_jets()
 
 native reset_jet_user(id)

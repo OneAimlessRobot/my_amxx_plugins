@@ -22,8 +22,8 @@
 
 
 
-new const sleep_color[4]={100, 100, 100,255}
-new const rage_sleep_color[4]={250, 92, 163,255}
+stock const sleep_color[4]={100, 100, 100,255}
+stock const rage_sleep_color[4]={250, 92, 163,255}
 
 native sh_sleep_user(id,attacker,gHeroID)
 native sh_unsleep_user(id)

@@ -10,12 +10,12 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-new hook_on[SH_MAXSLOTS+1]
-new gSpriteLaser;
-new g_dragging_who[SH_MAXSLOTS+1][2]
-new g_hook_kills[SH_MAXSLOTS+1]
+stock hook_on[SH_MAXSLOTS+1]
+stock gSpriteLaser;
+stock g_dragging_who[SH_MAXSLOTS+1][2]
+stock g_hook_kills[SH_MAXSLOTS+1]
 #define NUM_SENTENCES 5
-new const erica_sentences[NUM_SENTENCES][]={
+stock const erica_sentences[NUM_SENTENCES][]={
 	
 	"TAKE THIS! Wow... this think really went deep... Ok gotta get it off... HMMFFPPH!",
 	"Ahhh its too stuck! its between the guys ribs...",

@@ -17,7 +17,6 @@ new scan_loaded[SH_MAXSLOTS+1]
 new Float:jetplane_scan_radius;
 
 new jetplane_scan_ammo;
-new m_trail,sprite1,blood1,blood2
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -90,11 +89,6 @@ public _reset_user_jet_scans(iPlugins,iParams){
 	
 	new id=get_param(1)
 	return reset_jet_scans(jet_get_user_jet(id))
-
-}
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
 
 }
 public CmdStart(id, uc_handle)
@@ -174,12 +168,7 @@ scan_loaded[id] = true
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-
-	m_trail = precache_model("sprites/smoke.spr")
-	blood1 = precache_model("sprites/blood.spr");
-	blood2 = precache_model("sprites/bloodspray.spr");
-	precache_sound("ambience/particle_suck2.wav")
-	sprite1 = precache_model("sprites/white.spr")
+	precache_explosion_fx()
 	
 }
 //---------------------------------------------------------------------------------------------- 

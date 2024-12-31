@@ -1,6 +1,9 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "colt_inc/sh_ethereal.inc"
+#include "colt_inc/sh_colt.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 #define ADRIANO_STATS_TASKID 22226
 #define ADRIANO_HUD_TASKID 21121
@@ -104,6 +107,22 @@ public loadCVARS()
 	speed_points_heal_coeff=get_cvar_float("adriano_speed_points_heal_coeff")
 	base_points=get_cvar_num("adriano_base_points")
 }
+public Ham_respawn(id){
+	if ( shModActive() && gHasAdriano[id] && is_user_alive(id) ) {
+		adriano_weapons(id)
+
+	}
+
+
+}
+//----------------------------------------------------------------------------------------------
+public adriano_weapons(id)
+{
+	if ( shModActive() && client_hittable(id)&& gHasAdriano[id] ) {
+		colt_set_colt(id)
+		ethereal_set_ethereal(id)
+	}
+}
 public adriano_init()
 {
 	
@@ -117,6 +136,7 @@ public adriano_init()
 	gHasAdriano[id]=(hasPowers!=0)
 	if(gHasAdriano[id]){
 		
+		adriano_weapons(id)
 		g_adriano_points[id]=base_points;
 		g_base_speed[id]=base_speed
 		g_base_radius[id]=base_radius
@@ -124,6 +144,8 @@ public adriano_init()
 		set_task(0.1, "adriano_loop", id+ADRIANO_STATS_TASKID, "", 0, "b")
 	}
 	else{
+		ethereal_unset_ethereal(id)
+		colt_unset_colt(id)
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
@@ -291,9 +313,21 @@ public adriano_damage(id)
 {
 	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return
 	
+	
 	new  Float:damage= float(read_data(2))
 	
 	get_speed_dmg_in_radius(id,damage)
+	
+	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new headshot = bodypart == 1 ? 1 : 0
+	
+	if(!client_hittable(attacker)||!gHasAdriano[attacker]) return
+
+	if(weapon==CSW_ETHEREAL){
+	
+		sh_extra_damage(id,attacker,floatround(damage),"Adriano Ethereal Rifle",headshot)
+	
+	}
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
@@ -380,6 +414,7 @@ public newRound(id)
 {	
 	if(is_user_alive(id) && shModActive()){
 		if ( gHasAdriano[id]) {
+			adriano_weapons(id)
 			g_adriano_points[id]=base_points;
 			g_base_speed[id]=base_speed
 		}
@@ -390,7 +425,15 @@ public newRound(id)
 public plugin_precache()
 {
 	m_spriteTexture = precache_model("sprites/laserbeam.spr")
+	for(new i=0;i<sizeof(colt_sounds);i++){
 	
+		engfunc(EngFunc_PrecacheSound,colt_sounds[i] );
+	
+	}
+	precache_model(WORLDMODEL )
+	precache_model(VIEWMODEL )
+	precache_model(WEAPONMODEL )
+	precache_explosion_fx()
 }
 public sh_round_end(){
 	

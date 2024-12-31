@@ -21,7 +21,6 @@ Float:jetplane_law_rocketspeed,
 Float:jetplane_law_dmg;
 
 new jetplane_law_ammo;
-new m_trail,sprite1,blood1,blood2
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -160,11 +159,6 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	jetplane_orig[2]+=jetplane_origin_law_offsets[2]
 	set_pev(law_id,pev_origin,jetplane_orig)
 	set_pev(law_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD*2)
-}
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
 }
 public CmdStart(id, uc_handle)
 {
@@ -308,7 +302,7 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 	
 	
 	emit_sound(pToucher, CHAN_VOICE, ROCKET_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	make_shockwave(vExplodeAt)
+	make_shockwave(vExplodeAt,jetplane_law_radius,love_color)
 	RemoveEntity(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
@@ -403,76 +397,17 @@ public law_think(ent)
 	return FMRES_IGNORED
 }
 
-public make_shockwave(point[3]){
-
-
-
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte( 21 )
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(jetplane_law_radius))
-write_short( sprite1 )
-write_byte( 0 )
-write_byte(1)		// frame rate in 0.1's
-write_byte(6)		// life in 0.1's
-write_byte(8)		// line width in 0.1's
-write_byte(1)		// noise amplitude in 0.01's
-write_byte( love_color[0])
-write_byte( love_color[1] )
-write_byte( love_color[2] )
-write_byte( love_color[3] )
-write_byte( 0 )
-message_end()
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_LAVASPLASH);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + 16)
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_BLOODSPRITE);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2] + floatround(jetplane_law_radius))
-write_short(blood2);
-write_short(blood1);
-write_byte(255);
-write_byte(30);
-message_end();
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(TE_DLIGHT);
-write_coord(point[0])
-write_coord(point[1])
-write_coord(point[2])
-write_byte( love_color[0])
-write_byte( love_color[1] )
-write_byte( love_color[2] )
-write_byte( love_color[3] )
-write_byte(8);
-write_byte(60);
-message_end();
-
-}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
 
 	precache_model( ROCKET_MODEL);
-
-	m_trail = precache_model("sprites/smoke.spr")
-	blood1 = precache_model("sprites/blood.spr");
-	blood2 = precache_model("sprites/bloodspray.spr");
+	
 	precache_sound("ambience/particle_suck2.wav")
-	sprite1 = precache_model("sprites/white.spr")
 	engfunc(EngFunc_PrecacheSound,ROCKET_EXPLODE_SOUND)
 	precache_model(P_ROCKET_LAUNCHER_MODEL)
 	engfunc(EngFunc_PrecacheSound, JETPLANE_LAW_FIRE_SOUND)
+	precache_explosion_fx()
 	
 }
 //---------------------------------------------------------------------------------------------- 
