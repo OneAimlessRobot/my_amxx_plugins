@@ -383,7 +383,6 @@ update_stats(id){
 	if(gHasAdriano[id]){
 		////g_normal_speed[id]=900.0-float(g_adriano_points[id])
 		if(!sh_get_stun(id)){
-			sh_reset_max_speed(id)
 			new Float:maxspeed=get_user_maxspeed(id)
 			g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
 			set_user_maxspeed(id,g_normal_speed[id])

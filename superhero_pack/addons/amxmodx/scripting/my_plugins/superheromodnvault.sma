@@ -3520,8 +3520,8 @@ public cl_say(id)
 public dropPower_(){
 
 	new id=get_param(1)
-	new said[256];
-	get_array(2,said,256)
+	new said[101];
+	get_array(2,said,99)
 	new showmenu = get_param(3)
 	dropPower(id,said,showmenu);
 

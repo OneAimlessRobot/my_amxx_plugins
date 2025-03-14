@@ -11,7 +11,7 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
-//#pragma dynamic 8000
+#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -628,9 +628,9 @@ id-=YANDERE_STATS_TASKID;
 
 if(gHasYandere[id]&&client_hittable(id)){
 
-	/*new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
+	new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	new iMax = global_get(glb_maxEntities) // Get's the limit
-	sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)*/
+	sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
 	update_stats(id)
 	
 	
