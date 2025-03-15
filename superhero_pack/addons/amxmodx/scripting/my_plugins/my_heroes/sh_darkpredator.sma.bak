@@ -26,7 +26,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 
 
-#define MAX_PICKED 0
+#define MAX_PICKED 1
 
 // VARIABLES
 new gHeroName[]="DarkPredator" 
