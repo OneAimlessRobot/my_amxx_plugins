@@ -42,7 +42,7 @@
  *        all possible server situations. MaxClients changes based on the
  *        server the plugin is deployed on..
  */
-#define MAX_PLAYERS 32 /* Maximum number of players AMX Mod X supports */
+#define MAX_PLAYERS 64 /* Maximum number of players AMX Mod X supports */
 
 /**
  * Maximum number of players the server supports 
@@ -592,3 +592,6 @@ enum
 }
 
 #include <cstrike_const> // To keep backward compatibility
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

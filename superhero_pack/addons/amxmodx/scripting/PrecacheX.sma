@@ -40,7 +40,7 @@ new const UnPrecache_ModelList[ 32 ][ ] =
 	"sprites/explode1.spr" 
 } 
 
-new const UnPrecache_SoundList[ 116 ][ ] = 
+new const UnPrecache_SoundList[117][] = 
 {
 	"items/suitcharge1.wav", 
 	"items/suitchargeno1.wav", 
@@ -48,12 +48,13 @@ new const UnPrecache_SoundList[ 116 ][ ] =
 	"common/wpn_hudoff.wav", 
 	"common/wpn_hudon.wav", 
 	"common/wpn_moveselect.wav", 
+	"common/wpn_denyselect.wav",
 	"player/geiger6.wav", 
 	"player/geiger5.wav", 
 	"player/geiger4.wav", 
 	"player/geiger3.wav", 
 	"player/geiger2.wav", 
-	"player/geiger1.wav  ", 
+	"player/geiger1.wav", 
 	"weapons/bullet_hit1.wav", 
 	"weapons/bullet_hit2.wav", 
 	"items/weapondrop1.wav", 
@@ -69,7 +70,6 @@ new const UnPrecache_SoundList[ 116 ][ ] =
 	"events/enemy_died.wav", 
 	"events/friend_died.wav", 
 	"events/task_complete.wav", 
-	 
 	"weapons/ak47_clipout.wav", 
 	"weapons/ak47_clipin.wav", 
 	"weapons/ak47_boltpull.wav", 
@@ -158,8 +158,8 @@ new const UnPrecache_SoundList[ 116 ][ ] =
 	"weapons/357_cock1.wav", 
 	"weapons/pinpull.wav", 
 	"common/bodydrop3.wav", 
-	"common/bodydrop4.wav" 
-} 
+	"common/bodydrop4.wav"
+};
 
 public plugin_init( ) 
 { 

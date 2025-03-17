@@ -154,7 +154,7 @@ public count_down(id){
 	id-=TASKID_COUNT
 	new message[128]
 	
-	new players[32],num;
+	new players[SH_MAXSLOTS],num;
 	get_players(players,num);
 	format(message, 127, "%i",gCurrCountDown--)
 	for(new i=0;i<num;i++){
@@ -265,7 +265,7 @@ public print_jeremy_stats(id)
 public force_end(id)
 {
 	id-=TASKID_PAST
-	new g_players[32], num;
+	new g_players[SH_MAXSLOTS], num;
 	get_players(g_players, num);
 	
 	new x;

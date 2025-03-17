@@ -476,7 +476,7 @@ new bool:gCZBotRegisterHam
 new bool:gMonsterModRunning
 
 //Memory Table Variables
-new gMemoryTableCount = 33
+new gMemoryTableCount = SH_MAXSLOTS
 new gMemoryTableKeys[gMemoryTableSize][32]				// Table for storing xp lines that need to be flushed to file...
 new gMemoryTableNames[gMemoryTableSize][32]				// Stores players name for a key
 new gMemoryTableXP[gMemoryTableSize]					// How much XP does a player have?
@@ -502,6 +502,7 @@ new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 
 new max_entities
 new max_entities_cvar
+
 #if defined SH_BACKCOMPAT
 //Old global variables, required for backward compat
 new gEventInit[SH_MAXHEROS][20]
@@ -751,6 +752,7 @@ public plugin_natives()
 	register_native("sh_get_max_hp", "_sh_get_max_hp")
 	register_native("sh_get_num_lvls", "_sh_get_num_lvls")
 	register_native("sh_max_entities", "_sh_max_entities",0)
+	register_native("sh_max_players", "_sh_max_players",0)
 	register_native("sh_get_lvl_xp", "_sh_get_lvl_xp")
 	register_native("sh_get_user_lvl", "_sh_get_user_lvl")
 	register_native("sh_set_user_lvl", "_sh_set_user_lvl")
@@ -3969,7 +3971,7 @@ public adminSetXP(id, level, cid)
 	get_user_authid(id, authid2, charsmax(authid2))
 
 	if ( arg[0] == '@' ) {
-		new players[32], inum
+		new players[SH_MAXSLOTS], inum
 		if ( equali("T", arg[1]) ) {
 			copy(arg[1], charsmax(arg)-1, "TERRORIST")
 		}
@@ -4718,7 +4720,7 @@ public vip_Escaped()
 	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
 
-	new players[32], numplayers, ct
+	new players[SH_MAXSLOTS], numplayers, ct
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 
 	get_players(players, numplayers, "h")
@@ -4772,7 +4774,7 @@ public host_AllRescued()
 	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
 
-	new players[32], numplayers, ct
+	new players[SH_MAXSLOTS], numplayers, ct
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 
 	get_players(players, numplayers, "ah")
@@ -4828,7 +4830,7 @@ public bomb_defused(defuser)
 	if ( cs_get_user_team(defuser) != CS_TEAM_CT ) return PLUGIN_CONTINUE
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
-	new players[32], numplayers, ct
+	new players[SH_MAXSLOTS], numplayers, ct
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 
 	get_players(players, numplayers, "ah")
@@ -4852,7 +4854,7 @@ public bomb_explode(planter, defuser)
 	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
-	new players[32], numplayers, terrorist
+	new players[SH_MAXSLOTS], numplayers, terrorist
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 
 	get_players(players, numplayers, "ah")
