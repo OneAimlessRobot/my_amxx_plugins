@@ -1,0 +1,538 @@
+Compiling plugins from index 1 to 40
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Advanced_Crossbow.sma(142) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2604 bytes
+Code size:            19412 bytes
+Data size:             5892 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   44292 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            636 bytes
+Code size:             2212 bytes
+Data size:              820 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20052 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Basilisk_Shotgun.sma(100) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2484 bytes
+Code size:            14204 bytes
+Data size:             5192 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38264 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            372 bytes
+Code size:              864 bytes
+Data size:             1408 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19028 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(19) : error 021: symbol already defined: "set_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(24) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(34) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(37) : error 021: symbol already defined: "show_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(42) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(44) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(45) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(46) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(49) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(50) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(51) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(54) : error 021: symbol already defined: "get_players"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(56) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(58) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(63) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(65) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(67) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(70) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(79) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(82) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(83) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(84) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(86) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(90) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(95) : error 021: symbol already defined: "vformat"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(96) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(97) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(100) : error 021: symbol already defined: "ArrayDestroy"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(103) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(106) : error 025: function heading differs from prototype
+
+Compilation aborted.
+26 Errors.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/ByM_ChistmasPresents.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1008 bytes
+Code size:            10436 bytes
+Data size:            11904 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   39732 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            456 bytes
+Code size:             1328 bytes
+Data size:            10128 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   28296 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+ByM_Framework.sma(463) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           3108 bytes
+Code size:            27412 bytes
+Data size:            16788 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   63692 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+ByM_Vip_Core.sma(535) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2952 bytes
+Code size:            35140 bytes
+Data size:            36180 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   90656 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_Coilgun.sma(151) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2812 bytes
+Code size:            21112 bytes
+Data size:             6184 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46492 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2336 bytes
+Code size:            23008 bytes
+Data size:             7272 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   49000 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_Flintlock.sma(127) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+CSO_Flintlock.sma(88) : warning 204: symbol is assigned a value that is never used: "g_MaxPlayers"
+CSO_Flintlock.sma(86) : warning 204: symbol is assigned a value that is never used: "g_MsgWeaponList"
+Header size:           2500 bytes
+Code size:            17776 bytes
+Data size:             5188 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41848 bytes
+
+3 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2148 bytes
+Code size:            18484 bytes
+Data size:             5708 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42724 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1984 bytes
+Code size:            27736 bytes
+Data size:             5964 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   52068 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_M1887Maverick.sma(184) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2440 bytes
+Code size:            19772 bytes
+Data size:             5692 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   44288 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2104 bytes
+Code size:            17388 bytes
+Data size:             5404 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41280 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2148 bytes
+Code size:            18408 bytes
+Data size:             5436 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42376 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_Mosin.sma(176) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2352 bytes
+Code size:            17948 bytes
+Data size:             4600 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41284 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2348 bytes
+Code size:            23960 bytes
+Data size:             4724 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47416 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_QuadBarrel_2014.sma(133) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2628 bytes
+Code size:            20628 bytes
+Data size:             5580 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   45220 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_RailCannon_2014.sma(164) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2632 bytes
+Code size:            27512 bytes
+Data size:             6840 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   53368 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_Spas12Deluxe.sma(194) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2288 bytes
+Code size:            21344 bytes
+Data size:             5432 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   45448 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+CSO_Spear2015.sma(150) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2488 bytes
+Code size:            30152 bytes
+Data size:             5864 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   54888 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2316 bytes
+Code size:            26652 bytes
+Data size:            82304 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  127656 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1768 bytes
+Code size:            10816 bytes
+Data size:             4140 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33108 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Cod_Bow.sma(150) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2852 bytes
+Code size:            39404 bytes
+Data size:             8908 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   67548 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(19) : error 021: symbol already defined: "set_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(24) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(34) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(37) : error 021: symbol already defined: "show_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(42) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(44) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(45) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(46) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(49) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(50) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(51) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(54) : error 021: symbol already defined: "get_players"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(56) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(58) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(63) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(65) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(67) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(70) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(79) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(82) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(83) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(84) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(86) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(90) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(95) : error 021: symbol already defined: "vformat"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(96) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(97) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(100) : error 021: symbol already defined: "ArrayDestroy"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(103) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(106) : error 025: function heading differs from prototype
+
+Compilation aborted.
+26 Errors.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/Cod_Classes.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1440 bytes
+Code size:            20384 bytes
+Data size:           443544 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  481752 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Cod_ClassesWJoergSkins.sma(941) : warning 217: loose indentation
+Cod_ClassesWJoergSkins.sma(943) : warning 217: loose indentation
+Cod_ClassesWJoergSkins.sma(953) : warning 217: loose indentation
+Cod_ClassesWJoergSkins.sma(958) : warning 217: loose indentation
+Cod_ClassesWJoergSkins.sma(1013) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           3312 bytes
+Code size:            32876 bytes
+Data size:            33504 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   86076 bytes
+
+5 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            828 bytes
+Code size:             5688 bytes
+Data size:             7940 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   30840 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Cod_Perks.sma(377) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2140 bytes
+Code size:            11116 bytes
+Data size:            12704 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42344 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Cod_Secoundary_Weapons.sma(222) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2788 bytes
+Code size:            39128 bytes
+Data size:             8672 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   66972 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+DragonSword.sma(431) : warning 225: unreachable code
+Header size:           1900 bytes
+Code size:            24068 bytes
+Data size:             4468 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46820 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2276 bytes
+Code size:            24192 bytes
+Data size:             6060 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   48912 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Dual_Barrel.sma(34) : error 017: undefined symbol "weapon_gatling"
+Dual_Barrel.sma(34) : warning 215: expression has no effect
+Dual_Barrel.sma(34) : warning 215: expression has no effect
+Dual_Barrel.sma(34) : error 001: expected token: ";", but found ")"
+Dual_Barrel.sma(34) : error 029: invalid expression, assumed zero
+Dual_Barrel.sma(34) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+4 Errors.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/Dual_Barrel.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1788 bytes
+Code size:            17996 bytes
+Data size:             4516 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   40684 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+GHW_CS_Bank.sma(71) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:            856 bytes
+Code size:             4192 bytes
+Data size:             6256 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27688 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1824 bytes
+Code size:            28704 bytes
+Data size:            14324 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   61236 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            640 bytes
+Code size:            16804 bytes
+Data size:           107420 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  141248 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+GHW_RC-CS.sma(344) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1816 bytes
+Code size:            28584 bytes
+Data size:             5824 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   52608 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+GHW_connect.sma(145) : warning 233: symbol "geoip_country" is marked as deprecated: Use geoip_country_ex() instead.
+GHW_connect.sma(172) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:            796 bytes
+Code size:             6812 bytes
+Data size:            22768 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46760 bytes
+
+2 Warnings.
+Done.

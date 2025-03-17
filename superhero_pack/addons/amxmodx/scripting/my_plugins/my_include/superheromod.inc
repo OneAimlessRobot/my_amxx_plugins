@@ -12,7 +12,7 @@
 #endif
 
 
-#define MAX_ENTITIES 30000
+#define MAX_ENTITIES 2048
 
 //Default includes used for shero
 

@@ -42,7 +42,7 @@
  *        all possible server situations. MaxClients changes based on the
  *        server the plugin is deployed on..
  */
-#define MAX_PLAYERS 64 /* Maximum number of players AMX Mod X supports */
+#define MAX_PLAYERS 32 /* Maximum number of players AMX Mod X supports */
 
 /**
  * Maximum number of players the server supports 

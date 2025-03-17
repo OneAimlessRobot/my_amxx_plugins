@@ -33,7 +33,7 @@ stock const SH_VERSION_STR[] =	"1.2.0.16";
 #define SH_COOLDOWN_TASKID	572910
 
 // Max player slots
-#define SH_MAXSLOTS		64
+#define SH_MAXSLOTS		32
 
 // sh_hero_init(id, heroID, mode) modes
 #define SH_HERO_DROP		0	//Hero is dropped

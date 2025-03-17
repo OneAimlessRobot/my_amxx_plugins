@@ -1,0 +1,470 @@
+Compiling plugins from index 241 to 280
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            748 bytes
+Code size:             8088 bytes
+Data size:             6148 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   31368 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+unlimited_money.sma(173) : warning 225: unreachable code
+Header size:           1080 bytes
+Code size:             7064 bytes
+Data size:             2644 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27172 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+updatehint.sma(166) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:            732 bytes
+Code size:             3796 bytes
+Data size:             3052 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   23964 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+v26_ffachmp.sma(296) : warning 217: loose indentation
+v26_ffachmp.sma(328 -- 329) : warning 213: tag mismatch
+v26_ffachmp.sma(362) : warning 213: tag mismatch
+v26_ffachmp.sma(674) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+v26_ffachmp.sma(972) : warning 233: symbol "socket_change" is marked as deprecated: Use socket_is_readable() instead
+v26_ffachmp.sma(1290) : warning 211: possibly unintended assignment
+v26_ffachmp.sma(1333) : warning 217: loose indentation
+v26_ffachmp.sma(1409) : warning 217: loose indentation
+Header size:           3364 bytes
+Code size:            41760 bytes
+Data size:            85468 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  146976 bytes
+
+8 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+walkguard.sma(131) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+walkguard.sma(423) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(440) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(441) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(442) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(445) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(446) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(447) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(448) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(449) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(450) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+walkguard.sma(455) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+Header size:           2380 bytes
+Code size:            39524 bytes
+Data size:            11328 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   69616 bytes
+
+12 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+war3ft.sma(1073) : warning 203: symbol is never used: "g_iRaceSprites"
+Header size:          10236 bytes
+Code size:           425932 bytes
+Data size:           739388 bytes
+Stack/heap size:      16384 bytes
+Total requirements: 1191940 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+weapon_laser_tracers.sma(205) : warning 204: symbol is assigned a value that is never used: "iBlue"
+weapon_laser_tracers.sma(203) : warning 204: symbol is assigned a value that is never used: "iGreen"
+Header size:           1000 bytes
+Code size:             3868 bytes
+Data size:             1868 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   23120 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1252 bytes
+Code size:            12300 bytes
+Data size:             6644 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   36580 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3820 bytes
+Code size:            59440 bytes
+Data size:           128888 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  208532 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            788 bytes
+Code size:             4020 bytes
+Data size:             2084 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   23276 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            540 bytes
+Code size:             1000 bytes
+Data size:              840 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   18764 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1260 bytes
+Code size:            11776 bytes
+Data size:             7932 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   37352 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            376 bytes
+Code size:              548 bytes
+Data size:              576 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   17884 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1516 bytes
+Code size:            24096 bytes
+Data size:             5848 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47844 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            368 bytes
+Code size:              668 bytes
+Data size:             1080 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   18500 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            876 bytes
+Code size:             5804 bytes
+Data size:             2132 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   25196 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            696 bytes
+Code size:             2484 bytes
+Data size:             1072 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20636 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            900 bytes
+Code size:             5912 bytes
+Data size:             2388 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   25584 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_gameinfo_cs.sma(478) : warning 233: symbol "is_amd64_server" is marked as deprecated: AMXX is not shipping 64bits builds anymore. This native is basically guaranteed to return 0.
+wpn_gameinfo_cs.sma(510) : warning 233: symbol "is_amd64_server" is marked as deprecated: AMXX is not shipping 64bits builds anymore. This native is basically guaranteed to return 0.
+Header size:           1976 bytes
+Code size:             8224 bytes
+Data size:             4608 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   31192 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1136 bytes
+Code size:            13676 bytes
+Data size:            43680 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   74876 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1384 bytes
+Code size:             9752 bytes
+Data size:             1940 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   29460 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_hivehand.sma(314) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1372 bytes
+Code size:            25720 bytes
+Data size:             3408 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46884 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_katana.sma(113) : warning 233: symbol "plugin_modules" is marked as deprecated: Module dependency is now automatically handled by the compiler. This forward is no longer called.
+wpn_katana.sma(114) : warning 233: symbol "require_module" is marked as deprecated: Module dependency is now automatically handled by the compiler. This native has no effect.
+Header size:           1284 bytes
+Code size:            12612 bytes
+Data size:             2772 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33052 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_laptopgun_cs.sma(145) : warning 233: symbol "plugin_modules" is marked as deprecated: Module dependency is now automatically handled by the compiler. This forward is no longer called.
+wpn_laptopgun_cs.sma(146) : warning 233: symbol "require_module" is marked as deprecated: Module dependency is now automatically handled by the compiler. This native has no effect.
+Header size:           1476 bytes
+Code size:            16924 bytes
+Data size:             3592 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38376 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_lsaber.sma(93) : warning 217: loose indentation
+wpn_lsaber.sma(97) : warning 217: loose indentation
+Header size:            636 bytes
+Code size:             2140 bytes
+Data size:             1040 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20200 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            572 bytes
+Code size:             1664 bytes
+Data size:             1052 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19672 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            752 bytes
+Code size:             3032 bytes
+Data size:             4052 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   24220 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1040 bytes
+Code size:             7852 bytes
+Data size:             2940 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   28216 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1516 bytes
+Code size:            24096 bytes
+Data size:             5904 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47900 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+wpn_pd_rocketlauncher.sma(380) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1248 bytes
+Code size:            10172 bytes
+Data size:             2576 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   30380 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1516 bytes
+Code size:            24096 bytes
+Data size:             5884 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47880 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            876 bytes
+Code size:             5744 bytes
+Data size:             2116 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   25120 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1136 bytes
+Code size:             8536 bytes
+Data size:             2612 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   28668 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            836 bytes
+Code size:             4172 bytes
+Data size:             1600 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22992 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            644 bytes
+Code size:             2508 bytes
+Data size:             2524 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22060 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            660 bytes
+Code size:             2108 bytes
+Data size:             1380 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20532 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            816 bytes
+Code size:             3100 bytes
+Data size:             2128 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22428 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1220 bytes
+Code size:             6136 bytes
+Data size:             2248 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   25988 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            660 bytes
+Code size:             2264 bytes
+Data size:             1604 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20912 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            504 bytes
+Code size:             1280 bytes
+Data size:              464 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   18632 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3876 bytes
+Code size:            38000 bytes
+Data size:            28256 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   86516 bytes
+Done.

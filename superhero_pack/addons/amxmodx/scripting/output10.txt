@@ -1,0 +1,497 @@
+Compiling plugins from index 361 to 400
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_plasma_gun.sma(170) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2876 bytes
+Code size:            15512 bytes
+Data size:             3532 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38304 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1092 bytes
+Code size:             8144 bytes
+Data size:            11628 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   37248 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_rewards_ammopacks.sma(302) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2232 bytes
+Code size:             9544 bytes
+Data size:             5396 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33556 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2364 bytes
+Code size:             7084 bytes
+Data size:             4124 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   29956 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_rewards_money.sma(405) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2600 bytes
+Code size:            12064 bytes
+Data size:             6608 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   37656 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            372 bytes
+Code size:              272 bytes
+Data size:              892 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   17920 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_spawn_protection.sma(128) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1040 bytes
+Code size:             2940 bytes
+Data size:             1620 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   21984 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1064 bytes
+Code size:             6364 bytes
+Data size:             3220 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27032 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1304 bytes
+Code size:             6304 bytes
+Data size:             2852 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26844 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_zclass_charger.sma(144) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2888 bytes
+Code size:            19908 bytes
+Data size:             6660 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   45840 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1452 bytes
+Code size:             2812 bytes
+Data size:             1704 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22352 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_zombie_features.sma(113) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2112 bytes
+Code size:             5856 bytes
+Data size:             2364 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26716 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_zombie_smoker.sma(87) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2284 bytes
+Code size:            11060 bytes
+Data size:             4080 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33808 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp50_zombie_sounds.sma(433) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1900 bytes
+Code size:            14464 bytes
+Data size:             9328 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42076 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           5600 bytes
+Code size:            28688 bytes
+Data size:            23168 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   73840 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_bank.sma(519) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1756 bytes
+Code size:            24080 bytes
+Data size:            14204 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   56424 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_donate_ap.sma(54) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+zp_donate_ap.sma(63) : warning 233: symbol "strbreak" is marked as deprecated: Use argbreak() instead
+Header size:            948 bytes
+Code size:             5968 bytes
+Data size:             3192 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26492 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_Golden_MP5.sma(88) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1508 bytes
+Code size:             6248 bytes
+Data size:             3044 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27184 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(19) : error 021: symbol already defined: "set_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(24) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(34) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(37) : error 021: symbol already defined: "show_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(42) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(44) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(45) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(46) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(49) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(50) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(51) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(54) : error 021: symbol already defined: "get_players"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(56) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(58) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(63) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(65) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(67) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(70) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(79) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(82) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(83) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(84) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(86) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(90) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(95) : error 021: symbol already defined: "vformat"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(96) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(97) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(100) : error 021: symbol already defined: "ArrayDestroy"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(103) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(106) : error 025: function heading differs from prototype
+
+Compilation aborted.
+26 Errors.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/zp_extra_addon_countdown.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2644 bytes
+Code size:            25576 bytes
+Data size:             5492 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   50096 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2576 bytes
+Code size:            17180 bytes
+Data size:            12860 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   49000 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1092 bytes
+Code size:             3680 bytes
+Data size:             1892 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   23048 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_goldenak.sma(91) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1508 bytes
+Code size:             6248 bytes
+Data size:             3140 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27280 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_goldendg.sma(91) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1508 bytes
+Code size:             6248 bytes
+Data size:             3200 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27340 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_goldenm4.sma(62) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1508 bytes
+Code size:             6248 bytes
+Data size:             3152 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27292 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2532 bytes
+Code size:            17064 bytes
+Data size:            12440 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   48420 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_m79.sma(244) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           3204 bytes
+Code size:            20748 bytes
+Data size:             6564 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46900 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2516 bytes
+Code size:            15488 bytes
+Data size:            11556 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   45944 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_minigun_m134.sma(182) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2548 bytes
+Code size:            17108 bytes
+Data size:            11908 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47948 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_extra_plasma_rifle.sma(145) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2372 bytes
+Code size:            16016 bytes
+Data size:             3668 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38440 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2600 bytes
+Code size:            17924 bytes
+Data size:            12812 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   49720 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1140 bytes
+Code size:            10268 bytes
+Data size:             5968 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33760 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1816 bytes
+Code size:             8660 bytes
+Data size:             3368 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   30228 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2528 bytes
+Code size:            16952 bytes
+Data size:            12196 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   48060 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2620 bytes
+Code size:            31952 bytes
+Data size:             7056 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   58012 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_item_jp_bazooka.sma(186) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2716 bytes
+Code size:            18224 bytes
+Data size:             6000 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   43324 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+zp_lasermine_perfect_4.2.sma(1056) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           3980 bytes
+Code size:            68952 bytes
+Data size:            44684 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  134000 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            852 bytes
+Code size:             3152 bytes
+Data size:             1828 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22216 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            684 bytes
+Code size:             8828 bytes
+Data size:             1096 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26992 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1248 bytes
+Code size:             2876 bytes
+Data size:             1660 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22168 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2356 bytes
+Code size:            13496 bytes
+Data size:             4648 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   36884 bytes
+Done.

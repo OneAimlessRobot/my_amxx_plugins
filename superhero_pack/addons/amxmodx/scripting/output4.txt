@@ -1,0 +1,492 @@
+Compiling plugins from index 121 to 160
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            968 bytes
+Code size:            17616 bytes
+Data size:           128772 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  163740 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cod_mw3_srb.sma(4448) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           7172 bytes
+Code size:           178716 bytes
+Data size:           211720 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  413992 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cod_timer.sma(197) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2112 bytes
+Code size:            22436 bytes
+Data size:            24148 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   65080 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4.sma(2) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_abilities.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_abilities.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_bank.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_bank.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_classes.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_classes.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_cmds.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_cmds.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_fakedmg.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_fakedmg.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_levels.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_levels.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codmw4_perks.sma(1) : fatal error 100: cannot read from file: "../../include/nvault.inc"
+
+Compilation aborted.
+1 Error.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/codmw4_perks.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+codsrb.sma(1919) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           5552 bytes
+Code size:           103588 bytes
+Data size:           108032 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  233556 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+control-players.sma(701) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           2052 bytes
+Code size:            31192 bytes
+Data size:            14732 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   64360 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2996 bytes
+Code size:            26452 bytes
+Data size:           181264 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  227096 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           4360 bytes
+Code size:            57912 bytes
+Data size:            67096 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  145752 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1556 bytes
+Code size:            11252 bytes
+Data size:             7312 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   36504 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+crxknives_knockback.sma(27) : warning 204: symbol is assigned a value that is never used: "g_pFriendlyFire"
+Header size:            812 bytes
+Code size:             2176 bytes
+Data size:              996 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20368 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(19) : error 021: symbol already defined: "set_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(24) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(34) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(37) : error 021: symbol already defined: "show_dhudmessage"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(42) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(44) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(45) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(46) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(49) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(50) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(51) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(54) : error 021: symbol already defined: "get_players"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(56) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(58) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(63) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(65) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(67) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(70) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(79) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(82) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(83) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(84) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(86) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(90) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(95) : error 021: symbol already defined: "vformat"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(96) : warning 218: old style prototypes used with optional semicolumns
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(97) : error 054: unmatched closing brace
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(100) : error 021: symbol already defined: "ArrayDestroy"
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(103) : error 010: invalid function or declaration
+D:\SteamFAST\steamapps\common\Half-Life\cstrike\addons\amxmodx\scripting\include\dhudmessage.inc(106) : error 025: function heading differs from prototype
+
+Compilation aborted.
+26 Errors.
+Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/cs16_connect_info.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_ham_bots_api.sma(154) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1172 bytes
+Code size:             5944 bytes
+Data size:             2632 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26132 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_maxspeed_api.sma(108) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1144 bytes
+Code size:             2928 bytes
+Data size:             1992 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22448 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_player_models_api.sma(145) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1144 bytes
+Code size:             4756 bytes
+Data size:             7492 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   29776 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_teams_api.sma(84) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:            912 bytes
+Code size:             2860 bytes
+Data size:             1400 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   21556 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_weap_models_api.sma(295) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1128 bytes
+Code size:             8116 bytes
+Data size:            12592 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38220 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cs_weap_restrict_api.sma(138) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1024 bytes
+Code size:             4028 bytes
+Data size:             3556 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   24992 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+csdm_equip.sma(130) : warning 213: tag mismatch
+csdm_equip.sma(131) : warning 213: tag mismatch
+csdm_equip.sma(132) : warning 213: tag mismatch
+csdm_equip.sma(133) : warning 213: tag mismatch
+csdm_equip.sma(134) : warning 213: tag mismatch
+csdm_equip.sma(240) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+csdm_equip.sma(349) : warning 213: tag mismatch
+csdm_equip.sma(390) : warning 213: tag mismatch
+csdm_equip.sma(645) : warning 225: unreachable code
+csdm_equip.sma(680) : warning 225: unreachable code
+csdm_equip.sma(718) : warning 225: unreachable code
+Header size:           2444 bytes
+Code size:            47928 bytes
+Data size:            35200 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  101956 bytes
+
+11 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1592 bytes
+Code size:             9496 bytes
+Data size:             5508 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   32980 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+csdm_itemmode.sma(617) : warning 225: unreachable code
+csdm_itemmode.sma(638) : warning 225: unreachable code
+csdm_itemmode.sma(659) : warning 225: unreachable code
+Header size:           2904 bytes
+Code size:            89664 bytes
+Data size:            58196 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  167148 bytes
+
+3 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2468 bytes
+Code size:            21088 bytes
+Data size:            15312 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   55252 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1980 bytes
+Code size:            20084 bytes
+Data size:            16508 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   54956 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+csdm_protection.sma(103) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1280 bytes
+Code size:            10008 bytes
+Data size:             3892 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   31564 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1380 bytes
+Code size:            27572 bytes
+Data size:            11024 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   56360 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            620 bytes
+Code size:             2384 bytes
+Data size:             1136 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20524 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1020 bytes
+Code size:             4516 bytes
+Data size:            16072 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   37992 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+csdm_tickets.sma(78) : warning 213: tag mismatch
+csdm_tickets.sma(128) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:           1392 bytes
+Code size:            13656 bytes
+Data size:             8916 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   40348 bytes
+
+2 Warnings.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            588 bytes
+Code size:             1272 bytes
+Data size:              784 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19028 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            452 bytes
+Code size:              440 bytes
+Data size:              712 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   17988 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            880 bytes
+Code size:             2052 bytes
+Data size:             1024 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20340 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            548 bytes
+Code size:             1356 bytes
+Data size:             1164 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19452 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2236 bytes
+Code size:            19168 bytes
+Data size:            35080 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   72868 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+cshop_leap.sma(32) : warning 233: symbol "client_disconnect" is marked as deprecated: Use client_disconnected() instead.
+Header size:            764 bytes
+Code size:             2200 bytes
+Data size:             1300 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20648 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1108 bytes
+Code size:             3040 bytes
+Data size:             1784 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22316 bytes
+Done.

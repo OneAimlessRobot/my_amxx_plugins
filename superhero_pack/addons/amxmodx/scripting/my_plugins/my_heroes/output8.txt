@@ -8,9 +8,9 @@ sh_sapper.sma(18) : warning 203: symbol is never used: "m_spriteTexture"
 sh_sapper.sma(50) : warning 203: symbol is never used: "mine_color"
 Header size:           2688 bytes
 Code size:            12612 bytes
-Data size:             6380 bytes
+Data size:             5868 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   38064 bytes
+Total requirements:   37552 bytes
 
 3 Warnings.
 Done.
@@ -21,9 +21,9 @@ Copyright (c) 2004-2013 AMX Mod X Team
 sh_selfless_yandere.sma(411) : warning 204: symbol is assigned a value that is never used: "gHeroLevel"
 Header size:           2424 bytes
 Code size:            20432 bytes
-Data size:            11388 bytes
+Data size:             9468 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   50628 bytes
+Total requirements:   48708 bytes
 
 1 Warning.
 Done.
@@ -33,9 +33,9 @@ Copyright (c) 2004-2013 AMX Mod X Team
 
 Header size:           4188 bytes
 Code size:            53796 bytes
-Data size:            42500 bytes
+Data size:            27268 bytes
 Stack/heap size:      32000 bytes
-Total requirements:  132484 bytes
+Total requirements:  117252 bytes
 Done.
 AMX Mod X Compiler 1.10.0.5467
 Copyright (c) 1997-2006 ITB CompuPhase
@@ -45,9 +45,9 @@ h_rifle_inc/sh_h_rifle.inc(6) : warning 201: redefinition of constant/macro (sym
 h_rifle_inc/sh_h_rifle.inc(11) : warning 201: redefinition of constant/macro (symbol "SPEED")
 Header size:           1536 bytes
 Code size:             6504 bytes
-Data size:             4208 bytes
+Data size:             3952 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   28632 bytes
+Total requirements:   28376 bytes
 
 2 Warnings.
 Done.
@@ -57,9 +57,9 @@ Copyright (c) 2004-2013 AMX Mod X Team
 
 Header size:           3108 bytes
 Code size:            32824 bytes
-Data size:            11684 bytes
+Data size:            11428 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   64000 bytes
+Total requirements:   63744 bytes
 Done.
 AMX Mod X Compiler 1.10.0.5467
 Copyright (c) 1997-2006 ITB CompuPhase
@@ -68,9 +68,9 @@ Copyright (c) 2004-2013 AMX Mod X Team
 sh_teliko.sma(8) : warning 203: symbol is never used: "teliko_slitter_sounds"
 Header size:           2920 bytes
 Code size:            17756 bytes
-Data size:            46400 bytes
+Data size:            19904 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   83460 bytes
+Total requirements:   56964 bytes
 
 1 Warning.
 Done.
@@ -81,9 +81,9 @@ Copyright (c) 2004-2013 AMX Mod X Team
 sh_thrashythrash.sma(148) : warning 204: symbol is assigned a value that is never used: "gHeroLevel"
 Header size:           2808 bytes
 Code size:            23892 bytes
-Data size:            10928 bytes
+Data size:             9904 bytes
 Stack/heap size:      16384 bytes
-Total requirements:   54012 bytes
+Total requirements:   52988 bytes
 
 1 Warning.
 Done.
