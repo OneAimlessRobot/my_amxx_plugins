@@ -18,8 +18,8 @@ new const gHeroName[] = "Human Torch"
 new bool:gHasHumanTorch[SH_MAXSLOTS+1]
 new bool:gIsBurning[SH_MAXSLOTS+1]
 new const gSoundBurning[] = "ambience/burning1.wav"
-new const gSoundScream[] = "scientist/c1a0_sci_catscream.wav"
 new const gSoundFlameBlast[] = "ambience/flameburst1.wav"
+new const gSoundScream[] = "scientist/c1a0_sci_catscream.wav"
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
 new pCvarArmorCost, pCvarNumBurns, pCvarBurnDamage
 //----------------------------------------------------------------------------------------------
@@ -327,6 +327,3 @@ public client_connect(id)
 	gIsBurning[id] = false
 }
 //----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

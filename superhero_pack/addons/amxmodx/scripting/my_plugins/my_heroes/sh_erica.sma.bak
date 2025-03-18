@@ -7,8 +7,6 @@
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
-#include "tranq_gun_inc/sh_molotov_funcs.inc"
-#include "tranq_gun_inc/sh_molotov_fx.inc"
 
 // GLOBAL VARIABLES
 
@@ -16,7 +14,6 @@ new gHasErica[SH_MAXSLOTS+1]
 new gNumDarts[SH_MAXSLOTS+1]
 new g_erica_points[SH_MAXSLOTS+1]
 new g_erica_kills[SH_MAXSLOTS+1]
-new gNumMollies[SH_MAXSLOTS+1]
 new Float:g_base_er_speed[SH_MAXSLOTS+1]
 new Float:g_normal_er_speed[SH_MAXSLOTS+1]
 new Float:g_base_er_dmg_mult[SH_MAXSLOTS+1]
@@ -38,7 +35,7 @@ new const erica_knife_sounds[9][]={"weapons/erica_knife/knife_deploy1.wav",
 new const redline_color[4]={250, 92, 163,1}
 new m_spriteTexture
 new hud_sync
-//new gHeroLevel
+new gHeroLevel
 new base_er_points
 new max_er_points
 new Float:speed_speed_er_points_pct
@@ -52,7 +49,6 @@ new Float:max_dmg_er_mult
 new Float:base_dmg_er_mult
 new Float:dmg_mult_er_inc
 new num_er_darts
-new num_mollies
 
 
 //----------------------------------------------------------------------------------------------
@@ -75,7 +71,6 @@ public plugin_init()
 	register_cvar("erica_base_speed", "500")
 	register_cvar("erica_max_speed", "1000")
 	register_cvar("erica_num_darts", "100")
-	register_cvar("erica_num_mollies", "181288")
 	register_cvar("erica_speed_speed_points_pct", "0.1")
 	register_cvar("erica_dmg_speed_points_pct", "0.1")
 	register_event("ResetHUD","newRound","b")
@@ -101,11 +96,6 @@ public plugin_natives(){
 	register_native("tranq_set_num_darts","_tranq_set_num_darts",0);
 	
 	
-	register_native("erica_dec_num_mollies","_erica_dec_num_mollies",0);
-	register_native("erica_get_num_mollies","_erica_get_num_mollies",0);
-	register_native("erica_set_num_mollies","_erica_set_num_mollies",0);
-	
-	
 	
 	register_native("tranq_set_hero_id","_tranq_set_hero_id",0);
 	register_native("tranq_get_hero_id","_tranq_get_hero_id",0);
@@ -114,27 +104,6 @@ public plugin_natives(){
 	register_native("tranq_get_has_erica","_tranq_get_has_erica",0);
 	register_native("tranq_set_has_erica","_tranq_set_has_erica",0);
 	
-
-}
-
-public _erica_set_num_mollies(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumMollies[id]=value_to_set;
-}
-public _erica_get_num_mollies(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumMollies[id]
-
-}
-
-public _erica_dec_num_mollies(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumMollies[id]-= (gNumMollies[id]>0)? 1:0
 
 }
 public bool:_tranq_get_is_max_points(iPlugin,iParams){
@@ -246,15 +215,14 @@ erica_hud(id){
 					g_erica_points[id],
 					max_er_points
 					);*/
-	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nKills: %d^nPoints: %d^nHook strikes left: %d^nHas hook: %d^nHas %d Mollies left^n",
+	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nKills: %d^nPoints: %d^nHook strikes left: %d^nHas hook: %d^n",
 					gHeroName,
 					g_normal_er_speed[id],
 					gNumDarts[id],
 					g_erica_kills[id],
 					g_erica_points[id],
 					hook_get_hook_kills(id),
-					hook_get_hook(id),
-					erica_get_num_mollies(id)
+					hook_get_hook(id)
 					);
 	
 	set_hudmessage(redline_color[0], redline_color[1], redline_color[2], 0.5, 0.05, redline_color[3], 0.0, 0.5,0.0,0.0,1)
@@ -274,7 +242,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	//gHeroLevel=get_cvar_num("erica_level")
+	gHeroLevel=get_cvar_num("erica_level")
 	base_er_radius=get_cvar_float("erica_base_radius")
 	max_er_radius=get_cvar_float("erica_max_radius")
 	max_er_points=get_cvar_num("erica_max_points")
@@ -282,7 +250,6 @@ public loadCVARS()
 	base_er_speed=get_cvar_float("erica_base_speed")
 	max_er_speed=get_cvar_float("erica_max_speed")
 	num_er_darts=get_cvar_num("erica_num_darts")
-	num_mollies=get_cvar_num("erica_num_mollies")
 	max_dmg_er_mult=get_cvar_float("erica_max_dmg_mult")
 	base_dmg_er_mult=get_cvar_float("erica_base_dmg_mult")
 	dmg_mult_er_inc=get_cvar_float("erica_dmg_mult_inc")
@@ -356,7 +323,6 @@ public newRound(id)
 		if ( gHasErica[id]) {
 			g_erica_kills[id]=0;
 			gNumDarts[id]=num_er_darts
-			gNumMollies[id]=num_mollies
 			g_erica_points[id]=base_er_points;
 			g_base_er_speed[id]=base_er_speed
 			g_base_er_dmg_mult[id]=base_dmg_er_mult
@@ -408,7 +374,6 @@ public get_speed_dmg_in_radius(id,Float:damage){
 public sh_round_end(){
 
 	clear_darts()
-	clear_mollies()
 
 }
 public weaponChange(id)
@@ -479,8 +444,7 @@ update_stats2(id){
 public Erica_weapons(id)
 {
 if ( sh_is_active() && is_user_alive(id) && gHasErica[id] ) {
-	sh_give_weapon(id,CSW_HEGRENADE,false)
-	cs_set_user_bpammo(id, CSW_HEGRENADE,num_mollies);
+	
 	sh_give_weapon(id, CSW_ELITE)
 	hook_set_hook(id,1)
 	
@@ -548,11 +512,7 @@ public plugin_precache()
 }
 public death()
 {	
-	new id = read_data(2)
-	if(gHasErica[id] && molly_get_molly_loaded(id)){
-	
-		molly_uncharge_molly(id)
-	}
+	//new id = read_data(2)
 	new killer= read_data(1)
 	new killer_name[128]
 	get_user_name(killer,killer_name,127)

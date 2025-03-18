@@ -31,11 +31,6 @@ native tranq_set_hero_id(id)
 native tranq_get_hero_id()
 
 
-native erica_set_num_mollies(id,value_to_set)
-native erica_get_num_mollies(id)
-
-native erica_dec_num_mollies(id)
-
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

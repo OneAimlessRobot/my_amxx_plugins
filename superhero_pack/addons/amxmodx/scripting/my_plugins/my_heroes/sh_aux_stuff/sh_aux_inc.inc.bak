@@ -43,8 +43,8 @@ stock smoke, white, fire
 stock m_trail
 stock gSpriteLaser,blood1,blood2,sprite1;
 stock g_msgFade
-stock g_iFireSprite, g_iSmokeSprite[2];
-stock gSpriteSmoke, gSpriteFire, gSpriteBurning
+
+
 stock trail(vec1[3],vec2[3],const color[4],id){
 
 //BEAMENTPOINTS
@@ -108,94 +108,9 @@ public track_task(array[],id){
 		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
 	}
 	
-}
-stock random_fire(Origin[3], ent, Float:radius) {
-
-	static iRange, iOrigin[3], g_g, i;
-
-	iRange = floatround(radius);
-
-	for (i = 1; i <= 5; i++) {
-
-		g_g = 1;
-
-		iOrigin[0] = Origin[0] + random_num(-iRange, iRange);
-		iOrigin[1] = Origin[1] + random_num(-iRange, iRange);
-		iOrigin[2] = Origin[2];
-		iOrigin[2] = ground_z(iOrigin, ent);
-
-		while (get_distance(iOrigin, Origin) > iRange) {		// If iOrigin is too far away, recalculate its position
-
-			iOrigin[0] = Origin[0] + random_num(-iRange, iRange);
-			iOrigin[1] = Origin[1] + random_num(-iRange, iRange);
-			iOrigin[2] = Origin[2];
-
-			if (++g_g >= ANTI_LAGG) {
-				iOrigin[2] = ground_z(iOrigin, ent, 1);
-			} else {
-				iOrigin[2] = ground_z(iOrigin, ent);
-			}
-		}
-
-		new rand = random_num(5, 15);
-
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
-		write_byte(TE_SPRITE);
-		write_coord(iOrigin[0]);	// Position
-		write_coord(iOrigin[1]);
-		write_coord(iOrigin[2] + rand * 5);
-		write_short(g_iFireSprite);	// Sprite index
-		write_byte(rand);		// Scale
-		write_byte(100);		// Brightness
-		message_end();
-	}
-
-	// One smoke puff for each call to random_fire, regardless of number of flames
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
-	write_byte(TE_SMOKE);
-	write_coord(iOrigin[0]);			// Position
-	write_coord(iOrigin[1]);
-	write_coord(iOrigin[2] + 120);
-	write_short(g_iSmokeSprite[random_num(0, 1)]);	// Sprite index
-	write_byte(random_num(10, 30));			// Scale
-	write_byte(random_num(10, 20));			// Framerate
-	message_end();
 
 }
-stock make_fire(id, Float:rad){
 
-	new radius=floatround(rad)
-	new rx, ry, rz, Float:forigin[3]
-	rx = random_num(-radius, radius)
-	ry = random_num(-radius, radius)
-	rz = random_num(-radius, radius)
-
-	pev(id, pev_origin, forigin)
-
-	// Additive sprite, plays 1 cycle
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_SPRITE)		// 17
-	engfunc(EngFunc_WriteCoord, forigin[0] + rx)	// coord, coord, coord (position)
-	engfunc(EngFunc_WriteCoord, forigin[1] + ry)
-	engfunc(EngFunc_WriteCoord, forigin[2] + 10 + rz)
-	write_short(gSpriteBurning)	// short (sprite index)
-	write_byte(30)		// byte (scale in 0.1's)
-	write_byte(200)		// byte (brightness)
-	message_end()
-
-	// Smoke
-	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte(TE_SMOKE)		// 5
-	engfunc(EngFunc_WriteCoord, forigin[0] + (rx*2))	// coord, coord, coord (position)
-	engfunc(EngFunc_WriteCoord, forigin[1] + (ry*2))
-	engfunc(EngFunc_WriteCoord, forigin[2] + 100 + (rz*2))
-	write_short(gSpriteSmoke)	// short (sprite index)
-	write_byte(60)		// byte (scale in 0.1's)
-	write_byte(15)		// byte (framerate)
-	message_end()
-
-
-}
 stock make_shockwave(point[3],Float:radius,const color[4]){
 
 
@@ -712,12 +627,6 @@ stock precache_explosion_fx(){
 	precache_sound("ambience/particle_suck2.wav")
 	sprite1 = precache_model("sprites/white.spr")
 	g_msgFade = get_user_msgid("ScreenFade");
-	g_iFireSprite = precache_model("sprites/flame.spr");
-	g_iSmokeSprite[0] = precache_model("sprites/black_smoke3.spr");
-	g_iSmokeSprite[1] = precache_model("sprites/steam1.spr");
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
-	gSpriteBurning = precache_model("sprites/xfire.spr")
 	
 	
 }
