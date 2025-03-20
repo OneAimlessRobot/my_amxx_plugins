@@ -3,8 +3,7 @@
 
 new Array:ArModel, Array:ArSound
 new GTempData[64]
-
-new const UnPrecache_ModelList[ 32 ][ ] = 
+/*new const UnPrecache_ModelList[ 32 ][ ] = 
 { 
 	"models/w_battery.mdl", 
 	"models/shield/p_shield_deagle.mdl", 
@@ -25,6 +24,41 @@ new const UnPrecache_ModelList[ 32 ][ ] =
 	"models/shield/v_shield_p228.mdl", 
 	"models/shield/v_shield_smokegrenade.mdl", 
 	"models/shield/v_shield_usp.mdl", 
+	"models/w_antidote.mdl", 
+	"models/w_security.mdl", 
+	"models/w_longjump.mdl", 
+	"sprites/WXplo1.spr", 
+	"sprites/bubble.spr", 
+	"sprites/eexplo.spr", 
+	"sprites/fexplo.spr", 
+	"sprites/fexplo1.spr", 
+	"sprites/b-tele1.spr", 
+	"sprites/c-tele1.spr", 
+	"sprites/ledglow.spr", 
+	"sprites/laserdot.spr", 
+	"sprites/explode1.spr" 
+} */
+new const UnPrecache_ModelList[ 32][ ] = 
+{ 
+	"models/shield/p_shield_deagle.mdl", 
+	"models/shield/p_shield_fiveseven.mdl", 
+	"models/shield/p_shield_flashbang.mdl", 
+	"models/shield/p_shield_glock18.mdl", 
+	"models/shield/p_shield_hegrenade.mdl", 
+	"models/shield/p_shield_knife.mdl", 
+	"models/shield/p_shield_p228.mdl", 
+	"models/shield/p_shield_smokegrenade.mdl", 
+	"models/shield/p_shield_usp.mdl", 
+	"models/shield/v_shield_deagle.mdl", 
+	"models/shield/v_shield_fiveseven.mdl", 
+	"models/shield/v_shield_flashbang.mdl", 
+	"models/shield/v_shield_glock18.mdl", 
+	"models/shield/v_shield_hegrenade.mdl", 
+	"models/shield/v_shield_knife.mdl", 
+	"models/shield/v_shield_p228.mdl", 
+	"models/shield/v_shield_smokegrenade.mdl", 
+	"models/shield/v_shield_usp.mdl", 
+	"models/w_battery.mdl",
 	"models/w_antidote.mdl", 
 	"models/w_security.mdl", 
 	"models/w_longjump.mdl", 

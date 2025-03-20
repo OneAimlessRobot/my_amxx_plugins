@@ -312,6 +312,7 @@ new origin[3],dist,i
 make_shockwave(vExplodeAt, MOLLY_RADIUS, molly_color)
 random_fire(vExplodeAt, id_molly, MOLLY_RADIUS);
 emit_sound(id_molly, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 for ( i = 1; i <= SH_MAXSLOTS; i++) {
 	
 	if( !client_hittable(i) ) continue

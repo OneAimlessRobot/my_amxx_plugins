@@ -21,14 +21,12 @@ public plugin_init(){
 	
 }
 public plugin_precache(){
-
 	precache_explosion_fx()
 	precache_sound(gSoundBurning)
 	precache_sound(gSoundScream)
 
 }
 public plugin_natives(){
-	
 	
 	register_native("sh_molly_user","_sh_molly_user",0);
 	register_native("sh_unmolly_user","_sh_unmolly_user",0);
@@ -50,7 +48,7 @@ public burn_task(array[],id)
 		if( !client_hittable(i) || i==id || gIsBurning[i] ) continue
 		get_user_origin(i,origin)
 		dist = get_distance(origin,burned_origin)
-		if (dist <= MOLLY_RADIUS) {
+		if (dist <= MOLLY_PROPAGATE_RADIUS) {
 			
 			sh_molly_user(i,id,tranq_get_hero_id())
 			
@@ -123,8 +121,8 @@ stock burn_user(id,attacker){
 	gIsBurning[id]=true
 	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID,array, sizeof(array), "a",BURN_TIMES)
 	set_task(BURN_PERIOD, "fire_sound", id+BURN_TASKID+1, "", 0,  "a", BURN_TIMES);
-	set_task(0.7, "fire_scream", id)
-	set_task(5.5, "stop_fire_sound", id)
+	set_task(0.7, "fire_scream", id+BURN_TASKID+2)
+	set_task(5.5, "stop_fire_sound", id+BURN_TASKID+3)
 	set_task(floatsub(floatmul(BURN_PERIOD,float(BURN_TIMES)),0.1),"unburn_task",id+UNMOLLY_TASKID,"", 0,  "a",1)
 	return 0
 	
@@ -141,6 +139,9 @@ public unburn_task(id){
 	id-=UNMOLLY_TASKID
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+BURN_TASKID)
+	remove_task(id+BURN_TASKID+1)
+	remove_task(id+BURN_TASKID+2)
+	remove_task(id+BURN_TASKID+3)
 	unfade_screen_user(id)
 	
 	gIsBurning[id]=false
@@ -154,6 +155,10 @@ unburn_user(id){
 	remove_task(id+UNMOLLY_TASKID)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+BURN_TASKID)
+	remove_task(id+BURN_TASKID+1)
+	remove_task(id+BURN_TASKID+2)
+	remove_task(id+BURN_TASKID+3)
+	unfade_screen_user(id)
 	gIsBurning[id]=false
 	return 0
 	

@@ -553,6 +553,7 @@ public death()
 	
 		molly_uncharge_molly(id)
 	}
+	sh_unmolly_user(id)
 	new killer= read_data(1)
 	new killer_name[128]
 	get_user_name(killer,killer_name,127)
