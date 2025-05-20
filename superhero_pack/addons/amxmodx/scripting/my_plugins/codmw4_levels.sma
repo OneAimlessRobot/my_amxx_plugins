@@ -11,6 +11,7 @@
 #include "../include/csx.inc"
 #include "../include/cstrike.inc"
 #include "../include/Vexd_Utilities.inc"
+#include "my_include/codmw4_abilities.inc"
 #include "my_include/codmw4_levels.inc"
 
 #tryinclude "my_include/codmw4_lvl.cfg"
@@ -65,6 +66,11 @@ public getMaxLevel(){
 
 public print_MaxLvl(id, level, cid){
 
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	console_print(id,"Max levels: %i",getMaxLevel());
 
 }public getXpFromLevel(level){
@@ -78,6 +84,11 @@ public setPlayerLvl(iPlugin,iParams){
 	new id=get_param(1);
 	new lvl=get_param(2);
 	
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	level_igraca[id]=lvl;
 
 
@@ -88,6 +99,11 @@ public setPlayerXp(iPlugin,iParams){
 	new id=get_param(1);
 	new xp=get_param(2);
 	
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	iskustvo_igraca[id]=xp;
 
 }
@@ -95,6 +111,11 @@ public getPlayerLvl(iPlugin,iParams){
 	
 	new id=get_param(1);
 	
+	if(!is_user_connected(id)){
+		
+		
+			return 1
+	}
 	return level_igraca[id];
 
 
@@ -104,6 +125,11 @@ public getPlayerXp(iPlugin,iParams){
 
 	new id=get_param(1);
 	
+	if(!is_user_connected(id)){
+		
+		
+			return 1
+	}
 	return iskustvo_igraca[id];
 }
 
@@ -112,6 +138,11 @@ public incPlayerXp(iPlugin,iParams){
 	new id=get_param(1);
 	new inc=get_param(2);
 	
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	iskustvo_igraca[id]+=inc;
 
 }
@@ -127,6 +158,11 @@ public _SacuvajPodatke(iPlugin,iParams)
 	new condition=get_param(6)
 	
 	
+	if(!is_user_connected(id)){
+		
+		
+			return PLUGIN_CONTINUE;
+	}
 	
 	if(!class)
 		return PLUGIN_CONTINUE;
@@ -144,7 +180,6 @@ public _SacuvajPodatke(iPlugin,iParams)
 
 public lvlPlayerUp(iPlugin,iParams){
 
-	
 	new id=get_param(1)
 	new class=get_param(2)
 	new intel=get_param(3)
@@ -152,6 +187,11 @@ public lvlPlayerUp(iPlugin,iParams){
 	new resistance=get_param(5)
 	new condition=get_param(6)
 	
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	if(level_igraca[id] <getMaxLevel())
 	{
 		new leveled_up=0;
@@ -179,6 +219,11 @@ public setPlayerPoints(iPlugin,iParams){
 
 	new id=get_param(1)
 	new ammount=get_param(2)
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	poeni_igraca[id]=ammount;
 
 }
@@ -186,6 +231,11 @@ public getPlayerPoints(iPlugin,iParams){
 
 
 	new id=get_param(1)
+	if(!is_user_connected(id)){
+		
+		
+			return 4
+	}
 	return poeni_igraca[id];
 
 }
@@ -193,6 +243,11 @@ public incPlayerPoints(iPlugin,iParams){
 
 	new id=get_param(1)
 	new ammount=get_param(2)
+	if(!is_user_connected(id)){
+		
+		
+			return
+	}
 	poeni_igraca[id]+=ammount;
 
 

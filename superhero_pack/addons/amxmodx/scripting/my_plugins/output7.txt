@@ -29,4 +29,4 @@ crash_funny.sma(100) : fatal error 107: too many error messages on one line
 
 Compilation aborted.
 5 Errors.
-Could not locate output file D:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/crash_funny.amx (compile failed).
+Could not locate output file F:/SteamFAST/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/crash_funny.amx (compile failed).

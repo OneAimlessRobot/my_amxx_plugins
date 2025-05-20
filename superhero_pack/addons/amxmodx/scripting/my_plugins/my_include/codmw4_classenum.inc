@@ -3,7 +3,11 @@
 #endif
 #define codmw4_classenum_included
 
-enum { NONE = 0, 
+
+
+
+enum { 
+NONE = 0, 
 Snajperista,
 Marinac,
 UltraMarinac,

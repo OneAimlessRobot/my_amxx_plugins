@@ -397,12 +397,12 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	for (new i=0; i < numfound; i++)
 	{	
 			
-		if(!client_hittable(i)){
+		new pid = entlist[i];
+		
+		if(!client_hittable(pid)){
 			continue
 		
 		}
-		new pid = entlist[i];
-		
 		sh_screen_shake(pid,10.0,3.0,10.0)
 		if(pid!=ent_id){
 			if(cs_get_user_team(pid)==idTeam){
@@ -434,15 +434,18 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
 	
 	new owner_id=pev(ent_id,pev_owner)
+	new name_of_player[128];
+	get_user_name(owner_id,name_of_player,127)
+	console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do owner e %s!!!!^n",name_of_player)
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
 	for (new i=0; i < numfound; i++)
 	{		
-		if(!client_hittable(i)){
+		new pid = entlist[i];
+		if(!client_hittable(pid)){
 			continue
 		
 		}
-		new pid = entlist[i];
 		sh_screen_shake(pid,10.0,3.0,10.0)
 		if(pid!=owner_id){
 			if(cs_get_user_team(pid)==idTeam){
@@ -451,6 +454,9 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 		}
 		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power)
 		
+		get_user_name(pid,name_of_player,127)
+		console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do player dmged e %s!!!!^n",name_of_player)
+	
 	}
 }
 stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power){

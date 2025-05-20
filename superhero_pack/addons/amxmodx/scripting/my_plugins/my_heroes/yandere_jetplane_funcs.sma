@@ -152,7 +152,6 @@ public _jet_charge_user(iPlugin, iParams){
 	new alpha=100
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jetplane[id],pev_owner,id)
-	//set_pev(g_jaqueo_shield[id],pev_owner,id)
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jetplane[id]
@@ -230,9 +229,6 @@ public jet_deploy_task(parm[],id){
 		return;
 	}
 	
-	/*set_pev(shield_id,pev_rendermode,kRenderTransAlpha)
-	set_pev(shield_id,pev_renderfx,kRenderFxGlowShell)
-	new alpha=camman_camera_minalpha*/
 	set_pev(jetplane_id, pev_takedamage, DAMAGE_YES)
 	set_pev(jetplane_id, pev_movetype, MOVETYPE_BOUNCE) 
 	set_pev(jetplane_id, pev_solid, SOLID_BBOX)

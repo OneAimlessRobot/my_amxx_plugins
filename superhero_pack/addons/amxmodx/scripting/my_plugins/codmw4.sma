@@ -1,17 +1,17 @@
 
-#include "../../include/nvault.inc"
-#include "../../include/amxmod.inc"
-#include "../../include/amxmodx.inc"
-#include "../../include/amxmisc.inc"
-#include "../../include/hamsandwich.inc"
-#include "../../include/fakemeta.inc"
-#include "../../include/fakemeta_util.inc"
-#include "../../include/colorchat.inc"
-#include "../../include/engine.inc"
-#include "../../include/fun.inc"
-#include "../../include/csx.inc"
-#include "../../include/cstrike.inc"
-#include "../../include/Vexd_Utilities.inc"
+#include "../include/nvault.inc"
+#include "../include/amxmod.inc"
+#include "../include/amxmodx.inc"
+#include "../include/amxmisc.inc"
+#include "../include/hamsandwich.inc"
+#include "../include/fakemeta.inc"
+#include "../include/fakemeta_util.inc"
+#include "../include/colorchat.inc"
+#include "../include/engine.inc"
+#include "../include/fun.inc"
+#include "../include/csx.inc"
+#include "../include/cstrike.inc"
+#include "../include/Vexd_Utilities.inc"
 #include "my_include/codmw4_classenum.inc"
 #include "my_include/codmw4_classes.inc"
 #include "my_include/codmw4_cmds.inc"
@@ -88,7 +88,7 @@ new const szForwards[ StructForwards ][ ] = {
 	"get_NumPerks",
 	"get_NumClasses",
 	"get_MaxLevel",
-	"get_XpFromLevel",
+	"getXpFromLevel",
 	"getPlayerGB",
 	"addPlayerGB",
 	"setPlayerGB",
@@ -311,7 +311,7 @@ public cmd_setclass(id, level, cid)
 	read_argv(2, arg2, 127);
 	read_argv(3, arg3, 1);
 	new mode= str_to_num(arg3);
-	
+	new player = cmd_target(id, arg1, 0);
 	if (arg1[0] == '@')
 	{
 		new Team=0;
@@ -360,9 +360,11 @@ public cmd_setclass(id, level, cid)
 			
 			
 			if(!mode){
+				console_print(player,"Escolheste a classe %s^n",arg2)
 				set_player_class(player,arg2)
 			}
 			else{
+				console_print(player,"Escolheste uma classe aleatoria!!!")
 				set_random_player_class(player)
 			}
 		}
@@ -377,7 +379,9 @@ public set_player_class(player, class_name[]){
 	for(; i <class_num; i++){
 		new buff[128];
 		new result
+		PrepareArray(buff,128,1)
 		ExecuteForward(fwForwards[get_class_name_fwd],result,i,buff);
+		console_print(player,"Nome desta classe %s^n^nO nome da tua classe: %s^n",buff,class_name)
 		if(equali(class_name,buff,strlen(buff))){
 			
 			klasa_igraca[player]=i;
@@ -695,8 +699,11 @@ public plugin_cfg()
 public plugin_precache()
 {
 	new Entity = create_entity( "info_map_parameters" );
-	
-	DispatchKeyValue( Entity, "buying", "3" );
+	if(pev_valid(Entity)){
+		
+		DispatchKeyValue( Entity, "buying", "3" );
+			
+	}
 	DispatchSpawn( Entity );
 	
 	
@@ -727,11 +734,13 @@ public plugin_precache()
 public pfn_keyvalue( Entity )  
 { 
 	new ClassName[ 20 ], Dummy[ 2 ];
+	
+	
 	copy_keyvalue( ClassName, charsmax( ClassName ), Dummy, charsmax( Dummy ), Dummy, charsmax( Dummy ) );
 	
 	if( equal( ClassName, "info_map_parameters" ) ) 
 	{ 
-		remove_entity( Entity );
+		//remove_entity( Entity );
 		return PLUGIN_HANDLED ;
 	}
 	return PLUGIN_CONTINUE;
@@ -801,7 +810,10 @@ public CmdStart(id, uc_handle)
 	{ 
 		new button = get_uc(uc_handle, UC_Buttons);
 		new ent = find_ent_by_owner(-1, "weapon_p228", id);
-		
+		if(!pev_valid(ent)){
+			
+				return FMRES_IGNORED
+		}
 		if(button & IN_ATTACK)
 		{
 			button &= ~IN_ATTACK;
@@ -820,6 +832,10 @@ public CmdStart(id, uc_handle)
 			Angle[0] *= -1.0
 			
 			new ent = create_entity("info_target")
+			if(!pev_valid(ent)){
+				
+					return FMRES_IGNORED
+			}
 			set_pev(ent, pev_classname, "rocket");
 			engfunc(EngFunc_SetModel, ent, "models/s_grenade.mdl");
 			
@@ -892,6 +908,10 @@ public Shope(id)
 }
 public AAAbp(id, menu, item) 
 {
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk QTM_CodMod/select");
 	
 	if(item == MENU_EXIT)
@@ -926,6 +946,10 @@ public Shop(id)
 }
 public Shop_Handle(id, menu, item) 
 {
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk QTM_CodMod/select");
 	
 	if(item == MENU_EXIT)
@@ -1130,6 +1154,10 @@ public Shop_Handle(id, menu, item)
 }
 public Predmeti(id)
 {
+	
+	if (!is_user_connected(id)) 
+		return
+	
 	new naslow[60]
 	new player_gb
 	ExecuteForward(fwForwards[get_player_gb_fwd],player_gb,id);
@@ -1146,6 +1174,9 @@ public Predmeti(id)
 }
 public Predmeti_Handle(id, menu, item) 
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk QTM_CodMod/select");
 	
 	new player_gb
@@ -1232,6 +1263,9 @@ public Predmeti_Handle(id, menu, item)
 }
 public DodelaPoena(id)
 {
+	
+	if (!is_user_connected(id)) 
+		return
 	
 	new inteligencija[65], inteligencija10[65], inteligencija100[65], inteligencija1000[65];
 	new energija[60], energija10[60], energija100[65], energija1000[65];
@@ -1931,7 +1965,7 @@ public Pocetak(id)
 		{
 			give_item(id, "weapon_p228");
 			give_item(id, "weapon_deagle");
-			ima_bazuku[id] = true;
+			//ima_bazuku[id] = true;
 			rakete_igraca[id] = 10;
 		}
 		case Price:
@@ -2180,7 +2214,9 @@ public novaRunda()
 	new iEnt = find_ent_by_class(-1, "Mine");
 	while(iEnt > 0) 
 	{
-		remove_entity(iEnt);
+		if (pev_valid(iEnt)){
+			remove_entity(iEnt);
+		}
 		iEnt = find_ent_by_class(iEnt, "Mine");	
 	}
 }
@@ -2556,6 +2592,11 @@ public client_disconnected(id)
 }
 public DeleteSkills(id)
 {
+	if(!is_user_connected(id)){
+		
+		return;
+	
+	}
 	klasa_igraca[id] = 0;
 	set_PlayerLvl(id,0);
 	set_PlayerXp(id,0);
@@ -2579,6 +2620,10 @@ public ObrisiZadatke(id)
 }
 public OpisKlase(id)
 {
+	if (!is_user_connected(id)) 
+		return
+	
+	
 	new menu = menu_create("Select Class:", "OpisKlase_Handle");
 	new class_num;
 	ExecuteForward(fwForwards[get_num_classes_fwd],class_num);
@@ -2598,6 +2643,9 @@ public OpisKlase(id)
 }
 public OpisKlase_Handle(id, menu, item)
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk QTM_CodMod/select");
 	
 	if(item++ == MENU_EXIT)
@@ -2672,6 +2720,11 @@ public IzaberiFrakciju_Handle(id, menu2, item)
 }
 public IzaberiKlasu_Handle(id, menu, item)
 {
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
+	
 	client_cmd(id, "spk mw/select");
 	
 	if(item == MENU_EXIT)
@@ -2812,6 +2865,9 @@ public IzaberiKlasu_Handle(id, menu, item)
 }
 public KreirajMedKit(id)
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	if(!broj_medkit_igraca[id])
 	{
 		set_hudmessage(255, 0, 0, 0.23, 0.10, 0, 6.0, 6.0);
@@ -2833,6 +2889,10 @@ public KreirajMedKit(id)
 	entity_get_vector(id, EV_VEC_origin, origin);
 	
 	new ent = create_entity("info_target");
+	if(!pev_valid(ent)){
+				
+			return PLUGIN_CONTINUE
+	}
 	entity_set_string(ent, EV_SZ_classname, "MedKit");
 	entity_set_edict(ent, EV_ENT_owner, id);
 	entity_set_int(ent, EV_INT_solid, SOLID_NOT);
@@ -2851,6 +2911,9 @@ public KreirajMedKit(id)
 public MedKitThink(ent)
 {
 	new id = entity_get_edict(ent, EV_ENT_owner);
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	new totem_dist = 300;
 	new totem_heal = 5+floatround(inteligencija_igraca[id]*0.5);
 	if (entity_get_edict(ent, EV_ENT_euser2) == 1)
@@ -2944,7 +3007,10 @@ public KreirajRakete(id)
 		entity_get_vector(id, EV_VEC_origin , Origin);
 		
 		new Ent = create_entity("info_target");
-		
+		if(!pev_valid(Ent)){
+				
+				return PLUGIN_CONTINUE
+		}
 		entity_set_string(Ent, EV_SZ_classname, "Rocket");
 		entity_set_model(Ent, "models/rpgrocket.mdl");
 		
@@ -3069,6 +3135,10 @@ public PostaviMine(id)
 	entity_get_vector(id, EV_VEC_origin, origin);
 	
 	new ent = create_entity("info_target");
+	if(!pev_valid(ent)){
+		
+		return PLUGIN_CONTINUE
+	}
 	entity_set_string(ent ,EV_SZ_classname, "Mine");
 	entity_set_edict(ent ,EV_ENT_owner, id);
 	entity_set_int(ent, EV_INT_movetype, MOVETYPE_TOSS);
@@ -3087,6 +3157,9 @@ public PostaviMine(id)
 }
 public DodirMine(ent, id)
 {
+	if ( !is_valid_ent(ent))
+		return;
+	
 	new attacker = entity_get_edict(ent, EV_ENT_owner);
 	if (get_user_team(attacker) != get_user_team(id))
 	{
@@ -3163,6 +3236,10 @@ public DodirRakete(ent)
 }
 public fw_Touch(ent, id)
 {
+	
+	if (!is_user_connected(id)) 
+		return FMRES_IGNORED;
+	
 	if (!pev_valid(ent)) 
 		return FMRES_IGNORED
 	
@@ -3328,6 +3405,9 @@ public EmitSound(id, iChannel, szSound[], Float:fVol, Float:fAttn, iFlags, iPitc
 }
 public KoristiPredmet(id)
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	if(informacije_predmet_igraca[id][0] == 19 && informacije_predmet_igraca[id][1]>0) 
 	{
 		set_user_health(id, maximalna_energija_igraca[id]);
@@ -3347,6 +3427,9 @@ public KoristiPredmet(id)
 
 public OpisPredmeta(id, menu, item)
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	new slucajne_vrednosti[3];
 	
 	new buffperk[512];
@@ -3381,6 +3464,9 @@ public PokaziInformacije(id)
 {   
 	id -= ZADATAK_POKAZI_INFORMACIJE;
 	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	set_task(0.1, "PokaziInformacije", id+ZADATAK_POKAZI_INFORMACIJE);
 	new result
 	if(is_user_connected(id) && !is_user_alive(id))
@@ -3398,9 +3484,11 @@ public PokaziInformacije(id)
 		PrepareArray(buffperk,128,1)
 		ExecuteForward(fwForwards[get_perk_name_fwd],result,informacije_predmet_igraca[target][0],buffperk);
 		
-		new player_gb
+		new player_gb,player_xp_to_next_level,max_level
+		ExecuteForward(fwForwards[get_max_lvl_fwd],max_level)
+		ExecuteForward(fwForwards[get_lvl_xp_fwd],player_xp_to_next_level,get_PlayerLvl(target)+((get_PlayerLvl(target)>=max_level-1)?0:1));
 		ExecuteForward(fwForwards[get_player_gb_fwd],player_gb,target);
-		ShowSyncHudMsg(id, SyncHudObj, "Class: %s^nExperience: %i^nLevel: %i^nHP: %d^nItem: %s^nGB : %i^nMod by Me", buff, get_PlayerXp(target),get_PlayerLvl(target), get_user_health(target), buffperk,player_gb);
+		ShowSyncHudMsg(id, SyncHudObj, "Class: %s^nExperience: %i/%i^nLevel: %i^nHP: %d^nItem: %s^nGB : %i^nMod by Me", buff, get_PlayerXp(target),player_xp_to_next_level,get_PlayerLvl(target), get_user_health(target), buffperk,player_gb);
 		
 		return PLUGIN_CONTINUE;
 	}
@@ -3414,9 +3502,11 @@ public PokaziInformacije(id)
 	
 	PrepareArray(buffperk,128,1)
 	ExecuteForward(fwForwards[get_perk_name_fwd],result,informacije_predmet_igraca[id][0],buffperk);
-	new player_gb
+	new player_gb,player_xp_to_next_level,max_level
+	ExecuteForward(fwForwards[get_max_lvl_fwd],max_level)
+	ExecuteForward(fwForwards[get_lvl_xp_fwd],player_xp_to_next_level,get_PlayerLvl(id)+((get_PlayerLvl(id)>=max_level-1)?0:1));
 	ExecuteForward(fwForwards[get_player_gb_fwd],player_gb,id);
-	ShowSyncHudMsg(id, SyncHudObj, "[Class: %s]^n[Experience: %i]^n[Level: %i]^n[HP: %d]^n[Item: %s]^n[GB: %i]^n[Mod by Romanov]", buff, get_PlayerXp(id),get_PlayerLvl(id), get_user_health(id), buffperk, player_gb);
+	ShowSyncHudMsg(id, SyncHudObj, "[Class: %s]^n[Experience: %i/%i]^n[Level: %i]^n[HP: %d]^n[Item: %s]^n[GB: %i]^n[Mod by Romanov]", buff, get_PlayerXp(id),player_xp_to_next_level,get_PlayerLvl(id), get_user_health(id), buffperk, player_gb);
 	if(broj_medkit_igraca[id] != 0)
 	{
 		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
@@ -3443,14 +3533,24 @@ public PokaziInformacije(id)
 public PokaziReklame(id)
 {
 	id-=ZADATAK_POKAZI_REKLAME;
+	if (!is_user_connected(id)) 
+		return 
+	
 	ColorChat(0, GREEN, "[COD:MW4]^1 Welcome to COD:MW4. Mod edit by ^3Romanov");
 }
 
-public Pomoc(id)
+public Pomoc(id){
+	if (!is_user_connected(id)) 
+		return
+	
 	show_menu(id, 1023, "\y/reset\w - reset points^n\y/class\w - Change class^n\y/drop\w - Drops item^n\y/item\w - Shows the description of your item^n\y/des\w - Shows the description of the class^n\y+use\w - Use the special power", -1, "Pomoc");
+}
 public PostaviBrzinu(id)
 {
 	id -= id > 32 ? ZADATAK_POSTAVI_BRZINU : 0
+	
+	if (!is_user_connected(id)) 
+		return
 	
 	if(klasa_igraca[id])
 	{
@@ -3461,6 +3561,11 @@ public fw_traceline(Float:vecStart[3],Float:vecEnd[3],ignoreM,id,trace)
 {
 	if(!is_user_connected(id))
 		return;
+	
+	if(!is_user_connected(get_tr2(0,TR_pHit))){
+		
+		return
+	}
 	
 	new hit = get_tr2(trace, TR_pHit);
 	
@@ -3493,6 +3598,9 @@ public DodirOruzija(weapon,id)
 }
 stock bool:UTIL_In_FOV(id,target)
 {
+	if (!is_user_connected(id)) 
+		return false
+	
 	if (Find_Angle(id,target,9999.9) > 0.0)
 		return true;
 	
@@ -3513,6 +3621,9 @@ stock Float:Find_Angle(Core,Target,Float:dist)
 	
 	pev(Core,pev_origin,CoreOrigin);
 	pev(Target,pev_origin,TargetOrigin);
+	
+	if (!pev_valid(Core)||!pev_valid(Target)) 
+		return 0.0;
 	
 	if (get_distance_f(CoreOrigin,TargetOrigin) > dist)
 		return 0.0;
@@ -3579,6 +3690,10 @@ public SetModel(ent, model[])
 		return FMRES_IGNORED;
 	
 	new id = pev(ent, pev_owner);
+
+	if(!is_user_connected(id))
+		return FMRES_IGNORED
+	
 	if(!(ima_bazuku[id]))
 		return FMRES_IGNORED;
 	
@@ -3592,6 +3707,9 @@ public message_DeathMsg()
 	static killer, victim;
 	killer = get_msg_arg_int(1);
 	victim = get_msg_arg_int(2);
+	
+	if(!is_user_connected(killer)||!is_user_connected(victim))
+		return PLUGIN_CONTINUE
 	
 	if(lansirano[killer][victim])
 	{
@@ -3610,12 +3728,24 @@ public message_DeathMsg()
 public task_launcher_reload(id)
 {
 	id -= 3512;
+	
+	if (!is_user_connected(id)) 
+		return
+	
 	reloading[id] = false;
 	set_pev(id, pev_weaponanim, 0);
 }
 public Weapon_DeployBazooka(ent)
 {
+	if(!pev_valid(ent)){
+		
+			return PLUGIN_CONTINUE
+	}
 	new id = get_pdata_cbase(ent, 41, 4);
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	if(ima_bazuku[id])
 	{
 		set_pev(id, pev_viewmodel2, "models/v_law.mdl");
@@ -3626,7 +3756,14 @@ public Weapon_DeployBazooka(ent)
 }
 public Weapon_DeployKatana(ent)
 {
+	if(!pev_valid(ent))
+		return PLUGIN_CONTINUE;
+	
 	new id = get_pdata_cbase(ent, 41, 4);
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	if(classHasKatana(klasa_igraca[id]))
 	{
 		set_pev(id, pev_viewmodel2, "models/ByM_Cod/v_katanainv.mdl");
@@ -3637,7 +3774,14 @@ public Weapon_DeployKatana(ent)
 }
 public Weapon_DeploySuperShotgun(ent){
 
+	if(!pev_valid(ent))
+		return PLUGIN_CONTINUE;
+	
 	new id = get_pdata_cbase(ent, 41, 4);
+	
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	if(classHasSuperShotgun(klasa_igraca[id]))
 	{
 		set_pev(id, pev_viewmodel2, "models/ByM_Cod/v_supershotgun.mdl");
@@ -3649,7 +3793,14 @@ public Weapon_DeploySuperShotgun(ent){
 }
 public Weapon_WeaponIdle(ent)
 {
+	if(!pev_valid(ent))
+		return
+	
 	new id = get_pdata_cbase(ent, 41, 4);
+	
+	if (!is_user_connected(id)) 
+		return
+	
 	if(get_user_weapon(id) == 1 && ima_bazuku[id])
 	{
 		if(!idle[id]) 
@@ -3738,11 +3889,20 @@ public cmd_setpredmet(id, level, cid)
 	}
 	return PLUGIN_HANDLED;
 }
-public Komande(id)
+public Komande(id){
+	
+	if (!is_user_connected(id)) 
+		return
+	
 	show_menu(id, 1023, "\r/reset\y -Ponovo podeli poene^n\r/shop\y - Otvari Shop^n\r/class\y - Choose a class^n\r/drop\y - Remove item^n\r/predmet\y - Opis tvog predmeta^n\r/opis\y -Opis svih klasa^n\rna +use \y- Koristi specijalne moci klase^n\rna (+radio2) \y- Koristi killstreak^n\r/rs\y resetuje skor^n\r/pomoc\y Ukljucuje/Iskljucuje pomoc u chatu^n\r/def\y ", -1, "Komande");
+}
 public Prodaj(id) 
 { 
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk MW4/select");  
+	
 	
 	if(!informacije_predmet_igraca[id][0]) 
 	{ 
@@ -3765,6 +3925,9 @@ public Prodaj(id)
 }  
 public DajNekomPredmet(id) 
 { 
+	if (!is_user_connected(id)) 
+		return 
+	
 	new menu = menu_create("Izaberi Igraca", "DajNekomPredmet_Handle"); 
 	new cb = menu_makecallback("DajNekomPredmet_Callback"); 
 	new broj_predmeta; 
@@ -3829,6 +3992,9 @@ public DajNekomPredmet_Callback(id, menu, item)
 }  
 public Menu(id)
 {
+	if (!is_user_connected(id)) 
+		return
+	
 	new menu = menu_create("Menu:", "Menu_handle");
 	menu_additem(menu, "\rClasses\y(Class Menu)");
 	menu_additem(menu, "\rDescription Klase\y(Description of the Class Menu)");
@@ -3837,6 +4003,9 @@ public Menu(id)
 }
 public Menu_handle(id, menu, item) 
 {
+	if (!is_user_connected(id)) 
+		return PLUGIN_CONTINUE;
+	
 	client_cmd(id, "spk QTM_CodMod/select");
 	
 	if(item == MENU_EXIT)
@@ -3861,6 +4030,3 @@ public Menu_handle(id, menu, item)
 	}
 	return PLUGIN_CONTINUE;
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

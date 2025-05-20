@@ -78,19 +78,19 @@ public plugin_precache(){
 				replace(row, 199, "[recoil]", " ");
 				replace(row, 199, "[sight_model]", " ");
 				
-				strbreak(row,left,63,right,63);
+				argbreak(row,left,63,right,63);
 				format(row, 199, "%s", right);
 				format(model, 63, "%s", left);
 	 
-				strbreak(row,left,63,right,63);
+				argbreak(row,left,63,right,63);
 				format(row, 199, "%s", right);
 				wchange = str_to_num(left);
 	 
-				strbreak(row,left,63,right,63);
+				argbreak(row,left,63,right,63);
 				format(row, 199, "%s", right);
 				format(recoil, 31, "%s", left);
 	 
-				strbreak(row,left,63,right,63);
+				argbreak(row,left,63,right,63);
 				format(row, 199, "%s", right);
 				format(sight_model, 63, "%s", left);
 				
@@ -101,7 +101,9 @@ public plugin_precache(){
 	 
 				format(V_MODEL[idwpn], 63, "models/%s.mdl", model);
 				format(SIGHT[idwpn], 63, "models/%s.mdl", sight_model);
-				precache_model(V_MODEL[idwpn]);
+				
+				console_print(0,"Precachamos:^nmodel '%s' para arma^nmodel '%s' para sight",V_MODEL[idwpn],SIGHT[idwpn]);
+				precache_model(V_MODEL[idwpn])
 				precache_model(SIGHT[idwpn]);
 				idwpn++;
 			}
