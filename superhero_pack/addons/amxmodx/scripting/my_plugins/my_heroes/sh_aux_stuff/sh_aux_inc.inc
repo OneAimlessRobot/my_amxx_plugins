@@ -705,6 +705,46 @@ stock explode_fx( vec1[3] )
 	write_byte(28)			// decal
 	message_end()
 }
+
+//----------------------------------------------------------------------------------------------
+stock blood_spray(vic, vicOrigin[3], scale)
+{
+	new x, y
+	for(new i = 0; i < 2; i++) {
+		x = random_num(-10, 10)
+		y = random_num(-10, 10)
+		for(new j = 0; j < 2; j++) {
+			// Blood spray
+			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+			write_byte(115)				// TE_BLOODSPRITE
+			write_coord(vicOrigin[0]+(x*j))	// position
+			write_coord(vicOrigin[1]+(y*j))
+			write_coord(vicOrigin[2]+21)
+			write_short(blood2)	// sprite1 index
+			write_short(blood)	// sprite2 index
+			write_byte(248) 			// color RED = 248 YELLOW = 196
+			write_byte(scale) 			// scale
+			message_end()
+		}
+	}
+}
+stock trailing_beam(life,ent,const color[4]) {
+	if(pev_valid(ent)&&(life>0)){
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
+		write_byte(22); // TE_BEAMFOLLOW
+		write_short(ent); // ball
+		write_short(m_trail); // laserbeam
+		write_byte(life); // life
+		write_byte(5); // width
+		write_byte(color[0]); // R
+		write_byte(color[1]); // G
+		write_byte(color[2]); // B
+		write_byte(color[3]); // brightness
+		message_end();
+	}
+}
+
+//----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
 	
 	
@@ -714,6 +754,7 @@ stock precache_explosion_fx(){
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
 	m_trail = precache_model("sprites/smoke.spr")
 	blood1 = precache_model("sprites/blood.spr");
+	white = precache_model("sprites/shockwave.spr")
 	blood2 = precache_model("sprites/bloodspray.spr");
 	precache_sound("ambience/particle_suck2.wav")
 	sprite1 = precache_model("sprites/white.spr")
