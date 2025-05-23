@@ -13,14 +13,16 @@ new Float:kzam_track_radius,
 	Float:kzam_spore_speed, 
 	Float:kzam_track_time,
 	Float:kzam_heal_coeff,
+	Float:kzam_spore_base_health,
 	Float:kzam_follow_time;
 new kzam_max_victims
 new hud_sync_enemies
-new bool:g_spore_used[SH_MAXSLOTS+1]
-new bool:g_spore_busy[SH_MAXSLOTS+1]
-new bool:g_spore_ready[SH_MAXSLOTS+1]
+new hud_sync_stats
+new num_launched_spores[SH_MAXSLOTS+1]
 new g_player_num_victims[SH_MAXSLOTS+1]
-new g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new bool:g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new g_player_targets[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new Float:g_player_cooldown_remaining[SH_MAXSLOTS+1]
 new g_spore_phase[MAX_ENTITIES]
 new Float:g_spore_timer[MAX_ENTITIES]
 //----------------------------------------------------------------------------------------------
@@ -36,15 +38,22 @@ public plugin_init()
 	register_cvar("kzam_follow_time", "5.0")
 	register_cvar("kzam_heal_coeff", "0.5" )
 	register_cvar("kzam_max_victims", "4" )
+	register_cvar("kzam_spore_health", "100.0" )
 	
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
-	register_event("ResetHUD","newRound","b")
+	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	hud_sync_enemies = CreateHudSyncObj()
+	hud_sync_stats = CreateHudSyncObj()
 	register_forward(FM_PlayerPreThink, "spore_launch_check")
 	register_forward(FM_Think, "spore_think")
 }
+#define STATUS_UPDATE_TASKID 7812713
+#define STATUS_UPDATE_PERIOD 0.5
+
+
+
 public plugin_natives(){
 	
 	
@@ -53,10 +62,12 @@ public plugin_natives(){
 	register_native("spores_reset_user","_spores_reset_user",0)
 	register_native("spores_clear","_spores_clear",0)
 	register_native("spores_busy","_spores_busy",0)
-	register_native("spores_ready","_spores_ready",0)
-	register_native("spores_used","_spores_used",0)
 	register_native("spores_max_victims","_spores_max_victims",0)
 	register_native("spores_gather_targets","_spores_gather_targets",0)
+	register_native("delete_hud_tasks","_delete_hud_tasks",0)
+	register_native("init_hud_tasks","_init_hud_tasks",0)
+	register_native("delete_cooldown_update_tasks","_delete_cooldown_update_tasks",0)
+	register_native("init_cooldown_update_tasks","_init_cooldown_update_tasks",0)
 	
 	
 	
@@ -81,15 +92,88 @@ bool:heal(id,Float:damage){
 	return true
 
 }
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
+
+public _delete_hud_tasks(iPlugins, iParms){
 	
-	if ( spores_has_kzam(id) && sh_is_active() ) {
+	new id= get_param(1)
+	remove_task(id+STATUS_UPDATE_TASKID)
+	
+	
+	
+}
+
+public _init_hud_tasks(iPlugins, iParms){
+	
+	new id= get_param(1)
+	set_task(STATUS_UPDATE_PERIOD,"status_hud",id+STATUS_UPDATE_TASKID,"",0,"b")
+	
+	
+}
+public _delete_cooldown_update_tasks(iPlugins, iParms){
+	
+	new id= get_param(1)
+	remove_task(id+COOLDOWN_UPDATE_TASKID)
+	
+	
+	
+}
+
+public _init_cooldown_update_tasks(iPlugins, iParms){
+	
+	new id= get_param(1)
+	set_task(COOLDOWN_UPDATE_PERIOD,"launcher_recharge_loop",id+COOLDOWN_UPDATE_TASKID,"",0,"b")
+	
+	
+}
+public status_hud(id){
+	id-=STATUS_UPDATE_TASKID
+	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_kzam(id))){
+				
+		delete_hud_tasks(id)
+		return
 		
-		spores_reset_user(id)
 	}
-	return PLUGIN_HANDLED
+	new hud_msg[300];
+	format(hud_msg,200,"[SH] kzam:^nNumber of launched spores %d^nCurrent number of victims gathered: %d^n",
+					num_launched_spores[id],
+					g_player_num_victims[id]);
+	if(g_player_cooldown_remaining[id]>0){
+	format(hud_msg,299,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
+					g_player_cooldown_remaining[id]);
+	}
+	else{
+	
+	
+	format(hud_msg,299,"%s^n%Mrs. Kzam? The launcher is ready.^n",hud_msg)
+	
+		
+		
+	}
+	
+	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
+	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
+	
+	
+}
+
+public launcher_recharge_loop(id){
+	
+	id-=COOLDOWN_UPDATE_TASKID;
+	
+	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_kzam(id))){
+				
+		delete_hud_tasks(id)
+		return
+		
+	}
+	if(g_player_cooldown_remaining[id]>0.0){
+		
+		g_player_cooldown_remaining[id]=floatsub(g_player_cooldown_remaining[id],COOLDOWN_UPDATE_PERIOD);
+		
+		
+	}
+	
+	
 }
 public _spores_clear(iPlugins, iParms){
 	
@@ -98,6 +182,9 @@ public _spores_clear(iPlugins, iParms){
 		remove_entity(spore)
 		spore = find_ent_by_class(spore, SPORE_CLASSNAME)
 	}
+	
+	arrayset(g_spore_phase,0,MAX_ENTITIES)
+	arrayset(g_spore_timer,0.0,MAX_ENTITIES)
 	
 }
 public _spores_max_victims(iPlugins, iParms){
@@ -111,30 +198,18 @@ public _spores_reset_user(iPlugins, iParms){
 	
 	if ( spores_has_kzam(id) && sh_is_active() ) {
 		arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
+		arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 		g_player_num_victims[id]=0
-		g_spore_used[id]=false
-		g_spore_busy[id]=false
-		g_spore_ready[id]=true
+		g_player_cooldown_remaining[id]=0.0
+		num_launched_spores[id]=0;
 	}
 	return PLUGIN_HANDLED
-	
-}
-public bool:_spores_ready(iPlugins, iParms){
-	
-	new id= get_param(1)
-	return g_spore_ready[id]
-	
-}
-public bool:_spores_used(iPlugins, iParms){
-	
-	new id= get_param(1)
-	return g_spore_used[id]
 	
 }
 public bool:_spores_busy(iPlugins, iParms){
 	
 	new id= get_param(1)
-	return g_spore_busy[id]
+	return (g_player_num_victims[id]>0)
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -153,6 +228,7 @@ public loadCVARS()
 	kzam_track_time= get_cvar_float("kzam_track_time")
 	kzam_follow_time= get_cvar_float("kzam_follow_time")
 	kzam_heal_coeff=get_cvar_float("kzam_heal_coeff")
+	kzam_spore_base_health=get_cvar_float("kzam_spore_health")
 	kzam_max_victims= get_cvar_num("kzam_max_victims")
 }
 show_targets(id){
@@ -173,15 +249,27 @@ show_targets(id){
 }
 public spore_think(ent){
 	
+	if ( !pev_valid(ent) ) return FMRES_IGNORED
 	
-	if(!pev_valid(ent)){
+	static classname[32]
+	classname[0] = '^0'
+	pev(ent, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, SPORE_CLASSNAME) ) return FMRES_IGNORED
+	
+	new Float:spore_hp=float(pev(ent,pev_health))
+	
+	
+	if ( (spore_hp<SPORE_DEAD_HP) ||( g_spore_timer[ent]>kzam_track_time)){
 		
-		return
+		untrack_spore(ent)
+		return FMRES_IGNORED
 		
 	}
-	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
+	floatadd(g_spore_timer[ent],SPORE_THINK_PERIOD)
+	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
 	
-
+	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public _spores_gather_targets(iPlugin, iParms)
@@ -215,8 +303,10 @@ for( new i= 0;i< numfound;i++){
 		if((cs_get_user_team(pid)==idTeam)){
 				continue
 		}
-		g_player_tracks_player[id][pid]=true
-		g_player_num_victims[id]++
+		if(!g_player_tracks_player[id][pid]){
+			g_player_tracks_player[id][pid]=true
+			g_player_num_victims[id]++
+		}
 	
 }
 show_targets(id)
@@ -224,26 +314,38 @@ show_targets(id)
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
+	
 	for(new i=0;i<=SH_MAXSLOTS;i++){
 		
 			if(i!=id){
 				if(g_player_tracks_player[id][i]&&client_hittable(i)&&is_user_connected(i)){
+					g_player_targets[id][num_launched_spores[id]++]=i;
 					
-					spore_launch(id,i)
 				}
 			}
 	}
-	
+	set_task(SHOOT_LOOP_PERIOD, "spore_launch", id+SHOOT_LOOP_TASKID, "", 0, "a",num_launched_spores[id])
+	g_player_cooldown_remaining[id]=spores_cooldown()
 }
 //----------------------------------------------------------------------------------------------
-public spore_launch(id,target)
+public spore_launch(id)
 {
-new spore = create_entity("info_target")
+id-= SHOOT_LOOP_TASKID
+if(!spores_has_kzam(id)||!client_hittable(id)){
+	
+	return
+}
+new material[128]
+new health[128]	
+new spore = create_entity( "func_breakable" );
 
-if ( (spore == 0) || !pev_valid(spore)) {
+if ( (spore == 0) || !pev_valid(spore)||!is_valid_ent(spore)) {
 	client_print(id, print_chat, "[SH](Kzam) Spore Creation Failure")
 	return
 }
+
+g_spore_phase[spore]=0
+g_spore_timer[spore]=0.0
 
 new Float:b_orig[3]
 
@@ -259,8 +361,10 @@ distance[0] = originlook[0]-originplayer[0]
 distance[1] = originlook[1]-originplayer[1]
 
 
-aimvec[0]=originplayer[0]
-aimvec[1]=originplayer[1]
+new unitsinfront = 80
+
+aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
+aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
 aimvec[2]=originplayer[2]+UNITS_ABOVE
 
 b_orig[0] = float(aimvec[0]);
@@ -272,27 +376,23 @@ entity_set_string(spore, EV_SZ_classname, SPORE_CLASSNAME)
 
 entity_set_model(spore, KZAM_SPORE_MDL)
 
+float_to_str(SPORE_DEAD_HP+kzam_spore_base_health,health,127)
+num_to_str(2,material,127)
+DispatchKeyValue( spore, "material", material );
+DispatchKeyValue( spore, "health", health );
+
+
+set_pev(spore, pev_health, SPORE_DEAD_HP+kzam_spore_base_health)
+engfunc(EngFunc_SetSize, spore, Float:{-SPORE_SIZE, -SPORE_SIZE,-SPORE_SIZE}, Float:{SPORE_SIZE, SPORE_SIZE, SPORE_SIZE})
+
+
+set_pev(spore, pev_takedamage, DAMAGE_YES)
+set_pev(spore, pev_solid, SOLID_TRIGGER)
+entity_set_int(spore,EV_INT_movetype, MOVETYPE_NOCLIP)
 entity_set_origin(spore, b_orig)
-//entity_set_float(spore,EV_FL_health,500.0)
-//entity_set_float(spore, EV_FL_takedamage, 1.0)
-
-new Float:MinBox[3]
-new Float:MaxBox[3]
-MinBox[0] = -SPORE_SIZE
-MinBox[1] = -SPORE_SIZE
-MinBox[2] = -SPORE_SIZE
-MaxBox[0] = SPORE_SIZE
-MaxBox[1] = SPORE_SIZE
-MaxBox[2] = SPORE_SIZE
-entity_set_vector(spore,EV_VEC_mins, MinBox)
-entity_set_vector(spore,EV_VEC_maxs, MaxBox)
-
 
 //Sets who the owner of the entity is
-entity_set_edict(spore, EV_ENT_owner, id)
-
-entity_set_int(spore, EV_INT_solid, SOLID_TRIGGER)
-entity_set_int(spore,EV_INT_movetype, MOVETYPE_NOCLIP)
+entity_set_edict(spore, EV_ENT_euser1,id)
 
 new velocity[3]
 new Float:fVelocity[3]
@@ -305,13 +405,17 @@ entity_set_vector(spore, EV_VEC_velocity, fVelocity)
 new parms[3];
 parms[0]=spore
 parms[1]=id
-parms[2]=target
+parms[2]=(g_player_targets[id][num_launched_spores[id]-1])
+new user_name[128]
+get_user_name(g_player_targets[id][num_launched_spores[id]-1],user_name,127)
+client_print(id, print_console, "[SH](Kzam) Spore sent! spore id is: %d^nLaunched at target number: %d^nThe name if said target is: %s^n",spore,num_launched_spores[id],user_name)
+num_launched_spores[id]--
 sporetrack(parms)
 }
 public sporetrack(parms[]){
 new spore=parms[0]
 emit_sound(parms[1], CHAN_WEAPON, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(floatsub(floatmul(FOLLOW_LOOP_PERIOD,float(FOLLOW_LOOP_TIMES)),0.1),"untrack_spore_task",spore+UNFOLLOW_LOOP_TASKID,parms, 3,  "a",1)
+set_task(floatsub(floatmul(FOLLOW_LOOP_PERIOD,float(FOLLOW_LOOP_TIMES)),0.1),"untrack_spore_task",spore+UNFOLLOW_LOOP_TASKID,"",0,  "a",1)
 set_task(FOLLOW_LOOP_PERIOD, "track_spore", spore+FOLLOW_LOOP_TASKID, parms, 3, "a",FOLLOW_LOOP_TIMES)
 }
 //----------------------------------------------------------------------------------------------
@@ -328,7 +432,7 @@ if ( !is_valid_ent(spore) ) {
 	return
 }
 
-if ( is_user_alive(spore_target)) {
+if ( is_user_alive(spore_target)&&is_user_alive(spore_owner)) {
 	entity_set_follow(spore, spore_target)
 	sporetrail(spore)
 }
@@ -336,14 +440,19 @@ else{
 	
 	untrack_spore(spore)
 	g_player_tracks_player[spore_owner][spore_target]=false
-	g_player_num_victims[spore_owner]--
 }
 }
 //----------------------------------------------------------------------------------------------
 untrack_spore(spore){
 	remove_task(spore+UNFOLLOW_LOOP_TASKID)
 	remove_task(spore+FOLLOW_LOOP_TASKID)
-	remove_entity(spore)
+	if(pev_valid(spore)){
+		new spore_owner = entity_get_edict(spore, EV_ENT_euser1)
+		g_player_num_victims[spore_owner]--
+		g_spore_phase[spore]=0
+		g_spore_timer[spore]=0.0
+		remove_entity(spore)
+	}
 	return 0
 
 }
@@ -351,7 +460,13 @@ untrack_spore(spore){
 public untrack_spore_task(spore){
 	spore-=UNFOLLOW_LOOP_TASKID
 	remove_task(spore+FOLLOW_LOOP_TASKID)
-	remove_entity(spore)
+	if(pev_valid(spore)){
+		new spore_owner = entity_get_edict(spore, EV_ENT_euser1)
+		g_player_num_victims[spore_owner]--
+		g_spore_phase[spore]=0
+		g_spore_timer[spore]=0.0
+		remove_entity(spore)
+	}
 	return 0
 
 }
@@ -393,25 +508,42 @@ return 1
 public touch_event(pToucher, pTouched)  //This is triggered when two entites touch
 {
 
-new killer = entity_get_edict(pToucher, EV_ENT_owner)
+new killer = entity_get_edict(pToucher, EV_ENT_euser1)
 new victim = pTouched
 new ffOn = get_cvar_num("mp_friendlyfire")
 if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 {
 	sh_extra_damage(victim, killer, floatround(kzam_spore_damage), "kzam spore")
+	emit_sound(victim, CHAN_WEAPON, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	heal(killer,kzam_spore_damage)
 	g_player_tracks_player[killer][victim]=false
 	untrack_spore(pToucher)
-	g_player_num_victims[killer]--
 }
 
 }
 
+public death()
+{
+	new id = read_data(2)
+	
+	if(spores_has_kzam(id)){
+		
+		spores_reset_user(id)
+		delete_hud_tasks(id)
+		
+	}
+	
+}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
 	precache_model(KZAM_SPORE_MDL)
 	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
+	engfunc(EngFunc_PrecacheSound, SPORE_WOUND_SFX)
+	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	precache_explosion_fx()
 }

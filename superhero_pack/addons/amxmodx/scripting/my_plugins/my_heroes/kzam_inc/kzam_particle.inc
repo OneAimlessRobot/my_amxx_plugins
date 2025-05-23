@@ -1,5 +1,6 @@
 
 #define KZAM_SPORE_MDL "models/shmod/predgun/preddisc.mdl"
+#define SPORE_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
 
 #define SPORE_CLASSNAME "kzam_spore"
 
@@ -10,3 +11,6 @@
 #define UNFOLLOW_LOOP_TASKID 1223332
 #define FOLLOW_LOOP_PERIOD 0.2
 #define FOLLOW_LOOP_TIMES floatround(floatdiv(kzam_follow_time,FOLLOW_LOOP_PERIOD))
+
+
+#define SPORE_DEAD_HP 1000.0

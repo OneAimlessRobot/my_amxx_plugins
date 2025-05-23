@@ -36,9 +36,9 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "kzam_level" )
-	
-	
 	register_event("ResetHUD","newRound","b")
+	
+	
 	// INIT
 	register_srvcmd("kzam_init", "kzam_init")
 	shRegHeroInit(gHeroName, "kzam_init")
@@ -51,6 +51,7 @@ public plugin_natives(){
 	
 	
 	register_native("spores_has_kzam","_spores_has_kzam",0)
+	register_native("spores_cooldown","_spores_cooldown",0)
 	
 	
 	
@@ -61,6 +62,24 @@ public _spores_has_kzam(iPlugins, iParms){
 	new id= get_param(1)
 	return gHasKzam[id]
 	
+}public Float:_spores_cooldown(iPlugins, iParms){
+	
+	return cooldown
+	
+}
+//----------------------------------------------------------------------------------------------
+public newRound(id)
+{
+	if(!is_user_connected(id)||!sh_is_active()||!id){
+		
+		return PLUGIN_CONTINUE
+	}
+	spores_reset_user(id)
+	if ( spores_has_kzam(id)) {
+		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
+		init_hud_tasks(id)
+	}
+	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -88,22 +107,15 @@ public kzam_init()
 	gHasKzam[id] = (hasPowers!=0)
 	if ( gHasKzam[id] )
 	{
-		
+		spores_reset_user(id)
+		init_cooldown_update_tasks(id)
+		init_hud_tasks(id)
 	}
 	else{
-		
+		spores_reset_user(id)
+		delete_cooldown_update_tasks(id)
+		delete_hud_tasks(id)
 	}
-}
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{	
-	if(is_user_alive(id) && shModActive()){
-		if ( spores_has_kzam(id)) {
-			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-		}
-	}
-	return PLUGIN_HANDLED
-	
 }
 //----------------------------------------------------------------------------------------------
 public kzam_kd()
@@ -113,12 +125,21 @@ public kzam_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) || !spores_has_kzam(id) ) return PLUGIN_HANDLED
+	if ( !client_hittable(id) || !spores_has_kzam(id) ) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
 		playSoundDenySelect(id)
+		sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
 		return PLUGIN_HANDLED
+	}
+	else if(spores_busy(id)){
+		
+		playSoundDenySelect(id)
+		sh_chat_message(id,gHeroID,"Some launched spores still busy!");
+		return PLUGIN_HANDLED
+		
+		
 	}
 	
 	ultimateTimer(id, cooldown)
@@ -128,6 +149,7 @@ public kzam_kd()
 	format(message, 127, SEARCH_MSG )
 	set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
 	show_hudmessage(id, message)
+	spores_reset_user(id)
 	spores_gather_targets(id)
 	spores_launch(id)
 	
