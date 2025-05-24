@@ -387,7 +387,7 @@ public make_beam(id)
 	//notFloat_vOrigin[2] = floatround(vOrigin[2])
 
 	new NewEnt
-	NewEnt = CreateEntity("info_target")
+	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
 		client_print(id,print_chat,"[SH](S.W.A.T.) Rocket Failure")
 		return PLUGIN_HANDLED

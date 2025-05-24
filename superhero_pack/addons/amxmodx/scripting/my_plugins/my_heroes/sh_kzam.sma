@@ -22,7 +22,9 @@ kzam_heal_coeff 0.5
 // GLOBAL VARIABLES
 new gHeroName[]="kzam"
 new bool:gHasKzam[SH_MAXSLOTS+1]
+new gmorphed[SH_MAXSLOTS+1]
 new Float:cooldown
+new teamglow_on
 new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -31,12 +33,14 @@ public plugin_init()
 	register_plugin("SUPERHERO kzam","1.1","MilkChanThaGOAT")
 	
 	register_cvar("kzam_level", "12" )
+	register_cvar("kzam_teamglow_on", "1")
 	register_cvar("kzam_cooldown", "10.0" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "kzam_level" )
 	register_event("ResetHUD","newRound","b")
+	register_event("DeathMsg","death","a")
 	
 	
 	// INIT
@@ -52,11 +56,16 @@ public plugin_natives(){
 	
 	register_native("spores_has_kzam","_spores_has_kzam",0)
 	register_native("spores_cooldown","_spores_cooldown",0)
+	register_native("spores_kzam_hero_id","_spores_kzam_hero_id",0)
 	
 	
 	
 }
 
+public _spores_kzam_hero_id(iPlugins, iParms){
+
+	return gHeroID
+}
 public _spores_has_kzam(iPlugins, iParms){
 	
 	new id= get_param(1)
@@ -70,12 +79,13 @@ public _spores_has_kzam(iPlugins, iParms){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if(!is_user_connected(id)||!sh_is_active()||!id){
+	if(!client_hittable(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
 	spores_reset_user(id)
 	if ( spores_has_kzam(id)) {
+		kzam_model(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
 	}
@@ -91,6 +101,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	cooldown= get_cvar_float("kzam_cooldown")
+	teamglow_on=get_cvar_num("kzam_teamglow_on")
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -108,6 +119,7 @@ public kzam_init()
 	if ( gHasKzam[id] )
 	{
 		spores_reset_user(id)
+		kzam_model(id)
 		init_cooldown_update_tasks(id)
 		init_hud_tasks(id)
 	}
@@ -115,6 +127,7 @@ public kzam_init()
 		spores_reset_user(id)
 		delete_cooldown_update_tasks(id)
 		delete_hud_tasks(id)
+		kzam_unmorph(id+KZAM_MORPH_TASKID)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -154,4 +167,80 @@ public kzam_kd()
 	spores_launch(id)
 	
 	return PLUGIN_HANDLED
+}
+
+public plugin_precache()
+{
+	precache_model(KZAM_PLAYER_MODEL)
+
+}
+
+//----------------------------------------------------------------------------------------------
+public kzam_model(id)
+{
+	set_task(1.0, "kzam_morph", id+KZAM_MORPH_TASKID)
+	if( teamglow_on){
+		set_task(1.0, "kzam_glow", id+KZAM_MORPH_TASKID, "", 0, "b" )
+	}
+
+}
+//----------------------------------------------------------------------------------------------
+public kzam_morph(id)
+{
+	id-=KZAM_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_kzam(id) ) return
+	
+	// Message
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "kzam: '...'")
+	cs_set_user_model(id,"kzam")
+
+	gmorphed[id] = true
+	
+}
+//----------------------------------------------------------------------------------------------
+public kzam_unmorph(id)
+{
+	id-=KZAM_MORPH_TASKID
+	if(!is_user_connected(id) ) return
+	if ( gmorphed[id] ) {
+
+		cs_reset_user_model(id)
+
+		gmorphed[id] = false
+
+		if ( teamglow_on ) {
+			remove_task(id+KZAM_MORPH_TASKID)
+			set_user_rendering(id)
+		}
+	}
+}
+//----------------------------------------------------------------------------------------------
+public kzam_glow(id)
+{
+	id -= KZAM_MORPH_TASKID
+
+	if ( !is_user_connected(id) ) {
+		//Don't want any left over residuals
+		remove_task(id+KZAM_MORPH_TASKID)
+		return
+	}
+
+	if ( spores_has_kzam(id) && is_user_alive(id)) {
+		if ( get_user_team(id) == 1 ) {
+			shGlow(id, 255, 0, 0)
+		}
+		else {
+			shGlow(id, 0, 0, 255)
+		}
+	}
+}
+
+public death()
+{
+	new id = read_data(2)
+	if(client_hittable(id)&&spores_has_kzam(id)){
+		
+		kzam_unmorph(id+KZAM_MORPH_TASKID)
+	}
 }

@@ -6,6 +6,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
@@ -352,7 +353,7 @@ return HAM_IGNORED
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()){
+	if(shModActive()&&client_hittable(id)){
 		if ( gHasErica[id]) {
 			g_erica_kills[id]=0;
 			gNumDarts[id]=num_er_darts
@@ -386,11 +387,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 	for(new i=1;i<=SH_MAXSLOTS;i++){
 		
 		//if(!is_user_connected(i)||!gHasAdriano[i]||!is_user_alive(i)){
-		if(!is_user_connected(i)||!is_user_alive(i)){
-			
-			
-		}
-		else{
+		if(gHasErica[id]&&client_hittable(id)){
 			get_user_origin(i,teamate_origin)
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<g_normal_er_radius[id]){
@@ -413,7 +410,7 @@ public sh_round_end(){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!gHasErica[id] ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!gHasErica[id] ||!shModActive()&&client_hittable(id)) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
@@ -449,7 +446,7 @@ public erica_stats(id){
 	
 	id-=ERICA_STATS_TASKID;
 	
-	if(gHasErica[id]){
+	if(gHasErica[id]&&client_hittable(id)){
 		
 		update_stats2(id)
 		
@@ -462,7 +459,7 @@ public erica_stats(id){
 
 update_stats2(id){
 	
-	if(gHasErica[id]){
+	if(gHasErica[id]&&client_hittable(id)){
 		////g_normal_speed[id]=900.0-float(g_adriano_points[id])
 		if(!sh_get_stun(id)){
 			new Float:maxspeed=get_user_maxspeed(id)
@@ -478,7 +475,7 @@ update_stats2(id){
 }
 public Erica_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && gHasErica[id] ) {
+if ( sh_is_active() && is_user_alive(id) && gHasErica[id] &&client_hittable(id)) {
 	sh_give_weapon(id,CSW_HEGRENADE,false)
 	cs_set_user_bpammo(id, CSW_HEGRENADE,num_mollies);
 	sh_give_weapon(id, CSW_ELITE)

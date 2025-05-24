@@ -415,7 +415,7 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 }
 stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	
-	if(!pev_valid(ent_id)){
+	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
 	
 		return 
 	
@@ -462,6 +462,11 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power){
 	
 	
+	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
+	
+		return 
+	
+	}
 	
 	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
 	
@@ -523,7 +528,7 @@ stock unfade_screen_user(id){
 stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
 {
 	if ( !pev_valid(ent_id) ) return
-	
+	if(!client_hittable(pev(ent_id, pev_owner))) return
 	static  colors[3]
 	
 	switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
