@@ -77,6 +77,7 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
 
+	g_msgFade = get_user_msgid("ScreenFade");
 	//EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")

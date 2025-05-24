@@ -514,7 +514,7 @@ new ffOn = get_cvar_num("mp_friendlyfire")
 if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 {
 	sh_extra_damage(victim, killer, floatround(kzam_spore_damage), "kzam spore")
-	emit_sound(victim, CHAN_WEAPON, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	heal(killer,kzam_spore_damage)
 	g_player_tracks_player[killer][victim]=false
 	untrack_spore(pToucher)
@@ -540,7 +540,7 @@ public plugin_precache()
 	precache_model(KZAM_SPORE_MDL)
 	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_WOUND_SFX)
+	precache_sound(SPORE_WOUND_SFX)
 	precache_model( "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );

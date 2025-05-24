@@ -1,6 +1,6 @@
 
 #define KZAM_SPORE_MDL "models/shmod/predgun/preddisc.mdl"
-#define SPORE_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
+#define SPORE_WOUND_SFX  "hornet/ag_hornethit1.wav"
 
 #define SPORE_CLASSNAME "kzam_spore"
 

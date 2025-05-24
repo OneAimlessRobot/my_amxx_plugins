@@ -45,6 +45,7 @@ public plugin_init()
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	
+	g_msgFade = get_user_msgid("ScreenFade");
 	hud_sync_charge=CreateHudSyncObj()
 	
 	// Add your code here...

@@ -41,8 +41,8 @@ stock const LineColors[COLORS_NUM][3] = {
 stock const tag_color[4]={0,255,255,255}
 stock smoke, white, fire
 stock m_trail
+new g_msgFade
 stock gSpriteLaser,blood1,blood2,sprite1;
-stock g_msgFade
 stock g_iFireSprite, g_iSmokeSprite[2];
 stock gSpriteSmoke, gSpriteFire, gSpriteBurning
 stock trail(vec1[3],vec2[3],const color[4],id){
@@ -758,7 +758,6 @@ stock precache_explosion_fx(){
 	blood2 = precache_model("sprites/bloodspray.spr");
 	precache_sound("ambience/particle_suck2.wav")
 	sprite1 = precache_model("sprites/white.spr")
-	g_msgFade = get_user_msgid("ScreenFade");
 	g_iFireSprite = precache_model("sprites/flame.spr");
 	g_iSmokeSprite[0] = precache_model("sprites/black_smoke3.spr");
 	g_iSmokeSprite[1] = precache_model("sprites/steam1.spr");

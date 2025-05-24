@@ -6,8 +6,6 @@
 
 stock const graciete_color[4]={50, 205, 50, 100}
 
-new gHeroID
-new const gHeroName[] = "Graciete"
 
 native client_isnt_hitter(id)
 native graciete_get_has_graciete(id)

@@ -6,7 +6,8 @@
 
 #define GRACIETE_HUD_TASKID 17282
 #define GRACIETE_MORPH_TASKID 212122
-new gHeroLevel
+new gHeroID
+new const gHeroName[] = "Graciete"
 new gHasGraciete[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
@@ -174,7 +175,6 @@ public graciete_loop(id)
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel= get_cvar_num("graciete_level");
 	teamglow_on=get_cvar_num("graciete_teamglow_on")
 	
 }
