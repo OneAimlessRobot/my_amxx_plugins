@@ -5,19 +5,19 @@
 #include "../my_include/superheromod.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "kzam_inc/kzam_global.inc"
-#include "kzam_inc/kzam_particle.inc"
-#include "kzam_inc/kzam_spore_launcher.inc"
+#include "ksun_inc/ksun_global.inc"
+#include "ksun_inc/ksun_particle.inc"
+#include "ksun_inc/ksun_spore_launcher.inc"
 
-new Float:kzam_track_radius, 
-	Float:kzam_spore_damage, 
-	Float:kzam_spore_speed,
-	Float:kzam_hold_time,
-	Float:kzam_heal_coeff,
-	Float:kzam_spore_base_health,
-	Float:kzam_launcher_base_health,
-	Float:kzam_follow_time;
-new kzam_max_victims
+new Float:ksun_track_radius, 
+	Float:ksun_spore_damage, 
+	Float:ksun_spore_speed,
+	Float:ksun_hold_time,
+	Float:ksun_heal_coeff,
+	Float:ksun_spore_base_health,
+	Float:ksun_launcher_base_health,
+	Float:ksun_follow_time;
+new ksun_max_victims
 new hud_sync_stats
 new num_launched_spores[SH_MAXSLOTS+1]
 new num_deployed_spores[SH_MAXSLOTS+1]
@@ -33,17 +33,17 @@ new Float:g_launcher_timer[SH_MAXSLOTS+1]
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO kzam","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun","1.1","MilkChanThaGOAT")
 	
-	register_cvar("kzam_track_radius", "2000.0")
-	register_cvar("kzam_spore_damage", "100.0" )
-	register_cvar("kzam_spore_speed", "900.0" )
-	register_cvar("kzam_follow_time", "5.0")
-	register_cvar("kzam_hold_time", "5.0")
-	register_cvar("kzam_heal_coeff", "0.5" )
-	register_cvar("kzam_max_victims", "4" )
-	register_cvar("kzam_spore_health", "100.0" )
-	register_cvar("kzam_launcher_health", "100.0" )
+	register_cvar("ksun_track_radius", "2000.0")
+	register_cvar("ksun_spore_damage", "100.0" )
+	register_cvar("ksun_spore_speed", "900.0" )
+	register_cvar("ksun_follow_time", "5.0")
+	register_cvar("ksun_hold_time", "5.0")
+	register_cvar("ksun_heal_coeff", "0.5" )
+	register_cvar("ksun_max_victims", "4" )
+	register_cvar("ksun_spore_health", "100.0" )
+	register_cvar("ksun_launcher_health", "100.0" )
 	
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	register_event("DeathMsg","death","a")
@@ -90,7 +90,7 @@ bool:heal(id,Float:damage){
 		return false
 	
 	}
-	damage*=kzam_heal_coeff
+	damage*=ksun_heal_coeff
 	new Float: new_health=floatadd(mate_health,damage)
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
 	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
@@ -133,14 +133,14 @@ public _init_cooldown_update_tasks(iPlugins, iParms){
 }
 public status_hud(id){
 	id-=STATUS_UPDATE_TASKID
-	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_kzam(id))){
+	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_ksun(id))){
 				
 		delete_hud_tasks(id)
 		return
 		
 	}
 	new hud_msg[200];
-	format(hud_msg,150,"[SH] kzam:^nNumber of launched spores %d^nNumber of deployed spores: %d^nCurrent number of victims gathered: %d^nCurrent phase: %d^nCurrent hold time: %0.2f^n",
+	format(hud_msg,150,"[SH] ksun:^nNumber of launched spores %d^nNumber of deployed spores: %d^nCurrent number of victims gathered: %d^nCurrent phase: %d^nCurrent hold time: %0.2f^n",
 					num_launched_spores[id],
 					num_deployed_spores[id],
 					g_player_num_victims[id],
@@ -153,7 +153,7 @@ public status_hud(id){
 	else{
 	
 	
-	format(hud_msg,199,"%s^n%Mrs. Kzam? The launcher is ready.^n",hud_msg)
+	format(hud_msg,199,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
 	
 		
 		
@@ -169,7 +169,7 @@ public launcher_recharge_loop(id){
 	
 	id-=COOLDOWN_UPDATE_TASKID;
 	
-	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_kzam(id))){
+	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_ksun(id))){
 				
 		delete_hud_tasks(id)
 		return
@@ -201,7 +201,7 @@ public _spores_clear(iPlugins, iParms){
 }
 public _spores_max_victims(iPlugins, iParms){
 	
-	return kzam_max_victims
+	return ksun_max_victims
 	
 }
 public _spores_reset_user(iPlugins, iParms){
@@ -227,19 +227,19 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	kzam_track_radius= get_cvar_float("kzam_track_radius")
-	kzam_spore_damage= get_cvar_float("kzam_spore_damage")
-	kzam_spore_speed= get_cvar_float("kzam_spore_speed")
-	kzam_hold_time= get_cvar_float("kzam_hold_time")
-	kzam_follow_time= get_cvar_float("kzam_follow_time")
-	kzam_heal_coeff= get_cvar_float("kzam_heal_coeff")
-	kzam_spore_base_health= get_cvar_float("kzam_spore_health")
-	kzam_launcher_base_health= get_cvar_float("kzam_launcher_health")
-	kzam_max_victims= get_cvar_num("kzam_max_victims")
+	ksun_track_radius= get_cvar_float("ksun_track_radius")
+	ksun_spore_damage= get_cvar_float("ksun_spore_damage")
+	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
+	ksun_hold_time= get_cvar_float("ksun_hold_time")
+	ksun_follow_time= get_cvar_float("ksun_follow_time")
+	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
+	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
+	ksun_launcher_base_health= get_cvar_float("ksun_launcher_health")
+	ksun_max_victims= get_cvar_num("ksun_max_victims")
 }
 show_targets(id){
 
-	if(!client_hittable(id)||!spores_has_kzam(id)){
+	if(!client_hittable(id)||!spores_has_ksun(id)){
 		
 		return
 	}
@@ -249,10 +249,10 @@ show_targets(id){
 	get_user_name(id,client_name,127)
 	if(g_player_num_victims[id]<=0){
 		
-		client_print(id,print_center,"[SH] kzam:^nNo victims were gathered...")
+		client_print(id,print_center,"[SH] ksun:^nNo victims were gathered...")
 	}
 	else{
-		format(hud_msg,500,"[SH] kzam:^nTargets:^n")
+		format(hud_msg,500,"[SH] ksun:^nTargets:^n")
 		for(new i=1;i<=SH_MAXSLOTS;i++){
 			if(g_player_tracks_player[id][i]&&client_hittable(i)){
 				get_user_name(i,client_name,127)
@@ -316,7 +316,7 @@ public launcher_think(ent){
 		case PHASE_IDLE:{
 			
 			g_launcher_timer[launcher_owner]=floatadd(g_launcher_timer[launcher_owner],LAUNCHER_THINK_PERIOD)
-			if(g_launcher_timer[launcher_owner]>kzam_hold_time){
+			if(g_launcher_timer[launcher_owner]>ksun_hold_time){
 				
 				g_launcher_phase[launcher_owner]=PHASE_SEND
 				set_pev(ent, pev_takedamage, DAMAGE_YES)
@@ -344,7 +344,7 @@ public launcher_think(ent){
 		}
 		case PHASE_HOLD:{
 			g_launcher_timer[launcher_owner]=floatadd(g_launcher_timer[launcher_owner],LAUNCHER_THINK_PERIOD)
-			if(g_launcher_timer[launcher_owner]>kzam_hold_time){
+			if(g_launcher_timer[launcher_owner]>ksun_hold_time){
 				
 				client_print(0,print_console,"Chegamos à parte de mudar para send^n")
 				g_launcher_phase[launcher_owner]=PHASE_SEND
@@ -371,7 +371,7 @@ public launcher_think(ent){
 		case PHASE_DONE:{
 		
 	
-			set_task(kzam_follow_time,"destroy_player_launcher",launcher_owner+UNDEPLOY_LOOP_TASKID)
+			set_task(ksun_follow_time,"destroy_player_launcher",launcher_owner+UNDEPLOY_LOOP_TASKID)
 			return FMRES_IGNORED;
 		}
 		
@@ -386,7 +386,7 @@ public launcher_think(ent){
 public _spores_gather_targets(iPlugin, iParms)
 {
 new id= get_param(1)
-if(!client_hittable(id)||!spores_has_kzam(id)){
+if(!client_hittable(id)||!spores_has_ksun(id)){
 	
 		return
 }
@@ -398,11 +398,11 @@ new iOrigin[3];
 for(new i=0;i<3;i++){
 	iOrigin[i] = floatround(fOrigin[i]);
 }
-make_shockwave(iOrigin,kzam_track_radius,{255, 0, 255,125})
+make_shockwave(iOrigin,ksun_track_radius,{255, 0, 255,125})
 new entlist[33];
-new numfound = find_sphere_class(id,"player", kzam_track_radius ,entlist, 32);
+new numfound = find_sphere_class(id,"player", ksun_track_radius ,entlist, 32);
 new CsTeams:idTeam = cs_get_user_team(id)
-for( new i= 0;(g_player_num_victims[id]<=(kzam_max_victims))&&(i< numfound);i++){
+for( new i= 0;(g_player_num_victims[id]<=(ksun_max_victims))&&(i< numfound);i++){
 	
 	
 				
@@ -440,7 +440,7 @@ public _spores_launch(iPlugin,iParms){
 public spore_launch(id)
 {
 id-=FIRE_LOOP_TASKID
-if(!spores_has_kzam(id)||!client_hittable(id)){
+if(!spores_has_ksun(id)||!client_hittable(id)){
 	
 	return
 }
@@ -451,7 +451,7 @@ switch(g_launcher_phase[id]){
 		new spore = create_entity( "func_breakable" );
 
 		if ( (spore == 0) || !pev_valid(spore)||!is_valid_ent(spore)) {
-			client_print(id, print_chat, "[SH](Kzam) Spore Creation Failure")
+			client_print(id, print_chat, "[SH](ksun) Spore Creation Failure")
 			return
 		}
 
@@ -482,15 +482,15 @@ switch(g_launcher_phase[id]){
 		entity_set_string(spore, EV_SZ_classname, SPORE_CLASSNAME)
 
 
-		entity_set_model(spore, KZAM_SPORE_MDL)
+		entity_set_model(spore, KSUN_SPORE_MDL)
 
-		float_to_str(SPORE_DEAD_HP+kzam_spore_base_health,health,127)
+		float_to_str(SPORE_DEAD_HP+ksun_spore_base_health,health,127)
 		num_to_str(2,material,127)
 		DispatchKeyValue( spore, "material", material );
 		DispatchKeyValue( spore, "health", health );
 
 
-		set_pev(spore, pev_health, SPORE_DEAD_HP+kzam_spore_base_health)
+		set_pev(spore, pev_health, SPORE_DEAD_HP+ksun_spore_base_health)
 		engfunc(EngFunc_SetSize, spore, Float:{-SPORE_SIZE, -SPORE_SIZE,-SPORE_SIZE}, Float:{SPORE_SIZE, SPORE_SIZE, SPORE_SIZE})
 
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
@@ -509,7 +509,7 @@ switch(g_launcher_phase[id]){
 		parms[0]=g_player_spores[id][num_deployed_spores[id]]
 		parms[1]=id
 		parms[2]=g_player_launcher[id]
-		client_print(id, print_console, "[SH](Kzam) Spore prepared! spore id is: %d^nSpore number is: %d^n",spore,num_deployed_spores[id])
+		client_print(id, print_console, "[SH](ksun) Spore prepared! spore id is: %d^nSpore number is: %d^n",spore,num_deployed_spores[id])
 		sporeprepare(parms)
 		}
 	case PHASE_SEND:{
@@ -522,7 +522,7 @@ switch(g_launcher_phase[id]){
 		new user_name[128]
 		emit_sound(parms[0], CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		get_user_name(parms[2],user_name,127)
-		client_print(id, print_console, "[SH](Kzam) Spore sent! spore id is: %d^nSpore number is: %d^nLaunched at target number: %d^nThe name of said target is: %s^n",parms[0],num_launched_spores[id],parms[2],user_name)
+		client_print(id, print_console, "[SH](ksun) Spore sent! spore id is: %d^nSpore number is: %d^nLaunched at target number: %d^nThe name of said target is: %s^n",parms[0],num_launched_spores[id],parms[2],user_name)
 		sporetrack(parms)
 	}
 }
@@ -542,7 +542,7 @@ entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_
 public launcher_deploy(id)
 {
 
-if(!spores_has_kzam(id)||!client_hittable(id)){
+if(!spores_has_ksun(id)||!client_hittable(id)){
 	
 	return
 }
@@ -551,7 +551,7 @@ new health[128]
 new launcher = create_entity( "func_breakable" );
 
 if ( (launcher == 0) || !pev_valid(launcher)||!is_valid_ent(launcher)) {
-	client_print(id, print_chat, "[SH](Kzam) Launcher Creation Failure")
+	client_print(id, print_chat, "[SH](ksun) Launcher Creation Failure")
 	return
 }
 
@@ -584,15 +584,15 @@ b_orig[2] = float(aimvec[2]);
 entity_set_string(launcher, EV_SZ_classname, LAUNCHER_CLASSNAME)
 
 
-entity_set_model(launcher, KZAM_SPORE_MDL)
+entity_set_model(launcher, KSUN_SPORE_MDL)
 
-float_to_str(LAUNCHER_DEAD_HP+kzam_launcher_base_health,health,127)
+float_to_str(LAUNCHER_DEAD_HP+ksun_launcher_base_health,health,127)
 num_to_str(2,material,127)
 DispatchKeyValue( launcher, "material", material );
 DispatchKeyValue( launcher, "health", health );
 
 
-set_pev(launcher, pev_health, LAUNCHER_DEAD_HP+kzam_launcher_base_health)
+set_pev(launcher, pev_health, LAUNCHER_DEAD_HP+ksun_launcher_base_health)
 engfunc(EngFunc_SetSize, launcher, Float:{-LAUNCHER_SIZE, -LAUNCHER_SIZE,-LAUNCHER_SIZE}, Float:{LAUNCHER_SIZE, LAUNCHER_SIZE, LAUNCHER_SIZE})
 
 
@@ -605,7 +605,7 @@ entity_set_origin(launcher, b_orig)
 entity_set_edict(launcher, EV_ENT_euser1,id)
 entity_set_edict(launcher, EV_ENT_owner,id)
 
-client_print(id, print_console, "[SH](Kzam) Launcher deployed! Launcher id is: %d(%d)^n Launcher phase is: %d^n Launcher timer is: %0.2f^n",launcher,g_player_launcher[id],g_launcher_phase[id],g_launcher_timer[id])
+client_print(id, print_console, "[SH](ksun) Launcher deployed! Launcher id is: %d(%d)^n Launcher phase is: %d^n Launcher timer is: %0.2f^n",launcher,g_player_launcher[id],g_launcher_phase[id],g_launcher_timer[id])
 
 g_launcher_phase[id]=PHASE_DEPLOY
 entity_set_float( launcher, EV_FL_nextthink, floatadd(get_gametime( ) ,LAUNCHER_THINK_PERIOD));
@@ -691,7 +691,7 @@ new Float:fl_Origin[3], Float:fl_EntOrigin[3]
 entity_get_vector(target, EV_VEC_origin, fl_Origin)
 entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
 
-new Float:fl_InvTime = (kzam_spore_speed / vector_distance(fl_Origin, fl_EntOrigin))
+new Float:fl_InvTime = (ksun_spore_speed / vector_distance(fl_Origin, fl_EntOrigin))
 
 new Float:fl_Distance[3]
 fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
@@ -730,13 +730,13 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	new tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
-	sh_extra_damage(victim, killer, floatround(kzam_spore_damage), "kzam spore")
-	sh_bleed_user(victim,killer,spores_kzam_hero_id())
-	heal(killer,kzam_spore_damage)
+	sh_extra_damage(victim, killer, floatround(ksun_spore_damage), "ksun spore")
+	sh_bleed_user(victim,killer,spores_ksun_hero_id())
+	heal(killer,ksun_spore_damage)
 	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	g_player_tracks_player[killer][victim]=false
-	sh_chat_message(killer,spores_kzam_hero_id(),"You just spored %s!^n",vic_name)
-	sh_chat_message(victim,spores_kzam_hero_id(),"You got spored by %s!^n",tger_name)
+	sh_chat_message(killer,spores_ksun_hero_id(),"You just spored %s!^n",vic_name)
+	sh_chat_message(victim,spores_ksun_hero_id(),"You got spored by %s!^n",tger_name)
 	untrack_spore(pToucher)
 }
 
@@ -747,7 +747,7 @@ public destroy_player_launcher(id){
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	remove_task(id+FIRE_LOOP_TASKID)
 	
-	if ( spores_has_kzam(id)) {
+	if ( spores_has_ksun(id)) {
 		arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
 		arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 		arrayset(g_player_spores[id],0,SH_MAXSLOTS+1)
@@ -778,7 +778,7 @@ public death()
 {
 	new id = read_data(2)
 	
-	if(spores_has_kzam(id)){
+	if(spores_has_ksun(id)){
 		for(new i=0;i<=SH_MAXSLOTS;i++){
 			
 			if(g_player_spores[id][i]&&is_valid_ent(g_player_spores[id][i])){
@@ -798,7 +798,7 @@ public death()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(KZAM_SPORE_MDL)
+	precache_model(KSUN_SPORE_MDL)
 	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, LAUNCHER_SCAN_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)

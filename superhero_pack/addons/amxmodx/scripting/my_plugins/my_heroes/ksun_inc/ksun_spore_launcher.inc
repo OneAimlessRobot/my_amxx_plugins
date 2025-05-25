@@ -1,29 +1,27 @@
 
 
+#if defined sh_ksun_launcher_funcs
+  #endinput
+#endif
+#define sh_ksun_launcher_funcs
+
 #define SEARCH_MSG "loading targets!"
 #define BUSY_MSG "Some launched spores still busy!"
 
 
 #define SEARCH_LOOP_TASKID 218128
 #define SPORE_TRAIL_LOOP_TASKID 2329129
-#if defined sh_kzam_launcher_funcs
-  #endinput
-#endif
-#define sh_kzam_launcher_funcs
+
+#define LAUNCHER_CLASSNAME "ksun_launcher"
 
 
-#define LAUNCHER_CLASSNAME "kzam_launcher"
+#define SPORE_PREPARE_SFX "shmod/ksun/launcher/eject_prepare.wav"
+#define SPORE_SEND_SFX "shmod/ksun/launcher/eject_send.wav"
+#define LAUNCHER_SCAN_SFX "shmod/ksun/launcher/scanner_wash.wav"
+#define SPORE_READY_SFX "shmod/ksun/launcher/spore_notification.wav"
 
 
-#define SPORE_PREPARE_SFX "shmod/kzam/launcher/eject_prepare.wav"
-#define SPORE_SEND_SFX "shmod/kzam/launcher/eject_send.wav"
-#define LAUNCHER_SCAN_SFX "shmod/kzam/launcher/scanner_wash.wav"
-#define SPORE_READY_SFX "shmod/kzam/launcher/spore_notification.wav"
-
-
-//emit_sound(id, CHAN_WEAPON, SPORE_PREPARE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-//emit_sound(id, CHAN_WEAPON, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
+#define KSUN_HEAL_GLOW_TIME SHOOT_LOOP_PERIOD
 
 #define SHOOT_LOOP_TASKID 46523423
 #define UNSHOOT_LOOP_TASKID 6433243

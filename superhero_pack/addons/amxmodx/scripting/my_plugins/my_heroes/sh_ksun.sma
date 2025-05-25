@@ -1,27 +1,31 @@
-// kzam
+// KSUN
 /* CVARS - copy and paste to shconfig.cfg
 
 //
-kzam_level 12
-kzam_target_radius 2000.0
-kzam_spore_damage 100.0
-kzam_spore_speed 900.0
-kzam_track_time 5.0
-kzam_follow_time 5.0
-kzam_max_victims 4
-kzam_heal_coeff 0.5
+ksun_level 12
+ksun_track_radius 2000.0
+ksun_spore_damage 100.0
+ksun_spore_speed 900.0
+ksun_follow_time 5.0
+ksun_teamglow_on 1
+ksun_hold_time 5.0
+ksun_max_victims 4
+ksun_heal_coeff 0.5
+ksun_cooldown 10.0
+ksun_spore_health 100.0
+ksun_launcher_health 500.0
 */
 
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "kzam_inc/kzam_particle.inc"
-#include "kzam_inc/kzam_global.inc"
-#include "kzam_inc/kzam_spore_launcher.inc"
+#include "ksun_inc/ksun_particle.inc"
+#include "ksun_inc/ksun_global.inc"
+#include "ksun_inc/ksun_spore_launcher.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="kzam"
-new bool:gHasKzam[SH_MAXSLOTS+1]
+new gHeroName[]="ksun"
+new bool:gHasksun[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new Float:cooldown
 new teamglow_on
@@ -30,55 +34,57 @@ new gHeroID
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO kzam","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun","1.1","MilkChanThaGOAT")
 	
-	register_cvar("kzam_level", "12" )
-	register_cvar("kzam_teamglow_on", "1")
-	register_cvar("kzam_cooldown", "10.0" )
+	register_cvar("ksun_level", "12" )
+	register_cvar("ksun_teamglow_on", "1")
+	register_cvar("ksun_cooldown", "10.0" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "kzam_level" )
+	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
 	register_event("ResetHUD","newRound","b")
 	register_event("DeathMsg","death","a")
 	
 	
 	// INIT
-	register_srvcmd("kzam_init", "kzam_init")
-	shRegHeroInit(gHeroName, "kzam_init")
+	register_srvcmd("ksun_init", "ksun_init")
+	shRegHeroInit(gHeroName, "ksun_init")
 	
-	register_srvcmd("kzam_kd", "kzam_kd")
-	shRegKeyDown(gHeroName, "kzam_kd")
+	register_srvcmd("ksun_kd", "ksun_kd")
+	shRegKeyDown(gHeroName, "ksun_kd")
+	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
+	register_forward(FM_PlayerPreThink, "ksun_prethink")
 }
 public plugin_natives(){
 	
 	
 	
-	register_native("spores_has_kzam","_spores_has_kzam",0)
+	register_native("spores_has_ksun","_spores_has_ksun",0)
 	register_native("spores_cooldown","_spores_cooldown",0)
-	register_native("spores_kzam_hero_id","_spores_kzam_hero_id",0)
+	register_native("spores_ksun_hero_id","_spores_ksun_hero_id",0)
 	
 	
 	
 }
 
-public _spores_kzam_hero_id(iPlugins, iParms){
+public _spores_ksun_hero_id(iPlugins, iParms){
 
 	return gHeroID
 }
-public _spores_has_kzam(iPlugins, iParms){
+public _spores_has_ksun(iPlugins, iParms){
 	
 	new id= get_param(1)
-	return gHasKzam[id]
+	return gHasksun[id]
 	
 }public Float:_spores_cooldown(iPlugins, iParms){
 	
 	return cooldown
 	
 }
-kzam_weapons(id)
+ksun_weapons(id)
 {
-if ( sh_is_active() && client_hittable(id) && spores_has_kzam(id)) {
+if ( sh_is_active() && client_hittable(id) && spores_has_ksun(id)) {
 	sh_give_weapon(id, CSW_M4A1)
 }
 }
@@ -90,9 +96,9 @@ public newRound(id)
 		return PLUGIN_CONTINUE
 	}
 	spores_reset_user(id)
-	if ( spores_has_kzam(id)) {
-		kzam_weapons(id)
-		kzam_model(id)
+	if ( spores_has_ksun(id)) {
+		ksun_weapons(id)
+		ksun_model(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
 	}
@@ -107,12 +113,12 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	cooldown= get_cvar_float("kzam_cooldown")
-	teamglow_on=get_cvar_num("kzam_teamglow_on")
+	cooldown= get_cvar_float("ksun_cooldown")
+	teamglow_on=get_cvar_num("ksun_teamglow_on")
 	
 }
 //----------------------------------------------------------------------------------------------
-public kzam_init()
+public ksun_init()
 {
 	// First Argument is an id
 	new temp[6]
@@ -122,11 +128,11 @@ public kzam_init()
 	read_argv(2,temp,5)
 	new hasPowers = str_to_num(temp)
 	
-	gHasKzam[id] = (hasPowers!=0)
-	if ( gHasKzam[id] )
+	gHasksun[id] = (hasPowers!=0)
+	if ( gHasksun[id] )
 	{
 		spores_reset_user(id)
-		kzam_model(id)
+		ksun_model(id)
 		init_cooldown_update_tasks(id)
 		init_hud_tasks(id)
 	}
@@ -134,19 +140,19 @@ public kzam_init()
 		spores_reset_user(id)
 		delete_cooldown_update_tasks(id)
 		delete_hud_tasks(id)
-		kzam_unmorph(id+KZAM_MORPH_TASKID)
+		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, CSW_M4A1, true)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public kzam_kd()
+public ksun_kd()
 {
 	new temp[6]
 	
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) || !spores_has_kzam(id) ) return PLUGIN_HANDLED
+	if ( !client_hittable(id) || !spores_has_ksun(id) ) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
@@ -179,37 +185,73 @@ public kzam_kd()
 
 public plugin_precache()
 {
-	precache_model(KZAM_PLAYER_MODEL)
+	precache_model(KSUN_PLAYER_MODEL)
 
 }
+public get_ksun_num(id,want_alive,want_all){
 
+new players[SH_MAXSLOTS]
+new team_name[32]
+new player_count;
+get_user_team(id,team_name,32)
+if(want_all){
+	if(!want_alive){
+		get_players(players,player_count,"b")
+	}
+	else{
+		get_players(players,player_count,"a")
+		player_count--
+	}
+}
+else{
+	if(!want_alive){
+		get_players(players,player_count,"eb",team_name)
+	}
+	else{
+		get_players(players,player_count,"ea",team_name)
+		player_count--
+	}
+}
+return player_count;
+
+
+}
 //----------------------------------------------------------------------------------------------
-public kzam_model(id)
+public ksun_prethink(id)
 {
-	set_task(1.0, "kzam_morph", id+KZAM_MORPH_TASKID)
+	if ( sh_is_active() && is_user_alive(id) && (get_ksun_num(id,1,0)<=0)) {
+		set_pev(id, pev_flTimeStepSound, 999)
+	}
+}
+//----------------------------------------------------------------------------------------------
+public ksun_model(id)
+{
+	if ( !is_user_alive(id)||!spores_has_ksun(id) ) return
+	
+	set_task(1.0, "ksun_morph", id+KSUN_MORPH_TASKID)
 	if( teamglow_on){
-		set_task(1.0, "kzam_glow", id+KZAM_MORPH_TASKID, "", 0, "b" )
+		set_task(1.0, "ksun_glow", id+KSUN_MORPH_TASKID, "", 0, "b" )
 	}
 
 }
 //----------------------------------------------------------------------------------------------
-public kzam_morph(id)
+public ksun_morph(id)
 {
-	id-=KZAM_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_kzam(id) ) return
+	id-=KSUN_MORPH_TASKID
+	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_ksun(id) ) return
 	
 	// Message
 	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "kzam: '...'")
-	cs_set_user_model(id,"kzam")
+	show_hudmessage(id, "ksun: '...'")
+	cs_set_user_model(id,"ksun")
 
 	gmorphed[id] = true
 	
 }
 //----------------------------------------------------------------------------------------------
-public kzam_unmorph(id)
+public ksun_unmorph(id)
 {
-	id-=KZAM_MORPH_TASKID
+	id-=KSUN_MORPH_TASKID
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 
@@ -218,28 +260,28 @@ public kzam_unmorph(id)
 		gmorphed[id] = false
 
 		if ( teamglow_on ) {
-			remove_task(id+KZAM_MORPH_TASKID)
+			remove_task(id+KSUN_MORPH_TASKID)
 			set_user_rendering(id)
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
-public kzam_glow(id)
+public ksun_glow(id)
 {
-	id -= KZAM_MORPH_TASKID
+	id -= KSUN_MORPH_TASKID
 
 	if ( !is_user_connected(id) ) {
 		//Don't want any left over residuals
-		remove_task(id+KZAM_MORPH_TASKID)
+		remove_task(id+KSUN_MORPH_TASKID)
 		return
 	}
 
-	if ( spores_has_kzam(id) && is_user_alive(id)) {
+	if ( spores_has_ksun(id) && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
+			shGlow(id, 255, 0, 255)
 		}
 		else {
-			shGlow(id, 0, 0, 255)
+			shGlow(id, 0, 255, 255)
 		}
 	}
 }
@@ -247,8 +289,8 @@ public kzam_glow(id)
 public death()
 {
 	new id = read_data(2)
-	if(client_hittable(id)&&spores_has_kzam(id)){
+	if(client_hittable(id)&&spores_has_ksun(id)){
 		
-		kzam_unmorph(id+KZAM_MORPH_TASKID)
+		ksun_unmorph(id+KSUN_MORPH_TASKID)
 	}
 }
