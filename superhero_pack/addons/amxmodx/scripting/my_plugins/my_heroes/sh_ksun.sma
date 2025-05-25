@@ -22,12 +22,15 @@ ksun_launcher_health 500.0
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
+#include "ksun_inc/sh_sleep_grenade_funcs.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
 new bool:gHasksun[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
+new gNumSleepNades[SH_MAXSLOTS+1]
 new Float:cooldown
+new num_sleep_nades
 new teamglow_on
 new gHeroID
 //----------------------------------------------------------------------------------------------
@@ -39,6 +42,7 @@ public plugin_init()
 	register_cvar("ksun_level", "12" )
 	register_cvar("ksun_teamglow_on", "1")
 	register_cvar("ksun_cooldown", "10.0" )
+	register_cvar("ksun_num_of_sleep_nades","6")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -59,6 +63,12 @@ public plugin_init()
 public plugin_natives(){
 	
 	
+	register_native("ksun_dec_num_sleep_nades","_ksun_dec_num_sleep_nades",0);
+	register_native("ksun_get_num_sleep_nades","_ksun_get_num_sleep_nades",0);
+	register_native("ksun_set_num_sleep_nades","_ksun_set_num_sleep_nades",0);
+	
+	
+	
 	
 	register_native("spores_has_ksun","_spores_has_ksun",0)
 	register_native("spores_cooldown","_spores_cooldown",0)
@@ -68,6 +78,26 @@ public plugin_natives(){
 	
 }
 
+public _ksun_set_num_sleep_nades(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gNumSleepNades[id]=value_to_set;
+}
+public _ksun_get_num_sleep_nades(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	return gNumSleepNades[id]
+
+}
+
+public _ksun_dec_num_sleep_nades(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	gNumSleepNades[id]-= (gNumSleepNades[id]>0)? 1:0
+
+}
 public _spores_ksun_hero_id(iPlugins, iParms){
 
 	return gHeroID
@@ -84,7 +114,10 @@ public _spores_has_ksun(iPlugins, iParms){
 }
 ksun_weapons(id)
 {
+
 if ( sh_is_active() && client_hittable(id) && spores_has_ksun(id)) {
+	cs_set_user_bpammo(id, CSW_HEGRENADE,num_sleep_nades);
+	sh_give_weapon(id,CSW_FLASHBANG,false)
 	sh_give_weapon(id, CSW_M4A1)
 }
 }
@@ -98,11 +131,17 @@ public newRound(id)
 	spores_reset_user(id)
 	if ( spores_has_ksun(id)) {
 		ksun_weapons(id)
+		gNumSleepNades[id]=num_sleep_nades
 		ksun_model(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
 	}
 	return PLUGIN_HANDLED
+}
+public sh_round_end(){
+
+	clear_sleep_nades()
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -115,6 +154,7 @@ public loadCVARS()
 {
 	cooldown= get_cvar_float("ksun_cooldown")
 	teamglow_on=get_cvar_num("ksun_teamglow_on")
+	num_sleep_nades=get_cvar_num("ksun_num_of_sleep_nades")
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -133,6 +173,7 @@ public ksun_init()
 	{
 		spores_reset_user(id)
 		ksun_model(id)
+		ksun_weapons(id)
 		init_cooldown_update_tasks(id)
 		init_hud_tasks(id)
 	}
@@ -290,7 +331,11 @@ public death()
 {
 	new id = read_data(2)
 	if(client_hittable(id)&&spores_has_ksun(id)){
-		
+		if(sleep_nade_get_sleep_nade_loaded(id)){
+	
+			sleep_nade_uncharge_sleep_nade(id)
+		}		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
+
 	}
 }

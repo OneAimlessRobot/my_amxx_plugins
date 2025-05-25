@@ -18,3 +18,8 @@
 native spores_has_ksun(id)
 native spores_ksun_hero_id()
 native Float:spores_cooldown()
+native ksun_dec_num_sleep_nades(id)
+native ksun_get_num_sleep_nades(id)
+native ksun_set_num_sleep_nades(id,value)
+	
+	

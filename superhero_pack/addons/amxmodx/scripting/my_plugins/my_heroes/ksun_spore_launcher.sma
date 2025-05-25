@@ -148,11 +148,9 @@ public status_hud(id){
 		
 	}
 	new hud_msg[200];
-	format(hud_msg,150,"[SH] ksun:^nNumber of launched spores %d^nNumber of deployed spores: %d^nCurrent number of victims gathered: %d^nCurrent phase: %d^nCurrent hold time: %0.2f^n",
-					num_launched_spores[id],
-					num_deployed_spores[id],
+	format(hud_msg,150,"[SH] ksun:^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
+					ksun_get_num_sleep_nades(id),
 					g_player_num_victims[id],
-					g_launcher_phase[id],
 					g_launcher_timer[id]);
 	if(g_player_cooldown_remaining[id]>0){
 	format(hud_msg,199,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
