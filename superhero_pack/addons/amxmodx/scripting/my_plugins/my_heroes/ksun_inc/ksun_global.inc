@@ -15,24 +15,24 @@
 #define STATUS_UPDATE_TASKID 7812713
 #define STATUS_UPDATE_PERIOD 0.5
 
-#define MAX_VIOLENCE 14
+#define MAX_VIOLENCE 13
 
-stock const CENSORSHIP_SENTENCES[MAX_VIOLENCE][2][128]=
+stock const CENSORSHIP_SENTENCES[MAX_VIOLENCE+1][2][128]=
 	{
 	  {"",""},
-	  {"You just got spored by","You just spored"},
-	  {"You just got seeded by","You just seeded"},
-	  {"you got tagged by","you just seeded"},
-	  {"you got caught by","you caught"},
-	  {"you got rocked by","you rocked"},
-	  {"You got socked by","smacked and socked"},
-      {"Broooo... you rlly just got owned by %s fr","Dommed and owned"},
-	  {"robbed","you just ran the pockets of"},
-	  {"you just got taken on a walk by","petted and adopted"},
-	  {"scrubbed","you just deleted"},
-	  {"sucked","just sucked and spat on"},
-	  {"chest bursted","Eviscerated"},
-	  {"graped","You did them a fifty shades of grey... poor"},
+	  {"You just got spored by  ","You just spored  "},
+	  {"You just got seeded by  ","You just seeded  "},
+	  {"you got tagged by  ","you just seeded  "},
+	  {"you got caught by  ","you caught  "},
+	  {"you got rocked by  ","you rocked  "},
+	  {"You got socked by  ","smacked and socked  "},
+      {"Fr broo...you rlly just got owned by  ","Dommed and owned  "},
+	  {"robbed  ","you just ran the pockets of  "},
+	  {"you just got taken on a walk by  ","petted and adopted  "},
+	  {"scrubbed  ","you just deleted  "},
+	  {"sucked  ","just sucked and spat on  "},
+	  {"chest bursted  ","Eviscerated  "},
+	  {"graped  ","You did them a fifty shades of grey... poor "},
 	 }
 native spores_has_ksun(id)
 native spores_ksun_hero_id()

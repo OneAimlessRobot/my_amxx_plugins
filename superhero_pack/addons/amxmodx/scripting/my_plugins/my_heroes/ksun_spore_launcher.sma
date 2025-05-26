@@ -8,43 +8,25 @@
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
+#include "ksun_inc/ksun_scanner.inc"
 
-new Float:ksun_spore_damage, 
-	Float:ksun_spore_speed,
-	Float:ksun_track_max_radius,
-	Float:ksun_track_min_radius,
-	Float:ksun_track_traverse_time,
-	Float:ksun_hold_time,
-	Float:ksun_heal_coeff,
-	Float:ksun_spore_base_health,
+new Float:ksun_hold_time,
 	Float:ksun_launcher_base_health,
 	Float:ksun_follow_time;
-new ksun_max_victims
 new hud_sync_stats
-new num_launched_spores[SH_MAXSLOTS+1]
-new num_deployed_spores[SH_MAXSLOTS+1]
 
-new g_player_num_victims[SH_MAXSLOTS+1]
-new bool:g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new g_player_spores[SH_MAXSLOTS+1][SH_MAXSLOTS+2]
-new g_player_targets[SH_MAXSLOTS+1][SH_MAXSLOTS+2]
+
+
 new Float:g_player_cooldown_remaining[SH_MAXSLOTS+1]
 new g_launcher_phase[SH_MAXSLOTS+1]
 new g_player_launcher[SH_MAXSLOTS+1]
 new Float:g_launcher_timer[SH_MAXSLOTS+1]
-new g_player_scanner[SH_MAXSLOTS+1]
-new violence_level
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1","MilkChanThaGOAT")
 	
-	register_cvar("ksun_track_max_radius", "2000.0")
-	register_cvar("ksun_track_min_radius", "500.0")
-	register_cvar("ksun_track_traverse_time", "2.0")
-	register_cvar("ksun_spore_damage", "100.0" )
-	register_cvar("ksun_spore_speed", "900.0" )
 	register_cvar("ksun_follow_time", "5.0")
 	register_cvar("ksun_hold_time", "5.0")
 	register_cvar("ksun_heal_coeff", "0.5" )
@@ -58,10 +40,7 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	hud_sync_stats = CreateHudSyncObj()
-	register_forward(FM_PlayerPreThink, "spore_launch_check")
-	register_forward(FM_Think, "spore_think")
 	register_forward(FM_Think, "launcher_think")
-	register_forward(FM_Think, "scanner_think")
 }
 
 
@@ -71,42 +50,67 @@ public plugin_natives(){
 	
 	
 	register_native("spores_launch","_spores_launch",0)
+	register_native("launcher_deploy","_launcher_deploy",0)
 	register_native("spores_reset_user","_spores_reset_user",0)
-	register_native("spores_clear","_spores_clear",0)
+	register_native("launchers_clear","_launchers_clear",0)
 	register_native("spores_busy","_spores_busy",0)
-	register_native("spores_max_victims","_spores_max_victims",0)
-	register_native("delete_hud_tasks","_delete_hud_tasks",0)
+	register_native("get_player_launcher_phase","_get_player_launcher_phase",0)
+	register_native("get_player_launcher","_get_player_launcher",0)
+	
+	
+	register_native("get_follow_time","_get_follow_time",0)
+	
+	
 	register_native("init_hud_tasks","_init_hud_tasks",0)
+	register_native("delete_hud_tasks","_delete_hud_tasks",0)
 	register_native("delete_cooldown_update_tasks","_delete_cooldown_update_tasks",0)
 	register_native("init_cooldown_update_tasks","_init_cooldown_update_tasks",0)
 	
 	
 	
 }
+public Float:_get_follow_time(iPlugins,iParms){
+	
+	return ksun_follow_time;
+
+}
+
+public _get_player_launcher_phase(iPlugins, iParms){ 
+	
+	new id= get_param(1)
+	return g_launcher_phase[id]
+	
+}
+public _get_player_launcher(iPlugins, iParms){ 
+	
+	new id= get_param(1)
+	return g_player_launcher[id]
+	
+}
 public ev_SendAudio(){
 	
-	spores_clear()
-			
+	if(!sh_is_active()) return PLUGIN_CONTINUE
+	
+	launchers_clear()
+	
+}
+//----------------------------------------------------------------------------------------------
+public newRound(id)
+{
+	if(!client_hittable(id)||!sh_is_active()){
 		
-}
-bool:heal(id,Float:damage){
-	
-	new Float:mate_health=float(get_user_health(id))
-	if(mate_health>=sh_get_max_hp(id)){
-		return false
-	
+		return PLUGIN_CONTINUE
 	}
-	damage*=ksun_heal_coeff
-	new Float: new_health=floatadd(mate_health,damage)
-	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
-	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(KSUN_HEAL_GLOW_TIME,"remove_glow_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)
-	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	return true
-
+	spores_reset_user(id)
+	if ( spores_has_ksun(id)) {
+		ksun_weapons(id)
+		gNumSleepNades[id]=num_sleep_nades
+		ksun_model(id)
+		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
+		init_hud_tasks(id)
+	}
+	return PLUGIN_HANDLED
 }
-
 public _delete_hud_tasks(iPlugins, iParms){
 	
 	new id= get_param(1)
@@ -155,22 +159,22 @@ public status_hud(id){
 		return
 		
 	}
-	new hud_msg[200];
-	format(hud_msg,150,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
-					is_valid_ent(g_player_scanner[id])&&(g_player_scanner[id]>0)? "ON":"OFF",
-					is_valid_ent(g_player_scanner[id])? entity_get_float(g_player_scanner[id],EV_FL_fuser1):0.0,
-					is_valid_ent(g_player_scanner[id])? entity_get_float(g_player_scanner[id],EV_FL_fuser2):0.0,
+	new hud_msg[256];
+	format(hud_msg,255,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
+					is_valid_ent(get_player_scanner(id))&&(get_player_scanner(id)>0)? "ON":"OFF",
+					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser1):0.0,
+					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser2):0.0,
 					ksun_get_num_sleep_nades(id),
-					g_player_num_victims[id],
+					get_player_num_victims(id),
 					g_launcher_timer[id]);
 	if(g_player_cooldown_remaining[id]>0){
-	format(hud_msg,199,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
+	format(hud_msg,255,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
 					g_player_cooldown_remaining[id]);
 	}
 	else{
 	
 	
-	format(hud_msg,199,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
+	format(hud_msg,255,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
 	
 		
 		
@@ -201,29 +205,13 @@ public launcher_recharge_loop(id){
 	
 	
 }
-public _spores_clear(iPlugins, iParms){
+public _launchers_clear(iPlugins, iParms){
 	
-	new spore = find_ent_by_class(-1, SPORE_CLASSNAME)
-	while(spore) {
-		remove_entity(spore)
-		spore = find_ent_by_class(spore, SPORE_CLASSNAME)
-	}
 	new launcher = find_ent_by_class(-1, LAUNCHER_CLASSNAME)
 	while(launcher) {
 		remove_entity(launcher)
 		launcher = find_ent_by_class(launcher, LAUNCHER_CLASSNAME)
 	}
-	new scanner = find_ent_by_class(-1, SCANNER_CLASSNAME)
-	while( scanner) {
-		remove_entity( scanner)
-		scanner = find_ent_by_class(launcher, SCANNER_CLASSNAME)
-	}
-	
-	
-}
-public _spores_max_victims(iPlugins, iParms){
-	
-	return ksun_max_victims
 	
 }
 public _spores_reset_user(iPlugins, iParms){
@@ -237,7 +225,7 @@ public _spores_reset_user(iPlugins, iParms){
 public bool:_spores_busy(iPlugins, iParms){
 	
 	new id= get_param(1)
-	return (g_player_num_victims[id]>0)
+	return (get_player_num_victims(id)>0)
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -250,139 +238,9 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	ksun_track_min_radius= get_cvar_float("ksun_track_min_radius")
-	ksun_track_max_radius= get_cvar_float("ksun_track_max_radius")
-	ksun_track_traverse_time= get_cvar_float("ksun_track_traverse_time")
-	ksun_spore_damage= get_cvar_float("ksun_spore_damage")
-	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
 	ksun_hold_time= get_cvar_float("ksun_hold_time")
-	violence_level= get_cvar_num("ksun_violence_level")
 	ksun_follow_time= get_cvar_float("ksun_follow_time")
-	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
-	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
 	ksun_launcher_base_health= get_cvar_float("ksun_launcher_health")
-	ksun_max_victims= get_cvar_num("ksun_max_victims")
-}
-show_targets(id){
-
-	if(!client_hittable(id)||!spores_has_ksun(id)){
-		
-		return
-	}
-	new hud_msg[500];
-	new client_name[128];
-	get_user_name(id,client_name,127)
-	if(g_player_num_victims[id]<=0){
-		
-		client_print(id,print_center,"[SH] ksun:^nNo victims were gathered...")
-	}
-	else{
-		format(hud_msg,500,"[SH] ksun:^nTargets:^n")
-		for(new i=1;i<=SH_MAXSLOTS;i++){
-			if(g_player_tracks_player[id][i]&&client_hittable(i)){
-				get_user_name(i,client_name,127)
-				format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
-			}
-		} 
-		client_print(id,print_center, "%s", hud_msg)
-	}
-}
-public scanner_think(scanner){
-	
-	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return FMRES_IGNORED
-	static classname[32]
-	classname[0] = '^0'
-	pev(scanner, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, SCANNER_CLASSNAME) ) return FMRES_IGNORED
-	
-	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if ( !client_hittable(id) ||!spores_has_ksun(id)) return FMRES_IGNORED
-
-	new Float:fOrigin[3];
-	entity_get_vector( id, EV_VEC_origin, fOrigin);
-	if(entity_get_float(scanner, EV_FL_fuser2)>=ksun_track_max_radius){
-		
-		
-		if(g_player_num_victims[id]>0){
-			
-			launcher_deploy(id)
-		}
-		destroy_player_scanner(id)
-		return FMRES_IGNORED
-		
-	}
-	
-	new iOrigin[3];
-	for(new i=0;i<3;i++){
-		iOrigin[i] = floatround(fOrigin[i]);
-	}
-	
-	arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
-	num_deployed_spores[id]=0
-	num_launched_spores[id]=0
-	arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
-	g_player_num_victims[id]=0
-	
-	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255,50})
-	new entlist[33];
-	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
-	new CsTeams:idTeam = cs_get_user_team(id)
-	for( new i= 0;(g_player_num_victims[id]<=(ksun_max_victims))&&(i< numfound);i++){
-		
-			new pid = entlist[i];
-			if(!client_hittable(pid)){
-				continue
-			
-			}
-			
-			if((cs_get_user_team(pid)==idTeam)){
-					continue
-			}
-			if(!g_player_tracks_player[id][pid]){
-				g_player_tracks_player[id][pid]=true
-				num_deployed_spores[id]++
-				num_launched_spores[id]++
-				g_player_targets[id][num_launched_spores[id]]=pid;
-				g_player_num_victims[id]++
-			}
-		
-	}
-	
-	show_targets(id)
-	entity_set_float( scanner, EV_FL_fuser2, floatadd(entity_get_float(scanner, EV_FL_fuser2) ,SCAN_DIST_INC));
-	//draw_bbox(ent,0)
-	entity_set_float( scanner, EV_FL_fuser1, floatadd(entity_get_float(scanner, EV_FL_fuser1) ,SCAN_LOOP_PERIOD));
-	entity_set_float( scanner, EV_FL_nextthink, floatadd(get_gametime( ) ,SCAN_LOOP_PERIOD));
-	
-	return FMRES_IGNORED
-}
-public spore_think(ent){
-	
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
-	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, SPORE_CLASSNAME) ) return FMRES_IGNORED
-	
-	new Float:spore_hp=float(pev(ent,pev_health))
-	
-	
-	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(entity_get_edict(ent,EV_ENT_euser1)) || !is_valid_ent(entity_get_edict(ent,EV_ENT_euser1))|| !is_valid_ent(entity_get_edict(ent,EV_ENT_owner))){
-		
-		client_print(entity_get_edict(ent,EV_ENT_euser1),print_console,"Spore untrack function about to be called in spore thinking function!!!!!^nCurrent hp of this spore: %0.2f^n",spore_hp)
-		//draw_bbox(ent,1)
-		untrack_spore(ent)
-		return FMRES_IGNORED
-		
-	}
-	//draw_bbox(ent,0)
-	entity_set_float( ent, EV_FL_fuser1, floatadd(entity_get_float(ent, EV_FL_fuser1) ,SPORE_THINK_PERIOD));
-	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-	
-	return FMRES_IGNORED
 }
 public launcher_think(ent){
 	
@@ -426,14 +284,14 @@ public launcher_think(ent){
 		}
 		case PHASE_DEPLOY:{
 		
-			if(num_deployed_spores[launcher_owner]<=0){
+			if(get_player_num_deployed_spores(launcher_owner)<=0){
 				
 				g_launcher_phase[launcher_owner]=PHASE_HOLD
 				
 			}
 			else{
-				spore_launch(launcher_owner+FIRE_LOOP_TASKID)
-				num_deployed_spores[launcher_owner]--
+				spore_launch(launcher_owner)
+				dec_player_num_deployed_spores(launcher_owner)
 			}
 			think_time=DEPLOY_LOOP_PERIOD
 		}
@@ -450,15 +308,14 @@ public launcher_think(ent){
 		}
 		case PHASE_SEND:{
 		
-			if(num_launched_spores[launcher_owner]<=0){
+			if(get_player_num_launched_spores(launcher_owner)<=0){
 			
 				g_launcher_phase[launcher_owner]=PHASE_DONE
 			
 			}
 			else{
-				//set_task(FIRE_DELAY,"spore_launch",launcher_owner+FIRE_LOOP_TASKID)
-				spore_launch(launcher_owner+FIRE_LOOP_TASKID)
-				num_launched_spores[launcher_owner]--
+				spore_launch(launcher_owner)
+				dec_player_num_launched_spores(launcher_owner)
 			}
 			think_time=SHOOT_LOOP_PERIOD
 		}
@@ -484,136 +341,18 @@ public _spores_launch(iPlugin,iParms){
 		return
 	}
 	spores_reset_user(id)
-	g_player_cooldown_remaining[id]=floatadd(spores_cooldown(),ksun_track_traverse_time)
-	new originplayer[3]
-	new Float: b_orig[3]
-	get_user_origin(id, originplayer)
-	
-	b_orig[0] = float(originplayer[0]);
-	b_orig[1] = float(originplayer[1]);
-	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
-	new scanner = create_entity( "info_target" );
-	if ( (scanner == 0) || !pev_valid(scanner )||!is_valid_ent(scanner )) {
-		client_print(id, print_chat, "[SH](ksun) Scanner Creation Failure")
-		return
-	}
-	entity_set_string(scanner, EV_SZ_classname, SCANNER_CLASSNAME)
-	entity_set_float(scanner, EV_FL_fuser1, 0.0);
-	entity_set_float(scanner, EV_FL_fuser2, ksun_track_min_radius);
-	entity_set_edict(scanner, EV_ENT_owner, id)
-	entity_set_origin(scanner, b_orig)
-	g_player_scanner[id]=scanner
-	entity_set_float(scanner, EV_FL_nextthink, get_gametime()+SCAN_LOOP_PERIOD);
-	emit_sound(id, CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	g_player_cooldown_remaining[id]=floatadd(spores_cooldown(),get_scanner_traverse_time())
+	spawn_scanner(id)
 	
 	
 }
+
+
 //----------------------------------------------------------------------------------------------
-public spore_launch(id)
-{
-id-=FIRE_LOOP_TASKID
-if(!spores_has_ksun(id)||!client_hittable(id)){
-	
-	return
-}
-switch(g_launcher_phase[id]){
-	case PHASE_DEPLOY:{
-		new material[128]
-		new health[128]	
-		new spore = create_entity( "func_breakable" );
-
-		if ( (spore == 0) || !pev_valid(spore)||!is_valid_ent(spore)) {
-			client_print(id, print_chat, "[SH](ksun) Spore Creation Failure")
-			return
-		}
-
-		new Float:b_orig[3]
-
-		new originplayer[3], originlook[3], aimvec[3]
-
-		get_user_origin(id, originplayer)
-		get_user_origin(id, originlook, 2)
-
-
-		new distance[2]
-
-		distance[0] = originlook[0]-originplayer[0]
-		distance[1] = originlook[1]-originplayer[1]
-
-
-		new unitsinfront = 80
-
-		aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
-		aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
-		aimvec[2]=originplayer[2]+UNITS_ABOVE
-
-		b_orig[0] = float(aimvec[0]);
-		b_orig[1] = float(aimvec[1]);
-		b_orig[2] = float(aimvec[2]);
-
-		entity_set_string(spore, EV_SZ_classname, SPORE_CLASSNAME)
-
-
-		entity_set_model(spore, KSUN_SPORE_MDL)
-
-		float_to_str(SPORE_DEAD_HP+ksun_spore_base_health,health,127)
-		num_to_str(2,material,127)
-		DispatchKeyValue( spore, "material", material );
-		DispatchKeyValue( spore, "health", health );
-
-
-		set_pev(spore, pev_health, SPORE_DEAD_HP+ksun_spore_base_health)
-		engfunc(EngFunc_SetSize, spore, Float:{-SPORE_SIZE, -SPORE_SIZE,-SPORE_SIZE}, Float:{SPORE_SIZE, SPORE_SIZE, SPORE_SIZE})
-
-		entity_set_float( spore, EV_FL_fuser1, 0.0);
-
-		set_pev(spore, pev_takedamage, DAMAGE_YES)
-		set_pev(spore, pev_solid, SOLID_BBOX)
-		entity_set_int(spore,EV_INT_movetype, MOVETYPE_NOCLIP)
-		entity_set_origin(spore, b_orig)
-
-		//Sets who the owner of the entity is
-		entity_set_edict(spore, EV_ENT_euser1,id)
-		entity_set_edict(spore, EV_ENT_owner,g_player_launcher[id])
-
-		new parms[3];
-		g_player_spores[id][num_deployed_spores[id]]=spore
-		parms[0]=g_player_spores[id][num_deployed_spores[id]]
-		parms[1]=id
-		parms[2]=g_player_launcher[id]
-		client_print(id, print_console, "[SH](ksun) Spore prepared! spore id is: %d^nSpore number is: %d^n",spore,num_deployed_spores[id])
-		sporeprepare(parms)
-		}
-	case PHASE_SEND:{
-		
-		
-		new parms[3];
-		parms[0]=g_player_spores[id][num_launched_spores[id]]
-		parms[1]=id
-		parms[2]=g_player_targets[id][num_launched_spores[id]]
-		new user_name[128]
-		emit_sound(parms[0], CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		get_user_name(parms[2],user_name,127)
-		client_print(id, print_console, "[SH](ksun) Spore sent! spore id is: %d^nSpore number is: %d^nLaunched at target number: %d^nThe name of said target is: %s^n",parms[0],num_launched_spores[id],parms[2],user_name)
-		sporetrack(parms)
-	}
-}
-}
-public sporetrack(parms[]){
-new spore=parms[0]
-emit_sound(parms[1], CHAN_STATIC, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(floatsub(floatmul(FOLLOW_LOOP_PERIOD,float(FOLLOW_LOOP_TIMES)),0.1),"untrack_spore_task",spore+UNFOLLOW_LOOP_TASKID,"",0,  "a",1)
-set_task(FOLLOW_LOOP_PERIOD, "track_spore", spore+FOLLOW_LOOP_TASKID, parms, 3, "a",FOLLOW_LOOP_TIMES)
-}
-public sporeprepare(parms[]){
-new spore=parms[0]
-emit_sound(parms[1], CHAN_WEAPON, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-}
-//----------------------------------------------------------------------------------------------
-public launcher_deploy(id)
+public _launcher_deploy(iPlugin,iParams)
 {
 
+new id= get_param(1)
 if(!spores_has_ksun(id)||!client_hittable(id)){
 	
 	return
@@ -683,156 +422,19 @@ g_launcher_phase[id]=PHASE_DEPLOY
 entity_set_float( launcher, EV_FL_nextthink, floatadd(get_gametime( ) ,LAUNCHER_THINK_PERIOD));
 
 }
-//----------------------------------------------------------------------------------------------
-public track_spore(parms[])
-{
 
-new spore = parms[0]
-new spore_owner = parms[1]
-new spore_target = parms[2]
-if ( !is_valid_ent(spore) ) {
-	remove_task(spore+FOLLOW_LOOP_TASKID)
-	remove_task(spore+UNFOLLOW_LOOP_TASKID)
-	return
-}
-emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-if(g_launcher_phase[spore_owner]<=PHASE_DEPLOY){
-			if(client_hittable(spore_owner)){
-				if ( is_valid_ent(g_player_launcher[spore_owner])) {
-					entity_set_follow(spore, g_player_launcher[spore_owner])
-					sporetrail(spore)
-				}
-			}
-}
-else{
-			if ( client_hittable(spore_target)&&client_hittable(spore_owner)) {
-				entity_set_follow(spore, spore_target)
-				sporetrail(spore)
-			}
-			else{
-				
-				untrack_spore(spore)
-				g_player_tracks_player[spore_owner][spore_target]=false
-			}
-		}
-}
-//----------------------------------------------------------------------------------------------
-untrack_spore(spore){
-	remove_task(spore+UNFOLLOW_LOOP_TASKID)
-	remove_task(spore+FOLLOW_LOOP_TASKID)
-	if(pev_valid(spore)){
-		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
-		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		//client_print(spore_owner,print_console,"Spore untrack function called!!!!!^n")
-		entity_set_float( spore, EV_FL_fuser1, 0.0);
-		remove_entity(spore)
-		g_player_num_victims[spore_owner]--
-	}
-	return 0
 
-}
-//----------------------------------------------------------------------------------------------
-public untrack_spore_task(spore){
-	spore-=UNFOLLOW_LOOP_TASKID
-	remove_task(spore+FOLLOW_LOOP_TASKID)
-	if(pev_valid(spore)){
-		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
-		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		//client_print(spore_owner,print_console,"Spore untrack task called!!!!!^n")
-		entity_set_float( spore, EV_FL_fuser1, 0.0);
-		remove_entity(spore)
-		g_player_num_victims[spore_owner]--
-	}
-	return 0
-
-}
-
-//----------------------------------------------------------------------------------------------
-sporetrail(entid){
-	trailing_beam(20,entid,{255, 0, 255,125}) 	
-}
-//----------------------------------------------------------------------------------------------
-stock entity_set_follow(entity, target)
-{
-if ( !is_valid_ent(entity) || !client_hittable(target) ) return 0
-
-new Float:fl_Origin[3], Float:fl_EntOrigin[3]
-entity_get_vector(target, EV_VEC_origin, fl_Origin)
-entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
-
-new Float:fl_InvTime = (ksun_spore_speed / vector_distance(fl_Origin, fl_EntOrigin))
-
-new Float:fl_Distance[3]
-fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
-fl_Distance[1] = fl_Origin[1] - fl_EntOrigin[1]
-fl_Distance[2] = fl_Origin[2] - fl_EntOrigin[2]
-
-new Float:fl_Velocity[3]
-fl_Velocity[0] = fl_Distance[0] * fl_InvTime
-fl_Velocity[1] = fl_Distance[1] * fl_InvTime
-fl_Velocity[2] = fl_Distance[2] * fl_InvTime
-
-entity_set_vector(entity, EV_VEC_velocity, fl_Velocity)
-
-new Float:fl_NewAngle[3]
-vector_to_angle(fl_Velocity, fl_NewAngle)
-entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
-
-return 1
-}
-//----------------------------------------------------------------------------------------------
-public touch_event(pToucher, pTouched)  //This is triggered when two entites touch
-{
-if(!is_valid_ent(pToucher)) return
-
-if(!client_hittable(pTouched)) return
-
-new killer = entity_get_edict(pToucher, EV_ENT_euser1)
-
-if(!client_hittable(killer)) return
-
-new victim = pTouched
-new ffOn = get_cvar_num("mp_friendlyfire")
-if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
-{
-	//client_print(killer,print_console,"Spore untrack function about to be called in touch hook!!!!!^n")
-	new tger_name[128], vic_name[128]
-	get_user_name(victim,vic_name,127)
-	get_user_name(killer,tger_name,127)
-	sh_extra_damage(victim, killer, floatround(ksun_spore_damage), "ksun spore")
-	sh_bleed_user(victim,killer,spores_ksun_hero_id())
-	heal(killer,ksun_spore_damage)
-	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	g_player_tracks_player[killer][victim]=false
-	new violence_to_use
-	if(violence_level<0){
-		
-		violence_to_use=random_num(1,14)
-	}
-	else{
-		
-		violence_to_use=clamp(violence_level,1,14)
-	}
-	sh_chat_message(killer,spores_ksun_hero_id(),"%s %s!^n",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
-	sh_chat_message(victim,spores_ksun_hero_id(),"%s by %s!^n",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
-	untrack_spore(pToucher)
-}
-}
 public destroy_player_launcher(id){
 	
 	id-=UNDEPLOY_LOOP_TASKID
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
 	if ( spores_has_ksun(id)) {
-		arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
-		arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
-		arrayset(g_player_spores[id],0,SH_MAXSLOTS+1)
-		g_player_num_victims[id]=0
+		reset_player_targets(id)
+		set_player_num_victims(id,0)
 		g_player_cooldown_remaining[id]=0.0
-		num_deployed_spores[id]=0;
-		num_launched_spores[id]=0;
+		set_player_num_deployed_spores(id,0);
+		set_player_num_launched_spores(id,0);
 		g_launcher_phase[id]=0;
 		g_launcher_timer[id]=0.0;
 		
@@ -854,41 +456,12 @@ public destroy_player_launcher(id){
 
 }
 
-public destroy_player_scanner(id){
-	
-	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
-	
-
-	if ( spores_has_ksun(id)) {
-		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
-			
-			
-			emit_sound(g_player_launcher[id], CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
-			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
-			remove_entity(g_player_scanner[id])
-			g_player_scanner[id]=0
-	
-	
-		}
-	}
-	return PLUGIN_HANDLED
-}
 public death()
 {
 	new id = read_data(2)
 	
 	if(spores_has_ksun(id)){
-		for(new i=0;i<=SH_MAXSLOTS;i++){
-			
-			if(g_player_spores[id][i]&&is_valid_ent(g_player_spores[id][i])){
-				
-				
-				entity_set_int(g_player_spores[id][i],EV_INT_movetype, MOVETYPE_TOSS)
-				
-			}	
-			
-		}
+	
 		spores_reset_user(id)
 		delete_hud_tasks(id)
 		

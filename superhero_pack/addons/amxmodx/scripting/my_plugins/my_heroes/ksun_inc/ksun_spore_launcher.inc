@@ -13,25 +13,18 @@
 #define SPORE_TRAIL_LOOP_TASKID 2329129
 
 #define LAUNCHER_CLASSNAME "ksun_launcher"
-#define SCANNER_CLASSNAME "ksun_launcher_scanner"
 
 
 #define SPORE_PREPARE_SFX "shmod/ksun/launcher/eject_prepare.wav"
 #define SPORE_SEND_SFX "shmod/ksun/launcher/eject_send.wav"
-#define LAUNCHER_SCAN_SFX "shmod/ksun/launcher/scanner_wash.wav"
 #define SPORE_READY_SFX "shmod/ksun/launcher/spore_notification.wav"
 
-
-#define KSUN_HEAL_GLOW_TIME SHOOT_LOOP_PERIOD
 
 #define SHOOT_LOOP_TASKID 46523423
 #define UNSHOOT_LOOP_TASKID 6433243
 #define SHOOT_LOOP_PERIOD 0.2
 
 
-
-#define SCAN_LOOP_PERIOD 0.2
-#define SCAN_DIST_INC floatmul(floatsub(ksun_track_max_radius,ksun_track_min_radius),floatdiv(SCAN_LOOP_PERIOD,ksun_track_traverse_time))
 
 
 #define DEPLOY_LOOP_TASKID 7261272
@@ -60,8 +53,12 @@ native delete_hud_tasks(id)
 native init_hud_tasks(id)
 native init_cooldown_update_tasks(id)
 native delete_cooldown_update_tasks(id)
+native get_player_launcher_phase(id)
+native get_player_launcher(id)
+native launcher_deploy(id)
 native spores_launch(id)
 native spores_reset_user(id)
-native spores_clear()
+native launchers_clear()
+native Float:get_follow_time()
 native bool:spores_busy(id)
 native spores_max_victims()

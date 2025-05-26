@@ -10,6 +10,8 @@
 #define SPORE_TRAVEL_SFX "roach/rch_smash.wav"
 
 
+#define KSUN_HEAL_GLOW_TIME SHOOT_LOOP_PERIOD
+
 
 #define SPORE_CLASSNAME "ksun_spore"
 
@@ -23,7 +25,19 @@
 #define FOLLOW_LOOP_TASKID 2329129
 #define UNFOLLOW_LOOP_TASKID 1223332
 #define FOLLOW_LOOP_PERIOD 0.2
-#define FOLLOW_LOOP_TIMES floatround(floatdiv(ksun_follow_time,FOLLOW_LOOP_PERIOD))
+#define FOLLOW_LOOP_TIMES floatround(floatdiv(get_follow_time(),FOLLOW_LOOP_PERIOD))
 
 
 #define SPORE_DEAD_HP 1000.0
+
+native get_from_player_spores(id,index)
+native Float:get_spore_base_health()
+native spore_launch(id)
+native spores_clear()
+native get_times_player_spiked_player(attacker,victim)
+native inc_times_player_spiked_player(attacker,victim)
+
+native get_times_player_spiked_by_player(victim,attacker)
+native inc_times_player_spiked_by_player(victim,attacker)
+native Float:get_spike_base_damage_debt()
+native bool:heal(id, Float:damage)

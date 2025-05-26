@@ -49,6 +49,8 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
 	register_event("ResetHUD","newRound","b")
 	register_event("DeathMsg","death","a")
+	register_event("Damage", "ksun_damage_debt", "b", "2!0")
+	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt")
 	
 	
 	// INIT
@@ -75,6 +77,49 @@ public plugin_natives(){
 	register_native("spores_ksun_hero_id","_spores_ksun_hero_id",0)
 	
 	
+	
+}
+public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
+{
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||(id==attacker)||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+
+new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+
+new CsTeams:att_team=cs_get_user_team(attacker)
+if(gHasksun[attacker]&&!(cs_get_user_team(id)==att_team)){
+	
+	inc_times_player_spiked_player(attacker,victim)
+}
+
+	new debt_mult_int=0
+	new debt_mult_float=0.0
+	for(new collector=0;collector<SH_MAXSLOTS+1;collector++){
+
+		if(attacker==colector){
+			
+			continue;
+		}
+		if(!client_hittable(collector)||!client_hittable(payer)){
+			
+			
+			continue
+		}
+		if(!spores_has_ksun(collector)){
+			
+			continue
+		}
+		
+		
+
+
+	}
+	debt_mult_float=float(debt_mult_int)
+
+	
+	damage=1.0+damage- (damage*psychosis_dmg_cushion)
+	SetHamParamFloat(4, damage);
+}
+return HAM_IGNORED
 	
 }
 
