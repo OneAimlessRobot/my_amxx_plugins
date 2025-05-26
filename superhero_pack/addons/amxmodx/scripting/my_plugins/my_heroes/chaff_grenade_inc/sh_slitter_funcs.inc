@@ -5,7 +5,7 @@
 
 #define SLITTER_V_MODEL "models/shmod/teliko/v_knife.mdl"
 
-new const teliko_slitter_sounds[1][]={"weapons/teliko_slitter/knife_stab.wav"}
+stock const teliko_slitter_sounds[1][]={"weapons/teliko_slitter/knife_stab.wav"}
 #define SLITTER_TASKID 21211221
 #define SLITTER_DRAG_THINK_PERIOD 0.1
 #define SLITTER_DRAG_THINK_TIMES (slitter_drag_time/SLITTER_DRAG_THINK_PERIOD)

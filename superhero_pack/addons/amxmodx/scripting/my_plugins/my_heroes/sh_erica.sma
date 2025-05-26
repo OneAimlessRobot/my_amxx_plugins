@@ -201,6 +201,7 @@ public erica_init()
 		g_base_er_speed[id]=base_er_speed
 		g_base_er_radius[id]=base_er_radius
 		gNumDarts[id]=num_er_darts
+		gNumMollies[id]=num_mollies
 		Erica_weapons(id)
 		set_task(0.1, "erica_hud_task", id+ERICA_HUD_TASKID, "", 0, "b")
 		set_task(0.1, "erica_stats", id+ERICA_STATS_TASKID, "", 0, "b")

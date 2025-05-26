@@ -12,9 +12,9 @@
 #define CHAFF_THROW_SFX  "shmod/lara/spear/spear_throw.wav"
 #define CHAFF_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
 
-new gHeroID
+stock gHeroID
 
-new const gHeroName[] = "Teliko"
+stock const gHeroName[] = "Teliko"
 
 native teliko_set_num_chaffs(id,value_to_set)
 native teliko_get_num_chaffs(id)

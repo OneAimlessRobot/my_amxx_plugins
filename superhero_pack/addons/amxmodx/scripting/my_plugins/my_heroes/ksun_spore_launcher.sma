@@ -9,9 +9,11 @@
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
 
-new Float:ksun_track_radius, 
-	Float:ksun_spore_damage, 
+new Float:ksun_spore_damage, 
 	Float:ksun_spore_speed,
+	Float:ksun_track_max_radius,
+	Float:ksun_track_min_radius,
+	Float:ksun_track_traverse_time,
 	Float:ksun_hold_time,
 	Float:ksun_heal_coeff,
 	Float:ksun_spore_base_health,
@@ -21,6 +23,7 @@ new ksun_max_victims
 new hud_sync_stats
 new num_launched_spores[SH_MAXSLOTS+1]
 new num_deployed_spores[SH_MAXSLOTS+1]
+
 new g_player_num_victims[SH_MAXSLOTS+1]
 new bool:g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_player_spores[SH_MAXSLOTS+1][SH_MAXSLOTS+2]
@@ -29,18 +32,23 @@ new Float:g_player_cooldown_remaining[SH_MAXSLOTS+1]
 new g_launcher_phase[SH_MAXSLOTS+1]
 new g_player_launcher[SH_MAXSLOTS+1]
 new Float:g_launcher_timer[SH_MAXSLOTS+1]
+new g_player_scanner[SH_MAXSLOTS+1]
+new violence_level
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1","MilkChanThaGOAT")
 	
-	register_cvar("ksun_track_radius", "2000.0")
+	register_cvar("ksun_track_max_radius", "2000.0")
+	register_cvar("ksun_track_min_radius", "500.0")
+	register_cvar("ksun_track_traverse_time", "2.0")
 	register_cvar("ksun_spore_damage", "100.0" )
 	register_cvar("ksun_spore_speed", "900.0" )
 	register_cvar("ksun_follow_time", "5.0")
 	register_cvar("ksun_hold_time", "5.0")
 	register_cvar("ksun_heal_coeff", "0.5" )
+	register_cvar("ksun_violence_level", "3" )
 	register_cvar("ksun_max_victims", "4" )
 	register_cvar("ksun_spore_health", "100.0" )
 	register_cvar("ksun_launcher_health", "100.0" )
@@ -53,6 +61,7 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "spore_launch_check")
 	register_forward(FM_Think, "spore_think")
 	register_forward(FM_Think, "launcher_think")
+	register_forward(FM_Think, "scanner_think")
 }
 
 
@@ -66,7 +75,6 @@ public plugin_natives(){
 	register_native("spores_clear","_spores_clear",0)
 	register_native("spores_busy","_spores_busy",0)
 	register_native("spores_max_victims","_spores_max_victims",0)
-	register_native("spores_gather_targets","_spores_gather_targets",0)
 	register_native("delete_hud_tasks","_delete_hud_tasks",0)
 	register_native("init_hud_tasks","_init_hud_tasks",0)
 	register_native("delete_cooldown_update_tasks","_delete_cooldown_update_tasks",0)
@@ -148,7 +156,10 @@ public status_hud(id){
 		
 	}
 	new hud_msg[200];
-	format(hud_msg,150,"[SH] ksun:^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
+	format(hud_msg,150,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
+					is_valid_ent(g_player_scanner[id])&&(g_player_scanner[id]>0)? "ON":"OFF",
+					is_valid_ent(g_player_scanner[id])? entity_get_float(g_player_scanner[id],EV_FL_fuser1):0.0,
+					is_valid_ent(g_player_scanner[id])? entity_get_float(g_player_scanner[id],EV_FL_fuser2):0.0,
 					ksun_get_num_sleep_nades(id),
 					g_player_num_victims[id],
 					g_launcher_timer[id]);
@@ -202,6 +213,11 @@ public _spores_clear(iPlugins, iParms){
 		remove_entity(launcher)
 		launcher = find_ent_by_class(launcher, LAUNCHER_CLASSNAME)
 	}
+	new scanner = find_ent_by_class(-1, SCANNER_CLASSNAME)
+	while( scanner) {
+		remove_entity( scanner)
+		scanner = find_ent_by_class(launcher, SCANNER_CLASSNAME)
+	}
 	
 	
 }
@@ -214,6 +230,7 @@ public _spores_reset_user(iPlugins, iParms){
 	
 	new id= get_param(1)
 	destroy_player_launcher(id+UNDEPLOY_LOOP_TASKID)
+	destroy_player_scanner(id)
 	return PLUGIN_HANDLED
 	
 }
@@ -233,10 +250,13 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	ksun_track_radius= get_cvar_float("ksun_track_radius")
+	ksun_track_min_radius= get_cvar_float("ksun_track_min_radius")
+	ksun_track_max_radius= get_cvar_float("ksun_track_max_radius")
+	ksun_track_traverse_time= get_cvar_float("ksun_track_traverse_time")
 	ksun_spore_damage= get_cvar_float("ksun_spore_damage")
 	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
 	ksun_hold_time= get_cvar_float("ksun_hold_time")
+	violence_level= get_cvar_num("ksun_violence_level")
 	ksun_follow_time= get_cvar_float("ksun_follow_time")
 	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
 	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
@@ -249,7 +269,6 @@ show_targets(id){
 		
 		return
 	}
-	emit_sound(id, CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new hud_msg[500];
 	new client_name[128];
 	get_user_name(id,client_name,127)
@@ -267,6 +286,76 @@ show_targets(id){
 		} 
 		client_print(id,print_center, "%s", hud_msg)
 	}
+}
+public scanner_think(scanner){
+	
+	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return FMRES_IGNORED
+	static classname[32]
+	classname[0] = '^0'
+	pev(scanner, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, SCANNER_CLASSNAME) ) return FMRES_IGNORED
+	
+	new id= entity_get_edict(scanner,EV_ENT_owner)
+	if ( !client_hittable(id) ||!spores_has_ksun(id)) return FMRES_IGNORED
+
+	new Float:fOrigin[3];
+	entity_get_vector( id, EV_VEC_origin, fOrigin);
+	if(entity_get_float(scanner, EV_FL_fuser2)>=ksun_track_max_radius){
+		
+		
+		if(g_player_num_victims[id]>0){
+			
+			launcher_deploy(id)
+		}
+		destroy_player_scanner(id)
+		return FMRES_IGNORED
+		
+	}
+	
+	new iOrigin[3];
+	for(new i=0;i<3;i++){
+		iOrigin[i] = floatround(fOrigin[i]);
+	}
+	
+	arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
+	num_deployed_spores[id]=0
+	num_launched_spores[id]=0
+	arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
+	g_player_num_victims[id]=0
+	
+	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255,50})
+	new entlist[33];
+	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
+	new CsTeams:idTeam = cs_get_user_team(id)
+	for( new i= 0;(g_player_num_victims[id]<=(ksun_max_victims))&&(i< numfound);i++){
+		
+			new pid = entlist[i];
+			if(!client_hittable(pid)){
+				continue
+			
+			}
+			
+			if((cs_get_user_team(pid)==idTeam)){
+					continue
+			}
+			if(!g_player_tracks_player[id][pid]){
+				g_player_tracks_player[id][pid]=true
+				num_deployed_spores[id]++
+				num_launched_spores[id]++
+				g_player_targets[id][num_launched_spores[id]]=pid;
+				g_player_num_victims[id]++
+			}
+		
+	}
+	
+	show_targets(id)
+	entity_set_float( scanner, EV_FL_fuser2, floatadd(entity_get_float(scanner, EV_FL_fuser2) ,SCAN_DIST_INC));
+	//draw_bbox(ent,0)
+	entity_set_float( scanner, EV_FL_fuser1, floatadd(entity_get_float(scanner, EV_FL_fuser1) ,SCAN_LOOP_PERIOD));
+	entity_set_float( scanner, EV_FL_nextthink, floatadd(get_gametime( ) ,SCAN_LOOP_PERIOD));
+	
+	return FMRES_IGNORED
 }
 public spore_think(ent){
 	
@@ -352,7 +441,6 @@ public launcher_think(ent){
 			g_launcher_timer[launcher_owner]=floatadd(g_launcher_timer[launcher_owner],LAUNCHER_THINK_PERIOD)
 			if(g_launcher_timer[launcher_owner]>ksun_hold_time){
 				
-				client_print(0,print_console,"Chegamos à parte de mudar para send^n")
 				g_launcher_phase[launcher_owner]=PHASE_SEND
 				emit_sound(g_player_launcher[launcher_owner], CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				
@@ -388,58 +476,36 @@ public launcher_think(ent){
 	
 	return FMRES_IGNORED
 }
-//----------------------------------------------------------------------------------------------
-public _spores_gather_targets(iPlugin, iParms)
-{
-new id= get_param(1)
-if(!client_hittable(id)||!spores_has_ksun(id)){
-	
-		return
-}
-spores_reset_user(id)
-new Float:fOrigin[3];
-entity_get_vector( id, EV_VEC_origin, fOrigin);
-
-new iOrigin[3];
-for(new i=0;i<3;i++){
-	iOrigin[i] = floatround(fOrigin[i]);
-}
-make_shockwave(iOrigin,ksun_track_radius,{255, 0, 255,125})
-new entlist[33];
-new numfound = find_sphere_class(id,"player", ksun_track_radius ,entlist, 32);
-new CsTeams:idTeam = cs_get_user_team(id)
-for( new i= 0;(g_player_num_victims[id]<=(ksun_max_victims))&&(i< numfound);i++){
-	
-	
-				
-		new pid = entlist[i];
-		if(!client_hittable(pid)){
-			continue
-		
-		}
-		
-		if((cs_get_user_team(pid)==idTeam)){
-				continue
-		}
-		if(!g_player_tracks_player[id][pid]){
-			g_player_tracks_player[id][pid]=true
-			num_deployed_spores[id]++
-			num_launched_spores[id]++
-			g_player_targets[id][num_launched_spores[id]]=pid;
-			g_player_num_victims[id]++
-		}
-	
-}
-show_targets(id)
-}
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
-	if(g_player_num_victims[id]>0){
+	if(!spores_has_ksun(id)||!client_hittable(id)){
 		
-		launcher_deploy(id)
+		return
 	}
-	g_player_cooldown_remaining[id]=spores_cooldown()
+	spores_reset_user(id)
+	g_player_cooldown_remaining[id]=floatadd(spores_cooldown(),ksun_track_traverse_time)
+	new originplayer[3]
+	new Float: b_orig[3]
+	get_user_origin(id, originplayer)
+	
+	b_orig[0] = float(originplayer[0]);
+	b_orig[1] = float(originplayer[1]);
+	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
+	new scanner = create_entity( "info_target" );
+	if ( (scanner == 0) || !pev_valid(scanner )||!is_valid_ent(scanner )) {
+		client_print(id, print_chat, "[SH](ksun) Scanner Creation Failure")
+		return
+	}
+	entity_set_string(scanner, EV_SZ_classname, SCANNER_CLASSNAME)
+	entity_set_float(scanner, EV_FL_fuser1, 0.0);
+	entity_set_float(scanner, EV_FL_fuser2, ksun_track_min_radius);
+	entity_set_edict(scanner, EV_ENT_owner, id)
+	entity_set_origin(scanner, b_orig)
+	g_player_scanner[id]=scanner
+	entity_set_float(scanner, EV_FL_nextthink, get_gametime()+SCAN_LOOP_PERIOD);
+	emit_sound(id, CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -629,6 +695,7 @@ if ( !is_valid_ent(spore) ) {
 	remove_task(spore+UNFOLLOW_LOOP_TASKID)
 	return
 }
+emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 if(g_launcher_phase[spore_owner]<=PHASE_DEPLOY){
 			if(client_hittable(spore_owner)){
 				if ( is_valid_ent(g_player_launcher[spore_owner])) {
@@ -638,14 +705,12 @@ if(g_launcher_phase[spore_owner]<=PHASE_DEPLOY){
 			}
 }
 else{
-			client_print(0,print_console,"Chegamos ao switch de send^n")
 			if ( client_hittable(spore_target)&&client_hittable(spore_owner)) {
 				entity_set_follow(spore, spore_target)
 				sporetrail(spore)
 			}
 			else{
 				
-				client_print(spore_owner,print_console,"Spore untrack function about to be called in tracking function!!!!!^nSpore owner id: %d^nSpore target id: %d^n",spore_owner, spore_target)
 				untrack_spore(spore)
 				g_player_tracks_player[spore_owner][spore_target]=false
 			}
@@ -741,17 +806,24 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	heal(killer,ksun_spore_damage)
 	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	g_player_tracks_player[killer][victim]=false
-	sh_chat_message(killer,spores_ksun_hero_id(),"You just spored %s!^n",vic_name)
-	sh_chat_message(victim,spores_ksun_hero_id(),"You got spored by %s!^n",tger_name)
+	new violence_to_use
+	if(violence_level<0){
+		
+		violence_to_use=random_num(1,14)
+	}
+	else{
+		
+		violence_to_use=clamp(violence_level,1,14)
+	}
+	sh_chat_message(killer,spores_ksun_hero_id(),"%s %s!^n",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
+	sh_chat_message(victim,spores_ksun_hero_id(),"%s by %s!^n",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
 	untrack_spore(pToucher)
 }
-
 }
 public destroy_player_launcher(id){
 	
 	id-=UNDEPLOY_LOOP_TASKID
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
-	remove_task(id+FIRE_LOOP_TASKID)
 	
 	if ( spores_has_ksun(id)) {
 		arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
@@ -767,10 +839,11 @@ public destroy_player_launcher(id){
 		if(is_valid_ent(g_player_launcher[id])){
 			
 			
-			emit_sound(g_player_launcher[id], CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+			emit_sound(id, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			draw_bbox(g_player_launcher[id],1)
 			remove_entity(g_player_launcher[id])
+			g_player_launcher[id]=0
 		
 		
 		}
@@ -779,6 +852,27 @@ public destroy_player_launcher(id){
 	
 	
 
+}
+
+public destroy_player_scanner(id){
+	
+	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
+	
+
+	if ( spores_has_ksun(id)) {
+		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
+			
+			
+			emit_sound(g_player_launcher[id], CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
+			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
+			remove_entity(g_player_scanner[id])
+			g_player_scanner[id]=0
+	
+	
+		}
+	}
+	return PLUGIN_HANDLED
 }
 public death()
 {

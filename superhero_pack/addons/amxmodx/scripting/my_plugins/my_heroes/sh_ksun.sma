@@ -173,6 +173,7 @@ public ksun_init()
 	{
 		spores_reset_user(id)
 		ksun_model(id)
+		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
 		init_cooldown_update_tasks(id)
 		init_hud_tasks(id)
@@ -218,7 +219,6 @@ public ksun_kd()
 	set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
 	show_hudmessage(id, message)
 	spores_reset_user(id)
-	spores_gather_targets(id)
 	spores_launch(id)
 	
 	return PLUGIN_HANDLED
