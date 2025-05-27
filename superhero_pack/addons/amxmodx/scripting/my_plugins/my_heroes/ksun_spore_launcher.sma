@@ -92,24 +92,8 @@ public ev_SendAudio(){
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	
 	launchers_clear()
+	return PLUGIN_CONTINUE
 	
-}
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-	if(!client_hittable(id)||!sh_is_active()){
-		
-		return PLUGIN_CONTINUE
-	}
-	spores_reset_user(id)
-	if ( spores_has_ksun(id)) {
-		ksun_weapons(id)
-		gNumSleepNades[id]=num_sleep_nades
-		ksun_model(id)
-		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-		init_hud_tasks(id)
-	}
-	return PLUGIN_HANDLED
 }
 public _delete_hud_tasks(iPlugins, iParms){
 	

@@ -81,43 +81,96 @@ public plugin_natives(){
 }
 public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||(id==attacker)||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+if ( !sh_is_active() || !client_hittable(id) || !client_hittable(attacker)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(gHasksun[attacker]&&!(cs_get_user_team(id)==att_team)){
-	
-	inc_times_player_spiked_player(attacker,victim)
-}
 
-	new debt_mult_int=0
-	new debt_mult_float=0.0
-	for(new collector=0;collector<SH_MAXSLOTS+1;collector++){
+if(spores_has_ksun(id)&&COVERT_ABUSE_ENABLED){
 
-		if(attacker==colector){
-			
-			continue;
-		}
-		if(!client_hittable(collector)||!client_hittable(payer)){
+	for(new payer=0;payer<SH_MAXSLOTS+1;payer++){
+
+		if(!client_hittable(payer)){
 			
 			
 			continue
 		}
-		if(!spores_has_ksun(collector)){
+		new CsTeams:payer_team=cs_get_user_team(payer)
+		if(cs_get_user_team(id)==payer_team){
 			
 			continue
 		}
-		
+		new times_spiked_by_me=get_times_player_spiked_by_player(payer,id)
+		//should be multiplied because heal function splits it by default. Ill do it l8r
+		if((times_spiked_by_me>0)){
+			new tger_name[128], vic_name[128]
+			get_user_name(payer,vic_name,127)
+			get_user_name(id,tger_name,127)
+			new Float: pctHealthLost=get_spike_base_damage_debt()*float(times_spiked_by_me)
+			new Float: healthXtracted=1.0+(float(get_user_health(payer))*pctHealthLost)
+			sh_extra_damage(payer,id,floatround(healthXtracted),"ksun debt",0,SH_DMG_NORM)
+			heal(id,healthXtracted)
+			new violence_to_use
+			if(get_cvar_num("ksun_violence_level")<0){
+				
+				violence_to_use=random_num(1,MAX_VIOLENCE)
+			}
+			else{
+				
+				violence_to_use=clamp(1,get_cvar_num("ksun_violence_level"),MAX_VIOLENCE)
+			}
+			sh_chat_message(id,spores_ksun_hero_id(),"(Expected and obligated) %s%s!",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
+			sh_chat_message(payer,spores_ksun_hero_id(),"(Expected and obligated) %s by%s!",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
+		}
 		
 
 
 	}
-	debt_mult_float=float(debt_mult_int)
+}
+if((damage>0.0)&&OVERT_ABUSE_ENABLED){
+	for(new collector=0;collector<SH_MAXSLOTS+1;collector++){
 
-	
-	damage=1.0+damage- (damage*psychosis_dmg_cushion)
-	SetHamParamFloat(4, damage);
+		if(!client_hittable(collector)){
+			
+			
+			continue
+		}
+		
+		new CsTeams:collector_team=cs_get_user_team(collector)
+		if(att_team==collector_team){
+			
+			continue
+		}
+		
+		new times_spiked_by_them=get_times_player_spiked_player(collector,attacker)
+		if((times_spiked_by_them>0)){
+			
+			new tger_name[128], vic_name[128]
+			get_user_name(attacker,vic_name,127)
+			get_user_name(collector,tger_name,127)
+			
+			new Float: pctDmgLost=get_spike_base_damage_debt()*float(times_spiked_by_them)
+			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
+		
+			heal(collector,dmgSnatched)
+			new violence_to_use
+			if(get_cvar_num("ksun_violence_level")<0){
+				
+				violence_to_use=random_num(1,MAX_VIOLENCE)
+			}
+			else{
+				
+				violence_to_use=clamp(1,get_cvar_num("ksun_violence_level"),MAX_VIOLENCE)
+			}
+			sh_chat_message(collector,spores_ksun_hero_id(),"(kind and generosly) %s%s!",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
+			sh_chat_message(attacker,spores_ksun_hero_id(),"(kindly and generosly) %s by%s!",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
+			new Float:newDamage=damage- dmgSnatched
+			SetHamParamFloat(4, newDamage);
+		}
+
+
+	}
 }
 return HAM_IGNORED
 	

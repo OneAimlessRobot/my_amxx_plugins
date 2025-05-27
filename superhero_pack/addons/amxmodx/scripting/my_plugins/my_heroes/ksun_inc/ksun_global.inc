@@ -6,7 +6,6 @@
 #define KSUN_MORPH_TASKID 912333
 #define KSUN_UNGLOW_TASKID 5912382
 
-
 #define KSUN_PLAYER_MODEL "models/player/ksun/ksun.mdl"
 
 #define COOLDOWN_UPDATE_TASKID 1233222
@@ -17,6 +16,8 @@
 
 #define MAX_VIOLENCE 13
 
+stock const OVERT_ABUSE_ENABLED=1
+stock const COVERT_ABUSE_ENABLED=1
 stock const CENSORSHIP_SENTENCES[MAX_VIOLENCE+1][2][128]=
 	{
 	  {"",""},

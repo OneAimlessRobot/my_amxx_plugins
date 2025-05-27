@@ -46,9 +46,12 @@ public plugin_natives(){
 	register_native("spores_clear","_spores_clear",0)
 	register_native("get_times_player_spiked_player","_get_times_player_spiked_player",0)
 	register_native("inc_times_player_spiked_player","_inc_times_player_spiked_player",0)
+	register_native("dec_times_player_spiked_player","_dec_times_player_spiked_player",0)
 	
 	register_native("get_times_player_spiked_by_player","_get_times_player_spiked_by_player",0)
 	register_native("inc_times_player_spiked_by_player","_inc_times_player_spiked_by_player",0)
+	register_native("dec_times_player_spiked_by_player","_dec_times_player_spiked_by_player",0)
+	register_native("get_spike_base_damage_debt","_get_spike_base_damage_debt",0)
 	register_native("heal","_heal",0)
 	
 	
@@ -94,9 +97,9 @@ public loadCVARS()
 }
 public bool:_heal(iPlugins, iParms){
 	new id= get_param(1)
-	new damage=get_param_f(2)
+	new Float:damage=get_param_f(2)
 	
-	new Float:mate_health=float(get_user_health(id))
+	new Float: mate_health=float(get_user_health(id))
 	if(mate_health>=sh_get_max_hp(id)){
 		return false
 	
@@ -212,6 +215,14 @@ public _inc_times_player_spiked_player(iPlugin,iParms){
 
 		g_times_player_spiked_player[killer][victim]++
 }
+public _dec_times_player_spiked_player(iPlugin,iParms){
+
+		new killer= get_param(1)
+		new victim= get_param(2)
+
+		g_times_player_spiked_player[killer][victim]= (g_times_player_spiked_player[killer][victim]>0)? (g_times_player_spiked_player[killer][victim]-1):0
+		
+}
 //----------------------------------------------------------------------------------------------
 public _get_times_player_spiked_by_player(iPlugin,iParms){
 	
@@ -229,6 +240,15 @@ public _inc_times_player_spiked_by_player(iPlugin,iParms){
 		new killer= get_param(2)
 
 		g_times_player_spiked_by_player[victim][killer]++
+}
+
+public _dec_times_player_spiked_by_player(iPlugin,iParms){
+
+		new victim= get_param(1)
+		new killer= get_param(2)
+
+		g_times_player_spiked_by_player[victim][killer]= (g_times_player_spiked_by_player[victim][killer]>0)? (g_times_player_spiked_by_player[victim][killer]-1):0
+		
 }
 //----------------------------------------------------------------------------------------------
 public _spore_launch(iPlugins,iParms)
@@ -278,23 +298,6 @@ public sporeprepare(parms[]){
 new spore=parms[0]
 emit_sound(parms[1], CHAN_WEAPON, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-}
-bool:heal(id,Float:damage){
-	
-	new Float:mate_health=float(get_user_health(id))
-	if(mate_health>=sh_get_max_hp(id)){
-		return false
-	
-	}
-	damage*=ksun_heal_coeff
-	new Float: new_health=floatadd(mate_health,damage)
-	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
-	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(KSUN_HEAL_GLOW_TIME,"remove_glow_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)
-	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	return true
-
 }
 
 public track_spore(parms[])
@@ -415,6 +418,12 @@ if(!is_valid_ent(pToucher)) return
 
 if(!client_hittable(pTouched)) return
 
+static classname[32]
+classname[0] = '^0'
+pev(pToucher, pev_classname, classname, charsmax(classname))
+	
+if ( !equal(classname, SPORE_CLASSNAME) ) return
+
 new killer = entity_get_edict(pToucher, EV_ENT_euser1)
 
 if(!client_hittable(killer)) return
@@ -445,7 +454,6 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	}
 	sh_chat_message(killer,spores_ksun_hero_id(),"%s%s!",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
 	sh_chat_message(victim,spores_ksun_hero_id(),"%s by%s!",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
-	g_player_times_spiked[id]
 	untrack_spore(pToucher)
 }
 }
