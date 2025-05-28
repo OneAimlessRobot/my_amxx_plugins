@@ -31,7 +31,6 @@ public plugin_init()
 	register_cvar("ksun_hold_time", "5.0")
 	register_cvar("ksun_heal_coeff", "0.5" )
 	register_cvar("ksun_violence_level", "3" )
-	register_cvar("ksun_max_victims", "4" )
 	register_cvar("ksun_spore_health", "100.0" )
 	register_cvar("ksun_launcher_health", "100.0" )
 	
@@ -143,22 +142,23 @@ public status_hud(id){
 		return
 		
 	}
-	new hud_msg[256];
-	format(hud_msg,255,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent hold time: %0.2f^n",
+	new hud_msg[301];
+	format(hud_msg,300,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent number of kills with M4A1 as ksun: %d^nCurrent hold time: %0.2f^n",
 					is_valid_ent(get_player_scanner(id))&&(get_player_scanner(id)>0)? "ON":"OFF",
 					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser1):0.0,
 					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser2):0.0,
 					ksun_get_num_sleep_nades(id),
 					get_player_num_victims(id),
+					ksun_get_num_available_spores(id),
 					g_launcher_timer[id]);
 	if(g_player_cooldown_remaining[id]>0){
-	format(hud_msg,255,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
+	format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
 					g_player_cooldown_remaining[id]);
 	}
 	else{
 	
 	
-	format(hud_msg,255,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
+	format(hud_msg,300,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
 	
 		
 		

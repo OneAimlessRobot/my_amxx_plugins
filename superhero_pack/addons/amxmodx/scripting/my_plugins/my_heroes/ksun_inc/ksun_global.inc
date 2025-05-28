@@ -41,5 +41,10 @@ native Float:spores_cooldown()
 native ksun_dec_num_sleep_nades(id)
 native ksun_get_num_sleep_nades(id)
 native ksun_set_num_sleep_nades(id,value)
+
+native ksun_dec_num_available_spores(id)
+native ksun_inc_num_available_spores(id)
+native ksun_get_num_available_spores(id)
+native ksun_set_num_available_spores(id,value)
 	
 	

@@ -84,11 +84,16 @@ public plugin_natives(){
 	
 	
 }
-
+public _scanner_max_victims(iPlugin,iParams){
+	
+	
+		return ksun_max_victims
+}
 public ev_SendAudio(){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	scanners_clear()
+	return PLUGIN_CONTINUE
 }
 public _get_spore_from_player_spores(iPlugin,iParams){
 	new id=get_param(1)
@@ -297,12 +302,6 @@ public loadCVARS()
 	ksun_track_traverse_time= get_cvar_float("ksun_track_traverse_time")
 	ksun_max_victims= get_cvar_num("ksun_max_victims")
 }
-public _scanner_max_victims(iPlugins, iParms){
-	
-	return ksun_max_victims
-	
-}
-
 public _scanners_clear(iPlugins, iParms){
 	
 	
@@ -358,7 +357,7 @@ public scanner_think(scanner){
 	new entlist[33];
 	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
 	new CsTeams:idTeam = cs_get_user_team(id)
-	for( new i= 0;(g_player_num_victims[id]<=(ksun_max_victims))&&(i< numfound);i++){
+	for( new i= 0;(g_player_num_victims[id]<(min(ksun_get_num_available_spores(id),ksun_max_victims)))&&(i< numfound);i++){
 		
 			new pid = entlist[i];
 			if(!client_hittable(pid)){
@@ -393,7 +392,6 @@ show_targets(id){
 		
 		return
 	}
-	new hud_msg[500];
 	new client_name[128];
 	get_user_name(id,client_name,127)
 	if(g_player_num_victims[id]<=0){
@@ -401,14 +399,13 @@ show_targets(id){
 		client_print(id,print_center,"[SH] ksun:^nNo victims were gathered...")
 	}
 	else{
-		format(hud_msg,500,"[SH] (ksun):Targets are:^n")
+		client_print(id,print_chat,"[SH] (ksun):Targets are:")
 		for(new i=1;i<=SH_MAXSLOTS;i++){
 			if(g_player_tracks_player[id][i]&&client_hittable(i)){
 				get_user_name(i,client_name,127)
-				format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
+				client_print(id,print_chat,"- %s",client_name);
 			}
-		} 
-		client_print(id,print_chat, "%s", hud_msg)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -42,6 +42,7 @@ native spawn_scanner(id)
 native Float:get_scanner_min_radius()
 native Float:get_scanner_max_radius()
 native Float:get_scanner_traverse_time()
+native scanner_max_victims()
 
 native reset_player_targets(id)
 

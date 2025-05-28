@@ -22,6 +22,7 @@ ksun_launcher_health 500.0
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
+#include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 
 // GLOBAL VARIABLES
@@ -29,6 +30,8 @@ new gHeroName[]="ksun"
 new bool:gHasksun[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new gNumSleepNades[SH_MAXSLOTS+1]
+new gMaxSporesUsable[SH_MAXSLOTS+1]
+new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new Float:cooldown
 new num_sleep_nades
 new teamglow_on
@@ -51,7 +54,8 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_event("Damage", "ksun_damage_debt", "b", "2!0")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt")
-	
+	RegisterHam(Ham_Killed, "player", "fw_Killed_with_ksun_m4");
+	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
@@ -68,6 +72,12 @@ public plugin_natives(){
 	register_native("ksun_dec_num_sleep_nades","_ksun_dec_num_sleep_nades",0);
 	register_native("ksun_get_num_sleep_nades","_ksun_get_num_sleep_nades",0);
 	register_native("ksun_set_num_sleep_nades","_ksun_set_num_sleep_nades",0);
+	
+	
+	register_native("ksun_get_num_available_spores","_ksun_get_num_available_spores",0);
+	register_native("ksun_set_num_available_spores","_ksun_set_num_available_spores",0);
+	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores",0);
+	register_native("ksun_inc_num_available_spores","_ksun_inc_num_available_spores",0);
 	
 	
 	
@@ -87,6 +97,14 @@ new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
 
+if (idinflictor != attacker)
+{
+    gWeaponPlayerKilledPlayerWith[attacker][id] = CSW_HEGRENADE;
+}
+else
+{
+    gWeaponPlayerKilledPlayerWith[attacker][id] = weapon;
+}
 if(spores_has_ksun(id)&&COVERT_ABUSE_ENABLED){
 
 	for(new payer=0;payer<SH_MAXSLOTS+1;payer++){
@@ -176,6 +194,65 @@ return HAM_IGNORED
 	
 }
 
+public fw_Killed_with_ksun_m4(victim, attacker, shouldgib) {
+	
+	if(client_hittable(attacker)&&is_user_connected(victim)){
+		if((gWeaponPlayerKilledPlayerWith[attacker][victim]==CSW_M4A1)&&spores_has_ksun(attacker)){
+			sh_chat_message(attacker,spores_ksun_hero_id(),"Killed someone with your M4A1!")
+			ksun_inc_num_available_spores(attacker)
+		}
+		gWeaponPlayerKilledPlayerWith[attacker][victim]=0;
+	}
+} 
+
+public client_disconnected(id){
+	
+	spores_reset_user(id)
+	ksun_set_num_available_spores(id,0)
+	
+	
+}
+
+public ev_SendAudio(){
+	
+	if(!sh_is_active()) return PLUGIN_CONTINUE
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+		
+		arrayset(gWeaponPlayerKilledPlayerWith[i],0,SH_MAXSLOTS+1)
+	
+	}
+	
+	arrayset(gMaxSporesUsable,0,SH_MAXSLOTS+1)
+	
+	return PLUGIN_HANDLED
+}
+public _ksun_set_num_available_spores(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gMaxSporesUsable[id]=value_to_set;
+}
+public _ksun_get_num_available_spores(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	return gMaxSporesUsable[id]
+
+}
+
+public _ksun_dec_num_available_spores(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	gMaxSporesUsable[id]-= (gMaxSporesUsable[id]>0)? 1:0
+
+}
+public _ksun_inc_num_available_spores(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	gMaxSporesUsable[id]=(gMaxSporesUsable[id]>=scanner_max_victims())? scanner_max_victims():gMaxSporesUsable[id]+1
+
+}
 public _ksun_set_num_sleep_nades(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set=get_param(2)
@@ -230,6 +307,7 @@ public newRound(id)
 	if ( spores_has_ksun(id)) {
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
+		ksun_set_num_available_spores(id,0)
 		ksun_model(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
@@ -274,6 +352,7 @@ public ksun_init()
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
 		init_cooldown_update_tasks(id)
+		ksun_set_num_available_spores(id,0)
 		init_hud_tasks(id)
 	}
 	else{
@@ -282,6 +361,7 @@ public ksun_init()
 		delete_hud_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, CSW_M4A1, true)
+		ksun_set_num_available_spores(id,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -309,6 +389,13 @@ public ksun_kd()
 		
 	}
 	
+	if(!ksun_get_num_available_spores(id)){
+		
+		client_print(id,print_center,"[SH] ksun:^nKill someone with your M4A1 first");
+		playSoundDenySelect(id)
+		return PLUGIN_HANDLED
+		
+	}
 	ultimateTimer(id, cooldown)
 	
 	// colussus Messsage
@@ -434,6 +521,7 @@ public death()
 			sleep_nade_uncharge_sleep_nade(id)
 		}		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
+		ksun_set_num_available_spores(id,0)
 
 	}
 }

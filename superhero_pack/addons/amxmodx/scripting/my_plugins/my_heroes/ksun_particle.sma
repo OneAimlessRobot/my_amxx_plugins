@@ -74,6 +74,7 @@ untrack_spore(spore){
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
 		remove_entity(spore)
 		dec_player_num_victims(spore_owner)
+		ksun_dec_num_available_spores(spore_owner)
 	}
 	return 0
 
@@ -345,6 +346,7 @@ public untrack_spore_task(spore){
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
 		remove_entity(spore)
 		dec_player_num_victims(spore_owner)
+		ksun_dec_num_available_spores(spore_owner)
 	}
 	return 0
 
