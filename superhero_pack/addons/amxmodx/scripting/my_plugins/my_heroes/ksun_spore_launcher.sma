@@ -9,6 +9,7 @@
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
+#include "ksun_inc/ksun_ultimate.inc"
 
 new Float:ksun_hold_time,
 	Float:ksun_launcher_base_health,
@@ -143,28 +144,51 @@ public status_hud(id){
 		
 	}
 	new hud_msg[301];
-	format(hud_msg,300,"[SH] ksun:^nScanner: %s^nCurrent scanner time: %0.1f^nCurrent scanner radius: %0.1f^nCurrent number of sleep grenades: %d^nCurrent number of victims gathered: %d^nCurrent number of kills with M4A1 as ksun: %d^nCurrent hold time: %0.2f^n",
+	format(hud_msg,300,"[SH] ksun:^nScanner: %s^nCurrent number of sleep grenades: %d^nCurrent number of kills with ksun M4A1: %d^nNumber of supply points: %d^n",
 					is_valid_ent(get_player_scanner(id))&&(get_player_scanner(id)>0)? "ON":"OFF",
-					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser1):0.0,
-					is_valid_ent(get_player_scanner(id))? entity_get_float(get_player_scanner(id),EV_FL_fuser2):0.0,
 					ksun_get_num_sleep_nades(id),
-					get_player_num_victims(id),
 					ksun_get_num_available_spores(id),
-					g_launcher_timer[id]);
-	if(g_player_cooldown_remaining[id]>0){
-	format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
-					g_player_cooldown_remaining[id]);
+					ksun_get_player_supply_points(id));
+	
+	new color[3];
+	if(!ksun_player_is_ultimate_ready(id)){
+		
+		color[0]=255
+		color[1]=255
+		color[2]=255
+		if(g_player_cooldown_remaining[id]>0){
+			
+			format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
+			g_player_cooldown_remaining[id]);
+		}
+		else{
+		
+		
+			format(hud_msg,300,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
+		
+			
+			
+		}
+		
 	}
 	else{
-	
-	
-	format(hud_msg,300,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
-	
 		
+		color[0]=LineColors[PURPLE][0]
+		color[1]=LineColors[PURPLE][1]
+		color[2]=LineColors[PURPLE][2]
+		if(g_player_cooldown_remaining[id]>0){
+			
+			format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
+			g_player_cooldown_remaining[id]);
+		}
+		else{
+			
+			format(hud_msg,300,"%s^nUltimate ready.^n",hud_msg)
+			
+		}
 		
 	}
-	
-	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
+	set_hudmessage(color[0], color[1], color[2],1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
 	
 	

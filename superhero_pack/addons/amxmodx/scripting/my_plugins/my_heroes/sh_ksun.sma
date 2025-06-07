@@ -23,6 +23,7 @@ ksun_launcher_health 500.0
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
+#include "ksun_inc/ksun_ultimate.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 
 // GLOBAL VARIABLES
@@ -52,7 +53,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
 	register_event("ResetHUD","newRound","b")
 	register_event("DeathMsg","death","a")
-	register_event("Damage", "ksun_damage_debt", "b", "2!0")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt")
 	RegisterHam(Ham_Killed, "player", "fw_Killed_with_ksun_m4");
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -129,6 +129,7 @@ if(spores_has_ksun(id)&&COVERT_ABUSE_ENABLED){
 			new Float: healthXtracted=1.0+(float(get_user_health(payer))*pctHealthLost)
 			sh_extra_damage(payer,id,floatround(healthXtracted),"ksun debt",0,SH_DMG_NORM)
 			heal(id,healthXtracted)
+			ksun_inc_player_supply_points(id,floatround(healthXtracted))
 			new violence_to_use
 			if(get_cvar_num("ksun_violence_level")<0){
 				
@@ -172,6 +173,7 @@ if((damage>0.0)&&OVERT_ABUSE_ENABLED){
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
 			heal(collector,dmgSnatched)
+			ksun_inc_player_supply_points(collector,floatround(dmgSnatched))
 			new violence_to_use
 			if(get_cvar_num("ksun_violence_level")<0){
 				
@@ -197,7 +199,7 @@ return HAM_IGNORED
 public fw_Killed_with_ksun_m4(victim, attacker, shouldgib) {
 	
 	if(client_hittable(attacker)&&is_user_connected(victim)){
-		if((gWeaponPlayerKilledPlayerWith[attacker][victim]==CSW_M4A1)&&spores_has_ksun(attacker)){
+		if((gWeaponPlayerKilledPlayerWith[attacker][victim]==CSW_M4A1)&&spores_has_ksun(attacker)&&!ksun_player_is_in_ultimate(attacker)){
 			sh_chat_message(attacker,spores_ksun_hero_id(),"Killed someone with your M4A1!")
 			ksun_inc_num_available_spores(attacker)
 		}
@@ -208,6 +210,7 @@ public fw_Killed_with_ksun_m4(victim, attacker, shouldgib) {
 public client_disconnected(id){
 	
 	spores_reset_user(id)
+	ksun_unultimate_user(id)
 	ksun_set_num_available_spores(id,0)
 	
 	
@@ -219,6 +222,8 @@ public ev_SendAudio(){
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		
 		arrayset(gWeaponPlayerKilledPlayerWith[i],0,SH_MAXSLOTS+1)
+		
+		ksun_unultimate_user(i)
 	
 	}
 	
@@ -348,6 +353,7 @@ public ksun_init()
 	if ( gHasksun[id] )
 	{
 		spores_reset_user(id)
+		ksun_unultimate_user(id)
 		ksun_model(id)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
@@ -357,6 +363,7 @@ public ksun_init()
 	}
 	else{
 		spores_reset_user(id)
+		ksun_unultimate_user(id)
 		delete_cooldown_update_tasks(id)
 		delete_hud_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
@@ -372,7 +379,9 @@ public ksun_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) || !spores_has_ksun(id) ) return PLUGIN_HANDLED
+	if ( !client_hittable(id) ) return PLUGIN_HANDLED
+	
+	if(!spores_has_ksun(id) && !ksun_player_is_ultimate_ready(id)) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
@@ -380,32 +389,46 @@ public ksun_kd()
 		sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
 		return PLUGIN_HANDLED
 	}
-	else if(spores_busy(id)){
+	else if(spores_busy(id)||ksun_player_is_in_ultimate(id)){
 		
 		playSoundDenySelect(id)
-		sh_chat_message(id,gHeroID,"Some launched spores still busy!");
+		if(!ksun_player_is_in_ultimate(id)){
+			sh_chat_message(id,gHeroID,"Some launched spores still busy!");
+		}
+		else if(!spores_busy(id)){
+			
+			
+			sh_chat_message(id,gHeroID,"Already in ultimate! Ignoring!");
+				
+			
+		}
 		return PLUGIN_HANDLED
 		
 		
 	}
 	
-	if(!ksun_get_num_available_spores(id)){
+	if(!ksun_player_is_ultimate_ready(id)){
+		if(!ksun_get_num_available_spores(id)){
 		
-		client_print(id,print_center,"[SH] ksun:^nKill someone with your M4A1 first");
-		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+			client_print(id,print_center,"[SH] ksun:^nKill someone with your M4A1 first");
+			playSoundDenySelect(id)
+			return PLUGIN_HANDLED
 		
+		}
+	
+		new message[128]
+		format(message, 127, SEARCH_MSG )
+		set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+		show_hudmessage(id, message)
+		spores_launch(id)
 	}
+	else{
+		
+		spores_reset_user(id)
+		ksun_player_engage_ultimate(id)
+	}
+	
 	ultimateTimer(id, cooldown)
-	
-	// colussus Messsage
-	new message[128]
-	format(message, 127, SEARCH_MSG )
-	set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
-	show_hudmessage(id, message)
-	spores_reset_user(id)
-	spores_launch(id)
-	
 	return PLUGIN_HANDLED
 }
 

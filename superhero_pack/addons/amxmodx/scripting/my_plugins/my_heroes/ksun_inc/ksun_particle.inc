@@ -43,3 +43,5 @@ native inc_times_player_spiked_by_player(victim,attacker)
 native dec_times_player_spiked_by_player(victim,attacker)
 native Float:get_spike_base_damage_debt()
 native bool:heal(id, Float:damage)
+
+native ksun_glisten(id)

@@ -54,6 +54,8 @@ public plugin_natives(){
 	register_native("get_spike_base_damage_debt","_get_spike_base_damage_debt",0)
 	register_native("heal","_heal",0)
 	
+	register_native("ksun_glisten","_ksun_glisten",0)
+	
 	
 	
 }
@@ -108,12 +110,20 @@ public bool:_heal(iPlugins, iParms){
 	damage*=ksun_heal_coeff
 	new Float: new_health=floatadd(mate_health,damage)
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
-	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(KSUN_HEAL_GLOW_TIME,"remove_glow_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)
+	ksun_glisten(id)
 	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	return true
 
+}
+
+public _ksun_glisten(iPlugins,iParms){
+	
+	new id= get_param(1)
+	
+	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
+	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
+	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
+	
 }
 public _spores_clear(iPlugins, iParms){
 	
@@ -460,7 +470,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 }
 }
 
-public remove_glow_task(id){
+public remove_glisten_task(id){
 
 id-=KSUN_UNGLOW_TASKID
 if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return

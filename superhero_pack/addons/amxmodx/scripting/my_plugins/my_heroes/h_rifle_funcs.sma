@@ -272,7 +272,11 @@ public fw_CmdStart(id, uc_handle, seed)
 		
 	static iEnt; iEnt = fm_get_user_weapon_entity(id, get_user_weapon(id))
 	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
+	if(!is_valid_ent(iEnt)||(iEnt<=0)){
 	
+		return FMRES_IGNORED
+	
+	}
 	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON))
 	{
 		set_uc(uc_handle, UC_Buttons, PressButton & ~IN_RELOAD)
