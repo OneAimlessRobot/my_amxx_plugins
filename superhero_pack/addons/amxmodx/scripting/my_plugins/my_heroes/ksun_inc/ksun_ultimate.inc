@@ -11,6 +11,7 @@
 #define KSUN_ULTIMATE_LOOP_TIMES floatround(floatdiv(float(ksun_supply_capacity),float(KSUN_ULTIMATE_LOOP_DEC)))
 
 
+
 native ksun_player_is_in_ultimate(id)
 
 native ksun_player_is_ultimate_ready(id)

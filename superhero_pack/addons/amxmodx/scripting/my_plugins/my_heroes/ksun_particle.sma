@@ -6,6 +6,7 @@
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
+#include "ksun_inc/ksun_ultimate.inc"
 
 
 
@@ -72,7 +73,6 @@ untrack_spore(spore){
 		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
 		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		//client_print(spore_owner,print_console,"Spore untrack function called!!!!!^n")
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
 		remove_entity(spore)
 		dec_player_num_victims(spore_owner)
@@ -102,6 +102,10 @@ public bool:_heal(iPlugins, iParms){
 	new id= get_param(1)
 	new Float:damage=get_param_f(2)
 	
+	
+	ksun_glisten(id)
+	ksun_inc_player_supply_points(id,floatround(damage))
+	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new Float: mate_health=float(get_user_health(id))
 	if(mate_health>=sh_get_max_hp(id)){
 		return false
@@ -110,8 +114,6 @@ public bool:_heal(iPlugins, iParms){
 	damage*=ksun_heal_coeff
 	new Float: new_health=floatadd(mate_health,damage)
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
-	ksun_glisten(id)
-	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	return true
 
 }
@@ -120,7 +122,7 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	new id= get_param(1)
 	
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
+	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,180)
 	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
 	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
 	
@@ -352,7 +354,6 @@ public untrack_spore_task(spore){
 		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
 		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		//client_print(spore_owner,print_console,"Spore untrack task called!!!!!^n")
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
 		remove_entity(spore)
 		dec_player_num_victims(spore_owner)

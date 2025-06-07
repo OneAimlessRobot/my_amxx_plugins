@@ -129,7 +129,6 @@ if(spores_has_ksun(id)&&COVERT_ABUSE_ENABLED){
 			new Float: healthXtracted=1.0+(float(get_user_health(payer))*pctHealthLost)
 			sh_extra_damage(payer,id,floatround(healthXtracted),"ksun debt",0,SH_DMG_NORM)
 			heal(id,healthXtracted)
-			ksun_inc_player_supply_points(id,floatround(healthXtracted))
 			new violence_to_use
 			if(get_cvar_num("ksun_violence_level")<0){
 				
@@ -173,7 +172,6 @@ if((damage>0.0)&&OVERT_ABUSE_ENABLED){
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
 			heal(collector,dmgSnatched)
-			ksun_inc_player_supply_points(collector,floatround(dmgSnatched))
 			new violence_to_use
 			if(get_cvar_num("ksun_violence_level")<0){
 				
@@ -423,6 +421,9 @@ public ksun_kd()
 		spores_launch(id)
 	}
 	else{
+		new owner_name[128]
+		get_user_name(id,owner_name,127)
+		client_print(0,print_chat,"[SH](ksun): %s is glistening",owner_name)
 		
 		spores_reset_user(id)
 		ksun_player_engage_ultimate(id)
@@ -435,6 +436,7 @@ public ksun_kd()
 public plugin_precache()
 {
 	precache_model(KSUN_PLAYER_MODEL)
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_READY_SOUND)
 
 }
 public get_ksun_num(id,want_alive,want_all){
@@ -542,7 +544,8 @@ public death()
 		if(sleep_nade_get_sleep_nade_loaded(id)){
 	
 			sleep_nade_uncharge_sleep_nade(id)
-		}		
+		}
+		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		ksun_set_num_available_spores(id,0)
 

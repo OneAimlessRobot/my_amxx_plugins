@@ -34,6 +34,7 @@ public plugin_init()
 	register_cvar("ksun_supply_capacity", "1000" )
 	register_cvar("ksun_dmg_absorption_index", "1.0" )
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook")
+	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 	
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -83,7 +84,7 @@ if(spores_has_ksun(id)&&ksun_player_is_in_ultimate(id)){
 	
 	new Float:newDamage=damage- dmgSnatched
 	SetHamParamFloat(4, newDamage);
-	sh_chat_message(id,spores_ksun_hero_id(),"You are in ultimate. You absorbed %0.2f damage from this attac.",dmgSnatched)
+	sh_chat_message(id,spores_ksun_hero_id(),"You are in ultimate. You absorbed %0.2f damage from this attack.",dmgSnatched)
 		
 
 }
@@ -179,6 +180,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	if(!spores_has_ksun(id)) return
 	
 	g_player_in_ultimate[id]=1
+	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",KSUN_ULTIMATE_LOOP_TIMES)
 	set_task(floatmul(KSUN_ULTIMATE_LOOP_PERIOD,float(KSUN_ULTIMATE_LOOP_TIMES))+1.0,"unultimate_task",id+UNKSUN_ULTIMATE_TASKID,"", 0,  "a",1)
 	
@@ -215,6 +217,7 @@ public _ksun_unultimate_user(iPlugin,iParams){
 }
 public unultimate_task(id){
 	id-=UNKSUN_ULTIMATE_TASKID
+	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	g_player_in_ultimate[id]=0
 	return 0
@@ -226,6 +229,7 @@ public unultimate_task(id){
 unultimate_user(id){
 	remove_task(id+UNKSUN_ULTIMATE_TASKID)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
+	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
 	return 0
 	
@@ -292,4 +296,15 @@ return PLUGIN_CONTINUE
 public plugin_precache(){
 	
 	m_spriteTexture = precache_model("sprites/dot.spr")
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
+}
+public death()
+{
+	new id = read_data(2)
+	if(client_hittable(id)&&spores_has_ksun(id)){
+		
+		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		ksun_unultimate_user(id)
+
+	}
 }

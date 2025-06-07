@@ -8,6 +8,12 @@
 
 #define KSUN_PLAYER_MODEL "models/player/ksun/ksun.mdl"
 
+#define KSUN_ULTIMATE_READY_SOUND "ambience/alien_zonerator.wav"
+#define KSUN_ULTIMATE_DRONE_SOUND "ambience/pulsemachine.wav"
+
+
+
+
 #define COOLDOWN_UPDATE_TASKID 1233222
 #define COOLDOWN_UPDATE_PERIOD 0.5
 
