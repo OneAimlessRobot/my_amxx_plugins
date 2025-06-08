@@ -307,6 +307,7 @@ public newRound(id)
 		return PLUGIN_CONTINUE
 	}
 	spores_reset_user(id)
+	ksun_unultimate_user(id)
 	if ( spores_has_ksun(id)) {
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
@@ -379,7 +380,7 @@ public ksun_kd()
 	
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
-	if(!spores_has_ksun(id) && !ksun_player_is_ultimate_ready(id)) return PLUGIN_HANDLED
+	if(!spores_has_ksun(id)) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
@@ -540,7 +541,7 @@ public ksun_glow(id)
 public death()
 {
 	new id = read_data(2)
-	if(client_hittable(id)&&spores_has_ksun(id)){
+	if(is_user_connected(id)&&spores_has_ksun(id)){
 		if(sleep_nade_get_sleep_nade_loaded(id)){
 	
 			sleep_nade_uncharge_sleep_nade(id)

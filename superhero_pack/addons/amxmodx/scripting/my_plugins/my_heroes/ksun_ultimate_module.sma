@@ -220,6 +220,7 @@ public unultimate_task(id){
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	g_player_in_ultimate[id]=0
+	g_player_supply_amount[id]=0
 	return 0
 	
 	
@@ -231,6 +232,7 @@ unultimate_user(id){
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
+	g_player_supply_amount[id]=0
 	return 0
 	
 	
@@ -301,10 +303,9 @@ public plugin_precache(){
 public death()
 {
 	new id = read_data(2)
-	if(client_hittable(id)&&spores_has_ksun(id)){
+	if(is_user_connected(id)&&spores_has_ksun(id)){
 		
 		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		ksun_unultimate_user(id)
 
 	}
 }

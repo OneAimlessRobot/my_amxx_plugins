@@ -102,16 +102,17 @@ public bool:_heal(iPlugins, iParms){
 	new id= get_param(1)
 	new Float:damage=get_param_f(2)
 	
-	
-	ksun_glisten(id)
-	ksun_inc_player_supply_points(id,floatround(damage))
-	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new Float: mate_health=float(get_user_health(id))
 	if(mate_health>=sh_get_max_hp(id)){
 		return false
 	
 	}
 	damage*=ksun_heal_coeff
+	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
+	ksun_glisten(id)
+	ksun_inc_player_supply_points(id,new_damage)
+	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	
 	new Float: new_health=floatadd(mate_health,damage)
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
 	return true
