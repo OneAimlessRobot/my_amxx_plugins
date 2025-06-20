@@ -50,6 +50,10 @@ native ksun_set_num_sleep_nades(id,value)
 
 native ksun_dec_num_available_spores(id)
 native ksun_inc_num_available_spores(id)
+
+native ksun_multi_dec_num_available_spores(id,value)
+native ksun_multi_inc_num_available_spores(id,value)
+
 native ksun_get_num_available_spores(id)
 native ksun_set_num_available_spores(id,value)
 	

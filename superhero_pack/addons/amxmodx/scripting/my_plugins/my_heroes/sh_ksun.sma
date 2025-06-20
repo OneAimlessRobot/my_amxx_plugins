@@ -34,6 +34,9 @@ new gNumSleepNades[SH_MAXSLOTS+1]
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new Float:cooldown
+new ksun_kill_type_broadness_level
+new ksun_spores_per_kill
+new ksun_spore_m4_mult
 new num_sleep_nades
 new teamglow_on
 new gHeroID
@@ -47,14 +50,15 @@ public plugin_init()
 	register_cvar("ksun_teamglow_on", "1")
 	register_cvar("ksun_cooldown", "10.0" )
 	register_cvar("ksun_num_of_sleep_nades","6")
+	register_cvar("ksun_kill_type_broadness_level","0")
+	register_cvar("ksun_spores_per_kill","0")
+	register_cvar("ksun_spore_m4_mult","0")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
 	register_event("ResetHUD","newRound","b")
-	register_event("DeathMsg","death","a")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt")
-	RegisterHam(Ham_Killed, "player", "fw_Killed_with_ksun_m4");
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	// INIT
@@ -78,6 +82,11 @@ public plugin_natives(){
 	register_native("ksun_set_num_available_spores","_ksun_set_num_available_spores",0);
 	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores",0);
 	register_native("ksun_inc_num_available_spores","_ksun_inc_num_available_spores",0);
+	
+	register_native("ksun_multi_inc_num_available_spores","_ksun_multi_inc_num_available_spores",0);
+	register_native("ksun_multi_dec_num_available_spores","_ksun_multi_dec_num_available_spores",0);
+	
+	
 	
 	
 	
@@ -194,16 +203,6 @@ return HAM_IGNORED
 	
 }
 
-public fw_Killed_with_ksun_m4(victim, attacker, shouldgib) {
-	
-	if(client_hittable(attacker)&&is_user_connected(victim)){
-		if((gWeaponPlayerKilledPlayerWith[attacker][victim]==CSW_M4A1)&&spores_has_ksun(attacker)&&!ksun_player_is_in_ultimate(attacker)){
-			sh_chat_message(attacker,spores_ksun_hero_id(),"Killed someone with your M4A1!")
-			ksun_inc_num_available_spores(attacker)
-		}
-		gWeaponPlayerKilledPlayerWith[attacker][victim]=0;
-	}
-} 
 
 public client_disconnected(id){
 	
@@ -242,6 +241,22 @@ public _ksun_get_num_available_spores(iPlugin,iParams){
 
 }
 
+public _ksun_multi_dec_num_available_spores(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	new value= get_param(2)
+	gMaxSporesUsable[id]-= (gMaxSporesUsable[id]>0)? value:0
+
+}
+public _ksun_multi_inc_num_available_spores(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	new value= get_param(2)
+	gMaxSporesUsable[id]=((gMaxSporesUsable[id]+value)>=scanner_max_victims())? scanner_max_victims():gMaxSporesUsable[id]+value
+
+}
 public _ksun_dec_num_available_spores(iPlugin,iParams){
 
 
@@ -335,6 +350,11 @@ public loadCVARS()
 	cooldown= get_cvar_float("ksun_cooldown")
 	teamglow_on=get_cvar_num("ksun_teamglow_on")
 	num_sleep_nades=get_cvar_num("ksun_num_of_sleep_nades")
+	//<=1: Only m4 kills (Normal m4 damage) count for spores
+	//>=2: Any kills count for spores
+	ksun_kill_type_broadness_level=get_cvar_num("ksun_kill_type_broadness_level")
+	ksun_spores_per_kill=get_cvar_num("ksun_spores_per_kill")
+	ksun_spore_m4_mult=get_cvar_num("ksun_spore_m4_mult")
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -409,7 +429,7 @@ public ksun_kd()
 	if(!ksun_player_is_ultimate_ready(id)){
 		if(!ksun_get_num_available_spores(id)){
 		
-			client_print(id,print_center,"[SH] ksun:^nKill someone with your M4A1 first");
+			client_print(id,print_center,"%s",(ksun_kill_type_broadness_level<=1)?"[SH] ksun:^nKill someone with your M4A1 first":"[SH] ksun:^nKill someone first");
 			playSoundDenySelect(id)
 			return PLUGIN_HANDLED
 		
@@ -540,7 +560,12 @@ public ksun_glow(id)
 
 public death()
 {
+	if(!sh_is_active()) return
+	
 	new id = read_data(2)
+	new killer= read_data(1)
+	
+	
 	if(is_user_connected(id)&&spores_has_ksun(id)){
 		if(sleep_nade_get_sleep_nade_loaded(id)){
 	
@@ -549,6 +574,51 @@ public death()
 		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		ksun_set_num_available_spores(id,0)
-
+		
 	}
+	if(is_user_connected(killer)&&spores_has_ksun(killer)){
+		if(ksun_kill_type_broadness_level>=3){
+			
+				ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill)
+			
+		}
+	}
+		
+}
+public sh_client_death(id, killer, headshot, const wpnDescription[]){
+	
+	if(is_user_connected(id)&&spores_has_ksun(id)){
+		if(sleep_nade_get_sleep_nade_loaded(id)){
+	
+			sleep_nade_uncharge_sleep_nade(id)
+		}
+		
+		ksun_unmorph(id+KSUN_MORPH_TASKID)
+		ksun_set_num_available_spores(id,0)
+		
+	}
+	if(client_hittable(killer)&&is_user_connected(id)){
+		if(spores_has_ksun(killer)&&!ksun_player_is_in_ultimate(killer)){
+			if(ksun_kill_type_broadness_level<=1){
+				if(gWeaponPlayerKilledPlayerWith[killer][id]==CSW_M4A1){
+					sh_chat_message(killer,spores_ksun_hero_id(),"Killed someone with your M4A1!")
+					sh_chat_message(killer,spores_ksun_hero_id(),"You got %d spores for your kill!",ksun_spores_per_kill)
+					ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill)
+				}
+			}
+			else{
+				sh_chat_message(killer,spores_ksun_hero_id(),"Killed someone")
+				sh_chat_message(killer,spores_ksun_hero_id(),"You got %d spores for your kill!",ksun_spores_per_kill)
+				if(gWeaponPlayerKilledPlayerWith[killer][id]==CSW_M4A1){
+					sh_chat_message(killer,spores_ksun_hero_id(),"You got %d extra spores for an M4A1 kill!",((ksun_spores_per_kill*ksun_spore_m4_mult)-ksun_spores_per_kill))
+					ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill*ksun_spore_m4_mult)
+				}
+				else{
+					ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill)
+				}
+			}
+		}
+		gWeaponPlayerKilledPlayerWith[killer][id]=0;
+	}
+	
 }
