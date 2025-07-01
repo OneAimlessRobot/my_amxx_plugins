@@ -15,6 +15,7 @@
 #define FADE_HOLD (1<<2)
 
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
+#define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 
 #define COLORS_NUM 8
 //Colors To Pick From
@@ -306,7 +307,29 @@ stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:ti
 
 
 }
+stock suck_in_sound(ent_id,make_sound){
 
+	if(!is_valid_ent(ent_id)) return PLUGIN_CONTINUE
+	
+	new Float:fl_origin[3]
+	Entvars_Get_Vector(ent_id, EV_VEC_origin, fl_origin)
+
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(14)
+	write_coord(floatround(fl_origin[0]))
+	write_coord(floatround(fl_origin[1]))
+	write_coord(floatround(fl_origin[2]))
+	write_byte (200)
+	write_byte (40)
+	write_byte (45)
+	message_end()
+	if(make_sound){
+		emit_sound(ent_id, CHAN_WEAPON, SUCK_IN_SOUND_FILE_NAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(ent_id, CHAN_VOICE, SUCK_IN_SOUND_FILE_NAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
+	
+	return PLUGIN_CONTINUE
+}
 stock detect_user(id,enemy,PlayerCoords[3]){
 
 
@@ -774,7 +797,7 @@ stock precache_explosion_fx(){
 	blood1 = precache_model("sprites/blood.spr");
 	white = precache_model("sprites/shockwave.spr")
 	blood2 = precache_model("sprites/bloodspray.spr");
-	precache_sound("ambience/particle_suck2.wav")
+	precache_sound(SUCK_IN_SOUND_FILE_NAME)
 	sprite1 = precache_model("sprites/white.spr")
 	g_iFireSprite = precache_model("sprites/flame.spr");
 	g_iSmokeSprite[0] = precache_model("sprites/black_smoke3.spr");

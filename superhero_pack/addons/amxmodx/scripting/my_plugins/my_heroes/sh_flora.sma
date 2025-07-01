@@ -43,7 +43,6 @@ public plugin_init()
 	register_srvcmd("flora_ku", "flora_ku")
 	shRegKeyUp(gHeroName, "flora_ku")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
-	register_forward(FM_PlayerPreThink, "flora_prethink")
 }
 
 
@@ -59,8 +58,6 @@ public plugin_natives(){
 	register_native("flora_get_user_num_fields","_flora_get_user_num_fields",0)
 	register_native("flora_set_user_num_fields","_flora_set_user_num_fields",0)
 	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields",0)
-	register_native("init_hud_tasks","_init_hud_tasks",0)
-	register_native("delete_hud_tasks","_delete_hud_tasks",0)
 	register_native("flora_get_hero_lvl","_flora_get_hero_lvl",0)
 	
 	//register_native("flora_inc_user_num_fields","_flora_inc_user_num_fields",0)
@@ -90,19 +87,16 @@ public _flora_get_hero_lvl(iPlugins,iParams){
 	
 	
 }
-public _delete_hud_tasks(iPlugins, iParms){
+delete_hud_tasks(id){
 	
-	new id= get_param(1)
 	sh_chat_message(id,flora_get_hero_id(),"Hud removido!!!^n")
-	remove_task(id+FLORA_STATUS_HUD_TASKID)
+	remove_task(id+STATUS_UPDATE_TASKID)
 	
 	
 	
 }
 
-public _init_hud_tasks(iPlugins, iParms){
-	
-	new id= get_param(1)
+init_hud_tasks(id){
 	set_task(STATUS_UPDATE_PERIOD,"status_hud",id+STATUS_UPDATE_TASKID,"",0,"b")
 	
 	
@@ -149,22 +143,20 @@ public status_hud(id){
 	id-=STATUS_UPDATE_TASKID
 	if(!flora_get_has_flora(id)){
 		
-		sh_chat_message(id,flora_get_hero_id(),"Não tens flora!");
 		delete_hud_tasks(id)
 		return
 		
 	}
-	sh_chat_message(id,flora_get_hero_id(),"tens flora!");
 	new hud_msg[301];
 	format(hud_msg,300,"[SH] flora:^nNumber active fields: %d^nNumber of fields left: %d^n",
-					flora_get_user_num_fields(id),
-					flora_get_user_num_active_fields(id));
+					flora_get_user_num_active_fields(id),
+					flora_get_user_num_fields(id));
 	
 	new color[3];
 	color[0]=LineColors[GREEN][0]
 	color[1]=LineColors[GREEN][1]
 	color[2]=LineColors[GREEN][2]
-	if(field_get_user_field_cooldown(id)>0.0){
+	if(!field_loaded(id)){
 			
 		format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
 		field_get_user_field_cooldown(id));
@@ -172,7 +164,7 @@ public status_hud(id){
 	else{
 		
 		
-		format(hud_msg,300,"%s^nlauncher ready^n",hud_msg)
+		format(hud_msg,300,"%s^nnext field ready^n",hud_msg)
 		
 			
 			
@@ -192,11 +184,11 @@ public newRound(id)
 	if ( flora_get_has_flora(id)) {
 		reset_flora_user(id)
 		init_hud_tasks(id)
-		flora_set_user_num_fields(id,flora_max_fields())
+		flora_set_user_num_fields(id,flora_start_fields())
 		clear_user_fields(id)
 		flora_model(id)
 	}
-	return PLUGIN_HANDLED
+	return PLUGIN_CONTINUE
 }
 public sh_round_end(){
 
@@ -230,10 +222,12 @@ public flora_init()
 	gHasFlora[id] = (hasPowers!=0)
 	if ( gHasFlora[id] )
 	{
+		
 		reset_flora_user(id)
-		flora_model(id)
-		flora_set_user_num_fields(id,flora_max_fields())
 		init_hud_tasks(id)
+		flora_set_user_num_fields(id,flora_start_fields())
+		clear_user_fields(id)
+		flora_model(id)
 	}
 	else{
 		reset_flora_user(id)
@@ -298,10 +292,10 @@ public flora_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!flora_get_has_flora(id)||!field_loaded(id)) {
+	if ( !is_user_alive(id) ||!flora_get_has_flora(id)) {
 		return PLUGIN_CONTINUE
 	}
-	if(field_get_user_field_cooldown(id)>0.0){
+	if(!field_loaded(id)){
 		
 		sh_sound_deny(id)
 		sh_chat_message(id, flora_get_hero_id(), "Field deployment still in cooldown! Wait %0.2f more seconds!",field_get_user_field_cooldown(id))
@@ -372,7 +366,8 @@ public flora_glow(id)
 public death()
 {
 new id = read_data(2)
-if(gHasFlora[id]){
+if(flora_get_has_flora(id)){
+	reset_flora_user(id)
 	flora_unmorph(id+FLORA_MORPH_TASKID)
 	field_uncharge_user(id)
 	delete_hud_tasks(id)

@@ -628,9 +628,10 @@ id-=YANDERE_STATS_TASKID;
 
 if(gHasYandere[id]&&client_hittable(id)){
 
-	new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
+	/*new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	new iMax = global_get(glb_maxEntities) // Get's the limit
 	sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
+	*/
 	update_stats(id)
 	
 	
