@@ -26,7 +26,6 @@
 #define YELLOW		5
 #define PURPLE		6
 #define ORANGE		7
-
 //Color definitions
 stock const LineColors[COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
@@ -38,6 +37,20 @@ stock const LineColors[COLORS_NUM][3] = {
 	{255, 0, 255},		//Purple
 	{255, 128, 0}		//Orange
 }
+stock const LineColorsWithAlpha[COLORS_NUM][4] = {
+	{150, 150, 150,255},	//Custom
+	{255, 0, 0,255},		//Red
+	{0, 255, 0,100},		//Green
+	{0, 0, 255,255},		//Blue
+	{0, 255, 255,255},		//Light Blue
+	{255, 255, 0,255},		//Yellow
+	{255, 0, 255,255},		//Purple
+	{255, 128, 0,255}		//Orange
+}
+
+stock Float:null_vector[3]={0.0,0.0,0.0}
+stock null_iVector[3]={0,0,0}
+
 stock const tag_color[4]={0,255,255,255}
 stock smoke, white, fire
 stock m_trail
@@ -211,7 +224,7 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 	write_short( white )
 	write_byte( 0 )
 	write_byte(1)		// frame rate in 0.1's
-	write_byte(6)		// life in 0.1's
+	write_byte(10)		// life in 0.1's
 	write_byte(8)		// line width in 0.1's
 	write_byte(1)		// noise amplitude in 0.01's
 	write_byte( color[0])
@@ -220,7 +233,7 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 	write_byte( color[3] )
 	write_byte( 0 )
 	message_end()
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	/*message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 	write_byte(TE_LAVASPLASH);
 	write_coord(point[0])
 	write_coord(point[1])
@@ -249,7 +262,7 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 	write_byte( color[3] )
 	write_byte(8);
 	write_byte(60);
-	message_end();
+	message_end();*/
 
 }
 stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:time){
