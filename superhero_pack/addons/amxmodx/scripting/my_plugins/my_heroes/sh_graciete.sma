@@ -124,8 +124,8 @@ public graciete_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Mission failed.")
+		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Mission failed.")*/
 	}
 }
 //----------------------------------------------------------------------------------------------

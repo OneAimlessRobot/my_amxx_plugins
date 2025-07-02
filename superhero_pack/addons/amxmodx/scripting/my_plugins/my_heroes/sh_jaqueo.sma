@@ -332,8 +332,8 @@ public jaqueo_morph(id)
 		cs_set_user_model(id, "jaqueot")
 	}
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "M' ready.")
+	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "M' ready.")*/
 	
 	gmorphed[id] = true
 	
@@ -345,8 +345,8 @@ public jaqueo_unmorph(id)
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Bros I died")
+		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Bros I died")*/
 		
 		cs_reset_user_model(id)
 		

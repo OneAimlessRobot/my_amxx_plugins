@@ -327,7 +327,7 @@ public newRound(id)
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_set_num_available_spores(id,0)
-		ksun_model(id)
+		ksun_morph(id+KSUN_MORPH_TASKID)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
 	}
@@ -373,7 +373,7 @@ public ksun_init()
 	{
 		spores_reset_user(id)
 		ksun_unultimate_user(id)
-		ksun_model(id)
+		ksun_morph(id+KSUN_MORPH_TASKID)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
 		init_cooldown_update_tasks(id)
@@ -513,8 +513,8 @@ public ksun_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_ksun(id) ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "ksun: '...'")
+	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "ksun: '...'")*/
 	cs_set_user_model(id,"ksun")
 
 	gmorphed[id] = true

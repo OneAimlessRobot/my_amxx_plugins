@@ -230,11 +230,13 @@ Float:get_player_alpha(id){
 	
 	new Float:alphaMult=1.0;
 	new player_lvl,hero_lvl,lvl_diff;
-	if(client_hittable(id)&&flora_get_has_flora(id)){
-		player_lvl=sh_get_user_lvl(id)
-		hero_lvl=flora_get_hero_lvl()
-		lvl_diff=player_lvl-hero_lvl
-		alphaMult=floatmax(flora_invis_alpha_min,flora_invis_alpha_max-(float(lvl_diff)*flora_invis_alpha_dec_per_lvl))
+	if(client_hittable(id)){
+		if(flora_get_has_flora(id)){
+			player_lvl=sh_get_user_lvl(id)
+			hero_lvl=flora_get_hero_lvl()
+			lvl_diff=player_lvl-hero_lvl
+			alphaMult=floatmax(flora_invis_alpha_min,flora_invis_alpha_max-(float(lvl_diff)*flora_invis_alpha_dec_per_lvl))
+		}
 	}
 	return alphaMult
 	
@@ -247,6 +249,7 @@ public _reset_flora_user(iPlugin,iParams){
 	g_flora_field_cooldown[id]=0.0;
 	g_field_teleport_time[id]=0.0
 	g_flora_num_of_active_fields[id]=0
+	g_flora_curr_charging[id]=0
 	clear_user_fields(id)
 	
 	
@@ -260,9 +263,10 @@ destroy_field(field_id,make_sound){
 		}
 		emit_sound(field_id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		suck_in_sound(field_id,0)
-		if(client_hittable(owner)&&flora_get_has_flora(owner)){
-			flora_dec_user_num_active_fields(owner,1)
-			
+		if(client_hittable(owner)){
+			if(flora_get_has_flora(owner)){
+				flora_dec_user_num_active_fields(owner,1)
+			}
 		}
 		remove_entity(field_id)
 	}
@@ -376,7 +380,7 @@ public _form_field(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!flora_get_has_flora(id)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+	if(!flora_get_has_flora(id)||!client_hittable(id)) return PLUGIN_HANDLED
 	
 	if(!flora_get_user_num_fields(id)){
 		
@@ -650,9 +654,9 @@ public field_think(ent)
 			new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*dmg_mult),0.99))
 			new damage= floatround(fdamage)
 			sh_extra_damage(pid,owner,damage,"Flora field damage")
-			sh_set_stun(pid,flora_stun_time*dmg_mult,0.5)
+			sh_set_stun(pid,flora_stun_time*dmg_mult,170.0)
 			sh_set_rendering(pid, LineColorsWithAlpha[heal_color][0], LineColorsWithAlpha[heal_color][1], LineColorsWithAlpha[heal_color][2], LineColorsWithAlpha[heal_color][3], kRenderFxGlowShell, kRenderTransAlpha)
-			heal(owner,float(damage),heal_color)
+			flora_heal(owner,float(damage),heal_color)
 			}
 	}
 	
@@ -773,7 +777,7 @@ stock glow(id, r, g, b,a, on) {
 public remove_glisten_task(id){
 
 id-=FLORA_UNGLISTEN_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
+if(!sh_is_active()||!client_hittable(id)) return
 
 set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 emit_sound(id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -795,7 +799,7 @@ public flora_glisten(id,heal_color){
 	set_task(FLORA_HEAL_GLOW_TIME,"remove_glisten_task",id+FLORA_UNGLISTEN_TASKID,"", 0,  "a",1)	
 	
 }
-public heal(id,Float:damage,color){
+public flora_heal(id,Float:damage,color){
 	
 	new Float: mate_health=float(get_user_health(id))
 	if(mate_health>=sh_get_max_hp(id)){

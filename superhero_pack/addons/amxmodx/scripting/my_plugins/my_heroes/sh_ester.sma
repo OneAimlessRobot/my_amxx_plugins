@@ -132,8 +132,8 @@ public ester_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Ready to adult.")
+	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Ready to adult.")*/
 	cs_set_user_model(id, "ester")
 	
 	gmorphed[id] = true
@@ -155,8 +155,8 @@ public ester_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Fuck my li- Sigh... Spectating again")
+		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Fuck my li- *Sigh...* Spectating again")*/
 	}
 }
 //----------------------------------------------------------------------------------------------

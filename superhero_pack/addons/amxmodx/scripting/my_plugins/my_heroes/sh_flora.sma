@@ -185,14 +185,13 @@ public newRound(id)
 		reset_flora_user(id)
 		init_hud_tasks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
-		clear_user_fields(id)
-		flora_model(id)
+		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	return PLUGIN_CONTINUE
 }
 public sh_round_end(){
 
-	clear_fields()
+	//clear_fields()
 
 }
 //----------------------------------------------------------------------------------------------
@@ -226,8 +225,7 @@ public flora_init()
 		reset_flora_user(id)
 		init_hud_tasks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
-		clear_user_fields(id)
-		flora_model(id)
+		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	else{
 		reset_flora_user(id)
@@ -260,8 +258,8 @@ public flora_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!flora_get_has_flora(id) ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "flora: 'h- hey! hhello!'")
+	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "flora: 'h- hey! hhello!'")*/
 	cs_set_user_model(id,"flora")
 
 	gmorphed[id] = true
@@ -366,10 +364,11 @@ public flora_glow(id)
 public death()
 {
 new id = read_data(2)
-if(flora_get_has_flora(id)){
-	reset_flora_user(id)
-	flora_unmorph(id+FLORA_MORPH_TASKID)
-	field_uncharge_user(id)
-	delete_hud_tasks(id)
+if(is_user_connected(id)){
+	if(flora_get_has_flora(id)){
+		reset_flora_user(id)
+		flora_unmorph(id+FLORA_MORPH_TASKID)
+		delete_hud_tasks(id)
+}
 }
 }
