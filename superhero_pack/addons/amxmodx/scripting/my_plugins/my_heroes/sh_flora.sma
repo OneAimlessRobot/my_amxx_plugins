@@ -141,7 +141,7 @@ public _flora_get_hero_id(iPlugin,iParams){
 }*/
 public status_hud(id){
 	id-=STATUS_UPDATE_TASKID
-	if(!flora_get_has_flora(id)){
+	if(!flora_get_has_flora(id)||!client_hittable(id)||!sh_is_active()){
 		
 		delete_hud_tasks(id)
 		return
@@ -243,7 +243,7 @@ public plugin_precache(){
 //----------------------------------------------------------------------------------------------
 public flora_model(id)
 {
-	if ( !is_user_alive(id)||!flora_get_has_flora(id) ) return
+	if ( !client_hittable(id)||!flora_get_has_flora(id) ) return
 	
 	set_task(1.0, "flora_morph", id+FLORA_MORPH_TASKID)
 	if( teamglow_on){
@@ -255,7 +255,7 @@ public flora_model(id)
 public flora_morph(id)
 {
 	id-=FLORA_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!flora_get_has_flora(id) ) return
+	if ( gmorphed[id] || !client_hittable(id)||!flora_get_has_flora(id) ) return
 	
 	// Message
 	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
@@ -281,6 +281,14 @@ public flora_unmorph(id)
 			set_user_rendering(id)
 		}
 	}
+}
+public client_disconnected(id){
+	
+	reset_flora_user(id)
+	delete_hud_tasks(id)
+	flora_unmorph(id+FLORA_MORPH_TASKID)
+	gHasFlora[id]=0;
+
 }
 //----------------------------------------------------------------------------------------------
 public flora_kd()
@@ -323,7 +331,7 @@ public flora_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!flora_get_has_flora(id)) {
+	if ( !!client_hittable(id) ||!flora_get_has_flora(id)) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -345,7 +353,7 @@ public flora_glow(id)
 {
 	id -= FLORA_MORPH_TASKID
 
-	if ( !is_user_connected(id) ) {
+	if ( !client_hittable(id) ) {
 		//Don't want any left over residuals
 		remove_task(id+FLORA_MORPH_TASKID)
 		return

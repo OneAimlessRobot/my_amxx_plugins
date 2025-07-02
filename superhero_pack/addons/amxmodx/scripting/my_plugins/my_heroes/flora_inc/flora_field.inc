@@ -21,7 +21,7 @@
 
 #define FIELD_DEPLOYED "shmod/flora/fields/flora_deployed.wav"
 #define FIELD_HUM "shmod/flora/fields/flora_fieldambience.wav"
-#define FIELD_HEAL "shmod/ration.wav"
+#define FIELD_HEAL "shmod/flora/fields/flora_heal.wav"
 #define FIELD_DESTROYED "shmod/flora/fields/field_destroy.wav"
 #define FIELD_CHARGING "shmod/flora/fields/field_charging.wav"
 #define FIELD_TELEPORT "shmod/flora/fields/flora_teleport.wav"

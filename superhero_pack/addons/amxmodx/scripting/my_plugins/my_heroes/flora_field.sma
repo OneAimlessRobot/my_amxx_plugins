@@ -807,8 +807,14 @@ public flora_heal(id,Float:damage,color){
 	
 	}
 	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
-	if((new_damage>0)&&(FLORA_HEAL_GLOWING_ON)){
-		flora_glisten(id,color)
+	if(new_damage>0){
+		if(FLORA_HEAL_GLOWING_ON){
+			flora_glisten(id,color)
+		}
+		else{
+			emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			
+		}
 	}
 	new Float: new_health=floatadd(mate_health,float(new_damage))
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
