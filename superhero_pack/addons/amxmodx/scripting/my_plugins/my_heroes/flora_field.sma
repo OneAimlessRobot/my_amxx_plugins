@@ -26,12 +26,12 @@ flora_field_time 30.0
  * 
  * 
  */
- 
 #define PLUGIN "Superhero flora shield funcs"
 #define VERSION "1.0.0"
 #define AUTHOR "NULLTick"
 #define Struct				enum
 #define KILL_BEAM_TASKID 81292373
+stock const  FLORA_HEAL_GLOWING_ON=0
 new Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
 new g_flora_field_loaded[SH_MAXSLOTS+1];
 new g_flora_num_of_active_fields[SH_MAXSLOTS+1]
@@ -807,7 +807,7 @@ public flora_heal(id,Float:damage,color){
 	
 	}
 	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
-	if(new_damage>0){
+	if((new_damage>0)&&(FLORA_HEAL_GLOWING_ON)){
 		flora_glisten(id,color)
 	}
 	new Float: new_health=floatadd(mate_health,float(new_damage))
