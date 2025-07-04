@@ -160,8 +160,7 @@ public Player_TakeDamage(id)
 }
 public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||(id==attacker)||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
-
+if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker) ||(id==attacker)) return HAM_IGNORED
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)

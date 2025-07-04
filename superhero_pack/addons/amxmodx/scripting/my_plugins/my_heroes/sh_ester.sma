@@ -1,9 +1,13 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "ester_inc/ester_global.inc"
+#include "ester_inc/ester_flight.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 #define ESTER_HUD_TASKID 23443
 #define ESTER_REVENGE_TASKID 11122
+
 
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
 #define NEUROBLAST_CHARGE "shmod/ester/ester_buildup.wav"
@@ -71,7 +75,7 @@ public plugin_init()
 	register_cvar("ester_pan_dmg", "1.5")
 	hud_sync = CreateHudSyncObj()
 	hud_sync_enemies = CreateHudSyncObj()
-	gHeroID=shCreateHero(gHeroName, "NEUROBLAST!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
+	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
 	
 	register_event("Damage", "ester_damage", "b", "2!0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -83,6 +87,25 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ester_kd")
 	register_srvcmd("ester_ku", "ester_ku")
 	shRegKeyUp(gHeroName, "ester_ku")
+}
+
+public plugin_natives(){
+	
+	register_native("ester_get_has_ester","_ester_get_has_ester",0)
+	register_native("ester_get_hero_id","_ester_get_hero_id",0)
+	
+	
+	
+}
+public _ester_get_hero_id(iPlugins, iParms){
+	
+	return gHeroID
+}
+public _ester_get_has_ester(iPlugins, iParms){
+	
+	new id= get_param(1)
+	
+	return gHasEster[id]
 }
 public ester_init()
 {
@@ -107,6 +130,7 @@ public ester_init()
 		set_task( 1.0, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
 	}
 	else{
+		reset_ester_reborn_mode(id,0)
 		reset_ester_user_round(id)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
 		remove_task(id+ESTER_REVENGE_TASKID)
@@ -183,7 +207,6 @@ public ester_glow(id)
 reset_status(id){
 
 
-
 	remove_task(id+ESTER_REVENGE_TASKID)
 	gFinished[id]=false
 	damage_to_do[id]=0
@@ -194,11 +217,6 @@ reset_status(id){
 
 }
 
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
 count_enemies(id){
 	
 	new count=0;
@@ -384,32 +402,7 @@ public charge_aura(id){
 	message_end()
 
 }
-public charge_reflect_spark(id, x)
-{
-	emit_sound(id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( 8 )
-	write_short(id)				// start entity
-	write_short(x)				// entity
-	write_short(m_spriteTexture)		// model
-	write_byte( 0 ) 				// starting frame
-	write_byte( 30 )  			// frame rate
-	write_byte( 1)  			// life
-	write_byte( 2)  		// line width
-	write_byte(80 )  			// noise amplitude
-	write_byte(8)				// r, g, b
-	write_byte( 60)				// r, g, b
-	write_byte( 8 )				// r, g, b
-	write_byte( 110)				// brightness
-	write_byte( 8 )				// scroll speed
-	message_end()
 
-}
 public Ester_revenge_loop(id)
 {
 	id-=ESTER_REVENGE_TASKID
@@ -478,8 +471,11 @@ public Ester_instant(x, id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasEster[id]&&is_user_alive(id) && sh_is_active() ) {
+	if ( ester_get_has_ester(id)&&is_user_connected(id)&& sh_is_active() ) {
 		
+		trailing_beam(0,id,LineColorsWithAlpha[GREEN])
+		set_user_rendering(id,_,_,_,_,_,0)
+		emit_sound(id, CHAN_WEAPON,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		reset_ester_user_round(id)
@@ -529,14 +525,13 @@ public ester_damage(id)
 			
 			shExtraDamage( attacker, id,floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil), "Charging reflect" )
 			emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
-			charge_reflect_spark(id, attacker)
+			directed_spark(attacker, id)
 		}
 	}
 }
 public plugin_precache()
 {
 	
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	precache_model("models/player/ester/ester.mdl")
 	precache_model("models/player/ester/esterT.mdl")
 	engfunc(EngFunc_PrecacheSound, PAN_HIT_AIR1_SOUND)
@@ -551,19 +546,21 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
 	precache_model(PAN_V_MODEL)
 	precache_model(PAN_P_MODEL)
+	precache_explosion_fx()
 	
 }
 
 public death()
 {
 	new id=read_data(1)
-	
-	ester_unmorph(id+ESTER_MORPH_TASKID)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 	if ( !is_user_connected(id)||!gHasEster[id]||!id){
 		return
 	}
+	reset_ester_reborn_mode(id,0)
+	ester_unmorph(id+ESTER_MORPH_TASKID)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	
 	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
 }	
 

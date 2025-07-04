@@ -200,7 +200,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(eventid != g_Event_Ethereal)
 		return FMRES_IGNORED
 	
-	engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
+	engfunc(EngFunc_PlaybackEvent, flags | FEV_GLOBAL, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		
 	set_weapon_anim(invoker, E_ANIM_SHOOT1)
 	

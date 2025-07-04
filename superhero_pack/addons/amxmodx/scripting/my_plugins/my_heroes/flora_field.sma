@@ -369,7 +369,6 @@ public plugin_precache(){
 	precache_sound(FIELD_TELEPORT)
 	precache_sound(FIELD_HEAL)
 	precache_sound(FIELD_CHARGING)
-	precache_sound(FIELD_NULL)
 	precache_explosion_fx()
 	
 	
@@ -672,7 +671,7 @@ uncharge_user(id){
 	if(is_valid_ent(g_flora_curr_charging[id])){
 		
 		
-		emit_sound(id, CHAN_VOICE, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		destroy_field(g_flora_curr_charging[id],0)
 		g_flora_field_loaded[id]=1
 	}
@@ -764,15 +763,6 @@ public charge_task(parm[],id){
 	
 	
 }
-stock glow(id, r, g, b,a, on) {
-	if(on) {
-		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderTransAlpha, a)
-	}
-	else{
-		set_rendering(id, kRenderFxNone, r, g, b,  kRenderTransAlpha, a)
-	}
-}
-
 
 public remove_glisten_task(id){
 
@@ -780,7 +770,7 @@ id-=FLORA_UNGLISTEN_TASKID
 if(!sh_is_active()||!client_hittable(id)) return
 
 set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-emit_sound(id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 }
 

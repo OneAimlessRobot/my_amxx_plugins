@@ -21,9 +21,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 */
 
 
-#include <amxmod>
-#include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new g_heroName[]="Phoenix"
 new bool:g_hasPhoenix[SH_MAXSLOTS+1]
@@ -105,7 +103,8 @@ public phoenix_death()
 		parm[0] = id
 		// Respawn it faster then Zues, let this power be used before Zues's
 		// never set higher then 1.9 or lower then 0.5
-		set_task(0.6, "phoenix_respawn", 0, parm, 1)
+		//set_task(0.6, "phoenix_respawn", 0, parm, 1)
+		set_task(4.0, "phoenix_respawn", 0, parm, 1)
 	}
 }
 //----------------------------------------------------------------------------------------------

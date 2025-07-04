@@ -16,6 +16,7 @@
 
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
+#define NULL_SOUND "common/null.wav"
 
 #define COLORS_NUM 8
 //Colors To Pick From
@@ -410,7 +411,7 @@ public move_enemy(parm[])
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
-stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
+stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0){
 	
 	if(!is_user_connected(ent_id)){
 		return
@@ -445,7 +446,7 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power)
+		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner)
 		
 	}
 }
@@ -472,7 +473,7 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	new owner_id=pev(ent_id,pev_owner)
 	new name_of_player[128];
 	get_user_name(owner_id,name_of_player,127)
-	console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do owner e %s!!!!^n",name_of_player)
+	//console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do owner e %s!!!!^n",name_of_player)
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
 	for (new i=0; i < numfound; i++)
@@ -491,16 +492,31 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power)
 		
 		get_user_name(pid,name_of_player,127)
-		console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do player dmged e %s!!!!^n",name_of_player)
+		//console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do player dmged e %s!!!!^n",name_of_player)
 	
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=0){
 	
 	
 	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
 	
 		return 
+	
+	}
+	if(is_user_connected(ent_id)&&is_user_connected(pid)){
+		if(ent_id==pid){
+			if(client_hittable(ent_id)){
+					
+				if(ignore_owner){
+					
+					return;
+				
+				}
+				
+			
+			}
+		}
 	
 	}
 	
@@ -530,17 +546,15 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power){
 	b_vel[2]=force
 	
 	
-	if(pid!=owner_id){
+	new parm[4]
 		
-		new parm[4]
-		
-		parm[0] = floatround(b_vel[0])
-		parm[1] = floatround(b_vel[1])
-		parm[2] = floatround(b_vel[2])
-		parm[3] = pid
-		set_task(0.1, "move_enemy", 0, parm, 4)
-		sh_set_stun(pid,3.0,0.5)
-	}
+	parm[0] = floatround(b_vel[0])
+	parm[1] = floatround(b_vel[1])
+	parm[2] = floatround(b_vel[2])
+	parm[3] = pid
+	set_task(0.1, "move_enemy", 0, parm, 4)
+	sh_set_stun(pid,3.0,0.5)
+	
 	sh_screen_shake(pid,10.0,3.0,10.0)
 	unfade_screen_user(pid)
 	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -746,7 +760,31 @@ stock explode_fx( vec1[3] )
 	write_byte(28)			// decal
 	message_end()
 }
+stock directed_spark(init_id, end_id)
+{
+	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+	
+	emit_sound(end_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+	
+	
+	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+	write_byte( 8 )
+	write_short(init_id)				// start entity
+	write_short(end_id)				// entity
+	write_short(gSpriteLaser)		// model
+	write_byte( 0 ) 				// starting frame
+	write_byte( 30 )  			// frame rate
+	write_byte( 1)  			// life
+	write_byte( 2)  		// line width
+	write_byte(80 )  			// noise amplitude
+	write_byte(8)				// r, g, b
+	write_byte( 60)				// r, g, b
+	write_byte( 8 )				// r, g, b
+	write_byte( 110)				// brightness
+	write_byte( 8 )				// scroll speed
+	message_end()
 
+}
 //----------------------------------------------------------------------------------------------
 stock blood_spray(vic, vicOrigin[3], scale)
 {
@@ -785,6 +823,15 @@ stock trailing_beam(life,ent,const color[4]) {
 	}
 }
 
+stock glow(id, r, g, b,a, on) {
+	if(on) {
+		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderTransAlpha, a)
+	}
+	else{
+		set_rendering(id, kRenderFxNone, r, g, b,  kRenderTransAlpha, a)
+	}
+}
+
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
 	
@@ -805,6 +852,7 @@ stock precache_explosion_fx(){
 	gSpriteSmoke = precache_model("sprites/steam1.spr")
 	gSpriteFire = precache_model("sprites/explode1.spr")
 	gSpriteBurning = precache_model("sprites/xfire.spr")
+	precache_sound(NULL_SOUND)
 	
 	
 }

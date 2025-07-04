@@ -331,7 +331,7 @@ public flora_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !!client_hittable(id) ||!flora_get_has_flora(id)) {
+	if ( !client_hittable(id) ||!flora_get_has_flora(id)) {
 		return PLUGIN_HANDLED
 	}
 	
