@@ -272,9 +272,9 @@ public FM_CmdStart_Pre(id, uc_handle, seed)
 
 	static buttons, oldbuttons
 	buttons = get_uc(uc_handle, UC_Buttons)
-	oldbuttons = pev(id, pev_oldbuttons)
+	oldbuttons = entity_get_int(id,EV_INT_oldbuttons)
 
-	set_uc( uc_handle, UC_Buttons, buttons & ~(IN_ATTACK | IN_ATTACK2) )
+	//set_uc( uc_handle, UC_Buttons, buttons & ~(IN_ATTACK | IN_ATTACK2) )
 
 	//Check speed of player against the checkmove cvar
 	new Float:velocity[3]

@@ -6,7 +6,21 @@
 #define FLIGHT_POWER "shmod/ester/flight/flight_power.wav"
 #define FLIGHT_HUM "shmod/ester/flight/flight_hum.wav"
 #define FLIGHT_WEAK "shmod/ester/flight/flight_weak.wav"
-#define FLIGHT_BLOWUPSOUND "shmod/ester/flight/flight_blowup.wav"
+
+
+#define ESTER_NUM_BLOWUPSOUNDS 3
+stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
+
+	"shmod/ester/flight/flight_blowup1.wav",
+	"shmod/ester/flight/flight_blowup2.wav",
+	"shmod/ester/flight/flight_blowup3.wav"
+}
+
+#define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
+
+#define ESTER_SUICIDE_FAIL_MSG "You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy."
+
+#define ESTER_SUICIDE_SCOURN_MSG "Wow, they really do not make gods like they used to. Forgiven for taking your own life? Alright, enjoy the rest of the round."
 
 #define FLIGHT_GODMODE_THINK_TIME 0.3
 
@@ -23,6 +37,13 @@ const fPainShock=108
 #define ESTER_REBORN_TEAM_CHECK_TASKID   676423923
 #define ESTER_REBORN_EXPLOSION_DELAY_TASKID   8271237
 
+#define ESTER_NUM_SENTENCES 3
+stock const ester_sentences[ESTER_NUM_SENTENCES][128]={
+	"You were made to do more than survive the day. Go avenge yourself",
+	"This one must count, now. I wont disappoint myself or them any longer",
+	"Its show time."}
+	
 native ester_get_reborn_mode(id)
+native ester_get_respawn_attempts_remaining(id)
 native ester_set_reborn_mode(id,value)
 native reset_ester_reborn_mode(id,enable)

@@ -204,7 +204,6 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 		
 	set_weapon_anim(invoker, E_ANIM_SHOOT1)
 	
-	emit_sound(invoker, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 	//Eject_Shell(invoker, g_RifleShell_Id, 0.01)
 	
 	return FMRES_IGNORED
@@ -299,6 +298,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 {
 	static id; id = pev(Ent, pev_owner)
 	pev(id, pev_punchangle, g_Recoil[id])
+	emit_sound(id, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	return HAM_IGNORED
 }

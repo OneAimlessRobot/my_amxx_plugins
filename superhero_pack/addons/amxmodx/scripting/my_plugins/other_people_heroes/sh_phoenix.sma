@@ -104,7 +104,7 @@ public phoenix_death()
 		// Respawn it faster then Zues, let this power be used before Zues's
 		// never set higher then 1.9 or lower then 0.5
 		//set_task(0.6, "phoenix_respawn", 0, parm, 1)
-		set_task(4.0, "phoenix_respawn", 0, parm, 1)
+		set_task(0.6, "phoenix_respawn", 0, parm, 1)
 	}
 }
 //----------------------------------------------------------------------------------------------

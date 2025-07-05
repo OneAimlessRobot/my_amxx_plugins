@@ -180,7 +180,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	if(!spores_has_ksun(id)) return
 	
 	g_player_in_ultimate[id]=1
-	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",KSUN_ULTIMATE_LOOP_TIMES)
 	set_task(floatmul(KSUN_ULTIMATE_LOOP_PERIOD,float(KSUN_ULTIMATE_LOOP_TIMES))+1.0,"unultimate_task",id+UNKSUN_ULTIMATE_TASKID,"", 0,  "a",1)
 	
@@ -217,7 +217,9 @@ public _ksun_unultimate_user(iPlugin,iParams){
 }
 public unultimate_task(id){
 	id-=UNKSUN_ULTIMATE_TASKID
+	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	g_player_in_ultimate[id]=0
 	g_player_supply_amount[id]=0
@@ -230,7 +232,9 @@ public unultimate_task(id){
 unultimate_user(id){
 	remove_task(id+UNKSUN_ULTIMATE_TASKID)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
+	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
 	g_player_supply_amount[id]=0
 	return 0
@@ -299,13 +303,16 @@ public plugin_precache(){
 	
 	m_spriteTexture = precache_model("sprites/dot.spr")
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 }
 public death()
 {
 	new id = read_data(2)
 	if(is_user_connected(id)&&spores_has_ksun(id)){
 		
+		emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 
 	}
 }

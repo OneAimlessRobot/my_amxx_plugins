@@ -217,7 +217,7 @@ reset_status(id){
 
 }
 
-count_enemies(id){
+stock count_enemies(id){
 	
 	new count=0;
 	if((gTimesLeft[id]>0)||!gFinished[id]){
@@ -265,7 +265,7 @@ public reset_ester_user_round(id){
 public status_hud(id){
 
 	new hud_msg[200];
-	format(hud_msg,199,"[SH] %s:^nCharging? %s^nUnloding? %s^nFinished? %s^nYour damage: %d^nTimes left: %d^nDamage to do to enemies: %d^nNumber of enemies: %d^n",
+	/*format(hud_msg,199,"[SH] %s:^nCharging? %s^nUnloding? %s^nFinished? %s^nYour damage: %d^nTimes left: %d^nDamage to do to enemies: %d^nNumber of enemies: %d^n",
 					gHeroName,
 					gPedalIsFloored[id]?"Yes":"No.",
 					gUnloading[id]?"Yes":"No.",
@@ -273,7 +273,13 @@ public status_hud(id){
 					gEsterDmg[id],
 					gTimesLeft[id],
 					damage_to_do[id],
-					count_enemies(id));
+					count_enemies(id));*/
+	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nNumber of attempts to matter left: %d^nAre you in respawn mode? %s^n",
+					gHeroName,
+					gTimesLeft[id],
+					ester_get_respawn_attempts_remaining(id),
+					ester_get_reborn_mode(id)?"Yes!":"No."
+					);
 	
 	
 	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)

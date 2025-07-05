@@ -10,7 +10,7 @@
 #define KSUN_ULTIMATE_LOOP_DEC 30
 #define KSUN_ULTIMATE_LOOP_TIMES floatround(floatdiv(float(ksun_supply_capacity),float(KSUN_ULTIMATE_LOOP_DEC)))
 
-
+#define KSUN_ULTIMATE_SOUND "shmod/ksun/ultimate/ksun_ultimate_deploy_sound.wav"
 
 native ksun_player_is_in_ultimate(id)
 
