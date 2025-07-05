@@ -54,7 +54,7 @@ if (gHasMiragePowers[id]&&is_user_alive(id)&&is_user_connected(id))
 {
 	for (new enemy=1;enemy<=SH_MAXSLOTS;enemy++) 
 	{
-		if (is_user_alive(enemy) && get_user_team(enemy)!=get_user_team(id) && !gPlayerUltimateUsed[id]) 
+		if (is_user_connected(enemy)&&is_user_alive(enemy) && (get_user_team(enemy)!=get_user_team(id)) && !gPlayerUltimateUsed[id]) 
 		{
 			new aid,abody
 			get_user_aiming(enemy,aid,abody)
@@ -84,8 +84,9 @@ public client_disconnected(id){
 public turn_invis(parm[])
 {
 	new id=parm[0], step=parm[1]
-	set_user_rendering(id,kRenderFxGlowShell,8,8,8,kRenderTransAlpha,
-		255-floatround(step*(25.5/get_cvar_float("mirage_fadetime"))))
+	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+	
+	set_user_rendering(id,kRenderFxGlowShell,8,8,8,kRenderTransAlpha,255-floatround(step*(25.5/get_cvar_float("mirage_fadetime"))))
 	set_task(get_cvar_float("mirage_invistime"),"remove_invis",step*100+50+id,parm,2)
 	if (step==floatround(get_cvar_float("mirage_fadetime")*10)) 
 	client_print(id,print_chat,"-Turned invisible-")
@@ -95,8 +96,9 @@ public turn_invis(parm[])
 public remove_invis(parm[])
 {
 	new id=parm[0], step=parm[1]
-	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,
-		floatround(step*(25.5/get_cvar_float("mirage_fadetime"))))
+	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+	
+	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha, floatround(step*(25.5/get_cvar_float("mirage_fadetime"))))
 	if (step==floatround(get_cvar_float("mirage_fadetime")*10)) 
 	client_print(id,print_chat,"-Visible again-")
 	return PLUGIN_CONTINUE

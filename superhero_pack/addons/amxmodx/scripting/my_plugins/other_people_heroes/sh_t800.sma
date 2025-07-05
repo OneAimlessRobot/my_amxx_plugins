@@ -10,11 +10,8 @@ t800_paramult 5		    //how strong is the para
 
 */
 
-#include <amxmod>
-#include <superheromod>
-#include <Vexd_Utilities>
+#include "../my_include/superheromod.inc"
 
-#pragma dynamic 100000
 
 #define TASKID 800
 // VARIABLES
@@ -44,8 +41,6 @@ public plugin_init()
 	register_srvcmd("t800_init", "t800_init")
 	shRegHeroInit(gHeroName, "t800_init")
 	
-	// New Round
-	register_event("ResetHUD","t800_newround","b")
 	
 	// DEATH
 	register_event("DeathMsg", "t800_death", "a")
@@ -55,6 +50,8 @@ public plugin_init()
 	
 	// Extra Damage
 	register_event("Damage", "t800_damage", "b", "2!0")
+	register_logevent("t800_round_end", 2, "1=Round_End")
+	register_logevent("t800_round_end", 2, "1&Restart_Round_")
 	
 	
 	// KEY DOWN
@@ -69,6 +66,21 @@ public plugin_precache()
 	precache_model("models/shmod/t800_m249.mdl")
 	precache_model("models/shmod/t800_minigun.mdl")
 	precache_model("models/player/t800/t800.mdl")
+}
+//----------------------------------------------------------------------------------------------
+public t800_round_end()
+{
+	if ( !sh_is_active() ) return
+
+	arrayset(gPlayerUltimateUsed,false,SH_MAXSLOTS+1)
+	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
+	// Reset the cooldown on round end, to start fresh for a new round
+	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+		
+		if ( gHasT800Power[id] && is_user_alive(id) && shModActive() ) {
+			t800_endmode(id)
+		}
+	}
 }
 //----------------------------------------------------------------------------------------------
 public t800_init()
@@ -101,20 +113,11 @@ public t800_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public t800_newround(id)
-{
-	if ( gHasT800Power[id] && is_user_alive(id) && shModActive() ) {
-		t800_endmode(id) 
-		
-	}
-	
-	gPlayerUltimateUsed[id] = false
-	gT800Timer[id] = -1
-}
-//----------------------------------------------------------------------------------------------
 public t800_death()
 {
 	new id = read_data(2)
+	
+	if(!is_user_connected(id)) return
 	
 	gPlayerUltimateUsed[id] = false
 	gT800Timer[id]= -1

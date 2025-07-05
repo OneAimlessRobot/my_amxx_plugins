@@ -274,9 +274,10 @@ public status_hud(id){
 					gTimesLeft[id],
 					damage_to_do[id],
 					count_enemies(id));*/
-	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nNumber of attempts to matter left: %d^nAre you in respawn mode? %s^n",
+	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to enemies: %d^nNumber of attempts to matter left: %d^nAre you in respawn mode? %s^n",
 					gHeroName,
 					gTimesLeft[id],
+					damage_to_do[id],
 					ester_get_respawn_attempts_remaining(id),
 					ester_get_reborn_mode(id)?"Yes!":"No."
 					);
@@ -558,7 +559,7 @@ public plugin_precache()
 
 public death()
 {
-	new id=read_data(1)
+	new id=read_data(2)
 	if ( !is_user_connected(id)||!gHasEster[id]||!id){
 		return
 	}

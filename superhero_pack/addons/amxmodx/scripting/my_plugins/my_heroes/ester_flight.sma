@@ -19,6 +19,7 @@ Float:ester_calculation_time_period,
 Float:ester_calculation_chance_numerator,
 Float:ester_fly_knock_enemies_force,
 Float:ester_damage_reflect_coeff,
+Float:ester_reborn_weak_mode_hp,
 Float:ester_calculation_chance_denominator
 new ester_fly_knock_enemies;
 
@@ -66,6 +67,7 @@ public plugin_init()
 	register_cvar("ester_calculation_chance_denominator", "6.0")
 	register_cvar("ester_damage_reflect_coeff", "0.8")
 	register_cvar("ester_total_respawn_attempts", "4")
+	register_cvar("ester_reborn_weak_mode_hp", "160.0")
 	register_cvar("ester_anti_pussy_engaged", "0")
 	
 	register_event("DeathMsg","ester_death","a")
@@ -110,6 +112,7 @@ public loadCVARS()
 	ester_damage_reflect_coeff=get_cvar_float("ester_damage_reflect_coeff")
 	ester_total_respawn_attempts=get_cvar_num("ester_total_respawn_attempts")
 	ester_anti_pussy_engaged=get_cvar_num("ester_anti_pussy_engaged")
+	ester_reborn_weak_mode_hp=get_cvar_float("ester_reborn_weak_mode_hp")
 
 }
 public plugin_natives(){
@@ -214,9 +217,12 @@ remove_user_flight_fx(id){
 	
 	trailing_beam(0,id,LineColorsWithAlpha[GREEN])
 	set_user_rendering(id,_,_,_,_,_,0)
+	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(id, CHAN_AUTO,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	emit_sound(id, CHAN_AUTO,FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-	emit_sound(id, CHAN_BODY,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(id, CHAN_BODY,FLIGHT_POWER, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	emit_sound(id, CHAN_BODY,FLIGHT_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	g_is_glowing[id]=0;
 	g_flying[id]=false;
 	
@@ -244,20 +250,31 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 
 	g_ester_is_reborn_mode[id]=value
 }
-public OnCmdStart(id)
+public OnCmdStart(id, uc_handle, seed)
 {
-	if(!ester_get_has_ester(id)||!is_user_connected(id)) return;
-	
-	static button,oldbuttons; 
-	button = entity_get_int(id, EV_INT_button);
+	if(!ester_get_has_ester(id)||!client_hittable(id)||!ester_get_reborn_mode(id)){
+		
+		return FMRES_IGNORED;
+	}
+	static buttons,oldbuttons; 
+	buttons = get_uc(uc_handle, UC_Buttons)
 	
 	oldbuttons = entity_get_int(id,EV_INT_oldbuttons)
-	if(is_user_alive(id)&&ester_get_reborn_mode(id) && ((button & IN_DUCK)&&(button &IN_JUMP)))
+	if((buttons & IN_DUCK)&&(buttons &IN_JUMP))
 	{ 
-		if(!((oldbuttons & IN_DUCK)&&(oldbuttons &IN_JUMP))){
+		if(!(oldbuttons & IN_DUCK)||!(oldbuttons &IN_JUMP)){
 			
+			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
+				
+				emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			
-			emit_sound(id, CHAN_WEAPON, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			}
+			else{
+			
+				emit_sound(id, CHAN_AUTO, FLIGHT_WEAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			
+			}
+			
 			
 		}
 		g_flying[id]=true;
@@ -269,25 +286,26 @@ public OnCmdStart(id)
 			entity_set_vector(id, EV_VEC_velocity, Velocity)
 		
 			sh_extra_damage(id,id,floatround(ester_fly_health_spend),"Ester bleed flying")
-		
-		
-			
-		}
-		if(!g_is_glowing[id]){
-			g_is_glowing[id]=1
-			if(float(get_user_health(id)) > 160.0){
+			if(!g_is_glowing[id]){
+				g_is_glowing[id]=1
 				
-				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			}
 			
+			
+			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
+				trailing_beam(1,id,LineColorsWithAlpha[COLOR_STRONG])
+				glow(id,LineColorsWithAlpha[COLOR_STRONG][0],LineColorsWithAlpha[COLOR_STRONG][1],LineColorsWithAlpha[COLOR_STRONG][2],255,1)
+				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			}
 			else{
-			
-				emit_sound(id, CHAN_BODY, FLIGHT_WEAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			
+				trailing_beam(1,id,LineColorsWithAlpha[COLOR_WEAK])
+				glow(id,LineColorsWithAlpha[COLOR_WEAK][0],LineColorsWithAlpha[COLOR_WEAK][1],LineColorsWithAlpha[COLOR_WEAK][2],255,1)
+				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+				
+				
 			}
-			trailing_beam(1,id,LineColorsWithAlpha[GREEN])
-			glow(id,LineColorsWithAlpha[GREEN][0],LineColorsWithAlpha[GREEN][1],LineColorsWithAlpha[GREEN][2],LineColorsWithAlpha[GREEN][3],1)
 		}
+		
 	}
 	else{
 		g_flying[id]=false;
@@ -298,7 +316,7 @@ public OnCmdStart(id)
 		
 		
 	}
-	
+	return FMRES_IGNORED;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -319,14 +337,36 @@ public plugin_precache()
 
 public ester_death()
 {
-	if ( !sh_is_active() || g_is_between_rounds ) return
-
+	if ( !sh_is_active() || g_is_between_rounds ){
+		return PLUGIN_CONTINUE
+	}
+	new killer= read_data(1)
 	new id = read_data(2)
 
-	if ( !is_user_connected(id) || !ester_get_has_ester(id) ) return
-	g_ester_blow_up_time_left[id]=0.0
+	if ( !is_user_connected(id) || !ester_get_has_ester(id) ){
+		return PLUGIN_CONTINUE
+	}
+	if(killer==id){
+		if(ester_get_has_ester(id)&&ester_anti_pussy_engaged){
+			
+			sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_FAIL_MSG)
+			emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			g_ester_respawned_attempts[id]=ester_total_respawn_attempts
+			return PLUGIN_CONTINUE
+			
+		}
+		else if(ester_get_has_ester(id)){
+			
+			
+			
+			sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_SCOURN_MSG)
+			
+			
+		}
+	}
 	
-	ester_remove_statuses(id)
+	g_ester_blow_up_time_left[id]=0.0
+	ester_remove_statuses(id,1,1)
 	new user_name[128]
 	
 	get_user_name(id,user_name,127)
@@ -337,7 +377,7 @@ public ester_death()
 	}
 	sh_chat_message(id,ester_get_hero_id(),"Ester has died!!!!!!^nThe ester user was called %s^n",user_name)
 	
-	reset_ester_reborn_mode(id,0)
+	reset_ester_reborn_mode(id,1)
 
 	g_which_team_is_user[id] = get_user_team(id)
 
@@ -358,8 +398,9 @@ public ester_death()
 	
 			sh_chat_message(id,ester_get_hero_id(),ESTER_RESPAWN_FAIL_MSG)
 			emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);	
-			return
+			return PLUGIN_CONTINUE
 	}
+	return PLUGIN_CONTINUE
 }
 
 public ester_reborn_loop_task(parm[]){
@@ -373,12 +414,6 @@ public ester_reborn_loop_task(parm[]){
 		return
 		
 	}
-	else if(ester_get_has_ester(id)){
-		
-		sh_chat_message(id,ester_get_hero_id(),"Keeping you on the team...")
-		cs_set_user_team(id,g_which_team_is_user[id],CS_DONTCHANGE)
-	}
-	
 	new Float:chance=random_float(0.0,1.0)
 	if(chance<(ester_calculation_chance_numerator/ester_calculation_chance_denominator)){
 	
@@ -456,7 +491,7 @@ public ester_teamcheck(parm[])
 		sh_chat_message(id, ester_get_hero_id(), ESTER_REBORN_TEAM_CHANGE_MSG)
 		user_kill(id,1)
 		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-		ester_remove_statuses(id)
+		ester_remove_statuses(id,1,1)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -467,6 +502,7 @@ public ester_round_start()
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		if(is_user_connected(id)&&ester_get_has_ester(id)){
 			reset_ester_reborn_mode(id,0)
+			ester_remove_statuses(id,1,1)
 		}
 	}
 }
@@ -481,17 +517,8 @@ public ester_round_end()
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		remove_task(id+ESTER_REBORN_GLOW_TASKID)
-		if ( ester_get_has_ester(id)&&is_user_connected(id)) {
-			
-			if(get_user_godmode(id)){
-				sh_set_godmode(id,0.0)
-				ester_unglow(id)
-			}
-			emit_sound(id,CHAN_BODY,NULL_SOUND,VOL_NORM,ATTN_NORM,0,PITCH_HIGH)
-			reset_ester_reborn_mode(id,0)
-		}
+		ester_remove_statuses(id,1,1)
+		reset_ester_reborn_mode(id,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -527,13 +554,21 @@ public positionChangeTimer(id)
 
 	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
 }
-ester_remove_statuses(id){
+ester_remove_statuses(id,rem_explosion=1,remove_god=1){
 	
 	if(is_user_connected(id)&&ester_get_has_ester(id)){
-		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 		remove_task(id+ESTER_REBORN_GLOW_TASKID)
-		sh_set_godmode(id,0.0)
+		if(rem_explosion){
+			remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+		}
+		if(remove_god&&get_user_godmode(id)){
+			set_user_godmode(id,0)
+			new name[128]
+			get_user_name(id,name,127)
+			sh_chat_message(0,ester_get_hero_id(),"%s's godmode has been taken away!",name)
+		}
 		ester_unglow(id)
+		remove_user_flight_fx(id)
 	}
 	
 }
@@ -551,7 +586,7 @@ public positionChangeCheck(id)
 	if ( g_last_coords[id][0] == origin[0] && g_last_coords[id][1] == origin[1] && g_last_coords[id][2] == origin[2] && is_user_alive(id) ) {
 		user_kill(id,1)
 		sh_chat_message(id, ester_get_hero_id(), ESTER_WALL_STUCK_MSG)
-		ester_remove_statuses(id)
+		ester_remove_statuses(id,1,1)
 		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 		reset_ester_reborn_mode(id,0)
 	}
@@ -560,9 +595,7 @@ public positionChangeCheck(id)
 public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
-	ester_unglow(id)
-	sh_set_godmode(id,0.0)
-	remove_task(id+ESTER_REBORN_GLOW_TASKID)
+	ester_remove_statuses(id,0,1)
 	explosion_player(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,ester_explosion_ignore_user)
 	
 		

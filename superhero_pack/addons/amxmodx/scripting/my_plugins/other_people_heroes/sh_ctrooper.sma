@@ -26,11 +26,8 @@
  //Version 2.7 - Fix for SND_STOP compile error
  */
 
- #include <amxmod>
- #include <Vexd_Utilities>
- #include <superheromod>
+#include "../my_include/superheromod.inc"
 
-#pragma dynamic 100000
  // GLOBAL VARIABLES
  new gHeroName[]="Clone Trooper"
  new bool:gHasCTrooperPower[SH_MAXSLOTS+1]

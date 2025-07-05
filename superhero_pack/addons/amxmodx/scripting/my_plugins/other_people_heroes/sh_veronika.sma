@@ -14,12 +14,8 @@ veronika_m203dmg 120
 // Thanx to the original code of MP5+203 Mod by PaintLancer
 
 
-#include <amxmodx>
-#include <fakemeta>
-#include <engine>
-#include <cstrike>
-#include <Vexd_Utilities>
-#include <superheromod>
+
+#include "../my_include/superheromod.inc"
 
 // VARIABLES
 new gHeroName[]="Veronika"
@@ -35,7 +31,6 @@ new xplode
 #define ICON_SHOW 1
 #define TE_BEAMFOLLOW 22
 
-new gmsgDeathMsg
 new gMsgID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -77,7 +72,6 @@ public plugin_init()
 	// Let Server know about Lara's Variable
 	shSetShieldRestrict(gHeroName)
 	
-	gmsgDeathMsg = get_user_msgid("DeathMsg")
 	gMsgID = get_user_msgid("StatusIcon")
 }
 //----------------------------------------------------------------------------------------------
@@ -360,66 +354,8 @@ public vexd_pfntouch(pToucher, pTouched)
 }
 
 do_victim(victim,attacker,damage,tk)
-{
-	new namek[32],namev[32],authida[35],authidv[35],teama[32],teamv[32]
-	get_user_name(victim,namev,31)
-	get_user_name(attacker,namek,31)
-	get_user_authid(victim,authidv,34)
-	get_user_authid(attacker,authida,34)
-	get_user_team(victim,teamv,31)
-	get_user_team(attacker,teama,31)
-	
-	new Float:fl_dmg = float(damage)
-	
-	if(damage >= get_user_health(victim))
-	{
-		set_msg_block(gmsgDeathMsg,BLOCK_SET)
-		fakedamage(victim, "grenade", fl_dmg, DMG_BLAST)  //user_kill(victim,1)
-		set_msg_block(gmsgDeathMsg,BLOCK_NOT)
-		
-		if(is_user_alive(victim)) //some cases where damage is messed with WC3? then return
-			return
-			
-		message_begin(MSG_ALL, get_user_msgid("DeathMsg"), {0,0,0}, 0)
-		write_byte(attacker)
-		write_byte(victim)
-		write_byte(0)
-		write_string("grenade")
-		message_end()
-		
-		if(tk == 1)
-		{
-			client_print(attacker,print_center,"You killed a teammate")
-			set_user_frags(attacker,get_user_frags(attacker) - 1 )
-			set_user_frags(victim, get_user_frags(victim) + 1)
-			log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"grenade^"",
-			namek,get_user_userid(attacker),authida,teama,namev,get_user_userid(victim),authidv,teamv)
-		}
-		else if(tk == 2)
-		{
-			log_message("^"%s<%d><%s><%s>^" killed self with ^"grenade^"",
-			namek,get_user_userid(attacker),authida,teama)
-		}
-		else
-		{
-			new money = cs_get_user_money(attacker)
-			cs_set_user_money(attacker, money + 300) // award for kill
-			
-			set_user_frags(attacker,get_user_frags(attacker) + 1 )
-			//set_user_frags(attacker,get_user_frags(victim) + 1 )
-			log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"grenade^"",
-			namek,get_user_userid(attacker),authida,teama,namev,get_user_userid(victim),authidv,teamv)
-		}
-	}
-	else
-	{
-		fakedamage(victim, "grenade", fl_dmg, DMG_BLAST) //set_user_health(victim,get_user_health(victim) - damage )
-		
-		if(tk == 1)
-		{
-			client_print(0,print_chat,"%s attacked a teammate",namek)
-		}
-	}
+{	
+	sh_extra_damage(victim,attacker,damage,"Veronika AK grenade",_,_,_,tk?true:false)
 }
 
 ammo_hud(id, sw)

@@ -8,13 +8,16 @@
 #define FLIGHT_HUM "shmod/ester/flight/flight_hum.wav"
 #define FLIGHT_WEAK "shmod/ester/flight/flight_weak.wav"
 
+#define COLOR_STRONG WHITE
+#define COLOR_WEAK GREEN
 
-#define ESTER_NUM_BLOWUPSOUNDS 4
+#define ESTER_NUM_BLOWUPSOUNDS 5
 stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 
 	"shmod/ester/flight/flight_blowup1.wav",
 	"shmod/ester/flight/flight_blowup2.wav",
 	"shmod/ester/flight/flight_blowup3.wav",
+	"shmod/ester/flight/flight_blowup4.wav",
 	"shmod/ester/flight/amurican_malez.wav"
 }
 

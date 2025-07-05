@@ -20,7 +20,7 @@ breaker_deduct 10
 
 
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -75,5 +75,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 //------------------------------------------------------------------------------------------------
 public remove_rendering(victim)
 {
+	if ( !is_user_connected(victim)) return 
+	
 	set_user_rendering(victim)
 }

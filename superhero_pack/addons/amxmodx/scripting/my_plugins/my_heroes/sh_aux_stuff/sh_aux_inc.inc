@@ -18,7 +18,7 @@
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
 
-#define COLORS_NUM 8
+#define COLORS_NUM 9
 //Colors To Pick From
 #define CUSTOM		0
 #define RED		1
@@ -28,6 +28,8 @@
 #define YELLOW		5
 #define PURPLE		6
 #define ORANGE		7
+#define WHITE		8
+
 //Color definitions
 stock const LineColors[COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
@@ -37,7 +39,8 @@ stock const LineColors[COLORS_NUM][3] = {
 	{0, 255, 255},		//Light Blue
 	{255, 255, 0},		//Yellow
 	{255, 0, 255},		//Purple
-	{255, 128, 0}		//Orange
+	{255, 128, 0},		//Orange
+	{255, 255, 255}		//White
 }
 stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{150, 150, 150,255},	//Custom
@@ -47,7 +50,8 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{0, 255, 255,255},		//Light Blue
 	{255, 255, 0,255},		//Yellow
 	{255, 0, 255,255},		//Purple
-	{255, 128, 0,255}		//Orange
+	{255, 128, 0,255},		//Orange
+	{255, 255, 255,255}		//White
 }
 
 stock Float:null_vector[3]={0.0,0.0,0.0}
