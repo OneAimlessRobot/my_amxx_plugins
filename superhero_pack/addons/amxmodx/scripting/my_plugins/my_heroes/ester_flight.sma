@@ -163,6 +163,24 @@ public client_kill(id){
 	}
 	return PLUGIN_CONTINUE
 }
+dec_user_ester_respawn_attempts(id){
+	
+	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
+		
+		g_ester_respawned_attempts[id]=g_ester_respawned_attempts[id]?g_ester_respawned_attempts[id]-1:0
+	
+	}
+	
+}
+inc_user_ester_respawn_attempts(id){
+	
+	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
+		
+		g_ester_respawned_attempts[id]=g_ester_respawned_attempts[id]<ester_total_respawn_attempts?g_ester_respawned_attempts[id]+1:ester_total_respawn_attempts
+	
+	}
+	
+}
 public Ester_Knockback(id)
 {
 	if ( !sh_is_active() || !ester_get_reborn_mode(id)||!client_hittable(id)) return HAM_IGNORED
@@ -230,9 +248,18 @@ public OnCmdStart(id)
 {
 	if(!ester_get_has_ester(id)||!is_user_connected(id)) return;
 	
-	static button; button = entity_get_int(id, EV_INT_button);
-	if(is_user_alive(id)&&ester_get_reborn_mode(id) && (button & IN_DUCK) && (button & IN_JUMP))
+	static button,oldbuttons; 
+	button = entity_get_int(id, EV_INT_button);
+	
+	oldbuttons = entity_get_int(id,EV_INT_oldbuttons)
+	if(is_user_alive(id)&&ester_get_reborn_mode(id) && ((button & IN_DUCK)&&(button &IN_JUMP)))
 	{ 
+		if(!((oldbuttons & IN_DUCK)&&(oldbuttons &IN_JUMP))){
+			
+			
+			emit_sound(id, CHAN_WEAPON, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			
+		}
 		g_flying[id]=true;
 		if(random(FlameAndSoundRate) <3)
 		{
@@ -268,6 +295,8 @@ public OnCmdStart(id)
 			g_is_glowing[id]=0;
 			remove_user_flight_fx(id)
 		}
+		
+		
 	}
 	
 }
@@ -278,6 +307,7 @@ public plugin_precache()
 	precache_explosion_fx()
 	engfunc(EngFunc_PrecacheSound,FLIGHT_HUM );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_POWER );
+	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_WEAK );
 	engfunc(EngFunc_PrecacheSound,ESTER_RESPAWN_FAIL_SOUND );
 	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
@@ -294,9 +324,10 @@ public ester_death()
 	new id = read_data(2)
 
 	if ( !is_user_connected(id) || !ester_get_has_ester(id) ) return
-	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
+	g_ester_blow_up_time_left[id]=0.0
 	
 	remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+	remove_task(id+ESTER_REBORN_GLOW_TASKID)
 	new user_name[128]
 	
 	get_user_name(id,user_name,127)
@@ -388,7 +419,7 @@ public ester_respawn(parm[])
 	reset_ester_reborn_mode(id,1)
 	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[random_num(0,ESTER_NUM_BLOWUPSOUNDS-1)] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
-	g_ester_respawned_attempts[id]++
+	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
 	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, 1)
@@ -451,6 +482,7 @@ public ester_round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+		remove_task(id+ESTER_REBORN_GLOW_TASKID)
 		if ( ester_get_has_ester(id)&&is_user_connected(id)) {
 			
 			if(get_user_godmode(id)){
@@ -508,8 +540,11 @@ public positionChangeCheck(id)
 	// Kill this player if Stuck in Wall!
 	if ( g_last_coords[id][0] == origin[0] && g_last_coords[id][1] == origin[1] && g_last_coords[id][2] == origin[2] && is_user_alive(id) ) {
 		user_kill(id,1)
-		sh_chat_message(id, ester_get_hero_id(), "You were killed for being stuck in a wall")
-		g_ester_respawned_attempts[id]--
+		sh_chat_message(id, ester_get_hero_id(), "You were eliminated completely. Dont get stuck on walls, numbskull.")
+		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+		remove_task(id+ESTER_REBORN_GLOW_TASKID)
+		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
+		reset_ester_reborn_mode(id,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -567,10 +602,9 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	if(g_flying[killer]&&ester_get_has_ester(killer)&&ester_get_reborn_mode(killer)&&ester_fly_knock_enemies){
 	
 		sh_chat_message(ester_get_hero_id(),killer,"You, named %s, knocked %s!!!!!^n (i hope)",tger_name,vic_name)
-		new Float:b_vel[3]
-		get_user_velocity(killer,b_vel)
-		new Float:velocity_num=VecLength(b_vel)
-		damage_player(ester_get_hero_id(),killer,killer,victim,100.0,ester_fly_knock_enemies_force+velocity_num,0)
+		
+		damage_player(ester_get_hero_id(),killer,killer,victim,200.0,ester_fly_knock_enemies_force,0)
+		sh_extra_damage(killer,killer,floatround(ester_fly_knock_enemies_force),"Ester fly ramming knockback")
 	}
 }
 return FMRES_IGNORED

@@ -4,16 +4,18 @@
 #define sh_ester_flight_funcs
 
 #define FLIGHT_POWER "shmod/ester/flight/flight_power.wav"
+#define FLIGHT_IGNITION "shmod/ester/flight/flight_ignition.wav"
 #define FLIGHT_HUM "shmod/ester/flight/flight_hum.wav"
 #define FLIGHT_WEAK "shmod/ester/flight/flight_weak.wav"
 
 
-#define ESTER_NUM_BLOWUPSOUNDS 3
+#define ESTER_NUM_BLOWUPSOUNDS 4
 stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 
 	"shmod/ester/flight/flight_blowup1.wav",
 	"shmod/ester/flight/flight_blowup2.wav",
-	"shmod/ester/flight/flight_blowup3.wav"
+	"shmod/ester/flight/flight_blowup3.wav",
+	"shmod/ester/flight/amurican_malez.wav"
 }
 
 #define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"

@@ -22,7 +22,6 @@ new HeroName[] = "Dark angel v2"
 new bool:HasDarkAngel[SH_MAXSLOTS+1]
 new bool:HasAcess[SH_MAXSLOTS+1]
 new gHeroID
-new gHeroLevel, dark_health,dark_armor,dark_gravity,dark_speed
 new times_picked
 new Float: MEGA_DARK_KNOCKBACK
 new a_flags[10]
@@ -45,7 +44,7 @@ public plugin_init()
 	register_cvar("darkangel_m4a1mult", "1.3")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(HeroName, "Dark Angel m4!", "Get dark angels Powerfull m4!", false, "darkangel_level")
+	gHeroID=shCreateHero(HeroName, "Dark Angel m4!", "Get dark angels Powerfull m4! 'MUAHAHAHH FEEL THE WRATH OF MY ANGER!!!! THE MIGHT OF MY POWER!!!!' This is him speaking MAHAHAHAHAAAAAAHHHH!!!!!", false, "darkangel_level")
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -73,11 +72,7 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel=get_cvar_num("darkangel_level")
-	dark_health=get_cvar_num("darkangel_health")
-	dark_armor=get_cvar_num("darkangel_armor")
-	dark_gravity=get_cvar_num("darkangel_gravity")
-	dark_speed=get_cvar_num("darkangel_speed")
+	get_cvar_num("darkangel_level")
 	get_cvar_string("darkangel_adminflag",a_flags,9)
 	m4dmgmult=get_cvar_float("darkangel_m4a1mult")
 	MEGA_DARK_KNOCKBACK=get_cvar_float("darkangel_knockback")
@@ -249,9 +244,16 @@ public darkangel_damage(id)
 		new headshot = bodypart == 1 ? 1 : 0
 		
 		// do extra damage
+		//also... it bypasses godmode.
+		//cuz why not
+		if(get_user_godmode(id)){
+		
+			sh_set_godmode(id,0.0)
+			
+		}
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
-			shExtraDamage(id, attacker, floatround(extraDamage), "dark darkness m4a1", headshot)
+			shExtraDamage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", headshot)
 		}
 		do_knockback(id,extraDamage);
 	}
