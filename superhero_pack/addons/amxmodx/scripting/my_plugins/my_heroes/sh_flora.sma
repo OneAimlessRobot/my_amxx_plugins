@@ -89,7 +89,6 @@ public _flora_get_hero_lvl(iPlugins,iParams){
 }
 delete_hud_tasks(id){
 	
-	sh_chat_message(id,flora_get_hero_id(),"Hud removido!!!^n")
 	remove_task(id+STATUS_UPDATE_TASKID)
 	
 	

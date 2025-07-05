@@ -150,7 +150,7 @@ public client_kill(id){
 	if(ester_get_has_ester(id)&&ester_anti_pussy_engaged){
 		
 		sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_FAIL_MSG)
-		console_print(0,"Suicide by ester user!");
+		//console_print(0,"Suicide by ester user!");
 		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 		return PLUGIN_CONTINUE
@@ -350,7 +350,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 			new killer_name[128], vic_name[128]
 			get_user_name(killer,killer_name,127)
 			get_user_name(id,vic_name,127)
-			console_print(0,"Self kill by ester user!^nO id do killer, chamado %s, era %d^nE o id da vitima, chamada %s, era %d^n",killer_name, killer, vic_name, id);
+			//console_print(0,"Self kill by ester user!^nO id do killer, chamado %s, era %d^nE o id da vitima, chamada %s, era %d^n",killer_name, killer, vic_name, id);
 			emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 			return PLUGIN_CONTINUE

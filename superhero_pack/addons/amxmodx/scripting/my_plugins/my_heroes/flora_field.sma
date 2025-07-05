@@ -177,6 +177,7 @@ public Float:_flora_get_cooldown(iPlugins, iParams){
 public _clear_user_fields(iPlugin,iParams){
 	
 	new id= get_param(1)
+	if(!is_user_connected(id) || !flora_get_user_num_active_fields(id) ) return
 	new grenada = find_ent_by_class(-1, FLORA_FIELD_CLASSNAME)
 	while(grenada) {
 		if(pev(grenada,pev_owner)==id){
@@ -185,6 +186,13 @@ public _clear_user_fields(iPlugin,iParams){
 			grenada = find_ent_by_class(grenada,  FLORA_FIELD_CLASSNAME)
 		}
 	}
+	if(!flora_get_has_flora(id)) return
+	emit_sound(id, CHAN_VOICE, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	
+	
 }
 public _clear_fields(iPlugin,iParams){
 	
@@ -245,12 +253,12 @@ Float:get_player_alpha(id){
 public _reset_flora_user(iPlugin,iParams){
 	
 	new id= get_param(1)
+	clear_user_fields(id)
 	g_flora_field_loaded[id]=1;
 	g_flora_field_cooldown[id]=0.0;
 	g_field_teleport_time[id]=0.0
 	g_flora_num_of_active_fields[id]=0
 	g_flora_curr_charging[id]=0
-	clear_user_fields(id)
 	
 	
 }
@@ -290,6 +298,7 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	new Float:best_distance=9999999.0
 	new field_id = find_ent_by_class(-1, FLORA_FIELD_CLASSNAME)
 	new best_id=-1
+	//console_print(0,"Inicio de loop em find_nearest!")
 	while(field_id) {
 		new new_field_id= find_ent_by_class(field_id, FLORA_FIELD_CLASSNAME)
 		if(!(pev(field_id,pev_owner)==player_id)){
@@ -317,6 +326,7 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 		}
 		field_id=new_field_id
 	}
+	//console_print(0,"Fim de loop em find_nearest!")
 	
 	return best_id
 	
@@ -493,6 +503,7 @@ public check_crouch(id,field_standing_on) {
 		return FMRES_IGNORED
 
 	}
+	
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
 	
@@ -526,7 +537,7 @@ public check_crouch(id,field_standing_on) {
 				if(is_valid_ent(field_id)){
 					entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
 					entity_set_vector( id, EV_VEC_origin, other_field_origin );
-					emit_sound(id, CHAN_VOICE, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					sh_chat_message(id,flora_get_hero_id(),"You just got teleported to the next nearest field! (hopefully)")
 				}
 				else{
@@ -605,6 +616,7 @@ public field_think(ent)
 		make_shockwave(iPos,field_core_radius,LineColorsWithAlpha[ORANGE])
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 		new CsTeams:idTeam = cs_get_user_team(owner)
+		//console_print(0,"Inicio de loop em flora_think!")
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
@@ -660,6 +672,7 @@ public field_think(ent)
 			flora_heal(owner,float(damage),heal_color)
 			}
 	}
+		//console_print(0,"Fim de loop em flora_think!")
 	
 		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))
@@ -673,9 +686,8 @@ uncharge_user(id){
 	if(is_valid_ent(g_flora_curr_charging[id])){
 		
 		
-		emit_sound(id, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(id, CHAN_VOICE, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		destroy_field(g_flora_curr_charging[id],0)
 		g_flora_field_loaded[id]=1
 	}

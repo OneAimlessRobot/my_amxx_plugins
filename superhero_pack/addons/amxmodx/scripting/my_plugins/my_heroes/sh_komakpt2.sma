@@ -77,7 +77,6 @@ new max_rpm
 new red_line
 new Float:gear_ratio
 new hud_sync
-new gHeroLevel
 
 #define SENDAUDIO_MESSAGE_PITCH_ARG 3
 
@@ -313,8 +312,6 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	
-	gHeroLevel=get_cvar_num("komak_level")
 	base_reload_ratio=get_cvar_float("komak_base_reload_ratio")
 	base_fire_ratio=get_cvar_float("komak_base_fire_ratio")
 	gear_ratio=get_cvar_float("komak_gear_ratio")
