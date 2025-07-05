@@ -453,8 +453,9 @@ public komak_ku()
 }
 public Event_CurWeapon(id) 
 { 
-	new Gun = read_data(2) 
+	if(!is_user_connected(id)||!is_user_alive(id)) return
 	
+	new Gun = read_data(2) 
 	if( !gHasKomak[id] || !Gun || Gun==6 || Gun==29 || Gun>30)return		
 	
 	new Ammo = read_data(3) 	

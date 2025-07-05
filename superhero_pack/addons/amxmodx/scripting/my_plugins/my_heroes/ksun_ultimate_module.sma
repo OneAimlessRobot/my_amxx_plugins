@@ -289,8 +289,9 @@ public _ksun_player_is_ultimate_ready(iPlugins, iParams){
 
 public ksun_rifle_laser(id)
 {
-	
-if ( !spores_has_ksun(id) ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+
+if(!client_hittable(id)) return PLUGIN_CONTINUE 
+if ( !spores_has_ksun(id)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 

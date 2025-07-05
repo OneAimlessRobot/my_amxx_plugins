@@ -261,11 +261,13 @@ destroy_field(field_id,make_sound){
 		if(make_sound){
 			emit_sound(field_id, CHAN_AUTO, FIELD_DESTROYED, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
-		emit_sound(field_id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		suck_in_sound(field_id,0)
+		emit_sound(field_id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(client_hittable(owner)){
 			if(flora_get_has_flora(owner)){
 				flora_dec_user_num_active_fields(owner,1)
+				set_user_rendering(owner)
 			}
 		}
 		remove_entity(field_id)
@@ -672,6 +674,8 @@ uncharge_user(id){
 		
 		
 		emit_sound(id, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		destroy_field(g_flora_curr_charging[id],0)
 		g_flora_field_loaded[id]=1
 	}
