@@ -163,7 +163,7 @@ public client_kill(id){
 	}
 	return PLUGIN_CONTINUE
 }
-dec_user_ester_respawn_attempts(id){
+/*dec_user_ester_respawn_attempts(id){
 	
 	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
 		
@@ -171,7 +171,7 @@ dec_user_ester_respawn_attempts(id){
 	
 	}
 	
-}
+}*/
 inc_user_ester_respawn_attempts(id){
 	
 	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
@@ -326,8 +326,7 @@ public ester_death()
 	if ( !is_user_connected(id) || !ester_get_has_ester(id) ) return
 	g_ester_blow_up_time_left[id]=0.0
 	
-	remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-	remove_task(id+ESTER_REBORN_GLOW_TASKID)
+	ester_remove_statuses(id)
 	new user_name[128]
 	
 	get_user_name(id,user_name,127)
@@ -357,7 +356,7 @@ public ester_death()
 	else if (!is_user_alive(id)){
 		
 	
-			sh_chat_message(id,ester_get_hero_id(),"You're done. You get no more chances.")
+			sh_chat_message(id,ester_get_hero_id(),ESTER_RESPAWN_FAIL_MSG)
 			emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);	
 			return
 	}
@@ -454,9 +453,10 @@ public ester_teamcheck(parm[])
 	new id = parm[0]
 
 	if ( g_which_team_is_user[id] != get_user_team(id) ) {
-		sh_chat_message(id, ester_get_hero_id(), "You changed teams and were reborn as ester, now you shall die")
+		sh_chat_message(id, ester_get_hero_id(), ESTER_REBORN_TEAM_CHANGE_MSG)
 		user_kill(id,1)
-		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);	
+		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+		ester_remove_statuses(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -527,6 +527,16 @@ public positionChangeTimer(id)
 
 	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
 }
+ester_remove_statuses(id){
+	
+	if(is_user_connected(id)&&ester_get_has_ester(id)){
+		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+		remove_task(id+ESTER_REBORN_GLOW_TASKID)
+		sh_set_godmode(id,0.0)
+		ester_unglow(id)
+	}
+	
+}
 //----------------------------------------------------------------------------------------------
 public positionChangeCheck(id)
 {
@@ -540,9 +550,8 @@ public positionChangeCheck(id)
 	// Kill this player if Stuck in Wall!
 	if ( g_last_coords[id][0] == origin[0] && g_last_coords[id][1] == origin[1] && g_last_coords[id][2] == origin[2] && is_user_alive(id) ) {
 		user_kill(id,1)
-		sh_chat_message(id, ester_get_hero_id(), "You were eliminated completely. Dont get stuck on walls, numbskull.")
-		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		remove_task(id+ESTER_REBORN_GLOW_TASKID)
+		sh_chat_message(id, ester_get_hero_id(), ESTER_WALL_STUCK_MSG)
+		ester_remove_statuses(id)
 		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 		reset_ester_reborn_mode(id,0)
 	}

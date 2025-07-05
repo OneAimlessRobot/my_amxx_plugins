@@ -20,6 +20,8 @@ stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 
 #define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
 
+#define ESTER_RESPAWN_FAIL_MSG "You're done. You get no more chances."
+
 #define ESTER_SUICIDE_FAIL_MSG "You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy."
 
 #define ESTER_SUICIDE_SCOURN_MSG "Wow, they really do not make gods like they used to. Forgiven for taking your own life? Alright, enjoy the rest of the round."
@@ -27,6 +29,12 @@ stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 #define FLIGHT_GODMODE_THINK_TIME 0.3
 
 #define FlameAndSoundRate 10
+
+#define ESTER_WALL_STUCK_MSG "You were eliminated completely. Dont get stuck on walls, numbskull."
+#define ESTER_REBORN_TEAM_CHANGE_MSG "You changed teams and were reborn as ester, now you shall die"
+
+
+
 
 const fPainShock=108
 #define PRE_RESPAWN_MESSAGE_RELAY 0.0
