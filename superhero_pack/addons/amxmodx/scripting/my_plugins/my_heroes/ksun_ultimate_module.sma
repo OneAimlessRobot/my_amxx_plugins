@@ -12,6 +12,8 @@ new Float:ksun_health_to_supply_ratio,
 	
 new Float:ksun_dmg_absorption_index
 
+new Float:ksun_ultimate_fire_rate_mult
+new Float:ksun_ultimate_reload_rate_mult
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
@@ -30,17 +32,28 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun supply","1.1","MilkChanThaGOAT")
 	
+	register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
+	register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
 	register_cvar("ksun_health_to_supply_ratio", "1.0" )
-	register_cvar("ksun_supply_capacity", "1000" )
 	register_cvar("ksun_dmg_absorption_index", "1.0" )
+	register_cvar("ksun_supply_capacity", "1000" )
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook")
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 	
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
+	register_logevent("ev_SendAudio", 2, "1=Round_End")
+	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	hud_sync_ultimate=CreateHudSyncObj()
 	
-	
+	new wpnName[32]
+	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
+	{
+		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
+		{
+			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1)
+		}
+	}
 	
 }
 
@@ -67,6 +80,20 @@ public plugin_natives(){
 	
 }
 
+public Item_PostFrame_Post(iEnt)
+{    
+	if(!is_valid_ent(iEnt)) return HAM_IGNORED
+	new id = entity_get_edict(iEnt, EV_ENT_owner);
+	if (!sh_is_active()||!spores_has_ksun(id)||!ksun_player_is_in_ultimate(id))return HAM_IGNORED
+	
+	if( get_pdata_int(iEnt, m_fInReload, 4) )
+	{
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], ksun_ultimate_reload_rate_mult)
+		set_pdata_float(get_pdata_cbase(iEnt, m_pPlayer, 4), m_flNextAttack, fDelay, 5)
+		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, 4)
+	}
+	return HAM_IGNORED
+}
 public ksun_ultimate_damage_hook(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !sh_is_active() || !client_hittable(id) || !client_hittable(attacker)) return HAM_IGNORED
@@ -115,6 +142,8 @@ public loadCVARS()
 	ksun_health_to_supply_ratio= get_cvar_float("ksun_health_to_supply_ratio")
 	ksun_dmg_absorption_index= get_cvar_float("ksun_dmg_absorption_index")
 	ksun_supply_capacity= get_cvar_num("ksun_supply_capacity")
+	ksun_ultimate_fire_rate_mult=get_cvar_float("ksun_ultimate_fire_rate_mult")
+	ksun_ultimate_reload_rate_mult=get_cvar_float("ksun_ultimate_reload_rate_mult")
 	
 }
 calculate_untaxed_health_to_filtered_supply(supply_parcel){
@@ -127,9 +156,13 @@ public ev_SendAudio(){
 	spores_clear()
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	
-	arrayset(g_player_supply_amount,0.0,SH_MAXSLOTS+1)
-	arrayset(g_player_in_ultimate,0,SH_MAXSLOTS+1)
-	
+	// Reset the cooldown on round end, to start fresh for a new round
+	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+		if(is_user_connected(id)){
+			unultimate_user(id)
+			
+		}
+	}
 	return PLUGIN_HANDLED
 }
 public _ksun_set_player_supply_points(iPlugins, iParams){
@@ -192,14 +225,17 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
 	if(!client_hittable(id)) return
-	if(!ksun_player_is_in_ultimate(id)) return
+	if(!ksun_player_is_in_ultimate(id)||!spores_has_ksun(id)) return
 	new hud_msg[128];
+	new origin[3]
+	get_user_origin(id,origin,0)
 	ksun_dec_player_supply_points(id,KSUN_ULTIMATE_LOOP_DEC)
+	ksun_glisten(id)
+	make_shockwave(origin,200.0,LineColorsWithAlpha[PURPLE])
+	
 	format(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
 	100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
 	);
-	
-	ksun_glisten(id)
 	set_hudmessage(LineColors[PURPLE][0], LineColors[PURPLE][1],LineColors[PURPLE][2], -1.0, -1.0,125, 0.0, 0.5,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync_ultimate, "%s", hud_msg)
 	
@@ -217,13 +253,13 @@ public _ksun_unultimate_user(iPlugin,iParams){
 }
 public unultimate_task(id){
 	id-=UNKSUN_ULTIMATE_TASKID
+	remove_task(id+KSUN_ULTIMATE_TASKID)
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	remove_task(id+KSUN_ULTIMATE_TASKID)
+	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
 	g_player_supply_amount[id]=0
-	return 0
 	
 	
 	
@@ -234,10 +270,10 @@ unultimate_user(id){
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
 	g_player_supply_amount[id]=0
-	return 0
 	
 	
 	
@@ -260,8 +296,9 @@ new ammo = read_data(3)		// ammo left in clip
 
 if ( (wpnid ==CSW_M4A1)&&(ksun_player_is_in_ultimate(id)))
 {
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-	
+	if (gLastWeapon[id] == 0){
+		gLastWeapon[id] = wpnid
+	}
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		new vec1[3], vec2[3]
@@ -290,6 +327,25 @@ if ( (wpnid ==CSW_M4A1)&&(ksun_player_is_in_ultimate(id)))
 		write_byte(255) // brightness
 		write_byte(150) // speed
 		message_end()
+		static Float:N_Speed
+		N_Speed =ksun_ultimate_fire_rate_mult
+		if(N_Speed != 1.0)
+		{
+			static weapon[32],Ent
+			get_weaponname(wpnid,weapon,31)
+			Ent = fm_find_ent_by_owner(-1,weapon,id)
+			if(Ent)
+			{
+				static Float:Delay,Float:M_Delay
+				Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
+				M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
+				if (Delay > 0.0)
+				{
+					set_pdata_float( Ent, 46, Delay, 4)
+					set_pdata_float( Ent, 47, M_Delay, 4)
+				}
+			}
+		}
 		
 	}
 	gLastClipCount[id] = ammo
@@ -310,9 +366,7 @@ public death()
 	new id = read_data(2)
 	if(is_user_connected(id)&&spores_has_ksun(id)){
 		
-		emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		unultimate_user(id)
 
 	}
 }

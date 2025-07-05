@@ -296,7 +296,18 @@ public fw_CheckVisibility(iEntity, pSet)
 
 public fw_Weapon_PrimaryAttack(Ent)
 {
+	if(!is_valid_ent(Ent)){
+		return HAM_IGNORED
+	}
 	static id; id = pev(Ent, pev_owner)
+	
+	if (!is_user_connected(id)){
+		return HAM_IGNORED
+	}
+	if(get_user_weapon(id) != CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, id)){
+		return HAM_IGNORED
+	}
+	
 	pev(id, pev_punchangle, g_Recoil[id])
 	emit_sound(id, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 	

@@ -33,6 +33,8 @@ public plugin_init()
 	register_cvar("ksun_violence_level", "3" )
 	register_cvar("ksun_spore_health", "100.0" )
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
+	register_logevent("ev_SendAudio", 2, "1=Round_End")
+	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	
