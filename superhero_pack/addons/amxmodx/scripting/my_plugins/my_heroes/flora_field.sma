@@ -91,9 +91,7 @@ public plugin_init()
 
 	
 	hud_sync_charge=CreateHudSyncObj()
-	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "field_think")
-	register_forward(FM_Touch, "field_touch")
 	
 	// Add your code here...
 }
@@ -177,21 +175,21 @@ public Float:_flora_get_cooldown(iPlugins, iParams){
 public _clear_user_fields(iPlugin,iParams){
 	
 	new id= get_param(1)
-	if(!is_user_connected(id) || !flora_get_user_num_active_fields(id) ) return
+	if(!is_user_connected(id)||!flora_get_user_num_active_fields(id)) return
 	new grenada = find_ent_by_class(-1, FLORA_FIELD_CLASSNAME)
 	while(grenada) {
 		if(pev(grenada,pev_owner)==id){
 			
 			destroy_field(grenada,1)
-			grenada = find_ent_by_class(grenada,  FLORA_FIELD_CLASSNAME)
 		}
+		grenada = find_ent_by_class(grenada,  FLORA_FIELD_CLASSNAME)
 	}
-	if(!flora_get_has_flora(id)) return
-	emit_sound(id, CHAN_VOICE, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	
+	if(is_user_connected(id)){
+		emit_sound(id, CHAN_VOICE, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_AUTO, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	}
 	
 }
 public _clear_fields(iPlugin,iParams){
@@ -253,6 +251,7 @@ Float:get_player_alpha(id){
 public _reset_flora_user(iPlugin,iParams){
 	
 	new id= get_param(1)
+	uncharge_user(id)
 	clear_user_fields(id)
 	g_flora_field_loaded[id]=1;
 	g_flora_field_cooldown[id]=0.0;
@@ -262,7 +261,7 @@ public _reset_flora_user(iPlugin,iParams){
 	
 	
 }
-destroy_field(field_id,make_sound){
+destroy_field(field_id,make_sound=0,planting=0){
 
 	if(is_valid_ent(field_id)){
 		new owner=pev(field_id,pev_owner);
@@ -272,9 +271,12 @@ destroy_field(field_id,make_sound){
 		suck_in_sound(field_id,0)
 		emit_sound(field_id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		if(client_hittable(owner)){
+		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		if(is_user_connected(owner)){
 			if(flora_get_has_flora(owner)){
-				flora_dec_user_num_active_fields(owner,1)
+				if(!planting){
+					flora_dec_user_num_active_fields(owner,1)
+				}
 				set_user_rendering(owner)
 			}
 		}
@@ -298,7 +300,6 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	new Float:best_distance=9999999.0
 	new field_id = find_ent_by_class(-1, FLORA_FIELD_CLASSNAME)
 	new best_id=-1
-	//console_print(0,"Inicio de loop em find_nearest!")
 	while(field_id) {
 		new new_field_id= find_ent_by_class(field_id, FLORA_FIELD_CLASSNAME)
 		if(!(pev(field_id,pev_owner)==player_id)){
@@ -326,7 +327,6 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 		}
 		field_id=new_field_id
 	}
-	//console_print(0,"Fim de loop em find_nearest!")
 	
 	return best_id
 	
@@ -441,7 +441,6 @@ public _form_field(iPlugin,iParams)
 	
 	
 	
-	//emit_sound(id, CHAN_WEAPON, FIELD_DE, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	glow(Ent,LineColors[ORANGE][0],LineColors[ORANGE][1],LineColors[ORANGE][2],100,1)
 	
 	new parm[2]
@@ -499,7 +498,6 @@ public check_crouch(id,field_standing_on) {
 			
 	if(!client_hittable(id)||!flora_get_has_flora(id)){
 		
-		//client_print(id,print_console,"failing in the first check for client validity and hero possession!!!");
 		return FMRES_IGNORED
 
 	}
@@ -514,7 +512,6 @@ public check_crouch(id,field_standing_on) {
 	
 	new Float:distance=VecDist(fOrigin,here_field_origin)
 	if( !(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
-		//client_print(id,print_console,"failing in the second check for client contact with ground!!!");
 		set_user_rendering(id)
 		g_field_teleport_time[id]=0.0
 		return FMRES_IGNORED;
@@ -616,7 +613,6 @@ public field_think(ent)
 		make_shockwave(iPos,field_core_radius,LineColorsWithAlpha[ORANGE])
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 		new CsTeams:idTeam = cs_get_user_team(owner)
-		//console_print(0,"Inicio de loop em flora_think!")
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
@@ -632,12 +628,7 @@ public field_think(ent)
 		
 				}
 				continue
-			}/*
-			new Float:enemy_pos[3]
-			entity_set_vector(pid,EV_VEC_origin,enemy_pos)
-			laser_line(ent,Pos,enemy_pos,0)
-			set_task(1.0,"kill_laser_beam",ent+KILL_BEAM_TASKID,"",0)
-			* */
+			}
 			new flora_sheltered_value=is_flora_user_in_owned_field(owner);
 			new Float:dmg_mult;
 			new heal_color;
@@ -672,7 +663,6 @@ public field_think(ent)
 			flora_heal(owner,float(damage),heal_color)
 			}
 	}
-		//console_print(0,"Fim de loop em flora_think!")
 	
 		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))
@@ -682,14 +672,16 @@ public field_think(ent)
 	return FMRES_IGNORED
 }
 uncharge_user(id){
+	
 	remove_task(id+FLORA_CHARGE_TASKID)
 	if(is_valid_ent(g_flora_curr_charging[id])){
 		
 		
-		emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		destroy_field(g_flora_curr_charging[id],0)
+		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		destroy_field(g_flora_curr_charging[id],0,1)
 		g_flora_field_loaded[id]=1
+		g_flora_curr_charging[id]=0;
 	}
 	sh_set_rendering(id)
 	if ( flora_get_prev_weapon(id) != CSW_KNIFE ){
@@ -711,10 +703,13 @@ public load_field(id){
 }
 public charge_task(parm[],id){
 	id-=FLORA_CHARGE_TASKID
-	//if(client_isnt_hitter(id)) return
-	
 	new owner= parm[0]
 	new field_id=parm[1]
+	
+	
+	if(!client_hittable(owner)||!flora_get_has_flora(owner)){
+		return
+	}
 	
 	if(!is_valid_ent(field_id)||(field_id == 0)) {
 		return
@@ -725,7 +720,6 @@ public charge_task(parm[],id){
 		sh_sound_deny(id)
 		sh_chat_message(id,flora_get_hero_id(),"This spore is too close to another one of yours! Will not plant.")
 		uncharge_user(owner)
-		destroy_field(field_id,1)
 		return
 	}
 	
@@ -734,7 +728,6 @@ public charge_task(parm[],id){
 		sh_sound_deny(owner)
 		sh_chat_message(owner, flora_get_hero_id(), "Charging stopped. You cannot charge a field while airborne")
 		uncharge_user(owner)
-		destroy_field(field_id,1)
 		return
 		
 	}

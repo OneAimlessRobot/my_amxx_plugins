@@ -393,12 +393,10 @@ public spore_think(ent){
 	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(entity_get_edict(ent,EV_ENT_euser1)) || !is_valid_ent(entity_get_edict(ent,EV_ENT_euser1))|| !is_valid_ent(entity_get_edict(ent,EV_ENT_owner))){
 		
 		client_print(entity_get_edict(ent,EV_ENT_euser1),print_console,"Spore untrack function about to be called in spore thinking function!!!!!^nCurrent hp of this spore: %0.2f^n",spore_hp)
-		//draw_bbox(ent,1)
 		untrack_spore(ent)
 		return FMRES_IGNORED
 		
 	}
-	//draw_bbox(ent,0)
 	entity_set_float( ent, EV_FL_fuser1, floatadd(entity_get_float(ent, EV_FL_fuser1) ,SPORE_THINK_PERIOD));
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
 	
@@ -454,7 +452,6 @@ new victim = pTouched
 new ffOn = get_cvar_num("mp_friendlyfire")
 if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 {
-	//client_print(killer,print_console,"Spore untrack function about to be called in touch hook!!!!!^n")
 	new tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)

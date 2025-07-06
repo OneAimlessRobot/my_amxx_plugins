@@ -30,9 +30,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level" )
 	register_event("ResetHUD","newRound","b")
-	//register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
-	register_event("DeathMsg","death","a")
 	// INIT
 	register_srvcmd("flora_init", "flora_init")
 	shRegHeroInit(gHeroName, "flora_init")
@@ -42,7 +40,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "flora_kd")
 	register_srvcmd("flora_ku", "flora_ku")
 	shRegKeyUp(gHeroName, "flora_ku")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 }
 
 
@@ -60,7 +57,6 @@ public plugin_natives(){
 	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields",0)
 	register_native("flora_get_hero_lvl","_flora_get_hero_lvl",0)
 	
-	//register_native("flora_inc_user_num_fields","_flora_inc_user_num_fields",0)
 
 	
 
@@ -131,13 +127,6 @@ public _flora_get_hero_id(iPlugin,iParams){
 	return gHeroID
 
 }
-/*public _flora_inc_user_num_fields(iPlugin,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-
-	g_flora_num_of_fields[id]=((flora_max+value)>=flora_field_max_ammount)? flora_field_max_ammount:g_flora_num_of_fields[id]+value
-
-}*/
 public status_hud(id){
 	id-=STATUS_UPDATE_TASKID
 	if(!flora_get_has_flora(id)||!client_hittable(id)||!sh_is_active()){
@@ -172,7 +161,6 @@ public status_hud(id){
 	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
 		
 }
-
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
@@ -187,11 +175,6 @@ public newRound(id)
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	return PLUGIN_CONTINUE
-}
-public sh_round_end(){
-
-	//clear_fields()
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -220,7 +203,6 @@ public flora_init()
 	gHasFlora[id] = (hasPowers!=0)
 	if ( gHasFlora[id] )
 	{
-		
 		reset_flora_user(id)
 		init_hud_tasks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
@@ -256,9 +238,6 @@ public flora_morph(id)
 	id-=FLORA_MORPH_TASKID
 	if ( gmorphed[id] || !client_hittable(id)||!flora_get_has_flora(id) ) return
 	
-	// Message
-	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "flora: 'h- hey! hhello!'")*/
 	cs_set_user_model(id,"flora")
 
 	gmorphed[id] = true
@@ -368,9 +347,8 @@ public flora_glow(id)
 	}
 }
 
-public death()
+public sh_client_death(id,killer,headshot,const wpnDescription[])
 {
-new id = read_data(2)
 if(is_user_connected(id)){
 	if(flora_get_has_flora(id)){
 		reset_flora_user(id)
