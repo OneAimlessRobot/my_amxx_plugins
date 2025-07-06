@@ -36,6 +36,7 @@ new Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
 new g_flora_field_loaded[SH_MAXSLOTS+1];
 new g_flora_num_of_active_fields[SH_MAXSLOTS+1]
 new Float:g_field_teleport_time[SH_MAXSLOTS+1]
+new g_flora_user_cloaked[SH_MAXSLOTS+1]
 new g_flora_curr_charging[SH_MAXSLOTS+1]
 
 
@@ -84,6 +85,7 @@ public plugin_init()
 	
 	
 	arrayset(g_flora_field_cooldown,0.0,SH_MAXSLOTS+1)
+	arrayset(g_flora_user_cloaked,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_curr_charging,0,SH_MAXSLOTS+1)
 	arrayset(g_field_teleport_time,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flora_num_of_active_fields,0,SH_MAXSLOTS+1)
@@ -258,6 +260,7 @@ public _reset_flora_user(iPlugin,iParams){
 	g_field_teleport_time[id]=0.0
 	g_flora_num_of_active_fields[id]=0
 	g_flora_curr_charging[id]=0
+	g_flora_user_cloaked[id]=0
 	
 	
 }
@@ -278,6 +281,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 					flora_dec_user_num_active_fields(owner,1)
 				}
 				set_user_rendering(owner)
+				g_flora_user_cloaked[owner]=0
 			}
 		}
 		remove_entity(field_id)
@@ -494,13 +498,31 @@ public field_deploy_task(parm[],id){
 	entity_set_float(field_id,EV_FL_nextthink,floatadd(get_gametime(),FLORA_THINK_PERIOD))
 	
 }
-public check_crouch(id,field_standing_on) {
+public check_crouch(id,field_thinking_about) {
 			
 	if(!client_hittable(id)||!flora_get_has_flora(id)){
 		
 		return FMRES_IGNORED
 
 	}
+	new field_id=find_next_nearest_flora_field(id,-1,99999.0)
+	if((field_id!=field_thinking_about)){
+		
+		return FMRES_IGNORED
+	}
+	else{
+		
+		field_id=find_next_nearest_flora_field(id,field_id,99999.0)
+	}
+	if( !(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
+		g_field_teleport_time[id]=0.0
+		g_flora_user_cloaked[id]=0
+	
+	
+	}
+	
+	
+	
 	
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
@@ -508,39 +530,34 @@ public check_crouch(id,field_standing_on) {
 	
 	static Float: fOrigin[ 3 ],Float:here_field_origin[3],Float:other_field_origin[3]
 	entity_get_vector( id, EV_VEC_origin, fOrigin );
-	entity_get_vector( field_standing_on, EV_VEC_origin, here_field_origin );
+	entity_get_vector( field_thinking_about, EV_VEC_origin, here_field_origin );
 	
 	new Float:distance=VecDist(fOrigin,here_field_origin)
-	if( !(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
-		set_user_rendering(id)
-		g_field_teleport_time[id]=0.0
-		return FMRES_IGNORED;
 	
-	
-	}
-	
-	
-	static iButton;
-	iButton = entity_get_int( id, EV_INT_button );
-	
-	if( ( iButton & IN_DUCK ) && (distance<=field_radius)){
+	if(  (entity_get_int( id, EV_INT_flags ) & FL_DUCKING )&&(distance<=field_radius) ){
 		if(distance<=field_core_radius){
 			g_field_teleport_time[id]= g_field_teleport_time[id]+FLORA_THINK_PERIOD
 			client_print(id,print_center,"[SH] flora: Teleporting time: %0.2f",g_field_teleport_time[id])
 		
 			if(g_field_teleport_time[id]>=flora_teleport_crouch_time){
-				
-				new field_id=find_next_nearest_flora_field(id,field_standing_on,99999.0)
-				if(is_valid_ent(field_id)){
-					entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
-					entity_set_vector( id, EV_VEC_origin, other_field_origin );
-					emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-					sh_chat_message(id,flora_get_hero_id(),"You just got teleported to the next nearest field! (hopefully)")
+				if(flora_get_user_num_active_fields(id)>1){
+					if(is_valid_ent(field_id)){
+						entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
+						entity_set_vector( id, EV_VEC_origin, other_field_origin );
+						emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						sh_chat_message(id,flora_get_hero_id(),"You just got teleported to the next nearest field! (hopefully)")
+					}
+					else{
+						sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (too far)")
+						
+						
+					}
 				}
 				else{
-					sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (maybe no other fields?)")
 					
-					
+					sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (no other fields)")
+						
+						
 				}
 				g_field_teleport_time[id]=0.0
 			}
@@ -548,13 +565,21 @@ public check_crouch(id,field_standing_on) {
 		else{
 			g_field_teleport_time[id]=0.0
 		}
-		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransAlpha);
+		if(!g_flora_user_cloaked[id]){
+			sh_chat_message(id,flora_get_hero_id(),"You became transparent, for being crouched within one of your fields")
+			sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransAlpha);
+			g_flora_user_cloaked[id]=1
+		}
 	}
 	else
 	{
 		
 		g_field_teleport_time[id]=0.0
-		set_user_rendering(id)
+		if(g_flora_user_cloaked[id]){
+			sh_chat_message(id,flora_get_hero_id(),"You either uncrouched or left one of your fields. You are no longer cloaked")
+			set_user_rendering(id)
+			g_flora_user_cloaked[id]=0
+		}
 		return FMRES_IGNORED;
 			
 	}
@@ -612,23 +637,14 @@ public field_think(ent)
 		make_shockwave(iPos,field_radius,LineColorsWithAlpha[YELLOW])
 		make_shockwave(iPos,field_core_radius,LineColorsWithAlpha[ORANGE])
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
-		new CsTeams:idTeam = cs_get_user_team(owner)
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
-			if(!client_hittable(pid)){
+			if(!client_hittable(pid)||(pid==owner)){
 				continue
 			
 			}
-			
-			if((cs_get_user_team(pid)==idTeam)){
-				if(pid==owner){
-				
-					check_crouch(owner,ent)
 		
-				}
-				continue
-			}
 			new flora_sheltered_value=is_flora_user_in_owned_field(owner);
 			new Float:dmg_mult;
 			new heal_color;
@@ -663,7 +679,8 @@ public field_think(ent)
 			flora_heal(owner,float(damage),heal_color)
 			}
 	}
-	
+		
+		check_crouch(owner,ent)
 		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))
 		entity_set_float(ent,EV_FL_fuser2,floatsub(entity_get_float(ent,EV_FL_fuser2),FLORA_THINK_PERIOD))

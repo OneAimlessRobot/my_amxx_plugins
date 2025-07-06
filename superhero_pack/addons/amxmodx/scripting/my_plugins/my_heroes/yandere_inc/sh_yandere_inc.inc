@@ -14,6 +14,14 @@
 #define YANDERE_THELAST3 "shmod/yandere/Yandere_thelast3.wav"
 #define YANDERE_PAIN "shmod/yandere/Yandere_pain.wav"
 
+#define NUM_YANDERE_PAIN_SOUNDS 2
+stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
+	"shmod/yandere/Yandere_pain.wav",
+	"shmod/yandere/Yakui_the_maid-Chloramine.wav"
+	
+	
+}
+
 #define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
 #define YANDERE_SHOTGUN_W_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
 

@@ -866,7 +866,11 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST2)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST3)
-	engfunc(EngFunc_PrecacheSound,YANDERE_PAIN)
+	for(new i=0;i<NUM_YANDERE_PAIN_SOUNDS;i++){
+		
+		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[i])
+	
+	}
 	precache_model("models/player/yanderu/yanderu.mdl")
 	precache_model("models/player/yanderu/yanderuT.mdl")
 	precache_model("models/player/superyanderu/superyanderu.mdl")
@@ -906,7 +910,7 @@ public yandere_kd()
 		}
 		gPsychosisTime[id]=floatround(psychosis_time)
 		ultimateTimer(id, psychosis_cooldown * 1.0)
-		emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, 0, PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, yandere_pain_sounds[random_num(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
 		new client_name[128]
 		get_user_name(id,client_name,127)
 		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
@@ -929,33 +933,6 @@ public yandere_kd()
 	
 	return PLUGIN_HANDLED
 }
-/*
-public yandere_kd()
-{
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if ( !is_user_alive(id)||!gHasYandere[id]) return PLUGIN_HANDLED
-	if(gSuperAngry[id]){
-		if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
-			sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
-			playSoundDenySelect(id)
-			return PLUGIN_HANDLED
-		}
-		gPsychosisTime[id]=floatround(psychosis_time)
-		ultimateTimer(id, psychosis_cooldown * 1.0)
-		emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, 0, PITCH_NORM)
-		new client_name[128]
-		get_user_name(id,client_name,127)
-		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
-		psychosis_user(id)
-	}
-	
-	return PLUGIN_HANDLED
-}*/
 //----------------------------------------------------------------------------------------------
 public yandere_ku()
 {
