@@ -7,7 +7,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-stock const debug_hud_mode= true
+stock const debug_hud_mode= false
 
 
 // GLOBAL VARIABLES

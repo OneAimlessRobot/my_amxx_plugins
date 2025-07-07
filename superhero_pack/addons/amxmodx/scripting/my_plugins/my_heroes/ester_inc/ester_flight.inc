@@ -39,8 +39,11 @@ stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 #define ESTER_REBORN_TEAM_CHANGE_MSG "You changed teams and were reborn as ester, now you shall die"
 
 
+#define ESTER_REBORN_COLLISION_DISTANCE_THRESHOLD 30.0
 
+#define ESTER_REBORN_COLLISION_THINK_TIME 0.05
 
+#define ESTER_REBORN_COLLISION_TASKID 82176261 
 const fPainShock=108
 #define PRE_RESPAWN_MESSAGE_RELAY 0.0
 #define ESTER_REBORN_EXPLOSION_DELAY_TIME 10.0

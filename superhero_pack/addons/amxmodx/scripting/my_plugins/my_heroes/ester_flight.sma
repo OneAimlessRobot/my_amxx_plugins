@@ -80,7 +80,7 @@ public plugin_init()
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
 	
-	register_forward(FM_Touch,"player_to_player_touch")
+	
 	RegisterHam(Ham_TakeDamage, "player", "Ester_Knockback", 1)
 	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect")
 	register_logevent("ester_round_start", 2, "1=Round_Start")
@@ -457,6 +457,7 @@ public ester_respawn(parm[])
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
+	set_task(ESTER_REBORN_COLLISION_THINK_TIME, "player_to_player_touch_task", id+ESTER_REBORN_COLLISION_TASKID,"",0,"b")
 	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, 1)
 
 	
@@ -516,6 +517,7 @@ public ester_round_end()
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
+	
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		ester_remove_statuses(id,1,1)
@@ -555,10 +557,13 @@ public positionChangeTimer(id)
 
 	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
 }
-ester_remove_statuses(id,rem_explosion=1,remove_god=1){
+ester_remove_statuses(id,rem_explosion=1,remove_god=1,remove_collosions=1){
 	
 	remove_task(id+ESTER_REBORN_GLOW_TASKID)
 	remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
+	if(remove_collosions){
+		remove_task(id+ESTER_REBORN_COLLISION_TASKID)
+	}
 	if(rem_explosion){
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 	}
@@ -598,7 +603,7 @@ public positionChangeCheck(id)
 public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
-	ester_remove_statuses(id,0,1)
+	ester_remove_statuses(id,0,1,0)
 	explosion_player(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,ester_explosion_ignore_user)
 	
 		
@@ -616,41 +621,60 @@ public revival(id)
 //----------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------
-public player_to_player_touch(pTouched, pToucher)  //This is triggered when two entites touch
+public player_to_player_touch_task(id)  //This is triggered when two entites touch
 {
+	id-=ESTER_REBORN_COLLISION_TASKID
+	new killer=id
+	if(!client_hittable(killer)||!ester_get_has_ester(killer)||!ester_get_reborn_mode(killer)||!ester_fly_knock_enemies){
+		
+		remove_task(id+ESTER_REBORN_COLLISION_TASKID)
+		return
+	}
+	if(!g_flying[killer]){
+		
+		return
+	}
+	new tger_name[128], vic_name[128],entlist[33];
+	get_user_name(killer,tger_name,127)
 	
-new tger_name[128], vic_name[128]
-new killer = pToucher
-new victim = pTouched
-if(!client_hittable(killer)){
-	
-	return FMRES_IGNORED
-}
-get_user_name(pToucher,tger_name,127)
+	new numfound = find_sphere_class(killer,"player", ESTER_REBORN_COLLISION_DISTANCE_THRESHOLD,entlist, 32);
+	new CsTeams:killer_team=cs_get_user_team(killer)
+	for(new i=0;i<numfound;i++){
+		new victim=entlist[i]
+		if(!client_hittable(victim)){
+			
+			continue
+		}
 
-if(!client_hittable(victim)){
-	
-	return FMRES_IGNORED
-}
-
-get_user_name(pTouched,vic_name,127)
-
-new ffOn = get_cvar_num("mp_friendlyfire")
-if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
-{
-	//console_print(0,"yay! client %d called %s just hit enemy %d named %s!!!",killer,tger_name,victim,vic_name)
-	/*console_print(0,"Lets go over some briefing, okay?^nOkay so, is the killer flying? %s^nAlright: Does the killer have ester equipped? %s^nAnyways, is the killer in reborn mode? %s^nSo, Lastly...^nIs ester fly knocking enabled on the server? %s^n",
-								g_flying[killer]?"Yes!":"No...",
-								ester_get_has_ester(killer)?"Yes!":"No...",
-								ester_get_reborn_mode(killer)?"Yes!":"No...",
-								ester_fly_knock_enemies?"Yes!":"No...")*/
-	if(g_flying[killer]&&ester_get_has_ester(killer)&&ester_get_reborn_mode(killer)&&ester_fly_knock_enemies){
-	
+		get_user_name(victim,vic_name,127)
+		if(cs_get_user_team(victim)==killer_team){
+			continue
+		}
+		console_print(0,"yay! client %d called %s just hit enemy %d named %s!!!",killer,tger_name,victim,vic_name)
+		console_print(0,"Lets go over some briefing, okay?^nOkay so, is the killer flying? %s^nAlright: Does the killer have ester equipped? %s^nAnyways, is the killer in reborn mode? %s^nSo, Lastly...^nIs ester fly knocking enabled on the server? %s^n",
+									g_flying[killer]?"Yes!":"No...",
+									ester_get_has_ester(killer)?"Yes!":"No...",
+									ester_get_reborn_mode(killer)?"Yes!":"No...",
+									ester_fly_knock_enemies?"Yes!":"No...")
 		sh_chat_message(ester_get_hero_id(),killer,"You, named %s, knocked %s!!!!!^n (i hope)",tger_name,vic_name)
 		
-		damage_player(ester_get_hero_id(),killer,killer,victim,200.0,ester_fly_knock_enemies_force,0)
-		sh_extra_damage(killer,killer,floatround(ester_fly_knock_enemies_force),"Ester fly ramming knockback")
+		new Float:killer_velocity[3],Float:killer_speed
+		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
+		
+		killer_speed=vector_length(killer_velocity)
+		
+		damage_player(ester_get_hero_id(),killer,killer,victim,0.1,ester_fly_knock_enemies_force,1,(0.5*killer_speed))
+		damage_player(ester_get_hero_id(),killer,killer,killer,0.1,ester_fly_knock_enemies_force,0,(0.25*killer_speed))
+		multiply_3d_vector_by_scalar(killer_velocity,0.25,killer_velocity)
+		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)
+		
+		
+		/*entity_get_vector(victim,EV_VEC_origin,victim_pos)
+		add_3d_vectors(killer_velocity,victim_pos,victim_pos)
+		multiply_3d_vector_by_scalar(killer_velocity,-1.0,killer_velocity)
+		add_3d_vectors(killer_pos,killer_velocity,killer_pos)
+		entity_set_vector(victim,EV_VEC_origin,victim_pos)
+		entity_set_vector(killer,EV_VEC_origin,killer_pos)*/
 	}
-}
-return FMRES_IGNORED
+	return
 }

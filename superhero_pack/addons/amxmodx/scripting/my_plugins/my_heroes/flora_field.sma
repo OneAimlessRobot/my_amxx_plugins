@@ -413,6 +413,15 @@ public flora_checks(id){
 		return
 		
 	}
+	if(!g_flora_field_loaded[id]){
+		
+		g_flora_curr_dmg_mult[id]=0.0
+		g_field_teleport_time[id]=0.0
+		g_flora_prev_inside[id]=g_flora_curr_inside[id]
+		g_flora_curr_inside[id]=-1
+		return
+		
+	}
 	
 	new field_id,flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
 	g_flora_sheltered_value[id]=flora_sheltered_value;
@@ -581,6 +590,7 @@ public _form_field(iPlugin,iParams)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	entity_set_float(Ent,EV_FL_fuser1,0.0)
 	g_flora_curr_charging[id]=Ent
+	g_flora_field_loaded[id]=0;
 	
 	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
 	entity_set_int(Ent,EV_INT_rendermode,kRenderTransAlpha)
@@ -630,7 +640,6 @@ public field_deploy_task(parm[],id){
 	flora_inc_user_num_active_fields(id,1)
 	
 	client_print(id,print_center,"You have %d fields left!",flora_get_user_num_fields(id))
-	g_flora_field_loaded[id]=0;
 	g_flora_field_cooldown[id]=field_cooldown
 	set_task(FLORA_CHARGE_PERIOD,"cooldown_update_task",id+FLORA_COOLDOWN_TASKID,"", 0,  "a",floatround(field_cooldown/FLORA_CHARGE_PERIOD)+1)
 	
@@ -867,11 +876,11 @@ public charge_task(parm[],id){
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
-	new parm[2]
-	parm[0]=owner
-	parm[1]=field_id
 	if(entity_get_float(field_id,EV_FL_fuser1)>flora_charge_time){
 	
+		new parm[2]
+		parm[0]=owner
+		parm[1]=field_id
 		field_deploy_task(parm,id+FLORA_DEPLOY_TASKID)
 		uncharge_user(owner)
 	}

@@ -3,7 +3,7 @@
 #endif
 #define sh_aux_funcs
 
-#include "../my_include/superheromod.inc"
+#include "../../my_include/superheromod.inc"
 #include <fakemeta_util>
 
 
@@ -500,7 +500,7 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=0){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 	
 	
 	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
@@ -508,23 +508,21 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 		return 
 	
 	}
-	if(is_user_connected(ent_id)&&is_user_connected(pid)){
-		if(ent_id==pid){
-			if(client_hittable(ent_id)){
-					
-				if(ignore_owner){
-					
-					return;
-				
-				}
-				
+	if(is_user_connected(pid)&&(pid==owner_id)){
+		
+		if(ignore_owner){
 			
-			}
+			return
+			
 		}
+		
+		
 	
 	}
 	
 	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
+	
+	new parm[4]
 	
 	Entvars_Get_Vector(pid, EV_VEC_origin, vOrig)
 	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
@@ -541,16 +539,21 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
 	distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= floatmin(1.0,distance/radius);
-	new Float:force=peak_power-(peak_power/2.0)*falloff_coeff
-	new iforce=floatround(force)
-	sh_extra_damage(pid,owner_id,iforce,"SH_Explosion");
+	new Float:force,Float:damage,idamage
+	damage=peak_power-(peak_power/2.0)*falloff_coeff
+	idamage=floatround(damage)
+	if(optional_force!=0.0){
+		force=optional_force-(optional_force/2.0)*falloff_coeff
+	}
+	else{
+		force=damage
+	}	
+	sh_extra_damage(pid,owner_id,idamage,"SH_Explosion");
 	
 	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
 	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
 	b_vel[2]=force
 	
-	
-	new parm[4]
 		
 	parm[0] = floatround(b_vel[0])
 	parm[1] = floatround(b_vel[1])
@@ -835,7 +838,38 @@ stock glow(id, r, g, b,a, on) {
 		set_rendering(id, kRenderFxNone, r, g, b,  kRenderTransAlpha, a)
 	}
 }
+stock multiply_3d_vector_by_scalar(Float:in_vec[3],Float:scalar,Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=in_vec[i]*scalar
+			
+	}
 
+}
+stock add_3d_vectors(Float:a_vec[3],Float:b_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=a_vec[i]+b_vec[i]
+			
+	}
+
+}
+stock sub_3d_vectors(Float:a_vec[3],Float:b_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=a_vec[i]-b_vec[i]
+			
+	}
+
+}
+stock mirror_3d_vec(Float:in_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=in_vec[i]*1.0
+			
+	}
+
+}
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
 	
