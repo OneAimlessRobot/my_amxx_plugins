@@ -70,9 +70,9 @@ public SuperNoodle_init()
 	//This gets run if they had the power but don't anymore
 	else {
 		h_rifle_unset_h_rifle(id)
-		engclient_cmd(id, "drop", "weapon_m249")
-		engclient_cmd(id, "drop", "weapon_elite")
-		engclient_cmd(id, "drop", "weapon_scout")
+		d_barrel_unset_d_barrel(id)
+		sh_drop_weapon(id, CSW_M249,true)
+		sh_drop_weapon(id, CSW_ELITE,true)
 		shRemHealthPower(id)
 		shRemArmorPower(id)
 	}
@@ -100,9 +100,8 @@ public SuperNoodle_weapons(id)
 	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
 		d_barrel_set_d_barrel(id)
 		h_rifle_set_h_rifle(id)
-		shGiveWeapon(id,"weapon_m249")
-		shGiveWeapon(id,"weapon_elite")
-		shGiveWeapon(id,"weapon_scout")
+		sh_give_weapon(id, CSW_M249)
+		sh_give_weapon(id, CSW_ELITE)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
 #define CSW_GATLING CSW_M3
 #define weapon_gatling "weapon_m3"
-#define WEAPON_ANIMEXT "m249"
+#define WEAPON_ANIMEXT "shotgun"
 #define DEFAULT_W_MODEL "models/w_m3.mdl"
 #define WEAPON_SECRET_CODE 1942
 #define old_event "events/m3.sc"

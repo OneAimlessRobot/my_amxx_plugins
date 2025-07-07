@@ -6,6 +6,10 @@
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
+
+stock const debug_hud_mode= true
+
+
 // GLOBAL VARIABLES
 new gHeroName[]="Flora"
 new gHasFlora[SH_MAXSLOTS+1]
@@ -139,6 +143,16 @@ public status_hud(id){
 	format(hud_msg,300,"[SH] flora:^nNumber active fields: %d^nNumber of fields left: %d^n",
 					flora_get_user_num_active_fields(id),
 					flora_get_user_num_fields(id));
+				
+	if(debug_hud_mode){
+		format(hud_msg,300,"%sAre you cloaked? %s^nAre you airborne? %s^nAre you crouched? %s^nWhat is your current inside field? %d^nWhat is your previous inside field? %d^n",
+							hud_msg,
+							flora_get_user_is_cloaked(id)?"Yes":"No",
+							flora_get_user_is_airborne(id)?"Yes":"No",
+							flora_get_user_is_crouched(id)?"Yes":"No",
+							flora_get_curr_inside(id),
+							flora_get_prev_inside(id))
+	}
 	
 	new color[3];
 	color[0]=LineColors[GREEN][0]
@@ -171,6 +185,7 @@ public newRound(id)
 	if ( flora_get_has_flora(id)) {
 		reset_flora_user(id)
 		init_hud_tasks(id)
+		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
@@ -205,6 +220,7 @@ public flora_init()
 	{
 		reset_flora_user(id)
 		init_hud_tasks(id)
+		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}

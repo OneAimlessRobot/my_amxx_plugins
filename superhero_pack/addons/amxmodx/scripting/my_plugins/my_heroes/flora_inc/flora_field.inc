@@ -28,8 +28,18 @@
 #define FIELD_MDL "models/shmod/jaqueo/shield/shield.mdl"
 #define FIELD_NULL "common/null.wav"
 
+#define FLORA_CLOAKED_MSG "You became transparent, for being crouched within one of your fields"
+#define FLORA_UNCLOAKED_UNDUCKED_MSG "You uncrouched. You are no longer cloaked"
+#define FLORA_UNCLOAKED_AIRBORNE_MSG "You became uncloaked for becoming airborne"
+#define FLORA_UNCLOAKED_OUT_OF_RANGE_MSG "You left one of your fields. You are no longer cloaked"
+
 #define FLORA_HEAL_GLOW_TIME 3.0
 #define FLORA_UNGLISTEN_TASKID 51237123
+#define FLORA_CHECKS_TASKID 5233378
+
+#define OUTSIDE 1
+#define SHELTERED 2
+#define DUNGEON_DWELLER 3
 
 native clear_fields()
 
@@ -57,3 +67,10 @@ native flora_get_user_num_active_fields(id)
 native flora_dec_user_num_active_fields(id,value)
 native flora_inc_user_num_active_fields(id,value)
 native flora_set_user_num_active_fields(id,value)
+
+native flora_get_user_is_cloaked(id)
+native flora_get_user_is_crouched(id)
+native flora_get_user_is_airborne(id)
+native flora_get_curr_inside(id)
+native flora_get_prev_inside(id)
+native start_flora_checks(id)

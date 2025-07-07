@@ -207,17 +207,17 @@ public Event_CurWeapon(id)
 			g_OldWeapon[id] = get_user_weapon(id)
 			return
 		}
-		/*
+		
 		static Float:Delay, Float:Delay2
 		
 		Delay = get_pdata_float(Ent, 46, 4) * SPEED
 		Delay2 = get_pdata_float(Ent, 47, 4) * SPEED
 		
 		if(Delay > 0.0)
-		{*/
-		set_pdata_float(Ent, 46, SPEED, 4)
-		set_pdata_float(Ent, 47, SPEED, 4)
-		//}
+		{
+		set_pdata_float(Ent, 46, Delay, 4)
+		set_pdata_float(Ent, 47, Delay2, 4)
+		}
 	} else if(CSWID != CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) {
 		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
 	}

@@ -165,7 +165,7 @@ public Event_CurWeapon(id)
 		if(pev_valid(Ent)) 
 		{
 			set_pdata_float(Ent, 46, get_pdata_float(Ent, 46, 4) * SPEED, 4)
-			set_pdata_float(Ent, 47, get_pdata_float(Ent, 46, 4) * SPEED, 4)
+			set_pdata_float(Ent, 47, get_pdata_float(Ent, 47, 4) * SPEED, 4)
 		}
 	}
 	

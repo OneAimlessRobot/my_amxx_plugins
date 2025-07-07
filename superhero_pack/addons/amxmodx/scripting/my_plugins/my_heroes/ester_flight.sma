@@ -557,11 +557,13 @@ public positionChangeTimer(id)
 }
 ester_remove_statuses(id,rem_explosion=1,remove_god=1){
 	
+	remove_task(id+ESTER_REBORN_GLOW_TASKID)
+	remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
+	if(rem_explosion){
+		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+	}
 	if(is_user_connected(id)&&ester_get_has_ester(id)){
-		remove_task(id+ESTER_REBORN_GLOW_TASKID)
-		if(rem_explosion){
-			remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		}
+		
 		if(remove_god&&get_user_godmode(id)){
 			set_user_godmode(id,0)
 			new name[128]

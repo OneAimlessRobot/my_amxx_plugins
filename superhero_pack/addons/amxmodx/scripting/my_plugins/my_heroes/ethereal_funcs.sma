@@ -200,11 +200,12 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(eventid != g_Event_Ethereal)
 		return FMRES_IGNORED
 	
-	engfunc(EngFunc_PlaybackEvent, flags | FEV_GLOBAL, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
+	engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		
 	set_weapon_anim(invoker, E_ANIM_SHOOT1)
 	
-	//Eject_Shell(invoker, g_RifleShell_Id, 0.01)
+	emit_sound(invoker, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
+	
 	
 	return FMRES_IGNORED
 }
@@ -309,7 +310,6 @@ public fw_Weapon_PrimaryAttack(Ent)
 	}
 	
 	pev(id, pev_punchangle, g_Recoil[id])
-	emit_sound(id, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	return HAM_IGNORED
 }
