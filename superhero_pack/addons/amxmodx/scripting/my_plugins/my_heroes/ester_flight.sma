@@ -252,7 +252,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 }
 public OnCmdStart(id, uc_handle, seed)
 {
-	if(!ester_get_has_ester(id)||!client_hittable(id)||!ester_get_reborn_mode(id)){
+	if(!ester_get_has_ester(id)||!client_hittable(id)||!ester_get_reborn_mode(id)||sh_get_stun(id)){
 		
 		return FMRES_IGNORED;
 	}
@@ -663,9 +663,10 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		
 		killer_speed=vector_length(killer_velocity)
 		
-		damage_player(ester_get_hero_id(),killer,killer,victim,0.1,ester_fly_knock_enemies_force,1,(0.5*killer_speed))
-		damage_player(ester_get_hero_id(),killer,killer,killer,0.1,ester_fly_knock_enemies_force,0,(0.25*killer_speed))
-		multiply_3d_vector_by_scalar(killer_velocity,0.25,killer_velocity)
+		damage_player(ester_get_hero_id(),killer,killer,victim,0.1,ester_fly_knock_enemies_force,1,(0.2*killer_speed))
+		damage_player(ester_get_hero_id(),killer,killer,killer,0.1,ester_fly_knock_enemies_force,0,(0.5*killer_speed))
+		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
+		multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)
 		
 		

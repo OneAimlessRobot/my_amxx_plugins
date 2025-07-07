@@ -3,7 +3,7 @@
 #endif
 #define sh_aux_funcs
 
-#include "../../my_include/superheromod.inc"
+#include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 
 
