@@ -402,7 +402,7 @@ public fw_Item_Deploy_Post(ent)
 	set_pev(id, pev_weaponmodel2, SubModel != -1 ? "" : WeaponModel[1])
 		
 	set_weapon_anim(id, GATLING_ANIM_DRAW)
-	//set_pdata_string(id, m_szAnimExtention * 4, WEAPON_ANIMEXT, -1 , 20)
+	set_pdata_string(id, m_szAnimExtention * 4, WEAPON_ANIMEXT, -1 , 20)
 }
 
 public fw_Weapon_Reload_Post(ent)

@@ -204,10 +204,10 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 		
 	set_weapon_anim(invoker, E_ANIM_SHOOT1)
 	
-	emit_sound(invoker, CHAN_WEAPON, Ethereal_Sounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(invoker, CHAN_WEAPON, Ethereal_Sounds[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	
-	return FMRES_IGNORED
+	return FMRES_SUPERCEDE
 }
 
 public fw_SetModel(entity, model[])

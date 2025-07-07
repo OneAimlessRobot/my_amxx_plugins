@@ -14,7 +14,7 @@
 #define DAMAGE 85
 #define SPEED 0.15
 #define RECOIL 2.0
-#define RELOAD_TIME 1.75
+#define RELOAD_TIME 3.0
 #define DEFAULT_CLIP 2
 #define DEFAULT_BPAMMO 64
 

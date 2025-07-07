@@ -44,11 +44,11 @@ public slayer_init()
 public slayer_loop()
 {
 	for ( new id=1; id<=SH_MAXSLOTS; id++ ){
-		if (gHasSlayerPowers[id]&&!gPlayerUltimateUsed[id])
+		if (gHasSlayerPowers[id]&&!gPlayerUltimateUsed[id]&&is_user_connected(id)&&is_user_alive(id))
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
-			if (aid && is_user_alive(aid) && get_user_godmode(aid) && (get_user_team(id)!=get_user_team(aid))) {
+			if (aid && is_user_alive(aid) && get_user_godmode(aid)&&(get_user_team(id)!=get_user_team(aid))) {
 				set_user_godmode(aid,0)
 				new name[128]
 				new slayer_name[128]
