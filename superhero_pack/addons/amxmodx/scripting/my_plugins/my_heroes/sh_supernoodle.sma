@@ -14,6 +14,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 #include "../my_include/superheromod.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
+#include "arifle_inc/sh_arifle.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
@@ -70,6 +71,7 @@ public SuperNoodle_init()
 	//This gets run if they had the power but don't anymore
 	else {
 		h_rifle_unset_h_rifle(id)
+		arifle_unset_arifle(id)
 		d_barrel_unset_d_barrel(id)
 		sh_drop_weapon(id, CSW_M249,true)
 		sh_drop_weapon(id, CSW_ELITE,true)
@@ -100,7 +102,7 @@ public SuperNoodle_weapons(id)
 	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
 		d_barrel_set_d_barrel(id)
 		h_rifle_set_h_rifle(id)
-		sh_give_weapon(id, CSW_M249)
+		arifle_set_arifle(id)
 		sh_give_weapon(id, CSW_ELITE)
 	}
 }

@@ -17,6 +17,7 @@
 #define RELOAD_TIME 3.0
 #define DEFAULT_CLIP 2
 #define DEFAULT_BPAMMO 64
+#define KNOCKPOWER 1000
 
 #define SUBMODEL -1
 

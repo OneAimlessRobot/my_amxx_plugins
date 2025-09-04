@@ -492,7 +492,6 @@ public _sh_uneffect_user(iPlugin,iParams){
 		}
 		default:{
 		
-			sh_chat_message(user,gHeroID,"No fx was removed sorry")
 			return 0;
 		
 		}

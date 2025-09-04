@@ -69,7 +69,8 @@ public plugin_init()
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")		
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1)
 	
 	RegisterHam(Ham_Item_Deploy, weapon_gatling, "fw_Item_Deploy_Post", 1)
 	RegisterHam(Ham_Weapon_Reload, weapon_gatling, "fw_Weapon_Reload_Post", 1)
@@ -334,6 +335,54 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 	return HAM_HANDLED
 }
 
+public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
+{
+	if(!is_connected(Attacker))
+		return HAM_IGNORED	
+	if(get_player_weapon(Attacker) != CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
+		return HAM_IGNORED
+	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
+		return HAM_IGNORED
+		
+	if (!(DamageType & DMG_BULLET))
+		return HAM_IGNORED
+	if (Damage <= 0.0 || GetHamReturnStatus() == HAM_SUPERCEDE || get_tr2(ptr, TR_pHit) != Ent)
+		return HAM_IGNORED
+	
+	// Get distance between players
+	static origin1[3], origin2[3]
+	get_user_origin(Ent, origin1)
+	get_user_origin(Attacker, origin2)
+	
+	// Max distance exceeded
+	if (get_distance(origin1, origin2) > 1024)
+		return HAM_IGNORED
+		
+	// Get victim's velocity
+	static Float:velocity[3]
+	pev(Ent, pev_velocity, velocity)
+	
+	// Use damage on knockback calculation
+	xs_vec_mul_scalar(Dir, Damage, Dir)
+	
+	// Use weapon power on knockback calculation
+	xs_vec_mul_scalar(Dir, float(KNOCKPOWER), Dir)
+	
+	// Apply ducking knockback multiplier
+	new ducking = pev(Ent, pev_flags) & (FL_DUCKING | FL_ONGROUND) == (FL_DUCKING | FL_ONGROUND)
+	if (ducking) xs_vec_mul_scalar(Dir, 0.5, Dir)
+	
+	// Add up the new vector
+	xs_vec_add(velocity, Dir, Dir)
+	
+	// Should knockback also affect vertical velocity?
+	Dir[2] = velocity[2]
+	
+	// Set the knockback'd victim's velocity
+	set_pev(Ent, pev_velocity, Dir)
+		
+	return HAM_IGNORED
+}
 public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageType)
 {
 	if(!is_alive(attacker))

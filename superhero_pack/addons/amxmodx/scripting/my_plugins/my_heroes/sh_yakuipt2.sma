@@ -121,7 +121,6 @@ init_yakui(id){
 	gatling_set_pillgatling(id,1)
 	gatling_set_rockets(id,0)
 	gatling_set_needle(id,0)
-	sh_chat_message(id,gHeroID,"You equipped pill gatling")
 	yakui_weapons(id)
 
 
@@ -133,7 +132,6 @@ reset_yakui(id){
 	
 	
 	clear_pills()
-	sh_chat_message(id,gHeroID,"You reset pill gatling")
 	gatling_set_num_pills(id,max_pills)
 	gatling_set_num_rockets(id,max_rockets)
 	yakui_weapons(id)
@@ -145,7 +143,6 @@ clear_yakui(id){
 
 	gatling_set_num_pills(id,0)
 	gatling_set_num_rockets(id,0)
-	sh_chat_message(id,gHeroID,"You UNequipped pill gatling")
 	sh_drop_weapon(id, CSW_M249, true)
 	clear_pills()
 	clear_missiles()
@@ -183,7 +180,6 @@ public sh_client_spawn(id)
 	if ( gatling_get_has_yakui(id)) {
 		
 		yakui_tasks(id)
-		sh_chat_message(id,gHeroID,"You spawned with pill gatling")
 		reset_yakui(id)
 		
 	}

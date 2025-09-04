@@ -1,6 +1,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #define KOMAK_HITZONE_TASKID 13321
 #define KOMAK_STATS_TASKID 14001
 #define KOMAK_HUD_TASKID 14221
@@ -187,9 +188,17 @@ public komak_is_top_speed(id){
 
 public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
-	if( !sh_is_active() || !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ) return HAM_IGNORED;
+	if( !sh_is_active() ||!client_hittable(idattacker)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
+		
+		if(!client_hittable(idattacker)){
+			
+				log_amx("Invalid thing in komak!!!!^n");
+			
+		}
+		
+		return HAM_IGNORED;
 	
-	
+	}
 	
 	// get ent looking at
 	static  body;
@@ -485,19 +494,6 @@ public Event_CurWeapon(id)
 			}
 		}
 	}
-}//Frome Fakemeta utility
-stock fm_find_ent_by_owner(index, const classname[], owner, jghgtype = 0)
-{
-	new strtype[11] = "classname", ent = index
-	switch (jghgtype) 
-	{
-		case 1: strtype = "target"
-		case 2: strtype = "targetname"
-		}
-		
-	while ((ent = engfunc(EngFunc_FindEntityByString, ent, strtype, classname)) && pev(ent, pev_owner) != owner) {}
-		
-	return ent
 }
 	
 //----------------------------------------------------------------------------------------------

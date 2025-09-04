@@ -1,0 +1,645 @@
+ID Tag: IDST
+Version: 10
+Name: "v_arifle.mdl"
+Length: 234600
+Has external texture file: No
+
+Eye Position: -0.000000 0.000000 0.000000
+Min: 0.000000 0.000000 0.000000
+Max: 0.000000 0.000000 0.000000
+Bounding Box Min: 0.000000 0.000000 0.000000
+Bounding Box Max: 0.000000 0.000000 0.000000
+Flags: 0
+
+Number of Bones: 41
+
+Bone 1 Name: "Hands biped"
+Bone 1 Parent: -1
+Bone 1 Flags: 0
+Bone 1 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 1 Value: 0.000000 1.616898 41.365490 0.000000 0.000000 1.570795
+Bone 1 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000047
+
+Bone 2 Name: "Hands biped Pelvis"
+Bone 2 Parent: 0
+Bone 2 Flags: 0
+Bone 2 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 2 Value: 0.000000 0.000000 0.000000 0.000000 1.570451 1.570795
+Bone 2 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 3 Name: "Hands biped Spine"
+Bone 3 Parent: 1
+Bone 3 Flags: 0
+Bone 3 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 3 Value: -1.392634 -0.004117 0.000002 -0.000004 0.000001 -0.000796
+Bone 3 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 4 Name: "Hands biped Spine1"
+Bone 4 Parent: 2
+Bone 4 Flags: 0
+Bone 4 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 4 Value: -5.172625 -0.004119 0.000000 0.000000 0.000000 0.000000
+Bone 4 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 5 Name: "Hands biped Spine2"
+Bone 5 Parent: 3
+Bone 5 Flags: 0
+Bone 5 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 5 Value: -5.172631 -0.004119 -0.000000 0.000000 0.000000 0.000000
+Bone 5 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 6 Name: "Hands biped Spine3"
+Bone 6 Parent: 4
+Bone 6 Flags: 0
+Bone 6 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 6 Value: -5.172629 -0.004119 -0.000000 0.000000 0.000000 0.000000
+Bone 6 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 7 Name: "Hands biped Neck"
+Bone 7 Parent: 5
+Bone 7 Flags: 0
+Bone 7 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 7 Value: -5.172631 -0.001584 0.000000 0.000000 0.000000 0.000000
+Bone 7 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 8 Name: "Hands biped R Clavicle"
+Bone 8 Parent: 6
+Bone 8 Flags: 0
+Bone 8 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 8 Value: -0.000000 0.001590 -1.989474 -0.000014 -1.370796 -3.140783
+Bone 8 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 9 Name: "Hands biped R UpperArm"
+Bone 9 Parent: 7
+Bone 9 Flags: 0
+Bone 9 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 9 Value: -5.172631 0.000000 0.000000 -1.340314 0.537627 -1.375841
+Bone 9 Scale: 0.003906 0.003906 0.003906 0.000012 0.000016 0.000012
+
+Bone 10 Name: "Hands biped R Forearm"
+Bone 10 Parent: 8
+Bone 10 Flags: 0
+Bone 10 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 10 Value: -11.936839 0.000004 -0.000000 -0.000000 -0.000000 2.414395
+Bone 10 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 11 Name: "Hands biped R Hand"
+Bone 11 Parent: 9
+Bone 11 Flags: 0
+Bone 11 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 11 Value: -11.936840 -0.000001 -0.000000 1.570000 -0.000000 -0.069813
+Bone 11 Scale: 0.003906 0.003906 0.003906 0.000015 0.000019 0.000032
+
+Bone 12 Name: "box_04"
+Bone 12 Parent: 10
+Bone 12 Flags: 0
+Bone 12 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 12 Value: -3.222110 -0.517694 0.853730 -0.232029 0.015922 -1.498434
+Bone 12 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 13 Name: "Object03"
+Bone 13 Parent: 11
+Bone 13 Flags: 0
+Bone 13 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 13 Value: -0.650634 -6.773496 7.760909 -0.000000 0.000000 -0.000000
+Bone 13 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 14 Name: "Object02"
+Bone 14 Parent: 11
+Bone 14 Flags: 0
+Bone 14 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 14 Value: -0.550165 -6.793611 7.719534 -0.000000 0.000000 -0.000000
+Bone 14 Scale: 0.003906 0.003906 0.003906 0.000051 0.000012 0.000012
+
+Bone 15 Name: "saw_clipbox"
+Bone 15 Parent: 11
+Bone 15 Flags: 0
+Bone 15 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 15 Value: -0.199054 -8.309097 -0.423038 -0.000000 0.000000 -0.000000
+Bone 15 Scale: 0.003906 0.003906 0.003906 0.000018 0.000012 0.000012
+
+Bone 16 Name: "Hands biped L Clavicle"
+Bone 16 Parent: 6
+Bone 16 Flags: 0
+Bone 16 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 16 Value: -0.000004 0.001579 1.989474 -0.000014 1.370796 -3.110810
+Bone 16 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 17 Name: "Hands biped L UpperArm"
+Bone 17 Parent: 15
+Bone 17 Flags: 0
+Bone 17 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 17 Value: -5.172630 -0.000000 0.000005 0.000000 -1.270796 0.000000
+Bone 17 Scale: 0.003906 0.003906 0.003906 0.000038 0.000017 0.000034
+
+Bone 18 Name: "Hands biped L Forearm"
+Bone 18 Parent: 16
+Bone 18 Flags: 0
+Bone 18 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 18 Value: -11.936850 -0.000000 -0.000001 0.000000 0.000000 0.200000
+Bone 18 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000066
+
+Bone 19 Name: "Hands biped L Hand"
+Bone 19 Parent: 17
+Bone 19 Flags: 0
+Bone 19 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 19 Value: -11.936838 -0.000001 0.000001 -1.570000 0.000000 0.000000
+Bone 19 Scale: 0.003906 0.003906 0.003906 0.000051 0.000044 0.000064
+
+Bone 20 Name: "Hands biped L Finger0"
+Bone 20 Parent: 18
+Bone 20 Flags: 0
+Bone 20 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 20 Value: -1.182542 0.109288 -1.426288 1.823541 -0.487125 -0.071487
+Bone 20 Scale: 0.003906 0.003906 0.003906 0.000031 0.000021 0.000012
+
+Bone 21 Name: "Hands biped L Finger01"
+Bone 21 Parent: 19
+Bone 21 Flags: 0
+Bone 21 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 21 Value: -2.492307 0.000001 -0.000000 -0.000000 0.000000 -0.113389
+Bone 21 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000029
+
+Bone 22 Name: "Hands biped L Finger1"
+Bone 22 Parent: 18
+Bone 22 Flags: 0
+Bone 22 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 22 Value: -3.978947 -0.000951 -1.193684 0.011610 -0.156576 -0.079348
+Bone 22 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000032
+
+Bone 23 Name: "Hands biped L Finger11"
+Bone 23 Parent: 21
+Bone 23 Flags: 0
+Bone 23 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 23 Value: -1.193685 0.000001 0.000002 -0.000000 -0.000000 0.000000
+Bone 23 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000025
+
+Bone 24 Name: "Hands biped L Finger12"
+Bone 24 Parent: 22
+Bone 24 Flags: 0
+Bone 24 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 24 Value: -1.193680 -0.000001 -0.000002 -0.000000 -0.000000 0.000000
+Bone 24 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000018
+
+Bone 25 Name: "Hands biped L Finger2"
+Bone 25 Parent: 18
+Bone 25 Flags: 0
+Bone 25 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 25 Value: -3.978948 -0.000316 -0.397895 0.005372 -0.078320 -0.078679
+Bone 25 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000035
+
+Bone 26 Name: "Hands biped L Finger21"
+Bone 26 Parent: 24
+Bone 26 Flags: 0
+Bone 26 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 26 Value: -1.392634 0.000001 0.000000 -0.000000 -0.000000 0.000000
+Bone 26 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000017
+
+Bone 27 Name: "Hands biped L Finger22"
+Bone 27 Parent: 25
+Bone 27 Flags: 0
+Bone 27 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 27 Value: -1.392633 -0.000000 0.000001 -0.000000 -0.000000 -0.008722
+Bone 27 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000026
+
+Bone 28 Name: "Hands biped L Finger3"
+Bone 28 Parent: 18
+Bone 28 Flags: 0
+Bone 28 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 28 Value: -3.978946 0.000316 0.397894 -0.000794 -0.000062 -0.078500
+Bone 28 Scale: 0.003906 0.003906 0.003906 0.000012 0.000019 0.000031
+
+Bone 29 Name: "Hands biped L Finger31"
+Bone 29 Parent: 27
+Bone 29 Flags: 0
+Bone 29 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 29 Value: -1.193689 0.000000 0.000000 -0.000000 -0.000000 0.000000
+Bone 29 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000037
+
+Bone 30 Name: "Hands biped L Finger32"
+Bone 30 Parent: 28
+Bone 30 Flags: 0
+Bone 30 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 30 Value: -1.193685 -0.000000 0.000001 -0.000000 -0.000000 0.000000
+Bone 30 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000029
+
+Bone 31 Name: "Hands biped L Finger4"
+Bone 31 Parent: 18
+Bone 31 Flags: 0
+Bone 31 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 31 Value: -3.978947 0.000949 1.193684 -0.012516 0.147755 -0.079485
+Bone 31 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000023
+
+Bone 32 Name: "Hands biped L Finger41"
+Bone 32 Parent: 30
+Bone 32 Flags: 0
+Bone 32 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 32 Value: -0.994738 -0.000001 -0.000000 -0.000000 0.000000 0.000000
+Bone 32 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000040
+
+Bone 33 Name: "Hands biped L Finger42"
+Bone 33 Parent: 31
+Bone 33 Flags: 0
+Bone 33 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 33 Value: -0.994734 -0.000000 -0.000000 -0.000000 0.000000 0.000000
+Bone 33 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000036
+
+Bone 34 Name: "Object05"
+Bone 34 Parent: 11
+Bone 34 Flags: 0
+Bone 34 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 34 Value: -1.090995 0.339846 0.304723 -0.000000 0.357792 -0.000000
+Bone 34 Scale: 0.003906 0.003906 0.003906 0.000021 0.000029 0.000012
+
+Bone 35 Name: "v_saw_round1"
+Bone 35 Parent: 33
+Bone 35 Flags: 0
+Bone 35 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 35 Value: -0.275520 -0.000000 -0.423417 -0.000000 0.034907 -0.000000
+Bone 35 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 36 Name: "v_saw_round2"
+Bone 36 Parent: 34
+Bone 36 Flags: 0
+Bone 36 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 36 Value: -0.110892 -0.000000 -0.503385 -0.000000 -0.139626 -0.000000
+Bone 36 Scale: 0.003906 0.003906 0.003906 0.000012 0.000015 0.000012
+
+Bone 37 Name: "v_saw_round3"
+Bone 37 Parent: 35
+Bone 37 Flags: 0
+Bone 37 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 37 Value: -0.078503 0.000000 -0.514840 -0.000000 0.209440 -0.000000
+Bone 37 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 38 Name: "v_saw_round4"
+Bone 38 Parent: 36
+Bone 38 Flags: 0
+Bone 38 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 38 Value: 0.168629 -0.000000 -0.525946 -0.000000 -0.462512 -0.000000
+Bone 38 Scale: 0.003906 0.003906 0.003906 0.000012 0.000030 0.000012
+
+Bone 39 Name: "v_saw_round5"
+Bone 39 Parent: 37
+Bone 39 Flags: 0
+Bone 39 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 39 Value: 0.058605 0.000000 -0.548402 -0.000000 -0.000000 -0.000000
+Bone 39 Scale: 0.003906 0.003906 0.003906 0.000012 0.000024 0.000012
+
+Bone 40 Name: "v_saw_round6"
+Bone 40 Parent: 38
+Bone 40 Flags: 0
+Bone 40 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 40 Value: 0.119350 0.000000 -0.529042 -0.000000 -0.000000 -0.000000
+Bone 40 Scale: 0.003906 0.003906 0.003906 0.000012 0.000012 0.000012
+
+Bone 41 Name: "v_saw_round7"
+Bone 41 Parent: 39
+Bone 41 Flags: 0
+Bone 41 Bonecontroller: -1 -1 -1 -1 -1 -1
+Bone 41 Value: 0.104863 0.000000 -0.377133 -0.000000 -0.000000 -0.000000
+Bone 41 Scale: 0.003906 0.003906 0.003906 0.000012 0.000019 0.000012
+
+Number of Bone Controllers: 0
+
+Number of Hitboxes: 8
+
+Hitbox 1 Bone: 11
+Hitbox 1 Group: 0
+Hitbox 1 Bounding Box Min: -3.970000 -32.090000 -0.423038
+Hitbox 1 Bounding Box Max: 2.380000 2.910000 11.250000
+
+Hitbox 2 Bone: 13
+Hitbox 2 Group: 0
+Hitbox 2 Bounding Box Min: -1.120000 0.000000 -1.110000
+Hitbox 2 Bounding Box Max: 1.210000 9.710000 0.890000
+
+Hitbox 3 Bone: 14
+Hitbox 3 Group: 0
+Hitbox 3 Bounding Box Min: -4.110000 -1.740000 -3.360000
+Hitbox 3 Bounding Box Max: 4.110000 1.750000 3.370000
+
+Hitbox 4 Bone: 17
+Hitbox 4 Group: 0
+Hitbox 4 Bounding Box Min: -0.420000 -2.220000 -1.280000
+Hitbox 4 Bounding Box Max: 11.990000 2.720000 2.020000
+
+Hitbox 5 Bone: 18
+Hitbox 5 Group: 0
+Hitbox 5 Bounding Box Min: 0.000000 -1.100000 -2.230000
+Hitbox 5 Bounding Box Max: 3.980000 0.920000 1.970000
+
+Hitbox 6 Bone: 19
+Hitbox 6 Group: 0
+Hitbox 6 Bounding Box Min: 0.000000 -0.880000 -0.580000
+Hitbox 6 Bounding Box Max: 2.660000 0.490000 1.000000
+
+Hitbox 7 Bone: 21
+Hitbox 7 Group: 0
+Hitbox 7 Bounding Box Min: 0.000000 -0.730000 -0.710000
+Hitbox 7 Bounding Box Max: 1.250000 0.390000 0.300000
+
+Hitbox 8 Bone: 28
+Hitbox 8 Group: 0
+Hitbox 8 Bounding Box Min: 0.000000 -0.730000 -0.480000
+Hitbox 8 Bounding Box Max: 1.193682 0.480000 0.580000
+
+Number of Sequences: 5
+
+Sequence 1 Label: "idle1"
+Sequence 1 Frames per sec: 20.000000
+Sequence 1 Flags: 0
+Sequence 1 Events: 0
+
+Sequence 2 Label: "shoot1"
+Sequence 2 Frames per sec: 40.000000
+Sequence 2 Flags: 0
+Sequence 2 Events: 1
+
+	Event 1 Frame: 0
+	Event 1 Event: 5001
+	Event 1 Options: 22
+	Event 1 Type: 0
+
+Sequence 3 Label: "shoot2"
+Sequence 3 Frames per sec: 30.000000
+Sequence 3 Flags: 0
+Sequence 3 Events: 1
+
+	Event 1 Frame: 0
+	Event 1 Event: 5001
+	Event 1 Options: 22
+	Event 1 Type: 0
+
+Sequence 4 Label: "reload"
+Sequence 4 Frames per sec: 35.000000
+Sequence 4 Flags: 0
+Sequence 4 Events: 2
+
+	Event 1 Frame: 1
+	Event 1 Event: 5004
+	Event 1 Options: weapons/saw_reload.wav
+	Event 1 Type: 0
+
+	Event 2 Frame: 61
+	Event 2 Event: 5004
+	Event 2 Options: weapons/saw_reload2.wav
+	Event 2 Type: 0
+
+Sequence 5 Label: "draw"
+Sequence 5 Frames per sec: 30.000000
+Sequence 5 Flags: 0
+Sequence 5 Events: 1
+
+	Event 1 Frame: 12
+	Event 1 Event: 5004
+	Event 1 Options: weapons/slideback1.wav
+	Event 1 Type: 0
+
+Number of Sequence Groups: 1
+
+Sequence Group 1 Label: "default"
+
+Sequence Group 1 Name: ""
+
+Sequence Group 1 Data: 0
+
+Number of Textures: 4
+Texture Index: 92080
+Texture Data Index: 92408
+
+Texture 1 Name: "v_sawmaster1.bmp"
+Texture 1 Flags: 0
+Texture 1 Width: 256
+Texture 1 Height: 255
+Texture 1 Index: 92408
+
+Texture 2 Name: "saw_triger_mech.bmp"
+Texture 2 Flags: 0
+Texture 2 Width: 32
+Texture 2 Height: 80
+Texture 2 Index: 158456
+
+Texture 3 Name: "hand.BMP"
+Texture 3 Flags: 0
+Texture 3 Width: 276
+Texture 3 Height: 192
+Texture 3 Index: 161784
+
+Texture 4 Name: "skin.BMP"
+Texture 4 Flags: 0
+Texture 4 Width: 144
+Texture 4 Height: 127
+Texture 4 Index: 215544
+
+Number of Skin References: 4
+Number of Skin Families: 1
+
+Number of Body Parts: 11
+
+Body Part 1 Name: "weapon"
+Body Part 1 Number of Models: 1
+Body Part 1 Base: 1
+Body Part 1 Model Index: 43220
+
+	Sub Model 1 Name: "v_saw"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 2
+	Sub Model 1 Vertices: 381
+	Sub Model 1 Normals: 212
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 454
+		Sub Model 1, Mesh 1 Triangle Index: 52204
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 211
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+		Sub Model 1, Mesh 2 Total Triangles: 2
+		Sub Model 1, Mesh 2 Triangle Index: 58484
+		Sub Model 1, Mesh 2 Skin Reference: 1
+		Sub Model 1, Mesh 2 Total Normals: 1
+		Sub Model 1, Mesh 2 Normals Index: 0
+
+Body Part 2 Name: "weapon"
+Body Part 2 Number of Models: 1
+Body Part 2 Base: 1
+Body Part 2 Model Index: 43332
+
+	Sub Model 1 Name: "v_saw_hands_reference"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 2
+	Sub Model 1 Vertices: 158
+	Sub Model 1 Normals: 157
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 250
+		Sub Model 1, Mesh 1 Triangle Index: 62660
+		Sub Model 1, Mesh 1 Skin Reference: 2
+		Sub Model 1, Mesh 1 Total Normals: 144
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+		Sub Model 1, Mesh 2 Total Triangles: 15
+		Sub Model 1, Mesh 2 Triangle Index: 65996
+		Sub Model 1, Mesh 2 Skin Reference: 3
+		Sub Model 1, Mesh 2 Total Normals: 13
+		Sub Model 1, Mesh 2 Normals Index: 0
+
+Body Part 3 Name: "weapon"
+Body Part 3 Number of Models: 1
+Body Part 3 Base: 1
+Body Part 3 Model Index: 43444
+
+	Sub Model 1 Name: "tfc_sniper_8rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 156
+	Sub Model 1 Normals: 127
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 158
+		Sub Model 1, Mesh 1 Triangle Index: 69892
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 127
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 4 Name: "weapon"
+Body Part 4 Number of Models: 1
+Body Part 4 Base: 1
+Body Part 4 Model Index: 43556
+
+	Sub Model 1 Name: "tfc_sniper_7rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 136
+	Sub Model 1 Normals: 111
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 138
+		Sub Model 1, Mesh 1 Triangle Index: 75236
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 111
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 5 Name: "weapon"
+Body Part 5 Number of Models: 1
+Body Part 5 Base: 1
+Body Part 5 Model Index: 43668
+
+	Sub Model 1 Name: "tfc_sniper_6rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 116
+	Sub Model 1 Normals: 95
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 118
+		Sub Model 1, Mesh 1 Triangle Index: 79844
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 95
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 6 Name: "weapon"
+Body Part 6 Number of Models: 1
+Body Part 6 Base: 1
+Body Part 6 Model Index: 43780
+
+	Sub Model 1 Name: "tfc_sniper_5rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 96
+	Sub Model 1 Normals: 79
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 98
+		Sub Model 1, Mesh 1 Triangle Index: 83716
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 79
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 7 Name: "weapon"
+Body Part 7 Number of Models: 1
+Body Part 7 Base: 1
+Body Part 7 Model Index: 43892
+
+	Sub Model 1 Name: "tfc_sniper_4rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 76
+	Sub Model 1 Normals: 63
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 78
+		Sub Model 1, Mesh 1 Triangle Index: 86852
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 63
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 8 Name: "weapon"
+Body Part 8 Number of Models: 1
+Body Part 8 Base: 1
+Body Part 8 Model Index: 44004
+
+	Sub Model 1 Name: "tfc_sniper_3rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 56
+	Sub Model 1 Normals: 47
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 58
+		Sub Model 1, Mesh 1 Triangle Index: 89252
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 47
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 9 Name: "weapon"
+Body Part 9 Number of Models: 1
+Body Part 9 Base: 1
+Body Part 9 Model Index: 44116
+
+	Sub Model 1 Name: "tfc_sniper_2rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 36
+	Sub Model 1 Normals: 31
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 38
+		Sub Model 1, Mesh 1 Triangle Index: 90916
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 31
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 10 Name: "weapon"
+Body Part 10 Number of Models: 1
+Body Part 10 Base: 1
+Body Part 10 Model Index: 44228
+
+	Sub Model 1 Name: "tfc_sniper_1round"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 1
+	Sub Model 1 Vertices: 16
+	Sub Model 1 Normals: 15
+	Sub Model 1 Deformation Groups: 0
+
+		Sub Model 1, Mesh 1 Total Triangles: 18
+		Sub Model 1, Mesh 1 Triangle Index: 91844
+		Sub Model 1, Mesh 1 Skin Reference: 0
+		Sub Model 1, Mesh 1 Total Normals: 15
+		Sub Model 1, Mesh 1 Normals Index: 0
+
+Body Part 11 Name: "weapon"
+Body Part 11 Number of Models: 1
+Body Part 11 Base: 1
+Body Part 11 Model Index: 44340
+
+	Sub Model 1 Name: "tfc_sniper_0rounds"
+	Sub Model 1 Type: 0
+	Sub Model 1 Meshes: 0
+	Sub Model 1 Vertices: 0
+	Sub Model 1 Normals: 0
+	Sub Model 1 Deformation Groups: 0
+
+Number of Attachments: 1
+Attachment 1 Name: ""
