@@ -2,6 +2,8 @@
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
+#include <reapi>
+#include "../my_include/weapons_const.inc"
 
 
 #define PLUGIN "Superhero erica tranq funcs"
@@ -9,6 +11,7 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
+new pPlayer
 new bool:dart_loaded[SH_MAXSLOTS+1]
 new Float:dart_launch_pos[MAX_ENTITIES][3];
 new bool:dart_hurts[MAX_ENTITIES];
@@ -26,6 +29,9 @@ public plugin_init(){
 	arrayset(dart_loaded,true,SH_MAXSLOTS+1)
 	arrayset(dart_hurts,false,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre")
+	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_WeaponPrimaryAttackPre")
+	RegisterHam(Ham_Weapon_Reload,STRN_ELITE, "fw_WeaponReloadPre")
 	
 }
 
@@ -81,11 +87,50 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
+public fw_ItemDeployPre(entity)
+{
+	pPlayer = get_member(entity, m_pPlayer)
+	
+	if(!tranq_get_has_erica(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	ExecuteHam(Ham_Item_Deploy, entity)
+	set_member(pPlayer, m_flNextAttack, 0.9)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, 0.9)
+	return HAM_SUPERCEDE
+}
 
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
+public fw_WeaponReloadPre(entity)
+{
+	pPlayer = get_member(entity, m_pPlayer)
+	
+	if(!tranq_get_has_erica(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	ExecuteHam(Ham_Weapon_Reload, entity)
+	set_member(pPlayer, m_flNextAttack, 2.23)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, 2.23)
+	return HAM_SUPERCEDE
+}
 
-}*/
+public fw_WeaponPrimaryAttackPre(entity)
+{
+	pPlayer = get_member(entity, m_pPlayer)
+	
+	if(!tranq_get_has_erica(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	if(get_member(entity, m_Weapon_iShotsFired)) return HAM_SUPERCEDE
+	
+	
+	set_member(entity, m_Weapon_flTimeWeaponIdle, 1.033)
+	set_member(entity, m_Weapon_flNextSecondaryAttack, 99999.0)
+	return HAM_SUPERCEDE
+}
+
 client_hittable(vic_userid){
 
 return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)

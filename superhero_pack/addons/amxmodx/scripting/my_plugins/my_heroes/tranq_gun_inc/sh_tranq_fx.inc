@@ -8,7 +8,7 @@
 
 
 #define XO_WEAPON 4
-#define m_pPlayer 41
+#define m_ppPlayer 41
 
 #define CAN_SELF_SLEEP 1
 

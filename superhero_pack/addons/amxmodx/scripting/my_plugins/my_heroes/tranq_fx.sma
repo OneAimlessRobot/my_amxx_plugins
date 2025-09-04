@@ -39,7 +39,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 {
 	if ( !sh_is_active()||!is_valid_ent(weapon_ent) ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
+	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
 
 	if ( gIsAsleep[owner]) {
 		return HAM_SUPERCEDE

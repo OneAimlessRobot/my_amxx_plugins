@@ -3,8 +3,6 @@
 #endif
 #define _weapons_included
 
-#include "../my_include/weapons_const.inc"
-
 #define MSGID_WEAPONLIST 78
 
 #define is_custom(%0,%1) (get_entvar(%0, var_impulse) == %1)
@@ -72,7 +70,7 @@ GunshotDecalTrace(iTrace, bool:bIsGunshot = false)
 {
 	static iMessage, iDecal, pHit, Float:vecEndPos[3]
 	pHit = get_tr2(iTrace, TR_pHit); if(pHit < 0) pHit = 0
-	if(pHit && !is_entity(pHit) || (pev(pHit, pev_flags) & FL_KILLME)) return PLUGIN_CONTINUE
+	if(pHit && !is_valid_ent(pHit) || (pev(pHit, pev_flags) & FL_KILLME)) return PLUGIN_CONTINUE
 	if(!ExecuteHam(Ham_IsBSPModel, pHit)) return PLUGIN_CONTINUE
 	
 	iDecal = ExecuteHam(Ham_DamageDecal, pHit, 0)
@@ -135,7 +133,7 @@ public fm_GunshotDecalIndexPost()
 CreateSmoke(type = SMOKE_WALLPUFF, Float:vecEndPos[3], Float:vecPlaneNormal[3], Float:scale = 0.5, Float:flColor[3], bool:wind = true, Float:framerate = 35.0)
 {
 	new entity = rg_create_entity("env_sprite")
-	if(!is_entity(entity)) return PLUGIN_CONTINUE
+	if(!is_valid_ent(entity)) return PLUGIN_CONTINUE
 	switch(type)
 	{
 		case SMOKE_WALLPUFF: g_SmokeType[type][17] = g_Num[random_num(0, 3)]

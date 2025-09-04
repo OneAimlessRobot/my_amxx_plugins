@@ -16,7 +16,7 @@ new pPlayer, pEntity, HookChain:TakeDamage
 new is_rehlds_avail
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheSound, SHOOTSOUND)
+	precache_sound(SHOOTSOUND);
 	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_clipin.wav")
 	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_clipout.wav")
 	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_slideback.wav")
@@ -75,7 +75,7 @@ public give_m1911a1(player)
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])
 {
 	pEntity = get_member(entity, m_WeaponBox_rgpPlayerItems, PISTOL_SLOT)
-	if(is_entity(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
+	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
 	SetHookChainArg(2, ATYPE_STRING, WORLDMODEL)
 }
 
@@ -173,6 +173,6 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(!is_user_alive(player)) return
 	pEntity = get_member(player, m_pActiveItem)
-	if(is_entity(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
+	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
 	set_cd(cd, CD_flNextAttack, 99999.0)
 }
