@@ -153,6 +153,7 @@ public fw_Weapon_Reload_Post(ent)
 		set_pdata_int(ent, 51, g_Tranq_Clip[id], 4)
 	}
 	
+	
 	return HAM_HANDLED
 } 
 public fw_ItemDeployPre(entity)

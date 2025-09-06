@@ -22,6 +22,7 @@ public plugin_natives(){
 	register_native("sh_ultrableed_user","_sh_ultrableed_user",0);
 	register_native("sh_minibleed_user","_sh_minibleed_user",0);
 	register_native("sh_unbleed_user","_sh_unbleed_user",0);
+	register_native("make_bleed_fx","_make_bleed_fx",0);
 }
 
 
@@ -108,8 +109,9 @@ public _sh_unbleed_user(iPlugin,iParams){
 
 
 }
-bleed_user_fx(id)
-{
+public _make_bleed_fx(iPlugin,iParams){
+
+	new id=get_param(1)
 	new origin[3]
 	get_user_origin(id,origin)
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
@@ -134,7 +136,7 @@ public minibleed_task(array[],id){
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 25)
 	sh_add_hp(array[0],MINIBLEED_DAMAGE,sh_get_max_hp(array[0]))
-	bleed_user_fx(id)
+	make_bleed_fx(id)
 	sh_set_stun(id,0.25,0.5)
 	sh_extra_damage(id,array[0],MINIBLEED_DAMAGE,"Minibleeding",0,SH_DMG_NORM)
 	
@@ -176,7 +178,7 @@ public ultrableed_task(array[],id){
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 150)
 	sh_add_hp(array[0],ULTRABLEED_DAMAGE,sh_get_max_hp(array[0]))
-	bleed_user_fx(id)
+	make_bleed_fx(id)
 	sh_set_stun(id,0.25,0.5)
 	sh_extra_damage(id,array[0],ULTRABLEED_DAMAGE,"Ultrableeding",0,SH_DMG_NORM)
 	
@@ -216,7 +218,7 @@ public bleed_task(array[],id){
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 50)
 	sh_add_hp(array[0],BLEED_DAMAGE,sh_get_max_hp(array[0]))
-	bleed_user_fx(id)
+	make_bleed_fx(id)
 	sh_extra_damage(id,array[0],BLEED_DAMAGE,"Bleeding",0,SH_DMG_NORM)
 	
 	

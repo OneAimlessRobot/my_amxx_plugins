@@ -39,6 +39,7 @@ native sh_bleed_user(id,attacker,gHeroID)
 native sh_ultrableed_user(id,attacker,gHeroID)
 native sh_minibleed_user(id,attacker,gHeroID)
 native sh_unbleed_user(id)
+native make_bleed_fx(id)
 
 
 

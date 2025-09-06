@@ -749,8 +749,8 @@ public field_think(ent)
 	else{
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
 		FVecIVec(ent_pos,ient_pos)
-		make_shockwave(ient_pos,field_radius,LineColorsWithAlpha[YELLOW])
-		make_shockwave(ient_pos,field_core_radius,LineColorsWithAlpha[ORANGE])
+		make_shockwave(ient_pos,field_radius,{255, 255, 0,60})
+		make_shockwave(ient_pos,field_core_radius,{255, 128, 0,60})
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 		new CsTeams:owner_team=cs_get_user_team(owner)
 		for( new i= 0;(i< numfound);i++){

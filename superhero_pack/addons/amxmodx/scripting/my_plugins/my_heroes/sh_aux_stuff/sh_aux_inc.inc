@@ -30,6 +30,10 @@
 #define ORANGE		7
 #define WHITE		8
 
+#define NULL_SOUND_FILENAME "common/null.wav"
+
+static const burn_decal[5] = {199,200,201,202,203}
+
 //Color definitions
 stock const LineColors[COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
@@ -128,6 +132,19 @@ public track_task(array[],id){
 	}
 	
 }
+
+stock make_sparks(Float:the_pos[3]){
+	
+
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
+	write_byte(TE_SPARKS);
+	engfunc(EngFunc_WriteCoord, the_pos[0])
+	engfunc(EngFunc_WriteCoord, the_pos[1])
+	engfunc(EngFunc_WriteCoord, the_pos[2])
+	message_end();	
+	
+}
+
 stock random_fire(Origin[3], ent, Float:radius) {
 
 	static iRange, iOrigin[3], g_g, i;
@@ -700,7 +717,18 @@ stock draw_bbox(ent_id,killbeam){
 
 
 }
-
+stock gun_shot_decal(Float:vec[3]){
+	
+	new decal_id = burn_decal[random_num(0,4)]
+	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte( 109 ) // decal and ricochet sound
+	write_coord_f( vec[0] ) //pos
+	write_coord_f( vec[1] )
+	write_coord_f( vec[2] )
+	write_short (0) // I have no idea what thats supposed to be
+	write_byte (decal_id) //decal
+	message_end()	
+}
 //-----------------------------------------------------------------------------------------------
 stock explode_fx( vec1[3] )
 {
