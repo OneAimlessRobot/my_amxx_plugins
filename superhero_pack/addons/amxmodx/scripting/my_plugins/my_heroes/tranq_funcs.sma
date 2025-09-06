@@ -2,6 +2,7 @@
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
+#include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
 
@@ -12,9 +13,11 @@
 #define Struct				enum
 
 new pPlayer
-new bool:dart_loaded[SH_MAXSLOTS+1]
 new Float:dart_launch_pos[MAX_ENTITIES][3];
+new Float:g_Recoil[SH_MAXSLOTS+1][3]
+new g_Tranq_Clip[SH_MAXSLOTS+1]
 new bool:dart_hurts[MAX_ENTITIES];
+new bool:dart_loaded[SH_MAXSLOTS+1];
 new m_trail
 public plugin_init(){
 	
@@ -26,12 +29,20 @@ public plugin_init(){
 		arrayset(dart_launch_pos[i],0.0,3);
 		
 	}
+	arrayset(dart_hurts,false,MAX_ENTITIES)
 	arrayset(dart_loaded,true,SH_MAXSLOTS+1)
-	arrayset(dart_hurts,false,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre")
 	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_WeaponPrimaryAttackPre")
+	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_Weapon_PrimaryAttack_Post", 1)	
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player")	
+	RegisterHam(Ham_Item_PostFrame, STRN_ELITE, "fw_Item_PostFrame")	
+	
 	RegisterHam(Ham_Weapon_Reload,STRN_ELITE, "fw_WeaponReloadPre")
+	RegisterHam(Ham_Weapon_Reload, STRN_ELITE, "fw_Weapon_Reload_Post", 1)	
+	
+	
 	
 }
 
@@ -41,52 +52,109 @@ public plugin_natives(){
 	
 	
 }
+
+
 public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!tranq_get_has_erica(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_elite", id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	
 	if(weapon==CSW_ELITE){
 		if(button & IN_ATTACK)
 		{
-			button &= ~IN_ATTACK;
-			set_uc(uc_handle, UC_Buttons, button);
-			if(!(is_user_alive(id))||!dart_loaded[id]) return FMRES_IGNORED
-			if(tranq_get_num_darts(id) == 0)
-			{
-				client_print(id, print_center, "You are out of darts")
-				return FMRES_IGNORED
+			if(!dart_loaded[id]){
+				button &= ~IN_ATTACK;
+				set_uc(uc_handle, UC_Buttons, button);
 			}
-			launch_dart(id)
-			dart_loaded[id]=false
 			
 		}
-		else
-		{
-			button &= ~IN_ATTACK;
-			set_uc(uc_handle, UC_Buttons, button);
-			
-			set_pev(id, pev_weaponanim, 0);
-			set_pdata_float(id, 83, 0.5, 4);
-			if(ent){
-				set_pdata_float(ent, 48, 0.5+DART_SHOOT_PERIOD, 4);
-			}
-			dart_loaded[id]=true
-		}
-	}
-	if(ent)
-	{
-		cs_set_weapon_ammo(ent, -1);
-		cs_set_user_bpammo(id, CSW_ELITE,tranq_get_num_darts(id));
 	}
 	
 	return FMRES_IGNORED;
 }
 
+public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{
+	if(!is_user_connected(Attacker))
+		return HAM_IGNORED	
+	if(get_user_weapon(Attacker) != CSW_ELITE || !tranq_get_has_erica(Attacker))
+		return HAM_IGNORED
+		
+	Damage=0.0;
+	
+	return HAM_SUPERCEDE
+}
+
+public fw_Item_PostFrame(ent)
+{
+	static id; id = pev(ent, pev_owner)
+	if(client_isnt_hitter(id)){
+		
+		return HAM_IGNORED;
+	}
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ELITE)
+	
+	static iClip; iClip = get_pdata_int(ent, 51, 4)
+	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	
+	if(fInReload && flNextAttack <= 0.0)
+	{
+		static temp1
+		temp1 = min(CLIP_SIZE - iClip, bpammo)
+
+		set_pdata_int(ent, 51, iClip + temp1, 4)
+		cs_set_user_bpammo(id, CSW_ELITE, bpammo - temp1)		
+		
+		set_pdata_int(ent, 54, 0, 4)
+		
+		fInReload = 0
+	}		
+	
+	return HAM_IGNORED
+}
+
+public fw_WeaponReloadPre(entity)
+{
+	pPlayer = get_member(entity, m_pPlayer)
+	
+	if(client_isnt_hitter(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	g_Tranq_Clip[pPlayer] = -1
+		
+	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, CSW_ELITE)
+	static iClip; iClip = get_pdata_int(entity, 51, 4)
+	
+	if(BPAmmo <= 0){
+		return HAM_SUPERCEDE
+	}
+	if(iClip >= CLIP_SIZE){
+		return HAM_SUPERCEDE		
+	}
+	g_Tranq_Clip[pPlayer] = iClip		
+	return HAM_HANDLED
+}
+public fw_Weapon_Reload_Post(ent)
+{
+	static id; id = pev(ent, pev_owner)
+	if(client_isnt_hitter(id)){
+		
+		return HAM_IGNORED
+	}
+	if((get_pdata_int(ent, 54, 4) == 1))
+	{ // Reload
+		if(g_Tranq_Clip[id] == -1)
+			return HAM_IGNORED
+		
+		set_pdata_int(ent, 51, g_Tranq_Clip[id], 4)
+	}
+	
+	return HAM_HANDLED
+} 
 public fw_ItemDeployPre(entity)
 {
 	pPlayer = get_member(entity, m_pPlayer)
@@ -96,39 +164,45 @@ public fw_ItemDeployPre(entity)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_member(pPlayer, m_flNextAttack, 0.9)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, 0.9)
+	set_member(pPlayer, m_flNextAttack, DART_SHOOT_PERIOD)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
 	return HAM_SUPERCEDE
 }
 
-public fw_WeaponReloadPre(entity)
-{
-	pPlayer = get_member(entity, m_pPlayer)
-	
-	if(!tranq_get_has_erica(pPlayer)){
-		
-		return HAM_IGNORED
-	}
-	ExecuteHam(Ham_Weapon_Reload, entity)
-	set_member(pPlayer, m_flNextAttack, 2.23)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, 2.23)
-	return HAM_SUPERCEDE
-}
 
 public fw_WeaponPrimaryAttackPre(entity)
 {
 	pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!tranq_get_has_erica(pPlayer)){
-		
-		return HAM_IGNORED
+	if ( client_isnt_hitter(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	
+	if(tranq_get_num_darts(pPlayer) == 0)
+	{
+		client_print(pPlayer, print_center, "You are out of darts")
+		sh_drop_weapon(pPlayer, CSW_ELITE, true)
+		return HAM_SUPERCEDE
 	}
-	if(get_member(entity, m_Weapon_iShotsFired)) return HAM_SUPERCEDE
-	
-	
-	set_member(entity, m_Weapon_flTimeWeaponIdle, 1.033)
+	launch_dart(pPlayer)
+	dart_loaded[pPlayer]=false;
+	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextSecondaryAttack, 99999.0)
-	return HAM_SUPERCEDE
+	return HAM_IGNORED
+}
+
+public fw_Weapon_PrimaryAttack_Post(Ent)
+{
+	static id; id = pev(Ent, pev_owner)
+	if(client_isnt_hitter(id)){
+			return;
+	}
+	static Float:Push[3]
+	pev(id, pev_punchangle, Push)
+	xs_vec_sub(Push, g_Recoil[id], Push)
+	
+	xs_vec_mul_scalar(Push, RECOIL, Push)
+	xs_vec_add(Push, g_Recoil[id], Push)
+	set_pev(id, pev_punchangle, Push)
 }
 
 client_hittable(vic_userid){
@@ -182,7 +256,8 @@ entity_set_vector(Ent, EV_VEC_angles, vAngle)
 
 entity_set_int(Ent, EV_INT_effects, 2)
 entity_set_int(Ent, EV_INT_solid, 2)
-entity_set_int(Ent, EV_INT_movetype, 5)
+entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
+entity_set_float(Ent,EV_FL_gravity, 2.0)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(DART_SPEED) , Velocity)
@@ -199,10 +274,13 @@ if(tranq_get_is_max_points(id)){
 
 }
 new parm[1]
+new parm2[1]
 
+parm2[0]= id
 parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
+set_task(DART_SHOOT_PERIOD, "dart_reload",id,parm2,1,"a",1)
 set_task(0.01, "darttrail",id,parm,1)
 
 return PLUGIN_CONTINUE
@@ -284,6 +362,17 @@ if(pev(pTouched,pev_solid)==SOLID_BSP){
 		}
 
 	}
+}
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	if(client_isnt_hitter(player)){
+		return
+	}
+	new clip, ammo, weapon = get_user_weapon(player, clip, ammo);
+	if(weapon!=CSW_ELITE){
+		return;
+	}
+	set_cd(cd, CD_flNextAttack, 99999.0)
 }
 public remove_dart(id_dart){
 	id_dart-=DART_REM_TASKID

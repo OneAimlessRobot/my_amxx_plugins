@@ -15,7 +15,7 @@
 
 #define DART_SPEED 3100.0
 
-#define DART_SHOOT_PERIOD 1.5
+#define DART_SHOOT_PERIOD 0.2
 
 #define DART_SHOOT_RANDOMNESS 0.0
 
@@ -24,6 +24,8 @@
 
 #define DART_REM_TIME 0.001
 
+#define RECOIL 0.4
+#define CLIP_SIZE 4
 
 native clear_darts()
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

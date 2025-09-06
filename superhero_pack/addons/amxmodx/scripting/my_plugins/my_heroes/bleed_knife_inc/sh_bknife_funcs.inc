@@ -1,7 +1,7 @@
-#if defined sh_gat_funcs
+#if defined sh_bleed_knife_funcs
   #endinput
 #endif
-#define sh_gat_funcs
+#define sh_bleed_knife_funcs
 
 #define DART_CLASSNAME "pill_gatling_pill"
 #define EFFECT_SHOT_SFX "shmod/Teliko/counter.wav"

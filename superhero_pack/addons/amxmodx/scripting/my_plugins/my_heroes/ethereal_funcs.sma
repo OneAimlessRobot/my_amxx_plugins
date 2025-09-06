@@ -118,25 +118,6 @@ public Do_Register_HamBot(id)
 	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Player")
 }
 
-/*
-public zd_weapon_bought(id, ItemID)
-{
-	if(ItemID == g_Ethereal) Get_Ethereal(id)
-}
-
-public zd_weapon_remove(id, ItemID)
-{
-	if(ItemID == g_Ethereal) Remove_Ethereal(id)
-}
-
-public zd_weapon_addammo(id, ItemID)
-{
-	if(ItemID == g_Ethereal) 
-	{
-		Give_RealAmmo(id, CSW_ETHEREAL)
-	}
-}*/
-
 public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)

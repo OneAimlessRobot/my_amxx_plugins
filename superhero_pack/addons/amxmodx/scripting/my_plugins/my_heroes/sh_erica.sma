@@ -3,14 +3,12 @@
 #include "../my_include/superheromod.inc"
 #include <xs>
 #include "tranq_gun_inc/sh_erica_get_set.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
-
 // GLOBAL VARIABLES
 
 new gHasErica[SH_MAXSLOTS+1]
@@ -363,6 +361,8 @@ public newRound(id)
 			g_base_er_speed[id]=base_er_speed
 			g_base_er_dmg_mult[id]=base_dmg_er_mult
 			g_base_er_radius[id]=base_er_radius
+			
+			
 		}
 	}
 	return PLUGIN_HANDLED
@@ -480,6 +480,12 @@ if ( sh_is_active() && is_user_alive(id) && gHasErica[id] &&client_hittable(id))
 	sh_give_weapon(id,CSW_HEGRENADE,false)
 	cs_set_user_bpammo(id, CSW_HEGRENADE,num_mollies);
 	sh_give_weapon(id, CSW_ELITE)
+	
+	new weapon_id=find_ent_by_owner(-1,"weapon_elite",id);
+	if(is_valid_ent(weapon_id)){
+		cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
+		cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-CLIP_SIZE);
+	}
 	hook_set_hook(id,1)
 	
 }

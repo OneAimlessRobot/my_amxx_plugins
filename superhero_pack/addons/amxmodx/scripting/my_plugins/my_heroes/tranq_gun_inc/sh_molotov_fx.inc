@@ -8,7 +8,6 @@
 
 
 #define XO_WEAPON 4
-#define m_pPlayer 41
 
 #define CAN_SELF_MOLLY 1
 
