@@ -922,10 +922,15 @@ stock Float:angle_between_vectors_radians(Float:input_a[3], Float:input_b[3], ve
 	return angle_between_input_a_and_input_b;
 	
 }
+stock prepare_shero_aux_lib(){
+	
+	xs_seed(get_systime(0));
+}
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
 	
 	
+	xs_seed(get_systime(0));
 	white = precache_model("sprites/shockwave.spr")
 	fire = precache_model("sprites/zerogxplode.spr")
 	gSpriteLaser = precache_model("sprites/laserbeam.spr")

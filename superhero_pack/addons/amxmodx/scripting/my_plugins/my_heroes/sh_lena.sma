@@ -40,8 +40,8 @@ public plugin_init()
 	register_event("ResetHUD","new_spawn","b")
 	shRegHeroInit(gHeroName, "lena_init")
 	register_event("DeathMsg","death","a")
+	prepare_shero_aux_lib()
 }
-
 public plugin_natives(){
 
 	register_native("lena_l96_dec_num_bullets","_lena_l96_dec_num_bullets",0);
@@ -117,10 +117,9 @@ public lena_hud_task(id){
 }
 lena_hud(id){
 	new hud_msg[500];
-	format(hud_msg,499,"[SH] %s:^nNum bullets left: %d^nCurr zoom mode: %d^n",
+	format(hud_msg,499,"[SH] %s:^nNum bullets left: %d^n",
 					gHeroName,
-					lena_l96_get_num_bullets(id),
-					lena_l96_get_user_zoom(id)
+					lena_l96_get_num_bullets(id)
 					);
 	
 	set_hudmessage(LineColorsWithAlpha[WHITE][0], LineColorsWithAlpha[WHITE][1], LineColorsWithAlpha[WHITE][2], 0.5, 0.05, 1, 0.0, 0.5,0.0,0.0,1)
@@ -156,14 +155,12 @@ public lena_init()
 	{
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		set_task(0.1, "lena_hud_task", id+LENA_HUD_TASKID, "", 0, "b")
-		lena_l96_set_user_zoom(id)
 		new_spawn(id)
 	}
 	else
 	{
 		sh_drop_weapon(id,LENA_WEAPON_CLASSID,true);
 		remove_task(id+LENA_HUD_TASKID)
-		lena_l96_remove_user_zoom(id)
 	}
 }
 public new_spawn(id)
@@ -171,7 +168,6 @@ public new_spawn(id)
 	if ( sh_is_active() && is_user_alive(id) && lena_get_has_lena(id) )
 	{
 		gNumBullets[id]=lena_max_bullets
-		lena_l96_reset_user_zoom(id)
 	}
 }
 public sh_client_spawn(id)
@@ -202,9 +198,6 @@ public death()
 {	
 	new id = read_data(2)
 	if(lena_get_has_lena(id)){
-		
-		
-		lena_l96_reset_user_zoom(id)
 		
 		
 	}

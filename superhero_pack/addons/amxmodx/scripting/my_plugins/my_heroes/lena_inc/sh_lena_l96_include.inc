@@ -26,7 +26,7 @@
 
 #define LENA_PROJECTILE_SHOOT_PERIOD 1.0
 
-#define LENA_PROJECTILE_SHOOT_RANDOMNESS 0.0
+#define LENA_PROJECTILE_SHOOT_RANDOMNESS 0.3
 
 #define LENA_PROJECTILE_RELOAD_TASKID 5762341
 #define LENA_PROJECTILE_REM_TASKID 12816212
@@ -79,7 +79,3 @@ native lena_l96_clear_bullets();
 native lena_l96_set_num_bullets(id,value_to_set)
 native lena_l96_get_num_bullets(id)
 native lena_l96_dec_num_bullets(id)
-native lena_l96_set_user_zoom(id)
-native lena_l96_reset_user_zoom(id)
-native lena_l96_remove_user_zoom(id)
-native lena_l96_get_user_zoom(id)

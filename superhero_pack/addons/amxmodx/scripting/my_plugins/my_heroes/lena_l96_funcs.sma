@@ -16,7 +16,6 @@ new bool:bullet_loaded[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new Float:bullet_launch_pos[MAX_ENTITIES][3];
 new g_L96_clip[SH_MAXSLOTS+1]
-new g_L96_zoom[SH_MAXSLOTS+1]
 public plugin_init(){
 	
 	
@@ -44,11 +43,6 @@ public plugin_init(){
 public plugin_natives(){
 	
 	register_native( "lena_l96_clear_bullets","_lena_l96_clear_bullets",0)
-	register_native( "lena_l96_get_user_zoom","_lena_l96_get_user_zoom",0)
-	register_native( "lena_l96_remove_user_zoom","_lena_l96_remove_user_zoom",0)
-	register_native( "lena_l96_reset_user_zoom","_lena_l96_reset_user_zoom",0)
-	register_native( "lena_l96_set_user_zoom","_lena_l96_set_user_zoom",0)
-	register_native( "lena_l96_get_user_zoom","_lena_l96_get_user_zoom",0)
 	
 	
 }
@@ -59,48 +53,17 @@ public CmdStart(id, uc_handle)
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new old_buttons= pev( id, pev_oldbuttons )
 	
 	//new flags= entity_get_int( id, EV_INT_flags ) 
 	//& FL_ONGROUND 
 	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==LENA_WEAPON_CLASSID)){
-		
-		if((button & IN_ATTACK2)&&!(old_buttons&IN_ATTACK2))
-		{
-			new zoom=g_L96_zoom[id]
-			switch(zoom){
-				
-				case LENA_NO_ZOOM:{
-					g_L96_zoom[id]=LENA_FIRST_ZOOM
-					
-				}
-				case LENA_FIRST_ZOOM:{
-					g_L96_zoom[id]=LENA_SECOND_ZOOM
-					
-					
-				}
-				case LENA_SECOND_ZOOM:{
-					
-					g_L96_zoom[id]=LENA_MAX_ZOOM
-					
-				}
-				case LENA_MAX_ZOOM:{
-					
-					g_L96_zoom[id]=LENA_NO_ZOOM
-					
-				}
-				
-			}
-		}
 		if(button & IN_ATTACK)
 		{
-			if(!bullet_loaded[id]||!(g_L96_zoom[id])){
+			if(!bullet_loaded[id]){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
-				emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-				emit_sound(id, CHAN_WEAPON, NULL_SOUND_FILENAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				return FMRES_SUPERCEDE
 			}
 			
@@ -165,7 +128,6 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 	g_L96_clip[pPlayer] = -1
-	g_L96_zoom[pPlayer] = LENA_NO_ZOOM
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, LENA_WEAPON_CLASSID)
 	static iClip; iClip = get_pdata_int(entity, 51, 4)
 	
@@ -210,8 +172,6 @@ public fw_ItemDeployPre(entity)
 	set_member(pPlayer, m_flNextAttack, LENA_PROJECTILE_SHOOT_PERIOD*2)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD*2)
 	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
-	cs_set_user_zoom(pPlayer,CS_RESET_ZOOM,0);
-	g_L96_zoom[pPlayer]=LENA_NO_ZOOM;
 	return HAM_SUPERCEDE
 }
 
@@ -252,7 +212,22 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	xs_vec_add(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
-
+stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
+	
+	
+	new Float:normal_speed[3];
+	new Float:norm_speed_random[3];
+	new Float:speed=VecLength(vec_to_randomize)
+	new Float:norm_random_speed;
+	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
+	norm_speed_random[0]=normal_speed[0]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[1]=normal_speed[1]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[2]=normal_speed[2]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_random_speed=VecLength(norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
+	
+}
 launch_bullet(id)
 {
 
@@ -286,8 +261,24 @@ entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+new Float:coeff_to_multiply_with
+if((cs_get_user_zoom(id)<CS_SET_FIRST_ZOOM)){
+	coeff_to_multiply_with=LENA_PROJECTILE_SHOOT_RANDOMNESS;
+}
+else{
+	
+	new Float:user_movement_velocity[3]
+	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
+	new Float:user_maxspeed=get_user_maxspeed(id);
+	new Float:user_current_speed=VecLength(user_movement_velocity)
+	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
+	coeff_to_multiply_with=coeff_to_multiply_with_extra*LENA_PROJECTILE_SHOOT_RANDOMNESS
+	
+}
+//console_print(id,"coeff to multiply with: %0.2f",coeff_to_multiply_with)
+randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
+entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 lena_l96_dec_num_bullets(id)
 
 bullet_launch_pos[Ent][0]=Origin[0]
@@ -382,72 +373,6 @@ public bulletspeed(parm[])
 	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 }
 
-
-public lena_zoom_task(id){
-	
-	id-=LENA_ZOOM_TASKID;
-	if(!lena_get_has_lena(id)||!is_user_connected(id)){
-		lena_l96_remove_user_zoom(id);
-	}
-	//sh_chat_message(id,lena_get_hero_id(),"Zoom loop running!");
-	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	if((weapon==LENA_WEAPON_CLASSID)){
-		new zoom=g_L96_zoom[id]
-		switch(zoom){
-			
-			
-			case LENA_NO_ZOOM:{
-				cs_set_user_zoom(id,CS_RESET_ZOOM,0);
-				
-			}
-			case LENA_FIRST_ZOOM:{
-				cs_set_user_zoom(id,CS_SET_AUGSG552_ZOOM,0);
-				
-				
-			}
-			case LENA_SECOND_ZOOM:{
-				
-				cs_set_user_zoom(id,CS_SET_FIRST_ZOOM,0);
-				
-			}
-			case LENA_MAX_ZOOM:{
-				
-				cs_set_user_zoom(id,CS_SET_SECOND_ZOOM,0);
-				
-			}
-			
-		}
-	}
-
-	
-	
-	
-}
-public _lena_l96_reset_user_zoom(iPlugin,iParams){
-
-	new id=get_param(1)
-	g_L96_zoom[id]=LENA_NO_ZOOM;
-
-}
-public _lena_l96_remove_user_zoom(iPlugin,iParams){
-
-	new id=get_param(1)
-	remove_task(id+LENA_ZOOM_TASKID)
-
-}
-
-public _lena_l96_set_user_zoom(iPlugin,iParams){
-
-	new id=get_param(1)
-	set_task(0.1,"lena_zoom_task",id+LENA_ZOOM_TASKID,"",0,"b")
-
-}
-public _lena_l96_get_user_zoom(iPlugin,iParams){
-
-	new id=get_param(1)
-	return g_L96_zoom[id]
-
-}
 
 public _lena_l96_clear_bullets(iPlugin,iParams){
 
