@@ -6,7 +6,6 @@
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
-#include "../my_include/weapons.inc"
 
 #define PLUGIN_AUTHOR "MilkChanTheGOAT"
 #define PLUGIN_VER "1.0"
@@ -209,6 +208,7 @@ public fw_ItemDeployPre(entity)
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_member(pPlayer, m_flNextAttack, LENA_PROJECTILE_SHOOT_PERIOD*2)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD*2)
+	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
 	cs_set_user_zoom(pPlayer,CS_RESET_ZOOM,0);
 	g_L96_zoom[pPlayer]=LENA_NO_ZOOM;
 	return HAM_SUPERCEDE
@@ -451,7 +451,6 @@ public vexd_pfntouch(pToucher, pTouched)
 			emit_sound(pToucher, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			make_sparks(origin);
 			gun_shot_decal(origin);
-			CreateSmoke(SMOKE_WALLPUFF, origin, bullet_launch_pos[pToucher], 0.5, Float:{40.0, 40.0, 40.0})
 			remove_entity(pToucher)	
 
 		}

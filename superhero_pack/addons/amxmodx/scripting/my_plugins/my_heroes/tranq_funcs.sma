@@ -167,6 +167,7 @@ public fw_ItemDeployPre(entity)
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_member(pPlayer, m_flNextAttack, DART_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
+	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
 	return HAM_SUPERCEDE
 }
 

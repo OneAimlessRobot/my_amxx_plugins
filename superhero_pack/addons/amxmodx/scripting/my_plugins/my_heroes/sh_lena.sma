@@ -37,8 +37,8 @@ public plugin_init()
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("lena_init", "lena_init")
+	register_event("ResetHUD","new_spawn","b")
 	shRegHeroInit(gHeroName, "lena_init")
-	register_event("ResetHUD", "new_spawn", "b")
 	register_event("DeathMsg","death","a")
 }
 
@@ -168,12 +168,16 @@ public lena_init()
 }
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && gHasLena[id] )
+	if ( sh_is_active() && is_user_alive(id) && lena_get_has_lena(id) )
 	{
 		gNumBullets[id]=lena_max_bullets
 		lena_l96_reset_user_zoom(id)
-		lena_weapons(id)
 	}
+}
+public sh_client_spawn(id)
+{
+	lena_weapons(id)
+
 }
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
