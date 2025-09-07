@@ -231,7 +231,9 @@ public fw_WeaponPrimaryAttackPre(entity)
 	bullet_loaded[pPlayer]=false;
 	g_L96_clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD)
-	set_member(entity, m_Weapon_flNextPrimaryAttack, 99999.0)
+	set_member(entity, m_Weapon_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD)
+	
+	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
 	return HAM_IGNORED
 }
 
@@ -328,11 +330,8 @@ message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_P
 public lena_zoom_task(id){
 	
 	id-=LENA_ZOOM_TASKID;
-	if(!lena_get_has_lena(id)){
+	if(!lena_get_has_lena(id)||!is_user_connected(id)){
 		lena_l96_remove_user_zoom(id);
-	}
-	if(!client_hittable(id)){
-		return;
 	}
 	//sh_chat_message(id,lena_get_hero_id(),"Zoom loop running!");
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
@@ -421,9 +420,17 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
+				new Float:speed
+				new Float:velocity[3]
+				
+				
+				entity_get_vector(pToucher,EV_VEC_velocity,velocity);
+				speed=VecLength(velocity);
+				new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
 				new Float:vic_origin[3];
 				new Float:vic_origin_eyes[3];
 				new vic_origin_eyes_int[3];
+				
 				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
 				get_user_origin(pTouched,vic_origin_eyes_int,1);
 				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
@@ -431,7 +438,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
 				new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
 				new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
-				new Float:damage=normal_damage;
+				new Float:damage=normal_damage*speed_coeff;
 				new headshot=0;
 				if(head_distance<LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST){
 					

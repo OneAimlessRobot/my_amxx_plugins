@@ -189,6 +189,8 @@ public fw_WeaponPrimaryAttackPre(entity)
 	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextSecondaryAttack, 99999.0)
+	
+	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
 	return HAM_IGNORED
 }
 
