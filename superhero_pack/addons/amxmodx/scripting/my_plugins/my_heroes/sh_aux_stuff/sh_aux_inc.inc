@@ -898,6 +898,30 @@ stock mirror_3d_vec(Float:in_vec[3],Float:out_vec[3]){
 	}
 
 }
+
+stock Float:dot_product( Float:input_a[3], Float:input_b[3], vec_size = 3) {
+	
+	new Float:result = 0.0;
+	for (new i = 0; i < vec_size; i++) {
+		
+		result += input_a[i] * input_b[i];
+		
+	}
+	return result;
+	
+}
+
+stock Float:angle_between_vectors_radians(Float:input_a[3], Float:input_b[3], vec_size = 3) {
+	
+	
+	new Float:dot_product_between_vecs = dot_product(input_a, input_b, vec_size);
+	new Float:vector_len_product = VecLength(input_a) * VecLength(input_b);
+	new Float:before_last = (dot_product_between_vecs / (vector_len_product));
+	before_last = floatclamp(before_last, -1.0, 1.0);
+	new Float:angle_between_input_a_and_input_b = floatacos(before_last,anglemode:radian);
+	return angle_between_input_a_and_input_b;
+	
+}
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
 	

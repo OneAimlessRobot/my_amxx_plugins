@@ -71,7 +71,6 @@ public CmdStart(id, uc_handle)
 			new zoom=g_L96_zoom[id]
 			switch(zoom){
 				
-				
 				case LENA_NO_ZOOM:{
 					g_L96_zoom[id]=LENA_FIRST_ZOOM
 					
@@ -196,7 +195,8 @@ public fw_Weapon_Reload_Post(ent)
 	
 	
 	return HAM_HANDLED
-} 
+}
+
 public fw_ItemDeployPre(entity)
 {
 	new pPlayer = get_member(entity, m_pPlayer)
@@ -281,7 +281,7 @@ entity_set_vector(Ent, EV_VEC_angles, vAngle)
 entity_set_int(Ent, EV_INT_effects, 2)
 entity_set_int(Ent, EV_INT_solid, 2)
 entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-entity_set_float(Ent,EV_FL_gravity, 1.25)
+entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
@@ -289,15 +289,21 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 lena_l96_dec_num_bullets(id)
 
-new parm[1]
+bullet_launch_pos[Ent][0]=Origin[0]
+bullet_launch_pos[Ent][1]=Origin[1]
+bullet_launch_pos[Ent][2]=Origin[2]
+new parm[2]
 new parm2[1]
 
 parm2[0]= id
 parm[0] = Ent
+parm[1] = id
 emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 set_task(LENA_PROJECTILE_SHOOT_PERIOD, "bullet_reload",id,parm2,1,"a",1)
-set_task(0.01, "bullettrail",id,parm,1)
+set_task(0.01, "bullettrail",Ent+LENA_PROJECTILE_TRAIL_TASKID,parm,2)
+
+set_task(LENA_PROJECTILE_PHYS_UPDATE_TIME, "bulletspeed",Ent+LENA_PROJECTILE_SPEED_TASKID,parm,2,"b")
 
 return PLUGIN_CONTINUE
 }
@@ -309,21 +315,70 @@ bullet_loaded[parm[0]] = true
 }
 public bullettrail(parm[])
 {
-new pid = parm[0]
-if (pid)
-{
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 5 )
-write_byte(LineColorsWithAlpha[WHITE][0])			// r, g, b
-write_byte(LineColorsWithAlpha[WHITE][1])		// r, g, b
-write_byte(LineColorsWithAlpha[WHITE][2])			// r, g, b
-write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	new pid = parm[0]
+	if (!is_valid_ent(pid))
+	{
+		return
+	}
+	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+	write_byte( TE_BEAMFOLLOW )
+	write_short(pid) // entity
+	write_short(m_trail)  // model
+	write_byte( 10 )       // life
+	write_byte( 5 )
+	write_byte(LineColorsWithAlpha[WHITE][0])			// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][1])		// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][2])			// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
+	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	if(client_hittable(parm[1])){
+		client_print(parm[1],print_console,"Trail update!!!");
+	}
 }
+public bulletspeed(parm[])
+{
+	new pid = parm[0]
+	if (!is_valid_ent(pid))
+	{
+		return
+	}
+	new Float:speedz,Float:speedx,Float:speedy;
+	new Float:velocity[3]
+	new Float:velocity_copy[3]
+				
+
+	entity_get_vector(pid,EV_VEC_velocity,velocity);
+	multiply_3d_vector_by_scalar(velocity,1.0,velocity_copy);
+	speedx=velocity[0]
+	speedy=velocity[1]
+	speedz=velocity[2]
+	
+	new Float:gravity_const=get_cvar_float("sv_gravity")*LENA_PROJECTILE_GRAVITY_MULT
+	new Float:delta_z=(((LENA_PROJECTILE_DRAG_CONST*speedz))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_x=(((LENA_PROJECTILE_DRAG_CONST*speedx))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_y=(((LENA_PROJECTILE_DRAG_CONST*speedy))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	/*console_print(parm[1],"Total speed: %0.2f^nspeedx: %0.2f^nspeedy: %0.2f^nspeedz: %0.2f^nThe angle between the velocity and gravity is: %0.2f^n",
+																							speed,
+																							speedx,
+																							speedy,
+																							speedz,
+																							the_angle_degrees);
+	console_print(parm[1],"The cosine: %0.2f^ngravity const: %0.2f^nDelta x is: %0.2f^nDelta y is: %0.2f^nDelta z is: %0.2f^nDrag constant: %0.2f",
+																					floatcos(the_angle_radians,anglemode:radian),
+																					gravity_const,
+																					delta_x,
+																					delta_y,
+																					delta_z,
+																					LENA_PROJECTILE_DRAG_CONST);*/
+																							
+	
+	speedx-=delta_x
+	speedy-=delta_y
+	speedz-=delta_z
+	velocity_copy[0]=speedx
+	velocity_copy[1]=speedy
+	velocity_copy[2]=speedz
+	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 }
 
 
@@ -397,7 +452,7 @@ public _lena_l96_clear_bullets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, LENA_PROJECTILE_CLASSNAME)
 while(grenada) {
-	remove_entity(grenada)
+	remove_bullet(grenada)
 	arrayset(bullet_launch_pos[grenada],0.0,3);
 	grenada = find_ent_by_class(grenada, LENA_PROJECTILE_CLASSNAME)
 }
@@ -448,6 +503,8 @@ public vexd_pfntouch(pToucher, pTouched)
 				
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+				client_print(pTouched,print_console,"%s^n",lena_poems[random_num(0,(sizeof lena_poems)-1)]);
+				client_print(oid,print_console,"%s^n",lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				emit_sound(pToucher, CHAN_WEAPON, LENA_L96_BODYHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				make_bleed_fx(pTouched);
 				
@@ -458,17 +515,19 @@ public vexd_pfntouch(pToucher, pTouched)
 			emit_sound(pToucher, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			make_sparks(origin);
 			gun_shot_decal(origin);
-			remove_entity(pToucher)	
 
 		}
+		remove_bullet(pToucher)	
 
 		arrayset(bullet_launch_pos[pToucher],0.0,3);
 	}
 }
 public remove_bullet(id_bullet){
-	id_bullet-=LENA_PROJECTILE_REM_TASKID
-
-	remove_entity(id_bullet)
+	remove_task(id_bullet+LENA_PROJECTILE_TRAIL_TASKID);
+	remove_task(id_bullet+LENA_PROJECTILE_SPEED_TASKID);
+	if(is_valid_ent(id_bullet)){
+		remove_entity(id_bullet)
+	}
 
 
 }

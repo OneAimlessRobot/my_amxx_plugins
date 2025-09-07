@@ -22,10 +22,6 @@ new const hud_color[4]={111,255,111,0}
 //new const love_color[4]={250, 92, 163,50}
 new const heal_color[4]={250,250,210, 100}
 
-new const maria_sentences[1][]={
-	
-	"HELL YEA LETS GOOOO!!!!"
-}
 new m_spriteTexture,sprite1
 new base_points
 new max_points
@@ -36,7 +32,7 @@ new Float:selfless_index
 new Float:max_radius
 new Float:base_radius
 new Float:base_heal
-
+new maria_alpha
 //new pCvarSpeed
 new hud_sync
 new hud_sync_health
@@ -57,6 +53,7 @@ public plugin_init()
 	register_cvar("maria_max_radius", "1000")
 	register_cvar("maria_base_points", "1000")
 	register_cvar("maria_base_heal", "1000")
+	register_cvar("maria_heal_alpha", "60")
 	register_cvar("maria_max_points", "1000")
 	register_cvar("maria_dmg_points_pct", "0.1")
 	register_cvar("maria_selfless_index", "0.9")
@@ -66,7 +63,7 @@ public plugin_init()
 	hud_sync=CreateHudSyncObj()
 	hud_sync_health=CreateHudSyncObj()
 	register_event("ResetHUD","newRound","b")
-	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr!", false, "maria_level" )
+	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level" )
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
@@ -74,10 +71,6 @@ public plugin_init()
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
-	/*register_srvcmd("adriano_kd", "adriano_kd")
-	shRegKeyDown(gHeroName, "adriano_kd")*/
-	//sh_set_hero_speed(gHeroID, pCvarSpeed)
-	//register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -93,6 +86,7 @@ public loadCVARS()
 	base_radius=get_cvar_float("maria_base_radius")
 	max_radius=get_cvar_float("maria_max_radius")
 	max_points=get_cvar_num("maria_max_points")
+	maria_alpha=get_cvar_num("maria_heal_alpha")
 	selfless_index=get_cvar_float("maria_selfless_index")
 	points_radius_pct=get_cvar_float("maria_points_radius_pct")
 	points_heal_coeff=get_cvar_float("maria_points_heal_coeff")
@@ -207,7 +201,7 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 if(healed){
 
 	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
-	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],(float(maria_alpha)/float(255)),kRenderTrans, kRenderTransAlpha)
 	set_task(MARIA_HEAL_PERIOD,"remove_glow_task",id+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 	heal_aura(id)
 
