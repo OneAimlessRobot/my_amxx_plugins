@@ -35,6 +35,7 @@ public plugin_init(){
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player")	
 	RegisterHam(Ham_Item_PostFrame, LENA_WEAPON, "fw_Item_PostFrame")	
 	
+	//register_event("CurWeapon", "weaponChange", "be", "1=1")
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre")
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1)	
 	
@@ -354,9 +355,9 @@ public bulletspeed(parm[])
 	speedz=velocity[2]
 	
 	new Float:gravity_const=get_cvar_float("sv_gravity")*LENA_PROJECTILE_GRAVITY_MULT
-	new Float:delta_z=(((LENA_PROJECTILE_DRAG_CONST*speedz))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_x=(((LENA_PROJECTILE_DRAG_CONST*speedx))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_y=(((LENA_PROJECTILE_DRAG_CONST*speedy))/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_z=((LENA_PROJECTILE_DRAG_CONST*speedz)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_x=((LENA_PROJECTILE_DRAG_CONST*speedx)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_y=((LENA_PROJECTILE_DRAG_CONST*speedy)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
 	/*console_print(parm[1],"Total speed: %0.2f^nspeedx: %0.2f^nspeedy: %0.2f^nspeedz: %0.2f^nThe angle between the velocity and gravity is: %0.2f^n",
 																							speed,
 																							speedx,
@@ -417,7 +418,7 @@ public lena_zoom_task(id){
 			
 		}
 	}
-	
+
 	
 	
 	
