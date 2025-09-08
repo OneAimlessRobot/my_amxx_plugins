@@ -7,10 +7,9 @@
 #define LENA_WEAPON_CLASSID CSW_AWP
 #define LENA_PROJECTILE_CLASSNAME "lena_projectile"
 
-//#define LENA_L96_SHOTSOUND "weapons/awp1.wav"
-#define LENA_L96_SHOTSOUND "shmod/erica/silent_tranq/silent.wav"
+
+#define LENA_L96_SHOTSOUND "weapons/lena_rifle/shoot-1.wav"
 #define LENA_L96_WALLHIT_SOUND "weapons/xbow_hit1.wav"
-#define LENA_L96_BODYHIT_SOUND  "weapons/xbow_hitbod2.wav"
 
 #define LENA_PROJECTILE_KNOCKBACK 300
 
@@ -86,3 +85,5 @@ native lena_l96_clear_bullets();
 native lena_l96_set_num_bullets(id,value_to_set)
 native lena_l96_get_num_bullets(id)
 native lena_l96_dec_num_bullets(id)
+
+

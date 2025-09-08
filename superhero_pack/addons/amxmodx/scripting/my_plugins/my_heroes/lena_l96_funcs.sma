@@ -478,14 +478,32 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=4;
 				}
-				
+				new CsArmorType:armor_type;
+				cs_get_user_armor(pTouched,armor_type);
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
-				client_print(pTouched,print_console,"%s^n",lena_poems[random_num(0,(sizeof lena_poems)-1)]);
-				client_print(oid,print_console,"%s^n",lena_poems[random_num(0,(sizeof lena_poems)-1)]);
-				emit_sound(pToucher, CHAN_WEAPON, LENA_L96_BODYHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				make_bleed_fx(pTouched);
-				
+				send_poem_function(oid,pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
+				switch(armor_type){
+					
+					case CS_ARMOR_NONE:{
+						
+						
+						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						make_bleed_fx(pTouched);
+						
+						
+					}
+					case CS_ARMOR_KEVLAR:{
+						
+						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						if(headshot){
+							make_bleed_fx(pTouched);
+						}
+					}
+					case CS_ARMOR_VESTHELM:{
+						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					}
+				}
 			}
 		}
 		if(pev(pTouched,pev_solid)==SOLID_BSP){
@@ -515,7 +533,6 @@ precache_explosion_fx()
 precache_model("models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, LENA_L96_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, LENA_L96_WALLHIT_SOUND)
-engfunc(EngFunc_PrecacheSound, LENA_L96_BODYHIT_SOUND)
 engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
 
 }
