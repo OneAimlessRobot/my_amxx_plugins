@@ -25,6 +25,7 @@ ksun_launcher_health 500.0
 #include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/ksun_ultimate.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
@@ -198,6 +199,23 @@ if((damage>0.0)&&OVERT_ABUSE_ENABLED){
 
 
 	}
+}
+if(spores_has_ksun(attacker)){
+	if(weapon==CSW_M4A1){
+		if(sh_get_user_is_asleep(id)){
+		
+			new tger_name[128], vic_name[128]
+			get_user_name(attacker,vic_name,127)
+			get_user_name(id,tger_name,127)
+			heal(attacker,damage)
+			ksun_inc_player_supply_points(attacker,floatround(damage))
+			if(spores_has_ksun(id)){
+				ksun_dec_player_supply_points(id,floatround(damage))
+				sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s!",floatround(damage),tger_name)
+			}
+		}
+	}
+	
 }
 return HAM_IGNORED
 	

@@ -21,8 +21,8 @@ for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 {
 	if ( get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
 	{
-			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",1,true)
-			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",1,true)
+			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
+			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
 	}
 }
 
@@ -32,6 +32,7 @@ public plugin_natives(){
 
 
 	register_native("sh_sleep_user","_sh_sleep_user",0);
+	register_native("sh_get_user_is_asleep","_sh_get_user_is_asleep",0);
 	register_native("sh_unsleep_user","_sh_unsleep_user",0);
 }
 
@@ -46,6 +47,13 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	}
 
 	return HAM_IGNORED
+}
+public bool:_sh_get_user_is_asleep(iPlugin,iParams){
+
+	new id=get_param(1)
+	return gIsAsleep[id]
+
+
 }
 public _sh_sleep_user(iPlugin,iParams){
 

@@ -7,6 +7,7 @@
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/ksun_ultimate.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 
@@ -455,9 +456,18 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	new tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
-	sh_extra_damage(victim, killer, floatround(ksun_spore_damage), "ksun spore")
+	new damage_to_do=sh_get_user_is_asleep(pTouched)?get_user_health(pTouched)*10:floatround(ksun_spore_damage)
+	new bool:remove_godmode=(sh_get_user_is_asleep(pTouched)?true:false)
+	
+	if(get_user_godmode(pTouched)&&remove_godmode){
+		
+		set_user_godmode(pTouched,!remove_godmode);
+		sh_chat_message(killer,spores_ksun_hero_id(),"You removed the godmode of your tg named %s!",tger_name);
+	}
+	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?"ksun slay":"ksun_spore")
 	sh_bleed_user(victim,killer,spores_ksun_hero_id())
-	heal(killer,ksun_spore_damage)
+	heal(killer,float(damage_to_do))
+	ksun_inc_player_supply_points(killer,damage_to_do)
 	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_scanner_player_tracks_player(killer,victim,0)
 	g_times_player_spiked_player[killer][victim]++
