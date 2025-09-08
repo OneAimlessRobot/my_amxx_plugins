@@ -5,7 +5,11 @@
 
 #define JAQUEO_HUD_TASKID 18382
 #define JAQUEO_MORPH_TASKID 28627
-new gHeroLevel
+
+new gHeroID
+new const gHeroName[] = "Jaqueo"
+new const jaqueo_cool_scout_sounds[4][]={"weapons/scouterista/tactical_clipin.wav","weapons/scouterista/tactical_bolt.wav","weapons/scouterista/tactical_clipout.wav","weapons/scouterista/tactical_fire-1.wav"}
+
 new gHasJaqueo[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
@@ -31,8 +35,8 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("jaqueo_init", "jaqueo_init")
 	shRegHeroInit(gHeroName, "jaqueo_init")
-	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn");
-	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage")
+	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
+	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",_,true)
 	register_srvcmd("jaqueo_kd", "jaqueo_kd")
 	shRegKeyDown(gHeroName, "jaqueo_kd")
 	register_srvcmd("jaqueo_ku", "jaqueo_ku")
@@ -135,7 +139,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( (idattacker <= 0 || idattacker > SH_MAXSLOTS )|| (idattacker==this)||!is_user_connected(idattacker)) return HAM_IGNORED
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
 	
 	if((weapon==CSW_SCOUT)&&gHasJaqueo[idattacker]){
 		new Float:extraDamage = damage * scout_mult - damage
@@ -166,7 +170,6 @@ public jaqueo_loop(id)
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel= get_cvar_num("jaqueo_level");
 	scout_mult=get_cvar_float("jaqueo_scout_mult")
 	teamglow_on=get_cvar_num("jaqueo_teamglow_on")
 }

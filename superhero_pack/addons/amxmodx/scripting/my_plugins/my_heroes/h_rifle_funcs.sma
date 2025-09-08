@@ -97,13 +97,13 @@ public plugin_init()
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
 	
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")
-	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack")		
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
+	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_mosin, "fw_Item_Deploy_Post", 1)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_mosin, "fw_Item_AddToPlayer_Post", 1)
-	RegisterHam(Ham_Weapon_Reload, weapon_mosin, "fw_Weapon_Reload")
-	RegisterHam(Ham_Item_PostFrame, weapon_mosin, "fw_Item_PostFrame")
+	RegisterHam(Ham_Item_Deploy, weapon_mosin, "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_mosin, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_mosin, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_mosin, "fw_Item_PostFrame",_,true)
 	//RegisterHam(Ham_Weapon_Reload, weapon_railcannon, "fw_Weapon_Reload_Post", 1)
 	
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
@@ -179,15 +179,15 @@ public Get_Mosin(id)
 	Set_BitVar(g_Had_Mosin, id)
 	
 	give_item(id, weapon_mosin)
-	cs_set_user_bpammo(id, CSW_MOSIN, BPAMMO)
+	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
-	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, CLIP)
+	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, H_RIFLE_CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
 	write_byte(1)
 	write_byte(CSW_MOSIN)
-	write_byte(CLIP)
+	write_byte(H_RIFLE_CLIP)
 	message_end()
 }
 
@@ -219,7 +219,7 @@ public Event_CurWeapon(id)
 			set_pev(id, pev_viewmodel2, "")
 		}
 		
-		static Float:TargetTime; TargetTime = get_pdata_float(Ent, 46, 4) * SPEED
+		static Float:TargetTime; TargetTime = get_pdata_float(Ent, 46, 4) * H_RIFLE_SPEED
 		
 		set_pdata_float(Ent, 46, TargetTime, 4)
 		set_pdata_float(id, 83, TargetTime, 5)
@@ -276,7 +276,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		return FMRES_IGNORED
 	
 	}
-	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON))
+	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < H_RIFLE_CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON))
 	{
 		set_uc(uc_handle, UC_Buttons, PressButton & ~IN_RELOAD)
 		
@@ -395,7 +395,7 @@ public fw_Item_PostFrame( iEnt )
 	{
 		case 1: // Check, Start
 		{
-			if(cs_get_weapon_ammo(iEnt) >= CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
+			if(cs_get_weapon_ammo(iEnt) >= H_RIFLE_CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
 			{
 				set_pdata_int(iEnt, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
 				return
@@ -412,7 +412,7 @@ public fw_Item_PostFrame( iEnt )
 		}
 		case 2: // Insert 
 		{
-			if(cs_get_weapon_ammo(iEnt) >= CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
+			if(cs_get_weapon_ammo(iEnt) >= H_RIFLE_CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
 			{
 				set_pdata_int(iEnt, m_fInSpecialReload, 4, XTRA_OFS_WEAPON)
 				return

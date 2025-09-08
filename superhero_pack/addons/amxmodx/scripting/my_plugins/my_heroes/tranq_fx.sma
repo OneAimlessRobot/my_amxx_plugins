@@ -21,8 +21,8 @@ for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 {
 	if ( get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
 	{
-			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post")
-			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post")
+			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",1,true)
+			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",1,true)
 	}
 }
 
@@ -58,7 +58,7 @@ public _sh_sleep_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsAsleep[user]){
 		if((user==attacker)){
-			if(CAN_SELF_SLEEP){
+			if(user&&CAN_SELF_SLEEP){
 				sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
 				sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
 				sleep_user(user,attacker)

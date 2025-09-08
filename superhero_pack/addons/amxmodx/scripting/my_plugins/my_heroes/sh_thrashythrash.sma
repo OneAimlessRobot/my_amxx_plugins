@@ -41,7 +41,7 @@ new spr_laser_impact
 new gHeroID;
 #define TASKID 532221
 new smoke, white, fire
-new g_spriteBlood, g_spriteBldSpray,gHeroLevel
+new g_spriteBlood, g_spriteBldSpray
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown,team_glow_on
 new a_flags[10]
 //----------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel=get_cvar_num("thrashy_level")
+	get_cvar_num("thrashy_level")
 	xplode_radius=get_cvar_num("thrashy_explode_radius")
 	xplodedmg=get_cvar_num("thrashy_explode_maxdamage")
 	xplodeod_radius=get_cvar_num("thrashy_explodeod_radius")

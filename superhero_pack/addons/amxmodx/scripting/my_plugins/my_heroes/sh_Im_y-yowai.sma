@@ -41,7 +41,7 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Meek Maid", "Accumulate hits... and... whatever I guess I dont really know", true, "Yowai_level" )
 	
-	RegisterHam(Ham_TakeDamage, "player", "Yowai_normal_damage");
+	RegisterHam(Ham_TakeDamage, "player", "Yowai_normal_damage",_,true)
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("Yowai_init", "Yowai_init")

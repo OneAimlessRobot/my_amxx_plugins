@@ -37,7 +37,7 @@ public plugin_init()
 	register_cvar("ksun_health_to_supply_ratio", "1.0" )
 	register_cvar("ksun_dmg_absorption_index", "1.0" )
 	register_cvar("ksun_supply_capacity", "1000" )
-	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook")
+	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook",_,true)
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 	
@@ -51,7 +51,7 @@ public plugin_init()
 	{
 		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
 		{
-			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1)
+			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
 	

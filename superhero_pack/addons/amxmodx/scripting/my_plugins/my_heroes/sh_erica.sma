@@ -11,6 +11,10 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 // GLOBAL VARIABLES
 
+new gHeroID
+
+stock const gHeroName[] = "Erica Fonseca"
+
 new gHasErica[SH_MAXSLOTS+1]
 new gNumDarts[SH_MAXSLOTS+1]
 new g_erica_points[SH_MAXSLOTS+1]
@@ -85,7 +89,7 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("erica_init", "erica_init")
 	shRegHeroInit(gHeroName, "erica_init")
-	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage")
+	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	

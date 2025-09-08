@@ -10,8 +10,13 @@
 // GLOBAL VARIABLES
 
 
+new gHeroID
+new const gHeroName[] = "Yakui Mk2"
+
+new gmorphed[SH_MAXSLOTS+1]
+new teamglow_on
+
 new hud_sync
-new gHeroLevel
 
 new max_pills
 new max_rockets
@@ -81,7 +86,6 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel=get_cvar_num("yakui_level");
 	max_pills=get_cvar_num("yakui_pills")
 	max_rockets=get_cvar_num("yakui_rockets")
 	teamglow_on=get_cvar_num("yakui_teamglow_on")

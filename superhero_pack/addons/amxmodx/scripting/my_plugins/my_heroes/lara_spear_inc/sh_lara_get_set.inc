@@ -12,10 +12,6 @@
 #define SPEAR_THROW_SFX  "shmod/lara/spear/spear_throw.wav"
 #define SPEAR_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
 
-new gHeroID
-
-new const redline_color[4]={255,1,1,255}
-new const gHeroName[] = "Lara"
 
 native spear_set_num_spears(id,value_to_set)
 native spear_get_num_spears(id)

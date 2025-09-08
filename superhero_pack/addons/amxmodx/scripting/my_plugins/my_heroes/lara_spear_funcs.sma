@@ -9,6 +9,7 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
+new const redline_color[4]={255,1,1,255}
 new bool:spear_loaded[SH_MAXSLOTS+1]
 
 new bool:spear_armed[SH_MAXSLOTS+1]
@@ -34,7 +35,7 @@ register_forward(FM_CmdStart, "CmdStart");
 register_cvar("lara_spear_max_charge_time", "5.0")
 register_cvar("lara_spear_min_charge_time", "1.0")
 hud_sync_charge=CreateHudSyncObj()
-RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab")
+RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
 }
 
 public plugin_natives(){
@@ -359,7 +360,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				}
 				else if(pTouched!=oid){
 					sh_extra_damage(pTouched,oid,SPEAR_DAMAGE,"Hunter Spear",0,SH_DMG_NORM)
-					sh_bleed_user(pTouched,oid,gHeroID)
+					sh_bleed_user(pTouched,oid,spear_get_hero_id())
 					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					spear_pickable[pToucher]=true
 					set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)

@@ -5,10 +5,10 @@
 
 #define DAMAGE 91 // 191 for Zombie
 
-#define CLIP 5
-#define BPAMMO 45
+#define H_RIFLE_CLIP 5
+#define H_RIFLE_BPAMMO 45
 
-#define SPEED 1.25
+#define H_RIFLE_SPEED 1.25
 
 #define MODEL_V "models/shmod/supernoodle/hrifle/v_mosin.mdl"
 #define MODEL_P "models/shmod/supernoodle/hrifle/p_mosin.mdl"

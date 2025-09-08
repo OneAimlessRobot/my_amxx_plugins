@@ -10,6 +10,14 @@
 #define Struct				enum
 
 
+new const Arifle_Sounds[4][] = 
+{
+	"weapons/m60-1.wav",
+	"weapons/ethereal_draw.wav",
+	"weapons/ethereal_idle1.wav",
+	"weapons/ethereal_reload.wav"
+}
+
 const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_AUG)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_GALIL)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
 const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN)|(1<<CSW_USP)|(1<<CSW_GLOCK18)|(1<<CSW_DEAGLE)
 
@@ -31,17 +39,17 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_arifle, "fw_Weapon_WeaponIdle_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack")
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack_Post", 1)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_arifle, "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	RegisterHam(Ham_Item_Deploy, weapon_arifle, "fw_Item_Deploy_Post", 1)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_arifle, "fw_Item_AddToPlayer_Post", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_arifle, "fw_Item_PostFrame")	
-	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload")
-	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload_Post", 1)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_arifle, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_arifle, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload_Post", 1,true)	
 	
-	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player")	
+	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
 	register_clcmd("weapon_arifle", "Hook_Weapon")
@@ -65,12 +73,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, W_MODEL)
 	
 	new i
-	for(i = 0; i < sizeof(Arifle_Sounds); i++)
+	for(i = 0; i < sizeof(Arifle_Sounds); i++){
 		engfunc(EngFunc_PrecacheSound, Arifle_Sounds[i])
-	for(i = 0; i < sizeof(Arifle_Resources); i++)
-	{
-		if(i == 0) engfunc(EngFunc_PrecacheGeneric, Arifle_Resources[i])
-		else engfunc(EngFunc_PrecacheModel, Arifle_Resources[i])
 	}
 	
 	g_SmokePuff_SprId = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")
@@ -152,8 +156,8 @@ public Event_CurWeapon(id)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(!pev_valid(Ent)) return
 	
-	Delay = get_pdata_float(Ent, 46, 4) * SPEED
-	Delay2 = get_pdata_float(Ent, 47, 4) * SPEED
+	Delay = get_pdata_float(Ent, 46, 4) * A_RIFLE_SPEED
+	Delay2 = get_pdata_float(Ent, 47, 4) * A_RIFLE_SPEED
 	
 	if(Delay > 0.0)
 	{
@@ -256,7 +260,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		pev(id, pev_punchangle, Push)
 		xs_vec_sub(Push, g_Recoil[id], Push)
 		
-		xs_vec_mul_scalar(Push, RECOIL, Push)
+		xs_vec_mul_scalar(Push, A_RIFLE_RECOIL, Push)
 		xs_vec_add(Push, g_Recoil[id], Push)
 		set_pev(id, pev_punchangle, Push)
 		
@@ -346,9 +350,9 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
 	write_string(Get_BitVar(g_Had_Arifle, id) ? weapon_arifle : "weapon_m249")
 	write_byte(4) // PrimaryAmmoID
-	write_byte(CLIP) // PrimaryAmmoMaxAmount
-	write_byte(RESERVE) // SecondaryAmmoID
-	write_byte(RESERVE) // SecondaryAmmoMaxAmount
+	write_byte(A_RIFLE_CLIP) // PrimaryAmmoMaxAmount
+	write_byte(A_RIFLE_RESERVE) // SecondaryAmmoID
+	write_byte(A_RIFLE_RESERVE) // SecondaryAmmoMaxAmount
 	write_byte(0) // SlotID (0...N)
 	write_byte(6) // NumberInSlot (1...N)
 	write_byte(Get_BitVar(g_Had_Arifle, id) ? CSW_ARIFLE : CSW_M249) // WeaponID
@@ -375,7 +379,7 @@ public fw_Item_PostFrame(ent)
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
-		temp1 = min(CLIP - iClip, bpammo)
+		temp1 = min(A_RIFLE_CLIP - iClip, bpammo)
 
 		set_pdata_int(ent, 51, iClip + temp1, 4)
 		cs_set_user_bpammo(id, CSW_ARIFLE, bpammo - temp1)		
@@ -403,7 +407,7 @@ public fw_Weapon_Reload(ent)
 		
 	if(BPAmmo <= 0)
 		return HAM_SUPERCEDE
-	if(iClip >= CLIP)
+	if(iClip >= A_RIFLE_CLIP)
 		return HAM_SUPERCEDE		
 			
 	g_Arifle_Clip[id] = iClip	
@@ -464,7 +468,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 	Make_BulletHole(Attacker, flEnd, Damage)
 	Make_BulletSmoke(Attacker, Ptr)
 
-	SetHamParamFloat(3, float(DAMAGE))
+	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))
 	
 	return HAM_IGNORED
 }
@@ -476,7 +480,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(get_user_weapon(Attacker) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
 		return HAM_IGNORED
 		
-	SetHamParamFloat(3, float(DAMAGE))
+	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))
 	
 	return HAM_IGNORED
 }

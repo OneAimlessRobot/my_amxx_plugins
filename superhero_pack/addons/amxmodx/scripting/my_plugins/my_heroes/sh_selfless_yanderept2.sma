@@ -53,7 +53,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Heal alive teamates and avenge dead ones!", true, "yandere_level" )
 	
 	register_event("Damage", "yandere_damage", "b", "2!0")
-	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1)
+	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	hud_sync=CreateHudSyncObj()
@@ -66,7 +66,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	MsgSetFOV = get_user_msgid("SetFOV")
-	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage")
+	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart");
 }
 public plugin_natives(){

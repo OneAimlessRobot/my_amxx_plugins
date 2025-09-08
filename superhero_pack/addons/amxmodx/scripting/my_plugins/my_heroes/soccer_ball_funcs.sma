@@ -259,7 +259,7 @@ public kick_ball(iPlugin,iParams)
 	
 	kicked_ball[id]=true
 	emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],10)
+	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
 	shoteffects(Origin,id)
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 	beam(10,Ent)
@@ -395,18 +395,3 @@ stock shoteffects(Float:Pos[3],ent){
 	message_end()
 	
 }
-
-stock glow(id, r, g, b, on) {
-	if(on == 1) {
-		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderNormal, 255)
-		entity_set_float(id, EV_FL_renderamt, 1.0)
-	}
-	else if(!on) {
-		set_rendering(id, kRenderFxNone, r, g, b,  kRenderNormal, 255)
-		entity_set_float(id, EV_FL_renderamt, 1.0)
-	}
-	else if(on == 10) {
-		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderNormal, 255)
-		entity_set_float(id, EV_FL_renderamt, 1.0)
-	}
-} 

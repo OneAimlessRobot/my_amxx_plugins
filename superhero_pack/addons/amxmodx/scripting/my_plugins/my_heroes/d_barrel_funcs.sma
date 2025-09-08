@@ -68,16 +68,16 @@ public plugin_init()
 	register_forward(FM_UpdateClientData, "fw_UpdateClientData_Post", 1)
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
-	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack")
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1)
+	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_gatling, "fw_Item_Deploy_Post", 1)
-	RegisterHam(Ham_Weapon_Reload, weapon_gatling, "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_gatling, "fw_Item_PostFrame")
-	RegisterHam(Ham_Item_AddToPlayer, weapon_gatling, "fw_Item_AddToPlayer_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack")
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack_Post", 1)
+	RegisterHam(Ham_Item_Deploy, weapon_gatling, "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_gatling, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_gatling, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_gatling, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	register_clcmd("weapon_gatling", "hook_weapon")
 }
@@ -157,7 +157,7 @@ public Mileage_WeaponRefillAmmo(id, ItemID)
 {
 	if(ItemID == g_Volcano) 
 	{
-		cs_set_user_bpammo(id, CSW_GATLING, DEFAULT_BPAMMO)
+		cs_set_user_bpammo(id, CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
 	}
 }
 
@@ -173,13 +173,13 @@ public get_gatling(id)
 	
 	// Set Clip
 	static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-	if(pev_valid(ent)) cs_set_weapon_ammo(ent, DEFAULT_CLIP)
+	if(pev_valid(ent)) cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 	// Set BpAmmo
-	cs_set_user_bpammo(id, CSW_GATLING, DEFAULT_BPAMMO)
+	cs_set_user_bpammo(id, CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
 	
 	// Update Ammo
-	update_ammo(id, CSW_GATLING, DEFAULT_CLIP, DEFAULT_BPAMMO)
+	update_ammo(id, CSW_GATLING, D_BARREL_DEFAULT_CLIP, D_BARREL_DEFAULT_BPAMMO)
 }
 
 public remove_gatling(id)
@@ -211,8 +211,8 @@ public Event_CurWeapon(id)
 		
 		static Float:Delay, Float:Delay2
 		
-		Delay = get_pdata_float(Ent, 46, 4) * SPEED
-		Delay2 = get_pdata_float(Ent, 47, 4) * SPEED
+		Delay = get_pdata_float(Ent, 46, 4) * D_BARREL_SPEED
+		Delay2 = get_pdata_float(Ent, 47, 4) * D_BARREL_SPEED
 		
 		if(Delay > 0.0)
 		{
@@ -276,7 +276,7 @@ public fw_CmdStart(id, uc_handle, seed)
 			return
 		}
 		
-		if(cs_get_weapon_ammo(ent) >= DEFAULT_CLIP)
+		if(cs_get_weapon_ammo(ent) >= D_BARREL_DEFAULT_CLIP)
 		{
 			set_weapon_anim(id, GATLING_ANIM_IDLE)
 			return
@@ -330,7 +330,7 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
-	SetHamParamFloat(3, float(DAMAGE) / random_float(6.0, 7.0))	
+	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / random_float(6.0, 7.0))	
 
 	return HAM_HANDLED
 }
@@ -366,7 +366,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 	xs_vec_mul_scalar(Dir, Damage, Dir)
 	
 	// Use weapon power on knockback calculation
-	xs_vec_mul_scalar(Dir, float(KNOCKPOWER), Dir)
+	xs_vec_mul_scalar(Dir, float(D_BARREL_KNOCKPOWER), Dir)
 	
 	// Apply ducking knockback multiplier
 	new ducking = pev(Ent, pev_flags) & (FL_DUCKING | FL_ONGROUND) == (FL_DUCKING | FL_ONGROUND)
@@ -398,7 +398,7 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 	make_bullet(attacker, flEnd)
 	//fake_smoke(attacker, ptr)
 		
-	SetHamParamFloat(3, float(DAMAGE) / random_float(6.5, 7.0))	
+	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / random_float(6.5, 7.0))	
 
 	return HAM_HANDLED
 }
@@ -466,10 +466,10 @@ public fw_Weapon_Reload_Post(ent)
 			return HAM_IGNORED
 
 		set_pdata_int(ent, 55, 0, OFFSET_LINUX_WEAPONS)
-		set_pdata_float(id, 83, RELOAD_TIME, OFFSET_LINUX_PLAYER)
-		set_pdata_float(ent, 48, RELOAD_TIME + 0.5, OFFSET_LINUX_WEAPONS)
-		set_pdata_float(ent, 46, RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
-		set_pdata_float(ent, 47, RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(id, 83, D_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
+		set_pdata_float(ent, 48, D_BARREL_RELOAD_TIME + 0.5, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(ent, 46, D_BARREL_RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(ent, 47, D_BARREL_RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
 		set_pdata_int(ent, m_fInReload, 1, OFFSET_LINUX_WEAPONS)
 		
 		set_weapon_anim(id, GATLING_ANIM_RELOAD1)			
@@ -487,7 +487,7 @@ public fw_Item_PostFrame(ent)
 
 	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, OFFSET_LINUX_PLAYER)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, OFFSET_LINUX_WEAPONS)
-	static iMaxClip ; iMaxClip = DEFAULT_CLIP
+	static iMaxClip ; iMaxClip = D_BARREL_DEFAULT_CLIP
 
 	if(get_pdata_int(ent, m_fInReload, OFFSET_LINUX_WEAPONS) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
 	{
@@ -496,7 +496,7 @@ public fw_Item_PostFrame(ent)
 		set_pdata_int(id, 381, iBpAmmo-j, OFFSET_LINUX_PLAYER)
 		
 		set_pdata_int(ent, m_fInReload, 0, OFFSET_LINUX_WEAPONS)
-		cs_set_weapon_ammo(ent, DEFAULT_CLIP)
+		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
 	
@@ -554,7 +554,7 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 	pev(id, pev_punchangle, push)
 	xs_vec_sub(push, g_punchangles[id], push)
 	
-	xs_vec_mul_scalar(push, RECOIL, push)
+	xs_vec_mul_scalar(push, D_BARREL_RECOIL, push)
 	xs_vec_add(push, g_punchangles[id], push)
 	set_pev(id, pev_punchangle, push)	
 }

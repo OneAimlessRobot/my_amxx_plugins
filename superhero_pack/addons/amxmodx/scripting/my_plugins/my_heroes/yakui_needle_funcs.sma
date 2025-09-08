@@ -21,8 +21,8 @@ public plugin_init(){
 	
 	arrayset(curr_needle_fx,0,SH_MAXSLOTS+1)
 	arrayset(needle_on,0,SH_MAXSLOTS+1)
-	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle")
-	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1)
+	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle",_,true)
+	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 }
 
@@ -82,19 +82,16 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	if((weapon==CSW_KNIFE)&&gatling_get_needle(attacker)){
 		new button = pev(attacker, pev_button);
-		new bool:slashing;
 		new bool:stabbing;
 		if(button & IN_ATTACK2){
 			
 			button &= ~IN_ATTACK2;
 			stabbing=true;
-			slashing=false
 		}
 		if(button & IN_ATTACK){
 			
 			button &= ~IN_ATTACK;
 			stabbing=false;
-			slashing=true
 		}
 		damage=1.0
 		SetHamParamFloat(4, damage);

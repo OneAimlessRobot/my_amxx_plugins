@@ -7,12 +7,12 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 
 // GLOBAL VARIABLES
-
+new gHeroID
+new const gHeroName[] = "Lara"
 new gHasLara[SH_MAXSLOTS+1]
 new gNumSpears[SH_MAXSLOTS+1]
 
 
-new gHeroLevel
 new num_spears
 
 
@@ -41,7 +41,7 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("lara_init", "lara_init")
 	shRegHeroInit(gHeroName, "lara_init")
-	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage")
+	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
@@ -136,7 +136,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	gHeroLevel=get_cvar_num("lara_level")
 	num_spears=get_cvar_num("lara_num_spears")
 }
 public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)

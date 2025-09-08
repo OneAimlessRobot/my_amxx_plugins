@@ -11,13 +11,13 @@
 #define WEAPON_SECRET_CODE 1942
 #define old_event "events/m3.sc"
 
-#define DAMAGE 85
-#define SPEED 0.15
-#define RECOIL 2.0
-#define RELOAD_TIME 3.0
-#define DEFAULT_CLIP 2
-#define DEFAULT_BPAMMO 64
-#define KNOCKPOWER 1000
+#define D_BARREL_DAMAGE 85
+#define D_BARREL_SPEED 0.15
+#define D_BARREL_RECOIL 2.0
+#define D_BARREL_RELOAD_TIME 3.0
+#define D_BARREL_DEFAULT_CLIP 2
+#define D_BARREL_DEFAULT_BPAMMO 64
+#define D_BARREL_KNOCKPOWER 1000
 
 #define SUBMODEL -1
 

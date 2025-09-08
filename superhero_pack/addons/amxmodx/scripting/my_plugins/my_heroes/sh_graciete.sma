@@ -35,7 +35,7 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("graciete_init", "graciete_init")
 	shRegHeroInit(gHeroName, "graciete_init")
-	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn");
+	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
 	
 	// Add your code here...
 }

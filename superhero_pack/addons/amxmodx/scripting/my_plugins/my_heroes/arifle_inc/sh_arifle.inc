@@ -3,11 +3,11 @@
 #endif
 #define sh_arifle_funcs
 
-#define DAMAGE 50
-#define CLIP 100
-#define RESERVE 400
-#define SPEED 1.0
-#define RECOIL 0.75
+#define A_RIFLE_DAMAGE 50
+#define A_RIFLE_CLIP 100
+#define A_RIFLE_RESERVE 400
+#define A_RIFLE_SPEED 1.0
+#define A_RIFLE_RECOIL 0.75
 
 #define CSW_ARIFLE CSW_M249
 #define weapon_arifle "weapon_m249"
@@ -17,22 +17,6 @@
 #define V_MODEL "/models/shmod/supernoodle/arifle/v_arifle.mdl"
 #define P_MODEL "models/p_m249.mdl"
 #define W_MODEL "models/w_m60.mdl"
-
-
-new const Arifle_Sounds[4][] = 
-{
-	"weapons/m60-1.wav",
-	"weapons/ethereal_draw.wav",
-	"weapons/ethereal_idle1.wav",
-	"weapons/ethereal_reload.wav"
-}
-
-new const Arifle_Resources[3][] = 
-{
-	"sprites/weapon_ethereal.txt",
-	"sprites/640hud7_2.spr",
-	"sprites/640hud74_2.spr"
-}
 
 #define MUZZLE_FLASH "sprites/muzzleflash7.spr"
 

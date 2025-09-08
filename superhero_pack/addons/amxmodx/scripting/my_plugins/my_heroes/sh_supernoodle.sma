@@ -50,7 +50,7 @@ public plugin_init()
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
-	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn");
+	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
 }
 
 //----------------------------------------------------------------------------------------------

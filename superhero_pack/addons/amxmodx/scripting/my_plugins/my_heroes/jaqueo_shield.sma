@@ -45,7 +45,7 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "shield_think")
 	//register_forward(FM_Touch, "shield_touch")
-	RegisterHam(Ham_TakeDamage,"player","Shield_Damage")
+	RegisterHam(Ham_TakeDamage,"player","Shield_Damage",_,true)
 	
 	// Add your code here...
 }

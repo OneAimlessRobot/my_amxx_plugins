@@ -25,7 +25,6 @@ stock const erica_sentences[NUM_SENTENCES][]={
 }
 new Float:hook_distance
 new Float:hook_drag_time
-new hook_level_difference
 new max_hook_kills_per_life
 new Float:hook_drag_speed
 public plugin_init(){
@@ -46,7 +45,7 @@ public plugin_init(){
 	register_cvar("hook_drag_speed", "2.0")
 	register_cvar("hook_level_difference", "10")
 	register_cvar("hook_drag_time", "3")
-	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage")
+	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
@@ -84,7 +83,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	hook_distance=get_cvar_float("hook_distance")
-	hook_level_difference=get_cvar_num("hook_level_difference")
 	hook_drag_time=get_cvar_float("hook_drag_time")
 	hook_drag_speed=get_cvar_float("hook_drag_speed")
 	max_hook_kills_per_life=get_cvar_num("max_hooks_per_life")

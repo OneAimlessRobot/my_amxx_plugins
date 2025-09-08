@@ -58,7 +58,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
 	register_event("ResetHUD","newRound","b")
-	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt")
+	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	// INIT

@@ -10,12 +10,6 @@
 #define YAKUI_HUD_TASKID 12286
 #define YAKUI_MORPH_TASKID 127186
 
-new gmorphed[SH_MAXSLOTS+1]
-new teamglow_on
-
-new gHeroID
-
-new const gHeroName[] = "Yakui Mk2"
 
 native gatling_set_num_pills(id,value_to_set)
 native gatling_get_num_pills(id)

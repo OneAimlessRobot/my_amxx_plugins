@@ -39,8 +39,8 @@ public plugin_init()
 	register_srvcmd("greaper2_init", "greaper2_init")
 	shRegHeroInit(gHeroName, "greaper2_init")
 	hud_sync = CreateHudSyncObj()
-	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe");
-	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "swing_scythe");
+	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe",_,true)
+	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "swing_scythe",_,true)
 	
 	
 	

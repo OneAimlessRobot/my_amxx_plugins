@@ -7,7 +7,7 @@
 #include <reapi>
 #include "../my_include/weapons_const.inc"
 
-#define PLUGIN_AUTHOR "MilkChanTheGOAT"
+#define PLUGIN_AUTHOR "MilkChanTheGOAasdasdasdasdasdasdasdasdsdasdT"
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
@@ -16,6 +16,7 @@ new bool:bullet_loaded[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new Float:bullet_launch_pos[MAX_ENTITIES][3];
 new g_L96_clip[SH_MAXSLOTS+1]
+//new HamHook:TakeDamage
 public plugin_init(){
 	
 	
@@ -27,16 +28,21 @@ public plugin_init(){
 	}
 	arrayset(bullet_loaded,true,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre")
-	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_WeaponPrimaryAttackPre")
-	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_Weapon_PrimaryAttack_Post", 1)	
+	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player")	
-	RegisterHam(Ham_Item_PostFrame, LENA_WEAPON, "fw_Item_PostFrame")	
+	RegisterHam(Ham_Item_PostFrame, LENA_WEAPON, "fw_Item_PostFrame",_,true)	
+	
+	//TakeDamage=RegisterHam(Ham_TakeDamage, "player", "Ham_TakeDamageLenaL96")
+	//DisableHamForward(TakeDamage)
+	
+	RegisterHam(Ham_TakeDamage, "player", "Ham_TakeDamageLenaL96",_,true)
+	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	//register_event("CurWeapon", "weaponChange", "be", "1=1")
-	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre")
-	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1)	
+	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)	
 	
 }
 
@@ -53,9 +59,6 @@ public CmdStart(id, uc_handle)
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	
-	//new flags= entity_get_int( id, EV_INT_flags ) 
-	//& FL_ONGROUND 
 	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==LENA_WEAPON_CLASSID)){
@@ -78,16 +81,25 @@ client_isnt_hitter(gatling_user){
 return (!lena_get_has_lena(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
 
 }
-public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+public Ham_TakeDamageLenaL96(id, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if(!is_user_connected(Attacker))
-		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != LENA_WEAPON_CLASSID || !lena_get_has_lena(Attacker))
-		return HAM_IGNORED
-		
-	Damage=0.0;
 	
+	if ( !shModActive() || !is_user_alive(id) ){
+		return HAM_IGNORED
+	}
+	if(client_isnt_hitter(idattacker)){
+		
+		return HAM_IGNORED;
+	}
+	if((get_user_weapon(idattacker) != LENA_WEAPON_CLASSID) || !lena_get_has_lena(idattacker)){
+		return HAM_IGNORED
+	}
+		
+	
+	damage=0.0;
+	SetHamParamFloat(4, damage)
 	return HAM_SUPERCEDE
+	
 }
 
 public fw_Item_PostFrame(ent)
@@ -181,11 +193,21 @@ public fw_WeaponPrimaryAttackPre(entity)
 	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( client_isnt_hitter(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	
+	static iClip, iPlaybackEvent
 	if(lena_l96_get_num_bullets(pPlayer) == 0)
 	{
 		client_print(pPlayer, print_center, "You are out of bullets")
 		sh_drop_weapon(pPlayer, LENA_WEAPON_CLASSID, true)
+		return HAM_SUPERCEDE
+	}
+	iClip = get_member(entity, m_Weapon_iClip)
+	if(iClip)
+	{
+		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
+		
+	}
+	ExecuteHam(Ham_Weapon_PrimaryAttack, entity)
+	if(!iClip){
 		return HAM_SUPERCEDE
 	}
 	launch_bullet(pPlayer)
@@ -194,8 +216,15 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD)
 	
+	emit_sound(pPlayer, CHAN_WEAPON, LENA_L96_SHOTSOUND, 1.0, 0.0, 0, PITCH_NORM)
+	
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
-	return HAM_IGNORED
+	set_entvar(pPlayer, var_weaponanim,  SEQ_SHOOT1)
+	
+	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
+	//DisableHamForward(TakeDamage)
+	
+	return HAM_SUPERCEDE
 }
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
@@ -231,6 +260,10 @@ stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
 launch_bullet(id)
 {
 
+if(!client_hittable(id)){
+		
+	return PLUGIN_CONTINUE
+}
 entity_set_int(id, EV_INT_weaponanim, 3)
 
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -241,8 +274,9 @@ entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 Ent = create_entity("info_target")
 
-if (!Ent) return PLUGIN_HANDLED
-
+if (!Ent){
+	return PLUGIN_HANDLED
+}
 entity_set_string(Ent, EV_SZ_classname, LENA_PROJECTILE_CLASSNAME)
 entity_set_model(Ent, "models/shell.mdl")
 
@@ -262,8 +296,11 @@ entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
-if((cs_get_user_zoom(id)<CS_SET_FIRST_ZOOM)){
+//new zoom=get_member(id,m_iLastZoom);
+new resume_zoom=get_member(id,m_bResumeZoom);
+if(!(resume_zoom)){
 	coeff_to_multiply_with=LENA_PROJECTILE_SHOOT_RANDOMNESS;
+	//console_print(id,"coeff to multiply with: %0.2f^nZOOM= %d^n",coeff_to_multiply_with,zoom)
 }
 else{
 	
@@ -273,9 +310,9 @@ else{
 	new Float:user_current_speed=VecLength(user_movement_velocity)
 	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
 	coeff_to_multiply_with=coeff_to_multiply_with_extra*LENA_PROJECTILE_SHOOT_RANDOMNESS
+	//console_print(id,"coeff to multiply with: %0.2f^nZOOM= %d^n",coeff_to_multiply_with,zoom)
 	
 }
-//console_print(id,"coeff to multiply with: %0.2f",coeff_to_multiply_with)
 randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -324,7 +361,7 @@ public bullettrail(parm[])
 	write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
 	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 	if(client_hittable(parm[1])){
-		client_print(parm[1],print_console,"Trail update!!!");
+		//client_print(parm[1],print_console,"Trail update!!!");
 	}
 }
 public bulletspeed(parm[])
@@ -382,6 +419,21 @@ while(grenada) {
 	arrayset(bullet_launch_pos[grenada],0.0,3);
 	grenada = find_ent_by_class(grenada, LENA_PROJECTILE_CLASSNAME)
 }
+}
+
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	if(!client_hittable(player)){
+		
+		return
+	}
+	if((get_user_weapon(player) != LENA_WEAPON_CLASSID) || !lena_get_has_lena(player)){
+		return	
+	}
+	new pEntity = get_member(player, m_pActiveItem)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd, CD_flNextAttack, 99999.0)
+	}
 }
 
 
@@ -467,3 +519,4 @@ engfunc(EngFunc_PrecacheSound, LENA_L96_BODYHIT_SOUND)
 engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
 
 }
+public fm_PlaybackEventPre() return FMRES_SUPERCEDE

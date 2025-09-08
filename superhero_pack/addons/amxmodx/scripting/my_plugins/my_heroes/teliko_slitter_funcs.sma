@@ -39,7 +39,7 @@ public plugin_init(){
 	register_cvar("slitter_drag_speed", "2.0")
 	register_cvar("slitter_level_difference", "10")
 	register_cvar("slitter_drag_time", "3")
-	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage")
+	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")

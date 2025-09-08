@@ -16,6 +16,7 @@ new gNumRockets[SH_MAXSLOTS+1]
 new gCurrFX[SH_MAXSLOTS+1]
 
 
+new gHeroID
 public plugin_init(){
 
 

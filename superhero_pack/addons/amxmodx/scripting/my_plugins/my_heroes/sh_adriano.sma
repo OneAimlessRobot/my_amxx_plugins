@@ -43,7 +43,7 @@ new Float:base_radius
 //new pCvarSpeed
 new hud_sync
 new hud_sync_health
-new gHeroLevel
+//new gHeroLevel
 
 
 //----------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ public plugin_init()
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
-	RegisterHam(Ham_TraceAttack,"player","trace_adriano")
+	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("adriano_init", "adriano_init")
@@ -94,7 +94,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	gHeroLevel=get_cvar_num("adriano_level")
+	get_cvar_num("adriano_level")
 	dmg_speed_points_pct=get_cvar_float("adriano_dmg_speed_points_pct")
 	base_radius=get_cvar_float("adriano_base_radius")
 	max_radius=get_cvar_float("adriano_max_radius")

@@ -13,9 +13,6 @@
 #define SILENT_TRANQS_SFX  "shmod/erica/silent_tranq/silent.wav"
 
 
-new gHeroID
-
-stock const gHeroName[] = "Erica Fonseca"
 
 native tranq_set_num_darts(id,value_to_set)
 native tranq_get_num_darts(id)

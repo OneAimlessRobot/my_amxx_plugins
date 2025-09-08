@@ -81,8 +81,8 @@ public plugin_init()
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
 	
 	
-	RegisterHam(Ham_TakeDamage, "player", "Ester_Knockback", 1)
-	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect")
+	RegisterHam(Ham_TakeDamage, "player", "Ester_Knockback", 1,true)
+	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect",_,true)
 	register_logevent("ester_round_start", 2, "1=Round_Start")
 	register_logevent("ester_round_end", 2, "1=Round_End")
 	register_logevent("ester_round_end", 2, "1&Restart_Round_")

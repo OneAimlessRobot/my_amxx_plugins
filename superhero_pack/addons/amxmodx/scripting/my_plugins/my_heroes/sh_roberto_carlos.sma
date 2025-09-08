@@ -7,13 +7,16 @@
 
 // GLOBAL VARIABLES
 
+new gHeroID
+
+new const gHeroName[] = "Roberto Carlos"
+
 new gHasRoberto[SH_MAXSLOTS+1]
 new gNumBalls[SH_MAXSLOTS+1]
 
 new round_win[] = "shmod/roberto_carlos/cheers/round_win.wav"
 new round_lose[] = "shmod/roberto_carlos/cheers/round_lose.wav"
 
-new gHeroLevel
 new num_balls
 new Float:ball_cooldown
 
@@ -198,7 +201,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	gHeroLevel=get_cvar_num("roberto_level")
 	num_balls=get_cvar_num("roberto_num_balls")
 	ball_cooldown=get_cvar_float("roberto_ball_cooldown")
 }

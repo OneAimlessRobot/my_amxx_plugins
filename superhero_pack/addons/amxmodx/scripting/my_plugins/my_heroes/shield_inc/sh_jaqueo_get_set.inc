@@ -10,13 +10,8 @@
 #define JAQUEO_COOL_SCOUT_P_MODEL "models/shmod/jaqueo/weapons/scout/p_cool_scout.mdl"
 #define JAQUEO_COOL_SCOUT_W_MODEL "models/shmod/jaqueo/weapons/scout/w_cool_scout.mdl"
 
-new const jaqueo_cool_scout_sounds[4][]={"weapons/scouterista/tactical_clipin.wav","weapons/scouterista/tactical_bolt.wav","weapons/scouterista/tactical_clipout.wav","weapons/scouterista/tactical_fire-1.wav"}
 
-
-new const jaqueo_color[4]={127, 174, 250, 100}
-
-new gHeroID
-new const gHeroName[] = "Jaqueo"
+new const jaqueo_color[4]={127, 174, 250, 100};
 
 native client_isnt_hitter(id)
 native jaqueo_get_has_jaqueo(id)

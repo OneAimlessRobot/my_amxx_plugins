@@ -108,8 +108,8 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("komak_init", "komak_init")
 	shRegHeroInit(gHeroName, "komak_init")
-	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakerypt2")
-	RegisterHam(Ham_TraceAttack,"player","trace_komakerypt2")
+	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakerypt2",_,true)
+	RegisterHam(Ham_TraceAttack,"player","trace_komakerypt2",_,true)
 	register_srvcmd("komak_kd", "komak_kd")
 	shRegKeyDown(gHeroName, "komak_kd")
 	register_srvcmd("komak_ku", "komak_ku")
@@ -121,7 +121,7 @@ public plugin_init()
 	{
 		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
 		{
-			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1)
+			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
 }

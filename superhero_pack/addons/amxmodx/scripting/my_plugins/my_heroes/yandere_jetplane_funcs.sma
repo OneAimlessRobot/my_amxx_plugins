@@ -42,7 +42,7 @@ public plugin_init()
 	hud_sync_charge=CreateHudSyncObj()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "jet_think")
-	RegisterHam(Ham_TakeDamage,"player","jet_Damage")
+	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
 	
 	
 	

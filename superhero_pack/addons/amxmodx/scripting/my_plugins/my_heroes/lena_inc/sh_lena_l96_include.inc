@@ -48,7 +48,7 @@
 #define LENA_AIR_RESISTANCE 200.0
 #define LENA_PROJECTILE_DRAG_CONST (LENA_PROJECTILE_AREA*LENA_PROJECTILE_CAR*LENA_AIR_RESISTANCE)
 
-#define RECOIL 0.4
+#define RECOIL 10.0
 
 #define MATH_PI  3.1415926535897932384626433832795028841971
 
@@ -72,7 +72,14 @@ enum{
 	LENA_SECOND_ZOOM=2,
 	LENA_MAX_ZOOM=3
 }
-
+enum{
+	SEQ_IDLE1=0,
+	SEQ_SHOOT1=1,
+	SEQ_SHOOT2=2,
+	SEQ_SHOOT3=3,
+	SEQ_RELOAD=4,
+	SEQ_DRAW=5
+}
 native lena_shoot_l96(id);
 native lena_get_hero_id();
 native lena_l96_clear_bullets();

@@ -3,16 +3,16 @@
 #endif
 #define sh_soccer_funcs
 
-new const BALL_BOUNCE_GROUND[ ] = "kickball/bounce.wav";
-new const g_szBallModel[ ]     = "models/kickball/ball.mdl";
+stock const BALL_BOUNCE_GROUND[ ] = "kickball/bounce.wav";
+stock const g_szBallModel[ ]     = "models/kickball/ball.mdl";
+stock ballcolor[3] = { 255,200,100 }
 
 //new kicked[] = "shmod/roberto_carlos/kickball/kicked.wav"
-new kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
-new gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
+stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
+stock gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
 
-new beamspr
-new ballcolor[3] = { 255,200,100 }
-new ballbeam[3] = { 20,50,255 }
+stock beamspr
+stock ballbeam[3] = { 20,50,255 }
 
 #define BALL_RETRIEVE true
 #define BALL_CLASSNAME "soccer_ball"
