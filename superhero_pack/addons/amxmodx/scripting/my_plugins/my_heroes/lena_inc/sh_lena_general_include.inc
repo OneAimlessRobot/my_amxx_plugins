@@ -23,12 +23,11 @@ stock const lena_poems[LENA_NUM_POEMS][MAX_POEM_LENGTH]={
 native lena_get_has_lena(id)
 
 
-stock send_poem_function(id, target, poem[MAX_POEM_LENGTH]){
+stock send_poem_function( target, poem[MAX_POEM_LENGTH]){
 	
 	new total=1;
 	new curr_char=0;
 	new printed=0;
-	new num_sends=0;
 	new buff[2*CHUNK_SIZE+1];
 	for(;total<MAX_POEM_LENGTH;total+=printed,curr_char+=printed){
 		arrayset(buff,0,sizeof buff)

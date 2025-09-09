@@ -482,7 +482,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				cs_get_user_armor(pTouched,armor_type);
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
-				send_poem_function(oid,pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
+				send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				switch(armor_type){
 					
 					case CS_ARMOR_NONE:{
