@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include <fakemeta_util>
@@ -18,7 +19,6 @@ new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Tranq_Clip[SH_MAXSLOTS+1]
 new bool:dart_hurts[MAX_ENTITIES];
 new bool:dart_loaded[SH_MAXSLOTS+1];
-new m_trail
 public plugin_init(){
 	
 	
@@ -56,7 +56,7 @@ public plugin_natives(){
 
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!tranq_get_has_erica(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -176,7 +176,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 {
 	pPlayer = get_member(entity, m_pPlayer)
 	
-	if ( client_isnt_hitter(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	
 	if(tranq_get_num_darts(pPlayer) == 0)
 	{
@@ -209,16 +209,18 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	set_pev(id, pev_punchangle, Push)
 }
 
-client_hittable(vic_userid){
+bool:client_isnt_hitter(pPlayer){
 
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
-client_isnt_hitter(gatling_user){
-
-
-return (!tranq_get_has_erica(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
+	if ( !client_hittable(pPlayer)){
+		
+		return true
+	}
+	if(!tranq_get_has_erica(pPlayer)){
+		
+		
+		return true;
+	}
+	return false
 }
 
 public _clear_darts(iPlugin,iParams){
@@ -387,7 +389,6 @@ public remove_dart(id_dart){
 }
 public plugin_precache()
 {
-m_trail = precache_model("sprites/smoke.spr")
 
 precache_model("models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)

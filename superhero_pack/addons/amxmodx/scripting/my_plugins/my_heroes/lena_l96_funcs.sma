@@ -52,11 +52,26 @@ public plugin_natives(){
 	
 	
 }
-
+public bool:client_isnt_hitter(id){
+	
+	if ( !client_hittable(id)){
+		
+		return true
+	}
+	if(!lena_get_has_lena(id)){
+		
+		
+		return true;
+	}
+	return false
+	
+}
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||client_isnt_hitter(id)) return FMRES_IGNORED;
-	
+	if(client_isnt_hitter(id)){
+		
+		return FMRES_IGNORED
+	}
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
@@ -75,23 +90,17 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-client_isnt_hitter(gatling_user){
-
-
-return (!lena_get_has_lena(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
-}
 public Ham_TakeDamageLenaL96(id, idinflictor, idattacker, Float:damage, damagebits)
 {
 	
-	if ( !shModActive() || !is_user_alive(id) ){
+	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
 	if(client_isnt_hitter(idattacker)){
 		
-		return HAM_IGNORED;
+		return HAM_IGNORED
 	}
-	if((get_user_weapon(idattacker) != LENA_WEAPON_CLASSID) || !lena_get_has_lena(idattacker)){
+	if((get_user_weapon(idattacker) != LENA_WEAPON_CLASSID)){
 		return HAM_IGNORED
 	}
 		
@@ -107,7 +116,7 @@ public fw_Item_PostFrame(ent)
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
-		return HAM_IGNORED;
+		return HAM_IGNORED
 	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
 	static bpammo; bpammo = cs_get_user_bpammo(id, LENA_WEAPON_CLASSID)
@@ -191,8 +200,10 @@ public fw_ItemDeployPre(entity)
 public fw_WeaponPrimaryAttackPre(entity)
 {
 	new pPlayer = get_member(entity, m_pPlayer)
-	
-	if ( client_isnt_hitter(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if(client_isnt_hitter(pPlayer)||!hasRoundStarted()){
+		
+		return HAM_IGNORED
+	}
 	static iClip, iPlaybackEvent
 	if(lena_l96_get_num_bullets(pPlayer) == 0)
 	{
@@ -231,7 +242,8 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 {
 	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
-			return;
+		
+		return
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
@@ -260,7 +272,7 @@ stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
 launch_bullet(id)
 {
 
-if(!client_hittable(id)){
+if(client_isnt_hitter(id)){
 		
 	return PLUGIN_CONTINUE
 }
@@ -423,12 +435,12 @@ while(grenada) {
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_hittable(player)){
+	if(client_isnt_hitter(player)){
 		
 		return
 	}
-	if((get_user_weapon(player) != LENA_WEAPON_CLASSID) || !lena_get_has_lena(player)){
-		return	
+	if((get_user_weapon(player) != LENA_WEAPON_CLASSID)){
+		return
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity)){
@@ -481,7 +493,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
-				sh_chat_message(oid,lena_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 				send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				switch(armor_type){
 					
