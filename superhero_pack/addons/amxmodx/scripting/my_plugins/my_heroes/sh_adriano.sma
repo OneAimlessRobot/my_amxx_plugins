@@ -369,7 +369,7 @@ public adriano_loop(id){
 	
 	id-=ADRIANO_STATS_TASKID;
 	
-	if(gHasAdriano[id]){
+	if(gHasAdriano[id]&&client_hittable(id)){
 		
 		update_stats(id)
 		
