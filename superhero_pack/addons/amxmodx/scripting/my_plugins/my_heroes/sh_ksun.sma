@@ -41,6 +41,7 @@ new ksun_spore_m4_mult
 new num_sleep_nades
 new teamglow_on
 new gHeroID
+stock ksun_when_reset_spores=never_reset;
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -54,6 +55,7 @@ public plugin_init()
 	register_cvar("ksun_kill_type_broadness_level","0")
 	register_cvar("ksun_spores_per_kill","0")
 	register_cvar("ksun_spore_m4_mult","0")
+	register_cvar("ksun_when_reset_spores","0")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -87,6 +89,9 @@ public plugin_natives(){
 	register_native("ksun_multi_inc_num_available_spores","_ksun_multi_inc_num_available_spores",0);
 	register_native("ksun_multi_dec_num_available_spores","_ksun_multi_dec_num_available_spores",0);
 	
+	
+	
+	register_native("ksun_get_when_reset_spores","_ksun_get_when_reset_spores",0);
 	
 	
 	
@@ -242,8 +247,9 @@ public ev_SendAudio(){
 	
 	}
 	
-	arrayset(gMaxSporesUsable,0,SH_MAXSLOTS+1)
-	
+	if(ksun_get_when_reset_spores()&reset_on_new_round){
+		arrayset(gMaxSporesUsable,0,SH_MAXSLOTS+1)
+	}
 	return PLUGIN_HANDLED
 }
 public _ksun_set_num_available_spores(iPlugin,iParams){
@@ -265,6 +271,13 @@ public _ksun_multi_dec_num_available_spores(iPlugin,iParams){
 	new id= get_param(1)
 	new value= get_param(2)
 	gMaxSporesUsable[id]-= (gMaxSporesUsable[id]>0)? value:0
+
+}
+
+
+public _ksun_get_when_reset_spores(iPlugin,iParams){
+
+	return ksun_when_reset_spores;
 
 }
 public _ksun_multi_inc_num_available_spores(iPlugin,iParams){
@@ -344,7 +357,6 @@ public newRound(id)
 	if ( spores_has_ksun(id)) {
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
-		ksun_set_num_available_spores(id,0)
 		ksun_morph(id+KSUN_MORPH_TASKID)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		init_hud_tasks(id)
@@ -373,6 +385,7 @@ public loadCVARS()
 	ksun_kill_type_broadness_level=get_cvar_num("ksun_kill_type_broadness_level")
 	ksun_spores_per_kill=get_cvar_num("ksun_spores_per_kill")
 	ksun_spore_m4_mult=get_cvar_num("ksun_spore_m4_mult")
+	ksun_when_reset_spores=clamp(get_cvar_num("ksun_when_reset_spores"),never_reset,always_reset)
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -591,8 +604,9 @@ public death()
 		}
 		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
-		ksun_set_num_available_spores(id,0)
-		
+		if(ksun_get_when_reset_spores()&reset_on_death){
+			ksun_set_num_available_spores(id,0)
+		}
 	}
 	if(is_user_connected(killer)&&spores_has_ksun(killer)){
 		if(ksun_kill_type_broadness_level>=3){
@@ -612,8 +626,9 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		}
 		
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
-		ksun_set_num_available_spores(id,0)
-		
+		if(ksun_get_when_reset_spores()&reset_on_death){
+			ksun_set_num_available_spores(id,0)
+		}
 	}
 	if(client_hittable(killer)&&is_user_connected(id)){
 		if(spores_has_ksun(killer)&&!ksun_player_is_in_ultimate(killer)){

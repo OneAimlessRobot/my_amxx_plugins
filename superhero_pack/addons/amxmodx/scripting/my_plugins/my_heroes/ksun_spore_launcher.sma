@@ -470,7 +470,9 @@ public death()
 	
 	if(spores_has_ksun(id)){
 	
-		spores_reset_user(id)
+		if(ksun_get_when_reset_spores()&reset_on_death){
+			spores_reset_user(id)
+		}
 		delete_hud_tasks(id)
 		
 	}

@@ -151,8 +151,10 @@ public ev_SendAudio(){
 	spores_clear()
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		arrayset(g_times_player_spiked_player[i],0,SH_MAXSLOTS+1)
-		arrayset(g_times_player_spiked_by_player[i],0,SH_MAXSLOTS+1)
+		if(ksun_get_when_reset_spores()&reset_on_new_round){
+			arrayset(g_times_player_spiked_player[i],0,SH_MAXSLOTS+1)
+			arrayset(g_times_player_spiked_by_player[i],0,SH_MAXSLOTS+1)
+		}
 	}
 	return PLUGIN_HANDLED
 }

@@ -41,6 +41,16 @@ stock const CENSORSHIP_SENTENCES[MAX_VIOLENCE+1][2][128]=
 	  {"chest bursted  ","Eviscerated  "},
 	  {"graped  ","You did them a fifty shades of grey... poor "},
 	 }
+	 
+enum ksun_reset_occasions{
+	never_reset=0,
+	reset_on_death=1,
+	reset_on_new_round=2,
+	always_reset=3
+	
+	
+}
+
 native spores_has_ksun(id)
 native spores_ksun_hero_id()
 native Float:spores_cooldown()
@@ -56,5 +66,7 @@ native ksun_multi_inc_num_available_spores(id,value)
 
 native ksun_get_num_available_spores(id)
 native ksun_set_num_available_spores(id,value)
+
+native ksun_reset_occasions:ksun_get_when_reset_spores()
 	
 	

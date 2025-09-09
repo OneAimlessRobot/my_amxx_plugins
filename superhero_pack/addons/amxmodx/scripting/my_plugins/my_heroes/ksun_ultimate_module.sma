@@ -159,7 +159,7 @@ public ev_SendAudio(){
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		if(is_user_connected(id)){
-			unultimate_user(id)
+			unultimate_user(id,(ksun_get_when_reset_spores()&reset_on_new_round))
 			
 		}
 	}
@@ -265,7 +265,7 @@ public unultimate_task(id){
 	
 }
 
-unultimate_user(id){
+unultimate_user(id,take_away_supply=1){
 	remove_task(id+UNKSUN_ULTIMATE_TASKID)
 	remove_task(id+KSUN_ULTIMATE_TASKID)
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -273,7 +273,7 @@ unultimate_user(id){
 	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
-	g_player_supply_amount[id]=0
+	g_player_supply_amount[id]=take_away_supply?0:g_player_supply_amount[id]
 	
 	
 	

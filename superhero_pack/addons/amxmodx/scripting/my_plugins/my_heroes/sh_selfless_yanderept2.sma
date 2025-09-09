@@ -486,6 +486,11 @@ message_end()
 }
 
 bool:heal_teamate(id,i){
+	if(!client_hittable(i)||!client_hittable(id)||!yandere_get_has_yandere(id)){
+		
+		
+		return false
+	}
 	new Float:mate_health=float(get_user_health(i))
 	if(mate_health>=sh_get_max_hp(i)){
 		return false
@@ -502,16 +507,20 @@ bool:heal_teamate(id,i){
 public heal_players_in_radius(id){
 
 id-=YANDERE_HEAL_TASKID
-if(!sh_is_active()||!client_hittable(id)) return
+if(!sh_is_active()||!client_hittable(id)||!yandere_get_has_yandere(id)) return
 
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
 new CsTeams:user_team= cs_get_user_team(id)
 new bool:healed=false
 for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
-	
-	if((i==id)||!client_hittable(i)){
+	if(!client_hittable(id)||!yandere_get_has_yandere(id)){
+		
+		
 		return
+	}
+	if((i==id)||!client_hittable(i)){
+		continue
 		
 	}
 	else if(is_user_alive(i)){
