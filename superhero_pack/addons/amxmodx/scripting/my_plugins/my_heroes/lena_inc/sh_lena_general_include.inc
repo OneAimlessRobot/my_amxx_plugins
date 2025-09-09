@@ -33,9 +33,7 @@ stock send_poem_function(id, target, poem[MAX_POEM_LENGTH]){
 	for(;total<MAX_POEM_LENGTH;total+=printed,curr_char+=printed){
 		arrayset(buff,0,sizeof buff)
 		strcat(buff,poem[curr_char],min(MAX_POEM_LENGTH-total,(sizeof buff)-1))
-		printed=console_print(id,"%s",buff);
-		console_print(target,"%s",buff);
-		server_print("send number: %d^nTotal: %d^nThis time printed was: %d^n",num_sends++,total,printed)
+		printed=console_print(target,"%s",buff);
 		if(!strlen(buff)){
 			
 			return

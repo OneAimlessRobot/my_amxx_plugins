@@ -16,6 +16,7 @@ veronika_m203dmg 120
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // VARIABLES
 new gHeroName[]="Veronika"
@@ -226,7 +227,6 @@ public launch_nade(id)
 	//client_print(id, print_center, "Origin: %f-%f-%f", Origin[0], Origin[1], Origin[2])
 	//client_print(id, print_center, "vAngle: %f-%f-%f", vAngle[0], vAngle[1], vAngle[2])
 	
-	Origin[2] = Origin[2] + 10
 	
 	Ent = create_entity("info_target")
 	
@@ -240,15 +240,22 @@ public launch_nade(id)
 	entity_set_vector(Ent, EV_VEC_mins, MinBox)
 	entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
 	
-	entity_set_origin(Ent, Origin)
 	entity_set_vector(Ent, EV_VEC_angles, vAngle)
 	
 	entity_set_int(Ent, EV_INT_effects, 2)
-	entity_set_int(Ent, EV_INT_solid, 1)
-	entity_set_int(Ent, EV_INT_movetype, 10)
+	//default
+	//entity_set_int(Ent, EV_INT_solid, SOLID_TRIGGER)
+	//entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCE)
+	entity_set_int(Ent, EV_INT_solid, SOLID_TRIGGER)
+	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCE)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
 	VelocityByAim(id, 2000 , Velocity)
+	new Float:mini_Velocity[3];
+	multiply_3d_vector_by_scalar(Velocity,1/2000.0,mini_Velocity);
+	multiply_3d_vector_by_scalar(mini_Velocity,30.0,mini_Velocity);
+	add_3d_vectors(Origin,mini_Velocity,Origin);
+	entity_set_origin(Ent, Origin)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	emit_sound(id,CHAN_VOICE,"shmod/glauncher.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
