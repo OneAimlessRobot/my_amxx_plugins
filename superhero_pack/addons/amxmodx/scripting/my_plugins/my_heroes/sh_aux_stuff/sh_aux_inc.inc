@@ -61,6 +61,14 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
 
+stock Float:x_vector[3]={1.0,0.0,0.0}
+stock x_iVector[3]={1,0,0}
+stock Float:y_vector[3]={0.0,1.0,0.0}
+stock y_iVector[3]={0,1,0}
+stock Float:z_vector[3]={0.0,0.0,1.0}
+stock z_iVector[3]={0,0,1}
+
+
 stock const tag_color[4]={0,255,255,255}
 stock smoke, white, fire
 stock m_trail
@@ -821,21 +829,22 @@ stock directed_spark(init_id, end_id)
 
 }
 //----------------------------------------------------------------------------------------------
-stock blood_spray(vic, vicOrigin[3], scale)
+stock blood_spray(Float:vicOrigin[3], scale)
 {
-	new x, y
+	new Float:x
+	new Float:y
 	for(new i = 0; i < 2; i++) {
-		x = random_num(-10, 10)
-		y = random_num(-10, 10)
-		for(new j = 0; j < 2; j++) {
+		x = float(random_num(-10, 10))
+		y = float(random_num(-10, 10))
+		for(new Float:j = 0.0; j < 2.0; j+=1.0) {
 			// Blood spray
 			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 			write_byte(115)				// TE_BLOODSPRITE
-			write_coord(vicOrigin[0]+(x*j))	// position
-			write_coord(vicOrigin[1]+(y*j))
-			write_coord(vicOrigin[2]+21)
+			write_coord_f(vicOrigin[0]+(x*j))	// position
+			write_coord_f(vicOrigin[1]+(y*j))
+			write_coord_f(vicOrigin[2]+21.0)
 			write_short(blood2)	// sprite1 index
-			write_short(blood)	// sprite2 index
+			write_short(blood1)	// sprite2 index
 			write_byte(248) 			// color RED = 248 YELLOW = 196
 			write_byte(scale) 			// scale
 			message_end()

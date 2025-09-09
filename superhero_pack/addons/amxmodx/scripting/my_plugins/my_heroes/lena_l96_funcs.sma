@@ -488,20 +488,27 @@ public vexd_pfntouch(pToucher, pTouched)
 					case CS_ARMOR_NONE:{
 						
 						
-						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						make_bleed_fx(pTouched);
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						blood_spray(origin, headshot?10:5)
 						
 						
 					}
 					case CS_ARMOR_KEVLAR:{
 						
-						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
 						if(headshot){
-							make_bleed_fx(pTouched);
+							blood_spray(origin, 5)
+						}
+						else{
+							
+							make_sparks(origin);
 						}
 					}
 					case CS_ARMOR_VESTHELM:{
-						emit_sound(pToucher, CHAN_WEAPON,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						make_sparks(origin);
 					}
 				}
 			}
