@@ -1,4 +1,80 @@
-Compiling plugins from index 19 to 24
+Compiling plugins from index 22 to 28
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+molotov_fx.sma(93) : warning 206: redundant test: constant expression is non-zero
+Header size:           1896 bytes
+Code size:            16204 bytes
+Data size:             4420 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   38904 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+pill_gatling_funcs.sma(196) : warning 217: loose indentation
+Header size:           3012 bytes
+Code size:            20488 bytes
+Data size:            13624 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   53508 bytes
+
+1 Warning.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2712 bytes
+Code size:            29004 bytes
+Data size:             6360 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   54460 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2896 bytes
+Code size:            19052 bytes
+Data size:             6620 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   44952 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2620 bytes
+Code size:            18592 bytes
+Data size:            13512 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   51108 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1828 bytes
+Code size:             9584 bytes
+Data size:             4808 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   32604 bytes
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2676 bytes
+Code size:            22808 bytes
+Data size:             9916 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   51784 bytes
+Done.
 AMX Mod X Compiler 1.10.0.5467
 Copyright (c) 1997-2006 ITB CompuPhase
 Copyright (c) 2004-2013 AMX Mod X Team
@@ -8,82 +84,4 @@ Code size:            35012 bytes
 Data size:            11868 bytes
 Stack/heap size:      16384 bytes
 Total requirements:   66272 bytes
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-sh_backtothepast.sma(12) : warning 203: symbol is never used: "gHeroLevel"
-Header size:           1976 bytes
-Code size:             9160 bytes
-Data size:             5548 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   33068 bytes
-
-1 Warning.
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-sh_bloodangelv2.sma(79) : warning 204: symbol is assigned a value that is never used: "dark_armor"
-sh_bloodangelv2.sma(80) : warning 204: symbol is assigned a value that is never used: "dark_gravity"
-sh_bloodangelv2.sma(78) : warning 204: symbol is assigned a value that is never used: "dark_health"
-sh_bloodangelv2.sma(81) : warning 204: symbol is assigned a value that is never used: "dark_speed"
-sh_bloodangelv2.sma(77) : warning 204: symbol is assigned a value that is never used: "gHeroLevel"
-Header size:           2140 bytes
-Code size:            10852 bytes
-Data size:             5024 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   34400 bytes
-
-5 Warnings.
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-sh_camman.sma(76) : warning 203: symbol is never used: "LineColors"
-sh_camman.sma(83) : warning 203: symbol is never used: "camera_color"
-sh_camman.sma(187) : warning 204: symbol is assigned a value that is never used: "gHeroLevel"
-Header size:           2604 bytes
-Code size:             9804 bytes
-Data size:             5960 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   34752 bytes
-
-3 Warnings.
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-sh_chikoi.sma(115) : warning 204: symbol is assigned a value that is never used: "gHeroLevel"
-Header size:           1392 bytes
-Code size:             3900 bytes
-Data size:             2612 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   24288 bytes
-
-1 Warning.
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-Header size:           2804 bytes
-Code size:            20628 bytes
-Data size:             8296 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   48112 bytes
-Done.
-AMX Mod X Compiler 1.10.0.5467
-Copyright (c) 1997-2006 ITB CompuPhase
-Copyright (c) 2004-2013 AMX Mod X Team
-
-Header size:           1720 bytes
-Code size:             8016 bytes
-Data size:             3948 bytes
-Stack/heap size:      16384 bytes
-Total requirements:   30068 bytes
 Done.

@@ -77,11 +77,14 @@ public CmdStart(id, uc_handle)
 
 public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if(!is_user_connected(Attacker))
+	
+	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_ELITE || !tranq_get_has_erica(Attacker))
+	}
+	if(get_user_weapon(Attacker) != CSW_ELITE || !tranq_get_has_erica(Attacker)){
 		return HAM_IGNORED
-		
+	}
+	
 	Damage=0.0;
 	
 	return HAM_SUPERCEDE

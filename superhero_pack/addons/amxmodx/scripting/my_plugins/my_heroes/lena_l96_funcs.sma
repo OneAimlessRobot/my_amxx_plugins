@@ -37,7 +37,7 @@ public plugin_init(){
 	//TakeDamage=RegisterHam(Ham_TakeDamage, "player", "Ham_TakeDamageLenaL96")
 	//DisableHamForward(TakeDamage)
 	
-	RegisterHam(Ham_TakeDamage, "player", "Ham_TakeDamageLenaL96",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaL96",_,true)
 	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	//register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -90,23 +90,19 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public Ham_TakeDamageLenaL96(id, idinflictor, idattacker, Float:damage, damagebits)
+public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
 {
 	
-	if ( !sh_is_active() ){
+	if(!is_user_connected(idattacker)){
+		return HAM_IGNORED	
+	}
+	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !lena_get_has_lena(idattacker)){
 		return HAM_IGNORED
 	}
-	if(client_isnt_hitter(idattacker)){
 		
-		return HAM_IGNORED
-	}
-	if((get_user_weapon(idattacker) != LENA_WEAPON_CLASSID)){
-		return HAM_IGNORED
-	}
 		
 	
 	damage=0.0;
-	SetHamParamFloat(4, damage)
 	return HAM_SUPERCEDE
 	
 }
