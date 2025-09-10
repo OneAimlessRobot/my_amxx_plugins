@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "d_barrel_inc/sh_d_barrel.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero Snoodle d_barrel funcs"
@@ -483,6 +484,11 @@ public fw_Weapon_Reload_Post(ent)
 public fw_Item_PostFrame(ent)
 {
 	static id; id = pev(ent, pev_owner)
+	
+	if(!client_hittable(id)){
+		
+		return
+	}
 	if(!Get_BitVar(g_Had_Volcano, id)) return
 
 	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, OFFSET_LINUX_PLAYER)

@@ -131,6 +131,11 @@ public Item_PostFrame_Post(iEnt)
 {    
 	if(!is_valid_ent(iEnt)) return HAM_IGNORED
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
+	
+	if(!client_hittable(id)){
+		
+		return HAM_IGNORED
+	}
 	if (!sh_is_active()||!gHasKomak[id])return HAM_IGNORED
 	
 	if( get_pdata_int(iEnt, m_fInReload, 4) )

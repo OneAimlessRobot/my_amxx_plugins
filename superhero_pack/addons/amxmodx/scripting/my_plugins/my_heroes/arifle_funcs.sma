@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "arifle_inc/sh_arifle.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero super noodle m60"
@@ -214,8 +215,9 @@ public fw_SetModel(entity, model[])
 
 public fw_CmdStart(id, uc_handle, seed)
 {
-	if(!is_user_alive(id))
-		return FMRES_IGNORED	
+	if(!client_hittable(id)){
+		return FMRES_IGNORED
+	}
 	if(!Get_BitVar(g_Had_Arifle, id) || get_user_weapon(id) != CSW_ARIFLE)	
 		return FMRES_IGNORED
 		
@@ -238,7 +240,8 @@ public fw_Weapon_PrimaryAttack(Ent)
 	}
 	static id; id = pev(Ent, pev_owner)
 	
-	if (!is_user_connected(id)){
+	if(!client_hittable(id)){
+		
 		return HAM_IGNORED
 	}
 	if(get_user_weapon(id) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, id)){
@@ -294,6 +297,11 @@ public fw_Item_Deploy_Post(Ent)
 	if(pev_valid(Ent) != 2)
 		return
 	static Id; Id = get_pdata_cbase(Ent, 41, 4)
+	
+	if(!client_hittable(Id)){
+		
+		return
+	}
 	if(get_pdata_cbase(Id, 373) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Arifle, Id))
@@ -365,8 +373,11 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 public fw_Item_PostFrame(ent)
 {
 	static id; id = pev(ent, pev_owner)
-	if(!is_user_alive(id))
+	
+	if(!client_hittable(id)){
+		
 		return HAM_IGNORED
+	}
 	if(!Get_BitVar(g_Had_Arifle, id))
 		return HAM_IGNORED	
 	

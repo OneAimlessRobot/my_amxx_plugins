@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "q_barrel_inc/sh_q_barrel.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero graciete shotty funcs"
@@ -385,6 +386,11 @@ public fw_Item_PostFrame(iEnt)
 	if(pev_valid(iEnt) != 2)
 		return 
 	static id; id = get_pdata_cbase(iEnt, 41, 4)
+	
+	if(!client_hittable(id)){
+		
+		return
+	}
 	if(get_pdata_cbase(id, 373) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
