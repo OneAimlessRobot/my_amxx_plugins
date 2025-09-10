@@ -2,6 +2,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero yakui pt2 pt1"
@@ -37,6 +38,7 @@ public plugin_precache(){
 
 
 	m_spriteTexture = precache_model("sprites/laserbeam.spr")
+	precache_explosion_fx()
 
 }
 public plugin_natives(){
@@ -117,7 +119,9 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active() ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
-
+	if(!client_hittable(owner)){
+		return HAM_IGNORED
+	}
 	if ( gatling_get_fx_num(owner)==METYLPHENIDATE) {
 		set_pev(owner, pev_punchangle, {0.0, 0.0, 0.0})
 	}
@@ -620,71 +624,6 @@ unstun_user(id){
 
 }
 
-trail(vec1[3],vec2[3],const color[4],id){
-
-//BEAMENTPOINTS
-		message_begin( MSG_ONE,SVC_TEMPENTITY,{0,0,0}, id)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( m_spriteTexture )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( color[0] )     // r, g, b
-		write_byte( color[1] )       // r, g, b
-		write_byte( color[2])
-		write_byte( color[3]) // brightness
-		write_byte(300) // speed
-		message_end()
-}
-public radioactive_task(array[],id){
-	id-=RADIOACTIVE_TASKID
-	
-	new hud_msg[256]
-	new client_name[128]
-	new distance, origin[3], eorigin[3],att_origin[3]
-	get_user_name(id,client_name,127)
-	
-	get_user_origin(id, eorigin)
-	get_user_origin(array[0], origin)
-	get_user_origin(array[0], att_origin)
-			
-	distance = get_distance(eorigin, origin)
-	format(hud_msg,256,"%s.^nDistance: %d^nNumero de teamates: %d^n",client_name,distance,array[2]);
-	set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
-	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
-	detect_user(array[0],id,eorigin);
-	trail(eorigin,origin,radioactive_color,array[0])
-	for(new i=0;i<array[2];i++){
-		if(array[i+3]==array[0]){
-			continue
-		}
-		get_user_origin(array[i+3], origin)
-			
-		distance = get_distance(eorigin, origin)
-		format(hud_msg,127,"%s.^nDistance: %d",client_name,distance);
-		set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
-		ShowSyncHudMsg(array[i+3],array[1], "%s", hud_msg)
-		detect_user(array[i+3],id,eorigin);
-		trail(eorigin,origin,radioactive_color,array[i+3])
-		
-	}
-	sh_set_rendering(id, radioactive_color[0],  radioactive_color[1], radioactive_color[2], radioactive_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, 0.9, radioactive_color[0], radioactive_color[1], radioactive_color[2],  50)
-	aura(id,radioactive_color)
-	sh_extra_damage(id,array[0],RADIOACTIVE_DAMAGE,"Uranium Pill",0,SH_DMG_NORM)
-	
-	
-
-}
-
 radioactive_user(id,attacker){
 	new players[SH_MAXSLOTS]
 	new team_name[32]
@@ -722,65 +661,6 @@ radioactive_user(id,attacker){
 
 }
 
-unradioactive_user(id){
-	
-	remove_task(id+UNRADIOACTIVE_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+RADIOACTIVE_TASKID)
-	return 0
-
-
-
-}
-
-public unradioactive_task(id){
-	id-=UNRADIOACTIVE_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+RADIOACTIVE_TASKID)
-	return 0
-
-
-
-}
-
-detect_user(id,enemy,PlayerCoords[3]){
-
-
-	
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-	write_byte(id)
-	write_byte(enemy)           
-	write_coord(PlayerCoords[0])
-	write_coord(PlayerCoords[1])
-	write_coord(PlayerCoords[2])
-	message_end()
-			
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
-	write_byte(enemy)
-	message_end()
-
-
-}
-
-aura(id,const color[4]){
-
-	new origin[3]
-
-	get_user_origin(id, origin, 1)
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(27)
-	write_coord(origin[0])	//pos
-	write_coord(origin[1])
-	write_coord(origin[2])
-	write_byte(15)
-	write_byte(color[0])			// r, g, b
-	write_byte(color[1])		// r, g, b
-	write_byte(color[2])			// r, g, b
-	write_byte(3)			// life
-	write_byte(1)			// decay
-	message_end()
-
-}
 
 public blind_task(id){
 	id-=BLIND_TASKID

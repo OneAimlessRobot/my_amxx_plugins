@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero bleed fx"

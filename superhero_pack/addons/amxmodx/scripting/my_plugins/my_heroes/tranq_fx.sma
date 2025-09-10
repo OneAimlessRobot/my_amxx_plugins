@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero tranq fx"
@@ -7,15 +8,12 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-new g_msgFade
-
 new bool:gIsAsleep[SH_MAXSLOTS+1]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
-g_msgFade = get_user_msgid("ScreenFade");
 new wpnName[32]
 for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 {
@@ -41,7 +39,9 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active()||!is_valid_ent(weapon_ent) ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
-
+	if(!client_hittable(owner)){
+		return HAM_IGNORED
+	}
 	if ( gIsAsleep[owner]) {
 		return HAM_SUPERCEDE
 	}
@@ -85,6 +85,7 @@ public _sh_sleep_user(iPlugin,iParams){
 public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound, SLEEP_SFX)
+	precache_explosion_fx()
 
 }
 
@@ -107,18 +108,6 @@ fade_screen_user(id){
 		write_byte(0); // fade blue  
 		write_byte(255); // fade alpha  
 		message_end(); 
-
-}
-unfade_screen_user(id){
-	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client"  
-	write_short(1<<12); // fade lasts this long duration  
-	write_short(1<<8); // fade lasts this long hold time  
-	write_short(FADE_OUT); // fade type
-	write_byte(0); // fade red  
-	write_byte(0); // fade green  
-	write_byte(0); // fade blue	 
-	write_byte(255); // fade alpha	 
-	message_end();	
 
 }
 public sleep_task(array[],id){
