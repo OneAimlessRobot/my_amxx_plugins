@@ -92,6 +92,9 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 public fw_Item_PostFrame(ent)
 {
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
+		
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -121,6 +124,9 @@ public fw_Item_PostFrame(ent)
 
 public fw_WeaponReloadPre(entity)
 {
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+		
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
@@ -143,6 +149,8 @@ public fw_WeaponReloadPre(entity)
 }
 public fw_Weapon_Reload_Post(ent)
 {
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -161,6 +169,8 @@ public fw_Weapon_Reload_Post(ent)
 } 
 public fw_ItemDeployPre(entity)
 {
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(!tranq_get_has_erica(pPlayer)){
@@ -176,7 +186,9 @@ public fw_ItemDeployPre(entity)
 
 
 public fw_WeaponPrimaryAttackPre(entity)
-{
+{	
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
@@ -199,6 +211,9 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
+	if(pev_valid(Ent)!=2)
+		return
+		
 	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
 			return;

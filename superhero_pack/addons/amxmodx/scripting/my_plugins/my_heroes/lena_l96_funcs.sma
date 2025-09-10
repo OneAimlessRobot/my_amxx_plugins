@@ -109,6 +109,7 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 
 public fw_Item_PostFrame(ent)
 {
+	if(!is_valid_ent(ent)) return HAM_IGNORED
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -138,6 +139,8 @@ public fw_Item_PostFrame(ent)
 
 public fw_WeaponReloadPre(entity)
 {
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
@@ -159,6 +162,9 @@ public fw_WeaponReloadPre(entity)
 }
 public fw_Weapon_Reload_Post(ent)
 {
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
+		
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -179,6 +185,9 @@ public fw_Weapon_Reload_Post(ent)
 
 public fw_ItemDeployPre(entity)
 {
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
@@ -195,6 +204,10 @@ public fw_ItemDeployPre(entity)
 
 public fw_WeaponPrimaryAttackPre(entity)
 {
+	
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+		
 	new pPlayer = get_member(entity, m_pPlayer)
 	if(client_isnt_hitter(pPlayer)||!hasRoundStarted()){
 		
@@ -236,6 +249,10 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
+	
+	if(pev_valid(Ent)!=2)
+		return
+		
 	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		

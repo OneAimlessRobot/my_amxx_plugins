@@ -129,7 +129,9 @@ public plugin_init()
 
 public Item_PostFrame_Post(iEnt)
 {    
-	if(!is_valid_ent(iEnt)) return HAM_IGNORED
+	if(pev_valid(iEnt) != 2){
+		return HAM_IGNORED
+	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
 	
 	if(!client_hittable(id)){

@@ -365,8 +365,9 @@ public fw_Item_AddToPlayer_Post(ent, id)
 
 public fw_Weapon_WeaponIdle_Post(iEnt)
 {
-	if(pev_valid(iEnt) != 2)
+	if(pev_valid(iEnt) != 2){
 		return 
+	}
 	static id; id = get_pdata_cbase(iEnt, 41, 4)
 	if(get_pdata_cbase(id, 373) != iEnt)
 		return
@@ -383,8 +384,9 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 
 public fw_Item_PostFrame(iEnt)
 {
-	if(pev_valid(iEnt) != 2)
+	if(pev_valid(iEnt) != 2){
 		return 
+	}
 	static id; id = get_pdata_cbase(iEnt, 41, 4)
 	
 	if(!client_hittable(id)){

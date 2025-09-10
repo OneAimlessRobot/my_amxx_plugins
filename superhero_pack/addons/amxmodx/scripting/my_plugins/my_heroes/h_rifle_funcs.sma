@@ -383,6 +383,9 @@ public fw_Weapon_Reload(iEnt)
 
 public fw_Item_PostFrame( iEnt )
 {
+	if(pev_valid(iEnt) != 2){
+		return
+	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)	
 
 	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, XTRA_OFS_PLAYER)
@@ -467,8 +470,9 @@ stock Set_WeaponAnim(id, anim)
 stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 {
 	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
-	if(!pev_valid(entwpn)) 
+	if(!pev_valid(entwpn )){
 		return
+	}
 		
 	set_pdata_float(entwpn, 46, TimeIdle, 4)
 	set_pdata_float(entwpn, 47, TimeIdle, 4)

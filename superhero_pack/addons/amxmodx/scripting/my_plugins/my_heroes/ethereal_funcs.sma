@@ -379,6 +379,9 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 
 public fw_Item_PostFrame(ent)
 {
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
+		
 	static id; id = pev(ent, pev_owner)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
@@ -409,6 +412,9 @@ public fw_Item_PostFrame(ent)
 
 public fw_Weapon_Reload(ent)
 {
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
+		
 	static id; id = pev(ent, pev_owner)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
