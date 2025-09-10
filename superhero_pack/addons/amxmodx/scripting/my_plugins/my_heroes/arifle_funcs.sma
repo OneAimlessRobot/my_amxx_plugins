@@ -33,7 +33,6 @@ public plugin_init()
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
 	register_forward(FM_UpdateClientData,"fw_UpdateClientData_Post", 1)
-	register_forward(FM_CmdStart, "fw_CmdStart")
 	register_forward(FM_SetModel, "fw_SetModel")	
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
@@ -211,25 +210,6 @@ public fw_SetModel(entity, model[])
 	}
 
 	return FMRES_IGNORED;
-}
-
-public fw_CmdStart(id, uc_handle, seed)
-{
-	if(!client_hittable(id)){
-		return FMRES_IGNORED
-	}
-	if(!Get_BitVar(g_Had_Arifle, id) || get_user_weapon(id) != CSW_ARIFLE)	
-		return FMRES_IGNORED
-		
-	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
-
-	if((PressButton & IN_ATTACK2))
-	{
-		PressButton &= ~IN_ATTACK2
-		set_uc(uc_handle, UC_Buttons, PressButton)
-	}
-	
-	return FMRES_IGNORED
 }
 
 

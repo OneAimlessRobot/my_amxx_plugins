@@ -66,7 +66,7 @@ public _gatling_set_rockets(iPlugin,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -108,11 +108,19 @@ public CmdStart(id, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-public client_isnt_hitter(gatling_user){
-
-
-return (!gatling_get_has_yakui(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
+public bool:client_isnt_hitter(id){
+	
+	if ( !client_hittable(id)){
+		
+		return true
+	}
+	if(!gatling_get_has_yakui(id)){
+		
+		
+		return true;
+	}
+	return false
+	
 }
 
 

@@ -2,6 +2,7 @@
 
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 
@@ -59,7 +60,10 @@ public _make_effect(iPlugin,iParams){
 	new vic= get_param(1)
 	new attacker= get_param(2)
 	new hero_id=get_param(3)
-
+	if(!is_user_connected(vic)||!is_user_connected(attacker)){
+		
+		return
+	}
 	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
 	new fx_num=sh_effect_user(vic,attacker,hero_id)
 	gCurrFX[vic]=fx_num;
@@ -71,6 +75,10 @@ public _make_effect_direct(iPlugin,iParams){
 	new attacker= get_param(2)
 	new fx_num= get_param(3)
 	new hero_id=get_param(4)
+	if(!is_user_connected(vic)||!is_user_connected(attacker)){
+		
+		return
+	}
 	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
 	sh_effect_user_direct(vic,attacker,fx_num,hero_id)
 	gCurrFX[vic]=fx_num;
@@ -80,6 +88,10 @@ public _uneffect_user_handler(iPlugin,iParams){
 
 	new user=get_param(1)
 	new hero_id=get_param(2)
+	if(!is_user_connected(user)){
+		
+		return
+	}
 	sh_uneffect_user(user,gatling_get_fx_num(user),hero_id)
 	gCurrFX[user]=0;
 
@@ -87,10 +99,18 @@ public _uneffect_user_handler(iPlugin,iParams){
 public _gatling_set_has_yakui(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set= get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gHasYakui[id]=value_to_set;
 }
 public _gatling_get_has_yakui(iPlugin,iParams){
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return 0
+	}
 	return gHasYakui[id]
 }
 
@@ -104,12 +124,20 @@ public _gatling_set_hero_id(iPlugin,iParams){
 public _gatling_set_num_pills(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set=get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gNumPills[id]=value_to_set;
 }
 public _gatling_get_num_pills(iPlugin,iParams){
 
 
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return -1
+	}
 	return gNumPills[id]
 
 }
@@ -118,6 +146,10 @@ public _gatling_dec_num_pills(iPlugin,iParams){
 
 
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gNumPills[id]-= (gNumPills[id]>0)? 1:0
 
 }
@@ -126,6 +158,10 @@ public _gatling_set_num_rockets(iPlugin,iParams){
 
 	new id= get_param(1)
 	new value_to_set=get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gNumRockets[id]=value_to_set;
 
 }
@@ -134,6 +170,10 @@ public _gatling_get_num_rockets(iPlugin,iParams){
 
 
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return -1
+	}
 	return gNumRockets[id]
 
 }
@@ -142,6 +182,10 @@ public _gatling_dec_num_rockets(iPlugin,iParams){
 
 
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
 
 }
@@ -149,6 +193,10 @@ public _gatling_get_fx_num(iPlugin,iParams){
 
 
 	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return 0
+	}
 	return gCurrFX[id]
 
 }
@@ -158,6 +206,10 @@ public _gatling_set_fx_num(iPlugin,iParams){
 
 	new id= get_param(1)
 	new value_to_set= get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
 	gCurrFX[id]=value_to_set
 
 }
@@ -165,6 +217,10 @@ public _gatling_set_fx_num(iPlugin,iParams){
 public _sh_get_pill_color(iPlugin,iParams){
 	new fx_num=get_param(1)
 	new attacker=get_param(2)
+	if(!is_user_connected(attacker)){
+		
+		return
+	}
 	new color[4]
 	get_array(3,color,4)
 
@@ -253,9 +309,4 @@ public _sh_get_pill_color(iPlugin,iParams){
 
 
 
-}
-
-public plugin_precache()
-{
-	
 }

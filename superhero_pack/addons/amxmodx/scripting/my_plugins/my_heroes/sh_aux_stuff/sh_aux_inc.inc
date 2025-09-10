@@ -34,6 +34,7 @@
 
 static const burn_decal[5] = {199,200,201,202,203}
 
+stock g_msgFade
 //Color definitions
 stock const LineColors[COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
@@ -72,7 +73,6 @@ stock z_iVector[3]={0,0,1}
 stock const tag_color[4]={0,255,255,255}
 stock smoke, white, fire
 stock m_trail
-new g_msgFade
 stock gSpriteLaser,blood1,blood2,sprite1;
 stock g_iFireSprite, g_iSmokeSprite[2];
 stock gSpriteSmoke, gSpriteFire, gSpriteBurning

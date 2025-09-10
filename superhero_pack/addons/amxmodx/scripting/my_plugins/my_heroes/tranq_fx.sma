@@ -8,11 +8,13 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
+
 new bool:gIsAsleep[SH_MAXSLOTS+1]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
+g_msgFade = get_user_msgid("ScreenFade");
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 new wpnName[32]
 for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
