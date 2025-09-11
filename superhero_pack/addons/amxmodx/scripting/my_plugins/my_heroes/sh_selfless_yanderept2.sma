@@ -1056,13 +1056,17 @@ public death()
 			for(new i=0;i<=SH_MAXSLOTS;i++){
 				g_is_cursed[i][id]=false;
 			}
+			gSuperAngry[id]=false;
+			if(gIsPsychosis[id]){
+				unpsychosis_user(id)
+			}
+			else{
+				yandere_unmorph(id+YANDERE_MORPH_TASKID)
+			}
 		}
-		gSuperAngry[id]=false;
-		if(gIsPsychosis[id]){
-			unpsychosis_user(id)
-		}
-		else{
-			yandere_unmorph(id+YANDERE_MORPH_TASKID)
+		else if(jet_deployed(id)){
+			
+			jet_destroy(id);
 		}
 		
 	}

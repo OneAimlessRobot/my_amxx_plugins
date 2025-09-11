@@ -60,6 +60,10 @@ public plugin_natives(){
 	
 	register_native("ksun_glisten","_ksun_glisten",0)
 	
+	register_native("clean_ksun_spores_from_players","_clean_ksun_spores_from_players",0)
+	register_native("check_by_whom_player_spored","_check_by_whom_player_spored",0)
+	register_native("check_who_player_is_sporing","_check_who_player_is_sporing",0)
+	
 	
 	
 }
@@ -146,16 +150,76 @@ public _spores_clear(iPlugins, iParms){
 	}
 	
 }
+public _clean_ksun_spores_from_players(iPlugins,iParam){
+	new dying_or_new_round=get_param(1);
+	new everyone=get_param(2);
+	new player=get_param(3);
+	new player_to_reset=everyone?-1:player
+	if(ksun_get_when_reset_spores()&(dying_or_new_round?reset_on_death:reset_on_new_round)){
+		if(player<0){
+			for(new i=0;i<SH_MAXSLOTS+1;i++){
+				clear_spores_from_player(i)
+			}
+		}
+		else{
+			clear_spores_from_player(player_to_reset)
+		}
+	}
+	
+}
+public _check_who_player_is_sporing(iPlugins,iParam){
+	new id=get_param(1);
+	if(is_user_connected(id)){
+		if(spores_has_ksun(id)){
+			
+			new username[128];
+			get_user_name(id,username,127);
+			server_print("[SH] ksun: this ksun user named %s is sporing the following players...:^n",username)
+			for(new i=0;i<SH_MAXSLOTS+1;i++){
+				
+				if(is_user_connected(i)){
+					
+					new tgname[128];
+					get_user_name(i, tgname,127);
+					server_print("[SH] ksun:... %s: %d times!^n",tgname,g_times_player_spiked_player[id][i])
+				}
+				
+				
+			}
+		}
+	}
+}
+public _check_by_whom_player_spored(iPlugins,iParam){
+	new id=get_param(1);
+	if(is_user_connected(id)){
+		new username[128];
+		get_user_name(id,username,127);
+		server_print("[SH] ksun: this player named %s is being spored sporing the following players...:^n",username)
+		for(new i=0;i<SH_MAXSLOTS+1;i++){
+			if(is_user_connected(i)){
+				if(spores_has_ksun(i)){
+					
+					new tgname[128];
+					get_user_name(i, tgname,127);
+					server_print("[SH] ksun:... ksun user %s: %d times!^n",tgname,g_times_player_spiked_by_player[id][i])
+				}
+			}
+		}
+	}
+}
+
+stock clear_spores_from_player(id){
+	
+	if(is_user_connected(id)){
+			arrayset(g_times_player_spiked_player[id],0,SH_MAXSLOTS+1)
+			arrayset(g_times_player_spiked_by_player[id],0,SH_MAXSLOTS+1)
+	}
+}
 public ev_SendAudio(){
 	
 	spores_clear()
 	if(!sh_is_active()) return PLUGIN_CONTINUE
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		if(ksun_get_when_reset_spores()&reset_on_new_round){
-			arrayset(g_times_player_spiked_player[i],0,SH_MAXSLOTS+1)
-			arrayset(g_times_player_spiked_by_player[i],0,SH_MAXSLOTS+1)
-		}
-	}
+	clean_ksun_spores_from_players(false,1,0);
 	return PLUGIN_HANDLED
 }
 public spawn_spore(id){

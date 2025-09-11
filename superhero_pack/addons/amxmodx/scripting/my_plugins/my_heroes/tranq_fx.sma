@@ -21,6 +21,7 @@ for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 {
 	if ( get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
 	{
+			server_print("The weapon name is: %s^n",wpnName);
 			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
 			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
 	}
@@ -41,6 +42,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active()||!is_valid_ent(weapon_ent) ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
+	player
 	if(!client_hittable(owner)){
 		return HAM_IGNORED
 	}

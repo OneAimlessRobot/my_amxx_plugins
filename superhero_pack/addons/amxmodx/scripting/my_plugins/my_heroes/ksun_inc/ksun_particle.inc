@@ -44,4 +44,7 @@ native dec_times_player_spiked_by_player(victim,attacker)
 native Float:get_spike_base_damage_debt()
 native bool:heal(id, Float:damage)
 
+native clean_ksun_spores_from_players(dying_or_new_round,everyone,player)
 native ksun_glisten(id)
+native check_who_player_is_sporing(id)
+native check_by_whom_player_spored(id)

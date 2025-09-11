@@ -400,7 +400,6 @@ public _sh_effect_user_direct(iPlugin,iParams){
 
 
 }
-
 public _sh_effect_user(iPlugin,iParams){
 
 	new fx_num=sh_gen_effect()
@@ -625,42 +624,11 @@ unstun_user(id){
 }
 
 radioactive_user(id,attacker){
-	new players[SH_MAXSLOTS]
-	new team_name[32]
-	new client_name[128]
-	new team_mate_name[128]
-	new enemy_name[128]
-	new player_count;
 	
-	get_user_name(id,enemy_name,127)
-	get_user_name(attacker,client_name,127)
-	
-	get_user_team(attacker,team_name,32)
-	get_players(players,player_count,"ea",team_name)
-	
-	for(new i=0;i<player_count;i++){
-		
-		get_user_name(players[i],team_mate_name,127)
-		sh_chat_message(players[i],gatling_get_hero_id(),"Your yakui using teamate %s has revealed %s's position in the radar!",client_name,enemy_name)
-		sh_chat_message(attacker,gatling_get_hero_id(),"%s knows!!!",team_mate_name)
-	
-	}
-	new array[3+33]
-	array[0] = attacker
-	array[1] = CreateHudSyncObj()
-	array[2] = player_count
-	for(new i=0;i<player_count;i++){
-	
-		array[3+i]=players[i]
-	}
-	set_task(RADIOACTIVE_PERIOD,"radioactive_task",id+RADIOACTIVE_TASKID,array, sizeof(array),  "a",RADIOACTIVE_TIMES)
-	set_task(floatsub(floatmul(RADIOACTIVE_PERIOD,float(RADIOACTIVE_TIMES)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASKID,"", 0,  "a",1)
-	return 0
-
+	track_user(gatling_get_hero_id(),id,attacker,1,RADIOACTIVE_DAMAGE,RADIOACTIVE_PERIOD,RADIOACTIVE_TIME)
 
 
 }
-
 
 public blind_task(id){
 	id-=BLIND_TASKID

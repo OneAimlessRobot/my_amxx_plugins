@@ -92,9 +92,9 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 public fw_Item_PostFrame(ent)
 {
-	if(pev_valid(ent)!=2)
-		return HAM_IGNORED
-		
+	server_print("entity id @ item post frame @ erica tranq gun hook: %d\n",ent);
+	if(!is_valid_ent(ent)) return HAM_IGNORED
+	
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -110,7 +110,7 @@ public fw_Item_PostFrame(ent)
 	{
 		static temp1
 		temp1 = min(CLIP_SIZE - iClip, bpammo)
-
+		
 		set_pdata_int(ent, 51, iClip + temp1, 4)
 		cs_set_user_bpammo(id, CSW_ELITE, bpammo - temp1)		
 		
@@ -125,8 +125,8 @@ public fw_Item_PostFrame(ent)
 public fw_WeaponReloadPre(entity)
 {
 	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
-		
+	return HAM_IGNORED
+	
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
@@ -134,7 +134,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 	g_Tranq_Clip[pPlayer] = -1
-		
+	
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, CSW_ELITE)
 	static iClip; iClip = get_pdata_int(entity, 51, 4)
 	
@@ -150,7 +150,7 @@ public fw_WeaponReloadPre(entity)
 public fw_Weapon_Reload_Post(ent)
 {
 	if(pev_valid(ent)!=2)
-		return HAM_IGNORED
+	return HAM_IGNORED
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -159,7 +159,7 @@ public fw_Weapon_Reload_Post(ent)
 	if((get_pdata_int(ent, 54, 4) == 1))
 	{ // Reload
 		if(g_Tranq_Clip[id] == -1)
-			return HAM_IGNORED
+		return HAM_IGNORED
 		
 		set_pdata_int(ent, 51, g_Tranq_Clip[id], 4)
 	}
@@ -170,7 +170,7 @@ public fw_Weapon_Reload_Post(ent)
 public fw_ItemDeployPre(entity)
 {
 	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
+	return HAM_IGNORED
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(!tranq_get_has_erica(pPlayer)){
@@ -188,7 +188,7 @@ public fw_ItemDeployPre(entity)
 public fw_WeaponPrimaryAttackPre(entity)
 {	
 	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
+	return HAM_IGNORED
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
@@ -212,11 +212,11 @@ public fw_WeaponPrimaryAttackPre(entity)
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
 	if(pev_valid(Ent)!=2)
-		return
-		
+	return
+	
 	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
-			return;
+		return;
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
@@ -228,7 +228,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 }
 
 bool:client_isnt_hitter(pPlayer){
-
+	
 	if ( !client_hittable(pPlayer)){
 		
 		return true
@@ -242,149 +242,202 @@ bool:client_isnt_hitter(pPlayer){
 }
 
 public _clear_darts(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, DART_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	arrayset(dart_launch_pos[grenada],0.0,3);
-	dart_hurts[grenada]=false;
-	grenada = find_ent_by_class(grenada, DART_CLASSNAME)
+	
+	new grenada = find_ent_by_class(-1, DART_CLASSNAME)
+	while(grenada) {
+		remove_dart(grenada)
+		arrayset(dart_launch_pos[grenada],0.0,3);
+		dart_hurts[grenada]=false;
+		grenada = find_ent_by_class(grenada, DART_CLASSNAME)
+	}
 }
-}
-
 launch_dart(id)
 {
-
-entity_set_int(id, EV_INT_weaponanim, 3)
-
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
-
-entity_get_vector(id, EV_VEC_origin , Origin)
-entity_get_vector(id, EV_VEC_v_angle, vAngle)
-
-
-Ent = create_entity("info_target")
-
-if (!Ent) return PLUGIN_HANDLED
-
-entity_set_string(Ent, EV_SZ_classname, DART_CLASSNAME)
-entity_set_model(Ent, "models/shell.mdl")
-
-new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-new Float:MaxBox[3] = {1.0, 1.0, 1.0}
-entity_set_vector(Ent, EV_VEC_mins, MinBox)
-entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
-
-entity_set_origin(Ent, Origin)
-entity_set_vector(Ent, EV_VEC_angles, vAngle)
-
-entity_set_int(Ent, EV_INT_effects, 2)
-entity_set_int(Ent, EV_INT_solid, 2)
-entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-entity_set_float(Ent,EV_FL_gravity, 2.0)
-entity_set_edict(Ent, EV_ENT_owner, id)
-
-VelocityByAim(id, floatround(DART_SPEED) , Velocity)
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-tranq_dec_num_darts(id)
-
-if(tranq_get_is_max_points(id)){
-
-	dart_hurts[Ent]=true;
-	dart_launch_pos[Ent][0]=Origin[0]
-	dart_launch_pos[Ent][1]=Origin[1]
-	dart_launch_pos[Ent][2]=Origin[2]
-
-}
-new parm[1]
-new parm2[1]
-
-parm2[0]= id
-parm[0] = Ent
-emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-set_task(DART_SHOOT_PERIOD, "dart_reload",id,parm2,1,"a",1)
-set_task(0.01, "darttrail",id,parm,1)
-
-return PLUGIN_CONTINUE
+	
+	entity_set_int(id, EV_INT_weaponanim, 3)
+	
+	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	
+	entity_get_vector(id, EV_VEC_origin , Origin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngle)
+	
+	
+	Ent = create_entity("info_target")
+	
+	if (!Ent) return PLUGIN_HANDLED
+	
+	entity_set_string(Ent, EV_SZ_classname, DART_CLASSNAME)
+	entity_set_model(Ent, "models/shell.mdl")
+	
+	new Float:MinBox[3] = {-1.0, -1.0, -1.0}
+	new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+	entity_set_vector(Ent, EV_VEC_mins, MinBox)
+	entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
+	
+	entity_set_origin(Ent, Origin)
+	entity_set_vector(Ent, EV_VEC_angles, vAngle)
+	
+	entity_set_int(Ent, EV_INT_effects, 2)
+	entity_set_int(Ent, EV_INT_solid, 2)
+	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
+	entity_set_float(Ent,EV_FL_gravity, 2.0)
+	entity_set_edict(Ent, EV_ENT_owner, id)
+	
+	VelocityByAim(id, floatround(DART_SPEED) , Velocity)
+	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+	
+	tranq_dec_num_darts(id)
+	
+	if(tranq_get_is_max_points(id)){
+		
+		dart_hurts[Ent]=true;
+		dart_launch_pos[Ent][0]=Origin[0]
+		dart_launch_pos[Ent][1]=Origin[1]
+		dart_launch_pos[Ent][2]=Origin[2]
+		
+	}
+	new parm[2]
+	new parm2[1]
+	
+	parm2[0]= id
+	parm[0] = Ent
+	parm[1] = id
+	emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	set_task(0.01, "darttrail",Ent+DART_TRAIL_TASKID,parm,2)
+	
+	set_task(DART_PHYS_UPDATE_TIME, "dartspeed",Ent+DART_SPEED_TASKID,parm,2,"b")
+	set_task(DART_SHOOT_PERIOD, "dart_reload",id,parm2,1,"a",1)
+	
+	return PLUGIN_CONTINUE
 }
 
 public dart_reload(parm[])
 {
-
-dart_loaded[parm[0]] = true
+	
+	dart_loaded[parm[0]] = true
 }
 public darttrail(parm[])
 {
-new pid = parm[0]
-if (pid)
-{
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 5 )        // width
-if(!dart_hurts[pid]){
-	write_byte(sleep_color[0])			// r, g, b
-	write_byte(sleep_color[1])		// r, g, b
-	write_byte(sleep_color[2])			// r, g, b
-	write_byte(sleep_color[3]) // brightness
-}
-else {
-	write_byte(rage_sleep_color[0])			// r, g, b
-	write_byte(rage_sleep_color[1])		// r, g, b
-	write_byte(rage_sleep_color[2])			// r, g, b
-	write_byte(rage_sleep_color[3]) // brightness
-}
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-}
+	new pid = parm[0]
+	if (pid)
+	{
+		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+		write_byte( TE_BEAMFOLLOW )
+		write_short(pid) // entity
+		write_short(m_trail)  // model
+		write_byte( 10 )       // life
+		write_byte( 5 )        // width
+		if(!dart_hurts[pid]){
+			write_byte(sleep_color[0])			// r, g, b
+			write_byte(sleep_color[1])		// r, g, b
+			write_byte(sleep_color[2])			// r, g, b
+			write_byte(sleep_color[3]) // brightness
+		}
+		else {
+			write_byte(rage_sleep_color[0])			// r, g, b
+			write_byte(rage_sleep_color[1])		// r, g, b
+			write_byte(rage_sleep_color[2])			// r, g, b
+			write_byte(rage_sleep_color[3]) // brightness
+		}
+		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	}
 }
 
 
 public vexd_pfntouch(pToucher, pTouched)
 {
-
-if (pToucher <= 0) return
-if (!is_valid_ent(pToucher)) return
-
-new szClassName[32]
-entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-if(equal(szClassName, DART_CLASSNAME))
-{
-new oid = entity_get_edict(pToucher, EV_ENT_owner)
-//new Float:origin[3],dist
-
-if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-	if(client_hittable(pTouched))
-	{
-		if(dart_hurts[pToucher]){
-			new Float:vic_origin[3];
-			entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-			new Float:distance=vector_distance(vic_origin,dart_launch_pos[pToucher]);
-			new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
-			sh_extra_damage(pTouched,oid,floatround(DART_DAMAGE-35.0*falloff_coeff),"Rage tranq");
-			
-		
-		}
-		sh_sleep_user(pTouched,oid,tranq_get_hero_id())
-		
-	}
-	remove_entity(pToucher)
-	arrayset(dart_launch_pos[pToucher],0.0,3);
-	dart_hurts[pToucher]=false;
-}
-//entity_get_vector(pTouched, EV_VEC_ORIGIN, origin)
-if(pev(pTouched,pev_solid)==SOLID_BSP){
 	
-		emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		remove_entity(pToucher)	
+	if (pToucher <= 0) return
+	if (!is_valid_ent(pToucher)) return
+	
+	new szClassName[32]
+	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	if(equal(szClassName, DART_CLASSNAME))
+	{
+		new oid = entity_get_edict(pToucher, EV_ENT_owner)
+		
+		new Float:origin[3]
+		entity_get_vector(pToucher,EV_VEC_origin,origin);
+		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
+			if(client_hittable(pTouched))
+			{
+				if(dart_hurts[pToucher]){
+					new Float:speed
+					new Float:velocity[3]
+					
+					
+					entity_get_vector(pToucher,EV_VEC_velocity,velocity);
+					speed=VecLength(velocity);
+					new Float:speed_coeff=(speed/DART_SPEED)
+					new Float:vic_origin[3];
+					new Float:vic_origin_eyes[3];
+					new vic_origin_eyes_int[3];
+					entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+					get_user_origin(pTouched,vic_origin_eyes_int,1);
+					IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+					new Float:distance=vector_distance(vic_origin,dart_launch_pos[pToucher]);
+					new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+					new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
+					new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
+					new Float:damage=normal_damage*speed_coeff;
+					new headshot=0;
+					if(head_distance<DART_HEADSHOT_THRESHOLD_DIST){
+						
+						headshot=1;
+						damage*=4;
+					}
+					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq");
+					sh_chat_message(oid,tranq_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+					
+					new CsArmorType:armor_type;
+					cs_get_user_armor(pTouched,armor_type);
+					switch(armor_type){
+						
+						case CS_ARMOR_NONE:{
+							
+							
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+							
+							blood_spray(origin, headshot?10:5)
+							
+							
+						}
+						case CS_ARMOR_KEVLAR:{
+							
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+							
+							if(headshot){
+								blood_spray(origin, 5)
+							}
+							else{
+								
+								make_sparks(origin);
+							}
+						}
+						case CS_ARMOR_VESTHELM:{
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+							make_sparks(origin);
+						}
+					}
+					
+				}
+				sh_sleep_user(pTouched,oid,tranq_get_hero_id())
+				
+			}
+		}
+//entity_get_vector(pTouched, EV_VEC_ORIGIN, origin)
+		if(pev(pTouched,pev_solid)==SOLID_BSP){
+			
+			emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			make_sparks(origin);
+			gun_shot_decal(origin);
+			
+			
+		}
+		remove_dart(pToucher)
 		arrayset(dart_launch_pos[pToucher],0.0,3);
 		dart_hurts[pToucher]=false;
-
-		}
-
+		
 	}
 }
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
@@ -398,18 +451,66 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	set_cd(cd, CD_flNextAttack, 99999.0)
 }
-public remove_dart(id_dart){
-	id_dart-=DART_REM_TASKID
-
-	remove_entity(id_dart)
-
-
+public dartspeed(parm[])
+{
+	new pid = parm[0]
+	if (!is_valid_ent(pid))
+	{
+		return
+	}
+	new Float:speedz,Float:speedx,Float:speedy;
+	new Float:velocity[3]
+	new Float:velocity_copy[3]
+	
+	
+	entity_get_vector(pid,EV_VEC_velocity,velocity);
+	multiply_3d_vector_by_scalar(velocity,1.0,velocity_copy);
+	speedx=velocity[0]
+	speedy=velocity[1]
+	speedz=velocity[2]
+	
+	new Float:gravity_const=get_cvar_float("sv_gravity")*DART_GRAVITY_MULT
+	new Float:delta_z=((DART_DRAG_CONST*speedz)/gravity_const)*DART_PHYS_UPDATE_TIME;
+	new Float:delta_x=((DART_DRAG_CONST*speedx)/gravity_const)*DART_PHYS_UPDATE_TIME;
+	new Float:delta_y=((DART_DRAG_CONST*speedy)/gravity_const)*DART_PHYS_UPDATE_TIME;
+	/*console_print(parm[1],"Total speed: %0.2f^nspeedx: %0.2f^nspeedy: %0.2f^nspeedz: %0.2f^nThe angle between the velocity and gravity is: %0.2f^n",
+																							speed,
+																							speedx,
+																							speedy,
+																							speedz,
+																							the_angle_degrees);
+	console_print(parm[1],"The cosine: %0.2f^ngravity const: %0.2f^nDelta x is: %0.2f^nDelta y is: %0.2f^nDelta z is: %0.2f^nDrag constant: %0.2f",
+																					floatcos(the_angle_radians,anglemode:radian),
+																					gravity_const,
+																					delta_x,
+																					delta_y,
+																					delta_z,
+																					LENA_PROJECTILE_DRAG_CONST);*/
+	
+	
+	speedx-=delta_x
+	speedy-=delta_y
+	speedz-=delta_z
+	velocity_copy[0]=speedx
+	velocity_copy[1]=speedy
+	velocity_copy[2]=speedz
+	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
+}
+remove_dart(id_dart){
+	remove_task(id_dart+DART_TRAIL_TASKID);
+	remove_task(id_dart+DART_SPEED_TASKID);
+	if(is_valid_ent(id_dart)){
+		remove_entity(id_dart)
+	}
+	
+	
 }
 public plugin_precache()
 {
-
-precache_model("models/shell.mdl")
-engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
-engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
-
+	
+	precache_model("models/shell.mdl")
+	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
+	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
+	precache_explosion_fx()
+	
 }

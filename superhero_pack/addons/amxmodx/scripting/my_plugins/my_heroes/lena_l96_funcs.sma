@@ -503,10 +503,11 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=4;
 				}
-				new CsArmorType:armor_type;
-				cs_get_user_armor(pTouched,armor_type);
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+				
+				new CsArmorType:armor_type;
+				cs_get_user_armor(pTouched,armor_type);
 				send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				switch(armor_type){
 					

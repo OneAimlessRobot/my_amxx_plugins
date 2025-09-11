@@ -10,6 +10,7 @@
 #define RADIOACTIVE_TASK_ID 73223627
 #define UNRADIOACTIVE_TASK_ID 732231123
 
+#define MATH_PI  3.1415926535897932384626433832795028841971
 
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
@@ -828,6 +829,8 @@ stock directed_spark(init_id, end_id)
 	message_end()
 
 }
+
+
 //----------------------------------------------------------------------------------------------
 stock blood_spray(Float:vicOrigin[3], scale)
 {
@@ -962,7 +965,15 @@ stock precache_explosion_fx(){
 }
 
 stock bool:client_hittable(vic_userid){
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
+	if(!vic_userid){
+		
+		return false;
+	}
+	if(!is_user_connected(vic_userid)){
+		
+		return false;
+	}
+	return (is_user_alive(vic_userid))?true:false;
 
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

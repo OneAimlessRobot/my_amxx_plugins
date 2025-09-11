@@ -597,16 +597,22 @@ public death()
 	new killer= read_data(1)
 	
 	
-	if(is_user_connected(id)&&spores_has_ksun(id)){
-		if(sleep_nade_get_sleep_nade_loaded(id)){
-	
-			sleep_nade_uncharge_sleep_nade(id)
-		}
+	if(is_user_connected(id)){
+		if(spores_has_ksun(id)){
+			if(sleep_nade_get_sleep_nade_loaded(id)){
 		
-		ksun_unmorph(id+KSUN_MORPH_TASKID)
-		if(ksun_get_when_reset_spores()&reset_on_death){
-			ksun_set_num_available_spores(id,0)
+				sleep_nade_uncharge_sleep_nade(id)
+			}
+			check_who_player_is_sporing(id)
+			
+			ksun_unmorph(id+KSUN_MORPH_TASKID)
+			if(ksun_get_when_reset_spores()&reset_on_death){
+				ksun_set_num_available_spores(id,0)
+				clean_ksun_spores_from_players(1,0,id);
+			}
 		}
+		check_by_whom_player_spored(id)
+		
 	}
 	if(is_user_connected(killer)&&spores_has_ksun(killer)){
 		if(ksun_kill_type_broadness_level>=3){
@@ -619,16 +625,22 @@ public death()
 }
 public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	
-	if(is_user_connected(id)&&spores_has_ksun(id)){
-		if(sleep_nade_get_sleep_nade_loaded(id)){
-	
-			sleep_nade_uncharge_sleep_nade(id)
-		}
+	if(is_user_connected(id)){
+		if(spores_has_ksun(id)){
+			if(sleep_nade_get_sleep_nade_loaded(id)){
 		
-		ksun_unmorph(id+KSUN_MORPH_TASKID)
-		if(ksun_get_when_reset_spores()&reset_on_death){
-			ksun_set_num_available_spores(id,0)
+				sleep_nade_uncharge_sleep_nade(id)
+			}
+			check_who_player_is_sporing(id)
+			
+			ksun_unmorph(id+KSUN_MORPH_TASKID)
+			if(ksun_get_when_reset_spores()&reset_on_death){
+				ksun_set_num_available_spores(id,0)
+				clean_ksun_spores_from_players(1,0,id);
+			}
 		}
+		check_by_whom_player_spored(id)
+		
 	}
 	if(client_hittable(killer)&&is_user_connected(id)){
 		if(spores_has_ksun(killer)&&!ksun_player_is_in_ultimate(killer)){
