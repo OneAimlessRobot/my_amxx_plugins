@@ -92,7 +92,6 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 public fw_Item_PostFrame(ent)
 {
-	server_print("entity id @ item post frame @ erica tranq gun hook: %d\n",ent);
 	if(!is_valid_ent(ent)) return HAM_IGNORED
 	
 	static id; id = pev(ent, pev_owner)
