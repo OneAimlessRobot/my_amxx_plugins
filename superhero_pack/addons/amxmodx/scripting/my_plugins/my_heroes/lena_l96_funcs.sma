@@ -34,13 +34,10 @@ public plugin_init(){
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHam(Ham_Item_PostFrame, LENA_WEAPON, "fw_Item_PostFrame",_,true)	
 	
-	//TakeDamage=RegisterHam(Ham_TakeDamage, "player", "Ham_TakeDamageLenaL96")
-	//DisableHamForward(TakeDamage)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaL96",_,true)
 	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
-	//register_event("CurWeapon", "weaponChange", "be", "1=1")
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)	
 	

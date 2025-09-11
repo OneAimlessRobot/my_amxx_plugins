@@ -32,7 +32,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
-	if ( !shModActive() || !is_user_alive(user) || !is_user_connected(user)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return
+	if ( !shModActive() || !client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
@@ -55,7 +55,7 @@ public _sh_ultrableed_user(iPlugin,iParams){
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
 	
-	if ( !shModActive() || !is_user_alive(user) || !is_user_connected(user)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return
+	if ( !shModActive() ||!client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
@@ -78,7 +78,7 @@ public _sh_minibleed_user(iPlugin,iParams){
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
-	if ( !shModActive() || !is_user_alive(user) || !is_user_connected(user)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return
+	if ( !shModActive() ||!client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
@@ -130,8 +130,7 @@ public _make_bleed_fx(iPlugin,iParams){
 
 public minibleed_task(array[],id){
 	id-=MINIBLEED_TASKID
-
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
 
 	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 25)
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
@@ -147,25 +146,22 @@ public minibleed_task(array[],id){
 }
 minibleed_user(id,attacker){
 	
-	if ( !shModActive()  || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker<=SH_MAXSLOTS)) return 0
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
 	array[0] = attacker
 	gIsBleeding[id]=true
 	set_task(MINIBLEED_PERIOD,"minibleed_task",id+MINIBLEED_TASKID,array, sizeof(array),  "a",MINIBLEED_TIMES)
 	set_task(floatsub(floatmul(MINIBLEED_PERIOD,float(MINIBLEED_TIMES)),0.1),"unminibleed_task",id+UNMINIBLEED_TASKID,"", 0,  "a",1)
-	return 0
-
 
 
 }
 public unminibleed_task(id){
 	id-=UNMINIBLEED_TASKID
 	
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS)) return 0
+	if ( !shModActive() || !is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+MINIBLEED_TASKID)
 	gIsBleeding[id]=false
-	return 0
 
 
 
@@ -174,7 +170,7 @@ public unminibleed_task(id){
 public ultrableed_task(array[],id){
 	id-=ULTRABLEED_TASKID
 
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
 	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 150)
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 150)
@@ -188,24 +184,22 @@ public ultrableed_task(array[],id){
 
 }
 ultrableed_user(id,attacker){
-	if ( !shModActive()  || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker<=SH_MAXSLOTS)) return 0
+	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
 	array[0] = attacker
 	gIsBleeding[id]=true
 	set_task(ULTRABLEED_PERIOD,"ultrableed_task",id+ULTRABLEED_TASKID,array, sizeof(array),  "a",ULTRABLEED_TIMES)
 	set_task(floatsub(floatmul(ULTRABLEED_PERIOD,float(ULTRABLEED_TIMES)),0.1),"unultrableed_task",id+UNULTRABLEED_TASKID,"", 0,  "a",1)
-	return 0
 
 
 
 }
 public unultrableed_task(id){
 	id-=UNULTRABLEED_TASKID
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS)) return 0
+	if ( !shModActive() || !is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+ULTRABLEED_TASKID)
 	gIsBleeding[id]=false
-	return 0
 
 
 
@@ -214,7 +208,7 @@ public unultrableed_task(id){
 public bleed_task(array[],id){
 	id-=BLEED_TASKID
 
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
 	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 50)
 	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 50)
@@ -227,35 +221,33 @@ public bleed_task(array[],id){
 
 }
 bleed_user(id,attacker){
-	if ( !shModActive()  || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker<=SH_MAXSLOTS)) return 0
+	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
 	array[0] = attacker
 	gIsBleeding[id]=true
 	set_task(BLEED_PERIOD,"bleed_task",id+BLEED_TASKID,array, sizeof(array),  "a",BLEED_TIMES)
 	set_task(floatsub(floatmul(BLEED_PERIOD,float(BLEED_TIMES)),0.1),"unbleed_task",id+UNBLEED_TASKID,"", 0,  "a",1)
-	return 0
 
 
 
 }
 public unbleed_task(id){
 	id-=UNBLEED_TASKID
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS)) return 0
+	if ( !shModActive() || !is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+BLEED_TASKID)
 	gIsBleeding[id]=false
-	return 0
 
 
 
 }
 
 unbleed_user(id){
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS)) return 0
-	remove_task(id+UNBLEED_TASKID)
+	if ( !shModActive() || !is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+BLEED_TASKID)
-	return 0
+	remove_task(id+UNBLEED_TASKID)
+	gIsBleeding[id]=false
 
 
 

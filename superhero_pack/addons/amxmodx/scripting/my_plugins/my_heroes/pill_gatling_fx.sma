@@ -495,8 +495,6 @@ public _sh_uneffect_user(iPlugin,iParams){
 		}
 		default:{
 		
-			return 0;
-		
 		}
 	
 	
@@ -513,9 +511,9 @@ public _sh_uneffect_user(iPlugin,iParams){
 kill_user(id,attacker){
 	
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_screen_fade(id, 0.1, 0.9, kill_color[0], kill_color[1], kill_color[2], 50)
 	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
-	return 0
 
 
 }
@@ -524,6 +522,7 @@ kill_user(id,attacker){
 public glow_task(id){
 	id-=GLOW_TASKID
 
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id, glow_color[0], glow_color[1], glow_color[2], glow_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	aura(id,glow_color)
 	
@@ -533,18 +532,18 @@ public glow_task(id){
 }
 
 glow_user(id){
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(GLOW_PERIOD,"glow_task",id+GLOW_TASKID,"", 0,  "a",GLOW_TIMES)
 	set_task(floatsub(floatmul(GLOW_PERIOD,float(GLOW_TIMES)),0.1),"unglow_task",id+UNGLOW_TASKID,"", 0,  "a",1)
-	return 0
 
 
 
 }
 public unglow_task(id){
 	id-=UNGLOW_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+GLOW_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 
 
@@ -552,9 +551,9 @@ public unglow_task(id){
 
 unglow_user(id){
 	remove_task(id+UNGLOW_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+GLOW_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 
 
@@ -562,9 +561,9 @@ unglow_user(id){
 stun_user(id){
 
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_stun(id, STUN_PERIOD, STUN_SPEED)
 	sh_screen_shake(id, 16.0, (STUN_PERIOD), 2.0)
-	return 0
 
 
 
@@ -572,6 +571,7 @@ stun_user(id){
 public poison_task(array[],id){
 	id-=POISON_TASKID
 
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
 	sh_set_rendering(id, poison_color[0], poison_color[1], poison_color[2], poison_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, 0.9, poison_color[0], poison_color[1], poison_color[2], 50)
 	sh_extra_damage(id,array[0],POISON_DAMAGE,"Crack pill",0,SH_DMG_NORM)
@@ -584,19 +584,19 @@ public poison_task(array[],id){
 poison_user(id,attacker){
 	new array[1]
 	array[0] = attacker
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
 	set_task(POISON_PERIOD,"poison_task",id+POISON_TASKID,array, sizeof(array),  "a",POISON_TIMES)
 	set_task(floatsub(floatmul(POISON_PERIOD,float(POISON_TIMES)),0.1),"unpoison_task",id+UNPOISON_TASKID,"", 0,  "a",1)
-	return 0
 
 
 
 }
 public unpoison_task(id){
 	id-=UNPOISON_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+POISON_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	gatling_set_fx_num(id,0)
-	return 0
 
 
 
@@ -604,10 +604,10 @@ public unpoison_task(id){
 
 unpoison_user(id){
 	remove_task(id+UNPOISON_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+POISON_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	gatling_set_fx_num(id,0)
-	return 0
 
 
 
@@ -617,7 +617,6 @@ unstun_user(id){
 	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
 	sh_set_stun(id,0.0,1.0)
 	sh_screen_shake(id,0.0,0.0,0.0)
-	return 0
 
 
 
@@ -625,6 +624,7 @@ unstun_user(id){
 
 radioactive_user(id,attacker){
 	
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
 	track_user(gatling_get_hero_id(),id,attacker,1,RADIOACTIVE_DAMAGE,RADIOACTIVE_PERIOD,RADIOACTIVE_TIME)
 
 
@@ -632,50 +632,49 @@ radioactive_user(id,attacker){
 
 public blind_task(id){
 	id-=BLIND_TASKID
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_screen_fade(id, 0.1, BLIND_PERIOD, blind_color[0], blind_color[1], blind_color[2], blind_color[3])
-	return 0
 
 }
 blind_user(id){
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(BLIND_PERIOD,"blind_task",id+BLIND_TASKID,"", 0,  "a",BLIND_TIMES)
-	return 0
 
 }
 unblind_user(id){
 	
 	remove_task(id+BLIND_TASKID)
-	return 0
 
 }
 
 public morphine_task(id){
 	id-=MORPHINE_TASKID
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id,morphine_color[0], morphine_color[1], morphine_color[2], morphine_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, MORPHINE_PERIOD, morphine_color[0], morphine_color[1], morphine_color[2],  50)
 	sh_add_hp(id,MORPHINE_HP_ADD,sh_get_max_hp(id))
-	return 0
 
 }
 morphine_user(id){
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(MORPHINE_PERIOD,"morphine_task",id+MORPHINE_TASKID,"", 0,  "a",MORPHINE_TIMES)
 	set_task(floatsub(floatmul(MORPHINE_PERIOD,float(MORPHINE_TIMES)),0.1),"unmorphine_task",id+UNMORPHINE_TASKID,"", 0,  "a",1)
-	return 0
 
 }
 public unmorphine_user(id){
 	remove_task(id+UNMORPHINE_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+MORPHINE_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
 public unmorphine_task(id){
 	id-=UNMORPHINE_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+MORPHINE_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
 public weed_task(id){
@@ -683,124 +682,124 @@ public weed_task(id){
 	sh_set_rendering(id, weed_color[0],  weed_color[1],  weed_color[2],  weed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, WEED_PERIOD, weed_color[0],  weed_color[1],  weed_color[2], 50)
 	set_user_gravity(id,WEED_GRAVITY)
-	return 0
 
 }
 weed_user(id){
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(WEED_PERIOD,"weed_task",id+WEED_TASKID,"", 0,  "a",WEED_TIMES)
 	set_task(floatsub(floatmul(WEED_PERIOD,float(WEED_TIMES)),0.1),"unweed_task",id+UNWEED_TASKID,"", 0,  "a",1)
-	return 0
 
 }
 unweed_user(id){
 	remove_task(id+UNWEED_TASKID)
 	remove_task(id+WEED_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_min_gravity(id)
-	return 0
 
 }
 public unweed_task(id){
 	id-=UNWEED_TASKID
 	remove_task(id+WEED_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_min_gravity(id)
-	return 0
 
 }
 public cocaine_task(id){
 	id-=COCAINE_TASKID
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id, cocaine_color[0], cocaine_color[1], cocaine_color[2], cocaine_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, COCAINE_PERIOD, cocaine_color[0], cocaine_color[1], cocaine_color[2], 50)
 	set_user_maxspeed(id,COCAINE_SPEED)
-	return 0
 
 }
 cocaine_user(id){
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(COCAINE_PERIOD,"cocaine_task",id+COCAINE_TASKID,"", 0,  "a",COCAINE_TIMES)
 	set_task(floatsub(floatmul(COCAINE_PERIOD,float(COCAINE_TIMES)),0.1),"uncocaine_task",id+UNCOCAINE_TASKID,"", 0,  "a",1)
-	return 0
 
 }
 uncocaine_user(id){
 	remove_task(id+UNCOCAINE_TASKID)
 	remove_task(id+COCAINE_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_max_speed(id)
-	return 0
 
 }
 public uncocaine_task(id){
 	id-=UNCOCAINE_TASKID
 	remove_task(id+COCAINE_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_reset_max_speed(id)
-	return 0
 
 }
 
 
 focus_user(id){
 
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(FOCUS_PERIOD,"focus_task",id+FOCUS_TASKID,"", 0,  "a",FOCUS_TIMES)
 	set_task(floatsub(floatmul(FOCUS_PERIOD,float(FOCUS_TIMES)),0.1),"unfocus_task",id+UNFOCUS_TASKID,"", 0,  "a",1)
-	return 0
 
 }
 public focus_task(id){
 	id-=FOCUS_TASKID
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id, focus_color[0], focus_color[1], focus_color[2], focus_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, FOCUS_PERIOD, focus_color[0], focus_color[1], focus_color[2], 50)
-	return 0
 
 }
 
 public unfocus_task(id){
 	id-=UNFOCUS_TASKID
+	remove_task(id+FOCUS_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return 0
 	gatling_set_fx_num(id,BATH+1)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+FOCUS_TASKID)
 	return 0
 
 }
 
 unfocus_user(id){
 	remove_task(id+UNFOCUS_TASKID)
-	gatling_set_fx_num(id,BATH+1)
 	remove_task(id+FOCUS_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	gatling_set_fx_num(id,BATH+1)
 
 }
 bath_user(id){
 
+	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(BATH_PERIOD,"bath_task",id+BATH_TASKID,"", 0,  "a",BATH_TIMES)
 	set_task(floatsub(floatmul(BATH_PERIOD,float(BATH_TIMES)),0.1),"unbath_task",id+UNBATH_TASKID,"", 0,  "a",1)
-	return 0
 
 }
 public bath_task(id){
 	id-=BATH_TASKID
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id, bath_color[0],bath_color[1], bath_color[2], bath_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, BATH_PERIOD, bath_color[0],bath_color[1], bath_color[2], 50)
-	return 0
 
 }
 
 public unbath_task(id){
 	id-=UNBATH_TASKID
+	remove_task(id+BATH_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	gatling_set_fx_num(id,BATH+1)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+BATH_TASKID)
-	return 0
 
 }
 
 unbath_user(id){
 	remove_task(id+UNBATH_TASKID)
-	gatling_set_fx_num(id,BATH+1)
 	remove_task(id+BATH_TASKID)
-	return 0
+	if ( !shModActive() ||!is_user_connected(id)) return
+	gatling_set_fx_num(id,BATH+1)
 
 }

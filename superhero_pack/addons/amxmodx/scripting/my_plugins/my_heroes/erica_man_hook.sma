@@ -3,6 +3,7 @@
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero erica hook"
@@ -11,7 +12,6 @@
 #define Struct				enum
 
 stock hook_on[SH_MAXSLOTS+1]
-stock gSpriteLaser;
 stock g_dragging_who[SH_MAXSLOTS+1][2]
 stock g_hook_kills[SH_MAXSLOTS+1]
 #define NUM_SENTENCES 5
@@ -108,42 +108,6 @@ stop_dragging(id){
 		g_dragging_who[id][1]=0
 		g_dragging_who[id][0]=-1
 
-}
-
-//----------------------------------------------------------------------------------------------
-laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
-{
-	if ( !pev_valid(ent_id) ) return
-
-	//This is a little cleaner but not much
-	if ( killbeam ) {
-		//Kill the Beam
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-		write_byte(TE_KILLBEAM)
-		write_short(ent_id) // entity
-		message_end()
-	}
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-	write_byte (0)     //TE_BEAMENTPOINTS 0
-	write_coord_f(Pos[0])
-	write_coord_f(Pos[1])
-	write_coord_f(Pos[2])		// start entity
-	write_coord_f(vEnd[0])	// end position
-	write_coord_f( vEnd[1])
-	write_coord_f(vEnd[2])
-	write_short(gSpriteLaser)// sprite index
-	write_byte(0)		// starting frame
-	write_byte(0)		// frame rate in 0.1's
-	write_byte(1)		// life in 0.1's
-	write_byte(5)		// line width in 0.1's
-	write_byte(0)		// noise amplitude in 0.01's
-	write_byte(bleed_color[0])	// Red
-	write_byte(bleed_color[1])	// Green
-	write_byte(bleed_color[2])	// Blue
-	write_byte(255)	// brightness
-	write_byte(0)		// scroll speed in 0.1's
-	message_end()
 }
 //----------------------------------------------------------------------------------------------
 public hook_think(id)
@@ -367,6 +331,8 @@ if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
 					sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
 					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
 					
+					process_manhook_manslaughter( attacker, id)
+					
 				}
 			}	
 		}
@@ -433,17 +399,40 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,man_hook_sounds[i] );
 	
 	}
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
+	precache_explosion_fx()
 
 }
 
 public death()
 {	
 	new id = read_data(2)
+	
 	if(tranq_get_has_erica(id)){
 		
-		stop_dragging(id)
+		stop_dragging(id);
 	
 	}
 	
+}
+process_manhook_manslaughter(iAgressor, iVictim)
+{
+	new iOrigin[3], iOrigin2[3]
+	//Check to make sure its a valid entity
+	if (!pev_valid(iAgressor)) {
+		iAgressor = iVictim
+	}
+
+	if (!is_user_connected(iVictim)) return
+
+	get_user_origin(iVictim, iOrigin)
+	get_user_origin(iAgressor, iOrigin2)
+
+	fx_gib_explode(iOrigin,iOrigin2)
+	fx_blood_large(iOrigin,4)
+	fx_blood_small(iOrigin,4)
+
+	fx_blood_small(iOrigin,8)
+	fx_extra_blood(iOrigin)
+	fx_blood_large(iOrigin,2)
+	fx_blood_small(iOrigin,4)
 }

@@ -213,10 +213,24 @@ if(spores_has_ksun(attacker)){
 			get_user_name(attacker,vic_name,127)
 			get_user_name(id,tger_name,127)
 			heal(attacker,damage)
-			ksun_inc_player_supply_points(attacker,floatround(damage))
-			if(spores_has_ksun(id)){
-				ksun_dec_player_supply_points(id,floatround(damage))
-				sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s!",floatround(damage),tger_name)
+			new CsTeams:payer_team=cs_get_user_team(id)
+			new CsTeams:att_team=cs_get_user_team(attacker)
+			if(att_team!=payer_team){
+				ksun_inc_player_supply_points(attacker,floatround(damage))
+				if(spores_has_ksun(id)){
+					ksun_dec_player_supply_points(id,floatround(damage))
+					sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+				}
+			}
+			else{
+				
+				if(spores_has_ksun(id)){
+					ksun_inc_player_supply_points(attacker,floatround(damage))
+					ksun_dec_player_supply_points(id,floatround(damage))
+					sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+				}
+				
+				
 			}
 		}
 	}

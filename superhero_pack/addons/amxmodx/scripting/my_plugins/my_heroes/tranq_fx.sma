@@ -16,19 +16,25 @@ public plugin_init(){
 register_plugin(PLUGIN, VERSION, AUTHOR);
 g_msgFade = get_user_msgid("ScreenFade");
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
-new wpnName[32]
-for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
+register_forward(FM_CmdStart, "CmdStart");
+
+}
+
+public CmdStart(id, uc_handle)
 {
-	if ( get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
-	{
-			server_print("The weapon name is: %s^n",wpnName);
-			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
-			RegisterHam(Ham_Weapon_SecondaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post",_,true)
+	if (!sh_is_active()||!client_hittable(id)) return FMRES_IGNORED;
+	
+	new button = get_uc(uc_handle, UC_Buttons);
+	
+	
+	if ( gIsAsleep[id]) {
+		button &= ~button;
+		set_uc(uc_handle, UC_Buttons, button);
+		return FMRES_SUPERCEDE
 	}
+	
+	return FMRES_IGNORED;
 }
-
-}
-
 public plugin_natives(){
 
 
@@ -37,21 +43,6 @@ public plugin_natives(){
 	register_native("sh_unsleep_user","_sh_unsleep_user",0);
 }
 
-public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
-{
-	if ( !sh_is_active()||!is_valid_ent(weapon_ent) ) return HAM_IGNORED
-
-	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
-	player
-	if(!client_hittable(owner)){
-		return HAM_IGNORED
-	}
-	if ( gIsAsleep[owner]) {
-		return HAM_SUPERCEDE
-	}
-
-	return HAM_IGNORED
-}
 public bool:_sh_get_user_is_asleep(iPlugin,iParams){
 
 	new id=get_param(1)
@@ -117,6 +108,7 @@ fade_screen_user(id){
 public sleep_task(array[],id){
 	id-=SLEEP_TASKID
 
+	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_stun(id,5.0,0.1)
 	sh_set_rendering(id, sleep_color[0], sleep_color[1], sleep_color[2], sleep_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -125,6 +117,7 @@ public sleep_task(array[],id){
 
 }
 sleep_user(id,attacker){
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return 0
 	new array[1]
 	array[0] = attacker
 	fade_screen_user(id)
@@ -152,8 +145,9 @@ public unsleep_task(id){
 
 unsleep_user(id){
 	remove_task(id+UNSLEEP_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+SLEEP_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return 0
+	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_set_stun(id,0.0)
 	gIsAsleep[id]=false
 	return 0

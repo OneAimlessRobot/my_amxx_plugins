@@ -92,8 +92,13 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 public fw_Item_PostFrame(ent)
 {
-	if(!is_valid_ent(ent)) return HAM_IGNORED
-	
+	new validity=pev_valid(ent);
+	if(validity!=2){
+		
+		server_print("weapon_elite entity has invalid private data @ fw_Item_PostFrame.^nValidity is: %d^n",validity)
+		return HAM_IGNORED
+		
+	}
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -385,7 +390,7 @@ public vexd_pfntouch(pToucher, pTouched)
 						headshot=1;
 						damage*=4;
 					}
-					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq");
+					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
 					sh_chat_message(oid,tranq_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 					
 					new CsArmorType:armor_type;
@@ -444,11 +449,14 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(client_isnt_hitter(player)){
 		return
 	}
-	new clip, ammo, weapon = get_user_weapon(player, clip, ammo);
+	new weapon = get_user_weapon(player);
 	if(weapon!=CSW_ELITE){
 		return;
 	}
-	set_cd(cd, CD_flNextAttack, 99999.0)
+	new pEntity = get_member(player, m_pActiveItem)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd, CD_flNextAttack, 99999.0)
+	}
 }
 public dartspeed(parm[])
 {

@@ -14,7 +14,6 @@
 
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
-
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
@@ -33,6 +32,15 @@
 
 #define NULL_SOUND_FILENAME "common/null.wav"
 
+#define BLOOD_COLOR_RED		247
+#define BLOOD_COLOR_YELLOW	195
+#define BLOOD_STREAM_RED	70
+#define BLOOD_STREAM_YELLOW	60
+#define BLOOD_SM_NUM 8
+#define BLOOD_LG_NUM 2
+stock blood_large_red[BLOOD_LG_NUM] = {204,205},
+	blood_small_red[BLOOD_SM_NUM] = {190,191,192,193,194,195,196,197}
+	
 static const burn_decal[5] = {199,200,201,202,203}
 
 stock g_msgFade
@@ -59,7 +67,6 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{255, 128, 0,255},		//Orange
 	{255, 255, 255,255}		//White
 }
-
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
 
@@ -77,6 +84,9 @@ stock m_trail
 stock gSpriteLaser,blood1,blood2,sprite1;
 stock g_iFireSprite, g_iSmokeSprite[2];
 stock gSpriteSmoke, gSpriteFire, gSpriteBurning
+
+//gibs
+stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
 stock trail(vec1[3],vec2[3],const color[4],id){
 
 //BEAMENTPOINTS
@@ -959,6 +969,7 @@ stock precache_explosion_fx(){
 	gSpriteSmoke = precache_model("sprites/steam1.spr")
 	gSpriteFire = precache_model("sprites/explode1.spr")
 	gSpriteBurning = precache_model("sprites/xfire.spr")
+	precache_gibs()
 	precache_sound(NULL_SOUND)
 	
 	
@@ -979,3 +990,260 @@ stock bool:client_hittable(vic_userid){
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */
+//NOT MINE!//Original plugin stuff 
+//register_plugin("Ultimate Gore","1.6","JTP10181")
+/************************************************************
+* FX FUNCTIONS
+************************************************************/
+
+stock fx_invisible(id)
+{
+	set_pev(id, pev_renderfx, kRenderFxNone)
+	set_pev(id, pev_rendermode, kRenderTransAlpha)
+	set_pev(id, pev_renderamt, 0.0)
+}
+
+stock fx_blood(origin[3],origin2[3],HitPlace)
+{
+	//Crash Checks
+	if (HitPlace < 0 || HitPlace > 7) HitPlace = 0
+	new rDistance = get_distance(origin,origin2) ? get_distance(origin,origin2) : 1
+
+	new rX = ((origin[0]-origin2[0]) * 300) / rDistance
+	new rY = ((origin[1]-origin2[1]) * 300) / rDistance
+	new rZ = ((origin[2]-origin2[2]) * 300) / rDistance
+
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_BLOODSTREAM)
+	write_coord(origin[0]+Offset[HitPlace][0])
+	write_coord(origin[1]+Offset[HitPlace][1])
+	write_coord(origin[2]+Offset[HitPlace][2])
+	write_coord(rX) // x
+	write_coord(rY) // y
+	write_coord(rZ) // z
+	write_byte(BLOOD_STREAM_RED) // color
+	write_byte(random_num(100,200)) // speed
+	message_end()
+}
+
+stock fx_bleed(origin[3])
+{
+	// Blood spray
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_BLOODSTREAM)
+	write_coord(origin[0])
+	write_coord(origin[1])
+	write_coord(origin[2]+10)
+	write_coord(random_num(-360,360)) // x
+	write_coord(random_num(-360,360)) // y
+	write_coord(-10) // z
+	write_byte(BLOOD_STREAM_RED) // color
+	write_byte(random_num(50,100)) // speed
+	message_end()
+}
+
+stock fx_blood_small(origin[3],num)
+{
+	// Write Small splash decal
+	for (new j = 0; j < num; j++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_WORLDDECAL)
+		write_coord(origin[0]+random_num(-100,100))
+		write_coord(origin[1]+random_num(-100,100))
+		write_coord(origin[2]-36)
+		write_byte(blood_small_red[random_num(0,BLOOD_SM_NUM - 1)]) // index
+		message_end()
+	}
+}
+
+stock fx_blood_large(origin[3],num)
+{
+	// Write Large splash decal
+	for (new i = 0; i < num; i++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_WORLDDECAL)
+		write_coord(origin[0]+random_num(-50,50))
+		write_coord(origin[1]+random_num(-50,50))
+		write_coord(origin[2]-36)
+		write_byte(blood_large_red[random_num(0,BLOOD_LG_NUM - 1)]) // index
+		message_end()
+	}
+}
+
+stock fx_gib_explode(origin[3],origin2[3])
+{
+	new flesh[2]
+	flesh[0] = mdl_gib_flesh
+	flesh[1] = mdl_gib_meat
+	new mult = 80, gibtime = 400 //40 seconds
+						
+
+	new rDistance = get_distance(origin,origin2) ? get_distance(origin,origin2) : 1
+	new rX = ((origin[0]-origin2[0]) * mult) / rDistance
+	new rY = ((origin[1]-origin2[1]) * mult) / rDistance
+	new rZ = ((origin[2]-origin2[2]) * mult) / rDistance
+	new rXm = rX >= 0 ? 1 : -1
+	new rYm = rY >= 0 ? 1 : -1
+	new rZm = rZ >= 0 ? 1 : -1
+
+	// Gib explosions
+
+	// Head
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_MODEL)
+	write_coord(origin[0])
+	write_coord(origin[1])
+	write_coord(origin[2]+40)
+	write_coord(rX + (rXm * random_num(0,80)))
+	write_coord(rY + (rYm * random_num(0,80)))
+	write_coord(rZ + (rZm * random_num(80,200)))
+	write_angle(random_num(0,360))
+	write_short(mdl_gib_head)
+	write_byte(0) // bounce
+	write_byte(gibtime) // life
+	message_end()
+
+	// Parts
+	for(new i = 0; i < 4; i++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_MODEL)
+		write_coord(origin[0])
+		write_coord(origin[1])
+		write_coord(origin[2])
+		write_coord(rX + (rXm * random_num(0,80)))
+		write_coord(rY + (rYm * random_num(0,80)))
+		write_coord(rZ + (rZm * random_num(80,200)))
+		write_angle(random_num(0,360))
+		write_short(flesh[random_num(0,1)])
+		write_byte(0) // bounce
+		write_byte(gibtime) // life
+		message_end()
+	}
+
+	// Spine
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_MODEL)
+	write_coord(origin[0])
+	write_coord(origin[1])
+	write_coord(origin[2]+30)
+	write_coord(rX + (rXm * random_num(0,80)))
+	write_coord(rY + (rYm * random_num(0,80)))
+	write_coord(rZ + (rZm * random_num(80,200)))
+	write_angle(random_num(0,360))
+	write_short(mdl_gib_spine)
+	write_byte(0) // bounce
+	write_byte(gibtime) // life
+	message_end()
+
+	// Lung
+	for(new i = 0; i <= 1; i++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_MODEL)
+		write_coord(origin[0])
+		write_coord(origin[1])
+		write_coord(origin[2]+10)
+		write_coord(rX + (rXm * random_num(0,80)))
+		write_coord(rY + (rYm * random_num(0,80)))
+		write_coord(rZ + (rZm * random_num(80,200)))
+		write_angle(random_num(0,360))
+		write_short(mdl_gib_lung)
+		write_byte(0) // bounce
+		write_byte(gibtime) // life
+		message_end()
+	}
+
+	//Legs
+	for(new i = 0; i <= 1; i++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_MODEL)
+		write_coord(origin[0])
+		write_coord(origin[1])
+		write_coord(origin[2]-10)
+		write_coord(rX + (rXm * random_num(0,80)))
+		write_coord(rY + (rYm * random_num(0,80)))
+		write_coord(rZ + (rZm * random_num(80,200)))
+		write_angle(random_num(0,360))
+		write_short(mdl_gib_legbone)
+		write_byte(0) // bounce
+		write_byte(gibtime) // life
+		message_end()
+	}
+
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_BLOODSPRITE)
+	write_coord(origin[0])
+	write_coord(origin[1])
+	write_coord(origin[2]+20)
+	write_short(spr_blood_spray)
+	write_short(spr_blood_drop)
+	write_byte(BLOOD_COLOR_RED) // color index
+	write_byte(10) // size
+	message_end()
+}
+
+stock fx_extra_blood(origin[3])
+{
+	new x, y, z
+
+	for(new i = 0; i < 3; i++) {
+		x = random_num(-15,15)
+		y = random_num(-15,15)
+		z = random_num(-20,25)
+		for(new j = 0; j < 2; j++) {
+			message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+			write_byte(TE_BLOODSPRITE)
+			write_coord(origin[0]+(x*j))
+			write_coord(origin[1]+(y*j))
+			write_coord(origin[2]+(z*j))
+			write_short(spr_blood_spray)
+			write_short(spr_blood_drop)
+			write_byte(BLOOD_COLOR_RED) // color index
+			write_byte(15) // size
+			message_end()
+		}
+	}
+}
+
+stock fx_headshot(origin[3])
+{
+	new Sprays = 8
+
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+	write_byte(TE_BLOODSPRITE)
+	write_coord(origin[0])
+	write_coord(origin[1])
+	write_coord(origin[2]+40)
+	write_short(spr_blood_spray)
+	write_short(spr_blood_drop)
+	write_byte(BLOOD_COLOR_RED) // color index
+	write_byte(15) // size
+	message_end()
+
+	// Blood sprays
+	for (new i = 0; i < Sprays; i++) {
+		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte(TE_BLOODSTREAM)
+		write_coord(origin[0])
+		write_coord(origin[1])
+		write_coord(origin[2]+40)
+		write_coord(random_num(-30,30)) // x
+		write_coord(random_num(-30,30)) // y
+		write_coord(random_num(80,300)) // z
+		write_byte(BLOOD_STREAM_RED) // color
+		write_byte(random_num(100,200)) // speed
+		message_end()
+	}
+}
+stock precache_gibs()
+{
+	spr_blood_drop = precache_model("sprites/blood.spr")
+	spr_blood_spray = precache_model("sprites/bloodspray.spr")
+
+	mdl_gib_flesh = precache_model("models/Fleshgibs.mdl")
+	mdl_gib_meat = precache_model("models/GIB_B_Gib.mdl")
+	mdl_gib_head = precache_model("models/GIB_Skull.mdl")
+	
+	mdl_gib_spine = precache_model("models/GIB_B_Bone.mdl")
+	mdl_gib_lung = precache_model("models/GIB_Lung.mdl")
+	mdl_gib_legbone = precache_model("models/GIB_Legbone.mdl")
+}

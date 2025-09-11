@@ -194,7 +194,7 @@ public _check_by_whom_player_spored(iPlugins,iParam){
 	if(is_user_connected(id)){
 		new username[128];
 		get_user_name(id,username,127);
-		server_print("[SH] ksun: this player named %s is being spored sporing the following players...:^n",username)
+		server_print("[SH] ksun: this player named %s is being spored by the following players...:^n",username)
 		for(new i=0;i<SH_MAXSLOTS+1;i++){
 			if(is_user_connected(i)){
 				if(spores_has_ksun(i)){
@@ -211,8 +211,12 @@ public _check_by_whom_player_spored(iPlugins,iParam){
 stock clear_spores_from_player(id){
 	
 	if(is_user_connected(id)){
-			arrayset(g_times_player_spiked_player[id],0,SH_MAXSLOTS+1)
-			arrayset(g_times_player_spiked_by_player[id],0,SH_MAXSLOTS+1)
+		arrayset(g_times_player_spiked_player[id],0,SH_MAXSLOTS+1)
+		for(new i=0;i<SH_MAXSLOTS+1;i++){
+			if(is_user_connected(i)){
+				g_times_player_spiked_by_player[i][id]=0;
+			}
+		}
 	}
 }
 public ev_SendAudio(){
