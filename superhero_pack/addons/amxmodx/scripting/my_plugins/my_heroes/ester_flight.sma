@@ -150,7 +150,6 @@ public client_kill(id){
 	if(ester_get_has_ester(id)&&ester_anti_pussy_engaged){
 		
 		sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_FAIL_MSG)
-		//console_print(0,"Suicide by ester user!");
 		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 		return PLUGIN_CONTINUE
@@ -166,15 +165,6 @@ public client_kill(id){
 	}
 	return PLUGIN_CONTINUE
 }
-/*dec_user_ester_respawn_attempts(id){
-	
-	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
-		
-		g_ester_respawned_attempts[id]=g_ester_respawned_attempts[id]?g_ester_respawned_attempts[id]-1:0
-	
-	}
-	
-}*/
 inc_user_ester_respawn_attempts(id){
 	
 	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
@@ -650,12 +640,12 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		if(cs_get_user_team(victim)==killer_team){
 			continue
 		}
-		console_print(0,"yay! client %d called %s just hit enemy %d named %s!!!",killer,tger_name,victim,vic_name)
+		/*console_print(0,"yay! client %d called %s just hit enemy %d named %s!!!",killer,tger_name,victim,vic_name)
 		console_print(0,"Lets go over some briefing, okay?^nOkay so, is the killer flying? %s^nAlright: Does the killer have ester equipped? %s^nAnyways, is the killer in reborn mode? %s^nSo, Lastly...^nIs ester fly knocking enabled on the server? %s^n",
 									g_flying[killer]?"Yes!":"No...",
 									ester_get_has_ester(killer)?"Yes!":"No...",
 									ester_get_reborn_mode(killer)?"Yes!":"No...",
-									ester_fly_knock_enemies?"Yes!":"No...")
+									ester_fly_knock_enemies?"Yes!":"No...")*/
 		sh_chat_message(ester_get_hero_id(),killer,"You, named %s, knocked %s!!!!!^n (i hope)",tger_name,vic_name)
 		
 		new Float:killer_velocity[3],Float:killer_speed
@@ -669,13 +659,6 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)
 		
-		
-		/*entity_get_vector(victim,EV_VEC_origin,victim_pos)
-		add_3d_vectors(killer_velocity,victim_pos,victim_pos)
-		multiply_3d_vector_by_scalar(killer_velocity,-1.0,killer_velocity)
-		add_3d_vectors(killer_pos,killer_velocity,killer_pos)
-		entity_set_vector(victim,EV_VEC_origin,victim_pos)
-		entity_set_vector(killer,EV_VEC_origin,killer_pos)*/
 	}
 	return
 }

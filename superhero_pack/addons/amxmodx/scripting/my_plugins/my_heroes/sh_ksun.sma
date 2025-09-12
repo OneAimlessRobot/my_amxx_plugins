@@ -617,7 +617,6 @@ public death()
 		
 				sleep_nade_uncharge_sleep_nade(id)
 			}
-			check_who_player_is_sporing(id)
 			
 			ksun_unmorph(id+KSUN_MORPH_TASKID)
 			if(ksun_get_when_reset_spores()&reset_on_death){
@@ -625,7 +624,6 @@ public death()
 				clean_ksun_spores_from_players(1,0,id);
 			}
 		}
-		check_by_whom_player_spored(id)
 		
 	}
 	if(is_user_connected(killer)&&spores_has_ksun(killer)){
@@ -645,7 +643,6 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		
 				sleep_nade_uncharge_sleep_nade(id)
 			}
-			check_who_player_is_sporing(id)
 			
 			ksun_unmorph(id+KSUN_MORPH_TASKID)
 			if(ksun_get_when_reset_spores()&reset_on_death){
@@ -653,7 +650,6 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 				clean_ksun_spores_from_players(1,0,id);
 			}
 		}
-		check_by_whom_player_spored(id)
 		
 	}
 	if(client_hittable(killer)&&is_user_connected(id)){

@@ -192,8 +192,8 @@ public fw_ItemDeployPre(entity)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_member(pPlayer, m_flNextAttack, LENA_PROJECTILE_SHOOT_PERIOD*2)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD*2)
+	set_member(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_DEPLOY_TIME)
 	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
 	return HAM_SUPERCEDE
 }

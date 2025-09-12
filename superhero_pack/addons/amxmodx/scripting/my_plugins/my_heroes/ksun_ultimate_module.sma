@@ -82,10 +82,16 @@ public plugin_natives(){
 
 public Item_PostFrame_Post(iEnt)
 {    
-	if(!is_valid_ent(iEnt)) return HAM_IGNORED
+	if(pev_valid(iEnt)!=2){
+		return HAM_IGNORED
+	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
-	if (!sh_is_active()||!spores_has_ksun(id)||!ksun_player_is_in_ultimate(id))return HAM_IGNORED
-	
+	if(!client_hittable(id)){
+		return HAM_IGNORED
+	}
+	if (!sh_is_active()||!spores_has_ksun(id)||!ksun_player_is_in_ultimate(id)){
+		return HAM_IGNORED
+	}
 	if( get_pdata_int(iEnt, m_fInReload, 4) )
 	{
 		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], ksun_ultimate_reload_rate_mult)
