@@ -67,7 +67,7 @@ public client_putinserver(id)
 	g_vars[id][gamepc] = 0
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(g_vars[id][game])
 	{
@@ -668,8 +668,6 @@ stock check_winner(player1_option, player2_option)
 	{
 		return 2
 	}
-
-	return 3
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

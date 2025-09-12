@@ -83,7 +83,7 @@ public client_putinserver(id)
 	ClearUserAllow(id)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	ClearUserAlive(id)
 

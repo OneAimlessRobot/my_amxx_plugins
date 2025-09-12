@@ -170,8 +170,6 @@ public _cs_get_user_money_ul(plug,param) {
 		return money_total[id]
 	}
 	
-	return PLUGIN_HANDLED
-	
 }
 
 public _cs_set_user_money_ul(plug,param) {

@@ -13,10 +13,8 @@ new gHasSapper[SH_MAXSLOTS+1]
 new gNumMines[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 
-new m_spriteTexture
 
 new hud_sync
-new gHeroLevel
 new num_mines
 new mine_cooldown
 new disarmable
@@ -170,7 +168,6 @@ if ( sh_is_active() && is_user_alive(id) && gHasSapper[id] ) {
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-gHeroLevel=get_cvar_num("sapper_level");
 num_mines=get_cvar_num("sapper_mines");
 mine_cooldown=get_cvar_num("sapper_mines");
 disarmable=get_cvar_num("sapper_disarmable");

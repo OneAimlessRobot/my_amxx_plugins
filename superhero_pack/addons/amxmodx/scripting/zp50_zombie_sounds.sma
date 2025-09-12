@@ -429,7 +429,7 @@ public fw_PlayerKilled(victim, attacker, shouldgib)
 	remove_task(victim+TASK_IDLE_SOUNDS)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	// Remove idle sounds task
 	remove_task(id+TASK_IDLE_SOUNDS)

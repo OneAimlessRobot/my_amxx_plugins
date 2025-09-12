@@ -97,7 +97,7 @@ public client_connect(id)
 	get_user_name(id, szName, 31)
 	get_user_authid(id, szID, 19)
 	get_user_ip(id, szIP, 19, 1)
-	geoip_country(szIP, szCountry, 19)
+	geoip_country_ex(szIP, szCountry, 19)
 
 	get_configsdir(szConfigsDir, 95)
 	format(szShowIPPath, 127, "%s/showip/ips.cfg", szConfigsDir)
@@ -324,7 +324,7 @@ public client_connect(id)
 	return PLUGIN_HANDLED
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (get_pcvar_num(g_Enabled) == 0)
 		return PLUGIN_HANDLED
@@ -637,7 +637,7 @@ public cmd_showall(id, level, cid)
 	get_user_name(tid, szName, 31)
 	get_user_ip(tid, szIP, 19, 1)
 	get_user_authid(tid, szID, 19)
-	geoip_country(szIP, szCountry, 19)
+	geoip_country_ex(szIP, szCountry, 19)
 
 	if (is_user_bot(tid))
 		console_print(id, "User %s is a bot!", szName)
@@ -670,7 +670,7 @@ public cmd_showall_all(id, level, cid)
 		get_user_name(iPlayers[i], szName, 31)
 		get_user_ip(iPlayers[i], szIP, 19, 1)
 		get_user_authid(iPlayers[i], szID, 19)
-		geoip_country(szIP, szCountry, 19)
+		geoip_country_ex(szIP, szCountry, 19)
 
 		if ((szIP[0] != '1' && szIP[1] != '9' && szIP[2] != '2') || (szIP[0] != '1' && szIP[1] != '2' && szIP[2] != '7'))
 			console_print(id, "^nShowIP: %s^n---^nIP: %s^nSteam ID: %s^nCountry: %s^n", szName, szIP, szID, szCountry)
@@ -812,7 +812,7 @@ public cmd_showcountry(id, level, cid)
 
 	get_user_name(tid, szName, 31)
 	get_user_ip(tid, szIP, 19, 1)
-	geoip_country(szIP, szCountry, 19)
+	geoip_country_ex(szIP, szCountry, 19)
 
 	if (is_user_bot(tid))
 		console_print(id, "User %s is a bot!", szName)
@@ -837,7 +837,7 @@ public cmd_showcountry_all(id, level, cid)
 	{
 		get_user_name(iPlayers[i], szName, 31)
 		get_user_ip(iPlayers[i], szIP, 19)
-		geoip_country(szIP, szCountry, 19)
+		geoip_country_ex(szIP, szCountry, 19)
 
 		if ((szIP[0] != '1' && szIP[1] != '9' && szIP[2] != '2') || (szIP[0] != '1' && szIP[1] != '2' && szIP[2] != '7'))
 			console_print(id, "^nShowIP: %s^n---^nCountry: %s^n", szName, szCountry)

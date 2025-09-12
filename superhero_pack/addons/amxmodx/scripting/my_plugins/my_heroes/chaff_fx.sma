@@ -56,7 +56,7 @@ public _sh_chaff_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsChaffed[user]){
 		if((user==attacker)){
-			if(CAN_SELF_CHAFF){
+			if(CAN_SELF_CHAFF&&user){
 				sh_chat_message(user,gHeroID,"%s has chaffed you!!!",attacker_name)
 				sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
 				chaff_user(user,attacker)

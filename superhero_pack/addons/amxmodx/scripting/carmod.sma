@@ -646,7 +646,7 @@ public client_infochanged(id)
    }
    return PLUGIN_HANDLED
 }
-public client_disconnect(id) {
+public client_disconnected(id) {
 
    if(incar[id] == 1) {
       car_drop(id)

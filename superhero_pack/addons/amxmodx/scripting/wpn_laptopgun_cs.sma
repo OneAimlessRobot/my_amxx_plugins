@@ -141,11 +141,6 @@ public plugin_precache()
 	//precache_generic(g_EVENT);
 }
 
-public plugin_modules()
-{
-	require_module("fakemeta");
-}
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);

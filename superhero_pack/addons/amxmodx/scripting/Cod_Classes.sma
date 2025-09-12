@@ -6,7 +6,6 @@
 #include < amxmodx >
 #include < hamsandwich >
 #include < bym_cod_2016 >
-#include < dhudmessage >
 #include < cs_player_models_api >
 #include < fakemeta >
 #include < cstrike >
@@ -969,7 +968,7 @@ public client_putinserver( iPlayer ) {
 		g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	for( new iIterator = 0; iIterator < StructPlayerInfo; iIterator ++ )
 		g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
 }

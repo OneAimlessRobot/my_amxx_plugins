@@ -146,7 +146,7 @@ public client_putinserver(id)
 	UnSet_BitVar(g_IsAlive, id)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	UnSet_BitVar(g_TempAttack, id)
 	UnSet_BitVar(g_IsAlive, id)

@@ -9,7 +9,7 @@
 #define WEAPON_BITSUM ((1<<CSW_GALIL))
 
 new const VERSION[] = "1.1";
-
+new const THING[64] = "!y[!gZP!y] You Bought !t%s!y.";
 #define ITEM_NAME "Rock Guitar"
 #define ITEM_COST 35
 
@@ -91,7 +91,7 @@ public client_putinserver(id)
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_has_guitar[id] = false;
 }
@@ -148,7 +148,7 @@ public zp_fw_items_select_post(player, itemid)
 	}
 	g_has_guitar[player] = true;
 	new wpnid = give_item(player, "weapon_galil");
-	client_print_color(player, "!y[!gZP!y] You Bought !t%s!y.", ITEM_NAME);
+	client_print_color(player,print_chat, THING, ITEM_NAME)
 	cs_set_weapon_ammo(wpnid, get_pcvar_num(cvar_rockguitar_clip));
 	cs_set_user_bpammo(player, CSW_GALIL, get_pcvar_num(cvar_rockguitar_bpammo));
 }
@@ -396,27 +396,6 @@ stock drop_primary(id)
 			static wname[32];
 			get_weaponname(weapons[i], wname, sizeof wname - 1);
 			engclient_cmd(id, "drop", wname);
-		}
-	}
-}
-
-stock client_print_color(const id,const input[], any:...)
-{
-	new msg[191], players[32], count = 1; vformat(msg,190,input,3);
-	replace_all(msg,190,"!g","^4");    // green
-	replace_all(msg,190,"!y","^1");    // normal
-	replace_all(msg,190,"!t","^3");    // team
-        
-	if (id) players[0] = id; else get_players(players,count,"ch");
-        
-	for (new i=0;i<count;i++)
-	{
-		if (is_user_connected(players[i]))
-		{
-			message_begin(MSG_ONE_UNRELIABLE,get_user_msgid("SayText"),_,players[i]);
-			write_byte(players[i]);
-			write_string(msg);
-			message_end();
 		}
 	}
 }

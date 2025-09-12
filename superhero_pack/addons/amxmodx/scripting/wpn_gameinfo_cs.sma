@@ -475,7 +475,6 @@ public get_offset_value(id, type)
 	
 	if(key != -1)
 	{
-		if(is_amd64_server()) key += 25
 		return get_pdata_int(id, key)
 	}
 	
@@ -507,7 +506,6 @@ public set_offset_value(id, type, value)
 	
 	if(key != -1)
 	{
-		if(is_amd64_server()) key += 25
 		set_pdata_int(id, key, value)
 	}
 	

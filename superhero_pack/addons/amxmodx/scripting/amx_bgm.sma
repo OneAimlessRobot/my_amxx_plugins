@@ -330,7 +330,7 @@ public client_authorized( id )
 g_pHeardSound[id] = true;
 
 
-public client_disconnect( id )
+public client_disconnected( id )
 {
 g_pHeardSound[id] = true;
 remove_task( id + TASKID_ADS );

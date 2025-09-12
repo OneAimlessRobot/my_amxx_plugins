@@ -410,7 +410,7 @@ public plugin_precache() {
 }
 
 // Reset Molotovs so that a new player doesn't have any
-public client_disconnect(id) {
+public client_disconnected(id) {
 	g_NumMolotov[ID_TO_INDEX(id)] = 0;
 }
 

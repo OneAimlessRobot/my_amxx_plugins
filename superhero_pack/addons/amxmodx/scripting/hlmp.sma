@@ -1,4 +1,4 @@
-/*	Formatright © 2009, ConnorMcLeod
+/*	Formatright ï¿½ 2009, ConnorMcLeod
 
 	Half Life Media Player is free software;
 	you can redistribute it and/or modify it under the terms of the
@@ -218,8 +218,8 @@ public client_authorized( id )
 public client_putinserver(id)
 {
 	g_iMenuOption[id] = mGroups
-	g_PlayerGroup[id][GroupName][0] = 0
-	g_PlayerGroup[id][GroupArrayOffset] = 0
+	g_PlayerGroup[id][GroupName][0] = 0;
+	g_PlayerGroup[id][GroupArrayOffset] = Invalid_Array
 
 	if( g_szAuthid[id][0] == 'C' )
 	{
@@ -289,7 +289,7 @@ GetPlayerSettings(id)
 	ClearIdBits(g_bListening, id)
 }
 
-public client_disconnect( id )
+public client_disconnected( id )
 {
 	static szSettings[8]
 	formatex(szSettings, charsmax(szSettings), "%d %d %d", 

@@ -11,7 +11,7 @@ get_user_name(id,sz_name,charsmax(sz_name))
  
 static sz_ip[16],sz_country[20]
 get_user_ip(id,sz_ip,charsmax(sz_ip),1)
-geoip_country(sz_ip,sz_country,charsmax(sz_country))
+geoip_country_ex(sz_ip,sz_country,charsmax(sz_country))
  
 ColorChat(0,GREY,"^x01Player^x03 %s^x01 connected from^x04 %s^x01",sz_name,sz_country)
 }

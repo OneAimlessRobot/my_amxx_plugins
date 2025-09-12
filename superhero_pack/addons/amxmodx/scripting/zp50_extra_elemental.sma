@@ -89,7 +89,7 @@ public plugin_precache()
 
 /*---------------------------------------=[Bug Prevention]=-----------------------------------------*/
 public client_connect(id) g_elemental[id] = false
-public client_disconnect(id) g_elemental[id] = false
+public client_disconnected(id) g_elemental[id] = false
 public Death() g_elemental[read_data(2)] = false
 public zp_fw_core_infect_post(id) g_elemental[id] = false
 public zp_fw_core_cure_post(id) g_elemental[id] = false

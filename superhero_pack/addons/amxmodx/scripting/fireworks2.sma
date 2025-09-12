@@ -1077,13 +1077,6 @@ public changelights(id)
 } 
 
 
-
-public plugin_modules()
-{
-	require_module("FakeMeta")
-	require_module("Engine")
-}
-
 public plugin_init() {
 	register_plugin("Fireworks++","2.5","Twilight Suzuka")
 

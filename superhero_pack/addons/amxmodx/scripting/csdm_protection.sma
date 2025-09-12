@@ -99,7 +99,7 @@ public client_connect(id)
 	g_Protected[id] = 0
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (g_Protected[id])
 	{

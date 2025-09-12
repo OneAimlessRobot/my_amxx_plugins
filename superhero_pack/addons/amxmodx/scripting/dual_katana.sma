@@ -389,8 +389,6 @@ public Check_StabAttack(id)
 		return 1
 	else
 		return 0
-	
-	return 0
 }	
 
 public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)

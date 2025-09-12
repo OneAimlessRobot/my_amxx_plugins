@@ -1,20 +1,17 @@
+// vim: set ts=4 sw=4 tw=99 noet:
+//
+// AMX Mod X, based on AMX Mod by Aleksander Naszko ("OLO").
+// Copyright (C) The AMX Mod X Development Team.
+//
+// This software is licensed under the GNU General Public License, version 3 or higher.
+// Additional exceptions apply. For full license details, see LICENSE.txt or visit:
+//     https://alliedmods.net/amxmodx-license
 
 #if defined _amxmodx_version_included
-  #endinput
+	#endinput
 #endif
 #define _amxmodx_version_included
 
-#define AMXX_VERSION_TAG            ""
-#define AMXX_VERSION_CSET           "27f451a8"
-#define AMXX_VERSION_MAJOR          "1"
-#define AMXX_VERSION_MAJOR_NUM      1
-#define AMXX_VERSION_MINOR          "10"
-#define AMXX_VERSION_MINOR_NUM      10
-#define AMXX_VERSION_RELEASE        "0"
-#define AMXX_VERSION_LOCAL_REV_NUM  5467
-#define AMXX_VERSION_LOCAL_REV      "5467"
-#define AMXX_VERSION                1.100
-#define AMXX_VERSION_NUM            200
-
-stock const AMXX_VERSION_STR[] = "1.10.0.5467";
-    
+#define AMXX_VERSION		1.10.0
+#define AMXX_VERSION_NUM	1100
+stock const AMXX_VERSION_STR[] = "1.10.0-manual";

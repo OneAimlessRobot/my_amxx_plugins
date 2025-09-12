@@ -9,7 +9,6 @@ new const gHeroName[] = "Chikoi the Maid"
 new bool:gHasChikoi[SH_MAXSLOTS+1]
 
 
-new gHeroLevel
 
 #define SENDAUDIO_MESSAGE_PITCH_ARG 3
 
@@ -110,8 +109,6 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	
-	gHeroLevel=get_cvar_num("chikoi_level")
 }
 public reset_chikoi(id){
 

@@ -47,7 +47,7 @@
 #define MINE_DISARM_TIMES floatround(floatdiv(min_charge_time,MINE_DISARM_PERIOD))
 
 
-new const mine_color[4]={255, 255, 255,200}
+stock const mine_color[4]={255, 255, 255,200}
 
 
 native clear_mines()

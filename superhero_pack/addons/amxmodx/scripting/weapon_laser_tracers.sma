@@ -1,4 +1,4 @@
-/*	Formatright © 2009, ConnorMcLeod
+/*	Formatright ï¿½ 2009, ConnorMcLeod
 
 	TraceAttack is free software;
 	you can redistribute it and/or modify it under the terms of the
@@ -26,7 +26,7 @@
 #include <cstrike>
 #include <fakemeta>
 #include <hamsandwich>
-
+#define PER_PLAYER_SETTINGS
 #define VERSION "LASER"
 
 #define MAX_PLAYERS	32

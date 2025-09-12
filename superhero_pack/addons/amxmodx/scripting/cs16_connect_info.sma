@@ -58,7 +58,7 @@ public Fwd_PlayerSpawn(id)
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	new Time[32]
 

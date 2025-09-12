@@ -147,7 +147,7 @@ public client_putinserver( id ) {
 	g_iPlayerTeam[ id ] = CS_TEAM_UNASSIGNED;
 }
 	
-public client_disconnect( id ) {
+public client_disconnected( id ) {
 	bym_igrac_je_izasao( id );
 	g_iPlayerTeam[ id ] = CS_TEAM_UNASSIGNED;
 }

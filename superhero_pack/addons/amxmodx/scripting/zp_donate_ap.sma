@@ -51,7 +51,7 @@ public handleSay(id)
 	new arg1[16]
 	new arg2[32]
 	
-	strbreak(args, arg1, charsmax(arg1), arg2, charsmax(arg2))
+	argbreak(args, arg1, charsmax(arg1), arg2, charsmax(arg2))
 	if (get_pcvar_num(g_CvarAllowDonate) && equal(arg1,"/donate", 7))
 		donate(id, arg2)
 	
@@ -60,7 +60,7 @@ public handleSay(id)
 public donate(id, arg[])
 {
 	new to[32], count[10]
-	strbreak(arg, to, 31, count, 9)
+	argbreak(arg, to, 31, count, 9)
 	
 	if (!to[0] || !count[0])
 	{

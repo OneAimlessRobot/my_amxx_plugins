@@ -181,7 +181,7 @@ new modname[32]
 //Cvar
 new ffac_showinfo
 new ffac_showpub
-new ffac_pub_time
+new Float:ffac_pub_time
 new ffac_ffacban
 new ffac_ffacban_duration
 new ffac_plog
@@ -226,22 +226,22 @@ new dod_stats
 
 
 //Multip stock Var -> Global
-	new szName[128]
-	new szAuthID[33]
+new szName[128]
+new szAuthID[33]
 
 public plugin_init() 
 {
 	new error, err[40]
 	new cmd[256]
- 
+	
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-
- 	register_event("DeathMsg","death","a")
+	
+	register_event("DeathMsg","death","a")
 	register_event("ResetHUD", "client_spawn", "be")
-
+	
 	register_clcmd("fullupdate", "clcmd_fullupdate")
 	register_clcmd("say", "handle_say")
-
+	
 	//HL1 mods support
 	get_modname(modname,32)
 	if (containi(modname,"cstrike")!=-1)cstrike_stats=1
@@ -293,10 +293,10 @@ public plugin_init()
 		register_logevent("cs_bomb_planted", 3, "2=Planted_The_Bomb")
 		
 		// Bomb defused event
-	    register_logevent("cs_bomb_defused", 3, "2=Defused_The_Bomb")
+		register_logevent("cs_bomb_defused", 3, "2=Defused_The_Bomb")
 		
 		// Target bombed (right before round end) event
-	    register_logevent("cs_target_bombed", 6, "3=Target_Bombed")	
+		register_logevent("cs_target_bombed", 6, "3=Target_Bombed")	
 	}
 		//TFC Stats
 	if (tfc_stats==1)
@@ -349,22 +349,22 @@ public plugin_init()
 	MapDownSize=0 
 	HPTStatus=0
 	gvar_count=0
-		
+	
 	sckRemoteServer = socket_open(ffac_master_server,SOCKET_PORT, SOCKET_UDP,error)
 	if(sckRemoteServer <= 0 || error)
-			server_print("Couldn't connect to ffac/tools master server, error: %s",err)
-			
+	server_print("Couldn't connect to ffac/tools master server, error: %s",err)
+	
 	formatex(cmd, 256, "%s^"level!^"%s^"%s^"%s^"%d^"%s^"%s^"%d^"%s^"",VERSION,port,thehostname,mapname,maxplayers,ffac_msn_contact,ffac_ip_bind,ffac_autoupdate,modname) 
 	socket_send2(sckRemoteServer, cmd,255)
 	set_task(TASK_SLOW, "receive_info", SOCKET_TASK, "",0, "b")
 	
 	if (ffac_showpub)
-		set_task(ffac_pub_time, "website_pub", PUB_TASK, "",0, "b")
-		
-
+	set_task(ffac_pub_time, "website_pub", PUB_TASK, "",0, "b")
+	
+	
 	if (ActiveHpt)
-		AddMenuItem("FFAC package manager", "amx_ffac_hpt_menu", ADMIN_MENU, PLUGIN)
-		
+	AddMenuItem("FFAC package manager", "amx_ffac_hpt_menu", ADMIN_MENU, PLUGIN)
+	
 	server_cmd("amx_cvar ffac_version %s",VERSION)
 	
 }
@@ -384,7 +384,7 @@ Native-Native-Native-Native-Native-Native-Native-Native
 public plugin_natives()
 {
 	register_library("ffac_sys")
-    
+	
 	register_native("ffac_register_plugin","_ffac_register_plugin")
 	register_native("ffac_get_server_id","_ffac_get_server_id")
 	register_native("ffac_get_skill","_ffac_get_skill")
@@ -406,7 +406,7 @@ public plugin_natives()
 	register_native("ffac_install_package","_ffac_install_package")
 	register_native("ffac_remove_package","_ffac_remove_package")
 	register_native("ffac_log_sentence","_ffac_log_sentence")
-
+	
 	
 	register_native("ffac_register_gvar","_ffac_register_gvar")
 	register_native("ffac_get_gvar_int","_ffac_get_gvar_int")
@@ -421,7 +421,7 @@ public _ffac_get_player_latitude(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	set_string(2,latitude[id],8)
 	return PLUGIN_CONTINUE
 }
@@ -429,7 +429,7 @@ public _ffac_get_player_longitude(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	set_string(2,longitude[id],8)
 	return PLUGIN_CONTINUE
 }
@@ -437,7 +437,7 @@ public _ffac_get_player_city(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	set_string(2,city[id],16)
 	return PLUGIN_CONTINUE
 }
@@ -445,7 +445,7 @@ public _ffac_get_player_country(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	set_string(2,country[id],16)
 	return PLUGIN_CONTINUE
 }
@@ -487,14 +487,14 @@ public _ffac_is_player_auth(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	return FFAReady[id]
 }
 public _ffac_get_skill(iPlugin,iParams)
 {
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	return skill[id]
 }
 public _ffac_msn_message(iPlugin,iParams)
@@ -639,7 +639,7 @@ public _ffac_log_sentence(iPlugin,iParams)
 	new cmd[128]
 	new id = get_param(1)
 	if(!id)
-		return PLUGIN_CONTINUE	
+	return PLUGIN_CONTINUE	
 	get_string(2,sentence,128)
 	get_user_authid(id,szAuthID,32)
 	formatex(cmd, 128, "%s^"Log!^"%s^"%s^"",VERSION, szAuthID,sentence) 
@@ -652,7 +652,7 @@ Native-Native-Native-Native-Native-Native-Native-Native
 ******************************************************/
 
 public clcmd_fullupdate() {
-    return PLUGIN_HANDLED
+	return PLUGIN_HANDLED
 }
 
 public client_putinserver(id)
@@ -663,14 +663,14 @@ public client_putinserver(id)
 	get_user_authid(id,szAuthID,32)
 	get_user_ip(id,szIP,64)
 	get_user_name(id,szName,128)
- 
+	
 	formatex(cmd, 256, "%s^"Score?^"%s^"%d^"%s^"%s^"%s^"%s^"",VERSION, szAuthID,id,szIP,port,szName,registered_gvar) 
 	socket_send2(sckRemoteServer, cmd,255)
 	FFAReady[id]=0
-
+	
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	static cmd[256]
 	static szIP[33]
@@ -709,7 +709,7 @@ public client_disconnect(id)
 	TPAction[id][3]=0
 	TPAction[id][4]=0
 	TPAction[id][5]=0
-
+	
 }
 
 public death ()
@@ -719,7 +719,7 @@ public death ()
   There are some server side skill checks. A server can give skill. If a player win 9 points an other MUST lost 9 points !
   You "can" change the calculation, but if you do a "bad calculation" you'll banned from ffac.
   */
-
+	
 	new killer
 	new victim
 	killer = read_data(1)
@@ -730,7 +730,7 @@ public death ()
 		new Float:scoreratio
 		new Float:scorefinal  
 		new score_num
-
+		
 		scoredif = skill[victim]-skill[killer] 
 		if (scoredif>0)
 		{
@@ -756,7 +756,7 @@ public death ()
 	}
 	return PLUGIN_CONTINUE 
 }
- 
+
 public  client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 {
 	if (hitplace == 1 && FFAReady[attacker] && FFAReady[victim] ) //Headshot
@@ -767,7 +767,7 @@ public  client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 		CHST[victim]=CHSG[victim]+1
 		if (ffac_showinfo)
 		{	
-
+			
 			client_print(attacker,print_chat,"FFAC : HeadShot, 9 points Won !")
 			client_print(victim,print_chat,"FFAC : HeadShot, 9 points Lost !")
 		}
@@ -783,16 +783,16 @@ public	client_spawn ( id )
 		if (cstrike_stats==1)
 		{
 			if (get_user_team(id)==1)
-				TSpawn[id]=TSpawn[id]+1
+			TSpawn[id]=TSpawn[id]+1
 			if (get_user_team(id)==2)
-				CTSpawn[id]=CTSpawn[id]+1
+			CTSpawn[id]=CTSpawn[id]+1
 		}
 	}
 } 
 
 public MapDownload(id,level,cid) {
 	if (!cmd_access(id,level,cid,2)) 
-		return PLUGIN_HANDLED 
+	return PLUGIN_HANDLED 
 	new arg[32]
 	read_argv(1, arg, 31)
 	new cmd[256]
@@ -802,20 +802,20 @@ public MapDownload(id,level,cid) {
 	get_basedir(basedir,127)
 	
 	if(containi(arg,".bsp") == -1) 
-		{
+	{
 		formatex(mapdir, 127, "%s/../../maps/%s.bsp",basedir,arg) 
 		formatex(cmd, 256, "%s*GetFile!*../../maps/%s.bsp*",VERSION, arg) 
 		socket_send2(sckRemoteServer, cmd,255)
 		client_print(0,print_chat,"Server download : %s",arg)
-
-		}
+		
+	}
 	else
-		{
+	{
 		formatex(mapdir, 127, "%s/../../maps/%s",basedir,arg) 
 		formatex(cmd, 256, "%s*GetFile!*../../maps/%s*",VERSION, arg) 
 		socket_send2(sckRemoteServer, cmd,255)
 		client_print(0,print_chat,"Server download : %s",arg)
-		}
+	}
 	return PLUGIN_HANDLED 	
 	
 } 
@@ -859,28 +859,28 @@ public hpt_show_menu()
 
 public hpt_install(id,level,cid){
 	if (!cmd_access(id,level,cid,2)) 
-		return PLUGIN_HANDLED 
+	return PLUGIN_HANDLED 
 	if (ActiveHpt==1)
 	{
-	new arg[32]
-	read_argv(1, arg, 31)
-	new cmd[256]
-	new basedir[128]
-	new ddir[128]
-	get_basedir(basedir,127)
-	formatex(ddir, 127, "%s/configs/hpt/",basedir) 
-	
-
-	if(dir_exists ( ddir ) ==0)
+		new arg[32]
+		read_argv(1, arg, 31)
+		new cmd[256]
+		new basedir[128]
+		new ddir[128]
+		get_basedir(basedir,127)
+		formatex(ddir, 127, "%s/configs/hpt/",basedir) 
+		
+		
+		if(dir_exists ( ddir ) ==0)
 		mkdir (ddir)
-	
-	HPTStatus=1
-	formatex(cmd, 256, "%s*GetFile!*configs/hpt/%s.hpt*",VERSION, arg) 
-	socket_send2(sckRemoteServer, cmd,255)
-	client_print(0,print_chat,"Install Package: %s",arg)
-
-	
-	formatex(HTPCurrentPacket, 127, "%s/configs/hpt/%s.hpt",basedir,arg)
+		
+		HPTStatus=1
+		formatex(cmd, 256, "%s*GetFile!*configs/hpt/%s.hpt*",VERSION, arg) 
+		socket_send2(sckRemoteServer, cmd,255)
+		client_print(0,print_chat,"Install Package: %s",arg)
+		
+		
+		formatex(HTPCurrentPacket, 127, "%s/configs/hpt/%s.hpt",basedir,arg)
 	}
 	else
 	{
@@ -888,12 +888,12 @@ public hpt_install(id,level,cid){
 	}
 	
 	return PLUGIN_HANDLED
-
+	
 }
 
 public hpt_remove(id,level,cid){
 	if (!cmd_access(id,level,cid,2)) 
-		return PLUGIN_HANDLED 
+	return PLUGIN_HANDLED 
 	new arg[32]
 	read_argv(1, arg, 31)
 	new basedir[128]
@@ -905,7 +905,7 @@ public hpt_remove(id,level,cid){
 	client_print(0,print_chat,"Remove Package: %s",arg)
 	packet_manager()
 	return PLUGIN_HANDLED
-
+	
 }
 
 public MapList(id) {
@@ -917,8 +917,8 @@ public MapList(id) {
 public ffacban(id,level,cid) 
 { 
 	if (!cmd_access(id, level, cid, 3))
-		return PLUGIN_HANDLED
-
+	return PLUGIN_HANDLED
+	
 	new target[32], minutes[8], reason[64]
 	
 	read_argv(1, target, 31)
@@ -926,7 +926,7 @@ public ffacban(id,level,cid)
 	read_argv(3, reason, 63)
 	
 	new cmd[128]
-
+	
 	if (ffac_ffacban)
 	{
 		get_user_authid(id,szAuthID,32)
@@ -941,24 +941,24 @@ public website_pub()
 {
 	new i
 	for(i=1;i<33;i++)
-		{
+	{
 		if (FFAReady[i]==1)
-			{
+		{
 			client_print(i,print_chat,"This server takes part in the FFAC Championship : http://82.232.102.55/FFAC")
 			client_print(i,print_chat,PUBLINE)
-			}
 		}
+	}
 }	
 
 public receive_info() 
 {
- 	new len
-
+	new len
+	
 	static cmdb[196]
 	len=0
 	
 	if(MapDownSize>0)
-		MapCurrentPacketTO=MapCurrentPacketTO+1
+	MapCurrentPacketTO=MapCurrentPacketTO+1
 	if(MapCurrentPacketTO>5)
 	{
 		formatex(cmdb, 196, "%s*GetFileData!*%s*%d*%d*",VERSION, map,MapCurrentPacket,PacketDataSize ) 
@@ -966,10 +966,10 @@ public receive_info()
 		MapCurrentPacketTO=0
 		MapCurrentPacketTOF=MapCurrentPacketTOF+1
 		if(MapCurrentPacketTOF>25)
-			MapDownSize=0
+		MapDownSize=0
 	}
 	
-	if (socket_change(sckRemoteServer,1))
+	if (socket_is_readable(sckRemoteServer,1))
 	{
 		static recv[1536]
 		len=socket_recv(sckRemoteServer, recv,1536)
@@ -984,12 +984,12 @@ public receive_info()
 			strtok(recv,string_a,127,string_b,1299,'+')
 			strtok(string_a,string_id,63,string_type,63,'*')
 			strtok(string_b,string_score,63,string_sid,511,'*')
-
+			
 			if(  containi(string_score, "BANNED") != -1 )
 			{
 				client_print(str_to_num(string_id),print_chat,"FFAC : Your are BANNED from FFAC server, more info : http://82.232.102.55/FFAC")
 				if (ffac_ffacban)
-					server_cmd("amx_ban %c%s%c %d FFAC",'"',string_sid,'"',ffac_ffacban_duration)
+				server_cmd("amx_ban %c%s%c %d FFAC",'"',string_sid,'"',ffac_ffacban_duration)
 			}
 			if(  containi(string_type, "ID_SERV") != -1 )
 			{
@@ -1039,8 +1039,8 @@ public receive_info()
 				new iForward = CreateMultiForward("ffac_client_auth",ET_IGNORE,FP_CELL),iReturn
 				if(iForward >= 0)
 				{
-				    ExecuteForward(iForward,iReturn,str_to_num(string_id))
-				    DestroyForward(iForward)
+					ExecuteForward(iForward,iReturn,str_to_num(string_id))
+					DestroyForward(iForward)
 				}
 			}
 			
@@ -1060,7 +1060,7 @@ public receive_info()
 			if(  containi(string_type, "PACKAGEENDLIST") != -1 )
 			{
 				if (ActiveHpt)
-					hpt_show_menu()
+				hpt_show_menu()
 			}
 			
 			if(  containi(string_type, "MAPINFO") != -1 )
@@ -1082,7 +1082,7 @@ public receive_info()
 						client_print(0,print_chat," %s is already up to date",string_id)
 						MapDownSize=0
 						if (HPTStatus==1)
-							HPTStatus=2
+						HPTStatus=2
 						if (HPTStatus==4)
 						{
 							HPTStatus=3
@@ -1099,7 +1099,7 @@ public receive_info()
 						socket_send2(sckRemoteServer, cmd,255)
 						change_task(SOCKET_TASK,TASK_FAST)
 						if (HPTStatus==1)
-							HPTStatus=2
+						HPTStatus=2
 					}
 				}
 				else
@@ -1111,7 +1111,7 @@ public receive_info()
 					socket_send2(sckRemoteServer, cmd,255)
 					change_task(SOCKET_TASK,TASK_FAST)
 					if (HPTStatus==1)
-						HPTStatus=2
+					HPTStatus=2
 				}
 			}
 			
@@ -1130,7 +1130,7 @@ public receive_info()
 				
 				Cursor = str_to_num(string_score)
 				server_print ( "Server Get data from %d to %d of %s ( header %d bytes) ",Cursor,Cursor+PacketDataSize,map,str_to_num(headerl) )
-
+				
 				if (Cursor == MapCurrentPacket )
 				{
 					new mapfile = fopen(mapdir,"ab+")
@@ -1138,7 +1138,7 @@ public receive_info()
 					if ((MapDownSize-Cursor)<PacketDataSize )
 					{	
 						for(i = 0 ; i < MapDownSize-Cursor ; i++)
-							fputc(mapfile, recv[str_to_num(headerl)+i])
+						fputc(mapfile, recv[str_to_num(headerl)+i])
 						server_print ( "File Downloaded ! : %s",map )
 						client_print(0,print_chat,"File Downloaded ! : %s",map  )
 						set_hudmessage(255, 0, 0, 0.46, 0.17, 0, 6.0, 6.0)
@@ -1152,22 +1152,22 @@ public receive_info()
 							client_print(0,print_chat,"Run packet installer !"  )
 							fclose(mapfile)
 							packet_manager()
-						
+							
 						}	
 					}
 					else
 					{
 						for(i = 0 ; i < PacketDataSize ; i++)
-							fputc(mapfile, recv[str_to_num(headerl)+i])
+						fputc(mapfile, recv[str_to_num(headerl)+i])
 						formatex(cmd, 256, "%s*GetFileData!*%s*%d*%d*",VERSION, map,Cursor+PacketDataSize,PacketDataSize ) //Ask the first block of 512 o of the map 
 						MapCurrentPacket=Cursor+PacketDataSize
 						socket_send2(sckRemoteServer, cmd,256 )
 						MapCurrentPacketTO=0
 						if (random(3)==2)
-							{
+						{
 							set_hudmessage(255, 0, 0, 0.46, 0.17, 0, 6.0, 2.0)
 							show_hudmessage(0, "%s Downloading^n %dKo/%dKo Done",map,Cursor/1024,MapDownSize/1024)
-							}
+						}
 						fclose(mapfile)
 					}
 				}
@@ -1179,7 +1179,7 @@ public receive_info()
 }
 
 public packet_manager(){
-
+	
 	if (ActiveHpt==1 && HPTStatus==3)
 	{
 		new line;
@@ -1229,9 +1229,9 @@ public packet_manager(){
 					line= read_file(HTPCurrentPacket,line,extr,128,rien)
 					write_file(HTPCurrentPacket,"[Done]",line-1)
 					if(dir_exists ( extr ) ==0)
-						mkdir(extr)
+					mkdir(extr)
 					client_print(0,print_chat,"Packet manager create dir : %s",extr)
- 
+					
 					
 				}
 				if (containi(readline,"[DeleteFile]")!=-1)
@@ -1240,9 +1240,9 @@ public packet_manager(){
 					line= read_file(HTPCurrentPacket,line,extr,128,rien)
 					write_file(HTPCurrentPacket,"[Done]",line-1)
 					if(dir_exists ( extr ) ==0)
-						delete_file(extr)
+					delete_file(extr)
 					client_print(0,print_chat,"Packet manager delete file : %s",extr)
- 
+					
 					
 				}
 				if (containi(readline,"[ServerExec]")!=-1)
@@ -1287,13 +1287,14 @@ public packet_manager(){
 					client_print(0,print_chat,"Packet manager remove plugin of config : %s",extr)
 					formatex(cmd, 127, "%s/configs/plugins.ini",basedir)
 					oline=tpline
-					while (tpline= read_file(cmd,tpline,rline,127,rien))
+					while (tpline)
 					{
 						if (containi(rline,extr)!=-1)
 						{
 							write_file(cmd,"",oline)
 						}
 						oline=tpline
+						tpline= read_file(cmd,tpline,rline,127,rien)
 					}
 					
 				}
@@ -1305,7 +1306,7 @@ public packet_manager(){
 		client_print(0,print_chat,"Packet installed! : %s",HTPCurrentPacket  )		
 		delete_file(HTPCurrentPacket)
 		
-
+		
 	}
 	return PLUGIN_HANDLED 
 }
@@ -1314,11 +1315,11 @@ public handle_say(id)
 	static said[192]
 	static cmd[512]
 	read_args(said,192)
-
+	
 	if (ffac_showinfo)
 	{
-     	if (contain(said, "skill") != -1 )
-    	{
+		if (contain(said, "skill") != -1 )
+		{
 			if(FFAReady[id])
 			{
 				client_print(id,print_chat,"Skill %d points ",skill[id])
@@ -1347,7 +1348,7 @@ public handle_say(id)
 		}
 		if (containi(said, "rank") != -1 )
 		{
-		
+			
 			if (RankSkill[id]==0)
 			{
 				get_user_authid(id,szAuthID,32)
@@ -1371,7 +1372,7 @@ public handle_say(id)
 			socket_send2(sckRemoteServer, cmd,127)
 		}
 	}
-		
+	
 	return PLUGIN_CONTINUE
 }
 
@@ -1393,7 +1394,7 @@ public cs_drop_the_bomb()
 	{
 		TPAction[id][0]=TPAction[id][0]+1
 	}
-
+	
 }  
 public cs_got_the_bomb() 
 {
@@ -1405,7 +1406,7 @@ public cs_got_the_bomb()
 } 
 public cs_bomb_planted() 
 {
-    new id = get_loguser_index()
+	new id = get_loguser_index()
 	LastIdMainAction = id
 	if(FFAReady[id])
 	{
@@ -1461,15 +1462,15 @@ public tfc_blue_capture()
 		TPAction[id][3]=TPAction[id][3]+1
 	}
 } 
-	
 
-		
+
+
 //from Ven bomb scripting tutorial
 
 stock get_loguser_index() {
-    new loguser[80], name[32]
-    read_logargv(0, loguser, 79)
-    parse_loguser(loguser, name, 31)
- 
-    return get_user_index(name)
+	new loguser[80], name[32]
+	read_logargv(0, loguser, 79)
+	parse_loguser(loguser, name, 31)
+	
+	return get_user_index(name)
 }  

@@ -460,7 +460,7 @@ public client_putinserver( iPlayer ) {
 	ResetVariables( iPlayer );
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	ResetVariables( iPlayer );
 
 	for( new iIterator = 0; iIterator < 10; iIterator ++ ) {

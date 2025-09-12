@@ -62,11 +62,6 @@
 #include <fun>
 #include <cstrike>
 
-public plugin_modules()
-{
-	require_module("fun")
-	require_module("cstrike")
-}
 
 public plugin_init()
 {
@@ -183,8 +178,6 @@ public admin_armor(id) {
 		client_print(id, print_console, "%L", LANG_PLAYER, "AINO_NICK_NOTFOUND")
 		return PLUGIN_HANDLED
 	}
-
-	return PLUGIN_CONTINUE
 }
 
 //ADMIN GODEMODE v0.9.3 by f117bomb
@@ -674,7 +667,6 @@ public give_money(id,level,cid){
     new arg1[32], arg2[8], name2[32]
     read_argv(1,arg1,31)
     read_argv(2,arg2,7)
-    new adminname[32]
 
     new player = cmd_target(id,arg1,2)
     if (!player) return PLUGIN_HANDLED
@@ -703,9 +695,6 @@ public give_money(id,level,cid){
     	client_print(id, print_chat, "%L", LANG_PLAYER, "AINO_MONEY_PLAYER_SUCCESS_GIVE_CONSOLE", name2)
     	return PLUGIN_HANDLED
     }
-    get_user_name(id,adminname,31)
-    log_amx("%L", LANG_SERVER, "AINO_LOG_MONEY_PLAYER_GIVE", adminname, name2)
-    return PLUGIN_HANDLED
 }
 public take_money(id,level,cid){
     if (!cmd_access(id,level,cid,3)){
@@ -849,7 +838,7 @@ public amx_ungag(id,level,cid) {
 	return PLUGIN_HANDLED
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	new param[2]
 	param[0] = id
 	ungag(param)

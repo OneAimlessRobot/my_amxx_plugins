@@ -67,7 +67,7 @@ public client_authorized2(id)
 	set_task(0.1,"cpt",id,"",0,"b")
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(!is_user_bot(id) && get_pcvar_num(pcvar))
 		save_money(id)

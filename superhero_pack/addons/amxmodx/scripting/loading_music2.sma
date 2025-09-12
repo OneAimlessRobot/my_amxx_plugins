@@ -301,7 +301,7 @@ public plugin_cfg()
     return PLUGIN_CONTINUE
 }
 //-----------------------------------------------------------------------------
-stock musicStart(id, track_to_continue=-1, can_emit=true, force_mode=FORCE_NONE)
+stock musicStart(id, track_to_continue=-1, force_mode=FORCE_NONE)
 {
 	new i = -1
     
@@ -441,7 +441,7 @@ public taskStartMusic(params[4]) // params = {player_id, restart_track, can_emit
     
 	if(params[1])
 		// restore playback under CS
-		musicStart(id, g_arrPlayer[id][i_track], .can_emit=params[2], .force_mode=params[3])
+		musicStart(id, g_arrPlayer[id][i_track], .force_mode=params[3])
 	else {
 		if(g_arrPlayer[id][i_track] < 0)
 		musicStart(id, .force_mode=params[3])
@@ -464,7 +464,7 @@ public client_connect(id)
         new arr[4]; arr[0] = id; arr[1] = -1; arr[2] = false; arr[3] = iForceMode
         set_task(fDelay, "taskStartMusic", id, arr, sizeof(arr))
     } else
-        musicStart(id, .can_emit=false, .force_mode=iForceMode)
+        musicStart(id, .force_mode=iForceMode)
 
     return PLUGIN_CONTINUE
 }

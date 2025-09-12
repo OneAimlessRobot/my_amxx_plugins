@@ -568,7 +568,7 @@ public event_DeathMsg()
 	remove_HurtEnt(read_data(2))
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	bInBuyzone[id] = false
 	bNadeReloaded[id] = true

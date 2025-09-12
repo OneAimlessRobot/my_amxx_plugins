@@ -4,9 +4,9 @@
 #define sh_sapper_get_set
 
 
-new gHeroID
+stock gHeroID
 
-new const gHeroName[] = "Sapper"
+stock const gHeroName[] = "Sapper"
 
 native sapper_set_num_mines(id,value_to_set)
 native sapper_get_num_mines(id)

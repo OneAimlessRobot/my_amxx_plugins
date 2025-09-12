@@ -240,7 +240,7 @@ public client_connect ( Player )
 }
 
 // Disconnect
-public client_disconnect ( Player )
+public client_disconnected( Player )
 {
 	// Update
 	g_hasLauncher [ Player ] = false

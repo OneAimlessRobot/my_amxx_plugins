@@ -1053,7 +1053,7 @@ public client_putinserver(id) {
 }
 
 // Client Disconect
-public client_disconnect(id) {
+public client_disconnected(id) {
 	RemoveAllTripmines(id);
 	remove_task(id + TASK_HUD)
 }

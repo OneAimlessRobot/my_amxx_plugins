@@ -1006,7 +1006,7 @@ public client_putinserver(id)
 	g_damagedealt_predator[id] = 0;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (g_isalive[id])
 		check_round(id);

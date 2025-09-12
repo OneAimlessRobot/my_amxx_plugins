@@ -7,7 +7,7 @@
   Ported to AMXX by GHW_Chronic
 
   0.1  Release
-  0.2  Fixed a few bugs
+  0.2  Fixed a few bugsS
 	 You can control a player when you are dead
   
 
@@ -697,7 +697,7 @@ public stop_control(id, level, cid)
 	return PLUGIN_HANDLED
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(controller[id])
 	{

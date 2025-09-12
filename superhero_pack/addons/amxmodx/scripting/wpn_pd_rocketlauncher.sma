@@ -376,7 +376,7 @@ public client_putinserver(id)
 	RockingSystemClear(id);
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	RockingSystemClear(id);
 }

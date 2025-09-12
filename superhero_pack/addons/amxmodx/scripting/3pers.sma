@@ -18,7 +18,7 @@ public plugin_precache()
 }
 public plugin_init()
 {
-    // register_plugin ça peut pas faire de mal non plus
+    // register_plugin ï¿½a peut pas faire de mal non plus
 
     g_pCamera = register_cvar("amx_3rdview", "1")
     register_clcmd("say /3pers", "cmdCamera")
@@ -44,5 +44,5 @@ public cmdCamera( id )
             set_view( id, CAMERA_NONE );
         }
     }
-    return PLUGIN_HANDLED // PLUGIN_CONTINUE ou même rien du tout si tu veux pouvoir voir la commande dans le tchat.
+    return PLUGIN_HANDLED // PLUGIN_CONTINUE ou mï¿½me rien du tout si tu veux pouvoir voir la commande dans le tchat.
 }  

@@ -47,6 +47,6 @@ public fw_traceattack(victim, attacker, Float:damage, direction[3], traceresult,
 
 	if(get_tr2(traceresult, TR_iHitgroup, HIT_HEAD))
 	{
-		set_tr2(traceresult, TR_iHitgroup, LEFTLEG)
+		set_tr2(traceresult, TR_iHitgroup, HIT_LEFTLEG)
 	}
 }

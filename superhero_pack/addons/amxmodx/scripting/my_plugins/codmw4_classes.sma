@@ -5,7 +5,6 @@
 #include "../include/hamsandwich.inc"
 #include "../include/fakemeta.inc"
 #include "../include/fakemeta_util.inc"
-#include "../include/colorchat.inc"
 #include "../include/engine.inc"
 #include "../include/fun.inc"
 #include "../include/csx.inc"
@@ -251,8 +250,9 @@ new const oklop_klase[] =
 300,
 240,
 15,
-};		
-new const naziv_klase[][] = 
+};
+
+stock const naziv_klase[][] = 
 {
 "None",					//  0
 "Snipers",		// 1
@@ -332,7 +332,7 @@ new const naziv_klase[][] =
 enum { NONE = 0,  o,  p, s, pr, sk}
 
 
-new const pripada[] = 
+stock const pripada[] = 
 {
 NONE, 		// Nema		        //  0
 o,
@@ -411,7 +411,7 @@ o,
 };
 
 
-new const novi_opis[][] = 
+stock const novi_opis[][] = 
 {
 "\rWeapon : \d Nema ^n\rEnergija : \d 0 HP^n\rPancir:\d 0 AP^nBrzina:\d 0 %",					
 "\rWeapon:\y AWP, Deagle i Scout                     ^n\rHitPoints:\y 120HP   ^n\rArmor:\y 100AP             \r^nSpeed:\y 110%      \r^nSpecial powers:\y 60% chance of instant killing knife",                     // 1
@@ -488,7 +488,7 @@ new const novi_opis[][] =
 "\rWeapon:\y Super shotgun,\r^nHitPoints:\y 450 HP^n\rArmor:\y 240 AP^n\rSpeed:\y 500%^n\rSpecial powers: Very Strong shotgun (damage ++ with intelligence),15 dinamite,^n exceptional damage with dynamite^nGlows bright red (BRING IT ON!) (very sturdy baseball cap)",
 "\rWeapon:\y Super AK+ super deagle+ super shotgun\r^nHitPoints:\y 700 HP^n\rArmor:\y 15 AP^n\rSpeed:\y 300%^n\rSpecial powers: Very Strong AK (damage 10x default)+ deagle (20x default)^n (plus super shotgun cuz why not)^n,30 dinamite,^n exceptional damage with dynamite^nGlows bright white (BRING IT ON!). Go kick their asses"
 };
-new const sufix_za_klasu[][] = 
+stock const sufix_za_klasu[][] = 
 {
 "Nema",			// 0
 "",		// 1
@@ -565,7 +565,7 @@ new const sufix_za_klasu[][] =
 "\y(\dPro class\y)",
 "\y(\dOrdinary class\y)",
 };
-new const naziv_klase_novi[][] = 
+stock const naziv_klase_novi[][] = 
 {
 "None",					//  0
 "\ySnipers",		// 1

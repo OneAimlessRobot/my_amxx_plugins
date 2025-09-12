@@ -127,11 +127,11 @@ public csdm_Init(const version[])
 	}
 
 	// Menus and callbacks
-	g_SecMenuID = menu_create(g_SecMenu, "m_SecHandler", 0)
-	g_PrimMenuID = menu_create(g_PrimMenu, "m_PrimHandler", 0)
-	g_ArmorMenuID = menu_create(g_ArmorMenu, "m_ArmorHandler", 0)
-	g_NadeMenuID = menu_create(g_NadeMenu, "m_NadeHandler", 0)
-	g_EquipMenuID = menu_create(g_EquipMenu, "m_EquipHandler", 0)
+	g_SecMenuID = menu_create(g_SecMenu, "m_SecHandler", false)
+	g_PrimMenuID = menu_create(g_PrimMenu, "m_PrimHandler", false)
+	g_ArmorMenuID = menu_create(g_ArmorMenu, "m_ArmorHandler", false)
+	g_NadeMenuID = menu_create(g_NadeMenu, "m_NadeHandler",false)
+	g_EquipMenuID = menu_create(g_EquipMenu, "m_EquipHandler", false)
 
 	menu_setprop(g_PrimMenuID, MPROP_EXIT, MEXIT_NEVER)
 	menu_setprop(g_SecMenuID, MPROP_EXIT, MEXIT_NEVER)
@@ -236,7 +236,7 @@ public client_connect(id)
 	return PLUGIN_CONTINUE
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_mShowuser[id] = true
 	g_mNades[id] = false
@@ -346,7 +346,7 @@ public cfgSecondary(readAction, line[], section[])
 	}
 	else if (readAction == CFG_RELOAD)
 	{
-		g_SecMenuID = menu_create(g_SecMenu, "m_SecHandler", 0)
+		g_SecMenuID = menu_create(g_SecMenu, "m_SecHandler", false)
 		g_iNumSec = 0
 		g_iNumUsedSec = 0
 	}
@@ -387,7 +387,7 @@ public cfgPrimary(readAction, line[], section[])
 		//TODO: Add menu_destroy_items to remake menu on cfg reload
 		menu_additem(g_PrimMenuID, display, cmd, 0, g_cPrimary)
 	} else if (readAction == CFG_RELOAD) {
-		g_PrimMenuID = menu_create(g_PrimMenu, "m_PrimHandler", 0)
+		g_PrimMenuID = menu_create(g_PrimMenu, "m_PrimHandler", false)
 		g_iNumPrim = 0
 		g_iNumUsedPrim = 0
 	} else if (readAction == CFG_DONE) {
@@ -642,7 +642,6 @@ public c_Equip(id, menu, item)
 		return ITEM_DISABLED
 	else
 		return ITEM_ENABLED
-	return PLUGIN_HANDLED
 }
 
 //Secondary Weapon Callback
@@ -676,8 +675,7 @@ public c_Secondary(id, menu, item)
 	else
 	{
 		return ITEM_DISABLED
-	}	
-	return PLUGIN_HANDLED
+	}
 }
 
 //Primary Weapon Callback
@@ -714,8 +712,7 @@ public c_Primary(id, menu, item)
 	else
 	{
 		return ITEM_DISABLED
-	}		
-	return PLUGIN_HANDLED
+	}
 }
 
 //Equipment Menu handler

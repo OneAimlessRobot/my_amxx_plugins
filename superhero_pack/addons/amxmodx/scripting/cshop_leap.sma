@@ -28,7 +28,7 @@ public plugin_precache()
 public client_putinserver(id)
 	g_bHasLeap[id] = false
 	
-public client_disconnect(id)
+public client_disconnected(id)
 	g_bHasLeap[id] = false
 	
 public cshop_item_selected(id, iItem)

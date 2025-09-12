@@ -218,7 +218,7 @@ public cod_used_ability( iPlayer ) {
 public client_connect( iPlayer ) 
 	ResetVariables( iPlayer );
 
-public client_disconnect( iPlayer ) 
+public client_disconnected( iPlayer ) 
 	ResetVariables( iPlayer );
 
 ResetVariables( iPlayer ) {

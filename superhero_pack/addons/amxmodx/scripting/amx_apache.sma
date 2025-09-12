@@ -75,7 +75,7 @@ public client_connect(id)
 	stealth[id] = false
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(task_exists(54545454+id))
 	{

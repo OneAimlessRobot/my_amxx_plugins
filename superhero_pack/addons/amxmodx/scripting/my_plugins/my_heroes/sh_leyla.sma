@@ -16,13 +16,10 @@ enum{
 	GIVE,
 	CHANGE
 }
-new hud_sync
 new hud_sync_money
-new gHeroLevel
 new starting_money
 new default_money
 new Float:give_radius
-new Float:headshot_mult
 #define SENDAUDIO_MESSAGE_PITCH_ARG 3
 
 //----------------------------------------------------------------------------------------------
@@ -37,11 +34,9 @@ public plugin_init()
 	register_cvar("leyla_staring_money", "10000")
 	register_cvar("leyla_default_give_money", "1000")
 	register_cvar("leyla_default_give_radius", "300.0")
-	register_cvar("leyla_headshot_mult", "1.5")
 	register_concmd("leyla_stats","print_leyla_stats")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Rich walking bank girl!", "Infinite max money! Donate it to teammates, by going next to them! Set the money with the cmd 'set_leyla_money'! Damage also rewards you!", true, "leyla_level" )
-	hud_sync=CreateHudSyncObj()
 	hud_sync_money=CreateHudSyncObj()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("leyla_init", "leyla_init")
@@ -248,11 +243,10 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
-	gHeroLevel=get_cvar_num("leyla_level")
+	get_cvar_num("leyla_level")
 	starting_money=get_cvar_num("leyla_staring_money")
 	default_money=get_cvar_num("leyla_default_give_money")
 	give_radius=get_cvar_float("leyla_default_give_radius")
-	headshot_mult=get_cvar_float("leyla_headshot_mult")
 }
 public reset_leyla(id){
 	

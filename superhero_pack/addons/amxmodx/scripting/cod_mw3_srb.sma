@@ -4444,7 +4444,7 @@ public client_connect(id)
 	UsunPrzedmiot(id);
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	remove_task(id+ZADANIE_POKAZ_INFORMACJE);
 	remove_task(id+ZADANIE_POKAZ_REKLAME);	
@@ -4454,7 +4454,7 @@ public client_disconnect(id)
 	hasZoom[id] = false 
 	ZapiszDane(id);
 	UsunPrzedmiot(id);
-	client_disconnect_magnet(id);
+	client_disconnected_magnet(id);
 }
 
 public RozbrajaBombe(id)
@@ -6384,7 +6384,7 @@ public clipoff(task_id)
 	new id = task_id - 3431
 	
 	set_hudmessage(0, 255, 0, 0.03, 0.76, 2, 0.02, 1.0, 0.01)
-	show_hudmessage(id, "Za %d sekundi gubite nevidljivost", Odliczanie[id]) //Wiadomoœæ pokazana w HUD'zie
+	show_hudmessage(id, "Za %d sekundi gubite nevidljivost", Odliczanie[id]) //Wiadomoï¿½ï¿½ pokazana w HUD'zie
 	
 	Odliczanie[id] -= 1 
 	
@@ -6394,7 +6394,7 @@ public clipoff(task_id)
 		{
 			remove_task(task_id)
 		}
-		set_user_noclip(id, 0); // tutaj wy³¹cza noclipa
+		set_user_noclip(id, 0); // tutaj wyï¿½ï¿½cza noclipa
 	}
 }
 
@@ -6617,12 +6617,12 @@ public ResetHUD(id)
 {
 	if(!is_user_connected(id))
 		return PLUGIN_HANDLED;
-	client_disconnect_magnet(id);
+	client_disconnected_magnet(id);
 	pozostale_elektromagnesy[id] = get_pcvar_num(pcvar_ilosc_elektromagnesow);
 	return PLUGIN_HANDLED
 }
 
-public client_disconnect_magnet(id)
+public client_disconnected_magnet(id)
 {
 	new ent = find_ent_by_class(0, "magnet");
 	while(ent > 0)

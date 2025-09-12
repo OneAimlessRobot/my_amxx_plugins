@@ -16,24 +16,6 @@ stock __dhud_fadeintime;
 stock __dhud_fadeouttime;
 stock __dhud_reliable;
 
-stock set_dhudmessage( red = 0, green = 160, blue = 0, Float:x = -1.0, Float:y = 0.65, effects = 2, Float:fxtime = 6.0, Float:holdtime = 3.0, Float:fadeintime = 0.1, Float:fadeouttime = 1.5, bool:reliable = false )
-{
-    #define clamp_byte(%1)       ( clamp( %1, 0, 255 ) )
-    #define pack_color(%1,%2,%3) ( %3 + ( %2 << 8 ) + ( %1 << 16 ) )
-
-    __dhud_color       = pack_color( clamp_byte( red ), clamp_byte( green ), clamp_byte( blue ) );
-    __dhud_x           = _:x;
-    __dhud_y           = _:y;
-    __dhud_effect      = effects;
-    __dhud_fxtime      = _:fxtime;
-    __dhud_holdtime    = _:holdtime;
-    __dhud_fadeintime  = _:fadeintime;
-    __dhud_fadeouttime = _:fadeouttime;
-    __dhud_reliable    = _:reliable;
-
-    return 1;
-}
-
 stock show_dhudmessage( index, const message[], any:... )
 {
     new buffer[ 128 ];

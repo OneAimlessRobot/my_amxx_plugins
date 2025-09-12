@@ -1,4 +1,4 @@
-/*	Formatright © 2009, ConnorMcLeod
+/*	Formatright ï¿½ 2009, ConnorMcLeod
 
 	Players Models is free software;
 	you can redistribute it and/or modify it under the terms of the

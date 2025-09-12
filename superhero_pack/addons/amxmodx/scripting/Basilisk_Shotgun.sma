@@ -96,7 +96,7 @@ public client_connect(id)
 {
 	g_has_hk416[id] = false
 }
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_has_hk416[id] = false
 }public zp_user_infected_post(id)

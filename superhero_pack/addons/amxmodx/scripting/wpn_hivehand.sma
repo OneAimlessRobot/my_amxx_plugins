@@ -310,7 +310,7 @@
     }
 
 
-    public client_disconnect ( id )
+    public client_disconnected ( id )
     {
         gf_RechargeTime  [ id ] = 0.0;
         gf_TimeWeaponIdle[ id ] = 0.0;

@@ -48,17 +48,24 @@
  public event_resethud(id)
  {
 	if(is_user_connected(id))
-		client_disconnect(id); // clear
+		clear(id); // clear
  }
 
  // player dies
  public event_deathmsg()
  {
-	client_disconnect(read_data(2)); // clear
+	clear(read_data(2)); // clear
  }
 
+public clear(id){
+	
+	
+	primed[id] = 0.0;
+	forceExplode[id] = 0;
+	remove_task(id);
+}
  // player leaves
- public client_disconnect(id)
+ public client_disconnected(id)
  {
 	primed[id] = 0.0;
 	forceExplode[id] = 0;
@@ -74,7 +81,7 @@
 	new oldWeapon = read_data(2);
 
 	if(oldWeapon == CSW_FLASHBANG || oldWeapon == CSW_HEGRENADE)
-		client_disconnect(id); // clear values
+		clear(id); // clear values
  }
 
  // player throws a grenade

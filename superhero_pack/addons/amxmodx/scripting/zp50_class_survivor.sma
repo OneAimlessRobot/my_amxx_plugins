@@ -146,7 +146,7 @@ public plugin_natives()
 	register_native("zp_class_survivor_get_count", "native_class_survivor_get_count")
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (flag_get(g_IsSurvivor, id))
 	{

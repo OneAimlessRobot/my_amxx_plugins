@@ -1226,7 +1226,7 @@ public client_authorized( iPlayer ) {
 	g_iPlayerInfo[ iPlayer ][ g_iLevel ] = 1;
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	SaveData( iPlayer );
 	SaveGold( iPlayer );
 	DeletePlayerData( iPlayer );

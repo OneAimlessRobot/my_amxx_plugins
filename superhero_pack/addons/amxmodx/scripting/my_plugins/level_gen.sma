@@ -113,23 +113,23 @@ loadCVARS(){
 	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
 
 }
-Float:calculate_level_it(Float:it){
+stock Float:calculate_level_it(Float:it){
 
 	return floatadd((floatmul(a_val , floatpower(b_val,floatmul(c_val,it)))), d_val)
 }
-Float:calculate_level_poly_it(Float:it){
+stock Float:calculate_level_poly_it(Float:it){
 
 	return floatadd(floatadd(floatmul(a_val,floatpower(it,2.0)),floatmul(b_val,it)),c_val)
 }
-Float:calculate_exp_xpgain_it(Float:it){
+stock Float:calculate_exp_xpgain_it(Float:it){
 
 	return floatadd((floatmul(g_val , floatpower(h_val,floatmul(i_val,it)))), j_val)
 }
-Float:calculate_poly_xpgain_it(Float:it){
+stock Float:calculate_poly_xpgain_it(Float:it){
 	
 	return floatadd(floatadd(floatmul(g_val,floatpower(it,2.0)),floatmul(h_val,it)),i_val)
 }
-Float:calculate_lin_xpgain_it(Float:it){
+stock Float:calculate_lin_xpgain_it(Float:it){
 
 	return floatadd(floatmul(e_val, it),  f_val)
 }

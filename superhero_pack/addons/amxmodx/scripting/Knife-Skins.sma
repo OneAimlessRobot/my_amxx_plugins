@@ -34,38 +34,38 @@ new ForwardReturn;
 
 new const g_KnifeNames[][32] =
 {
-"Normal Knife",
-"Alien Knife",
-"Ellium Dagger",
-"Dark Dagger",
-"Transparent Knife",
-"Genuine Dagger",
-"Hunt Blade",
-"Shadow Blade",
-"Slaughterer Axe",
-"Golden Katana",
-"Assasin's Blade",
-"Lightsaber",
-"Bloody Wolverine Claws",
-"Proton Axe"
+	"Normal Knife",
+	"Alien Knife",
+	"Ellium Dagger",
+	"Dark Dagger",
+	"Transparent Knife",
+	"Genuine Dagger",
+	"Hunt Blade",
+	"Shadow Blade",
+	"Slaughterer Axe",
+	"Golden Katana",
+	"Assasin's Blade",
+	"Lightsaber",
+	"Bloody Wolverine Claws",
+	"Proton Axe"
 };
 
 new const g_KnifevModels[][256] =
 {
-"models/v_knife.mdl",
-"models/Knifes/v_knife_alien.mdl",
-"models/Knifes/v_knife_ellium.mdl",
-"models/Knifes/v_knife_dark.mdl",
-"models/Knifes/v_knife_transparent.mdl",
-"models/Knifes/v_knife_genuine.mdl",
-"models/Knifes/v_knife_hunt.mdl",
-"models/Knifes/v_knife_shadow.mdl",
-"models/Knifes/v_knife_slaughterer.mdl",
-"models/Knifes/v_knife_katana.mdl",
-"models/Knifes/v_knife_assasins.mdl",
-"models/Knifes/v_knife_lightsaber.mdl",
-"models/Knifes/v_knife_wolverine.mdl",
-"models/Knifes/v_knife_proton.mdl"
+	"models/v_knife.mdl",
+	"models/Knifes/v_knife_alien.mdl",
+	"models/Knifes/v_knife_ellium.mdl",
+	"models/Knifes/v_knife_dark.mdl",
+	"models/Knifes/v_knife_transparent.mdl",
+	"models/Knifes/v_knife_genuine.mdl",
+	"models/Knifes/v_knife_hunt.mdl",
+	"models/Knifes/v_knife_shadow.mdl",
+	"models/Knifes/v_knife_slaughterer.mdl",
+	"models/Knifes/v_knife_katana.mdl",
+	"models/Knifes/v_knife_assasins.mdl",
+	"models/Knifes/v_knife_lightsaber.mdl",
+	"models/Knifes/v_knife_wolverine.mdl",
+	"models/Knifes/v_knife_proton.mdl"
 }
 
 native register_maxlevels( maxlevel = 99, started_xp_level = 100 );
@@ -284,7 +284,7 @@ public HandleSay(id){
 public EventDeathMsg(id)
 {
 	if (get_pcvar_num(knife_on) == 0)
-		return PLUGIN_HANDLED;
+	return PLUGIN_HANDLED;
 	
 	new killer = read_data( 1 );
 	new victim = read_data( 2 );
@@ -331,7 +331,7 @@ public FwdPlayerSpawn( id )
 public fw_TakeDamage(victim, inflictor, attacker, Float:damage)
 {
 	if( get_pcvar_num( knife_on ) == 0 )
-		return HAM_IGNORED;
+	return HAM_IGNORED;
 	
 	if( is_valid_player( attacker ) && get_user_weapon(attacker) == CSW_KNIFE )
 	{
@@ -421,7 +421,7 @@ public SetKnife(id, item) {
 	
 	new Clip, Ammo, Weapon = get_user_weapon(id, Clip, Ammo)  
 	if ( Weapon != CSW_KNIFE ) 
-		return PLUGIN_HANDLED 
+	return PLUGIN_HANDLED 
 	
 	new vModel[56],pModel[56] 
 	
@@ -594,7 +594,7 @@ public takexp(id) {
 	return PLUGIN_HANDLED;
 }
 
-public client_disconnect(id) {   
+public client_disconnected(id) {   
 	
 	if(task_exists(id)){
 		remove_task(id) 
@@ -606,7 +606,7 @@ public client_disconnect(id) {
 public Knifemessage(id) { 
 	
 	if (get_pcvar_num(knife_on) == 0)
-		return PLUGIN_HANDLED;
+	return PLUGIN_HANDLED;
 	
 	ColorChat(0, "Type ^3/knife ^1in chat to open the ^4Knife Skins Menu^1."); 
 	ColorChat(0, "This server is running ^4%s ^3v%s^1 by ^4%s^1.",g_VAULTNAME, VERSION, AUTHOR)
@@ -616,7 +616,7 @@ public Knifemessage(id) {
 public Levelmessage(id) { 
 	
 	if (get_pcvar_num(knife_on) == 0)
-		return PLUGIN_HANDLED;
+	return PLUGIN_HANDLED;
 	
 	ColorChat(0,"To see other ^4Players Level ^1type ^3/level ^1in chat."); 
 	return PLUGIN_HANDLED;
@@ -666,7 +666,7 @@ public LoadData(id){
 	
 	if( fvault_get_data(g_VAULTNAME, authid, data, sizeof( data ) - 1 ) )
 	{
-		strbreak( data, szLevel, sizeof( szLevel ) - 1, szXp, sizeof( szXp ) - 1 );
+		argbreak( data, szLevel, sizeof( szLevel ) - 1, szXp, sizeof( szXp ) - 1 );
 		
 		iLevel[id] = str_to_num( szLevel );
 		iXp[id] = str_to_num( szXp );
@@ -690,16 +690,16 @@ stock get_player_name(id){
 
 stock ColorChat( const id, const string[ ], { Float, Sql, Resul, _ } : ... )
 {
-new msg[ 191 ], players[ 32 ], count = 1;
-
-static len;
-len = formatex( msg, charsmax( msg ), "^x04[^x01 Knife-Skins^x04 ]^x01 " );
-vformat( msg[ len ], charsmax( msg ) - len, string, 3 );
-
-if( id )
+	new msg[ 191 ], players[ 32 ], count = 1;
+	
+	static len;
+	len = formatex( msg, charsmax( msg ), "^x04[^x01 Knife-Skins^x04 ]^x01 " );
+	vformat( msg[ len ], charsmax( msg ) - len, string, 3 );
+	
+	if( id )
 	players[ 0 ] = id;
 	else
-		get_players( players,count,"ch" );
+	get_players( players,count,"ch" );
 	
 	for( new i = 0; i < count; i++ )
 	{

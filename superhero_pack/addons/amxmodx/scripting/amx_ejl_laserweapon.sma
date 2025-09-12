@@ -76,7 +76,7 @@
 *    amx_firelasergun <color>  - bind a key to it and use as fire button
 *
 *  You can use the colors: white,red,green,blue,yellow,magenta,and cyan. If
-*  you don’t specify a color, a default color will be used. You can also
+*  you donï¿½t specify a color, a default color will be used. You can also
 *  specify a custom color by making one out of the 3 primary colors red,
 *  green, and blue. Precede your color # with an exclamation point, then
 *  without any spaces type three 3 digit numbers ranging from 0-255.
@@ -323,7 +323,6 @@ new bool:csmod_running
 new bool:stats_logging
 new bool:roundfreeze
 new tkcount[33]
-new customdir[64]
 new statsfile[128]
 new gmsgDeathMsg
 new gmsgScoreInfo
@@ -680,10 +679,10 @@ public fire_laser(id){
 	else if(laser_heat[id] < ((get_cvar_num("amx_laser_maxtemp") - 500) / 147)-5){
 		new lmessage[100]
 		if(get_cvar_num("amx_laser_buy") == 1) {
-			format(lmessage, 99, "Laser Temperature: %d °F",(laser_heat[id] * 147)+ 500)
+			format(lmessage, 99, "Laser Temperature: %d ï¿½F",(laser_heat[id] * 147)+ 500)
 		}
 		else {
-			format(lmessage, 99, "Laser Power Level: %d  <+>  Temperature: %d °F",laser_shots[id],(laser_heat[id] * 147)+ 500)
+			format(lmessage, 99, "Laser Power Level: %d  <+>  Temperature: %d ï¿½F",laser_shots[id],(laser_heat[id] * 147)+ 500)
 		}
 		//set_hudmessage(250,250,20, -1.0, 0.35, 0, 0.02, 3.0, 0.4, 0.3, 16)
 		//show_hudmessage(id,lmessage)
@@ -1241,7 +1240,7 @@ public client_connect(id){
 	return PLUGIN_CONTINUE
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 
 	if ((stats_logging || get_cvar_num("amx_forcestatslog")) && sl_detail[id][0] > 0) {
 		new name[32], authid[35], team[32]
@@ -1898,41 +1897,7 @@ public plugin_init() {
 		}
 	}
 
-	get_customdir(customdir, 63)
-	format(statsfile,127,"%s/ejl_laser_stats.ini",customdir)
-	new hudcfile[128]
-	format(hudcfile,127,"%s/ejl_hud_colors.ini",customdir)
-	new line, stxtsize
-	new data[192]
-	new sr[4],sg[4],sb[4]
-	if(file_exists(hudcfile)){
-		while((line=read_file(hudcfile,line,data,191,stxtsize))!=0){
-			parse(data,adscolors[line][3],39,sr,4,sg,4,sb,4)
-			adscolors[line][0] = str_to_num(sr)
-			adscolors[line][1] = str_to_num(sg)
-			adscolors[line][2] = str_to_num(sb)
-		}
-	}
 
-	new month[4]
-	get_time("%m",month,3)
-	new laser_month[4]
-	get_vaultdata("EJL_LASER_MONTH",laser_month,3)
-	if(!equal(laser_month,"") && !equal(laser_month,month)){
-		write_laserstats()
-		delete_file(statsfile)
-	}
-	set_vaultdata("EJL_LASER_MONTH",month)
-
-	csmod_running = cstrike_running() ? true : false
-	
-	if(csmod_running){
-		load_laser_stats()
-	}
-	else if(get_cvar_num("amx_laser_buy") == 1) {
-		server_print("[AMXX] Laser buying is only for Counter-Strike, amx_laser_buy is being set to 0")
-		set_cvar_num("amx_laser_buy",0)
-	}
 	if(get_cvar_num("sv_lan"))
 		set_cvar_string("amx_laser_trackbyip","1")
 
@@ -1977,14 +1942,4 @@ public load_laser_stats() {
 			}
 		}
 	}
-}
-
-public plugin_modules()
-{
-	require_module("fun")
-	require_module("engine")
-
-	#if defined CSTRIKE
-	require_module("Counter-Strike")
-	#endif
 }

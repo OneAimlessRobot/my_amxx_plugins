@@ -149,7 +149,7 @@ public plugin_natives()
 	register_native("zp_class_sniper_get_count", "native_class_sniper_get_count")
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (flag_get(g_IsSniper, id))
 	{

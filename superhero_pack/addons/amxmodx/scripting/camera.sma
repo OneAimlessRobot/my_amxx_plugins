@@ -94,7 +94,7 @@ public deletecm( id )
 	return PLUGIN_HANDLED
 }
 
-public client_disconnect( id )
+public client_disconnecteded( id )
 {
 	delete_camera( id )
 	return PLUGIN_CONTINUE

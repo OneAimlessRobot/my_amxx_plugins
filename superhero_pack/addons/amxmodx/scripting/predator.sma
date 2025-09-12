@@ -1434,7 +1434,6 @@ public func_adminunpredatorteam(id,level,cid)
 		show_hudmessage(id,"You are out of ammo")
 		return PLUGIN_HANDLED
 	}
-	return PLUGIN_HANDLED
  }
 
  //---------------[PLASMA HIT]---------------
@@ -1632,7 +1631,7 @@ public func_adminunpredatorteam(id,level,cid)
  }
 
  //---------------[PUBLIC ON CONNECT FUNCTION]---------------
- public client_disconnect(id)
+ public client_disconnected(id)
  {
 	ispredator[id]=0
 	plasma[id]=0

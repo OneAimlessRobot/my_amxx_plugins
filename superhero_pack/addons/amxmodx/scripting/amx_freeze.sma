@@ -98,7 +98,7 @@ public plugin_init()
 	
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(IsFrozen(id))
 		UnFreeze(id);

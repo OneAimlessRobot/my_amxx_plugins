@@ -1,6 +1,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "camera_inc/sh_camman_get_set.inc"
 #include "camera_inc/sh_camera_funcs.inc"
 
@@ -12,7 +13,6 @@ new gHasCamman[SH_MAXSLOTS+1]
 new gNumCameras[SH_MAXSLOTS+1]
 
 new hud_sync
-new gHeroLevel
 new num_cameras
 new camera_cooldown
 new disarmable
@@ -184,7 +184,6 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	gHeroLevel=get_cvar_num("camman_level");
 	num_cameras=min(MAX_CAMERAS,get_cvar_num("camman_cameras"))
 	camera_cooldown=get_cvar_num("camman_camera_cooldown");
 	disarmable=get_cvar_num("camman_disarmable");

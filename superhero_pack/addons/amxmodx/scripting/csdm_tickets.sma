@@ -24,7 +24,7 @@ new g_TicketsNr
 new bool:g_TicketPlayer = false
 new g_RespawnsTeam[3]
 
-new g_NrTicketsMenu[] = "CSDM: Number of Tickets Menu"
+stock const g_NrTicketsMenu[] = "CSDM: Number of Tickets Menu"
 new g_NrTicketsMenuID = -1
 new g_RespawnsPlayer[33]
 new g_maxplayers
@@ -75,7 +75,7 @@ public plugin_init()
 
 		if (g_TicketSettMenu)
 		{
-			g_NrTicketsMenuID = menu_create(g_NrTicketsMenu, "m_NrTicketsHandler",0)
+			g_NrTicketsMenuID = menu_create(g_NrTicketsMenu, "m_NrTicketsHandler",false)
 
 		//	CSDM: Ticketing Menu	
 			new cb = menu_makecallback("cb_ticket")
@@ -124,7 +124,7 @@ public client_connect(id)
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_RespawnsPlayer[id] = 0
 }

@@ -179,7 +179,7 @@ public plugin_cfg() {
 			set_weaponslot(3,{ 29,0 })
 			set_weaponslot(4,{ 4,9,25,0 })
 			set_weaponslot(5,{ 6,0 })
-			money_offset = is_amd64_server() ? 140 : 115
+			money_offset = 115
 		}
 		case 2: {
 			slotsnum = 6
@@ -201,7 +201,7 @@ set_weaponslot(slot,weapons[]) {
 	for(new i = 0; i < len; i++) weapon_slots[slot][i] = weapons[i]
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	if(is_user_bot(id)) {
 		new owner = botowner[id]
 		if(owner) {

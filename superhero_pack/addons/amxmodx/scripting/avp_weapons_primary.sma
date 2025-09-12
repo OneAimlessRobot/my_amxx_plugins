@@ -44,21 +44,21 @@ new const AVPWEAPONS[][WeaponData] = {
 public plugin_init()
 {
 	register_plugin("[AvP] Default CS Weapons", PLUGIN_VERSION, "Crazy");
-
+	
 //	for (new i = 0; i < sizeof AVPWEAPONS; i++)
 //		avp_register_weapon(AVPWEAPONS[i][WeaponName], AVPWEAPONS[i][WeaponEnt], AVPWEAPONS[i][WeaponType]);
-		avp_register_weapon("ES P90", "weapon_p90", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("AK-47 Kalashnikov", "weapon_ak47", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("SG-552 Commando", "weapon_sg552", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("G3SG1 Auto-Sniper", "weapon_g3sg1", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("M4A1 Carbine", "weapon_m4a1", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("M3 Super 90", "weapon_m3", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("M249 Para Machinegun", "weapon_m249", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("AWP Magnum Sniper", "weapon_awp", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("Famas", "weapon_famas", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("IMI Galil", "weapon_galil", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("SG-550 Auto-Sniper", "weapon_sg550", AVP_PRIMARY_WEAPON);
-		avp_register_weapon("Steyr AUG A1", "weapon_aug", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("ES P90", "weapon_p90", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("AK-47 Kalashnikov", "weapon_ak47", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("SG-552 Commando", "weapon_sg552", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("G3SG1 Auto-Sniper", "weapon_g3sg1", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("M4A1 Carbine", "weapon_m4a1", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("M3 Super 90", "weapon_m3", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("M249 Para Machinegun", "weapon_m249", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("AWP Magnum Sniper", "weapon_awp", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("Famas", "weapon_famas", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("IMI Galil", "weapon_galil", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("SG-550 Auto-Sniper", "weapon_sg550", AVP_PRIMARY_WEAPON);
+	avp_register_weapon("Steyr AUG A1", "weapon_aug", AVP_PRIMARY_WEAPON);
 }
 
 public weapon_p228(id)

@@ -112,10 +112,10 @@ public HudMsgColor(cvar, &r, &g, &b)
 	static color[16], piece[5]
 	get_pcvar_string(cvar, color, 15)
 	
-	strbreak( color, piece, 4, color, 15)
+	argbreak( color, piece, 4, color, 15)
 	r = str_to_num(piece)
 	
-	strbreak( color, piece, 4, color, 15)
+	argbreak( color, piece, 4, color, 15)
 	g = str_to_num(piece)
 	b = str_to_num(color)
 }
@@ -125,7 +125,7 @@ public HudMsgPos(&Float:x, &Float:y)
 	static coords[16], piece[10]
 	get_pcvar_string(g_auto_xypos , coords, 15)
 	
-	strbreak(coords, piece, 9, coords, 15)
+	argbreak(coords, piece, 9, coords, 15)
 	x = str_to_float(piece)
 	y = str_to_float(coords)
 }

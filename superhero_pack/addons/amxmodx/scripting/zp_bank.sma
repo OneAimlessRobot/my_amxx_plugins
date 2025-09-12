@@ -515,7 +515,7 @@ do_upgrade(id)
 	}		
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if ( get_pcvar_num(pcvars[auto]) ) 
 		store_cash(id, -1);

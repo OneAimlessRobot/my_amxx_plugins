@@ -68,7 +68,7 @@
 		register_event("HLTV", "event_new_round", "a", "1=0", "2=0");
  }
 
- public client_disconnect(id)
+ public client_disconnected(id)
  {
 	//When someone leaves, make sure no one else see's their previous things
 	ArrayClear( PreviousSlashes[id] );
@@ -243,7 +243,7 @@
 	//get the first command, put the rest in said
 	//note we skip the slash by using said[1]
 	new said_cmd[32];
-	strbreak( said[1], said_cmd, 31, said, 191 );
+	argbreak( said[1], said_cmd, 31, said, 191 );
 
 	new char_num, char_loc, cmdstr_len;
 
@@ -442,8 +442,8 @@
 	}
 
 	new szCid[10], szPrev[10];
-	strbreak(data, szCid,9, data, 127);
-	strbreak(data, szPrev,9, data, 127);
+	argbreak(data, szCid,9, data, 127);
+	argbreak(data, szPrev,9, data, 127);
 
 	new cid = str_to_num( szCid );
 	new prev_num = str_to_num( szPrev );
@@ -678,7 +678,7 @@
 				//Get the argument they put for the nick
 				for( i=0; i <= arg_num; i++ )
 				{
-					strbreak(command_right, command_left, 31, command_right, 63);
+					argbreak(command_right, command_left, 31, command_right, 63);
 				}
 
 				//Get the first player with the name

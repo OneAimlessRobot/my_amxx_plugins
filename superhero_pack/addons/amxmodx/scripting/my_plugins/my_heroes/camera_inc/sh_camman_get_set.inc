@@ -4,9 +4,9 @@
 #define sh_camman_get_set
 
 
-new gHeroID
+stock gHeroID
 
-new const gHeroName[] = "Camman"
+stock const gHeroName[] = "Camman"
 
 native camman_set_num_cameras(id,value_to_set)
 native camman_get_num_cameras(id)

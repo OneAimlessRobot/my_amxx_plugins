@@ -65,7 +65,7 @@ public Native_GetCamera(iPlayer)
 	return 1;
 }
 
-public client_disconnect(iPlayer) 
+public client_disconnected(iPlayer) 
 {
 	Remove_CameraEnt(iPlayer, 0)
 }

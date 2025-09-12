@@ -546,7 +546,6 @@ public cmd_radio1(id) {
 			return PLUGIN_CONTINUE
 		}
 	}
-	return PLUGIN_HANDLED
 }
 public cmd_radio2(id) {
 	if (!gRunning) return PLUGIN_CONTINUE
@@ -563,7 +562,6 @@ public cmd_radio2(id) {
 			return PLUGIN_CONTINUE
 		}
 	}
-	return PLUGIN_HANDLED
 }
 public cmd_radio3(id) {
 	if (!gRunning) return PLUGIN_CONTINUE
@@ -580,7 +578,6 @@ public cmd_radio3(id) {
 			return PLUGIN_CONTINUE
 		}
 	}
-	return PLUGIN_HANDLED
 }
 //			______
 //___________/ TASKS \______________________________________________________________________________________________________
@@ -1307,7 +1304,7 @@ public client_putinserver(id) {
 	set_task(5.0, "task_dimlights", offset_dimlights)
 	return PLUGIN_CONTINUE
 }
-public client_disconnect(id) {
+public client_disconnected(id) {
 	if(!gRunning) return PLUGIN_CONTINUE
 	cWarns[id] = 0
 	if (playerlivecount() < minplayers) {

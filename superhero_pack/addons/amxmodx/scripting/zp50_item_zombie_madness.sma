@@ -271,7 +271,7 @@ public remove_zombie_madness(taskid)
 	flag_unset(g_MadnessBlockDamage, ID_MADNESS)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	// Remove tasks on disconnect
 	remove_task(id+TASK_MADNESS)

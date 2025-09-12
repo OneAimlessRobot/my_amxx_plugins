@@ -27,7 +27,6 @@
            
 #include <amxmodx>
 #include <amxmisc>
-#include <dhudmessage>
 
 /*================================================================================
  [Defines]
@@ -94,70 +93,70 @@ public countdown()
 
 public ten()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 10 =-^n[**********]")
 	client_cmd(0, "spk zombie_plague/10")
 }
 
 public nine()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 9 =-^n[*********]")
 	client_cmd(0, "spk zombie_plague/9")
 }
 
 public eight()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 8 =-^n[********]")
 	client_cmd(0, "spk zombie_plague/8")
 }
 
 public seven()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 7 =-^n[*******]")
 	client_cmd(0, "spk zombie_plague/7")
 }
 
 public six()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 6 =-^n[******]")
 	client_cmd(0, "spk zombie_plague/6")
 }
 
 public five()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 5 =-^n[*****]")
 	client_cmd(0, "spk zombie_plague/5")
 }
 
 public four()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 4 =-^n[****]")
 	client_cmd(0, "spk zombie_plague/4")
 }
 
 public three()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 3 =-^n[***]")
 	client_cmd(0, "spk zombie_plague/3")
 }
 
 public two()
 {
-	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(0, 180, 255, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 2 =-^n[**]")
 	client_cmd(0, "spk zombie_plague/2")
 }
 
 public one()
 {
-	set_dhudmessage(255, 0, 0, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1, 10)
+	set_dhudmessage(255, 0, 0, -1.0, 0.28, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0, "-= 1 =-^n[*]")
 	client_cmd(0, "spk zombie_plague/1")
 }

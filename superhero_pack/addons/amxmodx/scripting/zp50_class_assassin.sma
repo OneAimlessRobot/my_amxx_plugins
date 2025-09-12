@@ -161,7 +161,7 @@ public native_filter(const name[], index, trap)
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if (flag_get(g_Isassassin, id))
 	{

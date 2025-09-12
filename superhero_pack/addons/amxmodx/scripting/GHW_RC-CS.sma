@@ -341,7 +341,7 @@ public Hook_DeathMsg()
 	}
 }
 
-public client_disconnect(id) unspawn_rc(id)
+public client_disconnected(id) unspawn_rc(id)
 public client_connect(id) can_spawn[id]=true
 
 //VEN

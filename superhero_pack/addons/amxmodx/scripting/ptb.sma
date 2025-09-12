@@ -1327,7 +1327,7 @@ public client_connect(id){
 	return PLUGIN_CONTINUE
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	kills[id] = 0
 	deaths[id] = 0
 	isBeingTransfered[id] = false

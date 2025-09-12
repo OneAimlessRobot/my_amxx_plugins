@@ -29,8 +29,8 @@
 Struct StructClasses {
 	// Ordinary classes
 	Marine,
-         Exekuttor,
-	 MiniTerminator,
+	Exekuttor,
+	MiniTerminator,
 	HeadShooter,
 	Kamikaze,
 	SWAT,
@@ -125,10 +125,10 @@ Struct _:StructModels {
 	Model_ClawsV,
 	Model_ClawsP,
 	Model_CrossbowP,
-         Model_CrossbowV,
+	Model_CrossbowV,
 	Model_JoergMiniP,
-         Model_JoergMiniV,
-         Model_JoergKnifeV,
+	Model_JoergMiniV,
+	Model_JoergKnifeV,
 	Model_DoubleCrossbowV,
 	Model_RepeatingCrossbowP,
 	Model_RepeatingCrossbowV,
@@ -300,7 +300,7 @@ public plugin_init( ) {
 	// Fakemeta Module Forwards
 	register_forward( FM_EmitSound, "fw_EmitSound" );
 	register_forward( FM_SetModel, "fw_SetModel" );
-
+	
 	// Events
 	register_event( "CurWeapon", "fw_CurWeapon", "be", "1=1" );
 	
@@ -309,8 +309,8 @@ public plugin_init( ) {
 	
 	// Register Classes
 	for( new StructClasses: iIterator = Marine; iIterator < StructClasses; iIterator ++ )
-		g_iClasses[ iIterator ] = cod_register_class( g_szClasses[ iIterator ][ 0 ], g_szClasses[ iIterator ][ 1 ], g_szClasses[ iIterator ][ 2 ], g_szClasses[ iIterator ][ 3 ], g_szClasses[ iIterator ][ 4 ], g_szClasses[ iIterator ][ 5 ], str_to_num( g_szClasses[ iIterator ][ 6 ] ), str_to_num( g_szClasses[ iIterator ][ 7 ] ), str_to_num( g_szClasses[ iIterator ][ 8 ] ), str_to_num( g_szClasses[ iIterator ][ 9 ] ) );
-		
+	g_iClasses[ iIterator ] = cod_register_class( g_szClasses[ iIterator ][ 0 ], g_szClasses[ iIterator ][ 1 ], g_szClasses[ iIterator ][ 2 ], g_szClasses[ iIterator ][ 3 ], g_szClasses[ iIterator ][ 4 ], g_szClasses[ iIterator ][ 5 ], str_to_num( g_szClasses[ iIterator ][ 6 ] ), str_to_num( g_szClasses[ iIterator ][ 7 ] ), str_to_num( g_szClasses[ iIterator ][ 8 ] ), str_to_num( g_szClasses[ iIterator ][ 9 ] ) );
+	
 	CreateCleaner( );
 }
 
@@ -318,7 +318,7 @@ CreateCleaner( ) {
 	new iEntity = create_entity( "info_target" );
 	
 	if( !iEntity )
-		return;
+	return;
 	
 	entity_set_string( iEntity, EV_SZ_classname, "Cleaner" );
 	entity_set_float( iEntity, EV_FL_nextthink, get_gametime( ) + 10.0 );
@@ -328,10 +328,10 @@ CreateCleaner( ) {
 
 public fw_CleanerThink( iEntity ) {
 	if( !is_valid_ent( iEntity ) )
-		return;
-		
+	return;
+	
 	entity_set_float( iEntity, EV_FL_nextthink, get_gametime( ) + 60.0 );
-
+	
 	new iEntityMine = find_ent_by_class( -1, "Mine" );
 	while( iEntityMine > 0 )  {
 		remove_entity( iEntityMine );
@@ -347,13 +347,13 @@ public fw_CleanerThink( iEntity ) {
 
 public fw_SetModel( iEntity, const szModel[ ] ) {
 	if( !is_valid_ent( iEntity ) )
-		return;
-		
+	return;
+	
 	new szClassName[ 32 ];
 	entity_get_string( iEntity, EV_SZ_classname, szClassName, charsmax( szClassName ) );
 	
 	if( !equal( szClassName, "weaponbox" ) )
-		return;
+	return;
 	
 	entity_set_float( iEntity, EV_FL_nextthink, get_gametime( ) + 0.1 );
 }
@@ -363,10 +363,10 @@ public fw_SetModel( iEntity, const szModel[ ] ) {
 //=================================================================================================
 public plugin_precache( ) {
 	for( new iIterator = 0; iIterator < StructModels; iIterator ++ )
-		g_iModelIndex[ iIterator ] = precache_model( g_szModels[ iIterator ] );
-
+	g_iModelIndex[ iIterator ] = precache_model( g_szModels[ iIterator ] );
+	
 	for( new iSounds = 0; iSounds < sizeof( g_szSounds ); iSounds ++ )
-		precache_sound( g_szSounds[ iSounds ] );
+	precache_sound( g_szSounds[ iSounds ] );
 }
 
 //=================================================================================================
@@ -377,7 +377,7 @@ public cod_abilities_set_pre( iPlayer, iClass ) {
 		cs_reset_player_model( iPlayer );
 		set_user_footsteps( iPlayer, 0 );
 	}
-
+	
 	g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] = 0;
 	g_iPlayerInfo[ iPlayer ][ g_iHasFootKick ] = 0;
 	g_iPlayerInfo[ iPlayer ][ g_iSkipModelChange ] = 0;
@@ -411,22 +411,22 @@ public cod_class_changed( iPlayer, iOldClass, iNewClass ) {
 
 public cod_used_ability( iPlayer ) {
 	if( !is_user_alive( iPlayer ) )
-		return;
-		
+	return;
+	
 	if( g_iPlayerInfo[ iPlayer ][ g_iClass ] == g_iClasses[ Wolverine ] ) {
 		if( get_user_weapon( iPlayer) != CSW_KNIFE )
-			engclient_cmd( iPlayer, "weapon_knife" );
-				
+		engclient_cmd( iPlayer, "weapon_knife" );
+		
 		entity_set_string( iPlayer, EV_SZ_viewmodel, ( ( g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] == 0 ) ? g_szModels[ Model_ClawsV ] : g_szModels[ Model_HandsV ] ) );
 		entity_set_string( iPlayer, EV_SZ_weaponmodel, ( ( g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] == 0 ) ? g_szModels[ Model_ClawsP ] : g_szModels[ Model_HandsP ] ) );
-				
+		
 		entity_set_float( iPlayer, EV_FL_speed, ( ( g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] == 0 ) ? ( entity_get_float( iPlayer, EV_FL_speed ) + 5.0 ) : ( entity_get_float( iPlayer, EV_FL_speed ) - 5.0 ) ) );
 		entity_set_float( iPlayer, EV_FL_gravity, ( ( g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] == 0 ) ? 0.65 : 0.8 ) );
-				
+		
 		emit_sound( iPlayer, CHAN_WEAPON, "ByM_Cod/claws_off_wolverine.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM );
 		g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] = g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] ? 0 : 1;
 	}
-
+	
 	if( g_iPlayerInfo[ iPlayer ][ g_iClass ] == g_iClasses[ Frankestein ]  && g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] > 0 ) {
 		set_task( 0.1, "TurnOnClip", iPlayer, "", 0, "a", 1 );
 		g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] = 0;
@@ -437,10 +437,10 @@ public TurnOnClip( iPlayer ) {
 	if( is_user_alive( iPlayer ) ) {
 		set_user_noclip( iPlayer, 1 ); 
 		g_iPlayerInfo[ iPlayer ][ g_iCountdown ] = 15;
-	
+		
 		if( task_exists( iPlayer + TASK_NOCLIP_OFF ) )
-			remove_task( iPlayer + TASK_NOCLIP_OFF );
-	
+		remove_task( iPlayer + TASK_NOCLIP_OFF );
+		
 		set_task( 1.0, "TurnOffClip", iPlayer + TASK_NOCLIP_OFF, _, _, "b" );
 	}
 }
@@ -450,16 +450,16 @@ public TurnOffClip( iTaskId ) {
 	
 	if( is_user_alive( iPlayer ) ) {
 		g_iPlayerInfo[ iPlayer ][ g_iCountdown ] --;
-	
+		
 		if( g_iPlayerInfo[ iPlayer ][ g_iCountdown ] > 0 )
-			client_print( iPlayer, print_center, "%L %d", iPlayer, "ML_NO_CLIP", g_iPlayerInfo[ iPlayer ][ g_iCountdown ] );
+		client_print( iPlayer, print_center, "%L %d", iPlayer, "ML_NO_CLIP", g_iPlayerInfo[ iPlayer ][ g_iCountdown ] );
 		else if( g_iPlayerInfo[ iPlayer ][ g_iCountdown ] < 1 ) {
 			if( task_exists( iTaskId ) )
-				remove_task( iTaskId );
-				
+			remove_task( iTaskId );
+			
 			if( is_user_alive( iPlayer ) )
-				set_user_noclip( iPlayer, 0 ); 
-				
+			set_user_noclip( iPlayer, 0 ); 
+			
 			g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] = 0;
 		} 
 	}
@@ -467,8 +467,8 @@ public TurnOffClip( iTaskId ) {
 
 public SetAbilities( iPlayer, iClass ) {
 	if( !is_user_alive( iPlayer ) )
-		return;
-		
+	return;
+	
 	// Perks
 	if( cod_get_perk( iPlayer ) == cod_get_perk_id( "ML_SWAT_SHIELD" ) ) {
 		cod_set_explosion_resistance( iPlayer, EXPLOSION_RESISTANCE_ON );
@@ -478,15 +478,15 @@ public SetAbilities( iPlayer, iClass ) {
 	// Ordinary Classes
 	if( iClass == g_iClasses[ Marine ] ) bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
 	if( iClass == g_iClasses[ Exekuttor ] ) {
-	bym_set_instant_kill( iPlayer, CSW_KNIFE, 2 );
-	bym_set_instant_kill( iPlayer, CSW_XM1014, 7 );
-	cod_set_rockets( iPlayer, 1, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
+		bym_set_instant_kill( iPlayer, CSW_KNIFE, 2 );
+		bym_set_instant_kill( iPlayer, CSW_XM1014, 7 );
+		cod_set_rockets( iPlayer, 1, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
 	}
 	if( iClass == g_iClasses[ MiniTerminator ] ) {
-	bym_set_instant_kill( iPlayer, CSW_DEAGLE, 7 );
-	bym_set_instant_kill( iPlayer, CSW_SCOUT, 2 );
-	bym_set_multi_jump( iPlayer, 2 );
-	cod_set_mines( iPlayer, 1, MINE_TYPE_ORDINARY );
+		bym_set_instant_kill( iPlayer, CSW_DEAGLE, 7 );
+		bym_set_instant_kill( iPlayer, CSW_SCOUT, 2 );
+		bym_set_multi_jump( iPlayer, 2 );
+		cod_set_mines( iPlayer, 1, MINE_TYPE_ORDINARY );
 	}
 	if( iClass == g_iClasses[ HeadShooter ] ) bym_set_aim( iPlayer, NO_WEAPON, 6 );
 	if( iClass == g_iClasses[ Sniperman ] ) bym_set_instant_kill( iPlayer, CSW_AWP, 2 );
@@ -530,9 +530,9 @@ public SetAbilities( iPlayer, iClass ) {
 		bym_set_instant_kill( iPlayer, CSW_AWP, 1 );
 	}
 	if( iClass == g_iClasses[ ExekuttorL ] ) {
-	bym_set_instant_kill( iPlayer, CSW_KNIFE, 2 );
-	bym_set_instant_kill( iPlayer, CSW_XM1014, 5 );
-	cod_set_rockets( iPlayer, 1, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
+		bym_set_instant_kill( iPlayer, CSW_KNIFE, 2 );
+		bym_set_instant_kill( iPlayer, CSW_XM1014, 5 );
+		cod_set_rockets( iPlayer, 1, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
 	}
 	if( iClass == g_iClasses[ Adrenaline ] ) {
 		bym_set_magician( iPlayer, NO_WEAPON, 8, str_to_num( g_szClasses[ Adrenaline ][ 8 ] ) );
@@ -552,11 +552,11 @@ public SetAbilities( iPlayer, iClass ) {
 		bym_set_anti_xray( iPlayer, ANTI_XRAY_ON );
 		bym_set_instant_kill( iPlayer, CSW_DEAGLE, 3 );
 		bym_set_weapon_invisiblity( iPlayer, CSW_KNIFE, 8, 255 );
-         }
+	}
 	if( iClass == g_iClasses[ ExekuttorXL ] ) {
-         bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
-         bym_set_instant_kill( iPlayer, CSW_XM1014, 4 );
-	 cod_set_rockets( iPlayer, 2, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
+		bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
+		bym_set_instant_kill( iPlayer, CSW_XM1014, 4 );
+		cod_set_rockets( iPlayer, 2, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
 	}
 	if( iClass == g_iClasses[ Hitler ] ) bym_set_instant_kill( iPlayer, CSW_AK47, 9 );
 	if( iClass == g_iClasses[ SergeantMajor ] ) {
@@ -620,9 +620,9 @@ public SetAbilities( iPlayer, iClass ) {
 		bym_set_instant_kill( iPlayer, CSW_USP, 4 );
 	}
 	if( iClass == g_iClasses[ ExekuttorXXL ] ) {
-	cod_set_rockets( iPlayer, 5, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
-	bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
-	bym_set_instant_kill( iPlayer, CSW_XM1014, 2 );
+		cod_set_rockets( iPlayer, 5, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
+		bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
+		bym_set_instant_kill( iPlayer, CSW_XM1014, 2 );
 	}
 	if( iClass == g_iClasses[ Camper ] ) {
 		cod_set_rockets( iPlayer, 2, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF);
@@ -638,7 +638,7 @@ public SetAbilities( iPlayer, iClass ) {
 		bym_set_instant_kill( iPlayer, CSW_SCOUT, 1 );
 		bym_set_multi_jump( iPlayer, 2 );
 	}
-
+	
 	if( iClass == g_iClasses[ Mordereca ] ) {
 		bym_set_additional_damage( iPlayer, CSW_MP5NAVY, 200 );
 		bym_set_unlimited_clip( iPlayer, UNLIMITED_CLIP_ON );
@@ -779,12 +779,12 @@ public SetAbilities( iPlayer, iClass ) {
 		bym_set_weapon_invisiblity( iPlayer, CSW_KNIFE, 8, str_to_num( g_szClasses[ Wolverine ][ 8 ] ) );
 	}
 	if( iClass == g_iClasses[ ProAssassin ] ){
-	bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
-	bym_set_instant_kill( iPlayer, CSW_DEAGLE, 3 );
-	bym_set_instant_kill( iPlayer, CSW_MP5NAVY, 5 );
-	bym_set_weapon_invisiblity( iPlayer, NO_WEAPON, 1, str_to_num( g_szClasses[ ProAssassin ][ 1 ] ) );
-	cod_set_rockets( iPlayer, 2, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
-         }
+		bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
+		bym_set_instant_kill( iPlayer, CSW_DEAGLE, 3 );
+		bym_set_instant_kill( iPlayer, CSW_MP5NAVY, 5 );
+		bym_set_weapon_invisiblity( iPlayer, NO_WEAPON, 1, str_to_num( g_szClasses[ ProAssassin ][ 1 ] ) );
+		cod_set_rockets( iPlayer, 2, ROCKET_TYPE_ORDINARY, ROCKET_TRACER_OFF );
+	}
 	if( iClass == g_iClasses[ Frankestein ] ) {
 		g_iPlayerInfo[ iPlayer ][ g_iPowersNumber ] = 1;
 		bym_set_instant_kill( iPlayer, CSW_KNIFE, 1 );
@@ -811,57 +811,57 @@ public SetAbilities( iPlayer, iClass ) {
 public fw_HamTakeDamagePre(iVictim, iInflictor, iAttacker, Float:fDamage, iDamageType ) {
 	
 	if( !is_user_connected( iAttacker ) || !is_user_alive( iAttacker ) || !( 1 <= iAttacker <= g_iMaxPlayers ) || ( iAttacker == iVictim ) )
-		return HAM_IGNORED;
-		
+	return HAM_IGNORED;
+	
 	if( !is_user_connected( iVictim ) || !is_user_alive( iVictim ) || ( g_iPlayerInfo[ iAttacker ][ g_iTeam ] == g_iPlayerInfo[ iVictim ][ g_iTeam ] ) )
-		return HAM_IGNORED;
+	return HAM_IGNORED;
 	
 	if( cod_get_perk( iVictim ) == cod_get_perk_id( "ML_SWAT_SHIELD" ) )
-		return HAM_IGNORED;
+	return HAM_IGNORED;
 	
 	if( g_iPlayerInfo[ iAttacker ][ g_iClass ] == g_iClasses[ Ironman ] && Chance( 5 ) )
-		bym_screen_fade( iVictim, ( 1 << 14 ), ( 1 << 14 ), ( 1 << 16 ), 255, 155, 50, 230 );
+	bym_screen_fade( iVictim, ( 1 << 14 ), ( 1 << 14 ), ( 1 << 16 ), 255, 155, 50, 230 );
 	
 	return HAM_IGNORED;
 }
 
 public fw_HamPlayerDeath( iVictim, iAttacker, iSh ) {
 	if( task_exists( iVictim + TASK_NOCLIP_OFF ) )
-		remove_task( iVictim + TASK_NOCLIP_OFF );
+	remove_task( iVictim + TASK_NOCLIP_OFF );
 	
 	if( is_user_connected( iAttacker ) && iAttacker != iVictim )
-		bym_screen_fade( iAttacker, 1 << 10, 1 << 10, 1 << 4, 0, 255, 255, 70 );
-
+	bym_screen_fade( iAttacker, 1 << 10, 1 << 10, 1 << 4, 0, 255, 255, 70 );
+	
 	if( is_user_connected( iVictim ) && g_iPlayerInfo[ iVictim ][ g_iClass ] == g_iClasses[ Kamikaze ] )
-		cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
-		
+	cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
+	
 	if( is_user_connected( iVictim ) && g_iPlayerInfo[ iVictim ][ g_iClass ] == g_iClasses[ ReanimatorXXL ] && Chance( 2 ) )
-		cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
-		
+	cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
+	
 	if( is_user_connected( iVictim ) && g_iPlayerInfo[ iVictim ][ g_iClass ] == g_iClasses[ Psikopaktik ] )
-		cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
+	cod_create_explosion( iVictim, iVictim, false, 1200.0, true );
 	
 	if( is_user_connected( iAttacker ) && g_iPlayerInfo[ iAttacker ][ g_iClass ] == g_iClasses[ ExekuttorXXL ] && is_user_alive( iAttacker ) )
-		bym_set_weapon_clip( iAttacker, g_iMaxClip[ get_user_weapon( iAttacker ) ] );
-		
+	bym_set_weapon_clip( iAttacker, g_iMaxClip[ get_user_weapon( iAttacker ) ] );
+	
 	if( is_user_connected( iVictim ) && g_iPlayerInfo[ iVictim ][ g_iClass ] == g_iClasses[ TerminatorXXXLUltimate ] )
-		cod_create_explosion( iVictim, iVictim, false, 1000000.0, true );
-		
-
+	cod_create_explosion( iVictim, iVictim, false, 1000000.0, true );
+	
+	
 	return HAM_IGNORED;
 }
 
 // Original author: Dias
 public fw_HamPlayerPreThink( iPlayer ) {
 	if( !is_user_alive( iPlayer ) )
-		return;
+	return;
 	
 	static Float: fNextAttack; 
 	fNextAttack = get_pdata_float( iPlayer, 83, 5 );
 	
 	if( fNextAttack >= 0.0 && g_iPlayerInfo[ iPlayer ][ g_iFootKick ] )
-		set_pev( iPlayer, pev_velocity, { 0.0,0.0,0.0 } );
-		
+	set_pev( iPlayer, pev_velocity, { 0.0,0.0,0.0 } );
+	
 	if( fNextAttack <= 0.0 && g_iPlayerInfo[ iPlayer ][ g_iFootKick ] ) {
 		static iWeapon; 
 		iWeapon = get_pdata_cbase( iPlayer, 373 ); 
@@ -875,7 +875,7 @@ public fw_HamPlayerPreThink( iPlayer ) {
 	static iButton;
 	iButton = get_user_button( iPlayer ) ;
 	if( ( iButton & IN_USE ) && g_iPlayerInfo[ iPlayer ][ g_iHasFootKick ] )
-		FootKick( iPlayer );
+	FootKick( iPlayer );
 }
 
 // Original author: Dias
@@ -883,14 +883,14 @@ public FootKick( iPlayer ) {
 	if( g_iPlayerInfo[ iPlayer ][ g_iHasFootKick ] && is_user_connected( iPlayer ) && is_user_alive( iPlayer ) && get_pdata_float( iPlayer, 83 ) <= 0.0 && !( entity_get_int( iPlayer, EV_INT_flags ) & FL_DUCKING ) ) {
 		set_pev( iPlayer, pev_velocity, { 0.0 } );
 		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_Foot ] );
-			
+		
 		PlayAnimation( iPlayer, 1 );
 		set_pdata_float( iPlayer, 83, 0.6 );
 		g_iPlayerInfo[ iPlayer ][ g_iFootKick ] = 1;
-			
+		
 		new iTarget, iBody;
 		get_user_aiming( iPlayer, iTarget, iBody, 100 );
-			
+		
 		if( iTarget && is_user_connected( iTarget ) && is_user_alive( iTarget ) && !( g_iPlayerInfo[ iPlayer ][ g_iTeam ] == g_iPlayerInfo[ iTarget ][ g_iTeam ] ) ) {
 			static Float: fVelocity[ 3 ] ;
 			velocity_by_aim( iPlayer, 500, fVelocity );
@@ -906,18 +906,18 @@ public FootKick( iPlayer ) {
 // It would be more optimizes if you are using: Ham_Item_Deploy, but it does not work for some reason :P
 public fw_CurWeapon( iPlayer ) {
 	if( !is_user_alive( iPlayer ) )
-		return;
-		
+	return;
+	
 	new iCurrentClass = g_iPlayerInfo[ iPlayer ][ g_iClass ];
 	new iWeapon = get_user_weapon( iPlayer );
 	
 	if( iWeapon == CSW_KNIFE ) {
 		if( iCurrentClass == g_iClasses[ Phantom ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_PhantomKnife ] );
-			
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_PhantomKnife ] );
+		
 		if( iCurrentClass == g_iClasses[ JoergSprave ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_JoergKnifeV ] );
-			
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_JoergKnifeV ] );
+		
 		if( iCurrentClass == g_iClasses[ Ninja ] || iCurrentClass == g_iClasses[ Samurai ] ) {
 			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_KatanaV ] );
 			entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_KatanaP ] );
@@ -930,72 +930,72 @@ public fw_CurWeapon( iPlayer ) {
 	}
 	if( iWeapon == CSW_AWP ) {
 		if( iCurrentClass == g_iClasses[ JoergSprave ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_DoubleCrossbowV ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_DoubleCrossbowV ] );
 	}
 	if( iWeapon == CSW_SCOUT ) {
 		if( iCurrentClass == g_iClasses[ Rocker ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_Guitar ] );
-			
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_Guitar ] );
+		
 		if( iCurrentClass == g_iClasses[ JoergSprave ] )
-			entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_CrossbowP ] );
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_CrossbowV ] );
-			
+		entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_CrossbowP ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_CrossbowV ] );
+		
 		if( iCurrentClass == g_iClasses[ Predator ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_PredatorScout ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_PredatorScout ] );
 	}
 	if( iWeapon == CSW_USP ) {
 		if( iCurrentClass == g_iClasses[ Hitman ] )
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_HitmanUSP ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_HitmanUSP ] );
 	}
 	if( iWeapon == CSW_G3SG1 ) {
 		if( iCurrentClass == g_iClasses[ JoergSprave ] )
 		entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_RepeatingCrossbowP ] );
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_RepeatingCrossbowV ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_RepeatingCrossbowV ] );
 	}
 	if( iWeapon == CSW_M249 ) {
 		if( iCurrentClass == g_iClasses[ JoergSprave ] )
- 			entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_JoergMiniP ] );
-			entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_JoergMiniV ] );
-         }
+		entity_set_string( iPlayer, EV_SZ_weaponmodel, g_szModels[ Model_JoergMiniP ] );
+		entity_set_string( iPlayer, EV_SZ_viewmodel, g_szModels[ Model_JoergMiniV ] );
+	}
 }
 
 public fw_EmitSound( iPlayer, iChannel, const szSample[ ], Float: fVolume, Float: fAttn, iFlags, iPitch ) {
 	if( !is_user_connected( iPlayer ) || !is_user_alive( iPlayer ) )
-		return FMRES_IGNORED;
+	return FMRES_IGNORED;
 	
 	if( g_iPlayerInfo[ iPlayer ][ g_iClass ] == g_iClasses[ Wolverine ] && ( get_user_weapon( iPlayer ) == CSW_KNIFE ) ) {
 		if( equal( szSample, "weapons/knife_hit1.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/hit1_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_hit2.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/hit2_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_hit3.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/hit3_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_hit4.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/hit4_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_hitwall1.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/wall1_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_hitwall2.wav" ) ) {
 			emit_sound( iPlayer, iChannel, "weapons/wall2_wolverine.wav", fVolume, fAttn, iFlags, iPitch );
 			return FMRES_SUPERCEDE;
 		}
-				
+		
 		if( equal( szSample, "weapons/knife_stab.wav" ) || equal( szSample, "weapons/knife_slash1.wav" ) || equal( szSample, "weapons/knife_slash1.wav" ) )
-			return FMRES_SUPERCEDE;
+		return FMRES_SUPERCEDE;
 	}
 	
 	return FMRES_IGNORED;
@@ -1007,12 +1007,12 @@ public fw_EmitSound( iPlayer, iChannel, const szSample[ ], Float: fVolume, Float
 
 public client_putinserver( iPlayer ) {
 	for( new iIterator = 0; iIterator < StructPlayerInfo; iIterator ++ )
-		g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
+	g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	for( new iIterator = 0; iIterator < StructPlayerInfo; iIterator ++ )
-		g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
+	g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
 }
 
 //=================================================================================================
@@ -1020,8 +1020,8 @@ public client_disconnect( iPlayer ) {
 //=================================================================================================
 stock SetCamouflage( iPlayer ) {
 	if( !is_user_alive( iPlayer ) )
-		return;
-		
+	return;
+	
 	cs_reset_player_model( iPlayer );
 	switch( cs_get_user_team( iPlayer ) ) {
 		case CS_TEAM_T: cs_set_player_model( iPlayer, g_szPlayerModels[ 1 ][ random_num( 0, 3 ) ] );

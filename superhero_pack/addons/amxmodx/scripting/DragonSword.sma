@@ -428,7 +428,6 @@ public Check_Attack(id, Mode)
 	else
 		return 0
 	
-	return 0
 }	
 
 public fw_TraceLine(Float:vector_start[3], Float:vector_end[3], ignored_monster, id, handle)

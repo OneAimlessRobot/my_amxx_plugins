@@ -374,7 +374,7 @@ public client_putinserver( iPlayer ) {
 		remove_task( iPlayer + TASK_REVIVE );
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	for( new iIterator = 0; iIterator < StructPlayerInfo; iIterator ++ )
 		g_iPlayerInfo[ iPlayer ][ iIterator ] = 0;
 		

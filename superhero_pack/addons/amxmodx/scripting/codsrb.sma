@@ -1915,7 +1915,7 @@ public client_putinserver(id)
 	set_task(3.0, "PokaziInformacije", id+ZADATAK_POKAZI_INFORMACIJE);
 	set_task(10.0, "PokaziReklame", id+ZADATAK_POKAZI_REKLAME);
 }
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	SacuvajPodatke(id);
 	DeleteSkills(id);

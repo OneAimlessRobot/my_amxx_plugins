@@ -87,7 +87,7 @@ public client_connect(id)
 	g_HasAk[id] = false
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_HasAk[id] = false
 }

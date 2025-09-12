@@ -125,7 +125,7 @@ public client_putinserver(id)
 	g_has_speargun[id] = false;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_has_speargun[id] = false;
 }

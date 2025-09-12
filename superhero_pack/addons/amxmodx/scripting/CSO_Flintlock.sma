@@ -51,7 +51,7 @@ const m_iShotsFired = 64;
 
 new g_Had_Flintlock, g_Ammo[33]
 new g_Event_Flintlock, g_SmokePuff_SprId
-new g_MsgCurWeapon, g_MsgAmmoX, g_MsgWeaponList, g_MaxPlayers
+new g_MsgCurWeapon, g_MsgAmmoX
 
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33], g_HamBot
@@ -82,8 +82,6 @@ public plugin_init()
 	
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
 	g_MsgAmmoX = get_user_msgid("AmmoX")
-	g_MsgWeaponList = get_user_msgid("WeaponList")
-	g_MaxPlayers = get_maxplayers()
 	
 	register_clcmd("say /flint", "Get_Flintlock")
 }
@@ -123,7 +121,7 @@ public Do_Register_HamBot(id)
 	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Player")	
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	Safety_Disconnected(id)
 }

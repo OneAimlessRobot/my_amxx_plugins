@@ -32,7 +32,6 @@
 #include <fun>
 
 #define MAX_TEXT_BUFFER 2047
-#define MAX_NAME_LENGTH 33
 #define MAX_PLAYER 33
 #define MAX_ASSISTERS 3
 
@@ -2691,7 +2690,7 @@ Float:normalize(Float:nVel)
  Comment:	$$
 
 ====================================================================================================*/
-public client_disconnect(id) {
+public client_disconnected(id) {
 	new m;
 	for(m = 1; m<=RECORDS; m++)
 		MadeRecord[id][m] = 0

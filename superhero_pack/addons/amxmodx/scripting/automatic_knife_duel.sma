@@ -60,12 +60,6 @@ new g_challenged
 new g_challenges[33]
 // Globals above
 
-public plugin_modules()
-{
-	require_module("fakemeta")
-	require_module("fun")
-}
-
 public forward_emitsound(const PIRATE, const Onceuponatimetherewasaverysmall, noise[], const Float:turtlewhoateabiggerturtleand, const Float:afterthatthesmallturtlegot, const veryveryverybig, const theend) {
 	if (g_noChallengingForAWhile || g_knifeArena || g_challenging || PIRATE < 1 || PIRATE > g_MAXPLAYERS || !is_user_alive(PIRATE) || !equal(noise, "weapons/knife_hitwall1.wav"))
 		return FMRES_IGNORED

@@ -351,9 +351,7 @@ public SpecRankInfo         = 0; // displays rank info when spectating
 
 // Standard Contstants.
 #define MAX_TEAMS               2
-#define MAX_PLAYERS             32 + 1
 
-#define MAX_NAME_LENGTH         31
 #define MAX_WEAPON_LENGTH       31
 #define MAX_TEXT_LENGTH         255
 #define MAX_BUFFER_LENGTH       2047

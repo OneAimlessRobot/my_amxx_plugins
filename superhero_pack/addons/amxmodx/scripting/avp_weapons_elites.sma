@@ -44,10 +44,10 @@ new const AVPWEAPONS[][WeaponData] = {
 public plugin_init()
 {
 	register_plugin("[AvP] Default CS Weapons", PLUGIN_VERSION, "Crazy");
-
+	
 //	for (new i = 0; i < sizeof AVPWEAPONS; i++)
 //		avp_register_weapon(AVPWEAPONS[i][WeaponName], AVPWEAPONS[i][WeaponEnt], AVPWEAPONS[i][WeaponType]);
-		avp_register_weapon("Dual Elite Berettas", "weapon_elite", AVP_SECONDARY_WEAPON)
+	avp_register_weapon("Dual Elite Berettas", "weapon_elite", AVP_SECONDARY_WEAPON)
 }
 
 public weapon_p228(id)

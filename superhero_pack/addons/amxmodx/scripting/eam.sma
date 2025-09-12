@@ -556,7 +556,7 @@
 		return float(COMMAND_SELECTION[command][argument][0]);
 
 	new Left[11], Right[11];
-	strbreak(COMMAND_SELECTION[command][argument], Left, 10, Right, 10);
+	argbreak(COMMAND_SELECTION[command][argument], Left, 10, Right, 10);
 	return str_to_float(Left);
  }
  Float:upper_command_range(const command, const argument)
@@ -568,7 +568,7 @@
 		return float(COMMAND_SELECTION[command][argument][1]);
 
 	new Left[11], Right[11];
-	strbreak(COMMAND_SELECTION[command][argument], Left, 10, Right, 10);
+	argbreak(COMMAND_SELECTION[command][argument], Left, 10, Right, 10);
 	return str_to_float(Right);
  }
  command_option(const command, const argument, const option_num, option[], len)

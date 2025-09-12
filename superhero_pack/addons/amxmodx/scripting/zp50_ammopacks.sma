@@ -4,7 +4,7 @@
 	-*- [ZP] Ammo Packs -*-
 	-----------------------
 	
-	This plugin is part of Zombie Plague Mod and is distributed under the
+	This plugin is part of Zombie Plague Mod and isS distributed under the
 	terms of the GNU General Public License. Check ZP_ReadMe.txt for details.
 	
 ================================================================================*/
@@ -88,7 +88,7 @@ public client_putinserver(id)
 	g_AmmoPacks[id] = get_pcvar_num(cvar_starting_ammo_packs)
 }
 
-public client_disconnect(id)
+public client_disconnecteded(id)
 {
 	remove_task(id+TASK_HIDEMONEY)
 }

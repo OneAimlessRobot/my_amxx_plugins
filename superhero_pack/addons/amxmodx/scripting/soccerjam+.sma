@@ -184,7 +184,6 @@
 #include <geoip>
 #include <cellarray>
 #include <colorchat_sj>
-#include <dhudmessage>
 
 #define PLUGIN 		"SoccerJam+"
 #define VERSION 	"2.3.0"
@@ -942,7 +941,7 @@ public plugin_init(){
 	msg_statusicon 	= get_user_msgid("StatusIcon")
 	msg_scoreboard 	= get_user_msgid("ScoreInfo")
 
-	OFFSET_INTERNALMODEL = is_amd64_server() ? 152 : 126
+	OFFSET_INTERNALMODEL =126
 
 	set_msg_block(get_user_msgid("RoundTime"), 	BLOCK_SET)
 	set_msg_block(get_user_msgid("ClCorpse"), 	BLOCK_SET)
@@ -4421,7 +4420,7 @@ public client_putinserver(id){
 		format(g_userCountry_3[id], 3, "")
 		format(g_userCity[id], 45,  "")
 	} else {
-		geoip_country(g_userip[id], g_userCountry[id], 63)
+		geoip_country_ex(g_userip[id], g_userCountry[id], 63)
 		geoip_code2_ex(g_userip[id], g_userCountry_2[id])
 		geoip_code3_ex(g_userip[id], g_userCountry_3[id])
 		geoip_city(g_userip[id], g_userCity[id], 45)
@@ -4547,7 +4546,7 @@ public WhoIs(id){
 
 	show_motd(id, plist, title )
 }
-public client_disconnect(id){
+public client_disconnected(id){
 	{
 		if(rtv[id])
 		{

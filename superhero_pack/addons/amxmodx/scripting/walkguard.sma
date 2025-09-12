@@ -18,7 +18,7 @@ enum ZONEMODE {
 	ZM_CAMPING_T2,	// Team 2 -> e.g. Counter-Terroris
 	ZM_BLOCK_ALL,
 	ZM_KILL,
-	ZM_KILL_T1,	// DoD-Unterstützung
+	ZM_KILL_T1,	// DoD-Unterstï¿½tzung
 	ZM_KILL_T2
 }
 
@@ -50,13 +50,13 @@ new maxzones		// soviele existieren
 new index		// die aktuelle Zone
 
 // Editier-Funktionen
-new setupunits = 10	// Änderungen an der Größe um diese Einheiten
+new setupunits = 10	// ï¿½nderungen an der Grï¿½ï¿½e um diese Einheiten
 new direction = 0	// 0 -> X-Koorinaten / 1 -> Y-Koords / 2 -> Z-Koords
 new koordinaten[3][] = { "TRANSLATE_X_KOORD", "TRANSLATE_Y_KOORD", "TRANSLATE_Z_KOORD" }
 
-new spr_dot		// benötigt für die Lininen
+new spr_dot		// benï¿½tigt fï¿½r die Lininen
 
-new editor = 0		// dieser Spieler ist gerade am erstellen .. Menü verkraftet nur einen Editor
+new editor = 0		// dieser Spieler ist gerade am erstellen .. Menï¿½ verkraftet nur einen Editor
 
 new camperzone[33]		// letzte Meldung der CamperZone
 new Float:campertime[33]	// der erste Zeitpunkt des eintreffens in die Zone
@@ -96,10 +96,10 @@ public plugin_init() {
 	server_cmd("WalkGuard %s", VERSION)
 
 	pcv_damage = register_cvar("wg_damage", "10")
-	pcv_botdamage = register_cvar("wg_botdamage", "0")	// Bot's sind einfach nur dumm ... und können nicht lesen
-	pcv_immunity = register_cvar("wg_immunity", "0")		// Admins mit Immunität brauchen nicht
-	pcv_direction = register_cvar("wg_direction", "1")	// zufällige Richtung beim Slap
-	pcv_botdirection = register_cvar("wg_botdirection", "1") // dito für Bots
+	pcv_botdamage = register_cvar("wg_botdamage", "0")	// Bot's sind einfach nur dumm ... und kï¿½nnen nicht lesen
+	pcv_immunity = register_cvar("wg_immunity", "0")		// Admins mit Immunitï¿½t brauchen nicht
+	pcv_direction = register_cvar("wg_direction", "1")	// zufï¿½llige Richtung beim Slap
+	pcv_botdirection = register_cvar("wg_botdirection", "1") // dito fï¿½r Bots
 	pcv_damageicon = register_cvar("wg_damageicon", "262144") // eigentlich ein Pfeil
 
 	register_menu("MainMenu", -1, "MainMenuAction", 0)
@@ -128,8 +128,8 @@ public plugin_precache() {
 	spr_dot = precache_model("sprites/dot.spr")
 }
 
-public client_disconnect(player) {
-	// aus irgend welchen Gründen ist der Spieler einfach wech........
+public client_disconnected(player) {
+	// aus irgend welchen Grï¿½nden ist der Spieler einfach wech........
 	if (player == editor) HideAllZones()
 }
 
@@ -203,7 +203,7 @@ public ZoneTouch(player, zone) {
 			camping[player] = get_gametime()
 			set_task(0.5, "ZoneModeCamper", TASK_BASIS_CAMPER + player, _, _, "b")
 		} else {
-			// immer fleissig mitzählen
+			// immer fleissig mitzï¿½hlen
 			camping[player] = get_gametime()
 		}
 	}
@@ -221,7 +221,7 @@ public ZoneModeCamper(player) {
 
 	if (!is_user_connected(player))
 	{
-		// so ein Feigling ... hat sich einfach verdrückt ^^
+		// so ein Feigling ... hat sich einfach verdrï¿½ckt ^^
 		remove_task(TASK_BASIS_CAMPER + player)
 		return
 	}
@@ -328,7 +328,7 @@ public SaveWGZ(player) {
 	format(zonefile, 199, "%s/walkguard", zonefile)
 	if (!dir_exists(zonefile)) mkdir(zonefile)
 	
-	// Namen über Map erstellen
+	// Namen ï¿½ber Map erstellen
 	get_mapname(mapname, 49)
 	format(zonefile, 199, "%s/%s.wgz", zonefile, mapname)
 	delete_file(zonefile)	// pauschal
@@ -399,7 +399,7 @@ public LoadWGZ() {
 	get_configsdir(zonefile, 199)
 	format(zonefile, 199, "%s/walkguard", zonefile)
 	
-	// Namen über Map erstellen
+	// Namen ï¿½ber Map erstellen
 	get_mapname(mapname, 49)
 	format(zonefile, 199, "%s/%s.wgz", zonefile, mapname)
 	
@@ -417,14 +417,14 @@ public LoadWGZ() {
 		if (!strlen(input)  || (input[0] == ';')) continue;	// Kommentar oder Leerzeile
 
 		new data[20], zm = 0, ct		// "abgebrochenen" Daten - ZoneMode - CamperTime
-		new Float:mins[3], Float:maxs[3], Float:pos[3]	// Größe & Position
+		new Float:mins[3], Float:maxs[3], Float:pos[3]	// Grï¿½ï¿½e & Position
 
 		// Zone abrufen
-		strbreak(input, data, 20, input, 999)
+		argbreak(input, data, 20, input, 999)
 		zm = -1
 		for(new i = 0; ZONEMODE:i < ZONEMODE; ZONEMODE:i++)
 		{
-			// Änderungen von CS:CZ zu allen Mods
+			// ï¿½nderungen von CS:CZ zu allen Mods
 			if (equal(data, "wgz_camper_te")) format(data, 19, "wgz_camper_t1")
 			if (equal(data, "wgz_camper_ct")) format(data, 19, "wgz_camper_t2")
 			if (equal(data, zonename[ZONEMODE:i])) zm = i;
@@ -437,22 +437,22 @@ public LoadWGZ() {
 		}
 		
 		// Position holen
-		strbreak(input, data, 20, input, 999);	pos[0] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	pos[1] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	pos[2] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	pos[0] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	pos[1] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	pos[2] = str_to_float(data);
 		
 		// Dimensionen
-		strbreak(input, data, 20, input, 999);	mins[0] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	mins[1] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	mins[2] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	maxs[0] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	maxs[1] = str_to_float(data);
-		strbreak(input, data, 20, input, 999);	maxs[2] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	mins[0] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	mins[1] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	mins[2] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	maxs[0] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	maxs[1] = str_to_float(data);
+		argbreak(input, data, 20, input, 999);	maxs[2] = str_to_float(data);
 
 		if ((ZONEMODE:zm == ZM_CAMPING) || (ZONEMODE:zm == ZM_CAMPING_T1) || (ZONEMODE:zm == ZM_CAMPING_T2))
 		{
 			// Campertime wird immer mitgeliefert
-			strbreak(input, data, 20, input, 999)
+			argbreak(input, data, 20, input, 999)
 			ct = str_to_num(data)
 		}
 
@@ -560,7 +560,7 @@ public ShowZoneBox(entity) {
 	if (!fm_is_in_viewcone(editor, pos) && (entity != zone[index])) return		// sieht der Editor eh nicht
 
 	// jetzt vom Editor zur Zone testen... Zonen hinter der Wand aber im ViewCone
-	// müssen nicht gezeichnet werden
+	// mï¿½ssen nicht gezeichnet werden
 	new Float:editorpos[3]
 	pev(editor, pev_origin, editorpos)
 	new Float:hitpoint[3]	// da ist der Treffer
@@ -569,7 +569,7 @@ public ShowZoneBox(entity) {
 	// Linie zur Zone zeichnen ... dann wird sie schneller gefunden
 	if (entity == zone[index]) DrawLine(editorpos[0], editorpos[1], editorpos[2] - 16.0, pos[0], pos[1], pos[2], { 255, 0, 0} )
 
-	// Distanz zum Treffer ... ist Wert größer dann war da etwas
+	// Distanz zum Treffer ... ist Wert grï¿½ï¿½er dann war da etwas
 	new Float:dh = vector_distance(editorpos, pos) - vector_distance(editorpos, hitpoint)
 	if ( (floatabs(dh) > 128.0) && (entity != zone[index])) return			// hinter einer Wand
 
@@ -580,7 +580,7 @@ public ShowZoneBox(entity) {
 	pev(entity, pev_mins, mins)
 	pev(entity, pev_maxs, maxs)
 
-	// Größe in Absolut umrechnen
+	// Grï¿½ï¿½e in Absolut umrechnen
 	mins[0] += pos[0]
 	mins[1] += pos[1]
 	mins[2] += pos[2]
@@ -643,7 +643,7 @@ public ShowZoneBox(entity) {
 }
 
 public HideAllZones() {
-	editor = 0	// Menü für den nächsten wieder frei geben ... ufnktionalität aktivieren
+	editor = 0	// Menï¿½ fï¿½r den nï¿½chsten wieder frei geben ... ufnktionalitï¿½t aktivieren
 	for(new i = 0; i < maxzones; i++)
 	{
 		new id = pev(zone[i], ZONEID)
@@ -749,12 +749,12 @@ public MainMenuAction(player, key) {
 				OpenWalkGuardMenu(player)
 			}
 		case 3: {
-				// nächste Zone
+				// nï¿½chste Zone
 				index = (index < maxzones - 1) ? index + 1 : index;
 				OpenWalkGuardMenu(player)
 			}
 		case 4:	{
-				// neue Zone über dem Spieler
+				// neue Zone ï¿½ber dem Spieler
 				if (maxzones < MAXZONES - 1)
 				{
 					CreateZoneOnPlayer(player);
@@ -768,7 +768,7 @@ public MainMenuAction(player, key) {
 				}
 			}
 		case 6: {
-				// aktuelle Zone löschen
+				// aktuelle Zone lï¿½schen
 				OpenKillMenu(player);
 			}
 		case 9: {
@@ -836,7 +836,7 @@ public EditMenuAction(player, key) {
 	switch(key)
 	{
 		case 1: {
-				// nächster ZoneMode
+				// nï¿½chster ZoneMode
 				new zm = -1
 				zm = pev(zone[index], ZONEID)
 				if (ZONEMODE:zm == ZM_KILL_T2) zm = 0; else zm++;
@@ -858,7 +858,7 @@ public EditMenuAction(player, key) {
 				OpenEditMenu(player)
 			}
 		case 4: {
-				// Editier-Richtung ändern
+				// Editier-Richtung ï¿½ndern
 				direction = (direction < 2) ? direction + 1 : 0
 				OpenEditMenu(player)
 			}
@@ -883,7 +883,7 @@ public EditMenuAction(player, key) {
 				OpenEditMenu(player)
 			}
 		case 9: {
-				// Schreitweite ändern
+				// Schreitweite ï¿½ndern
 				setupunits = (setupunits < 100) ? setupunits * 10 : 1
 				OpenEditMenu(player)
 			}
@@ -905,7 +905,7 @@ public VonRotAbziehen() {
 	pev(entity, pev_mins, mins)
 	pev(entity, pev_maxs, maxs)
 
-	// könnte Probleme geben -> zu klein
+	// kï¿½nnte Probleme geben -> zu klein
 	//if ((floatabs(mins[direction]) + maxs[direction]) < setupunits + 1) return
 	
 	mins[direction] -= float(setupunits) / 2.0
@@ -928,7 +928,7 @@ public ZuRotAddieren() {
 	pev(entity, pev_mins, mins)
 	pev(entity, pev_maxs, maxs)
 
-	// könnte Probleme geben -> zu klein
+	// kï¿½nnte Probleme geben -> zu klein
 	if ((floatabs(mins[direction]) + maxs[direction]) < setupunits + 1) return
 
 	mins[direction] += float(setupunits) / 2.0
@@ -951,7 +951,7 @@ public VonGelbAbziehen() {
 	pev(entity, pev_mins, mins)
 	pev(entity, pev_maxs, maxs)
 
-	// könnte Probleme geben -> zu klein
+	// kï¿½nnte Probleme geben -> zu klein
 	if ((floatabs(mins[direction]) + maxs[direction]) < setupunits + 1) return
 
 	mins[direction] += float(setupunits) / 2.0
@@ -974,7 +974,7 @@ public ZuGelbAddieren() {
 	pev(entity, pev_mins, mins)
 	pev(entity, pev_maxs, maxs)
 
-	// könnte Probleme geben -> zu klein
+	// kï¿½nnte Probleme geben -> zu klein
 	//if ((floatabs(mins[direction]) + maxs[direction]) < setupunits + 1) return
 
 	mins[direction] -= float(setupunits) / 2.0

@@ -278,7 +278,7 @@ public fwd_Client_Connect(id)
 	times_id[id] = 0
 }
 
-public fwd_Client_Disconnect(id)
+public fwd_client_disconnected(id)
 {
 	g_HasPower[id] = false
 	times_id[id] = 0

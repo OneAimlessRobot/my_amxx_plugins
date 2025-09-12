@@ -90,7 +90,7 @@ public _sh_molly_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsBurning[user]){
 		if((user==attacker)){
-			if(CAN_SELF_MOLLY){
+			if(CAN_SELF_MOLLY&&user){
 				sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
 				sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
 				burn_user(user,attacker)

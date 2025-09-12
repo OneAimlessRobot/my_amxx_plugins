@@ -561,7 +561,7 @@ readSettings()
 	}
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(!g_eSettings[CSHOP_LIMIT_TYPE] && g_eSettings[CSHOP_SAVE_LIMIT])
 		TrieSetArray(g_tLimit, g_szInfo[id], g_iLimit[id], sizeof(g_iLimit[]))

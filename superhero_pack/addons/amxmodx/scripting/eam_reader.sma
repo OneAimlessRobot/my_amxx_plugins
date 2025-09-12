@@ -9,71 +9,71 @@
  //																  //
  ///////////////////////////////////////////////////////////////////
 
- #include <amxmodx>
- #include <amxmisc>
- #include <eam>
+#include <amxmodx>
+#include <amxmisc>
+#include <eam>
 
- #define PLUGIN	"EAM Reader"
- #define VERSION "0.1"
- #define AUTHOR "Emp`"
+#define PLUGIN	"EAM Reader"
+#define VERSION "0.1"
+#define AUTHOR "Emp`"
 
- new config_file[128];
+new config_file[128];
 
- public plugin_init()
- {
+public plugin_init()
+{
 	register_plugin(PLUGIN, VERSION, AUTHOR);
- }
- public eam_setup()
- {
+}
+public eam_setup()
+{
 	get_configsdir(config_file,127);
 	add(config_file, 127, "/eam.cfg");
-
+	
 	new file = fopen(config_file, "rt");
-
+	
 	if(!file){
 		log_amx("**WARNING** EAM Config File not found, making default file");
 		ResetConfig();
 		return PLUGIN_CONTINUE;
 	}
-
+	
 	new Data[124];
 	new Left[62], Right[124];
 	new Float:temp;			//used for temporarily finding the lower bound on ranges
-
+	
 	new category = 0;
 	new command = 0;
 	new argument = 0;
 	new TYPE_PLAYER:user_type;
-
+	
 	while(!feof(file))
 	{
 		fgets(file, Data, 123);
-
+		
 		while( equali(Data, " ", 1 ) )
-			copy( Data, 123, Data[1]);
-
+		copy( Data, 123, Data[1]);
+		
 		if(equali(Data,"//",2) || equali(Data,";",1))
-			continue;
-
+		continue;
+		
 		switch(Data[0])
 		{
 			case '{':{
 				//get rid of the first character
 				copy( Data, 123, Data[1]);
-
+				
 				//fill Left with the first thing and Right with the rest
 				strtok( Data, Left, 61, Right, 123, '}');
-
+				
 				category = eam_category_register(Left);
 				command = 0;
 			}
 			case '[':{
 				//get rid of the first character
 				copy( Data, 123, Data[1]);
-
+				
 				//fill Left with the first thing and Right with the rest
 				strtok( Data, Left, 61, Right, 123, ']');
-
+				
 				command = eam_command_register(Left);
 				eam_command_category(command, category);
 				argument = 0;
@@ -81,27 +81,27 @@
 			case '-':{
 				//get rid of the first character
 				copy( Data, 123, Data[1]);
-
+				
 				//fill Left with the first thing and Right with the rest
-				strbreak( Data, Left, 61, Right, 123);
-
+				argbreak( Data, Left, 61, Right, 123);
+				
 				if(equali(Left, "ACCESS")){
-					strbreak( Right, Left, 61, Right, 123);
+					argbreak( Right, Left, 61, Right, 123);
 					if(equali(Left, "FLAG")){
 						strbrkqt( Right, Left, 61, Right, 123);
 						remove_quotes(Left);
 						if(command)
-							eam_command_access(command, FLAG, Left);
+						eam_command_access(command, FLAG, Left);
 						else
-							eam_category_access(command, FLAG, Left);
+						eam_category_access(command, FLAG, Left);
 					}
 					else if(equali(Left, "CVAR")){
 						strbrkqt( Right, Left, 61, Right, 123);
 						remove_quotes(Left);
 						if(command)
-							eam_command_access(command, FLAG, Left);
+						eam_command_access(command, FLAG, Left);
 						else
-							eam_category_access(command, FLAG, Left);
+						eam_category_access(command, FLAG, Left);
 					}
 				}
 				else if(equali(Left, "COMMENT")){
@@ -110,7 +110,7 @@
 					eam_command_comment(command, Left);
 				}
 				else if(equali(Left, "EXEC")){
-					strbreak( Right, Left, 61, Right, 123);
+					argbreak( Right, Left, 61, Right, 123);
 					if(equali(Left, "SERVER")){
 						eam_command_exec(command, EXEC_SERVER);
 					}
@@ -123,54 +123,54 @@
 				}
 				else if(equali(Left, "ARG")){
 					argument++;
-
-					strbreak( Right, Left, 61, Right, 123);
+					
+					argbreak( Right, Left, 61, Right, 123);
 					if(equali(Left, "PLAYER")){
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						if(equali(Left, "USERID"))
-							user_type = USERID;
+						user_type = USERID;
 						else if(equali(Left, "AUTHID"))
-							user_type = AUTHID;
+						user_type = AUTHID;
 						else if(equali(Left, "USERNAME"))
-							user_type = USERNAME;
+						user_type = USERNAME;
 						eam_command_arg(command, argument, PLAYER, user_type);
 					}
 					else if(equali(Left, "PLAYER_OR_TEAM")){
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						if(equali(Left, "USERID"))
-							user_type = USERID;
+						user_type = USERID;
 						else if(equali(Left, "AUTHID"))
-							user_type = AUTHID;
+						user_type = AUTHID;
 						else if(equali(Left, "USERNAME"))
-							user_type = USERNAME;
+						user_type = USERNAME;
 						eam_command_arg(command, argument, PLAYER_OR_TEAM, user_type);
 					}
 					else if(equali(Left, "TEAM")){
 						eam_command_arg(command, argument, TEAM);
 					}
 					else if(equali(Left, "RANGE")){
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						temp = str_to_float(Left)
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						eam_command_arg(command, argument, RANGE, floatround(temp), str_to_num(Left));
 					}
 					else if(equali(Left, "F_RANGE")){
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						temp = str_to_float(Left)
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						eam_command_arg(command, argument, F_RANGE, temp, str_to_float(Left));
 					}
 					else if(equali(Left, "OPTIONS")){
 						eam_command_arg(command, argument, OPTIONS, Right);
 					}
 					else if(equali(Left, "OPT_OR_PLYR")){
-						strbreak( Right, Left, 61, Right, 123);
+						argbreak( Right, Left, 61, Right, 123);
 						if(equali(Left, "USERID"))
-							user_type = USERID;
+						user_type = USERID;
 						else if(equali(Left, "AUTHID"))
-							user_type = AUTHID;
+						user_type = AUTHID;
 						else if(equali(Left, "USERNAME"))
-							user_type = USERNAME;
+						user_type = USERNAME;
 						eam_command_arg(command, argument, OPT_OR_PLYR, user_type, Right);
 					}
 					else if(equali(Left, "INPUT")){
@@ -180,15 +180,15 @@
 			}
 		}
 	}
-
+	
 	fclose(file);
-
+	
 	return PLUGIN_CONTINUE;
- }
- public ResetConfig()
- {
+}
+public ResetConfig()
+{
 	new file = fopen(config_file, "wt");
-
+	
 	fputs(file,	"^n");
 	fputs(file,	"//To add a Category, {Name} followed by commands^n");
 	fputs(file,	"//To add a Command, [Name] followed by properties^n");
@@ -241,22 +241,22 @@
 	fputs(file,	"//-ARG OPTIONS ^"zombie^" ^"headcrab^" ^"barney^"^n");
 	fputs(file,	"//-ARG PLAYER USERNAME^n");
 	fputs(file,	"//-ACCESS FLAG ^"c^"^n");
-
+	
 	fclose(file);	
- }
+}
 
  // Thank you SH mod
- stock strbrkqt(const text[], Left[], leftLen, Right[], rightLen)
- {
+stock strbrkqt(const text[], Left[], leftLen, Right[], rightLen)
+{
 	//Breaks text[] into two parts, Left[], and Right[]
 	// Left[] will contain the first parameter (either quoted or non-quoted)
 	// Right[] contain the rest of the string after Left[], not including the space
 	new bool:in_quotes = false
 	new bool:done_flag = false
 	new i, left_pos = 0
-
+	
 	for ( i = 0; i < strlen(text); i++) {
-
+		
 		if (equali(text[i], "^"", 1) && !done_flag) {
 			if (in_quotes) {
 				done_flag = true
@@ -275,9 +275,9 @@
 		}
 		else if (done_flag) break
 	}
-
+	
 	Left[left_pos] = 0
 	copy(Right,rightLen,text[i])
-
+	
 	return true
- }
+}

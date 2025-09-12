@@ -141,7 +141,7 @@ public client_putinserver(id) {
 	g_Charger_CD[id] = 0.0;
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	remove_task(id + TASK_SOUND);
 	remove_task(id + TASK_CHARGER_CAMERA);
 	

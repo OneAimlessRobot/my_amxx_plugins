@@ -289,7 +289,7 @@ public client_putinserver(id)
 	g_Spec[id] = 0;
 	LargestPlayer = max(LargestPlayer, id);
 }
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	unspec_stuff(id);
 	UpdateLargestPlayer();

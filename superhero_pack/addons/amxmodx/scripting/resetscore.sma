@@ -1,5 +1,5 @@
 /*
-	Copyright © 2009, aNNakin
+	Copyright ï¿½ 2009, aNNakin
 		Suport & help : http://forums.alliedmods.net/showthread.php?t=103669
 	
 	ResetScore is free software;

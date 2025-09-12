@@ -53,7 +53,7 @@ public plugin_init()
 	register_cvar("grimreaper_gravity", "0.25")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Invisibility/Scythe/Float/Silent", "Invisibility/Knife=1 Hit KO/Low Gravity/Silent Walking", false, "grimreaper_level")
+	shCreateHero(gHeroName, "Invisibility/Scythe/Float/Silent", "Invisibility/Knife=1 Hit KO/Low Gravity/Silent Walking", false, "grimreaper_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT

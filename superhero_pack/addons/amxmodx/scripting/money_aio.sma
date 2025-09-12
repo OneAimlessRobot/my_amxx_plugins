@@ -45,11 +45,11 @@ Amx_moneymenu
 
 Amx_setgmnum <amount1> [amount2] [amount3] ...
 
-// Set the menu¡¯s option amount. 
+// Set the menuï¿½ï¿½s option amount. 
 
 Amx_givemoney <target> <amount> 
 
-//Give player money Command, <target> should be player name, or put a ¡®@¡¯ as prefix to group player. 
+//Give player money Command, <target> should be player name, or put a ï¿½ï¿½@ï¿½ï¿½ as prefix to group player. 
 
 ********************************************************************************************/
 
@@ -405,7 +405,7 @@ public fn_colorprint(playerid, colorid, msg[]){		//the code from google...Thanks
 	message_end()
 } 
 
-public client_disconnect(id){
+public client_disconnected(id){
 	g_client_money[id] = 0
 }
 

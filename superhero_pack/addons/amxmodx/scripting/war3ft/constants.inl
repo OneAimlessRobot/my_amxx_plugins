@@ -1070,7 +1070,7 @@ new g_szSprites[MAX_SPRITES][64];
 //new g_szRaceSprites[MAX_RACES + 1][64];
 //new g_szLevelSprites[MAX_LEVELS + 1][64];
 
-new g_iRaceSprites[MAX_RACES + 1];
+//new g_iRaceSprites[MAX_RACES + 1];
 //new g_iLevelSprites[MAX_LEVELS + 1];
 new g_iSprites[MAX_SPRITES] = {0};
 

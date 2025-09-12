@@ -180,7 +180,7 @@ public Do_Register_HamBot(id)
 	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	Safety_Disconnected(id)
 }

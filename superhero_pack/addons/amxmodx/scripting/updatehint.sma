@@ -162,7 +162,7 @@ check_client_type(id)
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	remove_task(BASE_TASK_ID_HINT + id);
 	remove_task(BASE_TASK_ID_KICK + id);

@@ -184,7 +184,6 @@ static const AUTHOR[] = "OneEyed"
 static const VERSION[] = "2.07a"
 
 #define MAX_TEXT_BUFFER		2047
-#define MAX_NAME_LENGTH		33
 #define MAX_PLAYER			33
 #define MAX_ASSISTERS		3
 #define MAX_BALL_SPAWNS		5
@@ -461,7 +460,7 @@ public plugin_init() {
   	 	register_event("ShowMenu", "menuclass", "b", "4&CT_Select", "4&Terrorist_Select");
   	 	register_event("VGUIMenu", "menuclass", "b", "1=26", "1=27");
 
-  	 	OFFSET_INTERNALMODEL = is_amd64_server() ? 152 : 126;
+  	 	OFFSET_INTERNALMODEL = 126;
 	}
 	else {
 		register_plugin("Soccer Jam(OFF)", VERSION, AUTHOR)
@@ -2209,7 +2208,7 @@ public eraser(num) {
  Comment:	$$
 
 ====================================================================================================*/
-public client_disconnect(id) {
+public client_disconnected(id) {
 	if(is_kickball) {
 		new x
 		for(x = 1; x<=RECORDS; x++)

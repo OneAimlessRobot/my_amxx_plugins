@@ -93,7 +93,7 @@ public cmdSay(id)
         read_args(szArgs, 16);
         replace_all(szArgs, 16, "^"", "");
         new szCmd[10], szParams[5];
-        strbreak(szArgs, szCmd, 9, szParams, 4);
+        argbreak(szArgs, szCmd, 9, szParams, 4);
         if( equali(szCmd, "/sayrules", 0) )
         {
                 if( strlen(szParams) > 0 )

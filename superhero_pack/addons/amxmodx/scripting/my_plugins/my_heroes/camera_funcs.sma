@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "camera_inc/sh_camman_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "camera_inc/sh_camera_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 
@@ -26,7 +27,6 @@ new hud_sync_charge
 new camman_camera_maxalpha
 new camman_camera_minalpha
 new Float:max_camera_charge
-new gSpriteBeam
 public plugin_init(){
 	
 	
@@ -508,49 +508,6 @@ public camera_wait_task(parm[],camera_taskid){
 	
 	
 }
-//----------------------------------------------------------------------------------------------
-laser_line(cam_id,Float:Pos[3], Float:vEnd[3], bool:killbeam)
-{
-	if ( !pev_valid(cam_id) ) return
-	
-	static  colors[3]
-	
-	switch ( cs_get_user_team(pev(cam_id, pev_iuser2)) )
-	{
-		case CS_TEAM_T: colors = LineColors[RED]
-			case CS_TEAM_CT: colors = LineColors[BLUE]
-				default: colors = LineColors[CUSTOM]
-	}
-	//This is a little cleaner but not much
-	if ( killbeam ) {
-		//Kill the Beam
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-		write_byte(TE_KILLBEAM)
-		write_short(cam_id) // entity
-		message_end()
-	}
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-	write_byte (0)     //TE_BEAMENTPOINTS 0
-	write_coord_f(Pos[0])
-	write_coord_f(Pos[1])
-	write_coord_f(Pos[2])		// start entity
-	write_coord_f(vEnd[0])	// end position
-	write_coord_f( vEnd[1])
-	write_coord_f(vEnd[2])
-	write_short(gSpriteBeam)// sprite index
-	write_byte(0)		// starting frame
-	write_byte(0)		// frame rate in 0.1's
-	write_byte(1)		// life in 0.1's
-	write_byte(5)		// line width in 0.1's
-	write_byte(0)		// noise amplitude in 0.01's
-	write_byte(colors[0])	// Red
-	write_byte(colors[1])	// Green
-	write_byte(colors[2])	// Blue
-	write_byte(pev(cam_id,pev_renderamt))	// brightness
-	write_byte(0)		// scroll speed in 0.1's
-	message_end()
-}
 public remove_camera(parm[3]){
 	
 	if(!is_valid_ent(parm[1])) return
@@ -812,11 +769,6 @@ uncharge_user(id){
 	
 	
 }
-client_hittable(vic_userid){
-	
-	return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-	
-}
 public _clear_cameras(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, CAMERA_CLASSNAME)
@@ -836,7 +788,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
-	gSpriteBeam = precache_model("sprites/laserbeam.spr")
+	precache_explosion_fx()
 }
 public death()
 {	

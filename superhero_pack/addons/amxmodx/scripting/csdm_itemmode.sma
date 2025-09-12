@@ -614,7 +614,6 @@ public c_ItemMode(id, menu, item)
 		menu_item_setname(menu, item, fItem )
 		return ITEM_ENABLED
 	}
-	return ITEM_ENABLED
 }
 
 public c_PersItems(id, menu, item)
@@ -635,7 +634,6 @@ public c_PersItems(id, menu, item)
 		menu_item_setname(menu, item, fItem )
 		return ITEM_ENABLED
 	}
-	return ITEM_ENABLED
 }
 
 public c_NoGunMenu(id, menu, item)
@@ -656,7 +654,6 @@ public c_NoGunMenu(id, menu, item)
 		menu_item_setname(menu, item, fItem )
 		return ITEM_ENABLED
 	}
-	return ITEM_ENABLED
 }
 
 public cfgmain(readAction, line[], section[])

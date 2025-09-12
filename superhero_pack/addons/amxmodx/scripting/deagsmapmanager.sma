@@ -281,7 +281,7 @@ public client_authorized(id) {
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	remove_task(DMAP_TASKID_MORE_LIST_MAPS + id);
 	if (is_user_bot(id)) {
 		return PLUGIN_CONTINUE;
@@ -1524,7 +1524,7 @@ show_vote_menu(bool:bFirstTime) {
 					continue;	// Ignore comments
 				}
 
-				strbreak(sFullLine, sTagMap, charsmax(sTagMap), sTagText, charsmax(sTagText));	// Split the map name and tag apart
+				argbreak(sFullLine, sTagMap, charsmax(sTagMap), sTagText, charsmax(sTagText));	// Split the map name and tag apart
 
 				// TODO: Wildcard (regex) matching
 				// I pulled this code for the v3.24 release.
@@ -2843,7 +2843,7 @@ public dmap_status(id, level, cid) {
 	}
 	new sDV[8];
 	formatex(sDV, charsmax(sDV), "%L", -2, "DV");
-	console_print(id, "[DMM] Config: %s%d%s%d/%s/%s#%s/%s", is_linux_server() ? "L" : "W", is_amd64_server() ? 64 : 32, is_dedicated_server() ? "D" : "L", get_cvar_num("sv_lan"), hldsVer, hldsMod, AMXX_VERSION_STR, amxxRVer);
+	console_print(id, "[DMM] Config: %s%d%s%d/%s/%s#%s/%s", is_linux_server() ? "L" : "W", 32, is_dedicated_server() ? "D" : "L", get_cvar_num("sv_lan"), hldsVer, hldsMod, AMXX_VERSION_STR, amxxRVer);
 	console_print(id, "[DMM] Config: %s/%s#%s/%s/%d#%d/%d#%d/%d/%d/%d", sLang, cLang, g_VERSION, sDV, DMAP_EXPECTED_DV, g_iConnectCount, FILE_LOGLEVEL, floatround(get_gametime()), get_timeleft(), floatround(oldtimelimit), floatround(get_cvar_float("mp_timelimit")));
 
 	return PLUGIN_HANDLED;

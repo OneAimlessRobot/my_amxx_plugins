@@ -158,11 +158,7 @@ public plugin_init()
 	}
 }
 
-public plugin_natives()
-{
-	set_module_filter("module_filter")
-	set_native_filter("native_filter")
-}
+
 public module_filter(const module[])
 {
 	if (equal(module, LIBRARY_NEMESIS) || equal(module, LIBRARY_DRAGON) || equal(module, LIBRARY_ASSASSIN) || equal(module, LIBRARY_NIGHTCRAWLER) || equal(module, LIBRARY_SURVIVOR) || equal(module, LIBRARY_SNIPER) || equal(module, LIBRARY_KNIFER) || equal(module, LIBRARY_PLASMA))
@@ -485,7 +481,7 @@ public spectator_nightvision(id)
 		DisableNightVision(id)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	// Reset nightvision flags
 	flag_unset(g_NightVisionActive, id)

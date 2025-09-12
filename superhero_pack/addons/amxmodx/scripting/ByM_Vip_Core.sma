@@ -532,7 +532,7 @@ public client_putinserver( iPlayer ) {
 	CheckPlayer( iPlayer );
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	ByM::PlayerDisconnected( iPlayer );
 	DelBitVar( g_iFalling, iPlayer );
 	g_iJumps[ iPlayer ] = 0;
@@ -690,10 +690,10 @@ stock ColorExplode( iCvar, &iRed, &iGreen, &iBlue ) {
 	new szColors[ 16 ], szPiece[ 5 ];
 	get_pcvar_string( iCvar, szColors, charsmax( szColors ) );
 	
-	strbreak( szColors, szPiece, charsmax( szPiece ), szColors, charsmax( szColors ) );
+	argbreak( szColors, szPiece, charsmax( szPiece ), szColors, charsmax( szColors ) );
 	iRed = str_to_num( szPiece );
 	
-	strbreak( szColors, szPiece, charsmax( szPiece ), szColors, charsmax( szColors ) );
+	argbreak( szColors, szPiece, charsmax( szPiece ), szColors, charsmax( szColors ) );
 	iGreen = str_to_num( szPiece );
 	iBlue = str_to_num( szColors );
 }

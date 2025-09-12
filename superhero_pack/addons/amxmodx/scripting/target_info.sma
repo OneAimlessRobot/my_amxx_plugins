@@ -105,7 +105,7 @@ public client_putinserver(id){
 }
 
 
-public client_disconnect(id){
+public client_disconnected(id){
     _UnSet(_alive, id)
     _UnSet(_in_server, id)
 }

@@ -8,7 +8,6 @@
 #define TASKID_COUNT 1324
 #define TASKID_FX 1212
 // GLOBAL VARIABLES
-new gHeroLevel
 new gHeroName[]="Jeremy"
 new gHasJeremyPower[SH_MAXSLOTS+1]
 new gJeremyPowerUsedTimes[SH_MAXSLOTS+1]

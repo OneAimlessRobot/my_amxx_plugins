@@ -194,7 +194,7 @@ public client_putinserver( iPlayer ) {
 		set_task( 15.0, "RewardPlayer", iPlayer + TASK_REWARD );
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	if( task_exists( iPlayer + TASK_REWARD ) )
 		remove_task( iPlayer + TASK_REWARD );
 		

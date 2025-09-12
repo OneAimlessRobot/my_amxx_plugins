@@ -5,7 +5,6 @@
 #include "../include/hamsandwich.inc"
 #include "../include/fakemeta.inc"
 #include "../include/fakemeta_util.inc"
-#include "../include/colorchat.inc"
 #include "../include/engine.inc"
 #include "../include/fun.inc"
 #include "../include/csx.inc"

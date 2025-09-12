@@ -109,11 +109,6 @@ public plugin_precache()
 	//precache_generic(g_EVENT);
 }
 
-public plugin_modules()
-{
-	require_module("fakemeta");
-}
-
 public plugin_cfg()
 {
 	g_tKatanaClass = engfunc(EngFunc_AllocString,"info_target");

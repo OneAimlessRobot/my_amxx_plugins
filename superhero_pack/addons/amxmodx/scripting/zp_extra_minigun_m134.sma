@@ -178,7 +178,7 @@ public plugin_precache()
 	register_clcmd("weapon_m134", "cmd_m134_selected");
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 	g_has_m134[id] = false;
 
 public zp_user_infected_post(id)

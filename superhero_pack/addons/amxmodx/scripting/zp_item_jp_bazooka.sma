@@ -182,7 +182,7 @@ public CSBotInit(id)
 	bHamBot = true
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(bHasJetpack[id])
 	{

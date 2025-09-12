@@ -3,7 +3,6 @@
 #include < hamsandwich >
 #include < bym_cod_2016 >
 #include < colorchat >
-#include < dhudmessage >
 #include < fakemeta >
 #include < nvault >
 #include < engine >
@@ -497,7 +496,7 @@ public client_connect( iPlayer ) {
 	g_bCanSee[ iPlayer ] = false;
 }
 
-public client_disconnect( iPlayer ) {
+public client_disconnected( iPlayer ) {
 	g_bDisplaySpawns[ iPlayer ] = false;
 	g_bCanSee[ iPlayer ] = false;
 }
