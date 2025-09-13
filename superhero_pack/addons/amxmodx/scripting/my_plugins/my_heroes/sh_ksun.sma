@@ -536,8 +536,14 @@ return player_count;
 //----------------------------------------------------------------------------------------------
 public ksun_prethink(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && (get_ksun_num(id,1,0)<=0)) {
-		set_pev(id, pev_flTimeStepSound, 999)
+	if ( sh_is_active()){
+		if(client_hittable(id)){
+			if(spores_has_ksun(id)){
+				if((get_ksun_num(id,1,0)<=0)) {
+					set_pev(id, pev_flTimeStepSound, 999)
+					}
+				}
+			}
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -4505,14 +4505,14 @@ public client_putinserver(id)
 	gPlayerPutInServer[id] = true
 
 	// Find a czero bot to register Ham_Spawn
-	if ( get_pcvar_num(bot_quota) > 0 && !gCZBotRegisterHam ) {
+	/*if ( get_pcvar_num(bot_quota) > 0 && !gCZBotRegisterHam ) {
 		for(new i=0;i<10;i++){
 			console_print(0,"BOT LOGGGED AS CZBOT????^n")
 			
 		}
 		// Delay for private data to initialize
 		set_task(0.1, "czbotHookHam", id)
-	}
+	}*/
 
 	// Don't want to mess up already loaded XP
 	if ( !gReadXPNextRound[id] && gLongTermXP ) return
