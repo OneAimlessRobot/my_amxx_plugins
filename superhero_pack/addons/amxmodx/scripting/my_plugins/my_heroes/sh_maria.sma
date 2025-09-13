@@ -1,6 +1,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 #define MARIA_HEAL_TASKID 2219926
 #define MARIA_STATS_TASKID 7219926
@@ -13,16 +14,13 @@
 //new gHeroID
 new const gHeroName[] = "Maria"
 new bool:gHasMaria[SH_MAXSLOTS+1]
-//new g_base_points[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
 
 new const hud_color[4]={111,255,111,0}
-//new const love_color[4]={250, 92, 163,50}
 new const heal_color[4]={250,250,210, 100}
 
-new m_spriteTexture,sprite1
 new base_points
 new max_points
 new Float:points_heal_coeff
@@ -147,7 +145,16 @@ values[1]=maria_health;
 
 
 bool:heal_teamate(id,i){
-	
+	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)){
+		
+		
+		return false
+	}
+	if(!gHasMaria[id]){
+		
+		
+		return false
+	}
 	new Float:mate_health=float(get_user_health(i))
 	if(mate_health>=sh_get_max_hp(i)){
 		return false
@@ -159,7 +166,7 @@ bool:heal_teamate(id,i){
 	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
 	sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
 	setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-	set_task(MARIA_HEAL_PERIOD,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
+	set_task(MARIA_HEAL_PERIOD*2,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
 	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	heal_stream(id,i)
 	return true
@@ -169,15 +176,32 @@ bool:heal_teamate(id,i){
 public maria_heal_loop(id){
 
 id-=MARIA_HEAL_TASKID
-if(!sh_is_active()||!is_user_alive(id)) return
-
+if(!sh_is_active()||!client_hittable(id)){
+		
+		
+	return
+}
+if(!gHasMaria[id]){
+	
+	
+	return
+}
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
 new CsTeams:user_team= cs_get_user_team(id)
 new bool:healed=false;
 for(new i=1;i<=SH_MAXSLOTS;i++){
+	if(!client_hittable(id)){
 	
-	if((i==id)||!is_user_connected(i)){
+		return
+	
+	}
+	if(!gHasMaria[id]){
+		
+		return
+		
+	}
+	if((i==id)||!client_hittable(i)){
 		
 		
 	}
@@ -205,7 +229,7 @@ if(healed){
 	heal_aura(id)
 
 }
-make_shockwave(id,client_origin)
+make_shockwave(client_origin,g_normal_radius[id],hud_color)
 
 }
 public heal_aura(id){
@@ -229,31 +253,6 @@ public heal_aura(id){
 	
 }
 
-public make_shockwave(id,point[3]){
-	
-	
-	
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 21 )
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2]-10)
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + floatround(g_normal_radius[id]))
-	write_short( sprite1 )
-	write_byte( 0 )
-	write_byte(1)		// frame rate in 0.1's
-	write_byte(6)		// life in 0.1's
-	write_byte(2)		// line width in 0.1's
-	write_byte(1)		// noise amplitude in 0.01's
-	write_byte( hud_color[0])
-	write_byte( hud_color[1] )
-	write_byte( hud_color[2] )
-	write_byte( 10)
-	write_byte( 0 )
-	message_end()
-}
 public heal_stream(id, x)
 {
 	
@@ -265,7 +264,7 @@ public heal_stream(id, x)
 	write_byte( 8 )
 	write_short(id)				// start entity
 	write_short(x)				// entity
-	write_short(m_spriteTexture)		// model
+	write_short(white)		// model
 	write_byte( 0 ) 				// starting frame
 	write_byte( 30 )  			// frame rate
 	write_byte( 1)  			// life
@@ -394,8 +393,7 @@ public newRound(id)
 }
 public plugin_precache()
 {
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
-	sprite1 = precache_model("sprites/white.spr")
+	precache_explosion_fx()
 	
 }
 public sh_round_end(){
