@@ -183,6 +183,7 @@ g_teslacoilRunning[victim] = false
 // This needs to change to a forward check
 set_user_info(victim, "TC", "0")
 
+emit_sound(victim, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 gRechargeAllowed[victim] = false
 }
 //----------------------------------------------------------------------------------------------
