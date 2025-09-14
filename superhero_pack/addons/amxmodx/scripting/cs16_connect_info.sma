@@ -68,6 +68,10 @@ public client_disconnected(id)
 
 public Show_Info(id)
 {
+	if(is_user_hltv(id)){
+		
+		return
+	}
 	new szHostName[64]
 	get_pcvar_string(HostName, szHostName, charsmax(szHostName))
 
