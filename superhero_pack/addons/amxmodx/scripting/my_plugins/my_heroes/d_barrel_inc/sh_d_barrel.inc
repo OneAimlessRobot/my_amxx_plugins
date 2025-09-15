@@ -12,9 +12,9 @@
 #define old_event "events/m3.sc"
 
 #define D_BARREL_DAMAGE 85
-#define D_BARREL_SPEED 0.15
-#define D_BARREL_RECOIL 2.0
-#define D_BARREL_RELOAD_TIME 3.0
+#define D_BARREL_SPEED 0.5
+#define D_BARREL_RECOIL 0.7
+#define D_BARREL_RELOAD_TIME 1.5
 #define D_BARREL_DEFAULT_CLIP 2
 #define D_BARREL_DEFAULT_BPAMMO 64
 #define D_BARREL_KNOCKPOWER 1000

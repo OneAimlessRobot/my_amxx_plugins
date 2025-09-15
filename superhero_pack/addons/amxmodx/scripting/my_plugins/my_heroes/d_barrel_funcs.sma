@@ -49,7 +49,7 @@ const m_szAnimExtention = 492
 
 new g_Volcano, g_OldWeapon[33]
 new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2], g_ham_bot
-
+new g_SpecialShot
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 
@@ -256,7 +256,13 @@ public fw_CmdStart(id, uc_handle, seed)
 		return 
 
 	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
-
+	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+	if(!pev_valid(Ent)) return
+	
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
+	
+	
 	if(CurButton & IN_RELOAD)
 	{
 		CurButton &= ~IN_RELOAD
@@ -285,6 +291,17 @@ public fw_CmdStart(id, uc_handle, seed)
 			
 		fw_Weapon_Reload_Post(ent)
 	}
+	if(CurButton & IN_ATTACK2)
+	{
+		if(flNextAttack > 0.0) return
+		
+		for(new i = 0; i < Ammo; i++)
+		{
+			Set_BitVar(g_SpecialShot, id)
+			ExecuteHamB(Ham_Weapon_PrimaryAttack, Ent)
+			UnSet_BitVar(g_SpecialShot, id)
+		}
+	} 
 }
 
 public fw_SetModel(entity, model[])
