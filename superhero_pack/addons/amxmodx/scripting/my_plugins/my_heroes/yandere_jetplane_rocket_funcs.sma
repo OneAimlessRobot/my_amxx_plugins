@@ -357,25 +357,6 @@ public law_think(ent)
 		// Get the origin (position) of the reference entity
 		pev(jet_get_user_jet(owner), pev_origin, ref_pos)
 		
-		/*new Float:forward_vec[3]
-		new Float:left_vec[3]
-		// Get the forward vector (facing direction)
-		pev(jet_get_user_jet(owner), pev_v_angle, forward_vec)
-		
-		// Calculate the left vector (cross product)
-		left_vec[0] = -forward_vec[1] // X-component
-		left_vec[1] = forward_vec[0]  // Y-component
-		left_vec[2] = 0.0           // Z-component (keep it horizontal)
-		
-		new Float: length=vector_length(left_vec);
-		if(length==0.0){
-		
-			length=1.0
-		}
-		// Normalize the left vector
-		left_vec[0]/=length
-		left_vec[1]/=length
-		left_vec[2]/=length
 		
 		// Set the spawn position to the left*/
 		spawn_pos[0] = ref_pos[0]
@@ -391,7 +372,7 @@ public law_think(ent)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		
 		
-		draw_bbox(ent,0)
+		//draw_bbox(ent,0)
 		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
 	}
 	return FMRES_IGNORED

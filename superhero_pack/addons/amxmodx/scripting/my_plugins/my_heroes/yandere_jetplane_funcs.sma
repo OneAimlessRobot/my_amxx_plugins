@@ -236,7 +236,7 @@ public jet_deploy_task(parm[],id){
 		set_user_gravity(attacker,0.0001)
 	
 	}
-	new alpha=190
+	new alpha=255
 	set_pev(jetplane_id,pev_renderamt,float(alpha))
 	set_pev(attacker, pev_takedamage, DAMAGE_NO)
 	set_pev(attacker, pev_solid, SOLID_NOT)
@@ -354,7 +354,7 @@ public jet_think(ent)
 					get_user_jet_scans(owner));
 		set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.35, 0.8, 1, 0.0, 0.5,0.0,0.0,1)
 		ShowSyncHudMsg(owner, hud_sync_charge, "%s", hud_msg)
-		draw_bbox(jet_get_user_jet(owner),0)
+		//draw_bbox(jet_get_user_jet(owner),0)
 		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
 	}
 	return FMRES_IGNORED

@@ -17,6 +17,7 @@
 new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
 new shell_loaded[SH_MAXSLOTS+1]
+new gShallGib[SH_MAXSLOTS+1] 
 new jetplane_mg_ammo;
 public plugin_init(){
 	
@@ -29,8 +30,40 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_bulletspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "mg_think")
+	RegisterHam(Ham_Killed, "player", "Ham_Player_Killed");
+	RegisterHam(Ham_TakeDamage, "player", "Ham_Player_TakeDamage");
 	
 }
+public Ham_Player_TakeDamage(victim, inflictor, attacker, Float:damage, damagebits)
+{
+	new classname[128]
+	pev(inflictor,pev_classname,classname,127);
+	if(equali(classname,JETPLANE_SHELL_CLASSNAME)){
+		if(is_user_connected(victim)){
+			
+			gShallGib[victim]=true;
+		}
+		
+	}
+	
+	
+	return HAM_IGNORED;
+}
+
+public Ham_Player_Killed(victim, killer, shouldgib)
+{
+	if (!is_user_connected(victim)){
+		
+		return HAM_IGNORED
+	} 
+	if( gShallGib[victim]) {
+		SetHamParamInteger(3,2);
+		gShallGib[victim]=false;
+		return HAM_HANDLED;
+	}
+	return HAM_IGNORED;
+}
+
 public plugin_cfg(){
 	
 	loadCVARS()
@@ -96,22 +129,22 @@ public _get_user_mg(iPlugins,iParams){
 	new id=get_param(1)
 	new result=is_user_connected(id)
 	if(result){
-	new result2=pev_valid(jet_get_user_jet(id))
-	if(result2){
+		new result2=pev_valid(jet_get_user_jet(id))
+		if(result2){
 			
-		
-		return pev(jet_get_user_jet(id),pev_iuser3)
-	}
-	else{
-		return 0
-		
-	}
+			
+			return pev(jet_get_user_jet(id),pev_iuser3)
+		}
+		else{
+			return 0
+			
+		}
 	}
 	return 0
-
+	
 }
 public _spawn_jetplane_mg(iPlugins,iParams){
-
+	
 	new id=get_param(1)
 	new jetplane_id=jet_get_user_jet(id)
 	
@@ -138,7 +171,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	DispatchKeyValue(  mg_id , "health", health );
 	set_pev(mg_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(mg_id,pev_renderfx,kRenderFxGlowShell)
-	new alpha=190;
+	new alpha=255;
 	set_pev(mg_id,pev_renderamt,float(alpha))
 	Entvars_Set_Vector(mg_id, EV_VEC_mins,jetplane_mg_min_dims)
 	Entvars_Set_Vector(mg_id, EV_VEC_maxs,jetplane_mg_max_dims)
@@ -174,9 +207,9 @@ public CmdStart(id, uc_handle)
 			}
 		}
 		else{
-		
+			
 			client_print(id, print_center, "Mg is unnavailable. Please try again later.")
-		
+			
 		}
 	}
 	
@@ -184,13 +217,13 @@ public CmdStart(id, uc_handle)
 }
 
 public _clear_shells(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, JETPLANE_SHELL_CLASSNAME)
-while(grenada) {
 	
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, JETPLANE_SHELL_CLASSNAME)
-}
+	new grenada = find_ent_by_class(-1, JETPLANE_SHELL_CLASSNAME)
+	while(grenada) {
+		
+		remove_entity(grenada)
+		grenada = find_ent_by_class(grenada, JETPLANE_SHELL_CLASSNAME)
+	}
 }
 
 //----------------------------------------------------------------------------------------------
@@ -241,7 +274,7 @@ public mg_think(ent)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		
 		
-		draw_bbox(ent,0)
+		//draw_bbox(ent,0)
 		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
 	}
 	return FMRES_IGNORED
@@ -249,117 +282,173 @@ public mg_think(ent)
 
 launch_shell(id)
 {
-
-entity_set_int(id, EV_INT_weaponanim, 3)
-
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
-if(!pev_valid(get_user_mg(id))) return PLUGIN_HANDLED
-entity_get_vector(get_user_mg(id), EV_VEC_origin , Origin)
-entity_get_vector(id, EV_VEC_v_angle, vAngle)
-
-Origin[2]+=(jetplane_mg_max_dims[2]+10.0)
-
-Ent = create_entity("info_target")
-
-if (!Ent){
-	sh_chat_message(id,yandere_get_hero_id(),"shell failed!");
-	return PLUGIN_HANDLED
-}
-entity_set_string(Ent, EV_SZ_classname, JETPLANE_SHELL_CLASSNAME)
-entity_set_model(Ent, GUN_SHELL)
-
-new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-new Float:MaxBox[3] = {1.0, 1.0, 1.0}
-entity_set_vector(Ent, EV_VEC_mins, MinBox)
-entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
-
+	
+	entity_set_int(id, EV_INT_weaponanim, 3)
+	
+	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	if(!pev_valid(get_user_mg(id))) return PLUGIN_HANDLED
+	entity_get_vector(get_user_mg(id), EV_VEC_origin , Origin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngle)
+	
+	Origin[2]+=(jetplane_mg_max_dims[2]+10.0)
+	
+	Ent = create_entity("info_target")
+	
+	if (!Ent){
+		sh_chat_message(id,yandere_get_hero_id(),"shell failed!");
+		return PLUGIN_HANDLED
+	}
+	entity_set_string(Ent, EV_SZ_classname, JETPLANE_SHELL_CLASSNAME)
+	entity_set_model(Ent, GUN_SHELL)
+	
+	new Float:MinBox[3] = {-1.0, -1.0, -1.0}
+	new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+	entity_set_vector(Ent, EV_VEC_mins, MinBox)
+	entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
+	
 //Origin[0]+=jetplane_max_dims[0]
-
-entity_set_origin(Ent, Origin)
-entity_set_vector(Ent, EV_VEC_angles, vAngle)
-
-entity_set_int(Ent, EV_INT_solid, 2)
-entity_set_int(Ent, EV_INT_movetype, 5)
-entity_set_edict(Ent, EV_ENT_owner, id)
-
-VelocityByAim(id, floatround(jetplane_mg_bulletspeed) , Velocity)
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-new parm[1]
-set_user_jet_shells(id,get_user_jet_shells(id)-1)
-shell_loaded[id]=false
-parm[0]=id
-set_task(MG_SHELL_PERIOD,"shell_reload",id+MG_SHELL_RELOAD_TASKID,parm,1,"a",1)
-
-
-new parm1[1]
-parm1[0] = Ent
-emit_sound(id, CHAN_WEAPON, MACHINE_GUN_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(0.01, "shelltrail",id,parm1,1)
-
-return PLUGIN_CONTINUE
+	
+	entity_set_origin(Ent, Origin)
+	entity_set_vector(Ent, EV_VEC_angles, vAngle)
+	
+	entity_set_int(Ent, EV_INT_solid, 2)
+	entity_set_int(Ent, EV_INT_movetype, 5)
+	entity_set_edict(Ent, EV_ENT_owner, id)
+	
+	VelocityByAim(id, floatround(jetplane_mg_bulletspeed) , Velocity)
+	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+	
+	new parm[1]
+	set_user_jet_shells(id,get_user_jet_shells(id)-1)
+	shell_loaded[id]=false
+	parm[0]=id
+	set_task(MG_SHELL_PERIOD,"shell_reload",id+MG_SHELL_RELOAD_TASKID,parm,1,"a",1)
+	
+	
+	new parm1[1]
+	parm1[0] = Ent
+	emit_sound(id, CHAN_WEAPON, MACHINE_GUN_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	set_task(0.01, "shelltrail",id,parm1,1)
+	
+	return PLUGIN_CONTINUE
 }
 
 public shell_reload(parm[],id)
 {
-id-=MG_SHELL_RELOAD_TASKID
-shell_loaded[parm[0]] = true
+	id-=MG_SHELL_RELOAD_TASKID
+	shell_loaded[parm[0]] = true
 }
 public shelltrail(parm[])
 {
-new pid = parm[0]
-if (pid)
-{
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 2 )        // width
-write_byte(love_color[0])			// r, g, b
-write_byte(love_color[1])		// r, g, b
-write_byte(love_color[2])			// r, g, b
-write_byte(love_color[3]) // brightness
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-}
+	new pid = parm[0]
+	if (pid)
+	{
+		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+		write_byte( TE_BEAMFOLLOW )
+		write_short(pid) // entity
+		write_short(m_trail)  // model
+		write_byte( 10 )       // life
+		write_byte( 2 )        // width
+		write_byte(love_color[0])			// r, g, b
+		write_byte(love_color[1])		// r, g, b
+		write_byte(love_color[2])			// r, g, b
+		write_byte(love_color[3]) // brightness
+		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	}
 }
 
 
 public vexd_pfntouch(pToucher, pTouched)
 {
-
-if (pToucher <= 0) return
-if (!is_valid_ent(pToucher)) return
-new szClassName[32]
-Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
-
-new oid = entity_get_edict(pToucher, EV_ENT_owner)
+	
+	if (!is_valid_ent(pToucher)||!is_valid_ent(pTouched)) return
+	new szClassName[32]
+	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	
+	new oid = entity_get_edict(pToucher, EV_ENT_owner)
 //&&((pTouched==oid)||(pTouched==jet_get_user_jet(oid))||(pTouched!=get_user_mg(oid)))
-if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
-if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))) return
-if(client_hittable(pTouched))
-{
-	
-	sh_extra_damage(pTouched,oid,floatround(jetplane_mg_dmg),"Rage jet gatling cannon");
-	
-	
-}
-remove_entity(pToucher)
-}
+	if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
+		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))) return
+		
+		new Float:origin[3]
+		entity_get_vector(pToucher,EV_VEC_origin,origin);
+		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
+			if(client_hittable(pTouched))
+			{
+				new Float:vic_origin[3];
+				new Float:vic_origin_eyes[3];
+				new vic_origin_eyes_int[3];
+				
+				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+				get_user_origin(pTouched,vic_origin_eyes_int,1);
+				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+				new Float:damage=jetplane_mg_dmg
+				new headshot=0;
+				if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
+					
+					headshot=1;
+					damage*=4;
+				}
+				sh_extra_damage(pTouched,oid,floatround(damage),"RAGE GATLING SHELL",headshot);
+				sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+				
+				new CsArmorType:armor_type;
+				cs_get_user_armor(pTouched,armor_type);
+				switch(armor_type){
+					
+					case CS_ARMOR_NONE:{
+						
+						
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						blood_spray(origin, headshot?10:5)
+						
+						
+					}
+					case CS_ARMOR_KEVLAR:{
+						
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						if(headshot){
+							blood_spray(origin, 5)
+						}
+						else{
+							
+							make_sparks(origin);
+						}
+					}
+					case CS_ARMOR_VESTHELM:{
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						make_sparks(origin);
+					}
+				}
+			}
+		}
+		if(pev(pTouched,pev_solid)==SOLID_BSP){
+			
+			emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			make_sparks(origin);
+			gun_shot_decal(origin);
+			
+		}
+		remove_entity(pToucher)
+	}
 }
 public plugin_precache()
 {
-
-precache_explosion_fx()
-
-precache_model( "models/metalgibs.mdl" );
-engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
-precache_model(GUN_SHELL)
-precache_model(P_MACHINEGUN_MODEL)
-engfunc(EngFunc_PrecacheSound, MACHINE_GUN_SOUND)
-
+	
+	precache_explosion_fx()
+	
+	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
+	precache_model(GUN_SHELL)
+	precache_model(P_MACHINEGUN_MODEL)
+	engfunc(EngFunc_PrecacheSound, MACHINE_GUN_SOUND)
+	engfunc(EngFunc_PrecacheSound, GUN_SHELL_WALLHIT_SOUND)
+	
 }
 
 public _mg_destroy(iPlugin,iParams){

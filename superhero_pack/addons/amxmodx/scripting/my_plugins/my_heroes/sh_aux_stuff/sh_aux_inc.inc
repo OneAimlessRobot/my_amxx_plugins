@@ -42,7 +42,7 @@ stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 	blood_small_red[BLOOD_SM_NUM] = {190,191,192,193,194,195,196,197}
 	
 static const burn_decal[5] = {199,200,201,202,203}
-
+stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 stock g_msgFade
 //Color definitions
 stock const LineColors[COLORS_NUM][3] = {
@@ -113,7 +113,11 @@ stock trail(vec1[3],vec2[3],const color[4],id){
 }
 public track_task(array[],id){
 	id-=RADIOACTIVE_TASK_ID
-	
+	if(!client_hittable(id)){
+		
+		unradioactive_user(id);
+		return
+	}
 	new hud_msg[256]
 	new client_name[128]
 	new distance, origin[3], eorigin[3],att_origin[3]
@@ -338,8 +342,9 @@ stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:ti
 	array[3] = do_damage
 	array[4] = damage
 	for(new i=0;i<player_count;i++){
-	
-		array[5+i]=players[i]
+		if(client_hittable(players[i])){
+			array[5+i]=players[i]
+		}
 	}
 	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
 	set_task(floatsub(floatmul(period,float(radioactive_times)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
@@ -376,7 +381,7 @@ stock detect_user(id,enemy,PlayerCoords[3]){
 
 	
 	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-	write_byte(id)
+	write_byte(1)
 	write_byte(enemy)           
 	write_coord(PlayerCoords[0])
 	write_coord(PlayerCoords[1])
@@ -1001,7 +1006,7 @@ stock fx_invisible(id)
 	set_pev(id, pev_renderamt, 0.0)
 }
 
-stock fx_blood(origin[3],origin2[3],HitPlace)
+stock fx_blood(origin[3],origin2[3],HitPlace,bool:alien=false)
 {
 	//Crash Checks
 	if (HitPlace < 0 || HitPlace > 7) HitPlace = 0
@@ -1019,12 +1024,12 @@ stock fx_blood(origin[3],origin2[3],HitPlace)
 	write_coord(rX) // x
 	write_coord(rY) // y
 	write_coord(rZ) // z
-	write_byte(BLOOD_STREAM_RED) // color
+	write_byte(alien?BLOOD_STREAM_YELLOW:BLOOD_STREAM_RED) // color
 	write_byte(random_num(100,200)) // speed
 	message_end()
 }
 
-stock fx_bleed(origin[3])
+stock fx_bleed(origin[3],bool:alien=false)
 {
 	// Blood spray
 	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
@@ -1035,7 +1040,7 @@ stock fx_bleed(origin[3])
 	write_coord(random_num(-360,360)) // x
 	write_coord(random_num(-360,360)) // y
 	write_coord(-10) // z
-	write_byte(BLOOD_STREAM_RED) // color
+	write_byte(alien?BLOOD_STREAM_YELLOW:BLOOD_STREAM_RED) // color
 	write_byte(random_num(50,100)) // speed
 	message_end()
 }

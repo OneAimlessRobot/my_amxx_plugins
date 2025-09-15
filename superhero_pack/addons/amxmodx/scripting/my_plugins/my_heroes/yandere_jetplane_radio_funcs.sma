@@ -124,7 +124,7 @@ launch_scan(id){
 
 
 	
-	if(!is_user_connected(id)||!yandere_get_has_yandere(id)){
+	if(!client_hittable(id)||!yandere_get_has_yandere(id)){
 	
 		return 
 	
@@ -147,10 +147,14 @@ launch_scan(id){
 	for (new i=0; i < numfound; i++)
 	{		
 		new pid = entlist[i];
-		if(pid!=id){
+		if((pid!=id)){
 			if(cs_get_user_team(pid)==idTeam){
 				continue
 			}
+		}
+		else if(!(client_hittable(pid))){
+			
+			continue
 		}
 		track_user(yandere_get_hero_id(),pid,id,0,0,0.5,10.0)
 		

@@ -5,7 +5,7 @@
 
 #define JETPLANE_SHELL_CLASSNAME "yandere_bullet"
 #define JETPLANE_MG_CLASSNAME "yandere_mg"
-
+#define GUN_SHELL_WALLHIT_SOUND "weapons/xbow_hit1.wav"
 
 #define P_MACHINEGUN_MODEL "models/shmod/yandere/jetplane/gunz/mountgun/mountgun.mdl"
 #define GUN_SHELL "models/shmod/yandere/jetplane/projectiles/rshell.mdl"
@@ -22,6 +22,8 @@
 
 #define MG_SHELL_REM_TIME 0.001
 
+#define MG_SHELL_HEADSHOT_DIST_THRESHOLD 30.0
+
 stock Float:jetplane_mg_min_dims[3]={-30.0,-30.0,-30.0}
 stock Float:jetplane_mg_max_dims[3]={30.0,30.0,30.0}
 
@@ -37,6 +39,3 @@ native clear_mgs()
 native mg_destroy(id)
 native spawn_jetplane_mg(id)
 native get_user_mg(id)
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

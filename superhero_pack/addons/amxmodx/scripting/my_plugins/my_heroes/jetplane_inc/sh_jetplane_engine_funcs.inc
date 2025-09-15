@@ -3,7 +3,7 @@
 #endif
 #define sh_yandere_jet_engine_funcs
 
-#define FlameAndSoundRate 6
+#define FlameAndSoundRate 3
 
 #define JETPLANE_FLY_SOUND "shmod/yandere/jetsounds/engine/fly2.wav"
 #define JETPLANE_BLOW_SOUND "shmod/yandere/jetsounds/engine/blow.wav"

@@ -157,7 +157,7 @@ public lena_init()
 		set_task(0.1, "lena_hud_task", id+LENA_HUD_TASKID, "", 0, "b")
 		new_spawn(id)
 	}
-	else
+	else 
 	{
 		sh_drop_weapon(id,LENA_WEAPON_CLASSID,true);
 		remove_task(id+LENA_HUD_TASKID)

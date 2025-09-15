@@ -32,7 +32,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		if(!client_isnt_hittable(i)){
+		if(client_hittable(i)){
 			g_dragging_who[i][0]=-1;
 			g_dragging_who[i][1]=0
 		}
@@ -54,7 +54,7 @@ public plugin_init(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!tranq_get_has_erica(id) ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !client_hittable(id)||!tranq_get_has_erica(id) ||!shModActive()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&hook_get_hook_kills(id)) {
@@ -65,7 +65,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( tranq_get_has_erica(id)&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if ( tranq_get_has_erica(id)&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	stop_dragging(id)
 	g_hook_kills[id]=max_hook_kills_per_life;
@@ -100,7 +100,7 @@ stop_dragging(id){
 	
 		remove_task(id+HOOK_TASKID)
 		if((g_dragging_who[id][0]>=0)){
-			if(!client_isnt_hittable( g_dragging_who[id][0])){
+			if(client_hittable( g_dragging_who[id][0])){
 				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 			}
 			
@@ -113,7 +113,13 @@ stop_dragging(id){
 public hook_think(id)
 {
 	id-=HOOK_TASKID
-	if (client_isnt_hitter(id)){
+	if (!client_hittable(id)){
+	
+		remove_task(id+HOOK_TASKID)
+		return FMRES_IGNORED
+	
+	}
+	if (!tranq_get_has_erica(id)){
 	
 		remove_task(id+HOOK_TASKID)
 		return FMRES_IGNORED
@@ -207,8 +213,8 @@ public orient_user(id,Float:angles[3],Float:v_angle[3])
 //----------------------------------------------------------------------------------------------
 public CmdStart1(attacker, uc_handle)
 {
-	if ( !is_user_alive(attacker)||!tranq_get_has_erica(attacker)||!hasRoundStarted()||client_isnt_hittable(attacker)) return FMRES_IGNORED;
-	//if ( !is_user_alive(attacker)||!tranq_get_has_erica(attacker)) return FMRES_IGNORED;
+	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
+	if ( !tranq_get_has_erica(attacker)||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
 	
 	
 	static button;
@@ -371,22 +377,6 @@ public _hook_get_hook_kills(iPlugin,iParams){
 new id=get_param(1)
 
 return g_hook_kills[id]
-
-
-}
-
-
-client_isnt_hitter(gatling_user){
-new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-if(result) return true
-
-return !tranq_get_has_erica(gatling_user)
-
-}
-
-client_isnt_hittable(gatling_user){
-new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user))
-return result
 
 
 }

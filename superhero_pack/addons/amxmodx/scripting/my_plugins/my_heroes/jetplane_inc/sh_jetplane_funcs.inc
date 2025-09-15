@@ -27,13 +27,13 @@
 #define JET_CHARGE_TASKID 21267438
 #define JET_DEPLOY_TASKID 22227438
 #define JET_CHARGE_PERIOD 0.1
-#define JET_THINK_PERIOD 0.1
+#define JET_THINK_PERIOD 0.05
 
 #define JET_CHARGE_RATE 1000.0
 
-#define CAMERA_DIST 500.0
-stock Float:jetplane_min_dims[3]={-100.0,-100.0,-30.0}
-stock Float:jetplane_max_dims[3]={100.0,100.0,30.0}
+#define CAMERA_DIST 300.0
+stock Float:jetplane_min_dims[3]={-33.0,-33.0,-10.0}
+stock Float:jetplane_max_dims[3]={33.0,33.0,10.0}
 stock const jetplane_color[4]={100,100,100,50}
 
 stock const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}

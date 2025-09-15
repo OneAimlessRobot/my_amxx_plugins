@@ -111,7 +111,13 @@ stop_dragging(id){
 public slitter_think(id)
 {
 	id-=SLITTER_TASKID
-	if (client_isnt_hitter(id)){
+	if (!client_hittable(id)){
+	
+		remove_task(id+SLITTER_TASKID)
+		return FMRES_IGNORED
+	
+	}
+	if (!teliko_get_has_teliko(id)){
 	
 		remove_task(id+SLITTER_TASKID)
 		return FMRES_IGNORED
@@ -191,8 +197,8 @@ public orient_user(id,Float:angles[3],Float:v_angle[3])
 //----------------------------------------------------------------------------------------------
 public CmdStart(attacker, uc_handle)
 {
-	if ( !is_user_alive(attacker)||!teliko_get_has_teliko(attacker)||!hasRoundStarted()||client_isnt_hitter(attacker)) return FMRES_IGNORED;
-	
+	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
+	if ( !teliko_get_has_teliko(attacker)||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
 	
 	static button
 	button= get_uc(uc_handle, UC_Buttons);
@@ -378,15 +384,6 @@ new id=get_param(1)
 
 return g_slit_kills[id]
 
-
-}
-
-
-client_isnt_hitter(gatling_user){
-new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-if(result) return true
-
-return !teliko_get_has_teliko(gatling_user)
 
 }
 

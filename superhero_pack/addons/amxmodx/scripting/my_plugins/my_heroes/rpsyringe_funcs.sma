@@ -161,7 +161,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	new color[4]
 	sh_get_pill_color(rocket_fx[pToucher],id,color)
 	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
-	RemoveEntity(pToucher)
+	remove_missile(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
 		new szClassName2[32]
@@ -169,7 +169,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 		
 		if(equal(szClassName2, ROCKET_CLASSNAME)) {
 			emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			RemoveEntity(pTouched)
+			remove_missile(pTouched)
 		}
 	}
 }
@@ -197,7 +197,7 @@ return PLUGIN_HANDLED
 }
 
 Entvars_Set_String(NewEnt, EV_SZ_classname, ROCKET_CLASSNAME)
-ENT_SetModel(NewEnt, "models/w_smokegrenade.mdl")
+ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
 
 new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
@@ -207,7 +207,7 @@ Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
 ENT_SetOrigin(NewEnt, vOrigin)
 Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
-entity_set_int(NewEnt, EV_INT_effects, 2)
+entity_set_int(NewEnt, EV_INT_effects, 64)
 Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
 
 Entvars_Set_Int(NewEnt, EV_INT_movetype, 10)
@@ -223,6 +223,8 @@ iNewVelocity[0] = floatround(fl_iNewVelocity[0])
 iNewVelocity[1] = floatround(fl_iNewVelocity[1])
 iNewVelocity[2] = floatround(fl_iNewVelocity[2])
 
+emit_sound(NewEnt, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(NewEnt, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 has_rocket[id] = NewEnt
 
 gatling_dec_num_rockets(id)
@@ -263,12 +265,15 @@ message_end()
 }
 //----------------------------------------------------------------------------------------------
 remove_missile(missile){
-
+if(!pev_valid(missile)){
+	
+	return PLUGIN_CONTINUE
+}
 new Float:fl_origin[3]
 Entvars_Get_Vector(missile, EV_VEC_origin, fl_origin)
 
 message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte(14)
+write_byte(TE_IMPLOSION)
 write_coord(floatround(fl_origin[0]))
 write_coord(floatround(fl_origin[1]))
 write_coord(floatround(fl_origin[2]))
@@ -278,6 +283,7 @@ write_byte (45)
 message_end()
 
 emit_sound(missile, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 RemoveEntity(missile)
 return PLUGIN_CONTINUE
