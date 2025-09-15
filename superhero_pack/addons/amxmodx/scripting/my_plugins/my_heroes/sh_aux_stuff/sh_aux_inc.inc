@@ -818,8 +818,6 @@ stock directed_spark(init_id, end_id)
 {
 	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
-	emit_sound(end_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	
 	
 	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
 	write_byte( 8 )

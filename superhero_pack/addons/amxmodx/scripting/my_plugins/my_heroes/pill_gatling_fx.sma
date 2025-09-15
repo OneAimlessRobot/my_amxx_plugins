@@ -46,6 +46,7 @@ public plugin_natives(){
 
 	register_native("sh_effect_user","_sh_effect_user",0);
 	register_native("sh_gen_effect","_get_fx_num",0);
+	register_native("sh_get_user_effect","_sh_get_user_effect",0);
 	register_native("sh_effect_user_direct","_sh_effect_user_direct",0);
 	register_native("sh_uneffect_user","_sh_uneffect_user",0);
 	register_native("sh_get_fx_color_name","_sh_get_fx_color_name",0);
@@ -54,18 +55,32 @@ public plugin_natives(){
 
 public crack_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id)) return
+	if ( !sh_is_active() || !client_hittable(id)) return
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||!(gatling_get_fx_num(id)==POISON)) return
+	if ( !client_hittable(attacker)) return
 	
-	
-	new Float:extraDamage = damage * POISON_DMG_MULT - damage
-	if (floatround(extraDamage)>0){
-		shExtraDamage(id, attacker, floatround(extraDamage), "Crackhead rage", headshot)
+	new fx_num=(gatling_get_fx_num(attacker));
+	switch (fx_num){
+		case POISON:{
+			new Float:extraDamage = damage * POISON_DMG_MULT - damage
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Crackhead rage", headshot)
+					
+			}	
+		}
+		case METYLPHENIDATE:{
+			new gained_xp= floatround(FOCUS_XPMULT*damage);
+			new current_xp= sh_get_user_xp(attacker)
+			new new_xp= gained_xp+ current_xp;
+			sh_set_user_xp(attacker,new_xp);
+		}
+		default:{
 			
+			return
+		}
 	}
 }
 
@@ -130,10 +145,21 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 }
 public Player_TakeDamage(id)
 {
- if ( !shModActive() || !is_user_alive(id) || !( gatling_get_fx_num(id)==BATH)) return
+ if ( !sh_is_active() || !is_user_alive(id) || !( gatling_get_fx_num(id)==BATH)) return
  
  set_pdata_float(id, fPainShock, 1.0, 5)
 } 
+public _sh_get_user_effect(iPlugins,iParams){
+	
+	new id=get_param(1)
+	if(!client_hittable(id)||!sh_is_active()){
+		
+		return 0;
+	}
+	
+	return gatling_get_fx_num(id)
+
+}
 
 public _sh_get_fx_color_name(iPlugins,iParams){
 	
@@ -291,7 +317,7 @@ public _get_fx_num(iPlugin,iParams){
 		return BATH;
 	
 	}
-	return BATH +1
+	return _:BATH +1
 	
 	//return RADIOACTIVE
 
@@ -759,7 +785,7 @@ public unfocus_task(id){
 	id-=UNFOCUS_TASKID
 	remove_task(id+FOCUS_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return 0
-	gatling_set_fx_num(id,BATH+1)
+	gatling_set_fx_num(id,_:BATH+1)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	return 0
 
@@ -769,7 +795,7 @@ unfocus_user(id){
 	remove_task(id+UNFOCUS_TASKID)
 	remove_task(id+FOCUS_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,BATH+1)
+	gatling_set_fx_num(id,_:BATH+1)
 
 }
 bath_user(id){
@@ -791,7 +817,7 @@ public unbath_task(id){
 	id-=UNBATH_TASKID
 	remove_task(id+BATH_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,BATH+1)
+	gatling_set_fx_num(id,_:BATH+1)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
@@ -800,6 +826,6 @@ unbath_user(id){
 	remove_task(id+UNBATH_TASKID)
 	remove_task(id+BATH_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,BATH+1)
+	gatling_set_fx_num(id,_:BATH+1)
 
 }

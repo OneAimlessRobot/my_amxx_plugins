@@ -76,6 +76,7 @@
 
 #define FOCUS_TASKID 10001
 #define UNFOCUS_TASKID 10010
+#define FOCUS_XPMULT 4.0
 #define FOCUS_PERIOD 1.0
 #define FOCUS_TIME 4.0
 #define FOCUS_TIMES floatround(floatdiv(FOCUS_TIME,FOCUS_PERIOD))
@@ -120,6 +121,7 @@ native sh_gen_effect()
 native sh_effect_user_direct(id,attacker,fx_num,gHeroID)
 native sh_uneffect_user(id,fx_num,gHeroID)
 native sh_get_fx_color_name(fx_num,fx_arr[4],name[128])
+native sh_get_user_effect(id)
 
 
 
