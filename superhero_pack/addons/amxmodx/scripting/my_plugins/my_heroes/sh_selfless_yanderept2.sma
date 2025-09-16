@@ -11,7 +11,7 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
-#pragma dynamic 8000
+//#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -404,6 +404,7 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gS
 			emit_sound(id, CHAN_VOICE, sounds[random_num(0,2)], 1.0, 0.0, 0, PITCH_NORM)
 		}
 		sh_set_rendering(id, red_color[0], red_color[1], red_color[2],  255,kRenderFxGlowShell, kRenderTransAlpha)
+		set_task(3.0,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 	}
 	
 }
@@ -910,10 +911,11 @@ public plugin_precache()
 	precache_model("models/player/superyanderu/superyanderuT.mdl")
 	precache_model("models/player/yanderu_psycho/yanderu_psycho.mdl")
 	precache_model(YANDERE_SHOTGUN_V_MODEL)
-	precache_model(YANDERE_SHOTGUN_W_MODEL)
+	precache_model(YANDERE_SHOTGUN_P_MODEL)
 	precache_model(YANDERE_KNIFE_V_MODEL)
 	precache_model(YANDERE_KNIFE_P_MODEL)
 	precache_model(YANDERE_PSYCHO_KNIFE_V_MODEL)
+	precache_model(YANDERE_PSYCHO_KNIFE_P_MODEL)
 	g_spriteSmoke = precache_model("sprites/steam1.spr")
 	g_spriteRing = precache_model("sprites/white.spr")
 	g_spriteExplosion = precache_model("sprites/explode1.spr")
@@ -1072,6 +1074,7 @@ killyandere(id,bool:dropping=false){
 		if(gSuperAngry[id]){
 			new origin[3]
 			get_user_origin(id,origin)
+			fx_invisible(id)
 			kill_fx(origin)
 			for(new i=0;i<=SH_MAXSLOTS;i++){
 				g_is_cursed[i][id]=false;
@@ -1095,9 +1098,16 @@ killyandere(id,bool:dropping=false){
 public death()
 {	
 	new id = read_data(2)
-	
 	killyandere(id)
 	notify_yanderes_about_team_life(id,0)
+}
+public sh_client_death(id,attacker,headshot,const weapon_description[])
+{	
+	if(client_hittable(attacker)){
+		if(yandere_get_has_yandere(attacker)&&gSuperAngry[attacker]){
+			fx_invisible(id)
+		}
+	}
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1180,8 +1190,7 @@ public BlowUp(id)
 	get_user_name(id, name, 31)
 
 	// blowup even if dead
-	explode_effect(origin, floatround(explode_radius))
-
+	explode_fx(origin,floatround(explode_radius))
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
 		if ( is_user_alive(a) && a != id && (get_user_team(id) != get_user_team(a) || FFOn) ) {
 
@@ -1201,64 +1210,6 @@ public BlowUp(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public explode_effect(vec1[3], dmgRadius)
-{
-	// Ring
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(21)				// TE_BEAMCYLINDER
-	write_coord(vec1[0])		// center position
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 10)
-	write_coord(vec1[0])		// axis and radius
-	write_coord(vec1[1])
-	write_coord(vec1[2] + floatround(dmgRadius*3.5))
-	write_short(g_spriteRing)	// sprite index
-	write_byte(0)		// starting frame
-	write_byte(0)		// frame rate in 0.1's
-	write_byte(2)		// life in 0.1's
-	write_byte(20)		// line width in 0.1's
-	write_byte(0)		// noise amplitude in 0.01's
-	write_byte(248)	//colour
-	write_byte(20)
-	write_byte(25)
-	write_byte(255)	// brightness
-	write_byte(0)		// scroll speed in 0.1's
-	message_end()
-
-	// Explosion2
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(12)			// TE_EXPLOSION2
-	write_coord(vec1[0])	// start position
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_byte(188)	// starting color
-	write_byte(10)		// num colors
-	message_end()
-
-	// Explosion
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(3)			// TE_EXPLOSION
-	write_coord(vec1[0])	// start position 
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(g_spriteExplosion)	// sprite index
-	write_byte(dmgRadius/9)	// scale in 0.1's 
-	write_byte(10)			// framerate
-	write_byte(0)			// flags
-	message_end()
-
-	// Smoke
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(5)			// TE_SMOKE
-	write_coord(vec1[0])	// start position
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(g_spriteSmoke)	// sprite index
-	write_byte(dmgRadius/14)	// scale in 0.1's
-	write_byte(10)			// framerate
-	message_end()
-}
-//----------------------------------------------------------------------------------------------
 
 public weaponChange(id)
 {
@@ -1266,19 +1217,20 @@ public weaponChange(id)
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_XM1014) {
-		entity_set_string(id, EV_SZ_viewmodel, YANDERE_SHOTGUN_V_MODEL)
-		entity_set_string(id, EV_SZ_weaponmodel, YANDERE_SHOTGUN_W_MODEL)
+		set_pev(id, pev_viewmodel2,YANDERE_SHOTGUN_V_MODEL)
+		set_pev(id, pev_weaponmodel2,YANDERE_SHOTGUN_P_MODEL)
 	}
 	else if (wpnid == CSW_KNIFE) {
 		if(gIsPsychosis[id]){
-			entity_set_string(id, EV_SZ_viewmodel, YANDERE_PSYCHO_KNIFE_V_MODEL)
+			set_pev(id, pev_viewmodel2,YANDERE_PSYCHO_KNIFE_V_MODEL)
+			set_pev(id, pev_weaponmodel2,YANDERE_PSYCHO_KNIFE_P_MODEL)
 		}
 		else{
 		
-			entity_set_string(id, EV_SZ_viewmodel, YANDERE_KNIFE_V_MODEL)
+			set_pev(id, pev_viewmodel2,YANDERE_KNIFE_V_MODEL)
+			set_pev(id, pev_weaponmodel2,YANDERE_KNIFE_P_MODEL)
 		
 		}
-		//entity_set_string(id, EV_SZ_weaponmodel, YANDERE_KNIFE_P_MODEL)
 	}
 
 }

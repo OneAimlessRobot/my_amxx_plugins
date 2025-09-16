@@ -733,7 +733,7 @@ stock gun_shot_decal(Float:vec[3]){
 	message_end()	
 }
 //-----------------------------------------------------------------------------------------------
-stock explode_fx( vec1[3] )
+stock explode_fx( vec1[3] ,radius)
 {
 	// blast circles
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
@@ -743,7 +743,7 @@ stock explode_fx( vec1[3] )
 	write_coord(vec1[2] + 16)
 	write_coord(vec1[0])
 	write_coord(vec1[1])
-	write_coord(vec1[2] + 1936)
+	write_coord(vec1[2] + radius*3)
 	write_short( white )
 	write_byte( 0 ) // startframe
 	write_byte( 0 ) // framerate
@@ -762,7 +762,7 @@ stock explode_fx( vec1[3] )
 	write_coord(vec1[0])
 	write_coord(vec1[1])
 	write_coord(vec1[2])
-	write_byte( 188 ) // byte (scale in 0.1's) 188
+	write_byte( radius ) // byte (scale in 0.1's) 188
 	write_byte( 10 ) // byte (framerate)
 	message_end()
 	
@@ -773,7 +773,7 @@ stock explode_fx( vec1[3] )
 	write_coord(vec1[1] + random_num( -100, 100 ))
 	write_coord(vec1[2]+ random_num( -50, 50 ))
 	write_short( fire )
-	write_byte(  random_num(0,20) + 20  ) // byte (scale in 0.1's) 188
+	write_byte(  radius/9  ) // byte (scale in 0.1's) 188
 	write_byte( 12 ) // byte (framerate)
 	write_byte( 0 ) // byte flags
 	message_end()
@@ -785,7 +785,7 @@ stock explode_fx( vec1[3] )
 	write_coord(vec1[1] + random_num( -100, 100 ))
 	write_coord(vec1[2] + random_num( -50, 50 ))
 	write_short( smoke )
-	write_byte( 60 )  // 2
+	write_byte( radius/14 )  // 2
 	write_byte( 10 )  // 10
 	message_end()
 	
@@ -980,9 +980,11 @@ stock bool:client_hittable(vic_userid){
 
 stock fx_invisible(id)
 {
-	set_pev(id, pev_renderfx, kRenderFxNone)
-	set_pev(id, pev_rendermode, kRenderTransAlpha)
-	set_pev(id, pev_renderamt, 0.0)
+	if(is_user_connected(id)){
+		set_pev(id, pev_renderfx, kRenderFxNone)
+		set_pev(id, pev_rendermode, kRenderTransAlpha)
+		set_pev(id, pev_renderamt, 0.0)
+	}
 }
 
 stock fx_blood(origin[3],origin2[3],HitPlace,bool:alien=false)

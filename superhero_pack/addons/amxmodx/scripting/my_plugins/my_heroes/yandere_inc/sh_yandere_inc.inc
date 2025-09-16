@@ -23,12 +23,13 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 }
 
 #define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
-#define YANDERE_SHOTGUN_W_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
+#define YANDERE_SHOTGUN_P_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
 
 #define YANDERE_KNIFE_V_MODEL "models/shmod/yandere/knife/v_knife.mdl"
 #define YANDERE_KNIFE_P_MODEL "models/shmod/yandere/knife/p_knife.mdl"
 
 #define YANDERE_PSYCHO_KNIFE_V_MODEL "models/shmod/yandere/knife/v_psycho_knife.mdl"
+#define YANDERE_PSYCHO_KNIFE_P_MODEL "models/shmod/yandere/knife/p_psycho_knife.mdl"
 
 #define YANDERE_PSYCHOSIS_TASKID 3026
 #define UNPSYCHOSIS_TASKID 1122

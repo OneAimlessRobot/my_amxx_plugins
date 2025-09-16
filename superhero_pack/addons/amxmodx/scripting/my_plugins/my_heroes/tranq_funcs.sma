@@ -56,7 +56,10 @@ public plugin_natives(){
 public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
-	
+	if(!tranq_get_has_erica(id)){
+		
+		return FMRES_IGNORED
+	}
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
@@ -103,6 +106,10 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED;
 	}
+	if(!tranq_get_has_erica(id)){
+		
+		return HAM_IGNORED
+	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ELITE)
 	
@@ -127,12 +134,17 @@ public fw_Item_PostFrame(ent)
 
 public fw_WeaponReloadPre(entity)
 {
-	if(pev_valid(entity)!=2)
-	return HAM_IGNORED
+	if(pev_valid(entity)!=2){
+		return HAM_IGNORED
+	}
 	
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	if(!tranq_get_has_erica(pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -152,10 +164,15 @@ public fw_WeaponReloadPre(entity)
 }
 public fw_Weapon_Reload_Post(ent)
 {
-	if(pev_valid(ent)!=2)
-	return HAM_IGNORED
+	if(pev_valid(ent)!=2){
+		return HAM_IGNORED
+	}
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
+		
+		return HAM_IGNORED
+	}
+	if(!tranq_get_has_erica(id)){
 		
 		return HAM_IGNORED
 	}
@@ -172,8 +189,9 @@ public fw_Weapon_Reload_Post(ent)
 } 
 public fw_ItemDeployPre(entity)
 {
-	if(pev_valid(entity)!=2)
-	return HAM_IGNORED
+	if(pev_valid(entity)!=2){
+		return HAM_IGNORED
+	}
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if(!tranq_get_has_erica(pPlayer)){
@@ -190,12 +208,16 @@ public fw_ItemDeployPre(entity)
 
 public fw_WeaponPrimaryAttackPre(entity)
 {	
-	if(pev_valid(entity)!=2)
-	return HAM_IGNORED
+	if(pev_valid(entity)!=2){
+		return HAM_IGNORED
+	}
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	
+	if(!tranq_get_has_erica(pPlayer)){
+		
+		return HAM_IGNORED
+	}
 	if(tranq_get_num_darts(pPlayer) == 0)
 	{
 		client_print(pPlayer, print_center, "You are out of darts")
@@ -214,12 +236,17 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
-	if(pev_valid(Ent)!=2)
-	return
+	if(pev_valid(Ent)!=2){
+		return
+	}
 	
 	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		return;
+	}
+	if(!tranq_get_has_erica(id)){
+		
+		return
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
