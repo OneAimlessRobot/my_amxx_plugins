@@ -3,7 +3,7 @@
 #endif
 #define sh_yandere_jet_radio_funcs
 
-#define RADIO_SCAN_PERIOD 1.0
+#define RADIO_SCAN_PERIOD 5.0
 
 #define RADIO_RELOAD_TASKID 4752981
 

@@ -16,6 +16,8 @@
 
 #define MG_SHELL_PERIOD 0.1
 
+#define MG_THINK_PERIOD 0.1
+
 
 #define MG_SHELL_RELOAD_TASKID 51212631
 #define MG_SHELL_REM_TASKID 9467437
@@ -39,3 +41,4 @@ native clear_mgs()
 native mg_destroy(id)
 native spawn_jetplane_mg(id)
 native get_user_mg(id)
+native Float:get_mg_think_period()

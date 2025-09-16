@@ -28,6 +28,9 @@
 
 #define ROCKET_RADIUS 500.0
 
+
+#define LAW_THINK_PERIOD 0.1
+
 #define ROCKET_SPEED 2000.0
 
 stock Float:jetplane_law_min_dims[3]={-20.0,-5.0,-5.0}
@@ -44,6 +47,7 @@ native clear_laws()
 native law_destroy(id)
 native spawn_jetplane_law(id)
 native get_user_law(id)
+native Float:get_law_think_period()
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

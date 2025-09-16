@@ -250,6 +250,8 @@ public yandere_init()
 		remove_task(id+YANDERE_CRY_TASKID)
 		remove_task(id+YANDERE_STATS_TASKID)
 		remove_task(id+YANDERE_HEAL_TASKID)
+		killyandere(id,true)
+		set_user_gravity(id)
 		yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	}
 	
@@ -1063,14 +1065,10 @@ public fire_weapon(id)
 	return PLUGIN_CONTINUE 
 	
 }
-
-public death()
-{	
-	new id = read_data(2)
-	new killer= read_data(1)
+killyandere(id,bool:dropping=false){
 	
-	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
-	if(gHasYandere[id]){
+	if(!is_user_connected(id)||!sh_is_active()) return
+	if(gHasYandere[id]||dropping){
 		if(gSuperAngry[id]){
 			new origin[3]
 			get_user_origin(id,origin)
@@ -1092,8 +1090,14 @@ public death()
 		}
 		
 	}
-	notify_yanderes_about_team_life(id,0)
 	arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
+}
+public death()
+{	
+	new id = read_data(2)
+	
+	killyandere(id)
+	notify_yanderes_about_team_life(id,0)
 }
 
 //----------------------------------------------------------------------------------------------

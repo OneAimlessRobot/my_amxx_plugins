@@ -26,10 +26,14 @@
 
 #define JET_CHARGE_TASKID 21267438
 #define JET_HUD_TASKID 2141213
+#define JET_SOUND_TASKID 6212398
 #define JET_DEPLOY_TASKID 22227438
-#define JET_CHARGE_PERIOD 0.1
-#define JET_THINK_PERIOD 0.05
+#define JET_CHARGE_PERIOD 0.15
+#define JET_HUD_PERIOD 0.15
+#define JET_SOUND_PERIOD 0.15
+#define JET_THINK_PERIOD 0.1
 
+#define JET_AVG_SPEED_CALC_PERIOD 1.0
 #define JET_CHARGE_RATE 1000.0
 
 #define CAMERA_DIST 300.0
@@ -48,6 +52,7 @@ native jet_destroy(id)
 native jet_deployed(id)
 native jet_uncharge_user(id)
 native jet_charge_user(id)
+native Float:jet_get_think_period()
 native jet_get_user_jet(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

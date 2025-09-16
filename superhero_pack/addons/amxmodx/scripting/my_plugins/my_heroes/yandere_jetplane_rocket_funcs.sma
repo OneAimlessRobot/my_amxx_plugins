@@ -19,7 +19,7 @@ new law[SH_MAXSLOTS+1]
 new Float:jetplane_law_radius,
 Float:jetplane_law_rocketspeed,
 Float:jetplane_law_dmg;
-
+stock Float:law_think_period
 new jetplane_law_ammo;
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -31,6 +31,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_law_ammo", "5")
 	register_cvar("yandere_jetplane_law_dmg", "5")
 	register_cvar("yandere_jetplane_law_radius", "5")
+	register_cvar("yandere_jetplane_law_think_period", "5")
 	register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "law_think")
@@ -52,6 +53,7 @@ public loadCVARS()
 	jetplane_law_dmg=get_cvar_float("yandere_jetplane_law_dmg");
 	jetplane_law_ammo=get_cvar_num("yandere_jetplane_law_ammo");
 	jetplane_law_rocketspeed=get_cvar_float("yandere_jetplane_law_rocketspeed");
+	law_think_period=get_cvar_float("yandere_jetplane_law_think_period");
 }
 public plugin_natives(){
 
@@ -61,6 +63,7 @@ public plugin_natives(){
 	register_native("get_user_jet_rockets","_get_user_jet_rockets",0);
 	register_native("set_user_jet_rockets","_set_user_jet_rockets",0);
 	register_native("reset_jet_rockets","_reset_jet_rockets",0);
+	register_native("get_law_think_period","_get_law_think_period",0);
 	register_native("reset_user_jet_rockets","_reset_user_jet_rockets",0);
 	register_native("clear_laws","_clear_laws",0);
 	register_native("law_destroy","_law_destroy",0);
@@ -74,6 +77,11 @@ public _get_jet_rockets(iPlugins,iParams){
 	new num_rockets=pev(jet_id,pev_iuser4)
 	return num_rockets;
 
+}
+public Float:_get_law_think_period(iPlugins,iParams){
+	
+	return law_think_period
+	
 }
 public _set_jet_rockets(iPlugins,iParams){
 	new jet_id=get_param(1)
@@ -159,7 +167,7 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	jetplane_orig[1]+=jetplane_origin_law_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_law_offsets[2]
 	set_pev(law_id,pev_origin,jetplane_orig)
-	set_pev(law_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD*2)
+	set_pev(law_id, pev_nextthink, get_gametime() + LAW_THINK_PERIOD)
 }
 public CmdStart(id, uc_handle)
 {
@@ -229,7 +237,7 @@ Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
 Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
 
 new Float:fl_iNewVelocity[3]
-VelocityByAim(id, floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+VelocityByAim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
 Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 has_rocket[id] = NewEnt
@@ -355,7 +363,7 @@ public law_think(ent)
 		
 		
 		//draw_bbox(ent,0)
-		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
+		set_pev(ent, pev_nextthink, gametime + get_law_think_period())
 	}
 	return FMRES_IGNORED
 }

@@ -16,6 +16,7 @@
 
 new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
+stock Float:mg_think_period
 new shell_loaded[SH_MAXSLOTS+1]
 new gShallGib[SH_MAXSLOTS+1] 
 new jetplane_mg_ammo;
@@ -28,6 +29,7 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_ammo", "5")
 	register_cvar("yandere_jetplane_mg_dmg", "5")
 	register_cvar("yandere_jetplane_mg_bulletspeed", "5")
+	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "mg_think")
 	RegisterHam(Ham_Killed, "player", "Ham_Player_Killed");
@@ -72,6 +74,7 @@ public loadCVARS(){
 	jetplane_mg_dmg=get_cvar_float("yandere_jetplane_mg_dmg");
 	jetplane_mg_bulletspeed=get_cvar_float("yandere_jetplane_mg_bulletspeed");
 	jetplane_mg_ammo=get_cvar_num("yandere_jetplane_mg_ammo");
+	mg_think_period=get_cvar_float("yandere_jetplane_mg_think_period");
 }
 public plugin_natives(){
 	
@@ -81,6 +84,7 @@ public plugin_natives(){
 	register_native("mg_destroy","_mg_destroy",0);
 	register_native("spawn_jetplane_mg","_spawn_jetplane_mg",0);
 	register_native("set_jet_shells","_set_jet_shells",0);
+	register_native("get_mg_think_period","_get_mg_think_period",0);
 	register_native("get_user_jet_shells","_get_user_jet_shells",0);
 	register_native("set_user_jet_shells","_set_user_jet_shells",0);
 	register_native("reset_jet_shells","_reset_jet_shells",0);
@@ -93,6 +97,11 @@ public _get_jet_shells(iPlugins,iParams){
 	
 	new num_shells=pev(jet_id,pev_iuser2)
 	return num_shells;
+	
+}
+public Float:_get_mg_think_period(iPlugins,iParams){
+	
+	return mg_think_period
 	
 }
 public _set_jet_shells(iPlugins,iParams){
@@ -179,7 +188,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	jetplane_orig[1]+=jetplane_origin_mg_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_mg_offsets[2]
 	set_pev(mg_id,pev_origin,jetplane_orig)
-	set_pev(mg_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD*2)
+	set_pev(mg_id, pev_nextthink, get_gametime() + get_mg_think_period())
 }
 public CmdStart(id, uc_handle)
 {
@@ -276,7 +285,7 @@ public mg_think(ent)
 		
 		
 		//draw_bbox(ent,0)
-		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
+		set_pev(ent, pev_nextthink, gametime + (MG_THINK_PERIOD))
 	}
 	return FMRES_IGNORED
 }
@@ -316,7 +325,7 @@ launch_shell(id)
 	entity_set_int(Ent, EV_INT_movetype, 5)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
-	VelocityByAim(id, floatround(jetplane_mg_bulletspeed) , Velocity)
+	VelocityByAim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed) , Velocity)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	new parm[1]

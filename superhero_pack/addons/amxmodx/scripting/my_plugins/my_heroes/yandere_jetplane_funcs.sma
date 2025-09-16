@@ -22,12 +22,15 @@ new g_jetplane_cooldown[SH_MAXSLOTS+1];
 new g_jetplane_loaded[SH_MAXSLOTS+1];
 new g_jetplane_deployed[SH_MAXSLOTS+1];
 new g_jetplane[SH_MAXSLOTS+1];
+new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][4];
 new camera[SH_MAXSLOTS+1]
-
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
+stock Float:jet_think_period
 new hud_sync_charge
 new hud_sync_jetplane
+
+stock  SprFlame
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -36,6 +39,7 @@ public plugin_init()
 	
 	register_cvar("yandere_jetplane_hp", "5")
 	register_cvar("yandere_jetplane_cooldown", "5")
+	register_cvar("yandere_jetplane_think_period", "5")
 	arrayset(g_jetplane_cooldown,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
@@ -60,6 +64,7 @@ public plugin_natives(){
 	register_native("clear_jets","_clear_jets",0);
 	register_native("reset_jet_user","_reset_jet_user",0);
 	register_native("jet_get_user_jet_cooldown","_jet_get_user_jet_cooldown",0);
+	register_native("jet_get_think_period","_jet_get_think_period",0);
 	register_native("jet_uncharge_user","_jet_uncharge_user",0);
 	register_native("jet_charge_user","_jet_charge_user",0);
 	register_native("jet_loaded","_jet_loaded",0);
@@ -73,6 +78,7 @@ public plugin_natives(){
 public loadCVARS(){
 	jetplane_cooldown=get_cvar_float("yandere_jetplane_cooldown");
 	jetplane_hp=get_cvar_float("yandere_jetplane_hp")
+	jet_think_period=get_cvar_float("yandere_jetplane_think_period")
 }
 public plugin_precache(){
 
@@ -81,6 +87,9 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
+	SprFlame = precache_model("sprites/xfireball3.spr");
+	engfunc(EngFunc_PrecacheSound,JETPLANE_FLY_SOUND );
+	engfunc(EngFunc_PrecacheSound,JETPLANE_BLOW_SOUND );
 	precache_model(JETPLANE_MODEL)
 	precache_model(JETPLANE_CAMERA_MODEL)
 	precache_explosion_fx()
@@ -91,6 +100,11 @@ public _jet_get_user_jet(iPlugin,iParams){
 	new id=get_param(1)
 	
 	return g_jetplane[id]
+
+
+}
+public Float:_jet_get_think_period(iPlugin,iParams){
+	return jet_think_period
 
 
 }
@@ -274,8 +288,10 @@ public jet_deploy_task(parm[],id){
 	}
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
-	set_task(JET_CHARGE_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
-	set_pev(jetplane_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD)
+	set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
+	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
+	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID,"",0,"b")
+	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
 public load_jet(id){
 	id-=JET_LOAD_TASKID
@@ -402,7 +418,44 @@ public charge_task(parm[],id){
 	
 	
 }
-
+public jet_sound_task(id){
+		new owner=id-JET_SOUND_TASKID
+		if(!client_hittable(owner)){
+			
+			remove_task(id)
+			return
+		}
+		if(!yandere_get_has_yandere(owner)){
+			
+			remove_task(id)
+			return
+		}
+		if(!jet_deployed(owner)){
+			
+			remove_task(id)
+			return
+		}
+		
+		if(g_jetplane_telemetry_data[owner][2]>get_cvar_float("yandere_jetplane_speed")*0.5){
+			if(random(FlameAndSoundRate) == (FlameAndSoundRate-1)) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
+			{
+				if(get_user_fuel_ammount(owner) > 160.0) emit_sound(owner, CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+				else emit_sound(owner, CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+				
+				static Float:Origin[3]
+				entity_get_vector(owner, EV_VEC_origin, Origin)
+				engfunc(EngFunc_MessageBegin, MSG_PVS, SVC_TEMPENTITY, Origin, 0)
+				write_byte(TE_SPRITE)
+				engfunc(EngFunc_WriteCoord, Origin[0])
+				engfunc(EngFunc_WriteCoord, Origin[1])
+				engfunc(EngFunc_WriteCoord, Origin[2])
+				write_short(SprFlame)
+				write_byte(4)
+				write_byte(192)
+				message_end()
+			}
+		}
+}
 public jet_hud_task(id){
 		
 		new owner=id-JET_HUD_TASKID
@@ -416,10 +469,25 @@ public jet_hud_task(id){
 			remove_task(id)
 			return
 		}
+		if(!jet_deployed(owner)){
+			
+			remove_task(id)
+			return
+		}
+		new Float:move_velocity[3]
+		entity_get_vector(jet_get_user_jet(owner), EV_VEC_velocity, move_velocity)
+		new Float:abs_velocity=vector_length(move_velocity)
+		if(g_jetplane_telemetry_data[owner][0]>JET_AVG_SPEED_CALC_PERIOD){
+			g_jetplane_telemetry_data[owner][2]=g_jetplane_telemetry_data[owner][1]/(g_jetplane_telemetry_data[owner][0]/JET_HUD_PERIOD)
+			g_jetplane_telemetry_data[owner][0]=0.0
+			g_jetplane_telemetry_data[owner][1]=0.0
+			
+		}
 		new hud_msg[1024]
-		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
+		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
 					float(pev(jet_get_user_jet(owner),pev_health))-1000.0,
 					get_user_fuel_ammount(owner),
+					g_jetplane_telemetry_data[owner][2],
 					get_user_jet_bombs(owner),
 					get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
 					get_user_jet_shells(owner),
@@ -429,11 +497,16 @@ public jet_hud_task(id){
 		set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.35, 0.8, 1, 0.0, 0.5,0.0,0.0,1)
 		ShowSyncHudMsg(owner, hud_sync_jetplane, "%s", hud_msg)
 		
+		
+		g_jetplane_telemetry_data[owner][0]+=JET_HUD_PERIOD
+		g_jetplane_telemetry_data[owner][1]+=abs_velocity
+		
 }
 public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
 	remove_task(id+JET_HUD_TASKID)
+	remove_task(id+JET_SOUND_TASKID)
 	
 	g_jetplane_loaded[id]=true;
 	g_jetplane_cooldown[id]=0;

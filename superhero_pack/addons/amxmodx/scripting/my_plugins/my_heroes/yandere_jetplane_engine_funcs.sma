@@ -4,6 +4,7 @@
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero yandere jetty funcs"
@@ -16,7 +17,6 @@ new Float:jetplane_speed,
 Float:fuel_spend,
 Float:jetplane_fuel;
 
-new  SprFlame
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -95,8 +95,18 @@ public _reset_user_fuel_ammount(iPlugins,iParams){
 }
 public OnCmdStart(id)
 {
-	if(!jet_deployed(id)) return;
-	
+	if(!client_hittable(id)){
+			
+		return
+	}
+	if(!yandere_get_has_yandere(id)){
+			
+		return
+	}
+	if(!jet_deployed(id)){
+			
+		return
+	}
 	static button; button = entity_get_int(id, EV_INT_button);
 	if((get_user_fuel_ammount(id)> 0.0) && (button & IN_DUCK) && (button & IN_JUMP))
 	{ 
@@ -113,23 +123,7 @@ public OnCmdStart(id)
 		
 		set_user_fuel_ammount(id,get_user_fuel_ammount(id)-fuel_spend)
 		
-		if(random(FlameAndSoundRate) == (FlameAndSoundRate-1)) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
-		{
-			if(get_user_fuel_ammount(id) > 160.0) emit_sound(id, CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			else emit_sound(id, CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			
-			static Float:Origin[3]
-			entity_get_vector(id, EV_VEC_origin, Origin)
-			engfunc(EngFunc_MessageBegin, MSG_PVS, SVC_TEMPENTITY, Origin, 0)
-			write_byte(TE_SPRITE)
-			engfunc(EngFunc_WriteCoord, Origin[0])
-			engfunc(EngFunc_WriteCoord, Origin[1])
-			engfunc(EngFunc_WriteCoord, Origin[2])
-			write_short(SprFlame)
-			write_byte(4)
-			write_byte(192)
-			message_end()
-		}
+		
 	}
 	else{
 		if((get_user_fuel_ammount(id) < jetplane_fuel) && (entity_get_int(id, EV_INT_flags) & FL_ONGROUND)) //bugfix: only refill gas when on the ground
@@ -140,14 +134,3 @@ public OnCmdStart(id)
 	}
 	
 }
-
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	SprFlame = precache_model("sprites/xfireball3.spr")
-	
-	engfunc(EngFunc_PrecacheSound,JETPLANE_FLY_SOUND );
-	engfunc(EngFunc_PrecacheSound,JETPLANE_BLOW_SOUND );
-	
-}
-//---------------------------------------------------------------------------------------------- 
