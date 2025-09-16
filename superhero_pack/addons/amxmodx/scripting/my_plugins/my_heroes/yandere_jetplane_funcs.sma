@@ -27,6 +27,7 @@ new camera[SH_MAXSLOTS+1]
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
 new hud_sync_charge
+new hud_sync_jetplane
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,6 +41,7 @@ public plugin_init()
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane,0,SH_MAXSLOTS+1)
 	hud_sync_charge=CreateHudSyncObj()
+	hud_sync_jetplane=CreateHudSyncObj()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
@@ -174,6 +176,7 @@ public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 
 
 }
+
 public _jet_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
@@ -271,6 +274,7 @@ public jet_deploy_task(parm[],id){
 	}
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
+	set_task(JET_CHARGE_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + JET_THINK_PERIOD)
 }
 public load_jet(id){
@@ -308,7 +312,7 @@ public jet_think(ent)
 	}
 	if(g_jetplane_deployed[owner]){
 		
-		new ammo, clip, wpnid=get_user_weapon(owner,ammo,clip)
+		new wpnid=get_user_weapon(owner)
 		if(wpnid!=CSW_KNIFE){
 			shSwitchWeaponID(owner,CSW_KNIFE)
 		}
@@ -316,10 +320,10 @@ public jet_think(ent)
 		new Float:vOrigin[3]
 		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
 		
-		sh_set_rendering(owner,0,0,0,1,kRenderFxGlowShell,kRenderTransAlpha);
+		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
 		set_pev(owner,pev_velocity,NULL_VECTOR)
-		if(camera[owner]){
+		if(pev_valid(camera[owner])==2){
 		
 			
 			new Float:angles[3]
@@ -335,6 +339,7 @@ public jet_think(ent)
 				abs_velocity=1.0
 			
 			}
+			vOrigin[1]-=velocity[1]*(CAMERA_DIST/length)
 			vOrigin[2]-=velocity[2]*(CAMERA_DIST/length)
 			vOrigin[2]+=40.0
 			vOrigin[0]-=velocity[0]*(CAMERA_DIST/length)
@@ -342,18 +347,6 @@ public jet_think(ent)
 			entity_set_vector(camera[owner], EV_VEC_origin, vOrigin)
 		
 		}
-		new hud_msg[1024]
-		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
-					float(pev(ent,pev_health))-1000.0,
-					get_user_fuel_ammount(owner),
-					get_user_jet_bombs(owner),
-					get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
-					get_user_jet_shells(owner),
-					get_user_mg(owner)?(float(pev(get_user_law(owner),pev_health))-1000.0):0.0,
-					get_user_jet_rockets(owner),
-					get_user_jet_scans(owner));
-		set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.35, 0.8, 1, 0.0, 0.5,0.0,0.0,1)
-		ShowSyncHudMsg(owner, hud_sync_charge, "%s", hud_msg)
 		//draw_bbox(jet_get_user_jet(owner),0)
 		set_pev(ent, pev_nextthink, gametime + (JET_THINK_PERIOD))
 	}
@@ -410,9 +403,37 @@ public charge_task(parm[],id){
 	
 }
 
+public jet_hud_task(id){
+		
+		new owner=id-JET_HUD_TASKID
+		if(!client_hittable(owner)){
+			
+			remove_task(id)
+			return
+		}
+		if(!yandere_get_has_yandere(owner)){
+			
+			remove_task(id)
+			return
+		}
+		new hud_msg[1024]
+		format(hud_msg,1023,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
+					float(pev(jet_get_user_jet(owner),pev_health))-1000.0,
+					get_user_fuel_ammount(owner),
+					get_user_jet_bombs(owner),
+					get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
+					get_user_jet_shells(owner),
+					get_user_mg(owner)?(float(pev(get_user_law(owner),pev_health))-1000.0):0.0,
+					get_user_jet_rockets(owner),
+					get_user_jet_scans(owner));
+		set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.35, 0.8, 1, 0.0, 0.5,0.0,0.0,1)
+		ShowSyncHudMsg(owner, hud_sync_jetplane, "%s", hud_msg)
+		
+}
 public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
+	remove_task(id+JET_HUD_TASKID)
 	
 	g_jetplane_loaded[id]=true;
 	g_jetplane_cooldown[id]=0;

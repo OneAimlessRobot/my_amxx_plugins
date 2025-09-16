@@ -3,6 +3,8 @@
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
+#include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
+#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -28,6 +30,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_bomb_dmg", "5")
 	register_cvar("yandere_jetplane_bomb_ammo", "5")
 	register_forward(FM_CmdStart, "CmdStart");
+	g_msgFade = get_user_msgid("ScreenFade");
 
 
 
@@ -178,51 +181,32 @@ has_bomb[id] = 0
 }
 public vexd_pfntouch(pToucher, pTouched) {
 
-
-if ( !is_valid_ent(pToucher) ) return
-
+if (!pev_valid(pToucher)){
+		
+	return
+}
 new szClassName[32]
 Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
 new id = entity_get_edict(pToucher, EV_ENT_owner)
 if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
-	
-	new Float:fl_vExplodeAt[3]
-	Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-	new vExplodeAt[3]
-	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-	new origin[3],dist,i
-	
-	for ( i = 1; i <= SH_MAXSLOTS; i++) {
+	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
 		
-		if( !client_hittable(i) ) continue
-		get_user_origin(i,origin)
-		dist = get_distance(origin,vExplodeAt)
-		if (dist <= jetplane_bomb_radius) {
-			
-			
-			new Float:vic_origin[3]
-			entity_get_vector(i,EV_VEC_origin,vic_origin);
-			new Float:distance=vector_distance(vic_origin,fl_vExplodeAt);
-			new Float:falloff_coeff= floatmin(1.0,distance/JETBOMB_FALLOFF_DIST);
-			sh_extra_damage(i,id,floatround(jetplane_bomb_dmg-(jetplane_bomb_dmg/2.0)*falloff_coeff),"Yandere BOMB");
-		}
+		RemoveEntity(pToucher)
+		return
 	}
 	
-	
-	emit_sound(pToucher, CHAN_VOICE, BOMB_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	make_shockwave(vExplodeAt,jetplane_bomb_radius,love_color)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg)
 	RemoveEntity(pToucher)
+	
 	
 	if ( is_valid_ent(pTouched) ) {
 		new szClassName2[32]
 		Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
 		
 		if(equal(szClassName2, JETPLANE_BOMB_CLASSNAME)) {
-			emit_sound(pToucher, CHAN_VOICE, BOMB_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			RemoveEntity(pTouched)
+			explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg)
+			RemoveEntity(pToucher)
 		}
 	}
 }

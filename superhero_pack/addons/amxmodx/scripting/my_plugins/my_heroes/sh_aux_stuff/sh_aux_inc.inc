@@ -134,6 +134,10 @@ public track_task(array[],id){
 	detect_user(array[0],id,eorigin);
 	trail(eorigin,origin,tag_color,array[0])
 	for(new i=0;i<array[2];i++){
+		if(!client_hittable(array[i+5])){
+		
+			continue
+		}
 		if(array[i+5]==array[0]){
 			continue
 		}
@@ -260,7 +264,7 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 
 
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 21 )
+	write_byte( TE_BEAMCYLINDER)
 	write_coord(point[0])
 	write_coord(point[1])
 	write_coord(point[2] + 16)
@@ -277,38 +281,8 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 	write_byte( color[1] )
 	write_byte( color[2] )
 	write_byte( color[3] )
-	write_byte( 0 )
+	write_byte(0)
 	message_end()
-	/*message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_LAVASPLASH);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + 16)
-	message_end();
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_BLOODSPRITE);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + floatround(radius))
-	write_short(blood2);
-	write_short(blood1);
-	write_byte(255);
-	write_byte(30);
-	message_end();
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_DLIGHT);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2])
-	write_byte( color[0])
-	write_byte( color[1] )
-	write_byte( color[2] )
-	write_byte( color[3] )
-	write_byte(8);
-	write_byte(60);
-	message_end();*/
 
 }
 stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:time){
@@ -318,7 +292,6 @@ stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:ti
 	new players[SH_MAXSLOTS]
 	new team_name[32]
 	new client_name[128]
-	new team_mate_name[128]
 	new enemy_name[128]
 	new player_count;
 	
@@ -326,16 +299,18 @@ stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:ti
 	get_user_name(attacker,client_name,127)
 	
 	get_user_team(attacker,team_name,32)
-	get_players(players,player_count,"ea",team_name)
-	
+	get_players(players,player_count,"eah",team_name)
+	sh_chat_message(attacker,hero_id,"Your team's name: %s",team_name)
+	/*
 	for(new i=0;i<player_count;i++){
 		
+		new team_mate_name[128]
 		get_user_name(players[i],team_mate_name,127)
 		sh_chat_message(players[i],hero_id,"Your teamate %s has revealed %s's position in the radar!",client_name,enemy_name)
 		sh_chat_message(attacker,hero_id,"%s knows!!!",team_mate_name)
 	
-	}
-	new array[5+33]
+	}*/
+	new array[5+SH_MAXSLOTS+1]
 	array[0] = attacker
 	array[1] = CreateHudSyncObj()
 	array[2] = player_count
@@ -417,8 +392,10 @@ stock aura(id,const color[4]){
 
 stock unradioactive_user(id){
 	remove_task(id+UNRADIOACTIVE_TASK_ID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+RADIOACTIVE_TASK_ID)
+	if(client_hittable(id)){
+		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	}
 	return 0
 
 
@@ -427,8 +404,10 @@ stock unradioactive_user(id){
 
 public unradioactive_task(id){
 	id-=UNRADIOACTIVE_TASK_ID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+RADIOACTIVE_TASK_ID)
+	if(client_hittable(id)){
+		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	}
 	return 0
 
 

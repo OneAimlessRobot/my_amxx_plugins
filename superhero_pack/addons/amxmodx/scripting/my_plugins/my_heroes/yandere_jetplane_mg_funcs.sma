@@ -272,6 +272,7 @@ public mg_think(ent)
 		entity_set_vector(ent, EV_VEC_v_angle, angles)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
+		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
 		
 		
 		//draw_bbox(ent,0)
@@ -361,14 +362,22 @@ public shelltrail(parm[])
 public vexd_pfntouch(pToucher, pTouched)
 {
 	
-	if (!is_valid_ent(pToucher)||!is_valid_ent(pTouched)) return
+	
+	if (!pev_valid(pToucher)){
+		
+		return
+	}
 	new szClassName[32]
 	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 	
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
-//&&((pTouched==oid)||(pTouched==jet_get_user_jet(oid))||(pTouched!=get_user_mg(oid)))
 	if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
-		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))) return
+		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
+			
+			remove_entity(pToucher)
+			return
+			
+		}
 		
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
@@ -390,7 +399,8 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=4;
 				}
-				sh_extra_damage(pTouched,oid,floatround(damage),"RAGE GATLING SHELL",headshot);
+				//sh_extra_damage(pTouched,oid,floatround(damage),"RAGE GATLING SHELL",headshot);
+				ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
 				sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
 				
 				new CsArmorType:armor_type;

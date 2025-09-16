@@ -49,7 +49,7 @@ public plugin_natives(){
 	register_native("get_jet_scans","_get_jet_scans",0);
 	register_native("set_jet_scans","_set_jet_scans",0);
 	register_native("get_user_jet_scans","_get_user_jet_scans",0);
-	register_native("set_user_jet_rockets","_set_user_jet_scans",0);
+	register_native("set_user_jet_scans","_set_user_jet_scans",0);
 	register_native("reset_jet_scans","_reset_jet_scans",0);
 	register_native("reset_user_jet_scans","_reset_user_jet_scans",0);
 
@@ -57,20 +57,19 @@ public plugin_natives(){
 public _get_jet_scans(iPlugins,iParams){
 	new jet_id=get_param(1)
 	
-	new num_scans=pev(jet_id,pev_fuser4)
+	new num_scans=floatround(entity_get_float(jet_id,EV_FL_fuser4))
 	return num_scans;
 
 }
 public _set_jet_scans(iPlugins,iParams){
 	new jet_id=get_param(1)
 	new the_scans=get_param(2)
-
-	set_pev(jet_id,pev_fuser4,float(the_scans))
+	
+	entity_set_float(jet_id,EV_FL_fuser4,float(the_scans))
 }
 public _reset_jet_scans(iPlugins,iParams){
 	new jet_id=get_param(1)
-
-	set_pev(jet_id,pev_fuser4,float(jetplane_scan_ammo))
+	entity_set_float(jet_id,EV_FL_fuser4,float(jetplane_scan_ammo))
 }
 public _get_user_jet_scans(iPlugins,iParams){
 	
@@ -112,6 +111,7 @@ public CmdStart(id, uc_handle)
 			}
 			scan_loaded[id]=false
 			launch_scan(id)
+			set_user_jet_scans(id,get_user_jet_scans(id)-1)
 			set_task(RADIO_SCAN_PERIOD,"scan_reload",id+RADIO_RELOAD_TASKID,"",0,"a",1)
 			
 		}

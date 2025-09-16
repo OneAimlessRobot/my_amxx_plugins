@@ -34,6 +34,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "law_think")
+	g_msgFade = get_user_msgid("ScreenFade");
 
 
 
@@ -267,42 +268,22 @@ message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_P
 
 public vexd_pfntouch(pToucher, pTouched) {
 
-
-if ( !is_valid_ent(pToucher) ) return
-
+if (!pev_valid(pToucher)){
+	
+	 return
+}
 new szClassName[32]
 Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
 new id = entity_get_edict(pToucher, EV_ENT_owner)
 if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
-	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))) return
-	new Float:fl_vExplodeAt[3]
-	Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-	new vExplodeAt[3]
-	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-	new origin[3],dist,i
-	
-	for ( i = 1; i <= SH_MAXSLOTS; i++) {
+	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
 		
-		if( !client_hittable(i) ) continue
-		get_user_origin(i,origin)
-		dist = get_distance(origin,vExplodeAt)
-		if (dist <= jetplane_law_radius) {
-			
-			new Float:vic_origin[3]
-			entity_get_vector(i,EV_VEC_origin,vic_origin);
-			new Float:distance=vector_distance(vic_origin,fl_vExplodeAt);
-			new Float:falloff_coeff= floatmin(1.0,distance/JETROCKET_FALLOFF_DIST);
-			sh_extra_damage(i,id,floatround(jetplane_law_dmg-(jetplane_law_dmg/2.0)*falloff_coeff),"Yandere RRRRROQUETO");
-			
-		}
+		RemoveEntity(pToucher)
+		return
 	}
 	
-	
-	emit_sound(pToucher, CHAN_VOICE, ROCKET_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	make_shockwave(vExplodeAt,jetplane_law_radius,love_color)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg)
 	RemoveEntity(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
@@ -310,7 +291,7 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 		Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
 		
 		if(equal(szClassName2, JETPLANE_ROCKET_CLASSNAME)) {
-			emit_sound(pToucher, CHAN_VOICE, ROCKET_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			explosion(yandere_get_hero_id(),pTouched,jetplane_law_radius,jetplane_law_dmg)
 			RemoveEntity(pTouched)
 		}
 	}
@@ -370,6 +351,7 @@ public law_think(ent)
 		entity_set_vector(ent, EV_VEC_v_angle, angles)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
+		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
 		
 		
 		//draw_bbox(ent,0)

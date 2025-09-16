@@ -113,7 +113,7 @@ public OnCmdStart(id)
 		
 		set_user_fuel_ammount(id,get_user_fuel_ammount(id)-fuel_spend)
 		
-		if(random(FlameAndSoundRate) == 2) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
+		if(random(FlameAndSoundRate) == (FlameAndSoundRate-1)) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 		{
 			if(get_user_fuel_ammount(id) > 160.0) emit_sound(id, CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			else emit_sound(id, CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
