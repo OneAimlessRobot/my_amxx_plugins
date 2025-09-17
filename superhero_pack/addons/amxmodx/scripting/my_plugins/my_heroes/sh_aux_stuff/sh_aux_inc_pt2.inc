@@ -129,6 +129,11 @@ stock vector_norm(Float:vec_result[3], Float:vec_in[3]) {
 	multiply_3d_vector_by_scalar(vec_result, inv_len, vec_in);
 	
 }
+stock print_vector(Float:vec_in[3]) {
+	
+	server_print("Vector_print: (%0.2f, %0.2f, %0.2f)^n",vec_in[0],vec_in[1],vec_in[2])
+	
+}
 stock rotate_vector3(Float:vec_result[3], Float:vec_input[3], Float:angle_to_rotate_by_in_radians) {
 	
 	

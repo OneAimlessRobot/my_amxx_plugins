@@ -251,7 +251,6 @@ public yandere_init()
 		remove_task(id+YANDERE_STATS_TASKID)
 		remove_task(id+YANDERE_HEAL_TASKID)
 		killyandere(id,true)
-		set_user_gravity(id)
 		yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	}
 	
@@ -632,11 +631,12 @@ if(!sh_is_active()||!is_user_connected(id)) return
 
 new CsTeams:user_team= cs_get_user_team(id)
 for(new i=1;i<=SH_MAXSLOTS;i++){
-	if(!is_user_connected(i)){
+	if(!client_hittable(i)){
 		
 		
+		continue
 	}
-	else if(is_user_alive(i)&&gHasYandere[i]){
+	if(gHasYandere[i]){
 		
 		new CsTeams:other_user_team=cs_get_user_team(i)
 		if((user_team==other_user_team)){
@@ -675,7 +675,13 @@ if(gHasYandere[id]&&client_hittable(id)){
 public yandere_warcry(id){
 id-=YANDERE_CRY_TASKID
 
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)||!gHasYandere[id]||!gSuperAngry[id]) return
+if(!sh_is_active()||!client_hittable(id)){
+	return
+}
+if(!gHasYandere[id]||!gSuperAngry[id]){
+	return
+	
+}
 
 if(gSuperAngry[id]&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarted()&&gHasYandere[id]){
 	new client_name[128]
@@ -688,6 +694,13 @@ if(gSuperAngry[id]&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarted()&&gHas
 }
 public update_normal_stats(id){
 
+if(!sh_is_active()||!client_hittable(id)){
+	return
+}
+if(!gHasYandere[id]){
+	return
+	
+}
 new mates_dead=get_yandere_num(id,0,0)
 new mates_alive=get_yandere_num(id,1,0)
 new can_transform= (get_playersnum(0)>=min_players)
@@ -707,7 +720,7 @@ gBaseGravity[id]=gravity
 gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 set_user_gravity(id,gNormalGravity[id])
 gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
-if(gSuperAngry[id]&&is_user_alive(id)&&is_user_connected(id)){
+if(gSuperAngry[id]&&client_hittable(id)){
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	BlowUp(id)
@@ -720,6 +733,13 @@ if(gSuperAngry[id]&&is_user_alive(id)&&is_user_connected(id)){
 }
 public update_angry_stats(id){
 
+if(!sh_is_active()||!client_hittable(id)){
+	return
+}
+if(!gHasYandere[id]||!gSuperAngry[id]){
+	return
+	
+}
 new mates_alive=get_yandere_num(id,1,0)
 new can_transform= (get_playersnum(0)>=min_players)
 gNormalDmgMult[id]=angry_dmg_mult
@@ -1071,6 +1091,7 @@ killyandere(id,bool:dropping=false){
 	
 	if(!is_user_connected(id)||!sh_is_active()) return
 	if(gHasYandere[id]||dropping){
+		
 		if(gSuperAngry[id]){
 			new origin[3]
 			get_user_origin(id,origin)
@@ -1089,6 +1110,7 @@ killyandere(id,bool:dropping=false){
 		}
 		else if(jet_deployed(id)){
 			
+			set_user_gravity(id)
 			jet_destroy(id);
 		}
 		

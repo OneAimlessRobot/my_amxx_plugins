@@ -46,11 +46,12 @@ public plugin_init()
 public _client_isnt_hitter(iPlugin,iParams){
 	
 	new gatling_user=get_param(1);
-	
-	
-	new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-	if(result) return true
-	
+	if(!is_user_connected(gatling_user)){
+		return true;
+	}
+	if(!is_user_alive(gatling_user)){
+		return true;
+	}
 	return !gHasCamman[gatling_user]
 	
 }

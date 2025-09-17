@@ -123,7 +123,7 @@ chaff_user(id,attacker){
 	fade_screen_user(id)
 	new Float:maxspeed= get_user_maxspeed(id)
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)
-	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),maxspeed)
+	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),maxspeed*0.1)
 	gIsChaffed[id]=true
 	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",CHAFF_TIMES)
 	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,"", 0,  "a",DISORIENT_TIMES)

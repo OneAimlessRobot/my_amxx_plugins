@@ -448,7 +448,7 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 	
-	explode_fx(iOrigin)
+	explode_fx(iOrigin,floatround(explosion_radius))
 	
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
@@ -489,7 +489,7 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 	
-	explode_fx(iOrigin)
+	explode_fx(iOrigin,floatround(explosion_radius))
 	
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
