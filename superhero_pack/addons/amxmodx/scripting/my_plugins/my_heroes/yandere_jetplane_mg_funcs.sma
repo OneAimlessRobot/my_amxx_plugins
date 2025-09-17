@@ -171,7 +171,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	set_pev(jetplane_id, pev_iuser3,mg_id)
 	set_pev(mg_id,pev_owner,id)
 	set_pev(mg_id, pev_takedamage, DAMAGE_YES)
-	set_pev(mg_id, pev_solid, SOLID_NOT)
+	set_pev(mg_id, pev_solid, SOLID_TRIGGER)
 	set_pev(mg_id , pev_classname, JETPLANE_MG_CLASSNAME)
 	engfunc(EngFunc_SetModel, mg_id , P_MACHINEGUN_MODEL)
 	float_to_str(1250.0,health,127)

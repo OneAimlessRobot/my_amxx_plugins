@@ -150,7 +150,7 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	law[id]=law_id
 	set_pev(law_id,pev_owner,id)
 	set_pev(law_id, pev_takedamage, DAMAGE_YES)
-	set_pev(law_id, pev_solid, SOLID_NOT)
+	set_pev(law_id, pev_solid, SOLID_TRIGGER)
 	set_pev(law_id , pev_classname, JETPLANE_LAW_CLASSNAME)
 	engfunc(EngFunc_SetModel, law_id , P_ROCKET_LAUNCHER_MODEL)
 	float_to_str(1050.0,health,127)

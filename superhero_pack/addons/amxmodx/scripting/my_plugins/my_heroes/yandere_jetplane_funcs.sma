@@ -24,10 +24,12 @@ new g_jetplane_loaded[SH_MAXSLOTS+1];
 new g_jetplane_deployed[SH_MAXSLOTS+1];
 new g_jetplane[SH_MAXSLOTS+1];
 new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][4];
+new Float:g_jetplane_airspeed[SH_MAXSLOTS+1]
 new camera[SH_MAXSLOTS+1]
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
 stock Float:jet_think_period
+stock Float:jet_init_speed
 new hud_sync_charge
 new hud_sync_jetplane
 
@@ -41,6 +43,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_hp", "5")
 	register_cvar("yandere_jetplane_cooldown", "5")
 	register_cvar("yandere_jetplane_think_period", "5")
+	register_cvar("yandere_jetplane_init_speed", "5")
 	arrayset(g_jetplane_cooldown,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
@@ -80,6 +83,7 @@ public loadCVARS(){
 	jetplane_cooldown=get_cvar_float("yandere_jetplane_cooldown");
 	jetplane_hp=get_cvar_float("yandere_jetplane_hp")
 	jet_think_period=get_cvar_float("yandere_jetplane_think_period")
+	jet_init_speed=get_cvar_float("yandere_jetplane_init_speed")
 }
 public plugin_precache(){
 	
@@ -256,16 +260,17 @@ public jet_deploy_task(parm[],id){
 		return
 	}
 	set_pev(jetplane_id, pev_takedamage, DAMAGE_YES)
-	set_pev(jetplane_id, pev_movetype, MOVETYPE_FLY) 
-	set_pev(jetplane_id, pev_solid, SOLID_TRIGGER)
-	if(get_user_gravity(attacker)>0.0001){
-		set_user_gravity(attacker,0.0001)
+	set_pev(jetplane_id, pev_movetype, MOVETYPE_BOUNCEMISSILE) 
+	set_pev(jetplane_id, pev_solid, SOLID_BBOX)
+	if(get_user_gravity(attacker)>0.0){
+		set_user_gravity(attacker,0.0)
 	
 	}
 	new alpha=255
 	set_pev(jetplane_id,pev_renderamt,float(alpha))
 	set_pev(attacker, pev_takedamage, DAMAGE_NO)
 	set_pev(attacker, pev_solid, SOLID_NOT)
+	set_pev(attacker, pev_movetype, MOVETYPE_NONE) 
 	reset_jet_fuel(jetplane_id)
 	reset_jet_bombs(jetplane_id)
 	reset_jet_shells(jetplane_id)
@@ -299,10 +304,8 @@ public jet_deploy_task(parm[],id){
 		
 		attach_view(id, camera[id])
 	}
-	set_pev(jetplane_id,pev_maxspeed,get_cvar_float("sv_maxspeed"))
-	server_print("jet speed= %0.2f^n",get_jet_speed())
 	set_pev(jetplane_id,pev_velocity,init_speed)
-	print_vector(init_speed)
+	g_jetplane_airspeed[id]=jet_init_speed
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
 	set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
@@ -353,8 +356,8 @@ public jet_think(ent)
 		new Float:vOrigin[3]
 		new Float:angles[3]
 		new Float:velocity[3]
-		new Float:move_velocity[3]
 		new Float:accel_thingie=0.0;
+		set_pev(owner,pev_velocity,NULL_VECTOR)
 		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
 		
 		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
@@ -362,14 +365,7 @@ public jet_think(ent)
 		
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, angles)
 		velocity_by_aim(jet_get_user_jet(owner),floatround(CAMERA_DIST),velocity)
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_velocity, move_velocity)
-		new Float:abs_velocity=vector_length(move_velocity)
 		new Float:length=vector_length(velocity)
-		if(abs_velocity==0.0){
-			
-			abs_velocity=1.0
-			
-		}
 		if(pev_valid(camera[owner])==2){
 			
 			
@@ -399,10 +395,10 @@ public jet_think(ent)
 			}
 			
 		}
-		velocity_by_aim(owner, floatround(abs_velocity), move_velocity)
 		new Float:diff_speed[3]
 		new Float:accel_result=accel_thingie*get_jet_accelerate_const()*jet_get_think_period()
-		multiply_3d_vector_by_scalar(move_velocity,accel_result+abs_velocity,diff_speed)
+		g_jetplane_airspeed[owner]=floatmin(get_jet_speed(),g_jetplane_airspeed[owner]+accel_result)
+		velocity_by_aim(owner, floatround(g_jetplane_airspeed[owner]), diff_speed)
 		set_pev(jet_get_user_jet(owner), pev_velocity, diff_speed)
 		//draw_bbox(jet_get_user_jet(owner),0)
 		
