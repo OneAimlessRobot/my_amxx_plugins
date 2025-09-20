@@ -6,6 +6,7 @@
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 #define PLUGIN "Superhero yandere rocket funcs"
@@ -237,7 +238,8 @@ Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
 Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
 
 new Float:fl_iNewVelocity[3]
-VelocityByAim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+
 Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 has_rocket[id] = NewEnt

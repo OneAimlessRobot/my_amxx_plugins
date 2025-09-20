@@ -26,6 +26,8 @@ new g_jetplane_leftflapon[SH_MAXSLOTS+1]
 new g_jetplane_rightflapon[SH_MAXSLOTS+1]
 new g_jetplane_upflapon[SH_MAXSLOTS+1]
 new g_jetplane_downflapon[SH_MAXSLOTS+1]
+new g_jetplane_left_rollflapon[SH_MAXSLOTS+1]
+new g_jetplane_right_rollflapon[SH_MAXSLOTS+1]
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -80,6 +82,11 @@ public plugin_natives(){
 	register_native("get_jet_upflapon","_get_jet_upflapon",0);
 	register_native("set_jet_upflapon","_set_jet_upflapon",0);
 	
+	register_native("get_jet_left_rollflapon","_get_jet_left_rollflapon",0);
+	register_native("set_jet_left_rollflapon","_set_jet_left_rollflapon",0);
+	register_native("get_jet_right_rollflapon","_get_jet_right_rollflapon",0);
+	register_native("set_jet_right_rollflapon","_set_jet_right_rollflapon",0);
+	
 	register_native("get_jet_accelerate_const","_get_jet_accelerate_const",0);
 	register_native("jet_get_max_turn_const","_jet_get_max_turn_const",0);
 	register_native("jet_get_turn_inc_const","_jet_get_turn_inc_const",0);
@@ -107,6 +114,30 @@ public Float:_jet_get_max_turn_const(iPlugins,iParams){
 public Float:_get_jet_accelerate_const(iPlugins,iParams){
 	return accelerate_const
 }
+
+public _set_jet_left_rollflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_left_rollflapon[id]=on_or_off
+}
+public _get_jet_left_rollflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_left_rollflapon[id]
+}
+
+public _set_jet_right_rollflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_right_rollflapon[id]=on_or_off
+}
+public _get_jet_right_rollflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_right_rollflapon[id]
+}
+
+
 public _set_jet_leftflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
@@ -244,6 +275,9 @@ public OnCmdStart(id,uc_handle)
 	g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
 	g_jetplane_upflapon[id]=(button & IN_JUMP)
 	g_jetplane_downflapon[id]=(button &  IN_DUCK)
+	g_jetplane_left_rollflapon[id]=(button & IN_LEFT)
+	g_jetplane_right_rollflapon[id]=(button &  IN_RIGHT)
+	 
 	if((button & IN_FORWARD)){
 		
 		button&=~IN_FORWARD
@@ -259,6 +293,14 @@ public OnCmdStart(id,uc_handle)
 	if((button & IN_MOVERIGHT)){
 		
 		button&=~IN_MOVERIGHT
+	}
+	if((button & IN_LEFT)){
+		
+		button&=~IN_LEFT
+	}
+	if((button & IN_RIGHT)){
+		
+		button&=~IN_RIGHT
 	}
 	if((button & IN_JUMP)){
 		

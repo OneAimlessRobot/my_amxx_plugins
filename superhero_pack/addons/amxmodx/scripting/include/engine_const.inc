@@ -33,7 +33,7 @@
  * View types for the set_view() native.
  *
  * @note These do not correspond to any HLSDK constants and are only relevant to
- * 		 the custom functionality provided by the engine module.
+ *		 the custom functionality provided by the engine module.
  */
 #define CAMERA_NONE         0
 #define CAMERA_3RDPERSON    1
