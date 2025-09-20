@@ -311,7 +311,6 @@ public cmd_setclass(id, level, cid)
 	read_argv(2, arg2, 127);
 	read_argv(3, arg3, 1);
 	new mode= str_to_num(arg3);
-	new player = cmd_target(id, arg1, 0);
 	if (arg1[0] == '@')
 	{
 		new Team=0;

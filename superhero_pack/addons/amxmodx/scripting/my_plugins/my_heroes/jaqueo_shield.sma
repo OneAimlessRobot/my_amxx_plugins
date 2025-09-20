@@ -99,6 +99,10 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 	
 		return FMRES_IGNORED
 	}
+	if(!ptr){
+	
+		return FMRES_IGNORED
+	}
 	if (!g_normal_ptr[id]) {
 		g_normal_ptr[id] = ptr
 

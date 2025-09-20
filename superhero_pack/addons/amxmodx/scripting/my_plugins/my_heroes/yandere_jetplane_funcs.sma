@@ -382,7 +382,7 @@ public jet_think(ent)
 		if(get_jet_throttle(owner)||get_jet_airbrakes(owner)){
 			if(!get_jet_throttle(owner)&&get_jet_airbrakes(owner)){
 				
-				accel_thingie=-1.0
+				accel_thingie=-4.0
 			}
 			else if(get_jet_throttle(owner)&&!get_jet_airbrakes(owner)){
 				
@@ -480,19 +480,18 @@ public jet_sound_task(id){
 		
 		if(random(SoundRate) == (SoundRate-1)){ //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 			if(get_user_fuel_ammount(owner) > 160.0){
-				emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+				emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][2]/get_cvar_float("yandere_jetplane_speed"))));
 			}
 			else{
-				emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-				
+				emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][2]/get_cvar_float("yandere_jetplane_speed"))));
 			}
 		}
 	}
 	else{
 			//if(random(SoundRate) == (SoundRate-1)){ //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 		
-		emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-		
+		emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][2]/get_cvar_float("yandere_jetplane_speed"))));
+			
 			//}
 		
 	}
