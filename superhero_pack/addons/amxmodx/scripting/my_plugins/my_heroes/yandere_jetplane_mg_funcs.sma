@@ -6,6 +6,7 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 #define PLUGIN "Superhero yandere JETGATLING funcs"
@@ -324,8 +325,19 @@ launch_shell(id)
 	entity_set_int(Ent, EV_INT_solid, 2)
 	entity_set_int(Ent, EV_INT_movetype, 5)
 	entity_set_edict(Ent, EV_ENT_owner, id)
+	new Float:jet_v_angle[3];
+	new Float:jet_angles[3];	
+	entity_get_vector(jet_get_user_jet(id), EV_VEC_v_angle, jet_v_angle)
+	entity_get_vector(jet_get_user_jet(id), EV_VEC_angles, jet_angles)
 	
-	VelocityByAim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed) , Velocity)
+	vector_norm(jet_v_angle,jet_v_angle)
+	vector_norm(jet_angles,jet_angles)
+
+	//VelocityByAim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed) , Velocity)
+	
+	yaw_pitch_roll_vector_to_dir(jet_v_angle,Velocity,jetplane_mg_bulletspeed);
+	
+
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	new parm[1]

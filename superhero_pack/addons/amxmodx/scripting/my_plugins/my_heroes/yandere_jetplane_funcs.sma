@@ -23,6 +23,7 @@ new g_jetplane_cooldown[SH_MAXSLOTS+1];
 new g_jetplane_loaded[SH_MAXSLOTS+1];
 new g_jetplane_deployed[SH_MAXSLOTS+1];
 new g_jetplane[SH_MAXSLOTS+1];
+new Float:g_jetplane_turn_data[SH_MAXSLOTS+1][4];
 new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][4];
 new Float:g_jetplane_airspeed[SH_MAXSLOTS+1]
 new camera[SH_MAXSLOTS+1]
@@ -336,6 +337,16 @@ public jet_think(ent)
 	gametime = get_gametime()
 	pev(ent, pev_origin, Pos)
 	new owner=pev(ent,pev_owner)
+	
+	if(!client_hittable(owner)){
+
+		return FMRES_IGNORED
+	}
+	if(!yandere_get_has_yandere(owner)||!g_jetplane_deployed[owner]){
+
+		return FMRES_IGNORED
+	}
+		
 	new Float:jet_health=float(pev(ent,pev_health))
 	
 	if ( (jet_health<1000.0)) {
@@ -354,45 +365,88 @@ public jet_think(ent)
 		}
 		
 		new Float:vOrigin[3]
-		new Float:angles[3]
+		new Float:v_angle[3]
 		new Float:velocity[3]
 		new Float:accel_thingie=0.0;
+		new Float:turn_thingie=0.0;
+		new Float:updown_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
 		
 		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
 		
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, angles)
+		if(get_jet_upflapon(owner)){
+	
+
+			updown_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+			
+		}
+		if(get_jet_downflapon(owner)){
+
+			
+
+			updown_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+			
+		}
+		g_jetplane_turn_data[owner][0]=floatclamp(-jet_get_max_turn_const()*0.5,g_jetplane_turn_data[owner][0]+updown_thingie,jet_get_max_turn_const()*0.5);
+		
+		
+		if(get_jet_leftflapon(owner)){
+
+
+			turn_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+			
+		}
+		if(get_jet_rightflapon(owner)){
+
+			
+
+			turn_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+			
+		}
+		g_jetplane_turn_data[owner][1]=floatclamp(-jet_get_max_turn_const()*0.5,g_jetplane_turn_data[owner][1]+turn_thingie,jet_get_max_turn_const()*0.5);
+		
+		new Float:angles[3]
+		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
+		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
+		v_angle[1]+=g_jetplane_turn_data[owner][1]
+		angles[1]+=g_jetplane_turn_data[owner][1]
+		v_angle[0]-=g_jetplane_turn_data[owner][0]
+		angles[0]+=g_jetplane_turn_data[owner][0]
+		entity_set_vector(owner, EV_VEC_v_angle, v_angle)
+		entity_set_vector(owner, EV_VEC_angles, angles)
+		entity_set_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
+		entity_set_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
+		
 		velocity_by_aim(jet_get_user_jet(owner),floatround(CAMERA_DIST),velocity)
 		new Float:length=vector_length(velocity)
 		if(pev_valid(camera[owner])==2){
 			
 			
 			
-			vOrigin[1]-=velocity[1]*(CAMERA_DIST/length)
-			vOrigin[2]-=velocity[2]*(CAMERA_DIST/length)
+			vOrigin[1]+=velocity[1]*(CAMERA_DIST/length)
+			vOrigin[2]+=velocity[2]*(CAMERA_DIST/length)
 			vOrigin[2]+=40.0
-			vOrigin[0]-=velocity[0]*(CAMERA_DIST/length)
+			vOrigin[0]+=velocity[0]*(CAMERA_DIST/length)
+			entity_set_vector(camera[owner], EV_VEC_v_angle, v_angle)
 			entity_set_vector(camera[owner], EV_VEC_angles, angles)
 			entity_set_vector(camera[owner], EV_VEC_origin, vOrigin)
 			
 			
 		}
-		if(get_jet_throttle(owner)||get_jet_airbrakes(owner)){
-			if(!get_jet_throttle(owner)&&get_jet_airbrakes(owner)){
-				
-				accel_thingie=-4.0
-			}
-			else if(get_jet_throttle(owner)&&!get_jet_airbrakes(owner)){
-				
-				accel_thingie=1.0
-			}
-			else{
-				
-				
-				accel_thingie=0.0
-			}
+		
+		
+		if(get_jet_throttle(owner)){
+
+
+			accel_thingie=1.0
+			
+		}
+		if(get_jet_airbrakes(owner)){
+
+
+			accel_thingie-=4.0
 			
 		}
 		new Float:diff_speed[3]
@@ -542,7 +596,13 @@ public jet_hud_task(id){
 		
 	}
 	new hud_msg[1024]
-	format(hud_msg,1023,"Throttle on? %s^nAirbrake on? %s^njetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
+	format(hud_msg,1023,"Up flap on?: %s^nDown flap on?: %s^nLeft flap on?: %s^nRight flap on?: %s^nCurrent pitch angle: %0.2f^nCurrent turn angle: %0.2f^nThrottle on? %s^nAirbrake on? %s^njetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
+		get_jet_upflapon(owner)?"Yes":"No",
+		get_jet_downflapon(owner)?"Yes":"No",
+		get_jet_leftflapon(owner)?"Yes":"No",
+		get_jet_rightflapon(owner)?"Yes":"No",
+		g_jetplane_turn_data[owner][0],
+		g_jetplane_turn_data[owner][1],
 		get_jet_throttle(owner)?"Yes":"No",
 		get_jet_airbrakes(owner)?"Yes":"No",
 		float(pev(jet_get_user_jet(owner),pev_health))-1000.0,

@@ -121,6 +121,14 @@ stock get_player_aim_vector_raw(player_id, Float:raw_aim_dir[3]) {
 	sub_3d_vectors(f_user_aimend, user_coords, raw_aim_dir);
 	
 }
+stock yaw_pitch_roll_vector_to_dir(Float:input_vector[3], Float:output_vector[3],Float:desired_speed=1.0){
+	
+	output_vector[0]=floatcos(input_vector[1])*floatcos(input_vector[0])
+	output_vector[1]=floatsin(input_vector[1])*floatcos(input_vector[0])
+	output_vector[2]=-1.0*floatsin(input_vector[0])
+	vector_norm(output_vector,output_vector)
+	multiply_3d_vector_by_scalar(output_vector,desired_speed,output_vector);
+}
 
 stock vector_norm(Float:vec_result[3], Float:vec_in[3]) {
 	

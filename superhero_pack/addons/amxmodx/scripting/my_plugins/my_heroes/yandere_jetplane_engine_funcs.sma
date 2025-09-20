@@ -17,9 +17,15 @@
 new Float:jetplane_speed,
 Float:fuel_spend,
 Float:accelerate_const,
+Float:turn_inc_const,
+Float:max_turn_const,
 Float:jetplane_fuel;
 new g_jetplane_throttle[SH_MAXSLOTS+1]
 new g_jetplane_airbrakes[SH_MAXSLOTS+1]
+new g_jetplane_leftflapon[SH_MAXSLOTS+1]
+new g_jetplane_rightflapon[SH_MAXSLOTS+1]
+new g_jetplane_upflapon[SH_MAXSLOTS+1]
+new g_jetplane_downflapon[SH_MAXSLOTS+1]
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -32,6 +38,8 @@ public plugin_init()
 	register_cvar("yandere_jetplane_fuel_spend", "5")
 	register_cvar("yandere_jetplane_speed", "5")
 	register_cvar("yandere_jetplane_accelerate_const", "5")
+	register_cvar("yandere_jetplane_turn_inc_const","5")
+	register_cvar("yandere_jetplane_max_turn_const","5")
 	register_forward(FM_CmdStart, "OnCmdStart")
 
 
@@ -49,6 +57,8 @@ public loadCVARS()
 	jetplane_speed=get_cvar_float("yandere_jetplane_speed");
 	jetplane_fuel=get_cvar_float("yandere_jetplane_fuel");
 	accelerate_const=get_cvar_float("yandere_jetplane_accelerate_const");
+	max_turn_const=get_cvar_float("yandere_jetplane_max_turn_const");
+	turn_inc_const=get_cvar_float("yandere_jetplane_turn_inc_const");
 	fuel_spend=get_cvar_float("yandere_jetplane_fuel_spend");
 }
 public plugin_natives(){
@@ -60,14 +70,92 @@ public plugin_natives(){
 	register_native("set_jet_throttle","_set_jet_throttle",0);
 	register_native("get_jet_airbrakes","_get_jet_airbrakes",0);
 	register_native("set_jet_airbrakes","_set_jet_airbrakes",0);
+	register_native("get_jet_rightflapon","_get_jet_rightflapon",0);
+	register_native("set_jet_rightflapon","_set_jet_rightflapon",0);
+	register_native("get_jet_leftflapon","_get_jet_leftflapon",0);
+	register_native("set_jet_leftflapon","_set_jet_leftflapon",0);
+	
+	register_native("get_jet_downflapon","_get_jet_downflapon",0);
+	register_native("set_jet_downflapon","_set_jet_downflapon",0);
+	register_native("get_jet_upflapon","_get_jet_upflapon",0);
+	register_native("set_jet_upflapon","_set_jet_upflapon",0);
+	
 	register_native("get_jet_accelerate_const","_get_jet_accelerate_const",0);
+	register_native("jet_get_max_turn_const","_jet_get_max_turn_const",0);
+	register_native("jet_get_turn_inc_const","_jet_get_turn_inc_const",0);
 	register_native("get_jet_speed","_get_jet_speed",0);
 	register_native("get_user_fuel_ammount","_get_user_fuel_ammount",0);
 	register_native("set_user_fuel_ammount","_set_user_fuel_ammount",0);
 	register_native("reset_jet_fuel","_reset_jet_fuel",0);
 	register_native("reset_user_fuel_ammount","_reset_user_fuel_ammount",0);
-
+/*
+native get_jet_rightflapon(id)
+native set_jet_rightflapon(id,on_or_of)
+native get_jet_leftflapon(id)
+native set_jet_leftflapon(id,on_or_of)
+native jet_get_turn_inc_const()
+native jet_get_max_turn_const()
+*/
 }
+
+public Float:_jet_get_turn_inc_const(iPlugins,iParams){
+	return turn_inc_const
+}
+public Float:_jet_get_max_turn_const(iPlugins,iParams){
+	return max_turn_const
+}
+public Float:_get_jet_accelerate_const(iPlugins,iParams){
+	return accelerate_const
+}
+public _set_jet_leftflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_leftflapon[id]=on_or_off
+}
+public _get_jet_leftflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_leftflapon[id]
+}
+
+public _set_jet_rightflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_rightflapon[id]=on_or_off
+}
+public _get_jet_rightflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_rightflapon[id]
+}
+
+
+public _set_jet_upflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_upflapon[id]=on_or_off
+}
+public _get_jet_upflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_upflapon[id]
+}
+
+public _set_jet_downflapon(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_downflapon[id]=on_or_off
+}
+public _get_jet_downflapon(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_downflapon[id]
+}
+
+
+
+
+
 
 public _set_jet_throttle(iPlugins,iParams){
 	new id=get_param(1)
@@ -91,9 +179,6 @@ public _get_jet_airbrakes(iPlugins,iParams){
 }
 public Float:_get_jet_speed(iPlugins,iParams){
 	return jetplane_speed
-}
-public Float:_get_jet_accelerate_const(iPlugins,iParams){
-	return accelerate_const
 }
 public Float:_get_jet_fuel_spend(iPlugins,iParams){
 	
@@ -153,13 +238,12 @@ public OnCmdStart(id,uc_handle)
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	new Float:angles[3]
-	entity_get_vector(id, EV_VEC_v_angle, angles)
-	entity_set_vector(jet_get_user_jet(id), EV_VEC_v_angle, angles)
-	entity_get_vector(id, EV_VEC_angles, angles)
-	entity_set_vector(jet_get_user_jet(id), EV_VEC_angles, angles)
 	g_jetplane_throttle[id]=(button & IN_FORWARD)
 	g_jetplane_airbrakes[id]=(button &  IN_BACK)
+	g_jetplane_leftflapon[id]=(button & IN_MOVELEFT)
+	g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
+	g_jetplane_upflapon[id]=(button & IN_JUMP)
+	g_jetplane_downflapon[id]=(button &  IN_DUCK)
 	if((button & IN_FORWARD)){
 		
 		button&=~IN_FORWARD
@@ -167,6 +251,22 @@ public OnCmdStart(id,uc_handle)
 	if((button & IN_BACK)){
 		
 		button&=~IN_BACK
+	}
+	if((button & IN_MOVELEFT)){
+		
+		button&=~IN_MOVELEFT
+	}
+	if((button & IN_MOVERIGHT)){
+		
+		button&=~IN_MOVERIGHT
+	}
+	if((button & IN_JUMP)){
+		
+		button&=~IN_JUMP
+	}
+	if((button & IN_DUCK)){
+		
+		button&=~IN_DUCK
 	}
 	if((get_user_fuel_ammount(id)> 0.0) && (button & IN_DUCK) )
 	{ 
@@ -184,7 +284,7 @@ public OnCmdStart(id,uc_handle)
 		}
 		
 	}
-	return FMRES_IGNORED
+	return FMRES_SUPERCEDE
 	
 		
 	
