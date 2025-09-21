@@ -19,6 +19,7 @@ Float:fuel_spend,
 Float:accelerate_const,
 Float:turn_inc_const,
 Float:max_turn_const,
+Float:stabilizer_mushyness,
 Float:jetplane_fuel;
 new g_jetplane_throttle[SH_MAXSLOTS+1]
 new g_jetplane_airbrakes[SH_MAXSLOTS+1]
@@ -42,6 +43,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_accelerate_const", "5")
 	register_cvar("yandere_jetplane_turn_inc_const","5")
 	register_cvar("yandere_jetplane_max_turn_const","5")
+	register_cvar("yandere_jetplane_stabilizer_mushyness","5");
 	register_forward(FM_CmdStart, "OnCmdStart")
 
 
@@ -62,6 +64,7 @@ public loadCVARS()
 	max_turn_const=get_cvar_float("yandere_jetplane_max_turn_const");
 	turn_inc_const=get_cvar_float("yandere_jetplane_turn_inc_const");
 	fuel_spend=get_cvar_float("yandere_jetplane_fuel_spend");
+	stabilizer_mushyness=get_cvar_float("yandere_jetplane_stabilizer_mushyness");
 }
 public plugin_natives(){
 
@@ -76,7 +79,7 @@ public plugin_natives(){
 	register_native("set_jet_rightflapon","_set_jet_rightflapon",0);
 	register_native("get_jet_leftflapon","_get_jet_leftflapon",0);
 	register_native("set_jet_leftflapon","_set_jet_leftflapon",0);
-	
+	register_native("jet_get_stabilizer_mushyness","_jet_get_stabilizer_mushyness",0);
 	register_native("get_jet_downflapon","_get_jet_downflapon",0);
 	register_native("set_jet_downflapon","_set_jet_downflapon",0);
 	register_native("get_jet_upflapon","_get_jet_upflapon",0);
@@ -114,7 +117,9 @@ public Float:_jet_get_max_turn_const(iPlugins,iParams){
 public Float:_get_jet_accelerate_const(iPlugins,iParams){
 	return accelerate_const
 }
-
+public Float:_jet_get_stabilizer_mushyness(iPlugins,iParams){
+	return stabilizer_mushyness
+}
 public _set_jet_left_rollflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
@@ -269,12 +274,12 @@ public OnCmdStart(id,uc_handle)
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	g_jetplane_throttle[id]=(button & IN_FORWARD)
-	g_jetplane_airbrakes[id]=(button &  IN_BACK)
+	g_jetplane_throttle[id]=(button & IN_JUMP)
+	g_jetplane_airbrakes[id]=(button &  IN_DUCK)
 	g_jetplane_leftflapon[id]=(button & IN_MOVELEFT)
 	g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
-	g_jetplane_upflapon[id]=(button & IN_JUMP)
-	g_jetplane_downflapon[id]=(button &  IN_DUCK)
+	g_jetplane_upflapon[id]=(button & IN_FORWARD)
+	g_jetplane_downflapon[id]=(button &  IN_BACK)
 	g_jetplane_left_rollflapon[id]=(button & IN_LEFT)
 	g_jetplane_right_rollflapon[id]=(button &  IN_RIGHT)
 	 
@@ -310,21 +315,9 @@ public OnCmdStart(id,uc_handle)
 		
 		button&=~IN_DUCK
 	}
-	if((get_user_fuel_ammount(id)> 0.0) && (button & IN_DUCK) )
-	{ 
-		
-		button &=~IN_DUCK
-		set_uc(uc_handle, UC_Buttons, button);
-		set_user_fuel_ammount(id,floatmax(0.0,get_user_fuel_ammount(id)-get_jet_fuel_spend()))
-		return FMRES_HANDLED
-			
-	}
-	else{
-		if((get_user_fuel_ammount(id) < jetplane_fuel) && (entity_get_int(id, EV_INT_flags) & FL_ONGROUND)) //bugfix: only refill gas when on the ground
-		{
-			set_user_fuel_ammount(id,floatmin(jetplane_fuel,get_user_fuel_ammount(id)+fuel_spend))
-		}
-		
+	if((get_user_fuel_ammount(id) < jetplane_fuel) && (entity_get_int(id, EV_INT_flags) & FL_ONGROUND)) //bugfix: only refill gas when on the ground
+	{
+		set_user_fuel_ammount(id,floatmin(jetplane_fuel,get_user_fuel_ammount(id)+fuel_spend))
 	}
 	return FMRES_SUPERCEDE
 	

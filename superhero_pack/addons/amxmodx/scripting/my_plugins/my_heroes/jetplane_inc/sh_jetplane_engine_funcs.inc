@@ -38,6 +38,7 @@ native Float:get_jet_speed()
 native Float:get_jet_accelerate_const()
 native Float:jet_get_turn_inc_const()
 native Float:jet_get_max_turn_const()
+native Float:jet_get_stabilizer_mushyness()
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

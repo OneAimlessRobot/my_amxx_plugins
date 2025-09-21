@@ -382,51 +382,67 @@ public jet_think(ent)
 		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
 		
-		if(get_jet_upflapon(owner)){
-	
+		if(get_jet_upflapon(owner)||get_jet_downflapon(owner)){
+			if(get_jet_upflapon(owner)){
+		
 
-			updown_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
-			
+				updown_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
+			if(get_jet_downflapon(owner)){
+
+				
+
+				updown_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
 		}
-		if(get_jet_downflapon(owner)){
-
-			
-
-			updown_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
-			
+		else{
+	
+			updown_thingie=-((1.0/jet_get_stabilizer_mushyness())*g_jetplane_turn_data[owner][0])
 		}
 		g_jetplane_turn_data[owner][0]=floatclamp(g_jetplane_turn_data[owner][0]+updown_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		
-		
-		if(get_jet_leftflapon(owner)){
+		if(get_jet_leftflapon(owner)||get_jet_rightflapon(owner)){
+			if(get_jet_leftflapon(owner)){
 
 
-			turn_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
-			
+				turn_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
+			if(get_jet_rightflapon(owner)){
+
+				
+
+				turn_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
 		}
-		if(get_jet_rightflapon(owner)){
-
-			
-
-			turn_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
-			
+		else{
+	
+			turn_thingie=-((1.0/jet_get_stabilizer_mushyness())*g_jetplane_turn_data[owner][1])
 		}
 		g_jetplane_turn_data[owner][1]=floatclamp(g_jetplane_turn_data[owner][1]+turn_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		
 		
-		
-		if(get_jet_left_rollflapon(owner)){
+		if(get_jet_left_rollflapon(owner)||get_jet_right_rollflapon(owner)){
+			if(get_jet_left_rollflapon(owner)){
 
 
-			rolly_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
-			
+				rolly_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
+			if(get_jet_right_rollflapon(owner)){
+
+				
+
+				rolly_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
 		}
-		if(get_jet_right_rollflapon(owner)){
-
-			
-
-			rolly_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
-			
+		else{
+	
+			rolly_thingie=-((1.0/jet_get_stabilizer_mushyness())*g_jetplane_turn_data[owner][2])
 		}
 		g_jetplane_turn_data[owner][2]=floatclamp(g_jetplane_turn_data[owner][2]+rolly_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		
