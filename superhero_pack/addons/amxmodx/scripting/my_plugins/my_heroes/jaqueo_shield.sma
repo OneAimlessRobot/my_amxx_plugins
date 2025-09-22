@@ -95,7 +95,11 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 	if (ignore_monsters) {
 		return FMRES_IGNORED
 	}
-	if(!jaqueo_get_has_jaqueo(id)||!is_user_alive(id)){
+	if(!is_user_connected(id)){
+	
+		return FMRES_IGNORED
+	}
+	if(!jaqueo_get_has_jaqueo(id)){
 	
 		return FMRES_IGNORED
 	}
