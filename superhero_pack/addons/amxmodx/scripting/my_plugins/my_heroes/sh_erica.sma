@@ -480,7 +480,7 @@ update_stats2(id){
 }
 public Erica_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && gHasErica[id] &&client_hittable(id)) {
+if ( sh_is_active() && gHasErica[id] &&client_hittable(id)) {
 	sh_give_weapon(id,CSW_HEGRENADE,false)
 	cs_set_user_bpammo(id, CSW_HEGRENADE,num_mollies);
 	sh_give_weapon(id, CSW_ELITE)

@@ -605,14 +605,19 @@ stock unfade_screen_user(id){
 stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
 {
 	if ( !pev_valid(ent_id) ) return
-	if(!client_hittable(pev(ent_id, pev_owner))) return
 	static  colors[3]
+	if(client_hittable(pev(ent_id, pev_owner))){
 	
-	switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
-	{
-		case CS_TEAM_T: colors = LineColors[RED]
-			case CS_TEAM_CT: colors = LineColors[BLUE]
-				default: colors = LineColors[CUSTOM]
+		switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
+		{
+			case CS_TEAM_T: colors = LineColors[RED]
+				case CS_TEAM_CT: colors = LineColors[BLUE]
+					default: colors = LineColors[CUSTOM]
+		}
+	}
+	else{
+
+		colors=LineColors[CUSTOM]
 	}
 	//This is a little cleaner but not much
 	if ( killbeam ) {

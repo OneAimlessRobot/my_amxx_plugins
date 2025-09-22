@@ -95,7 +95,7 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 	if (ignore_monsters) {
 		return FMRES_IGNORED
 	}
-	if(!is_user_connected(id)||!is_user_alive(id)){
+	if(!jaqueo_get_has_jaqueo(id)||!is_user_alive(id)){
 	
 		return FMRES_IGNORED
 	}
@@ -108,6 +108,13 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 
 		return FMRES_IGNORED
 	}
+	if (is_user_alive(get_tr2(ptr, TR_pHit))) {
+		return FMRES_IGNORED
+	}
+	/*if(ptr<=0){
+		sh_chat_message(id,"Invalid tr!!!!! [shrugs shoulders]");
+		return FMRES_IGNORED
+	}*/
 	new ent=get_tr2(ptr, TR_pHit)
 	if(!pev_valid(ent)){
 		return FMRES_IGNORED

@@ -366,7 +366,7 @@ new id=get_param(1)
 new value_to_set=get_param(2)
 new prev_value=slitter_on[id]
 if(!prev_value&&value_to_set){
-	g_slit_kills[id]=0;
+	g_slit_kills[id]=max_slitter_kills_per_life;
 }
 slitter_on[id]=value_to_set
 

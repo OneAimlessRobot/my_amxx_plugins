@@ -11,8 +11,8 @@ source_ext="sma"
 bytecode_ext="amxx"
 
 
-output_folder="/mnt/SPACE/half-life_backup/Half-Life/cstrike/addons/amxmodx/plugins/"
-scripting_folder="/mnt/SPACE/half-life_backup/Half-Life/cstrike/addons/amxmodx/scripting/"
+output_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/"
+scripting_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/scripting/"
 
 search_command="ls *.${source_ext}"
 
@@ -43,7 +43,7 @@ function compile_plugin(){
     output_plugin_name=$(get_output_plugin_name "$plugin_name")
 
     # Fixed command (added -o for output file)
-    "${compiler_path}" "$plugin_name.${source_ext}" -o"$output_plugin_name"
+    "${compiler_path}" "$plugin_name.${source_ext}" -o"$output_plugin_name" -v
 }
 
 # for i in $(ls *.${source_ext});

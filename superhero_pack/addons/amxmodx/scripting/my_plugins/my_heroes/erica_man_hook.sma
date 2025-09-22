@@ -31,13 +31,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		if(client_hittable(i)){
-			g_dragging_who[i][0]=-1;
-			g_dragging_who[i][1]=0
-		}
-	
-	}
 	arrayset(hook_on,0,SH_MAXSLOTS+1)
 	arrayset(g_hook_kills,0,SH_MAXSLOTS+1)
 	register_cvar("hook_distance", "2.0")
@@ -67,10 +60,26 @@ public newRound(id)
 {
 if ( tranq_get_has_erica(id)&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
-	stop_dragging(id)
+	
+	erica_new_spawn_hooks(id)
+	
+}
+return PLUGIN_CONTINUE
+
+}
+//----------------------------------------------------------------------------------------------
+public sh_client_spawn(id)
+{
+
+	erica_new_spawn_hooks(id)
+}
+
+erica_new_spawn_hooks(id){
+
+if ( tranq_get_has_erica(id)&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
-return PLUGIN_HANDLED
+stop_dragging(id)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -112,6 +121,7 @@ stop_dragging(id){
 //----------------------------------------------------------------------------------------------
 public hook_think(id)
 {
+	
 	id-=HOOK_TASKID
 	if (!client_hittable(id)){
 	
@@ -217,7 +227,7 @@ public CmdStart1(attacker, uc_handle)
 	if ( !tranq_get_has_erica(attacker)||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
 	
 	
-	static button;
+	new button;
 	button= get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(attacker, clip, ammo);
 	
@@ -233,6 +243,7 @@ public CmdStart1(attacker, uc_handle)
 				button &= ~IN_RELOAD;
 				set_uc(uc_handle, UC_Buttons, button);
 				
+				
 				new Float: vec2LOS[2];
 				new Float: vecForward[3];
 				new Float: vecForward2D[2];
@@ -242,21 +253,32 @@ public CmdStart1(attacker, uc_handle)
 				xs_vec_make2d( vecForward, vec2LOS );
 				xs_vec_normalize( vec2LOS, vec2LOS );
 				
-				static Float:vTrace[3], id, tr
-				static Float:vOrigin[3],Float:vEnd[3]
+				new Float:vTrace[3], id, tr
+				new Float:vOrigin[3],Float:vEnd[3]
 				pev(attacker, pev_origin, vOrigin)
 				vEnd[0]=vOrigin[0]+vecForward[0]
 				vEnd[1]=vOrigin[1]+vecForward[1]
 				vEnd[2]=vOrigin[2]+vecForward[2]
-				tr = 0
+				tr = create_tr2()
+				if(tr<=0){
+					return FMRES_IGNORED
+				}
 				engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
 				get_tr2(tr, TR_vecEndPos, vTrace)
+				laser_line(attacker,vOrigin,vTrace,0);
 				id = get_tr2(tr, TR_pHit)
+				if (!is_user_alive(get_tr2(tr, TR_pHit))) {
+					free_tr2(tr)
+					return FMRES_IGNORED
+				}
+				
 				if (!is_user_alive(id) ){
+					free_tr2(tr)
 					return FMRES_IGNORED
 				
 				}
 				if(cs_get_user_team(id)==cs_get_user_team(attacker)){
+					free_tr2(tr)
 					return FMRES_IGNORED
 				}
 				velocity_by_aim(id, floatround(hook_distance), vecForward ); 
@@ -269,6 +291,7 @@ public CmdStart1(attacker, uc_handle)
 					if(!hook_get_hook_kills(attacker)){
 					
 						sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);
+						free_tr2(tr)
 						return FMRES_IGNORED
 					}
 					sh_minibleed_user(id,attacker,tranq_get_hero_id())
@@ -281,6 +304,7 @@ public CmdStart1(attacker, uc_handle)
 					sh_chat_message(id,tranq_get_hero_id(),"%s HOOKED TO YOU! SHAKE EM OFF!",att_name);
 					
 				}
+				free_tr2(tr)
 			}
 		}
 		else {
@@ -291,6 +315,7 @@ public CmdStart1(attacker, uc_handle)
 		}
 		
 	}
+	
 	return FMRES_IGNORED;
 }
 public Erica2_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
@@ -338,7 +363,7 @@ if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
 					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
 					
 					process_manhook_manslaughter( attacker, id)
-					
+					stop_dragging(attacker)	
 				}
 			}	
 		}
@@ -360,7 +385,7 @@ new id=get_param(1)
 new value_to_set=get_param(2)
 new prev_value=hook_on[id]
 if(!prev_value&&value_to_set){
-	g_hook_kills[id]=0;
+	g_hook_kills[id]=max_hook_kills_per_life
 }
 hook_on[id]=value_to_set
 
@@ -398,7 +423,7 @@ public death()
 	new id = read_data(2)
 	
 	if(tranq_get_has_erica(id)){
-		
+				
 		stop_dragging(id);
 	
 	}
