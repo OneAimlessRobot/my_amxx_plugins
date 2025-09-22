@@ -758,6 +758,8 @@ gToPlaySound[id]=true;
 gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
 if(!gSuperAngry[id]){
 	sh_reset_max_speed(id)
+	gNormalGravity[id]=gBaseGravity[id]
+	set_user_gravity(id,gNormalGravity[id])
 	sh_chat_message(id,gHeroID,"Demorphing!")
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
