@@ -16,10 +16,16 @@ new bool:bullet_loaded[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new Float:bullet_launch_pos[MAX_ENTITIES][3];
 new g_L96_clip[SH_MAXSLOTS+1]
+new dmg_headshot_mult,
+	xp_distance_mult;
+
 //new HamHook:TakeDamage
 public plugin_init(){
 	
 	
+	register_cvar("lena_xp_distance_mult","4")
+	register_cvar("lena_dmg_headshot_mult","5")
+
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, PLUGIN_AUTHOR);
 	for(new i=0;i<MAX_ENTITIES;i++){
 		
@@ -43,6 +49,19 @@ public plugin_init(){
 	
 }
 
+//----------------------------------------------------------------------------------------------
+public plugin_cfg()
+{
+	loadCVARS();
+}
+//----------------------------------------------------------------------------------------------
+public loadCVARS()
+{
+	xp_distance_mult=get_cvar_num("lena_xp_distance_mult");
+	dmg_headshot_mult=get_cvar_num("lena_dmg_headshot_mult");
+
+
+}//----------------------------------------------------------------------------------------------
 public plugin_natives(){
 	
 	register_native( "lena_l96_clear_bullets","_lena_l96_clear_bullets",0)
@@ -498,11 +517,16 @@ public vexd_pfntouch(pToucher, pTouched)
 				if(head_distance<LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST){
 					
 					headshot=1;
-					damage*=4;
+					damage*=dmg_headshot_mult;
 				}
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+				sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
+				if(headshot){
+					sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
 				
+				}
+				sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
 				send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
@@ -534,6 +558,7 @@ public vexd_pfntouch(pToucher, pTouched)
 						make_sparks(origin);
 					}
 				}
+				
 			}
 		}
 		if(pev(pTouched,pev_solid)==SOLID_BSP){

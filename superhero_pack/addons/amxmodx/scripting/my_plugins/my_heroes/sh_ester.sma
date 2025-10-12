@@ -35,6 +35,14 @@ new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,powe
 new base_dmg_per_it,dmg_inc_per_inc,num_lvls_for_inc,max_dmg
 new Float:pan_dmg
 new gHeroLevel
+new max_moralizing_xp;
+new moralizing_tmp_xp_give;
+new moralizing_pan_xp_give;
+new moralizing_headshot_xp_mult;
+
+new moralizing_tmp_xp_get_mult; 
+new moralizing_pan_xp_get_mult;
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -55,6 +63,13 @@ public plugin_init()
 	register_cvar("ester_uses_per_map","1")
 	register_cvar("ester_power_cost", "3")
 	register_cvar("ester_pan_dmg", "1.5")
+	register_cvar("ester_max_moralizing_xp","9000") 
+	register_cvar("ester_moralizing_tmp_xp_give","4.0")
+	register_cvar("ester_moralizing_pan_xp_give","16.0")
+	register_cvar("ester_moralizing_headshot_xp_mult","4");
+	register_cvar("ester_moralizing_tmp_xp_get_mult","5.0"); 
+	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
+
 	hud_sync = CreateHudSyncObj()
 	hud_sync_enemies = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
@@ -376,6 +391,13 @@ public loadCVARS()
 	num_lvls_for_inc=get_cvar_num("ester_lvls_for_inc")
 	pan_dmg=get_cvar_float("ester_pan_dmg")
 	teamglow_on=get_cvar_num("ester_teamglow_on")
+	max_moralizing_xp=get_cvar_num("ester_max_moralizing_xp");
+	moralizing_tmp_xp_give=get_cvar_num("ester_moralizing_tmp_xp_give")
+	moralizing_pan_xp_give=get_cvar_num("ester_moralizing_pan_xp_give")
+	moralizing_headshot_xp_mult=get_cvar_num("ester_moralizing_headshot_xp_mult");
+	moralizing_tmp_xp_get_mult=get_cvar_num("ester_moralizing_tmp_xp_get_mult"); 
+	moralizing_pan_xp_get_mult=get_cvar_num("ester_moralizing_pan_xp_get_mult");
+
 }//----------------------------------------------------------------------------------------------
 public ester_loop(id)
 {
@@ -546,7 +568,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	new hitgroup=get_tr2(Ptr,TR_iHitgroup)
 	new headshot=(hitgroup==1)
 	new weapon=get_user_weapon(attacker)
-	new mult=(headshot?4:1);
+	new mult=(headshot?moralizing_headshot_xp_mult:1);
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
@@ -563,13 +585,13 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			case CSW_KNIFE:{
 				
 				if((vic_team==att_team)){
-					if((gBuiltUpXp[attacker]>ESTER_GIVE_PER_HIT_BIG)){
+					if((gBuiltUpXp[attacker]>moralizing_pan_xp_give)){
 						if(sh_get_user_effect(id)!=METYLPHENIDATE){
 							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
 							sh_chat_message(attacker,gHeroID,"%s: AYO CHILL, %s!",client_name,attacker_name)
 							sh_chat_message(id,gHeroID,"%s: HEY! LOCK! IN, %s!",attacker_name,client_name)
-							new unextra_moralizing_xp=min(mult*ESTER_GIVE_PER_HIT_BIG,gBuiltUpXp[attacker])
+							new unextra_moralizing_xp=min(mult*moralizing_tmp_xp_give,gBuiltUpXp[attacker])
 							if(unextra_moralizing_xp){
 								
 								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
@@ -587,7 +609,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					new Float:extraDamage = floatsub(floatmul(damage, pan_dmg ),damage)
 					if (extraDamage>0){
 						sh_extra_damage(id, attacker, floatround(extraDamage), "Adutling Pan (TM)", headshot)
-						new extra_moralizing_xp=max(0,min(mult*floatround(extraDamage+damage),MAX_ESTER_XP-gBuiltUpXp[attacker]))
+						new extra_moralizing_xp=max(0,min(moralizing_pan_xp_get_mult*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
 							
 							client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
@@ -600,13 +622,13 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			case CSW_TMP:{
 				
 				if((vic_team==att_team)){
-					if((gBuiltUpXp[attacker]>ESTER_GIVE_PER_HIT)){
+					if((gBuiltUpXp[attacker]>moralizing_tmp_xp_give)){
 						if(sh_get_user_effect(id)!=METYLPHENIDATE){
 							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
 							sh_chat_message(attacker,gHeroID,"%s: AYO CHILL, %s!",client_name,attacker_name)
 							sh_chat_message(id,gHeroID,"%s: HEY! LOCK! IN, %s!",attacker_name,client_name)
-							new unextra_moralizing_xp=min(mult*ESTER_GIVE_PER_HIT,gBuiltUpXp[attacker])
+							new unextra_moralizing_xp=min(mult*moralizing_tmp_xp_give,gBuiltUpXp[attacker])
 							if(unextra_moralizing_xp){
 								
 								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
@@ -625,7 +647,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						sh_chat_message(id,gHeroID,"%s: Shhh... its okay, %s... Just stay there for me, yes?",attacker_name,client_name)
 						sh_set_stun(id,GLOW_TIME,150.0);
 					}
-					new extra_moralizing_xp=max(0,min(mult*floatround(damage),MAX_ESTER_XP-gBuiltUpXp[attacker]))
+					new extra_moralizing_xp=max(0,min(moralizing_tmp_xp_get_mult*mult*floatround(damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 					if(extra_moralizing_xp){
 						client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
 						sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",attacker_name,headshot?"headshot":"(wow... not even headshot)")

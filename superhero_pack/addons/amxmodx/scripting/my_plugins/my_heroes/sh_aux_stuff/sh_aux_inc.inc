@@ -962,8 +962,8 @@ stock precache_explosion_fx(){
 	
 }
 
-stock bool:client_hittable(vic_userid){
-	if(!vic_userid){
+stock bool:client_hittable(vic_userid,optional_bool=1){
+	if(pev_valid(vic_userid)!=2){
 		
 		return false;
 	}
@@ -971,7 +971,7 @@ stock bool:client_hittable(vic_userid){
 		
 		return false;
 	}
-	return (is_user_alive(vic_userid))?true:false;
+	return (((is_user_alive(vic_userid))?true:false)&&optional_bool);
 
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

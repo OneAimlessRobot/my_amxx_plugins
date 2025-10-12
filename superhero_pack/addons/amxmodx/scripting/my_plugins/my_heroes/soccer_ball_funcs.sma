@@ -168,7 +168,7 @@ public vexd_pfntouch(pToucher, pTouched)
 						tagged_by_baller[oid][pTouched]=true
 						ball_in_the_face(pToucher,oid,pTouched)
 						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						tagged_by_baller[oid][pTouched]=false
+						sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 						set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
 					}
 				}
@@ -231,7 +231,7 @@ public kick_ball(iPlugin,iParams)
 	
 	arrayset(tagged_by_baller[id],false,SH_MAXSLOTS+1)
 	entity_set_string(  Ent, EV_SZ_classname, BALL_CLASSNAME );
-	entity_set_int(  Ent , EV_INT_solid, SOLID_TRIGGER);
+	entity_set_int(  Ent , EV_INT_solid, SOLID_BSP);
 	entity_set_int( Ent, EV_INT_movetype, MOVETYPE_BOUNCE );
 	entity_set_model(  Ent , g_szBallModel );
 	entity_set_size(  Ent, Float:{ -15.0, -15.0, 0.0 }, Float:{ 15.0, 15.0, 12.0 } );
@@ -259,6 +259,7 @@ public kick_ball(iPlugin,iParams)
 	
 	kicked_ball[id]=true
 	emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	arrayset(tagged_by_baller[id],false,sizeof tagged_by_baller[]);
 	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
 	shoteffects(Origin,id)
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );

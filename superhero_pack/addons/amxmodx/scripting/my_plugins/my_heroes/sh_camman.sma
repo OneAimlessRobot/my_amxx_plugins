@@ -212,7 +212,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if ( !client_isnt_hitter(id)&& shModActive() &&!hasRoundStarted() ) {
+	if (client_hittable(id)&&shModActive() &&!hasRoundStarted() ) {
 		
 		reset_camman_user(id)
 	}

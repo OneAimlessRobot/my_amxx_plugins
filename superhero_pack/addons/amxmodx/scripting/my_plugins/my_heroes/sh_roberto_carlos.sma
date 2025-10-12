@@ -36,7 +36,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "roberto_ku")
 	*/
 	register_cvar("roberto_level", "8")
-	
+	arrayset(gHasRoberto,0,sizeof gHasRoberto);
 	register_cvar("roberto_num_balls", "100")
 	register_cvar("roberto_ball_cooldown", "1.0")
 	register_event("ResetHUD","newRound","b")
@@ -79,14 +79,15 @@ public ev_SendAudio(){
 		
 		
 	} // Draw
-	for(new id=0;id<SH_MAXSLOTS+1;id++){
+	for(new id=1;id<SH_MAXSLOTS+1;id++){
 		
 		if(gHasRoberto[id]&&is_user_connected(id)){
 			player_team=cs_get_user_team(id)
-			if(player_team==win_team)
+			if(player_team==win_team){
 				if(!playing_win_sound){
 					playing_win_sound=true
 					emit_sound(id, CHAN_VOICE, round_win, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					sh_chat_message(id,roberto_get_hero_id(),"Your team has won!");
 				
 				}
 				else{
@@ -100,7 +101,7 @@ public ev_SendAudio(){
 				if(!playing_lose_sound){
 					playing_lose_sound=true
 					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				
+					sh_chat_message(id,roberto_get_hero_id(),"Your team has lost!");
 				}
 				else{
 					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -110,6 +111,7 @@ public ev_SendAudio(){
 			}
 			
 		}
+	}
 			
 		
 }

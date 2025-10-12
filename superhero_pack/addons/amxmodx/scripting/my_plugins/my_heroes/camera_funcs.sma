@@ -39,7 +39,7 @@ public plugin_init(){
 	arrayset(camera_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(user_curr_camera,0,SH_MAXSLOTS+1)
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		arrayset(user_cameras[i],0,MAX_CAMERAS)
+		arrayset(user_cameras[i],-1,MAX_CAMERAS)
 	}
 	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
@@ -200,10 +200,10 @@ public _toggle_camera_view(iPlugins,iParams){
 	new id=get_param(1);
 	
 	if(!looking_with_camera[id]&&camman_get_num_cameras(id)){
-		new camera_id
+		new camera_id=-1
 		new i=user_curr_camera[id]
 		new count=0
-		for(;(count<camman_get_max_cameras())&&(!camera_id||!pev(camera_id, pev_iuser1));count++,i=(i+1)%(camman_get_max_cameras())){
+		for(;(count<camman_get_max_cameras())&&((camera_id<=0)||(pev_valid(camera_id)!=2));count++,i=(i+1)%(camman_get_max_cameras())){
 			camera_id=user_cameras[id][(i)%(camman_get_max_cameras())]
 			user_curr_camera[id]=(i)%(camman_get_max_cameras())
 		}
@@ -498,7 +498,7 @@ public camera_arm_task(parm[],camera_taskid){
 }
 public camera_wait_task(parm[],camera_taskid){
 	new camera_id=parm[1];
-	if(!is_valid_ent(camera_id)){
+	if(pev_valid(camera_id)!=2){
 		
 		return;
 	}
@@ -510,16 +510,16 @@ public camera_wait_task(parm[],camera_taskid){
 }
 public remove_camera(parm[3]){
 	
-	if(!is_valid_ent(parm[1])) return
+	if(pev_valid(parm[1])!=2) return
 	
 	remove_task(parm[1]+CAMERA_ARMING_TASKID);
 	remove_task(parm[1]+CAMERA_WAIT_TASKID);
 	camera_loaded[parm[0]]=true
 	remove_entity(parm[1])
 	if(parm[2]>=0){
-		user_cameras[parm[0]][parm[2]]=0
+		user_cameras[parm[0]][parm[2]]=-1
 	}
-	
+	sh_chat_message(parm[0],camman_get_hero_id(),"The camera with index %d and in-user id %d was removed (hopefully)",parm[1],parm[2]);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -543,6 +543,10 @@ public loadCVARS()
 
 public disarm_task(param[],id){
 	id-=CAMERA_DISARM_TASKID
+	if(camman_get_num_cameras(id)<=0){
+		return;
+
+	}
 	new hud_msg[128];
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],CAMERA_DISARM_PERIOD)
 	format(hud_msg,127,"[SH]: DISARMING CAMERA: %0.2f^n",
