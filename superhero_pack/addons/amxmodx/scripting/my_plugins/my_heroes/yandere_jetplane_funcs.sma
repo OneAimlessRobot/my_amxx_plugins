@@ -491,7 +491,20 @@ public jet_think(ent)
 		}
 		new Float:diff_speed[3]
 		new Float:accel_result=accel_thingie*get_jet_accelerate_const()*jet_get_think_period()
-		g_jetplane_airspeed[owner]=floatmax(0.0,floatmin(get_jet_speed(),g_jetplane_airspeed[owner]+accel_result))
+		
+		new Float:other_velocity[3]
+		new Float:velocity_copy[3]
+					
+
+		entity_get_vector(jet_get_user_jet(owner),EV_VEC_velocity,other_velocity);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,velocity_copy);
+		
+		new Float:curr_jet_speed=VecLength(velocity_copy);
+		
+		new Float:gravity_const=get_cvar_float("sv_gravity")*JETPLANE_GRAVITY_MULT
+		new Float:delta_speed=((JETPLANE_DRAG_CONST*curr_jet_speed*curr_jet_speed)/gravity_const)*JETPLANE_PHYS_UPDATE_TIME;
+
+		g_jetplane_airspeed[owner]=floatmax(0.0,floatmin(get_jet_speed(),g_jetplane_airspeed[owner]+accel_result-delta_speed))
 		velocity_by_aim(owner, floatround(g_jetplane_airspeed[owner]), diff_speed)
 		set_pev(jet_get_user_jet(owner), pev_velocity, diff_speed)
 		//draw_bbox(jet_get_user_jet(owner),0)
@@ -552,6 +565,7 @@ public charge_task(parm[],id){
 	
 	
 }
+
 public jet_sound_task(id){
 	new owner=id-JET_SOUND_TASKID
 	if(!client_hittable(owner)){
