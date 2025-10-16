@@ -20,7 +20,8 @@ Float:accelerate_const,
 Float:turn_inc_const,
 Float:max_turn_const,
 Float:stabilizer_mushyness,
-Float:jetplane_fuel;
+Float:jetplane_fuel,
+Float:jet_innertia_speed_frac;
 new g_jetplane_throttle[SH_MAXSLOTS+1]
 new g_jetplane_airbrakes[SH_MAXSLOTS+1]
 new g_jetplane_leftflapon[SH_MAXSLOTS+1]
@@ -29,6 +30,8 @@ new g_jetplane_upflapon[SH_MAXSLOTS+1]
 new g_jetplane_downflapon[SH_MAXSLOTS+1]
 new g_jetplane_left_rollflapon[SH_MAXSLOTS+1]
 new g_jetplane_right_rollflapon[SH_MAXSLOTS+1]
+new g_jetplane_flying[SH_MAXSLOTS+1];
+new g_jetplane_engine[SH_MAXSLOTS+1];
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -43,7 +46,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_accelerate_const", "5")
 	register_cvar("yandere_jetplane_turn_inc_const","5")
 	register_cvar("yandere_jetplane_max_turn_const","5")
-	register_cvar("yandere_jetplane_stabilizer_mushyness","5");
+	register_cvar("yandere_jetplane_innertia_speed_frac","0.25");
 	register_forward(FM_CmdStart, "OnCmdStart")
 
 
@@ -65,10 +68,15 @@ public loadCVARS()
 	turn_inc_const=get_cvar_float("yandere_jetplane_turn_inc_const");
 	fuel_spend=get_cvar_float("yandere_jetplane_fuel_spend");
 	stabilizer_mushyness=get_cvar_float("yandere_jetplane_stabilizer_mushyness");
+	jet_innertia_speed_frac=get_cvar_float("yandere_jetplane_innertia_speed_frac");
 }
 public plugin_natives(){
 
 	register_native("get_jet_fuel","_get_jet_fuel",0);
+	register_native("get_jet_flying","_get_jet_flying",0);
+	register_native("set_jet_flying","_set_jet_flying",0);
+	register_native("get_jet_engine","_get_jet_engine",0);
+	register_native("set_jet_engine","_set_jet_engine",0);
 	register_native("set_jet_fuel","_set_jet_fuel",0);
 	register_native("get_jet_fuel_spend","_get_jet_fuel_spend",0);
 	register_native("get_jet_throttle","_get_jet_throttle",0);
@@ -90,6 +98,7 @@ public plugin_natives(){
 	register_native("get_jet_right_rollflapon","_get_jet_right_rollflapon",0);
 	register_native("set_jet_right_rollflapon","_set_jet_right_rollflapon",0);
 	
+	register_native("get_jet_innertia_speed_frac","_get_jet_innertia_speed_frac",0);
 	register_native("get_jet_accelerate_const","_get_jet_accelerate_const",0);
 	register_native("jet_get_max_turn_const","_jet_get_max_turn_const",0);
 	register_native("jet_get_turn_inc_const","_jet_get_turn_inc_const",0);
@@ -107,7 +116,10 @@ native jet_get_turn_inc_const()
 native jet_get_max_turn_const()
 */
 }
+public Float:_get_jet_innertia_speed_frac(iPlugins,iParams){
 
+	return jet_innertia_speed_frac;
+}
 public Float:_jet_get_turn_inc_const(iPlugins,iParams){
 	return turn_inc_const
 }
@@ -203,6 +215,26 @@ public _get_jet_throttle(iPlugins,iParams){
 
 	return g_jetplane_throttle[id]
 }
+public _get_jet_flying(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_flying[id]
+}
+public _set_jet_engine(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_engine[id]=on_or_off
+}
+public _get_jet_engine(iPlugins,iParams){
+	new id=get_param(1)
+
+	return g_jetplane_engine[id]
+}
+public _set_jet_flying(iPlugins,iParams){
+	new id=get_param(1)
+	new on_or_off=get_param(2)
+	g_jetplane_flying[id]=on_or_off
+}
 public _set_jet_airbrakes(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
@@ -271,53 +303,74 @@ public OnCmdStart(id,uc_handle)
 	if(!jet_deployed(id)){
 		return FMRES_IGNORED
 	}
-	
 	new button = get_uc(uc_handle, UC_Buttons);
+	new old_button= pev(id,pev_oldbuttons);
+	if((button & IN_RELOAD)&&!(old_button & IN_RELOAD)){
+			g_jetplane_engine[id]=!g_jetplane_engine[id];
+	}
 	
-	g_jetplane_throttle[id]=(button & IN_JUMP)
-	g_jetplane_airbrakes[id]=(button &  IN_DUCK)
-	g_jetplane_leftflapon[id]=(button & IN_MOVELEFT)
-	g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
-	g_jetplane_upflapon[id]=(button & IN_FORWARD)
-	g_jetplane_downflapon[id]=(button &  IN_BACK)
-	g_jetplane_left_rollflapon[id]=(button & IN_LEFT)
-	g_jetplane_right_rollflapon[id]=(button &  IN_RIGHT)
-	 
-	if((button & IN_FORWARD)){
-		
-		button&=~IN_FORWARD
+	if(!get_jet_engine(id)||(get_user_fuel_ammount(id) < fuel_spend)){
+		if(g_jetplane_flying[id]){
+				sh_chat_message(id,yandere_get_hero_id(),"Jetplane too weak! Forcing a landing...");
+				g_jetplane_flying[id]=0;
+		}
 	}
-	if((button & IN_BACK)){
+	else if((get_user_fuel_ammount(id) > (jetplane_fuel*0.25))&&get_jet_engine(id)){
+		if(!g_jetplane_flying[id]){
 		
-		button&=~IN_BACK
+			sh_chat_message(id,yandere_get_hero_id(),"Jetplane is okay now! Ready for take off!");
+			g_jetplane_flying[id]=1;
+		}
 	}
-	if((button & IN_MOVELEFT)){
+	if(g_jetplane_flying[id]){
+		g_jetplane_throttle[id]=(button & IN_JUMP)
+		g_jetplane_airbrakes[id]=(button &  IN_DUCK)
+		g_jetplane_upflapon[id]=(button & IN_FORWARD)
+		g_jetplane_downflapon[id]=(button &  IN_BACK)
+		g_jetplane_leftflapon[id]=(button & IN_MOVELEFT)
+		g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
+		g_jetplane_left_rollflapon[id]=(button & IN_LEFT)
+		g_jetplane_right_rollflapon[id]=(button &  IN_RIGHT)
 		
-		button&=~IN_MOVELEFT
+		if((button & IN_FORWARD)){
+			
+			button&=~IN_FORWARD
+		}
+		if((button & IN_BACK)){
+			
+			button&=~IN_BACK
+		}
+		if((button & IN_JUMP)){
+			
+			button&=~IN_JUMP
+		}
+		if((button & IN_DUCK)){
+			
+			button&=~IN_DUCK
+		}
+		if((button & IN_MOVELEFT)){
+			
+			button&=~IN_MOVELEFT
+		}
+		if((button & IN_MOVERIGHT)){
+			
+			button&=~IN_MOVERIGHT
+		}
+		if((button & IN_LEFT)){
+			
+			button&=~IN_LEFT
+		}
+		if((button & IN_RIGHT)){
+			
+			button&=~IN_RIGHT
+		}
+		set_user_fuel_ammount(id,floatmax(0.0,get_user_fuel_ammount(id)-(fuel_spend+((4.0*float(g_jetplane_throttle[id]))*fuel_spend))))
+	
 	}
-	if((button & IN_MOVERIGHT)){
-		
-		button&=~IN_MOVERIGHT
-	}
-	if((button & IN_LEFT)){
-		
-		button&=~IN_LEFT
-	}
-	if((button & IN_RIGHT)){
-		
-		button&=~IN_RIGHT
-	}
-	if((button & IN_JUMP)){
-		
-		button&=~IN_JUMP
-	}
-	if((button & IN_DUCK)){
-		
-		button&=~IN_DUCK
-	}
-	if((get_user_fuel_ammount(id) < jetplane_fuel) && (entity_get_int(id, EV_INT_flags) & FL_ONGROUND)) //bugfix: only refill gas when on the ground
+	else
 	{
-		set_user_fuel_ammount(id,floatmin(jetplane_fuel,get_user_fuel_ammount(id)+fuel_spend))
+		set_user_fuel_ammount(id,floatmin(jetplane_fuel,get_user_fuel_ammount(id)+((entity_get_int(jet_get_user_jet(id), EV_INT_flags) & FL_ONGROUND)?fuel_spend*8.0:fuel_spend)))
+		return FMRES_IGNORED
 	}
 	return FMRES_SUPERCEDE
 	
