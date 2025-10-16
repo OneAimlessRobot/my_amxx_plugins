@@ -322,7 +322,7 @@ launch_shell(id)
 	entity_set_vector(Ent, EV_VEC_angles, vAngle)
 	
 	entity_set_int(Ent, EV_INT_solid, 2)
-	entity_set_int(Ent, EV_INT_movetype, 5)
+	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCEMISSILE)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
 
@@ -375,7 +375,7 @@ public vexd_pfntouch(pToucher, pTouched)
 {
 	
 	
-	if (!pev_valid(pToucher)){
+	if (pev_valid(pToucher)!=2){
 		
 		return
 	}
@@ -384,75 +384,88 @@ public vexd_pfntouch(pToucher, pTouched)
 	
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
 	if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
-		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
-			
-			remove_entity(pToucher)
-			return
-			
-		}
-		
-		new Float:origin[3]
-		entity_get_vector(pToucher,EV_VEC_origin,origin);
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{
-				new Float:vic_origin[3];
-				new Float:vic_origin_eyes[3];
-				new vic_origin_eyes_int[3];
+		if(pev_valid(pTouched)==2){
+			if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
 				
-				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-				get_user_origin(pTouched,vic_origin_eyes_int,1);
-				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-				new Float:damage=jetplane_mg_dmg
-				new headshot=0;
-				if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
+				return
+			
+			} 
+			new Float:origin[3]
+			entity_get_vector(pToucher,EV_VEC_origin,origin);
+			if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
+				if(client_hittable(pTouched))
+				{
+					new Float:vic_origin[3];
+					new Float:vic_origin_eyes[3];
+					new vic_origin_eyes_int[3];
 					
-					headshot=1;
-					damage*=4;
-				}
-				//sh_extra_damage(pTouched,oid,floatround(damage),"RAGE GATLING SHELL",headshot);
-				ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
-				sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
-				
-				new CsArmorType:armor_type;
-				cs_get_user_armor(pTouched,armor_type);
-				switch(armor_type){
-					
-					case CS_ARMOR_NONE:{
+					entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+					get_user_origin(pTouched,vic_origin_eyes_int,1);
+					IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+					new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+					new Float:damage=jetplane_mg_dmg
+					new headshot=0;
+					if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
 						
-						
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						
-						blood_spray(origin, headshot?10:5)
-						
-						
+						headshot=1;
+						damage*=4;
 					}
-					case CS_ARMOR_KEVLAR:{
+					ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
+					sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+					
+					new CsArmorType:armor_type;
+					cs_get_user_armor(pTouched,armor_type);
+					switch(armor_type){
 						
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						
-						if(headshot){
-							blood_spray(origin, 5)
-						}
-						else{
+						case CS_ARMOR_NONE:{
 							
+							
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+							
+							blood_spray(origin, headshot?10:5)
+							
+							
+						}
+						case CS_ARMOR_KEVLAR:{
+							
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+							
+							if(headshot){
+								blood_spray(origin, 5)
+							}
+							else{
+								
+								make_sparks(origin);
+							}
+						}
+						case CS_ARMOR_VESTHELM:{
+							emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 							make_sparks(origin);
 						}
 					}
-					case CS_ARMOR_VESTHELM:{
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						make_sparks(origin);
+				}
+			}
+			if((pev(pTouched,pev_solid)==SOLID_BBOX)){
+		
+				new szClassNameJet[32]
+				Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
+		
+				if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
+					
+					new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
+					if(client_hittable(jet_owner)){
+						jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
+						sh_chat_message(oid,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
 					}
 				}
 			}
-		}
-		if(pev(pTouched,pev_solid)==SOLID_BSP){
-			
-			emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			make_sparks(origin);
-			gun_shot_decal(origin);
-			
+			if(pev(pTouched,pev_solid)==SOLID_BSP){
+				
+				emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+				make_sparks(origin);
+				gun_shot_decal(origin);
+				
+			}
 		}
 		remove_entity(pToucher)
 	}

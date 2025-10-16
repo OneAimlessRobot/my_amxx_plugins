@@ -11,8 +11,8 @@ source_ext="sma"
 bytecode_ext="amxx"
 
 
-output_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/"
-scripting_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/scripting/"
+output_folder="/mnt/FASTstorage/GamesFAST/Half-Life/cstrike/addons/amxmodx/plugins/"
+scripting_folder="/mnt/FASTstorage/GamesFAST/Half-Life/cstrike/addons/amxmodx/scripting/"
 
 search_command="ls *.${source_ext}"
 

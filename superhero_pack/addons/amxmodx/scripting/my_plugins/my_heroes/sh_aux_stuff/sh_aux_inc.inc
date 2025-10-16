@@ -435,6 +435,26 @@ public move_enemy(parm[])
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
+public move_entity(parm[])
+{
+	new victim = parm[3]
+	
+	new Float:origin[3]
+	
+	pev(victim,pev_origin,origin)
+	
+	origin[2]+=100.0
+	
+	set_pev(victim,pev_origin,origin)
+	
+	new Float:fl_velocity[3]
+	fl_velocity[0] = float(parm[0])
+	fl_velocity[1] = float(parm[1])
+	fl_velocity[2] = floatabs(float(parm[2]))
+	
+	set_pev(victim, pev_velocity, fl_velocity)
+	
+}
 stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0){
 	
 	if(!is_user_connected(ent_id)){
@@ -476,7 +496,7 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 }
 stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	
-	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
+	if((pev_valid(ent_id)!=2)){
 	
 		return 
 	
@@ -497,7 +517,6 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 	new owner_id=pev(ent_id,pev_owner)
 	new name_of_player[128];
 	get_user_name(owner_id,name_of_player,127)
-	//console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do owner e %s!!!!^n",name_of_player)
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
 	for (new i=0; i < numfound; i++)
@@ -514,16 +533,54 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 			}
 		}
 		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power)
-		
-		get_user_name(pid,name_of_player,127)
-		//console_print(owner_id,"yeeeyyyyy!!!! Mensagem enviada ao owner na funcao de dmg!!!!^nO nome do player dmged e %s!!!!^n",name_of_player)
+
+	}
+}
+stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player"){
 	
+	if((pev_valid(ent_id)!=2)){
+	
+		return 
+	
+	}
+	
+	new Float:fOrigin[3];
+	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
+	
+	new iOrigin[3];
+	for(new i=0;i<3;i++)
+		iOrigin[i] = floatround(fOrigin[i]);
+	
+	explode_fx(iOrigin,floatround(explosion_radius))
+	
+	new entlist[33];
+	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
+	
+	new owner_id=pev(ent_id,pev_owner)
+	for (new i=0; i < numfound; i++)
+	{		
+		new eid = entlist[i];
+		if(pev_valid(eid)!=2){
+			break
+		
+		}
+		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power)
 	}
 }
 stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 	
 	
-	if(!pev_valid(ent_id)||!is_valid_ent(ent_id)){
+	if((pev_valid(ent_id)!=2)){
+	
+		return 
+	
+	}
+	if(!is_user_connected(owner_id)){
+	
+		return 
+	
+	}
+	if(!is_user_connected(pid)){
 	
 		return 
 	
@@ -587,6 +644,66 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	sh_chat_message(owner_id,hero_id,"%s was shattered by you!",client_name);
 	sh_chat_message(pid,hero_id,"%s shattered you!",attacker_name);
+}
+stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
+	
+	
+	if((pev_valid(ent_id)!=2)||(pev_valid(tg_id)!=2)){
+	
+		return 
+	
+	}
+	
+	if(is_user_connected(tg_id)&&(tg_id==owner_id)){
+		
+		if(ignore_owner){
+			
+			return
+			
+		}
+		
+		
+	
+	}
+	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
+	
+	new parm[4]
+	
+	Entvars_Get_Vector(tg_id, EV_VEC_origin, vOrig)
+	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
+	
+	Entvars_Get_Vector(ent_id, EV_VEC_velocity, b_vel)
+	
+	new Float:distance=get_distance_f(vOrig,usOrig);
+	new Float:vic_origin[3],Float:mine_origin[3];
+	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
+	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
+	distance=vector_distance(vic_origin,mine_origin);
+	new Float:falloff_coeff= floatmin(1.0,distance/radius);
+	new Float:force,Float:damage,idamage
+	damage=peak_power-(peak_power/2.0)*falloff_coeff
+	idamage=floatround(damage)
+	if(optional_force!=0.0){
+		force=optional_force-(optional_force/2.0)*falloff_coeff
+	}
+	else{
+		force=damage
+	}
+	new this_ent_owner = entity_get_edict(tg_id, EV_ENT_owner)
+	if(client_hittable(this_ent_owner)){
+		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, float(idamage), 0);
+	}
+	
+	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
+	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
+	b_vel[2]=force
+	
+		
+	parm[0] = floatround(b_vel[0])
+	parm[1] = floatround(b_vel[1])
+	parm[2] = floatround(b_vel[2])
+	parm[3] = tg_id
+	set_task(0.1, "move_entity", 0, parm, 4)
 }
 
 stock unfade_screen_user(id){

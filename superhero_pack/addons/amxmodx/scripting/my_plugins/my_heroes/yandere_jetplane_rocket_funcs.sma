@@ -278,33 +278,49 @@ message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_P
 
 public vexd_pfntouch(pToucher, pTouched) {
 
-if (!pev_valid(pToucher)){
+if (pev_valid(pToucher)!=2){
 	
-	 return
+	return
 }
 new szClassName[32]
 Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
 new id = entity_get_edict(pToucher, EV_ENT_owner)
 if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
-	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
-		
-		RemoveEntity(pToucher)
-		return
-	}
 	
-	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg)
-	RemoveEntity(pToucher)
-	
-	if ( is_valid_ent(pTouched) ) {
-		new szClassName2[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
-		
-		if(equal(szClassName2, JETPLANE_ROCKET_CLASSNAME)) {
-			explosion(yandere_get_hero_id(),pTouched,jetplane_law_radius,jetplane_law_dmg)
-			RemoveEntity(pTouched)
+	if(pev_valid(pTouched)==2){
+		if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
+			
+			return
+		}
+		if((pev(pTouched,pev_solid)==SOLID_BBOX)){
+			
+			new szClassNameJet[32]
+			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
+
+			if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
+				
+				new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
+				if(client_hittable(jet_owner)){
+					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_law_dmg)
+					sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+				}
+			}
+		}
+		if((pev(pTouched,pev_solid)==SOLID_TRIGGER)){
+			
+			new szClassNameMissile[32]
+			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
+			
+			if(equal(szClassNameMissile, JETPLANE_ROCKET_CLASSNAME)) {
+				sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit an enemy rocket... I repeat... You hit, an enemy rocket...");
+				RemoveEntity(pTouched)
+			}
 		}
 	}
+	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg)
+	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME)
+	RemoveEntity(pToucher)
 }
 }
 

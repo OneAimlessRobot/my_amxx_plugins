@@ -68,6 +68,7 @@ public plugin_init()
 		register_touch( JETPLANE_FUSELAGE_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 	}
 	
+	RegisterHam(Ham_TakeDamage,JETPLANE_FUSELAGE_CLASSNAME,"jet_itself_Damage",_,true)
 	
 }
 
@@ -88,6 +89,8 @@ public plugin_natives(){
 	register_native("jet_deployed","_jet_deployed",0);
 	register_native("jet_destroy","_jet_destroy",0);
 	register_native("jet_get_user_jet","_jet_get_user_jet",0);
+	register_native("jet_hurt_user_jet","_jet_hurt_user_jet",0);
+
 	
 	
 	
@@ -120,6 +123,32 @@ public _jet_get_user_jet(iPlugin,iParams){
 	
 	return g_jetplane[id]
 	
+	
+}
+public _jet_hurt_user_jet(iPlugin,iParams){
+	new id=get_param(1)
+	new attacker=get_param(2)
+	new damage_entity=get_param(3)
+	new Float:damage_to_do=get_param_f(4)
+	if(!sh_is_active()){
+		return
+	}
+	if(pev_valid(damage_entity)!=2){
+		return
+	}
+	if(!client_hittable(id)||!client_hittable(attacker)){
+		return
+	}
+	if(!yandere_get_has_yandere(attacker)){
+		return
+	}
+	if(pev_valid(jet_get_user_jet(id))!=2){
+		return
+	}
+	if(!jet_deployed(id)){
+		return
+	}
+	ExecuteHam(Ham_TakeDamage, jet_get_user_jet(id), damage_entity, attacker, damage_to_do, 0);
 	
 }
 public Float:_jet_get_think_period(iPlugin,iParams){
@@ -208,6 +237,45 @@ public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	
 	
+}
+public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
+	
+	if(!sh_is_active()){
+		return HAM_IGNORED
+	}
+	if(pev_valid(this)!=2){
+		return HAM_IGNORED
+	
+	}
+	
+	
+	if(pev_valid(idattacker)!=2){
+		return HAM_IGNORED
+	
+	}
+	if(!is_user_connected(idattacker)){
+		return HAM_IGNORED
+	
+	}
+	new attacker_name[128]
+	get_user_name(idattacker,attacker_name,127);
+	if(pev_valid(idinflictor)!=2){
+		return HAM_IGNORED
+	
+	}
+	static classname[32]
+	classname[0] = '^0'
+	pev(idinflictor, pev_classname, classname, charsmax(classname))
+	
+	new oid = entity_get_edict(this, EV_ENT_owner)
+	
+	console_print(oid,"[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!^nYou received: %0.2f damage^nFrom entity of type: %s^nFrom attacker of id: %d (name %s)^n"
+				,damage
+				,classname
+				,idattacker
+				,attacker_name);
+	
+	return HAM_IGNORED;
 }
 
 public _jet_uncharge_user(iPlugin,iParams){
@@ -310,9 +378,9 @@ public jet_deploy_task(parm[],id){
 	if(camera[id] > 0)
 	{
 		entity_set_string(camera[id], EV_SZ_classname, "camera")
-		entity_set_int(camera[id], EV_INT_solid, SOLID_NOT)
-		entity_set_int(camera[id], EV_INT_movetype, MOVETYPE_NOCLIP)
-		entity_set_size(camera[id], Float:{0,0,0}, Float:{0,0,0})
+		entity_set_int(camera[id], EV_INT_solid, SOLID_BBOX)
+		entity_set_int(camera[id], EV_INT_movetype, MOVETYPE_FLY)
+		entity_set_size(camera[id], Float:{-1.0,-1.0,-1.0}, Float:{1.0,1.0,1.0})
 		entity_set_model(camera[id], JETPLANE_CAMERA_MODEL)
 		set_rendering(camera[id], kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
 		
@@ -346,9 +414,9 @@ public FwdTouchWorld( Ball, World ) {
 	entity_get_vector( Ball, EV_VEC_velocity, vVelocity );
 	
 	if( floatround( vector_length( vVelocity ) ) > 10 ) {
-		vVelocity[ 0 ] *= 0.25;
-		vVelocity[ 1 ] *= 0.25;
-		vVelocity[ 2 ] *= 0.25;
+		vVelocity[ 0 ] *= 0.15;
+		vVelocity[ 1 ] *= 0.15;
+		vVelocity[ 2 ] *= 0.15;
 		
 		entity_set_vector( Ball, EV_VEC_velocity, vVelocity );
 		
@@ -554,25 +622,8 @@ public jet_think(ent)
 		
 	return FMRES_IGNORED
 }
-/*
-public vexd_pfntouch(pToucher, pTouched)
-{
-	
-	
-	if (!pev_valid(pToucher)){
-		
-		return
-	}
-	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
-	
-	if(equal(szClassName, JETPLANE_FUSELAGE_CLASSNAME)) {
-		
-	}
-}*/
 public charge_task(parm[],id){
 	id-=JET_CHARGE_TASKID
-	//if(client_isnt_hitter(id)) return
 	
 	
 	
@@ -719,16 +770,13 @@ public jet_hud_task(id){
 		
 	}
 	new hud_msg[1024]
-	format(hud_msg,1023,"Up flap on?: %s^nDown flap on?: %s^nLeft flap on?: %s^nRight flap on?: %s^nLeft roll flap on?: %s^nRight roll flap on?: %s^nCurrent pitch value: %0.2f^nCurrent turn value: %0.2f^nCurrent roll value: %0.2f^nThrottle on? %s^nAirbrake on? %s^njetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^nIs engine on? %s^nIs jetplane flying? %s^nCurrent inertia coeff: %0.2f^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
+	format(hud_msg,1023,"Up flap on?: %s^nDown flap on?: %s^nLeft flap on?: %s^nRight flap on?: %s^nLeft roll flap on?: %s^nRight roll flap on?: %s^nThrottle on? %s^nAirbrake on? %s^njetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^nIs engine on? %s^nIs jetplane flying? %s^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
 		get_jet_upflapon(owner)?"Yes":"No",
 		get_jet_downflapon(owner)?"Yes":"No",
 		get_jet_leftflapon(owner)?"Yes":"No",
 		get_jet_rightflapon(owner)?"Yes":"No",
 		get_jet_left_rollflapon(owner)?"Yes":"No",
 		get_jet_right_rollflapon(owner)?"Yes":"No",
-		g_jetplane_turn_data[owner][0],
-		g_jetplane_turn_data[owner][1],
-		g_jetplane_turn_data[owner][2],
 		get_jet_throttle(owner)?"Yes":"No",
 		get_jet_airbrakes(owner)?"Yes":"No",
 		float(pev(jet_get_user_jet(owner),pev_health))-1000.0,
@@ -736,7 +784,6 @@ public jet_hud_task(id){
 		g_jetplane_telemetry_data[owner][2],
 		get_jet_engine(owner)?"Yes":"No",
 		get_jet_flying(owner)?"Yes":"No",
-		g_jetplane_telemetry_data[owner][2]/get_jet_speed(),
 		get_user_jet_bombs(owner),
 		get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
 		get_user_jet_shells(owner),
