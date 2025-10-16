@@ -48,6 +48,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_brake_const", "5")
 	register_cvar("yandere_jetplane_turn_inc_const","5")
 	register_cvar("yandere_jetplane_max_turn_const","5")
+	register_cvar("yandere_jetplane_stabilizer_mushyness","0.25");
 	register_cvar("yandere_jetplane_innertia_speed_frac","0.25");
 	register_forward(FM_CmdStart, "OnCmdStart")
 

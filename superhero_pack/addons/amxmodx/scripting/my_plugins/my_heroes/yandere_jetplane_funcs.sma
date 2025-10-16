@@ -430,7 +430,7 @@ public jet_think(ent)
 		}
 		else{
 			
-			updown_thingie-=((1.0/6.0)*1.0*g_jetplane_turn_data[owner][0])
+			updown_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][0])
 		}
 		g_jetplane_turn_data[owner][0]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][0]+updown_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		if(get_jet_leftflapon(owner)||get_jet_rightflapon(owner)){
@@ -449,7 +449,7 @@ public jet_think(ent)
 			}
 		}
 		else{
-			turn_thingie-=((1.0/6.0)*1.0*g_jetplane_turn_data[owner][1])
+			turn_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][1])
 		}
 		g_jetplane_turn_data[owner][1]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][1]+turn_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		
@@ -470,7 +470,7 @@ public jet_think(ent)
 		}
 		else{
 	
-			rolly_thingie-=((1.0/6.0)*1.0*g_jetplane_turn_data[owner][2]);
+			rolly_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][2]);
 		}
 		g_jetplane_turn_data[owner][2]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][2]+rolly_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 
