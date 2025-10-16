@@ -9,11 +9,17 @@
 #define JETPLANE_PHYS_UPDATE_TIME 0.05
 
 #define JETPLANE_THRUST 100.0
+#define JETPLANE_STANDSTILL_FUEL_REGEN_MULT 20.0
+#define JETPLANE_THOTTLE_FUEL_SPEND_MULT 2.0
+#define JETPLANE_MAX_TURN_SPEED_THRESHOLD 1.0
+#define JETPLANE_MIN_TURN_CONST 1.0
+#define JETPLANE_MAX_BRAKE_SPEED_THRESHOLD 0.5
+#define JETPLANE_MIN_BRAKE_CONST 0.0
 #define JETPLANE_MASS 1.0
 #define JETPLANE_CAR 0.045
-#define JETPLANE_DIAMETER 33.0
+#define JETPLANE_DIAMETER 16.666667
 #define JETPLANE_AREA ((JETPLANE_DIAMETER*JETPLANE_DIAMETER)*MATH_PI)
-#define JETPLANE_AIR_RESISTANCE 0.005
+#define JETPLANE_AIR_RESISTANCE 0.01
 #define JETPLANE_DRAG_CONST (JETPLANE_AREA*JETPLANE_CAR*JETPLANE_AIR_RESISTANCE)
 
 
@@ -52,6 +58,7 @@ native reset_user_fuel_ammount(id)
 native Float:get_jet_fuel_spend()
 native Float:get_jet_speed()
 native Float:get_jet_accelerate_const()
+native Float:get_jet_brake_const()
 native Float:jet_get_turn_inc_const()
 native Float:jet_get_max_turn_const()
 native Float:jet_get_stabilizer_mushyness()

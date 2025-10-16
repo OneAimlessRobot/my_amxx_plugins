@@ -467,11 +467,11 @@ write_byte( 8 )
 write_short(id)				// start entity
 write_short(x)				// entity
 write_short(m_spriteTexture)		// model
-write_byte( 0 ) 				// starting frame
-write_byte( 30 )  			// frame rate
-write_byte( 1)  			// life
-write_byte( 45)  		// line width
-write_byte( 0 )  			// noise amplitude
+write_byte( 0 )				// starting frame
+write_byte( 30 )			// frame rate
+write_byte( 1)			// life
+write_byte( 45)		// line width
+write_byte( 0 )			// noise amplitude
 write_byte( 0 )				// r, g, b
 write_byte( 60 )				// r, g, b
 write_byte( 255 )				// r, g, b
@@ -978,8 +978,8 @@ public yandere_kd()
 	
 		if(jet_deployed(id)){
 			
-			sh_sound_deny(id)
-			sh_chat_message(id, yandere_get_hero_id(), "Jet already on!")
+			jet_destroy(id)
+			sh_chat_message(id, yandere_get_hero_id(), "You J-ed out!!")
 			return PLUGIN_HANDLED
 			
 		}
