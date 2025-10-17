@@ -19,7 +19,8 @@ new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
 stock Float:mg_think_period
 new shell_loaded[SH_MAXSLOTS+1]
-new gShallGib[SH_MAXSLOTS+1] 
+new gShallGib[SH_MAXSLOTS+1]
+new user_mg[SH_MAXSLOTS+1]
 new jetplane_mg_ammo;
 public plugin_init(){
 	
@@ -143,14 +144,14 @@ public _get_user_mg(iPlugins,iParams){
 		if(result2){
 			
 			
-			return pev(jet_get_user_jet(id),pev_iuser3)
+			return user_mg[id]
 		}
 		else{
-			return 0
+			return -1
 			
 		}
 	}
-	return 0
+	return -1
 	
 }
 public _spawn_jetplane_mg(iPlugins,iParams){
@@ -164,12 +165,12 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	new Float:jetplane_orig[3]
 	pev(jetplane_id,pev_origin,jetplane_orig)
 	new mg_id = create_entity( "func_breakable" );
-	if(!is_valid_ent(mg_id)||(mg_id == 0)) {
+	if(!is_valid_ent(mg_id)||(mg_id <= 0)) {
 		
 		sh_chat_message(id,yandere_get_hero_id(),"Mg failed to spawn")
 		return
 	}
-	set_pev(jetplane_id, pev_iuser3,mg_id)
+	user_mg[id]=mg_id
 	set_pev(mg_id,pev_owner,id)
 	set_pev(mg_id, pev_takedamage, DAMAGE_YES)
 	set_pev(mg_id, pev_solid, SOLID_TRIGGER)
@@ -200,7 +201,7 @@ public CmdStart(id, uc_handle)
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
 	if((weapon==CSW_KNIFE)&&jet_deployed(id)){
-		if(get_user_mg(id)){
+		if(get_user_mg(id)>0){
 			if(button & IN_ATTACK)
 			{
 				button &= ~IN_ATTACK;
@@ -211,14 +212,13 @@ public CmdStart(id, uc_handle)
 					client_print(id, print_center, "You are out of shells")
 					return FMRES_IGNORED
 				}
-				client_print(id, print_center, "Shell fired!")
 				launch_shell(id)
 				
 			}
 		}
 		else{
 			
-			client_print(id, print_center, "Mg is unnavailable. Please try again later.")
+			client_print(id, print_center, "MG is unnavailable. Please try again later.")
 			
 		}
 	}
@@ -296,7 +296,7 @@ launch_shell(id)
 	
 	entity_set_int(id, EV_INT_weaponanim, 3)
 	
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	new Float: Origin[3], Float: vAngle[3], Ent
 	if(!pev_valid(get_user_mg(id))) return PLUGIN_HANDLED
 	entity_get_vector(get_user_mg(id), EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -326,7 +326,12 @@ launch_shell(id)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
 
-	VelocityByAim(jet_get_user_jet(id),floatround(jetplane_mg_bulletspeed),Velocity)
+	new Float:jet_velocity[3]
+	pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
+	new Float:jet_velocity_num=VecLength(jet_velocity);
+
+	new Float:Velocity[3]
+	velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed+jet_velocity_num), Velocity)
 	
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -490,10 +495,10 @@ public _mg_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
 	
-	if(is_valid_ent(get_user_mg(id))&&get_user_mg(id)){
+	if(is_valid_ent(get_user_mg(id))){
 		draw_bbox(get_user_mg(id),true)
 		remove_entity(get_user_mg(id));
-		set_pev(jet_get_user_jet(id),pev_iuser3,0)
+		user_mg[id]=-1;
 	}
 }
 public _clear_mgs(iPlugin,iParams){

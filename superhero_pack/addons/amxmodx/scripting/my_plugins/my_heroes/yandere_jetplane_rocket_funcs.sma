@@ -125,11 +125,11 @@ public _get_user_law(iPlugins,iParams){
 		return law[id]
 	}
 	else{
-		return 0
+		return -1
 		
 	}
 	}
-	return 0
+	return -1
 
 }
 public _spawn_jetplane_law(iPlugins,iParams){
@@ -178,18 +178,25 @@ public CmdStart(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if((weapon==CSW_KNIFE )&& jet_deployed(id) && get_user_law(id)){
-		if(button & IN_ALT1)
-		{
-			button &= ~IN_ALT1;
-			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
-			if(!get_user_jet_rockets(id))
+	if((weapon==CSW_KNIFE )&& jet_deployed(id)){
+		if(get_user_law(id)>0){
+			if(button & IN_ALT1)
 			{
-				client_print(id, print_center, "You are out of rockets!")
-				return FMRES_IGNORED
+				button &= ~IN_ALT1;
+				set_uc(uc_handle, UC_Buttons, button);
+				if( !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
+				if(!get_user_jet_rockets(id))
+				{
+					client_print(id, print_center, "You are out of rockets!")
+					return FMRES_IGNORED
+				}
+				make_rocket(id)
+				
 			}
-			make_rocket(id)
+		}
+		else{
+			
+			client_print(id, print_center, "LAW is unnavailable. Please try again later.")
 			
 		}
 	}
@@ -229,7 +236,7 @@ Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
 ENT_SetOrigin(NewEnt, vOrigin)
 Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
-entity_set_int(NewEnt, EV_INT_effects, 2)
+entity_set_int(NewEnt, EV_INT_effects, 64)
 Entvars_Set_Int(NewEnt, EV_INT_solid, SOLID_TRIGGER)
 
 Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
@@ -237,8 +244,12 @@ Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
 
 Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
 
+new Float:jet_velocity[3]
+pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
+new Float:jet_velocity_num=VecLength(jet_velocity);
+
 new Float:fl_iNewVelocity[3]
-velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed+jet_velocity_num), fl_iNewVelocity)
 
 Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 

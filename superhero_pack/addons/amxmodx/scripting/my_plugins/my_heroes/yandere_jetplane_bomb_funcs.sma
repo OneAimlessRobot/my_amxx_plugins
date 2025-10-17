@@ -160,10 +160,12 @@ Entvars_Set_Int(NewEnt, EV_INT_movetype, 10)
 
 Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
 
+new Float:jet_velocity[3]
+pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
+new Float:jet_velocity_num=VecLength(jet_velocity);
+
 new Float:fl_iNewVelocity[3]
-fl_iNewVelocity[0]=0.0
-fl_iNewVelocity[1]=0.0
-fl_iNewVelocity[2]=0.0
+velocity_by_aim(jet_get_user_jet(id), floatround(jet_velocity_num), fl_iNewVelocity)
 Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 has_bomb[id] = NewEnt
