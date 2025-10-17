@@ -441,6 +441,15 @@ public move_entity(parm[])
 	
 	new Float:origin[3]
 	
+	if(!is_valid_ent(victim)){
+		
+		return;
+	}
+	if((pev_valid(victim)!=2)){
+	
+		return 
+	
+	}
 	pev(victim,pev_origin,origin)
 	
 	origin[2]+=100.0
@@ -560,8 +569,13 @@ stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent
 	for (new i=0; i < numfound; i++)
 	{		
 		new eid = entlist[i];
+		
+		if(!is_valid_ent(eid)){
+			
+			continue;
+		}
 		if(pev_valid(eid)!=2){
-			break
+			continue
 		
 		}
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power)
@@ -693,7 +707,15 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	if(client_hittable(this_ent_owner)){
 		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, float(idamage), 0);
 	}
+	if(!is_valid_ent(tg_id)){
+		
+		return;
+	}
+	if(pev_valid(tg_id)!=2){
+		
+		return
 	
+	}
 	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
 	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
 	b_vel[2]=force

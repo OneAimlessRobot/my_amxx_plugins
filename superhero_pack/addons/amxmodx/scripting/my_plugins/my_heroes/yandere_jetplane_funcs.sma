@@ -32,6 +32,8 @@ new Float:jetplane_cooldown,
 Float:jetplane_hp;
 stock Float:jet_think_period
 stock Float:jet_init_speed
+stock jetplane_enable_gravity= 0;
+stock jetplane_enable_air_drag= 1;
 new hud_sync_charge
 new hud_sync_jetplane
 
@@ -46,6 +48,8 @@ public plugin_init()
 	register_cvar("yandere_jetplane_cooldown", "5")
 	register_cvar("yandere_jetplane_think_period", "5")
 	register_cvar("yandere_jetplane_init_speed", "5")
+	register_cvar("yandere_jetplane_enable_gravity", "0")
+	register_cvar("yandere_jetplane_enable_air_drag", "1")
 	arrayset(g_jetplane_cooldown,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
@@ -100,6 +104,8 @@ public loadCVARS(){
 	jetplane_hp=get_cvar_float("yandere_jetplane_hp")
 	jet_think_period=get_cvar_float("yandere_jetplane_think_period")
 	jet_init_speed=get_cvar_float("yandere_jetplane_init_speed")
+	jetplane_enable_gravity=get_cvar_num("yandere_jetplane_enable_gravity")
+	jetplane_enable_air_drag=get_cvar_num("yandere_jetplane_enable_air_drag")
 }
 public plugin_precache(){
 	
@@ -341,13 +347,13 @@ public jet_deploy_task(parm[],id){
 		return
 	}
 	set_pev(jetplane_id, pev_takedamage, DAMAGE_YES)
-	set_pev(jetplane_id, pev_movetype, MOVETYPE_BOUNCE) 
+	set_pev(jetplane_id, pev_movetype, jetplane_enable_gravity?MOVETYPE_BOUNCE:MOVETYPE_BOUNCEMISSILE) 
 	set_pev(jetplane_id, pev_solid, SOLID_BBOX)
 	if(get_user_gravity(attacker)>0.0){
 		set_user_gravity(attacker,0.0)
 	
 	}
-	set_pev(jet_get_user_jet(id),pev_gravity,JETPLANE_GRAVITY_MULT*0.15)
+	set_pev(jet_get_user_jet(id),pev_gravity,jetplane_enable_gravity?JETPLANE_GRAVITY_MULT*0.15:0.0)
 	new alpha=255
 	set_pev(jetplane_id,pev_renderamt,float(alpha))
 	set_pev(attacker, pev_takedamage, DAMAGE_NO)
@@ -601,20 +607,22 @@ public jet_think(ent)
 		}
 		new Float:other_velocity[3]
 		new Float:velocity_copy[3]
-		new Float:drag_vector[3];
-		arrayset(drag_vector,0,sizeof drag_vector);
 
 		entity_get_vector(jet_get_user_jet(owner),EV_VEC_velocity,other_velocity);
 		multiply_3d_vector_by_scalar(other_velocity,1.0,velocity_copy);
-		new Float:norm= VecLength(velocity_copy);
-		velocity_by_aim(jet_get_user_jet(owner),floatround(norm),raw_velocity);
-		new Float:gravity_const=get_cvar_float("sv_gravity")*JETPLANE_GRAVITY_MULT
-		drag_vector[0]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[0])/gravity_const)*jet_get_think_period();
-		drag_vector[1]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[1])/gravity_const)*jet_get_think_period();
-		drag_vector[2]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[2])/gravity_const)*jet_get_think_period();
+		new Float:drag_vector[3];
+		if(jetplane_enable_air_drag){
+			arrayset(drag_vector,0,sizeof drag_vector);
+			new Float:norm= VecLength(velocity_copy);
+			velocity_by_aim(jet_get_user_jet(owner),floatround(norm),raw_velocity);
+			new Float:gravity_const=get_cvar_float("sv_gravity")*JETPLANE_GRAVITY_MULT
+			drag_vector[0]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[0])/gravity_const)*jet_get_think_period();
+			drag_vector[1]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[1])/gravity_const)*jet_get_think_period();
+			drag_vector[2]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[2])/gravity_const)*jet_get_think_period();
+		}
 		raw_velocity[2]=velocity_copy[2]
 		for(new i=0;i<3;i++){
-			raw_velocity[i]+=thrust_vector[i]+drag_vector[i]+airbrake_vector[i];
+			raw_velocity[i]+=thrust_vector[i]+(jetplane_enable_air_drag?drag_vector[i]:0.0)+airbrake_vector[i];
 		}
 		set_pev(jet_get_user_jet(owner), pev_velocity, raw_velocity)
 		set_pev(ent, pev_nextthink, gametime + jet_get_think_period())
