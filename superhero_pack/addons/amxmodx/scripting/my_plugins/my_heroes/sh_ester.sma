@@ -33,12 +33,13 @@ new hud_sync
 new hud_sync_enemies
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
 new base_dmg_per_it,dmg_inc_per_inc,num_lvls_for_inc,max_dmg
-new Float:pan_dmg
+new Float:pan_dmg,Float:tmp_dmg_mult
 new gHeroLevel
 new max_moralizing_xp;
 new moralizing_tmp_xp_give;
 new moralizing_pan_xp_give;
 new moralizing_headshot_xp_mult;
+new min_damage_to_do;
 
 new moralizing_tmp_xp_get_mult; 
 new moralizing_pan_xp_get_mult;
@@ -63,6 +64,8 @@ public plugin_init()
 	register_cvar("ester_uses_per_map","1")
 	register_cvar("ester_power_cost", "3")
 	register_cvar("ester_pan_dmg", "1.5")
+	register_cvar("ester_tmp_dmg_mult", "1.5")
+	register_cvar("ester_min_damage_to_do", "1.5")
 	register_cvar("ester_max_moralizing_xp","9000") 
 	register_cvar("ester_moralizing_tmp_xp_give","4.0")
 	register_cvar("ester_moralizing_pan_xp_give","16.0")
@@ -161,12 +164,19 @@ public ester_init()
 		ester_weapons(id)
 		reset_ester_user_round(id)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
-		remove_task(id+ESTER_REVENGE_TASKID)
 		remove_task(id+ESTER_HUD_TASKID)
 		
 	}
 	
 	
+}
+stock stop_sounds(id){
+	
+	if(is_user_connected(id)){
+		emit_sound(id, CHAN_WEAPON,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	}
 }
 stock ester_weapons(id){
 	if(!sh_is_active()||!client_hittable(id)){
@@ -200,9 +210,8 @@ public ester_morph(id)
 	id-=ESTER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
 	
-	// Message
-	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Ready to adult.")*/
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	show_hudmessage(id, "Ready to adult & Pwn 50m3 n3wbz")
 	cs_set_user_model(id, "ester")
 	
 	gmorphed[id] = true
@@ -223,9 +232,8 @@ public ester_unmorph(id)
 			remove_task(id+ESTER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		// Message
-		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Fuck my li- *Sigh...* Spectating again")*/
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Fuck my li- *Sigh...* Spectating again")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -253,13 +261,13 @@ reset_status(id){
 	
 	
 	remove_task(id+ESTER_REVENGE_TASKID)
+	set_user_rendering(id,_,_,_,_,_,0)	
 	gFinished[id]=false
 	damage_to_do[id]=0
 	gBuiltUpXp[id]=0
 	gPedalIsFloored[id]=false
 	gUnloading[id]=false
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	stop_sounds(id)
 	
 }
 
@@ -324,9 +332,6 @@ public weaponChange(id)
 }
 public reset_ester_user_round(id){
 	reset_status(id)
-	if(gTimesLeft[id]<=0){
-		arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-	}
 	update_max_dmg(id)
 	
 	
@@ -335,9 +340,10 @@ public reset_ester_user_round(id){
 public status_hud(id){
 	
 	new hud_msg[200];
-	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to enemies: %d^nAmmount of moralizing xp built up: %d^nNumber of attempts to matter used: %d^nAre you in respawn mode? %s^n",
+	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to %d enemies: %d^nAmmount of moralizing xp built up: %d^nNumber of attempts to matter used: %d^nAre you in respawn mode? %s^n",
 		gHeroName,
 		gTimesLeft[id],
+		count_enemies(id),
 		damage_to_do[id],
 		gBuiltUpXp[id],
 		ester_get_respawn_attempts_remaining(id),
@@ -386,10 +392,12 @@ public loadCVARS()
 	power_cost=get_cvar_num("ester_power_cost")
 	times_per_map=get_cvar_num("ester_uses_per_map")
 	base_dmg_per_it=get_cvar_num("ester_damage")
+	min_damage_to_do=get_cvar_num("ester_min_damage_to_do")
 	max_dmg=get_cvar_num("ester_max_dmg")
 	dmg_inc_per_inc=get_cvar_num("ester_dmg_inc_per_inc")
 	num_lvls_for_inc=get_cvar_num("ester_lvls_for_inc")
 	pan_dmg=get_cvar_float("ester_pan_dmg")
+	tmp_dmg_mult=get_cvar_float("ester_tmp_dmg_mult")
 	teamglow_on=get_cvar_num("ester_teamglow_on")
 	max_moralizing_xp=get_cvar_num("ester_max_moralizing_xp");
 	moralizing_tmp_xp_give=get_cvar_num("ester_moralizing_tmp_xp_give")
@@ -426,6 +434,7 @@ public ester_loop(id)
 			
 			sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
 			sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
+			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
 			
 			
 		}
@@ -511,9 +520,6 @@ public sh_client_spawn(id)
 		ester_weapons(id)
 		trailing_beam(0,id,LineColorsWithAlpha[GREEN])
 		set_user_rendering(id,_,_,_,_,_,0)
-		emit_sound(id, CHAN_WEAPON,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		reset_ester_user_round(id)
 		ester_model(id)
 		
@@ -581,35 +587,22 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		new client_name[128]
 		get_user_name(attacker,attacker_name,127)
 		get_user_name(id,client_name,127)
-		switch(weapon){
-			case CSW_KNIFE:{
-				
-				if((vic_team==att_team)){
-					if((gBuiltUpXp[attacker]>moralizing_pan_xp_give)){
-						if(sh_get_user_effect(id)!=METYLPHENIDATE){
-							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
+		new is_teamate=(vic_team==att_team)
+		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
+		switch(is_teamate){
+			case 0:{
+					if(sh_get_user_effect(id)!=GLOW){
+							new fx_num=sh_effect_user_direct(id,attacker,GLOW,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
-							sh_chat_message(attacker,gHeroID,"%s: AYO CHILL, %s!",client_name,attacker_name)
-							sh_chat_message(id,gHeroID,"%s: HEY! LOCK! IN, %s!",attacker_name,client_name)
-							new unextra_moralizing_xp=min(mult*moralizing_tmp_xp_give,gBuiltUpXp[attacker])
-							if(unextra_moralizing_xp){
-								
-								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
-								sh_set_user_xp(id,unextra_moralizing_xp,true);
-							}
-							gBuiltUpXp[attacker]-=unextra_moralizing_xp
-						}
+							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							sh_set_stun(id,GLOW_TIME,150.0);
+						
 					}
-				}
-				else{
-					
-					sh_set_stun(id,2.0,0.5)
-					sh_chat_message(attacker,gHeroID,"%s: OW! What was that for, Ester? (%s)?",client_name,attacker_name)
-					sh_chat_message(id,gHeroID,"%s: Shut up, %s.",attacker_name,client_name)
-					new Float:extraDamage = floatsub(floatmul(damage, pan_dmg ),damage)
+					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult)+1.0):floatadd(damage,pan_dmg))
 					if (extraDamage>0){
-						sh_extra_damage(id, attacker, floatround(extraDamage), "Adutling Pan (TM)", headshot)
-						new extra_moralizing_xp=max(0,min(moralizing_pan_xp_get_mult*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
+						sh_extra_damage(id, attacker, floatround(extraDamage), (weapon==CSW_TMP?"The moralizing ray (C)":"Adutling Pan (TM)"), headshot)
+						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?moralizing_tmp_xp_get_mult:moralizing_pan_xp_get_mult)*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
 							
 							client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
@@ -617,18 +610,15 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						}
 						gBuiltUpXp[attacker]+=extra_moralizing_xp
 					}
-				}
 			}
-			case CSW_TMP:{
-				
-				if((vic_team==att_team)){
-					if((gBuiltUpXp[attacker]>moralizing_tmp_xp_give)){
+			case 1:{
+					if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
 						if(sh_get_user_effect(id)!=METYLPHENIDATE){
 							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
-							sh_chat_message(attacker,gHeroID,"%s: AYO CHILL, %s!",client_name,attacker_name)
-							sh_chat_message(id,gHeroID,"%s: HEY! LOCK! IN, %s!",attacker_name,client_name)
-							new unextra_moralizing_xp=min(mult*moralizing_tmp_xp_give,gBuiltUpXp[attacker])
+							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							new unextra_moralizing_xp=min(mult*(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give),gBuiltUpXp[attacker])
 							if(unextra_moralizing_xp){
 								
 								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
@@ -637,29 +627,14 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 							gBuiltUpXp[attacker]-=unextra_moralizing_xp
 						}
 					}
-				}
-				else{
 					
-					if(sh_get_user_effect(id)!=GLOW){
-						new fx_num=sh_effect_user_direct(id,attacker,GLOW,ester_get_hero_id());
-						gatling_set_fx_num(id,fx_num);
-						sh_chat_message(attacker,gHeroID,"%s: huh....? %s?",client_name,attacker_name)
-						sh_chat_message(id,gHeroID,"%s: Shhh... its okay, %s... Just stay there for me, yes?",attacker_name,client_name)
-						sh_set_stun(id,GLOW_TIME,150.0);
-					}
-					new extra_moralizing_xp=max(0,min(moralizing_tmp_xp_get_mult*mult*floatround(damage),max_moralizing_xp-gBuiltUpXp[attacker]))
-					if(extra_moralizing_xp){
-						client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
-						sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",attacker_name,headshot?"headshot":"(wow... not even headshot)")
-					}
-					gBuiltUpXp[attacker]+=extra_moralizing_xp
-				}
 			}
 			default:{
 			}
 		}
 		
 		
+	}
 	}
 	return HAM_IGNORED
 }
@@ -701,12 +676,14 @@ public death()
 	}
 	reset_ester_reborn_mode(id,0)
 	ester_unmorph(id+ESTER_MORPH_TASKID)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
-	emit_sound(id, CHAN_VOICE, NULL_SOUND_FILENAME, 1.0, 0.0,SND_STOP,PITCH_NORM)
+	reset_status(id)
 	emit_sound(id, CHAN_VOICE, ester_death_sounds[random_num(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,random_num(95,120))
 	
 	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
+	
+	if((gTimesLeft[id]&&gPedalIsFloored[id])){
+		arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
+	}
 }	
 
 //----------------------------------------------------------------------------------------------
@@ -719,6 +696,13 @@ public ester_kd()
 	if ( !is_user_alive(id)||!gHasEster[id]||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
+	if(!count_enemies(id)){
+	
+		sh_chat_message(id,gHeroID,"Maaaaan... you have no enemies yet! Chiiiilll");
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+		
+	}
 	if(!gTimesLeft[id]){
 		
 		sh_chat_message(id,gHeroID,"Already used Ester %d times this map. Dumbass",times_per_map);
@@ -727,7 +711,7 @@ public ester_kd()
 	}
 	if(gUnloading[id]){
 		
-		sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NO AHAHAAHAH!!!!");
+		sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NOw AHAHAAHAH!!!!");
 		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 		
@@ -756,8 +740,15 @@ public ester_ku()
 		return PLUGIN_HANDLED
 	}
 	gPedalIsFloored[id]=false
-	
-	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, SND_STOP, PITCH_NORM)
+	stop_sounds(id)
+	new client_name[128]
+	get_user_name(id,client_name,127)
+	if(damage_to_do[id]<min_damage_to_do){
+		
+		sh_chat_message(id,gHeroID,"Not enough built up damage! (current: %d but needs %d.) Resetting damage to do",damage_to_do[id],min_damage_to_do);
+		reset_status(id)
+		return PLUGIN_HANDLED;
+	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	if(!gFinished[id]){
 		gUnloading[id]=true

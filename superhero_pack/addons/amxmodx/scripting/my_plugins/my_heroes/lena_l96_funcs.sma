@@ -494,6 +494,7 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
+				
 				new Float:speed
 				new Float:velocity[3]
 				
@@ -504,7 +505,6 @@ public vexd_pfntouch(pToucher, pTouched)
 				new Float:vic_origin[3];
 				new Float:vic_origin_eyes[3];
 				new vic_origin_eyes_int[3];
-				
 				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
 				get_user_origin(pTouched,vic_origin_eyes_int,1);
 				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
@@ -521,15 +521,19 @@ public vexd_pfntouch(pToucher, pTouched)
 				}
 				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
-				sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
-				if(headshot){
-					sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
-				
+				new CsTeams:att_team=cs_get_user_team(oid)
+				new CsTeams:vic_team=cs_get_user_team(pTouched)
+				if(att_team!=vic_team){
+					sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
+					if(headshot){
+						sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
+					
+					}
+					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
+					send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				}
-				sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
-				send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
 				switch(armor_type){
 					
 					case CS_ARMOR_NONE:{

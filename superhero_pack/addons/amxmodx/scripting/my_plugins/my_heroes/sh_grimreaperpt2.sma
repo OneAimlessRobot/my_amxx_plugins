@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define GREAPER_TASKID 12812
@@ -11,6 +12,7 @@ new gHeroID
 new const gHeroName[] = "Grim Reaper pt2"
 new bool:gHasGreaper[SH_MAXSLOTS+1]
 new bool:gUsedScythe[SH_MAXSLOTS+1]
+new bool:gJustResetRendering[SH_MAXSLOTS+1]
 new gScytheSwings[SH_MAXSLOTS+1]
 
 new const gModelScythe[] = "models/shmod/v_scythe.mdl"
@@ -45,17 +47,6 @@ public plugin_init()
 	
 	
 }
-public weaponChange(id)
-{
-	if ( !is_user_alive(id)||!gHasGreaper[id] ||!shModActive()||!gModelLoaded ) return PLUGIN_CONTINUE
-
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_KNIFE &&gScytheSwings[id]) {
-		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)
-	}
-	return PLUGIN_CONTINUE
-
-}
 
 public greaper2_init()
 {
@@ -78,6 +69,23 @@ public greaper2_init()
 		remove_task(id+GREAPER_TASKID);
 	}
 	
+}
+public weaponChange(id)
+{
+	if ( !is_user_alive(id)||!gHasGreaper[id] ||!shModActive()||!gModelLoaded ) return PLUGIN_CONTINUE
+
+	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
+		gJustResetRendering[id]=false
+		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)
+		sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
+	}
+	else if(!gJustResetRendering[id]){
+		gJustResetRendering[id]=true
+		set_user_rendering(id,_,_,_,_,_,0)
+	}
+	return PLUGIN_CONTINUE
+
 }
 public reset_greaper2_user(id){
 	
@@ -116,18 +124,12 @@ public greaper2_loop(id)
 {
 id -= GREAPER_TASKID
 
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasGreaper[id]||!((id>0) && (id<=SH_MAXSLOTS))){
+if (!gHasGreaper[id]||!client_hittable(id)){
 	
 	return PLUGIN_CONTINUE
 	
 }
 status_hud(id)
-new clip,ammo, weapon=get_user_weapon(id,clip,ammo)
-if(gScytheSwings[id]&&(weapon==CSW_KNIFE)){
-
-	sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
-
-}
 return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -181,17 +183,6 @@ vec_mult(Float:vec1[3],Float:mult,Float:vecRes[3]){
 
 }
 
-client_hittable(greaper_userid,vic_userid,CsTeams:greapers_team){
-
-return is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&(vic_userid!=greaper_userid)&&vic_userid&&(greapers_team!=cs_get_user_team(vic_userid))
-
-}
-client_isnt_hitter(greaper_userid){
-new clip,ammo;
-
-return (!shModActive()||!gHasGreaper[greaper_userid]||!is_user_alive(greaper_userid)||greaper_userid <= 0 || greaper_userid > SH_MAXSLOTS||(get_user_weapon(greaper_userid,clip,ammo) != CSW_KNIFE))
-
-}
 
 swing_connected(Att){
 
@@ -213,14 +204,22 @@ new num_ents=SH_MAXSLOTS+1
 new ent_list[SH_MAXSLOTS+1];
 new className[]="player"
 find_sphere_class(-1, className, (g_reaper_range), ent_list, num_ents,att_aim_f);
-new CsTeams:att_team=cs_get_user_team(Att)
+new att_team=get_user_team(Att);
 for(new i=0;i<num_ents;i++){
 
-	if(client_hittable(Att,ent_list[i],att_team)){
-			Vic=ent_list[i];
-			greaper_damage(Vic,Att);
-			return
+	Vic=ent_list[i];
+	if(!client_hittable(Vic)){
+		continue
 	}
+	if(!client_hittable(Att)){
+		continue
+	}
+	if(get_user_team(Vic)==att_team){
+	
+		continue
+	}
+	greaper_damage(Vic,Att);
+	return
 }
 sh_chat_message(Att,gHeroID,"Your swing missed!!!!!")
 }
@@ -230,13 +229,17 @@ public swing_scythe(weaponent)
 	
 	
 	new id = get_pdata_cbase(weaponent, 41, 4);
-	if (client_isnt_hitter(id))return HAM_IGNORED
-
+	if (!client_hittable(id)){
+		return HAM_IGNORED
+	}
+	if (!gHasGreaper[id]){
+		return HAM_IGNORED
+	}
 	if (gScytheSwings[id]>0) 
 	{
 		emit_sound(id, CHAN_WEAPON, GRIM_SWING_SFX, 1.0, 0.0, 0, PITCH_NORM)
 		gUsedScythe[id]=true
-		gScytheSwings[id]= (inf_swings? gScytheSwings[id]:gScytheSwings[id]-1);
+		gScytheSwings[id]= (inf_swings? gScytheSwings[id]:max(0,gScytheSwings[id]-1));
 		swing_connected(id)
 		
 	}

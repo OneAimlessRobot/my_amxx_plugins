@@ -24,6 +24,7 @@ stock const erica_sentences[NUM_SENTENCES][]={
 	"I think... AHH got it!"
 }
 new Float:hook_distance
+new Float:gutting_dmg_mult
 new Float:hook_drag_time
 new max_hook_kills_per_life
 new Float:hook_drag_speed
@@ -38,6 +39,7 @@ public plugin_init(){
 	register_cvar("hook_drag_speed", "2.0")
 	register_cvar("hook_level_difference", "10")
 	register_cvar("hook_drag_time", "3")
+	register_cvar("hook_gutting_dmg_mult", "3")
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
@@ -95,6 +97,7 @@ public loadCVARS()
 	hook_drag_time=get_cvar_float("hook_drag_time")
 	hook_drag_speed=get_cvar_float("hook_drag_speed")
 	max_hook_kills_per_life=get_cvar_num("max_hooks_per_life")
+	gutting_dmg_mult=get_cvar_float("hook_gutting_dmg_mult")
 }
 public plugin_natives(){
 	
@@ -200,7 +203,6 @@ public hook_think(id)
 	fl_Velocity[2] = (newVec[2]-eOrigin[2])*hook_drag_speed
 
 	entity_set_vector(id, EV_VEC_velocity, fl_Velocity)
-	laser_line(id,eOrigin,vOrigin,false)
 	orient_user(id,vAngles,vAngle)
 	if(!(g_dragging_who[id][1]%30)){
 		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
@@ -265,7 +267,6 @@ public CmdStart1(attacker, uc_handle)
 				}
 				engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
 				get_tr2(tr, TR_vecEndPos, vTrace)
-				laser_line(attacker,vOrigin,vTrace,0);
 				id = get_tr2(tr, TR_pHit)
 				if (!is_user_alive(get_tr2(tr, TR_pHit))) {
 					free_tr2(tr)
@@ -320,7 +321,7 @@ public CmdStart1(attacker, uc_handle)
 }
 public Erica2_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
@@ -358,7 +359,7 @@ if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(id,attacker,floatround(damage*2),"Gutting")
+					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),"Gutting")
 					sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
 					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
 					
