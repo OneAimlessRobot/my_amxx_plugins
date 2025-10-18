@@ -277,13 +277,14 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if((gTimesLeft[id]>0)||!gFinished[id]){
+	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&ester_get_has_ester(id)){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
+		new CsTeams:ester_user_team=cs_get_user_team(id);
 		for(new i=0;i<player_count;i++){
 			if(client_hittable(players[i])){
-				count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i]))?1:0;
+				count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i])&&(cs_get_user_team(players[i])!=ester_user_team))?1:0;
 			}
 		}
 		
