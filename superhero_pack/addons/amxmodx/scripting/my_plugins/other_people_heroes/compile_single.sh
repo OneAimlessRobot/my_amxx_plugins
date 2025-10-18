@@ -3,9 +3,10 @@
 source_ext="sma"
 bytecode_ext="amxx"
 
+current_folder=$(cat .curr_dir_file)
 
-output_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/"
-scripting_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/scripting/"
+output_folder=$current_folder"/plugins/"
+scripting_folder=$current_folder"/scripting/"
 
 compiler_name="amxxpc"
 compiler_path="${scripting_folder}${compiler_name}"

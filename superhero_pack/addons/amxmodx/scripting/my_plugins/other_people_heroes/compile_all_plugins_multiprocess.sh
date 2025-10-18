@@ -10,11 +10,12 @@ div_data=()
 source_ext="sma"
 bytecode_ext="amxx"
 
+current_folder=$(cat .curr_dir_file)
 
-output_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/plugins/"
-scripting_folder="/home/addysmagic/.steam/steam/steamapps/common/Half-Life/cstrike/addons/amxmodx/scripting/"
+output_folder=$current_folder"/plugins/"
+scripting_folder=$current_folder"/scripting/"
 
-search_command="ls *.${source_ext}"
+search_command=$(ls *.${source_ext})
 
 compiler_name="amxxpc"
 compiler_path="${scripting_folder}${compiler_name}"
@@ -46,7 +47,7 @@ function compile_plugin(){
     "${compiler_path}" "$plugin_name.${source_ext}" -o"$output_plugin_name" -v
 }
 
-# for i in $(ls *.${source_ext});
+# for i in search_command;
 # do
 # proto_plugin_name="$(basename $i '.sma')"
 # echo "${proto_plugin_name}"

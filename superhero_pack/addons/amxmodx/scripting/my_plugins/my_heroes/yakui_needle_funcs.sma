@@ -60,7 +60,7 @@ public Ham_Needle_Swing(weapon_ent)
 {
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
+	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
 
 	if ( client_isnt_hitter(owner)||!gatling_get_needle(owner)) {
 		return HAM_IGNORED
