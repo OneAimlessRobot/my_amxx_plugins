@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<base href="http://192.168.1.4:110001/shero_help_files/shero_help_files">
+
+</head>
+<body>
+So.<br>
+Chikoi the maid: the small maid, huh?<br>
+<br>
+Hero is simple, da?<br>
+<br>
+Shot in head= die.<br>
+Not shot in head= live haha<br>
+
+<br>
+here is lore, haha
+<br>
+<a href="./chikoi_lore1.txt">lore_lol</a>
+
+</body>
+</html>

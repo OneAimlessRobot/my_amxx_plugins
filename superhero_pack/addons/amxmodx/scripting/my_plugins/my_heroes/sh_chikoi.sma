@@ -27,7 +27,7 @@ public plugin_init()
 	new hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_help_file.txt",hero_name_arr)
+	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.txt",hero_name_arr)
 	register_event("Damage", "chikoi_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("chikoi_init", "chikoi_init")
