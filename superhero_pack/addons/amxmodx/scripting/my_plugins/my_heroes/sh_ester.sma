@@ -82,6 +82,7 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	
+	g_msgFade = get_user_msgid("ScreenFade");
 	register_srvcmd("ester_init", "ester_init")
 	shRegHeroInit(gHeroName, "ester_init")
 	register_srvcmd("ester_kd", "ester_kd")

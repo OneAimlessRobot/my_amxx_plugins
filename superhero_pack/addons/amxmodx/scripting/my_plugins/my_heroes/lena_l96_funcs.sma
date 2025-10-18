@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -414,31 +415,8 @@ public bulletspeed(parm[])
 	{
 		return
 	}
-	new Float:speedz,Float:speedx,Float:speedy;
-	new Float:velocity[3]
-	new Float:velocity_copy[3]
-				
-
-	entity_get_vector(pid,EV_VEC_velocity,velocity);
-	multiply_3d_vector_by_scalar(velocity,1.0,velocity_copy);
-	new Float:velocity_num=VecLength(velocity_copy)
-	speedx=velocity[0]
-	speedy=velocity[1]
-	speedz=velocity[2]
+	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
 	
-	new Float:gravity_const=get_cvar_float("sv_gravity")*LENA_PROJECTILE_GRAVITY_MULT
-	new Float:delta_z=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedz)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_x=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedx)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_y=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedy)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-																							
-	
-	speedx-=delta_x
-	speedy-=delta_y
-	speedz-=delta_z
-	velocity_copy[0]=speedx
-	velocity_copy[1]=speedy
-	velocity_copy[2]=speedz
-	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 }
 
 

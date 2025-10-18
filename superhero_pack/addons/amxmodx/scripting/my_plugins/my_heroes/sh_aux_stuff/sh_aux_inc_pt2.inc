@@ -152,3 +152,38 @@ stock rotate_vector3(Float:vec_result[3], Float:vec_input[3], Float:angle_to_rot
 	
 	
 }
+stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mult,Float:phys_update_time){
+
+	
+
+	new pid = parm[0]
+	if (!is_valid_ent(pid))
+	{
+		return
+	}
+	new Float:speedz,Float:speedx,Float:speedy;
+	new Float:velocity[3]
+	new Float:velocity_copy[3]
+	
+	
+	entity_get_vector(pid,EV_VEC_velocity,velocity);
+	multiply_3d_vector_by_scalar(velocity,1.0,velocity_copy);
+	speedx=velocity[0]
+	speedy=velocity[1]
+	speedz=velocity[2]
+	new Float:velocity_num=VecLength(velocity_copy)
+	
+	new Float:gravity_const=get_cvar_float("sv_gravity")*gravity_mult
+	new Float:delta_z=((drag_const*velocity_num*speedz)/gravity_const)*phys_update_time;
+	new Float:delta_x=((drag_const*velocity_num*speedx)/gravity_const)*phys_update_time;
+	new Float:delta_y=((drag_const*velocity_num*speedy)/gravity_const)*phys_update_time;
+	
+	speedx-=delta_x
+	speedy-=delta_y
+	speedz-=delta_z
+	velocity_copy[0]=speedx
+	velocity_copy[1]=speedy
+	velocity_copy[2]=speedz
+	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
+
+}
