@@ -7,7 +7,7 @@
 #define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
 #define XO_WEAPON 4
-#define m_pPlayer 41
+#define m_ppPlayer 41
 
 
 

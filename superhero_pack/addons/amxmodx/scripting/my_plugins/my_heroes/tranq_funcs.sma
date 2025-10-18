@@ -501,25 +501,12 @@ public dartspeed(parm[])
 	speedx=velocity[0]
 	speedy=velocity[1]
 	speedz=velocity[2]
+	new Float:velocity_num=VecLength(velocity_copy)
 	
 	new Float:gravity_const=get_cvar_float("sv_gravity")*DART_GRAVITY_MULT
-	new Float:delta_z=((DART_DRAG_CONST*speedz)/gravity_const)*DART_PHYS_UPDATE_TIME;
-	new Float:delta_x=((DART_DRAG_CONST*speedx)/gravity_const)*DART_PHYS_UPDATE_TIME;
-	new Float:delta_y=((DART_DRAG_CONST*speedy)/gravity_const)*DART_PHYS_UPDATE_TIME;
-	/*console_print(parm[1],"Total speed: %0.2f^nspeedx: %0.2f^nspeedy: %0.2f^nspeedz: %0.2f^nThe angle between the velocity and gravity is: %0.2f^n",
-																							speed,
-																							speedx,
-																							speedy,
-																							speedz,
-																							the_angle_degrees);
-	console_print(parm[1],"The cosine: %0.2f^ngravity const: %0.2f^nDelta x is: %0.2f^nDelta y is: %0.2f^nDelta z is: %0.2f^nDrag constant: %0.2f",
-																					floatcos(the_angle_radians,anglemode:radian),
-																					gravity_const,
-																					delta_x,
-																					delta_y,
-																					delta_z,
-																					LENA_PROJECTILE_DRAG_CONST);*/
-	
+	new Float:delta_z=((DART_DRAG_CONST*velocity_num*speedz)/gravity_const)*DART_PHYS_UPDATE_TIME;
+	new Float:delta_x=((DART_DRAG_CONST*velocity_num*speedx)/gravity_const)*DART_PHYS_UPDATE_TIME;
+	new Float:delta_y=((DART_DRAG_CONST*velocity_num*speedy)/gravity_const)*DART_PHYS_UPDATE_TIME;
 	
 	speedx-=delta_x
 	speedy-=delta_y

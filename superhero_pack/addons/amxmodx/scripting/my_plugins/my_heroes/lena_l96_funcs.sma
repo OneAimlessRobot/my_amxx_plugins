@@ -3,6 +3,8 @@
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
@@ -419,27 +421,15 @@ public bulletspeed(parm[])
 
 	entity_get_vector(pid,EV_VEC_velocity,velocity);
 	multiply_3d_vector_by_scalar(velocity,1.0,velocity_copy);
+	new Float:velocity_num=VecLength(velocity_copy)
 	speedx=velocity[0]
 	speedy=velocity[1]
 	speedz=velocity[2]
 	
 	new Float:gravity_const=get_cvar_float("sv_gravity")*LENA_PROJECTILE_GRAVITY_MULT
-	new Float:delta_z=((LENA_PROJECTILE_DRAG_CONST*speedz)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_x=((LENA_PROJECTILE_DRAG_CONST*speedx)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	new Float:delta_y=((LENA_PROJECTILE_DRAG_CONST*speedy)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
-	/*console_print(parm[1],"Total speed: %0.2f^nspeedx: %0.2f^nspeedy: %0.2f^nspeedz: %0.2f^nThe angle between the velocity and gravity is: %0.2f^n",
-																							speed,
-																							speedx,
-																							speedy,
-																							speedz,
-																							the_angle_degrees);
-	console_print(parm[1],"The cosine: %0.2f^ngravity const: %0.2f^nDelta x is: %0.2f^nDelta y is: %0.2f^nDelta z is: %0.2f^nDrag constant: %0.2f",
-																					floatcos(the_angle_radians,anglemode:radian),
-																					gravity_const,
-																					delta_x,
-																					delta_y,
-																					delta_z,
-																					LENA_PROJECTILE_DRAG_CONST);*/
+	new Float:delta_z=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedz)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_x=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedx)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
+	new Float:delta_y=((LENA_PROJECTILE_DRAG_CONST*velocity_num*speedy)/gravity_const)*LENA_PROJECTILE_PHYS_UPDATE_TIME;
 																							
 	
 	speedx-=delta_x
@@ -524,6 +514,14 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
+					if(!sh_get_stun(pTouched)){
+							new Float:the_period=(headshot?0.33:1.0);
+							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
+							track_user(lena_get_hero_id(),pTouched,oid,0,_,the_period,the_time)
+							sh_set_stun(pTouched,the_time,150.0);
+							sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
+					
+					}
 					sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
 					if(headshot){
 						sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));

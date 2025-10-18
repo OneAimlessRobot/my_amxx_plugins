@@ -261,7 +261,9 @@ reset_status(id){
 	
 	
 	remove_task(id+ESTER_REVENGE_TASKID)
-	set_user_rendering(id,_,_,_,_,_,0)	
+	if(is_user_connected(id)){
+		set_user_rendering(id,_,_,_,_,_,0)	
+	}
 	gFinished[id]=false
 	damage_to_do[id]=0
 	gBuiltUpXp[id]=0
@@ -455,23 +457,34 @@ public Ester_revenge_loop(id)
 		
 		if (power_cost > 0 )
 		{
-			if ( (userArmor < power_cost)) {
-				if ( user_health< power_cost ) {
-					sh_chat_message(id,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
-					sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
-					return;
+			if(count_enemies(id)){
+				if ( (userArmor < power_cost)) {
+					if ( user_health< power_cost ) {
+						sh_chat_message(id,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
+						sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
+						return;
+					}
+					
+					sh_extra_damage(id,id,power_cost,"Neuroblast",false,SH_DMG_NORM)
+					user_health=get_user_health(id)
 				}
-				
-				sh_extra_damage(id,id,power_cost,"Neuroblast",false,SH_DMG_NORM)
-				user_health=get_user_health(id)
+				else{
+					
+					cs_set_user_armor(id, userArmor - power_cost, armorType)
+					if( cs_get_user_armor(id, armorType)<power_cost){
+						sh_chat_message(id,gHeroID,"You ran out stamina. Now you will now lose health.");
+						
+					}
+				}
 			}
 			else{
-				
-				cs_set_user_armor(id, userArmor - power_cost, armorType)
-				if( cs_get_user_armor(id, armorType)<power_cost){
-					sh_chat_message(id,gHeroID,"You ran out stamina. Now you will now lose health.");
-					
-				}
+			
+				sh_chat_message(id,gHeroID,"No enemies detected as you charged! Aborting!");
+				sh_sound_deny(id)
+				reset_status(id)
+				remove_task(id+ESTER_REVENGE_TASKID)
+				return
+			
 			}
 		}
 		
@@ -479,22 +492,31 @@ public Ester_revenge_loop(id)
 		damage_to_do[id]+=gEsterDmg[id]
 	}
 	else if(gUnloading[id]){
-		
-		for ( new x=1; x<=SH_MAXSLOTS; x++) 
-		{
-			if ( is_user_alive(x) && (get_user_team(id)!=get_user_team(x)) && x!=id &&(g_ester_enemies[id][x]))
+		if(count_enemies(id)){
+			for ( new x=1; x<=SH_MAXSLOTS; x++) 
 			{
+				if ( is_user_alive(x) && (get_user_team(id)!=get_user_team(x)) && x!=id &&(g_ester_enemies[id][x]))
+				{
+					
+					Ester_instant(x, id)
+					sh_set_stun(x,stun_time_at_it, stun_speed_at_it)
+				}
+			}
+			damage_to_do[id]-=min(power_cost,damage_to_do[id])
+			if(!damage_to_do[id]){
 				
-				Ester_instant(x, id)
-				sh_set_stun(x,stun_time_at_it, stun_speed_at_it)
+				gUnloading[id]=false;
+				gFinished[id]=true;
+				sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
+				
 			}
 		}
-		damage_to_do[id]-=min(power_cost,damage_to_do[id])
-		if(!damage_to_do[id]){
-			
-			gUnloading[id]=false;
+		else{
+			sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
+			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),1)
+			reset_status(id)
 			gFinished[id]=true;
-			sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
+			return
 			
 		}
 	}
@@ -504,7 +526,7 @@ public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	shExtraDamage( x, id,gEsterDmg[id], "Neuroblast" )
-	directed_spark(id,x)
+	directed_spark(id,x,30,5,200,40,PURPLE)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -670,19 +692,37 @@ public death()
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(!ester_get_has_ester(id)){
+	if(ester_get_has_ester(id)){
 		
-		return
+		reset_ester_reborn_mode(id,0)
+		ester_unmorph(id+ESTER_MORPH_TASKID)
+		reset_status(id)
+		emit_sound(id, CHAN_VOICE, ester_death_sounds[random_num(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,random_num(95,120))
+		
+		gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
+		
+		if(damage_to_do[id]){
+			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
+		}
 	}
-	reset_ester_reborn_mode(id,0)
-	ester_unmorph(id+ESTER_MORPH_TASKID)
-	reset_status(id)
-	emit_sound(id, CHAN_VOICE, ester_death_sounds[random_num(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,random_num(95,120))
-	
-	gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
-	
-	if((gTimesLeft[id]&&gPedalIsFloored[id])){
-		arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
+	new dead_client_name[128]
+	get_user_name(id,dead_client_name,127)
+	for(new i=1;i<=SH_MAXSLOTS;i++){
+		if(!client_hittable(i)){
+		
+			continue
+		}
+		if(!ester_get_has_ester(i)){
+		
+			continue
+		} 
+		if(!g_ester_enemies[i][id]){
+			continue
+		}
+		new ester_wielder_name[128]
+		get_user_name(i,ester_wielder_name,127)
+		sh_chat_message(i,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
+		sh_chat_message(id,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
 	}
 }	
 
@@ -746,6 +786,7 @@ public ester_ku()
 	if(damage_to_do[id]<min_damage_to_do){
 		
 		sh_chat_message(id,gHeroID,"Not enough built up damage! (current: %d but needs %d.) Resetting damage to do",damage_to_do[id],min_damage_to_do);
+		sh_sound_deny(id)
 		reset_status(id)
 		return PLUGIN_HANDLED;
 	}

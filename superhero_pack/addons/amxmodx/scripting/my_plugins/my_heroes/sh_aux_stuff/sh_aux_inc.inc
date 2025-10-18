@@ -942,7 +942,7 @@ stock explode_fx( vec1[3] ,radius)
 	write_byte(28)			// decal
 	message_end()
 }
-stock directed_spark(init_id, end_id)
+stock directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
 {
 	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
@@ -955,13 +955,13 @@ stock directed_spark(init_id, end_id)
 	write_byte( 0 ) 				// starting frame
 	write_byte( 30 )  			// frame rate
 	write_byte( 1)  			// life
-	write_byte( 2)  		// line width
-	write_byte(80 )  			// noise amplitude
-	write_byte(8)				// r, g, b
-	write_byte( 60)				// r, g, b
-	write_byte( 8 )				// r, g, b
-	write_byte( 110)				// brightness
-	write_byte( 8 )				// scroll speed
+	write_byte(girth)  		// line width
+	write_byte(veins)  			// noise amplitude
+	write_byte(LineColors[color_constant][0])				// r, g, b
+	write_byte(LineColors[color_constant][1])				// r, g, b
+	write_byte(LineColors[color_constant][2])				// r, g, b
+	write_byte( glowing)				// brightness
+	write_byte( ramming_pace )				// scroll speed
 	message_end()
 
 }

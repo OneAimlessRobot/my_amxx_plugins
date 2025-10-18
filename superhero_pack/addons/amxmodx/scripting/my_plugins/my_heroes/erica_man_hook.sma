@@ -205,8 +205,9 @@ public hook_think(id)
 	entity_set_vector(id, EV_VEC_velocity, fl_Velocity)
 	orient_user(id,vAngles,vAngle)
 	if(!(g_dragging_who[id][1]%30)){
-		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
-		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
+		new random_number=random_num(0,NUM_SENTENCES-1);
+		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 	}
 	g_dragging_who[id][1]--;
 	return FMRES_IGNORED
@@ -360,8 +361,10 @@ if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
 					get_user_name(id,vic_name,127)
 						
 					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),"Gutting")
-					sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
-					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_num(0,NUM_SENTENCES-1)]);
+					new random_number=random_num(0,NUM_SENTENCES-1);
+					sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					sh_ultrableed_user(id,attacker,tranq_get_hero_id())
 					
 					process_manhook_manslaughter( attacker, id)
 					stop_dragging(attacker)	
