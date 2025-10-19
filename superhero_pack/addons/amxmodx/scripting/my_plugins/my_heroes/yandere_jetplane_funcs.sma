@@ -753,18 +753,7 @@ public jet_sound_task(id){
 		if(g_jetplane_telemetry_data[owner][2]>get_cvar_float("yandere_jetplane_speed")*0.5){
 			if(random(FlameRate) == (FlameRate-1)) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 			{
-				
-				message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-				write_byte( TE_BEAMFOLLOW )
-				write_short(jet_get_user_jet(owner)) // entity
-				write_short(m_trail)  // model
-				write_byte( 3 )       // life
-				write_byte( 10 )        // width
-				write_byte(love_color[0])			// r, g, b
-				write_byte(love_color[1])		// r, g, b
-				write_byte(love_color[2])			// r, g, b
-				write_byte(love_color[3]) // brightness
-				message_end() 
+				trail(jet_get_user_jet(owner))
 			}
 		}
 	}

@@ -11,7 +11,7 @@ stock help_files_directory[STRLEN_FOR_FILES+1]
 stock const help_cmd[]="help_of"
 stock const config_directory_name[128]="/shero_help_files/"
 stock const default_directory_name[128]="shero_def_dir/"
-stock const default_index_name[128]="shero_no_help_found.txt"
+stock const default_index_name[128]="shero_no_help_found.html"
 stock const default_title[128]="No Help Found for the specified hero."
 stock const default_hero_name[128]={0};
 stock default_directory[STRLEN_FOR_FILES+1]

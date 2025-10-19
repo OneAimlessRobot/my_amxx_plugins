@@ -90,28 +90,22 @@ stock gSpriteSmoke, gSpriteFire, gSpriteBurning
 
 //gibs
 stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
-stock trail(vec1[3],vec2[3],const color[4],id){
+stock trail(ent_id,color_const=PINK,life=3,width=10){
 
-//BEAMENTPOINTS
-		message_begin( MSG_ONE,SVC_TEMPENTITY,{0,0,0}, id)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( gSpriteLaser )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( color[0] )     // r, g, b
-		write_byte( color[1] )       // r, g, b
-		write_byte( color[2])
-		write_byte( color[3]) // brightness
-		write_byte(300) // speed
+		if(!pev_valid(ent_id)){
+		
+			return
+		}
+		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+		write_byte( TE_BEAMFOLLOW )
+		write_short(ent_id) // entity
+		write_short(m_trail)  // model
+		write_byte( life )       // life
+		write_byte( width )        // width
+		write_byte(LineColorsWithAlpha[color_const][0])			// r, g, b
+		write_byte(LineColorsWithAlpha[color_const][1])		// r, g, b
+		write_byte(LineColorsWithAlpha[color_const][2])			// r, g, b
+		write_byte(LineColorsWithAlpha[color_const][3]) // brightness
 		message_end()
 }
 public track_task(array[],id){
@@ -124,6 +118,7 @@ public track_task(array[],id){
 	new hud_msg[256]
 	new client_name[128]
 	new distance, origin[3], eorigin[3],att_origin[3]
+	new Float:Pos[3],Float:vEnd[3]
 	get_user_name(id,client_name,127)
 	
 	get_user_origin(id, eorigin)
@@ -135,7 +130,9 @@ public track_task(array[],id){
 	set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
 	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
 	detect_user(array[0],id,eorigin);
-	trail(eorigin,origin,tag_color,array[0])
+	IVecFVec(origin,Pos)
+	IVecFVec(eorigin,vEnd)
+	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
 	for(new i=0;i<array[2];i++){
 		if(!client_hittable(array[i+5])){
 		
@@ -151,7 +148,8 @@ public track_task(array[],id){
 		set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
 		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
 		detect_user(array[i+5],id,eorigin);
-		trail(eorigin,origin,tag_color,array[i+5])
+		IVecFVec(origin,Pos)
+		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
 		
 	}
 	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
