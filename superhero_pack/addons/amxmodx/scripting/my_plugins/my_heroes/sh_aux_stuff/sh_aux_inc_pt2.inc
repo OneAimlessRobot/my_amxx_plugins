@@ -187,3 +187,48 @@ stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mul
 	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 
 }
+stock draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM}){
+	new Float:fvec1[3], Float:fvec2[3],vec1[3],vec2[3]
+	get_user_origin(id, vec1, 1) // origin; your camera point.
+	get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
+	IVecFVec(vec1,fvec1)
+	IVecFVec(vec2,fvec2)
+	laser_line(id,fvec1, fvec2,true,color_vector_indices)
+
+}
+
+stock superhero_morph_message(id,message_text[]){
+
+	if(is_user_connected(id)){
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, message_text)
+	}
+
+}
+
+stock do_fast_shot(id,wpnid,Float:speed=1.0){
+	
+	if(!client_hittable(id)){
+		return
+	}
+	static Float:N_Speed
+	N_Speed =speed
+	if(N_Speed != 1.0)
+	{
+		static weapon[32],Ent
+		get_weaponname(wpnid,weapon,31)
+		Ent = fm_find_ent_by_owner(-1,weapon,id)
+		if(Ent)
+		{
+			static Float:Delay,Float:M_Delay
+			Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
+			M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
+			if (Delay > 0.0)
+			{
+				set_pdata_float( Ent, 46, Delay, 4)
+				set_pdata_float( Ent, 47, M_Delay, 4)
+			}
+		}
+	}
+
+}

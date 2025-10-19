@@ -206,7 +206,7 @@ if((damage>0.0)&&OVERT_ABUSE_ENABLED){
 	}
 }
 if(spores_has_ksun(attacker)){
-	if(weapon==CSW_M4A1){
+	if(weapon==KSUN_WEAPON_ID){
 		if(sh_get_user_is_asleep(id)){
 		
 			new tger_name[128], vic_name[128]
@@ -356,7 +356,7 @@ ksun_weapons(id)
 if ( sh_is_active() && client_hittable(id) && spores_has_ksun(id)) {
 	cs_set_user_bpammo(id, CSW_HEGRENADE,num_sleep_nades);
 	sh_give_weapon(id,CSW_FLASHBANG,false)
-	sh_give_weapon(id, CSW_M4A1)
+	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
 }
 //----------------------------------------------------------------------------------------------
@@ -431,7 +431,7 @@ public ksun_init()
 		delete_cooldown_update_tasks(id)
 		delete_hud_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
-		sh_drop_weapon(id, CSW_M4A1, true)
+		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
 		ksun_set_num_available_spores(id,0)
 	}
 }
@@ -661,8 +661,8 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	if(client_hittable(killer)&&is_user_connected(id)){
 		if(spores_has_ksun(killer)&&!ksun_player_is_in_ultimate(killer)){
 			if(ksun_kill_type_broadness_level<=1){
-				if(gWeaponPlayerKilledPlayerWith[killer][id]==CSW_M4A1){
-					sh_chat_message(killer,spores_ksun_hero_id(),"Killed someone with your M4A1!")
+				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
+					sh_chat_message(killer,spores_ksun_hero_id(),"Killed someone with your %s!",KSUN_WEAPON_NAME)
 					sh_chat_message(killer,spores_ksun_hero_id(),"You got %d spores for your kill!",ksun_spores_per_kill)
 					ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill)
 				}
@@ -670,8 +670,8 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 			else{
 				sh_chat_message(killer,spores_ksun_hero_id(),"Killed someone")
 				sh_chat_message(killer,spores_ksun_hero_id(),"You got %d spores for your kill!",ksun_spores_per_kill)
-				if(gWeaponPlayerKilledPlayerWith[killer][id]==CSW_M4A1){
-					sh_chat_message(killer,spores_ksun_hero_id(),"You got %d extra spores for an M4A1 kill!",((ksun_spores_per_kill*ksun_spore_m4_mult)-ksun_spores_per_kill))
+				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
+					sh_chat_message(killer,spores_ksun_hero_id(),"You got %d extra spores for an %s kill!",((ksun_spores_per_kill*ksun_spore_m4_mult)-ksun_spores_per_kill),KSUN_WEAPON_NAME)
 					ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill*ksun_spore_m4_mult)
 				}
 				else{

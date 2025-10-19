@@ -2,6 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #define KOMAK_HITZONE_TASKID 13321
 #define KOMAK_STATS_TASKID 14001
 #define KOMAK_HUD_TASKID 14221
@@ -18,14 +19,13 @@
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
 // weapons offsets
-const m_pPlayer            = 41
-const m_iId                = 43
-const m_flNextPrimaryAttack    = 46
-const m_flNextSecondaryAttack    = 47
-const m_flTimeWeaponIdle        = 48
-const m_fInReload            = 54
-
-const m_flNextAttack = 83
+const m_ppPlayer            = 41
+const m_iiId                = 43
+const m_fflNextPrimaryAttack    = 46
+const m_fflNextSecondaryAttack    = 47
+const m_fflTimeWeaponIdle        = 48
+const m_ffInReload            = 54
+const m_fflNextAttack = 83
 
 stock const Float:g_fReloadDelay[CSW_P90+1] = {
 	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
@@ -105,7 +105,6 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Mechanical maid", "Change gears, hit players and hit faster!", true, "komak_level" )
 	hud_sync=CreateHudSyncObj()
-	register_event("DeathMsg","death","a")
 	register_srvcmd("komak_init", "komak_init")
 	shRegHeroInit(gHeroName, "komak_init")
 	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakerypt2",_,true)
@@ -140,11 +139,11 @@ public Item_PostFrame_Post(iEnt)
 	}
 	if (!sh_is_active()||!gHasKomak[id])return HAM_IGNORED
 	
-	if( get_pdata_int(iEnt, m_fInReload, 4) )
+	if( get_pdata_int(iEnt, m_ffInReload, 4) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], gCurrReloadRatio[id])
-		set_pdata_float(get_pdata_cbase(iEnt, m_pPlayer, 4), m_flNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, 4)
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iiId, 4)], gCurrReloadRatio[id])
+		set_pdata_float(get_pdata_cbase(iEnt, m_ppPlayer, 4), m_fflNextAttack, fDelay, 5)
+		set_pdata_float(iEnt, m_fflTimeWeaponIdle, fDelay + 0.5, 4)
 	}
 	return HAM_IGNORED
 } 
@@ -480,27 +479,7 @@ public Event_CurWeapon(id)
 	}
 	gLastWeapon[id] = Gun
 	gLastClipCount[id] = Ammo 
-	
-	static Float:N_Speed
-	if(gHasKomak[id]) N_Speed =gCurrFireRatio[id]
-	
-	if(N_Speed != 1.0)
-	{
-		static weapon[32],Ent
-		get_weaponname(Gun,weapon,31)
-		Ent = fm_find_ent_by_owner(-1,weapon,id)
-		if(Ent)
-		{
-			static Float:Delay,Float:M_Delay
-			Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
-			M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
-			if (Delay > 0.0)
-			{
-				set_pdata_float( Ent, 46, Delay, 4)
-				set_pdata_float( Ent, 47, M_Delay, 4)
-			}
-		}
-	}
+	do_fast_shot(id,Gun,gCurrFireRatio[id])
 }
 	
 //----------------------------------------------------------------------------------------------
@@ -518,15 +497,4 @@ engfunc(EngFunc_PrecacheSound, KOMAK_FAST_SHOT)
 engfunc(EngFunc_PrecacheSound, KOMAK_BLOWN_ENGINE)
 engfunc(EngFunc_PrecacheSound, KOMAK_GEAR_UP)
 		
-}
-public sh_round_end(){
-		
-		
-}
-
-public death()
-{	/*
-	new id = read_data(2)
-	new killer= read_data(1)
-	*/
 }

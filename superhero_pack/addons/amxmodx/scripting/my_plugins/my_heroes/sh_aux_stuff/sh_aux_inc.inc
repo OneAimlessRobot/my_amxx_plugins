@@ -18,7 +18,7 @@
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
 
-#define COLORS_NUM 9
+#define COLORS_NUM 10
 //Colors To Pick From
 #define CUSTOM		0
 #define RED		1
@@ -29,6 +29,7 @@
 #define PURPLE		6
 #define ORANGE		7
 #define WHITE		8
+#define PINK		9
 
 #define NULL_SOUND_FILENAME "common/null.wav"
 
@@ -54,7 +55,8 @@ stock const LineColors[COLORS_NUM][3] = {
 	{255, 255, 0},		//Yellow
 	{255, 0, 255},		//Purple
 	{255, 128, 0},		//Orange
-	{255, 255, 255}		//White
+	{255, 255, 255},	//White
+	{250, 92, 163}      //Pink
 }
 stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{150, 150, 150,255},	//Custom
@@ -65,7 +67,8 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{255, 255, 0,255},		//Yellow
 	{255, 0, 255,255},		//Purple
 	{255, 128, 0,255},		//Orange
-	{255, 255, 255,255}		//White
+	{255, 255, 255,255},	//White
+	{250, 92, 163,255}      //Pink
 }
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
@@ -741,7 +744,7 @@ stock unfade_screen_user(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
+stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]={RED,BLUE,CUSTOM})
 {
 	if ( !pev_valid(ent_id) ) return
 	static  colors[3]
@@ -749,14 +752,14 @@ stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam)
 	
 		switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
 		{
-			case CS_TEAM_T: colors = LineColors[RED]
-				case CS_TEAM_CT: colors = LineColors[BLUE]
-					default: colors = LineColors[CUSTOM]
+			case CS_TEAM_T: colors = LineColors[color_constants[0]]
+				case CS_TEAM_CT: colors = LineColors[color_constants[1]]
+					default: colors = LineColors[color_constants[2]]
 		}
 	}
 	else{
 
-		colors=LineColors[CUSTOM]
+		colors=LineColors[color_constants[2]]
 	}
 	//This is a little cleaner but not much
 	if ( killbeam ) {

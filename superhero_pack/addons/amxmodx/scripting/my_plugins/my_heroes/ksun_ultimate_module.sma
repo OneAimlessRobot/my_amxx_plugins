@@ -1,6 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
@@ -24,7 +25,6 @@ new g_player_supply_amount[SH_MAXSLOTS+1]
 new g_player_in_ultimate[SH_MAXSLOTS+1]
 
 
-new m_spriteTexture
 new hud_sync_ultimate
 
 public plugin_init()
@@ -124,11 +124,11 @@ if(spores_has_ksun(id)&&ksun_player_is_in_ultimate(id)){
 if(spores_has_ksun(attacker)&&ksun_player_is_in_ultimate(attacker)){
 
 	
-	if(weapon==CSW_M4A1){
+	if(weapon==KSUN_WEAPON_ID){
 		new Float:dmgAdded= damage*ksun_dmg_absorption_index
 		new Float:newDamage=damage+ dmgAdded
 		SetHamParamFloat(4, newDamage);
-		sh_chat_message(attacker,spores_ksun_hero_id(),"You are in ultimate. You dealt %0.2f more damage from your rifle!",dmgAdded)
+		sh_chat_message(attacker,spores_ksun_hero_id(),"You are in ultimate. You dealt %0.2f more damage from your %s!",KSUN_WEAPON_NAME)
 	}
 }
 return HAM_IGNORED
@@ -301,58 +301,16 @@ if ( !spores_has_ksun(id)) return PLUGIN_CONTINUE
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
-if ( (wpnid ==CSW_M4A1)&&(ksun_player_is_in_ultimate(id)))
+if ( (wpnid ==KSUN_WEAPON_ID)&&(ksun_player_is_in_ultimate(id)))
 {
 	if (gLastWeapon[id] == 0){
 		gLastWeapon[id] = wpnid
 	}
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-		new vec1[3], vec2[3]
-		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
 		
-		
-		//BEAMENTPOINTS
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( m_spriteTexture )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( LineColors[PURPLE][0] )     // r, g, b
-		write_byte( LineColors[PURPLE][1] )       // r, g, b
-		write_byte( LineColors[PURPLE][2] )
-		write_byte(255) // brightness
-		write_byte(150) // speed
-		message_end()
-		static Float:N_Speed
-		N_Speed =ksun_ultimate_fire_rate_mult
-		if(N_Speed != 1.0)
-		{
-			static weapon[32],Ent
-			get_weaponname(wpnid,weapon,31)
-			Ent = fm_find_ent_by_owner(-1,weapon,id)
-			if(Ent)
-			{
-				static Float:Delay,Float:M_Delay
-				Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
-				M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
-				if (Delay > 0.0)
-				{
-					set_pdata_float( Ent, 46, Delay, 4)
-					set_pdata_float( Ent, 47, M_Delay, 4)
-				}
-			}
-		}
+		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
+		do_fast_shot(id,wpnid,ksun_ultimate_fire_rate_mult)
 		
 	}
 	gLastClipCount[id] = ammo
@@ -364,7 +322,7 @@ return PLUGIN_CONTINUE
 
 public plugin_precache(){
 	
-	m_spriteTexture = precache_model("sprites/dot.spr")
+	precache_explosion_fx()
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 }

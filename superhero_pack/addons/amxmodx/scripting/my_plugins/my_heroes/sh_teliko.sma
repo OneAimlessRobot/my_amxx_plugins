@@ -2,6 +2,8 @@
 
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 
@@ -25,7 +27,6 @@ new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
 
 new bool:g_teliko_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new m_spriteTexture
 
 new hud_sync
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
@@ -283,19 +284,11 @@ if ( gHasTeliko[id] ) {
 }
 public teliko_morph(id){
 
-
-	// Message
-	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Roger? Teliko here. Ready to go. Over.")*/
-
+	superhero_morph_message(id,"Roger? Teliko here. Ready to go. Over.")
 }
 public teliko_unmorph(id){
 
-
-	// Message
-	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Mission failed. Im down. Come pick me up.")*/
-
+	superhero_morph_message(id,"Mission failed. Im down. Come pick me up.")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -447,7 +440,7 @@ public sh_round_end(){
 public plugin_precache()
 {
 
-m_spriteTexture = precache_model("sprites/dot.spr")
+precache_explosion_fx()
 engfunc(EngFunc_PrecacheSound, COUNTER_SHOT_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX) 
@@ -534,33 +527,7 @@ if ( (wpnid ==g_teliko_weapon[id]))
 	
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)&&(g_counter_bullets[id])) 
 	{
-		new vec1[3], vec2[3]
-		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
-		
-		
-		//BEAMENTPOINTS
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( m_spriteTexture )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( 255 )     // r, g, b
-		write_byte( 200 )       // r, g, b
-		write_byte( 200 )
-		write_byte(200) // brightness
-		write_byte(150) // speed
-		message_end()
-		
+		draw_aim_vector(id)
 		g_counter_bullets[id]--;
 	}
 	gLastClipCount[id] = ammo

@@ -24,6 +24,8 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 //------- Do not edit below this point ------//
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 #define MARKSMAN_TASKID 12812
 // GLOBAL VARIABLES
@@ -34,8 +36,6 @@ new bool:gHasMarksman[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new marksman_bullets[ SH_MAXSLOTS+1 ]
 
-
-new m_spriteTexture
 
 
 
@@ -209,7 +209,7 @@ public plugin_precache()
 			engfunc(EngFunc_PrecacheSound, g_sounds[i])
 			console_print(0, "Sound loaded: ^"%s^"", g_sounds[i])
 	}
-	m_spriteTexture = precache_model("sprites/dot.spr")
+	precache_explosion_fx()
 }
 
 public Crouch(id,alpha) {
@@ -298,46 +298,14 @@ new ammo = read_data(3)		// ammo left in clip
 
 if ( (wpnid == CSW_SG550)||(wpnid == CSW_G3SG1))
 {
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-	
+	if (gLastWeapon[id] == 0){
+		gLastWeapon[id] = wpnid
+	}
 	if ((marksman_bullets[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		
-			new vec1[3], vec2[3]
-			get_user_origin(id, vec1, 1) // origin; your camera point.
-			get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
-			
-			
-			//BEAMENTPOINTS
-			message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-			write_byte (0)     //TE_BEAMENTPOINTS 0
-			write_coord(vec1[0])
-			write_coord(vec1[1])
-			write_coord(vec1[2])
-			write_coord(vec2[0])
-			write_coord(vec2[1])
-			write_coord(vec2[2])
-			write_short( m_spriteTexture )
-			write_byte(1) // framestart
-			write_byte(5) // framerate
-			write_byte(2) // life
-			write_byte(10) // width
-			write_byte(0) // noise
-			if(wpnid == CSW_SG550){
-				Marksman_Shooting(id)
-				write_byte( 50 )     // r, g, b
-				write_byte( 200 )       // r, g, b
-				write_byte( 200 )       // r, g, b
-			}
-			else{
-				Marksman_Shooting(id)
-				write_byte( 200 )     // r, g, b
-				write_byte( 50 )       // r, g, b
-				write_byte( 50 )       // r, g, b
-			}
-			write_byte(200) // brightness
-			write_byte(150) // speed
-			message_end()
+			draw_aim_vector(id,{RED,BLUE,WHITE})
+			Marksman_Shooting(id)
 	}
 	marksman_bullets[id] = ammo
 	gLastWeapon[id]=wpnid;

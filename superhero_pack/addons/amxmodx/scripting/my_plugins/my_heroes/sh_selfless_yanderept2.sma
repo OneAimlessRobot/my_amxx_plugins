@@ -10,6 +10,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 //#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
@@ -764,7 +765,9 @@ if(!gSuperAngry[id]){
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	sh_drop_weapon(id, CSW_XM1014,true)
-	
+	if(gIsPsychosis[id]){
+		unpsychosis_user(id)
+	}
 }
 
 }
@@ -1054,32 +1057,7 @@ public fire_weapon(id)
 	
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-		new vec1[3], vec2[3]
-		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
-		
-		
-		//BEAMENTPOINTS
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( m_spriteTexture )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( 255 )     // r, g, b
-		write_byte( 0 )       // r, g, b
-		write_byte( 0)
-		write_byte(255) // brightness
-		write_byte(300) // speed
-		message_end()
+		draw_aim_vector(id,{RED,RED,RED})
 		if(wpnid==CSW_XM1014){
 			emit_sound(id, CHAN_WEAPON, yandere_shotgun_sounds[1], 1.0, 0.0, 0, PITCH_NORM)
 		}

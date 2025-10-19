@@ -80,6 +80,7 @@ public plugin_init()
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	register_event("CurWeapon", "fire_weapon", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	
 	g_msgFade = get_user_msgid("ScreenFade");
@@ -211,8 +212,7 @@ public ester_morph(id)
 	id-=ESTER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
 	
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "Ready to adult & Pwn 50m3 n3wbz")
+	superhero_morph_message(id,"Ready to adult & Pwn 50m3 n3wbz")
 	cs_set_user_model(id, "ester")
 	
 	gmorphed[id] = true
@@ -233,8 +233,7 @@ public ester_unmorph(id)
 			remove_task(id+ESTER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Fuck my li- *Sigh...* Spectating again")
+		superhero_morph_message(id,"Fuck my li- *Sigh...* Spectating again")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -589,6 +588,27 @@ public ester_damage(id)
 	}
 }
 
+public fire_weapon(id)
+{
+	
+	if ( !ester_get_has_ester(id) ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+	new wpnid = read_data(2)		// id of the weapon 
+	new ammo = read_data(3)		// ammo left in clip 
+	
+	if ( (wpnid ==CSW_TMP))
+	{
+		if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
+		
+		if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
+		{
+			draw_aim_vector(id,{GREEN,GREEN,GREEN})
+		}
+		gLastClipCount[id] = ammo
+		gLastWeapon[id]=wpnid;
+	}
+	return PLUGIN_CONTINUE 
+	
+}
 public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
 	
@@ -625,7 +645,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					}
 					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult)+1.0):floatadd(damage,pan_dmg))
 					if (extraDamage>0){
-						sh_extra_damage(id, attacker, floatround(extraDamage), (weapon==CSW_TMP?"The moralizing ray (C)":"Adutling Pan (TM)"), headshot)
+						sh_extra_damage(id, attacker, floatround(extraDamage), (weapon==CSW_TMP?"tmp":"Adutling Pan (TM)"), headshot)
 						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?moralizing_tmp_xp_get_mult:moralizing_pan_xp_get_mult)*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
 							

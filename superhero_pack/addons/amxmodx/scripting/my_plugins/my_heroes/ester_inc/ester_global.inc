@@ -37,5 +37,8 @@ stock ester_death_sounds[ESTER_NUM_DEATH_SOUNDS][]={
 #define ESTER_JUST_SHUT_UP_STRING "[SH] %s: Moralizing has earned you %d more xp!"
 #define ESTER_FINE_WHATEVER_YOU_SAY "Moralizing last round has earned you %d more xp!"
 
+stock gLastWeapon[SH_MAXSLOTS+1]
+stock gLastClipCount[SH_MAXSLOTS+1]
+
 native ester_get_has_ester(id)
 native ester_get_hero_id()

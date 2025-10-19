@@ -3,6 +3,7 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 #define PLUGIN "Superhero yakui pt2 pt1"
@@ -16,7 +17,6 @@ const fPainShock = 108
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
-new m_spriteTexture
 public plugin_init(){
 
 
@@ -37,7 +37,6 @@ register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 public plugin_precache(){
 
 
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	precache_explosion_fx()
 
 }
@@ -87,7 +86,7 @@ public crack_damage(id)
 public fire_weapon(id)
 {
 	
-	if (!is_user_connected(id)||!is_user_alive(id)||!(gatling_get_fx_num(id)==POISON)) return PLUGIN_CONTINUE 
+	if (!is_user_connected(id)||!is_user_alive(id)||!((gatling_get_fx_num(id)==POISON)||(gatling_get_fx_num(id)==COCAINE))) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -95,32 +94,12 @@ public fire_weapon(id)
 	
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-		new vec1[3], vec2[3]
-		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
 		
+		draw_aim_vector(id,(gatling_get_fx_num(id)==POISON)?{GREEN,GREEN,GREEN}:{PINK,PINK,PINK})
+		if((gatling_get_fx_num(id)==COCAINE)){
 		
-		//BEAMENTPOINTS
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short( m_spriteTexture )
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		write_byte( poison_color[0] )     // r, g, b
-		write_byte( poison_color[1] )       // r, g, b
-		write_byte( poison_color[2])
-		write_byte(255) // brightness
-		write_byte(300) // speed
-		message_end()
+			do_fast_shot(id,wpnid,COCAINE_FIRE_RATE_MULT)
+		}
 	}
 	gLastClipCount[id] = ammo
 	gLastWeapon[id]=wpnid;
@@ -539,6 +518,7 @@ kill_user(id,attacker){
 	if ( !shModActive() ||!client_hittable(id)) return
 	sh_screen_fade(id, 0.1, 0.9, kill_color[0], kill_color[1], kill_color[2], 50)
 	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
+	gatling_set_fx_num(id, 0)
 
 
 }
@@ -569,6 +549,7 @@ public unglow_task(id){
 	remove_task(id+GLOW_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 
 
 
@@ -579,6 +560,7 @@ unglow_user(id){
 	remove_task(id+GLOW_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 
 
 
@@ -621,7 +603,7 @@ public unpoison_task(id){
 	remove_task(id+POISON_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id,0)
+	gatling_set_fx_num(id, 0)
 
 
 
@@ -632,7 +614,7 @@ unpoison_user(id){
 	remove_task(id+POISON_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id,0)
+	gatling_set_fx_num(id, 0)
 
 
 
@@ -641,6 +623,7 @@ unstun_user(id){
 
 	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
 	sh_set_stun(id,0.0,1.0)
+	gatling_set_fx_num(id, 0)
 	sh_screen_shake(id,0.0,0.0,0.0)
 
 
@@ -670,6 +653,7 @@ blind_user(id){
 unblind_user(id){
 	
 	remove_task(id+BLIND_TASKID)
+	gatling_set_fx_num(id, 0)
 
 }
 
@@ -693,6 +677,7 @@ public unmorphine_user(id){
 	remove_task(id+MORPHINE_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 
 }
 public unmorphine_task(id){
@@ -700,6 +685,7 @@ public unmorphine_task(id){
 	remove_task(id+MORPHINE_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 
 }
 public weed_task(id){
@@ -721,6 +707,7 @@ unweed_user(id){
 	remove_task(id+WEED_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 	sh_reset_min_gravity(id)
 
 }
@@ -729,6 +716,7 @@ public unweed_task(id){
 	remove_task(id+WEED_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 	sh_reset_min_gravity(id)
 
 }
@@ -752,6 +740,7 @@ uncocaine_user(id){
 	remove_task(id+COCAINE_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 	sh_reset_max_speed(id)
 
 }
@@ -760,6 +749,7 @@ public uncocaine_task(id){
 	remove_task(id+COCAINE_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	gatling_set_fx_num(id, 0)
 	sh_reset_max_speed(id)
 
 }
@@ -784,7 +774,7 @@ public unfocus_task(id){
 	id-=UNFOCUS_TASKID
 	remove_task(id+FOCUS_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return 0
-	gatling_set_fx_num(id,_:BATH+1)
+	gatling_set_fx_num(id, 0)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	return 0
 
@@ -794,7 +784,7 @@ unfocus_user(id){
 	remove_task(id+UNFOCUS_TASKID)
 	remove_task(id+FOCUS_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,_:BATH+1)
+	gatling_set_fx_num(id, 0)
 
 }
 bath_user(id){
@@ -816,7 +806,7 @@ public unbath_task(id){
 	id-=UNBATH_TASKID
 	remove_task(id+BATH_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,_:BATH+1)
+	gatling_set_fx_num(id, 0)
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
@@ -825,6 +815,6 @@ unbath_user(id){
 	remove_task(id+UNBATH_TASKID)
 	remove_task(id+BATH_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id,_:BATH+1)
+	gatling_set_fx_num(id, 0)
 
 }
