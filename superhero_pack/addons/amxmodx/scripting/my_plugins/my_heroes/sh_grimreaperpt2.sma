@@ -152,7 +152,7 @@ new attacker_name[128];
 new client_name[128];
 get_user_name(attacker,attacker_name,127);
 get_user_name(this,client_name,127);
-sh_extra_damage(this,attacker,1,"Death Swing",0,SH_DMG_KILL);
+sh_extra_damage(this,attacker,1,"Death Swing",1,SH_DMG_KILL);
 sh_chat_message(0,gHeroID,"AND THAT IS A HIT!!!!! %s HAS SLAIN %s WITH THE DEATHS SCYTHE!!!!!",attacker_name,client_name);
 emit_sound(attacker, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 emit_sound(this, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)

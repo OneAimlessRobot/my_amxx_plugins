@@ -41,6 +41,11 @@
  *        FORWARDS        *
  **************************/
 
+forward sh_extra_damage_fwd_pre(victim, attacker, damage,const wpnDescription[32],  headshot,dmgMode, bool:dmgStun, bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type);
+
+forward sh_extra_damage_fwd_post(victim, attacker, damage,const wpnDescription[32],  headshot,dmgMode, bool:dmgStun, bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type);
+
+
 /**
  * Called when a hero is added or dropped.
  * See superheroconst.inc for mode types.
@@ -390,7 +395,7 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0});
+native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC);
 
 /**
  * Speed stuns client for time specified. Bind powers are not usable when stunned.

@@ -259,6 +259,27 @@ public yowai_unmorph(id)
 		}
 	}
 }
+//TODO: IT WOOOORRRKKSSSS, MAHAHAHAHAAAA!!!! I CAN DETECT DAMAGE FROM SUPER HERO MOD NOW!
+/*
+public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
+
+	server_print("Extra damage multiforward executed sucessfully!!!^nYou (%d) were the victim^nThe attacker was %d^nThe damage dealt was %d^nThe weapon description was %s^nWas it a headshot? %s^nDamage mode was %d^nDid we stun? %s^n",
+											victim,
+											attacker,
+											damage,
+											wpnDescription,
+											headshot?"Yes!":"No...",
+											dmgMode,
+											dmgStun?"Yes!":"No...")
+											
+	server_print("Did we trigger friendly fire? %s^nDamage origin: (x, y, z) == (%0.2f, %0.2f, %0.2f)^nDamage type was: %d^n",
+											dmgFFmsg?"Yes!":"No...",
+											dmgOrigin[0],
+											dmgOrigin[1],
+											dmgOrigin[2],
+											dmg_type);
+}*/
+
 //----------------------------------------------------------------------------------------------
 public yowai_glow(id)
 {

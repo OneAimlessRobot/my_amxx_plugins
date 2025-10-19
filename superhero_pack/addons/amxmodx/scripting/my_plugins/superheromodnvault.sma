@@ -499,6 +499,8 @@ new sh_anubisdmg_check, gAnubisHero[25]
 new fwdReturn
 new fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
+//new fwd_ShDamagePre,fwd_ShDamagePost
+new fwd_ShDamagePost
 
 //new max_entities
 //new max_entities_cvar
@@ -603,6 +605,9 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
+	//fwd_ShDamagePre=CreateMultiForward("sh_extra_damage_fwd_pre",ET_IGNORE,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
+	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
+
 
 
 #if defined SH_BACKCOMPAT
@@ -2909,7 +2914,7 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 	return HAM_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-//native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const dmgOrigin[3] = {0,0,0});
+//native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const dmgOrigin[3] = {0,0,0},dmg_type=DMG_GENERIC);
 public _sh_extra_damage()
 {
 	new victim = get_param(1)
@@ -2923,8 +2928,11 @@ public _sh_extra_damage()
 	if ( attacker == gXpBounsVIP && getVipFlags() & VIP_BLOCK_EXTRADMG ) return
 
 	new damage = get_param(3)
-
 	new mode = get_param(6)
+	new bool:dmgStun = get_param(7) ? true : false
+	new bool:dmgFFmsg = get_param(8) ? true : false
+	new wpnDescription[32]
+	get_string(4, wpnDescription, charsmax(wpnDescription))
 
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
@@ -2959,12 +2967,14 @@ public _sh_extra_damage()
 	new newHealth = health - damage
 	new FFon = get_pcvar_num(mp_friendlyfire)
 	new freeforall = get_pcvar_num(sh_ffa)
+	new headshot = get_param(5)
 	new CsTeams:victimTeam = cs_get_user_team(victim)
 	new CsTeams:attackerTeam = cs_get_user_team(attacker)
-
+	new Float:dmgOrigin[3]
+	get_array_f(9, dmgOrigin, 3)
+	new dmg_type=get_param(10)
 	if ( newHealth < 1 ) {
 		new bool:kill
-		new headshot = get_param(5)
 		new attackerFrags = get_user_frags(attacker)
 		new attackerMoney = cs_get_user_money(attacker)
 
@@ -3008,10 +3018,9 @@ public _sh_extra_damage()
 			}
 		}
 
-		if ( !kill ) return
-
-		new wpnDescription[32]
-		get_string(4, wpnDescription, charsmax(wpnDescription))
+		if ( !kill ){
+			return
+		}
 
 		// Kill the victim and block the message
 		set_msg_block(gmsgScoreInfo, BLOCK_ONCE)
@@ -3070,6 +3079,18 @@ public _sh_extra_damage()
 		write_short(0)
 		write_short(_:attackerTeam)
 		message_end()
+		
+		
+		if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
+			// Damage origin is attacker
+			pev(attacker, pev_origin, dmgOrigin)
+		}
+		new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
+		server_print("Sh damage forward execute error?.");
+		if (!ExecuteForward(fwd_ShDamagePost, fwdReturn, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+			server_print("Sh damage forward execute error.");
+			return 
+		}
 	}
 	else {
 		new bool:hurt = false
@@ -3078,7 +3099,6 @@ public _sh_extra_damage()
 		}
 		else if ( FFon ) {
 			hurt = true
-			//new bool:dmgFFmsg = get_param(6) ? true : false
 			if ( get_param(8) ) {
 				new name[32]
 				get_user_name(attacker, name, charsmax(name))
@@ -3086,14 +3106,9 @@ public _sh_extra_damage()
 			}
 		}
 
-		if ( !hurt ) return
-
-		//if ( !sh_is_active() ) return
-		//if ( victim == attacker ) return
-		//if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
-
-		new wpnDescription[32]
-		get_string(4, wpnDescription, charsmax(wpnDescription))
+		if ( !hurt ){
+			return
+		}
 
 		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
@@ -3115,8 +3130,7 @@ public _sh_extra_damage()
 		cs_set_user_armor(victim, plrArmor, armorType)
 
 		// Slow down from damage, does not effect z vector
-		// new bool:dmgStun = get_param(7) ? true : false
-		if ( get_param(7) && pev(victim, pev_movetype) & MOVETYPE_WALK ) {
+		if ( dmgStun && pev(victim, pev_movetype) & MOVETYPE_WALK ) {
 
 			// Fake a slowdown from damage
 			// Method needs improvement can not find how cs does it
@@ -3128,12 +3142,8 @@ public _sh_extra_damage()
 			// Keep [2] the same as current velocity
 			set_pev(victim, pev_velocity, velocity)
 		}
-
-		if ( is_user_bot(victim) ) return
-
-		new Float:dmgOrigin[3]
-		get_array_f(9, dmgOrigin, 3)
-
+	
+		
 		if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
 			// Damage origin is attacker
 			pev(attacker, pev_origin, dmgOrigin)
@@ -3143,12 +3153,18 @@ public _sh_extra_damage()
 		message_begin(MSG_ONE_UNRELIABLE, gmsgDamage, _, victim)
 		write_byte(0)		// dmg_save
 		write_byte(damage)	// dmg_take
-		write_long(DMG_GENERIC)	// visibleDamageBits
+		write_long(dmg_type)	// visibleDamageBits
 		engfunc(EngFunc_WriteCoord, dmgOrigin[0])	// damageOrigin.x
 		engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
-	}
+		new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
+		server_print("Sh damage forward execute error?.");
+		if (!ExecuteForward(fwd_ShDamagePost, fwdReturn, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+			server_print("Sh damage forward execute error.");
+			return 
+		}
+		}
 }
 //---------------------------------------------------------------------------------------------
 public fm_AlertMessage(atype, const msg[])

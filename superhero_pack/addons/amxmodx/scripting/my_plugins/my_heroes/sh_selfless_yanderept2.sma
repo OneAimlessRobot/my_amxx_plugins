@@ -57,6 +57,7 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	hud_sync=CreateHudSyncObj()
 	
+	g_msgFade = get_user_msgid("ScreenFade");
 	register_srvcmd("yandere_init", "yandere_init")
 	shRegHeroInit(gHeroName, "yandere_init")
 	register_srvcmd("yandere_kd", "yandere_kd")

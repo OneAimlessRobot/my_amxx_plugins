@@ -487,7 +487,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=dmg_headshot_mult;
 				}
-				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet",headshot);
+				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet", headshot,_,_,_,_,DMG_BULLET);
 				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
