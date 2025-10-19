@@ -7,7 +7,6 @@
 stock const graciete_color[4]={50, 205, 50, 100}
 
 
-native client_isnt_hitter(id)
 native graciete_get_has_graciete(id)
 native graciete_get_hero_id()
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -7,7 +7,6 @@
 #define MARIA_STATS_TASKID 7219926
 #define MARIA_HUD_TASKID 82219926
 
-#define MARIA_HEAL_PERIOD 1.0
 #define MARIA_REMOVE_GLOW_TASKID 12812810
 
 // GLOBAL VARIABLES
@@ -18,8 +17,6 @@ new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
 
-new const hud_color[4]={111,255,111,0}
-new const heal_color[4]={250,250,210, 100}
 
 new base_points
 new max_points
@@ -30,10 +27,10 @@ new Float:selfless_index
 new Float:max_radius
 new Float:base_radius
 new Float:base_heal
+new Float:heal_period
 new maria_alpha
 new hud_sync
 new hud_sync_health
-//new gHeroLevel
 
 
 //----------------------------------------------------------------------------------------------
@@ -55,6 +52,7 @@ public plugin_init()
 	register_cvar("maria_dmg_points_pct", "0.1")
 	register_cvar("maria_selfless_index", "0.9")
 	register_cvar("maria_points_heal_coeff", "4")
+	register_cvar("maria_heal_period", "0.33")
 	
 	
 	hud_sync=CreateHudSyncObj()
@@ -64,7 +62,6 @@ public plugin_init()
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
-	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
@@ -89,6 +86,7 @@ public loadCVARS()
 	points_heal_coeff=get_cvar_float("maria_points_heal_coeff")
 	base_points=get_cvar_num("maria_base_points")
 	base_heal=get_cvar_float("maria_base_heal")
+	heal_period=get_cvar_float("maria_heal_period")
 }
 
 public remove_glow_task(id){
@@ -114,9 +112,9 @@ public maria_init()
 		
 		g_maria_points[id]=base_points;
 		g_base_radius[id]=base_radius
-		set_task(MARIA_HEAL_PERIOD, "maria_heal_loop", id+MARIA_HEAL_TASKID, "", 0, "b")
-		set_task(MARIA_HEAL_PERIOD, "maria_hud", id+MARIA_HUD_TASKID, "", 0, "b")
-		set_task(MARIA_HEAL_PERIOD, "maria_loop", id+MARIA_STATS_TASKID, "", 0, "b")
+		set_task(heal_period, "maria_heal_loop", id+MARIA_HEAL_TASKID, "", 0, "b")
+		set_task(heal_period, "maria_hud", id+MARIA_HUD_TASKID, "", 0, "b")
+		set_task(heal_period, "maria_loop", id+MARIA_STATS_TASKID, "", 0, "b")
 	}
 	else{
 		g_maria_points[id]=0;
@@ -138,14 +136,15 @@ add_points(id,Float:damage){
 calculate_healing(id,Float:values[2]){
 
 new Float: maria_health=float(get_user_health(id))
-values[0]=MARIA_HEAL_PERIOD*base_heal*selfless_index*(float(g_maria_points[id])/float(max_points))
+new Float:value=heal_period*base_heal*selfless_index*(float(g_maria_points[id])/float(max_points));
 values[1]=maria_health;
+values[0]=(maria_health>value)?value:0.0;
 
 }
 
 
 bool:heal_teamate(id,i){
-	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)){
+	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)||!hasRoundStarted()){
 		
 		
 		return false
@@ -165,9 +164,9 @@ bool:heal_teamate(id,i){
 	new Float: new_health=floatadd(mate_health,values[0]*points_heal_coeff)
 	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
 	sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
-	setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-	set_task(MARIA_HEAL_PERIOD*2,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
-	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	setScreenFlash(i,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)
+	set_task(heal_period*2,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
+	sh_set_rendering(i, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	heal_stream(id,i)
 	return true
 
@@ -223,60 +222,14 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 }
 if(healed){
 
-	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
-	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
-	set_task(MARIA_HEAL_PERIOD,"remove_glow_task",id+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	heal_aura(id)
+	setScreenFlash(id,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)	
+	sh_set_rendering(id, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
+	set_task(heal_period,"remove_glow_task",id+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	aura(id,LineColorsWithAlpha[WHITE])
 
 }
-make_shockwave(client_origin,g_normal_radius[id],hud_color)
+make_shockwave(client_origin,g_normal_radius[id],LineColorsWithAlpha[LTGREEN],1,3,2,20)
 
-}
-public heal_aura(id){
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(27)
-	write_coord(origin[0])	//pos
-	write_coord(origin[1])
-	write_coord(origin[2])
-	write_byte(15)
-	write_byte( hud_color[0] )				// r, g, b
-	write_byte( hud_color[1] )				// r, g, b
-	write_byte( hud_color[2] )				// r, g, b
-	write_byte(3)			// life
-	write_byte(1)			// decay
-	message_end()
-	
-}
-
-public heal_stream(id, x)
-{
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( 8 )
-	write_short(id)				// start entity
-	write_short(x)				// entity
-	write_short(white)		// model
-	write_byte( 0 ) 				// starting frame
-	write_byte( 30 )  			// frame rate
-	write_byte( 1)  			// life
-	write_byte( 45)  		// line width
-	write_byte( 0 )  			// noise amplitude
-	write_byte( hud_color[0] )				// r, g, b
-	write_byte( hud_color[1] )				// r, g, b
-	write_byte( hud_color[2] )				// r, g, b
-	write_byte( 255 )				// brightness
-	write_byte( 8 )				// scroll speed
-	message_end()
-	
 }
 public maria_hud(id){
 	id-=MARIA_HUD_TASKID
@@ -291,7 +244,7 @@ public maria_hud(id){
 					g_normal_radius[id]
 					);
 	
-	set_hudmessage(hud_color[0], hud_color[1], hud_color[2], 1.0, 0.5, hud_color[3], 0.0, 0.5,0.0,0.0,1)
+	set_hudmessage(LineColorsWithAlpha[WHITE][0], LineColorsWithAlpha[WHITE][1], LineColorsWithAlpha[WHITE][2], 1.0, 0.5, LineColorsWithAlpha[WHITE][3], 0.0, 0.5,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	
@@ -333,7 +286,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			format(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
-			set_hudmessage(hud_color[0], hud_color[1], hud_color[2], -1.0, -1.0, hud_color[3], 0.0, 0.1,0.0,0.0,1)
+			set_hudmessage(LineColorsWithAlpha[LTGREEN][0], LineColorsWithAlpha[LTGREEN][1], LineColorsWithAlpha[LTGREEN][2], -1.0, -1.0, LineColorsWithAlpha[LTGREEN][3], 0.0, 0.1,0.0,0.0,1)
 			ShowSyncHudMsg(id, hud_sync_health, "%s", hud_msg)
 			
 		}	
@@ -357,8 +310,6 @@ public maria_loop(id){
 update_stats(id){
 	
 	if(gHasMaria[id]){
-		////g_normal_speed[id]=900.0-float(g_adriano_points[id])
-		
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),points_radius_pct)),max_radius);
 		
 	}
@@ -366,20 +317,6 @@ update_stats(id){
 	
 }
 
-public adriano_kd()
-{
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if ( !is_user_alive(id)||!gHasMaria[id]) return PLUGIN_HANDLED
-	
-	heal_teamate(id,id)
-	
-	return PLUGIN_HANDLED
-}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
@@ -394,15 +331,5 @@ public newRound(id)
 public plugin_precache()
 {
 	precache_explosion_fx()
-	
-}
-public sh_round_end(){
-	
-	
-	
-}
-
-public death(){
-	
 	
 }

@@ -232,3 +232,14 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	}
 
 }
+
+stock anime_kill_fx(origin[3]){
+
+message_begin(MSG_ALL, SVC_TEMPENTITY) 
+write_byte(10)	// TE_LAVASPLASH 
+write_coord(origin[0]) 
+write_coord(origin[1]) 
+write_coord(origin[2]-26) 
+message_end() 
+
+}

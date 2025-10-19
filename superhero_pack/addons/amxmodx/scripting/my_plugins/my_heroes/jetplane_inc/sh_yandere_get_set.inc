@@ -5,9 +5,6 @@
 
 
 
-stock const love_color[4]={250, 92, 163,50}
-stock const red_color[4]={255, 0, 0, 50}
-stock const heal_color[4]={250,250,210, 100}
 
 stock const yandere_shotgun_sounds[3][]={"weapons/yandere_shotgun/balrog11_draw.wav",
 "weapons/yandere_shotgun/xm1014-1.wav",

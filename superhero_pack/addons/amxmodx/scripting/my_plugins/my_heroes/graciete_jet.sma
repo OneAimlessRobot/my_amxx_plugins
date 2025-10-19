@@ -116,8 +116,6 @@ public _reset_graciete_user(iPlugin,iParams){
 
 public plugin_precache(){
 	
-	
-	m_trail = precache_model("sprites/smoke.spr")
 	precache_model(jp_mdl)
 	engfunc(EngFunc_PrecacheSound,  jp_jump)
 	engfunc(EngFunc_PrecacheSound,  jp_fly)
@@ -134,8 +132,7 @@ public plugin_end(){
 }
 public graciete_cooldown_loop(id){
 	id-=GRACIETE_COOLDOWN_TASKID;
-	//sh_chat_message(id,gHeroID,"Loop running! %d seconds left!",g_graciete_jetpack_cooldown[id]);
-	if(client_isnt_hitter(id)){
+	if(!client_hittable(id,graciete_get_has_graciete(id))){
 		return PLUGIN_HANDLED
 		
 	}
@@ -148,7 +145,7 @@ public graciete_cooldown_loop(id){
 	
 }
 charge_user(id){
-	if(client_isnt_hitter(id)) return 0
+	if(!client_hittable(id,graciete_get_has_graciete(id))) return 0
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 	
@@ -210,7 +207,7 @@ uncharge_user(id){
 }
 public client_PostThink(id) {
 	
-	if( client_isnt_hitter(id)) { 
+	if( !client_hittable(id,graciete_get_has_graciete(id))) { 
 		return
 	}
 	if(g_graciete_leaped[id]){
@@ -231,7 +228,7 @@ public client_PostThink(id) {
 }
 public CmdStart(id, uc_handle)
 {
-	if (client_isnt_hitter(id)||!hasRoundStarted()) return FMRES_IGNORED;
+	if (!client_hittable(id,graciete_get_has_graciete(id))||!hasRoundStarted()) return FMRES_IGNORED;
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -284,22 +281,14 @@ public load_jetpack(id){
 public rockettrail(id)
 {
 	id-=GRACIETE_TRAIL_TASKID
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( TE_BEAMFOLLOW )
-	write_short(id) // entity
-	write_short(m_trail)  // model
-	write_byte( 10)       // life
-	write_byte( 15 )        // width
-	write_byte(graciete_color[0])			// r, g, b
-	write_byte(graciete_color[1])		// r, g, b
-	write_byte(graciete_color[2])			// r, g, b
-	write_byte(255) // brightness
 	
-	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	
+	trail(id,LTGREEN,10,15)
+	// move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 }
 public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
-	if(client_isnt_hitter(id)) return
+	if(!client_hittable(id,graciete_get_has_graciete(id))) return
 	
 	
 	

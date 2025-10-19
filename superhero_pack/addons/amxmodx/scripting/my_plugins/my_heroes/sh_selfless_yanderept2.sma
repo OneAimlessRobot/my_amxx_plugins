@@ -266,11 +266,11 @@ public psychosis_task(id){
 	gPsychosisTime[id]
 	);
 	gPsychosisTime[id]--
-	set_hudmessage(love_color[0],love_color[1],love_color[2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0,1)
+	set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	sh_screen_fade(id,0.1,1.0,love_color[0],love_color[1],love_color[2],50)
-	sh_set_rendering(id, love_color[0],love_color[1],love_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	heal_aura(id)
+	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
+	sh_set_rendering(id, LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	aura(id,LineColorsWithAlpha[PINK])
 	
 	
 	
@@ -278,7 +278,7 @@ public psychosis_task(id){
 psychosis_user(id){
 	
 	psychosis_on(id)
-	sh_screen_fade(id,0.1,1.0,love_color[0],love_color[1],love_color[2],50)
+	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",PSYCHOSIS_TIMES)
 	set_task(floatsub(floatmul(PSYCHOSIS_PERIOD,float(PSYCHOSIS_TIMES)),0.1),"unpsychosis_task",id+UNPSYCHOSIS_TASKID,"", 0,  "a",1)
 	
@@ -398,12 +398,12 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gS
 		sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
 		new Float:degen_dmg_mult= gIsPsychosis[id]?psychosis_degen_mult*2.0:1.0 //'2.0' cuz of psychosis armor
 		sh_extra_damage(id,id,floatround(degen_dmg_mult*angry_degen,floatround_ceil),"Yandere longing")
-		sh_screen_fade(id, 0.5, 2.5, red_color[0], red_color[1], red_color[2], 50)
+		sh_screen_fade(id, 0.5, 2.5, LineColorsWithAlpha[RED][0], LineColorsWithAlpha[RED][1], LineColorsWithAlpha[RED][2], 50)
 		emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
 		if(random_num(0,1)){
 			emit_sound(id, CHAN_VOICE, sounds[random_num(0,2)], 1.0, 0.0, 0, PITCH_NORM)
 		}
-		sh_set_rendering(id, red_color[0], red_color[1], red_color[2],  255,kRenderFxGlowShell, kRenderTransAlpha)
+		sh_set_rendering(id, LineColorsWithAlpha[RED][0], LineColorsWithAlpha[RED][1], LineColorsWithAlpha[RED][2],  255,kRenderFxGlowShell, kRenderTransAlpha)
 		set_task(3.0,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 	}
 	
@@ -426,62 +426,6 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 
 
 }
-public heal_aura(id){
-
-new origin[3]
-
-get_user_origin(id, origin, 1)
-
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(27)
-write_coord(origin[0])	//pos
-write_coord(origin[1])
-write_coord(origin[2])
-write_byte(15)
-write_byte(20)			// r, g, b
-write_byte(200)		// r, g, b
-write_byte(40)			// r, g, b
-write_byte(3)			// life
-write_byte(1)			// decay
-message_end()
-
-}
-public kill_fx(origin[3]){
-
-message_begin(MSG_ALL, SVC_TEMPENTITY) 
-write_byte(10)	// TE_LAVASPLASH 
-write_coord(origin[0]) 
-write_coord(origin[1]) 
-write_coord(origin[2]-26) 
-message_end() 
-
-}
-public heal_stream(id, x)
-{
-
-new origin[3]
-
-get_user_origin(id, origin, 1)
-
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( 8 )
-write_short(id)				// start entity
-write_short(x)				// entity
-write_short(m_spriteTexture)		// model
-write_byte( 0 )				// starting frame
-write_byte( 30 )			// frame rate
-write_byte( 1)			// life
-write_byte( 45)		// line width
-write_byte( 0 )			// noise amplitude
-write_byte( 0 )				// r, g, b
-write_byte( 60 )				// r, g, b
-write_byte( 255 )				// r, g, b
-write_byte( 255 )				// brightness
-write_byte( 8 )				// scroll speed
-message_end()
-
-}
-
 bool:heal_teamate(id,i){
 	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)){
 		
@@ -500,8 +444,8 @@ bool:heal_teamate(id,i){
 	}
 	new Float: new_health=floatadd(mate_health,YANDERE_HEAL_PERIOD*floatmul(gNormalHeal[id],heal_base))
 	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
-	setScreenFlash(i,heal_color[0],heal_color[1],heal_color[2],3,100)
-	sh_set_rendering(i, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	setScreenFlash(i,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)
+	sh_set_rendering(i, LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	set_task(YANDERE_HEAL_PERIOD*2,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 	heal_stream(id,i)
 	return true
@@ -557,10 +501,10 @@ for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
 }
 if(healed){
 
-	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
-	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	setScreenFlash(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)	
+	sh_set_rendering(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	heal_aura(id)
+	aura(id,LineColorsWithAlpha[LTGREEN])
 
 }
 
@@ -618,10 +562,10 @@ if(!gSuperAngry[id]){
 }
 if(healed){
 
-	setScreenFlash(id,heal_color[0],heal_color[1],heal_color[2],3,100)	
-	sh_set_rendering(id, heal_color[0],heal_color[1],heal_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	setScreenFlash(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)	
+	sh_set_rendering(id, LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	heal_aura(id)
+	aura(id,LineColorsWithAlpha[LTGREEN])
 
 }
 
@@ -773,7 +717,7 @@ if(!gSuperAngry[id]){
 }
 update_stats(id){
 
-if(gHasYandere[id]&&client_hittable(id)){
+if(client_hittable(id,gHasYandere[id])){
 	if(gSuperAngry[id]){
 		
 		yandere_update_idle(id)
@@ -889,7 +833,7 @@ public yandere_damage(id)
 				if(extraDamage>=health){
 					new origin[3];
 					get_user_origin(id,origin)
-					kill_fx(origin)
+					anime_kill_fx(origin)
 					
 				}
 				if((weapon==CSW_KNIFE)&&!gHasYandere[id]){
@@ -919,7 +863,6 @@ public yandere_damage(id)
 }
 public plugin_precache()
 {
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	engfunc(EngFunc_PrecacheSound,YANDERE_WARCRY)
 	engfunc(EngFunc_PrecacheSound,YANDERE_CYCLE)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST)
@@ -941,9 +884,6 @@ public plugin_precache()
 	precache_model(YANDERE_KNIFE_P_MODEL)
 	precache_model(YANDERE_PSYCHO_KNIFE_V_MODEL)
 	precache_model(YANDERE_PSYCHO_KNIFE_P_MODEL)
-	g_spriteSmoke = precache_model("sprites/steam1.spr")
-	g_spriteRing = precache_model("sprites/white.spr")
-	g_spriteExplosion = precache_model("sprites/explode1.spr")
 	for(new i=0;i<sizeof(yandere_shotgun_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,yandere_shotgun_sounds[i] );
@@ -1076,7 +1016,7 @@ killyandere(id,bool:dropping=false){
 			new origin[3]
 			get_user_origin(id,origin)
 			fx_invisible(id)
-			kill_fx(origin)
+			anime_kill_fx(origin)
 			for(new i=0;i<=SH_MAXSLOTS;i++){
 				g_is_cursed[i][id]=false;
 			}
@@ -1183,18 +1123,17 @@ public yandere_glow(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
-	new Float:dRatio, damage, distanceBetween
+	new distanceBetween
 	new origin[3], origin1[3], name[32]
-	new FFOn = get_cvar_num("mp_friendlyfire")
 
 	get_user_origin(id, origin)
 
 	get_user_name(id, name, 31)
 
 	// blowup even if dead
-	explode_fx(origin,floatround(explode_radius))
+	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1)
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
-		if ( is_user_alive(a) && a != id && (get_user_team(id) != get_user_team(a) || FFOn) ) {
+		if ( is_user_alive(a) && (a != id )) {
 
 			get_user_origin(a, origin1)
 
@@ -1203,10 +1142,6 @@ public BlowUp(id)
 			if ( distanceBetween < floatround(explode_radius) ) {
 				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1, 85)
 				show_hudmessage(a, "%s LOST IT!!!!!", name)
-
-				dRatio = float(distanceBetween) / explode_radius
-				damage = floatround(explode_maxdamage)- floatround(explode_maxdamage* dRatio)
-				sh_extra_damage(a, id, damage, "yanderu explosion")
 			}
 		}
 	}

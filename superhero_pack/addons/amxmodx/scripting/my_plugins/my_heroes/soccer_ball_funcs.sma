@@ -81,21 +81,7 @@ public FwdTouchWorld( Ball, World ) {
 	
 	return PLUGIN_CONTINUE;
 }
-
-public beam(life,ball) {
-	
-	message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
-	write_byte(22); // TE_BEAMFOLLOW
-	write_short(ball); // ball
-	write_short(beamspr); // laserbeam
-	write_byte(life); // life
-	write_byte(5); // width
-	write_byte(ballbeam[0]); // R
-	write_byte(ballbeam[1]); // G
-	write_byte(ballbeam[2]); // B
-	write_byte(175); // brightness
-	message_end();
-}
+//
 
 //----------------------------------------------------------------------------------------------
 public ball_in_the_face(ball,id,vic)
@@ -263,7 +249,8 @@ public kick_ball(iPlugin,iParams)
 	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
 	shoteffects(Origin,id)
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
-	beam(10,Ent)
+	trail(Ent,BLUE,10,5)
+	
 	
 	return PLUGIN_CONTINUE
 }
@@ -347,7 +334,6 @@ public plugin_precache()
 	precache_model( g_szBallModel );
 	precache_sound( BALL_BOUNCE_GROUND );
 	
-	beamspr = precache_model( "sprites/laserbeam.spr" );
 	precache_sound(kicked)
 	precache_sound(gotball)
 	precache_sound(cheers)

@@ -1,6 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 
@@ -41,7 +42,6 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("client_isnt_hitter","_client_isnt_hitter",0);
 	register_native("graciete_get_has_graciete","_graciete_get_has_graciete",0);
 	register_native("graciete_get_hero_id","_graciete_get_hero_id",0);
 	
@@ -164,7 +164,7 @@ public graciete_loop(id)
 {
 	id -= GRACIETE_HUD_TASKID
 	
-	if ( client_isnt_hitter(id)){
+	if ( !client_hittable(id,gHasGraciete[id])){
 		
 		return PLUGIN_HANDLED
 		
@@ -176,18 +176,6 @@ public graciete_loop(id)
 public loadCVARS()
 {
 	teamglow_on=get_cvar_num("graciete_teamglow_on")
-	
-}
-public _client_isnt_hitter(iPlugin,iParams){
-	
-	new gatling_user=get_param(1);
-	if(!is_user_connected(gatling_user)){
-		return true;
-	}
-	if(!is_user_alive(gatling_user)){
-		return true;
-	}
-	return !gHasGraciete[gatling_user]
 	
 }
 //----------------------------------------------------------------------------------------------

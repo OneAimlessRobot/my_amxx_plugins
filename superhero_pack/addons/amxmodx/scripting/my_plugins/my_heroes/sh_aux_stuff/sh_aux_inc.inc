@@ -18,7 +18,7 @@
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
 
-#define COLORS_NUM 10
+#define COLORS_NUM 11
 //Colors To Pick From
 #define CUSTOM		0
 #define RED		1
@@ -30,6 +30,7 @@
 #define ORANGE		7
 #define WHITE		8
 #define PINK		9
+#define LTGREEN     10
 
 #define NULL_SOUND_FILENAME "common/null.wav"
 
@@ -56,7 +57,8 @@ stock const LineColors[COLORS_NUM][3] = {
 	{255, 0, 255},		//Purple
 	{255, 128, 0},		//Orange
 	{255, 255, 255},	//White
-	{250, 92, 163}      //Pink
+	{250, 92, 163},      //Pink
+	{111,255,111}      //Light Green
 }
 stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{150, 150, 150,255},	//Custom
@@ -68,7 +70,8 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{255, 0, 255,255},		//Purple
 	{255, 128, 0,255},		//Orange
 	{255, 255, 255,255},	//White
-	{250, 92, 163,255}      //Pink
+	{250, 92, 163,255},      //Pink
+	{111,255,111,40}      //Light Green
 }
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
@@ -260,7 +263,7 @@ stock make_fire(id, Float:rad){
 
 
 }
-stock make_shockwave(point[3],Float:radius,const color[4]){
+stock make_shockwave(point[3],Float:radius,const color[4],shockwave_frame_rate=1,shockwave_life=10,shockwave_line_width=8,shockwave_amplitude=1){
 
 
 
@@ -274,10 +277,10 @@ stock make_shockwave(point[3],Float:radius,const color[4]){
 	write_coord(point[2] + floatround(radius))
 	write_short( white )
 	write_byte( 0 )
-	write_byte(1)		// frame rate in 0.1's
-	write_byte(10)		// life in 0.1's
-	write_byte(8)		// line width in 0.1's
-	write_byte(1)		// noise amplitude in 0.01's
+	write_byte(shockwave_frame_rate)		// frame rate in 0.1's
+	write_byte(shockwave_life)		// life in 0.1's
+	write_byte(shockwave_line_width)		// line width
+	write_byte(shockwave_amplitude)		// noise amplitude in 0.01's
 	write_byte( color[0])
 	write_byte( color[1] )
 	write_byte( color[2] )
@@ -391,6 +394,31 @@ stock aura(id,const color[4]){
 
 }
 
+stock heal_stream(id, x,color_index=LTGREEN)
+{
+	
+	new origin[3]
+	
+	get_user_origin(id, origin, 1)
+	
+	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+	write_byte( 8 )
+	write_short(id)				// start entity
+	write_short(x)				// entity
+	write_short(white)		// model
+	write_byte( 0 ) 				// starting frame
+	write_byte( 30 )  			// frame rate
+	write_byte( 1)  			// life
+	write_byte( 45)  		// line width
+	write_byte( 0 )  			// noise amplitude
+	write_byte( LineColorsWithAlpha[color_index][0] )				// r, g, b
+	write_byte( LineColorsWithAlpha[color_index][1] )				// r, g, b
+	write_byte( LineColorsWithAlpha[color_index][2] )				// r, g, b
+	write_byte( LineColorsWithAlpha[color_index][3] )				// brightness
+	write_byte( 8 )				// scroll speed
+	message_end()
+	
+}
 stock unradioactive_user(id){
 	remove_task(id+UNRADIOACTIVE_TASK_ID)
 	remove_task(id+RADIOACTIVE_TASK_ID)
