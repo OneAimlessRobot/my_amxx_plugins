@@ -361,17 +361,7 @@ public shelltrail(parm[])
 	new pid = parm[0]
 	if (pid)
 	{
-		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-		write_byte( TE_BEAMFOLLOW )
-		write_short(pid) // entity
-		write_short(m_trail)  // model
-		write_byte( 10 )       // life
-		write_byte( 2 )        // width
-		write_byte(love_color[0])			// r, g, b
-		write_byte(love_color[1])		// r, g, b
-		write_byte(love_color[2])			// r, g, b
-		write_byte(love_color[3]) // brightness
-		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+		trail(pid,PINK,10,2)
 	}
 }
 

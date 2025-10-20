@@ -2,8 +2,10 @@
 
 #include "../my_include/superheromod.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #define CHIKOI_HITZONE_TASKID 19999
 
+#define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Chikoi the Maid"
@@ -29,7 +31,6 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 	register_event("Damage", "chikoi_damage", "b", "2!0")
-	register_event("DeathMsg","death","a")
 	register_srvcmd("chikoi_init", "chikoi_init")
 	shRegHeroInit(gHeroName, "chikoi_init")
 	
@@ -58,6 +59,14 @@ public chikoi_init()
 	
 	
 }
+stock dmg_message(id, attacker){
+	new attacker_name[128];
+	new client_name[128];
+	get_user_name(attacker,attacker_name,127);
+	get_user_name(id,client_name,127);
+	sh_chat_message(0,gHeroID,"%s has killed Chikoi the Maid (%s), the Small Maid, at your service.",attacker_name,client_name)
+
+}
 public chikoi_damage(id){
 if ( !shModActive() || !is_user_alive(id) ||!gHasChikoi[id]) return
 
@@ -73,9 +82,8 @@ get_user_name(id,client_name,127);
 if(headshot){
 
 	
-	shExtraDamage(id, attacker, 1, "Smallness", headshot,SH_DMG_KILL)
-	sh_chat_message(id,gHeroID,"%s has killed Chikoi the Maid (%s), the Small Maid, at your service.",attacker_name,client_name)
-
+	shExtraDamage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
+	dmg_message(id, attacker)
 }
 
 }
@@ -129,18 +137,26 @@ if(is_user_alive(id) && shModActive()&&gHasChikoi[id]){
 }
 return PLUGIN_HANDLED	
 }
-public plugin_precache()
-{
-		
-}
-public sh_round_end(){
-	
-		
-}
 
-public death()
-{	/*
-	new id = read_data(2)
-	new killer= read_data(1)
-	*/
+public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
+	if(client_hittable(victim,gHasChikoi[victim])){
+		if(headshot){
+			
+			
+			new Ent = create_entity("info_target")
+
+			if (pev_valid(Ent)!=2){
+			return PLUGIN_HANDLED
+			}
+			entity_set_string(Ent, EV_SZ_classname, CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
+			ExecuteHam(Ham_TakeDamage,victim,attacker,Ent,((float(get_user_health(victim)))+1),DMG_GENERIC);
+			dmg_message(victim, attacker)
+			remove_entity(Ent)
+			return DMG_FWD_PASS
+		}
+		else {
+			return DMG_FWD_BLOCK
+		}
+	}
+	return DMG_FWD_PASS
 }

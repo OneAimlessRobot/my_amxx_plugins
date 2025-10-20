@@ -6,6 +6,13 @@
 #endif
 #define _sheroconst_included
 
+
+enum {
+	DMG_FWD_PASS=0,
+	DMG_FWD_BLOCK=1
+
+
+}
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed
 //----------------------------------------------------------------------------------------------

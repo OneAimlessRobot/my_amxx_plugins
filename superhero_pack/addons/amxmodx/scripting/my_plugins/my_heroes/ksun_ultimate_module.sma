@@ -117,8 +117,7 @@ if(spores_has_ksun(id)&&ksun_player_is_in_ultimate(id)){
 	
 	new Float:newDamage=damage- dmgSnatched
 	SetHamParamFloat(4, newDamage);
-	sh_chat_message(id,spores_ksun_hero_id(),"You are in ultimate. You absorbed %0.2f damage from this attack.",dmgSnatched)
-		
+	
 
 }
 if(spores_has_ksun(attacker)&&ksun_player_is_in_ultimate(attacker)){
@@ -128,7 +127,6 @@ if(spores_has_ksun(attacker)&&ksun_player_is_in_ultimate(attacker)){
 		new Float:dmgAdded= damage*ksun_dmg_absorption_index
 		new Float:newDamage=damage+ dmgAdded
 		SetHamParamFloat(4, newDamage);
-		sh_chat_message(attacker,spores_ksun_hero_id(),"You are in ultimate. You dealt %0.2f more damage from your %s!",dmgAdded,KSUN_WEAPON_NAME)
 	}
 }
 return HAM_IGNORED

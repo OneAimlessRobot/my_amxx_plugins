@@ -1,8 +1,9 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
-
+#define YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME "Thanks for that"
 #define YOWAI_TASKID 21232
 #define YOWAI_MORPH_TASKID 7622
 
@@ -140,15 +141,24 @@ public Inc_hits(id){
 
 }
 
+stock dmg_message(id,attacker,Float:damage){
+	if(client_hittable(id,gHasYowai[id]&&g_yowai_mode[id])){
+		new client_name[128];
+		new attacker_name[128]
+		get_user_name(id,client_name,127);
+		get_user_name(attacker,attacker_name,127);
+		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
+		Inc_hits(id)
+		status_hud(id);
+	}
+
+}
 public Yowai_normal_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
 
 if ( (attacker <= 0 || attacker > SH_MAXSLOTS )||!is_user_connected(attacker)) return HAM_IGNORED
-new client_name[128];
-new attacker_name[128]
-get_user_name(id,client_name,127);
-get_user_name(attacker,attacker_name,127);
+
 new CsTeams:att_team=CS_TEAM_UNASSIGNED;
 if(is_user_connected(attacker)&&is_user_alive(attacker)){
 	att_team=cs_get_user_team(attacker)
@@ -166,19 +176,16 @@ if(gHasYowai[id]&&g_yowai_mode[id]){
 		
 	}
 	else if((damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id]))){
-			
-		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
+		
+		dmg_message(id,attacker,damage)
 		damage=0.0
 		SetHamParamFloat(4, damage);
-		Inc_hits(id)
-		status_hud(id);
 			
 	}
 	
 }
 return HAM_IGNORED
 }
-
 public plugin_precache()
 {
 	precache_model(YOWAI_PLAYER_MODEL)
@@ -260,25 +267,31 @@ public yowai_unmorph(id)
 	}
 }
 //TODO: IT WOOOORRRKKSSSS, MAHAHAHAHAAAA!!!! I CAN DETECT DAMAGE FROM SUPER HERO MOD NOW!
-/*
-public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
 
-	server_print("Extra damage multiforward executed sucessfully!!!^nYou (%d) were the victim^nThe attacker was %d^nThe damage dealt was %d^nThe weapon description was %s^nWas it a headshot? %s^nDamage mode was %d^nDid we stun? %s^n",
-											victim,
-											attacker,
-											damage,
-											wpnDescription,
-											headshot?"Yes!":"No...",
-											dmgMode,
-											dmgStun?"Yes!":"No...")
-											
-	server_print("Did we trigger friendly fire? %s^nDamage origin: (x, y, z) == (%0.2f, %0.2f, %0.2f)^nDamage type was: %d^n",
-											dmgFFmsg?"Yes!":"No...",
-											dmgOrigin[0],
-											dmgOrigin[1],
-											dmgOrigin[2],
-											dmg_type);
-}*/
+public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
+	if(client_hittable(victim)){
+		if(gHasYowai[victim]&&g_yowai_mode[victim]){
+			if((damage>=dmg_threshold||(g_hits[victim]>=g_max_hits_player[victim]))){
+				
+				
+				new Ent = create_entity("info_target")
+
+				if (pev_valid(Ent)!=2){
+				return PLUGIN_HANDLED
+				}
+				entity_set_string(Ent, EV_SZ_classname, YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME)
+				ExecuteHam(Ham_TakeDamage,victim,attacker,Ent,((float(get_user_health(victim)))+1),DMG_GENERIC);
+				remove_entity(Ent)
+				return DMG_FWD_PASS
+			}
+			else if((damage<dmg_threshold&&(g_hits[victim]<g_max_hits_player[victim]))){
+				dmg_message(victim,attacker,float(damage))
+				return DMG_FWD_BLOCK
+			}
+		}
+	}
+	return DMG_FWD_PASS
+}
 
 //----------------------------------------------------------------------------------------------
 public yowai_glow(id)

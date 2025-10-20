@@ -605,8 +605,8 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
-	//fwd_ShDamagePre=CreateMultiForward("sh_extra_damage_fwd_pre",ET_IGNORE,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
-	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
+	//fwd_ShDamagePre=CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
+	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_CONTINUE ,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
 
 
 
@@ -2973,6 +2973,15 @@ public _sh_extra_damage()
 	new Float:dmgOrigin[3]
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
+	
+	new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
+	
+	new the_dmg_return_value=DMG_FWD_PASS
+	server_print("Sh damage forward execute error?.");
+	if (!ExecuteForward(fwd_ShDamagePost, the_dmg_return_value, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+		server_print("Sh damage forward execute error.");
+	}
+	if(the_dmg_return_value!=DMG_FWD_BLOCK){
 	if ( newHealth < 1 ) {
 		new bool:kill
 		new attackerFrags = get_user_frags(attacker)
@@ -3085,12 +3094,6 @@ public _sh_extra_damage()
 			// Damage origin is attacker
 			pev(attacker, pev_origin, dmgOrigin)
 		}
-		new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
-		server_print("Sh damage forward execute error?.");
-		if (!ExecuteForward(fwd_ShDamagePost, fwdReturn, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
-			server_print("Sh damage forward execute error.");
-			return 
-		}
 	}
 	else {
 		new bool:hurt = false
@@ -3158,13 +3161,12 @@ public _sh_extra_damage()
 		engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
-		new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
-		server_print("Sh damage forward execute error?.");
-		if (!ExecuteForward(fwd_ShDamagePost, fwdReturn, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
-			server_print("Sh damage forward execute error.");
-			return 
 		}
-		}
+	}
+	else{
+		server_print("Shero damage blocked!!!\n");
+	
+	}
 }
 //---------------------------------------------------------------------------------------------
 public fm_AlertMessage(atype, const msg[])
