@@ -1131,6 +1131,10 @@ stock precache_explosion_fx(){
 }
 
 stock bool:client_hittable(vic_userid,optional_bool=1){
+	if(vic_userid<=0){
+		
+		return false;
+	}
 	if(pev_valid(vic_userid)!=2){
 		
 		return false;

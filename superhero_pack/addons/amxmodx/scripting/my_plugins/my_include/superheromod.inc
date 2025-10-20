@@ -41,7 +41,7 @@
  *        FORWARDS        *
  **************************/
 
-forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,const wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type);
+forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type);
 
 /**
  * Called when a hero is added or dropped.

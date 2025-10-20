@@ -604,7 +604,7 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_STRING,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF)
 
 
 
@@ -2932,7 +2932,18 @@ public _sh_extra_damage()
 	new bool:dmgFFmsg = get_param(8) ? true : false
 	new wpnDescription[32]
 	get_string(4, wpnDescription, charsmax(wpnDescription))
-
+	
+	new headshot = get_param(5)
+	new Float:dmgOrigin[3]
+	get_array_f(9, dmgOrigin, 3)
+	new dmg_type=get_param(10)
+	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,1)
+	new preparedWpnDescription=PrepareArray(wpnDescription,32,1)
+	
+	new the_dmg_return_value=DMG_FWD_PASS
+	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+		server_print("Sh damage forward execute error.");
+	}
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
 	new plrArmor = cs_get_user_armor(victim, armorType)
@@ -2968,18 +2979,9 @@ public _sh_extra_damage()
 	new newHealth = health - damage_after
 	new FFon = get_pcvar_num(mp_friendlyfire)
 	new freeforall = get_pcvar_num(sh_ffa)
-	new headshot = get_param(5)
 	new CsTeams:victimTeam = cs_get_user_team(victim)
 	new CsTeams:attackerTeam = cs_get_user_team(attacker)
-	new Float:dmgOrigin[3]
-	get_array_f(9, dmgOrigin, 3)
-	new dmg_type=get_param(10)
-	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,0)
 	
-	new the_dmg_return_value=DMG_FWD_PASS
-	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
-		server_print("Sh damage forward execute error.");
-	}
 	if(the_dmg_return_value!=DMG_FWD_BLOCK){
 	if ( newHealth < 1 ) {
 		new bool:kill

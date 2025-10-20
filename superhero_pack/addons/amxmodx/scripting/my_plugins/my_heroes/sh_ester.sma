@@ -707,6 +707,15 @@ public plugin_precache()
 	
 }
 
+public sh_client_death(id, killer, headshot, const wpnDescription[]){
+	
+	if(is_user_connected(id)){
+		if(ester_get_has_ester(id)){
+			reset_ester_reborn_mode(id,0)
+		}
+	}
+
+}
 public death()
 {
 	new id=read_data(2)
@@ -726,6 +735,8 @@ public death()
 		if(damage_to_do[id]){
 			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
 		}
+		
+		reset_ester_reborn_mode(id,0)
 	}
 	new dead_client_name[128]
 	get_user_name(id,dead_client_name,127)

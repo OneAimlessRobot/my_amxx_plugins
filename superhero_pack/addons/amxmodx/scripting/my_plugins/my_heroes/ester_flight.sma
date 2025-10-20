@@ -259,7 +259,7 @@ public OnCmdStart(id, uc_handle, seed)
 				emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			
 			}
-			else{
+			else if(float(get_user_health(id))>1){
 			
 				emit_sound(id, CHAN_AUTO, FLIGHT_WEAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			

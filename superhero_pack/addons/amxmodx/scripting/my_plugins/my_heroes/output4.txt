@@ -1,0 +1,94 @@
+Compiling plugins from index 22 to 28
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1984 bytes
+Code size:            19320 bytes
+Data size:             5328 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   43016 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3080 bytes
+Code size:            23184 bytes
+Data size:            13776 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   56424 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3020 bytes
+Code size:            39008 bytes
+Data size:             8880 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   67292 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3252 bytes
+Code size:            28848 bytes
+Data size:             7340 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   55824 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2688 bytes
+Code size:            21816 bytes
+Data size:            14688 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   55576 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_inc.inc(397) : error 059: function argument may not have a default value (variable "color_index")
+sh_adriano.sma(215) : error 021: symbol already defined: "heal_stream"
+
+2 Errors.
+Could not locate output file ../../../plugins/sh_adriano.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           3008 bytes
+Code size:            35036 bytes
+Data size:            11868 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   66296 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1976 bytes
+Code size:             9160 bytes
+Data size:             5548 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33068 bytes
+
+Done.
+Done.

@@ -138,20 +138,27 @@ if(is_user_alive(id) && shModActive()&&gHasChikoi[id]){
 return PLUGIN_HANDLED	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, const wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
-	if(client_hittable(victim,gHasChikoi[victim])){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+	
+	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	if(gHasChikoi[victim]){
+		if((cs_get_user_team(victim)==cs_get_user_team(attacker))){
+			if(victim!=attacker){
+			
+				return DMG_FWD_PASS
+			}
+		
+		}
 		if(headshot){
 			
-			
-			new Ent = create_entity("info_target")
-
-			if (pev_valid(Ent)!=2){
-			return PLUGIN_HANDLED
-			}
-			entity_set_string(Ent, EV_SZ_classname, CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
-			ExecuteHam(Ham_TakeDamage,victim,attacker,Ent,((float(get_user_health(victim)))+1),DMG_GENERIC);
+			arrayset(wpnDescription,0,sizeof wpnDescription)
+			copy(wpnDescription, strlen(CHIKOI_THE_MAID_PHYSICAL_PROPERTY),CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
+			damage=get_user_health(victim)+1;
+			dmgMode=SH_DMG_KILL
 			dmg_message(victim, attacker)
-			remove_entity(Ent)
 			return DMG_FWD_PASS
 		}
 		else {

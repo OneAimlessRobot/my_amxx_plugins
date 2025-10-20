@@ -35,9 +35,11 @@ stock Float:jet_init_speed
 stock jetplane_enable_gravity= 0;
 stock jetplane_enable_air_drag= 1;
 stock jetplane_enable_speed_limiter= 1;
-new hud_sync_charge
-new hud_sync_jetplane
-
+stock hud_sync_charge
+stock hud_sync_jetplane
+stock ham_is_here=0
+stock ham_is_on=0
+stock HamHook:the_damage_ham_hook;
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -72,8 +74,6 @@ public plugin_init()
 	for( new i; i < sizeof szEntity; i++ ){
 		register_touch( JETPLANE_FUSELAGE_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 	}
-	
-	RegisterHam(Ham_TakeDamage,"func_breakable","jet_itself_Damage",_,true)
 	
 }
 
@@ -409,6 +409,14 @@ public jet_deploy_task(parm[],id){
 	g_jetplane_airspeed[id]=jet_init_speed
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
+	if(!ham_is_here){
+		the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","jet_itself_Damage",_,true)
+		ham_is_here=1;
+	}
+	if(!ham_is_on){
+		EnableHamForward(the_damage_ham_hook)
+		ham_is_on=1;
+	}
 	set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
@@ -859,5 +867,10 @@ public _clear_jets(iPlugin,iParams){
 	while(grenada) {
 		remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, JETPLANE_FUSELAGE_CLASSNAME)
+	}
+	
+	if(ham_is_on){
+		DisableHamForward(the_damage_ham_hook)
+		ham_is_on=0;
 	}
 }

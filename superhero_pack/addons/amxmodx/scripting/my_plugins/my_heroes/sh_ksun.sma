@@ -132,7 +132,7 @@ stock covert_spike_damage(id){
 				}
 				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
 				sh_chat_message(id,spores_ksun_hero_id(),"health of target named %s before: %d",vic_name,get_user_health(payer))
-				ExecuteHam(Ham_TakeDamage,payer,id,Ent,healthXtracted,DMG_GENERIC);
+				ExecuteHam(Ham_TakeDamage,payer,Ent,id,healthXtracted,DMG_GENERIC);
 				sh_chat_message(id,spores_ksun_hero_id(),"health of target named %s now: %d",vic_name,get_user_health(payer))
 				remove_entity(Ent)
 				heal(id,healthXtracted)
@@ -707,10 +707,12 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, const wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
 	
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
-
+	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	
+		return DMG_FWD_PASS
+	}
 	if(spores_has_ksun(victim)&&COVERT_ABUSE_ENABLED){
 
 	
