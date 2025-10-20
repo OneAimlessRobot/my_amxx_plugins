@@ -138,7 +138,7 @@ if(is_user_alive(id) && shModActive()&&gHasChikoi[id]){
 return PLUGIN_HANDLED	
 }
 
-public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, const wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
 	if(client_hittable(victim,gHasChikoi[victim])){
 		if(headshot){
 			

@@ -499,8 +499,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 new fwdReturn
 new fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
-//new fwd_ShDamagePre,fwd_ShDamagePost
-new fwd_ShDamagePost
+new fwd_ShDamagePre
 
 //new max_entities
 //new max_entities_cvar
@@ -605,8 +604,7 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
-	//fwd_ShDamagePre=CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
-	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_CONTINUE ,FP_CELL,FP_CELL,FP_CELL,FP_STRING,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_STRING,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF)
 
 
 
@@ -2927,7 +2925,8 @@ public _sh_extra_damage()
 
 	if ( attacker == gXpBounsVIP && getVipFlags() & VIP_BLOCK_EXTRADMG ) return
 
-	new damage = get_param(3)
+	new damage_after;
+	damage_after = get_param(3)
 	new mode = get_param(6)
 	new bool:dmgStun = get_param(7) ? true : false
 	new bool:dmgFFmsg = get_param(8) ? true : false
@@ -2939,14 +2938,14 @@ public _sh_extra_damage()
 	new plrArmor = cs_get_user_armor(victim, armorType)
 
 	if ( mode == SH_DMG_KILL ) {
-		damage = health
+		damage_after = health
 	}
 	else {
-		if ( damage <= 0 ) return
+		if ( damage_after <= 0 ) return
 
 		// *** Damage calculation due to armor from: multiplayer/dlls/player.cpp ***
 		// *** Note: this is not exactly CS damage method because we do not have that sdk ***
-		new Float:flDamage = float(damage)
+		new Float:flDamage = float(damage_after)
 		new Float:flNewDamage = flDamage * SH_ARMOR_RATIO
 		new Float:flArmor = (flDamage - flNewDamage) * SH_ARMOR_BONUS
 
@@ -2960,11 +2959,13 @@ public _sh_extra_damage()
 			plrArmor = floatround(plrArmor - flArmor)
 		}
 
-		if ( mode == SH_DMG_NORM ) damage = floatround(flNewDamage)
+		if ( mode == SH_DMG_NORM ){
+			damage_after = floatround(flNewDamage)
+		}
 		//*** End of damage-armor calculations ***
 	}
 
-	new newHealth = health - damage
+	new newHealth = health - damage_after
 	new FFon = get_pcvar_num(mp_friendlyfire)
 	new freeforall = get_pcvar_num(sh_ffa)
 	new headshot = get_param(5)
@@ -2973,12 +2974,10 @@ public _sh_extra_damage()
 	new Float:dmgOrigin[3]
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
-	
-	new preparedWpnDmgOriginInt=PrepareArray(dmgOrigin,3,0)
+	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,0)
 	
 	new the_dmg_return_value=DMG_FWD_PASS
-	server_print("Sh damage forward execute error?.");
-	if (!ExecuteForward(fwd_ShDamagePost, the_dmg_return_value, victim, attacker, damage,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,wpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
 		server_print("Sh damage forward execute error.");
 	}
 	if(the_dmg_return_value!=DMG_FWD_BLOCK){
@@ -3070,14 +3069,14 @@ public _sh_extra_damage()
 
 		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage)
-			sh_chat_message(attacker, -1, "Anubis SH damage %d - %s ", damage, wpnDescription)
+			ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage_after)
+			sh_chat_message(attacker, -1, "Anubis SH damage %d - %s ", damage_after, wpnDescription)
 		}
 
 		if ( gHasAnubis[victim] && get_pcvar_num(sh_anubisdmg_check) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, gMsgSync1, "%d", damage)
-			sh_chat_message(victim, -1, "Anubis SH damage %d - %s", damage, wpnDescription)
+			ShowSyncHudMsg(victim, gMsgSync1, "%d", damage_after)
+			sh_chat_message(victim, -1, "Anubis SH damage %d - %s", damage_after, wpnDescription)
 		}
 
 		// Update killers scoreboard with new info
@@ -3115,12 +3114,12 @@ public _sh_extra_damage()
 
 		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, gMsgSync2, "%d", damage)
+			ShowSyncHudMsg(attacker, gMsgSync2, "%d", damage_after)
 		}
 
 		if ( gHasAnubis[victim] && get_pcvar_num(sh_anubisdmg_check) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, gMsgSync2, "%d", damage)
+			ShowSyncHudMsg(victim, gMsgSync2, "%d", damage_after)
 		}
 
 		// External plugins might use this
@@ -3155,17 +3154,13 @@ public _sh_extra_damage()
 		// Damage message for showing damage bits only
 		message_begin(MSG_ONE_UNRELIABLE, gmsgDamage, _, victim)
 		write_byte(0)		// dmg_save
-		write_byte(damage)	// dmg_take
+		write_byte(damage_after)	// dmg_take
 		write_long(dmg_type)	// visibleDamageBits
 		engfunc(EngFunc_WriteCoord, dmgOrigin[0])	// damageOrigin.x
 		engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
 		}
-	}
-	else{
-		server_print("Shero damage blocked!!!\n");
-	
 	}
 }
 //---------------------------------------------------------------------------------------------

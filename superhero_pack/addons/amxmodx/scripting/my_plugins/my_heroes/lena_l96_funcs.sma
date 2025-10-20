@@ -506,7 +506,9 @@ public vexd_pfntouch(pToucher, pTouched)
 					
 					}
 					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
-					send_poem_function(pTouched, lena_poems[random_num(0,(sizeof lena_poems)-1)]);
+					new random_number=random_num(0,(sizeof lena_poems)-1)
+					send_poem_function(pTouched, lena_poems[random_number]);
+					send_poem_function(oid, lena_poems[random_number]);
 				}
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);

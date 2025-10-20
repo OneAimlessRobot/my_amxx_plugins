@@ -68,5 +68,4 @@ native ksun_get_num_available_spores(id)
 native ksun_set_num_available_spores(id,value)
 
 native ksun_reset_occasions:ksun_get_when_reset_spores()
-	
-	
+

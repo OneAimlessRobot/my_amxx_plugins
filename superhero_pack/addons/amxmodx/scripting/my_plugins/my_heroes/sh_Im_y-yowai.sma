@@ -268,26 +268,24 @@ public yowai_unmorph(id)
 }
 //TODO: IT WOOOORRRKKSSSS, MAHAHAHAHAAAA!!!! I CAN DETECT DAMAGE FROM SUPER HERO MOD NOW!
 
-public sh_extra_damage_fwd_post(victim, attacker, damage, const wpnDescription[32], headshot, dmgMode, bool:dmgStun,bool:dmgFFmsg, const Float:dmgOrigin[3],dmg_type){
-	if(client_hittable(victim)){
-		if(gHasYowai[victim]&&g_yowai_mode[victim]){
-			if((damage>=dmg_threshold||(g_hits[victim]>=g_max_hits_player[victim]))){
-				
-				
-				new Ent = create_entity("info_target")
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, const wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+	if(gHasYowai[victim]&&g_yowai_mode[victim]){
+		if((damage>=dmg_threshold||(g_hits[victim]>=g_max_hits_player[victim]))){
+			
+			
+			new Ent = create_entity("info_target")
 
-				if (pev_valid(Ent)!=2){
-				return PLUGIN_HANDLED
-				}
-				entity_set_string(Ent, EV_SZ_classname, YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME)
-				ExecuteHam(Ham_TakeDamage,victim,attacker,Ent,((float(get_user_health(victim)))+1),DMG_GENERIC);
-				remove_entity(Ent)
-				return DMG_FWD_PASS
+			if (pev_valid(Ent)!=2){
+			return PLUGIN_HANDLED
 			}
-			else if((damage<dmg_threshold&&(g_hits[victim]<g_max_hits_player[victim]))){
-				dmg_message(victim,attacker,float(damage))
-				return DMG_FWD_BLOCK
-			}
+			entity_set_string(Ent, EV_SZ_classname, YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME)
+			ExecuteHam(Ham_TakeDamage,victim,attacker,Ent,((float(get_user_health(victim)))+1),DMG_GENERIC);
+			remove_entity(Ent)
+			return DMG_FWD_PASS
+		}
+		else if((damage<dmg_threshold&&(g_hits[victim]<g_max_hits_player[victim]))){
+			dmg_message(victim,attacker,float(damage))
+			return DMG_FWD_BLOCK
 		}
 	}
 	return DMG_FWD_PASS

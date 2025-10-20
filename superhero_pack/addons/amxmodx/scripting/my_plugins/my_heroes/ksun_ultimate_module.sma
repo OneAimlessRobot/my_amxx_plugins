@@ -333,3 +333,20 @@ public death()
 
 	}
 }
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, const wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+	
+	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+		return DMG_FWD_PASS
+	}
+	if(!spores_has_ksun(victim)&&!spores_has_ksun(attacker)){
+		return DMG_FWD_PASS
+	}
+	if(spores_has_ksun(victim)&&ksun_player_is_in_ultimate(victim)){
+
+	
+		return DMG_FWD_BLOCK
+	}
+	
+	return DMG_FWD_PASS
+}

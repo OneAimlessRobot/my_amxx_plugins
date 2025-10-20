@@ -9,7 +9,8 @@
 
 enum {
 	DMG_FWD_PASS=0,
-	DMG_FWD_BLOCK=1
+	DMG_FWD_OVERRIDE=1,
+	DMG_FWD_BLOCK=2
 
 
 }
