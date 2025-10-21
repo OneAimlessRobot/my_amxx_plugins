@@ -273,17 +273,8 @@ public rockettrail(parm[])
 new pid = parm[0]
 if (pid)
 {
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 2 )        // width
-write_byte(love_color[0])			// r, g, b
-write_byte(love_color[1])		// r, g, b
-write_byte(love_color[2])			// r, g, b
-write_byte(love_color[3]) // brightness
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+
+trail(pid,PINK,10,5)
 }
 }
 
@@ -313,8 +304,12 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 				
 				new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
 				if(client_hittable(jet_owner)){
-					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_law_dmg)
-					sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+					new CsTeams:att_team=cs_get_user_team(id),
+						CsTeams:vic_team=cs_get_user_team(jet_owner);
+					if(att_team!=vic_team){
+						jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_law_dmg)
+						sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+					}
 				}
 			}
 		}
@@ -324,7 +319,7 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
 			
 			if(equal(szClassNameMissile, JETPLANE_ROCKET_CLASSNAME)) {
-				sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit an enemy rocket... I repeat... You hit, an enemy rocket...");
+				sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit another rocket... I repeat... You hit, another rocket...");
 				RemoveEntity(pTouched)
 			}
 		}

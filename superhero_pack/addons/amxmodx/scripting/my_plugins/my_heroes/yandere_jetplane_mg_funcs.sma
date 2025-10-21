@@ -405,9 +405,12 @@ public vexd_pfntouch(pToucher, pTouched)
 						headshot=1;
 						damage*=4;
 					}
-					ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
-					sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
-					
+					new CsTeams:att_team=cs_get_user_team(oid),
+							CsTeams:vic_team=cs_get_user_team(pTouched);
+					if(att_team!=vic_team){
+						ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,jetplane_mg_dmg);
+						sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+					}
 					new CsArmorType:armor_type;
 					cs_get_user_armor(pTouched,armor_type);
 					switch(armor_type){
@@ -449,8 +452,12 @@ public vexd_pfntouch(pToucher, pTouched)
 					
 					new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
 					if(client_hittable(jet_owner)){
-						jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
-						sh_chat_message(oid,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+						new CsTeams:att_team=cs_get_user_team(oid),
+							CsTeams:vic_team=cs_get_user_team(jet_owner);
+						if(att_team!=vic_team){
+							jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
+							sh_chat_message(oid,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+						}
 					}
 				}
 			}

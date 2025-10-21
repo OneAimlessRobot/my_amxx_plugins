@@ -830,6 +830,7 @@ public yandere_damage(id)
 				setScreenFlash(attacker,255,0,0,3,100)
 				sh_set_stun(id,2.0,0.25)
 				sh_set_rendering(attacker, 250, 92, 163,255,kRenderFxGlowShell, kRenderTransAlpha)
+				set_task(3.0,"remove_glow_task",attacker+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 				sh_add_hp(attacker,floatround(extraDamage*angry_hitheal_pct),sh_get_max_hp(id))
 				if(extraDamage>=health){
 					new origin[3];

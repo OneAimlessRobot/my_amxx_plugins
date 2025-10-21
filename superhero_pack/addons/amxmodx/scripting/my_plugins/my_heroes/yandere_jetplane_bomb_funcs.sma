@@ -208,8 +208,12 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 				
 				new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
 				if(client_hittable(jet_owner)){
-					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_bomb_dmg)
-					sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+					new CsTeams:att_team=cs_get_user_team(id),
+						CsTeams:vic_team=cs_get_user_team(jet_owner);
+					if(att_team!=vic_team){
+						jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_bomb_dmg)
+						sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
+					}
 				}
 			}
 		}
@@ -219,7 +223,7 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
 			
 			if(equal(szClassNameMissile, JETPLANE_BOMB_CLASSNAME)) {
-				sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit an enemy bomb... I repeat... You hit, an enemy bomb...");
+				sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit another bomb... I repeat... You hit, another bomb...");
 				RemoveEntity(pTouched)
 			}
 		}

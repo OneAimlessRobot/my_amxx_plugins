@@ -38,8 +38,6 @@ new const erica_knife_sounds[9][]={"weapons/erica_knife/knife_deploy1.wav",
 "weapons/erica_knife/knife_slash2.wav",
 "weapons/erica_knife/knife_stab.wav"}
 
-new const redline_color[4]={250, 92, 163,1}
-new m_spriteTexture
 new hud_sync
 //new gHeroLevel
 new base_er_points
@@ -85,6 +83,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention and get ++ powerful!", false, "erica_level" )
 	tranq_set_hero_id(gHeroID)
 	hud_sync=CreateHudSyncObj()
+	g_msgFade = get_user_msgid("ScreenFade");
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("erica_init", "erica_init")
@@ -261,7 +260,7 @@ erica_hud(id){
 					erica_get_num_mollies(id)
 					);
 	
-	set_hudmessage(redline_color[0], redline_color[1], redline_color[2], 0.5, 0.05, redline_color[3], 0.0, 0.5,0.0,0.0,1)
+	set_hudmessage(LineColorsWithAlpha[PINK][0], LineColorsWithAlpha[PINK][1], LineColorsWithAlpha[PINK][2], 0.5, 0.05, LineColorsWithAlpha[PINK][3], 0.0, 0.5,0.0,0.0,1)
 	
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 
@@ -396,8 +395,8 @@ public get_speed_dmg_in_radius(id,Float:damage){
 			get_user_origin(i,teamate_origin)
 			distance=get_distance(client_origin,teamate_origin)
 			if(distance<g_normal_er_radius[id]){
-				heal_stream(i, id)
-				heal_aura(id)
+				heal_stream(i, id,PINK)
+				aura(id,LineColorsWithAlpha[PINK])
 				add_speed_points(id,damage)
 				return 1
 			}
@@ -494,51 +493,6 @@ if ( sh_is_active() && gHasErica[id] &&client_hittable(id)) {
 	
 }
 }
-public heal_aura(id){
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(27)
-	write_coord(origin[0])	//pos
-	write_coord(origin[1])
-	write_coord(origin[2])
-	write_byte(15)
-	write_byte( redline_color[0] )				// r, g, b
-	write_byte( redline_color[1] )				// r, g, b
-	write_byte( redline_color[2] )				// r, g, b
-	write_byte(3)			// life
-	write_byte(1)			// decay
-	message_end()
-	
-}
-public heal_stream(id, x)
-{
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( 8 )
-	write_short(id)				// start entity
-	write_short(x)				// entity
-	write_short(m_spriteTexture)		// model
-	write_byte( 0 ) 				// starting frame
-	write_byte( 30 )  			// frame rate
-	write_byte( 1)  			// life
-	write_byte( 45)  		// line width
-	write_byte( 0 )  			// noise amplitude
-	write_byte( redline_color[0] )				// r, g, b
-	write_byte( redline_color[1] )				// r, g, b
-	write_byte( redline_color[2] )				// r, g, b
-	write_byte( 255 )				// brightness
-	write_byte( 8 )				// scroll speed
-	message_end()
-	
-}
 public plugin_precache()
 {
 	precache_model(NAVALHA_V_MODEL)
@@ -546,12 +500,12 @@ public plugin_precache()
 	precache_model(TRANQS_P_MODEL)
 	precache_model(TRANQS_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	for(new i=0;i<sizeof(erica_knife_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,erica_knife_sounds[i] );
 	
 	}
+	precache_explosion_fx()
 		
 }
 public death()

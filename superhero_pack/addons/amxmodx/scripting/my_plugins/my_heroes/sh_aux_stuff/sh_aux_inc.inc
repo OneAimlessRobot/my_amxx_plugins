@@ -111,59 +111,6 @@ stock trail(ent_id,color_const=PINK,life=3,width=10){
 		write_byte(LineColorsWithAlpha[color_const][3]) // brightness
 		message_end()
 }
-public track_task(array[],id){
-	id-=RADIOACTIVE_TASK_ID
-	if(!client_hittable(id)){
-		
-		unradioactive_user(id);
-		return
-	}
-	new hud_msg[256]
-	new client_name[128]
-	new distance, origin[3], eorigin[3],att_origin[3]
-	new Float:Pos[3],Float:vEnd[3]
-	get_user_name(id,client_name,127)
-	
-	get_user_origin(id, eorigin)
-	get_user_origin(array[0], origin)
-	get_user_origin(array[0], att_origin)
-			
-	distance = get_distance(eorigin, origin)
-	format(hud_msg,256,"%s.^nDistance: %d^nNumero de teamates: %d^n",client_name,distance,array[2]);
-	set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
-	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
-	detect_user(array[0],id,eorigin);
-	IVecFVec(origin,Pos)
-	IVecFVec(eorigin,vEnd)
-	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
-	for(new i=0;i<array[2];i++){
-		if(!client_hittable(array[i+5])){
-		
-			continue
-		}
-		if(array[i+5]==array[0]){
-			continue
-		}
-		get_user_origin(array[i+5], origin)
-			
-		distance = get_distance(eorigin, origin)
-		format(hud_msg,127,"%s.^nDistance: %d",client_name,distance);
-		set_hudmessage(240, 80, 30,  0.0, 0.2, 0, 0.0, 1.0)
-		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
-		detect_user(array[i+5],id,eorigin);
-		IVecFVec(origin,Pos)
-		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
-		
-	}
-	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, 0.9, tag_color[0], tag_color[1], tag_color[2],  50)
-	aura(id,tag_color)
-	if(array[3]){
-		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
-	}
-	
-}
-
 stock make_sparks(Float:the_pos[3]){
 	
 
@@ -289,7 +236,67 @@ stock make_shockwave(point[3],Float:radius,const color[4],shockwave_frame_rate=1
 	message_end()
 
 }
-stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:time){
+
+stock detect_user(id,enemy){
+
+
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
+	write_byte(enemy)
+	message_end()
+
+
+}
+public track_task(array[],id){
+	id-=RADIOACTIVE_TASK_ID
+	if(!client_hittable(id)){
+		
+		unradioactive_user(id);
+		return
+	}
+	new hud_msg[256]
+	new client_name[128]
+	new distance, origin[3], eorigin[3],att_origin[3]
+	new Float:Pos[3],Float:vEnd[3]
+	get_user_name(id,client_name,127)
+	
+	get_user_origin(id, eorigin)
+	get_user_origin(array[0], origin)
+	get_user_origin(array[0], att_origin)
+			
+	distance = get_distance(eorigin, origin)
+	format(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
+	set_hudmessage(LineColorsWithAlpha[ORANGE][0], LineColorsWithAlpha[ORANGE][1], LineColorsWithAlpha[ORANGE][2],  0.0, 0.2, 0, 0.0, 1.0)
+	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
+	detect_user(array[0],id);
+	IVecFVec(origin,Pos)
+	IVecFVec(eorigin,vEnd)
+	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
+	for(new i=0;i<array[2];i++){
+		if(!client_hittable(array[i+5])){
+		
+			continue
+		}
+		get_user_origin(array[i+5], origin)
+			
+		distance = get_distance(eorigin, origin)
+		format(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
+		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
+		detect_user(array[i+5],id);
+		IVecFVec(origin,Pos)
+		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
+		
+	}
+	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
+	sh_screen_fade(id, 0.1, 0.9, tag_color[0], tag_color[1], tag_color[2],  50)
+	aura(id,tag_color)
+	if(array[3]){
+		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
+	}
+	
+}
+
+
+stock track_user(id,attacker,do_damage=0,damage=40,Float:period,Float:time){
 	
 	
 	new  radioactive_times=floatround(time/period)
@@ -304,23 +311,16 @@ stock track_user(hero_id,id,attacker,do_damage=0,damage=40,Float:period,Float:ti
 	
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
-	sh_chat_message(attacker,hero_id,"Your team's name: %s",team_name)
-	/*
-	for(new i=0;i<player_count;i++){
-		
-		new team_mate_name[128]
-		get_user_name(players[i],team_mate_name,127)
-		sh_chat_message(players[i],hero_id,"Your teamate %s has revealed %s's position in the radar!",client_name,enemy_name)
-		sh_chat_message(attacker,hero_id,"%s knows!!!",team_mate_name)
 	
-	}*/
 	new array[5+SH_MAXSLOTS+1]
+	arrayset(array,-1,sizeof array)
 	array[0] = attacker
 	array[1] = CreateHudSyncObj()
 	array[2] = player_count
 	array[3] = do_damage
 	array[4] = damage
 	for(new i=0;i<player_count;i++){
+		
 		if(client_hittable(players[i])){
 			array[5+i]=players[i]
 		}
@@ -355,25 +355,6 @@ stock suck_in_sound(ent_id,make_sound){
 	
 	return PLUGIN_CONTINUE
 }
-stock detect_user(id,enemy,PlayerCoords[3]){
-
-
-	
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-	write_byte(1)
-	write_byte(enemy)           
-	write_coord(PlayerCoords[0])
-	write_coord(PlayerCoords[1])
-	write_coord(PlayerCoords[2])
-	message_end()
-			
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
-	write_byte(enemy)
-	message_end()
-
-
-}
-
 stock aura(id,const color[4]){
 
 	new origin[3]

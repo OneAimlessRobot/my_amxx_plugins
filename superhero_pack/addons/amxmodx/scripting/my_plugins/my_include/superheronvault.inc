@@ -15,7 +15,7 @@
 #define _shsave_included
 
 //Include the nvault file
-#include "my_include/nvault.inc"
+#include "../my_include/nvault.inc"
 //Global to save the vault handle
 new gVaultHandle
 

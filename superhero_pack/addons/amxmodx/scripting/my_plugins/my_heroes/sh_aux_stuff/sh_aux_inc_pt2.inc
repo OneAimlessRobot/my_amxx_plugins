@@ -2,7 +2,7 @@
   #endinput
 #endif
 #define sh_aux_funcs_pt2
-#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./sh_aux_stuff/sh_aux_inc.inc"
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
 

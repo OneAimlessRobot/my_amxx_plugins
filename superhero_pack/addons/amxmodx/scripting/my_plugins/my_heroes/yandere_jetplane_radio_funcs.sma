@@ -137,7 +137,7 @@ launch_scan(id){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 	
-	make_shockwave(iOrigin,jetplane_scan_radius,love_color)
+	make_shockwave(iOrigin,jetplane_scan_radius,LineColorsWithAlpha[PINK])
 	
 	new entlist[33];
 	new numfound = find_sphere_class(id,"player", jetplane_scan_radius ,entlist, 32);
@@ -147,16 +147,14 @@ launch_scan(id){
 	for (new i=0; i < numfound; i++)
 	{		
 		new pid = entlist[i];
-		if((pid!=id)){
-			if(cs_get_user_team(pid)==idTeam){
-				continue
-			}
+		if(cs_get_user_team(pid)==idTeam){
+			continue
 		}
 		else if(!(client_hittable(pid))){
 			
 			continue
 		}
-		track_user(yandere_get_hero_id(),pid,id,0,0,0.5,10.0)
+		track_user(pid,id,0,0,0.5,10.0)
 		
 	}
 

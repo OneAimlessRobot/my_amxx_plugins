@@ -633,7 +633,7 @@ unstun_user(id){
 radioactive_user(id,attacker){
 	
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
-	track_user(gatling_get_hero_id(),id,attacker,1,RADIOACTIVE_DAMAGE,RADIOACTIVE_PERIOD,RADIOACTIVE_TIME)
+	track_user(id,attacker,1,RADIOACTIVE_DAMAGE,RADIOACTIVE_PERIOD,RADIOACTIVE_TIME)
 
 
 }

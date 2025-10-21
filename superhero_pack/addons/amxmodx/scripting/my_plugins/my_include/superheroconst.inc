@@ -14,6 +14,59 @@ enum {
 
 
 }
+enum {
+	XP_FWD_PASS=0,
+	XP_FWD_OVERRIDE=1,
+	XP_FWD_BLOCK=2
+
+
+}
+enum {
+	XP_KILL_XP=0,
+	XP_BOMB_PLANT_XP=1,
+	XP_BOMB_EXPLODE_XP=2,
+	XP_BOMB_TARGET_SAVE_XP=3,
+	XP_BOMB_DEFUSE_XP=4,
+	XP_HOSTAGE_RESCUED_XP=5,
+	XP_HOSTAGE_ALL_RESCUED_XP=6,
+	XP_VIP_ASSASSINATE_XP=7,
+	XP_VIP_ESCAPE_XP=8,
+	XP_VIP_PROTECT_XP=9
+
+
+}
+stock const xp_extra_earn_strings[XP_VIP_PROTECT_XP+1][]={
+
+	"for killing players",
+	"for planting the bomb",
+	"along with your team for detonating the bomb",
+	"along with your team for saving the bomb target",
+	"for being the bomb defuser",
+	"for rescuing a hostage",
+	"along with your team for rescuing all the hostages",
+	"for killing the vip",
+	"for escaping as the vip",
+	"along with your team for protecting the vip"
+
+
+
+}
+stock const xp_extra_type_strings[XP_VIP_PROTECT_XP+1][]={
+
+	"XP_KILL_XP",
+	"XP_BOMB_PLANT_XP",
+	"XP_BOMB_EXPLODE_XP",
+	"XP_BOMB_TARGET_SAVE_XP",
+	"XP_BOMB_DEFUSE_XP",
+	"XP_HOSTAGE_RESCUED_XP",
+	"XP_HOSTAGE_ALL_RESCUED_XP",
+	"XP_VIP_ASSASSINATE_XP",
+	"XP_VIP_ESCAPE_XP",
+	"XP_VIP_PROTECT_XP"
+
+
+
+}
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed
 //----------------------------------------------------------------------------------------------

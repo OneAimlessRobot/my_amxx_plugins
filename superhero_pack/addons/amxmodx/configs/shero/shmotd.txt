@@ -23,6 +23,7 @@ say /myheroes		- Displays your heroes
 say /clearpowers	- Clears ALL powers
 say /drop <hero>		- Drop one power so you can pick another
 say /whohas <hero>		- Shows you who has a particular hero
+say /help_of <hero>		- Shows you a help page for a particular hero (if available)
 say /playerskills [@ALL|@CT|@T|name] - Shows you what heroes other players have chosen
 say /playerlevels [@ALL|@CT|@T|name] - Shows you what levels other players are
 

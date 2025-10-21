@@ -20,13 +20,10 @@ new Float:g_normal_speed[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
 
-new const hud_color[4]={255,255,1,0}
-
 new const adriano_sentences[1][]={
 	
 	"HELL YEA LETS GOOOO!!!!"
 }
-new m_spriteTexture
 
 new base_points
 new max_points
@@ -76,14 +73,9 @@ public plugin_init()
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
-	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("adriano_init", "adriano_init")
 	shRegHeroInit(gHeroName, "adriano_init")
-	/*register_srvcmd("adriano_kd", "adriano_kd")
-	shRegKeyDown(gHeroName, "adriano_kd")*/
-	//sh_set_hero_speed(gHeroID, pCvarSpeed)
-	//register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -179,8 +171,8 @@ public get_speed_dmg_in_radius(id,Float:damage){
 				get_user_origin(i,teamate_origin)
 				distance=get_distance(client_origin,teamate_origin)
 				if(distance<g_normal_radius[i]){
-					heal_stream(i, id)
-					heal_aura(i)
+					heal_stream(i, id,YELLOW)
+					aura(i,LineColorsWithAlpha[YELLOW])
 					add_speed_points(i,damage,true)
 				}
 			}
@@ -189,51 +181,6 @@ public get_speed_dmg_in_radius(id,Float:damage){
 		
 	}
 	
-	
-}
-public heal_aura(id){
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(27)
-	write_coord(origin[0])	//pos
-	write_coord(origin[1])
-	write_coord(origin[2])
-	write_byte(15)
-	write_byte( hud_color[0] )				// r, g, b
-	write_byte( hud_color[1] )				// r, g, b
-	write_byte( hud_color[2] )				// r, g, b
-	write_byte(3)			// life
-	write_byte(1)			// decay
-	message_end()
-	
-}
-public heal_stream(id, x)
-{
-	
-	new origin[3]
-	
-	get_user_origin(id, origin, 1)
-	
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( 8 )
-	write_short(id)				// start entity
-	write_short(x)				// entity
-	write_short(m_spriteTexture)		// model
-	write_byte( 0 ) 				// starting frame
-	write_byte( 30 )  			// frame rate
-	write_byte( 1)  			// life
-	write_byte( 45)  		// line width
-	write_byte( 0 )  			// noise amplitude
-	write_byte( hud_color[0] )				// r, g, b
-	write_byte( hud_color[1] )				// r, g, b
-	write_byte( hud_color[2] )				// r, g, b
-	write_byte( 255 )				// brightness
-	write_byte( 8 )				// scroll speed
-	message_end()
 	
 }
 public adriano_hud(id){
@@ -251,7 +198,7 @@ public adriano_hud(id){
 					max_points
 					);
 	
-	set_hudmessage(hud_color[0], hud_color[1], hud_color[2], 1.0, 0.5, hud_color[3], 0.0, 0.5,0.0,0.0,1)
+	set_hudmessage(LineColorsWithAlpha[YELLOW][0], LineColorsWithAlpha[YELLOW][1], LineColorsWithAlpha[YELLOW][2], 1.0, 0.5, LineColorsWithAlpha[YELLOW][3], 0.0, 0.5,0.0,0.0,1)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	
@@ -357,7 +304,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			format(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
-			set_hudmessage(hud_color[0], hud_color[1], hud_color[2], -1.0, -1.0, hud_color[3], 0.0, 0.1,0.0,0.0,1)
+			set_hudmessage(LineColorsWithAlpha[YELLOW][0], LineColorsWithAlpha[YELLOW][1], LineColorsWithAlpha[YELLOW][2], -1.0, -1.0, LineColorsWithAlpha[YELLOW][3], 0.0, 0.1,0.0,0.0,1)
 			ShowSyncHudMsg(id, hud_sync_health, "%s", hud_msg)
 			
 		}	
@@ -423,7 +370,6 @@ public newRound(id)
 }
 public plugin_precache()
 {
-	m_spriteTexture = precache_model("sprites/laserbeam.spr")
 	for(new i=0;i<sizeof(colt_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,colt_sounds[i] );
@@ -433,14 +379,4 @@ public plugin_precache()
 	precache_model(VIEWMODEL )
 	precache_model(WEAPONMODEL )
 	precache_explosion_fx()
-}
-public sh_round_end(){
-	
-	
-	
-}
-
-public death(){
-	
-	
 }

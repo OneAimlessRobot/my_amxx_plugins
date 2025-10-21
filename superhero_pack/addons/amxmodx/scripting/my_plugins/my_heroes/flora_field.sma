@@ -568,7 +568,8 @@ public _form_field(iPlugin,iParams)
 	Origin[2]+=50.0
 	Ent = create_entity("info_target")
 	
-	if (!Ent){
+	if(pev_valid(Ent)!=2){
+		
 		sh_chat_message(id,flora_get_hero_id(),"Field failure!");
 		return PLUGIN_HANDLED
 	}
@@ -629,9 +630,10 @@ public field_deploy_task(parm[],id){
 	id-=FLORA_DEPLOY_TASKID
 	
 	new field_id=parm[1];
-	if(!is_valid_ent(field_id)){
+	if(pev_valid(field_id)!=2){
 		
-		return;
+		return
+	
 	}
 	entity_set_int(field_id,EV_INT_solid, SOLID_BBOX)
 	entity_set_vector(field_id,EV_VEC_velocity,null_vector)
@@ -652,7 +654,7 @@ public field_deploy_task(parm[],id){
 }
 public apply_teleport(id,field_inside) {
 	
-	if(!is_valid_ent(field_inside)){
+	if(pev_valid(field_inside)!=2){
 		
 		return
 	
@@ -717,7 +719,7 @@ apply_cloak(id){
 //----------------------------------------------------------------------------------------------
 public field_think(ent)
 {
-	if ( !is_valid_ent(ent) ){
+	if ( pev_valid(ent)!=2 ){
 		
 	
 			return FMRES_IGNORED
@@ -739,7 +741,7 @@ public field_think(ent)
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
 	if (entity_get_float(ent,EV_FL_fuser2)<FIELD_ACTIVE_TIME_BUFFER) {
-		if(is_valid_ent(ent)){
+		if(pev_valid(ent)==2){
 			sh_chat_message(owner,flora_get_hero_id(),"Field died!")
 			
 			destroy_field(ent,1)
@@ -780,7 +782,9 @@ public field_think(ent)
 									kRenderFxGlowShell,
 									
 									kRenderTransAlpha)
+				set_task(flora_stun_time*g_flora_curr_dmg_mult[owner],"remove_glow_task",pid+FLORA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
 				flora_heal(owner,fdamage,g_flora_dmg_color[owner])
+				
 			}
 		}
 		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -793,7 +797,7 @@ public field_think(ent)
 uncharge_user(id){
 	
 	remove_task(id+FLORA_CHARGE_TASKID)
-	if(is_valid_ent(g_flora_curr_charging[id])){
+	if(pev_valid(g_flora_curr_charging[id])==2){
 		
 		
 		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -802,7 +806,6 @@ uncharge_user(id){
 		g_flora_field_loaded[id]=1
 		g_flora_curr_charging[id]=-1;
 	}
-	sh_set_rendering(id)
 	if ( flora_get_prev_weapon(id) != CSW_KNIFE ){
 		shSwitchWeaponID(id, flora_get_prev_weapon(id))
 	}
@@ -812,6 +815,13 @@ uncharge_user(id){
 	
 }
 
+public remove_glow_task(id){
+
+id-=FLORA_REMOVE_GLOW_TASKID
+if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
+set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+
+}
 public load_field(id){
 	id-=FLORA_LOAD_TASKID
 	
@@ -830,7 +840,7 @@ public charge_task(parm[],id){
 		return
 	}
 	
-	if(!is_valid_ent(field_id)||(field_id == 0)) {
+	if(pev_valid(field_id)!=2) {
 		return
 	}
 	

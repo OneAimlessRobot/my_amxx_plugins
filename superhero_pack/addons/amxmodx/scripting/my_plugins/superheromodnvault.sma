@@ -464,7 +464,11 @@ new gMaxPowers = 0
 new gMenuID = 0
 new gNumHostages = 0
 new gXpBounsC4ID = -1
-new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2
+
+new xp_and_powers_hud_color[3]={0,255,0}
+
+new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2, xp_and_powers_hud_channel
+
 new bool:gMapBlockWeapons[31]	//1-30 CSW_ constants
 new bool:gXrtaDmgClientKill
 new gServersMaxPlayers
@@ -484,7 +488,7 @@ new gMemoryTableFlags[gMemoryTableSize]					// User flags for other settings (se
 new gMemoryTablePowers[gMemoryTableSize][SH_MAXLEVELS+1]		// 0=# of powers, 1=hero index, etc...
 
 //Config Files
-new gSHConfigDir[128], gBanFile[128], gSHConfig[128], gHelpMotd[128]
+new gSHConfigDir[128], gBanFile[128], gSHConfig[128], gHelpMotd[1024]
 
 //PCVARs
 new sv_superheros, sh_adminaccess, sh_alivedrop, sh_autobalance, sh_objectivexp
@@ -500,6 +504,8 @@ new fwdReturn
 new fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
+new fwd_ShXpPre
+
 
 //new max_entities
 //new max_entities_cvar
@@ -512,6 +518,8 @@ new gEventKeyUp[SH_MAXHEROS][20]
 new gEventMaxHealth[SH_MAXHEROS][20]
 new gEventLevels[SH_MAXHEROS][20]   // Holds server functions to call when a person levels...
 #endif
+
+
 
 //Level up sound
 new const gSoundLevel[] = "plats/elevbell1.wav"
@@ -605,6 +613,7 @@ public plugin_init()
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF)
+	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 
 
 
@@ -688,6 +697,7 @@ public plugin_init()
 	register_concmd("herolist", "showHeroListCon", ADMIN_ALL, "[search] [start] - Lists/Searches available heroes in console")
 
 	// Hud Syncs for help and hero info, need 2 since help can be on at same time
+	xp_and_powers_hud_channel = CreateHudSyncObj()
 	gHelpHudSync = CreateHudSyncObj()
 	gHeroHudSync = CreateHudSyncObj()
 	gMsgSync1 = CreateHudSyncObj()
@@ -1138,7 +1148,6 @@ public _sh_set_user_lvl()
 	if ( setlevel < 0 || setlevel > gNumLevels ) return -1
 
 	gPlayerXP[id] = gXPLevel[setlevel]
-	displayPowers(id, false)
 
 	return setlevel
 }
@@ -1164,8 +1173,10 @@ public _sh_set_user_xp()
 
 	new xp = get_param(2)
 
+	
 	// Add to XP or set a value
 	if ( get_param(3) ) {
+		
 		localAddXP(id, xp)
 	}
 	else {
@@ -1173,7 +1184,6 @@ public _sh_set_user_xp()
 		localAddXP(id, (xp - gPlayerXP[id]))
 	}
 
-	displayPowers(id, false)
 
 	return 1
 }
@@ -1977,7 +1987,6 @@ menuSuperPowers(id, menuOffset)
 
 		//Init This Hero!
 		initHero(id, heroIndex, SH_HERO_ADD)
-		displayPowers(id, true)
 
 		//Don't show menu to bots and wait for next menu call before giving another power
 		return PLUGIN_HANDLED
@@ -2691,17 +2700,21 @@ public msg_StatusText()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-writeStatusMessage(id, const message[64])
+writeStatusMessage(id, const message[256])
 {
-	// Crash Check, bots will crash server is message sent to them
+	/*// Crash Check, bots will crash server is message sent to them
 	if ( !is_user_connected(id) || is_user_bot(id) ) return
-
-	// Message is a max of 64 characters including null terminator
+	*/
+	if ( !is_user_connected(id)) return
+	/*// Message is a max of 64 characters including null terminator
 	// Place in unreliable stream, not a necessary message
 	message_begin(MSG_ONE_UNRELIABLE, gmsgStatusText, _, id)
 	write_byte(0)
 	write_string(message)
-	message_end()
+	message_end()*/
+	set_hudmessage(xp_and_powers_hud_color[0],xp_and_powers_hud_color[1],xp_and_powers_hud_color[2],0.02,0.92,0,0.0,0.90,0.0,0.2,1)
+	ShowSyncHudMsg(id,xp_and_powers_hud_channel,"%s",message)
+	
 }
 //----------------------------------------------------------------------------------------------
 displayPowers(id, bool:setThePowers)
@@ -2725,7 +2738,7 @@ displayPowers(id, bool:setThePowers)
 	// OK Test What Level this Fool is
 	testLevel(id)
 
-	new message[64], temp[64]
+	new message[256], temp[256]
 	new heroIndex, MaxBinds, count, playerLevel, playerpowercount
 	new menuid, mkeys
 
@@ -2833,9 +2846,9 @@ public _sh_add_kill_xp()
 	if ( id < 1 || id > gServersMaxPlayers || victim < 1 || victim > gServersMaxPlayers ) return
 
 	if(is_user_bot(id)&&!gBotsEarnXP) return
-	
-	localAddXP(id, floatround(get_param_f(3) * gXPGiven[gPlayerLevel[victim]]))
-	displayPowers(id, false)
+
+	new xp_to_add=floatround(gXPGiven[gPlayerLevel[victim]] * get_param_f(3))
+	localAddXP(id, xp_to_add)
 }
 //----------------------------------------------------------------------------------------------
 //native sh_set_hero_dmgmult(heroID, pcvarDamage, const weaponID = 0)
@@ -2995,13 +3008,12 @@ public _sh_extra_damage()
 			kill = true
 
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
-			if ( headshot && hsmult > 1.0 ) {
-				localAddXP(attacker, floatround(gXPGiven[gPlayerLevel[victim]] * hsmult))
+			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
+			localAddXP(attacker, xp_to_add)
+			new the_xp_return_value=XP_FWD_PASS
+			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
+				server_print("Sh xp forward execute error.");
 			}
-			else {
-				localAddXP(attacker, gXPGiven[gPlayerLevel[victim]])
-			}
-
 			set_user_frags(attacker, ++attackerFrags)
 
 			// Frag gives $300, make sure not to go over max
@@ -3057,7 +3069,6 @@ public _sh_extra_damage()
 			set_user_frags(victim, ++victimFrags)
 
 			// Update attacker's statustext since his xp changed
-			displayPowers(attacker, false)
 
 			// Update victims scoreboard with correct info
 			message_begin(MSG_ALL, gmsgScoreInfo)
@@ -3244,19 +3255,17 @@ public event_DeathMsg()
 		else {
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
 			//new headshot = read_data(3)
-			if ( read_data(3) && hsmult > 1.0 ) {
-				localAddXP(killer, floatround(gXPGiven[gPlayerLevel[victim]] * hsmult))
-			}
-			else {
-				localAddXP(killer, gXPGiven[gPlayerLevel[victim]])
+			new xp_to_add=( ((read_data(3)) && (hsmult > 1.0)) )?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
+			localAddXP(killer, xp_to_add)
+			new the_xp_return_value=XP_FWD_PASS
+			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, killer,xp_to_add,XP_KILL_XP)){
+				server_print("Sh xp forward execute error.");
 			}
 		}
 
-		displayPowers(killer, false)
 	}
 
 	gCurrentWeapon[victim] = 0
-	displayPowers(victim, false)
 }
 //----------------------------------------------------------------------------------------------
 //native sh_reload_ammo(id, mode = 0)
@@ -3385,6 +3394,7 @@ timerAll()
 					gPlayerGodTimer[id]--
 				}
 			}
+			displayPowers(id,false)
 		}
 		else {
 			gPlayerStunTimer[id] = -1
@@ -3582,7 +3592,6 @@ public dropPower(id, const said[], showmenu)
 	// Show the menu and the loss of power... or a message
 	
 	if ( found&&showmenu ) {
-		displayPowers(id, true)
 		menuSuperPowers(id, gPlayerMenuOffset[id])
 	}
 	else {
@@ -3918,7 +3927,6 @@ public adminSetLevel(id, level, cid)
 		for ( new a = 0; a < inum; a++ ) {
 			user = players[a]
 			gPlayerXP[user] = gXPLevel[setlevel]
-			displayPowers(user, false)
 		}
 
 		show_activity(id, name2, "set level %d on %s players", setlevel, arg[1])
@@ -3932,7 +3940,6 @@ public adminSetLevel(id, level, cid)
 		if ( !player ) return PLUGIN_HANDLED
 
 		gPlayerXP[player] = gXPLevel[setlevel]
-		displayPowers(player, false)
 
 		new name[32], authid[32]
 		get_user_name(player, name, charsmax(name))
@@ -4007,7 +4014,6 @@ public adminSetXP(id, level, cid)
 			user = players[a]
 			if ( giveXP ) localAddXP(user, xp)
 			else gPlayerXP[user] = xp
-			displayPowers(user, false)
 		}
 
 		show_activity(id, name2, "%s %d XP on %s players", giveXP ? "added" : "set", xp, arg[1])
@@ -4022,7 +4028,6 @@ public adminSetXP(id, level, cid)
 
 		if ( giveXP ) localAddXP(player, xp)
 		else gPlayerXP[player] = xp
-		displayPowers(player, false)
 
 		new name[32], authid[32]
 		get_user_name(player, name, charsmax(name))
@@ -4147,7 +4152,6 @@ public adminUnbanXP(id, level, cid)
 		if ( !removeBanFromFile(id, bankey) ) return PLUGIN_HANDLED
 
 		gIsPowerBanned[player] = false
-		displayPowers(player, false)
 
 		show_activity(id, name2, "unbanned %s from using superhero powers", name) 
 
@@ -4714,9 +4718,12 @@ public vip_UserEscape()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_VIP_ESCAPE_XP)){
+		server_print("Sh xp forward execute error.");
+	}
 	localAddXP(id, XPtoGive)
 	chatMessage(id, _, "You got %d XP for escaping as the VIP", XPtoGive)
-	displayPowers(id, false)
 }
 //----------------------------------------------------------------------------------------------
 public vip_Assassinated()
@@ -4730,9 +4737,12 @@ public vip_Assassinated()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
+		server_print("Sh xp forward execute error.");
+	}
 	localAddXP(attacker, XPtoGive)
 	chatMessage(attacker, _, "You got %d XP for assassinating the VIP", XPtoGive)
-	displayPowers(attacker, false)
 }
 //----------------------------------------------------------------------------------------------
 public vip_Escaped()
@@ -4749,9 +4759,12 @@ public vip_Escaped()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( ct == gXpBounsVIP || (is_user_alive(ct) && cs_get_user_team(ct) == CS_TEAM_CT) ) {
+			new the_xp_return_value=XP_FWD_PASS
+			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_VIP_PROTECT_XP)){
+				server_print("Sh xp forward execute error.");
+			}		
 			localAddXP(ct, XPtoGive)
 			chatMessage(ct, _, "Your team got %d XP for a successful VIP esacpe", XPtoGive)
-			displayPowers(ct, false)
 		}
 	}
 }
@@ -4767,7 +4780,6 @@ public host_Killed()
 	new XPtoTake = get_pcvar_num(sh_objectivexp)
 	localAddXP(id, -XPtoTake)
 	chatMessage(id, _, "You lost %d XP for killing a hostage", XPtoTake)
-	displayPowers(id, false)
 }
 //----------------------------------------------------------------------------------------------
 public host_Rescued()
@@ -4783,10 +4795,12 @@ public host_Rescued()
 	// Give at least 1 xp per hostage even if sh_objectivexp is really low
 	// gNumHostages should never be 0 if this is called so no need to check for div by 0
 	new XPtoGive = max(1, floatround(get_pcvar_float(sh_objectivexp) / gNumHostages))
-
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
+		server_print("Sh xp forward execute error.");
+	}
 	localAddXP(id, XPtoGive)
 	chatMessage(id, _, "You got %d XP for rescuing a hostage", XPtoGive)
-	displayPowers(id, false)
 }
 //----------------------------------------------------------------------------------------------
 public host_AllRescued()
@@ -4802,9 +4816,12 @@ public host_AllRescued()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
+		new the_xp_return_value=XP_FWD_PASS
+		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
+			server_print("Sh xp forward execute error.");
+		}
 		localAddXP(ct, XPtoGive)
 		chatMessage(ct, _, "Your team got %d XP for rescuing all the hostages", XPtoGive)
-		displayPowers(ct, false)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -4837,9 +4854,13 @@ public bomb_planted(planter)
 	gXpBounsC4ID = -1
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
+	
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+		server_print("Sh xp forward execute error.");
+	}
 	localAddXP(planter, XPtoGive)
 	chatMessage(planter, _, "You got %d XP for planting the bomb", XPtoGive)
-	displayPowers(planter, false)
 }
 //----------------------------------------------------------------------------------------------
 public bomb_defused(defuser)
@@ -4858,13 +4879,20 @@ public bomb_defused(defuser)
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
+		new the_xp_return_value=XP_FWD_PASS
+		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
+			server_print("Sh xp forward execute error.");
+		}
 		localAddXP(ct, XPtoGive)
 		chatMessage(ct, _, "Your team got %d XP for a successful bomb defusion", XPtoGive)
-		displayPowers(ct, false)
+	}
+
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
+		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(defuser, XPtoGive)
 	chatMessage(defuser, _, "Your got extra %d XP for being the defuser", XPtoGive)
-	displayPowers(defuser, false)
 	return PLUGIN_CONTINUE
 
 }
@@ -4882,13 +4910,21 @@ public bomb_explode(planter, defuser)
 	for (new i = 0; i < numplayers; i++) {
 		terrorist = players[i]
 		if ( cs_get_user_team(terrorist) != CS_TEAM_T ) continue
+		new the_xp_return_value=XP_FWD_PASS
+		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
+			server_print("Sh xp forward execute error.");
+		}
 		localAddXP(terrorist, XPtoGive)
 		chatMessage(terrorist, _, "Your team got %d XP for a successful bomb explosion", XPtoGive)
-		displayPowers(terrorist, false)
+
+	}
+	new the_xp_return_value=XP_FWD_PASS
+	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(planter, XPtoGive)
 	chatMessage(planter, _, "Your got extra %d XP for being the planter", XPtoGive)
-	displayPowers(planter, false)
+
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -5012,7 +5048,6 @@ public readXP(id)
 
 	gReadXPNextRound[id] = false
 	memoryTableUpdate(id)
-	displayPowers(id, false)
 }
 //----------------------------------------------------------------------------------------------
 getSaveKey(id, savekey[32])
@@ -5395,6 +5430,7 @@ createHelpMotdFile(const helpMotdFile[])
 	fputs(helpFile, "say /clearpowers	- Clears ALL powers^n")
 	fputs(helpFile, "say /drop <hero>		- Drop one power so you can pick another^n")
 	fputs(helpFile, "say /whohas <hero>		- Shows you who has a particular hero^n")
+	fputs(helpFile, "say /help_of <hero>		- Shows you a help page for a particular hero (if available)^n")
 	fputs(helpFile, "say /playerskills [@ALL|@CT|@T|name] - Shows you what heroes other players have chosen^n")
 	fputs(helpFile, "say /playerlevels [@ALL|@CT|@T|name] - Shows you what levels other players are^n^n")
 
@@ -5412,7 +5448,7 @@ createHelpMotdFile(const helpMotdFile[])
 buildHelpHud()
 {
 	// Max characters hud messages can be is 479
-	// Message is 338 characters currently
+	// Message is 355 characters currently
 	new n
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "SuperHero Mod Help^n^n")
 
@@ -5433,6 +5469,7 @@ buildHelpHud()
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "/playerlevels^n")
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "/myheroes^n")
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "/automenu^n")
+	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "/help_of <hero>^n")
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "--------------------^n")
 	n += copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "Enable This HUD:  /helpon^n")
 	copy(gHelpHudMsg[n], charsmax(gHelpHudMsg)-n, "Disable This HUD: /helpoff")

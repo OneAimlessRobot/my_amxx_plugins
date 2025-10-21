@@ -1,5 +1,5 @@
 #! /bin/bash
-num_of_divs=10
+num_of_divs=4
 
 is_even=0
 

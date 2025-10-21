@@ -3,9 +3,6 @@
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "special_fx_inc/sh_yakui_get_set.inc"
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
@@ -487,15 +484,15 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=dmg_headshot_mult;
 				}
-				sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet", headshot,_,_,_,_,DMG_BULLET);
-				sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
+					sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet", headshot,_,_,_,_,DMG_BULLET);
+					sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 					if(!sh_get_stun(pTouched)){
 							new Float:the_period=(headshot?0.33:1.0);
 							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
-							track_user(lena_get_hero_id(),pTouched,oid,0,_,the_period,the_time)
+							track_user(pTouched,oid,0,_,the_period,the_time)
 							sh_set_stun(pTouched,the_time,150.0);
 							sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
 					
@@ -508,7 +505,6 @@ public vexd_pfntouch(pToucher, pTouched)
 					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
 					new random_number=random_num(0,(sizeof lena_poems)-1)
 					send_poem_function(pTouched, lena_poems[random_number]);
-					send_poem_function(oid, lena_poems[random_number]);
 				}
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
