@@ -2,8 +2,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define GREAPER_TASKID 12812
-
 #define GRIM_SWING_SFX "shmod/Grimpt2/Stolen1.wav"
 #define GRIM_HIT_MEAT_SFX "shmod/Grimpt2/Stolen2.wav"
 
@@ -16,7 +14,6 @@ new bool:gJustResetRendering[SH_MAXSLOTS+1]
 new gScytheSwings[SH_MAXSLOTS+1]
 
 new const gModelScythe[] = "models/shmod/v_scythe.mdl"
-new hud_sync
 new gModelLoaded
 new num_swings,Float:g_reaper_range,inf_swings
 
@@ -35,12 +32,10 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Death!", "One deathscythe kill", false, "greaper2_level" )
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	hud_sync = CreateHudSyncObj()
 	
 	
 	register_srvcmd("greaper2_init", "greaper2_init")
 	shRegHeroInit(gHeroName, "greaper2_init")
-	hud_sync = CreateHudSyncObj()
 	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "swing_scythe",_,true)
 	
@@ -62,11 +57,9 @@ public greaper2_init()
 	if(gHasGreaper[id]){
 		
 		reset_greaper2_user(id)
-		set_task(0.5,"greaper2_loop",id+GREAPER_TASKID, "", 0, "b" )
 	}
 	else{
 		reset_greaper2_user(id)
-		remove_task(id+GREAPER_TASKID);
 	}
 	
 }
@@ -96,16 +89,6 @@ public reset_greaper2_user(id){
 	
 	
 }
-status_hud(id){
-	
-	new hud_msg[40];
-	format(hud_msg,39,"[SH] %s:  You have %d swings left!",gHeroName,gScytheSwings[id]);
-	
-	set_hudmessage(255, 255, 255, 1.0, 0.2, 0, 0.0, 0.2,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -118,19 +101,6 @@ inf_swings=get_cvar_num("greaper2_inf_swings")
 g_reaper_range=get_cvar_float("greaper2_range")
 num_swings=get_cvar_num("greaper2_num_swings")
 get_cvar_num("greaper_level");
-}
-//----------------------------------------------------------------------------------------------
-public greaper2_loop(id)
-{
-id -= GREAPER_TASKID
-
-if (!gHasGreaper[id]||!client_hittable(id)){
-	
-	return PLUGIN_CONTINUE
-	
-}
-status_hud(id)
-return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -227,7 +197,10 @@ sh_chat_message(Att,gHeroID,"Your swing missed!!!!!")
 public swing_scythe(weaponent)
 {
 	
-	
+	if(pev_valid(weaponent)!=2){
+
+		server_print("Grim reaper hook to weapon faulty???");
+	}
 	new id = get_pdata_cbase(weaponent, 41, 4);
 	if (!client_hittable(id)){
 		return HAM_IGNORED

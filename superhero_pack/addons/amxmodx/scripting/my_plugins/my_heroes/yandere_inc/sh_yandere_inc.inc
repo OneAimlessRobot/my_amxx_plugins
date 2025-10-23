@@ -7,6 +7,8 @@
 #define YANDERE_HEAL_PERIOD 0.7
 #define YANDERE_REMOVE_GLOW_TASKID 30112
 
+#define YANDERE_WEAPON_CLASSID CSW_XM1014
+#define YANDERE_WEAPON_NAME "weapon_xm1014"
 #define YANDERE_WARCRY "shmod/yandere/Yanderu_war_cry.wav"
 #define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
 #define YANDERE_THELAST "shmod/yandere/Yandere_thelast.wav"

@@ -215,8 +215,9 @@ public fw_SetModel(entity, model[])
 
 public fw_Weapon_PrimaryAttack(Ent)
 {
-	if(!is_valid_ent(Ent)){
-		return HAM_IGNORED
+	if(pev_valid(Ent)!=2){
+
+		return HAM_IGNORED;
 	}
 	static id; id = pev(Ent, pev_owner)
 	
@@ -235,6 +236,10 @@ public fw_Weapon_PrimaryAttack(Ent)
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
+	if(pev_valid(Ent)!=2){
+
+		return;
+	}
 	static id; id = pev(Ent, pev_owner)
 	
 	if(Get_BitVar(g_Had_Arifle, id))

@@ -12,9 +12,6 @@ new const gHeroName[] = "Chikoi the Maid"
 new bool:gHasChikoi[SH_MAXSLOTS+1]
 
 
-
-#define SENDAUDIO_MESSAGE_PITCH_ARG 3
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

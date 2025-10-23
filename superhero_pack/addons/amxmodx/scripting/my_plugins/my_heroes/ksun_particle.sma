@@ -224,7 +224,7 @@ public ev_SendAudio(){
 	spores_clear()
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	clean_ksun_spores_from_players(false,1,0);
-	return PLUGIN_HANDLED
+	return PLUGIN_CONTINUE
 }
 public spawn_spore(id){
 	if(!spores_has_ksun(id)||!client_hittable(id)){

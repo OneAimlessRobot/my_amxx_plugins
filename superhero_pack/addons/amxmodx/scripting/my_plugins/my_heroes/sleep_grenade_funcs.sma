@@ -17,7 +17,6 @@ new bool:sleep_nade_armed[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
-new hud_sync_charge
 public plugin_init(){
 	
 	
@@ -30,7 +29,6 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("ksun_sleep_nade_max_charge_time", "5.0")
 	register_cvar("ksun_sleep_nade_min_charge_time", "1.0")
-	hud_sync_charge=CreateHudSyncObj()
 }
 
 public plugin_natives(){
@@ -142,8 +140,7 @@ public charge_task(id){
 	format(hud_msg,299,"[SH]: Curr charge: %0.2f^n%s",
 	curr_charge_pct,encouragement
 	);
-	set_hudmessage(LineColors[PURPLE][0], LineColors[PURPLE][1],LineColors[PURPLE][2], -1.0, -1.0,125, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	
 	
 	

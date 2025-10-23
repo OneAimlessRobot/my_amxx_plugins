@@ -37,10 +37,6 @@ new Float:max_speed
 new Float:max_radius
 new Float:base_radius
 
-//new pCvarSpeed
-new hud_sync
-new hud_sync_health
-//new gHeroLevel
 
 
 //----------------------------------------------------------------------------------------------
@@ -64,9 +60,6 @@ public plugin_init()
 	register_cvar("adriano_speed_points_heal", "100")
 	register_cvar("adriano_speed_points_heal_coeff", "4")
 	
-	
-	hud_sync=CreateHudSyncObj()
-	hud_sync_health=CreateHudSyncObj()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Hyped by suffering!", "Get faster from those around you and pat mates on the back for motivation!", false, "adriano_level" )
 	
@@ -183,27 +176,6 @@ public get_speed_dmg_in_radius(id,Float:damage){
 	
 	
 }
-public adriano_hud(id){
-	id-=ADRIANO_HUD_TASKID
-	new hud_msg[1000];
-	
-	if(!is_user_alive(id)||!is_user_connected(id)||!gHasAdriano[id]) return
-	format(hud_msg,499,"[SH] %s:^nBase speed: %0.2f^nCurr speed: %0.2f^nMax speed: %0.2f^nBase Points: %d^nPoints: %d^nMax Points: %d^n",
-					gHeroName,
-					g_base_speed[id],
-					g_normal_speed[id],
-					max_speed,
-					base_points,
-					g_adriano_points[id],
-					max_points
-					);
-	
-	set_hudmessage(LineColorsWithAlpha[YELLOW][0], LineColorsWithAlpha[YELLOW][1], LineColorsWithAlpha[YELLOW][2], 1.0, 0.5, LineColorsWithAlpha[YELLOW][3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-	
-}
 public heal_teamate(id,teamate){
 	
 	new client_name[128]
@@ -304,8 +276,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			format(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
-			set_hudmessage(LineColorsWithAlpha[YELLOW][0], LineColorsWithAlpha[YELLOW][1], LineColorsWithAlpha[YELLOW][2], -1.0, -1.0, LineColorsWithAlpha[YELLOW][3], 0.0, 0.1,0.0,0.0,1)
-			ShowSyncHudMsg(id, hud_sync_health, "%s", hud_msg)
+			client_print(id,print_center,"%s",hud_msg)
 			
 		}	
 		

@@ -28,7 +28,6 @@ new Float:jet_velocity
 new Float:jet_max_power
 new Float:jet_stomp_grav_mult
 new cmd_forward
-new hud_sync_charge
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -46,9 +45,7 @@ public plugin_init()
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	
 	g_msgFade = get_user_msgid("ScreenFade");
-	hud_sync_charge=CreateHudSyncObj()
 	
-	// Add your code here...
 }
 
 public plugin_natives(){
@@ -318,9 +315,7 @@ public charge_task(id){
 	g_graciete_land_power[id]=floatmin(jet_max_power,floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
 	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
 	);
-	set_hudmessage(graciete_color[0], graciete_color[1], graciete_color[2], -1.0, -1.0, graciete_color[3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
-	
+	client_print(id,print_center,"%s",hud_msg)
 	
 	
 	

@@ -38,12 +38,8 @@ public plugin_init()
 	register_cvar("ksun_dmg_absorption_index", "1.0" )
 	register_cvar("ksun_supply_capacity", "1000" )
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook",_,true)
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 	
-	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
-	register_logevent("ev_SendAudio", 2, "1=Round_End")
-	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	hud_sync_ultimate=CreateHudSyncObj()
 	
 	new wpnName[32]
@@ -155,20 +151,6 @@ calculate_untaxed_health_to_filtered_supply(supply_parcel){
 	return max(0,floatround(floatmul(float(supply_parcel),ksun_health_to_supply_ratio)))
 	
 }
-public ev_SendAudio(){
-	
-	spores_clear()
-	if(!sh_is_active()) return PLUGIN_CONTINUE
-	
-	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if(is_user_connected(id)){
-			unultimate_user(id,(ksun_get_when_reset_spores()&reset_on_new_round))
-			
-		}
-	}
-	return PLUGIN_HANDLED
-}
 public _ksun_set_player_supply_points(iPlugins, iParams){
 	
 	new id= get_param(1)
@@ -221,8 +203,6 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",KSUN_ULTIMATE_LOOP_TIMES)
 	set_task(floatmul(KSUN_ULTIMATE_LOOP_PERIOD,float(KSUN_ULTIMATE_LOOP_TIMES))+1.0,"unultimate_task",id+UNKSUN_ULTIMATE_TASKID,"", 0,  "a",1)
 	
-	
-	
 }
 
 
@@ -251,7 +231,10 @@ public ultimate_task(id){
 }
 public _ksun_unultimate_user(iPlugin,iParams){
 	new id=get_param(1)
-	unultimate_user(id)
+	new dying_or_new_round=get_param(2)
+	new force_take=get_param(3)
+	new should_i_remove_points=(force_take||(ksun_get_when_reset_spores()&(dying_or_new_round?reset_on_death:reset_on_new_round)))
+	unultimate_user(id,should_i_remove_points)
 	
 	
 }
@@ -324,16 +307,6 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 }
-public death()
-{
-	new id = read_data(2)
-	if(is_user_connected(id)&&spores_has_ksun(id)){
-		
-		unultimate_user(id)
-
-	}
-}
-
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
 	
 	

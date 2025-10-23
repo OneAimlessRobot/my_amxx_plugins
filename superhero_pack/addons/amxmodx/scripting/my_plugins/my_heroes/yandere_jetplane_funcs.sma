@@ -35,7 +35,6 @@ stock Float:jet_init_speed
 stock jetplane_enable_gravity= 0;
 stock jetplane_enable_air_drag= 1;
 stock jetplane_enable_speed_limiter= 1;
-stock hud_sync_charge
 stock hud_sync_jetplane
 stock ham_is_here=0
 stock ham_is_on=0
@@ -58,7 +57,6 @@ public plugin_init()
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane,-1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_sound_on,0,SH_MAXSLOTS+1)
-	hud_sync_charge=CreateHudSyncObj()
 	hud_sync_jetplane=CreateHudSyncObj()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "jet_think")
@@ -689,8 +687,7 @@ public charge_task(parm[],id){
 	new hud_msg[128];
 	set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
 	format(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
-	set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], -1.0, -1.0, 1, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jetplane[id]

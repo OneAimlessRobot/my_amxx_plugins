@@ -20,7 +20,6 @@ new hud_sync_money
 new starting_money
 new default_money
 new Float:give_radius
-#define SENDAUDIO_MESSAGE_PITCH_ARG 3
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -81,20 +80,6 @@ public print_leyla_stats(id)
 		
 	}
 	return PLUGIN_HANDLED
-}
-public leyla_damage(id){
-	if ( !shModActive() || !is_user_alive(id) ||!gHasLeyla[id]) return
-	
-	/*
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return
-	new attacker_name[128];
-	new client_name[128];
-	get_user_name(attacker,attacker_name,127);
-	get_user_name(id,client_name,127);
-	
-	*/
 }
 
 public unpoor_teamate(id,teamate,ammount,type_of_trade){
@@ -284,15 +269,6 @@ public newRound(id)
 	}
 	return PLUGIN_HANDLED	
 }
-public plugin_precache()
-{
-	
-}
-public sh_round_end(){
-	
-	
-}
-
 public death()
 {	
 	//new id = read_data(2)

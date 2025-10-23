@@ -29,8 +29,6 @@ new Float:base_radius
 new Float:base_heal
 new Float:heal_period
 new maria_alpha
-new hud_sync
-new hud_sync_health
 
 
 //----------------------------------------------------------------------------------------------
@@ -55,8 +53,6 @@ public plugin_init()
 	register_cvar("maria_heal_period", "0.33")
 	
 	
-	hud_sync=CreateHudSyncObj()
-	hud_sync_health=CreateHudSyncObj()
 	register_event("ResetHUD","newRound","b")
 	shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level" )
 	
@@ -231,25 +227,6 @@ if(healed){
 make_shockwave(client_origin,g_normal_radius[id],LineColorsWithAlpha[LTGREEN],1,3,2,20)
 
 }
-public maria_hud(id){
-	id-=MARIA_HUD_TASKID
-	new hud_msg[1000];
-	
-	if(!is_user_alive(id)||!is_user_connected(id)||!gHasMaria[id]) return
-	format(hud_msg,499,"[SH] %s:^nBase Points: %d^nPoints: %d^nMax Points: %d^nHeal radius: %0.2f^n",
-					gHeroName,
-					base_points,
-					g_maria_points[id],
-					max_points,
-					g_normal_radius[id]
-					);
-	
-	set_hudmessage(LineColorsWithAlpha[WHITE][0], LineColorsWithAlpha[WHITE][1], LineColorsWithAlpha[WHITE][2], 1.0, 0.5, LineColorsWithAlpha[WHITE][3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-	
-}
 public maria_damage(id)
 {
 	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ||!gHasMaria[id]) return
@@ -286,8 +263,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			format(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
-			set_hudmessage(LineColorsWithAlpha[LTGREEN][0], LineColorsWithAlpha[LTGREEN][1], LineColorsWithAlpha[LTGREEN][2], -1.0, -1.0, LineColorsWithAlpha[LTGREEN][3], 0.0, 0.1,0.0,0.0,1)
-			ShowSyncHudMsg(id, hud_sync_health, "%s", hud_msg)
+			client_print(id,print_center,"%s",hud_msg)
 			
 		}	
 		

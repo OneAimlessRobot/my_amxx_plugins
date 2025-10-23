@@ -13,7 +13,6 @@ new const jaqueo_cool_scout_sounds[4][]={"weapons/scouterista/tactical_clipin.wa
 new gHasJaqueo[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
-new hud_sync
 new Float:scout_mult
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -31,7 +30,6 @@ public plugin_init()
 	register_cvar("jaqueo_shield_radius", "8")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Jaqueo!", "Jaqueo", true, "jaqueo_level" )
-	hud_sync=CreateHudSyncObj()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("jaqueo_init", "jaqueo_init")
 	shRegHeroInit(gHeroName, "jaqueo_init")
@@ -95,26 +93,13 @@ public jaqueo_init()
 		reset_jaqueo_user(id)
 		jaqueo_weapons(id)
 		jaqueo_tasks(id)
-		
-		//set_task( 0.2, "jaqueo_loop", id+GRACIETE_HUD_TASKID, "", 0, "b")
 	}
 	else{
 		
 		jaqueo_drop_weapons(id)
 		reset_jaqueo_user(id)
 		jaqueo_unmorph(id+JAQUEO_MORPH_TASKID)
-		//remove_task(id+GRACIETE_HUD_TASKID)
 	}
-	
-}
-public status_hud(id){
-	
-	new hud_msg[1000];
-	format(hud_msg,500,"[SH] %s:^n",gHeroName);
-	
-	set_hudmessage(jaqueo_color[0], jaqueo_color[1], jaqueo_color[2], 0.2, 0.2, 0, 0.0, 0.2)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
 	
 }
 public jaqueo_weapons(id){
@@ -153,19 +138,6 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	
 	
-}
-//----------------------------------------------------------------------------------------------
-public jaqueo_loop(id)
-{
-	id -= JAQUEO_HUD_TASKID
-	
-	if ( client_isnt_hitter(id)){
-		
-		return PLUGIN_HANDLED
-		
-	}
-	status_hud(id)
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
@@ -270,10 +242,6 @@ public plugin_cfg()
 	loadCVARS();
 	
 }
-public sh_round_end(){
-	
-	
-}
 public client_disconnected(id){
 	
 	jaqueo_weapons(id)
@@ -347,10 +315,6 @@ public jaqueo_unmorph(id)
 	id-=JAQUEO_MORPH_TASKID
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
-		// Message
-		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Bros I died")*/
-		
 		cs_reset_user_model(id)
 		
 		gmorphed[id] = false

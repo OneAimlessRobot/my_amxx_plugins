@@ -2,6 +2,7 @@
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero lara mk2 pt2"
@@ -9,7 +10,6 @@
 #define AUTHOR "Me"
 #define Struct				enum
 
-new const redline_color[4]={255,1,1,255}
 new bool:spear_loaded[SH_MAXSLOTS+1]
 
 new bool:spear_armed[SH_MAXSLOTS+1]
@@ -19,8 +19,6 @@ new bool:spear_pickable[MAX_ENTITIES]
 
 new Float:min_charge_time,Float:max_charge_time
 
-new m_trail
-new hud_sync_charge
 public plugin_init(){
 
 
@@ -34,7 +32,6 @@ arrayset(spear_pickable,false,MAX_ENTITIES)
 register_forward(FM_CmdStart, "CmdStart");
 register_cvar("lara_spear_max_charge_time", "5.0")
 register_cvar("lara_spear_min_charge_time", "1.0")
-hud_sync_charge=CreateHudSyncObj()
 RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
 }
 
@@ -50,7 +47,7 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!spear_get_has_lara(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!spear_get_has_lara(id)||!hasRoundStarted()||!client_hittable(id,spear_get_has_lara(id))) return FMRES_IGNORED;
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -119,8 +116,7 @@ public charge_task(id){
 	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 					100.0*(curr_charge[id]/max_charge_time)
 					);
-	set_hudmessage(redline_color[0], redline_color[1], redline_color[2], -1.0, -1.0, redline_color[3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 					
 	
 
@@ -174,29 +170,6 @@ public Ham_Weapon_Stab(weapon_ent)
 	}
 
 	return HAM_IGNORED
-}
-public lara_charge_task(id){
-	id-=SPEAR_CHARGE_TASKID
-	
-	
-
-
-}
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
-
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
-
-}*/
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
-client_isnt_hitter(gatling_user){
-
-
-return (!spear_get_has_lara(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
 }
 
 public _clear_spears(iPlugin,iParams){
@@ -314,21 +287,9 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 public speartrail(parm[])
 {
 	new pid = parm[0]
-	if (pid)
-	{
-		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-		write_byte( TE_BEAMFOLLOW )
-		write_short(pid) // entity
-		write_short(m_trail)  // model
-		write_byte( 10 )       // life
-		write_byte( 5 )        // width
-		write_byte(255)			// r, g, b
-		write_byte(255)		// r, g, b
-		write_byte(255)			// r, g, b
-		write_byte(255) // brightness
-
-		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-	}
+	
+	trail(pid,WHITE,10,5)
+	
 }
 
 
@@ -336,7 +297,7 @@ public vexd_pfntouch(pToucher, pTouched)
 {
 	
 	if (pToucher <= 0) return
-	if (!is_valid_ent(pToucher)) return
+	if (pev_valid(pToucher)!=2) return
 	
 	new szClassName[32]
 	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
@@ -387,8 +348,8 @@ public remove_spear(id_spear){
 }
 public plugin_precache()
 {
-	m_trail = precache_model("sprites/smoke.spr")
 
+	precache_explosion_fx()
 	precache_model(SPEAR_W_MODEL)
 	engfunc(EngFunc_PrecacheSound, SPEAR_HIT_SFX)
 	engfunc(EngFunc_PrecacheSound, SPEAR_THROW_SFX)

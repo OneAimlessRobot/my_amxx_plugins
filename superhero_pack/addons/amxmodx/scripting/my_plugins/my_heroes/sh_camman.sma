@@ -12,7 +12,6 @@
 new gHasCamman[SH_MAXSLOTS+1]
 new gNumCameras[SH_MAXSLOTS+1]
 
-new hud_sync
 new num_cameras
 new camera_cooldown
 new disarmable
@@ -29,7 +28,6 @@ public plugin_init()
 	register_cvar("camman_disarmable", "1")
 	register_cvar("camman_camera_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "Camman", "Plant cameras on walls", true, "camman_level" )
 	camman_set_hero_id(gHeroID)
 	register_event("DeathMsg","death","a")
@@ -172,8 +170,7 @@ public status_hud(id){
 	new hud_msg[1000];
 	format(hud_msg,500,"[SH] %s:^nNumber of cameras: %d^n",gHeroName,camman_get_num_cameras(id));
 	
-	set_hudmessage(255, 255, 255, 0.0, 0.2, 1, 0.0, 0.2)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	
 	
 }

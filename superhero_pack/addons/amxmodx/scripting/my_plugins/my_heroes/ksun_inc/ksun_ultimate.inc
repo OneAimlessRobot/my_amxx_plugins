@@ -36,7 +36,7 @@ native ksun_player_is_in_ultimate(id)
 
 native ksun_player_is_ultimate_ready(id)
 
-native ksun_unultimate_user(id)
+native ksun_unultimate_user(id,dying_or_new_round=1,force_take=1)
 
 native ksun_player_engage_ultimate(id)
 

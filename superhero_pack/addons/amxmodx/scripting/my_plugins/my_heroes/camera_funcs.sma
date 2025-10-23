@@ -552,8 +552,7 @@ public disarm_task(param[],id){
 	format(hud_msg,127,"[SH]: DISARMING CAMERA: %0.2f^n",
 	100.0*(curr_disarm_charge[id]/min_charge_time)
 	);
-	set_hudmessage(camera_color[0], camera_color[1], camera_color[2], -1.0, -1.0, 0, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	camman_update_disarming(id)
 	if(!camera_get_camera_disarming(id)){
 		new parm[3];

@@ -79,7 +79,6 @@ new red_line
 new Float:gear_ratio
 new hud_sync
 
-#define SENDAUDIO_MESSAGE_PITCH_ARG 3
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

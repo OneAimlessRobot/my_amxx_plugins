@@ -220,6 +220,11 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 		Ent = fm_find_ent_by_owner(-1,weapon,id)
 		if(Ent)
 		{
+			if(pev_valid(Ent)!=2){
+
+				server_print("Hook faulty??!!! attempted to change firing speed of invalid weapon!^n")
+
+			}
 			static Float:Delay,Float:M_Delay
 			Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
 			M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)

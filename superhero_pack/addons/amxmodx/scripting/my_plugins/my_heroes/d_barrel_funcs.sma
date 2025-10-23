@@ -500,6 +500,9 @@ public fw_Weapon_Reload_Post(ent)
 
 public fw_Item_PostFrame(ent)
 {
+	if(pev_valid(ent)!=2){
+		return
+	}
 	static id; id = pev(ent, pev_owner)
 	
 	if(!client_hittable(id)){
@@ -560,6 +563,10 @@ public fw_Item_AddToPlayer_Post(ent, id)
 
 public fw_Weapon_PrimaryAttack(ent)
 {
+	if(pev_valid(ent)!=2){
+
+		return;
+	}
 	static id; id = pev(ent, pev_owner)
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
@@ -569,6 +576,10 @@ public fw_Weapon_PrimaryAttack(ent)
 
 public fw_Weapon_PrimaryAttack_Post(ent)
 {
+	if(pev_valid(ent)!=2){
+
+		return;
+	}
 	static id; id = pev(ent, pev_owner)
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return

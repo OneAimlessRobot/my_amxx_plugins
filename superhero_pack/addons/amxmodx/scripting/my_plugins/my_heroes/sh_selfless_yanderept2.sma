@@ -671,8 +671,9 @@ if(gSuperAngry[id]&&client_hittable(id)){
 	yandere_model(id)
 	BlowUp(id)
 	jet_destroy(id)
-	sh_give_weapon(id, CSW_XM1014,true)
-
+	if(sh_is_inround()){
+		sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
+	}
 }
 
 
@@ -709,7 +710,6 @@ if(!gSuperAngry[id]){
 	sh_chat_message(id,gHeroID,"Demorphing!")
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
-	sh_drop_weapon(id, CSW_XM1014,true)
 	if(gIsPsychosis[id]){
 		unpsychosis_user(id)
 	}
@@ -780,6 +780,8 @@ public newRound(id)
 		notify_yanderes_about_team_life(id,1)
 		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
 		if ( gHasYandere[id]) {
+
+			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			unpsychosis_user(id)
 			gIsPsychosis[id]=false;
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
@@ -817,7 +819,7 @@ public yandere_damage(id)
 		if (floatround(extraDamage) > 0){
 			
 			new health = get_user_health(id)
-			if(weapon==CSW_XM1014){
+			if(weapon==YANDERE_WEAPON_CLASSID){
 				sh_extra_damage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", false)
 			}
 			else  {
@@ -960,12 +962,10 @@ public sh_round_end(){
 	
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 	
-		//if(yandere_get_has_yandere(i)&&jet_deployed(i)&&client_hittable(i)){
-		if(yandere_get_has_yandere(i)&&client_hittable(i)){
-		
-			
-			sh_drop_weapon(i, CSW_XM1014,true)
-			jet_destroy(i)
+		if(client_hittable(i)){
+			if(yandere_get_has_yandere(i)){
+				jet_destroy(i)
+			}
 		}
 	
 	}
@@ -1000,9 +1000,7 @@ public fire_weapon(id)
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		draw_aim_vector(id,{RED,RED,RED})
-		if(wpnid==CSW_XM1014){
-			emit_sound(id, CHAN_WEAPON, yandere_shotgun_sounds[1], 1.0, 0.0, 0, PITCH_NORM)
-		}
+		
 	}
 	gLastClipCount[id] = ammo
 	gLastWeapon[id]=wpnid;
@@ -1155,7 +1153,7 @@ public weaponChange(id)
 	if ( !client_hittable(id)||!gHasYandere[id] ||!gSuperAngry[id]||!shModActive()) return
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_XM1014) {
+	if (wpnid == YANDERE_WEAPON_CLASSID) {
 		set_pev(id, pev_viewmodel2,YANDERE_SHOTGUN_V_MODEL)
 		set_pev(id, pev_weaponmodel2,YANDERE_SHOTGUN_P_MODEL)
 	}

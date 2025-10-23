@@ -95,7 +95,7 @@ stock gSpriteSmoke, gSpriteFire, gSpriteBurning
 stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
 stock trail(ent_id,color_const=PINK,life=3,width=10){
 
-		if(!pev_valid(ent_id)){
+		if(pev_valid(ent_id)!=2){
 		
 			return
 		}

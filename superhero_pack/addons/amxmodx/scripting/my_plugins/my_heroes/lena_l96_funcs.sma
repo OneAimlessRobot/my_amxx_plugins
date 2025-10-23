@@ -125,7 +125,9 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 
 public fw_Item_PostFrame(ent)
 {
-	if(!is_valid_ent(ent)) return HAM_IGNORED
+	if(pev_valid(ent) != 2){
+		return HAM_IGNORED
+	}
 	static id; id = pev(ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
@@ -337,11 +339,9 @@ entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
-//new zoom=get_member(id,m_iLastZoom);
 new resume_zoom=get_member(id,m_bResumeZoom);
 if(!(resume_zoom)){
 	coeff_to_multiply_with=LENA_PROJECTILE_SHOOT_RANDOMNESS;
-	//console_print(id,"coeff to multiply with: %0.2f^nZOOM= %d^n",coeff_to_multiply_with,zoom)
 }
 else{
 	
@@ -351,13 +351,13 @@ else{
 	new Float:user_current_speed=VecLength(user_movement_velocity)
 	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
 	coeff_to_multiply_with=coeff_to_multiply_with_extra*LENA_PROJECTILE_SHOOT_RANDOMNESS
-	//console_print(id,"coeff to multiply with: %0.2f^nZOOM= %d^n",coeff_to_multiply_with,zoom)
 	
 }
 randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 lena_l96_dec_num_bullets(id)
+sh_chat_message(id, lena_get_hero_id(),"%d l96 bullets left",lena_l96_get_num_bullets(id))
 
 bullet_launch_pos[Ent][0]=Origin[0]
 bullet_launch_pos[Ent][1]=Origin[1]

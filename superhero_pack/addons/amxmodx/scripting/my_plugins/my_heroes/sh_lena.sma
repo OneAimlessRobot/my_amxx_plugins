@@ -18,7 +18,6 @@ new gHeroID;
 new bool:gHasLena[SH_MAXSLOTS+1]
 new gNumBullets[SH_MAXSLOTS+1]
 new lena_max_bullets
-new hud_sync
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -32,7 +31,6 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "L96A1", "become Lena de Verias! Get her A.W.P.!", false, "lena_level")
-	hud_sync=CreateHudSyncObj()
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -101,34 +99,6 @@ public _lena_l96_dec_num_bullets(iPlugin,iParams){
 	gNumBullets[id]-= (gNumBullets[id]>0)? 1:0
 
 }
-
-public lena_hud_task(id){
-	id-=LENA_HUD_TASKID
-	
-	if(!is_user_alive(id)||!is_user_connected(id)||!lena_get_has_lena(id)){
-		
-		return
-	}
-	
-	lena_hud(id)
-	
-	
-
-}
-lena_hud(id){
-	new hud_msg[500];
-	format(hud_msg,499,"[SH] %s:^nNum bullets left: %d^n",
-					gHeroName,
-					lena_l96_get_num_bullets(id)
-					);
-	
-	set_hudmessage(LineColorsWithAlpha[WHITE][0], LineColorsWithAlpha[WHITE][1], LineColorsWithAlpha[WHITE][2], 0.5, 0.05, 1, 0.0, 0.5,0.0,0.0,1)
-	
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-
-
-
-}
 public sh_round_end(){
 
 	lena_l96_clear_bullets()
@@ -154,13 +124,11 @@ public lena_init()
 	if(gHasLena[id])
 	{
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
-		set_task(0.1, "lena_hud_task", id+LENA_HUD_TASKID, "", 0, "b")
 		new_spawn(id)
 	}
 	else 
 	{
 		sh_drop_weapon(id,LENA_WEAPON_CLASSID,true);
-		remove_task(id+LENA_HUD_TASKID)
 	}
 }
 public new_spawn(id)

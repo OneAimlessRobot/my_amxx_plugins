@@ -62,7 +62,6 @@ stock Float:flora_teleport_crouch_time
 stock Float:flora_teleport_reach_max_distance
 stock flora_field_start_ammount
 stock flora_field_max_active_ammount
-stock hud_sync_charge
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -103,7 +102,6 @@ public plugin_init()
 	arrayset(g_flora_field_loaded,1,SH_MAXSLOTS+1)
 
 	
-	hud_sync_charge=CreateHudSyncObj()
 	register_forward(FM_Think, "field_think")
 	
 	// Add your code here...
@@ -881,8 +879,7 @@ public charge_task(parm[],id){
 	new hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))
 	format(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/flora_charge_time)*100.0);
-	set_hudmessage(LineColors[GREEN][0], LineColors[GREEN][1], LineColors[GREEN][2], -1.0, -1.0, 1, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(owner, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	

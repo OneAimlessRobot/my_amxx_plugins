@@ -17,7 +17,6 @@ new bool:molly_armed[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
-new hud_sync_charge
 public plugin_init(){
 	
 	
@@ -30,7 +29,6 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("erica_molly_max_charge_time", "5.0")
 	register_cvar("erica_molly_min_charge_time", "1.0")
-	hud_sync_charge=CreateHudSyncObj()
 }
 
 public plugin_natives(){
@@ -145,8 +143,8 @@ public charge_task(id){
 	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 	100.0*(curr_charge[id]/max_charge_time)
 	);
-	set_hudmessage(molly_color[0], molly_color[1], molly_color[2], -1.0, -1.0,molly_color[3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	
+	client_print(id,print_center,"%s",hud_msg)
 	
 	
 	

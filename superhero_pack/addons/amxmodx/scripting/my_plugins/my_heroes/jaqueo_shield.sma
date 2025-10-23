@@ -24,7 +24,6 @@ new Float:shield_cooldown
 new Float:shield_radius
 new Float:shield_max_hp
 new gSpriteLaser
-new hud_sync_charge
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -38,8 +37,6 @@ public plugin_init()
 	arrayset(g_last_attack_release_gametime,0.0,SH_MAXSLOTS+1)
 	arrayset(g_jaqueo_shield,0,SH_MAXSLOTS+1)
 
-	
-	hud_sync_charge=CreateHudSyncObj()
 	register_forward(FM_TraceLine,"fw_traceline",1);
 	//register_forward(FM_Touch,"touch_shield")
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
@@ -483,8 +480,7 @@ public charge_task(parm[],id){
 	new hud_msg[128];
 	set_pev(g_jaqueo_shield[id],pev_health,floatmin(shield_max_hp,floatadd(float(pev(g_jaqueo_shield[id],pev_health)),floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
 	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
-	set_hudmessage(jaqueo_color[0], jaqueo_color[1], jaqueo_color[2], -1.0, -1.0, 1, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jaqueo_shield[id]

@@ -30,7 +30,6 @@ new teamglow_on
 
 new bool:g_ester_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new hud_sync
-new hud_sync_enemies
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
 new base_dmg_per_it,dmg_inc_per_inc,num_lvls_for_inc,max_dmg
 new Float:pan_dmg,Float:tmp_dmg_mult
@@ -74,7 +73,6 @@ public plugin_init()
 	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 
 	hud_sync = CreateHudSyncObj()
-	hud_sync_enemies = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
 	
 	register_event("Damage", "ester_damage", "b", "2!0")
@@ -371,8 +369,7 @@ public show_targets(id){
 			format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
 		}
 	} 
-	set_hudmessage(255,50, 255, -1.0, -1.0,      0,       0.0,       4.0,       0.0,     0.0,      1)
-	ShowSyncHudMsg(0, hud_sync_enemies, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	
 }
 public update_max_dmg(id){

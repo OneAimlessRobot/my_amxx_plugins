@@ -17,7 +17,6 @@ new Float:gat_wound_time[SH_MAXSLOTS+1]
 new gPillGatlingEngaged[SH_MAXSLOTS+1]
 
 new pill_fx[MAX_ENTITIES]
-new  hud_sync_windup
 new Float:windup_time
 new const gunsound[] = "shmod/yakui/m249-1.wav";
 public plugin_init(){
@@ -32,7 +31,6 @@ public plugin_init(){
 	arrayset(gat_wound_triggered,false,SH_MAXSLOTS+1)
 	arrayset(gat_wound_time,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
-	hud_sync_windup=CreateHudSyncObj()
 	register_cvar("yakui_windup_time", "2.0")
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
@@ -188,8 +186,7 @@ public charge_task(id){
 		format(hud_msg,127,"[SH]: Curr windup: %0.2f^n",
 			100.0*(gat_wound_time[id]/windup_time)
 		);
-		set_hudmessage(255,255, 255, -1.0, -1.0, 255, 0.0, 0.5,0.0,0.0,1)
-		ShowSyncHudMsg(id, hud_sync_windup, "%s", hud_msg)
+		client_print(id,print_center,"%s",hud_msg)
 	}
 	else{
 		gat_wound_up[id]=true

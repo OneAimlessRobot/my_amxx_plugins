@@ -12,7 +12,6 @@ new const gHeroName[] = "Graciete"
 new gHasGraciete[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
-new hud_sync
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -32,7 +31,7 @@ public plugin_init()
 	register_cvar("graciete_power_land_charge_time", "8")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Gritty warrior!", "Gritty warrior.", false, "graciete_level" )
-	hud_sync=CreateHudSyncObj()
+
 	register_event("DeathMsg","death","a")
 	register_srvcmd("graciete_init", "graciete_init")
 	shRegHeroInit(gHeroName, "graciete_init")
@@ -124,8 +123,8 @@ public graciete_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-		show_hudmessage(id, "Mission failed.")*/
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		show_hudmessage(id, "Mission failed.")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -148,17 +147,6 @@ public graciete_glow(id)
 		}
 	}
 }
-
-public status_hud(id){
-	
-	new hud_msg[1000];
-	format(hud_msg,500,"[SH] %s:^nJetpack seconds left: %d^nPower landing next land? %s^n",gHeroName,jet_get_user_jet_cooldown(id),jet_get_user_power_landing(id)?"Yes":"No");
-	
-	set_hudmessage(graciete_color[0], graciete_color[1], graciete_color[2], 0.2, 0.2, 0, 0.0, 0.2)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-}
 //----------------------------------------------------------------------------------------------
 public graciete_loop(id)
 {
@@ -169,7 +157,6 @@ public graciete_loop(id)
 		return PLUGIN_HANDLED
 		
 	}
-	status_hud(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------

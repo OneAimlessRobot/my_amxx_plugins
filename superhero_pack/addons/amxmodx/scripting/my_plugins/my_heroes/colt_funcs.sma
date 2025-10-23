@@ -127,6 +127,10 @@ public fw_WeaponReloadPre(entity)
 
 public fw_WeaponPrimaryAttackPre(entity)
 {
+	if(pev_valid(entity)!=2){
+
+		return HAM_IGNORED;
+	}
 	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
 	if(get_member(entity, m_Weapon_iShotsFired)) return HAM_SUPERCEDE
 	static iClip, iTraceLine, iPlaybackEvent

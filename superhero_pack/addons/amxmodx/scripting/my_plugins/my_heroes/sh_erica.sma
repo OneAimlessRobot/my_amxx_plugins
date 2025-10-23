@@ -38,7 +38,6 @@ new const erica_knife_sounds[9][]={"weapons/erica_knife/knife_deploy1.wav",
 "weapons/erica_knife/knife_slash2.wav",
 "weapons/erica_knife/knife_stab.wav"}
 
-new hud_sync
 //new gHeroLevel
 new base_er_points
 new max_er_points
@@ -82,7 +81,6 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention and get ++ powerful!", false, "erica_level" )
 	tranq_set_hero_id(gHeroID)
-	hud_sync=CreateHudSyncObj()
 	g_msgFade = get_user_msgid("ScreenFade");
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
@@ -249,20 +247,14 @@ erica_hud(id){
 					g_erica_points[id],
 					max_er_points
 					);*/
-	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nKills: %d^nPoints: %d^nHook strikes left: %d^nHas hook: %d^nHas %d Mollies left^n",
+	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nHook strikes left: %d^n",
 					gHeroName,
 					g_normal_er_speed[id],
 					gNumDarts[id],
-					g_erica_kills[id],
-					g_erica_points[id],
-					hook_get_hook_kills(id),
-					hook_get_hook(id),
-					erica_get_num_mollies(id)
+					hook_get_hook_kills(id)
 					);
 	
-	set_hudmessage(LineColorsWithAlpha[PINK][0], LineColorsWithAlpha[PINK][1], LineColorsWithAlpha[PINK][2], 0.5, 0.05, LineColorsWithAlpha[PINK][3], 0.0, 0.5,0.0,0.0,1)
-	
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 
 
 

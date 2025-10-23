@@ -63,6 +63,8 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
+	register_logevent("ev_SendAudio", 2, "1=Round_End")
+	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
@@ -268,7 +270,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 public client_disconnected(id){
 	
 	spores_reset_user(id)
-	ksun_unultimate_user(id)
+	ksun_unultimate_user(id,_,1)
 	ksun_set_num_available_spores(id,0)
 	
 	
@@ -277,18 +279,25 @@ public client_disconnected(id){
 public ev_SendAudio(){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		
+	for(new i=1;i<=SH_MAXSLOTS;i++){
+		if(!is_user_connected(i)){
+
+			continue
+		}
+		if(!spores_has_ksun(i)){
+
+			continue
+		}
 		arrayset(gWeaponPlayerKilledPlayerWith[i],0,SH_MAXSLOTS+1)
 		
-		ksun_unultimate_user(i)
+		ksun_unultimate_user(i,0,0)
 	
 	}
 	
 	if(ksun_get_when_reset_spores()&reset_on_new_round){
 		arrayset(gMaxSporesUsable,0,SH_MAXSLOTS+1)
 	}
-	return PLUGIN_HANDLED
+	return PLUGIN_CONTINUE
 }
 public _ksun_set_num_available_spores(iPlugin,iParams){
 	new id= get_param(1)
@@ -391,7 +400,6 @@ public newRound(id)
 		return PLUGIN_CONTINUE
 	}
 	spores_reset_user(id)
-	ksun_unultimate_user(id)
 	if ( spores_has_ksun(id)) {
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
@@ -441,7 +449,7 @@ public ksun_init()
 	if ( gHasksun[id] )
 	{
 		spores_reset_user(id)
-		ksun_unultimate_user(id)
+		ksun_unultimate_user(id,_,1)
 		ksun_morph(id+KSUN_MORPH_TASKID)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
@@ -451,7 +459,7 @@ public ksun_init()
 	}
 	else{
 		spores_reset_user(id)
-		ksun_unultimate_user(id)
+		ksun_unultimate_user(id,_,1)
 		delete_cooldown_update_tasks(id)
 		delete_hud_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
@@ -640,22 +648,7 @@ public death()
 	new id = read_data(2)
 	new killer= read_data(1)
 	
-	
-	if(is_user_connected(id)){
-		if(spores_has_ksun(id)){
-			if(sleep_nade_get_sleep_nade_loaded(id)){
-		
-				sleep_nade_uncharge_sleep_nade(id)
-			}
-			
-			ksun_unmorph(id+KSUN_MORPH_TASKID)
-			if(ksun_get_when_reset_spores()&reset_on_death){
-				ksun_set_num_available_spores(id,0)
-				clean_ksun_spores_from_players(1,0,id);
-			}
-		}
-		
-	}
+	ksun_death_handler(id)
 	if(is_user_connected(killer)&&spores_has_ksun(killer)){
 		if(ksun_kill_type_broadness_level>=3){
 			
@@ -665,10 +658,11 @@ public death()
 	}
 		
 }
-public sh_client_death(id, killer, headshot, const wpnDescription[]){
-	
+stock ksun_death_handler(id){
+
 	if(is_user_connected(id)){
 		if(spores_has_ksun(id)){
+			ksun_unultimate_user(id,1,0)
 			if(sleep_nade_get_sleep_nade_loaded(id)){
 		
 				sleep_nade_uncharge_sleep_nade(id)
@@ -682,6 +676,11 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		}
 		
 	}
+
+}
+public sh_client_death(id, killer, headshot, const wpnDescription[]){
+	
+	ksun_death_handler(id)
 	if(client_hittable(killer)&&is_user_connected(id)){
 		if(spores_has_ksun(killer)&&!ksun_player_is_in_ultimate(killer)){
 			if(ksun_kill_type_broadness_level<=1){
