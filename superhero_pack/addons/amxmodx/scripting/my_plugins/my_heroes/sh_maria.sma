@@ -5,7 +5,6 @@
 
 #define MARIA_HEAL_TASKID 2219926
 #define MARIA_STATS_TASKID 7219926
-#define MARIA_HUD_TASKID 82219926
 
 #define MARIA_REMOVE_GLOW_TASKID 12812810
 
@@ -109,13 +108,11 @@ public maria_init()
 		g_maria_points[id]=base_points;
 		g_base_radius[id]=base_radius
 		set_task(heal_period, "maria_heal_loop", id+MARIA_HEAL_TASKID, "", 0, "b")
-		set_task(heal_period, "maria_hud", id+MARIA_HUD_TASKID, "", 0, "b")
 		set_task(heal_period, "maria_loop", id+MARIA_STATS_TASKID, "", 0, "b")
 	}
 	else{
 		g_maria_points[id]=0;
 		g_base_radius[id]=0.0
-		remove_task(id+MARIA_HUD_TASKID)
 		remove_task(id+MARIA_STATS_TASKID)
 		remove_task(id+MARIA_HEAL_TASKID)
 	}

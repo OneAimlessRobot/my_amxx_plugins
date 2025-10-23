@@ -6,7 +6,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 #define ADRIANO_STATS_TASKID 22226
-#define ADRIANO_HUD_TASKID 21121
 
 
 // GLOBAL VARIABLES
@@ -125,7 +124,6 @@ public adriano_init()
 		g_adriano_points[id]=base_points;
 		g_base_speed[id]=base_speed
 		g_base_radius[id]=base_radius
-		set_task(0.1, "adriano_hud", id+ADRIANO_HUD_TASKID, "", 0, "b")
 		set_task(0.1, "adriano_loop", id+ADRIANO_STATS_TASKID, "", 0, "b")
 	}
 	else{
@@ -134,7 +132,6 @@ public adriano_init()
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
-		remove_task(id+ADRIANO_HUD_TASKID)
 		remove_task(id+ADRIANO_STATS_TASKID)
 	}
 	
