@@ -47,7 +47,13 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!spear_get_has_lara(id)||!hasRoundStarted()||!client_hittable(id,spear_get_has_lara(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,spear_get_has_lara(id))) return FMRES_IGNORED;
+	if(!hasRoundStarted()){
+	
+		uncharge_user(id)
+		return FMRES_IGNORED
+	
+	}
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -69,6 +75,15 @@ public CmdStart(id, uc_handle)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
+			}
+			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
+				
+				launch_spear(id)
+				client_print(id,print_center,"You have %d spears left",
+					spear_get_num_spears(id)
+					);
+				uncharge_user(id)
+				return FMRES_IGNORED
 			}
 			
 		}

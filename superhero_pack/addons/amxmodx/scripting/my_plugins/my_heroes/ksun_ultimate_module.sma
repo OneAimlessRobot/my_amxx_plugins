@@ -25,7 +25,6 @@ new g_player_supply_amount[SH_MAXSLOTS+1]
 new g_player_in_ultimate[SH_MAXSLOTS+1]
 
 
-new hud_sync_ultimate
 
 public plugin_init()
 {
@@ -40,7 +39,6 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook",_,true)
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 	
-	hud_sync_ultimate=CreateHudSyncObj()
 	
 	new wpnName[32]
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
@@ -220,8 +218,7 @@ public ultimate_task(id){
 	format(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
 	100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
 	);
-	set_hudmessage(LineColors[PURPLE][0], LineColors[PURPLE][1],LineColors[PURPLE][2], -1.0, -1.0,125, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_ultimate, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	
 	
 	

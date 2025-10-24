@@ -6,8 +6,6 @@
 #include "camera_inc/sh_camera_funcs.inc"
 
 
-#define CAMMAN_TASKID 12812
-
 // GLOBAL VARIABLES
 new gHasCamman[SH_MAXSLOTS+1]
 new gNumCameras[SH_MAXSLOTS+1]
@@ -41,22 +39,8 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "camman_ku")
 }
 
-public _client_isnt_hitter(iPlugin,iParams){
-	
-	new gatling_user=get_param(1);
-	if(!is_user_connected(gatling_user)){
-		return true;
-	}
-	if(!is_user_alive(gatling_user)){
-		return true;
-	}
-	return !gHasCamman[gatling_user]
-	
-}
-
 public plugin_natives(){
 	
-	register_native("client_isnt_hitter","_client_isnt_hitter",0);
 	register_native("camman_set_num_cameras","_camman_set_num_cameras",0)
 	register_native("camman_get_num_cameras","_camman_get_num_cameras",0)
 	
@@ -142,16 +126,8 @@ public camman_init()
 	read_argv(2,temp,5)
 	new hasPowers = str_to_num(temp)
 	gHasCamman[id]=(hasPowers!=0)
-	if(gHasCamman[id]){
-		
-		reset_camman_user(id)
-		
-		set_task( 0.2, "camman_loop", id+CAMMAN_TASKID, "", 0, "b")
-	}
-	else{
-		reset_camman_user(id)
-		remove_task(id+CAMMAN_TASKID)
-	}
+	reset_camman_user(id)
+
 	
 }
 public reset_camman_user(id){
@@ -161,16 +137,6 @@ public reset_camman_user(id){
 	camera_clear_user_cameras(id)
 	gNumCameras[id]=0
 	
-	
-	
-}
-
-public status_hud(id){
-	
-	new hud_msg[1000];
-	format(hud_msg,500,"[SH] %s:^nNumber of cameras: %d^n",gHeroName,camman_get_num_cameras(id));
-	
-	client_print(id,print_center,"%s",hud_msg)
 	
 	
 }
@@ -185,19 +151,6 @@ public loadCVARS()
 	num_cameras=min(MAX_CAMERAS,get_cvar_num("camman_cameras"))
 	camera_cooldown=get_cvar_num("camman_camera_cooldown");
 	disarmable=get_cvar_num("camman_disarmable");
-}
-//----------------------------------------------------------------------------------------------
-public camman_loop(id)
-{
-	id -= CAMMAN_TASKID
-	
-	if ( client_isnt_hitter(id)){
-		
-		return PLUGIN_HANDLED
-		
-	}
-	status_hud(id)
-	return PLUGIN_HANDLED
 }
 public sh_client_spawn(id)
 {
@@ -214,13 +167,6 @@ public newRound(id)
 		reset_camman_user(id)
 	}
 	return PLUGIN_HANDLED
-	
-}
-public plugin_precache()
-{
-	
-	
-	
 	
 }
 public death()

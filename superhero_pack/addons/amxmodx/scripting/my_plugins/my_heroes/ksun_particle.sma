@@ -363,7 +363,6 @@ switch(get_player_launcher_phase(id)){
 		parms[0]=spore
 		parms[1]=id
 		parms[2]=get_player_launcher(id)
-		client_print(id, print_console, "[SH](ksun) Spore prepared! spore id is: %d^nSpore number is: %d^n",spore,get_player_num_deployed_spores(id))
 		sporeprepare(parms)
 		}
 	case PHASE_SEND:{
@@ -376,7 +375,6 @@ switch(get_player_launcher_phase(id)){
 		new user_name[128]
 		emit_sound(parms[0], CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		get_user_name(parms[2],user_name,127)
-		client_print(id, print_console, "[SH](ksun) Spore sent! spore id is: %d^nSpore number is: %d^nLaunched at target number: %d^nThe name of said target is: %s^n",parms[0],get_player_num_launched_spores(id),parms[2],user_name)
 		sporetrack(parms)
 	}
 }
@@ -463,7 +461,6 @@ public spore_think(ent){
 	
 	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(entity_get_edict(ent,EV_ENT_euser1)) || !is_valid_ent(entity_get_edict(ent,EV_ENT_euser1))|| !is_valid_ent(entity_get_edict(ent,EV_ENT_owner))){
 		
-		client_print(entity_get_edict(ent,EV_ENT_euser1),print_console,"Spore untrack function about to be called in spore thinking function!!!!!^nCurrent hp of this spore: %0.2f^n",spore_hp)
 		untrack_spore(ent)
 		return FMRES_IGNORED
 		

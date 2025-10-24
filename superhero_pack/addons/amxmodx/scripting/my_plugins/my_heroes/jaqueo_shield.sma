@@ -1,6 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"
 #include "shield_inc/sh_jaqueo_shield.inc"
 
@@ -23,7 +24,6 @@ new g_normal_ptr[SH_MAXSLOTS+1]
 new Float:shield_cooldown
 new Float:shield_radius
 new Float:shield_max_hp
-new gSpriteLaser
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -112,10 +112,6 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 	if (is_user_alive(get_tr2(ptr, TR_pHit))) {
 		return FMRES_IGNORED
 	}
-	/*if(ptr<=0){
-		sh_chat_message(id,"Invalid tr!!!!! [shrugs shoulders]");
-		return FMRES_IGNORED
-	}*/
 	new ent=get_tr2(ptr, TR_pHit)
 	if(!pev_valid(ent)){
 		return FMRES_IGNORED
@@ -291,9 +287,6 @@ public shield_deploy_task(parm[],id){
 		
 		return;
 	}
-	/*set_pev(shield_id,pev_rendermode,kRenderTransAlpha)
-	set_pev(shield_id,pev_renderfx,kRenderFxGlowShell)
-	new alpha=camman_camera_minalpha*/
 	set_pev(shield_id, pev_iuser1, 1)
 	set_pev(shield_id, pev_takedamage, DAMAGE_YES)
 	set_pev(shield_id, pev_solid, SOLID_BBOX)
@@ -304,10 +297,6 @@ public shield_deploy_task(parm[],id){
 	emit_sound(shield_id, CHAN_ITEM,shield_deploy, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_pev(shield_id, pev_nextthink, get_gametime() + JAQUEO_THINK_PERIOD)
 }
-public plugin_end(){
-	
-	
-}
 public plugin_precache(){
 
 
@@ -316,7 +305,6 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	precache_model(shield_mdl)
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
 	engfunc(EngFunc_PrecacheSound,  shield_deploy)
 	engfunc(EngFunc_PrecacheSound,  shield_hum)
 	engfunc(EngFunc_PrecacheSound,  shield_destroyed)
@@ -454,8 +442,12 @@ public load_shield(id){
 }
 public charge_task(parm[],id){
 	id-=JAQUEO_CHARGE_TASKID
-	//if(client_isnt_hitter(id)) return
+	if(!hasRoundStarted()){
 	
+		uncharge_user(id)
+		return
+	
+	}
 	
 	
 	new Float:vOrigin[3]

@@ -202,7 +202,6 @@ public erica_init()
 		gNumDarts[id]=num_er_darts
 		gNumMollies[id]=num_mollies
 		Erica_weapons(id)
-		set_task(0.1, "erica_hud_task", id+ERICA_HUD_TASKID, "", 0, "b")
 		set_task(0.1, "erica_stats", id+ERICA_STATS_TASKID, "", 0, "b")
 		
 	}
@@ -213,7 +212,6 @@ public erica_init()
 		g_base_er_radius[id]=0.0
 		gNumDarts[id]=0
 		remove_task(id+ERICA_STATS_TASKID)
-		remove_task(id+ERICA_HUD_TASKID)
 		if ( is_user_alive(id) ) {
 			sh_drop_weapon(id, CSW_ELITE, true)
 		}
@@ -221,43 +219,6 @@ public erica_init()
 	}
 	
 	
-}
-public erica_hud_task(id){
-	id-=ERICA_HUD_TASKID
-	
-	if(!is_user_alive(id)||!is_user_connected(id)||!tranq_get_has_erica(id)) return
-	if(gHasErica[id]){
-		erica_hud(id)
-		
-	
-	}
-	
-
-}
-erica_hud(id){
-	new hud_msg[500];
-	/*format(hud_msg,499,"[SH] %s:^nBase speed: %0.2f^nCurr speed: %0.2f^nMax speed: %0.2f^nNum darts: %d^nKills: %d^nBase Points: %d^nPoints: %d^nMax Points: %d^n",
-					gHeroName,
-					g_base_er_speed[id],
-					g_normal_er_speed[id],
-					max_er_speed,
-					gNumDarts[id],
-					g_erica_kills[id],
-					base_er_points,
-					g_erica_points[id],
-					max_er_points
-					);*/
-	format(hud_msg,499,"[SH] %s:^nCurr speed: %0.2f^nNum darts: %d^nHook strikes left: %d^n",
-					gHeroName,
-					g_normal_er_speed[id],
-					gNumDarts[id],
-					hook_get_hook_kills(id)
-					);
-	
-	client_print(id,print_center,"%s",hud_msg)
-
-
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

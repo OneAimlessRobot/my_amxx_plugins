@@ -1,23 +1,4 @@
-//Swat - 	1.x update by heliumdream
-//				recode based on Missiles Launcher 3.8.2 (amx_ejl_missiles.sma)
-//				by Eric Lidman & jtp10181
 
-/*
-//Swat
-Swat_level 7
-Swat_cooldown 6 		//How long it takes Swat to reload
-Swat_damage 80			//How much damage will be dealt (According to how far away missile is)
-Swat_velocity 2000		//Speed of Swat's missile
-Swat_force 500.0		//How much player hit by missile will fly up into the air with
-Swat_radius 400		//The radius from where missile hit people will be damaged
-Swat_obeygravity 0		//Makes missile obey server gravity rules 1 -yes, 0 - no
-Swat_effects 2			//1 Regualy missile, no effects
-						//2 Yellow sprites around missile - laggy
-						//3 Light given off around missile
-						//4 2 & 3 combined
-Swat_m4a1mult 1.5
-swat_knifemult 4.0
-*/
 
 #define SWAT_M4_P_MODEL "models/shmod/swatm4/p_m4a1.mdl"
 #define SWAT_M4_V_MODEL "models/shmod/swatm4/v_m4a1.mdl"
@@ -50,9 +31,6 @@ new has_rocket[33]
 new bool:g_betweenRounds
 new bool:is_a_swat[33]
 new gHeroID
-//new sprite, sprite1, sprite2, sprite3
-//new beam, boom
-new beam,sprite2, sprite3
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -63,9 +41,6 @@ public plugin_init()
 	register_cvar("Swat_level", "7")
 	register_cvar("Swat_cooldown", "20.0")
 	register_cvar("Swat_damage", "40")
-	//register_cvar("Swat_randmg", "1")
-	//register_cvar("Swat_mindmg", "15")
-	//register_cvar("Swat_maxdmg", "60")
 	register_cvar("swat_armor", "200")
 	register_cvar("swat_m4a1mult", "1.5")
 	register_cvar("swat_knifemult", "4.0")
@@ -243,7 +218,6 @@ public Swat_kd()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	beam = precache_model("sprites/smoke.spr")
 	precache_model("models/player/swat/swat.mdl")
 	precache_model("models/shmod/swat_v_knife.mdl")
 	precache_model("models/shmod/swat_p_knife.mdl")
@@ -312,66 +286,9 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-		Swat_boom(vExplodeAt)
-
 		RemoveEntity(pToucher)
 
 	}
-}
-//----------------------------------------------------------------------------------------------
-public Swat_boom(Explorigin[])
-{
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(12)
-	write_coord(Explorigin[0])
-	write_coord(Explorigin[1])
-	write_coord(Explorigin[2])
-	write_byte(188)
-	write_byte(10)
-	message_end()
-
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 21 )
-	write_coord(Explorigin[0])
-	write_coord(Explorigin[1])
-	write_coord(Explorigin[2] + 16)
-	write_coord(Explorigin[0])
-	write_coord(Explorigin[1])
-	write_coord(Explorigin[2] + 1936)
-	write_short( sprite1 )
-	write_byte( 0 )
-	write_byte(1)
-	write_byte(50)
-	write_byte(8)
-	write_byte( 0 )
-	write_byte(255)
-	write_byte( 0 )
-	write_byte( 0 )
-	write_byte( 255 )
-	write_byte( 0 )
-	message_end()
-
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 3 )
-	write_coord(Explorigin[0])
-	write_coord(Explorigin[1])
-	write_coord(Explorigin[2])
-	write_short( sprite2 )
-	write_byte( 255 )
-	write_byte( 20 )
-	write_byte( 0 )
-	message_end()
-
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 5 )
-	write_coord(Explorigin[0])
-	write_coord(Explorigin[1])
-	write_coord(Explorigin[2])
-	write_short( sprite3 )
-	write_byte( 10 )
-	write_byte( 10 )
-	message_end()
 }
 //----------------------------------------------------------------------------------------------
 public make_beam(id)
@@ -381,11 +298,6 @@ public make_beam(id)
 	new Float:vAngles[3]
 	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
 	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
-	//new notFloat_vOrigin[3]
-	//notFloat_vOrigin[0] = floatround(vOrigin[0])
-	//notFloat_vOrigin[1] = floatround(vOrigin[1])
-	//notFloat_vOrigin[2] = floatround(vOrigin[2])
-
 	new NewEnt
 	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
@@ -442,9 +354,6 @@ public make_beam(id)
 	//new iNewVelocity[3]
 	VelocityByAim(id, MissileVel, fl_iNewVelocity)
 	Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
-	//iNewVelocity[0] = floatround(fl_iNewVelocity[0])
-	//iNewVelocity[1] = floatround(fl_iNewVelocity[1])
-	//iNewVelocity[2] = floatround(fl_iNewVelocity[2])
 
 	emit_sound(NewEnt, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(NewEnt, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -452,27 +361,11 @@ public make_beam(id)
 	args[0] = id
 	args[1] = NewEnt
 
-	make_trail(NewEnt)
+	trail(NewEnt,RED,10,10)
 	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
 	set_task(0.1,"guide_rocket_comm",NewEnt,args,2,"b")
-	//set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 
 	return PLUGIN_HANDLED
-}
-//----------------------------------------------------------------------------------------------
-make_trail(NewEnt)
-{
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(22)
-	write_short(NewEnt)
-	write_short(beam)
-	write_byte(200)
-	write_byte(100)
-	write_byte(255)
-	write_byte(0)
-	write_byte(0)
-	write_byte(255)
-	message_end()
 }
 //----------------------------------------------------------------------------------------------
 public guide_rocket_comm(args[])

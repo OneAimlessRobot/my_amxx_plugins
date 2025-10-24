@@ -16,15 +16,13 @@
 
 #define EXPLODE_RADIUS 750.0
 
-#define MINE_DAMAGE_FALLOFF_DIST 750.0
-
+#define MINE_DAMAGE 200.0
 #define MINE_PLANT_PERIOD 1.0
 
 #define MINE_ARMING_TASKID 2162
 #define MINE_ARMING_TIME 4.0
 #define UNMINE_ARMING_TASKID 3538
 
-#define MINE_DAMAGE 200
 
 #define MINE_RELOAD_TASKID 5122
 
@@ -47,7 +45,6 @@
 #define MINE_DISARM_TIMES floatround(floatdiv(min_charge_time,MINE_DISARM_PERIOD))
 
 
-stock const mine_color[4]={255, 255, 255,200}
 
 
 native clear_mines()

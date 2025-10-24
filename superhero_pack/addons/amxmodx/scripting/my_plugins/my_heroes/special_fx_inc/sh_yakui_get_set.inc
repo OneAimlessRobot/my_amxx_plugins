@@ -7,7 +7,6 @@
 #define GATLING_V_MODEL "models/shmod/yakui/v_m249.mdl"
 #define GATLING_P_MODEL "models/shmod/yakui/p_m249.mdl"
 
-#define YAKUI_HUD_TASKID 12286
 #define YAKUI_MORPH_TASKID 127186
 
 

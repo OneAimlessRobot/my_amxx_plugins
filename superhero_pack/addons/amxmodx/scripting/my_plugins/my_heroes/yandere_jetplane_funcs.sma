@@ -662,7 +662,12 @@ public jet_think(ent)
 }
 public charge_task(parm[],id){
 	id-=JET_CHARGE_TASKID
+	if(!hasRoundStarted()){
 	
+		uncharge_user(id)
+		return
+	
+	}
 	
 	
 	new Float:vOrigin[3]

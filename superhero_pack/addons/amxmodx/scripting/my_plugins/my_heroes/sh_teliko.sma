@@ -194,33 +194,10 @@ public remove_enemy(id){
 
 public status_hud(id){
 	
-	new weapon_name[128];
-	new client_name[128];
 	new hud_msg[1000];
-	if(g_teliko_weapon[id]>0)
-	{
-		get_weaponname(g_teliko_weapon[id],weapon_name,127);
-	}
-	else{
 	
-		strcat(weapon_name,"NONE",128)
-	
-	}
-	format(hud_msg,500,"[SH] %s:^nSlit kills left: %d^nNumber of chaffs: %d^nCurrent counter weapon name: %s. %s^n%d counter bullet%s of %d left^nEnemy list:^n",gHeroName,
-			slitter_get_slit_kills(id),teliko_get_num_chaffs(id),weapon_name,g_teliko_locked[id]? "(LOCKED)":"",g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		if(g_teliko_enemies[id][i]){
-			
-			new distance, origin[3], eorigin[3]
-			get_user_name(i,client_name,127)
-			get_user_origin(id, origin)
-			
-			get_user_origin(i, eorigin)
-			
-			distance = get_distance(eorigin, origin)
-			format(hud_msg,500,"%s%s.^nMega counters from you: %d^nDistance: %d^n",hud_msg,client_name,g_num_mega_counters_enemy[id][i],distance);
-		}
-	}
+	format(hud_msg,500,"[SH] %s:^nSlit kills left: %d^n%d counter bullet%s of %d left^n",gHeroName,
+	slitter_get_slit_kills(id),g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
 	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	

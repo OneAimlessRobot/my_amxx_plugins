@@ -314,6 +314,7 @@ public _sh_effect_user_direct(iPlugin,iParams){
 	new attacker=get_param(2)
 	new fx_num=get_param(3)
 	new gHeroID=get_param(4)
+	
 	if(user==attacker){
 	
 		

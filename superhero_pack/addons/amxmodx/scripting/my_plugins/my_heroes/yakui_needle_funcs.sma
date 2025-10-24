@@ -96,11 +96,11 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 		damage=1.0
 		SetHamParamFloat(4, damage);
 		if(stabbing){
-			make_effect_direct(id,attacker,curr_needle_fx[attacker],gatling_get_hero_id())
-			
+		
+			if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
+				make_effect_direct(id,attacker,curr_needle_fx[attacker],gatling_get_hero_id())
+			}
 		}
-		/*curr_needle_fx[attacker]=sh_gen_effect()
-		notify_fx_user(attacker)*/
 	}
 	
 	return HAM_IGNORED

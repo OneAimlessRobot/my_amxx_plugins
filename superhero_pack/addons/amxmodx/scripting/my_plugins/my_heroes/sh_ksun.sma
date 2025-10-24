@@ -1,22 +1,3 @@
-// KSUN
-/* CVARS - copy and paste to shconfig.cfg
-
-//
-ksun_level 12
-ksun_track_radius 2000.0
-ksun_spore_damage 100.0
-ksun_spore_speed 900.0
-ksun_follow_time 5.0
-ksun_teamglow_on 1
-ksun_hold_time 5.0
-ksun_max_victims 4
-ksun_heal_coeff 0.5
-ksun_cooldown 10.0
-ksun_spore_health 100.0
-ksun_launcher_health 500.0
-*/
-
-
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "ksun_inc/ksun_particle.inc"
@@ -514,8 +495,7 @@ public ksun_kd()
 	
 		new message[128]
 		format(message, 127, SEARCH_MSG )
-		set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
-		show_hudmessage(id, message)
+		client_print(id,print_center,"%s",message)
 		spores_launch(id)
 	}
 	else{

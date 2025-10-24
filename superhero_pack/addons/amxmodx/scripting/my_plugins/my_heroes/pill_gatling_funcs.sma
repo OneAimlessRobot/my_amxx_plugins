@@ -78,7 +78,12 @@ public _gatling_set_pillgatling(iPlugin,iParams){
 	//----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,gatling_get_has_yakui(id))) return FMRES_IGNORED;
+	if(!hasRoundStarted()){
+	
+		uncharge_user(id)
+		return FMRES_IGNORED
+	}
 	
 	
 	static button;
@@ -106,6 +111,7 @@ public CmdStart(id, uc_handle)
 			else {
 				launch_pill(id)
 			}
+			return FMRES_IGNORED
 			
 		}
 		if(button & IN_USE){
@@ -144,13 +150,6 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-client_isnt_hitter(gatling_user){
-	new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-	if(result) return true
-	
-	return !gatling_get_has_yakui(gatling_user)
-	
-}
 
 	//----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -316,7 +315,7 @@ public pill_think(ent)
 		return;
 	}
 	new id=pev(ent,pev_owner)
-	if ( client_isnt_hitter(id )) {
+	if (!client_hittable(id,gatling_get_has_yakui(id))) {
 		remove_entity(ent)
 		return
 	}
@@ -421,7 +420,9 @@ public vexd_pfntouch(pToucher, pTouched)
 			if(client_hittable(pTouched))
 			{
 				
-				make_effect_direct(pTouched,oid,pill_fx[pToucher],gatling_get_hero_id())
+				if((sh_get_user_effect(pTouched)<KILL)||(sh_get_user_effect(pTouched)>BATH)){
+					make_effect_direct(pTouched,oid,pill_fx[pToucher],gatling_get_hero_id())
+				}
 				remove_entity(pToucher)
 			}
 		}
@@ -443,8 +444,6 @@ public remove_pill(id_pill){
 }
 public plugin_precache()
 {
-	m_trail = precache_model("sprites/smoke.spr")
-	
 	precache_model("models/shell.mdl")
 	precache_model(GATLING_P_MODEL)
 	precache_model(GATLING_V_MODEL)

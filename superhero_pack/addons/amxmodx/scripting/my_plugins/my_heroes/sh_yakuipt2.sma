@@ -16,7 +16,6 @@ new const gHeroName[] = "Yakui Mk2"
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
 
-new hud_sync
 
 new max_pills
 new max_rockets
@@ -43,7 +42,6 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yakui_init")
 	register_srvcmd("yakui_kd", "yakui_kd")
 	shRegKeyDown(gHeroName, "yakui_kd")
-	hud_sync= CreateHudSyncObj()
 }
 
 //----------------------------------------------------------------------------------------------
@@ -52,12 +50,7 @@ public player_prethink_yakui_weapon(id)
 	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()) return FMRES_IGNORED
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	/*client_print(id, print_center, "Shot a pill 0!!!!! Atacas? %s Equipped? %s Yakui? %s",
-					(entity_get_int(id, EV_INT_button) & IN_ATTACK)?"Sim":"Nao",
-					(wpnid == CSW_M249) ?"Sim":"Nao",
-					gHasYakui[id]?"Sim":"Nao"
-					)
-	*/
+	
 	
 	if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==CSW_M249)){
 		new has_rockets=gatling_get_rockets(id)
@@ -105,12 +98,10 @@ public yakui_init()
 		init_yakui(id)
 		
 		yakui_tasks(id)
-		set_task(0.1,"yakui_hud_task",id+YAKUI_HUD_TASKID,"",0,"b")
 	}
 	else{
 	
 		clear_yakui(id)
-		remove_task(id+YAKUI_HUD_TASKID)
 		remove_task(id+YAKUI_MORPH_TASKID)
 	}
 	
@@ -163,18 +154,6 @@ if ( sh_is_active() && is_user_alive(id) && gatling_get_has_yakui(id) ) {
 
 }
 
-public yakui_hud_task(id){
-	id-=YAKUI_HUD_TASKID
-	
-	if(!is_user_alive(id)||!is_user_connected(id)||!gatling_get_has_yakui(id)) return
-	new hud_msg[256]
-	format(hud_msg,255,"[SH] %s:^nPill gatling engaged? %s^nRoquetos engaged? %s^nWeedle engaged? %s^nNum rocketos: %d^nNum pills: %d",gHeroName,gatling_get_pillgatling(id)?"OH HELL YES MY BOY":"Naaaah....",gatling_get_rockets(id)?"AWWWWW MY GAWD":"NAW G..... :|",gatling_get_needle(id)?"lets end the true drug crisis!":"Nepia bro...",gatling_get_num_rockets(id),gatling_get_num_pills(id));
-		
-	set_hudmessage(80, 240, 100, 0.0, 0.4, 0, 0.0, 1.0)
-	ShowSyncHudMsg(id,hud_sync, "%s", hud_msg)
-
-
-}
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {

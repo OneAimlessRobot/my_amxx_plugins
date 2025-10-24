@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 
@@ -17,21 +18,18 @@ new Float:curr_disarm_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time
 
-new hud_sync_charge
-new sprite_blast
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
-	
+	g_msgFade = get_user_msgid("ScreenFade");
 	arrayset(mine_loaded,true,SH_MAXSLOTS+1)
 	arrayset(mine_armed,0,SH_MAXSLOTS+1)
 	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("sapper_mine_min_charge_time", "1.0")
-	hud_sync_charge=CreateHudSyncObj()
 }
 
 public plugin_natives(){
@@ -109,7 +107,7 @@ public _plant_mine(iPlugins,iParams)
 {
 	new id= get_param(1)
 	
-	if(!sapper_get_has_sapper(id)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!client_hittable(id,sapper_get_has_sapper(id))) return FMRES_IGNORED;
 	
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
@@ -131,7 +129,7 @@ public _plant_mine(iPlugins,iParams)
 	new parm[2];
 	parm[0]=id;
 	parm[1]=ent
-	
+	sh_chat_message(id,sapper_get_hero_id(),"You have %d mines left",sapper_get_num_mines(id));
 	set_task(MINE_ARMING_TIME,"mine_arm_task",ent+MINE_ARMING_TASKID, parm, 2, "a",1)
 	
 	return PLUGIN_CONTINUE;
@@ -180,41 +178,20 @@ public mine_wait_task(parm[],mine_taskid){
 
 public blow_mine_up(ent, id)
 {
+		if(pev_valid(ent)!=2){
+		
+			return;
+		}
 		new attacker = entity_get_edict(ent, EV_ENT_owner);
+		if(!client_hittable(attacker,sapper_get_has_sapper(attacker))){
+		
+			return
+		}
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		new iOrigin[3];
-		for(new i=0;i<3;i++)
-			iOrigin[i] = floatround(fOrigin[i]);
+		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE)
 		
-		message_begin(MSG_BROADCAST,SVC_TEMPENTITY, iOrigin);
-		write_byte(TE_EXPLOSION);
-		write_coord(iOrigin[0]);
-		write_coord(iOrigin[1]);
-		write_coord(iOrigin[2]);
-		write_short(sprite_blast);
-		write_byte(32); // scale
-		write_byte(20); // framerate
-		write_byte(0);// flags
-		message_end();
-		new entlist[33];
-		new numfound = find_sphere_class(ent,"player", EXPLODE_RADIUS ,entlist, 32);
-		
-		for (new i=0; i < numfound; i++)
-		{		
-			new pid = entlist[i];
-			
-			new client_name[128];
-			get_user_name(pid,client_name,127);
-			new Float:vic_origin[3],Float:mine_origin[3];
-			entity_get_vector(pid,EV_VEC_origin,vic_origin);
-			entity_get_vector(ent,EV_VEC_origin,mine_origin);
-			new Float:distance=vector_distance(vic_origin,mine_origin);
-			new Float:falloff_coeff= floatmin(1.0,distance/MINE_DAMAGE_FALLOFF_DIST);
-			sh_extra_damage(pid,attacker,floatround(MINE_DAMAGE-(MINE_DAMAGE/2.0)*falloff_coeff),"Mine");
-			sh_chat_message(attacker,sapper_get_hero_id(),"%s stepped on your mine!",client_name);
-		}
 		new parm[2];
 		parm[0]=id;
 		parm[1]=ent;
@@ -253,8 +230,7 @@ public disarm_task(param[],id){
 	format(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
 	100.0*(curr_disarm_charge[id]/min_charge_time)
 	);
-	set_hudmessage(mine_color[0], mine_color[1], mine_color[2], -1.0, -1.0, mine_color[3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	sapper_update_disarming(id)
 	if(!mine_get_mine_disarming(id)){
 		new parm[2];
@@ -395,13 +371,18 @@ if(!(butnprs&IN_DUCK)){
 }
 public charge_task(id){
 	id-=MINE_CHARGE_TASKID
+	if(!hasRoundStarted()){
+	
+		uncharge_user(id)
+		return
+	
+	}
 	new hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],MINE_CHARGE_PERIOD)
 	format(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
 	100.0*(curr_charge[id]/min_charge_time)
 	);
-	set_hudmessage(mine_color[0], mine_color[1], mine_color[2], -1.0, -1.0, mine_color[3], 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	sapper_update_planting(id)
 	if(!mine_get_mine_charging(id)){
 		plant_mine(id)
@@ -439,11 +420,6 @@ uncharge_user(id){
 	
 	
 }
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
 public _clear_mines(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, MINE_CLASSNAME)
@@ -455,17 +431,7 @@ while(grenada) {
 }
 public plugin_precache()
 {
-
+precache_explosion_fx()
 precache_model( MINE_WORLD_MDL );
-	
-sprite_blast = precache_model("sprites/dexplo.spr");
+
 }
-public glow(id, r, g, b,a, on) {
-if(on){
-set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderTransAlpha, a)
-}
-else {
-set_rendering(id, kRenderFxNone, r, g, b,  kRenderNormal, 255)
-entity_set_float(id, EV_FL_renderamt, 1.0)
-}
-} 

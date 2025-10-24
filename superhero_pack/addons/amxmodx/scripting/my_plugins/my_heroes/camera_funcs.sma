@@ -5,6 +5,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "camera_inc/sh_camera_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
@@ -23,7 +24,6 @@ new user_cameras[SH_MAXSLOTS+1][MAX_CAMERAS]
 new user_curr_camera[SH_MAXSLOTS+1]
 new Float:camera_charge[SH_MAXSLOTS+1]
 new Float:camera_hp
-new hud_sync_charge
 new camman_camera_maxalpha
 new camman_camera_minalpha
 new Float:max_camera_charge
@@ -50,7 +50,6 @@ public plugin_init(){
 	register_cvar("camman_camera_maxalpha", "100.0")
 	register_cvar("camman_camera_minalpha", "1000.0")
 	register_event("DeathMsg","death","a")
-	hud_sync_charge=CreateHudSyncObj()
 	register_forward(FM_Think, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 }
@@ -81,7 +80,7 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public camera_controls(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!camman_get_has_camman(id)||!hasRoundStarted()||!camman_get_num_cameras(id)||!looking_with_camera[id]) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,camman_get_has_camman(id))||!camman_get_num_cameras(id)||!looking_with_camera[id]) return FMRES_IGNORED;
 	
 	new Float:zoom;
 	pev(id,pev_fov,zoom)
@@ -415,14 +414,11 @@ public laser_on_player_think(ent){
 		new CsTeams:owner_team=cs_get_user_team(owner)
 		new CsTeams:target_team=cs_get_user_team(iHit)
 	
-		if(owner_team==target_team){
-		
-			sh_chat_message(owner,camman_get_hero_id(),"Teamate detetado!");
-		
-		}
-		else{
-			sh_chat_message(owner,camman_get_hero_id(),"Inimigo detetado!");
-			sh_effect_user_direct(iHit,owner,GLOW,camman_get_hero_id())
+		if(owner_team!=target_team){
+			if((sh_get_user_effect(iHit)<KILL)||(sh_get_user_effect(iHit)>BATH)){
+				new fx_num=sh_effect_user_direct(iHit,owner,GLOW,camman_get_hero_id())
+				gatling_set_fx_num(iHit,fx_num);
+			}
 		}
 	}
 	return
@@ -462,13 +458,11 @@ public camera_think(ent)
 	static Float:beamtime
 	pev(ent, pev_fuser1, beamtime)
 	if ( beamtime <= gametime ) {
-		//Should get called every second
 		set_pev(ent, pev_fuser1, gametime + (1.0/CAMERA_FRAMERATE))
 	}
 	camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
 	if(looking_with_camera[owner]){
 		
-		//client_print(owner,print_center,"Battery charge: %0.2f seconds left!",camera_charge[owner])
 		laser_on_player_think(ent)
 		update_camera_aiming(owner,ent)
 	}
@@ -519,7 +513,6 @@ public remove_camera(parm[3]){
 	if(parm[2]>=0){
 		user_cameras[parm[0]][parm[2]]=-1
 	}
-	sh_chat_message(parm[0],camman_get_hero_id(),"The camera with index %d and in-user id %d was removed (hopefully)",parm[1],parm[2]);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -728,13 +721,18 @@ camman_update_disarming(id){
 }
 public charge_task(id){
 	id-=CAMERA_CHARGE_TASKID
+	if(!hasRoundStarted()){
+	
+		uncharge_user(id)
+		return
+	
+	}
 	new hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],CAMERA_CHARGE_PERIOD)
 	format(hud_msg,127,"[SH]: Curr camera charge: %0.2f^n",
 	100.0*(curr_charge[id]/min_charge_time)
 	);
-	set_hudmessage(camera_color[0], camera_color[1], camera_color[2], -1.0, -1.0, 0, 0.0, 0.5,0.0,0.0,1)
-	ShowSyncHudMsg(id, hud_sync_charge, "%s", hud_msg)
+	client_print(id,print_center,"%s",hud_msg)
 	camman_update_planting(id)
 	if(!camera_get_camera_charging(id)){
 		plant_camera(id)

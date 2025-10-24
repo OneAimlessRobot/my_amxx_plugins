@@ -47,7 +47,7 @@ public CmdStart(id, uc_handle)
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
-	
+		return FMRES_IGNORED
 	}
 	
 	
@@ -65,6 +65,7 @@ public CmdStart(id, uc_handle)
 			{
 				client_print(id, print_center, "You are out of chaffs")
 				sh_drop_weapon(id,CSW_SMOKEGRENADE,true)
+				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}
@@ -77,6 +78,10 @@ public CmdStart(id, uc_handle)
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
 				
 				
+				launch_chaff(id)
+				client_print(id,print_center,"You have %d chaffs left",
+				teliko_get_num_chaffs(id)
+				);
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}

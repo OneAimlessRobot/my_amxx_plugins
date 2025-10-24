@@ -144,9 +144,7 @@ public status_hud(id){
 		
 	}
 	new hud_msg[301];
-	format(hud_msg,300,"[SH] ksun:^nScanner: %s^nCurrent number of sleep grenades: %d^nCurrent number of valid kills: %d^nNumber of supply points: %d^n",
-					is_valid_ent(get_player_scanner(id))&&(get_player_scanner(id)>0)? "ON":"OFF",
-					ksun_get_num_sleep_nades(id),
+	format(hud_msg,300,"[SH] ksun:^nCurrent number of valid kills: %d^nNumber of supply points: %d^n",
 					ksun_get_num_available_spores(id),
 					ksun_get_player_supply_points(id));
 	

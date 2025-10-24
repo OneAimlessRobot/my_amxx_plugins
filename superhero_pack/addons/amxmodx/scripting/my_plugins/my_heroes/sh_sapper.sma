@@ -3,6 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define SAPPER_TASKID 12812
@@ -14,7 +15,6 @@ new gNumMines[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 
 
-new hud_sync
 new num_mines
 new mine_cooldown
 new disarmable
@@ -33,10 +33,10 @@ public plugin_init()
 	register_cvar("sapper_teamglow_on", "1")
 	register_cvar("sapper_mine_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
 	sapper_set_hero_id(gHeroID)
 	register_event("DeathMsg","death","a")
+	g_msgFade = get_user_msgid("ScreenFade");
 	
 	register_srvcmd("sapper_init", "sapper_init")
 	shRegHeroInit(gHeroName, "sapper_init")
@@ -124,7 +124,6 @@ public sapper_init()
 		reset_sapper_user(id)
 		
 		sapper_model(id)
-		set_task( 0.2, "sapper_loop", id+SAPPER_TASKID, "", 0, "b")
 	}
 	else{
 		reset_sapper_user(id)
@@ -144,16 +143,6 @@ public reset_sapper_user(id){
 	
 }
 
-public status_hud(id){
-	
-	new hud_msg[1000];
-	format(hud_msg,500,"[SH] %s:^nNumber of mines: %d^n",gHeroName,sapper_get_num_mines(id));
-	
-	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -172,19 +161,6 @@ num_mines=get_cvar_num("sapper_mines");
 mine_cooldown=get_cvar_num("sapper_mines");
 disarmable=get_cvar_num("sapper_disarmable");
 teamglow_on=get_cvar_num("sapper_teamglow_on")
-}
-//----------------------------------------------------------------------------------------------
-public sapper_loop(id)
-{
-id -= SAPPER_TASKID
-
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasSapper[id]){
-	
-	return PLUGIN_HANDLED
-	
-}
-status_hud(id)
-return PLUGIN_HANDLED
 }
 public sh_client_spawn(id)
 {

@@ -632,7 +632,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
 		switch(is_teamate){
 			case 0:{
-					if(sh_get_user_effect(id)!=GLOW){
+					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 							new fx_num=sh_effect_user_direct(id,attacker,GLOW,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
 							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
@@ -654,7 +654,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			}
 			case 1:{
 					if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
-						if(sh_get_user_effect(id)!=METYLPHENIDATE){
+					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
 							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)

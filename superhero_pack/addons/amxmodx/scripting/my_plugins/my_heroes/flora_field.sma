@@ -6,26 +6,6 @@
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
-/*
-* 
-flora_field_max_ammount 10
-flora_field_cooldown 9.0
-flora_field_radius 1000.0
-flora_field_time 30.0
-*/
-
-
-/**
- * 
- * 
- * NOTES:
- * in each field entity,
- * pev_fuser1 is the charging time
- * pev_fuser2 is the active time left
- * 
- * 
- * 
- */
 #define PLUGIN "Superhero flora shield funcs"
 #define VERSION "1.0.0"
 #define AUTHOR "NULLTick"

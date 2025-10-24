@@ -32,9 +32,6 @@ public plugin_init()
 	
 	register_srvcmd("roberto_kd", "roberto_kd")
 	shRegKeyDown(gHeroName, "roberto_kd")
-	/*register_srvcmd("roberto_ku", "roberto_ku")
-	shRegKeyUp(gHeroName, "roberto_ku")
-	*/
 	register_cvar("roberto_level", "8")
 	arrayset(gHasRoberto,0,sizeof gHasRoberto);
 	register_cvar("roberto_num_balls", "100")
@@ -42,8 +39,6 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
 	roberto_set_hero_id(gHeroID)
-	//register_event("Damage", "lara_damage", "b", "2!0")
-	register_event("DeathMsg","death","a")
 	register_srvcmd("roberto_init", "roberto_init")
 	shRegHeroInit(gHeroName, "roberto_init")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -252,20 +247,6 @@ public sh_client_spawn(id)
 	}
 	
 }
-/*
-public erica_ku()
-{
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if ( !is_user_alive(id)||!gHasErica[id]) return PLUGIN_HANDLED
-	
-	
-	return PLUGIN_HANDLED
-}*/
 public sh_round_end(){
 	
 	clear_balls()
@@ -277,14 +258,4 @@ public plugin_precache()
 	precache_sound(round_lose)
 	
 	
-}
-public death()
-{	
-	new id = read_data(2)
-	if(!is_user_connected(id)||!gHasRoberto[id]) return
-	
-	/*new killer= read_data(1)
-	new killer_name[128]
-	get_user_name(killer,killer_name,127)
-	*/
 }
