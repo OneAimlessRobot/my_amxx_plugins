@@ -1,0 +1,54 @@
+Reason:  Kicked
+Bot 'Slurr' kicked.
+Dropped Slurr from server
+Reason:  Kicked
+Bot 'miesso' kicked.
+Dropped miesso from server
+Reason:  Kicked
+Bot 'DrEdGe FuEgO' kicked.
+Dropped DrEdGe FuEgO from server
+Reason:  Kicked
+Bot 'Savage|420|' kicked.
+Dropped Savage|420| from server
+Reason:  Kicked
+ThrashBrat : i LOVE THIS
+ThrashBrat : its like my tiny little shop or smth
+ThrashBrat : try to get a headshot
+ThrashBrat : with the gun
+*DEAD* ThrashBrat : its a projectile
+ThrashBrat : its a projectile lol
+ThrashBrat : ok if youre bored you can go back. this is more than enough testing. thx for your time!
+ThrashBrat : ok I need to make a bunch of help files
+ThrashBrat : try to type: "/help_of <hero name here>
+ThrashBrat : like you do with "drop"
+doje bu kapus tu : the main thing is
+ThrashBrat : only 1 hero has a proper help page
+doje bu kapus tu : cs 1.6 is already dead
+ThrashBrat : not for me, man. not for me
+doje bu kapus tu : is it worth it to make a server?
+doje bu kapus tu : :D
+ThrashBrat : bro I made this all from scratch (almost). IM literally hosting this
+ThrashBrat : from an apple laptop that runs linux
+ThrashBrat : Who cares if the game is dead
+ThrashBrat : I love this stuff
+doje bu kapus tu : that shit is too much op
+ThrashBrat : wow that shit sent me straight to last week lol
+ThrashBrat : I know! I was testing it
+doje bu kapus tu : exactly
+ThrashBrat : I need to tweak the convars
+doje bu kapus tu : ok so good luck with the server
+ThrashBrat : look in your console when I hit you
+ThrashBrat : with the rifle
+doje bu kapus tu : if you make some progress maybe you can let me know? .D
+ThrashBrat : it sends poems
+doje bu kapus tu : yeah but i dont understand a shit
+doje bu kapus tu : :D
+ThrashBrat : mahahaha WHO CARES
+ThrashBrat : ok sorry you can go now
+ThrashBrat : bye!
+doje bu kapus tu : but an AI can translate it for me  but doesnt matter
+doje bu kapus tu : cya
+Dropped doje bu kapus tu from server
+Reason:  Client sent 'drop'
+Dropped ThrashBrat from server
+Reason:  Server shutting down

@@ -445,6 +445,7 @@ public remove_pill(id_pill){
 public plugin_precache()
 {
 	precache_model("models/shell.mdl")
+	precache_explosion_fx()
 	precache_model(GATLING_P_MODEL)
 	precache_model(GATLING_V_MODEL)
 	precache_sound(jp_fly)
