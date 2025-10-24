@@ -68,8 +68,12 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!tranq_get_has_erica(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,tranq_get_has_erica(id))) return FMRES_IGNORED;
+	if(!hasRoundStarted()){
 	
+		uncharge_user(id)
+	
+	}
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, "weapon_hegrenade", id);
@@ -93,6 +97,12 @@ public CmdStart(id, uc_handle)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
+			}
+			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
+				
+				
+				uncharge_user(id)
+				return FMRES_IGNORED
 			}
 			
 		}
@@ -185,18 +195,6 @@ uncharge_user(id){
 	
 	
 }
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
-
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
-
-}*/
-client_isnt_hitter(gatling_user){
-
-
-return (!tranq_get_has_erica(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
-}
-
 public _clear_mollies(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, MOLLY_CLASSNAME)
@@ -271,21 +269,8 @@ entity_set_string(parm[0], EV_SZ_viewmodel, MOLLY_V_MODEL)
 public mollytrail(parm[])
 {
 new pid = parm[0]
-if (pid)
-{
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 5 )        // width
-write_byte(255)			// r, g, b
-write_byte(255)		// r, g, b
-write_byte(255)			// r, g, b
-write_byte(255) // brightness
 
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-}
+trail(pid,WHITE,10,5)
 }
 
 

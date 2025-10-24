@@ -2,6 +2,8 @@
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 #define PLUGIN "Superhero teliko mk2 pt2"
@@ -16,7 +18,6 @@ new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
 
-new m_trail, blood1,blood2,sprite1
 public plugin_init(){
 	
 	
@@ -39,66 +40,15 @@ public plugin_natives(){
 	
 	
 }
-public make_shockwave(point[3]){
-	
-	
-	
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 21 )
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + 16)
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + floatround(CHAFF_RADIUS))
-	write_short( sprite1 )
-	write_byte( 0 )
-	write_byte(1)		// frame rate in 0.1's
-	write_byte(6)		// life in 0.1's
-	write_byte(8)		// line width in 0.1's
-	write_byte(1)		// noise amplitude in 0.01's
-	write_byte( chaff_color[0])
-	write_byte( chaff_color[1] )
-	write_byte( chaff_color[2] )
-	write_byte( chaff_color[3] )
-	write_byte( 0 )
-	message_end()
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_LAVASPLASH);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + 16)
-	message_end();
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_BLOODSPRITE);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + floatround(CHAFF_RADIUS))
-	write_short(blood2);
-	write_short(blood1);
-	write_byte(255);
-	write_byte(30);
-	message_end();
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_DLIGHT);
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2])
-	write_byte( chaff_color[0])
-	write_byte( chaff_color[1] )
-	write_byte( chaff_color[2] )
-	write_byte( chaff_color[3] )
-	write_byte(8);
-	write_byte(60);
-	message_end();
-	
-}
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!teliko_get_has_teliko(id)||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,teliko_get_has_teliko(id))) return FMRES_IGNORED;
+	if(!hasRoundStarted()){
+	
+		uncharge_user(id)
+	
+	}
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -123,6 +73,12 @@ public CmdStart(id, uc_handle)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
+			}
+			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
+				
+				
+				uncharge_user(id)
+				return FMRES_IGNORED
 			}
 			
 		}
@@ -214,22 +170,6 @@ uncharge_user(id){
 	
 	
 }
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
-
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
-
-}*/
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
-client_isnt_hitter(gatling_user){
-
-
-return (!teliko_get_has_teliko(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-
-}
 
 public _clear_chaffs(iPlugin,iParams){
 
@@ -305,21 +245,7 @@ entity_set_string(parm[0], EV_SZ_viewmodel, CHAFF_V_MODEL)
 public chafftrail(parm[])
 {
 new pid = parm[0]
-if (pid)
-{
-message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-write_byte( TE_BEAMFOLLOW )
-write_short(pid) // entity
-write_short(m_trail)  // model
-write_byte( 10 )       // life
-write_byte( 5 )        // width
-write_byte(255)			// r, g, b
-write_byte(255)		// r, g, b
-write_byte(255)			// r, g, b
-write_byte(255) // brightness
-
-message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-}
+trail(pid,WHITE,10,5)
 }
 public blow_chaff_up(id_chaff){
 id_chaff-=CHAFF_BLAST_TASKID
@@ -339,8 +265,8 @@ vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 new id = Entvars_Get_Edict(id_chaff, EV_ENT_owner)
 new origin[3],dist,i
-make_shockwave(vExplodeAt)
-chaff_fx(vExplodeAt)
+make_shockwave(vExplodeAt,CHAFF_RADIUS,LineColorsWithAlpha[WHITE],1,5,8,4)
+anime_kill_fx(vExplodeAt)
 emit_sound(id_chaff, CHAN_WEAPON, CHAFF_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 for ( i = 1; i <= SH_MAXSLOTS; i++) {
 	
@@ -356,7 +282,6 @@ for ( i = 1; i <= SH_MAXSLOTS; i++) {
 
 new parm[1]
 parm[0]=id
-//set_task(CHAFF_REM_TIME,"remove_chaff",id_chaff+CHAFF_REM_TASKID,parm,1)
 remove_chaff(parm,id_chaff+CHAFF_REM_TASKID)
 }
 
@@ -385,17 +310,6 @@ if(pev(pTouched,pev_solid)==SOLID_BSP){
 }
 }
 
-
-public chaff_fx(origin[3]){
-	
-	message_begin(MSG_ALL, SVC_TEMPENTITY) 
-	write_byte(10)	// TE_LAVASPLASH 
-	write_coord(origin[0]) 
-	write_coord(origin[1]) 
-	write_coord(origin[2]-26) 
-	message_end() 
-	
-}
 public remove_chaff(parm[],id_chaff){
 id_chaff-=CHAFF_REM_TASKID
 if(!is_valid_ent(id_chaff)) return
@@ -406,90 +320,10 @@ remove_entity(id_chaff)
 }
 public plugin_precache()
 {
-m_trail = precache_model("sprites/smoke.spr")
-
+precache_explosion_fx()
 precache_sound("ambience/particle_suck2.wav")
 precache_model("models/w_smokegrenade.mdl")
-blood1 = precache_model("sprites/blood.spr");
-blood2 = precache_model("sprites/bloodspray.spr");
-sprite1 = precache_model("sprites/white.spr")
 engfunc(EngFunc_PrecacheSound, CHAFF_BOUNCE_SFX)
 engfunc(EngFunc_PrecacheSound,CHAFF_EXPLODE_SFX)
 
 }
-/*
-
-public _gatling_set_num_pills(iPlugin,iParams){
-new id= get_param(1)
-new value_to_set=get_param(2)
-gNumPills[id]=value_to_set;
-}
-public _gatling_set_has_yakui(iPlugin,iParams){
-new id= get_param(1)
-new value_to_set= get_param(2)
-gHasYakui[id]=value_to_set;
-}
-public _gatling_get_has_yakui(iPlugin,iParams){
-new id= get_param(1)
-return gHasYakui[id]
-}
-
-public _gatling_get_num_pills(iPlugin,iParams){
-
-
-new id= get_param(1)
-return gNumPills[id]
-
-}
-
-public _gatling_dec_num_pills(iPlugin,iParams){
-
-
-new id= get_param(1)
-gNumPills[id]-= (gNumPills[id]>0)? 1:0
-
-}
-public _gatling_get_fx_num(iPlugin,iParams){
-
-
-new id= get_param(1)
-return gCurrFX[id]
-
-}
-
-public _gatling_set_fx_num(iPlugin,iParams){
-
-
-new id= get_param(1)
-new value_to_set= get_param(2)
-gCurrFX[id]=value_to_set
-
-}
-
-
-public _gatling_get_hero_id(iPlugin,iParams){
-
-return gHeroID
-
-}
-
-public _gatling_set_hero_id(iPlugin,iParams){
-
-
-new value_to_set= get_param(1)
-gHeroID=value_to_set
-
-}
-
-public _gatling_get_pillgatling(iPlugin,iParams){
-new id=get_param(1)
-return gPillGatlingEngaged[id]
-
-}
-public _gatling_set_pillgatling(iPlugin,iParams){
-
-new id= get_param(1)
-new value_to_set= get_param(2)
-gPillGatlingEngaged[id]=value_to_set;
-}
-*/
