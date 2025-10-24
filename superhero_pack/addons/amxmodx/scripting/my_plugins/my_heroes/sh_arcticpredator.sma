@@ -651,7 +651,7 @@ new maxdamage = get_cvar_num("arcticPredator_explode_maxdamage")
 new name[32]
 get_user_name(id,name,31)
 shUnglow(id)
-set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1, 85)
+set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_hudmessage(0,"%s has exploded.",name)
 new FFOn = get_cvar_num("mp_friendlyfire")
 new origin[3], origin1[3]
@@ -696,7 +696,7 @@ if ( gHasArcPredPowers[id] && is_user_alive(id) && is_user_connected(id) && Nigh
 	
 	new messagethree[128]
 	format(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
-	set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1, 155)
+	set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
 	show_hudmessage( id, messagethree)
 }
 }

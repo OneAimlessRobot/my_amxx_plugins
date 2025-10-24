@@ -377,20 +377,20 @@ public give_weapon(admin_index,victim_index,weapon_give)
 	{
 	if (equal(team,"CT"))
 		{
-		set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+		set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 		show_hudmessage(0,"The Counter-Terrorists Have Been Given Weapons")
 		log_amx("%L", LANG_SERVER, "AINO_LOG_WEAPON_CT", adminname)
 		}
 		else if (equal(team,"TERRORIST"))
 		{
-		set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+		set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 		show_hudmessage(0,"The Terrorists Have Been Given Weapons")
 		log_amx("%L", LANG_SERVER, "AINO_LOG_WEAPON_T", adminname)
 		}
 	}
 	else
 	{
-	set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+	set_hudmessage(200, 50, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 	show_hudmessage(0,"%s Has Been Given A Weapon",name)
 	log_amx("%L", LANG_SERVER, "AINO_LOG_WEAPON_PLAYER", adminname, name)
 	}

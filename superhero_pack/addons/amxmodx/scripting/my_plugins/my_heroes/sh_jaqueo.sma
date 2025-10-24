@@ -302,9 +302,6 @@ public jaqueo_morph(id)
 	{
 		cs_set_user_model(id, "jaqueot")
 	}
-	// Message
-	/*set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
-	show_hudmessage(id, "M' ready.")*/
 	
 	gmorphed[id] = true
 	

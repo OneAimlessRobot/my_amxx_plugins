@@ -121,7 +121,7 @@ public client_PreThink(id)
 		g_fDelay[id] = get_gametime()
 	}
 	
-	set_hudmessage(255, 255, 255, -1.0, 0.4, 0, 0.0, 10.0, 0.0, 0.0, 2)
+	set_hudmessage(255, 255, 255, -1.0, 0.4, 0, 0.0, 10.0, 0.0, 0.0)
 	switch(g_NumberID)
 	{
 		case 1: show_hudmessage(id, "%d%d%d%d%d%d%d%d%d%d%d", n(0), rn(), rn(), rn(), rn(), rn(), rn(), rn(), rn(), rn(), rn()) 

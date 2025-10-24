@@ -178,7 +178,7 @@ public lightsOn()
 	get_players(players, player_num, "ac")
 	for (new i = 0; i < player_num; i++) {
 		id = players[i]
-		set_hudmessage(0, 128, 0, -1.0, 0.65, 2, 0.02, 6.0, 0.01, 0.1, 62)
+		set_hudmessage(0, 128, 0, -1.0, 0.65, 2, 0.02, 6.0, 0.01, 0.1)
 		show_hudmessage(id,"Normal Lighting Resotred")
 		if (NightVisionUse[id]) StopNVG(id)
 	}
@@ -255,7 +255,7 @@ public pitch_loop()
 		if(PitchTimer[id] > 0) {
 			new message[64]
 			format(message, 63, "PitchBlack - %d seconds left", PitchTimer[id])
-			set_hudmessage(255, 255, 255, -1.0, 0.3, 0, 1.0, 1.1, 0.0, 0.0, 4)
+			set_hudmessage(255, 255, 255, -1.0, 0.3, 0, 1.0, 1.1, 0.0, 0.0)
 			show_hudmessage(id, message)
 			PitchTimer[id]--
 			continue
@@ -271,7 +271,7 @@ public pitch_loop()
 			continue
 		}
 		else {
-			set_hudmessage(255, 255, 255, -1.0, 0.65, 2, 0.02, 2.0, 0.01, 0.1, 62)
+			set_hudmessage(255, 255, 255, -1.0, 0.65, 2, 0.02, 2.0, 0.01, 0.1)
 			show_hudmessage(id,"Pitch Black Mode - Total Darkness")
 			continue
 		}

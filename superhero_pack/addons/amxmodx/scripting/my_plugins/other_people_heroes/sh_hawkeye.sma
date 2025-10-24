@@ -151,12 +151,12 @@ public hawkeye_damage(id)
 		new damage = read_data(2)
 
 		if ( is_user_connected(attacker) && g_hasHawkeye[attacker] ) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02, 78)
+			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(attacker, "%i", damage)
 		}
 
 		if ( is_user_connected(id) && g_hasHawkeye[id] ) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 4.0, 0.02, 0.02, 80)
+			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(id, "%i", damage)
 		}
 	}

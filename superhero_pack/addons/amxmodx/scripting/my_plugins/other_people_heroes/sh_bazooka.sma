@@ -380,7 +380,7 @@ public fire_missile(id)
 			if(using_menu[id])
 				show_main_menu(id)
 
-			set_hudmessage(0,255,0, -1.0, 0.30, 0, 0.02, 3.0, 1.01, 1.1, 4)
+			set_hudmessage(0,255,0, -1.0, 0.30, 0, 0.02, 3.0, 1.01, 1.1)
 			show_hudmessage(id,"ANTIMISSILE RADAR DEACTIVATED")
 			return PLUGIN_HANDLED
 		}
@@ -459,7 +459,7 @@ public fire_missile(id)
 		is_scan_rocket[id] = 1
 		set_task(0.2,"anti_missile_radar",id,"",0,"b")
 		set_task(0.3,"amr_pay",id,"",0,"b")
-		set_hudmessage(0,255,0, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1, 54)
+		set_hudmessage(0,255,0, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1)
 		show_hudmessage(id,"ANTIMISSILE RADAR SYSTEM ACTIVATED^nAim at missile you want to shoot down")
 	}
 	return PLUGIN_HANDLED
@@ -518,7 +518,7 @@ public anti_missile_radar(id)
 	}
 	if(tid > SH_MAXSLOTS){
 		client_cmd(id,"spk fvox/beep")
-		set_hudmessage(255,10,10, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1, 54)
+		set_hudmessage(255,10,10, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1)
 		show_hudmessage(id,"ANTIMISSILE LOCKED ONTO TARGET")
 		is_scan_rocket[id] = 0
 		remove_task(id)
@@ -529,7 +529,7 @@ public anti_missile_radar(id)
 //----------------------------------------------------------------------------------------------
 public amr_pay(id)
 {
-	set_hudmessage(255,0,0, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1, 54)
+	set_hudmessage(255,0,0, -1.0, 0.26, 0, 0.02, 3.0, 1.01, 1.1)
 	if(radar_batt[id] < 1){
 		show_hudmessage(id,"WARNING: ANTIMISSILE RADAR SYSTEM FAILURE")
 		client_print(id,print_center,"^n^nBattery is dead")
@@ -1225,7 +1225,7 @@ public rocket_fuel_timer(args[]){
 	emit_sound(ent, CHAN_WEAPON, "debris/beamstart8.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM )
 	emit_sound(ent, CHAN_VOICE, "ambience/rocket_steam1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	if(args[11] == 1){
-		set_hudmessage(250,10,10,-1.0,0.45, 0, 0.0, 1.5, 0.5, 0.15, 54)
+		set_hudmessage(250,10,10,-1.0,0.45, 0, 0.0, 1.5, 0.5, 0.15)
 		show_hudmessage(id,"WARNING: FUEL TANK EMPTY^nCONTROLS DISENGAGED")
 	}
 	set_task(0.1,"guide_rocket_comm",ent,args,16,"b")
@@ -1255,7 +1255,7 @@ show_missile_inv(id){
 		for(new i=1;i<8;i++)
 			sum += missile_inv[id][i]
 
-		set_hudmessage(255, 10, 10, 0.80, 0.60, 0, 0.02, 6.0, 1.01, 1.1, 55)
+		set_hudmessage(255, 10, 10, 0.80, 0.60, 0, 0.02, 6.0, 1.01, 1.1)
 		n += format( Message[n],len-n,"Common Missile  ( %d )^n",missile_inv[id][1])
 		n += format( Message[n],len-n,"Laser Guided Missile  ( %d )^n",missile_inv[id][2])
 		n += format( Message[n],len-n,"Gun Camera Missile  ( %d )^n",missile_inv[id][3])

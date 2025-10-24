@@ -394,7 +394,7 @@ public FwdTouchPlayer( Ball, id ) {
 		entity_set_int( Ball, EV_INT_iuser1, id );
 		beam(10)
 		emit_sound(Ball, CHAN_ITEM, gotball, 1.0, ATTN_NORM, 0, PITCH_NORM);
-		set_hudmessage(255, 20, 20, -1.0, 0.4, 1, 1.0, 1.5, 0.1, 0.1, 2)
+		set_hudmessage(255, 20, 20, -1.0, 0.4, 1, 1.0, 1.5, 0.1, 0.1)
 		show_hudmessage(id,"*** YOU HAVE THE BALL! ***")
 		// set_user_maxspeed(id, 230.0)
 	}

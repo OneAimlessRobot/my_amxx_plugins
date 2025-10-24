@@ -100,7 +100,7 @@ public graciete_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasGraciete[id] ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "Graciete ready.")
 	cs_set_user_model(id, "graciete")
 	
@@ -123,7 +123,7 @@ public graciete_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "Mission failed.")
 	}
 }

@@ -123,7 +123,7 @@ public shade_kd()
 	// shade Messsage
 	new message[128]
 	format(message, 127, "Created a dust-storm!" )
-	set_hudmessage(0,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+	set_hudmessage(0,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_hudmessage(id, message)
 	emit_sound(id,CHAN_STATIC, g_shadeSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
 
@@ -147,7 +147,7 @@ public shade_loop()
 				g_shadeTimer[id]--
 				new message[128]
 				format(message, 127, "Dust storm created.", g_shadeTimer[id] )
-				set_hudmessage(0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0,4)
+				set_hudmessage(0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 				show_hudmessage( id, message)
 				set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
 			}

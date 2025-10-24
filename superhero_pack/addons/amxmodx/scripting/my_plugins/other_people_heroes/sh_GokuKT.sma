@@ -161,7 +161,7 @@ public gokukt_loop()
 			if ( GokuKTTimer[id] > 0 ) {
 				GokuKTTimer[id]--
 				shGlow(id,255,0,0)
-				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0, 4)
+				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0)
 				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id])
 			}
 			else if ( GokuKTTimer[id] == 0 ) {
@@ -216,7 +216,7 @@ public gokukt_kaiokenmode(id)
 		}
 			
 			
-		set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0, 4)
+		set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
 		show_hudmessage(id, "5 Times x Kaioken! Haaaa!")
 		emit_sound(0, CHAN_AUTO, "shmod/kaiokenbonini.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		powerup_effect(parm)

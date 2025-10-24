@@ -200,7 +200,7 @@ stock draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM}){
 stock superhero_morph_message(id,message_text[]){
 
 	if(is_user_connected(id)){
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, message_text)
 	}
 

@@ -747,7 +747,7 @@ public goku_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 19)
 
-					set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Goku - You've turned Super Saiyan")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup1.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -764,7 +764,7 @@ public goku_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 39)
 
-					set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Goku - You've turned Super Saiyan 2")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup2.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -781,7 +781,7 @@ public goku_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 59)
 
-					set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Goku - You've turned Super Saiyan 3")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup3.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -800,7 +800,7 @@ public goku_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 79)
 
-					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Goku - You've turned Super Saiyan 4")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup4.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -886,7 +886,7 @@ public shake_n_stun(id)
 			// Let them know why they get shaken and stunned, except the person that leveled
 			new gokuName[32]
 			get_user_name(id, gokuName, 31)
-			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0, 84)
+			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
 			show_hudmessage(vic, "Goku - %s has turned Super Saiyan 4", gokuName)
 		}
 	}

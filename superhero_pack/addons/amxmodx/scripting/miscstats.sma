@@ -960,7 +960,7 @@ public bombTimer()
 				g = 255 - r
 			}
 
-			set_hudmessage(r, g, 0, -1.0, 0.75, g_C4Timer <= 10 ? 1 : 0, 0.01, 1.1, 0.001, 0.001, .channel = -1)
+			set_hudmessage(r, g, 0, -1.0, 0.75, g_C4Timer <= 10 ? 1 : 0, 0.01, 1.1, 0.001, 0.001)
 			show_hudmessage(0, "C4: %ds", g_C4Timer)
 		}
 		if (BombCountVoice)

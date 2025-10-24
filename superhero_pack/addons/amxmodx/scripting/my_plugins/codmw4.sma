@@ -3475,7 +3475,7 @@ public PokaziInformacije(id)
 		if(!target)
 			return PLUGIN_CONTINUE;
 		
-		set_hudmessage(-122, 255, 0, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
+		set_hudmessage(-122, 255, 0, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0);
 		new buff[128];
 		PrepareArray(buff,128,1)
 		ExecuteForward(fwForwards[get_class_name_fwd],result,klasa_igraca[target],buff);
@@ -3508,22 +3508,22 @@ public PokaziInformacije(id)
 	ShowSyncHudMsg(id, SyncHudObj, "[Class: %s]^n[Experience: %i/%i]^n[Level: %i]^n[HP: %d]^n[Item: %s]^n[GB: %i]^n[Mod by Romanov]", buff, get_PlayerXp(id),player_xp_to_next_level,get_PlayerLvl(id), get_user_health(id), buffperk, player_gb);
 	if(broj_medkit_igraca[id] != 0)
 	{
-		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
+		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0);
 		ShowSyncHudMsg(id, SyncHudObj2, "[Medkit: %i]", broj_medkit_igraca[id])
 	}
 	if(broj_raketa_igraca[id] != 0)
 	{
-		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
+		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0);
 		ShowSyncHudMsg(id, SyncHudObj2, "[Rakete: %i]", broj_raketa_igraca[id])
 	}
 	if(broj_min_igraca[id] != 0)
 	{
-		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
+		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0);
 		ShowSyncHudMsg(id, SyncHudObj2, "[Mine: %i]", broj_min_igraca[id])
 	}
 	if(broj_dinamita_igraca[id] != 0)
 	{
-		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0, 2);
+		set_hudmessage(240, 220, 200, 0.6, -1.0, 0, 0.0, 0.3, 0.0, 0.0);
 		ShowSyncHudMsg(id, SyncHudObj2, "[Dinamit: %i]", broj_dinamita_igraca[id])
 	}	
 	return PLUGIN_CONTINUE;

@@ -267,7 +267,7 @@ public psychosis_task(id){
 	gPsychosisTime[id]
 	);
 	gPsychosisTime[id]--
-	set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0,1)
+	set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	sh_set_rendering(id, LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
@@ -1140,7 +1140,7 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 
 			if ( distanceBetween < floatround(explode_radius) ) {
-				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1, 85)
+				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 				show_hudmessage(a, "%s LOST IT!!!!!", name)
 			}
 		}

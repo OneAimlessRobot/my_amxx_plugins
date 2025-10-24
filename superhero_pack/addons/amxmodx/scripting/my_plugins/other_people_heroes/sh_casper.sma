@@ -175,7 +175,7 @@ public casper_setghost(id)
 	else {
 		format(message, 127, "Casper - You have entered Ghost Mode!")
 	}
-	set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 2.0, 0.0, 0.0, 17)
+	set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 2.0, 0.0, 0.0)
 	show_hudmessage(id, message)
 }
 //---------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ public casper_removeghost(id)
 		// Let them know they are no longer in Ghost Mode
 		new message[128]
 		format(message, 127, "Casper - You have left Ghost Mode!" )
-		set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 2.0, 0.0, 0.0,17)
+		set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 2.0, 0.0, 0.0)
 		show_hudmessage(id, message)
 	}
 

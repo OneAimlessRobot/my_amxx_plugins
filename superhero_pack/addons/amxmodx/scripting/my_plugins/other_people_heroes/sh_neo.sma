@@ -200,7 +200,7 @@ public neo_morph(id)
 	cs_set_user_model(id, "Neo")
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "You are now Neo")
 	
 	gmorphed[id] = true
@@ -210,7 +210,7 @@ public neo_unmorph(id)
 {
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "You arent Neo anymore")
 		
 		cs_reset_user_model(id)

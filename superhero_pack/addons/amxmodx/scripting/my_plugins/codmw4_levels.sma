@@ -204,7 +204,7 @@ public lvlPlayerUp(iPlugin,iParams){
 		}
 		if(leveled_up){
 		
-			set_hudmessage(245, 200, 25, -1.0, 0.25, 0, 1.0, 2.0, 0.1, 0.2, 2);
+			set_hudmessage(245, 200, 25, -1.0, 0.25, 0, 1.0, 2.0, 0.1, 0.2);
 			ShowSyncHudMsg(id, SyncHudObj3, "Dobrodosao na %i level !", level_igraca[id]);
 			client_cmd(id, "spk QTM_CodMod/levelup");
 		}

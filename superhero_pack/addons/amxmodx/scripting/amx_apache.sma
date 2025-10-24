@@ -801,7 +801,7 @@ public client_PreThink(id)
 			
 			entity_set_vector(grabbed[id], EV_VEC_velocity, velocity)
 		}
-		set_hudmessage(255, 255, 255, -2.0, 0.76, 0, 1.0, 0.01, 0.1, 0.2, 4)
+		set_hudmessage(255, 255, 255, -2.0, 0.76, 0, 1.0, 0.01, 0.1, 0.2)
 		show_hudmessage(id, " [APACHE] Speed: %i, Health: %i", apache_speed[id], floatround(entity_get_float(apaches[id], EV_FL_health) - 5000))
 	}
 	

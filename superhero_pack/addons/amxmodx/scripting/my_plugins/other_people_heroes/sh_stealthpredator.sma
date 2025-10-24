@@ -160,7 +160,7 @@ public stealth_kd()
 	
 
 	// MODE MESSAGE
-	set_hudmessage(0, 0, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0, 4)
+	set_hudmessage(0, 0, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
 	show_hudmessage(id, "Stealth Mode", gHeroName)
 
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -196,7 +196,7 @@ public stealth_ku()
 		
 
 		// MODE MESSAGE
-		set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0, 4)
+		set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
 		show_hudmessage(id, "Normal Mode", gHeroName)
 		
 		g_usingPower[id] = false

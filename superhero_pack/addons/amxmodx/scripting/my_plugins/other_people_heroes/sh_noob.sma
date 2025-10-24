@@ -282,7 +282,7 @@ public changeWeapon(id)
 	if ((arrows != 0) && arrows >= 0 ) {
 		new message[128]
 		format(message, 127, "You Have %d arrows left",arrows)
-		set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+		set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 		show_hudmessage(id, message)
 	}
 	return PLUGIN_CONTINUE

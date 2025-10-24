@@ -210,7 +210,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_money=cs_get_user_money(ent)
 			format(hud_msg,127,"[SH] %s: Money of %s: %d+%d",gHeroName,client_name,client_money,gLeylaUserMoney[ent])
-			set_hudmessage(money_color[0], money_color[1], money_color[2], -1.0, -1.0, money_color[3], 0.0, 0.5,0.0,0.0,1)
+			set_hudmessage(money_color[0], money_color[1], money_color[2], -1.0, -1.0, money_color[3], 0.0, 0.5,0.0,0.0)
 			ShowSyncHudMsg(id, hud_sync_money, "%s", hud_msg)
 			
 		}	

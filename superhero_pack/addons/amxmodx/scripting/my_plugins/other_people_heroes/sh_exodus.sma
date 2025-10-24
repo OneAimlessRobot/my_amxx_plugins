@@ -248,7 +248,7 @@ public set_grabbed(id, targetid)
 	get_user_name(targetid, vicName, 31)
 	get_user_name(id, idName, 31)
 
-	set_hudmessage(255, 255, 0, -1.0, 0.30, 0, 1.0, 3.0, 0.0, 0.0, 6)
+	set_hudmessage(255, 255, 0, -1.0, 0.30, 0, 1.0, 3.0, 0.0, 0.0)
 	show_hudmessage(targetid, "%s has telekinetically grabbed you", idName)
 	show_hudmessage(id, "Telekinetically grabbed:  %s", vicName)
 }
@@ -260,7 +260,7 @@ public exodus_timeloop(id)
 	if ( g_grabTimer[id] > 0 && g_grabTimer[id] < 11 ) {
 		new message[128]
 		format(message, 127, "%d second%s left of Telekinetic Grab", g_grabTimer[id], g_grabTimer[id] == 1 ? "" : "s")
-		set_hudmessage(255, 255, 0, -1.0, 0.32, 0, 1.0, 1.0, 0.0, 0.0, 4)
+		set_hudmessage(255, 255, 0, -1.0, 0.32, 0, 1.0, 1.0, 0.0, 0.0)
 		show_hudmessage(id, message)
 	}
 	else if ( g_grabTimer[id] == 0 ) {

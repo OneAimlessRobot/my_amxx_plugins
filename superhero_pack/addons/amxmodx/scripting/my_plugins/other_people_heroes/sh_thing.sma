@@ -58,14 +58,14 @@ public Thing_damage(id)
   new ThingLevel = floatround(get_cvar_float("Thing_weapon_percent") * 100)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && gHasThingPower[id] && weapon!=CSW_KNIFE ) {
     shAddHPs(id, damage, 500 )
-    set_hudmessage(0, 100, 200, 0.05, 0.60, 1, 0.1, 2.0, 0.1, 0.1, 80)
+    set_hudmessage(0, 100, 200, 0.05, 0.60, 1, 0.1, 2.0, 0.1, 0.1)
     show_hudmessage(id, "Bullet bounces off your rock skin.")
   }
   randNum = random_num(0, 100 )
   ThingLevel = floatround(get_cvar_float("Thing_knife_percent") * 100)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && gHasThingPower[id] && weapon==CSW_KNIFE && bodypart!=HIT_HEAD ) {
     shAddHPs(id, damage, 500 )
-    set_hudmessage(0, 100, 200, 0.05, 0.63, 1, 0.1, 2.0, 0.1, 0.1, 81)
+    set_hudmessage(0, 100, 200, 0.05, 0.63, 1, 0.1, 2.0, 0.1, 0.1)
     show_hudmessage(id, "Your rock skin blocks the knife attack.")
   }
 

@@ -264,7 +264,7 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 
 			if ( distanceBetween < dmgRadius ) {
-				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1, 85)
+				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 				show_hudmessage(a, "%s was Re-Born using the power of the Phoenix!", name)
 
 				dRatio = float(distanceBetween) / float(dmgRadius)

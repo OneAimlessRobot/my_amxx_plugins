@@ -296,16 +296,16 @@ komak_hud(id){
 					);
 	
 	if(gEngineRepairTimer[id]>0){
-		set_hudmessage(broken_color[0], broken_color[1], broken_color[2], 1.0, 0.2, broken_color[3], 0.0, 0.5,0.0,0.0,1)
+		set_hudmessage(broken_color[0], broken_color[1], broken_color[2], 1.0, 0.2, broken_color[3], 0.0, 0.5,0.0,0.0)
 	}
 	else if(komak_is_top_speed(id)){
-		set_hudmessage(top_speed_color[0], top_speed_color[1], top_speed_color[2], 1.0, 0.2, top_speed_color[3], 0.0, 0.5,0.0,0.0,1)
+		set_hudmessage(top_speed_color[0], top_speed_color[1], top_speed_color[2], 1.0, 0.2, top_speed_color[3], 0.0, 0.5,0.0,0.0)
 	}
 	else if(g_komak_hits[id]>red_line){
-		set_hudmessage(redline_color[0], redline_color[1], redline_color[2], 1.0, 0.2, redline_color[3], 0.0, 0.5,0.0,0.0,1)
+		set_hudmessage(redline_color[0], redline_color[1], redline_color[2], 1.0, 0.2, redline_color[3], 0.0, 0.5,0.0,0.0)
 	}
 	else{
-		set_hudmessage(good_color[0], good_color[1], good_color[2], 1.0, 0.2, good_color[3], 0.0, 0.5,0.0,0.0,1)
+		set_hudmessage(good_color[0], good_color[1], good_color[2], 1.0, 0.2, good_color[3], 0.0, 0.5,0.0,0.0)
 	}
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 

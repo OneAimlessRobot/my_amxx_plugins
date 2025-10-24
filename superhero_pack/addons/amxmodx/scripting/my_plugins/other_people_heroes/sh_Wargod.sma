@@ -600,7 +600,7 @@ public Wargod_fire(id)
 			
 			new message[128]
 			format(message, 127, "You Have %d bullet(s) left",gBullets[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 			show_hudmessage(id, message)
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1
@@ -1104,12 +1104,12 @@ public damage_msg(vIndex)
 		
 		new damage = read_data(2)
 		if ( is_user_alive(aIndex) && gHasWargodPower[aIndex]) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, 74)
+			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02)
 			show_hudmessage(aIndex,"%i", damage)
 		}
 		
 		if ( is_user_alive(vIndex) && gHasWargodPower[vIndex] ) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, 76)
+			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02)
 			show_hudmessage(vIndex,"%i", damage)
 		}
 	}

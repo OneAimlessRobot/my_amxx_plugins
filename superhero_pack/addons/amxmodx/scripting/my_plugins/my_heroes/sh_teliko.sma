@@ -198,7 +198,7 @@ public status_hud(id){
 	
 	format(hud_msg,500,"[SH] %s:^nSlit kills left: %d^n%d counter bullet%s of %d left^n",gHeroName,
 	slitter_get_slit_kills(id),g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
-	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 0.2)
+	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 2.0,0.0,0.0)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	

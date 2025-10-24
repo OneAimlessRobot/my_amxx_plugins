@@ -352,7 +352,7 @@ public status_hud(id){
 	);
 	
 	
-	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
+	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
 	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
 	
 	

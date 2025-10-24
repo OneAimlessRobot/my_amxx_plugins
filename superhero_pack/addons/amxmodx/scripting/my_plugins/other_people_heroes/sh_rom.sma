@@ -138,7 +138,7 @@ public rom_kd()
          get_user_origin(x,xorigin)
          get_user_name(x,xname,31)
          new distance=get_distance(idorigin,xorigin)
-         set_hudmessage(255,0,0,1.0,35.0,0,0.0,3.0,0.1,0.2,4)
+         set_hudmessage(255,0,0,1.0,35.0,0,0.0,3.0,0.1,0.2)
          show_hudmessage(id,"%s is %i meters away from you.",xname,distance)
       } 
    } 
@@ -156,7 +156,7 @@ public rom_loop()
         gRomTimer[id]--
         new message[128]
         format(message, 127, "%d seconds left of Tracking device ", gRomTimer[id] )
-        set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0,4)
+        set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
         show_hudmessage( id, message)
         new var = get_cvar_num("rom_sensetime")*10 
 
@@ -187,7 +187,7 @@ public rom_loop()
              get_user_origin(x,xorigin)
              get_user_name(x,xname,31)
              new distance=get_distance(idorigin,xorigin)
-             set_hudmessage(255,0,0,1.0,35.0,0,0.0,3.0,0.1,0.2,4)
+             set_hudmessage(255,0,0,1.0,35.0,0,0.0,3.0,0.1,0.2)
              show_hudmessage(id,"%s is %i meters away from you.",xname,distance)
           } 
        } 

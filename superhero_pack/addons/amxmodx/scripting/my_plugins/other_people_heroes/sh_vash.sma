@@ -93,7 +93,7 @@ public vash_init()
 			engclient_cmd(id, "drop", "weapon_deagle")
 			shRemGravityPower(id)
 			set_user_hitzones(0, id, 255)
-			set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1, 54)
+			set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1)
 			show_hudmessage(id, "Vash - EVASION OFF - Hitzones returned to normal")
 		}
 	}
@@ -121,7 +121,7 @@ public vash_weapons(id)
 	if ( shModActive() && is_user_alive(id) ) {
 
 		// Just tell them here since this gets run at the right times anyway
-		set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1, 54)
+		set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "Vash - EVASION ON - Removing a random hitzone every second")
 
 		shGiveWeapon(id, "weapon_deagle")

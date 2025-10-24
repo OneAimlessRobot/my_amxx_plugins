@@ -394,27 +394,6 @@ public guide_rocket_comm(args[])
 		vexd_pfntouch(ent,0)
 }
 //----------------------------------------------------------------------------------------------
-//public rocket_fuel_timer(args[]) {
-//	new ent = args[1]
-//	new id = args[0]
-//	remove_task(ent)
-//	if (!is_valid_ent(ent)) return
-//	Entvars_Set_Int(ent, EV_INT_effects, 2)
-//	Entvars_Set_Int(ent, EV_INT_rendermode,0)
-//	Entvars_Set_Float(ent, EV_FL_gravity, 1.0)
-//	Entvars_Set_Int(ent, EV_INT_iuser1, 0)
-//	emit_sound(ent, CHAN_WEAPON, "debris/beamstart8.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM )
-//	emit_sound(ent, CHAN_VOICE, "ambience/rocket_steam1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-//	if(args[11] == 1){
-//		set_hudmessage(250,10,10,-1.0,0.45, 0, 0.0, 1.5, 0.5, 0.15, 54)
-//		show_hudmessage(id,"WARNING: FUEL TANK EMPTY^nCONTROLS DISENGAGED")
-//	}
-//	set_task(0.1,"guide_rocket_comm",ent,args,16,"b")
-//}
-//public client_connect(id)
-//	//no real tasks to set
-//}
-//----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
 	remove_task(id)

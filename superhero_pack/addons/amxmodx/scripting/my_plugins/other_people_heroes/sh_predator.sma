@@ -496,7 +496,7 @@ public pred_DLdamage(id)
 		write_byte(attacker_id)
 		write_byte(id)
 		write_byte(0)
-		write_string("So_jardinanço_fodace_tambem...")
+		write_string("So_jardinanï¿½o_fodace_tambem...")
 		message_end()
 		//Save Hummiliation
 		new namea[24],namev[24],authida[20],authidv[20],teama[8],teamv[8] 
@@ -637,7 +637,7 @@ public changeWeapon(id)
 	if ((bullets != 0) && bullets >= 0 ) {
 		new message[128]
 		format(message, 127, "You Have %d laser bullets left",bullets)
-		set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+		set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 		show_hudmessage(id, message)
 	}
 	return PLUGIN_CONTINUE

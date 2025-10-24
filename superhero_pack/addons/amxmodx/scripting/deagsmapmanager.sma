@@ -229,16 +229,15 @@ public time_display() {
 		remove_task(DMAP_TASKID_TIME_DIS);
 	}
 	if (timeleft > 30) {
-		set_hudmessage(255, 255, 220, 0.02, 0.2, 0, 1.0, 1.04, 0.0, 0.05, 3);
+		set_hudmessage(255, 255, 220, 0.02, 0.2, 0, 1.0, 1.04, 0.0, 0.05);
 	} else {
-		set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 1.0, 1.04, 0.0, 0.05, 3);
-		//Flashing red:set_hudmessage(210, 0, 0, 0.02, 0.2, 1, 1.0, 1.04, 0.0, 0.05, 3);
+		set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 1.0, 1.04, 0.0, 0.05);
 	}
 	show_hudmessage(0, "%L^n%d:%02d", LANG_PLAYER, "DMAP_TIME_LEFT", minutes, seconds);
 	if (timeleft < 70 && (timeleft % 5) == 1) {
 		new smap[32];
 		get_cvar_string("amx_nextmap", smap, charsmax(smap));
-		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5, 4);
+		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_NEXTMAP", smap);
 	}
 	return PLUGIN_HANDLED;
@@ -456,7 +455,7 @@ check_if_need() {
 	if ((minutesplayed + 0.5) >= (float(minimumwait))) {
 		if (rocks >= needed && rocks >= minimum) {
 			c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_RTV_STARTING", rocks);
-			set_hudmessage(222, 70, 0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0, 4);
+			set_hudmessage(222, 70, 0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0);
 			show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_RTV_START", rocks);
 			hasbeenrocked = 1;
 			inprogress = 1;
@@ -523,7 +522,7 @@ public rock_the_vote(id) {
 	}
 	if (rocks >= needed && rocks >= minimum) {
 		c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_RTV_STARTING", rocks);
-		set_hudmessage(222, 70,0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0, 4);
+		set_hudmessage(222, 70,0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_RTV_START", rocks);
 		hasbeenrocked = 1;
 		inprogress = 1;
@@ -561,7 +560,7 @@ public rock_it_now() {
 	inprogress = 1;
 	mselected = false;
 	if (quiet != 2) {
-		set_hudmessage(0, 222,50, -1.0, 0.23, 1, 6.0, 6.0, 1.0, 1.0, 4);
+		set_hudmessage(0, 222,50, -1.0, 0.23, 1, 6.0, 6.0, 1.0, 1.0);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_START_MAPVOTE");
 	} else {
 		c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_START_MAPVOTE");
@@ -647,7 +646,7 @@ public check_votes() {
 		istimeset = 1;
 
 		if (quiet != 2) {
-			set_hudmessage(222, 70,0, -1.0, 0.4, 0, 4.0, 10.0, 2.0, 2.0, 4);
+			set_hudmessage(222, 70,0, -1.0, 0.4, 0, 4.0, 10.0, 2.0, 2.0);
 			show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_MAP_EXTENDED", steptime);
 			if (quiet != 1) {
 				client_cmd(0, "speak ^"barney/waitin^"");
@@ -672,10 +671,10 @@ public check_votes() {
 		get_players(players, inum, "c");
 		if (quiet != 2) {
 			if (timeleft <= 0 || timeleft > 300) {
-				set_hudmessage(222, 70,0, -1.0, 0.36, 0, 4.0, 10.0, 2.0, 2.0, 4);
+				set_hudmessage(222, 70,0, -1.0, 0.36, 0, 4.0, 10.0, 2.0, 2.0);
 				show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_MAP_WINS", nmaps[nnextmaps[b]], nvotes[b]);
 			} else {
-				set_hudmessage(0, 152, 255, -1.0, 0.22, 0, 4.0, 7.0, 2.1, 1.5, 4);
+				set_hudmessage(0, 152, 255, -1.0, 0.22, 0, 4.0, 7.0, 2.1, 1.5);
 				if ((get_pcvar_num(pEnforceTimelimit) == 1) && bIsCstrike) {
 					show_hudmessage(0, "%L %L", LANG_PLAYER, "DMAP_MAP_WINS2", nmaps[nnextmaps[b]], nvotes[b], LANG_PLAYER, "DMAP_IN_SECONDS", timeleft);
 				} else {
@@ -686,7 +685,6 @@ public check_votes() {
 				}
 			}
 			if ((strlen(mapsurl) > 0) && is_custom_map(nmaps[nnextmaps[b]])) {
-				//set_hudmessage(0, 152, 255, -1.0, 0.70, 1, 4.0, 12.0, 2.1, 1.5, 7);
 				c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_DOWNLOAD_MAPS_URL", mapsurl);
 			}
 			if (quiet != 1) {
@@ -731,13 +729,12 @@ public time_dis2() {
 	if ((timeleft % 5) == 1) {
 		new smap[32];
 		get_cvar_string("amx_nextmap", smap, charsmax(smap));
-		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5, 4);
+		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_NEXTMAP", smap);
 		if (waited < 90) {
-			set_hudmessage(255, 215, 190, 0.02, 0.2, 0, 5.0, 5.04, 0.0, 0.5, 3);
+			set_hudmessage(255, 215, 190, 0.02, 0.2, 0, 5.0, 5.04, 0.0, 0.5);
 		} else {
-			set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 5.0, 5.04, 0.0, 0.5, 3);
-			//Flashing red:set_hudmessage(210, 0 ,0, 0.02, 0.2, 1, 1.0, 1.04, 0.0, 0.05, 3);
+			set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 5.0, 5.04, 0.0, 0.5);
 		}
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_LAST_ROUND");
 	}
@@ -749,13 +746,12 @@ public time_dis3() {
 	if ((timeleft % 5) == 1) {
 		new smap[32];
 		get_cvar_string("amx_nextmap", smap, charsmax(smap));
-		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5, 4);
+		set_hudmessage(0, 132, 255, 0.02, 0.27, 0, 5.0, 5.04, 0.0, 0.5);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_NEXTMAP", smap);
 		if (timeleft > 30) {
-			set_hudmessage(255, 215, 190, 0.02, 0.2, 0, 5.0, 5.04, 0.0, 0.5, 3);
+			set_hudmessage(255, 215, 190, 0.02, 0.2, 0, 5.0, 5.04, 0.0, 0.5);
 		} else {
-			set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 5.0, 5.04, 0.0, 0.5, 3);
-			//Flashing red:set_hudmessage(210, 0, 0, 0.02, 0.2, 1, 5.0, 5.04, 0.0, 0.5, 3);
+			set_hudmessage(210, 0 ,0, 0.02, 0.15, 0, 5.0, 5.04, 0.0, 0.5);
 		}
 		//countdown when "Enforcing timelimit"
 		new seconds = timeleft % 60;
@@ -850,7 +846,7 @@ public dmap_cancel_vote(id, level, cid) {
 #endif
 		c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_ADMIN_CANCELLED", name);
 		remove_task(DMAP_TASKID_ROCK_IT_NOW, 1);
-		set_hudmessage(222, 70,0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0, 8);
+		set_hudmessage(222, 70,0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_ADMIN_CANCELLED", name);
 		hasbeenrocked = 0;
 		inprogress = 0;
@@ -956,7 +952,7 @@ public countdown() {
 	new smap[32];
 	get_cvar_string("amx_nextmap", smap, charsmax(smap));
 	countnum++;
-	set_hudmessage(150, 120, 0, -1.0, 0.3, 0, 0.5, 1.1, 0.1, 0.1, 4);
+	set_hudmessage(150, 120, 0, -1.0, 0.3, 0, 0.5, 1.1, 0.1, 0.1);
 	show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_MAP_CHANGING_IN", smap, 7 - countnum);
 	return PLUGIN_HANDLED;
 }
@@ -1099,8 +1095,6 @@ list_nominations(id) {
 		}
 		while (a < nmaps_num) {
 			get_user_name(whonmaps_num[a], name1, charsmax(name1));
-			//set_hudmessage(255, 0, 0, 0.12, 0.3 + 0.08 * float(a), 0, 15.0, 15.04, 1.5, 3.75, 2 + a);
-			//show_hudmessage(id, "%s by: %s", nmaps[a], name1);
 			formatex(string1, charsmax(string1), "^n%L", id, "DMAP_MAP_BY", nmaps[a], name1);
 			add(string3, charsmax(string3), string1);
 			a++;
@@ -1156,7 +1150,7 @@ message_fifteen() {
 		c_p(0, print_chat, "[DMM] %L", LANG_PLAYER, "DMAP_VOTING_IN_XSEC", 15);
 		return PLUGIN_HANDLED;
 	}
-	set_hudmessage(0, 222, 50, -1.0, 0.23, 1, 6.5, 6.5, 1.0, 3.0, 4);
+	set_hudmessage(0, 222, 50, -1.0, 0.23, 1, 6.5, 6.5, 1.0, 3.0);
 	show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_VOTING_IN_XSEC", 15);
 	if (quiet == 0) {
 		client_cmd(0, "spk ^"get red(e80) ninety(s45) to check(e20) use bay(s18) mass(e42) cap(s50)^"");
@@ -1182,7 +1176,7 @@ public time_to_vote() {
 		return PLUGIN_HANDLED;
 	} else {
 		if (counttovote > 0 && counttovote <= 5) {
-			set_hudmessage(0, 222, 50, -1.0, 0.13, 0, 1.0, 0.94, 0.0, 0.0, 4);
+			set_hudmessage(0, 222, 50, -1.0, 0.13, 0, 1.0, 0.94, 0.0, 0.0);
 			show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_VOTING_IN_XSEC", 6 - counttovote);
 			if (quiet == 0) {
 				client_cmd(0, "spk ^"fvox/%s^"", speak[5 - counttovote]);
@@ -1251,7 +1245,7 @@ public ask_for_next_map() {
 	inprogress = 1;
 	if (mp_winlimit && !(timeleft >= 115 && timeleft < 134)) {
 		if (quiet != 2) {
-			set_hudmessage(0, 222, 50, -1.0, 0.13, 1, 6.0, 6.0, 1.0, 1.0, 4);
+			set_hudmessage(0, 222, 50, -1.0, 0.13, 1, 6.0, 6.0, 1.0, 1.0);
 			show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_START_MAPVOTE");
 			if (quiet == 0) {
 				client_cmd(0, "spk ^"get red(e80) ninety(s45) to check(e20) use bay(s18) mass(e42) cap(s50)^"");

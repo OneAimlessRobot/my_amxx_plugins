@@ -213,7 +213,7 @@ announce(killer, level)
     		new name[32];
 
    		get_user_name(killer, name, 32);
-		set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 6.0, 0.01, 0.1, 2);
+		set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 6.0, 0.01, 0.1);
 		ShowSyncHudMsg(0, gmsgHudSync, stkmessages[level], name);
 	}
 
@@ -272,7 +272,7 @@ public knife_kill()
 		get_user_name(victim_id,victim_name,33)
 
 
-		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 		ShowSyncHudMsg(0, gmsgHudSync, "%L", LANG_PLAYER, knifemessages[ random_num(0,KNIFEMESSAGES-1) ],killer_name,victim_name)
 	}
 
@@ -305,7 +305,7 @@ public death_msg(id)
 		new name1[32], name2[32]
 		get_user_name(players_ct[0],name1,32)
 		get_user_name(players_t[0],name2,32)
-		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 
 		if (lmmode_bit & 1)
 		{
@@ -352,7 +352,7 @@ public death_msg(id)
 
 	if (lmmode_bit & 1)
 	{
-		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15, 1)
+		set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 6.0, 6.0, 0.5, 0.15)
 
 		if (lmmode_bit & 2)
 		{
@@ -384,7 +384,7 @@ public hs()
 
 	get_user_name(victim_id,victim_name,33)
 
-	set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 3.0, 3.0, 0.15, 0.15, 1)
+	set_hudmessage(200, 100, 0, -1.0, 0.30, 0, 3.0, 3.0, 0.15, 0.15)
 	ShowSyncHudMsg(killer_id, gmsgHudSync, "::HEADSHOT::^nYou Owned %s !!",victim_name)
 	}
 

@@ -817,7 +817,7 @@ public jet_hud_task(id){
 		get_user_law(owner)?(float(pev(get_user_law(owner),pev_health))-1000.0):0.0,
 		get_user_jet_rockets(owner),
 		get_user_jet_scans(owner));
-	set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.15, 1.9, 1, 0.0, 0.5,0.0,0.0,1)
+	set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.15, 1.9, 1, 0.0, 0.5,0.0,0.0)
 	ShowSyncHudMsg(owner, hud_sync_jetplane, "%s", hud_msg)
 	
 	

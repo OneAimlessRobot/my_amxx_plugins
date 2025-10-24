@@ -1,6 +1,6 @@
  //CloneTrooper
 
- //Credits go to Vittu for Master Chief´s Morphing Code and Teh Creators of Cyclops
+ //Credits go to Vittu for Master Chiefï¿½s Morphing Code and Teh Creators of Cyclops
  
  /* CVARS - copy and paste to shconfig.cfg
 
@@ -306,7 +306,7 @@
 	CTrooper_sound(id)
 
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "CTrooper - Prepared for war..SIR!")
 
 	gmorphed[id] = true
@@ -316,7 +316,7 @@
  {
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "CTrooper - All systems down...")
 
 		#if defined AMXX_VERSION

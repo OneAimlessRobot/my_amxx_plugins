@@ -121,7 +121,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	gIsHitByMrHydrogen[id] = true
 	set_task(0.1,"mrhydrogen_victim_float", id, "", 0, "b")
 	set_task(get_cvar_float("mrhydrogen_floattime"),"mrhydrogen_stop_powers", id)
-	set_hudmessage(255, 0, 0, -1.0, 0.35, 0, 5.0, 5.0, 0.1, 0.2, 4)
+	set_hudmessage(255, 0, 0, -1.0, 0.35, 0, 5.0, 5.0, 0.1, 0.2)
 	show_hudmessage(id, "Someone Filled You With Hydrogen Gas! - It Will Run Out In Sometime", gHeroName)
 	emit_sound(id, CHAN_STATIC, "player/breathe2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	}

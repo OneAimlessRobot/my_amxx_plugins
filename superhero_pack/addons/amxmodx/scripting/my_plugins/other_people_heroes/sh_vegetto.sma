@@ -732,7 +732,7 @@ public vegetto_loop()
 				// run it this way so it doesn't check all the elses
 				if ( g_isSaiyanLevel[id] > 0 ) {
 					shResetSpeed(id)
-					set_hudmessage(204, 0, 204, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(204, 0, 204, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You are now gathering nether energy")
 
                                         g_isSaiyanLevel[id] = 0
@@ -747,7 +747,7 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 19)
 
-					set_hudmessage(255, 255, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(255, 255, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -764,7 +764,7 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 39)
 
-					set_hudmessage(255, 165, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(255, 165, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 2")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -781,7 +781,7 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 59)
 
-					set_hudmessage(255, 210, 110, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(255, 210, 110, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 3")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup3.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -800,7 +800,7 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 79)
 
-					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 4")
 					emit_sound(id, CHAN_WEAPON, "shmod/vegetto_powerup4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)         
         
@@ -886,7 +886,7 @@ public shake_n_stun(id)
 			// Let them know why they get shaken and stunned, except the person that leveled
 			new vegettoName[32]
 			get_user_name(id, vegettoName, 31)
-			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0, 84)
+			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
 			show_hudmessage(vic, "Vegetto - %s has turned Super Saiyan 4", vegettoName)
 		}
 	}

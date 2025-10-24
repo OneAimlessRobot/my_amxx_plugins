@@ -66,14 +66,14 @@ public sh_hero_key(id, heroID, key)
 		if ( !g_canClimb[id] ) {
 			g_canClimb[id]=true
 			set_task(0.1, "wall_walk", id, "", 0, "b")
-			set_hudmessage(20, 255, 20, -1.0, 0.25, 0, 1.0, 1.2, 0.4, 0.4, 95)
+			set_hudmessage(20, 255, 20, -1.0, 0.25, 0, 1.0, 1.2, 0.4, 0.4)
 			show_hudmessage(id, "You can now walk up walls!")
 			return PLUGIN_HANDLED
 		}
 
 		g_canClimb[id]=false
 		remove_task(id)
-		set_hudmessage(20, 255, 20, -1.0, 0.25, 0, 1.0, 1.2, 0.4, 0.4, 95)
+		set_hudmessage(20, 255, 20, -1.0, 0.25, 0, 1.0, 1.2, 0.4, 0.4)
 		show_hudmessage(id, "You got rid of your ability to walk up walls")
 		return PLUGIN_HANDLED
 	}

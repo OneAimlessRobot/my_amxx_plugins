@@ -684,8 +684,6 @@ public fire_laser(id){
 		else {
 			format(lmessage, 99, "Laser Power Level: %d  <+>  Temperature: %d �F",laser_shots[id],(laser_heat[id] * 147)+ 500)
 		}
-		//set_hudmessage(250,250,20, -1.0, 0.35, 0, 0.02, 3.0, 0.4, 0.3, 16)
-		//show_hudmessage(id,lmessage)
 		client_print(id,print_center,lmessage)
 	}
 	else {
@@ -1074,7 +1072,7 @@ do_laserdamage(id,tid,tbody,namea[],namev[],teama[],teamv[],authida[],authidv[],
 			case 3: user_kill(id,0)
 		}
 		if(!is_user_alive(id)){
-			set_hudmessage(255,50,50, -1.0, 0.45, 0, 0.02, 10.0, 1.01, 1.1,16)
+			set_hudmessage(255,50,50, -1.0, 0.45, 0, 0.02, 10.0, 1.01, 1.1)
 			show_hudmessage(id,"YOU WERE KILLED^nFOR ATTACKING TEAMMATES.^nSEE THAT IT HAPPENS NO MORE!")
 		}
 	}

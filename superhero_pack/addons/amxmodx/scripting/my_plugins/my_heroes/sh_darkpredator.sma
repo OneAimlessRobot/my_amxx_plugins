@@ -192,7 +192,7 @@ public darkpred_morph(id)
 	#endif
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "You now wear your Predator battle armour.")
 	
 	gmorphed[id] = true
@@ -202,7 +202,7 @@ public darkpred_unmorph(id)
 {
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "You are not wearing your Predator battle armour.")
 		
 		#if defined AMXX_VERSION
@@ -453,7 +453,7 @@ public darkpred_fire(id)
 			
 			new message[128]
 			format(message, 127, "You Have %d bullet(s) left",gBullets[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 			show_hudmessage(id, message)
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1

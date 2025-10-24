@@ -171,7 +171,7 @@ public status_hud(id){
 			
 			
 	}
-	set_hudmessage(color[0], color[1], color[2],0.0, 0.3, 0, 0.0, 2.0,0.0,0.0,1)
+	set_hudmessage(color[0], color[1], color[2],0.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
 	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
 		
 }

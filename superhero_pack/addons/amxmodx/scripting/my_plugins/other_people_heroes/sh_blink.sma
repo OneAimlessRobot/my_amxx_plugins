@@ -93,7 +93,7 @@ public blink_kd()
 	if ( !is_user_alive(id) || !g_hasBlinkPower[id] ) return PLUGIN_HANDLED
 
 	new text[128]
-	set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0,38)
+	set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 
 	if ( blinkAmount[id] <= 0 ) {
 		blinkAmount[id] = 0

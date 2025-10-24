@@ -222,7 +222,7 @@ public sapper_morph(id)
 	id-=SAPPER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasSapper[id] ) return
 	
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "Sapper ready.")
 	cs_set_user_model(id, "sapper")
 	
@@ -244,7 +244,7 @@ public sapper_unmorph(id)
 			remove_task(id+SAPPER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "Mission failed.")
 	}
 }

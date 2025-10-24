@@ -203,7 +203,7 @@ public UberGunner_morph(id)
 	UberGunner_sound(id)
 
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "UberGunner - Getting Ready 2 Own!")
 
 	gmorphed[id] = true
@@ -213,7 +213,7 @@ public UberGunner_unmorph(id)
 {
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "UberGunner - MODE OFF, you returned to normal self.")
 
 		#if defined AMXX_VERSION

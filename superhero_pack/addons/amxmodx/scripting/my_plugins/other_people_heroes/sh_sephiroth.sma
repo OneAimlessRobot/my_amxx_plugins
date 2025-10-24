@@ -712,7 +712,7 @@ public sephiroth_loop()
                 // Set these items only once when armor is sSephLevel 1
                 if ( g_isSaiyanLevel[id] < 1 ) {
 
-                    set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+                    set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
                     show_hudmessage(id, "Sephiroth - You've turned into Sephiroth")
                     //emit_sound(id, CHAN_STATIC, "shmod/goku_powerup1.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -724,7 +724,7 @@ public sephiroth_loop()
                 // Set these items only once when armor is sSephLevel 2
                 if ( g_isSaiyanLevel[id] < 2 ) {
 
-                    set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+                    set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
                     show_hudmessage(id, "Sephiroth - You've turned Superhuman")
                     //emit_sound(id, CHAN_STATIC, "shmod/goku_powerup2.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
@@ -736,12 +736,12 @@ public sephiroth_loop()
                 // Set these items only once when armor is sSephLevel 3
                 if ( g_isSaiyanLevel[id] < 3 ) {
 
-                    set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0, 84)
+                    set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
                     show_hudmessage(id, "Sephiroth - You've turned into a Demi-God")
                     //emit_sound(id, CHAN_STATIC, "shmod/goku_powerup3.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
                     new sephirothName[32]
                     get_user_name(id, sephirothName, 31)
-                    set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0, 84)
+                    set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
                     show_hudmessage(id, "Sephiroth - %s has turned into a Demi-God", sephirothName)
 
                     g_isSaiyanLevel[id] = 3

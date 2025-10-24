@@ -769,7 +769,7 @@ public task_spawn_SwBox(param[])
 	
 		set_pev(ent, pev_nextthink, fCurrentTime() + 1.5)
 	}
-	set_hudmessage(0, 255, 0, -1.0, 0.00, 1, 6.0, 15.0, 0.15, 0.15, 4)
+	set_hudmessage(0, 255, 0, -1.0, 0.00, 1, 6.0, 15.0, 0.15, 0.15)
 	show_hudmessage(0,"SuperWeapon^nM4A1 w/ M203 : with greande launcher...")
 	bGhostEntRemoved = remove_GhostEnt()
 

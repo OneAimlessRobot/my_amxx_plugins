@@ -417,7 +417,7 @@ public set_user_on_spawn(id) {
 public task_show_idle_message(idleMessage[]) {
 	if(gameStarted) return
 	
-	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0, 1);
+	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0);
 	ShowSyncHudMsg(0, msgObjMain, idleMessage);
 	
 	return
@@ -435,7 +435,7 @@ public task_show_freeze_message() {
 	
 	get_players(Players, numPlayers, "ac")
 	
-	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0, 1);
+	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0);
 	
 	for(i = 0; i < numPlayers; i++) {
 		id = Players[i]
@@ -453,23 +453,23 @@ public task_show_freeze_message() {
 					}
 				}
 				
-				set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0, 1);
+				set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjMain, "%L", id, "RANKED_OUT_OF", playerRank, topPlayersId);
 				
-				set_hudmessage(107, 142, 35, 0.05, 0.6, 0, 0.0, 1.0, 0.0, 0.0, 2);
+				set_hudmessage(107, 142, 35, 0.05, 0.6, 0, 0.0, 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjLBottom, "%L^n%L", id, "RANKED_OUT_OF", playerRank, topPlayersId, id, "RANK_SCORE", globalRank[1][t], globalRank[4][t], globalRank[2][t], globalRank[3][t]);
 
-				set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 1.0, 0.0, 0.0, 3); 
+				set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 1.0, 0.0, 0.0); 
 				ShowSyncHudMsg(id, msgObjRTop, "%L", id, "INFO_HUD");
 
 			}
 		}
 	
 		if(!foundPlayer) {
-			set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0, 1);
+			set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0);
 			ShowSyncHudMsg(id, msgObjMain, "%L", id, "INFO");
 			
-			set_hudmessage(107, 142, 35, 0.05, 0.67, 0, 0.0, 1.0, 0.0, 0.0, 2);
+			set_hudmessage(107, 142, 35, 0.05, 0.67, 0, 0.0, 1.0, 0.0, 0.0);
 			ShowSyncHudMsg(id, msgObjLBottom, "%L", id, "INFO_HUD");
 		}	
 	}
@@ -678,7 +678,7 @@ public event_start_round() {
 		return PLUGIN_HANDLED
 	}
 	
-	set_hudmessage(107, 142, 35, 0.05, 0.67, 0, 0.0, 60.0, 0.0, 0.0, 2);
+	set_hudmessage(107, 142, 35, 0.05, 0.67, 0, 0.0, 60.0, 0.0, 0.0);
 	ShowSyncHudMsg(0, msgObjLBottom, "%L", LANG_PLAYER, "INFO_HUD");
 	
 	roundStarted = true
@@ -692,7 +692,7 @@ public event_start_round() {
 		strip_user_weapons(id)
 		give_item(id,"weapon_knife")
 		
-		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 20.0, 0.0, 0.0, 3); 
+		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 20.0, 0.0, 0.0); 
 		
 		if(UserTeam == CS_TEAM_T) {
 			ShowSyncHudMsg(id, msgObjRTop, "%L", id, "YOUR_TASK");
@@ -780,10 +780,10 @@ public event_death() {
 		if(UserTeam == CS_TEAM_T) nPT++
 	}
 		
-	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 10.0, 0.0, 0.0, 1);
+	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 10.0, 0.0, 0.0);
 	ShowSyncHudMsg(victim, msgObjMain, "%L", victim, "FAILED")	
 	
-	set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3); 
+	set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0); 
 	ShowSyncHudMsg(attacker, msgObjRTop, "%L", attacker, "KILLED_CARRIER")			
 	
 	client_print(victim, print_chat, "[GEO] %L", victim, "FAILED")
@@ -824,7 +824,7 @@ public task_relay_start_searching() {
 		
 	for(i = 0; i < numPlayers; i++) {
 		id = Players[i]
-		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 1.0, 0.0, 0.0, 3); 
+		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 1.0, 0.0, 0.0); 
 			
 		new CsTeams:UserTeam = cs_get_user_team(id)
 		if(UserTeam == CS_TEAM_T) {
@@ -841,13 +841,13 @@ public task_relay_start_searching() {
 			
 			if(foundPlayer && timePassed == 1.0) {
 				if((rampageTeam == CS_TEAM_T && penalty != 0.0 && huntedInRampageCount != 0 && survivedRampageCount != 0) || (rampageTeam == CS_TEAM_CT && penalty != 0.0 && huntedInRampageCount != 0 && survivedRampageCount == 0)) {
-					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime - penalty - 1.0, 0.0, 0.0, 3); 
+					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime - penalty - 1.0, 0.0, 0.0); 
 					ShowSyncHudMsg(id, msgObjRTop, "[NOLAG]%L (-%.2f %L)", id, "YOUR_TASK_NOW", (boxSetBaseTime - penalty) - timePassed, penalty, id, "SEC");
 				} else if((rampageTeam == CS_TEAM_CT && penalty != 0.0 && huntedInRampageCount != 0 && survivedRampageCount != 0) || (rampageTeam == CS_TEAM_T && penalty != 0.0 && huntedInRampageCount != 0 && survivedRampageCount == 0)) {
-					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime + penalty - 1.0, 0.0, 0.0, 3); 
+					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime + penalty - 1.0, 0.0, 0.0); 
 					ShowSyncHudMsg(id, msgObjRTop, "[NOLAG]%L (+%.2f %L)", id, "YOUR_TASK_NOW", (boxSetBaseTime + penalty) - timePassed, penalty, id, "SEC");
 				} else {
-					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime - 1.0, 0.0, 0.0, 3); 
+					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, boxSetBaseTime - 1.0, 0.0, 0.0); 
 					ShowSyncHudMsg(id, msgObjRTop, "[NOLAG]%L (+-0.00 %L)", id, "YOUR_TASK_NOW", boxSetBaseTime - timePassed, id, "SEC");
 				}
 			}
@@ -912,7 +912,7 @@ public start_searching() {
 		if(is_user_alive(id)) {
 			new CsTeams:UserTeam = cs_get_user_team(id)
 			
-			set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 60.0, 0.0, 0.0, 3); 
+			set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 60.0, 0.0, 0.0); 
 			
 			if(UserTeam == CS_TEAM_T) {
 				set_user_maxspeed(id, 0.1)
@@ -1002,7 +1002,7 @@ public start_searching() {
 				user_silentkill(id)
 			}
 			
-			set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 60.0, 0.0, 0.0, 1);
+			set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 60.0, 0.0, 0.0);
 			ShowSyncHudMsg(id, msgObjMain, "%L %L^n%L", id, "NOT_SET_BOXES_IN_ROW", roundsNoBoxesSetTemp[1][i], id, "READ_HELP", id, "INFO_HELP")		
 		}
 		
@@ -1039,7 +1039,7 @@ public task_show_stats() {
 	
 	get_players(Players, numPlayers, "ac")
 	
-	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0, 1);
+	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, 1.0, 0.0, 0.0);
 	
 	if(canSetBoxes) {
 		for(i = 0; i < numPlayers; i++) {
@@ -1133,7 +1133,7 @@ public event_geo(id) {
 				return PLUGIN_HANDLED
 			}
 			else {
-				set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 2.0, 0.0, 0.0, 3); 
+				set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 2.0, 0.0, 0.0); 
 				ShowSyncHudMsg(id, msgObjRBottom, "%L", id, "NO_BOXES");
 				
 				client_print(id, print_chat, "[GEO] %L", id, "NO_BOXES")	
@@ -1156,7 +1156,7 @@ public event_geo(id) {
 					return PLUGIN_HANDLED
 				}
 				else {
-					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3); 
+					set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0); 
 					ShowSyncHudMsg(id, msgObjRTop, "%L", id, "ALREADY_BOX")
 					
 					client_print(id, print_chat, "[GEO] %L", id, "ALREADY_BOX")
@@ -1179,7 +1179,7 @@ public event_geo(id) {
 							registredGeoKeyTime[1][n] = 2;
 						}
 						else {
-							set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3);
+							set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0);
 							ShowSyncHudMsg(id, msgObjRTop, "%L", id, "TOO_OFTEN")
 					
 							client_print(id, print_chat, "[GEO] %L", id, "TOO_OFTEN")
@@ -1227,7 +1227,7 @@ public task_countdown_pickup_times() {
 					user_silentkill(id)
 				}
 				
-				set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3);
+				set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjRTop, "%L %L^n%L", id, "DID_NOT_PICK_UP", id, "READ_HELP", id, "INFO_HELP")
 						
 				client_print(id, print_chat, "[GEO] %L %L %L", id, "DID_NOT_PICK_UP", id, "READ_HELP", id, "INFO_HELP")
@@ -1329,10 +1329,10 @@ public create_box(id, boxSize) {
 	entity_set_string(boxEntity[boxEntityId], EV_SZ_classname, boxName)
 	
 	if(canSetBoxes) {
-		set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 2.0, 0.0, 0.0, 3);
+		set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 2.0, 0.0, 0.0);
 	}
 	else {
-		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3);
+		set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0);
 	}
 	
 	switch (boxSize) {
@@ -1410,7 +1410,7 @@ public remove_box(id) {
 		}
 	}
 	
-	set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0, 3); 
+	set_hudmessage(107, 142, 35, 0.7, -1.0, 0, 0.0, 2.0, 0.0, 0.0); 
 	
 	if(foundBox != -1) {
 		new i
@@ -1523,7 +1523,7 @@ public task_relay_end_game() {
 		
 		new CsTeams:UserTeam = cs_get_user_team(id)
 		
-		set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, 1.0, 0.0, 0.0, 2);
+		set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, 1.0, 0.0, 0.0);
 		
 		new n
 		new bool:foundPlayer;
@@ -1541,7 +1541,7 @@ public task_relay_end_game() {
 				ShowSyncHudMsg(id, msgObjLBottom, "%L", id, "TIME_REMAINING_VICTORY", gameTime - timePassed, addTime, boxesTakenCount, nPT);
 			}
 			else if(foundPlayer == true && timePassed == 1.0 + addTime) {
-				set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, gameTime - 1.0, 0.0, 0.0, 2);
+				set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, gameTime - 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjLBottom, "[NOLAG] %L", id, "TIME_REMAINING_VICTORY_LIMITED", gameTime - timePassed);
 			}
 		}
@@ -1550,7 +1550,7 @@ public task_relay_end_game() {
 				ShowSyncHudMsg(id, msgObjLBottom, "%L", id, "TIME_REMAINING_VICTORY", gameTime - timePassed, addTime, boxesTakenCount, nPT);
 			}
 			else if(foundPlayer == true && timePassed == 1.0 + addTime) {
-				set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, gameTime - 1.0, 0.0, 0.0, 2);
+				set_hudmessage(107, 142, 35, 0.05, 0.7, 0, 0.0, gameTime - 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjLBottom, "[NOLAG] %L", id, "TIME_REMAINING_VICTORY_LIMITED", gameTime - timePassed);
 			}
 		}
@@ -1581,13 +1581,13 @@ public task_radar() {
 			}
 		}
 		
-		set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 1.0, 0.0, 0.0, 4);
+		set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, 1.0, 0.0, 0.0);
 		
 		new CsTeams:UserTeam = cs_get_user_team(id)
 				
 		if(UserTeam == CS_TEAM_CT) {
 			if(foundPlayerNoLag == true && timePassed == 0.0) {
-				set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, gameTime, 0.0, 0.0, 4);
+				set_hudmessage(107, 142, 35, 0.7, 0.55, 0, 0.0, gameTime, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjRBottom, "[NOLAG] %L %L", id, "RADAR", id, "RADAR_BLINK");
 			}
 			
@@ -1644,7 +1644,7 @@ public task_radar() {
 				}
 				
 				if(!foundPlayer) {
-					set_hudmessage(255, 0, 0, 0.7, 0.55, 1, 0.0, 0.4, 0.0, 0.0, 4);
+					set_hudmessage(255, 0, 0, 0.7, 0.55, 1, 0.0, 0.4, 0.0, 0.0);
 					ShowSyncHudMsg(id, msgObjRBottom, "%L %L", id, "RADAR_DETECTS", id, "BOXES_NEAR");
 					
 					registredRadarTime[0][registredRadarTimeId] = id;
@@ -1653,7 +1653,7 @@ public task_radar() {
 				}
 				else {
 					if(registredRadarTime[1][foundPlayerT] == 0) {
-						set_hudmessage(255, 0, 0, 0.7, 0.55, 1, 0.0, 0.4, 0.0, 0.0, 4);
+						set_hudmessage(255, 0, 0, 0.7, 0.55, 1, 0.0, 0.4, 0.0, 0.0);
 						ShowSyncHudMsg(id, msgObjRBottom, "%L %L", id, "RADAR_DETECTS", id, "BOXES_NEAR");
 						
 						registredRadarTime[1][foundPlayerT] = 10;
@@ -1851,7 +1851,7 @@ public end_game() {
 	}
 	
 	if(boxesSetCount == 0 && nrPT == 0) {
-		set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, rampageTime, 0.0, 0.0, 1);
+		set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, rampageTime, 0.0, 0.0);
 		ShowSyncHudMsg(0, msgObjMain, "%L", LANG_PLAYER, "LAST_PLAYER_KILLED")
 		
 		client_print(0, print_chat, "[GEO] %L", LANG_PLAYER, "LAST_PLAYER_KILLED");
@@ -1881,7 +1881,7 @@ public task_rampage() {
 		if(rUserTeam == CS_TEAM_CT) nrPCT++
 	}
 	
-	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, rampageTime, 0.0, 0.0, 1);
+	set_hudmessage(107, 142, 35, -1.0, 0.3, 0, 0.0, rampageTime, 0.0, 0.0);
 	
 	if(boxesSetCount == 0 && !canSetBoxes && nrPT != 0) {
 		ShowSyncHudMsg(0, msgObjMain, "%L", LANG_PLAYER, "ALL_BOXES_FOUND")
@@ -1938,10 +1938,10 @@ public task_rampage() {
 			}
 			
 			if(!foundPlayer) {
-				set_hudmessage(255, 0, 0, 0.7, -1.0, 1, 0.0, rampageTime, 0.0, 0.0, 3); 
+				set_hudmessage(255, 0, 0, 0.7, -1.0, 1, 0.0, rampageTime, 0.0, 0.0); 
 			}
 			else {
-				set_hudmessage(255, 0, 0, 0.7, -1.0, 0, 0.0, rampageTime, 0.0, 0.0, 3); 
+				set_hudmessage(255, 0, 0, 0.7, -1.0, 0, 0.0, rampageTime, 0.0, 0.0); 
 			}
 			
 			if(userTeam == rampageTeam) {
@@ -1958,7 +1958,7 @@ public task_rampage() {
 				
 				client_print(Players[t], print_chat, "[GEO] %L", Players[t], "KILL_ALL");
 				
-				set_hudmessage(255, 0, 0, 0.05, 0.7, 1, 0.0, 1.0, 0.0, 0.0, 2);
+				set_hudmessage(255, 0, 0, 0.05, 0.7, 1, 0.0, 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(Players[t], msgObjLBottom, "%L", Players[t], "KILL_IN_SECS", rampageTime);
 				
 				client_print(Players[t], print_chat, "[GEO] %L", Players[t], "KILL_IN_SECS", rampageTime)
@@ -1976,7 +1976,7 @@ public task_rampage() {
 				
 				client_print(Players[t], print_chat, "[GEO] %L", Players[t], "ESC_OR_DIE")
 				
-				set_hudmessage(255, 0, 0, 0.05, 0.7, 1, 0.0, 1.0, 0.0, 0.0, 2);
+				set_hudmessage(255, 0, 0, 0.05, 0.7, 1, 0.0, 1.0, 0.0, 0.0);
 				ShowSyncHudMsg(Players[t], msgObjLBottom, "%L", Players[t], "SURVIVE", rampageTime);
 				
 				client_print(Players[t], print_chat, "[GEO] %L", Players[t], "SURVIVE", rampageTime)
@@ -2020,7 +2020,7 @@ public task_relay_rampage_survived() {
 				ShowSyncHudMsg(id, msgObjLBottom, "%L", id, "KILL_IN_SECS", rampageTime - timePassed);
 			}
 			else if(foundPlayer == true && timePassed == 1.0) {
-				set_hudmessage(255, 0, 0, 0.05, 0.7, 0, 0.0, rampageTime, 0.0, 0.0, 2);
+				set_hudmessage(255, 0, 0, 0.05, 0.7, 0, 0.0, rampageTime, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjLBottom, "[NOLAG] %L", id, "KILL_IN_SECS", rampageTime - timePassed);
 			}
 		}
@@ -2029,7 +2029,7 @@ public task_relay_rampage_survived() {
 				ShowSyncHudMsg(id, msgObjLBottom, "%L", id, "SURVIVE", rampageTime - timePassed);
 			}
 			else if(foundPlayer == true && timePassed == 1.0) {
-				set_hudmessage(255, 0, 0, 0.05, 0.7, 0, 0.0, rampageTime, 0.0, 0.0, 2);
+				set_hudmessage(255, 0, 0, 0.05, 0.7, 0, 0.0, rampageTime, 0.0, 0.0);
 				ShowSyncHudMsg(id, msgObjLBottom, "[NOLAG] %L", id, "SURVIVE", rampageTime - timePassed);
 			}
 		}

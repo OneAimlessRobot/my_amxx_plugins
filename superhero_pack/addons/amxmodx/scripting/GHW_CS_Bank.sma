@@ -95,7 +95,7 @@ public cpt(id)
 				cs_set_user_money(id,10000)
 			}
 		}
-		set_hudmessage(0, 255, 0, 0.7, 0.87, 0, 6.0, 0.1, 0.1, 0.2, next_hudchannel(id) )
+		set_hudmessage(0, 255, 0, 0.7, 0.87, 0, 6.0, 0.1, 0.1, 0.2)
 		show_hudmessage(id,"%L",id,"MSG_BANK",bank[id])
 	}
 }

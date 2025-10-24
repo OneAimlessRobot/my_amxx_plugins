@@ -121,7 +121,7 @@ public sharky_kd()
   // sharky Messsage 
   new message[128]
   format(message, 127, "entered confused mode - ur confused" )
-  set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
+  set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
   show_hudmessage(id, message)
   emit_sound(id,CHAN_STATIC, g_sharkySound, 0.1, ATTN_NORM, 0, PITCH_LOW)
 
@@ -145,7 +145,7 @@ public sharky_loop()
         g_sharkyTimer[id]--
         new message[128]
         format(message, 127, "%d seconds left of Sharky Mode", g_sharkyTimer[id] )
-        set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0,4)
+        set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
         show_hudmessage( id, message)
 	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
       }

@@ -189,7 +189,7 @@ public yakui_morph(id)
 	cs_set_user_model(id, "yakui")
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 	show_hudmessage(id, "Ready for a trip?")
 	
 	gmorphed[id] = true
@@ -202,7 +202,7 @@ public yakui_unmorph(id)
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, 7)
+		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
 		show_hudmessage(id, "Hmpf...")
 		
 		cs_reset_user_model(id)

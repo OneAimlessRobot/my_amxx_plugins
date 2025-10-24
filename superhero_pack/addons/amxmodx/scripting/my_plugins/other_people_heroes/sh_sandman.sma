@@ -205,7 +205,7 @@ public sinking_effects(id, targetid)
 	get_user_name(targetid, targname, 31)
 	get_user_name(id, idname, 31)
 
-	set_hudmessage(46, 139, 87, -1.0, 0.24, 0, 1.0, 4.0, 0.0, 0.0, 6)
+	set_hudmessage(46, 139, 87, -1.0, 0.24, 0, 1.0, 4.0, 0.0, 0.0)
 	show_hudmessage(id, "%s has been cought in your Quicksand", targname)
 	show_hudmessage(targetid, "You have been cought in %s's Quicksand", idname)
 

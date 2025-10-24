@@ -664,7 +664,7 @@ public task_flashlight(TaskID) {
 						format(hudmsg, 80, "Hostage^nHealth: %i", floatround(tmpHP))	
 					}
 				}
-				set_hudmessage(0,75,150, 0.0,0.15, 0,0.0,2.0, 0.0,0.5, 4)
+				set_hudmessage(0,75,150, 0.0,0.15, 0,0.0,2.0, 0.0,0.5)
 				show_hudmessage(gPredator, hudmsg)
 			}
 		}

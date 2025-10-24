@@ -136,7 +136,7 @@ public t800_loop(id)
 			gT800Timer[id]--
 			new message[128]
 			format(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0,87)
+			set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 			show_hudmessage(id, message)
 			
 			// Make sure still on para
@@ -239,7 +239,7 @@ public t800_kd()
 	
 	new message[128]
 	format(message, 127, "You have become a T-800 KILL!")
-	set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0,87)
+	set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_hudmessage(id, message)
 	
 	return PLUGIN_HANDLED
@@ -279,7 +279,7 @@ public t800_unmorph(id)
 	new totalkill = get_user_frags(id) - gKills
 	
 	if ( gMorphed[id] ) {
-		set_hudmessage(255, 0, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1, 86)
+		set_hudmessage(255, 0, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1)
 		if (totalkill == 1) {
 			show_hudmessage(id,"T-800 Mode has ended, you have killed 1 person")
 		} 
