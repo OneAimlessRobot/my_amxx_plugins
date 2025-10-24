@@ -1000,21 +1000,6 @@ stock blood_spray(Float:vicOrigin[3], scale)
 		}
 	}
 }
-stock trailing_beam(life,ent,const color[4]) {
-	if(pev_valid(ent)&&(life>0)){
-		message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
-		write_byte(22); // TE_BEAMFOLLOW
-		write_short(ent); // ball
-		write_short(m_trail); // laserbeam
-		write_byte(life); // life
-		write_byte(5); // width
-		write_byte(color[0]); // R
-		write_byte(color[1]); // G
-		write_byte(color[2]); // B
-		write_byte(color[3]); // brightness
-		message_end();
-	}
-}
 
 stock glow(id, r, g, b,a, on) {
 	if(on) {

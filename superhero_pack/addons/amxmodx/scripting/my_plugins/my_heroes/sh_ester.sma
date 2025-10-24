@@ -538,7 +538,7 @@ public sh_client_spawn(id)
 		
 		set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
 		ester_weapons(id)
-		trailing_beam(0,id,LineColorsWithAlpha[GREEN])
+		trail(id,GREEN,0,0)
 		set_user_rendering(id,_,_,_,_,_,0)
 		reset_ester_user_round(id)
 		ester_model(id)

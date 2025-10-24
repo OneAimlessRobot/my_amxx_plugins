@@ -201,11 +201,12 @@ public _reset_ester_reborn_mode(iPlugin,iParams){
 
 	
 }
+
 remove_user_flight_fx(id){
 	
 	if(!ester_get_has_ester(id)||!is_user_connected(id)||!sh_is_active()) return
 	
-	trailing_beam(0,id,LineColorsWithAlpha[GREEN])
+	trail(id,GREEN,0,0)
 	set_user_rendering(id,_,_,_,_,_,0)
 	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	emit_sound(id, CHAN_AUTO,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -213,6 +214,9 @@ remove_user_flight_fx(id){
 	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	emit_sound(id, CHAN_BODY,FLIGHT_POWER, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(id, CHAN_BODY,FLIGHT_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
+		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[i] , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);	
+	}
 	g_is_glowing[id]=0;
 	g_flying[id]=false;
 	
@@ -283,12 +287,12 @@ public OnCmdStart(id, uc_handle, seed)
 			
 			
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
-				trailing_beam(1,id,LineColorsWithAlpha[COLOR_STRONG])
+				trail(id,COLOR_STRONG,1,10)
 				glow(id,LineColorsWithAlpha[COLOR_STRONG][0],LineColorsWithAlpha[COLOR_STRONG][1],LineColorsWithAlpha[COLOR_STRONG][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			}
 			else{
-				trailing_beam(1,id,LineColorsWithAlpha[COLOR_WEAK])
+				trail(id,COLOR_WEAK,1,10)
 				glow(id,LineColorsWithAlpha[COLOR_WEAK][0],LineColorsWithAlpha[COLOR_WEAK][1],LineColorsWithAlpha[COLOR_WEAK][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 				
@@ -299,7 +303,7 @@ public OnCmdStart(id, uc_handle, seed)
 	}
 	else{
 		g_flying[id]=false;
-		if(g_is_glowing[id]){
+		if(g_is_glowing[id]){//avoids calling it too many times (heavy function)
 			g_is_glowing[id]=0;
 			remove_user_flight_fx(id)
 		}
@@ -355,19 +359,10 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 			
 		}
 	}
-	
 	g_ester_blow_up_time_left[id]=0.0
 	ester_remove_statuses(id,1,1)
-	new user_name[128]
 	
-	get_user_name(id,user_name,127)
-	
-	emit_sound(id,CHAN_AUTO,NULL_SOUND,VOL_NORM,ATTN_NORM,0,PITCH_HIGH)
-	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
-		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[i] , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);	
-	}
-	sh_chat_message(id,ester_get_hero_id(),"Ester has died!!!!!!^nThe ester user was called %s^n",user_name)
-	
+	remove_user_flight_fx(id)
 	reset_ester_reborn_mode(id,1)
 
 	g_which_team_is_user[id] = get_user_team(id)
@@ -380,8 +375,6 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	if ( !is_user_alive(id) && (g_ester_respawned_attempts[id]<ester_total_respawn_attempts) ) {
 		new parm[1]
 		parm[0] = id
-		// Respawn it faster then Zues, let this power be used before Zues's
-		// never set higher then 1.9 or lower then 0.5
 		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,ester_calculation_time_period-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, 1,"a",ester_calculation_times)
 	}
 	else if (!is_user_alive(id)){

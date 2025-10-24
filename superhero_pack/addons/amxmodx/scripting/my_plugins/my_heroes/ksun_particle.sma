@@ -443,7 +443,7 @@ public untrack_spore_task(spore){
 
 //----------------------------------------------------------------------------------------------
 sporetrail(entid){
-	trailing_beam(20,entid,{255, 0, 255,125}) 	
+	trail(entid,PURPLE,20,3) 	
 }
 
 public spore_think(ent){
