@@ -237,8 +237,16 @@ stock make_shockwave(point[3],Float:radius,const color[4],shockwave_frame_rate=1
 
 }
 
-stock detect_user(id,enemy){
+stock detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0}){
 
+
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
+	write_byte(1)
+	write_byte(enemy)
+	write_coord_f(origin[0])
+	write_coord_f(origin[1])
+	write_coord_f(origin[2])
+	message_end()
 
 	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
 	write_byte(enemy)
@@ -267,7 +275,7 @@ public track_task(array[],id){
 	format(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
 	set_hudmessage(LineColorsWithAlpha[ORANGE][0], LineColorsWithAlpha[ORANGE][1], LineColorsWithAlpha[ORANGE][2],  0.0, 0.2, 0, 0.0, 1.0)
 	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
-	detect_user(array[0],id);
+	detect_user(array[0],id,vEnd);
 	IVecFVec(origin,Pos)
 	IVecFVec(eorigin,vEnd)
 	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
@@ -281,7 +289,7 @@ public track_task(array[],id){
 		distance = get_distance(eorigin, origin)
 		format(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
 		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
-		detect_user(array[i+5],id);
+		detect_user(array[i+5],id,vEnd);
 		IVecFVec(origin,Pos)
 		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
 		

@@ -1,4 +1,4 @@
-de_westwood
+starwars
 starwars
 starwars
 starwars

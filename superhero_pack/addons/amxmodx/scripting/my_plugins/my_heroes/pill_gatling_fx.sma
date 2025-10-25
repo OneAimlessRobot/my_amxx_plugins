@@ -577,6 +577,26 @@ stun_user(id){
 	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_stun(id, STUN_PERIOD, STUN_SPEED)
 	sh_screen_shake(id, 16.0, (STUN_PERIOD), 2.0)
+	set_task(STUN_PERIOD,"unstun_task",id+UNSTUN_TASKID,"", 0,  "a",1)
+
+
+
+}
+unstun_user(id){
+
+	if ( !shModActive() ||!client_hittable(id)) return
+	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
+	sh_set_stun(id,0.0,1.0)
+	gatling_set_fx_num(id, 0)
+	sh_screen_shake(id,0.0,0.0,0.0)
+	remove_task(id+UNSTUN_TASKID)
+
+
+
+}
+public unstun_task(id){
+	id-=UNSTUN_TASKID
+	unstun_user(id)
 
 
 
@@ -625,16 +645,6 @@ unpoison_user(id){
 
 
 }
-unstun_user(id){
-
-	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
-	sh_set_stun(id,0.0,1.0)
-	gatling_set_fx_num(id, 0)
-	sh_screen_shake(id,0.0,0.0,0.0)
-
-
-
-}
 
 radioactive_user(id,attacker){
 	
@@ -654,11 +664,21 @@ blind_user(id){
 	
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(BLIND_PERIOD,"blind_task",id+BLIND_TASKID,"", 0,  "a",BLIND_TIMES)
+	set_task(floatsub(floatmul(BLIND_PERIOD,float(BLIND_TIMES)),0.1),"unblind_task",id+UNBLIND_TASKID,"", 0,  "a",1)
+
+}
+public unblind_task(id){
+	id-=UNBLIND_TASKID
+	unblind_user(id)
+
+
 
 }
 unblind_user(id){
 	
+	if ( !shModActive() ||!client_hittable(id)) return
 	remove_task(id+BLIND_TASKID)
+	remove_task(id+UNBLIND_TASKID)
 	gatling_set_fx_num(id, 0)
 
 }

@@ -29,7 +29,7 @@
 
 
 
-
+#define UNSTUN_TASKID 47128
 #define STUN_PERIOD 4.0
 #define STUN_SPEED 70.0
 
@@ -69,6 +69,7 @@
 #define COCAINE_TIMES floatround(floatdiv(COCAINE_TIME,COCAINE_PERIOD))
 
 #define BLIND_TASKID 12226
+#define UNBLIND_TASKID 472165
 #define BLIND_PERIOD 0.1
 #define BLIND_TIME 4.0
 #define BLIND_TIMES floatround(floatdiv(BLIND_TIME,BLIND_PERIOD))
