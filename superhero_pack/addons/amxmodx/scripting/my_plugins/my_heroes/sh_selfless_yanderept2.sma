@@ -11,6 +11,8 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 //#pragma dynamic 8000
 //----------------------------------------------------------------------------------------------
@@ -119,6 +121,8 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!gHasYandere[id]||!gIsPsychosis[id]||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
@@ -465,7 +469,8 @@ if(!yandere_get_has_yandere(id)){
 	return
 	
 }
-
+if(sh_get_user_is_asleep(id)) return
+if(sh_get_user_is_chaffed(id)) return
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
 new CsTeams:user_team= cs_get_user_team(id)
@@ -906,6 +911,9 @@ public yandere_kd()
 	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id)||!gHasYandere[id]) return PLUGIN_HANDLED
+
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+
 	if(gSuperAngry[id]){
 		if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
 			sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
@@ -922,7 +930,8 @@ public yandere_kd()
 	}
 	else{
 	
-	
+		
+		if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 		if(jet_deployed(id)){
 			
 			jet_destroy(id)

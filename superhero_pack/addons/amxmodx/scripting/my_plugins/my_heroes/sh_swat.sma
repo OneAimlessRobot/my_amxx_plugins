@@ -19,6 +19,8 @@ new const m4_swat_sounds[12][]={"weapons/swatm4/m4a1_silencer_off.wav",
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #if defined AMX98
@@ -205,6 +207,10 @@ public Swat_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !g_hasSwatPower[id]  ) return
+
+	if(sh_get_user_is_asleep(id)) return
+	if(sh_get_user_is_chaffed(id)) return
+
 	if ( gPlayerUltimateUsed[id] ) {
 		client_print(id,print_chat,"[SH](S.W.A.T.) Your next I.C.B.M. is not ready yet.")
 		playSoundDenySelect(id)

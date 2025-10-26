@@ -7,6 +7,8 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #define PLUGIN "Superhero yandere JETGATLING funcs"
@@ -196,6 +198,7 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!hasRoundStarted()||!client_hittable(id)) return FMRES_IGNORED;
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);

@@ -4,6 +4,7 @@
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define SAPPER_TASKID 12812
@@ -280,6 +281,8 @@ public sapper_kd()
 	if ( !is_user_alive(id) ||!sapper_get_has_sapper(id)) {
 		return PLUGIN_HANDLED
 	}
+
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	new mine_id
 	if(!(mine_id=player_touching_mine(id))){
 		if(gPlayerUltimateUsed[id]){

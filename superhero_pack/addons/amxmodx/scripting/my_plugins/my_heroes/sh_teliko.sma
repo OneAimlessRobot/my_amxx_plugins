@@ -6,6 +6,8 @@
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #define TELIKO_TASKID 12812
@@ -149,8 +151,8 @@ public teliko_init()
 	else{
 		reset_teliko_user(id)
 		remove_task(id+TELIKO_TASKID)
-		sh_drop_weapon(id, CSW_P228, true)
-		sh_drop_weapon(id, CSW_FAMAS, true)
+		sh_drop_weapon(id, TELIKO_SIDEARM_CLASSID, true)
+		sh_drop_weapon(id, TELIKO_RIFLE_CLASSID, true)
 		slitter_set_slitter(id,0)
 	}
 	
@@ -211,13 +213,13 @@ public plugin_cfg()
 Teliko_weapons(id)
 {
 if ( sh_is_active() && is_user_alive(id) && gHasTeliko[id] ) {
-	sh_give_weapon(id,CSW_SMOKEGRENADE,false)
-	cs_set_user_bpammo(id, CSW_SMOKEGRENADE,num_chaffs);
-	sh_give_weapon(id, CSW_P228)
+	sh_give_weapon(id,CHAFF_CLASSID,false)
+	cs_set_user_bpammo(id, CHAFF_CLASSID,num_chaffs);
+	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-gHeroLevel
 	if(level_diff>=famas_level_diff){
-		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So you get a FAMAS!",level_diff);
-		sh_give_weapon(id, CSW_FAMAS)
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,TELIKO_RIFLE_WEAPON_NAME);
+		sh_give_weapon(id, TELIKO_RIFLE_CLASSID)
 	}
 	slitter_set_slitter(id,1)
 }
@@ -486,6 +488,9 @@ if ( !is_user_alive(id) ) {
 	return PLUGIN_HANDLED
 }
 
+if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
+
 g_teliko_locked[id]= g_teliko_locked[id]? false:true;
 
 return PLUGIN_HANDLED
@@ -528,7 +533,7 @@ if(gHasTeliko[id]){
 	g_teliko_weapon[id]=wpnid;
 	if(!teliko_get_num_chaffs(id)){
 	
-		sh_drop_weapon(id,CSW_SMOKEGRENADE,true)
+		sh_drop_weapon(id,CHAFF_CLASSID,true)
 	}
 }
 

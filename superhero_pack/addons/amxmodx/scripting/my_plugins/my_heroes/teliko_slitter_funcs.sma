@@ -4,6 +4,7 @@
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero teliko slitter"
@@ -200,6 +201,8 @@ public CmdStart(attacker, uc_handle)
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
 	if ( !teliko_get_has_teliko(attacker)||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
 	
+	if(sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
+
 	static button
 	button= get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(attacker, clip, ammo);

@@ -61,6 +61,8 @@ public CmdStart(id, uc_handle)
 		
 		return FMRES_IGNORED
 	}
+
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);

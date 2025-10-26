@@ -5,6 +5,7 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 // GLOBAL VARIABLES
@@ -52,7 +53,7 @@ public player_prethink_yakui_weapon(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	
-	if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==CSW_M249)){
+	if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==YAKUI_WEAPON_CLASSID)){
 		new has_rockets=gatling_get_rockets(id)
 		new has_pgatling=gatling_get_pillgatling(id)
 		gatling_set_pillgatling(id,!has_pgatling)
@@ -138,7 +139,7 @@ clear_yakui(id){
 
 	gatling_set_num_pills(id,0)
 	gatling_set_num_rockets(id,0)
-	sh_drop_weapon(id, CSW_M249, true)
+	sh_drop_weapon(id, YAKUI_WEAPON_CLASSID, true)
 	clear_pills()
 	clear_missiles()
 
@@ -148,8 +149,12 @@ clear_yakui(id){
 public yakui_weapons(id){
 
 if ( sh_is_active() && is_user_alive(id) && gatling_get_has_yakui(id) ) {
-	sh_give_weapon(id, CSW_M249)
-	sh_chat_message(id,gHeroID,"You got your weapon!")
+	sh_give_weapon(id, YAKUI_WEAPON_CLASSID)
+	new weapon_id=find_ent_by_owner(-1,YAKUI_WEAPON_NAME,id);
+	if(is_valid_ent(weapon_id)){
+		cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
+		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gatling_get_num_pills(id)-CLIP_SIZE);
+	}
 }
 
 }
@@ -240,7 +245,7 @@ public switchmodel(id)
 {
 	if ( !is_user_alive(id) || !gatling_get_has_yakui(id) ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_M249) {
+	if (wpnid == YAKUI_WEAPON_CLASSID) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
 		Entvars_Set_String(id, EV_SZ_viewmodel, GATLING_V_MODEL)
 		Entvars_Set_String(id, EV_SZ_weaponmodel, GATLING_P_MODEL)
@@ -254,7 +259,7 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 	new clip = read_data(3)
 
-	if ( wpnid != CSW_M249 && (!gatling_get_pillgatling(id) ||!gatling_get_rockets(id)) ) return
+	if ( wpnid != YAKUI_WEAPON_CLASSID && (!gatling_get_pillgatling(id) ||!gatling_get_rockets(id)) ) return
 
 	switchmodel(id)
 
@@ -279,16 +284,17 @@ public yakui_kd(){
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||(wid!=CSW_M249)) {
+	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||(wid!=YAKUI_WEAPON_CLASSID)) {
 		return PLUGIN_HANDLED
 	}
+
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+
 	gatling_dec_num_pills(id)
 
 	
 	make_effect(id,id,gHeroID)
 
-	sh_chat_message(id,gatling_get_hero_id(),"gatling shot! %d pills left!!!!!",gatling_get_num_pills(id))
-	
 
 	return PLUGIN_HANDLED
 }

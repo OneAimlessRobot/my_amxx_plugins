@@ -140,6 +140,8 @@ public styropyro_kd()
 
 	if ( !is_user_alive(id) ) return
 
+	if(sh_get_user_is_asleep(id)) return
+
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "Ran out'a microwaves, back to the shop")
 		playSoundDenySelect(id)

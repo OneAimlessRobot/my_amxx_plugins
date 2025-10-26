@@ -4,6 +4,8 @@
 #define sh_molly_funcs
 
 #define MOLLY_CLASSNAME "molotov_grenade"
+#define MOLLY_CLASSID CSW_HEGRENADE
+#define MOLLY_WEAPON_NAME "weapon_hegrenade"
 
 #define XO_WEAPON 4
 #define m_pPlayer 41

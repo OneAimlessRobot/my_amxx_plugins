@@ -50,11 +50,13 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_flashbang", id);
+	new ent = find_ent_by_owner(-1, SLEEP_NADE_WEAPON_NAME, id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if(weapon==CSW_FLASHBANG){
+	if(weapon==SLEEP_NADE_CLASSID){
 		if(button & IN_ATTACK)
 		{
 			button &= ~IN_ATTACK;
@@ -63,7 +65,7 @@ public CmdStart(id, uc_handle)
 			if(ksun_get_num_sleep_nades(id) == 0)
 			{
 				client_print(id, print_center, "Sorry, dear... No more sleep grenades, I am afraid.")
-				sh_drop_weapon(id,CSW_HEGRENADE,true)
+				sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
 				return FMRES_IGNORED
@@ -106,7 +108,7 @@ public CmdStart(id, uc_handle)
 		uncharge_user(id)
 	}
 	if(ent){
-		cs_set_user_bpammo(id, CSW_FLASHBANG,ksun_get_num_sleep_nades(id));
+		cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,ksun_get_num_sleep_nades(id));
 		
 	}
 	return FMRES_IGNORED;
@@ -250,7 +252,12 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 sleep_nade_loaded[id] = false
 
 ksun_dec_num_sleep_nades(id)
-
+if(ksun_get_num_sleep_nades(id) == 0)
+{
+	client_print(id, print_center, "You are out of %s s, darling!",SLEEP_NADE_WEAPON_NAME)
+	sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
+	engclient_cmd(id, "weapon_knife")
+}
 new parm[1]
 parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, SLEEP_NADE_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -266,7 +273,7 @@ public sleep_nade_reload(parm[])
 if(!is_user_alive(parm[0])||!spores_has_ksun(parm[0])||!is_user_connected(parm[0])) return
 sleep_nade_loaded[parm[0]] = true
 new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==CSW_FLASHBANG)&&ksun_get_num_sleep_nades(parm[0])){
+if((wid==SLEEP_NADE_CLASSID)&&ksun_get_num_sleep_nades(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, SLEEP_NADE_V_MODEL)
 }
 }

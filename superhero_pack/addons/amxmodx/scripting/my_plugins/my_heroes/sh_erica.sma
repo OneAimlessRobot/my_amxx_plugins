@@ -433,8 +433,8 @@ update_stats2(id){
 public Erica_weapons(id)
 {
 if ( sh_is_active() && gHasErica[id] &&client_hittable(id)) {
-	sh_give_weapon(id,CSW_HEGRENADE,false)
-	cs_set_user_bpammo(id, CSW_HEGRENADE,num_mollies);
+	sh_give_weapon(id,MOLLY_CLASSID,false)
+	cs_set_user_bpammo(id, MOLLY_CLASSID,num_mollies);
 	sh_give_weapon(id, CSW_ELITE)
 	
 	new weapon_id=find_ent_by_owner(-1,"weapon_elite",id);

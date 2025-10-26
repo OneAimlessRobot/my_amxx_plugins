@@ -272,6 +272,7 @@ public escapist_kd()
 		g_climbing[id] = 0
 		return PLUGIN_HANDLED 
 	}
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	g_climbing[id] = 1
 
 	return PLUGIN_HANDLED 

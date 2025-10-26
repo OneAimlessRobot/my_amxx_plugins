@@ -6,6 +6,9 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
+
 
 
 #define PLUGIN "Superhero yandere jetty funcs"
@@ -303,6 +306,8 @@ public OnCmdStart(id,uc_handle)
 	if(!jet_deployed(id)){
 		return FMRES_IGNORED
 	}
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
 	new button = get_uc(uc_handle, UC_Buttons);
 	new old_button= pev(id,pev_oldbuttons);
 	if((button & IN_RELOAD)&&!(old_button & IN_RELOAD)){

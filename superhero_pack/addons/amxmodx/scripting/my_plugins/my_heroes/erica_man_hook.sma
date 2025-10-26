@@ -4,6 +4,7 @@
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero erica hook"
@@ -229,6 +230,7 @@ public CmdStart1(attacker, uc_handle)
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
 	if ( !tranq_get_has_erica(attacker)||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
 	
+	if (sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
 	
 	new button;
 	button= get_uc(uc_handle, UC_Buttons);

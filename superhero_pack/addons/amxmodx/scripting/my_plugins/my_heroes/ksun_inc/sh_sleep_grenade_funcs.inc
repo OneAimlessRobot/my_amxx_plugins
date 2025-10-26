@@ -4,6 +4,8 @@
 #define sh_sleep_grenade_funcs
 
 #define SLEEP_NADE_CLASSNAME "sleep_grenade"
+#define SLEEP_NADE_WEAPON_NAME "weapon_smokegrenade"
+#define SLEEP_NADE_CLASSID CSW_SMOKEGRENADE
 
 
 #define SLEEP_NADE_BURST_SFX "shmod/erica/molotov/molotov_crack.wav"

@@ -219,6 +219,10 @@ new id=str_to_num(temp)
 if ( !is_user_alive(id)||!gHasYowai[id]||g_yowai_mode[id] ) {
 	return PLUGIN_HANDLED
 }
+if (sh_get_user_is_asleep(id)){
+
+	return PLUGIN_HANDLED;
+}
 g_yowai_mode[id]= true;
 yowai_model(id)
 //set_task( 1.0, "Yowai_resilience", id+YOWAI_RESILIENCE, "", 0, "b")

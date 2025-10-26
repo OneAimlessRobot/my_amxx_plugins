@@ -7,6 +7,7 @@
 #include "ksun_inc/ksun_ultimate.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
@@ -368,8 +369,8 @@ ksun_weapons(id)
 {
 
 if ( sh_is_active() && client_hittable(id) && spores_has_ksun(id)) {
-	cs_set_user_bpammo(id, CSW_HEGRENADE,num_sleep_nades);
-	sh_give_weapon(id,CSW_FLASHBANG,false)
+	cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,num_sleep_nades);
+	sh_give_weapon(id,SLEEP_NADE_CLASSID,false)
 	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
 }
@@ -460,6 +461,9 @@ public ksun_kd()
 	
 	if(!spores_has_ksun(id)) return PLUGIN_HANDLED
 	
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
+
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
 		playSoundDenySelect(id)

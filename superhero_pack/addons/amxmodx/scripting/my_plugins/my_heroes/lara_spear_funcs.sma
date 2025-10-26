@@ -3,6 +3,7 @@
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero lara mk2 pt2"
@@ -54,6 +55,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	
 	}
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);

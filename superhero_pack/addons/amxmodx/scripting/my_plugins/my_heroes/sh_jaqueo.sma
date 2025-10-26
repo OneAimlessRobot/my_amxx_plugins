@@ -2,6 +2,8 @@
 #include "../my_include/superheromod.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"
 #include "shield_inc/sh_jaqueo_shield.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 #define JAQUEO_HUD_TASKID 18382
 #define JAQUEO_MORPH_TASKID 28627
@@ -204,6 +206,9 @@ public jaqueo_kd()
 	if ( !is_user_alive(id) ||!jaqueo_get_has_jaqueo(id)||!shield_loaded(id)) {
 		return PLUGIN_CONTINUE
 	}
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
+
 	if(shield_deployed(id)){
 		
 		sh_sound_deny(id)

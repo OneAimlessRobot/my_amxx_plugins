@@ -4,8 +4,8 @@
 #define sh_get_set
 
 #define EFFECT_SHOT_SFX "shmod/Teliko/counter.wav"
-#define GATLING_V_MODEL "models/shmod/yakui/v_m249.mdl"
-#define GATLING_P_MODEL "models/shmod/yakui/p_m249.mdl"
+#define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
+#define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
 
 #define YAKUI_MORPH_TASKID 127186
 

@@ -5,6 +5,7 @@
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 stock const debug_hud_mode= false
@@ -294,6 +295,10 @@ public flora_kd()
 	
 	if ( !is_user_alive(id) ||!flora_get_has_flora(id)) {
 		return PLUGIN_CONTINUE
+	}
+	if (sh_get_user_is_asleep(id)){
+
+		return PLUGIN_HANDLED;
 	}
 	if(!field_loaded(id)){
 		

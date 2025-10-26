@@ -4,6 +4,7 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero teliko mk2 pt2"
@@ -50,12 +51,13 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_smokegrenade", id);
+	new ent = find_ent_by_owner(-1, CHAFF_WEAPON_NAME, id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if(weapon==CSW_SMOKEGRENADE){
+	if(weapon==CHAFF_CLASSID){
 		if(button & IN_ATTACK)
 		{
 			button &= ~IN_ATTACK;
@@ -64,7 +66,7 @@ public CmdStart(id, uc_handle)
 			if(teliko_get_num_chaffs(id) == 0)
 			{
 				client_print(id, print_center, "You are out of chaffs")
-				sh_drop_weapon(id,CSW_SMOKEGRENADE,true)
+				sh_drop_weapon(id,CHAFF_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
 				return FMRES_IGNORED
@@ -107,7 +109,7 @@ public CmdStart(id, uc_handle)
 		uncharge_user(id)
 	}
 	if(ent){
-		cs_set_user_bpammo(id, CSW_SMOKEGRENADE,teliko_get_num_chaffs(id));
+		cs_set_user_bpammo(id, CHAFF_CLASSID,teliko_get_num_chaffs(id));
 		
 	}
 	return FMRES_IGNORED;
@@ -228,7 +230,12 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 chaff_loaded[id] = false
 
 teliko_dec_num_chaffs(id)
-
+if(teliko_get_num_chaffs(id) == 0)
+{
+	client_print(id, print_center, "You are out of %s s. I repeat: You're out.",CHAFF_WEAPON_NAME)
+	sh_drop_weapon(id,CHAFF_CLASSID,true)
+	engclient_cmd(id, "weapon_knife")
+}
 new parm[1]
 parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, CHAFF_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -243,7 +250,7 @@ public chaff_reload(parm[])
 if(!is_user_alive(parm[0])||!teliko_get_has_teliko(parm[0])||!is_user_connected(parm[0])) return
 chaff_loaded[parm[0]] = true
 new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==CSW_SMOKEGRENADE)&&teliko_get_num_chaffs(parm[0])){
+if((wid==CHAFF_CLASSID)&&teliko_get_num_chaffs(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, CHAFF_V_MODEL)
 }
 }

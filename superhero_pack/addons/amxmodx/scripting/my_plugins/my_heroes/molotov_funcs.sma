@@ -3,6 +3,7 @@
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include <fakemeta_util>
 
 
@@ -75,11 +76,13 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_hegrenade", id);
+	new ent = find_ent_by_owner(-1, MOLLY_WEAPON_NAME, id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if(weapon==CSW_HEGRENADE){
+	if(weapon==MOLLY_CLASSID){
 		if(button & IN_ATTACK)
 		{
 			button &= ~IN_ATTACK;
@@ -88,7 +91,7 @@ public CmdStart(id, uc_handle)
 			if(erica_get_num_mollies(id) == 0)
 			{
 				client_print(id, print_center, "You are out of mollies sis!!!")
-				sh_drop_weapon(id,CSW_HEGRENADE,true)
+				sh_drop_weapon(id,MOLLY_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
 				return FMRES_IGNORED
@@ -130,7 +133,7 @@ public CmdStart(id, uc_handle)
 		uncharge_user(id)
 	}
 	if(ent){
-		cs_set_user_bpammo(id, CSW_HEGRENADE,erica_get_num_mollies(id));
+		cs_set_user_bpammo(id, MOLLY_CLASSID,erica_get_num_mollies(id));
 		
 	}
 	return FMRES_IGNORED;
@@ -251,7 +254,12 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 molly_loaded[id] = false
 
 erica_dec_num_mollies(id)
-
+if(erica_get_num_mollies(id) == 0)
+{
+	client_print(id, print_center, "You are out of %s s, sis!",MOLLY_WEAPON_NAME)
+	sh_drop_weapon(id,MOLLY_CLASSID,true)
+	engclient_cmd(id, "weapon_knife")
+}
 new parm[1]
 parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, MOLLY_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -266,7 +274,7 @@ public molly_reload(parm[])
 if(!is_user_alive(parm[0])||!tranq_get_has_erica(parm[0])||!is_user_connected(parm[0])) return
 molly_loaded[parm[0]] = true
 new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==CSW_HEGRENADE)&&erica_get_num_mollies(parm[0])){
+if((wid==MOLLY_CLASSID)&&erica_get_num_mollies(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, MOLLY_V_MODEL)
 }
 }

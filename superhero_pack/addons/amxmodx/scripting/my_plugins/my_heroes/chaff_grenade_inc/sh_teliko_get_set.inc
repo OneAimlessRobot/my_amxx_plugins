@@ -11,6 +11,11 @@
 #define CHAFF_HIT_SFX  "shmod/lara/spear/spear_hit.wav"
 #define CHAFF_THROW_SFX  "shmod/lara/spear/spear_throw.wav"
 #define CHAFF_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
+#define TELIKO_SIDEARM_CLASSID CSW_P228
+#define TELIKO_RIFLE_CLASSID CSW_FAMAS
+
+#define TELIKO_SIDEARM_WEAPON_NAME "weapon_p228"
+#define TELIKO_RIFLE_WEAPON_NAME "weapon_famas"
 
 stock gHeroID
 

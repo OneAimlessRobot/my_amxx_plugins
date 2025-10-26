@@ -4,9 +4,8 @@
 #define sh_chaff_funcs
 
 #define CHAFF_CLASSNAME "chaff_grenade"
-
-#define XO_WEAPON 4
-#define m_pPlayer 41
+#define CHAFF_CLASSID CSW_FLASHBANG
+#define CHAFF_WEAPON_NAME "weapon_flashbang"
 
 
 

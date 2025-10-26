@@ -3079,17 +3079,21 @@ public _sh_extra_damage()
 			write_short(_:victimTeam)
 			message_end()
 		}
-
+		new victim_name[128];
+		new attacker_name[128];
+		get_user_name(victim,victim_name,127)
+		get_user_name(attacker,attacker_name,127)
+		
 		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage_after)
-			sh_chat_message(attacker, -1, "Anubis SH damage %d - %s ", damage_after, wpnDescription)
+			sh_chat_message(attacker, -1, "You killed: %s with: %d dmg using: %s",victim_name,damage_after,wpnDescription)
 		}
 
 		if ( gHasAnubis[victim] && get_pcvar_num(sh_anubisdmg_check) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(victim, gMsgSync1, "%d", damage_after)
-			sh_chat_message(victim, -1, "Anubis SH damage %d - %s", damage_after, wpnDescription)
+			sh_chat_message(victim, -1, "You were killed by: %s with: %d dmg using: %s",attacker_name,damage_after,wpnDescription)
 		}
 
 		// Update killers scoreboard with new info
@@ -4708,14 +4712,14 @@ public vip_UserSpawned()
 //----------------------------------------------------------------------------------------------
 public vip_UserEscape()
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
 
 	new id = getLoguserIndex()
 
-	if ( !is_user_connected(id) ) return
-	if ( id != gXpBounsVIP ) return
-	if ( cs_get_user_team(id) != CS_TEAM_CT ) return
-	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !is_user_connected(id) ) return PLUGIN_CONTINUE
+	if ( id != gXpBounsVIP ) return PLUGIN_CONTINUE
+	if ( cs_get_user_team(id) != CS_TEAM_CT ) return PLUGIN_CONTINUE
+	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	new the_xp_return_value=XP_FWD_PASS
@@ -4724,17 +4728,18 @@ public vip_UserEscape()
 	}
 	localAddXP(id, XPtoGive)
 	chatMessage(id, _, "You got %d XP for escaping as the VIP", XPtoGive)
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public vip_Assassinated()
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
 
 	new attacker = getLoguserIndex()
 
-	if ( !is_user_connected(attacker) ) return
-	if ( cs_get_user_team(attacker) != CS_TEAM_T ) return
-	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !is_user_connected(attacker) ) return PLUGIN_CONTINUE
+	if ( cs_get_user_team(attacker) != CS_TEAM_T ) return PLUGIN_CONTINUE
+	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	new the_xp_return_value=XP_FWD_PASS
@@ -4743,12 +4748,13 @@ public vip_Assassinated()
 	}
 	localAddXP(attacker, XPtoGive)
 	chatMessage(attacker, _, "You got %d XP for assassinating the VIP", XPtoGive)
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public vip_Escaped()
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
-	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
+	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new players[SH_MAXSLOTS], numplayers, ct
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
@@ -4767,6 +4773,7 @@ public vip_Escaped()
 			chatMessage(ct, _, "Your team got %d XP for a successful VIP esacpe", XPtoGive)
 		}
 	}
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public host_Killed()
@@ -4784,13 +4791,13 @@ public host_Killed()
 //----------------------------------------------------------------------------------------------
 public host_Rescued()
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP) return PLUGIN_CONTINUE
 
 	new id = getLoguserIndex()
 
-	if ( !is_user_connected(id) ) return
-	if ( cs_get_user_team(id) != CS_TEAM_CT ) return
-	if ( get_playersnum() < get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !is_user_connected(id) ) return PLUGIN_CONTINUE
+	if ( cs_get_user_team(id) != CS_TEAM_CT ) return PLUGIN_CONTINUE
+	if ( get_playersnum() < get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	// Give at least 1 xp per hostage even if sh_objectivexp is really low
 	// gNumHostages should never be 0 if this is called so no need to check for div by 0
@@ -4801,12 +4808,13 @@ public host_Rescued()
 	}
 	localAddXP(id, XPtoGive)
 	chatMessage(id, _, "You got %d XP for rescuing a hostage", XPtoGive)
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public host_AllRescued()
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
-	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
+	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new players[SH_MAXSLOTS], numplayers, ct
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
@@ -4823,6 +4831,7 @@ public host_AllRescued()
 		localAddXP(ct, XPtoGive)
 		chatMessage(ct, _, "Your team got %d XP for rescuing all the hostages", XPtoGive)
 	}
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public bomb_HolderSpawned()
@@ -4844,11 +4853,11 @@ public bomb_HolderSpawned()
 //----------------------------------------------------------------------------------------------
 public bomb_planted(planter)
 {
-	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return
-	if ( !is_user_connected(planter) || !pev_valid(gXpBounsC4ID) ) return
-	if ( planter != pev(gXpBounsC4ID, pev_owner) ) return
-	if ( cs_get_user_team(planter) != CS_TEAM_T ) return
-	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return
+	if ( !get_pcvar_num(sv_superheros) || !gObjectiveXP ) return PLUGIN_CONTINUE
+	if ( !is_user_connected(planter) || !pev_valid(gXpBounsC4ID) ) return PLUGIN_CONTINUE
+	if ( planter != pev(gXpBounsC4ID, pev_owner) ) return PLUGIN_CONTINUE
+	if ( cs_get_user_team(planter) != CS_TEAM_T ) return PLUGIN_CONTINUE
+	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	// Only give this out once per round
 	gXpBounsC4ID = -1
@@ -4861,6 +4870,7 @@ public bomb_planted(planter)
 	}
 	localAddXP(planter, XPtoGive)
 	chatMessage(planter, _, "You got %d XP for planting the bomb", XPtoGive)
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public bomb_defused(defuser)

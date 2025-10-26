@@ -7,8 +7,6 @@
 #define FADE_HOLD (1<<2)
 
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
 
 #define CAN_SELF_CHAFF 1
 
@@ -31,6 +29,7 @@
 
 stock const chaff_color[4]={255, 255, 255,200}
 
+native sh_get_user_is_chaffed(id)
 native sh_chaff_user(id,attacker,gHeroID)
 native sh_unchaff_user(id)
 

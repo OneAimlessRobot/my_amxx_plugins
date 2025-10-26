@@ -25,6 +25,7 @@ public plugin_natives(){
 	
 	register_native("sh_chaff_user","_sh_chaff_user",0);
 	register_native("sh_unchaff_user","_sh_unchaff_user",0);
+	register_native("sh_get_user_is_chaffed","_sh_get_user_is_chaffed",0);
 }
 public disorient_user(id)
 {
@@ -44,6 +45,10 @@ public disorient_user(id)
 	entity_set_int( id, EV_INT_fixangle, 1);
 	
 	return PLUGIN_CONTINUE
+}
+public _sh_get_user_is_chaffed(iPlugin,iParams){
+	new id= get_param(1);
+	return gIsChaffed[id]
 }
 public _sh_chaff_user(iPlugin,iParams){
 	

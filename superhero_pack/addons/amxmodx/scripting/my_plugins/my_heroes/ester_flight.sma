@@ -5,6 +5,8 @@
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #define PLUGIN "Superhero ester flight funcs"
@@ -125,7 +127,7 @@ public plugin_natives(){
 public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)||(id==attacker)) return HAM_IGNORED
-	
+
 	if(cs_get_user_team(id)==cs_get_user_team(attacker)){
 	
 		return HAM_IGNORED;
@@ -247,7 +249,14 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 public OnCmdStart(id, uc_handle, seed)
 {
 	if(!ester_get_has_ester(id)||!client_hittable(id)||!ester_get_reborn_mode(id)||sh_get_stun(id)){
-		
+			return FMRES_IGNORED;
+	}
+	if (sh_get_user_is_asleep(id)){
+
+		return FMRES_IGNORED;
+	}
+	if (sh_get_user_is_chaffed(id)){
+
 		return FMRES_IGNORED;
 	}
 	static buttons,oldbuttons; 

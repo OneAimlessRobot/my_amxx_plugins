@@ -3,6 +3,10 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
+
+
 #define KOMAK_HITZONE_TASKID 13321
 #define KOMAK_STATS_TASKID 14001
 #define KOMAK_HUD_TASKID 14221
@@ -19,7 +23,7 @@
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
 // weapons offsets
-const m_ppPlayer            = 41
+const m_pppPlayer            = 41
 const m_iiId                = 43
 const m_fflNextPrimaryAttack    = 46
 const m_fflNextSecondaryAttack    = 47
@@ -141,7 +145,7 @@ public Item_PostFrame_Post(iEnt)
 	if( get_pdata_int(iEnt, m_ffInReload, 4) )
 	{
 		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iiId, 4)], gCurrReloadRatio[id])
-		set_pdata_float(get_pdata_cbase(iEnt, m_ppPlayer, 4), m_fflNextAttack, fDelay, 5)
+		set_pdata_float(get_pdata_cbase(iEnt, m_pppPlayer, 4), m_fflNextAttack, fDelay, 5)
 		set_pdata_float(iEnt, m_fflTimeWeaponIdle, fDelay + 0.5, 4)
 	}
 	return HAM_IGNORED
@@ -426,6 +430,9 @@ public komak_kd()
 	
 	if ( !sh_is_active()||!is_user_alive(id)||!gHasKomak[id]||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
+
 	if ( gPlayerUltimateUsed[id] ) {
 		sh_chat_message(id,gHeroID,"Youve blown the engine! Wait %d more seconds!",gEngineRepairTimer[id])
 		playSoundDenySelect(id)

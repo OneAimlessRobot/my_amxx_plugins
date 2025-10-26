@@ -6,6 +6,7 @@
 #include "camera_inc/sh_camera_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
@@ -81,8 +82,7 @@ public plugin_natives(){
 public camera_controls(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id,camman_get_has_camman(id))||!camman_get_num_cameras(id)||!looking_with_camera[id]) return FMRES_IGNORED;
-	
-	new Float:zoom;
+		new Float:zoom;
 	pev(id,pev_fov,zoom)
 	
 	

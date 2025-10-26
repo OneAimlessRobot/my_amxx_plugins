@@ -5,6 +5,10 @@
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
+
+
 
 
 #define PLUGIN "Superhero graciete jetty funcs"
@@ -225,9 +229,14 @@ public client_PostThink(id) {
 }
 public CmdStart(id, uc_handle)
 {
-	if (!client_hittable(id,graciete_get_has_graciete(id))||!hasRoundStarted()) return FMRES_IGNORED;
-	
-	
+	if (!client_hittable(id,graciete_get_has_graciete(id))||!hasRoundStarted()){
+			return FMRES_IGNORED;
+	}
+	if (sh_get_user_is_asleep(id)){
+
+		return FMRES_IGNORED;
+	}
+	if (sh_get_user_is_chaffed(id)) return FMRES_IGNORED
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	

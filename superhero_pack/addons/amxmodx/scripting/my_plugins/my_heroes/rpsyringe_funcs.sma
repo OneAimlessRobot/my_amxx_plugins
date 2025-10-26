@@ -2,7 +2,10 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
+#include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 pt4"
@@ -68,12 +71,14 @@ public CmdStart(id, uc_handle)
 {
 	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, "weapon_m249", id);
+	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if(weapon==CSW_M249 ){
+	if(weapon==YAKUI_WEAPON_CLASSID){
 		if(button & IN_ATTACK2)
 		{
 			button &= ~IN_ATTACK2;
@@ -99,11 +104,6 @@ public CmdStart(id, uc_handle)
 			}
 			has_rocket[id] = 0
 		}
-	}
-	if(ent)
-	{
-		cs_set_weapon_ammo(ent, -1);
-		cs_set_user_bpammo(id, CSW_M249,gatling_get_num_rockets(id));
 	}
 	
 	return FMRES_IGNORED;

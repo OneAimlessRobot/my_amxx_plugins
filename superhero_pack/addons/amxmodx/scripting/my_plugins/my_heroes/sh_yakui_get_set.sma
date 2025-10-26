@@ -296,7 +296,6 @@ public _sh_get_pill_color(iPlugin,iParams){
 		
 		}
 		default:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"No fx will be applied bro sorry")
 			color[3]=0
 		
 		}

@@ -7,6 +7,8 @@
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 #define ESTER_HUD_TASKID 23443
 #define ESTER_REVENGE_TASKID 11122
@@ -766,6 +768,8 @@ public ester_kd()
 	if ( !is_user_alive(id)||!gHasEster[id]||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
+	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 	if(!count_enemies(id)){
 	
 		sh_chat_message(id,gHeroID,"Maaaaan... you have no enemies yet! Chiiiilll");

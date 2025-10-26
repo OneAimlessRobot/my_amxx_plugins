@@ -3,6 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
+
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
@@ -70,16 +71,7 @@ public plugin_natives(){
 }
 public bool:client_isnt_hitter(id){
 	
-	if ( !client_hittable(id)){
-		
-		return true
-	}
-	if(!lena_get_has_lena(id)){
-		
-		
-		return true;
-	}
-	return false
+	return !client_hittable(id,lena_get_has_lena(id))
 	
 }
 public CmdStart(id, uc_handle)

@@ -10,6 +10,7 @@
 
 
 new bool:gIsAsleep[SH_MAXSLOTS+1]
+new Float:gKeepAngles[SH_MAXSLOTS+1][3]
 public plugin_init(){
 
 
@@ -62,6 +63,7 @@ public _sh_sleep_user(iPlugin,iParams){
 	if(!gIsAsleep[user]){
 		if((user==attacker)){
 			if(user&&CAN_SELF_SLEEP){
+
 				sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
 				sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
 				sleep_user(user,attacker)
@@ -109,7 +111,9 @@ public sleep_task(array[],id){
 	id-=SLEEP_TASKID
 
 	if ( !shModActive() ||!client_hittable(id)) return
-	sh_set_stun(id,5.0,0.1)
+	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
+	entity_set_int( id, EV_INT_fixangle, 1);
+	sh_set_stun(id,floatsub(floatmul(SLEEP_PERIOD,float(SLEEP_TIMES)),0.1),0.1)
 	sh_set_rendering(id, sleep_color[0], sleep_color[1], sleep_color[2], sleep_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
@@ -122,6 +126,7 @@ sleep_user(id,attacker){
 	array[0] = attacker
 	fade_screen_user(id)
 	gIsAsleep[id]=true
+	entity_get_vector(id, EV_VEC_angles, gKeepAngles[id])
 	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",SLEEP_TIMES)
 	set_task(floatsub(floatmul(SLEEP_PERIOD,float(SLEEP_TIMES)),0.1),"unsleep_task",id+UNSLEEP_TASKID,"", 0,  "a",1)
 	return 0
@@ -137,6 +142,8 @@ public unsleep_task(id){
 	
 	sh_set_stun(id,0.0)
 	gIsAsleep[id]=false
+	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
+	entity_set_int( id, EV_INT_fixangle, 0);
 	return 0
 
 
@@ -150,6 +157,8 @@ unsleep_user(id){
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	sh_set_stun(id,0.0)
 	gIsAsleep[id]=false
+	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
+	entity_set_int( id, EV_INT_fixangle, 0);
 	return 0
 
 
