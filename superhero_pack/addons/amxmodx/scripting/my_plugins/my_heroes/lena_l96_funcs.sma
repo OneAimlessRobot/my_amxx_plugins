@@ -438,8 +438,10 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 public vexd_pfntouch(pToucher, pTouched)
 {
 
-	if (pToucher <= 0) return
-	if (!is_valid_ent(pToucher)) return
+	if (pev_valid(pToucher)!=2){
+		
+		return
+	}
 
 	new szClassName[32]
 	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)

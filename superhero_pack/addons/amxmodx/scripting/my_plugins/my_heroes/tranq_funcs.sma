@@ -380,9 +380,10 @@ public darttrail(parm[])
 public vexd_pfntouch(pToucher, pTouched)
 {
 	
-	if (pToucher <= 0) return
-	if (!is_valid_ent(pToucher)) return
 	
+	if (pev_valid(pToucher)!=2 ){
+		return
+	}
 	new szClassName[32]
 	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 	if(equal(szClassName, DART_CLASSNAME))
@@ -458,7 +459,6 @@ public vexd_pfntouch(pToucher, pTouched)
 				
 			}
 		}
-//entity_get_vector(pTouched, EV_VEC_ORIGIN, origin)
 		if(pev(pTouched,pev_solid)==SOLID_BSP){
 			
 			emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

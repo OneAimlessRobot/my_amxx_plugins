@@ -30,10 +30,7 @@ public sh_set_user_xp_fwd_pre(&id, &xp,xp_type){
 
         return XP_FWD_PASS
     }
-    new prev_bonus_xp=player_built_xp_this_round[id][xp_type]
     player_built_xp_this_round[id][xp_type]+=(xp+xp_extra_type_bonuses[xp_type]);
-    new curr_bonus_xp=player_built_xp_this_round[id][xp_type]
-    server_print("The xp forward was executed!!!^nUser: %d^nxp: %d^nReason: %s^nPrevious bonus xp: %d^nCurrent bonus xp: %d^n",id,xp,xp_extra_earn_strings[xp_type],prev_bonus_xp,curr_bonus_xp)
     return XP_FWD_PASS
 
 }
@@ -44,7 +41,7 @@ public sh_round_end(){
     for(new i=1;i<=SH_MAXSLOTS;i++){
         if(is_user_connected(i)){
             for(new type=0;type<sizeof player_built_xp_this_round[];type++){
-                if(player_built_xp_this_round[i][type]>=0){
+                if(player_built_xp_this_round[i][type]>0){
                     new xp_earned=player_built_xp_this_round[i][type]*(floatround(xp_extra_type_mults[type]));
                     sh_chat_message(i,-1,"You were awarded an extra %d xp %s last round!",xp_earned,xp_extra_earn_strings[type])
                     sh_set_user_xp(i,xp_earned,true);

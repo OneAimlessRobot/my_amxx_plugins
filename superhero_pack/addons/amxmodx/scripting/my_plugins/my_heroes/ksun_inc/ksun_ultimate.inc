@@ -26,12 +26,6 @@ const m_fInReload            = 54
 
 const m_flNextAttack = 83
 
-stock const Float:g_fReloadDelay[CSW_P90+1] = {
-	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
-	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
-	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
-}
-
 native ksun_player_is_in_ultimate(id)
 
 native ksun_player_is_ultimate_ready(id)

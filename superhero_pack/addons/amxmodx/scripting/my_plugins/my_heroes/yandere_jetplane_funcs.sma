@@ -419,6 +419,7 @@ public jet_deploy_task(parm[],id){
 	set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
+	set_jet_engine(id,1);
 	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID,"",0,"b")
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
@@ -499,7 +500,8 @@ public jet_think(ent)
 		new Float:rolly_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
-		
+		new Float:curr_speed_stab_coeff=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
+		new Float:curr_speed_dampening_coeff=floatclamp(((get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*g_jetplane_telemetry_data[owner][4])/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
 		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
 		
@@ -522,26 +524,8 @@ public jet_think(ent)
 			
 			updown_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][0])
 		}
-		g_jetplane_turn_data[owner][0]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][0]+updown_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
-		if(get_jet_leftflapon(owner)||get_jet_rightflapon(owner)){
-			if(get_jet_leftflapon(owner)){
 
-
-				turn_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
-				
-			}
-			if(get_jet_rightflapon(owner)){
-
-				
-
-				turn_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
-				
-			}
-		}
-		else{
-			turn_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][1])
-		}
-		g_jetplane_turn_data[owner][1]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][1]+turn_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
+		g_jetplane_turn_data[owner][0]=curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][0]+updown_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
 		
 		if(get_jet_left_rollflapon(owner)||get_jet_right_rollflapon(owner)){
 			if(get_jet_left_rollflapon(owner)){
@@ -562,17 +546,42 @@ public jet_think(ent)
 	
 			rolly_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][2]);
 		}
-		g_jetplane_turn_data[owner][2]=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)*floatclamp(g_jetplane_turn_data[owner][2]+rolly_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
+		g_jetplane_turn_data[owner][2]=curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][2]+rolly_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5);
+		
+		if(get_jet_leftflapon(owner)||get_jet_rightflapon(owner)){
+			if(get_jet_leftflapon(owner)){
 
+
+				turn_thingie+=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
+			if(get_jet_rightflapon(owner)){
+
+				
+
+				turn_thingie-=jet_get_turn_inc_const()*jet_get_think_period()
+				
+			}
+		}
+		else{
+			turn_thingie-=((1.0/jet_get_stabilizer_mushyness())*1.0*g_jetplane_turn_data[owner][1])
+		}
+		g_jetplane_turn_data[owner][1]=(curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][1]+turn_thingie,-jet_get_max_turn_const()*0.5,jet_get_max_turn_const()*0.5))+g_jetplane_turn_data[owner][2];
+		
 		new Float:angles[3]
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
 		v_angle[1]+=g_jetplane_turn_data[owner][1]
 		angles[1]+=g_jetplane_turn_data[owner][1]
 		v_angle[0]=floatclamp(v_angle[0]+g_jetplane_turn_data[owner][0],-45.0,45.0)
+		v_angle[0]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*v_angle[0]*jet_get_think_period());
+		
 		angles[0]=floatclamp(angles[0]-g_jetplane_turn_data[owner][0],-45.0,45.0)
+		angles[0]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*angles[0]*jet_get_think_period());
 		v_angle[2]=floatclamp(v_angle[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
+		v_angle[2]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*v_angle[2]*jet_get_think_period());
 		angles[2]=floatclamp(angles[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
+		angles[2]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*angles[2]*jet_get_think_period());
 		entity_set_vector(owner, EV_VEC_v_angle, v_angle)
 		entity_set_vector(owner, EV_VEC_angles, angles)
 		entity_set_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
@@ -608,10 +617,18 @@ public jet_think(ent)
 		}
 		
 		new Float:raw_velocity[3];
+		new Float:other_velocity[3]
+		new Float:airbrake_tmp_velocity[3]
+		new Float:velocity_copy[3]
+
 		arrayset(raw_velocity,0,sizeof raw_velocity);
 		new Float:accel_result=accel_thingie*get_jet_accelerate_const()*jet_get_think_period();
 		new Float:brake_result=brake_thingie*get_jet_brake_const()*jet_get_think_period();
 		
+		entity_get_vector(jet_get_user_jet(owner),EV_VEC_velocity,other_velocity);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,velocity_copy);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,airbrake_tmp_velocity);
+
 		new Float:thrust_vector[3];
 		arrayset(thrust_vector,0,sizeof thrust_vector);
 		if(get_jet_flying(owner)){
@@ -620,13 +637,9 @@ public jet_think(ent)
 		new Float:airbrake_vector[3];
 		arrayset(airbrake_vector,0,sizeof airbrake_vector);
 		if(get_jet_flying(owner)){
-			velocity_by_aim(jet_get_user_jet(owner), -1*floatround(brake_result), airbrake_vector)
+			vector_norm(airbrake_tmp_velocity,airbrake_tmp_velocity)
+			multiply_3d_vector_by_scalar(airbrake_tmp_velocity,-1.0*brake_result,airbrake_vector);
 		}
-		new Float:other_velocity[3]
-		new Float:velocity_copy[3]
-
-		entity_get_vector(jet_get_user_jet(owner),EV_VEC_velocity,other_velocity);
-		multiply_3d_vector_by_scalar(other_velocity,1.0,velocity_copy);
 		new Float:drag_vector[3];
 		if(jetplane_enable_air_drag){
 			arrayset(drag_vector,0,sizeof drag_vector);

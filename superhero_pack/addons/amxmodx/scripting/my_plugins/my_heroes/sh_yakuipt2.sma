@@ -5,7 +5,10 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 // GLOBAL VARIABLES
@@ -16,6 +19,7 @@ new const gHeroName[] = "Yakui Mk2"
 
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
+new mode_change_button_pressed[SH_MAXSLOTS+1]
 
 
 new max_pills
@@ -34,7 +38,7 @@ public plugin_init()
 	register_cvar("yakui_teamglow_on","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
 	gatling_set_hero_id(gHeroID)
-	register_forward(FM_PlayerPreThink, "player_prethink_yakui_weapon")
+	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange","be","1=1")
@@ -46,25 +50,43 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public player_prethink_yakui_weapon(id)
+public player_prethink_yakui_weapon(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()) return FMRES_IGNORED
+	if ( !is_user_alive(id)||!client_hittable(id,gatling_get_has_yakui(id))) return FMRES_IGNORED;
 	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	
-	
-	if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==YAKUI_WEAPON_CLASSID)){
-		new has_rockets=gatling_get_rockets(id)
-		new has_pgatling=gatling_get_pillgatling(id)
-		gatling_set_pillgatling(id,!has_pgatling)
-		gatling_set_rockets(id,!has_rockets)
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
+
+	static button;
+	button= get_uc(uc_handle, UC_Buttons);
+	new clip,ammo,wpnid=get_user_weapon(id,clip,ammo)
+	if(button & IN_ALT1){
+
+		button &= ~IN_ALT1
+		set_uc(uc_handle, UC_Buttons, button)
+		if(!mode_change_button_pressed[id]){
+			if(wpnid==YAKUI_WEAPON_CLASSID){
+				mode_change_button_pressed[id]=1
+				new has_rockets=gatling_get_rockets(id)
+				new has_pgatling=gatling_get_pillgatling(id)
+				gatling_set_pillgatling(id,!has_pgatling)
+				gatling_set_rockets(id,!has_rockets)
+				sh_chat_message(id,gatling_get_hero_id(),"Engaged %s mode! %s",!has_rockets?"Rocket propelled syringe":"Pill shooting gatling",!has_rockets?"MOUSE1 attacks are disabled!":"")
+			}
+		
+			else if(wpnid==CSW_KNIFE){
+				mode_change_button_pressed[id]=1
+				new has_needle=gatling_get_needle(id)
+				gatling_set_needle(id,!has_needle)
+			}
+		}
 	}
-	
-	else if((entity_get_int(id, EV_INT_button) & IN_ALT1)&&(wpnid==CSW_KNIFE)){
-		new has_needle=gatling_get_needle(id)
-		gatling_set_needle(id,!has_needle)
+	else{
+
+		mode_change_button_pressed[id]=0
 	}
-	return FMRES_IGNORED
+	return FMRES_IGNORED;
 }
 public plugin_precache(){
 
@@ -127,6 +149,7 @@ reset_yakui(id){
 	if(!sh_is_active()||!gatling_get_has_yakui(id)) return;
 	
 	
+	mode_change_button_pressed[id]=0
 	clear_pills()
 	gatling_set_num_pills(id,max_pills)
 	gatling_set_num_rockets(id,max_rockets)

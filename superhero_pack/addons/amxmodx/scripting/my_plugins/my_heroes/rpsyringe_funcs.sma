@@ -127,12 +127,14 @@ public bool:client_isnt_hitter(id){
 public vexd_pfntouch(pToucher, pTouched) {
 
 
-if ( !is_valid_ent(pToucher) ) return
-
+if (pev_valid(pToucher)!=2 ){
+	return
+}
 new szClassName[32]
 Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
 if(equal(szClassName, ROCKET_CLASSNAME)) {
+	
 	
 	new Float:fl_vExplodeAt[3]
 	Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
@@ -162,7 +164,6 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	new color[4]
 	sh_get_pill_color(rocket_fx[pToucher],id,color)
 	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
-	remove_missile(pToucher)
 	
 	if ( is_valid_ent(pTouched) ) {
 		new szClassName2[32]
@@ -173,6 +174,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 			remove_missile(pTouched)
 		}
 	}
+	remove_missile(pToucher)	
 }
 }
 //----------------------------------------------------------------------------------------------

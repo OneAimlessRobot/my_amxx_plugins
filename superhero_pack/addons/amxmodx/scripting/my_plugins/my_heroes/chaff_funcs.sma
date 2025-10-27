@@ -302,23 +302,23 @@ remove_chaff(parm,id_chaff+CHAFF_REM_TASKID)
 public vexd_pfntouch(pToucher, pTouched)
 {
 
-if (pToucher <= 0) return
-if (!is_valid_ent(pToucher)) return
 
+if (pev_valid(pToucher)!=2){
+	return
+}
 new szClassName[32]
 entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 if(equal(szClassName,CHAFF_CLASSNAME))
 {
-new Float:velocity[3]
-entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
-if(pev(pTouched,pev_solid)==SOLID_BSP){
-	emit_sound(pToucher, CHAN_WEAPON, CHAFF_BOUNCE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	velocity[0]*=0.5
-	velocity[1]*=0.5
-	velocity[2]*=0.5
-	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
-}
-
+	new Float:velocity[3]
+	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	if(pev(pTouched,pev_solid)==SOLID_BSP){
+		emit_sound(pToucher, CHAN_WEAPON, CHAFF_BOUNCE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		velocity[0]*=0.5
+		velocity[1]*=0.5
+		velocity[2]*=0.5
+		entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+	}
 }
 }
 

@@ -73,6 +73,12 @@ stock const LineColorsWithAlpha[COLORS_NUM][4] = {
 	{250, 92, 163,255},      //Pink
 	{111,255,111,40}      //Light Green
 }
+
+stock const Float:g_fReloadDelay[CSW_P90+1] = {
+	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
+	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
+	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
+}
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
 
@@ -93,6 +99,24 @@ stock gSpriteSmoke, gSpriteFire, gSpriteBurning
 
 //gibs
 stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
+stock trail_custom(ent_id,color[4]={255,255,255,255},life=3,width=10){
+
+		if(pev_valid(ent_id)!=2){
+		
+			return
+		}
+		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+		write_byte( TE_BEAMFOLLOW )
+		write_short(ent_id) // entity
+		write_short(m_trail)  // model
+		write_byte( life )       // life
+		write_byte( width )        // width
+		write_byte(color[0])			// r, g, b
+		write_byte(color[1])		// r, g, b
+		write_byte(color[2])			// r, g, b
+		write_byte(color[3]) // brightness
+		message_end()
+}
 stock trail(ent_id,color_const=PINK,life=3,width=10){
 
 		if(pev_valid(ent_id)!=2){
@@ -296,7 +320,9 @@ public track_task(array[],id){
 	}
 	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(id, 0.1, 0.9, tag_color[0], tag_color[1], tag_color[2],  50)
-	aura(id,tag_color)
+	new the_fucking_argument[4];
+	copy(the_fucking_argument,4,tag_color)
+	aura(id,the_fucking_argument)
 	if(array[3]){
 		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
 	}
@@ -363,7 +389,7 @@ stock suck_in_sound(ent_id,make_sound){
 	
 	return PLUGIN_CONTINUE
 }
-stock aura(id,const color[4]){
+stock aura(id,const color[4]={255,255,255,255},life=3,decay=1){
 
 	new origin[3]
 
@@ -377,8 +403,8 @@ stock aura(id,const color[4]){
 	write_byte(color[0])			// r, g, b
 	write_byte(color[1])		// r, g, b
 	write_byte(color[2])			// r, g, b
-	write_byte(3)			// life
-	write_byte(1)			// decay
+	write_byte(life)			// life
+	write_byte(decay)			// decay
 	message_end()
 
 }

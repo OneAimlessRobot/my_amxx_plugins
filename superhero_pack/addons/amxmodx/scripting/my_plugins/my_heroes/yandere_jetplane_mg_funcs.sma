@@ -21,7 +21,6 @@ new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
 stock Float:mg_think_period
 new shell_loaded[SH_MAXSLOTS+1]
-new gShallGib[SH_MAXSLOTS+1]
 new user_mg[SH_MAXSLOTS+1]
 new jetplane_mg_ammo;
 public plugin_init(){
@@ -36,39 +35,9 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "mg_think")
-	RegisterHam(Ham_Killed, "player", "Ham_Player_Killed");
-	RegisterHam(Ham_TakeDamage, "player", "Ham_Player_TakeDamage");
 	
-}
-public Ham_Player_TakeDamage(victim, inflictor, attacker, Float:damage, damagebits)
-{
-	new classname[128]
-	pev(inflictor,pev_classname,classname,127);
-	if(equali(classname,JETPLANE_SHELL_CLASSNAME)){
-		if(is_user_connected(victim)){
-			
-			gShallGib[victim]=true;
-		}
-		
-	}
-	
-	
-	return HAM_IGNORED;
 }
 
-public Ham_Player_Killed(victim, killer, shouldgib)
-{
-	if (!is_user_connected(victim)){
-		
-		return HAM_IGNORED
-	} 
-	if( gShallGib[victim]) {
-		SetHamParamInteger(3,2);
-		gShallGib[victim]=false;
-		return HAM_HANDLED;
-	}
-	return HAM_IGNORED;
-}
 
 public plugin_cfg(){
 	
@@ -382,95 +351,96 @@ public vexd_pfntouch(pToucher, pTouched)
 	
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
 	if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
-		if(pev_valid(pTouched)==2){
-			if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
-				
-				return
+		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
 			
-			} 
-			new Float:origin[3]
-			entity_get_vector(pToucher,EV_VEC_origin,origin);
-			if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-				if(client_hittable(pTouched))
-				{
-					new Float:vic_origin[3];
-					new Float:vic_origin_eyes[3];
-					new vic_origin_eyes_int[3];
+			return
+		
+		} 
+		new Float:origin[3]
+		entity_get_vector(pToucher,EV_VEC_origin,origin);
+		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
+			if(client_hittable(pTouched))
+			{
+				new Float:vic_origin[3];
+				new Float:vic_origin_eyes[3];
+				new vic_origin_eyes_int[3];
+				
+				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+				get_user_origin(pTouched,vic_origin_eyes_int,1);
+				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+				new Float:damage=jetplane_mg_dmg
+				new headshot=0;
+				if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
 					
-					entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-					get_user_origin(pTouched,vic_origin_eyes_int,1);
-					IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-					new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-					new Float:damage=jetplane_mg_dmg
-					new headshot=0;
-					if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
-						
-						headshot=1;
-						damage*=4;
-					}
-					new CsTeams:att_team=cs_get_user_team(oid),
-							CsTeams:vic_team=cs_get_user_team(pTouched);
-					if(att_team!=vic_team){
-						ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,jetplane_mg_dmg);
-						sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
-					}
-					new CsArmorType:armor_type;
-					cs_get_user_armor(pTouched,armor_type);
-					switch(armor_type){
-						
-						case CS_ARMOR_NONE:{
+					headshot=1;
+					damage*=4;
+				}
+				new CsTeams:att_team=cs_get_user_team(oid),
+						CsTeams:vic_team=cs_get_user_team(pTouched);
+				if(att_team!=vic_team){
+					ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
+					sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
+					if(is_user_alive(pTouched)){
+						new CsArmorType:armor_type;
+						cs_get_user_armor(pTouched,armor_type);
+						switch(armor_type){
 							
-							
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							
-							blood_spray(origin, headshot?10:5)
-							
-							
-						}
-						case CS_ARMOR_KEVLAR:{
-							
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							
-							if(headshot){
-								blood_spray(origin, 5)
-							}
-							else{
+							case CS_ARMOR_NONE:{
 								
+								
+								emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+								
+								blood_spray(origin, headshot?10:5)
+								
+								
+							}
+							case CS_ARMOR_KEVLAR:{
+								
+								emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+								
+								if(headshot){
+									blood_spray(origin, 5)
+								}
+								else{
+									
+									make_sparks(origin);
+								}
+							}
+							case CS_ARMOR_VESTHELM:{
+								emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 								make_sparks(origin);
 							}
 						}
-						case CS_ARMOR_VESTHELM:{
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							make_sparks(origin);
-						}
+					}
+			}
+				
+			}
+		}
+		if((pev(pTouched,pev_solid)==SOLID_BBOX)){
+	
+			new szClassNameJet[32]
+			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
+	
+			if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
+				
+				new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
+				if(client_hittable(jet_owner)){
+					new CsTeams:att_team=cs_get_user_team(oid),
+						CsTeams:vic_team=cs_get_user_team(jet_owner);
+					if(att_team!=vic_team){
+						jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
+						sh_chat_message(oid,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
 					}
 				}
 			}
-			if((pev(pTouched,pev_solid)==SOLID_BBOX)){
-		
-				new szClassNameJet[32]
-				Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
-		
-				if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
-					
-					new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
-					if(client_hittable(jet_owner)){
-						new CsTeams:att_team=cs_get_user_team(oid),
-							CsTeams:vic_team=cs_get_user_team(jet_owner);
-						if(att_team!=vic_team){
-							jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
-							sh_chat_message(oid,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
-						}
-					}
-				}
-			}
-			if(pev(pTouched,pev_solid)==SOLID_BSP){
-				
-				emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				make_sparks(origin);
-				gun_shot_decal(origin);
-				
-			}
+		}
+		if(pev(pTouched,pev_solid)==SOLID_BSP){
+			
+			emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			make_sparks(origin);
+			gun_shot_decal(origin);
+			
 		}
 		remove_entity(pToucher)
 	}

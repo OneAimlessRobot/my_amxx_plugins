@@ -330,9 +330,9 @@ remove_molly(parm,id_molly+MOLLY_REM_TASKID)
 public vexd_pfntouch(pToucher, pTouched)
 {
 
-if (pToucher <= 0) return
-if (!is_valid_ent(pToucher)) return
-
+if (pev_valid(pToucher)!=2){
+	return
+}
 new szClassName[32]
 entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 if(equal(szClassName,MOLLY_CLASSNAME))
@@ -341,7 +341,6 @@ if(equal(szClassName,MOLLY_CLASSNAME))
 		emit_sound(pToucher, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		blow_molly_up(pToucher+MOLLY_BLAST_TASKID)
 	}
-
 }
 }
 

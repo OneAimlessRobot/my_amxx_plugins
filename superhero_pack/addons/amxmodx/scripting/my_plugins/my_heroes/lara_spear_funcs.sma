@@ -313,9 +313,11 @@ public speartrail(parm[])
 public vexd_pfntouch(pToucher, pTouched)
 {
 	
-	if (pToucher <= 0) return
-	if (pev_valid(pToucher)!=2) return
-	
+	if (pev_valid(pToucher)!=2){
+		
+		return
+	}
+
 	new szClassName[32]
 	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 	if(equal(szClassName, SPEAR_CLASSNAME))
@@ -344,15 +346,16 @@ public vexd_pfntouch(pToucher, pTouched)
 					set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
 				}
 			}
+			return
 		}
-		//entity_get_vector(pTouched, EV_VEC_ORIGIN, origin)
-		if(pev(pTouched,pev_solid)==SOLID_BSP){
+		else if(pev(pTouched,pev_solid)==SOLID_BSP){
 			emit_sound(pToucher, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			entity_set_vector(pToucher, EV_VEC_velocity ,NULL_VECTOR)
 			spear_pickable[pToucher]=true
 			set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
+			return
 		}
-
+		remove_entity(pToucher)
 	}
 }
 public remove_spear(id_spear){

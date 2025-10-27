@@ -31,11 +31,6 @@ const m_fflTimeWeaponIdle        = 48
 const m_ffInReload            = 54
 const m_fflNextAttack = 83
 
-stock const Float:g_fReloadDelay[CSW_P90+1] = {
-	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
-	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
-	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
-}
 //https://forums.alliedmods.net/showthread.php?p=777018#post777018
 
 // GLOBAL VARIABLES
@@ -59,17 +54,6 @@ new Float:gear_ratios[MAX_GEARS]
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
-/*
-new const yandere_sentences[5][]={
-	"Hiss.... Hiss.... Hiss.... Hiss.....",
-	"Where are you... where... are you...",
-	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",
-	"I hear their voices... I hear them... Then want... they want... red and black",
-	"I want... all your blood. All of it.... and water the graves of my family with it."
-}*/
-/*new m_spriteTexture
-
-new Float:base_dmg_mult,*/
 new Float:base_reload_ratio
 new Float:base_fire_ratio
 new Float:max_reload_ratio
@@ -240,7 +224,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 			
 		}
 	}
-	else if(((pev(this,pev_solid)==SOLID_BSP)&&!gClutchDown[idattacker]&&RESET_ON_MISS)){
+	else if(((pev(this,pev_solid)!=SOLID_SLIDEBOX)&&!gClutchDown[idattacker]&&RESET_ON_MISS)){
 		
 		if(!komak_is_top_speed(idattacker)){
 			emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)

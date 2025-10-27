@@ -226,39 +226,33 @@ public _sh_get_pill_color(iPlugin,iParams){
 
 	switch(fx_num){
 		case KILL:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your kill bro!")
 			copy(color,4,kill_color)
 			
 		
 		}
 		case GLOW:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your glow bro!")
 			copy(color,4,glow_color)
 			
 		
 		}
 		case STUN:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your stun bro!")
 			copy(color,4,stun_color)
 		
 		
 		}
 		case POISON:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your crack bro!")
 			copy(color,4,poison_color)
 		
 		
 		
 		}
 		case RADIOACTIVE:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your radioactive bro!")
 			copy(color,4,radioactive_color)
 		
 		
 		
 		}
 		case MORPHINE:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your morphine bro!")
 			copy(color,4,morphine_color)
 		
 		
@@ -266,31 +260,26 @@ public _sh_get_pill_color(iPlugin,iParams){
 		}
 		case WEED:{
 		
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your weed bro!")
 			copy(color,4,weed_color)
 		
 		}
 		case COCAINE:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your cocaine bro!")
 			copy(color,4,cocaine_color)
 		
 		
 		
 		}
 		case BLIND:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your blindness bro!")
 			copy(color,4,blind_color)
 		
 		
 		}
 		case METYLPHENIDATE:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your college pills bro!")
 			copy(color,4,focus_color)
 		
 		
 		}
 		case BATH:{
-			sh_chat_message(attacker,gatling_get_hero_id(),"Here is your spicy college pills bro!")
 			copy(color,4,bath_color)
 		
 		

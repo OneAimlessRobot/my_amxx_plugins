@@ -122,12 +122,11 @@ public ball_in_the_face(ball,id,vic)
 		set_task(0.1, "move_enemy", 0, parm, 5)
 	}
 }
-public vexd_pfntouch(pToucher, pTouched)
-{
+public vexd_pfntouch(pToucher, pTouched){
 	
-	if (pToucher <= 0) return
-	if (!is_valid_ent(pToucher)) return
-	
+	if (pev_valid(pToucher)!=2){
+		return
+	}
 	new szClassName[32]
 	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 	if(equal(szClassName, BALL_CLASSNAME))
@@ -145,6 +144,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					ball_pickable[pToucher]=false
 					kicked_ball[oid]=false
 					remove_entity(pToucher);
+					return
 					
 				}
 				//else if(pTouched!=oid){
@@ -156,6 +156,7 @@ public vexd_pfntouch(pToucher, pTouched)
 						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 						sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 						set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
+						return
 					}
 				}
 			}
@@ -163,9 +164,8 @@ public vexd_pfntouch(pToucher, pTouched)
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){
 			ball_pickable[pToucher]=true
 			set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
+			return
 		}
-		
-		
 	}
 }
 

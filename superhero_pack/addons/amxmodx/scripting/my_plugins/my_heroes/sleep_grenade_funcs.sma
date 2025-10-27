@@ -327,9 +327,10 @@ remove_sleep_nade(parm,id_sleep_nade+SLEEP_NADE_REM_TASKID)
 public vexd_pfntouch(pToucher, pTouched)
 {
 
-if (pToucher <= 0) return
-if (!is_valid_ent(pToucher)) return
 
+if (pev_valid(pToucher)!=2 ){
+	return
+}
 new szClassName[32]
 entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 if(equal(szClassName,SLEEP_NADE_CLASSNAME))
@@ -338,7 +339,7 @@ if(equal(szClassName,SLEEP_NADE_CLASSNAME))
 		emit_sound(pToucher, CHAN_WEAPON, SLEEP_NADE_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		blow_sleep_nade_up(pToucher+SLEEP_NADE_BLAST_TASKID)
 	}
-
+	
 }
 }
 
