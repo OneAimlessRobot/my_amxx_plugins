@@ -437,9 +437,9 @@ public FwdTouchWorld( Ball, World ) {
 	entity_get_vector( Ball, EV_VEC_velocity, vVelocity );
 	
 	if( floatround( vector_length( vVelocity ) ) > 10 ) {
-		vVelocity[ 0 ] *= 0.15;
-		vVelocity[ 1 ] *= 0.15;
-		vVelocity[ 2 ] *= 0.15;
+		vVelocity[ 0 ] *= 0.40;
+		vVelocity[ 1 ] *= 0.40;
+		vVelocity[ 2 ] *= 0.40;
 		
 		entity_set_vector( Ball, EV_VEC_velocity, vVelocity );
 		
@@ -573,15 +573,18 @@ public jet_think(ent)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
 		v_angle[1]+=g_jetplane_turn_data[owner][1]
 		angles[1]+=g_jetplane_turn_data[owner][1]
-		v_angle[0]=floatclamp(v_angle[0]+g_jetplane_turn_data[owner][0],-45.0,45.0)
-		v_angle[0]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*v_angle[0]*jet_get_think_period());
+
+		v_angle[0]=floatclamp(v_angle[0]+g_jetplane_turn_data[owner][0],-75.0,75.0)
+		v_angle[0]-=(curr_speed_stab_coeff*((1.0/jet_get_stabilizer_mushyness()))*v_angle[0]*jet_get_think_period());
+
+		angles[0]=floatclamp(angles[0]-g_jetplane_turn_data[owner][0],-75.0,75.0)
+		angles[0]-=(curr_speed_stab_coeff*((1.0/jet_get_stabilizer_mushyness()))*angles[0]*jet_get_think_period());
 		
-		angles[0]=floatclamp(angles[0]-g_jetplane_turn_data[owner][0],-45.0,45.0)
-		angles[0]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*angles[0]*jet_get_think_period());
 		v_angle[2]=floatclamp(v_angle[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
-		v_angle[2]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*v_angle[2]*jet_get_think_period());
+		v_angle[2]-=(curr_speed_stab_coeff*v_angle[2]*jet_get_think_period());
+
 		angles[2]=floatclamp(angles[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
-		angles[2]-=(curr_speed_stab_coeff*(1.0/jet_get_stabilizer_mushyness())*1.0*angles[2]*jet_get_think_period());
+		angles[2]-=(curr_speed_stab_coeff*angles[2]*jet_get_think_period());
 		entity_set_vector(owner, EV_VEC_v_angle, v_angle)
 		entity_set_vector(owner, EV_VEC_angles, angles)
 		entity_set_vector(jet_get_user_jet(owner), EV_VEC_v_angle, v_angle)
