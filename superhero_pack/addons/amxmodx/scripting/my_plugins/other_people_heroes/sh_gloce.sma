@@ -39,7 +39,7 @@ gloce_freeze_time 5		//How long they should be frozen
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <hamsandwich>
 #include <fakemeta>
 

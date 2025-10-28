@@ -9,7 +9,7 @@ insptequila_level 0
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Inspector Tequila"

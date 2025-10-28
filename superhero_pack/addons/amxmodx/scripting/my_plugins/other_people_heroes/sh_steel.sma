@@ -11,7 +11,7 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Steel"

@@ -19,7 +19,7 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="UberGunner"

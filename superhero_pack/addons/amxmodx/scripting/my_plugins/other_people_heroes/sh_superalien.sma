@@ -34,7 +34,7 @@ SuperAlien_knifemode 0	//1-knife only can't change weapons, 0-SuperAlien Vision 
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "SuperAlien"

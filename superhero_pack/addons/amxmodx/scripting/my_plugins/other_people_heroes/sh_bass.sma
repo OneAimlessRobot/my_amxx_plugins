@@ -32,7 +32,7 @@ bass_multishot 0.1			//Delay for multishots on holding key down, set to -1 for o
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // Damage Variables
 #define h1_dam 500	// head

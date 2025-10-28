@@ -12,7 +12,7 @@ pitch_cooldown 60			//Seconds till next available use of power
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Pitch Black"

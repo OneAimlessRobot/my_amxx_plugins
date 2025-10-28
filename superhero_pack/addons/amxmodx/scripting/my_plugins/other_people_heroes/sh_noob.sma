@@ -1,5 +1,5 @@
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GREEN ARROW - Exploding Arrows (bullets from scout)
 

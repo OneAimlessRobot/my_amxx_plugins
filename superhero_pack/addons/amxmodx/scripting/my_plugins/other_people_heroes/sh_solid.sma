@@ -12,7 +12,7 @@ solid_ration_health 50		// How many health you have per ration?
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <cstrike>
 #include <fakemeta>
 #include <fun>

@@ -2,7 +2,7 @@
   #endinput
 #endif
 #define sh_aux_funcs_pt2
-#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_inc.inc"
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
 
@@ -20,10 +20,10 @@ stock Float:cross_product(Float:result[3], Float:input_a[3], Float:input_b[3]) {
 }
 stock dir_vector_to_yaw_pitch_roll(Float:result[3], Float:input_a[3]) {
 	
-	vector_norm(vec_a, vec_a, vec_size);
-	vec_result[0] = -1.0 * (1.0 * floatsin(vec_a[2])) * (180.0 / MATH_PI);
-	vec_result[1] = floatatan2((1.0 * vec_a[1]), (1.0 * vec_a[0])) * (180.0 / MATH_PI);
-	vec_result[2] = 0.0;
+	vector_norm(input_a, input_a);
+	result[0] = -1.0 * (1.0 * floatsin(input_a[2])) * (180.0 / MATH_PI);
+	result[1] = floatatan2((1.0 * input_a[1]), (1.0 * input_a[0]),degrees) * (180.0 / MATH_PI);
+	result[2] = 0.0;
 }
 
 stock Float:angle_convert(Float:angle, bool:false_for_degrees_to_radians_true_for_radians_to_degrees = true) {
@@ -247,4 +247,25 @@ write_coord(origin[1])
 write_coord(origin[2]-26) 
 message_end() 
 
+}
+stock Float:get_entity_velocity(ent){
+	if(pev_valid(ent)!=2){
+
+		return -1.0
+	}
+
+	new Float:velocity_vector[3]
+	pev(ent,pev_velocity,velocity_vector)
+	return vector_length(velocity_vector)
+
+
+}
+stock Float:kill_all_entity_beams(ent_id){
+	if(pev_valid(ent_id)==2){
+
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
+		write_byte(TE_KILLBEAM)
+		write_short(ent_id) // entity
+		message_end()
+	}
 }

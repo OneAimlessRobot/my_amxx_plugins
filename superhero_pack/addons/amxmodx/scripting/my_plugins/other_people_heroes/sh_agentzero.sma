@@ -19,7 +19,7 @@ agentz_level 5
 *      Thanks to Arkshine for the NO_RECOIL_WEAPONS_BITSUM and The Art of War for the idea.
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 

@@ -47,7 +47,7 @@ ghostface_teamglow 0		//Glow Team Color when player skin in use, Default 0 (0=no
 
 #include <amxmodx>
 #include <fakemeta>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Ghostface (Scream)"

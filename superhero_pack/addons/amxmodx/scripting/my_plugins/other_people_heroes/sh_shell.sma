@@ -9,7 +9,7 @@ shell_healmax 250		//Max # HP shell can heal to
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 #define TASKID 5556

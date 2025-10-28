@@ -16,7 +16,7 @@ speed_hight 60.0	//how high can he jump?!
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <fakemeta>
 
 new gHeroName[] = "Speed Racer";

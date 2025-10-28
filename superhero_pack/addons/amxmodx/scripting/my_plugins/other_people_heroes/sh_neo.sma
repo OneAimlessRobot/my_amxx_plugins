@@ -21,7 +21,7 @@ neo_toggle 0		//Def=0
 #include <amxmisc> 
 #include <xtrafun>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"

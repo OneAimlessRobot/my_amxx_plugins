@@ -23,7 +23,7 @@ sv_maxspeed 500
 */
 #include <amxmodx>
 #include <fakemeta>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 
 // GLOBAL VARIABLES

@@ -15,7 +15,7 @@ ricochet_extradamage 5	//Additional damage (not a damage mult)
 *    Requested by fikstress.
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <xs>
 
 new gSpriteLaser

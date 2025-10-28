@@ -31,7 +31,7 @@ stick_enemyonly 0		//0=rings on all players 1=rings on enemy only
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Stick"

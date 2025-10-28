@@ -62,6 +62,8 @@ public plugin_init(){
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_Item_PostFrame, YAKUI_WEAPON_NAME, "Item_PostFrame_Post", 1,true)
 		
+	RegisterHam(Ham_Weapon_Reload,YAKUI_WEAPON_NAME, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, YAKUI_WEAPON_NAME, "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
 	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
@@ -133,7 +135,7 @@ public Ham_Weapon_PillGatling(weapon_ent)
 	return HAM_IGNORED
 }
 public fwPlaybackEvent(flags, invoker, eventid) {
-	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_hittable(invoker,gatling_get_has_yakui(invoker)&&gatling_get_pillgatling(invoker)&&!atk1[invoker])){
+	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_hittable(invoker,gatling_get_has_yakui(invoker)&&gatling_get_pillgatling(invoker))){
 		return FMRES_IGNORED
 	}
 

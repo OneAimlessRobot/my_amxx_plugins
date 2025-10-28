@@ -10,7 +10,7 @@ dracula_pctperlev 0.03	//What percent of damage to give back per level of player
 
 // v1.17.5 - JTP - Added code to allow you to regen to your max heatlh
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

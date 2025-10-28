@@ -10,7 +10,7 @@ superman_gravity 0.35		//Gravity
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

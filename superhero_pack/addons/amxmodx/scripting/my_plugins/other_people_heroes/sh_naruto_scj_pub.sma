@@ -140,7 +140,7 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 		- created
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <chr_engine>
 #include <fakemeta_util>
 

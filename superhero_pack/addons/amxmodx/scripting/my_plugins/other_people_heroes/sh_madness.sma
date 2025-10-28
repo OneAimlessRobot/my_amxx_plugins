@@ -20,7 +20,7 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Madness"

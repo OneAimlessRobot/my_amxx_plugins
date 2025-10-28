@@ -15,7 +15,7 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="BEA-03 Lancer"

@@ -23,7 +23,7 @@ wolv_knifemult 1.35			//Multiplier for knife damage
 
 //------- Do not edit below this point ------//
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -20,7 +20,7 @@ frieza_disklife 50
 
 #include <amxmodx>
 #include <engine>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new gHeroName[] = "Frieza" 
 new bool:g_hasfriezaPowers[SH_MAXSLOTS+1] 

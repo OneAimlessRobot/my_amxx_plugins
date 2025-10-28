@@ -12,7 +12,7 @@ leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 
 new bubbleSprite

@@ -51,7 +51,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Goku's Kaioken technic"
@@ -241,7 +241,7 @@ public powerup_effect(parm[])
 	// Show a powerup to all alive players except the one being powered up.
 	for (new i = 0; i < pnum; i++) {
 		idOthers = players[i]
-		if ( !is_user_alive(idOthers) || idOthers == id ) continue
+		if ( !is_user_alive(idOthers)) continue
 
 		get_user_origin(id, Origin)
 

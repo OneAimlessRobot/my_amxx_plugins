@@ -17,7 +17,7 @@ shangchi_health 80		//Max HP Shang-Chi will reduce knife damage to (Default 80)
 *    Hero orginally created by AssKicR.
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroID

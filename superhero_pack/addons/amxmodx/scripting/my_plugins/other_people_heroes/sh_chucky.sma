@@ -55,7 +55,7 @@ chucky_knifespeed 720    //User speed when knife is out
 #include <amxmodx>
 #include <cstrike>
 #include <csx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if USE_MODEL
 	#include <fakemeta>

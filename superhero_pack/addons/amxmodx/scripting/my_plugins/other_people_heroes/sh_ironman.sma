@@ -13,7 +13,7 @@ ironman_fuelcost 1		//How much armor does it cost per firing, set 0 to not use a
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -172,7 +172,7 @@ clear_yakui(id){
 public yakui_weapons(id){
 
 if ( sh_is_active() && is_user_alive(id) && gatling_get_has_yakui(id) ) {
-	sh_give_weapon(id, YAKUI_WEAPON_CLASSID)
+	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,false)
 	new weapon_id=find_ent_by_owner(-1,YAKUI_WEAPON_NAME,id);
 	if(is_valid_ent(weapon_id)){
 		cs_set_weapon_ammo(weapon_id, CLIP_SIZE);

@@ -10,7 +10,7 @@ kamikaze_maxdamage 125			//Maximum damage to deal to a player
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

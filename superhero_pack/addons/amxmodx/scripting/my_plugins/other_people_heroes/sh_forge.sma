@@ -20,7 +20,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 #include <amxmod>
 //#include <amxmisc>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 //#if defined AMX98
 //  #include <cmath>

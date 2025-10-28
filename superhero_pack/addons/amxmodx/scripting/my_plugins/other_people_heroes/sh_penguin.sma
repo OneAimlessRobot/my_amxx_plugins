@@ -33,7 +33,7 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 #include <fakemeta>
 #include <engine>
 #include <cstrike>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define AMMOX_HEGRENADE 12
 

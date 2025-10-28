@@ -39,7 +39,7 @@ catwoman_minrounds 5		//Min rounds to wait until you can sneak, no matter your l
 #include <amxmodx>
 #include <cstrike>
 #include <engine>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 //ok happy now jtp? lol
 
 // GLOBAL VARIABLES

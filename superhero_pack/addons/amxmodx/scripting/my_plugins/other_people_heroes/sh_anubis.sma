@@ -15,7 +15,7 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 *		for servers that already have ghostchat
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -11,7 +11,7 @@ invisman_checkonground 0	//Must player be on ground to be invisible (Default 0 =
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

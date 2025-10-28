@@ -117,7 +117,7 @@
 /************* Do Not Edit Below Here **************/
 
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if defined MONITOR_HP || defined MONITOR_SPEC
 	new UserHealth[SH_MAXSLOTS+1]

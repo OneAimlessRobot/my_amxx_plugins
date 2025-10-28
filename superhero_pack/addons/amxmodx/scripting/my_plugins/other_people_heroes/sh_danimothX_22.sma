@@ -23,7 +23,7 @@
 **		  
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define RED 50
 #define GREEN 100

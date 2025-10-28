@@ -8,7 +8,7 @@ abe_level 10
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <fakemeta>
 #include <cstrike>
 #include <fun>

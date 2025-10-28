@@ -18,7 +18,7 @@ zeus_workinside 0		//Allow zeus to work inside buidings and so on
 
 //------- Do not edit below this point ------//
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

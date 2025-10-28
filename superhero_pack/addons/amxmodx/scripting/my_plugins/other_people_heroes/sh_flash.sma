@@ -8,7 +8,7 @@ flash_speed 350		//the speed flash can run
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

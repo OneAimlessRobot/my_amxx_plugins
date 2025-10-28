@@ -10,7 +10,7 @@ saddam_wait 5 // Time while in your hole def=5
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 
 // VARIABLES

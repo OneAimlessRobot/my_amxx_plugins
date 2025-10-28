@@ -12,7 +12,7 @@ demoman_minehealth 80		// health of mines (determines how many shots blow them u
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 //Max number of mines that can be set using the CVAR
 #define MAX_MINES 20

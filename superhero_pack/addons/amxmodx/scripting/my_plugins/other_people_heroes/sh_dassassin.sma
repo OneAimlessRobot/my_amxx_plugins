@@ -10,7 +10,7 @@ dsniper_gravity 0.3
 dsniper_mult 4
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new gHeroID
 new gHeroName[] = "Deagle Assassin"

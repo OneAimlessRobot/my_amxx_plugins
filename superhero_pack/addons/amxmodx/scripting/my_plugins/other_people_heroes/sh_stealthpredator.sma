@@ -6,7 +6,7 @@
 #include <fun> 
 #include <cstrike>
 #include <engine> 
-#include <superheromod> 
+#include "../my_include/superheromod.inc" 
 
 /*
 

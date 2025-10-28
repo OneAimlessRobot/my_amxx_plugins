@@ -9,7 +9,7 @@ terrorist_level 0
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <amxmisc> 
 #include <engine>
 

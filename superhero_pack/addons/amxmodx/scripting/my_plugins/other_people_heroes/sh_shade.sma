@@ -1,6 +1,6 @@
 #include <amxmod>
 #include <xtrafun>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // shade
 

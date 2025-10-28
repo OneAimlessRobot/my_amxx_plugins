@@ -20,7 +20,7 @@ Version History:
 
 */
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 //Global Variables
 

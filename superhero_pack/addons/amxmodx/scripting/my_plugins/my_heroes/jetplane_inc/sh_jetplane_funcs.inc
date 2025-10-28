@@ -33,13 +33,17 @@
 #define JET_HUD_PERIOD 0.15
 #define JET_SOUND_PERIOD 0.15
 #define JET_THINK_PERIOD 0.1
+#define JET_MINIMUM_SPEED 50.0
+#define JET_RESTITUTION_COEFF 0.40
+#define JET_TRAIL_LIFE_PERIOD 1.0
+#define JET_TRAIL_LIFE_INPUT_VALUE (floatround(JET_TRAIL_LIFE_PERIOD*10.0)+1)
 
 #define JET_AVG_SPEED_CALC_PERIOD 0.1
 #define JET_CHARGE_RATE 1000.0
 
 #define CAMERA_DIST 300.0
-stock Float:jetplane_min_dims[3]={-33.0,-33.0,-10.0}
-stock Float:jetplane_max_dims[3]={33.0,33.0,10.0}
+stock Float:jetplane_min_dims[3]={-33.0,-33.0,-33.0}
+stock Float:jetplane_max_dims[3]={33.0,33.0,33.0}
 stock const jetplane_color[4]={100,100,100,50}
 
 stock const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}

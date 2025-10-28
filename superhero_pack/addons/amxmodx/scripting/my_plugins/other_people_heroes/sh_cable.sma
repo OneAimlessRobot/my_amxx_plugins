@@ -12,7 +12,7 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // Damage Variables
 #define h1_dam 100 //head

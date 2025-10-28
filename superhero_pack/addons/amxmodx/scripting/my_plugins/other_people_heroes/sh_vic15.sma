@@ -15,7 +15,7 @@ vic15_auraradius 300		//Radius of Victim 15's ghostly aura
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new g_heroName[]="Victim 15/21"
 new bool:g_hasVic15[SH_MAXSLOTS+1]

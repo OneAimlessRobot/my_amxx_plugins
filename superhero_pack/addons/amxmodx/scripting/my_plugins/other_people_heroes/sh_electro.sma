@@ -20,7 +20,7 @@ electro_jumpradius 500		//Radius to search for a lightning jump (Default 500)
 *   Originally commented with "WC3 Chain Lightning Ripoff :D".
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define LINE_WIDTH 80
 

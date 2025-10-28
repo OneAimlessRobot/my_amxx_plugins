@@ -39,7 +39,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 // INCLUDED HEADERS
 //--------------------------------------------------------------------------------------------------
 	#include <amxmodx>
-	#include <superheromod>
+	#include "../my_include/superheromod.inc"
 	#include <engine>
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES

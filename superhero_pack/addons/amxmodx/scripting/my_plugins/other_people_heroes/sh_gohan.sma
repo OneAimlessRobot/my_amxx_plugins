@@ -23,7 +23,7 @@ gohan_healmax 400		//Max # HP gohan can heal to
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 #define TASKID 100000

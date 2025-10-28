@@ -36,7 +36,7 @@ wonderwoman_entangletime 10	//# of seconds the victim is stunned (Default 10)
 
 //------- Do not edit below this point ------//
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

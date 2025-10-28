@@ -26,7 +26,7 @@ afterburn_burndmg 5		//How much damage each burn does
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="AfterBurn"

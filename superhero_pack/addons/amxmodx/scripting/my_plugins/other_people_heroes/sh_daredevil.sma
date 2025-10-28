@@ -10,7 +10,7 @@ daredevil_bright 192		//How bright to make the rings
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

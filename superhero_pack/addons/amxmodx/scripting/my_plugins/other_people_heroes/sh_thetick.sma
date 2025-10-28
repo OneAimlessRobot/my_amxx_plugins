@@ -21,7 +21,7 @@ thetick_level 0
 *
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroID

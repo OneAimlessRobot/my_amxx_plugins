@@ -8,7 +8,7 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

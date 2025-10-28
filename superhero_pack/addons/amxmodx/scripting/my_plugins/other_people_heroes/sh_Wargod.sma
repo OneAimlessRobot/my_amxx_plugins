@@ -54,7 +54,7 @@ Wargod_mulishot 1
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <xtrafun>
 
 // VARIABLES

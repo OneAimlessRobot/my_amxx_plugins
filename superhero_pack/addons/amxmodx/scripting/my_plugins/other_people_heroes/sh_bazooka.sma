@@ -66,7 +66,7 @@ bazooka_spawndelay 0
 #include <amxmod>
 #include <amxmisc>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if defined AMX98
   #include <cmath>

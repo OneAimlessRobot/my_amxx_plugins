@@ -24,7 +24,7 @@ secretary_workinside 0		//Allow Ion Cannon to work inside buidings and so on
 *   By A.F. aka hjkwe654.
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <engine>
 
 #define XO_WEAPON 4

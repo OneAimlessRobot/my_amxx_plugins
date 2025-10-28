@@ -10,7 +10,7 @@ scarlet_wallspeed 250.0				//speed he climbs
 
 #include <amxmodx>
 #include <fakemeta>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new g_heroID
 new pcvar_level

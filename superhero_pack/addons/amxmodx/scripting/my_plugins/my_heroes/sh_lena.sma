@@ -37,7 +37,6 @@ public plugin_init()
 	register_srvcmd("lena_init", "lena_init")
 	register_event("ResetHUD","new_spawn","b")
 	shRegHeroInit(gHeroName, "lena_init")
-	register_event("DeathMsg","death","a")
 	prepare_shero_aux_lib()
 }
 public plugin_natives(){
@@ -159,15 +158,4 @@ lena_weapons(id)
 public client_connect(id)
 {
 	gHasLena[id] = false
-}
-//----------------------------------------------------------------------------------------------
-
-public death()
-{	
-	new id = read_data(2)
-	if(lena_get_has_lena(id)){
-		
-		
-	}
-	
 }

@@ -12,7 +12,7 @@ xavier_refreshtimer 5.0			//How often do the trails refresh
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -30,7 +30,7 @@ hawk_freewpn 1		//Free Aug if CT / Sig if T [def=1]
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 
 //Autoshoot settings ***CHANGE AIM TRIGGER HERE*** (0-no 1-yes)

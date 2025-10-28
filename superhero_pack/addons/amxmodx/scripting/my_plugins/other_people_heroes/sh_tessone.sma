@@ -25,7 +25,7 @@ tessone_absorbtime 8
 tessone_cooldown 45
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new g_HeroID
 new const g_HeroName[] = "TESS-One"

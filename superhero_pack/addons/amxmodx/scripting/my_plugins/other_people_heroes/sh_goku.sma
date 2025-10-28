@@ -54,7 +54,7 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="Goku"
@@ -923,7 +923,7 @@ public powerup_effect(parm[])
 	// Show a powerup to all alive players except the one being powered up.
 	for (new i = 0; i < pnum; i++) {
 		idOthers = players[i]
-		if ( !is_user_alive(idOthers) || idOthers == id ) continue
+		if ( !is_user_alive(idOthers) ) continue
 
 		get_user_origin(id, Origin)
 

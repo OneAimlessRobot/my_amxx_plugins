@@ -14,7 +14,7 @@ bomberman_maxdamage 100		//Maximum Damage to deal		(def=100)
 
 //Thanks to TheLooser & Demonic_Frost for help testing
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

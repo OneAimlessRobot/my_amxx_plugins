@@ -15,7 +15,7 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #pragma dynamic 100000
 

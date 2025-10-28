@@ -33,7 +33,7 @@ frogger_level 0
 //------- Do not edit below this point ------//
 
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define m_fLongJump 356
 

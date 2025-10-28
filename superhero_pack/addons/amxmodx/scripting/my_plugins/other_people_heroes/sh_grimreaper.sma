@@ -25,7 +25,7 @@ grimreaper_gravity 0.25		//Precent of normal gravity (Default 0.25)
 //
 #include <amxmodx>
 #include <fun>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <Vexd_Utilities>
 
 

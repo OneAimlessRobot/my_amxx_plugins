@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -373,7 +374,7 @@ public _sh_effect_user_direct(iPlugin,iParams){
 		case COCAINE:{
 		
 		
-			cocaine_user(user)
+			cocaine_user(user,attacker,gHeroID)
 		
 		}
 		case BLIND:{
@@ -754,12 +755,12 @@ public cocaine_task(id){
 	set_user_maxspeed(id,COCAINE_SPEED)
 
 }
-cocaine_user(id){
+cocaine_user(id,attacker,gHeroID){
 	
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
 	set_task(COCAINE_PERIOD,"cocaine_task",id+COCAINE_TASKID,"", 0,  "a",COCAINE_TIMES)
 	set_task(floatsub(floatmul(COCAINE_PERIOD,float(COCAINE_TIMES)),0.1),"uncocaine_task",id+UNCOCAINE_TASKID,"", 0,  "a",1)
-
+	sh_minibleed_user(id,attacker,gHeroID)
 }
 uncocaine_user(id){
 	remove_task(id+UNCOCAINE_TASKID)

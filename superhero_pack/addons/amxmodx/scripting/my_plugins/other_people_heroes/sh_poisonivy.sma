@@ -36,7 +36,7 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"

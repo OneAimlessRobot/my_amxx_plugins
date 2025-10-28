@@ -11,7 +11,7 @@ goblin_grenadetimer 10		//How many second delay for new grenade
 
 // v1.17 - JTP - Fixed giving new genades using more reliable event
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

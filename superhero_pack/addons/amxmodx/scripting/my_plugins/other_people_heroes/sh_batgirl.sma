@@ -15,7 +15,7 @@ batgirl_maxhooks -1		//Max ammout of hooks allowed (-1 is an unlimited ammount)
 
 #include <amxmodx>
 #include <fakemeta>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 #define HOOKBEAMLIFE  100

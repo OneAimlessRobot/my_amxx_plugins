@@ -1,6 +1,6 @@
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // MEGAMAN! = The Ultimate Hero
 

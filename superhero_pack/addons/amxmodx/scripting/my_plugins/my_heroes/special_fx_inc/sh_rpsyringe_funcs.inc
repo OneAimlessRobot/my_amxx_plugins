@@ -14,7 +14,7 @@
 
 #define ROCKET_RADIUS 500.0
 
-#define ROCKET_SPEED 2000.0
+#define ROCKET_SPEED 750.0
 
 
 

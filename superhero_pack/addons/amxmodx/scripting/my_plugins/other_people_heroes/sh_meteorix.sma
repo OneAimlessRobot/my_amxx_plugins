@@ -11,7 +11,7 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 */
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define h1_dam 500 // head
 #define h2_dam 250  // body

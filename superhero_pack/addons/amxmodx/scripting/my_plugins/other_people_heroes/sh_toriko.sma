@@ -18,7 +18,7 @@ toriko_hpgained 20    // How much health is gained on a streak
 
 
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -10,7 +10,7 @@ wildcard_radius 50		//Radius of the burst fire bullets
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 //#include <ostk_tools>
 
 #define MAX_WEAPONS       30   // --| Max number of weapons. ( cs1.6/cz )

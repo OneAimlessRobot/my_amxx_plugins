@@ -10,7 +10,7 @@ shadowcat_cliptime 6		//# of seconds Shadowcat has in noclip mode.
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -1,7 +1,7 @@
 //Library
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // -VERSION-
 // Update: 1.1

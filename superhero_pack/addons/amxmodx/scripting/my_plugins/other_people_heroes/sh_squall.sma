@@ -9,7 +9,7 @@ squall_bullets 7
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <xs>
 
 #pragma semicolon 1

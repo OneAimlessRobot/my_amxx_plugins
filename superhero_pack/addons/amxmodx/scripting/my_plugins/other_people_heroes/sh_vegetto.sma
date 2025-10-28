@@ -50,7 +50,7 @@ vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"

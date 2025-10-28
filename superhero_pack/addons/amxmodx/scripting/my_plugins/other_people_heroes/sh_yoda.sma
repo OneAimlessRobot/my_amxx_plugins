@@ -31,7 +31,7 @@ yoda_selfdmg 0		//Amount of damage using push does to self (def=0)
 *   from original code "MORE JEDI POWERS TO BE ADDED :)"
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -5,7 +5,7 @@
  
  #include <amxmodx>
  #include <xtrafun>
- #include <superheromod>
+ #include "../my_include/superheromod.inc"
 
  #define TE_BEAMPOINTS 0
  #define TE_EXPLOSION 3

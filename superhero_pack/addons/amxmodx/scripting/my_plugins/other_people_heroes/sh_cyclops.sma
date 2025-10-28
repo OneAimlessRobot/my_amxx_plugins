@@ -11,7 +11,7 @@ cyclops_multishot 0.2			//Delay for multishots on holding key down
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // Damage Variables
 new const lDamage[7] = {

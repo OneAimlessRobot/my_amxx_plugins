@@ -10,7 +10,7 @@ mystique_toggle 1				//Should the key be a toggle or do they need to hold it dow
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -11,7 +11,7 @@ aquaman_bubbledamage 10			//How much damage each bubble does
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

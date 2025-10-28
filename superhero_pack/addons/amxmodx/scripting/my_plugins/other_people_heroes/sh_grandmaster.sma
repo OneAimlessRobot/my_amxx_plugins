@@ -10,7 +10,7 @@ gmaster_cooldown 600		//# of seconds for Grandmaster cooldown
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -19,7 +19,7 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Thor"

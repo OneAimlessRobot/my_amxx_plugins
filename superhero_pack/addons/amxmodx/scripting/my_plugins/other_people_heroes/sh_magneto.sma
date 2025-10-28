@@ -10,7 +10,7 @@ magneto_giveglock 1				//Give the poor victim a glock?
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

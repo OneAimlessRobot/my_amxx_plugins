@@ -80,7 +80,7 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 
 #include <amxmodx>
 #include <fakemeta>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Master Chief"

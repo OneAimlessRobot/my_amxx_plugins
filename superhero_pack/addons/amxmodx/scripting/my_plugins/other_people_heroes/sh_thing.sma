@@ -16,7 +16,7 @@ Thing_knife_percent 1.00	// Percent chance to ignore knife hits (headshots alway
 
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new gHeroName[]="Thing" 
 new gHasThingPower[SH_MAXSLOTS+1]

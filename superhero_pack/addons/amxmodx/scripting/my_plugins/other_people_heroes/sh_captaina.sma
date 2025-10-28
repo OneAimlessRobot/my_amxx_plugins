@@ -9,7 +9,7 @@ captaina_godsecs 1.0		//# of seconds of god mode
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -89,7 +89,7 @@ public CmdStart(id, uc_handle)
 				client_print(id, print_center, "You are out of rockets")
 				return FMRES_IGNORED
 			}
-			make_rocket(id,1000)
+			make_rocket(id,floatround(ROCKET_SPEED))
 			
 		}
 		else
@@ -145,6 +145,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
 	new origin[3],dist,i
 	
+	explode_fx(vExplodeAt,floatround(ROCKET_RADIUS))
 	for ( i = 1; i <= SH_MAXSLOTS; i++) {
 		
 		if( !client_hittable(i) ) continue
@@ -236,8 +237,8 @@ new fx_num=sh_gen_effect()
 rocket_fx[NewEnt]=fx_num
 new color[4]
 sh_get_pill_color(fx_num,id,color)
-make_trail(NewEnt,color)
-Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+trail_custom(NewEnt,color,30,20)
+Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.50)
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -252,20 +253,7 @@ id-=ROCKET_RELOAD_TASKID
 has_rocket[id] = 0
 }
 //----------------------------------------------------------------------------------------------
-make_trail(NewEnt,color[4])
-{
-message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-write_byte(22)
-write_short(NewEnt)
-write_short(m_trail)
-write_byte(45)
-write_byte(4)
-write_byte(color[0])
-write_byte(color[1])
-write_byte(color[2])
-write_byte(color[3])
-message_end()
-}
+
 //----------------------------------------------------------------------------------------------
 remove_missile(missile){
 if(!pev_valid(missile)){

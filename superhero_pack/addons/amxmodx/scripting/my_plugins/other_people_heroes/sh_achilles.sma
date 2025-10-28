@@ -1,5 +1,5 @@
 #include <amxmodx> 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <fun>
 #include <cstrike>
 

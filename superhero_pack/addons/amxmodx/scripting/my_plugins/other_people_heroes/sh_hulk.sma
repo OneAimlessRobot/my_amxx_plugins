@@ -11,7 +11,7 @@ hulk_stunspeed 70		//Speed of stunned players
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

@@ -18,7 +18,7 @@ iceman2_armor 100			//How much armor does ironman start with?
 #include <fun> 
 #include <cstrike>
 #include <engine> 
-#include <superheromod> 
+#include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
 new gHeroName[]="Ice Man"

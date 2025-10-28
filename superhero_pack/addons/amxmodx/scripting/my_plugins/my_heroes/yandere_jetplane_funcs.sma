@@ -26,8 +26,8 @@ new g_jetplane_deployed[SH_MAXSLOTS+1];
 new g_jetplane[SH_MAXSLOTS+1];
 new g_jetplane_sound_on[SH_MAXSLOTS+1];
 new Float:g_jetplane_turn_data[SH_MAXSLOTS+1][4];
-new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][5];
-new Float:g_jetplane_airspeed[SH_MAXSLOTS+1]
+new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][4];
+new g_jetplane_trail_engaged[SH_MAXSLOTS+1]
 new camera[SH_MAXSLOTS+1]
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
@@ -62,17 +62,21 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
+	g_msgFade = get_user_msgid("ScreenFade");
 	
 	
 	new const szEntity[ ][ ] = {
 		"worldspawn", "func_wall", "func_door",  "func_door_rotating",
 		"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
-		"func_illusionary", "func_button", "func_rot_button", "func_rotating"
+		"func_illusionary", "func_button", "func_rot_button", "func_rotating",JETPLANE_FUSELAGE_CLASSNAME
 	}
 	
 	for( new i; i < sizeof szEntity; i++ ){
 		register_touch( JETPLANE_FUSELAGE_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 	}
+	register_logevent("round_start", 2, "1=Round_Start")
+	register_logevent("round_end", 2, "1=Round_End")
+	register_logevent("round_end", 2, "1&Restart_Round_")
 	
 }
 
@@ -302,10 +306,9 @@ public _jet_uncharge_user(iPlugin,iParams){
 uncharge_user(id){
 	remove_task(id+JET_CHARGE_TASKID)
 	g_jetplane_deployed[id]=0
-	if(is_valid_ent(g_jetplane[id])){
+	if(pev_valid(g_jetplane[id])==2){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		remove_entity(g_jetplane[id]);
-		g_jetplane[id]=0;
+		jet_destroy(id)
 	}
 	g_jetplane_loaded[id]=1
 	return 0
@@ -405,7 +408,6 @@ public jet_deploy_task(parm[],id){
 		attach_view(id, camera[id])
 	}
 	set_pev(jetplane_id,pev_velocity,init_speed)
-	g_jetplane_airspeed[id]=jet_init_speed
 	spawn_jetplane_mg(attacker)
 	spawn_jetplane_law(attacker)
 	if(!ham_is_here){
@@ -420,6 +422,7 @@ public jet_deploy_task(parm[],id){
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
 	set_jet_engine(id,1);
+	g_jetplane_trail_engaged[attacker]=0
 	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID,"",0,"b")
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
@@ -432,22 +435,36 @@ public load_jet(id){
 	
 }
 
-public FwdTouchWorld( Ball, World ) {
-	static Float:vVelocity[ 3 ];
-	entity_get_vector( Ball, EV_VEC_velocity, vVelocity );
+public FwdTouchWorld( jet, World ) {
 	
-	if( floatround( vector_length( vVelocity ) ) > 10 ) {
-		vVelocity[ 0 ] *= 0.40;
-		vVelocity[ 1 ] *= 0.40;
-		vVelocity[ 2 ] *= 0.40;
-		
-		entity_set_vector( Ball, EV_VEC_velocity, vVelocity );
-		
+	if(pev_valid(jet)!=2){
+
+		return FMRES_IGNORED;
+	}
+	new owner=pev(jet,pev_owner)
+	if(client_hittable(owner,yandere_get_has_yandere(owner))){
+
+		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
+
+
+			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp)
+			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME)
+			jet_destroy(owner)
+			return FMRES_IGNORED
+			
+		}
+		if(get_entity_velocity(jet)>((JET_MINIMUM_SPEED*(1.0+JET_RESTITUTION_COEFF))+10.0)){
+			new Float:vector_velocity[3];
+			pev(jet,pev_velocity,vector_velocity)
+			multiply_3d_vector_by_scalar(vector_velocity,JET_RESTITUTION_COEFF,vector_velocity)
+			set_pev(jet,pev_velocity,vector_velocity)
+
+		}
 	}
 	
-	return PLUGIN_CONTINUE;
+	
+	return FMRES_IGNORED;
 }
-
 //----------------------------------------------------------------------------------------------
 public jet_think(ent)
 {
@@ -500,9 +517,9 @@ public jet_think(ent)
 		new Float:rolly_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
-		new Float:curr_speed_stab_coeff=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
-		new Float:curr_speed_dampening_coeff=floatclamp(((get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*g_jetplane_telemetry_data[owner][4])/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
-		sh_set_rendering(owner,0,0,0,1,kRenderFxNone,kRenderTransAlpha);
+		new Float:curr_speed_stab_coeff=floatclamp(get_entity_velocity(jet_get_user_jet(owner))/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
+		new Float:curr_speed_dampening_coeff=floatclamp(((get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*get_entity_velocity(jet_get_user_jet(owner)))/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
+		sh_set_rendering(owner,0,0,0,0,kRenderFxNone,kRenderTransAlpha);
 		ENT_SetOrigin(owner, vOrigin)
 		
 		if(get_jet_upflapon(owner)||get_jet_downflapon(owner)){
@@ -615,13 +632,15 @@ public jet_think(ent)
 		if(get_jet_airbrakes(owner)){
 
 
-			brake_thingie+=floatclamp(g_jetplane_telemetry_data[owner][4]/(get_jet_speed()*JETPLANE_MAX_BRAKE_SPEED_THRESHOLD),JETPLANE_MIN_BRAKE_CONST,1.0)*1.0
+			brake_thingie+=floatclamp(get_entity_velocity(jet_get_user_jet(owner))/(get_jet_speed()*JETPLANE_MAX_BRAKE_SPEED_THRESHOLD),JETPLANE_MIN_BRAKE_CONST,1.0)*1.0
 			
 		}
 		
 		new Float:raw_velocity[3];
 		new Float:other_velocity[3]
 		new Float:airbrake_tmp_velocity[3]
+		new Float:throttle_tmp_velocity[3]
+		new Float:drag_tmp_velocity[3]
 		new Float:velocity_copy[3]
 
 		arrayset(raw_velocity,0,sizeof raw_velocity);
@@ -631,11 +650,14 @@ public jet_think(ent)
 		entity_get_vector(jet_get_user_jet(owner),EV_VEC_velocity,other_velocity);
 		multiply_3d_vector_by_scalar(other_velocity,1.0,velocity_copy);
 		multiply_3d_vector_by_scalar(other_velocity,1.0,airbrake_tmp_velocity);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,throttle_tmp_velocity);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,drag_tmp_velocity);
+		multiply_3d_vector_by_scalar(other_velocity,1.0,raw_velocity);
 
 		new Float:thrust_vector[3];
 		arrayset(thrust_vector,0,sizeof thrust_vector);
 		if(get_jet_flying(owner)){
-				velocity_by_aim(jet_get_user_jet(owner), floatround(accel_result), thrust_vector)
+			velocity_by_aim(jet_get_user_jet(owner), floatround(accel_result), thrust_vector)
 		}
 		new Float:airbrake_vector[3];
 		arrayset(airbrake_vector,0,sizeof airbrake_vector);
@@ -647,12 +669,13 @@ public jet_think(ent)
 		if(jetplane_enable_air_drag){
 			arrayset(drag_vector,0,sizeof drag_vector);
 			new Float:norm= VecLength(velocity_copy);
-			velocity_by_aim(jet_get_user_jet(owner),floatround(norm),raw_velocity);
 			new Float:gravity_const=get_cvar_float("sv_gravity")*JETPLANE_GRAVITY_MULT
 			drag_vector[0]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[0])/gravity_const)*jet_get_think_period();
 			drag_vector[1]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[1])/gravity_const)*jet_get_think_period();
 			drag_vector[2]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[2])/gravity_const)*jet_get_think_period();
 		}
+		new Float:norm= VecLength(raw_velocity);
+		velocity_by_aim(jet_get_user_jet(owner),floatround(norm),raw_velocity);
 		raw_velocity[2]=velocity_copy[2]
 		for(new i=0;i<3;i++){
 			raw_velocity[i]+=thrust_vector[i]+(jetplane_enable_air_drag?drag_vector[i]:0.0)+airbrake_vector[i];
@@ -670,7 +693,12 @@ public jet_think(ent)
 				multiply_3d_vector_by_scalar(raw_velocity,new_speed,raw_velocity)
 			}
 		}
-		
+		new Float:low_speed_capper_thingie=(raw_speed<JET_MINIMUM_SPEED)?(JET_MINIMUM_SPEED-raw_speed+((1.0/JETPLANE_MAX_SPEED_BOUNCE_RATIO)*get_jet_speed() )):0.0
+		if(low_speed_capper_thingie>0.1){
+			vector_norm(raw_velocity, raw_velocity)
+			new Float:new_speed=raw_speed+low_speed_capper_thingie;
+			multiply_3d_vector_by_scalar(raw_velocity,new_speed,raw_velocity)
+		}
 		set_pev(jet_get_user_jet(owner), pev_velocity, raw_velocity)
 		set_pev(ent, pev_nextthink, gametime + jet_get_think_period())
 	}
@@ -729,7 +757,15 @@ public charge_task(parm[],id){
 	
 	
 }
+public round_end(){
 
+	for (new id=1; id <= SH_MAXSLOTS; id++) {
+		if ( client_hittable(id,yandere_get_has_yandere(id))) {
+			uncharge_user(id)
+		}
+	}
+
+}
 public jet_sound_task(id){
 	new owner=id-JET_SOUND_TASKID
 	if(!client_hittable(owner)){
@@ -762,29 +798,55 @@ public jet_sound_task(id){
 		}
 	}
 	if(g_jetplane_sound_on[owner]){
-		if(g_jetplane_telemetry_data[owner][2]>get_cvar_float("yandere_jetplane_speed")*0.5){
+		if(get_entity_velocity(jet_get_user_jet(owner))>(get_jet_speed()*0.5)){
 			
 			if(random(SoundRate) == (SoundRate-1)){ //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 				if(get_user_fuel_ammount(owner) > 160.0){
-					emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][4]/get_cvar_float("yandere_jetplane_speed"))));
+					emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(get_entity_velocity(jet_get_user_jet(owner))/get_jet_speed())));
 				}
 				else{
-					emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][4]/get_cvar_float("yandere_jetplane_speed"))));
+					emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(get_entity_velocity(jet_get_user_jet(owner))/get_jet_speed())));
 				}
 			}
 		}
 		else{
-			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(g_jetplane_telemetry_data[owner][4]/get_cvar_float("yandere_jetplane_speed"))));
+			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(get_entity_velocity(jet_get_user_jet(owner))/get_jet_speed())));
 			
-		}	
-		if(g_jetplane_telemetry_data[owner][2]>get_cvar_float("yandere_jetplane_speed")*0.5){
-			if(random(FlameRate) == (FlameRate-1)) //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
-			{
-				trail(jet_get_user_jet(owner))
-			}
 		}
 	}
+	if(get_jet_throttle(owner)){
+		engage_user_jet_throttle(owner)
+	}
+	else{
+		disengage_user_jet_throttle(owner)
+	}
 }
+//both of these two functions assume that:
+/*
+
+the owner hass a jet
+the jet is valid
+owner has yandere
+owner is hittable
+so dont @ me
+
+what crashes, crashed.
+Im tired of polluting my code with shitty checks
+*/
+//-----------------------------------------------------------------------------------------------
+engage_user_jet_throttle(owner){
+	if(!g_jetplane_trail_engaged[owner]){
+		g_jetplane_trail_engaged[owner]=1;
+		trail(jet_get_user_jet(owner),PINK,JET_TRAIL_LIFE_INPUT_VALUE,15)
+	}
+}
+disengage_user_jet_throttle(owner){
+	if(g_jetplane_trail_engaged[owner]){
+		g_jetplane_trail_engaged[owner]=0;
+		kill_all_entity_beams(jet_get_user_jet(owner))
+	}
+}
+//-----------------------------------------------------------------------------------------------
 public jet_hud_task(id){
 	
 	new owner=id-JET_HUD_TASKID
@@ -803,35 +865,20 @@ public jet_hud_task(id){
 		remove_task(id)
 		return
 	}
-	new Float:move_velocity[3]
-	entity_get_vector(jet_get_user_jet(owner), EV_VEC_velocity, move_velocity)
-	new Float:abs_velocity=vector_length(move_velocity)
-	g_jetplane_telemetry_data[owner][4]=abs_velocity
+	new Float:abs_velocity=get_entity_velocity(jet_get_user_jet(owner))
 	if(g_jetplane_telemetry_data[owner][0]>JET_AVG_SPEED_CALC_PERIOD){
 		g_jetplane_telemetry_data[owner][2]=g_jetplane_telemetry_data[owner][1]/(g_jetplane_telemetry_data[owner][0]/JET_HUD_PERIOD)
 		g_jetplane_telemetry_data[owner][0]=0.0
 		g_jetplane_telemetry_data[owner][1]=0.0
 		
 	}
-	new hud_msg[1024]
-	format(hud_msg,1023,"Up flap on?: %s^nDown flap on?: %s^nLeft flap on?: %s^nRight flap on?: %s^nLeft roll flap on?: %s^nRight roll flap on?: %s^nThrottle on? %s^nAirbrake on? %s^njetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^nIs engine on? %s^nIs jetplane flying? %s^njetplane BOMBS: %d^njetplane JETGATLING hp: %0.2f^njetplane JETGATLING rounds: %d^njetplane LAW hp: %0.2f^njetplane roquetos: %d^nGround scans left: %d^n",
-		get_jet_upflapon(owner)?"Yes":"No",
-		get_jet_downflapon(owner)?"Yes":"No",
-		get_jet_leftflapon(owner)?"Yes":"No",
-		get_jet_rightflapon(owner)?"Yes":"No",
-		get_jet_left_rollflapon(owner)?"Yes":"No",
-		get_jet_right_rollflapon(owner)?"Yes":"No",
-		get_jet_throttle(owner)?"Yes":"No",
-		get_jet_airbrakes(owner)?"Yes":"No",
+	new hud_msg[300]
+	format(hud_msg,299,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
 		float(pev(jet_get_user_jet(owner),pev_health))-1000.0,
 		get_user_fuel_ammount(owner),
 		g_jetplane_telemetry_data[owner][2],
-		get_jet_engine(owner)?"Yes":"No",
-		get_jet_flying(owner)?"Yes":"No",
 		get_user_jet_bombs(owner),
-		get_user_mg(owner)?(float(pev(get_user_mg(owner),pev_health))-1000.0):0.0,
 		get_user_jet_shells(owner),
-		get_user_law(owner)?(float(pev(get_user_law(owner),pev_health))-1000.0):0.0,
 		get_user_jet_rockets(owner),
 		get_user_jet_scans(owner));
 	set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.15, 1.9, 1, 0.0, 0.5,0.0,0.0)
@@ -852,19 +899,18 @@ public _jet_destroy(iPlugin,iParams){
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, NULL_SOUND_FILENAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	remove_task(id+JET_SOUND_TASKID)
 	
-	g_jetplane_loaded[id]=true;
-	g_jetplane_cooldown[id]=0;
-	g_jetplane_deployed[id]=false;
 	if(is_valid_ent(g_jetplane[id])){
 		if(client_hittable(id)){
 			set_pev(id, pev_takedamage, DAMAGE_YES)
 			set_pev(id, pev_solid, SOLID_SLIDEBOX)
 			sh_set_rendering(id);
-			new Float:origin[3],Float:plane_orig[3]
-			pev(id,pev_origin,origin)
-			pev(g_jetplane[id],pev_origin,plane_orig)
-			origin[2]=plane_orig[2]+10.0
-			set_pev(id,pev_origin,origin)
+			if(g_jetplane_deployed[id]){
+				new Float:origin[3],Float:plane_orig[3]
+				pev(id,pev_origin,origin)
+				pev(g_jetplane[id],pev_origin,plane_orig)
+				origin[2]=plane_orig[2]+10.0
+				set_pev(id,pev_origin,origin)
+			}
 			
 		}
 		mg_destroy(id)
@@ -879,6 +925,9 @@ public _jet_destroy(iPlugin,iParams){
 		remove_entity(camera[id])
 		camera[id] = 0
 	}
+	g_jetplane_loaded[id]=true;
+	g_jetplane_cooldown[id]=0;
+	g_jetplane_deployed[id]=false;
 }
 public _clear_jets(iPlugin,iParams){
 	

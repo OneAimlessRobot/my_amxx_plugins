@@ -18,7 +18,7 @@ batman_armor 125		//defualt 125
 *        batman so powerful.  Batman is split between Batman and Punisher
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

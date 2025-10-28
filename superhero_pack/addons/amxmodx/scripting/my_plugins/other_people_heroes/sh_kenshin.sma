@@ -14,7 +14,7 @@ kenshin_knifemult 3.0		//Multiplier for knife damage (Default 3.0)
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Kenshin"

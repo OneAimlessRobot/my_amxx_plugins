@@ -23,7 +23,7 @@ sandman_cooldown 20		//Seconds before you can use quicksand again (Default 20)
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if defined AMX98
 	#define FL_ONGROUND (1<<9) //Only for the constant

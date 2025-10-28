@@ -9,7 +9,7 @@ dazzler_cooldown 15		//# of seconds before Dazzler can flash
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

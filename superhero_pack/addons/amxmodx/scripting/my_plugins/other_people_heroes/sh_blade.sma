@@ -53,7 +53,7 @@ blade_gunburndmg 3	//Amount of damage per burn from gun burn (Default 3)
 //------- Do not edit below this point ------//
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if USE_MODEL
 	#include <fakemeta>

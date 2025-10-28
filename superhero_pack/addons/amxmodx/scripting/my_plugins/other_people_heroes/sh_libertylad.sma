@@ -37,7 +37,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 // INCLUDED HEADERS
 //--------------------------------------------------------------------------------------------------
 	#include <amxmodx>
-	#include <superheromod>
+	#include "../my_include/superheromod.inc"
 	#include <engine>
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES

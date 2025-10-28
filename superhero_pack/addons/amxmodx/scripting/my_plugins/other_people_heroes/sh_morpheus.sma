@@ -27,7 +27,7 @@ morpheus_mp5mult 2.0		//Damage multiplyer for his MP5
 
 //------- Do not edit below this point ------//
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

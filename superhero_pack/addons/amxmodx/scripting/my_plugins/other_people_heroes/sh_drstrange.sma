@@ -35,7 +35,7 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // Damage Variables
 #define h1_dam 120 //head

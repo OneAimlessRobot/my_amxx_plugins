@@ -1,6 +1,6 @@
 #include <amxmodx>
 #include <engine>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new const SOUND_SMOKESCREEN[]	= "weapons/sg_explode.wav"
 new const MODEL_SHURIKEN[]	= "models/rshell_big.mdl"

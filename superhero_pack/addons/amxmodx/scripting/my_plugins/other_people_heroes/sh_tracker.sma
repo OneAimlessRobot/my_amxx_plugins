@@ -1,6 +1,6 @@
 #include <amxmodx>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 /* CVARS - COPY AND PASTE INTO shconfig.cfg
 

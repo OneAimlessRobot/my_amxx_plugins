@@ -14,7 +14,7 @@ tnt_radius 100		//damage radius from mine explosion
 
 
 #include <amxmodx>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 #include <engine>
 #include <fakemeta>
 

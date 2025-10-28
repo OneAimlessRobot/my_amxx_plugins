@@ -13,7 +13,7 @@ skeletor_maxsnarks 10			// maximum amount of snarks to spawn on a player
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroID

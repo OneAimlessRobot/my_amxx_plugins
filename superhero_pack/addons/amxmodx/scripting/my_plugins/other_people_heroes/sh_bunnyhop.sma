@@ -10,7 +10,7 @@ Bunny_level 5
 
 */
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 new gHeroName[]="Bunny hop"
 new bool:gHasBunnyHop[SH_MAXSLOTS+1]

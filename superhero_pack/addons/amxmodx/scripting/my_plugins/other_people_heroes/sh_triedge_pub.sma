@@ -34,7 +34,7 @@ Version History:
 */
 //----------------------------------------------------------------------------------------------
 
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Tri-Edge"

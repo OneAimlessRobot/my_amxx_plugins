@@ -21,7 +21,7 @@ bishop_blastmult 2.50	//Energy absorbed X this cvar = damage that Energy Blast d
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Bishop"

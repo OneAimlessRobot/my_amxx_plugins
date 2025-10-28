@@ -18,7 +18,7 @@ shock_armor 250			//Armor Starts with (def=250)
 #include <fun> 
 #include <cstrike>
 #include <engine> 
-#include <superheromod> 
+#include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
 new gHeroName[]="Static Shock"

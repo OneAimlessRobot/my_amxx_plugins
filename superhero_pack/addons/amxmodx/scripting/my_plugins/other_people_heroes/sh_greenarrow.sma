@@ -11,7 +11,7 @@
 
  #include <amxmod>
  #include <Vexd_Utilities>
- #include <superheromod>
+ #include "../my_include/superheromod.inc"
 
  // VARIABLES
  new gHeroName[]="Green Arrow"

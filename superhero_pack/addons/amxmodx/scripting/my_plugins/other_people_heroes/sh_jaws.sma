@@ -2,7 +2,7 @@
 #include <engine>
 #include <fun>
 #include <cstrike>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #define IDLE		0
 #define DIVING		1

@@ -12,7 +12,7 @@ blink_delaystuck 0			//Is the user stuck in place during the delay?
 
 #include <amxmod>
 #include <Vexd_Utilities>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 #if defined AMX98
 	#include <xtrafun>  //Only for the constants, doesn't use any functions

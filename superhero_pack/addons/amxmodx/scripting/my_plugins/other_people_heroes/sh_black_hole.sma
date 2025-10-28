@@ -16,7 +16,7 @@ black_thinktime 2 //how long victims get to pray to their god
 #include <amxmod>
 #include <Vexd_Utilities>
 //#include <VexdUM_stock>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Black Hole"
