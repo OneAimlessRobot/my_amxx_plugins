@@ -162,8 +162,9 @@ public fwd_Ham_Spawn_post(id)
 
 public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 {
-	if(Attacker == 0) return HAM_IGNORED
-
+	if(!shModActive()||!is_user_connected(Attacker)){
+		return HAM_IGNORED
+	}
 	else if(is_user_alive(id) && shModActive() && is_user_connected(id))
 	{
 		new Float:fHealth
