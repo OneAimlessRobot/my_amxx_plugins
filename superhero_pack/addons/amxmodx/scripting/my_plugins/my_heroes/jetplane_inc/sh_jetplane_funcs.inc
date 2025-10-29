@@ -42,8 +42,8 @@
 #define JET_CHARGE_RATE 1000.0
 
 #define CAMERA_DIST 300.0
-stock Float:jetplane_min_dims[3]={-33.0,-33.0,-33.0}
-stock Float:jetplane_max_dims[3]={33.0,33.0,33.0}
+stock Float:jetplane_min_dims[3]={-33.0,-33.0,-10.0}
+stock Float:jetplane_max_dims[3]={33.0,33.0,10.0}
 stock const jetplane_color[4]={100,100,100,50}
 
 stock const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}

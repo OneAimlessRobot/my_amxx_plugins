@@ -1,6 +1,6 @@
 #include <amxmodx>
 #include <cstrike>
-#include <superheromod.inc>
+#include "../my_include/superheromod.inc"
 
 // Luke Skywalker 
 

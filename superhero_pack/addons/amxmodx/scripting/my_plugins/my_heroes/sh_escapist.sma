@@ -13,6 +13,7 @@ shock_armor 250			//Armor Starts with (def=250)
 */
 
 #include "../my_include/superheromod.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 #define TASKID 90000
 #define TASKID_ESCAPE 90232

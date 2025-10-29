@@ -10,7 +10,8 @@ styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 
 */
 
 #include <amxmod>
-#include <superheromod>
+#include "../my_include/superheromod.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 // Damage Variables
 #define h1_dam 1500	// head

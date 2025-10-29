@@ -1,6 +1,6 @@
 #include <amxmod.inc>
 #include <xtrafun>
-#include <superheromod.inc>
+#include "../my_include/superheromod.inc"
 
 // Rom!
 

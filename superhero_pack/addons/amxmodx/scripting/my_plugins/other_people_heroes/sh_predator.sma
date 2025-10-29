@@ -1,7 +1,7 @@
 #include <amxmod.inc> 
 #include <amxmisc> 
 #include <xtrafun>
-#include <superheromod.inc>
+#include "../my_include/superheromod.inc"
 
 // Predator - Watch the movie
 

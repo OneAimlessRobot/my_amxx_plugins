@@ -2,6 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 #define YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME "Thanks for that"
 #define YOWAI_TASKID 21232

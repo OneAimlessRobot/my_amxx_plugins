@@ -74,7 +74,6 @@ public plugin_init()
 	for( new i; i < sizeof szEntity; i++ ){
 		register_touch( JETPLANE_FUSELAGE_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 	}
-	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 	

@@ -1,6 +1,6 @@
 #include <amxmod.inc>
 #include <Vexd_Utilities>
-#include <superheromod.inc>
+#include "../my_include/superheromod.inc"
 
 
 // VARIABLES
