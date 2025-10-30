@@ -31,13 +31,19 @@ public sh_set_user_xp_fwd_pre(&id, &xp,xp_type){
         return XP_FWD_PASS
     }
     player_built_xp_this_round[id][xp_type]+=(xp+xp_extra_type_bonuses[xp_type]);
+    
+    if(xp_type>0){
+        sh_chat_message(id,-1,"You shall be awarded an extra %d xp %s at the end of the round",(xp+xp_extra_type_bonuses[xp_type]),xp_extra_earn_strings[xp_type])
+    }
     return XP_FWD_PASS
 
 }
 
-public sh_round_end(){
+public sh_round_start(){
 
-    if(!sh_is_active()) return;
+    if(!sh_is_active()){
+        return;
+    }
     for(new i=1;i<=SH_MAXSLOTS;i++){
         if(is_user_connected(i)){
             for(new type=0;type<sizeof player_built_xp_this_round[];type++){

@@ -20,8 +20,8 @@
 #define LEVEL_GEN_CSV_KILLS "level_kills.csv"
 #define LEVEL_GEN_CSV_KILLS_CUSTOM "level_kills_custom.csv"
 
-#define XP_NEEDED_FUNC  calculate_level_poly_it
-#define XP_GAINED_FUNC  calculate_poly_xpgain_it
+#define XP_NEEDED_FUNC  calculate_level_it
+#define XP_GAINED_FUNC  calculate_exp_xpgain_it
 
 #include <amxmodx>
 #include <amxmisc>

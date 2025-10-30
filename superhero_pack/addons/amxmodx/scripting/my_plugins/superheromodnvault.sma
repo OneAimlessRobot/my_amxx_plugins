@@ -4888,7 +4888,9 @@ public bomb_defused(defuser)
 
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
-		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
+		if ( cs_get_user_team(ct) != CS_TEAM_CT ){
+			continue
+		}
 		new the_xp_return_value=XP_FWD_PASS
 		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
 			server_print("Sh xp forward execute error.");
@@ -4919,7 +4921,9 @@ public bomb_explode(planter, defuser)
 
 	for (new i = 0; i < numplayers; i++) {
 		terrorist = players[i]
-		if ( cs_get_user_team(terrorist) != CS_TEAM_T ) continue
+		if ( cs_get_user_team(terrorist) != CS_TEAM_T ){
+			continue
+		}
 		new the_xp_return_value=XP_FWD_PASS
 		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
 			server_print("Sh xp forward execute error.");
