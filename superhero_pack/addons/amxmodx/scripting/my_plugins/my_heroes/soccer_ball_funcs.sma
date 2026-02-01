@@ -217,7 +217,7 @@ public kick_ball(iPlugin,iParams)
 	
 	arrayset(tagged_by_baller[id],false,SH_MAXSLOTS+1)
 	entity_set_string(  Ent, EV_SZ_classname, BALL_CLASSNAME );
-	entity_set_int(  Ent , EV_INT_solid, SOLID_BSP);
+	entity_set_int(  Ent , EV_INT_solid, SOLID_BBOX);
 	entity_set_int( Ent, EV_INT_movetype, MOVETYPE_BOUNCE );
 	entity_set_model(  Ent , g_szBallModel );
 	entity_set_size(  Ent, Float:{ -15.0, -15.0, 0.0 }, Float:{ 15.0, 15.0, 12.0 } );
