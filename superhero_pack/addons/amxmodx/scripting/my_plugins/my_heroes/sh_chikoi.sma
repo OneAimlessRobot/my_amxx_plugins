@@ -3,6 +3,8 @@
 #include "../my_include/superheromod.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "ksun_inc/ksun_global.inc"
+#include "chikoi_inc/sh_chikoi_funcs.inc"
 #define CHIKOI_HITZONE_TASKID 19999
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
@@ -28,13 +30,26 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 	register_event("Damage", "chikoi_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	register_srvcmd("chikoi_init", "chikoi_init")
 	shRegHeroInit(gHeroName, "chikoi_init")
 	
 	
 }
 
+public plugin_natives(){
+	
+	register_native("chikoi_has_chikoi","_chikoi_has_chikoi",0);
+}
+public _chikoi_has_chikoi(iPlugin,iParams){
 
+	new id=get_param(1)
+	if(!client_hittable(id)){
+
+		return 0
+	}
+	return gHasChikoi[id]
+}
 public chikoi_init()
 {
 	
@@ -46,13 +61,7 @@ public chikoi_init()
 	read_argv(2,temp,5)
 	new hasPowers = str_to_num(temp)
 	gHasChikoi[id]=(hasPowers!=0)
-	if(gHasChikoi[id]){
-		set_task(0.1, "hitzone_loop", id+CHIKOI_HITZONE_TASKID, "", 0, "b")
-		
-	}
-	else{
-		remove_task(id+CHIKOI_HITZONE_TASKID)
-	}
+	
 	
 	
 }
@@ -84,28 +93,42 @@ if(headshot){
 }
 
 }
-public chikoi_hitzones(id)
-{
-	if ( !shModActive() || !hasRoundStarted() ) return PLUGIN_CONTINUE
-	if ( gHasChikoi[id] && is_user_alive(id) ) {
-		
-		set_user_hitzones(0, id, HITZONE_STOMACH)
-	}
-	return PLUGIN_CONTINUE
-}
 
-public hitzone_loop(id){
-	
-	id-=CHIKOI_HITZONE_TASKID;
-	
-	if(gHasChikoi[id]){
-		
-		chikoi_hitzones(id)
-		
-		
+public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
+
+	if(!client_hittable(id)){
+
+		return HAM_IGNORED;
+
 	}
-	
-	
+	if(!gHasChikoi[id]){
+
+		return HAM_IGNORED;
+
+	}
+	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
+	switch(hitgroup){
+		case HIT_STOMACH:{
+			sh_chat_message(attacker,gHeroID,"stomach shot")
+			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
+			SetHamParamTraceResult(5,tracehandle)
+		}
+		case HIT_HEAD:{
+
+			
+			sh_chat_message(attacker,gHeroID,"headshot")
+			if(!spores_has_ksun(id)){ //without this check... chikoi + ksun= unkillable by bullets
+				sh_chat_message(attacker,gHeroID,"headshot on non-ksun-using chikoi user!")
+				SetHamParamFloat(3,0.0)
+			}
+			//SetHamParamFloat(3,0.0)
+		}
+		default:{
+			sh_chat_message(attacker,gHeroID,"wateeeeerr!...")
+			SetHamParamFloat(3,0.0)
+		}
+	}
+	return HAM_HANDLED;
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

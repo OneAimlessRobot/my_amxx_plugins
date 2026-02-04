@@ -126,8 +126,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
 			if (floatround(extraDamage)>0){
 				damage=floatround(extraDamage)
-				sh_chat_message(attacker,-1,"You've dealt %0.2f more (superhero) damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
-			
+				
 			}	
 		}
 		default:{

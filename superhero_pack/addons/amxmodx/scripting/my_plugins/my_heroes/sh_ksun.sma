@@ -8,8 +8,8 @@
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "chikoi_inc/sh_chikoi_funcs.inc"
 
-#define KSUN_HITZONE_TASKID 19977
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
@@ -49,7 +49,7 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	register_logevent("ev_SendAudio", 2, "1=Round_End")
 	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
-	//RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
+	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
     //register_event("Damage", "ksun_physical_body", "b", "2!0")
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
@@ -250,7 +250,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	return HAM_IGNORED
 	
 }
-/*
+
 public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
 
 	if(!client_hittable(id)){
@@ -264,36 +264,27 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
-	if(hitgroup==HIT_CHEST){
-		sh_chat_message(attacker,spores_ksun_hero_id(),"Chest shot!")
-		set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
+	switch(hitgroup){
+		case HIT_STOMACH:{
+			sh_chat_message(attacker,spores_ksun_hero_id(),"stomach shot!")
+			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
+			SetHamParamTraceResult(5,tracehandle)
+		}
+		case HIT_CHEST:{
+			sh_chat_message(attacker,spores_ksun_hero_id(),"chest shot!")
+			SetHamParamFloat(3,0.0)
+		}
+		case HIT_HEAD:{
+			sh_chat_message(attacker,spores_ksun_hero_id(),"head shot!")
+			/*if(!chikoi_has_chikoi(id)){ //without this check... chikoi + ksun= unkillable by bullets
+				sh_chat_message(attacker,spores_ksun_hero_id(),"head shot on non-chikoi-using ksun user!")
+				SetHamParamFloat(3,0.0)
+			}*/
+			SetHamParamFloat(3,0.0)
+		}
 	}
-	SetHamParamTraceResult(5,tracehandle)
-	return HAM_SUPERCEDE;
+	return HAM_HANDLED;
 }
-	
-*//*
-public ksun_physical_body(id){
-	if ( !shModActive() || !client_hittable(id)) return
-	if ( !spores_has_ksun(id)) return
-
-
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == HIT_CHEST ? 1 : 0
-	if ( !client_hittable(attacker)||attacker==id ) return
-	new attacker_name[128];
-	new client_name[128];
-	get_user_name(attacker,attacker_name,127);
-	get_user_name(id,client_name,127);
-
-	if(headshot){
-
-		
-		shExtraDamage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
-		dmg_message(id, attacker)
-	}
-
-}*/
 public client_disconnected(id){
 	
 	spores_reset_user(id)
@@ -483,7 +474,6 @@ public ksun_init()
 		init_cooldown_update_tasks(id)
 		ksun_set_num_available_spores(id,0)
 		init_hud_tasks(id)
-		set_task(0.1, "hitzone_loop", id+KSUN_HITZONE_TASKID, "", 0, "b")
 		
 	
 	}
@@ -495,7 +485,6 @@ public ksun_init()
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
 		ksun_set_num_available_spores(id,0)
-		remove_task(id+KSUN_HITZONE_TASKID)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -599,29 +588,7 @@ return player_count;
 
 }
 
-public hitzone_loop(id){
-	
-	id-=KSUN_HITZONE_TASKID;
-	
-	if(spores_has_ksun(id)){
-		
-		ksun_hitzones(id)
-		
-		
-	}
-	
-	
-}
 
-public ksun_hitzones(id)
-{
-	if ( !shModActive() || !hasRoundStarted() ) return PLUGIN_CONTINUE
-	if ( spores_has_ksun(id) && is_user_alive(id) ) {
-		
-		set_user_hitzones(0, id, ~HITZONE_HEAD)
-	}
-	return PLUGIN_CONTINUE
-}
 //----------------------------------------------------------------------------------------------
 public ksun_prethink(id)
 {

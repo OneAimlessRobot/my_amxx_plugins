@@ -1,9 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
-#include "special_fx_inc/sh_yakui_get_set.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 

@@ -91,7 +91,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF  + damage
 		if (floatround(extraDamage)>0){
 			damage=floatround(extraDamage)
-			sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more (superhero) damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
 		}
 	}
 	

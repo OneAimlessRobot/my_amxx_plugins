@@ -146,14 +146,12 @@ public komak_init()
 	new hasPowers = str_to_num(temp)
 	gHasKomak[id]=(hasPowers!=0)
 	if(gHasKomak[id]){
-		set_task(0.1, "hitzone_loop", id+KOMAK_HITZONE_TASKID, "", 0, "b")
 		set_task(0.1, "stats_komak_task", id+KOMAK_STATS_TASKID, "", 0, "b")
 		set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
 		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
 		
 	}
 	else{
-		remove_task(id+KOMAK_HITZONE_TASKID)
 		remove_task(id+KOMAK_STATS_TASKID)
 		remove_task(id+KOMAK_HUD_TASKID)
 		remove_task(id+KOMAK_REPAIR_TASKID)
@@ -163,17 +161,6 @@ public komak_init()
 	
 }
 
-public komak_hitzones(id)
-{
-	if ( !shModActive() || !hasRoundStarted() ) return PLUGIN_CONTINUE
-	if ( gHasKomak[id] && is_user_alive(id) ) {
-		
-		set_user_hitzones(0, id, HITZONES_DEFAULT & (~HITZONE_LEFTARM))	//remove left arm hitzone
-		new client_name[128]
-		get_user_name(id,client_name,127)
-	}
-	return PLUGIN_CONTINUE
-}
 public komak_is_top_speed(id){
 
 	return !((gCurrFireRatio[id]<max_fire_ratio)||(gCurrReloadRatio[id]<max_reload_ratio))
@@ -181,6 +168,21 @@ public komak_is_top_speed(id){
 
 public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
+	new return_result=HAM_IGNORED;
+	if(client_hittable(this)){
+		if(gHasKomak[this]){
+
+			new hitgroup=get_tr2(traceresult,TR_iHitgroup);
+			switch(hitgroup){
+				case HIT_RIGHTARM:{
+					SetHamParamFloat(3,0.0)
+					return_result=HAM_HANDLED
+				}
+			}
+
+		}
+	}
+	
 	if( !sh_is_active() ||!client_hittable(idattacker)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
 		
 		if(!client_hittable(idattacker)){
@@ -188,11 +190,9 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 				log_amx("Invalid thing in komak!!!!^n");
 			
 		}
-		
-		return HAM_IGNORED;
+		return return_result;
 	
 	}
-	
 	// get ent looking at
 	static  body;
 	get_user_aiming(idattacker, this, body);
@@ -235,19 +235,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 		
 	}
-	return HAM_IGNORED;
-}
-public hitzone_loop(id){
-	
-	id-=KOMAK_HITZONE_TASKID;
-	
-	if(gHasKomak[id]){
-		
-		komak_hitzones(id)
-		
-		
-	}
-	
+	return return_result;
 	
 }
 public engine_repair_loop(id){
