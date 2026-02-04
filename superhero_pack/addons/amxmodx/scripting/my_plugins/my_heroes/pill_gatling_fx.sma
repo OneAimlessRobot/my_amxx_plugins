@@ -62,8 +62,9 @@ public crack_damage(id)
 	new headshot = bodypart == 1 ? 1 : 0
 	if ( !client_hittable(attacker)) return
 	
-	new fx_num=(gatling_get_fx_num(attacker));
-	switch (fx_num){
+	new fx_num_att=(gatling_get_fx_num(attacker));
+	new fx_num_vic=(gatling_get_fx_num(id));
+	switch (fx_num_att){
 		case POISON:{
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
 			if (floatround(extraDamage)>0){
@@ -78,10 +79,62 @@ public crack_damage(id)
 			sh_set_user_xp(attacker,new_xp);
 		}
 		default:{
-			
-			return
+		
 		}
 	}
+	switch(fx_num_vic){
+
+		case RADIOACTIVE:{
+			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Radoactive damage vulnerability", headshot)
+				sh_chat_message(attacker,-1,"You've dealt %0.2f more damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
+			}	
+		}
+		default:{
+
+		}
+	}
+	
+}
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
+
+	new fx_num_att=(gatling_get_fx_num(attacker));
+	new fx_num_vic=(gatling_get_fx_num(victim));
+	switch (fx_num_att){
+		case POISON:{
+			new Float:extraDamage = damage * POISON_DMG_MULT - damage
+			if (floatround(extraDamage)>0){
+				damage=floatround(extraDamage)
+			}	
+		}
+		case METYLPHENIDATE:{
+			new gained_xp= floatround(FOCUS_XPMULT*damage);
+			new current_xp= sh_get_user_xp(attacker)
+			new new_xp= gained_xp+ current_xp;
+			sh_set_user_xp(attacker,new_xp);
+		}
+		default:{
+		
+		}
+	}
+	switch(fx_num_vic){
+
+		case RADIOACTIVE:{
+			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
+			if (floatround(extraDamage)>0){
+				damage=floatround(extraDamage)
+				sh_chat_message(attacker,-1,"You've dealt %0.2f more (superhero) damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
+			
+			}	
+		}
+		default:{
+			
+		}
+	}
+	return DMG_FWD_PASS
 }
 
 public fire_weapon(id)

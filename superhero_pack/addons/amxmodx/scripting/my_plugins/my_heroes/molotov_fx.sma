@@ -5,7 +5,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero chaff fx"
+#define PLUGIN "Superhero molotov fx"
 #define VERSION "1.0.0"
 #define AUTHOR "Me"
 #define Struct				enum
@@ -18,6 +18,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsBurning,false,SH_MAXSLOTS+1)
 	g_msgFade = get_user_msgid("ScreenFade");
+	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	
 }
 public plugin_precache(){
@@ -68,6 +69,37 @@ public burn_task(array[],id)
 	return PLUGIN_CONTINUE
 }
 
+public molotov_damage_vulnerability(id){
+	if ( !shModActive() || !client_hittable(id)) return
+	new  Float:damage= float(read_data(2))
+	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new headshot = bodypart == 1 ? 1 : 0
+	if(gIsBurning[id]){
+		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
+		if (floatround(extraDamage)>0){
+			shExtraDamage(id, attacker, floatround(extraDamage), "Burn damage vulnerability", headshot)
+			sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
+		}
+	}
+
+	
+}
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
+
+	if(gIsBurning[victim]){
+		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF  + damage
+		if (floatround(extraDamage)>0){
+			damage=floatround(extraDamage)
+			sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more (superhero) damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
+		}
+	}
+	
+
+	
+	return DMG_FWD_PASS
+}
+
 //----------------------------------------------------------------------------------------------
 public fire_scream(id)
 {
@@ -76,6 +108,7 @@ public fire_scream(id)
 //----------------------------------------------------------------------------------------------
 public stop_fire_sound(id)
 {
+	if(!is_user_connected(id)) return
 	gIsBurning[id] = false
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 }

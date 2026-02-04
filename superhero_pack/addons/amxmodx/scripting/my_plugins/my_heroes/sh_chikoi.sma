@@ -69,7 +69,7 @@ if ( !shModActive() || !is_user_alive(id) ||!gHasChikoi[id]) return
 
 
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-new headshot = bodypart == 1 ? 1 : 0
+new headshot = bodypart == HIT_STOMACH ? 1 : 0
 if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return
 new attacker_name[128];
 new client_name[128];
@@ -89,9 +89,7 @@ public chikoi_hitzones(id)
 	if ( !shModActive() || !hasRoundStarted() ) return PLUGIN_CONTINUE
 	if ( gHasChikoi[id] && is_user_alive(id) ) {
 		
-		set_user_hitzones(0, id, HITZONE_HEAD)	//remove left arm hitzone
-		new client_name[128]
-		get_user_name(id,client_name,127)
+		set_user_hitzones(0, id, HITZONE_STOMACH)
 	}
 	return PLUGIN_CONTINUE
 }

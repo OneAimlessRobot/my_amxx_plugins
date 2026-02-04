@@ -49,8 +49,7 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	register_logevent("ev_SendAudio", 2, "1=Round_End")
 	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
-	//RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
-    //register_event("Damage", "ksun_physical_body", "b", "2!0")
+    register_event("Damage", "ksun_physical_body", "b", "2!0")
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
 	shRegHeroInit(gHeroName, "ksun_init")
@@ -250,29 +249,6 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	return HAM_IGNORED
 	
 }
-/*
-public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
-
-	if(!client_hittable(id)){
-
-		return HAM_IGNORED;
-
-	}
-	if(!spores_has_ksun(id)){
-
-		return HAM_IGNORED;
-
-	}
-	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
-	if(hitgroup==HIT_CHEST){
-		sh_chat_message(attacker,spores_ksun_hero_id(),"Chest shot!")
-		set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
-	}
-	SetHamParamTraceResult(5,tracehandle)
-	return HAM_SUPERCEDE;
-}
-	
-*//*
 public ksun_physical_body(id){
 	if ( !shModActive() || !client_hittable(id)) return
 	if ( !spores_has_ksun(id)) return
@@ -293,7 +269,9 @@ public ksun_physical_body(id){
 		dmg_message(id, attacker)
 	}
 
-}*/
+}
+	
+
 public client_disconnected(id){
 	
 	spores_reset_user(id)
@@ -618,7 +596,13 @@ public ksun_hitzones(id)
 	if ( !shModActive() || !hasRoundStarted() ) return PLUGIN_CONTINUE
 	if ( spores_has_ksun(id) && is_user_alive(id) ) {
 		
-		set_user_hitzones(0, id, ~HITZONE_HEAD)
+		set_user_hitzones(0, id, ~HITZONE_HEAD&&(
+									HITZONE_LEFTARM||
+									HITZONE_RIGHTARM||
+									HITZONE_CHEST||
+									HITZONE_STOMACH||
+									(1 << HIT_LEFTLEG)||
+									HITZONE_RIGHTLEG))
 	}
 	return PLUGIN_CONTINUE
 }
