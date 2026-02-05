@@ -272,7 +272,8 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		}
 		case HIT_CHEST:{
 			sh_chat_message(attacker,spores_ksun_hero_id(),"chest shot!")
-			SetHamParamFloat(3,0.0)
+			//SetHamParamFloat(3,0.0)
+			return HAM_SUPERCEDE
 		}
 		case HIT_HEAD:{
 			sh_chat_message(attacker,spores_ksun_hero_id(),"head shot!")
@@ -280,7 +281,8 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 				sh_chat_message(attacker,spores_ksun_hero_id(),"head shot on non-chikoi-using ksun user!")
 				SetHamParamFloat(3,0.0)
 			}*/
-			SetHamParamFloat(3,0.0)
+			//SetHamParamFloat(3,0.0)
+			return HAM_SUPERCEDE
 		}
 	}
 	return HAM_HANDLED;
