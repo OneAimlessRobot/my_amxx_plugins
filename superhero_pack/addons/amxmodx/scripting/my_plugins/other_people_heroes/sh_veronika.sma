@@ -19,8 +19,8 @@ veronika_m203dmg 120
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 stock veronika_ak_v_mdl[]= "models/shmod/veronika/ak47grenade.mdl"
-stock veronika_ak_w_mdl[]= "models/shmod/veronika/w_akgrenade.mdl"
-stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_akgrenade.mdl"
+stock veronika_ak_w_mdl[]= "models/shmod/veronika/w_9mmar.mdl"
+stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_9mmar.mdl"
 
 // VARIABLES
 new gHeroName[]="Veronika"
