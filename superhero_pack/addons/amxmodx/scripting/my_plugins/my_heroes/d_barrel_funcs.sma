@@ -17,9 +17,10 @@ new const WeaponModel[3][] =
 	"models/shmod/supernoodle/dbarrel/w_dbarrel.mdl" // W
 }
 
-new const WeaponSounds[6][] = 
+new const WeaponSounds[7][] = 
 {
 	"weapons/dbarrel1.wav",
+	"weapons/dbarrel-1.wav",
 	"weapons/dbarrel_draw.wav",
 	"weapons/dbarrel_foley1.wav",
 	"weapons/dbarrel_foley2.wav",

@@ -40,7 +40,7 @@ new marksman_bullets[ SH_MAXSLOTS+1 ]
 
 
 new const g_psg1Sounds[1][]={"shmod/marksman/PSG1/g3sg1-1.wav"}
-new const g_dragunovSounds[1][]={"shmod/marksman/Dragunov/g3sg1-1.wav"}
+new const g_psg1Sounds[1][]={"shmod/marksman/PSG1/g3sg1-1.wav"}
 new const g_psg1Model[1][]={"models/shmod/marksman/psg1/v_sg550.mdl"}
 new const g_dragunovModel[2][]={"models/shmod/marksman/dragunov/v_g3sg1.mdl","models/shmod/marksman/dragunov/p_g3sg1.mdl"}
 new gPlayerLevel[SH_MAXSLOTS+1]

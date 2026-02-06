@@ -18,6 +18,10 @@ veronika_m203dmg 120
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
+stock veronika_ak_v_mdl[]= "models/shmod/veronika/ak47grenade.mdl"
+stock veronika_ak_w_mdl[]= "models/shmod/veronika/w_akgrenade.mdl"
+stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_akgrenade.mdl"
+
 // VARIABLES
 new gHeroName[]="Veronika"
 new gHasVeronikaPower[SH_MAXSLOTS+1]
@@ -78,9 +82,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/ak47grenade.mdl")
-	precache_model("models/p_9mmar.mdl")
-	precache_model("models/w_9mmar.mdl")
+	precache_model(veronika_ak_v_mdl)
+	precache_model(veronika_ak_p_mdl)
+	precache_model(veronika_ak_w_mdl)
 	precache_model("models/grenade.mdl")
 	precache_sound("shmod/glauncher.wav")
 	precache_sound("shmod/a_exm2.wav")
@@ -153,7 +157,8 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_AK47) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/ak47grenade.mdl")
+		Entvars_Set_String(id, EV_SZ_viewmodel, veronika_ak_v_mdl)
+		Entvars_Set_String(id, EV_SZ_weaponmodel, veronika_ak_p_mdl)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -457,7 +462,7 @@ if (!is_valid_ent(entity))
 	return FMRES_IGNORED
 }
 
-if (equal(model, "models/shmod/ak47grenade.mdl"))
+if (equal(model, veronika_ak_v_mdl))
 {
 	new classname[11]
 	entity_get_string(entity, EV_SZ_classname, classname, 10)
@@ -468,7 +473,7 @@ if (equal(model, "models/shmod/ak47grenade.mdl"))
 	{
 		//client_print(0, print_chat, "Setting model")
 		
-		entity_set_model(entity, "models/w_9mmar.mdl")
+		entity_set_model(entity, veronika_ak_w_mdl)
 		
 		return FMRES_SUPERCEDE
 	}

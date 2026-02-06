@@ -5,7 +5,6 @@
 
 
 #define JAQUEO_AK47_V_MODEL "models/shmod/jaqueo/weapons/ak47/v_ak47.mdl"
-#define JAQUEO_SCOUT_V_MODEL "models/shmod/jaqueo/weapons/scout/v_scout.mdl"
 #define JAQUEO_COOL_SCOUT_V_MODEL "models/shmod/jaqueo/weapons/scout/v_cool_scout.mdl"
 #define JAQUEO_COOL_SCOUT_P_MODEL "models/shmod/jaqueo/weapons/scout/p_cool_scout.mdl"
 #define JAQUEO_COOL_SCOUT_W_MODEL "models/shmod/jaqueo/weapons/scout/w_cool_scout.mdl"

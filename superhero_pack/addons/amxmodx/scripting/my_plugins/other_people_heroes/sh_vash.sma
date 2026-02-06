@@ -33,6 +33,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
+stock vash_v_deagle_model[]="models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
 new gHeroName[]="Vash the Stampede"
 new bool:gHasVashPower[SH_MAXSLOTS+1]
@@ -69,7 +70,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/vash_deagle.mdl")
+	precache_model(vash_v_deagle_model)
 }
 //----------------------------------------------------------------------------------------------
 public vash_init()
@@ -162,7 +163,7 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if ( wpnid == CSW_DEAGLE ) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/vash_deagle.mdl")
+		Entvars_Set_String(id, EV_SZ_viewmodel, vash_v_deagle_model)
 	}
 }
 //----------------------------------------------------------------------------------------------

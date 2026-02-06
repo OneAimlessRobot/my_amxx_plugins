@@ -272,7 +272,6 @@ public plugin_precache(){
 	precache_model("models/player/jaqueo/jaqueo.mdl")
 	precache_model("models/player/jaqueot/jaqueot.mdl")
 	precache_model(JAQUEO_AK47_V_MODEL)
-	precache_model(JAQUEO_SCOUT_V_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_V_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_P_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_W_MODEL)

@@ -40,19 +40,17 @@ gloce_freeze_time 5		//How long they should be frozen
 
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
-#include <hamsandwich>
-#include <fakemeta>
 
-//#define USE_MODEL
+#define USE_MODEL
 
 #define gVERSION "1.1"
 #define GLOCE_DSPT "Icy Powers - Slow down your enemies with your Ice glock"
 
-new const g_sound[]	=	"warcraft3/frostnova.wav"
+new const g_sound[]	=	"shmod/frostnova.wav"
 new const g_sprite[]	=	"sprites/white.spr"
 
 #if defined USE_MODEL
-new const g_model[]	=	"models/shmod/v_gloce.mdl"
+ new const g_model[]	=	"models/shmod/v_gloce.mdl"
 #endif
 
 new gloce_glock
@@ -62,7 +60,7 @@ new gloce_times
 new gloce_time
 
 new g_spriteRing
-new v_model
+
 
 new bool:slowed[33]
 new Float:g_fMaxSpeed[33]
@@ -83,8 +81,8 @@ public plugin_init()
 	register_forward(FM_ClientConnect, "fwd_Client_Connect")
 	register_forward(FM_ClientDisconnect, "fwd_Client_Disconnect")
 
-	RegisterHam(Ham_Spawn, "player", "fwd_Ham_Spawn_post", 1)
-	RegisterHam(Ham_TakeDamage, "player", "fwd_Ham_TakeDamage_post")
+	RegisterHam(Ham_Spawn, "player", "fwd_Ham_Spawn_post", 1,true)
+	RegisterHam(Ham_TakeDamage, "player", "fwd_Ham_TakeDamage_post",1,true)
 
 	//Register Cvars
 	register_cvar("gloce_level", "7" )
@@ -110,7 +108,7 @@ public plugin_precache()
 	g_spriteRing = precache_model(g_sprite)
 
 	#if defined USE_MODEL
-	 v_model = precache_model(g_model)
+	   precache_model(g_model)
 	#endif
 }
 
@@ -140,7 +138,7 @@ public gloce_v_model(id)
 	new weapon = get_user_weapon(id)
 
 	if(weapon == CSW_GLOCK18 && is_user_connected(id) && g_HasPower[id] && shModActive())
-		set_pev(id, pev_viewmodel2, v_model)
+		set_pev(id, pev_viewmodel2, g_model)
 }
 
 public fwd_Ham_Spawn_post(id)
@@ -162,9 +160,8 @@ public fwd_Ham_Spawn_post(id)
 
 public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 {
-	if(!shModActive()||!is_user_connected(Attacker)){
-		return HAM_IGNORED
-	}
+	if(Attacker == 0) return HAM_IGNORED
+
 	else if(is_user_alive(id) && shModActive() && is_user_connected(id))
 	{
 		new Float:fHealth
@@ -279,7 +276,7 @@ public fwd_Client_Connect(id)
 	times_id[id] = 0
 }
 
-public fwd_client_disconnected(id)
+public fwd_Client_Disconnect(id)
 {
 	g_HasPower[id] = false
 	times_id[id] = 0
@@ -343,6 +340,3 @@ stock fm_set_rendering(entity, fx = kRenderFxNone, r = 255, g = 255, b = 255, re
 
 	return 1
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/
