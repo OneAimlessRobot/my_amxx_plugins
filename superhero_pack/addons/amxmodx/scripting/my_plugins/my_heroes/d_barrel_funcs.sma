@@ -614,7 +614,6 @@ public update_ammo(id, csw_id, clip, bpammo)
 public Event_Gatling_Shoot(id)
 {
 	set_weapon_anim(id, random_num(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
-	emit_sound(id, CHAN_WEAPON, WeaponSounds[0], 1.0, 0.4, 0, 94 + random_num(0, 15))
 }
 
 stock fm_cs_get_weapon_ent_owner(ent)
