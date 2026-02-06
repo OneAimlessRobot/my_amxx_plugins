@@ -20,8 +20,8 @@
 #define LEVEL_GEN_CSV_KILLS "level_kills.csv"
 #define LEVEL_GEN_CSV_KILLS_CUSTOM "level_kills_custom.csv"
 
-#define XP_NEEDED_FUNC  calculate_level_it
-#define XP_GAINED_FUNC  calculate_exp_xpgain_it
+#define XP_NEEDED_FUNC  calculate_level_poly_it
+#define XP_GAINED_FUNC  calculate_lin_xpgain_it
 
 #include <amxmodx>
 #include <amxmisc>
@@ -31,13 +31,25 @@ new Float:a_val, Float:b_val,Float:c_val,Float:d_val,
 
 Float:e_val, Float:f_val,
 
-Float:g_val, Float:h_val,Float:i_val,Float:j_val
+Float:g_val, Float:h_val,Float:i_val,Float:j_val,
+
+Float:sum_coeff_needed,
+
+Float:sum_coeff_gained,
+
+Float:k_val,Float:l_val,Float:m_val,Float:n_val
 
 new num_levels_cvar_p,a_val_cvar_p,b_val_cvar_p,c_val_cvar_p,d_val_cvar_p,
 
 e_val_cvar_p,f_val_cvar_p,
 
-g_val_cvar_p,h_val_cvar_p,i_val_cvar_p,j_val_cvar_p
+g_val_cvar_p,h_val_cvar_p,i_val_cvar_p,j_val_cvar_p,
+sum_coeff_needed_cvar_p,
+sum_coeff_gained_cvar_p,
+k_val_cvar_p,
+l_val_cvar_p,
+m_val_cvar_p,
+n_val_cvar_p
 
 new level_cfg_folder[128],level_cfg_file[128],level_ini_file[128], xp_gain_csv_file[128], level_xp_csv_file[128],level_kills_needed_csv_file[128],
 level_kills_custom_csv_file[128]
@@ -65,6 +77,15 @@ g_val_cvar_p         = register_cvar( "level_gen_g_val"        , "1.0"   );
 h_val_cvar_p   = register_cvar( "level_gen_h_val"  , "1.0"   );
 i_val_cvar_p   = register_cvar( "level_gen_i_val"  , "1.0"   );
 j_val_cvar_p   = register_cvar( "level_gen_j_val"  , "1.0"   );
+m_val_cvar_p   = register_cvar( "level_gen_m_val"  , "1.0"   );
+n_val_cvar_p   = register_cvar( "level_gen_n_val"  , "1.0"   );
+
+sum_coeff_needed_cvar_p       = register_cvar( "xp_needed_sum_coeff"        , "1.0"   );
+
+sum_coeff_gained_cvar_p       = register_cvar( "xp_gained_sum_coeff"        , "1.0"   );
+
+k_val_cvar_p   = register_cvar( "level_gen_k_val"  , "1.0"   );
+l_val_cvar_p   = register_cvar( "level_gen_l_val"  , "1.0"   );
 
 register_concmd("level_gen", "level_gen", ADMIN_RCON);
 
@@ -99,6 +120,7 @@ loadCVARS(){
 	b_val=get_pcvar_float(b_val_cvar_p)
 	c_val=get_pcvar_float(c_val_cvar_p)
 	d_val=get_pcvar_float(d_val_cvar_p)
+	
 	e_val=get_pcvar_float(e_val_cvar_p)
 	f_val=get_pcvar_float(f_val_cvar_p)
 	
@@ -106,12 +128,24 @@ loadCVARS(){
 	h_val=get_pcvar_float(h_val_cvar_p)
 	i_val=get_pcvar_float(i_val_cvar_p)
 	j_val=get_pcvar_float(j_val_cvar_p)
-	console_print(0,"LEVEL GEN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",a_val,b_val,c_val,d_val);
-	console_print(0,"LEVEL GEN MATH EXPR POLY: (%f * x * x) + (%f * x) + %f",a_val,b_val,c_val);
-	console_print(0,"LINEAR LEVEL GEN XPGAIN MATH EXPR: %f * x + %f",e_val,f_val);
-	console_print(0,"POLY LEVEL GEN XPGAIN MATH EXPR: (%f * x * x) + (%f * x) + %f",g_val,h_val,i_val);
-	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
 
+	sum_coeff_needed=get_pcvar_float(sum_coeff_needed_cvar_p)
+	sum_coeff_gained=get_pcvar_float(sum_coeff_gained_cvar_p)
+
+
+	k_val=get_pcvar_float(k_val_cvar_p)
+	l_val=get_pcvar_float(l_val_cvar_p)
+	m_val=get_pcvar_float(m_val_cvar_p)
+	n_val=get_pcvar_float(n_val_cvar_p)
+
+	console_print(0,"LEVEL GEN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",a_val,b_val,c_val,d_val);
+	console_print(0,"LEVEL GEN MATH EXPR POLY: (%f * pow(x,(%f)) + (%f * x) + %f",a_val,m_val,b_val,c_val);
+	console_print(0,"LINEAR LEVEL GEN XPGAIN MATH EXPR: %f * x + %f",e_val,f_val);
+	console_print(0,"LINEAR LEVEL GEN MATH EXPR: %f * x + %f",k_val,l_val);
+	console_print(0,"POLY LEVEL GEN XPGAIN MATH EXPR: (%f * pow(x,(%f)) + (%f * x) + %f",g_val,n_val,h_val,i_val);
+	console_print(0,"EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
+	console_print(0,"SUM COEFF (FOR NEEDED XP): %f",sum_coeff_needed)
+	console_print(0,"SUM COEFF (FOR GAINED XP): %f",sum_coeff_gained)
 }
 stock Float:calculate_level_it(Float:it){
 
@@ -119,7 +153,11 @@ stock Float:calculate_level_it(Float:it){
 }
 stock Float:calculate_level_poly_it(Float:it){
 
-	return floatadd(floatadd(floatmul(a_val,floatpower(it,2.0)),floatmul(b_val,it)),c_val)
+	return floatadd(floatadd(floatmul(a_val,floatpower(it,m_val)),floatmul(b_val,it)),c_val)
+}
+stock Float:calculate_level_lin_it(Float:it){
+
+	return floatadd(floatmul(k_val, it),  l_val)
 }
 stock Float:calculate_exp_xpgain_it(Float:it){
 
@@ -127,7 +165,7 @@ stock Float:calculate_exp_xpgain_it(Float:it){
 }
 stock Float:calculate_poly_xpgain_it(Float:it){
 	
-	return floatadd(floatadd(floatmul(g_val,floatpower(it,2.0)),floatmul(h_val,it)),i_val)
+	return floatadd(floatadd(floatmul(g_val,floatpower(it,n_val)),floatmul(h_val,it)),i_val)
 }
 stock Float:calculate_lin_xpgain_it(Float:it){
 
@@ -149,7 +187,7 @@ public kill_req_gen(id, level, cid)
 {
 	new level_arg[16]
 	new level_num
-	if (read_argc() >= 2)
+	if (read_argc() == 2)
 	{
 		loadCVARS()
 		read_argv(1,level_arg,charsmax(level_arg))
@@ -160,6 +198,7 @@ public kill_req_gen(id, level, cid)
 	else{
 	
 		log_amx("Invalid number of arguments!!!!! %d provided! %d needed!",read_argc(),2);
+		server_print("Invalid number of arguments!!!!! %d provided! %d needed!",read_argc(),2);
 	
 	}
 
@@ -211,12 +250,19 @@ make_arrs(){
 	for(new it=1;it<=num_levels;it++){
 	
 		g_needed[it]=XP_NEEDED_FUNC(float(it-1))
+		new it2=it-1
+		if(it2>0){
+			g_needed[it]+=sum_coeff_needed*g_needed[it2];
+		}
 	
 	}
 	for(new it=0;it<=num_levels;it++){
 	
 		g_gained[it]=XP_GAINED_FUNC(float(it-1))
-	
+		new it2=it-1
+		if(it2>0){
+			g_gained[it]+=sum_coeff_gained*g_gained[it2];
+		}
 	}
 	for(new it=0;it<=num_levels;it++){
 	

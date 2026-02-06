@@ -10,7 +10,11 @@
 
 new gHeroID
 new const gHeroName[] = "Jaqueo"
-new const jaqueo_cool_scout_sounds[4][]={"weapons/scouterista/tactical_clipin.wav","weapons/scouterista/tactical_bolt.wav","weapons/scouterista/tactical_clipout.wav","weapons/scouterista/tactical_fire-1.wav"}
+new const jaqueo_cool_scout_sounds[4][]={
+				"weapons/scouterista/tactical_clipin.wav",
+				"weapons/scouterista/tactical_bolt.wav",
+				"weapons/scouterista/tactical_clipout.wav",
+				"weapons/scouterista/tactical_fire-1.wav"}
 
 new gHasJaqueo[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]

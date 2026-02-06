@@ -86,15 +86,15 @@ stock const Float:xp_extra_type_mults[XP_VIP_PROTECT_XP+1]={
 stock const xp_extra_type_bonuses[XP_VIP_PROTECT_XP+1]={
 
 	0,
-	50000,
-	10000,
-	10000,
-	50000,
-	2500,
-	150000,
-	15000,
-	300000,
-	100000
+	50,
+	10,
+	10,
+	5,
+	25,
+	15,
+	15,
+	30,
+	10
 
 
 
