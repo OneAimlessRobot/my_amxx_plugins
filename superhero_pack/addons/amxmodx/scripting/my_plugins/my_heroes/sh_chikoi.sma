@@ -109,24 +109,24 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
 	switch(hitgroup){
 		case HIT_STOMACH:{
-			//sh_chat_message(attacker,gHeroID,"stomach shot")
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
 		}
 		case HIT_HEAD:{
 
 			
-			//sh_chat_message(attacker,gHeroID,"headshot")
-			if(!spores_has_ksun(id)){ //without this check... chikoi + ksun= unkillable by bullets
-				//sh_chat_message(attacker,gHeroID,"headshot on non-ksun-using chikoi user!")
-				//SetHamParamFloat(3,0.0)
+			if(!spores_has_ksun(id)){
 				return HAM_SUPERCEDE
 			}
-			//SetHamParamFloat(3,0.0)
+		}
+		case HIT_CHEST:{
+
+			
+			if(!spores_has_ksun(id)){
+				return HAM_SUPERCEDE
+			}
 		}
 		default:{
-			//sh_chat_message(attacker,gHeroID,"wateeeeerr!...")
-			//SetHamParamFloat(3,0.0)
 			return HAM_SUPERCEDE
 		}
 	}

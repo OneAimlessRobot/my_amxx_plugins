@@ -266,22 +266,13 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
 	switch(hitgroup){
 		case HIT_STOMACH:{
-			//sh_chat_message(attacker,spores_ksun_hero_id(),"stomach shot!")
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
 		}
 		case HIT_CHEST:{
-			//sh_chat_message(attacker,spores_ksun_hero_id(),"chest shot!")
-			//SetHamParamFloat(3,0.0)
 			return HAM_SUPERCEDE
 		}
 		case HIT_HEAD:{
-			//sh_chat_message(attacker,spores_ksun_hero_id(),"head shot!")
-			/*if(!chikoi_has_chikoi(id)){ //without this check... chikoi + ksun= unkillable by bullets
-				sh_chat_message(attacker,spores_ksun_hero_id(),"head shot on non-chikoi-using ksun user!")
-				SetHamParamFloat(3,0.0)
-			}*/
-			//SetHamParamFloat(3,0.0)
 			return HAM_SUPERCEDE
 		}
 	}

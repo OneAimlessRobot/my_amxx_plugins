@@ -37,7 +37,6 @@ new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
 new g_spriteBlood, g_spriteBldSpray
-new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -56,7 +55,7 @@ public plugin_init()
 	register_cvar("arcticPredator_cooldown", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
+	shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -669,7 +668,6 @@ for(new a = 1; a <= SH_MAXSLOTS; a++) {
 			
 			dRatio = float(distanceBetween) / float(damradius)
 			damage = maxdamage - floatround( maxdamage * dRatio)
-			sh_chat_message(a,gHeroID,"Damage: %0.2f",damage)
 			if(damage>=1){
 				sh_extra_damage(a, id, damage, "Self Destruction")
 			}

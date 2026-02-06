@@ -39,13 +39,27 @@ new marksman_bullets[ SH_MAXSLOTS+1 ]
 
 
 
-new const g_psg1Sounds[1][]={"shmod/marksman/PSG1/g3sg1-1.wav"}
-new const g_psg1Sounds[1][]={"shmod/marksman/PSG1/g3sg1-1.wav"}
-new const g_psg1Model[1][]={"models/shmod/marksman/psg1/v_sg550.mdl"}
-new const g_dragunovModel[2][]={"models/shmod/marksman/dragunov/v_g3sg1.mdl","models/shmod/marksman/dragunov/p_g3sg1.mdl"}
+new const g_psg1Sounds[6][]={
+	"weapons/marksmania/psg1_marksmania/psg1_boltpull1.wav",
+	"weapons/marksmania/psg1_marksmania/psg1_boltpull2.wav",
+	"weapons/marksmania/psg1_marksmania/psg1_boltrelease.wav",
+	"weapons/marksmania/psg1_marksmania/psg1_clipin.wav",
+	"weapons/marksmania/psg1_marksmania/psg1_clipout.wav",
+	"weapons/marksmania/psg1_marksmania/psg1_draw.wav"
+}
+new const g_dragunovSounds[6][]={
+	"weapons/marksmania/svd_marksmania/svd-1.wav",
+	"weapons/marksmania/svd_marksmania/svdnew-1.wav",
+	"weapons/marksmania/svd_marksmania/svd_boltpull.wav",
+	"weapons/marksmania/svd_marksmania/svd_clipin.wav",
+	"weapons/marksmania/svd_marksmania/svd_clipout.wav",
+	"weapons/marksmania/svd_marksmania/svd_clipon.wav"
+
+	}
+
+new const g_psg1Models[2][]={"models/shmod/marksman/psg1/v_sg550.mdl","models/shmod/marksman/psg1/p_sg550.mdl"}
+new const g_dragunovModels[2][]={"models/shmod/marksman/dragunov/v_g3sg1.mdl","models/shmod/marksman/dragunov/p_g3sg1.mdl"}
 new gPlayerLevel[SH_MAXSLOTS+1]
-new const g_models[3][128];
-new const g_sounds[2][128];
 new bool:g_modelsloaded
 new gHeroLevel
 new Float:PSG1_DMG_Mult
@@ -184,30 +198,44 @@ public Marksman_damage(id)
 }
 public plugin_precache()
 {
-	strcat(g_models[0],g_psg1Model[0],127)
-	strcat(g_models[1],g_dragunovModel[0],127)
-	strcat(g_models[2],g_dragunovModel[1],127)
-	for(new i=0;i<sizeof(g_models);i++){
+	for(new i=0;i<sizeof(g_dragunovModels);i++){
 	
-		if ( file_exists(g_models[i]) ) {
-			precache_model(g_models[i])
-			console_print(0, "Model loaded: ^"%s^"", g_models[i])
+		if ( file_exists(g_dragunovModels[i]) ) {
+			precache_model(g_dragunovModels[i])
+			console_print(0, "Model loaded: ^"%s^"", g_dragunovModels[i])
 			g_modelsloaded=true
 			
 		}
 		else{
-			console_print(0, "Aborted loading ^"%s^", file does not exist on server", g_models[i])
+			console_print(0, "Aborted loading ^"%s^", file does not exist on server", g_dragunovModels[i])
+			g_modelsloaded= false
+		}
+	
+	}
+	for(new i=0;i<sizeof(g_psg1Models);i++){
+	
+		if ( file_exists(g_psg1Models[i]) ) {
+			precache_model(g_psg1Models[i])
+			console_print(0, "Model loaded: ^"%s^"", g_psg1Models[i])
+			g_modelsloaded=true
+			
+		}
+		else{
+			console_print(0, "Aborted loading ^"%s^", file does not exist on server", g_psg1Models[i])
 			g_modelsloaded= false
 		}
 	
 	}
 	console_print(0, "Models loaded? %d", g_modelsloaded)
-	strcat(g_sounds[0],g_psg1Sounds[0],127)
-	strcat(g_sounds[1],g_dragunovSounds[0],127)
-	for(new i=0;i<sizeof(g_sounds);i++){
+	for(new i=0;i<sizeof(g_psg1Sounds);i++){
 	
-			engfunc(EngFunc_PrecacheSound, g_sounds[i])
-			console_print(0, "Sound loaded: ^"%s^"", g_sounds[i])
+			engfunc(EngFunc_PrecacheSound, g_psg1Sounds[i])
+			console_print(0, "Sound loaded: ^"%s^"", g_psg1Sounds[i])
+	}
+	for(new i=0;i<sizeof(g_dragunovSounds);i++){
+	
+			engfunc(EngFunc_PrecacheSound, g_dragunovSounds[i])
+			console_print(0, "Sound loaded: ^"%s^"", g_dragunovSounds[i])
 	}
 	precache_explosion_fx()
 }
@@ -256,24 +284,13 @@ switch_model(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 
 	if ( wpnid == CSW_SG550 ) {
-		entity_set_string(id, EV_SZ_viewmodel, g_psg1Model[0])
+		entity_set_string(id, EV_SZ_viewmodel, g_psg1Models[0])
+		entity_set_string(id, EV_SZ_weaponmodel, g_psg1Models[1])
 	}
 	else if(wpnid == CSW_G3SG1){
-		entity_set_string(id, EV_SZ_viewmodel, g_dragunovModel[0])
-		entity_set_string(id, EV_SZ_weaponmodel, g_dragunovModel[1])
+		entity_set_string(id, EV_SZ_viewmodel, g_dragunovModels[0])
+		entity_set_string(id, EV_SZ_weaponmodel, g_dragunovModels[1])
 	}
-}
-public Marksman_Shooting(id)
-{	new clip,ammo
-	new wpnid = get_user_weapon(id,clip,ammo)
-	
-	if(wpnid== CSW_SG550){
-		emit_sound(id, CHAN_WEAPON, g_psg1Sounds[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)	
-	}
-	else if(wpnid== CSW_G3SG1){
-		emit_sound(id, CHAN_WEAPON, g_dragunovSounds[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)	
-	}
-
 }
 
 //----------------------------------------------------------------------------------------------
@@ -305,7 +322,6 @@ if ( (wpnid == CSW_SG550)||(wpnid == CSW_G3SG1))
 	{
 		
 			draw_aim_vector(id,{RED,BLUE,WHITE})
-			Marksman_Shooting(id)
 	}
 	marksman_bullets[id] = ammo
 	gLastWeapon[id]=wpnid;
