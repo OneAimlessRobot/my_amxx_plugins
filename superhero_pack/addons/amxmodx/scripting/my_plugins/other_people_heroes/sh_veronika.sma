@@ -19,7 +19,6 @@ veronika_m203dmg 120
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 stock veronika_ak_v_mdl[]= "models/shmod/veronika/ak47grenade.mdl"
-stock veronika_ak_w_mdl[]= "models/shmod/veronika/w_9mmar.mdl"
 stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_9mmar.mdl"
 
 // VARIABLES
@@ -71,8 +70,6 @@ public plugin_init()
 	//handle when player presses attack2
 	register_forward(FM_PlayerPreThink, "forward_playerprethink")
 	
-	// handle world model
-	register_forward(FM_SetModel, "forward_setmodel")
 	
 	// Let Server know about Lara's Variable
 	shSetShieldRestrict(gHeroName)
@@ -84,7 +81,6 @@ public plugin_precache()
 {
 	precache_model(veronika_ak_v_mdl)
 	precache_model(veronika_ak_p_mdl)
-	precache_model(veronika_ak_w_mdl)
 	precache_model("models/grenade.mdl")
 	precache_sound("shmod/glauncher.wav")
 	precache_sound("shmod/a_exm2.wav")
@@ -453,33 +449,6 @@ if (gid)
 	
 	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 }
-}
-
-public forward_setmodel(entity, model[])
-{
-if (!is_valid_ent(entity))
-{
-	return FMRES_IGNORED
-}
-
-if (equal(model, veronika_ak_v_mdl))
-{
-	new classname[11]
-	entity_get_string(entity, EV_SZ_classname, classname, 10)
-	
-	//client_print(0, print_chat, "Model: %s Classname: %s", model, classname)
-	
-	if (equal(classname, "weaponbox"))
-	{
-		//client_print(0, print_chat, "Setting model")
-		
-		entity_set_model(entity, veronika_ak_w_mdl)
-		
-		return FMRES_SUPERCEDE
-	}
-}
-
-return FMRES_IGNORED
 }
 
 

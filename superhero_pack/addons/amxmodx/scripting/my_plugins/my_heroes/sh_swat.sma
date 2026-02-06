@@ -4,10 +4,11 @@
 #define SWAT_M4_V_MODEL "models/shmod/swatm4/v_m4a1.mdl"
 #define SWAT_M4_W_MODEL "models/shmod/swatm4/w_m4a1.mdl"
 
-new const m4_swat_sounds[12][]={"weapons/swatm4/m4a1_silencer_off.wav",
-"weapons/swatm4/m4a1_silencer_on.wav",
+new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
+"weapons/swatm4/silencer_on.wav",
 "weapons/swatm4/m4a1-2.wav",
 "weapons/swatm4/m4a1_unsil-1.wav",
+"weapons/swatm4/m4a1_unsil-2.wav",
 "weapons/swatm4/m4a1-1.wav",
 "weapons/swatm4/m16a1/foley.wav",
 "weapons/swatm4/m16a1/inserting.wav",
