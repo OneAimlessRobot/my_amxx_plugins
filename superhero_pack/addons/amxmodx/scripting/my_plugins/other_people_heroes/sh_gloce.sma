@@ -165,7 +165,7 @@ public fwd_Ham_Spawn_post(id)
 
 public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 {
-	if(!is_user_alive(Attacker) && is_user_connected(Attacker)) return HAM_IGNORED
+	if(!is_user_alive(Attacker) || !is_user_connected(Attacker)) return HAM_IGNORED
 
 	else if(is_user_alive(id) && shModActive() && is_user_connected(id))
 	{
