@@ -197,11 +197,11 @@ stock draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM}){
 
 }
 
-stock superhero_morph_message(id,message_text[]){
-
-	if(is_user_connected(id)){
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, message_text)
+stock superhero_protected_hud_message(id,const message_text[],string[]="",r=50,g=205,b=50,Float:param1=-1.0,Float:param2=0.40, param3=2, Float:param4=0.02, Float:param5=4.0, Float:param6=0.01, Float:param7=0.1){
+	if(is_user_connected(id)&&!is_user_bot(id)){
+		
+		set_hudmessage(r,g,b,param1,param2,param3,param4,param5,param6,param7)
+		show_hudmessage(id, message_text,string)
 	}
 
 }

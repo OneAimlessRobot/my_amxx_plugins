@@ -13,6 +13,7 @@ arcticPredator_explode_maxdamage 250
 
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
@@ -32,7 +33,6 @@ new bool:NightVisionUse[SH_MAXSLOTS+1]
 #define TASKID_REVENGE 532223
 #define TASKID_NVG 532224
 new NVGToggle = 0
-new smoke, white, fire
 new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
@@ -143,8 +143,7 @@ public arcticPredator_loop(id)
 			new message[128]
 			format(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
 			set_user_rendering(id,kRenderFxGlowShell,0,0,0,10,gAlphaInvis)
-			set_hudmessage(0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0,4)
-			show_hudmessage( id, message)
+			superhero_protected_hud_message( id, message,"",0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 		}
 		else
 		{
@@ -886,7 +885,7 @@ else
 	{
 		shExtraDamage(victim, killer, damage, "Predator's Hunter Disc")
 		get_user_origin(victim, vicOrigin)
-		blood_spray(victim, vicOrigin)
+		here_blood_spray(victim, vicOrigin)
 	}
 	
 }
@@ -927,7 +926,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	return FMRES_IGNORED;
 }
 //----------------------------------------------------------------------------------------------
-public blood_spray(vic, vicOrigin[3])
+public here_blood_spray(vic, vicOrigin[3])
 {
 	new x, y
 	for(new i = 0; i < 2; i++) {

@@ -245,7 +245,10 @@ public _spawn_scanner(iPlugins,iParams){
 	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
 	new scanner = create_entity( "info_target" );
 	if ( (scanner == 0) || !pev_valid(scanner )||!is_valid_ent(scanner )) {
-		client_print(id, print_chat, "[SH](ksun) Scanner Creation Failure")
+		
+		if(!is_user_bot(id)){
+			client_print(id, print_chat, "[SH](ksun) Scanner Creation Failure")
+		}
 		return
 	}
 	entity_set_string(scanner, EV_SZ_classname, SCANNER_CLASSNAME)
@@ -396,14 +399,20 @@ show_targets(id){
 	get_user_name(id,client_name,127)
 	if(g_player_num_victims[id]<=0){
 		
-		client_print(id,print_center,"[SH] ksun:^nNo victims were gathered...")
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_center,"[SH] ksun:^nNo victims were gathered...")
+		}
 	}
 	else{
-		client_print(id,print_chat,"[SH] (ksun):Targets are:")
-		for(new i=1;i<=SH_MAXSLOTS;i++){
-			if(g_player_tracks_player[id][i]&&client_hittable(i)){
-				get_user_name(i,client_name,127)
-				client_print(id,print_chat,"- %s",client_name);
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_chat,"[SH] (ksun):Targets are:")
+			for(new i=1;i<=SH_MAXSLOTS;i++){
+				if(g_player_tracks_player[id][i]&&client_hittable(i)){
+					get_user_name(i,client_name,127)
+					client_print(id,print_chat,"- %s",client_name);
+				}
 			}
 		}
 	}

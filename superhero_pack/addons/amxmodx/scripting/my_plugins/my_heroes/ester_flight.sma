@@ -402,7 +402,10 @@ public ester_reborn_loop_task(parm[]){
 	if(is_user_alive(id)&&ester_get_has_ester(id)){
 		
 		
-		sh_chat_message(id,ester_get_hero_id(),"Removing respawning dice rool loop. already alive")
+		
+		if(!is_user_bot(id)){
+			sh_chat_message(id,ester_get_hero_id(),"Removing respawning dice rool loop. already alive")
+		}
 		remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
 		return
 		
@@ -414,8 +417,10 @@ public ester_reborn_loop_task(parm[]){
 		
 	}
 	else{
-		sh_chat_message(id,ester_get_hero_id(),"Not this time...")
 		
+		if(!is_user_bot(id)){
+			sh_chat_message(id,ester_get_hero_id(),"Not this time...")
+		}
 		
 	}
 	
@@ -460,7 +465,10 @@ public godmode_render_update(id){
 	id-=ESTER_REBORN_GLOW_TASKID
 	
 	if(client_hittable(id)&&ester_get_has_ester(id)){
-		client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
+		}
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
 		glow(id,255,255,255,255,1)
 	}
@@ -642,14 +650,6 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		if(cs_get_user_team(victim)==killer_team){
 			continue
 		}
-		/*console_print(0,"yay! client %d called %s just hit enemy %d named %s!!!",killer,tger_name,victim,vic_name)
-		console_print(0,"Lets go over some briefing, okay?^nOkay so, is the killer flying? %s^nAlright: Does the killer have ester equipped? %s^nAnyways, is the killer in reborn mode? %s^nSo, Lastly...^nIs ester fly knocking enabled on the server? %s^n",
-									g_flying[killer]?"Yes!":"No...",
-									ester_get_has_ester(killer)?"Yes!":"No...",
-									ester_get_reborn_mode(killer)?"Yes!":"No...",
-									ester_fly_knock_enemies?"Yes!":"No...")*/
-		sh_chat_message(ester_get_hero_id(),killer,"You, named %s, knocked %s!!!!!^n (i hope)",tger_name,vic_name)
-		
 		new Float:killer_velocity[3],Float:killer_speed
 		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
 		

@@ -234,7 +234,7 @@ public maria_damage(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!gHasMaria[id] )
+	if( !sh_is_active() || !is_user_alive(id) ||!gHasMaria[id]  ||is_user_bot(id))
 		return FMRES_IGNORED;
 	
 	

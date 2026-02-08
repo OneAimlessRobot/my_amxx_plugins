@@ -53,8 +53,9 @@ notify_fx_user(id){
 	sh_get_fx_color_name(curr_needle_fx[id],needle_color,needle_name);
 	sh_screen_fade(id, 0.1, 0.9, needle_color[0], needle_color[1], needle_color[2], 50)
 	playertrail(id,needle_color)
-	sh_chat_message(id,gatling_get_hero_id(),"Effect switched! On next swing, you will inject: %s fluid",needle_name)
-
+	if(!is_user_bot(id)){
+		sh_chat_message(id,gatling_get_hero_id(),"Effect switched! On next swing, you will inject: %s fluid",needle_name)
+	}
 }
 public Ham_Needle_Swing(weapon_ent)
 {

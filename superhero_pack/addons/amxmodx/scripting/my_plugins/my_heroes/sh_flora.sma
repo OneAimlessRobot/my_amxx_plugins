@@ -185,7 +185,9 @@ public newRound(id)
 	}
 	if ( flora_get_has_flora(id)) {
 		reset_flora_user(id)
-		init_hud_tasks(id)
+		if(!is_user_bot(id)){
+			init_hud_tasks(id)
+		}
 		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
@@ -220,14 +222,18 @@ public flora_init()
 	if ( gHasFlora[id] )
 	{
 		reset_flora_user(id)
-		init_hud_tasks(id)
+		if(!is_user_bot(id)){
+			init_hud_tasks(id)
+		}
 		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	else{
 		reset_flora_user(id)
-		delete_hud_tasks(id)
+		if(!is_user_bot(id)){
+			delete_hud_tasks(id)
+		}
 		flora_unmorph(id+FLORA_MORPH_TASKID)
 	}
 }
@@ -280,7 +286,9 @@ public flora_unmorph(id)
 public client_disconnected(id){
 	
 	reset_flora_user(id)
-	delete_hud_tasks(id)
+	if(!is_user_bot(id)){
+		delete_hud_tasks(id)
+	}
 	flora_unmorph(id+FLORA_MORPH_TASKID)
 	gHasFlora[id]=0;
 
@@ -301,9 +309,11 @@ public flora_kd()
 		return PLUGIN_HANDLED;
 	}
 	if(!field_loaded(id)){
+		if(!is_user_bot(id)){
+			sh_sound_deny(id)
+			sh_chat_message(id, flora_get_hero_id(), "Field deployment still in cooldown! Wait %0.2f more seconds!",field_get_user_field_cooldown(id))
 		
-		sh_sound_deny(id)
-		sh_chat_message(id, flora_get_hero_id(), "Field deployment still in cooldown! Wait %0.2f more seconds!",field_get_user_field_cooldown(id))
+		}
 		return PLUGIN_HANDLED
 		
 		
@@ -311,7 +321,10 @@ public flora_kd()
 	
 	if(flora_get_user_num_active_fields(id)>=flora_max_fields()){
 		
-		sh_chat_message(id, flora_get_hero_id(), "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),flora_max_fields())
+		
+		if(!is_user_bot(id)){
+				sh_chat_message(id, flora_get_hero_id(), "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),flora_max_fields())
+		}
 		return PLUGIN_HANDLED
 		
 	}
@@ -336,7 +349,10 @@ public flora_ku()
 	
 	if(flora_get_user_num_active_fields(id)<flora_max_fields()){
 		if(g_flora_num_of_fields_prev[id]==g_flora_num_of_fields[id]){
-			sh_chat_message(id,flora_get_hero_id(),"Field not deployed. Action interrupted");
+			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,flora_get_hero_id(),"Field not deployed. Action interrupted");
+			}
 		}
 		field_uncharge_user(id)
 		
@@ -374,7 +390,9 @@ if(is_user_connected(id)){
 	if(flora_get_has_flora(id)){
 		reset_flora_user(id)
 		flora_unmorph(id+FLORA_MORPH_TASKID)
-		delete_hud_tasks(id)
-}
+		if(!is_user_bot(id)){
+			delete_hud_tasks(id)
+		}
+	}
 }
 }

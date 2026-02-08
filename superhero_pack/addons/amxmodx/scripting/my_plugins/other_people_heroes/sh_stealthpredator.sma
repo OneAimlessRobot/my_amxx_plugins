@@ -1,12 +1,7 @@
 //Stealth Predator!, Unique Predator that has Invisibility
 
-#include <amxmod>
-#include <Vexd_Utilities>
-#include <amxmodx> 
-#include <fun> 
-#include <cstrike>
-#include <engine> 
-#include "../my_include/superheromod.inc" 
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 /*
 
@@ -159,9 +154,8 @@ public stealth_kd()
 	shRemSpeedPower(id)
 	
 
-	// MODE MESSAGE
-	set_hudmessage(0, 0, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
-	show_hudmessage(id, "Stealth Mode", gHeroName)
+	
+	superhero_protected_hud_message(id, "Stealth Mode")
 
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -195,9 +189,8 @@ public stealth_ku()
 		shRemSpeedPower(id)
 		
 
-		// MODE MESSAGE
-		set_hudmessage(200, 200, 200, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
-		show_hudmessage(id, "Normal Mode", gHeroName)
+		
+		superhero_protected_hud_message(id, "Normal Mode")
 		
 		g_usingPower[id] = false
 		gHealPoints = get_cvar_num("stealth_healpoints")

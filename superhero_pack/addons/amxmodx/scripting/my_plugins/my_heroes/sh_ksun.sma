@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
@@ -107,9 +108,6 @@ stock covert_spike_damage(id){
 			}
 			new times_spiked_by_me=get_times_player_spiked_by_player(payer,id)
 			if((times_spiked_by_me>0)){
-				new tger_name[128], vic_name[128]
-				get_user_name(payer,vic_name,127)
-				get_user_name(id,tger_name,127)
 				new Float: pctHealthLost=get_spike_base_damage_debt()*float(times_spiked_by_me)
 				new Float: healthXtracted=1.0+(float(get_user_health(payer))*pctHealthLost)
 				new Ent = create_entity("info_target")
@@ -118,22 +116,10 @@ stock covert_spike_damage(id){
 					continue
 				}
 				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
-				sh_chat_message(id,spores_ksun_hero_id(),"health of target named %s before: %d",vic_name,get_user_health(payer))
 				ExecuteHam(Ham_TakeDamage,payer,Ent,id,healthXtracted,DMG_GENERIC);
-				sh_chat_message(id,spores_ksun_hero_id(),"health of target named %s now: %d",vic_name,get_user_health(payer))
 				remove_entity(Ent)
 				heal(id,healthXtracted)
-				new violence_to_use
-				if(get_cvar_num("ksun_violence_level")<0){
-					
-					violence_to_use=random_num(1,MAX_VIOLENCE)
-				}
-				else{
-					
-					violence_to_use=clamp(1,get_cvar_num("ksun_violence_level"),MAX_VIOLENCE)
-				}
-				sh_chat_message(id,spores_ksun_hero_id(),"(Expected and obligated) %s%s! they %0.2f health points were due today",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name,healthXtracted)
-				sh_chat_message(payer,spores_ksun_hero_id(),"(Expected and obligated) %s by%s! %0.2f health points were due today",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name,healthXtracted)
+				
 			}
 		}
 			
@@ -159,25 +145,10 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 		new times_spiked_by_them=get_times_player_spiked_player(collector,attacker)
 		if((times_spiked_by_them>0)){
 			
-			new tger_name[128], vic_name[128]
-			get_user_name(attacker,vic_name,127)
-			get_user_name(collector,tger_name,127)
-			
 			new Float: pctDmgLost=get_spike_base_damage_debt()*float(times_spiked_by_them)
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
 			heal(collector,dmgSnatched)
-			new violence_to_use
-			if(get_cvar_num("ksun_violence_level")<0){
-				
-				violence_to_use=random_num(1,MAX_VIOLENCE)
-			}
-			else{
-				
-				violence_to_use=clamp(1,get_cvar_num("ksun_violence_level"),MAX_VIOLENCE)
-			}
-			sh_chat_message(collector,spores_ksun_hero_id(),"(kind and generosly) %s%s! %0.2f of privileges were due today",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name,dmgSnatched)
-			sh_chat_message(attacker,spores_ksun_hero_id(),"(kindly and generosly) %s by%s! %0.2f of privileges were due today",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name,dmgSnatched)
 			new Float:newDamage=damage- dmgSnatched
 			if(is_in_ham_hook){
 				SetHamParamFloat(4, newDamage);
@@ -230,7 +201,9 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 					ksun_inc_player_supply_points(attacker,floatround(damage))
 					if(spores_has_ksun(id)){
 						ksun_dec_player_supply_points(id,floatround(damage))
-						sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+						}
 					}
 				}
 				else{
@@ -238,7 +211,9 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 					if(spores_has_ksun(id)){
 						ksun_inc_player_supply_points(attacker,floatround(damage))
 						ksun_dec_player_supply_points(id,floatround(damage))
-						sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
+						}
 					}
 					
 					
@@ -497,22 +472,26 @@ public ksun_kd()
 
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {
-		playSoundDenySelect(id)
-		sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
+		if(!is_user_bot(id)){
+			playSoundDenySelect(id)
+			sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
+		}
 		return PLUGIN_HANDLED
 	}
 	else if(spores_busy(id)||ksun_player_is_in_ultimate(id)){
 		
-		playSoundDenySelect(id)
-		if(!ksun_player_is_in_ultimate(id)){
-			sh_chat_message(id,gHeroID,"Some launched spores still busy!");
-		}
-		else if(!spores_busy(id)){
-			
-			
-			sh_chat_message(id,gHeroID,"Already in ultimate! Ignoring!");
+		if(!is_user_bot(id)){
+			playSoundDenySelect(id)
+			if(!ksun_player_is_in_ultimate(id)){
+				sh_chat_message(id,gHeroID,"Some launched spores still busy!");
+			}
+			else if(!spores_busy(id)){
 				
-			
+				
+				sh_chat_message(id,gHeroID,"Already in ultimate! Ignoring!");
+					
+				
+			}
 		}
 		return PLUGIN_HANDLED
 		
@@ -522,22 +501,28 @@ public ksun_kd()
 	if(!ksun_player_is_ultimate_ready(id)){
 		if(!ksun_get_num_available_spores(id)){
 		
-			client_print(id,print_center,"%s",(ksun_kill_type_broadness_level<=1)?"[SH] ksun:^nKill someone with your M4A1 first":"[SH] ksun:^nKill someone first");
-			playSoundDenySelect(id)
+			
+			if(!is_user_bot(id)){
+				client_print(id,print_center,"%s",(ksun_kill_type_broadness_level<=1)?"[SH] ksun:^nKill someone with your M4A1 first":"[SH] ksun:^nKill someone first");
+				playSoundDenySelect(id)
+			}
 			return PLUGIN_HANDLED
 		
 		}
 	
-		new message[128]
-		format(message, 127, SEARCH_MSG )
-		client_print(id,print_center,"%s",message)
+		if(!is_user_bot(id)){
+			new message[128]
+			format(message, 127, SEARCH_MSG )
+			client_print(id,print_center,"%s",message)
+		}
 		spores_launch(id)
 	}
 	else{
-		new owner_name[128]
-		get_user_name(id,owner_name,127)
-		client_print(0,print_chat,"[SH](ksun): %s is glistening",owner_name)
-		
+		if(!is_user_bot(id)){
+			new owner_name[128]
+			get_user_name(id,owner_name,127)
+			client_print(0,print_chat,"[SH](ksun): %s is glistening",owner_name)
+		}
 		spores_reset_user(id)
 		ksun_player_engage_ultimate(id)
 	}
@@ -613,8 +598,7 @@ public ksun_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_ksun(id) ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "ksun: '...'")
+	superhero_protected_hud_message(id,  "ksun: '...'")
 	cs_set_user_model(id,"ksun")
 
 	gmorphed[id] = true

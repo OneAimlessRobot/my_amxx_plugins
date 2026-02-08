@@ -192,10 +192,15 @@ public heal_teamate(id,teamate){
 			
 			set_user_health(teamate,min(sh_get_max_hp(teamate),floatround(new_health)))
 			add_speed_points(id,speed_points_heal,false)
-			sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
-			sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
-			sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
-			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
+			}
+			if(!is_user_bot(teamate)){
+				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
+			}
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
+			}
 		}
 		
 		
@@ -247,7 +252,7 @@ public adriano_damage(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!gHasAdriano[id] )
+	if( !sh_is_active() || !is_user_alive(id) ||!gHasAdriano[id]||is_user_bot(id) )
 		return FMRES_IGNORED;
 	
 	

@@ -23,6 +23,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 */
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 
@@ -192,8 +193,8 @@ public darkpred_morph(id)
 	#endif
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "You now wear your Predator battle armour.")
+	
+	superhero_protected_hud_message(id, "You now wear your Predator battle armour.")
 	
 	gmorphed[id] = true
 }
@@ -201,9 +202,8 @@ public darkpred_morph(id)
 public darkpred_unmorph(id)
 {
 	if ( gmorphed[id] ) {
-		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "You are not wearing your Predator battle armour.")
+		
+		superhero_protected_hud_message(id,  "You are not wearing your Predator battle armour.")
 		
 		#if defined AMXX_VERSION
 		//cs_reset_user_model(id)

@@ -62,14 +62,26 @@ public _sh_chaff_user(iPlugin,iParams){
 	if(!gIsChaffed[user]){
 		if((user==attacker)){
 			if(CAN_SELF_CHAFF&&user){
-				sh_chat_message(user,gHeroID,"%s has chaffed you!!!",attacker_name)
-				sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
+				
+				if(!is_user_bot(user)){
+					sh_chat_message(user,gHeroID,"%s has chaffed you!!!",attacker_name)
+				}
+				
+				if(!is_user_bot(attacker)){
+					sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
+				}
 				chaff_user(user,attacker)
 			}
 		}
 		else{
-			sh_chat_message(user,gHeroID,"%s has chaffed you!!!",attacker_name)
-			sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
+
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"%s has chaffed you!!!",attacker_name)
+			}
+			
+			if(!is_user_bot(attacker)){
+				sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
+			}
 			chaff_user(user,attacker)
 		}
 	}

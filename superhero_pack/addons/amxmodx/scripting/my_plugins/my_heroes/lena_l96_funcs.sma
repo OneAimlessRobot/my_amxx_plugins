@@ -226,7 +226,10 @@ public fw_WeaponPrimaryAttackPre(entity)
 	static iClip, iPlaybackEvent
 	if(lena_l96_get_num_bullets(pPlayer) == 0)
 	{
-		client_print(pPlayer, print_center, "You are out of bullets")
+		
+		if(!is_user_bot(pPlayer)){
+			client_print(pPlayer, print_center, "You are out of bullets")
+		}
 		sh_drop_weapon(pPlayer, LENA_WEAPON_CLASSID, true)
 		return HAM_SUPERCEDE
 	}
@@ -482,23 +485,34 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
 					sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet", headshot,_,_,_,_,DMG_BULLET);
-					sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+					
+					if(!is_user_bot(oid)){
+						sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+					}
 					if(!sh_get_stun(pTouched)){
 							new Float:the_period=(headshot?0.33:1.0);
 							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
 							track_user(pTouched,oid,0,_,the_period,the_time)
 							sh_set_stun(pTouched,the_time,150.0);
-							sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
-					
+							
+							if(!is_user_bot(oid)){
+								sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
+							}
 					}
-					sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
-					if(headshot){
-						sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
 					
+					if(!is_user_bot(oid)){
+						sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
+						if(headshot){
+							sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
+						
+						}
 					}
 					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
 					new random_number=random_num(0,(sizeof lena_poems)-1)
-					send_poem_function(pTouched, lena_poems[random_number]);
+					
+					if(!is_user_bot(pTouched)){
+						send_poem_function(pTouched, lena_poems[random_number]);
+					}
 				}
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);

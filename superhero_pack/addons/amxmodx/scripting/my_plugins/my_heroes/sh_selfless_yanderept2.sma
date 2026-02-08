@@ -106,7 +106,7 @@ public _yandere_get_hero_id(iPlugin,iParams){
 
 public client_PostThink(id) {
 	
-	if( client_isnt_hitter(id)) { 
+	if(!client_hittable(id,yandere_get_has_yandere(id))) { 
 		return
 	}
 	if(g_yandere_leaped[id]){
@@ -119,7 +119,7 @@ public client_PostThink(id) {
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!gHasYandere[id]||!gIsPsychosis[id]||!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!gHasYandere[id]||!gIsPsychosis[id]||!hasRoundStarted()||!client_hittable(id,yandere_get_has_yandere(id))) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
@@ -143,16 +143,6 @@ public CmdStart(id, uc_handle)
 }
 
 
-client_isnt_hitter(gatling_user){
-
-
-if(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS){
-
-	return true
-}
-return !gHasYandere[gatling_user]
-
-}
 
 public Player_TakeDamage(id)
 {
@@ -265,17 +255,21 @@ public yandere_init()
 
 public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
-	new hud_msg[100];
-	format(hud_msg,99,"[SH] %s:^nPsychosis mode for %d more seconds!",
-	gHeroName,
-	gPsychosisTime[id]
-	);
+
 	gPsychosisTime[id]--
-	set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	sh_set_rendering(id, LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	aura(id,LineColorsWithAlpha[PINK])
+
+	if(!is_user_bot(id)){
+		new hud_msg[100];
+		format(hud_msg,99,"[SH] %s:^nPsychosis mode for %d more seconds!",
+		gHeroName,
+		gPsychosisTime[id]
+		);
+		set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
+		ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
+		sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
+	}
 	
 	
 	
@@ -594,8 +588,10 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 			
 			sh_reset_min_gravity(i)
 			sh_reset_max_speed(i)
-			sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
 			
+			if(!is_user_bot(i)){
+				sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
+			}
 		}
 	}
 	
@@ -712,7 +708,10 @@ if(!gSuperAngry[id]){
 	sh_reset_max_speed(id)
 	gNormalGravity[id]=gBaseGravity[id]
 	set_user_gravity(id,gNormalGravity[id])
-	sh_chat_message(id,gHeroID,"Demorphing!")
+	
+	if(!is_user_bot(id)){
+		sh_chat_message(id,gHeroID,"Demorphing!")
+	}
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	if(gIsPsychosis[id]){
@@ -848,9 +847,14 @@ public yandere_damage(id)
 				if((weapon==CSW_KNIFE)&&!gHasYandere[id]){
 					
 					g_is_cursed[id][attacker]=true
-					sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
-					sh_chat_message(id,gHeroID,"%s has put a curse on you!",attacker_name)
+					
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
+					}
 				
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,"%s has put a curse on you!",attacker_name)
+					}
 				
 				}
 			}
@@ -916,7 +920,10 @@ public yandere_kd()
 
 	if(gSuperAngry[id]){
 		if ( gPlayerUltimateUsed[id]||gIsPsychosis[id] ) {
-			sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
+			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
+			}
 			playSoundDenySelect(id)
 			return PLUGIN_HANDLED
 		}
@@ -935,7 +942,10 @@ public yandere_kd()
 		if(jet_deployed(id)){
 			
 			jet_destroy(id)
-			sh_chat_message(id, yandere_get_hero_id(), "You J-ed out!!")
+			
+			if(!is_user_bot(id)){
+				sh_chat_message(id, yandere_get_hero_id(), "You J-ed out!!")
+			}
 			return PLUGIN_HANDLED
 			
 		}
@@ -959,7 +969,10 @@ public yandere_ku()
 	}
 	
 	if(!jet_deployed(id)){
-		sh_chat_message(id,yandere_get_hero_id(),"Jet not deployed. Action interrupted");
+		
+		if(!is_user_bot(id)){
+			sh_chat_message(id,yandere_get_hero_id(),"Jet not deployed. Action interrupted");
+		}
 		jet_uncharge_user(id)
 		return PLUGIN_HANDLED
 	}
@@ -1147,10 +1160,11 @@ public BlowUp(id)
 			get_user_origin(a, origin1)
 
 			distanceBetween = get_distance(origin, origin1)
-
-			if ( distanceBetween < floatround(explode_radius) ) {
-				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-				show_hudmessage(a, "%s LOST IT!!!!!", name)
+			if(!is_user_bot(a)){
+				if ( distanceBetween < floatround(explode_radius) ) {
+					set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+					show_hudmessage(a, "%s LOST IT!!!!!", name)
+				}
 			}
 		}
 	}

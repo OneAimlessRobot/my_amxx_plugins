@@ -144,7 +144,9 @@ public mine_arm_task(parm[],mine_taskid){
 		return;
 	}
 	set_task(MINE_WAIT_PERIOD,"mine_wait_task",mine_id+MINE_WAIT_TASKID, parm, 2, "b")
-	sh_chat_message(attacker,sapper_get_hero_id(),"The mine is armed!");
+	if(!is_user_bot(attacker)){
+		sh_chat_message(attacker,sapper_get_hero_id(),"The mine is armed!");
+	}
 }
 public mine_wait_task(parm[],mine_taskid){
 	
@@ -225,12 +227,14 @@ public loadCVARS()
 
 public disarm_task(param[],id){
 	id-=MINE_DISARM_TASKID
-	new hud_msg[128];
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
-	format(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
-	100.0*(curr_disarm_charge[id]/min_charge_time)
-	);
-	client_print(id,print_center,"%s",hud_msg)
+	if(!is_user_bot(id)){
+		new hud_msg[128];
+		format(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
+		100.0*(curr_disarm_charge[id]/min_charge_time)
+		);
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	sapper_update_disarming(id)
 	if(!mine_get_mine_disarming(id)){
 		new parm[2];
@@ -238,7 +242,10 @@ public disarm_task(param[],id){
 		parm[0]=id;
 		sapper_set_num_mines(id,sapper_get_num_mines(id)+1)
 		remove_mine(parm);
-		client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));
+		}
 	}
 	
 	
@@ -306,28 +313,39 @@ butnprs = Entvars_Get_Int(id, EV_INT_button)
 
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE){
 
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_uncharge_mine(id)
 }
 if (butnprs&IN_JUMP){
 
 
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_uncharge_mine(id)
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_uncharge_mine(id)
 
 
 }
 if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_uncharge_mine(id)
 }
 if(!(butnprs&IN_DUCK)){
-	sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+	}
 	mine_uncharge_mine(id)
 }
 
@@ -341,28 +359,38 @@ butnprs = Entvars_Get_Int(id, EV_INT_button)
 
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_undisarm_mine(id)
 }
 if (butnprs&IN_JUMP){
 
 
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_undisarm_mine(id)
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_undisarm_mine(id)
 
 
 }
 if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
-	sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+	}
 	mine_undisarm_mine(id)
 }
 if(!(butnprs&IN_DUCK)){
-	sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+	if(!is_user_bot(id)){
+		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+	}
 	mine_undisarm_mine(id)
 }
 
@@ -377,17 +405,21 @@ public charge_task(id){
 		return
 	
 	}
-	new hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],MINE_CHARGE_PERIOD)
-	format(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
-	100.0*(curr_charge[id]/min_charge_time)
-	);
-	client_print(id,print_center,"%s",hud_msg)
+	if(!is_user_bot(id)){
+		new hud_msg[128];
+		format(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
+		100.0*(curr_charge[id]/min_charge_time)
+		);
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	sapper_update_planting(id)
 	if(!mine_get_mine_charging(id)){
 		plant_mine(id)
-		client_print(id,print_center,"You have %d mines left",
-		sapper_get_num_mines(id));
+		if(!is_user_bot(id)){
+			client_print(id,print_center,"You have %d mines left",
+			sapper_get_num_mines(id));
+		}
 	}
 	
 	

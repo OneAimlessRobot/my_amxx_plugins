@@ -145,7 +145,10 @@ public loadCVARS()
 public reset_chikoi(id){
 
 	if ( gHasChikoi[id]) {
-		sh_chat_message(id,gHeroID,"Hello player! I am Chikoi the maid, The Small Maid, at your service.")
+		
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"Hello player! I am Chikoi the maid, The Small Maid, at your service.")
+		}
 	}
 
 }

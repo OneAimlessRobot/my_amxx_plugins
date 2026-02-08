@@ -11,6 +11,7 @@
 */
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 
@@ -36,12 +37,8 @@ new times_picked
 
 
 new blast_shroom
-new spr_laser
-new spr_laser_impact
 new gHeroID;
 #define TASKID 532221
-new smoke, white, fire
-new g_spriteBlood, g_spriteBldSpray
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown,team_glow_on
 new a_flags[10]
 //----------------------------------------------------------------------------------------------
@@ -195,13 +192,12 @@ public thrashy_tasks(id)
 public thrashy_morph(id)
 {
 	id-=TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasThrashyPowers[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasThrashyPowers[id]||is_user_bot(id) ) return
 
 	cs_set_user_model(id, "thrash")
 
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "You are now the baddest bitch on earth!")
+	superhero_protected_hud_message(id, "You are now the baddest bitch on earth!")
 
 	gmorphed[id] = true
 	
@@ -213,8 +209,7 @@ public thrashy_unmorph(id)
 	if ( !is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
+		superhero_protected_hud_message(id, "Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
 
 		cs_reset_user_model(id)
 
@@ -259,21 +254,7 @@ public plugin_precache()
 	else {
 		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", gHeroName,	Model_Player)
 	}
-	if ( file_exists("sprites/laserbeam.spr") ) {
-			spr_laser = precache_model("sprites/laserbeam.spr")
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading 'sprites/laserbeam.spr', file does not exist on server", gHeroName)
-	}
-	precache_sound("weapons/electro5.wav")
-	spr_laser = precache_model("sprites/laserbeam.spr")
-	smoke = precache_model("sprites/steam1.spr")
-	blast_shroom = precache_model("sprites/mushroom.spr")
-	spr_laser_impact = precache_model("sprites/zerogxplode.spr")
-	white = precache_model("sprites/shockwave.spr")
-	fire = precache_model("sprites/zerogxplode.spr")
-	g_spriteBlood = precache_model("sprites/blood.spr")
-	g_spriteBldSpray = precache_model("sprites/bloodspray.spr")
+	precache_explosion_fx()
 	precache_sound("weapons/zoom.wav")
 }
 //----------------------------------------------------------------------------------------------
@@ -358,45 +339,8 @@ if ( wpnid  == CSW_AK47)
 	
 	if ((thrash_bullets[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-		
-		new vec1[3], vec2[3]
-		get_user_origin(id, vec1, 1) // origin; where you are
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes
-
-			// tracer beam
-		message_begin(MSG_PAS, SVC_TEMPENTITY, vec1)
-		write_byte(0)        // TE_BEAMPOINTS
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short(spr_laser)    // laserbeam sprite
-		write_byte(0)        // starting frame
-		write_byte(10)        // frame rate
-		write_byte(2)        // life in 0.1s
-		write_byte(4)        // line width in 0.1u
-		write_byte(1)        // noise in 0.1u
-		write_byte(255)        // red
-		write_byte(0)      // green
-		write_byte(255)        // blue
-		write_byte(190)        // brightness
-		write_byte(100)        // scroll speed
-		message_end()
-
-			// bullet impact explosion
-		message_begin(MSG_PAS, SVC_TEMPENTITY, vec2)
-		write_byte(3)        // TE_EXPLOSION
-		write_coord(vec2[0])    // end point of beam
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short(spr_laser_impact)    // blast sprite
-		write_byte(10)            // scale in 0.1u
-		write_byte(30)            // frame rate
-		write_byte(8)            // TE_EXPLFLAG_NOPARTICLES
-		message_end()            // ..unless i'm mistaken, noparticles helps avoid a crash
 			
+		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
 	}
 	thrash_bullets[id] = ammo
 	gLastWeapon[id]=wpnid;
@@ -498,63 +442,6 @@ public thrashy_damage(id)
 	return PLUGIN_CONTINUE
 }
 
-//-----------------------------------------------------------------------------------------------
-public explode( vec1[3] )
-{
-	// blast circles
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 21 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 16)
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 1936)
-	write_short( white )
-	write_byte( 0 ) // startframe
-	write_byte( 0 ) // framerate
-	write_byte( 2 ) // life 2
-	write_byte( 60 ) // width 16
-	write_byte( 0 ) // noise
-	write_byte( 255 ) // r
-	write_byte( 0 ) // g
-	write_byte( 0 ) // b
-	write_byte( 255 ) //brightness
-	write_byte( 0 ) // speed
-	message_end()
-	//Explosion2
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 12 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_byte( 188 ) // byte (scale in 0.1's) 188
-	write_byte( 10 ) // byte (framerate)
-	message_end()
-
-	//TE_Explosion
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 3 )
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2]+ random_num( -50, 50 ))
-	write_short( fire )
-	write_byte(  random_num(0,20) + 20  ) // byte (scale in 0.1's) 188
-	write_byte( 12 ) // byte (framerate)
-	write_byte( 0 ) // byte flags
-	message_end()
-
-	//Smoke
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 5 ) // 5
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2] + random_num( -50, 50 ))
-	write_short( smoke )
-	write_byte( 60 )  // 2
-	write_byte( 10 )  // 10
-	message_end()
-}
 //----------------------------------------------------------------------------------------------
 public BlowUp(id,bool:died)
 {
@@ -581,7 +468,7 @@ public BlowUp(id,bool:died)
 	new origin[3], origin1[3]
 	get_user_origin(id,origin)
 
-	explode(origin) // blowup even if dead
+	explode_fx(origin,xplode_radius) // blowup even if dead
 
 	for(new a = 1; a <= SH_MAXSLOTS; a++) {
 		if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn || (a == id &&died)) ) {
@@ -603,70 +490,6 @@ public BlowUp(id,bool:died)
 	} // loop
 	return PLUGIN_CONTINUE;
 }
-//----------------------------------------------------------------------------------------------
-public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
-{
-	if(!is_user_alive(id))
-	return FMRES_IGNORED;
-
-	if(!gHasThrashyPowers[id])
-	return FMRES_IGNORED;
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	
-	if(wpnid != CSW_AK47)
-	return FMRES_IGNORED;
-
-	// get crosshair aim
-	new MyAim[3], Float:flMyAim[3];
-	get_user_origin(id,MyAim,3);
-	IVecFVec(MyAim,flMyAim);
-
-	// set crosshair aim
-	set_tr(TR_vecEndPos,flMyAim);
-
-	// get ent looking at
-	new ent, body;
-	get_user_aiming(id,ent,body);
-
-	// if looking at something
-	if(is_valid_ent(ent)) {
-		set_tr(TR_flFraction,0.1); // 1.0 == no hit, < 1.0 == hit
-		set_tr(TR_pHit,ent); // entity hit
-		set_tr(TR_iHitgroup,body); // bodypart hit
-	}
-
-	return FMRES_IGNORED;
-}
-//----------------------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------
-public blood_spray(vic, vicOrigin[3])
-{
-	new x, y
-	for(new i = 0; i < 2; i++) {
-		x = random_num(-10, 10)
-		y = random_num(-10, 10)
-		for(new j = 0; j < 2; j++) {
-			// Blood spray
-			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-			write_byte(115)				// TE_BLOODSPRITE
-			write_coord(vicOrigin[0]+(x*j))	// position
-			write_coord(vicOrigin[1]+(y*j))
-			write_coord(vicOrigin[2]+21)
-			write_short(g_spriteBldSpray)	// sprite1 index
-			write_short(g_spriteBlood)	// sprite2 index
-			write_byte(248) 			// color RED = 248 YELLOW = 196
-			write_byte(10) 			// scale
-			message_end()
-		}
-	}
-}
-/*public drop_hero(id){
-
-	id-=TASKID
-
-
-}*/
 //----------------------------------------------------------------------------------------------
 public thrashy_pickable_check(id)
 {

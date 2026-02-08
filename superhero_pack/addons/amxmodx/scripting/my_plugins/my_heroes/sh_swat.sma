@@ -213,8 +213,11 @@ public Swat_kd()
 	if(sh_get_user_is_chaffed(id)) return
 
 	if ( gPlayerUltimateUsed[id] ) {
-		client_print(id,print_chat,"[SH](S.W.A.T.) Your next I.C.B.M. is not ready yet.")
-		playSoundDenySelect(id)
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_chat,"[SH](S.W.A.T.) Your next I.C.B.M. is not ready yet.")
+			playSoundDenySelect(id)
+		}
 		return
 	}
 
@@ -308,7 +311,10 @@ public make_beam(id)
 	new NewEnt
 	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
-		client_print(id,print_chat,"[SH](S.W.A.T.) Rocket Failure")
+		
+		if(!is_user_bot(id)){
+			client_print(id,print_chat,"[SH](S.W.A.T.) Rocket Failure")
+		}
 		return PLUGIN_HANDLED
 	}
 

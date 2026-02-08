@@ -65,7 +65,10 @@ public CmdStart(id, uc_handle)
 			if( !(is_user_alive(id))||!chaff_loaded[id]) return FMRES_IGNORED
 			if(teliko_get_num_chaffs(id) == 0)
 			{
-				client_print(id, print_center, "You are out of chaffs")
+				
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "You are out of chaffs")
+				}
 				sh_drop_weapon(id,CHAFF_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
@@ -81,9 +84,13 @@ public CmdStart(id, uc_handle)
 				
 				
 				launch_chaff(id)
-				client_print(id,print_center,"You have %d chaffs left",
-				teliko_get_num_chaffs(id)
-				);
+				
+				if(!is_user_bot(id)){
+					
+					client_print(id,print_center,"You have %d chaffs left",
+					teliko_get_num_chaffs(id)
+					);
+				}
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}
@@ -92,13 +99,18 @@ public CmdStart(id, uc_handle)
 		else if(chaff_armed[id]){
 			if(curr_charge[id]>=min_charge_time){
 				launch_chaff(id)
-				client_print(id,print_center,"You have %d chaffs left",
-				teliko_get_num_chaffs(id)
-				);
+				
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d chaffs left",
+					teliko_get_num_chaffs(id)
+					);
+				}
 			}
 			else if(curr_charge[id]>0.0){
-				sh_chat_message(id,teliko_get_hero_id(),"Chaff not charged! Not launched...");
 				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,teliko_get_hero_id(),"Chaff not charged! Not launched...");
+				}
 			}
 			uncharge_user(id)
 			
@@ -131,13 +143,16 @@ public loadCVARS()
 
 public charge_task(id){
 	id-=CHAFF_CHARGE_TASKID
-	new hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],CHAFF_CHARGE_PERIOD)
-	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
-	100.0*(curr_charge[id]/max_charge_time)
-	);
-	client_print(id,print_center,"%s",hud_msg)
 	
+	if(!is_user_bot(id)){
+					
+		new hud_msg[128];
+		format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
+		100.0*(curr_charge[id]/max_charge_time)
+		);
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	
 	
 	
@@ -232,7 +247,10 @@ chaff_loaded[id] = false
 teliko_dec_num_chaffs(id)
 if(teliko_get_num_chaffs(id) == 0)
 {
-	client_print(id, print_center, "You are out of %s s. I repeat: You're out.",CHAFF_WEAPON_NAME)
+	
+	if(!is_user_bot(id)){
+		client_print(id, print_center, "You are out of %s s. I repeat: You're out.",CHAFF_WEAPON_NAME)
+	}
 	sh_drop_weapon(id,CHAFF_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }

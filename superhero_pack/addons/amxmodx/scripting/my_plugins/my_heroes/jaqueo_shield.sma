@@ -356,7 +356,10 @@ public shield_think(ent)
 		Entvars_Set_Vector(g_jaqueo_shield[owner], EV_VEC_velocity,  velocity)
 	
 	
-		client_print(owner,print_center,"jaqueo shield hp: %0.2f",float(pev(ent,pev_health))-1000.0)
+		
+		if(!is_user_bot(owner)){
+			client_print(owner,print_center,"jaqueo shield hp: %0.2f",float(pev(ent,pev_health))-1000.0)
+		}
 	}
 	set_pev(ent, pev_nextthink, gametime + (JAQUEO_THINK_PERIOD))
 	return FMRES_IGNORED
@@ -366,7 +369,9 @@ public _shield_charge_user(iPlugin, iParams){
 	new id= get_param(1)
 	if(!g_jaqueo_shield_loaded[id]){
 		
-		sh_chat_message(id,jaqueo_get_hero_id(),"Shield not loaded")
+		if(!is_user_bot(id)){
+			sh_chat_message(id,jaqueo_get_hero_id(),"Shield not loaded")
+		}
 		return
 	}
 	g_jaqueo_shield_loaded[id]=0
@@ -436,8 +441,10 @@ public load_shield(id){
 	id-=JAQUEO_LOAD_TASKID
 	
 	g_jaqueo_shield_loaded[id]=1;	
-	sh_chat_message(id,jaqueo_get_hero_id(),"Shield loaded");
 	
+	if(!is_user_bot(id)){
+		sh_chat_message(id,jaqueo_get_hero_id(),"Shield loaded");
+	}
 	
 }
 public charge_task(parm[],id){
@@ -469,10 +476,13 @@ public charge_task(parm[],id){
 	Entvars_Set_Vector(g_jaqueo_shield[id], EV_VEC_velocity,  velocity)
 	
 	
-	new hud_msg[128];
-	set_pev(g_jaqueo_shield[id],pev_health,floatmin(shield_max_hp,floatadd(float(pev(g_jaqueo_shield[id],pev_health)),floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
-	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
-	client_print(id,print_center,"%s",hud_msg)
+	
+	if(!is_user_bot(id)){
+		new hud_msg[128];
+		set_pev(g_jaqueo_shield[id],pev_health,floatmin(shield_max_hp,floatadd(float(pev(g_jaqueo_shield[id],pev_health)),floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
+		format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jaqueo_shield[id]

@@ -119,7 +119,10 @@ public Item_PostFrame_Post(iEnt)
 		return HAM_IGNORED
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
-	
+	if(is_user_bot(id)){
+
+		return HAM_IGNORED
+	}
 	if(!client_hittable(id)){
 		
 		return HAM_IGNORED
@@ -147,13 +150,16 @@ public komak_init()
 	gHasKomak[id]=(hasPowers!=0)
 	if(gHasKomak[id]){
 		set_task(0.1, "stats_komak_task", id+KOMAK_STATS_TASKID, "", 0, "b")
-		set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
 		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
-		
+		if(!is_user_bot(id)){
+			set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
+		}
 	}
 	else{
 		remove_task(id+KOMAK_STATS_TASKID)
-		remove_task(id+KOMAK_HUD_TASKID)
+		if(!is_user_bot(id)){
+			remove_task(id+KOMAK_HUD_TASKID)
+		}
 		remove_task(id+KOMAK_REPAIR_TASKID)
 	}
 	reset_komak(id)
@@ -242,6 +248,10 @@ public engine_repair_loop(id){
 	
 	id-=KOMAK_REPAIR_TASKID;
 	
+	if(!client_hittable(id)){
+
+		return;
+	}
 	if(gHasKomak[id]&&(gEngineRepairTimer[id]>0)){
 		
 		gEngineRepairTimer[id]--;
@@ -253,6 +263,10 @@ public engine_repair_loop(id){
 }
 public komak_hud_task(id){
 	id-=KOMAK_HUD_TASKID
+	if(!client_hittable(id)){
+
+		return;
+	}
 	if(gHasKomak[id]){
 		komak_hud(id)
 		
@@ -328,6 +342,10 @@ public reset_komak(id){
 public stats_komak_task(id){
 
 	id-=KOMAK_STATS_TASKID
+	if(!client_hittable(id)){
+
+		return;
+	}
 	if ( gHasKomak[id]) {
 		
 		stats_komak(id)

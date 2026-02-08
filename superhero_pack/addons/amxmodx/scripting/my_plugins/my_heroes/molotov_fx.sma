@@ -78,7 +78,10 @@ public molotov_damage_vulnerability(id){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
 			shExtraDamage(id, attacker, floatround(extraDamage), "Burn damage vulnerability", headshot)
-			sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
+			
+			if(!is_user_bot(attacker)){
+				sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
+			}
 		}
 	}
 
@@ -123,14 +126,25 @@ public _sh_molly_user(iPlugin,iParams){
 	if(!gIsBurning[user]){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
-				sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
-				sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
-				burn_user(user,attacker)
+				
+					if(!is_user_bot(user)){
+						sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
+					}
+					
+					if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
+					}
+					burn_user(user,attacker)
 			}
 		}
 		else{
-			sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
-			sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
+			
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
+			}
+			if(!is_user_bot(attacker)){
+				sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
+			}
 			burn_user(user,attacker)
 		}
 	}

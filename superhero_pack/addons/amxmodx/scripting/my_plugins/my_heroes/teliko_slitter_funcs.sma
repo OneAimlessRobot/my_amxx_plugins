@@ -260,12 +260,17 @@ public CmdStart(attacker, uc_handle)
 						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"b")
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
-						sh_chat_message(attacker,teliko_get_hero_id(),"Snuck up on %s!",vic_name);
-						sh_chat_message(id,teliko_get_hero_id(),"You got snuck up on by %s!",att_name);
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,teliko_get_hero_id(),"Snuck up on %s!",vic_name);
+						}
+						if(!is_user_bot(id)){
+							sh_chat_message(id,teliko_get_hero_id(),"You got snuck up on by %s!",att_name);
+						}
 					}
 					else{
-						sh_chat_message(attacker,teliko_get_hero_id(),"Level difference is too small! Cannot drag opponent!");
-						
+						if(!is_user_bot(id)){
+							sh_chat_message(attacker,teliko_get_hero_id(),"Level difference is too small! Cannot drag opponent!");
+						}
 					}
 				}
 			}
@@ -327,26 +332,36 @@ if(teliko_get_has_teliko(attacker)&&!(cs_get_user_team(id)==att_team)){
 						if(get_user_godmode(id)){
 						
 							
-							sh_chat_message(attacker,teliko_get_hero_id(),"You removed %s's godmode!!",vic_name);
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,teliko_get_hero_id(),"You removed %s's godmode!!",vic_name);
+							}
 							set_user_godmode(id,0)
 						}
 						else{
 							damage=get_user_health(id)*3.0
 							SetHamParamFloat(4, damage);
-							sh_extra_damage(id,attacker,floatround(damage),"Slit throat",1)
-							sh_chat_message(attacker,teliko_get_hero_id(),"You slit %s's throat!",vic_name);
+							if(!is_user_bot(id)){
+								sh_extra_damage(id,attacker,floatround(damage),"Slit throat",1)
+							}
+							if(!is_user_bot(id)){
+								sh_chat_message(attacker,teliko_get_hero_id(),"You slit %s's throat!",vic_name);
+							}
 						}
 						g_slit_kills[attacker]--;
 						if(slitter_get_slit_kills(attacker)){							
 							
-							sh_chat_message(attacker,teliko_get_hero_id(),"You got %d slit strikes left",slitter_get_slit_kills(attacker));
-						
+							
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,teliko_get_hero_id(),"You got %d slit strikes left",slitter_get_slit_kills(attacker));
+							}
 						}
 					}
 					else{
 					
-						sh_chat_message(attacker,teliko_get_hero_id(),"Already hit %d slit kills this life!",max_slitter_kills_per_life);
-				
+						
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,teliko_get_hero_id(),"Already hit %d slit kills this life!",max_slitter_kills_per_life);
+						}
 					}
 				}
 			}	

@@ -27,6 +27,7 @@
  */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
  // GLOBAL VARIABLES
  new gHeroName[]="Clone Trooper"
@@ -35,7 +36,7 @@
  new gTaskID
  new gCTrooperSound[]="items/suitchargeno1.wav"
  new lastammo[33]
- new spriteindex, smoke
+ new spriteindex
  //----------------------------------------------------------------------------------------------
  public plugin_init()
  {
@@ -306,8 +307,7 @@
 	CTrooper_sound(id)
 
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "CTrooper - Prepared for war..SIR!")
+	superhero_protected_hud_message(id,"CTrooper - Prepared for war..SIR!")
 
 	gmorphed[id] = true
  }
@@ -316,8 +316,7 @@
  {
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "CTrooper - All systems down...")
+		superhero_protected_hud_message(id,"CTrooper - All systems down...")
 
 		#if defined AMXX_VERSION
 		cs_reset_user_model(id)

@@ -20,6 +20,7 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 #include <amxmod>
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="UberGunner"
@@ -70,7 +71,7 @@ public plugin_init()
 public plugin_precache()
 {
 	precache_model("models/player/UberGunner/UberGunner.mdl")
-	precache_model("models/shmod/UberGunner_v_m4a1.mdl")
+	precache_model("models/shmod/usmarine_m4a1.mdl")
 	precache_sound(gUberGunnerSound)
 }
 //----------------------------------------------------------------------------------------------
@@ -145,7 +146,7 @@ public switchmodel(id)
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M4A1) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/UberGunner_v_m4a1.mdl")
+		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/usmarine_m4a1.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -202,9 +203,7 @@ public UberGunner_morph(id)
 
 	UberGunner_sound(id)
 
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "UberGunner - Getting Ready 2 Own!")
+	superhero_protected_hud_message( id, "UberGunner - Getting Ready 2 Own!")
 
 	gmorphed[id] = true
 }
@@ -212,9 +211,7 @@ public UberGunner_morph(id)
 public UberGunner_unmorph(id)
 {
 	if ( gmorphed[id] ) {
-		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "UberGunner - MODE OFF, you returned to normal self.")
+		superhero_protected_hud_message( id, "UberGunner - MODE OFF, you returned to normal self.")
 
 		#if defined AMXX_VERSION
 		cs_reset_user_model(id)

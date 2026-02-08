@@ -159,15 +159,20 @@ public ester_init()
 		}
 		reset_ester_user_round(id)
 		ester_weapons(id)
-		set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+		
+		if(!is_user_bot(id)){
+			set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+		}
 	}
 	else{
 		reset_ester_reborn_mode(id,0)
 		ester_weapons(id)
 		reset_ester_user_round(id)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
-		remove_task(id+ESTER_HUD_TASKID)
 		
+		if(!is_user_bot(id)){
+			remove_task(id+ESTER_HUD_TASKID)
+		}
 	}
 	
 	
@@ -212,7 +217,7 @@ public ester_morph(id)
 	id-=ESTER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
 	
-	superhero_morph_message(id,"Ready to adult & Pwn 50m3 n3wbz")
+	superhero_protected_hud_message(id,"Ready to adult & Pwn 50m3 n3wbz")
 	cs_set_user_model(id, "ester")
 	
 	gmorphed[id] = true
@@ -233,7 +238,7 @@ public ester_unmorph(id)
 			remove_task(id+ESTER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		superhero_morph_message(id,"Fuck my li- *Sigh...* Spectating again")
+		superhero_protected_hud_message(id,"Fuck my li- *Sigh...* Spectating again")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -434,7 +439,10 @@ public ester_loop(id)
 		}
 		else  if(gFinished[id]) {
 			
-			sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
+			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
+			}
 			sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
 			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
 			
@@ -460,7 +468,9 @@ public Ester_revenge_loop(id)
 			if(count_enemies(id)){
 				if ( (userArmor < power_cost)) {
 					if ( user_health< power_cost ) {
-						sh_chat_message(id,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
+						}
 						sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
 						return;
 					}
@@ -472,15 +482,18 @@ public Ester_revenge_loop(id)
 					
 					cs_set_user_armor(id, userArmor - power_cost, armorType)
 					if( cs_get_user_armor(id, armorType)<power_cost){
-						sh_chat_message(id,gHeroID,"You ran out stamina. Now you will now lose health.");
-						
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,"You ran out stamina. Now you will now lose health.");
+						}
 					}
 				}
 			}
 			else{
 			
-				sh_chat_message(id,gHeroID,"No enemies detected as you charged! Aborting!");
-				sh_sound_deny(id)
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"No enemies detected as you charged! Aborting!");
+					sh_sound_deny(id)
+				}
 				reset_status(id)
 				remove_task(id+ESTER_REVENGE_TASKID)
 				return
@@ -507,12 +520,15 @@ public Ester_revenge_loop(id)
 				
 				gUnloading[id]=false;
 				gFinished[id]=true;
-				sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
-				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
+				}
 			}
 		}
 		else{
-			sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
+			}
 			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),1)
 			reset_status(id)
 			gFinished[id]=true;
@@ -538,7 +554,9 @@ public sh_client_spawn(id)
 			
 		}
 		
-		set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+		if(!is_user_bot(id)){
+			set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+		}
 		ester_weapons(id)
 		trail(id,GREEN,0,0)
 		set_user_rendering(id,_,_,_,_,_,0)
@@ -637,8 +655,12 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 							new fx_num=sh_effect_user_direct(id,attacker,GLOW,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
-							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
-							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+							}
+							if(!is_user_bot(id)){
+								sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							}
 							sh_set_stun(id,GLOW_TIME,150.0);
 						
 					}
@@ -648,8 +670,11 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?moralizing_tmp_xp_get_mult:moralizing_pan_xp_get_mult)*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
 							
-							client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
-							sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
+							
+							if(!is_user_bot(attacker)){
+								client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
+								sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
+							}
 						}
 						gBuiltUpXp[attacker]+=extra_moralizing_xp
 					}
@@ -659,12 +684,19 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
 							gatling_set_fx_num(id,fx_num);
-							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
-							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+							}
+							if(!is_user_bot(id)){
+								sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							}
 							new unextra_moralizing_xp=min(mult*(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give),gBuiltUpXp[attacker])
 							if(unextra_moralizing_xp){
 								
-								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
+								if(!is_user_bot(attacker)){
+									sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
+								}
 								sh_set_user_xp(id,unextra_moralizing_xp,true);
 							}
 							gBuiltUpXp[attacker]-=unextra_moralizing_xp
@@ -753,8 +785,13 @@ public death()
 		}
 		new ester_wielder_name[128]
 		get_user_name(i,ester_wielder_name,127)
-		sh_chat_message(i,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
-		sh_chat_message(id,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
+		
+		if(!is_user_bot(i)){
+			sh_chat_message(i,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
+		}
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"%s: KARMA, %s! KARMA!",ester_wielder_name,dead_client_name)
+		}
 	}
 }	
 
@@ -779,14 +816,18 @@ public ester_kd()
 	}
 	if(!gTimesLeft[id]){
 		
-		sh_chat_message(id,gHeroID,"Already used Ester %d times this map. Dumbass",times_per_map);
-		sh_sound_deny(id)
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"Already used Ester %d times this map. Dumbass",times_per_map);
+			sh_sound_deny(id)
+		}
 		return PLUGIN_HANDLED
 	}
 	if(gUnloading[id]){
 		
-		sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NOw AHAHAAHAH!!!!");
-		sh_sound_deny(id)
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NOw AHAHAAHAH!!!!");
+			sh_sound_deny(id)
+		}
 		return PLUGIN_HANDLED
 		
 	}
@@ -794,8 +835,10 @@ public ester_kd()
 	get_user_name(id,client_name,127)
 	sh_chat_message(0,gHeroID,"%s is charging up and about to release a NEUROBLAST!!!!^n",client_name)
 	sh_chat_message(0,gHeroID,"%s: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!",client_name);
-	show_targets(id)
 	
+	if(!is_user_bot(id)){
+		show_targets(id)
+	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	gPedalIsFloored[id]=true
 	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "b")
@@ -819,8 +862,10 @@ public ester_ku()
 	get_user_name(id,client_name,127)
 	if(damage_to_do[id]<min_damage_to_do){
 		
-		sh_chat_message(id,gHeroID,"Not enough built up damage! (current: %d but needs %d.) Resetting damage to do",damage_to_do[id],min_damage_to_do);
-		sh_sound_deny(id)
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"Not enough built up damage! (current: %d but needs %d.) Resetting damage to do",damage_to_do[id],min_damage_to_do);
+			sh_sound_deny(id)
+		}
 		reset_status(id)
 		return PLUGIN_HANDLED;
 	}

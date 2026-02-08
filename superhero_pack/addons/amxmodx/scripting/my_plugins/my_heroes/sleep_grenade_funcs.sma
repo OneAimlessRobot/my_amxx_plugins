@@ -64,7 +64,9 @@ public CmdStart(id, uc_handle)
 			if( !(is_user_alive(id))||!sleep_nade_loaded[id]) return FMRES_IGNORED
 			if(ksun_get_num_sleep_nades(id) == 0)
 			{
-				client_print(id, print_center, "Sorry, dear... No more sleep grenades, I am afraid.")
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "Sorry, dear... No more sleep grenades, I am afraid.")
+				}
 				sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
@@ -80,9 +82,11 @@ public CmdStart(id, uc_handle)
 				
 				
 				launch_sleep_nade(id)
-				client_print(id,print_center,"You have %d gas grenades left, darling. I repeat, %d",
-				ksun_get_num_sleep_nades(id),ksun_get_num_sleep_nades(id)
-				);
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d gas grenades left, darling. I repeat, %d",
+					ksun_get_num_sleep_nades(id),ksun_get_num_sleep_nades(id)
+					);
+				}
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}
@@ -91,13 +95,16 @@ public CmdStart(id, uc_handle)
 		else if(sleep_nade_armed[id]){
 			if(curr_charge[id]>=min_charge_time){
 				launch_sleep_nade(id)
-				client_print(id,print_center,"You have %d gas grenades left, darling. I repeat, %d",
-				ksun_get_num_sleep_nades(id),ksun_get_num_sleep_nades(id)
-				);
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d gas grenades left, darling. I repeat, %d",
+					ksun_get_num_sleep_nades(id),ksun_get_num_sleep_nades(id)
+					)
+				}
 			}
 			else if(curr_charge[id]>0.0){
-				sh_chat_message(id,spores_ksun_hero_id(),"You have to charge them, darling...");
-				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,spores_ksun_hero_id(),"You have to charge them, darling...");
+				}
 			}
 			uncharge_user(id)
 			
@@ -131,35 +138,37 @@ public loadCVARS()
 public charge_task(id){
 	id-=SLEEP_NADE_CHARGE_TASKID
 	
-	new hud_msg[300];
-	new encouragement[128]
 	curr_charge[id]=floatadd(curr_charge[id],SLEEP_NADE_CHARGE_PERIOD)
 	new Float:curr_charge_pct=100.0*(curr_charge[id]/max_charge_time);
-	if(curr_charge_pct>20.0 && curr_charge_pct<40.0){
-		
-		format(encouragement,127,"yes, thats it. Keep going, sweetie.^n")
-		
-	}
-	else if(curr_charge_pct<60.0){
-		
-		format(encouragement,127,"Yes! thats it. Just like that, darling.^n")
-		
-	}
-	else if(curr_charge_pct<80.0){
-		
-		format(encouragement,127,"Yes! come on dear! Just a bit more!^n")
-		
-	}
-	else if(curr_charge_pct<100.0){
-		format(encouragement,127,"OH MY GOD, YES! MORE! MORE! YES!!!^n")
-		
-		
-	}
-	format(hud_msg,299,"[SH]: Curr charge: %0.2f^n%s",
-	curr_charge_pct,encouragement
-	);
-	client_print(id,print_center,"%s",hud_msg)
 	
+	if(!is_user_bot(id)){
+		new hud_msg[300];
+		new encouragement[128]
+		if(curr_charge_pct>20.0 && curr_charge_pct<40.0){
+			
+			format(encouragement,127,"yes, thats it. Keep going, sweetie.^n")
+			
+		}
+		else if(curr_charge_pct<60.0){
+			
+			format(encouragement,127,"Yes! thats it. Just like that, darling.^n")
+			
+		}
+		else if(curr_charge_pct<80.0){
+			
+			format(encouragement,127,"Yes! come on dear! Just a bit more!^n")
+			
+		}
+		else if(curr_charge_pct<100.0){
+			format(encouragement,127,"OH MY GOD, YES! MORE! MORE! YES!!!^n")
+			
+			
+		}
+		format(hud_msg,299,"[SH]: Curr charge: %0.2f^n%s",
+		curr_charge_pct,encouragement
+		);
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	
 	
 	
@@ -254,7 +263,9 @@ sleep_nade_loaded[id] = false
 ksun_dec_num_sleep_nades(id)
 if(ksun_get_num_sleep_nades(id) == 0)
 {
-	client_print(id, print_center, "You are out of %s s, darling!",SLEEP_NADE_WEAPON_NAME)
+	if(!is_user_bot(id)){
+		client_print(id, print_center, "You are out of %s s, darling!",SLEEP_NADE_WEAPON_NAME)
+	}
 	sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
@@ -262,7 +273,9 @@ new parm[1]
 parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, SLEEP_NADE_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-sh_chat_message(id, spores_ksun_hero_id(),"Ohh! My god, darling! You are amazing... Thank you so much for this [forehead kiss]")
+if(!is_user_bot(id)){
+	sh_chat_message(id, spores_ksun_hero_id(),"Ohh! My god, darling! You are amazing... Thank you so much for this [forehead kiss]")
+}
 set_task(0.01, "sleep_nade_trail",id,parm,1)
 
 return PLUGIN_CONTINUE

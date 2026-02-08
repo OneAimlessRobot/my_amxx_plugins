@@ -81,6 +81,7 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 #include <amxmodx>
 #include <fakemeta>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Master Chief"
@@ -418,9 +419,7 @@ public masterchief_morph(id)
 
 	masterchief_sound(id)
 
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, -1)
-	show_hudmessage(id, "%s - Spartan-117 reporting for duty", HeroName)
+	superhero_protected_hud_message(id, "Spartan-117 reporting for duty")
 
 	ModelPlayerSet[id] = true
 }
@@ -432,8 +431,8 @@ masterchief_unmorph(id)
 		if ( is_user_alive(id) )
 		{
 			// Message only shows if alive and dropping hero
-			set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, -1)
-			show_hudmessage(id, "%s - MODE OFF, you returned to normal self", HeroName)
+			
+			superhero_protected_hud_message(id, "masterchief MODE OFF, you returned to normal self")
 		}
 
 		cs_reset_user_model(id)

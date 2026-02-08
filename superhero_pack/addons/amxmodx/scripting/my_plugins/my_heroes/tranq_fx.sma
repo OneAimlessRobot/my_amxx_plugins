@@ -64,14 +64,24 @@ public _sh_sleep_user(iPlugin,iParams){
 		if((user==attacker)){
 			if(user&&CAN_SELF_SLEEP){
 
-				sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
-				sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+				
+				if(!is_user_bot(user)){
+					sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
+				}
+				if(!is_user_bot(attacker)){
+					sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+				}
 				sleep_user(user,attacker)
 			}
 		}
 		else{
-			sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
-			sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
+			}
+			
+			if(!is_user_bot(attacker)){
+				sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+			}
 			sleep_user(user,attacker)
 		}
 	}

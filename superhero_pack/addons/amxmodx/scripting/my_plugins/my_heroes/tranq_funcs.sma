@@ -223,7 +223,10 @@ public fw_WeaponPrimaryAttackPre(entity)
 	}
 	if(tranq_get_num_darts(pPlayer) == 0)
 	{
-		client_print(pPlayer, print_center, "You are out of darts")
+		
+		if(!is_user_bot(pPlayer)){
+			client_print(pPlayer, print_center, "You are out of darts")
+		}
 		sh_drop_weapon(pPlayer, CSW_ELITE, true)
 		return HAM_SUPERCEDE
 	}
@@ -421,7 +424,10 @@ public vexd_pfntouch(pToucher, pTouched)
 						damage*=4;
 					}
 					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
-					sh_chat_message(oid,tranq_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+					
+					if(!is_user_bot(oid)){
+						sh_chat_message(oid,tranq_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
+					}
 					
 					new CsArmorType:armor_type;
 					cs_get_user_armor(pTouched,armor_type);

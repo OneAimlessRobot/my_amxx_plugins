@@ -259,8 +259,7 @@
 
 			new message[128]
 			format(message, 127, "You Have %d arrow(s) left",gArrows[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
-			show_hudmessage(id, message)
+			client_print(id,print_center, "%s",message)
 
 			if ( gArrows[id] == 0 ) gArrows[id] = -1
 		}

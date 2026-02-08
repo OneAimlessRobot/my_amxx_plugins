@@ -112,7 +112,10 @@ switch(g_teslacoilRunning[id]) {
 				set_user_info(id, "TC", "0")
 				
 				emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				client_print(id, print_center, "[SH]ElectroB00M :You ran out of Power")
+				
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "[SH]ElectroB00M :You ran out of Power")
+				}
 				return
 			}
 			cs_set_user_armor(id, userArmor - gPowerCost, armorType)
@@ -156,7 +159,9 @@ switch(key)
 		
 		// This needs to change to a forward check
 		set_user_info(id, "TC", "1")
-		client_print(id, print_center, "[SH]ElectroB00M :Tesla coil on")
+		if(!is_user_bot(id)){
+			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil on")
+		}
 		set_user_rendering(id,kRenderFxGlowShell, 184, 105, 255, kRenderTransAlpha,255)
 	}
 	
@@ -169,8 +174,9 @@ switch(key)
 		// This needs to change to a forward check
 		set_user_info(id, "TC", "0")
 		emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		client_print(id, print_center, "[SH]ElectroB00M :Tesla coil off")
-		
+		if(!is_user_bot(id)){
+			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil off")
+		}
 		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	}
 }

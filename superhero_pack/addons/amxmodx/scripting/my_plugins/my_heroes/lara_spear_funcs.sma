@@ -69,7 +69,10 @@ public CmdStart(id, uc_handle)
 			if( !(is_user_alive(id))||!spear_loaded[id]) return FMRES_IGNORED
 			if(spear_get_num_spears(id) == 0)
 			{
-				client_print(id, print_center, "You are out of spears")
+				
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "You are out of spears")
+				}
 				return FMRES_IGNORED
 			}
 			if(!spear_armed[id]){
@@ -81,9 +84,12 @@ public CmdStart(id, uc_handle)
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
 				
 				launch_spear(id)
-				client_print(id,print_center,"You have %d spears left",
+				
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d spears left",
 					spear_get_num_spears(id)
 					);
+				}
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}
@@ -92,13 +98,18 @@ public CmdStart(id, uc_handle)
 		else if(spear_armed[id]){
 			if(curr_charge[id]>=min_charge_time){
 				launch_spear(id)
-				client_print(id,print_center,"You have %d spears left",
+				
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d spears left",
 					spear_get_num_spears(id)
 					);
+				}
 			}
 			else if(curr_charge[id]>0.0){
-				sh_chat_message(id,spear_get_hero_id(),"Spear not charged! Spear not launched...");
-			
+				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,spear_get_hero_id(),"Spear not charged! Spear not launched...");
+				}
 			}
 			uncharge_user(id)
 		

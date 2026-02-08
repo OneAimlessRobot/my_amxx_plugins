@@ -17,11 +17,8 @@ neo_toggle 0		//Def=0
 
 */
 
-#include <amxmodx>
-#include <amxmisc> 
-#include <xtrafun>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"
@@ -199,9 +196,7 @@ public neo_morph(id)
 	
 	cs_set_user_model(id, "Neo")
 	
-	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "You are now Neo")
+	superhero_protected_hud_message(id, "You are now Neo")
 	
 	gmorphed[id] = true
 }
@@ -209,9 +204,7 @@ public neo_morph(id)
 public neo_unmorph(id)
 {
 	if ( gmorphed[id] ) {
-		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "You arent Neo anymore")
+		superhero_protected_hud_message(id, "You arent Neo anymore")
 		
 		cs_reset_user_model(id)
 		

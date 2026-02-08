@@ -238,7 +238,9 @@ public kick_ball(iPlugin,iParams)
 	
 	set_pev(Ent, pev_vuser1, Velocity)
 	
-	client_print(id,print_center,"You have %d balls left!",roberto_get_num_balls(id))
+	if(!is_user_bot(id)){
+		client_print(id,print_center,"You have %d balls left!",roberto_get_num_balls(id))
+	}
 	
 	roberto_dec_num_balls(id)
 	

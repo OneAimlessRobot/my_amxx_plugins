@@ -157,11 +157,17 @@ public teliko_init()
 		reset_teliko_user(id)
 		update_max_bullets(id)
 		
-		set_task( 0.2, "teliko_loop", id+TELIKO_TASKID, "", 0, "b")
+		
+		if(!is_user_bot(id)){
+			set_task( 0.2, "teliko_loop", id+TELIKO_TASKID, "", 0, "b")
+		}
 	}
 	else{
 		reset_teliko_user(id)
-		remove_task(id+TELIKO_TASKID)
+		
+		if(!is_user_bot(id)){
+			remove_task(id+TELIKO_TASKID)
+		}
 		sh_drop_weapon(id, TELIKO_SIDEARM_CLASSID, true)
 		sh_drop_weapon(id, TELIKO_RIFLE_CLASSID, true)
 		slitter_set_slitter(id,0)
@@ -274,11 +280,11 @@ if ( gHasTeliko[id] ) {
 }
 public teliko_morph(id){
 
-	superhero_morph_message(id,"Roger? Teliko here. Ready to go. Over.")
+	superhero_protected_hud_message(id,"Roger? Teliko here. Ready to go. Over.")
 }
 public teliko_unmorph(id){
 
-	superhero_morph_message(id,"Mission failed. Im down. Come pick me up.")
+	superhero_protected_hud_message(id,"Mission failed. Im down. Come pick me up.")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -340,7 +346,9 @@ public Teliko_mega_counters_effects(id,enemy){
 	if(mega_counter_effect>=0){
 		sh_set_stun(enemy,MEGA_COUNTER_STUN_TIME,floatdiv(1.0,MEGA_COUNTER_SPEED_DIV));
 		sh_screen_shake(enemy,MEGA_COUNTER_SPEED_DIV,MEGA_COUNTER_STUN_TIME,4.0)
-		sh_chat_message(id,gHeroID,"Enemy %s got stunned on MEGA COUNTER #%d!",enemy_name,mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD);
+		if(!is_user_bot(id)){
+			sh_chat_message(id,gHeroID,"Enemy %s got stunned on MEGA COUNTER #%d!",enemy_name,mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD);
+		}
 		if(mega_counter_effect%2==1){
 		
 			new wpnid=Teliko_counter_drop_weapon(id,enemy)
@@ -350,12 +358,14 @@ public Teliko_mega_counters_effects(id,enemy){
 			else{
 				strcat(weapon_name,"NO_VALID_WEAPON",127);
 			}
-			sh_chat_message(id,gHeroID,"Enemy %s got their %s destroyed on MEGA COUNTER #%d!",enemy_name,weapon_name,mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD);
-			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"Enemy %s got their %s destroyed on MEGA COUNTER #%d!",enemy_name,weapon_name,mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD);
+			}
 			
 		}
-		sh_chat_message(enemy,gHeroID,"You got your %dth MEGA COUNTER  from %s!!! Watch it!!!",mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD,client_name);
-		
+		if(!is_user_bot(enemy)){
+			sh_chat_message(enemy,gHeroID,"You got your %dth MEGA COUNTER  from %s!!! Watch it!!!",mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD,client_name);
+		}
 	}
 
 

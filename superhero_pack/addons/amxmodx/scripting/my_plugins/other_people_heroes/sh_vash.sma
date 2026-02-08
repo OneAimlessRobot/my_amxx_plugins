@@ -32,6 +32,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 #include <amxmod>
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 stock vash_v_deagle_model[]="models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
@@ -94,8 +95,7 @@ public vash_init()
 			engclient_cmd(id, "drop", "weapon_deagle")
 			shRemGravityPower(id)
 			set_user_hitzones(0, id, 255)
-			set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1)
-			show_hudmessage(id, "Vash - EVASION OFF - Hitzones returned to normal")
+			superhero_protected_hud_message(id, "Vash - EVASION OFF - Hitzones returned to normal")
 		}
 	}
 
@@ -121,9 +121,8 @@ public vash_weapons(id)
 {
 	if ( shModActive() && is_user_alive(id) ) {
 
-		// Just tell them here since this gets run at the right times anyway
-		set_hudmessage(200, 0, 0, -1.0, 0.28, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "Vash - EVASION ON - Removing a random hitzone every second")
+		
+		superhero_protected_hud_message(id, "Vash - EVASION ON - Removing a random hitzone every second")
 
 		shGiveWeapon(id, "weapon_deagle")
 

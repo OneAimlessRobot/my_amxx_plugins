@@ -143,6 +143,7 @@ public t800_loop(id)
 			new clip,ammo,weaponID = get_user_weapon(id,clip,ammo)
 			if ( weaponID != CSW_M249 ) {
 				shGiveWeapon(id,"weapon_m249",true)
+				engclient_cmd(id,"weapon_m249")
 			}
 			
 			message_begin(MSG_ONE,gmsgScreenFade,{0,0,0},id)
@@ -165,7 +166,7 @@ public t800_loop(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !gHasT800Power[id] ) return
+	if ( !is_user_alive(id) || !gHasT800Power[id]||gT800Timer[id]<0 ) return
 	
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
@@ -225,8 +226,11 @@ public t800_kd()
 	}
 	
 	if ( is_user_connected(id) && get_user_godmode(id) == 1 ) {
-		playSoundDenySelect(id)
-		client_print(id,print_chat,"[SH](T-800) Error loading you are already in godmode")
+		
+		if(!is_user_bot(id)){
+			playSoundDenySelect(id)
+			client_print(id,print_chat,"[SH](T-800) Error loading you are already in godmode")
+		}
 		return PLUGIN_HANDLED
 	}
 	

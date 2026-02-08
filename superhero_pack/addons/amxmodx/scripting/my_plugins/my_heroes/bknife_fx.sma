@@ -40,8 +40,14 @@ public _sh_bleed_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsBleeding[user]||STABS_STACK){
 		
-		sh_chat_message(user,gHeroID,"%s has bled you!!!",attacker_name)
-		sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
+		
+		if(!is_user_bot(user)){
+			sh_chat_message(user,gHeroID,"%s has bled you!!!",attacker_name)
+		}
+		if(!is_user_bot(attacker)){
+			sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
+		
+		}
 		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		bleed_user(user,attacker)
 	}
@@ -63,8 +69,13 @@ public _sh_ultrableed_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsBleeding[user]||STABS_STACK){
 		
-		sh_chat_message(user,gHeroID,"%s has back stabbed you!!!!!!",attacker_name)
-		sh_chat_message(attacker,gHeroID,"You just back stabbed %s!!!!!!!",user_name)
+		
+		if(!is_user_bot(user)){
+			sh_chat_message(user,gHeroID,"%s has back stabbed you!!!!!!",attacker_name)
+		}
+		if(!is_user_bot(attacker)){
+			sh_chat_message(attacker,gHeroID,"You just back stabbed %s!!!!!!!",user_name)
+		}
 		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		ultrableed_user(user,attacker)
 	}
@@ -86,8 +97,13 @@ public _sh_minibleed_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 	if(!gIsBleeding[user]||SLASHES_STACK){
 		
-		sh_chat_message(user,gHeroID,"%s has slashed you!!!!!!",attacker_name)
-		sh_chat_message(attacker,gHeroID,"You just slashed %s!!!!!!!",user_name)
+		
+		if(!is_user_bot(user)){
+			sh_chat_message(user,gHeroID,"%s has slashed you!!!!!!",attacker_name)
+		}
+		if(!is_user_bot(attacker)){
+			sh_chat_message(attacker,gHeroID,"You just slashed %s!!!!!!!",user_name)
+		}
 		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		minibleed_user(user,attacker)
 	}

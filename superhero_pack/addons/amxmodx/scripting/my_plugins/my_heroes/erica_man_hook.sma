@@ -144,8 +144,9 @@ public hook_think(id)
 		g_hook_kills[id]--;
 		if(hook_get_hook_kills(id)){							
 				
-			sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
-			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
+			}
 		}
 	
 	
@@ -157,8 +158,9 @@ public hook_think(id)
 		g_hook_kills[id]--;
 		if(hook_get_hook_kills(id)){							
 				
-			sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
-			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
+			}	
 		}
 		stop_dragging(id)
 	
@@ -294,7 +296,9 @@ public CmdStart1(attacker, uc_handle)
 				{
 					if(!hook_get_hook_kills(attacker)){
 					
-						sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);
+						}
 						free_tr2(tr)
 						return FMRES_IGNORED
 					}
@@ -304,9 +308,12 @@ public CmdStart1(attacker, uc_handle)
 					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"b")
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
-					sh_chat_message(attacker,tranq_get_hero_id(),"HOOKED TO %s!",vic_name);
-					sh_chat_message(id,tranq_get_hero_id(),"%s HOOKED TO YOU! SHAKE EM OFF!",att_name);
-					
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,tranq_get_hero_id(),"HOOKED TO %s!",vic_name);
+					}
+					if(!is_user_bot(id)){
+						sh_chat_message(id,tranq_get_hero_id(),"%s HOOKED TO YOU! SHAKE EM OFF!",att_name);
+					}
 				}
 				free_tr2(tr)
 			}
@@ -364,8 +371,12 @@ if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
 						
 					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),"Gutting")
 					new random_number=random_num(0,NUM_SENTENCES-1);
-					sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
-					sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					if(!is_user_bot(id)){
+						sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					}
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					}
 					sh_ultrableed_user(id,attacker,tranq_get_hero_id())
 					
 					process_manhook_manslaughter( attacker, id)

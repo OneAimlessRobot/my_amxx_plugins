@@ -27,6 +27,7 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 #include <engine>
 #include <cstrike>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Exodus"

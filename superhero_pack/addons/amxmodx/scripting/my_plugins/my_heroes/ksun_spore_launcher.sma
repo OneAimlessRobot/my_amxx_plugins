@@ -368,7 +368,10 @@ new health[128]
 new launcher = create_entity( "func_breakable" );
 
 if ( (launcher == 0) || !pev_valid(launcher)||!is_valid_ent(launcher)) {
-	client_print(id, print_chat, "[SH](ksun) Launcher Creation Failure")
+	
+	if(!is_user_bot(id)){
+		client_print(id, print_chat, "[SH](ksun) Launcher Creation Failure")
+	}
 	return
 }
 
@@ -422,8 +425,10 @@ entity_set_origin(launcher, b_orig)
 entity_set_edict(launcher, EV_ENT_euser1,id)
 entity_set_edict(launcher, EV_ENT_owner,id)
 
-client_print(id, print_console, "[SH](ksun) Launcher deployed! Launcher id is: %d(%d)^n Launcher phase is: %d^n Launcher timer is: %0.2f^n",launcher,g_player_launcher[id],g_launcher_phase[id],g_launcher_timer[id])
 
+if(!is_user_bot(id)){
+	client_print(id, print_console, "[SH](ksun) Launcher deployed! Launcher id is: %d(%d)^n Launcher phase is: %d^n Launcher timer is: %0.2f^n",launcher,g_player_launcher[id],g_launcher_phase[id],g_launcher_timer[id])
+}
 g_launcher_phase[id]=PHASE_DEPLOY
 entity_set_float( launcher, EV_FL_nextthink, floatadd(get_gametime( ) ,LAUNCHER_THINK_PERIOD));
 

@@ -144,8 +144,11 @@ public styropyro_kd()
 	if(sh_get_user_is_asleep(id)) return
 
 	if ( gLaserShots[id] == 0 ) {
-		client_print(id, print_center, "Ran out'a microwaves, back to the shop")
-		playSoundDenySelect(id)
+		
+		if(!is_user_bot(id)){
+			client_print(id, print_center, "Ran out'a microwaves, back to the shop")
+			playSoundDenySelect(id)
+		}
 		return
 	}
 
@@ -191,8 +194,11 @@ public fire_laser(id)
 	sh_setScreenFlash(id, 255, 255, 255, 10, 200)
 	
 	if ( gLaserShots[id] == 0 ) {
-		client_print(id, print_center, "Ran out'a microwaves, back to the shop")
-		playSoundDenySelect(id)
+		
+		if(!is_user_bot(id)){
+			client_print(id, print_center, "Ran out'a microwaves, back to the shop")
+			playSoundDenySelect(id)
+		}
 		return
 	}
 
@@ -200,7 +206,10 @@ public fire_laser(id)
 
 	// Warn How many Blasts Left...
 	if ( gLaserShots[id] <= 10 && gLaserShots[id] >= 0 ) {
-		client_print(id, print_center, "Warning: %d0.0 kJoules of stored energy left!", gLaserShots[id])
+		
+		if(!is_user_bot(id)){
+			client_print(id, print_center, "Warning: %d0.0 kJoules of stored energy left!", gLaserShots[id])
+		}
 	}
 
 	get_user_origin(id, aimvec, 3)

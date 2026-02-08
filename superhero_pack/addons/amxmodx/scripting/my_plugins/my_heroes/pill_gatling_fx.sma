@@ -88,7 +88,10 @@ public crack_damage(id)
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage), "Radoactive damage vulnerability", headshot)
-				sh_chat_message(attacker,-1,"You've dealt %0.2f more damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
+				
+				if(!is_user_bot(attacker)){
+					sh_chat_message(attacker,-1,"You've dealt %0.2f more damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
+				}
 			}	
 		}
 		default:{
@@ -488,7 +491,10 @@ public _sh_uneffect_user(iPlugin,iParams){
 		
 		case GLOW:{
 		
-			sh_chat_message(user,gHeroID,"Removed ur glow bro!")
+			
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur glow bro!")
+			}
 			unglow_user(user)
 		
 		
@@ -496,63 +502,81 @@ public _sh_uneffect_user(iPlugin,iParams){
 		case STUN:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur stun bro!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur stun bro!")
+			}
 			unstun_user(user)
 		
 		}
 		case POISON:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur poisan!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur poisan!")
+			}
 			unpoison_user(user)
 		
 		}
 		case RADIOACTIVE:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur chernobyl!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur chernobyl!")
+			}
 			unradioactive_user(user)
 		
 		}
 		case MORPHINE:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur heals!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur heals!")
+			}
 			unmorphine_user(user)
 		
 		}
 		case WEED:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur weed!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur weed!")
+			}
 			unweed_user(user)
 		
 		}
 		case COCAINE:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur 80s!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur 80s!")
+			}
 			uncocaine_user(user)
 		
 		}
 		case BLIND:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur blindess!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur blindess!")
+			}
 			unblind_user(user)
 		
 		}
 		case METYLPHENIDATE:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur college pills!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur college pills!")
+			}
 			unfocus_user(user)
 		
 		}
 		case BATH:{
 		
 		
-			sh_chat_message(user,gHeroID,"Removed ur spicy college pills!")
+			if(!is_user_bot(user)){
+				sh_chat_message(user,gHeroID,"Removed ur spicy college pills!")
+			}
 			unbath_user(user)
 		
 		}

@@ -202,13 +202,17 @@ public camman_kd()
 		if(user_can_plant_camera(id)){
 			if(gPlayerUltimateUsed[id]){
 				
-				sh_chat_message(id,gHeroID,"N spammes!!!!")
-				playSoundDenySelect(id)
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"N spammes!!!!")
+					playSoundDenySelect(id)
+				}
 				return PLUGIN_HANDLED
 			}
 			if(camman_get_num_cameras(id)==num_cameras){
-				sh_chat_message(id,gHeroID,"Ja gastaste todas as camaras!!!! nao podes plantar mais!")
-				playSoundDenySelect(id)
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"Ja gastaste todas as camaras!!!! nao podes plantar mais!")
+					playSoundDenySelect(id)
+				}
 				return PLUGIN_HANDLED;
 				
 			}
@@ -227,9 +231,10 @@ public camman_kd()
 		}
 		else{
 			
-			sh_sound_deny(id)
-			sh_chat_message(id, camman_get_hero_id(), "You must plant the camera on a wall")
-		
+			if(!is_user_bot(id)){
+					sh_sound_deny(id)
+					sh_chat_message(id, camman_get_hero_id(), "You must plant the camera on a wall")
+			}
 		}
 	}
 	else if(disarmable){
@@ -262,7 +267,9 @@ public player_touching_camera(id)
 		new attacker = pev(entlist[i], pev_iuser2)
 		new terror_name[128];
 		get_user_name(attacker,terror_name,127);
-		sh_chat_message(id,camman_get_hero_id(),"Touching a camera from %s!",(attacker==id)?"You":terror_name);
+		if(!is_user_bot(id)){
+			sh_chat_message(id,camman_get_hero_id(),"Touching a camera from %s!",(attacker==id)?"You":terror_name);
+		}
 		return entlist[i];
 		
 	}
@@ -291,12 +298,16 @@ public camman_ku()
 	else{
 		if(camera_get_camera_planted(id)){
 			if(camera_get_camera_disarming(id)){
-				sh_chat_message(id,camman_get_hero_id(),"Camera not disarmed. Action interrupted");
+				if(!is_user_bot(id)){
+					sh_chat_message(id,camman_get_hero_id(),"Camera not disarmed. Action interrupted");
+				}
 				camera_undisarm_camera(id)
 				return PLUGIN_HANDLED
 			}
 			else if(camera_get_camera_charging(id)){
-				sh_chat_message(id,camman_get_hero_id(),"Camera not charged. Not planting...");
+				if(!is_user_bot(id)){
+					sh_chat_message(id,camman_get_hero_id(),"Camera not charged. Not planting...");
+				}
 				camera_uncharge_camera(id)
 				return PLUGIN_HANDLED
 				

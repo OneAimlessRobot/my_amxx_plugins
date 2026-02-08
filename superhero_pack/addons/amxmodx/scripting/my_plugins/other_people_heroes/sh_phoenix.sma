@@ -22,6 +22,8 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 new g_heroName[]="Phoenix"
 new bool:g_hasPhoenix[SH_MAXSLOTS+1]
@@ -264,8 +266,7 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 
 			if ( distanceBetween < dmgRadius ) {
-				set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-				show_hudmessage(a, "%s was Re-Born using the power of the Phoenix!", name)
+				superhero_protected_hud_message(a, "someone was Re-Born using the power of the Phoenix!", 248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 
 				dRatio = float(distanceBetween) / float(dmgRadius)
 				damage = maxDamage - floatround(maxDamage * dRatio)

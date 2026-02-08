@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 
@@ -73,13 +74,19 @@ public graciete_init()
 		q_barrel_set_q_barrel(id)
 		graciete_model(id)
 		
-		set_task( 0.2, "graciete_loop", id+GRACIETE_HUD_TASKID, "", 0, "b")
+		
+		if(!is_user_bot(id)){		
+			set_task( 0.2, "graciete_loop", id+GRACIETE_HUD_TASKID, "", 0, "b")
+		}
 	}
 	else{
 		reset_graciete_user(id)
 		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		q_barrel_unset_q_barrel(id)
-		remove_task(id+GRACIETE_HUD_TASKID)
+		
+		if(!is_user_bot(id)){
+			remove_task(id+GRACIETE_HUD_TASKID)
+		}
 	}
 	
 }
@@ -100,8 +107,7 @@ public graciete_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasGraciete[id] ) return
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "Graciete ready.")
+	superhero_protected_hud_message(id,"Graciete ready.")
 	cs_set_user_model(id, "graciete")
 	
 	gmorphed[id] = true
@@ -123,8 +129,7 @@ public graciete_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "Mission failed.")
+		superhero_protected_hud_message(id,"Mission failed.")
 	}
 }
 //----------------------------------------------------------------------------------------------

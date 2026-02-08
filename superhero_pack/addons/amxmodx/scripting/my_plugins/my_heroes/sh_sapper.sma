@@ -4,6 +4,7 @@
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
@@ -223,8 +224,7 @@ public sapper_morph(id)
 	id-=SAPPER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasSapper[id] ) return
 	
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "Sapper ready.")
+	superhero_protected_hud_message(id, "Sapper ready.")
 	cs_set_user_model(id, "sapper")
 	
 	gmorphed[id] = true
@@ -245,8 +245,7 @@ public sapper_unmorph(id)
 			remove_task(id+SAPPER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "Mission failed.")
+		superhero_protected_hud_message(id,"Mission failed.")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -333,7 +332,9 @@ public player_touching_mine(id)
 		new attacker = entity_get_edict(entlist[i], EV_ENT_owner);
 		new terror_name[128];
 		get_user_name(attacker,terror_name,127);
-		sh_chat_message(id,sapper_get_hero_id(),"Touching a mine from %s!",(attacker==id)?"You":terror_name);
+		if(!is_user_bot(id)){
+			sh_chat_message(id,sapper_get_hero_id(),"Touching a mine from %s!",(attacker==id)?"You":terror_name);
+		}
 		return entlist[i];
 	
 	}
@@ -352,7 +353,9 @@ public sapper_ku()
 	}
 	if(mine_get_mine_disarming(id)&&mine_get_mine_charging(id)){
 	
-			sh_chat_message(id,sapper_get_hero_id(),"Mine not disarmed. Action interrupted");
+			if(!is_user_bot(id)){
+				sh_chat_message(id,sapper_get_hero_id(),"Mine not disarmed. Action interrupted");
+			}
 			mine_uncharge_mine(id)
 			mine_undisarm_mine(id)
 			return PLUGIN_HANDLED
@@ -361,12 +364,16 @@ public sapper_ku()
 	
 	}
 	else if(mine_get_mine_disarming(id)){
-			sh_chat_message(id,sapper_get_hero_id(),"Mine not disarmed. Action interrupted");
+			if(!is_user_bot(id)){
+				sh_chat_message(id,sapper_get_hero_id(),"Mine not disarmed. Action interrupted");
+			}
 			mine_undisarm_mine(id)
 			return PLUGIN_HANDLED
 	}
 	else if(mine_get_mine_charging(id)){
-			sh_chat_message(id,sapper_get_hero_id(),"Mine not charged. Not planting...");
+			if(!is_user_bot(id)){
+				sh_chat_message(id,sapper_get_hero_id(),"Mine not charged. Not planting...");
+			}
 			mine_uncharge_mine(id)
 			return PLUGIN_HANDLED
 			
@@ -378,5 +385,3 @@ public sapper_ku()
 		
 	return PLUGIN_HANDLED
 }
-
-//----------------------------------------------------------------------------------------------

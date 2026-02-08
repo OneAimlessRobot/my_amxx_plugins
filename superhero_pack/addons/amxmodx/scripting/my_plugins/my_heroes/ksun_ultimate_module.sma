@@ -207,6 +207,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
 	if(!client_hittable(id)) return
+	
 	if(!ksun_player_is_in_ultimate(id)||!spores_has_ksun(id)) return
 	new hud_msg[128];
 	new origin[3]
@@ -215,11 +216,13 @@ public ultimate_task(id){
 	ksun_glisten(id)
 	make_shockwave(origin,200.0,LineColorsWithAlpha[PURPLE])
 	
-	format(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
-	100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
-	);
-	client_print(id,print_center,"%s",hud_msg)
 	
+	if(!is_user_bot(id)){
+		format(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
+		100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
+		);
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	
 	
 	

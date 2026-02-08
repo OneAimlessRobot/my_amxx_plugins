@@ -24,6 +24,7 @@ sv_maxspeed 500
 #include <amxmodx>
 #include <fakemeta>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 
 // GLOBAL VARIABLES
@@ -223,8 +224,7 @@ public Haloune_morph(id)
 	Haloune_sound(id)
 
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, -1)
-	show_hudmessage(id, "%s - Haloune Stealth Suit Online", HeroName)
+	superhero_protected_hud_message(id, "Haloune Stealth Suit Online")
 
 	HalouneModelSet[id] = true
 }
@@ -236,8 +236,8 @@ Haloune_unmorph(id)
 		if ( is_user_alive(id) )
 		{
 			// Message only shows if alive and dropping hero
-			set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1, -1)
-			show_hudmessage(id, "%s - MODE OFF, you returned to normal self", HeroName)
+			
+			superhero_protected_hud_message(id, "%: you returned to normal self", HeroName)
 		}
 
 		cs_reset_user_model(id)

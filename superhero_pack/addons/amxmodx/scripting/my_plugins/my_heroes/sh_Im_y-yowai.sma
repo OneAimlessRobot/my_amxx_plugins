@@ -79,8 +79,10 @@ public reset_Yowai_user(id){
 	g_max_hits_player[id]=0;
 	g_hits[id]=0;
 	g_yowai_mode[id]=false;
-	sh_chat_message(id,gHeroID,"WAAAAAAhhhhhh~.... Sir? When is the end of my shift?")
 	
+	if(!is_user_bot(id)){
+		sh_chat_message(id,gHeroID,"WAAAAAAhhhhhh~.... Sir? When is the end of my shift?")
+	}
 	
 	
 }
@@ -93,14 +95,16 @@ public update_max_hits(id){
 public status_hud(id){
 
 	new chat_msg[130];
-	if(g_yowai_mode[id]){
-		format(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
-							g_hits[id],
-							g_hits[id] == 1 ? "" : "s", 
-							g_max_hits_player[id]);
-	}
-	sh_chat_message(id,gHeroID,"%s",chat_msg);
 	
+	if(!is_user_bot(id)){
+		if(g_yowai_mode[id]){
+			format(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
+								g_hits[id],
+								g_hits[id] == 1 ? "" : "s", 
+								g_max_hits_player[id]);
+		}
+		sh_chat_message(id,gHeroID,"%s",chat_msg);
+	}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -144,13 +148,15 @@ public Inc_hits(id){
 
 stock dmg_message(id,attacker,Float:damage){
 	if(client_hittable(id,gHasYowai[id]&&g_yowai_mode[id])){
-		new client_name[128];
-		new attacker_name[128]
-		get_user_name(id,client_name,127);
-		get_user_name(attacker,attacker_name,127);
-		sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
+		if(!is_user_bot(id)){
+			new client_name[128];
+			new attacker_name[128]
+			get_user_name(id,client_name,127);
+			get_user_name(attacker,attacker_name,127);
+			sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
+			status_hud(id);
+		}
 		Inc_hits(id)
-		status_hud(id);
 	}
 
 }

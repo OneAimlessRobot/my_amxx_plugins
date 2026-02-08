@@ -211,14 +211,13 @@ public yakui_tasks(id)
 public yakui_morph(id)
 {
 	id-=YAKUI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gatling_get_has_yakui(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gatling_get_has_yakui(id)) return
 	
 	
 	cs_set_user_model(id, "yakui")
 	
 	// Message
-	set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-	show_hudmessage(id, "Ready for a trip?")
+	superhero_protected_hud_message(id, "Ready for a trip?")
 	
 	gmorphed[id] = true
 	
@@ -230,8 +229,7 @@ public yakui_unmorph(id)
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		set_hudmessage(50, 205, 50, -1.0, 0.40, 2, 0.02, 4.0, 0.01, 0.1)
-		show_hudmessage(id, "Hmpf...")
+		superhero_protected_hud_message(id,  "Hmpf...")
 		
 		cs_reset_user_model(id)
 		

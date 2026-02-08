@@ -86,7 +86,9 @@ public CmdStart(id, uc_handle)
 			if( !gatling_get_rockets(id) || !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
 			if(gatling_get_num_rockets(id) == 0)
 			{
-				client_print(id, print_center, "You are out of rockets")
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "You are out of rockets")
+				}
 				return FMRES_IGNORED
 			}
 			make_rocket(id,floatround(ROCKET_SPEED))
@@ -196,7 +198,9 @@ notFloat_vOrigin[2]  =floatround(floatadd( vOrigin[2] , 50.0))
 new NewEnt
 NewEnt = CreateEntity("info_target")
 if(NewEnt == 0) {
-client_print(id,print_chat,"[SH](Yakui the Maid Mk2): Rocket fail!")
+if(!is_user_bot(id)){
+	client_print(id,print_chat,"[SH](Yakui the Maid Mk2): Rocket fail!")
+}
 return PLUGIN_HANDLED
 }
 

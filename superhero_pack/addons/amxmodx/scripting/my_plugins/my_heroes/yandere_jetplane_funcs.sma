@@ -286,12 +286,13 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 	
 	new oid = entity_get_edict(this, EV_ENT_owner)
 	
-	console_print(oid,"[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!^nYou received: %0.2f damage^nFrom entity of type: %s^nFrom attacker of id: %d (name %s)^n"
+	if(!is_user_bot(oid)){
+		console_print(oid,"[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!^nYou received: %0.2f damage^nFrom entity of type: %s^nFrom attacker of id: %d (name %s)^n"
 				,damage
 				,classname
 				,idattacker
 				,attacker_name);
-	
+	}
 	return HAM_IGNORED;
 }
 
@@ -417,7 +418,9 @@ public jet_deploy_task(parm[],id){
 		EnableHamForward(the_damage_ham_hook)
 		ham_is_on=1;
 	}
-	set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
+	if(!is_user_bot(attacker)){
+		set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
+	}
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
 	set_jet_engine(id,1);
@@ -733,10 +736,12 @@ public charge_task(parm[],id){
 	Entvars_Set_Vector(g_jetplane[id], EV_VEC_velocity,  velocity)
 	
 	
-	new hud_msg[128];
-	set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
-	format(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
-	client_print(id,print_center,"%s",hud_msg)
+	if(!is_user_bot(id)){
+		new hud_msg[128];
+		set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
+		format(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
+		client_print(id,print_center,"%s",hud_msg)
+	}
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jetplane[id]
@@ -891,7 +896,9 @@ public jet_hud_task(id){
 public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
-	remove_task(id+JET_HUD_TASKID)
+	if(!is_user_bot(id)){
+		remove_task(id+JET_HUD_TASKID)
+	}
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);

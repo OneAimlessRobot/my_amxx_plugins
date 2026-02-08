@@ -90,7 +90,10 @@ public CmdStart(id, uc_handle)
 			if( !(is_user_alive(id))||!molly_loaded[id]) return FMRES_IGNORED
 			if(erica_get_num_mollies(id) == 0)
 			{
-				client_print(id, print_center, "You are out of mollies sis!!!")
+				
+				if(!is_user_bot(id)){
+					client_print(id, print_center, "You are out of mollies sis!!!")
+				}
 				sh_drop_weapon(id,MOLLY_CLASSID,true)
 				engclient_cmd(id, "weapon_knife")
 				uncharge_user(id)
@@ -105,9 +108,12 @@ public CmdStart(id, uc_handle)
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
 				
 				launch_molly(id)
-				client_print(id,print_center,"You have %d mollies left siss!!!! %d left!!!!!",
-				erica_get_num_mollies(id),erica_get_num_mollies(id)
-				);
+				
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d mollies left siss!!!! %d left!!!!!",
+					erica_get_num_mollies(id),erica_get_num_mollies(id)
+					);
+				}
 				uncharge_user(id)
 				return FMRES_IGNORED
 			}
