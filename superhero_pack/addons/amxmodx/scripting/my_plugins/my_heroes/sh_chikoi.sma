@@ -74,12 +74,12 @@ stock dmg_message(id, attacker){
 
 }
 public chikoi_damage(id){
-if ( !shModActive() || !is_user_alive(id) ||!gHasChikoi[id]) return
+if ( !shModActive() || !is_user_alive(id) ||!gHasChikoi[id]) return PLUGIN_CONTINUE
 
 
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 new headshot = bodypart == HIT_STOMACH ? 1 : 0
-if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return
+if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return PLUGIN_CONTINUE
 new attacker_name[128];
 new client_name[128];
 get_user_name(attacker,attacker_name,127);
@@ -91,6 +91,11 @@ if(headshot){
 	shExtraDamage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
 	dmg_message(id, attacker)
 }
+if(weapon==CSW_HEGRENADE){
+
+	return PLUGIN_HANDLED
+}
+return PLUGIN_CONTINUE
 
 }
 

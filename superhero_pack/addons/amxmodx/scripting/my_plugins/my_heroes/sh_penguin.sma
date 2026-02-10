@@ -29,15 +29,19 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 *   	Yang wrote, "Cred goez to vittu's sexiness on gambit and cheap_suit who created the original plugin".
 */
 
-
+#include <amxmodx>
+#include <fakemeta>
+#include <engine>
+#include <cstrike>
 #include "../my_include/superheromod.inc"
+
 #define AMMOX_HEGRENADE 12
 
 // GLOBAL VARIABLES
 new gHeroName[]="Penguin"
 new bool:gHasPenguinPower[SH_MAXSLOTS+1]
-new bool:gPauseEntity[MAX_ENTITIES]
-new bool:gPenguinNade[SH_MAXSLOTS+1][MAX_ENTITIES]
+new bool:gPauseEntity[999]
+new bool:gPenguinNade[SH_MAXSLOTS+1][999]
 new Float:gNadeSpeed
 new gSpriteTrail
 //----------------------------------------------------------------------------------------------
@@ -66,7 +70,7 @@ public plugin_init()
 	register_event("ResetHUD", "newSpawn", "b")
 
 	// EXTRA NADE DAMAGE
-	register_event("Damage", "penguin_damage", "b", "2!0")
+	RegisterHam(Ham_TakeDamage,"player","penguin_damage",_,true)
 
 	// CURRENT WEAPON
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -167,8 +171,8 @@ public on_AmmoX(id)
 			if ( !gPlayerUltimateUsed[id] ) {
 				new iGrenade = -1
 				while ( (iGrenade = find_ent_by_class(iGrenade, "grenade")) > 0 ) {
-					new model[128]
-					entity_get_string(iGrenade, EV_SZ_model, model, 127)
+					new model[32]
+					entity_get_string(iGrenade, EV_SZ_model, model, 31)
 					if ( id == entity_get_edict(iGrenade, EV_ENT_owner) && equal(model, "models/w_hegrenade.mdl") ) {
 						entity_set_model(iGrenade, "models/shmod/penguin_w_hegrenade.mdl")
 
@@ -373,38 +377,27 @@ public fw_entity_think(ent)
 
 	return FMRES_IGNORED
 }
-//----------------------------------------------------------------------------------------------
-public penguin_damage(id)
+
+public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !shModActive() || !is_user_connected(id) ) return PLUGIN_CONTINUE
+	if ( !shModActive() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-
-	if ( attacker == 0 && weapon == 0 && is_user_connected(id) ) {
-		for ( new atkr = 1; atkr <= SH_MAXSLOTS; atkr++ ) {
-			if ( gHasPenguinPower[atkr] && is_user_connected(atkr) && !gPlayerUltimateUsed[atkr] ) {
-				for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
-					if ( gPenguinNade[atkr][i] ) {
-						if ( is_user_alive(id) ) {
-							// do extra damage
-							new extraDamage = floatround(damage * get_cvar_float("penguin_grenademult") - damage)
-							if (extraDamage > 0) shExtraDamage(id, atkr, extraDamage, "grenade")
-						}
-
-						new parm[2]
-						parm[0] = i
-						parm[1] = atkr
-						// Set the cooldown in x seconds because nades can hurt more then one person
-						set_task(0.2, "cooldown", 0, parm, 2)
-
-						return PLUGIN_CONTINUE
-					}
-				}
-			}
+	if ( gPenguinNade[attacker][idinflictor] ) {
+		if ( is_user_alive(id) ) {
+			// do extra damage
+			new extraDamage = floatround(damage * get_cvar_float("penguin_grenademult") - damage)
+			if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "grenade")
 		}
+
+		new parm[2]
+		parm[0] = idinflictor
+		parm[1] = attacker
+		// Set the cooldown in x seconds because nades can hurt more then one person
+		set_task(0.2, "cooldown", idinflictor, parm, 2)
+
 	}
-	return PLUGIN_CONTINUE
+	return HAM_IGNORED
+	
 }
 //----------------------------------------------------------------------------------------------
 public cooldown(parm[])
@@ -434,3 +427,6 @@ public client_connect(id)
 	gHasPenguinPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1033\\ f0\\ fs16 \n\\ par }
+*/

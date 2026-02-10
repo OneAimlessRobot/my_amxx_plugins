@@ -193,7 +193,7 @@ public Haloune_damage(id)
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS )
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
 	if ( HasHaloune[attacker] && weapon == CSW_M4A1 && is_user_alive(id) )

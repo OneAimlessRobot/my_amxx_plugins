@@ -60,7 +60,7 @@ public crack_damage(id)
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( !client_hittable(attacker)) return
+	if ( !client_hittable(attacker)||attacker==id) return
 	
 	new fx_num_att=(gatling_get_fx_num(attacker));
 	new fx_num_vic=(gatling_get_fx_num(id));

@@ -166,7 +166,7 @@ public poisonivy_damage(id)
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
 	// If already poisoned no need to set it twice
 	if( gIsPoisoned[id][attacker] ) return

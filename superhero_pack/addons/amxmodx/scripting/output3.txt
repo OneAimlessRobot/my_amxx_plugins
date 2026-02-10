@@ -1,0 +1,481 @@
+Compiling plugins from index 79 to 117
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2792 bytes
+Code size:            39128 bytes
+Data size:             8672 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   66976 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2116 bytes
+Code size:            22436 bytes
+Data size:            24148 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   65084 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2056 bytes
+Code size:            31192 bytes
+Data size:            14732 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   64364 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2996 bytes
+Code size:            26452 bytes
+Data size:           181264 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  227096 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1556 bytes
+Code size:            11252 bytes
+Data size:             7312 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   36504 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            788 bytes
+Code size:             2132 bytes
+Data size:              928 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20232 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           4360 bytes
+Code size:            57912 bytes
+Data size:            67096 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  145752 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1052 bytes
+Code size:             7648 bytes
+Data size:             8564 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   33648 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2444 bytes
+Code size:            47856 bytes
+Data size:            35200 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  101884 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1592 bytes
+Code size:             9496 bytes
+Data size:             5508 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   32980 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2904 bytes
+Code size:            89592 bytes
+Data size:            58196 bytes
+Stack/heap size:      16384 bytes
+Total requirements:  167076 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2468 bytes
+Code size:            21088 bytes
+Data size:            15312 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   55252 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1980 bytes
+Code size:            20084 bytes
+Data size:            16508 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   54956 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1280 bytes
+Code size:            10008 bytes
+Data size:             3892 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   31564 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1380 bytes
+Code size:            27572 bytes
+Data size:            11024 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   56360 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            620 bytes
+Code size:             2384 bytes
+Data size:             1136 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20524 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1020 bytes
+Code size:             4516 bytes
+Data size:            16072 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   37992 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1392 bytes
+Code size:            13656 bytes
+Data size:             8916 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   40348 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1104 bytes
+Code size:             3540 bytes
+Data size:             1232 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22260 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1172 bytes
+Code size:             5944 bytes
+Data size:             2632 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   26132 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            588 bytes
+Code size:             1272 bytes
+Data size:              784 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19028 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            452 bytes
+Code size:              440 bytes
+Data size:              712 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   17988 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            880 bytes
+Code size:             2052 bytes
+Data size:             1024 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20340 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            548 bytes
+Code size:             1356 bytes
+Data size:             1164 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   19452 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2236 bytes
+Code size:            19168 bytes
+Data size:            35080 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   72868 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            768 bytes
+Code size:             2200 bytes
+Data size:             1300 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   20652 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1108 bytes
+Code size:             3040 bytes
+Data size:             1784 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22316 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:            436 bytes
+Code size:             1316 bytes
+Data size:              776 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   18912 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1148 bytes
+Code size:             2928 bytes
+Data size:             1992 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   22452 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1240 bytes
+Code size:             6628 bytes
+Data size:             2764 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   27016 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2816 bytes
+Code size:            21112 bytes
+Data size:             6184 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   46496 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2336 bytes
+Code size:            23008 bytes
+Data size:             7272 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   49000 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2480 bytes
+Code size:            17696 bytes
+Data size:             5136 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41696 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2148 bytes
+Code size:            18484 bytes
+Data size:             5708 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42724 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           1984 bytes
+Code size:            27736 bytes
+Data size:             5964 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   52068 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2444 bytes
+Code size:            19772 bytes
+Data size:             5692 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   44292 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2104 bytes
+Code size:            17388 bytes
+Data size:             5404 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41280 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2148 bytes
+Code size:            18408 bytes
+Data size:             5436 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   42376 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2356 bytes
+Code size:            17948 bytes
+Data size:             4600 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   41288 bytes
+
+Done.
+Done.
+AMX Mod X Compiler 1.10.0.5467
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+Header size:           2348 bytes
+Code size:            23960 bytes
+Data size:             4724 bytes
+Stack/heap size:      16384 bytes
+Total requirements:   47416 bytes
+
+Done.
+Done.

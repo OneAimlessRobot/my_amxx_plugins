@@ -37,6 +37,7 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Rich walking bank girl!", "Infinite max money! Donate it to teammates, by going next to them! Set the money with the cmd 'set_leyla_money'! Damage also rewards you!", true, "leyla_level" )
 	hud_sync_money=CreateHudSyncObj()
+	register_event("Money","leyla_money","b")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("leyla_init", "leyla_init")
 	shRegHeroInit(gHeroName, "leyla_init")
@@ -73,13 +74,33 @@ public leyla_init()
 	
 	
 }
+
+public leyla_money(id){
+
+
+	if ( !is_user_connected(id)||!is_user_bot(id)){
+		return PLUGIN_CONTINUE
+	}
+	if(!gHasLeyla[id]){
+		return PLUGIN_CONTINUE
+	}
+	new prev_money= cs_get_user_money(id)
+	new money_added= read_data(1)
+	new money_difference_displayed= read_data(2)
+	new new_money= prev_money+money_added
+	sh_chat_message(id,gHeroID,"Yeeeey we change the money here in this motherfucker. We had %d moneys (dollers). But now we have %d dolla. They gave us %d liquid. And the message caller %s to display it",
+								prev_money,new_money,money_added,money_difference_displayed?"chose":"did not choose")
+	return PLUGIN_CONTINUE
+
+}
 public print_leyla_stats(id)
 {
-	if (  is_user_alive(id) &&gHasLeyla[id]&&is_user_connected(id))
+	if (  is_user_alive(id) &&is_user_connected(id))
 	{
-		sh_chat_message(id,gHeroID,"You currently have %d backup money", gLeylaUserMoney[id] )
-		sh_chat_message(id,gHeroID,"And you can give %d money per key down", gLeylaGiveMoney[id])
-		
+		if(gHasLeyla[id]){
+			sh_chat_message(id,gHeroID,"You currently have %d backup money", gLeylaUserMoney[id] )
+			sh_chat_message(id,gHeroID,"And you can give %d money per key down", gLeylaGiveMoney[id])
+		}	
 	}
 	return PLUGIN_HANDLED
 }

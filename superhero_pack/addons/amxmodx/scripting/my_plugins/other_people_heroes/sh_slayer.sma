@@ -48,7 +48,7 @@ public slayer_loop()
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
-			if (aid && is_user_alive(aid) && get_user_godmode(aid)&&(get_user_team(id)!=get_user_team(aid))) {
+			if (aid && is_user_alive(aid) && get_user_godmode(aid)&&(get_user_team(id)!=get_user_team(aid))&&(aid != id) ) {
 				set_user_godmode(aid,0)
 				new name[128]
 				new slayer_name[128]
@@ -70,7 +70,7 @@ public slayer_damage(id)
 
     new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-    if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return PLUGIN_CONTINUE
+    if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
     if ( gHasSlayerPowers[attacker] && (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = random_num(0, 100)

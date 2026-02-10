@@ -268,8 +268,9 @@ public CmdStart(attacker, uc_handle)
 						}
 					}
 					else{
-						if(!is_user_bot(id)){
-							sh_chat_message(attacker,teliko_get_hero_id(),"Level difference is too small! Cannot drag opponent!");
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,teliko_get_hero_id(),"Level bias towards you is too small! Cannot drag opponent!");
+							sh_chat_message(attacker,teliko_get_hero_id(),"Current level difference is: %d in your favour. But needed level difference is > %d!",sh_get_user_lvl(attacker)-sh_get_user_lvl(id),slitter_level_difference)
 						}
 					}
 				}
@@ -340,10 +341,8 @@ if(teliko_get_has_teliko(attacker)&&!(cs_get_user_team(id)==att_team)){
 						else{
 							damage=get_user_health(id)*3.0
 							SetHamParamFloat(4, damage);
-							if(!is_user_bot(id)){
-								sh_extra_damage(id,attacker,floatround(damage),"Slit throat",1)
-							}
-							if(!is_user_bot(id)){
+							sh_extra_damage(id,attacker,floatround(damage),"Slit throat",1)
+							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,teliko_get_hero_id(),"You slit %s's throat!",vic_name);
 							}
 						}

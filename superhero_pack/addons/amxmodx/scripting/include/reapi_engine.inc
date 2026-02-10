@@ -300,6 +300,24 @@ native bool:rh_is_entity_fullpacked(const host, const entity, const frame = -1);
 */
 native Float:rh_get_realtime();
 
+/*
+* Checks if server paused
+*
+* @return           Returns true if paused, otherwise false.
+*
+*/
+native bool:rh_is_server_paused();
+
+/*
+* Set server pause state
+*
+* @param status    pause state
+*
+* @noreturn
+*
+*/
+native rh_set_server_pause(const bool:status);
+
 enum MessageHook
 {
 	INVALID_MESSAGEHOOK = 0
@@ -409,6 +427,15 @@ native GetMessageArgsNum();
 * @return           Returns true if the block type is successfully set, otherwise false.
 */
 native bool:SetMessageBlock(const msgid, MsgBlockType:type);
+
+/**
+* Retrieves the block type for the specified message ID.
+*
+* @param msgid      The ID of the message to retrieve the block type for.
+*
+* @return           Returns the block type of the specified message, look at the enum MsgBlockType
+*/
+native MsgBlockType:GetMessageBlock(const msgid);
 
 /**
 * Checks if the specified type of message data has been modified

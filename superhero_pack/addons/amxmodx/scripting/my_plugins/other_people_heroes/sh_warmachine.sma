@@ -297,7 +297,7 @@ public warmachine_damage(id)
 	new weaponid, bodypart, attacker = get_user_attacker(id, weaponid, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
 	if ( gHasWarMachinePower[attacker] && is_user_alive(id) && id != attacker ) {
 		new weaponName[32]

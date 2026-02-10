@@ -14,9 +14,9 @@
 #define PLAYER_ANIMEXT "m249"
 #define ARIFLE_OLDMODEL "models/w_m249.mdl"
 
-#define V_MODEL "/models/shmod/supernoodle/arifle/v_arifle.mdl"
-#define P_MODEL "/models/shmod/supernoodle/arifle/p_arifle.mdl"
-#define W_MODEL "/models/shmod/supernoodle/arifle/w_arifle.mdl"
+#define V_MODEL "models/shmod/supernoodle/arifle/v_arifle.mdl"
+#define P_MODEL "models/shmod/supernoodle/arifle/p_arifle.mdl"
+#define W_MODEL "models/shmod/supernoodle/arifle/w_arifle.mdl"
 
 #define MUZZLE_FLASH "sprites/muzzleflash7.spr"
 

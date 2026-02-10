@@ -282,7 +282,7 @@ public spawn_spore(id){
 
 	set_pev(spore, pev_takedamage, DAMAGE_YES)
 	set_pev(spore, pev_solid, SOLID_BBOX)
-	entity_set_int(spore,EV_INT_movetype, MOVETYPE_NOCLIP)
+	entity_set_int(spore,EV_INT_movetype, MOVETYPE_FLY)
 	entity_set_origin(spore, b_orig)
 
 	//Sets who the owner of the entity is

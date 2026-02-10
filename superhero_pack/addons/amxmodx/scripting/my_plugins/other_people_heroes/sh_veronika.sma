@@ -183,7 +183,7 @@ public veronika_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 	
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 	
 	if ( gHasVeronikaPower[attacker] && weapon == CSW_AK47 && is_user_alive(id) ) {
 		// do extra damage
@@ -320,13 +320,16 @@ public vexd_pfntouch(pToucher, pTouched)
 					
 					set_velocity_from_origin(i, fl_vExplodeAt, get_cvar_float("veronika_m203conc")*damage) // ThantiK's he-conc function - tried getting it to recognize m203 nades but failed so imported function
 					
+					if(i == oid){
+						do_victim(i,oid,damage,0)
+					}
 					if(cvar_exists("mp_friendlyfire"))
 					{
-						if(i == oid)
-							do_victim(i, oid, damage, 2)
-						else if( get_cvar_num("mp_friendlyfire"))
+						if( get_cvar_num("mp_friendlyfire"))
 						{
-							if(get_user_team(i) == get_user_team(oid)) tkill = 1
+							if(get_user_team(i) == get_user_team(oid)){
+								tkill = 1
+							}
 							do_victim(i,oid,damage,tkill)
 						}
 						else
@@ -337,10 +340,9 @@ public vexd_pfntouch(pToucher, pTouched)
 							}
 						}
 					}
-					else if(i == oid)
-						do_victim(i, oid, damage, 2)
-					else
+					else if(i != oid){
 						do_victim(i,oid,damage,0)
+					}
 				}
 			}
 		}

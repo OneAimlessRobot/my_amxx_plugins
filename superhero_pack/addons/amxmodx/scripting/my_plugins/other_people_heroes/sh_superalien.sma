@@ -222,7 +222,7 @@ public SuperAlien_damage(id)
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS )
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id )
 		return
 
 	if ( HasSuperAlien[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )

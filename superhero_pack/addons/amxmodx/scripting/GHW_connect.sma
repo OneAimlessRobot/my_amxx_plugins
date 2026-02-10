@@ -73,8 +73,8 @@ public plugin_precache()
 
 public client_putinserver(id)
 {
-	if(!is_user_bot(id))
-	{
+	//if(!is_user_bot(id))
+	//{
 		get_client_info(id)
 
 		new display_type = get_pcvar_num(display_type_pcvar)
@@ -133,7 +133,7 @@ public client_putinserver(id)
 				}
 			}
 		}
-	}
+	//}
 }
 
 public get_client_info(id)
@@ -162,16 +162,17 @@ public get_client_info(id)
 
 public client_infochanged(id)
 {
-	if(!is_user_bot(id))
-	{
+	//if(!is_user_bot(id))
+	//{
 		get_user_info(id,"name",name[id],31)
-	}
+	//}
 }
 
 public client_disconnected(id)
 {
-	if(!is_user_bot(id))
-	{
+	
+	//if(!is_user_bot(id))
+	//{
 		new display_type = get_pcvar_num(display_type_pcvar)
 		if(display_type & SHOW_DISCONNECT)
 		{
@@ -225,5 +226,5 @@ public client_disconnected(id)
 				}
 			}
 		}
-	}
+	//}
 }

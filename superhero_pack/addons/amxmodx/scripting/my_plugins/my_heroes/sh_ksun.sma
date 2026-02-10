@@ -51,7 +51,6 @@ public plugin_init()
 	register_logevent("ev_SendAudio", 2, "1=Round_End")
 	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
-    //register_event("Damage", "ksun_physical_body", "b", "2!0")
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
 	shRegHeroInit(gHeroName, "ksun_init")

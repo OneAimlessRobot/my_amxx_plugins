@@ -277,7 +277,7 @@
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
 
 	if ( gHasCTrooperPower[attacker] && weapon == CSW_AK47 && is_user_alive(id) ) {
 		if ( gHasCTrooperPower[attacker] && is_user_alive(id) ) {

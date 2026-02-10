@@ -198,7 +198,7 @@ public t800_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 	
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id  ) return
 	
 	if ( gHasT800Power[attacker] && weapon == CSW_M249 && is_user_alive(id) ) {
 		// do extra damage

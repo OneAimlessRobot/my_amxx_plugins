@@ -184,7 +184,7 @@ public show_update_hint(id)
 
 	new url[MAX_URL_LENGTH];
 	get_pcvar_string(pcvar_uh_url, url, charsmax(url));
-	set_hudmessage(255, 100, 100, -1.0, 0.35, 0, 3.0, 5.0, 0.1, 0.1);
+	set_hudmessage(255, 100, 100, -1.0, 0.35, 0, 3.0, 5.0, 0.1, 0.1, 4);
 	show_hudmessage(id, "%L", id, "HUDHINT");
 	client_print(id, print_chat, "%L", id, "CHATHINT", url);
 }

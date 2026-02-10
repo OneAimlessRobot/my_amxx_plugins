@@ -37,7 +37,6 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 new gHeroName[]="Gambit"
 new bool:gHasGambitPower[SH_MAXSLOTS+1]
 new bool:gWillHit[SH_MAXSLOTS+1]
-new bool:gPauseEntity[MAX_ENTITIES]
 new bool:gGambitNade[SH_MAXSLOTS+1][MAX_ENTITIES]
 new gGrenTrail
 new gHeroID;
@@ -54,6 +53,7 @@ public plugin_init()
 	register_cvar("gambit_grenademult", "60.9")
 	register_cvar("gambit_grenadetimer", "30.0")
 	register_cvar("gambit_chance", "6.0") // 6.0 means 1 in 6 chance. 6.1 means 1 in 6.1
+	register_cvar("gambit_powertimer", "6.0") //timer for powernades
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Kinetically Charged Nades", "Charge your HE Grenades with Kinetic Energy for Extra Damage, refill HE Grenades. ^nYou get a random chance of causing massive damage", false, "gambit_level")
@@ -67,7 +67,7 @@ public plugin_init()
 	register_event("ResetHUD", "newSpawn", "b")
 
 	// EXTRA NADE DAMAGE
-	register_event("Damage", "gambit_damage", "b", "2!0")
+	RegisterHam(Ham_TakeDamage,"player","gambit_damage",_,true)
 
 	// FIND THROWN GRENADES
 	register_event("AmmoX", "on_AmmoX", "b")
@@ -92,14 +92,14 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public grenade_throw(id, gid, wid)
 {
-	if(gHasGambitPower[id]){
+	if(gHasGambitPower[id]&&!gPlayerUltimateUsed[id] ){
 	if(wid == CSW_HEGRENADE){
-		gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
+		gGambitNade[id][gid]=gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
 		sh_chat_message(id,gHeroID,"GAMBLE IT ALL! You valliant survivor!")
 		if ( gWillHit[id])
 		{
-		gGambitNade[id][gid]=true
-		sh_chat_message(id,gHeroID,"BINGO!!!!!! hope it reaches someone...")
+			
+			sh_chat_message(id,gHeroID,"BINGO!!!!!! hope it reaches someone...")
 		}
 	}
 	}
@@ -128,6 +128,9 @@ public newSpawn(id)
 	if ( shModActive() && gHasGambitPower[id] && is_user_alive(id) ) {
 		gPlayerUltimateUsed[id] = false
 		set_task(0.1, "gambit_weapons", id)
+		for(new i = SH_MAXSLOTS+1; i < sizeof(gGambitNade[])-1; i++) {
+			gGambitNade[id][i] = false
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -137,6 +140,27 @@ public gambit_weapons(id)
 		shGiveWeapon(id, "weapon_hegrenade")
 	}
 }
+public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if ( !shModActive() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
+
+	if ( gGambitNade[attacker][idinflictor] ) {
+		if ( is_user_alive(id) ) {
+			// do extra damage
+			new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
+			if (extraDamage > 0) {
+				sh_extra_damage(id, attacker, extraDamage, "gambit super grenade")
+			}
+		}
+		new cooldown_params[2]
+		cooldown_params[0]=idinflictor
+		cooldown_params[1]=attacker
+		set_task(0.2,"cooldown",idinflictor,cooldown_params,2)
+	}
+	return HAM_IGNORED
+	
+}
+/*
 //----------------------------------------------------------------------------------------------
 public gambit_damage(id)
 {
@@ -146,25 +170,22 @@ public gambit_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker == 0 && weapon == 0 && is_user_connected(id) ) {
+	if ( attacker != id && attacker != 0 && weapon != 0 && is_user_connected(id)) {
 		for ( new atkr = 1; atkr <= SH_MAXSLOTS; atkr++ ) {
-			if ( gHasGambitPower[atkr] && is_user_connected(atkr) && !gPlayerUltimateUsed[atkr] ) {
-				for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
+			if ( gHasGambitPower[atkr] && is_user_connected(atkr)&&!gPlayerUltimateUsed[atkr]) {
+				for(new i = SH_MAXSLOTS+1; i < sizeof(gGambitNade[])-1; i++) {
 					if ( gGambitNade[atkr][i] ) {
 						if ( is_user_alive(id) ) {
 							// do extra damage
 							new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
-							if (extraDamage > 0&&gWillHit[attacker]) {
+							if (extraDamage > 0) {
 								sh_extra_damage(id, attacker, extraDamage, "gambit super grenade", headshot)
 							}
 						}
-
-						new parm[2]
-						parm[0] = i
-						parm[1] = atkr
-						// Set the cooldown in x seconds because nades can hurt more then one person
-						set_task(0.2, "cooldown", 0, parm, 2)
-
+						new cooldown_params[2]
+						cooldown_params[0]=i
+						cooldown_params[1]=atkr
+						set_task(0.2,"cooldown",0,cooldown_params,2)
 						return PLUGIN_CONTINUE
 					}
 				}
@@ -172,7 +193,7 @@ public gambit_damage(id)
 		}
 	}
 	return PLUGIN_CONTINUE
-}
+}*/
 //----------------------------------------------------------------------------------------------
 public cooldown(parm[])
 {
@@ -183,8 +204,8 @@ public cooldown(parm[])
 
 	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
 
-	// Cooldown will only be set if user hurts someone with a Grenader nade
-	new Float:gambitCooldown = get_cvar_float("gambit_grenadetimer")
+	// Cooldown will only be set if user hurts someone with a gambit nade
+	new Float:gambitCooldown = get_cvar_float("gambit_powertimer")
 	if (gambitCooldown > 0.0) ultimateTimer(id, gambitCooldown)
 }
 //----------------------------------------------------------------------------------------------
@@ -239,14 +260,6 @@ public on_AmmoX(id)
 			// Got a new nade remove the timer
 			remove_task(id)
 		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public round_start()
-{
-	// Reset any paused entity ids just in case
-	for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
-		gPauseEntity[i] = false
 	}
 }
 //----------------------------------------------------------------------------------------------

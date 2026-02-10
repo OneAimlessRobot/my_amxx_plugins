@@ -242,7 +242,7 @@ public adriano_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 	
-	if(!client_hittable(attacker)||!gHasAdriano[attacker]) return
+	if(!client_hittable(attacker)||!gHasAdriano[attacker]||attacker == id ) return
 
 	if(weapon==CSW_ETHEREAL){
 	

@@ -93,7 +93,7 @@ public noob_damage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker_id = get_user_attacker(id,weapon,bodypart)
 
-	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ) return PLUGIN_CONTINUE
+	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id) return PLUGIN_CONTINUE
 
 	if ( gHasNoobPower[attacker_id] && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
 	{

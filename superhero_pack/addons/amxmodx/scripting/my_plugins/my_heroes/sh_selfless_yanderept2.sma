@@ -809,6 +809,7 @@ public yandere_damage(id)
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new headshot = bodypart == 1 ? 1 : 0
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!client_hittable(attacker)) return PLUGIN_CONTINUE
 	
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
@@ -824,10 +825,10 @@ public yandere_damage(id)
 			
 			new health = get_user_health(id)
 			if(weapon==YANDERE_WEAPON_CLASSID){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", false)
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", headshot)
 			}
 			else  {
-				sh_extra_damage(id, attacker, floatround(extraDamage), "yandere rage", false)
+				sh_extra_damage(id, attacker, floatround(extraDamage), "yandere rage", headshot)
 			}
 			if(gSuperAngry[attacker]){
 				new attacker_name[128],client_name[128]

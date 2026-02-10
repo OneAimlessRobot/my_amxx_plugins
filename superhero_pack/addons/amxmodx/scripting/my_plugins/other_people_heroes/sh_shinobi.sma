@@ -139,7 +139,7 @@ public Event_Damage(id)
 		return PLUGIN_CONTINUE
 
 	new attakerWeapon, attacker = get_user_attacker(id, attakerWeapon)
-	if(!is_user_alive(attacker) || !g_hasShinobi[attacker])
+	if(!is_user_alive(attacker) || !g_hasShinobi[attacker]||attacker == id )
 		return PLUGIN_CONTINUE
 
 	if(attakerWeapon != CSW_KNIFE)

@@ -80,7 +80,7 @@ public plugin_init()
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("CurWeapon", "fire_weapon", "be", "1=1")
+	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("DeathMsg","death","a")
 	
 	g_msgFade = get_user_msgid("ScreenFade");
@@ -573,7 +573,7 @@ public ester_damage(id)
 	new damage= read_data(2)
 	new hitpoint, weapon
 	new attacker = get_user_attacker(id,weapon,hitpoint)
-	if ( !client_hittable(attacker)) return
+	if ( !client_hittable(attacker)||attacker == id) return
 	new origin[3]
 	get_user_origin(id,origin)
 	new origin2[3]

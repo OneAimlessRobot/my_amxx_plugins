@@ -295,7 +295,7 @@ public leviathan_damage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if (attacker <= 0 || attacker > SH_MAXSLOTS) return PLUGIN_CONTINUE
+	if (attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id) return PLUGIN_CONTINUE
 
 	if (gHasLeviathanPowers[attacker] && is_user_alive(id) && attacker!=id) {
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)

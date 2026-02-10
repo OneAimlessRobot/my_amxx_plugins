@@ -431,7 +431,7 @@ public pred_damage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	
-	if ( attacker <=0 || attacker>SH_MAXSLOTS ) return PLUGIN_CONTINUE
+	if ( attacker <=0 || attacker>SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 	
 	if ( gHasPredPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
@@ -449,7 +449,7 @@ public pred_DLdamage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker_id = get_user_attacker(id,weapon,bodypart)
 	
-	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ) return PLUGIN_CONTINUE
+	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id ) return PLUGIN_CONTINUE
 	
 	if ( gHasPredPower[attacker_id] && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
 	{ 

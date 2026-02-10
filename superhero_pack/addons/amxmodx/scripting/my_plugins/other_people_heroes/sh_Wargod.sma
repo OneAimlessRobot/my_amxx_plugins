@@ -174,7 +174,6 @@ public plugin_init()
 	
 	// GET MORE GUNZ!
 	register_event("ResetHUD","newRound","b")
-	register_event("Damage", "Wargod_damage", "b", "2!0")
 	
 	//Shield Restrict
 	shSetShieldRestrict(gHeroName)
@@ -420,7 +419,7 @@ public Wargod_damage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)
 	
-	if ( attacker < 0 || attacker > SH_MAXSLOTS ) return PLUGIN_CONTINUE
+	if ( attacker < 0 || attacker > SH_MAXSLOTS||attacker==id ) return PLUGIN_CONTINUE
 	
 	if ( gHasWargodPower[attacker] && weapon == CSW_DEAGLE && gBullets[attacker] >= 0 && is_user_alive(id) )
 	{

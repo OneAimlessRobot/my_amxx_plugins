@@ -82,7 +82,7 @@ public plugin_init()
 	register_srvcmd("teliko_kd", "teliko_kd")
 	shRegKeyDown(gHeroName, "teliko_kd")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
-	register_event("CurWeapon", "switch_weapon", "be", "1=1", "3>0")
+	register_event("CurWeapon", "switch_weapon", "be", "1=1")
 }
 
 public plugin_natives(){

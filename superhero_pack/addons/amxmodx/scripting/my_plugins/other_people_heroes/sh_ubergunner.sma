@@ -175,7 +175,7 @@ public UberGunner_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
 	if ( gHasUberGunnerPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage

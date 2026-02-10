@@ -68,9 +68,9 @@ public plugin_natives(){
 
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel, V_MODEL)
-	engfunc(EngFunc_PrecacheModel, P_MODEL)
-	engfunc(EngFunc_PrecacheModel, W_MODEL)
+	precache_model( V_MODEL)
+	precache_model( P_MODEL)
+	precache_model( W_MODEL)
 	
 	new i
 	for(i = 0; i < sizeof(Arifle_Sounds); i++){
