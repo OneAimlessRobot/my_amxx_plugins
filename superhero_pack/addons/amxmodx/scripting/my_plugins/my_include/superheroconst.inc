@@ -69,10 +69,10 @@ stock const xp_extra_type_strings[XP_VIP_PROTECT_XP+1][]={
 }
 stock const Float:xp_extra_type_mults[XP_VIP_PROTECT_XP+1]={
 
-	1.0,
+	0.0,
 	10.0,
-	100.0,
-	100.0,
+	10.0,
+	10.0,
 	10.0,
 	5.0,
 	50.0,

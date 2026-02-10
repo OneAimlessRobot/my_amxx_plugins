@@ -47,8 +47,8 @@ public sh_round_start(){
     for(new i=1;i<=SH_MAXSLOTS;i++){
         if(is_user_connected(i)){
             for(new type=0;type<sizeof player_built_xp_this_round[];type++){
-                if(player_built_xp_this_round[i][type]>0){
-                    new xp_earned=player_built_xp_this_round[i][type]*(floatround(xp_extra_type_mults[type]));
+                new xp_earned=player_built_xp_this_round[i][type]*(floatround(xp_extra_type_mults[type]));
+                if(xp_earned>0){
                     sh_chat_message(i,-1,"You were awarded an extra %d xp %s last round!",xp_earned,xp_extra_earn_strings[type])
                     sh_set_user_xp(i,xp_earned,true);
                 }
