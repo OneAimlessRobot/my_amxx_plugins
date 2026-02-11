@@ -8,7 +8,7 @@
 #include <fakemeta_util>
 
 
-#define PLUGIN "Superhero teliko mk2 pt2"
+#define PLUGIN "Superhero molotov funcs"
 #define VERSION "1.0.0"
 #define AUTHOR "Me"
 #define Struct				enum

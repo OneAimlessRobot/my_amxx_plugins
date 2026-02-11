@@ -11,16 +11,13 @@
 #define PAN_P_MODEL "models/shmod/ester/pan/p_knife.mdl"
 #define PAN_V_MODEL  "models/shmod/ester/pan/v_knife.mdl"
 
-#define ESTER_NUM_WEAPON_HIT_SOUNDS 8
+#define ESTER_NUM_WEAPON_HIT_SOUNDS 5
 stock ester_weapon_hit_sounds[ESTER_NUM_WEAPON_HIT_SOUNDS][]={
-	"weapons/esterpan/knife_hitwall1.wav",
 	"weapons/esterpan/knife_slash1.wav",
 	"weapons/esterpan/knife_slash2.wav",
 	"weapons/esterpan/knife_stab.wav",
 	"weapons/esterpan/knife_hit1.wav",
-	"weapons/esterpan/knife_hit2.wav",
-	"weapons/esterpan/knife_hit3.wav",
-	"weapons/esterpan/knife_hit4.wav"
+	"weapons/esterpan/knife_hit2.wav"
 }
 
 #define ESTER_NUM_DEATH_SOUNDS 1 

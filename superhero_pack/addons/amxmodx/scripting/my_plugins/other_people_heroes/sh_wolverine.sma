@@ -33,6 +33,7 @@ new gPcvarHealPoints
 
 #if defined USE_WEAPON_MODEL
 	new const gModelKnife[] = "models/shmod/wolv_knife.mdl"
+	new const gClawsDrawSound[] = "weapons/bladesout.wav"
 	new bool:gModelLoaded
 #endif
 //----------------------------------------------------------------------------------------------
@@ -70,6 +71,8 @@ public plugin_precache()
 	// Method servers 2 purposes, moron check and optional way to not use the model
 	if ( file_exists(gModelKnife) ) {
 		precache_model(gModelKnife)
+
+		engfunc(EngFunc_PrecacheSound,gClawsDrawSound );
 		gModelLoaded = true
 	}
 	else {

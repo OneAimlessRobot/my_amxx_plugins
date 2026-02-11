@@ -136,7 +136,7 @@ public UberGunner_tasks(id)
 public UberGunner_weapons(id)
 {
 	if ( is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_m4a1")
+		sh_give_weapon(id,CSW_M4A1,true)
 	}
 }
 //----------------------------------------------------------------------------------------------

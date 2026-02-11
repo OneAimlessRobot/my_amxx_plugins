@@ -28,12 +28,9 @@ new Float:g_base_er_radius[SH_MAXSLOTS+1]
 new Float:g_normal_er_radius[SH_MAXSLOTS+1]
 
 
-new const erica_knife_sounds[9][]={"weapons/erica_knife/knife_deploy1.wav",
+new const erica_knife_sounds[6][]={"weapons/cod6knife_draw.wav",
 "weapons/erica_knife/knife_hit1.wav",
 "weapons/erica_knife/knife_hit2.wav",
-"weapons/erica_knife/knife_hit3.wav",
-"weapons/erica_knife/knife_hit4.wav",
-"weapons/erica_knife/knife_hitwall1.wav",
 "weapons/erica_knife/knife_slash1.wav",
 "weapons/erica_knife/knife_slash2.wav",
 "weapons/erica_knife/knife_stab.wav"}
