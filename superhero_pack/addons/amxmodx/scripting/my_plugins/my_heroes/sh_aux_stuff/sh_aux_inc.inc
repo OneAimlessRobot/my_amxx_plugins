@@ -1186,7 +1186,17 @@ stock fx_blood(origin[3],origin2[3],HitPlace,bool:alien=false)
 	write_byte(random_num(100,200)) // speed
 	message_end()
 }
+stock strip_weapon_for_my_grenade_heroes(id,const message[]="You ran out",classid=CSW_DEAGLE,bool:optional_bool=true){
 
+	if(optional_bool){
+		if(!is_user_bot(id)){
+			client_print(id, print_center, message)
+		}
+		ham_strip_user_weapon(id, classid, _, false);
+		sh_drop_weapon(id,classid,true)
+		cs_set_user_bpammo(id, classid,0);
+	}
+}
 stock fx_bleed(origin[3],bool:alien=false)
 {
 	// Blood spray

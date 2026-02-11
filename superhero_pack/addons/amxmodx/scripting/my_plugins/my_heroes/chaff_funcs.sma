@@ -5,6 +5,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/stripweapons.inc"
 
 
 #define PLUGIN "Superhero teliko mk2 pt2"
@@ -63,17 +64,7 @@ public CmdStart(id, uc_handle)
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
 			if( !(is_user_alive(id))||!chaff_loaded[id]) return FMRES_IGNORED
-			if(teliko_get_num_chaffs(id) == 0)
-			{
-				
-				if(!is_user_bot(id)){
-					client_print(id, print_center, "You are out of chaffs")
-				}
-				sh_drop_weapon(id,CHAFF_CLASSID,true)
-				engclient_cmd(id, "weapon_knife")
-				uncharge_user(id)
-				return FMRES_IGNORED
-			}
+			
 			if(!chaff_armed[id]){
 				chaff_armed[id]=true
 				curr_charge[id]=0.0
@@ -92,7 +83,6 @@ public CmdStart(id, uc_handle)
 					);
 				}
 				uncharge_user(id)
-				return FMRES_IGNORED
 			}
 			
 		}
@@ -122,7 +112,7 @@ public CmdStart(id, uc_handle)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, CHAFF_CLASSID,teliko_get_num_chaffs(id));
-		
+		strip_weapon_for_my_grenade_heroes(id,"You are out of chaffs",CHAFF_CLASSID,!teliko_get_num_chaffs(id))	
 	}
 	return FMRES_IGNORED;
 }

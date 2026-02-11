@@ -4,6 +4,7 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/stripweapons.inc"
 #include <fakemeta_util>
 
 
@@ -88,17 +89,6 @@ public CmdStart(id, uc_handle)
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
 			if( !(is_user_alive(id))||!molly_loaded[id]) return FMRES_IGNORED
-			if(erica_get_num_mollies(id) == 0)
-			{
-				
-				if(!is_user_bot(id)){
-					client_print(id, print_center, "You are out of mollies sis!!!")
-				}
-				sh_drop_weapon(id,MOLLY_CLASSID,true)
-				engclient_cmd(id, "weapon_knife")
-				uncharge_user(id)
-				return FMRES_IGNORED
-			}
 			if(!molly_armed[id]){
 				molly_armed[id]=true
 				curr_charge[id]=0.0
@@ -115,16 +105,17 @@ public CmdStart(id, uc_handle)
 					);
 				}
 				uncharge_user(id)
-				return FMRES_IGNORED
 			}
 			
 		}
 		else if(molly_armed[id]){
 			if(curr_charge[id]>=min_charge_time){
 				launch_molly(id)
-				client_print(id,print_center,"You have %d mollies left siss!!!! %d left!!!!!",
-				erica_get_num_mollies(id),erica_get_num_mollies(id)
-				);
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %d mollies left siss!!!! %d left!!!!!",
+					erica_get_num_mollies(id),erica_get_num_mollies(id)
+					);
+				}
 			}
 			else if(curr_charge[id]>0.0){
 				sh_chat_message(id,tranq_get_hero_id(),"Chaff not charged! Not launched...");
@@ -140,7 +131,8 @@ public CmdStart(id, uc_handle)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, MOLLY_CLASSID,erica_get_num_mollies(id));
-		
+		strip_weapon_for_my_grenade_heroes(id,"You are out of mollies sis!!!",MOLLY_CLASSID,!erica_get_num_mollies(id))
+	
 	}
 	return FMRES_IGNORED;
 }

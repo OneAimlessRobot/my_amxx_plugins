@@ -3,6 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/stripweapons.inc"
 #include <fakemeta_util>
 
 
@@ -62,16 +63,6 @@ public CmdStart(id, uc_handle)
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
 			if( !(is_user_alive(id))||!sleep_nade_loaded[id]) return FMRES_IGNORED
-			if(ksun_get_num_sleep_nades(id) == 0)
-			{
-				if(!is_user_bot(id)){
-					client_print(id, print_center, "Sorry, dear... No more sleep grenades, I am afraid.")
-				}
-				sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
-				engclient_cmd(id, "weapon_knife")
-				uncharge_user(id)
-				return FMRES_IGNORED
-			}
 			if(!sleep_nade_armed[id]){
 				sleep_nade_armed[id]=true
 				curr_charge[id]=0.0
@@ -88,7 +79,6 @@ public CmdStart(id, uc_handle)
 					);
 				}
 				uncharge_user(id)
-				return FMRES_IGNORED
 			}
 			
 		}
@@ -107,7 +97,6 @@ public CmdStart(id, uc_handle)
 				}
 			}
 			uncharge_user(id)
-			
 		}
 	}
 	else
@@ -116,7 +105,7 @@ public CmdStart(id, uc_handle)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,ksun_get_num_sleep_nades(id));
-		
+		strip_weapon_for_my_grenade_heroes(id,"Sorry, dear... No more sleep grenades, I am afraid.",SLEEP_NADE_CLASSID,!ksun_get_num_sleep_nades(id));
 	}
 	return FMRES_IGNORED;
 }

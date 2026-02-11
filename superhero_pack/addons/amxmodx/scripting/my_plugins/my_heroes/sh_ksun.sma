@@ -372,7 +372,7 @@ ksun_weapons(id)
 {
 
 if ( sh_is_active() && client_hittable(id) && spores_has_ksun(id)) {
-	cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,num_sleep_nades);
+	cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,ksun_get_num_sleep_nades(id));
 	sh_give_weapon(id,SLEEP_NADE_CLASSID,false)
 	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
