@@ -504,12 +504,16 @@ doSwitch() {
 	format(text,255,"PTB: Switching %s with %s.",winnerName,loserName)
 	
 	if(get_pcvar_num(saychat) == 2 || get_pcvar_num(saychat) == 3){
-	set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, -1)
+	//say(text)
+		//set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, 1)
+		//show_hudmessage(0, text )
+		set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, -1)
 		ShowSyncHudMsg(0, g_MyMsgSync, "%s", text)
 		client_print(0,print_chat,"PTB: Switching %s with %s.",winnerName,loserName)
 	}else{
 		doTypesay(text, 5, 0, 255, 0)
 		client_print(0,print_chat,"PTB: Switching %s with %s.",winnerName,loserName)
+		//say(text)
 	}
 }
 
@@ -577,12 +581,16 @@ doTransfer() {
 	format(text,255,"PTB: Transfering %s to the %s",winnerName, (winnerTeam == CTS) ? "Ts" : "CTs")
 	
 	if(get_pcvar_num(saychat) == 2 || get_pcvar_num(saychat) == 3){
-	set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, -1)
+	//say(text)
+		//set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, 1)
+		//show_hudmessage(0, text )
+		set_hudmessage(0, 255, 0, 0.05, 0.25, 0, 6.0, 5.0 , 0.5, 0.15, -1)
 		ShowSyncHudMsg(0, g_MyMsgSync, "%s", text)
 		client_print(0,print_chat,"PTB: Transfering %s to the %s",winnerName, (winnerTeam == CTS) ? "Ts" : "CTs")
 	}else{
 		doTypesay(text, 5, 0, 255, 0)
 		client_print(0,print_chat,"PTB: Transfering %s to the %s",winnerName, (winnerTeam == CTS) ? "Ts" : "CTs")
+		//say(text)
 	}
 }
 
