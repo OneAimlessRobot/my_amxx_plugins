@@ -11,6 +11,7 @@ dracula_pctperlev 0.03	//What percent of damage to give back per level of player
 // v1.17.5 - JTP - Added code to allow you to regen to your max heatlh
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -43,7 +44,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex)
 {
-	if ( !sh_is_active() ) return
+	if ( !sh_is_active() || victim==attacker ) return
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
 	// Should nades not count? maybe remove them later

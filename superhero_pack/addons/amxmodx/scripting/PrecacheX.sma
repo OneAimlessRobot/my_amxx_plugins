@@ -3,41 +3,7 @@
 
 new Array:ArModel, Array:ArSound
 new GTempData[64]
-/*new const UnPrecache_ModelList[ 32 ][ ] = 
-{ 
-	"models/w_battery.mdl", 
-	"models/shield/p_shield_deagle.mdl", 
-	"models/shield/p_shield_fiveseven.mdl", 
-	"models/shield/p_shield_flashbang.mdl", 
-	"models/shield/p_shield_glock18.mdl", 
-	"models/shield/p_shield_hegrenade.mdl", 
-	"models/shield/p_shield_knife.mdl", 
-	"models/shield/p_shield_p228.mdl", 
-	"models/shield/p_shield_smokegrenade.mdl", 
-	"models/shield/p_shield_usp.mdl", 
-	"models/shield/v_shield_deagle.mdl", 
-	"models/shield/v_shield_fiveseven.mdl", 
-	"models/shield/v_shield_flashbang.mdl", 
-	"models/shield/v_shield_glock18.mdl", 
-	"models/shield/v_shield_hegrenade.mdl", 
-	"models/shield/v_shield_knife.mdl", 
-	"models/shield/v_shield_p228.mdl", 
-	"models/shield/v_shield_smokegrenade.mdl", 
-	"models/shield/v_shield_usp.mdl", 
-	"models/w_antidote.mdl", 
-	"models/w_security.mdl", 
-	"models/w_longjump.mdl", 
-	"sprites/WXplo1.spr", 
-	"sprites/bubble.spr", 
-	"sprites/eexplo.spr", 
-	"sprites/fexplo.spr", 
-	"sprites/fexplo1.spr", 
-	"sprites/b-tele1.spr", 
-	"sprites/c-tele1.spr", 
-	"sprites/ledglow.spr", 
-	"sprites/laserdot.spr", 
-	"sprites/explode1.spr" 
-} */
+
 new const UnPrecache_ModelList[ 32][ ] = 
 { 
 	"models/shield/p_shield_deagle.mdl", 
@@ -73,8 +39,21 @@ new const UnPrecache_ModelList[ 32][ ] =
 	"sprites/laserdot.spr", 
 	"sprites/explode1.spr" 
 } 
+//Files that I want to keep go here.
+/*
+"weapons/c4_click.wav", 
+	"weapons/c4_beep1.wav", 
+	"weapons/c4_beep2.wav", 
+	"weapons/c4_beep3.wav", 
+	"weapons/c4_beep4.wav", 
+	"weapons/c4_beep5.wav", 
+	"weapons/c4_explode1.wav", 
+	"weapons/c4_plant.wav", 
+	"weapons/c4_disarm.wav", 
+	"weapons/c4_disarmed.wav", 
+*/
 
-new const UnPrecache_SoundList[117][] = 
+new const UnPrecache_SoundList[107][] = 
 {
 	"items/suitcharge1.wav", 
 	"items/suitchargeno1.wav", 
@@ -112,16 +91,6 @@ new const UnPrecache_SoundList[117][] =
 	"weapons/aug_boltpull.wav", 
 	"weapons/aug_boltslap.wav", 
 	"weapons/aug_forearm.wav", 
-	"weapons/c4_click.wav", 
-	"weapons/c4_beep1.wav", 
-	"weapons/c4_beep2.wav", 
-	"weapons/c4_beep3.wav", 
-	"weapons/c4_beep4.wav", 
-	"weapons/c4_beep5.wav", 
-	"weapons/c4_explode1.wav", 
-	"weapons/c4_plant.wav", 
-	"weapons/c4_disarm.wav", 
-	"weapons/c4_disarmed.wav", 
 	"weapons/elite_reloadstart.wav", 
 	"weapons/elite_leftclipin.wav", 
 	"weapons/elite_clipout.wav", 
