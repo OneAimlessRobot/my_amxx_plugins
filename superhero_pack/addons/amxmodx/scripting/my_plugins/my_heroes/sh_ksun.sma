@@ -450,6 +450,7 @@ public ksun_init()
 		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
 		ksun_set_num_available_spores(id,0)
 	}
+	clean_ksun_spores_from_players(1,0,id);
 }
 //----------------------------------------------------------------------------------------------
 public ksun_kd()
