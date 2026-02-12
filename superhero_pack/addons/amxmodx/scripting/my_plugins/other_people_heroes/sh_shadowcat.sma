@@ -19,7 +19,6 @@ new bool:gHasShadowcat[SH_MAXSLOTS+1]
 new gShadowcatTimer[SH_MAXSLOTS+1]
 new const gSoundShadowcat[] = "ambience/alien_zonerator.wav"
 new gPcvarCooldown, gPcvarClipTime
-new gMsgSync
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -39,7 +38,6 @@ public plugin_init()
 	// LOOP
 	set_task(1.0, "shadowcat_loop", _, _, _, "b")
 
-	gMsgSync = CreateHudSyncObj()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -104,7 +102,7 @@ public sh_hero_key(id, heroID, key)
 
 	// Shadowcat Messsage
 	set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 0.25, 1.2, 0.0, 0.0, -1)
-	ShowSyncHudMsg(id, gMsgSync, "Entered %s Mode^nDon't get Stuck or you will die", gHeroName)
+	show_hudmessage(id, "Entered %s Mode^nDon't get Stuck or you will die", gHeroName)
 
 	emit_sound(id, CHAN_STATIC, gSoundShadowcat, 0.2, ATTN_NORM, 0, PITCH_LOW)
 }
@@ -123,8 +121,7 @@ public shadowcat_loop()
 			noclipTime = gShadowcatTimer[player]
 			if ( noclipTime > 0 ) {
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.2, 0.0, 0.0, -1)
-				ShowSyncHudMsg(player, gMsgSync, "%d second%s left of %s Mode^nDon't get Stuck or you will Die", noclipTime, noclipTime == 1 ? "" : "s", gHeroName)
-
+				show_hudmessage(player, "%d second%s left of %s Mode^nDon't get Stuck or you will Die", noclipTime, noclipTime == 1 ? "" : "s", gHeroName)
 				gShadowcatTimer[player]--
 			}
 			else if ( noclipTime == 0 ) {

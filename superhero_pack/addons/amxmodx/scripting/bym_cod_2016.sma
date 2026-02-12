@@ -30,7 +30,7 @@
 #include < httpx >
 #include < fun >
 
-#tryinclude "cod_xp.cfg"
+#tryinclude "cod_xp.inc"
 
 //=================================================================================================
 //					Preprocesors

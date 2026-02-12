@@ -1,6 +1,6 @@
 #include < amxmodx >
 #include < hamsandwich >
-#include < ByM_Cod_2016 >
+#include < bym_cod_2016 >
 #include < bym_framework >
 #include < colorchat >
 #include < fakemeta >

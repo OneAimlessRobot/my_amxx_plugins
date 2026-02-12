@@ -20,7 +20,6 @@ new gFuseTime[SH_MAXSLOTS+1]
 new const gSoundCountdown[] = "buttons/blip2.wav"
 new const gSoundFvox[11][] = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 new gSpriteSmoke, gSpriteWhite, gSpriteFire
-new gMsgSync
 new pCvarRadius, pCvarFuse, pCvarMaxDamage
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -42,7 +41,6 @@ public plugin_init()
 	// Timer loop
 	set_task(1.0, "kamikaze_check", _, _, _, "b")
 
-	gMsgSync = CreateHudSyncObj()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -107,8 +105,8 @@ public kamikaze_check()
 			}
 			else {
 				// Decrement the counter
-				set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1, -1)
-				ShowSyncHudMsg(player, gMsgSync, "You will explode in %d second%s", fuseTime, fuseTime == 1 ? "" : "s")
+				set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
+				show_hudmessage(player, "You will explode in %d second%s", fuseTime, fuseTime == 1 ? "" : "s")
 
 				// Say Time Remaining to the User Only.
 				if ( fuseTime == 11 ) {
@@ -147,8 +145,8 @@ public blow_up(id)
 	}
 
 	get_user_name(id, name, 31)
-	set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1, -1)
-	ShowSyncHudMsg(0, gMsgSync, "%s has exploded", name)
+	set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
+	show_hudmessage(0,  "%s has exploded", name)
 
 	new players[SH_MAXSLOTS], playerCount, player
 	get_players(players, playerCount, "ah")

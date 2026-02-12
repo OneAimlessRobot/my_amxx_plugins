@@ -147,7 +147,7 @@ public sharky_loop()
         format(message, 127, "%d seconds left of Sharky Mode", g_sharkyTimer[id] )
         set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
         show_hudmessage( id, message)
-	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
+        set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
       }
       else
       {

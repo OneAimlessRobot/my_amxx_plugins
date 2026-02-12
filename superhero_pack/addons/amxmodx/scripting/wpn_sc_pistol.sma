@@ -1,6 +1,5 @@
 #include <amxmodx>
 #include <weaponmod>
-#include <FastTask>
 #define PLUGIN	"Sven Co-Op Pistol"
     #define WPN_NAME "SC PIstol"
 	#define WPN_SHORT "sc_pist"
@@ -98,7 +97,7 @@ public pistol_attack (usr)
 	wpn_playanim( usr , anim_shoot )
 	
 	client_cmd( usr , "-attack" )
-	FastTask(0.05,"pistol_stoprecoil",usr)
+	set_task(0.05,"pistol_stoprecoil",usr)
 }
 public pistol_attack2(usr)
 {
@@ -109,7 +108,7 @@ public pistol_attack2(usr)
 	wpn_playanim( usr , anim_shoot )
 	
 	client_cmd( usr , "+lookup" )
-	FastTask(0.04,"pistol_stoprecoil",usr)
+	set_task(0.04,"pistol_stoprecoil",usr)
 }
 public pistol_stoprecoil(usr)
 {

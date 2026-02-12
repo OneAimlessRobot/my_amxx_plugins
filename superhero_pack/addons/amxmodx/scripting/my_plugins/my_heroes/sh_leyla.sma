@@ -16,7 +16,6 @@ enum{
 	GIVE,
 	CHANGE
 }
-new hud_sync_money
 new starting_money
 new default_money
 new Float:give_radius
@@ -36,7 +35,6 @@ public plugin_init()
 	register_concmd("leyla_stats","print_leyla_stats")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Rich walking bank girl!", "Infinite max money! Donate it to teammates, by going next to them! Set the money with the cmd 'set_leyla_money'! Damage also rewards you!", true, "leyla_level" )
-	hud_sync_money=CreateHudSyncObj()
 	register_event("Money","leyla_money","b")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("leyla_init", "leyla_init")
@@ -232,8 +230,8 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			get_user_name(ent,client_name,127)
 			new client_money=cs_get_user_money(ent)
 			format(hud_msg,127,"[SH] %s: Money of %s: %d+%d",gHeroName,client_name,client_money,gLeylaUserMoney[ent])
-			set_hudmessage(money_color[0], money_color[1], money_color[2], -1.0, -1.0, money_color[3], 0.0, 0.5,0.0,0.0)
-			ShowSyncHudMsg(id, hud_sync_money, "%s", hud_msg)
+			set_dhudmessage(money_color[0], money_color[1], money_color[2], -1.0, -1.0, money_color[3], 0.0, 0.5,0.0,0.0)
+			show_dhudmessage(id, "%s", hud_msg)
 			
 		}	
 		

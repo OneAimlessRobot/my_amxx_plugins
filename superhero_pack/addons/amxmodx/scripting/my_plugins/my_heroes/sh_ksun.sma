@@ -390,7 +390,6 @@ public newRound(id)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_morph(id+KSUN_MORPH_TASKID)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-		init_hud_tasks(id)
 	}
 	return PLUGIN_HANDLED
 }
@@ -440,7 +439,6 @@ public ksun_init()
 		ksun_weapons(id)
 		init_cooldown_update_tasks(id)
 		ksun_set_num_available_spores(id,0)
-		init_hud_tasks(id)
 		
 	
 	}
@@ -448,7 +446,6 @@ public ksun_init()
 		spores_reset_user(id)
 		ksun_unultimate_user(id,_,1)
 		delete_cooldown_update_tasks(id)
-		delete_hud_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
 		ksun_set_num_available_spores(id,0)

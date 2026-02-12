@@ -14,7 +14,6 @@
 new Float:ksun_hold_time,
 	Float:ksun_launcher_base_health,
 	Float:ksun_follow_time;
-new hud_sync_stats
 
 
 
@@ -39,7 +38,6 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
-	hud_sync_stats = CreateHudSyncObj()
 	register_forward(FM_Think, "launcher_think")
 }
 
@@ -61,8 +59,6 @@ public plugin_natives(){
 	register_native("get_follow_time","_get_follow_time",0)
 	
 	
-	register_native("init_hud_tasks","_init_hud_tasks",0)
-	register_native("delete_hud_tasks","_delete_hud_tasks",0)
 	register_native("delete_cooldown_update_tasks","_delete_cooldown_update_tasks",0)
 	register_native("init_cooldown_update_tasks","_init_cooldown_update_tasks",0)
 	
@@ -95,22 +91,7 @@ public ev_SendAudio(){
 	return PLUGIN_CONTINUE
 	
 }
-public _delete_hud_tasks(iPlugins, iParms){
-	
-	new id= get_param(1)
-	remove_task(id+STATUS_UPDATE_TASKID)
-	
-	
-	
-}
 
-public _init_hud_tasks(iPlugins, iParms){
-	
-	new id= get_param(1)
-	set_task(STATUS_UPDATE_PERIOD,"status_hud",id+STATUS_UPDATE_TASKID,"",0,"b")
-	
-	
-}
 public _delete_cooldown_update_tasks(iPlugins, iParms){
 	
 	new id= get_param(1)
@@ -135,62 +116,6 @@ if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
 set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
-public status_hud(id){
-	id-=STATUS_UPDATE_TASKID
-	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_ksun(id))){
-				
-		delete_hud_tasks(id)
-		return
-		
-	}
-	new hud_msg[301];
-	format(hud_msg,300,"[SH] ksun:^nCurrent number of valid kills: %d^nNumber of supply points: %d^n",
-					ksun_get_num_available_spores(id),
-					ksun_get_player_supply_points(id));
-	
-	new color[3];
-	if(!ksun_player_is_ultimate_ready(id)){
-		
-		color[0]=255
-		color[1]=255
-		color[2]=255
-		if(g_player_cooldown_remaining[id]>0){
-			
-			format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
-			g_player_cooldown_remaining[id]);
-		}
-		else{
-		
-		
-			format(hud_msg,300,"%s^n%Mrs. ksun? The launcher is ready.^n",hud_msg)
-		
-			
-			
-		}
-		
-	}
-	else{
-		
-		color[0]=LineColors[PURPLE][0]
-		color[1]=LineColors[PURPLE][1]
-		color[2]=LineColors[PURPLE][2]
-		if(g_player_cooldown_remaining[id]>0){
-			
-			format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
-			g_player_cooldown_remaining[id]);
-		}
-		else{
-			
-			format(hud_msg,300,"%s^nUltimate ready.^n",hud_msg)
-			
-		}
-		
-	}
-	set_hudmessage(color[0], color[1], color[2],1.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
-	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
-	
-	
-}
 
 public launcher_recharge_loop(id){
 	
@@ -198,7 +123,6 @@ public launcher_recharge_loop(id){
 	
 	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_ksun(id))){
 				
-		delete_hud_tasks(id)
 		return
 		
 	}
@@ -476,7 +400,6 @@ public death()
 		if(ksun_get_when_reset_spores()&reset_on_death){
 			spores_reset_user(id)
 		}
-		delete_hud_tasks(id)
 		
 	}
 	

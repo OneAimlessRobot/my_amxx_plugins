@@ -10,7 +10,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
-#define ESTER_HUD_TASKID 23443
+#define ESTER_GLOW_TASKID 23443
 #define ESTER_REVENGE_TASKID 11122
 #define ESTER_MORPH_TASKID 2182722
 
@@ -31,7 +31,6 @@ new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
 
 new bool:g_ester_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new hud_sync
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
 new base_dmg_per_it,dmg_inc_per_inc,num_lvls_for_inc,max_dmg
 new Float:pan_dmg,Float:tmp_dmg_mult
@@ -74,7 +73,6 @@ public plugin_init()
 	register_cvar("ester_moralizing_tmp_xp_get_mult","5.0"); 
 	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
 	
 	register_event("Damage", "ester_damage", "b", "2!0")
@@ -161,7 +159,7 @@ public ester_init()
 		ester_weapons(id)
 		
 		if(!is_user_bot(id)){
-			set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+			set_task( 0.25, "ester_loop", id+ESTER_GLOW_TASKID, "", 0, "b")
 		}
 	}
 	else{
@@ -171,7 +169,7 @@ public ester_init()
 		ester_unmorph(id+ESTER_MORPH_TASKID)
 		
 		if(!is_user_bot(id)){
-			remove_task(id+ESTER_HUD_TASKID)
+			remove_task(id+ESTER_GLOW_TASKID)
 		}
 	}
 	
@@ -360,7 +358,7 @@ public status_hud(id){
 	
 	
 	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
+	show_hudmessage(id, "%s", hud_msg)
 	
 	
 }
@@ -416,14 +414,13 @@ public loadCVARS()
 }//----------------------------------------------------------------------------------------------
 public ester_loop(id)
 {
-	id -= ESTER_HUD_TASKID
+	id -= ESTER_GLOW_TASKID
 	
 	if ( !is_user_connected(id)||!is_user_alive(id)||!gHasEster[id]||!id){
 		
 		return PLUGIN_HANDLED
 		
 	}
-	status_hud(id)
 	if(gPedalIsFloored[id]){
 		
 		sh_set_rendering(id, 8, 255, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
@@ -555,7 +552,7 @@ public sh_client_spawn(id)
 		}
 		
 		if(!is_user_bot(id)){
-			set_task( 0.25, "ester_loop", id+ESTER_HUD_TASKID, "", 0, "b")
+			set_task( 0.25, "ester_loop", id+ESTER_GLOW_TASKID, "", 0, "b")
 		}
 		ester_weapons(id)
 		trail(id,GREEN,0,0)
@@ -750,7 +747,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 public death()
 {
 	new id=read_data(2)
-	remove_task(id+ESTER_HUD_TASKID)
+	remove_task(id+ESTER_GLOW_TASKID)
 	if ( !is_user_connected(id)){
 		return
 	}

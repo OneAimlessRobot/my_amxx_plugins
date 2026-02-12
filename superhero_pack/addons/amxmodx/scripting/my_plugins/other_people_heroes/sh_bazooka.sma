@@ -68,10 +68,6 @@ bazooka_spawndelay 0
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
-#if defined AMX98
-  #include <cmath>
-#endif
-
 #define DT 0.1
 #define PI 3.1415926535897932384626433832795
 

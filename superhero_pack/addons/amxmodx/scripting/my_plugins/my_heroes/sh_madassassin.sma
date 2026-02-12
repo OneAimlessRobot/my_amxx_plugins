@@ -31,7 +31,9 @@ madassassin_healpoints 5	//The # of HP healed per second
 #define AMMO_MODE 0
 
 // Comment out to not use the Awp model
-#define USE_WPN_MODEL
+#define USING_WPN_MODEL 1
+
+#define USE_WPN_MODEL (USING_WPN_MODEL>=1)
 
 // Comment out to not give a free Awp
 #define GIVE_WEAPONS
@@ -72,7 +74,7 @@ public plugin_init()
 	shRegHeroInit(HeroName, "madassassin_init")
 
 	// EVENTS
-#if defined AMMO_MODE < 4 || defined USE_WPN_MODEL
+#if defined USE_WPN_MODEL
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 #endif
 
@@ -195,7 +197,7 @@ switch_model(id)
 }
 #endif
 //----------------------------------------------------------------------------------------------
-#if defined AMMO_MODE < 4 || defined USE_WPN_MODEL
+#if defined USE_WPN_MODEL
 public weapon_change(id)
 {
 	if ( !shModActive() || !HasMadAssassin[id] || !is_user_alive(id) ||!is_user_connected(id) )

@@ -57,7 +57,6 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
-	hud_sync=CreateHudSyncObj()
 	
 	g_msgFade = get_user_msgid("ScreenFade");
 	register_srvcmd("yandere_init", "yandere_init")
@@ -266,8 +265,8 @@ public psychosis_task(id){
 		gHeroName,
 		gPsychosisTime[id]
 		);
-		set_hudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
-		ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
+		set_dhudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
+		show_dhudmessage(id, "%s", hud_msg)
 		sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	}
 	
@@ -1163,8 +1162,8 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 			if(!is_user_bot(a)){
 				if ( distanceBetween < floatround(explode_radius) ) {
-					set_hudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-					show_hudmessage(a, "%s LOST IT!!!!!", name)
+					set_dhudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+					show_dhudmessage(a, "%s LOST IT!!!!!", name)
 				}
 			}
 		}

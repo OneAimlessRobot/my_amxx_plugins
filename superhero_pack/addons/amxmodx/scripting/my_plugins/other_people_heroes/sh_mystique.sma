@@ -20,7 +20,6 @@ new const gMystiqueSound[] = "ambience/disgusting.wav"
 new const CTSkins[4][10] = {"sas", "gsg9", "urban", "gign"}
 new const TSkins[4][10] = {"arctic", "leet", "guerilla", "terror"}
 new pCvarCooldown, pCvarMaxTime, pCvarToggle
-new gMsgSync
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -37,8 +36,6 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Morph into Enemy", "Press the +power key to shapeshift into the Enemy")
 	sh_set_hero_bind(gHeroID)
-
-	gMsgSync = CreateHudSyncObj()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -117,8 +114,8 @@ mystique_morph(id)
 	mystique_sound(id)
 
 	// Message
-	set_hudmessage(200, 200, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1, -1)
-	ShowSyncHudMsg(id, gMsgSync, "%s - YOU NOW LOOK LIKE THE ENEMY", gHeroName)
+	set_hudmessage(200, 200, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1)
+	show_hudmessage(id, "%s - YOU NOW LOOK LIKE THE ENEMY", gHeroName)
 
 	new Float:mystiqueMaxTime = get_pcvar_float(pCvarMaxTime)
 	if ( mystiqueMaxTime > 0.0 ) {
@@ -139,8 +136,8 @@ mystique_unmorph(id)
 
 	mystique_sound(id)
 
-	set_hudmessage(200, 200, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1, -1)
-	ShowSyncHudMsg(id, gMsgSync, "%s - RETURNED TO SELF", gHeroName)
+	set_hudmessage(200, 200, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1)
+	show_hudmessage(id,  "%s - RETURNED TO SELF", gHeroName)
 
 	new Float:cooldown = get_pcvar_float(pCvarCooldown)
 	if ( cooldown > 0.0 ) sh_set_cooldown(id, cooldown)

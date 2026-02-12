@@ -67,6 +67,7 @@ new g_lastWeapon[SH_MAXSLOTS+1]
 new g_prevWeapon[SH_MAXSLOTS+1]
 new g_ssjLevel[4]
 new Float:g_ssjSpeed[4]
+stock vegetto_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailZ
 new g_spriteExplosionG, g_spriteExplosionB, g_spriteExplosionR, g_spriteExplosionO, g_spritePowerUp
@@ -116,7 +117,7 @@ public plugin_init()
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "curweapon", "be", "1=1")
-
+	vegetto_hud_sync=CreateHudSyncObj()
 	// LOG EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
@@ -748,7 +749,7 @@ public vegetto_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 19)
 
 					set_hudmessage(255, 255, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto")
+					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 1
@@ -765,9 +766,8 @@ public vegetto_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 39)
 
 					set_hudmessage(255, 165, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 2")
+					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 2")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-
 					g_isSaiyanLevel[id] = 2
 					ssj_boost(id)
 				}
@@ -782,7 +782,7 @@ public vegetto_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 59)
 
 					set_hudmessage(255, 210, 110, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 3")
+					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 3")
 					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup3.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 3
@@ -801,7 +801,7 @@ public vegetto_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 79)
 
 					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Vegetto - You've turned into Super Vegetto 4")
+					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 4")
 					emit_sound(id, CHAN_WEAPON, "shmod/vegetto_powerup4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)         
         
 					g_isSaiyanLevel[id] = 4
@@ -887,7 +887,7 @@ public shake_n_stun(id)
 			new vegettoName[32]
 			get_user_name(id, vegettoName, 31)
 			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
-			show_hudmessage(vic, "Vegetto - %s has turned Super Saiyan 4", vegettoName)
+			ShowSyncHudMsg(vic,vegetto_hud_sync, "Vegetto - %s has turned Super Saiyan 4", vegettoName)
 		}
 	}
 }

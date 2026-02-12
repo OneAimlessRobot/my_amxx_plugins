@@ -194,8 +194,8 @@ public arcticPredator_kd()
 	// colussus Messsage
 	new message[128]
 	format(message, 127, "Entered Hunting Mode" )
-	set_hudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0,4)
-	show_hudmessage(id, message)
+	set_dhudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
+	show_dhudmessage(id, message)
 	//  emit_sound(id,CHAN_STATIC, g_colussusSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
 	
 	return PLUGIN_HANDLED
@@ -649,8 +649,8 @@ new maxdamage = get_cvar_num("arcticPredator_explode_maxdamage")
 new name[32]
 get_user_name(id,name,31)
 shUnglow(id)
-set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
-show_hudmessage(0,"%s has exploded.",name)
+set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
+show_dhudmessage(0,"%s has exploded.",name)
 new FFOn = get_cvar_num("mp_friendlyfire")
 new origin[3], origin1[3]
 get_user_origin(id,origin)
@@ -693,8 +693,8 @@ if ( gHasArcPredPowers[id] && is_user_alive(id) && is_user_connected(id) && Nigh
 	
 	new messagethree[128]
 	format(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
-	set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
-	show_hudmessage( id, messagethree)
+	set_dhudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
+	show_dhudmessage( id, messagethree)
 }
 }
 //----------------------------------------------------------------------------------------------

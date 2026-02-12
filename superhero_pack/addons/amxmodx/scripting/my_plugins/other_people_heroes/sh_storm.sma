@@ -285,10 +285,6 @@
 			if ( gStormTimer[id]>0 )
 			{
 				gStormTimer[id]--
-				new message[128]
-				format(message, 127, "%d seconds until the Storm will pass", gStormTimer[id] )
-				set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
-				show_hudmessage( id, message)
 			}
 			else
 			{

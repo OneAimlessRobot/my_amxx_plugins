@@ -453,8 +453,8 @@ public darkpred_fire(id)
 			
 			new message[128]
 			format(message, 127, "You Have %d bullet(s) left",gBullets[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
-			show_hudmessage(id, message)
+			set_dhudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
+			show_dhudmessage(id, message)
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1
 		}

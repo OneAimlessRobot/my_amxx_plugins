@@ -1,6 +1,5 @@
 #include <amxmodx>
 #include <weaponmod>
-#include <FastTask>
 #include <fakemeta>
 
 #define PLUGIN	"Sven Co-Op .9mm Assault Rifle"

@@ -37,7 +37,6 @@ public plugin_init()
 	register_srvcmd("lena_init", "lena_init")
 	register_event("ResetHUD","new_spawn","b")
 	shRegHeroInit(gHeroName, "lena_init")
-	prepare_shero_aux_lib()
 }
 public plugin_natives(){
 

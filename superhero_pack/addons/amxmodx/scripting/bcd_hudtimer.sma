@@ -98,9 +98,9 @@ public dispTime()
  
 	if(g_c4timer >= 0)
 	{
-		if(g_c4timer > 13) set_hudmessage(0, 150, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01, -1);
-		else if(g_c4timer > 7) set_hudmessage(150, 150, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01, -1);
-		else set_hudmessage(150, 0, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01, -1);
+		if(g_c4timer > 13) set_hudmessage(0, 150, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01);
+		else if(g_c4timer > 7) set_hudmessage(150, 150, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01);
+		else set_hudmessage(150, 0, 0, -1.0, 0.80, 0, 1.0, 1.0, 0.01, 0.01);
  
 		ShowSyncHudMsg(0, g_msgsync, "C4: %d", g_c4timer);
  

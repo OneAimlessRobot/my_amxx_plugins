@@ -81,8 +81,8 @@ stock Float:VecDist(Float:vVector[3], Float:vVector2[3])
 stock MessageBlock(iMessage, iMessageFlags)
 	return set_msg_block(iMessage, iMessageFlags)
 
-stock GetMessageBlock(iMessage)
-	return get_msg_block(iMessage)
+/*stock GetMessageBlock(iMessage)
+	return get_msg_block(iMessage)*/
 
 stock Float:HLTime()
 	return halflife_time()

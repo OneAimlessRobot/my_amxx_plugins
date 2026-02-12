@@ -71,6 +71,7 @@ new g_prevWeapon[SH_MAXSLOTS+1]
 new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new g_ssjLevel[4]
 new Float:g_ssjSpeed[4]
+stock goku_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailR
 new g_spriteExplosionY, g_spriteExplosionB, g_spriteExplosionR, g_spritePowerUp
@@ -125,7 +126,7 @@ public plugin_init()
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
-
+	goku_hud_sync=CreateHudSyncObj()
 	// LOOP
 	set_task(1.0, "goku_loop", 0, "", 0, "b")
 }
@@ -748,7 +749,7 @@ public goku_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 19)
 
 					set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Goku - You've turned Super Saiyan")
+					ShowSyncHudMsg(id, goku_hud_sync, "Goku - You've turned Super Saiyan")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup1.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 1
@@ -765,7 +766,7 @@ public goku_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 39)
 
 					set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Goku - You've turned Super Saiyan 2")
+					ShowSyncHudMsg(id, goku_hud_sync, "Goku - You've turned Super Saiyan 2")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup2.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 2
@@ -782,7 +783,7 @@ public goku_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 59)
 
 					set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Goku - You've turned Super Saiyan 3")
+					ShowSyncHudMsg(id, goku_hud_sync,"Goku - You've turned Super Saiyan 3")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup3.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 3
@@ -801,7 +802,7 @@ public goku_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 79)
 
 					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Goku - You've turned Super Saiyan 4")
+					ShowSyncHudMsg(id, goku_hud_sync,"Goku - You've turned Super Saiyan 4")
 					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup4.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 4
@@ -887,7 +888,7 @@ public shake_n_stun(id)
 			new gokuName[32]
 			get_user_name(id, gokuName, 31)
 			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
-			show_hudmessage(vic, "Goku - %s has turned Super Saiyan 4", gokuName)
+			ShowSyncHudMsg(id, goku_hud_sync,"Goku - %s has turned Super Saiyan 4", gokuName)
 		}
 	}
 }

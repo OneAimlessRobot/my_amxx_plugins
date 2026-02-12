@@ -465,9 +465,10 @@ new gMenuID = 0
 new gNumHostages = 0
 new gXpBounsC4ID = -1
 
-new xp_and_powers_hud_color[3]={0,255,0}
+//new xp_and_powers_hud_color[3]={0,255,0}
 
-new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2, xp_and_powers_hud_channel
+new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2
+//new xp_and_powers_hud_channel
 
 new bool:gMapBlockWeapons[31]	//1-30 CSW_ constants
 new bool:gXrtaDmgClientKill
@@ -697,7 +698,7 @@ public plugin_init()
 	register_concmd("herolist", "showHeroListCon", ADMIN_ALL, "[search] [start] - Lists/Searches available heroes in console")
 
 	// Hud Syncs for help and hero info, need 2 since help can be on at same time
-	xp_and_powers_hud_channel = CreateHudSyncObj()
+	//xp_and_powers_hud_channel = CreateHudSyncObj()
 	gHelpHudSync = CreateHudSyncObj()
 	gHeroHudSync = CreateHudSyncObj()
 	gMsgSync1 = CreateHudSyncObj()
@@ -2706,14 +2707,14 @@ writeStatusMessage(id, const message[256])
 	if ( !is_user_connected(id) || is_user_bot(id) ) return
 	*/
 	if ( !is_user_connected(id)) return
-	/*// Message is a max of 64 characters including null terminator
+	// Message is a max of 64 characters including null terminator
 	// Place in unreliable stream, not a necessary message
 	message_begin(MSG_ONE_UNRELIABLE, gmsgStatusText, _, id)
 	write_byte(0)
 	write_string(message)
-	message_end()*/
-	set_hudmessage(xp_and_powers_hud_color[0],xp_and_powers_hud_color[1],xp_and_powers_hud_color[2],0.02,0.92,0,0.0,0.90,0.0,0.2)
-	ShowSyncHudMsg(id,xp_and_powers_hud_channel,"%s",message)
+	message_end()
+	/*set_dhudmessage(xp_and_powers_hud_color[0],xp_and_powers_hud_color[1],xp_and_powers_hud_color[2],0.02,0.92,0,0.0,0.90,0.0,0.2)
+	show_dhudmessage(id,xp_and_powers_hud_channel,"%s",message)*/
 	
 }
 //----------------------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ new const AUTHOR[] = "CLLlAgOB"
 new bool:has_minigun[33], m249, bool:atk2[33], bool:atk1[33],
 bool:delay[33], clipp[33],clipstart,g_fwid,bool:delayhud[33],bool:beackup[33],
 mcost,msg[128],bool:frstCLIP[33],g_MaxPlayers,g_guns_eventids_bitsum,bool:haswhpnnmg[33],
-Float:g_lastShot[33], Float:g_nexSound[33], g_plAction[33],bool:g_fix_punchangle[33],
+Float:g_lastShot[33], Float:g_nextSound[33], g_plAction[33],bool:g_fix_punchangle[33],
 bool:canfire[33],oneround,only_adminCB,MsgSayText,g_normal_trace[33],DMGMG,bool:user_bot[33],
 bool:is_alive[33],bool:is_connected[33]
 // Blood

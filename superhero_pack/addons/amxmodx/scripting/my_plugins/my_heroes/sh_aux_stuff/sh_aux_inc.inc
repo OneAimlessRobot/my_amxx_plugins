@@ -42,7 +42,8 @@
 #define BLOOD_LG_NUM 2
 stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 	blood_small_red[BLOOD_SM_NUM] = {190,191,192,193,194,195,196,197}
-	
+
+
 static const burn_decal[5] = {199,200,201,202,203}
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 stock g_msgFade
@@ -96,7 +97,8 @@ stock m_trail
 stock gSpriteLaser,blood1,blood2,sprite1;
 stock g_iFireSprite, g_iSmokeSprite[2];
 stock gSpriteSmoke, gSpriteFire, gSpriteBurning
-
+stock hero_spawn_hud_msg_sync
+stock tracker_hud_msg_sync
 //gibs
 stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
 stock trail_custom(ent_id,color[4]={255,255,255,255},life=3,width=10){
@@ -298,7 +300,7 @@ public track_task(array[],id){
 	distance = get_distance(eorigin, origin)
 	format(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
 	set_hudmessage(LineColorsWithAlpha[ORANGE][0], LineColorsWithAlpha[ORANGE][1], LineColorsWithAlpha[ORANGE][2],  0.0, 0.2, 0, 0.0, 1.0)
-	ShowSyncHudMsg(array[0],array[1], "%s", hud_msg)
+	ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
 	detect_user(array[0],id,vEnd);
 	IVecFVec(origin,Pos)
 	IVecFVec(eorigin,vEnd)
@@ -1102,12 +1104,12 @@ stock Float:angle_between_vectors_radians(Float:input_a[3], Float:input_b[3], ve
 stock prepare_shero_aux_lib(){
 	
 	xs_seed(get_systime(0));
+	hero_spawn_hud_msg_sync =CreateHudSyncObj()
+	tracker_hud_msg_sync =CreateHudSyncObj()
 }
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){
-	
-	
-	xs_seed(get_systime(0));
+
 	white = precache_model("sprites/shockwave.spr")
 	fire = precache_model("sprites/zerogxplode.spr")
 	gSpriteLaser = precache_model("sprites/laserbeam.spr")
@@ -1126,6 +1128,7 @@ stock precache_explosion_fx(){
 	gSpriteBurning = precache_model("sprites/xfire.spr")
 	precache_gibs()
 	precache_sound(NULL_SOUND)
+	prepare_shero_aux_lib()
 	
 	
 }

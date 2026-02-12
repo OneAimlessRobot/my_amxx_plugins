@@ -10,7 +10,6 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
-#define TELIKO_TASKID 12812
 
 #define COUNTER_SHOT_SFX "shmod/Teliko/counter.wav"
 #define COUNTER_MEGA_SFX "shmod/Teliko/MEGA_counter.wav"
@@ -18,7 +17,6 @@
 #define PRE_FIRST_BLOOD_SFX "shmod/Teliko/deagle-om.wav"
 
 stock const famas_g2_v_model[]	=	"models/shmod/teliko/teliko_famas/v_famas.mdl"
-//new const famas_g2_w_model[]	=	"models/shmod/teliko/teliko_famas_g2/w_famas.mdl"
 stock const famas_g2_p_model[]	=	"models/shmod/teliko/teliko_famas/p_famas.mdl"
 stock const famas_g2_sounds[5][]= {"weapons/teliko_famas/famassooom-2.wav",
 								"weapons/teliko_famas/famassooom-1.wav",
@@ -41,7 +39,6 @@ new gLastClipCount[SH_MAXSLOTS+1]
 
 new bool:g_teliko_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
-new hud_sync
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
 new gHeroLevel
 new famas_level_diff
@@ -70,7 +67,6 @@ public plugin_init()
 	register_cvar("Teliko_mega_counter_stun_speed_div", "3.0")
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
 	register_event("ResetHUD","newRound","b")
-	hud_sync = CreateHudSyncObj()
 	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level" )
 	teliko_set_hero_id(gHeroID)
 	register_event("Damage", "Teliko_damage", "b", "2!0")
@@ -156,18 +152,9 @@ public teliko_init()
 		Teliko_weapons(id);
 		reset_teliko_user(id)
 		update_max_bullets(id)
-		
-		
-		if(!is_user_bot(id)){
-			set_task( 0.2, "teliko_loop", id+TELIKO_TASKID, "", 0, "b")
-		}
 	}
 	else{
 		reset_teliko_user(id)
-		
-		if(!is_user_bot(id)){
-			remove_task(id+TELIKO_TASKID)
-		}
 		sh_drop_weapon(id, TELIKO_SIDEARM_CLASSID, true)
 		sh_drop_weapon(id, TELIKO_RIFLE_CLASSID, true)
 		slitter_set_slitter(id,0)
@@ -211,17 +198,6 @@ public remove_enemy(id){
 	
 }
 
-public status_hud(id){
-	
-	new hud_msg[1000];
-	
-	format(hud_msg,500,"[SH] %s:^nSlit kills left: %d^n%d counter bullet%s of %d left^n",gHeroName,
-	slitter_get_slit_kills(id),g_counter_bullets[id], g_counter_bullets[id] == 1 ? "" : "s", g_max_counter_bullets[id]);
-	set_hudmessage(255, 255, 255, 0.0, 0.2, 0, 0.0, 2.0,0.0,0.0)
-	ShowSyncHudMsg(id, hud_sync, "%s", hud_msg)
-	
-	
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -257,19 +233,6 @@ MEGA_COUNTER_EFFECTS_THRESHOLD=get_cvar_num("Teliko_mega_counter_effects_thresho
 max_inc_lvl_inc=get_cvar_num("Teliko_max_plus_lvl_inc")
 max_bullets_p_inc=get_cvar_num("Teliko_max_bullets_per_inc")
 start_counter_bullets=get_cvar_num("Teliko_start_counter_bullets")
-}
-//----------------------------------------------------------------------------------------------
-public teliko_loop(id)
-{
-id -= TELIKO_TASKID
-
-if ( !is_user_connected(id)||!is_user_alive(id)||!gHasTeliko[id]){
-	
-	return PLUGIN_HANDLED
-	
-}
-status_hud(id)
-return PLUGIN_HANDLED
 }
 public sh_client_spawn(id)
 {

@@ -21,7 +21,6 @@ new g_flora_previous_weapon[SH_MAXSLOTS+1]
 new gFloraHeroLvl
 new teamglow_on
 new gHeroID
-new hud_sync_stats
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,7 +39,6 @@ public plugin_init()
 	register_srvcmd("flora_init", "flora_init")
 	shRegHeroInit(gHeroName, "flora_init")
 	
-	hud_sync_stats=CreateHudSyncObj()
 	register_srvcmd("flora_kd", "flora_kd")
 	shRegKeyDown(gHeroName, "flora_kd")
 	register_srvcmd("flora_ku", "flora_ku")
@@ -88,19 +86,7 @@ public _flora_get_hero_lvl(iPlugins,iParams){
 	
 	
 }
-delete_hud_tasks(id){
-	
-	remove_task(id+STATUS_UPDATE_TASKID)
-	
-	
-	
-}
 
-init_hud_tasks(id){
-	set_task(STATUS_UPDATE_PERIOD,"status_hud",id+STATUS_UPDATE_TASKID,"",0,"b")
-	
-	
-}
 public _flora_get_user_num_fields(iPlugin,iParams){
 	new id=get_param(1)
 	
@@ -132,50 +118,6 @@ public _flora_get_hero_id(iPlugin,iParams){
 	return gHeroID
 
 }
-public status_hud(id){
-	id-=STATUS_UPDATE_TASKID
-	if(!flora_get_has_flora(id)||!client_hittable(id)||!sh_is_active()){
-		
-		delete_hud_tasks(id)
-		return
-		
-	}
-	new hud_msg[301];
-	format(hud_msg,300,"[SH] flora:^nNumber active fields: %d^nNumber of fields left: %d^n",
-					flora_get_user_num_active_fields(id),
-					flora_get_user_num_fields(id));
-				
-	if(debug_hud_mode){
-		format(hud_msg,300,"%sAre you cloaked? %s^nAre you airborne? %s^nAre you crouched? %s^nWhat is your current inside field? %d^nWhat is your previous inside field? %d^n",
-							hud_msg,
-							flora_get_user_is_cloaked(id)?"Yes":"No",
-							flora_get_user_is_airborne(id)?"Yes":"No",
-							flora_get_user_is_crouched(id)?"Yes":"No",
-							flora_get_curr_inside(id),
-							flora_get_prev_inside(id))
-	}
-	
-	new color[3];
-	color[0]=LineColors[GREEN][0]
-	color[1]=LineColors[GREEN][1]
-	color[2]=LineColors[GREEN][2]
-	if(!field_loaded(id)){
-			
-		format(hud_msg,300,"%s^nCooldown_remaining_value: %0.2f^n",hud_msg,
-		field_get_user_field_cooldown(id));
-	}
-	else{
-		
-		
-		format(hud_msg,300,"%s^nnext field ready^n",hud_msg)
-		
-			
-			
-	}
-	set_hudmessage(color[0], color[1], color[2],0.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
-	ShowSyncHudMsg(id, hud_sync_stats, "%s", hud_msg)
-		
-}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
@@ -185,9 +127,6 @@ public newRound(id)
 	}
 	if ( flora_get_has_flora(id)) {
 		reset_flora_user(id)
-		if(!is_user_bot(id)){
-			init_hud_tasks(id)
-		}
 		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
@@ -222,18 +161,12 @@ public flora_init()
 	if ( gHasFlora[id] )
 	{
 		reset_flora_user(id)
-		if(!is_user_bot(id)){
-			init_hud_tasks(id)
-		}
 		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	else{
 		reset_flora_user(id)
-		if(!is_user_bot(id)){
-			delete_hud_tasks(id)
-		}
 		flora_unmorph(id+FLORA_MORPH_TASKID)
 	}
 }
@@ -286,9 +219,6 @@ public flora_unmorph(id)
 public client_disconnected(id){
 	
 	reset_flora_user(id)
-	if(!is_user_bot(id)){
-		delete_hud_tasks(id)
-	}
 	flora_unmorph(id+FLORA_MORPH_TASKID)
 	gHasFlora[id]=0;
 
@@ -390,9 +320,6 @@ if(is_user_connected(id)){
 	if(flora_get_has_flora(id)){
 		reset_flora_user(id)
 		flora_unmorph(id+FLORA_MORPH_TASKID)
-		if(!is_user_bot(id)){
-			delete_hud_tasks(id)
-		}
 	}
 }
 }
