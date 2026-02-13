@@ -56,7 +56,7 @@ public slayer_loop()
 				get_user_name(id,slayer_name,127)
 				sh_chat_message(id, heroID,"You removed %s's godmode!",name)
 				sh_chat_message(aid, heroID,"%s removed your godmode!",slayer_name)
-				shExtraDamage(id, id, get_user_health(id)/2, "Slayer Sacrifice" )
+				sh_extra_damage(id, id, get_user_health(id)/2, "Slayer Sacrifice" )
 				ultimateTimer(id, get_cvar_float("slayer_cooldown"))
 				gPlayerUltimateUsed[id]=true
 			}
@@ -75,8 +75,8 @@ public slayer_damage(id)
     if ( gHasSlayerPowers[attacker] && (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = random_num(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
-		shExtraDamage(attacker, attacker, get_user_health(attacker)/2, "Slayer Sacrifice" )
-		shExtraDamage(id, attacker, get_user_health(id), "Assassination" )		
+		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2, "Slayer Sacrifice" )
+		sh_extra_damage(id, attacker, get_user_health(id), "Assassination" )		
       }
     }
     return PLUGIN_CONTINUE

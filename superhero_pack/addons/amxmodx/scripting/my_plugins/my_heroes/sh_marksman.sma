@@ -187,12 +187,12 @@ public Marksman_damage(id)
 
 	if ( gHasMarksman[attacker] && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "SVD-Dragunov", headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "SVD-Dragunov", headshot)
 	
 	}
 	else if(gHasMarksman[attacker] && weapon == CSW_SG550 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * PSG1_DMG_Mult - damage)
-		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "PSG-1", headshot)
+		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "PSG-1", headshot)
 			
 	}
 }

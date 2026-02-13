@@ -576,7 +576,7 @@ if ( gHasArcPredPowers[attacker] && weapon == CSW_SCOUT && is_user_alive(id) && 
 	
 	// do extra damage
 	new extraDamage = 1000
-	shExtraDamage( id, attacker, extraDamage, "predator gun", headshot )
+	sh_extra_damage( id, attacker, extraDamage, "predator gun", headshot )
 }
 return PLUGIN_CONTINUE
 }
@@ -883,7 +883,7 @@ else
 	new ffOn = get_cvar_num("mp_friendlyfire")
 	if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	{
-		shExtraDamage(victim, killer, damage, "Predator's Hunter Disc")
+		sh_extra_damage(victim, killer, damage, "Predator's Hunter Disc")
 		get_user_origin(victim, vicOrigin)
 		here_blood_spray(victim, vicOrigin)
 	}

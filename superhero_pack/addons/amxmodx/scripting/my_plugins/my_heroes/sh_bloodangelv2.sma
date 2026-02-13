@@ -253,7 +253,7 @@ public darkangel_damage(id)
 		}
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
-			shExtraDamage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", headshot)
+			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", headshot)
 		}
 		do_knockback(id,extraDamage);
 	}

@@ -331,7 +331,7 @@ public fire_laser(id)
 			}
 		
 		// Deal the damage...
-		shExtraDamage(tid, id, damage, "Predator Laser")
+		sh_extra_damage(tid, id, damage, "Predator Laser")
 	}  
 }  
 
@@ -437,7 +437,7 @@ public pred_damage(id)
 	{
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("pred_knifemult") - damage)
-		shExtraDamage( id, attacker, extraDamage, "Super Knife" )
+		sh_extra_damage( id, attacker, extraDamage, "Super Knife" )
 	}
 	return PLUGIN_CONTINUE
 }

@@ -59,6 +59,7 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ksun_kd")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	register_forward(FM_PlayerPreThink, "ksun_prethink")
+	prepare_shero_aux_lib()
 }
 public plugin_natives(){
 	
@@ -116,6 +117,7 @@ stock covert_spike_damage(id){
 				}
 				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
 				ExecuteHam(Ham_TakeDamage,payer,Ent,id,healthXtracted,DMG_GENERIC);
+				sh_damage_display_stock(payer,id,true,false,floatround(healthXtracted))
 				remove_entity(Ent)
 				heal(id,healthXtracted)
 				
@@ -205,18 +207,6 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 						}
 					}
 				}
-				else{
-					
-					if(spores_has_ksun(id)){
-						ksun_inc_player_supply_points(attacker,floatround(damage))
-						ksun_dec_player_supply_points(id,floatround(damage))
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,spores_ksun_hero_id(),"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
-						}
-					}
-					
-					
-				}
 			}
 		}
 	
@@ -236,6 +226,10 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 
 		return HAM_IGNORED;
 
+	}
+	if(sh_clients_are_same_team(id,attacker)){
+
+		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
 	switch(hitgroup){
@@ -704,7 +698,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type){
 	
 	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
 	

@@ -100,7 +100,7 @@ public rattler_damage(id)
 		new returnDamage = floatround( ( gPlayerLevels[id] * get_cvar_float("rattler_dmgreturn") ) * damage )
 		if (returnDamage > 0)
 		{
-			shExtraDamage( attacker, id, returnDamage, "Rattler shockwave force field" )
+			sh_extra_damage( attacker, id, returnDamage, "Rattler shockwave force field" )
 
 			new iRed,iGreen,iBlue,iWidth,iNoise
 			iRed = random_num(0,100)

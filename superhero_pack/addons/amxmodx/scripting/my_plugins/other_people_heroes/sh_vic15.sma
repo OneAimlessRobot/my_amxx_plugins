@@ -235,7 +235,7 @@ public vic15_auraloop()
 				get_user_origin(enemy, eOrigin)
 				Distance = get_distance(Origin, eOrigin)
 				if (Distance < Radius){
-					shExtraDamage(enemy, id, Pain, "Victim 15/21 Aura")
+					sh_extra_damage(enemy, id, Pain, "Victim 15/21 Aura")
 				} //distance
 			} //enemy loop
 		} //power check

@@ -147,7 +147,7 @@ public steel_damage(id)
 		get_weaponname(weapon, wpn, 31)
 		replace(wpn, 31, "weapon_", "")
 
-		shExtraDamage(id, attacker, extraDamage, wpn, headshot)
+		sh_extra_damage(id, attacker, extraDamage, wpn, headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

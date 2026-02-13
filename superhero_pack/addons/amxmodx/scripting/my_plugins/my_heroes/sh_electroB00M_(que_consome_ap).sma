@@ -237,7 +237,7 @@ public ElectroB00M_instant(x, id)
 new ElectroB00MDamage=get_pcvar_num(pCvarElectroB00MDamage)
 lightning_effect(id, x)
 emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-shExtraDamage( x, id, ElectroB00MDamage, "ElectroB00M 's Mad Tesla Coil" )
+sh_extra_damage( x, id, ElectroB00MDamage, "ElectroB00M 's Mad Tesla Coil" )
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------

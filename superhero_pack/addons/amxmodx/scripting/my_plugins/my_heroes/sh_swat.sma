@@ -147,12 +147,12 @@ public swat_damage(id)
 	if ( g_hasSwatPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "swat_m4a1", headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "swat_m4a1", headshot)
 	}
 
 	else if(g_hasSwatPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
-		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "tactical_knife", headshot)
+		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "tactical_knife", headshot)
 	}
 	return PLUGIN_CONTINUE
 }

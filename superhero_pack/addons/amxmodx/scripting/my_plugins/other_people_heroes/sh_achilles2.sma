@@ -107,7 +107,7 @@ public achilles_damage(id)
 		get_weaponname(wpnid,wpn,31) // if a weapon was used, the weapon name is used
 	
 	replace(wpn, 31, "weapon_", "" )
-	shExtraDamage(id, attacker, extradamage, wpn)
+	sh_extra_damage(id, attacker, extradamage, wpn)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------

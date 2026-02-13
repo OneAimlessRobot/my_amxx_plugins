@@ -426,7 +426,7 @@ public thrashy_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(float(damage)*ak_dmgmult-float(damage));
-		shExtraDamage( id, attacker, extraDamage, "supermegaEPICTHRASHER", headshot )
+		sh_extra_damage( id, attacker, extraDamage, "supermegaEPICTHRASHER", headshot )
 		if(extraDamage>=health){
 			set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 0);
 			// do turn down that awful racket..to be replaced by a blood spurt!
@@ -484,7 +484,7 @@ public BlowUp(id,bool:died)
 					dRatio = float(distanceBetween) / float(damradius)
 					damage = maxdamage - floatround( maxdamage * dRatio)
 				}
-				shExtraDamage(a, id, damage, "Mega spy movie shit")
+				sh_extra_damage(a, id, damage, "Mega spy movie shit")
 			} // distance
 		} // alive
 	} // loop

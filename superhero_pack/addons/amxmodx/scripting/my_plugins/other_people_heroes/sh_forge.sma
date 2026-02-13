@@ -171,7 +171,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				dRatio = floatdiv(float(dist),float(damradius))
 				damage = maxdamage - floatround( maxdamage * dRatio)
 
-				shExtraDamage(i, id, damage, "Concussion Missile" )
+				sh_extra_damage(i, id, damage, "Concussion Missile" )
 
 				//cannot get this to function properly
 				new Float: force = get_cvar_float("Forge_force")

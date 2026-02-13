@@ -32,7 +32,7 @@
 
 #define PLUGIN "Call of Duty: MW4 Mod"
 #define VERSION "1.3.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 new sprite_white;
 new sprite_blast;

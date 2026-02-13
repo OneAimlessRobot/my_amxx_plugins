@@ -114,7 +114,7 @@ public riddick_damage(id)
 	if ( ghasRiddickPowers[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
-		if (extraDamage > 0) shExtraDamage( id, attacker, extraDamage, "knife", headshot )
+		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "knife", headshot )
 	}
 	return PLUGIN_CONTINUE
 }

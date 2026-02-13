@@ -307,7 +307,7 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type){
 	
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){

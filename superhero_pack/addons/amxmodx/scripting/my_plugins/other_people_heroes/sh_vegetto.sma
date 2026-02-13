@@ -602,7 +602,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				// Lessen damage taken by self by half
 				if ( vic == id ) damage = floatround(damage / 2.0)
 
-				shExtraDamage(vic, id, damage, damageName)
+				sh_extra_damage(vic, id, damage, damageName)
 
 				// Make them feel it
 				sh_screenShake(vic, 10, 10, 10)

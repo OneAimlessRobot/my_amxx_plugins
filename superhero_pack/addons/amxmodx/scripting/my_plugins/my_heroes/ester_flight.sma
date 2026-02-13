@@ -11,7 +11,7 @@
 
 #define PLUGIN "Superhero ester flight funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 

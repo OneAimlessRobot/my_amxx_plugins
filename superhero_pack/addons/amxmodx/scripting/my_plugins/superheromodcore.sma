@@ -7,9 +7,9 @@
 // XP Saving Method
 // **Make sure only ONE is uncommented**
 //#define SAVE_METHOD 1		//Saves XP to vault.ini (Note: Use also for non-save xp to avoid loading extra modules)
-#define SAVE_METHOD 2		//Saves XP to superhero nVault (default)
+//#define SAVE_METHOD 2		//Saves XP to superhero nVault (default)
 //#define SAVE_METHOD 3		//Saves XP to a MySQL database
-
+#define SAVE_METHOD 3
 /****************************************************************************
 *
 *   Version 1.2.1 - Date: ??/??/20??
@@ -176,7 +176,7 @@
 *	- Added functionality to remeber XP for bots by thier names
 *	- Eliminated cpalive CVAR, set sh_cmdprojector to "2" for the same effect
 *	- Heroes using extradamage now send the correct weapon name if they are only multiplying the damage
-*	- Added ability to send shExtraDamage as a headshot so the kill shows up correctly
+*	- Added ability to send sh_extra_damage as a headshot so the kill shows up correctly
 *	- Fixed small bug in playerskills console output
 *	- Fixed version CVAR so it will change when upgrading without a server restart
 *	- Plugin tries to make SQL tables if they don't exist already
@@ -205,7 +205,7 @@
 *	- Fixed some stuff in the include for AMXX
 *	- Reworked vault data parsing to remove hardcoded limit of loading only 20 skills (heroes)
 *	- Rewrote readINI function to use new strbrkqt stock
-*	- Moved all the shExtraDamage code into the core
+*	- Moved all the sh_extra_damage code into the core
 *	- Fixed readXP so it will not get processed more than once on a player
 *	- Added new hero command to set a shield restriction (see sh_batman.sma for example)
 *	- Found a more reliable way to detect hostage rescue and get players id
@@ -465,10 +465,7 @@ new gMenuID = 0
 new gNumHostages = 0
 new gXpBounsC4ID = -1
 
-//new xp_and_powers_hud_color[3]={0,255,0}
-
 new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2
-//new xp_and_powers_hud_channel
 
 new bool:gMapBlockWeapons[31]	//1-30 CSW_ constants
 new bool:gXrtaDmgClientKill
@@ -613,7 +610,7 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF)
 	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 
 
@@ -2926,7 +2923,6 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 	return HAM_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-//native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const dmgOrigin[3] = {0,0,0},dmg_type=DMG_GENERIC);
 public _sh_extra_damage()
 {
 	new victim = get_param(1)
@@ -2951,11 +2947,12 @@ public _sh_extra_damage()
 	new Float:dmgOrigin[3]
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
+	new thrashbrat_dmg_type=get_param(11)
 	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,1)
 	new preparedWpnDescription=PrepareArray(wpnDescription,32,1)
 	
 	new the_dmg_return_value=DMG_FWD_PASS
-	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type)){
+	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type,thrashbrat_dmg_type)){
 		server_print("Sh damage forward execute error.");
 	}
 	new health = get_user_health(victim)

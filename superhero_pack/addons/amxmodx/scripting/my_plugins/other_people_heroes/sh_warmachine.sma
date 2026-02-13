@@ -306,7 +306,7 @@ public warmachine_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("warmachine_dmgmult") - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, weaponName, headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, weaponName, headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 
 #define PLUGIN "Superhero yandere jetty funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 
@@ -316,10 +316,10 @@ public OnCmdStart(id,uc_handle)
 	g_jetplane_airbrakes[id]=(button &  IN_DUCK)
 	g_jetplane_upflapon[id]=(button & IN_FORWARD)
 	g_jetplane_downflapon[id]=(button &  IN_BACK)
-	g_jetplane_leftflapon[id]=(button & IN_MOVELEFT)
-	g_jetplane_rightflapon[id]=(button &  IN_MOVERIGHT)
-	g_jetplane_left_rollflapon[id]=(button & IN_LEFT)
-	g_jetplane_right_rollflapon[id]=(button &  IN_RIGHT)
+	g_jetplane_leftflapon[id]=(button & IN_LEFT)
+	g_jetplane_rightflapon[id]=(button &  IN_RIGHT)
+	g_jetplane_left_rollflapon[id]=(button & IN_MOVELEFT)
+	g_jetplane_right_rollflapon[id]=(button &  IN_MOVERIGHT)
 	if((button & IN_FORWARD)){
 		
 		button&=~IN_FORWARD

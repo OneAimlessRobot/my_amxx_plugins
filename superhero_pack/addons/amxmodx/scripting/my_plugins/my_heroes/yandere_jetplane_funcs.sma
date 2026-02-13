@@ -15,7 +15,7 @@
 
 #define PLUGIN "Superhero yandere jetty funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 
@@ -76,6 +76,7 @@ public plugin_init()
 	}
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
+	hud_sync_jetplane=CreateHudSyncObj();
 	
 }
 
@@ -452,6 +453,7 @@ public FwdTouchWorld( jet, World ) {
 			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp)
 			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME)
 			jet_destroy(owner)
+			user_kill(owner)
 			return FMRES_IGNORED
 			
 		}
@@ -886,7 +888,7 @@ public jet_hud_task(id){
 		get_user_jet_rockets(owner),
 		get_user_jet_scans(owner));
 	set_hudmessage(jetplane_color[0], jetplane_color[1], jetplane_color[2], 0.15, 1.9, 1, 0.0, 0.5,0.0,0.0)
-	show_hudmessage(owner, "%s", hud_msg)
+	ShowSyncHudMsg(owner,hud_sync_jetplane, "%s", hud_msg)
 	
 	
 	g_jetplane_telemetry_data[owner][0]+=JET_HUD_PERIOD

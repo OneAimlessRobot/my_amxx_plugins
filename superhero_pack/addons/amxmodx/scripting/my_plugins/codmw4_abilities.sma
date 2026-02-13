@@ -18,7 +18,7 @@
 
 #define PLUGIN "Call of Duty: MW4 abilities"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 public plugin_init(){

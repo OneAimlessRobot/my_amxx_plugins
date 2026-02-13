@@ -135,7 +135,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	if((weapon==CSW_SCOUT)&&gHasJaqueo[idattacker]){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
-			shExtraDamage(this, idattacker, floatround(extraDamage), "Jaqueo scout", headshot)
+			sh_extra_damage(this, idattacker, floatround(extraDamage), "Jaqueo scout", headshot)
 			
 		}
 	}

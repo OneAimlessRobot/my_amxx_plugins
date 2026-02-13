@@ -153,7 +153,7 @@ public bishop_damage(id)
 
 		// Deal Extra Damage
 		new energyDamage = floatround(get_cvar_float("bishop_damagemult") * g_absorbedDamage[attacker])
-		if ( energyDamage > 0 ) shExtraDamage(id, attacker, energyDamage, weaponName, headshot)
+		if ( energyDamage > 0 ) sh_extra_damage(id, attacker, energyDamage, weaponName, headshot)
 
 		// Should extra weapon damage be made to cost energy points?
 	}
@@ -178,7 +178,7 @@ public release_energy(id)
 			get_user_origin(vic, vicOrigin)
 
 			if ( get_distance(userAim, vicOrigin) <= 150 ) {
-				shExtraDamage(vic, id, blastDamage, "Energy Blast")
+				sh_extra_damage(vic, id, blastDamage, "Energy Blast")
 				hit[id] = true
 			}
 		}

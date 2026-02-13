@@ -115,7 +115,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	{
 	new extraDamage = floatround(damage * get_cvar_float("mrhydrogen_knifemult") - damage)
 	if (extraDamage > 0)
-	shExtraDamage(id, attacker, extraDamage, "knife", headshot)
+	sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
 	if (!gIsHitByMrHydrogen[id])
 	{
 	gIsHitByMrHydrogen[id] = true

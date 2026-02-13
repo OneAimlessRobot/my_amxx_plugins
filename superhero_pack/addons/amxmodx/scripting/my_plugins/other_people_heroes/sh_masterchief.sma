@@ -387,7 +387,7 @@ public masterchief_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarP90DmgMult) - damage)
 		if ( extraDamage > 0 )
-			shExtraDamage(id, attacker, extraDamage, "p90", headshot)
+			sh_extra_damage(id, attacker, extraDamage, "p90", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

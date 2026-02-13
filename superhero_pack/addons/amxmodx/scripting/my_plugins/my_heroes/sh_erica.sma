@@ -391,7 +391,7 @@ public erica_damage(id)
 	
 	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
 	if (floatround(extraDamage)>0){
-		shExtraDamage(id, attacker, floatround(extraDamage), "Hype shot", headshot)
+		sh_extra_damage(id, attacker, floatround(extraDamage), "Hype shot", headshot)
 			
 	}
 	get_speed_dmg_in_radius(attacker,extraDamage+damage)

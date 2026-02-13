@@ -975,11 +975,11 @@ public tracer(Float:start[3], Float:end[3])
 
 public duplicate_damage(id,attacker_id)
 {
-	shExtraDamage(id, attacker_id, get_pcvar_num(pCvardamage), "Shadow Clone")
+	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvardamage), "Shadow Clone")
 }
 public rasengan_damage(id,attacker_id)
 {
-	shExtraDamage(id, attacker_id, get_pcvar_num(pCvarrdamage), "Rasengan")
+	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvarrdamage), "Rasengan")
 }
 
 public summoning_ring_effects(id)

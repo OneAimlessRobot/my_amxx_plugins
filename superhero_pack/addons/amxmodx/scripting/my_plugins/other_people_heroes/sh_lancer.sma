@@ -426,7 +426,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				if( vic == id ) damage = floatround(damage / 2.0)
 
 				// Need hurt sound and small screen shake
-				shExtraDamage(vic, id, damage, "lancerz")
+				sh_extra_damage(vic, id, damage, "lancerz")
 
 				// Make them feel it
 				new Float:fl_vicVelocity[3]

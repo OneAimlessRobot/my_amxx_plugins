@@ -156,7 +156,7 @@ public madness_damage(id)
 	if ( gHasMadnessPower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "m3", headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "m3", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

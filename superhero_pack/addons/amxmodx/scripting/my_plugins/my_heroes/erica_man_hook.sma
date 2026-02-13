@@ -9,7 +9,7 @@
 
 #define PLUGIN "Superhero erica hook"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 stock hook_on[SH_MAXSLOTS+1]

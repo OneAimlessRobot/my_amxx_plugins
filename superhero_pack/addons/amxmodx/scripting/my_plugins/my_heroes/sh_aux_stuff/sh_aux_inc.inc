@@ -98,6 +98,8 @@ stock gSpriteLaser,blood1,blood2,sprite1;
 stock g_iFireSprite, g_iSmokeSprite[2];
 stock gSpriteSmoke, gSpriteFire, gSpriteBurning
 stock hero_spawn_hud_msg_sync
+stock victim_dmg_hud_msg_sync
+stock attacker_dmg_hud_msg_sync
 stock tracker_hud_msg_sync
 //gibs
 stock mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
@@ -1106,6 +1108,8 @@ stock prepare_shero_aux_lib(){
 	xs_seed(get_systime(0));
 	hero_spawn_hud_msg_sync =CreateHudSyncObj()
 	tracker_hud_msg_sync =CreateHudSyncObj()
+	attacker_dmg_hud_msg_sync=CreateHudSyncObj();
+	victim_dmg_hud_msg_sync=CreateHudSyncObj();
 }
 //----------------------------------------------------------------------------------------------
 stock precache_explosion_fx(){

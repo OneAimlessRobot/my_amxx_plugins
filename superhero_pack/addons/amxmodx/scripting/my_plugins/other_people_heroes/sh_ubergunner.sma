@@ -180,7 +180,7 @@ public UberGunner_damage(id)
 	if ( gHasUberGunnerPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
-		if (extraDamage > 0) shExtraDamage( id, attacker, extraDamage, "m4a1", headshot )
+		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "m4a1", headshot )
 	}
 }
 //----------------------------------------------------------------------------------------------

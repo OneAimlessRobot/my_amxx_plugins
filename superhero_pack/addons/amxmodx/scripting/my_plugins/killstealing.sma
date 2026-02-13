@@ -5,7 +5,7 @@
 
 #define PLUGIN "Kill stealing"
 #define VERSION "1.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 
 
 public plugin_init() {

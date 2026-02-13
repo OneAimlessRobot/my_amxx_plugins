@@ -1290,7 +1290,7 @@ public fire_laser(id)
 			}
 		
 		// Deal the damage...
-		shExtraDamage(tid, id, damage, "Wargod Laser")
+		sh_extra_damage(tid, id, damage, "Wargod Laser")
 	}
 	return PLUGIN_CONTINUE
 }

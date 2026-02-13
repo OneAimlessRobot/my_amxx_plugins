@@ -238,7 +238,7 @@ public madassassin_damage(id)
 		// do extra damage
 		new extraDamage = floatround(floatsub(floatmul(float(damage) , get_pcvar_float(CvarAwpDmgMult) ),float(damage)))
 		if ( extraDamage > 0 )
-			shExtraDamage(id, attacker, extraDamage, "awp", headshot)
+			sh_extra_damage(id, attacker, extraDamage, "awp", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

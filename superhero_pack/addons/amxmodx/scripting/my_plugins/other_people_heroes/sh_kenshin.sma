@@ -125,7 +125,7 @@ public kenshin_damage(id)
 	if ( g_hasKenshinPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("kenshin_knifemult") - damage)
-		if ( extraDamage > 0 ) shExtraDamage(id, attacker, extraDamage, "knife", headshot)
+		if ( extraDamage > 0 ) sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

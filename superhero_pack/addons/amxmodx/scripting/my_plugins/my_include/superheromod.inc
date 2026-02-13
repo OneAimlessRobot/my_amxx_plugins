@@ -41,7 +41,7 @@
  *        FORWARDS        *
  **************************/
 
-forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type);
+forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type);
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 
@@ -394,7 +394,7 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC);
+native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC,sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE);
 
 /**
  * Speed stuns client for time specified. Bind powers are not usable when stunned.
@@ -1123,7 +1123,7 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 //stock shReloadAmmo(id, dropwpn = 0)
 #define shReloadAmmo sh_reload_ammo
 
-//stock shExtraDamage(id, attacker, damage, weaponDescription[], headshot = 0 )
+//stock sh_extra_damage(id, attacker, damage, weaponDescription[], headshot = 0 )
 #define shExtraDamage sh_extra_damage
 
 #define getMaxClipAmmo(%1) gMaxClipAmmo[%1]

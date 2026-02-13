@@ -319,7 +319,7 @@
 			{
 				new Float: dRatio = distanceBetween / radius
 				new adjdmg = damage - floatround(damage * dRatio)
-				shExtraDamage(vic, id, adjdmg, "Storm Lightning")
+				sh_extra_damage(vic, id, adjdmg, "Storm Lightning")
 			} // distance
 		} // alive target...
 	} // loop

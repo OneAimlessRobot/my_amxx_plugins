@@ -8,7 +8,7 @@
 
 #define PLUGIN "Superhero yakui mk2 pt3"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new gHasYakui[SH_MAXSLOTS+1]

@@ -283,7 +283,7 @@
 		if ( gHasCTrooperPower[attacker] && is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("ctrooper_ak47mult") - damage)
-			if (extraDamage > 0) shExtraDamage( id, attacker, extraDamage, "ak47", headshot )
+			if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "ak47", headshot )
 		}
 	}
  }

@@ -190,7 +190,7 @@ public vash_damage(id)
 	if ( gHasVashPower[attacker] && weapon == CSW_DEAGLE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "deagle", headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "deagle", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

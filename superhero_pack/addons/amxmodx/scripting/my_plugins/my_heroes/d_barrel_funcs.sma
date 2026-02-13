@@ -7,7 +7,7 @@
 
 #define PLUGIN "Superhero Snoodle d_barrel funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new const WeaponModel[3][] =

@@ -5,7 +5,7 @@
 
 #define PLUGIN "Superhero bleed fx"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new bool:gIsBleeding[SH_MAXSLOTS+1]

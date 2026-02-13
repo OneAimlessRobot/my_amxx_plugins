@@ -269,3 +269,37 @@ stock Float:kill_all_entity_beams(ent_id){
 		message_end()
 	}
 }
+
+
+stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_UNASSIGNED,&CsTeams:stored_attacker_team=CS_TEAM_UNASSIGNED){
+
+	if(!is_user_connected(id)||!is_user_connected(attacker)){
+		return false
+	}
+	stored_id_team=cs_get_user_team(attacker)
+	stored_attacker_team=cs_get_user_team(id)
+
+	return (stored_id_team==stored_attacker_team)&&( id != attacker )
+
+
+}
+stock sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage){
+
+	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
+	if(sh_clients_are_same_team(victim,attacker)) return
+
+	if(!is_user_bot(attacker)){
+		if ( att_bool&&(attacker!=victim)) {
+			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
+			ShowSyncHudMsg(attacker, attacker_dmg_hud_msg_sync, "%d", damage)
+		}
+	}
+
+	
+	if(!is_user_bot(victim)){
+		if ( vic_bool) {
+			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
+			ShowSyncHudMsg(victim, victim_dmg_hud_msg_sync, "%d", damage)
+		}
+	}
+}

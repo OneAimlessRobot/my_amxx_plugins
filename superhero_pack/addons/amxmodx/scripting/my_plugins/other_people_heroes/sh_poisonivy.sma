@@ -19,7 +19,7 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 *          AMX can't register a MSG_ONE_UNRELIABLE message.
 *
 * v1.4 - vittu - 6/27/05
-*      - Minor update for FF servers, prevents the shExtraDamage
+*      - Minor update for FF servers, prevents the sh_extra_damage
 *          from saying you attacked a teammate for every cycle.
 *
 * v1.3 - vittu - 6/22/05
@@ -199,9 +199,9 @@ public poisonivy_loop()
 				new health = get_user_health(id)
 				new damage = gPoisonDamage[attacker]
 
-				//Prevents the shExtraDamage from saying you attacked a teammate for every cycle of the loop
+				//Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 				if(health - damage  <= 0) {
-					shExtraDamage(id, attacker, damage, "Poison Infection")
+					sh_extra_damage(id, attacker, damage, "Poison Infection")
 				}
 				else {
 						set_user_health(id, health - damage)

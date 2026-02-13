@@ -16,7 +16,7 @@
 
 #define PLUGIN "Call of Duty: MW4 extrawpns"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 

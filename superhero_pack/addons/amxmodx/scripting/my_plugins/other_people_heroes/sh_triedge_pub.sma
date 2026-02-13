@@ -194,7 +194,7 @@ public triedge_hookOn(id)
 
             if ( mode >= 2 ) {
                 if ( !get_user_godmode(hooktarget) ) blood_spurt(hooktarget, id)
-                shExtraDamage(hooktarget, id, get_cvar_num("triedge_markdmg"), "Tri-Edge Gaze")
+                sh_extra_damage(hooktarget, id, get_cvar_num("triedge_markdmg"), "Tri-Edge Gaze")
                 shStun(hooktarget, get_cvar_num("triedge_stuntime"))
                 set_user_maxspeed(hooktarget, 100.0)
             }
@@ -206,7 +206,7 @@ public triedge_hookOn(id)
             new ffOn = get_cvar_num("mp_friendlyfire")
             if ( ffOn && mode >= 2 ) {
                 if ( !get_user_godmode(hooktarget) ) blood_spurt(hooktarget, id)
-                shExtraDamage(hooktarget, id, get_cvar_num("triedge_markdmg"), "Tri-Edge Gaze")
+                sh_extra_damage(hooktarget, id, get_cvar_num("triedge_markdmg"), "Tri-Edge Gaze")
                 shStun(hooktarget, get_cvar_num("triedge_stuntime"))
                 set_user_maxspeed(hooktarget, 100.0)
             }
@@ -343,7 +343,7 @@ public strike(parm[])
 
     entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
-    shExtraDamage(vic, id, get_cvar_num("triedge_strikedmg"), "Tri-Edge Strike")
+    sh_extra_damage(vic, id, get_cvar_num("triedge_strikedmg"), "Tri-Edge Strike")
 }
 //----------------------------------------------------------------------------------------------
 public tristrike(parm[])
@@ -369,7 +369,7 @@ public tristrike(parm[])
 
     entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
-    shExtraDamage(vic, id, get_cvar_num("triedge_strikedmg"), "Tri-Edge Tri Strike")
+    sh_extra_damage(vic, id, get_cvar_num("triedge_strikedmg"), "Tri-Edge Tri Strike")
 }
 //----------------------------------------------------------------------------------------------
 public Finisher(parm[])
@@ -395,7 +395,7 @@ public Finisher(parm[])
 
     entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
-    shExtraDamage(vic, id, get_cvar_num("triedge_finaldmg"), "Tri-Edge Finisher")
+    sh_extra_damage(vic, id, get_cvar_num("triedge_finaldmg"), "Tri-Edge Finisher")
 }
 //----------------------------------------------------------------------------------------------
 public Infinity_Finisher(parm[])
@@ -423,7 +423,7 @@ public Infinity_Finisher(parm[])
 
     entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
-    shExtraDamage(vic, id, get_cvar_num("triedge_infinitydmg"), "Tri-Edge Infinity Finisher")
+    sh_extra_damage(vic, id, get_cvar_num("triedge_infinitydmg"), "Tri-Edge Infinity Finisher")
     sh_add_hp(id, get_cvar_num("triedge_infinitydmg") , get_cvar_num("triedge_maxheal"))
 }
 //----------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 
 #define PLUGIN "Superhero teliko slitter"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new slitter_on[SH_MAXSLOTS+1]

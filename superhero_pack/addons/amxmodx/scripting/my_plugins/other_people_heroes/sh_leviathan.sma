@@ -300,8 +300,8 @@ public leviathan_damage(id)
 	if (gHasLeviathanPowers[attacker] && is_user_alive(id) && attacker!=id) {
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)
 		if (extraDamage>0) if (get_user_health(id)>extraDamage) 
-			shExtraDamage(id, attacker, extraDamage, "leviathan")
-		else shExtraDamage(id, attacker, get_user_health(id)-random_num(1,6), "leviathan")
+			sh_extra_damage(id, attacker, extraDamage, "leviathan")
+		else sh_extra_damage(id, attacker, get_user_health(id)-random_num(1,6), "leviathan")
 	}
 	return PLUGIN_CONTINUE
 }

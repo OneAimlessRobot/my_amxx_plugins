@@ -3,6 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "chikoi_inc/sh_chikoi_funcs.inc"
 #define CHIKOI_HITZONE_TASKID 19999
@@ -88,7 +89,7 @@ get_user_name(id,client_name,127);
 if(headshot){
 
 	
-	shExtraDamage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
+	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
 	dmg_message(id, attacker)
 }
 if(weapon==CSW_HEGRENADE){
@@ -110,6 +111,10 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 
 		return HAM_IGNORED;
 
+	}
+	if(sh_clients_are_same_team(id,attacker)){
+
+		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
 	switch(hitgroup){
@@ -166,7 +171,7 @@ if(is_user_alive(id) && shModActive()&&gHasChikoi[id]){
 return PLUGIN_HANDLED	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
@@ -186,6 +191,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, wpnDescription[32], 
 			copy(wpnDescription, strlen(CHIKOI_THE_MAID_PHYSICAL_PROPERTY),CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
+			new_dmg_type=SH_NEW_DMG_SQUASHED
 			dmg_message(victim, attacker)
 			return DMG_FWD_PASS
 		}

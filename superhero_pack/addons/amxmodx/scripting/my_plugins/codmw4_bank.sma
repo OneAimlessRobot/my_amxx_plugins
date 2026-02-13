@@ -15,7 +15,7 @@
 
 #define PLUGIN "Call of Duty: MW4 bank"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new shop_poeni_igraca[33];

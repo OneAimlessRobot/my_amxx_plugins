@@ -262,7 +262,7 @@ public lightning_effect(id, eid, linewidth)
 public palpatine_instant(x, id)
 {
   new palpatineInstantDamage=get_cvar_num("palpatine_instantdamage")
-  shExtraDamage( x, id, palpatineInstantDamage, "Emperor Palpatine Instant Damage" )
+  sh_extra_damage( x, id, palpatineInstantDamage, "Emperor Palpatine Instant Damage" )
 }
 //----------------------------------------------------------------------------------------------
 public palpatine_noinstant(x, id)
@@ -276,7 +276,7 @@ public palpatine_noinstant(x, id)
 public palpatine_death(x, id)
 {
   new palpatineDeathDamage=get_cvar_num("palpatine_deathdamage")
-//  shExtraDamage( x, id, palpatineDeathDamage, "Palpatine Death" )
+//  sh_extra_damage( x, id, palpatineDeathDamage, "Palpatine Death" )
   new enemyHealth=get_user_health(x)
   new newHP=enemyHealth-palpatineDeathDamage
   set_user_health(x, newHP)
@@ -294,7 +294,7 @@ public palpatine_nodeath(x, id)
 public palpatine_decay(eid, id)
 {
   new palpatineDecayDamage=get_cvar_num("palpatine_decaydamage")
-//  shExtraDamage( x, id, palpatineDecayDamage, "Palpatine Decay" )
+//  sh_extra_damage( x, id, palpatineDecayDamage, "Palpatine Decay" )
   new enemyHealth=get_user_health(eid)
   new newHP=enemyHealth-palpatineDecayDamage
   lightning_effect(id, eid, 2)

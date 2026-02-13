@@ -119,22 +119,22 @@ public SuperNoodle_damage(id)
 
 	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
-		if (extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "super shotgun", headshot)
+		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "super shotgun", headshot)
 	
 	}
 	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
-		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "precisoin rifle", headshot)
+		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "precisoin rifle", headshot)
 			
 	}
 	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_M249 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
-		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "assault rifle", headshot)
+		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "assault rifle", headshot)
 			
 	}
 	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_ELITE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
-		if(extraDamage > 0) shExtraDamage(id, attacker, extraDamage, "dual pistols", headshot)
+		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "dual pistols", headshot)
 	}
 	return HAM_IGNORED
 }

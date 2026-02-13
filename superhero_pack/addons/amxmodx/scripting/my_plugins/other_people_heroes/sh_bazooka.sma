@@ -291,7 +291,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				dRatio = floatdiv(float(dist),float(damradius))
 				damage = maxdamage - floatround( maxdamage * dRatio)
 
-				shExtraDamage(i, id, damage, "Bazooka" )
+				sh_extra_damage(i, id, damage, "Bazooka" )
 
 			}
 		}

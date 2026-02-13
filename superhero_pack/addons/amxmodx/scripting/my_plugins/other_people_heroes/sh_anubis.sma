@@ -16,12 +16,14 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Anubis"
 new bool:gHasAnubis[SH_MAXSLOTS+1]
-new gmsgSayText, gMsgSync1, gMsgSync2
+new gmsgSayText
 new gPcvarShowDamage, gPcvarShowChat
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -38,6 +40,7 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Dark Notices", "Nothing Is Secret From You.  Hear Enemies - See Damage")
 
+	RegisterHam(Ham_TakeDamage, "player", "anubis_damage_eyes",_,true)
 	// FORWARD
 	register_forward(FM_Voice_SetClientListening, "_FM_Voice_SetClientListening")
 
@@ -46,8 +49,8 @@ public plugin_init()
 	register_clcmd("say_team", "handle_say")
 
 	gmsgSayText = get_user_msgid("SayText")
-	gMsgSync1 = CreateHudSyncObj()
-	gMsgSync2 = CreateHudSyncObj()
+
+	prepare_shero_aux_lib()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -117,22 +120,20 @@ public handle_say(id)
 		}
 	}
 }
+public anubis_damage_eyes(victim, idinflictor, attacker, Float:damage, damagebits){
+
+	
+	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
+	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
+	sh_damage_display_stock(victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],floatround(damage))
+
+}
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage)
 {
 	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
-	if ( victim == attacker ) return
-	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
+	sh_damage_display_stock(victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],damage)
 
-	if ( gHasAnubis[attacker] ) {
-		set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage)
-	}
-
-	if ( gHasAnubis[victim] ) {
-		set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(victim, gMsgSync2, "%d", damage)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)

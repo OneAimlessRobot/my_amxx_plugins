@@ -270,7 +270,7 @@ public BlowUp(id)
 
 				dRatio = float(distanceBetween) / float(dmgRadius)
 				damage = maxDamage - floatround(maxDamage * dRatio)
-				shExtraDamage(a, id, damage, "Phoenix Re-Birth")
+				sh_extra_damage(a, id, damage, "Phoenix Re-Birth")
 			}
 		}
 	}

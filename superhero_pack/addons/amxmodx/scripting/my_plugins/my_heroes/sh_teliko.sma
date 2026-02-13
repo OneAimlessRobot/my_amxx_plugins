@@ -377,7 +377,7 @@ if ( gHasTeliko[attacker]&&g_teliko_enemies[attacker][id]&&(weapon == g_teliko_w
 	
 	new Float:extraDamage = damage * COUNTER_DMG_Mult - damage
 	if (floatround(extraDamage)>0){
-		shExtraDamage(id, attacker, floatround(extraDamage), "Counter-Shot", headshot)
+		sh_extra_damage(id, attacker, floatround(extraDamage), "Counter-Shot", headshot)
 		
 	}
 	if(headshot){

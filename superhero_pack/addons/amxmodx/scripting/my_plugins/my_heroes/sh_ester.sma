@@ -538,7 +538,7 @@ public Ester_revenge_loop(id)
 public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	shExtraDamage( x, id,gEsterDmg[id], "Neuroblast" )
+	sh_extra_damage( x, id,gEsterDmg[id], "Neuroblast" )
 	directed_spark(id,x,30,5,200,40,PURPLE)
 }
 //----------------------------------------------------------------------------------------------
@@ -593,7 +593,7 @@ public ester_damage(id)
 			g_ester_enemies[id][attacker]=true;
 			if(gPedalIsFloored[id]){
 				
-				shExtraDamage( attacker, id,floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil), "Charging reflect" )
+				sh_extra_damage( attacker, id,floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil), "Charging reflect" )
 				emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
 				directed_spark(attacker, id)
 			}

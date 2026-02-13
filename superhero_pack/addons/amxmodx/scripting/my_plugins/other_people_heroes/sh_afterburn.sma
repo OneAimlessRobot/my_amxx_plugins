@@ -333,9 +333,9 @@ public on_fire(args[])
 	new health = get_user_health(id)
 	new damage = get_cvar_num("afterburn_burndmg")
 
-	//Prevents the shExtraDamage from saying you attacked a teammate for every cycle of the loop
+	//Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 	if(health - damage  <= 0) {
-		shExtraDamage(id, killer, damage, "AfterBurn")
+		sh_extra_damage(id, killer, damage, "AfterBurn")
 	}
 	else {
 		set_user_health(id, health - damage)

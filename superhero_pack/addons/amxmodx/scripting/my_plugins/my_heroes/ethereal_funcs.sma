@@ -6,7 +6,7 @@
 
 #define PLUGIN "Superhero adriano etheral"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 

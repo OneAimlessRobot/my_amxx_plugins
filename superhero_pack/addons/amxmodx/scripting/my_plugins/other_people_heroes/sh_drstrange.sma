@@ -291,7 +291,7 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		shExtraDamage(tid, id, damage, "Mystical Bolt")
+		sh_extra_damage(tid, id, damage, "Mystical Bolt")
 	}
 }
 //----------------------------------------------------------------------------------------------

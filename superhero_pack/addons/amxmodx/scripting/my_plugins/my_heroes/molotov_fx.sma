@@ -7,7 +7,7 @@
 
 #define PLUGIN "Superhero molotov fx"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 
@@ -77,7 +77,7 @@ public molotov_damage_vulnerability(id){
 	if(gIsBurning[id]){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
-			shExtraDamage(id, attacker, floatround(extraDamage), "Burn damage vulnerability", headshot)
+			sh_extra_damage(id, attacker, floatround(extraDamage), "Burn damage vulnerability", headshot)
 			
 			if(!is_user_bot(attacker)){
 				sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
@@ -87,7 +87,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &headshot, &dmgMode, &bool:dmgStun,&bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type){
 	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
 
 	if(gIsBurning[victim]){

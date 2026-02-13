@@ -8,7 +8,7 @@
 
 #define PLUGIN "Superhero lara mk2 pt2"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new bool:spear_loaded[SH_MAXSLOTS+1]

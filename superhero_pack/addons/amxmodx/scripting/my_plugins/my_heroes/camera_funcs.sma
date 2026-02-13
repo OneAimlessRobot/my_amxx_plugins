@@ -10,7 +10,7 @@
 
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 const m_iFOV = 363;
 new camera_loaded[SH_MAXSLOTS+1]

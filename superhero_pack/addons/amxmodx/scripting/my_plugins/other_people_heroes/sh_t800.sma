@@ -203,7 +203,7 @@ public t800_damage(id)
 	if ( gHasT800Power[attacker] && weapon == CSW_M249 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("t800_paramult") - damage)
-		if (extraDamage > 0) shExtraDamage( id, attacker, extraDamage, "m249", headshot )
+		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "m249", headshot )
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 #define PLUGIN "Superhero molotov funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new bool:molly_loaded[SH_MAXSLOTS+1]

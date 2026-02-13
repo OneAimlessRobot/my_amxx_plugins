@@ -233,7 +233,7 @@ public SuperAlien_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
 		if ( extraDamage > 0 )
-			shExtraDamage(id, attacker, extraDamage, "knife", headshot)
+			sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
 	}
 }
 //----------------------------------------------------------------------------------------------

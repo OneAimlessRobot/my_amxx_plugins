@@ -162,7 +162,7 @@ public scythe_damage(id)
 	{
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("grimreaper_knifemult") - damage)
-		if (extraDamage > 0) shExtraDamage( id, attacker, extraDamage, "death's scythe", headshot)
+		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "death's scythe", headshot)
 	}
 	return PLUGIN_CONTINUE
 }

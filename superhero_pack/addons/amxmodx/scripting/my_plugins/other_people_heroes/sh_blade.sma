@@ -377,9 +377,9 @@ public knifeburn(args[])
 		new knifeDmg = get_pcvar_num(CvarKnifeDmg)
 		new hpAfterDmg = get_user_health(id) - knifeDmg
 
-		// Prevents the shExtraDamage from saying you attacked a teammate for every cycle of the loop
+		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 		if ( hpAfterDmg <= 0 )
-			shExtraDamage(id, attacker, knifeDmg, "silver knife")
+			sh_extra_damage(id, attacker, knifeDmg, "silver knife")
 		else
 			set_user_health(id, hpAfterDmg)
 	}
@@ -430,9 +430,9 @@ public gunburn(args[])
 		new gunDmg = get_pcvar_num(CvarGunDmg)
 		new hpAfterDmg = get_user_health(id) - gunDmg
 
-		// Prevents the shExtraDamage from saying you attacked a teammate for every cycle of the loop
+		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 		if ( hpAfterDmg <= 0 )
-			shExtraDamage(id, attacker, gunDmg, "silver bullet")
+			sh_extra_damage(id, attacker, gunDmg, "silver bullet")
 		else
 			set_user_health(id, hpAfterDmg)
 	}

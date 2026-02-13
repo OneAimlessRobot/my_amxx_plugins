@@ -312,7 +312,7 @@ public lightnings_shot(id)
 		}
 
 		// Make damage to target
-		shExtraDamage(tid, id, damage, "Blue lightnings from Meteorix")
+		sh_extra_damage(tid, id, damage, "Blue lightnings from Meteorix")
 	}
 	return PLUGIN_CONTINUE
 }

@@ -169,7 +169,7 @@ public tank_damage(id)
     {
        // do extra damage
        new extraDamage = floatround(damage * get_cvar_float("tank_grenademult") - damage)
-       if (extraDamage>0) shExtraDamage( id, attacker, extraDamage, "grenade" )
+       if (extraDamage>0) sh_extra_damage( id, attacker, extraDamage, "grenade" )
     }
     return PLUGIN_CONTINUE
 }

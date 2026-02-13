@@ -8,9 +8,9 @@
 #include "../my_include/stripweapons.inc"
 
 
-#define PLUGIN "Superhero teliko mk2 pt2"
+#define PLUGIN "Superhero teliko chaff funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "Me"
+#define AUTHOR "ThrashBrat"
 #define Struct				enum
 
 new bool:chaff_loaded[SH_MAXSLOTS+1]

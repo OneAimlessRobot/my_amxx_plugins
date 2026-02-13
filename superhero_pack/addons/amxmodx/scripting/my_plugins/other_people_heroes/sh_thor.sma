@@ -93,7 +93,7 @@ public thor_damage(id)
 		// Deal a % of the damage back at them
 		new extraDamage = floatround(damage * get_cvar_num("thor_pctofdmg") * 0.01 )
 		if (extraDamage == 0) extraDamage = 1
-		shExtraDamage(attacker, id, extraDamage, "thunder bolt")
+		sh_extra_damage(attacker, id, extraDamage, "thunder bolt")
 
 		// create some effects
 		if ( extraDamage > 70 ) extraDamage = 70
