@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1.0,user-scalable=no">
+	<meta name="theme-color" content="#404040">
+	<meta name="msapplication-TileColor" content="#404040">
+	<link rel="stylesheet" href="style.css?1531832605" type="text/css">
+
+	<title>Тех. работы</title>
+</head>
+<body>
+<div class="title">
+<table><td><b>Тех. работы</b></td>
+</table></div>
+<div class="cntr"><div style="margin: 5px">На данный момент проходят технические работы по улучшению игры.<br/>Зайдите позже :)</div><a class="tch" href="/up/knife/sprites/weapon_snow.txt"><img src="/images/icons/refresh.png">Обновить</a></div><div class="main center"><a class="tch" href="/">Главная страница</a></div><div class="foot small gray center">
+&copy; NightTeam, 0.000 сек, <span id="stime"></span>
+<script type='text/javascript'>var time = 15499; function format(e){return 0==e?"00":(10>e?"0":"")+e}function renderTime(){var e=Math.floor(time/3600),t=Math.floor(time/60%60),r=time%60;document.getElementById("stime").innerHTML=format(e)+":"+format(t)+":"+format(r)}function runTimer(){time>=86400?time=0:time++,renderTime()}function smile(e){message.focus(),message.value+=""+e}var timer=window.setInterval("runTimer()",1e3);runTimer();</script><br/>
+<a href="/rules">Правила</a> | Онлайн: 0<br/>
+</div>
+</body>
+</html>

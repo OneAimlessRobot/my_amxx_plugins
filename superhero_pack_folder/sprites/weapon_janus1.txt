@@ -1,0 +1,4 @@
+3
+weapon			640 furien30_weapons/Janus1	0	0	170	45
+weapon_s		640 furien30_weapons/Janus1	0	45	170	45
+ammo			640 furien30_weapons/640hud7x	73	231	24	24
