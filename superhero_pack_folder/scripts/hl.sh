@@ -5,8 +5,7 @@
 # specified directory, then uses $PWD to figure out where that
 # directory lives - and all this in a subshell, so we don't affect
 # $PWD
-
-GAMEROOT=$(cd "${0%/*}" && echo $PWD)
+GAMEROOT=$(cd "${0%/*}" && echo "${PWD}")
 
 #determine platform
 UNAME=`uname`
