@@ -58,6 +58,7 @@ copy_stuff_to_pack_folder(){
 	cp -rfv "./scripts/${script_name}" "${hero_pack_folder_name}"&
 	cp -rfv *.gam "${hero_pack_folder_name}"&
 	cp -rfv ../*.sh "scripts"&
+	cp -rfv ../*.debug_cmd "scripts"&
 	cp -rfv *.cfg "configs"&
 	wait
 	for(( i=0; i< num_of_subfolders_of_backup; i++ ))

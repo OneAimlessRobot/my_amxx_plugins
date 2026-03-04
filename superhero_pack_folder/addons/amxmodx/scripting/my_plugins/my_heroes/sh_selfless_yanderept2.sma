@@ -269,7 +269,7 @@ public psychosis_task(id){
 		gHeroName,
 		gPsychosisTime[id]
 		);
-		set_dhudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -1.0, -1.0, 1, 0.0, 1.0,0.0,0.0)
+		set_dhudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
 		show_dhudmessage(id, "%s", hud_msg)
 		sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	}
@@ -315,6 +315,10 @@ psychosis_off(id)
 gIsPsychosis[id]=false
 yandere_unmorph(id+YANDERE_MORPH_TASKID)
 yandere_model(id)
+for(new i=0;i<sizeof yandere_pain_sounds;i++){
+	emit_sound(id, CHAN_AUTO, yandere_pain_sounds[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
+}
+emit_sound(id, CHAN_AUTO, NULL_SOUND, 1.0, 0.0, 0, PITCH_NORM)
 cs_set_user_armor(id,0,CS_ARMOR_NONE)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(90)	//Normal, not Zooming
@@ -397,7 +401,7 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gS
 		
 		new client_name[128]
 		get_user_name(id,client_name,127)
-		new degen_dmg_2_take= float(get_user_health(id))>psychosis_degen_health_threshold?floatround((float(get_user_health(id))-psychosis_degen_health_threshold)*degen_iter_period*(1.0/3.0)*0.01*(gIsPsychosis[id]?psychosis_degen_pct*200.0:angry_degen_pct),floatround_floor)*(gIdleAngry[id]?2:1):0
+		new degen_dmg_2_take= float(get_user_health(id))>psychosis_degen_health_threshold?(gIsPsychosis[id]?200000:1)*floatround((float(get_user_health(id))-psychosis_degen_health_threshold)*degen_iter_period*0.01*(gIsPsychosis[id]?psychosis_degen_pct:angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
 		if(degen_dmg_2_take>0){
 			new client_origin[3]
 			get_user_origin(id,client_origin)

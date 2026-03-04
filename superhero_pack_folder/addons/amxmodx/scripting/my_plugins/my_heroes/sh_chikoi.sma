@@ -9,6 +9,12 @@
 #define CHIKOI_HITZONE_TASKID 19999
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
+
+#define CHIKOI_NUM_DEATH_SOUNDS 1 
+stock chikoi_death_sounds[CHIKOI_NUM_DEATH_SOUNDS][]={
+	"shmod/chikoi_death_sound.wav"
+}
+
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Chikoi the Maid"
@@ -34,6 +40,7 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	register_srvcmd("chikoi_init", "chikoi_init")
 	shRegHeroInit(gHeroName, "chikoi_init")
+	register_event("DeathMsg","death","a")
 	
 	
 }
@@ -200,4 +207,26 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		}
 	}
 	return DMG_FWD_PASS
+}
+
+public plugin_precache()
+{
+	
+	for(new i=0;i<CHIKOI_NUM_DEATH_SOUNDS;i++){
+		
+		engfunc(EngFunc_PrecacheSound, chikoi_death_sounds[i])
+		
+	}
+	
+}
+public death()
+{
+	new id=read_data(2)
+	if ( !is_user_connected(id)){
+		return
+	}
+	if(gHasChikoi[id]){
+		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[random_num(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
+	}
+
 }

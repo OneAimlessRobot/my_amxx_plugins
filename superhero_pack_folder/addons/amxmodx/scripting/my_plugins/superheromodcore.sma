@@ -9,7 +9,7 @@
 //#define SAVE_METHOD 1		//Saves XP to vault.ini (Note: Use also for non-save xp to avoid loading extra modules)
 //#define SAVE_METHOD 2		//Saves XP to superhero nVault (default)
 //#define SAVE_METHOD 3		//Saves XP to a MySQL database
-#define SAVE_METHOD 2
+#define SAVE_METHOD 3
 /****************************************************************************
 *
 *   Version 1.2.1 - Date: ??/??/20??
