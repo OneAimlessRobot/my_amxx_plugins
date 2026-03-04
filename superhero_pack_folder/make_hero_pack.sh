@@ -9,7 +9,7 @@ the_dir="/mnt/REBORN/half_life_stuff/Half-Life/cstrike"
 
 backup_script_extension=".tar.xz"
 
-backup_locations=("/mnt/FASTstorage/GithubFAST/my_amxx_plugins")
+backup_locations=("/mnt/FASTstorage/GithubFAST/my_amxx_plugins" "/mnt/SUPER_CAVALEIRO/progsBackup" "/mnt/REBORN/FASTERprogs" "/mnt/FASTstorage/FASTprogs")
 
 subfolders_of_backup=("models/shmod" "models/player" "sound/shmod"  "sound/QTM_CodMod"  "sound/weapons" "sound/warcraft3" "sound/zombie_plague" "models/kickball" "sprites" "addons" "configs" "scripts" "gfx")
 
