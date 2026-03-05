@@ -1,0 +1,198 @@
+L 03/05/2026 - 15:05:43: Log file started (file "cstrike/addons/amxmodx/logs/dmaplog0305.log") (game "cstrike") (amx "1.10.0.5474")
+L 03/05/2026 - 15:05:43: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 15:05:43: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 15:05:43: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 15:05:44: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 15:23:39: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 15:23:39: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 15:23:39: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 15:23:39: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 15:41:52: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 15:41:52: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 15:41:52: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 15:41:52: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 15:41:52: Vote: Voting for the nextmap started
+L 03/05/2026 - 15:42:12: Vote: Voting for the nextmap finished. The nextmap will be cs_havana
+L 03/05/2026 - 15:50:48: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 15:50:48: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 15:50:48: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 15:50:48: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 15:58:01: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 15:58:01: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 15:58:01: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 15:58:01: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 16:01:21: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 16:01:21: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 16:01:21: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 16:01:22: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 16:20:04: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 16:20:04: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 16:20:04: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 16:20:04: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 16:20:04: Vote: Voting for the nextmap started
+L 03/05/2026 - 16:20:24: Vote: Voting for the nextmap finished. The nextmap will be de_cbble
+L 03/05/2026 - 16:21:03: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 16:21:03: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 16:21:03: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 16:21:04: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 16:39:16: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 16:39:16: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 16:39:16: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 16:39:16: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 16:39:16: Vote: Voting for the nextmap started
+L 03/05/2026 - 16:39:36: Vote: Voting for the nextmap finished. The nextmap will be de_dust
+L 03/05/2026 - 16:40:13: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 16:40:13: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 16:40:13: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 16:40:13: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 16:58:26: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 16:58:26: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 16:58:26: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 16:58:26: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 16:58:26: Vote: Voting for the nextmap started
+L 03/05/2026 - 16:58:46: Vote: Voting for the nextmap finished. The nextmap will be cs_747
+L 03/05/2026 - 16:59:24: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 16:59:24: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 16:59:24: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 16:59:24: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 13 are available for filling slots
+L 03/05/2026 - 17:17:36: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 17:17:36: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 17:17:36: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 17:17:36: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 17:17:36: Vote: Voting for the nextmap started
+L 03/05/2026 - 17:17:56: Vote: Voting for the nextmap finished. The nextmap will be de_prodigy
+L 03/05/2026 - 17:18:34: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 17:18:34: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 17:18:34: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 17:18:34: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 12 are available for filling slots
+L 03/05/2026 - 17:36:46: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 17:36:46: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 17:36:46: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 17:36:46: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 17:36:46: Vote: Voting for the nextmap started
+L 03/05/2026 - 17:37:06: Vote: Voting for the nextmap finished. The nextmap will be cs_assault
+L 03/05/2026 - 17:37:44: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 17:37:44: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 17:37:44: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 17:37:44: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 11 are available for filling slots
+L 03/05/2026 - 17:55:56: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 17:55:56: Filled 11 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 17:55:56: Randomly Filling slots for the vote with 5 out of 11
+L 03/05/2026 - 17:55:56: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 17:55:56: Vote: Voting for the nextmap started
+L 03/05/2026 - 17:56:16: Vote: Voting for the nextmap finished. The nextmap will be cs_office
+L 03/05/2026 - 18:37:27: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 18:37:27: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 18:37:27: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 18:37:27: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 12 are available for filling slots
+L 03/05/2026 - 18:42:27: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 18:42:27: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 18:42:27: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 18:42:28: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 13 are available for filling slots
+L 03/05/2026 - 19:01:55: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 19:01:55: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 19:01:55: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 19:01:55: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 19:01:55: Vote: Voting for the nextmap started
+L 03/05/2026 - 19:02:15: Vote: Voting for the nextmap finished. The nextmap will be cs_assault
+L 03/05/2026 - 19:02:55: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 19:02:55: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 19:02:55: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 19:02:55: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 19:21:53: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 19:21:53: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 19:21:53: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 19:21:53: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 19:21:53: Vote: Voting for the nextmap started
+L 03/05/2026 - 19:22:13: Vote: Voting for the nextmap finished. The nextmap will be cs_office
+L 03/05/2026 - 19:31:42: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 19:31:42: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 19:31:42: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 19:31:42: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 19:43:33: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 19:43:33: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 19:43:33: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 19:43:33: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 19:44:11: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 19:44:11: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 19:44:11: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 19:44:11: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 19:44:32: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 19:44:32: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 19:44:32: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 19:44:33: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 20:03:01: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 20:03:01: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 20:03:01: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 20:03:01: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 20:03:01: Vote: Voting for the nextmap started
+L 03/05/2026 - 20:03:21: Vote: Voting for the nextmap finished. The nextmap will be de_dust
+L 03/05/2026 - 20:03:59: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:03:59: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:03:59: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:03:59: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 20:09:35: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:09:35: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:09:35: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:09:35: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 20:09:45: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:09:45: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:09:45: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:09:45: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 20:10:08: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:10:08: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:10:08: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:10:08: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 20:10:51: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:10:51: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:10:51: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:10:51: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 20:12:43: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:12:43: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:12:43: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:12:43: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 20:17:05: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:17:05: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:17:05: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:17:05: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 16 are available for filling slots
+L 03/05/2026 - 20:35:32: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 20:35:32: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 20:35:32: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 20:35:32: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 20:35:32: Vote: Voting for the nextmap started
+L 03/05/2026 - 20:35:52: Vote: Voting for the nextmap finished. The nextmap will be de_train
+L 03/05/2026 - 20:36:32: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:36:32: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:36:32: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:36:32: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 20:58:38: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 20:58:38: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 20:58:38: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 20:58:39: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 21:15:55: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 21:15:55: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 21:15:55: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 21:15:55: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 21:24:14: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 21:24:15: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 21:24:15: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 21:24:15: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 21:42:56: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 21:42:56: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 21:42:56: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 21:42:56: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 21:42:56: Vote: Voting for the nextmap started
+L 03/05/2026 - 21:43:16: Vote: Voting for the nextmap finished. The nextmap will be cs_italy
+L 03/05/2026 - 21:43:41: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 21:43:41: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 21:43:41: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 21:43:41: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 14 are available for filling slots
+L 03/05/2026 - 21:51:52: Did not ban any maps from mapstoban.ini file
+L 03/05/2026 - 21:51:52: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/05/2026 - 21:51:52: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/05/2026 - 21:51:52: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/05/2026 - 22:10:04: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/05/2026 - 22:10:04: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/05/2026 - 22:10:04: Randomly Filling slots for the vote with 5 out of 12
+L 03/05/2026 - 22:10:04: Filled 5 vote slots with random maps, 0 are custom
+L 03/05/2026 - 22:10:04: Vote: Voting for the nextmap started

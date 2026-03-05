@@ -270,7 +270,7 @@ mySQLConnect()
 		static sql[410]
 		new Handle:query
 
-		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_savexp` ( `SH_KEY` varchar(32) binary NOT NULL default '', `PLAYER_NAME` varchar(32) binary NOT NULL default '', `LAST_PLAY_DATE` timestamp(14) NOT NULL, `XP` int(10) NOT NULL default '0', `HUDHELP` tinyint(3) unsigned NOT NULL default '1', `SKILL_COUNT` tinyint(3) unsigned NOT NULL default '0', PRIMARY KEY  (`SH_KEY`) ) TYPE=MyISAM COMMENT='SUPERHERO XP Saving Table'")
+		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_savexp` ( `SH_KEY` varchar(32) binary NOT NULL default '', `PLAYER_NAME` varchar(32) binary NOT NULL default '', `LAST_PLAY_DATE` timestamp(6) NOT NULL, `XP` int(10) NOT NULL default '0', `HUDHELP` tinyint(3) unsigned NOT NULL default '1', `SKILL_COUNT` tinyint(3) unsigned NOT NULL default '0', PRIMARY KEY  (`SH_KEY`) ) ENGINE=MyISAM COMMENT='SUPERHERO XP Saving Table'")
 
 		query = SQL_PrepareQuery(gDbConnect, "%s", sql)
 		if ( !SQL_Execute(query) ) {
@@ -282,7 +282,7 @@ mySQLConnect()
 		SQL_FreeHandle(query)
 
 		sql[0] = '^0'
-		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_saveskills` ( `SH_KEY` varchar(32) binary NOT NULL default '', `SKILL_NUMBER` tinyint(3) unsigned NOT NULL default '0', `HERO_NAME` varchar(25) NOT NULL default '', PRIMARY KEY  (`SH_KEY`,`SKILL_NUMBER`) ) TYPE=MyISAM COMMENT='SUPERHERO Skill Saving Table'")
+		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_saveskills` ( `SH_KEY` varchar(32) binary NOT NULL default '', `SKILL_NUMBER` tinyint(3) unsigned NOT NULL default '0', `HERO_NAME` varchar(25) NOT NULL default '', PRIMARY KEY  (`SH_KEY`,`SKILL_NUMBER`) ) ENGINE=MyISAM COMMENT='SUPERHERO Skill Saving Table'")
 		query = SQL_PrepareQuery(gDbConnect, "%s", sql)
 		if ( !SQL_Execute(query) ) {
 			errcode = SQL_QueryError(query, error, charsmax(error))

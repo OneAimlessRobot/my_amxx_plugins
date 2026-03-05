@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../configs"
+		},
+		{
+			"path": "../../../../../hlstatsx/hlstatsx"
 		}
 	],
 	"settings": {}

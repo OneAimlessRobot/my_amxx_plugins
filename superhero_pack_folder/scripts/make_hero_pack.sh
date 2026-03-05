@@ -33,6 +33,7 @@ remove_folder_from_backup_locations(){
 	
 	for(( i=0; i< num_of_backup_locations; i++ ))
 	do
+		rm -rfv "${backup_locations[$i]}/${hero_pack_name}${backup_script_extension}"&
 		rm -rfv "${backup_locations[$i]}/${hero_pack_folder_name}"&
 	done
 	wait
@@ -42,6 +43,7 @@ copy_folder_to_backup_locations(){
 	
 	for(( i=0; i< num_of_backup_locations; i++ ))
 	do
+		cp -rfv "${hero_pack_name}${backup_script_extension}" "${backup_locations[$i]}"&
 		cp -rfv  "${hero_pack_folder_name}" "${backup_locations[$i]}"&
 	done
 	wait
