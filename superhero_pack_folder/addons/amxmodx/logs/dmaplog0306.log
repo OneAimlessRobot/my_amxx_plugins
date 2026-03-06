@@ -1,0 +1,19 @@
+L 03/06/2026 - 01:31:38: Log file started (file "cstrike/addons/amxmodx/logs/dmaplog0306.log") (game "cstrike") (amx "1.10.0.5474")
+L 03/06/2026 - 01:31:38: Did not ban any maps from mapstoban.ini file
+L 03/06/2026 - 01:31:38: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/06/2026 - 01:31:38: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/06/2026 - 01:31:38: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/06/2026 - 01:32:43: Did not ban any maps from mapstoban.ini file
+L 03/06/2026 - 01:32:43: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/06/2026 - 01:32:43: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/06/2026 - 01:32:44: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/06/2026 - 01:43:13: Did not ban any maps from mapstoban.ini file
+L 03/06/2026 - 01:43:13: Loaded 0 Maps into the maps that will be picked for the vote
+L 03/06/2026 - 01:43:13: 0 Maps were not loaded because they were the last maps played, or defined twice, or banned
+L 03/06/2026 - 01:43:14: Found 16 Maps in your mapcycle.txt/allmaps.txt file, 15 are available for filling slots
+L 03/06/2026 - 02:06:38: Nominations for the map vote: 0 out of 5 possible nominations
+L 03/06/2026 - 02:06:38: Filled 12 slots in the fill maps array with maps from mapcycle.txt, 0 are custom
+L 03/06/2026 - 02:06:38: Randomly Filling slots for the vote with 5 out of 12
+L 03/06/2026 - 02:06:38: Filled 5 vote slots with random maps, 0 are custom
+L 03/06/2026 - 02:06:38: Vote: Voting for the nextmap started
+L 03/06/2026 - 02:06:58: Vote: Voting for the nextmap finished. Map starwars will be extended to next 15 minutes

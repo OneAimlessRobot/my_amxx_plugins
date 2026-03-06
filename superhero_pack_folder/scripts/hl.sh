@@ -36,7 +36,7 @@ ulimit -n 2048
 cd "$GAMEROOT"
 
 STATUS=42
-DEBUGGER="gdb"
+#DEBUGGER="gdb"
 while [ $STATUS -eq 42 ]; do
 	${DEBUGGER} "${GAMEROOT}"/${GAMEEXE} $@
 	STATUS=$?

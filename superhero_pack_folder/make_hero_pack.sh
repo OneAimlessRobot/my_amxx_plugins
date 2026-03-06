@@ -11,7 +11,7 @@ backup_script_extension=".tar.xz"
 
 backup_locations=("/mnt/FASTstorage/GithubFAST/my_amxx_plugins" "/mnt/SUPER_CAVALEIRO/progsBackup" "/mnt/REBORN/FASTERprogs" "/mnt/FASTstorage/FASTprogs")
 
-subfolders_of_backup=("models/shmod" "models/player" "sound/shmod"  "sound/QTM_CodMod"  "sound/weapons" "sound/warcraft3" "sound/zombie_plague" "models/kickball" "sprites" "addons" "configs" "scripts" "gfx")
+subfolders_of_backup=("models/shmod" "models/player" "sound/shmod"  "sound/QTM_CodMod"  "sound/weapons" "sound/warcraft3" "sound/zombie_plague" "models/kickball" "sprites" "addons" "configs" "scripts" "gfx" "txtfiles")
 
 num_of_subfolders_of_backup=${#subfolders_of_backup[@]}
 
@@ -58,10 +58,12 @@ make_empty_pack_folder(){
 }
 copy_stuff_to_pack_folder(){
 	cp -rfv "./scripts/${script_name}" "${hero_pack_folder_name}"&
-	cp -rfv *.gam "${hero_pack_folder_name}"&
+	cp -rfv *.gam "txtfiles"&
 	cp -rfv ../*.sh "scripts"&
 	cp -rfv ../*.debug_cmd "scripts"&
 	cp -rfv *.cfg "configs"&
+	cp -rfv mapcycle.txt "txtfiles"&
+	cp -rfv motd.txt "txtfiles"&
 	wait
 	for(( i=0; i< num_of_subfolders_of_backup; i++ ))
 	do
