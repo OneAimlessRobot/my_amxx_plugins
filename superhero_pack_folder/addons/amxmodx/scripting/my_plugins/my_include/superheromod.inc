@@ -13,6 +13,7 @@
 
 
 #define MAX_ENTITIES 2048
+#define MAX_HERO_NAME_LENGTH 256
 
 //Default includes used for shero
 
@@ -32,6 +33,9 @@
 #if defined SH_BACKCOMPAT
   #tryinclude "../../include/engine.inc"
 #endif
+
+
+#include "../my_heroes/sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
 //----------------------------------------------------------------------------------------------
 // IMPORTANT FUNCTIONS - WHAT EVENTS CAN THE SUPERHEROES REGISTER FOR?
 //----------------------------------------------------------------------------------------------
@@ -41,7 +45,7 @@
  *        FORWARDS        *
  **************************/
 
-forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type);
+forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_wpn_id);
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 
@@ -212,6 +216,7 @@ native sh_get_max_hp(id);
  */
 native sh_get_max_ap(id);
 
+native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
 //------------
 // Hero Creation/Property Natives
 //------------
@@ -394,7 +399,7 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC,sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE);
+native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC,sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,custom_wpn_id=-1);
 
 /**
  * Speed stuns client for time specified. Bind powers are not usable when stunned.

@@ -196,7 +196,7 @@ public stock const Float:NULL_VECTOR[3];
 #define HIT_LEFTLEG     6
 #define HIT_RIGHTLEG    7
 #define HIT_SHIELD      8 // CS only
-#define MAX_BODYHITS    8
+#define MAX_BODYHITS    9
 
 /**
  * @section emit_sound() constants

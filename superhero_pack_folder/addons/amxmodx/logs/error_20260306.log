@@ -1,0 +1,779 @@
+L 03/06/2026 - 06:51:47: Start of error session.
+L 03/06/2026 - 06:51:47: Info (map "cs_italy") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 06:51:47: [CSTRIKE] Player out of range (20)
+L 03/06/2026 - 06:51:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 06:51:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 06:51:47: [CSTRIKE] Player out of range (20)
+L 03/06/2026 - 06:51:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 06:51:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 06:51:47: [CSTRIKE] Player out of range (42)
+L 03/06/2026 - 06:51:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 06:51:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 06:51:47: [CSTRIKE] Player out of range (42)
+L 03/06/2026 - 06:51:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 06:51:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 06:51:48: [CSTRIKE] Player out of range (42)
+L 03/06/2026 - 06:51:48: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 06:51:48: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:29:43: Start of error session.
+L 03/06/2026 - 08:29:43: Info (map "cs_assault") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 08:29:43: [CSTRIKE] Player out of range (168)
+L 03/06/2026 - 08:29:43: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:29:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:39:46: Start of error session.
+L 03/06/2026 - 08:39:46: Info (map "cs_italy") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 08:39:46: [CSTRIKE] Player out of range (41)
+L 03/06/2026 - 08:39:46: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:39:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:39:46: [CSTRIKE] Player out of range (41)
+L 03/06/2026 - 08:39:46: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:39:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:49:29: [CSTRIKE] Player out of range (40)
+L 03/06/2026 - 08:49:29: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:49:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:49:41: [CSTRIKE] Player out of range (40)
+L 03/06/2026 - 08:49:41: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:49:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:49:47: [CSTRIKE] Player out of range (40)
+L 03/06/2026 - 08:49:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:49:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:49:47: [CSTRIKE] Player out of range (40)
+L 03/06/2026 - 08:49:47: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:49:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:53:46: [CSTRIKE] Player out of range (41)
+L 03/06/2026 - 08:53:46: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:53:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 08:53:46: [CSTRIKE] Player out of range (41)
+L 03/06/2026 - 08:53:46: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 08:53:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 10:51:01: Start of error session.
+L 03/06/2026 - 10:51:01: Info (map "cs_italy") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 10:51:01: [AMXX] Run time error 4 (plugin "sh_lena.amxx") - debug not enabled!
+L 03/06/2026 - 10:51:01: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 10:51:01: Unhandled dynamic native error
+L 03/06/2026 - 10:51:01: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "lena_get_has_lena") - debug not enabled!
+L 03/06/2026 - 10:51:01: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 13:51:50: Start of error session.
+L 03/06/2026 - 13:51:50: Info (map "cs_italy") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 13:51:50: [CSTRIKE] Player out of range (40)
+L 03/06/2026 - 13:51:50: [AMXX] Run time error 10 (plugin "sh_komakpt2.amxx") (native "cs_get_user_team") - debug not enabled!
+L 03/06/2026 - 13:51:50: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:12: Start of error session.
+L 03/06/2026 - 14:50:12: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 14:50:12: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:12: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:12: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:18: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:18: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:20: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:20: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:21: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:21: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:22: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:22: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:29: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:29: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:29: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:29: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:29: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:29: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:29: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:29: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:29: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:29: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:31: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:31: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:31: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:32: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:32: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:32: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:32: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:32: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:32: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:32: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:32: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:32: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:36: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:36: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:37: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:37: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:37: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:38: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:38: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:39: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:39: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:40: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:41: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:41: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:41: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:42: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:42: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:43: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:43: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:44: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:44: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:45: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:45: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:50:46: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:50:46: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:50:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:51:16: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:51:16: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:51:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:51:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:51:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:51:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:51:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:51:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:51:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:51:19: [CSX] Invalid weapon id -2
+L 03/06/2026 - 14:51:19: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:51:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:23: Start of error session.
+L 03/06/2026 - 14:56:23: Info (map "starwars") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 14:56:23: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:23: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:23: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:30: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:30: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:31: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:31: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:31: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:32: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:32: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:32: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:33: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:33: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:33: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:33: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:33: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:33: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:35: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:35: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:35: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:56:35: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:56:35: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:56:35: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:03: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:03: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:03: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:04: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:04: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:04: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:04: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:04: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:04: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:04: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:04: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:04: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:05: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:05: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:05: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:09: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:09: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:09: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:09: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:09: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:09: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:10: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:10: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:10: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:11: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:11: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:11: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:11: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:11: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:11: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:27: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:27: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:27: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:28: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:28: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:28: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:30: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:30: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:40: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:57:40: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:57:40: [AMXX] Run time error 10 (plugin "sh_damage_source_logging.amxx") (native "custom_weapon_shot") - debug not enabled!
+L 03/06/2026 - 14:57:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/06/2026 - 14:58:48: Start of error session.
+L 03/06/2026 - 14:58:48: Info (map "starwars") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 14:58:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:58:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:58:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:58:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:05: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:07: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:07: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:07: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:07: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:38: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:38: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:38: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:38: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:40: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:40: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:40: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:40: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:41: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:41: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:41: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:41: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:41: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:41: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:41: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:41: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:43: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:43: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:43: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:43: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 14:59:44: [CSX] Invalid weapon id 0
+L 03/06/2026 - 14:59:44: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 14:59:44: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 14:59:44: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:02:58: Start of error session.
+L 03/06/2026 - 15:02:58: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260306.log")
+L 03/06/2026 - 15:02:58: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:02:58: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:02:58: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:02:58: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:08: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:08: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:08: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:08: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:12: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:12: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:12: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:12: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:24: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:24: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:24: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:24: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:24: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:24: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:24: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:24: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:27: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:27: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:27: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:27: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:27: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:27: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:27: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:27: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:29: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:29: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:29: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:29: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:30: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:30: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:36: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:36: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:36: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:36: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:40: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:40: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:40: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:40: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:40: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:40: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:40: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:40: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:42: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:42: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:42: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:42: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:42: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:42: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:42: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:42: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:42: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:42: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:42: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:42: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:42: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:42: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:42: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:42: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:44: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:44: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:44: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:44: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:45: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:45: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:45: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:45: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:45: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:45: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:45: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:45: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:45: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:45: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:45: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:45: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:45: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:45: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:45: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:45: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:45: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:45: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:45: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:45: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/06/2026 - 15:03:48: [CSX] Invalid weapon id 0
+L 03/06/2026 - 15:03:48: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/06/2026 - 15:03:48: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/06/2026 - 15:03:48: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)

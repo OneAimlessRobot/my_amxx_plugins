@@ -88,7 +88,8 @@ new BODY_PART[MAX_BODYHITS][] =
 	"LEFTARM",
 	"RIGHTARM",
 	"LEFTLEG",
-	"RIGHTLEG"
+	"RIGHTLEG",
+	"SHIELD"
 }
 
 // Killer information, save killer info at the time when player is killed.

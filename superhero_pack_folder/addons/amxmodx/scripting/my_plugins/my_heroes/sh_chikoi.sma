@@ -178,8 +178,7 @@ if(is_user_alive(id) && shModActive()&&gHasChikoi[id]){
 return PLUGIN_HANDLED	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type){
-	
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

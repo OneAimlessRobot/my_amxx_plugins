@@ -54,7 +54,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Goku's Kaioken technic"
+new HeroName[] = "Gokus Kaioken technic"
 new bool:HasGokuKT[SH_MAXSLOTS+1]
 new GokuKTTimer[SH_MAXSLOTS+1]
 //reset variables

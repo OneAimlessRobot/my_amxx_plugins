@@ -1,3 +1,5 @@
+exec: ./hl_linux
+
 run $(cat cstrike_args.debug_cmd)
 
 $(cd "${0%/*}" && echo "${PWD}")

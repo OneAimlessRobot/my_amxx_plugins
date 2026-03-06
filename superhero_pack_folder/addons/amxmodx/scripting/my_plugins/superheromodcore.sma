@@ -610,7 +610,7 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF)
 	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 
 
@@ -769,6 +769,7 @@ public plugin_natives()
 	register_native("sh_set_user_xp", "_sh_set_user_xp")
 	register_native("sh_add_kill_xp", "_sh_add_kill_xp")
 	register_native("sh_get_hero_id", "_sh_get_hero_id")
+	register_native("sh_get_hero_name_from_id", "_sh_get_hero_name_from_id",0)
 	register_native("sh_user_has_hero", "_sh_user_has_hero")
 	register_native("_dropPower", "dropPower_")
 	register_native("sh_chat_message", "_sh_chat_message")
@@ -1331,6 +1332,14 @@ getHeroID(const heroName[])
 		}
 	}
 	return -1
+}
+public _sh_get_hero_name_from_id(iPlugin,iParams)
+{
+	new hero_id=get_param(1)
+	new truncated_hero_name_buff[MAX_HERO_NAME_LENGTH]
+	arrayset(truncated_hero_name_buff,0,MAX_HERO_NAME_LENGTH)
+	copy(truncated_hero_name_buff,sizeof(gSuperHeros[][hero])-1,gSuperHeros[hero_id][hero])
+	set_array(2,truncated_hero_name_buff,sizeof(truncated_hero_name_buff)-1)
 }
 //----------------------------------------------------------------------------------------------
 //native sh_user_has_hero(id, heroIndex)
@@ -2948,11 +2957,12 @@ public _sh_extra_damage()
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
 	new thrashbrat_dmg_type=get_param(11)
+	new custom_wpn_id=get_param(12)
 	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,1)
 	new preparedWpnDescription=PrepareArray(wpnDescription,32,1)
 	
 	new the_dmg_return_value=DMG_FWD_PASS
-	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type,thrashbrat_dmg_type)){
+	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type,thrashbrat_dmg_type,custom_wpn_id)){
 		server_print("Sh damage forward execute error.");
 	}
 	new health = get_user_health(victim)
