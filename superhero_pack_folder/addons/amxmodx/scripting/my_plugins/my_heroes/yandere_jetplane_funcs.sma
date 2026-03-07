@@ -450,7 +450,7 @@ public FwdTouchWorld( jet, World ) {
 		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
 
-			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp)
+			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp,30.0)
 			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME)
 			jet_destroy(owner)
 			user_kill(owner)

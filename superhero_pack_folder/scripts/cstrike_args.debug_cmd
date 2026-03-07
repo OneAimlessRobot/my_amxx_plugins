@@ -8,6 +8,7 @@ $(cd "${0%/*}" && echo "${PWD}")
 export LD_LIBRARY_PATH=${GAMEROOT}:$LD_LIBRARY_PATH
 =
 
-export LD_LIBRARY_PATH=$(cd "${0%/*}" && echo "${PWD}"):$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(echo "${PWD}"):$LD_LIBRARY_PATH
+export SteamEnv=1
 
 -nofbo freq 60  -stretchaspect -noforcemparms -game cstrike +port "27020" -w 800 -h 600 -windowed

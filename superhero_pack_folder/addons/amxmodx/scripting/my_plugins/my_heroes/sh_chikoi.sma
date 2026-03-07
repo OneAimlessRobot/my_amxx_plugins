@@ -19,7 +19,7 @@ stock chikoi_death_sounds[CHIKOI_NUM_DEATH_SOUNDS][]={
 new gHeroID
 new const gHeroName[] = "Chikoi the Maid"
 new bool:gHasChikoi[SH_MAXSLOTS+1]
-
+new custom_dmg_id=0;
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -41,7 +41,8 @@ public plugin_init()
 	register_srvcmd("chikoi_init", "chikoi_init")
 	shRegHeroInit(gHeroName, "chikoi_init")
 	register_event("DeathMsg","death","a")
-	
+	custom_dmg_id=sh_log_custom_damage_source(gHeroID,CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,CHIKOI_THE_MAID_PHYSICAL_PROPERTY,1)
+
 	
 }
 
@@ -96,7 +97,7 @@ get_user_name(id,client_name,127);
 if(headshot){
 
 	
-	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL)
+	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id)
 	dmg_message(id, attacker)
 }
 if(weapon==CSW_HEGRENADE){
@@ -195,6 +196,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			
 			arrayset(wpnDescription,0,sizeof wpnDescription)
 			copy(wpnDescription, strlen(CHIKOI_THE_MAID_PHYSICAL_PROPERTY),CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
+			custom_weapon_id=custom_dmg_id
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
 			new_dmg_type=SH_NEW_DMG_SQUASHED

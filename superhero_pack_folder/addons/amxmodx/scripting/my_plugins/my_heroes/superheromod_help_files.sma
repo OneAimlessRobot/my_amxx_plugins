@@ -137,7 +137,7 @@ public show_hero_help(id, const said[])
 		copy(heroName, charsmax(heroName), said[spaceIdx+1] )
 	}
 	else {
-		sh_chat_message(id, _, "Please provide at least two letters from the hero name you wish to drop")
+		sh_chat_message(id, _, "Please provide at least two letters from the hero name you wish to check the help file for")
 		return
 	}
 

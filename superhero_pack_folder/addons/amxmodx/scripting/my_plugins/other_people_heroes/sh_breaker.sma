@@ -59,9 +59,18 @@ public client_damage(attacker, victim, damage, wpnindex)
 	armor = cs_get_user_armor(victim, armortype) 
 	
 	if (gHasBreaker[attacker] && random_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
-	{ 
-		new slot = sh_get_weapon_slot(wpnindex) 
-		
+	{ 	
+		new slot=0;
+		if(wpnindex < CSW_P90){
+			slot = sh_get_weapon_slot(wpnindex) 
+		}
+		else if(xmod_is_melee_wpn(wpnindex)){
+			slot=-1;
+		}
+		else{
+			slot=1;
+
+		}
 		if (slot == 1 || slot == 2) 
 		{     
 			cs_set_user_armor (victim, max(armor - get_pcvar_num(pCvarDeduct), 0), armortype) 
@@ -69,7 +78,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 			sh_set_rendering(victim, 0, 255, 255, 50, kRenderFxGlowShell, kRenderGlow) 
 			
 			set_task(1.0, "remove_rendering", victim) 
-		} 
+		}
 	} 
 }  
 //------------------------------------------------------------------------------------------------

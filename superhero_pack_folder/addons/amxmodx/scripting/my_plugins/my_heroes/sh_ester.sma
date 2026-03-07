@@ -526,7 +526,7 @@ public Ester_revenge_loop(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 			}
-			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),1)
+			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),1,30.0)
 			reset_status(id)
 			gFinished[id]=true;
 			return

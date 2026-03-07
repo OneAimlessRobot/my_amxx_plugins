@@ -291,7 +291,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 		if(has_rocket[id] == pToucher)
 		has_rocket[id] = 0
 
-		explosion(gHeroID,pToucher,float(damradius),float(maxdamage))
+		explosion(gHeroID,pToucher,float(damradius),float(maxdamage),30.0)
 		
 
 		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

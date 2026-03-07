@@ -512,7 +512,7 @@ public move_entity(parm[])
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
-stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0){
+stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0){
 	
 	if(!is_user_connected(ent_id)){
 		return
@@ -547,11 +547,11 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner)
+		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force)
 		
 	}
 }
-stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
+stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -589,11 +589,11 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,_,optional_force)
 
 	}
 }
-stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player"){
+stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player",Float:optional_force=0.0){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -626,7 +626,7 @@ stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent
 			continue
 		
 		}
-		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power)
+		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
 stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){

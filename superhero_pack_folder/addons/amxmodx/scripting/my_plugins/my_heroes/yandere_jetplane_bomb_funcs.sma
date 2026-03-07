@@ -233,7 +233,7 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 			RemoveEntity(pTouched)
 		}
 	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,30.0)
 	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME)
 	RemoveEntity(pToucher)
 	

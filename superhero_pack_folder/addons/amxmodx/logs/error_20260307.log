@@ -1,0 +1,303 @@
+L 03/07/2026 - 18:35:55: Start of error session.
+L 03/07/2026 - 18:35:55: Info (map "starwars") (file "addons/amxmodx/logs/error_20260307.log")
+L 03/07/2026 - 18:35:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:35:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:35:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:35:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:35:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:35:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:35:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:35:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:35:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:35:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:35:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:35:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:35:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:35:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:35:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:35:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:36:39: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:36:39: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:36:39: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:36:39: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:04: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:04: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:04: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:04: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:21: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:21: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:21: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:21: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:28: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:28: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:28: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:28: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:29: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:29: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:29: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:29: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:29: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:29: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:29: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:29: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:31: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:31: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:31: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:31: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:32: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:32: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:32: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:32: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:32: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:32: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:32: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:32: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:33: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:33: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:33: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:33: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:33: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:33: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:33: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:33: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:37:33: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:37:33: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:37:33: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:37:33: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:15: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:15: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:15: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:15: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:28: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:28: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:28: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:28: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:38:50: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:38:50: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:38:50: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:38:50: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:39:40: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:39:40: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:39:40: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:39:40: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:22: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:22: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:22: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:22: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:29: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:29: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:29: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:29: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:29: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:29: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:29: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:29: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:37: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:37: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:37: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:37: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:53: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:53: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:53: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:53: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:55: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:55: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:55: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:55: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:56: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:56: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:56: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:56: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:56: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:56: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:56: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:56: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:40:58: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:40:58: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:40:58: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:40:58: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:05: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:05: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:05: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:05: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:26: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:26: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:26: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:26: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:27: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:27: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:27: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:27: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:27: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:27: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:27: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:27: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:30: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:30: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:30: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:30: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:41:31: [CSX] Invalid weapon id 0
+L 03/07/2026 - 18:41:31: [AMXX] Displaying debug trace (plugin "sh_damage_source_logging.amxx", version "1.0.0")
+L 03/07/2026 - 18:41:31: [AMXX] Run time error 10: native error (native "custom_weapon_shot")
+L 03/07/2026 - 18:41:31: [AMXX]    [0] sh_damage_source_logging.sma::sh_extra_damage_fwd_pre (line 79)
+L 03/07/2026 - 18:45:35: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:45:35: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:51:08: Start of error session.
+L 03/07/2026 - 18:51:08: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260307.log")
+L 03/07/2026 - 18:51:08: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:51:08: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:51:08: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:51:08: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:55:32: Start of error session.
+L 03/07/2026 - 18:55:32: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260307.log")
+L 03/07/2026 - 18:55:32: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:55:32: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:55:36: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:55:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:55:36: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:55:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:56:39: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:56:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:56:39: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:56:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:57:27: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:57:27: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 18:57:55: [AMXX] Run time error 4 (plugin "sh_breaker.amxx") - debug not enabled!
+L 03/07/2026 - 18:57:55: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/07/2026 - 19:00:04: Start of error session.
+L 03/07/2026 - 19:00:04: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260307.log")
+L 03/07/2026 - 19:00:04: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:00:04: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:00:04: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:00:53: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:00:53: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:00:53: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:01:46: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:01:46: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:01:46: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:02:30: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:02:30: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:02:30: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:03:48: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:03:48: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:03:48: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:10:46: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:10:46: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:10:46: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:11:31: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:11:31: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:11:31: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:17:58: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:17:58: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:17:58: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
+L 03/07/2026 - 19:17:58: [AMXX] Displaying debug trace (plugin "sh_breaker.amxx", version "1.1")
+L 03/07/2026 - 19:17:58: [AMXX] Run time error 4: index out of bounds 
+L 03/07/2026 - 19:17:58: [AMXX]    [0] sh_breaker.sma::client_damage (line 63)
