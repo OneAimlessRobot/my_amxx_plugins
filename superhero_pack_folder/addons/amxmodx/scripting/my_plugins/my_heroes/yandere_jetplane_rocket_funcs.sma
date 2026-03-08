@@ -326,7 +326,7 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 			RemoveEntity(pTouched)
 		}
 	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg,30.0)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude)
 	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME)
 	RemoveEntity(pToucher)
 }

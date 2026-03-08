@@ -451,6 +451,7 @@ new gXpBounsVIP
 //new Float:gLastKeydown[SH_MAXSLOTS+1]
 new bool:gHasAnubis[SH_MAXSLOTS+1]
 
+
 // Other miscellaneous global variables
 new gHelpHudMsg[340]
 new gmsgStatusText, gmsgScoreInfo, gmsgDeathMsg, gmsgDamage
@@ -570,6 +571,7 @@ public plugin_init()
 	sv_superheros = register_cvar("sv_superheros", "1")
 	sh_adminaccess = register_cvar("sh_adminaccess", "m")
 	sh_alivedrop = register_cvar("sh_alivedrop", "0")
+	sh_default_explode_knock_force_magnitude_cvar = register_cvar("sh_default_explode_knock_force_magnitude","3.0")
 	sh_autobalance = register_cvar("sh_autobalance", "0")
 	sh_objectivexp = register_cvar("sh_objectivexp", "8")
 	sh_cmdprojector = register_cvar("sh_cmdprojector", "1")
@@ -1023,6 +1025,7 @@ public cvarCheck()
 	gObjectiveXP = (get_pcvar_num(sh_objectivexp) <= 0) ? false : true
 	if ( !gLongTermXP ) gAutoBalance = get_pcvar_num(sh_autobalance) ? true : false
 	gCMDProj = get_pcvar_num(sh_cmdprojector)
+	default_explode_knock_force_magnitude = get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
 	gBotsEarnXP=get_pcvar_num(sh_botsearnxp)
 	gBotsMinLevel=get_pcvar_num(sh_botsminlevel)
 	gBotsMaxLevel=get_pcvar_num(sh_botsmaxlevel)

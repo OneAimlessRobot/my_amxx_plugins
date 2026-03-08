@@ -1169,7 +1169,7 @@ public BlowUp(id)
 	get_user_name(id, name, 31)
 
 	// blowup even if dead
-	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1,30.0)
+	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1, default_explode_knock_force_magnitude)
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
 		if ( is_user_alive(a) && (a != id )) {
 

@@ -145,6 +145,12 @@ stock const SH_VERSION_STR[] =	"1.2.0.16";
 // Cooldown task id, required to allow core to stop task
 #define SH_COOLDOWN_TASKID	572910
 
+#define SH_DEFAULT_EXPLODE_FORCE 4.0
+
+stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
+
+stock sh_default_explode_knock_force_magnitude_cvar;
+
 // Max player slots
 #define SH_MAXSLOTS		32
 
