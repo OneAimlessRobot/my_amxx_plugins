@@ -14,7 +14,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
-#pragma dynamic 32000
+#pragma dynamic 64000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

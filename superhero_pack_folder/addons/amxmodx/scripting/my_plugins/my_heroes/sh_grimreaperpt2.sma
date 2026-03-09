@@ -13,6 +13,10 @@ new bool:gUsedScythe[SH_MAXSLOTS+1]
 new bool:gJustResetRendering[SH_MAXSLOTS+1]
 new gScytheSwings[SH_MAXSLOTS+1]
 
+new dmg_source_name_short_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
+new dmg_source_name_long_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
+new custom_dmg_id_scythe
+
 new const gModelScythe[] = "models/shmod/v_scythe.mdl"
 new gModelLoaded
 new num_swings,Float:g_reaper_range,inf_swings
@@ -33,7 +37,8 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
-	
+	custom_dmg_id_scythe=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_scythe,dmg_source_name_long_scythe,1)
+
 	register_srvcmd("greaper2_init", "greaper2_init")
 	shRegHeroInit(gHeroName, "greaper2_init")
 	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe",_,true)
@@ -122,7 +127,7 @@ new attacker_name[128];
 new client_name[128];
 get_user_name(attacker,attacker_name,127);
 get_user_name(this,client_name,127);
-sh_extra_damage(this,attacker,1,"Death Swing",1,SH_DMG_KILL);
+sh_extra_damage(this,attacker,1,dmg_source_name_long_scythe,1000,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id_scythe);
 sh_chat_message(0,gHeroID,"AND THAT IS A HIT!!!!! %s HAS SLAIN %s WITH THE DEATHS SCYTHE!!!!!",attacker_name,client_name);
 emit_sound(attacker, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 emit_sound(this, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)

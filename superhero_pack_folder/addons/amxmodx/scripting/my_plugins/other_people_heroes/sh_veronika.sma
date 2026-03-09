@@ -23,10 +23,20 @@ stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_9mmar.mdl"
 
 // VARIABLES
 new gHeroName[]="Veronika"
+
+new dmg_source_name_short_ak[SAFE_BUFFER_SIZE+1]="ak_gl"
+new dmg_source_name_long_ak[SAFE_BUFFER_SIZE+1]="ak47_glauncher"
+new custom_dmg_id_ak
+
+new dmg_source_name_short_grenade[SAFE_BUFFER_SIZE+1]="m203"
+new dmg_source_name_long_grenade[SAFE_BUFFER_SIZE+1]="m203_grenade"
+new custom_dmg_id_grenade
+
+#define VERONIKA_GRENADE_SPEED 1250
 new gHasVeronikaPower[SH_MAXSLOTS+1]
 new g_ammo[33]
 new g_m203_loaded[33]
-
+new gHeroID
 //sprites
 new m_iTrail
 new xplode
@@ -54,8 +64,10 @@ public plugin_init()
 	
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Resident Evil", "AK Grenade Launcher Right Mouse Button.", false, "veronika_level" )
+	gHeroID=shCreateHero(gHeroName, "Resident Evil", "AK Grenade Launcher Right Mouse Button.", false, "veronika_level" )
 	
+	custom_dmg_id_ak=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ak,dmg_source_name_long_ak,0)
+	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_long_grenade,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
 	// INIT
@@ -188,7 +200,7 @@ public veronika_damage(id)
 	if ( gHasVeronikaPower[attacker] && weapon == CSW_AK47 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
-		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "AK47+M203", headshot )
+		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak, headshot,_,_,_,_,_,_,custom_dmg_id_ak)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -251,9 +263,9 @@ public launch_nade(id)
 	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCE)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
-	VelocityByAim(id, 2000 , Velocity)
+	VelocityByAim(id, VERONIKA_GRENADE_SPEED , Velocity)
 	new Float:mini_Velocity[3];
-	multiply_3d_vector_by_scalar(Velocity,1/2000.0,mini_Velocity);
+	multiply_3d_vector_by_scalar(Velocity,1.0/float(VERONIKA_GRENADE_SPEED),mini_Velocity);
 	multiply_3d_vector_by_scalar(mini_Velocity,30.0,mini_Velocity);
 	add_3d_vectors(Origin,mini_Velocity,Origin);
 	entity_set_origin(Ent, Origin)
@@ -365,7 +377,7 @@ public vexd_pfntouch(pToucher, pTouched)
 
 do_victim(victim,attacker,damage,tk)
 {	
-	sh_extra_damage(victim,attacker,damage,"Veronika AK grenade",_,_,_,tk?true:false)
+	sh_extra_damage(victim,attacker,damage, dmg_source_name_long_grenade,_,_,_,tk?true:false,_,_,_,custom_dmg_id_grenade)
 }
 
 ammo_hud(id, sw)

@@ -189,7 +189,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 	}
 	
-	if( !sh_is_active() ||!client_hittable(idattacker)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
+	if( !sh_is_active() ||!client_hittable(idattacker)|| !client_hittable(this)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
 		
 		if(!client_hittable(idattacker)){
 			

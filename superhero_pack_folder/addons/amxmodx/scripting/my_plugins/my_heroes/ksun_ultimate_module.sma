@@ -19,6 +19,10 @@ new Float:ksun_ultimate_reload_rate_mult
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
 
+new dmg_source_name_short_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
+new dmg_source_name_long_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
+new custom_dmg_id_r5
+
 
 new g_player_supply_amount[SH_MAXSLOTS+1]
 
@@ -48,6 +52,7 @@ public plugin_init()
 			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
+	custom_dmg_id_r5=sh_log_custom_damage_source(spores_ksun_hero_id(),dmg_source_name_short_r5,dmg_source_name_long_r5,0)
 	
 }
 
@@ -120,7 +125,8 @@ if(spores_has_ksun(attacker)&&ksun_player_is_in_ultimate(attacker)){
 	if(weapon==KSUN_WEAPON_ID){
 		new Float:dmgAdded= damage*ksun_dmg_absorption_index
 		new Float:newDamage=damage+ dmgAdded
-		SetHamParamFloat(4, newDamage);
+		SetHamParamFloat(4, 0.0);
+		sh_extra_damage(id,attacker,floatround(newDamage),dmg_source_name_long_r5,1,_,_,_,_,_,_,custom_dmg_id_r5)
 	}
 }
 return HAM_IGNORED

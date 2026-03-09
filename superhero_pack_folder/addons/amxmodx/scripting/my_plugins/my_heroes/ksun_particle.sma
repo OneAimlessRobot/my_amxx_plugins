@@ -136,7 +136,7 @@ public _ksun_glisten(iPlugins,iParms){
 	color[0]=LineColors[PURPLE][0]
 	color[1]=LineColors[PURPLE][1]
 	color[2]=LineColors[PURPLE][2]
-	color[3]=230
+	color[3]=100
 	aura(id,color)
 	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
 	

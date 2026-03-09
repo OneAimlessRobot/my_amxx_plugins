@@ -447,9 +447,10 @@ public camera_think(ent)
 	parm[1]=ent
 	parm[0]=owner
 	new i=0
-	
+	for(;(user_cameras[owner][i]!=ent)&&(i<camman_get_max_cameras());i++){}
+
 	if ( (cameraHealth<1000.0)) {
-		for(;(user_cameras[owner][i]!=ent)&&(i<camman_get_max_cameras());i++){}
+		
 		
 		if(i<camman_get_max_cameras()){
 			parm[2]=i
@@ -464,8 +465,8 @@ public camera_think(ent)
 		set_pev(ent, pev_fuser1, gametime + (1.0/CAMERA_FRAMERATE))
 	}
 	camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
-	if(looking_with_camera[owner]){
-		
+	if(looking_with_camera[owner]&&(((i+1)%(camman_get_max_cameras()))==user_curr_camera[owner])){
+		//(user_curr_camera[id]+1)%(camman_get_max_cameras())
 		laser_on_player_think(ent)
 		update_camera_aiming(owner,ent)
 	}
