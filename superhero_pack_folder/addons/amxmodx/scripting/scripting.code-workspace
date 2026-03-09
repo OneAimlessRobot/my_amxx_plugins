@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../../../../hlstatsx/hlstatsx"
+		},
+		{
+			"path": "../../../scripts"
 		}
 	],
 	"settings": {}

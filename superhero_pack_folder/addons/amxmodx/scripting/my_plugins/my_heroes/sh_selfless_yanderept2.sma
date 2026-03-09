@@ -14,7 +14,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
-#pragma dynamic 16000
+#pragma dynamic 32000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -339,7 +339,7 @@ message_end()
 public remove_glow_task(id){
 
 id-=YANDERE_REMOVE_GLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
+if(!sh_is_active()||!is_user_connected(id)) return
 set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 
 }
@@ -823,7 +823,7 @@ public yandere_damage(id)
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
+	new headshot = (bodypart == 1 ? 1 : 0)
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!client_hittable(attacker)) return PLUGIN_CONTINUE
 	
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
@@ -845,7 +845,7 @@ public yandere_damage(id)
 				sh_extra_damage(id, attacker, floatround(extraDamage), "yandere rage", headshot)
 			}
 			if(gSuperAngry[attacker]){
-				new attacker_name[128],client_name[128]
+				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
 				setScreenFlash(attacker,255,0,0,3,100)
@@ -854,7 +854,9 @@ public yandere_damage(id)
 				set_task(3.0,"remove_glow_task",attacker+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
 				sh_add_hp(attacker,floatround(extraDamage*angry_hitheal_pct),overheal_hp_max)
 				if(extraDamage>=health){
-					new origin[3];
+					static origin[3];
+					// player fades.. 
+					set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4); 
 					get_user_origin(id,origin)
 					anime_kill_fx(origin)
 					
@@ -1051,7 +1053,7 @@ killyandere(id,bool:dropping=false){
 	if(gHasYandere[id]||dropping){
 		
 		if(gSuperAngry[id]){
-			new origin[3]
+			static origin[3]
 			get_user_origin(id,origin)
 			fx_invisible(id)
 			anime_kill_fx(origin)
@@ -1161,8 +1163,8 @@ public yandere_glow(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
-	new distanceBetween
-	new origin[3], origin1[3], name[32]
+	static distanceBetween
+	static origin[3], origin1[3], name[32]
 
 	get_user_origin(id, origin)
 
