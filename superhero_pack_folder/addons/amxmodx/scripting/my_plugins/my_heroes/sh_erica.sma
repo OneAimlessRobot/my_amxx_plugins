@@ -321,6 +321,19 @@ public newRound(id)
 	return PLUGIN_HANDLED
 	
 }
+public client_disconnected(id){
+	
+	g_erica_points[id]=0;
+	g_erica_kills[id]=0;
+	g_base_er_speed[id]=0.0
+	g_base_er_radius[id]=0.0
+	gNumDarts[id]=0
+	remove_task(id+ERICA_STATS_TASKID)
+	if ( is_user_alive(id) ) {
+		sh_drop_weapon(id, CSW_ELITE, true)
+	}
+	hook_set_hook(id,0)
+}
 public sh_client_spawn(id)
 {
 	if ( gHasErica[id] ) {

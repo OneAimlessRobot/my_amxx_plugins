@@ -239,6 +239,10 @@ public plugin_precache()
 	}
 	precache_explosion_fx()
 }
+public client_disconnected(id){
+
+		remove_task(id+MARKSMAN_TASKID)
+}
 
 public Crouch(id,alpha) {
 		

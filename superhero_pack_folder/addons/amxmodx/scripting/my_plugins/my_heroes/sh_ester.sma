@@ -710,7 +710,17 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	}
 	return HAM_IGNORED
 }
+public client_disconnected(id){
 
+	reset_ester_reborn_mode(id,0)
+	ester_weapons(id)
+	reset_ester_user_round(id)
+	ester_unmorph(id+ESTER_MORPH_TASKID)
+	
+	if(!is_user_bot(id)){
+		remove_task(id+ESTER_GLOW_TASKID)
+	}
+}
 public plugin_precache()
 {
 	

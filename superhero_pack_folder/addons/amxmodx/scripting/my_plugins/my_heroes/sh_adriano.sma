@@ -298,6 +298,16 @@ public adriano_loop(id){
 	
 	
 }
+public client_disconnected(id){
+	ethereal_unset_ethereal(id)
+	colt_unset_colt(id)
+	g_adriano_points[id]=0;
+	g_base_speed[id]=0.0
+	g_base_radius[id]=0.0
+	remove_task(id+ADRIANO_STATS_TASKID)
+
+
+}
 update_stats(id){
 	
 	if(gHasAdriano[id]){

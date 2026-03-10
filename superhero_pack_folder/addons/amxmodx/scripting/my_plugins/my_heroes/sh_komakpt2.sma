@@ -191,11 +191,6 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 	
 	if( !sh_is_active() ||!client_hittable(idattacker)|| !client_hittable(this)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
 		
-		if(!client_hittable(idattacker)){
-			
-				log_amx("Invalid thing in komak!!!!^n");
-			
-		}
 		return return_result;
 	
 	}
@@ -387,6 +382,15 @@ stats_komak(id){
 	gCurrFireRatio[id]=floatadd(base_fire_ratio,floatmin(get_max_added_fire_ratio(id),get_added_fire_ratio(id)))
 	gCurrReloadRatio[id]=floatadd(base_reload_ratio,floatmin(get_max_added_reload_ratio(id),get_added_reload_ratio(id)))
 }
+
+public client_disconnected(id){
+
+	remove_task(id+KOMAK_STATS_TASKID)
+	if(!is_user_bot(id)){
+		remove_task(id+KOMAK_HUD_TASKID)
+	}
+	remove_task(id+KOMAK_REPAIR_TASKID)
+}
 public komak_gear_change(id,is_up){
 	
 	new increment= is_up?1:-1
@@ -410,6 +414,7 @@ public komak_gear_change(id,is_up){
 	g_komak_gear[id]=the_gear
 	
 }
+
 public komak_kd()
 {
 	new temp[6]

@@ -125,7 +125,14 @@ add_points(id,Float:damage){
 	
 	
 }
+public client_disconnected(id){
 
+	g_maria_points[id]=0;
+	g_base_radius[id]=0.0
+	remove_task(id+MARIA_STATS_TASKID)
+	remove_task(id+MARIA_HEAL_TASKID)
+
+}
 calculate_healing(id,Float:values[2]){
 
 new Float: maria_health=float(get_user_health(id))

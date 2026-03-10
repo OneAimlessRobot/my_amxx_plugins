@@ -730,6 +730,18 @@ if(!gSuperAngry[id]){
 }
 
 }
+
+
+public client_disconnected(id){
+
+
+	remove_task(id+YANDERE_ANGER_TASKID)
+	remove_task(id+YANDERE_CRY_TASKID)
+	remove_task(id+YANDERE_STATS_TASKID)
+	remove_task(id+YANDERE_HEAL_TASKID)
+	killyandere(id,true)
+	yandere_unmorph(id+YANDERE_MORPH_TASKID)
+}
 update_stats(id){
 
 if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
