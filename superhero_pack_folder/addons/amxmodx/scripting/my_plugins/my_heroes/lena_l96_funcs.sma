@@ -20,6 +20,10 @@ new g_L96_clip[SH_MAXSLOTS+1]
 new dmg_headshot_mult,
 	xp_distance_mult;
 
+new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="L96A1"
+new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
+new custom_dmg_id_l96
+
 //new HamHook:TakeDamage
 public plugin_init(){
 	
@@ -46,7 +50,8 @@ public plugin_init(){
 	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
+	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 	
 }
 
@@ -484,7 +489,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
-					sh_extra_damage(pTouched,oid,floatround(damage),"Lena bullet", headshot,_,_,_,_,DMG_BULLET);
+					sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
 					
 					if(!is_user_bot(oid)){
 						sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");

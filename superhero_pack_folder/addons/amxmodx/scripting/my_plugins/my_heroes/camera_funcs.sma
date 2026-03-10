@@ -637,7 +637,7 @@ public _user_can_plant_camera(iPlugins,iParams){
 	if ( fraction >= 1.0 ) {
 		return 0
 	}
-	return 1
+	return !looking_with_camera[id]
 }
 public _camera_charge_camera(iPlugins,iParams){
 	
