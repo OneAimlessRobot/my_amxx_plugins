@@ -1,0 +1,89 @@
+#if defined sh_maria_riveter_funcs
+  #endinput
+#endif
+#define sh_maria_riveter_funcs
+
+#define MARIA_WEAPON "weapon_m249"
+#define MARIA_WEAPON_CLASSID CSW_M249
+#define MARIA_PROJECTILE_CLASSNAME "maria_riveter"
+
+
+#define MARIA_RIVETER_SHOTSOUND "weapons/m60-1.wav"
+#define MARIA_RIVETER_WALLHIT_SOUND "weapons/xbow_hit1.wav"
+
+
+
+#define MARIA_PROJECTILE_DAMAGE 300
+#define MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST 2500.0
+
+
+#define MARIA_PROJECTILE_DEPLOY_TIME 1.0
+#define MARIA_PROJECTILE_SHOOT_PERIOD 0.05
+
+#define MARIA_PROJECTILE_SHOOT_RANDOMNESS 0.01
+
+#define MARIA_PROJECTILE_RELOAD_TASKID 724311
+#define MARIA_PROJECTILE_REM_TASKID 612132
+
+#define MARIA_PROJECTILE_TRAIL_TASKID 832121
+
+#define MARIA_PROJECTILE_SPEED_TASKID 762112
+
+#define MARIA_ZOOM_TASKID 6734212
+
+#define MARIA_PROJECTILE_REM_TIME 0.001
+
+#define MARIA_PROJECTILE_LIFE 40.0
+
+#define MARIA_PROJECTILE_SPEED 1500.0
+#define MARIA_PROJECTILE_GRAVITY_MULT 1.0
+#define MARIA_PROJECTILE_PHYS_UPDATE_TIME 0.05
+
+#define MARIA_PROJECTILE_MASS 1.0
+#define MARIA_PROJECTILE_CAR 0.4292
+#define MARIA_PROJECTILE_DIAMETER 2.0
+#define MARIA_PROJECTILE_AREA ((MARIA_PROJECTILE_DIAMETER*MARIA_PROJECTILE_DIAMETER)*MATH_PI)
+#define MARIA_AIR_RESISTANCE 0.25
+#define MARIA_PROJECTILE_DRAG_CONST (MARIA_PROJECTILE_AREA*MARIA_PROJECTILE_CAR*MARIA_AIR_RESISTANCE)
+
+#define MATH_PI  3.1415926535897932384626433832795028841971
+#define RECOIL 2.0
+
+
+
+#define CLIP_SIZE 25
+
+/*
+enum
+{
+    CS_RESET_ZOOM = 0,      // Reset any zoom blocking (mode has no effect)
+    CS_SET_NO_ZOOM,         // Disable any sort of zoom
+    CS_SET_FIRST_ZOOM,      // Set first zoom level (AWP style)
+    CS_SET_SECOND_ZOOM,     // Set second zoom level (AWP style)
+    CS_SET_AUGSG552_ZOOM,   // Set AUG/SG552 zoom style
+};
+*/
+
+enum{
+	MARIA_NO_ZOOM=0,
+	MARIA_FIRST_ZOOM=1,
+	MARIA_SECOND_ZOOM=2,
+	MARIA_MAX_ZOOM=3
+}
+
+enum
+{
+	anim_idle,
+	anim_shoot1,
+	anim_shoot2,
+	anim_reload,
+	anim_draw,
+}
+native maria_shoot_riveter(id);
+native maria_get_hero_id();
+native maria_riveter_clear_rivets();
+native maria_riveter_set_num_rivets(id,value_to_set)
+native maria_riveter_get_num_rivets(id)
+native maria_riveter_dec_num_rivets(id)
+
+

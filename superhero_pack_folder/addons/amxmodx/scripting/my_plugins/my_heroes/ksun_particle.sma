@@ -130,13 +130,13 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	new id= get_param(1)
 	
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,180)
+	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
 	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
 	new color[4];
 	color[0]=LineColors[PURPLE][0]
 	color[1]=LineColors[PURPLE][1]
 	color[2]=LineColors[PURPLE][2]
-	color[3]=100
+	color[3]=200
 	aura(id,color)
 	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
 	

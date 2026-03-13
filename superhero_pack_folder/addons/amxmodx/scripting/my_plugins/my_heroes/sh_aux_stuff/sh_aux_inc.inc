@@ -306,7 +306,7 @@ public track_task(array[],id){
 	detect_user(array[0],id,vEnd);
 	IVecFVec(origin,Pos)
 	IVecFVec(eorigin,vEnd)
-	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
+	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE},true)
 	for(new i=0;i<array[2];i++){
 		if(!client_hittable(array[i+5])){
 		
@@ -319,7 +319,7 @@ public track_task(array[],id){
 		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
 		detect_user(array[i+5],id,vEnd);
 		IVecFVec(origin,Pos)
-		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE})
+		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE},true)
 		
 	}
 	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
@@ -500,7 +500,7 @@ public move_entity(parm[])
 	}
 	pev(victim,pev_origin,origin)
 	
-	origin[2]+=100.0
+	origin[2]+=10.0
 	
 	set_pev(victim,pev_origin,origin)
 	
@@ -512,7 +512,7 @@ public move_entity(parm[])
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
-stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0){
+stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0,set_stun=0){
 	
 	if(!is_user_connected(ent_id)){
 		return
@@ -547,11 +547,11 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force)
+		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun)
 		
 	}
 }
-stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0){
+stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0,ignore_owner=1,set_stun=0){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -589,7 +589,7 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:opt
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,_,optional_force)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun)
 
 	}
 }
@@ -629,7 +629,7 @@ stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -699,8 +699,9 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	parm[2] = floatround(b_vel[2])
 	parm[3] = pid
 	set_task(0.1, "move_enemy", 0, parm, 4)
-	sh_set_stun(pid,3.0,0.5)
-	
+	if(set_stun){
+		sh_set_stun(pid,3.0,0.5)
+	}
 	sh_screen_shake(pid,10.0,3.0,10.0)
 	unfade_screen_user(pid)
 	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -789,7 +790,7 @@ stock unfade_screen_user(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]={RED,BLUE,CUSTOM})
+stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]={RED,BLUE,CUSTOM},bool:for_one=false)
 {
 	if ( !pev_valid(ent_id) ) return
 	static  colors[3]
@@ -809,13 +810,13 @@ stock laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]=
 	//This is a little cleaner but not much
 	if ( killbeam ) {
 		//Kill the Beam
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
+		message_begin(for_one?MSG_ONE_UNRELIABLE:MSG_BROADCAST, SVC_TEMPENTITY,_,for_one?ent_id:0) //message begin
 		write_byte(TE_KILLBEAM)
 		write_short(ent_id) // entity
 		message_end()
 	}
 	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
+	message_begin(for_one?MSG_ONE_UNRELIABLE:MSG_BROADCAST, SVC_TEMPENTITY,_,for_one?ent_id:0) //message begin
 	write_byte (0)     //TE_BEAMENTPOINTS 0
 	write_coord_f(Pos[0])
 	write_coord_f(Pos[1])

@@ -1,0 +1,116 @@
+L 03/10/2026 - 18:21:45: Start of error session.
+L 03/10/2026 - 18:21:45: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:21:45: [AMXX] Run time error 4 (plugin "sh_maria.amxx") - debug not enabled!
+L 03/10/2026 - 18:21:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/10/2026 - 18:21:45: Unhandled dynamic native error
+L 03/10/2026 - 18:21:45: [AMXX] Run time error 10 (plugin "maria_riveter_funcs.amxx") (native "maria_get_has_maria") - debug not enabled!
+L 03/10/2026 - 18:21:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/10/2026 - 18:22:38: Start of error session.
+L 03/10/2026 - 18:22:38: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:22:38: [AMXX] Run time error 4 (plugin "sh_maria.amxx") - debug not enabled!
+L 03/10/2026 - 18:22:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/10/2026 - 18:22:38: Unhandled dynamic native error
+L 03/10/2026 - 18:22:38: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:22:38: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:22:38: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:22:38: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 268)
+L 03/10/2026 - 18:23:18: Start of error session.
+L 03/10/2026 - 18:23:18: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:23:18: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:23:18: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:23:18: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:23:18: Unhandled dynamic native error
+L 03/10/2026 - 18:23:18: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:23:18: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:23:18: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:23:18: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 268)
+L 03/10/2026 - 18:28:18: Start of error session.
+L 03/10/2026 - 18:28:18: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:28:18: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:28:18: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:28:18: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:28:18: Unhandled dynamic native error
+L 03/10/2026 - 18:28:18: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:28:18: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:28:18: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:28:18: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 18:33:07: Start of error session.
+L 03/10/2026 - 18:33:07: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:33:07: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:33:07: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:33:07: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:33:07: Unhandled dynamic native error
+L 03/10/2026 - 18:33:07: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:33:07: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:33:07: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:33:07: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 18:42:33: Start of error session.
+L 03/10/2026 - 18:42:33: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:42:33: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:42:33: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:42:33: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:42:33: Unhandled dynamic native error
+L 03/10/2026 - 18:42:33: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:42:33: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:42:33: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:42:33: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 18:48:18: Start of error session.
+L 03/10/2026 - 18:48:18: Info (map "starwars") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:48:18: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:48:18: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:48:18: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:48:18: Unhandled dynamic native error
+L 03/10/2026 - 18:48:18: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:48:18: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:48:18: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:48:18: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 18:58:02: Start of error session.
+L 03/10/2026 - 18:58:02: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 18:58:02: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 18:58:02: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 18:58:02: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 88)
+L 03/10/2026 - 18:58:02: Unhandled dynamic native error
+L 03/10/2026 - 18:58:02: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 18:58:02: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 18:58:02: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 18:58:02: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 19:02:50: Start of error session.
+L 03/10/2026 - 19:02:50: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 19:02:50: [AMXX] Displaying debug trace (plugin "sh_maria.amxx", version "1.0")
+L 03/10/2026 - 19:02:50: [AMXX] Run time error 4: index out of bounds 
+L 03/10/2026 - 19:02:50: [AMXX]    [0] sh_maria.sma::_maria_get_has_maria (line 90)
+L 03/10/2026 - 19:02:50: Unhandled dynamic native error
+L 03/10/2026 - 19:02:50: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 19:02:50: [AMXX] Run time error 10: native error (native "maria_get_has_maria")
+L 03/10/2026 - 19:02:50: [AMXX]    [0] maria_riveter_funcs.sma::client_isnt_hitter (line 72)
+L 03/10/2026 - 19:02:50: [AMXX]    [1] maria_riveter_funcs.sma::fw_Weapon_PrimaryAttack_Post (line 267)
+L 03/10/2026 - 22:46:18: Start of error session.
+L 03/10/2026 - 22:46:18: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260310.log")
+L 03/10/2026 - 22:46:18: Plugin called message_begin with an invalid message id (0).
+L 03/10/2026 - 22:46:18: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 22:46:18: [AMXX] Run time error 10: native error (native "message_begin")
+L 03/10/2026 - 22:46:18: [AMXX]    [0] sh_aux_inc.inc::unfade_screen_user (line 780)
+L 03/10/2026 - 22:46:18: [AMXX]    [1] sh_aux_inc.inc::damage_player (line 705)
+L 03/10/2026 - 22:46:18: [AMXX]    [2] sh_aux_inc.inc::explosion (line 592)
+L 03/10/2026 - 22:46:18: [AMXX]    [3] maria_riveter_funcs.sma::vexd_pfntouch (line 452)
+L 03/10/2026 - 22:46:27: Plugin called message_begin with an invalid message id (0).
+L 03/10/2026 - 22:46:27: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 22:46:27: [AMXX] Run time error 10: native error (native "message_begin")
+L 03/10/2026 - 22:46:27: [AMXX]    [0] sh_aux_inc.inc::unfade_screen_user (line 780)
+L 03/10/2026 - 22:46:27: [AMXX]    [1] sh_aux_inc.inc::damage_player (line 705)
+L 03/10/2026 - 22:46:27: [AMXX]    [2] sh_aux_inc.inc::explosion (line 592)
+L 03/10/2026 - 22:46:27: [AMXX]    [3] maria_riveter_funcs.sma::vexd_pfntouch (line 452)
+L 03/10/2026 - 22:46:28: Plugin called message_begin with an invalid message id (0).
+L 03/10/2026 - 22:46:28: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 22:46:28: [AMXX] Run time error 10: native error (native "message_begin")
+L 03/10/2026 - 22:46:28: [AMXX]    [0] sh_aux_inc.inc::unfade_screen_user (line 780)
+L 03/10/2026 - 22:46:28: [AMXX]    [1] sh_aux_inc.inc::damage_player (line 705)
+L 03/10/2026 - 22:46:28: [AMXX]    [2] sh_aux_inc.inc::explosion (line 592)
+L 03/10/2026 - 22:46:28: [AMXX]    [3] maria_riveter_funcs.sma::vexd_pfntouch (line 452)
+L 03/10/2026 - 22:46:32: Plugin called message_begin with an invalid message id (0).
+L 03/10/2026 - 22:46:32: [AMXX] Displaying debug trace (plugin "maria_riveter_funcs.amxx", version "1.0")
+L 03/10/2026 - 22:46:32: [AMXX] Run time error 10: native error (native "message_begin")
+L 03/10/2026 - 22:46:32: [AMXX]    [0] sh_aux_inc.inc::unfade_screen_user (line 780)
+L 03/10/2026 - 22:46:32: [AMXX]    [1] sh_aux_inc.inc::damage_player (line 705)
+L 03/10/2026 - 22:46:32: [AMXX]    [2] sh_aux_inc.inc::explosion (line 592)
+L 03/10/2026 - 22:46:32: [AMXX]    [3] maria_riveter_funcs.sma::vexd_pfntouch (line 452)

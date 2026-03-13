@@ -24,9 +24,6 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
-#if defined AMX98
- #include <cmath>
-#endif
 
 new gHeroName[]="S.W.A.T."
 new bool:g_hasSwatPower[SH_MAXSLOTS+1]

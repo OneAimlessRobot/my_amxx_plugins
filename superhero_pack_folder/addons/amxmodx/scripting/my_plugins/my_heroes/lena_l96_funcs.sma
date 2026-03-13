@@ -2,6 +2,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 
 #include <fakemeta_util>
@@ -85,6 +86,7 @@ public CmdStart(id, uc_handle)
 		
 		return FMRES_IGNORED
 	}
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
@@ -216,7 +218,6 @@ public fw_ItemDeployPre(entity)
 	return HAM_SUPERCEDE
 }
 
-
 public fw_WeaponPrimaryAttackPre(entity)
 {
 	
@@ -260,8 +261,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_entvar(pPlayer, var_weaponanim,  SEQ_SHOOT1)
 	
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
-	//DisableHamForward(TakeDamage)
-	
 	return HAM_SUPERCEDE
 }
 

@@ -220,7 +220,7 @@ public ultimate_task(id){
 	get_user_origin(id,origin,0)
 	ksun_dec_player_supply_points(id,KSUN_ULTIMATE_LOOP_DEC)
 	ksun_glisten(id)
-	make_shockwave(origin,200.0,LineColorsWithAlpha[PURPLE])
+	//make_shockwave(origin,200.0,LineColorsWithAlpha[PURPLE])
 	
 	
 	if(!is_user_bot(id)){

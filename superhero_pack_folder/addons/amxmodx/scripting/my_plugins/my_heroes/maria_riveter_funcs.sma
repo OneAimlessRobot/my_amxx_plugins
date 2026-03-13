@@ -1,0 +1,490 @@
+#include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "maria_riveter_inc/maria_riveter_funcs.inc"
+#include "maria_riveter_inc/maria_general_inc.inc"
+
+#include <fakemeta_util>
+#include <reapi>
+#include "../my_include/weapons_const.inc"
+
+#define PLUGIN_AUTHOR "MilkChanTheGOAasdasdasdasdasdasdasdasdsdasdT"
+#define PLUGIN_VER "1.0"
+#define PLUGIN_NAME "SUPERHERO Maria's riveter"
+
+
+new bool:rivet_loaded[SH_MAXSLOTS+1]
+new Float:g_Recoil[SH_MAXSLOTS+1][3]
+new Float:rivet_launch_pos[MAX_ENTITIES][3];
+new g_Riveter_clip[SH_MAXSLOTS+1]
+
+
+//new HamHook:TakeDamage
+public plugin_init(){
+	
+
+	register_plugin(PLUGIN_NAME, PLUGIN_VER, PLUGIN_AUTHOR);
+	for(new i=0;i<MAX_ENTITIES;i++){
+		
+		arrayset(rivet_launch_pos[i],0.0,3);
+		
+	}
+	arrayset(rivet_loaded,true,SH_MAXSLOTS+1)
+	register_forward(FM_CmdStart, "CmdStart");
+	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
+	RegisterHam(Ham_Item_PostFrame, MARIA_WEAPON, "fw_Item_PostFrame",_,true)	
+	
+	
+	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaRiveter",_,true)
+	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
+	
+	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
+	g_msgFade = get_user_msgid("ScreenFade");
+	
+}
+
+//----------------------------------------------------------------------------------------------
+public plugin_cfg()
+{
+	loadCVARS();
+}
+//----------------------------------------------------------------------------------------------
+public loadCVARS()
+{
+
+
+}//----------------------------------------------------------------------------------------------
+public plugin_natives(){
+	
+	register_native( "maria_riveter_clear_rivets","_maria_riveter_clear_rivets",0)
+	
+	
+}
+public bool:client_isnt_hitter(id){
+	
+	return !client_hittable(id,maria_get_has_maria(id))
+	
+}
+public CmdStart(id, uc_handle)
+{
+	if(client_isnt_hitter(id)){
+		
+		return FMRES_IGNORED
+	}
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	
+	new button = get_uc(uc_handle, UC_Buttons);
+	
+	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
+	if((weapon==MARIA_WEAPON_CLASSID)){
+		if(button & IN_ATTACK)
+		{
+			if(!rivet_loaded[id]){
+				button &= ~IN_ATTACK;
+				set_uc(uc_handle, UC_Buttons, button);
+				return FMRES_SUPERCEDE
+			}
+			
+		}
+	}
+	return FMRES_IGNORED;
+}
+
+public Ham_TraceAttackLenaRiveter(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
+{
+	
+	if(!is_user_connected(idattacker)){
+		return HAM_IGNORED	
+	}
+	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !maria_get_has_maria(idattacker)){
+		return HAM_IGNORED
+	}
+		
+		
+	
+	damage=0.0;
+	return HAM_SUPERCEDE
+	
+}
+
+public fw_Item_PostFrame(ent)
+{
+	
+	if(pev_valid(ent) != 2){
+		return HAM_IGNORED
+	}
+	static id; id = pev(ent, pev_owner)
+	if(client_isnt_hitter(id)){
+		
+		return HAM_IGNORED
+	}
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static bpammo; bpammo = cs_get_user_bpammo(id, MARIA_WEAPON_CLASSID)
+	
+	static iClip; iClip = get_pdata_int(ent, 51, 4)
+	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	
+	if(fInReload && flNextAttack <= 0.0)
+	{
+		static temp1
+		temp1 = min(CLIP_SIZE - iClip, bpammo)
+
+		set_pdata_int(ent, 51, iClip + temp1, 4)
+		cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID, bpammo - temp1)		
+		
+		set_pdata_int(ent, 54, 0, 4)
+		
+		fInReload = 0
+	}
+	return HAM_IGNORED
+}
+
+public fw_WeaponReloadPre(entity)
+{
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+	new pPlayer = get_member(entity, m_pPlayer)
+	
+	if(client_isnt_hitter(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	g_Riveter_clip[pPlayer] = -1
+	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, MARIA_WEAPON_CLASSID)
+	static iClip; iClip = get_pdata_int(entity, 51, 4)
+	
+	if(BPAmmo <= 0){
+		return HAM_SUPERCEDE
+	}
+	if(iClip >= CLIP_SIZE){
+		return HAM_SUPERCEDE		
+	}
+	g_Riveter_clip[pPlayer] = iClip		
+	return HAM_HANDLED
+}
+public fw_Weapon_Reload_Post(ent)
+{
+	if(pev_valid(ent)!=2)
+		return HAM_IGNORED
+		
+	static id; id = pev(ent, pev_owner)
+	if(client_isnt_hitter(id)){
+		
+		return HAM_IGNORED
+	}
+	if((get_pdata_int(ent, 54, 4) == 1))
+	{ 
+	
+		if(g_Riveter_clip[id] == -1)
+			return HAM_IGNORED
+		
+		set_pdata_int(ent, 51, g_Riveter_clip[id], 4)
+	}
+	
+	
+	return HAM_HANDLED
+}
+
+public fw_ItemDeployPre(entity)
+{
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+		
+	new pPlayer = get_member(entity, m_pPlayer)
+	
+	if(client_isnt_hitter(pPlayer)){
+		
+		return HAM_IGNORED
+	}
+	ExecuteHam(Ham_Item_Deploy, entity)
+	set_member(pPlayer, m_flNextAttack, MARIA_PROJECTILE_DEPLOY_TIME)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, MARIA_PROJECTILE_DEPLOY_TIME)
+	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
+	return HAM_SUPERCEDE
+}
+
+
+public fw_WeaponPrimaryAttackPre(entity)
+{
+
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+		
+	new pPlayer = get_member(entity, m_pPlayer)
+	if(client_isnt_hitter(pPlayer)||!hasRoundStarted()){
+		
+		return HAM_IGNORED
+	}
+	static iClip, iPlaybackEvent
+	if(maria_riveter_get_num_rivets(pPlayer) == 0)
+	{
+		
+		if(!is_user_bot(pPlayer)){
+			client_print(pPlayer, print_center, "You are out of rivets")
+		}
+		sh_drop_weapon(pPlayer, MARIA_WEAPON_CLASSID, true)
+		return HAM_SUPERCEDE
+	}
+	iClip = get_member(entity, m_Weapon_iClip)
+	if(iClip)
+	{
+		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
+		
+		
+	}
+	ExecuteHam(Ham_Weapon_PrimaryAttack, entity)
+	if(!iClip){
+		return HAM_SUPERCEDE
+	}
+	launch_rivet(pPlayer);
+	rivet_loaded[pPlayer]=false;
+	g_Riveter_clip[pPlayer]=get_pdata_int(entity, 51, 4)
+	set_member(entity, m_Weapon_flTimeWeaponIdle, MARIA_PROJECTILE_SHOOT_PERIOD)
+	set_member(entity, m_Weapon_flNextPrimaryAttack, MARIA_PROJECTILE_SHOOT_PERIOD)
+
+	emit_sound(pPlayer, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, 1.0, 0.0, 0, PITCH_NORM)
+
+	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
+	set_entvar(pPlayer, var_weaponanim,  random_num(anim_shoot1,anim_shoot2))
+	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
+	return HAM_SUPERCEDE
+}
+
+public fw_Weapon_PrimaryAttack_Post(Ent)
+{
+	
+	if(pev_valid(Ent)!=2)
+		return
+		
+	new id; id = pev(Ent, pev_owner)
+	if(client_isnt_hitter(id)){
+		
+		return
+	}
+	static Float:Push[3]
+	pev(id, pev_punchangle, Push)
+	xs_vec_sub(Push, g_Recoil[id], Push)
+	
+	xs_vec_mul_scalar(Push, RECOIL, Push)
+	xs_vec_add(Push, g_Recoil[id], Push)
+	set_pev(id, pev_punchangle, Push)
+}
+stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
+	
+	
+	new Float:normal_speed[3];
+	new Float:norm_speed_random[3];
+	new Float:speed=VecLength(vec_to_randomize)
+	new Float:norm_random_speed;
+	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
+	norm_speed_random[0]=normal_speed[0]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[1]=normal_speed[1]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[2]=normal_speed[2]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_random_speed=VecLength(norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
+	
+}
+launch_rivet(id)
+{
+
+if(client_isnt_hitter(id)){
+		
+	return PLUGIN_CONTINUE
+}
+entity_set_int(id, EV_INT_weaponanim, 3)
+
+new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+
+entity_get_vector(id, EV_VEC_origin , Origin)
+entity_get_vector(id, EV_VEC_v_angle, vAngle)
+
+
+Ent = create_entity("info_target")
+
+if (!Ent){
+	return PLUGIN_HANDLED
+}
+entity_set_string(Ent, EV_SZ_classname, MARIA_PROJECTILE_CLASSNAME)
+entity_set_model(Ent, "models/shell.mdl")
+
+new Float:MinBox[3] = {-1.0, -1.0, -1.0}
+new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+entity_set_vector(Ent, EV_VEC_mins, MinBox)
+entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
+
+entity_set_origin(Ent, Origin)
+entity_set_vector(Ent, EV_VEC_angles, vAngle)
+
+entity_set_int(Ent, EV_INT_effects, 2)
+entity_set_int(Ent, EV_INT_solid, 2)
+entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
+entity_set_float(Ent,EV_FL_gravity, MARIA_PROJECTILE_GRAVITY_MULT)
+entity_set_edict(Ent, EV_ENT_owner, id)
+
+VelocityByAim(id, floatround(MARIA_PROJECTILE_SPEED) , Velocity)
+new Float:coeff_to_multiply_with
+new resume_zoom=get_member(id,m_bResumeZoom);
+if(!(resume_zoom)){
+	coeff_to_multiply_with=MARIA_PROJECTILE_SHOOT_RANDOMNESS;
+}
+else{
+	
+	new Float:user_movement_velocity[3]
+	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
+	new Float:user_maxspeed=get_user_maxspeed(id);
+	new Float:user_current_speed=VecLength(user_movement_velocity)
+	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
+	coeff_to_multiply_with=coeff_to_multiply_with_extra*MARIA_PROJECTILE_SHOOT_RANDOMNESS
+	
+}
+randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
+
+entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+maria_riveter_dec_num_rivets(id)
+
+rivet_launch_pos[Ent][0]=Origin[0]
+rivet_launch_pos[Ent][1]=Origin[1]
+rivet_launch_pos[Ent][2]=Origin[2]
+new parm[2]
+new parm2[1]
+
+parm2[0]= id
+parm[0] = Ent
+parm[1] = id
+emit_sound(id, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+set_task(MARIA_PROJECTILE_SHOOT_PERIOD, "rivet_reload",id,parm2,1,"a",1)
+set_task(0.01, "rivettrail",Ent+MARIA_PROJECTILE_TRAIL_TASKID,parm,2)
+
+set_task(MARIA_PROJECTILE_PHYS_UPDATE_TIME, "rivetspeed",Ent+MARIA_PROJECTILE_SPEED_TASKID,parm,2,"b")
+
+return PLUGIN_CONTINUE
+}
+
+public rivet_reload(parm[])
+{
+
+rivet_loaded[parm[0]] = true
+}
+public rivettrail(parm[])
+{
+new pid = parm[0]
+if (!is_valid_ent(pid))
+{
+    return
+}
+trail(pid,WHITE,10,5)
+	
+}
+public rivetspeed(parm[])
+{
+	new pid = parm[0]
+	if (!is_valid_ent(pid))
+	{
+		return
+	}
+	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
+	
+}
+
+
+public _maria_riveter_clear_rivets(iPlugin,iParams){
+
+new grenada = find_ent_by_class(-1, MARIA_PROJECTILE_CLASSNAME)
+while(grenada) {
+	remove_rivet(grenada)
+	arrayset(rivet_launch_pos[grenada],0.0,3);
+	grenada = find_ent_by_class(grenada, MARIA_PROJECTILE_CLASSNAME)
+}
+}
+
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	if(client_isnt_hitter(player)){
+		
+		return
+	}
+	if((get_user_weapon(player) != MARIA_WEAPON_CLASSID)){
+		return
+	}
+	new pEntity = get_member(player, m_pActiveItem)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd, CD_flNextAttack, 99999.0)
+	}
+}
+
+
+public vexd_pfntouch(pToucher, pTouched)
+{
+
+	if (pev_valid(pToucher)!=2){
+		
+		return
+	}
+
+	new szClassName[32]
+	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	if(equal(szClassName, MARIA_PROJECTILE_CLASSNAME))
+	{
+		new Float:origin[3]
+		entity_get_vector(pToucher,EV_VEC_origin,origin);
+		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)||pev(pTouched,pev_solid)==SOLID_BSP){
+			
+            new Float:speed
+            new Float:velocity[3]
+            
+            
+            entity_get_vector(pToucher,EV_VEC_velocity,velocity);
+            speed=VecLength(velocity);
+            new Float:speed_coeff=(speed/MARIA_PROJECTILE_SPEED)
+            new Float:distance=vector_distance(origin,rivet_launch_pos[pToucher]);
+            new Float:falloff_coeff= floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST);
+            new Float:normal_damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
+            new Float:damage=normal_damage*speed_coeff;
+            explosion(maria_get_hero_id(),pToucher,200.0,damage, 0.0001,1)
+		}
+		remove_rivet(pToucher)	
+
+		arrayset(rivet_launch_pos[pToucher],0.0,3);
+	}
+}
+public remove_rivet(id_rivet){
+	remove_task(id_rivet+MARIA_PROJECTILE_TRAIL_TASKID);
+	remove_task(id_rivet+MARIA_PROJECTILE_SPEED_TASKID);
+	if(is_valid_ent(id_rivet)){
+		remove_entity(id_rivet)
+	}
+
+
+}
+public plugin_precache()
+{
+precache_explosion_fx()
+precache_model("models/shell.mdl")
+engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_SHOTSOUND)
+engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_WALLHIT_SOUND)
+engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
+
+}
+public fm_PlaybackEventPre() return FMRES_SUPERCEDE
+
+/*message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+	write_byte( TE_BEAMFOLLOW )
+	write_short(pid) // entity
+	write_short(m_trail)  // model
+	write_byte( 10 )       // life
+	write_byte( 5 )
+	write_byte(LineColorsWithAlpha[WHITE][0])			// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][1])		// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][2])			// r, g, b
+	write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
+	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	if(client_hittable(parm[1])){
+		//client_print(parm[1],print_console,"Trail update!!!");
+	}*/

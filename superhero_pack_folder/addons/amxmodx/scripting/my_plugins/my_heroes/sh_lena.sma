@@ -121,8 +121,8 @@ public lena_init()
 	gHasLena[id]=(hasPowers!=0)
 	if(gHasLena[id])
 	{
-		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		new_spawn(id)
+		lena_weapons(id)
 	}
 	else 
 	{
@@ -138,6 +138,7 @@ public new_spawn(id)
 }
 public sh_client_spawn(id)
 {
+	new_spawn(id)
 	lena_weapons(id)
 
 }
