@@ -16,6 +16,7 @@
 new const gHeroName[] = "Maria"
 new bool:gHasMaria[SH_MAXSLOTS+1]
 new bool:gHealthDrainValve[SH_MAXSLOTS+1]
+new bool:gHealthDrainValveTimerStarted[SH_MAXSLOTS+1]
 new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
@@ -145,8 +146,8 @@ public loadCVARS()
 	max_radius=get_cvar_float("maria_max_radius")
 	max_points=get_cvar_num("maria_max_points")
 	maria_alpha=get_cvar_num("maria_heal_alpha")
-	health_drain_begin_threshold=get_cvar_num("maria_health_valve_drain_begin_threshold")
-	health_drain_end_threshold=get_cvar_num("maria_health_valve_drain_end_threshold")
+	health_drain_begin_threshold=get_cvar_num("maria_health_drain_begin_threshold")
+	health_drain_end_threshold=get_cvar_num("maria_health_drain_end_threshold")
 	begin_open_valve_timer=get_cvar_float("maria_begin_open_valve_timer")
 	selfless_index=get_cvar_float("maria_selfless_index")
 	points_radius_pct=get_cvar_float("maria_points_radius_pct")
@@ -224,6 +225,7 @@ public new_spawn(id)
 		gNumRivets[id]=maria_max_rivets
 		gHealthDrainValve[id]=false
 		gHealthDrainValveTimer[id]=begin_open_valve_timer
+		gHealthDrainValveTimerStarted[id]=true
 	}
 }
 add_points(id,Float:damage){
@@ -273,7 +275,7 @@ bool:heal_teamate(id,i){
 	sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
 	setScreenFlash(i,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)
 	set_task(heal_period*2,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
-	sh_set_rendering(i, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	sh_set_rendering(i, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
 	heal_stream(id,i)
 	return true
 
@@ -337,8 +339,7 @@ if(healed){
 	setScreenFlash(id,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)	
 	sh_set_rendering(id, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
 	set_task(heal_period,"remove_glow_task",id+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	aura(id,LineColorsWithAlpha[WHITE])
-
+	
 }
 make_shockwave(client_origin,g_normal_radius[id],LineColorsWithAlpha[LTGREEN],1,3,2,20)
 
@@ -390,8 +391,11 @@ public maria_loop(id){
 	
 	id-=MARIA_STATS_TASKID;
 	if(client_hittable(id,gHasMaria[id])){
-		gHealthDrainValveTimer[id]-=heal_period
 		update_stats(id)
+		if((get_user_health(id)>=health_drain_begin_threshold)){
+				gHealthDrainValveTimerStarted[id]=true
+		}
+		gHealthDrainValveTimer[id]-=((gHealthDrainValveTimerStarted[id]&&(gHealthDrainValveTimer[id]>0.0))?heal_period:0.0)
 		
 		
 	}
@@ -405,11 +409,14 @@ update_stats(id){
 		if(!gHealthDrainValve[id]&&(get_user_health(id)>=health_drain_begin_threshold)&&(gHealthDrainValveTimer[id]<=0.0)){
 			gHealthDrainValve[id]=true
 			sh_chat_message(id,maria_get_hero_id(),"Health drain valve opened!");
+			return;
 		}
-		else if(gHealthDrainValve[id]&&(get_user_health(id)<=health_drain_end_threshold)){
+		if(gHealthDrainValve[id]&&(get_user_health(id)<=health_drain_end_threshold)){
 			gHealthDrainValve[id]=false
-			sh_chat_message(id,maria_get_hero_id(),"Health drain valve closed.!");
+			gHealthDrainValveTimerStarted[id]=false
 			gHealthDrainValveTimer[id]=begin_open_valve_timer
+			sh_chat_message(id,maria_get_hero_id(),"Health drain valve closed.");
+			
 		}
 	}
 	

@@ -168,7 +168,7 @@ if(spear_get_has_lara(attacker)&&!(cs_get_user_team(id)==att_team)){
 		velocity_by_aim(id, 1, vecForward ); 
         
 		xs_vec_make2d( vecForward, vecForward2D );
-		sh_extra_damage(id,attacker,SPEAR_STAB_DAMAGE,"Hunter Spear",0,SH_DMG_NORM)
+		sh_extra_damage(id,attacker,stabbing?SPEAR_STAB_DAMAGE:SPEAR_SLASH_DAMAGE,"Hunter Spear",0,SH_DMG_NORM)
 		if(stabbing){
 			
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )

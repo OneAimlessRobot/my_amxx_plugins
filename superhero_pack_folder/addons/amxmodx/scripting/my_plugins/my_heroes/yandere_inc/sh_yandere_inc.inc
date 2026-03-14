@@ -3,8 +3,6 @@
 #define YANDERE_STATS_TASKID 29626
 #define YANDERE_ANGER_TASKID 29333
 #define YANDERE_CRY_TASKID 30333
-#define YANDERE_HEAL_TASKID 30911
-#define YANDERE_HEAL_PERIOD 0.7
 #define YANDERE_REMOVE_GLOW_TASKID 30112
 
 #define YANDERE_WEAPON_CLASSID CSW_XM1014
@@ -54,8 +52,6 @@ stock bool:gPlayedSound[SH_MAXSLOTS+1]
 stock gmorphed[SH_MAXSLOTS+1]
 stock bool:g_is_cursed[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 stock Float:gNormalDmgMult[SH_MAXSLOTS+1]
-stock Float:gNormalHeal[SH_MAXSLOTS+1]
-stock Float:gNormalHealRadius[SH_MAXSLOTS+1]
 stock Float:gNormalSpeed[SH_MAXSLOTS+1]
 stock Float:gPrevSpeed[SH_MAXSLOTS+1]
 stock Float:gNormalGravity[SH_MAXSLOTS+1]
@@ -64,13 +60,7 @@ stock Float:gBaseGravity[SH_MAXSLOTS+1]
 stock bool:gIsPsychosis[SH_MAXSLOTS+1]
 stock gPsychosisTime[SH_MAXSLOTS+1]
 stock bool:g_yandere_leaped[SH_MAXSLOTS+1];
-enum{
-NO_HEALING=0,
-RADIAL_HEALING,
-GAZE_HEALING
 
-
-}
 stock g_spriteSmoke, g_spriteRing, g_spriteExplosion
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 
@@ -81,20 +71,14 @@ stock gLastClipCount[SH_MAXSLOTS+1]
 stock m_spriteTexture
 stock Float:base_dmg_mult,
 Float:dmg_pct_per_inc,
-Float:base_heal,
-Float:heal_pct_per_inc,
-Float:base_heal_radius,
-Float:heal_radius_inc_per_inc,
 Float:base_extra_speed,
 Float:speed_inc_per_inc
 
-stock Float:angry_heal,
-Float:angry_speed,
+stock Float:angry_speed,
 Float:angry_dmg_mult,
 Float:angry_gravity,
 Float:angry_degen_pct,
 Float:angry_hitheal_pct,
-Float:heal_base,
 Float:explode_radius,
 Float:explode_maxdamage,
 Float:curse_pct;
@@ -102,7 +86,6 @@ stock hud_sync
 stock Float:psychosis_time
 stock psychosis_cooldown
 stock gHeroLevel
-stock heal_mode
 stock min_players
 stock teamglow_on
 stock zoom

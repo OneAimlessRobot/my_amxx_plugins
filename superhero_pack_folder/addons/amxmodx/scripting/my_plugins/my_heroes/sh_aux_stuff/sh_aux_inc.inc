@@ -478,7 +478,7 @@ public move_enemy(parm[])
 	new Float:fl_velocity[3]
 	fl_velocity[0] = float(parm[0])
 	fl_velocity[1] = float(parm[1])
-	fl_velocity[2] = floatabs(float(parm[2]))
+	fl_velocity[2] = float(parm[2])
 	
 	set_pev(victim, pev_velocity, fl_velocity)
 	
@@ -507,12 +507,12 @@ public move_entity(parm[])
 	new Float:fl_velocity[3]
 	fl_velocity[0] = float(parm[0])
 	fl_velocity[1] = float(parm[1])
-	fl_velocity[2] = floatabs(float(parm[2]))
+	fl_velocity[2] = float(parm[2])
 	
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
-stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0){
+stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
 	
 	if(!is_user_connected(ent_id)){
 		return
@@ -547,11 +547,11 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift)
+		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift,damage_frac_ignore_owner)
 		
 	}
 }
-stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0,ignore_owner=1,set_stun=0,Float:upward_shift=1.0){
+stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0,ignore_owner=1,set_stun=0,Float:upward_shift=1.0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -589,7 +589,7 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:opt
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift,damage_frac_ignore_owner)
 
 	}
 }
@@ -629,7 +629,7 @@ stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force,upward_shift)
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -653,6 +653,10 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 			
 			return
 			
+		}
+		else{
+
+			peak_power=peak_power*damage_frac_ignore_owner
 		}
 		
 		
@@ -691,7 +695,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
 	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
-	b_vel[2]=force
+	b_vel[2]=((vOrig[2] -usOrig[2]) )*force
 	
 		
 	parm[0] = floatround(b_vel[0])
@@ -768,7 +772,7 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	}
 	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
 	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
-	b_vel[2]=force
+	b_vel[2]=((vOrig[2] -usOrig[2]) )*force
 	
 		
 	parm[0] = floatround(b_vel[0])

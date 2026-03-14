@@ -24,20 +24,13 @@ public plugin_init()
 	register_cvar("yandere_level", "8")
 	register_cvar("yandere_base_dmg_mult", "1.0")
 	register_cvar("yandere_dmg_pct_per_inc", "0.35")
-	register_cvar("yandere_heal", "1.0")
-	register_cvar("yandere_heal_mode", "1")
 	register_cvar("yandere_explode_radius", "1")
 	register_cvar("yandere_explode_maxdamage", "1")
 	register_cvar("yandere_teamglow_on", "1")
 	register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
-	register_cvar("yandere_heal_pct_per_inc", "0.35")
-	register_cvar("yandere_heal_radius", "100")
-	register_cvar("yandere_heal_base", "50.0")
-	register_cvar("yandere_heal_radius_inc_per_inc", "50")
 	register_cvar("yandere_base_extra_speed", "500")
 	register_cvar("yandere_degen_iter_period", "0.1")
 	register_cvar("yandere_speed_inc_per_inc", "50")
-	register_cvar("yandere_angry_heal", "0")
 	register_cvar("yandere_angry_curse_pct", "0.5")
 	register_cvar("yandere_angry_speed", "1000")
 	register_cvar("yandere_angry_gravity", "0.25")
@@ -55,7 +48,7 @@ public plugin_init()
 	register_cvar("yandere_psychosis_degen_mult", "30")
 	register_cvar("yandere_min_players", "6")
 	register_event("ResetHUD","newRound","b")
-	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Heal alive teamates and avenge dead ones!", true, "yandere_level" )
+	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
 	
 	register_event("Damage", "yandere_damage", "b", "2!0")
 	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true)
@@ -235,20 +228,12 @@ public yandere_init()
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
 		set_task( 0.4, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
-		if(heal_mode){
-			if(heal_mode==RADIAL_HEALING){	
-				set_task( YANDERE_HEAL_PERIOD, "heal_players_in_radius", id+YANDERE_HEAL_TASKID, "", 0, "b")
-			}
-			else if(heal_mode==GAZE_HEALING){	
-				set_task( YANDERE_HEAL_PERIOD, "heal_player_in_sight", id+YANDERE_HEAL_TASKID, "", 0, "b")
-			}
-		}
+		
 	}
 	else{
 		remove_task(id+YANDERE_ANGER_TASKID)
 		remove_task(id+YANDERE_CRY_TASKID)
 		remove_task(id+YANDERE_STATS_TASKID)
-		remove_task(id+YANDERE_HEAL_TASKID)
 		killyandere(id,true)
 		yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	}
@@ -435,151 +420,7 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 
 
 }
-bool:heal_teamate(id,i){
-	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)){
-		
-		
-		return false
-	}
-	if(!yandere_get_has_yandere(id)){
-		
-		
-		return false
-	}
-	new Float:mate_health=float(get_user_health(i))
-	if(mate_health>=sh_get_max_hp(i)){
-		return false
-	
-	}
-	new Float: new_health=floatadd(mate_health,YANDERE_HEAL_PERIOD*floatmul(gNormalHeal[id],heal_base))
-	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
-	setScreenFlash(i,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)
-	sh_set_rendering(i, LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(YANDERE_HEAL_PERIOD*2,"remove_glow_task",i+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	heal_stream(id,i)
-	return true
 
-}
-public heal_players_in_radius(id){
-
-id-=YANDERE_HEAL_TASKID
-if(!sh_is_active()||!client_hittable(id)){
-	
-	return
-	
-}
-if(!yandere_get_has_yandere(id)){
-	
-	return
-	
-}
-if(sh_get_user_is_asleep(id)) return
-if(sh_get_user_is_chaffed(id)) return
-new client_origin[3],teamate_origin[3],distance
-get_user_origin(id,client_origin);
-new CsTeams:user_team= cs_get_user_team(id)
-new bool:healed=false
-for(new i=1;i<=SH_MAXSLOTS&&!gSuperAngry[id];i++){
-	if(!client_hittable(id)){
-	
-		return
-	
-	}
-	if(!yandere_get_has_yandere(id)){
-		
-		return
-		
-	}
-
-	if((i==id)||!client_hittable(i)){
-		continue
-		
-	}
-	else if(is_user_alive(i)){
-		new CsTeams:other_user_team=cs_get_user_team(i)
-		if((user_team==other_user_team)){
-			get_user_origin(i,teamate_origin)
-			distance=get_distance(client_origin,teamate_origin)
-			if(distance<gNormalHealRadius[id]){
-				healed=heal_teamate(id,i)
-				
-			}
-		}
-	}
-	
-	
-}
-if(healed){
-
-	setScreenFlash(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)	
-	sh_set_rendering(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	aura(id,LineColorsWithAlpha[LTGREEN])
-
-}
-
-
-}
-
-
-public heal_player_in_sight(id){
-
-id-=YANDERE_HEAL_TASKID
-if(!sh_is_active()||!client_hittable(id)){
-	
-	return
-	
-}
-if(!yandere_get_has_yandere(id)){
-	
-	return
-	
-}
-
-new client_origin[3],teamate_origin[3],distance
-get_user_origin(id,client_origin);
-new CsTeams:user_team= cs_get_user_team(id)
-new bool:healed=false
-if(!gSuperAngry[id]){
-	
-	// get crosshair aim
-	new iMyAim[3], Float:flMyAim[3];
-	get_user_origin(id, iMyAim, 3);
-	IVecFVec(iMyAim, flMyAim);
-	
-	// set crosshair aim
-	set_tr(TR_vecEndPos, flMyAim);
-	
-	// get ent looking at
-	new i, body;
-	get_user_aiming(id, i, body);
-	
-	if((i==id)||!client_hittable(i)){
-		return
-	}
-	else if(is_user_alive(i)){
-		new CsTeams:other_user_team=cs_get_user_team(i)
-		if((user_team==other_user_team)){
-			get_user_origin(i,teamate_origin)
-			distance=get_distance(client_origin,teamate_origin)
-			if(distance<gNormalHealRadius[id]){
-				healed=heal_teamate(id,i)
-			}
-		}
-	}
-	
-	
-}
-if(healed){
-
-	setScreenFlash(id,LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],3,100)	
-	sh_set_rendering(id, LineColorsWithAlpha[LTGREEN][0],LineColorsWithAlpha[LTGREEN][1],LineColorsWithAlpha[LTGREEN][2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	set_task(YANDERE_HEAL_PERIOD,"remove_glow_task",id+YANDERE_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
-	aura(id,LineColorsWithAlpha[LTGREEN])
-
-}
-
-}
 public notify_yanderes_about_team_life(id,alive){
 
 if(!sh_is_active()||!is_user_connected(id)) return
@@ -662,8 +503,6 @@ new mates_dead=get_yandere_num(id,0,0)
 new mates_alive=get_yandere_num(id,1,0)
 new can_transform= (get_playersnum(0)>=min_players)
 gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(mates_dead))),angry_dmg_mult);
-gNormalHeal[id]=floatadd(base_heal,floatmul(heal_pct_per_inc,float(mates_alive)));
-gNormalHealRadius[id]=floatadd(base_heal_radius,floatmul(heal_radius_inc_per_inc,float(mates_alive)));
 if(!sh_get_stun(id)){
 	new Float:maxspeed=get_user_maxspeed(id)
 	gPrevSpeed[id]=maxspeed
@@ -701,8 +540,6 @@ if(!gHasYandere[id]||!gSuperAngry[id]){
 new mates_alive=get_yandere_num(id,1,0)
 new can_transform= (get_playersnum(0)>=min_players)
 gNormalDmgMult[id]=angry_dmg_mult
-gNormalHeal[id]=angry_heal
-gNormalHealRadius[id]=float(0)
 if(!sh_get_stun(id)){
 	sh_reset_max_speed(id)
 	new Float:maxspeed=get_user_maxspeed(id)
@@ -738,7 +575,6 @@ public client_disconnected(id){
 	remove_task(id+YANDERE_ANGER_TASKID)
 	remove_task(id+YANDERE_CRY_TASKID)
 	remove_task(id+YANDERE_STATS_TASKID)
-	remove_task(id+YANDERE_HEAL_TASKID)
 	killyandere(id,true)
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 }
@@ -773,16 +609,9 @@ public loadCVARS()
 
 gHeroLevel=get_cvar_num("yandere_level")
 base_dmg_mult=get_cvar_float("yandere_base_dmg_mult")
-heal_mode=get_cvar_num("yandere_heal_mode")
 dmg_pct_per_inc=get_cvar_float("yandere_dmg_pct_per_inc")
-base_heal=get_cvar_float("yandere_heal")
-heal_pct_per_inc=get_cvar_float("yandere_heal_pct_per_inc")
-base_heal_radius=get_cvar_float("yandere_heal_radius")
-heal_base=get_cvar_float("yandere_heal_base")
-heal_radius_inc_per_inc=get_cvar_float("yandere_heal_radius_inc_per_inc")
 base_extra_speed=get_cvar_float("yandere_base_extra_speed")
 speed_inc_per_inc=get_cvar_float("yandere_speed_inc_per_inc")
-angry_heal=get_cvar_float("yandere_angry_heal")
 angry_speed=get_cvar_float("yandere_angry_speed")
 angry_gravity=get_cvar_float("yandere_angry_gravity")
 angry_dmg_mult=get_cvar_float("yandere_angry_dmg_mult")

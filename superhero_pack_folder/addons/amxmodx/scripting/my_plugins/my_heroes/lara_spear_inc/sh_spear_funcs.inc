@@ -3,6 +3,8 @@
 #endif
 #define sh_lara_funcs
 
+#define Struct				enum
+
 #define SPEAR_CLASSNAME "spear"
 
 #define XO_WEAPON 4
@@ -12,13 +14,20 @@
 #define SPEAR_RETRIEVE true
 
 
-#define SPEAR_SPEED 3000.0
+#define SPEAR_SPEED 1750.0
 
 #define SPEAR_SHOOT_PERIOD 1.0
 
-#define SPEAR_DAMAGE 100
+#define SPEAR_LAUNCH_DAMAGE 100
+#define SPEAR_LAUNCH_FORCE 30.0
+#define SPEAR_LAUNCH_EXPLODE_RADIUS 100.0
+
+#define SPEAR_SMASH_DAMAGE 400
+#define SPEAR_SMASH_FORCE 30.0
+#define SPEAR_SMASH_EXPLODE_RADIUS 70.0
 
 #define SPEAR_STAB_DAMAGE 200
+#define SPEAR_SLASH_DAMAGE 10
 
 #define SPEAR_SHOOT_RANDOMNESS 0.0
 
@@ -33,11 +42,23 @@
 #define SPEAR_CHARGE_PERIOD 0.1
 #define SPEAR_CHARGE_TIMES floatround(floatdiv(max_charge_time,SPEAR_CHARGE_PERIOD))
 
+enum spear_mode{
+	spear_mode_off=0,
+	spear_mode_launch=1,
+	spear_mode_blast=2,
+  spear_mode_max=3
+};
 
+stock const spear_mode_names[spear_mode_max][]={
+        "No mode",
+        "Launch",
+        "Blast"
+};
 
 native clear_spears()
 native spear_get_spear_loaded(id)
 native spear_uncharge_spear(id)
+native spear_mode:spear_get_user_spear_mode(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */
