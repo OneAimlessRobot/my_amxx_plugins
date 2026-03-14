@@ -37,6 +37,8 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 #define PSYCHOSIS_PERIOD 1.0
 #define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
 
+
+#define YANDERE_CYCLE_PERIOD 0.4
 #define TOUCHING_GROUND (1<<9)
 const FL_INGROUND2=TOUCHING_GROUND
 
@@ -96,6 +98,12 @@ stock Float:psychosis_degen_health_threshold
 stock Float:degen_iter_period
 stock degen_health_extra_threshold
 stock overheal_hp_max
+
+
+stock Float:gTransTimer[SH_MAXSLOTS+1]
+stock bool:gTransTimerStarted[SH_MAXSLOTS+1]
+stock Float:trans_time
+
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

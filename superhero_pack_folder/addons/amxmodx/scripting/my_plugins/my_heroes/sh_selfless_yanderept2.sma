@@ -27,6 +27,7 @@ public plugin_init()
 	register_cvar("yandere_explode_radius", "1")
 	register_cvar("yandere_explode_maxdamage", "1")
 	register_cvar("yandere_teamglow_on", "1")
+	register_cvar("yandere_trans_time", "4.0")
 	register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
 	register_cvar("yandere_base_extra_speed", "500")
 	register_cvar("yandere_degen_iter_period", "0.1")
@@ -226,7 +227,7 @@ public yandere_init()
 		g_yandere_leaped[id]=true
 		yandere_model(id)
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
-		set_task( 0.4, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
+		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 		
 	}
@@ -459,10 +460,12 @@ id-=YANDERE_STATS_TASKID;
 
 if(client_hittable(id,gHasYandere[id])){
 
-	/*new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
-	new iMax = global_get(glb_maxEntities) // Get's the limit
-	sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
-	*/
+	//new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
+	//new iMax = global_get(glb_maxEntities) // Get's the limit
+	//sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
+	if(!is_user_bot(id)&&gTransTimerStarted[id]){
+		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
+	}
 	update_stats(id)
 	
 	
@@ -515,7 +518,20 @@ new Float:gravity=get_user_gravity(id)
 gBaseGravity[id]=gravity
 gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 set_user_gravity(id,gNormalGravity[id])
-gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
+gTransTimerStarted[id]= (mates_alive<=0)&&can_transform? true:false
+if(gTransTimerStarted[id]){
+
+	gTransTimer[id]-= YANDERE_CYCLE_PERIOD
+	if(gTransTimer[id]<=0.0){
+
+		gSuperAngry[id]=true
+		gTransTimer[id]=trans_time
+	}
+}
+else if(gTransTimer[id]!=trans_time){
+
+	gTransTimer[id]=trans_time
+}
 if(gSuperAngry[id]&&client_hittable(id)){
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
@@ -614,6 +630,7 @@ base_extra_speed=get_cvar_float("yandere_base_extra_speed")
 speed_inc_per_inc=get_cvar_float("yandere_speed_inc_per_inc")
 angry_speed=get_cvar_float("yandere_angry_speed")
 angry_gravity=get_cvar_float("yandere_angry_gravity")
+trans_time=get_cvar_float("yandere_trans_time")
 angry_dmg_mult=get_cvar_float("yandere_angry_dmg_mult")
 angry_degen_pct=get_cvar_float("yandere_angry_degen_pct")
 angry_hitheal_pct=get_cvar_float("yandere_angry_hitheal_pct")
@@ -647,6 +664,8 @@ public newRound(id)
 			gSuperAngry[id]=false;
 			gPlayedSound[id]=false
 			gBaseSpeed[id]=base_extra_speed
+			gTransTimer[id]=trans_time
+			gTransTimerStarted[id]=false
 			gBaseGravity[id]=1.0
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
