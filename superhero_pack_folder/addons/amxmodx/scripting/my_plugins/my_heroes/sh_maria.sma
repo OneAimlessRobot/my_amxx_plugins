@@ -15,6 +15,8 @@
 //new gHeroID
 new const gHeroName[] = "Maria"
 new bool:gHasMaria[SH_MAXSLOTS+1]
+new bool:gHealthDrainValve[SH_MAXSLOTS+1]
+new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
@@ -33,6 +35,9 @@ new Float:base_radius
 new Float:base_heal
 new Float:heal_period
 new maria_alpha
+new health_drain_begin_threshold
+new health_drain_end_threshold
+new Float:begin_open_valve_timer;
 new gHeroID
 
 //----------------------------------------------------------------------------------------------
@@ -47,6 +52,9 @@ public plugin_init()
 	register_cvar("maria_num_rivets", "100")
 	register_cvar("maria_points_radius_pct", "0.1")
 	register_cvar("maria_base_radius", "500")
+	register_cvar("maria_health_drain_begin_threshold", "500")
+	register_cvar("maria_health_drain_end_threshold", "100")
+	register_cvar("maria_begin_open_valve_timer", "3.0")
 	register_cvar("maria_max_radius", "1000")
 	register_cvar("maria_base_points", "1000")
 	register_cvar("maria_base_heal", "1000")
@@ -137,6 +145,9 @@ public loadCVARS()
 	max_radius=get_cvar_float("maria_max_radius")
 	max_points=get_cvar_num("maria_max_points")
 	maria_alpha=get_cvar_num("maria_heal_alpha")
+	health_drain_begin_threshold=get_cvar_num("maria_health_valve_drain_begin_threshold")
+	health_drain_end_threshold=get_cvar_num("maria_health_valve_drain_end_threshold")
+	begin_open_valve_timer=get_cvar_float("maria_begin_open_valve_timer")
 	selfless_index=get_cvar_float("maria_selfless_index")
 	points_radius_pct=get_cvar_float("maria_points_radius_pct")
 	points_heal_coeff=get_cvar_float("maria_points_heal_coeff")
@@ -211,6 +222,8 @@ public new_spawn(id)
 	if ( sh_is_active() && is_user_alive(id) && maria_get_has_maria(id) )
 	{
 		gNumRivets[id]=maria_max_rivets
+		gHealthDrainValve[id]=false
+		gHealthDrainValveTimer[id]=begin_open_valve_timer
 	}
 }
 add_points(id,Float:damage){
@@ -278,6 +291,11 @@ if(!gHasMaria[id]){
 	
 	
 	return
+}
+if(!gHealthDrainValve[id]){
+
+
+	return;
 }
 new client_origin[3],teamate_origin[3],distance
 get_user_origin(id,client_origin);
@@ -371,9 +389,8 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 public maria_loop(id){
 	
 	id-=MARIA_STATS_TASKID;
-	
-	if(gHasMaria[id]){
-		
+	if(client_hittable(id,gHasMaria[id])){
+		gHealthDrainValveTimer[id]-=heal_period
 		update_stats(id)
 		
 		
@@ -385,7 +402,15 @@ update_stats(id){
 	
 	if(gHasMaria[id]){
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),points_radius_pct)),max_radius);
-		
+		if(!gHealthDrainValve[id]&&(get_user_health(id)>=health_drain_begin_threshold)&&(gHealthDrainValveTimer[id]<=0.0)){
+			gHealthDrainValve[id]=true
+			sh_chat_message(id,maria_get_hero_id(),"Health drain valve opened!");
+		}
+		else if(gHealthDrainValve[id]&&(get_user_health(id)<=health_drain_end_threshold)){
+			gHealthDrainValve[id]=false
+			sh_chat_message(id,maria_get_hero_id(),"Health drain valve closed.!");
+			gHealthDrainValveTimer[id]=begin_open_valve_timer
+		}
 	}
 	
 	

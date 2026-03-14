@@ -616,7 +616,7 @@ public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
 
-if(gHasYandere[id]&&client_hittable(id)){
+if(client_hittable(id,gHasYandere[id])){
 
 	/*new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	new iMax = global_get(glb_maxEntities) // Get's the limit
@@ -1183,7 +1183,7 @@ public BlowUp(id)
 	get_user_name(id, name, 31)
 
 	// blowup even if dead
-	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1, default_explode_knock_force_magnitude)
+	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
 		if ( is_user_alive(a) && (a != id )) {
 

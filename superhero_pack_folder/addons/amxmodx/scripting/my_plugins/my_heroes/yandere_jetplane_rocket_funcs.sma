@@ -326,8 +326,8 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 			RemoveEntity(pTouched)
 		}
 	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude)
-	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
+	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME,_,default_explode_upward_shift)
 	RemoveEntity(pToucher)
 }
 }

@@ -146,10 +146,13 @@ stock const SH_VERSION_STR[] =	"1.2.0.16";
 #define SH_COOLDOWN_TASKID	572910
 
 #define SH_DEFAULT_EXPLODE_FORCE 4.0
+#define SH_DEFAULT_EXPLODE_UPWARD_SHIFT 4.0
 
 stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
+stock Float:default_explode_upward_shift=SH_DEFAULT_EXPLODE_UPWARD_SHIFT;
 
 stock sh_default_explode_knock_force_magnitude_cvar;
+stock sh_default_explode_upward_shift_cvar;
 
 // Max player slots
 #define SH_MAXSLOTS		32

@@ -192,7 +192,7 @@ public blow_mine_up(ent, id)
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
+		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
 		
 		new parm[2];
 		parm[0]=id;

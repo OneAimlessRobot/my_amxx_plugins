@@ -572,6 +572,7 @@ public plugin_init()
 	sh_adminaccess = register_cvar("sh_adminaccess", "m")
 	sh_alivedrop = register_cvar("sh_alivedrop", "0")
 	sh_default_explode_knock_force_magnitude_cvar = register_cvar("sh_default_explode_knock_force_magnitude","3.0")
+	sh_default_explode_upward_shift_cvar = register_cvar("sh_default_explode_upward_shift","1.0")
 	sh_autobalance = register_cvar("sh_autobalance", "0")
 	sh_objectivexp = register_cvar("sh_objectivexp", "8")
 	sh_cmdprojector = register_cvar("sh_cmdprojector", "1")
@@ -1026,6 +1027,7 @@ public cvarCheck()
 	if ( !gLongTermXP ) gAutoBalance = get_pcvar_num(sh_autobalance) ? true : false
 	gCMDProj = get_pcvar_num(sh_cmdprojector)
 	default_explode_knock_force_magnitude = get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
+	default_explode_upward_shift = get_pcvar_float(sh_default_explode_upward_shift_cvar);
 	gBotsEarnXP=get_pcvar_num(sh_botsearnxp)
 	gBotsMinLevel=get_pcvar_num(sh_botsminlevel)
 	gBotsMaxLevel=get_pcvar_num(sh_botsmaxlevel)

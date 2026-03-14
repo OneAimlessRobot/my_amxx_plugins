@@ -471,7 +471,7 @@ public move_enemy(parm[])
 	
 	pev(victim,pev_origin,origin)
 	
-	origin[2]+=100.0
+	origin[2]+=float(parm[4])
 	
 	set_pev(victim,pev_origin,origin)
 	
@@ -500,7 +500,7 @@ public move_entity(parm[])
 	}
 	pev(victim,pev_origin,origin)
 	
-	origin[2]+=10.0
+	origin[2]+=float(parm[4])
 	
 	set_pev(victim,pev_origin,origin)
 	
@@ -512,7 +512,7 @@ public move_entity(parm[])
 	set_pev(victim, pev_velocity, fl_velocity)
 	
 }
-stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0,set_stun=0){
+stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ignore_owner=0,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0){
 	
 	if(!is_user_connected(ent_id)){
 		return
@@ -547,11 +547,11 @@ stock explosion_player(hero_id,ent_id,Float:explosion_radius,Float:peak_power,ig
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun)
+		damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift)
 		
 	}
 }
-stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0,ignore_owner=1,set_stun=0){
+stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:optional_force=0.0,ignore_owner=1,set_stun=0,Float:upward_shift=1.0){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -589,11 +589,11 @@ stock explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:opt
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift)
 
 	}
 }
-stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player",Float:optional_force=0.0){
+stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player",Float:optional_force=0.0,Float:upward_shift=1.0){
 	
 	if((pev_valid(ent_id)!=2)){
 	
@@ -626,10 +626,10 @@ stock explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent
 			continue
 		
 		}
-		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
+		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force,upward_shift)
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -661,7 +661,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
 	
-	new parm[4]
+	new parm[5]
 	
 	Entvars_Get_Vector(pid, EV_VEC_origin, vOrig)
 	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
@@ -698,7 +698,8 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	parm[1] = floatround(b_vel[1])
 	parm[2] = floatround(b_vel[2])
 	parm[3] = pid
-	set_task(0.1, "move_enemy", 0, parm, 4)
+	parm[4] = floatround(upward_shift)
+	set_task(0.1, "move_enemy", 0, parm, 5)
 	if(set_stun){
 		sh_set_stun(pid,3.0,0.5)
 	}
@@ -708,7 +709,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	sh_chat_message(owner_id,hero_id,"%s was shattered by you!",client_name);
 	sh_chat_message(pid,hero_id,"%s shattered you!",attacker_name);
 }
-stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
+stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,Float:upward_shift=1.0){
 	
 	
 	if((pev_valid(ent_id)!=2)||(pev_valid(tg_id)!=2)){
@@ -730,7 +731,7 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	}
 	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
 	
-	new parm[4]
+	new parm[5]
 	
 	Entvars_Get_Vector(tg_id, EV_VEC_origin, vOrig)
 	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
@@ -774,7 +775,8 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	parm[1] = floatround(b_vel[1])
 	parm[2] = floatround(b_vel[2])
 	parm[3] = tg_id
-	set_task(0.1, "move_entity", 0, parm, 4)
+	parm[4] = floatround(upward_shift)
+	set_task(0.1, "move_entity", 0, parm, 5)
 }
 
 stock unfade_screen_user(id){

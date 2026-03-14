@@ -217,7 +217,7 @@ public client_PostThink(id) {
 			g_graciete_leaped[id]=false
 			if(g_graciete_power_landing[id]){
 				
-				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],_, default_explode_knock_force_magnitude)
+				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],_, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
 				g_graciete_land_power[id]=0.0
 				
 			}

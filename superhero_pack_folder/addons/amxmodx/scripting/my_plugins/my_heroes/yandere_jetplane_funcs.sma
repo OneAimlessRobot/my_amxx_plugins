@@ -450,8 +450,8 @@ public FwdTouchWorld( jet, World ) {
 		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
 
-			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp, default_explode_knock_force_magnitude)
-			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME)
+			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
+			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME,_,default_explode_upward_shift)
 			jet_destroy(owner)
 			user_kill(owner)
 			return FMRES_IGNORED
