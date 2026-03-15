@@ -78,13 +78,15 @@ public CmdStart(id, uc_handle)
 	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
+	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==MARIA_WEAPON_CLASSID)){
+		
 		if(button & IN_ATTACK)
 		{
-			if(!rivet_loaded[id]){
+			if(!rivet_loaded[id]||(maria_riveter_get_num_rivets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
@@ -221,15 +223,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
-	if(maria_riveter_get_num_rivets(pPlayer) == 0)
-	{
-		
-		if(!is_user_bot(pPlayer)){
-			client_print(pPlayer, print_center, "You are out of rivets")
-		}
-		sh_drop_weapon(pPlayer, MARIA_WEAPON_CLASSID, true)
-		return HAM_SUPERCEDE
-	}
 	iClip = get_member(entity, m_Weapon_iClip)
 	if(iClip)
 	{

@@ -69,9 +69,10 @@ public CmdStart(id, uc_handle)
 	if(weapon==CSW_ELITE){
 		if(button & IN_ATTACK)
 		{
-			if(!dart_loaded[id]){
+			if(!dart_loaded[id]||(tranq_get_num_darts(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
+				return FMRES_SUPERCEDE
 			}
 			
 		}
@@ -221,15 +222,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 		return HAM_IGNORED
 	}
-	if(tranq_get_num_darts(pPlayer) == 0)
-	{
-		
-		if(!is_user_bot(pPlayer)){
-			client_print(pPlayer, print_center, "You are out of darts")
-		}
-		sh_drop_weapon(pPlayer, CSW_ELITE, true)
-		return HAM_SUPERCEDE
-	}
+	
 	launch_dart(pPlayer)
 	dart_loaded[pPlayer]=false;
 	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)

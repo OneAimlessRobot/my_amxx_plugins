@@ -94,7 +94,7 @@ public CmdStart(id, uc_handle)
 	if((weapon==LENA_WEAPON_CLASSID)){
 		if(button & IN_ATTACK)
 		{
-			if(!bullet_loaded[id]){
+			if(!bullet_loaded[id]||(lena_l96_get_num_bullets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
@@ -230,15 +230,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
-	if(lena_l96_get_num_bullets(pPlayer) == 0)
-	{
-		
-		if(!is_user_bot(pPlayer)){
-			client_print(pPlayer, print_center, "You are out of bullets")
-		}
-		sh_drop_weapon(pPlayer, LENA_WEAPON_CLASSID, true)
-		return HAM_SUPERCEDE
-	}
 	iClip = get_member(entity, m_Weapon_iClip)
 	if(iClip)
 	{
