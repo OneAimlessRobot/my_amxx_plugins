@@ -1,8 +1,0 @@
-L 03/14/2026 - 23:17:29: Start of error session.
-L 03/14/2026 - 23:17:29: Info (map "de_train") (file "addons/amxmodx/logs/error_20260314.log")
-L 03/14/2026 - 23:17:29: [FUN] Invalid player 3 (not in-game)
-L 03/14/2026 - 23:17:29: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "spawn") - debug not enabled!
-L 03/14/2026 - 23:17:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
-L 03/14/2026 - 23:17:29: [FUN] Invalid player 3
-L 03/14/2026 - 23:17:29: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_user_origin") - debug not enabled!
-L 03/14/2026 - 23:17:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

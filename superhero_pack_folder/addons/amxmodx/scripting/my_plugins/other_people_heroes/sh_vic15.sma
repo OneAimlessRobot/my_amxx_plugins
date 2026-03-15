@@ -124,14 +124,17 @@ public vic15_teamcheck(parm[])
 {
 	new id = parm[0]
 
-	if ( g_userTeam[id] != get_user_team(id) ) {
-		client_print(id, print_chat, "[SH](Victim 15/21) You cannot respawn after switcing teams. Wait until the next round.")
+	
+	if(is_user_alive(id)){
+		if ( g_userTeam[id] != get_user_team(id) ) {
+			client_print(id, print_chat, "[SH](Victim 15/21) You cannot respawn after switcing teams. Wait until the next round.")
 
-		user_kill(id, 1)
+			user_kill(id, 1)
 
-		// StopVictim15 from respawning until round ends
-		remove_task(id)
-		g_vic15PowerUsed[id] = false
+			// StopVictim15 from respawning until round ends
+			remove_task(id)
+			g_vic15PowerUsed[id] = false
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -158,24 +161,24 @@ public round_end()
 //----------------------------------------------------------------------------------------------
 public vic15_teleport(id)
 {
-	// Teleport the player
-	set_user_origin(id, g_savedOrigin[id])
-	//set_user_health(id, 100)
-	if (get_user_team(id)==1){
-		give_item(id,"weapon_knife")
-		give_item(id,"weapon_glock18")
-		give_item(id,"ammo_9mm")
-		give_item(id,"ammo_9mm")
-	}
-	else{
-		give_item(id,"weapon_knife")
-		give_item(id,"weapon_usp")
-		give_item(id,"ammo_45acp")
-		give_item(id,"ammo_45acp")
-	}
-	emit_sound(id, CHAN_STATIC, "misc/victim15_revive.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
+	if(is_user_connected(id)){// Teleport the player
+		set_user_origin(id, g_savedOrigin[id])
+		if (get_user_team(id)==1){
+			give_item(id,"weapon_knife")
+			give_item(id,"weapon_glock18")
+			give_item(id,"ammo_9mm")
+			give_item(id,"ammo_9mm")
+		}
+		else{
+			give_item(id,"weapon_knife")
+			give_item(id,"weapon_usp")
+			give_item(id,"ammo_45acp")
+			give_item(id,"ammo_45acp")
+		}
+		emit_sound(id, CHAN_STATIC, "misc/victim15_revive.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
-	positionChangeTimer(id)
+		positionChangeTimer(id)
+	}
 
 }
 //----------------------------------------------------------------------------------------------
