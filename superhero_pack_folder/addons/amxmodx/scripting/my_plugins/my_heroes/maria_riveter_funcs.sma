@@ -1,9 +1,11 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "maria_riveter_inc/maria_general_inc.inc"
+
 
 #include <fakemeta_util>
 #include <reapi>
@@ -19,6 +21,10 @@ new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new Float:rivet_launch_pos[MAX_ENTITIES][3];
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
+new test_taskid_var;
+new test_taskid_var2;
+new test_taskid_var3;
+new test_taskid_var4;
 
 //new HamHook:TakeDamage
 public plugin_init(){
@@ -45,6 +51,10 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	g_msgFade = get_user_msgid("ScreenFade");
+	test_taskid_var= allocate_typed_task_id(player_task)
+	test_taskid_var2= allocate_typed_task_id(entity_task)
+	test_taskid_var3= allocate_typed_task_id(entity_task)
+	test_taskid_var4= allocate_typed_task_id(player_task)
 	
 }
 

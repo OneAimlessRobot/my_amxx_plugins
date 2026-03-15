@@ -1,0 +1,189 @@
+
+Currently loaded plugins:
+       id  name                    version     author            url                              file         status   
+ [  1] 0   Admin Base (SQL)        1.10.0.547  AMXX Dev Team                                      admin.amxx   running no tasks
+ [  2] 1   Admin Commands          1.10.0.547  AMXX Dev Team                                      admincmd.am  running TASKS!
+ [  3] 2   Admin Help              1.10.0.547  AMXX Dev Team                                      adminhelp.a  running TASKS!
+ [  4] 3   Slots Reservation       1.10.0.547  AMXX Dev Team                                      adminslots.  running no tasks
+ [  5] 4   Multi-Lingual System    1.10.0.547  AMXX Dev Team                                      multilingua  running TASKS!
+ [  6] 5   Menus Front-End         1.10.0.547  AMXX Dev Team                                      menufront.a  running no tasks
+ [  7] 6   Commands Menu           1.10.0.547  AMXX Dev Team                                      cmdmenu.amx  running no tasks 
+ [  8] 7   Players Menu            1.10.0.547  AMXX Dev Team                                      plmenu.amxx  running no tasks
+ [  9] 8   Teleport Menu           1.10.0.547  AMXX Dev Team                                      telemenu.am  running no tasks
+ [ 10] 9   Maps Menu               1.10.0.547  AMXX Dev Team                                      mapsmenu.am  running TASKS!
+ [ 11] 10  Plugin Menu             1.10.0.547  AMXX Dev Team                                      pluginmenu.  running TASKS!
+ [ 12] 11  Admin Chat              1.10.0.547  AMXX Dev Team                                      adminchat.a  running no tasks
+ [ 13] 12  Anti Flood              1.10.0.547  AMXX Dev Team                                      antiflood.a  running no tasks
+ [ 14] 13  Scrolling Message       1.10.0.547  AMXX Dev Team                                      scrollmsg.a  running TASKS!
+ [ 15] 14  Info. Messages          1.10.0.547  AMXX Dev Team                                      imessage.am  running TASKS!
+ [ 16] 15  Admin Votes             1.10.0.547  AMXX Dev Team                                      adminvote.a  running TASKS!
+ [ 17] 16  NextMap                 1.10.0.547  AMXX Dev Team                                      nextmap.amx  running TASKS!
+ [ 18] 17  Nextmap Chooser         1.10.0.547  AMXX Dev Team                                      mapchooser.  running TASKS!
+ [ 19] 18  TimeLeft                1.10.0.547  AMXX Dev Team                                      timeleft.am  running TASKS!
+ [ 20] 19  Pause Plugins           1.10.0.547  AMXX Dev Team                                      pausecfg.am  running no tasks
+ [ 21] 20  Stats Configuration     1.10.0.547  AMXX Dev Team                                      statscfg.am  running no tasks
+ [ 22] 21  Restrict Weapons        1.10.0.547  AMXX Dev Team                                      restmenu.am  running TASKS!
+ [ 23] 22  StatsX                  1.10.0.547  AMXX Dev Team                                      statsx.amxx  running TASKS!
+ [ 24] 23  CS Misc. Stats          1.10.0.547  AMXX Dev Team                                      miscstats.a  running TASKS!
+ [ 25] 24  CS Stats Logging        1.10.0.547  AMXX Dev Team                                      stats_loggi  running TASKS!
+ [ 26] 25  HLstatsX CE Ingame Plu  1.6.19 (HL  psychonic                                          hlstatsx_co  running no tasks
+ [ 27] 26  Death-info beams        3.0         BMJ                                                dib3.amxx    running no tasks
+ [ 28] 27  PLAY THE PIANO          1.0         EJL                                                play_the_pi  running TASKS!
+ [ 29] 28  Spectator Banner Ads    0.1.16      iG_os                                              spec_banner  running no tasks
+ [ 30] 29  AINO Commands           2.0         AMX(x) Community                                   admin_allin  running OHH LORD... TASKS!
+ [ 31] 30  [CS] MaxSpeed API       1.0         WiLS                                               cs_maxspeed  running no tasks
+ [ 32] 31  GHW Connect Messages    1.1         GHW_Chronic                                        GHW_connect  debug   no tasks
+ [ 33] 32  Obscura Cam             0.7         Nani (SkumTomteN                                   ObscuraCam_  running no tasks
+ [ 34] 33  amx freeze              1.8         Drekes                                             amx_freeze.  running TASKS!
+ [ 35] 34  [CS] Ham Hooks for Bot  1.0         WiLS                                               cs_ham_bots  running TASKS!
+ [ 36] 35  Team Balancer           1.8b3       Ptahhotep                                          ptb.amxx     running TASKS!
+ [ 37] 36  Rules                   1.0         toxic                                              Rules.amxx   running no tasks
+ [ 38] 37  WalkGuard               1.3.2       mogel                                              walkguard.a  running OH LORD... TASKS!
+ [ 39] 38  Advanced Spectate       1.5         Emp`                                               advanced_sp  running TASKS!
+ [ 40] 39  Hostage HP              1.1         AssKicR                                            hostage_hp.  running no tasks
+ [ 41] 40  Bomb Countdown HUD Tim  0.2         SAMURAI                                            bcd_hudtime  running TASKS! 
+ [ 42] 41  Level xp generator      1.0         ThrashBrat                                         level_gen.a  running no tasks 
+ [ 43] 42  Precache Kit            0.0.2       Jhob94                                             precache_ki  running no tasks 
+ [ 44] 43  Precache X              1.0         Dias Leon & DeXT                                   PrecacheX.a  running no tasks! 
+ [ 45] 44  SuperHero Core          1.2.0.16    JTP10181/{HOJ}Ba                                   superheromo  running OH LORD... TASKS!
+ [ 46] 45  Superhero xp adder fun  1.0.0       ThrasherBratter                                    sh_xp_adder  running no tasks
+ [ 47] 46  Superhero help file fu  1.0.0       ThrasherBratter                                    superheromo  running no tasks 
+ [ 48] 47  Superhero damage sourc  1.0.0       ThrashBrat                                         sh_damage_s  running no tasks 
+ [ 49] 48  SHero Merchant          APP_VER     Werdpad                                            sh_merchant  running no tasks
+ [ 50] 49  SuperHero Monitor       1.6         vittu                                              sh_monitor.  running no tasks 
+ [ 51] 50  Superhero tranq fx      1.0.0       ThrashBrat                                         tranq_fx.am  running TASKS!
+ [ 52] 51  Superhero chaff fx      1.0.0       ThrashBrat                                         chaff_fx.am  running TASKS!
+ [ 53] 52  SUPERHERO ksun          1.1         MilkChanThaGOAT                                    sh_ksun.amx  running TASKS! 
+ [ 54] 53  Superhero ksun sleep g  1.0.0       ThrashBrat                                         sleep_grena  running TASKS! 
+ [ 55] 54  SUPERHERO ksun scanner  1.1         MilkChanThaGOAT                                    ksun_scanne  running TASKS!
+ [ 56] 55  SUPERHERO ksun spores   1.1         MilkChanThaGOAT                                    ksun_partic  running TASKS!
+ [ 57] 56  SUPERHERO ksun spore l  1.1         MilkChanThaGOAT                                    ksun_spore_  running TASKS!
+ [ 58] 57  SUPERHERO ksun supply   1.1         MilkChanThaGOAT                                    ksun_ultima  running TASKS! 
+ [ 59] 58  Superhero erica tranq   1.0.0       ThrashBrat                                         tranq_funcs  running TASKS! 
+ [ 60] 59  Superhero teliko chaff  1.0.0       ThrashBrat                                         chaff_funcs  running TASKS!
+ [ 61] 60  SUPERHERO Teliko        1.0         TastyMedula                                        sh_teliko.a  running no tasks
+ [ 62] 61  Superhero teliko slitt  1.0.0       ThrashBrat                                         teliko_slit  running TASKS! 
+ [ 63] 62  Superhero yakui mk2 pt  1.0.0       ThrashBrat                                         sh_yakui_ge  running no tasks 
+ [ 64] 63  Superhero sapper mk2 p  1.0.0       ThrashBrat                                         mine_funcs.  running OHH LORD... TASKS!
+ [ 65] 64  Superhero jaqueo ratty  1.0.0       ThrashBrat                                         jaqueo_shie  running TASKS! 
+ [ 66] 65  Superhero camman mk2 p  1.0.0       ThrashBrat                                         camera_func  running many TASKS!
+ [ 67] 66  Superhero erica hook    1.0.0       ThrashBrat                                         erica_man_h  running TASKS! 
+ [ 68] 67  Superhero yandere rock  1.0.0       ThrashBrat                                         yandere_jet  running TASKS! 
+ [ 69] 68  Superhero yandere radi  1.0.0       ThrashBrat                                         yandere_jet  running TASKS!
+ [ 70] 69  Superhero yandere JETG  1.0.0       ThrashBrat                                         yandere_jet  running TASKS!
+ [ 71] 70  Superhero yandere jett  1.0.0       ThrashBrat                                         yandere_jet  running no tasks
+ [ 72] 71  Superhero yandere jett  1.0.0       ThrashBrat                                         yandere_jet  debug   no tasks
+ [ 73] 72  Superhero yandere BOMB  1.0.0       ThrashBrat                                         yandere_jet  running TASKS!
+ [ 74] 73  Superhero adriano colt  1.0.0       ThrashBrat                                         colt_funcs.  running no tasks
+ [ 75] 74  Superhero adriano ethe  1.0.0       ThrashBrat                                         ethereal_fu  running no tasks
+ [ 76] 75  Superhero yakui mk2 ne  1.0.0       ThrashBrat                                         yakui_needl  running no tasks 
+ [ 77] 76  SUPERHERO Goku's Kaiok  3.0         MEGA/SOEN/BONINI                                   sh_GokuKT.a  running TASKS! 
+ [ 78] 77  SUPERHERO Phoenix       1.1         [FTW]-S.W.A.T /                                    sh_phoenix.  running TASKS!
+ [ 79] 78  SUPERHERO Naruto Uzuma  0.9.29b     1sh0t2killz                                        sh_naruto_s  running Caralho... TASKS!
+ [ 80] 79  SUPERHERO Thrashy Thrs  1.0         Thrasher                                           sh_thrashyt  running TASKS! 
+ [ 81] 80  SUPERHERO Dr. Strange   1.2         Mr. Sparkle                                        sh_drstrang  running TASKS!
+ [ 82] 81  SUPERHERO Maria's rive  1.0         MilkChanTheGOAas                                   maria_rivet  running TASKS!
+ [ 83] 82  SUPERHERO Maria!        1.0         Adriano Valente                                    sh_maria.am  running TASKS!
+ [ 84] 83  Superhero graciete jet  1.0.0       ThrashBrat                                         graciete_je  running TASKS! 
+ [ 85] 84  SUPERHERO Graciete      1.0         TastyMedula                                        sh_graciete  running TASKS!
+ [ 86] 85  SUPERHERO Tracker       1.3         Kunlock                                            sh_tracker.  running TASKS!
+ [ 87] 86  SUPERHERO Hobgoblin     1.2.0.16    {HOJ} Batman/JTP                                   sh_hobgobli  running TASKS!
+ [ 88] 87  SUPERHERO Jaws          1.01        K-OS                                               sh_jaws.amx  running TASKS!
+ [ 89] 88  SUPERHERO Lena de Veri  1.0         MilkChanTheGOAT                                    sh_lena.amx  running no tasks
+ [ 90] 89  SUPERHERO Lena de Veri  1.0         MilkChanTheGOAas                                   lena_l96_fu  running TASKS!
+ [ 91] 90  SUPERHERO SuperNoodle   1.0         TastyMedula                                        sh_supernoo  running no tasks 
+ [ 92] 91  SUPERHERO Poison Ivy    1.5         AssKicR / vittu                                    sh_poisoniv  running TASKS! 
+ [ 93] 92  SUPERHERO Inspector Te  1.0         vittu                                              sh_insptequ  running no tasks 
+ [ 94] 93  SUPERHERO Juggernaut (  1.0         1sh0t2killz AKA                                    sh_juggerna  running no tasks 
+ [ 95] 94  SUPERHERO Shell         1.02        1sh0t2killz                                        sh_shell.am  running TASKS!
+ [ 96] 95  SUPERHERO Shang-Chi     1.1         AssKicR                                            sh_shangchi  running no tasks 
+ [ 97] 96  SUPERHERO Marksman      1.0         TastyMedula                                        sh_marksman  running TASKS! 
+ [ 98] 97  SUPERHERO Thor          1.1         TreDizzle                                          sh_thor.amx  running no tasks 
+ [ 99] 98  SUPERHERO Rattler       2.1         DuPeR/Rockell                                      sh_rattler.  running no tasks 
+ [100] 99  SUPERHERO Escapist      1.0         ThrashyThrash                                      sh_escapist  running TASKS! 
+ [101] 100 SUPERHERO The Tick      1.3         vittu                                              sh_thetick.  running TASKS!
+ [102] 101 SUPERHERO Stun Gun      1.3         Jelle/Timian                                       sh_stungun.  running TASKS! 
+ [103] 102 SUPERHERO Yoda          1.3         AssKicR / Freeco                                   sh_yoda.amx  running TASKS!
+ [104] 103 SUPERHERO Steel         1.0         HeKTiK ChAoS                                       sh_steel.am  running TASKS!
+ [105] 104 SUPERHERO Deagle Snipe  1.0         Jelle / Fr33m@n                                    sh_dassassi  running no tasks
+ [106] 105 SUPERHERO Chikoi the M  1.0         TastyMedula                                        sh_chikoi.a  running no tasks 
+ [107] 106 SUPERHERO Swat          1.0         SRGrty                                             sh_swat.amx  running TASKS! 
+ [108] 107 SUPERHERO Cyclone       1.32        K-OS                                               sh_cyclone.  running TASKS!
+ [109] 108 SUPERHERO DarkPredator  1.0         kanu | DarkPreda                                   sh_darkpred  running TASKS! 
+ [110] 109 SUPERHERO Victim15/21   1           World Crafter/[F                                   sh_vic15.am  running TASKS! 
+ [111] 110 SUPERHERO Painkiller    1.0         1sh0t2killz                                        sh_painkill  running TASKS! 
+ [112] 111 SUPERHERO styropyro     1.0         TastyMedula                                        sh_styropyr  running TASKS! 
+ [113] 112 SUPERHERO ElectroB00M   2.0         TastyMedula                                        sh_electroB  running TASKS! 
+ [114] 113 SUPERHERO Raak the Bre  1.1         The Art of War                                     sh_breaker.  running TASKS!  
+ [115] 114 SUPERHERO Grim Reaper   1.0         ThrashBrat                                         sh_grimreap  running no tasks
+ [116] 115 Superhero yakui pt2 pt  1.0.0       ThrashBrat                                         pill_gatlin  running TASKS! 
+ [117] 116 Superhero lara mk2 pt2  1.0.0       ThrashBrat                                         lara_spear_  running TASKS! 
+ [118] 117 Superhero graciete sho  1.0.0       ThrashBrat                                         q_barrel_fu  running TASKS! 
+ [119] 118 Superhero: Supernoodle  1.0         ThrashBrat                                         h_rifle_fun  running TASKS! 
+ [120] 119 Superhero super noodle  1.0.0       ThrashBrat                                         arifle_func  running TASKS! 
+ [121] 120 Superhero Snoodle d_ba  1.0.0       ThrashBrat                                         d_barrel_fu  running TASKS!
+ [122] 121 Superhero roberto mk2   1.0.0       ThrashBrat                                         soccer_ball  running TASKS!
+ [123] 122 Superhero yakui mk2 pt  1.0.0       ThrashBrat                                         rpsyringe_f  running no tasks 
+ [124] 123 Superhero yakui mk2 pt  1.0.0       ThrashBrat                                         pill_gatlin  running TASKS! 
+ [125] 124 SUPERHERO Yakui the Ma  1.0         TastyMedula                                        sh_yakuipt2  running TASKS!
+ [126] 125 SUPERHERO Anubis        1.2.0.16    AssKicR/JTP10181                                   sh_anubis.a  running no tasks 
+ [127] 126 SUPERHERO Captain Amer  1.2.0.16    {HOJ} Batman/JTP                                   sh_captaina  running TASKS! 
+ [128] 127 SUPERHERO Camman        1.0         TastyMedula                                        sh_camman.a  running no tasks 
+ [129] 128 SUPERHERO Jaqueo        1.0         TastyMedula                                        sh_jaqueo.a  running TASKS! 
+ [130] 129 SUPERHERO Jeremy Code   1.0         ThrashyThrash                                      sh_backtoth  running TASKS! 
+ [131] 130 SUPERHERO Roberto       1.0         TastyMedula                                        sh_roberto_  running no tasks 
+ [132] 131 SUPERHERO Dracula       1.2.0.16    {HOJ} Batman/JTP                                   sh_dracula.  running no tasks 
+ [133] 132 SUPERHERO Leyla         1.0         TastyMedula                                        sh_leyla.am  running no tasks
+ [134] 133 SUPERHERO Grandmaster   1.2.0.16    {HOJ} Batman/JTP                                   sh_grandmas  running TASKS! 
+ [135] 134 SUPERHERO Komak the Ma  1.0         TastyMedula                                        sh_komakpt2  running TASKS!
+ [136] 135 Superhero ester flight  1.0.0       ThrashBrat                                         ester_fligh  running TASKS!
+ [137] 136 SUPERHERO Ester         1.0         TastyMedula                                        sh_ester.am  running TASKS! 
+ [138] 137 SUPERHERO Invisible Ma  1.2.0.16    AssKicR                                            sh_invisman  running TASKS! 
+ [139] 138 SUPERHERO Morpheus      1.2.0.16    RadidEskimo/Free                                   sh_morpheus  running no tasks 
+ [140] 139 SUPERHERO Yowai         1.0         TastyMedula                                        sh_Im_y-yow  running TASKS! 
+ [141] 140 SUPERHERO Erica         1.0         TastyMedula                                        sh_erica.am  running TASKS!
+ [142] 141 SUPERHERO Spider-Man    1.2.0.16    {HOJ} Batman/JTP                                   sh_spiderma  running TASKS! 
+ [143] 142 SUPERHERO Sapper        1.0         TastyMedula                                        sh_sapper.a  running TASKS! 
+ [144] 143 SUPERHERO Lara          1.0         TastyMedula                                        sh_lara.amx  running no tasks 
+ [145] 144 SUPERHERO Xavier        1.2.0.16    {HOJ} Batman                                       sh_xavier.a  running TASKS! 
+ [146] 145 SUPERHERO Squall        1.8         Random1                                            sh_squall.a  running no tasks 
+ [147] 146 SUPERHERO Arctic Preda  1.1         duper                                              sh_arcticpr  running DEAR... TASKS! 
+ [148] 147 SUPERHERO Goku          1.5         |RIC|_ALBANIAN /                                   sh_goku.amx  running DEAR... TASKS! 
+ [149] 148 SUPERHERO Batgirl       1.2         sharky/JTP10181                                    sh_batgirl.  running TASKS! 
+ [150] 149 SUPERHERO Vegetto       0.2         |RIC|_ALBANIAN /                                   sh_vegetto.  running TASKS!
+ [151] 150 SUPERHERO Bass          1.3         Op                                                 sh_bass.amx  running TASKS! 
+ [152] 151 SUPERHERO Dark Angel v  2.0         Detox/KitKat                                       sh_bloodang  running no tasks
+ [153] 152 SUPERHERO Scorpion      2.3         ReVeNgIsT/yang/v                                   sh_scorpion  running no tasks 
+ [154] 153 SUPERHERO Veronika      1.3         DuPeR/Yang                                         sh_veronika  running TASKS! 
+ [155] 154 SUPERHERO Cola Lover    1.3         Dr Dream                                           sh_colalove  running no tasks 
+ [156] 155 SUPERHERO Riddick       1.0         JTP10181                                           sh_riddick.  running TASKS! 
+ [157] 156 SUPERHERO Stealth Pred  1.15        Neogaiden(z)/Str                                   sh_stealthp  running TASKS! 
+ [158] 157 SUPERHERO Uber Gunner   1.1         Kebmaster                                          sh_ubergunn  running TASKS! 
+ [159] 158 SUPERHERO Exodus        1.2         Freecode / Rabid                                   sh_exodus.a  running TASKS!
+ [160] 159 SUPERHERO Clone Troope  2.7         Om3gA                                              sh_ctrooper  running TASKS! 
+ [161] 160 SUPERHERO Casper        1.1         BLU3 V1Z10N / ma                                   sh_casper.a  running TASKS! 
+ [162] 161 SUPERHERO Bazooka       4.0         JTP10181 / AssKi                                   sh_bazooka.  running Bless me... TASKS! 
+ [163] 162 SUPERHERO Chucky        1.4         LiToViEtBoI/vitt                                   sh_chucky.a  running TASKS! 
+ [164] 163 SUPERHERO frieza        1.1         Gorlag/Batman  /                                   sh_frieza.a  running TASKS!
+ [165] 164 SUPERHERO Master Chief  1.6         Spartan-117/vitt                                   sh_masterch  running TASKS! 
+ [166] 165 SUPERHERO Penguin       1.2         Yang/vittu                                         sh_penguin.  running TASKS! 
+ [167] 166 SUPERHERO Polaris       1.11        K-OS                                               sh_polaris.  running TASKS! 
+ [168] 167 SUPERHERO Ricochet      1.2         Fr33m@n / marcel                                   sh_ricochet  running no tasks 
+ [169] 168 SUPERHERO T-800         2.0         Bum_Boy16                                          sh_t800.amx  running TASKS! 
+ [170] 169 SUPERHERO Bunny hop     1.0         newbie1233                                         sh_bunnyhop  running no tasks 
+ [171] 170 SUPERHERO Meteorix      1.0         NOmeR1                                             sh_meteorix  running TASKS! 
+ [172] 171 SUPERHERO Wolverine     1.2.0.16    {HOJ}Batman/JTP1                                   sh_wolverin  running TASKS! 
+ [173] 172 SUPERHERO Gambit        1.3         Vectren / vittu                                    sh_gambit.a  running TASKS!
+ [174] 173 SUPERHERO Mirage        1.0         Mydas                                              sh_mirage.a  running TASKS! 
+ [175] 174 SUPERHERO Selfless Yan  1.0         TastyMedulaasasd                                   sh_selfless  running TASKS! 
+ [176] 175 SUPERHERO Adriano Vale  1.0         Adriano Valente                                    sh_adriano.  running TASKS!
+ [177] 176 SUPERHERO Vash the Sta  1.4         sharky / vittu                                     sh_vash.amx  running TASKS! 
+ [178] 177 SUPERHERO Secretary of  1.1         A.F./Fr33m@n                                       sh_secretar  running TASKS! 
+ [179] 178 SUPERHERO Catwoman      2.6         Emp`                                               sh_catwoman  running TASKS! 
+ [180] 179 Superhero bleed fx      1.0.0       ThrashBrat                                         bknife_fx.a  running TASKS! 
+ [181] 180 Superhero flora shield  1.0.0       NULLTick                                           flora_field  running TASKS!
+ [182] 181 SUPERHERO flora         1.1         MilkChanThaGOAT                                    sh_flora.am  running TASKS! 
+ [183] 182 SUPERHERO Gloce         1.1         [A]tomen                                           sh_gloce.am  running TASKS!
+ [184] 183 Superhero molotov func  1.0.0       ThrashBrat                                         molotov_fun  running TASKS! 
+ [185] 184 Superhero molotov fx    1.0.0       ThrashBrat                                         molotov_fx.  running TASKS!
+185 plugins, 185 running

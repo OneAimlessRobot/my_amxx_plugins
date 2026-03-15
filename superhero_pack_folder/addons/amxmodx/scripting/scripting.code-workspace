@@ -7,13 +7,7 @@
 			"path": "../configs"
 		},
 		{
-			"path": "../../../../../hlstatsx/hlstatsx"
-		},
-		{
 			"path": "../../../scripts"
-		},
-		{
-			"path": "../../.."
 		}
 	],
 	"settings": {}

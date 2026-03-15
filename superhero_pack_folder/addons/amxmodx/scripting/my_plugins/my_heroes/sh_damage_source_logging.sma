@@ -4,15 +4,6 @@
 #define VERSION "1.0.0"
 #define AUTHOR "ThrashBrat"
 
-/*
-
-
-stock sh_damage_source_hero_ids[MAX_SH_CUSTOM_DMG_SOURCES]
-stock sh_damage_source_is_a_melee[MAX_SH_CUSTOM_DMG_SOURCES]
-stock sh_damage_source_short_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
-stock sh_damage_source_long_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
-
- */
 
 public plugin_init(){
 
