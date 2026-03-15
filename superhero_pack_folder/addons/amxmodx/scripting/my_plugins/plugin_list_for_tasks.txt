@@ -2,19 +2,19 @@
 Currently loaded plugins:
        id  name                    version     author            url                              file         status   
  [  1] 0   Admin Base (SQL)        1.10.0.547  AMXX Dev Team                                      admin.amxx   running no tasks
- [  2] 1   Admin Commands          1.10.0.547  AMXX Dev Team                                      admincmd.am  running TASKS!
- [  3] 2   Admin Help              1.10.0.547  AMXX Dev Team                                      adminhelp.a  running TASKS!
+ [  2] 1   Admin Commands          1.10.0.547  AMXX Dev Team                                      admincmd.am  running TASKS! done
+ [  3] 2   Admin Help              1.10.0.547  AMXX Dev Team                                      adminhelp.a  running TASKS! done
  [  4] 3   Slots Reservation       1.10.0.547  AMXX Dev Team                                      adminslots.  running no tasks
- [  5] 4   Multi-Lingual System    1.10.0.547  AMXX Dev Team                                      multilingua  running TASKS!
+ [  5] 4   Multi-Lingual System    1.10.0.547  AMXX Dev Team                                      multilingua  running TASKS! done
  [  6] 5   Menus Front-End         1.10.0.547  AMXX Dev Team                                      menufront.a  running no tasks
  [  7] 6   Commands Menu           1.10.0.547  AMXX Dev Team                                      cmdmenu.amx  running no tasks 
  [  8] 7   Players Menu            1.10.0.547  AMXX Dev Team                                      plmenu.amxx  running no tasks
  [  9] 8   Teleport Menu           1.10.0.547  AMXX Dev Team                                      telemenu.am  running no tasks
- [ 10] 9   Maps Menu               1.10.0.547  AMXX Dev Team                                      mapsmenu.am  running TASKS!
- [ 11] 10  Plugin Menu             1.10.0.547  AMXX Dev Team                                      pluginmenu.  running TASKS!
+ [ 10] 9   Maps Menu               1.10.0.547  AMXX Dev Team                                      mapsmenu.am  running TASKS! done
+ [ 11] 10  Plugin Menu             1.10.0.547  AMXX Dev Team                                      pluginmenu.  running TASKS! done
  [ 12] 11  Admin Chat              1.10.0.547  AMXX Dev Team                                      adminchat.a  running no tasks
  [ 13] 12  Anti Flood              1.10.0.547  AMXX Dev Team                                      antiflood.a  running no tasks
- [ 14] 13  Scrolling Message       1.10.0.547  AMXX Dev Team                                      scrollmsg.a  running TASKS!
+ [ 14] 13  Scrolling Message       1.10.0.547  AMXX Dev Team                                      scrollmsg.a  running TASKS! done
  [ 15] 14  Info. Messages          1.10.0.547  AMXX Dev Team                                      imessage.am  running TASKS!
  [ 16] 15  Admin Votes             1.10.0.547  AMXX Dev Team                                      adminvote.a  running TASKS!
  [ 17] 16  NextMap                 1.10.0.547  AMXX Dev Team                                      nextmap.amx  running TASKS!

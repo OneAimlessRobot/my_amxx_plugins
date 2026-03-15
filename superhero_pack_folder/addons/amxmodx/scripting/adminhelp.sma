@@ -12,6 +12,7 @@
 //
 
 #include <amxmodx>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 const MaxMapLength         = 32;
 const MaxDefaultEntries    = 10;
@@ -30,6 +31,7 @@ new CvarNextmap[MaxMapLength];
 new Float:CvarTimeLimit;
 
 new bool:DisplayClientMessage[MAX_PLAYERS + 1 char];
+new the_taskid
 
 public plugin_init()
 {
@@ -42,6 +44,7 @@ public plugin_init()
 	bind_pcvar_num(create_cvar("amx_help_display_msg"     , "1" , .has_min = true, .min_val = 0.0, .has_max = true, .max_val = 1.0), CvarDisplayClientMessage);
 	bind_pcvar_num(create_cvar("amx_help_display_msg_time", "15", .has_min = true, .min_val = 0.0), CvarDisplayMessageTime);
 	bind_pcvar_num(create_cvar("amx_help_amount_per_page" , "10", .has_min = true, .min_val = 0.0), CvarHelpAmount);
+	the_taskid= allocate_typed_task_id(player_task)
 }
 
 public OnConfigsExecuted()
@@ -63,7 +66,7 @@ public client_putinserver(id)
 		DisplayClientMessage{id} = true;
 
 		new Float:messageTime = float(CvarDisplayMessageTime <= 0 ? DefaultMsgTime : CvarDisplayMessageTime);
-		set_task(messageTime, "@Task_DisplayMessage", id);
+		set_task(messageTime, "@Task_DisplayMessage", id+the_taskid);
 	}
 }
 
@@ -72,7 +75,7 @@ public client_disconnected(id)
 	if (DisplayClientMessage{id})
 	{
 		DisplayClientMessage{id} = false;
-		remove_task(id);
+		remove_task(id+the_taskid);
 	}
 }
 

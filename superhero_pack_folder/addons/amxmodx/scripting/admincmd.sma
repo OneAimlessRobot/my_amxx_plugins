@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 // This is not a dynamic array because it would be bad for 24/7 map servers.
 #define OLD_CONNECTION_QUEUE 10
@@ -37,6 +38,7 @@ new g_Size;
 
 public Trie:g_tempBans
 new Trie:g_tXvarsFlags;
+new the_taskid
 
 stock InsertInfo(id)
 {
@@ -178,6 +180,7 @@ public plugin_init()
 	{
 		set_pcvar_flags(rcon_password, flags | FCVAR_PROTECTED);
 	}
+	the_taskid= allocate_typed_task_id(generic_task)
 }
 
 public cmdKick(id, level, cid)
@@ -692,7 +695,7 @@ public cmdMap(id, level, cid)
 		message_end()
 	}
 	
-	set_task(2.0, "chMap", 0, arg, arglen + 1)
+	set_task(2.0, "chMap", the_taskid, arg, arglen + 1)
 	
 	return PLUGIN_HANDLED
 }

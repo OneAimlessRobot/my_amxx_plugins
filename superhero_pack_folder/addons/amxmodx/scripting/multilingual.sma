@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new g_menuLang[MAX_PLAYERS + 1]
 new g_langNum
@@ -21,6 +22,7 @@ new g_coloredMenus
 new g_cvarDisplayClientMessage;
 new g_cvarClientLanguages;
 new g_cvarServerLanguage;
+new the_taskid
 
 public plugin_init()
 {
@@ -38,19 +40,20 @@ public plugin_init()
 	
 	g_langNum = get_langsnum()
 	g_coloredMenus = colored_menus()
+	the_taskid= allocate_typed_task_id(player_task)
 }
 
 public client_putinserver(id)
 {
 	if (get_pcvar_num(g_cvarDisplayClientMessage) && get_pcvar_num(g_cvarClientLanguages) && !is_user_bot(id))
 	{
-		set_task(10.0, "dispInfo", id)
+		set_task(10.0, "dispInfo", id+the_taskid)
 	}
 }
 
 public client_disconnected(id)
 {
-	remove_task(id)
+	remove_task(id+the_taskid)
 }
 
 public dispInfo(id)

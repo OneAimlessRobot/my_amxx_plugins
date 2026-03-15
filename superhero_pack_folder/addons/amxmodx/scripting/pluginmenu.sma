@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 
@@ -40,6 +41,7 @@ new cmdmenu_cmdid;
 
 new ExplicitPlugin[MAX_PLAYERS + 1];
 
+new the_taskid_g
 public plugin_init()
 {
 	register_plugin("Plugin Menu",AMXX_VERSION_STR,"AMXX Dev Team");
@@ -56,12 +58,14 @@ public plugin_init()
 	// Register global menu callbacks.
 	DisabledCallback=menu_makecallback("AlwaysDisableCallback");
 	EnabledCallback=menu_makecallback("AlwaysEnableCallback");
+	
+	the_taskid_g = allocate_typed_task_id(generic_task)
 }
 
 // Add these menus to the amxmodmenu
 public plugin_cfg()
 {
-	set_task(0.1, "addToMenuFront");
+	set_task(0.1, "addToMenuFront",the_taskid_g);
 }
 public addToMenuFront()
 {

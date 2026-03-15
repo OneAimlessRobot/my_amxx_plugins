@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new Array:g_mapName;
 new g_mapNums
@@ -26,6 +27,10 @@ new g_voteSelectedNum[MAX_PLAYERS + 1]
 new g_coloredMenus
 
 new g_choosed
+
+new the_taskid_delaychange_g,
+	the_taskid_checkvotes_p,
+	the_taskid_autorefuse_g;
 
 public plugin_init()
 {
@@ -56,6 +61,9 @@ public plugin_init()
 	load_settings(maps_ini_file)
 
 	g_coloredMenus = colored_menus()
+	the_taskid_delaychange_g = allocate_typed_task_id(generic_task)
+	the_taskid_checkvotes_p = allocate_typed_task_id(player_task)
+	the_taskid_autorefuse_g = allocate_typed_task_id(generic_task)
 }
 
 public autoRefuse()
@@ -66,7 +74,7 @@ public autoRefuse()
 
 public actionResult(id, key)
 {
-	remove_task(4545454)
+	remove_task(the_taskid_autorefuse_g)
 	
 	switch (key)
 	{
@@ -84,7 +92,7 @@ public actionResult(id, key)
 			new tempMap[32];
 			ArrayGetString(g_mapName, g_choosed, tempMap, charsmax(tempMap));
 			
-			set_task(2.0, "delayedChange", 0, tempMap, strlen(tempMap) + 1)
+			set_task(2.0, "delayedChange", the_taskid_delaychange_g, tempMap, strlen(tempMap) + 1)
 			log_amx("Vote: %L", "en", "RESULT_ACC")
 			client_print(0, print_chat, "%L", LANG_PLAYER, "RESULT_ACC")
 		}
@@ -133,7 +141,7 @@ public checkVotes(id)
 			format(menuBody[len], charsmax(menuBody) - len, "^n1. %L^n2. %L", id, "YES", id, "NO")
 
 			show_menu(id, 0x03, menuBody, 10, "The winner: ")
-			set_task(10.0, "autoRefuse", 4545454)
+			set_task(10.0, "autoRefuse", the_taskid_autorefuse_g)
 		} else {
 			new _modName[10]
 			get_modname(_modName, charsmax(_modName))
@@ -145,14 +153,14 @@ public checkVotes(id)
 			}
 			new tempMap[32];
 			ArrayGetString(g_mapName, g_choosed, tempMap, charsmax(tempMap));
-			set_task(2.0, "delayedChange", 0, tempMap, strlen(tempMap) + 1)
+			set_task(2.0, "delayedChange", the_taskid_delaychange_g, tempMap, strlen(tempMap) + 1)
 		}
 	} else {
 		client_print(0, print_chat, "%L", LANG_PLAYER, "VOTE_FAILED")
 		log_amx("Vote: %L", "en", "VOTE_FAILED")
 	}
 	
-	remove_task(34567 + id)
+	remove_task(the_taskid_checkvotes_p + id)
 }
 
 public voteCount(id, key)
@@ -160,7 +168,7 @@ public voteCount(id, key)
 	if (key > 3)
 	{
 		client_print(0, print_chat, "%L", LANG_PLAYER, "VOT_CANC")
-		remove_task(34567 + id)
+		remove_task(the_taskid_checkvotes_p + id)
 		set_cvar_float("amx_last_voting", get_gametime())
 		log_amx("Vote: Cancel vote session")
 		
@@ -331,7 +339,7 @@ public actionVoteMapMenu(id, key)
 			set_cvar_float("amx_last_voting", get_gametime() + vote_time)
 			new iVoteTime = floatround(vote_time)
 
-			set_task(vote_time, "checkVotes", 34567 + id)
+			set_task(vote_time, "checkVotes", the_taskid_checkvotes_p + id)
 
 			new menuBody[512]
 			new players[MAX_PLAYERS]
@@ -458,7 +466,7 @@ public actionMapsMenu(id, key)
 			show_activity_key("ADMIN_CHANGEL_1", "ADMIN_CHANGEL_2", name, tempMap);
 
 			log_amx("Cmd: ^"%s<%d><%s><>^" changelevel ^"%s^"", name, get_user_userid(id), authid, tempMap)
-			set_task(2.0, "delayedChange", 0, tempMap, strlen(tempMap) + 1)
+			set_task(2.0, "delayedChange", the_taskid_delaychange_g, tempMap, strlen(tempMap) + 1)
 			/* displayMapsMenu(id, g_menuPosition[id]) */
 		}
 	}

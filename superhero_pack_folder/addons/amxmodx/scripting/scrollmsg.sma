@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 #define SPEED 0.3
 #define SCROLLMSG_SIZE	512
@@ -24,6 +25,7 @@ new g_displayMsg[SCROLLMSG_SIZE]
 new Float:g_xPos
 new g_Length
 new g_Frequency
+new the_taskid_g
 
 public plugin_init()
 {
@@ -31,6 +33,7 @@ public plugin_init()
 	register_dictionary("scrollmsg.txt")
 	register_dictionary("common.txt")
 	register_srvcmd("amx_scrollmsg", "setMessage")
+	the_taskid_g = allocate_typed_task_id(generic_task)
 }
 
 public showMsg()
@@ -70,13 +73,13 @@ public msgInit()
 	
 	g_Length = strlen(g_scrollMsg)
 	
-	set_task(SPEED, "showMsg", 123, "", 0, "a", g_Length + 48)
+	set_task(SPEED, "showMsg", the_taskid_g, "", 0, "a", g_Length + 48)
 	client_print(0, print_console, "%s", g_scrollMsg)
 }
 
 public setMessage()
 {
-	remove_task(123)		/* remove current messaging */
+	remove_task(the_taskid_g)		/* remove current messaging */
 	read_argv(1, g_scrollMsg, charsmax(g_scrollMsg))
 	
 	g_Length = strlen(g_scrollMsg)
@@ -98,7 +101,7 @@ public setMessage()
 		}
 
 		server_print("%L", LANG_SERVER, "MSG_FREQ", g_Frequency / 60, g_Frequency % 60)
-		set_task(float(g_Frequency), "msgInit", 123, "", 0, "b")
+		set_task(float(g_Frequency), "msgInit", the_taskid_g, "", 0, "b")
 	}
 	else
 		server_print("%L", LANG_SERVER, "MSG_DISABLED")
