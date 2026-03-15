@@ -273,7 +273,9 @@ public vic15_ringloop()
 //----------------------------------------------------------------------------------------------
 public revival(id)
 {
-	user_spawn(id)
-	setScreenFlash(id, 0, 0, 0, 10, 255 )  //Black flash indicating revival
+	if(is_user_connected(id)){
+		user_spawn(id)
+		setScreenFlash(id, 0, 0, 0, 10, 255 )  //Black flash indicating revival
+	}
 }
 //----------------------------------------------------------------------------------------------
