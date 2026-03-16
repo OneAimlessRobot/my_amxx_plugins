@@ -3,6 +3,7 @@
 #include <fakemeta_util>
 #include "camera_inc/sh_camman_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "camera_inc/sh_camera_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -831,7 +832,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
-	precache_explosion_fx()
+	
 }
 public death()
 {	

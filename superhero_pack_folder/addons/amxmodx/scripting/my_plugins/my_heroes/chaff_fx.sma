@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 #define PLUGIN "Superhero chaff fx"
@@ -10,6 +11,9 @@
 
 new g_msgFade
 
+new CHAFF_TASKID
+new UNCHAFF_TASKID
+new DISORIENT_TASKID
 new bool:gIsChaffed[SH_MAXSLOTS+1]
 public plugin_init(){
 	
@@ -17,6 +21,9 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsChaffed,false,SH_MAXSLOTS+1)
 	g_msgFade = get_user_msgid("ScreenFade");
+	CHAFF_TASKID=allocate_typed_task_id(player_task)
+	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
+	DISORIENT_TASKID=allocate_typed_task_id(player_task)
 	
 }
 

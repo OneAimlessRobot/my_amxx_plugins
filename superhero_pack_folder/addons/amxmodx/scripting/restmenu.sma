@@ -14,6 +14,7 @@
 #include <amxmodx>
 #include <amxmisc>
 #include <cstrike>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new const PluginName[] = "Restrict Weapons";
 
@@ -81,7 +82,7 @@ new const ItemsInfos[][][MenuItem] =
 	{ ITEM(PRIAMMO), ITEM(SECAMMO) , ITEM_NONE      , ITEM_NONE      , ITEM_NONE         , ITEM_NONE      , ITEM_NONE , ITEM_NONE    },
 };
 
-
+new taskid_save_config_g
 public plugin_init()
 {
 	register_plugin(PluginName, AMXX_VERSION_STR, "AMXX Dev Team");
@@ -95,6 +96,7 @@ public plugin_init()
 	CvarPointerAllowMapSettings     = register_cvar("amx_restrmapsettings", "0");
 	CvarPointerRestrictedWeapons    = register_cvar("amx_restrweapons"    , RestrictedBotWeapons);
 	CvarPointerRestrictedEquipAmmos = register_cvar("amx_restrequipammo"  , RestrictedBotEquipAmmos);
+	taskid_save_config_g = allocate_typed_task_id(generic_task)
 }
 
 public OnConfigsExecuted()
@@ -295,11 +297,9 @@ public blockcommand(const id) // Might be used by others plugins, so keep this f
 		// amx_restrmapsettings cvar value read after per-map configs are processed. Postponing the saving a little.
 		if (!ConfigsExecuted)
 		{
-			const taskId = 424242;
-
-			if (!task_exists(taskId))
+			if (!task_exists(taskid_save_config_g))
 			{
-				set_task(0.1, "@Task_SaveConfig", taskId);
+				set_task(0.1, "@Task_SaveConfig", taskid_save_config_g);
 			}
 
 			return PLUGIN_HANDLED;

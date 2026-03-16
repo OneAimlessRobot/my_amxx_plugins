@@ -13,7 +13,8 @@ arcticPredator_explode_maxdamage 250
 
 
 #include "../my_include/superheromod.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
@@ -125,9 +126,6 @@ public plugin_precache()
 	spr_laser = precache_model("sprites/laserbeam.spr")
 	spr_laser_impact = precache_model("sprites/zerogxplode.spr")
 	blast_shroom = precache_model("sprites/mushroom.spr")
-	smoke = precache_model("sprites/steam1.spr")
-	white = precache_model("sprites/shockwave.spr")
-	fire = precache_model("sprites/zerogxplode.spr")
 	g_spriteBlood = precache_model("sprites/blood.spr")
 	g_spriteBldSpray = precache_model("sprites/bloodspray.spr")
 }
@@ -581,64 +579,6 @@ if ( gHasArcPredPowers[attacker] && weapon == CSW_SCOUT && is_user_alive(id) && 
 return PLUGIN_CONTINUE
 }
 
-//-----------------------------------------------------------------------------------------------
-public explode( vec1[3] )
-{
-// blast circles
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-write_byte( 21 )
-write_coord(vec1[0])
-write_coord(vec1[1])
-write_coord(vec1[2] + 16)
-write_coord(vec1[0])
-write_coord(vec1[1])
-write_coord(vec1[2] + 1936)
-write_short( white )
-write_byte( 0 ) // startframe
-write_byte( 0 ) // framerate
-write_byte( 2 ) // life 2
-write_byte( 60 ) // width 16
-write_byte( 0 ) // noise
-write_byte( 20 ) // r
-write_byte( 20 ) // g
-write_byte( 250 ) // b
-write_byte( 255 ) //brightness
-write_byte( 0 ) // speed
-message_end()
-
-//Explosion2
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte( 12 )
-write_coord(vec1[0])
-write_coord(vec1[1])
-write_coord(vec1[2])
-write_byte( 188 ) // byte (scale in 0.1's) 188
-write_byte( 10 ) // byte (framerate)
-message_end()
-
-//TE_Explosion
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-write_byte( 3 )
-write_coord(vec1[0] + random_num( -100, 100 ))
-write_coord(vec1[1] + random_num( -100, 100 ))
-write_coord(vec1[2]+ random_num( -50, 50 ))
-write_short( fire )
-write_byte(  random_num(0,20) + 20  ) // byte (scale in 0.1's) 188
-write_byte( 12 ) // byte (framerate)
-write_byte( 0 ) // byte flags
-message_end()
-
-//Smoke
-message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-write_byte( 5 ) // 5
-write_coord(vec1[0] + random_num( -100, 100 ))
-write_coord(vec1[1] + random_num( -100, 100 ))
-write_coord(vec1[2] + random_num( -50, 50 ))
-write_short( smoke )
-write_byte( 60 )  // 2
-write_byte( 10 )  // 10
-message_end()
-}
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
@@ -655,7 +595,7 @@ new FFOn = get_cvar_num("mp_friendlyfire")
 new origin[3], origin1[3]
 get_user_origin(id,origin)
 
-explode(origin) // blowup even if dead
+explode_fx(origin,damradius) // blowup even if dead
 
 for(new a = 1; a <= SH_MAXSLOTS; a++) {
 	if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn) &&(id!=a)) {

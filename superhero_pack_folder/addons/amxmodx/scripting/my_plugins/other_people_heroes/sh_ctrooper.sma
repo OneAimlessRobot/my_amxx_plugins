@@ -27,7 +27,8 @@
  */
 
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
  // GLOBAL VARIABLES
  new gHeroName[]="Clone Trooper"
@@ -36,7 +37,7 @@
  new gTaskID
  new gCTrooperSound[]="items/suitchargeno1.wav"
  new lastammo[33]
- new spriteindex
+
  //----------------------------------------------------------------------------------------------
  public plugin_init()
  {
@@ -49,7 +50,6 @@
 	register_cvar("ctrooper_ak47mult", "2.0")
 	register_cvar("ctrooper_health", "150")
 	register_cvar("ctrooper_armor", "150")
-	register_cvar("ctrooper_teamcolored", "1")
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	shCreateHero(gHeroName, "CTrooper", "Become a Clone Trooper! - Cooler Player Model and Gun and laser bullets", false, "CTrooper_level" )
 
@@ -72,8 +72,6 @@
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
  {
-	smoke = precache_model("sprites/steam1.spr")
-	spriteindex = precache_model("sprites/laserbeam.spr")
 	precache_sound("weapons/electro5.wav")
 	precache_model("models/player/clonetrooper/clonetrooper.mdl")
 	precache_model("models/shmod/clonetrooper_v_ak47.mdl")
@@ -127,78 +125,14 @@
 	if ((lastammo[id] > clip) && (wpnid == CSW_AK47) ) {
 
 		new vec1[3], vec2[3]
+		new Float:fvec1[3], Float:fvec2[3]
 		get_user_origin(id, vec1, 1) // origin; your camera point.
 		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
 
-		emit_sound(id,CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		IVecFVec(vec1,fvec1)
+		IVecFVec(vec2,fvec2)
 
-		// DELIGHT
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte( 27 )
-		write_coord( vec1[0] ) //pos
-		write_coord( vec1[1] )
-		write_coord( vec1[2] )
-		write_byte( 10 )
-		write_byte( 250 ) // r, g, b
-		write_byte( 0 ) // r, g, b
-		write_byte( 0 ) // r, g, b
-		write_byte( 2 ) // life
-		write_byte( 1 ) // decay
-		message_end()
-
-		//BEAMENTPOINTS
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte (0)     //TE_BEAMENTPOINTS 0
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short(spriteindex)
-		write_byte(1) // framestart
-		write_byte(5) // framerate
-		write_byte(2) // life
-		write_byte(10) // width
-		write_byte(0) // noise
-		if (!get_cvar_num("ctrooper_teamcolored")) {
-			write_byte( 0 )     // r, g, b
-			write_byte( 250 )       // r, g, b
-			write_byte( 0 )       // r, g, b
-		}
-		// Terrorist
-		else if (get_user_team(id)==1) {
-			write_byte( 255 )     // r, g, b
-			write_byte( 0 )       // r, g, b
-			write_byte( 0 )       // r, g, b
-		}
-		// Counter-Terrorist
-		else {
-			write_byte( 0 )      // r, g, b
-			write_byte( 255 )      // r, g, b
-			write_byte( 0 )    // r, g, b
-		}
-		write_byte(200) // brightness
-		write_byte(200) // speed
-		message_end()
-
-		//Sparks
-		message_begin( MSG_PVS, SVC_TEMPENTITY)
-		write_byte(9)
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		message_end()
-		//Smoke
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte(5) // 5
-		write_coord(vec2[0])
-		write_coord(vec2[1])
-		write_coord(vec2[2])
-		write_short(smoke)
-		write_byte(22)  // 10
-		write_byte(10)  // 10
-		message_end()
+		laser_line(id,fvec1,fvec2,false,_,_,true)
 	}
 
 	lastammo[id] = clip

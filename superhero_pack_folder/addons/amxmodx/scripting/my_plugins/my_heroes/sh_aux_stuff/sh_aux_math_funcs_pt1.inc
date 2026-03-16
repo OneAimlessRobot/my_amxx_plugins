@@ -1,9 +1,64 @@
-#if defined sh_aux_funcs_pt2
+#if defined sh_aux_math_funcs_pt1
   #endinput
 #endif
-#define sh_aux_funcs_pt2
-#include "sh_aux_inc.inc"
-#define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
+#define sh_aux_math_funcs_pt1
+
+stock multiply_3d_vector_by_scalar(Float:in_vec[3],Float:scalar,Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=in_vec[i]*scalar
+			
+	}
+
+}
+stock add_3d_vectors(Float:a_vec[3],Float:b_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=a_vec[i]+b_vec[i]
+			
+	}
+
+}
+stock sub_3d_vectors(Float:a_vec[3],Float:b_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=a_vec[i]-b_vec[i]
+			
+	}
+
+}
+stock mirror_3d_vec(Float:in_vec[3],Float:out_vec[3]){
+	
+	for(new i=0;i<3;i++){
+		out_vec[i]=in_vec[i]*1.0
+			
+	}
+
+}
+
+stock Float:dot_product( Float:input_a[3], Float:input_b[3], vec_size = 3) {
+	
+	new Float:result = 0.0;
+	for (new i = 0; i < vec_size; i++) {
+		
+		result += input_a[i] * input_b[i];
+		
+	}
+	return result;
+	
+}
+
+stock Float:angle_between_vectors_radians(Float:input_a[3], Float:input_b[3], vec_size = 3) {
+	
+	
+	new Float:dot_product_between_vecs = dot_product(input_a, input_b, vec_size);
+	new Float:vector_len_product = VecLength(input_a) * VecLength(input_b);
+	new Float:before_last = (dot_product_between_vecs / (vector_len_product));
+	before_last = floatclamp(before_last, -1.0, 1.0);
+	new Float:angle_between_input_a_and_input_b = floatacos(before_last,anglemode:radian);
+	return angle_between_input_a_and_input_b;
+	
+}
 
 
 stock Float:cross_product(Float:result[3], Float:input_a[3], Float:input_b[3]) {
@@ -32,34 +87,6 @@ stock Float:angle_convert(Float:angle, bool:false_for_degrees_to_radians_true_fo
 	
 }
 
-stock draw_view_cone(player_id, Float:fov_to_contain, Float:distance_limit) {
-	
-	static 
-	Float:origin_a[3], 
-	Float:aimorigin_a[3], 
-	Float:aimorigin_left[3], 
-	Float:aimorigin_right[3], 
-	Float:vec_a[3], 
-	Float:vec_left[3], 
-	Float:vec_right[3];
-	
-	entity_get_vector(player_id, EV_VEC_origin,origin_a)
-	get_player_aim_vector_raw(player_id, vec_a);
-	Float:length_a = vector_len(vec_a, 3);
-	vector_mult(vec_a, vec_a, distance_limit / length_a, 3);
-	fov_to_contain = angle_convert(fov_to_contain, false);
-	rotate_vector3(vec_left, vec_a, -0.5 * (fov_to_contain));
-	rotate_vector3(vec_right, vec_a, 0.5 * (fov_to_contain));
-	add_3d_vectors(vec_a, aimorigin_a,origin_a);
-	add_3d_vectors(vec_right, aimorigin_right,origin_a);
-	add_3d_vectors(vec_left, aimorigin_left,origin_a);
-	
-	aimorigin_a[2] = aimorigin_right[2] = aimorigin_left[2] = origin_a[2];
-	laser_line(player_id, origin_a, aimorigin_a,false);
-	laser_beam(player_id, origin_a, aimorigin_right, false);
-	laser_beam(player_id, origin_a, aimorigin_left, false);
-	
-}
 stock bool:check_in_fov(player_id, player_hit, Float:fov_to_check, Float:distance_to_check, Float:fov_to_store[1]={0.0}) {
 	static Float:origin_a[3], 
 	Float:origin_b[3],
@@ -186,120 +213,4 @@ stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mul
 	velocity_copy[2]=speedz
 	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 
-}
-stock draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM}){
-	new Float:fvec1[3], Float:fvec2[3],vec1[3],vec2[3]
-	get_user_origin(id, vec1, 1) // origin; your camera point.
-	get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
-	IVecFVec(vec1,fvec1)
-	IVecFVec(vec2,fvec2)
-	laser_line(id,fvec1, fvec2,true,color_vector_indices)
-
-}
-
-stock superhero_protected_hud_message(id,const message_text[],string[]="",r=50,g=205,b=50,Float:param1=-1.0,Float:param2=0.40, param3=2, Float:param4=0.02, Float:param5=4.0, Float:param6=0.01, Float:param7=0.1){
-	if(is_user_connected(id)&&!is_user_bot(id)){
-		
-		set_hudmessage(r,g,b,param1,param2,param3,param4,param5,param6,param7)
-		show_hudmessage(id, message_text,string)
-	}
-
-}
-
-stock do_fast_shot(id,wpnid,Float:speed=1.0){
-	
-	if(!client_hittable(id)){
-		return
-	}
-	static Float:N_Speed
-	N_Speed =speed
-	if(N_Speed != 1.0)
-	{
-		static weapon[32],Ent
-		get_weaponname(wpnid,weapon,31)
-		Ent = fm_find_ent_by_owner(-1,weapon,id)
-		if(Ent)
-		{
-			if(pev_valid(Ent)!=2){
-
-				server_print("Hook faulty??!!! attempted to change firing speed of invalid weapon!^n")
-
-			}
-			static Float:Delay,Float:M_Delay
-			Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
-			M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
-			if (Delay > 0.0)
-			{
-				set_pdata_float( Ent, 46, Delay, 4)
-				set_pdata_float( Ent, 47, M_Delay, 4)
-			}
-		}
-	}
-
-}
-
-stock anime_kill_fx(origin[3]){
-
-message_begin(MSG_ALL, SVC_TEMPENTITY) 
-write_byte(10)	// TE_LAVASPLASH 
-write_coord(origin[0]) 
-write_coord(origin[1]) 
-write_coord(origin[2]-26) 
-message_end() 
-
-}
-stock Float:get_entity_velocity(ent){
-	if(pev_valid(ent)!=2){
-
-		return -1.0
-	}
-
-	new Float:velocity_vector[3]
-	pev(ent,pev_velocity,velocity_vector)
-	return vector_length(velocity_vector)
-
-
-}
-stock Float:kill_all_entity_beams(ent_id){
-	if(pev_valid(ent_id)==2){
-
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY) //message begin
-		write_byte(TE_KILLBEAM)
-		write_short(ent_id) // entity
-		message_end()
-	}
-}
-
-
-stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_UNASSIGNED,&CsTeams:stored_attacker_team=CS_TEAM_UNASSIGNED){
-
-	if(!is_user_connected(id)||!is_user_connected(attacker)){
-		return false
-	}
-	stored_id_team=cs_get_user_team(attacker)
-	stored_attacker_team=cs_get_user_team(id)
-
-	return (stored_id_team==stored_attacker_team)&&( id != attacker )
-
-
-}
-stock sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage){
-
-	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
-	if(sh_clients_are_same_team(victim,attacker)) return
-
-	if(!is_user_bot(attacker)){
-		if ( att_bool&&(attacker!=victim)) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, attacker_dmg_hud_msg_sync, "%d", damage)
-		}
-	}
-
-	
-	if(!is_user_bot(victim)){
-		if ( vic_bool) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, victim_dmg_hud_msg_sync, "%d", damage)
-		}
-	}
 }

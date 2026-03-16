@@ -2,6 +2,8 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
@@ -47,8 +49,6 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
-	
-	g_msgFade = get_user_msgid("ScreenFade");
 	
 }
 
@@ -120,7 +120,7 @@ public plugin_precache(){
 	precache_model(jp_mdl)
 	engfunc(EngFunc_PrecacheSound,  jp_jump)
 	engfunc(EngFunc_PrecacheSound,  jp_fly)
-	precache_explosion_fx()
+	
 	
 	
 }
@@ -217,7 +217,7 @@ public client_PostThink(id) {
 			g_graciete_leaped[id]=false
 			if(g_graciete_power_landing[id]){
 				
-				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],_, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
+				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,_, _,default_explode_upward_shift)
 				g_graciete_land_power[id]=0.0
 				
 			}

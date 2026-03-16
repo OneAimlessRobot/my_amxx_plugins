@@ -4,7 +4,8 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define PLUGIN "Superhero yakui pt2 pt1"
@@ -38,7 +39,7 @@ register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 public plugin_precache(){
 
 
-	precache_explosion_fx()
+	
 
 }
 public plugin_natives(){

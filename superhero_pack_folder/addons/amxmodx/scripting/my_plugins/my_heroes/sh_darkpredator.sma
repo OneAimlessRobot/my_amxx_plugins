@@ -23,7 +23,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 */
 
 #include "../my_include/superheromod.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 

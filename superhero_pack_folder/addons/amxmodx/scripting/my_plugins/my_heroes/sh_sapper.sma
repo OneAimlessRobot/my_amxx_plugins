@@ -4,7 +4,6 @@
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
@@ -38,7 +37,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
 	sapper_set_hero_id(gHeroID)
 	register_event("DeathMsg","death","a")
-	g_msgFade = get_user_msgid("ScreenFade");
 	
 	register_srvcmd("sapper_init", "sapper_init")
 	shRegHeroInit(gHeroName, "sapper_init")

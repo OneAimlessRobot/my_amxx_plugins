@@ -25,7 +25,7 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 #define MARKSMAN_TASKID 12812
 // GLOBAL VARIABLES
@@ -237,7 +237,7 @@ public plugin_precache()
 			engfunc(EngFunc_PrecacheSound, g_dragunovSounds[i])
 			console_print(0, "Sound loaded: ^"%s^"", g_dragunovSounds[i])
 	}
-	precache_explosion_fx()
+	
 }
 public client_disconnected(id){
 

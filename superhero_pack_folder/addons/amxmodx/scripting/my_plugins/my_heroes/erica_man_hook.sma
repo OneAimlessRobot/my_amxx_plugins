@@ -4,6 +4,8 @@
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
@@ -431,7 +433,7 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,man_hook_sounds[i] );
 	
 	}
-	precache_explosion_fx()
+	
 
 }
 

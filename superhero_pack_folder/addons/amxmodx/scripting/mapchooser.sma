@@ -13,6 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 #define SELECTMAPS  5
 
@@ -28,6 +29,8 @@ new g_lastMap[32]
 new g_coloredMenus
 new bool:g_selected = false
 
+new taskid_next_map_g //987456
+new taskid_check_votes_g //0 
 public plugin_init()
 {
 	register_plugin("Nextmap Chooser", AMXX_VERSION_STR, "AMXX Dev Team")
@@ -48,6 +51,8 @@ public plugin_init()
 
 	get_localinfo("lastMap", g_lastMap, charsmax(g_lastMap))
 	set_localinfo("lastMap", "")
+	taskid_next_map_g = allocate_typed_task_id(generic_task)
+	taskid_check_votes_g = allocate_typed_task_id(generic_task)
 
 	new maps_ini_file[64]
 	get_configsdir(maps_ini_file, charsmax(maps_ini_file));
@@ -56,7 +61,7 @@ public plugin_init()
 	if (!file_exists(maps_ini_file))
 		get_cvar_string("mapcyclefile", maps_ini_file, charsmax(maps_ini_file))
 	if (loadSettings(maps_ini_file))
-		set_task(15.0, "voteNextmap", 987456, "", 0, "b")
+		set_task(15.0, "voteNextmap", taskid_next_map_g, "", 0, "b")
 
 	g_coloredMenus = colored_menus()
 	
@@ -200,7 +205,7 @@ public voteNextmap()
 	
 	format(MenuName, charsmax(MenuName), "%L", "en", "CHOOSE_NEXTM")
 	show_menu(0, mkeys, menu, 15, MenuName)
-	set_task(15.0, "checkVotes")
+	set_task(15.0, "checkVotes",taskid_check_votes_g)
 	client_print(0, print_chat, "%L", LANG_SERVER, "TIME_CHOOSE")
 	client_cmd(0, "spk Gman/Gman_Choose2")
 	log_amx("Vote: Voting for the nextmap started")

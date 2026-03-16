@@ -11,7 +11,8 @@
 */
 
 #include "../my_include/superheromod.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 
 
@@ -254,7 +255,7 @@ public plugin_precache()
 	else {
 		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", gHeroName,	Model_Player)
 	}
-	precache_explosion_fx()
+	
 	precache_sound("weapons/zoom.wav")
 }
 //----------------------------------------------------------------------------------------------

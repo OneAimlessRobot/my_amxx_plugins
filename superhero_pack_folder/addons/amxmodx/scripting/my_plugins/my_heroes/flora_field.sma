@@ -5,11 +5,15 @@
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
-#define PLUGIN "Superhero flora shield funcs"
+
+#define PLUGIN "Superhero flora field funcs"
 #define VERSION "1.0.0"
 #define AUTHOR "NULLTick"
 #define Struct				enum
+
+
 #define KILL_BEAM_TASKID 81292373
 stock const  FLORA_HEAL_GLOWING_ON=0
 stock Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
@@ -515,7 +519,7 @@ public plugin_precache(){
 	precache_sound(FIELD_TELEPORT)
 	precache_sound(FIELD_HEAL)
 	precache_sound(FIELD_CHARGING)
-	precache_explosion_fx()
+	
 	
 	
 }

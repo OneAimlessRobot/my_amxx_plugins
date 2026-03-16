@@ -6,6 +6,7 @@
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
@@ -78,7 +79,6 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention and get ++ powerful!", false, "erica_level" )
 	tranq_set_hero_id(gHeroID)
-	g_msgFade = get_user_msgid("ScreenFade");
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("erica_init", "erica_init")
@@ -468,7 +468,7 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,erica_knife_sounds[i] );
 	
 	}
-	precache_explosion_fx()
+	
 		
 }
 public death()

@@ -1,7 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
@@ -309,7 +309,7 @@ return PLUGIN_CONTINUE
 
 public plugin_precache(){
 	
-	precache_explosion_fx()
+	
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 }

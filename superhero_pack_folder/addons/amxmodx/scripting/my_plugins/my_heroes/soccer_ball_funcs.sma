@@ -2,6 +2,9 @@
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include <xs>
 
 #define PLUGIN "Superhero roberto mk2 pt2"
@@ -49,12 +52,6 @@ public plugin_natives(){
 	
 }
 
-client_isnt_hitter(gatling_user){
-	
-	
-	return (!roberto_get_has_roberto(gatling_user)||!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-	
-}
 
 public _clear_balls(iPlugin,iParams){
 	
@@ -119,7 +116,7 @@ public ball_in_the_face(ball,id,vic)
 		set_pev(vic, pev_velocity, {0.0, 0.0, 200.0})
 		
 		// Then push them back in x seconds after lift and do some damage
-		set_task(0.1, "move_enemy", 0, parm, 5)
+		move_enemy(parm)
 	}
 }
 public vexd_pfntouch(pToucher, pTouched){
@@ -273,7 +270,7 @@ public ball_think(ent)
 		return;
 	}
 	new id=pev(ent,pev_iuser1)
-	if ( client_isnt_hitter(id )) {
+	if ( !client_hittable(id,roberto_get_has_roberto(id) )) {
 		set_task(0.1,"remove_ball",ent+BALL_REM_TASKID)
 		return
 	}
@@ -339,48 +336,7 @@ public plugin_precache()
 	precache_sound(kicked)
 	precache_sound(gotball)
 	precache_sound(cheers)
-	precache_explosion_fx()
 	
 	
-}
-stock shoteffects(Float:Pos[3],ent){
-	if(client_isnt_hitter(ent)) return
-	new Float:vOrigin[3]
-	pev(ent, pev_origin, vOrigin)
-	
-	new Float:vTraceDirection[3], Float:vTraceEnd[3],Float:vNormal[3]
-	
-	velocity_by_aim(ent, 64, vTraceDirection)
-	vTraceEnd[0] = vTraceDirection[0] + vOrigin[0]
-	vTraceEnd[1] = vTraceDirection[1] + vOrigin[1]
-	vTraceEnd[2] = vTraceDirection[2] + vOrigin[2]
-	
-	new tr = 0
-	engfunc(EngFunc_TraceLine, vOrigin, vTraceEnd, 0, ent, tr)
-	get_tr2(tr, TR_vecPlaneNormal, vNormal)
-	new iPos[3],iTD[3]
-	FVecIVec(Pos,iPos)
-	FVecIVec(vTraceDirection,iTD)
-	
-	message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
-	write_byte(TE_BEAMTORUS)
-	write_coord(iPos[0])
-	write_coord(iPos[1])
-	write_coord(iPos[2])
-	write_coord(iTD[0])
-	write_coord(iTD[1])
-	write_coord(iTD[2])
-	write_short(sprite1)
-	write_byte(1)
-	write_byte(5)
-	write_byte(5)
-	write_byte(14)
-	write_byte(1)
-	write_byte(255)
-	write_byte(255)
-	write_byte(255)
-	write_byte(255)
-	write_byte(1)
-	message_end()
 	
 }

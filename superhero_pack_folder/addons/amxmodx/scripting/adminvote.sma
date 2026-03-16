@@ -13,7 +13,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
-
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new g_Answer[128]
 new g_optionName[4][64]
@@ -28,6 +28,9 @@ new g_execLen
 new bool:g_execResult
 new Float:g_voteRatio
 
+new taskid_autorefuse_g //4545454
+new taskid_checkvotes_g	//99889988
+new taskid_delayexec_g //0 delayedExec
 public plugin_init()
 {
 	register_plugin("Admin Votes", AMXX_VERSION_STR, "AMXX Dev Team")
@@ -47,6 +50,9 @@ public plugin_init()
 	register_concmd("amx_cancelvote", "cmdCancelVote", ADMIN_VOTE, "- cancels last vote")
 	
 	g_coloredMenus = colored_menus()
+	taskid_autorefuse_g = allocate_typed_task_id(generic_task)
+	taskid_checkvotes_g = allocate_typed_task_id(generic_task)
+	taskid_delayexec_g = allocate_typed_task_id(generic_task)
 }
 
 public cmdCancelVote(id, level, cid)
@@ -54,7 +60,7 @@ public cmdCancelVote(id, level, cid)
 	if (!cmd_access(id, level, cid, 0))
 		return PLUGIN_HANDLED
 
-	if (task_exists(99889988, 1))
+	if (task_exists(taskid_checkvotes_g, 1))
 	{
 		new authid[32], name[MAX_NAME_LENGTH]
 		
@@ -78,7 +84,7 @@ public cmdCancelVote(id, level, cid)
 		
 		console_print(id, "%L", id, "VOTING_CANC")
 		client_print(0,print_chat,"%L",LANG_PLAYER,"VOTING_CANC")
-		remove_task(99889988, 1)
+		remove_task(taskid_checkvotes_g, 1)
 		set_cvar_float("amx_last_voting", get_gametime())
 	}
 	else
@@ -98,13 +104,13 @@ public autoRefuse()
 
 public actionResult(id, key)
 {
-	remove_task(4545454)
+	remove_task(taskid_autorefuse_g)
 	
 	switch (key)
 	{
 		case 0:
 		{
-			set_task(2.0, "delayedExec", 0, g_Execute, g_execLen)
+			set_task(2.0, "delayedExec",taskid_delayexec_g, g_Execute, g_execLen)
 			log_amx("Vote: %L", "en", "RES_ACCEPTED")
 			client_print(0, print_chat, "%L", LANG_PLAYER, "RES_ACCEPTED")
 		}
@@ -171,10 +177,10 @@ public checkVotes()
 			len += format(menuBody[len], charsmax(menuBody) - len, g_coloredMenus ? "\y%L^n\w" : "%L^n", g_voteCaller, "WANT_CONTINUE")
 			format(menuBody[len], charsmax(menuBody) - len, "^n1. %s^n2. %s", lYes, lNo)
 			show_menu(g_voteCaller, 0x03, menuBody, 10, "The result: ")
-			set_task(10.0, "autoRefuse", 4545454)
+			set_task(10.0, "autoRefuse", taskid_autorefuse_g)
 		}
 		else
-			set_task(2.0, "delayedExec", 0, g_Execute, g_execLen)
+			set_task(2.0, "delayedExec", taskid_delayexec_g, g_Execute, g_execLen)
 	}
 	
 	new lVotingSuccess[32]
@@ -315,7 +321,7 @@ public cmdVoteMap(id, level, cid)
 	g_voteRatio = get_cvar_float("amx_votemap_ratio")
 	g_Answer = "changelevel %s"
 	show_menu(0, keys, menu_msg, floatround(vote_time), (g_validMaps > 1) ? "Choose map: " : "Change map to ")
-	set_task(vote_time, "checkVotes", 99889988)
+	set_task(vote_time, "checkVotes", taskid_checkvotes_g)
 	g_voteCaller = id
 	console_print(id, "%L", id, "VOTING_STARTED")
 	g_voteCount = {0, 0, 0, 0}
@@ -410,7 +416,7 @@ public cmdVote(id, level, cid)
 	replace_all(quest, charsmax(quest), "%", "");
 	format(g_Answer, charsmax(g_Answer), "%s - ^"%%s^"", quest)
 	show_menu(0, keys, menu_msg, floatround(vote_time), "Vote: ")
-	set_task(vote_time, "checkVotes", 99889988)
+	set_task(vote_time, "checkVotes", taskid_checkvotes_g)
 	g_voteCaller = id
 	console_print(id, "%L", id, "VOTING_STARTED")
 	g_voteCount = {0, 0, 0, 0}
@@ -540,7 +546,7 @@ public cmdVoteKickBan(id, level, cid)
 		g_Answer = "kick #%s";
 	}
 	show_menu(0, keys, menu_msg, floatround(vote_time), voteban ? "Ban " : "Kick ")
-	set_task(vote_time, "checkVotes", 99889988)
+	set_task(vote_time, "checkVotes", taskid_checkvotes_g)
 	g_voteCaller = id
 	console_print(id, "%L", id, "VOTING_STARTED")
 	g_voteCount = {0, 0, 0, 0}

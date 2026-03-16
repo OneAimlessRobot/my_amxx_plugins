@@ -1,7 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include <fakemeta_util>
@@ -351,25 +352,7 @@ public darttrail(parm[])
 	new pid = parm[0]
 	if (pid)
 	{
-		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-		write_byte( TE_BEAMFOLLOW )
-		write_short(pid) // entity
-		write_short(m_trail)  // model
-		write_byte( 10 )       // life
-		write_byte( 5 )        // width
-		if(!dart_hurts[pid]){
-			write_byte(sleep_color[0])			// r, g, b
-			write_byte(sleep_color[1])		// r, g, b
-			write_byte(sleep_color[2])			// r, g, b
-			write_byte(sleep_color[3]) // brightness
-		}
-		else {
-			write_byte(rage_sleep_color[0])			// r, g, b
-			write_byte(rage_sleep_color[1])		// r, g, b
-			write_byte(rage_sleep_color[2])			// r, g, b
-			write_byte(rage_sleep_color[3]) // brightness
-		}
-		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+		trail(pid,RED,3,5)
 	}
 }
 
@@ -511,6 +494,6 @@ public plugin_precache()
 	precache_model("models/shell.mdl")
 	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
-	precache_explosion_fx()
+	
 	
 }

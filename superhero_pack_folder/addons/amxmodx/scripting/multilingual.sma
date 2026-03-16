@@ -58,6 +58,7 @@ public client_disconnected(id)
 
 public dispInfo(id)
 {
+	id-=the_taskid
 	client_print(id, print_chat, "%L", id, "TYPE_LANGMENU")
 }
 

@@ -5,6 +5,8 @@
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -74,7 +76,6 @@ public plugin_init()
 	
 	
 	register_forward(FM_CmdStart, "OnCmdStart")
-	g_msgFade = get_user_msgid("ScreenFade");
 	arrayset(g_ester_is_reborn_mode,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_is_glowing,0,SH_MAXSLOTS+1)
@@ -325,7 +326,7 @@ public OnCmdStart(id, uc_handle, seed)
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_explosion_fx()
+	
 	engfunc(EngFunc_PrecacheSound,FLIGHT_HUM );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_POWER );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
@@ -604,7 +605,7 @@ public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 	ester_remove_statuses(id,0,1,0)
-	explosion_player(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,ester_explosion_ignore_user, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
+	explosion_player(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude, ester_explosion_ignore_user, _,default_explode_upward_shift)
 	
 		
 	
@@ -655,8 +656,7 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		
 		killer_speed=vector_length(killer_velocity)
 		
-		damage_player(ester_get_hero_id(),killer,killer,victim,0.1,ester_fly_knock_enemies_force,1,(0.2*killer_speed))
-		damage_player(ester_get_hero_id(),killer,killer,killer,0.1,ester_fly_knock_enemies_force,0,(0.5*killer_speed))
+		explosion_player(ester_get_hero_id(),killer,150.0,(0.2*killer_speed),ester_fly_knock_enemies_force,1)
 		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
 		multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)

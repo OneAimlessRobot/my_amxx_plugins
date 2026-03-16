@@ -183,6 +183,8 @@ ProcessHelp(id, start_argindex, bool:do_search, const main_command[], const sear
 
 @Task_DisplayMessage(id)
 {
+
+	id-=the_taskid
 	client_print(id, print_chat, "%l", "TYPE_HELP", HelpCommand, SearchCommand);
 
 	if (CvarTimeLimit > 0.0)

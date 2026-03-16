@@ -3,7 +3,8 @@
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
@@ -41,7 +42,6 @@ public plugin_init(){
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
-	g_msgFade = get_user_msgid("ScreenFade");
 }
 public plugin_natives(){
 
@@ -313,7 +313,13 @@ public lara_spear_decide_func(id){
 		case spear_mode_blast:{
 
 			
-			explosion_player(spear_get_hero_id(),id,get_charge_index_from_id(id)*SPEAR_SMASH_EXPLODE_RADIUS,get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE), 1,get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,_,default_explode_upward_shift)
+			explosion_player(spear_get_hero_id(),id,
+							get_charge_index_from_id(id)*SPEAR_SMASH_EXPLODE_RADIUS,
+							get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE),
+							get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,
+							1,
+							_,
+							default_explode_upward_shift)
 			spear_loaded[id] = false
 			new parm[1]
 			parm[0]=id
@@ -439,7 +445,7 @@ public remove_spear(id_spear){
 public plugin_precache()
 {
 
-	precache_explosion_fx()
+	
 	precache_model(SPEAR_W_MODEL)
 	engfunc(EngFunc_PrecacheSound, SPEAR_HIT_SFX)
 	engfunc(EngFunc_PrecacheSound, SPEAR_THROW_SFX)

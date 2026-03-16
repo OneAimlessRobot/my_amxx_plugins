@@ -10,11 +10,12 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
-#pragma dynamic 64000
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -56,7 +57,6 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	
-	g_msgFade = get_user_msgid("ScreenFade");
 	register_srvcmd("yandere_init", "yandere_init")
 	shRegHeroInit(gHeroName, "yandere_init")
 	register_srvcmd("yandere_kd", "yandere_kd")
@@ -533,6 +533,7 @@ else if(gTransTimer[id]!=trans_time){
 	gTransTimer[id]=trans_time
 }
 if(gSuperAngry[id]&&client_hittable(id)){
+	gTransTimerStarted[id]=false
 	yandere_unmorph(id+YANDERE_MORPH_TASKID)
 	yandere_model(id)
 	BlowUp(id)
@@ -780,7 +781,7 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,yandere_shotgun_sounds[i] );
 	
 	}
-	precache_explosion_fx()
+	
 	
 }
 
@@ -1031,7 +1032,7 @@ public BlowUp(id)
 	get_user_name(id, name, 31)
 
 	// blowup even if dead
-	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,1, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
+	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,default_explode_knock_force_magnitude,1,_,default_explode_upward_shift)
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
 		if ( is_user_alive(a) && (a != id )) {
 

@@ -3,7 +3,8 @@
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
 
@@ -340,7 +341,7 @@ remove_entity(id_chaff)
 }
 public plugin_precache()
 {
-precache_explosion_fx()
+
 precache_sound("ambience/particle_suck2.wav")
 precache_model("models/w_smokegrenade.mdl")
 engfunc(EngFunc_PrecacheSound, CHAFF_BOUNCE_SFX)

@@ -7,6 +7,8 @@
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -33,7 +35,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_bomb_dmg", "5")
 	register_cvar("yandere_jetplane_bomb_ammo", "5")
 	register_forward(FM_CmdStart, "CmdStart");
-	g_msgFade = get_user_msgid("ScreenFade");
 
 
 
@@ -245,7 +246,7 @@ public plugin_precache()
 
 	precache_model( BOMB_MODEL );
 		
-	precache_explosion_fx()
+	
 	precache_sound("ambience/particle_suck2.wav")
 	engfunc(EngFunc_PrecacheSound,BOMB_EXPLODE_SOUND)
 	

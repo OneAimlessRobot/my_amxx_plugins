@@ -12,6 +12,7 @@
 //
 
 #include <amxmodx>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 // WARNING: If you comment this line make sure
 // that in your mapcycle file maps don't repeat.
@@ -27,6 +28,8 @@ new g_changeMapCalled;
 // pcvars
 new g_mp_friendlyfire, g_mp_chattime
 new g_amx_nextmap
+
+new taskid_delaychange_g
 
 public plugin_init()
 {
@@ -62,6 +65,7 @@ public plugin_init()
 	set_pcvar_string(g_amx_nextmap, g_nextMap)
 	formatex(szString, charsmax(szString), "%s %d", g_mapCycle, g_pos)	// save lastmapcycle settings
 	set_localinfo("lastmapcycle", szString)
+	taskid_delaychange_g = allocate_typed_task_id(generic_task)
 }
 
 getNextMapName(szArg[], iMax)
@@ -115,7 +119,7 @@ public changeMap()
 		g_changeMapCalled = true;
 	}
 	new len = getNextMapName(string, charsmax(string)) + 1
-	set_task(chattime, "delayedChange", 0, string, len)	// change with 1.5 sec. delay
+	set_task(chattime, "delayedChange", taskid_delaychange_g, string, len)	// change with 1.5 sec. delay
 }
 
 new g_warning[] = "WARNING: Couldn't find a valid map or the file doesn't exist (file ^"%s^")"

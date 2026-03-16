@@ -4,7 +4,9 @@
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -81,7 +83,6 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("DeathMsg","death","a")
 	
-	g_msgFade = get_user_msgid("ScreenFade");
 	register_srvcmd("ester_init", "ester_init")
 	shRegHeroInit(gHeroName, "ester_init")
 	register_srvcmd("ester_kd", "ester_kd")
@@ -526,7 +527,7 @@ public Ester_revenge_loop(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 			}
-			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),1, default_explode_knock_force_magnitude,_,default_explode_upward_shift)
+			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,1, _,default_explode_upward_shift)
 			reset_status(id)
 			gFinished[id]=true;
 			return
@@ -741,7 +742,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
 	precache_model(PAN_V_MODEL)
 	precache_model(PAN_P_MODEL)
-	precache_explosion_fx()
+	
 	
 }
 

@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
@@ -373,28 +374,16 @@ public bullet_reload(parm[])
 
 bullet_loaded[parm[0]] = true
 }
+
 public bullettrail(parm[])
 {
 	new pid = parm[0]
-	if (!is_valid_ent(pid))
+	if (pid)
 	{
-		return
-	}
-	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( TE_BEAMFOLLOW )
-	write_short(pid) // entity
-	write_short(m_trail)  // model
-	write_byte( 10 )       // life
-	write_byte( 5 )
-	write_byte(LineColorsWithAlpha[WHITE][0])			// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][1])		// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][2])			// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
-	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-	if(client_hittable(parm[1])){
-		//client_print(parm[1],print_console,"Trail update!!!");
+		trail(pid,LTGREEN,3,5)
 	}
 }
+
 public bulletspeed(parm[])
 {
 	new pid = parm[0]
@@ -565,7 +554,7 @@ public remove_bullet(id_bullet){
 }
 public plugin_precache()
 {
-precache_explosion_fx()
+
 precache_model("models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, LENA_L96_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, LENA_L96_WALLHIT_SOUND)

@@ -23,7 +23,6 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
 
 new g_heroName[]="Phoenix"
 new bool:g_hasPhoenix[SH_MAXSLOTS+1]

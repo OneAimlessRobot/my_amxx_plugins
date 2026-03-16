@@ -3,6 +3,7 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 
 #define PLUGIN "Superhero molotov fx"
@@ -17,12 +18,11 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsBurning,false,SH_MAXSLOTS+1)
-	g_msgFade = get_user_msgid("ScreenFade");
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	
 }
 public plugin_precache(){
-	precache_explosion_fx()
+	
 	precache_sound(gSoundBurning)
 	precache_sound(gSoundScream)
 

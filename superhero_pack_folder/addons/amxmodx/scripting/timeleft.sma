@@ -12,9 +12,12 @@
 //
 
 #include <amxmodx>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
+/*
 const TASK_TIMEREMAIN_SHORT = 8648458	// 0.8s repeat task
 const TASK_TIMEREMAIN_LARGE = 34543		// 1.0s repeat task
+*/
 
 // time display flags
 const TD_BOTTOM_WHITE_TEXT = 1			// a - display white text on bottom
@@ -32,6 +35,10 @@ new g_Switch
 new g_amx_time_voice, g_amx_timeleft
 new g_mp_timelimit
 
+new taskid_timeremain_short_g
+new taskid_timeremain_large_g
+
+
 public plugin_init()
 {
 	register_plugin("TimeLeft", AMXX_VERSION_STR, "AMXX Dev Team")
@@ -42,7 +49,10 @@ public plugin_init()
 	register_clcmd("say timeleft", "sayTimeLeft", 0, "- displays timeleft")
 	register_clcmd("say thetime", "sayTheTime", 0, "- displays current time")
 	
-	set_task(0.8, "timeRemain", TASK_TIMEREMAIN_SHORT, "", 0, "b")
+	taskid_timeremain_short_g = allocate_typed_task_id(generic_task)
+	taskid_timeremain_large_g = allocate_typed_task_id(generic_task)
+	
+	set_task(0.8, "timeRemain", taskid_timeremain_short_g, "", 0, "b")
 
 	g_mp_timelimit = get_cvar_pointer("mp_timelimit")
 }
@@ -176,8 +186,8 @@ findDispFormat(_time)
 				if (!g_Switch)
 				{
 					g_CountDown = g_Switch = _time
-					remove_task(TASK_TIMEREMAIN_SHORT)
-					set_task(1.0, "timeRemain", TASK_TIMEREMAIN_LARGE, "", 0, "b")
+					remove_task(taskid_timeremain_short_g)
+					set_task(1.0, "timeRemain", taskid_timeremain_large_g, "", 0, "b")
 				}
 				
 				return i
@@ -226,9 +236,9 @@ public timeRemain(param[])
 	
 	if (g_Switch && gmtm > g_Switch)
 	{
-		remove_task(TASK_TIMEREMAIN_LARGE)
+		remove_task(taskid_timeremain_large_g)
 		g_Switch = 0
-		set_task(0.8, "timeRemain", TASK_TIMEREMAIN_SHORT, "", 0, "b")
+		set_task(0.8, "timeRemain", taskid_timeremain_short_g, "", 0, "b")
 		
 		return
 	}

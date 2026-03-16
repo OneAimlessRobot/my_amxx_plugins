@@ -10,8 +10,6 @@
 #define XO_WEAPON 4
 #define m_pPlayer 41
 
-#define ANTI_LAGG		7
-
 #define MOLLY_BURST_SFX "shmod/erica/molotov/molotov_crack.wav"
 #define MOLLY_FIRE_SFX "shmod/erica/molotov/molotov_fire.wav"
 

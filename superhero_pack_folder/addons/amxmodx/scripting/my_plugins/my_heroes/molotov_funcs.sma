@@ -3,6 +3,8 @@
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
 #include <fakemeta_util>
@@ -41,31 +43,6 @@ public plugin_natives(){
 	register_native( "molly_uncharge_molly","_molly_uncharge_molly",0)
 	
 	
-}
-stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
-
-	iOrigin[2] += random_num(5, 80);
-
-	if (!pev_valid(ent)) {
-		return iOrigin[2];
-	}
-
-	new Float:fOrigin[3];
-	IVecFVec(iOrigin, fOrigin);
-	set_pev(ent, pev_origin, fOrigin);
-	engfunc(EngFunc_DropToFloor, ent);
-
-	if (!skip && !engfunc(EngFunc_EntIsOnFloor, ent)) {
-		if (iRecursion >= ANTI_LAGG) {
-			skip = 1;
-		}
-
-		return ground_z(iOrigin, ent, skip, ++iRecursion);
-	}
-
-	pev(ent, pev_origin, fOrigin);
-
-	return floatround(fOrigin[2]);
 }
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
@@ -353,7 +330,7 @@ remove_entity(id_molly)
 }
 public plugin_precache()
 {
-	precache_explosion_fx()
+	
 
 	precache_model(MOLLY_V_MODEL);
 	precache_model(MOLLY_W_MODEL);

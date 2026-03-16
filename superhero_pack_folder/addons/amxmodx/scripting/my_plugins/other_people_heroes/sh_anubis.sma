@@ -17,7 +17,7 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -50,7 +50,6 @@ public plugin_init()
 
 	gmsgSayText = get_user_msgid("SayText")
 
-	prepare_shero_aux_lib()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

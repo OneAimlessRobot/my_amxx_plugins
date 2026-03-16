@@ -1,7 +1,7 @@
 //Stealth Predator!, Unique Predator that has Invisibility
 
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 /*
 

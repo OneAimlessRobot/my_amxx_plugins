@@ -9,7 +9,8 @@
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 
@@ -62,7 +63,6 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
 	register_forward(FM_Think, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
-	g_msgFade = get_user_msgid("ScreenFade");
 	
 	
 	new const szEntity[ ][ ] = {
@@ -124,7 +124,7 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,JETPLANE_IDLE_SOUND );
 	precache_model(JETPLANE_MODEL)
 	precache_model(JETPLANE_CAMERA_MODEL)
-	precache_explosion_fx()
+	
 	
 	
 }

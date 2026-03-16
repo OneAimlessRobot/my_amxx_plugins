@@ -104,7 +104,7 @@ public actionResult(id, key)
 
 public checkVotes(id)
 {
-	id -= 34567
+	id -= the_taskid_checkvotes_p
 	new num, ppl[MAX_PLAYERS], a = 0
 	
 	get_players(ppl, num, "c")

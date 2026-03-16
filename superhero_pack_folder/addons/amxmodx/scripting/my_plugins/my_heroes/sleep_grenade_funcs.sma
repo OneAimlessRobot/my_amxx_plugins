@@ -1,6 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
@@ -356,7 +358,7 @@ remove_entity(id_sleep_nade)
 }
 public plugin_precache()
 {
-	precache_explosion_fx()
+	
 
 	precache_model(SLEEP_NADE_V_MODEL);
 	precache_model(SLEEP_NADE_W_MODEL);

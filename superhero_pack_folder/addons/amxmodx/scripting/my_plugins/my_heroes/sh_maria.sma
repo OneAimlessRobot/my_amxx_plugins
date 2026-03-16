@@ -2,7 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "maria_riveter_inc/maria_general_inc.inc"
 
@@ -436,6 +436,6 @@ public newRound(id)
 }
 public plugin_precache()
 {
-	precache_explosion_fx()
+	
 	
 }

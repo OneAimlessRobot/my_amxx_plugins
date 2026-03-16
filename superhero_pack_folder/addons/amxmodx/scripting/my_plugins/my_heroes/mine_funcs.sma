@@ -1,6 +1,8 @@
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 
@@ -22,8 +24,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
-	g_msgFade = get_user_msgid("ScreenFade");
 	arrayset(mine_loaded,true,SH_MAXSLOTS+1)
 	arrayset(mine_armed,0,SH_MAXSLOTS+1)
 	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
@@ -463,7 +463,7 @@ while(grenada) {
 }
 public plugin_precache()
 {
-precache_explosion_fx()
+
 precache_model( MINE_WORLD_MDL );
 
 }

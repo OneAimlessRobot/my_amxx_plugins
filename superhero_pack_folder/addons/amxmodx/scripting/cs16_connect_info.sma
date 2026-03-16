@@ -78,7 +78,7 @@ public Show_Info(id)
 	static Name[32]
 	get_user_name(id, Name, charsmax (Name))
 
-	static Stats[8], Body[8]
+	static Stats[STATSX_MAX_STATS], Body[MAX_BODYHITS]
 
 	new RankPos = get_user_stats(id, Stats, Body)
 	new MaxRank = get_statsnum()

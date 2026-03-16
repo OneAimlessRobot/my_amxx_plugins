@@ -1,4 +1,8 @@
 
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
+the_taskid= allocate_typed_task_id(player_task)
+
+
 Currently loaded plugins:
        id  name                    version     author            url                              file         status   
  [  1] 0   Admin Base (SQL)        1.10.0.547  AMXX Dev Team                                      admin.amxx   running no tasks
@@ -15,15 +19,15 @@ Currently loaded plugins:
  [ 12] 11  Admin Chat              1.10.0.547  AMXX Dev Team                                      adminchat.a  running no tasks
  [ 13] 12  Anti Flood              1.10.0.547  AMXX Dev Team                                      antiflood.a  running no tasks
  [ 14] 13  Scrolling Message       1.10.0.547  AMXX Dev Team                                      scrollmsg.a  running TASKS! done
- [ 15] 14  Info. Messages          1.10.0.547  AMXX Dev Team                                      imessage.am  running TASKS!
- [ 16] 15  Admin Votes             1.10.0.547  AMXX Dev Team                                      adminvote.a  running TASKS!
- [ 17] 16  NextMap                 1.10.0.547  AMXX Dev Team                                      nextmap.amx  running TASKS!
- [ 18] 17  Nextmap Chooser         1.10.0.547  AMXX Dev Team                                      mapchooser.  running TASKS!
- [ 19] 18  TimeLeft                1.10.0.547  AMXX Dev Team                                      timeleft.am  running TASKS!
+ [ 15] 14  Info. Messages          1.10.0.547  AMXX Dev Team                                      imessage.am  running TASKS! done
+ [ 16] 15  Admin Votes             1.10.0.547  AMXX Dev Team                                      adminvote.a  running TASKS! done
+ [ 17] 16  NextMap                 1.10.0.547  AMXX Dev Team                                      nextmap.amx  running TASKS! done
+ [ 18] 17  Nextmap Chooser         1.10.0.547  AMXX Dev Team                                      mapchooser.  running TASKS! done
+ [ 19] 18  TimeLeft                1.10.0.547  AMXX Dev Team                                      timeleft.am  running TASKS! done
  [ 20] 19  Pause Plugins           1.10.0.547  AMXX Dev Team                                      pausecfg.am  running no tasks
  [ 21] 20  Stats Configuration     1.10.0.547  AMXX Dev Team                                      statscfg.am  running no tasks
- [ 22] 21  Restrict Weapons        1.10.0.547  AMXX Dev Team                                      restmenu.am  running TASKS!
- [ 23] 22  StatsX                  1.10.0.547  AMXX Dev Team                                      statsx.amxx  running TASKS!
+ [ 22] 21  Restrict Weapons        1.10.0.547  AMXX Dev Team                                      restmenu.am  running TASKS! done
+ [ 23] 22  StatsX                  1.10.0.547  AMXX Dev Team                                      statsx.amxx  running TASKS! 
  [ 24] 23  CS Misc. Stats          1.10.0.547  AMXX Dev Team                                      miscstats.a  running TASKS!
  [ 25] 24  CS Stats Logging        1.10.0.547  AMXX Dev Team                                      stats_loggi  running TASKS!
  [ 26] 25  HLstatsX CE Ingame Plu  1.6.19 (HL  psychonic                                          hlstatsx_co  running no tasks

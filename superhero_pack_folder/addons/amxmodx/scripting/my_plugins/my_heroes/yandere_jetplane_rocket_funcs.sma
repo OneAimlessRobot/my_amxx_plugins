@@ -6,7 +6,9 @@
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -38,8 +40,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "law_think")
-	g_msgFade = get_user_msgid("ScreenFade");
-
 
 
 
@@ -404,7 +404,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,ROCKET_EXPLODE_SOUND)
 	precache_model(P_ROCKET_LAUNCHER_MODEL)
 	engfunc(EngFunc_PrecacheSound, JETPLANE_LAW_FIRE_SOUND)
-	precache_explosion_fx()
+	
 	
 }
 //---------------------------------------------------------------------------------------------- 

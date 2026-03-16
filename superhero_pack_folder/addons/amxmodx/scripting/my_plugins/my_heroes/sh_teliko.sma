@@ -3,7 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -414,7 +414,7 @@ switchmodel(id)
 public plugin_precache()
 {
 
-precache_explosion_fx()
+
 engfunc(EngFunc_PrecacheSound, COUNTER_SHOT_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX) 

@@ -4,6 +4,8 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -300,7 +302,7 @@ public plugin_precache()
 {
 precache_sound(ROCKET_EXPLODE_SFX)
 precache_sound("ambience/particle_suck2.wav")
-precache_explosion_fx()
+
 
 precache_model(GATLING_P_MODEL)
 precache_model(GATLING_V_MODEL)

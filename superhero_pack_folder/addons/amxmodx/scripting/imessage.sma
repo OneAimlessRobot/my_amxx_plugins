@@ -13,6 +13,8 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
+
 
 #define X_POS         -1.0
 #define Y_POS         0.20
@@ -24,6 +26,7 @@ new g_MessagesNum
 new g_Current
 
 new amx_freq_imessage;
+new taskid_g
 
 public plugin_init()
 {
@@ -39,6 +42,7 @@ public plugin_init()
 	get_localinfo("lastinfomsg", lastinfo, charsmax(lastinfo))
 	g_Current = str_to_num(lastinfo)
 	set_localinfo("lastinfomsg", "")
+	taskid_g=allocate_typed_task_id(generic_task)
 }
 
 public infoMessage()
@@ -73,7 +77,7 @@ public infoMessage()
 	new Float:freq_im = get_pcvar_float(amx_freq_imessage);
 	
 	if (freq_im > 0.0)
-		set_task(freq_im, "infoMessage", 12345);
+		set_task(freq_im, "infoMessage", taskid_g);
 }
 
 public setMessage()
@@ -81,7 +85,7 @@ public setMessage()
 
 	new Message[384];
 	
-	remove_task(12345)
+	remove_task( taskid_g)
 	read_argv(1, Message, charsmax(Message))
 	
 	while (replace(Message, charsmax(Message), "\n", "^n")) {}
@@ -106,7 +110,7 @@ public setMessage()
 	ArrayPushArray(g_Values, vals);
 	
 	if (freq_im > 0.0)
-		set_task(freq_im, "infoMessage", 12345)
+		set_task(freq_im, "infoMessage",  taskid_g)
 	
 	return PLUGIN_HANDLED
 }

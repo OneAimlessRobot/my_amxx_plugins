@@ -221,7 +221,7 @@ public client_putinserver(id) {
 	return PLUGIN_CONTINUE;
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) {
 	remove_task(987600 + id);
 	remove_task(127600 + id);
 	if (is_user_bot(id)) {
@@ -1489,7 +1489,7 @@ show_vote_menu(bool:bFirstTime) {
 					continue;	// Ignore comments
 				}
 
-				strbreak(sFullLine, sTagMap, 31, sTagText, 31);	// Split the map name and tag apart
+				argbreak(sFullLine, sTagMap, 31, sTagText, 31);	// Split the map name and tag apart
 
 				if (equali(nmaps[nnextmaps[nmapstoch]], sTagMap)) {
 					format(sMenuOption, 63, "%s [%s]", sMenuOption, sTagText);

@@ -3,7 +3,7 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -647,7 +647,7 @@ public remove_pill(id_pill){
 public plugin_precache()
 {
 	precache_model("models/shell.mdl")
-	precache_explosion_fx()
+	
 	precache_model(GATLING_P_MODEL)
 	precache_model(GATLING_V_MODEL)
 	g_fwid = register_forward(FM_PrecacheEvent, "fwPrecacheEvent", 1)

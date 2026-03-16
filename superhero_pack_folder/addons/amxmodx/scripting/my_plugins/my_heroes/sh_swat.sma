@@ -20,6 +20,8 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 
@@ -52,7 +54,6 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
 
-	g_msgFade = get_user_msgid("ScreenFade");
 	//EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
@@ -237,7 +238,7 @@ public plugin_precache()
 	precache_model(SWAT_M4_P_MODEL )
 	precache_model(SWAT_M4_V_MODEL )
 	precache_model(SWAT_M4_W_MODEL )
-	precache_explosion_fx()
+	
 
 	precache_model("models/rpgrocket.mdl")
 

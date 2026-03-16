@@ -4,6 +4,7 @@
 #include "colt_inc/sh_ethereal.inc"
 #include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 #define ADRIANO_STATS_TASKID 22226
 
@@ -361,5 +362,5 @@ public plugin_precache()
 	precache_model(WORLDMODEL )
 	precache_model(VIEWMODEL )
 	precache_model(WEAPONMODEL )
-	precache_explosion_fx()
+	
 }

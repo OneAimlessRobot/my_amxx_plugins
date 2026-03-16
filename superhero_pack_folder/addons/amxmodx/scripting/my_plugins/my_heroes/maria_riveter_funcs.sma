@@ -1,7 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "maria_riveter_inc/maria_general_inc.inc"
@@ -21,10 +22,6 @@ new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new Float:rivet_launch_pos[MAX_ENTITIES][3];
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
-new test_taskid_var;
-new test_taskid_var2;
-new test_taskid_var3;
-new test_taskid_var4;
 
 //new HamHook:TakeDamage
 public plugin_init(){
@@ -50,12 +47,6 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
-	g_msgFade = get_user_msgid("ScreenFade");
-	test_taskid_var= allocate_typed_task_id(player_task)
-	test_taskid_var2= allocate_typed_task_id(entity_task)
-	test_taskid_var3= allocate_typed_task_id(entity_task)
-	test_taskid_var4= allocate_typed_task_id(player_task)
-	
 }
 
 //----------------------------------------------------------------------------------------------
@@ -459,7 +450,7 @@ public remove_rivet(id_rivet){
 }
 public plugin_precache()
 {
-precache_explosion_fx()
+
 precache_model("models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_WALLHIT_SOUND)

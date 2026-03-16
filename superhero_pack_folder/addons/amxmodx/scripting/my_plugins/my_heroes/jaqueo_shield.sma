@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"
 #include "shield_inc/sh_jaqueo_shield.inc"
 
@@ -172,28 +173,16 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 		xs_vec_copy(vector, bulletshot)
 
 		xs_vec_sub(vector, fired_particle_start_origin, vector)
-
+		new Float:vInit[3];
+		vInit[0]=bulletshot[0]-vnormal[0]*200
+		vInit[1]=bulletshot[1]-vnormal[1]*200
+		vInit[2]=bulletshot[2]-vnormal[2]*200
+		new Float:vEnd[3];
+		vEnd[0]=bulletshot[0]+vnormal[0]*200
+		vEnd[1]=bulletshot[1]+vnormal[1]*200
+		vEnd[2]=bulletshot[2]+vnormal[2]*200
 		get_tr2(ptr, TR_vecPlaneNormal, vnormal)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_BEAMPOINTS)	// 0
-		engfunc(EngFunc_WriteCoord,bulletshot[0]-vnormal[0]*200)
-		engfunc(EngFunc_WriteCoord,bulletshot[1]-vnormal[1]*200)
-		engfunc(EngFunc_WriteCoord,bulletshot[2]-vnormal[2]*200)
-		engfunc(EngFunc_WriteCoord,bulletshot[0]+vnormal[0]*200)
-		engfunc(EngFunc_WriteCoord,bulletshot[1]+vnormal[1]*200)
-		engfunc(EngFunc_WriteCoord,bulletshot[2]+vnormal[2]*200)
-		write_short(gSpriteLaser)
-		write_byte(1)		// framestart
-		write_byte(1)		// framerate
-		write_byte(50)		// life
-		write_byte(5)		// width
-		write_byte(0)		// noise
-		write_byte(0)		// r, g, b
-		write_byte(255)		// r, g, b
-		write_byte(200)		// r, g, b
-		write_byte(200)		// brightness
-		write_byte(0)		// speed
-		message_end()
+		laser_line(id,vInit,vEnd,0)
 		// Calculate boucing bullet
 		v[0] = (bulletshot[0] - fired_particle_start_origin[0]) * -1
 		v[1] = (bulletshot[1] - fired_particle_start_origin[1]) * -1

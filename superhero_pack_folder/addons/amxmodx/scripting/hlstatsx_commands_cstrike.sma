@@ -515,7 +515,7 @@ public client_death(killer, victim, wpnindex, hitplace, TK)
 	new id = victim
 
 	if ((id > 0) && (is_user_connected(id))) {
-		new iStats[8], iHits[8]
+		new iStats[STATSX_MAX_STATS], iHits[MAX_BODYHITS]
 		static szTeam[16], szName[32], szAuthid[32], szWeapon[24]
 		new iUserid = get_user_userid(id)
 		new _max = xmod_get_maxweapons()

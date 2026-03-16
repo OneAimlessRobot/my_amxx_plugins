@@ -32,7 +32,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 #include <amxmod>
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 stock vash_v_deagle_model[]="models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES

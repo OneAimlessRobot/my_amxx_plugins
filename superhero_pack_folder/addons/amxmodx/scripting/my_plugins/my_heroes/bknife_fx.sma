@@ -1,6 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 #define PLUGIN "Superhero bleed fx"
@@ -8,12 +10,28 @@
 #define AUTHOR "ThrashBrat"
 #define Struct				enum
 
+new BLEED_TASKID
+new UNBLEED_TASKID
+new ULTRABLEED_TASKID
+new UNULTRABLEED_TASKID
+new MINIBLEED_TASKID
+new UNMINIBLEED_TASKID
+
 new bool:gIsBleeding[SH_MAXSLOTS+1]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 arrayset(gIsBleeding,false,SH_MAXSLOTS+1)
+
+BLEED_TASKID=allocate_typed_task_id(player_task)
+UNBLEED_TASKID=allocate_typed_task_id(player_task)
+UNULTRABLEED_TASKID=allocate_typed_task_id(player_task)
+BLEED_TASKID=allocate_typed_task_id(player_task)
+MINIBLEED_TASKID=allocate_typed_task_id(player_task)
+UNMINIBLEED_TASKID=allocate_typed_task_id(player_task)
+
+
 }
 
 public plugin_natives(){

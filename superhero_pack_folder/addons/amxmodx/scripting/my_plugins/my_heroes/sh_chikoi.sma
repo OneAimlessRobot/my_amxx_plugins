@@ -3,7 +3,6 @@
 #include "../my_include/superheromod.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_inc_pt2.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "chikoi_inc/sh_chikoi_funcs.inc"
 #define CHIKOI_HITZONE_TASKID 19999

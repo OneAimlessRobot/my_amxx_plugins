@@ -1,7 +1,7 @@
 #include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
-#include "../level_gen_inc/level_gen_aux_stuff.inc"
+#include "level_gen_inc/level_gen_aux_stuff.inc"
 
 
 public plugin_init()

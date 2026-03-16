@@ -1,6 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 
 #define PLUGIN "Superhero tranq fx"
@@ -11,6 +13,7 @@
 
 new bool:gIsAsleep[SH_MAXSLOTS+1]
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
+new g_msgFade
 public plugin_init(){
 
 
@@ -92,7 +95,7 @@ public _sh_sleep_user(iPlugin,iParams){
 public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound, SLEEP_SFX)
-	precache_explosion_fx()
+	
 
 }
 
