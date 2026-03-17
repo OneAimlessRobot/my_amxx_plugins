@@ -1,9 +1,9 @@
 #include "../my_include/superheromod.inc"
+#include "../my_include/my_author_header.inc"
 
 #define PLUGIN "Superhero damage source logging"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-
+#include "../my_include/my_author_header.inc"
 
 public plugin_init(){
 

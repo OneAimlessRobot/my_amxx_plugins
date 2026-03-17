@@ -3,7 +3,7 @@
 #endif
 #define sh_lara_funcs
 
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 #define SPEAR_CLASSNAME "spear"
 

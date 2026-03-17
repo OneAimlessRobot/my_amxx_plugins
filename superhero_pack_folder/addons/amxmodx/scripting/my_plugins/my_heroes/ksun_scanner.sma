@@ -7,6 +7,7 @@
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
+#include "../my_include/my_author_header.inc"
 
 
 
@@ -30,7 +31,7 @@ new g_player_scanner[SH_MAXSLOTS+1]
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO ksun scanner","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun scanner","1.1",AUTHOR)
 	
 	register_cvar("ksun_track_max_radius", "2000.0")
 	register_cvar("ksun_track_min_radius", "500.0")

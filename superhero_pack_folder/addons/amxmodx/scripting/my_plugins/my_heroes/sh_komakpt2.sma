@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "../my_include/my_author_header.inc"
 
 
 #define KOMAK_HITZONE_TASKID 13321
@@ -71,7 +72,7 @@ new hud_sync
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO Komak the Maid", "1.0", "TastyMedula")
+	register_plugin("SUPERHERO Komak the Maid", "1.0", AUTHOR)
 	register_event("CurWeapon","Event_CurWeapon", "b")
 	
 	

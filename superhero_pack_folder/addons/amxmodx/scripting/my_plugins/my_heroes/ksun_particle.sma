@@ -9,6 +9,7 @@
 #include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/ksun_ultimate.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/my_author_header.inc"
 
 
 
@@ -24,7 +25,7 @@ new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO ksun spores","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun spores","1.1",AUTHOR)
 	
 	register_cvar("ksun_spore_damage", "100.0" )
 	register_cvar("ksun_spore_speed", "900.0" )

@@ -15,8 +15,7 @@
 
 #define PLUGIN "Superhero yandere rocket funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 new has_rocket[SH_MAXSLOTS+1]

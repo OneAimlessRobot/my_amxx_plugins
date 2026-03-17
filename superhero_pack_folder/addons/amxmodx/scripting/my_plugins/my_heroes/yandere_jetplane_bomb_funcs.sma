@@ -16,8 +16,7 @@
 
 #define PLUGIN "Superhero yandere BOMB funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 new has_bomb[SH_MAXSLOTS+1]

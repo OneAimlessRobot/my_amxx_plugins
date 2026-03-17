@@ -9,8 +9,7 @@
 
 #define PLUGIN "Superhero roberto mk2 pt2"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"

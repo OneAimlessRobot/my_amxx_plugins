@@ -2,6 +2,7 @@
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
 #include "level_gen_inc/level_gen_aux_stuff.inc"
+#include "my_include/my_author_header.inc"
 
 
 public plugin_init()

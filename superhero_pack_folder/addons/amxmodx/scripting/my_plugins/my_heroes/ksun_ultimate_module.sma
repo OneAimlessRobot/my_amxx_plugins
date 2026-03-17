@@ -5,6 +5,7 @@
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
+#include "../my_include/my_author_header.inc"
 
 
 
@@ -33,7 +34,7 @@ new g_player_in_ultimate[SH_MAXSLOTS+1]
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO ksun supply","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun supply","1.1",AUTHOR)
 	
 	register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
 	register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )

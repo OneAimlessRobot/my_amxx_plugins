@@ -7,8 +7,7 @@
 
 #define PLUGIN "Superhero graciete shotty funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 new g_Had_QB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33]
 new g_HamBot, g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id

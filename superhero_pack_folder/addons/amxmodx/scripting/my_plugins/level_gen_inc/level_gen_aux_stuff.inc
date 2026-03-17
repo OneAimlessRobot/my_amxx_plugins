@@ -4,8 +4,6 @@
 
 #define PLUGIN_NAME "Level xp generator"
 #define VERSION "1.0"
-#define AUTHOR "ThrashBrat"
-
 
 #define MAX_LEVELS 150
 #define PATHSIZE 128

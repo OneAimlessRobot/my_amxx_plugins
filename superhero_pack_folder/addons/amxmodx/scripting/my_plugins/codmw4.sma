@@ -32,8 +32,7 @@
 
 #define PLUGIN "Call of Duty: MW4 Mod"
 #define VERSION "1.3.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "my_include/my_author_header.inc"
 new sprite_white;
 new sprite_blast;
 new sprite_beam;

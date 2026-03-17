@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../my_include/my_author_header.inc"
 
 /* CVARS - copy and paste to shconfig.cfg
 
@@ -30,7 +31,7 @@ new gPowerCost
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO ElectroB00M","2.0","TastyMedula")
+	register_plugin("SUPERHERO ElectroB00M","2.0",AUTHOR)
 	
 	// DEFAULT THE CVARS
 	new pcvarLevel = register_cvar("ElectroB00M_level", "20" )

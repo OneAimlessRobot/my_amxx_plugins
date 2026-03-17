@@ -6,12 +6,11 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/my_author_header.inc"
 
 
 #define PLUGIN "Superhero lara mk2 pt2 (spear)"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-
 
 new bool:spear_loaded[SH_MAXSLOTS+1]
 

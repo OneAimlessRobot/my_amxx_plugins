@@ -12,8 +12,7 @@
 
 #define PLUGIN "Superhero erica tranq funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 new pPlayer
 new Float:dart_launch_pos[MAX_ENTITIES][3];

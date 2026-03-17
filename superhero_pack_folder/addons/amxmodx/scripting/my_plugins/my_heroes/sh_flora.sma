@@ -6,6 +6,7 @@
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "../my_include/my_author_header.inc"
 
 
 stock const debug_hud_mode= false
@@ -25,7 +26,7 @@ new gHeroID
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO flora","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
 	register_cvar("flora_level", "39" )
 	register_cvar("flora_teamglow_on", "1")

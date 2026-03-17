@@ -8,8 +8,7 @@
 
 #define PLUGIN "Superhero molotov fx"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 new bool:gIsBurning[SH_MAXSLOTS+1]

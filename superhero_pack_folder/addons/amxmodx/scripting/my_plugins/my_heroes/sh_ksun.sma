@@ -10,6 +10,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "chikoi_inc/sh_chikoi_funcs.inc"
+#include "../my_include/my_author_header.inc"
 
 
 // GLOBAL VARIABLES
@@ -31,7 +32,7 @@ stock ksun_when_reset_spores=never_reset;
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO ksun","1.1","MilkChanThaGOAT")
+	register_plugin("SUPERHERO ksun","1.1",AUTHOR)
 	
 	register_cvar("ksun_level", "12" )
 	register_cvar("ksun_teamglow_on", "1")

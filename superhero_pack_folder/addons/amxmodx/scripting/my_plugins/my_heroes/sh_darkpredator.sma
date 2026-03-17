@@ -24,6 +24,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_include/my_author_header.inc"
 
 
 
@@ -49,8 +50,7 @@ new laser,laser_impact,blast_shroom
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
-	// Plugin Info
-	register_plugin("SUPERHERO DarkPredator","1.0","kanu | DarkPredator")
+	my_authored_register_func("SUPERHERO DarkPredator","1.0","kanu | DarkPredator",true,AUTHOR )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	if ( isDebugOn() ) server_print("Attempting to create DarkPredator Hero")

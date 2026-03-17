@@ -4,8 +4,7 @@
 
 #define PLUGIN "Superhero help file funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrasherBratter"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 stock help_files_directory[STRLEN_FOR_FILES+1]
 stock const help_cmd[]="help_of"

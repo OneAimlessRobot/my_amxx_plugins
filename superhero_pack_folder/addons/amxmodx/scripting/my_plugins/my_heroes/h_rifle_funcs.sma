@@ -5,8 +5,7 @@
 
 #define PLUGIN "Superhero: Supernoodle hunting rifle"
 #define VERSION "1.0"
-#define AUTHOR "ThrashBrat"
-
+#include "../my_include/my_author_header.inc"
 
 new const WeaponSounds[4][] = 
 {

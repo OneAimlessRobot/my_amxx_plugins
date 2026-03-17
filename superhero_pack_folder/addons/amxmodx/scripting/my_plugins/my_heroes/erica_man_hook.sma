@@ -11,8 +11,7 @@
 
 #define PLUGIN "Superhero erica hook"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 stock hook_on[SH_MAXSLOTS+1]
 stock g_dragging_who[SH_MAXSLOTS+1][2]

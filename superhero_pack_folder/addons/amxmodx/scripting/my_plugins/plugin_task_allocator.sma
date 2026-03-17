@@ -1,12 +1,12 @@
 #include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 #define PLUGIN "task allocator aux stuff"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
+#include "my_include/my_author_header.inc"
 
 initialize_default_stuff(){
 

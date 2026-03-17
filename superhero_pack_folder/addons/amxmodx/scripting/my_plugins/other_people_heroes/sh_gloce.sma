@@ -40,6 +40,7 @@ gloce_freeze_time 5		//How long they should be frozen
 
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
+#include "../my_include/my_author_header.inc"
 
 #define USE_MODEL
 
@@ -72,8 +73,7 @@ new times_id[SH_MAXSLOTS+1]
 
 public plugin_init()
 {
-	//Register Plugin
-	register_plugin("SUPERHERO Gloce", gVERSION, "[A]tomen")
+	my_authored_register_func("SUPERHERO Gloce", gVERSION, "[A]tomen",true,AUTHOR)
 
 	//Register Events
 	register_event("CurWeapon", "weapon_event", "be", "1=1")

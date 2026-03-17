@@ -389,6 +389,7 @@
 #include "../include/Vexd_Utilities.inc"
 #include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
+#include "my_include/my_author_header.inc"
 
 new const SH_CORE_STR[] =  "SuperHero Core"
 
@@ -545,7 +546,6 @@ new const gTeamName[4][] =  {
 	#include "my_include/superheromysql.inc"	//Saves XP to a MySQL database
 #endif
 //==============================================================================================
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -555,7 +555,7 @@ public plugin_init()
 	}
 
 	// Plugin Info
-	register_plugin(SH_CORE_STR, SH_VERSION_STR, "JTP10181/{HOJ}Batman/vittu/AssKicR")
+	my_authored_register_func(SH_CORE_STR, SH_VERSION_STR,"JTP10181/{HOJ}Batman/vittu/AssKicR",true,AUTHOR)
 	register_cvar("SuperHeroMod_Version", SH_VERSION_STR, FCVAR_SERVER|FCVAR_SPONLY)
 	set_cvar_string("SuperHeroMod_Version", SH_VERSION_STR)	// Update incase new version loaded while still running
 

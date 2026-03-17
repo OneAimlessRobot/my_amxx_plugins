@@ -24,6 +24,7 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "../my_include/my_author_header.inc"
 
 
 
@@ -37,7 +38,7 @@ new gHeroID
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO Swat", "1.0", "SRGrty")
+	register_plugin("SUPERHERO Swat", "1.0", "SRGrty HEAVILY MODIFIED")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	register_cvar("Swat_level", "7")

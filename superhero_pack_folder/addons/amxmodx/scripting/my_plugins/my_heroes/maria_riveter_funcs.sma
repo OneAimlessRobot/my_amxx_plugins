@@ -6,13 +6,13 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "maria_riveter_inc/maria_general_inc.inc"
+#include "../my_include/my_author_header.inc"
 
 
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
 
-#define PLUGIN_AUTHOR "MilkChanTheGOAasdasdasdasdasdasdasdasdsdasdT"
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
 
@@ -27,7 +27,7 @@ new g_Riveter_clip[SH_MAXSLOTS+1]
 public plugin_init(){
 	
 
-	register_plugin(PLUGIN_NAME, PLUGIN_VER, PLUGIN_AUTHOR);
+	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 	for(new i=0;i<MAX_ENTITIES;i++){
 		
 		arrayset(rivet_launch_pos[i],0.0,3);

@@ -15,8 +15,7 @@
 
 #define PLUGIN "Superhero graciete jetty funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 new g_graciete_jetpack_cooldown[SH_MAXSLOTS+1];
 new Float:g_graciete_base_gravity[SH_MAXSLOTS+1];

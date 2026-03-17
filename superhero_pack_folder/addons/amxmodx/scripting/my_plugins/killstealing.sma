@@ -5,8 +5,7 @@
 
 #define PLUGIN "Kill stealing"
 #define VERSION "1.0"
-#define AUTHOR "ThrashBrat"
-
+#include "my_include/my_author_header.inc"
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR)

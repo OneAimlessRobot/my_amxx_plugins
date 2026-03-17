@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../my_include/my_author_header.inc"
 
 // Slayer (GGXX) - founder of the Assassins guild, has an unblockable move :-"
 /*
@@ -11,7 +12,7 @@ new gHasSlayerPowers[SH_MAXSLOTS+1]
 new heroID
 public plugin_init()
 {
-  register_plugin("SUPERHERO Slayer","1.0","Mydas")
+  my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)
   register_cvar("slayer_level", "6" )
   heroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
   register_srvcmd("slayer_init", "slayer_init")

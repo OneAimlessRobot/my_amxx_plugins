@@ -80,7 +80,7 @@
 #include <fun>
 
 
-#define APP_VER 1.17
+#define APP_VER "1.17"
 
 //defines used for the check function
 #define CHECK_OK 1	//returned if all checks are ok
@@ -103,7 +103,7 @@ new cvar_xp, cvar_hp, cvar_fr, cvar_ap
 new cvar_xpcost, cvar_hpcost, cvar_frcost, cvar_apcost
 
 public plugin_init(){
-	register_plugin("SHero Merchant","APP_VER","Werdpad")
+	register_plugin("SHero Merchant",APP_VER,"Werdpad")
 
 	register_cvar("sv_merchant", "1")		//enable cvar
 	//register_cvar("shm_mode", "1")		//plugin mode

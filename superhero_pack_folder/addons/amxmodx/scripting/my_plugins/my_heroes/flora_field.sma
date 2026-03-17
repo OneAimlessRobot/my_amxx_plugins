@@ -10,8 +10,7 @@
 
 #define PLUGIN "Superhero flora field funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "NULLTick"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 #define KILL_BEAM_TASKID 81292373

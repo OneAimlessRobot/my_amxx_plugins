@@ -5,12 +5,12 @@
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
+#include "../my_include/my_author_header.inc"
 
 #include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
 
-#define PLUGIN_AUTHOR "MilkChanTheGOAasdasdasdasdasdasdasdasdsdasdT"
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
@@ -33,7 +33,7 @@ public plugin_init(){
 	register_cvar("lena_xp_distance_mult","4")
 	register_cvar("lena_dmg_headshot_mult","5")
 
-	register_plugin(PLUGIN_NAME, PLUGIN_VER, PLUGIN_AUTHOR);
+	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 	for(new i=0;i<MAX_ENTITIES;i++){
 		
 		arrayset(bullet_launch_pos[i],0.0,3);

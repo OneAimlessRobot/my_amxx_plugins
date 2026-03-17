@@ -6,8 +6,7 @@
 
 #define PLUGIN "Superhero yakui mk2 needles"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrashBrat"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 new curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on[SH_MAXSLOTS+1]

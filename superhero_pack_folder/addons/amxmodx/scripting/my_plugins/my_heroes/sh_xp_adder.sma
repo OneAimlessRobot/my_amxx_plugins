@@ -3,8 +3,7 @@
 
 #define PLUGIN "Superhero xp adder funcs"
 #define VERSION "1.0.0"
-#define AUTHOR "ThrasherBratter"
-#define Struct				enum
+#include "../my_include/my_author_header.inc"
 
 
 stock player_built_xp_this_round[SH_MAXSLOTS+1][XP_VIP_PROTECT_XP+1]
