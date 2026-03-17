@@ -16,6 +16,7 @@
 #include <amxmisc>
 #include <csx>
 #include <hamsandwich>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 //--------------------------------
 
 // Uncomment to activate log debug messages.
@@ -153,6 +154,16 @@ new t_sWpn[MAX_WEAPON_LENGTH + 1]                       = ""
 new g_HudSync_EndRound
 new g_HudSync_SpecInfo
 
+
+new taskid_ertask_g
+//set_task(0.3, "ERTask", 997)
+
+new taskid_delay_spawn_p
+//set_task(0.1, "delay_spawn", 200 + id, args, sizeof(args))
+
+new taskid_end_game_stats_g
+//set_task(1.0, "end_game_stats", 900)
+
 //--------------------------------
 // Initialize
 //--------------------------------
@@ -215,6 +226,11 @@ public plugin_init()
 
 	g_HudSync_EndRound = CreateHudSyncObj()
 	g_HudSync_SpecInfo = CreateHudSyncObj()
+	
+	taskid_delay_spawn_p = allocate_typed_task_id(player_task)
+	taskid_ertask_g = allocate_typed_task_id(generic_task)
+	taskid_end_game_stats_g = allocate_typed_task_id(generic_task)
+
 }
 
 public plugin_cfg()
@@ -1339,7 +1355,7 @@ public eventSpawn(id)
 	args[0] = id
 
 	if (g_iPluginMode & MODE_HUD_DELAY)
-		set_task(0.1, "delay_spawn", 200 + id, args, sizeof(args))
+		set_task(0.1, "delay_spawn", taskid_delay_spawn_p + id, args, sizeof(args))
 	else
 		delay_spawn(args)
 
@@ -1518,7 +1534,7 @@ public eventEndRound()
 			g_izTeamScore[1]++
 	}
 
-	set_task(0.3, "ERTask", 997)
+	set_task(0.3, "ERTask", taskid_ertask_g)
 
 	return PLUGIN_CONTINUE
 }
@@ -1586,7 +1602,7 @@ public eventTeamScore()
 public eventIntermission()
 {
 	if (EndPlayer || EndTop15)
-		set_task(1.0, "end_game_stats", 900)
+		set_task(1.0, "end_game_stats", taskid_end_game_stats_g)
 }
 
 public end_game_stats()

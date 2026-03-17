@@ -15,6 +15,7 @@
 #include <amxmisc>
 #include <cstrike>
 #include <csx>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 public MultiKill
 public MultiKillSound
@@ -78,9 +79,6 @@ new g_bottom_sync
 new g_he_sync
 
 new g_pcvar_mp_c4timer, g_c4timer_value
-
-const TASK_BOMB_TIMER = 8038
-const TASK_DELAYED_NEW_ROUND = 98038
 
 new g_connected[MAX_PLAYERS + 1]
 new g_msounds[MAX_PLAYERS + 1]
@@ -178,6 +176,10 @@ new g_HeadShots[7][] =
 
 new const g_teamsNames[CsTeams][] = { "", "TERRORIST" , "CT", "" };
 
+new TASK_BOMB_TIMER
+new TASK_DELAYED_NEW_ROUND
+new taskid_check_kills
+
 public plugin_init()
 {
 	register_plugin("CS Misc. Stats", AMXX_VERSION_STR, "AMXX Dev Team")
@@ -219,6 +221,9 @@ public plugin_init()
 
 	register_clcmd("say /msounds", "cmdSwitchSounds", _, " - switches sounds on and off")
 	register_clcmd("say_team /msounds", "cmdSwitchSounds", _, " - switches sounds on and off")
+	TASK_BOMB_TIMER = allocate_typed_task_id(generic_task)
+	TASK_DELAYED_NEW_ROUND = allocate_typed_task_id(generic_task)
+	taskid_check_kills = allocate_typed_task_id(player_task)
 }
 
 public plugin_precache()
@@ -529,7 +534,7 @@ public client_death(killer, victim, wpnindex, hitplace, TK)
 			
 			param[0] = killer
 			param[1] = g_multiKills[killer][0]
-			set_task(4.0 + float(param[1]), "checkKills", killer, param, sizeof(param))
+			set_task(4.0 + float(param[1]), "checkKills", killer+ taskid_check_kills, param, sizeof(param))
 		}
 	}
 

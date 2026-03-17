@@ -10,6 +10,7 @@
 
 #include <amxmodx>
 #include <hamsandwich>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 #define INVALID_HANDLE -1
 #define REGISTERHAM_CALLBACK "__RegisterHamBots"
@@ -26,6 +27,7 @@ new Array:g_HamFunctionIsPost
 new Array:g_HamForwardHandle
 new Array:g_HamForwardEnable
 new g_BotHooksCount
+new taskid_register_ham_bots
 
 public plugin_precache()
 {
@@ -44,6 +46,7 @@ public plugin_init()
 	
 	g_MaxPlayers = get_maxplayers()
 	cvar_bot_quota = get_cvar_pointer("bot_quota")
+	taskid_register_ham_bots = allocate_typed_task_id(player_task)
 }
 
 public plugin_natives()
@@ -90,7 +93,7 @@ public native_register_ham_bots(plugin_id, num_params)
 	if (g_CZBotPlayerID)
 	{
 		// Use it to register right away
-		register_ham_czbots(g_CZBotPlayerID)
+		register_ham_czbots(g_CZBotPlayerID+taskid_register_ham_bots)
 	}
 	
 	return g_BotHooksCount - 1;
@@ -175,13 +178,14 @@ public client_putinserver(id)
 	if (is_user_bot(id) && cvar_bot_quota)
 	{
 		// Set a task to let the private data initialize
-		set_task(0.1, "register_ham_czbots", id)
+		set_task(0.1, "register_ham_czbots", id+taskid_register_ham_bots)
 	}
 }
 
 // Register Ham Forwards for CZ bots
 public register_ham_czbots(id_bot)
 {
+	id_bot-=taskid_register_ham_bots
 	// Make sure it's a CZ bot and it's still connected
 	if (!is_user_connected(id_bot) || !get_pcvar_num(cvar_bot_quota))
 		return;

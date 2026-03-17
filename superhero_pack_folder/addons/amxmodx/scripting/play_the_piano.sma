@@ -67,6 +67,7 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new g_broadcastmode
 new broadcastmode[33]
@@ -75,6 +76,8 @@ new instrument[33]
 new instrument_sound[4][] = {"fvox/boop","fvox/beep","buzwarn","bizwarn"}
 new Float:transpose[4] = {86.4,102.9,111.5,94.5} 
 new are_you_sure[33]
+
+new reset_sure_taskid
 
 public plugin_init() {
 	register_plugin("PLAY THE PIANO","1.0","EJL")
@@ -88,6 +91,7 @@ public plugin_init() {
 	register_clcmd("amx_piano_wtf","admin_piano_wtf")
 	register_clcmd("say /piano","piano_motd")
 	register_clcmd("say","HandleSay")
+	reset_sure_taskid = allocate_typed_task_id(generic_task)
 	return PLUGIN_CONTINUE
 }
 
@@ -212,7 +216,7 @@ public admin_bindk(id){
 		are_you_sure[id] = 1
 		new ays[2]
 		ays[0] = id
-		set_task(35.0,"reset_sure",0,ays,1)
+		set_task(35.0,"reset_sure",reset_sure_taskid,ays,1)
 		client_cmd(id,"echo ") 
 		client_cmd(id,"echo ")
 		client_cmd(id,"echo ")  

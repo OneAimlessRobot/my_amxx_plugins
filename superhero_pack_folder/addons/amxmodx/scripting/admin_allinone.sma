@@ -61,6 +61,12 @@
 #include <amxmisc>
 #include <fun>
 #include <cstrike>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
+
+new taskid_slap_g
+new taskid_lastwords_g
+new taskid_ungag_p
+new taskid_ignite_effects_g 
 
 
 public plugin_init()
@@ -97,6 +103,10 @@ public plugin_init()
 	register_concmd("amx_weapon","admin_weapon",ADMIN_LEVEL_H,"<part of nick> or <@team> <weapon # to give > ")
 
 	register_cvar("amx_moneymsg","1")
+	taskid_slap_g = allocate_typed_task_id(generic_task)
+	taskid_lastwords_g = allocate_typed_task_id(generic_task)
+	taskid_ungag_p = allocate_typed_task_id(player_task)
+	taskid_ignite_effects_g = allocate_typed_task_id(generic_task)
 }
 
 
@@ -805,7 +815,7 @@ public amx_gag(id,level,cid) {
 
 	new param[2]
 	param[0] = player
-	set_task( gagtime ? gagtime : 99999.0 ,"ungag",player,param,1)
+	set_task( gagtime ? gagtime : 99999.0 ,"ungag",player+taskid_ungag_p,param,1)
 	
 	new name[32]
 	get_user_name(id,name,31)
@@ -817,7 +827,7 @@ public amx_gag(id,level,cid) {
 public ungag(param[]) {
 	new id = param[0]
 	gag[id] = 0
-	remove_task(id)
+	remove_task(id+taskid_ungag_p)
 	return PLUGIN_HANDLED
 }
 
@@ -1107,8 +1117,8 @@ public admin_slap(id,level,cid){
 	ids[0] = player
 	get_user_name(player,name,32)
 	udisarm_player(id,player)
-	set_task(0.1, "slap_player", 0, ids, 1, "a", 100)
-	set_task(11.5, "last_words", 0, ids, 1, "a", 0)
+	set_task(0.1, "slap_player", taskid_slap_g, ids, 1, "a", 100)
+	set_task(11.5, "last_words", taskid_lastwords_g, ids, 1, "a", 0)
 	get_user_name(id,name2,31)
 	log_amx("%L", LANG_SERVER, "AINO_LOG_UBERSLAP_PLAYER", name2, name)
 	return PLUGIN_HANDLED
@@ -1338,7 +1348,7 @@ public ignite_effects(skIndex[])   {
 		write_byte( 15 ) // byte (framerate)
 		message_end()
 		
-		set_task(0.2, "ignite_effects" , 0 , skIndex, 2)		
+		set_task(0.2, "ignite_effects" , taskid_ignite_effects_g , skIndex, 2)		
 	}	
 	else    {
 		if( onfire[kIndex] )   {

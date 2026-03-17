@@ -13,14 +13,17 @@
 
 #include <amxmodx>
 #include <csx>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new g_pingSum[MAX_PLAYERS + 1]
 new g_pingCount[MAX_PLAYERS + 1]
 new g_inGame[MAX_PLAYERS + 1]
+new taskid_get_ping
 
 public plugin_init()
 {
 	register_plugin("CS Stats Logging", AMXX_VERSION_STR, "AMXX Dev Team")
+	taskid_get_ping = allocate_typed_task_id(player_task)
 }
 
 public client_disconnected(id)
@@ -77,12 +80,14 @@ public client_putinserver(id)
 		g_pingSum[id] = g_pingCount[id] = 0
 		if (task_exists(id))
 			remove_task(id)
-		set_task(19.5, "getPing", id, "", 0, "b")
+		set_task(19.5, "getPing", id + taskid_get_ping, "", 0, "b")
 	}
 }
 
 public getPing(id)
-{
+{	
+	id-=taskid_get_ping
+
 	new iPing, iLoss
 	
 	get_user_ping(id, iPing, iLoss)

@@ -52,11 +52,13 @@
 		- All the other people that suggested and helped improving the plugin
 */
 
-#pragma semicolon 1
 
 #include <amxmodx>
 #include <amxmisc>
 #include <fakemeta>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
+
+#pragma semicolon 1
 
 #define VERSION 	"1.8"
 
@@ -81,6 +83,7 @@ new const g_TeamNames[teams][] =
 new cvar_knife;
 new frozen;
 new g_PreThinkId;
+new taskid_unfreeze_p;
 
 new Float: g_Angles[33][3];
 
@@ -95,6 +98,7 @@ public plugin_init()
 	
 	register_cvar("freeze_version", VERSION, FCVAR_SERVER | FCVAR_SPONLY);
 	cvar_knife = register_cvar("amx_freeze_knife_only", "1");
+	taskid_unfreeze_p = allocate_typed_task_id(player_task);
 	
 }
 
@@ -216,7 +220,7 @@ freeze(id, on, Float:Time)
 		pev(id, pev_v_angle, g_Angles[id]);
 		
 		if(Time)
-			set_task(Time, "Task_Unfreeze", id);
+			set_task(Time, "Task_Unfreeze", id+taskid_unfreeze_p);
 	}
 	
 	return PLUGIN_HANDLED;
@@ -224,6 +228,8 @@ freeze(id, on, Float:Time)
 
 public Task_Unfreeze(id)
 {
+	id-=taskid_unfreeze_p;
+
 	if(is_user_connected(id))
 	{
 		UnFreeze(id);
