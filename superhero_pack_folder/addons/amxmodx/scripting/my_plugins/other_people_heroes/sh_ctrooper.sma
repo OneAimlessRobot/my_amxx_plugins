@@ -127,12 +127,12 @@
 		new vec1[3], vec2[3]
 		new Float:fvec1[3], Float:fvec2[3]
 		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 4) // termina; where your bullet goes (4 is cs-only)
+		get_user_origin(id, vec2, 3) // termina; where your bullet goes (4 is cs-only)
 
 		IVecFVec(vec1,fvec1)
 		IVecFVec(vec2,fvec2)
 
-		laser_line(id,fvec1,fvec2,false,_,_,true)
+		laser_line(id,fvec1,fvec2,false,{GREEN,GREEN,GREEN},_,true)
 	}
 
 	lastammo[id] = clip

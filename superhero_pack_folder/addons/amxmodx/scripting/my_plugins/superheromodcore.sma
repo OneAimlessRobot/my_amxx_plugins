@@ -481,8 +481,8 @@ new bool:gMonsterModRunning
 
 //Memory Table Variables
 new gMemoryTableCount = SH_MAXSLOTS
-new gMemoryTableKeys[gMemoryTableSize][32]				// Table for storing xp lines that need to be flushed to file...
-new gMemoryTableNames[gMemoryTableSize][32]				// Stores players name for a key
+new gMemoryTableKeys[gMemoryTableSize][MAX_PLAYER_SAVE_KEY_LENGTH]				// Table for storing xp lines that need to be flushed to file...
+new gMemoryTableNames[gMemoryTableSize][MAX_PLAYER_SAVE_KEY_LENGTH]				// Stores players name for a key
 new gMemoryTableXP[gMemoryTableSize]					// How much XP does a player have?
 new gMemoryTableFlags[gMemoryTableSize]					// User flags for other settings (see below)
 new gMemoryTablePowers[gMemoryTableSize][SH_MAXLEVELS+1]		// 0=# of powers, 1=hero index, etc...
@@ -775,7 +775,8 @@ public plugin_natives()
 	register_native("sh_get_hero_id", "_sh_get_hero_id")
 	register_native("sh_get_hero_name_from_id", "_sh_get_hero_name_from_id",0)
 	register_native("sh_user_has_hero", "_sh_user_has_hero")
-	register_native("_dropPower", "dropPower_")
+	register_native("sh_get_player_save_key_on_db","_sh_get_player_save_key_on_db",0)
+	register_native("_dropPower", "dropPower_",0)
 	register_native("sh_chat_message", "_sh_chat_message")
 	register_native("sh_debug_message", "_sh_debug_message")
 	register_native("sh_extra_damage", "_sh_extra_damage")
@@ -3562,20 +3563,20 @@ public cl_say(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public dropPower_(){
+public dropPower_(iPlugin,iParams){
 
 	new id=get_param(1)
 	new said[101];
 	get_array(2,said,99)
 	new showmenu = get_param(3)
-	dropPower(id,said,showmenu);
+	dropPower(id,said,showmenu,true);
 
 }
 
 //----------------------------------------------------------------------------------------------
-public dropPower(id, const said[], showmenu)
+dropPower(id, const said[], showmenu,bool:from_plugin=false)
 {
-	if ( !get_pcvar_num(sh_alivedrop) && is_user_alive(id) ) {
+	if ( !get_pcvar_num(sh_alivedrop) && is_user_alive(id) && !from_plugin ) {
 		chatMessage(id, _, "You are not allowed to drop heroes while alive")
 		return
 	}
@@ -4078,7 +4079,7 @@ public adminBanXP(id, level, cid)
 	new player = cmd_target(id, arg, CMDTARGET_OBEY_IMMUNITY)
 	if ( !player ) return PLUGIN_HANDLED
 
-	new name[32], authid[32], bankey[32]
+	new name[32], authid[32], bankey[MAX_PLAYER_SAVE_KEY_LENGTH]
 	new userid = get_user_userid(player)
 	get_user_name(player, name, charsmax(name))
 	get_user_authid(player, authid, charsmax(authid))
@@ -4148,7 +4149,7 @@ public adminUnbanXP(id, level, cid)
 
 	new player = cmd_target(id, arg, CMDTARGET_ALLOW_SELF)
 
-	new name2[32], authid2[32], bankey[32]
+	new name2[32], authid2[32], bankey[MAX_PLAYER_SAVE_KEY_LENGTH]
 	get_user_name(id, name2, charsmax(name2))
 	get_user_authid(id, authid2, charsmax(authid2))
 
@@ -4194,7 +4195,7 @@ public adminUnbanXP(id, level, cid)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-removeBanFromFile(adminID, const bankey[32])
+removeBanFromFile(adminID, const bankey[MAX_PLAYER_SAVE_KEY_LENGTH])
 {
 	new tempFile[128]
 	formatex(tempFile, charsmax(tempFile), "%s~", gBanFile)
@@ -4269,7 +4270,7 @@ public adminImmuneXP(id, level, cid)
 	new player = cmd_target(id, arg, CMDTARGET_ALLOW_SELF)
 	if ( !player ) return PLUGIN_HANDLED
 
-	new name[32], authid[32], bankey[32]
+	new name[32], authid[32], bankey[MAX_PLAYER_SAVE_KEY_LENGTH]
 	new userid = get_user_userid(player)
 	get_user_name(player, name, charsmax(name))
 	get_user_authid(player, authid, charsmax(authid))
@@ -5049,7 +5050,7 @@ public readXP(id)
 	// Players XP already loaded, no need to do this again
 	if ( !gReadXPNextRound[id] ) return
 
-	static savekey[32]
+	static savekey[MAX_PLAYER_SAVE_KEY_LENGTH]
 
 	// Get Key
 	if ( !getSaveKey(id, savekey) ) {
@@ -5079,10 +5080,10 @@ public readXP(id)
 	memoryTableUpdate(id)
 }
 //----------------------------------------------------------------------------------------------
-getSaveKey(id, savekey[32])
+getSaveKey(id, savekey[MAX_PLAYER_SAVE_KEY_LENGTH])
 {
 	if ( is_user_bot(id) ) {
-		static botname[32]
+		static botname[MAX_PLAYER_SAVE_KEY_LENGTH]
 		get_user_name(id, botname, charsmax(botname))
 
 		// Get Rid of BOT Tag
@@ -5154,8 +5155,22 @@ getSaveKey(id, savekey[32])
 
 	return true
 }
+
+//native sh_get_player_save_key_on_db(id,key_ret_result[])
+public _sh_get_player_save_key_on_db(iPlugin,iParams){
+
+	new id= get_param(1)
+	new player_key_res[MAX_PLAYER_SAVE_KEY_LENGTH]={0, ...}
+
+	getSaveKey(id,player_key_res)
+	set_string(2,player_key_res,MAX_PLAYER_SAVE_KEY_LENGTH-1)
+	
+	
+
+
+}
 //----------------------------------------------------------------------------------------------
-checkBan(id, const bankey[32])
+checkBan(id, const bankey[MAX_PLAYER_SAVE_KEY_LENGTH])
 {
 	if ( !file_exists(gBanFile) || gIsPowerBanned[id] ) return
 
@@ -5193,7 +5208,7 @@ memoryTableUpdate(id)
 	if ( gIsPowerBanned[id] || gReadXPNextRound[id] ) return
 
 	// Update this XP line in Memory Table
-	static savekey[32], x, powerCount
+	static savekey[MAX_PLAYER_SAVE_KEY_LENGTH], x, powerCount
 
 	if ( !getSaveKey(id, savekey) ) return
 

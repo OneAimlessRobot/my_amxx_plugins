@@ -784,6 +784,10 @@ public setTeam(id)
 
 public showStatus(id)
 {
+	if (!is_user_connected(id)){
+		
+		return		
+	}
 	if( PlayerName) 
 	{
 		new name[MAX_NAME_LENGTH], pid = read_data(2)

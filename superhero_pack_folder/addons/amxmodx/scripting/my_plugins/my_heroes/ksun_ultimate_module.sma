@@ -297,6 +297,7 @@ if ( (wpnid ==KSUN_WEAPON_ID)&&(ksun_player_is_in_ultimate(id)))
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		
+		
 		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
 		do_fast_shot(id,wpnid,ksun_ultimate_fire_rate_mult)
 		

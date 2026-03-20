@@ -127,7 +127,7 @@ public adminCopyVHelper(parm[])
 	//If it makes it this far it must be done copying
 
 	// OK now load the XP for any players playing
-	new savekey[32]
+	new savekey[MAX_PLAYER_SAVE_KEY_LENGTH]
 
 	for ( new x = 1; x <= SH_MAXSLOTS; x++ ) {
 		if ( !is_user_connected(x) ) continue
@@ -270,7 +270,7 @@ mySQLConnect()
 		static sql[410]
 		new Handle:query
 
-		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_savexp` ( `SH_KEY` varchar(32) binary NOT NULL default '', `PLAYER_NAME` varchar(32) binary NOT NULL default '', `LAST_PLAY_DATE` timestamp(6) NOT NULL, `XP` int(10) NOT NULL default '0', `HUDHELP` tinyint(3) unsigned NOT NULL default '1', `SKILL_COUNT` tinyint(3) unsigned NOT NULL default '0', PRIMARY KEY  (`SH_KEY`) ) ENGINE=MyISAM COMMENT='SUPERHERO XP Saving Table'")
+		formatex(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_savexp` ( `SH_KEY` varchar(%d) binary NOT NULL default '', `PLAYER_NAME` varchar(32) binary NOT NULL default '', `LAST_PLAY_DATE` timestamp(6) NOT NULL, `XP` int(10) NOT NULL default '0', `HUDHELP` tinyint(3) unsigned NOT NULL default '1', `SKILL_COUNT` tinyint(3) unsigned NOT NULL default '0', PRIMARY KEY  (`SH_KEY`) ) ENGINE=MyISAM COMMENT='SUPERHERO XP Saving Table'",MAX_PLAYER_SAVE_KEY_LENGTH)
 
 		query = SQL_PrepareQuery(gDbConnect, "%s", sql)
 		if ( !SQL_Execute(query) ) {
@@ -282,7 +282,7 @@ mySQLConnect()
 		SQL_FreeHandle(query)
 
 		sql[0] = '^0'
-		copy(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_saveskills` ( `SH_KEY` varchar(32) binary NOT NULL default '', `SKILL_NUMBER` tinyint(3) unsigned NOT NULL default '0', `HERO_NAME` varchar(25) NOT NULL default '', PRIMARY KEY  (`SH_KEY`,`SKILL_NUMBER`) ) ENGINE=MyISAM COMMENT='SUPERHERO Skill Saving Table'")
+		formatex(sql, charsmax(sql), "CREATE TABLE IF NOT EXISTS `sh_saveskills` ( `SH_KEY` varchar(%d) binary NOT NULL default '', `SKILL_NUMBER` tinyint(3) unsigned NOT NULL default '0', `HERO_NAME` varchar(25) NOT NULL default '', PRIMARY KEY  (`SH_KEY`,`SKILL_NUMBER`) ) ENGINE=MyISAM COMMENT='SUPERHERO Skill Saving Table'",MAX_PLAYER_SAVE_KEY_LENGTH)
 		query = SQL_PrepareQuery(gDbConnect, "%s", sql)
 		if ( !SQL_Execute(query) ) {
 			errcode = SQL_QueryError(query, error, charsmax(error))
@@ -309,11 +309,11 @@ writeData(x)
 	new Handle:query
 	new errcode
 
-	static savekey[63]
+	static savekey[MAX_PLAYER_SAVE_KEY_LENGTH-1]
 	copy(savekey, charsmax(savekey), gMemoryTableKeys[x])
 	replace_all(savekey, charsmax(savekey), "'", "\'")
 
-	static bkqtname[63]
+	static bkqtname[MAX_PLAYER_SAVE_KEY_LENGTH-1]
 	copy(bkqtname, charsmax(bkqtname), gMemoryTableNames[x])
 	replace_all(bkqtname, charsmax(bkqtname), "'", "\'")
 
@@ -402,7 +402,7 @@ writeData(x)
 }
 //----------------------------------------------------------------------------------------------
 //immediate use, no threading
-loadXP(id, const savekey[32])
+loadXP(id, const savekey[MAX_PLAYER_SAVE_KEY_LENGTH])
 {
 	mySQLConnect()
 
@@ -410,7 +410,7 @@ loadXP(id, const savekey[32])
 
 	debugMsg(id, 8, "Trying to load XP data from MySQL database")
 
-	static sql[180], error[128], shkey[63]
+	static sql[180], error[128], shkey[MAX_PLAYER_SAVE_KEY_LENGTH-1]
 	new Handle:query
 	new errcode
 

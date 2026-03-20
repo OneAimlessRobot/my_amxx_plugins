@@ -34,12 +34,7 @@ for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
 register_event("Damage", "crack_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
-}
-public plugin_precache(){
-
-
-	
-
+register_event("DeathMsg","on_death_status","a")
 }
 public plugin_natives(){
 
@@ -730,7 +725,6 @@ radioactive_user(id,attacker){
 
 
 }
-
 public blind_task(id){
 	id-=BLIND_TASKID
 	if ( !shModActive() ||!client_hittable(id)) return
@@ -920,4 +914,15 @@ unbath_user(id){
 	if ( !shModActive() ||!is_user_connected(id)) return
 	gatling_set_fx_num(id, 0)
 
+}
+
+public on_death_status()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		sh_uneffect_user(id,0,gatling_get_hero_id())
+	
+	}
+	
 }

@@ -29,6 +29,7 @@ UNULTRABLEED_TASKID=allocate_typed_task_id(player_task)
 BLEED_TASKID=allocate_typed_task_id(player_task)
 MINIBLEED_TASKID=allocate_typed_task_id(player_task)
 UNMINIBLEED_TASKID=allocate_typed_task_id(player_task)
+register_event("DeathMsg","on_death_bleeding","a")
 
 
 }
@@ -280,8 +281,23 @@ unbleed_user(id){
 	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
 	remove_task(id+BLEED_TASKID)
 	remove_task(id+UNBLEED_TASKID)
+	remove_task(id+MINIBLEED_TASKID)
+	remove_task(id+UNMINIBLEED_TASKID)
+	remove_task(id+ULTRABLEED_TASKID)
+	remove_task(id+UNULTRABLEED_TASKID)
 	gIsBleeding[id]=false
 
 
 
+}
+
+public on_death_bleeding()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		sh_unbleed_user(id)
+	
+	}
+	
 }

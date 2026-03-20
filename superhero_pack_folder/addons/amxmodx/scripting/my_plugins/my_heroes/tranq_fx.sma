@@ -20,6 +20,7 @@ register_plugin(PLUGIN, VERSION, AUTHOR);
 g_msgFade = get_user_msgid("ScreenFade");
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
+register_event("DeathMsg","on_death_sleeping","a")
 
 }
 
@@ -175,4 +176,15 @@ unsleep_user(id){
 
 
 
+}
+
+public on_death_sleeping()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		sh_unsleep_user(id)
+	
+	}
+	
 }

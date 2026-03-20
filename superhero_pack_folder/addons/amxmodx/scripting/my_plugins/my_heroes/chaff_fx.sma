@@ -23,6 +23,7 @@ public plugin_init(){
 	CHAFF_TASKID=allocate_typed_task_id(player_task)
 	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
+	register_event("DeathMsg","on_death_chaffed","a")
 	
 }
 
@@ -183,5 +184,16 @@ unchaff_user(id){
 	return 0
 	
 	
+	
+}
+
+public on_death_chaffed()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		sh_unchaff_user(id)
+	
+	}
 	
 }

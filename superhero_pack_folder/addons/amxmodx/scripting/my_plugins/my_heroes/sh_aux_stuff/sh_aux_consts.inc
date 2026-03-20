@@ -93,4 +93,3 @@ stock Float:z_vector[3]={0.0,0.0,1.0}
 stock z_iVector[3]={0,0,1}
 
 
-stock const tag_color[4]={0,255,255,255}

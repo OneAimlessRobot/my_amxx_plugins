@@ -3,7 +3,6 @@
 #endif
 #define task_allocator_aux_stuff_included
 
-#define Struct enum
 
 #define ALLOCATOR_CFG_FILENAME "allocator.cfg"
 #define ALLOCATOR_CFG_DIRECTORY "/task_allocator"

@@ -14,6 +14,7 @@
 
 #define MAX_ENTITIES 2048
 #define MAX_HERO_NAME_LENGTH 256
+#define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
 //Default includes used for shero
 
@@ -217,6 +218,9 @@ native sh_get_max_hp(id);
 native sh_get_max_ap(id);
 
 native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
+
+
+native sh_get_player_save_key_on_db(id,key_ret_result[MAX_PLAYER_SAVE_KEY_LENGTH])
 //------------
 // Hero Creation/Property Natives
 //------------

@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../logs"
+		},
+		{
+			"path": "../../../../../../../FASTstorage/FASTprogs/mysqlstuff/amxmodxserver_mgmt/scripts"
 		}
 	],
 	"settings": {}

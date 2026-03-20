@@ -346,15 +346,23 @@ public dart_reload(parm[])
 	
 	dart_loaded[parm[0]] = true
 }
+
 public darttrail(parm[])
 {
-	new pid = parm[0]
-	if (pid)
-	{
-		trail(pid,RED,3,5)
-	}
+new pid = parm[0]
+if (!is_valid_ent(pid))
+{
+    return
 }
-
+new arr_of_color[4];
+for(new i=0;i<(sizeof arr_of_color )-1;i++){
+	
+	arr_of_color[i]=LineColors[dart_hurts[pid]?RED:WHITE][i];
+}
+arr_of_color[3]=255
+trail_custom(pid,arr_of_color,3,5)
+	
+}
 
 public vexd_pfntouch(pToucher, pTouched)
 {

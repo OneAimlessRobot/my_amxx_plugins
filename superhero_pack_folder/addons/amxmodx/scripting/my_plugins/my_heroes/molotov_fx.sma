@@ -18,6 +18,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsBurning,false,SH_MAXSLOTS+1)
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
+	register_event("DeathMsg","on_death_burning","a")
 	
 }
 public plugin_precache(){
@@ -104,11 +105,15 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 //----------------------------------------------------------------------------------------------
 public fire_scream(id)
 {
-	emit_sound(id, CHAN_AUTO, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	id-=BURN_TASKID+2
+	if(!is_user_connected(id)) return
+
+	emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 }
 //----------------------------------------------------------------------------------------------
 public stop_fire_sound(id)
 {
+	id-=BURN_TASKID+3
 	if(!is_user_connected(id)) return
 	gIsBurning[id] = false
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -208,5 +213,16 @@ unburn_user(id){
 	return 0
 	
 	
+	
+}
+
+public on_death_burning()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		sh_unmolly_user(id)
+	
+	}
 	
 }

@@ -8,6 +8,8 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 /*
 
 //#include "sh_aux_stuff/sh_aux_fx_natives_const_pt2.inc"
@@ -19,6 +21,7 @@
 new RADIOACTIVE_TASK_ID
 new UNRADIOACTIVE_TASK_ID
 
+#define NUM_INIT_TRACK_PARAMS 6
 
 #define PLUGIN "Superhero aux natives"
 #define VERSION "1.0.0"
@@ -30,6 +33,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	UNRADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
+	register_event("DeathMsg","on_death_tracked","a")
 	prepare_shero_aux_lib_pt3()
 
     
@@ -98,6 +102,7 @@ public track_task(array[],id){
 	new client_name[128]
 	new distance, origin[3], eorigin[3],att_origin[3]
 	new Float:Pos[3],Float:vEnd[3]
+	new color_const=array[5]
 	get_user_name(id,client_name,127)
 	
 	get_user_origin(id, eorigin)
@@ -106,31 +111,36 @@ public track_task(array[],id){
 			
 	distance = get_distance(eorigin, origin)
 	format(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
-	set_hudmessage(LineColorsWithAlpha[ORANGE][0], LineColorsWithAlpha[ORANGE][1], LineColorsWithAlpha[ORANGE][2],  0.0, 0.2, 0, 0.0, 1.0)
+	set_hudmessage(LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  0.0, 0.2, 0, 0.0, 1.0)
 	ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
 	detect_user(array[0],id,vEnd);
 	IVecFVec(origin,Pos)
 	IVecFVec(eorigin,vEnd)
-	laser_line(array[0],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE},true)
+	new color_const_arr[3];
+	for(new i=0;i<sizeof color_const_arr;i++){
+
+		color_const_arr[i]=color_const
+	}
+	laser_line(array[0],Pos,vEnd,true,color_const_arr,true)
 	for(new i=0;i<array[2];i++){
-		if(!client_hittable(array[i+5])){
+		if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
 		
 			continue
 		}
-		get_user_origin(array[i+5], origin)
+		get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
 			
 		distance = get_distance(eorigin, origin)
 		format(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
-		ShowSyncHudMsg(array[i+5],array[1], "%s", hud_msg)
-		detect_user(array[i+5],id,vEnd);
+		ShowSyncHudMsg(array[i+NUM_INIT_TRACK_PARAMS],array[1], "%s", hud_msg)
+		detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
 		IVecFVec(origin,Pos)
-		laser_line(array[i+5],Pos,vEnd,true,{LTBLUE,LTBLUE,LTBLUE},true)
+		laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
 		
 	}
-	sh_set_rendering(id, tag_color[0],  tag_color[1], tag_color[2], tag_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, 0.9, tag_color[0], tag_color[1], tag_color[2],  50)
+	sh_set_rendering(id, LineColorsWithAlpha[color_const][0],  LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
+	sh_screen_fade(id, 0.1, 0.9, LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  50)
 	new the_fucking_argument[4];
-	copy(the_fucking_argument,4,tag_color)
+	copy(the_fucking_argument,4,LineColorsWithAlpha[color_const])
 	aura(id,the_fucking_argument)
 	if(array[3]){
 		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
@@ -141,54 +151,58 @@ public track_task(array[],id){
 
 public _track_user(iPlugins, iParams){
 
-    new id=get_param(1),
-        attacker=get_param(2),
-        do_damage=get_param(3),
-        damage=get_param(4),
-        Float:period=get_param_f(5),
-        Float:time=get_param_f(6)
+	new id=get_param(1),
+		attacker=get_param(2),
+		do_damage=get_param(3),
+		damage=get_param(4),
+		Float:period=get_param_f(5),
+		Float:time=get_param_f(6),
+		track_color=get_param(7)
 
-    new  radioactive_times=floatround(time/period)
-    new players[SH_MAXSLOTS]
-    new team_name[32]
-    new client_name[128]
-    new enemy_name[128]
-    new player_count;
+	new  radioactive_times=floatround(time/period)
+	new players[SH_MAXSLOTS]
+	new team_name[32]
+	new client_name[128]
+	new enemy_name[128]
+	new player_count;
+	gatling_set_fx_num(id, RADIOACTIVE)
+	
+	get_user_name(id,enemy_name,127)
+	get_user_name(attacker,client_name,127)
 
-    get_user_name(id,enemy_name,127)
-    get_user_name(attacker,client_name,127)
+	get_user_team(attacker,team_name,32)
+	get_players(players,player_count,"eah",team_name)
 
-    get_user_team(attacker,team_name,32)
-    get_players(players,player_count,"eah",team_name)
-
-    new array[5+SH_MAXSLOTS+1]
-    arrayset(array,-1,sizeof array)
-    array[0] = attacker
-    array[1] = CreateHudSyncObj()
-    array[2] = player_count
-    array[3] = do_damage
-    array[4] = damage
-    for(new i=0;i<player_count;i++){
-        
-        if(client_hittable(players[i])){
-            array[5+i]=players[i]
-        }
-    }
-    set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
-    set_task(floatsub(floatmul(period,float(radioactive_times)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
-    return 0
+	new array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
+	arrayset(array,-1,sizeof array)
+	array[0] = attacker
+	array[1] = CreateHudSyncObj()
+	array[2] = player_count
+	array[3] = do_damage
+	array[4] = damage
+	array[5] = track_color
+	for(new i=0;i<player_count;i++){
+		
+		if(client_hittable(players[i])){
+			array[NUM_INIT_TRACK_PARAMS+i]=players[i]
+		}
+	}
+	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
+	set_task(floatsub(floatmul(period,float(radioactive_times)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
+	return 0
 
 
 
 }
 public _unradioactive_user(iPlugin,iParams){
-    new id=get_param(1)
-    remove_task(id+UNRADIOACTIVE_TASK_ID)
-    remove_task(id+RADIOACTIVE_TASK_ID)
-    if(client_hittable(id)){
-        set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-    }
-    return 0
+	new id=get_param(1)
+	remove_task(id+UNRADIOACTIVE_TASK_ID)
+	remove_task(id+RADIOACTIVE_TASK_ID)
+	if(client_hittable(id)){
+		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+		gatling_set_fx_num(id, 0)
+	}
+	return 0
 
 
 
@@ -199,6 +213,7 @@ public unradioactive_task(id){
 	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(client_hittable(id)){
 		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+		gatling_set_fx_num(id, 0)
 	}
 	return 0
 
@@ -506,4 +521,15 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	parm[3] = tg_id
 	parm[4] = floatround(upward_shift)
 	move_entity(parm)
+}
+
+public on_death_tracked()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		unradioactive_user(id)
+	
+	}
+	
 }

@@ -254,6 +254,8 @@ public BlowUp(id)
 
 	get_user_name(id, name, 31)
 
+	set_dhudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+	show_dhudmessage(0,"% was Re-Born using the power of the Phoenix!",name)
 	// blowup even if dead
 	explode_effect(origin, dmgRadius)
 
@@ -265,8 +267,6 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 
 			if ( distanceBetween < dmgRadius ) {
-				superhero_protected_hud_message(a, "% was Re-Born using the power of the Phoenix!", name,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-
 				dRatio = float(distanceBetween) / float(dmgRadius)
 				damage = maxDamage - floatround(maxDamage * dRatio)
 				sh_extra_damage(a, id, damage, "Phoenix Re-Birth")

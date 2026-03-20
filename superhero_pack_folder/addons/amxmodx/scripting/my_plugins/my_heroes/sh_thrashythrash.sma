@@ -341,7 +341,6 @@ if ( wpnid  == CSW_AK47)
 	
 	if ((thrash_bullets[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-			
 		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
 	}
 	thrash_bullets[id] = ammo
