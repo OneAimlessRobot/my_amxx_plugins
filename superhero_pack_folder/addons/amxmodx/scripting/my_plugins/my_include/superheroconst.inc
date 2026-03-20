@@ -124,10 +124,10 @@ stock const new_dmg_type_names[SH_NEW_DMG_SQUASHED+SH_NEW_DMG_ENERGY_BLAST][32]=
 //----------------------------------------------------------------------------------------------
 
 // Max levels that can be loaded from the superhero.ini
-#define SH_MAXLEVELS 100
+#define SH_MAXLEVELS 200
 
 // Max Amount of heros that can be loaded
-#define SH_MAXHEROS 100
+#define SH_MAXHEROS 200
 
 // Potential of power1-power9 but limited by sh_maxbinds (3 default)
 #define SH_MAXBINDPOWERS 9

@@ -451,10 +451,7 @@ public darkpred_fire(id)
 			
 			gBullets[id]--
 			
-			new message[128]
-			format(message, 127, "You Have %d bullet(s) left",gBullets[id])
-			set_dhudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
-			show_dhudmessage(id, message)
+			superhero_protected_hud_message(id,"You Have %d bullet(s) left",gBullets[id],255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1
 		}

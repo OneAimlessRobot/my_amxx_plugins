@@ -2727,8 +2727,6 @@ writeStatusMessage(id, const message[256])
 	write_byte(0)
 	write_string(message)
 	message_end()
-	/*set_dhudmessage(xp_and_powers_hud_color[0],xp_and_powers_hud_color[1],xp_and_powers_hud_color[2],0.02,0.92,0,0.0,0.90,0.0,0.2)
-	show_dhudmessage(id,xp_and_powers_hud_channel,"%s",message)*/
 	
 }
 //----------------------------------------------------------------------------------------------

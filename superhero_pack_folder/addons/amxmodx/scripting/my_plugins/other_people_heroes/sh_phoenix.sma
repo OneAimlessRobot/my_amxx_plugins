@@ -120,7 +120,7 @@ public phoenix_respawn(parm[])
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 	client_print(id, print_chat, "[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!")
-
+	
 	// Double spawn prevents the no HUD glitch
 	user_spawn(id)
 	user_spawn(id)
@@ -254,8 +254,7 @@ public BlowUp(id)
 
 	get_user_name(id, name, 31)
 
-	set_dhudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-	show_dhudmessage(0,"% was Re-Born using the power of the Phoenix!",name)
+	superhero_protected_hud_message(0,"%s was Re-Born using the power of the Phoenix!",name,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 	// blowup even if dead
 	explode_effect(origin, dmgRadius)
 

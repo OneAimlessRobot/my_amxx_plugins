@@ -256,8 +256,7 @@ public psychosis_task(id){
 		gHeroName,
 		gPsychosisTime[id]
 		);
-		set_dhudmessage(LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
-		show_dhudmessage(id, "%s", hud_msg)
+		superhero_protected_hud_message(id,"%s", hud_msg,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
 		sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	}
 	
@@ -1031,6 +1030,7 @@ public BlowUp(id)
 	get_user_origin(id, origin)
 
 	get_user_name(id, name, 31)
+	superhero_protected_hud_message(0,"%s LOST IT!!!!!", name,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 
 	// blowup even if dead
 	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,default_explode_knock_force_magnitude,1,_,default_explode_upward_shift)
@@ -1042,8 +1042,7 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 			if(!is_user_bot(a)){
 				if ( distanceBetween < floatround(explode_radius) ) {
-					set_dhudmessage(248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-					show_dhudmessage(a, "%s LOST IT!!!!!", name)
+					
 				}
 			}
 		}
