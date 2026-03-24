@@ -1,14 +1,20 @@
 /*
 delimiter ;
 */
+
+/*
 DROP DATABASE sh_skill_configs;
+
+*/
 
 CREATE DATABASE sh_skill_configs;
 
 use sh_skill_configs;
 
+drop function `num_configs_client`;
 drop table `sh_config_heroes`;
 drop table `sh_player_configs`;
+
 
 CREATE TABLE IF NOT EXISTS `sh_player_configs` (
   `SH_KEY` varchar(64) binary NOT NULL default '',
@@ -25,6 +31,20 @@ CREATE TABLE IF NOT EXISTS `sh_config_heroes` (
   FOREIGN KEY (`CONFIG_ID`) REFERENCES `sh_player_configs`(`CONFIG_ID`)
 ) ENGINE = InnoDB COMMENT = 'SUPERHERO configs heroes table';
 
+SET GLOBAL log_bin_trust_function_creators = 1;
+delimiter //
+CREATE FUNCTION `num_configs_client`(client_key varchar(64)) RETURNS int(10)
+READS SQL DATA
+BEGIN
+DECLARE num int;
+SELECT COUNT(*) into num
+from `sh_player_configs`
+where `sh_player_configs`.`SH_KEY`= client_key;
+RETURN num;
+END//
+
+delimiter ;
+SET GLOBAL log_bin_trust_function_creators = 0;
 /*
  MyISAM engine will ignore any foreign key constraints. Always use InnoDB to create tables that use foreign keys between eachother
 */

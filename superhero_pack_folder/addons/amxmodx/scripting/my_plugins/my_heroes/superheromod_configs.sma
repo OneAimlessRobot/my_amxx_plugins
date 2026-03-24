@@ -1,6 +1,7 @@
 #include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
+#include "../../include/sqlx.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "superheromod_configs_aux/superheromod_configs_header.inc"
@@ -11,7 +12,16 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+/*
+//these work
 
+sh_get_player_save_key_on_db(id,player_key_from_id)
+        
+client_cmd(id,"clearpowers")
+    
+
+
+ */
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -24,6 +34,7 @@ public plugin_init()
     setupConfig()
     loadConfig()
     loadCVARS()
+    initialize_config_engine()
 
 
 
@@ -41,9 +52,7 @@ public newRound(id){
 		return PLUGIN_CONTINUE
 	}
 	if(!is_user_bot(id)){
-        new player_key_from_id[MAX_PLAYER_SAVE_KEY_LENGTH]
-        sh_get_player_save_key_on_db(id,player_key_from_id)
-        sh_chat_message(id,0,"Here is your savekey_id for the db!:^n%s^n",player_key_from_id)
+        
     }
 	return PLUGIN_CONTINUE
 
@@ -104,4 +113,75 @@ loadConfig()
 	else {
 		log_amx("Could not find %s file", shconfigs_cfg_file)
 	}
+}
+
+mySQLConnectForConfigs()
+{
+
+    // Only create the tuple it was not done yet or a connection could not be made
+    if ( !MySQL_Tuple ) {
+        
+
+        //mysql only for now
+        SQL_SetAffinity("mysql")
+
+        // Set up the tuple, cache the information
+        MySQL_Tuple = SQL_MakeDbTuple(setting_struct_arr[SETTING_MYSQL_HOST][value_string],
+                                setting_struct_arr[SETTING_MYSQL_USER][value_string],
+                                setting_struct_arr[SETTING_MYSQL_PASS][value_string],
+                                setting_struct_arr[SETTING_MYSQL_DB][value_string])
+    }
+
+    // Attempt to connect
+    static error[128]
+    new errcode
+    if ( MySQL_Tuple ) MySQL_Handle = SQL_Connect(MySQL_Tuple, errcode, error, charsmax(error))
+
+    if ( MySQL_Handle == Empty_Handle ) {
+        /*console_print(0,"MySQL connect error: [%d] '%s' (%s,%s,%s)^n", errcode, error,
+                                        setting_struct_arr[SETTING_MYSQL_HOST][value_string],
+                                        setting_struct_arr[SETTING_MYSQL_USER][value_string],
+                                        setting_struct_arr[SETTING_MYSQL_DB][value_string])*/
+
+        // Free the tuple on a connection error
+        SQL_FreeHandle(MySQL_Tuple)
+        MySQL_Tuple = Empty_Handle
+        return
+    }
+    /*console_print(0,"MySQL connect sucessfull!: [%d] '%s' (%s,%s,%s)^n", errcode, error,
+                                        setting_struct_arr[SETTING_MYSQL_HOST][value_string],
+                                        setting_struct_arr[SETTING_MYSQL_USER][value_string],
+                                        setting_struct_arr[SETTING_MYSQL_DB][value_string])*/
+
+}
+
+//----------------------------------------------------------------------------------------------
+close_mysql()
+{
+	if ( MySQL_Handle == Empty_Handle ) return
+
+	SQL_FreeHandle(MySQL_Handle)
+	MySQL_Handle = Empty_Handle
+}
+config_saving_end()
+{
+	if ( MySQL_Handle != Empty_Handle ) {
+		SQL_FreeHandle(MySQL_Handle)
+		MySQL_Handle = Empty_Handle
+		
+	}
+
+	if ( MySQL_Tuple != Empty_Handle ) {
+		SQL_FreeHandle(MySQL_Tuple)
+		MySQL_Tuple = Empty_Handle
+	}
+}
+
+initialize_config_engine(){
+
+
+    mySQLConnectForConfigs()
+    close_mysql()
+    config_saving_end()
+
 }

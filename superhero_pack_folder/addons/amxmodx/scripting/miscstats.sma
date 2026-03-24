@@ -537,7 +537,9 @@ public client_death(killer, victim, wpnindex, hitplace, TK)
 			set_task(4.0 + float(param[1]), "checkKills", killer+ taskid_check_kills, param, sizeof(param))
 		}
 	}
-
+	if(!is_user_connected(victim)){
+		return
+	}
 	new const CsTeams:team = cs_get_user_team(victim);
 
 	if (EnemyRemaining && CS_TEAM_T <= team <= CS_TEAM_CT && is_user_connected(victim))

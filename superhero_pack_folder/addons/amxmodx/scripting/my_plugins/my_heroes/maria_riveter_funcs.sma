@@ -435,11 +435,16 @@ public vexd_pfntouch(pToucher, pTouched)
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		
-		
+		new bool:is_direct_hit = client_hittable(pTouched);
 		new Float:distance=vector_distance(origin,rivet_launch_pos[pToucher]);
-		new Float:falloff_coeff= floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST);
-		new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
-		explosion(maria_get_hero_id(),pToucher,MARIA_PROJECTILE_EXPLODE_RADIUS,damage, MARIA_PROJECTILE_EXPLODE_FORCE,0,_,default_explode_upward_shift)
+		new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
+		new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+(is_direct_hit?MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS:0.0);
+		explosion(maria_get_hero_id(),pToucher,
+										MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
+										MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
+										is_direct_hit,
+										is_direct_hit,
+										default_explode_upward_shift)
 		remove_rivet(pToucher)	
 
 		arrayset(rivet_launch_pos[pToucher],0.0,3);

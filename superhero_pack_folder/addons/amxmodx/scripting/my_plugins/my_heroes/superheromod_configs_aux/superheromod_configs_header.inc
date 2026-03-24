@@ -11,10 +11,8 @@
 #define MAX_CONFIGS_PER_PLAYER_HARD_CAP 20
 
 
-stock MySQL_Handle;
-
-stock sh_max_num_configs_per_player_pcvar
-
+stock Handle:MySQL_Handle,
+    Handle:MySQL_Tuple
 
 stock shconfigs_cfg_folder[128],shconfigs_cfg_file[128]
 
@@ -32,6 +30,12 @@ stock const DEFAULT_USER_PASS[MAX_CHARS_STRING] = "white_gown_queen_xd"
 
 enum setting_ids{
     SETTING_MAX_NUM_CONFIGS=0,
+    SETTING_MYSQL_HOST,
+    SETTING_MYSQL_DB,
+    SETTING_MYSQL_USER,
+    SETTING_MYSQL_PASS,
+    SETTING_MYSQL_ROOT_USER,
+    SETTING_MYSQL_ROOT_PASS,
     MAX_SETTING_IDS
 }
 enum setting_init_data_type{
@@ -62,7 +66,13 @@ enum cvar_struct{
 }
 stock const CVAR_INIT[_:MAX_SETTING_IDS][cvar_struct]={
     
-    {_:data_type_num,"10","max_configs_per_player","sh_max_configs_per_player"}
+    {_:data_type_num,"10","max_configs_per_player","sh_max_configs_per_player"},
+    {_:data_type_str,"","configs_db_host","sh_configs_db_host"},
+    {_:data_type_str,"","configs_db_name","sh_configs_db_name"},
+    {_:data_type_str,"","configs_db_user","sh_configs_db_user"},
+    {_:data_type_str,"","configs_db_password","sh_configs_db_password"},
+    {_:data_type_str,"","configs_db_root_user","sh_configs_db_root_user"},
+    {_:data_type_str,"","configs_db_root_password","sh_configs_db_root__password"}
 }
 
 stock setting_struct_arr[_:MAX_SETTING_IDS][setting_struct]
