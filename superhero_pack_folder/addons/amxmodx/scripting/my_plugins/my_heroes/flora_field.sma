@@ -2,10 +2,10 @@
 
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
-#include "flora_inc/flora_field.inc"
-#include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "flora_inc/flora_field.inc"
+#include "flora_inc/flora_global.inc"
 
 
 #define PLUGIN "Superhero flora field funcs"
@@ -23,7 +23,9 @@ stock g_flora_user_is_cloaked[SH_MAXSLOTS+1]
 stock g_flora_prev_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_charging[SH_MAXSLOTS+1]
-stock g_flora_sheltered_value[SH_MAXSLOTS+1]
+stock flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
+stock g_is_flora_tagging_this_player[SH_MAXSLOTS+1]
+stock g_was_player_tagged_by_flora[SH_MAXSLOTS+1]
 stock g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
@@ -86,8 +88,8 @@ public plugin_init()
 
 	
 	register_forward(FM_Think, "field_think")
-	
-	// Add your code here...
+	register_event("DeathMsg","on_death_tagged_by_flora","a")
+
 }
 
 public plugin_natives(){
@@ -274,6 +276,14 @@ public loadCVARS(){
 	flora_teleport_crouch_time=get_cvar_float("flora_teleport_crouch_time")
 	flora_base_stun_speed=get_cvar_float("flora_base_stun_speed")
 }
+clear_flora_tagging_arrays(id,bool:is_victim){
+
+
+
+	arrayset((is_victim?g_was_player_tagged_by_flora:g_is_flora_tagging_this_player)[i],false,sizeof((is_victim?g_was_player_tagged_by_flora:g_is_flora_tagging_this_player)[]));
+	
+
+}
 Float:get_player_alpha(id){
 	
 	new Float:alphaMult=1.0;
@@ -404,7 +414,7 @@ public flora_checks(id){
 		
 	}
 	
-	new field_id,flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
+	new field_id,flora_sheltered_values:flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
 	g_flora_sheltered_value[id]=flora_sheltered_value;
 	
 	if(g_flora_curr_inside[id]!=field_id){
@@ -414,11 +424,10 @@ public flora_checks(id){
 	
 	new crouched=flora_get_user_is_crouched(id)
 	if(g_flora_sheltered_value[id]&&crouched){
-		
+		g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
 		switch(g_flora_sheltered_value[id]){
 			case OUTSIDE:
 			{
-				g_flora_dmg_color[id]=GREEN
 				g_flora_curr_dmg_mult[id]=1.0
 				g_field_teleport_time[id]=0.0
 				g_flora_prev_inside[id]=g_flora_curr_inside[id]
@@ -434,13 +443,11 @@ public flora_checks(id){
 			}
 			case SHELTERED:
 			{
-				g_flora_dmg_color[id]=YELLOW
 				g_flora_curr_dmg_mult[id]=flora_field_heal_mult
 				g_field_teleport_time[id]=0.0
 			}
 			case DUNGEON_DWELLER:
 			{
-				g_flora_dmg_color[id]=RED
 				g_flora_curr_dmg_mult[id]=flora_field_heal_mult*flora_core_heal_mult
 				apply_teleport(id,field_id)
 			}
@@ -469,19 +476,19 @@ public flora_checks(id){
 		}
 	}
 }
-is_flora_user_in_owned_field(player_id,&field_id=-1){
+flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
 	if ( !client_hittable(player_id)||!flora_get_has_flora(player_id) ){
 		
 	
 			field_id=-1
-			return 0
+			return NONE
 	
 	}
 	else if( !(entity_get_int( player_id, EV_INT_flags ) & FL_ONGROUND  )){
 		
 			field_id=-1
-			return 0
+			return NONE
 	
 	}
 	new Float:pos[3],Float:field_pos[3]
@@ -746,7 +753,7 @@ public field_think(ent)
 			else if(cs_get_user_team(pid)==owner_team){
 				continue
 			}
-			if(g_flora_sheltered_value[owner]>0){
+			if(g_flora_sheltered_value[owner]>NONE){
 				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
 				
 				sh_extra_damage(pid,owner,floatround(fdamage),"Flora field damage")
@@ -928,4 +935,15 @@ public flora_heal(id,Float:damage,color){
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
 	return true
 
+}
+
+public on_death_tagged_by_flora()
+{	
+	new id = read_data(2)
+	
+	if(is_user_connected(id)||sh_is_active()){
+		
+	
+	}
+	
 }

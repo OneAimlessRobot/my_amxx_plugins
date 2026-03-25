@@ -132,7 +132,7 @@
 		IVecFVec(vec1,fvec1)
 		IVecFVec(vec2,fvec2)
 
-		laser_line(id,fvec1,fvec2,false,{GREEN,GREEN,GREEN},_,true)
+		laser_line(id,fvec1,fvec2,false,{RED,GREEN,GREEN},_,true)
 	}
 
 	lastammo[id] = clip

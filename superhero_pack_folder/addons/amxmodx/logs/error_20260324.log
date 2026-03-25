@@ -1,0 +1,47 @@
+L 03/24/2026 - 20:11:00: Start of error session.
+L 03/24/2026 - 20:11:00: Info (map "cs_assault") (file "addons/amxmodx/logs/error_20260324.log")
+L 03/24/2026 - 20:11:00: Function "on_death_tagged_by_flora" was not found
+L 03/24/2026 - 20:11:00: [AMXX] Run time error 19 (plugin "flora_field.amxx") - debug not enabled!
+L 03/24/2026 - 20:11:00: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Start of error session.
+L 03/24/2026 - 23:49:16: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260324.log")
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10 (plugin "yandere_jetplane_rocket_funcs.amxx") (native "yandere_get_has_yandere") - debug not enabled!
+L 03/24/2026 - 23:49:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10 (plugin "yandere_jetplane_radio_funcs.amxx") (native "yandere_get_has_yandere") - debug not enabled!
+L 03/24/2026 - 23:49:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10 (plugin "yandere_jetplane_mg_funcs.amxx") (native "yandere_get_has_yandere") - debug not enabled!
+L 03/24/2026 - 23:49:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10 (plugin "yandere_jetplane_engine_funcs.amxx") (native "yandere_get_has_yandere") - debug not enabled!
+L 03/24/2026 - 23:49:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10 (plugin "yandere_jetplane_bomb_funcs.amxx") (native "yandere_get_has_yandere") - debug not enabled!
+L 03/24/2026 - 23:49:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:49:16: Called dynanative into a paused plugin.
+L 03/24/2026 - 23:49:16: [AMXX] Displaying debug trace (plugin "yandere_jetplane_funcs.amxx", version "1.0.0")
+L 03/24/2026 - 23:49:16: [AMXX] Run time error 10: native error (native "yandere_get_has_yandere")
+L 03/24/2026 - 23:49:16: [AMXX]    [0] yandere_jetplane_funcs.sma::round_end (line 768)
+L 03/24/2026 - 23:51:09: Start of error session.
+L 03/24/2026 - 23:51:09: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260324.log")
+L 03/24/2026 - 23:51:09: Function "molotov_damage_vulnerability" was not found
+L 03/24/2026 - 23:51:09: [AMXX] Run time error 19 (plugin "yandere_psychosis_fx.amxx") - debug not enabled!
+L 03/24/2026 - 23:51:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:51:09: [HAMSANDWICH] Function Player_TakeDamage not found.
+L 03/24/2026 - 23:51:09: [AMXX] Run time error 10 (plugin "sh_selfless_yanderept2.amxx") (native "RegisterHam") - debug not enabled!
+L 03/24/2026 - 23:51:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:51:38: Start of error session.
+L 03/24/2026 - 23:51:38: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260324.log")
+L 03/24/2026 - 23:51:38: Function "molotov_damage_vulnerability" was not found
+L 03/24/2026 - 23:51:38: [AMXX] Run time error 19 (plugin "yandere_psychosis_fx.amxx") - debug not enabled!
+L 03/24/2026 - 23:51:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:51:38: [HAMSANDWICH] Function Player_TakeDamage not found.
+L 03/24/2026 - 23:51:38: [AMXX] Run time error 10 (plugin "sh_selfless_yanderept2.amxx") (native "RegisterHam") - debug not enabled!
+L 03/24/2026 - 23:51:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 03/24/2026 - 23:52:08: Start of error session.
+L 03/24/2026 - 23:52:08: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260324.log")
+L 03/24/2026 - 23:52:08: Function "molotov_damage_vulnerability" was not found
+L 03/24/2026 - 23:52:08: [AMXX] Run time error 19 (plugin "yandere_psychosis_fx.amxx") - debug not enabled!
+L 03/24/2026 - 23:52:08: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

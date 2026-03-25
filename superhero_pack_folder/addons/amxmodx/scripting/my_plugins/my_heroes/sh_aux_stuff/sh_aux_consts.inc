@@ -20,20 +20,21 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
 
-#define COLORS_NUM 11
 //Colors To Pick From
-#define CUSTOM		0
-#define RED		1
-#define GREEN		2
-#define BLUE		3
-#define LTBLUE		4
-#define YELLOW		5
-#define PURPLE		6
-#define ORANGE		7
-#define WHITE		8
-#define PINK		9
-#define LTGREEN     10
-
+enum sh_custom_color{
+		CUSTOM=0,
+		RED,
+		GREEN,
+		BLUE,
+		LTBLUE,
+		YELLOW,
+		PURPLE,
+		ORANGE,
+		WHITE,
+		PINK,
+		LTGREEN,
+		COLORS_NUM
+}
 #define NULL_SOUND_FILENAME "common/null.wav"
 
 #define BLOOD_COLOR_RED		247
@@ -50,7 +51,7 @@ stock const burn_decal[5] = {199,200,201,202,203}
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 
 //Color definitions
-stock const LineColors[COLORS_NUM][3] = {
+stock const LineColors[_:COLORS_NUM][3] = {
 	{150, 150, 150},	//Custom
 	{255, 0, 0},		//Red
 	{0, 255, 0},		//Green
@@ -63,7 +64,7 @@ stock const LineColors[COLORS_NUM][3] = {
 	{250, 92, 163},      //Pink
 	{111,255,111}      //Light Green
 }
-stock const LineColorsWithAlpha[COLORS_NUM][4] = {
+stock const LineColorsWithAlpha[_:COLORS_NUM][4] = {
 	{150, 150, 150,255},	//Custom
 	{255, 0, 0,255},		//Red
 	{0, 255, 0,100},		//Green

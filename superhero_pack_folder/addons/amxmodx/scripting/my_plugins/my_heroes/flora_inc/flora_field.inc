@@ -37,10 +37,21 @@
 #define FLORA_UNGLISTEN_TASKID 51237123
 #define FLORA_CHECKS_TASKID 5233378
 
-#define OUTSIDE 1
-#define SHELTERED 2
-#define DUNGEON_DWELLER 3
+enum flora_sheltered_values{
+  NONE=0,
+  OUTSIDE,
+  SHELTERED,
+  DUNGEON_DWELLER,
+  MAX_FLORA_SHELTERED
+}
 
+stock const flora_damage_colors[MAX_FLORA_SHELTERED]={
+  GREEN,
+  GREEN,
+  YELLOW,
+  RED
+
+}
 native clear_fields()
 
 native reset_flora_user(id)

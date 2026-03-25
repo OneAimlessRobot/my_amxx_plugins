@@ -26,10 +26,13 @@ stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_
 	if(!is_user_connected(id)||!is_user_connected(attacker)){
 		return false
 	}
-	stored_id_team=cs_get_user_team(attacker)
-	stored_attacker_team=cs_get_user_team(id)
+	new CsTeams:the_stored_id_team=cs_get_user_team(attacker),
+			CsTeams:the_stored_attacker_team=cs_get_user_team(id)
+	
+	stored_id_team=the_stored_id_team;
+	stored_attacker_team=the_stored_attacker_team;
 
-	return (stored_id_team==stored_attacker_team)&&( id != attacker )
+	return (the_stored_id_team==the_stored_attacker_team)&&( id != attacker )
 
 
 }

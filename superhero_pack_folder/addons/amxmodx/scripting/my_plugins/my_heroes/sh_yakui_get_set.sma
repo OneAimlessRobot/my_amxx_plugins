@@ -64,7 +64,7 @@ public _make_effect(iPlugin,iParams){
 		return
 	}
 	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
-	new fx_num=sh_effect_user(vic,attacker,hero_id)
+	new fx_id:fx_num=sh_effect_user(vic,attacker,hero_id)
 	gCurrFX[vic]=fx_num;
 
 }
@@ -194,7 +194,7 @@ public _gatling_get_fx_num(iPlugin,iParams){
 	new id= get_param(1)
 	if(!is_user_connected(id)){
 		
-		return 0
+		return NONE
 	}
 	return gCurrFX[id]
 
@@ -222,75 +222,7 @@ public _sh_get_pill_color(iPlugin,iParams){
 	}
 	new color[4]
 	get_array(3,color,4)
-
-	switch(fx_num){
-		case KILL:{
-			copy(color,4,kill_color)
-			
-		
-		}
-		case GLOW:{
-			copy(color,4,glow_color)
-			
-		
-		}
-		case STUN:{
-			copy(color,4,stun_color)
-		
-		
-		}
-		case POISON:{
-			copy(color,4,poison_color)
-		
-		
-		
-		}
-		case RADIOACTIVE:{
-			copy(color,4,radioactive_color)
-		
-		
-		
-		}
-		case MORPHINE:{
-			copy(color,4,morphine_color)
-		
-		
-		
-		}
-		case WEED:{
-		
-			copy(color,4,weed_color)
-		
-		}
-		case COCAINE:{
-			copy(color,4,cocaine_color)
-		
-		
-		
-		}
-		case BLIND:{
-			copy(color,4,blind_color)
-		
-		
-		}
-		case METYLPHENIDATE:{
-			copy(color,4,focus_color)
-		
-		
-		}
-		case BATH:{
-			copy(color,4,bath_color)
-		
-		
-		}
-		default:{
-			color[3]=0
-		
-		}
-	
-
-	
-	}
+	copy(color,4,fx_colors[fx_num])		
 	set_array(3,color,4)
 
 

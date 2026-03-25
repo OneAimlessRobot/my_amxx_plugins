@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
@@ -30,7 +31,16 @@ for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 			RegisterHam(Ham_Weapon_PrimaryAttack, wpnName, "Ham_Weapon_PrimaryAttack_Post", 1,true) 
 	}
 }
-
+for(new i=_:GLOW;i<_:NUM_FX;i++){
+	
+	fx_task_parameters[i][_:fx_task_apply_id]=allocate_typed_task_id(player_task)
+	fx_task_parameters[i][_:fx_task_remove_id]=allocate_typed_task_id(player_task)
+	static Float:the_period;
+	the_period=fx_task_parameters[i][_:fx_task_period]
+	static Float:the_time;
+	the_time=fx_task_parameters[i][_:fx_task_time]
+	fx_task_parameters[i][_:fx_task_repeats]=floatround(floatdiv(the_time,the_period))
+}
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
 register_event("Damage", "crack_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
@@ -184,12 +194,12 @@ public Player_TakeDamage(id)
  
  set_pdata_float(id, fPainShock, 1.0, 5)
 } 
-public _sh_get_user_effect(iPlugins,iParams){
+public fx_id:_sh_get_user_effect(iPlugins,iParams){
 	
 	new id=get_param(1)
 	if(!client_hittable(id)||!sh_is_active()){
 		
-		return 0;
+		return NONE;
 	}
 	
 	return gatling_get_fx_num(id)
@@ -199,161 +209,61 @@ public _sh_get_user_effect(iPlugins,iParams){
 public _sh_get_fx_color_name(iPlugins,iParams){
 	
 	new fx_num=get_param(1)
-	switch(fx_num){
+	set_array(2,fx_colors[fx_num],4)
+	set_array(3,fx_names[fx_num],128)
 	
-		case KILL:{
-			
-			set_array(2,kill_color,4)
-			set_array(3,"cyanide",128)
-		
-		
-		}
-		case GLOW:{
-		
-			set_array(2,stun_color,4)
-			set_array(3,"glowstick juice",128)
-		
-		
-		}
-		case STUN:{
-		
-		
-			set_array(2,stun_color,4)
-			set_array(3,"stunner",128)
-		
-		}
-		case POISON:{
-		
-		
-			set_array(2,poison_color,4)
-			set_array(3,"poison",128)
-		
-		}
-		case RADIOACTIVE:{
-		
-		
-			set_array(2,radioactive_color,4)
-			set_array(3,"uranium",128)
-		
-		}
-		case MORPHINE:{
-		
-		
-			set_array(2,morphine_color,4)
-			set_array(3,"morphine",128)
-		
-		}
-		case WEED:{
-		
-		
-			set_array(2,weed_color,4)
-			set_array(3,"weed",128)
-		
-		}
-		case COCAINE:{
-		
-		
-			set_array(2,cocaine_color,4)
-			set_array(3,"cocaine",128)
-		
-		}
-		case BLIND:{
-		
-		
-			set_array(2,blind_color,4)
-			set_array(3,"blindness",128)
-		
-		}
-		case METYLPHENIDATE:{
-		
-		
-			set_array(2,focus_color,4)
-			set_array(3,"metylphenidate",128)
-		
-		}
-		case BATH:{
-		
-		
-			set_array(2,bath_color,4)
-			set_array(3,"bath salts",128)
-		
-		}
-		default:{
-		
-			
-			set_array(2,no_color,4)
-			set_array(3,"no drug",128)
-		}
-	
-	
-	
-	
-	}
+
+
+}
+screen_fade_with_color_num(id,fx_id:the_color_num){
+
+	sh_screen_fade(id, 0.1, 0.9, fx_colors[the_color_num][0], fx_colors[the_color_num][1], fx_colors[the_color_num][2], 50)
+
+}
+
+
+fx_task_user(id,fx_id:fx_num){
+	if ( !shModActive() ||!client_hittable(id)) return
+	set_task(fx_task_parameters[fx_num][fx_task_period],
+					fx_task_parameters[fx_num][fx_task_apply_func_name],
+					id+fx_task_parameters[fx_num][fx_task_apply_id],
+					"",
+					0,
+					"a",
+					fx_task_parameters[fx_num][fx_task_repeats])
+
+	set_task(floatsub(floatmul(fx_task_parameters[fx_num][fx_task_period],
+					float(fx_task_parameters[fx_num][fx_task_repeats])),0.1),
+					fx_task_parameters[fx_num][fx_task_remove_func_name],
+					id+fx_task_parameters[fx_num][fx_task_remove_id],
+					"",
+					0,
+					"a",
+					1)
 
 
 
 }
-public _get_fx_num(iPlugin,iParams){
+public fx_id:_get_fx_num(iPlugin,iParams){
 
-	
+
 	new Float:chance=random_float(0.0,1.0)
-	if(chance<0.01){
-	
-		return KILL;
-	
+
+
+	for(new fx_id:i=KILL;i<NUM_FX;i++){
+		new Float:compared=fx_rarity_slice_edges[i];
+		if(chance<compared){
+
+			return i;
+		}
+
 	}
-	if(chance< 0.38){
-	
-		return GLOW;
-	
-	}
-	if(chance< 0.46){
-	
-		return STUN;
-	
-	}
-	if(chance< 0.50){
-	
-		return POISON;
-	
-	}
-	if(chance< 0.58){
-	
-		return RADIOACTIVE;
-	
-	}
-	if(chance< 0.64){
-	
-		return MORPHINE;
-	
-	}
-	if(chance< 0.71){
-	
-		return WEED;
-	
-	}
-	if(chance< 0.79){
-	
-		return COCAINE;
-	
-	}
-	if(chance< 0.85){
-	
-		return BLIND;
-	
-	}
-	if(chance< 0.90){
-	
-		return METYLPHENIDATE;
-	
-	}
-	if(chance< 0.95){
-	
-		return BATH;
-	
-	}
-	return _:BATH +1
-	
+	return NONE
+
+}
+execute_effect_task(fx_id:fx_num,user){
+
+
 
 
 
@@ -365,7 +275,6 @@ public _sh_effect_user_direct(iPlugin,iParams){
 	new attacker=get_param(2)
 	new fx_num=get_param(3)
 	new gHeroID=get_param(4)
-	
 	if(user==attacker){
 	
 		
@@ -387,14 +296,14 @@ public _sh_effect_user_direct(iPlugin,iParams){
 		}
 		case GLOW:{
 		
-			glow_user(user)
+			fx_task_user(id,fx_num)
 		
 		
 		}
 		case STUN:{
 		
 		
-			stun_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		case POISON:{
@@ -406,19 +315,19 @@ public _sh_effect_user_direct(iPlugin,iParams){
 		case RADIOACTIVE:{
 		
 		
-			radioactive_user(user,attacker)
+			fx_task_user(id,fx_num)
 		
 		}
 		case MORPHINE:{
 		
 		
-			morphine_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		case WEED:{
 		
 		
-			weed_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		case COCAINE:{
@@ -430,24 +339,24 @@ public _sh_effect_user_direct(iPlugin,iParams){
 		case BLIND:{
 		
 		
-			blind_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		case METYLPHENIDATE:{
 		
 		
-			focus_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		case BATH:{
 		
 		
-			bath_user(user)
+			fx_task_user(id,fx_num)
 		
 		}
 		default:{
 		
-			return 0;
+			return NONE;
 		
 		}
 	
@@ -461,9 +370,9 @@ public _sh_effect_user_direct(iPlugin,iParams){
 
 
 }
-public _sh_effect_user(iPlugin,iParams){
+public fx_id:_sh_effect_user(iPlugin,iParams){
 
-	new fx_num=sh_gen_effect()
+	new fx_id:fx_num=sh_gen_effect()
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
@@ -477,111 +386,15 @@ public _sh_effect_user(iPlugin,iParams){
 
 
 
-public _sh_uneffect_user(iPlugin,iParams){
+public fx_id:_sh_uneffect_user(iPlugin,iParams){
 
 	new user=get_param(1)
 	new fx_num=get_param(2)
 	new gHeroID=get_param(3)
-	switch(fx_num){
-		
-		case GLOW:{
-		
-			
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur glow bro!")
-			}
-			unglow_user(user)
-		
-		
-		}
-		case STUN:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur stun bro!")
-			}
-			unstun_user(user)
-		
-		}
-		case POISON:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur poisan!")
-			}
-			unpoison_user(user)
-		
-		}
-		case RADIOACTIVE:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur chernobyl!")
-			}
-			unradioactive_user(user)
-		
-		}
-		case MORPHINE:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur heals!")
-			}
-			unmorphine_user(user)
-		
-		}
-		case WEED:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur weed!")
-			}
-			unweed_user(user)
-		
-		}
-		case COCAINE:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur 80s!")
-			}
-			uncocaine_user(user)
-		
-		}
-		case BLIND:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur blindess!")
-			}
-			unblind_user(user)
-		
-		}
-		case METYLPHENIDATE:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur college pills!")
-			}
-			unfocus_user(user)
-		
-		}
-		case BATH:{
-		
-		
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"Removed ur spicy college pills!")
-			}
-			unbath_user(user)
-		
-		}
-		default:{
-		
-		}
 	
-	
-	
-	
+	uneffect_user_primitive(id,true)
+	if(!is_user_bot(user)){
+		sh_chat_message(user,gHeroID,fx_remove_strings[fx_num])
 	}
 	gatling_set_fx_num(user,0)
 	return fx_num;
@@ -594,9 +407,9 @@ kill_user(id,attacker){
 	
 	
 	if ( !shModActive() ||!client_hittable(id)) return
-	sh_screen_fade(id, 0.1, 0.9, kill_color[0], kill_color[1], kill_color[2], 50)
+	sh_screen_fade(id, 0.1, 0.9, fx_colors[KILL][0], fx_colors[KILL][1], fx_colors[KILL][2], 50)
 	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
-	gatling_set_fx_num(id, 0)
+	gatling_set_fx_num(id, NONE)
 
 
 }
@@ -606,40 +419,10 @@ public glow_task(id){
 	id-=GLOW_TASKID
 
 	if ( !shModActive() ||!client_hittable(id)) return
-	sh_set_rendering(id, glow_color[0], glow_color[1], glow_color[2], glow_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	aura(id,glow_color)
+	sh_set_rendering(id, fx_colors[GLOW][0], fx_colors[GLOW][1], fx_colors[GLOW][2], fx_colors[GLOW][3],kRenderFxGlowShell, kRenderTransAlpha)
+	aura(id,fx_colors[GLOW])
 	
 	
-
-
-}
-
-glow_user(id){
-	if ( !shModActive() ||!client_hittable(id)) return
-	set_task(GLOW_PERIOD,"glow_task",id+GLOW_TASKID,"", 0,  "a",GLOW_TIMES)
-	set_task(floatsub(floatmul(GLOW_PERIOD,float(GLOW_TIMES)),0.1),"unglow_task",id+UNGLOW_TASKID,"", 0,  "a",1)
-
-
-
-}
-public unglow_task(id){
-	id-=UNGLOW_TASKID
-	remove_task(id+GLOW_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id, 0)
-
-
-
-}
-
-unglow_user(id){
-	remove_task(id+UNGLOW_TASKID)
-	remove_task(id+GLOW_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id, 0)
-
 
 
 }
@@ -657,18 +440,11 @@ stun_user(id){
 unstun_user(id){
 
 	if ( !shModActive() ||!client_hittable(id)) return
-	sh_screen_fade(id, 0.1, 0.9, stun_color[0], stun_color[1], stun_color[2],  50)
+	sh_screen_fade(id, 0.1, 0.9, fx_colors[STUN][0], stun_color[1], stun_color[2],  50)
 	sh_set_stun(id,0.0,1.0)
 	gatling_set_fx_num(id, 0)
 	sh_screen_shake(id,0.0,0.0,0.0)
 	remove_task(id+UNSTUN_TASKID)
-
-
-
-}
-public unstun_task(id){
-	id-=UNSTUN_TASKID
-	unstun_user(id)
 
 
 
@@ -725,6 +501,13 @@ radioactive_user(id,attacker){
 
 
 }
+unradioactive_user(id,attacker){
+	
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
+	track_user(id,attacker,1,RADIOACTIVE_DAMAGE,RADIOACTIVE_PERIOD,RADIOACTIVE_TIME)
+
+
+}
 public blind_task(id){
 	id-=BLIND_TASKID
 	if ( !shModActive() ||!client_hittable(id)) return
@@ -739,6 +522,8 @@ blind_user(id){
 
 }
 public unblind_task(id){
+	id-=fx_task_parameters[BLIND][fx_task_apply_id]
+	uneffect_user_primitive(id,false)
 	id-=UNBLIND_TASKID
 	unblind_user(id)
 
@@ -821,7 +606,7 @@ public cocaine_task(id){
 	id-=COCAINE_TASKID
 	if ( !shModActive() ||!client_hittable(id)) return
 	sh_set_rendering(id, cocaine_color[0], cocaine_color[1], cocaine_color[2], cocaine_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, COCAINE_PERIOD, cocaine_color[0], cocaine_color[1], cocaine_color[2], 50)
+	
 	set_user_maxspeed(id,COCAINE_SPEED)
 
 }
@@ -832,56 +617,12 @@ cocaine_user(id,attacker,gHeroID){
 	set_task(floatsub(floatmul(COCAINE_PERIOD,float(COCAINE_TIMES)),0.1),"uncocaine_task",id+UNCOCAINE_TASKID,"", 0,  "a",1)
 	sh_minibleed_user(id,attacker,gHeroID)
 }
-uncocaine_user(id){
-	remove_task(id+UNCOCAINE_TASKID)
-	remove_task(id+COCAINE_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id, 0)
-	sh_reset_max_speed(id)
-
-}
-public uncocaine_task(id){
-	id-=UNCOCAINE_TASKID
-	remove_task(id+COCAINE_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	gatling_set_fx_num(id, 0)
-	sh_reset_max_speed(id)
-
-}
-
 
 focus_user(id){
 
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_task(FOCUS_PERIOD,"focus_task",id+FOCUS_TASKID,"", 0,  "a",FOCUS_TIMES)
 	set_task(floatsub(floatmul(FOCUS_PERIOD,float(FOCUS_TIMES)),0.1),"unfocus_task",id+UNFOCUS_TASKID,"", 0,  "a",1)
-
-}
-public focus_task(id){
-	id-=FOCUS_TASKID
-	if ( !shModActive() ||!client_hittable(id)) return
-	sh_set_rendering(id, focus_color[0], focus_color[1], focus_color[2], focus_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, FOCUS_PERIOD, focus_color[0], focus_color[1], focus_color[2], 50)
-
-}
-
-public unfocus_task(id){
-	id-=UNFOCUS_TASKID
-	remove_task(id+FOCUS_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return 0
-	gatling_set_fx_num(id, 0)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	return 0
-
-}
-
-unfocus_user(id){
-	remove_task(id+UNFOCUS_TASKID)
-	remove_task(id+FOCUS_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id, 0)
 
 }
 bath_user(id){
@@ -899,19 +640,64 @@ public bath_task(id){
 
 }
 
-public unbath_task(id){
-	id-=UNBATH_TASKID
-	remove_task(id+BATH_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return
-	gatling_set_fx_num(id, 0)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+uncocaine_user(id){
+	
+	uneffect_user_primitive(id,true)
+	sh_reset_max_speed(id)
+
+}
+public uncocaine_task(id){
+	id-=fx_task_parameters[COCAINE][fx_task_apply_id]
+	uneffect_user_primitive(id,false)
+	sh_reset_max_speed(id)
 
 }
 
+public unbath_task(id){
+	id-=fx_task_parameters[BATH][fx_task_apply_id]
+	uneffect_user_primitive(id,false)
+
+}
+
+public focus_task(id){
+	id-=fx_task_parameters[METYLPHENIDATE][fx_task_apply_id]
+	uneffect_user_primitive(id,false)
+
+}
+
+public unfocus_task(id){
+	id-=fx_task_parameters[METYLPHENIDATE][fx_task_remove_id]
+	uneffect_user_primitive(id,false)
+
+}
+
+unfocus_user(id){
+	uneffect_user_primitive(id,true)
+
+}
+
+
+
 unbath_user(id){
-	remove_task(id+UNBATH_TASKID)
-	remove_task(id+BATH_TASKID)
+	uneffect_user_primitive(id,true)
+
+}
+
+public unstun_task(id){
+	id-=fx_task_parameters[STUN][fx_task_apply_id]
+	unstun_user(id)
+
+
+
+}
+uneffect_user_primitive(id,bool:terminate_cleaner_task=false){
+	new fx_id:the_fx_id=gatling_get_fx_num(id)
+	if(terminate_cleaner_task){
+			remove_task(id+fx_task_parameters[_:the_fx_id][_:fx_task_remove_id])
+	}
+	remove_task(id+fx_task_parameters[_:the_fx_id][_:fx_task_apply_id])
 	if ( !shModActive() ||!is_user_connected(id)) return
+	set_user_rendering(id)
 	gatling_set_fx_num(id, 0)
 
 }

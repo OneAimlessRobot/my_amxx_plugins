@@ -119,10 +119,7 @@ public Item_PostFrame_Post(iEnt)
 		return HAM_IGNORED
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
-	if(is_user_bot(id)){
-
-		return HAM_IGNORED
-	}
+	
 	if(!client_hittable(id)){
 		
 		return HAM_IGNORED
@@ -175,7 +172,8 @@ public komak_is_top_speed(id){
 public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	new return_result=HAM_IGNORED;
-	if(client_hittable(this)){
+	new client_is_hittable_here=client_hittable(this)
+	if(client_is_hittable_here){
 		if(gHasKomak[this]){
 
 			new hitgroup=get_tr2(traceresult,TR_iHitgroup);
@@ -189,10 +187,14 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 	}
 	
-	if( !sh_is_active() ||!client_hittable(idattacker)|| !client_hittable(this)|| !is_user_alive(idattacker) || !gHasKomak[idattacker]|| gPlayerUltimateUsed[idattacker] ){
+	if( !sh_is_active() ||!client_hittable(idattacker,gHasKomak[idattacker])){
 		
 		return return_result;
 	
+	}
+	if(gPlayerUltimateUsed[idattacker]){
+
+		return return_result;
 	}
 	// get ent looking at
 	static  body;
@@ -203,13 +205,17 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		set_tr(TR_pHit, this); // entity hit
 		set_tr(TR_iHitgroup, body); // bodypart hit
 		if((pev(this,pev_solid)==SOLID_SLIDEBOX)){
+			if(sh_clients_are_same_team(this,idattacker)){
+
+				return return_result;
+			}
 			if(g_komak_hits[idattacker]>red_line){
 			
 				emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
 			
 			}
 			
-			if(!komak_is_top_speed(idattacker)&&!(cs_get_user_team(this)==cs_get_user_team(idattacker))){
+			if(!komak_is_top_speed(idattacker)){
 				g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1,max_rpm);
 			}
 			if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
@@ -226,7 +232,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 	}
 	else if(((pev(this,pev_solid)!=SOLID_SLIDEBOX)&&!gClutchDown[idattacker]&&RESET_ON_MISS)){
-		
+
 		if(!komak_is_top_speed(idattacker)){
 			emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			g_komak_hits[idattacker]=max(0,g_komak_hits[idattacker]-1);
@@ -272,11 +278,13 @@ public komak_hud_task(id){
 }
 komak_hud(id){
 	new hud_msg[128];
-	format(hud_msg,127,"[SH] %s:^nGear: %d^nCurr rpm: %d|%d^nEngine broken? %s^n",
+	format(hud_msg,127,"[SH] %s:^nGear: %d^nCurr rpm: %d|%d^nCurrent fire ration: %0.2f^nCurrent reload ration: %0.2f^nEngine broken? %s^n",
 					gHeroName,
 					g_komak_gear[id],
 					g_komak_hits[id],
 					max_rpm,
+					gCurrFireRatio[id],
+					gCurrReloadRatio[id],
 					gEngineRepairTimer[id]>0? "Yeah...":"Nope... ALL ready!"
 					);
 	
@@ -489,7 +497,7 @@ public newRound(id)
 if(is_user_alive(id) && shModActive()&&gHasKomak[id]){ 
 	reset_komak(id)	
 }
-return PLUGIN_HANDLED	
+return PLUGIN_CONTINUE
 }
 public plugin_precache()
 {

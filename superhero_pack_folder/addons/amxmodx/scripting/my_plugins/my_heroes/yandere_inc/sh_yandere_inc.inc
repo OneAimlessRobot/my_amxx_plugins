@@ -14,15 +14,6 @@
 #define YANDERE_THELAST3 "shmod/yandere/Yandere_thelast3.wav"
 #define YANDERE_PAIN "shmod/yandere/Yandere_pain.wav"
 
-#define NUM_YANDERE_PAIN_SOUNDS 3
-stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
-	"shmod/yandere/Yakui_the_maid-bodies_everywhere.wav",
-	"shmod/yandere/Yakui_the_maid-46.wav",
-	"shmod/yandere/Yakui_the_maid-Chloramine.wav"
-	
-	
-}
-
 #define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
 #define YANDERE_SHOTGUN_P_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
 
@@ -32,10 +23,6 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 #define YANDERE_PSYCHO_KNIFE_V_MODEL "models/shmod/yandere/knife/v_psycho_knife.mdl"
 #define YANDERE_PSYCHO_KNIFE_P_MODEL "models/shmod/yandere/knife/p_psycho_knife.mdl"
 
-#define YANDERE_PSYCHOSIS_TASKID 3026
-#define UNPSYCHOSIS_TASKID 1122
-#define PSYCHOSIS_PERIOD 1.0
-#define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
 
 
 #define YANDERE_CYCLE_PERIOD 0.4
@@ -59,18 +46,12 @@ stock Float:gPrevSpeed[SH_MAXSLOTS+1]
 stock Float:gNormalGravity[SH_MAXSLOTS+1]
 stock Float:gBaseSpeed[SH_MAXSLOTS+1]
 stock Float:gBaseGravity[SH_MAXSLOTS+1]
-stock bool:gIsPsychosis[SH_MAXSLOTS+1]
-stock gPsychosisTime[SH_MAXSLOTS+1]
-stock bool:g_yandere_leaped[SH_MAXSLOTS+1];
 
-stock g_spriteSmoke, g_spriteRing, g_spriteExplosion
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 
-stock MsgSetFOV
 stock gLastWeapon[SH_MAXSLOTS+1]
 stock gLastClipCount[SH_MAXSLOTS+1]
 
-stock m_spriteTexture
 stock Float:base_dmg_mult,
 Float:dmg_pct_per_inc,
 Float:base_extra_speed,
@@ -85,17 +66,9 @@ Float:explode_radius,
 Float:explode_maxdamage,
 Float:curse_pct;
 stock hud_sync
-stock Float:psychosis_time
-stock psychosis_cooldown
 stock gHeroLevel
 stock min_players
 stock teamglow_on
-stock zoom
-stock psychosis_add_ap
-stock Float:psychosis_degen_pct
-stock Float:psychosis_dmg_cushion
-stock Float:psychosis_degen_health_threshold
-stock Float:degen_iter_period
 stock degen_health_extra_threshold
 stock overheal_hp_max
 
@@ -103,6 +76,7 @@ stock overheal_hp_max
 stock Float:gTransTimer[SH_MAXSLOTS+1]
 stock bool:gTransTimerStarted[SH_MAXSLOTS+1]
 stock Float:trans_time
+
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
