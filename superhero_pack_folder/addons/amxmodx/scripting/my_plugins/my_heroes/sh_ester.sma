@@ -315,14 +315,14 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_TMP) {
 		if(gGunLastDeployed[id]!=wpnid){
-			if(sh_get_user_effect(id)!=METYLPHENIDATE){
-				new fx_num=sh_effect_user_direct(id,id,METYLPHENIDATE,ester_get_hero_id());
+			if(sh_get_user_effect(id)!=_:METYLPHENIDATE){
+				new fx_num=sh_effect_user_direct(id,id,_:METYLPHENIDATE,ester_get_hero_id());
 				gatling_set_fx_num(id,fx_num);
 			}
 		}
 	}
 	else{
-		if(sh_get_user_effect(id)==METYLPHENIDATE){
+		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
 			sh_uneffect_user(id,METYLPHENIDATE,ester_get_hero_id());
 			
 		}

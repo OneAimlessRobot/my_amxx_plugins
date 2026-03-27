@@ -164,7 +164,8 @@ public yandere_init()
 	gHasYandere[id]=(hasPowers!=0)
 	if(gHasYandere[id]){
 		
-		gBaseSpeed[id]=base_extra_speed
+		sh_reset_max_speed(id)
+		gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
 		yandere_model(id)
 		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
@@ -287,25 +288,15 @@ public notify_yanderes_about_team_life(id,alive){
 
 if(!sh_is_active()||!is_user_connected(id)) return
 
-new CsTeams:user_team= cs_get_user_team(id)
 for(new i=1;i<=SH_MAXSLOTS;i++){
-	if(!client_hittable(i)){
-		
-		
-		continue
-	}
-	if(gHasYandere[i]){
-		
-		new CsTeams:other_user_team=cs_get_user_team(i)
-		if((user_team==other_user_team)){
-			
-			sh_reset_min_gravity(i)
-			sh_reset_max_speed(i)
-			
-			if(!is_user_bot(i)){
-				sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
-			}
-		}
+	if(!client_hittable(i,gHasYandere[i])) continue;
+
+	if(!sh_clients_are_same_team(id,i)) continue;
+	
+	update_stats(id);
+	
+	if(!is_user_bot(i)){
+		sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
 	}
 	
 	
@@ -319,20 +310,18 @@ public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
 
-if(client_hittable(id,gHasYandere[id])){
-
+if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
+	g_mates_dead[id]=get_yandere_num(id,0,0)
+	g_mates_alive[id]=get_yandere_num(id,1,0)
 	//new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	//new iMax = global_get(glb_maxEntities) // Get's the limit
 	//sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
 	if(!is_user_bot(id)&&gTransTimerStarted[id]){
 		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 	}
-	update_stats(id)
-	
+	yandere_timer_transform(id)
 	
 }
-
-
 }
 public yandere_warcry(id){
 id-=YANDERE_CRY_TASKID
@@ -354,98 +343,88 @@ if(gSuperAngry[id]&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarted()&&gHas
 	gPlayedSound[id]=true
 }
 }
-public update_normal_stats(id){
 
-if(!sh_is_active()||!client_hittable(id)){
-	return
-}
-if(!gHasYandere[id]){
-	return
-	
-}
-new mates_dead=get_yandere_num(id,0,0)
-new mates_alive=get_yandere_num(id,1,0)
-new can_transform= (get_playersnum(0)>=min_players)
-gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(mates_dead))),angry_dmg_mult);
-if(!sh_get_stun(id)){
+update_stats(id){
+
+	if(!client_hittable(id,gHasYandere[id])||sh_is_freezetime()) return
+	new Float:gravity=get_user_gravity(id)
 	new Float:maxspeed=get_user_maxspeed(id)
-	gPrevSpeed[id]=maxspeed
-	gNormalSpeed[id]=floatmax(floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(mates_dead))),angry_speed),maxspeed);
-	set_user_maxspeed(id,gNormalSpeed[id])
-}
-gIdleAngry[id]=true;
-gToPlaySound[id]=false;
-new Float:gravity=get_user_gravity(id)
-gBaseGravity[id]=gravity
-gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
-set_user_gravity(id,gNormalGravity[id])
-gTransTimerStarted[id]= (mates_alive<=0)&&can_transform? true:false
-if(gTransTimerStarted[id]){
+	if(gSuperAngry[id]){
 
-	gTransTimer[id]-= YANDERE_CYCLE_PERIOD
-	if(gTransTimer[id]<=0.0){
-
-		gSuperAngry[id]=true
-		gTransTimer[id]=trans_time
+		gNormalDmgMult[id]=angry_dmg_mult
+		gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
+		gNormalGravity[id]=floatmin(angry_gravity,gravity);
+		
 	}
-}
-else if(gTransTimer[id]!=trans_time){
-
-	gTransTimer[id]=trans_time
-}
-if(gSuperAngry[id]&&client_hittable(id)){
-	gTransTimerStarted[id]=false
-	yandere_unmorph(id)
-	yandere_model(id)
-	BlowUp(id)
-	jet_destroy(id)
-	if(sh_is_inround()){
-		sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
+	else{
+		gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(g_mates_dead[id]))),angry_dmg_mult);
+		gPrevSpeed[id]=maxspeed
+		gNormalSpeed[id]=floatmax(floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(g_mates_dead[id]))),angry_speed),maxspeed);
+		gBaseGravity[id]=gravity
+		gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 	}
-}
-
-
-}
-public update_angry_stats(id){
-
-if(!sh_is_active()||!client_hittable(id)){
-	return
-}
-if(!gHasYandere[id]||!gSuperAngry[id]){
-	return
-	
-}
-new mates_alive=get_yandere_num(id,1,0)
-new can_transform= (get_playersnum(0)>=min_players)
-gNormalDmgMult[id]=angry_dmg_mult
-if(!sh_get_stun(id)){
-	sh_reset_max_speed(id)
-	new Float:maxspeed=get_user_maxspeed(id)
-	gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
 	set_user_maxspeed(id,gNormalSpeed[id])
-}
-new Float:gravity=get_user_gravity(id)
-gNormalGravity[id]=floatmin(angry_gravity,gravity);
-set_user_gravity(id,gNormalGravity[id])
-gToPlaySound[id]=true;
-gSuperAngry[id]= (mates_alive<=0)&&can_transform? true:false
-if(!gSuperAngry[id]){
-	sh_reset_max_speed(id)
-	gNormalGravity[id]=gBaseGravity[id]
 	set_user_gravity(id,gNormalGravity[id])
-	
-	if(!is_user_bot(id)){
-		sh_chat_message(id,gHeroID,"Demorphing!")
-	}
-	yandere_unmorph(id)
-	yandere_model(id)
-	if(yandere_get_user_is_psychosis(id)){
-		yandere_unpsychosis_user(id)
-	}
 }
+public yandere_timer_transform(id){
+	if(!sh_is_active()||!client_hittable(id)){
+		return
+	}
+	if(!gHasYandere[id]){
+		return
+		
+	}
+	if(gSuperAngry[id]){
+
+		new can_transform= (get_playersnum(0)>=min_players)
+		gToPlaySound[id]=true;
+		gSuperAngry[id]= (g_mates_alive[id]<=0)&&can_transform? true:false
+		if(!gSuperAngry[id]){
+			gNormalGravity[id]=gBaseGravity[id]
+			set_user_gravity(id,gNormalGravity[id])
+			
+			if(!is_user_bot(id)){
+				sh_chat_message(id,gHeroID,"Demorphing!")
+			}
+			yandere_unmorph(id)
+			yandere_model(id)
+			if(yandere_get_user_is_psychosis(id)){
+				yandere_unpsychosis_user(id)
+			}
+		}
+		yandere_update_idle(id)
+	}
+	else{
+		new can_transform= (get_playersnum(0)>=min_players)
+		gIdleAngry[id]=true;
+		gToPlaySound[id]=false;
+		gTransTimerStarted[id]= (g_mates_alive[id]<=0)&&can_transform? true:false
+		if(gTransTimerStarted[id]){
+
+			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
+			if(gTransTimer[id]<=0.0){
+
+				gSuperAngry[id]=true
+				gTransTimer[id]=trans_time
+			}
+		}
+		else if(gTransTimer[id]!=trans_time){
+
+			gTransTimer[id]=trans_time
+		}
+		if(gSuperAngry[id]&&client_hittable(id)){
+			gTransTimerStarted[id]=false
+			yandere_unmorph(id)
+			yandere_model(id)
+			BlowUp(id)
+			jet_destroy(id)
+			if(sh_is_inround()){
+				sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
+			}
+		}
+	}
 
 }
-
 
 public client_disconnected(id){
 
@@ -455,25 +434,6 @@ public client_disconnected(id){
 	remove_task(id+YANDERE_STATS_TASKID)
 	killyandere(id,true)
 	yandere_unmorph(id)
-}
-update_stats(id){
-
-if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
-	if(gSuperAngry[id]){
-		
-		yandere_update_idle(id)
-		update_angry_stats(id)
-		
-	}
-	else{
-		update_normal_stats(id)
-		
-	}
-	
-	
-}
-
-
 }
 
 //----------------------------------------------------------------------------------------------
@@ -511,13 +471,14 @@ public newRound(id)
 		notify_yanderes_about_team_life(id,1)
 		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
 		if ( gHasYandere[id]) {
-
+			
+			sh_reset_max_speed(id)
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			gSuperAngry[id]=false;
 			gPlayedSound[id]=false
-			gBaseSpeed[id]=base_extra_speed
+			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
 			gTransTimer[id]=trans_time
 			gTransTimerStarted[id]=false
 			gBaseGravity[id]=1.0
@@ -724,11 +685,11 @@ public sh_round_end(){
 	
 	}
 	
-	new total_alive=get_yandere_num(0,1,1)
-	
 	clear_bombs()
 	clear_shells()
 	clear_rockets()
+	
+	new total_alive=get_yandere_num(0,1,1)
 	
 	if(total_alive){
 		return;
@@ -925,5 +886,10 @@ public weaponChange(id)
 		
 		}
 	}
-
+	if ( g_prevWeapon[id] != wpnid ) {
+		if ( get_user_maxspeed(id) < gNormalSpeed[id]){
+			set_user_maxspeed(id, gNormalSpeed[id])
+		}
+	}
+	g_prevWeapon[id] = wpnid
 }

@@ -46,6 +46,9 @@ stock Float:gPrevSpeed[SH_MAXSLOTS+1]
 stock Float:gNormalGravity[SH_MAXSLOTS+1]
 stock Float:gBaseSpeed[SH_MAXSLOTS+1]
 stock Float:gBaseGravity[SH_MAXSLOTS+1]
+stock g_prevWeapon[SH_MAXSLOTS+1]
+stock g_mates_alive[SH_MAXSLOTS+1]
+stock g_mates_dead[SH_MAXSLOTS+1]
 
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 

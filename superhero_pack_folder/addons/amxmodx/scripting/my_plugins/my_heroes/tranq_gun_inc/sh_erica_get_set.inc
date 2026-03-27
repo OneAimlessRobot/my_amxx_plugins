@@ -3,8 +3,6 @@
 #endif
 #define sh_erica_get_set
 
-#define ERICA_STATS_TASKID 16721
-
 #define NAVALHA_V_MODEL  "models/shmod/erica/knife/v_combat_knife.mdl"
 #define NAVALHA_P_MODEL  "models/shmod/erica/knife/p_combat_knife.mdl"
 #define TRANQS_P_MODEL  "models/shmod/erica/pistols/p_elite.mdl"

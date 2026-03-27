@@ -813,8 +813,8 @@ public vegetto_loop()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public ssj_boost(id)
-{
+public ssj_boost(id){
+	
 	if ( !shModActive() || !g_hasVegetto[id] || !is_user_alive(id) || g_betweenRounds ) return
 	if ( !g_isSaiyanLevel[id] ) return
 

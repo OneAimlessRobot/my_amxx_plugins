@@ -23,7 +23,6 @@
 
 
 
-#define UNSTUN_TASKID 47128
 #define STUN_PERIOD 4.0
 #define STUN_SPEED 70.0
 
@@ -92,15 +91,14 @@ enum fx_task_parameter_id{
 	fx_task_apply_id,
 	fx_task_remove_id,
 	fx_task_apply_func_name[128],
-	fx_task_remove_func_name[128],
-	fx_max_task_parameter
+	fx_task_remove_func_name[128]
 }
 
 stock const fx_colors[_:NUM_FX][4]={
 			{0,0,0,0},
 			{1, 255, 255, 255},
-			{80, 240, 30, 255},
 			{255, 255, 255, 255},
+			{80, 240, 30, 255},
 			{100, 100, 100, 255},
 			{240, 80, 30,  255},
 			{80, 240, 1, 255},
@@ -114,8 +112,8 @@ stock const fx_names[_:NUM_FX][]={
 			"no drug",
 			"cyanide",
 			"glowstick juice",
-			"stunner",
 			"poison",
+			"stunner",
 			"uranium",
 			"morphine",
 			"weed",
@@ -153,49 +151,19 @@ stock const Float:fx_rarity_slice_edges[_:NUM_FX]={
 				0.90,
 				0.95
 }
-/*
-
-
-
-enum fx_id{
-	NONE=0,
-	KILL,
-	GLOW,
-	POISON,
-	STUN,
-	RADIOACTIVE,
-	MORPHINE,
-	WEED,
-	COCAINE,
-	BLIND,
-	METYLPHENIDATE,
-	BATH,
-	NUM_FX
-}
-enum fx_task_parameter_id{
-	fx_task_period=0,
-	fx_task_time,
-	fx_task_repeats,
-	fx_task_apply_id,
-	fx_task_remove_id,
-	fx_max_task_parameter
-}
-
- */
-// A value less than 0 = unused / unecessary
-new fx_task_parameters[_:NUM_FX][_:fx_max_task_parameter]={	
+stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={	
 					{-1.0,5.0,0,-1,-1,"",""},
 					{-1.0,5.0,0,-1,-1,"",""},
 					{1.0,5.0,0,-1,-1,"glow_task","unglow_task"},
 					{1.0,5.0,0,-1,-1,"poison_task","unpoison_task"},
 					{0.1,0.1,0,-1,-1,"stun_task","unstun_task"},
-					{0.1,0.1,0,-1,-1,"radioactive_task","unradioactive_task"},
+					{1.0,5.0,0,-1,-1,"radioactive_task","unradioactive_task"},
 					{1.0,5.0,0,-1,-1,"morphine_task","unmorphine_task"},
 					{1.0,5.0,0,-1,-1,"weed_task","unweed_task"},
 					{1.0,5.0,0,-1,-1,"cocaine_task","uncocaine_task"},
 					{1.0,5.0,0,-1,-1,"blind_task","unblind_task"},
-					{1.0,5.0,0,-1,-1,"focus_user","unfocus_user"},
-					{1.0,5.0,0,-1,-1,"bath_user","unbath_user"}
+					{1.0,5.0,0,-1,-1,"focus_task","unfocus_task"},
+					{1.0,5.0,0,-1,-1,"bath_task","unbath_task"}
 
 }
 native fx_id:sh_effect_user(id,attacker,gHeroID)

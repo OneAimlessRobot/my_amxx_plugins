@@ -7,7 +7,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_include/my_author_header.inc"
 
-#define ADRIANO_STATS_TASKID 22226
 
 
 // GLOBAL VARIABLES
@@ -20,6 +19,8 @@ new Float:g_base_speed[SH_MAXSLOTS+1]
 new Float:g_normal_speed[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
+new g_prevWeapon[SH_MAXSLOTS+1]
+
 
 new const adriano_sentences[1][]={
 	
@@ -70,6 +71,7 @@ public plugin_init()
 	
 	register_srvcmd("adriano_init", "adriano_init")
 	shRegHeroInit(gHeroName, "adriano_init")
+	register_event("CurWeapon", "weaponChange", "be", "1=1")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -122,11 +124,13 @@ public adriano_init()
 	gHasAdriano[id]=(hasPowers!=0)
 	if(gHasAdriano[id]){
 		
+		sh_reset_max_speed(id)
 		adriano_weapons(id)
 		g_adriano_points[id]=base_points;
 		g_base_speed[id]=base_speed
 		g_base_radius[id]=base_radius
-		set_task(0.1, "adriano_loop", id+ADRIANO_STATS_TASKID, "", 0, "b")
+		g_normal_radius[id]=base_radius
+		g_normal_speed[id]=0.0
 	}
 	else{
 		ethereal_unset_ethereal(id)
@@ -134,7 +138,9 @@ public adriano_init()
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
-		remove_task(id+ADRIANO_STATS_TASKID)
+		g_normal_speed[id]=0.0
+		g_normal_radius[id]=0.0
+		sh_reset_max_speed(id)
 	}
 	
 	
@@ -142,33 +148,21 @@ public adriano_init()
 add_speed_points(id,Float:damage,is_up){
 	
 	g_adriano_points[id]=is_up?min(max_points,g_adriano_points[id]+(floatround(damage*dmg_speed_points_pct))):max(0,g_adriano_points[id]-(floatround(damage*speed_points_heal_coeff)))
-	
+	update_stats(id)
 	
 }
 public get_speed_dmg_in_radius(id,Float:damage){
 	
-	new client_origin[3],teamate_origin[3],distance
-	get_user_origin(id,client_origin);
-	new CsTeams:user_team= cs_get_user_team(id)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		
-		//if(!is_user_connected(i)||!gHasAdriano[i]||!is_user_alive(i)){
-		if((i==id)||!is_user_connected(i)||!gHasAdriano[i]||!is_user_alive(i)){
-			
-			
-		}
-		else{
-			new CsTeams:other_user_team=cs_get_user_team(i)
-			if((user_team==other_user_team)){
-				get_user_origin(i,teamate_origin)
-				distance=get_distance(client_origin,teamate_origin)
-				if(distance<g_normal_radius[i]){
-					heal_stream(i, id,YELLOW)
-					aura(i,LineColorsWithAlpha[YELLOW])
-					add_speed_points(i,damage,true)
-				}
-			}
-		}
+	new entlist[33];
+	new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
+	for(new p=0;p<num_found;p++){
+		new i=entlist[p]
+		if(!client_hittable(i)||(i==id)) continue;
+
+		if(!sh_clients_are_same_team(i,id)) continue;
+		heal_stream(i, id,YELLOW)
+		aura(i,LineColorsWithAlpha[YELLOW])
+		add_speed_points(i,damage,true)
 		
 		
 	}
@@ -234,18 +228,19 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 }
 public adriano_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return
+	if ( !shModActive() || !client_hittable(id) ) return
 	
 	
 	new  Float:damage= float(read_data(2))
 	
-	get_speed_dmg_in_radius(id,damage)
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 	
-	if(!client_hittable(attacker)||!gHasAdriano[attacker]||attacker == id ) return
+	if (  attacker==id  ) return
 
+	get_speed_dmg_in_radius(id,damage)
+	
 	if(weapon==CSW_ETHEREAL){
 	
 		sh_extra_damage(id,attacker,floatround(damage),"Adriano Ethereal Rifle",headshot)
@@ -287,43 +282,43 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	}	
 	return FMRES_IGNORED;
 }
-public adriano_loop(id){
-	
-	id-=ADRIANO_STATS_TASKID;
-	
-	if(gHasAdriano[id]&&client_hittable(id)&&!sh_is_freezetime()){
-		
-		update_stats(id)
-		
-		
-	}
-	
-	
-}
 public client_disconnected(id){
 	ethereal_unset_ethereal(id)
 	colt_unset_colt(id)
 	g_adriano_points[id]=0;
 	g_base_speed[id]=0.0
 	g_base_radius[id]=0.0
-	remove_task(id+ADRIANO_STATS_TASKID)
+	g_normal_speed[id]=0.0
+	g_normal_radius[id]=0.0
 
 
 }
 update_stats(id){
 	
 	if(gHasAdriano[id]){
-		////g_normal_speed[id]=900.0-float(g_adriano_points[id])
-		if(!sh_get_stun(id)){
-			new Float:maxspeed=get_user_maxspeed(id)
-			g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
-			set_user_maxspeed(id,g_normal_speed[id])
-		}
+		new Float:maxspeed=get_user_maxspeed(id)
+		g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
+		set_user_maxspeed(id,g_normal_speed[id])
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_adriano_points[id]),speed_points_radius_pct)),max_radius);
 		
 	}
 	
 	
+}
+public weaponChange(id)
+{
+	if ( !is_user_alive(id)||!shModActive()&&client_hittable(id,gHasAdriano[id] )) return PLUGIN_CONTINUE
+
+	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	
+	if ( g_prevWeapon[id] != wpnid ) {
+		if ( get_user_maxspeed(id) < g_normal_speed[id] ){
+			set_user_maxspeed(id, g_normal_speed[id])
+		}
+	}
+	g_prevWeapon[id] = wpnid
+	return PLUGIN_CONTINUE
+
 }
 
 public adriano_kd()
@@ -346,8 +341,11 @@ public newRound(id)
 	if(is_user_alive(id) && shModActive()){
 		if ( gHasAdriano[id]) {
 			adriano_weapons(id)
+			sh_reset_max_speed(id)
 			g_adriano_points[id]=base_points;
 			g_base_speed[id]=base_speed
+			g_normal_radius[id]=base_radius
+			g_normal_speed[id]=0.0
 		}
 	}
 	return PLUGIN_HANDLED

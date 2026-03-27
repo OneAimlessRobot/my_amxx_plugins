@@ -24,8 +24,8 @@ stock g_flora_prev_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_charging[SH_MAXSLOTS+1]
 stock flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
-stock g_is_flora_tagging_this_player[SH_MAXSLOTS+1]
-stock g_was_player_tagged_by_flora[SH_MAXSLOTS+1]
+new bool:g_is_flora_tagging_this_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new bool:g_was_player_tagged_by_flora[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 stock g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
@@ -116,6 +116,8 @@ public plugin_natives(){
 	register_native("flora_get_curr_inside","_flora_get_curr_inside",0)
 	register_native("flora_get_prev_inside","_flora_get_prev_inside",0)
 	register_native("start_flora_checks","_start_flora_checks",0)
+	register_native("clear_one_flora_array","_clear_one_flora_array",0)
+	register_native("clear_all_flora_arrays","_clear_all_flora_arrays",0)
 	
 
 	
@@ -253,6 +255,22 @@ public _flora_get_prev_inside(iPlugin,iParams){
 
 
 }
+public _clear_one_flora_array(iPlugin,iParams){
+	new id=get_param(1)
+	new is_victim=get_param(2)
+	arrayset((is_victim?g_was_player_tagged_by_flora[id]:g_is_flora_tagging_this_player[id]),false,sizeof(g_is_flora_tagging_this_player[]));
+	
+
+}
+public _clear_all_flora_arrays(iPlugin,iParams){
+
+
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+		clear_one_flora_array(i,false)
+		clear_one_flora_array(i,true)
+	}
+
+}
 public plugin_cfg(){
 
 	loadCVARS();
@@ -275,14 +293,6 @@ public loadCVARS(){
 	flora_teleport_reach_max_distance=get_cvar_float("flora_teleport_reach_max_distance")+field_radius
 	flora_teleport_crouch_time=get_cvar_float("flora_teleport_crouch_time")
 	flora_base_stun_speed=get_cvar_float("flora_base_stun_speed")
-}
-clear_flora_tagging_arrays(id,bool:is_victim){
-
-
-
-	arrayset((is_victim?g_was_player_tagged_by_flora:g_is_flora_tagging_this_player)[i],false,sizeof((is_victim?g_was_player_tagged_by_flora:g_is_flora_tagging_this_player)[]));
-	
-
 }
 Float:get_player_alpha(id){
 	
@@ -743,6 +753,8 @@ public field_think(ent)
 		make_shockwave(ient_pos,field_core_radius,{255, 128, 0,60})
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 		new CsTeams:owner_team=cs_get_user_team(owner)
+
+		clear_one_flora_array(owner,false)
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
@@ -753,7 +765,8 @@ public field_think(ent)
 			else if(cs_get_user_team(pid)==owner_team){
 				continue
 			}
-			if(g_flora_sheltered_value[owner]>NONE){
+			g_was_player_tagged_by_flora[pid][owner]=(g_flora_sheltered_value[owner]>NONE)
+			if(g_was_player_tagged_by_flora[pid][owner]){
 				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
 				
 				sh_extra_damage(pid,owner,floatround(fdamage),"Flora field damage")
@@ -943,7 +956,8 @@ public on_death_tagged_by_flora()
 	
 	if(is_user_connected(id)||sh_is_active()){
 		
-	
+		clear_one_flora_array(id,true)
+		clear_one_flora_array(id,false)
 	}
 	
 }

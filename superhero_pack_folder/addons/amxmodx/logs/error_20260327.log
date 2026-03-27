@@ -1,0 +1,15 @@
+L 03/27/2026 - 00:10:12: Start of error session.
+L 03/27/2026 - 00:10:12: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260327.log")
+L 03/27/2026 - 00:10:12: Function is not present (function "radioactive_task") (plugin "pill_gatling_fx.amxx")
+L 03/27/2026 - 00:10:12: [AMXX] Displaying debug trace (plugin "pill_gatling_fx.amxx", version "1.0.0")
+L 03/27/2026 - 00:10:12: [AMXX] Run time error 10: native error (native "set_task")
+L 03/27/2026 - 00:10:12: [AMXX]    [0] pill_gatling_fx.sma::fx_task_user (line 230)
+L 03/27/2026 - 00:10:12: [AMXX]    [1] pill_gatling_fx.sma::_sh_effect_user_direct (line 313)
+L 03/27/2026 - 00:10:12: Unhandled dynamic native error
+L 03/27/2026 - 00:10:12: [AMXX] Displaying debug trace (plugin "sh_yakui_get_set.amxx", version "1.0.0")
+L 03/27/2026 - 00:10:12: [AMXX] Run time error 10: native error (native "sh_effect_user_direct")
+L 03/27/2026 - 00:10:12: [AMXX]    [0] sh_yakui_get_set.sma::_make_effect_direct (line 82)
+L 03/27/2026 - 00:10:12: Unhandled dynamic native error
+L 03/27/2026 - 00:10:12: [AMXX] Displaying debug trace (plugin "pill_gatling_funcs.amxx", version "1.0.0")
+L 03/27/2026 - 00:10:12: [AMXX] Run time error 10: native error (native "make_effect_direct")
+L 03/27/2026 - 00:10:12: [AMXX]    [0] pill_gatling_funcs.sma::vexd_pfntouch (line 626)

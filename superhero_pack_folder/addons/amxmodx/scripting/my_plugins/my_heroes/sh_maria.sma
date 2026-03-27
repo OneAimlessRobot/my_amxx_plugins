@@ -300,40 +300,21 @@ if(!gHealthDrainValve[id]){
 
 	return;
 }
-new client_origin[3],teamate_origin[3],distance
-get_user_origin(id,client_origin);
-new CsTeams:user_team= cs_get_user_team(id)
+new entlist[33];
+new client_origin[3]
+get_user_origin(id,client_origin)
+new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
 new bool:healed=false;
-for(new i=1;i<=SH_MAXSLOTS;i++){
-	if(!client_hittable(id)){
+for(new p=0;p<num_found;p++){
+	new i=entlist[p]
+	if(!client_hittable(i)||(i==id)) continue;
+
+	if(!sh_clients_are_same_team(i,id)) continue;
 	
-		return
-	
-	}
-	if(!gHasMaria[id]){
-		
-		return
-		
-	}
-	if((i==id)||!client_hittable(i)){
-		
+	if(float(get_user_health(id))>(sh_get_max_hp(id)*(1-selfless_index))){
+		healed=heal_teamate(id,i)
 		
 	}
-	else if(is_user_alive(i)){
-		new CsTeams:other_user_team=cs_get_user_team(i)
-		if((user_team==other_user_team)){
-			get_user_origin(i,teamate_origin)
-			distance=get_distance(client_origin,teamate_origin)
-			if(distance<g_normal_radius[id]){
-				if(float(get_user_health(id))>(sh_get_max_hp(id)*(1-selfless_index))){
-					healed=heal_teamate(id,i)
-					
-				}
-			}
-		}
-	}
-	
-	
 }
 if(healed){
 

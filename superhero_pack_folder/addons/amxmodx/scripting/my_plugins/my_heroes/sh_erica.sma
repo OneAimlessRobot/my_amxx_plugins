@@ -28,6 +28,7 @@ new Float:g_base_er_dmg_mult[SH_MAXSLOTS+1]
 new Float:g_normal_er_dmg_mult[SH_MAXSLOTS+1]
 new Float:g_base_er_radius[SH_MAXSLOTS+1]
 new Float:g_normal_er_radius[SH_MAXSLOTS+1]
+new g_prevWeapon[SH_MAXSLOTS+1]
 
 
 new const erica_knife_sounds[6][]={"weapons/cod6knife_draw.wav",
@@ -193,14 +194,17 @@ public erica_init()
 	new hasPowers = str_to_num(temp)
 	gHasErica[id]=(hasPowers!=0)
 	if(gHasErica[id]){
-		g_erica_points[id]=base_er_points;
 		g_erica_kills[id]=0;
+		g_erica_points[id]=base_er_points;
 		g_base_er_speed[id]=base_er_speed
 		g_base_er_radius[id]=base_er_radius
+		g_base_er_dmg_mult[id]=base_dmg_er_mult
+		g_normal_er_radius[id]=base_er_radius
+		g_normal_er_dmg_mult[id]=0.0
+		g_normal_er_speed[id]=0.0
 		gNumDarts[id]=num_er_darts
 		gNumMollies[id]=num_mollies
 		Erica_weapons(id)
-		set_task(0.1, "erica_stats", id+ERICA_STATS_TASKID, "", 0, "b")
 		
 	}
 	else{
@@ -208,8 +212,12 @@ public erica_init()
 		g_erica_kills[id]=0;
 		g_base_er_speed[id]=0.0
 		g_base_er_radius[id]=0.0
+		g_base_er_dmg_mult[id]=0.0
+		g_normal_er_radius[id]=0.0
+		g_normal_er_dmg_mult[id]=0.0
+		g_normal_er_speed[id]=0.0
 		gNumDarts[id]=0
-		remove_task(id+ERICA_STATS_TASKID)
+		gNumMollies[id]=0
 		if ( is_user_alive(id) ) {
 			sh_drop_weapon(id, CSW_ELITE, true)
 		}
@@ -308,13 +316,17 @@ public newRound(id)
 {	
 	if(shModActive()&&client_hittable(id)){
 		if ( gHasErica[id]) {
+			sh_reset_max_speed(id)
 			g_erica_kills[id]=0;
-			gNumDarts[id]=num_er_darts
-			gNumMollies[id]=num_mollies
 			g_erica_points[id]=base_er_points;
 			g_base_er_speed[id]=base_er_speed
-			g_base_er_dmg_mult[id]=base_dmg_er_mult
 			g_base_er_radius[id]=base_er_radius
+			g_base_er_dmg_mult[id]=base_dmg_er_mult
+			g_normal_er_radius[id]=base_er_radius
+			g_normal_er_dmg_mult[id]=0.0
+			g_normal_er_speed[id]=0.0
+			gNumDarts[id]=num_er_darts
+			gNumMollies[id]=num_mollies
 			
 			
 		}
@@ -328,11 +340,12 @@ public client_disconnected(id){
 	g_erica_kills[id]=0;
 	g_base_er_speed[id]=0.0
 	g_base_er_radius[id]=0.0
+	g_base_er_dmg_mult[id]=0.0
+	g_normal_er_radius[id]=0.0
+	g_normal_er_dmg_mult[id]=0.0
+	g_normal_er_speed[id]=0.0
 	gNumDarts[id]=0
-	remove_task(id+ERICA_STATS_TASKID)
-	if ( is_user_alive(id) ) {
-		sh_drop_weapon(id, CSW_ELITE, true)
-	}
+	gNumMollies[id]=0
 	hook_set_hook(id,0)
 }
 public sh_client_spawn(id)
@@ -345,30 +358,28 @@ public sh_client_spawn(id)
 add_speed_points(id,Float:damage){
 	
 	g_erica_points[id]=min(max_er_points,g_erica_points[id]+(floatround(damage*dmg_speed_er_points_pct)))
-	
+	update_stats(id)
 	
 }
 public get_speed_dmg_in_radius(id,Float:damage){
 
-	new client_origin[3],teamate_origin[3],distance
-	get_user_origin(id,client_origin);
-	for(new i=1;i<=SH_MAXSLOTS;i++){
+	new entlist[33];
+	new num_found = find_sphere_class(id,"player", g_normal_er_radius[id] ,entlist, 32);
+	new result=0;
+	for(new p=0;p<num_found;p++){
+		new i=entlist[p]
+		if(!client_hittable(i)||(i==id)) continue;
+
+		if(sh_clients_are_same_team(i,id)) continue;
 		
-		//if(!is_user_connected(i)||!gHasAdriano[i]||!is_user_alive(i)){
-		if(gHasErica[id]&&client_hittable(id)){
-			get_user_origin(i,teamate_origin)
-			distance=get_distance(client_origin,teamate_origin)
-			if(distance<g_normal_er_radius[id]){
-				heal_stream(i, id,PINK)
-				aura(id,LineColorsWithAlpha[PINK])
-				add_speed_points(id,damage)
-				return 1
-			}
-		}
+		heal_stream(i, id,PINK)
+		aura(id,LineColorsWithAlpha[PINK])
+		add_speed_points(id,damage)
+		result=1
 		
 		
 	}
-	return 0
+	return result
 }
 public sh_round_end(){
 
@@ -389,6 +400,13 @@ public weaponChange(id)
 		entity_set_string(id, EV_SZ_viewmodel,TRANQS_V_MODEL)
 		entity_set_string(id, EV_SZ_weaponmodel, TRANQS_P_MODEL)
 	}
+	
+	if ( g_prevWeapon[id] != wpnid ) {
+		if ( get_user_maxspeed(id) < g_normal_er_speed[id] ){
+			set_user_maxspeed(id, g_normal_er_speed[id])
+		}
+	}
+	g_prevWeapon[id] = wpnid
 	return PLUGIN_CONTINUE
 
 }
@@ -400,7 +418,7 @@ public erica_damage(id)
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id  ||!gHasErica[attacker]||!is_user_connected(attacker)) return
+	if ( !client_hittable(attacker,gHasErica[attacker])|| attacker==id  ) return
 	
 	
 	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
@@ -410,36 +428,18 @@ public erica_damage(id)
 	}
 	get_speed_dmg_in_radius(attacker,extraDamage+damage)
 }
-public erica_stats(id){
-	
-	id-=ERICA_STATS_TASKID;
-	
-	if(gHasErica[id]&&client_hittable(id)&&!sh_is_freezetime()){
-		
-		update_stats2(id)
-		
-		
-	}
-	
-	
-}
 
-
-update_stats2(id){
-	
+update_stats(id){
 	if(gHasErica[id]&&client_hittable(id)){
-		////g_normal_speed[id]=900.0-float(g_adriano_points[id])
-		if(!sh_get_stun(id)){
-			new Float:maxspeed=get_user_maxspeed(id)
-			g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(speed_speed_er_points_pct,float(g_erica_points[id]))),max_er_speed),maxspeed),
-			set_user_maxspeed(id,g_normal_er_speed[id])
-		}
+		new Float:maxspeed=get_user_maxspeed(id)
+		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(speed_speed_er_points_pct,float(g_erica_points[id]))),max_er_speed),maxspeed),
+		set_user_maxspeed(id,g_normal_er_speed[id])
 		g_normal_er_radius[id]=floatmin(floatadd(g_base_er_radius[id],floatmul(float(g_erica_points[id]),speed_points_er_radius_pct)),max_er_radius);
 		g_normal_er_dmg_mult[id]=floatmin(floatadd(g_base_er_dmg_mult[id],floatmul(float(g_erica_kills[id]),dmg_mult_er_inc)),max_dmg_er_mult);
-		
+			
 	}
-	
-	
+
+
 }
 public Erica_weapons(id)
 {

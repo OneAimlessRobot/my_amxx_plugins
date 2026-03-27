@@ -26,7 +26,6 @@ public plugin_init(){
 	register_cvar("yandere_psychosis_cooldown", "30")
 	register_cvar("yandere_psychosis_cooldown", "30")
 	register_cvar("yandere_psychosis_degen_mult", "30")
-	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	
