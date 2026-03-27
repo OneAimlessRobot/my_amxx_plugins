@@ -147,7 +147,7 @@ native sh_effect_user_direct(id,attacker,gHeroID,fx_num)
 native sh_uneffect_user(id,gHeroID,fx_num)
 native sh_get_fx_color_name(fx_num,fx_arr[4],name[128])
 native sh_get_user_effect(id)
-native set_render_with_fx_num(id,the_color_num,reveal_user=1)
+native set_render_with_fx_num(id,the_color_num,glow_on_user=1,alpha=-1,the_hud_alpha=-1)
 
 
 

@@ -250,10 +250,12 @@ public _sh_get_fx_color_name(iPlugins,iParams){
 public _set_render_with_fx_num(iPlugins,iParams){
 	new id=get_param(1)
 	new the_color_num=get_param(2)
-	new reveal_user=get_param(3)
-	sh_screen_fade(id, 0.1, 0.9, fx_colors[the_color_num][0], fx_colors[the_color_num][1], fx_colors[the_color_num][2], 50)
-	if(reveal_user){
-		sh_set_rendering(id, fx_colors[the_color_num][0], fx_colors[the_color_num][1], fx_colors[the_color_num][2], fx_colors[the_color_num][3],kRenderFxGlowShell, kRenderTransAlpha)
+	new glow_on_user=get_param(3)
+	new alpha=get_param(4)
+	new the_hud_alpha=get_param(5)
+	sh_screen_fade(id, 0.1, 0.9, fx_colors[the_color_num][0], fx_colors[the_color_num][1], fx_colors[the_color_num][2], (the_hud_alpha<0)?50:the_hud_alpha)
+	if(glow_on_user){
+		sh_set_rendering(id, fx_colors[the_color_num][0], fx_colors[the_color_num][1], fx_colors[the_color_num][2], (alpha<0)?fx_colors[the_color_num][3]:alpha,kRenderFxGlowShell, kRenderTransAlpha)
 		aura(id,fx_colors[the_color_num])
 	}
 }

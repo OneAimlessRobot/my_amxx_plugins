@@ -8,20 +8,6 @@
 
 #define BLEED_SFX "hornet/ag_hornethit1.wav"
 
-#define BLEED_PERIOD 1.0
-#define BLEED_TIME 5.0
-#define BLEED_DAMAGE 40
-#define BLEED_TIMES floatround(floatdiv(BLEED_TIME,BLEED_PERIOD))
-
-#define ULTRABLEED_PERIOD 0.25
-#define ULTRABLEED_TIME 5.0
-#define ULTRABLEED_DAMAGE 40
-#define ULTRABLEED_TIMES floatround(floatdiv(ULTRABLEED_TIME,ULTRABLEED_PERIOD))
-
-#define MINIBLEED_PERIOD 1.0
-#define MINIBLEED_TIME 5.0
-#define MINIBLEED_DAMAGE 10
-#define MINIBLEED_TIMES floatround(floatdiv(MINIBLEED_TIME,MINIBLEED_PERIOD))
 
 
 enum fx_bleed_type{
@@ -40,7 +26,10 @@ enum bleed_task_parameter_id{
 	bleed_task_apply_func_name[128],
 	bleed_task_remove_func_name[128]
 }
-
+enum bleed_alpha_type{
+  hud_alpha,
+  render_alpha
+}
 stock const bleed_type_names[_:NUM_BLEED_TYPES][]={
 			"no bleeding",
       "mini bleeding",
@@ -53,6 +42,12 @@ stock const bleed_type_damages[_:NUM_BLEED_TYPES]={
       40,
       40
 }
+stock const bleed_type_alphas[_:NUM_BLEED_TYPES][bleed_alpha_type]={
+			{0,0},
+      {50,255},
+      {75,255},
+      {120,255}
+}
 stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={	
 					{-1.0,5.0,0,-1,-1,"",""},
 					{1.0,5.0,0,-1,-1,"bleed_task","unbleed_task"},
@@ -60,8 +55,6 @@ stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={
 					{0.25,5.0,0,-1,-1,"bleed_task","unbleed_task"}
 
 }
-
-stock const bleed_color[4]={255, 1, 1,255}
 
 native sh_bleed_user(id,attacker,fx_bleed_type:bleed_type,gHeroID)
 

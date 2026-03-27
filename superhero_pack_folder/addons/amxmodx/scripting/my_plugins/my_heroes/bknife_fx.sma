@@ -194,8 +194,8 @@ public bleed_task(array[],id){
 	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
 
-	set_render_with_fx_num(id,COCAINE)
-	set_render_with_fx_num(array[1],COCAINE)
+	set_render_with_fx_num(id,COCAINE,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
+	set_render_with_fx_num(array[1],COCAINE,0,-1,bleed_type_alphas[array[0]][hud_alpha])
 	sh_add_hp(array[1],bleed_type_damages[array[0]],sh_get_max_hp(array[1]))
 	make_bleed_fx(id)
 	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],bleed_type_names[array[0]],0,SH_DMG_NORM)
