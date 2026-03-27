@@ -92,12 +92,8 @@ public Item_PostFrame_Post(iEnt)
 	if (!sh_is_active()||!spores_has_ksun(id)||!ksun_player_is_in_ultimate(id)){
 		return HAM_IGNORED
 	}
-	if( get_pdata_int(iEnt, m_fInReload, 4) )
-	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], ksun_ultimate_reload_rate_mult)
-		set_pdata_float(get_pdata_cbase(iEnt, m_pPlayer, 4), m_flNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, 4)
-	}
+	do_fast_reload(id,iEnt,ksun_ultimate_reload_rate_mult)
+
 	return HAM_IGNORED
 }
 public ksun_ultimate_damage_hook(id, idinflictor, attacker, Float:damage, damagebits)

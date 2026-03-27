@@ -4,6 +4,7 @@
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 
@@ -504,7 +505,8 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	new Float:pos[3],Float:field_pos[3]
 	pev(player_id, pev_origin, pos)
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME,player_id)
-	while(grenada) {
+	new is_crouched=flora_get_user_is_crouched(player_id)
+	while(grenada&&is_crouched) {
 			pev(grenada,pev_origin,field_pos)
 			new Float:distance=VecDist(pos,field_pos)
 			if(distance<field_radius){
@@ -752,20 +754,24 @@ public field_think(ent)
 		make_shockwave(ient_pos,field_radius,{255, 255, 0,60})
 		make_shockwave(ient_pos,field_core_radius,{255, 128, 0,60})
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
-		new CsTeams:owner_team=cs_get_user_team(owner)
 
-		clear_one_flora_array(owner,false)
+		clear_one_flora_array(owner,true)
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
+			if(pid==owner){
+
+				continue
+			}
 			if(!client_hittable(pid)){
 				continue
 			
 			}
-			else if(cs_get_user_team(pid)==owner_team){
+			if(sh_clients_are_same_team(pid,owner)){
+
 				continue
 			}
-			g_was_player_tagged_by_flora[pid][owner]=(g_flora_sheltered_value[owner]>NONE)
+			g_was_player_tagged_by_flora[pid][owner]=(g_flora_sheltered_value[owner]>OUTSIDE)
 			if(g_was_player_tagged_by_flora[pid][owner]){
 				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
 				
@@ -783,7 +789,7 @@ public field_think(ent)
 									kRenderFxGlowShell,
 									
 									kRenderTransAlpha)
-				set_task(flora_stun_time*g_flora_curr_dmg_mult[owner],"remove_glow_task",pid+FLORA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
+				remove_glow_user(pid,flora_stun_time*g_flora_curr_dmg_mult[owner])
 				flora_heal(owner,fdamage,g_flora_dmg_color[owner])
 				
 			}
@@ -816,13 +822,6 @@ uncharge_user(id){
 	
 }
 
-public remove_glow_task(id){
-
-id-=FLORA_REMOVE_GLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
-set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-
-}
 public load_field(id){
 	id-=FLORA_LOAD_TASKID
 	

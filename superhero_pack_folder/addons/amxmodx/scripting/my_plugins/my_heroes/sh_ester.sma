@@ -316,14 +316,13 @@ public weaponChange(id)
 	if (wpnid == CSW_TMP) {
 		if(gGunLastDeployed[id]!=wpnid){
 			if(sh_get_user_effect(id)!=_:METYLPHENIDATE){
-				new fx_num=sh_effect_user_direct(id,id,_:METYLPHENIDATE,ester_get_hero_id());
-				gatling_set_fx_num(id,fx_num);
+				sh_effect_user_direct(id,id,ester_get_hero_id(),_:METYLPHENIDATE);
 			}
 		}
 	}
 	else{
 		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
-			sh_uneffect_user(id,METYLPHENIDATE,ester_get_hero_id());
+			sh_uneffect_user(id,ester_get_hero_id(),METYLPHENIDATE);
 			
 		}
 		if (wpnid == CSW_KNIFE) {
@@ -651,16 +650,14 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
 		switch(is_teamate){
 			case 0:{
-					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-							new fx_num=sh_effect_user_direct(id,attacker,GLOW,ester_get_hero_id());
-							gatling_set_fx_num(id,fx_num);
+					if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
+							sh_effect_user_direct(id,attacker,ester_get_hero_id(),STUN);
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 							}
 							if(!is_user_bot(id)){
 								sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
 							}
-							sh_set_stun(id,GLOW_TIME,150.0);
 						
 					}
 					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult)+1.0):floatadd(damage,pan_dmg))
@@ -680,9 +677,8 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			}
 			case 1:{
 					if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
-					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-							new fx_num=sh_effect_user_direct(id,attacker,METYLPHENIDATE,ester_get_hero_id());
-							gatling_set_fx_num(id,fx_num);
+					if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
+							sh_effect_user_direct(id,attacker,ester_get_hero_id(),METYLPHENIDATE);
 							
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)

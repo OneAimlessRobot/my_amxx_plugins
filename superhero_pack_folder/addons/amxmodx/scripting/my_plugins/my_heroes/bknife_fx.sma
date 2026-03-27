@@ -1,7 +1,9 @@
 #include "../my_include/superheromod.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
@@ -9,26 +11,23 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new BLEED_TASKID
-new UNBLEED_TASKID
-new ULTRABLEED_TASKID
-new UNULTRABLEED_TASKID
-new MINIBLEED_TASKID
-new UNMINIBLEED_TASKID
-
-new bool:gIsBleeding[SH_MAXSLOTS+1]
+new gIsBleeding[SH_MAXSLOTS+1]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
-arrayset(gIsBleeding,false,SH_MAXSLOTS+1)
+arrayset(gIsBleeding,NONE,SH_MAXSLOTS+1)
 
-BLEED_TASKID=allocate_typed_task_id(player_task)
-UNBLEED_TASKID=allocate_typed_task_id(player_task)
-UNULTRABLEED_TASKID=allocate_typed_task_id(player_task)
-BLEED_TASKID=allocate_typed_task_id(player_task)
-MINIBLEED_TASKID=allocate_typed_task_id(player_task)
-UNMINIBLEED_TASKID=allocate_typed_task_id(player_task)
+for(new i=_:MINI_BLEED;i<_:NUM_BLEED_TYPES;i++){
+	
+	bleed_task_parameters[i][bleed_task_apply_id]=allocate_typed_task_id(player_task)
+	bleed_task_parameters[i][bleed_task_remove_id]=allocate_typed_task_id(player_task)
+	static Float:the_period;
+	the_period=bleed_task_parameters[i][bleed_task_period]
+	static Float:the_time;
+	the_time=bleed_task_parameters[i][bleed_task_time]
+	bleed_task_parameters[i][bleed_task_repeats]=floatround(floatdiv(the_time,the_period))
+}
 register_event("DeathMsg","on_death_bleeding","a")
 
 
@@ -38,25 +37,119 @@ public plugin_natives(){
 
 
 	register_native("sh_bleed_user","_sh_bleed_user",0);
-	register_native("sh_ultrableed_user","_sh_ultrableed_user",0);
-	register_native("sh_minibleed_user","_sh_minibleed_user",0);
 	register_native("sh_unbleed_user","_sh_unbleed_user",0);
 	register_native("make_bleed_fx","_make_bleed_fx",0);
+	register_native("do_bleed_knife_attack","_do_bleed_knife_attack",0)
 }
 
+public _do_bleed_knife_attack(iPlugin,iParam){
+
+new id= get_param(1)
+new attacker= get_param(2)
+new hero_id= get_param(3)
+new slash_damage=get_param(4)
+new stab_damage=get_param(5)
+new optional_bool=get_param(6)
+new attack_name_string[128]
+get_string(7,attack_name_string,127)
+new blood_sound_sample[128]
+get_string(8,blood_sound_sample,127)
+
+new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+
+
+if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
+	
+	if(weapon==CSW_KNIFE){
+		emit_sound(attacker, CHAN_WEAPON, blood_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		new button = pev(attacker, pev_button);
+		new bool:slashing;
+		new bool:stabbing;
+		if(button & IN_ATTACK2){
+			
+			button &= ~IN_ATTACK2;
+			stabbing=true;
+			slashing=false
+		}
+		if(button & IN_ATTACK){
+			
+			button &= ~IN_ATTACK;
+			stabbing=false;
+			slashing=true
+		}
+		new Float: vec2LOS[2];
+		new Float: vecForward[3];
+		new Float: vecForward2D[2];
+	
+		velocity_by_aim( attacker, 1, vecForward );
+      
+		xs_vec_make2d( vecForward, vec2LOS );
+		xs_vec_normalize( vec2LOS, vec2LOS );
+    
+		velocity_by_aim(id, 1, vecForward ); 
+        
+		xs_vec_make2d( vecForward, vecForward2D );
+		new damage=(stabbing?stab_damage:slash_damage)
+		if(stabbing){
+			
+			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
+			{
+				sh_bleed_user(id,attacker,ULTRABLEED,hero_id)
+				damage=damage*4;
+			}
+			else{
+				sh_bleed_user(id,attacker,BLEED,hero_id)
+			}
+		}
+		else if(slashing){
+			
+			sh_bleed_user(id,attacker,MINI_BLEED,hero_id)
+		}
+		sh_extra_damage(id,attacker,damage,attack_name_string,0,SH_DMG_NORM)
+	}
+}
+return HAM_IGNORED
+}
+
+bleed_task_user(id,attacker){
+	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
+	new array[2]
+	array[0] = gIsBleeding[id]
+	array[1] = attacker
+	set_task(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
+					bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_func_name],
+					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id],
+					array,
+					2,
+					"a",
+					bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats])
+
+	set_task(floatsub(floatmul(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
+					float(bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats])),0.1),
+					bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_func_name],
+					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_id],
+					array,
+					1,
+					"a",
+					1)
+
+
+
+}
 
 public _sh_bleed_user(iPlugin,iParams){
 
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new gHeroID=get_param(3)
+	new bleed_type=get_param(3)
+	new gHeroID=get_param(4)
 	if ( !shModActive() || !client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
 	new user_name[128]
 	get_user_name(user,user_name,127)
-	if(!gIsBleeding[user]||STABS_STACK){
+	if(!gIsBleeding[user]){
 		
 		
 		if(!is_user_bot(user)){
@@ -67,63 +160,8 @@ public _sh_bleed_user(iPlugin,iParams){
 		
 		}
 		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		bleed_user(user,attacker)
-	}
-
-
-
-}
-public _sh_ultrableed_user(iPlugin,iParams){
-
-	new user=get_param(1)
-	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	
-	if ( !shModActive() ||!client_hittable(user)||!client_hittable(attacker)) return
-
-	new attacker_name[128]
-	get_user_name(attacker,attacker_name,127)
-	new user_name[128]
-	get_user_name(user,user_name,127)
-	if(!gIsBleeding[user]||STABS_STACK){
-		
-		
-		if(!is_user_bot(user)){
-			sh_chat_message(user,gHeroID,"%s has back stabbed you!!!!!!",attacker_name)
-		}
-		if(!is_user_bot(attacker)){
-			sh_chat_message(attacker,gHeroID,"You just back stabbed %s!!!!!!!",user_name)
-		}
-		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		ultrableed_user(user,attacker)
-	}
-
-
-
-}
-public _sh_minibleed_user(iPlugin,iParams){
-
-	
-	new user=get_param(1)
-	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	if ( !shModActive() ||!client_hittable(user)||!client_hittable(attacker)) return
-
-	new attacker_name[128]
-	get_user_name(attacker,attacker_name,127)
-	new user_name[128]
-	get_user_name(user,user_name,127)
-	if(!gIsBleeding[user]||SLASHES_STACK){
-		
-		
-		if(!is_user_bot(user)){
-			sh_chat_message(user,gHeroID,"%s has slashed you!!!!!!",attacker_name)
-		}
-		if(!is_user_bot(attacker)){
-			sh_chat_message(attacker,gHeroID,"You just slashed %s!!!!!!!",user_name)
-		}
-		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		minibleed_user(user,attacker)
+		gIsBleeding[user]=bleed_type
+		bleed_task_user(user,attacker)
 	}
 
 
@@ -149,143 +187,42 @@ public _make_bleed_fx(iPlugin,iParams){
 	new id=get_param(1)
 	new origin[3]
 	get_user_origin(id,origin)
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
-	write_byte(TE_BLOODSTREAM);
-	write_coord(origin[0]);
-	write_coord(origin[1]);
-	write_coord(origin[2]+10);
-	write_coord(random_num(-360,360));
-	write_coord(random_num(-360,360));
-	write_coord(-10);
-	write_byte(70);
-	write_byte(random_num(50,100));
-	message_end();
-}
-
-public minibleed_task(array[],id){
-	id-=MINIBLEED_TASKID
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
-
-	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 25)
-	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 25)
-	sh_add_hp(array[0],MINIBLEED_DAMAGE,sh_get_max_hp(array[0]))
-	make_bleed_fx(id)
-	sh_set_stun(id,0.25,0.5)
-	sh_extra_damage(id,array[0],MINIBLEED_DAMAGE,"Minibleeding",0,SH_DMG_NORM)
-	
-	
-
-
-}
-minibleed_user(id,attacker){
-	
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
-	new array[1]
-	array[0] = attacker
-	gIsBleeding[id]=true
-	set_task(MINIBLEED_PERIOD,"minibleed_task",id+MINIBLEED_TASKID,array, sizeof(array),  "a",MINIBLEED_TIMES)
-	set_task(floatsub(floatmul(MINIBLEED_PERIOD,float(MINIBLEED_TIMES)),0.1),"unminibleed_task",id+UNMINIBLEED_TASKID,"", 0,  "a",1)
-
-
-}
-public unminibleed_task(id){
-	id-=UNMINIBLEED_TASKID
-	
-	if ( !shModActive() || !is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+MINIBLEED_TASKID)
-	gIsBleeding[id]=false
-
-
-
-}
-
-public ultrableed_task(array[],id){
-	id-=ULTRABLEED_TASKID
-
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
-	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 150)
-	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 150)
-	sh_add_hp(array[0],ULTRABLEED_DAMAGE,sh_get_max_hp(array[0]))
-	make_bleed_fx(id)
-	sh_set_stun(id,0.25,0.5)
-	sh_extra_damage(id,array[0],ULTRABLEED_DAMAGE,"Ultrableeding",0,SH_DMG_NORM)
-	
-	
-
-
-}
-ultrableed_user(id,attacker){
-	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
-	new array[1]
-	array[0] = attacker
-	gIsBleeding[id]=true
-	set_task(ULTRABLEED_PERIOD,"ultrableed_task",id+ULTRABLEED_TASKID,array, sizeof(array),  "a",ULTRABLEED_TIMES)
-	set_task(floatsub(floatmul(ULTRABLEED_PERIOD,float(ULTRABLEED_TIMES)),0.1),"unultrableed_task",id+UNULTRABLEED_TASKID,"", 0,  "a",1)
-
-
-
-}
-public unultrableed_task(id){
-	id-=UNULTRABLEED_TASKID
-	if ( !shModActive() || !is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+ULTRABLEED_TASKID)
-	gIsBleeding[id]=false
-
-
-
+	fx_blood(origin,origin,HIT_STOMACH,false)
 }
 
 public bleed_task(array[],id){
-	id-=BLEED_TASKID
+	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
 
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[0])) return
-	sh_screen_fade(id, 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 50)
-	sh_set_rendering(id, bleed_color[0], bleed_color[1], bleed_color[2], bleed_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(array[0], 0.1, 0.9, bleed_color[0], bleed_color[1], bleed_color[2], 50)
-	sh_add_hp(array[0],BLEED_DAMAGE,sh_get_max_hp(array[0]))
+	set_render_with_fx_num(id,COCAINE)
+	set_render_with_fx_num(array[1],COCAINE)
+	sh_add_hp(array[1],bleed_type_damages[array[0]],sh_get_max_hp(array[1]))
 	make_bleed_fx(id)
-	sh_extra_damage(id,array[0],BLEED_DAMAGE,"Bleeding",0,SH_DMG_NORM)
+	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],bleed_type_names[array[0]],0,SH_DMG_NORM)
 	
 	
 
 
 }
-bleed_user(id,attacker){
-	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
-	new array[1]
-	array[0] = attacker
-	gIsBleeding[id]=true
-	set_task(BLEED_PERIOD,"bleed_task",id+BLEED_TASKID,array, sizeof(array),  "a",BLEED_TIMES)
-	set_task(floatsub(floatmul(BLEED_PERIOD,float(BLEED_TIMES)),0.1),"unbleed_task",id+UNBLEED_TASKID,"", 0,  "a",1)
-
-
-
-}
-public unbleed_task(id){
-	id-=UNBLEED_TASKID
+public unbleed_task(array[],id){
+	id-=bleed_task_parameters[array[0]][bleed_task_remove_id]
+	
 	if ( !shModActive() || !is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+BLEED_TASKID)
-	gIsBleeding[id]=false
+	remove_task(id+bleed_task_parameters[array[0]][bleed_task_apply_id])
+	set_user_rendering(id)
+	gIsBleeding[id]=NONE
 
 
 
 }
 
 unbleed_user(id){
+	remove_task(id+bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_id])
+	remove_task(id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id])
 	if ( !shModActive() || !is_user_connected(id)) return
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-	remove_task(id+BLEED_TASKID)
-	remove_task(id+UNBLEED_TASKID)
-	remove_task(id+MINIBLEED_TASKID)
-	remove_task(id+UNMINIBLEED_TASKID)
-	remove_task(id+ULTRABLEED_TASKID)
-	remove_task(id+UNULTRABLEED_TASKID)
-	gIsBleeding[id]=false
+	
+	set_user_rendering(id)
+	gIsBleeding[id]=NONE
 
 
 

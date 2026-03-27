@@ -63,5 +63,6 @@ native explosion(hero_id,ent_id,Float:explosion_radius,Float:peak_power,Float:op
 native explosion_custom_entity(ent_id,Float:explosion_radius,Float:peak_power,ent_classname[]="player",Float:optional_force=0.0,Float:upward_shift=1.0);
 native track_user(id,attacker,do_damage=0,damage=40,Float:period,Float:time,track_color=LTBLUE);
 native unradioactive_user(id)
+native remove_glow_user(id,Float:delay)
 
 native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);

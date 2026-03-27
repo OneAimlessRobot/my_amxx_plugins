@@ -254,61 +254,18 @@ public loadCVARS()
 }
 public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
 
-new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+	if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)){
 
-new CsTeams:att_team=cs_get_user_team(attacker)
-if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
-	
-	if(weapon==CSW_KNIFE){
-		new button = pev(attacker, pev_button);
-		new bool:slashing;
-		new bool:stabbing;
-		if(button & IN_ATTACK2){
-			
-			button &= ~IN_ATTACK2;
-			stabbing=true;
-			slashing=false
-		}
-		if(button & IN_ATTACK){
-			
-			button &= ~IN_ATTACK;
-			stabbing=false;
-			slashing=true
-		}
-		new Float: vec2LOS[2];
-		new Float: vecForward[3];
-		new Float: vecForward2D[2];
-	
-		velocity_by_aim( attacker, 1, vecForward );
-      
-		xs_vec_make2d( vecForward, vec2LOS );
-		xs_vec_normalize( vec2LOS, vec2LOS );
-    
-		velocity_by_aim(id, 1, vecForward ); 
-        
-		xs_vec_make2d( vecForward, vecForward2D );
-		if(stabbing){
-			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
-			{
-				sh_ultrableed_user(id,attacker,gHeroID)
-			}
-			else{
-				sh_bleed_user(id,attacker,gHeroID)
-			}
-			return HAM_IGNORED
-		}
-		else if(slashing){
-			
-			sh_minibleed_user(id,attacker,gHeroID)
-			return HAM_IGNORED
-		}
+		return HAM_IGNORED
 	}
-}
 
-return HAM_IGNORED
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,tranq_get_has_erica(attacker));
+
+
+
+	return ham_result
+
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -402,7 +359,7 @@ public weaponChange(id)
 	}
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( get_user_maxspeed(id) < g_normal_er_speed[id] ){
+		if ( (get_user_maxspeed(id) < g_normal_er_speed[id]) && !sh_get_stun(id) ){
 			set_user_maxspeed(id, g_normal_er_speed[id])
 		}
 	}
@@ -418,8 +375,12 @@ public erica_damage(id)
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( !client_hittable(attacker,gHasErica[attacker])|| attacker==id  ) return
+	if ( !client_hittable(attacker)|| attacker==id  ) return
 	
+	if(!gHasErica[attacker]){
+
+		return
+	}
 	
 	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
 	if (floatround(extraDamage)>0){

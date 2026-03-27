@@ -64,4 +64,4 @@ stock curr_num_of_tasks,
 stock starting_id_pcvar, slots_per_task_type_pcvars[_:max_task_type];
 
 
-native allocate_typed_task_id(task_type:the_tipe);
+native allocate_typed_task_id(task_type:the_tipe,stack_ammount=1);

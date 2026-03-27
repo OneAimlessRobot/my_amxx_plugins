@@ -3,6 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "maria_riveter_inc/maria_general_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -158,14 +159,6 @@ public loadCVARS()
 	heal_period=get_cvar_float("maria_heal_period")
 }
 
-public remove_glow_task(id){
-
-id-=MARIA_REMOVE_GLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
-
-set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
-
-}
 public maria_init()
 {
 	
@@ -275,7 +268,7 @@ bool:heal_teamate(id,i){
 	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
 	sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
 	setScreenFlash(i,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)
-	set_task(heal_period*2,"remove_glow_task",i+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)
+	remove_glow_user(i,heal_period*2)
 	sh_set_rendering(i, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
 	heal_stream(id,i)
 	return true
@@ -320,7 +313,7 @@ if(healed){
 
 	setScreenFlash(id,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)	
 	sh_set_rendering(id, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
-	set_task(heal_period,"remove_glow_task",id+MARIA_REMOVE_GLOW_TASKID,"", 0,  "a",1)	
+	remove_glow_user(id,heal_period)
 	
 }
 make_shockwave(client_origin,g_normal_radius[id],LineColorsWithAlpha[LTGREEN],1,3,2,20)

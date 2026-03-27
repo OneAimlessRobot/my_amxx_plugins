@@ -49,7 +49,6 @@ public plugin_natives(){
 	
 	register_native( "uneffect_user_handler","_uneffect_user_handler",0)
 	register_native( "make_effect","_make_effect",0)
-	register_native( "make_effect_direct","_make_effect_direct",0)
 	register_native( "sh_get_pill_color","_sh_get_pill_color",0)
 
 }
@@ -59,30 +58,24 @@ public _make_effect(iPlugin,iParams){
 	new vic= get_param(1)
 	new attacker= get_param(2)
 	new hero_id=get_param(3)
+	new fx_num= get_param(4)
+	new override=get_param(5)
+
+	new true_fx_num= (fx_num<0)?sh_gen_effect():fx_num
+	
 	if(!is_user_connected(vic)||!is_user_connected(attacker)){
 		
 		return
 	}
-	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
-	new fx_id:fx_num=sh_effect_user(vic,attacker,hero_id)
-	gCurrFX[vic]=fx_num;
+	if((sh_get_user_effect(vic)>=_:GLOW)&&(sh_get_user_effect(vic)<=_:BATH)&&!override){
 
-}
-public _make_effect_direct(iPlugin,iParams){
-
-	new vic= get_param(1)
-	new attacker= get_param(2)
-	new fx_num= get_param(3)
-	new hero_id=get_param(4)
-	if(!is_user_connected(vic)||!is_user_connected(attacker)){
-		
 		return
 	}
-	sh_uneffect_user(vic,gCurrFX[vic],hero_id)
-	sh_effect_user_direct(vic,attacker,fx_num,hero_id)
-	gCurrFX[vic]=fx_num;
+	sh_uneffect_user(vic,hero_id,gCurrFX[vic])
+	sh_effect_user_direct(vic,attacker,hero_id,true_fx_num)
 
 }
+
 public _uneffect_user_handler(iPlugin,iParams){
 
 	new user=get_param(1)
@@ -91,7 +84,7 @@ public _uneffect_user_handler(iPlugin,iParams){
 		
 		return
 	}
-	sh_uneffect_user(user,gatling_get_fx_num(user),hero_id)
+	sh_uneffect_user(user,hero_id,gatling_get_fx_num(user))
 	gCurrFX[user]=0;
 
 }

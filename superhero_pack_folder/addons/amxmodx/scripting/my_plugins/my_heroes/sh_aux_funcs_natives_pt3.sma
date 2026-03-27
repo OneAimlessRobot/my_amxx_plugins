@@ -20,6 +20,7 @@
 
 new RADIOACTIVE_TASK_ID
 new UNRADIOACTIVE_TASK_ID
+new REMOVE_GLOW_TASKID
 
 #define NUM_INIT_TRACK_PARAMS 6
 
@@ -33,6 +34,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	UNRADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
+	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_tracked","a")
 	prepare_shero_aux_lib_pt3()
 
@@ -53,6 +55,7 @@ public plugin_natives(){
 	register_native("explosion_custom_entity","_explosion_custom_entity",0);
 	register_native("track_user","_track_user",0);
 	register_native("sh_damage_display_stock","_sh_damage_display_stock",0)
+	register_native("remove_glow_user","_remove_glow_user",0)
 }
 
 
@@ -532,4 +535,21 @@ public on_death_tracked()
 	
 	}
 	
+}
+public _remove_glow_user(iPlugin,iParams){
+	new id=get_param(1)
+	new Float:delay=get_param_f(2)
+
+	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID,"", 0,  "a",1)
+				
+
+}
+public remove_glow_task(id){
+
+id-=REMOVE_GLOW_TASKID
+if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
+	return
+}
+set_user_rendering(id)
+
 }

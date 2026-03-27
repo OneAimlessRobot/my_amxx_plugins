@@ -16,15 +16,6 @@
 
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
-// weapons offsets
-const m_pPlayer            = 41
-const m_iId                = 43
-const m_flNextPrimaryAttack    = 46
-const m_flNextSecondaryAttack    = 47
-const m_flTimeWeaponIdle        = 48
-const m_fInReload            = 54
-
-const m_flNextAttack = 83
 
 native ksun_player_is_in_ultimate(id)
 

@@ -29,12 +29,11 @@ native gatling_set_hero_id(id)
 native gatling_get_hero_id()
 
 
-native sh_get_pill_color(fx_id:fx_num,attacker,color[4])
+native sh_get_pill_color(fx_num,attacker,color[4])
 
 
-native make_effect(vic,attacker,gHeroId)
+native make_effect(vic,attacker,gHeroId,fx_num=-1,bool:override=false)
 
-native make_effect_direct(vic,attacker,gHeroID,fx_id:fx_num)
 
 native uneffect_user_handler(id,gHeroID)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

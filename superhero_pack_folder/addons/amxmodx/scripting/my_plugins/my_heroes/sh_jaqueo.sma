@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"
 #include "shield_inc/sh_jaqueo_shield.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -157,7 +158,7 @@ public _client_isnt_hitter(iPlugin,iParams){
 	new gatling_user=get_param(1);
 	
 	
-	new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||(gatling_user < 0 || gatling_user > SH_MAXSLOTS))
+	new bool:result=(!client_hittable(gatling_user))
 	if(result) return true
 	
 	return !gHasJaqueo[gatling_user]

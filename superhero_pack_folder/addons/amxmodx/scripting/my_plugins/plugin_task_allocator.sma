@@ -93,16 +93,8 @@ start_allocator(){
 	task_id_to_give=starting_id;
 
 }
-print_allocator_state(){
-/*
-stock starting_id = default_starting_id;
+/*print_allocator_state(){
 
-const default_slots_per_player_task = 40
-const default_slots_per_entity_task = 2000
-
-stock slots_per_task_type[_:max_task_type];
-
-*/
 	server_print("Printing current allocator state!!^n^nAllocator stuff:^nStarting slot: %d (default: %d)^n^n^n",
 					starting_id, default_starting_id)
 	server_print("Defined num slots for task types:^n")
@@ -117,15 +109,15 @@ stock slots_per_task_type[_:max_task_type];
 					curr_num_of_tasks,prev_task_id_given,task_id_to_give)
 
 }
-
+*/
 public _allocate_typed_task_id(iPlugin,iParams){
 
 	new the_type = get_param(1)
-
+	new stack_ammount= get_param(2)
 	prev_task_id_given = task_id_to_give
 
 
-	task_id_to_give += (slots_per_task_type[the_type]+1)
+	task_id_to_give += ((slots_per_task_type[the_type]+1)+(3*stack_ammount))
 	curr_num_of_tasks++;
 
 	//print_allocator_state()

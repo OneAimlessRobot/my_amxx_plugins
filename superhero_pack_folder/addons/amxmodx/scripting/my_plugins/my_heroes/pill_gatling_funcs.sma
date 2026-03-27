@@ -622,9 +622,7 @@ public vexd_pfntouch(pToucher, pTouched)
 			if(client_hittable(pTouched))
 			{
 
-				if((sh_get_user_effect(pTouched)<KILL)||(sh_get_user_effect(pTouched)>BATH)){
-					make_effect_direct(pTouched,oid,pill_fx[pToucher],gatling_get_hero_id())
-				}
+				make_effect(pTouched,oid,gatling_get_hero_id(),pill_fx[pToucher],false)
 			}
 		}
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){

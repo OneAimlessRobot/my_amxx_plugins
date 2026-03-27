@@ -414,7 +414,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				}
 				else if(pTouched!=oid){
 					sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
-					sh_bleed_user(pTouched,oid,spear_get_hero_id())
+					sh_bleed_user(pTouched,oid,BLEED,spear_get_hero_id())
 					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0,_,default_explode_upward_shift)
 					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					spear_pickable[pToucher]=true

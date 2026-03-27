@@ -160,10 +160,12 @@ public get_speed_dmg_in_radius(id,Float:damage){
 		if(!client_hittable(i)||(i==id)) continue;
 
 		if(!sh_clients_are_same_team(i,id)) continue;
-		heal_stream(i, id,YELLOW)
-		aura(i,LineColorsWithAlpha[YELLOW])
-		add_speed_points(i,damage,true)
-		
+
+		if(gHasAdriano[i]){
+			heal_stream(i, id,YELLOW)
+			aura(i,LineColorsWithAlpha[YELLOW])
+			add_speed_points(i,damage,true)
+		}
 		
 	}
 	
@@ -241,7 +243,7 @@ public adriano_damage(id)
 
 	get_speed_dmg_in_radius(id,damage)
 	
-	if(weapon==CSW_ETHEREAL){
+	if(gHasAdriano[id]&&(weapon==CSW_ETHEREAL)){
 	
 		sh_extra_damage(id,attacker,floatround(damage),"Adriano Ethereal Rifle",headshot)
 	
@@ -312,7 +314,7 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( get_user_maxspeed(id) < g_normal_speed[id] ){
+		if ( (get_user_maxspeed(id) < g_normal_speed[id]) && !sh_get_stun(id)){
 			set_user_maxspeed(id, g_normal_speed[id])
 		}
 	}

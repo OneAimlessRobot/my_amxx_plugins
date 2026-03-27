@@ -418,10 +418,8 @@ public laser_on_player_think(ent){
 		new CsTeams:target_team=cs_get_user_team(iHit)
 	
 		if(owner_team!=target_team){
-			if((sh_get_user_effect(iHit)<KILL)||(sh_get_user_effect(iHit)>BATH)){
-				new fx_num=sh_effect_user_direct(iHit,owner,GLOW,camman_get_hero_id())
-				gatling_set_fx_num(iHit,fx_num);
-			}
+			make_effect(iHit,owner,camman_get_hero_id(),GLOW,false)
+				
 		}
 	}
 	return

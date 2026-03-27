@@ -70,6 +70,26 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	}
 
 }
+stock do_fast_reload(id,iEnt,Float:speed=1.0){
+	
+	if(!client_hittable(id)){
+		return
+	}
+/*
+	static m_pppPlayer            = 41,
+			m_iiId                = 43,
+			m_fflTimeWeaponIdle        = 48,
+			m_ffInReload            = 54,
+			m_fflNextAttack = 83*/
+	
+	if( get_pdata_int(iEnt, m_ffInReload, 4) )
+	{
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iiId, 4)], speed)
+		set_pdata_float(get_pdata_cbase(iEnt, m_pppPlayer, 4), m_fflNextAttack, fDelay, 5)
+		set_pdata_float(iEnt, m_fflTimeWeaponIdle, fDelay + 0.5, 4)
+	}
+
+}
 
 stock Float:get_entity_velocity(ent){
 	if(pev_valid(ent)!=2){

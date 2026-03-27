@@ -20,16 +20,9 @@
 
 #define BLOW_ENGINE 0
 #define RESET_ON_MISS 1
-#define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+/*
+*/
 
-// weapons offsets
-const m_pppPlayer            = 41
-const m_iiId                = 43
-const m_fflNextPrimaryAttack    = 46
-const m_fflNextSecondaryAttack    = 47
-const m_fflTimeWeaponIdle        = 48
-const m_ffInReload            = 54
-const m_fflNextAttack = 83
 
 //https://forums.alliedmods.net/showthread.php?p=777018#post777018
 
@@ -125,13 +118,7 @@ public Item_PostFrame_Post(iEnt)
 		return HAM_IGNORED
 	}
 	if (!sh_is_active()||!gHasKomak[id])return HAM_IGNORED
-	
-	if( get_pdata_int(iEnt, m_ffInReload, 4) )
-	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iiId, 4)], gCurrReloadRatio[id])
-		set_pdata_float(get_pdata_cbase(iEnt, m_pppPlayer, 4), m_fflNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, m_fflTimeWeaponIdle, fDelay + 0.5, 4)
-	}
+	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
 	return HAM_IGNORED
 } 
 public komak_init()

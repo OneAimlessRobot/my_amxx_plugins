@@ -156,9 +156,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 		dist = get_distance(origin,vExplodeAt)
 		if (dist <= ROCKET_RADIUS) {
 			
-			if((sh_get_user_effect(i)<KILL)||(sh_get_user_effect(i)>BATH)){
-				make_effect_direct(i,id,rocket_fx[pToucher],gatling_get_hero_id())
-			}
+			make_effect(i,id,gatling_get_hero_id(),rocket_fx[pToucher],false)
 			
 		}
 	}

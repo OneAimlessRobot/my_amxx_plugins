@@ -1,5 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
 
@@ -11,7 +13,6 @@
 new curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on[SH_MAXSLOTS+1]
 
-new m_trail
 public plugin_init(){
 	
 	
@@ -30,6 +31,8 @@ public plugin_natives(){
 
 	register_native( "gatling_set_needle","_gatling_set_needle",0)
 	register_native( "gatling_get_needle","_gatling_get_needle",0)
+	register_native( "gatling_get_needle_fx","_gatling_get_needle_fx",0)
+	register_native( "gatling_needle_cycle_fx","_gatling_needle_cycle_fx",0)
 
 }
 public weaponChange(id)
@@ -39,8 +42,7 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
 		entity_set_string(id, EV_SZ_viewmodel, NEEDLE_V_MODEL)
-		curr_needle_fx[id]=sh_gen_effect()
-		notify_fx_user(id)
+		gatling_needle_cycle_fx(id)
 	}
 	return PLUGIN_CONTINUE
 	
@@ -62,7 +64,15 @@ public Ham_Needle_Swing(weapon_ent)
 
 	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
 
-	if ( client_isnt_hitter(owner)||!gatling_get_needle(owner)) {
+	if ( !client_hittable(owner)) {
+		return HAM_IGNORED
+	}
+	if(!gatling_get_has_yakui(owner)){
+
+		return HAM_IGNORED
+	}
+	if(!gatling_get_needle(owner)){
+
 		return HAM_IGNORED
 	}
 	curr_needle_fx[owner]=sh_gen_effect()
@@ -73,8 +83,17 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active()) return HAM_IGNORED
 	
-	if ( client_isnt_hitter(attacker)) return HAM_IGNORED
-	
+	if ( !client_hittable(attacker)) {
+		return HAM_IGNORED
+	}
+	if(!gatling_get_has_yakui(attacker)){
+
+		return HAM_IGNORED
+	}
+	if(!gatling_get_needle(attacker)){
+
+		return HAM_IGNORED
+	}
 	new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 	
 	new CsTeams:att_team=cs_get_user_team(attacker)
@@ -96,35 +115,18 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 		damage=1.0
 		SetHamParamFloat(4, damage);
 		if(stabbing){
-		
-			if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-				make_effect_direct(id,attacker,curr_needle_fx[attacker],gatling_get_hero_id())
-			}
+
+			make_effect(id,attacker,gatling_get_hero_id(),curr_needle_fx[attacker],false)
 		}
 	}
 	
 	return HAM_IGNORED
 }
-public playertrail(pid, parm[])
+public playertrail(pid, parm[4])
 {
 	if (client_hittable(pid))
 	{
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_KILLBEAM)	// TE_KILLBEAM
-		write_short(pid)
-		message_end()
-		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-		write_byte( TE_BEAMFOLLOW )
-		write_short(pid) // entity
-		write_short(m_trail)  // model
-		write_byte( 10 )       // life
-		write_byte( 5 )        // width
-		write_byte(parm[0])			// r, g, b
-		write_byte(parm[1])		// r, g, b
-		write_byte(parm[2])			// r, g, b
-		write_byte(parm[3]) // brightness
-
-		message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+		trail_custom(pid,parm,10,5)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -145,6 +147,31 @@ public _gatling_get_needle(iPlugin,iParams){
 
 
 }
+public _gatling_get_needle_fx(iPlugin,iParams){
+	new id=get_param(1)
+	
+	return curr_needle_fx[id]
+
+
+}
+public _gatling_needle_cycle_fx(iPlugin,iParams){
+	new id=get_param(1)
+
+	if ( !client_hittable(id)) {
+		return
+	}
+	if(!gatling_get_has_yakui(id)){
+
+		return
+	}
+	if(!gatling_get_needle(id)){
+
+		return
+	}
+
+	curr_needle_fx[id]=sh_gen_effect()
+	notify_fx_user(id)
+}
 public _gatling_set_needle(iPlugin,iParams){
 	new id=get_param(1)
 	new value_to_set=get_param(2)
@@ -164,30 +191,9 @@ public _gatling_set_needle(iPlugin,iParams){
 
 }
 
-/*client_hittable(gatling_user,vic_userid,CsTeams:gatling_team){
-
-return ((gatling_user==vic_userid))||(is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid&&(gatling_team!=cs_get_user_team(vic_userid)))
-
-}*/
-client_hittable(vic_userid){
-
-return (is_user_connected(vic_userid)&&is_user_alive(vic_userid)&&vic_userid)
-
-}
-
-client_isnt_hitter(gatling_user){
-	new bool:result=(!is_user_connected(gatling_user)||!is_user_alive(gatling_user)||gatling_user <= 0 || gatling_user > SH_MAXSLOTS)
-	if(result) return true
-	
-	return !gatling_get_has_yakui(gatling_user)
-	
-}
-
 
 public plugin_precache()
 {
-m_trail = precache_model("sprites/smoke.spr")
-
 precache_model(NEEDLE_V_MODEL)
 
 }

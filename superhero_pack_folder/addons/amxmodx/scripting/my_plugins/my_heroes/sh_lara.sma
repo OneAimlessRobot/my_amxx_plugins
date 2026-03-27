@@ -2,6 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 #include <xs>
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -133,63 +134,15 @@ public loadCVARS()
 }
 public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+	if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)){
 
-new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
-
-new CsTeams:att_team=cs_get_user_team(attacker)
-if(spear_get_has_lara(attacker)&&!(cs_get_user_team(id)==att_team)){
-	
-	if(weapon==CSW_KNIFE){
-		emit_sound(attacker, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		new button = pev(attacker, pev_button);
-		new bool:slashing;
-		new bool:stabbing;
-		if(button & IN_ATTACK2){
-			
-			button &= ~IN_ATTACK2;
-			stabbing=true;
-			slashing=false
-		}
-		if(button & IN_ATTACK){
-			
-			button &= ~IN_ATTACK;
-			stabbing=false;
-			slashing=true
-		}
-		new Float: vec2LOS[2];
-		new Float: vecForward[3];
-		new Float: vecForward2D[2];
-	
-		velocity_by_aim( attacker, 1, vecForward );
-      
-		xs_vec_make2d( vecForward, vec2LOS );
-		xs_vec_normalize( vec2LOS, vec2LOS );
-    
-		velocity_by_aim(id, 1, vecForward ); 
-        
-		xs_vec_make2d( vecForward, vecForward2D );
-		sh_extra_damage(id,attacker,stabbing?SPEAR_STAB_DAMAGE:SPEAR_SLASH_DAMAGE,"Hunter Spear",0,SH_DMG_NORM)
-		if(stabbing){
-			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
-			{
-				sh_ultrableed_user(id,attacker,gHeroID)
-			}
-			else{
-				sh_bleed_user(id,attacker,gHeroID)
-			}
-			return HAM_IGNORED
-		}
-		else if(slashing){
-			
-			sh_minibleed_user(id,attacker,gHeroID)
-			return HAM_IGNORED
-		}
+		return HAM_IGNORED
 	}
-}
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,spear_get_has_lara(attacker),"hunter_spear");
 
-return HAM_IGNORED
+
+
+	return ham_result
 	
 }
 //----------------------------------------------------------------------------------------------

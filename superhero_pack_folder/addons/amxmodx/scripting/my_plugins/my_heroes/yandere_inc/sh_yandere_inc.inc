@@ -34,6 +34,7 @@ const fPainShock = 108
 stock gHeroID
 stock const gHeroName[] = "Yandere Mk.II"
 stock bool:gHasYandere[SH_MAXSLOTS+1]
+stock bool:gWasSuperAngry[SH_MAXSLOTS+1]
 stock bool:gSuperAngry[SH_MAXSLOTS+1]
 stock bool:gIdleAngry[SH_MAXSLOTS+1]
 stock bool:gToPlaySound[SH_MAXSLOTS+1]
@@ -47,6 +48,8 @@ stock Float:gNormalGravity[SH_MAXSLOTS+1]
 stock Float:gBaseSpeed[SH_MAXSLOTS+1]
 stock Float:gBaseGravity[SH_MAXSLOTS+1]
 stock g_prevWeapon[SH_MAXSLOTS+1]
+stock g_prev_mates_alive[SH_MAXSLOTS+1]
+stock g_prev_mates_dead[SH_MAXSLOTS+1]
 stock g_mates_alive[SH_MAXSLOTS+1]
 stock g_mates_dead[SH_MAXSLOTS+1]
 

@@ -13,6 +13,19 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 
 #define MATH_PI  3.1415926535897932384626433832795028841971
 
+
+#define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+#define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+
+// weapons offsets
+stock const m_pppPlayer            = 41
+stock const m_iiId                = 43
+stock const m_fflNextPrimaryAttack    = 46
+stock const m_fflNextSecondaryAttack    = 47
+stock const m_fflTimeWeaponIdle        = 48
+stock const m_ffInReload            = 54
+stock const m_fflNextAttack = 83
+
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
 #define LASER_LINE_DEFAULT_SOUND "weapons/electro5.wav"

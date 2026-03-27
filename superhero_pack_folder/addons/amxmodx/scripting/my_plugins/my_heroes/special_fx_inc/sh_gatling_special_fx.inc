@@ -4,7 +4,7 @@
 #define sh_special_fx
 
 
-#define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+
 
 #define XO_WEAPON 4
 #define m_ppPlayer 41
@@ -14,59 +14,34 @@
 
 #define POISON_DMG_MULT 2.0
 #define POISON_DAMAGE 40
-#define POISON_TIMES floatround(floatdiv(POISON_TIME,POISON_PERIOD))
-
-
-#define GLOW_PERIOD 1.0
-#define GLOW_TIME 5.0
-#define GLOW_TIMES floatround(floatdiv(GLOW_TIME,GLOW_PERIOD))
 
 
 
-#define STUN_PERIOD 4.0
+
+
 #define STUN_SPEED 70.0
 
-#define RADIOACTIVE_PERIOD 1.0
-#define RADIOACTIVE_TIME 20.0
 #define RADIOACTIVE_DAMAGE 40
 #define RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF 0.40
-#define RADIOACTIVE_TIMES floatround(floatdiv(RADIOACTIVE_TIME,RADIOACTIVE_PERIOD))
 
 
-#define MORPHINE_PERIOD 1.0
 #define MORPHINE_HP_ADD 50
-#define MORPHINE_TIME 5.0
-#define MORPHINE_TIMES floatround(floatdiv(MORPHINE_TIME,MORPHINE_PERIOD))
 
 
 #define WEED_GRAVITY 0.1
-#define WEED_PERIOD 0.1
-#define WEED_TIME 4.0
-#define WEED_TIMES floatround(floatdiv(WEED_TIME,WEED_PERIOD))
 
 
 
 
 #define COCAINE_SPEED 1000.0
 #define COCAINE_FIRE_RATE_MULT 3.0
-#define COCAINE_PERIOD 0.1
-#define COCAINE_TIME 4.0
-#define COCAINE_TIMES floatround(floatdiv(COCAINE_TIME,COCAINE_PERIOD))
+#define COCAINE_RELOAD_RATE_MULT 3.0
 
-#define BLIND_PERIOD 0.1
-#define BLIND_TIME 4.0
-#define BLIND_TIMES floatround(floatdiv(BLIND_TIME,BLIND_PERIOD))
 
 
 
 #define FOCUS_XPMULT 4.0
-#define FOCUS_PERIOD 1.0
-#define FOCUS_TIME 4.0
-#define FOCUS_TIMES floatround(floatdiv(FOCUS_TIME,FOCUS_PERIOD))
 
-#define BATH_PERIOD 1.0
-#define BATH_TIME 4.0
-#define BATH_TIMES floatround(floatdiv(BATH_TIME,BATH_PERIOD))
 
 
 enum fx_id{
@@ -152,26 +127,27 @@ stock const Float:fx_rarity_slice_edges[_:NUM_FX]={
 				0.95
 }
 stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={	
-					{-1.0,5.0,0,-1,-1,"",""},
-					{-1.0,5.0,0,-1,-1,"",""},
-					{1.0,5.0,0,-1,-1,"glow_task","unglow_task"},
-					{1.0,5.0,0,-1,-1,"poison_task","unpoison_task"},
-					{0.1,0.1,0,-1,-1,"stun_task","unstun_task"},
-					{1.0,5.0,0,-1,-1,"radioactive_task","unradioactive_task"},
-					{1.0,5.0,0,-1,-1,"morphine_task","unmorphine_task"},
-					{1.0,5.0,0,-1,-1,"weed_task","unweed_task"},
-					{1.0,5.0,0,-1,-1,"cocaine_task","uncocaine_task"},
-					{1.0,5.0,0,-1,-1,"blind_task","unblind_task"},
-					{1.0,5.0,0,-1,-1,"focus_task","unfocus_task"},
-					{1.0,5.0,0,-1,-1,"bath_task","unbath_task"}
+					{-1.0,5.0,-1,-1,-1,"",""},
+					{-1.0,5.0,-1,-1,-1,"",""},
+					{1.0,5.0,-1,-1,-1,"glow_task","unglow_task"},
+					{1.0,5.0,-1,-1,-1,"poison_task","unpoison_task"},
+					{0.1,5.0,1,-1,-1,"stun_task","unstun_task"},
+					{0.1,5.0,1,-1,-1,"radioactive_task","unradioactive_task"},
+					{1.0,5.0,-1,-1,-1,"morphine_task","unmorphine_task"},
+					{1.0,5.0,-1,-1,-1,"weed_task","unweed_task"},
+					{1.0,5.0,-1,-1,-1,"cocaine_task","uncocaine_task"},
+					{1.0,5.0,-1,-1,-1,"blind_task","unblind_task"},
+					{1.0,5.0,-1,-1,-1,"focus_task","unfocus_task"},
+					{1.0,5.0,-1,-1,-1,"bath_task","unbath_task"}
 
 }
-native fx_id:sh_effect_user(id,attacker,gHeroID)
-native fx_id:sh_gen_effect()
-native sh_effect_user_direct(id,attacker,fx_num,gHeroID)
-native sh_uneffect_user(id,fx_num,gHeroID)
+native sh_effect_user(id,attacker,gHeroID)
+native sh_gen_effect()
+native sh_effect_user_direct(id,attacker,gHeroID,fx_num)
+native sh_uneffect_user(id,gHeroID,fx_num)
 native sh_get_fx_color_name(fx_num,fx_arr[4],name[128])
 native sh_get_user_effect(id)
+native set_render_with_fx_num(id,the_color_num,reveal_user=1)
 
 
 

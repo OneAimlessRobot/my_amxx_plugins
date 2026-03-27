@@ -534,7 +534,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 		sh_chat_message(killer,spores_ksun_hero_id(),"You removed the godmode of your tg named %s!",tger_name);
 	}
 	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?"ksun slay":"ksun_spore")
-	sh_bleed_user(victim,killer,spores_ksun_hero_id())
+	sh_bleed_user(victim,killer,BLEED,spores_ksun_hero_id())
 	heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
 	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

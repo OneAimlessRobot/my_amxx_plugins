@@ -1,5 +1,0 @@
-L 03/25/2026 - 00:12:29: Start of error session.
-L 03/25/2026 - 00:12:29: Info (map "de_aztec") (file "addons/amxmodx/logs/error_20260325.log")
-L 03/25/2026 - 00:12:29: Function "molotov_damage_vulnerability" was not found
-L 03/25/2026 - 00:12:29: [AMXX] Run time error 19 (plugin "yandere_psychosis_fx.amxx") - debug not enabled!
-L 03/25/2026 - 00:12:29: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

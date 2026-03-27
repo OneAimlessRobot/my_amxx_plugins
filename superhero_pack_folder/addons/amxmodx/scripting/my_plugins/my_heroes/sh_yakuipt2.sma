@@ -305,17 +305,28 @@ public yakui_kd(){
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||(wid!=YAKUI_WEAPON_CLASSID)) {
+	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
 		return PLUGIN_HANDLED
 	}
 
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 
-	gatling_dec_num_pills(id)
-
 	
-	make_effect(id,id,gHeroID)
+	switch(wid){
+	
+		case YAKUI_WEAPON_CLASSID:{
+			
+			make_effect(id,id,gHeroID)
+			gatling_dec_num_pills(id)
+			
+		}
+		case CSW_KNIFE:{
 
+			make_effect(id,id,gHeroID,gatling_get_needle_fx(id),true)
+			gatling_needle_cycle_fx(id)
+
+		}
+	}
 
 	return PLUGIN_HANDLED
 }
