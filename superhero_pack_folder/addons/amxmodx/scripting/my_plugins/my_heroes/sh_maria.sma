@@ -354,7 +354,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 			new client_name[127]
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
-			format(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
+			formatex(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
 			client_print(id,print_center,"%s",hud_msg)
 			
 		}	

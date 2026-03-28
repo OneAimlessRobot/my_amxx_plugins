@@ -139,7 +139,7 @@ public arcticPredator_loop(id)
 		{
 			g_huntTimer[id]--
 			new message[128]
-			format(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
+			formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
 			set_user_rendering(id,kRenderFxGlowShell,0,0,0,10,gAlphaInvis)
 			superhero_protected_hud_message( id, message,"",0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 		}
@@ -191,7 +191,7 @@ public arcticPredator_kd()
 	gHuntMode[id] = true
 	// colussus Messsage
 	new message[128]
-	format(message, 127, "Entered Hunting Mode" )
+	formatex(message, 127, "Entered Hunting Mode" )
 	set_dhudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_dhudmessage(id, message)
 	//  emit_sound(id,CHAN_STATIC, g_colussusSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
@@ -632,7 +632,7 @@ if ( gHasArcPredPowers[id] && is_user_alive(id) && is_user_connected(id) && Nigh
 	get_user_name(killer[id],namea,23)
 	
 	new messagethree[128]
-	format(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
+	formatex(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
 	set_dhudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
 	show_dhudmessage( id, messagethree)
 }

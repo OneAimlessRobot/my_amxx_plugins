@@ -382,7 +382,7 @@ public touch_Shuriken(ent, id)
 	message_end()
 
 	new SOUND_HIT[21]
-	format(SOUND_HIT, 20, "player/headshot%d.wav", random_num(2, 3))
+	formatex(SOUND_HIT, 20, "player/headshot%d.wav", random_num(2, 3))
 	emit_sound(ent, CHAN_BODY, SOUND_HIT, 0.5, ATTN_NORM, 0, PITCH_NORM)
 
 	new attacker = entity_get_edict(ent, EV_ENT_owner)
@@ -437,7 +437,7 @@ public create_shuriken(id)
 		message_end()
 
 		new SOUND_SHELLS[21]
-		format(SOUND_SHELLS, 20, "player/pl_shell%d.wav", random_num(1, 3))
+		formatex(SOUND_SHELLS, 20, "player/pl_shell%d.wav", random_num(1, 3))
 		emit_sound(ent, CHAN_STATIC, SOUND_SHELLS, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 }

@@ -383,7 +383,7 @@ do_victim(victim,attacker,damage,tk)
 ammo_hud(id, sw)
 {
 new s_sprite[33]
-format(s_sprite,32,"number_%d",g_ammo[id])
+formatex(s_sprite,32,"number_%d",g_ammo[id])
 
 if(sw)
 {

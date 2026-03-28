@@ -503,7 +503,7 @@ public ksun_kd()
 	
 		if(!is_user_bot(id)){
 			new message[128]
-			format(message, 127, SEARCH_MSG )
+			formatex(message, 127, SEARCH_MSG )
 			client_print(id,print_center,"%s",message)
 		}
 		spores_launch(id)

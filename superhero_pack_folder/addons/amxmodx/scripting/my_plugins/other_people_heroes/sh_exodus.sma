@@ -259,7 +259,7 @@ public exodus_timeloop(id)
 
 	if ( g_grabTimer[id] > 0 && g_grabTimer[id] < 11 ) {
 		new message[128]
-		format(message, 127, "%d second%s left of Telekinetic Grab", g_grabTimer[id], g_grabTimer[id] == 1 ? "" : "s")
+		formatex(message, 127, "%d second%s left of Telekinetic Grab", g_grabTimer[id], g_grabTimer[id] == 1 ? "" : "s")
 		set_hudmessage(255, 255, 0, -1.0, 0.32, 0, 1.0, 1.0, 0.0, 0.0)
 		show_hudmessage(id, message)
 	}

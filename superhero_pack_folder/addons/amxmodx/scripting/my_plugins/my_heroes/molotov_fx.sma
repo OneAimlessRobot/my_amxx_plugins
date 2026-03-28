@@ -187,7 +187,7 @@ public fire_sound(id) {
 
 public unburn_task(id){
 	id-=UNMOLLY_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+BURN_TASKID)
 	remove_task(id+BURN_TASKID+1)
 	remove_task(id+BURN_TASKID+2)
@@ -203,7 +203,7 @@ public unburn_task(id){
 
 unburn_user(id){
 	remove_task(id+UNMOLLY_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+BURN_TASKID)
 	remove_task(id+BURN_TASKID+1)
 	remove_task(id+BURN_TASKID+2)

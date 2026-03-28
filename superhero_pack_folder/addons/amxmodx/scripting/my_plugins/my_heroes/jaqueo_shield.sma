@@ -468,7 +468,7 @@ public charge_task(parm[],id){
 	if(!is_user_bot(id)){
 		new hud_msg[128];
 		set_pev(g_jaqueo_shield[id],pev_health,floatmin(shield_max_hp,floatadd(float(pev(g_jaqueo_shield[id],pev_health)),floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
-		format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
+		formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new parm[2]

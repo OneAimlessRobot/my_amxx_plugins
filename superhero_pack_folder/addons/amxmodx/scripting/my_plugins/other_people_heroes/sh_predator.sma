@@ -636,7 +636,7 @@ public changeWeapon(id)
 	}
 	if ((bullets != 0) && bullets >= 0 ) {
 		new message[128]
-		format(message, 127, "You Have %d laser bullets left",bullets)
+		formatex(message, 127, "You Have %d laser bullets left",bullets)
 		set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 		show_hudmessage(id, message)
 	}

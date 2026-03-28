@@ -740,7 +740,7 @@ public charge_task(parm[],id){
 	if(!is_user_bot(id)){
 		new hud_msg[128];
 		set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
-		format(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
+		formatex(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new parm[2]
@@ -878,7 +878,7 @@ public jet_hud_task(id){
 		
 	}
 	new hud_msg[300]
-	format(hud_msg,299,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
+	formatex(hud_msg,299,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
 		float(pev(jet_get_user_jet(owner),pev_health))-1000.0,
 		get_user_fuel_ammount(owner),
 		g_jetplane_telemetry_data[owner][2],

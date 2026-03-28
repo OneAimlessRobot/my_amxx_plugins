@@ -71,7 +71,7 @@ public getKillGB(){
 public _Banka(id)
 {
 new naslove[60]
-format(naslove, 59, "\dGB Banka(\r%i\y):", shop_poeni_igraca[id]);
+formatex(naslove, 59, "\dGB Banka(\r%i\y):", shop_poeni_igraca[id]);
 new menu = menu_create(naslove, "BankaHandler")
 menu_additem(menu,"\yPut GB points in the bank")
 menu_additem(menu,"\yWithdraw GB points from bank")

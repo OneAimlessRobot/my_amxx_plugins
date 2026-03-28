@@ -15,7 +15,7 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 #define PSYCHOSIS_PERIOD 1.0
 #define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
 
-stock gPsychosisTime[SH_MAXSLOTS+1]
+stock Float:gPsychosisTime[SH_MAXSLOTS+1]
 stock bool:gIsPsychosis[SH_MAXSLOTS+1]
 stock bool:g_yandere_leaped[SH_MAXSLOTS+1];
 stock MsgSetFOV
@@ -33,4 +33,6 @@ stock Float:degen_iter_period
 native bool:yandere_get_user_is_psychosis(id);
 native yandere_psychosis_user(id);
 native yandere_unpsychosis_user(id);
+native Float:yandere_get_psychosis_degen_pct()
+native Float:yandere_get_psychosis_degen_health_threshold()
 

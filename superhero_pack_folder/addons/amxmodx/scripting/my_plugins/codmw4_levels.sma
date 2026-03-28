@@ -166,11 +166,11 @@ public _SacuvajPodatke(iPlugin,iParams)
 		return PLUGIN_CONTINUE;
 	
 	new vaultkey[128],vaultdata[256], ID_igraca[64];
-	format(vaultdata, charsmax(vaultdata),"#%i#%i#%i#%i#%i#%i", get_PlayerXp(id), get_PlayerLvl(id), intel,energy,resistance,condition);
+	formatex(vaultdata, charsmax(vaultdata),"#%i#%i#%i#%i#%i#%i", get_PlayerXp(id), get_PlayerLvl(id), intel,energy,resistance,condition);
 	
 	get_user_authid(id, ID_igraca, charsmax(ID_igraca))
 	
-	format(vaultkey, charsmax(vaultkey),"%s-%i-cod", ID_igraca, class);
+	formatex(vaultkey, charsmax(vaultkey),"%s-%i-cod", ID_igraca, class);
 	nvault_set(g_vault,vaultkey,vaultdata);
 	
 	return PLUGIN_CONTINUE;

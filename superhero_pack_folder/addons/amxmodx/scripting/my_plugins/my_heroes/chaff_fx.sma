@@ -159,7 +159,7 @@ chaff_user(id,attacker){
 }
 public unchaff_task(id){
 	id-=UNCHAFF_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+CHAFF_TASKID)
 	unfade_screen_user(id)
 	
@@ -175,7 +175,7 @@ public unchaff_task(id){
 
 unchaff_user(id){
 	remove_task(id+UNCHAFF_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+CHAFF_TASKID)
 	sh_set_stun(id,0.0)
 	gIsChaffed[id]=false

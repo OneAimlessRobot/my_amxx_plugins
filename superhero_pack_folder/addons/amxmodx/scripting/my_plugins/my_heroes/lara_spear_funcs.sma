@@ -161,7 +161,7 @@ public charge_task(id){
 	id-=SPEAR_CHARGE_TASKID
 	new hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],SPEAR_CHARGE_PERIOD)
-	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
+	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 					100.0*(curr_charge[id]/max_charge_time)
 					);
 	client_print(id,print_center,"%s",hud_msg)

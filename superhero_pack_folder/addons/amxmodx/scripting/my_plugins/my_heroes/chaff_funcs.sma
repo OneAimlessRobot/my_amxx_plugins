@@ -138,7 +138,7 @@ public charge_task(id){
 	if(!is_user_bot(id)){
 					
 		new hud_msg[128];
-		format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
+		formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 		100.0*(curr_charge[id]/max_charge_time)
 		);
 		client_print(id,print_center,"%s",hud_msg)

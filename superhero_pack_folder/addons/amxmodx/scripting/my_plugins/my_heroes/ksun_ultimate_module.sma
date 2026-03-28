@@ -221,7 +221,7 @@ public ultimate_task(id){
 	
 	
 	if(!is_user_bot(id)){
-		format(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
+		formatex(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
 		100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
 		);
 		client_print(id,print_center,"%s",hud_msg)

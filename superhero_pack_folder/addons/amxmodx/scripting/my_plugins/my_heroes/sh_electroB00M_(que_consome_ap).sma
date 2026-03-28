@@ -178,7 +178,7 @@ switch(key)
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil off")
 		}
-		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+		set_user_rendering(id)
 	}
 }
 }

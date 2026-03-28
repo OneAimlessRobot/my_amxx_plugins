@@ -18,7 +18,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(g_yandere_leaped,true,SH_MAXSLOTS+1)
-	register_event("DeathMsg","on_death_burning","a")
+	register_event("DeathMsg","on_death_psychosis","a")
 	register_cvar("yandere_psychosis_time", "5")
 	register_cvar("yandere_psychosis_zoom", "5")
 	register_cvar("yandere_psychosis_add_ap", "5")
@@ -26,8 +26,10 @@ public plugin_init(){
 	register_cvar("yandere_psychosis_cooldown", "30")
 	register_cvar("yandere_psychosis_cooldown", "30")
 	register_cvar("yandere_psychosis_degen_mult", "30")
+	register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
+	register_forward(FM_CmdStart, "psychosis_leap")
 	
 }
 
@@ -51,7 +53,8 @@ public plugin_natives(){
 	register_native("yandere_get_user_is_psychosis","_yandere_get_user_is_psychosis",0);
 	register_native("yandere_psychosis_user","_yandere_psychosis_user",0);
 	register_native("yandere_unpsychosis_user","_yandere_unpsychosis_user",0);
-
+	register_native("yandere_get_psychosis_degen_pct","_yandere_get_psychosis_degen_pct",0);
+	register_native("yandere_get_psychosis_degen_health_threshold","_yandere_get_psychosis_degen_health_threshold",0);
 
 
 }
@@ -71,6 +74,14 @@ psychosis_degen_pct=get_cvar_float("yandere_psychosis_degen_pct");
 psychosis_degen_health_threshold=get_cvar_float("yandere_psychosis_degen_health_threshold")
 psychosis_add_ap=get_cvar_num("yandere_psychosis_add_ap")
 
+}
+public Float:_yandere_get_psychosis_degen_pct(iPlugin,iParams){
+
+	return psychosis_degen_pct
+}
+public Float:_yandere_get_psychosis_degen_health_threshold(iPlugin,iParams){
+
+	return psychosis_degen_health_threshold
 }
 
 
@@ -119,7 +130,7 @@ public Player_TakeDamage(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public CmdStart(id, uc_handle)
+public psychosis_leap(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!yandere_get_user_is_psychosis(id)||!hasRoundStarted()||!client_hittable(id,yandere_get_has_yandere(id))) return FMRES_IGNORED;
 	
@@ -147,14 +158,16 @@ public CmdStart(id, uc_handle)
 public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
 
-	gPsychosisTime[id]--
+	gPsychosisTime[id]-=1.0
 	sh_set_rendering(id, LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	aura(id,LineColorsWithAlpha[PINK])
 
 	if(!is_user_bot(id)){
 		new hud_msg[100];
-		format(hud_msg,99,"[SH] %s:^nPsychosis mode for %d more seconds!",
-		gHeroName,
+		static hero_name_arr[MAX_HERO_NAME_LENGTH]
+		sh_get_hero_name_from_id(yandere_get_hero_id(),hero_name_arr)
+		formatex(hud_msg,99,"[SH] %s:^nPsychosis mode for %0.1f more seconds!",
+		hero_name_arr,
 		gPsychosisTime[id]
 		);
 		superhero_protected_hud_message(id,"%s", hud_msg,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
@@ -169,14 +182,14 @@ psychosis_user(id){
 	psychosis_on(id)
 	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
 	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",PSYCHOSIS_TIMES)
-	set_task(floatsub(floatmul(PSYCHOSIS_PERIOD,float(PSYCHOSIS_TIMES)),0.1),"unpsychosis_task",id+UNPSYCHOSIS_TASKID,"", 0,  "a",1)
+	set_task(floatsub(psychosis_time,0.1),"unpsychosis_task",id+UNPSYCHOSIS_TASKID,"", 0,  "a",1)
 	
 	
 	
 }
 public unpsychosis_task(id){
 	id-=UNPSYCHOSIS_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+YANDERE_PSYCHOSIS_TASKID)
 	psychosis_off(id)
 	
@@ -186,7 +199,7 @@ public unpsychosis_task(id){
 
 public unpsychosis_user(id){
 	remove_task(id+UNPSYCHOSIS_TASKID)
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+YANDERE_PSYCHOSIS_TASKID)
 	psychosis_off(id)
 	
@@ -215,6 +228,9 @@ message_end()
 }
 psychosis_on(id){
 
+gPsychosisTime[id]=psychosis_time
+ultimateTimer(id, psychosis_cooldown * 1.0)
+g_yandere_leaped[id]=false
 gIsPsychosis[id]=true
 yandere_unmorph(id)
 yandere_model(id)
@@ -226,12 +242,12 @@ message_end()
 }
 
 
-public on_death_burning()
+public on_death_psychosis()
 {	
 	new id = read_data(2)
 	
 	if(is_user_connected(id)||sh_is_active()){
-	
+		unpsychosis_user(id)
 	}
 	
 }

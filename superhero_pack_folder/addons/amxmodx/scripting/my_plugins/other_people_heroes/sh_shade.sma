@@ -122,7 +122,7 @@ public shade_kd()
 
 	// shade Messsage
 	new message[128]
-	format(message, 127, "Created a dust-storm!" )
+	formatex(message, 127, "Created a dust-storm!" )
 	set_hudmessage(0,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_hudmessage(id, message)
 	emit_sound(id,CHAN_STATIC, g_shadeSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
@@ -146,7 +146,7 @@ public shade_loop()
 			{
 				g_shadeTimer[id]--
 				new message[128]
-				format(message, 127, "Dust storm created.", g_shadeTimer[id] )
+				formatex(message, 127, "Dust storm created.", g_shadeTimer[id] )
 				set_hudmessage(0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 				show_hudmessage( id, message)
 				set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
@@ -277,11 +277,11 @@ public summon_shade(id)
 	get_user_team(id,team,7)
 
 	if (equal(team, "CT", 1)) {
-		format(cmd, 127, "amx_monster hassassin #%i 1 @T", id)
+		formatex(cmd, 127, "amx_monster hassassin #%i 1 @T", id)
 		server_cmd(cmd)
 	}
 	else {
-		format(cmd, 127, "amx_monster hassassin #%i 1 @CT", id)
+		formatex(cmd, 127, "amx_monster hassassin #%i 1 @CT", id)
 		server_cmd(cmd)
 	}
 }

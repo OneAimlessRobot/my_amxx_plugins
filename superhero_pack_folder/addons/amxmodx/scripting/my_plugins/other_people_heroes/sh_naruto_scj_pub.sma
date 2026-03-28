@@ -454,7 +454,7 @@ public shadowclone(id)
 
 	new model[32],modelchange[128]
 	get_user_info(id,"model",model,31)
-	format(modelchange,127,"models/player/%s/%s.mdl",model,model)
+	formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
 	sh_chat_message(id, gHeroID, "Your shadow clone has arrived")
 	engfunc(EngFunc_SetModel,botEnt[id],modelchange)
 	//This will make it so that the ent appears in front of the user	

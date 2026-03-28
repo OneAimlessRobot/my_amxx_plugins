@@ -229,7 +229,7 @@ public disarm_task(param[],id){
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
 	if(!is_user_bot(id)){
 		new hud_msg[128];
-		format(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
+		formatex(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
 		100.0*(curr_disarm_charge[id]/min_charge_time)
 		);
 		client_print(id,print_center,"%s",hud_msg)
@@ -407,7 +407,7 @@ public charge_task(id){
 	curr_charge[id]=floatadd(curr_charge[id],MINE_CHARGE_PERIOD)
 	if(!is_user_bot(id)){
 		new hud_msg[128];
-		format(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
+		formatex(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
 		100.0*(curr_charge[id]/min_charge_time)
 		);
 		client_print(id,print_center,"%s",hud_msg)

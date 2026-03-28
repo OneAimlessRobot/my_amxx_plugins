@@ -387,7 +387,7 @@ public fire_missile(id)
 	}
 	if(get_cvar_num("bazooka_buy") == 1) {
 		new cvarname[32]
-		format(cvarname,31,"bazooka_cost%d",icmd)
+		formatex(cvarname,31,"bazooka_cost%d",icmd)
 		new umoney = get_user_money(id)
 		new m_cost = get_cvar_num(cvarname)
 		if(umoney < m_cost){
@@ -1252,19 +1252,19 @@ show_missile_inv(id){
 			sum += missile_inv[id][i]
 
 		set_hudmessage(255, 10, 10, 0.80, 0.60, 0, 0.02, 6.0, 1.01, 1.1)
-		n += format( Message[n],len-n,"Common Missile  ( %d )^n",missile_inv[id][1])
-		n += format( Message[n],len-n,"Laser Guided Missile  ( %d )^n",missile_inv[id][2])
-		n += format( Message[n],len-n,"Gun Camera Missile  ( %d )^n",missile_inv[id][3])
-		n += format( Message[n],len-n,"Anti-Missile Shots  ( %d )^n",missile_inv[id][4])
-		n += format( Message[n],len-n,"Heat-Seeking Missile  ( %d )^n",missile_inv[id][5])
-		n += format( Message[n],len-n,"Rope-Seeking Missile  ( %d )^n",missile_inv[id][6])
+		n += formatex( Message[n],len-n,"Common Missile  ( %d )^n",missile_inv[id][1])
+		n += formatex( Message[n],len-n,"Laser Guided Missile  ( %d )^n",missile_inv[id][2])
+		n += formatex( Message[n],len-n,"Gun Camera Missile  ( %d )^n",missile_inv[id][3])
+		n += formatex( Message[n],len-n,"Anti-Missile Shots  ( %d )^n",missile_inv[id][4])
+		n += formatex( Message[n],len-n,"Heat-Seeking Missile  ( %d )^n",missile_inv[id][5])
+		n += formatex( Message[n],len-n,"Rope-Seeking Missile  ( %d )^n",missile_inv[id][6])
 
 		if(get_cvar_num("bazooka_ammo7ta")) {
 			new sdcount = sum / 7
-			n += format( Message[n],len-n,"Swirling Death Missile  ( %d )",sdcount)
+			n += formatex( Message[n],len-n,"Swirling Death Missile  ( %d )",sdcount)
 		}
 		else
-			n += format( Message[n],len-n,"Swirling Death Missile  ( %d )",missile_inv[id][7])
+			n += formatex( Message[n],len-n,"Swirling Death Missile  ( %d )",missile_inv[id][7])
 
 		show_hudmessage(id,Message)
 	}
@@ -1279,17 +1279,17 @@ public show_main_menu(id) {
 	if(!gHasBazookaPowers[id] || !is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	n += format( menu_body[n],len-n,"\yFire Missile Menu^n\w^n")
+	n += formatex( menu_body[n],len-n,"\yFire Missile Menu^n\w^n")
 
 	if(get_cvar_num("bazooka_buy") == 1 ){
 
-		n += format( menu_body[n],len-n,"1. Common Missile - $%d^n",get_cvar_num("bazooka_cost1"))
-		n += format( menu_body[n],len-n,"2. Laser Guided Missile - $%d^n",get_cvar_num("bazooka_cost2"))
-		n += format( menu_body[n],len-n,"3. Gun Camera Missile - $%d^n",get_cvar_num("bazooka_cost3"))
-		n += format( menu_body[n],len-n,"4. Anti-Missile Shots - $%d^n",get_cvar_num("bazooka_cost4"))
-		n += format( menu_body[n],len-n,"5. Heat-Seeking Missile - $%d^n",get_cvar_num("bazooka_cost5"))
-		n += format( menu_body[n],len-n,"6. Rope-Seeking Missile - $%d^n",get_cvar_num("bazooka_cost6"))
-		n += format( menu_body[n],len-n,"7. Swirling Death Missile - $%d^n",get_cvar_num("bazooka_cost7"))
+		n += formatex( menu_body[n],len-n,"1. Common Missile - $%d^n",get_cvar_num("bazooka_cost1"))
+		n += formatex( menu_body[n],len-n,"2. Laser Guided Missile - $%d^n",get_cvar_num("bazooka_cost2"))
+		n += formatex( menu_body[n],len-n,"3. Gun Camera Missile - $%d^n",get_cvar_num("bazooka_cost3"))
+		n += formatex( menu_body[n],len-n,"4. Anti-Missile Shots - $%d^n",get_cvar_num("bazooka_cost4"))
+		n += formatex( menu_body[n],len-n,"5. Heat-Seeking Missile - $%d^n",get_cvar_num("bazooka_cost5"))
+		n += formatex( menu_body[n],len-n,"6. Rope-Seeking Missile - $%d^n",get_cvar_num("bazooka_cost6"))
+		n += formatex( menu_body[n],len-n,"7. Swirling Death Missile - $%d^n",get_cvar_num("bazooka_cost7"))
 	}
 	else {
 
@@ -1297,22 +1297,22 @@ public show_main_menu(id) {
 		for(new i=1;i<8;i++)
 			sum += missile_inv[id][i]
 
-		n += format( menu_body[n],len-n,"1. Common Missile ( %d )^n",missile_inv[id][1])
-		n += format( menu_body[n],len-n,"2. Laser Guided Missile ( %d )^n",missile_inv[id][2])
-		n += format( menu_body[n],len-n,"3. Gun Camera Missile ( %d )^n",missile_inv[id][3])
-		n += format( menu_body[n],len-n,"4. Anti-Missile Shots ( %d )^n",missile_inv[id][4])
-		n += format( menu_body[n],len-n,"5. Heat-Seeking Missile ( %d )^n",missile_inv[id][5])
-		n += format( menu_body[n],len-n,"6. Rope-Seeking Missile ( %d )^n",missile_inv[id][6])
+		n += formatex( menu_body[n],len-n,"1. Common Missile ( %d )^n",missile_inv[id][1])
+		n += formatex( menu_body[n],len-n,"2. Laser Guided Missile ( %d )^n",missile_inv[id][2])
+		n += formatex( menu_body[n],len-n,"3. Gun Camera Missile ( %d )^n",missile_inv[id][3])
+		n += formatex( menu_body[n],len-n,"4. Anti-Missile Shots ( %d )^n",missile_inv[id][4])
+		n += formatex( menu_body[n],len-n,"5. Heat-Seeking Missile ( %d )^n",missile_inv[id][5])
+		n += formatex( menu_body[n],len-n,"6. Rope-Seeking Missile ( %d )^n",missile_inv[id][6])
 
 		if(get_cvar_num("bazooka_ammo7ta")) {
 			new sdcount = sum / 7
-			n += format( menu_body[n],len-n,"7. Swirling Death Missile ( %d )^n",sdcount)
+			n += formatex( menu_body[n],len-n,"7. Swirling Death Missile ( %d )^n",sdcount)
 		}
 		else
-			n += format( menu_body[n],len-n,"7. Swirling Death Missile ( %d )^n",missile_inv[id][7])
+			n += formatex( menu_body[n],len-n,"7. Swirling Death Missile ( %d )^n",missile_inv[id][7])
 	}
 
-	n += format( menu_body[n],len-n,"0. Exit")
+	n += formatex( menu_body[n],len-n,"0. Exit")
 
 	new keys = (1<<0)|(1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5)|(1<<6)|(1<<9)
 
@@ -1350,7 +1350,7 @@ public action_main_menu(id,key){
 	if (key >= 1 && key <= 7) {
 		if(get_cvar_num("bazooka_buy")){
 			new costcvar[32]
-			format(costcvar,31,"bazooka_cost%d",key)
+			formatex(costcvar,31,"bazooka_cost%d",key)
 			if(get_user_money(id) < get_cvar_num(costcvar))
  	 			show_main_menu(id)
 		}

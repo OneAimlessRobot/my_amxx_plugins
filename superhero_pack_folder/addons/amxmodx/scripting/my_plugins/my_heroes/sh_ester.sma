@@ -347,7 +347,7 @@ public reset_ester_user_round(id){
 public status_hud(id){
 	
 	new hud_msg[200];
-	format(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to %d enemies: %d^nAmmount of moralizing xp built up: %d^nNumber of attempts to matter used: %d^nAre you in respawn mode? %s^n",
+	formatex(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to %d enemies: %d^nAmmount of moralizing xp built up: %d^nNumber of attempts to matter used: %d^nAre you in respawn mode? %s^n",
 		gHeroName,
 		gTimesLeft[id],
 		count_enemies(id),
@@ -368,11 +368,11 @@ public show_targets(id){
 	new hud_msg[500];
 	new client_name[128];
 	get_user_name(id,client_name,127)
-	format(hud_msg,500,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
+	formatex(hud_msg,500,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
 	for(new i=1;i<=SH_MAXSLOTS;i++){
 		if(g_ester_enemies[id][i]&&client_hittable(i)){
 			get_user_name(i,client_name,127)
-			format(hud_msg,500,"%s%s.^n",hud_msg,client_name);
+			formatex(hud_msg,500,"%s%s.^n",hud_msg,client_name);
 		}
 	} 
 	client_print(id,print_center,"%s",hud_msg)

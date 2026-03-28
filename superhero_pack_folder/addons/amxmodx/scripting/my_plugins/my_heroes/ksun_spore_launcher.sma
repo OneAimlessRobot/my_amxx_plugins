@@ -111,7 +111,7 @@ public remove_glow_task(id){
 id-=KSUN_UNGLOW_TASKID
 if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
 
-set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+set_user_rendering(id)
 
 }
 

@@ -155,7 +155,7 @@ public rom_loop()
       {
         gRomTimer[id]--
         new message[128]
-        format(message, 127, "%d seconds left of Tracking device ", gRomTimer[id] )
+        formatex(message, 127, "%d seconds left of Tracking device ", gRomTimer[id] )
         set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
         show_hudmessage( id, message)
         new var = get_cvar_num("rom_sensetime")*10 

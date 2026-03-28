@@ -156,7 +156,7 @@ public count_down(id){
 	
 	new players[SH_MAXSLOTS],num;
 	get_players(players,num);
-	format(message, 127, "%i",gCurrCountDown--)
+	formatex(message, 127, "%i",gCurrCountDown--)
 	for(new i=0;i<num;i++){
 		sh_chat_message(players[i],gHeroID,"%s",message);
 	}
@@ -186,7 +186,7 @@ public return_to_past_now(id){
 	new message[1024]
 	new playerName[256];
 	get_user_name(id,playerName,256)
-	format(message, 1023, "player %s is RETURNING THE SERVER TO THE PAST NOW! IN...",playerName)
+	formatex(message, 1023, "player %s is RETURNING THE SERVER TO THE PAST NOW! IN...",playerName)
 	sh_chat_message(0,gHeroID,"%s",message);
 	gCurrCountDown=gCountdown;
 	gPowerBeingUsed=true

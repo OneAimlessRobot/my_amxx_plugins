@@ -265,7 +265,7 @@ public komak_hud_task(id){
 }
 komak_hud(id){
 	new hud_msg[128];
-	format(hud_msg,127,"[SH] %s:^nGear: %d^nCurr rpm: %d|%d^nCurrent fire ration: %0.2f^nCurrent reload ration: %0.2f^nEngine broken? %s^n",
+	formatex(hud_msg,127,"[SH] %s:^nGear: %d^nCurr rpm: %d|%d^nCurrent fire ration: %0.2f^nCurrent reload ration: %0.2f^nEngine broken? %s^n",
 					gHeroName,
 					g_komak_gear[id],
 					g_komak_hits[id],

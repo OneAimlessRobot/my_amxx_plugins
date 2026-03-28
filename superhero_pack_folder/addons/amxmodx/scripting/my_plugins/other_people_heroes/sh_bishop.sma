@@ -114,7 +114,7 @@ public bishop_loop()
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		if ( g_hasBishop[id] && is_user_alive(id) ) {
 			new message[128]
-			format(message, 127, "Total Energy Absorbed: %i", g_absorbedDamage[id])
+			formatex(message, 127, "Total Energy Absorbed: %i", g_absorbedDamage[id])
 			set_hudmessage(50, 50, 255, -1.0, 0.10, 0, 1.0, 1.0, 0.0, 0.0)
 			show_hudmessage(id, message)
 		}

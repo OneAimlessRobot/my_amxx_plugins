@@ -149,7 +149,7 @@ sleep_user(id,attacker){
 }
 public unsleep_task(id){
 	id-=UNSLEEP_TASKID
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	remove_task(id+SLEEP_TASKID)
 	unfade_screen_user(id)
 	
@@ -167,7 +167,7 @@ unsleep_user(id){
 	remove_task(id+UNSLEEP_TASKID)
 	remove_task(id+SLEEP_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return 0
-	set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+	set_user_rendering(id)
 	sh_set_stun(id,0.0)
 	gIsAsleep[id]=false
 	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])

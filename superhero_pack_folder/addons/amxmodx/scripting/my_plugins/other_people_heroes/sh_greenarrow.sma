@@ -258,7 +258,7 @@
 			gArrows[id]--
 
 			new message[128]
-			format(message, 127, "You Have %d arrow(s) left",gArrows[id])
+			formatex(message, 127, "You Have %d arrow(s) left",gArrows[id])
 			client_print(id,print_center, "%s",message)
 
 			if ( gArrows[id] == 0 ) gArrows[id] = -1

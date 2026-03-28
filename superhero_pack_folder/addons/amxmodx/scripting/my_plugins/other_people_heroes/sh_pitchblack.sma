@@ -254,7 +254,7 @@ public pitch_loop()
 		id = players[i]
 		if(PitchTimer[id] > 0) {
 			new message[64]
-			format(message, 63, "PitchBlack - %d seconds left", PitchTimer[id])
+			formatex(message, 63, "PitchBlack - %d seconds left", PitchTimer[id])
 			set_hudmessage(255, 255, 255, -1.0, 0.3, 0, 1.0, 1.1, 0.0, 0.0)
 			show_hudmessage(id, message)
 			PitchTimer[id]--

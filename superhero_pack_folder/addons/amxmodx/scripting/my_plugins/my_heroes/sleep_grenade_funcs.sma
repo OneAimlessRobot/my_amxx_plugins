@@ -136,25 +136,25 @@ public charge_task(id){
 		new encouragement[128]
 		if(curr_charge_pct>20.0 && curr_charge_pct<40.0){
 			
-			format(encouragement,127,"yes, thats it. Keep going, sweetie.^n")
+			formatex(encouragement,127,"yes, thats it. Keep going, sweetie.^n")
 			
 		}
 		else if(curr_charge_pct<60.0){
 			
-			format(encouragement,127,"Yes! thats it. Just like that, darling.^n")
+			formatex(encouragement,127,"Yes! thats it. Just like that, darling.^n")
 			
 		}
 		else if(curr_charge_pct<80.0){
 			
-			format(encouragement,127,"Yes! come on dear! Just a bit more!^n")
+			formatex(encouragement,127,"Yes! come on dear! Just a bit more!^n")
 			
 		}
 		else if(curr_charge_pct<100.0){
-			format(encouragement,127,"OH MY GOD, YES! MORE! MORE! YES!!!^n")
+			formatex(encouragement,127,"OH MY GOD, YES! MORE! MORE! YES!!!^n")
 			
 			
 		}
-		format(hud_msg,299,"[SH]: Curr charge: %0.2f^n%s",
+		formatex(hud_msg,299,"[SH]: Curr charge: %0.2f^n%s",
 		curr_charge_pct,encouragement
 		);
 		client_print(id,print_center,"%s",hud_msg)

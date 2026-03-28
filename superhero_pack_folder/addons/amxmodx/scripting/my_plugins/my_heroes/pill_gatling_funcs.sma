@@ -18,10 +18,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-const m_pppPlayer            = 41
-const m_fflTimeWeaponIdle        = 48
-const m_ffInReload            = 54
-const m_fflNextAttack = 83
 
 new bool:pill_loaded[SH_MAXSLOTS+1][NUM_BARRELS]
 new atk2[SH_MAXSLOTS+1]

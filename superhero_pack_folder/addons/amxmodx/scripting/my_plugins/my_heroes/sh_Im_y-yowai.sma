@@ -99,7 +99,7 @@ public status_hud(id){
 	
 	if(!is_user_bot(id)){
 		if(g_yowai_mode[id]){
-			format(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
+			formatex(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
 								g_hits[id],
 								g_hits[id] == 1 ? "" : "s", 
 								g_max_hits_player[id]);

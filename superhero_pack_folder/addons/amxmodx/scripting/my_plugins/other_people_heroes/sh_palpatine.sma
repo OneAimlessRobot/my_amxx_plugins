@@ -151,7 +151,7 @@ public palpatine_kd()
   }
 
   new message[128]
-  format(message, 127, "If you will not be turned, you will be destroyed!" )
+  formatex(message, 127, "If you will not be turned, you will be destroyed!" )
   set_hudmessage(175,0,255,-1.0,1.0,0,0.25,1.0,0.0,0.0)
   show_hudmessage(id, message)
   return PLUGIN_HANDLED
@@ -168,7 +168,7 @@ public palpatine_loop()
       {
         g_palpatineTimer[id]--
         new message[128]
-        format(message, 127, "%d seconds left of Sith power!", g_palpatineTimer[id] )
+        formatex(message, 127, "%d seconds left of Sith power!", g_palpatineTimer[id] )
         set_hudmessage(175,0,255,-1.0,1.0,0,1.0,1.0,0.0,0.0)
         show_hudmessage( id, message)
         set_user_rendering(id,kRenderFxGlowShell,175,0,255,kRenderTransAlpha,25)       
@@ -268,7 +268,7 @@ public palpatine_instant(x, id)
 public palpatine_noinstant(x, id)
 {
   new nodamage[128]
-  format(nodamage, 127, "You are immune to the Dark Side of the force!" )
+  formatex(nodamage, 127, "You are immune to the Dark Side of the force!" )
   set_hudmessage(175,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
   show_hudmessage( x, nodamage)
 }
@@ -286,7 +286,7 @@ public palpatine_death(x, id)
 public palpatine_nodeath(x, id)
 {
   new nodeath[128]
-  format(nodeath, 127, "The Force is strong with you, indeed!" )
+  formatex(nodeath, 127, "The Force is strong with you, indeed!" )
   set_hudmessage(175,0,255,-1.0,-0.3,0,1.0,1.0,0.0,0.0)
   show_hudmessage( x, nodeath)
 }
@@ -307,7 +307,7 @@ public palpatine_nodecay(eid, id)
   new nodecay[128]
   new skywalker[21] 
   get_user_name(id,skywalker,20) 
-  format(nodecay, 127, "Fear not the Dark Side, young %s!", skywalker)
+  formatex(nodecay, 127, "Fear not the Dark Side, young %s!", skywalker)
   set_hudmessage(175,0,255,-1.0,-1.0,0,1.0,1.0,0.0,0.0)
   show_hudmessage( eid, nodecay)
 }

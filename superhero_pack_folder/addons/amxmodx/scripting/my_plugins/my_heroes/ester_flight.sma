@@ -209,7 +209,7 @@ remove_user_flight_fx(id){
 	if(!ester_get_has_ester(id)||!is_user_connected(id)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
-	set_user_rendering(id,_,_,_,_,_,0)
+	set_user_rendering(id)
 	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	emit_sound(id, CHAN_AUTO,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(id, CHAN_AUTO,FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);

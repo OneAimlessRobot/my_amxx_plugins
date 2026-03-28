@@ -113,7 +113,7 @@ public track_task(array[],id){
 	get_user_origin(array[0], att_origin)
 			
 	distance = get_distance(eorigin, origin)
-	format(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
+	formatex(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
 	set_hudmessage(LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  0.0, 0.2, 0, 0.0, 1.0)
 	ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
 	detect_user(array[0],id,vEnd);
@@ -133,7 +133,7 @@ public track_task(array[],id){
 		get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
 			
 		distance = get_distance(eorigin, origin)
-		format(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
+		formatex(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
 		ShowSyncHudMsg(array[i+NUM_INIT_TRACK_PARAMS],array[1], "%s", hud_msg)
 		detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
 		IVecFVec(origin,Pos)
@@ -202,7 +202,7 @@ public _unradioactive_user(iPlugin,iParams){
 	remove_task(id+UNRADIOACTIVE_TASK_ID)
 	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(client_hittable(id)){
-		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+		set_user_rendering(id)
 		gatling_set_fx_num(id, 0)
 	}
 	return 0
@@ -215,7 +215,7 @@ public unradioactive_task(id){
 	id-=UNRADIOACTIVE_TASK_ID
 	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(client_hittable(id)){
-		set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+		set_user_rendering(id)
 		gatling_set_fx_num(id, 0)
 	}
 	return 0

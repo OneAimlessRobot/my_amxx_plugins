@@ -321,7 +321,7 @@ public charge_task(id){
 	
 	new hud_msg[128];
 	g_graciete_land_power[id]=floatmin(jet_max_power,floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
-	format(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
+	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
 	);
 	client_print(id,print_center,"%s",hud_msg)
 	

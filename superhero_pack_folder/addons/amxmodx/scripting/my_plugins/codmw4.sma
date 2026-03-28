@@ -403,7 +403,7 @@ public UcitajPodatke(id, klasa)
 	
 	get_user_authid(id, ID_igraca, charsmax(ID_igraca))
 	
-	format(vaultkey, charsmax(vaultkey),"%s-%i-cod", ID_igraca, klasa);
+	formatex(vaultkey, charsmax(vaultkey),"%s-%i-cod", ID_igraca, klasa);
 	nvault_get(g_vault,vaultkey,vaultdata,255);
 	
 	replace_all(vaultdata, 255, "#", " ");
@@ -1159,7 +1159,7 @@ public Predmeti(id)
 	new naslow[60]
 	new player_gb
 	ExecuteForward(fwForwards[get_player_gb_fwd],player_gb,id);
-	format(naslow, 59, "\yGB Shop(\r%i\y):", player_gb);
+	formatex(naslow, 59, "\yGB Shop(\r%i\y):", player_gb);
 	new menu = menu_create(naslow, "Predmeti_Handle");
 	menu_additem(menu, "\dScout Expert \y[\ritem\y] \dPrice: \y200 GB");  //Hvala Razor za ovo \d
 	menu_additem(menu, "\dAWP Master \y[\rItem\y] \dPrice: \y200 GB");  //Hvala Razor za ovo \d
@@ -1270,23 +1270,23 @@ public DodelaPoena(id)
 	new snaga[60], snaga10[60], snaga100[60], snaga1000[60];
 	new kondicija[60], kondicija10[60], kondicija100[60], kondicija1000[60];
 	new naslov[25];
-	format(inteligencija, 64, "\yIntelligence: \r%i \y(Increases attack)", inteligencija_igraca[id]);
-	format(energija, 59, "\yEnergy: \r%i \y(Increases HP)", energija_igraca[id]);
-	format(snaga, 59, "\yResistance: \r%i \y(Reduces violation)", snaga_igraca[id]);
-	format(kondicija, 59, "\yStamina: \r%i \y(Increases the pace of walking)", kondicija_igraca[id]);
-	format(inteligencija10, 64, "\yAdd \d10 \ypoints to Intelligence");
-	format(energija10, 59, "\yAdd \d10 \ypoints to Energy");
-	format(snaga10, 59, "\yAdd \d10 \ypoints to Resistance");
-	format(kondicija10, 59, "\yAdd \d10 \ypoints to Stamina");
-	format(inteligencija100, 64, "\yAdd \d100 \ypoints to Intelligence");
-	format(energija100, 59, "\yAdd \d100 \ypoints to Energy");
-	format(snaga100, 59, "\yAdd \d100 \ypoints to Resistance");
-	format(kondicija100, 59, "\yAdd \d100 \ypoints to Stamina");
-	format(inteligencija1000, 64, "\yAdd \d1000 \ypoints to Intelligence");
-	format(energija1000, 59, "\yAdd \d1000 \ypoints to Energy");
-	format(snaga1000, 59, "\yAdd \d1000 \ypoints to Resistance");
-	format(kondicija1000, 59, "\yAdd \d1000 \ypoints to Stamina");
-	format(naslov, 24, "\Award points(%i):", get_PlayerPoints(id));
+	formatex(inteligencija, 64, "\yIntelligence: \r%i \y(Increases attack)", inteligencija_igraca[id]);
+	formatex(energija, 59, "\yEnergy: \r%i \y(Increases HP)", energija_igraca[id]);
+	formatex(snaga, 59, "\yResistance: \r%i \y(Reduces violation)", snaga_igraca[id]);
+	formatex(kondicija, 59, "\yStamina: \r%i \y(Increases the pace of walking)", kondicija_igraca[id]);
+	formatex(inteligencija10, 64, "\yAdd \d10 \ypoints to Intelligence");
+	formatex(energija10, 59, "\yAdd \d10 \ypoints to Energy");
+	formatex(snaga10, 59, "\yAdd \d10 \ypoints to Resistance");
+	formatex(kondicija10, 59, "\yAdd \d10 \ypoints to Stamina");
+	formatex(inteligencija100, 64, "\yAdd \d100 \ypoints to Intelligence");
+	formatex(energija100, 59, "\yAdd \d100 \ypoints to Energy");
+	formatex(snaga100, 59, "\yAdd \d100 \ypoints to Resistance");
+	formatex(kondicija100, 59, "\yAdd \d100 \ypoints to Stamina");
+	formatex(inteligencija1000, 64, "\yAdd \d1000 \ypoints to Intelligence");
+	formatex(energija1000, 59, "\yAdd \d1000 \ypoints to Energy");
+	formatex(snaga1000, 59, "\yAdd \d1000 \ypoints to Resistance");
+	formatex(kondicija1000, 59, "\yAdd \d1000 \ypoints to Stamina");
+	formatex(naslov, 24, "\Award points(%i):", get_PlayerPoints(id));
 	new menu = menu_create(naslov, "DodelaPoena_Handler");
 	menu_additem(menu, inteligencija);
 	menu_additem(menu, energija);
@@ -2659,7 +2659,7 @@ public OpisKlase_Handle(id, menu, item)
 	new name[128];
 	PrepareArray(name,128,1)
 	ExecuteForward(fwForwards[get_class_name_fwd],result,item,name);
-	format(opis, charsmax(opis), "\rClass:\d%s^n%s", name, subopis);
+	formatex(opis, charsmax(opis), "\rClass:\d%s^n%s", name, subopis);
 	show_menu(id, 1023, opis);
 	
 	return PLUGIN_CONTINUE;
@@ -2701,7 +2701,7 @@ public IzaberiFrakciju_Handle(id, menu2, item)
 			ExecuteForward(fwForwards[get_class_suffix_fwd],result,i,buff);
 			PrepareArray(buff2,128,1)
 			ExecuteForward(fwForwards[get_class_name_fwd],result,i,buff2);
-			format(klasa, 259, "\r%s %s \rLevel:\y %i", buff2, buff, get_PlayerLvl(id));
+			formatex(klasa, 259, "\r%s %s \rLevel:\y %i", buff2, buff, get_PlayerLvl(id));
 			menu_additem(menu, klasa);
 		}
 	}
@@ -3435,7 +3435,7 @@ public OpisPredmeta(id, menu, item)
 	PrepareArray(buffperk,512,1)
 	ExecuteForward(fwForwards[get_perk_desc_fwd],result,informacije_predmet_igraca[id][0],buffperk);
 	num_to_str(informacije_predmet_igraca[id][1], slucajne_vrednosti, 2);
-	format(buffperk, 511, buffperk);
+	formatex(buffperk, 511, buffperk);
 	replace_all(buffperk, 511, "LW", slucajne_vrednosti);
 	if(item++ == MENU_EXIT)
 	{
@@ -3449,7 +3449,7 @@ public OpisPredmeta(id, menu, item)
 	new buffperk3[512];
 	PrepareArray(buffperk3,512,1)
 	ExecuteForward(fwForwards[get_perk_desc_fwd],result,informacije_predmet_igraca[id][0],buffperk3);
-	format(finalbuff, charsmax(finalbuff), "\rPredmet: \y%s^n\rOpis: \d%s", buffperk2, buffperk3);
+	formatex(finalbuff, charsmax(finalbuff), "\rPredmet: \y%s^n\rOpis: \d%s", buffperk2, buffperk3);
 	show_menu(id, 1023, finalbuff)
 	return PLUGIN_CONTINUE;
 }   

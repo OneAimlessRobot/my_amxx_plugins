@@ -135,7 +135,7 @@ public t800_loop(id)
 		if ( gT800Timer[id] > 0 ) {
 			gT800Timer[id]--
 			new message[128]
-			format(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
+			formatex(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
 			set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 			show_hudmessage(id, message)
 			
@@ -242,7 +242,7 @@ public t800_kd()
 	ultimateTimer(id, get_cvar_num("t800_cooldown") * 1.0)
 	
 	new message[128]
-	format(message, 127, "You have become a T-800 KILL!")
+	formatex(message, 127, "You have become a T-800 KILL!")
 	set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_hudmessage(id, message)
 	

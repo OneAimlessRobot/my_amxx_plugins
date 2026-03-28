@@ -31,7 +31,6 @@ public plugin_init()
 	register_cvar("yandere_explode_maxdamage", "1")
 	register_cvar("yandere_teamglow_on", "1")
 	register_cvar("yandere_trans_time", "4.0")
-	register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
 	register_cvar("yandere_base_extra_speed", "500")
 	register_cvar("yandere_degen_iter_period", "0.1")
 	register_cvar("yandere_speed_inc_per_inc", "50")
@@ -203,7 +202,7 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&yandere_get_has_yan
 		
 		new client_name[128]
 		get_user_name(id,client_name,127)
-		new degen_dmg_2_take= float(get_user_health(id))>psychosis_degen_health_threshold?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(get_user_health(id))-psychosis_degen_health_threshold)*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?psychosis_degen_pct:angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
+		new degen_dmg_2_take= (float(get_user_health(id))>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(get_user_health(id))-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
 		if(degen_dmg_2_take>0){
 			new client_origin[3]
 			get_user_origin(id,client_origin)
@@ -309,24 +308,19 @@ if(yandere_get_is_super(id)&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarte
 update_stats(id){
 
 	if(!client_hittable(id,gHasYandere[id])||sh_is_freezetime()) return
-	new Float:gravity=get_user_gravity(id)
 	new Float:maxspeed=get_user_maxspeed(id)
 	if(yandere_get_is_super(id)){
 
 		gNormalDmgMult[id]=angry_dmg_mult
 		gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
-		gNormalGravity[id]=floatmin(angry_gravity,gravity);
 		
 	}
 	else{
 		gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(g_mates_dead[id]))),angry_dmg_mult);
 		gPrevSpeed[id]=maxspeed
 		gNormalSpeed[id]=floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(g_mates_dead[id]))),angry_speed);
-		gBaseGravity[id]=gravity
-		gNormalGravity[id]=floatmin(gBaseGravity[id],gravity);
 	}
 	set_user_maxspeed(id,gNormalSpeed[id])
-	set_user_gravity(id,gNormalGravity[id])
 }
 public yandere_timer_transform(id){
 	if(!sh_is_active()||!client_hittable(id)){
@@ -342,8 +336,7 @@ public yandere_timer_transform(id){
 		gToPlaySound[id]=true;
 		gSuperAngry[id]= (g_mates_alive[id]<=0)&&can_transform? true:false
 		if(!yandere_get_is_super(id)){
-			gNormalGravity[id]=gBaseGravity[id]
-			set_user_gravity(id,gNormalGravity[id])
+			set_user_gravity(id)
 			
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"Demorphing!")
@@ -354,6 +347,8 @@ public yandere_timer_transform(id){
 				yandere_unpsychosis_user(id)
 			}
 		}
+		new Float:gravity=get_user_gravity(id)
+		set_user_gravity(id,floatmin(angry_gravity,gravity))
 		yandere_update_idle(id)
 	}
 	else{
@@ -443,7 +438,6 @@ public newRound(id)
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
 			gTransTimer[id]=trans_time
 			gTransTimerStarted[id]=false
-			gBaseGravity[id]=1.0
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
@@ -582,8 +576,6 @@ public yandere_kd()
 			playSoundDenySelect(id)
 			return PLUGIN_HANDLED
 		}
-		gPsychosisTime[id]=floatround(psychosis_time)
-		ultimateTimer(id, psychosis_cooldown * 1.0)
 		emit_sound(id, CHAN_AUTO, yandere_pain_sounds[random_num(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
 		new client_name[128]
 		get_user_name(id,client_name,127)

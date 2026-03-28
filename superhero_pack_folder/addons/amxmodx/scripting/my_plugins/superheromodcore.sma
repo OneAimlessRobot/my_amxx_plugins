@@ -1317,7 +1317,7 @@ debugMsg(id, level, const message[], any:...)
 		get_user_authid(id, authid,  charsmax(authid))
 		get_user_team(id, team,  charsmax(team))
 		if ( equal(team, "UNASSIGNED") ) copy(team, charsmax(team), "")
-		if ( userid > 0 ) format(output, charsmax(output), "^"%s<%d><%s><%s>^" %s", name, userid, authid, team, output)
+		if ( userid > 0 ) formatex(output, charsmax(output), "^"%s<%d><%s><%s>^" %s", name, userid, authid, team, output)
 	}
 
 	log_amx("DEBUG: %s", output)
@@ -2035,7 +2035,7 @@ menuSuperPowers(id, menuOffset)
 			add(message,charsmax(message),"\w")
 		}
 		keys |= (1<<x-menuOffset) // enable this option
-		formatex(temp, charsmax(temp), "%s (%d%s)", gSuperHeros[heroIndex][hero], heroLevel, gSuperHeros[heroIndex][requiresKeys] ? "b" : "")
+		format(temp, charsmax(temp), "%s (%d%s)", gSuperHeros[heroIndex][hero], heroLevel, gSuperHeros[heroIndex][requiresKeys] ? "b" : "")
 		format(temp, charsmax(temp), "%d. %-20s- %s^n", x - menuOffset + 1, temp, gSuperHeros[heroIndex][superpower])
 		add(message, charsmax(message), temp)
 	}

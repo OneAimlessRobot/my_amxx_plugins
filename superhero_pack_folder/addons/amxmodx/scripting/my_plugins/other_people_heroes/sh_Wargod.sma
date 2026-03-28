@@ -598,7 +598,7 @@ public Wargod_fire(id)
 			gBullets[id]--
 			
 			new message[128]
-			format(message, 127, "You Have %d bullet(s) left",gBullets[id])
+			formatex(message, 127, "You Have %d bullet(s) left",gBullets[id])
 			set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 			show_hudmessage(id, message)
 			
@@ -1062,7 +1062,7 @@ public handle_say(id)
 	if (team == 1) copy(teamname,4,"(T)")
 	else if (team == 2)	copy(teamname,4,"(CT)")
 		
-	format(sMessage,190, "%c[DN]%s%s%s :  %s^n", 2,  isSayTeam ? teamname : "", is_alive ? "*ALIVE*" : "*DEAD*", name, message)
+	formatex(sMessage,190, "%c[DN]%s%s%s :  %s^n", 2,  isSayTeam ? teamname : "", is_alive ? "*ALIVE*" : "*DEAD*", name, message)
 	get_players(players, player_count, "c")
 	
 	for (new i = 0; i < player_count; i++) {

@@ -97,7 +97,7 @@ public blink_kd()
 
 	if ( blinkAmount[id] <= 0 ) {
 		blinkAmount[id] = 0
-		format(text, 127, "You have no blinks left" )
+		formatex(text, 127, "You have no blinks left" )
 		show_hudmessage( id, text)
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -120,7 +120,7 @@ public blink_kd()
 	blinkAmount[id]--
 
 	if (blinkAmount[id] <= 4) {
-		format(text, 127, "You have %d blink%s left", blinkAmount[id], blinkAmount[id] == 1 ? "" : "s" )
+		formatex(text, 127, "You have %d blink%s left", blinkAmount[id], blinkAmount[id] == 1 ? "" : "s" )
 		show_hudmessage( id, text)
 	}
 

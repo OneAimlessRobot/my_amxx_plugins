@@ -880,7 +880,7 @@ public charge_task(parm[],id){
 	
 	new hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))
-	format(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/flora_charge_time)*100.0);
+	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/flora_charge_time)*100.0);
 	client_print(id,print_center,"%s",hud_msg)
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -906,7 +906,7 @@ public remove_glisten_task(id){
 id-=FLORA_UNGLISTEN_TASKID
 if(!sh_is_active()||!client_hittable(id)) return
 
-set_user_rendering(id,kRenderFxGlowShell, 0, 0, 0, _,_)
+set_user_rendering(id)
 emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 }
