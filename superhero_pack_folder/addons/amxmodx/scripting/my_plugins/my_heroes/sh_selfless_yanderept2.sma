@@ -16,6 +16,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 //----------------------------------------------------------------------------------------------
@@ -242,14 +243,31 @@ public notify_yanderes_about_team_life(id,alive){
 if(!sh_is_active()||!is_user_connected(id)) return
 
 for(new i=1;i<=SH_MAXSLOTS;i++){
-	if(!client_hittable(i,gHasYandere[i])) continue;
+	if(!client_hittable(i)) continue;
+
+	if(!gHasYandere[i]) continue;
 
 	if(!sh_clients_are_same_team(id,i)) continue;
 	
 	if(!is_user_bot(i)){
 		sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
 	}
+
+	g_mates_dead[i]=get_yandere_num(i,0,0)
+	g_mates_alive[i]=get_yandere_num(i,1,0)
 	
+	if(yandere_get_is_super(i)){
+
+		new can_transform= (get_playersnum(0)>=min_players)
+		gSuperAngry[i]= (g_mates_alive[i]<=0)&&can_transform? true:false
+	}
+	else{
+		new can_transform= (get_playersnum(0)>=min_players)
+		gTransTimerStarted[i]= (g_mates_alive[i]<=0)&&can_transform? true:false
+	}
+
+	update_stats(i)
+	set_user_maxspeed(i,gNormalSpeed[i])
 	
 }
 
@@ -262,11 +280,7 @@ public yandere_loop(id){
 id-=YANDERE_STATS_TASKID;
 
 if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
-	gWasSuperAngry[id]=gSuperAngry[id]
-	g_prev_mates_dead[id]=g_mates_dead[id]
-	g_prev_mates_alive[id]=g_mates_alive[id]
-	g_mates_dead[id]=get_yandere_num(id,0,0)
-	g_mates_alive[id]=get_yandere_num(id,1,0)
+	
 	
 	//new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
 	//new iMax = global_get(glb_maxEntities) // Get's the limit
@@ -276,12 +290,6 @@ if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
 	}
 	yandere_timer_transform(id)
 	
-	if((g_prev_mates_dead[id]-g_mates_dead[id])||
-					((g_prev_mates_alive[id]-g_mates_alive[id]))||
-					((gWasSuperAngry[id]-gSuperAngry[id]))){
-			update_stats(id)
-
-	}
 }
 }
 public yandere_warcry(id){
@@ -307,8 +315,11 @@ if(yandere_get_is_super(id)&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarte
 
 update_stats(id){
 
-	if(!client_hittable(id,gHasYandere[id])||sh_is_freezetime()) return
+	if(!client_hittable(id)||sh_is_freezetime()) return
+	if(!gHasYandere[id]) return
+	
 	new Float:maxspeed=get_user_maxspeed(id)
+	
 	if(yandere_get_is_super(id)){
 
 		gNormalDmgMult[id]=angry_dmg_mult
@@ -317,10 +328,8 @@ update_stats(id){
 	}
 	else{
 		gNormalDmgMult[id]=floatmin(floatadd(base_dmg_mult,floatmul(dmg_pct_per_inc,float(g_mates_dead[id]))),angry_dmg_mult);
-		gPrevSpeed[id]=maxspeed
 		gNormalSpeed[id]=floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(g_mates_dead[id]))),angry_speed);
 	}
-	set_user_maxspeed(id,gNormalSpeed[id])
 }
 public yandere_timer_transform(id){
 	if(!sh_is_active()||!client_hittable(id)){
@@ -332,9 +341,7 @@ public yandere_timer_transform(id){
 	}
 	if(yandere_get_is_super(id)){
 
-		new can_transform= (get_playersnum(0)>=min_players)
 		gToPlaySound[id]=true;
-		gSuperAngry[id]= (g_mates_alive[id]<=0)&&can_transform? true:false
 		if(!yandere_get_is_super(id)){
 			set_user_gravity(id)
 			
@@ -352,16 +359,16 @@ public yandere_timer_transform(id){
 		yandere_update_idle(id)
 	}
 	else{
-		new can_transform= (get_playersnum(0)>=min_players)
-		gIdleAngry[id]=true;
+		gIdleAngry[id]=false;
 		gToPlaySound[id]=false;
-		gTransTimerStarted[id]= (g_mates_alive[id]<=0)&&can_transform? true:false
 		if(gTransTimerStarted[id]){
 
 			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
 			if(gTransTimer[id]<=0.0){
 
 				gSuperAngry[id]=true
+				update_stats(id)
+				set_user_maxspeed(id,gNormalSpeed[id])
 				gTransTimer[id]=trans_time
 			}
 		}
@@ -429,13 +436,13 @@ public newRound(id)
 		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
 		if ( yandere_get_has_yandere(id)) {
 			
-			sh_reset_max_speed(id)
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			gSuperAngry[id]=false;
 			gPlayedSound[id]=false
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
+			set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
 			gTransTimer[id]=trans_time
 			gTransTimerStarted[id]=false
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
@@ -450,21 +457,17 @@ public newRound(id)
 }
 public yandere_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ) return PLUGIN_CONTINUE
+	if ( !shModActive() || !client_hittable(id)) return PLUGIN_CONTINUE
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = (bodypart == 1 ? 1 : 0)
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!client_hittable(attacker)) return PLUGIN_CONTINUE
+	if ( !client_hittable(attacker)) return PLUGIN_CONTINUE
 	
-	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
-	att_team=cs_get_user_team(attacker)
-	if(cs_get_user_team(id)==att_team){
-		
+	if(!sh_clients_are_same_team(id,attacker)){
 		return PLUGIN_CONTINUE
-		
 	}
-	if ( gHasYandere[attacker] && is_user_alive(id) ) {
+	if ( gHasYandere[attacker] ) {
 		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
 		if (floatround(extraDamage) > 0){
 			
@@ -479,9 +482,10 @@ public yandere_damage(id)
 				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
-				setScreenFlash(attacker,255,0,0,3,100)
+				set_render_with_fx_num(attacker,COCAINE)
+				
 				sh_set_stun(id,2.0,0.25)
-				sh_set_rendering(attacker, 250, 92, 163,255,kRenderFxGlowShell, kRenderTransAlpha)
+				
 				remove_glow_user(attacker,3.0)
 				sh_add_hp(attacker,floatround(extraDamage*angry_hitheal_pct),overheal_hp_max)
 				if(extraDamage>=health){

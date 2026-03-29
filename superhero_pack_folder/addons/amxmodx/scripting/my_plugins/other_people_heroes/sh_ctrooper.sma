@@ -115,12 +115,11 @@
  //----------------------------------------------------------------------------------------------
  public make_tracer(id)
  {
+	if(!client_hittable(id)) return PLUGIN_CONTINUE
 	if (!gHasCTrooperPower[id]) return PLUGIN_CONTINUE
 	new clip, ammo
 	new wpnid = get_user_weapon(id, clip, ammo)
-	new pteam[16]
-
-	get_user_team(id, pteam, 15)
+	new CsTeams:user_team=cs_get_user_team(id)
 
 	if ((lastammo[id] > clip) && (wpnid == CSW_AK47) ) {
 
@@ -133,6 +132,7 @@
 		IVecFVec(vec2,fvec2)
 
 		laser_line(id,fvec1,fvec2,false,{RED,GREEN,GREEN},_,true)
+		aura(id,LineColorsWithAlpha[((user_team==CS_TEAM_CT)?GREEN:RED)])
 	}
 
 	lastammo[id] = clip

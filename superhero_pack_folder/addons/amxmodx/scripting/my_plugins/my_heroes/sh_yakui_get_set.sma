@@ -84,9 +84,10 @@ public _uneffect_user_handler(iPlugin,iParams){
 		
 		return
 	}
-	sh_uneffect_user(user,hero_id,gatling_get_fx_num(user))
-	gCurrFX[user]=0;
-
+	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<_:NUM_FX)){
+		sh_uneffect_user(user,hero_id,gatling_get_fx_num(user))
+		gCurrFX[user]=0;
+	}
 }
 public _gatling_set_has_yakui(iPlugin,iParams){
 	new id= get_param(1)

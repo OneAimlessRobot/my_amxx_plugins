@@ -336,7 +336,7 @@ public pfn_touch(ptr, ptd)
 	if ( !is_user_connected(ptd) || get_user_godmode(ptd) ) return
 
 	new grenadeOwner = entity_get_edict(ptr, EV_ENT_owner)
-
+	if(!is_user_connected (grenadeOwner) ) return 
 	if ( cs_get_user_team(grenadeOwner) == cs_get_user_team(ptd) ) return
 
 	new parm[2]

@@ -363,8 +363,15 @@ public _laser_line(iPlugins, iParams){
 					default: colors = LineColors[color_constants[2]]
 		}
 	}
+	else if(client_hittable(ent_id)){
+		switch ( cs_get_user_team(ent_id) )
+		{
+			case CS_TEAM_T: colors = LineColors[color_constants[0]]
+				case CS_TEAM_CT: colors = LineColors[color_constants[1]]
+					default: colors = LineColors[color_constants[2]]
+		}
+	}
 	else{
-
 		colors=LineColors[color_constants[2]]
 	}
 	//This is a little cleaner but not much

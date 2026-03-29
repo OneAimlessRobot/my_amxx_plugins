@@ -101,54 +101,60 @@ public track_task(array[],id){
 		unradioactive_user(id);
 		return
 	}
-	new hud_msg[256]
-	new client_name[128]
-	new distance, origin[3], eorigin[3],att_origin[3]
-	new Float:Pos[3],Float:vEnd[3]
-	new color_const=array[5]
-	get_user_name(id,client_name,127)
-	
-	get_user_origin(id, eorigin)
-	get_user_origin(array[0], origin)
-	get_user_origin(array[0], att_origin)
-			
-	distance = get_distance(eorigin, origin)
-	formatex(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
-	set_hudmessage(LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  0.0, 0.2, 0, 0.0, 1.0)
-	ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
-	detect_user(array[0],id,vEnd);
-	IVecFVec(origin,Pos)
-	IVecFVec(eorigin,vEnd)
-	new color_const_arr[3];
-	for(new i=0;i<sizeof color_const_arr;i++){
-
-		color_const_arr[i]=color_const
-	}
-	laser_line(array[0],Pos,vEnd,true,color_const_arr,true)
-	for(new i=0;i<array[2];i++){
-		if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
+	if(client_hittable(array[0])){
+		new hud_msg[256]
+		new client_name[128]
+		new distance, origin[3], eorigin[3],att_origin[3]
+		new Float:Pos[3],Float:vEnd[3]
+		new color_const=array[5]
+		get_user_name(id,client_name,127)
 		
-			continue
-		}
-		get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
-			
+		get_user_origin(id, eorigin)
+		get_user_origin(array[0], origin)
+		get_user_origin(array[0], att_origin)			
+		
 		distance = get_distance(eorigin, origin)
-		formatex(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
-		ShowSyncHudMsg(array[i+NUM_INIT_TRACK_PARAMS],array[1], "%s", hud_msg)
-		detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+		formatex(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
+		set_hudmessage(LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  0.0, 0.2, 0, 0.0, 1.0)
+		ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
+		detect_user(array[0],id,vEnd);
 		IVecFVec(origin,Pos)
-		laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
-		
+		IVecFVec(eorigin,vEnd)
+		new color_const_arr[3];
+		for(new i=0;i<sizeof color_const_arr;i++){
+
+			color_const_arr[i]=color_const
+		}
+		laser_line(array[0],Pos,vEnd,true,color_const_arr,true)
+		for(new i=0;i<array[2];i++){
+			if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
+			
+				continue
+			}
+			get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
+				
+			distance = get_distance(eorigin, origin)
+			formatex(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
+			ShowSyncHudMsg(array[i+NUM_INIT_TRACK_PARAMS],array[1], "%s", hud_msg)
+			detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+			IVecFVec(origin,Pos)
+			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
+			
+		}
+		sh_set_rendering(id, LineColorsWithAlpha[color_const][0],  LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
+		sh_screen_fade(id, 0.1, 0.9, LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  50)
+		new the_fucking_argument[4];
+		copy(the_fucking_argument,4,LineColorsWithAlpha[color_const])
+		aura(id,the_fucking_argument)
+		if(array[3]){
+			sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
+		}
 	}
-	sh_set_rendering(id, LineColorsWithAlpha[color_const][0],  LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(id, 0.1, 0.9, LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  50)
-	new the_fucking_argument[4];
-	copy(the_fucking_argument,4,LineColorsWithAlpha[color_const])
-	aura(id,the_fucking_argument)
-	if(array[3]){
-		sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
+	else{
+
+		unradioactive_user(id);
+		return
 	}
-	
 }
 
 
