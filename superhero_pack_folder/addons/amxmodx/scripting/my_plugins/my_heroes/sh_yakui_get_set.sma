@@ -213,11 +213,8 @@ public _sh_get_pill_color(iPlugin,iParams){
 	if(!is_user_connected(attacker)){
 		
 		return
-	}
-	new color[4]
-	get_array(3,color,4)
-	copy(color,4,fx_colors[fx_num])		
-	set_array(3,color,4)
+	}	
+	set_array(3,LineColors[_:NUM_FX+fx_num-1],3)
 
 
 

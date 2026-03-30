@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include <fakemeta_util>
 
 
@@ -53,6 +54,7 @@ public plugin_natives(){
 	register_native("draw_aim_vector","_draw_aim_vector",0);
 	register_native("precache_native_fx_pt1","_precache_native_fx_pt1",0)
 	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1",0);
+	register_native("set_render_with_color_const","_set_render_with_color_const",0)
 }
 
 public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
@@ -88,12 +90,13 @@ public _trail_custom(iPlugins, iParams){
 
 		new ent_id=get_param(1)
 
-		new color[4]
+		new color[3]
 
-		get_array(2,color,4)
+		get_array(2,color,3)
 
 		new life = get_param(3)
 		new width = get_param(4)
+		new alpha= get_param(5)
 
 		if(pev_valid(ent_id)!=2){
 		
@@ -108,7 +111,7 @@ public _trail_custom(iPlugins, iParams){
 		write_byte(color[0])			// r, g, b
 		write_byte(color[1])		// r, g, b
 		write_byte(color[2])			// r, g, b
-		write_byte(color[3]) // brightness
+		write_byte(alpha) // brightness
 		message_end()
 }
 public _trail(iPlugins, iParams){
@@ -119,6 +122,7 @@ public _trail(iPlugins, iParams){
 
 		new life = get_param(3)
 		new width = get_param(4)
+		new alpha = get_param(5)
 
 		if(pev_valid(ent_id)!=2){
 		
@@ -130,10 +134,10 @@ public _trail(iPlugins, iParams){
 		write_short(m_trail)  // model
 		write_byte( life )       // life
 		write_byte( width )        // width
-		write_byte(LineColorsWithAlpha[color_const][0])			// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][1])		// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][2])			// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][3]) // brightness
+		write_byte(LineColors[color_const][0])			// r, g, b
+		write_byte(LineColors[color_const][1])		// r, g, b
+		write_byte(LineColors[color_const][2])			// r, g, b
+		write_byte(alpha) // brightness
 		message_end()
 }
 public _make_sparks(iPlugins, iParams){
@@ -249,20 +253,19 @@ public _make_fire(iPlugins, iParams){
 
 
 }
-//(point[3],Float:radius,const color[4],shockwave_frame_rate=1,shockwave_life=10,shockwave_line_width=8,shockwave_amplitude=1)
-
 public _make_shockwave(iPlugins, iParams){
 
 	new point[3],
 	Float:radius=get_param_f(2),
-	color[4],
+	color[3],
 	shockwave_frame_rate=get_param(4),
 	shockwave_life=get_param(5),
 	shockwave_line_width=get_param(6),
-	shockwave_amplitude=get_param(7)
+	shockwave_amplitude=get_param(7),
+	alpha=get_param(8)
 
 	get_array(1,point,3)
-	get_array(3,color,4)
+	get_array(3,color,3)
 
 
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
@@ -282,7 +285,7 @@ public _make_shockwave(iPlugins, iParams){
 	write_byte( color[0])
 	write_byte( color[1] )
 	write_byte( color[2] )
-	write_byte( color[3] )
+	write_byte(alpha )
 	write_byte(0)
 	message_end()
 
@@ -295,6 +298,7 @@ public _heal_stream(iPlugins, iParams){
 	new x=get_param(2)
 	new color_index=get_param(3)
 
+	new alpha= get_param(4)
 	new origin[3]
 
 	get_user_origin(id, origin, 1)
@@ -309,10 +313,10 @@ public _heal_stream(iPlugins, iParams){
 	write_byte( 1)  			// life
 	write_byte( 45)  		// line width
 	write_byte( 0 )  			// noise amplitude
-	write_byte( LineColorsWithAlpha[color_index][0] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][1] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][2] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][3] )				// brightness
+	write_byte( LineColors[color_index][0] )				// r, g, b
+	write_byte( LineColors[color_index][1] )				// r, g, b
+	write_byte( LineColors[color_index][2] )				// r, g, b
+	write_byte(alpha)				// brightness
 	write_byte( 8 )				// scroll speed
 	message_end()
 	
@@ -487,6 +491,8 @@ public _draw_bbox(iPlugins, iParams){
 
 
 }
+
+
 public _gun_shot_decal(iPlugins, iParams){
 
 	new Float:vec[3]
@@ -684,8 +690,8 @@ public _suck_in_sound(iPlugins, iParams){
 
 public _aura(iPlugins, iParams){
 	new id= get_param(1);
-	new color[4]
-	get_array(2,color,4)
+	new color[3]
+	get_array(2,color,3)
 	new life=get_param(3)
 	new decay= get_param(4)
 
@@ -791,4 +797,32 @@ public _shoteffects(iPlugin,iParams){
 	write_byte(1)
 	message_end()
 	
+}
+
+public _set_render_with_color_const(iPlugins,iParams){
+	new id=get_param(1)
+	new the_color_const=get_param(2)
+	new glow_on_user=get_param(3)
+	new alpha=get_param(4)
+	new the_hud_alpha=get_param(5)
+	new glow_user_hud=get_param(6)
+	new is_sleep=get_param(7)
+	if(is_sleep||(glow_user_hud&&!sh_get_user_is_asleep(id))){
+			sh_screen_fade(id, 0.1, 0.9,
+					LineColors[the_color_const][0],
+					LineColors[the_color_const][1],
+					LineColors[the_color_const][2],
+					(the_hud_alpha<0)?50:the_hud_alpha)
+	}
+	if(glow_on_user){
+		sh_set_rendering(id,
+						LineColors[the_color_const][0],
+						LineColors[the_color_const][1],
+						LineColors[the_color_const][2],
+						(alpha<0)?255:alpha,
+						kRenderFxGlowShell,
+						kRenderTransAlpha)
+		
+		aura(id,LineColors[the_color_const])
+	}
 }

@@ -467,10 +467,10 @@ launch_pill(id)
 	pill_loaded[id][curr_barrel[id]] = false
 
 	gatling_dec_num_pills(id)
-	new parm[6]
+	new parm[5]
 	new fx_num=sh_gen_effect()
 	pill_fx[Ent]=fx_num
-	new color[4]
+	new color[3]
 	sh_get_pill_color(fx_num,id,color)
 	parm[0] = Ent
 	parm[1] =id
@@ -544,7 +544,7 @@ public pill_reload(parm[])
 public pilltrail(parm[])
 {
 	new pid = parm[0]
-	new the_fucking_argument[4];
+	new the_fucking_argument[3];
 	for(new i=0;i<sizeof the_fucking_argument;i++){
 		the_fucking_argument[i]=parm[2+i]
 	}

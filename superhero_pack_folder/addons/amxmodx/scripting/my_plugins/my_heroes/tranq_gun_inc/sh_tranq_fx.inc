@@ -14,16 +14,10 @@
 
 #define SLEEP_SFX "shmod/erica/sleep/snore.wav"
 
-#define SLEEP_TASKID 18123
-#define UNSLEEP_TASKID 8871
-#define SLEEP_PERIOD 1.0
+#define SLEEP_PERIOD 0.25
 #define SLEEP_TIME 5.0
 #define SLEEP_TIMES floatround(floatdiv(SLEEP_TIME,SLEEP_PERIOD))
 
-
-
-stock const sleep_color[4]={100, 100, 100,255}
-stock const rage_sleep_color[4]={250, 92, 163,255}
 
 native sh_sleep_user(id,attacker,gHeroID)
 native sh_unsleep_user(id)

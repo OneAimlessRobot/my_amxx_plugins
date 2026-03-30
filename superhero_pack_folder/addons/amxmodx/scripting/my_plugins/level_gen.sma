@@ -84,6 +84,11 @@ loadCVARS(){
 	m_val=get_pcvar_float(m_val_cvar_p)
 	n_val=get_pcvar_float(n_val_cvar_p)
 
+	
+}
+stock print_level_gen_state(){
+
+
 	server_print("LEVEL GEN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",a_val,b_val,c_val,d_val);
 	server_print("LEVEL GEN MATH EXPR POLY: (%f * pow(x,(%f)) + (%f * x) + %f",a_val,m_val,b_val,c_val);
 	server_print("LINEAR LEVEL GEN XPGAIN MATH EXPR: %f * x + %f",e_val,f_val);
@@ -92,6 +97,7 @@ loadCVARS(){
 	server_print("EXP GEN MATH XPGAIN MATH EXPR: %f * pow( %f ,(x * %f)) + %f",g_val,h_val,i_val,j_val);
 	server_print("SUM COEFF (FOR NEEDED XP): %f",sum_coeff_needed)
 	server_print("SUM COEFF (FOR GAINED XP): %f",sum_coeff_gained)
+
 }
 stock Float:calculate_level_it(Float:it){
 
@@ -123,6 +129,7 @@ public level_gen(id)
 reset_arrs()
 loadConfig()
 loadCVARS()
+print_level_gen_state()
 make_files()
 
 
@@ -136,6 +143,7 @@ public kill_req_gen(id, level, cid)
 	if (read_argc() == 2)
 	{
 		loadCVARS()
+		print_level_gen_state()
 		read_argv(1,level_arg,charsmax(level_arg))
 		level_num= min(str_to_num(level_arg),num_levels)
 		log_amx("LVL %d REQUIRED KILLS!!!!",level_num);

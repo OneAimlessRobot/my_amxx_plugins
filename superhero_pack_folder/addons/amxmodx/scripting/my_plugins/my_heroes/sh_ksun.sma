@@ -60,6 +60,7 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ksun_kd")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	register_forward(FM_PlayerPreThink, "ksun_prethink")
+	init_hud_syncs()
 }
 public plugin_natives(){
 	
@@ -117,9 +118,9 @@ stock covert_spike_damage(id){
 				}
 				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
 				ExecuteHam(Ham_TakeDamage,payer,Ent,id,healthXtracted,DMG_GENERIC);
-				sh_damage_display_stock(payer,id,true,false,floatround(healthXtracted))
+				sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,payer,id,true,false,floatround(healthXtracted))
 				remove_entity(Ent)
-				heal(id,healthXtracted)
+				ksun_heal(id,healthXtracted)
 				
 			}
 		}
@@ -149,7 +150,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 			new Float: pctDmgLost=get_spike_base_damage_debt()*float(times_spiked_by_them)
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
-			heal(collector,dmgSnatched)
+			ksun_heal(collector,dmgSnatched)
 			new Float:newDamage=damage- dmgSnatched
 			if(is_in_ham_hook){
 				SetHamParamFloat(4, newDamage);
@@ -195,7 +196,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 				new tger_name[128], vic_name[128]
 				get_user_name(attacker,vic_name,127)
 				get_user_name(id,tger_name,127)
-				heal(attacker,damage)
+				ksun_heal(attacker,damage)
 				new CsTeams:payer_team=cs_get_user_team(id)
 				new CsTeams:att_team=cs_get_user_team(attacker)
 				if(att_team!=payer_team){
@@ -589,7 +590,7 @@ public ksun_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!spores_has_ksun(id) ) return
 	
 	// Message
-	superhero_protected_hud_message(id,  "ksun: '...'")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,  "ksun: '...'")
 	cs_set_user_model(id,"ksun")
 
 	gmorphed[id] = true

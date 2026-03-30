@@ -58,7 +58,7 @@ public plugin_natives(){
 	register_native("inc_times_player_spiked_by_player","_inc_times_player_spiked_by_player",0)
 	register_native("dec_times_player_spiked_by_player","_dec_times_player_spiked_by_player",0)
 	register_native("get_spike_base_damage_debt","_get_spike_base_damage_debt",0)
-	register_native("heal","_heal",0)
+	register_native("ksun_heal","_ksun_heal",0)
 	
 	register_native("ksun_glisten","_ksun_glisten",0)
 	
@@ -107,7 +107,7 @@ public loadCVARS()
 	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
 	ksun_dmg_paycut=get_cvar_float("ksun_dmg_paycut")
 }
-public bool:_heal(iPlugins, iParms){
+public bool:_ksun_heal(iPlugins, iParms){
 	new id= get_param(1)
 	new Float:damage=get_param_f(2)
 	
@@ -134,11 +134,10 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
 	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
-	new color[4];
+	new color[3];
 	color[0]=LineColors[PURPLE][0]
 	color[1]=LineColors[PURPLE][1]
 	color[2]=LineColors[PURPLE][2]
-	color[3]=200
 	aura(id,color)
 	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
 	
@@ -535,7 +534,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	}
 	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?"ksun slay":"ksun_spore")
 	sh_bleed_user(victim,killer,BLEED,spores_ksun_hero_id())
-	heal(killer,float(damage_to_do))
+	ksun_heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
 	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_scanner_player_tracks_player(killer,victim,0)

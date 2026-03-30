@@ -748,11 +748,11 @@ public field_think(ent)
 		}
 		return FMRES_IGNORED
 	}
-	else{
+	else{//60
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
 		FVecIVec(ent_pos,ient_pos)
-		make_shockwave(ient_pos,field_radius,{255, 255, 0,60})
-		make_shockwave(ient_pos,field_core_radius,{255, 128, 0,60})
+		make_shockwave(ient_pos,field_radius,{255, 255, 0},_,_,_,_,60)
+		make_shockwave(ient_pos,field_core_radius,{255, 128, 0},_,_,_,_,60)
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 
 		clear_one_flora_array(owner,true)
@@ -779,13 +779,13 @@ public field_think(ent)
 				
 				sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
 				
-				sh_set_rendering(pid, LineColorsWithAlpha[g_flora_dmg_color[owner]][0],
+				sh_set_rendering(pid, LineColors[g_flora_dmg_color[owner]][0],
 				
-									LineColorsWithAlpha[g_flora_dmg_color[owner]][1],
+									LineColors[g_flora_dmg_color[owner]][1],
 									
-									LineColorsWithAlpha[g_flora_dmg_color[owner]][2],
+									LineColors[g_flora_dmg_color[owner]][2],
 									
-									LineColorsWithAlpha[g_flora_dmg_color[owner]][3], 
+									255, 
 									kRenderFxGlowShell,
 									
 									kRenderTransAlpha)
@@ -901,29 +901,14 @@ public charge_task(parm[],id){
 	
 }
 
-public remove_glisten_task(id){
-
-id-=FLORA_UNGLISTEN_TASKID
-if(!sh_is_active()||!client_hittable(id)) return
-
-set_user_rendering(id)
-emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-}
 
 public flora_glisten(id,heal_color){
 	
 	
-	setScreenFlash(id,LineColors[heal_color][0],LineColors[heal_color][1],LineColors[heal_color][2],3,180)
-	glow(id,LineColors[heal_color][0],LineColors[heal_color][1],LineColors[heal_color][2],100,1)
-	new color[4];
-	color[0]=LineColors[heal_color][0]
-	color[1]=LineColors[heal_color][1]
-	color[2]=LineColors[heal_color][2]
-	color[3]=230
-	aura(id,color)
+	set_render_with_color_const(id,heal_color,1,100,180,1)
+	aura(id,LineColors[heal_color])
 	emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(FLORA_HEAL_GLOW_TIME,"remove_glisten_task",id+FLORA_UNGLISTEN_TASKID,"", 0,  "a",1)	
+	remove_glow_user(id,FLORA_HEAL_GLOW_TIME)
 	
 }
 public flora_heal(id,Float:damage,color){

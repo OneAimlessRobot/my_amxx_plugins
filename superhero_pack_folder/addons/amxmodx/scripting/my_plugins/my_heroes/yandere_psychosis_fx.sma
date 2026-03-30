@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
@@ -30,6 +31,7 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
+	init_hud_syncs()
 	
 }
 
@@ -159,19 +161,19 @@ public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
 
 	gPsychosisTime[id]-=1.0
-	sh_set_rendering(id, LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	aura(id,LineColorsWithAlpha[PINK])
+	sh_set_rendering(id, LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	aura(id,LineColors[PINK])
 
 	if(!is_user_bot(id)){
-		new hud_msg[100];
+		static hud_msg[SH_HUD_MSG_BUFF_SIZE];
 		static hero_name_arr[MAX_HERO_NAME_LENGTH]
 		sh_get_hero_name_from_id(yandere_get_hero_id(),hero_name_arr)
 		formatex(hud_msg,99,"[SH] %s:^nPsychosis mode for %0.1f more seconds!",
 		hero_name_arr,
 		gPsychosisTime[id]
 		);
-		superhero_protected_hud_message(id,"%s", hud_msg,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
-		sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"%s", hud_msg,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
+		sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
 	}
 	
 	
@@ -180,7 +182,7 @@ public psychosis_task(id){
 psychosis_user(id){
 	
 	psychosis_on(id)
-	sh_screen_fade(id,0.1,1.0,LineColorsWithAlpha[PINK][0],LineColorsWithAlpha[PINK][1],LineColorsWithAlpha[PINK][2],50)
+	sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
 	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",PSYCHOSIS_TIMES)
 	set_task(floatsub(psychosis_time,0.1),"unpsychosis_task",id+UNPSYCHOSIS_TASKID,"", 0,  "a",1)
 	

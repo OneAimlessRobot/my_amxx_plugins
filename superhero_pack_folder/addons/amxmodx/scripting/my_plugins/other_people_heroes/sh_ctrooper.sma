@@ -29,6 +29,7 @@
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
  // GLOBAL VARIABLES
@@ -68,6 +69,7 @@
 	shSetShieldRestrict(gHeroName)
 	shSetMaxHealth(gHeroName, "ctrooper_health")
 	shSetMaxArmor(gHeroName, "ctrooper_armor")
+	init_hud_syncs()
  }
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
@@ -132,7 +134,7 @@
 		IVecFVec(vec2,fvec2)
 
 		laser_line(id,fvec1,fvec2,false,{RED,GREEN,GREEN},_,true)
-		aura(id,LineColorsWithAlpha[((user_team==CS_TEAM_CT)?GREEN:RED)])
+		aura(id,LineColors[((user_team==CS_TEAM_CT)?GREEN:RED)])
 	}
 
 	lastammo[id] = clip
@@ -241,7 +243,7 @@
 	CTrooper_sound(id)
 
 	// Message
-	superhero_protected_hud_message(id,"CTrooper - Prepared for war..SIR!")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,"CTrooper - Prepared for war..SIR!")
 
 	gmorphed[id] = true
  }
@@ -250,7 +252,7 @@
  {
 	if ( gmorphed[id] ) {
 		// Message
-		superhero_protected_hud_message(id,"CTrooper - All systems down...")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"CTrooper - All systems down...")
 
 		#if defined AMXX_VERSION
 		cs_reset_user_model(id)

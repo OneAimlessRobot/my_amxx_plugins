@@ -32,6 +32,7 @@ stock const m_fflNextAttack = 83
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
+#define SPORE_HEAL_SFX "shmod/ration.wav"
 
 //Colors To Pick From
 enum sh_custom_color{
@@ -46,8 +47,24 @@ enum sh_custom_color{
 		WHITE,
 		PINK,
 		LTGREEN,
+		INVIS,
+		BLACK,
+		FX_NONE,
+		FX_KILL,
+		FX_GLOW,
+		FX_POISON,
+		FX_STUN,
+		FX_RADIOACTIVE,
+		FX_MORPHINE,
+		FX_WEED,
+		FX_COCAINE,
+		FX_BLIND,
+		FX_METYLPHENIDATE,
+		FX_BATH,
 		COLORS_NUM
 }
+
+
 #define NULL_SOUND_FILENAME "common/null.wav"
 
 #define BLOOD_COLOR_RED		247
@@ -75,22 +92,22 @@ stock const LineColors[_:COLORS_NUM][3] = {
 	{255, 128, 0},		//Orange
 	{255, 255, 255},	//White
 	{250, 92, 163},      //Pink
-	{111,255,111}      //Light Green
+	{111,255,111},      //Light Green
+	{10,10,10},      //invisible
+	{1,1,1},      //Black
+	{0,0,0}, //fx_none
+	{1, 255, 255}, //fx_cyanide
+	{255, 255, 255}, //fx_glow
+	{80, 240, 30},	//fx_poison
+	{100, 100, 100}, //fx_stun
+	{240, 80, 30}, //fx_radioactive
+	{80, 240, 1}, //fx_morphine
+	{80, 240, 90}, //fx_weed
+	{250, 10, 30},  //fx_cocaine
+	{255, 255, 255}, //fx_blind
+	{10, 10, 10},  //fx_metylphenidate
+	{179, 66, 5} //fx_bath
 }
-stock const LineColorsWithAlpha[_:COLORS_NUM][4] = {
-	{150, 150, 150,255},	//Custom
-	{255, 0, 0,255},		//Red
-	{0, 255, 0,100},		//Green
-	{0, 0, 255,255},		//Blue
-	{0, 255, 255,255},		//Light Blue
-	{255, 255, 0,255},		//Yellow
-	{255, 0, 255,255},		//Purple
-	{255, 128, 0,255},		//Orange
-	{255, 255, 255,255},	//White
-	{250, 92, 163,255},      //Pink
-	{111,255,111,40}      //Light Green
-}
-
 stock const Float:g_fReloadDelay[CSW_P90+1] = {
 	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
 	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 

@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 needles"
@@ -42,18 +43,20 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
 		entity_set_string(id, EV_SZ_viewmodel, NEEDLE_V_MODEL)
-		gatling_needle_cycle_fx(id)
+		if(!sh_get_user_is_asleep(id)){
+			gatling_needle_cycle_fx(id)
+		}
 	}
 	return PLUGIN_CONTINUE
 	
 }
 notify_fx_user(id){
 
-	new needle_color[4];
-	new needle_name[128]
+	static needle_color[3];
+	static needle_name[128]
 	sh_get_fx_color_name(curr_needle_fx[id],needle_color,needle_name);
 	sh_screen_fade(id, 0.1, 0.9, needle_color[0], needle_color[1], needle_color[2], 50)
-	playertrail(id,needle_color)
+	playertrail(id)
 	if(!is_user_bot(id)){
 		sh_chat_message(id,gatling_get_hero_id(),"Effect switched! On next swing, you will inject: %s fluid",needle_name)
 	}
@@ -122,11 +125,11 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	return HAM_IGNORED
 }
-public playertrail(pid, parm[4])
+public playertrail(pid)
 {
 	if (client_hittable(pid))
 	{
-		trail_custom(pid,parm,10,5)
+		trail(pid,FX_COLOR_OFFSET+curr_needle_fx[pid],10,5)
 	}
 }
 //----------------------------------------------------------------------------------------------

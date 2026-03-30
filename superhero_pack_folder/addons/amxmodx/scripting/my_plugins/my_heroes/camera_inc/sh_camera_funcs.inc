@@ -57,7 +57,6 @@
 #define MAX_ZOOM 160.0
 
 #define MIN_ZOOM 45.0
-stock const camera_color[4]={255,255,255,255};
 native clear_cameras()
 native camera_get_camera_disarmer_on(id)
 native camera_set_camera_disarmer_on(id,value_to_set)

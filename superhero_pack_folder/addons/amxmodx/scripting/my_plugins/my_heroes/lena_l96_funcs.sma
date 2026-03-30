@@ -382,13 +382,7 @@ if (!is_valid_ent(pid))
 {
     return
 }
-new arr_of_color[4];
-for(new i=0;i<(sizeof arr_of_color )-1;i++){
-	
-	arr_of_color[i]=LineColors[BLUE][i];
-}
-arr_of_color[3]=255
-trail_custom(pid,arr_of_color,3,5)
+trail(pid,YELLOW,3,5)
 	
 }
 public bulletspeed(parm[])
@@ -483,7 +477,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					if(!sh_get_stun(pTouched)){
 							new Float:the_period=(headshot?0.33:1.0);
 							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
-							track_user(pTouched,oid,0,_,the_period,the_time,BLUE)
+							track_user(pTouched,oid,0,_,the_period,the_time)
 							sh_set_stun(pTouched,the_time,150.0);
 							
 							if(!is_user_bot(oid)){

@@ -269,8 +269,8 @@ public _plant_camera(iPlugins,iParams)
 	
 	if(!camman_get_has_camman(id)) return PLUGIN_HANDLED
 	
-	new material[128]
-	new health[128]	
+	static material[128]
+	static health[128]	
 	new NewEnt = create_entity( "func_breakable" );
 	if ( !NewEnt ) return PLUGIN_HANDLED
 	

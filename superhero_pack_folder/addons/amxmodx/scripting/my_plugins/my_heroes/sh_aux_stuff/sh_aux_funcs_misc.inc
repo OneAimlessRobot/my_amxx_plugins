@@ -4,6 +4,9 @@
 #define sh_aux_funcs_pt2
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
+#define SH_HUD_MSG_BUFF_SIZE 512
+
+stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 
 stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
@@ -29,14 +32,6 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 	pev(ent, pev_origin, fOrigin);
 
 	return floatround(fOrigin[2]);
-}
-stock superhero_protected_hud_message(id,const message_text[],string[]="",r=50,g=205,b=50,Float:param1=-1.0,Float:param2=0.40, param3=2, Float:param4=0.02, Float:param5=4.0, Float:param6=0.01, Float:param7=0.1){
-	if(is_user_connected(id)&&!is_user_bot(id)){
-		
-		set_hudmessage(r,g,b,param1,param2,param3,param4,param5,param6,param7)
-		show_hudmessage(id, message_text,string)
-	}
-
 }
 
 stock do_fast_shot(id,wpnid,Float:speed=1.0){
@@ -75,13 +70,6 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	if(!client_hittable(id)){
 		return
 	}
-/*
-	static m_pppPlayer            = 41,
-			m_iiId                = 43,
-			m_fflTimeWeaponIdle        = 48,
-			m_ffInReload            = 54,
-			m_fflNextAttack = 83*/
-	
 	if( get_pdata_int(iEnt, m_ffInReload, 4) )
 	{
 		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iiId, 4)], speed)
@@ -90,7 +78,15 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 
 }
+stock init_hud_syncs(){
 
+	attacker_dmg_hud_msg_sync=CreateHudSyncObj()
+	victim_dmg_hud_msg_sync=CreateHudSyncObj()
+	heal_hp_hud_msg_sync=CreateHudSyncObj()
+	superhero_hud_msg_sync=CreateHudSyncObj()
+
+
+}
 stock Float:get_entity_velocity(ent){
 	if(pev_valid(ent)!=2){
 

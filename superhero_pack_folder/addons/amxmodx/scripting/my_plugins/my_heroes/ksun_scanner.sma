@@ -358,7 +358,7 @@ public scanner_think(scanner){
 	arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 	g_player_num_victims[id]=0
 	
-	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255,50})
+	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
 	new entlist[33];
 	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
 	new CsTeams:idTeam = cs_get_user_team(id)

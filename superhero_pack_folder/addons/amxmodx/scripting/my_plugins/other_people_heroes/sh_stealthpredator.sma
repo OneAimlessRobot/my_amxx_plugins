@@ -2,6 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 /*
 
@@ -64,6 +65,7 @@ public plugin_init()
 
 	//HEAL LOOP
 	set_task(1.0, "stealth_loop", 0, "", 0, "b")
+	init_hud_syncs()
 
 }
 //----------------------------------------------------------------------------------------------
@@ -155,7 +157,7 @@ public stealth_kd()
 	
 
 	
-	superhero_protected_hud_message(id, "Stealth Mode")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Stealth Mode")
 
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -190,7 +192,7 @@ public stealth_ku()
 		
 
 		
-		superhero_protected_hud_message(id, "Normal Mode")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Normal Mode")
 		
 		g_usingPower[id] = false
 		gHealPoints = get_cvar_num("stealth_healpoints")

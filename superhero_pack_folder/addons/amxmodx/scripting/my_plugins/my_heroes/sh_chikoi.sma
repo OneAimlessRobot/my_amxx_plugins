@@ -32,7 +32,7 @@ public plugin_init()
 	register_cvar("chikoi_level", "8")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Small maid!", "Become headshot only! But it really is headshot only! 1Shot 1Kill!", false, "chikoi_level" )
-	new hero_name_arr[STRLEN_FOR_NAMES];
+	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)

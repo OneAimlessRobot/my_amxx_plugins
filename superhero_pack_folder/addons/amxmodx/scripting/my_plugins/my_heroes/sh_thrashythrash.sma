@@ -13,6 +13,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -74,6 +75,7 @@ public plugin_init()
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
+	init_hud_syncs()
 
 
 	// INIT
@@ -199,7 +201,7 @@ public thrashy_morph(id)
 	cs_set_user_model(id, "thrash")
 
 	// Message
-	superhero_protected_hud_message(id, "You are now the baddest bitch on earth!")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You are now the baddest bitch on earth!")
 
 	gmorphed[id] = true
 	
@@ -211,7 +213,7 @@ public thrashy_unmorph(id)
 	if ( !is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		superhero_protected_hud_message(id, "Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
 
 		cs_reset_user_model(id)
 

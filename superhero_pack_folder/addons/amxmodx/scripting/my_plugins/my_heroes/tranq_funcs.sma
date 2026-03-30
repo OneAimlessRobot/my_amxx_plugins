@@ -354,13 +354,7 @@ if (!is_valid_ent(pid))
 {
     return
 }
-new arr_of_color[4];
-for(new i=0;i<(sizeof arr_of_color )-1;i++){
-	
-	arr_of_color[i]=LineColors[dart_hurts[pid]?RED:WHITE][i];
-}
-arr_of_color[3]=255
-trail_custom(pid,arr_of_color,3,5)
+trail(pid,dart_hurts[pid]?RED:WHITE,3,5)
 	
 }
 

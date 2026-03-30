@@ -4,6 +4,7 @@
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -80,6 +81,7 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "teliko_kd")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
+	init_hud_syncs()
 }
 
 public plugin_natives(){
@@ -244,11 +246,11 @@ if ( gHasTeliko[id] ) {
 }
 public teliko_morph(id){
 
-	superhero_protected_hud_message(id,"Roger? Teliko here. Ready to go. Over.")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Roger? Teliko here. Ready to go. Over.")
 }
 public teliko_unmorph(id){
 
-	superhero_protected_hud_message(id,"Mission failed. Im down. Come pick me up.")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed. Im down. Come pick me up.")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)

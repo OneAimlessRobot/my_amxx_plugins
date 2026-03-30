@@ -28,9 +28,6 @@
 #define DISORIENT_TIMES floatround(floatdiv(DISORIENT_TIME,DISORIENT_PERIOD))
 
 
-
-stock const mine_color[4]={255, 255, 255,200}
-
 native sh_mine_user(id,attacker,gHeroID)
 native sh_unmine_user(id)
 

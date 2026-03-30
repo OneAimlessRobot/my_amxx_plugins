@@ -373,13 +373,7 @@ if (!is_valid_ent(pid))
 {
     return
 }
-new arr_of_color[4];
-for(new i=0;i<(sizeof arr_of_color )-1;i++){
-	
-	arr_of_color[i]=LineColors[LTGREEN][i];
-}
-arr_of_color[3]=255
-trail_custom(pid,arr_of_color,3,5)
+trail(pid,LTGREEN,3,5)
 	
 }
 public rivetspeed(parm[])
@@ -469,18 +463,3 @@ engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
 
 }
 public fm_PlaybackEventPre() return FMRES_SUPERCEDE
-
-/*message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
-	write_byte( TE_BEAMFOLLOW )
-	write_short(pid) // entity
-	write_short(m_trail)  // model
-	write_byte( 10 )       // life
-	write_byte( 5 )
-	write_byte(LineColorsWithAlpha[WHITE][0])			// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][1])		// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][2])			// r, g, b
-	write_byte(LineColorsWithAlpha[WHITE][3]) // brightness
-	message_end() // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
-	if(client_hittable(parm[1])){
-		//client_print(parm[1],print_console,"Trail update!!!");
-	}*/

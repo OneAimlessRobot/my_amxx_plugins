@@ -38,7 +38,7 @@ public burn_task(array[],id)
 	
 	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return PLUGIN_CONTINUE
 	sh_screen_fade(id, 0.1, 0.9, molly_color[0], molly_color[1], molly_color[2], 50)
-	sh_set_rendering(id,  molly_color[0], molly_color[1], molly_color[2],molly_color[3],kRenderFxGlowShell, kRenderTransAlpha)
+	sh_set_rendering(id,  molly_color[0], molly_color[1], molly_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
 	sh_screen_fade(array[0], 0.1, 0.9, molly_color[0], molly_color[1], molly_color[2], 50)
 	
 	make_fire(id,30.0)

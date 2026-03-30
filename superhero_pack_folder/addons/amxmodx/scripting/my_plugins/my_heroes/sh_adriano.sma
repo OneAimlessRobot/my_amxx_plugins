@@ -5,6 +5,7 @@
 #include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -72,6 +73,7 @@ public plugin_init()
 	register_srvcmd("adriano_init", "adriano_init")
 	shRegHeroInit(gHeroName, "adriano_init")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -163,7 +165,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 
 		if(gHasAdriano[i]){
 			heal_stream(i, id,YELLOW)
-			aura(i,LineColorsWithAlpha[YELLOW])
+			aura(i,LineColors[YELLOW])
 			add_speed_points(i,damage,true)
 		}
 		
@@ -175,29 +177,23 @@ public heal_teamate(id,teamate){
 	
 	new client_name[128]
 	get_user_name(teamate,client_name,127)
-	new CsTeams:att_team=cs_get_user_team(id)
 	
 	new attacker_name[128]
 	get_user_name(id,attacker_name,127)
 	
 	
-	if((cs_get_user_team(teamate)==att_team)) {
-		new Float:mate_health=float(get_user_health(teamate))
-		new Float:added_hp=speed_points_heal*speed_points_heal_coeff;
-		new Float: new_health=floatadd(mate_health,added_hp)
-		if((sh_get_max_hp(teamate)>floatround(mate_health))){
-			
-			
-			set_user_health(teamate,min(sh_get_max_hp(teamate),floatround(new_health)))
+
+	if(sh_clients_are_same_team(id,teamate)&&(id!=teamate)){
+		new bool:result=generic_heal(heal_hp_hud_msg_sync,teamate,speed_points_heal*speed_points_heal_coeff,_,YELLOW,0,_,80,1)
+		if(result){
+
 			add_speed_points(id,speed_points_heal,false)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
+				sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
 			}
 			if(!is_user_bot(teamate)){
 				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
-			}
-			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
 			}
 		}
 		
@@ -272,8 +268,8 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if( pev_valid(ent))
 	{
 		if((pev(ent,pev_solid)==SOLID_SLIDEBOX)&&(get_user_team(id)==get_user_team(ent))){
-			new hud_msg[128]
-			new client_name[127]
+			static hud_msg[128]
+			static client_name[127]
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			formatex(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))
@@ -309,12 +305,12 @@ update_stats(id){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!shModActive()&&client_hittable(id,gHasAdriano[id] )) return PLUGIN_CONTINUE
-
+	if (!shModActive()&&client_hittable(id)) return PLUGIN_CONTINUE
+	if(!gHasAdriano[id]) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_speed[id]) && !sh_get_stun(id)){
+		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)){
 			set_user_maxspeed(id, g_normal_speed[id])
 		}
 	}

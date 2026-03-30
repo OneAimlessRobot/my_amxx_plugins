@@ -29,7 +29,7 @@ native gatling_set_hero_id(id)
 native gatling_get_hero_id()
 
 
-native sh_get_pill_color(fx_num,attacker,color[4])
+native sh_get_pill_color(fx_num,attacker,color[3])
 
 
 native make_effect(vic,attacker,gHeroId,fx_num=-1,bool:override=false)

@@ -1,9 +1,10 @@
 #include "../my_include/superheromod.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
@@ -29,7 +30,7 @@ for(new i=_:MINI_BLEED;i<_:NUM_BLEED_TYPES;i++){
 	bleed_task_parameters[i][bleed_task_repeats]=floatround(floatdiv(the_time,the_period))
 }
 register_event("DeathMsg","on_death_bleeding","a")
-
+init_hud_syncs()
 
 }
 
@@ -111,21 +112,21 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 return HAM_IGNORED
 }
 
-bleed_task_user(id,attacker){
+bleed_task_user(id,attacker,heal_user){
 	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
-	new array[2]
+	new array[3]
 	array[0] = gIsBleeding[id]
 	array[1] = attacker
+	array[2] = heal_user
 	set_task(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
 					bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_func_name],
 					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id],
 					array,
-					2,
+					3,
 					"a",
 					bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats])
 
-	set_task(floatsub(floatmul(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
-					float(bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats])),0.1),
+	set_task(floatsub(bleed_task_parameters[gIsBleeding[id]][bleed_task_time],0.1),
 					bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_func_name],
 					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_id],
 					array,
@@ -143,6 +144,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	new attacker=get_param(2)
 	new bleed_type=get_param(3)
 	new gHeroID=get_param(4)
+	new heal_user=get_param(5)
 	if ( !shModActive() || !client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
@@ -161,7 +163,7 @@ public _sh_bleed_user(iPlugin,iParams){
 		}
 		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		gIsBleeding[user]=bleed_type
-		bleed_task_user(user,attacker)
+		bleed_task_user(user,attacker,heal_user)
 	}
 
 
@@ -194,9 +196,20 @@ public bleed_task(array[],id){
 	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
 
-	set_render_with_fx_num(id,COCAINE,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
-	set_render_with_fx_num(array[1],COCAINE,0,-1,bleed_type_alphas[array[0]][hud_alpha])
-	sh_add_hp(array[1],bleed_type_damages[array[0]],sh_get_max_hp(array[1]))
+	set_render_with_color_const(id,RED,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
+	if(array[2]){
+		generic_heal(heal_hp_hud_msg_sync,
+					array[1],
+					float(bleed_type_damages[array[0]]),
+					_,
+					RED,
+					_,
+					_,
+					bleed_type_alphas[array[0]][hud_alpha],1,0)
+	}
+	else{
+		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[array[0]][hud_alpha],1)
+	}
 	make_bleed_fx(id)
 	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],bleed_type_names[array[0]],0,SH_DMG_NORM)
 	

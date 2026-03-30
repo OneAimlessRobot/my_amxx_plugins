@@ -49,6 +49,7 @@ public plugin_init()
 	register_clcmd("say_team", "handle_say")
 
 	gmsgSayText = get_user_msgid("SayText")
+	init_hud_syncs()
 
 }
 //----------------------------------------------------------------------------------------------
@@ -124,14 +125,14 @@ public anubis_damage_eyes(victim, idinflictor, attacker, Float:damage, damagebit
 	
 	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
 	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
-	sh_damage_display_stock(victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],floatround(damage))
+	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],floatround(damage))
 
 }
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage)
 {
 	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
-	sh_damage_display_stock(victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],damage)
+	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],damage)
 
 }
 //----------------------------------------------------------------------------------------------

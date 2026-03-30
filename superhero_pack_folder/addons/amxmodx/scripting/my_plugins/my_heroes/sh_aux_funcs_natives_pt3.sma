@@ -1,7 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
-#include "sh_aux_stuff/sh_aux_consts.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt3.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
@@ -9,20 +9,15 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
-/*
-
-//#include "sh_aux_stuff/sh_aux_fx_natives_const_pt2.inc"
-	#include "sh_aux_stuff/sh_aux_fx_funcs_pt1.inc"
-	#include "sh_aux_stuff/sh_aux_fx_funcs_pt2.inc"
-*/
 
 
 new RADIOACTIVE_TASK_ID
 new UNRADIOACTIVE_TASK_ID
 new REMOVE_GLOW_TASKID
 
-#define NUM_INIT_TRACK_PARAMS 6
+#define NUM_INIT_TRACK_PARAMS 5
 
 #define PLUGIN "Superhero aux natives"
 #define VERSION "1.0.0"
@@ -35,6 +30,7 @@ public plugin_init(){
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	UNRADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
+	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	register_event("DeathMsg","on_death_tracked","a")
 	prepare_shero_aux_lib_pt3()
 
@@ -56,32 +52,35 @@ public plugin_natives(){
 	register_native("track_user","_track_user",0);
 	register_native("sh_damage_display_stock","_sh_damage_display_stock",0)
 	register_native("remove_glow_user","_remove_glow_user",0)
+	register_native("generic_heal","_generic_heal",0)
+	register_native("superhero_protected_hud_message","_superhero_protected_hud_message",0)
 }
 
 
 public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
 	
-	attacker_dmg_hud_msg_sync=CreateHudSyncObj()
-	victim_dmg_hud_msg_sync=CreateHudSyncObj()
 	xs_seed(get_systime(0));
 	server_print("Shero lib pt3 innited!^n")
 }
 //native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
 
 public _sh_damage_display_stock(iPlugin,iParams){
-	new victim= get_param(1),
-		attacker= get_param(2),
-		att_bool=get_param(3),
-		vic_bool=get_param(4),
-		damage=get_param(5);
+	new hud_msg_sync_vic=get_param(1),
+		hud_msg_sync_att=get_param(2),
+		victim= get_param(3),
+		attacker= get_param(4),
+		att_bool=get_param(5),
+		vic_bool=get_param(6),
+		damage=get_param(7);
 
+	if((hud_msg_sync_vic<=0)||(hud_msg_sync_att<=0)) return
 	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
 	if(sh_clients_are_same_team(victim,attacker)) return
 
 	if(!is_user_bot(attacker)){
 		if ( att_bool&&(attacker!=victim)) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, attacker_dmg_hud_msg_sync, "%d", damage)
+			ShowSyncHudMsg(attacker,hud_msg_sync_att, "%d", damage)
 		}
 	}
 
@@ -89,7 +88,7 @@ public _sh_damage_display_stock(iPlugin,iParams){
 	if(!is_user_bot(victim)){
 		if ( vic_bool) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, victim_dmg_hud_msg_sync, "%d", damage)
+			ShowSyncHudMsg(victim, hud_msg_sync_vic, "%d", damage)
 		}
 	}
 }
@@ -102,21 +101,16 @@ public track_task(array[],id){
 		return
 	}
 	if(client_hittable(array[0])){
-		new hud_msg[256]
 		new client_name[128]
-		new distance, origin[3], eorigin[3],att_origin[3]
+		new origin[3], eorigin[3],att_origin[3]
 		new Float:Pos[3],Float:vEnd[3]
-		new color_const=array[5]
+		new color_const=array[4]
 		get_user_name(id,client_name,127)
 		
 		get_user_origin(id, eorigin)
 		get_user_origin(array[0], origin)
 		get_user_origin(array[0], att_origin)			
 		
-		distance = get_distance(eorigin, origin)
-		formatex(hud_msg,256,"%s.^nDistance: %d^n",client_name,distance);
-		set_hudmessage(LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  0.0, 0.2, 0, 0.0, 1.0)
-		ShowSyncHudMsg(array[0],array[1],"%s", hud_msg)
 		detect_user(array[0],id,vEnd);
 		IVecFVec(origin,Pos)
 		IVecFVec(eorigin,vEnd)
@@ -126,28 +120,23 @@ public track_task(array[],id){
 			color_const_arr[i]=color_const
 		}
 		laser_line(array[0],Pos,vEnd,true,color_const_arr,true)
-		for(new i=0;i<array[2];i++){
+		for(new i=0;i<array[1];i++){
 			if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
 			
 				continue
 			}
 			get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
-				
-			distance = get_distance(eorigin, origin)
-			formatex(hud_msg,127,"%s.^nDistance: %d^n",client_name,distance);
-			ShowSyncHudMsg(array[i+NUM_INIT_TRACK_PARAMS],array[1], "%s", hud_msg)
+			
 			detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
 			IVecFVec(origin,Pos)
 			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
 			
 		}
-		sh_set_rendering(id, LineColorsWithAlpha[color_const][0],  LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
-		sh_screen_fade(id, 0.1, 0.9, LineColorsWithAlpha[color_const][0], LineColorsWithAlpha[color_const][1], LineColorsWithAlpha[color_const][2],  50)
-		new the_fucking_argument[4];
-		copy(the_fucking_argument,4,LineColorsWithAlpha[color_const])
-		aura(id,the_fucking_argument)
-		if(array[3]){
-			sh_extra_damage(id,array[0],array[4],"SH_TRACKING",0,SH_DMG_NORM)
+		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
+		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
+		aura(id,LineColors[color_const])
+		if(array[2]){
+			sh_extra_damage(id,array[0],array[3],"SH_TRACKING",0,SH_DMG_NORM)
 		}
 	}
 	else{
@@ -185,11 +174,10 @@ public _track_user(iPlugins, iParams){
 	new array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
 	arrayset(array,-1,sizeof array)
 	array[0] = attacker
-	array[1] = CreateHudSyncObj()
-	array[2] = player_count
-	array[3] = do_damage
-	array[4] = damage
-	array[5] = track_color
+	array[1] = player_count
+	array[2] = do_damage
+	array[3] = damage
+	array[4] = track_color
 	for(new i=0;i<player_count;i++){
 		
 		if(client_hittable(players[i])){
@@ -197,7 +185,7 @@ public _track_user(iPlugins, iParams){
 		}
 	}
 	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
-	set_task(floatsub(floatmul(period,float(radioactive_times)),0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
+	set_task(floatsub(time,0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
 	return 0
 
 
@@ -557,5 +545,86 @@ if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
 	return
 }
 set_user_rendering(id)
+
+}
+
+public bool:_generic_heal(iPlugins, iParms){
+	new hud_msg_sync=get_param(1),
+		id= get_param(2),
+		Float:added_hp=get_param_f(3),
+		max_hp_to_clamp=get_param(4),
+		color_const=get_param(5),
+		user_will_glow=get_param(6),
+		Float:glow_remove_timer=get_param_f(7),
+		hud_alpha=get_param(8),
+		hud_will_glow=get_param(9),
+		make_sound=get_param(10),
+		Float: mate_health=float(get_user_health(id))
+	
+	if(mate_health>=sh_get_max_hp(id)){
+		return false
+	
+	}
+	if((max_hp_to_clamp>0)&&((max_hp_to_clamp)<=mate_health)){
+		return false
+	
+	}
+
+	if(make_sound){
+		emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
+	new Float: new_health=floatadd(mate_health,added_hp)
+	set_user_health(id,min((max_hp_to_clamp>0)?max_hp_to_clamp:sh_get_max_hp(id),floatround(new_health)))
+	set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow)
+	if(user_will_glow>0){
+		remove_glow_user(id,glow_remove_timer)
+	}
+	if(hud_msg_sync<=0){
+		
+		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
+		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", added_hp)
+	
+	}
+	return true
+
+}
+
+public _superhero_protected_hud_message(iPlugin,iParams){
+
+	new hud_msg_sync=get_param(1),
+		id= get_param(2),
+		r=get_param(5),
+		g=get_param(6),
+		b=get_param(7),
+		Float:param1=get_param_f(8),
+		Float:param2=get_param_f(9),
+		param3=get_param(10),
+		Float:param4=get_param_f(11),
+		Float:param5=get_param_f(12),
+		Float:param6=get_param_f(13),
+		Float:param7=get_param_f(14)
+
+	
+	if(hud_msg_sync<=0){
+
+		return
+	}
+	static message_text[SH_HUD_MSG_BUFF_SIZE+1],
+		string[SH_HUD_MSG_BUFF_SIZE+1]
+	
+	get_string(3,message_text,SH_HUD_MSG_BUFF_SIZE)
+	get_string(4,string,SH_HUD_MSG_BUFF_SIZE)
+
+	if(is_user_connected(id)&&!is_user_bot(id)){
+		
+		set_hudmessage(r,g,b,param1,param2,param3,param4,param5,param6,param7)
+		if(strlen(string)){
+			ShowSyncHudMsg(id,hud_msg_sync,message_text,string)
+		}
+		else{
+
+			ShowSyncHudMsg(id,hud_msg_sync,message_text)
+		}
+	}
 
 }

@@ -35,10 +35,10 @@ stock trail(ent_id,color_const=PINK,life=3,width=10){
 		write_short(m_trail)  // model
 		write_byte( life )       // life
 		write_byte( width )        // width
-		write_byte(LineColorsWithAlpha[color_const][0])			// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][1])		// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][2])			// r, g, b
-		write_byte(LineColorsWithAlpha[color_const][3]) // brightness
+		write_byte(LineColors[color_const][0])			// r, g, b
+		write_byte(LineColors[color_const][1])		// r, g, b
+		write_byte(LineColors[color_const][2])			// r, g, b
+		write_byte(LineColors[color_const][3]) // brightness
 		message_end()
 }
 stock make_sparks(Float:the_pos[3]){
@@ -184,10 +184,10 @@ stock heal_stream(id, x,color_index=LTGREEN)
 	write_byte( 1)  			// life
 	write_byte( 45)  		// line width
 	write_byte( 0 )  			// noise amplitude
-	write_byte( LineColorsWithAlpha[color_index][0] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][1] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][2] )				// r, g, b
-	write_byte( LineColorsWithAlpha[color_index][3] )				// brightness
+	write_byte( LineColors[color_index][0] )				// r, g, b
+	write_byte( LineColors[color_index][1] )				// r, g, b
+	write_byte( LineColors[color_index][2] )				// r, g, b
+	write_byte( LineColors[color_index][3] )				// brightness
 	write_byte( 8 )				// scroll speed
 	message_end()
 	

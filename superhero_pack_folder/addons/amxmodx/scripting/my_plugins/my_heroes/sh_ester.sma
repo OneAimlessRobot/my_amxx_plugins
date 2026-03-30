@@ -92,6 +92,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "ester_ku")
 	register_forward(FM_PlayerPreThink, "ester_prethink")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
+	init_hud_syncs()
 
 }
 public Hook_BloodColor(id)
@@ -217,7 +218,7 @@ public ester_morph(id)
 	id-=ESTER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
 	
-	superhero_protected_hud_message(id,"Ready to adult & Pwn 50m3 n3wbz")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Ready to adult & Pwn 50m3 n3wbz")
 	cs_set_user_model(id, "ester")
 	
 	gmorphed[id] = true
@@ -238,7 +239,7 @@ public ester_unmorph(id)
 			remove_task(id+ESTER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		superhero_protected_hud_message(id,"Fuck my li- *Sigh...* Spectating again")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Fuck my li- *Sigh...* Spectating again")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -365,8 +366,8 @@ public status_hud(id){
 }
 public show_targets(id){
 	
-	new hud_msg[500];
-	new client_name[128];
+	static hud_msg[500];
+	static client_name[128];
 	get_user_name(id,client_name,127)
 	formatex(hud_msg,500,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
 	for(new i=1;i<=SH_MAXSLOTS;i++){
@@ -499,7 +500,7 @@ public Ester_revenge_loop(id)
 			}
 		}
 		
-		aura(id,{100,100,255,255});
+		aura(id,{100,100,255});
 		damage_to_do[id]+=gEsterDmg[id]
 	}
 	else if(gUnloading[id]){

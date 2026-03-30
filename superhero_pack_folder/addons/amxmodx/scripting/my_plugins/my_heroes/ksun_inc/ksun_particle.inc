@@ -6,7 +6,6 @@
 
 #define KSUN_SPORE_MDL "models/shmod/predgun/preddisc.mdl"
 #define SPORE_WOUND_SFX  "hornet/ag_hornethit1.wav"
-#define SPORE_HEAL_SFX "shmod/ration.wav"
 #define SPORE_TRAVEL_SFX "roach/rch_smash.wav"
 
 
@@ -42,7 +41,7 @@ native get_times_player_spiked_by_player(victim,attacker)
 native inc_times_player_spiked_by_player(victim,attacker)
 native dec_times_player_spiked_by_player(victim,attacker)
 native Float:get_spike_base_damage_debt()
-native bool:heal(id, Float:damage)
+native bool:ksun_heal(id, Float:damage)
 
 native clean_ksun_spores_from_players(dying_or_new_round,everyone,player)
 native ksun_glisten(id)

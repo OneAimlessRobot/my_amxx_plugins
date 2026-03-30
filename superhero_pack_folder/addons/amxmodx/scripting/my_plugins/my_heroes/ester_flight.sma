@@ -297,12 +297,12 @@ public OnCmdStart(id, uc_handle, seed)
 			
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
 				trail(id,COLOR_STRONG,1,10)
-				glow(id,LineColorsWithAlpha[COLOR_STRONG][0],LineColorsWithAlpha[COLOR_STRONG][1],LineColorsWithAlpha[COLOR_STRONG][2],255,1)
+				glow(id,LineColors[COLOR_STRONG][0],LineColors[COLOR_STRONG][1],LineColors[COLOR_STRONG][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			}
 			else{
 				trail(id,COLOR_WEAK,1,10)
-				glow(id,LineColorsWithAlpha[COLOR_WEAK][0],LineColorsWithAlpha[COLOR_WEAK][1],LineColorsWithAlpha[COLOR_WEAK][2],255,1)
+				glow(id,LineColors[COLOR_WEAK][0],LineColors[COLOR_WEAK][1],LineColors[COLOR_WEAK][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 				
 				

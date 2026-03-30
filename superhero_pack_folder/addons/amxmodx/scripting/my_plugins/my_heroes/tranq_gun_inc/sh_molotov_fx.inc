@@ -30,7 +30,7 @@
 
 
 
-stock const molly_color[4]={255, 50, 255,200}
+stock const molly_color[3]={255, 50, 255}
 
 native sh_molly_user(id,attacker,gHeroID)
 native sh_unmolly_user(id)

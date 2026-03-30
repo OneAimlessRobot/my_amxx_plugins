@@ -19,6 +19,7 @@ neo_toggle 0		//Def=0
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"
@@ -85,6 +86,7 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "neo_armor")
 	shSetMinGravity(gHeroName, "neo_gravity")
 	shSetMaxSpeed(gHeroName, "neo_speed", "[0]")
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public neo_init()
@@ -196,7 +198,7 @@ public neo_morph(id)
 	
 	cs_set_user_model(id, "Neo")
 	
-	superhero_protected_hud_message(id, "You are now Neo")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You are now Neo")
 	
 	gmorphed[id] = true
 }
@@ -204,7 +206,7 @@ public neo_morph(id)
 public neo_unmorph(id)
 {
 	if ( gmorphed[id] ) {
-		superhero_protected_hud_message(id, "You arent Neo anymore")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id, "You arent Neo anymore")
 		
 		cs_reset_user_model(id)
 		

@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 #include "../my_include/my_author_header.inc"
@@ -37,6 +38,7 @@ public plugin_init()
 	register_srvcmd("graciete_init", "graciete_init")
 	shRegHeroInit(gHeroName, "graciete_init")
 	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
+	init_hud_syncs()
 	
 	// Add your code here...
 }
@@ -107,7 +109,7 @@ public graciete_morph(id)
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasGraciete[id] ) return
 	
 	// Message
-	superhero_protected_hud_message(id,"Graciete ready.")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Graciete ready.")
 	cs_set_user_model(id, "graciete")
 	
 	gmorphed[id] = true
@@ -129,7 +131,7 @@ public graciete_unmorph(id)
 			set_user_rendering(id)
 		}
 		// Message
-		superhero_protected_hud_message(id,"Mission failed.")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
 	}
 }
 //----------------------------------------------------------------------------------------------

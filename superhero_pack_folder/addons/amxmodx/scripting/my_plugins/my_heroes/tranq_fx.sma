@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -9,6 +10,10 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+stock SLEEP_TASKID,
+		UNSLEEP_TASKID,
+		FULLY_WAKE_UP_TASKID
 
 new bool:gIsAsleep[SH_MAXSLOTS+1]
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
@@ -21,6 +26,9 @@ g_msgFade = get_user_msgid("ScreenFade");
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
 register_event("DeathMsg","on_death_sleeping","a")
+SLEEP_TASKID=allocate_typed_task_id(player_task)
+UNSLEEP_TASKID=allocate_typed_task_id(player_task)
+FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 
 }
 
@@ -28,7 +36,7 @@ public CmdStart(id, uc_handle)
 {
 	if (!sh_is_active()||!client_hittable(id)) return FMRES_IGNORED;
 	
-	new button = get_uc(uc_handle, UC_Buttons);
+	static button; button= get_uc(uc_handle, UC_Buttons);
 	
 	
 	if ( gIsAsleep[id]) {
@@ -122,13 +130,10 @@ fade_screen_user(id){
 }
 public sleep_task(array[],id){
 	id-=SLEEP_TASKID
-
 	if ( !shModActive() ||!client_hittable(id)) return
 	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
 	entity_set_int( id, EV_INT_fixangle, 1);
-	sh_set_stun(id,floatsub(floatmul(SLEEP_PERIOD,float(SLEEP_TIMES)),0.1),0.1)
-	sh_set_rendering(id, sleep_color[0], sleep_color[1], sleep_color[2], sleep_color[3],kRenderFxGlowShell, kRenderTransAlpha)
-	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	set_render_with_color_const(id,BLACK,0,255,255,1,1)
 	
 
 
@@ -137,11 +142,13 @@ sleep_user(id,attacker){
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return 0
 	new array[1]
 	array[0] = attacker
-	fade_screen_user(id)
 	gIsAsleep[id]=true
+	sh_set_stun(id,SLEEP_TIME,0.000001)
+	fade_screen_user(id)
 	entity_get_vector(id, EV_VEC_angles, gKeepAngles[id])
-	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",SLEEP_TIMES)
-	set_task(floatsub(floatmul(SLEEP_PERIOD,float(SLEEP_TIMES)),0.1),"unsleep_task",id+UNSLEEP_TASKID,"", 0,  "a",1)
+	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",SLEEP_TIMES+9)
+	set_task(SLEEP_TIME,"unsleep_task",id+UNSLEEP_TASKID,"", 0,  "a",1)
 	return 0
 
 
@@ -149,30 +156,37 @@ sleep_user(id,attacker){
 }
 public unsleep_task(id){
 	id-=UNSLEEP_TASKID
-	set_user_rendering(id)
-	remove_task(id+SLEEP_TASKID)
+
+	if ( !shModActive() ||!is_user_connected(id)) return
 	unfade_screen_user(id)
-	
-	sh_set_stun(id,0.0)
-	gIsAsleep[id]=false
-	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
-	entity_set_int( id, EV_INT_fixangle, 0);
-	return 0
+	set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,"",0,"a",1)
 
 
 
 }
+public fully_wake_up_task(id){
+	id-=FULLY_WAKE_UP_TASKID
+	if ( !shModActive() ||!is_user_connected(id)) return
+	
+	sh_set_stun(id,0.0)
+	set_user_rendering(id)
+	gIsAsleep[id]=false
+	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
+	entity_set_int( id, EV_INT_fixangle, 0);
+	
 
+
+}
 unsleep_user(id){
 	remove_task(id+UNSLEEP_TASKID)
 	remove_task(id+SLEEP_TASKID)
-	if ( !shModActive() ||!is_user_connected(id)) return 0
+	remove_task(id+FULLY_WAKE_UP_TASKID)
+	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id)
 	sh_set_stun(id,0.0)
 	gIsAsleep[id]=false
 	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
 	entity_set_int( id, EV_INT_fixangle, 0);
-	return 0
 
 
 

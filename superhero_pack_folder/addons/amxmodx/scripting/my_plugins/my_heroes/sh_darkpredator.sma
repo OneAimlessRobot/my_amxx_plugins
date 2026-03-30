@@ -24,6 +24,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -103,7 +104,7 @@ public plugin_init()
 	shRegMaxHealth(gHeroName, "darkpred_maxhealth" )
 	gHealPoints = get_cvar_num("darkpred_healpoints")
 	times_picked=0;
-	
+	init_hud_syncs()
 	// BULLETS FIRED
 	register_event("CurWeapon","darkpred_fire", "be", "1=1", "3>0") 
 }
@@ -194,7 +195,7 @@ public darkpred_morph(id)
 	
 	// Message
 	
-	superhero_protected_hud_message(id, "You now wear your Predator battle armour.")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You now wear your Predator battle armour.")
 	
 	gmorphed[id] = true
 }
@@ -203,7 +204,7 @@ public darkpred_unmorph(id)
 {
 	if ( gmorphed[id] ) {
 		
-		superhero_protected_hud_message(id,  "You are not wearing your Predator battle armour.")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,  "You are not wearing your Predator battle armour.")
 		
 		#if defined AMXX_VERSION
 		//cs_reset_user_model(id)
@@ -450,8 +451,7 @@ public darkpred_fire(id)
 			message_end()			// ..unless i'm mistaken, noparticles helps avoid a crash
 			
 			gBullets[id]--
-			
-			superhero_protected_hud_message(id,"You Have %d bullet(s) left",gBullets[id],255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
+			client_print(id,print_center,"You Have %d bullet(s) left",gBullets[id])
 			
 			if ( gBullets[id] == 0 ) gBullets[id] = -1
 		}

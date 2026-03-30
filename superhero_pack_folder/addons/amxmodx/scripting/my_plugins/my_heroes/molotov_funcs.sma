@@ -278,7 +278,7 @@ vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 new id = Entvars_Get_Edict(id_molly, EV_ENT_owner)
 new origin[3],dist,i
-make_shockwave(vExplodeAt, MOLLY_RADIUS, molly_color)
+make_shockwave(vExplodeAt, MOLLY_RADIUS, molly_color,_,_,_,_,200)
 random_fire(vExplodeAt, id_molly, MOLLY_RADIUS);
 emit_sound(id_molly, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 

@@ -285,7 +285,7 @@ vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 new id = Entvars_Get_Edict(id_chaff, EV_ENT_owner)
 new origin[3],dist,i
-make_shockwave(vExplodeAt,CHAFF_RADIUS,LineColorsWithAlpha[WHITE],1,5,8,4)
+make_shockwave(vExplodeAt,CHAFF_RADIUS,LineColors[WHITE],1,5,8,4)
 anime_kill_fx(vExplodeAt)
 emit_sound(id_chaff, CHAN_WEAPON, CHAFF_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 for ( i = 1; i <= SH_MAXSLOTS; i++) {

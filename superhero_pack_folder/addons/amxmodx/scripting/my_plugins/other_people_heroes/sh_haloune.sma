@@ -25,6 +25,7 @@ sv_maxspeed 500
 #include <fakemeta>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 // GLOBAL VARIABLES
@@ -68,6 +69,7 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "Haloune_armor")
 	shSetMinGravity(HeroName, "Haloune_gravity")
 	shSetMaxSpeed(HeroName, "Haloune_speed", "[0]")
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -224,7 +226,7 @@ public Haloune_morph(id)
 	Haloune_sound(id)
 
 	// Message
-	superhero_protected_hud_message(id, "Haloune Stealth Suit Online")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Haloune Stealth Suit Online")
 
 	HalouneModelSet[id] = true
 }
@@ -233,12 +235,6 @@ Haloune_unmorph(id)
 {
 	if ( HalouneModelSet[id] && is_user_connected(id) )
 	{
-		if ( is_user_alive(id) )
-		{
-			// Message only shows if alive and dropping hero
-			
-			superhero_protected_hud_message(id, "%: you returned to normal self", HeroName)
-		}
 
 		cs_reset_user_model(id)
 

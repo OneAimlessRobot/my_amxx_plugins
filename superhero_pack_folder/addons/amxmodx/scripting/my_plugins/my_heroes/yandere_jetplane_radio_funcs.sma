@@ -141,7 +141,7 @@ launch_scan(id){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 	
-	make_shockwave(iOrigin,jetplane_scan_radius,LineColorsWithAlpha[PINK])
+	make_shockwave(iOrigin,jetplane_scan_radius,LineColors[PINK])
 	
 	new entlist[33];
 	new numfound = find_sphere_class(id,"player", jetplane_scan_radius ,entlist, 32);

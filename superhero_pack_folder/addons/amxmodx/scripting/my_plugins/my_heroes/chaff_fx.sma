@@ -151,7 +151,7 @@ chaff_user(id,attacker){
 	gIsChaffed[id]=true
 	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",CHAFF_TIMES)
 	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,"", 0,  "a",DISORIENT_TIMES)
-	set_task(floatsub(floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),0.1),"unchaff_task",id+UNCHAFF_TASKID,"", 0,  "a",1)
+	set_task(floatsub(CHAFF_TIME,0.1),"unchaff_task",id+UNCHAFF_TASKID,"", 0,  "a",1)
 	return 0
 	
 	

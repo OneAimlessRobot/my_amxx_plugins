@@ -14,6 +14,7 @@ pitch_cooldown 60			//Seconds till next available use of power
 #include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Pitch Black"
@@ -55,6 +56,7 @@ public plugin_init()
 	// NightVision
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public pitch_init()
@@ -179,7 +181,7 @@ public lightsOn()
 	get_players(players, player_num, "ac")
 	for (new i = 0; i < player_num; i++) {
 		id = players[i]
-		superhero_protected_hud_message(id,"Normal Lighting Resotred")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Normal Lighting Resotred")
 		if (NightVisionUse[id]) StopNVG(id)
 	}
 }
@@ -271,7 +273,7 @@ public pitch_loop()
 			continue
 		}
 		else {
-			superhero_protected_hud_message(id,"Pitch Black Mode - Total Darkness")
+			superhero_protected_hud_message(superhero_hud_msg_sync,id,"Pitch Black Mode - Total Darkness")
 			continue
 		}
 	}

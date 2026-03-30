@@ -56,7 +56,7 @@ stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={
 
 }
 
-native sh_bleed_user(id,attacker,fx_bleed_type:bleed_type,gHeroID)
+native sh_bleed_user(id,attacker,fx_bleed_type:bleed_type,gHeroID,heal_user=1)
 
 native do_bleed_knife_attack(id,
           attacker,

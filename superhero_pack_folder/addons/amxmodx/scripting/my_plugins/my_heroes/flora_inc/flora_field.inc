@@ -34,7 +34,6 @@
 #define FLORA_UNCLOAKED_OUT_OF_RANGE_MSG "You left one of your fields. You are no longer cloaked"
 
 #define FLORA_HEAL_GLOW_TIME 3.0
-#define FLORA_UNGLISTEN_TASKID 51237123
 #define FLORA_CHECKS_TASKID 5233378
 
 enum flora_sheltered_values{

@@ -93,7 +93,7 @@ start_allocator(){
 	task_id_to_give=starting_id;
 
 }
-/*print_allocator_state(){
+stock print_allocator_state(){
 
 	server_print("Printing current allocator state!!^n^nAllocator stuff:^nStarting slot: %d (default: %d)^n^n^n",
 					starting_id, default_starting_id)
@@ -109,7 +109,7 @@ start_allocator(){
 					curr_num_of_tasks,prev_task_id_given,task_id_to_give)
 
 }
-*/
+
 public _allocate_typed_task_id(iPlugin,iParams){
 
 	new the_type = get_param(1)
@@ -119,8 +119,6 @@ public _allocate_typed_task_id(iPlugin,iParams){
 
 	task_id_to_give += ((slots_per_task_type[the_type]+1)+(3*stack_ammount))
 	curr_num_of_tasks++;
-
-	//print_allocator_state()
 
 	return prev_task_id_given;
 

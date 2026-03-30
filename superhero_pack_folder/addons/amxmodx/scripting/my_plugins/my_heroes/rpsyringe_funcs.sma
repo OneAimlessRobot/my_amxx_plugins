@@ -1,9 +1,9 @@
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -163,7 +163,7 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	
 	
 	emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	new color[4]
+	new color[3]
 	sh_get_pill_color(rocket_fx[pToucher],id,color)
 	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
 	
@@ -238,9 +238,7 @@ gatling_dec_num_rockets(id)
 
 new fx_num=sh_gen_effect()
 rocket_fx[NewEnt]=fx_num
-new color[4]
-sh_get_pill_color(fx_num,id,color)
-trail_custom(NewEnt,color,30,20)
+trail(NewEnt,FX_COLOR_OFFSET+rocket_fx[NewEnt],30,20)
 Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.50)
 return PLUGIN_HANDLED
 }

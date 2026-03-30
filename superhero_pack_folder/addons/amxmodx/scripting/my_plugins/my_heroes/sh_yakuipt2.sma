@@ -6,6 +6,7 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
@@ -47,6 +48,7 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yakui_init")
 	register_srvcmd("yakui_kd", "yakui_kd")
 	shRegKeyDown(gHeroName, "yakui_kd")
+	init_hud_syncs()
 }
 
 //----------------------------------------------------------------------------------------------
@@ -217,7 +219,7 @@ public yakui_morph(id)
 	cs_set_user_model(id, "yakui")
 	
 	// Message
-	superhero_protected_hud_message(id, "Ready for a trip?")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Ready for a trip?")
 	
 	gmorphed[id] = true
 	
@@ -229,7 +231,7 @@ public yakui_unmorph(id)
 	if(!is_user_connected(id) ) return
 	if ( gmorphed[id] ) {
 		// Message
-		superhero_protected_hud_message(id,  "Hmpf...")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,  "Hmpf...")
 		
 		cs_reset_user_model(id)
 		

@@ -82,6 +82,7 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 #include <fakemeta>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
@@ -161,6 +162,7 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "masterchief_armor")
 	shSetMinGravity(HeroName, "masterchief_gravity")
 	shSetMaxSpeed(HeroName, "masterchief_speed", "[0]")
+	init_hud_syncs()
 
 	#if defined GIVE_WEAPON
 		shSetShieldRestrict(HeroName)
@@ -419,7 +421,7 @@ public masterchief_morph(id)
 
 	masterchief_sound(id)
 
-	superhero_protected_hud_message(id, "Spartan-117 reporting for duty")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Spartan-117 reporting for duty")
 
 	ModelPlayerSet[id] = true
 }
@@ -432,7 +434,7 @@ masterchief_unmorph(id)
 		{
 			// Message only shows if alive and dropping hero
 			
-			superhero_protected_hud_message(id, "masterchief MODE OFF, you returned to normal self")
+			superhero_protected_hud_message(superhero_hud_msg_sync,id, "masterchief MODE OFF, you returned to normal self")
 		}
 
 		cs_reset_user_model(id)

@@ -15,6 +15,7 @@ arcticPredator_explode_maxdamage 250
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
@@ -141,7 +142,7 @@ public arcticPredator_loop(id)
 			new message[128]
 			formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
 			set_user_rendering(id,kRenderFxGlowShell,0,0,0,10,gAlphaInvis)
-			superhero_protected_hud_message( id, message,"",0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
+			client_print(id,print_center,message)
 		}
 		else
 		{

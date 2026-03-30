@@ -330,7 +330,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 		if(sh_clients_are_same_team(i,id)) continue;
 		
 		heal_stream(i, id,PINK)
-		aura(id,LineColorsWithAlpha[PINK])
+		aura(id,LineColors[PINK])
 		add_speed_points(id,damage)
 		result=1
 		
@@ -346,7 +346,8 @@ public sh_round_end(){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!gHasErica[id] ||!shModActive()&&client_hittable(id)) return PLUGIN_CONTINUE
+	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
+	if(!gHasErica[id]) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
@@ -359,7 +360,7 @@ public weaponChange(id)
 	}
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_er_speed[id]) && !sh_get_stun(id) ){
+		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)){
 			set_user_maxspeed(id, g_normal_er_speed[id])
 		}
 	}

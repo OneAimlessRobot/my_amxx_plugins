@@ -77,6 +77,7 @@ public plugin_init()
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
+	init_hud_syncs()
 }
 public plugin_natives(){
 
@@ -257,21 +258,14 @@ bool:heal_teamate(id,i){
 		
 		return false
 	}
-	new Float:mate_health=float(get_user_health(i))
-	if(mate_health>=sh_get_max_hp(i)){
-		return false
-	
-	}
 	new Float:values[2]
 	calculate_healing(id,values)
-	new Float: new_health=floatadd(mate_health,values[0]*points_heal_coeff)
-	set_user_health(i,min(sh_get_max_hp(i),floatround(new_health)))
-	sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
-	setScreenFlash(i,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)
-	remove_glow_user(i,heal_period*2)
-	sh_set_rendering(i, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
-	heal_stream(id,i)
-	return true
+	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,_,INVIS,1,heal_period*2,_,1,0)
+	if(result){
+		sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
+		heal_stream(id,i)
+	}
+	return result
 
 }
 
@@ -311,12 +305,11 @@ for(new p=0;p<num_found;p++){
 }
 if(healed){
 
-	setScreenFlash(id,LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],3,100)	
-	sh_set_rendering(id, LineColors[LTGREEN][0],LineColors[LTGREEN][1],LineColors[LTGREEN][2],maria_alpha,kRenderTransAlpha, kRenderTransAlpha)
+	set_render_with_color_const(id,LTGREEN,1,maria_alpha,100,1)
 	remove_glow_user(id,heal_period)
 	
 }
-make_shockwave(client_origin,g_normal_radius[id],LineColorsWithAlpha[LTGREEN],1,3,2,20)
+make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
 
 }
 public maria_damage(id)
@@ -350,8 +343,8 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if( pev_valid(ent))
 	{
 		if((pev(ent,pev_solid)==SOLID_SLIDEBOX)&&(get_user_team(id)==get_user_team(ent))){
-			new hud_msg[128]
-			new client_name[127]
+			static hud_msg[128]
+			static client_name[127]
 			get_user_name(ent,client_name,127)
 			new client_health=get_user_health(ent)
 			formatex(hud_msg,127,"[SH] %s: HP of %s: %d/%d",gHeroName,client_name,client_health,sh_get_max_hp(ent))

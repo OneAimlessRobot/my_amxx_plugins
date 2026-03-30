@@ -305,7 +305,7 @@ vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 new id = Entvars_Get_Edict(id_sleep_nade, EV_ENT_owner)
 new origin[3],dist,i
-make_shockwave(vExplodeAt, SLEEP_NADE_RADIUS, {180,180,180,120})
+make_shockwave(vExplodeAt, SLEEP_NADE_RADIUS, {180,180,180},_,_,_,_,120)
 emit_sound(id_sleep_nade, CHAN_WEAPON, SLEEP_NADE_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 for ( i = 1; i <= SH_MAXSLOTS; i++) {

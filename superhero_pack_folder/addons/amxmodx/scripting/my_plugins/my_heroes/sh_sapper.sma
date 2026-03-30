@@ -4,6 +4,7 @@
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -46,6 +47,7 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "sapper_kd")
 	register_srvcmd("sapper_ku", "sapper_ku")
 	shRegKeyUp(gHeroName, "sapper_ku")
+	init_hud_syncs()
 }
 
 public plugin_natives(){
@@ -223,7 +225,7 @@ public sapper_morph(id)
 	id-=SAPPER_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasSapper[id] ) return
 	
-	superhero_protected_hud_message(id, "Sapper ready.")
+	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Sapper ready.")
 	cs_set_user_model(id, "sapper")
 	
 	gmorphed[id] = true
@@ -244,7 +246,7 @@ public sapper_unmorph(id)
 			remove_task(id+SAPPER_MORPH_TASKID)
 			set_user_rendering(id)
 		}
-		superhero_protected_hud_message(id,"Mission failed.")
+		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
 	}
 }
 //----------------------------------------------------------------------------------------------

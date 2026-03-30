@@ -59,6 +59,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
+	init_hud_syncs()
 }
 public plugin_natives(){
 
@@ -104,7 +105,7 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,gHasYandere[attacker]);
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,gHasYandere[attacker]&&gSuperAngry[attacker]);
 
 
 
@@ -129,14 +130,12 @@ public yandere_init()
 		gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
 		yandere_model(id)
-		set_task( 1.0, "yandere_warcry", id+YANDERE_CRY_TASKID, "", 0, "b")
 		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 		
 	}
 	else{
 		remove_task(id+YANDERE_ANGER_TASKID)
-		remove_task(id+YANDERE_CRY_TASKID)
 		remove_task(id+YANDERE_STATS_TASKID)
 		killyandere(id,true)
 		yandere_unmorph(id)
@@ -203,10 +202,13 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&yandere_get_has_yan
 		
 		new client_name[128]
 		get_user_name(id,client_name,127)
-		new degen_dmg_2_take= (float(get_user_health(id))>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(get_user_health(id))-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
+		new user_health=get_user_health(id)
+		new degen_dmg_2_take= (float(user_health)>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(user_health)-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
 		if(degen_dmg_2_take>0){
 			new client_origin[3]
 			get_user_origin(id,client_origin)
+			new Float:floatalpha=25.0+floatmax(0.0,floatmin(120.0,255.0*(float(user_health)/float(overheal_hp_max))))
+			sh_screen_fade(id, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
 			sh_extra_damage(id,id,degen_dmg_2_take,"Yandere longing")
 			
 			fx_bleed(client_origin)
@@ -214,7 +216,6 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&yandere_get_has_yan
 					emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
 					sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
 			}
-			sh_screen_fade(id, 0.5, 2.5, LineColorsWithAlpha[RED][0], LineColorsWithAlpha[RED][1], LineColorsWithAlpha[RED][2], 50)
 		}
 	}
 	
@@ -238,53 +239,43 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 
 }
 
-public notify_yanderes_about_team_life(id,alive){
-
-if(!sh_is_active()||!is_user_connected(id)) return
-
+notify_yanderes_about_team_life(id=-1,alive=0,disconnected=0){
+if(!sh_is_active()) return
+if(!disconnected){
+	if(is_user_connected(id)) return
+}
 for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!client_hittable(i)) continue;
 
 	if(!gHasYandere[i]) continue;
-
-	if(!sh_clients_are_same_team(id,i)) continue;
-	
+	if(!(disconnected)&&(id!=i)){
+		if(!sh_clients_are_same_team(id,i)) continue;
+	}
 	if(!is_user_bot(i)){
-		sh_chat_message(i,gHeroID,"%s",!alive? "I feel... heavier":"Wow... I feel lighter")
+		sh_chat_message(i,gHeroID,"%s",(!alive)? "I feel... heavier":"Wow... I feel lighter")
 	}
-
-	g_mates_dead[i]=get_yandere_num(i,0,0)
-	g_mates_alive[i]=get_yandere_num(i,1,0)
-	
-	if(yandere_get_is_super(i)){
-
-		new can_transform= (get_playersnum(0)>=min_players)
-		gSuperAngry[i]= (g_mates_alive[i]<=0)&&can_transform? true:false
-	}
-	else{
-		new can_transform= (get_playersnum(0)>=min_players)
-		gTransTimerStarted[i]= (g_mates_alive[i]<=0)&&can_transform? true:false
-	}
-
+	new mates_alive
+	get_yandere_team_counts(i,mates_alive,g_mates_dead[i])
+	sh_chat_message(i,yandere_get_hero_id(),"Mates alive: %d",mates_alive)
+	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
+	gTransTimerStarted[i]= can_transform
+	sh_chat_message(i,yandere_get_hero_id(),"Mates alive: %d, can transform: %d, timer started: %d",mates_alive,can_transform,gSuperAngry[i],gTransTimerStarted[i])
 	update_stats(i)
 	set_user_maxspeed(i,gNormalSpeed[i])
-	
 }
 
 
 }
-
-
 public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
 
-if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
+if(client_hittable(id)){
+	if(!gHasYandere[id]){
+
+		return
+	}
 	
-	
-	//new iNum = engfunc(EngFunc_NumberOfEntities) // Get's the current Ent's active
-	//new iMax = global_get(glb_maxEntities) // Get's the limit
-	//sh_chat_message(id,yandere_get_hero_id(),"Num of edicts: %d (Max: %d)",iNum,iMax)
 	if(!is_user_bot(id)&&gTransTimerStarted[id]){
 		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 	}
@@ -292,30 +283,11 @@ if(client_hittable(id,gHasYandere[id])&&!sh_is_freezetime()){
 	
 }
 }
-public yandere_warcry(id){
-id-=YANDERE_CRY_TASKID
 
-if(!sh_is_active()||!client_hittable(id)){
-	return
-}
-if(!yandere_get_has_yandere(id)||!yandere_get_is_super(id)){
-	return
-	
-}
-
-if(yandere_get_is_super(id)&&gToPlaySound[id]&&!gPlayedSound[id]&&hasRoundStarted()&&yandere_get_has_yandere(id)){
-	new client_name[128]
-	get_user_name(id,client_name,127)
-	sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
-	emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
-	gToPlaySound[id]=false;
-	gPlayedSound[id]=true
-}
-}
 
 update_stats(id){
 
-	if(!client_hittable(id)||sh_is_freezetime()) return
+	if(!client_hittable(id)) return
 	if(!gHasYandere[id]) return
 	
 	new Float:maxspeed=get_user_maxspeed(id)
@@ -331,6 +303,20 @@ update_stats(id){
 		gNormalSpeed[id]=floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(g_mates_dead[id]))),angry_speed);
 	}
 }
+stock get_yandere_team_counts(id, &alive, &dead)
+{
+	alive = 0
+	dead = 0
+
+	new team = get_user_team(id)
+	for (new i = 1; i <= SH_MAXSLOTS; i++) {
+		if (i == id || !is_user_connected(i)) continue
+		if (get_user_team(i) != team) continue
+
+		if (is_user_alive(i)) alive++
+		else dead++
+	}
+}
 public yandere_timer_transform(id){
 	if(!sh_is_active()||!client_hittable(id)){
 		return
@@ -341,26 +327,12 @@ public yandere_timer_transform(id){
 	}
 	if(yandere_get_is_super(id)){
 
-		gToPlaySound[id]=true;
-		if(!yandere_get_is_super(id)){
-			set_user_gravity(id)
-			
-			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"Demorphing!")
-			}
-			yandere_unmorph(id)
-			yandere_model(id)
-			if(yandere_get_user_is_psychosis(id)){
-				yandere_unpsychosis_user(id)
-			}
-		}
 		new Float:gravity=get_user_gravity(id)
 		set_user_gravity(id,floatmin(angry_gravity,gravity))
 		yandere_update_idle(id)
 	}
 	else{
 		gIdleAngry[id]=false;
-		gToPlaySound[id]=false;
 		if(gTransTimerStarted[id]){
 
 			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
@@ -369,6 +341,13 @@ public yandere_timer_transform(id){
 				gSuperAngry[id]=true
 				update_stats(id)
 				set_user_maxspeed(id,gNormalSpeed[id])
+				if(!gPlayedSound[id]){
+					static client_name[128]
+					get_user_name(id,client_name,127)
+					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
+					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
+					gPlayedSound[id]=true
+				}
 				gTransTimer[id]=trans_time
 			}
 		}
@@ -376,7 +355,7 @@ public yandere_timer_transform(id){
 
 			gTransTimer[id]=trans_time
 		}
-		if(yandere_get_is_super(id)&&client_hittable(id)){
+		if(gSuperAngry[id]&&client_hittable(id)){
 			gTransTimerStarted[id]=false
 			yandere_unmorph(id)
 			yandere_model(id)
@@ -394,10 +373,10 @@ public client_disconnected(id){
 
 
 	remove_task(id+YANDERE_ANGER_TASKID)
-	remove_task(id+YANDERE_CRY_TASKID)
 	remove_task(id+YANDERE_STATS_TASKID)
 	killyandere(id,true)
 	yandere_unmorph(id)
+	notify_yanderes_about_team_life(-1,0,1)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -431,7 +410,7 @@ degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold"
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
-{	if(is_user_alive(id) && shModActive()){ 
+{	if(is_user_alive(id) && shModActive()){
 		notify_yanderes_about_team_life(id,1)
 		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
 		if ( yandere_get_has_yandere(id)) {
@@ -452,7 +431,7 @@ public newRound(id)
 			yandere_model(id)
 		}
 	}
-	return PLUGIN_HANDLED
+	return PLUGIN_CONTINUE
 	
 }
 public yandere_damage(id)
@@ -464,12 +443,12 @@ public yandere_damage(id)
 	new headshot = (bodypart == 1 ? 1 : 0)
 	if ( !client_hittable(attacker)) return PLUGIN_CONTINUE
 	
-	if(!sh_clients_are_same_team(id,attacker)){
+	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return PLUGIN_CONTINUE
 	}
 	if ( gHasYandere[attacker] ) {
 		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
-		if (floatround(extraDamage) > 0){
+		if (floatround(extraDamage) > 0.0){
 			
 			new health = get_user_health(id)
 			if(weapon==YANDERE_WEAPON_CLASSID){
@@ -482,12 +461,9 @@ public yandere_damage(id)
 				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
-				set_render_with_fx_num(attacker,COCAINE)
-				
 				sh_set_stun(id,2.0,0.25)
-				
-				remove_glow_user(attacker,3.0)
-				sh_add_hp(attacker,floatround(extraDamage*angry_hitheal_pct),overheal_hp_max)
+			
+				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*angry_hitheal_pct,overheal_hp_max,RED,1,_,70,1)
 				if(extraDamage>=health){
 					static origin[3];
 					// player fades.. 
@@ -647,15 +623,17 @@ public sh_round_end(){
 	clear_shells()
 	clear_rockets()
 	
-	new total_alive=get_yandere_num(0,1,1)
+	new total_alive,total_dead;
+	get_yandere_team_counts(0,total_alive,total_dead)
 	
-	if(total_alive){
+	if(total_alive>0){
 		return;
 		
 	}
 	new last_alive=get_first_alive()
+	if(!client_hittable(last_alive)) return
 	if(gHasYandere[last_alive]){
-		new client_name[128]
+		static client_name[128]
 		get_user_name(last_alive,client_name,127)
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)
 		
@@ -693,7 +671,6 @@ killyandere(id,bool:dropping=false){
 			for(new i=0;i<=SH_MAXSLOTS;i++){
 				g_is_cursed[i][id]=false;
 			}
-			gSuperAngry[id]=false;
 			if(yandere_get_user_is_psychosis(id)){
 				yandere_unpsychosis_user(id)
 			}
@@ -706,6 +683,7 @@ killyandere(id,bool:dropping=false){
 			set_user_gravity(id)
 			jet_destroy(id);
 		}
+		gSuperAngry[id]=false;
 		
 	}
 	arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
@@ -760,6 +738,7 @@ public yandere_morph(id)
 public _yandere_unmorph(iPlugin,iParams)
 {
 	new id= get_param(1)
+	remove_task(id+YANDERE_MORPH_TASKID)
 	if(!is_user_connected(id)) return
 	if ( gmorphed[id] ) {
 
@@ -768,7 +747,6 @@ public _yandere_unmorph(iPlugin,iParams)
 		gmorphed[id] = false
 
 		if ( teamglow_on ) {
-			remove_task(id+YANDERE_MORPH_TASKID)
 			set_user_rendering(id)
 		}
 	}
@@ -815,7 +793,7 @@ public BlowUp(id)
 			distanceBetween = get_distance(origin, origin1)
 			if(!is_user_bot(a)){
 				if ( distanceBetween < floatround(explode_radius) ) {
-					superhero_protected_hud_message(a,"%s LOST IT!!!!!", name,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+					superhero_protected_hud_message(superhero_hud_msg_sync,a,"The CRAZY ONE! THEY'VE LOST IT!!!!!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 				}
 			}
 		}
@@ -825,7 +803,8 @@ public BlowUp(id)
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||!yandere_get_has_yandere(id) ||!shModActive()) return
+	if ( !client_hittable(id)||!shModActive()) return
+	if(!yandere_get_has_yandere(id)) return
 
 	new  wpnid = get_user_weapon(id)
 

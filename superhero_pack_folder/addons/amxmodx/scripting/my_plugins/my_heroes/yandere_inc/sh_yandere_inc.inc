@@ -2,7 +2,6 @@
 #define YANDERE_MORPH_TASKID 8562
 #define YANDERE_STATS_TASKID 29626
 #define YANDERE_ANGER_TASKID 29333
-#define YANDERE_CRY_TASKID 30333
 #define YANDERE_REMOVE_GLOW_TASKID 30112
 
 #define YANDERE_WEAPON_CLASSID CSW_XM1014
@@ -25,7 +24,7 @@
 
 
 
-#define YANDERE_CYCLE_PERIOD 0.4
+#define YANDERE_CYCLE_PERIOD 0.5
 #define TOUCHING_GROUND (1<<9)
 const FL_INGROUND2=TOUCHING_GROUND
 
@@ -36,7 +35,6 @@ stock const gHeroName[] = "Yandere Mk.II"
 stock bool:gHasYandere[SH_MAXSLOTS+1]
 stock bool:gSuperAngry[SH_MAXSLOTS+1]
 stock bool:gIdleAngry[SH_MAXSLOTS+1]
-stock bool:gToPlaySound[SH_MAXSLOTS+1]
 stock bool:gPlayedSound[SH_MAXSLOTS+1]
 stock gmorphed[SH_MAXSLOTS+1]
 stock bool:g_is_cursed[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -44,7 +42,6 @@ stock Float:gNormalDmgMult[SH_MAXSLOTS+1]
 stock Float:gNormalSpeed[SH_MAXSLOTS+1]
 stock Float:gBaseSpeed[SH_MAXSLOTS+1]
 stock g_prevWeapon[SH_MAXSLOTS+1]
-stock g_mates_alive[SH_MAXSLOTS+1]
 stock g_mates_dead[SH_MAXSLOTS+1]
 
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
