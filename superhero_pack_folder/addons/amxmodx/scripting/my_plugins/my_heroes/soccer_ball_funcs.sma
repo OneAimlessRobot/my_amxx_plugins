@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -16,6 +17,10 @@ new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 new bool:ball_pickable[MAX_ENTITIES]
 new bool:kicked_ball[SH_MAXSLOTS+1]
 new bool:tagged_by_baller[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+
+
+stock BALL_REM_TASKID
+
 public plugin_init(){
 	
 	arrayset(ball_pickable,false,MAX_ENTITIES)
@@ -37,6 +42,8 @@ public plugin_init(){
 		"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
 		"func_illusionary", "func_button", "func_rot_button", "func_rotating"
 	}
+
+	BALL_REM_TASKID=allocate_typed_task_id(entity_task)
 	
 	for( new i; i < sizeof szEntity; i++ )
 		register_touch( BALL_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
@@ -79,45 +86,6 @@ public FwdTouchWorld( Ball, World ) {
 }
 //
 
-//----------------------------------------------------------------------------------------------
-public ball_in_the_face(ball,id,vic)
-{
-	if ( !is_user_alive(id)||!is_user_alive(vic) ) return
-	
-	new parm[5],Float:b_vel[3],Float:b_origin[3]
-	
-	new CsTeams:idTeam = cs_get_user_team(id)
-	
-	Entvars_Get_Vector(ball, EV_VEC_velocity, b_vel)
-	
-	new Float:velocity=vector_length(b_vel)
-	
-	b_vel[0]/=velocity
-	b_vel[1]/=velocity
-	b_vel[2]/=velocity
-	
-	
-	Entvars_Get_Vector(ball, EV_VEC_origin, b_origin)
-	
-	
-	
-	if ( vic != id  && (idTeam != cs_get_user_team(vic)) ) {
-		
-		
-		parm[0] = floatround(b_vel[0]*velocity*BALL_MASS)
-		parm[1] = floatround(b_vel[1]*velocity*BALL_MASS)
-		parm[2] = floatround(b_vel[2]*velocity*BALL_MASS)
-		parm[3] = vic
-		parm[4] = id
-		
-		
-		// First lift them
-		set_pev(vic, pev_velocity, {0.0, 0.0, 200.0})
-		
-		// Then push them back in x seconds after lift and do some damage
-		move_enemy(parm)
-	}
-}
 public vexd_pfntouch(pToucher, pTouched){
 	
 	if (pev_valid(pToucher)!=2){
@@ -128,11 +96,12 @@ public vexd_pfntouch(pToucher, pTouched){
 	if(equal(szClassName, BALL_CLASSNAME))
 	{
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		//new Float:origin[3],dist
 		
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{		
+				new Float:origin[3]
+				entity_get_vector(pTouched,EV_VEC_origin,origin)
 				if(roberto_get_has_roberto(pTouched)&&(pTouched==oid)&&ball_pickable[pToucher] && BALL_RETRIEVE){
 					
 					roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
@@ -148,7 +117,7 @@ public vexd_pfntouch(pToucher, pTouched){
 					if(!tagged_by_baller[oid][pTouched]){
 						ball_pickable[pToucher]=true
 						tagged_by_baller[oid][pTouched]=true
-						ball_in_the_face(pToucher,oid,pTouched)
+						set_velocity_from_origin(pTouched,origin,BALL_KNOCKBACK)
 						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 						sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 						set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)

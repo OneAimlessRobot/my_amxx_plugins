@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
@@ -25,6 +26,8 @@ Float:jetplane_law_rocketspeed,
 Float:jetplane_law_dmg;
 stock Float:law_think_period
 new jetplane_law_ammo;
+
+stock ROCKET_RELOAD_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,7 +43,7 @@ public plugin_init()
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "law_think")
 
-
+	ROCKET_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
 }
 public plugin_cfg(){
@@ -173,10 +176,24 @@ public _spawn_jetplane_law(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!hasRoundStarted()||!client_hittable(id)) return FMRES_IGNORED;
-	
+	if(!hasRoundStarted()){
+
+		return FMRES_IGNORED
+	}
+	if(!client_hittable(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!yandere_get_has_yandere(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!jet_deployed(id)){
+		return FMRES_IGNORED
+	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
@@ -187,7 +204,7 @@ public CmdStart(id, uc_handle)
 			{
 				button &= ~IN_ALT1;
 				set_uc(uc_handle, UC_Buttons, button);
-				if( !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
+				if(has_rocket[id]) return FMRES_IGNORED
 				if(!get_user_jet_rockets(id))
 				{
 					client_print(id, print_center, "You are out of rockets!")
@@ -259,9 +276,9 @@ Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 has_rocket[id] = NewEnt
 set_user_jet_rockets(id,get_user_jet_rockets(id)-1)
 set_task(ROCKET_SHOOT_PERIOD,"rocket_reload",id+ROCKET_RELOAD_TASKID,"",0,"a",1)
-new parm[1]
-parm[0]=NewEnt
-set_task(0.01, "rockettrail",id,parm,1)
+
+trail(NewEnt,PINK,10,5)
+
 emit_sound(get_user_law(id), CHAN_VOICE, JETPLANE_LAW_FIRE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 return PLUGIN_HANDLED
 }
@@ -271,16 +288,6 @@ public rocket_reload(id)
 id-=ROCKET_RELOAD_TASKID
 has_rocket[id] = 0
 }
-public rockettrail(parm[])
-{
-new pid = parm[0]
-if (pid)
-{
-
-trail(pid,PINK,10,5)
-}
-}
-
 public vexd_pfntouch(pToucher, pTouched) {
 
 if (pev_valid(pToucher)!=2){
@@ -325,8 +332,8 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 			RemoveEntity(pTouched)
 		}
 	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
-	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME,_,default_explode_upward_shift)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude)
+	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME)
 	RemoveEntity(pToucher)
 }
 }
@@ -434,7 +441,11 @@ public _clear_rockets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, JETPLANE_ROCKET_CLASSNAME)
 while(grenada) {
-	remove_task(grenada+ROCKET_RELOAD_TASKID);
+	new owner=Entvars_Get_Edict(grenada, EV_ENT_owner)
+	if(pev_valid(owner)==2){
+
+		remove_task(owner+ROCKET_RELOAD_TASKID);
+	}
 	remove_rocket(grenada)
 	grenada = find_ent_by_class(grenada, JETPLANE_ROCKET_CLASSNAME)
 }

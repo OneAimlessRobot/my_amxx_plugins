@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
@@ -19,7 +20,14 @@ new bool:molly_loaded[SH_MAXSLOTS+1]
 new bool:molly_armed[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 
+
 new Float:min_charge_time,Float:max_charge_time
+
+
+stock MOLLY_REM_TASKID,
+		MOLLY_CHARGE_TASKID,
+		UNMOLLY_CHARGE_TASKID
+
 public plugin_init(){
 	
 	
@@ -32,6 +40,10 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("erica_molly_max_charge_time", "5.0")
 	register_cvar("erica_molly_min_charge_time", "1.0")
+
+	MOLLY_REM_TASKID=allocate_typed_task_id(entity_task)
+	MOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	UNMOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
@@ -234,11 +246,8 @@ if(erica_get_num_mollies(id) == 0)
 	sh_drop_weapon(id,MOLLY_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-new parm[1]
-parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, MOLLY_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(0.01, "mollytrail",id,parm,1)
-//set_task(MOLLY_SHOOT_PERIOD, "blow_molly_up",Ent+MOLLY_BLAST_TASKID,"",0)
+trail(Ent,WHITE,10,5)
 
 return PLUGIN_CONTINUE
 }
@@ -252,16 +261,9 @@ if((wid==MOLLY_CLASSID)&&erica_get_num_mollies(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, MOLLY_V_MODEL)
 }
 }
-public mollytrail(parm[])
-{
-new pid = parm[0]
-
-trail(pid,WHITE,10,5)
-}
-
 
 public blow_molly_up(id_molly){
-id_molly-=MOLLY_BLAST_TASKID
+
 
 if ( !is_valid_ent(id_molly) ) return
 
@@ -313,7 +315,7 @@ if(equal(szClassName,MOLLY_CLASSNAME))
 {
 	if(pev(pTouched,pev_solid)==SOLID_BSP){
 		emit_sound(pToucher, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		blow_molly_up(pToucher+MOLLY_BLAST_TASKID)
+		blow_molly_up(pToucher)
 	}
 }
 }

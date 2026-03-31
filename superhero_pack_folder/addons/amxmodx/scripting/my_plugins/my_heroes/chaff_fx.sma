@@ -2,13 +2,14 @@
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 
 #define PLUGIN "Superhero chaff fx"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new g_msgFade
 
 new CHAFF_TASKID
 new UNCHAFF_TASKID
@@ -19,7 +20,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsChaffed,false,SH_MAXSLOTS+1)
-	g_msgFade = get_user_msgid("ScreenFade");
 	CHAFF_TASKID=allocate_typed_task_id(player_task)
 	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
@@ -109,30 +109,6 @@ public _sh_unchaff_user(iPlugin,iParams){
 	
 	
 }
-fade_screen_user(id){
-	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
-	write_short(1<<12); // fade lasts this long duration 
-	write_short(0); // fade lasts this long hold time 
-	write_short(FADE_HOLD); // fade type 
-	write_byte( chaff_color[0] )
-	write_byte( chaff_color[1] )
-	write_byte( chaff_color[2] )
-	write_byte( chaff_color[3 ]); // fade alpha  
-	message_end(); 
-	
-}
-unfade_screen_user(id){
-	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client"  
-	write_short(1<<12); // fade lasts this long duration  
-	write_short(1<<8); // fade lasts this long hold time  
-	write_short(FADE_OUT); // fade type
-	write_byte( chaff_color[0])
-	write_byte( chaff_color[1] )
-	write_byte( chaff_color[2] )
-	write_byte( chaff_color[3] ) 
-	message_end();	
-	
-}
 public chaff_task(array[],id){
 	id-=CHAFF_TASKID
 	
@@ -191,7 +167,7 @@ public on_death_chaffed()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		sh_unchaff_user(id)
 	
 	}

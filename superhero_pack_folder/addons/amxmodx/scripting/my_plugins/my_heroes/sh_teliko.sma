@@ -1,5 +1,3 @@
-
-
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

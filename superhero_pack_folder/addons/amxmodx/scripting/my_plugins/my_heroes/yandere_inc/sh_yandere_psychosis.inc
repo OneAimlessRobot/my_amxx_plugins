@@ -10,8 +10,6 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 	
 }
 
-#define YANDERE_PSYCHOSIS_TASKID 3026
-#define UNPSYCHOSIS_TASKID 1122
 #define PSYCHOSIS_PERIOD 1.0
 #define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
 

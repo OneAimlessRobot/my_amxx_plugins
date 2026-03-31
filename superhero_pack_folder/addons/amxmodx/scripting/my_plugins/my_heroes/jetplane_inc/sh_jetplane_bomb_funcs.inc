@@ -7,7 +7,6 @@
 
 #define BOMB_DROP_PERIOD 20.0
 
-#define BOMB_RELOAD_TASKID 2912922
 
 #define BOMB_RADIUS 500.0
 

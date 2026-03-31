@@ -293,6 +293,11 @@ public _reset_user_fuel_ammount(iPlugins,iParams){
 }
 public OnCmdStart(id,uc_handle)
 {
+
+	if(!!hasRoundStarted()){
+
+		return FMRES_IGNORED
+	}
 	if(!client_hittable(id)){
 			
 		return FMRES_IGNORED
@@ -306,6 +311,8 @@ public OnCmdStart(id,uc_handle)
 	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
+	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new old_button= pev(id,pev_oldbuttons);
 	if((button & IN_RELOAD)&&!(old_button & IN_RELOAD)){

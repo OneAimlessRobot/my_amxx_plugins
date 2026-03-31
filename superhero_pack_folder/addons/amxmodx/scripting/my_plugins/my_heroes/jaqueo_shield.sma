@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -24,6 +25,13 @@ new g_normal_ptr[SH_MAXSLOTS+1]
 new Float:shield_cooldown
 new Float:shield_radius
 new Float:shield_max_hp
+
+
+
+stock	JAQUEO_LOAD_TASKID,
+		JAQUEO_CHARGE_TASKID,
+		JAQUEO_DEPLOY_TASKID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -43,6 +51,9 @@ public plugin_init()
 	register_forward(FM_Think, "shield_think")
 	//register_forward(FM_Touch, "shield_touch")
 	RegisterHam(Ham_TakeDamage,"player","Shield_Damage",_,true)
+	JAQUEO_LOAD_TASKID=allocate_typed_task_id(player_task)
+	JAQUEO_DEPLOY_TASKID=allocate_typed_task_id(player_task)
+	JAQUEO_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	
 	// Add your code here...
 }
@@ -355,6 +366,11 @@ public shield_think(ent)
 public _shield_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
+
+	if(!client_hittable(id)) return
+
+	if(!jaqueo_get_has_jaqueo(id)) return
+
 	if(!g_jaqueo_shield_loaded[id]){
 		
 		if(!is_user_bot(id)){
@@ -362,6 +378,9 @@ public _shield_charge_user(iPlugin, iParams){
 		}
 		return
 	}
+	new Float: Origin[3]
+	
+	entity_get_vector(id, EV_VEC_origin , Origin)
 	g_jaqueo_shield_loaded[id]=0
 	
 	new material[128]
@@ -372,6 +391,7 @@ public _shield_charge_user(iPlugin, iParams){
 		
 		return
 	}
+	
 	set_pev(NewEnt, pev_classname, JAQUEO_SHIELD_CLASSNAME)
 	engfunc(EngFunc_SetModel, NewEnt, shield_mdl)
 	float_to_str(1000.0,health,127)
@@ -400,7 +420,9 @@ public _shield_charge_user(iPlugin, iParams){
 	new alpha=100
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jaqueo_shield[id],pev_iuser2,id)
-	//set_pev(g_jaqueo_shield[id],pev_owner,id)
+
+	ENT_SetOrigin(g_jaqueo_shield[id], Origin)
+
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jaqueo_shield[id]

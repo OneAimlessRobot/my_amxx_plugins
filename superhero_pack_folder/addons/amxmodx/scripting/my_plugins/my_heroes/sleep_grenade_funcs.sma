@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -19,6 +20,14 @@ new bool:sleep_nade_armed[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
+
+
+stock SLEEP_NADE_REM_TASKID,
+		SLEEP_NADE_BLAST_TASKID,
+		SLEEP_NADE_CHARGE_TASKID,
+		UNSLEEP_NADE_CHARGE_TASKID
+
+
 public plugin_init(){
 	
 	
@@ -31,6 +40,10 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("ksun_sleep_nade_max_charge_time", "5.0")
 	register_cvar("ksun_sleep_nade_min_charge_time", "1.0")
+	SLEEP_NADE_REM_TASKID=allocate_typed_task_id(entity_task)
+	SLEEP_NADE_BLAST_TASKID=allocate_typed_task_id(entity_task)
+	SLEEP_NADE_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	SLEEP_NADE_REM_TASKID=allocate_typed_task_id(entity_task)
 }
 
 public plugin_natives(){
@@ -259,14 +272,12 @@ if(ksun_get_num_sleep_nades(id) == 0)
 	sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-new parm[1]
-parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, SLEEP_NADE_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 if(!is_user_bot(id)){
 	sh_chat_message(id, spores_ksun_hero_id(),"Ohh! My god, darling! You are amazing... Thank you so much for this [forehead kiss]")
 }
-set_task(0.01, "sleep_nade_trail",id,parm,1)
+trail(Ent,WHITE,10,5)
 
 return PLUGIN_CONTINUE
 }
@@ -279,11 +290,6 @@ new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
 if((wid==SLEEP_NADE_CLASSID)&&ksun_get_num_sleep_nades(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, SLEEP_NADE_V_MODEL)
 }
-}
-public sleep_nade_trail(parm[])
-{
-new pid = parm[0]
-trail(pid,WHITE,10,5)
 }
 
 

@@ -1,5 +1,5 @@
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "ksun_inc/ksun_global.inc"
@@ -29,6 +29,8 @@ new g_player_supply_amount[SH_MAXSLOTS+1]
 
 new g_player_in_ultimate[SH_MAXSLOTS+1]
 
+stock KSUN_ULTIMATE_TASKID,
+		UNKSUN_ULTIMATE_TASKID
 
 
 public plugin_init()
@@ -43,9 +45,12 @@ public plugin_init()
 	register_cvar("ksun_supply_capacity", "1000" )
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook",_,true)
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
+
+	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
+	UNKSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
 	
 	
-	new wpnName[32]
+	static wpnName[32]
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 	{
 		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
@@ -186,7 +191,6 @@ public _ksun_get_player_supply_points(iPlugins, iParams){
 public _ksun_player_is_in_ultimate(iPlugins, iParams){
 	
 	new id= get_param(1)
-	
 	return g_player_in_ultimate[id]
 	
 	

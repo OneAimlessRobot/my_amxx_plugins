@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -23,6 +24,11 @@ stock Float:mg_think_period
 new shell_loaded[SH_MAXSLOTS+1]
 new user_mg[SH_MAXSLOTS+1]
 new jetplane_mg_ammo;
+
+
+stock MG_SHELL_RELOAD_TASKID
+
+
 public plugin_init(){
 	
 	
@@ -35,6 +41,8 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "mg_think")
+
+	MG_SHELL_RELOAD_TASKID=allocate_typed_task_id(player_task)
 	
 }
 
@@ -165,10 +173,24 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!hasRoundStarted()||!client_hittable(id)) return FMRES_IGNORED;
-	
+	if(!hasRoundStarted()){
+
+		return FMRES_IGNORED
+	}
+	if(!client_hittable(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!yandere_get_has_yandere(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!jet_deployed(id)){
+		return FMRES_IGNORED
+	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
@@ -178,7 +200,7 @@ public CmdStart(id, uc_handle)
 			{
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
-				if(!(is_user_alive(id))||!shell_loaded[id]) return FMRES_IGNORED
+				if(!shell_loaded[id]) return FMRES_IGNORED
 				if(!get_user_jet_shells(id))
 				{
 					client_print(id, print_center, "You are out of shells")
@@ -315,10 +337,8 @@ launch_shell(id)
 	set_task(MG_SHELL_PERIOD,"shell_reload",id+MG_SHELL_RELOAD_TASKID,parm,1,"a",1)
 	
 	
-	new parm1[1]
-	parm1[0] = Ent
 	emit_sound(id, CHAN_WEAPON, MACHINE_GUN_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(0.01, "shelltrail",id,parm1,1)
+	trail(Ent,PINK,10,2)
 	
 	return PLUGIN_CONTINUE
 }
@@ -327,14 +347,6 @@ public shell_reload(parm[],id)
 {
 	id-=MG_SHELL_RELOAD_TASKID
 	shell_loaded[parm[0]] = true
-}
-public shelltrail(parm[])
-{
-	new pid = parm[0]
-	if (pid)
-	{
-		trail(pid,PINK,10,2)
-	}
 }
 
 

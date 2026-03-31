@@ -7,7 +7,6 @@ stock const BALL_BOUNCE_GROUND[ ] = "kickball/bounce.wav";
 stock const g_szBallModel[ ]     = "models/kickball/ball.mdl";
 stock ballcolor[3] = { 255,200,100 }
 
-//new kicked[] = "shmod/roberto_carlos/kickball/kicked.wav"
 stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
 stock gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
 
@@ -21,9 +20,8 @@ stock ballbeam[3] = { 20,50,255 }
 
 #define BALL_DMG 100
 
-#define BALL_REM_TASKID 11123
 
-#define BALL_CURVE_TASKID 19923
+#define BALL_KNOCKBACK 1500.0
 
 #define AVG_FACTOR 3
 

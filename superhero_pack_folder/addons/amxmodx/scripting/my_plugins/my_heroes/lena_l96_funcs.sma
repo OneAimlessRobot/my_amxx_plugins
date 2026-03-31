@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -25,6 +26,9 @@ new dmg_headshot_mult,
 new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="L96A1"
 new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
 new custom_dmg_id_l96
+
+
+stock LENA_PROJECTILE_RELOAD_TASKID
 
 //new HamHook:TakeDamage
 public plugin_init(){
@@ -54,9 +58,45 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
-	
+	LENA_PROJECTILE_RELOAD_TASKID=allocate_typed_task_id(player_task)
+
+	register_forward(FM_Think, "bulette_thinque")
+
+
 }
 
+public bulette_thinque(ent){
+
+
+	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	
+	static classname[32]
+	classname[0] = '^0'
+	pev(ent, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, LENA_PROJECTILE_CLASSNAME) ) return FMRES_IGNORED
+	new owner=entity_get_edict(ent, EV_ENT_owner)
+
+	if(!client_hittable(owner)){
+
+		remove_bullet(ent)	
+		return FMRES_IGNORED
+	}
+
+
+	new parm[2]
+	parm[0] = ent
+	parm[1] = owner
+	
+	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
+	
+
+	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
+
+	return FMRES_IGNORED
+
+
+}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -122,7 +162,6 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	return HAM_SUPERCEDE
 	
 }
-
 public fw_Item_PostFrame(ent)
 {
 	if(pev_valid(ent) != 2){
@@ -296,7 +335,7 @@ launch_bullet(id)
 
 if(client_isnt_hitter(id)){
 		
-	return PLUGIN_CONTINUE
+	return
 }
 entity_set_int(id, EV_INT_weaponanim, 3)
 
@@ -309,7 +348,7 @@ entity_get_vector(id, EV_VEC_v_angle, vAngle)
 Ent = create_entity("info_target")
 
 if (!Ent){
-	return PLUGIN_HANDLED
+	return
 }
 entity_set_string(Ent, EV_SZ_classname, LENA_PROJECTILE_CLASSNAME)
 entity_set_model(Ent, "models/shell.mdl")
@@ -353,47 +392,28 @@ sh_chat_message(id, lena_get_hero_id(),"%d l96 bullets left",lena_l96_get_num_bu
 bullet_launch_pos[Ent][0]=Origin[0]
 bullet_launch_pos[Ent][1]=Origin[1]
 bullet_launch_pos[Ent][2]=Origin[2]
-new parm[2]
+
 new parm2[1]
 
 parm2[0]= id
-parm[0] = Ent
-parm[1] = id
 emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+new origin_int[3]
+FVecIVec(bullet_launch_pos[Ent],origin_int)
+make_shockwave(origin_int,100.0,{255, 255, 255},5,30,3,_,150)
 
-set_task(LENA_PROJECTILE_SHOOT_PERIOD, "bullet_reload",id,parm2,1,"a",1)
-set_task(0.01, "bullettrail",Ent+LENA_PROJECTILE_TRAIL_TASKID,parm,2)
+trail(Ent,YELLOW,3,10)
 
-set_task(LENA_PROJECTILE_PHYS_UPDATE_TIME, "bulletspeed",Ent+LENA_PROJECTILE_SPEED_TASKID,parm,2,"b")
+set_task(LENA_PROJECTILE_SHOOT_PERIOD, "bullet_reload",id+LENA_PROJECTILE_RELOAD_TASKID,parm2,1,"a",1)
 
-return PLUGIN_CONTINUE
+entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
+
 }
 
-public bullet_reload(parm[])
+public bullet_reload(parm[],id)
 {
+id-=LENA_PROJECTILE_RELOAD_TASKID
 
 bullet_loaded[parm[0]] = true
-}
-
-public bullettrail(parm[])
-{
-new pid = parm[0]
-if (!is_valid_ent(pid))
-{
-    return
-}
-trail(pid,YELLOW,3,5)
-	
-}
-public bulletspeed(parm[])
-{
-	new pid = parm[0]
-	if (!is_valid_ent(pid))
-	{
-		return
-	}
-	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
-	
 }
 
 
@@ -470,7 +490,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
 					sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
-					
+					set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
 					if(!is_user_bot(oid)){
 						sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 					}
@@ -545,8 +565,6 @@ public vexd_pfntouch(pToucher, pTouched)
 	}
 }
 public remove_bullet(id_bullet){
-	remove_task(id_bullet+LENA_PROJECTILE_TRAIL_TASKID);
-	remove_task(id_bullet+LENA_PROJECTILE_SPEED_TASKID);
 	if(is_valid_ent(id_bullet)){
 		remove_entity(id_bullet)
 	}

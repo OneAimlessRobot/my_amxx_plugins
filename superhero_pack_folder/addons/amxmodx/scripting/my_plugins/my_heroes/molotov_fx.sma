@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
@@ -10,6 +11,12 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+stock MOLLY_TASKID,
+		UNMOLLY_TASKID,
+		BURN_TASKID_MAIN,
+		BURN_TASKID_SOUND,
+		BURN_TASKID_SCREAMS,
+		BURN_TASKID_STOP_SOUND
 
 new bool:gIsBurning[SH_MAXSLOTS+1]
 public plugin_init(){
@@ -19,6 +26,12 @@ public plugin_init(){
 	arrayset(gIsBurning,false,SH_MAXSLOTS+1)
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	register_event("DeathMsg","on_death_burning","a")
+	MOLLY_TASKID=allocate_typed_task_id(player_task)
+	UNMOLLY_TASKID=allocate_typed_task_id(player_task)
+	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
+	BURN_TASKID_SOUND=allocate_typed_task_id(player_task)
+	BURN_TASKID_SCREAMS=allocate_typed_task_id(player_task)
+	BURN_TASKID_STOP_SOUND=allocate_typed_task_id(player_task)
 	
 }
 public plugin_precache(){
@@ -34,13 +47,11 @@ public plugin_natives(){
 }
 public burn_task(array[],id)
 {
-	id-=BURN_TASKID
+	id-=BURN_TASKID_MAIN
 	
 	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return PLUGIN_CONTINUE
-	sh_screen_fade(id, 0.1, 0.9, molly_color[0], molly_color[1], molly_color[2], 50)
-	sh_set_rendering(id,  molly_color[0], molly_color[1], molly_color[2],255,kRenderFxGlowShell, kRenderTransAlpha)
-	sh_screen_fade(array[0], 0.1, 0.9, molly_color[0], molly_color[1], molly_color[2], 50)
 	
+	set_render_with_color_const(id,PINK,1,50,50,1,1)
 	make_fire(id,30.0)
 	new origin[3],dist,i,burned_origin[3]
 	get_user_origin(id,burned_origin)
@@ -105,7 +116,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 //----------------------------------------------------------------------------------------------
 public fire_scream(id)
 {
-	id-=BURN_TASKID+2
+	id-=BURN_TASKID_SCREAMS
 	if(!is_user_connected(id)) return
 
 	emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -113,9 +124,8 @@ public fire_scream(id)
 //----------------------------------------------------------------------------------------------
 public stop_fire_sound(id)
 {
-	id-=BURN_TASKID+3
+	id-=BURN_TASKID_STOP_SOUND
 	if(!is_user_connected(id)) return
-	gIsBurning[id] = false
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 }
 public _sh_molly_user(iPlugin,iParams){
@@ -169,48 +179,48 @@ stock burn_user(id,attacker){
 	new array[1]
 	array[0] = attacker
 	gIsBurning[id]=true
-	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID,array, sizeof(array), "a",BURN_TIMES)
-	set_task(BURN_PERIOD, "fire_sound", id+BURN_TASKID+1, "", 0,  "a", BURN_TIMES);
-	set_task(0.7, "fire_scream", id+BURN_TASKID+2)
-	set_task(5.5, "stop_fire_sound", id+BURN_TASKID+3)
-	set_task(floatsub(floatmul(BURN_PERIOD,float(BURN_TIMES)),0.1),"unburn_task",id+UNMOLLY_TASKID,"", 0,  "a",1)
-	return 0
+	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array), "a",BURN_TIMES)
+	set_task(BURN_PERIOD, "fire_sound", id+BURN_TASKID_SOUND, "", 0,  "a", BURN_TIMES);
+	set_task(0.7, "fire_scream", id+BURN_TASKID_SCREAMS)
+	set_task(5.5, "stop_fire_sound", id+BURN_TASKID_STOP_SOUND)
+	set_task(floatsub(BURN_TIME,0.1),"unburn_task",id+UNMOLLY_TASKID,"", 0,  "a",1)
+	return
 	
 	
 	
 }
 // Make fire sounds
 public fire_sound(id) {
-	id-=BURN_TASKID+1
+	id-=BURN_TASKID_SOUND
 	emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 }
 
 public unburn_task(id){
 	id-=UNMOLLY_TASKID
+	remove_task(id+BURN_TASKID_MAIN)
+	remove_task(id+BURN_TASKID_SOUND)
+	remove_task(id+BURN_TASKID_SCREAMS)
+	remove_task(id+BURN_TASKID_STOP_SOUND)
+	if ( !shModActive() ||!is_user_connected(id)) return
+	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	set_user_rendering(id)
-	remove_task(id+BURN_TASKID)
-	remove_task(id+BURN_TASKID+1)
-	remove_task(id+BURN_TASKID+2)
-	remove_task(id+BURN_TASKID+3)
 	unfade_screen_user(id)
 	
 	gIsBurning[id]=false
-	return 0
 	
 	
 	
 }
 
 unburn_user(id){
-	remove_task(id+UNMOLLY_TASKID)
-	set_user_rendering(id)
-	remove_task(id+BURN_TASKID)
-	remove_task(id+BURN_TASKID+1)
-	remove_task(id+BURN_TASKID+2)
-	remove_task(id+BURN_TASKID+3)
+	remove_task(id+BURN_TASKID_MAIN)
+	remove_task(id+BURN_TASKID_SOUND)
+	remove_task(id+BURN_TASKID_SCREAMS)
+	if ( !shModActive() ||!is_user_connected(id)) return
+	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)
+	set_user_rendering(id)
 	gIsBurning[id]=false
-	return 0
 	
 	
 	
@@ -220,7 +230,7 @@ public on_death_burning()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		sh_unmolly_user(id)
 	
 	}

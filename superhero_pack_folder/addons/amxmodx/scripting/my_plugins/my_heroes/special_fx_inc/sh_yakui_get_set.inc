@@ -7,8 +7,6 @@
 #define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
 #define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
 
-#define YAKUI_MORPH_TASKID 127186
-
 
 native gatling_set_num_pills(id,value_to_set)
 native gatling_get_num_pills(id)

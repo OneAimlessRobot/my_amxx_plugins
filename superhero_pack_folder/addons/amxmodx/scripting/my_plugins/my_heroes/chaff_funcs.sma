@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
@@ -20,6 +21,12 @@ new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
 
+
+stock CHAFF_REM_TASKID,
+		CHAFF_BLAST_TASKID,
+		CHAFF_CHARGE_TASKID,
+		UNCHAFF_CHARGE_TASKID
+
 public plugin_init(){
 	
 	
@@ -31,6 +38,10 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("teliko_chaff_max_charge_time", "5.0")
 	register_cvar("teliko_chaff_min_charge_time", "1.0")
+	CHAFF_REM_TASKID=allocate_typed_task_id(entity_task)
+	CHAFF_BLAST_TASKID=allocate_typed_task_id(entity_task)
+	CHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	UNCHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
@@ -244,10 +255,8 @@ if(teliko_get_num_chaffs(id) == 0)
 	sh_drop_weapon(id,CHAFF_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-new parm[1]
-parm[0] = Ent
 emit_sound(id, CHAN_WEAPON, CHAFF_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(0.01, "chafftrail",id,parm,1)
+trail(Ent,WHITE,10,5)
 set_task(CHAFF_SHOOT_PERIOD, "blow_chaff_up",Ent+CHAFF_BLAST_TASKID,"",0)
 
 return PLUGIN_CONTINUE
@@ -262,11 +271,8 @@ if((wid==CHAFF_CLASSID)&&teliko_get_num_chaffs(parm[0])){
 entity_set_string(parm[0], EV_SZ_viewmodel, CHAFF_V_MODEL)
 }
 }
-public chafftrail(parm[])
-{
-new pid = parm[0]
-trail(pid,WHITE,10,5)
-}
+
+
 public blow_chaff_up(id_chaff){
 id_chaff-=CHAFF_BLAST_TASKID
 

@@ -15,7 +15,7 @@ stock Float:total_weight=0.0;
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+#define rarity_function_to_use prepare_rarities_l1
 const fPainShock = 108
 
 
@@ -23,10 +23,10 @@ new gLastWeapon[SH_MAXSLOTS+1]
 new g_last_weapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
 
-prepare_rarities(){
+stock prepare_rarities_l2(){
 
 
-server_print("Pill gatling fx! Preparing rarity fx weights!^n")
+server_print("Pill gatling fx! Preparing l2 rarity fx weights!^n")
 
 for(new i=0;i<_:NUM_FX;i++){
 
@@ -34,14 +34,44 @@ for(new i=0;i<_:NUM_FX;i++){
 	total_weight+=(fx_rarity_weights[i]*fx_rarity_weights[i])
 }
 total_weight=floatsqroot(total_weight)
-server_print("The norm of the weight array is: ^"%0.5f^"^n^n",total_weight)
+server_print("The norm of the l2 weight array is: ^"%0.5f^"^n^n",total_weight)
+
+build_rarity_array()
+
+}
+
+stock prepare_rarities_l1(){
+
+
+server_print("Pill gatling fx! Preparing l1 rarity fx weights!^n")
+
 for(new i=0;i<_:NUM_FX;i++){
 
 
-	fx_rarities[i]=(fx_rarity_weights[i]/total_weight);
+	total_weight+=(fx_rarity_weights[i])
 }
 
+server_print("The sum of the l1 array is: ^"%0.5f^"^n^n",total_weight)
+
+build_rarity_array()
+
 }
+
+build_rarity_array(){
+
+
+	static Float:the_cummulative=0.0,
+			Float:this_weight=0.0;
+	for(new i=0;i<_:NUM_FX;i++){
+
+		this_weight=(fx_rarity_weights[i]/total_weight);
+		the_cummulative+=this_weight
+		fx_rarities[i]=the_cummulative
+	}
+	SortFloats(fx_rarities,_:NUM_FX,Sort_Ascending)
+
+}
+
 
 print_rarities(){
 
@@ -96,7 +126,7 @@ for(new i=_:GLOW;i<_:NUM_FX;i++){
 	}
 }
 
-prepare_rarities()
+rarity_function_to_use()
 print_rarities()
 
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 

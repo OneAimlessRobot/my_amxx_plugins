@@ -164,7 +164,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 		if(!sh_clients_are_same_team(i,id)) continue;
 
 		if(gHasAdriano[i]){
-			heal_stream(i, id,YELLOW)
+			heal_stream(i, id,YELLOW,200)
 			aura(i,LineColors[YELLOW])
 			add_speed_points(i,damage,true)
 		}

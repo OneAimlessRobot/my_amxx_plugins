@@ -1,16 +1,13 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
-#define KOMAK_HITZONE_TASKID 13321
-#define KOMAK_STATS_TASKID 14001
-#define KOMAK_HUD_TASKID 14221
-#define KOMAK_REPAIR_TASKID 17221
 //https://forums.alliedmods.net/showthread.php?p=777018#post777018
 
 #define KOMAK_MISSED_SHOT "shmod/komak/missed_shot.wav"
@@ -61,6 +58,9 @@ new Float:gear_ratio
 new hud_sync
 
 
+stock KOMAK_HUD_TASKID,
+	KOMAK_REPAIR_TASKID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -95,7 +95,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "komak_ku")
 	
 	
-	new wpnName[32]
+	static wpnName[32]
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 	{
 		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
@@ -103,6 +103,10 @@ public plugin_init()
 			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
+
+	
+	KOMAK_HUD_TASKID=allocate_typed_task_id(player_task)
+	KOMAK_REPAIR_TASKID=allocate_typed_task_id(player_task)
 }
 
 
@@ -133,14 +137,12 @@ public komak_init()
 	new hasPowers = str_to_num(temp)
 	gHasKomak[id]=(hasPowers!=0)
 	if(gHasKomak[id]){
-		set_task(0.1, "stats_komak_task", id+KOMAK_STATS_TASKID, "", 0, "b")
 		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
 		if(!is_user_bot(id)){
 			set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
 		}
 	}
 	else{
-		remove_task(id+KOMAK_STATS_TASKID)
 		if(!is_user_bot(id)){
 			remove_task(id+KOMAK_HUD_TASKID)
 		}
@@ -229,6 +231,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 		
 	}
+	stats_komak(idattacker)
 	return return_result;
 	
 }
@@ -264,7 +267,7 @@ public komak_hud_task(id){
 
 }
 komak_hud(id){
-	new hud_msg[128];
+	static hud_msg[128];
 	formatex(hud_msg,127,"[SH] %s:^nGear: %d^nCurr rpm: %d|%d^nCurrent fire ration: %0.2f^nCurrent reload ration: %0.2f^nEngine broken? %s^n",
 					gHeroName,
 					g_komak_gear[id],
@@ -329,19 +332,6 @@ public reset_komak(id){
 	}
 
 }
-public stats_komak_task(id){
-
-	id-=KOMAK_STATS_TASKID
-	if(!client_hittable(id)){
-
-		return;
-	}
-	if ( gHasKomak[id]) {
-		
-		stats_komak(id)
-	}
-
-}
 Float:get_max_added_fire_ratio(id){
 
 	
@@ -379,8 +369,6 @@ stats_komak(id){
 }
 
 public client_disconnected(id){
-
-	remove_task(id+KOMAK_STATS_TASKID)
 	if(!is_user_bot(id)){
 		remove_task(id+KOMAK_HUD_TASKID)
 	}

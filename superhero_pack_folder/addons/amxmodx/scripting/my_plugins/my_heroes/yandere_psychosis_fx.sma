@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -13,6 +14,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+stock YANDERE_PSYCHOSIS_TASKID,
+	UNPSYCHOSIS_TASKID
 
 public plugin_init(){
 	
@@ -31,6 +34,8 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
+	YANDERE_PSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
+	UNPSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 	
 }
@@ -248,7 +253,7 @@ public on_death_psychosis()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		unpsychosis_user(id)
 	}
 	

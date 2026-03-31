@@ -4,7 +4,6 @@
 #define sh_needle_funcs
 
 #define NEEDLE_V_MODEL "models/shmod/yakui/v_knife.mdl"
-#define YAKUI_TASK_ID 738329
 
 
 native gatling_set_needle(id,value_to_set)

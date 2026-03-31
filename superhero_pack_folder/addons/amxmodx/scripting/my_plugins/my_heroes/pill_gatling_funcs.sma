@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
@@ -37,6 +38,9 @@ new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmo
 new pill_fx[MAX_ENTITIES]
 new Float:windup_time
 new const g_guns_events[][] = {"events/m249.sc"}
+
+
+stock PILL_REM_TASKID
 public plugin_init(){
 
 
@@ -69,6 +73,8 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_forward(FM_Think, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
+	PILL_REM_TASKID=allocate_typed_task_id(entity_task)
+
 }
 
 
@@ -457,6 +463,7 @@ launch_pill(id)
 
 	entity_set_int(Ent, EV_INT_effects, 2)
 	entity_set_int(Ent, EV_INT_solid, 2)
+
 	entity_set_int(Ent, EV_INT_movetype, 10)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 
@@ -467,19 +474,18 @@ launch_pill(id)
 	pill_loaded[id][curr_barrel[id]] = false
 
 	gatling_dec_num_pills(id)
-	new parm[5]
+	new parm[2]
 	new fx_num=sh_gen_effect()
 	pill_fx[Ent]=fx_num
 	new color[3]
 	sh_get_pill_color(fx_num,id,color)
 	parm[0] = Ent
 	parm[1] =id
-	for(new i=0;i<sizeof color;i++){
-		parm[i+2]=color[i]
-	}
 	aura(id,color,3,1)
 	emit_sound(id, CHAN_WEAPON, m_SOUND[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(0.01, "pilltrail",id,parm,6)
+	
+	trail_custom(Ent,color,10,5)
+	
 
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 	parm[0] = id
@@ -540,16 +546,6 @@ public pill_reload(parm[])
 	
 }
 
-
-public pilltrail(parm[])
-{
-	new pid = parm[0]
-	new the_fucking_argument[3];
-	for(new i=0;i<sizeof the_fucking_argument;i++){
-		the_fucking_argument[i]=parm[2+i]
-	}
-	trail_custom(pid,the_fucking_argument,10,5)
-}
 
 public fw_ItemDeployPre(entity)
 {

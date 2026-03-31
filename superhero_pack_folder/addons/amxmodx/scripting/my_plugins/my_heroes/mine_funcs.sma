@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -19,6 +20,16 @@ new Float:curr_disarm_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time
 
+
+
+stock MINE_ARMING_TASKID,
+		MINE_WAIT_TASKID,
+		MINE_CHARGE_TASKID,
+		UNMINE_CHARGE_TASKID,
+		MINE_DISARM_TASKID,
+		UNMINE_DISARM_TASKID
+
+
 public plugin_init(){
 	
 	
@@ -29,6 +40,14 @@ public plugin_init(){
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("sapper_mine_min_charge_time", "1.0")
+
+
+	MINE_ARMING_TASKID=allocate_typed_task_id(entity_task)
+	MINE_WAIT_TASKID=allocate_typed_task_id(entity_task)
+	MINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	UNMINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	MINE_DISARM_TASKID=allocate_typed_task_id(player_task)
+	UNMINE_DISARM_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
@@ -106,8 +125,9 @@ public _plant_mine(iPlugins,iParams)
 {
 	new id= get_param(1)
 	
-	if ( !is_user_alive(id)||!client_hittable(id,sapper_get_has_sapper(id))) return FMRES_IGNORED;
-	
+	if ( !client_hittable(id)) return
+	if(!sapper_get_has_sapper(id))  return
+
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
 	
@@ -131,7 +151,6 @@ public _plant_mine(iPlugins,iParams)
 	sh_chat_message(id,sapper_get_hero_id(),"You have %d mines left",sapper_get_num_mines(id));
 	set_task(MINE_ARMING_TIME,"mine_arm_task",ent+MINE_ARMING_TASKID, parm, 2, "a",1)
 	
-	return PLUGIN_CONTINUE;
 }
 public mine_arm_task(parm[],mine_taskid){
 	
@@ -191,7 +210,7 @@ public blow_mine_up(ent, id)
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
+		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
 		
 		new parm[2];
 		parm[0]=id;

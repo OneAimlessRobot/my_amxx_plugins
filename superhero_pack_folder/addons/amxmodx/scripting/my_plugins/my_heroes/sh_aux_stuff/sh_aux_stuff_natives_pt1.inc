@@ -24,6 +24,8 @@ native make_shockwave(point[3],Float:radius,const color[3],shockwave_frame_rate=
 native heal_stream(id, x,color_index=LTGREEN,alpha=255)
 
 native unfade_screen_user(id)
+
+native fade_screen_user(id)
 //----------------------------------------------------------------------------------------------
 native laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]={RED,BLUE,CUSTOM},bool:for_one=false,bool:make_sound=false,const default_sound_sample[]=LASER_LINE_DEFAULT_SOUND);
 

@@ -1,6 +1,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <xs>
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
@@ -18,6 +19,10 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
+
+stock YANDERE_MORPH_TASKID,
+		YANDERE_STATS_TASKID,
+		YANDERE_ANGER_TASKID
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -59,6 +64,9 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
+	YANDERE_MORPH_TASKID=allocate_typed_task_id(player_task)
+	YANDERE_STATS_TASKID=allocate_typed_task_id(player_task)
+	YANDERE_ANGER_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -242,7 +250,7 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 notify_yanderes_about_team_life(id=-1,alive=0,disconnected=0){
 if(!sh_is_active()) return
 if(!disconnected){
-	if(is_user_connected(id)) return
+	if(!is_user_connected(id)) return
 }
 for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!client_hittable(i)) continue;
@@ -256,10 +264,8 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	}
 	new mates_alive
 	get_yandere_team_counts(i,mates_alive,g_mates_dead[i])
-	sh_chat_message(i,yandere_get_hero_id(),"Mates alive: %d",mates_alive)
 	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
 	gTransTimerStarted[i]= can_transform
-	sh_chat_message(i,yandere_get_hero_id(),"Mates alive: %d, can transform: %d, timer started: %d",mates_alive,can_transform,gSuperAngry[i],gTransTimerStarted[i])
 	update_stats(i)
 	set_user_maxspeed(i,gNormalSpeed[i])
 }
@@ -400,8 +406,8 @@ angry_dmg_mult=get_cvar_float("yandere_angry_dmg_mult")
 angry_degen_pct=get_cvar_float("yandere_angry_degen_pct")
 angry_hitheal_pct=get_cvar_float("yandere_angry_hitheal_pct")
 min_players=get_cvar_num("yandere_min_players")
-explode_maxdamage=get_cvar_float("yandere_explode_radius")
-explode_radius=get_cvar_float("yandere_explode_maxdamage")
+explode_maxdamage=get_cvar_float("yandere_explode_maxdamage")
+explode_radius=get_cvar_float("yandere_explode_radius")
 curse_pct=get_cvar_float("yandere_angry_curse_pct")
 teamglow_on=get_cvar_num("yandere_teamglow_on")
 degen_iter_period=get_cvar_float("yandere_degen_iter_period")
@@ -784,7 +790,7 @@ public BlowUp(id)
 	
 
 	// blowup even if dead
-	explosion_player(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,default_explode_knock_force_magnitude,1,_,default_explode_upward_shift)
+	explosion(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,default_explode_knock_force_magnitude,1)
 	for (new a = 1; a <= SH_MAXSLOTS; a++) {
 		if ( is_user_alive(a) && (a != id )) {
 

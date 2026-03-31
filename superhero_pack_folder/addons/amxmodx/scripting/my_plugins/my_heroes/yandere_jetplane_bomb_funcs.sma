@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
@@ -23,6 +24,8 @@ new has_bomb[SH_MAXSLOTS+1]
 new Float:jetplane_bomb_radius,
 Float:jetplane_bomb_dmg;
 new jetplane_bomb_ammo;
+
+stock BOMB_RELOAD_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -34,6 +37,8 @@ public plugin_init()
 	register_cvar("yandere_jetplane_bomb_dmg", "5")
 	register_cvar("yandere_jetplane_bomb_ammo", "5")
 	register_forward(FM_CmdStart, "CmdStart");
+
+	BOMB_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
 
 
@@ -101,9 +106,21 @@ public _reset_user_jet_bombs(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!hasRoundStarted()||!client_hittable(id)) return FMRES_IGNORED;
-	
-	
+	if(!hasRoundStarted()){
+
+		return FMRES_IGNORED
+	}
+	if(!client_hittable(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!yandere_get_has_yandere(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!jet_deployed(id)){
+		return FMRES_IGNORED
+	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
 
@@ -233,8 +250,8 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 			RemoveEntity(pTouched)
 		}
 	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
-	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME,_,default_explode_upward_shift)
+	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg, default_explode_knock_force_magnitude)
+	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME)
 	RemoveEntity(pToucher)
 	
 }
@@ -278,7 +295,11 @@ public _clear_bombs(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, JETPLANE_BOMB_CLASSNAME)
 while(grenada) {
-	remove_task(grenada+BOMB_RELOAD_TASKID);
+	new owner=Entvars_Get_Edict(grenada, EV_ENT_owner)
+	if(pev_valid(owner)==2){
+
+		remove_task(owner+BOMB_RELOAD_TASKID);
+	}
 	remove_bomb(grenada)
 	grenada = find_ent_by_class(grenada, JETPLANE_BOMB_CLASSNAME)
 }

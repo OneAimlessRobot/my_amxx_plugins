@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -20,6 +21,10 @@ new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Tranq_Clip[SH_MAXSLOTS+1]
 new bool:dart_hurts[MAX_ENTITIES];
 new bool:dart_loaded[SH_MAXSLOTS+1];
+
+
+
+
 public plugin_init(){
 	
 	
@@ -42,10 +47,45 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,STRN_ELITE, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, STRN_ELITE, "fw_Weapon_Reload_Post", 1,true)
+
+	register_forward(FM_Think, "tranque_thinque")
+
 	
 	
 }
 
+public tranque_thinque(ent){
+
+
+	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	
+	static classname[32]
+	classname[0] = '^0'
+	pev(ent, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, DART_CLASSNAME) ) return FMRES_IGNORED
+	new owner=entity_get_edict(ent, EV_ENT_owner)
+
+	if(!client_hittable(owner)){
+
+		remove_dart(ent)	
+		return FMRES_IGNORED
+	}
+
+
+	new parm[2]
+	parm[0] = ent
+	parm[1] = owner
+	
+	projectile_air_drag_update_speed(parm,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
+	
+
+	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
+
+	return FMRES_IGNORED
+
+
+}
 public plugin_natives(){
 	
 	register_native( "clear_darts","_clear_darts",0)
@@ -294,7 +334,7 @@ launch_dart(id)
 	
 	Ent = create_entity("info_target")
 	
-	if (!Ent) return PLUGIN_HANDLED
+	if (!Ent) return
 	
 	entity_set_string(Ent, EV_SZ_classname, DART_CLASSNAME)
 	entity_set_model(Ent, "models/shell.mdl")
@@ -310,7 +350,7 @@ launch_dart(id)
 	entity_set_int(Ent, EV_INT_effects, 2)
 	entity_set_int(Ent, EV_INT_solid, 2)
 	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-	entity_set_float(Ent,EV_FL_gravity, 2.0)
+	entity_set_float(Ent,EV_FL_gravity, DART_GRAVITY_MULT)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
 	VelocityByAim(id, floatround(DART_SPEED) , Velocity)
@@ -326,36 +366,21 @@ launch_dart(id)
 		dart_launch_pos[Ent][2]=Origin[2]
 		
 	}
-	new parm[2]
 	new parm2[1]
 	
 	parm2[0]= id
-	parm[0] = Ent
-	parm[1] = id
 	emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(0.01, "darttrail",Ent+DART_TRAIL_TASKID,parm,2)
 	
-	set_task(DART_PHYS_UPDATE_TIME, "dartspeed",Ent+DART_SPEED_TASKID,parm,2,"b")
+	trail(Ent,dart_hurts[Ent]?RED:WHITE,3,5)
+	
 	set_task(DART_SHOOT_PERIOD, "dart_reload",id,parm2,1,"a",1)
-	
-	return PLUGIN_CONTINUE
+	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
 }
 
 public dart_reload(parm[])
 {
 	
 	dart_loaded[parm[0]] = true
-}
-
-public darttrail(parm[])
-{
-new pid = parm[0]
-if (!is_valid_ent(pid))
-{
-    return
-}
-trail(pid,dart_hurts[pid]?RED:WHITE,3,5)
-	
 }
 
 public vexd_pfntouch(pToucher, pTouched)
@@ -471,18 +496,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		set_cd(cd, CD_flNextAttack, 99999.0)
 	}
 }
-public dartspeed(parm[])
-{
-	new pid = parm[0]
-	if (!is_valid_ent(pid))
-	{
-		return
-	}
-	projectile_air_drag_update_speed(parm,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
-}
 remove_dart(id_dart){
-	remove_task(id_dart+DART_TRAIL_TASKID);
-	remove_task(id_dart+DART_SPEED_TASKID);
 	if(is_valid_ent(id_dart)){
 		remove_entity(id_dart)
 	}

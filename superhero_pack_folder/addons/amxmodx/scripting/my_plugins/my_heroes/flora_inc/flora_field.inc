@@ -7,12 +7,7 @@
 
 
 
-// GLOBAL VARIABLES
-#define FLORA_COOLDOWN_TASKID 7231819
-#define FLORA_LOAD_TASKID 6128376
-#define FLORA_REMOVE_GLOW_TASKID 2912192
-#define FLORA_CHARGE_TASKID 3479886
-#define FLORA_DEPLOY_TASKID 7123436
+
 #define FLORA_CHARGE_PERIOD 0.1
 #define FLORA_THINK_PERIOD 0.35
 
@@ -34,8 +29,6 @@
 #define FLORA_UNCLOAKED_OUT_OF_RANGE_MSG "You left one of your fields. You are no longer cloaked"
 
 #define FLORA_HEAL_GLOW_TIME 3.0
-#define FLORA_CHECKS_TASKID 5233378
-
 enum flora_sheltered_values{
   NONE=0,
   OUTSIDE,
@@ -84,5 +77,3 @@ native flora_get_user_is_airborne(id)
 native flora_get_curr_inside(id)
 native flora_get_prev_inside(id)
 native start_flora_checks(id)
-native clear_one_flora_array(id,bool:is_victim)
-native clear_all_flora_arrays()

@@ -1,5 +1,5 @@
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -33,6 +33,14 @@ new Float:jet_velocity
 new Float:jet_max_power
 new Float:jet_stomp_grav_mult
 new cmd_forward
+
+
+stock GRACIETE_TRAIL_TASKID,
+		GRACIETE_COOLDOWN_TASKID,
+		GRACIETE_LOAD_TASKID,
+		GRACIETE_CHARGE_TASKID
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -48,6 +56,10 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
+	GRACIETE_TRAIL_TASKID=allocate_typed_task_id(entity_task)
+	GRACIETE_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
+	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
+	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	
 }
 
@@ -216,7 +228,7 @@ public client_PostThink(id) {
 			g_graciete_leaped[id]=false
 			if(g_graciete_power_landing[id]){
 				
-				explosion_player(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,_, _,default_explode_upward_shift)
+				explosion(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude)
 				g_graciete_land_power[id]=0.0
 				
 			}
@@ -289,12 +301,12 @@ public rockettrail(id)
 	
 	
 	trail(id,LTGREEN,10,15)
-	// move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+
 }
 public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
-	if(!client_hittable(id,graciete_get_has_graciete(id))) return
-	
+	if(!client_hittable(id)) return
+	if(!graciete_get_has_graciete(id)) return
 	
 	
 	new Float:vOrigin[3]

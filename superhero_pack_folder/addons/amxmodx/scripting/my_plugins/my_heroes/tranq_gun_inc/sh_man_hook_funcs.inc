@@ -5,7 +5,6 @@
 
 
 stock const man_hook_sounds[1][]={"weapons/teliko_slitter/knife_stab.wav"}
-#define HOOK_TASKID 27823709
 #define HOOK_DRAG_THINK_PERIOD 0.1
 #define HOOK_DRAG_THINK_TIMES (hook_drag_time/HOOK_DRAG_THINK_PERIOD)
 #define DRAG_FORCE 10.0

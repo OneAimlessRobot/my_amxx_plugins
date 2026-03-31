@@ -329,7 +329,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 
 		if(sh_clients_are_same_team(i,id)) continue;
 		
-		heal_stream(i, id,PINK)
+		heal_stream(i, id,PINK,190)
 		aura(id,LineColors[PINK])
 		add_speed_points(id,damage)
 		result=1

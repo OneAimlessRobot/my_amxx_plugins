@@ -1,8 +1,10 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
@@ -22,6 +24,14 @@ new violence_level
 
 new g_times_player_spiked_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+
+
+
+
+stock FOLLOW_LOOP_TASKID,
+		UNFOLLOW_LOOP_TASKID
+
+
 public plugin_init()
 {
 	// Plugin Info
@@ -42,6 +52,9 @@ public plugin_init()
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	
 	register_forward(FM_Think, "spore_think")
+
+	FOLLOW_LOOP_TASKID=allocate_typed_task_id(entity_task)
+	UNFOLLOW_LOOP_TASKID=allocate_typed_task_id(entity_task)
 }
 
 public plugin_natives(){
@@ -132,14 +145,13 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	new id= get_param(1)
 	
-	setScreenFlash(id,LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],3,100)
-	sh_set_rendering(id, LineColors[PURPLE][0],LineColors[PURPLE][1],LineColors[PURPLE][2],180,kRenderFxGlowShell, kRenderTransAlpha)
-	new color[3];
-	color[0]=LineColors[PURPLE][0]
-	color[1]=LineColors[PURPLE][1]
-	color[2]=LineColors[PURPLE][2]
-	aura(id,color)
-	set_task(KSUN_HEAL_GLOW_TIME,"remove_glisten_task",id+KSUN_UNGLOW_TASKID,"", 0,  "a",1)	
+	set_render_with_color_const(id,PURPLE,1,180,100,1,0)
+	remove_glow_user(id,KSUN_HEAL_GLOW_TIME)
+	static arr[3]
+	arr[0]=LineColors[PURPLE][0]
+	arr[1]=LineColors[PURPLE][1]
+	arr[2]=LineColors[PURPLE][2]
+	aura(id,arr)
 	
 }
 public _spores_clear(iPlugins, iParms){
@@ -409,14 +421,14 @@ if(get_player_launcher_phase(spore_owner)<=PHASE_DEPLOY){
 			if(client_hittable(spore_owner)){
 				if ( is_valid_ent(get_player_launcher_phase(spore_owner))) {
 					entity_set_follow(spore, get_player_launcher_phase(spore_owner))
-					sporetrail(spore)
+					trail(spore,PURPLE,20,3)
 				}
 			}
 }
 else{
 			if ( client_hittable(spore_target)&&client_hittable(spore_owner)) {
 				entity_set_follow(spore, spore_target)
-				sporetrail(spore)
+				trail(spore,PURPLE,20,3) 
 			}
 			else{
 				
@@ -442,10 +454,6 @@ public untrack_spore_task(spore){
 
 }
 
-//----------------------------------------------------------------------------------------------
-sporetrail(entid){
-	trail(entid,PURPLE,20,3) 	
-}
 
 public spore_think(ent){
 	
@@ -555,14 +563,6 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 }
 }
 
-public remove_glisten_task(id){
-
-id-=KSUN_UNGLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
-
-set_user_rendering(id)
-
-}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {

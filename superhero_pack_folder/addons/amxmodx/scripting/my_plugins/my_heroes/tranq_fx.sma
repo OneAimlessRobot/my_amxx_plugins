@@ -17,12 +17,10 @@ stock SLEEP_TASKID,
 
 new bool:gIsAsleep[SH_MAXSLOTS+1]
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
-new g_msgFade
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
-g_msgFade = get_user_msgid("ScreenFade");
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
 register_event("DeathMsg","on_death_sleeping","a")
@@ -116,24 +114,13 @@ public _sh_unsleep_user(iPlugin,iParams){
 
 
 }
-fade_screen_user(id){
-		message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
-		write_short(0); // fade lasts this long duration 
-		write_short(0); // fade lasts this long hold time 
-		write_short(FADE_HOLD); // fade type 
-		write_byte(0); // fade red 
-		write_byte(0); // fade green 
-		write_byte(0); // fade blue  
-		write_byte(255); // fade alpha  
-		message_end(); 
-
-}
 public sleep_task(array[],id){
 	id-=SLEEP_TASKID
 	if ( !shModActive() ||!client_hittable(id)) return
 	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
 	entity_set_int( id, EV_INT_fixangle, 1);
-	set_render_with_color_const(id,BLACK,0,255,255,1,1)
+	set_render_with_color_const(id,BLACK,0,_,255,1,1)
+	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
 	
 
 
@@ -196,7 +183,7 @@ public on_death_sleeping()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		sh_unsleep_user(id)
 	
 	}

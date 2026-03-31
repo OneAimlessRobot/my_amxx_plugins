@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <xs>
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
@@ -30,6 +31,10 @@ new Float:gutting_dmg_mult
 new Float:hook_drag_time
 new max_hook_kills_per_life
 new Float:hook_drag_speed
+
+
+stock HOOK_TASKID
+
 public plugin_init(){
 	
 	
@@ -47,6 +52,8 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+
+	HOOK_TASKID=allocate_typed_task_id(player_task)
 }
 
 public weaponChange(id)

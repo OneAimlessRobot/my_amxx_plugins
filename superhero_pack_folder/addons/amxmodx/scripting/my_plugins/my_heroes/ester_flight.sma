@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include <engine>
 #include "ester_inc/ester_global.inc"
@@ -50,6 +51,15 @@ new g_last_coords[SH_MAXSLOTS+1][3]
 
 
 new g_is_glowing[SH_MAXSLOTS+1]
+
+
+stock ESTER_REBORN_COLLISION_TASKID,
+		ESTER_REBORN_CALCULATION_LOOP_TASKID,
+		ESTER_REBORN_POSITION_CHECK_TASKID,
+		ESTER_REBORN_GLOW_TASKID,
+		ESTER_REBORN_TEAM_CHECK_TASKID ,
+		ESTER_REBORN_EXPLOSION_DELAY_TASKID 
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -88,6 +98,14 @@ public plugin_init()
 	register_logevent("ester_round_start", 2, "1=Round_Start")
 	register_logevent("ester_round_end", 2, "1=Round_End")
 	register_logevent("ester_round_end", 2, "1&Restart_Round_")
+
+	ESTER_REBORN_COLLISION_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REBORN_CALCULATION_LOOP_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REBORN_POSITION_CHECK_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REBORN_GLOW_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REBORN_TEAM_CHECK_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REBORN_EXPLOSION_DELAY_TASKID=allocate_typed_task_id(player_task)
+	
 
 
 }
@@ -604,7 +622,7 @@ public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 	ester_remove_statuses(id,0,1,0)
-	explosion_player(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude, ester_explosion_ignore_user, _,default_explode_upward_shift)
+	explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude, ester_explosion_ignore_user)
 	
 		
 	
@@ -655,7 +673,7 @@ public player_to_player_touch_task(id)  //This is triggered when two entites tou
 		
 		killer_speed=vector_length(killer_velocity)
 		
-		explosion_player(ester_get_hero_id(),killer,150.0,(0.2*killer_speed),ester_fly_knock_enemies_force,1)
+		explosion(ester_get_hero_id(),killer,150.0,(0.2*killer_speed),ester_fly_knock_enemies_force,1)
 		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
 		multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)

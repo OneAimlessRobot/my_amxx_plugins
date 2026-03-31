@@ -6,8 +6,6 @@
 #define KSUN_WEAPON_ID CSW_GALIL
 #define KSUN_WEAPON_NAME "weapon_galil"
 
-#define KSUN_ULTIMATE_TASKID 23712316
-#define UNKSUN_ULTIMATE_TASKID 9723512
 #define KSUN_ULTIMATE_LOOP_PERIOD 0.4
 #define KSUN_ULTIMATE_LOOP_DEC 30
 #define KSUN_ULTIMATE_LOOP_TIMES floatround(floatdiv(float(ksun_supply_capacity),float(KSUN_ULTIMATE_LOOP_DEC)))

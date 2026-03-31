@@ -150,10 +150,6 @@ stock sh_default_explode_knock_force_magnitude_cvar;
 stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
 
 
-#define SH_DEFAULT_EXPLODE_UPWARD_SHIFT 4.0
-stock sh_default_explode_upward_shift_cvar;
-stock Float:default_explode_upward_shift=SH_DEFAULT_EXPLODE_UPWARD_SHIFT;
-
 #define SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER 0.5
 stock sh_default_explode_owner_ignore_frac_cvar;
 stock Float:default_explode_owner_ignore_frac=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER;

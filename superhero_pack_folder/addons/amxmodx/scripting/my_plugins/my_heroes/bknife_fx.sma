@@ -245,7 +245,7 @@ public on_death_bleeding()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		sh_unbleed_user(id)
 	
 	}

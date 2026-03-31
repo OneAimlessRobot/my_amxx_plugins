@@ -1,6 +1,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -14,7 +15,7 @@
 #include "../my_include/my_author_header.inc"
 
 
-#define KILL_BEAM_TASKID 81292373
+
 stock const  FLORA_HEAL_GLOWING_ON=0
 stock Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
 stock g_flora_field_loaded[SH_MAXSLOTS+1];
@@ -25,8 +26,7 @@ stock g_flora_prev_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_charging[SH_MAXSLOTS+1]
 stock flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
-new bool:g_is_flora_tagging_this_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new bool:g_was_player_tagged_by_flora[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+stock flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
 stock g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
@@ -48,6 +48,17 @@ stock Float:flora_teleport_crouch_time
 stock Float:flora_teleport_reach_max_distance
 stock flora_field_start_ammount
 stock flora_field_max_active_ammount
+
+
+
+stock FLORA_COOLDOWN_TASKID,
+		FLORA_LOAD_TASKID,
+		FLORA_CHARGE_TASKID,
+		FLORA_DEPLOY_TASKID,
+		FLORA_CHECKS_TASKID
+
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -87,9 +98,14 @@ public plugin_init()
 	arrayset(g_flora_num_of_active_fields,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_field_loaded,1,SH_MAXSLOTS+1)
 
-	
+	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
+	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
+	FLORA_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	FLORA_DEPLOY_TASKID=allocate_typed_task_id(player_task)
+	FLORA_CHECKS_TASKID=allocate_typed_task_id(player_task)
+
 	register_forward(FM_Think, "field_think")
-	register_event("DeathMsg","on_death_tagged_by_flora","a")
+	init_hud_syncs()
 
 }
 
@@ -117,8 +133,6 @@ public plugin_natives(){
 	register_native("flora_get_curr_inside","_flora_get_curr_inside",0)
 	register_native("flora_get_prev_inside","_flora_get_prev_inside",0)
 	register_native("start_flora_checks","_start_flora_checks",0)
-	register_native("clear_one_flora_array","_clear_one_flora_array",0)
-	register_native("clear_all_flora_arrays","_clear_all_flora_arrays",0)
 	
 
 	
@@ -127,8 +141,10 @@ public plugin_natives(){
 public _start_flora_checks(iPlugin,iParams){
 	new id=get_param(1)
 	
-	if(client_hittable(id)&&flora_get_has_flora(id)){
-		set_task(FLORA_THINK_PERIOD,"flora_checks",id+FLORA_CHECKS_TASKID,"",0,"b")
+	if(client_hittable(id)){
+		if(flora_get_has_flora(id)){
+			set_task(FLORA_THINK_PERIOD,"flora_checks",id+FLORA_CHECKS_TASKID,"",0,"b")
+		}
 	}
 }
 public _flora_get_user_num_active_fields(iPlugin,iParams){
@@ -256,22 +272,6 @@ public _flora_get_prev_inside(iPlugin,iParams){
 
 
 }
-public _clear_one_flora_array(iPlugin,iParams){
-	new id=get_param(1)
-	new is_victim=get_param(2)
-	arrayset((is_victim?g_was_player_tagged_by_flora[id]:g_is_flora_tagging_this_player[id]),false,sizeof(g_is_flora_tagging_this_player[]));
-	
-
-}
-public _clear_all_flora_arrays(iPlugin,iParams){
-
-
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		clear_one_flora_array(i,false)
-		clear_one_flora_array(i,true)
-	}
-
-}
 public plugin_cfg(){
 
 	loadCVARS();
@@ -315,8 +315,8 @@ public _reset_flora_user(iPlugin,iParams){
 	
 	new id= get_param(1)
 	
-	uncharge_user(id)
 	clear_user_fields(id)
+	uncharge_user(id)
 	g_flora_field_loaded[id]=1;
 	g_flora_field_cooldown[id]=0.0;
 	g_field_teleport_time[id]=0.0
@@ -409,7 +409,13 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 public flora_checks(id){
 	
 	id-=FLORA_CHECKS_TASKID
-	if(!client_hittable(id)||!flora_get_has_flora(id)){
+	if(!client_hittable(id)){
+		
+		remove_task(id+FLORA_CHECKS_TASKID)
+		return
+		
+	}
+	if(!flora_get_has_flora(id)){
 		
 		remove_task(id+FLORA_CHECKS_TASKID)
 		return
@@ -424,7 +430,7 @@ public flora_checks(id){
 		return
 		
 	}
-	
+	g_flora_prev_sheltered_value[id]=g_flora_sheltered_value[id]
 	new field_id,flora_sheltered_values:flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
 	g_flora_sheltered_value[id]=flora_sheltered_value;
 	
@@ -432,7 +438,6 @@ public flora_checks(id){
 		g_flora_prev_inside[id]=g_flora_curr_inside[id]
 		g_flora_curr_inside[id]=field_id
 	}
-	
 	new crouched=flora_get_user_is_crouched(id)
 	if(g_flora_sheltered_value[id]&&crouched){
 		g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
@@ -522,10 +527,6 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	return OUTSIDE
 	
 }
-public plugin_end(){
-	
-	
-}
 public plugin_precache(){
 
 
@@ -547,18 +548,20 @@ public _form_field(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!flora_get_has_flora(id)||!client_hittable(id)) return PLUGIN_HANDLED
+	if(!client_hittable(id)) return
+
+	if(!flora_get_has_flora(id)) return
 	
 	if(!flora_get_user_num_fields(id)){
 		
 		client_print(id,print_center,"You ran out of fields")
-		return PLUGIN_HANDLED
+		return
 		
 	}
 	if(!g_flora_field_loaded[id]){
 		
 		sh_chat_message(id,flora_get_hero_id(),"Field not loaded")
-		return PLUGIN_HANDLED
+		return
 	}
 	
 	new Float: Origin[3],  Ent
@@ -571,7 +574,7 @@ public _form_field(iPlugin,iParams)
 	if(pev_valid(Ent)!=2){
 		
 		sh_chat_message(id,flora_get_hero_id(),"Field failure!");
-		return PLUGIN_HANDLED
+		return
 	}
 	
 	entity_set_string(  Ent, EV_SZ_classname, FLORA_FIELD_CLASSNAME );
@@ -590,6 +593,7 @@ public _form_field(iPlugin,iParams)
 	
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	entity_set_float(Ent,EV_FL_fuser1,0.0)
+	entity_set_origin(Ent,Origin);
 	g_flora_curr_charging[id]=Ent
 	g_flora_field_loaded[id]=0;
 	
@@ -607,7 +611,7 @@ public _form_field(iPlugin,iParams)
 	set_task(FLORA_CHARGE_PERIOD,"charge_task",id+FLORA_CHARGE_TASKID,parm, 2,  "b")
 	
 	
-	return PLUGIN_CONTINUE
+	return
 }
 public cooldown_update_task(id){
 	
@@ -755,7 +759,6 @@ public field_think(ent)
 		make_shockwave(ient_pos,field_core_radius,{255, 128, 0},_,_,_,_,60)
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 
-		clear_one_flora_array(owner,true)
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
@@ -764,6 +767,10 @@ public field_think(ent)
 				continue
 			}
 			if(!client_hittable(pid)){
+				if(is_user_connected(pid)){
+					set_render_with_color_const(pid,INVIS,1,_,_,0)
+				}
+				
 				continue
 			
 			}
@@ -771,8 +778,7 @@ public field_think(ent)
 
 				continue
 			}
-			g_was_player_tagged_by_flora[pid][owner]=(g_flora_sheltered_value[owner]>OUTSIDE)
-			if(g_was_player_tagged_by_flora[pid][owner]){
+			if(g_flora_sheltered_value[owner]>OUTSIDE){
 				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
 				
 				sh_extra_damage(pid,owner,floatround(fdamage),"Flora field damage")
@@ -790,8 +796,7 @@ public field_think(ent)
 									
 									kRenderTransAlpha)
 				remove_glow_user(pid,flora_stun_time*g_flora_curr_dmg_mult[owner])
-				flora_heal(owner,fdamage,g_flora_dmg_color[owner])
-				
+				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}
 		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -898,50 +903,5 @@ public charge_task(parm[],id){
 	
 	
 	
-	
-}
-
-
-public flora_glisten(id,heal_color){
-	
-	
-	set_render_with_color_const(id,heal_color,1,100,180,1)
-	aura(id,LineColors[heal_color])
-	emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	remove_glow_user(id,FLORA_HEAL_GLOW_TIME)
-	
-}
-public flora_heal(id,Float:damage,color){
-	
-	new Float: mate_health=float(get_user_health(id))
-	if(mate_health>=sh_get_max_hp(id)){
-		return false
-	
-	}
-	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
-	if(new_damage>0){
-		if(FLORA_HEAL_GLOWING_ON){
-			flora_glisten(id,color)
-		}
-		else{
-			emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			
-		}
-	}
-	new Float: new_health=floatadd(mate_health,float(new_damage))
-	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
-	return true
-
-}
-
-public on_death_tagged_by_flora()
-{	
-	new id = read_data(2)
-	
-	if(is_user_connected(id)||sh_is_active()){
-		
-		clear_one_flora_array(id,true)
-		clear_one_flora_array(id,false)
-	}
 	
 }

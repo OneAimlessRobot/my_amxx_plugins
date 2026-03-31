@@ -1,6 +1,5 @@
-
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -13,9 +12,6 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-#define ESTER_GLOW_TASKID 23443
-#define ESTER_REVENGE_TASKID 11122
-#define ESTER_MORPH_TASKID 2182722
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -46,6 +42,10 @@ new min_damage_to_do;
 
 new moralizing_tmp_xp_get_mult; 
 new moralizing_pan_xp_get_mult;
+
+stock ESTER_GLOW_TASKID,
+	ESTER_REVENGE_TASKID,
+	ESTER_MORPH_TASKID
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -92,6 +92,9 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "ester_ku")
 	register_forward(FM_PlayerPreThink, "ester_prethink")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
+	ESTER_GLOW_TASKID=allocate_typed_task_id(player_task)
+	ESTER_REVENGE_TASKID=allocate_typed_task_id(player_task)
+	ESTER_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 
 }
@@ -528,7 +531,7 @@ public Ester_revenge_loop(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 			}
-			explosion_player(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,1, _,default_explode_upward_shift)
+			explosion(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,1)
 			reset_status(id)
 			gFinished[id]=true;
 			return

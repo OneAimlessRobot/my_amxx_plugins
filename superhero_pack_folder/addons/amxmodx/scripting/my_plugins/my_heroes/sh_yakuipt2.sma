@@ -1,6 +1,5 @@
-
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
@@ -25,6 +24,8 @@ new mode_change_button_pressed[SH_MAXSLOTS+1]
 
 new max_pills
 new max_rockets
+
+stock YAKUI_MORPH_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -48,6 +49,7 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yakui_init")
 	register_srvcmd("yakui_kd", "yakui_kd")
 	shRegKeyDown(gHeroName, "yakui_kd")
+	YAKUI_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 

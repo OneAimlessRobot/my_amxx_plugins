@@ -14,6 +14,7 @@
 new curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on[SH_MAXSLOTS+1]
 
+
 public plugin_init(){
 	
 	
@@ -129,7 +130,7 @@ public playertrail(pid)
 {
 	if (client_hittable(pid))
 	{
-		trail(pid,FX_COLOR_OFFSET+curr_needle_fx[pid],10,5)
+		trail(pid,FX_COLOR_OFFSET+curr_needle_fx[pid],10,5,40)
 	}
 }
 //----------------------------------------------------------------------------------------------

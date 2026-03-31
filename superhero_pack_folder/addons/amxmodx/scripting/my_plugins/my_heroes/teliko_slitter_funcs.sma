@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <xs>
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
@@ -21,6 +22,9 @@ new Float:slitter_drag_time
 new slitter_level_difference
 new max_slitter_kills_per_life
 new Float:slitter_drag_speed
+
+stock SLITTER_TASKID
+
 public plugin_init(){
 	
 	
@@ -44,6 +48,7 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	SLITTER_TASKID=allocate_typed_task_id(player_task)
 }
 
 public weaponChange(id)

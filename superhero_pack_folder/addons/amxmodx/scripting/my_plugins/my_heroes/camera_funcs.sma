@@ -1,5 +1,5 @@
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "camera_inc/sh_camman_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -28,6 +28,15 @@ new Float:camera_hp
 new camman_camera_maxalpha
 new camman_camera_minalpha
 new Float:max_camera_charge
+
+
+stock CAMERA_ARMING_TASKID,
+		CAMERA_WAIT_TASKID,
+		CAMERA_CHARGE_TASKID,
+		UNCAMERA_CHARGE_TASKID,
+		CAMERA_DISARM_TASKID,
+		UNCAMERA_DISARM_TASKID
+
 public plugin_init(){
 	
 	
@@ -53,6 +62,13 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_forward(FM_Think, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
+	CAMERA_ARMING_TASKID=allocate_typed_task_id(entity_task)
+	CAMERA_WAIT_TASKID=allocate_typed_task_id(entity_task)
+	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	UNCAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
+	UNCAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
+
 }
 public plugin_natives(){
 	

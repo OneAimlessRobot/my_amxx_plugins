@@ -5,7 +5,6 @@
 
 #define RADIO_SCAN_PERIOD 5.0
 
-#define RADIO_RELOAD_TASKID 4752981
 
 #define RADIO_RADIUS 500.0
 

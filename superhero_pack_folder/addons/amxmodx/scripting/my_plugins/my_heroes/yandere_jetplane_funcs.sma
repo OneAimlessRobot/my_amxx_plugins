@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
@@ -40,6 +41,15 @@ stock hud_sync_jetplane
 stock ham_is_here=0
 stock ham_is_on=0
 stock HamHook:the_damage_ham_hook;
+
+
+stock JET_LOAD_TASKID,
+		JET_CHARGE_TASKID,
+		JET_HUD_TASKID,
+		JET_SOUND_TASKID,
+		JET_DEPLOY_TASKID;
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -76,7 +86,13 @@ public plugin_init()
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 	hud_sync_jetplane=CreateHudSyncObj();
-	
+
+	JET_LOAD_TASKID=allocate_typed_task_id(player_task)
+	JET_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	JET_DEPLOY_TASKID=allocate_typed_task_id(player_task)
+	JET_HUD_TASKID=allocate_typed_task_id(player_task)
+	JET_SOUND_TASKID=allocate_typed_task_id(player_task)
+
 }
 
 
@@ -189,11 +205,24 @@ public _jet_get_user_jet_cooldown(iPlugin,iParams){
 public _jet_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
+
+
+
+	if(!client_hittable(id)) return
+
+	if(!yandere_get_has_yandere(id)) return
+
+
 	if(!g_jetplane_loaded[id]){
 		
 		sh_chat_message(id,yandere_get_hero_id(),"Shield not loaded")
 		return
 	}
+
+	new Float: Origin[3]
+	
+	entity_get_vector(id, EV_VEC_origin , Origin)
+
 	g_jetplane_loaded[id]=0
 	
 	new material[128]
@@ -225,6 +254,7 @@ public _jet_charge_user(iPlugin, iParams){
 	new alpha=100
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jetplane[id],pev_owner,id)
+	ENT_SetOrigin(g_jetplane[id], Origin)
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jetplane[id]
@@ -449,8 +479,8 @@ public FwdTouchWorld( jet, World ) {
 		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
 
-			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp, default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
-			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME,_,default_explode_upward_shift)
+			explosion(yandere_get_hero_id(),jet,jetplane_hp,jetplane_hp, default_explode_knock_force_magnitude)
+			explosion_custom_entity(jet,jetplane_hp,jetplane_hp,JETPLANE_FUSELAGE_CLASSNAME)
 			jet_destroy(owner)
 			user_kill(owner)
 			return FMRES_IGNORED

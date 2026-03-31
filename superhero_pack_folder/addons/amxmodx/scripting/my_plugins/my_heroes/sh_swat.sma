@@ -17,7 +17,9 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 "weapons/swatm4/m16a1/m16-1.wav",
 "weapons/swatm4/m16a1/boltpull.wav",
 "weapons/swatm4/m16a1/magin.wav"}
+
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -34,6 +36,9 @@ new has_rocket[33]
 new bool:g_betweenRounds
 new bool:is_a_swat[33]
 new gHeroID
+
+stock MISSILE_TASKID,
+		WEAPONS_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -75,13 +80,15 @@ public plugin_init()
 	// INIT
 	register_srvcmd("Swat_init", "Swat_init")
 	shRegHeroInit(gHeroName, "Swat_init")
+	MISSILE_TASKID=allocate_typed_task_id(entity_task)
+	WEAPONS_TASKID=allocate_typed_task_id(player_task)
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
 	gPlayerUltimateUsed[id] = false
 	if ( shModActive() && g_hasSwatPower[id] && is_user_alive(id) ) {
-		set_task(0.1, "swat_weapons", id)
+		set_task(0.1, "swat_weapons", id+WEAPONS_TASKID)
 
 	}
 	return PLUGIN_CONTINUE
@@ -89,6 +96,7 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 public swat_weapons(id)
 {
+	id-=WEAPONS_TASKID
 	if ( shModActive() && is_user_alive(id) ) {
 		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"item_thighpack")
@@ -290,7 +298,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 		if(has_rocket[id] == pToucher)
 		has_rocket[id] = 0
 
-		explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude,_,_,default_explode_upward_shift)
+		explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude)
 		
 
 		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -375,13 +383,14 @@ public make_beam(id)
 
 	trail(NewEnt,RED,10,10)
 	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
-	set_task(0.1,"guide_rocket_comm",NewEnt,args,2,"b")
+	set_task(0.1,"guide_rocket_comm",NewEnt+MISSILE_TASKID,args,2,"b")
 
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public guide_rocket_comm(args[])
+public guide_rocket_comm(args[],id)
 {
+	id-=MISSILE_TASKID
 	new ent = args[1]
 	if (!is_valid_ent(ent)) return
 	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
@@ -391,7 +400,7 @@ public guide_rocket_comm(args[])
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	remove_task(id)
+	remove_task(id+WEAPONS_TASKID)
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -437,8 +446,8 @@ remove_missile(id,missile){
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	has_rocket[id] = 0
 	gPlayerUltimateUsed[id]=false
-	remove_task(missile)
-	remove_task(id)
+	remove_task(missile+MISSILE_TASKID)
+	remove_task(id+WEAPONS_TASKID)
 	AttachView(id,id)
 	RemoveEntity(missile)
 	return PLUGIN_CONTINUE

@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -24,6 +25,12 @@ new bool:spear_pickable[MAX_ENTITIES]
 
 new Float:min_charge_time,Float:max_charge_time
 
+
+stock SPEAR_RELOAD_TASKID,
+	SPEAR_REM_TASKID,
+	SPEAR_CHARGE_TASKID,
+	UNSPEAR_CHARGE_TASKID
+
 public plugin_init(){
 
 
@@ -41,6 +48,12 @@ public plugin_init(){
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
+	SPEAR_RELOAD_TASKID=allocate_typed_task_id(player_task)
+	SPEAR_REM_TASKID=allocate_typed_task_id(entity_task)
+	SPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
+	UNSPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
+
+
 }
 public plugin_natives(){
 
@@ -280,12 +293,10 @@ launch_spear(id)
 
 	spear_dec_num_spears(id)
 
-	new parm[1]
-	parm[0] = Ent
 	emit_sound(id, CHAN_WEAPON, SPEAR_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	//if(get_cvar_num("veronika_m203trail"))
-	set_task(0.01, "speartrail",id,parm,1)
-
+	trail(Ent,WHITE,10,5)
+	new parm[1]
 	parm[0] = id
 	entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
 	set_task(SPEAR_SHOOT_PERIOD, "spear_reload",id+SPEAR_RELOAD_TASKID,parm,1)
@@ -312,13 +323,12 @@ public lara_spear_decide_func(id){
 		case spear_mode_blast:{
 
 			
-			explosion_player(spear_get_hero_id(),id,
+			explosion(spear_get_hero_id(),id,
 							get_charge_index_from_id(id)*SPEAR_SMASH_EXPLODE_RADIUS,
 							get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE),
 							get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,
-							1,
-							_,
-							default_explode_upward_shift)
+							1)
+
 			spear_loaded[id] = false
 			new parm[1]
 			parm[0]=id
@@ -338,49 +348,6 @@ public spear_reload(parm[])
 	if((wid==CSW_KNIFE)&&spear_get_num_spears(parm[0])){
 		entity_set_string(parm[0], EV_SZ_viewmodel, SPEAR_V_MODEL)
 	}
-}
-/////////////////////
-//Thantik's he-conc functions
-stock get_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed, Float:fVelocity[3] )
-{
-	new Float:fEntOrigin[3];
-	entity_get_vector( ent, EV_VEC_origin, fEntOrigin );
-
-	// Velocity = Distance / Time
-
-	new Float:fDistance[3];
-	fDistance[0] = fEntOrigin[0] - fOrigin[0];
-	fDistance[1] = fEntOrigin[1] - fOrigin[1];
-	fDistance[2] = fEntOrigin[2] - fOrigin[2];
-
-	new Float:fTime = ( vector_distance( fEntOrigin,fOrigin ) / fSpeed );
-
-	fVelocity[0] = fDistance[0] / fTime;
-	fVelocity[1] = fDistance[1] / fTime;
-	fVelocity[2] = fDistance[2] / fTime;
-
-	return ( fVelocity[0] && fVelocity[1] && fVelocity[2] );
-}
-
-
-// Sets velocity of an entity (ent) away from origin with speed (speed)
-
-stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
-{
-	new Float:fVelocity[3];
-	get_velocity_from_origin( ent, fOrigin, fSpeed, fVelocity )
-
-	entity_set_vector( ent, EV_VEC_velocity, fVelocity );
-
-	return ( 1 );
-}
-
-public speartrail(parm[])
-{
-	new pid = parm[0]
-	
-	trail(pid,WHITE,10,5)
-	
 }
 
 
@@ -415,7 +382,7 @@ public vexd_pfntouch(pToucher, pTouched)
 				else if(pTouched!=oid){
 					sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
 					sh_bleed_user(pTouched,oid,BLEED,spear_get_hero_id())
-					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0,_,default_explode_upward_shift)
+					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					spear_pickable[pToucher]=true
 					set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)

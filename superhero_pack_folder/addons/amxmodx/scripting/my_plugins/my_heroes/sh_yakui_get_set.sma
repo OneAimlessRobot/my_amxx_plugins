@@ -1,5 +1,4 @@
 #include "../my_include/superheromod.inc"
-
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -17,6 +16,8 @@ new gCurrFX[SH_MAXSLOTS+1]
 
 
 new gHeroID
+
+
 public plugin_init(){
 
 

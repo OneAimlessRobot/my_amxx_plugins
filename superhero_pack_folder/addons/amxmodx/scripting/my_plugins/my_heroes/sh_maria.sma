@@ -1,6 +1,5 @@
-
-
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -8,10 +7,6 @@
 #include "maria_riveter_inc/maria_general_inc.inc"
 #include "../my_include/my_author_header.inc"
 
-#define MARIA_HEAL_TASKID 2219926
-#define MARIA_STATS_TASKID 7219926
-
-#define MARIA_REMOVE_GLOW_TASKID 12812810
 
 // GLOBAL VARIABLES
 //new gHeroID
@@ -42,6 +37,11 @@ new health_drain_begin_threshold
 new health_drain_end_threshold
 new Float:begin_open_valve_timer;
 new gHeroID
+
+
+stock MARIA_HEAL_TASKID,
+	MARIA_STATS_TASKID
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -77,6 +77,8 @@ public plugin_init()
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
+	MARIA_HEAL_TASKID=allocate_typed_task_id(player_task)
+	MARIA_STATS_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -263,7 +265,7 @@ bool:heal_teamate(id,i){
 	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
 		sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
-		heal_stream(id,i)
+		heal_stream(id,i,_,190)
 	}
 	return result
 

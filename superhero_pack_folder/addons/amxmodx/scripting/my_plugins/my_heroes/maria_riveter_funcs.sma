@@ -47,8 +47,44 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
+
+	register_forward(FM_Think, "rivette_thinque")
+
+
 }
 
+public rivette_thinque(ent){
+
+
+	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	
+	static classname[32]
+	classname[0] = '^0'
+	pev(ent, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, MARIA_PROJECTILE_CLASSNAME) ) return FMRES_IGNORED
+	new owner=entity_get_edict(ent, EV_ENT_owner)
+
+	if(!client_hittable(owner)){
+
+		remove_rivet(ent)	
+		return FMRES_IGNORED
+	}
+
+
+	new parm[2]
+	parm[0] = ent
+	parm[1] = owner
+
+	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
+	
+
+	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
+
+	return FMRES_IGNORED
+
+
+}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -353,10 +389,10 @@ parm[0] = Ent
 parm[1] = id
 emit_sound(id, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
+trail(Ent,LTGREEN,3,5)
 set_task(MARIA_PROJECTILE_SHOOT_PERIOD, "rivet_reload",id,parm2,1,"a",1)
-set_task(0.01, "rivettrail",Ent+MARIA_PROJECTILE_TRAIL_TASKID,parm,2)
 
-set_task(MARIA_PROJECTILE_PHYS_UPDATE_TIME, "rivetspeed",Ent+MARIA_PROJECTILE_SPEED_TASKID,parm,2,"b")
+entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
 
 return PLUGIN_CONTINUE
 }
@@ -366,16 +402,7 @@ public rivet_reload(parm[])
 
 rivet_loaded[parm[0]] = true
 }
-public rivettrail(parm[])
-{
-new pid = parm[0]
-if (!is_valid_ent(pid))
-{
-    return
-}
-trail(pid,LTGREEN,3,5)
-	
-}
+
 public rivetspeed(parm[])
 {
 	new pid = parm[0]
@@ -383,7 +410,6 @@ public rivetspeed(parm[])
 	{
 		return
 	}
-	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 }
 
@@ -437,16 +463,13 @@ public vexd_pfntouch(pToucher, pTouched)
 										MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
 										MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
 										is_direct_hit,
-										is_direct_hit,
-										default_explode_upward_shift)
+										is_direct_hit)
 		remove_rivet(pToucher)	
 
 		arrayset(rivet_launch_pos[pToucher],0.0,3);
 	}
 }
 public remove_rivet(id_rivet){
-	remove_task(id_rivet+MARIA_PROJECTILE_TRAIL_TASKID);
-	remove_task(id_rivet+MARIA_PROJECTILE_SPEED_TASKID);
 	if(is_valid_ent(id_rivet)){
 		remove_entity(id_rivet)
 	}

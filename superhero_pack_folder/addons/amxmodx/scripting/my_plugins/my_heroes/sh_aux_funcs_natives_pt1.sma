@@ -40,6 +40,7 @@ public plugin_natives(){
 	register_native("make_shockwave","_make_shockwave",0);
 	register_native("heal_stream","_heal_stream",0);
 	register_native("unfade_screen_user","_unfade_screen_user",0);
+	register_native("fade_screen_user","_fade_screen_user",0);
 	register_native("laser_line","_laser_line",0);
 	register_native("draw_bbox","_draw_bbox",0);
 	register_native("gun_shot_decal","_gun_shot_decal",0);
@@ -320,6 +321,22 @@ public _heal_stream(iPlugins, iParams){
 	write_byte( 8 )				// scroll speed
 	message_end()
 	
+}
+
+public _fade_screen_user(iPlugins, iParams){
+
+		new id=get_param(1)
+
+		message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
+		write_short(0); // fade lasts this long duration 
+		write_short(0); // fade lasts this long hold time 
+		write_short(FADE_HOLD); // fade type 
+		write_byte(0); // fade red 
+		write_byte(0); // fade green 
+		write_byte(0); // fade blue  
+		write_byte(255); // fade alpha  
+		message_end(); 
+
 }
 public _unfade_screen_user(iPlugins, iParams){
 

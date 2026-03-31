@@ -9,8 +9,6 @@
 #define BUSY_MSG "Some launched spores still busy!"
 
 
-#define SEARCH_LOOP_TASKID 218128
-#define SPORE_TRAIL_LOOP_TASKID 2329129
 
 #define LAUNCHER_CLASSNAME "ksun_launcher"
 
@@ -20,15 +18,10 @@
 #define SPORE_READY_SFX "shmod/ksun/launcher/spore_notification.wav"
 
 
-#define SHOOT_LOOP_TASKID 46523423
-#define UNSHOOT_LOOP_TASKID 6433243
 #define SHOOT_LOOP_PERIOD 0.2
 
 
 
-
-#define DEPLOY_LOOP_TASKID 7261272
-#define UNDEPLOY_LOOP_TASKID 3434004
 #define DEPLOY_LOOP_PERIOD 0.2
 
 #define SPORE_THINK_PERIOD 0.05

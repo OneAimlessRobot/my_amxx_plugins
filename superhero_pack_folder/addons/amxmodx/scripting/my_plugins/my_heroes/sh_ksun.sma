@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "ksun_inc/ksun_particle.inc"
@@ -12,6 +13,8 @@
 #include "chikoi_inc/sh_chikoi_funcs.inc"
 #include "../my_include/my_author_header.inc"
 
+
+stock KSUN_MORPH_TASKID
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
@@ -60,6 +63,7 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ksun_kd")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	register_forward(FM_PlayerPreThink, "ksun_prethink")
+	KSUN_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 public plugin_natives(){

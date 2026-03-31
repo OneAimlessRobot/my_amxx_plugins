@@ -1,5 +1,6 @@
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_radio_funcs.inc"
@@ -19,6 +20,8 @@
 new scan_loaded[SH_MAXSLOTS+1]
 new Float:jetplane_scan_radius;
 
+stock RADIO_RELOAD_TASKID
+
 new jetplane_scan_ammo;
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -31,7 +34,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_scan_ammo", "5")
 	register_cvar("yandere_jetplane_scan_radius", "5")
 	register_forward(FM_CmdStart, "CmdStart");
-
+	RADIO_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
 
 
@@ -95,10 +98,24 @@ public _reset_user_jet_scans(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!hasRoundStarted()||!client_hittable(id)) return FMRES_IGNORED;
-	
+	if(!hasRoundStarted()){
+
+		return FMRES_IGNORED
+	}
+	if(!client_hittable(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!yandere_get_has_yandere(id)){
+			
+		return FMRES_IGNORED
+	}
+	if(!jet_deployed(id)){
+		return FMRES_IGNORED
+	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
@@ -107,7 +124,7 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_USE;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||!scan_loaded[id]) return FMRES_IGNORED
+			if(!scan_loaded[id]) return FMRES_IGNORED
 			if(!get_user_jet_scans(id))
 			{
 				client_print(id, print_center, "You are out of scans!")

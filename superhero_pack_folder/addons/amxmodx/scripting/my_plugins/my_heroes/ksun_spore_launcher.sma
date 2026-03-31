@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -19,6 +20,14 @@ new Float:g_player_cooldown_remaining[SH_MAXSLOTS+1]
 new g_launcher_phase[SH_MAXSLOTS+1]
 new g_player_launcher[SH_MAXSLOTS+1]
 new Float:g_launcher_timer[SH_MAXSLOTS+1]
+
+
+
+
+stock UNDEPLOY_LOOP_TASKID,
+	COOLDOWN_UPDATE_TASKID
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -37,6 +46,7 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	register_forward(FM_Think, "launcher_think")
+	UNDEPLOY_LOOP_TASKID=allocate_typed_task_id(player_task)
 }
 
 
@@ -105,14 +115,6 @@ public _init_cooldown_update_tasks(iPlugins, iParms){
 	set_task(COOLDOWN_UPDATE_PERIOD,"launcher_recharge_loop",id+COOLDOWN_UPDATE_TASKID,"",0,"b")
 	
 	
-}
-public remove_glow_task(id){
-
-id-=KSUN_UNGLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)) return
-
-set_user_rendering(id)
-
 }
 
 public launcher_recharge_loop(id){

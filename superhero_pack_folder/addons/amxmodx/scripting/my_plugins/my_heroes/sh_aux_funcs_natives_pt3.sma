@@ -46,7 +46,6 @@ public plugin_natives(){
 
 	register_native("prepare_shero_aux_lib_pt3","_prepare_shero_aux_lib_pt3",0);
 	register_native("unradioactive_user","_unradioactive_user",0)
-	register_native("explosion_player","_explosion_player",0);
 	register_native("explosion","_explosion",0);
 	register_native("explosion_custom_entity","_explosion_custom_entity",0);
 	register_native("track_user","_track_user",0);
@@ -217,108 +216,54 @@ public unradioactive_task(id){
 
 
 }
-public _explosion_player(iPlugins,iParams){
-	
-
-    new hero_id=get_param(1),
-        ent_id=get_param(2),
-        Float:explosion_radius=get_param_f(3),
-        Float:peak_power=get_param_f(4),
-        Float:optional_force=get_param_f(5),
-        ignore_owner=get_param(6),
-        set_stun=get_param(7),
-        Float:upward_shift=get_param_f(8),
-        Float:damage_frac_ignore_owner=get_param_f(9)
-
-    if(!is_user_connected(ent_id)){
-        return
-
-    }
-    new Float:fOrigin[3];
-    entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
-
-    new iOrigin[3];
-    for(new i=0;i<3;i++)
-        iOrigin[i] = floatround(fOrigin[i]);
-
-    explode_fx(iOrigin,floatround(explosion_radius))
-
-    new entlist[33];
-    new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
-
-    new CsTeams:idTeam = cs_get_user_team(ent_id)
-        
-    for (new i=0; i < numfound; i++)
-    {	
-            
-        new pid = entlist[i];
-        
-        if(!client_hittable(pid)){
-            continue
-        
-        }
-        sh_screen_shake(pid,10.0,3.0,10.0)
-        if(pid!=ent_id){
-            if(cs_get_user_team(pid)==idTeam){
-                continue
-            }
-        }
-        damage_player(hero_id,ent_id,ent_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift,damage_frac_ignore_owner)
-        
-    }
-}
 public _explosion(iPlugins,iParams){
 
 
-    new hero_id=get_param(1),
-        ent_id=get_param(2),
-        Float:explosion_radius=get_param_f(3),
-        Float:peak_power=get_param_f(4),
-        Float:optional_force=get_param_f(5),
-        ignore_owner=get_param(6),
-        set_stun=get_param(7),
-        Float:upward_shift=get_param_f(8),
-        Float:damage_frac_ignore_owner=get_param_f(9)
+	new hero_id=get_param(1),
+		ent_id=get_param(2),
+		Float:explosion_radius=get_param_f(3),
+		Float:peak_power=get_param_f(4),
+		Float:optional_force=get_param_f(5),
+		ignore_owner=get_param(6),
+		set_stun=get_param(7),
+		Float:damage_frac_ignore_owner=get_param_f(8)
 
-    if((pev_valid(ent_id)!=2)){
+	if((pev_valid(ent_id)!=2)){
 
-        return 
+		return 
 
-    }
+	}
+	new Float:fOrigin[3];
+	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
 
-    new Float:fOrigin[3];
-    entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
+	new iOrigin[3];
+	for(new i=0;i<3;i++)
+		iOrigin[i] = floatround(fOrigin[i]);
 
-    new iOrigin[3];
-    for(new i=0;i<3;i++)
-        iOrigin[i] = floatround(fOrigin[i]);
+	explode_fx(iOrigin,floatround(explosion_radius))
 
-    explode_fx(iOrigin,floatround(explosion_radius))
+	new entlist[33];
+	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
+	new owner_id=(is_user_connected(ent_id))?ent_id:pev(ent_id,pev_owner)
 
-    new entlist[33];
-    new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
+	new CsTeams:idTeam = cs_get_user_team(owner_id)
+		
+	for (new i=0; i < numfound; i++)
+	{		
+		new pid = entlist[i];
+		if(!client_hittable(pid)){
+			continue
+		
+		}
+		sh_screen_shake(pid,10.0,3.0,10.0)
+		if(pid!=owner_id){
+			if(cs_get_user_team(pid)==idTeam){
+				continue
+			}
+		}
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,damage_frac_ignore_owner)
 
-    new owner_id=pev(ent_id,pev_owner)
-    new name_of_player[128];
-    get_user_name(owner_id,name_of_player,127)
-    new CsTeams:idTeam = cs_get_user_team(owner_id)
-        
-    for (new i=0; i < numfound; i++)
-    {		
-        new pid = entlist[i];
-        if(!client_hittable(pid)){
-            continue
-        
-        }
-        sh_screen_shake(pid,10.0,3.0,10.0)
-        if(pid!=owner_id){
-            if(cs_get_user_team(pid)==idTeam){
-                continue
-            }
-        }
-        damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,upward_shift,damage_frac_ignore_owner)
-
-    }
+	}
 }
 public _explosion_custom_entity(iPlugins,iParams){
 
@@ -329,8 +274,7 @@ public _explosion_custom_entity(iPlugins,iParams){
     new ent_id=get_param(1),
         Float:explosion_radius=get_param_f(2),
         Float:peak_power=get_param_f(3),
-        Float:optional_force=get_param_f(5),
-        Float:upward_shift=get_param_f(6);
+        Float:optional_force=get_param_f(4)
 
     if((pev_valid(ent_id)!=2)){
 
@@ -363,10 +307,10 @@ public _explosion_custom_entity(iPlugins,iParams){
             continue
         
         }
-        damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force,upward_shift)
+        damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
     }
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:upward_shift=1.0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -400,18 +344,16 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	}
 	
-	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
+	new Float:vOrig[3],Float:usOrig[3]
 	
-	new parm[5]
 	
 	Entvars_Get_Vector(pid, EV_VEC_origin, vOrig)
 	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
 	
-	Entvars_Get_Vector(ent_id, EV_VEC_velocity, b_vel)
 	
 	new Float:distance=get_distance_f(vOrig,usOrig);
-	new client_name[128];
-	new attacker_name[128];
+	static client_name[128];
+	static attacker_name[128];
 	get_user_name(pid,client_name,127);
 	get_user_name(owner_id,attacker_name,127);
 	new Float:vic_origin[3],Float:mine_origin[3];
@@ -430,17 +372,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	}	
 	sh_extra_damage(pid,owner_id,idamage,"SH_Explosion");
 	
-	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
-	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
-	b_vel[2]=((vOrig[2] -usOrig[2]) )*force
-	
-		
-	parm[0] = floatround(b_vel[0])
-	parm[1] = floatround(b_vel[1])
-	parm[2] = floatround(b_vel[2])
-	parm[3] = pid
-	parm[4] = floatround(upward_shift)
-	move_enemy(parm)
+	set_velocity_from_origin(pid,usOrig,force)
 	if(set_stun){
 		sh_set_stun(pid,3.0,0.5)
 	}
@@ -450,7 +382,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	sh_chat_message(owner_id,hero_id,"%s was shattered by you!",client_name);
 	sh_chat_message(pid,hero_id,"%s shattered you!",attacker_name);
 }
-stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,Float:upward_shift=1.0){
+stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 
 
 	if((pev_valid(ent_id)!=2)||(pev_valid(tg_id)!=2)){
@@ -470,14 +402,12 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 		
 	
 	}
-	new Float:b_vel[3],Float:vOrig[3],Float:usOrig[3]
+	new Float:vOrig[3],Float:usOrig[3]
 	
-	new parm[5]
 	
-	Entvars_Get_Vector(tg_id, EV_VEC_origin, vOrig)
-	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
+	Entvars_Get_Vector(ent_id, EV_VEC_origin, vOrig)
+	Entvars_Get_Vector(owner_id, EV_VEC_origin, usOrig)
 	
-	Entvars_Get_Vector(ent_id, EV_VEC_velocity, b_vel)
 	
 	new Float:distance=get_distance_f(vOrig,usOrig);
 	new Float:vic_origin[3],Float:mine_origin[3];
@@ -507,24 +437,15 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 		return
 	
 	}
-	b_vel[0]=((vOrig[0] -usOrig[0]) )*force
-	b_vel[1]=((vOrig[1] -usOrig[1]) )*force
-	b_vel[2]=((vOrig[2] -usOrig[2]) )*force
 	
-		
-	parm[0] = floatround(b_vel[0])
-	parm[1] = floatround(b_vel[1])
-	parm[2] = floatround(b_vel[2])
-	parm[3] = tg_id
-	parm[4] = floatround(upward_shift)
-	move_entity(parm)
+	set_velocity_from_origin(tg_id,vOrig,force)
 }
 
 public on_death_tracked()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)||sh_is_active()){
+	if(is_user_connected(id)&&sh_is_active()){
 		unradioactive_user(id)
 	
 	}
@@ -560,6 +481,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		hud_will_glow=get_param(9),
 		make_sound=get_param(10),
 		Float: mate_health=float(get_user_health(id))
+
 	
 	if(mate_health>=sh_get_max_hp(id)){
 		return false
@@ -571,7 +493,11 @@ public bool:_generic_heal(iPlugins, iParms){
 	}
 
 	if(make_sound){
-		emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+		static sound_sample_string[128]
+
+		get_string(11,sound_sample_string,127)
+		emit_sound(id, CHAN_STATIC, sound_sample_string, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 	new Float: new_health=floatadd(mate_health,added_hp)
 	set_user_health(id,min((max_hp_to_clamp>0)?max_hp_to_clamp:sh_get_max_hp(id),floatround(new_health)))

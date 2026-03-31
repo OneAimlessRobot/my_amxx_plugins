@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -245,12 +246,6 @@ return PLUGIN_HANDLED
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-has_rocket[id] = 0
-}
-//----------------------------------------------------------------------------------------------
-public rocket_reload(id)
-{
-id-=ROCKET_RELOAD_TASKID
 has_rocket[id] = 0
 }
 //----------------------------------------------------------------------------------------------
