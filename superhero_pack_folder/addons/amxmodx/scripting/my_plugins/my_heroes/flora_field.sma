@@ -762,10 +762,10 @@ public field_think(ent)
 		for( new i= 0;(i< numfound);i++){
 		
 			new pid = entlist[i];
-			/*if(pid==owner){
+			if(pid==owner){
 
 				continue
-			}*/
+			}
 			if(!client_hittable(pid)){
 				if(is_user_connected(pid)){
 					set_render_with_color_const(pid,INVIS,1,10,_,0)
@@ -786,7 +786,7 @@ public field_think(ent)
 				sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
 
 				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1)
-				set_damage_icon(pid,1,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]])
+				set_damage_icon(pid,2,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]])
 				unset_damage_icon(pid,DMG_ICON_POISON)
 				remove_glow_user(pid,flora_stun_time*g_flora_curr_dmg_mult[owner])
 				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)

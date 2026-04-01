@@ -158,7 +158,7 @@ sleep_user(id,attacker){
 	array[0] = attacker
 	gIsAsleep[id]=true
 	sleep_user_switch_weapon(id)
-	set_damage_icon(id,1,DMG_ICON_GAS,LineColors[WHITE])
+	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
 	entity_get_vector(id, EV_VEC_angles, gKeepAngles[id])

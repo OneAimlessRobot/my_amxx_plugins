@@ -192,6 +192,7 @@ stock burn_user(id,attacker){
 	new array[1]
 	array[0] = attacker
 	gIsBurning[id]=true
+	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
 	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array), "a",BURN_TIMES)
 	set_task(BURN_PERIOD, "fire_sound", id+BURN_TASKID_SOUND, "", 0,  "a", BURN_TIMES);
 	set_task(0.7, "fire_scream", id+BURN_TASKID_SCREAMS)
@@ -214,6 +215,7 @@ public unburn_task(id){
 	remove_task(id+BURN_TASKID_SCREAMS)
 	remove_task(id+BURN_TASKID_STOP_SOUND)
 	if ( !shModActive() ||!is_user_connected(id)) return
+	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	set_user_rendering(id)
 	unfade_screen_user(id)
@@ -229,6 +231,7 @@ unburn_user(id){
 	remove_task(id+BURN_TASKID_SOUND)
 	remove_task(id+BURN_TASKID_SCREAMS)
 	if ( !shModActive() ||!is_user_connected(id)) return
+	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)
 	set_user_rendering(id)

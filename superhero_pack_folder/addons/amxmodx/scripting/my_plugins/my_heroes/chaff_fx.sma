@@ -138,6 +138,7 @@ chaff_user(id,attacker){
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)
 	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),default_stun_speed)
 	gIsChaffed[id]=true
+	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
 	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",CHAFF_TIMES)
 	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,"", 0,  "a",DISORIENT_TIMES)
 	set_task(floatsub(CHAFF_TIME,0.1),"unchaff_task",id+UNCHAFF_TASKID,"", 0,  "a",1)
@@ -153,6 +154,7 @@ public unchaff_task(id){
 	
 
 	gIsChaffed[id]=false
+	set_damage_icon(id,0,DMG_ICON_SHOCK)
 	remove_task(id+DISORIENT_TASKID)
 	entity_set_int( id, EV_INT_fixangle, 0 );
 	
@@ -166,6 +168,7 @@ unchaff_user(id){
 	remove_task(id+CHAFF_TASKID)
 
 	gIsChaffed[id]=false
+	set_damage_icon(id,0,DMG_ICON_SHOCK)
 	remove_task(id+DISORIENT_TASKID)
 	entity_set_int( id, EV_INT_fixangle, 0 );
 	

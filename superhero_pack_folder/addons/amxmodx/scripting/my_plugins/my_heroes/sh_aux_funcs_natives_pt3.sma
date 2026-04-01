@@ -170,7 +170,7 @@ public _track_user(iPlugins, iParams){
 	new player_count;
 	gatling_set_fx_num(id, RADIOACTIVE)
 	
-	set_damage_icon(id,1,DMG_ICON_RADIATION,LineColors[track_color])
+	set_damage_icon(id,2,DMG_ICON_RADIATION,LineColors[track_color])
 
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
