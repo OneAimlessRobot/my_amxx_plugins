@@ -3,7 +3,14 @@
 #endif
 #define sh_aux_fx_funcs_natives_pt1
 
-
+enum damage_icon_types{
+  DMG_ICON_POISON=0,
+  DMG_ICON_RADIATION,
+  DMG_ICON_SHOCK,
+  DMG_ICON_GAS,
+  DMG_ICON_HEAT,
+  DMG_ICON_MAX
+}
 
 native precache_native_fx_pt1()
 native prepare_shero_aux_lib_pt1()
@@ -19,8 +26,36 @@ native random_fire(Origin[3], ent, Float:radius)
 native make_fire(id, Float:rad)
 
 native make_shockwave(point[3],Float:radius,const color[3],shockwave_frame_rate=1,shockwave_life=10,shockwave_line_width=8,shockwave_amplitude=1,alpha=255)
+/** 
+hide=0
+show=1
+flash=2
+
+enum damage_icon_types{
+  DMG_ICON_POISON=0,
+  DMG_ICON_RADIATION,
+  DMG_ICON_SHOCK,
+  DMG_ICON_GAS,
+  DMG_ICON_HEAT,
+  DMG_ICON_MAX //this_value bounds an internal array. dont use it
+}
 
 
+ */
+native set_damage_icon(id,hide_show_or_flash=0,the_type_of_icon=DMG_ICON_POISON,const color[3]={0,0,0})
+native unset_damage_icon(id,the_type_of_icon,Float:delay=1.0)
+
+/** 
+remember:
+
+this is a special fx function.
+the purpose of the radius value
+is to allow the native to choose
+between big decals (Radius>18)
+or small decals (otherwise)
+
+native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18)
+*/
 native heal_stream(id, x,color_index=LTGREEN,alpha=255)
 
 native unfade_screen_user(id)
@@ -55,7 +90,11 @@ native detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0})
 
 native draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM});
 
+/**
+true for torus
+false for disk
 
-native shoteffects(Float:Pos[3],ent)
+*/
+native create_fired_shot_disk(Float:Pos[3],ent,bool:torus_or_disk=true)
 
 native set_render_with_color_const(id,the_color_num,glow_on_user=1,alpha=-1,the_hud_alpha=-1,glow_user_hud=1,is_sleep=0)

@@ -37,9 +37,20 @@ public plugin_init(){
 	YANDERE_PSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
 	UNPSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
+	register_event("ResetHUD","psychosis_newRound","b")
 	
 }
 
+//----------------------------------------------------------------------------------------------
+public psychosis_newRound(id)
+{	
+	if(shModActive()&&client_hittable(id)){
+		if(gIsPsychosis[id]){
+			yandere_unpsychosis_user(id)
+		}
+	}
+	
+}
 public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker) ||(id==attacker)) return HAM_IGNORED

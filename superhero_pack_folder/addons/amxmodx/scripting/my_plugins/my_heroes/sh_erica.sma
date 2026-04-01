@@ -288,7 +288,6 @@ public newRound(id)
 			
 		}
 	}
-	return PLUGIN_HANDLED
 	
 }
 public client_disconnected(id){

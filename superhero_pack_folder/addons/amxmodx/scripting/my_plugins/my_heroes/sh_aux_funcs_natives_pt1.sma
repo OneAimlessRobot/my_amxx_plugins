@@ -16,12 +16,24 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new const damage_icon_strings_arr[_:DMG_ICON_MAX][]={
+	"dmg_poison",
+	"dmg_rad",
+	"dmg_shock",
+	"dmg_gas",
+	"dmg_heat"
+}
+
+stock REMOVE_DAMAGE_ICON_TASKID
+
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	g_msgFade = get_user_msgid("ScreenFade");
+	gmsgIcon = get_user_msgid("StatusIcon")
 	prepare_shero_aux_lib_pt1()
+	REMOVE_DAMAGE_ICON_TASKID=allocate_typed_task_id(player_task)
 
 }
 public plugin_precache(){
@@ -51,11 +63,15 @@ public plugin_natives(){
 	register_native("suck_in_sound","_suck_in_sound",0);
 	register_native("aura","_aura",0);
 	register_native("detect_user","_detect_user",0);
-	register_native("shoteffects","_shoteffects",0);
+	register_native("create_fired_shot_disk","_create_fired_shot_disk",0);
 	register_native("draw_aim_vector","_draw_aim_vector",0);
 	register_native("precache_native_fx_pt1","_precache_native_fx_pt1",0)
 	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1",0);
 	register_native("set_render_with_color_const","_set_render_with_color_const",0)
+	register_native("tank_impact_shot_fx","_tank_impact_shot_fx",0)
+	register_native("set_damage_icon","_set_damage_icon",0)
+	register_native("unset_damage_icon","_unset_damage_icon",0)
+
 }
 
 public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
@@ -77,20 +93,19 @@ public _precache_native_fx_pt1(iPlugin,iParams){
 	smoke = precache_model("sprites/steam1.spr")
 	g_iFireSprite = precache_model("sprites/flame.spr");
 	gSpriteLaser = precache_model("sprites/laserbeam.spr")
+	precached_explosion_sprite = precache_model("sprites/shmod/zerogxplode2.spr")
 
-	engfunc(EngFunc_PrecacheSound,  LASER_LINE_DEFAULT_SOUND)
-	engfunc(EngFunc_PrecacheSound,  crush_stunned)
-	precache_sound(SUCK_IN_SOUND_FILE_NAME)
-	precache_sound(NULL_SOUND)
-	/*
-	fire = precache_model("sprites/zerogxplode.spr")
-	*/
+	engfunc(EngFunc_PrecacheSound, LASER_LINE_DEFAULT_SOUND)
+	engfunc(EngFunc_PrecacheSound, crush_stunned)
+	engfunc(EngFunc_PrecacheSound, SUCK_IN_SOUND_FILE_NAME)
+	engfunc(EngFunc_PrecacheSound, EXPLOSION_TANK_SHOT_SOUND)
 
 }
 public _trail_custom(iPlugins, iParams){
 
 		new ent_id=get_param(1)
 
+		if(!is_valid_ent(ent_id)) return 
 		new color[3]
 
 		get_array(2,color,3)
@@ -119,16 +134,13 @@ public _trail(iPlugins, iParams){
 
 		new ent_id=get_param(1)
 
+		if(!is_valid_ent(ent_id)) return 
 		new color_const= get_param(2)
 
 		new life = get_param(3)
 		new width = get_param(4)
 		new alpha = get_param(5)
 
-		if(pev_valid(ent_id)!=2){
-		
-			return
-		}
 		message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
 		write_byte( TE_BEAMFOLLOW )
 		write_short(ent_id) // entity
@@ -164,6 +176,8 @@ public _random_fire(iPlugins, iParams){
 	get_array(1,Origin,3)
 	
 	new ent = get_param(2)
+
+	if(!is_valid_ent(ent)) return 
 	new Float:radius = get_param_f(3)
 
 	static iRange, iOrigin[3], g_g, i;
@@ -228,6 +242,7 @@ public _make_fire(iPlugins, iParams){
 	ry = random_num(-radius, radius)
 	rz = random_num(-radius, radius)
 
+	if(!is_valid_ent(id)) return 
 	pev(id, pev_origin, forigin)
 
 	// Additive sprite, plays 1 cycle
@@ -325,17 +340,17 @@ public _heal_stream(iPlugins, iParams){
 
 public _fade_screen_user(iPlugins, iParams){
 
-		new id=get_param(1)
+	new id=get_param(1)
 
-		message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
-		write_short(0); // fade lasts this long duration 
-		write_short(0); // fade lasts this long hold time 
-		write_short(FADE_HOLD); // fade type 
-		write_byte(0); // fade red 
-		write_byte(0); // fade green 
-		write_byte(0); // fade blue  
-		write_byte(255); // fade alpha  
-		message_end(); 
+	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
+	write_short(0); // fade lasts this long duration 
+	write_short(0); // fade lasts this long hold time 
+	write_short(FADE_HOLD); // fade type 
+	write_byte(0); // fade red 
+	write_byte(0); // fade green 
+	write_byte(0); // fade blue  
+	write_byte(255); // fade alpha  
+	message_end(); 
 
 }
 public _unfade_screen_user(iPlugins, iParams){
@@ -366,14 +381,14 @@ public _laser_line(iPlugins, iParams){
 		for_one=get_param(6),
 		make_sound=get_param(7),
 		sound_sample[128]
+		
+	if(!is_valid_ent(ent_id)) return
 	
 	get_array_f(2,Pos,3)
 	get_array_f(3,vEnd,3)
 	get_array(5,color_constants,3)
 	get_string(8,sound_sample,127)
 
-
-	if ( !pev_valid(ent_id) ) return
 	static  colors[3]
 	if(client_hittable(pev(ent_id, pev_owner))){
 	
@@ -432,7 +447,7 @@ public _draw_bbox(iPlugins, iParams){
 
 	new ent_id=get_param(1),
 		killbeam=get_param(2)
-
+	if(!is_valid_ent(ent_id)) return
 	new Float:bbox_mins[3],Float:bbox_maxs[3],Float:ent_orig[3]
 		
 	//Example: vex_rld = vex rear left down (z, y, x)
@@ -608,6 +623,7 @@ public _directed_spark(iPlugins, iParams){
 		ramming_pace=get_param(6),
 		color_constant=get_param(7)
 
+	if(!is_valid_ent(init_id)||!is_valid_ent(end_id)) return 
 	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	
@@ -629,7 +645,107 @@ public _directed_spark(iPlugins, iParams){
 	message_end()
 
 }
+public _tank_impact_shot_fx(iPlugin,iParms){
 
+		new ent=get_param(1)
+		if(!is_valid_ent(ent)) return 
+		
+		new Float:origin[3]
+
+		get_array_f(2,origin,3)
+		new radius=get_param(3)
+		
+
+
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_SPRITE)
+		write_coord_f(origin[0])
+		write_coord_f(origin[1])
+		write_coord_f(origin[2] + 60)
+		write_short(precached_explosion_sprite)
+		write_byte(20)
+		write_byte(200)
+		message_end()
+		
+		emit_sound(ent, CHAN_WEAPON, EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+		new decal_id
+		if ( radius <= 18 ) {
+			//radius ~< 216
+			decal_id = g_burnDecal[random_num(0,2)]
+		}
+		else {
+			decal_id = g_burnDecalBig[random_num(0,2)]
+		}
+
+		// Create the burn decal
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)		//TE_GUNSHOTDECAL
+		write_coord_f(origin[0])
+		write_coord_f(origin[1])
+		write_coord_f(origin[2])
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
+		message_end()
+
+}
+public _create_fired_shot_disk(iPlugin,iParms){
+	new Float:Pos[3]
+
+	get_array_f(1,Pos,3)
+	new ent=get_param(2)
+	if(!is_valid_ent(ent)) return 
+	new torus_or_disk=get_param(3)
+
+	torus_or_disk=clamp(torus_or_disk,0,1)
+
+	new Float:vOrigin[3]
+	pev(ent, pev_origin, vOrigin)
+	
+	new Float:vTraceDirection[3], Float:vTraceEnd[3],Float:vNormal[3]
+	
+	velocity_by_aim(ent, 64, vTraceDirection)
+	vTraceEnd[0] = vTraceDirection[0] + vOrigin[0]
+	vTraceEnd[1] = vTraceDirection[1] + vOrigin[1]
+	vTraceEnd[2] = vTraceDirection[2] + vOrigin[2]
+	
+	new tr = 0
+	engfunc(EngFunc_TraceLine, vOrigin, vTraceEnd, 0, ent, tr)
+	get_tr2(tr, TR_vecPlaneNormal, vNormal)
+	
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
+	write_byte(torus_or_disk?TE_BEAMTORUS:TE_BEAMDISK)
+	write_coord_f(vOrigin[0])
+	write_coord_f(vOrigin[1])
+	write_coord_f(vOrigin[2])
+	switch(torus_or_disk){
+		case 0:{
+			write_coord_f(vNormal[0])
+			write_coord_f(vNormal[1])
+			write_coord_f(vNormal[2])
+		}
+		case 1:{
+
+			write_coord_f(vTraceDirection[0])
+			write_coord_f(vTraceDirection[1])
+			write_coord_f(vTraceDirection[2])
+
+		}
+	}
+	write_short(white)
+	write_byte(1)
+	write_byte(5)
+	write_byte(5)
+	write_byte(14)
+	write_byte(1)
+	write_byte(255)
+	write_byte(255)
+	write_byte(255)
+	write_byte(255)
+	write_byte(1)
+	message_end()
+
+}
 
 //----------------------------------------------------------------------------------------------
 public _blood_spray(iPlugins, iParams){
@@ -707,6 +823,8 @@ public _suck_in_sound(iPlugins, iParams){
 
 public _aura(iPlugins, iParams){
 	new id= get_param(1);
+
+	if ( !is_user_connected(id) ) return
 	new color[3]
 	get_array(2,color,3)
 	new life=get_param(3)
@@ -730,6 +848,28 @@ public _aura(iPlugins, iParams){
 
 }
 
+public _set_damage_icon(iPlugins, iParams){
+
+	new id= get_param(1)
+	if ( !is_user_connected(id) ) return
+	new hide_show_or_flash=get_param(2)
+
+	new the_icon_type_to_show=get_param(3)
+	new color[3]
+
+	get_array(4,color,3)
+
+
+// Poison HUD Icon
+
+	message_begin(MSG_ONE, gmsgIcon, {0,0,0}, id)
+	write_byte(hide_show_or_flash)				// status (0=hide, 1=show, 2=flash)
+	write_string(damage_icon_strings_arr[the_icon_type_to_show])	// sprite name
+	write_byte(color[0])		// red
+	write_byte(color[1])	// green
+	write_byte(color[2])		// blue
+	message_end()
+}
 
 /*
 
@@ -740,6 +880,10 @@ public _detect_user(iPlugins, iParams){
 
 	new id= get_param(1)
 	new enemy= get_param(2)
+
+
+	if(!is_valid_ent(id)||!is_valid_ent(enemy)) return 
+
 	new Float:origin[3]
 	get_array_f(3,origin,3)
 
@@ -759,6 +903,9 @@ public _detect_user(iPlugins, iParams){
 }
 public _draw_aim_vector(iPlugin,iParams){
 	new id=get_param(1)
+
+	if(!is_valid_ent(id)) return 
+	
 	new color_vector_indices[3]
 	get_array(2,color_vector_indices,3)
 
@@ -770,54 +917,12 @@ public _draw_aim_vector(iPlugin,iParams){
 	laser_line(id,fvec1, fvec2,true,color_vector_indices,false)
 
 }
-public _shoteffects(iPlugin,iParams){
-	new Float:Pos[3]
-
-	get_array_f(1,Pos,3)
-	new ent=get_param(2)
-
-	new Float:vOrigin[3]
-	pev(ent, pev_origin, vOrigin)
-	
-	new Float:vTraceDirection[3], Float:vTraceEnd[3],Float:vNormal[3]
-	
-	velocity_by_aim(ent, 64, vTraceDirection)
-	vTraceEnd[0] = vTraceDirection[0] + vOrigin[0]
-	vTraceEnd[1] = vTraceDirection[1] + vOrigin[1]
-	vTraceEnd[2] = vTraceDirection[2] + vOrigin[2]
-	
-	new tr = 0
-	engfunc(EngFunc_TraceLine, vOrigin, vTraceEnd, 0, ent, tr)
-	get_tr2(tr, TR_vecPlaneNormal, vNormal)
-	new iPos[3],iTD[3]
-	FVecIVec(Pos,iPos)
-	FVecIVec(vTraceDirection,iTD)
-	
-	message_begin(MSG_BROADCAST,SVC_TEMPENTITY);
-	write_byte(TE_BEAMTORUS)
-	write_coord(iPos[0])
-	write_coord(iPos[1])
-	write_coord(iPos[2])
-	write_coord(iTD[0])
-	write_coord(iTD[1])
-	write_coord(iTD[2])
-	write_short(white)
-	write_byte(1)
-	write_byte(5)
-	write_byte(5)
-	write_byte(14)
-	write_byte(1)
-	write_byte(255)
-	write_byte(255)
-	write_byte(255)
-	write_byte(255)
-	write_byte(1)
-	message_end()
-	
-}
-
 public _set_render_with_color_const(iPlugins,iParams){
 	new id=get_param(1)
+
+	if(!is_valid_ent(id)) return 
+
+
 	new the_color_const=get_param(2)
 	new glow_on_user=get_param(3)
 	new alpha=get_param(4)
@@ -842,4 +947,24 @@ public _set_render_with_color_const(iPlugins,iParams){
 		
 		aura(id,LineColors[the_color_const])
 	}
+}
+public _unset_damage_icon(iPlugins,iParams){
+
+	new id=get_param(1)
+	if(!is_user_connected(id)) return
+	new the_icon_to_remove=get_param(2)
+
+	new Float:delay=get_param_f(3)
+	new parm[1]
+	parm[0]=the_icon_to_remove
+	set_task(delay,"remove_damage_icon_task",id+REMOVE_DAMAGE_ICON_TASKID,parm,1)
+
+}
+public remove_damage_icon_task(array[],id){
+
+	id-=REMOVE_DAMAGE_ICON_TASKID
+	if(!is_user_connected(id)) return
+	set_damage_icon(id,_,array[0])
+
+
 }

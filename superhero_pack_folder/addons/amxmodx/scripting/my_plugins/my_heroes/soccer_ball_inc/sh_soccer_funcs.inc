@@ -21,7 +21,7 @@ stock ballbeam[3] = { 20,50,255 }
 #define BALL_DMG 100
 
 
-#define BALL_KNOCKBACK 1500.0
+#define BALL_KNOCKBACK 1200.0
 
 #define AVG_FACTOR 3
 

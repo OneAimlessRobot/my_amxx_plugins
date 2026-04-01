@@ -482,7 +482,6 @@ public plugin_precache()
 precache_model("models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_WALLHIT_SOUND)
-engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
 
 }
 public fm_PlaybackEventPre() return FMRES_SUPERCEDE

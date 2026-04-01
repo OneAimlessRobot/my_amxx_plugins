@@ -17,6 +17,7 @@ veronika_m203dmg 120
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 stock veronika_ak_v_mdl[]= "models/shmod/veronika/ak47grenade.mdl"
@@ -407,42 +408,6 @@ else
 }
 }
 
-
-/////////////////////
-//Thantik's he-conc functions
-stock get_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed, Float:fVelocity[3] )
-{
-new Float:fEntOrigin[3];
-entity_get_vector( ent, EV_VEC_origin, fEntOrigin );
-
-// Velocity = Distance / Time
-
-new Float:fDistance[3];
-fDistance[0] = fEntOrigin[0] - fOrigin[0];
-fDistance[1] = fEntOrigin[1] - fOrigin[1];
-fDistance[2] = fEntOrigin[2] - fOrigin[2];
-
-new Float:fTime = ( vector_distance( fEntOrigin,fOrigin ) / fSpeed );
-
-fVelocity[0] = fDistance[0] / fTime;
-fVelocity[1] = fDistance[1] / fTime;
-fVelocity[2] = fDistance[2] / fTime;
-
-return ( fVelocity[0] && fVelocity[1] && fVelocity[2] );
-}
-
-
-// Sets velocity of an entity (ent) away from origin with speed (speed)
-
-stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
-{
-new Float:fVelocity[3];
-get_velocity_from_origin( ent, fOrigin, fSpeed, fVelocity )
-
-entity_set_vector( ent, EV_VEC_velocity, fVelocity );
-
-return ( 1 );
-}
 
 public grentrail(parm[])
 {

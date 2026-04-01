@@ -40,6 +40,7 @@ public plugin_init()
 
 	BOMB_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
+	init_explosion_defaults()
 
 
 

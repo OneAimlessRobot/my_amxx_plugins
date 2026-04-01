@@ -45,6 +45,7 @@ public plugin_init()
 
 	ROCKET_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
+	init_explosion_defaults()
 }
 public plugin_cfg(){
 

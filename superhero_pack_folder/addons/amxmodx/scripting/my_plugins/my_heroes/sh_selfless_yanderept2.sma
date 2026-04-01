@@ -68,6 +68,7 @@ public plugin_init()
 	YANDERE_STATS_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_ANGER_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
+	init_explosion_defaults()
 }
 public plugin_natives(){
 
@@ -467,7 +468,7 @@ public yandere_damage(id)
 				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
-				sh_set_stun(id,2.0,0.25)
+				sh_set_stun(id,2.0,default_stun_speed)
 			
 				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*angry_hitheal_pct,overheal_hp_max,RED,1,_,70,1)
 				if(extraDamage>=health){

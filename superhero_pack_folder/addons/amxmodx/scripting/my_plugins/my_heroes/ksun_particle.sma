@@ -96,6 +96,9 @@ untrack_spore(spore){
 		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
+		new Float:origin[3]
+		entity_get_vector(spore,EV_VEC_origin,origin)
+		make_sparks(origin)
 		remove_entity(spore)
 		dec_player_num_victims(spore_owner)
 		ksun_dec_num_available_spores(spore_owner)
@@ -513,7 +516,10 @@ public touch_event(pToucher, pTouched)  //This is triggered when two entites tou
 {
 if(!is_valid_ent(pToucher)) return
 
-if(!client_hittable(pTouched)) return
+if(!client_hittable(pTouched)){
+	untrack_spore(pToucher)
+	return
+}
 
 static classname[32]
 classname[0] = '^0'

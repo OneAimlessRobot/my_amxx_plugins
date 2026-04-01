@@ -97,6 +97,8 @@ public plugin_init()
 	ESTER_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 
+	init_explosion_defaults()
+
 }
 public Hook_BloodColor(id)
 {
@@ -738,7 +740,7 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound, ester_death_sounds[i])
 		
 	}
-	engfunc(EngFunc_PrecacheSound,NULL_SOUND_FILENAME)
+	engfunc(EngFunc_PrecacheSound,NULL_SOUND)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_CHARGE)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
 	precache_model(PAN_V_MODEL)

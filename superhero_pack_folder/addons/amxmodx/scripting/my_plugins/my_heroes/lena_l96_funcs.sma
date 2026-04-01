@@ -2,7 +2,10 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
@@ -61,6 +64,7 @@ public plugin_init(){
 	LENA_PROJECTILE_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
 	register_forward(FM_Think, "bulette_thinque")
+	init_explosion_defaults()
 
 
 }
@@ -87,7 +91,20 @@ public bulette_thinque(ent){
 	new parm[2]
 	parm[0] = ent
 	parm[1] = owner
-	
+	new Float:current_bullet_reverb_time=entity_get_float(ent,EV_FL_fuser1)
+	if(!entity_get_int(ent,EV_INT_iuser1)){
+		
+		if(current_bullet_reverb_time>0.0){
+			entity_set_float(ent,EV_FL_fuser1,current_bullet_reverb_time-LENA_PROJECTILE_PHYS_UPDATE_TIME)
+		}
+		else{
+			entity_set_int(ent,EV_INT_iuser1,1)
+			entity_set_float(ent,EV_FL_fuser1,0.0)
+			emit_sound(owner, CHAN_WEAPON, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(owner, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+		}
+	}
 	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
@@ -351,7 +368,7 @@ if (!Ent){
 	return
 }
 entity_set_string(Ent, EV_SZ_classname, LENA_PROJECTILE_CLASSNAME)
-entity_set_model(Ent, "models/shell.mdl")
+entity_set_model(Ent, "models/grenade.mdl")
 
 new Float:MinBox[3] = {-1.0, -1.0, -1.0}
 new Float:MaxBox[3] = {1.0, 1.0, 1.0}
@@ -364,7 +381,7 @@ entity_set_vector(Ent, EV_VEC_angles, vAngle)
 entity_set_int(Ent, EV_INT_effects, 2)
 entity_set_int(Ent, EV_INT_solid, 2)
 entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT)
+entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT*0.5)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
@@ -393,15 +410,15 @@ bullet_launch_pos[Ent][0]=Origin[0]
 bullet_launch_pos[Ent][1]=Origin[1]
 bullet_launch_pos[Ent][2]=Origin[2]
 
+entity_set_float(Ent,EV_FL_fuser1,LENA_REVERB_SHOT_DELAY)
+entity_set_int(Ent,EV_INT_iuser1,0)
 new parm2[1]
 
 parm2[0]= id
 emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-new origin_int[3]
-FVecIVec(bullet_launch_pos[Ent],origin_int)
-make_shockwave(origin_int,100.0,{255, 255, 255},5,30,3,_,150)
+create_fired_shot_disk(bullet_launch_pos[Ent],id,true)
 
-trail(Ent,YELLOW,3,10)
+trail(Ent,ORANGE,6,13,200)
 
 set_task(LENA_PROJECTILE_SHOOT_PERIOD, "bullet_reload",id+LENA_PROJECTILE_RELOAD_TASKID,parm2,1,"a",1)
 
@@ -461,6 +478,8 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
+				new Float:vic_origin[3]
+				entity_get_vector(pToucher,EV_VEC_origin,vic_origin);
 				
 				new Float:speed
 				new Float:velocity[3]
@@ -469,7 +488,6 @@ public vexd_pfntouch(pToucher, pTouched)
 				entity_get_vector(pToucher,EV_VEC_velocity,velocity);
 				speed=VecLength(velocity);
 				new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
-				new Float:vic_origin[3];
 				new Float:vic_origin_eyes[3];
 				new vic_origin_eyes_int[3];
 				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
@@ -489,16 +507,17 @@ public vexd_pfntouch(pToucher, pTouched)
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
+					new health = get_user_health(pTouched)
 					sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
 					set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
 					if(!is_user_bot(oid)){
 						sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
 					}
-					if(!sh_get_stun(pTouched)){
+					if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
 							new Float:the_period=(headshot?0.33:1.0);
 							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
-							track_user(pTouched,oid,0,_,the_period,the_time)
-							sh_set_stun(pTouched,the_time,150.0);
+							track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
+							sh_set_stun(pTouched,the_time,default_stun_speed)
 							
 							if(!is_user_bot(oid)){
 								sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
@@ -517,6 +536,22 @@ public vexd_pfntouch(pToucher, pTouched)
 					
 					if(!is_user_bot(pTouched)){
 						send_poem_function(pTouched, lena_poems[random_number]);
+					}
+					if(floatround(damage)>=health){
+
+						new ivicOrigin[3],
+							ivExplodeAt[3]
+						FVecIVec(vic_origin,ivicOrigin)
+						FVecIVec(origin,ivExplodeAt)
+						fx_gib_explode(ivicOrigin,ivExplodeAt)
+						fx_blood_large(ivicOrigin,4)
+						fx_blood_small(ivicOrigin,4)
+
+						fx_blood_small(ivicOrigin,8)
+						fx_extra_blood(ivicOrigin)
+						fx_blood_large(ivExplodeAt,2)
+						fx_blood_small(ivicOrigin,4)
+
 					}
 				}
 				new CsArmorType:armor_type;
@@ -559,6 +594,10 @@ public vexd_pfntouch(pToucher, pTouched)
 			gun_shot_decal(origin);
 
 		}
+
+		tank_impact_shot_fx(pToucher,origin,17)
+
+		
 		remove_bullet(pToucher)	
 
 		arrayset(bullet_launch_pos[pToucher],0.0,3);
@@ -574,10 +613,9 @@ public remove_bullet(id_bullet){
 public plugin_precache()
 {
 
-precache_model("models/shell.mdl")
+precache_model("models/grenade.mdl")
 engfunc(EngFunc_PrecacheSound, LENA_L96_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, LENA_L96_WALLHIT_SOUND)
-engfunc(EngFunc_PrecacheSound, NULL_SOUND_FILENAME)
 
 }
 public fm_PlaybackEventPre() return FMRES_SUPERCEDE

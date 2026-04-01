@@ -58,6 +58,7 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIBLES
@@ -79,9 +80,7 @@ stock goku_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailR
 new g_spriteExplosionY, g_spriteExplosionB, g_spriteExplosionR, g_spritePowerUp
-
-static const g_burnDecal[3] = {28, 29, 30}
-static const g_burnDecalBig[3] = {46, 47, 48}
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -106,7 +105,7 @@ public plugin_init()
 	register_cvar("goku_blast_decals", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
+	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -132,6 +131,7 @@ public plugin_init()
 	goku_hud_sync=CreateHudSyncObj()
 	// LOOP
 	set_task(1.0, "goku_loop", 0, "", 0, "b")
+	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -608,9 +608,9 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 				// Lessen damage taken by self by half
 				if ( vic == id ) damage = floatround(damage / 2.0)
-
+				new health=get_user_health(vic)
 				sh_extra_damage(vic, id, damage, damageName)
-				if((g_powerNum[id]==4)&&(vic==pTouched)){
+				if((g_powerNum[id]>=3)&&(vic==pTouched)&&(damage>=health)){
 
 						
 						fx_gib_explode(vicOrigin,vExplodeAt)
@@ -880,6 +880,7 @@ public shake_n_stun(id)
 
 	get_players(players, pnum, "a")
 
+
 	// Shake and Stun all alive users in radius inluding self
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
@@ -906,6 +907,7 @@ public shake_n_stun(id)
 			ShowSyncHudMsg(id, goku_hud_sync,"Goku - %s has turned Super Saiyan 4", gokuName)
 		}
 	}
+	explosion(gHeroID,id,float(get_cvar_num("goku_radius4")),100.0,default_explode_knock_force_magnitude,_,1)
 }
 //----------------------------------------------------------------------------------------------
 public reset_instun(id)

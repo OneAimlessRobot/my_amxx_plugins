@@ -56,7 +56,6 @@ public _precache_native_fx_pt2(iPlugin,iParams){
 	precache_sound(SUCK_IN_SOUND_FILE_NAME)
 	
 	precache_gibs()
-	precache_sound(NULL_SOUND)
 
 }
 public _fx_invisible(iPlugins, iParams){
@@ -103,6 +102,9 @@ public _fx_blood(iPlugins, iParams){
 public _strip_weapon_for_my_grenade_heroes(iPlugins, iParams){
 
 	new id=get_param(1)
+
+
+	if(!is_user_connected(id)) return 
 
 	new message[128]
 

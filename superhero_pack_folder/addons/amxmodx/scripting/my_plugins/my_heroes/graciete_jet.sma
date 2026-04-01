@@ -60,7 +60,7 @@ public plugin_init()
 	GRACIETE_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	
+	init_explosion_defaults()
 }
 
 public plugin_natives(){

@@ -397,6 +397,7 @@ public _sh_effect_user_direct(iPlugin,iParams){
 
 
 			stun_user(user)
+			remove_glow_user(user,fx_task_parameters[_:STUN][fx_task_time])
 		}
 		else{
 			fx_task_user(user,attacker,fx_num)
@@ -544,11 +545,6 @@ public bath_task(array[],id){
 
 public unstun_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	
-	if ( !shModActive() ||!client_hittable(id)) return
-	if(gatling_get_fx_num(id)!=_:STUN) return
-
-	sh_set_stun(id,0.0)
 	uneffect_user_primitive(id,true)
 
 

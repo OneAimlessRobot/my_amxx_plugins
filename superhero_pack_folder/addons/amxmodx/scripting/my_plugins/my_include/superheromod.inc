@@ -219,6 +219,9 @@ native sh_get_max_ap(id);
 
 native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
 
+native Float:sh_get_max_force_knockback_explosion()
+native Float:sh_get_default_explode_owner_ignore_frac()
+native Float:sh_get_default_stun_speed()
 
 native sh_get_player_save_key_on_db(id,key_ret_result[MAX_PLAYER_SAVE_KEY_LENGTH])
 //------------

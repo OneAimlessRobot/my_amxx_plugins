@@ -93,6 +93,7 @@ public plugin_init()
 	JET_HUD_TASKID=allocate_typed_task_id(player_task)
 	JET_SOUND_TASKID=allocate_typed_task_id(player_task)
 
+	init_explosion_defaults()
 }
 
 
@@ -827,7 +828,7 @@ public jet_sound_task(id){
 			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, NULL_SOUND_FILENAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			g_jetplane_sound_on[owner]=0;
 		
 		}
@@ -933,7 +934,7 @@ public _jet_destroy(iPlugin,iParams){
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, NULL_SOUND_FILENAME, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	remove_task(id+JET_SOUND_TASKID)
 	
 	if(is_valid_ent(g_jetplane[id])){

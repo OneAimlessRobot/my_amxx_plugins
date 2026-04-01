@@ -622,7 +622,7 @@ public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 	ester_remove_statuses(id,0,1,0)
-	explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude, ester_explosion_ignore_user)
+	explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
 	
 		
 	

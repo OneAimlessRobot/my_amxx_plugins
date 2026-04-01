@@ -33,7 +33,7 @@ stock const m_fflNextAttack = 83
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
 #define SPORE_HEAL_SFX "shmod/ration.wav"
-
+#define EXPLOSION_TANK_SHOT_SOUND "shmod/a_exm2.wav"
 //Colors To Pick From
 enum sh_custom_color{
 		CUSTOM=0,
@@ -65,7 +65,6 @@ enum sh_custom_color{
 }
 
 
-#define NULL_SOUND_FILENAME "common/null.wav"
 
 #define BLOOD_COLOR_RED		247
 #define BLOOD_COLOR_YELLOW	195
@@ -78,6 +77,9 @@ stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 
 
 stock const burn_decal[5] = {199,200,201,202,203}
+stock const g_burnDecal[3] = {28, 29, 30}
+stock const g_burnDecalBig[3] = {46, 47, 48}
+
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 
 //Color definitions

@@ -573,6 +573,7 @@ public plugin_init()
 	sh_alivedrop = register_cvar("sh_alivedrop", "0")
 	sh_default_explode_knock_force_magnitude_cvar = register_cvar("sh_default_explode_knock_force_magnitude","3.0")
 	sh_default_explode_owner_ignore_frac_cvar = register_cvar("sh_default_explode_owner_ignore_frac","0.5")
+	sh_default_stun_speed_pcvar = register_cvar("sh_default_stun_speed","0.5")
 	sh_autobalance = register_cvar("sh_autobalance", "0")
 	sh_objectivexp = register_cvar("sh_objectivexp", "8")
 	sh_cmdprojector = register_cvar("sh_cmdprojector", "1")
@@ -790,7 +791,28 @@ public plugin_natives()
 	register_native("sh_give_item", "_sh_give_item")
 	register_native("sh_reset_max_speed", "_sh_reset_max_speed")
 	register_native("sh_reset_min_gravity", "_sh_reset_min_gravity")
+	register_native("sh_get_default_stun_speed","_sh_get_default_stun_speed")
+	register_native("sh_get_max_force_knockback_explosion", "_sh_get_max_force_knockback_explosion")
+	register_native("sh_get_default_explode_owner_ignore_frac", "_sh_get_default_explode_owner_ignore_frac")
 }
+
+public Float:_sh_get_default_stun_speed(iPlugin, iParams){
+
+
+	return get_pcvar_float(sh_default_stun_speed_pcvar);
+
+}public Float:_sh_get_max_force_knockback_explosion(iPlugin, iParams){
+
+
+	return get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
+
+}
+public Float:_sh_get_default_explode_owner_ignore_frac(iPlugin, iParams){
+
+
+	return get_pcvar_float(sh_default_explode_owner_ignore_frac_cvar);
+}
+
 //----------------------------------------------------------------------------------------------
 public fm_GetGameDesc()
 {
@@ -1029,6 +1051,7 @@ public cvarCheck()
 	gCMDProj = get_pcvar_num(sh_cmdprojector)
 	default_explode_knock_force_magnitude = get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
 	default_explode_owner_ignore_frac = get_pcvar_float(sh_default_explode_owner_ignore_frac_cvar)
+	default_stun_speed = get_pcvar_float(sh_default_stun_speed_pcvar)
 	gBotsEarnXP=get_pcvar_num(sh_botsearnxp)
 	gBotsMinLevel=get_pcvar_num(sh_botsminlevel)
 	gBotsMaxLevel=get_pcvar_num(sh_botsmaxlevel)

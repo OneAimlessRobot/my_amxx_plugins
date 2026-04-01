@@ -101,7 +101,7 @@ public vexd_pfntouch(pToucher, pTouched){
 			if(client_hittable(pTouched))
 			{		
 				new Float:origin[3]
-				entity_get_vector(pTouched,EV_VEC_origin,origin)
+				entity_get_vector(pToucher,EV_VEC_origin,origin)
 				if(roberto_get_has_roberto(pTouched)&&(pTouched==oid)&&ball_pickable[pToucher] && BALL_RETRIEVE){
 					
 					roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
@@ -112,7 +112,6 @@ public vexd_pfntouch(pToucher, pTouched){
 					return
 					
 				}
-				//else if(pTouched!=oid){
 				else if((pTouched!=oid)){
 					if(!tagged_by_baller[oid][pTouched]){
 						ball_pickable[pToucher]=true
@@ -214,7 +213,7 @@ public kick_ball(iPlugin,iParams)
 	emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	arrayset(tagged_by_baller[id],false,sizeof tagged_by_baller[]);
 	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
-	shoteffects(Origin,id)
+	create_fired_shot_disk(Origin,id,false)
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 	trail(Ent,BLUE,10,5)
 	

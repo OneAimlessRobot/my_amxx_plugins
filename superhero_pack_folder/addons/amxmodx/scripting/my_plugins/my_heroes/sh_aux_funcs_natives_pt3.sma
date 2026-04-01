@@ -41,6 +41,9 @@ public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
 }
+
+
+				
 public plugin_natives(){
 
 
@@ -58,6 +61,7 @@ public plugin_natives(){
 
 public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
 	
+	init_explosion_defaults()
 	xs_seed(get_systime(0));
 	server_print("Shero lib pt3 innited!^n")
 }
@@ -71,6 +75,8 @@ public _sh_damage_display_stock(iPlugin,iParams){
 		att_bool=get_param(5),
 		vic_bool=get_param(6),
 		damage=get_param(7);
+
+	if(!is_user_connected(victim)||!is_user_connected(attacker)) return
 
 	if((hud_msg_sync_vic<=0)||(hud_msg_sync_att<=0)) return
 	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
@@ -141,7 +147,6 @@ public track_task(array[],id){
 	else{
 
 		unradioactive_user(id);
-		return
 	}
 }
 
@@ -156,16 +161,16 @@ public _track_user(iPlugins, iParams){
 		Float:time=get_param_f(6),
 		track_color=get_param(7)
 
+	
+	if(!is_user_connected(id)||!is_user_connected(attacker)) return 
+
 	new  radioactive_times=floatround(time/period)
 	new players[SH_MAXSLOTS]
 	new team_name[32]
-	new client_name[128]
-	new enemy_name[128]
 	new player_count;
 	gatling_set_fx_num(id, RADIOACTIVE)
 	
-	get_user_name(id,enemy_name,127)
-	get_user_name(attacker,client_name,127)
+	set_damage_icon(id,1,DMG_ICON_RADIATION,LineColors[track_color])
 
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
@@ -185,7 +190,6 @@ public _track_user(iPlugins, iParams){
 	}
 	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
 	set_task(floatsub(time,0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
-	return 0
 
 
 
@@ -196,10 +200,9 @@ public _unradioactive_user(iPlugin,iParams){
 	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(client_hittable(id)){
 		set_user_rendering(id)
+		set_damage_icon(id,0,DMG_ICON_RADIATION)
 		gatling_set_fx_num(id, 0)
 	}
-	return 0
-
 
 
 }
@@ -209,9 +212,9 @@ public unradioactive_task(id){
 	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(client_hittable(id)){
 		set_user_rendering(id)
+		set_damage_icon(id,0,DMG_ICON_RADIATION)
 		gatling_set_fx_num(id, 0)
 	}
-	return 0
 
 
 
@@ -242,9 +245,11 @@ public _explosion(iPlugins,iParams){
 
 	explode_fx(iOrigin,floatround(explosion_radius))
 
+	emit_sound(ent_id, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
-	new owner_id=(is_user_connected(ent_id))?ent_id:pev(ent_id,pev_owner)
+	new owner_id=((is_user_connected(ent_id))?ent_id:pev(ent_id,pev_owner))
 
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
@@ -267,48 +272,50 @@ public _explosion(iPlugins,iParams){
 }
 public _explosion_custom_entity(iPlugins,iParams){
 
-    new ent_classname[128]
+	new ent_classname[128]
 
-    get_string(4,ent_classname,128)
+	get_string(4,ent_classname,128)
 
-    new ent_id=get_param(1),
-        Float:explosion_radius=get_param_f(2),
-        Float:peak_power=get_param_f(3),
-        Float:optional_force=get_param_f(4)
+	new ent_id=get_param(1),
+		Float:explosion_radius=get_param_f(2),
+		Float:peak_power=get_param_f(3),
+		Float:optional_force=get_param_f(4)
 
-    if((pev_valid(ent_id)!=2)){
+	if((pev_valid(ent_id)!=2)){
 
-        return 
+		return 
 
-    }
+	}
 
-    new Float:fOrigin[3];
-    entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
+	new Float:fOrigin[3];
+	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
 
-    new iOrigin[3];
-    for(new i=0;i<3;i++)
-        iOrigin[i] = floatround(fOrigin[i]);
+	new iOrigin[3];
+	for(new i=0;i<3;i++)
+		iOrigin[i] = floatround(fOrigin[i]);
 
-    explode_fx(iOrigin,floatround(explosion_radius))
+	explode_fx(iOrigin,floatround(explosion_radius))
 
-    new entlist[33];
-    new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
+	emit_sound(ent_id, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-    new owner_id=pev(ent_id,pev_owner)
-    for (new i=0; i < numfound; i++)
-    {		
-        new eid = entlist[i];
-        
-        if(!is_valid_ent(eid)){
-            
-            continue;
-        }
-        if(pev_valid(eid)!=2){
-            continue
-        
-        }
-        damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
-    }
+	new entlist[33];
+	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
+
+	new owner_id=pev(ent_id,pev_owner)
+	for (new i=0; i < numfound; i++)
+	{		
+		new eid = entlist[i];
+		
+		if(!is_valid_ent(eid)){
+			
+			continue;
+		}
+		if(pev_valid(eid)!=2){
+			continue
+		
+		}
+		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
+	}
 }
 stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
 	
@@ -369,16 +376,17 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	}
 	else{
 		force=damage
-	}	
+	}
+
 	sh_extra_damage(pid,owner_id,idamage,"SH_Explosion");
 	
 	set_velocity_from_origin(pid,usOrig,force)
+
 	if(set_stun){
-		sh_set_stun(pid,3.0,0.5)
+		sh_set_stun(pid,3.0,default_stun_speed)
 	}
 	sh_screen_shake(pid,10.0,3.0,10.0)
 	unfade_screen_user(pid)
-	emit_sound(pid, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	sh_chat_message(owner_id,hero_id,"%s was shattered by you!",client_name);
 	sh_chat_message(pid,hero_id,"%s shattered you!",attacker_name);
 }

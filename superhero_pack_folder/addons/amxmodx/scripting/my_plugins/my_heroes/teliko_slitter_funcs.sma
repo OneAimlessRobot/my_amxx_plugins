@@ -49,6 +49,7 @@ public plugin_init(){
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	SLITTER_TASKID=allocate_typed_task_id(player_task)
+	init_explosion_defaults()
 }
 
 public weaponChange(id)
@@ -181,7 +182,7 @@ public slitter_think(id)
 	entity_set_vector(g_dragging_who[id][0], EV_VEC_velocity, fl_Velocity)
 	
 	orient_user(g_dragging_who[id][0],vAngles,vAngle)
-	sh_set_stun(g_dragging_who[id][0],2.0,0.1)
+	sh_set_stun(g_dragging_who[id][0],2.0,default_stun_speed)
 	set_user_maxspeed(id,slitter_drag_speed)
 	
 	set_pev(g_dragging_who[id][0],pev_renderamt,255.0)

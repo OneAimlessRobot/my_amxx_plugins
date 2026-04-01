@@ -360,6 +360,8 @@ public scanner_think(scanner){
 	
 	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
 	new entlist[33];
+	new Float:f_vic_origin[3],
+			Float:f_ksun_origin[3]
 	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
 	new CsTeams:idTeam = cs_get_user_team(id)
 	for( new i= 0;(g_player_num_victims[id]<(min(ksun_get_num_available_spores(id),ksun_max_victims)))&&(i< numfound);i++){

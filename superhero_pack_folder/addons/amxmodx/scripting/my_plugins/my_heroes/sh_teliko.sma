@@ -43,7 +43,7 @@ new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
 new gHeroLevel
 new famas_level_diff
 new base_counter_bullets
-new Float:COUNTER_DMG_Mult,Float:COUNTER_BULLET_PCT,Float:MEGA_COUNTER_STUN_TIME,Float:MEGA_COUNTER_SPEED_DIV,MEGA_COUNTER_EFFECTS_THRESHOLD
+new Float:COUNTER_DMG_Mult,Float:COUNTER_BULLET_PCT,Float:MEGA_COUNTER_STUN_TIME,MEGA_COUNTER_EFFECTS_THRESHOLD
 new num_chaffs
 
 //----------------------------------------------------------------------------------------------
@@ -64,7 +64,6 @@ public plugin_init()
 	register_cvar("Teliko_max_plus_lvl_inc", "5")
 	register_cvar("Teliko_start_counter_bullets", "30")
 	register_cvar("Teliko_mega_counter_stun_time", "3.0")
-	register_cvar("Teliko_mega_counter_stun_speed_div", "3.0")
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level" )
@@ -80,6 +79,7 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
 	init_hud_syncs()
+	init_explosion_defaults()
 }
 
 public plugin_natives(){
@@ -229,7 +229,6 @@ max_counter_bullets=get_cvar_num("Teliko_max_bullets");
 base_counter_bullets=get_cvar_num("Teliko_base_bullets");
 COUNTER_BULLET_PCT=get_cvar_float("Teliko_get_bullet_pct")
 MEGA_COUNTER_STUN_TIME=get_cvar_float("Teliko_mega_counter_stun_time")
-MEGA_COUNTER_SPEED_DIV=get_cvar_float("Teliko_mega_counter_stun_speed_div")
 MEGA_COUNTER_EFFECTS_THRESHOLD=get_cvar_num("Teliko_mega_counter_effects_threshold");
 max_inc_lvl_inc=get_cvar_num("Teliko_max_plus_lvl_inc")
 max_bullets_p_inc=get_cvar_num("Teliko_max_bullets_per_inc")
@@ -308,8 +307,8 @@ public Teliko_mega_counters_effects(id,enemy){
 	
 	new mega_counter_effect=g_num_mega_counters_enemy[id][enemy]-MEGA_COUNTER_EFFECTS_THRESHOLD;
 	if(mega_counter_effect>=0){
-		sh_set_stun(enemy,MEGA_COUNTER_STUN_TIME,floatdiv(1.0,MEGA_COUNTER_SPEED_DIV));
-		sh_screen_shake(enemy,MEGA_COUNTER_SPEED_DIV,MEGA_COUNTER_STUN_TIME,4.0)
+		sh_set_stun(enemy,MEGA_COUNTER_STUN_TIME,default_stun_speed);
+		sh_screen_shake(enemy,9.0,MEGA_COUNTER_STUN_TIME,4.0)
 		if(!is_user_bot(id)){
 			sh_chat_message(id,gHeroID,"Enemy %s got stunned on MEGA COUNTER #%d!",enemy_name,mega_counter_effect+MEGA_COUNTER_EFFECTS_THRESHOLD);
 		}
@@ -443,42 +442,6 @@ if(gHasTeliko[id]){
 
 remove_enemy(id)
 }
-/////////////////////
-//Thantik's he-conc functions
-stock get_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed, Float:fVelocity[3] )
-{
-new Float:fEntOrigin[3];
-entity_get_vector( ent, EV_VEC_origin, fEntOrigin );
-
-// Velocity = Distance / Time
-
-new Float:fDistance[3];
-fDistance[0] = fEntOrigin[0] - fOrigin[0];
-fDistance[1] = fEntOrigin[1] - fOrigin[1];
-fDistance[2] = fEntOrigin[2] - fOrigin[2];
-
-new Float:fTime = ( vector_distance( fEntOrigin,fOrigin ) / fSpeed );
-
-fVelocity[0] = fDistance[0] / fTime;
-fVelocity[1] = fDistance[1] / fTime;
-fVelocity[2] = fDistance[2] / fTime;
-
-return ( fVelocity[0] && fVelocity[1] && fVelocity[2] );
-}
-
-
-// Sets velocity of an entity (ent) away from origin with speed (speed)
-
-stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
-{
-new Float:fVelocity[3];
-get_velocity_from_origin( ent, fOrigin, fSpeed, fVelocity )
-
-entity_set_vector( ent, EV_VEC_velocity, fVelocity );
-
-return ( 1 );
-}
-
 //----------------------------------------------------------------------------------------------
 public teliko_kd()
 {

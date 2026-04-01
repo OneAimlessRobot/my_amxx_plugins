@@ -87,6 +87,13 @@ stock init_hud_syncs(){
 
 
 }
+stock init_explosion_defaults(){
+
+	default_explode_knock_force_magnitude=sh_get_max_force_knockback_explosion()
+	default_explode_owner_ignore_frac=sh_get_default_explode_owner_ignore_frac()
+	default_stun_speed=sh_get_default_stun_speed()
+
+}
 stock Float:get_entity_velocity(ent){
 	if(pev_valid(ent)!=2){
 

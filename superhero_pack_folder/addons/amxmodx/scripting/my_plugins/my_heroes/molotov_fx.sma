@@ -32,6 +32,19 @@ public plugin_init(){
 	BURN_TASKID_SOUND=allocate_typed_task_id(player_task)
 	BURN_TASKID_SCREAMS=allocate_typed_task_id(player_task)
 	BURN_TASKID_STOP_SOUND=allocate_typed_task_id(player_task)
+	register_event("ResetHUD","molotov_newRound","b")
+
+}
+
+//----------------------------------------------------------------------------------------------
+public molotov_newRound(id)
+{	
+	if(shModActive()&&client_hittable(id)){
+		if(gIsBurning[id]){
+			sh_unmolly_user(id)
+		}
+
+	}
 	
 }
 public plugin_precache(){
@@ -184,7 +197,6 @@ stock burn_user(id,attacker){
 	set_task(0.7, "fire_scream", id+BURN_TASKID_SCREAMS)
 	set_task(5.5, "stop_fire_sound", id+BURN_TASKID_STOP_SOUND)
 	set_task(floatsub(BURN_TIME,0.1),"unburn_task",id+UNMOLLY_TASKID,"", 0,  "a",1)
-	return
 	
 	
 	

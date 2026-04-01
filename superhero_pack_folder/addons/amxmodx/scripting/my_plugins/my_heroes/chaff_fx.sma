@@ -24,6 +24,20 @@ public plugin_init(){
 	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_chaffed","a")
+	register_event("ResetHUD","chaff_newRound","b")
+	init_explosion_defaults()
+
+}
+
+//----------------------------------------------------------------------------------------------
+public chaff_newRound(id)
+{	
+	if(shModActive()&&client_hittable(id)){
+		if(gIsChaffed[id]){
+			sh_unchaff_user(id)
+		}
+
+	}
 	
 }
 
@@ -121,14 +135,12 @@ chaff_user(id,attacker){
 	new array[1]
 	array[0] = attacker
 	fade_screen_user(id)
-	new Float:maxspeed= get_user_maxspeed(id)
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)
-	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),maxspeed*0.1)
+	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),default_stun_speed)
 	gIsChaffed[id]=true
 	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",CHAFF_TIMES)
 	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,"", 0,  "a",DISORIENT_TIMES)
 	set_task(floatsub(CHAFF_TIME,0.1),"unchaff_task",id+UNCHAFF_TASKID,"", 0,  "a",1)
-	return 0
 	
 	
 	
@@ -139,11 +151,10 @@ public unchaff_task(id){
 	remove_task(id+CHAFF_TASKID)
 	unfade_screen_user(id)
 	
-	sh_set_stun(id,0.0)
+
 	gIsChaffed[id]=false
 	remove_task(id+DISORIENT_TASKID)
 	entity_set_int( id, EV_INT_fixangle, 0 );
-	return 0
 	
 	
 	
@@ -153,11 +164,10 @@ unchaff_user(id){
 	remove_task(id+UNCHAFF_TASKID)
 	set_user_rendering(id)
 	remove_task(id+CHAFF_TASKID)
-	sh_set_stun(id,0.0)
+
 	gIsChaffed[id]=false
 	remove_task(id+DISORIENT_TASKID)
 	entity_set_int( id, EV_INT_fixangle, 0 );
-	return 0
 	
 	
 	

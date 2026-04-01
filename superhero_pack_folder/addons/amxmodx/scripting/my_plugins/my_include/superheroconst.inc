@@ -154,6 +154,10 @@ stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
 stock sh_default_explode_owner_ignore_frac_cvar;
 stock Float:default_explode_owner_ignore_frac=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER;
 
+#define SH_DEFAULT_STUN_SPEED 30.0
+stock sh_default_stun_speed_pcvar;
+stock Float:default_stun_speed=SH_DEFAULT_STUN_SPEED;
+
 // Max player slots
 #define SH_MAXSLOTS		32
 

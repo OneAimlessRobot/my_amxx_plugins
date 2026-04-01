@@ -82,6 +82,9 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "Swat_init")
 	MISSILE_TASKID=allocate_typed_task_id(entity_task)
 	WEAPONS_TASKID=allocate_typed_task_id(player_task)
+
+
+	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)

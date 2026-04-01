@@ -18,8 +18,7 @@ stock get_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed, Float:fVelo
 	fDistance[1] = fEntOrigin[1] - fOrigin[1];
 	fDistance[2] = fEntOrigin[2] - fOrigin[2];
 
-	new Float:fTime = ( vector_distance( fEntOrigin,fOrigin ) / fSpeed );
-
+	new Float:fTime = ( floatmax(1.0,vector_distance( fEntOrigin,fOrigin )) / fSpeed );
 	fVelocity[0] = fDistance[0] / fTime;
 	fVelocity[1] = fDistance[1] / fTime;
 	fVelocity[2] = fDistance[2] / fTime;
