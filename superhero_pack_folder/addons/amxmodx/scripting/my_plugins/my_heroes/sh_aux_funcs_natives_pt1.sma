@@ -666,7 +666,7 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		write_coord_f(origin[1])
 		write_coord_f(origin[2] + 60)
 		write_short(precached_explosion_sprite)
-		write_byte(20)
+		write_byte(radius)
 		write_byte(200)
 		message_end()
 		

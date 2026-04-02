@@ -273,7 +273,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 	new ent_id=get_param(1),
 		Float:explosion_radius=get_param_f(2),
 		Float:peak_power=get_param_f(3),
-		Float:optional_force=get_param_f(4)
+		Float:optional_force=get_param_f(5)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -344,15 +344,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 		
 	
 	}
-	
-	new Float:vOrig[3],Float:usOrig[3]
-	
-	
-	Entvars_Get_Vector(pid, EV_VEC_origin, vOrig)
-	Entvars_Get_Vector(ent_id, EV_VEC_origin, usOrig)
-	
-	
-	new Float:distance=get_distance_f(vOrig,usOrig);
+
 	static client_name[128];
 	static attacker_name[128];
 	get_user_name(pid,client_name,127);
@@ -360,7 +352,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	new Float:vic_origin[3],Float:mine_origin[3];
 	entity_get_vector(pid,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
-	distance=vector_distance(vic_origin,mine_origin);
+	new Float:distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= floatmin(1.0,distance/radius);
 	new Float:force,Float:damage,idamage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
@@ -374,7 +366,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 
 	sh_extra_damage(pid,owner_id,idamage,"SH_Explosion");
 	
-	set_velocity_from_origin(pid,usOrig,force)
+	set_velocity_from_origin(pid,mine_origin,force)
 
 	if(set_stun){
 		sh_set_stun(pid,3.0,default_stun_speed)
@@ -404,22 +396,13 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 		
 	
 	}
-	new Float:vOrig[3],Float:usOrig[3]
-	
-	
-	Entvars_Get_Vector(ent_id, EV_VEC_origin, vOrig)
-	Entvars_Get_Vector(owner_id, EV_VEC_origin, usOrig)
-	
-	
-	new Float:distance=get_distance_f(vOrig,usOrig);
 	new Float:vic_origin[3],Float:mine_origin[3];
 	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
-	distance=vector_distance(vic_origin,mine_origin);
+	new Float:distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= floatmin(1.0,distance/radius);
-	new Float:force,Float:damage,idamage
+	new Float:force,Float:damage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
-	idamage=floatround(damage)
 	if(optional_force!=0.0){
 		force=optional_force-(optional_force/2.0)*falloff_coeff
 	}
@@ -428,7 +411,7 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	}
 	new this_ent_owner = entity_get_edict(tg_id, EV_ENT_owner)
 	if(client_hittable(this_ent_owner)){
-		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, float(idamage), 0);
+		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
 	if(!is_valid_ent(tg_id)){
 		
@@ -439,8 +422,8 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 		return
 	
 	}
+	set_velocity_from_origin(tg_id,mine_origin,force)
 	
-	set_velocity_from_origin(tg_id,vOrig,force)
 }
 
 public on_death_tracked()

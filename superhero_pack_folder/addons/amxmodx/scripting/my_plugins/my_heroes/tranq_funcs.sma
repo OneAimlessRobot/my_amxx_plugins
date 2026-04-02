@@ -427,11 +427,6 @@ public vexd_pfntouch(pToucher, pTouched)
 						damage*=4;
 					}
 					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
-					
-					if(!is_user_bot(oid)){
-						sh_chat_message(oid,tranq_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
-					}
-					
 					new CsArmorType:armor_type;
 					cs_get_user_armor(pTouched,armor_type);
 					switch(armor_type){

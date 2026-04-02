@@ -294,7 +294,7 @@ public _reset_user_fuel_ammount(iPlugins,iParams){
 public OnCmdStart(id,uc_handle)
 {
 
-	if(!!hasRoundStarted()){
+	if(!hasRoundStarted()){
 
 		return FMRES_IGNORED
 	}

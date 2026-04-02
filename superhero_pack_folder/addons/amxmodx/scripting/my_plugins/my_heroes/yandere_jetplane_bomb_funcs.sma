@@ -252,7 +252,7 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 		}
 	}
 	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg, default_explode_knock_force_magnitude)
-	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME)
+	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
 	RemoveEntity(pToucher)
 	
 }

@@ -367,9 +367,11 @@ public vexd_pfntouch(pToucher, pTouched)
 			
 			return
 		
-		} 
+		}
+
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
+		tank_impact_shot_fx(pToucher,origin,3);
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
@@ -392,7 +394,6 @@ public vexd_pfntouch(pToucher, pTouched)
 						CsTeams:vic_team=cs_get_user_team(pTouched);
 				if(att_team!=vic_team){
 					ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
-					sh_chat_message(oid,yandere_get_hero_id(),"You hit him! It was%sa headshot!",headshot?" ":" not ");
 					if(is_user_alive(pTouched)){
 						new CsArmorType:armor_type;
 						cs_get_user_armor(pTouched,armor_type);
