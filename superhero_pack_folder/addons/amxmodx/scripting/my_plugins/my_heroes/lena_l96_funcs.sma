@@ -31,7 +31,8 @@ new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
 new custom_dmg_id_l96
 
 
-stock LENA_PROJECTILE_RELOAD_TASKID
+stock LENA_PROJECTILE_RELOAD_TASKID,
+		LENA_HIT_STAGGER_TASKID
 
 //new HamHook:TakeDamage
 public plugin_init(){
@@ -62,6 +63,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 	LENA_PROJECTILE_RELOAD_TASKID=allocate_typed_task_id(player_task)
+	LENA_HIT_STAGGER_TASKID=allocate_typed_task_id(player_task)
 
 	register_forward(FM_Think, "bulette_thinque")
 	init_explosion_defaults()
@@ -504,33 +506,23 @@ public vexd_pfntouch(pToucher, pTouched)
 					headshot=1;
 					damage*=dmg_headshot_mult;
 				}
+				new Float:the_period=(headshot?0.33:1.0);
+				new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
 				new CsTeams:att_team=cs_get_user_team(oid)
 				new CsTeams:vic_team=cs_get_user_team(pTouched)
 				if(att_team!=vic_team){
 					new health = get_user_health(pTouched)
 					sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
+					sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
+
+					sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
+					fade_screen_user(pTouched)
+					set_task(0.5,"unfade_screen_user_task",pTouched+LENA_HIT_STAGGER_TASKID)
 					set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
-					if(!is_user_bot(oid)){
-						sh_chat_message(oid,lena_get_hero_id(),"You hit him! They were %0.2f hammer units away! It was%sa headshot!",distance,headshot?" ":" not ");
-					}
 					if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
-							new Float:the_period=(headshot?0.33:1.0);
-							new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
 							track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
-							sh_set_stun(pTouched,the_time,default_stun_speed)
-							
-							if(!is_user_bot(oid)){
-								sh_chat_message(oid,lena_get_hero_id(),"You marked an enemy for getting a hit! For %0.2fs they will be visible on the minimap and hud",the_time);
-							}
 					}
 					
-					if(!is_user_bot(oid)){
-						sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d xp for getting a hit with Lena's L96!",xp_distance_mult*floatround(distance));
-						if(headshot){
-							sh_chat_message(oid,lena_get_hero_id(),"You were awarded %d extra xp for getting a headshot hit!!!!!",xp_distance_mult*(dmg_headshot_mult-1)*floatround(distance));
-						
-						}
-					}
 					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
 					new random_number=random_num(0,(sizeof lena_poems)-1)
 					
@@ -539,18 +531,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					}
 					if(floatround(damage)>=health){
 
-						new ivicOrigin[3],
-							ivExplodeAt[3]
-						FVecIVec(vic_origin,ivicOrigin)
-						FVecIVec(origin,ivExplodeAt)
-						fx_gib_explode(ivicOrigin,ivExplodeAt)
-						fx_blood_large(ivicOrigin,4)
-						fx_blood_small(ivicOrigin,4)
-
-						fx_blood_small(ivicOrigin,8)
-						fx_extra_blood(ivicOrigin)
-						fx_blood_large(ivExplodeAt,2)
-						fx_blood_small(ivicOrigin,4)
+						gross_kill_gibs_fx(pTouched,vic_origin,origin)
 
 					}
 				}
@@ -603,6 +584,16 @@ public vexd_pfntouch(pToucher, pTouched)
 		arrayset(bullet_launch_pos[pToucher],0.0,3);
 	}
 }
+public unfade_screen_user_task(id){
+	id-=LENA_HIT_STAGGER_TASKID
+	if(is_user_connected(id)){
+		
+		unfade_screen_user(id)
+
+	}
+
+}
+
 public remove_bullet(id_bullet){
 	if(is_valid_ent(id_bullet)){
 		remove_entity(id_bullet)

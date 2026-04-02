@@ -235,7 +235,7 @@ public adriano_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 	
-	if (  attacker==id  ) return
+	if (  (attacker==id) && !is_user_connected(attacker) ) return
 
 	get_speed_dmg_in_radius(id,damage)
 	

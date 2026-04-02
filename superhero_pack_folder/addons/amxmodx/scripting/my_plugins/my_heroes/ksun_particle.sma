@@ -1,6 +1,5 @@
 
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -19,17 +18,12 @@ new Float:ksun_spore_damage,
 	Float:ksun_spore_speed,
 	Float:ksun_heal_coeff,
 	Float:ksun_dmg_paycut,
+	Float:ksun_spore_track_detect_distance,
 	Float:ksun_spore_base_health;
-new violence_level
 
 new g_times_player_spiked_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
-
-
-
-stock FOLLOW_LOOP_TASKID,
-		UNFOLLOW_LOOP_TASKID
 
 
 public plugin_init()
@@ -40,6 +34,7 @@ public plugin_init()
 	register_cvar("ksun_spore_damage", "100.0" )
 	register_cvar("ksun_spore_speed", "900.0" )
 	register_cvar("ksun_follow_time", "5.0")
+	register_cvar("ksun_spore_track_detect_dist", "500.0")
 	register_cvar("ksun_hold_time", "5.0")
 	register_cvar("ksun_heal_coeff", "0.5" )
 	register_cvar("ksun_dmg_paycut", "0.05" )
@@ -53,8 +48,6 @@ public plugin_init()
 	
 	register_forward(FM_Think, "spore_think")
 
-	FOLLOW_LOOP_TASKID=allocate_typed_task_id(entity_task)
-	UNFOLLOW_LOOP_TASKID=allocate_typed_task_id(entity_task)
 }
 
 public plugin_natives(){
@@ -89,8 +82,6 @@ public Float:_get_spike_base_damage_debt(iPlugins, iParms){
 	
 //----------------------------------------------------------------------------------------------
 untrack_spore(spore){
-	remove_task(spore+UNFOLLOW_LOOP_TASKID)
-	remove_task(spore+FOLLOW_LOOP_TASKID)
 	if(pev_valid(spore)){
 		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
 		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -118,10 +109,10 @@ public loadCVARS()
 	
 	ksun_spore_damage= get_cvar_float("ksun_spore_damage")
 	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
-	violence_level= get_cvar_num("ksun_violence_level")
 	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
 	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
 	ksun_dmg_paycut=get_cvar_float("ksun_dmg_paycut")
+	ksun_spore_track_detect_distance=get_cvar_float("ksun_spore_track_detect_dist")
 }
 public bool:_ksun_heal(iPlugins, iParms){
 	new id= get_param(1)
@@ -367,83 +358,33 @@ if(!spores_has_ksun(id)||!client_hittable(id)){
 	
 	return
 }
+new spore
 switch(get_player_launcher_phase(id)){
 	case PHASE_DEPLOY:{
-		new spore= spawn_spore(id)
+		spore= spawn_spore(id)
 		if(!spore){
 			
 			return
 		}
-		new parms[3];
+
+		emit_sound(spore, CHAN_STATIC, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		set_spore_at_player_spores(id,get_player_num_deployed_spores(id),spore)
-		parms[0]=spore
-		parms[1]=id
-		parms[2]=get_player_launcher(id)
-		sporeprepare(parms)
+		entity_set_edict(spore,EV_ENT_euser1,id)
 		}
 	case PHASE_SEND:{
 		
-		
-		new parms[3];
-		parms[0]=get_spore_from_player_spores(id,get_player_num_launched_spores(id))
-		parms[1]=id
-		parms[2]=get_target_from_player_targets(id,get_player_num_launched_spores(id))
-		new user_name[128]
-		emit_sound(parms[0], CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		get_user_name(parms[2],user_name,127)
-		sporetrack(parms)
+		spore=get_spore_from_player_spores(id,get_player_num_launched_spores(id))
+		entity_set_edict(spore,EV_ENT_euser2,
+						get_target_from_player_targets(id,get_player_num_launched_spores(id)))
+		trail(spore,PURPLE,20,3)
+		entity_set_float(spore, EV_FL_nextthink, floatadd(get_gametime() ,SPORE_THINK_PERIOD));
 	}
 }
 }
-public sporetrack(parms[]){
-new spore=parms[0]
-emit_sound(parms[1], CHAN_STATIC, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-set_task(floatsub(floatmul(FOLLOW_LOOP_PERIOD,float(FOLLOW_LOOP_TIMES)),0.1),"untrack_spore_task",spore+UNFOLLOW_LOOP_TASKID,"",0,  "a",1)
-set_task(FOLLOW_LOOP_PERIOD, "track_spore", spore+FOLLOW_LOOP_TASKID, parms, 3, "a",FOLLOW_LOOP_TIMES)
-}
-public sporeprepare(parms[]){
-new spore=parms[0]
-emit_sound(parms[1], CHAN_WEAPON, SPORE_SEND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-}
 
-public track_spore(parms[])
-{
-
-
-new spore = parms[0]
-new spore_owner = parms[1]
-new spore_target = parms[2]
-if ( !is_valid_ent(spore) ) {
-	remove_task(spore+FOLLOW_LOOP_TASKID)
-	remove_task(spore+UNFOLLOW_LOOP_TASKID)
-	return
-}
-emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-if(get_player_launcher_phase(spore_owner)<=PHASE_DEPLOY){
-			if(client_hittable(spore_owner)){
-				if ( is_valid_ent(get_player_launcher_phase(spore_owner))) {
-					entity_set_follow(spore, get_player_launcher_phase(spore_owner))
-					trail(spore,PURPLE,20,3)
-				}
-			}
-}
-else{
-			if ( client_hittable(spore_target)&&client_hittable(spore_owner)) {
-				entity_set_follow(spore, spore_target)
-				trail(spore,PURPLE,20,3) 
-			}
-			else{
-				
-				untrack_spore(spore)
-				set_scanner_player_tracks_player(spore_owner,spore_target,0)
-			}
-		}
-}
 //----------------------------------------------------------------------------------------------
 public untrack_spore_task(spore){
-	spore-=UNFOLLOW_LOOP_TASKID
-	remove_task(spore+FOLLOW_LOOP_TASKID)
+
 	if(pev_valid(spore)){
 		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
 		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -453,63 +394,135 @@ public untrack_spore_task(spore){
 		dec_player_num_victims(spore_owner)
 		ksun_dec_num_available_spores(spore_owner)
 	}
-	return 0
 
 }
 
 
-public spore_think(ent){
-	
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
-	
+public spore_think(spore){
+
+	if ( !is_valid_ent(spore) ) return FMRES_IGNORED
+
 	static classname[32]
 	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
+	pev(spore, pev_classname, classname, charsmax(classname))
+
 	if ( !equal(classname, SPORE_CLASSNAME) ) return FMRES_IGNORED
-	
-	new Float:spore_hp=float(pev(ent,pev_health))
-	
-	
-	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(entity_get_edict(ent,EV_ENT_euser1)) || !is_valid_ent(entity_get_edict(ent,EV_ENT_euser1))|| !is_valid_ent(entity_get_edict(ent,EV_ENT_owner))){
+
+	new Float:spore_hp=float(pev(spore,pev_health))
+
+	new	spore_owner=entity_get_edict(spore,EV_ENT_euser1),
+		spore_target=entity_get_edict(spore,EV_ENT_euser2)
+
+	new Float:current_track_time=entity_get_float(spore, EV_FL_fuser1)
+
+	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(spore_owner) ||
+						!client_hittable(spore_target)){
 		
-		untrack_spore(ent)
+		untrack_spore(spore)
 		return FMRES_IGNORED
 		
 	}
-	entity_set_float( ent, EV_FL_fuser1, floatadd(entity_get_float(ent, EV_FL_fuser1) ,SPORE_THINK_PERIOD));
-	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-	
+
+	else if(current_track_time>get_follow_time()){
+		untrack_spore(spore)
+		return FMRES_IGNORED
+	}
+
+	new trackresult=entity_set_follow(spore, spore_target,spore_owner)
+
+	if(trackresult){
+
+		if(trackresult<0){
+			if(trackresult==-1){
+				untrack_spore(spore)
+				set_scanner_player_tracks_player(spore_owner,spore_target,0)
+				return FMRES_IGNORED
+			}
+			else{
+
+				entity_set_vector(spore, EV_VEC_velocity, Float:{0.0,0.0,0.0})
+			}
+		}
+		else{
+			emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			entity_set_float(spore, EV_FL_fuser1, floatadd(current_track_time,SPORE_THINK_PERIOD));
+		}
+	}
+	else{
+
+		entity_set_vector(spore, EV_VEC_velocity, Float:{0.0,0.0,0.0})
+			
+	}
+
+	entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
+
 	return FMRES_IGNORED
 }
-//----------------------------------------------------------------------------------------------
-stock entity_set_follow(entity, target)
+//https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
+stock is_wall_between_points(Float:start[3], Float:end[3], ignore_ent)
 {
-if ( !is_valid_ent(entity) || !client_hittable(target) ) return 0
+    // Create the trace handle! It is best to create it!
+    new ptr = create_tr2()
+    
+    // The main traceline function!
+    // This function ignores GLASS, MISSILE and MONSTERS!
+    // Here is an example of how you should combine all the flags!
+    engfunc(EngFunc_TraceLine, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, ignore_ent, ptr)
+    
+    // We are interested in the fraction parameter
+    new Float:fraction
+    get_tr2(ptr, TR_flFraction, fraction)
+    
+    // Free the trace handle (don't forget to do this!)
+    free_tr2(ptr)
+    
+    // If = 1.0 then it didn't hit anything!
+    return (fraction != 1.0)
+} 
+//----------------------------------------------------------------------------------------------
+stock entity_set_follow(entity, target,spore_owner)
+{
+	if ( !is_valid_ent(entity) || !client_hittable(target) ||!client_hittable(spore_owner)) return -1
 
-new Float:fl_Origin[3], Float:fl_EntOrigin[3]
-entity_get_vector(target, EV_VEC_origin, fl_Origin)
-entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
+	new Float:fl_Origin[3], Float:fl_EntOrigin[3], Float:entity_in_the_way_origin[3],
+	Float:in_the_way_vector[3]
+	entity_get_vector(target, EV_VEC_origin, fl_Origin)
+	entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
+	new Float: distance=vector_distance(fl_Origin, fl_EntOrigin)
+	if(distance>ksun_spore_track_detect_distance){
 
-new Float:fl_InvTime = (ksun_spore_speed / vector_distance(fl_Origin, fl_EntOrigin))
+		return 0
+	}
+	sub_3d_vectors(fl_Origin,fl_EntOrigin,in_the_way_vector)
+	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*3.0,in_the_way_vector)
+	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
 
-new Float:fl_Distance[3]
-fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
-fl_Distance[1] = fl_Origin[1] - fl_EntOrigin[1]
-fl_Distance[2] = fl_Origin[2] - fl_EntOrigin[2]
+	laser_line(spore_owner,fl_EntOrigin,entity_in_the_way_origin,0,_,false,false)
 
-new Float:fl_Velocity[3]
-fl_Velocity[0] = fl_Distance[0] * fl_InvTime
-fl_Velocity[1] = fl_Distance[1] * fl_InvTime
-fl_Velocity[2] = fl_Distance[2] * fl_InvTime
+	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, entity)
+	if(wall_in_the_way){
+		
+		return -2
+	}
+	new Float:fl_InvTime = (ksun_spore_speed / distance)
 
-entity_set_vector(entity, EV_VEC_velocity, fl_Velocity)
+	new Float:fl_Distance[3]
+	fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
+	fl_Distance[1] = fl_Origin[1] - fl_EntOrigin[1]
+	fl_Distance[2] = fl_Origin[2] - fl_EntOrigin[2]
 
-new Float:fl_NewAngle[3]
-vector_to_angle(fl_Velocity, fl_NewAngle)
-entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
+	new Float:fl_Velocity[3]
+	fl_Velocity[0] = fl_Distance[0] * fl_InvTime
+	fl_Velocity[1] = fl_Distance[1] * fl_InvTime
+	fl_Velocity[2] = fl_Distance[2] * fl_InvTime
 
-return 1
+	entity_set_vector(entity, EV_VEC_velocity, fl_Velocity)
+
+	new Float:fl_NewAngle[3]
+	vector_to_angle(fl_Velocity, fl_NewAngle)
+	entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
+
+	return 1
 }
 //----------------------------------------------------------------------------------------------
 public touch_event(pToucher, pTouched)  //This is triggered when two entites touch
@@ -517,7 +530,6 @@ public touch_event(pToucher, pTouched)  //This is triggered when two entites tou
 if(!is_valid_ent(pToucher)) return
 
 if(!client_hittable(pTouched)){
-	untrack_spore(pToucher)
 	return
 }
 
@@ -554,17 +566,6 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	set_scanner_player_tracks_player(killer,victim,0)
 	g_times_player_spiked_player[killer][victim]++
 	g_times_player_spiked_by_player[victim][killer]++
-	new violence_to_use
-	if(violence_level<0){
-		
-		violence_to_use=random_num(1,MAX_VIOLENCE)
-	}
-	else{
-		
-		violence_to_use=clamp(violence_level,1,MAX_VIOLENCE)
-	}
-	sh_chat_message(killer,spores_ksun_hero_id(),"%s%s!",CENSORSHIP_SENTENCES[violence_to_use][0],vic_name)
-	sh_chat_message(victim,spores_ksun_hero_id(),"%s by%s!",CENSORSHIP_SENTENCES[violence_to_use][1],tger_name)
 	untrack_spore(pToucher)
 }
 }

@@ -197,20 +197,14 @@ public _track_user(iPlugins, iParams){
 public _unradioactive_user(iPlugin,iParams){
 	new id=get_param(1)
 	remove_task(id+UNRADIOACTIVE_TASK_ID)
-	remove_task(id+RADIOACTIVE_TASK_ID)
-	if(client_hittable(id)){
-		set_user_rendering(id)
-		set_damage_icon(id,0,DMG_ICON_RADIATION)
-		gatling_set_fx_num(id, 0)
-	}
-
+	unradioactive_task(id+UNRADIOACTIVE_TASK_ID)
 
 }
 
 public unradioactive_task(id){
 	id-=UNRADIOACTIVE_TASK_ID
 	remove_task(id+RADIOACTIVE_TASK_ID)
-	if(client_hittable(id)){
+	if(is_user_connected(id)){
 		set_user_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_RADIATION)
 		gatling_set_fx_num(id, 0)

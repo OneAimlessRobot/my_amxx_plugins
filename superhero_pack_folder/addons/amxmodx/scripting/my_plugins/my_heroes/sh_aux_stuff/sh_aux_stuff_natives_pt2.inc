@@ -31,6 +31,7 @@ native fx_headshot(origin[3])
 
 native anime_kill_fx(origin[3])
 
+native gross_kill_gibs_fx(id, Float:vic_origin[3],Float:origin[3])
 
 native precache_gibs()
 

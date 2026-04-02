@@ -9,7 +9,10 @@ enum damage_icon_types{
   DMG_ICON_SHOCK,
   DMG_ICON_GAS,
   DMG_ICON_HEAT,
-  DMG_ICON_MAX
+  DMG_ICON_HEALTH,
+  DMG_ICON_ARMOR,
+  DMG_ICON_LONGJUMP,
+  DMG_ICON_MAX //this_value bounds an internal array. dont use it
 }
 
 native precache_native_fx_pt1()
@@ -37,6 +40,9 @@ enum damage_icon_types{
   DMG_ICON_SHOCK,
   DMG_ICON_GAS,
   DMG_ICON_HEAT,
+  DMG_ICON_HEALTH,
+  DMG_ICON_ARMOR,
+  DMG_ICON_LONGJUMP,
   DMG_ICON_MAX //this_value bounds an internal array. dont use it
 }
 
@@ -54,8 +60,8 @@ is to allow the native to choose
 between big decals (Radius>18)
 or small decals (otherwise)
 
-native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18)
 */
+native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18)
 native heal_stream(id, x,color_index=LTGREEN,alpha=255)
 
 native unfade_screen_user(id)

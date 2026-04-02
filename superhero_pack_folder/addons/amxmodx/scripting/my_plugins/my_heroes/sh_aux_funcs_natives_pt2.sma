@@ -40,6 +40,7 @@ public plugin_natives(){
 	register_native("anime_kill_fx","_anime_kill_fx",0);
 	register_native("precache_gibs","_precache_gibs",0);
 	register_native("draw_view_cone","_draw_view_cone",0);
+	register_native("gross_kill_gibs_fx","_gross_kill_gibs_fx",0)
 	register_native("precache_native_fx_pt2","_precache_native_fx_pt2",0)
 	register_native("prepare_shero_aux_lib_pt2","_prepare_shero_aux_lib_pt2",0);
 }
@@ -366,6 +367,31 @@ public _anime_kill_fx(iPlugins, iParams){
 	write_coord(origin[1]) 
 	write_coord(origin[2]-26) 
 	message_end() 
+
+}
+public _gross_kill_gibs_fx(iPlugins,iParm){
+
+	new id=get_param(1)
+	if(!is_user_connected(id)) return
+
+	new Float:vic_origin[3],Float:origin[3]
+	new ivExplodeAt[3],ivicOrigin[3]
+	get_array_f(2,vic_origin,3)
+	get_array_f(3,origin,3)
+
+
+	fx_invisible(id)
+
+	FVecIVec(vic_origin,ivicOrigin)
+	FVecIVec(origin,ivExplodeAt)
+	fx_gib_explode(ivicOrigin,ivExplodeAt)
+	fx_blood_large(ivicOrigin,4)
+	fx_blood_small(ivicOrigin,4)
+
+	fx_blood_small(ivicOrigin,8)
+	fx_extra_blood(ivicOrigin)
+	fx_blood_large(ivExplodeAt,2)
+	fx_blood_small(ivicOrigin,4)
 
 }
 public _precache_gibs(iPlugins, iParams){

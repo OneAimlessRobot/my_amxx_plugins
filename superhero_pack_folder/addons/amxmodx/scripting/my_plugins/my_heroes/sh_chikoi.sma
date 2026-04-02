@@ -76,10 +76,8 @@ public chikoi_init()
 }
 stock dmg_message(id, attacker){
 	new attacker_name[128];
-	new client_name[128];
 	get_user_name(attacker,attacker_name,127);
-	get_user_name(id,client_name,127);
-	sh_chat_message(0,gHeroID,"%s has killed Chikoi the Maid (%s), the Small Maid, at your service.",attacker_name,client_name)
+	sh_chat_message(id,gHeroID,"%s has killed Chikoi the Maid, the Small Maid, at your service.",attacker_name)
 
 }
 public chikoi_damage(id){
@@ -98,7 +96,6 @@ if(headshot){
 
 	
 	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id)
-	dmg_message(id, attacker)
 }
 if(weapon==CSW_HEGRENADE){
 
@@ -200,7 +197,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
 			new_dmg_type=SH_NEW_DMG_SQUASHED
-			dmg_message(victim, attacker)
+			dmg_message(victim,attacker)
 			return DMG_FWD_PASS
 		}
 		else {
@@ -223,11 +220,16 @@ public plugin_precache()
 public death()
 {
 	new id=read_data(2)
+	new killer=read_data(1)
 	if ( !is_user_connected(id)){
 		return
 	}
 	if(gHasChikoi[id]){
 		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[random_num(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
+		
+		if(is_user_connected(killer)&&(killer!=id)){
+			dmg_message(id,killer)
+		}
 	}
 
 }

@@ -147,15 +147,14 @@ public Inc_hits(id){
 
 }
 
-stock dmg_message(id,attacker,Float:damage){
-	if(client_hittable(id,gHasYowai[id]&&g_yowai_mode[id])){
-		if(!is_user_bot(id)){
-			new client_name[128];
-			new attacker_name[128]
-			get_user_name(id,client_name,127);
-			get_user_name(attacker,attacker_name,127);
-			sh_chat_message(id,gHeroID,"Dont worry, %s... youll be fine... like always... sigh... damage: %.0f from %s is a scratch",client_name,damage,attacker_name)
-			status_hud(id);
+stock dmg_message(id,Float:damage){
+	if(client_hittable(id)){
+		if(gHasYowai[id]&&g_yowai_mode[id]){
+				if(!is_user_bot(id)){
+
+				sh_chat_message(id,gHeroID,"Dont worry, ... youll be fine, like always... sigh... damage: %.0f is a scratch",damage)
+				status_hud(id);
+			}
 		}
 		Inc_hits(id)
 	}
@@ -185,7 +184,7 @@ if(gHasYowai[id]&&g_yowai_mode[id]){
 	}
 	else if((damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id]))){
 		
-		dmg_message(id,attacker,damage)
+		dmg_message(id,damage)
 		damage=0.0
 		SetHamParamFloat(4, damage);
 			
@@ -302,7 +301,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			return DMG_FWD_PASS
 		}
 		else if((damage<dmg_threshold&&(g_hits[victim]<g_max_hits_player[victim]))){
-			dmg_message(victim,attacker,float(damage))
+			dmg_message(victim,float(damage))
 			return DMG_FWD_BLOCK
 		}
 	}

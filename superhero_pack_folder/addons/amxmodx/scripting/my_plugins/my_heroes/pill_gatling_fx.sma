@@ -3,91 +3,22 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_gatling_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
-
-stock Float:total_weight=0.0;
 
 #define PLUGIN "Superhero yakui pt2 pt1"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-#define rarity_function_to_use prepare_rarities_l1
 const fPainShock = 108
 
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new g_last_weapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
-
-stock prepare_rarities_l2(){
-
-
-server_print("Pill gatling fx! Preparing l2 rarity fx weights!^n")
-
-for(new i=0;i<_:NUM_FX;i++){
-
-
-	total_weight+=(fx_rarity_weights[i]*fx_rarity_weights[i])
-}
-total_weight=floatsqroot(total_weight)
-server_print("The norm of the l2 weight array is: ^"%0.5f^"^n^n",total_weight)
-
-build_rarity_array()
-
-}
-
-stock prepare_rarities_l1(){
-
-
-server_print("Pill gatling fx! Preparing l1 rarity fx weights!^n")
-
-for(new i=0;i<_:NUM_FX;i++){
-
-
-	total_weight+=(fx_rarity_weights[i])
-}
-
-server_print("The sum of the l1 array is: ^"%0.5f^"^n^n",total_weight)
-
-build_rarity_array()
-
-}
-
-build_rarity_array(){
-
-
-	static Float:the_cummulative=0.0,
-			Float:this_weight=0.0;
-	for(new i=0;i<_:NUM_FX;i++){
-
-		this_weight=(fx_rarity_weights[i]/total_weight);
-		the_cummulative+=this_weight
-		fx_rarities[i]=the_cummulative
-	}
-	SortFloats(fx_rarities,_:NUM_FX,Sort_Ascending)
-
-}
-
-
-print_rarities(){
-
-
-
-server_print("Here are all the weights!:^n^n")
-
-for(new i=0;i<_:NUM_FX;i++){
-
-
-	server_print("The weight of fx named ^"%s^" is: ^"%0.5f^"^n",fx_names[i],fx_rarities[i])
-
-
-}
-
-}
 
 public plugin_init(){
 
@@ -125,10 +56,6 @@ for(new i=_:GLOW;i<_:NUM_FX;i++){
 		fx_task_parameters[i][fx_task_repeats]=floatround(floatdiv(the_time,the_period))
 	}
 }
-
-rarity_function_to_use()
-print_rarities()
-
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
 register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
@@ -327,6 +254,11 @@ fx_task_user(id,attacker,fx_num){
 	new array[2]
 	array[0] = fx_num
 	array[1] = attacker
+	if((fx_task_parameters[fx_num][fx_task_status_icon])>=0){
+
+		set_damage_icon(id,1,fx_task_parameters[fx_num][fx_task_status_icon],LineColors[FX_COLOR_OFFSET+fx_num])
+	}
+	
 	if(strlen(fx_task_parameters[fx_num][fx_task_apply_func_name])){
 		
 		set_task(fx_task_parameters[fx_num][fx_task_period],
@@ -354,11 +286,11 @@ fx_task_user(id,attacker,fx_num){
 public _get_fx_num(iPlugin,iParams){
 
 
-	new Float:chance=random_float(0.0,fx_rarities[sizeof(fx_rarities)-1])
+	new Float:chance=random_float(0.0,fx_rarity_weights[sizeof(fx_rarity_weights)-1])
 
 
 	for(new fx_id:i=KILL;i<NUM_FX;i++){
-		new Float:compared=fx_rarities[i];
+		new Float:compared=fx_rarity_weights[i];
 		if(chance<compared){
 
 			return i;
@@ -469,7 +401,6 @@ public glow_task(array[],id){
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	
-	
 
 
 }
@@ -542,63 +473,26 @@ public bath_task(array[],id){
 
 }
 
+public uneffect_task_generic(array[],id){
 
-public unstun_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,true)
-
-
-
-}
-public unpoison_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_remove_id]
 	uneffect_user_primitive(id,false)
-
-
-
 }
-public unblind_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,true)
 
-}
-public unmorphine_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
 
-}
+
 public unweed_task(array[],id){
+	uneffect_task_generic(array,id)
 	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
 	sh_reset_min_gravity(id)
 
 }
 public uncocaine_task(array[],id){
+	uneffect_task_generic(array,id)
 	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
 	sh_reset_max_speed(id)
 
 }
-
-public unbath_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
-
-}
-
-
-public unfocus_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
-
-}
-
-public unglow_task(array[],id){
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
-
-}
-
 
 
 
@@ -611,6 +505,11 @@ uneffect_user_primitive(id,bool:terminate_cleaner_task=false){
 	}
 	remove_task(id+fx_task_parameters[the_fx_id][fx_task_apply_id])
 	set_user_rendering(id)
+	if((fx_task_parameters[the_fx_id][fx_task_status_icon])>=0){
+
+		set_damage_icon(id,0,fx_task_parameters[the_fx_id][fx_task_status_icon])
+	}
+	
 	if(the_fx_id==_:RADIOACTIVE){
 		unradioactive_user(id)
 	}

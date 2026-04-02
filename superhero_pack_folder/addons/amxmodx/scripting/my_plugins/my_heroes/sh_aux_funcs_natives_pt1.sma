@@ -21,7 +21,10 @@ new const damage_icon_strings_arr[_:DMG_ICON_MAX][]={
 	"dmg_rad",
 	"dmg_shock",
 	"dmg_gas",
-	"dmg_heat"
+	"dmg_heat",
+	"item_healthkit",
+	"suit_full",
+	"item_longjump"
 }
 
 stock REMOVE_DAMAGE_ICON_TASKID

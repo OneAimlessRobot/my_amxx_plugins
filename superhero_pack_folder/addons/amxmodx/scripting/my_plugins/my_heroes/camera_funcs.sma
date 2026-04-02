@@ -812,7 +812,6 @@ public uncharge_task(id){
 	id-=UNCAMERA_CHARGE_TASKID
 	remove_task(id+CAMERA_CHARGE_TASKID)
 	camera_armed[id]=0
-	return 0
 	
 	
 	
@@ -820,9 +819,7 @@ public uncharge_task(id){
 
 uncharge_user(id){
 	remove_task(id+UNCAMERA_CHARGE_TASKID)
-	remove_task(id+CAMERA_CHARGE_TASKID)
-	camera_armed[id]=0
-	return 0
+	uncharge_task(id+UNCAMERA_CHARGE_TASKID)
 	
 	
 }

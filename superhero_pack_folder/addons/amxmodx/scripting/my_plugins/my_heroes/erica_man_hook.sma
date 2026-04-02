@@ -456,7 +456,7 @@ public death()
 }
 process_manhook_manslaughter(iAgressor, iVictim)
 {
-	new iOrigin[3], iOrigin2[3]
+	new Float:Origin[3], Float:Origin2[3]
 	//Check to make sure its a valid entity
 	if (!pev_valid(iAgressor)) {
 		iAgressor = iVictim
@@ -464,15 +464,8 @@ process_manhook_manslaughter(iAgressor, iVictim)
 
 	if (!is_user_connected(iVictim)) return
 
-	get_user_origin(iVictim, iOrigin)
-	get_user_origin(iAgressor, iOrigin2)
+	entity_get_vector(iVictim,EV_VEC_origin,Origin)
+	entity_get_vector(iAgressor,EV_VEC_origin,Origin2)
 
-	fx_gib_explode(iOrigin,iOrigin2)
-	fx_blood_large(iOrigin,4)
-	fx_blood_small(iOrigin,4)
-
-	fx_blood_small(iOrigin,8)
-	fx_extra_blood(iOrigin)
-	fx_blood_large(iOrigin,2)
-	fx_blood_small(iOrigin,4)
+	gross_kill_gibs_fx(iVictim,Origin,Origin2)
 }

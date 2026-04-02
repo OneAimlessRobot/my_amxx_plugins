@@ -612,15 +612,9 @@ public vexd_pfntouch(pToucher, pTouched) {
 				sh_extra_damage(vic, id, damage, damageName)
 				if((g_powerNum[id]>=3)&&(vic==pTouched)&&(damage>=health)){
 
-						
-						fx_gib_explode(vicOrigin,vExplodeAt)
-						fx_blood_large(vicOrigin,4)
-						fx_blood_small(vicOrigin,4)
-
-						fx_blood_small(vicOrigin,8)
-						fx_extra_blood(vicOrigin)
-						fx_blood_large(vExplodeAt,2)
-						fx_blood_small(vicOrigin,4)
+						new Float:vic_origin_f[3]
+						IVecFVec(vicOrigin,vic_origin_f)
+						gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
 				}
 
 				// Make them feel it

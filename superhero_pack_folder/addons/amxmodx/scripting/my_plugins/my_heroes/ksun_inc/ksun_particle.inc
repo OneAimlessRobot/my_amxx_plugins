@@ -16,10 +16,7 @@
 
 #define SPORE_SIZE 5.0
 
-#define FIRE_DELAY 0.2
 
-#define FOLLOW_LOOP_PERIOD 0.2
-#define FOLLOW_LOOP_TIMES floatround(floatdiv(get_follow_time(),FOLLOW_LOOP_PERIOD))
 
 
 #define SPORE_DEAD_HP 1000.0

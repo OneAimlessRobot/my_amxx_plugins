@@ -24,7 +24,7 @@
 
 #define DEPLOY_LOOP_PERIOD 0.2
 
-#define SPORE_THINK_PERIOD 0.05
+#define SPORE_THINK_PERIOD 0.2
 
 #define UNITS_ABOVE 80
 

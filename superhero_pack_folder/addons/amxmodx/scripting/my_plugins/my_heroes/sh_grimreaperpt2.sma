@@ -124,41 +124,12 @@ return PLUGIN_CONTINUE
 public greaper_damage(this, attacker)
 {
 
-new attacker_name[128];
-new client_name[128];
-get_user_name(attacker,attacker_name,127);
-get_user_name(this,client_name,127);
 sh_extra_damage(this,attacker,1,dmg_source_name_long_scythe,1000,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id_scythe);
-sh_chat_message(0,gHeroID,"AND THAT IS A HIT!!!!! %s HAS SLAIN %s WITH THE DEATHS SCYTHE!!!!!",attacker_name,client_name);
 emit_sound(attacker, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 emit_sound(this, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 
 return;
 }
-vec_sum(Float:vec1[3],Float:vec2[3],Float:vecRes[3]){
-
-	vecRes[0]=vec1[0]+vec2[0];
-	vecRes[1]=vec1[1]+vec2[1];
-	vecRes[2]=vec1[2]+vec2[2];
-
-}
-vec_diff(Float:vec1[3],Float:vec2[3],Float:vecRes[3]){
-
-	vecRes[0]=vec1[0]-vec2[0];
-	vecRes[1]=vec1[1]-vec2[1];
-	vecRes[2]=vec1[2]-vec2[2];
-
-}
-vec_mult(Float:vec1[3],Float:mult,Float:vecRes[3]){
-
-	vecRes[0]=vec1[0]*mult;
-	vecRes[1]=vec1[1]*mult;
-	vecRes[2]=vec1[2]*mult;
-
-
-
-}
-
 
 swing_connected(Att){
 
@@ -169,12 +140,12 @@ get_user_origin(Att,att_aim,3);
 IVecFVec(att_orig,att_orig_f);
 IVecFVec(att_aim,att_aim_f);
 new Float:aim_beam_f[3];
-vec_diff(att_aim_f,att_orig_f,aim_beam_f);
+sub_3d_vectors(att_aim_f,att_orig_f,aim_beam_f);
 new Float:aim_len=vector_length(aim_beam_f);
-vec_mult(aim_beam_f,1.0/aim_len,aim_beam_f);
-vec_mult(aim_beam_f,g_reaper_range,aim_beam_f);
+multiply_3d_vector_by_scalar(aim_beam_f,1.0/aim_len,aim_beam_f);
+multiply_3d_vector_by_scalar(aim_beam_f,g_reaper_range,aim_beam_f);
 
-vec_sum(att_orig_f,aim_beam_f,att_aim_f);
+add_3d_vectors(att_orig_f,aim_beam_f,att_aim_f);
 
 new num_ents=SH_MAXSLOTS+1
 new ent_list[SH_MAXSLOTS+1];
