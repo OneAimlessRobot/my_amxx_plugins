@@ -1,4 +1,6 @@
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -72,7 +74,7 @@ public _make_effect(iPlugin,iParams){
 
 		return
 	}
-	sh_uneffect_user(vic,hero_id,gCurrFX[vic])
+	sh_uneffect_user(vic,gCurrFX[vic])
 	sh_effect_user_direct(vic,attacker,hero_id,true_fx_num)
 
 }
@@ -80,13 +82,12 @@ public _make_effect(iPlugin,iParams){
 public _uneffect_user_handler(iPlugin,iParams){
 
 	new user=get_param(1)
-	new hero_id=get_param(2)
 	if(!is_user_connected(user)){
 		
 		return
 	}
 	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<_:NUM_FX)){
-		sh_uneffect_user(user,hero_id,gatling_get_fx_num(user))
+		sh_uneffect_user(user,gatling_get_fx_num(user))
 		gCurrFX[user]=0;
 	}
 }

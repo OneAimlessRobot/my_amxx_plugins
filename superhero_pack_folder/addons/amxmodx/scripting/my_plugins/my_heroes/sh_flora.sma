@@ -279,12 +279,7 @@ public flora_ku()
 	}
 	
 	if(flora_get_user_num_active_fields(id)<flora_max_fields()){
-		if(g_flora_num_of_fields_prev[id]==g_flora_num_of_fields[id]){
-			
-			if(!is_user_bot(id)){
-				sh_chat_message(id,flora_get_hero_id(),"Field not deployed. Action interrupted");
-			}
-		}
+		
 		field_uncharge_user(id)
 		
 		return PLUGIN_HANDLED

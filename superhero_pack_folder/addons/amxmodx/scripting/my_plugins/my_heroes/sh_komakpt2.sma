@@ -437,7 +437,7 @@ public komak_ku()
 	
 	gClutchDown[id]=false
 	if(g_komak_hits[id]<red_line){
-		sh_chat_message(id,gHeroID,"Thats not the gear changing rpm! Rev until redline! Dont bog the engine come on!")
+		
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	

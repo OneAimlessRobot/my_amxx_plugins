@@ -248,7 +248,7 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
 
 }
 
-notify_yanderes_about_team_life(id=-1,alive=0,disconnected=0){
+notify_yanderes_about_team_life(id=-1,disconnected=0){
 if(!sh_is_active()) return
 if(!disconnected){
 	if(!is_user_connected(id)) return
@@ -259,9 +259,6 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!gHasYandere[i]) continue;
 	if(!(disconnected)&&(id!=i)){
 		if(!sh_clients_are_same_team(id,i)) continue;
-	}
-	if(!is_user_bot(i)){
-		sh_chat_message(i,gHeroID,"%s",(!alive)? "I feel... heavier":"Wow... I feel lighter")
 	}
 	new mates_alive
 	sh_get_team_counts(i,mates_alive,g_mates_dead[i])
@@ -370,7 +367,7 @@ public client_disconnected(id){
 	remove_task(id+YANDERE_STATS_TASKID)
 	killyandere(id,true)
 	yandere_unmorph(id)
-	notify_yanderes_about_team_life(-1,0,1)
+	notify_yanderes_about_team_life(-1,1)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -591,9 +588,6 @@ public yandere_ku()
 	
 	if(!jet_deployed(id)){
 		
-		if(!is_user_bot(id)){
-			sh_chat_message(id,yandere_get_hero_id(),"Jet not deployed. Action interrupted");
-		}
 		jet_uncharge_user(id)
 		return PLUGIN_HANDLED
 	}

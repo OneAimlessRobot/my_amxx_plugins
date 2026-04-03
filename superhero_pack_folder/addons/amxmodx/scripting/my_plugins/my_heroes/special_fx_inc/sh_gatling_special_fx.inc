@@ -137,7 +137,7 @@ stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={
 native sh_effect_user(id,attacker,gHeroID)
 native sh_gen_effect()
 native sh_effect_user_direct(id,attacker,gHeroID,fx_num)
-native sh_uneffect_user(id,gHeroID,fx_num)
+native sh_uneffect_user(id,fx_num)
 native sh_get_fx_color_name(fx_num,fx_arr[3],name[128])
 native sh_get_user_effect(id)
 

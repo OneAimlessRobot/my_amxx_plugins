@@ -1,0 +1,6 @@
+L 04/03/2026 - 18:12:37: Start of error session.
+L 04/03/2026 - 18:12:37: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260403.log")
+L 04/03/2026 - 18:12:37: Function "_shinobu_get_cooldown" was not found
+L 04/03/2026 - 18:12:37: [AMXX] Run time error 19 (plugin "sh_shinobu_kocho.amxx") - debug not enabled!
+L 04/03/2026 - 18:12:37: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/03/2026 - 18:12:37: [AMXX] Run time error -1 (plugin "sh_shinobu_kocho.amxx") - debug not enabled!

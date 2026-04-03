@@ -43,6 +43,14 @@ new min_damage_to_do;
 new moralizing_tmp_xp_get_mult; 
 new moralizing_pan_xp_get_mult;
 
+new moralizing_ray_wpn_id
+new dmg_source_name_short_moralizing_ray[SAFE_BUFFER_SIZE+1]="moralizing_ray"
+new dmg_source_name_long_moralizing_ray[SAFE_BUFFER_SIZE+1]="ester_moralizer"
+
+new adulting_pan_wpn_id
+new dmg_source_name_short_adulting_pan[SAFE_BUFFER_SIZE+1]="the_pan_tm"
+new dmg_source_name_long_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
+
 stock ESTER_GLOW_TASKID,
 	ESTER_REVENGE_TASKID,
 	ESTER_MORPH_TASKID
@@ -98,6 +106,18 @@ public plugin_init()
 	init_hud_syncs()
 
 	init_explosion_defaults()
+
+	adulting_pan_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_moralizing_ray,
+								dmg_source_name_long_moralizing_ray,
+								0)
+
+	adulting_pan_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_adulting_pan,
+								dmg_source_name_long_adulting_pan,
+								0)
 
 }
 public Hook_BloodColor(id)
@@ -328,7 +348,7 @@ public weaponChange(id)
 	}
 	else{
 		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
-			sh_uneffect_user(id,ester_get_hero_id(),METYLPHENIDATE);
+			sh_uneffect_user(id,METYLPHENIDATE);
 			
 		}
 		if (wpnid == CSW_KNIFE) {
@@ -668,7 +688,12 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					}
 					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult)+1.0):floatadd(damage,pan_dmg))
 					if (extraDamage>0){
-						sh_extra_damage(id, attacker, floatround(extraDamage), (weapon==CSW_TMP?"tmp":"Adutling Pan (TM)"), headshot)
+						
+						sh_extra_damage(id,attacker,floatround(extraDamage),
+									(weapon==CSW_TMP?dmg_source_name_short_moralizing_ray:dmg_source_name_long_adulting_pan),0,_,_,_,_,_,
+									_,
+									(weapon==CSW_TMP?moralizing_ray_wpn_id:adulting_pan_wpn_id))
+
 						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?moralizing_tmp_xp_get_mult:moralizing_pan_xp_get_mult)*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
 							

@@ -370,14 +370,10 @@ public _sh_effect_user(iPlugin,iParams){
 public _sh_uneffect_user(iPlugin,iParams){
 
 	new user=get_param(1)
-	new gHeroID=get_param(2)
-	new fx_num=get_param(3)
+	new fx_num=get_param(2)
 	
 	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<=_:BATH)){
 		uneffect_user_primitive(user,true)
-		if(!is_user_bot(user)){
-			sh_chat_message(user,gHeroID,fx_remove_strings[fx_num])
-		}
 	}
 	return fx_num;
 
@@ -526,7 +522,7 @@ public on_death_status()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-			sh_uneffect_user(id,gatling_get_hero_id(),gatling_get_fx_num(id))
+			sh_uneffect_user(id,gatling_get_fx_num(id))
 	}
 	
 }

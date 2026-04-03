@@ -191,7 +191,7 @@ public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)|| !sh_is_active()) return
 	
-	uneffect_user_handler(id,gHeroID)
+	uneffect_user_handler(id)
 	if ( gatling_get_has_yakui(id)) {
 		
 		yakui_tasks(id)
@@ -298,7 +298,7 @@ public death(){
 	new id=read_data(2)
 	if(!sh_is_active()) return
 	
-	uneffect_user_handler(id,gHeroID)
+	uneffect_user_handler(id)
 	yakui_unmorph(id+YAKUI_MORPH_TASKID)
 
 

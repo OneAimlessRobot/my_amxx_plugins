@@ -58,6 +58,7 @@ public teleport_newRound(id)
 
 	if ( shinobu_get_has_shinobu(id)) {
 		
+		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
 	}
 	return PLUGIN_HANDLED
@@ -68,6 +69,8 @@ shinobu_teleport(id,attacker)
 
 	orient_user(attacker,g_shinobu_dst_angles[attacker],g_shinobu_dst_v_angles[attacker])
 	set_user_origin(attacker,g_shinobu_dst_positions[attacker])
+	
+	ultimateTimer(attacker, shinobu_get_cooldown())
 
 	positionChangeTimer(id,attacker)
 	
@@ -118,6 +121,7 @@ public positionChangeCheck(array[], attacker)
 		set_user_origin(attacker,g_shinobu_positions[attacker])
 		orient_user(attacker,g_shinobu_angles[attacker],g_shinobu_v_angles[attacker])
 		sh_chat_message(attacker,shinobu_get_hero_id(),"Finalizing teleport would have gotten you stuck! Aborting...")
+		sh_end_cooldown(attacker+SH_COOLDOWN_TASKID)
 		return
 	}
 	sh_chat_message(tg,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:random_num(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
@@ -135,6 +139,14 @@ public _nani_behind_player(iPlugin,iParams){
 
 		return
 	}
+	if ( gPlayerUltimateUsed[tele_player] ) {
+		if(!is_user_bot(tele_player)){
+			playSoundDenySelect(tele_player)
+			sh_chat_message(tele_player,shinobu_get_hero_id(),"Teleport canceled. Still on cooldown!");
+		}
+		return
+	}
+
 	arrayset(g_shinobu_dst_positions[tele_player],0,sizeof g_shinobu_dst_positions)
 	arrayset(g_shinobu_positions[tele_player],0,sizeof g_shinobu_positions)
 

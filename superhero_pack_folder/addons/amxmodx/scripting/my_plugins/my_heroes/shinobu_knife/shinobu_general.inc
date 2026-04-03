@@ -7,6 +7,7 @@
 native shinobu_get_has_shinobu(id)
 native shinobu_get_user_tagged_player(id)
 
+native Float:shinobu_get_cooldown()
 //default value untags user!
 
 native shinobu_set_user_tagged_player(id,value=0)

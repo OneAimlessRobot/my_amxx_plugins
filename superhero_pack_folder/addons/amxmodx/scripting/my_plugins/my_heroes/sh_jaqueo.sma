@@ -218,7 +218,6 @@ public jaqueo_kd()
 	if(shield_deployed(id)){
 		
 		sh_sound_deny(id)
-		sh_chat_message(id, jaqueo_get_hero_id(), "Shield already on!")
 		return PLUGIN_HANDLED
 		
 	}
@@ -238,7 +237,7 @@ public jaqueo_ku()
 	}
 	
 	if(!shield_deployed(id)){
-		sh_chat_message(id,jaqueo_get_hero_id(),"Shield not deployed. Action interrupted");
+		
 		shield_uncharge_user(id)
 		return PLUGIN_HANDLED
 	}

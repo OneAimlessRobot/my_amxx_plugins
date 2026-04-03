@@ -318,7 +318,6 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 					CsTeams:vic_team=cs_get_user_team(jet_owner);
 				if(att_team!=vic_team){
 					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_law_dmg)
-					sh_chat_message(id,yandere_get_hero_id(),"You hit an enemy jet! I repeat: You hit an enemy jet!");
 				}
 			}
 		}
@@ -329,7 +328,6 @@ if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
 		Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
 		
 		if(equal(szClassNameMissile, JETPLANE_ROCKET_CLASSNAME)) {
-			sh_chat_message(id,yandere_get_hero_id(),"WOAH! You hit another rocket... I repeat... You hit, another rocket...");
 			RemoveEntity(pTouched)
 		}
 	}

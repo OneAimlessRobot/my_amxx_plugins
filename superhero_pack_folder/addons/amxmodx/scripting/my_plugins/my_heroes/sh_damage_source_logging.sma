@@ -37,19 +37,7 @@ sh_log_damage_source_primitive(hero_id=-1,short_name[SAFE_BUFFER_SIZE+1]="",long
             sh_damage_source_is_a_melee[wpn_id]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
             copy(sh_damage_source_short_names[wpn_id],SAFE_BUFFER_SIZE-1,is_generic_hero?generic_dmg_source_name:short_name)
             copy(sh_damage_source_long_names[wpn_id],SAFE_BUFFER_SIZE-1,is_generic_hero?generic_dmg_source_name:long_name)
-            new hero_name[MAX_HERO_NAME_LENGTH];
-            if(!is_generic_hero){
-            sh_get_hero_name_from_id(hero_id,hero_name)
-            }
-            /*server_print("Valid wpn_id obtained at _sh_log_custom_damage_source!^nIt came out as %d!^nA new weapon will be added!\nHere is the identification of this custom danage source:^n1 - hero_name: %s (id is %d)^n2 - wpn_id: %d^n3 - long_name: %s (short: %s)^n4 - %s^n^n",
-                                wpn_id,
-                                is_generic_hero?generic_dmg_hero_name:hero_name,
-                                sh_damage_source_hero_ids[wpn_id],
-                                wpn_id,
-                                sh_damage_source_long_names[wpn_id],
-                                sh_damage_source_short_names[wpn_id],
-                                sh_damage_source_is_a_melee[wpn_id]? "This weapon is a melee weapon":"This weapon is not a melee weapon")
-            */
+            
         }
         else{
 

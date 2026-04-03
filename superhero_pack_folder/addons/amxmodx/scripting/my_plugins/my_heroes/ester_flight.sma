@@ -419,11 +419,6 @@ public ester_reborn_loop_task(parm[]){
 	new id= parm[0]
 	if(is_user_alive(id)&&ester_get_has_ester(id)){
 		
-		
-		
-		if(!is_user_bot(id)){
-			sh_chat_message(id,ester_get_hero_id(),"Removing respawning dice rool loop. already alive")
-		}
 		remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
 		return
 		
@@ -432,13 +427,6 @@ public ester_reborn_loop_task(parm[]){
 	if(chance<(ester_calculation_chance_numerator/ester_calculation_chance_denominator)){
 	
 		ester_respawn(parm)
-		
-	}
-	else{
-		
-		if(!is_user_bot(id)){
-			sh_chat_message(id,ester_get_hero_id(),"Not this time...")
-		}
 		
 	}
 	
@@ -590,9 +578,6 @@ ester_remove_statuses(id,rem_explosion=1,remove_god=1,remove_collosions=1){
 		
 		if(remove_god&&get_user_godmode(id)){
 			set_user_godmode(id,0)
-			new name[128]
-			get_user_name(id,name,127)
-			sh_chat_message(0,ester_get_hero_id(),"%s's godmode has been taken away!",name)
 		}
 		ester_unglow(id)
 		remove_user_flight_fx(id)
@@ -636,7 +621,6 @@ public revival(id)
 		if(!user_has_weapon(id,CSW_KNIFE)){
 			sh_give_weapon(id,CSW_KNIFE,true)
 		}
-		engclient_cmd(id, "weapon_knife")
 		setScreenFlash(id, 0, 0, 0, 0, 255 )  //Black flash indicating revival
 	}
 }

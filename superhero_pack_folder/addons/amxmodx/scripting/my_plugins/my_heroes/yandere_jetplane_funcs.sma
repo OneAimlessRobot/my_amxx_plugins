@@ -311,19 +311,6 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 		return HAM_IGNORED
 		
 	}
-	static classname[32]
-	classname[0] = '^0'
-	pev(idinflictor, pev_classname, classname, charsmax(classname))
-	
-	new oid = entity_get_edict(this, EV_ENT_owner)
-	
-	if(!is_user_bot(oid)){
-		console_print(oid,"[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!^nYou received: %0.2f damage^nFrom entity of type: %s^nFrom attacker of id: %d (name %s)^n"
-				,damage
-				,classname
-				,idattacker
-				,attacker_name);
-	}
 	return HAM_IGNORED;
 }
 

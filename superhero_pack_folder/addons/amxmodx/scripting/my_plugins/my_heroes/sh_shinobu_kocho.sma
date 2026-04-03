@@ -76,6 +76,7 @@ public plugin_natives(){
 	register_native("shinobu_get_has_shinobu","_shinobu_get_has_shinobu",0)
 	register_native("shinobu_get_user_tagged_player","_shinobu_get_user_tagged_player",0)
 	register_native("shinobu_set_user_tagged_player","_shinobu_set_user_tagged_player",0)
+	register_native("shinobu_get_cooldown","_shinobu_get_cooldown",0)
 	register_native("shinobu_get_hero_id","_shinobu_get_hero_id",0)
 	
 	
@@ -119,6 +120,11 @@ public _shinobu_get_hero_id(iPlugins, iParms){
 	return gHeroID
 	
 }
+public Float:_shinobu_get_cooldown(iPlugins, iParms){
+	
+	return shinobu_cooldown
+	
+}
 
 public shinobuDamage(id)
 {
@@ -153,10 +159,6 @@ public newRound(id)
 		return PLUGIN_CONTINUE
 	}
 
-	if ( shinobu_get_has_shinobu(id)) {
-		
-		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-	}
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -262,18 +264,12 @@ public shinobu_kd()
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] ) {
-		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
-			sh_chat_message(id,gHeroID,"Wait for a bit");
-		}
-		return PLUGIN_HANDLED
-	}
+	
 	if(g_shinobu_tagged_player[id]<=0){
 
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
-			sh_chat_message(id,gHeroID,"Tag someonme first! Tag someone to teleport!");
+			sh_chat_message(id,gHeroID,"Tag someone to teleport!");
 		}
 		return PLUGIN_HANDLED
 	}
@@ -281,14 +277,13 @@ public shinobu_kd()
 		new tg_is_connected=is_user_connected(g_shinobu_tagged_player[id])
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
-			sh_chat_message(id,gHeroID, "Unavailable. Tag someone else to teleport! They are %s",
+			sh_chat_message(id,gHeroID, "Unavailable. They are %s",
 						tg_is_connected?"Not alive! (Try again when they respawn ^^-^^)":"Not connected.");
 		}
 		return PLUGIN_HANDLED
 	}
 	sh_chat_message(id,shinobu_get_hero_id(),"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:random_num(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
 	shinobu_teleport_init(id)
-	ultimateTimer(id, shinobu_cooldown)
 	return PLUGIN_HANDLED
 }
 
@@ -334,20 +329,6 @@ public death()
 	}
 		
 }
-/*
-native bool:generic_heal(hud_msg_sync=-1,
-					id,
-					Float:added_hp,
-					max_hp_to_clamp=-1,
-					color_const=GREEN,
-					user_will_glow=0,
-					Float:glow_remove_timer=1.0,
-					hud_alpha=-1,
-					hud_will_glow=1,
-					make_sound=1,
-					const sound_sample_buff[128]=SPORE_HEAL_SFX)
-
- */
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
 	
