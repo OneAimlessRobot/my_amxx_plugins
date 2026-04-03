@@ -533,34 +533,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_READY_SOUND)
 
 }
-public get_ksun_num(id,want_alive,want_all){
-
-new players[SH_MAXSLOTS]
-new team_name[32]
-new player_count;
-get_user_team(id,team_name,32)
-if(want_all){
-	if(!want_alive){
-		get_players(players,player_count,"b")
-	}
-	else{
-		get_players(players,player_count,"a")
-		player_count--
-	}
-}
-else{
-	if(!want_alive){
-		get_players(players,player_count,"eb",team_name)
-	}
-	else{
-		get_players(players,player_count,"ea",team_name)
-		player_count--
-	}
-}
-return player_count;
-
-
-}
 
 
 //----------------------------------------------------------------------------------------------
@@ -569,7 +541,9 @@ public ksun_prethink(id)
 	if ( sh_is_active()){
 		if(client_hittable(id)){
 			if(spores_has_ksun(id)){
-				if((get_ksun_num(id,1,0)<=0)) {
+				new alive=0,dead=0
+				sh_get_team_counts(id,alive,dead)
+				if((alive<=0)) {
 					set_pev(id, pev_flTimeStepSound, 999)
 					}
 				}

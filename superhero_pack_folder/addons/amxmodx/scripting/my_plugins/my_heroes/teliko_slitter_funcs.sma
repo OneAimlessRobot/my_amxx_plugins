@@ -190,16 +190,6 @@ public slitter_think(id)
 	return FMRES_IGNORED
 }
 
-public orient_user(id,Float:angles[3],Float:v_angle[3])
-{
-	
-	entity_set_int( id, EV_INT_fixangle, 0 );
-	entity_set_vector(id, EV_VEC_v_angle,v_angle)
-	entity_set_vector(id, EV_VEC_angles,angles)
-	entity_set_int( id, EV_INT_fixangle, 1 );
-	
-	return PLUGIN_CONTINUE
-}
 //----------------------------------------------------------------------------------------------
 public CmdStart(attacker, uc_handle)
 {

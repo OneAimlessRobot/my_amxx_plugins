@@ -555,6 +555,7 @@ public ester_teleport(id)
 	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"b")
 	for(new i=0;i<3;i++){
 		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME+(float(i)*FLIGHT_GODMODE_THINK_TIME),"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
+
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -632,6 +633,9 @@ public revival(id)
 	ExecuteHamB(Ham_Spawn, id) 
 	if(client_hittable(id)){
 		remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
+		if(!user_has_weapon(id,CSW_KNIFE)){
+			sh_give_weapon(id,CSW_KNIFE,true)
+		}
 		engclient_cmd(id, "weapon_knife")
 		setScreenFlash(id, 0, 0, 0, 0, 255 )  //Black flash indicating revival
 	}

@@ -67,6 +67,7 @@ public plugin_init(){
 
 	register_forward(FM_Think, "bulette_thinque")
 	init_explosion_defaults()
+	init_gravity_pcvar()
 
 
 }

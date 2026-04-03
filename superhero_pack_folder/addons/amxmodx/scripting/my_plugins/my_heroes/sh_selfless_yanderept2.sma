@@ -264,7 +264,7 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 		sh_chat_message(i,gHeroID,"%s",(!alive)? "I feel... heavier":"Wow... I feel lighter")
 	}
 	new mates_alive
-	get_yandere_team_counts(i,mates_alive,g_mates_dead[i])
+	sh_get_team_counts(i,mates_alive,g_mates_dead[i])
 	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
 	gTransTimerStarted[i]= can_transform
 	update_stats(i)
@@ -310,20 +310,6 @@ update_stats(id){
 		gNormalSpeed[id]=floatmin(floatadd(gBaseSpeed[id],floatmul(speed_inc_per_inc,float(g_mates_dead[id]))),angry_speed);
 	}
 }
-stock get_yandere_team_counts(id, &alive, &dead)
-{
-	alive = 0
-	dead = 0
-
-	new team = get_user_team(id)
-	for (new i = 1; i <= SH_MAXSLOTS; i++) {
-		if (i == id || !is_user_connected(i)) continue
-		if (get_user_team(i) != team) continue
-
-		if (is_user_alive(i)) alive++
-		else dead++
-	}
-}
 public yandere_timer_transform(id){
 	if(!sh_is_active()||!client_hittable(id)){
 		return
@@ -347,6 +333,7 @@ public yandere_timer_transform(id){
 
 				gSuperAngry[id]=true
 				update_stats(id)
+				sh_reset_min_gravity(id)
 				set_user_maxspeed(id,gNormalSpeed[id])
 				if(!gPlayedSound[id]){
 					static client_name[128]
@@ -631,7 +618,7 @@ public sh_round_end(){
 	clear_rockets()
 	
 	new total_alive,total_dead;
-	get_yandere_team_counts(0,total_alive,total_dead)
+	sh_get_team_counts(0,total_alive,total_dead)
 	
 	if(total_alive>0){
 		return;

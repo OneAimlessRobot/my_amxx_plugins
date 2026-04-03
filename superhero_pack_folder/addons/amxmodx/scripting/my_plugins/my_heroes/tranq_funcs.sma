@@ -49,6 +49,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, STRN_ELITE, "fw_Weapon_Reload_Post", 1,true)
 
 	register_forward(FM_Think, "tranque_thinque")
+	init_gravity_pcvar()
 
 	
 	

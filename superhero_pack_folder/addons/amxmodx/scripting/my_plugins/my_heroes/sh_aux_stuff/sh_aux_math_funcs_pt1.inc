@@ -2,7 +2,13 @@
   #endinput
 #endif
 #define sh_aux_math_funcs_pt1
+stock sv_gravity_pcvar;
 
+stock init_gravity_pcvar(){
+
+	sv_gravity_pcvar=register_cvar("sv_gravity","800")
+
+}
 stock multiply_3d_vector_by_scalar(Float:in_vec[3],Float:scalar,Float:out_vec[3]){
 	
 	for(new i=0;i<3;i++){
@@ -200,7 +206,7 @@ stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mul
 	speedz=velocity[2]
 	new Float:velocity_num=VecLength(velocity_copy)
 	
-	new Float:gravity_const=get_cvar_float("sv_gravity")*gravity_mult
+	new Float:gravity_const=get_pcvar_float(sv_gravity_pcvar)*gravity_mult
 	new Float:delta_z=((drag_const*velocity_num*speedz)/gravity_const)*phys_update_time;
 	new Float:delta_x=((drag_const*velocity_num*speedx)/gravity_const)*phys_update_time;
 	new Float:delta_y=((drag_const*velocity_num*speedy)/gravity_const)*phys_update_time;

@@ -17,11 +17,24 @@ new RADIOACTIVE_TASK_ID
 new UNRADIOACTIVE_TASK_ID
 new REMOVE_GLOW_TASKID
 
-#define NUM_INIT_TRACK_PARAMS 5
 
-#define PLUGIN "Superhero aux natives"
+#define PLUGIN "Superhero aux natives pt3"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+enum{
+	
+	TRACK_TASK_ATTACKER=0,
+	TRACK_TASK_PLAYER_COUNT,
+	TRACK_TASK_DO_DAMAGE,
+	TRACK_TASK_DAMAGE,
+	TRACK_TASK_TRACK_COLOR,
+	NUM_INIT_TRACK_PARAMS
+
+
+	
+}
 
 public plugin_init(){
 	
@@ -30,7 +43,6 @@ public plugin_init(){
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	UNRADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
-	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	register_event("DeathMsg","on_death_tracked","a")
 	prepare_shero_aux_lib_pt3()
 
@@ -40,6 +52,7 @@ public plugin_init(){
 public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
+	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 }
 
 
@@ -105,18 +118,18 @@ public track_task(array[],id){
 		unradioactive_user(id);
 		return
 	}
-	if(client_hittable(array[0])){
+	if(client_hittable(array[TRACK_TASK_ATTACKER])){
 		new client_name[128]
 		new origin[3], eorigin[3],att_origin[3]
 		new Float:Pos[3],Float:vEnd[3]
-		new color_const=array[4]
+		new color_const=array[TRACK_TASK_TRACK_COLOR]
 		get_user_name(id,client_name,127)
 		
 		get_user_origin(id, eorigin)
-		get_user_origin(array[0], origin)
-		get_user_origin(array[0], att_origin)			
+		get_user_origin(array[TRACK_TASK_ATTACKER], origin)
+		get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)			
 		
-		detect_user(array[0],id,vEnd);
+		detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
 		IVecFVec(origin,Pos)
 		IVecFVec(eorigin,vEnd)
 		new color_const_arr[3];
@@ -124,7 +137,7 @@ public track_task(array[],id){
 
 			color_const_arr[i]=color_const
 		}
-		laser_line(array[0],Pos,vEnd,true,color_const_arr,true)
+		laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
 		for(new i=0;i<array[1];i++){
 			if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
 			
@@ -140,8 +153,8 @@ public track_task(array[],id){
 		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
 		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
 		aura(id,LineColors[color_const])
-		if(array[2]){
-			sh_extra_damage(id,array[0],array[3],"SH_TRACKING",0,SH_DMG_NORM)
+		if(array[TRACK_TASK_DO_DAMAGE]){
+			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],"SH_TRACKING",0,SH_DMG_NORM)
 		}
 	}
 	else{
@@ -177,11 +190,11 @@ public _track_user(iPlugins, iParams){
 
 	new array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
 	arrayset(array,-1,sizeof array)
-	array[0] = attacker
-	array[1] = player_count
-	array[2] = do_damage
-	array[3] = damage
-	array[4] = track_color
+	array[TRACK_TASK_ATTACKER] = attacker
+	array[TRACK_TASK_PLAYER_COUNT] = player_count
+	array[TRACK_TASK_DO_DAMAGE] = do_damage
+	array[TRACK_TASK_DAMAGE] = damage
+	array[TRACK_TASK_TRACK_COLOR] = track_color
 	for(new i=0;i<player_count;i++){
 		
 		if(client_hittable(players[i])){

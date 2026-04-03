@@ -52,8 +52,14 @@ public plugin_natives(){
 	register_native("sh_unbleed_user","_sh_unbleed_user",0);
 	register_native("make_bleed_fx","_make_bleed_fx",0);
 	register_native("do_bleed_knife_attack","_do_bleed_knife_attack",0)
-}
+	register_native("sh_get_user_is_bleeding","_sh_get_user_is_bleeding",0)
 
+}
+public _sh_get_user_is_bleeding(iPlugin,iParam){
+
+	new id= get_param(1)
+	return gIsBleeding[id]
+}
 public _do_bleed_knife_attack(iPlugin,iParam){
 
 new id= get_param(1)

@@ -62,7 +62,7 @@ public burn_task(array[],id)
 {
 	id-=BURN_TASKID_MAIN
 	
-	if ( !shModActive() || !is_user_connected(id)||!(id>=1 && id <=SH_MAXSLOTS) ||!is_user_connected(array[0]) ||!(array[0]>=1 && array[0]<=SH_MAXSLOTS)) return PLUGIN_CONTINUE
+	if ( !shModActive() || !client_hittable(id)||!client_hittable(array[0])) return PLUGIN_CONTINUE
 	
 	set_render_with_color_const(id,PINK,1,50,50,1,1)
 	make_fire(id,30.0)
@@ -101,11 +101,7 @@ public molotov_damage_vulnerability(id){
 	if(gIsBurning[id]){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
-			sh_extra_damage(id, attacker, floatround(extraDamage), "Burn damage vulnerability", headshot)
-			
-			if(!is_user_bot(attacker)){
-				sh_chat_message(attacker,tranq_get_hero_id(),"You've dealt %0.2f more damage thanks to burn damage vulnerability!",damage * BURN_DAMAGE_VULNERABILITY_COEFF)
-			}
+			sh_extra_damage(id, attacker, floatround(extraDamage), "Burn vuln", headshot)
 		}
 	}
 

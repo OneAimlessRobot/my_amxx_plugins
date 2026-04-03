@@ -126,11 +126,15 @@ public fx_damage(id)
 		case RADIOACTIVE:{
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
 			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Radoactive damage vulnerability", headshot)
-				
-				if(!is_user_bot(attacker)){
-					sh_chat_message(attacker,-1,"You've dealt %0.2f more damage thanks to radioactive damage vulnerability!",damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF)
-				}
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Radiation vuln", headshot)
+			}	
+		}
+		case POISON:{
+			new Float:extraDamage = damage * POISON_DMG_MULT - damage
+			extraDamage*=(sh_get_user_is_bleeding(id)?2.0:1.0)
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id, attacker, floatround(extraDamage), "Poison vuln", headshot)
+					
 			}	
 		}
 		default:{
@@ -427,7 +431,7 @@ public poison_task(array[],id){
 
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	sh_extra_damage(id,array[1],POISON_DAMAGE,"Crack pill",0,SH_DMG_NORM)
+	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),"Crack pill",0,SH_DMG_NORM,_,_,_,_,SH_NEW_DMG_DRUG_POISON)
 	
 	
 

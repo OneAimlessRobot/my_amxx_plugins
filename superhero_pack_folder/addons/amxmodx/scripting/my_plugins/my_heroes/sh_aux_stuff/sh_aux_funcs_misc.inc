@@ -1,7 +1,7 @@
-#if defined sh_aux_funcs_pt2
+#if defined sh_aux_funcs_misc
   #endinput
 #endif
-#define sh_aux_funcs_pt2
+#define sh_aux_funcs_misc
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
 #define SH_HUD_MSG_BUFF_SIZE 512
@@ -92,6 +92,19 @@ stock init_explosion_defaults(){
 	default_explode_knock_force_magnitude=sh_get_max_force_knockback_explosion()
 	default_explode_owner_ignore_frac=sh_get_default_explode_owner_ignore_frac()
 	default_stun_speed=sh_get_default_stun_speed()
+
+}
+
+public orient_user(id,Float:angles[3],Float:v_angle[3])
+{
+	
+	if(!client_hittable(id)){
+		return
+	}
+	entity_set_int( id, EV_INT_fixangle, 0 );
+	entity_set_vector(id, EV_VEC_v_angle,v_angle)
+	entity_set_vector(id, EV_VEC_angles,angles)
+	entity_set_int( id, EV_INT_fixangle, 1 );
 
 }
 stock Float:get_entity_velocity(ent){

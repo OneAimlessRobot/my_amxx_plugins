@@ -49,6 +49,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 
 	register_forward(FM_Think, "rivette_thinque")
+	init_gravity_pcvar()
 
 
 }
@@ -70,7 +71,6 @@ public rivette_thinque(ent){
 		remove_rivet(ent)	
 		return FMRES_IGNORED
 	}
-
 
 	new parm[2]
 	parm[0] = ent

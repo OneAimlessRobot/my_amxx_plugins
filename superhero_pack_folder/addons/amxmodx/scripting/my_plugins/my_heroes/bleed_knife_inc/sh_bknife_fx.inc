@@ -69,6 +69,7 @@ native do_bleed_knife_attack(id,
 
 native sh_unbleed_user(id)
 native make_bleed_fx(id)
+native sh_get_user_is_bleeding(id)
 
 
 
