@@ -64,7 +64,7 @@ public _make_effect(iPlugin,iParams){
 	new fx_num= get_param(4)
 	new override=get_param(5)
 
-	new true_fx_num= (fx_num<0)?sh_gen_effect():fx_num
+	new true_fx_num= (fx_num<=0)?sh_gen_effect():fx_num
 	
 	if(!is_user_connected(vic)||!is_user_connected(attacker)){
 		

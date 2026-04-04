@@ -40,6 +40,8 @@
 
 
 
+#define HALF_CAMERA_SIZE 8.0
+#define CAMERA_SIZE (HALF_CAMERA_SIZE*2.0)
 #define CAMERA_DISARM_PERIOD 0.1
 #define CAMERA_DISARM_TIMES floatround(floatdiv(min_charge_time,CAMERA_DISARM_PERIOD))
 
@@ -63,9 +65,8 @@ native user_can_plant_camera(id)
 native camera_get_camera_charging(id)
 native camera_uncharge_camera(id)
 native camera_charge_camera(id)
-native camera_disarm_camera(id,mine_id,cam_it)
-native camera_get_curr_camera(id)
-native camera_clear_user_cameras(id)
+native camera_disarm_camera(id,mine_id)
+native camera_clear_user_camera(id)
 native camera_undisarm_camera(id)
 native camera_get_camera_disarming(id)
 

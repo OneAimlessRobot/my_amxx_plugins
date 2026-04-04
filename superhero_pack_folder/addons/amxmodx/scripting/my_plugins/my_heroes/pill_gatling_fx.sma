@@ -13,6 +13,81 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+stock const fx_remove_strings[_:NUM_FX][]={
+			"We have removed nothing!",
+			"We have removed nothing! You should be dead...",
+			"Removed ur glow bro!",
+			"Removed ur poisan!",
+			"Removed ur stun bro!",
+			"Removed ur chernobyl!",
+			"Removed ur heals!",
+			"Removed ur weed!",
+			"Removed ur 80s!",
+			"Removed ur blindess!",
+			"Removed ur college pills!",
+			"Removed ur spicy college pills!"
+	
+}
+
+stock const fx_names[_:NUM_FX][]={
+			"no drug",
+			"cyanide",
+			"glowstick juice",
+			"poison",
+			"stunner",
+			"uranium",
+			"morphine",
+			"weed",
+			"cocaine",
+			"blindness",
+			"metylphenidate",
+			"bath salts",
+}
+
+stock const Float:fx_rarity_weights[_:NUM_FX]={
+				0.0,
+				1.0,
+				20.0,
+				30.0,
+				40.0,
+				50.0,
+				60.0,
+				71.0,
+				79.0,
+				85.0,
+				90.0,
+				100.0
+}
+
+
+enum fx_task_parameter_id{
+	Float:fx_task_period,
+	Float:fx_task_time,
+	fx_task_repeats,
+	fx_task_apply_id,
+	fx_task_remove_id,
+	fx_task_apply_func_name[128],
+	fx_task_remove_func_name[128],
+	fx_task_will_glow_user_screen,
+	fx_task_status_icon
+}
+
+stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={	
+					{-1.0,5.0,-1,-1,-1,"","",0,-1},
+					{-1.0,5.0,-1,-1,-1,"","",0,-1},
+					{1.0,5.0,-1,-1,-1,"glow_task","uneffect_task_generic",-1,-1},
+					{1.0,5.0,-1,-1,-1,"poison_task","uneffect_task_generic",-1,DMG_ICON_POISON},
+					{0.1,5.0,1,-1,-1,"","uneffect_task_generic",-1,DMG_ICON_SHOCK},
+					{1.0,5.0,1,-1,-1,"radioactive_task","",-1,-1},
+					{1.0,5.0,-1,-1,-1,"morphine_task","uneffect_task_generic",DMG_ICON_HEALTH},
+					{1.0,5.0,-1,-1,-1,"weed_task","unweed_task",0,DMG_ICON_LONGJUMP},
+					{1.0,5.0,-1,-1,-1,"cocaine_task","uncocaine_task",1,DMG_ICON_POISON},
+					{0.5,5.0,-1,-1,-1,"blind_task","uneffect_task_generic",1,-1},
+					{1.0,5.0,-1,-1,-1,"","uneffect_task_generic",0,DMG_ICON_SHOCK},
+					{1.0,5.0,-1,-1,-1,"bath_task","uneffect_task_generic",0,DMG_ICON_ARMOR}
+
+}
+
 const fPainShock = 108
 
 
@@ -310,12 +385,6 @@ public _sh_effect_user_direct(iPlugin,iParams){
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
 	new fx_num=get_param(4)
-	if(user==attacker){
-
-		
-		sh_chat_message(attacker,gHeroID,"Hehe...")
-
-	}
 	if(fx_num==_:KILL){
 
 		if(user==attacker){
@@ -329,6 +398,7 @@ public _sh_effect_user_direct(iPlugin,iParams){
 	}
 	else if(fx_num){
 		gatling_set_fx_num(user,fx_num)
+		fx_task_user(user,attacker,fx_num)
 		if(fx_num==_:STUN){
 
 
@@ -336,7 +406,6 @@ public _sh_effect_user_direct(iPlugin,iParams){
 			remove_glow_user(user,fx_task_parameters[_:STUN][fx_task_time])
 		}
 		else{
-			fx_task_user(user,attacker,fx_num)
 			if(fx_num==_:COCAINE){
 
 				sh_bleed_user(user,attacker,MINI_BLEED,gHeroID,0)
@@ -513,7 +582,7 @@ uneffect_user_primitive(id,bool:terminate_cleaner_task=false){
 	if(the_fx_id==_:RADIOACTIVE){
 		unradioactive_user(id)
 	}
-	gatling_set_fx_num(id, NONE)
+	gatling_set_fx_num(id, 0)
 
 }
 

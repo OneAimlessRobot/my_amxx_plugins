@@ -8,6 +8,7 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
@@ -16,18 +17,20 @@ const m_iFOV = 363;
 new camera_loaded[SH_MAXSLOTS+1]
 
 new camera_armed[SH_MAXSLOTS+1]
-new looking_with_camera[SH_MAXSLOTS+1]
+new bool:looking_with_camera[SH_MAXSLOTS+1]
 new disarmer_on[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 new Float:curr_disarm_charge[SH_MAXSLOTS+1]
 new Float:min_charge_time
-new user_cameras[SH_MAXSLOTS+1][MAX_CAMERAS]
-new user_curr_camera[SH_MAXSLOTS+1]
+new user_camera[SH_MAXSLOTS+1]
 new Float:camera_charge[SH_MAXSLOTS+1]
 new Float:camera_hp
 new camman_camera_maxalpha
 new camman_camera_minalpha
 new Float:max_camera_charge
+stock ham_is_here=0
+stock ham_is_on=0
+stock HamHook:the_damage_ham_hook;
 
 
 stock CAMERA_ARMING_TASKID,
@@ -47,10 +50,7 @@ public plugin_init(){
 	arrayset(looking_with_camera,0,SH_MAXSLOTS+1)
 	arrayset(camera_armed,0,SH_MAXSLOTS+1)
 	arrayset(camera_charge,0.0,SH_MAXSLOTS+1)
-	arrayset(user_curr_camera,0,SH_MAXSLOTS+1)
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		arrayset(user_cameras[i],-1,MAX_CAMERAS)
-	}
+	arrayset(user_camera,0,SH_MAXSLOTS+1)
 	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
@@ -76,8 +76,7 @@ public plugin_natives(){
 	register_native( "clear_cameras","_clear_cameras",0)
 	register_native( "camera_get_camera_loaded","_camera_get_camera_loaded",0)
 	register_native( "user_can_plant_camera","_user_can_plant_camera",0)
-	register_native( "camera_get_curr_camera","_camera_get_curr_camera",0)
-	register_native( "camera_clear_user_cameras","_camera_clear_user_cameras",0)
+	register_native( "camera_clear_user_camera","_camera_clear_user_camera",0)
 	register_native( "toggle_camera_view","_toggle_camera_view",0)
 	register_native( "camera_get_camera_armed","_camera_get_camera_armed",0)
 	register_native( "camera_get_camera_planted","_camera_get_camera_planted",0)
@@ -94,12 +93,57 @@ public plugin_natives(){
 	
 	
 }
+
+public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(!sh_is_active()){
+		return HAM_IGNORED
+	}
+	if(pev_valid(this)!=2){
+		return HAM_IGNORED
+	
+	}
+	
+	
+	if(pev_valid(attacker)!=2){
+		return HAM_IGNORED
+	
+	}
+	if(!is_user_connected(attacker)){
+		return HAM_IGNORED
+	
+	}
+	if(pev_valid(idinflictor)!=2){
+		return HAM_IGNORED
+	
+	}
+	static classname[32]
+	classname[31]='^0'
+	pev(this, pev_classname, classname, charsmax(classname))
+	if(!equal(classname, CAMERA_CLASSNAME)){
+		
+		return HAM_IGNORED
+		
+	}
+	set_pev(this, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
+	return HAM_IGNORED
+}
 //----------------------------------------------------------------------------------------------
 public camera_controls(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,camman_get_has_camman(id))||!camman_get_num_cameras(id)||!looking_with_camera[id]){
+	if ( !is_user_alive(id)||!client_hittable(id)){
 		return FMRES_IGNORED;
 	}
+
+	if(!camman_get_has_camman(id)) return FMRES_IGNORED
+
+	if(!camman_get_has_camera(id)) return FMRES_IGNORED
+	
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+
+	if(!looking_with_camera[id]) return FMRES_IGNORED
 	
 	new Float:zoom;
 	pev(id,pev_fov,zoom)
@@ -111,9 +155,7 @@ public camera_controls(id, uc_handle)
 	{
 		button &= ~IN_ATTACK;
 		set_uc(uc_handle, UC_Buttons, button);
-		
-		
-		//set_pev(id,pev_fov,floatmin(MAX_ZOOM,zoom+ZOOM_INC))
+
 		set_pev(id,pev_fov,floatmin( MAX_ZOOM ,zoom+ZOOM_INC))
 		set_pdata_int(id, m_iFOV, floatround(floatmin(MAX_ZOOM,zoom+ZOOM_INC)));
 		
@@ -133,24 +175,17 @@ public camera_controls(id, uc_handle)
 public _camera_get_curr_camera(iPlugins,iParams){
 	
 	new id=get_param(1)
-	return user_curr_camera[id]
+	return user_camera[id]
 	
 	
 	
 	
 }
-public _camera_clear_user_cameras(iPlugins,iParams){
+public _camera_clear_user_camera(iPlugins,iParams){
 	
 	new id=get_param(1)
-	for(new i=0;i<camman_get_max_cameras();i++){
-		new parm[3]
-		parm[2]=i
-		parm[0]=id
-		parm[1]=user_cameras[id][i]
-		remove_camera(parm);
-		
-	}
-	user_curr_camera[id]=0;
+	remove_camera(id)
+	user_camera[id]=-1;
 	
 	
 	
@@ -180,7 +215,7 @@ public _camera_get_camera_armed(iPlugins,iParams){
 public _camera_get_camera_planted(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return camman_get_num_cameras(id)
+	return camman_get_has_camera(id)
 	
 	
 }
@@ -217,60 +252,45 @@ public _camera_get_camera_loaded(iPlugins,iParams){
 public _toggle_camera_view(iPlugins,iParams){
 	new id=get_param(1);
 	
-	if(!looking_with_camera[id]&&camman_get_num_cameras(id)){
-		new camera_id=-1
-		new i=user_curr_camera[id]
-		new count=0
-		for(;(count<camman_get_max_cameras())&&((camera_id<=0)||(pev_valid(camera_id)!=2));count++,i=(i+1)%(camman_get_max_cameras())){
-			camera_id=user_cameras[id][(i)%(camman_get_max_cameras())]
-			user_curr_camera[id]=(i)%(camman_get_max_cameras())
-		}
-		if(!camera_id){
+	if(!looking_with_camera[id]){
+		new camera_id=user_camera[id]
+		
+		if(!pev_valid(camera_id)){
 			
 			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
-			looking_with_camera[id]=0;
-			return
-			
-		}
-		else if(!pev_valid(camera_id)){
-			
-			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
-			looking_with_camera[id]=0;
+			looking_with_camera[id]=false;
 			return
 			
 		}
 		else if(!pev(camera_id, pev_iuser1)){
 			
 			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
-			looking_with_camera[id]=0;
+			looking_with_camera[id]=false;
 			return
 			
 		}
 		
-		
-		new owner_name[128];
-		get_user_name(pev(camera_id, pev_iuser2),owner_name,127)
 		new Float: battery_pct=camera_charge[id]*(100.0/max_camera_charge)
 		if(battery_pct<25.0){
 			
 			
 			
-			sh_chat_message(id,camman_get_hero_id(),"Not enough charge (%0.2f)! Replant your camera,%s!",battery_pct,owner_name);
+			sh_chat_message(id,camman_get_hero_id(),"Not enough charge (%0.2f)! Replant your camera!",battery_pct);
+			looking_with_camera[id]=false
 			return
 		}
 		new Float: cam_health;
 		pev(camera_id,pev_health,cam_health)
-		looking_with_camera[id]=1
+		looking_with_camera[id]=true
 		attach_view(id,camera_id)
-		sh_chat_message(id,camman_get_hero_id(),"Looking with camera %d^n",camera_get_curr_camera(id))
-		sh_chat_message(id,camman_get_hero_id(),"Your camera currently has %0.2f HP And %0.2f pct. charge!It belongs to %s!",cam_health,battery_pct,owner_name);
-		user_curr_camera[id]=(user_curr_camera[id]+1)%(camman_get_max_cameras())
+		set_pev(camera_id, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
+		sh_chat_message(id,camman_get_hero_id(),"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
 		return
 		
 	}
 	else {
 		
-		looking_with_camera[id]=0;
+		looking_with_camera[id]=false;
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
 		attach_view(id,id)
@@ -299,7 +319,8 @@ public _plant_camera(iPlugins,iParams)
 	
 	
 	set_pev(NewEnt, pev_health, camera_hp+1000.0)
-	engfunc(EngFunc_SetSize, NewEnt, Float:{-8.0, -8.0, -8.0}, Float:{8.0, 8.0, 8.0})
+	engfunc(EngFunc_SetSize, NewEnt, Float:{-HALF_CAMERA_SIZE, -HALF_CAMERA_SIZE, -HALF_CAMERA_SIZE},
+									Float:{HALF_CAMERA_SIZE, HALF_CAMERA_SIZE, HALF_CAMERA_SIZE})
 	set_pev(NewEnt, pev_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
 	set_pev(NewEnt, pev_solid, SOLID_NOT)
 	set_pev(NewEnt, pev_body, 3)
@@ -309,9 +330,9 @@ public _plant_camera(iPlugins,iParams)
 	
 	
 	set_camera_aiming(id,NewEnt)
-	set_pev(NewEnt, pev_iuser2, id)
-	user_cameras[id][camman_get_num_cameras(id)]=NewEnt
-	camman_inc_num_cameras(id);
+	set_pev(NewEnt, pev_euser1, id)
+	camman_set_has_camera(id,1)
+	user_camera[id]=NewEnt
 	
 	new parm[2];
 	parm[0]=id;
@@ -325,12 +346,12 @@ public _plant_camera(iPlugins,iParams)
 set_camera_aiming(other_ent,cam_id){
 	
 	
-	new Float:vOrigin[3]
+	static Float:vOrigin[3]
 	pev(other_ent, pev_origin, vOrigin)
 	
-	new Float:vTraceDirection[3], Float:vTraceEnd[3], Float:vTraceResult[3], Float:vNormal[3]
+	static Float:vTraceDirection[3], Float:vTraceEnd[3], Float:vTraceResult[3], Float:vNormal[3]
 	
-	velocity_by_aim(other_ent, 64, vTraceDirection)
+	velocity_by_aim(other_ent, 9999, vTraceDirection)
 	vTraceEnd[0] = vTraceDirection[0] + vOrigin[0]
 	vTraceEnd[1] = vTraceDirection[1] + vOrigin[1]
 	vTraceEnd[2] = vTraceDirection[2] + vOrigin[2]
@@ -340,20 +361,22 @@ set_camera_aiming(other_ent,cam_id){
 	get_tr2(tr, TR_vecEndPos, vTraceResult)
 	get_tr2(tr, TR_vecPlaneNormal, vNormal)
 	get_tr2(tr, TR_flFraction, fraction)
-	//0 Will be for inactive.
+
+	free_tr2(tr)
 	
-	
-	new Float:vNewOrigin[3], Float:vEntAngles[3]
-	vNewOrigin[0] = vTraceResult[0] + (vNormal[0] * 8.0)
-	vNewOrigin[1] = vTraceResult[1] + (vNormal[1] * 8.0)
-	vNewOrigin[2] = vTraceResult[2] + (vNormal[2] * 8.0)
+	static Float:vNewOrigin[3], Float:vEntAngles[3]
+	//distance that the camera will be placed away from the wall
+	new Float:walldist=HALF_CAMERA_SIZE
+	vNewOrigin[0] = vTraceResult[0] + (vNormal[0] * walldist)
+	vNewOrigin[1] = vTraceResult[1] + (vNormal[1] * walldist)
+	vNewOrigin[2] = vTraceResult[2] + (vNormal[2] * walldist)
 	engfunc(EngFunc_SetOrigin, cam_id, vNewOrigin)
 	
 	
 	vector_to_angle(vNormal, vEntAngles)
 	set_pev(cam_id, pev_angles, vEntAngles)
 	
-	new Float:vBeamEnd[3], Float:vTracedBeamEnd[3]
+	static Float:vBeamEnd[3], Float:vTracedBeamEnd[3]
 	vBeamEnd[0] = vNewOrigin[0] + (vNormal[0] * 8192.0)
 	vBeamEnd[1] = vNewOrigin[1] + (vNormal[1] * 8192.0)
 	vBeamEnd[2] = vNewOrigin[2] + (vNormal[2] * 8192.0)
@@ -361,50 +384,45 @@ set_camera_aiming(other_ent,cam_id){
 	tr = 0
 	engfunc(EngFunc_TraceLine, vNewOrigin, vBeamEnd, 1, -1, tr)
 	get_tr2(tr, TR_vecEndPos, vTracedBeamEnd)
+
+	free_tr2(tr)
+
 	set_pev(cam_id, pev_vuser1, vTracedBeamEnd)
+	
 }
 
 update_camera_aiming(other_ent,cam_id){
 	
-	new Float:vOrigin[3],Float:other_orig[3],Float: aim_orig[3];
+	static Float:angles[3];
+	
+	entity_get_vector(cam_id, EV_VEC_v_angle, angles)
+	angles[0] = - angles[0]
+	entity_set_vector(cam_id, EV_VEC_v_angle, angles)
+
+	static Float:vOrigin[3],Float: aim_orig[3];
 	
 	pev(cam_id,pev_origin,vOrigin);
-	pev(other_ent,pev_origin,other_orig);
+	fm_get_aim_origin(cam_id,aim_orig)
+
+	static Float:vector_direction_result[3]
 	
+	xs_vec_sub(aim_orig,vOrigin,vector_direction_result)
+
+	xs_vec_normalize(vector_direction_result,vector_direction_result)
+
+	xs_vec_mul_scalar(vector_direction_result,MAX_MAP_DIST_POSSIBLE,vector_direction_result)
 	
-	fm_get_aim_origin(other_ent, aim_orig)
-	new Float:aim_vec[3];
-	for(new i=0;i<sizeof(aim_vec);i++){
-		aim_vec[i]=aim_orig[i]-other_orig[i]
-		
-	}
-	new Float:aimlen=vector_length(aim_vec);
-	
-	
-	for(new i=0;i<sizeof(aim_vec);i++){
-		aim_vec[i]*=((1.0)/aimlen)
-		
-	}
-	
-	new Float:angles[3];
-	
+	xs_vec_add(vOrigin,vector_direction_result,aim_orig)
+
+	set_pev(cam_id, pev_vuser1, aim_orig)
+
 	entity_get_vector(other_ent, EV_VEC_v_angle, angles)
 	angles[0] = - angles[0]
 	entity_set_vector(cam_id, EV_VEC_v_angle, angles)
 	entity_get_vector(other_ent, EV_VEC_angles, angles)
 	angles[0] = - angles[0]
 	entity_set_vector(cam_id, EV_VEC_angles, angles)
-	
-	new Float:vBeamEnd[3],Float:vTracedBeamEnd[3]
-	
-	vBeamEnd[0] = vOrigin[0] + (aim_vec[0] * 8192.0)
-	vBeamEnd[1] = vOrigin[1] + (aim_vec[1] * 8192.0)
-	vBeamEnd[2] = vOrigin[2] + (aim_vec[2] * 8192.0)
-	new tr = 0
-	
-	engfunc(EngFunc_TraceLine, vOrigin, vBeamEnd, 0, -1, tr)
-	get_tr2(tr, TR_vecEndPos, vTracedBeamEnd)
-	set_pev(cam_id, pev_vuser1, vTracedBeamEnd)
+
 	
 	
 }
@@ -417,7 +435,7 @@ public laser_on_player_think(ent){
 	pev(ent, pev_classname, classname, charsmax(classname))
 	
 	if ( !equal(classname, CAMERA_CLASSNAME) ) return
-	new owner=pev(ent,pev_iuser2)
+	new owner=pev(ent,pev_euser1)
 	
 	static Float:vTrace[3], iHit, tr
 	static Float:vOrigin[3],Float:vEnd[3]
@@ -427,18 +445,17 @@ public laser_on_player_think(ent){
 	engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, ent, tr)
 	get_tr2(tr, TR_vecEndPos, vTrace)
 	iHit = get_tr2(tr, TR_pHit)
-	laser_line(ent,vOrigin,vEnd,true)
+	free_tr2(tr)
+	laser_line(ent,vOrigin,vTrace,true)
+
 	if ( is_user_alive(iHit) ) {
-	
-		new CsTeams:owner_team=cs_get_user_team(owner)
-		new CsTeams:target_team=cs_get_user_team(iHit)
-	
-		if(owner_team!=target_team){
+		
+		if(!sh_clients_are_same_team(owner,iHit)&&(iHit!=owner)){
 			make_effect(iHit,owner,camman_get_hero_id(),GLOW,false)
+
 				
 		}
 	}
-	return
 }
 //----------------------------------------------------------------------------------------------
 public camera_think(ent)
@@ -455,36 +472,23 @@ public camera_think(ent)
 	pev(ent, pev_origin, Pos)
 	pev(ent, pev_vuser1, vEnd)
 	gametime = get_gametime()
-	new owner=pev(ent,pev_iuser2)
+	new owner=pev(ent,pev_euser1)
 	new Float:cameraHealth=float(pev(ent,pev_health))
 	new parm[3]
 	parm[1]=ent
 	parm[0]=owner
-	new i=0
-	for(;(user_cameras[owner][i]!=ent)&&(i<camman_get_max_cameras());i++){}
-
 	if ( (cameraHealth<1000.0)) {
 		
-		
-		if(i<camman_get_max_cameras()){
-			parm[2]=i
-			remove_camera(parm);
-			camman_dec_num_cameras(owner)
-		}
+		remove_camera(owner);
 		return FMRES_IGNORED
 	}
-	static Float:beamtime
-	pev(ent, pev_fuser1, beamtime)
-	if ( beamtime <= gametime ) {
-		set_pev(ent, pev_fuser1, gametime + (1.0/CAMERA_FRAMERATE))
-	}
-	camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
-	if(looking_with_camera[owner]&&(((i+1)%(camman_get_max_cameras()))==user_curr_camera[owner])){
-		//(user_curr_camera[id]+1)%(camman_get_max_cameras())
+	if(looking_with_camera[owner]){
+		camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
 		laser_on_player_think(ent)
 		update_camera_aiming(owner,ent)
+		set_pev(ent, pev_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
 	}
-	set_pev(ent, pev_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
+	
 	return FMRES_IGNORED
 }
 public camera_arm_task(parm[],camera_taskid){
@@ -503,9 +507,17 @@ public camera_arm_task(parm[],camera_taskid){
 	emit_sound(camera_id,CHAN_VOICE, CAMERA_BOOTED_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	set_pev(camera_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(camera_id,pev_renderfx,kRenderFxGlowShell)
-	new alpha=camman_camera_minalpha
+	new alpha=camman_camera_maxalpha
 	set_pev(camera_id,pev_renderamt,float(alpha))
 	set_task(CAMERA_WAIT_TIME,"camera_wait_task",camera_id+CAMERA_WAIT_TASKID, parm, 2, "b")
+	if(!ham_is_here){
+		the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","Camera_Damage",_,true)
+		ham_is_here=1;
+	}
+	if(!ham_is_on){
+		EnableHamForward(the_damage_ham_hook)
+		ham_is_on=1;
+	}
 	if(!is_user_bot(attacker)){
 		sh_chat_message(attacker,camman_get_hero_id(),"The camera is armed!");
 	}
@@ -517,22 +529,22 @@ public camera_wait_task(parm[],camera_taskid){
 		return;
 	}
 	new alpha=pev(camera_id,pev_renderamt)
-	alpha=min(alpha+ALPHA_INC,camman_camera_maxalpha)
+	alpha=max(alpha-ALPHA_INC,camman_camera_minalpha)
 	set_pev(camera_id,pev_renderamt,float(alpha))
 	
 	
 }
-public remove_camera(parm[3]){
+public remove_camera(pid){
+	if(!is_user_connected(pid)) return
+	camman_set_has_camera(pid,0)
+	if(pev_valid(user_camera[pid])!=2) return
 	
-	if(pev_valid(parm[1])!=2) return
-	
-	remove_task(parm[1]+CAMERA_ARMING_TASKID);
-	remove_task(parm[1]+CAMERA_WAIT_TASKID);
-	camera_loaded[parm[0]]=true
-	remove_entity(parm[1])
-	if(parm[2]>=0){
-		user_cameras[parm[0]][parm[2]]=-1
-	}
+	remove_task(user_camera[pid]+CAMERA_ARMING_TASKID);
+	remove_task(user_camera[pid]+CAMERA_WAIT_TASKID);
+	camera_loaded[pid]=true
+	remove_entity(user_camera[pid])
+
+	user_camera[pid]=-1
 }
 
 //----------------------------------------------------------------------------------------------
@@ -556,11 +568,11 @@ public loadCVARS()
 
 public disarm_task(param[],id){
 	id-=CAMERA_DISARM_TASKID
-	if(camman_get_num_cameras(id)<=0){
+	if(!camman_get_has_camera(id)){
 		return;
 
 	}
-	new hud_msg[128];
+	static hud_msg[128];
 	if(!is_user_bot(id)){
 		curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],CAMERA_DISARM_PERIOD)
 		formatex(hud_msg,127,"[SH]: DISARMING CAMERA: %0.2f^n",
@@ -570,15 +582,12 @@ public disarm_task(param[],id){
 	}
 	camman_update_disarming(id)
 	if(!camera_get_camera_disarming(id)){
-		new parm[3];
-		parm[2]=param[1];
-		parm[1]=param[0];
-		parm[0]=id;
-		camman_set_num_cameras(id,camman_get_num_cameras(id)-1)
-		remove_camera(parm);
+		
 		if(!is_user_bot(id)){
-			client_print(id,print_center,"You retrieved and disarmed 1 camera! %d cameras left now!",camman_get_num_cameras(id));
+			client_print(id,print_center,"You retrieved and disarmed your camera! The camera id is %d",user_camera[id]);
 		}
+
+		remove_camera(id);
 	}
 	
 	
@@ -597,9 +606,7 @@ public undisarm_task(id){
 	id-=UNCAMERA_DISARM_TASKID
 	remove_task(id+CAMERA_DISARM_TASKID)
 	disarmer_on[id]=0
-	return 0
-	
-	
+
 	
 }
 
@@ -607,9 +614,7 @@ undisarm_user(id){
 	remove_task(id+UNCAMERA_DISARM_TASKID)
 	remove_task(id+CAMERA_DISARM_TASKID)
 	disarmer_on[id]=0
-	return 0
-	
-	
+
 }
 public _camera_disarm_camera(iPlugins,iParams){
 	
@@ -620,12 +625,9 @@ public _camera_disarm_camera(iPlugins,iParams){
 	param[0]=camera_id
 	param[1]=cam_it
 	curr_disarm_charge[id]=0.0
-	user_curr_camera[id]=0;
 	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,param, 2,  "a",CAMERA_DISARM_TIMES)
 	set_task(floatmul(CAMERA_DISARM_PERIOD,float(CAMERA_DISARM_TIMES))+1.0,"undisarm_task",id+UNCAMERA_DISARM_TASKID,"", 0,  "a",1)
-	return 0
-	
-	
+
 	
 	
 }
@@ -792,8 +794,6 @@ public charge_task(id){
 	camman_update_planting(id)
 	if(!camera_get_camera_charging(id)){
 		plant_camera(id)
-		client_print(id,print_center,"You have %d cameras left",
-		camman_get_num_cameras(id));
 	}
 	
 	
@@ -830,6 +830,11 @@ public _clear_cameras(iPlugin,iParams){
 		remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, CAMERA_CLASSNAME)
 	}
+
+	if(ham_is_on){
+		DisableHamForward(the_damage_ham_hook)
+		ham_is_on=0;
+	}
 }
 public plugin_precache()
 {
@@ -850,7 +855,7 @@ public death()
 	if(camman_get_has_camman(id)&&is_user_connected(id)){
 		
 		
-		looking_with_camera[id]=0;
+		looking_with_camera[id]=false;
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
 		attach_view(id,id)

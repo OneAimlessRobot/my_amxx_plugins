@@ -289,7 +289,7 @@ public shield_deploy_task(parm[],id){
 	set_pev(shield_id, pev_iuser1, 1)
 	set_pev(shield_id, pev_takedamage, DAMAGE_YES)
 	set_pev(shield_id, pev_solid, SOLID_BBOX)
-	set_pev(shield_id,pev_owner,pev(shield_id,pev_iuser2))
+	set_pev(shield_id,pev_owner,pev(shield_id,pev_euser1))
 	new alpha=190
 	set_pev(shield_id,pev_renderamt,float(alpha))
 	sh_chat_message(attacker,jaqueo_get_hero_id(),"Shield armed!");
@@ -326,7 +326,7 @@ public shield_think(ent)
 	pev(ent, pev_origin, Pos)
 	pev(ent, pev_vuser1, vEnd)
 	gametime = get_gametime()
-	new owner=pev(ent,pev_iuser2)
+	new owner=pev(ent,pev_euser1)
 	new Float:shield_health=float(pev(ent,pev_health))
 	
 	if ( (shield_health<1000.0)) {
@@ -419,7 +419,7 @@ public _shield_charge_user(iPlugin, iParams){
 	set_pev(NewEnt,pev_renderfx,kRenderFxGlowShell)
 	new alpha=100
 	set_pev(NewEnt,pev_renderamt,float(alpha))
-	set_pev(g_jaqueo_shield[id],pev_iuser2,id)
+	set_pev(g_jaqueo_shield[id],pev_euser1,id)
 
 	ENT_SetOrigin(g_jaqueo_shield[id], Origin)
 

@@ -34,6 +34,22 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 	return floatround(fOrigin[2]);
 }
 
+
+stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search[],Float:touch_distance=50.0)
+{
+	
+	if (!client_hittable(id)||!sh_is_active()) return 0
+	//Its an ""entlist""
+	new entlist[1];
+	new num_found = find_sphere_class(id,the_entity_classname_to_search, touch_distance ,entlist, 1);
+	
+	if(!num_found){
+		
+		return 0
+	}
+	
+	return entlist[0]
+}
 stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	
 	if(!client_hittable(id)){

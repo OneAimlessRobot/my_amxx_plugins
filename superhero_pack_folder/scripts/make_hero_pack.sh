@@ -47,6 +47,7 @@ copy_folder_to_backup_locations(){
 		cp -rfv  "${hero_pack_folder_name}" "${backup_locations[$i]}"&
 	done
 	wait
+	rm -rfv "/mnt/FASTstorage/GithubFAST/my_amxx_plugins/${hero_pack_name}${backup_script_extension}"
 	
 }
 make_empty_pack_folder(){
@@ -70,6 +71,7 @@ copy_stuff_to_pack_folder(){
 		cp --parents  -rfv  "./${subfolders_of_backup[$i]}" "./${hero_pack_folder_name}"/&
 	done
 	wait
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.ztmp")
 }
 remove_current_backup_folder_and_archive
 

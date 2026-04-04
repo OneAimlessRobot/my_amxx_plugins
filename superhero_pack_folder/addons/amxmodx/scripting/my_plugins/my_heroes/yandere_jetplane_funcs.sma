@@ -297,8 +297,6 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 		return HAM_IGNORED
 	
 	}
-	new attacker_name[128]
-	get_user_name(idattacker,attacker_name,127);
 	if(pev_valid(idinflictor)!=2){
 		return HAM_IGNORED
 	

@@ -43,7 +43,7 @@ stock MISSILE_TASKID,
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO Swat", "1.0", "SRGrty HEAVILY MODIFIED")
+	register_plugin("SUPERHERO Swat", "1.0", "SRGrty")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	register_cvar("Swat_level", "7")

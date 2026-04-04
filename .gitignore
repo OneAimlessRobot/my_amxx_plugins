@@ -8,4 +8,5 @@
 *.o
 *.exe
 *.d
+*.ztmp
 .metadata/

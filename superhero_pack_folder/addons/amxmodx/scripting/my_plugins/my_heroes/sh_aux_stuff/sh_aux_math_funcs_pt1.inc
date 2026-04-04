@@ -185,6 +185,28 @@ stock rotate_vector3(Float:vec_result[3], Float:vec_input[3], Float:angle_to_rot
 	
 	
 }
+stock build_carthesian_vector_from_angles_vector(Float:angles_vector[3],Float:dst_carthesian_vector[3]){
+
+
+
+	//slot 0 is forward
+	//slot 1 is right
+	//slot 2 is up
+
+	static Float:vectors[3][3]
+	
+	xs_anglevectors(angles_vector,vectors[0],vectors[1],vectors[2])
+
+
+	for(new i=0;i<3;i++){
+
+		print_vector(vectors[0])
+		dst_carthesian_vector[i]=vectors[0][i]
+
+	}
+
+
+}
 stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mult,Float:phys_update_time){
 
 	

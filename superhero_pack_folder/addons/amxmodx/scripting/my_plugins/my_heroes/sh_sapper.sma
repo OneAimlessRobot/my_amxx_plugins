@@ -284,7 +284,7 @@ public sapper_kd()
 
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	new mine_id
-	if(!(mine_id=player_touching_mine(id))){
+	if(!(mine_id=player_touching_entity_of_some_classname(id,MINE_CLASSNAME))){
 		if(gPlayerUltimateUsed[id]){
 			
 			sh_chat_message(id,gHeroID,"N spammes!!!!")
@@ -314,33 +314,6 @@ public sapper_kd()
 	return PLUGIN_HANDLED
 }
 
-public player_touching_mine(id)
-{
-	
-	if (id <= 0) return 0
-	if (!is_user_connected(id)||!is_user_alive(id)||!sh_is_active()||!sapper_get_has_sapper(id)) return 0
-	
-	new entlist[MAX_ENTITIES+1];
-	new num_found = find_sphere_class(id,MINE_CLASSNAME, 50.0 ,entlist, MAX_ENTITIES);
-	
-	if(!num_found){
-	
-		return 0
-	}
-	
-	for(new i=0;i<num_found;i++){
-	
-		new attacker = entity_get_edict(entlist[i], EV_ENT_owner);
-		new terror_name[128];
-		get_user_name(attacker,terror_name,127);
-		if(!is_user_bot(id)){
-			sh_chat_message(id,sapper_get_hero_id(),"Touching a mine from %s!",(attacker==id)?"You":terror_name);
-		}
-		return entlist[i];
-	
-	}
-	return 0
-}
 //----------------------------------------------------------------------------------------------
 public sapper_ku()
 {

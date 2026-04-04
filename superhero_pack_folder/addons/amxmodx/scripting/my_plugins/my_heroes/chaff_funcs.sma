@@ -56,14 +56,17 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,teliko_get_has_teliko(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
+	if(!teliko_get_has_teliko(id)) return FMRES_IGNORED
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	
+	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
 		return FMRES_IGNORED
 	}
-	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, CHAFF_WEAPON_NAME, id);

@@ -16,7 +16,7 @@ stock my_authored_register_func(const plugin_name[], const plugin_ver[], const o
     new author_string[BIG_STRING_SIZE]={0}
     if(is_modified){
 
-        formatex(author_string,BIG_STRING_SIZE-1,"(MODIFIED BY %s) %s",new_author,original_author)
+        formatex(author_string,BIG_STRING_SIZE-1,"(Modified by %s) Original authors: %s",new_author,original_author)
     }
     else{
         formatex(author_string,BIG_STRING_SIZE-1,"%s",original_author)
