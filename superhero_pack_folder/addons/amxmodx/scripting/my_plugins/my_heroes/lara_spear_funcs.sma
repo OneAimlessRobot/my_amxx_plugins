@@ -21,7 +21,6 @@ new bool:player_mode_button_pressed[SH_MAXSLOTS+1]
 new bool:spear_armed[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
 
-new bool:spear_pickable[MAX_ENTITIES]
 
 new Float:min_charge_time,Float:max_charge_time
 
@@ -43,7 +42,6 @@ public plugin_init(){
 
 	arrayset(spear_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
-	arrayset(spear_pickable,false,MAX_ENTITIES)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
@@ -370,12 +368,12 @@ public vexd_pfntouch(pToucher, pTouched)
 			
 			if(client_hittable(pTouched))
 			{
-				
-				if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&spear_pickable[pToucher] && SPEAR_RETRIEVE){
+				//get pickability status
+				new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
+				if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
 				
 					spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 					sh_chat_message(oid,spear_get_hero_id(),"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
-					spear_pickable[pToucher]=false
 					remove_entity(pToucher);
 				
 				}
@@ -384,7 +382,8 @@ public vexd_pfntouch(pToucher, pTouched)
 					sh_bleed_user(pTouched,oid,BLEED,spear_get_hero_id())
 					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-					spear_pickable[pToucher]=true
+					//set pickability status
+					entity_set_int(pToucher,EV_INT_iuser2,true)
 					set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
 				}
 			}
@@ -393,7 +392,8 @@ public vexd_pfntouch(pToucher, pTouched)
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){
 			emit_sound(pToucher, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			entity_set_vector(pToucher, EV_VEC_velocity ,NULL_VECTOR)
-			spear_pickable[pToucher]=true
+			//set pickability status
+			entity_set_int(pToucher,EV_INT_iuser2,true)
 			set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
 			return
 		}
@@ -403,7 +403,8 @@ public vexd_pfntouch(pToucher, pTouched)
 public remove_spear(id_spear){
 	id_spear-=SPEAR_REM_TASKID
 	if(!is_valid_ent(id_spear)) return
-	spear_pickable[id_spear]=false
+	//set pickability status
+	entity_set_int(id_spear,EV_INT_iuser2,false)
 	remove_entity(id_spear)
 
 

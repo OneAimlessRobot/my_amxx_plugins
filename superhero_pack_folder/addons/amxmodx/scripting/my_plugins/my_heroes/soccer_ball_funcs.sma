@@ -14,7 +14,6 @@
 
 
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
-new bool:ball_pickable[MAX_ENTITIES]
 new bool:kicked_ball[SH_MAXSLOTS+1]
 new bool:tagged_by_baller[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
@@ -23,7 +22,6 @@ stock BALL_REM_TASKID
 
 public plugin_init(){
 	
-	arrayset(ball_pickable,false,MAX_ENTITIES)
 	arrayset(kicked_ball,false,SH_MAXSLOTS+1)
 	for(new i=0;i<=SH_MAXSLOTS;i++){
 		
@@ -34,7 +32,6 @@ public plugin_init(){
 	}
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
 	register_forward(FM_Think, "ball_think")
 	
 	new const szEntity[ ][ ] = {
@@ -102,11 +99,15 @@ public vexd_pfntouch(pToucher, pTouched){
 			{		
 				new Float:origin[3]
 				entity_get_vector(pToucher,EV_VEC_origin,origin)
-				if(sh_user_has_hero(pTouched,roberto_get_hero_id())&&(pTouched==oid)&&ball_pickable[pToucher] && BALL_RETRIEVE){
+				//get pickability status
+				new ball_pickable=entity_get_int(pToucher,EV_INT_iuser2)
+				if(sh_user_has_hero(pTouched,roberto_get_hero_id())&&(pTouched==oid)&&ball_pickable&& BALL_RETRIEVE){
 					
 					roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
 					sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
-					ball_pickable[pToucher]=false
+					
+					//set pickability status
+					entity_set_int(pToucher,EV_INT_iuser2,false)
 					kicked_ball[oid]=false
 					remove_entity(pToucher);
 					return
@@ -114,7 +115,8 @@ public vexd_pfntouch(pToucher, pTouched){
 				}
 				else if((pTouched!=oid)){
 					if(!tagged_by_baller[oid][pTouched]){
-						ball_pickable[pToucher]=true
+						//set pickability status
+						entity_set_int(pToucher,EV_INT_iuser2,true)
 						tagged_by_baller[oid][pTouched]=true
 						set_velocity_from_origin(pTouched,origin,BALL_KNOCKBACK)
 						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -126,7 +128,8 @@ public vexd_pfntouch(pToucher, pTouched){
 			}
 		}
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){
-			ball_pickable[pToucher]=true
+			//set pickability status
+			entity_set_int(pToucher,EV_INT_iuser2,true)
 			set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
 			return
 		}
@@ -139,7 +142,8 @@ public remove_ball(id_ball){
 	if(!is_valid_ent(id_ball)) return
 	new oid=pev(id_ball,pev_iuser1)
 	if(!kicked_ball[oid]) return
-	ball_pickable[id_ball]=false
+	//set pickability status
+	entity_set_int(id_ball,EV_INT_iuser2,true)
 	kicked_ball[oid]=false
 	remove_entity(id_ball)
 	

@@ -16,11 +16,10 @@
 #include "../my_include/my_author_header.inc"
 
 new pPlayer
-new Float:dart_launch_pos[MAX_ENTITIES][3];
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
+new trigger_is_down[SH_MAXSLOTS+1]
+new trigger_was_down[SH_MAXSLOTS+1]
 new g_Tranq_Clip[SH_MAXSLOTS+1]
-new bool:dart_hurts[MAX_ENTITIES];
-new bool:dart_loaded[SH_MAXSLOTS+1];
 
 
 
@@ -29,14 +28,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
-	for(new i=0;i<MAX_ENTITIES;i++){
-		
-		arrayset(dart_launch_pos[i],0.0,3);
-		
-	}
-	arrayset(dart_hurts,false,MAX_ENTITIES)
-	arrayset(dart_loaded,true,SH_MAXSLOTS+1)
+	
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_WeaponPrimaryAttackPre",_,true)
@@ -98,20 +90,19 @@ public plugin_natives(){
 public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
-	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
-		
-		return FMRES_IGNORED
-	}
-
+	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
+	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);
+	trigger_is_down[id]=(button & IN_ATTACK)
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if(weapon==CSW_ELITE){
-		if(button & IN_ATTACK)
+		if(trigger_is_down[id])
 		{
-			if(!dart_loaded[id]||(tranq_get_num_darts(id)<=0)){
-				button &= ~IN_ATTACK;
+
+			button &= ~IN_ATTACK;
+			if(trigger_was_down[id]||(tranq_get_num_darts(id)<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -275,12 +266,12 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_SUPERCEDE
 	}
 	launch_dart(pPlayer)
-	dart_loaded[pPlayer]=false;
 	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, DART_SHOOT_PERIOD)
 	
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
+	set_entvar(pPlayer, var_weaponanim,  random_num(seq_shoot_left1,seq_shoot_rightlast))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	
 	return HAM_SUPERCEDE
@@ -328,14 +319,16 @@ public _clear_darts(iPlugin,iParams){
 	new grenada = find_ent_by_class(-1, DART_CLASSNAME)
 	while(grenada) {
 		remove_dart(grenada)
-		arrayset(dart_launch_pos[grenada],0.0,3);
-		dart_hurts[grenada]=false;
 		grenada = find_ent_by_class(grenada, DART_CLASSNAME)
 	}
 }
 launch_dart(id)
 {
-	
+	if(client_isnt_hitter(id)){
+			
+		return
+	}
+
 	entity_set_int(id, EV_INT_weaponanim, 3)
 	
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -369,13 +362,14 @@ launch_dart(id)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	tranq_dec_num_darts(id)
-	
+	new bool:dart_hurts=false;
 	if(tranq_get_is_max_points(id)){
-		
-		dart_hurts[Ent]=true;
-		dart_launch_pos[Ent][0]=Origin[0]
-		dart_launch_pos[Ent][1]=Origin[1]
-		dart_launch_pos[Ent][2]=Origin[2]
+		dart_hurts=true
+		//dart will cause damage on top of sleeping
+		entity_set_int(Ent,EV_INT_iuser1,dart_hurts)
+
+		//dart launch pos is stored here
+		entity_set_vector(Ent,EV_VEC_vuser1,Origin)
 		
 	}
 	new parm2[1]
@@ -383,16 +377,9 @@ launch_dart(id)
 	parm2[0]= id
 	emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
-	trail(Ent,dart_hurts[Ent]?RED:WHITE,3,5)
+	trail(Ent,dart_hurts?RED:WHITE,3,5)
 	
-	set_task(DART_SHOOT_PERIOD, "dart_reload",id,parm2,1,"a",1)
 	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
-}
-
-public dart_reload(parm[])
-{
-	
-	dart_loaded[parm[0]] = true
 }
 
 public vexd_pfntouch(pToucher, pTouched)
@@ -413,21 +400,24 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
-				if(dart_hurts[pToucher]){
+				new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
+				if(dart_hurts){
 					new Float:speed
 					new Float:velocity[3]
 					
 					
 					entity_get_vector(pToucher,EV_VEC_velocity,velocity);
 					speed=VecLength(velocity);
+					new Float:dart_launch_pos[3]
 					new Float:speed_coeff=(speed/DART_SPEED)
 					new Float:vic_origin[3];
 					new Float:vic_origin_eyes[3];
 					new vic_origin_eyes_int[3];
+					entity_get_vector(pToucher,EV_VEC_vuser1,dart_launch_pos)
 					entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
 					get_user_origin(pTouched,vic_origin_eyes_int,1);
 					IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-					new Float:distance=vector_distance(vic_origin,dart_launch_pos[pToucher]);
+					new Float:distance=vector_distance(vic_origin,dart_launch_pos);
 					new Float:head_distance=vector_distance(vic_origin_eyes,origin);
 					new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
 					new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
@@ -484,8 +474,6 @@ public vexd_pfntouch(pToucher, pTouched)
 			
 		}
 		remove_dart(pToucher)
-		arrayset(dart_launch_pos[pToucher],0.0,3);
-		dart_hurts[pToucher]=false;
 		
 	}
 }

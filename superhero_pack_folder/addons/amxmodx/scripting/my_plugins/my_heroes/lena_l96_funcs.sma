@@ -19,9 +19,9 @@
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
 
-new bool:bullet_loaded[SH_MAXSLOTS+1]
+new trigger_is_down[SH_MAXSLOTS+1]
+new trigger_was_down[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
-new Float:bullet_launch_pos[MAX_ENTITIES][3];
 new g_L96_clip[SH_MAXSLOTS+1]
 new dmg_headshot_mult,
 	xp_distance_mult;
@@ -31,8 +31,7 @@ new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
 new custom_dmg_id_l96
 
 
-stock LENA_PROJECTILE_RELOAD_TASKID,
-		LENA_HIT_STAGGER_TASKID
+stock LENA_HIT_STAGGER_TASKID
 
 //new HamHook:TakeDamage
 public plugin_init(){
@@ -42,12 +41,7 @@ public plugin_init(){
 	register_cvar("lena_dmg_headshot_mult","5")
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
-	for(new i=0;i<MAX_ENTITIES;i++){
-		
-		arrayset(bullet_launch_pos[i],0.0,3);
-		
-	}
-	arrayset(bullet_loaded,true,SH_MAXSLOTS+1)
+	
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
@@ -57,12 +51,10 @@ public plugin_init(){
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaL96",_,true)
-	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
-	LENA_PROJECTILE_RELOAD_TASKID=allocate_typed_task_id(player_task)
 	LENA_HIT_STAGGER_TASKID=allocate_typed_task_id(player_task)
 
 	register_forward(FM_Think, "bulette_thinque")
@@ -143,20 +135,24 @@ public bool:client_isnt_hitter(id){
 }
 public CmdStart(id, uc_handle)
 {
+
+	
 	if(client_isnt_hitter(id)){
 		
 		return FMRES_IGNORED
 	}
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
+	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);
-	
+	trigger_is_down[id]=(button & IN_ATTACK)
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==LENA_WEAPON_CLASSID)){
-		if(button & IN_ATTACK)
+		if(trigger_is_down[id])
 		{
-			if(!bullet_loaded[id]||(lena_l96_get_num_bullets(id)<=0)){
-				button &= ~IN_ATTACK;
+
+			button &= ~IN_ATTACK;
+			if(trigger_was_down[id]||(lena_l96_get_num_bullets(id)<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -301,7 +297,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_SUPERCEDE
 	}
 	launch_bullet(pPlayer)
-	bullet_loaded[pPlayer]=false;
 	g_L96_clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD)
@@ -355,6 +350,8 @@ if(client_isnt_hitter(id)){
 		
 	return
 }
+
+if(!trigger_is_down[id]) return
 entity_set_int(id, EV_INT_weaponanim, 3)
 
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -407,9 +404,8 @@ entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 lena_l96_dec_num_bullets(id)
 sh_chat_message(id, lena_get_hero_id(),"%d l96 bullets left",lena_l96_get_num_bullets(id))
 
-bullet_launch_pos[Ent][0]=Origin[0]
-bullet_launch_pos[Ent][1]=Origin[1]
-bullet_launch_pos[Ent][2]=Origin[2]
+//bullet launch pos
+entity_set_vector(Ent,EV_VEC_vuser1,Origin)
 
 entity_set_float(Ent,EV_FL_fuser1,LENA_REVERB_SHOT_DELAY)
 entity_set_int(Ent,EV_INT_iuser1,0)
@@ -417,30 +413,20 @@ new parm2[1]
 
 parm2[0]= id
 emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-create_fired_shot_disk(bullet_launch_pos[Ent],id,true)
+create_fired_shot_disk(Origin,id,true)
 
 trail(Ent,ORANGE,6,13,200)
 
-set_task(LENA_PROJECTILE_SHOOT_PERIOD, "bullet_reload",id+LENA_PROJECTILE_RELOAD_TASKID,parm2,1,"a",1)
 
 entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
 
 }
-
-public bullet_reload(parm[],id)
-{
-id-=LENA_PROJECTILE_RELOAD_TASKID
-
-bullet_loaded[parm[0]] = true
-}
-
 
 public _lena_l96_clear_bullets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, LENA_PROJECTILE_CLASSNAME)
 while(grenada) {
 	remove_bullet(grenada)
-	arrayset(bullet_launch_pos[grenada],0.0,3);
 	grenada = find_ent_by_class(grenada, LENA_PROJECTILE_CLASSNAME)
 }
 }
@@ -488,13 +474,15 @@ public vexd_pfntouch(pToucher, pTouched)
 				
 				entity_get_vector(pToucher,EV_VEC_velocity,velocity);
 				speed=VecLength(velocity);
+				new Float:bullet_launch_pos[3]
 				new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
 				new Float:vic_origin_eyes[3];
 				new vic_origin_eyes_int[3];
+				entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
 				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
 				get_user_origin(pTouched,vic_origin_eyes_int,1);
 				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-				new Float:distance=vector_distance(vic_origin,bullet_launch_pos[pToucher]);
+				new Float:distance=vector_distance(vic_origin,bullet_launch_pos);
 				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
 				new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
 				new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
@@ -578,9 +566,7 @@ public vexd_pfntouch(pToucher, pTouched)
 		tank_impact_shot_fx(pToucher,origin,17)
 
 		
-		remove_bullet(pToucher)	
-
-		arrayset(bullet_launch_pos[pToucher],0.0,3);
+		remove_bullet(pToucher)
 	}
 }
 public unfade_screen_user_task(id){

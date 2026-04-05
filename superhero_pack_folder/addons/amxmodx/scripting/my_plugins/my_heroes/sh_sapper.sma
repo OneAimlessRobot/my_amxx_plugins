@@ -262,7 +262,7 @@ public sapper_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,sapper_get_hero_id())) {
+	if ( !is_user_alive(id) ||!gHasSapper[id]) {
 		return PLUGIN_HANDLED
 	}
 
@@ -306,7 +306,7 @@ public sapper_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,sapper_get_hero_id())||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
+	if ( !is_user_alive(id) ||!gHasSapper[id]||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(mine_get_mine_disarming(id)&&mine_get_mine_charging(id)){

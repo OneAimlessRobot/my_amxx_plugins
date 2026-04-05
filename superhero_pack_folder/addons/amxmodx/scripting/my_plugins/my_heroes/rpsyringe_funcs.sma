@@ -17,14 +17,12 @@
 
 new gRocketsEngaged[SH_MAXSLOTS+1]
 new has_rocket[SH_MAXSLOTS+1]
-new rocket_fx[MAX_ENTITIES]
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
 	
-	arrayset(rocket_fx,0,MAX_ENTITIES)
 	arrayset(has_rocket,0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 }
@@ -32,29 +30,10 @@ public plugin_init(){
 public plugin_natives(){
 	
 	
-	register_native("gatling_set_rocket_fx_num","_gatling_set_rocket_fx_num",0);
-	register_native("gatling_get_rocket_fx_num","_gatling_get_rocket_fx_num",0);
 	register_native("gatling_set_rockets","_gatling_set_rockets",0);
 	register_native("gatling_get_rockets","_gatling_get_rockets",0);
 	register_native( "clear_missiles","_clear_missiles",0)
 	
-	
-}
-
-public _gatling_get_rocket_fx_num(iPlugin,iParams){
-	
-	
-	new pillid= get_param(1)
-	return rocket_fx[pillid]
-	
-}
-
-public _gatling_set_rocket_fx_num(iPlugin,iParams){
-	
-	
-	new pillid= get_param(1)
-	new value_to_set= get_param(2)
-	rocket_fx[pillid]=value_to_set
 	
 }
 
@@ -147,25 +126,28 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 	new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
-	new origin[3],dist,i
 	
 	explode_fx(vExplodeAt,floatround(ROCKET_RADIUS))
-	for ( i = 1; i <= SH_MAXSLOTS; i++) {
+
+	//retrieve current rocket fx num
+
+	
+	new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
+	new entlist[33];
+	new numfound = find_sphere_class(pToucher,"player", ROCKET_RADIUS ,entlist, 32);
 		
-		if( !client_hittable(i) ) continue
-		get_user_origin(i,origin)
-		dist = get_distance(origin,vExplodeAt)
-		if (dist <= ROCKET_RADIUS) {
-			
-			make_effect(i,id,gatling_get_hero_id(),rocket_fx[pToucher],false)
-			
-		}
+	for (new i=0; i < numfound; i++)
+	{		
+		new pid = entlist[i];
+		if( !client_hittable(pid) ) continue
+		
+		make_effect(i,id,gatling_get_hero_id(),fx_num,false)
 	}
 	
 	
 	emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new color[3]
-	sh_get_pill_color(rocket_fx[pToucher],id,color)
+	sh_get_pill_color(fx_num,id,color)
 	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
 	
 	if ( is_valid_ent(pTouched) ) {
@@ -238,8 +220,10 @@ has_rocket[id] = NewEnt
 gatling_dec_num_rockets(id)
 
 new fx_num=sh_gen_effect()
-rocket_fx[NewEnt]=fx_num
-trail(NewEnt,FX_COLOR_OFFSET+rocket_fx[NewEnt],30,20)
+
+//this will store the fx num in the rocket ent
+entity_set_int(NewEnt,EV_INT_iuser3,fx_num)
+trail(NewEnt,FX_COLOR_OFFSET+fx_num,30,20)
 Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.50)
 return PLUGIN_HANDLED
 }

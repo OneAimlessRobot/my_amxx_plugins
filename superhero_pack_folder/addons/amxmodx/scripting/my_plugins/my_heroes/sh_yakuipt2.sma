@@ -57,7 +57,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,gHasYakui[id])) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED

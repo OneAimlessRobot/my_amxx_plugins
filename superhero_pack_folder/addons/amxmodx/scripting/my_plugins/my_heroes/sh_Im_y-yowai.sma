@@ -232,7 +232,6 @@ if (sh_get_user_is_asleep(id)){
 }
 g_yowai_mode[id]= true;
 yowai_model(id)
-//set_task( 1.0, "Yowai_resilience", id+YOWAI_RESILIENCE, "", 0, "b")
 
 sh_chat_message(id,gHeroID,"Activated yowai mode.")
 		

@@ -1,5 +1,0 @@
-L 04/05/2026 - 17:30:46: Start of error session.
-L 04/05/2026 - 17:30:46: Info (map "de_aztec") (file "addons/amxmodx/logs/error_20260405.log")
-L 04/05/2026 - 17:30:46: Invalid event (name "WeaponPickup") (plugin "sh_shinobu_kocho.amxx")
-L 04/05/2026 - 17:30:46: [AMXX] Run time error 10 (plugin "sh_shinobu_kocho.amxx") (native "register_event") - debug not enabled!
-L 04/05/2026 - 17:30:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

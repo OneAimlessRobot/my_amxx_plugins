@@ -76,10 +76,6 @@ public graciete_init()
 		q_barrel_set_q_barrel(id)
 		graciete_model(id)
 		
-		
-		if(!is_user_bot(id)){		
-			set_task( 0.2, "graciete_loop", id+GRACIETE_HUD_TASKID, "", 0, "b")
-		}
 	}
 	else{
 		reset_graciete_user(id)
@@ -153,18 +149,6 @@ public graciete_glow(id)
 			shGlow(id, 0, 0, 255)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public graciete_loop(id)
-{
-	id -= GRACIETE_HUD_TASKID
-	
-	if ( !client_hittable(id,gHasGraciete[id])){
-		
-		return PLUGIN_HANDLED
-		
-	}
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()

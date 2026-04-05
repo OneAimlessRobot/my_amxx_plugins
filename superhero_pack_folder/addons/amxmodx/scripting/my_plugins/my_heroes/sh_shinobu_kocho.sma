@@ -292,7 +292,7 @@ public shinobu_kd()
 	
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return PLUGIN_HANDLED
+	if(!gHasShinobu[id]) return PLUGIN_HANDLED
 	
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
@@ -326,7 +326,7 @@ public shinobu_prethink(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(sh_user_has_hero(id,shinobu_get_hero_id())){
+			if(gHasShinobu[id]){
 				static weapon;
 				weapon=cs_get_user_weapon(id)
 				if((weapon==CSW_KNIFE)||(weapon==SHINOBU_WEAPON_CLASSID)) {
@@ -344,7 +344,7 @@ public death()
 	new killer= read_data(1)
 	
 	if(is_user_connected(killer)&&is_user_connected(id)){
-		if(sh_user_has_hero(killer,shinobu_get_hero_id())){
+		if(gHasShinobu[killer]){
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
@@ -356,7 +356,7 @@ public death()
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}
 		}
-		if(sh_user_has_hero(id,shinobu_get_hero_id())){
+		if(gHasShinobu[id]){
 			
 			g_shinobu_tagged_player[id]=0
 			remove_task(id+SHINOBU_POISON_KICK_DELAYED_TASKID)

@@ -123,7 +123,7 @@ public lena_init()
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,lena_get_hero_id()) )
+	if ( sh_is_active() && is_user_alive(id) && gHasLena[id])
 	{
 		gNumBullets[id]=lena_max_bullets
 	}
@@ -137,7 +137,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,lena_get_hero_id())&&client_hittable(id) ) {
+	if ( sh_is_active() && client_hittable(id) && gHasLena[id]) {
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){

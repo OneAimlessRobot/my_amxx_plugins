@@ -827,7 +827,9 @@ public _clear_cameras(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, CAMERA_CLASSNAME)
 	while(grenada) {
-		remove_entity(grenada)
+
+		new owner=pev(grenada,pev_owner)
+		remove_camera(owner)
 		grenada = find_ent_by_class(grenada, CAMERA_CLASSNAME)
 	}
 

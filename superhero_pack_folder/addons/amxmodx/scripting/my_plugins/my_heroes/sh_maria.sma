@@ -183,7 +183,7 @@ public maria_init()
 //----------------------------------------------------------------------------------------------
 maria_weapons(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,maria_get_hero_id())&&client_hittable(id) ) {
+	if ( sh_is_active() && client_hittable(id)&&gHasMaria[id] ) {
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=find_ent_by_owner(-1,MARIA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
@@ -205,7 +205,7 @@ public client_connect(id)
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,maria_get_hero_id()))
+	if ( sh_is_active() && is_user_alive(id) && gHasMaria[id] )
 	{
 		gNumRivets[id]=maria_max_rivets
 		gHealthDrainValve[id]=false

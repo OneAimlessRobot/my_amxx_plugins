@@ -119,7 +119,7 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,sh_user_has_hero(id,spear_get_hero_id()),"hunter_spear");
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,gHasLara[id],"hunter_spear");
 
 
 

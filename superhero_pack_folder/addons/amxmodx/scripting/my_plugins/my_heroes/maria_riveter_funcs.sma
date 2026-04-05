@@ -18,20 +18,14 @@
 
 new bool:rivet_loaded[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
-new Float:rivet_launch_pos[MAX_ENTITIES][3];
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
 
-//new HamHook:TakeDamage
 public plugin_init(){
 	
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
-	for(new i=0;i<MAX_ENTITIES;i++){
-		
-		arrayset(rivet_launch_pos[i],0.0,3);
-		
-	}
+
 	arrayset(rivet_loaded,true,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
@@ -42,7 +36,6 @@ public plugin_init(){
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
-	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
@@ -271,7 +264,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_SUPERCEDE
 	}
 	launch_rivet(pPlayer);
-	rivet_loaded[pPlayer]=false;
 	g_Riveter_clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, MARIA_PROJECTILE_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, MARIA_PROJECTILE_SHOOT_PERIOD)
@@ -376,9 +368,9 @@ randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 maria_riveter_dec_num_rivets(id)
 
-rivet_launch_pos[Ent][0]=Origin[0]
-rivet_launch_pos[Ent][1]=Origin[1]
-rivet_launch_pos[Ent][2]=Origin[2]
+//rivet launch pos
+entity_set_vector(Ent,EV_VEC_vuser1,Origin)
+
 new parm[2]
 new parm2[1]
 
@@ -388,27 +380,9 @@ parm[1] = id
 emit_sound(id, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 trail(Ent,LTGREEN,3,5)
-set_task(MARIA_PROJECTILE_SHOOT_PERIOD, "rivet_reload",id,parm2,1,"a",1)
-
 entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
 
 return PLUGIN_CONTINUE
-}
-
-public rivet_reload(parm[])
-{
-
-rivet_loaded[parm[0]] = true
-}
-
-public rivetspeed(parm[])
-{
-	new pid = parm[0]
-	if (!is_valid_ent(pid))
-	{
-		return
-	}
-	
 }
 
 
@@ -417,7 +391,6 @@ public _maria_riveter_clear_rivets(iPlugin,iParams){
 new grenada = find_ent_by_class(-1, MARIA_PROJECTILE_CLASSNAME)
 while(grenada) {
 	remove_rivet(grenada)
-	arrayset(rivet_launch_pos[grenada],0.0,3);
 	grenada = find_ent_by_class(grenada, MARIA_PROJECTILE_CLASSNAME)
 }
 }
@@ -454,7 +427,9 @@ public vexd_pfntouch(pToucher, pTouched)
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		
 		new bool:is_direct_hit = client_hittable(pTouched);
-		new Float:distance=vector_distance(origin,rivet_launch_pos[pToucher]);
+		new Float:rivet_launch_pos[3]
+		entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
+		new Float:distance=vector_distance(origin,rivet_launch_pos);
 		new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
 		new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+(is_direct_hit?MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS:0.0);
 		explosion(maria_get_hero_id(),pToucher,
@@ -462,9 +437,7 @@ public vexd_pfntouch(pToucher, pTouched)
 										MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
 										is_direct_hit,
 										is_direct_hit)
-		remove_rivet(pToucher)	
-
-		arrayset(rivet_launch_pos[pToucher],0.0,3);
+		remove_rivet(pToucher)
 	}
 }
 public remove_rivet(id_rivet){

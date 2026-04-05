@@ -7,11 +7,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
-
-
-#include <engine>
-
-#include <fakemeta_util>
 #include <reapi>
 #include "../my_include/weapons_const.inc"
 
@@ -20,12 +15,10 @@
 #include "../my_include/my_author_header.inc"
 
 
-new bool:pill_loaded[SH_MAXSLOTS+1][NUM_BARRELS]
 new atk2[SH_MAXSLOTS+1]
 new atk1[SH_MAXSLOTS+1]
 new delay[SH_MAXSLOTS+1]
 new g_fix_punchangle[SH_MAXSLOTS+1]
-new curr_barrel[SH_MAXSLOTS+1]
 new g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]
 new Float:g_lastShot[SH_MAXSLOTS+1]
@@ -35,22 +28,17 @@ new g_fwid
 new g_guns_eventids_bitsum
 // Sounds
 new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmod/yakui/hw_spinup.wav", "shmod/yakui/hw_spindown.wav"}
-new pill_fx[MAX_ENTITIES]
+
 new Float:windup_time
 new const g_guns_events[][] = {"events/m249.sc"}
 
-
-stock PILL_REM_TASKID
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	console_print(0, "maximo de entidades: %d^n", sh_max_entities())
-	arrayset(pill_fx,0,sh_max_entities())
-	for(new i=1;i<=SH_MAXSLOTS;i++){
-		arrayset(pill_loaded[i],true,NUM_BARRELS)
-	}
-	arrayset(curr_barrel,0,SH_MAXSLOTS+1);
+
+	
 	register_event("CurWeapon","event_curweapon","be", "1=1")
 	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "Ham_Weapon_PillGatling",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
@@ -65,14 +53,12 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, YAKUI_WEAPON_NAME, "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
-	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	register_forward(FM_CmdStart, "CmdStart");
 	register_logevent("event_start", 2, "1=Round_Start")
 	register_cvar("yakui_windup_time", "2.0")
 	register_forward(FM_Think, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
-	PILL_REM_TASKID=allocate_typed_task_id(entity_task)
 
 }
 
@@ -225,28 +211,10 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 public plugin_natives(){
 
 
-	register_native("gatling_set_pill_fx_num","_gatling_set_pill_fx_num",0);
-	register_native("gatling_get_pill_fx_num","_gatling_get_pill_fx_num",0);
 	register_native("gatling_set_pillgatling","_gatling_set_pillgatling",0);
 	register_native("gatling_get_pillgatling","_gatling_get_pillgatling",0);
 	register_native( "clear_pills","_clear_pills",0)
 
-
-}
-public _gatling_get_pill_fx_num(iPlugin,iParams){
-
-
-	new pillid= get_param(1)
-	return pill_fx[pillid]
-
-}
-
-public _gatling_set_pill_fx_num(iPlugin,iParams){
-
-
-	new pillid= get_param(1)
-	new value_to_set= get_param(2)
-	pill_fx[pillid]=value_to_set
 
 }
 public _gatling_get_pillgatling(iPlugin,iParams){
@@ -317,8 +285,6 @@ public delayanim(id){
 	delay[id] = 0
 }
 public _clear_pills(iPlugin,iParams){
-
-	arrayset(pill_fx,0,sh_max_entities())
 	new grenada = find_ent_by_class(-1, PILL_CLASSNAME)
 	while(grenada) {
 		remove_entity(grenada)
@@ -418,6 +384,8 @@ fire_mode(id,entity, type) {
 		if(type == 0 && g_Pillgatling_clip[id]>0){
 			g_Pillgatling_clip[id]=get_pdata_int(entity, 51, 4)
 			launch_pill(id)
+			set_member(entity, m_Weapon_flTimeWeaponIdle, PILL_SHOOT_PERIOD)
+			set_member(entity, m_Weapon_flNextPrimaryAttack, PILL_SHOOT_PERIOD)
 			emit_sound(id, CHAN_WEAPON, m_SOUND[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 			native_playanim(id, anim_spinfire)
 		} 
@@ -470,16 +438,16 @@ launch_pill(id)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 	set_pev(Ent, pev_vuser1, Velocity)
-	pill_loaded[id][curr_barrel[id]] = false
+	
 
 	gatling_dec_num_pills(id)
-	new parm[2]
 	new fx_num=sh_gen_effect()
-	pill_fx[Ent]=fx_num
+	
+	//this will store the fx num in the pill ent
+	entity_set_int(Ent,EV_INT_iuser3,fx_num)
 	new color[3]
 	sh_get_pill_color(fx_num,id,color)
-	parm[0] = Ent
-	parm[1] =id
+
 	aura(id,color,3,1)
 	emit_sound(id, CHAN_WEAPON, m_SOUND[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
@@ -487,10 +455,6 @@ launch_pill(id)
 	
 
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
-	parm[0] = id
-	parm[1] = curr_barrel[id]
-	curr_barrel[id]=(((curr_barrel[id]+1)<NUM_BARRELS)?curr_barrel[id]+1:0)
-	set_task(PILL_SHOOT_PERIOD, "pill_reload",id+PILL_RELOAD_TASKID,parm,2)
 
 	return PLUGIN_CONTINUE
 }
@@ -538,13 +502,6 @@ public pill_think(ent)
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 
 }
-public pill_reload(parm[])
-{
-	if(!client_hittable(parm[0],sh_user_has_hero(parm[0],gatling_get_hero_id()))) return
-	pill_loaded[parm[0]][parm[1]]=true
-	
-}
-
 
 public fw_ItemDeployPre(entity)
 {
@@ -612,8 +569,10 @@ public vexd_pfntouch(pToucher, pTouched)
 		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
 			if(client_hittable(pTouched))
 			{
+				//retrieve current pill fx num
 
-				make_effect(pTouched,oid,gatling_get_hero_id(),pill_fx[pToucher],false)
+				new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
+				make_effect(pTouched,oid,gatling_get_hero_id(),fx_num,false)
 			}
 		}
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){
@@ -624,13 +583,6 @@ public vexd_pfntouch(pToucher, pTouched)
 		}
 		remove_entity(pToucher)
 	}
-}
-public remove_pill(id_pill){
-	id_pill-=PILL_REM_TASKID
-
-	remove_entity(id_pill)
-
-
 }
 public plugin_precache()
 {

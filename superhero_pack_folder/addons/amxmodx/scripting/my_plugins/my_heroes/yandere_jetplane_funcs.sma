@@ -794,11 +794,6 @@ public jet_sound_task(id){
 		remove_task(id)
 		return
 	}
-	if(!sh_user_has_hero(owner,yandere_get_hero_id())){
-		
-		remove_task(id)
-		return
-	}
 	if(!jet_deployed(owner)){
 		
 		remove_task(id)
@@ -872,11 +867,6 @@ public jet_hud_task(id){
 	
 	new owner=id-JET_HUD_TASKID
 	if(!client_hittable(owner)){
-		
-		remove_task(id)
-		return
-	}
-	if(!sh_user_has_hero(owner,yandere_get_hero_id())){
 		
 		remove_task(id)
 		return

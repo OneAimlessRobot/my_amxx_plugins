@@ -23,7 +23,6 @@ new Float:min_charge_time
 
 
 stock MINE_ARMING_TASKID,
-		MINE_WAIT_TASKID,
 		MINE_CHARGE_TASKID,
 		UNMINE_CHARGE_TASKID,
 		MINE_DISARM_TASKID,
@@ -40,10 +39,10 @@ public plugin_init(){
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("sapper_mine_min_charge_time", "1.0")
+	register_forward(FM_Think, "mine_think")
 
 
 	MINE_ARMING_TASKID=allocate_typed_task_id(entity_task)
-	MINE_WAIT_TASKID=allocate_typed_task_id(entity_task)
 	MINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNMINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	MINE_DISARM_TASKID=allocate_typed_task_id(player_task)
@@ -147,37 +146,38 @@ public _plant_mine(iPlugins,iParams)
 	glow(ent,1,1,1,120,1)
 	drop_to_floor(ent);
 	sapper_dec_num_mines(id);
-	new parm[2];
-	parm[0]=id;
-	parm[1]=ent
 	sh_chat_message(id,sapper_get_hero_id(),"You have %d mines left",sapper_get_num_mines(id));
-	set_task(MINE_ARMING_TIME,"mine_arm_task",ent+MINE_ARMING_TASKID, parm, 2, "a",1)
+	set_task(MINE_ARMING_TIME,"mine_arm_task",ent+MINE_ARMING_TASKID)
 	
 }
-public mine_arm_task(parm[],mine_taskid){
+public mine_arm_task(mine_id){
 	
-	
-	new attacker=parm[0];
-	new mine_id=parm[1];
+	mine_id-=MINE_ARMING_TASKID
 	if(!is_valid_ent(mine_id)){
 	
 		return;
 	}
-	set_task(MINE_WAIT_PERIOD,"mine_wait_task",mine_id+MINE_WAIT_TASKID, parm, 2, "b")
-	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,sapper_get_hero_id(),"The mine is armed!");
-	}
+	entity_set_float(mine_id,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 }
-public mine_wait_task(parm[],mine_taskid){
+public mine_think(mine_id){
+
+	if ( pev_valid(mine_id)!=2 ){
+		
 	
+			return FMRES_IGNORED
 	
-	new attacker=parm[0];
-	new mine_id=parm[1];
-	if(!is_valid_ent(mine_id)){
+	}
+	static classname[32]
+	classname[0] = '^0'
+	pev(mine_id, pev_classname, classname, charsmax(classname))
 	
-		return;
+	if ( !equal(classname, MINE_CLASSNAME) ){
+		
+			
+		return FMRES_IGNORED
 	}
 	
+	new attacker=pev(mine_id,pev_owner)
 	new entlist[33];
 	new numfound = find_sphere_class(mine_id,"player", DETECT_RADIUS ,entlist, 32);
 		
@@ -192,10 +192,17 @@ public mine_wait_task(parm[],mine_taskid){
 		if((get_user_team(attacker) == get_user_team(pid))){
 			continue;
 		}
+		if(!(entity_get_int( pid, EV_INT_flags ) & FL_ONGROUND  )){
+
+			continue
+		}
 		blow_mine_up(mine_id,pid);
+		return FMRES_IGNORED
 	}
 
+	entity_set_float(mine_id,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 
+	return FMRES_IGNORED
 }
 
 public blow_mine_up(ent, id)
@@ -222,7 +229,6 @@ public blow_mine_up(ent, id)
 public remove_mine(parm[]){
 
 if(!is_valid_ent(parm[1])) return
-remove_task(parm[1]+MINE_WAIT_TASKID);
 remove_task(parm[1]+MINE_ARMING_TASKID);
 mine_loaded[parm[0]]=true
 remove_entity(parm[1])
@@ -476,8 +482,11 @@ public _clear_mines(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, MINE_CLASSNAME)
 while(grenada) {
-	remove_task(grenada+MINE_WAIT_TASKID);
-	remove_entity(grenada)
+	new parm[2]
+	new owner=pev(grenada,pev_owner)
+	parm[0]=owner
+	parm[1]=grenada
+	remove_mine(parm)
 	grenada = find_ent_by_class(grenada, MINE_CLASSNAME)
 }
 }

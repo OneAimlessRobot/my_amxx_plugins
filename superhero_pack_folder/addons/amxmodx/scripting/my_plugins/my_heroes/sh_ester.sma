@@ -178,10 +178,6 @@ public ester_init()
 		}
 		reset_ester_user_round(id)
 		ester_weapons(id)
-		
-		if(!is_user_bot(id)){
-			set_task( 0.25, "ester_loop", id+ESTER_GLOW_TASKID, "", 0, "b")
-		}
 	}
 	else{
 		reset_ester_reborn_mode(id,0)
@@ -189,9 +185,6 @@ public ester_init()
 		reset_ester_user_round(id)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
 		
-		if(!is_user_bot(id)){
-			remove_task(id+ESTER_GLOW_TASKID)
-		}
 	}
 	
 	
@@ -570,10 +563,6 @@ public sh_client_spawn(id)
 			sh_chat_message(id,ester_get_hero_id(),ESTER_FINE_WHATEVER_YOU_SAY,gBuiltUpXp[id]);
 			
 		}
-		
-		if(!is_user_bot(id)){
-			set_task( 0.25, "ester_loop", id+ESTER_GLOW_TASKID, "", 0, "b")
-		}
 		ester_weapons(id)
 		trail(id,GREEN,0,0)
 		set_user_rendering(id,_,_,_,_,_,0)
@@ -738,6 +727,8 @@ public client_disconnected(id){
 	ester_weapons(id)
 	reset_ester_user_round(id)
 	ester_unmorph(id+ESTER_MORPH_TASKID)
+	
+	remove_task(id+ESTER_REVENGE_TASKID)
 	
 	if(!is_user_bot(id)){
 		remove_task(id+ESTER_GLOW_TASKID)
