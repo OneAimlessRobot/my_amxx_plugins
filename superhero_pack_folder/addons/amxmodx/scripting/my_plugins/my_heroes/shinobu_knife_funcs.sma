@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 #define PLUGIN "Shinobu nani behind player pt1"
 #define VERSION "1.0.0"
@@ -22,6 +23,10 @@ new Float:g_shinobu_angles[SH_MAXSLOTS+1][3],
 new Float:g_shinobu_v_angles[SH_MAXSLOTS+1][3],
 	Float:g_shinobu_dst_v_angles[SH_MAXSLOTS+1][3]
 
+
+stock g_prev_shinobu_cloaked[SH_MAXSLOTS+1];
+stock g_curr_shinobu_cloaked[SH_MAXSLOTS+1];
+
 enum{
 	
 	TELEPORT_TASK_TARGET,
@@ -36,6 +41,7 @@ public plugin_init(){
 	TELEPORT_CHECK_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_cleanup","a")
 	register_event("ResetHUD","teleport_newRound","b")
+	register_forward(FM_CmdStart, "shinobu_cloak")
 
     
 	
@@ -48,6 +54,44 @@ public plugin_natives(){
 }
 
 
+public shinobu_cloak(id, uc_handle){
+
+
+	if(!client_hittable(id)) return FMRES_IGNORED
+
+	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return FMRES_IGNORED
+	
+
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
+	new button = get_uc(uc_handle, UC_Buttons);
+	g_curr_shinobu_cloaked[id]=((button & IN_DUCK ))
+	apply_cloak(id)
+	return FMRES_IGNORED
+}
+
+apply_cloak(id){
+	
+	if(!client_hittable(id)||!sh_user_has_hero(id,shinobu_get_hero_id())){
+		
+		g_curr_shinobu_cloaked[id]=0
+		g_prev_shinobu_cloaked[id]=0
+		return 
+
+	}
+	if(!(g_curr_shinobu_cloaked[id]-g_prev_shinobu_cloaked[id])){
+
+		return
+	}
+
+	if(g_curr_shinobu_cloaked[id]){
+		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransAlpha);
+	}
+	else{
+		
+		set_user_rendering(id)
+	}
+}	
 //----------------------------------------------------------------------------------------------
 public teleport_newRound(id)
 {
@@ -56,7 +100,7 @@ public teleport_newRound(id)
 		return PLUGIN_CONTINUE
 	}
 
-	if ( shinobu_get_has_shinobu(id)) {
+	if ( sh_user_has_hero(id,shinobu_get_hero_id())) {
 		
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
@@ -109,7 +153,7 @@ public positionChangeCheck(array[], attacker)
 
 	if(!is_user_alive(attacker) ) return
 
-	if(!shinobu_get_has_shinobu(attacker)) return
+	if(!sh_user_has_hero(attacker,shinobu_get_hero_id())) return
 
 
 	new tg=array[TELEPORT_TASK_TARGET]
@@ -195,7 +239,7 @@ public on_death_cleanup()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		if(shinobu_get_has_shinobu(id)){
+		if(sh_user_has_hero(id,shinobu_get_hero_id())){
 
 			remove_task(id+TELEPORT_CHECK_TASKID)
 		}

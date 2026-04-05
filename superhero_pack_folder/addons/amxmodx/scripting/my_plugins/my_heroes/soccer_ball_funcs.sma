@@ -102,7 +102,7 @@ public vexd_pfntouch(pToucher, pTouched){
 			{		
 				new Float:origin[3]
 				entity_get_vector(pToucher,EV_VEC_origin,origin)
-				if(roberto_get_has_roberto(pTouched)&&(pTouched==oid)&&ball_pickable[pToucher] && BALL_RETRIEVE){
+				if(sh_user_has_hero(pTouched,roberto_get_hero_id())&&(pTouched==oid)&&ball_pickable[pToucher] && BALL_RETRIEVE){
 					
 					roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
 					sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
@@ -150,7 +150,7 @@ public kick_ball(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!roberto_get_has_roberto(id)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,roberto_get_hero_id())||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
 	
 	if(!roberto_get_num_balls(id)){
 		
@@ -237,7 +237,7 @@ public ball_think(ent)
 		return;
 	}
 	new id=pev(ent,pev_iuser1)
-	if ( !client_hittable(id,roberto_get_has_roberto(id) )) {
+	if ( !client_hittable(id,sh_user_has_hero(id,roberto_get_hero_id()))) {
 		set_task(0.1,"remove_ball",ent+BALL_REM_TASKID)
 		return
 	}

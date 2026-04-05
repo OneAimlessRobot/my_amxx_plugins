@@ -56,7 +56,7 @@ public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker) ||(id==attacker)) return HAM_IGNORED
 new CsTeams:att_team,CsTeams:vic_team;
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker,vic_team,att_team)
-if(yandere_get_has_yandere(id)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&yandere_get_user_is_psychosis(id)){
+if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&yandere_get_user_is_psychosis(id)){
 	
 	damage=1.0+damage- (damage*psychosis_dmg_cushion)
 	SetHamParamFloat(4, damage);
@@ -128,7 +128,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 
 public client_PostThink(id) {
 	
-	if(!client_hittable(id,yandere_get_has_yandere(id))) { 
+	if(!client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) { 
 		return
 	}
 	if(g_yandere_leaped[id]){
@@ -150,7 +150,7 @@ public Player_TakeDamage(id)
 //----------------------------------------------------------------------------------------------
 public psychosis_leap(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!yandere_get_has_yandere(id)||!yandere_get_user_is_psychosis(id)||!hasRoundStarted()||!client_hittable(id,yandere_get_has_yandere(id))) return FMRES_IGNORED;
+	if (!sh_user_has_hero(id,yandere_get_hero_id())||!yandere_get_user_is_psychosis(id)||!hasRoundStarted()) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED

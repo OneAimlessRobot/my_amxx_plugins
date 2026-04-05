@@ -165,7 +165,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(!client_hittable(id)||!client_hittable(attacker)){
 		return
 	}
-	if(!yandere_get_has_yandere(attacker)){
+	if(!sh_user_has_hero(attacker,yandere_get_hero_id())){
 		return
 	}
 	if(pev_valid(jet_get_user_jet(id))!=2){
@@ -211,7 +211,7 @@ public _jet_charge_user(iPlugin, iParams){
 
 	if(!client_hittable(id)) return
 
-	if(!yandere_get_has_yandere(id)) return
+	if(!sh_user_has_hero(id,yandere_get_hero_id())) return
 
 
 	if(!g_jetplane_loaded[id]){
@@ -268,7 +268,7 @@ public _jet_charge_user(iPlugin, iParams){
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!yandere_get_has_yandere(this)) return HAM_IGNORED
+	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,yandere_get_hero_id())) return HAM_IGNORED
 	
 	if(!g_jetplane_deployed[this]) return HAM_IGNORED
 	
@@ -369,7 +369,7 @@ public jet_deploy_task(parm[],id){
 		
 		return
 	}
-	if(!yandere_get_has_yandere(attacker)){
+	if(!sh_user_has_hero(attacker,yandere_get_hero_id())){
 		
 		return
 	}
@@ -460,7 +460,7 @@ public FwdTouchWorld( jet, World ) {
 		return FMRES_IGNORED;
 	}
 	new owner=pev(jet,pev_owner)
-	if(client_hittable(owner,yandere_get_has_yandere(owner))){
+	if(client_hittable(owner,sh_user_has_hero(owner,yandere_get_hero_id()))){
 
 		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
@@ -504,7 +504,7 @@ public jet_think(ent)
 
 		return FMRES_IGNORED
 	}
-	if(!yandere_get_has_yandere(owner)||!g_jetplane_deployed[owner]){
+	if(!sh_user_has_hero(owner,yandere_get_hero_id())||!g_jetplane_deployed[owner]){
 
 		return FMRES_IGNORED
 	}
@@ -781,7 +781,7 @@ public charge_task(parm[],id){
 public round_end(){
 
 	for (new id=1; id <= SH_MAXSLOTS; id++) {
-		if ( client_hittable(id,yandere_get_has_yandere(id))) {
+		if ( client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) {
 			uncharge_user(id)
 		}
 	}
@@ -794,7 +794,7 @@ public jet_sound_task(id){
 		remove_task(id)
 		return
 	}
-	if(!yandere_get_has_yandere(owner)){
+	if(!sh_user_has_hero(owner,yandere_get_hero_id())){
 		
 		remove_task(id)
 		return
@@ -876,7 +876,7 @@ public jet_hud_task(id){
 		remove_task(id)
 		return
 	}
-	if(!yandere_get_has_yandere(owner)){
+	if(!sh_user_has_hero(owner,yandere_get_hero_id())){
 		
 		remove_task(id)
 		return

@@ -94,7 +94,7 @@ public Item_PostFrame_Post(iEnt)
 	if(!client_hittable(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!spores_has_ksun(id)||!ksun_player_is_in_ultimate(id)){
+	if (!sh_is_active()||!sh_user_has_hero(id,spores_ksun_hero_id())||!ksun_player_is_in_ultimate(id)){
 		return HAM_IGNORED
 	}
 	do_fast_reload(id,iEnt,ksun_ultimate_reload_rate_mult)
@@ -105,14 +105,14 @@ public ksun_ultimate_damage_hook(id, idinflictor, attacker, Float:damage, damage
 {
 if ( !sh_is_active() || !client_hittable(id) || !client_hittable(attacker)) return HAM_IGNORED
 
-if(!spores_has_ksun(id)&&!spores_has_ksun(attacker)) return HAM_IGNORED
+if(!sh_user_has_hero(id,spores_ksun_hero_id())&&!sh_user_has_hero(attacker,spores_ksun_hero_id())) return HAM_IGNORED
 
 
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 
-if(spores_has_ksun(id)&&ksun_player_is_in_ultimate(id)){
+if(sh_user_has_hero(id,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(id)){
 
 	new Float:dmgSnatched= damage*ksun_dmg_absorption_index
 	
@@ -121,7 +121,7 @@ if(spores_has_ksun(id)&&ksun_player_is_in_ultimate(id)){
 	
 
 }
-if(spores_has_ksun(attacker)&&ksun_player_is_in_ultimate(attacker)){
+if(sh_user_has_hero(attacker,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(attacker)){
 
 	
 	if(weapon==KSUN_WEAPON_ID){
@@ -201,7 +201,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	new id= get_param(1)
 	
 	if(!client_hittable(id)) return
-	if(!spores_has_ksun(id)) return
+	if(!sh_user_has_hero(id,spores_ksun_hero_id())) return
 	
 	g_player_in_ultimate[id]=1
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -215,7 +215,7 @@ public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
 	if(!client_hittable(id)) return
 	
-	if(!ksun_player_is_in_ultimate(id)||!spores_has_ksun(id)) return
+	if(!ksun_player_is_in_ultimate(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return
 	new hud_msg[128];
 	new origin[3]
 	get_user_origin(id,origin,0)
@@ -283,7 +283,7 @@ public ksun_rifle_laser(id)
 {
 
 if(!client_hittable(id)) return PLUGIN_CONTINUE 
-if ( !spores_has_ksun(id)) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,spores_ksun_hero_id())) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -319,7 +319,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(spores_has_ksun(victim)&&ksun_player_is_in_ultimate(victim)){
+	if(sh_user_has_hero(victim,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(victim)){
 
 	
 		return DMG_FWD_BLOCK

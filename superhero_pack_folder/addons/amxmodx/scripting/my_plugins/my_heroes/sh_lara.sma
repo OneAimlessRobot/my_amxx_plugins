@@ -31,7 +31,6 @@ public plugin_init()
 	register_cvar("lara_num_spears", "100")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "lara the hunter!", "Get a spear!", false, "lara_level" )
-	spear_set_hero_id(gHeroID)
 	register_event("DeathMsg","death","a")
 	register_srvcmd("lara_init", "lara_init")
 	shRegHeroInit(gHeroName, "lara_init")
@@ -51,32 +50,14 @@ public plugin_natives(){
 	
 	
 	
-	register_native("spear_set_hero_id","_spear_set_hero_id",0);
 	register_native("spear_get_hero_id","_spear_get_hero_id",0);
 	
-	register_native("spear_get_has_lara","_spear_get_has_lara",0);
-	register_native("spear_set_has_lara","_spear_set_has_lara",0);
-	
 
-}
-
-public _spear_set_has_lara(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasLara[id]=value_to_set;
-}
-public _spear_get_has_lara(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasLara[id]
 }
 
 public _spear_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
-public _spear_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
-}
-
 public _spear_set_num_spears(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set=get_param(2)
@@ -138,7 +119,7 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,spear_get_has_lara(attacker),"hunter_spear");
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,sh_user_has_hero(id,spear_get_hero_id()),"hunter_spear");
 
 
 

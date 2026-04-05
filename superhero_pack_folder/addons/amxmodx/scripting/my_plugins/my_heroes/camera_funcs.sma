@@ -135,7 +135,7 @@ public camera_controls(id, uc_handle)
 		return FMRES_IGNORED;
 	}
 
-	if(!camman_get_has_camman(id)) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,camman_get_hero_id())) return FMRES_IGNORED
 
 	if(!camman_get_has_camera(id)) return FMRES_IGNORED
 	
@@ -303,7 +303,7 @@ public _plant_camera(iPlugins,iParams)
 {
 	new id= get_param(1)
 	
-	if(!camman_get_has_camman(id)) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
 	
 	static material[128]
 	static health[128]	
@@ -659,7 +659,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
 	
-	if(!camman_get_has_camman(id)) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
 	
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
@@ -852,7 +852,7 @@ public plugin_precache()
 public death()
 {	
 	new id=read_data(2)
-	if(camman_get_has_camman(id)&&is_user_connected(id)){
+	if(sh_user_has_hero(id,camman_get_hero_id())&&is_user_connected(id)){
 		
 		
 		looking_with_camera[id]=false;

@@ -138,7 +138,7 @@ public plugin_natives(){
 }
 public bool:client_isnt_hitter(id){
 	
-	return !client_hittable(id,lena_get_has_lena(id))
+	return !client_hittable(id,sh_user_has_hero(id,lena_get_hero_id()))
 	
 }
 public CmdStart(id, uc_handle)
@@ -172,7 +172,7 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !lena_get_has_lena(idattacker)){
+	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,lena_get_hero_id())){
 		return HAM_IGNORED
 	}
 		
@@ -305,8 +305,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 	g_L96_clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD)
-	
-	emit_sound(pPlayer, CHAN_WEAPON, LENA_L96_SHOTSOUND, 1.0, 0.0, 0, PITCH_NORM)
 	
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
 	set_entvar(pPlayer, var_weaponanim,  SEQ_SHOOT1)

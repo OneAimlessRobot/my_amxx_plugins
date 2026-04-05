@@ -58,7 +58,7 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,tranq_get_has_erica(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,tranq_get_hero_id()))) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -254,7 +254,7 @@ return PLUGIN_CONTINUE
 
 public molly_reload(parm[])
 {
-if(!is_user_alive(parm[0])||!tranq_get_has_erica(parm[0])||!is_user_connected(parm[0])) return
+if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],tranq_get_hero_id())||!is_user_connected(parm[0])) return
 molly_loaded[parm[0]] = true
 new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
 if((wid==MOLLY_CLASSID)&&erica_get_num_mollies(parm[0])){

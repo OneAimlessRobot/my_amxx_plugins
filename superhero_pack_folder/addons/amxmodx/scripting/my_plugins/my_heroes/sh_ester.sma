@@ -124,7 +124,7 @@ public Hook_BloodColor(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(ester_get_has_ester(id)){
+			if(gHasEster[id]){
 				SetHamReturnInteger(BLOOD_COLOR_YELLOW)
 				return HAM_SUPERCEDE;
 			}
@@ -138,7 +138,7 @@ public ester_prethink(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(ester_get_has_ester(id)){
+			if(gHasEster[id]){
 				if(get_user_weapon(id)==CSW_TMP) {
 					set_pev(id, pev_flTimeStepSound, 999)
 				}
@@ -148,7 +148,6 @@ public ester_prethink(id)
 }
 public plugin_natives(){
 	
-	register_native("ester_get_has_ester","_ester_get_has_ester",0)
 	register_native("ester_get_hero_id","_ester_get_hero_id",0)
 	
 	
@@ -157,12 +156,6 @@ public plugin_natives(){
 public _ester_get_hero_id(iPlugins, iParms){
 	
 	return gHeroID
-}
-public _ester_get_has_ester(iPlugins, iParms){
-	
-	new id= get_param(1)
-	
-	return gHasEster[id]
 }
 public ester_init()
 {
@@ -217,7 +210,7 @@ stock ester_weapons(id){
 		return
 		
 	}
-	else if(ester_get_has_ester(id)){
+	else if(gHasEster[id]){
 		shGiveWeaponID(id, CSW_TMP)
 	}
 	else{
@@ -307,7 +300,7 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&ester_get_has_ester(id)){
+	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&gHasEster[id]){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
@@ -334,7 +327,7 @@ public weaponChange(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	if(!ester_get_has_ester(id)){
+	if(!gHasEster[id]){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -571,7 +564,7 @@ public Ester_instant(x, id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( ester_get_has_ester(id)&&is_user_connected(id)&& sh_is_active() ) {
+	if ( gHasEster[id]&&is_user_connected(id)&& sh_is_active() ) {
 		if(gBuiltUpXp[id]){
 			sh_set_user_xp(id,gBuiltUpXp[id],true);
 			sh_chat_message(id,ester_get_hero_id(),ESTER_FINE_WHATEVER_YOU_SAY,gBuiltUpXp[id]);
@@ -632,7 +625,7 @@ public ester_damage(id)
 public fire_weapon(id)
 {
 	
-	if ( !ester_get_has_ester(id) ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+	if ( !gHasEster[id] ||!is_user_alive(id)) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -663,7 +656,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
-	if(!ester_get_has_ester(attacker)){
+	if(!gHasEster[attacker]){
 		return HAM_IGNORED
 	}
 	
@@ -777,7 +770,7 @@ public plugin_precache()
 public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	
 	if(is_user_connected(id)){
-		if(ester_get_has_ester(id)){
+		if(gHasEster[id]){
 			reset_ester_reborn_mode(id,0)
 		}
 	}
@@ -790,7 +783,7 @@ public death()
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(ester_get_has_ester(id)){
+	if(gHasEster[id]){
 		
 		reset_ester_reborn_mode(id,0)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
@@ -812,7 +805,7 @@ public death()
 		
 			continue
 		}
-		if(!ester_get_has_ester(i)){
+		if(!gHasEster[i]){
 		
 			continue
 		} 

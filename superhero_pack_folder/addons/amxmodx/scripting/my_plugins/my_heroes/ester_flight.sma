@@ -151,7 +151,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED;
 	
 	}
-	if(g_flying[id]&&ester_get_has_ester(id)&&ester_get_reborn_mode(id)){
+	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&ester_get_reborn_mode(id)){
 		
 			sh_extra_damage( attacker, id,floatround(ester_damage_reflect_coeff*damage), "Charging reflect" )
 			directed_spark(id, attacker)
@@ -167,7 +167,7 @@ public client_kill(id){
 	
 	if(!is_user_connected(id)) return PLUGIN_CONTINUE
 	
-	if(ester_get_has_ester(id)&&ester_anti_pussy_engaged){
+	if(sh_user_has_hero(id,ester_get_hero_id())&&ester_anti_pussy_engaged){
 		
 		sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_FAIL_MSG)
 		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
@@ -175,7 +175,7 @@ public client_kill(id){
 		return PLUGIN_CONTINUE
 		
 	}
-	else if(ester_get_has_ester(id)){
+	else if(sh_user_has_hero(id,ester_get_hero_id())){
 		
 		
 		
@@ -187,7 +187,7 @@ public client_kill(id){
 }
 inc_user_ester_respawn_attempts(id){
 	
-	if(is_user_connected(id)&&sh_is_active()&&ester_get_has_ester(id)){
+	if(is_user_connected(id)&&sh_is_active()&&sh_user_has_hero(id,ester_get_hero_id())){
 		
 		g_ester_respawned_attempts[id]=g_ester_respawned_attempts[id]<ester_total_respawn_attempts?g_ester_respawned_attempts[id]+1:ester_total_respawn_attempts
 	
@@ -206,7 +206,7 @@ public _reset_ester_reborn_mode(iPlugin,iParams){
 	
 	new id=get_param(1)
 	new enable=get_param(2)
-	if(!ester_get_has_ester(id)||!sh_is_active()) return
+	if(!sh_user_has_hero(id,ester_get_hero_id())||!sh_is_active()) return
 	
 	ester_set_reborn_mode(id,enable)
 	if(!enable){
@@ -224,7 +224,7 @@ public _reset_ester_reborn_mode(iPlugin,iParams){
 
 remove_user_flight_fx(id){
 	
-	if(!ester_get_has_ester(id)||!is_user_connected(id)||!sh_is_active()) return
+	if(!sh_user_has_hero(id,ester_get_hero_id())||!is_user_connected(id)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
 	set_user_rendering(id)
@@ -266,7 +266,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 }
 public OnCmdStart(id, uc_handle, seed)
 {
-	if(!ester_get_has_ester(id)||!client_hittable(id)||!ester_get_reborn_mode(id)||sh_get_stun(id)){
+	if(!sh_user_has_hero(id,ester_get_hero_id())||!client_hittable(id)||!ester_get_reborn_mode(id)||sh_get_stun(id)){
 			return FMRES_IGNORED;
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -361,23 +361,22 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		return PLUGIN_CONTINUE
 	}
 
-	if ( !is_user_connected(id) || !ester_get_has_ester(id) ||!is_user_connected(killer)){
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,ester_get_hero_id())||!is_user_connected(killer)){
 		return PLUGIN_CONTINUE
 	}
 	if(killer==id){
-		if(ester_get_has_ester(id)&&ester_anti_pussy_engaged){
+		if(sh_user_has_hero(id,ester_get_hero_id())&&ester_anti_pussy_engaged){
 			
 			sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_FAIL_MSG)
 			new killer_name[128], vic_name[128]
 			get_user_name(killer,killer_name,127)
 			get_user_name(id,vic_name,127)
-			//console_print(0,"Self kill by ester user!^nO id do killer, chamado %s, era %d^nE o id da vitima, chamada %s, era %d^n",killer_name, killer, vic_name, id);
 			emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 			return PLUGIN_CONTINUE
 			
 		}
-		else if(ester_get_has_ester(id)){
+		else if(sh_user_has_hero(id,ester_get_hero_id())){
 			
 			
 			
@@ -417,7 +416,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 public ester_reborn_loop_task(parm[]){
 	
 	new id= parm[0]
-	if(is_user_alive(id)&&ester_get_has_ester(id)){
+	if(is_user_alive(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 		
 		remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
 		return
@@ -438,7 +437,7 @@ public ester_respawn(parm[])
 {
 	new id = parm[0]
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( !ester_get_has_ester(id)) return
+	if ( !sh_user_has_hero(id,ester_get_hero_id())) return
 	if ( (g_ester_respawned_attempts[id]>=ester_total_respawn_attempts)|| g_is_between_rounds ) return
 	if ( g_which_team_is_user[id]!= get_user_team(id) ) return //prevents respawning spectators
 
@@ -470,7 +469,7 @@ public godmode_render_update(id){
 	
 	id-=ESTER_REBORN_GLOW_TASKID
 	
-	if(client_hittable(id)&&ester_get_has_ester(id)){
+	if(client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
@@ -483,7 +482,7 @@ public godmode_render_update(id){
 }
 public ester_unglow(id){
 	
-	if(is_user_connected(id)&&ester_get_has_ester(id)){
+	if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 	
 		glow(id,255,255,255,255,0)
 	}
@@ -508,7 +507,7 @@ public ester_round_start()
 	g_is_between_rounds = 0
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if(is_user_connected(id)&&ester_get_has_ester(id)){
+		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 			reset_ester_reborn_mode(id,0)
 			ester_remove_statuses(id,1,1)
 		}
@@ -574,7 +573,7 @@ ester_remove_statuses(id,rem_explosion=1,remove_god=1,remove_collosions=1){
 	if(rem_explosion){
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 	}
-	if(is_user_connected(id)&&ester_get_has_ester(id)){
+	if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 		
 		if(remove_god&&get_user_godmode(id)){
 			set_user_godmode(id,0)
@@ -627,11 +626,11 @@ public revival(id)
 //----------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------
-public player_to_player_touch_task(id)  //This is triggered when two entites touch
+public player_to_player_touch_task(id)
 {
 	id-=ESTER_REBORN_COLLISION_TASKID
 	new killer=id
-	if(!client_hittable(killer)||!ester_get_has_ester(killer)||!ester_get_reborn_mode(killer)||!ester_fly_knock_enemies){
+	if(!client_hittable(killer)||!sh_user_has_hero(killer,ester_get_hero_id())||!ester_get_reborn_mode(killer)||!ester_fly_knock_enemies){
 		
 		remove_task(id+ESTER_REBORN_COLLISION_TASKID)
 		return

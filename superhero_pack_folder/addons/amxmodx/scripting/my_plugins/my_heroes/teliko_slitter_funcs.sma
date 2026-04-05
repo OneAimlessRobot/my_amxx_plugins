@@ -54,7 +54,7 @@ public plugin_init(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!teliko_get_has_teliko(id) ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,teliko_get_hero_id()) ||!shModActive()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&slitter_get_slit_kills(id)) {
@@ -66,7 +66,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( teliko_get_has_teliko(id)&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,teliko_get_hero_id()) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
 	
 	stop_dragging(id)
 	g_slit_kills[id]=max_slitter_kills_per_life;
@@ -123,7 +123,7 @@ public slitter_think(id)
 		return FMRES_IGNORED
 	
 	}
-	if (!teliko_get_has_teliko(id)){
+	if (!sh_user_has_hero(id,teliko_get_hero_id()) ){
 	
 		remove_task(id+SLITTER_TASKID)
 		return FMRES_IGNORED
@@ -194,7 +194,7 @@ public slitter_think(id)
 public CmdStart(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !teliko_get_has_teliko(attacker)||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
 
@@ -288,7 +288,7 @@ if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_al
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(teliko_get_has_teliko(attacker)&&!(cs_get_user_team(id)==att_team)){
+if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att_team)){
 	
 	if(weapon==CSW_KNIFE){
 		new button = pev(attacker, pev_button);
@@ -415,7 +415,7 @@ public plugin_precache()
 public death()
 {	
 	new id = read_data(2)
-	if(teliko_get_has_teliko(id)){
+	if(sh_user_has_hero(id,teliko_get_hero_id()) ){
 		
 		stop_dragging(id)
 	

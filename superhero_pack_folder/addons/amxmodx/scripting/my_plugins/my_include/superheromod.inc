@@ -50,6 +50,9 @@ forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], 
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 
+
+forward sh_extra_health_add_pre(&id,&the_health_to_add)
+
 /**
  * Called when a hero is added or dropped.
  * See superheroconst.inc for mode types.
@@ -726,10 +729,11 @@ stock sh_add_hp(id, hitPoints, maxHealth = 0)
 
 	if ( currentHealth < maxHealth ) {
 		new newHealth = min((currentHealth + hitPoints), maxHealth);
-		set_user_health(id, newHealth);
+		
+		set_user_health(id, newHealth)
 		return newHealth - currentHealth;
 	}
-
+	
 	return 0;
 }
 

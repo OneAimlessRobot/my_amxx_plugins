@@ -80,7 +80,6 @@ public plugin_init()
 	register_cvar("erica_dmg_speed_points_pct", "0.1")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention and get ++ powerful!", false, "erica_level" )
-	tranq_set_hero_id(gHeroID)
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("erica_init", "erica_init")
@@ -104,14 +103,9 @@ public plugin_natives(){
 	register_native("erica_get_num_mollies","_erica_get_num_mollies",0);
 	register_native("erica_set_num_mollies","_erica_set_num_mollies",0);
 	
-	
-	
-	register_native("tranq_set_hero_id","_tranq_set_hero_id",0);
 	register_native("tranq_get_hero_id","_tranq_get_hero_id",0);
 	
 	register_native("tranq_get_is_max_points","_tranq_get_is_max_points",0);
-	register_native("tranq_get_has_erica","_tranq_get_has_erica",0);
-	register_native("tranq_set_has_erica","_tranq_set_has_erica",0);
 	
 
 }
@@ -143,23 +137,10 @@ public bool:_tranq_get_is_max_points(iPlugin,iParams){
 
 
 }
-public _tranq_set_has_erica(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasErica[id]=value_to_set;
-}
-public _tranq_get_has_erica(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasErica[id]
-}
 
 public _tranq_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
-public _tranq_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
-}
-
 public _tranq_set_num_darts(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set=get_param(2)
@@ -260,7 +241,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,tranq_get_has_erica(attacker));
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_user_has_hero(id,tranq_get_hero_id()));
 
 
 

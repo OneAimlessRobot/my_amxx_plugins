@@ -44,8 +44,6 @@ public plugin_natives(){
 	register_native("lena_l96_get_num_bullets","_lena_l96_get_num_bullets",0);
 	register_native("lena_l96_set_num_bullets","_lena_l96_set_num_bullets",0);
 	
-	register_native("lena_get_has_lena","_lena_get_has_lena",0);
-	
 	register_native("lena_get_hero_id","_lena_get_hero_id",0);
 	
 
@@ -65,12 +63,6 @@ public loadCVARS()
 {
 	
 	lena_max_bullets=get_cvar_num("lena_num_bullets")
-}
-public _lena_get_has_lena(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return gHasLena[id]
-
 }
 
 public _lena_l96_set_num_bullets(iPlugin,iParams){
@@ -131,7 +123,7 @@ public lena_init()
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && lena_get_has_lena(id) )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,lena_get_hero_id()) )
 	{
 		gNumBullets[id]=lena_max_bullets
 	}
@@ -145,7 +137,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
 {
-	if ( sh_is_active() && lena_get_has_lena(id)&&client_hittable(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,lena_get_hero_id())&&client_hittable(id) ) {
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){

@@ -12,12 +12,9 @@ native camman_set_has_camera(id,value_to_set)
 native camman_get_has_camera(id)
 
 
-native camman_set_has_camman(id,value_to_set)
-native camman_get_has_camman(id)
 
 native camman_get_disarmable()
 
-native camman_set_hero_id(id)
 native camman_get_hero_id()
 
 

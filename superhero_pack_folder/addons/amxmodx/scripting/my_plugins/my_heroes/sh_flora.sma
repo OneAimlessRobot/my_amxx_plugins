@@ -52,7 +52,6 @@ public plugin_init()
 
 public plugin_natives(){
 
-	register_native("flora_get_has_flora","_flora_get_has_flora",0);
 	register_native("flora_get_hero_id","_flora_get_hero_id",0);
 	register_native("flora_set_prev_weapon","_flora_set_prev_weapon",0)
 	register_native("flora_get_prev_weapon","_flora_get_prev_weapon",0)
@@ -107,13 +106,6 @@ public _flora_dec_user_num_fields(iPlugin,iParams){
 	g_flora_num_of_fields[id]= (g_flora_num_of_fields[id]>0)? (g_flora_num_of_fields[id]-value):0
 
 }
-public _flora_get_has_flora(iPlugin,iParams){
-	
-	new id= get_param(1)
-	
-	return gHasFlora[id]
-
-}
 public _flora_get_hero_id(iPlugin,iParams){
 	
 	return gHeroID
@@ -126,9 +118,8 @@ public newRound(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	if ( flora_get_has_flora(id)) {
+	if ( sh_user_has_hero(id,flora_get_hero_id())) {
 		reset_flora_user(id)
-		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
@@ -162,7 +153,6 @@ public flora_init()
 	if ( gHasFlora[id] )
 	{
 		reset_flora_user(id)
-		start_flora_checks(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 		flora_morph(id+FLORA_MORPH_TASKID)
 	}
@@ -181,7 +171,7 @@ public plugin_precache(){
 //----------------------------------------------------------------------------------------------
 public flora_model(id)
 {
-	if ( !client_hittable(id)||!flora_get_has_flora(id) ) return
+	if ( !client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id()) ) return
 	
 	set_task(1.0, "flora_morph", id+FLORA_MORPH_TASKID)
 	if( teamglow_on){
@@ -193,7 +183,7 @@ public flora_model(id)
 public flora_morph(id)
 {
 	id-=FLORA_MORPH_TASKID
-	if ( gmorphed[id] || !client_hittable(id)||!flora_get_has_flora(id) ) return
+	if ( gmorphed[id] || !client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id())) return
 	
 	cs_set_user_model(id,"flora")
 
@@ -232,7 +222,7 @@ public flora_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!flora_get_has_flora(id)) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,flora_get_hero_id())) {
 		return PLUGIN_CONTINUE
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -274,7 +264,7 @@ public flora_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) ||!flora_get_has_flora(id)) {
+	if ( !client_hittable(id) ||!sh_user_has_hero(id,flora_get_hero_id())) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -300,7 +290,7 @@ public flora_glow(id)
 		return
 	}
 
-	if ( flora_get_has_flora(id) && is_user_alive(id)) {
+	if (is_user_alive(id)&&sh_user_has_hero(id,flora_get_hero_id())) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 0, 255, 255)
 		}
@@ -313,7 +303,7 @@ public flora_glow(id)
 public sh_client_death(id,killer,headshot,const wpnDescription[])
 {
 if(is_user_connected(id)){
-	if(flora_get_has_flora(id)){
+	if(sh_user_has_hero(id,flora_get_hero_id())){
 		reset_flora_user(id)
 		flora_unmorph(id+FLORA_MORPH_TASKID)
 	}

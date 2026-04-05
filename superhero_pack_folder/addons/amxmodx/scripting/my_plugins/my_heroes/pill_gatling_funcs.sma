@@ -70,7 +70,6 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_logevent("event_start", 2, "1=Round_Start")
 	register_cvar("yakui_windup_time", "2.0")
-	register_event("DeathMsg","death","a")
 	register_forward(FM_Think, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 	PILL_REM_TASKID=allocate_typed_task_id(entity_task)
@@ -88,7 +87,7 @@ public Item_PostFrame_Post(iEnt)
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
 	
-	if(!client_hittable(id,gatling_get_has_yakui(id)&&gatling_get_pillgatling(id))){
+	if(!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id())&&gatling_get_pillgatling(id))){
 		
 		return HAM_IGNORED
 	}
@@ -129,14 +128,14 @@ public Ham_Weapon_PillGatling(weapon_ent)
 	if ( !sh_is_active() ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
-	if(!client_hittable(owner,gatling_get_has_yakui(owner))) return HAM_IGNORED
+	if(!client_hittable(owner,sh_user_has_hero(owner,gatling_get_hero_id()))) return HAM_IGNORED
 	if(!gatling_get_pillgatling(owner)||(g_plAction[owner]!=act_run)){
 		return HAM_SUPERCEDE
 	}
 	return HAM_IGNORED
 }
 public fwPlaybackEvent(flags, invoker, eventid) {
-	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_hittable(invoker,gatling_get_has_yakui(invoker)&&gatling_get_pillgatling(invoker))){
+	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_hittable(invoker,sh_user_has_hero(invoker,gatling_get_hero_id())&&gatling_get_pillgatling(invoker))){
 		return FMRES_IGNORED
 	}
 
@@ -154,7 +153,7 @@ public fwPlayerPostThink(id) {
 	return FMRES_IGNORED
 }
 public event_curweapon(id){
-	if(!client_hittable(id,gatling_get_has_yakui(id))) return PLUGIN_CONTINUE;	
+	if(!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return PLUGIN_CONTINUE;	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 	if(weapon == YAKUI_WEAPON_CLASSID){
 		if(!gatling_get_pillgatling(id)){
@@ -215,7 +214,7 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID|| !gatling_get_has_yakui(idattacker)){
+	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gatling_get_hero_id())){
 		return HAM_IGNORED
 	}
 	
@@ -266,7 +265,7 @@ public _gatling_set_pillgatling(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,gatling_get_has_yakui(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
@@ -332,7 +331,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_hittable(pPlayer,gatling_get_has_yakui(pPlayer)&&gatling_get_pillgatling(pPlayer))){
+	if(!client_hittable(pPlayer,sh_user_has_hero(pPlayer,gatling_get_hero_id())&&gatling_get_pillgatling(pPlayer))){
 		
 		return HAM_IGNORED
 	}
@@ -355,7 +354,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = pev(ent, pev_owner)
-	if(!client_hittable(id,gatling_get_has_yakui(id)&&gatling_get_pillgatling(id))){
+	if(!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id())&&gatling_get_pillgatling(id))){
 		
 		return HAM_IGNORED
 	}
@@ -375,7 +374,7 @@ public fw_Weapon_Reload_Post(ent)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_hittable(player,gatling_get_has_yakui(player))){
+	if(!client_hittable(player,sh_user_has_hero(player,gatling_get_hero_id()))){
 		
 		return FMRES_IGNORED
 	}
@@ -512,7 +511,7 @@ public pill_think(ent)
 		return;
 	}
 	new id=pev(ent,pev_owner)
-	if (!client_hittable(id,gatling_get_has_yakui(id))) {
+	if (!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) {
 		remove_entity(ent)
 		return
 	}
@@ -541,7 +540,7 @@ public pill_think(ent)
 }
 public pill_reload(parm[])
 {
-	if(!client_hittable(parm[0],gatling_get_has_yakui(parm[0]))) return
+	if(!client_hittable(parm[0],sh_user_has_hero(parm[0],gatling_get_hero_id()))) return
 	pill_loaded[parm[0]][parm[1]]=true
 	
 }
@@ -554,7 +553,7 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_hittable(pPlayer,gatling_get_has_yakui(pPlayer)&&gatling_get_pillgatling(pPlayer))){
+	if(!client_hittable(pPlayer,sh_user_has_hero(pPlayer,gatling_get_hero_id())&&gatling_get_pillgatling(pPlayer))){
 		
 		return HAM_IGNORED
 	}
@@ -570,7 +569,7 @@ public fw_ItemDeployPre(entity)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(sh_is_active()&&client_hittable(id,gatling_get_has_yakui(id))){
+	if(sh_is_active()&&client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))){
 		atk1[id]=0;
 		atk2[id]=0;
 		g_plAction[id]=act_none;
@@ -645,15 +644,5 @@ public plugin_precache()
 	precache_sound(m_SOUND[1])
 	precache_sound(m_SOUND[2])
 	precache_sound(m_SOUND[3])
-
-}
-
-public death()
-{
-	new id = read_data(2)
-		//new killer= read_data(1)
-
-	if(!is_user_connected(id)||!sh_is_active()||!gatling_get_has_yakui(id)) return
-
 
 }

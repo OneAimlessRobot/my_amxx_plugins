@@ -10,13 +10,8 @@
 #include "../my_include/my_author_header.inc"
 
 
-new const Arifle_Sounds[4][] = 
-{
-	"weapons/m60-1.wav",
-	"weapons/ethereal_draw.wav",
-	"weapons/ethereal_idle1.wav",
-	"weapons/ethereal_reload.wav"
-}
+new const Arifle_Sound[] = "weapons/m60-1.wav"
+
 
 const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_AUG)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_GALIL)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
 const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN)|(1<<CSW_USP)|(1<<CSW_GLOCK18)|(1<<CSW_DEAGLE)
@@ -71,10 +66,8 @@ public plugin_precache()
 	precache_model( P_MODEL)
 	precache_model( W_MODEL)
 	
-	new i
-	for(i = 0; i < sizeof(Arifle_Sounds); i++){
-		engfunc(EngFunc_PrecacheSound, Arifle_Sounds[i])
-	}
+
+	engfunc(EngFunc_PrecacheSound, Arifle_Sound)
 	
 	g_SmokePuff_SprId = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")
 	
@@ -442,11 +435,9 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(eventid != g_Event_Arifle)
 		return FMRES_IGNORED
 	
-	engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
-		
 	set_weapon_anim(invoker, anim_shoot1)
 	
-	emit_sound(invoker, CHAN_WEAPON, Arifle_Sounds[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(invoker, CHAN_WEAPON, Arifle_Sound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	
 	return FMRES_SUPERCEDE

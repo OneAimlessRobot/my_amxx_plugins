@@ -72,7 +72,6 @@ enum{
 	SEQ_RELOAD=4,
 	SEQ_DRAW=5
 }
-native lena_shoot_l96(id);
 native lena_get_hero_id();
 native lena_l96_clear_bullets();
 native lena_l96_set_num_bullets(id,value_to_set)

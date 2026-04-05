@@ -302,7 +302,7 @@ public OnCmdStart(id,uc_handle)
 			
 		return FMRES_IGNORED
 	}
-	if(!yandere_get_has_yandere(id)){
+	if(!sh_user_has_hero(id,yandere_get_hero_id())){
 			
 		return FMRES_IGNORED
 	}

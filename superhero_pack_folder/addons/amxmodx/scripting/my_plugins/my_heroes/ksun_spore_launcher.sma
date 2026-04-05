@@ -121,7 +121,7 @@ public launcher_recharge_loop(id){
 	
 	id-=COOLDOWN_UPDATE_TASKID;
 	
-	if(!client_hittable(id)||(client_hittable(id)&&!spores_has_ksun(id))){
+	if(!client_hittable(id)||(client_hittable(id)&&!sh_user_has_hero(id,spores_ksun_hero_id()))){
 				
 		return
 		
@@ -266,7 +266,7 @@ public launcher_think(ent){
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
-	if(!spores_has_ksun(id)||!client_hittable(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}
@@ -283,7 +283,7 @@ public _launcher_deploy(iPlugin,iParams)
 {
 
 new id= get_param(1)
-if(!spores_has_ksun(id)||!client_hittable(id)){
+if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 	
 	return
 }
@@ -364,7 +364,7 @@ public destroy_player_launcher(id){
 	id-=UNDEPLOY_LOOP_TASKID
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
-	if ( spores_has_ksun(id)) {
+	if(sh_user_has_hero(id,spores_ksun_hero_id())){
 		reset_player_targets(id)
 		set_player_num_victims(id,0)
 		g_player_cooldown_remaining[id]=0.0
@@ -395,7 +395,7 @@ public death()
 {
 	new id = read_data(2)
 	
-	if(spores_has_ksun(id)){
+	if(sh_user_has_hero(id,spores_ksun_hero_id())){
 	
 		if(ksun_get_when_reset_spores()&reset_on_death){
 			spores_reset_user(id)

@@ -28,7 +28,8 @@ new dmg_source_name_long_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
 new custom_weapon_damage_sharp_poison_kick_id
 
 new Float:shinobu_poison_kick_stun_time,
-	Float:shinobu_poison_kick_stun_speed
+	Float:shinobu_poison_kick_stun_speed,
+	Float:shinobu_max_health
 
 
 new shinobu_poison_kick_knockback
@@ -42,6 +43,7 @@ public plugin_init()
 	register_cvar("shinobu_level", "19" )
 	register_cvar("shinobu_cooldown", "10.0" )
 	register_cvar("shinobu_burst_damage", "10.0" )
+	register_cvar("shinobu_max_health", "100.0" )
 	register_cvar("shinobu_poison_kick_delay","2.0")
 	register_cvar("shinobu_poison_kick_stun_time", "10.0" )
 	register_cvar("shinobu_poison_kick_stun_speed", "110.0" )
@@ -57,11 +59,18 @@ public plugin_init()
 	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	register_srvcmd("shinobu_init", "shinobu_init")
 	shRegHeroInit(gHeroName, "shinobu_init")
+	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
+	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
+	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
+
+	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
+
 	
 	register_srvcmd("shinobu_kd", "shinobu_kd")
 	shRegKeyDown(gHeroName, "shinobu_kd")
 
 	register_forward(FM_PlayerPreThink, "shinobu_prethink")
+	register_forward(FM_CmdStart,"Crouch")
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
@@ -73,16 +82,81 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("shinobu_get_has_shinobu","_shinobu_get_has_shinobu",0)
 	register_native("shinobu_get_user_tagged_player","_shinobu_get_user_tagged_player",0)
 	register_native("shinobu_set_user_tagged_player","_shinobu_set_user_tagged_player",0)
 	register_native("shinobu_get_cooldown","_shinobu_get_cooldown",0)
 	register_native("shinobu_get_hero_id","_shinobu_get_hero_id",0)
+	register_native("shinobu_get_max_hp","_shinobu_get_max_hp",0)
 	
 	
 	
 }
 
+public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{
+	if ( !sh_is_active()) return HAM_IGNORED
+	
+	if ( !client_hittable(idattacker)) {
+		return HAM_IGNORED
+	}
+	if(!gHasShinobu[idattacker]){
+
+		return HAM_IGNORED
+	}
+	new CsTeams:att_team=cs_get_user_team(idattacker)
+	if((cs_get_user_team(this)==att_team)) return HAM_IGNORED
+	new ammo,weapon=get_user_weapon(idattacker,_,ammo)
+	if(weapon==CSW_USP){
+		static Float:speed,Float:stun_time;
+		new hitzone=get_tr2(traceresult,TR_Hitgroup)
+		new is_headshot=(hitzone==HIT_HEAD)
+		new target_is_marked_by_weapon_owner=(g_shinobu_tagged_player[idattacker]==this)
+		if(target_is_marked_by_weapon_owner){
+			
+			stun_time=(is_headshot?3.0:1.0)
+			speed=(is_headshot?40.0:220.0)
+			sh_set_stun(this,stun_time,speed)
+			
+			damage*=(is_headshot?0.5:0.0)
+			ammo+=(is_headshot?3:1)
+			cs_set_user_bpammo(idattacker,CSW_USP,ammo)
+		}
+		else{
+			damage=0.0
+
+		}
+		SetHamParamFloat(3, damage);
+	}
+	return HAM_IGNORED
+}
+//----------------------------------------------------------------------------------------------
+public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
+{
+	if ( damagebits & DMG_FALL && gHasShinobu[this] ) return HAM_SUPERCEDE
+
+	return HAM_IGNORED
+}
+public Shinobu_Limit_HP(msgid, dest, id)
+{
+	if(!sh_is_active()) return
+
+	if(!client_hittable(id)) return
+
+	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+
+	static the_health_to_be_set
+	the_health_to_be_set = get_msg_arg_int(1)
+
+	static the_resulting_health;
+	the_resulting_health=min(floatround(shinobu_max_health),the_health_to_be_set)
+	
+	set_user_health(id,the_resulting_health)
+	
+	if ( the_resulting_health <= 255 ) {
+		set_msg_arg_int(1, ARG_BYTE, the_resulting_health)
+	}
+
+}
 public client_disconnected(id){
 
 	g_shinobu_tagged_player[id]=0
@@ -108,16 +182,15 @@ public _shinobu_set_user_tagged_player(iPlugin,iParams){
 	new value= get_param(2)
 	g_shinobu_tagged_player[id]=value
 }
-public _shinobu_get_has_shinobu(iPlugins, iParms){
-	
-	new id= get_param(1)
-	return gHasShinobu[id]
-	
-}
 
 public _shinobu_get_hero_id(iPlugins, iParms){
 	
 	return gHeroID
+	
+}
+public Float:_shinobu_get_max_hp(iPlugins, iParms){
+	
+	return shinobu_max_health
 	
 }
 public Float:_shinobu_get_cooldown(iPlugins, iParms){
@@ -130,7 +203,7 @@ public shinobuDamage(id)
 {
 	if ( !shModActive() || !client_hittable(id)) return PLUGIN_CONTINUE
 	new victim=id
-	new weapon, bodypart, attacker = get_user_attacker(victim, weapon, bodypart)
+	new weapon, attacker = get_user_attacker(victim, weapon)
 	if ( !client_hittable(attacker)||!attacker) return PLUGIN_CONTINUE
 	
 	if(sh_clients_are_same_team(victim,attacker)||(victim==attacker)){
@@ -159,7 +232,9 @@ public newRound(id)
 		return PLUGIN_CONTINUE
 	}
 
-	return PLUGIN_HANDLED
+	shinobu_weapons(id)
+
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -172,6 +247,7 @@ public loadCVARS()
 {
 	shinobu_cooldown = get_cvar_float("shinobu_cooldown")
 	shinobu_burst_damage = get_cvar_float("shinobu_burst_damage")
+	shinobu_max_health = get_cvar_float("shinobu_max_health")
 	shinobu_poison_kick_delay = get_cvar_float("shinobu_poison_kick_delay")
 	shinobu_poison_kick_stun_time = get_cvar_float("shinobu_poison_kick_stun_time")
 	shinobu_poison_kick_stun_speed = get_cvar_float("shinobu_poison_kick_stun_speed")
@@ -190,10 +266,41 @@ public shinobu_init()
 	new hasPowers = str_to_num(temp)
 	
 	gHasShinobu[id] = (hasPowers!=0)
-	
+	if(gHasShinobu[id]){
+
+		shinobu_weapons(id)
+	}
+	else{
+
+		shinobu_unweapons(id)
+
+
+	}
 	g_shinobu_tagged_player[id]=0
 }
+public shinobu_weapons(id){
 
+	if(!client_hittable(id)||!sh_is_active()){
+		
+		return
+	}
+	if(gHasShinobu[id]&&(cs_get_user_team(id)!=CS_TEAM_CT)&&!user_has_weapon(id,CSW_USP)){
+
+		sh_give_weapon(id,CSW_USP,true)
+	}
+	
+
+}
+public shinobu_unweapons(id){
+	if(!client_hittable(id)||!sh_is_active()){
+		
+		return
+	}
+	if((cs_get_user_team(id)!=CS_TEAM_CT)&&user_has_weapon(id,CSW_USP)){
+
+		sh_drop_weapon(id,CSW_USP,true)
+	}
+}
 
 public shinobu_burst_damage_task_bootstrap(attacker,tg){
 	if(g_shinobu_tagged_player[attacker]==tg) return
@@ -258,7 +365,7 @@ public shinobu_kd()
 	
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
-	if(!shinobu_get_has_shinobu(id)) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return PLUGIN_HANDLED
 	
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
@@ -292,8 +399,10 @@ public shinobu_prethink(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(shinobu_get_has_shinobu(id)){
-				if((cs_get_user_weapon(id)==CSW_KNIFE)) {
+			if(sh_user_has_hero(id,shinobu_get_hero_id())){
+				static weapon;
+				weapon=cs_get_user_weapon(id)
+				if((weapon==CSW_KNIFE)||(weapon==CSW_USP)) {
 					set_pev(id, pev_flTimeStepSound, 999)
 					}
 				}
@@ -308,7 +417,7 @@ public death()
 	new killer= read_data(1)
 	
 	if(is_user_connected(killer)&&is_user_connected(id)){
-		if(shinobu_get_has_shinobu(killer)){
+		if(sh_user_has_hero(killer,shinobu_get_hero_id())){
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
@@ -320,7 +429,7 @@ public death()
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}
 		}
-		if(shinobu_get_has_shinobu(id)){
+		if(sh_user_has_hero(id,shinobu_get_hero_id())){
 			
 			g_shinobu_tagged_player[id]=0
 			remove_task(id+SHINOBU_POISON_KICK_DELAYED_TASKID)
@@ -343,4 +452,33 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	}
 	
 	return DMG_FWD_PASS
+}
+
+
+public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
+{
+	if ( !sh_is_active()) return FMRES_IGNORED
+	
+	if (!client_hittable(id))
+		return FMRES_IGNORED	
+	if(get_user_weapon(id) != CSW_USP)
+		return FMRES_IGNORED
+	if(!gHasShinobu[id]){
+
+		return FMRES_IGNORED
+	}
+	new button = get_uc(uc_handle, UC_Buttons);
+	if(button & IN_ATTACK)
+	{
+
+		new weapon_ent = get_pdata_cbase( id , m_pActiveItem ) 
+		new is_silenced=cs_get_weapon_silen(weapon_ent)
+		if(!is_silenced){
+			button &= ~IN_ATTACK;
+			set_uc(uc_handle, UC_Buttons, button);
+			return FMRES_SUPERCEDE
+		}
+		
+	}
+	return FMRES_IGNORED
 }

@@ -51,25 +51,13 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
-	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	HOOK_TASKID=allocate_typed_task_id(player_task)
-}
-
-public weaponChange(id)
-{
-	if ( !client_hittable(id)||!tranq_get_has_erica(id) ||!shModActive()) return PLUGIN_CONTINUE
-	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if ((wpnid == CSW_KNIFE)&&hook_get_hook_kills(id)) {
-	}
-	return PLUGIN_CONTINUE
-	
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( tranq_get_has_erica(id)&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,tranq_get_hero_id())&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	
 	erica_new_spawn_hooks(id)
@@ -87,7 +75,7 @@ public sh_client_spawn(id)
 
 erica_new_spawn_hooks(id){
 
-if ( tranq_get_has_erica(id)&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,tranq_get_hero_id())&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
 stop_dragging(id)
@@ -141,7 +129,7 @@ public hook_think(id)
 		return FMRES_IGNORED
 	
 	}
-	if (!tranq_get_has_erica(id)){
+	if (!sh_user_has_hero(id,tranq_get_hero_id())){
 	
 		remove_task(id+HOOK_TASKID)
 		return FMRES_IGNORED
@@ -228,7 +216,7 @@ public hook_think(id)
 public CmdStart1(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !tranq_get_has_erica(attacker)||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
 	
 	if (sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
 	
@@ -334,7 +322,7 @@ if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)) return 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(tranq_get_has_erica(attacker)&&!(cs_get_user_team(id)==att_team)){
+if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_team)){
 	
 	if(weapon==CSW_KNIFE){
 		new button = pev(attacker, pev_button);
@@ -437,7 +425,7 @@ public death()
 {	
 	new id = read_data(2)
 	
-	if(tranq_get_has_erica(id)){
+	if(sh_user_has_hero(id,tranq_get_hero_id())){
 				
 		stop_dragging(id);
 	

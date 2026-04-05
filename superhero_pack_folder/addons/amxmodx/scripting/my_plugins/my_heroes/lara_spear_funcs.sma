@@ -72,7 +72,7 @@ Float:get_charge_index_from_id(id){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,spear_get_has_lara(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,spear_get_hero_id()))) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -226,7 +226,7 @@ public Ham_Weapon_Stab(weapon_ent)
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
 
-	if ( (!spear_loaded[owner]||!spear_get_num_spears(owner))&&spear_get_has_lara(owner)) {
+	if ( (!spear_loaded[owner]||!spear_get_num_spears(owner))&&sh_user_has_hero(owner,spear_get_hero_id())) {
 		return HAM_SUPERCEDE
 	}
 
@@ -307,7 +307,7 @@ launch_spear(id)
 
 public lara_spear_decide_func(id){
 
-	if ( !is_user_alive(id)||!client_hittable(id,spear_get_has_lara(id))) return ;
+	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,spear_get_hero_id()))) return ;
 
 	new spear_mode:the_mode=spear_get_user_spear_mode(id);
 	switch(the_mode){
@@ -342,7 +342,7 @@ public lara_spear_decide_func(id){
 }
 public spear_reload(parm[])
 {
-	if(!is_user_alive(parm[0])||!spear_get_has_lara(parm[0])||!is_user_connected(parm[0])) return
+	if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],spear_get_hero_id())||!is_user_connected(parm[0])) return
 	spear_loaded[parm[0]] = true
 	new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
 	if((wid==CSW_KNIFE)&&spear_get_num_spears(parm[0])){
@@ -371,7 +371,7 @@ public vexd_pfntouch(pToucher, pTouched)
 			if(client_hittable(pTouched))
 			{
 				
-				if(spear_get_has_lara(pTouched)&&(pTouched==oid)&&spear_pickable[pToucher] && SPEAR_RETRIEVE){
+				if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&spear_pickable[pToucher] && SPEAR_RETRIEVE){
 				
 					spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 					sh_chat_message(oid,spear_get_hero_id(),"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))

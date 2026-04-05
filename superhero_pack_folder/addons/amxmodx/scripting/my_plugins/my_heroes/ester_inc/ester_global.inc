@@ -37,5 +37,5 @@ stock ester_death_sounds[ESTER_NUM_DEATH_SOUNDS][]={
 stock gLastWeapon[SH_MAXSLOTS+1]
 stock gLastClipCount[SH_MAXSLOTS+1]
 
-native ester_get_has_ester(id)
+
 native ester_get_hero_id()

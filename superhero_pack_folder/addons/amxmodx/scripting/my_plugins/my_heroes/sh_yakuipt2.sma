@@ -17,6 +17,7 @@
 new gHeroID
 new const gHeroName[] = "Yakui Mk2"
 
+new gHasYakui[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
 new mode_change_button_pressed[SH_MAXSLOTS+1]
@@ -56,7 +57,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,gatling_get_has_yakui(id))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
 	
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
@@ -120,8 +121,8 @@ public yakui_init()
 	
 	read_argv(2,temp,5)
 	new hasPowers = str_to_num(temp)
-	gatling_set_has_yakui(id,(hasPowers!=0))
-	if(gatling_get_has_yakui(id)){
+	gHasYakui[id]=(hasPowers!=0)
+	if(gHasYakui[id]){
 		init_yakui(id)
 		
 		yakui_tasks(id)
@@ -150,7 +151,7 @@ init_yakui(id){
 }
 reset_yakui(id){
 
-	if(!sh_is_active()||!gatling_get_has_yakui(id)) return;
+	if(!sh_is_active()||!gHasYakui[id]) return;
 	
 	
 	mode_change_button_pressed[id]=0
@@ -175,7 +176,7 @@ clear_yakui(id){
 }
 public yakui_weapons(id){
 
-if ( sh_is_active() && is_user_alive(id) && gatling_get_has_yakui(id) ) {
+if ( sh_is_active() && is_user_alive(id) && gHasYakui[id] ) {
 	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,false)
 	new weapon_id=find_ent_by_owner(-1,YAKUI_WEAPON_NAME,id);
 	if(is_valid_ent(weapon_id)){
@@ -192,7 +193,7 @@ public sh_client_spawn(id)
 	if(!is_user_alive(id)|| !sh_is_active()) return
 	
 	uneffect_user_handler(id)
-	if ( gatling_get_has_yakui(id)) {
+	if ( gHasYakui[id]) {
 		
 		yakui_tasks(id)
 		reset_yakui(id)
@@ -215,7 +216,7 @@ public yakui_tasks(id)
 public yakui_morph(id)
 {
 	id-=YAKUI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gatling_get_has_yakui(id)) return
+	if ( gmorphed[id] || !is_user_alive(id)||!gHasYakui[id]) return
 	
 	
 	cs_set_user_model(id, "yakui")
@@ -256,7 +257,7 @@ public yakui_glow(id)
 		return
 	}
 	
-	if ( gatling_get_has_yakui(id) && is_user_alive(id)) {
+	if ( gHasYakui[id] && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -268,7 +269,7 @@ public yakui_glow(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !gatling_get_has_yakui(id) ) return
+	if ( !is_user_alive(id) || !gHasYakui[id] ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == YAKUI_WEAPON_CLASSID) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
@@ -279,7 +280,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gatling_get_has_yakui(id) || !shModActive()||!is_user_alive(id)||!is_user_connected(id) ) return
+	if ( !gHasYakui[id] || !shModActive()||!is_user_alive(id)||!is_user_connected(id) ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -309,7 +310,7 @@ public yakui_kd(){
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
-	if ( !is_user_alive(id)||!gatling_get_has_yakui(id)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
+	if ( !is_user_alive(id)||!gHasYakui[id]||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
 		return PLUGIN_HANDLED
 	}
 

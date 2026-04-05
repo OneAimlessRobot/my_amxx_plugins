@@ -20,11 +20,8 @@ native gatling_get_fx_num(id)
 native gatling_dec_num_pills(id)
 native gatling_dec_num_rockets(id)
 
-native gatling_set_has_yakui(id,value_to_set)
-native gatling_get_has_yakui(id)
-
-native gatling_set_hero_id(id)
 native gatling_get_hero_id()
+native gatling_set_hero_id(id)
 
 
 native sh_get_pill_color(fx_num,attacker,color[3])

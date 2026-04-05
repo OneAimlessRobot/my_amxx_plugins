@@ -37,7 +37,7 @@ public plugin_init()
 	register_cvar("sapper_mine_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
-	sapper_set_hero_id(gHeroID)
+
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("sapper_init", "sapper_init")
@@ -58,24 +58,11 @@ register_native("sapper_get_num_mines","_sapper_get_num_mines",0)
 register_native("sapper_dec_num_mines","_sapper_dec_num_mines",0)
 
 
-
-register_native("sapper_set_has_sapper","_sapper_set_has_sapper",0)
-register_native("sapper_get_has_sapper","_sapper_get_has_sapper",0)
 register_native("sapper_get_disarmable","_sapper_get_disarmable",0)
 
-register_native("sapper_set_hero_id","_sapper_set_hero_id",0)
 register_native("sapper_get_hero_id","_sapper_get_hero_id",0)
 	
 
-}
-public _sapper_set_has_sapper(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasSapper[id]=value_to_set;
-}
-public _sapper_get_has_sapper(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasSapper[id]
 }
 public _sapper_get_disarmable(iPlugin,iParams){
 	
@@ -84,9 +71,6 @@ public _sapper_get_disarmable(iPlugin,iParams){
 
 public _sapper_get_hero_id(iPlugin,iParams){
 	return gHeroID
-}
-public _sapper_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
 }
 
 public _sapper_set_num_mines(iPlugin,iParams){
@@ -278,7 +262,7 @@ public sapper_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!sapper_get_has_sapper(id)) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,sapper_get_hero_id())) {
 		return PLUGIN_HANDLED
 	}
 
@@ -322,7 +306,7 @@ public sapper_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!sapper_get_has_sapper(id)||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,sapper_get_hero_id())||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(mine_get_mine_disarming(id)&&mine_get_mine_charging(id)){

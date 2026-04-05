@@ -106,7 +106,7 @@ public CmdStart(id, uc_handle)
 			
 		return FMRES_IGNORED
 	}
-	if(!yandere_get_has_yandere(id)){
+	if(!sh_user_has_hero(id,yandere_get_hero_id())){
 			
 		return FMRES_IGNORED
 	}
@@ -145,7 +145,7 @@ launch_scan(id){
 
 
 	
-	if(!client_hittable(id)||!yandere_get_has_yandere(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
 	
 		return 
 	
@@ -186,12 +186,5 @@ public scan_reload(id)
 {
 id-=RADIO_RELOAD_TASKID
 scan_loaded[id] = true
-}
-
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	
-	
 }
 //---------------------------------------------------------------------------------------------- 

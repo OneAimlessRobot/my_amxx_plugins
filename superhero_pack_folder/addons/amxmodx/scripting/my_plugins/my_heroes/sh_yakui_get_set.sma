@@ -11,7 +11,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHasYakui[SH_MAXSLOTS+1]
 new gNumPills[SH_MAXSLOTS+1]
 new gNumRockets[SH_MAXSLOTS+1]
 new gCurrFX[SH_MAXSLOTS+1]
@@ -42,13 +41,8 @@ public plugin_natives(){
 	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
 	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
 	
-	
-	register_native("gatling_set_hero_id","_gatling_set_hero_id",0);
 	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
-	
-	register_native("gatling_set_has_yakui","_gatling_set_has_yakui",0);
-	register_native("gatling_get_has_yakui","_gatling_get_has_yakui",0);
-	
+	register_native("gatling_set_hero_id","_gatling_set_hero_id",0);
 	
 	register_native( "uneffect_user_handler","_uneffect_user_handler",0)
 	register_native( "make_effect","_make_effect",0)
@@ -90,23 +84,6 @@ public _uneffect_user_handler(iPlugin,iParams){
 		sh_uneffect_user(user,gatling_get_fx_num(user))
 		gCurrFX[user]=0;
 	}
-}
-public _gatling_set_has_yakui(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	if(!is_user_connected(id)){
-		
-		return
-	}
-	gHasYakui[id]=value_to_set;
-}
-public _gatling_get_has_yakui(iPlugin,iParams){
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return 0
-	}
-	return gHasYakui[id]
 }
 
 public _gatling_get_hero_id(iPlugin,iParams){

@@ -27,11 +27,6 @@ native teliko_get_num_chaffs(id)
 native teliko_dec_num_chaffs(id)
 
 
-
-native teliko_set_has_teliko(id,value_to_set)
-native teliko_get_has_teliko(id)
-
-native teliko_set_hero_id(id)
 native teliko_get_hero_id()
 
 

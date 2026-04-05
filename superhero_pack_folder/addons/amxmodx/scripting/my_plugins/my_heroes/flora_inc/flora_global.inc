@@ -7,10 +7,9 @@
 #define FLORA_MORPH_TASKID 9762237
 #define FLORA_UNGLOW_TASKID 5612718
 #define FLORA_PLAYER_MODEL "models/player/flora/flora.mdl"
-#define STATUS_UPDATE_PERIOD 0.8
-#define STATUS_UPDATE_TASKID 81271237
 
-native flora_get_has_flora(id)
+
+
 native flora_get_hero_id()
 native flora_get_user_num_fields(id)
 native flora_set_user_num_fields(id,value)

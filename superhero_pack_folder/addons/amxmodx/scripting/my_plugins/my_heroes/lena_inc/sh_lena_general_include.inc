@@ -16,9 +16,6 @@ stock const lena_poems[LENA_NUM_POEMS][]={
 };
 
 
-native lena_get_has_lena(id)
-
-
 stock send_poem_function( target, poem[]){
 	
 	new poem_len=strlen(poem)

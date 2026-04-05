@@ -67,7 +67,6 @@ public plugin_init()
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level" )
-	teliko_set_hero_id(gHeroID)
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	
@@ -89,31 +88,12 @@ public plugin_natives(){
 	register_native("teliko_get_num_chaffs","_teliko_get_num_chaffs",0);
 	register_native("teliko_set_num_chaffs","_teliko_set_num_chaffs",0);
 	
-	
-	
-	register_native("teliko_set_hero_id","_teliko_set_hero_id",0);
 	register_native("teliko_get_hero_id","_teliko_get_hero_id",0);
 	
-	register_native("teliko_get_has_teliko","_teliko_get_has_teliko",0);
-	register_native("teliko_set_has_teliko","_teliko_set_has_teliko",0);
-	
 
 }
-public _teliko_set_has_teliko(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasTeliko[id]=value_to_set;
-}
-public _teliko_get_has_teliko(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasTeliko[id]
-}
-
 public _teliko_get_hero_id(iPlugin,iParams){
 	return gHeroID
-}
-public _teliko_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
 }
 
 public _teliko_set_num_chaffs(iPlugin,iParams){

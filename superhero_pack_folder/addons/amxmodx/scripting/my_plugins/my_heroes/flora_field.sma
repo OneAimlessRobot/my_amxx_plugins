@@ -8,6 +8,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero flora field funcs"
@@ -19,9 +20,11 @@
 stock const  FLORA_HEAL_GLOWING_ON=0
 stock Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
 stock g_flora_field_loaded[SH_MAXSLOTS+1];
+stock g_prev_flora_button[SH_MAXSLOTS+1];
+stock g_curr_flora_button[SH_MAXSLOTS+1];
+stock g_prev_flora_cloaked[SH_MAXSLOTS+1];
+stock g_curr_flora_cloaked[SH_MAXSLOTS+1];
 stock g_flora_num_of_active_fields[SH_MAXSLOTS+1]
-stock Float:g_field_teleport_time[SH_MAXSLOTS+1]
-stock g_flora_user_is_cloaked[SH_MAXSLOTS+1]
 stock g_flora_prev_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_charging[SH_MAXSLOTS+1]
@@ -54,8 +57,7 @@ stock flora_field_max_active_ammount
 stock FLORA_COOLDOWN_TASKID,
 		FLORA_LOAD_TASKID,
 		FLORA_CHARGE_TASKID,
-		FLORA_DEPLOY_TASKID,
-		FLORA_CHECKS_TASKID
+		FLORA_DEPLOY_TASKID
 
 
 
@@ -88,13 +90,11 @@ public plugin_init()
 	
 	
 	arrayset(g_flora_field_cooldown,0.0,SH_MAXSLOTS+1)
-	arrayset(g_flora_user_is_cloaked,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_prev_inside,-1,SH_MAXSLOTS+1)
 	arrayset(g_flora_curr_inside,-1,SH_MAXSLOTS+1)
 	arrayset(g_flora_sheltered_value,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_dmg_color,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_curr_charging,-1,SH_MAXSLOTS+1)
-	arrayset(g_field_teleport_time,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flora_num_of_active_fields,0,SH_MAXSLOTS+1)
 	arrayset(g_flora_field_loaded,1,SH_MAXSLOTS+1)
 
@@ -102,9 +102,9 @@ public plugin_init()
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
 	FLORA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	FLORA_DEPLOY_TASKID=allocate_typed_task_id(player_task)
-	FLORA_CHECKS_TASKID=allocate_typed_task_id(player_task)
 
 	register_forward(FM_Think, "field_think")
+	register_forward(FM_CmdStart, "field_checks")
 	init_hud_syncs()
 
 }
@@ -128,24 +128,12 @@ public plugin_natives(){
 	
 	
 	register_native("flora_get_user_is_cloaked","_flora_get_user_is_cloaked",0)
-	register_native("flora_get_user_is_crouched","_flora_get_user_is_crouched",0)
-	register_native("flora_get_user_is_airborne","_flora_get_user_is_airborne",0)
 	register_native("flora_get_curr_inside","_flora_get_curr_inside",0)
 	register_native("flora_get_prev_inside","_flora_get_prev_inside",0)
-	register_native("start_flora_checks","_start_flora_checks",0)
 	
 
 	
 
-}
-public _start_flora_checks(iPlugin,iParams){
-	new id=get_param(1)
-	
-	if(client_hittable(id)){
-		if(flora_get_has_flora(id)){
-			set_task(FLORA_THINK_PERIOD,"flora_checks",id+FLORA_CHECKS_TASKID,"",0,"b")
-		}
-	}
 }
 public _flora_get_user_num_active_fields(iPlugin,iParams){
 	new id=get_param(1)
@@ -240,21 +228,7 @@ public Float:_field_get_user_field_cooldown(iPlugin,iParams){
 public _flora_get_user_is_cloaked(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_flora_user_is_cloaked[id]
-
-
-}
-public _flora_get_user_is_crouched(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return (entity_get_int( id, EV_INT_flags ) & FL_DUCKING )
-
-
-}
-public _flora_get_user_is_airborne(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return !(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )
+	return g_curr_flora_cloaked[id]
 
 
 }
@@ -300,7 +274,7 @@ Float:get_player_alpha(id){
 	new Float:alphaMult=1.0;
 	new player_lvl,hero_lvl,lvl_diff;
 	if(client_hittable(id)){
-		if(flora_get_has_flora(id)){
+		if(sh_user_has_hero(id,flora_get_hero_id())){
 			player_lvl=sh_get_user_lvl(id)
 			hero_lvl=flora_get_hero_lvl()
 			lvl_diff=player_lvl-hero_lvl
@@ -319,13 +293,12 @@ public _reset_flora_user(iPlugin,iParams){
 	uncharge_user(id)
 	g_flora_field_loaded[id]=1;
 	g_flora_field_cooldown[id]=0.0;
-	g_field_teleport_time[id]=0.0
 	g_flora_num_of_active_fields[id]=0
-	g_flora_user_is_cloaked[id]=0
+	g_prev_flora_cloaked[id]=0
+	g_curr_flora_cloaked[id]=0
 	g_flora_curr_charging[id]=-1
 	g_flora_curr_inside[id]=-1
 	g_flora_prev_inside[id]=-1
-	remove_task(id+FLORA_CHECKS_TASKID)
 	
 	
 }
@@ -341,11 +314,11 @@ destroy_field(field_id,make_sound=0,planting=0){
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(is_user_connected(owner)){
-			if(flora_get_has_flora(owner)){
+			if(sh_user_has_hero(owner,flora_get_hero_id())){
 				if(!planting){
 					flora_dec_user_num_active_fields(owner,1)
 				}
-				g_flora_user_is_cloaked[owner]=0;
+				g_curr_flora_cloaked[owner]=0;
 				apply_cloak(owner)
 				if(field_id==g_flora_curr_inside[owner]){
 			
@@ -364,7 +337,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 }
 find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	
-	if ( !client_hittable(player_id)||!flora_get_has_flora(player_id) ){
+	if ( !client_hittable(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
 		
 	
 			return -1
@@ -406,28 +379,31 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	return best_id
 	
 }
-public flora_checks(id){
+public field_checks(id, uc_handle){
+
+
+	if(!client_hittable(id)) return FMRES_IGNORED
+
+	if(!sh_user_has_hero(id,flora_get_hero_id())) return FMRES_IGNORED
 	
-	id-=FLORA_CHECKS_TASKID
-	if(!client_hittable(id)){
+
+	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	g_prev_flora_button[id]=g_curr_flora_button[id]
+	g_prev_flora_cloaked[id]=g_curr_flora_cloaked[id]
+	new button = get_uc(uc_handle, UC_Buttons);
+	g_curr_flora_button[id]=button
+
+	if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )||!(button & IN_DUCK )){
 		
-		remove_task(id+FLORA_CHECKS_TASKID)
-		return
-		
+		g_curr_flora_cloaked[id]=0
+		apply_cloak(id)
+		return FMRES_IGNORED
+	
 	}
-	if(!flora_get_has_flora(id)){
-		
-		remove_task(id+FLORA_CHECKS_TASKID)
-		return
-		
-	}
+
 	if(!g_flora_field_loaded[id]){
 		
-		g_flora_curr_dmg_mult[id]=0.0
-		g_field_teleport_time[id]=0.0
-		g_flora_prev_inside[id]=g_flora_curr_inside[id]
-		g_flora_curr_inside[id]=-1
-		return
+		return FMRES_IGNORED
 		
 	}
 	g_flora_prev_sheltered_value[id]=g_flora_sheltered_value[id]
@@ -435,66 +411,43 @@ public flora_checks(id){
 	g_flora_sheltered_value[id]=flora_sheltered_value;
 	
 	if(g_flora_curr_inside[id]!=field_id){
+		g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>flora_sheltered_values:0?1.0:0.0))
+						*floatpower(flora_field_heal_mult,float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
+
 		g_flora_prev_inside[id]=g_flora_curr_inside[id]
-		g_flora_curr_inside[id]=field_id
+		g_flora_curr_inside[id]=g_flora_sheltered_value[id]<=OUTSIDE?-1:field_id
 	}
-	new crouched=flora_get_user_is_crouched(id)
-	if(g_flora_sheltered_value[id]&&crouched){
+	if(g_flora_sheltered_value[id]>flora_sheltered_values:0){
 		g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
 		switch(g_flora_sheltered_value[id]){
 			case OUTSIDE:
 			{
-				g_flora_curr_dmg_mult[id]=1.0
-				g_field_teleport_time[id]=0.0
-				g_flora_prev_inside[id]=g_flora_curr_inside[id]
-				g_flora_curr_inside[id]=-1
-				if(g_flora_user_is_cloaked[id]){
-					g_flora_user_is_cloaked[id]=0
-					if(!g_flora_sheltered_value[id]){
-						sh_chat_message(id,flora_get_hero_id(),FLORA_UNCLOAKED_OUT_OF_RANGE_MSG)
-					}
+				if(g_prev_flora_cloaked[id]){
+					g_curr_flora_cloaked[id]=0
 				}
 				apply_cloak(id)
-				return
-			}
-			case SHELTERED:
-			{
-				g_flora_curr_dmg_mult[id]=flora_field_heal_mult
-				g_field_teleport_time[id]=0.0
+				return FMRES_IGNORED
 			}
 			case DUNGEON_DWELLER:
 			{
-				g_flora_curr_dmg_mult[id]=flora_field_heal_mult*flora_core_heal_mult
-				apply_teleport(id,field_id)
+				
+				if(!(g_prev_flora_button[id] & IN_DUCK)){
+					
+					apply_teleport(id,field_id)
+				}
+			
 			}
 		}
-		if(!g_flora_user_is_cloaked[id]){
-			g_flora_user_is_cloaked[id]=1
-			sh_chat_message(id,flora_get_hero_id(),FLORA_CLOAKED_MSG)
+		if(!g_prev_flora_cloaked[id]){
+			g_curr_flora_cloaked[id]=1
 			apply_cloak(id)
 		}
 	}
-	else{
-		
-		g_flora_curr_dmg_mult[id]=0.0
-		g_field_teleport_time[id]=0.0
-		g_flora_prev_inside[id]=g_flora_curr_inside[id]
-		g_flora_curr_inside[id]=-1
-		if(g_flora_user_is_cloaked[id]){
-			g_flora_user_is_cloaked[id]=0
-			if(!g_flora_sheltered_value[id]){
-				sh_chat_message(id,flora_get_hero_id(),FLORA_UNCLOAKED_AIRBORNE_MSG)
-			}
-			if(!crouched){
-				sh_chat_message(id,flora_get_hero_id(),FLORA_UNCLOAKED_UNDUCKED_MSG)
-			}
-			apply_cloak(id)
-		}
-	}
+	return FMRES_IGNORED
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
-	if ( !client_hittable(player_id)||!flora_get_has_flora(player_id) ){
+	if ( !client_hittable(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
 		
 	
 			field_id=-1
@@ -510,8 +463,7 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	new Float:pos[3],Float:field_pos[3]
 	pev(player_id, pev_origin, pos)
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME,player_id)
-	new is_crouched=flora_get_user_is_crouched(player_id)
-	while(grenada&&is_crouched) {
+	while(grenada) {
 			pev(grenada,pev_origin,field_pos)
 			new Float:distance=VecDist(pos,field_pos)
 			if(distance<field_radius){
@@ -550,7 +502,7 @@ public _form_field(iPlugin,iParams)
 	
 	if(!client_hittable(id)) return
 
-	if(!flora_get_has_flora(id)) return
+	if(!sh_user_has_hero(id,flora_get_hero_id())) return
 	
 	if(!flora_get_user_num_fields(id)){
 		
@@ -663,7 +615,7 @@ public apply_teleport(id,field_inside) {
 		return
 	
 	}
-	if(!client_hittable(id)||!flora_get_has_flora(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id())){
 		
 		return
 
@@ -671,48 +623,46 @@ public apply_teleport(id,field_inside) {
 	new Float: fOrigin[ 3 ],Float:other_field_origin[3]
 	entity_get_vector( id, EV_VEC_origin, fOrigin );
 	
-	
-	g_field_teleport_time[id]= g_field_teleport_time[id]+FLORA_THINK_PERIOD
-	client_print(id,print_center,"[SH] flora: Teleporting time: %0.2f",g_field_teleport_time[id])
-	
-	if(g_field_teleport_time[id]>=flora_teleport_crouch_time){
-		if(flora_get_user_num_active_fields(id)>1){
-			new field_id=find_next_nearest_flora_field(id,field_inside,999999.0)
-			if(is_valid_ent(field_id)){
-				entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
-				entity_set_vector( id, EV_VEC_origin, other_field_origin );
-				emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				sh_chat_message(id,flora_get_hero_id(),"You just got teleported to the next nearest field! (hopefully)")
-			}
-			else{
-				sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (too far)")
-				
-				
-			}
+
+	if(flora_get_user_num_active_fields(id)>1){
+		new field_id=find_next_nearest_flora_field(id,field_inside,999999.0)
+		if(is_valid_ent(field_id)){
+			entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
+			entity_set_vector( id, EV_VEC_origin, other_field_origin );
+			emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 		else{
+			sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (too far)")
 			
-			sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (no other fields)")
-				
-				
+			
 		}
-		g_field_teleport_time[id]=0.0
+	}
+	else{
+		
+		sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (no other fields)")
+			
+			
 	}
 	return
 }
 
 apply_cloak(id){
 	
-	if(!client_hittable(id)||!flora_get_has_flora(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id())){
 		
-		g_flora_user_is_cloaked[id]=0
+		g_curr_flora_cloaked[id]=0
+		g_prev_flora_cloaked[id]=0
 		return 
 
+	}
+	if(!(g_curr_flora_cloaked[id]-g_prev_flora_cloaked[id])){
+
+		return
 	}
 
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
-	if(g_flora_user_is_cloaked[id]){
+	if(g_curr_flora_cloaked[id]){
 		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransAlpha);
 	}
 	else{
@@ -834,7 +784,7 @@ public charge_task(parm[],id){
 	new field_id=parm[1]
 	
 	
-	if(!client_hittable(owner)||!flora_get_has_flora(owner)){
+	if(!client_hittable(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
 		return
 	}
 	

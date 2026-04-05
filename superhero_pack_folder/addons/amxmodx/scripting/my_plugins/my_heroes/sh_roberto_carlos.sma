@@ -125,20 +125,7 @@ public plugin_natives(){
 	register_native("roberto_set_hero_id","_roberto_set_hero_id",0);
 	register_native("roberto_get_hero_id","_roberto_get_hero_id",0);
 	
-	register_native("roberto_get_has_roberto","_roberto_get_has_roberto",0);
-	register_native("roberto_set_has_roberto","_roberto_set_has_roberto",0);
 	
-	
-}
-
-public _roberto_set_has_roberto(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasRoberto[id]=value_to_set;
-}
-public _roberto_get_has_roberto(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasRoberto[id]
 }
 
 public _roberto_get_hero_id(iPlugin,iParams){

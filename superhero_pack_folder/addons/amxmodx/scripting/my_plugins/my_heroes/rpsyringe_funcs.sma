@@ -118,7 +118,7 @@ public bool:client_isnt_hitter(id){
 		
 		return true
 	}
-	if(!gatling_get_has_yakui(id)){
+	if(!sh_user_has_hero(id,gatling_get_hero_id())){
 		
 		
 		return true;

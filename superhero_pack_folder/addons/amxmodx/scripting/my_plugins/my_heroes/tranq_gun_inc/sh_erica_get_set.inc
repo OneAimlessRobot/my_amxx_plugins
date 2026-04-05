@@ -18,10 +18,6 @@ native tranq_dec_num_darts(id)
 
 native bool:tranq_get_is_max_points(id)
 
-native tranq_set_has_erica(id,value_to_set)
-native tranq_get_has_erica(id)
-
-native tranq_set_hero_id(id)
 native tranq_get_hero_id()
 
 

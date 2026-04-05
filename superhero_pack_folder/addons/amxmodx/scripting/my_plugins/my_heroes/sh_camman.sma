@@ -29,7 +29,6 @@ public plugin_init()
 	register_cvar("camman_camera_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Camman", "Plant cameras on walls", true, "camman_level" )
-	camman_set_hero_id(gHeroID)
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("camman_init", "camman_init")
@@ -46,34 +45,18 @@ public plugin_natives(){
 	register_native("camman_set_has_camera","_camman_set_has_camera",0)
 	register_native("camman_get_has_camera","_camman_get_has_camera",0)
 	
-	register_native("camman_set_has_camman","_camman_set_has_camman",0)
-	register_native("camman_get_has_camman","_camman_get_has_camman",0)
 	register_native("camman_get_disarmable","_camman_get_disarmable",0)
 	
-	register_native("camman_set_hero_id","_camman_set_hero_id",0)
 	register_native("camman_get_hero_id","_camman_get_hero_id",0)
 	
 	
-}
-public _camman_set_has_camman(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gHasCamman[id]=value_to_set;
-}
-public _camman_get_has_camman(iPlugin,iParams){
-	new id= get_param(1)
-	return gHasCamman[id]
 }
 public _camman_get_disarmable(iPlugin,iParams){
 	
 	return disarmable
 }
-
 public _camman_get_hero_id(iPlugin,iParams){
 	return gHeroID
-}
-public _camman_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
 }
 
 public _camman_set_has_camera(iPlugin,iParams){
@@ -159,7 +142,7 @@ public camman_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!camman_get_has_camman(id)) {
+	if ( !is_user_alive(id) ||!gHasCamman[id]) {
 		return PLUGIN_HANDLED
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -224,7 +207,7 @@ public camman_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!camman_get_has_camman(id)||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
+	if ( !is_user_alive(id) ||!gHasCamman[id]||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(camera_get_camera_disarming(id)&&camera_get_camera_charging(id)){

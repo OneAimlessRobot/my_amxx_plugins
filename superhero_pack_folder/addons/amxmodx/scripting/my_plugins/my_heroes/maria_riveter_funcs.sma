@@ -5,7 +5,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
-#include "maria_riveter_inc/maria_general_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -42,7 +41,7 @@ public plugin_init(){
 	RegisterHam(Ham_Item_PostFrame, MARIA_WEAPON, "fw_Item_PostFrame",_,true)	
 	
 	
-	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaRiveter",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
 	console_print(0,"Ham error value: %d^n",IsHamValid(Ham_TakeDamage))
 	
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
@@ -104,7 +103,7 @@ public plugin_natives(){
 }
 public bool:client_isnt_hitter(id){
 	
-	return !client_hittable(id,maria_get_has_maria(id))
+	return !client_hittable(id,sh_user_has_hero(id,maria_get_hero_id()))
 	
 }
 public CmdStart(id, uc_handle)
@@ -134,13 +133,13 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public Ham_TraceAttackLenaRiveter(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
+public Ham_TraceAttackMariaRiveter(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
 {
 	
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !maria_get_has_maria(idattacker)){
+	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,maria_get_hero_id())){
 		return HAM_IGNORED
 	}
 		
@@ -277,7 +276,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, MARIA_PROJECTILE_SHOOT_PERIOD)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, MARIA_PROJECTILE_SHOOT_PERIOD)
 
-	emit_sound(pPlayer, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, 1.0, 0.0, 0, PITCH_NORM)
 
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
 	set_entvar(pPlayer, var_weaponanim,  random_num(anim_shoot1,anim_shoot2))

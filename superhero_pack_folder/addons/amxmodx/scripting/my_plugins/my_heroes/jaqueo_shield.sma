@@ -69,7 +69,7 @@ public fwPlayerPreThink(id)
 }
 public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!jaqueo_get_has_jaqueo(this)) return HAM_IGNORED
+	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,jaqueo_get_hero_id())) return HAM_IGNORED
 	
 	if(!g_jaqueo_shield_deployed[this]) return HAM_IGNORED
 
@@ -107,7 +107,7 @@ public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id
 	
 		return FMRES_IGNORED
 	}
-	if(!jaqueo_get_has_jaqueo(id)){
+	if(!sh_user_has_hero(id,jaqueo_get_hero_id())){
 	
 		return FMRES_IGNORED
 	}
@@ -369,7 +369,7 @@ public _shield_charge_user(iPlugin, iParams){
 
 	if(!client_hittable(id)) return
 
-	if(!jaqueo_get_has_jaqueo(id)) return
+	if(!sh_user_has_hero(id,jaqueo_get_hero_id())) return
 
 	if(!g_jaqueo_shield_loaded[id]){
 		

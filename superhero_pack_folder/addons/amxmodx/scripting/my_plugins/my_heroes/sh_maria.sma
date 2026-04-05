@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
-#include "maria_riveter_inc/maria_general_inc.inc"
+#include "shinobu_knife/shinobu_general.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -87,22 +87,11 @@ public plugin_natives(){
 	register_native("maria_riveter_get_num_rivets","_maria_riveter_get_num_rivets",0);
 	register_native("maria_riveter_set_num_rivets","_maria_riveter_set_num_rivets",0);
 	
-	register_native("maria_get_has_maria","_maria_get_has_maria",0);
 	
 	register_native("maria_get_hero_id","_maria_get_hero_id",0);
 	
 
 	
-
-}
-
-public _maria_get_has_maria(iPlugin,iParams){
-	new id=get_param(1)
-	if(id<0||id>=sizeof(gHasMaria)){
-		sh_chat_message(0,maria_get_hero_id(),"The id: %d^n",id)
-		return 0;
-	}
-	return gHasMaria[id]
 
 }
 
@@ -195,7 +184,7 @@ public maria_init()
 //----------------------------------------------------------------------------------------------
 maria_weapons(id)
 {
-	if ( sh_is_active() && maria_get_has_maria(id)&&client_hittable(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,maria_get_hero_id())&&client_hittable(id) ) {
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=find_ent_by_owner(-1,MARIA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
@@ -217,7 +206,7 @@ public client_connect(id)
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && maria_get_has_maria(id) )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,maria_get_hero_id()))
 	{
 		gNumRivets[id]=maria_max_rivets
 		gHealthDrainValve[id]=false
@@ -262,7 +251,9 @@ bool:heal_teamate(id,i){
 	}
 	new Float:values[2]
 	calculate_healing(id,values)
-	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,_,INVIS,1,heal_period*2,_,1,0)
+
+	new the_max_health_to_cap=sh_user_has_hero(i,shinobu_get_hero_id())?floatround(shinobu_get_max_hp()):0
+	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,the_max_health_to_cap,INVIS,1,heal_period*2,_,1,0)
 	if(result){
 		sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
 		heal_stream(id,i,_,190)

@@ -128,7 +128,7 @@ public _plant_mine(iPlugins,iParams)
 	new id= get_param(1)
 	
 	if ( !client_hittable(id)) return
-	if(!sapper_get_has_sapper(id))  return
+	if(!sh_user_has_hero(id,sapper_get_hero_id()))  return
 
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
@@ -205,7 +205,7 @@ public blow_mine_up(ent, id)
 			return;
 		}
 		new attacker = entity_get_edict(ent, EV_ENT_owner);
-		if(!client_hittable(attacker,sapper_get_has_sapper(attacker))){
+		if(!client_hittable(attacker,sh_user_has_hero(attacker,sapper_get_hero_id()))){
 		
 			return
 		}

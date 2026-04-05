@@ -14,13 +14,7 @@ native sapper_get_num_mines(id)
 native sapper_dec_num_mines(id)
 
 
-
-native sapper_set_has_sapper(id,value_to_set)
-native sapper_get_has_sapper(id)
-
 native sapper_get_disarmable()
-
-native sapper_set_hero_id(id)
 native sapper_get_hero_id()
 
 

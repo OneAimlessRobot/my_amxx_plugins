@@ -144,7 +144,7 @@ public plugin_end(){
 }
 public graciete_cooldown_loop(id){
 	id-=GRACIETE_COOLDOWN_TASKID;
-	if(!client_hittable(id,graciete_get_has_graciete(id))){
+	if(!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))){
 		return PLUGIN_HANDLED
 		
 	}
@@ -157,7 +157,7 @@ public graciete_cooldown_loop(id){
 	
 }
 charge_user(id){
-	if(!client_hittable(id,graciete_get_has_graciete(id))) return 0
+	if(!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) return 0
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 	
@@ -219,7 +219,7 @@ uncharge_user(id){
 }
 public client_PostThink(id) {
 	
-	if( !client_hittable(id,graciete_get_has_graciete(id))) { 
+	if( !client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) { 
 		return
 	}
 	if(g_graciete_leaped[id]){
@@ -240,7 +240,7 @@ public client_PostThink(id) {
 }
 public CmdStart(id, uc_handle)
 {
-	if (!client_hittable(id,graciete_get_has_graciete(id))||!hasRoundStarted()){
+	if (!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))||!hasRoundStarted()){
 			return FMRES_IGNORED;
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -306,7 +306,7 @@ public rockettrail(id)
 public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
 	if(!client_hittable(id)) return
-	if(!graciete_get_has_graciete(id)) return
+	if(!sh_user_has_hero(id,graciete_get_hero_id())) return
 	
 	
 	new Float:vOrigin[3]
@@ -371,7 +371,7 @@ public JetpackJump( id,intensity){
 public death()
 {
 	new id = read_data(2)
-	if(!is_user_connected(id)||!sh_is_active()||!graciete_get_has_graciete(id)) return
+	if(!is_user_connected(id)||!sh_is_active()||!sh_user_has_hero(id,graciete_get_hero_id())) return
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	
 }

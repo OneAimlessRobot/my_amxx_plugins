@@ -217,7 +217,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
 
-	if ( spores_has_ksun(id)) {
+	if(sh_user_has_hero(id,spores_ksun_hero_id())){
 		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
 			
 			
@@ -234,7 +234,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 }
 public _spawn_scanner(iPlugins,iParams){
 	new id= get_param(1)
-	if(!spores_has_ksun(id)||!client_hittable(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}
@@ -330,7 +330,7 @@ public scanner_think(scanner){
 	if ( !equal(classname, SCANNER_CLASSNAME) ) return FMRES_IGNORED
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if ( !client_hittable(id) ||!spores_has_ksun(id)) return FMRES_IGNORED
+	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return FMRES_IGNORED
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
@@ -394,7 +394,7 @@ public scanner_think(scanner){
 
 show_targets(id){
 
-	if(!client_hittable(id)||!spores_has_ksun(id)){
+	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}

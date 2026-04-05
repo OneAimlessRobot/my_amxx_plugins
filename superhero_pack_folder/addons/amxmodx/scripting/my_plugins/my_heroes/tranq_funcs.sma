@@ -98,7 +98,7 @@ public plugin_natives(){
 public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
-	if(!tranq_get_has_erica(id)){
+	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
 		
 		return FMRES_IGNORED
 	}
@@ -128,7 +128,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(Attacker) != CSW_ELITE || !tranq_get_has_erica(Attacker)){
+	if(get_user_weapon(Attacker) != CSW_ELITE || !sh_user_has_hero(Attacker,tranq_get_hero_id()) ){
 		return HAM_IGNORED
 	}
 	
@@ -151,7 +151,7 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED;
 	}
-	if(!tranq_get_has_erica(id)){
+	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
 		
 		return HAM_IGNORED
 	}
@@ -189,7 +189,7 @@ public fw_WeaponReloadPre(entity)
 		
 		return HAM_IGNORED
 	}
-	if(!tranq_get_has_erica(pPlayer)){
+	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id()) ){
 		
 		return HAM_IGNORED
 	}
@@ -217,7 +217,7 @@ public fw_Weapon_Reload_Post(ent)
 		
 		return HAM_IGNORED
 	}
-	if(!tranq_get_has_erica(id)){
+	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
 		
 		return HAM_IGNORED
 	}
@@ -239,7 +239,7 @@ public fw_ItemDeployPre(entity)
 	}
 	pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!tranq_get_has_erica(pPlayer)){
+	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id()) ){
 		
 		return HAM_IGNORED
 	}
@@ -259,20 +259,31 @@ public fw_WeaponPrimaryAttackPre(entity)
 	pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	if(!tranq_get_has_erica(pPlayer)){
+	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
 		
 		return HAM_IGNORED
 	}
-	
+	static iClip, iPlaybackEvent
+	iClip = get_member(entity, m_Weapon_iClip)
+	if(iClip)
+	{
+		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
+		
+	}
+	ExecuteHam(Ham_Weapon_PrimaryAttack, entity)
+	if(!iClip){
+		return HAM_SUPERCEDE
+	}
 	launch_dart(pPlayer)
 	dart_loaded[pPlayer]=false;
 	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
-	set_member(entity, m_Weapon_flNextPrimaryAttack, 99999.0)
+	set_member(entity, m_Weapon_flNextPrimaryAttack, DART_SHOOT_PERIOD)
 	
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
+	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	
-	return HAM_IGNORED
+	return HAM_SUPERCEDE
 }
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
@@ -285,7 +296,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(client_isnt_hitter(id)){
 		return;
 	}
-	if(!tranq_get_has_erica(id)){
+	if(!sh_user_has_hero(id,tranq_get_hero_id())){
 		
 		return
 	}
@@ -304,7 +315,7 @@ bool:client_isnt_hitter(pPlayer){
 		
 		return true
 	}
-	if(!tranq_get_has_erica(pPlayer)){
+	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
 		
 		
 		return true;
@@ -508,3 +519,4 @@ public plugin_precache()
 	
 	
 }
+public fm_PlaybackEventPre() return FMRES_SUPERCEDE

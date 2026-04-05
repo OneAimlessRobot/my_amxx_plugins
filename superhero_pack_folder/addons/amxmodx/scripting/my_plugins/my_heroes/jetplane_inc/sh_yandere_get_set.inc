@@ -18,7 +18,6 @@ stock const yandere_sentences[5][]={
 }
 
 native yandere_get_is_super(id)
-native yandere_get_has_yandere(id)
 native yandere_get_hero_id()
 native yandere_unmorph(id)
 native yandere_model(id)

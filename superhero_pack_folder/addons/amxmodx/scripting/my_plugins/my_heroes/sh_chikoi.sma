@@ -1,12 +1,8 @@
-
-
 #include "../my_include/superheromod.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "ksun_inc/ksun_global.inc"
-#include "chikoi_inc/sh_chikoi_funcs.inc"
 #include "../my_include/my_author_header.inc"
-#define CHIKOI_HITZONE_TASKID 19999
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
 
@@ -42,22 +38,16 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "chikoi_init")
 	register_event("DeathMsg","death","a")
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,CHIKOI_THE_MAID_PHYSICAL_PROPERTY,1)
-
+	RegisterHam(Ham_TakeDamage,"player","ham_Chikoi_fallDamage")
 	
 }
 
-public plugin_natives(){
-	
-	register_native("chikoi_has_chikoi","_chikoi_has_chikoi",0);
-}
-public _chikoi_has_chikoi(iPlugin,iParams){
+//----------------------------------------------------------------------------------------------
+public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
+{
+	if ( damagebits & DMG_FALL && gHasChikoi[this] ) return HAM_SUPERCEDE
 
-	new id=get_param(1)
-	if(!client_hittable(id)){
-
-		return 0
-	}
-	return gHasChikoi[id]
+	return HAM_IGNORED
 }
 public chikoi_init()
 {
@@ -130,14 +120,14 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		case HIT_HEAD:{
 
 			
-			if(!spores_has_ksun(id)){
+			if(!sh_user_has_hero(id,spores_ksun_hero_id())){
 				return HAM_SUPERCEDE
 			}
 		}
 		case HIT_CHEST:{
 
 			
-			if(!spores_has_ksun(id)){
+			if(!sh_user_has_hero(id,spores_ksun_hero_id())){
 				return HAM_SUPERCEDE
 			}
 		}

@@ -1,0 +1,98 @@
+L 04/05/2026 - 00:00:18: Start of error session.
+L 04/05/2026 - 00:00:18: Info (map "de_aztec") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:00:18: Function "_camman_get_hero_id" was not found
+L 04/05/2026 - 00:00:18: [AMXX] Run time error 19 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:00:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:00:18: [AMXX] Run time error -1 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:20:39: Start of error session.
+L 04/05/2026 - 00:20:39: Info (map "de_cbble") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:20:39: Function "_camman_get_hero_id" was not found
+L 04/05/2026 - 00:20:39: [AMXX] Run time error 19 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:20:39: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:20:39: [AMXX] Run time error -1 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:20:45: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:20:45: [AMXX] Run time error 10 (plugin "sh_yakuipt2.amxx") (native "gatling_set_needle") - debug not enabled!
+L 04/05/2026 - 00:20:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:20:45: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:20:45: [AMXX] Displaying debug trace (plugin "sh_ksun.amxx", version "1.1")
+L 04/05/2026 - 00:20:45: [AMXX] Run time error 10: native error (native "spores_reset_user")
+L 04/05/2026 - 00:20:45: [AMXX]    [0] sh_ksun.sma::newRound (line 377)
+L 04/05/2026 - 00:20:45: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:20:45: [AMXX] Displaying debug trace (plugin "ksun_ultimate_module.amxx", version "1.1")
+L 04/05/2026 - 00:20:45: [AMXX] Run time error 10: native error (native "spores_ksun_hero_id")
+L 04/05/2026 - 00:20:45: [AMXX]    [0] ksun_ultimate_module.sma::ksun_rifle_laser (line 286)
+L 04/05/2026 - 00:20:45: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:20:45: [AMXX] Run time error 10 (plugin "sleep_grenade_funcs.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/05/2026 - 00:20:45: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:20:46: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:20:46: [AMXX] Displaying debug trace (plugin "ksun_particle.amxx", version "1.1")
+L 04/05/2026 - 00:20:46: [AMXX] Run time error 10: native error (native "ksun_get_when_reset_spores")
+L 04/05/2026 - 00:20:46: [AMXX]    [0] ksun_particle.sma::_clean_ksun_spores_from_players (line 165)
+L 04/05/2026 - 00:20:46: Unhandled dynamic native error
+L 04/05/2026 - 00:20:46: [AMXX] Displaying debug trace (plugin "ksun_particle.amxx", version "1.1")
+L 04/05/2026 - 00:20:46: [AMXX] Run time error 10: native error (native "ksun_get_when_reset_spores")
+L 04/05/2026 - 00:20:46: [AMXX]    [0] ksun_particle.sma::_clean_ksun_spores_from_players (line 165)
+L 04/05/2026 - 00:25:11: Start of error session.
+L 04/05/2026 - 00:25:11: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:25:11: Function "_camman_get_hero_id" was not found
+L 04/05/2026 - 00:25:11: [AMXX] Run time error 19 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:25:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:25:11: [AMXX] Run time error -1 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:25:15: Start of error session.
+L 04/05/2026 - 00:25:15: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:25:15: Function "_camman_get_hero_id" was not found
+L 04/05/2026 - 00:25:15: [AMXX] Run time error 19 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:25:15: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:25:15: [AMXX] Run time error -1 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/05/2026 - 00:26:16: Start of error session.
+L 04/05/2026 - 00:26:16: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:26:16: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:26:16: [AMXX] Run time error 10 (plugin "ksun_spore_launcher.amxx") (native "destroy_player_scanner") - debug not enabled!
+L 04/05/2026 - 00:26:16: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:26:16: Unhandled dynamic native error
+L 04/05/2026 - 00:26:16: [AMXX] Displaying debug trace (plugin "sh_ksun.amxx", version "1.1")
+L 04/05/2026 - 00:26:16: [AMXX] Run time error 10: native error (native "spores_reset_user")
+L 04/05/2026 - 00:26:16: [AMXX]    [0] sh_ksun.sma::newRound (line 377)
+L 04/05/2026 - 00:26:17: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:26:17: [AMXX] Displaying debug trace (plugin "sh_ksun.amxx", version "1.1")
+L 04/05/2026 - 00:26:17: [AMXX] Run time error 10: native error (native "spores_reset_user")
+L 04/05/2026 - 00:26:17: [AMXX]    [0] sh_ksun.sma::newRound (line 377)
+L 04/05/2026 - 00:26:17: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:26:17: [AMXX] Displaying debug trace (plugin "ksun_particle.amxx", version "1.1")
+L 04/05/2026 - 00:26:17: [AMXX] Run time error 10: native error (native "ksun_get_when_reset_spores")
+L 04/05/2026 - 00:26:17: [AMXX]    [0] ksun_particle.sma::_clean_ksun_spores_from_players (line 165)
+L 04/05/2026 - 00:26:17: Unhandled dynamic native error
+L 04/05/2026 - 00:26:17: [AMXX] Displaying debug trace (plugin "ksun_particle.amxx", version "1.1")
+L 04/05/2026 - 00:26:17: [AMXX] Run time error 10: native error (native "ksun_get_when_reset_spores")
+L 04/05/2026 - 00:26:17: [AMXX]    [0] ksun_particle.sma::_clean_ksun_spores_from_players (line 165)
+L 04/05/2026 - 00:26:17: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:26:17: [AMXX] Displaying debug trace (plugin "ksun_ultimate_module.amxx", version "1.1")
+L 04/05/2026 - 00:26:17: [AMXX] Run time error 10: native error (native "spores_ksun_hero_id")
+L 04/05/2026 - 00:26:17: [AMXX]    [0] ksun_ultimate_module.sma::ksun_rifle_laser (line 286)
+L 04/05/2026 - 00:26:17: Called dynanative into a paused plugin.
+L 04/05/2026 - 00:26:17: [AMXX] Run time error 10 (plugin "sleep_grenade_funcs.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/05/2026 - 00:26:17: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:38:40: Start of error session.
+L 04/05/2026 - 00:38:40: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:38:40: Function "_tranq_set_hero_id" was not found
+L 04/05/2026 - 00:38:40: [AMXX] Run time error 19 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:40: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:38:40: [AMXX] Run time error -1 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:43: Start of error session.
+L 04/05/2026 - 00:38:43: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:38:43: Function "_tranq_set_hero_id" was not found
+L 04/05/2026 - 00:38:43: [AMXX] Run time error 19 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:38:43: [AMXX] Run time error -1 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:48: Start of error session.
+L 04/05/2026 - 00:38:48: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:38:48: Function "_tranq_set_hero_id" was not found
+L 04/05/2026 - 00:38:48: [AMXX] Run time error 19 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:48: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:38:48: [AMXX] Run time error -1 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:51: Start of error session.
+L 04/05/2026 - 00:38:51: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260405.log")
+L 04/05/2026 - 00:38:51: Function "_tranq_set_hero_id" was not found
+L 04/05/2026 - 00:38:51: [AMXX] Run time error 19 (plugin "sh_erica.amxx") - debug not enabled!
+L 04/05/2026 - 00:38:51: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/05/2026 - 00:38:51: [AMXX] Run time error -1 (plugin "sh_erica.amxx") - debug not enabled!

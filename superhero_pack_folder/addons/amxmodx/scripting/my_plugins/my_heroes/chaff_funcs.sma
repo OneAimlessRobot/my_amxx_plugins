@@ -57,7 +57,7 @@ public plugin_natives(){
 public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
-	if(!teliko_get_has_teliko(id)) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,teliko_get_hero_id())) return FMRES_IGNORED
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	
 	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
@@ -267,7 +267,7 @@ return PLUGIN_CONTINUE
 
 public chaff_reload(parm[])
 {
-if(!is_user_alive(parm[0])||!teliko_get_has_teliko(parm[0])||!is_user_connected(parm[0])) return
+if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],teliko_get_hero_id())||!is_user_connected(parm[0])) return
 chaff_loaded[parm[0]] = true
 new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
 if((wid==CHAFF_CLASSID)&&teliko_get_num_chaffs(parm[0])){

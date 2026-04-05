@@ -503,7 +503,7 @@ public bool:_generic_heal(iPlugins, iParms){
 	if(user_will_glow>0){
 		remove_glow_user(id,glow_remove_timer)
 	}
-	if(hud_msg_sync<=0){
+	if(hud_msg_sync>0){
 		
 		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
 		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", added_hp)

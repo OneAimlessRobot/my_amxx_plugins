@@ -1,0 +1,22 @@
+L 04/04/2026 - 18:11:21: Start of error session.
+L 04/04/2026 - 18:11:21: Info (map "de_train") (file "addons/amxmodx/logs/error_20260404.log")
+L 04/04/2026 - 18:11:21: [HAMSANDWICH] Failed to retrieve classtype for "+player", hook for "Shinobu_Limit_HP" not active.
+L 04/04/2026 - 18:11:21: [AMXX] Run time error 10 (plugin "sh_shinobu_kocho.amxx") (native "RegisterHam") - debug not enabled!
+L 04/04/2026 - 18:11:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/04/2026 - 19:20:49: Start of error session.
+L 04/04/2026 - 19:20:49: Info (map "de_train") (file "addons/amxmodx/logs/error_20260404.log")
+L 04/04/2026 - 19:20:49: Invalid message argument 1
+L 04/04/2026 - 19:20:49: [AMXX] Run time error 10 (plugin "sh_selfless_yanderept2.amxx") (native "set_msg_arg_int") - debug not enabled!
+L 04/04/2026 - 19:20:49: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/04/2026 - 19:27:04: Start of error session.
+L 04/04/2026 - 19:27:04: Info (map "de_train") (file "addons/amxmodx/logs/error_20260404.log")
+L 04/04/2026 - 19:27:04: Invalid message argument 1
+L 04/04/2026 - 19:27:04: [AMXX] Displaying debug trace (plugin "sh_selfless_yanderept2.amxx", version "1.0")
+L 04/04/2026 - 19:27:04: [AMXX] Run time error 10: native error (native "set_msg_arg_int")
+L 04/04/2026 - 19:27:04: [AMXX]    [0] sh_selfless_yanderept2.sma::yandere_sentence_loop (line 223)
+L 04/04/2026 - 23:39:57: Start of error session.
+L 04/04/2026 - 23:39:57: Info (map "de_train") (file "addons/amxmodx/logs/error_20260404.log")
+L 04/04/2026 - 23:39:57: Function "_camman_get_hero_id" was not found
+L 04/04/2026 - 23:39:57: [AMXX] Run time error 19 (plugin "sh_camman.amxx") - debug not enabled!
+L 04/04/2026 - 23:39:57: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/04/2026 - 23:39:57: [AMXX] Run time error -1 (plugin "sh_camman.amxx") - debug not enabled!

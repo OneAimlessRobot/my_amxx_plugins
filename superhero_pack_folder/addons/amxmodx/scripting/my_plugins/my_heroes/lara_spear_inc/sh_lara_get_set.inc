@@ -19,11 +19,6 @@ native spear_get_num_spears(id)
 native spear_dec_num_spears(id)
 
 
-
-native spear_set_has_lara(id,value_to_set)
-native spear_get_has_lara(id)
-
-native spear_set_hero_id(id)
 native spear_get_hero_id()
 
 

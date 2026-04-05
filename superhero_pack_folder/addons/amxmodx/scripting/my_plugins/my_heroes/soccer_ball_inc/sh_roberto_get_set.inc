@@ -12,12 +12,6 @@ native roberto_get_num_balls(id)
 
 native roberto_dec_num_balls(id)
 
-
-
-native roberto_set_has_roberto(id,value_to_set)
-native roberto_get_has_roberto(id)
-
-native roberto_set_hero_id(id)
 native roberto_get_hero_id()
 
 

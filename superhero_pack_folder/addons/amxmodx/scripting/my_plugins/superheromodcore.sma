@@ -506,7 +506,6 @@ new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShXpPre
 
-
 //new max_entities
 //new max_entities_cvar
 
@@ -616,7 +615,6 @@ public plugin_init()
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF)
 	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
-
 
 
 #if defined SH_BACKCOMPAT
@@ -2989,7 +2987,20 @@ public _sh_extra_damage()
 	new preparedWpnDescription=PrepareArray(wpnDescription,32,1)
 	
 	new the_dmg_return_value=DMG_FWD_PASS
-	if (!ExecuteForward(fwd_ShDamagePre, the_dmg_return_value, victim, attacker, damage_after,preparedWpnDescription,headshot, mode,dmgStun,dmgFFmsg , preparedWpnDmgOriginInt,dmg_type,thrashbrat_dmg_type,custom_wpn_id)){
+	if (!ExecuteForward(fwd_ShDamagePre, 
+					the_dmg_return_value, 
+					victim,
+					attacker,
+					damage_after,
+					preparedWpnDescription,headshot,
+					mode,
+					dmgStun,
+					dmgFFmsg,
+					preparedWpnDmgOriginInt,
+					dmg_type,
+					thrashbrat_dmg_type,
+					custom_wpn_id)){
+		
 		server_print("Sh damage forward execute error.");
 	}
 	new health = get_user_health(victim)
