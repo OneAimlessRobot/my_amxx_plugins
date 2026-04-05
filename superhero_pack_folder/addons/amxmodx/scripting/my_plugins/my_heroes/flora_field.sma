@@ -630,6 +630,23 @@ public apply_teleport(id,field_inside) {
 			entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
 			entity_set_vector( id, EV_VEC_origin, other_field_origin );
 			emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			static entlist[33];
+			new numfound = find_sphere_class(field_id,"player", field_radius ,entlist, 32);
+
+			for( new i= 0;(i< numfound);i++){
+			
+				new pid = entlist[i];
+				if(pid==id){
+
+					continue
+				}
+				if(sh_clients_are_same_team(id,pid)){
+
+					sh_chat_message(pid, flora_get_hero_id(),"Flora asks: ^"Hey! Do you like bugs?^"")
+					break;
+				}
+
+			}
 		}
 		else{
 			sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (too far)")

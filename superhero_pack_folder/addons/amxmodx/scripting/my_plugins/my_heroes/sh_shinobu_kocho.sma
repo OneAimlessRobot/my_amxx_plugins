@@ -3,6 +3,7 @@
 #include <xs>
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
+#include "shinobu_knife/shinobu_usp_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -20,7 +21,6 @@ new gHeroName[]="Shinobu Kocho"
 new bool:gHasShinobu[SH_MAXSLOTS+1]
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
 new Float:shinobu_cooldown
-new Float:shinobu_burst_damage
 new Float:shinobu_poison_kick_delay
 new gHeroID
 new dmg_source_name_short_poison_kick[SAFE_BUFFER_SIZE+1]="poison_kick"
@@ -42,7 +42,6 @@ public plugin_init()
 	
 	register_cvar("shinobu_level", "19" )
 	register_cvar("shinobu_cooldown", "10.0" )
-	register_cvar("shinobu_burst_damage", "10.0" )
 	register_cvar("shinobu_max_health", "100.0" )
 	register_cvar("shinobu_poison_kick_delay","2.0")
 	register_cvar("shinobu_poison_kick_stun_time", "10.0" )
@@ -52,7 +51,6 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level" )
-	register_event("ResetHUD","newRound","b")
 	register_event("Damage","shinobuDamage","b", "2!0")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	register_logevent("ev_SendAudio", 2, "1=Round_End")
@@ -60,8 +58,6 @@ public plugin_init()
 	register_srvcmd("shinobu_init", "shinobu_init")
 	shRegHeroInit(gHeroName, "shinobu_init")
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
-	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
-	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
 
@@ -92,43 +88,7 @@ public plugin_natives(){
 	
 }
 
-public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{
-	if ( !sh_is_active()) return HAM_IGNORED
-	
-	if ( !client_hittable(idattacker)) {
-		return HAM_IGNORED
-	}
-	if(!gHasShinobu[idattacker]){
 
-		return HAM_IGNORED
-	}
-	new CsTeams:att_team=cs_get_user_team(idattacker)
-	if((cs_get_user_team(this)==att_team)) return HAM_IGNORED
-	new ammo,weapon=get_user_weapon(idattacker,_,ammo)
-	if(weapon==CSW_USP){
-		static Float:speed,Float:stun_time;
-		new hitzone=get_tr2(traceresult,TR_Hitgroup)
-		new is_headshot=(hitzone==HIT_HEAD)
-		new target_is_marked_by_weapon_owner=(g_shinobu_tagged_player[idattacker]==this)
-		if(target_is_marked_by_weapon_owner){
-			
-			stun_time=(is_headshot?3.0:1.0)
-			speed=(is_headshot?40.0:220.0)
-			sh_set_stun(this,stun_time,speed)
-			
-			damage*=(is_headshot?0.5:0.0)
-			ammo+=(is_headshot?3:1)
-			cs_set_user_bpammo(idattacker,CSW_USP,ammo)
-		}
-		else{
-			damage=0.0
-
-		}
-		SetHamParamFloat(3, damage);
-	}
-	return HAM_IGNORED
-}
 //----------------------------------------------------------------------------------------------
 public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
@@ -142,7 +102,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 
 	if(!client_hittable(id)) return
 
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+	if(!gHasShinobu[id]) return
 
 	static the_health_to_be_set
 	the_health_to_be_set = get_msg_arg_int(1)
@@ -218,22 +178,10 @@ public shinobuDamage(id)
 		}
 		if(gHasShinobu[attacker]){
 
-			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,gHasShinobu[attacker]);
+			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,gHasShinobu[attacker],_,_,0);
 			shinobu_burst_damage_task_bootstrap(attacker,victim)
 		}	
 	}
-	return PLUGIN_CONTINUE
-}
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-	if(!client_hittable(id)||!sh_is_active()){
-		
-		return PLUGIN_CONTINUE
-	}
-
-	shinobu_weapons(id)
-
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -246,7 +194,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	shinobu_cooldown = get_cvar_float("shinobu_cooldown")
-	shinobu_burst_damage = get_cvar_float("shinobu_burst_damage")
 	shinobu_max_health = get_cvar_float("shinobu_max_health")
 	shinobu_poison_kick_delay = get_cvar_float("shinobu_poison_kick_delay")
 	shinobu_poison_kick_stun_time = get_cvar_float("shinobu_poison_kick_stun_time")
@@ -278,30 +225,6 @@ public shinobu_init()
 	}
 	g_shinobu_tagged_player[id]=0
 }
-public shinobu_weapons(id){
-
-	if(!client_hittable(id)||!sh_is_active()){
-		
-		return
-	}
-	if(gHasShinobu[id]&&(cs_get_user_team(id)!=CS_TEAM_CT)&&!user_has_weapon(id,CSW_USP)){
-
-		sh_give_weapon(id,CSW_USP,true)
-	}
-	
-
-}
-public shinobu_unweapons(id){
-	if(!client_hittable(id)||!sh_is_active()){
-		
-		return
-	}
-	if((cs_get_user_team(id)!=CS_TEAM_CT)&&user_has_weapon(id,CSW_USP)){
-
-		sh_drop_weapon(id,CSW_USP,true)
-	}
-}
-
 public shinobu_burst_damage_task_bootstrap(attacker,tg){
 	if(g_shinobu_tagged_player[attacker]==tg) return
 	g_shinobu_tagged_player[attacker]=tg
@@ -329,7 +252,11 @@ public shinobu_burst_damage_task(array[],attacker){
 		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:random_num(0,_:MAX_DICKERY-1)])
 	}
 
-	sh_extra_damage(tg,attacker,floatround(shinobu_burst_damage),dmg_source_name_long_poison_kick,0,_,_,_,_,_,
+	new enemy_health=get_user_health(tg)
+
+	new damage_to_cause=floatround((float(enemy_health)/2.0)-1.0,floatround_floor)
+
+	sh_extra_damage(tg,attacker,damage_to_cause,dmg_source_name_long_poison_kick,0,_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					custom_weapon_damage_sharp_poison_kick_id)
 
@@ -338,14 +265,14 @@ public shinobu_burst_damage_task(array[],attacker){
 
 	user_slap(tg, shinobu_poison_kick_knockback,0)
 
-	generic_heal(heal_hp_hud_msg_sync,attacker,shinobu_burst_damage,_,PURPLE,_,_,50,1,1)
+	generic_heal(heal_hp_hud_msg_sync,attacker,float(damage_to_cause),_,PURPLE,_,_,50,1,1)
 
 
 	sh_screen_shake(tg, 14.0, 14.0, 14.0)
 	
 	sh_set_stun(tg,shinobu_poison_kick_stun_time,shinobu_poison_kick_stun_speed)
 	
-	sh_bleed_user(tg,attacker,MINI_BLEED,20)
+	sh_bleed_user(tg,attacker,MINI_BLEED,gHeroID,0)
 	
 	sh_effect_user_direct(tg,attacker,gHeroID,_:POISON)
 }
@@ -402,7 +329,7 @@ public shinobu_prethink(id)
 			if(sh_user_has_hero(id,shinobu_get_hero_id())){
 				static weapon;
 				weapon=cs_get_user_weapon(id)
-				if((weapon==CSW_KNIFE)||(weapon==CSW_USP)) {
+				if((weapon==CSW_KNIFE)||(weapon==SHINOBU_WEAPON_CLASSID)) {
 					set_pev(id, pev_flTimeStepSound, 999)
 					}
 				}
@@ -452,33 +379,4 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	}
 	
 	return DMG_FWD_PASS
-}
-
-
-public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
-{
-	if ( !sh_is_active()) return FMRES_IGNORED
-	
-	if (!client_hittable(id))
-		return FMRES_IGNORED	
-	if(get_user_weapon(id) != CSW_USP)
-		return FMRES_IGNORED
-	if(!gHasShinobu[id]){
-
-		return FMRES_IGNORED
-	}
-	new button = get_uc(uc_handle, UC_Buttons);
-	if(button & IN_ATTACK)
-	{
-
-		new weapon_ent = get_pdata_cbase( id , m_pActiveItem ) 
-		new is_silenced=cs_get_weapon_silen(weapon_ent)
-		if(!is_silenced){
-			button &= ~IN_ATTACK;
-			set_uc(uc_handle, UC_Buttons, button);
-			return FMRES_SUPERCEDE
-		}
-		
-	}
-	return FMRES_IGNORED
 }

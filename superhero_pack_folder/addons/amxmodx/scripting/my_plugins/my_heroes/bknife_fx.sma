@@ -72,6 +72,7 @@ new attack_name_string[128]
 get_string(7,attack_name_string,127)
 new blood_sound_sample[128]
 get_string(8,blood_sound_sample,127)
+new heal_attacker=get_param(9)
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
@@ -112,16 +113,16 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 			
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
 			{
-				sh_bleed_user(id,attacker,ULTRABLEED,hero_id)
+				sh_bleed_user(id,attacker,ULTRABLEED,hero_id,heal_attacker)
 				damage=damage*4;
 			}
 			else{
-				sh_bleed_user(id,attacker,BLEED,hero_id)
+				sh_bleed_user(id,attacker,BLEED,hero_id,heal_attacker)
 			}
 		}
 		else if(slashing){
 			
-			sh_bleed_user(id,attacker,MINI_BLEED,hero_id)
+			sh_bleed_user(id,attacker,MINI_BLEED,hero_id,heal_attacker)
 		}
 		sh_extra_damage(id,attacker,damage,attack_name_string,0,SH_DMG_NORM)
 	}

@@ -6,7 +6,7 @@
 #include "shinobu_knife/shinobu_knife_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
-#define PLUGIN "Shinobu nani behind player pt1"
+#define PLUGIN "Shinobu knife funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
@@ -23,6 +23,8 @@ new Float:g_shinobu_angles[SH_MAXSLOTS+1][3],
 new Float:g_shinobu_v_angles[SH_MAXSLOTS+1][3],
 	Float:g_shinobu_dst_v_angles[SH_MAXSLOTS+1][3]
 
+
+new g_shinobu_using_knife[SH_MAXSLOTS+1]
 
 stock g_prev_shinobu_cloaked[SH_MAXSLOTS+1];
 stock g_curr_shinobu_cloaked[SH_MAXSLOTS+1];
@@ -41,12 +43,20 @@ public plugin_init(){
 	TELEPORT_CHECK_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_cleanup","a")
 	register_event("ResetHUD","teleport_newRound","b")
+	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "shinobu_cloak")
 
     
 	
 }
-				
+public on_Knife_Weapon_Change(id)
+{
+	if ( !client_hittable(id)||!shModActive()) return
+	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+
+	new  wpnid = get_user_weapon(id)
+	g_shinobu_using_knife[id]=(wpnid == CSW_KNIFE)
+}
 public plugin_natives(){
 
 
@@ -65,7 +75,7 @@ public shinobu_cloak(id, uc_handle){
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
 	new button = get_uc(uc_handle, UC_Buttons);
-	g_curr_shinobu_cloaked[id]=((button & IN_DUCK ))
+	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
 	apply_cloak(id)
 	return FMRES_IGNORED
 }
@@ -91,7 +101,8 @@ apply_cloak(id){
 		
 		set_user_rendering(id)
 	}
-}	
+}
+
 //----------------------------------------------------------------------------------------------
 public teleport_newRound(id)
 {

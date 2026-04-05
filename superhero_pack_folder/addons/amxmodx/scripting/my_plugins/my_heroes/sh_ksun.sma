@@ -10,7 +10,6 @@
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
-#include "chikoi_inc/sh_chikoi_funcs.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -533,7 +532,7 @@ public ksun_prethink(id)
 		if(client_hittable(id)){
 			if(gHasKsun[id]){
 				new alive=0,dead=0
-				sh_get_team_counts(id,alive,dead)
+				sh_get_player_counts(id,1,alive,dead)
 				if((alive<=0)) {
 					set_pev(id, pev_flTimeStepSound, 999)
 					}
@@ -556,7 +555,7 @@ public ksun_model(id)
 public ksun_morph(id)
 {
 	id-=KSUN_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasKsun[id] ) return
+	if (  !is_user_alive(id)||!gHasKsun[id]||gmorphed[id] ) return
 	
 	// Message
 	superhero_protected_hud_message(superhero_hud_msg_sync,id,  "ksun: '...'")

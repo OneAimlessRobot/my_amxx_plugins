@@ -9,6 +9,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 
@@ -489,7 +490,10 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
+	if(sh_user_has_hero(id,shinobu_get_hero_id())&&(floatround(mate_health)>=floatround(shinobu_get_max_hp()))){
 
+		return false
+	}
 	if(make_sound){
 
 		static sound_sample_string[128]

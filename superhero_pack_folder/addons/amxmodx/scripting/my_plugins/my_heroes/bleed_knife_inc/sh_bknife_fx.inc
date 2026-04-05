@@ -65,7 +65,8 @@ native do_bleed_knife_attack(id,
           stab_damage,
           optional_bool=1,
           const attack_name_string[128]="def_melee_bleed",
-          const bleed_sound_sample[128]=BLEED_SFX);
+          const bleed_sound_sample[128]=BLEED_SFX,
+          heal_attacker=1);
 
 native sh_unbleed_user(id)
 native make_bleed_fx(id)

@@ -64,6 +64,7 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
+	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
 	YANDERE_MORPH_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_STATS_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_ANGER_TASKID=allocate_typed_task_id(player_task)
@@ -93,7 +94,25 @@ public _yandere_get_hero_id(iPlugin,iParams){
 
 }
 
+public yandere_angry_idle_checks(id, uc_handle){
 
+	if(!client_hittable(id)) return FMRES_IGNORED
+
+	if(!gHasYandere[id]||!gSuperAngry[id]) return FMRES_IGNORED
+	static butnprs
+
+	gIdleAngry[id] = true
+	butnprs =  get_uc(uc_handle, UC_Buttons);
+
+	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) gIdleAngry[id] = false
+
+	if (butnprs&IN_JUMP) gIdleAngry[id]  = false
+	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) gIdleAngry[id] = false
+	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
+
+	return FMRES_IGNORED
+
+}
 public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 
@@ -141,34 +160,6 @@ public yandere_init()
 	
 }
 
-public get_yandere_num(id,want_alive,want_all){
-
-new players[SH_MAXSLOTS]
-new team_name[32]
-new player_count;
-get_user_team(id,team_name,32)
-if(want_all){
-	if(!want_alive){
-		get_players(players,player_count,"b")
-	}
-	else{
-		get_players(players,player_count,"a")
-		player_count--
-	}
-}
-else{
-	if(!want_alive){
-		get_players(players,player_count,"eb",team_name)
-	}
-	else{
-		get_players(players,player_count,"ea",team_name)
-		player_count--
-	}
-}
-return player_count;
-
-
-}
 public get_first_alive(){
 
 
@@ -192,7 +183,7 @@ return -1;
 public yandere_sentence_loop(id){
 id-=YANDERE_ANGER_TASKID;
 
-if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&yandere_get_is_super(id)){
+if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gSuperAngry[id]){
 	
 	
 	if(gIdleAngry[id]||(get_user_health(id)>degen_health_extra_threshold)){
@@ -220,21 +211,6 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&ya
 
 
 }
-yandere_update_idle(id){
-new butnprs
-
-gIdleAngry[id] = true
-butnprs = Entvars_Get_Int(id, EV_INT_button)
-
-if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) gIdleAngry[id] = false
-
-if (butnprs&IN_JUMP) gIdleAngry[id]  = false
-if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) gIdleAngry[id] = false
-if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
-
-
-
-}
 
 notify_yanderes_about_team_life(id=-1,disconnected=0){
 if(!sh_is_active()) return
@@ -245,13 +221,13 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!client_hittable(i)) continue;
 
 	if(!gHasYandere[i]) continue;
-	if(!(disconnected)&&(id!=i)){
-		if(!sh_clients_are_same_team(id,i)) continue;
+	if(!(disconnected)){
+		if(!sh_clients_are_same_team(id,i)||(id==i)) continue;
 	}
 	new mates_alive
-	sh_get_team_counts(i,mates_alive,g_mates_dead[i])
+	sh_get_player_counts(i,1,mates_alive,g_mates_dead[i])
 	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
-	gTransTimerStarted[i]= can_transform
+	gTransTimerStarted[i]= (can_transform && !gSuperAngry[i])
 	update_stats(i)
 	set_user_maxspeed(i,gNormalSpeed[i])
 }
@@ -284,7 +260,7 @@ update_stats(id){
 	
 	new Float:maxspeed=get_user_maxspeed(id)
 	
-	if(yandere_get_is_super(id)){
+	if(gSuperAngry[id]){
 
 		gNormalDmgMult[id]=angry_dmg_mult
 		gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
@@ -303,11 +279,10 @@ public yandere_timer_transform(id){
 		return
 		
 	}
-	if(yandere_get_is_super(id)){
+	if(gSuperAngry[id]){
 
 		new Float:gravity=get_user_gravity(id)
 		set_user_gravity(id,floatmin(angry_gravity,gravity))
-		yandere_update_idle(id)
 	}
 	else{
 		gIdleAngry[id]=false;
@@ -529,7 +504,7 @@ public yandere_kd()
 
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 
-	if(yandere_get_is_super(id)){
+	if(gSuperAngry[id]){
 		if ( gPlayerUltimateUsed[id]||yandere_get_user_is_psychosis(id) ) {
 			
 			if(!is_user_bot(id)){
@@ -603,9 +578,9 @@ public sh_round_end(){
 	clear_rockets()
 	
 	new total_alive,total_dead;
-	sh_get_team_counts(0,total_alive,total_dead)
+	sh_get_player_counts(0,0,total_alive,total_dead)
 	
-	if(total_alive>0){
+	if(total_alive>1){
 		return;
 		
 	}
@@ -621,7 +596,7 @@ public sh_round_end(){
 public fire_weapon(id)
 {
 	
-	if ( !gHasYandere[id] ||!is_user_alive(id)||!yandere_get_is_super(id)) return PLUGIN_CONTINUE 
+	if ( !gHasYandere[id] ||!is_user_alive(id)||!gSuperAngry[id]) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -642,7 +617,7 @@ killyandere(id,bool:dropping=false){
 	if(!is_user_connected(id)||!sh_is_active()) return
 	if(gHasYandere[id]||dropping){
 		
-		if(yandere_get_is_super(id)){
+		if(gSuperAngry[id]){
 			static origin[3]
 			get_user_origin(id,origin)
 			fx_invisible(id)
@@ -699,7 +674,7 @@ public yandere_morph(id)
 	id-=YANDERE_MORPH_TASKID
 	if ( gmorphed[id] || !is_user_alive(id)||!gHasYandere[id] ) return
 	
-	if(!yandere_get_is_super(id)){
+	if(!gSuperAngry[id]){
 		cs_set_user_model(id, "yanderu")
 	}
 	else{

@@ -4,7 +4,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
-#include "shinobu_knife/shinobu_general.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -252,8 +251,7 @@ bool:heal_teamate(id,i){
 	new Float:values[2]
 	calculate_healing(id,values)
 
-	new the_max_health_to_cap=sh_user_has_hero(i,shinobu_get_hero_id())?floatround(shinobu_get_max_hp()):0
-	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,the_max_health_to_cap,INVIS,1,heal_period*2,_,1,0)
+	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*points_heal_coeff,_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
 		sh_extra_damage(id,id,floatround(values[0]),"Selflessness",0)
 		heal_stream(id,i,_,190)

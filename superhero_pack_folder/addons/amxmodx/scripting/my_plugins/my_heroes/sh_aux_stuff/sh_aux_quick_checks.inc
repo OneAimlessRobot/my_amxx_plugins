@@ -39,15 +39,15 @@ stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_
 
 
 
-stock sh_get_team_counts(id, &alive, &dead)
+stock sh_get_player_counts(id,discriminate_team=1, &alive, &dead)
 {
 	alive = 0
 	dead = 0
 
 	new team = get_user_team(id)
 	for (new i = 1; i <= SH_MAXSLOTS; i++) {
-		if (i == id || !is_user_connected(i)) continue
-		if (get_user_team(i) != team) continue
+		if ((i == id || !is_user_connected(i))&&discriminate_team) continue
+		if ((get_user_team(i) != team)&&discriminate_team) continue
 
 		if (is_user_alive(i)) alive++
 		else dead++

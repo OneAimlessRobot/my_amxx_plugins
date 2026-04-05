@@ -161,40 +161,6 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	return HAM_IGNORED
 	
 }
-/*
-//----------------------------------------------------------------------------------------------
-public gambit_damage(id)
-{
-	if ( !shModActive() || !is_user_alive(id) ) return PLUGIN_CONTINUE
-
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
-
-	if ( attacker != id && attacker != 0 && weapon != 0 && is_user_connected(id)) {
-		for ( new atkr = 1; atkr <= SH_MAXSLOTS; atkr++ ) {
-			if ( gHasGambitPower[atkr] && is_user_connected(atkr)&&!gPlayerUltimateUsed[atkr]) {
-				for(new i = SH_MAXSLOTS+1; i < sizeof(gGambitNade[])-1; i++) {
-					if ( gGambitNade[atkr][i] ) {
-						if ( is_user_alive(id) ) {
-							// do extra damage
-							new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
-							if (extraDamage > 0) {
-								sh_extra_damage(id, attacker, extraDamage, "gambit super grenade", headshot)
-							}
-						}
-						new cooldown_params[2]
-						cooldown_params[0]=i
-						cooldown_params[1]=atkr
-						set_task(0.2,"cooldown",0,cooldown_params,2)
-						return PLUGIN_CONTINUE
-					}
-				}
-			}
-		}
-	}
-	return PLUGIN_CONTINUE
-}*/
 //----------------------------------------------------------------------------------------------
 public cooldown(parm[])
 {

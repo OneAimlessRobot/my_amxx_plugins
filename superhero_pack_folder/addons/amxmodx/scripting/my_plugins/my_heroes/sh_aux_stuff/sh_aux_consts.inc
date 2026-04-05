@@ -18,7 +18,7 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
 // weapons offsets
-stock const m_pActiveItem = 373;
+stock const m_ppActiveItem = 373;
 stock const m_pppPlayer            = 41
 stock const m_iiId                = 43
 stock const m_fflNextPrimaryAttack    = 46
