@@ -112,12 +112,15 @@
 #define MONITOR_SPEED
 #define MONITOR_GODMODE
 #define MONITOR_SPEC
+#define MONITOR_ALPHA
 
+#define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
 
 /************* Do Not Edit Below Here **************/
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_include/my_author_header.inc"
 
 #if defined MONITOR_HP || defined MONITOR_SPEC
 	new UserHealth[SH_MAXSLOTS+1]
@@ -136,7 +139,7 @@ new const TaskClassname[] = "monitorloop"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
-	register_plugin("SuperHero Monitor", "1.6", "vittu")
+	my_authored_register_func("Superhero Monitor", "0.2", "vittu",true,AUTHOR)
 
 	#if defined MONITOR_HP || defined MONITOR_SPEC
 		register_event("Health", "health_change", "b")
@@ -179,6 +182,7 @@ public sh_client_spawn(id)
 	#if defined MONITOR_AP || defined MONITOR_SPEC
 		UserArmor[id] = get_user_armor(id)
 	#endif
+
 }
 //----------------------------------------------------------------------------------------------
 #if defined MONITOR_HP || defined MONITOR_SPEC
@@ -224,7 +228,7 @@ public monitor_think(ent)
 			#if defined MONITOR_GRAVITY || defined MONITOR_SPEC
 				static Float:gravity
 			#endif
-			#if defined MONITOR_GODMODE
+			#if defined MONITOR_GODMODE || defined MONITOR_SPEC
 				static Float:takeDamage
 			#endif
 
@@ -232,7 +236,11 @@ public monitor_think(ent)
 				static specPlayer, specPlayerLevel
 			#endif
 
-			#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE
+			#if defined MONITOR_ALPHA || defined MONITOR_SPEC
+				static Float:spec_alpha, Float:real_alpha, spec_render_mode, render_mode
+			#endif
+
+			#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE || defined MONITOR_ALPHA
 				static len
 			#endif
 
@@ -245,7 +253,7 @@ public monitor_think(ent)
 				id = players[i]
 				temp[0] = '^0'
 
-				if ( is_user_alive(id) )
+				if ( is_user_alive(id) && !is_user_bot(id))
 				{
 					#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE
 						len = 0
@@ -279,6 +287,18 @@ public monitor_think(ent)
 							len += formatex(temp[len], charsmax(temp) - len, "SPD %d", floatround(vector_length(velocity)) )
 						#endif
 
+						#if defined MONITOR_ALPHA
+							#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED
+								len += formatex(temp[len], charsmax(temp) - len, "  |  ")
+							#endif
+
+							real_alpha=entity_get_float(id, EV_FL_renderamt)
+							render_mode=entity_get_int(id, EV_INT_rendermode)
+
+							len += formatex(temp[len], charsmax(temp) - len, "CLOAK %d%", ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(render_mode,real_alpha))
+						
+						#endif
+
 						#if defined MONITOR_GODMODE
 							pev(id, pev_takedamage, takeDamage)
 							
@@ -303,7 +323,7 @@ public monitor_think(ent)
 					#endif
 				}
 				#if defined MONITOR_SPEC
-					else
+					else if(!is_user_bot(id))
 					{
 						// Who is the id specing
 						specPlayer = pev(id, pev_iuser2)
@@ -312,6 +332,8 @@ public monitor_think(ent)
 
 						pev(specPlayer, pev_velocity, velocity)
 						pev(specPlayer, pev_gravity, gravity)
+						spec_alpha=entity_get_float(specPlayer, EV_FL_renderamt)
+						spec_render_mode=entity_get_int(specPlayer, EV_INT_rendermode)
 						specPlayerLevel = sh_get_user_lvl(specPlayer)
 
 						if ( specPlayerLevel < ServerMaxLevel ) {
@@ -319,7 +341,15 @@ public monitor_think(ent)
 						}
 
 						set_hudmessage(255, 255, 255, 0.018, 0.9, 2, 0.05, 0.1, 0.01, 3.0)
-						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d  |  Armor: %d^nGravity: %d%%  |  Speed: %d", specPlayerLevel, ServerMaxLevel, sh_get_user_xp(specPlayer), temp, UserHealth[specPlayer], UserArmor[specPlayer], floatround(gravity*100.0), floatround(vector_length(velocity)))
+						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d  |  Armor: %d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
+												specPlayerLevel,
+												ServerMaxLevel,
+												sh_get_user_xp(specPlayer),
+												temp, UserHealth[specPlayer],
+												UserArmor[specPlayer],
+												floatround(gravity*100.0),
+												floatround(vector_length(velocity)),
+												ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(spec_render_mode,spec_alpha))
 					}
 				#endif
 			}
