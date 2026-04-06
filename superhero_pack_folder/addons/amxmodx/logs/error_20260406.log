@@ -1,5 +1,0 @@
-L 04/06/2026 - 00:23:28: Start of error session.
-L 04/06/2026 - 00:23:28: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260406.log")
-L 04/06/2026 - 00:23:28: [FAKEMETA] Invalid entity
-L 04/06/2026 - 00:23:28: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "pev") - debug not enabled!
-L 04/06/2026 - 00:23:28: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
