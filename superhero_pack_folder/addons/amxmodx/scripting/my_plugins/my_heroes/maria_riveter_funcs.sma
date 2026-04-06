@@ -49,7 +49,7 @@ public plugin_init(){
 public rivette_thinque(ent){
 
 
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
 	static classname[32]
 	classname[0] = '^0'

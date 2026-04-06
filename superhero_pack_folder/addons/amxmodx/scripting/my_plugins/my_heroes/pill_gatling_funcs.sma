@@ -463,21 +463,21 @@ launch_pill(id)
 public pill_think(ent)
 {
 
-	if(!pev_valid(ent)){
+	if(pev_valid(ent)!=2){
 
-		return
+		return FMRES_IGNORED
 
 	}
 	new szClassName[32]
 	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
 	if(!equal(szClassName, PILL_CLASSNAME))
 	{
-		return;
+		return FMRES_IGNORED
 	}
 	new id=pev(ent,pev_owner)
 	if (!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) {
 		remove_entity(ent)
-		return
+		return FMRES_IGNORED
 	}
 	new Float:newVelocity[3],Float:velocityVec[ 3 ]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
@@ -501,6 +501,7 @@ public pill_think(ent)
 	set_pev(ent, pev_vuser1, newVelocity)
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 
+	return FMRES_IGNORED
 }
 
 public fw_ItemDeployPre(entity)

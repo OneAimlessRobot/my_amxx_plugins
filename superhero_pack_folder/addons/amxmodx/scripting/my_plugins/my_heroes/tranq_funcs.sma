@@ -15,7 +15,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new pPlayer
+
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new trigger_is_down[SH_MAXSLOTS+1]
 new trigger_was_down[SH_MAXSLOTS+1]
@@ -50,7 +50,7 @@ public plugin_init(){
 public tranque_thinque(ent){
 
 
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
 	static classname[32]
 	classname[0] = '^0'
@@ -174,7 +174,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 	
-	pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if(client_isnt_hitter(pPlayer)){
 		
@@ -228,7 +228,7 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id()) ){
 		
@@ -247,7 +247,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_member(entity, m_pPlayer)
 	
 	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
