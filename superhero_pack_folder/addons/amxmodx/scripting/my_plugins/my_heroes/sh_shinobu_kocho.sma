@@ -29,7 +29,7 @@ new custom_weapon_damage_sharp_poison_kick_id
 
 new Float:shinobu_poison_kick_stun_time,
 	Float:shinobu_poison_kick_stun_speed,
-	Float:shinobu_max_health
+	shinobu_max_health
 
 
 new shinobu_poison_kick_knockback
@@ -42,7 +42,7 @@ public plugin_init()
 	
 	register_cvar("shinobu_level", "19" )
 	register_cvar("shinobu_cooldown", "10.0" )
-	register_cvar("shinobu_max_health", "100.0" )
+	register_cvar("shinobu_max_health", "100" )
 	register_cvar("shinobu_poison_kick_delay","2.0")
 	register_cvar("shinobu_poison_kick_stun_time", "10.0" )
 	register_cvar("shinobu_poison_kick_stun_speed", "110.0" )
@@ -52,9 +52,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level" )
 	register_event("Damage","shinobuDamage","b", "2!0")
-	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
-	register_logevent("ev_SendAudio", 2, "1=Round_End")
-	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	register_srvcmd("shinobu_init", "shinobu_init")
 	shRegHeroInit(gHeroName, "shinobu_init")
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
@@ -108,7 +105,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 	the_health_to_be_set = get_msg_arg_int(1)
 
 	static the_resulting_health;
-	the_resulting_health=min(floatround(shinobu_max_health),the_health_to_be_set)
+	the_resulting_health=min(shinobu_max_health,the_health_to_be_set)
 	
 	set_user_health(id,the_resulting_health)
 	
@@ -129,10 +126,6 @@ public client_disconnected(id){
 
 }
 
-public ev_SendAudio(){
-	
-	return PLUGIN_CONTINUE
-}
 public _shinobu_get_user_tagged_player(iPlugin,iParams){
 	new id= get_param(1)
 	return g_shinobu_tagged_player[id]
@@ -148,7 +141,7 @@ public _shinobu_get_hero_id(iPlugins, iParms){
 	return gHeroID
 	
 }
-public Float:_shinobu_get_max_hp(iPlugins, iParms){
+public _shinobu_get_max_hp(iPlugins, iParms){
 	
 	return shinobu_max_health
 	
@@ -194,7 +187,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	shinobu_cooldown = get_cvar_float("shinobu_cooldown")
-	shinobu_max_health = get_cvar_float("shinobu_max_health")
+	shinobu_max_health = get_cvar_num("shinobu_max_health")
 	shinobu_poison_kick_delay = get_cvar_float("shinobu_poison_kick_delay")
 	shinobu_poison_kick_stun_time = get_cvar_float("shinobu_poison_kick_stun_time")
 	shinobu_poison_kick_stun_speed = get_cvar_float("shinobu_poison_kick_stun_speed")
@@ -216,10 +209,13 @@ public shinobu_init()
 	if(gHasShinobu[id]){
 
 		shinobu_weapons(id)
+		set_user_health(id,min(sh_get_max_hp(id),shinobu_max_health))
+		manual_cloak_check(id)
 	}
 	else{
 
 		shinobu_unweapons(id)
+		uncloak_shinobu(id)
 
 
 	}

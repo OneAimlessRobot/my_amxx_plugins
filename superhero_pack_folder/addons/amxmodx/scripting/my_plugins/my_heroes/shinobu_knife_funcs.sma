@@ -61,9 +61,35 @@ public plugin_natives(){
 
 
 	register_native("nani_behind_player","_nani_behind_player",0)
+	register_native("manual_cloak_check","_manual_cloak_check",0)
+	register_native("uncloak_shinobu","_uncloak_shinobu",0)
 }
 
 
+public _manual_cloak_check(id){
+
+	new id= get_param(1)
+
+	if ( !client_hittable(id)||!shModActive()) return
+	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+
+	g_prev_shinobu_cloaked[id]=0
+	g_shinobu_using_knife[id]= ((get_user_weapon(id)==CSW_KNIFE))
+	new button=pev(id,pev_button)
+	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
+	apply_cloak(id)
+}
+public _uncloak_shinobu(id){
+
+	new id= get_param(1)
+
+	if ( !client_hittable(id)||!shModActive()) return
+
+	
+	g_curr_shinobu_cloaked[id]=0
+	g_prev_shinobu_cloaked[id]=1
+	apply_cloak(id)
+}
 public shinobu_cloak(id, uc_handle){
 
 
@@ -74,7 +100,7 @@ public shinobu_cloak(id, uc_handle){
 
 	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
 	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
-	new button = get_uc(uc_handle, UC_Buttons);
+	new button = get_uc(uc_handle, UC_Buttons)
 	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
 	apply_cloak(id)
 	return FMRES_IGNORED
@@ -86,6 +112,7 @@ apply_cloak(id){
 		
 		g_curr_shinobu_cloaked[id]=0
 		g_prev_shinobu_cloaked[id]=0
+		set_user_rendering(id)
 		return 
 
 	}
@@ -95,7 +122,9 @@ apply_cloak(id){
 	}
 
 	if(g_curr_shinobu_cloaked[id]){
+		
 		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransAlpha);
+
 	}
 	else{
 		
@@ -113,10 +142,11 @@ public teleport_newRound(id)
 
 	if ( sh_user_has_hero(id,shinobu_get_hero_id())) {
 		
+		manual_cloak_check(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
 	}
-	return PLUGIN_HANDLED
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 shinobu_teleport(id,attacker)
