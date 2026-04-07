@@ -8,7 +8,7 @@
 
 #define SLEEP_SFX "shmod/erica/sleep/snore.wav"
 
-#define SLEEP_PERIOD 1.0
+#define SLEEP_PERIOD 0.25
 #define SLEEP_TIME 5.0
 #define SLEEP_TIMES floatround(floatdiv(SLEEP_TIME,SLEEP_PERIOD))
 
