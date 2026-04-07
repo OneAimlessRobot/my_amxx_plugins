@@ -174,8 +174,10 @@ public rg_CBasePlayerTakeDamagePre(victim, inflictor, attacker, Float:flDamage) 
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!is_user_alive(player)) return
+	if(!is_user_alive(player)) return FMRES_IGNORED
 	pEntity = get_member(player, m_pActiveItem)
-	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
-	set_cd(cd, CD_flNextAttack, 99999.0)
+	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1){
+		set_cd(cd, CD_flNextAttack, get_gametime()+99999.0)
+	}
+	return FMRES_HANDLED
 }

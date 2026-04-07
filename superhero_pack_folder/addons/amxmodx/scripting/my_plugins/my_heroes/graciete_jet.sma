@@ -24,10 +24,7 @@ new g_graciete_jetpack[SH_MAXSLOTS+1];
 new Float:g_graciete_land_power[SH_MAXSLOTS+1];
 new bool:g_graciete_power_landing[SH_MAXSLOTS+1];
 new bool:g_graciete_leaped[SH_MAXSLOTS+1];
-//const FL_INGROUND2 = (FL_CONVEYOR|FL_ONGROUND|FL_PARTIALGROUND|FL_INWATER|FL_FLOAT)
-const FL_INGROUND2=TOUCHING_GROUND
 new jet_cooldown
-//new Float:berserk_m3_mult
 new Float:land_explosion_radius
 new Float:jet_velocity
 new Float:jet_max_power
@@ -55,6 +52,7 @@ public plugin_init()
 	arrayset(g_graciete_leaped,false,SH_MAXSLOTS+1)
 	register_event("DeathMsg","death","a")
 
+	register_forward(FM_Think,JP_CLASSNAME)
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_TRAIL_TASKID=allocate_typed_task_id(entity_task)
 	GRACIETE_COOLDOWN_TASKID=allocate_typed_task_id(player_task)

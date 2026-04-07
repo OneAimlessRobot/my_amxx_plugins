@@ -3,9 +3,6 @@
 #endif
 #define sh_roberto_get_set
 
-#define ERICA_STATS_TASKID 16721
-#define ERICA_HUD_TASKID 15934
-
 
 native roberto_set_num_balls(id,value_to_set)
 native roberto_get_num_balls(id)

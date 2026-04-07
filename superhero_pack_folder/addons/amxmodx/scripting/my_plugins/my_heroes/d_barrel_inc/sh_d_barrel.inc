@@ -28,16 +28,10 @@
 #define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
 
 
-const PDATA_SAFE = 2
-const OFFSET_LINUX_WEAPONS = 4
-const OFFSET_LINUX_PLAYER = 5
 const OFFSET_WEAPONOWNER = 41
 const m_iClip = 51
-const m_fInReload = 54
+const m_flInReload = 54
 const m_flNextAttack = 83
-const m_szAnimExtention = 492
-const m_szAnimExtention = 492
-
 native d_barrel_set_d_barrel(id)
 native d_barrel_unset_d_barrel(id)
 

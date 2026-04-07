@@ -26,7 +26,6 @@ new Float:min_charge_time,Float:max_charge_time
 
 
 stock SPEAR_RELOAD_TASKID,
-	SPEAR_REM_TASKID,
 	SPEAR_CHARGE_TASKID,
 	UNSPEAR_CHARGE_TASKID
 
@@ -43,13 +42,31 @@ public plugin_init(){
 	arrayset(spear_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	register_forward(FM_Think, "spaar_thaank");
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
 	SPEAR_RELOAD_TASKID=allocate_typed_task_id(player_task)
-	SPEAR_REM_TASKID=allocate_typed_task_id(entity_task)
 	SPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNSPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
+
+
+}
+
+public spaar_thaank(ent){
+
+
+	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	
+	static classname[32]
+	classname[0] = '^0'
+	pev(ent, pev_classname, classname, charsmax(classname))
+	
+	if ( !equal(classname, SPEAR_CLASSNAME) ) return FMRES_IGNORED
+	
+
+	remove_entity(ent)
+	return FMRES_IGNORED
 
 
 }
@@ -292,11 +309,15 @@ launch_spear(id)
 	spear_dec_num_spears(id)
 
 	emit_sound(id, CHAN_WEAPON, SPEAR_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	//if(get_cvar_num("veronika_m203trail"))
+
+	//set pickability status
+	entity_set_int(Ent,EV_INT_iuser2,false)
 	trail(Ent,WHITE,10,5)
+	entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
+	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
+
 	new parm[1]
 	parm[0] = id
-	entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
 	set_task(SPEAR_SHOOT_PERIOD, "spear_reload",id+SPEAR_RELOAD_TASKID,parm,1)
 
 	return PLUGIN_CONTINUE
@@ -379,12 +400,12 @@ public vexd_pfntouch(pToucher, pTouched)
 				}
 				else if(pTouched!=oid){
 					sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
-					sh_bleed_user(pTouched,oid,BLEED,spear_get_hero_id())
+					sh_bleed_user(pTouched,oid,BLEED_NORMAL,spear_get_hero_id())
 					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					//set pickability status
 					entity_set_int(pToucher,EV_INT_iuser2,true)
-					set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
+					entity_set_float( pToucher, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
 				}
 			}
 			return
@@ -394,20 +415,11 @@ public vexd_pfntouch(pToucher, pTouched)
 			entity_set_vector(pToucher, EV_VEC_velocity ,NULL_VECTOR)
 			//set pickability status
 			entity_set_int(pToucher,EV_INT_iuser2,true)
-			set_task(SPEAR_REM_TIME,"remove_spear",pToucher+SPEAR_REM_TASKID,"",0)
+			entity_set_float( pToucher, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
 			return
 		}
 		remove_entity(pToucher)
 	}
-}
-public remove_spear(id_spear){
-	id_spear-=SPEAR_REM_TASKID
-	if(!is_valid_ent(id_spear)) return
-	//set pickability status
-	entity_set_int(id_spear,EV_INT_iuser2,false)
-	remove_entity(id_spear)
-
-
 }
 public plugin_precache()
 {

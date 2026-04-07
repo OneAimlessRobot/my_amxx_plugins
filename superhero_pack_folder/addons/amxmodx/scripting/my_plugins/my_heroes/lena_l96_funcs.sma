@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -10,9 +11,6 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 #include "../my_include/my_author_header.inc"
-
-#include <fakemeta_util>
-#include <reapi>
 #include "../my_include/weapons_const.inc"
 
 #define PLUGIN_VER "1.0"
@@ -78,7 +76,7 @@ public bulette_thinque(ent){
 
 	if(!client_hittable(owner)){
 
-		remove_bullet(ent)	
+		remove_entity(ent)	
 		return FMRES_IGNORED
 	}
 
@@ -426,7 +424,7 @@ public _lena_l96_clear_bullets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, LENA_PROJECTILE_CLASSNAME)
 while(grenada) {
-	remove_bullet(grenada)
+	remove_entity(grenada)
 	grenada = find_ent_by_class(grenada, LENA_PROJECTILE_CLASSNAME)
 }
 }
@@ -435,15 +433,17 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
 		
-		return
+		return FMRES_IGNORED
 	}
 	if((get_user_weapon(player) != LENA_WEAPON_CLASSID)){
-		return
+		return FMRES_IGNORED
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, 99999.0)
+		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		return FMRES_HANDLED
 	}
+	return FMRES_IGNORED
 }
 
 
@@ -566,7 +566,7 @@ public vexd_pfntouch(pToucher, pTouched)
 		tank_impact_shot_fx(pToucher,origin,17)
 
 		
-		remove_bullet(pToucher)
+		remove_entity(pToucher)
 	}
 }
 public unfade_screen_user_task(id){
@@ -579,13 +579,6 @@ public unfade_screen_user_task(id){
 
 }
 
-public remove_bullet(id_bullet){
-	if(is_valid_ent(id_bullet)){
-		remove_entity(id_bullet)
-	}
-
-
-}
 public plugin_precache()
 {
 

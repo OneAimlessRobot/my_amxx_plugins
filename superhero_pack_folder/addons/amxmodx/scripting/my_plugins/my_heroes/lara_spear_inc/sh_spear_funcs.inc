@@ -7,10 +7,6 @@
 
 #define SPEAR_CLASSNAME "spear"
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
-
-
 #define SPEAR_RETRIEVE true
 
 
@@ -31,8 +27,6 @@
 
 #define SPEAR_SHOOT_RANDOMNESS 0.0
 
-
-#define SPEAR_REM_TIME 1.0
 
 
 #define SPEAR_CHARGE_PERIOD 0.1

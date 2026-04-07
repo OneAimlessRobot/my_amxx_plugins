@@ -4,15 +4,8 @@
 #define sh_graciete_rocket_funcs
 
 
-#define FADE_OUT	(1<<1)
-#define FADE_HOLD (1<<2)
-
-
-
 #define JP_CLASSNAME "jp_class"
 #define GROUND_THRESHOLD 20.0
-#define TOUCHING_GROUND (1<<9)
-
 
 #define GRACIETE_CHARGE_PERIOD 0.1
 #define GRACIETE_CHARGE_TIMES floatround(floatdiv(power_land_charge_time,GRACIETE_CHARGE_PERIOD))

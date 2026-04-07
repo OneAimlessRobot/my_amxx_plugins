@@ -46,8 +46,7 @@ stock HamHook:the_damage_ham_hook;
 stock JET_LOAD_TASKID,
 		JET_CHARGE_TASKID,
 		JET_HUD_TASKID,
-		JET_SOUND_TASKID,
-		JET_DEPLOY_TASKID;
+		JET_SOUND_TASKID
 
 
 //----------------------------------------------------------------------------------------------
@@ -89,7 +88,6 @@ public plugin_init()
 
 	JET_LOAD_TASKID=allocate_typed_task_id(player_task)
 	JET_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	JET_DEPLOY_TASKID=allocate_typed_task_id(player_task)
 	JET_HUD_TASKID=allocate_typed_task_id(player_task)
 	JET_SOUND_TASKID=allocate_typed_task_id(player_task)
 
@@ -171,7 +169,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(pev_valid(jet_get_user_jet(id))!=2){
 		return
 	}
-	if(!jet_deployed(id)){
+	if(!g_jetplane_deployed[id]){
 		return
 	}
 	ExecuteHam(Ham_TakeDamage, jet_get_user_jet(id), damage_entity, attacker, damage_to_do, 0);
@@ -356,8 +354,6 @@ public _reset_jet_user(iPlugin,iParams){
 }
 
 public jet_deploy_task(parm[],id){
-	
-	id-=JET_DEPLOY_TASKID
 	
 	new attacker=parm[0];
 	new jetplane_id=parm[1];
@@ -768,7 +764,7 @@ public charge_task(parm[],id){
 		
 		g_jetplane_deployed[id]=1;
 		set_pev(g_jetplane[id],pev_health,1000.0+pev(g_jetplane[id],pev_health))
-		jet_deploy_task(parm,id+JET_DEPLOY_TASKID)
+		jet_deploy_task(parm,id)
 		remove_task(id+JET_CHARGE_TASKID)
 	}
 	
@@ -794,7 +790,7 @@ public jet_sound_task(id){
 		remove_task(id)
 		return
 	}
-	if(!jet_deployed(owner)){
+	if(!g_jetplane_deployed[owner]){
 		
 		remove_task(id)
 		return
@@ -871,7 +867,7 @@ public jet_hud_task(id){
 		remove_task(id)
 		return
 	}
-	if(!jet_deployed(owner)){
+	if(!g_jetplane_deployed[owner]){
 		
 		remove_task(id)
 		return

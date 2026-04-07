@@ -21,12 +21,10 @@
 new Float:jetplane_mg_dmg,
 Float:jetplane_mg_bulletspeed;
 stock Float:mg_think_period
-new shell_loaded[SH_MAXSLOTS+1]
 new user_mg[SH_MAXSLOTS+1]
 new jetplane_mg_ammo;
 
 
-stock MG_SHELL_RELOAD_TASKID
 
 
 public plugin_init(){
@@ -34,15 +32,12 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	arrayset(shell_loaded,true,SH_MAXSLOTS+1)
 	register_cvar("yandere_jetplane_mg_ammo", "5")
 	register_cvar("yandere_jetplane_mg_dmg", "5")
 	register_cvar("yandere_jetplane_mg_bulletspeed", "5")
 	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "mg_think")
-
-	MG_SHELL_RELOAD_TASKID=allocate_typed_task_id(player_task)
 	
 }
 
@@ -196,7 +191,9 @@ public CmdStart(id, uc_handle)
 			{
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
-				if(!shell_loaded[id]) return FMRES_IGNORED
+				//retrieve gatling loaded
+				new gatling_loaded=entity_get_int(user_mg[id],EV_INT_iuser1)
+				if(!gatling_loaded) return FMRES_IGNORED
 				if(!get_user_jet_shells(id))
 				{
 					client_print(id, print_center, "You are out of shells")
@@ -273,9 +270,18 @@ public mg_think(ent)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
+		new Float:current_mg_loading_time=entity_get_float(ent,EV_FL_fuser1)
+		if(!entity_get_int(ent,EV_INT_iuser1)){
 		
-		
-		//draw_bbox(ent,0)
+			if(current_mg_loading_time>0.0){
+				entity_set_float(ent,EV_FL_fuser1,current_mg_loading_time-MG_THINK_PERIOD)
+			}
+			else{
+				entity_set_int(ent,EV_INT_iuser1,1)
+				entity_set_float(ent,EV_FL_fuser1,0.0)
+
+			}
+		}
 		set_pev(ent, pev_nextthink, gametime + (MG_THINK_PERIOD))
 	}
 	return FMRES_IGNORED
@@ -328,9 +334,11 @@ launch_shell(id)
 	
 	new parm[1]
 	set_user_jet_shells(id,get_user_jet_shells(id)-1)
-	shell_loaded[id]=false
 	parm[0]=id
-	set_task(MG_SHELL_PERIOD,"shell_reload",id+MG_SHELL_RELOAD_TASKID,parm,1,"a",1)
+	//set gatling loaded
+	entity_set_int(user_mg[id],EV_INT_iuser1,0)
+	//set gatling loading timeout
+	entity_set_float(user_mg[id],EV_FL_fuser1,MG_SHELL_PERIOD)
 	
 	
 	emit_sound(id, CHAN_WEAPON, MACHINE_GUN_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -338,13 +346,6 @@ launch_shell(id)
 	
 	return PLUGIN_CONTINUE
 }
-
-public shell_reload(parm[],id)
-{
-	id-=MG_SHELL_RELOAD_TASKID
-	shell_loaded[parm[0]] = true
-}
-
 
 public vexd_pfntouch(pToucher, pTouched)
 {

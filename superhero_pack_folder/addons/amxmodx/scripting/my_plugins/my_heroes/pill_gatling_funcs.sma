@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include <reapi>
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -7,7 +8,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
-#include <reapi>
 #include "../my_include/weapons_const.inc"
 
 #define PLUGIN "Superhero yakui mk2 pt2"
@@ -77,11 +77,11 @@ public Item_PostFrame_Post(iEnt)
 		
 		return HAM_IGNORED
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_fflNextAttack, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, _:m_flNextAttack, 5)
 	static bpammo; bpammo = cs_get_user_bpammo(id, YAKUI_WEAPON_CLASSID)
 	
 	static iClip; iClip = get_pdata_int(iEnt, 51, 4)
-	static fInReload; fInReload = get_pdata_int(iEnt, m_ffInReload , 4)
+	static fInReload; fInReload = get_pdata_int(iEnt, _:m_fInReload , 4)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
@@ -91,12 +91,9 @@ public Item_PostFrame_Post(iEnt)
 		set_pdata_int(iEnt, 51, iClip + temp1, 4)
 		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID, bpammo - temp1)		
 		
-		set_pdata_int(iEnt, m_ffInReload , 0, 4)
+		set_pdata_int(iEnt, m_fInReload , 0, 4)
 		
 		fInReload = 0
-		new Float:fDelay = floatdiv(g_fReloadDelay[YAKUI_WEAPON_CLASSID], windup_time)
-		set_pdata_float(get_pdata_cbase(iEnt, m_pppPlayer, 4), m_fflNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, m_fflTimeWeaponIdle, fDelay + 0.5, 4)
 	}
 	return HAM_IGNORED
 } 
@@ -113,7 +110,8 @@ public Ham_Weapon_PillGatling(weapon_ent)
 {
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
+	
+	new owner = get_member(weapon_ent, m_pPlayer)
 	if(!client_hittable(owner,sh_user_has_hero(owner,gatling_get_hero_id()))) return HAM_IGNORED
 	if(!gatling_get_pillgatling(owner)||(g_plAction[owner]!=act_run)){
 		return HAM_SUPERCEDE
@@ -349,10 +347,10 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(gatling_get_pillgatling(player)&&is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack,  halflife_time() + 999999.0)
-
+		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		return FMRES_HANDLED
 	}
-	return FMRES_HANDLED
+	return FMRES_IGNORED
 }
 
 // in fire

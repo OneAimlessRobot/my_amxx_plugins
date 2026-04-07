@@ -8,6 +8,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -378,7 +379,9 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 		force=damage
 	}
 
-	sh_extra_damage(pid,owner_id,idamage,"SH_Explosion");
+	sh_extra_damage(pid,owner_id,idamage,new_dmg_type_names[_:SH_NEW_DMG_FRAG_BLAST],0,_,_,_,_,_,
+			SH_NEW_DMG_FRAG_BLAST,
+			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST))
 	
 	set_velocity_from_origin(pid,mine_origin,force)
 

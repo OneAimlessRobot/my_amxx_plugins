@@ -38,14 +38,6 @@ enum
 	GATLING_ANIM_DRAW
 }
 
-const PDATA_SAFE = 2
-const OFFSET_LINUX_WEAPONS = 4
-const OFFSET_LINUX_PLAYER = 5
-const OFFSET_WEAPONOWNER = 41
-const m_iClip = 51
-const m_fInReload = 54
-const m_flNextAttack = 83
-const m_szAnimExtention = 492
 
 new g_Volcano, g_OldWeapon[33]
 new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2], g_ham_bot
@@ -271,7 +263,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
 		if(!pev_valid(ent)) return
 		
-		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, OFFSET_LINUX_WEAPONS)
+		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 		
 		if (flNextAttack > 0.0)
@@ -483,12 +475,12 @@ public fw_Weapon_Reload_Post(ent)
 		if(CurBpAmmo  <= 0)
 			return HAM_IGNORED
 
-		set_pdata_int(ent, 55, 0, OFFSET_LINUX_WEAPONS)
+		set_pdata_int(ent, 55, 0, XO_WEAPON)
 		set_pdata_float(id, 83, D_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
-		set_pdata_float(ent, 48, D_BARREL_RELOAD_TIME + 0.5, OFFSET_LINUX_WEAPONS)
-		set_pdata_float(ent, 46, D_BARREL_RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
-		set_pdata_float(ent, 47, D_BARREL_RELOAD_TIME + 0.25, OFFSET_LINUX_WEAPONS)
-		set_pdata_int(ent, m_fInReload, 1, OFFSET_LINUX_WEAPONS)
+		set_pdata_float(ent, 48, D_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
+		set_pdata_float(ent, 46, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
+		set_pdata_float(ent, 47, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
+		set_pdata_int(ent, m_fInReload, 1, XO_WEAPON)
 		
 		set_weapon_anim(id, GATLING_ANIM_RELOAD1)			
 		
@@ -512,16 +504,16 @@ public fw_Item_PostFrame(ent)
 	if(!Get_BitVar(g_Had_Volcano, id)) return
 
 	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, OFFSET_LINUX_PLAYER)
-	static iClip ; iClip = get_pdata_int(ent, m_iClip, OFFSET_LINUX_WEAPONS)
+	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = D_BARREL_DEFAULT_CLIP
 
-	if(get_pdata_int(ent, m_fInReload, OFFSET_LINUX_WEAPONS) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
+	if(get_pdata_int(ent, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
-		set_pdata_int(ent, m_iClip, iClip + j, OFFSET_LINUX_WEAPONS)
+		set_pdata_int(ent, m_iClip, iClip + j, XO_WEAPON)
 		set_pdata_int(id, 381, iBpAmmo-j, OFFSET_LINUX_PLAYER)
 		
-		set_pdata_int(ent, m_fInReload, 0, OFFSET_LINUX_WEAPONS)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
@@ -620,7 +612,7 @@ stock fm_cs_get_weapon_ent_owner(ent)
 	if (pev_valid(ent) != PDATA_SAFE)
 		return -1
 	
-	return get_pdata_cbase(ent, OFFSET_WEAPONOWNER, OFFSET_LINUX_WEAPONS)
+	return get_pdata_cbase(ent, OFFSET_WEAPONOWNER, XO_WEAPON)
 }
 
 stock set_weapon_anim(id, anim)

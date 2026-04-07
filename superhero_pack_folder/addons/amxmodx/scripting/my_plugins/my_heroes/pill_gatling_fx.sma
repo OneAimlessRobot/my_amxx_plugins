@@ -88,9 +88,6 @@ stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={
 
 }
 
-const fPainShock = 108
-
-
 new gLastWeapon[SH_MAXSLOTS+1]
 new g_last_weapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
@@ -291,7 +288,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
-	new owner = get_pdata_cbase(weapon_ent, m_ppPlayer, XO_WEAPON)
+	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
 	if(!client_hittable(owner)){
 		return HAM_IGNORED
 	}
@@ -408,7 +405,7 @@ public _sh_effect_user_direct(iPlugin,iParams){
 		else{
 			if(fx_num==_:COCAINE){
 
-				sh_bleed_user(user,attacker,MINI_BLEED,gHeroID,0)
+				sh_bleed_user(user,attacker,BLEED_MINI,gHeroID,0)
 
 			}
 		}

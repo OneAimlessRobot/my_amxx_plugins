@@ -1,13 +1,12 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
+#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
-#include <fakemeta_util>
-#include <reapi>
 #include "../my_include/weapons_const.inc"
 
 
@@ -61,7 +60,7 @@ public tranque_thinque(ent){
 
 	if(!client_hittable(owner)){
 
-		remove_dart(ent)	
+		remove_entity(ent)	
 		return FMRES_IGNORED
 	}
 
@@ -318,7 +317,7 @@ public _clear_darts(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, DART_CLASSNAME)
 	while(grenada) {
-		remove_dart(grenada)
+		remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, DART_CLASSNAME)
 	}
 }
@@ -473,30 +472,25 @@ public vexd_pfntouch(pToucher, pTouched)
 			
 			
 		}
-		remove_dart(pToucher)
+		remove_entity(pToucher)
 		
 	}
 }
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
-		return
+		return FMRES_IGNORED
 	}
 	new weapon = get_user_weapon(player);
 	if(weapon!=CSW_ELITE){
-		return;
+		return FMRES_IGNORED
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, 99999.0)
+		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		return FMRES_HANDLED
 	}
-}
-remove_dart(id_dart){
-	if(is_valid_ent(id_dart)){
-		remove_entity(id_dart)
-	}
-	
-	
+	return FMRES_IGNORED
 }
 public plugin_precache()
 {

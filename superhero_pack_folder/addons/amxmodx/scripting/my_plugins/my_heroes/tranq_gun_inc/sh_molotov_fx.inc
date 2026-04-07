@@ -3,11 +3,6 @@
 #endif
 #define sh_molly_fx
 
-#define FADE_OUT	(1<<1)
-#define FADE_HOLD (1<<2)
-
-
-#define XO_WEAPON 4
 
 #define CAN_SELF_MOLLY 1
 

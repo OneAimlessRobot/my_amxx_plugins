@@ -24,10 +24,6 @@
 #define SLEEP_NADE_SHOOT_PERIOD 1.0
 
 
-#define SLEEP_NADE_DET_TIME 1.0
-#define SLEEP_NADE_REM_TIME 1.0
-
-
 #define SLEEP_NADE_CHARGE_PERIOD 0.1
 #define SLEEP_NADE_CHARGE_TIMES floatround(floatdiv(max_charge_time,SLEEP_NADE_CHARGE_PERIOD))
 

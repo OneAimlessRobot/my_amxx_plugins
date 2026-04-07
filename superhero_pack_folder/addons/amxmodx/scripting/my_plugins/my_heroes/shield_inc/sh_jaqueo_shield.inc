@@ -4,11 +4,6 @@
 #define sh_jaqueo_shield_funcs
 
 
-#define FADE_OUT	(1<<1)
-#define FADE_HOLD (1<<2)
-
-
-
 #define JAQUEO_SHIELD_CLASSNAME "jaqueo_shield"
 
 

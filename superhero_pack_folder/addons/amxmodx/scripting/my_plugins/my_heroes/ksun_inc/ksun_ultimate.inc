@@ -12,8 +12,6 @@
 
 #define KSUN_ULTIMATE_SOUND "shmod/ksun/ultimate/ksun_ultimate_deploy_sound.wav"
 
-#define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
-
 
 native ksun_player_is_in_ultimate(id)
 

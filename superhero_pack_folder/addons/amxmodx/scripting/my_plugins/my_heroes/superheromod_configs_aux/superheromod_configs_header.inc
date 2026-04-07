@@ -88,22 +88,22 @@ stock initialize_settings(){
 stock assign_setting_values(){
 
     for(new i=0;i<_:MAX_SETTING_IDS;i++){
-        server_print("Assigning value on setting named %s:^nfrom cvar named %s (with type %s)...^n^n",CVAR_INIT[i][setting_name],CVAR_INIT[i][cvar_name],setting_init_data_type_names[CVAR_INIT[i][setting_data_type]])
+       // server_print("Assigning value on setting named %s:^nfrom cvar named %s (with type %s)...^n^n",CVAR_INIT[i][setting_name],CVAR_INIT[i][cvar_name],setting_init_data_type_names[CVAR_INIT[i][setting_data_type]])
         switch(CVAR_INIT[i][setting_data_type]){
             case data_type_num:{
                 setting_struct_arr[i][value_num]=get_pcvar_num(setting_struct_arr[i][cvar_p])
-                server_print("^n...with value %d^n^n",setting_struct_arr[i][value_num])
+                //server_print("^n...with value %d^n^n",setting_struct_arr[i][value_num])
             }
             case data_type_float:{
 
                 setting_struct_arr[i][value_float]=get_pcvar_float(setting_struct_arr[i][cvar_p])
-                server_print("^n...with value %0.2f^n^n",setting_struct_arr[i][value_float])
+                //server_print("^n...with value %0.2f^n^n",setting_struct_arr[i][value_float])
                 
             }
             case data_type_str:{
                 
                 get_pcvar_string(setting_struct_arr[i][cvar_p], setting_struct_arr[i][value_string], MAX_CHARS_STRING)
-                server_print("^n...with value %s^n^n",setting_struct_arr[i][value_string])
+                //server_print("^n...with value %s^n^n",setting_struct_arr[i][value_string])
                 
             }
             default:{

@@ -24,15 +24,45 @@ register_plugin(PLUGIN, VERSION, AUTHOR);
 arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
 register_event("DeathMsg","on_death_sleeping","a")
+register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 UNSLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 register_event("ResetHUD","sleep_newRound","b")
 init_explosion_defaults()
+}
+//https://forums.alliedmods.net/showthread.php?t=258006
+public Fwd_PlayerPreThink(id)
+{
+	if(!client_hittable(id)){
+		return FMRES_IGNORED
+	}
 
+	if(!gIsAsleep[id]){
+		return FMRES_IGNORED
+	}
+	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
+	entity_set_int( id, EV_INT_fixangle, 1 )
+	return FMRES_IGNORED
 }
 
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	if(!client_hittable(player)){
+		
+		return FMRES_IGNORED
+	}
+	if(!gIsAsleep[player]){
+		return FMRES_IGNORED
+	}
+	new pEntity = get_pdata_cbase(player, m_pActiveItem)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
+}
 //----------------------------------------------------------------------------------------------
 public sleep_newRound(id)
 {	
@@ -144,8 +174,6 @@ public _sh_unsleep_user(iPlugin,iParams){
 public sleep_task(array[],id){
 	id-=SLEEP_TASKID
 	if ( !shModActive() ||!client_hittable(id)) return
-	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
-	entity_set_int( id, EV_INT_fixangle, 1);
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
 	
@@ -156,12 +184,12 @@ sleep_user(id,attacker){
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
 	array[0] = attacker
+	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	gIsAsleep[id]=true
 	sleep_user_switch_weapon(id)
 	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
-	entity_get_vector(id, EV_VEC_angles, gKeepAngles[id])
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",SLEEP_TIMES+9)
 	set_task(SLEEP_TIME,"unsleep_task",id+UNSLEEP_TASKID,"", 0,  "a",1)
@@ -186,8 +214,6 @@ public fully_wake_up_task(id){
 	set_user_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
 	gIsAsleep[id]=false
-	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
-	entity_set_int( id, EV_INT_fixangle, 0);
 	
 
 
@@ -200,8 +226,6 @@ unsleep_user(id){
 	set_user_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
 	gIsAsleep[id]=false
-	entity_set_vector(id, EV_VEC_angles, gKeepAngles[id])
-	entity_set_int( id, EV_INT_fixangle, 0);
 
 
 

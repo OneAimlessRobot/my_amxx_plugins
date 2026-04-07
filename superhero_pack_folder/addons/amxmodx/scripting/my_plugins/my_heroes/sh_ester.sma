@@ -107,11 +107,11 @@ public plugin_init()
 
 	init_explosion_defaults()
 
-	adulting_pan_wpn_id=sh_log_custom_damage_source(
+	moralizing_ray_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_moralizing_ray,
 								dmg_source_name_long_moralizing_ray,
-								0)
+								1)
 
 	adulting_pan_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -668,13 +668,14 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 							}
 						
 					}
-					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult)+1.0):floatadd(damage,pan_dmg))
+					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult+1.0)):floatadd(damage,pan_dmg))
 					if (extraDamage>0){
 						
 						sh_extra_damage(id,attacker,floatround(extraDamage),
-									(weapon==CSW_TMP?dmg_source_name_short_moralizing_ray:dmg_source_name_long_adulting_pan),0,_,_,_,_,_,
+									(weapon==CSW_TMP)?dmg_source_name_short_moralizing_ray:dmg_source_name_short_adulting_pan,headshot,_,_,_,_,_,
 									_,
-									(weapon==CSW_TMP?moralizing_ray_wpn_id:adulting_pan_wpn_id))
+									(weapon==CSW_TMP)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
+						
 
 						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?moralizing_tmp_xp_get_mult:moralizing_pan_xp_get_mult)*mult*floatround(extraDamage+damage),max_moralizing_xp-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){

@@ -5,10 +5,6 @@
 
 #define MINE_CLASSNAME "mine"
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
-
-
 
 #define MINE_WORLD_MDL "models/shmod/sapper/mine/mine.mdl"
 
@@ -25,7 +21,6 @@
 
 
 #define MINE_WAIT_PERIOD 0.2
-#define MINE_REM_TIME 1.0
 
 #define MINE_CHARGE_PERIOD 0.1
 #define MINE_CHARGE_TIMES floatround(floatdiv(min_charge_time,MINE_CHARGE_PERIOD))

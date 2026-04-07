@@ -3,10 +3,6 @@
 #endif
 #define sh_chaff_fx
 
-#define FADE_OUT	(1<<1)
-#define FADE_HOLD (1<<2)
-
-
 
 #define CAN_SELF_CHAFF 1
 

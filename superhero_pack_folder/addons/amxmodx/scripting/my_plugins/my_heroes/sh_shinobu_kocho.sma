@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <xs>
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
@@ -63,7 +62,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "shinobu_kd")
 
 	register_forward(FM_PlayerPreThink, "shinobu_prethink")
-	register_forward(FM_CmdStart,"Crouch")
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
@@ -268,7 +266,7 @@ public shinobu_burst_damage_task(array[],attacker){
 	
 	sh_set_stun(tg,shinobu_poison_kick_stun_time,shinobu_poison_kick_stun_speed)
 	
-	sh_bleed_user(tg,attacker,MINI_BLEED,gHeroID,0)
+	sh_bleed_user(tg,attacker,BLEED_MINI,gHeroID,0)
 	
 	sh_effect_user_direct(tg,attacker,gHeroID,_:POISON)
 }

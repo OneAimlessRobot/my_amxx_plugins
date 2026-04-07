@@ -18,14 +18,27 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
 // weapons offsets
-stock const m_ppActiveItem = 373;
-stock const m_pppPlayer            = 41
-stock const m_iiId                = 43
-stock const m_fflNextPrimaryAttack    = 46
-stock const m_fflNextSecondaryAttack    = 47
-stock const m_fflTimeWeaponIdle        = 48
-stock const m_ffInReload            = 54
-stock const m_fflNextAttack = 83
+
+#define TOUCHING_GROUND (1<<9)
+stock const PDATA_SAFE = 2
+stock const XO_WEAPON= 4
+stock const OFFSET_LINUX_PLAYER = 5
+stock const FL_INGROUND2=TOUCHING_GROUND
+stock const fPainShock = 108
+stock const m_flNextPrimaryAttack    = 46
+stock const m_flNextSecondaryAttack    = 47
+stock const m_fInReload            = 54
+
+#if !defined _reapi_included 
+	stock const m_pActiveItem = 373;
+	stock const m_flTimeWeaponIdle        = 48
+	stock const m_flNextAttack = 83
+	stock const m_szAnimExtention = 492
+	stock const m_iId                = 43
+	stock const m_pPlayer            = 41
+#endif
+
+#define FlameAndSoundRate 10
 
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)

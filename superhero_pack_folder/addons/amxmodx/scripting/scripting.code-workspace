@@ -14,6 +14,9 @@
 		},
 		{
 			"path": "../../../../../../../FASTstorage/FASTprogs/mysqlstuff/amxmodxserver_mgmt/scripts"
+		},
+		{
+			"path": "../../yapb"
 		}
 	],
 	"settings": {}

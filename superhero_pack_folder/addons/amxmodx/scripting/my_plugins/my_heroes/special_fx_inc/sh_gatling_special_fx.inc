@@ -4,14 +4,6 @@
 #define sh_special_fx
 
 
-
-
-#define XO_WEAPON 4
-#define m_ppPlayer 41
-
-
-
-
 #define POISON_DMG_MULT 2.0
 #define POISON_DAMAGE 40
 

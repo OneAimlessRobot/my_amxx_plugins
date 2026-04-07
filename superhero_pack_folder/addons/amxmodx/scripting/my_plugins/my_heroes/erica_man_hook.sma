@@ -288,7 +288,7 @@ public CmdStart1(attacker, uc_handle)
 						free_tr2(tr)
 						return FMRES_IGNORED
 					}
-					sh_bleed_user(id,attacker,MINI_BLEED,tranq_get_hero_id())
+					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
 					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"b")
@@ -363,7 +363,7 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					if(!is_user_bot(attacker)){
 						sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 					}
-					sh_bleed_user(id,attacker,ULTRABLEED,tranq_get_hero_id())
+					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					
 					process_manhook_manslaughter( attacker, id)
 					stop_dragging(attacker)	

@@ -1,4 +1,7 @@
-
+#if defined sh_yandere_inc
+  #endinput
+#endif
+#define sh_yandere_inc
 
 
 #define YANDERE_WEAPON_CLASSID CSW_XM1014
@@ -22,10 +25,6 @@
 
 
 #define YANDERE_CYCLE_PERIOD 0.5
-#define TOUCHING_GROUND (1<<9)
-const FL_INGROUND2=TOUCHING_GROUND
-
-const fPainShock = 108 
 // GLOBAL VARIABLES
 stock gHeroID
 stock const gHeroName[] = "Yandere Mk.II"

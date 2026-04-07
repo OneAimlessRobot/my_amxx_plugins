@@ -8,10 +8,6 @@
 #include "sh_aux_consts.inc"
 #include "sh_aux_quick_checks.inc"
 #include "sh_aux_math_funcs_pt1.inc"
-/*
-#include "sh_aux_fx_funcs_pt1.inc"
-#include "sh_aux_fx_funcs_pt2.inc"
-*/
 #include "sh_aux_funcs_misc.inc"
 
 

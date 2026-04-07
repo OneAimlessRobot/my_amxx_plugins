@@ -1,15 +1,12 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "../my_include/my_author_header.inc"
-
-
-#include <fakemeta_util>
-#include <reapi>
 #include "../my_include/weapons_const.inc"
 
 #define PLUGIN_VER "1.0"
@@ -60,7 +57,7 @@ public rivette_thinque(ent){
 
 	if(!client_hittable(owner)){
 
-		remove_rivet(ent)	
+		remove_entity(ent)	
 		return FMRES_IGNORED
 	}
 
@@ -390,7 +387,7 @@ public _maria_riveter_clear_rivets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, MARIA_PROJECTILE_CLASSNAME)
 while(grenada) {
-	remove_rivet(grenada)
+	remove_entity(grenada)
 	grenada = find_ent_by_class(grenada, MARIA_PROJECTILE_CLASSNAME)
 }
 }
@@ -399,15 +396,17 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
 		
-		return
+		return FMRES_IGNORED
 	}
 	if((get_user_weapon(player) != MARIA_WEAPON_CLASSID)){
-		return
+		return FMRES_IGNORED
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, 99999.0)
+		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		return FMRES_HANDLED
 	}
+	return FMRES_IGNORED
 }
 
 
@@ -437,15 +436,8 @@ public vexd_pfntouch(pToucher, pTouched)
 										MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
 										is_direct_hit,
 										is_direct_hit)
-		remove_rivet(pToucher)
+		remove_entity(pToucher)
 	}
-}
-public remove_rivet(id_rivet){
-	if(is_valid_ent(id_rivet)){
-		remove_entity(id_rivet)
-	}
-
-
 }
 public plugin_precache()
 {

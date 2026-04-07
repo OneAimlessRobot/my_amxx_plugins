@@ -26,6 +26,7 @@ stock ballbeam[3] = { 20,50,255 }
 #define AVG_FACTOR 3
 
 #define BALL_REM_TIME 2.0
+#define BALL_THINK_TIME 0.05
 
 #define BALL_MASS 1.8
 

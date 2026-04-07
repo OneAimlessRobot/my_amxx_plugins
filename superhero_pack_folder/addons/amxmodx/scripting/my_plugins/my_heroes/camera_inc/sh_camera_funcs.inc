@@ -5,10 +5,6 @@
 
 #define CAMERA_CLASSNAME "cam"
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
-
-
 
 #define CAMERA_WORLD_MDL "models/shmod/camman/camera/camera.mdl"
 

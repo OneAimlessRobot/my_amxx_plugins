@@ -14,23 +14,9 @@
 
 
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
-new bool:kicked_ball[SH_MAXSLOTS+1]
-new bool:tagged_by_baller[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
-
-stock BALL_REM_TASKID
 
 public plugin_init(){
-	
-	arrayset(kicked_ball,false,SH_MAXSLOTS+1)
-	for(new i=0;i<=SH_MAXSLOTS;i++){
-		
-		
-		arrayset(tagged_by_baller[i],false,SH_MAXSLOTS+1)
-		
-		
-	}
-	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_forward(FM_Think, "ball_think")
 	
@@ -40,8 +26,6 @@ public plugin_init(){
 		"func_illusionary", "func_button", "func_rot_button", "func_rotating"
 	}
 
-	BALL_REM_TASKID=allocate_typed_task_id(entity_task)
-	
 	for( new i; i < sizeof szEntity; i++ )
 		register_touch( BALL_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 }
@@ -60,7 +44,7 @@ public _clear_balls(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, BALL_CLASSNAME)
 	while(grenada) {
-		remove_ball(grenada+BALL_REM_TASKID)
+		remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, BALL_CLASSNAME)
 	}
 }
@@ -108,20 +92,21 @@ public vexd_pfntouch(pToucher, pTouched){
 					
 					//set pickability status
 					entity_set_int(pToucher,EV_INT_iuser2,false)
-					kicked_ball[oid]=false
 					remove_entity(pToucher);
 					return
 					
 				}
 				else if((pTouched!=oid)){
-					if(!tagged_by_baller[oid][pTouched]){
+
+					//get "touched someone" boolean
+					new touched_someone=entity_get_int(pToucher,EV_INT_iuser3)
+					if(!touched_someone){
 						//set pickability status
 						entity_set_int(pToucher,EV_INT_iuser2,true)
-						tagged_by_baller[oid][pTouched]=true
+						entity_set_int(pToucher,EV_INT_iuser3,true)
 						set_velocity_from_origin(pTouched,origin,BALL_KNOCKBACK)
 						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 						sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
-						set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
 						return
 					}
 				}
@@ -130,24 +115,9 @@ public vexd_pfntouch(pToucher, pTouched){
 		else if(pev(pTouched,pev_solid)==SOLID_BSP){
 			//set pickability status
 			entity_set_int(pToucher,EV_INT_iuser2,true)
-			set_task(BALL_REM_TIME,"remove_ball",pToucher+BALL_REM_TASKID)
 			return
 		}
 	}
-}
-
-public remove_ball(id_ball){
-	id_ball-=BALL_REM_TASKID
-	
-	if(!is_valid_ent(id_ball)) return
-	new oid=pev(id_ball,pev_iuser1)
-	if(!kicked_ball[oid]) return
-	//set pickability status
-	entity_set_int(id_ball,EV_INT_iuser2,true)
-	kicked_ball[oid]=false
-	remove_entity(id_ball)
-	
-	
 }
 public kick_ball(iPlugin,iParams)
 {
@@ -159,12 +129,6 @@ public kick_ball(iPlugin,iParams)
 	if(!roberto_get_num_balls(id)){
 		
 		client_print(id,print_center,"You ran out of balls")
-		return PLUGIN_HANDLED
-		
-	}
-	if(kicked_ball[id]){
-		
-		client_print(id,print_center,"Wait for the next ball!")
 		return PLUGIN_HANDLED
 		
 	}
@@ -183,7 +147,6 @@ public kick_ball(iPlugin,iParams)
 		return PLUGIN_HANDLED
 	}
 	
-	arrayset(tagged_by_baller[id],false,SH_MAXSLOTS+1)
 	entity_set_string(  Ent, EV_SZ_classname, BALL_CLASSNAME );
 	entity_set_int(  Ent , EV_INT_solid, SOLID_BBOX);
 	entity_set_int( Ent, EV_INT_movetype, MOVETYPE_BOUNCE );
@@ -211,14 +174,17 @@ public kick_ball(iPlugin,iParams)
 	}
 	
 	roberto_dec_num_balls(id)
-	
-	
-	kicked_ball[id]=true
+	//set removal timer
+	entity_set_float( Ent, EV_FL_fuser1, BALL_REM_TIME);
+	//set pickability status
+	entity_set_int( Ent, EV_INT_iuser2, false);
+	//set "tagged someone" boolean
+	entity_set_int( Ent, EV_INT_iuser3, false);
+						
 	emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	arrayset(tagged_by_baller[id],false,sizeof tagged_by_baller[]);
 	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
 	create_fired_shot_disk(Origin,id,false)
-	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
+	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
 	trail(Ent,BLUE,10,5)
 	
 	
@@ -231,20 +197,33 @@ public ball_think(ent)
 	
 	if(!pev_valid(ent)){
 		
-		return
+		return FMRES_IGNORED
 		
 	}
 	new szClassName[32]
 	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
 	if(!equal(szClassName, BALL_CLASSNAME))
 	{
-		return;
+		return FMRES_IGNORED
 	}
 	new id=pev(ent,pev_iuser1)
 	if ( !client_hittable(id,sh_user_has_hero(id,roberto_get_hero_id()))) {
-		set_task(0.1,"remove_ball",ent+BALL_REM_TASKID)
-		return
+		remove_entity(ent)
+		return FMRES_IGNORED
 	}
+	//get removal timer
+	new Float:removal_timer=entity_get_float( ent, EV_FL_fuser1);
+	if(removal_timer>=0.0){
+		entity_set_float( ent, EV_FL_fuser1, removal_timer-BALL_THINK_TIME);
+
+	}
+	else{
+
+		remove_entity(ent)
+		return FMRES_IGNORED
+
+	}
+	
 	new Float:newVelocity[3],Float:velocityVec[ 3 ],Float:fl_origin[3],iAimVec[3],iPos[3],Float:Pos[3],Float:AimVec[3]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
 	entity_get_vector( ent, EV_VEC_velocity, newVelocity );
@@ -296,8 +275,8 @@ public ball_think(ent)
 	
 	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
 	set_pev(ent, pev_vuser1, newVelocity)
-	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
-	
+	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
+	return FMRES_IGNORED
 }
 public plugin_precache()
 {

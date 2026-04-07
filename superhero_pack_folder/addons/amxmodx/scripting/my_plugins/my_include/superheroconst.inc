@@ -102,22 +102,29 @@ stock const xp_extra_type_bonuses[XP_VIP_PROTECT_XP+1]={
 
 enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_NONE=0,
-	SH_NEW_DMG_ENERGY_BLAST=1,
-	SH_NEW_DMG_DRAIN=2,
-	SH_NEW_DMG_SUPER_BULLET=3,
-	SH_NEW_DMG_BLEED=4,
-	SH_NEW_DMG_DRUG_POISON=5,
-	SH_NEW_DMG_SQUASHED=6
+	SH_NEW_DMG_ENERGY_BLAST,
+	SH_NEW_DMG_DRAIN,
+	SH_NEW_DMG_SUPER_BULLET,
+	SH_NEW_DMG_BLEED,
+	SH_NEW_DMG_DRUG_POISON,
+	SH_NEW_DMG_SQUASHED,
+	SH_NEW_DMG_SHOCK,
+	SH_NEW_DMG_FRAG_BLAST,
+	SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+	SH_NEW_DMG_MAX_DAMAGES
 
 }
-stock const new_dmg_type_names[SH_NEW_DMG_SQUASHED+SH_NEW_DMG_ENERGY_BLAST][32]={
+stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 	"SH_Unnamed_Damage",
 	"SH_Energy_Blast",
 	"SH_Drain",
 	"SH_Super_Bullet",
 	"SH_Bleed",
 	"SH_Drug_Poison",
-	"SH_Squashed"
+	"SH_Squashed",
+	"SH_Shock",
+	"SH_Frag_Blast",
+	"xXxSH_DarkShadowBladexXX"
 }
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed

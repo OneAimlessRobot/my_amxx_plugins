@@ -19,7 +19,6 @@
 #include "../my_include/my_author_header.inc"
 
 
-new has_rocket[SH_MAXSLOTS+1]
 new law[SH_MAXSLOTS+1]
 new Float:jetplane_law_radius,
 Float:jetplane_law_rocketspeed,
@@ -27,7 +26,6 @@ Float:jetplane_law_dmg;
 stock Float:law_think_period
 new jetplane_law_ammo;
 
-stock ROCKET_RELOAD_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -42,9 +40,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_Think, "law_think")
-
-	ROCKET_RELOAD_TASKID=allocate_typed_task_id(player_task)
-
 	init_explosion_defaults()
 }
 public plugin_cfg(){
@@ -201,7 +196,9 @@ public CmdStart(id, uc_handle)
 			{
 				button &= ~IN_ALT1;
 				set_uc(uc_handle, UC_Buttons, button);
-				if(has_rocket[id]) return FMRES_IGNORED
+				//retrieve law loaded
+				new law_loaded=entity_get_int(law[id],EV_INT_iuser1)
+				if(!law_loaded) return FMRES_IGNORED
 				if(!get_user_jet_rockets(id))
 				{
 					client_print(id, print_center, "You are out of rockets!")
@@ -270,20 +267,17 @@ velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed+jet_ve
 
 Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
-has_rocket[id] = NewEnt
 set_user_jet_rockets(id,get_user_jet_rockets(id)-1)
-set_task(ROCKET_SHOOT_PERIOD,"rocket_reload",id+ROCKET_RELOAD_TASKID,"",0,"a",1)
+
+//set law loaded
+entity_set_int(law[id],EV_INT_iuser1,0)
+//set law loading timeout
+entity_set_float(law[id],EV_FL_fuser1,ROCKET_SHOOT_PERIOD)
 
 trail(NewEnt,PINK,10,5)
 
 emit_sound(get_user_law(id), CHAN_VOICE, JETPLANE_LAW_FIRE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 return PLUGIN_HANDLED
-}
-//----------------------------------------------------------------------------------------------
-public rocket_reload(id)
-{
-id-=ROCKET_RELOAD_TASKID
-has_rocket[id] = 0
 }
 public vexd_pfntouch(pToucher, pTouched) {
 
@@ -387,7 +381,18 @@ public law_think(ent)
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
+		new Float:current_law_loading_time=entity_get_float(ent,EV_FL_fuser1)
+		if(!entity_get_int(ent,EV_INT_iuser1)){
 		
+			if(current_law_loading_time>0.0){
+				entity_set_float(ent,EV_FL_fuser1,current_law_loading_time-LAW_THINK_PERIOD)
+			}
+			else{
+				entity_set_int(ent,EV_INT_iuser1,1)
+				entity_set_float(ent,EV_FL_fuser1,0.0)
+
+			}
+		}
 		
 		//draw_bbox(ent,0)
 		set_pev(ent, pev_nextthink, gametime + get_law_think_period())
@@ -436,11 +441,6 @@ public _clear_rockets(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, JETPLANE_ROCKET_CLASSNAME)
 while(grenada) {
-	new owner=Entvars_Get_Edict(grenada, EV_ENT_owner)
-	if(pev_valid(owner)==2){
-
-		remove_task(owner+ROCKET_RELOAD_TASKID);
-	}
 	remove_rocket(grenada)
 	grenada = find_ent_by_class(grenada, JETPLANE_ROCKET_CLASSNAME)
 }

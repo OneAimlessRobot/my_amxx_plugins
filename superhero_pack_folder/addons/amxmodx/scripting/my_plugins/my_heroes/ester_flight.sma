@@ -1,4 +1,3 @@
-
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <fakemeta_util>
@@ -53,8 +52,7 @@ new g_last_coords[SH_MAXSLOTS+1][3]
 new g_is_glowing[SH_MAXSLOTS+1]
 
 
-stock ESTER_REBORN_COLLISION_TASKID,
-		ESTER_REBORN_CALCULATION_LOOP_TASKID,
+stock ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_POSITION_CHECK_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_TEAM_CHECK_TASKID ,
@@ -99,7 +97,6 @@ public plugin_init()
 	register_logevent("ester_round_end", 2, "1=Round_End")
 	register_logevent("ester_round_end", 2, "1&Restart_Round_")
 
-	ESTER_REBORN_COLLISION_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_CALCULATION_LOOP_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_POSITION_CHECK_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_GLOW_TASKID=allocate_typed_task_id(player_task)
@@ -151,7 +148,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED;
 	
 	}
-	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&ester_get_reborn_mode(id)){
+	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&g_ester_is_reborn_mode[id]){
 		
 			sh_extra_damage( attacker, id,floatround(ester_damage_reflect_coeff*damage), "Charging reflect" )
 			directed_spark(id, attacker)
@@ -196,7 +193,7 @@ inc_user_ester_respawn_attempts(id){
 }
 public Ester_Knockback(id)
 {
-	if ( !sh_is_active() || !ester_get_reborn_mode(id)||!client_hittable(id)) return HAM_IGNORED
+	if ( !sh_is_active() ||!client_hittable(id)|| !g_ester_is_reborn_mode[id]) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -227,7 +224,6 @@ remove_user_flight_fx(id){
 	if(!sh_user_has_hero(id,ester_get_hero_id())||!is_user_connected(id)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
-	set_user_rendering(id)
 	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	emit_sound(id, CHAN_AUTO,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(id, CHAN_AUTO,FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -266,7 +262,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 }
 public OnCmdStart(id, uc_handle, seed)
 {
-	if(!sh_user_has_hero(id,ester_get_hero_id())||!client_hittable(id)||!ester_get_reborn_mode(id)||sh_get_stun(id)){
+	if(!sh_user_has_hero(id,ester_get_hero_id())||!client_hittable(id)||!g_ester_is_reborn_mode[id]||sh_get_stun(id)){
 			return FMRES_IGNORED;
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -295,7 +291,14 @@ public OnCmdStart(id, uc_handle, seed)
 				emit_sound(id, CHAN_AUTO, FLIGHT_WEAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			
 			}
-			
+			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
+				trail(id,COLOR_STRONG,1,10)
+			}
+			else{
+				trail(id,COLOR_WEAK,1,10)
+				
+				
+			}
 			
 		}
 		g_flying[id]=true;
@@ -314,13 +317,9 @@ public OnCmdStart(id, uc_handle, seed)
 			
 			
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
-				trail(id,COLOR_STRONG,1,10)
-				glow(id,LineColors[COLOR_STRONG][0],LineColors[COLOR_STRONG][1],LineColors[COLOR_STRONG][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			}
 			else{
-				trail(id,COLOR_WEAK,1,10)
-				glow(id,LineColors[COLOR_WEAK][0],LineColors[COLOR_WEAK][1],LineColors[COLOR_WEAK][2],255,1)
 				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 				
 				
@@ -459,7 +458,6 @@ public ester_respawn(parm[])
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
-	set_task(ESTER_REBORN_COLLISION_THINK_TIME, "player_to_player_touch_task", id+ESTER_REBORN_COLLISION_TASKID,"",0,"b")
 	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, 1)
 
 	
@@ -563,13 +561,11 @@ public positionChangeTimer(id)
 
 	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
 }
-ester_remove_statuses(id,rem_explosion=1,remove_god=1,remove_collosions=1){
+ester_remove_statuses(id,rem_explosion=1,remove_god=1){
 	
 	remove_task(id+ESTER_REBORN_GLOW_TASKID)
 	remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
-	if(remove_collosions){
-		remove_task(id+ESTER_REBORN_COLLISION_TASKID)
-	}
+	
 	if(rem_explosion){
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 	}
@@ -606,7 +602,7 @@ public positionChangeCheck(id)
 public BlowUp(id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
-	ester_remove_statuses(id,0,1,0)
+	ester_remove_statuses(id,0,1)
 	explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
 	
 		
@@ -625,46 +621,43 @@ public revival(id)
 }
 //----------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------
-public player_to_player_touch_task(id)
-{
-	id-=ESTER_REBORN_COLLISION_TASKID
-	new killer=id
-	if(!client_hittable(killer)||!sh_user_has_hero(killer,ester_get_hero_id())||!ester_get_reborn_mode(killer)||!ester_fly_knock_enemies){
-		
-		remove_task(id+ESTER_REBORN_COLLISION_TASKID)
-		return
-	}
-	if(!g_flying[killer]){
-		
-		return
-	}
-	new tger_name[128], vic_name[128],entlist[33];
-	get_user_name(killer,tger_name,127)
-	
-	new numfound = find_sphere_class(killer,"player", ESTER_REBORN_COLLISION_DISTANCE_THRESHOLD,entlist, 32);
-	new CsTeams:killer_team=cs_get_user_team(killer)
-	for(new i=0;i<numfound;i++){
-		new victim=entlist[i]
-		if(!client_hittable(victim)){
-			
-			continue
-		}
+public vexd_pfntouch(pToucher, pTouched) {
 
-		get_user_name(victim,vic_name,127)
-		if(cs_get_user_team(victim)==killer_team){
-			continue
-		}
-		new Float:killer_velocity[3],Float:killer_speed
-		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
-		
-		killer_speed=vector_length(killer_velocity)
-		
-		explosion(ester_get_hero_id(),killer,150.0,(0.2*killer_speed),ester_fly_knock_enemies_force,1)
-		entity_get_vector(killer,EV_VEC_velocity,killer_velocity)
-		multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
-		entity_set_vector(killer,EV_VEC_velocity,killer_velocity)
-		
-	}
+
+if (pev_valid(pToucher)!=2){
+	
 	return
+}
+if (!client_hittable(pToucher)){
+
+	return
+}
+if (!sh_user_has_hero(pToucher,ester_get_hero_id())||!g_ester_is_reborn_mode[pToucher]||!ester_fly_knock_enemies){
+
+	return
+}
+if(!client_hittable(pTouched)){
+	
+	return
+}
+if(pTouched==pToucher){
+
+	return
+}
+if(sh_clients_are_same_team(pToucher,pTouched)){
+
+	return
+}
+
+new Float:killer_velocity[3],Float:killer_speed
+entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+
+killer_speed=vector_length(killer_velocity)
+
+explosion(ester_get_hero_id(),pToucher,150.0,(0.2*killer_speed),ester_fly_knock_enemies_force,1)
+entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
+entity_set_vector(pToucher,EV_VEC_velocity,killer_velocity)
+
+
 }

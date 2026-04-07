@@ -26,11 +26,41 @@ public plugin_init(){
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
 	RegisterHam(Ham_Weapon_Reload, SHINOBU_WEAPON_CLASSNAME, "track_shinobu_usp_ammo",_,true)
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("ResetHUD","shinobu_usp_newRound","b")
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	init_hud_syncs()
     
 	
+}
+
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	
+	if(!client_hittable(player)){
+		return FMRES_IGNORED
+	}
+
+	if(!sh_user_has_hero(player,shinobu_get_hero_id())){
+
+		return FMRES_IGNORED
+	}
+	new weapon = get_user_weapon(player);
+	if(weapon!=SHINOBU_WEAPON_CLASSID){
+		return FMRES_IGNORED
+	}
+	
+	new pEntity = get_pdata_cbase(player, m_pActiveItem)
+	if(is_valid_ent(pEntity)){
+
+		new is_silenced=cs_get_weapon_silen(pEntity)
+		if(!is_silenced){
+			sh_chat_message(player,-1,"Did the update weapon function run?")
+			set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+			return FMRES_HANDLED
+		}
+	}	
+	return FMRES_IGNORED
 }
 public plugin_natives(){
 
@@ -186,7 +216,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	if(button & IN_ATTACK)
 	{
-		new weapon_ent = get_pdata_cbase( id , m_ppActiveItem ) 
+		new weapon_ent = get_pdata_cbase( id , m_pActiveItem ) 
 		new is_silenced=cs_get_weapon_silen(weapon_ent)
 		if(!is_silenced){
 			button &= ~IN_ATTACK;

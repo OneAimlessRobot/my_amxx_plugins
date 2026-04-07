@@ -12,6 +12,45 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+enum bleed_task_parameter_id{
+	Float:bleed_task_period,
+	Float:bleed_task_time,
+	bleed_task_repeats,
+	bleed_task_apply_id,
+	bleed_task_remove_id,
+	bleed_task_apply_func_name[128],
+	bleed_task_remove_func_name[128]
+}
+enum bleed_alpha_type{
+  hud_alpha,
+  render_alpha
+}
+stock const bleed_type_names[_:NUM_BLEED_TYPES][]={
+			"no bleeding",
+      "mini bleeding",
+      "bleeding",
+      "ultrableeding"
+}
+stock const bleed_type_damages[_:NUM_BLEED_TYPES]={
+			0,
+      10,
+      40,
+      40
+}
+stock const bleed_type_alphas[_:NUM_BLEED_TYPES][bleed_alpha_type]={
+			{0,0},
+      {50,255},
+      {75,255},
+      {120,255}
+}
+stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={	
+					{-1.0,5.0,0,-1,-1,"",""},
+					{1.0,5.0,0,-1,-1,"bleed_task","unbleed_task"},
+					{1.0,5.0,0,-1,-1,"bleed_task","unbleed_task"},
+					{0.25,5.0,0,-1,-1,"bleed_task","unbleed_task"}
+
+}
+
 new gIsBleeding[SH_MAXSLOTS+1]
 public plugin_init(){
 
@@ -19,7 +58,7 @@ public plugin_init(){
 register_plugin(PLUGIN, VERSION, AUTHOR);
 arrayset(gIsBleeding,NONE,SH_MAXSLOTS+1)
 
-for(new i=_:MINI_BLEED;i<_:NUM_BLEED_TYPES;i++){
+for(new i=_:BLEED_MINI;i<_:NUM_BLEED_TYPES;i++){
 	
 	bleed_task_parameters[i][bleed_task_apply_id]=allocate_typed_task_id(player_task)
 	bleed_task_parameters[i][bleed_task_remove_id]=allocate_typed_task_id(player_task)
@@ -113,16 +152,16 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 			
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
 			{
-				sh_bleed_user(id,attacker,ULTRABLEED,hero_id,heal_attacker)
+				sh_bleed_user(id,attacker,BLEED_ULTRA,hero_id,heal_attacker)
 				damage=damage*4;
 			}
 			else{
-				sh_bleed_user(id,attacker,BLEED,hero_id,heal_attacker)
+				sh_bleed_user(id,attacker,BLEED_NORMAL,hero_id,heal_attacker)
 			}
 		}
 		else if(slashing){
 			
-			sh_bleed_user(id,attacker,MINI_BLEED,hero_id,heal_attacker)
+			sh_bleed_user(id,attacker,BLEED_MINI,hero_id,heal_attacker)
 		}
 		sh_extra_damage(id,attacker,damage,attack_name_string,0,SH_DMG_NORM)
 	}
