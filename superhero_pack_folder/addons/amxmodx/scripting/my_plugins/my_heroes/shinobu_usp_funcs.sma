@@ -55,7 +55,6 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 
 		new is_silenced=cs_get_weapon_silen(pEntity)
 		if(!is_silenced){
-			sh_chat_message(player,-1,"Did the update weapon function run?")
 			set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
 			return FMRES_HANDLED
 		}
