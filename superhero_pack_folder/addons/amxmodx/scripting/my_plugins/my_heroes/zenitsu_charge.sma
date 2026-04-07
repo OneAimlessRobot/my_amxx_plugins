@@ -5,6 +5,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -18,7 +19,6 @@
 #include "../my_include/my_author_header.inc"
 
 new g_zenitsu_has_touched_player[SH_MAXSLOTS+1]
-new g_zenitsu_charge_engaged[SH_MAXSLOTS+1]
 new g_zenitsu_is_charging[SH_MAXSLOTS+1]
 new g_zenitsu_was_charging[SH_MAXSLOTS+1]
 new Float:g_zenitsu_curr_charge_look_direction[SH_MAXSLOTS+1][3]
@@ -83,17 +83,8 @@ remove_user_flight_fx(id){
 }
 public plugin_natives(){
 
-	register_native("zenitsu_charge_execute","_zenitsu_charge_execute",0)
 	register_native("zenitsu_get_has_touched_player","_zenitsu_get_has_touched_player",0)
 	
-}
-public _zenitsu_charge_execute(iPlugin,iParams){
-	
-	new id= get_param(1)
-	
-	if ( !client_hittable(id)||!shModActive()) return
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())) return
-	g_zenitsu_charge_engaged[id]=1
 }
 public _zenitsu_get_has_touched_player(iPlugin,iParams){
 	
@@ -103,7 +94,7 @@ public _zenitsu_get_has_touched_player(iPlugin,iParams){
 }
 public zenitsu_charge(id, uc_handle, seed)
 {
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!client_hittable(id)||!g_zenitsu_charge_engaged[id]||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!client_hittable(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -161,7 +152,7 @@ if (!client_hittable(pToucher)){
 
 	return
 }
-if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!g_zenitsu_charge_engaged[pToucher]||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
+if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
 
 	return
 }
@@ -185,8 +176,16 @@ sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[
 			SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
 
-g_zenitsu_has_touched_player[pToucher]=1
-g_zenitsu_charge_engaged[pToucher]=0
+
+if((floatround(ZENITSU_DAMAGE)>=get_user_health(pTouched))&&!get_user_godmode(pTouched)){
+
+	new Float:vic_origin[3],Float:origin[3]
+	entity_get_vector(pTouched,pev_origin,vic_origin)
+	entity_get_vector(pToucher,pev_origin,origin)
+	gross_kill_gibs_fx(pTouched,vic_origin,origin)
+
+}
+zenitsu_set_charge_mode_engaged(pToucher,0)
 
 }
 
@@ -198,7 +197,7 @@ public on_death_cleanup()
 	if(is_user_connected(id)&&sh_is_active()){
 		if(sh_user_has_hero(id,zenitsu_get_hero_id())){
 
-			g_zenitsu_charge_engaged[id]=0
+			zenitsu_set_charge_mode_engaged(id,0)
 		}
 	}
 	

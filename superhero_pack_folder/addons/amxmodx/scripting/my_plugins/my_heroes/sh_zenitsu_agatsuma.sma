@@ -41,6 +41,7 @@ public plugin_init()
 public plugin_natives(){
 	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id",0)
 	register_native("zenitsu_get_charge_mode_engaged","_zenitsu_get_charge_mode_engaged",0)
+	register_native("zenitsu_set_charge_mode_engaged","_zenitsu_set_charge_mode_engaged",0)
 	
 	
 	
@@ -49,6 +50,12 @@ public plugin_natives(){
 public _zenitsu_get_charge_mode_engaged(iPlugins, iParms){
 	new id=get_param(1)
 	return gChargeModeEngaged[id]
+	
+}
+public _zenitsu_set_charge_mode_engaged(iPlugins, iParms){
+	new id=get_param(1)
+	new value=get_param(2)
+	gChargeModeEngaged[id]=value
 	
 }
 
@@ -70,13 +77,6 @@ public loadCVARS()
     //nothing for now
 
 }
-zenitsu_charge_init(id){
-
-
-	sh_chat_message(id,gHeroID,"Zenitsu charge initted!")
-	zenitsu_charge_execute(id)
-}
-
 //----------------------------------------------------------------------------------------------
 public zenitsu_newRound(id)
 {
@@ -140,32 +140,5 @@ public zenitsu_kd()
 	}
 	gChargeModeEngaged[id]=1
 	sh_sleep_user(id,id,zenitsu_get_hero_id())
-	zenitsu_charge_init(id)
 	return PLUGIN_HANDLED
-}
-public death()
-{
-	if(!sh_is_active()) return
-	
-	new id = read_data(2)
-	new killer= read_data(1)
-	
-	if(is_user_connected(killer)&&is_user_connected(id)){
-		if(gHasZenitsu[killer]){
-			
-		}
-		if(gHasZenitsu[id]){
-			
-		}
-		
-	}
-		
-}
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
-	
-		return DMG_FWD_PASS
-	}
-	
-	return DMG_FWD_PASS
 }
