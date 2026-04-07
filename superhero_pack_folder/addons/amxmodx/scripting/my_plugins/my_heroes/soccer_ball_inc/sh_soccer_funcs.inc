@@ -3,8 +3,8 @@
 #endif
 #define sh_soccer_funcs
 
-stock const BALL_BOUNCE_GROUND[ ] = "kickball/bounce.wav";
-stock const g_szBallModel[ ]     = "models/kickball/ball.mdl";
+stock const BALL_BOUNCE_GROUND[ ] = "shmod/roberto_carlos/kickball/bounce.wav";
+stock const g_szBallModel[ ]     = "models/shmod/roberto_carlos/kickball/ball.mdl";
 stock ballcolor[3] = { 255,200,100 }
 
 stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"

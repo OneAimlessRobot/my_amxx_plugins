@@ -5,7 +5,8 @@
 # specified directory, then uses $PWD to figure out where that
 # directory lives - and all this in a subshell, so we don't affect
 # $PWD
-GAMEROOT=$(cd "${0%/*}" && echo "${PWD}")
+
+GAMEROOT=$(cd "${0%/*}" && echo $PWD)
 
 #determine platform
 UNAME=`uname`
@@ -36,7 +37,6 @@ ulimit -n 2048
 cd "$GAMEROOT"
 
 STATUS=42
-#DEBUGGER="gdb"
 while [ $STATUS -eq 42 ]; do
 	${DEBUGGER} "${GAMEROOT}"/${GAMEEXE} $@
 	STATUS=$?

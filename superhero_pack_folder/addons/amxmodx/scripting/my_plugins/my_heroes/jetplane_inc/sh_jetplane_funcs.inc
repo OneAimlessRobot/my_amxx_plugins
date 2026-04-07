@@ -15,7 +15,7 @@
 
 
 #define JETPLANE_MODEL "models/shmod/yandere/jetplane/fuselage/airattack_plane.mdl"
-#define JETPLANE_CAMERA_MODEL "models/camera.mdl"
+#define JETPLANE_CAMERA_MODEL "models/shmod/camman/camera/camera.mdl"
 #define ROCKET_MODEL "models/shmod/yandere/jetplane/projectiles/GradRocket.mdl"
 
 
