@@ -20,7 +20,6 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -31,7 +30,6 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 
 
 new gHeroName[]="S.W.A.T."
-new bool:g_hasSwatPower[SH_MAXSLOTS+1]
 new has_rocket[33]
 new bool:g_betweenRounds
 new bool:is_a_swat[33]
@@ -90,7 +88,7 @@ public plugin_init()
 public newRound(id)
 {
 	gPlayerUltimateUsed[id] = false
-	if ( shModActive() && g_hasSwatPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		set_task(0.1, "swat_weapons", id+WEAPONS_TASKID)
 
 	}
@@ -129,7 +127,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !g_hasSwatPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -154,13 +152,13 @@ public swat_damage(id)
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-	if ( g_hasSwatPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
 		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "swat_m4a1", headshot)
 	}
 
-	else if(g_hasSwatPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ){
+	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "tactical_knife", headshot)
 	}
@@ -183,17 +181,9 @@ public Swat_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has BlackLotus
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	if (!is_user_connected(id)) return
-
-	g_hasSwatPower[id] = (hasPowers != 0)
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
-	if (g_hasSwatPower[id]) {
+	if (sh_user_has_hero(id,gHeroID)) {
 		swat_weapons(id)
 		switchmodel(id)
 	}
@@ -217,7 +207,7 @@ public Swat_kd()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	if ( !is_user_alive(id) || !g_hasSwatPower[id]  ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  ) return
 
 	if(sh_get_user_is_asleep(id)) return
 	if(sh_get_user_is_chaffed(id)) return
@@ -404,11 +394,6 @@ public guide_rocket_comm(args[],id)
 public client_disconnected(id)
 {
 	remove_task(id+WEAPONS_TASKID)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	g_hasSwatPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public round_end(){

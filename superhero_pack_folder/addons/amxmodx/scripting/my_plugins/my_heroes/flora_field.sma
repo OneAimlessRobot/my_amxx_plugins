@@ -22,6 +22,7 @@ stock Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
 stock g_flora_field_loaded[SH_MAXSLOTS+1];
 stock g_prev_flora_button[SH_MAXSLOTS+1];
 stock g_curr_flora_button[SH_MAXSLOTS+1];
+stock g_flora_previous_weapon[SH_MAXSLOTS+1]
 stock g_prev_flora_cloaked[SH_MAXSLOTS+1];
 stock g_curr_flora_cloaked[SH_MAXSLOTS+1];
 stock g_flora_num_of_active_fields[SH_MAXSLOTS+1]
@@ -56,8 +57,7 @@ stock flora_field_max_active_ammount
 
 stock FLORA_COOLDOWN_TASKID,
 		FLORA_LOAD_TASKID,
-		FLORA_CHARGE_TASKID,
-		FLORA_DEPLOY_TASKID
+		FLORA_CHARGE_TASKID
 
 
 
@@ -101,7 +101,7 @@ public plugin_init()
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
 	FLORA_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	FLORA_DEPLOY_TASKID=allocate_typed_task_id(player_task)
+
 
 	register_forward(FM_Think, "field_think")
 	register_forward(FM_CmdStart, "field_checks")
@@ -515,6 +515,10 @@ public _form_field(iPlugin,iParams)
 		sh_chat_message(id,flora_get_hero_id(),"Field not loaded")
 		return
 	}
+
+	new weaponID = get_user_weapon(id)
+	g_flora_previous_weapon[id]=weaponID
+
 	
 	new Float: Origin[3],  Ent
 	
@@ -582,8 +586,6 @@ public end_cooldown_update_tasks(id){
 	remove_task(id+FLORA_COOLDOWN_TASKID)
 }
 public field_deploy_task(parm[],id){
-	
-	id-=FLORA_DEPLOY_TASKID
 	
 	new field_id=parm[1];
 	if(pev_valid(field_id)!=2){
@@ -778,8 +780,8 @@ uncharge_user(id){
 		g_flora_field_loaded[id]=1
 		g_flora_curr_charging[id]=-1;
 	}
-	if ( flora_get_prev_weapon(id) != CSW_KNIFE ){
-		shSwitchWeaponID(id, flora_get_prev_weapon(id))
+	if (g_flora_previous_weapon[id] != CSW_KNIFE ){
+		shSwitchWeaponID(id, g_flora_previous_weapon[id])
 	}
 	return 0
 	
@@ -855,7 +857,7 @@ public charge_task(parm[],id){
 		new parm[2]
 		parm[0]=owner
 		parm[1]=field_id
-		field_deploy_task(parm,id+FLORA_DEPLOY_TASKID)
+		field_deploy_task(parm,id)
 		uncharge_user(owner)
 	}
 	

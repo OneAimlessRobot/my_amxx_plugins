@@ -20,7 +20,6 @@ shock_armor 250			//Armor Starts with (def=250)
 #define TASKID_ESCAPE 90232
 // GLOBAL VARIABLES
 new gHeroName[]="Escapist"
-new bool:g_hasEscapistPower[SH_MAXSLOTS+1]
 new g_climbing[SH_MAXSLOTS+1]
 new Float:g_wallorigin[SH_MAXSLOTS+1][3]
 new g_lastWeapon[SH_MAXSLOTS+1]
@@ -109,7 +108,7 @@ public sh_round_end()
 public fw_Touch(ent,id){
 
 
-	if(!is_user_alive(ent) || !g_hasEscapistPower[ ent ]|| !pev_valid(ent)||!is_valid_ent( ent ) )
+	if(!is_user_alive(ent) || !sh_user_has_hero(ent,gHeroID)  || !pev_valid(ent)||!is_valid_ent( ent ) )
 		return FMRES_IGNORED
 	
 	entity_get_vector( ent, EV_VEC_origin, g_wallorigin[ ent ] );
@@ -185,7 +184,7 @@ public escapist_escape_prison(id){
 
 	id-=TASKID_ESCAPE
 	
-	if ( !is_user_connected(id)||!is_user_alive(id)||!g_hasEscapistPower[id]){
+	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ){
 	
 	
 	return
@@ -209,13 +208,7 @@ public escapist_init()
 	new id=str_to_num(temp)
 	gPlayerLevel[id]=sh_get_user_lvl(id)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Static Shock powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-
-	g_hasEscapistPower[id] = (hasPowers!=0)
-
-	if ( g_hasEscapistPower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)  ) {
 		remove_task(id+TASKID)
 		remove_task(id+TASKID_ESCAPE)
 		set_task( 0.01, "escapist_loop", id+TASKID, "", 0, "b")
@@ -231,7 +224,7 @@ public escapist_loop(id)
 {
 	id -= TASKID
 
-	if ( !is_user_connected(id)||!is_user_alive(id)||!g_hasEscapistPower[id]){
+	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ){
 	
 	
 	return PLUGIN_HANDLED
@@ -355,8 +348,7 @@ public sh_round_start(){
 public newRound(id)
 {
 	gPlayerLevel[id]=sh_get_user_lvl(id)
-	if(g_hasEscapistPower[id]&&gIsGoTime&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)&&is_user_alive(id)&&is_user_connected(id)){
-		sh_chat_message(id,gHeroID,"You mastered escaping so you are now free to move in freeze time!");
+	if(sh_user_has_hero(id,gHeroID)  &&gIsGoTime&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)&&is_user_alive(id)&&is_user_connected(id)){
 		sh_chat_message(id,gHeroID,"You got switched to your fastest weapon!");
 	
 	}

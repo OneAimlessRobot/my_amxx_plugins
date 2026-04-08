@@ -17,7 +17,6 @@ new gmorphed[SH_MAXSLOTS+1]
 new num_mines
 new mine_cooldown
 new disarmable
-new teamglow_on
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -29,7 +28,6 @@ public plugin_init()
 	register_cvar("sapper_level", "8")
 	register_cvar("sapper_mines", "8")
 	register_cvar("sapper_disarmable", "1")
-	register_cvar("sapper_teamglow_on", "1")
 	register_cvar("sapper_mine_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
@@ -139,7 +137,6 @@ public loadCVARS()
 num_mines=get_cvar_num("sapper_mines");
 mine_cooldown=get_cvar_num("sapper_mines");
 disarmable=get_cvar_num("sapper_disarmable");
-teamglow_on=get_cvar_num("sapper_teamglow_on")
 }
 public sh_client_spawn(id)
 {
@@ -190,9 +187,7 @@ if(sh_user_has_hero(id,gHeroID) ){
 public sapper_model(id)
 {
 	set_task(1.0, "sapper_morph", id+SAPPER_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "sapper_glow", id+SAPPER_MORPH_TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -218,10 +213,6 @@ public sapper_unmorph(id)
 
 		gmorphed[id] = false
 
-		if ( teamglow_on ) {
-			remove_task(id+SAPPER_MORPH_TASKID)
-			set_user_rendering(id)
-		}
 		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
 	}
 }

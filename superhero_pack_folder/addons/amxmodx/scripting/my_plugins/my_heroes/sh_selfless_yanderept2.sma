@@ -35,7 +35,6 @@ public plugin_init()
 	register_cvar("yandere_dmg_pct_per_inc", "0.35")
 	register_cvar("yandere_explode_radius", "1")
 	register_cvar("yandere_explode_maxdamage", "1")
-	register_cvar("yandere_teamglow_on", "1")
 	register_cvar("yandere_trans_time", "4.0")
 	register_cvar("yandere_base_extra_speed", "500")
 	register_cvar("yandere_degen_iter_period", "0.1")
@@ -357,7 +356,6 @@ min_players=get_cvar_num("yandere_min_players")
 explode_maxdamage=get_cvar_float("yandere_explode_maxdamage")
 explode_radius=get_cvar_float("yandere_explode_radius")
 curse_pct=get_cvar_float("yandere_angry_curse_pct")
-teamglow_on=get_cvar_num("yandere_teamglow_on")
 degen_iter_period=get_cvar_float("yandere_degen_iter_period")
 overheal_hp_max=get_cvar_num("yandere_overheal_hp_max")
 degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold")
@@ -660,9 +658,7 @@ public _yandere_model(iPlugin,iParams)
 {
 	new id= get_param(1)
 	set_task(1.0, "yandere_morph", id+YANDERE_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "yandere_glow", id+YANDERE_MORPH_TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -698,9 +694,6 @@ public _yandere_unmorph(iPlugin,iParams)
 
 		gmorphed[id] = false
 
-		if ( teamglow_on ) {
-			set_user_rendering(id)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------

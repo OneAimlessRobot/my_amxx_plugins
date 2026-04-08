@@ -26,7 +26,6 @@ new ksun_kill_type_broadness_level
 new ksun_spores_per_kill
 new ksun_spore_m4_mult
 new num_sleep_nades
-new teamglow_on
 new gHeroID
 stock ksun_when_reset_spores=never_reset;
 //----------------------------------------------------------------------------------------------
@@ -36,7 +35,6 @@ public plugin_init()
 	register_plugin("SUPERHERO ksun","1.1",AUTHOR)
 	
 	register_cvar("ksun_level", "12" )
-	register_cvar("ksun_teamglow_on", "1")
 	register_cvar("ksun_cooldown", "10.0" )
 	register_cvar("ksun_num_of_sleep_nades","6")
 	register_cvar("ksun_kill_type_broadness_level","0")
@@ -396,7 +394,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	cooldown= get_cvar_float("ksun_cooldown")
-	teamglow_on=get_cvar_num("ksun_teamglow_on")
 	num_sleep_nades=get_cvar_num("ksun_num_of_sleep_nades")
 	//<=1: Only m4 kills (Normal m4 damage) count for spores
 	//>=2: Any kills count for spores
@@ -421,7 +418,6 @@ public ksun_init()
 		ksun_morph(id+KSUN_MORPH_TASKID)
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
-		init_cooldown_update_tasks(id)
 		ksun_set_num_available_spores(id,0)
 		
 	
@@ -429,7 +425,6 @@ public ksun_init()
 	else{
 		spores_reset_user(id)
 		ksun_unultimate_user(id,_,1)
-		delete_cooldown_update_tasks(id)
 		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
 		ksun_set_num_available_spores(id,0)
@@ -492,15 +487,13 @@ public ksun_kd()
 		}
 	
 		if(!is_user_bot(id)){
-			new message[128]
-			formatex(message, 127, SEARCH_MSG )
-			client_print(id,print_center,"%s",message)
+			client_print(id,print_center,"%s",SEARCH_MSG)
 		}
 		spores_launch(id)
 	}
 	else{
 		if(!is_user_bot(id)){
-			new owner_name[128]
+			static owner_name[128]
 			get_user_name(id,owner_name,127)
 			client_print(0,print_chat,"[SH](ksun): %s is glistening",owner_name)
 		}
@@ -541,9 +534,7 @@ public ksun_model(id)
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
 	
 	set_task(1.0, "ksun_morph", id+KSUN_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "ksun_glow", id+KSUN_MORPH_TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -570,30 +561,6 @@ public ksun_unmorph(id)
 
 		gmorphed[id] = false
 
-		if ( teamglow_on ) {
-			remove_task(id+KSUN_MORPH_TASKID)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public ksun_glow(id)
-{
-	id -= KSUN_MORPH_TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+KSUN_MORPH_TASKID)
-		return
-	}
-
-	if (sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 255)
-		}
-		else {
-			shGlow(id, 0, 255, 255)
-		}
 	}
 }
 

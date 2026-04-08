@@ -11,7 +11,6 @@
 new gHeroID
 new const gHeroName[] = "Graciete"
 new gmorphed[SH_MAXSLOTS+1]
-new teamglow_on
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -24,7 +23,6 @@ public plugin_init()
 	register_cvar("graciete_jet_velocity", "8")
 	register_cvar("graciete_jet_cooldown", "8")
 	register_cvar("graciete_jet_max_power", "8")
-	register_cvar("graciete_teamglow_on", "1")
 	register_cvar("graciete_jet_stomp_grav_mult", "8")
 	register_cvar("graciete_land_explosion_radius", "8")
 	register_cvar("graciete_berserk_m3_mult", "8")
@@ -78,9 +76,7 @@ public graciete_init()
 public graciete_model(id)
 {
 	set_task(1.0, "graciete_morph", id+GRACIETE_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "graciete_glow", id+GRACIETE_MORPH_TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -107,10 +103,6 @@ public graciete_unmorph(id)
 
 		gmorphed[id] = false
 
-		if ( teamglow_on ) {
-			remove_task(id+GRACIETE_MORPH_TASKID)
-			set_user_rendering(id)
-		}
 		// Message
 		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
 	}
@@ -138,7 +130,7 @@ public graciete_glow(id)
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	teamglow_on=get_cvar_num("graciete_teamglow_on")
+	
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -182,11 +174,6 @@ public plugin_cfg()
 {
 	loadCVARS();
 	
-}
-public sh_round_end(){
-
-	clear_jps()
-
 }
 public client_disconnected(id){
 	

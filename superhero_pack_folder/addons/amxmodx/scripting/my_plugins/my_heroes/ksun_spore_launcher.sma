@@ -15,16 +15,12 @@ new Float:ksun_hold_time,
 
 
 
-new Float:g_player_cooldown_remaining[SH_MAXSLOTS+1]
 new g_launcher_phase[SH_MAXSLOTS+1]
 new g_player_launcher[SH_MAXSLOTS+1]
 new Float:g_launcher_timer[SH_MAXSLOTS+1]
 
 
 
-
-stock UNDEPLOY_LOOP_TASKID,
-	COOLDOWN_UPDATE_TASKID
 
 
 //----------------------------------------------------------------------------------------------
@@ -45,7 +41,6 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	register_forward(FM_Think, "launcher_think")
-	UNDEPLOY_LOOP_TASKID=allocate_typed_task_id(player_task)
 }
 
 
@@ -65,9 +60,6 @@ public plugin_natives(){
 	
 	register_native("get_follow_time","_get_follow_time",0)
 	
-	
-	register_native("delete_cooldown_update_tasks","_delete_cooldown_update_tasks",0)
-	register_native("init_cooldown_update_tasks","_init_cooldown_update_tasks",0)
 	
 	
 	
@@ -98,42 +90,6 @@ public ev_SendAudio(){
 	return PLUGIN_CONTINUE
 	
 }
-
-public _delete_cooldown_update_tasks(iPlugins, iParms){
-	
-	new id= get_param(1)
-	remove_task(id+COOLDOWN_UPDATE_TASKID)
-	
-	
-	
-}
-
-public _init_cooldown_update_tasks(iPlugins, iParms){
-	
-	new id= get_param(1)
-	set_task(COOLDOWN_UPDATE_PERIOD,"launcher_recharge_loop",id+COOLDOWN_UPDATE_TASKID,"",0,"b")
-	
-	
-}
-
-public launcher_recharge_loop(id){
-	
-	id-=COOLDOWN_UPDATE_TASKID;
-	
-	if(!client_hittable(id)||(client_hittable(id)&&!sh_user_has_hero(id,spores_ksun_hero_id()))){
-				
-		return
-		
-	}
-	if(g_player_cooldown_remaining[id]>0.0){
-		
-		g_player_cooldown_remaining[id]=floatsub(g_player_cooldown_remaining[id],COOLDOWN_UPDATE_PERIOD);
-		
-		
-	}
-	
-	
-}
 public _launchers_clear(iPlugins, iParms){
 	
 	new launcher = find_ent_by_class(-1, LAUNCHER_CLASSNAME)
@@ -146,7 +102,9 @@ public _launchers_clear(iPlugins, iParms){
 public _spores_reset_user(iPlugins, iParms){
 	
 	new id= get_param(1)
-	destroy_player_launcher(id+UNDEPLOY_LOOP_TASKID)
+
+	set_player_num_victims(id,0)
+	destroy_player_launcher(id)
 	destroy_player_scanner(id)
 	return PLUGIN_HANDLED
 	
@@ -189,7 +147,7 @@ public launcher_think(ent){
 	if ( (launcher_hp<LAUNCHER_DEAD_HP) || !is_valid_ent(launcher_owner) ){
 		
 		draw_bbox(ent,1)
-		destroy_player_launcher(launcher_owner+UNDEPLOY_LOOP_TASKID)
+		destroy_player_launcher(launcher_owner)
 		return FMRES_IGNORED
 		
 	}
@@ -251,7 +209,7 @@ public launcher_think(ent){
 		case PHASE_DONE:{
 		
 	
-			set_task(ksun_follow_time,"destroy_player_launcher",launcher_owner+UNDEPLOY_LOOP_TASKID)
+			destroy_player_launcher(launcher_owner)
 			return FMRES_IGNORED;
 		}
 		
@@ -270,7 +228,6 @@ public _spores_launch(iPlugin,iParms){
 		return
 	}
 	spores_reset_user(id)
-	g_player_cooldown_remaining[id]=floatadd(spores_cooldown(),get_scanner_traverse_time())
 	spawn_scanner(id)
 	
 	
@@ -360,13 +317,10 @@ entity_set_float( launcher, EV_FL_nextthink, floatadd(get_gametime( ) ,LAUNCHER_
 
 public destroy_player_launcher(id){
 	
-	id-=UNDEPLOY_LOOP_TASKID
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
 	if(sh_user_has_hero(id,spores_ksun_hero_id())){
 		reset_player_targets(id)
-		set_player_num_victims(id,0)
-		g_player_cooldown_remaining[id]=0.0
 		set_player_num_deployed_spores(id,0);
 		set_player_num_launched_spores(id,0);
 		g_launcher_phase[id]=0;

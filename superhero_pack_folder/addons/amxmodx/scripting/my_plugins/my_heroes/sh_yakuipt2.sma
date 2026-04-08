@@ -18,7 +18,6 @@ new gHeroID
 new const gHeroName[] = "Yakui Mk2"
 
 new gmorphed[SH_MAXSLOTS+1]
-new teamglow_on
 new mode_change_button_pressed[SH_MAXSLOTS+1]
 
 
@@ -37,7 +36,6 @@ public plugin_init()
 	register_cvar("yakui_level", "8")
 	register_cvar("yakui_pills","1000")
 	register_cvar("yakui_rockets","5")
-	register_cvar("yakui_teamglow_on","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
 	gatling_set_hero_id(gHeroID)
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
@@ -108,7 +106,6 @@ public loadCVARS()
 {
 	max_pills=get_cvar_num("yakui_pills")
 	max_rockets=get_cvar_num("yakui_rockets")
-	teamglow_on=get_cvar_num("yakui_teamglow_on")
 }
 public yakui_init()
 {
@@ -203,9 +200,6 @@ public sh_client_spawn(id)
 public yakui_tasks(id)
 {
 	set_task(1.0, "yakui_morph", id+YAKUI_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "yakui_glow", id+YAKUI_MORPH_TASKID, "", 0, "b" )
-	}
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -236,30 +230,6 @@ public yakui_unmorph(id)
 		
 		gmorphed[id] = false
 		
-		if ( teamglow_on ) {
-			remove_task(id+YAKUI_MORPH_TASKID)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public yakui_glow(id)
-{
-	id -= YAKUI_MORPH_TASKID
-	
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+YAKUI_MORPH_TASKID)
-		return
-	}
-	
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------

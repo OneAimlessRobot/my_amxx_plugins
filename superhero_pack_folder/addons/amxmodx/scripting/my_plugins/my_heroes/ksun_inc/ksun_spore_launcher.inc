@@ -42,8 +42,6 @@
 
 
 
-native init_cooldown_update_tasks(id)
-native delete_cooldown_update_tasks(id)
 native get_player_launcher_phase(id)
 native get_player_launcher(id)
 native launcher_deploy(id)

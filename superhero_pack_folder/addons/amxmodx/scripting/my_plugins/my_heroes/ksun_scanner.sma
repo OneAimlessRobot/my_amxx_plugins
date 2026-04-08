@@ -218,7 +218,6 @@ public _destroy_player_scanner(iPlugin,iParams){
 	if(sh_user_has_hero(id,spores_ksun_hero_id())){
 		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
 			
-			
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
 			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
@@ -334,7 +333,6 @@ public scanner_think(scanner){
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
 	if(entity_get_float(scanner, EV_FL_fuser2)>=ksun_track_max_radius){
 		
-		
 		show_targets(id)
 		if(g_player_num_victims[id]>0){
 			
@@ -355,22 +353,26 @@ public scanner_think(scanner){
 	num_launched_spores[id]=0
 	arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 	g_player_num_victims[id]=0
-	
-	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
-	new entlist[33];
 
-	new numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
-	new CsTeams:idTeam = cs_get_user_team(id)
-	for( new i= 0;(g_player_num_victims[id]<(min(ksun_get_num_available_spores(id),ksun_max_victims)))&&(i< numfound);i++){
+	new obj_num_of_victims=min(ksun_get_num_available_spores(id),ksun_max_victims)
+	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
+	static entlist[33];
+
+	new  numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
+	
+	
+	for( new i= 0;(g_player_num_victims[id]<obj_num_of_victims)&&(i< numfound);i++){
 		
 			new pid = entlist[i];
 			if(!client_hittable(pid)){
 				continue
 			
 			}
-			
-			if((cs_get_user_team(pid)==idTeam)){
-					continue
+			if(pid==id){
+				continue
+			}
+			if(sh_clients_are_same_team(pid,id)){
+				continue
 			}
 			if(!g_player_tracks_player[id][pid]){
 				g_player_tracks_player[id][pid]=true
@@ -398,7 +400,7 @@ show_targets(id){
 	}
 	new client_name[128];
 	get_user_name(id,client_name,127)
-	if(g_player_num_victims[id]<=0){
+	if(!g_player_num_victims[id]){
 		
 		
 		if(!is_user_bot(id)){

@@ -33,9 +33,7 @@ stock ham_is_on=0
 stock HamHook:the_damage_ham_hook;
 
 
-stock CAMERA_ARMING_TASKID,
-		CAMERA_WAIT_TASKID,
-		CAMERA_CHARGE_TASKID,
+stock CAMERA_CHARGE_TASKID,
 		UNCAMERA_CHARGE_TASKID,
 		CAMERA_DISARM_TASKID,
 		UNCAMERA_DISARM_TASKID
@@ -62,8 +60,6 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_forward(FM_Think, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
-	CAMERA_ARMING_TASKID=allocate_typed_task_id(entity_task)
-	CAMERA_WAIT_TASKID=allocate_typed_task_id(entity_task)
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNCAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
@@ -328,7 +324,8 @@ public _plant_camera(iPlugins,iParams)
 	set_pev(NewEnt, pev_takedamage, DAMAGE_NO)
 	set_pev(NewEnt, pev_iuser1, 0)		//0 Will be for inactive.
 	
-	
+	//set phase status
+	set_pev(NewEnt,pev_iuser2,0)
 	set_camera_aiming(id,NewEnt)
 	set_pev(NewEnt, pev_euser1, id)
 	camman_set_has_camera(id,1)
@@ -339,8 +336,7 @@ public _plant_camera(iPlugins,iParams)
 	parm[1]=NewEnt
 	
 	camera_charge[id]=max_camera_charge
-	set_task(CAMERA_ARMING_TIME,"camera_arm_task",NewEnt+CAMERA_ARMING_TASKID, parm, 2, "a",1)
-	set_pev(NewEnt, pev_nextthink, get_gametime() + CAMERA_ARMING_TIME+1.0)
+	set_pev(NewEnt, pev_nextthink, get_gametime() + CAMERA_ARMING_TIME)
 	return PLUGIN_HANDLED
 }
 set_camera_aiming(other_ent,cam_id){
@@ -467,80 +463,77 @@ public camera_think(ent)
 	pev(ent, pev_classname, classname, charsmax(classname))
 	
 	if ( !equal(classname, CAMERA_CLASSNAME) ) return FMRES_IGNORED
-	
-	static Float:vEnd[3], Float:gametime,Float:Pos[3]
-	pev(ent, pev_origin, Pos)
-	pev(ent, pev_vuser1, vEnd)
-	gametime = get_gametime()
+	//get phase
+	new phase=pev(ent,pev_iuser2)
 	new owner=pev(ent,pev_euser1)
-	new Float:cameraHealth=float(pev(ent,pev_health))
-	new parm[3]
-	parm[1]=ent
-	parm[0]=owner
-	if ( (cameraHealth<1000.0)) {
-		
-		remove_camera(owner);
-		return FMRES_IGNORED
-	}
-	if(looking_with_camera[owner]){
-		camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
-		laser_on_player_think(ent)
-		update_camera_aiming(owner,ent)
-		set_pev(ent, pev_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
+	static Float:gametime
+	gametime = get_gametime()
+	switch(phase){
+		case 0:{
+			set_pev(ent, pev_iuser1, 1)
+			set_pev(ent, pev_takedamage, DAMAGE_YES)
+			set_pev(ent, pev_solid, SOLID_BBOX)
+			emit_sound(ent, CHAN_VOICE, CAMERA_CLICK_SFX, 1.0, 0.0, 0, PITCH_NORM)
+			emit_sound(ent,CHAN_VOICE, CAMERA_BOOTED_SFX, 1.0, 0.0, 0, PITCH_NORM)
+			set_pev(ent,pev_rendermode,kRenderTransAlpha)
+			set_pev(ent,pev_renderfx,kRenderFxGlowShell)
+			new alpha=camman_camera_maxalpha
+			set_pev(ent,pev_renderamt,float(alpha))
+			if(!ham_is_here){
+				the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","Camera_Damage",_,true)
+				ham_is_here=1;
+			}
+			if(!ham_is_on){
+				EnableHamForward(the_damage_ham_hook)
+				ham_is_on=1;
+			}
+			if(!is_user_bot(owner)){
+				sh_chat_message(owner,camman_get_hero_id(),"The camera is armed!");
+			}
+			set_pev(ent,pev_iuser2,1)
+
+			set_pev(ent, pev_nextthink, gametime + 1.0)
+		}
+		case 1:{
+
+			new alpha=pev(ent,pev_renderamt)
+			alpha=max(alpha-ALPHA_INC,camman_camera_minalpha)
+			set_pev(ent,pev_renderamt,float(alpha))
+			if(alpha==camman_camera_minalpha){
+				
+				set_pev(ent,pev_iuser2,2)
+			}
+			set_pev(ent, pev_nextthink, gametime + 1.0)
+		}
+		case 2:{
+			static Float:vEnd[3], Float:Pos[3]
+			pev(ent, pev_origin, Pos)
+			pev(ent, pev_vuser1, vEnd)
+			new Float:cameraHealth=float(pev(ent,pev_health))
+			new parm[3]
+			parm[1]=ent
+			parm[0]=owner
+			if ( (cameraHealth<1000.0)) {
+				
+				remove_camera(owner);
+				return FMRES_IGNORED
+			}
+			if(looking_with_camera[owner]){
+				camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
+				laser_on_player_think(ent)
+				update_camera_aiming(owner,ent)
+				set_pev(ent, pev_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
+			}
+		}
 	}
 	
 	return FMRES_IGNORED
-}
-public camera_arm_task(parm[],camera_taskid){
-	
-	
-	new attacker=parm[0];
-	new camera_id=parm[1];
-	if(!is_valid_ent(camera_id)){
-		
-		return;
-	}
-	set_pev(camera_id, pev_iuser1, 1)
-	set_pev(camera_id, pev_takedamage, DAMAGE_YES)
-	set_pev(camera_id, pev_solid, SOLID_BBOX)
-	emit_sound(camera_id, CHAN_VOICE, CAMERA_CLICK_SFX, 1.0, 0.0, 0, PITCH_NORM)
-	emit_sound(camera_id,CHAN_VOICE, CAMERA_BOOTED_SFX, 1.0, 0.0, 0, PITCH_NORM)
-	set_pev(camera_id,pev_rendermode,kRenderTransAlpha)
-	set_pev(camera_id,pev_renderfx,kRenderFxGlowShell)
-	new alpha=camman_camera_maxalpha
-	set_pev(camera_id,pev_renderamt,float(alpha))
-	set_task(CAMERA_WAIT_TIME,"camera_wait_task",camera_id+CAMERA_WAIT_TASKID, parm, 2, "b")
-	if(!ham_is_here){
-		the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","Camera_Damage",_,true)
-		ham_is_here=1;
-	}
-	if(!ham_is_on){
-		EnableHamForward(the_damage_ham_hook)
-		ham_is_on=1;
-	}
-	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,camman_get_hero_id(),"The camera is armed!");
-	}
-}
-public camera_wait_task(parm[],camera_taskid){
-	new camera_id=parm[1];
-	if(pev_valid(camera_id)!=2){
-		
-		return;
-	}
-	new alpha=pev(camera_id,pev_renderamt)
-	alpha=max(alpha-ALPHA_INC,camman_camera_minalpha)
-	set_pev(camera_id,pev_renderamt,float(alpha))
-	
-	
 }
 public remove_camera(pid){
 	if(!is_user_connected(pid)) return
 	camman_set_has_camera(pid,0)
 	if(pev_valid(user_camera[pid])!=2) return
 	
-	remove_task(user_camera[pid]+CAMERA_ARMING_TASKID);
-	remove_task(user_camera[pid]+CAMERA_WAIT_TASKID);
 	camera_loaded[pid]=true
 	remove_entity(user_camera[pid])
 

@@ -1,0 +1,43 @@
+L 04/08/2026 - 20:07:21: Start of error session.
+L 04/08/2026 - 20:07:21: Info (map "de_train") (file "addons/amxmodx/logs/error_20260408.log")
+L 04/08/2026 - 20:07:21: [FAKEMETA] Invalid entity
+L 04/08/2026 - 20:07:21: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "pev") - debug not enabled!
+L 04/08/2026 - 20:07:21: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:26: Start of error session.
+L 04/08/2026 - 20:28:26: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260408.log")
+L 04/08/2026 - 20:28:26: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:26: [AMXX] Run time error 10 (plugin "ksun_ultimate_module.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:28:26: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:30: Start of error session.
+L 04/08/2026 - 20:28:30: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260408.log")
+L 04/08/2026 - 20:28:30: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:30: [AMXX] Run time error 10 (plugin "ksun_ultimate_module.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:28:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:30: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:30: [AMXX] Run time error 10 (plugin "ksun_particle.amxx") (native "ksun_get_when_reset_spores") - debug not enabled!
+L 04/08/2026 - 20:28:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:30: Unhandled dynamic native error
+L 04/08/2026 - 20:28:30: [AMXX] Run time error 10 (plugin "ksun_particle.amxx") (native "ksun_get_when_reset_spores") - debug not enabled!
+L 04/08/2026 - 20:28:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:55: Start of error session.
+L 04/08/2026 - 20:28:55: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260408.log")
+L 04/08/2026 - 20:28:55: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:55: [AMXX] Run time error 10 (plugin "ksun_ultimate_module.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:28:55: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:57: Start of error session.
+L 04/08/2026 - 20:28:57: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260408.log")
+L 04/08/2026 - 20:28:57: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:57: [AMXX] Run time error 10 (plugin "ksun_ultimate_module.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:28:57: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:58: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:28:58: [AMXX] Run time error 10 (plugin "ksun_particle.amxx") (native "ksun_get_when_reset_spores") - debug not enabled!
+L 04/08/2026 - 20:28:58: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:28:58: Unhandled dynamic native error
+L 04/08/2026 - 20:28:58: [AMXX] Run time error 10 (plugin "ksun_particle.amxx") (native "ksun_get_when_reset_spores") - debug not enabled!
+L 04/08/2026 - 20:28:58: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:29:03: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:29:03: [AMXX] Run time error 10 (plugin "sleep_grenade_funcs.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:29:03: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/08/2026 - 20:29:20: Called dynanative into a paused plugin.
+L 04/08/2026 - 20:29:20: [AMXX] Run time error 10 (plugin "ksun_spore_launcher.amxx") (native "spores_ksun_hero_id") - debug not enabled!
+L 04/08/2026 - 20:29:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

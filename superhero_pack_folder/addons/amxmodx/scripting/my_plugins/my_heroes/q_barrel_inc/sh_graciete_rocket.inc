@@ -4,7 +4,6 @@
 #define sh_graciete_rocket_funcs
 
 
-#define JP_CLASSNAME "jp_class"
 #define GROUND_THRESHOLD 20.0
 
 #define GRACIETE_CHARGE_PERIOD 0.1
@@ -16,8 +15,6 @@
 
 #define jp_jump "shmod/graciete/jp/rocketfire1.wav"
 #define jp_fly "shmod/graciete/jp/rocket1.wav"
-#define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
-#define jp_mdl "models/shmod/graciete/jp/rpgrocket.mdl"
 /*
 public Float:distance_to_ground( const id )
 {
@@ -40,10 +37,7 @@ public Float:distance_to_ground( const id )
     return result
 }*/
 
-native clear_jps()
-
 native reset_graciete_user(id)
-native jet_get_user_jet_cooldown(id)
 native jet_get_user_power_landing(id)
 native jet_uncharge_user(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

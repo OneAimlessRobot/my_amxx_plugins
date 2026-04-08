@@ -41,7 +41,7 @@ new times_picked
 new blast_shroom
 new gHeroID;
 #define TASKID 532221
-new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown,team_glow_on
+new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
 new a_flags[10]
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -59,7 +59,6 @@ public plugin_init()
 	register_cvar("thrashy_cooldown", "2" )
 	register_cvar("thrashy_adminflag", "a")
 	register_cvar("thrashy_akmult", "10.0" )
-	register_cvar("thrashy_teamglow", "1" )
 	register_cvar("thrashy_speed", "500" )
 	new healthcvar=register_cvar("thrashy_health", "1000" )
 
@@ -147,7 +146,6 @@ public loadCVARS()
 	xplodeod_radius=get_cvar_num("thrashy_explodeod_radius")
 	xplodeoddmg=get_cvar_num("thrashy_explodeod_maxdamage")
 	ndynamites=get_cvar_num("thrashy_ndynamites")
-	team_glow_on=get_cvar_num("thrashy_teamglow")
 	cooldown=get_cvar_num("thrashy_cooldown")
 	get_cvar_string("thrashy_adminflag",a_flags,9)
 	ak_dmgmult=get_cvar_float("thrashy_akmult")
@@ -183,9 +181,7 @@ public fw_CmdStart( id, uc_handle, seed )
 public thrashy_tasks(id)
 {
 	set_task(1.0, "thrashy_morph", id+TASKID)
-	if( team_glow_on){
-		set_task(1.0, "thrashy_glow", id+TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -215,30 +211,6 @@ public thrashy_unmorph(id)
 
 		gmorphed[id] = false
 
-		if ( team_glow_on ) {
-			remove_task(id+TASKID)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public thrashy_glow(id)
-{
-	id -= TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+TASKID)
-		return
-	}
-
-	if (sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------

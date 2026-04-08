@@ -382,21 +382,6 @@ switch(get_player_launcher_phase(id)){
 }
 }
 
-//----------------------------------------------------------------------------------------------
-public untrack_spore_task(spore){
-
-	if(pev_valid(spore)){
-		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
-		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		entity_set_float( spore, EV_FL_fuser1, 0.0);
-		remove_entity(spore)
-		dec_player_num_victims(spore_owner)
-		ksun_dec_num_available_spores(spore_owner)
-	}
-
-}
-
 
 public spore_think(spore){
 

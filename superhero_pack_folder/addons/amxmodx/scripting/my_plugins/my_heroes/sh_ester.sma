@@ -26,7 +26,6 @@ new gTimesLeft[SH_MAXSLOTS+1]
 new gBuiltUpXp[SH_MAXSLOTS+1]
 
 new gmorphed[SH_MAXSLOTS+1]
-new teamglow_on
 
 new bool:g_ester_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
@@ -50,8 +49,7 @@ new adulting_pan_wpn_id
 new dmg_source_name_short_adulting_pan[SAFE_BUFFER_SIZE+1]="the_pan_tm"
 new dmg_source_name_long_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
 
-stock ESTER_GLOW_TASKID,
-	ESTER_REVENGE_TASKID,
+stock ESTER_REVENGE_TASKID,
 	ESTER_MORPH_TASKID
 
 //----------------------------------------------------------------------------------------------
@@ -68,7 +66,6 @@ public plugin_init()
 	register_cvar("ester_damage", "3")
 	register_cvar("ester_period", "0.1")
 	register_cvar("ester_max_dmg", "20")
-	register_cvar("ester_teamglow_on", "1")
 	register_cvar("ester_dmg_inc_per_inc", "5")
 	register_cvar("ester_lvls_for_inc", "5")
 	register_cvar("ester_uses_per_map","1")
@@ -99,7 +96,6 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "ester_ku")
 	register_forward(FM_PlayerPreThink, "ester_prethink")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
-	ESTER_GLOW_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REVENGE_TASKID=allocate_typed_task_id(player_task)
 	ESTER_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
@@ -212,9 +208,7 @@ stock ester_weapons(id){
 public ester_model(id)
 {
 	set_task(1.0, "ester_morph", id+ESTER_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "ester_glow", id+ESTER_MORPH_TASKID, "", 0, "b" )
-	}
+	
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -240,10 +234,6 @@ public ester_unmorph(id)
 		
 		gmorphed[id] = false
 		
-		if ( teamglow_on ) {
-			remove_task(id+ESTER_MORPH_TASKID)
-			set_user_rendering(id)
-		}
 		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Fuck my li- *Sigh...* Spectating again")
 	}
 }
@@ -410,7 +400,6 @@ public loadCVARS()
 	num_lvls_for_inc=get_cvar_num("ester_lvls_for_inc")
 	pan_dmg=get_cvar_float("ester_pan_dmg")
 	tmp_dmg_mult=get_cvar_float("ester_tmp_dmg_mult")
-	teamglow_on=get_cvar_num("ester_teamglow_on")
 	max_moralizing_xp=get_cvar_num("ester_max_moralizing_xp");
 	moralizing_tmp_xp_give=get_cvar_num("ester_moralizing_tmp_xp_give")
 	moralizing_pan_xp_give=get_cvar_num("ester_moralizing_pan_xp_give")
@@ -418,42 +407,6 @@ public loadCVARS()
 	moralizing_tmp_xp_get_mult=get_cvar_num("ester_moralizing_tmp_xp_get_mult"); 
 	moralizing_pan_xp_get_mult=get_cvar_num("ester_moralizing_pan_xp_get_mult");
 
-}//----------------------------------------------------------------------------------------------
-public ester_loop(id)
-{
-	id -= ESTER_GLOW_TASKID
-	
-	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!id){
-		
-		return PLUGIN_HANDLED
-		
-	}
-	if(gPedalIsFloored[id]){
-		
-		sh_set_rendering(id, 8, 255, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
-		
-		
-	}
-	else {
-		if(gUnloading[id]){
-			
-			sh_set_rendering(id, 255, 255, 255, 255,kRenderFxGlowShell, kRenderTransAlpha)
-			
-			
-		}
-		else  if(gFinished[id]) {
-			
-			
-			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"Revenge taken. You shall now die");
-			}
-			sh_extra_damage(id,id,1,"Neuroblast",false,SH_DMG_KILL)
-			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-			
-			
-		}
-	}
-	return PLUGIN_HANDLED
 }
 public Ester_revenge_loop(id)
 {
@@ -725,9 +678,6 @@ public client_disconnected(id){
 	
 	remove_task(id+ESTER_REVENGE_TASKID)
 	
-	if(!is_user_bot(id)){
-		remove_task(id+ESTER_GLOW_TASKID)
-	}
 }
 public plugin_precache()
 {
@@ -765,7 +715,6 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 public death()
 {
 	new id=read_data(2)
-	remove_task(id+ESTER_GLOW_TASKID)
 	if ( !is_user_connected(id)){
 		return
 	}

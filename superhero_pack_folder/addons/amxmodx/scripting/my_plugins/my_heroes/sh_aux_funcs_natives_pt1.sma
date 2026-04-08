@@ -8,8 +8,6 @@
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
-#include <fakemeta_util>
-
 
 
 #define PLUGIN "Superhero fx natives pt1"

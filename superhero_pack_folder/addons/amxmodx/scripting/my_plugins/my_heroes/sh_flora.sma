@@ -1,7 +1,6 @@
 
 
 #include "../my_include/superheromod.inc"
-#include <fakemeta_util>
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -16,10 +15,7 @@ stock const debug_hud_mode= false
 new gHeroName[]="Flora"
 new gmorphed[SH_MAXSLOTS+1]
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
-new g_flora_num_of_fields_prev[SH_MAXSLOTS+1]
-new g_flora_previous_weapon[SH_MAXSLOTS+1]
 new gFloraHeroLvl
-new teamglow_on
 new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -28,7 +24,6 @@ public plugin_init()
 	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
 	register_cvar("flora_level", "39" )
-	register_cvar("flora_teamglow_on", "1")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -52,29 +47,12 @@ public plugin_init()
 public plugin_natives(){
 
 	register_native("flora_get_hero_id","_flora_get_hero_id",0);
-	register_native("flora_set_prev_weapon","_flora_set_prev_weapon",0)
-	register_native("flora_get_prev_weapon","_flora_get_prev_weapon",0)
 	register_native("flora_get_user_num_fields","_flora_get_user_num_fields",0)
 	register_native("flora_set_user_num_fields","_flora_set_user_num_fields",0)
 	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields",0)
 	register_native("flora_get_hero_lvl","_flora_get_hero_lvl",0)
 	
 
-	
-
-}
-public _flora_set_prev_weapon(iPlugins,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-	
-	g_flora_previous_weapon[id]=value
-	
-
-}
-public _flora_get_prev_weapon(iPlugins,iParams){
-	new id=get_param(1)
-	
-	return g_flora_previous_weapon[id]
 	
 
 }
@@ -134,7 +112,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	gFloraHeroLvl=get_cvar_num("flora_level")
-	teamglow_on=get_cvar_num("flora_teamglow_on")
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -169,9 +146,7 @@ public flora_model(id)
 	if ( !client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return
 	
 	set_task(1.0, "flora_morph", id+FLORA_MORPH_TASKID)
-	if( teamglow_on){
-		set_task(1.0, "flora_glow", id+FLORA_MORPH_TASKID, "", 0, "b" )
-	}
+	
 
 }
 //----------------------------------------------------------------------------------------------
@@ -184,23 +159,6 @@ public flora_morph(id)
 
 	gmorphed[id] = true
 	
-}
-//----------------------------------------------------------------------------------------------
-public flora_unmorph(id)
-{
-	id-=FLORA_MORPH_TASKID
-	if(!is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-		if ( teamglow_on ) {
-			remove_task(id+FLORA_MORPH_TASKID)
-			set_user_rendering(id)
-		}
-	}
 }
 public client_disconnected(id){
 	
@@ -243,10 +201,6 @@ public flora_kd()
 		return PLUGIN_HANDLED
 		
 	}
-	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
-	flora_set_prev_weapon(id,weaponID)
-
-	g_flora_num_of_fields_prev[id]=g_flora_num_of_fields[id]
 	form_field(id)
 	return PLUGIN_HANDLED
 }
@@ -273,26 +227,6 @@ public flora_ku()
 	return PLUGIN_HANDLED
 }
 
-//----------------------------------------------------------------------------------------------
-public flora_glow(id)
-{
-	id -= FLORA_MORPH_TASKID
-
-	if ( !client_hittable(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+FLORA_MORPH_TASKID)
-		return
-	}
-
-	if (is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 0, 255, 255)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
-}
 
 public sh_client_death(id,killer,headshot,const wpnDescription[])
 {

@@ -22,7 +22,6 @@ new gHeroName[]="ElectroB00M"
 new gSpriteLightning
 new const gTeslaCoilRevvingSound[] = "ambience/voltage.wav"
 new const gTeslaCoilOff[] = "weapons/egon_off1.wav"
-new bool:g_hasElectroBoomPowers[SH_MAXSLOTS+1]
 new bool:g_teslacoilRunning[SH_MAXSLOTS+1]
 new bool:gRechargeAllowed[SH_MAXSLOTS+1]
 new pcvarArmor, pCvarPeriod, pCvarPowerCost, pcvarTimeToStun, pcvarElectroB00MStunSpeed, pCvarElectroB00MRadius,pCvarElectroB00MDamage
@@ -67,11 +66,6 @@ public sh_hero_init(id, heroID, mode)
 	
 	if ( mode == SH_HERO_ADD ) {
 		set_task(get_pcvar_float(pCvarPeriod), "ElectroB00M_loop", id, _, _, "b")
-		g_hasElectroBoomPowers[id]=true
-	}
-	else{
-		g_hasElectroBoomPowers[id]=false
-	
 	}
 	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
@@ -89,7 +83,7 @@ gPowerCost = get_pcvar_num(pCvarPowerCost)
 public ElectroB00M_loop(id)
 {
 
-if ( !sh_is_active() || !is_user_alive(id) || !gRechargeAllowed[id] ||!g_hasElectroBoomPowers[id]) return
+if ( !sh_is_active() || !is_user_alive(id) || !gRechargeAllowed[id] ||!sh_user_has_hero(id,gHeroID) ) return
 static CsArmorType:armorType
 static userArmor
 userArmor = cs_get_user_armor(id, armorType)
@@ -149,7 +143,7 @@ switch(g_teslacoilRunning[id]) {
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, gHeroID, key)
 {
-if ( gHeroID != gHeroID ||!g_hasElectroBoomPowers[id]) return
+if ( gHeroID != gHeroID ||!sh_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -283,7 +277,6 @@ g_teslacoilRunning[id] = false
 // This needs to change to a forward check
 set_user_info(id, "TC", "0")
 
-g_hasElectroBoomPowers[id]=false
 gRechargeAllowed[id] = false
 
 // Yeah don't want any left over residuals
