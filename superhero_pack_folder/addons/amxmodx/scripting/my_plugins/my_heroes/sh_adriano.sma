@@ -13,8 +13,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Adriano"
-new bool:gHasAdriano[SH_MAXSLOTS+1]
-//new g_base_points[SH_MAXSLOTS+1]
 new g_adriano_points[SH_MAXSLOTS+1]
 new Float:g_base_speed[SH_MAXSLOTS+1]
 new Float:g_normal_speed[SH_MAXSLOTS+1]
@@ -98,7 +96,7 @@ public loadCVARS()
 	base_points=get_cvar_num("adriano_base_points")
 }
 public Ham_respawn(id){
-	if ( shModActive() && gHasAdriano[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		adriano_weapons(id)
 
 	}
@@ -108,7 +106,7 @@ public Ham_respawn(id){
 //----------------------------------------------------------------------------------------------
 public adriano_weapons(id)
 {
-	if ( shModActive() && client_hittable(id)&& gHasAdriano[id] ) {
+	if ( shModActive() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
 		colt_set_colt(id)
 		ethereal_set_ethereal(id)
 	}
@@ -121,10 +119,7 @@ public adriano_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasAdriano[id]=(hasPowers!=0)
-	if(gHasAdriano[id]){
+	if(sh_user_has_hero(id,gHeroID)){
 		
 		sh_reset_max_speed(id)
 		adriano_weapons(id)
@@ -163,7 +158,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 
 		if(!sh_clients_are_same_team(i,id)) continue;
 
-		if(gHasAdriano[i]){
+		if(sh_user_has_hero(i,gHeroID) ){
 			heal_stream(i, id,YELLOW,200)
 			aura(i,LineColors[YELLOW])
 			add_speed_points(i,damage,true)
@@ -204,7 +199,7 @@ public heal_teamate(id,teamate){
 public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!gHasAdriano[attacker]) return HAM_IGNORED
+	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
 	new clip,ammo, weapon = get_user_weapon(attacker, clip,ammo)
 	
@@ -239,7 +234,7 @@ public adriano_damage(id)
 
 	get_speed_dmg_in_radius(id,damage)
 	
-	if(gHasAdriano[id]&&(weapon==CSW_ETHEREAL)){
+	if(sh_user_has_hero(id,gHeroID) &&(weapon==CSW_ETHEREAL)){
 	
 		sh_extra_damage(id,attacker,floatround(damage),"Adriano Ethereal Rifle",headshot)
 	
@@ -247,7 +242,7 @@ public adriano_damage(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!gHasAdriano[id]||is_user_bot(id) )
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) )
 		return FMRES_IGNORED;
 	
 	
@@ -293,7 +288,7 @@ public client_disconnected(id){
 }
 update_stats(id){
 	
-	if(gHasAdriano[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
 		set_user_maxspeed(id,g_normal_speed[id])
@@ -306,7 +301,7 @@ update_stats(id){
 public weaponChange(id)
 {
 	if (!shModActive()&&client_hittable(id)) return PLUGIN_CONTINUE
-	if(!gHasAdriano[id]) return PLUGIN_CONTINUE
+	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
@@ -327,7 +322,7 @@ public adriano_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id)||!gHasAdriano[id]) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
 	heal_teamate(id,id)
 	
@@ -337,7 +332,7 @@ public adriano_kd()
 public newRound(id)
 {	
 	if(is_user_alive(id) && shModActive()){
-		if ( gHasAdriano[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			adriano_weapons(id)
 			sh_reset_max_speed(id)
 			g_adriano_points[id]=base_points;

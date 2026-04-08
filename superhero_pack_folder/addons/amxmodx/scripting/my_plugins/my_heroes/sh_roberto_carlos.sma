@@ -14,7 +14,6 @@ new gHeroID
 
 new const gHeroName[] = "Roberto Carlos"
 
-new gHasRoberto[SH_MAXSLOTS+1]
 new gNumBalls[SH_MAXSLOTS+1]
 
 new round_win[] = "shmod/roberto_carlos/cheers/round_win.wav"
@@ -36,12 +35,10 @@ public plugin_init()
 	register_srvcmd("roberto_kd", "roberto_kd")
 	shRegKeyDown(gHeroName, "roberto_kd")
 	register_cvar("roberto_level", "8")
-	arrayset(gHasRoberto,0,sizeof gHasRoberto);
 	register_cvar("roberto_num_balls", "100")
 	register_cvar("roberto_ball_cooldown", "1.0")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
-	roberto_set_hero_id(gHeroID)
 	register_srvcmd("roberto_init", "roberto_init")
 	shRegHeroInit(gHeroName, "roberto_init")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -79,7 +76,7 @@ public ev_SendAudio(){
 	} // Draw
 	for(new id=1;id<SH_MAXSLOTS+1;id++){
 		
-		if(gHasRoberto[id]&&is_user_connected(id)){
+		if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
 			player_team=cs_get_user_team(id)
 			if(player_team==win_team){
 				if(!playing_win_sound){
@@ -120,9 +117,6 @@ public plugin_natives(){
 	register_native("roberto_get_num_balls","_roberto_get_num_balls",0);
 	register_native("roberto_set_num_balls","_roberto_set_num_balls",0);
 	
-	
-	
-	register_native("roberto_set_hero_id","_roberto_set_hero_id",0);
 	register_native("roberto_get_hero_id","_roberto_get_hero_id",0);
 	
 	
@@ -131,10 +125,6 @@ public plugin_natives(){
 public _roberto_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
-public _roberto_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
-}
-
 public _roberto_set_num_balls(iPlugin,iParams){
 	new id= get_param(1)
 	new value_to_set=get_param(2)
@@ -165,10 +155,7 @@ public roberto_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasRoberto[id]=(hasPowers!=0)
-	if(gHasRoberto[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		gNumBalls[id]=num_balls
 		
 	}
@@ -200,7 +187,7 @@ public roberto_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id)||!gHasRoberto[id]) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
@@ -227,18 +214,12 @@ public roberto_kd()
 public newRound(id)
 {	
 	if(is_user_alive(id) && shModActive()){
-		if ( gHasRoberto[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			gNumBalls[id]=num_balls
 		}
 	}
 	return PLUGIN_HANDLED
-	
-}
-public sh_client_spawn(id)
-{
-	if ( gHasRoberto[id] ) {
-	}
 	
 }
 public sh_round_end(){

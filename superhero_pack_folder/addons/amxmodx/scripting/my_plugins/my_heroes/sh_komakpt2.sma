@@ -26,7 +26,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Komak the Maid Mk. II"
-new bool:gHasKomak[SH_MAXSLOTS+1]
 new g_komak_hits[SH_MAXSLOTS+1]
 new g_komak_gear[SH_MAXSLOTS+1]
 new Float:gCurrReloadRatio[SH_MAXSLOTS+1]
@@ -121,7 +120,7 @@ public Item_PostFrame_Post(iEnt)
 		
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!gHasKomak[id])return HAM_IGNORED
+	if (!sh_is_active()||!sh_user_has_hero(id,gHeroID) )return HAM_IGNORED
 	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
 	return HAM_IGNORED
 } 
@@ -133,10 +132,7 @@ public komak_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasKomak[id]=(hasPowers!=0)
-	if(gHasKomak[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
 		if(!is_user_bot(id)){
 			set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
@@ -163,7 +159,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 	new return_result=HAM_IGNORED;
 	new client_is_hittable_here=client_hittable(this)
 	if(client_is_hittable_here){
-		if(gHasKomak[this]){
+		if(sh_user_has_hero(this,gHeroID) ){
 
 			new hitgroup=get_tr2(traceresult,TR_iHitgroup);
 			switch(hitgroup){
@@ -176,7 +172,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 	}
 	
-	if( !sh_is_active() ||!client_hittable(idattacker,gHasKomak[idattacker])){
+	if( !sh_is_active() ||!client_hittable(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
 		
 		return return_result;
 	
@@ -243,7 +239,7 @@ public engine_repair_loop(id){
 
 		return;
 	}
-	if(gHasKomak[id]&&(gEngineRepairTimer[id]>0)){
+	if(sh_user_has_hero(id,gHeroID) &&(gEngineRepairTimer[id]>0)){
 		
 		gEngineRepairTimer[id]--;
 		
@@ -258,7 +254,7 @@ public komak_hud_task(id){
 
 		return;
 	}
-	if(gHasKomak[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		komak_hud(id)
 		
 	
@@ -324,7 +320,7 @@ public loadCVARS()
 }
 public reset_komak(id){
 
-	if ( gHasKomak[id]) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		g_komak_hits[id]=0;
 		g_komak_gear[id]=1;
 		gCurrFireRatio[id]=base_fire_ratio;
@@ -406,7 +402,7 @@ public komak_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !sh_is_active()||!is_user_alive(id)||!gHasKomak[id]||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
+	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
@@ -433,7 +429,7 @@ public komak_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !sh_is_active()||!is_user_alive(id)||!gHasKomak[id]||!gClutchDown[id]) return PLUGIN_HANDLED
+	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!gClutchDown[id]) return PLUGIN_HANDLED
 	
 	gClutchDown[id]=false
 	if(g_komak_hits[id]<red_line){
@@ -452,7 +448,7 @@ public Event_CurWeapon(id)
 	if(!is_user_connected(id)||!is_user_alive(id)) return
 	
 	new Gun = read_data(2) 
-	if( !gHasKomak[id] || !Gun || Gun==6 || Gun==29 || Gun>30)return		
+	if( !sh_user_has_hero(id,gHeroID) || !Gun || Gun==6 || Gun==29 || Gun>30)return		
 	
 	new Ammo = read_data(3) 	
 	if(gLastWeapon[id] != Gun || gLastClipCount[id] == Ammo)
@@ -469,7 +465,7 @@ public Event_CurWeapon(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-if(is_user_alive(id) && shModActive()&&gHasKomak[id]){ 
+if(is_user_alive(id) && shModActive()&&sh_user_has_hero(id,gHeroID) ){ 
 	reset_komak(id)	
 }
 return PLUGIN_CONTINUE

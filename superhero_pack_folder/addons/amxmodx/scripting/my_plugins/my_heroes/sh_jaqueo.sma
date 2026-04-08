@@ -7,7 +7,6 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-#define JAQUEO_HUD_TASKID 18382
 #define JAQUEO_MORPH_TASKID 28627
 
 new gHeroID
@@ -18,7 +17,6 @@ new const jaqueo_cool_scout_sounds[4][]={
 				"weapons/scouterista/tactical_clipout.wav",
 				"weapons/scouterista/tactical_fire-1.wav"}
 
-new gHasJaqueo[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
 new Float:scout_mult
@@ -54,7 +52,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasJaqueo[id]||!is_user_connected(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
@@ -68,9 +66,6 @@ switch_model(id)
 }
 public plugin_natives(){
 	
-	register_native("client_isnt_hitter","_client_isnt_hitter",0);
-	register_native("jaqueo_get_has_jaqueo","_jaqueo_get_has_jaqueo",0);
-	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id",0);
 	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id",0);
 	
 	
@@ -78,11 +73,6 @@ public plugin_natives(){
 public _jaqueo_get_hero_id(iPlugin,iParams){
 	
 	return gHeroID;
-	
-}
-public _jaqueo_get_has_jaqueo(iPlugin,iParams){
-	new id=get_param(1);
-	return gHasJaqueo[id]
 	
 }
 public jaqueo_init()
@@ -93,10 +83,7 @@ public jaqueo_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasJaqueo[id]=(hasPowers!=0)
-	if(gHasJaqueo[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_jaqueo_user(id)
 		jaqueo_weapons(id)
@@ -112,7 +99,7 @@ public jaqueo_init()
 }
 public jaqueo_weapons(id){
 	
-	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_give_weapon(id,CSW_SCOUT)
 	sh_give_weapon(id,CSW_AK47)
@@ -120,7 +107,7 @@ public jaqueo_weapons(id){
 }
 public jaqueo_drop_weapons(id){
 	
-	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_drop_weapon(id,CSW_SCOUT,true)
 	sh_drop_weapon(id,CSW_AK47,true)
@@ -134,7 +121,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	new headshot = bodypart == 1 ? 1 : 0
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
 	
-	if((weapon==CSW_SCOUT)&&gHasJaqueo[idattacker]){
+	if((weapon==CSW_SCOUT)&&sh_user_has_hero(idattacker,gHeroID) ){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(this, idattacker, floatround(extraDamage), "Jaqueo scout", headshot)
@@ -153,15 +140,12 @@ public loadCVARS()
 	scout_mult=get_cvar_float("jaqueo_scout_mult")
 	teamglow_on=get_cvar_num("jaqueo_teamglow_on")
 }
-public _client_isnt_hitter(iPlugin,iParams){
-	
-	new gatling_user=get_param(1);
-	
+public client_isnt_hitter(gatling_user){
 	
 	new bool:result=(!client_hittable(gatling_user))
 	if(result) return true
 	
-	return !gHasJaqueo[gatling_user]
+	return !sh_user_has_hero(gatling_user,gHeroID) 
 	
 }
 
@@ -170,7 +154,7 @@ public _client_isnt_hitter(iPlugin,iParams){
 public newRound(id)
 {	
 	
-	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
@@ -180,7 +164,7 @@ public newRound(id)
 }
 public sh_client_spawn(id){
 	
-	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
@@ -191,7 +175,7 @@ public sh_client_spawn(id){
 }
 public Ham_respawn(id){
 	
-	if(!gHasJaqueo[id]||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
@@ -209,7 +193,7 @@ public jaqueo_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!jaqueo_get_has_jaqueo(id)||!shield_loaded(id)) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!shield_loaded(id)) {
 		return PLUGIN_CONTINUE
 	}
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
@@ -232,7 +216,7 @@ public jaqueo_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!jaqueo_get_has_jaqueo(id)) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -265,7 +249,7 @@ public death()
 {
 	new id = read_data(2)
 	jaqueo_unmorph(id+JAQUEO_MORPH_TASKID)
-	if(gHasJaqueo[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		shield_destroy(id)
 		jaqueo_drop_weapons(id)
@@ -301,7 +285,7 @@ public jaqueo_tasks(id)
 public jaqueo_morph(id)
 {
 	id-=JAQUEO_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasJaqueo[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
 	
 	if ( get_user_team(id) == 1 )
 	{
@@ -342,7 +326,7 @@ public jaqueo_glow(id)
 		return
 	}
 	
-	if ( gHasJaqueo[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -353,7 +337,7 @@ public jaqueo_glow(id)
 }
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !gHasJaqueo[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 	
 	new weapon= read_data(2)
 	//weaponID = read_data(2)

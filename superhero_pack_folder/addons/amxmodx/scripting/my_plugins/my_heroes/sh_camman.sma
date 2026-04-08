@@ -11,7 +11,6 @@
 
 
 // GLOBAL VARIABLES
-new gHasCamman[SH_MAXSLOTS+1]
 new bool:gHasCamera[SH_MAXSLOTS+1]
 
 new camera_cooldown
@@ -80,9 +79,6 @@ public camman_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasCamman[id]=(hasPowers!=0)
 	reset_camman_user(id)
 
 	
@@ -110,7 +106,7 @@ public loadCVARS()
 }
 public sh_client_spawn(id)
 {
-	if ( gHasCamman[id] ) {
+	if (sh_user_has_hero(id,gHeroID)  ) {
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	
@@ -128,7 +124,7 @@ public newRound(id)
 public death()
 {
 	new id = read_data(2)
-	if(gHasCamman[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		camera_uncharge_camera(id)
 		camera_undisarm_camera(id)
@@ -142,7 +138,7 @@ public camman_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasCamman[id]) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	if (sh_get_user_is_asleep(id)){
@@ -207,7 +203,7 @@ public camman_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasCamman[id]||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(camera_get_camera_disarming(id)&&camera_get_camera_charging(id)){

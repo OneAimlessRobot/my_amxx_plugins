@@ -26,7 +26,6 @@ stock const famas_g2_sounds[5][]= {"weapons/teliko_famas/famassooom-2.wav",
 
 
 // GLOBAL VARIABLES
-new gHasTeliko[SH_MAXSLOTS+1]
 new gNumChaffs[SH_MAXSLOTS+1]
 new g_counter_bullets[SH_MAXSLOTS+1]
 new g_max_counter_bullets[SH_MAXSLOTS+1]
@@ -125,10 +124,7 @@ public teliko_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasTeliko[id]=(hasPowers!=0)
-	if(gHasTeliko[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		Teliko_weapons(id);
 		reset_teliko_user(id)
@@ -186,7 +182,7 @@ public plugin_cfg()
 }
 Teliko_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && gHasTeliko[id] ) {
+if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  ) {
 	sh_give_weapon(id,CHAFF_CLASSID,false)
 	cs_set_user_bpammo(id, CHAFF_CLASSID,num_chaffs);
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
@@ -216,7 +212,7 @@ start_counter_bullets=get_cvar_num("Teliko_start_counter_bullets")
 }
 public sh_client_spawn(id)
 {
-if ( gHasTeliko[id] ) {
+if ( sh_user_has_hero(id,gHeroID) ) {
 	Teliko_weapons(id)
 }
 
@@ -232,7 +228,7 @@ public teliko_unmorph(id){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( gHasTeliko[id]&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
 	
 	reset_teliko_user(id)
 	update_max_bullets(id)
@@ -341,7 +337,7 @@ else{
 	copy(weapon_name,strlen("NONE"),"NONE");
 	
 }
-if(gHasTeliko[id]){
+if(sh_user_has_hero(id,gHeroID) ){
 	
 	g_teliko_enemies[id][attacker]=true;
 	if((random_float(0.0,1.0) < COUNTER_BULLET_PCT)){
@@ -353,7 +349,7 @@ if(gHasTeliko[id]){
 	
 }
 
-if ( gHasTeliko[attacker]&&g_teliko_enemies[attacker][id]&&(weapon == g_teliko_weapon[attacker])&&(g_counter_bullets[attacker]>0))  {
+if ( sh_user_has_hero(attacker,gHeroID) &&g_teliko_enemies[attacker][id]&&(weapon == g_teliko_weapon[attacker])&&(g_counter_bullets[attacker]>0))  {
 	
 	new Float:extraDamage = damage * COUNTER_DMG_Mult - damage
 	if (floatround(extraDamage)>0){
@@ -382,7 +378,7 @@ public sh_round_end(){
 }
 switchmodel(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasTeliko[id]||!is_user_connected(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 
@@ -413,7 +409,7 @@ for(new i=0;i<sizeof(famas_g2_sounds);i++){
 public death()
 {
 new id = read_data(2)
-if(gHasTeliko[id]){
+if(sh_user_has_hero(id,gHeroID) ){
 
 	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
 	teliko_unmorph(id)
@@ -445,7 +441,7 @@ return PLUGIN_HANDLED
 public fire_weapon(id)
 {
 	
-if ( !gHasTeliko[id] ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -467,7 +463,7 @@ return PLUGIN_CONTINUE
 
 public switch_weapon(id)
 {
-if(gHasTeliko[id]){
+if(sh_user_has_hero(id,gHeroID) ){
 	new clip,ammo
 	new wpnid = get_user_weapon(id,clip,ammo)
 	if ( wpnid == CSW_FAMAS ){

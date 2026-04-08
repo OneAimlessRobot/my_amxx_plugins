@@ -8,12 +8,8 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-
-#define SAPPER_TASKID 12812
 #define SAPPER_MORPH_TASKID 128121
 
-// GLOBAL VARIABLES
-new gHasSapper[SH_MAXSLOTS+1]
 new gNumMines[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 
@@ -102,10 +98,7 @@ public sapper_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasSapper[id]=(hasPowers!=0)
-	if(gHasSapper[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		sapper_weapons(id);
 		reset_sapper_user(id)
@@ -114,7 +107,6 @@ public sapper_init()
 	}
 	else{
 		reset_sapper_user(id)
-		remove_task(id+SAPPER_TASKID)
 		sh_drop_weapon(id, CSW_P90, true)
 		sapper_unmorph(id+SAPPER_MORPH_TASKID)
 	}
@@ -137,7 +129,7 @@ public plugin_cfg()
 }
 sapper_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && gHasSapper[id] ) {
+if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 	sh_give_weapon(id, CSW_P90)
 }
 }
@@ -151,7 +143,7 @@ teamglow_on=get_cvar_num("sapper_teamglow_on")
 }
 public sh_client_spawn(id)
 {
-if ( gHasSapper[id] ) {
+if ( sh_user_has_hero(id,gHeroID) ) {
 	sapper_weapons(id)
 	sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 }
@@ -160,7 +152,7 @@ if ( gHasSapper[id] ) {
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( gHasSapper[id]&&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
 	
 	reset_sapper_user(id)
 	sapper_weapons(id)
@@ -187,7 +179,7 @@ public death()
 {
 new id = read_data(2)
 sapper_unmorph(id+SAPPER_MORPH_TASKID)
-if(gHasSapper[id]){
+if(sh_user_has_hero(id,gHeroID) ){
 
 	mine_uncharge_mine(id)
 	mine_undisarm_mine(id)
@@ -207,7 +199,7 @@ public sapper_model(id)
 public sapper_morph(id)
 {
 	id-=SAPPER_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasSapper[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
 	
 	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Sapper ready.")
 	cs_set_user_model(id, "sapper")
@@ -244,7 +236,7 @@ public sapper_glow(id)
 		return
 	}
 
-	if ( gHasSapper[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -262,7 +254,7 @@ public sapper_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasSapper[id]) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 
@@ -306,7 +298,7 @@ public sapper_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasSapper[id]||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(mine_get_mine_disarming(id)&&mine_get_mine_charging(id)){

@@ -36,9 +36,7 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 
 // GLOBAL VARIABLES
 new gHeroName[]="Gambit"
-new bool:gHasGambitPower[SH_MAXSLOTS+1]
 new bool:gWillHit[SH_MAXSLOTS+1]
-new bool:gGambitNade[SH_MAXSLOTS+1][MAX_ENTITIES]
 new gGrenTrail
 new gHeroID;
 new Float:gTotalChance
@@ -93,9 +91,10 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public grenade_throw(id, gid, wid)
 {
-	if(gHasGambitPower[id]&&!gPlayerUltimateUsed[id] ){
+	if(sh_user_has_hero(id,gHeroID) &&!gPlayerUltimateUsed[id] ){
 	if(wid == CSW_HEGRENADE){
-		gGambitNade[id][gid]=gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
+		gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
+		entity_set_int(gid,EV_INT_iuser1,gWillHit[id])
 		sh_chat_message(id,gHeroID,"GAMBLE IT ALL! You valliant survivor!")
 		if ( gWillHit[id])
 		{
@@ -113,39 +112,31 @@ public gambit_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasGambitPower[id] = (hasPowers!=0)
-
-	if (gHasGambitPower[id] && is_user_alive(id) ) {
+	if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		gambit_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasGambitPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		gPlayerUltimateUsed[id] = false
 		set_task(0.1, "gambit_weapons", id)
-		for(new i = SH_MAXSLOTS+1; i < sizeof(gGambitNade[])-1; i++) {
-			gGambitNade[id][i] = false
-		}
+		
 	}
 }
 //----------------------------------------------------------------------------------------------
 public gambit_weapons(id)
 {
-	if ( shModActive() && gHasGambitPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		shGiveWeapon(id, "weapon_hegrenade")
 	}
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !shModActive() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
-
-	if ( gGambitNade[attacker][idinflictor] ) {
+	new gambit_charged= entity_get_int(idinflictor,EV_INT_iuser1)
+	if ( gambit_charged ) {
 		if ( is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
@@ -165,9 +156,15 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 public cooldown(parm[])
 {
 	new grenade = parm[0]
+
+	if(!is_valid_ent(grenade )) return 
+	new szClassNamePtr[32]
+	entity_get_string(grenade , EV_SZ_classname, szClassNamePtr, 31)
+	if ( !equal(szClassNamePtr, "grenade")) return
+	
 	new id = parm[1]
 
-	gGambitNade[id][grenade] = false
+	entity_set_int(grenade,EV_INT_iuser1,false)
 
 	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
 
@@ -183,7 +180,7 @@ public on_AmmoX(id)
 	new iAmmoType = read_data(1)
 	new iAmmoCount = read_data(2)
 
-	if ( iAmmoType == AMMOX_HEGRENADE && gHasGambitPower[id] ) {
+	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID)  ) {
 
 		if (iAmmoCount == 0) {
 			set_task(get_cvar_float("gambit_grenadetimer"), "gambit_weapons", id)
@@ -228,10 +225,5 @@ public on_AmmoX(id)
 			remove_task(id)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasGambitPower[id] = false
 }
 //----------------------------------------------------------------------------------------------

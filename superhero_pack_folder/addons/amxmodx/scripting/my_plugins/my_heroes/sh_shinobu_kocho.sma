@@ -17,7 +17,6 @@ stock SHINOBU_POISON_KICK_DELAYED_TASKID
 
 // GLOBAL VARIABLES
 new gHeroName[]="Shinobu Kocho"
-new bool:gHasShinobu[SH_MAXSLOTS+1]
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
 new Float:shinobu_cooldown
 new Float:shinobu_poison_kick_delay
@@ -93,7 +92,7 @@ public shinobu_health_newRound(id)
 		return PLUGIN_CONTINUE
 	}
 
-	if ( gHasShinobu[id]) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		
 		set_user_health(id,min(get_user_health(id),shinobu_max_health))
 	}
@@ -102,7 +101,7 @@ public shinobu_health_newRound(id)
 //----------------------------------------------------------------------------------------------
 public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_FALL && gHasShinobu[this] ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }
@@ -112,7 +111,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 
 	if(!client_hittable(id)) return
 
-	if(!gHasShinobu[id]) return
+	if(!sh_user_has_hero(id,gHeroID) ) return
 
 	static the_health_to_be_set
 	the_health_to_be_set = get_msg_arg_int(1)
@@ -177,14 +176,14 @@ public shinobuDamage(id)
 	}	
 	if((weapon==CSW_KNIFE)){
 		
-		if ( gHasShinobu[victim] ) {
+		if (sh_user_has_hero(victim,gHeroID)  ) {
 			
 			shinobu_burst_damage_task_bootstrap(victim,attacker)
 
 		}
-		if(gHasShinobu[attacker]){
+		if(sh_user_has_hero(attacker,gHeroID) ){
 
-			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,gHasShinobu[attacker],_,_,0);
+			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,0);
 			shinobu_burst_damage_task_bootstrap(attacker,victim)
 		}	
 	}
@@ -215,11 +214,7 @@ public shinobu_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	
-	gHasShinobu[id] = (hasPowers!=0)
-	if(gHasShinobu[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
 		set_user_health(id,min(sh_get_max_hp(id),shinobu_max_health))
@@ -252,7 +247,7 @@ public shinobu_burst_damage_task(array[],attacker){
 	if(!client_hittable(tg)) return
 
 	
-	if(!gHasShinobu[attacker] ) return
+	if(!sh_user_has_hero(attacker,gHeroID)  ) return
 
 	if(!is_user_bot(tg)){
 		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:random_num(0,_:MAX_DICKERY-1)])
@@ -301,7 +296,7 @@ public shinobu_kd()
 	
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
-	if(!gHasShinobu[id]) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
@@ -335,7 +330,7 @@ public shinobu_prethink(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(gHasShinobu[id]){
+			if(sh_user_has_hero(id,gHeroID) ){
 				static weapon;
 				weapon=cs_get_user_weapon(id)
 				if((weapon==CSW_KNIFE)||(weapon==SHINOBU_WEAPON_CLASSID)) {
@@ -353,7 +348,7 @@ public death()
 	new killer= read_data(1)
 	
 	if(is_user_connected(killer)&&is_user_connected(id)){
-		if(gHasShinobu[killer]){
+		if(sh_user_has_hero(killer,gHeroID) ){
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
@@ -365,7 +360,7 @@ public death()
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}
 		}
-		if(gHasShinobu[id]){
+		if(sh_user_has_hero(id,gHeroID) ){
 			
 			g_shinobu_tagged_player[id]=0
 			remove_task(id+SHINOBU_POISON_KICK_DELAYED_TASKID)
@@ -380,7 +375,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		return DMG_FWD_PASS
 	}
 	if(new_dmg_type==SH_NEW_DMG_DRUG_POISON){
-		if(gHasShinobu[victim]){
+		if(sh_user_has_hero(victim,gHeroID) ){
 			sh_chat_message(victim,gHeroID,"Awww? That was a [nice] try! But I drank it like pina colada ;)")
 			generic_heal(heal_hp_hud_msg_sync,victim,float(damage),_,PURPLE,_,_,50,1,1)
 			return DMG_FWD_BLOCK

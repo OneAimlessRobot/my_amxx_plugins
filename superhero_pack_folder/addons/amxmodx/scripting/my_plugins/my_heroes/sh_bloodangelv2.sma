@@ -22,7 +22,6 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #define DARK_TASKID 13213
 // GLOBAL VARIABLES
 new HeroName[] = "Dark angel v2"
-new bool:HasDarkAngel[SH_MAXSLOTS+1]
 new bool:HasAcess[SH_MAXSLOTS+1]
 new gHeroID
 new times_picked
@@ -58,7 +57,6 @@ public plugin_init()
 	register_event("ResetHUD", "new_spawn", "b")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "darkangel_damage", "b", "2!0")
-	register_event("DeathMsg", "darkangel_death", "a")
 	// Let Server know about the hero's variables
 	shSetShieldRestrict(HeroName)
 	shSetMaxHealth(HeroName, "darkangel_health")
@@ -102,17 +100,13 @@ public darkangel_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-	HasDarkAngel[id]=(hasPowers!=0)
-	HasAcess[id]=HasDarkAngel[id]
-	if ( is_user_connected(id) && HasDarkAngel[id]){
+	HasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
+	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
 		
 		darklydark_pickable_check(id)
 		
 	}
-	if(HasDarkAngel[id])
+	if(sh_user_has_hero(id,gHeroID) )
 	{
 		if ( is_user_alive(id) )
 		{
@@ -139,7 +133,7 @@ public new_spawn(id)
 {
 	if (haveable_check(id)&& HasAcess[id]&&is_user_alive(id) && shModActive()) {
 		darklydark_haveable_check(id)
-		if(HasDarkAngel[id]){
+		if(sh_user_has_hero(id,gHeroID) ){
 			
 			darkangel_weapons(id)
 		}
@@ -148,7 +142,7 @@ public new_spawn(id)
 //----------------------------------------------------------------------------------------------
 public darkangel_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasDarkAngel[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
 		return
 	
 	shGiveWeapon(id, "weapon_m4a1")
@@ -156,7 +150,7 @@ public darkangel_weapons(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasDarkAngel[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
 		return
 	
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -180,7 +174,7 @@ public do_knockback(id,Float:extraDamage){
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasDarkAngel[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) )
 		return
 	
 	new wpnid = read_data(2)
@@ -206,7 +200,7 @@ public darkangel_damage(id)
 	
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return
 	
-	if ( HasDarkAngel[attacker] && weapon == CSW_M4A1)
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -227,29 +221,14 @@ public darkangel_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public darkangel_death()
-{
-	new id = read_data(2)
-	
-	if ( !HasDarkAngel[id] )
-		return
-	
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	HasDarkAngel[id] = false
-}
-//----------------------------------------------------------------------------------------------
 public darklydark_pickable_check(id)
 {
 	new accessLevel[10]
 	
 	get_cvar_string("darkangel_adminflag", accessLevel, 9)
 	
-	if ( HasDarkAngel[id] &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
-		HasDarkAngel[id] = false
-		new dropMsg[100];
+	if ( sh_user_has_hero(id,gHeroID)  &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
+		static dropMsg[100];
 		formatex(dropMsg,99,"drop %s",HeroName);
 		_dropPower(id,dropMsg,0);
 		
@@ -263,9 +242,9 @@ public darklydark_haveable_check(id)
 	
 	get_cvar_string("darkangel_adminflag", accessLevel, 9)
 	
-	if ( HasDarkAngel[id] &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
-		HasDarkAngel[id] = false
-		new dropMsg[100];
+	if ( sh_user_has_hero(id,gHeroID)  &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
+
+		static dropMsg[100];
 		formatex(dropMsg,99,"drop %s",HeroName);
 		_dropPower(id,dropMsg,0);
 		

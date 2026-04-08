@@ -11,7 +11,6 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="Zenitsu Agatsuma"
-new bool:gHasZenitsu[SH_MAXSLOTS+1]
 new gChargeModeEngaged[SH_MAXSLOTS+1]
 
 new gHeroID
@@ -85,7 +84,7 @@ public zenitsu_newRound(id)
 		return PLUGIN_CONTINUE
 	}
 
-	if ( gHasZenitsu[id]) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		
 		gChargeModeEngaged[id]=0
 
@@ -100,10 +99,6 @@ public zenitsu_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	
-	gHasZenitsu[id] = (hasPowers!=0)
 	
 	gChargeModeEngaged[id]=0
 }
@@ -117,7 +112,7 @@ public zenitsu_kd()
 	
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
-	if(!gHasZenitsu[id]) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED

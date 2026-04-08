@@ -7,11 +7,9 @@
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 #include "../my_include/my_author_header.inc"
 
-#define GRACIETE_HUD_TASKID 17282
 #define GRACIETE_MORPH_TASKID 212122
 new gHeroID
 new const gHeroName[] = "Graciete"
-new gHasGraciete[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new teamglow_on
 //----------------------------------------------------------------------------------------------
@@ -43,8 +41,6 @@ public plugin_init()
 	// Add your code here...
 }
 public plugin_natives(){
-
-	register_native("graciete_get_has_graciete","_graciete_get_has_graciete",0);
 	register_native("graciete_get_hero_id","_graciete_get_hero_id",0);
 	
 
@@ -52,11 +48,6 @@ public plugin_natives(){
 public _graciete_get_hero_id(iPlugin,iParams){
 
 	return gHeroID;
-
-}
-public _graciete_get_has_graciete(iPlugin,iParams){
-	new id=get_param(1);
-	return gHasGraciete[id]
 
 }
 public graciete_init()
@@ -67,10 +58,7 @@ public graciete_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasGraciete[id]=(hasPowers!=0)
-	if(gHasGraciete[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_graciete_user(id)
 		q_barrel_set_q_barrel(id)
@@ -82,9 +70,6 @@ public graciete_init()
 		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		q_barrel_unset_q_barrel(id)
 		
-		if(!is_user_bot(id)){
-			remove_task(id+GRACIETE_HUD_TASKID)
-		}
 	}
 	
 }
@@ -102,7 +87,7 @@ public graciete_model(id)
 public graciete_morph(id)
 {
 	id-=GRACIETE_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasGraciete[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
 	
 	// Message
 	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Graciete ready.")
@@ -141,7 +126,7 @@ public graciete_glow(id)
 		return
 	}
 
-	if ( gHasGraciete[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -159,7 +144,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
 			reset_graciete_user(id)
 			graciete_model(id)
 			jet_uncharge_user(id)
@@ -170,7 +155,7 @@ public newRound(id)
 }
 public sh_client_spawn(id){
 	
-	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
 			graciete_model(id)
 			jet_uncharge_user(id)
@@ -182,7 +167,7 @@ public sh_client_spawn(id){
 }
 public Ham_respawn(id){
 
-	if(gHasGraciete[id]&&is_user_alive(id) && shModActive()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
 			graciete_model(id)
 			jet_uncharge_user(id)
@@ -220,7 +205,7 @@ public plugin_precache(){
 public death()
 {
 	new id = read_data(2)
-	if(gHasGraciete[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		reset_graciete_user(id)

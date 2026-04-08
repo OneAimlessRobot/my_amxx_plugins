@@ -10,7 +10,6 @@
 // GLOBAL VARIABLES
 //new gHeroID
 new const gHeroName[] = "Maria"
-new bool:gHasMaria[SH_MAXSLOTS+1]
 new bool:gHealthDrainValve[SH_MAXSLOTS+1]
 new bool:gHealthDrainValveTimerStarted[SH_MAXSLOTS+1]
 new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
@@ -158,10 +157,7 @@ public maria_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasMaria[id]=(hasPowers!=0)
-	if(gHasMaria[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		new_spawn(id)
 		maria_weapons(id)
@@ -183,7 +179,7 @@ public maria_init()
 //----------------------------------------------------------------------------------------------
 maria_weapons(id)
 {
-	if ( sh_is_active() && client_hittable(id)&&gHasMaria[id] ) {
+	if ( sh_is_active() && client_hittable(id)&&sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=find_ent_by_owner(-1,MARIA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
@@ -198,14 +194,9 @@ public sh_client_spawn(id)
 	maria_weapons(id)
 
 }
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasMaria[id] = false
-}
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasMaria[id] )
+	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  )
 	{
 		gNumRivets[id]=maria_max_rivets
 		gHealthDrainValve[id]=false
@@ -243,7 +234,7 @@ bool:heal_teamate(id,i){
 		
 		return false
 	}
-	if(!gHasMaria[id]){
+	if(!sh_user_has_hero(id,gHeroID) ){
 		
 		
 		return false
@@ -268,7 +259,7 @@ if(!sh_is_active()||!client_hittable(id)){
 		
 	return
 }
-if(!gHasMaria[id]){
+if(!sh_user_has_hero(id,gHeroID) ){
 	
 	
 	return
@@ -305,7 +296,7 @@ make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40
 }
 public maria_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ||!gHasMaria[id]) return
+	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ||!sh_user_has_hero(id,gHeroID) ) return
 	
 	new  Float:damage= float(read_data(2))
 	
@@ -313,7 +304,7 @@ public maria_damage(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!gHasMaria[id]  ||is_user_bot(id))
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)  ||is_user_bot(id))
 		return FMRES_IGNORED;
 	
 	
@@ -349,7 +340,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 public maria_loop(id){
 	
 	id-=MARIA_STATS_TASKID;
-	if(client_hittable(id,gHasMaria[id])){
+	if(client_hittable(id)&&sh_user_has_hero(id,gHeroID)){
 		update_stats(id)
 		if((get_user_health(id)>=health_drain_begin_threshold)){
 				gHealthDrainValveTimerStarted[id]=true
@@ -363,7 +354,7 @@ public maria_loop(id){
 }
 update_stats(id){
 	
-	if(gHasMaria[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),points_radius_pct)),max_radius);
 		if(!gHealthDrainValve[id]&&(get_user_health(id)>=health_drain_begin_threshold)&&(gHealthDrainValveTimer[id]<=0.0)){
 			gHealthDrainValve[id]=true
@@ -386,15 +377,10 @@ update_stats(id){
 public newRound(id)
 {	
 	if(is_user_alive(id) && shModActive()){
-		if ( gHasMaria[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_maria_points[id]=base_points;
 		}
 	}
 	return PLUGIN_HANDLED
-	
-}
-public plugin_precache()
-{
-	
 	
 }

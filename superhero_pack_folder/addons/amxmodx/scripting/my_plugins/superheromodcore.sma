@@ -1633,7 +1633,7 @@ initHero(id, heroIndex, mode)
 
 	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false	
 
-	gPlayerHasPowerTable[id][heroIndex]= mode ? true : false	
+	gPlayerHasPowerTable[id][heroIndex]= bool:mode
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
 		//If this is called by an added hero they must be restricted

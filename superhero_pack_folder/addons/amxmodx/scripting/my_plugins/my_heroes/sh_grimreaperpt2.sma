@@ -9,7 +9,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Grim Reaper pt2"
-new bool:gHasGreaper[SH_MAXSLOTS+1]
 new bool:gUsedScythe[SH_MAXSLOTS+1]
 new bool:gJustResetRendering[SH_MAXSLOTS+1]
 new gScytheSwings[SH_MAXSLOTS+1]
@@ -57,10 +56,7 @@ public greaper2_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasGreaper[id]=(hasPowers!=0)
-	if(gHasGreaper[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_greaper2_user(id)
 	}
@@ -71,7 +67,7 @@ public greaper2_init()
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!gHasGreaper[id] ||!shModActive()||!gModelLoaded ) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!shModActive()||!gModelLoaded ) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
@@ -111,7 +107,7 @@ get_cvar_num("greaper_level");
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( gHasGreaper[id]&&is_user_alive(id) && shModActive() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() ) {
 	
 	reset_greaper2_user(id)
 	gScytheSwings[id]=num_swings;
@@ -182,7 +178,7 @@ public swing_scythe(weaponent)
 	if (!client_hittable(id)){
 		return HAM_IGNORED
 	}
-	if (!gHasGreaper[id]){
+	if (!sh_user_has_hero(id,gHeroID) ){
 		return HAM_IGNORED
 	}
 	if (gScytheSwings[id]>0) 

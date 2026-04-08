@@ -40,11 +40,11 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 
 // GLOBAL VARIABLES
 new gHeroName[]="Penguin"
-new bool:gHasPenguinPower[SH_MAXSLOTS+1]
-new bool:gPauseEntity[999]
-new bool:gPenguinNade[SH_MAXSLOTS+1][999]
+//iuser2 new bool:gPenguinNade[SH_MAXSLOTS+1][999]
+//iuser3 new bool:gPauseEntity[999]
 new Float:gNadeSpeed
 new gSpriteTrail
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -60,7 +60,7 @@ public plugin_init()
 	register_cvar("penguin_nadespeed", "900")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Seeking HE-Penguins", "Throw HE Grenade strapped Pengiun friends that Seek out your enemy, also refill HE Grenades.", false, "penguin_level")
+	gHeroID=shCreateHero(gHeroName, "Seeking HE-Penguins", "Throw HE Grenade strapped Pengiun friends that Seek out your enemy, also refill HE Grenades.", false, "penguin_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -81,9 +81,6 @@ public plugin_init()
 
 	// FAKEMETA FORWARD
 	register_forward(FM_Think, "fw_entity_think", 0)
-
-	// ROUND START
-	register_logevent("round_start", 2, "1=Round_Start")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -100,13 +97,7 @@ public penguin_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasPenguinPower[id] = (hasPowers!=0)
-
-	if ( gHasPenguinPower[id] && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		penguin_weapons(id)
 		switchmodel(id)
 	}
@@ -114,12 +105,10 @@ public penguin_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && gHasPenguinPower[id] ) {
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		gPlayerUltimateUsed[id] = false
 		set_task(0.1, "penguin_weapons", id)
-		for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
-			gPenguinNade[id][i] = false
-		}
+		
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -148,7 +137,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !shModActive() || !gHasPenguinPower[id] || gPlayerUltimateUsed[id] ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || gPlayerUltimateUsed[id] ) return
 
 	new wpnid = read_data(2)
 
@@ -164,7 +153,7 @@ public on_AmmoX(id)
 	new iAmmoType = read_data(1)
 	new iAmmoCount = read_data(2)
 
-	if ( iAmmoType == AMMOX_HEGRENADE && gHasPenguinPower[id] ) {
+	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID) ) {
 
 		if ( iAmmoCount == 0 ) {
 			set_task(get_cvar_float("penguin_grenadetimer"), "penguin_weapons", id)
@@ -181,8 +170,9 @@ public on_AmmoX(id)
 						gNadeSpeed = get_cvar_float("penguin_nadespeed")
 						if ( gNadeSpeed <= 0.0 ) gNadeSpeed = 1.0
 
-						gPauseEntity[iGrenade] = true
-
+						entity_set_int(iGrenade,EV_INT_iuser2,true)
+						entity_set_int(iGrenade,EV_INT_iuser3,true)
+						
 						new parm[3]
 						parm[0] = iGrenade
 						parm[1] = id
@@ -191,7 +181,7 @@ public on_AmmoX(id)
 						set_task(1.0, "find_target", 0, parm, 3)
 
 						// Set the fuse
-						set_task(get_cvar_float("penguin_fuse"), "unpause_nade", iGrenade, parm, 2)
+						set_task(get_cvar_float("penguin_fuse"), "unpause_nade", iGrenade, parm, 1)
 					}
 				}
 			}
@@ -331,7 +321,8 @@ public pfn_touch(ptr, ptd)
 	entity_get_string(ptd, EV_SZ_classname, szClassNamePtd, 31)
 
 	if ( !equal(szClassNamePtr, "grenade") && !equal(szClassNamePtd, "player") ) return
-	if ( !gPauseEntity[ptr] ) return
+	new paused=entity_get_int(ptr,EV_INT_iuser3)
+	if ( !paused ) return
 
 	if ( !is_user_connected(ptd) || get_user_godmode(ptd) ) return
 
@@ -339,38 +330,33 @@ public pfn_touch(ptr, ptd)
 	if(!is_user_connected (grenadeOwner) ) return 
 	if ( cs_get_user_team(grenadeOwner) == cs_get_user_team(ptd) ) return
 
-	new parm[2]
+	new parm[1]
 	parm[0] = ptr
-	parm[1] = grenadeOwner
 	unpause_nade(parm)
 }
 //----------------------------------------------------------------------------------------------
 public unpause_nade(parm[])
 {
 	new ent = parm[0]
-	new id = parm[1]
-
+	if(!is_valid_ent(ent)) return 
+	new szClassNamePtr[32]
+	entity_get_string(ent, EV_SZ_classname, szClassNamePtr, 31)
+	if ( !equal(szClassNamePtr, "grenade")) return
 	remove_task(ent)
 
-	gPenguinNade[id][ent] = true
-	set_task(0.4, "nade_reset", 0, parm, 2)
-
-	gPauseEntity[ent] = false
-}
-//----------------------------------------------------------------------------------------------
-public nade_reset(parm[])
-{
-	new ent = parm[0]
-	new id = parm[1]
-
-	gPenguinNade[id][ent] = false
+	entity_set_int(ent,EV_INT_iuser2,true)
+	entity_set_int(ent,EV_INT_iuser3,false)
 }
 //----------------------------------------------------------------------------------------------
 public fw_entity_think(ent)
 {
-	if ( ent <= SH_MAXSLOTS || ent > sizeof(gPauseEntity)-1 ) return FMRES_IGNORED
+	if(!is_valid_ent(ent)) return FMRES_IGNORED
+	new szClassNamePtr[32]
+	entity_get_string(ent, EV_SZ_classname, szClassNamePtr, 31)
+	if ( !equal(szClassNamePtr, "grenade")) return FMRES_IGNORED
 
-	if ( gPauseEntity[ent] ) {
+	new paused=entity_get_int(ent,EV_INT_iuser3)
+	if ( paused ) {
 		new Float:nextThink = entity_get_float(ent, EV_FL_nextthink)
 		set_pev(ent, pev_nextthink, nextThink + 0.1)
 		return FMRES_SUPERCEDE
@@ -383,7 +369,8 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !shModActive() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
 
-	if ( gPenguinNade[attacker][idinflictor] ) {
+	new charged=entity_get_int(idinflictor,EV_INT_iuser2)
+	if ( charged ) {
 		if ( is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("penguin_grenademult") - damage)
@@ -406,26 +393,13 @@ public cooldown(parm[])
 	new grenade = parm[0]
 	new id = parm[1]
 
-	gPenguinNade[id][grenade] = false
+	entity_set_int(grenade,EV_INT_iuser2,false)
 
 	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
 
 	// Cooldown will only be set if user hurts someone with a Grenader nade
 	new Float:penguinCooldown = get_cvar_float("penguin_cooldown")
 	if (penguinCooldown > 0.0) ultimateTimer(id, penguinCooldown)
-}
-//----------------------------------------------------------------------------------------------
-public round_start()
-{
-	// Reset any paused entity ids just in case
-	for(new i = SH_MAXSLOTS+1; i < sizeof(gPauseEntity)-1; i++) {
-		gPauseEntity[i] = false
-	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasPenguinPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -26,7 +26,6 @@ new const Model_Weapon_P[] = "models/shmod/thrashteen/p_superak47.mdl";
 new const Model_Weapon_V[] = "models/shmod/thrashteen/v_superak47.mdl"
 new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
-new bool:gHasThrashyPowers[SH_MAXSLOTS+1]
 new bool:gHasAcess[SH_MAXSLOTS+1]
 new bool:gmorphed[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
@@ -112,16 +111,13 @@ public thrashy_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasThrashyPowers[id]=(hasPowers!=0)
-	gHasAcess[id]=gHasThrashyPowers[id]
-	if ( is_user_connected(id) && gHasThrashyPowers[id]){
+	gHasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
+	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
 		
 		thrashy_pickable_check(id)
 		
 	}
-	if(gHasThrashyPowers[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		gThrashyExplosionAmmo[id]=ndynamites
@@ -166,14 +162,14 @@ public fw_CmdStart( id, uc_handle, seed )
 		new szClip, szAmmo
 		new szWeapID = get_user_weapon( id, szClip, szAmmo )
 		
-		if( szWeapID == CSW_AK47 && gHasThrashyPowers[id] == true && !gHasThrashZoom[id] == true)
+		if( szWeapID == CSW_AK47 && sh_user_has_hero(id,gHeroID) && !gHasThrashZoom[id] == true)
 		{
 			gHasThrashZoom[id] = true
 			cs_set_user_zoom( id, CS_SET_AUGSG552_ZOOM, 0 )
 			emit_sound( id, CHAN_ITEM, "weapons/zoom.wav", 0.20, 2.40, 0, 100 )
 		}
 		
-		else if ( szWeapID == CSW_AK47 && gHasThrashyPowers[id] == true && gHasThrashZoom[id])
+		else if ( szWeapID == CSW_AK47 && sh_user_has_hero(id,gHeroID) && gHasThrashZoom[id])
 		{
 			gHasThrashZoom[ id ] = false
 			cs_set_user_zoom( id, CS_RESET_ZOOM, 0 )
@@ -196,7 +192,7 @@ public thrashy_tasks(id)
 public thrashy_morph(id)
 {
 	id-=TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasThrashyPowers[id]||is_user_bot(id) ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) ) return
 
 	cs_set_user_model(id, "thrash")
 
@@ -236,7 +232,7 @@ public thrashy_glow(id)
 		return
 	}
 
-	if ( gHasThrashyPowers[id] && is_user_alive(id)) {
+	if (sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -307,7 +303,7 @@ public newRound(id)
 	
 	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && shModActive() ) {
 		thrashy_haveable_check(id)
-		if(gHasThrashyPowers[id]){
+		if(sh_user_has_hero(id,gHeroID) ){
 			gPlayerUltimateUsed[id]=false
 			gThrashyExplosionAmmo[id]=ndynamites
 		
@@ -322,7 +318,7 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 public switchgun(id)
 {
-	if ( !is_user_alive(id)||!gHasThrashyPowers[id]) return
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_AK47) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
@@ -333,7 +329,7 @@ public switchgun(id)
 public make_tracer(id)
 {
 	
-if ( !gHasThrashyPowers[id] ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -354,7 +350,7 @@ return PLUGIN_CONTINUE
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasThrashyPowers[id] ||!shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)  ||!shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -385,7 +381,7 @@ public death()
 	new id = read_data(2)
 	gPlayerUltimateUsed[id]=false
 	thrashy_unmorph(id+TASKID)
-	if ( gHasThrashyPowers[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id,true)
 	}
@@ -401,7 +397,7 @@ public thrashy_damage(id)
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-	if ( gHasThrashyPowers[attacker]&&weapon == CSW_AK47 && is_user_alive(id)  )
+	if ( sh_user_has_hero(attacker,gHeroID)&&weapon == CSW_AK47 && is_user_alive(id)  )
 	{
 		new health = get_user_health(id)
 
@@ -448,7 +444,7 @@ public thrashy_damage(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id,bool:died)
 {
-	if ( !shModActive() ||!gHasThrashyPowers[id]){	
+	if ( !shModActive() ||!sh_user_has_hero(id,gHeroID)){	
 		return PLUGIN_CONTINUE;
 			
 			
@@ -497,9 +493,9 @@ public BlowUp(id,bool:died)
 public thrashy_pickable_check(id)
 {
 
-	if ( gHasThrashyPowers[id] &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
-		gHasThrashyPowers[id] = false
-		new dropMsg[100];
+	if ( sh_user_has_hero(id,gHeroID) &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
+
+		static dropMsg[100];
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);
 		
@@ -508,9 +504,8 @@ public thrashy_pickable_check(id)
 }public thrashy_haveable_check(id)
 {
 
-	if ( gHasThrashyPowers[id] &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
-		gHasThrashyPowers[id] = false
-		new dropMsg[100];
+	if ( sh_user_has_hero(id,gHeroID) &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
+		static dropMsg[100];
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);
 		

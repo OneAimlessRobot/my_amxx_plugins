@@ -49,10 +49,10 @@ new BeamColors[8][3] = {
 
 // GLOBAL VARIABLES
 new gHeroName[]="styropyro"
-new bool:gHasstyropyroPower[SH_MAXSLOTS+1]
 new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -67,7 +67,7 @@ public plugin_init()
 	register_cvar("styropyro_multishot", "0.1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Stay safe n' happy lazing", "Press the +power key to fire your your 10 kJ C.R.L.C (crazy ruby laser cannon)", true, "styropyro_level")
+	gHeroID=shCreateHero(gHeroName, "Stay safe n' happy lazing", "Press the +power key to fire your your 10 kJ C.R.L.C (crazy ruby laser cannon)", true, "styropyro_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -106,23 +106,17 @@ public styropyro_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	// This gets run if they had the power but don't anymore
-	if ( hasPowers && is_user_connected(id) ) {
+	if ( sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) {
 		gPlayerUltimateUsed[id] = false
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")
 	}
 
-	// Sets this variable to the current status
-	gHasstyropyroPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasstyropyroPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		remove_task(id)
 		gPlayerUltimateUsed[id] = false
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")
@@ -341,8 +335,6 @@ public client_disconnected(id)
 
 	// Yeah don't want any left over residuals
 	remove_task(id)
-
-	gHasstyropyroPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

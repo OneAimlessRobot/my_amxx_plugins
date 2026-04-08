@@ -32,7 +32,6 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Marksman"
-new bool:gHasMarksman[SH_MAXSLOTS+1]
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new marksman_bullets[ SH_MAXSLOTS+1 ]
@@ -106,7 +105,6 @@ public sh_hero_init(id, heroID, mode)
 	
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasMarksman[id] = true
 			set_task( 0.3, "marksman_loop", id+MARKSMAN_TASKID, "", 0, "b")
 			
 			#if defined GIVE_WEAPON
@@ -115,7 +113,6 @@ public sh_hero_init(id, heroID, mode)
 		}
 		
 		case SH_HERO_DROP: {
-			gHasMarksman[id] = false
 			#if defined GIVE_WEAPON
 			if ( is_user_alive(id) ) {
 				sh_drop_weapon(id, CSW_G3SG1, true)
@@ -149,7 +146,7 @@ public marksman_loop(id)
 {
 	id -= MARKSMAN_TASKID
 
-	if ( !is_user_connected(id)||!is_user_alive(id)||!gHasMarksman[id]){
+	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ){
 	
 	
 	return PLUGIN_HANDLED
@@ -171,7 +168,7 @@ public marksman_loop(id)
 #if defined GIVE_WEAPON
 public sh_client_spawn(id)
 {
-	if ( gHasMarksman[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		Marksman_weapons(id)
 	}
 
@@ -186,12 +183,12 @@ public Marksman_damage(id)
 
 	if ( !is_user_connected(attacker) ||id==attacker) return
 
-	if ( gHasMarksman[attacker] && weapon == CSW_G3SG1 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
 		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "SVD-Dragunov", headshot)
 	
 	}
-	else if(gHasMarksman[attacker] && weapon == CSW_SG550 && is_user_alive(id) ){
+	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SG550 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * PSG1_DMG_Mult - damage)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "PSG-1", headshot)
 			
@@ -284,7 +281,7 @@ public Crouch(id,alpha) {
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasMarksman[id]||!is_user_connected(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 
@@ -301,7 +298,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 Marksman_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && gHasMarksman[id] ) {
+if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 	if ( cs_get_user_team(id) == CS_TEAM_CT ){
 		sh_give_weapon(id, CSW_G3SG1)
 	}
@@ -314,7 +311,7 @@ if ( sh_is_active() && is_user_alive(id) && gHasMarksman[id] ) {
 public make_tracer(id)
 {
 	
-if ( !gHasMarksman[id] ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,gHeroID) ||!is_user_alive(id)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -339,7 +336,7 @@ return PLUGIN_CONTINUE
 #if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
 public weapon_change(id)
 {
-if ( !sh_is_active() || !gHasMarksman[id] ) return
+if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 
 new weapon= read_data(2)
 //weaponID = read_data(2)

@@ -10,7 +10,6 @@
 #define TASKID_FX 1212
 // GLOBAL VARIABLES
 new gHeroName[]="Jeremy"
-new gHasJeremyPower[SH_MAXSLOTS+1]
 new gJeremyPowerUsedTimes[SH_MAXSLOTS+1]
 new gUserTeam[ SH_MAXSLOTS+1 ]
 new gHeroID
@@ -138,12 +137,7 @@ public jeremy_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasJeremyPower[id] = (hasPowers!=0)
-	if(gHasJeremyPower[id]&&is_user_connected(id)){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
 	
 		gUserTeam[id]=getTeamNumFromEnum(cs_get_user_team(id))
 	}
@@ -209,7 +203,7 @@ new temp[6]
 read_argv(1,temp,5)
 new id=str_to_num(temp)
 
-if ( !hasRoundStarted()|| !is_user_alive(id) ||!gHasJeremyPower[id]||!is_user_connected(id))
+if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!is_user_connected(id))
 {
 	playSoundDenySelect(id)
 	return PLUGIN_HANDLED 
@@ -252,7 +246,7 @@ return PLUGIN_HANDLED
 //-----------------------------------------------------------------------------------------------
 public print_jeremy_stats(id)
 {
-	if (  is_user_alive(id) &&gHasJeremyPower[id]&&is_user_connected(id))
+	if (  is_user_alive(id) &&sh_user_has_hero(id,gHeroID) &&is_user_connected(id))
 	{
 		sh_chat_message(id,gHeroID,"You have currently used this power %d times", gJeremyPowerUsedTimes[id] )
 		sh_chat_message(id,gHeroID,"Your team used it %d times", gTeamUseCount[gUserTeam[id]])

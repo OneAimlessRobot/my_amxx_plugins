@@ -22,7 +22,6 @@ new g_discID[SH_MAXSLOTS+1]
 new g_huntTimer[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new gHeroName[]="Arctic Predator"
-new bool:gHasArcPredPowers[SH_MAXSLOTS+1]
 new gAlphaInvis
 new lastweap[33]
 new lastammo[33]
@@ -39,6 +38,7 @@ new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
 new g_spriteBlood, g_spriteBldSpray
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -57,7 +57,7 @@ public plugin_init()
 	register_cvar("arcticPredator_cooldown", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
+	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -90,11 +90,7 @@ public arcticPredator_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	
-	gHasArcPredPowers[id] = (hasPowers!=0)
-	if ( gHasArcPredPowers[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
 		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
@@ -134,7 +130,7 @@ public plugin_precache()
 public arcticPredator_loop(id)
 {
 	id-=TASKID_LOOP
-	if ( gHasArcPredPowers[id] && is_user_alive(id)  )
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 	{
 		if ( g_huntTimer[id]>0 )
 		{
@@ -207,7 +203,7 @@ public newRound(id)
 		remove_entity(disc)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
-	if ( gHasArcPredPowers[id] && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && shModActive() ) {
 		gPlayerUltimateUsed[id]=false
 		discThrown[id] = false
 		set_task(0.1, "arcpredator_weapons", id+TASKID_GUNS)
@@ -220,9 +216,9 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 pred_Morph(id)
 {
-	if ( gmorphed[id] ||!is_user_alive(id) ||!gHasArcPredPowers[id]) return
+	if ( gmorphed[id] ||!is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)) return
 	
-	if(gHasArcPredPowers[id]){
+	if(sh_user_has_hero(id,gHeroID)){
 		if ( get_user_team(id) == 1 )
 		{
 			cs_set_user_model(id, "arcpredct")
@@ -248,7 +244,7 @@ pred_unMorph(id)
 //-----------------------------------------------------------------------------------------------
 public switchgun(id)
 {
-if ( !is_user_alive(id) || !gHasArcPredPowers[id] ) return
+if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 if (wpnid == CSW_AWP) {
 	// Weapon Model change thanks to [CCC]Taz-Devil
@@ -268,7 +264,7 @@ if (wpnid == CSW_KNIFE) {
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-if ( !gHasArcPredPowers[id] || !shModActive() ) return
+if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 
 new wpnid = read_data(2)
 new clip = read_data(3)
@@ -289,7 +285,7 @@ if ( clip == 0 ) {
 public arcpredator_weapons(id)
 {
 	id-=TASKID_GUNS
-	if ( is_user_alive(id)&&gHasArcPredPowers[id] ) {
+	if ( is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
 		shGiveWeapon(id,"weapon_awp")
 		shGiveWeapon(id,"weapon_scout")
 	}
@@ -297,7 +293,7 @@ public arcpredator_weapons(id)
 //-----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !shModActive() || !gHasArcPredPowers[id] || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 	
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -307,7 +303,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !gHasArcPredPowers[id] || !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() || !is_user_alive(id) ) return
 	
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )
@@ -391,7 +387,7 @@ public death()
 	g_huntTimer[id] = 0
 	gPlayerUltimateUsed[id]=false
 	pred_unMorph(id)
-	if ( gHasArcPredPowers[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id)
 		gHuntMode[id] = false
@@ -400,10 +396,10 @@ public death()
 	if ( killer[id] != id ) {
 		new namea[32]
 		get_user_name(killer[id],namea,31)
-		if ( gHasArcPredPowers[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			client_print(id,print_chat,"[SH Predator] Tracking %s next round, hunt him down.", namea)
 		}
-		if(gHasArcPredPowers[killer[id]]&&killer[killer[id]]==id){
+		if(sh_user_has_hero(killer[id],gHeroID)&&killer[killer[id]]==id){
 			
 			new namea[32]
 			get_user_name(id,namea,31)
@@ -421,12 +417,12 @@ public death()
 //----------------------------------------------------------------------------------------------
 public make_tracer(id)
 {
-	if ( !gHasArcPredPowers[id] ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	
 	new weap = read_data(2)        // id of the weapon
 	new ammo = read_data(3)        // ammo left in clip
 	
-	if ( gHasArcPredPowers[id] && weap == CSW_SCOUT && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID) && weap == CSW_SCOUT && is_user_alive(id) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap
 		
@@ -476,7 +472,7 @@ public make_tracer(id)
 		return PLUGIN_CONTINUE
 		
 	}
-	if ( gHasArcPredPowers[id] && weap == CSW_AWP && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID) && weap == CSW_AWP && is_user_alive(id) )
 	{
 		if (lastweap[id] == 0) lastweap[id] = weap
 		
@@ -540,7 +536,7 @@ new headshot = bodypart == 1 ? 1 : 0
 
 if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-if ( gHasArcPredPowers[attacker] && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
+if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
 {
 	new health = get_user_health(id)
 	
@@ -619,7 +615,7 @@ for(new a = 1; a <= SH_MAXSLOTS; a++) {
 public Revenge_Tracker(id)
 {
 id-=TASKID_REVENGE
-if ( gHasArcPredPowers[id] && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
+if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
 {
 	new distance, origin[3], eorigin[3]
 	
@@ -641,7 +637,7 @@ if ( gHasArcPredPowers[id] && is_user_alive(id) && is_user_connected(id) && Nigh
 //----------------------------------------------------------------------------------------------
 public disc_throw_check(id)
 {
-if(is_user_alive(id) && gHasArcPredPowers[id] )
+if(is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 {
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (entity_get_int(id, EV_INT_button) & IN_USE && wpnid == CSW_KNIFE && discThrown[id] == false )
@@ -837,7 +833,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if(!is_user_alive(id))
 		return FMRES_IGNORED;
 	
-	if(!gHasArcPredPowers[id])
+	if(!sh_user_has_hero(id,gHeroID))
 		return FMRES_IGNORED;
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)

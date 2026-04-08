@@ -16,7 +16,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ester"
-new bool:gHasEster[SH_MAXSLOTS+1]
 new bool:gPedalIsFloored[SH_MAXSLOTS+1]
 new bool:gUnloading[SH_MAXSLOTS+1]
 new bool:gFinished[SH_MAXSLOTS+1]
@@ -124,7 +123,7 @@ public Hook_BloodColor(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(gHasEster[id]){
+			if(sh_user_has_hero(id,gHeroID) ){
 				SetHamReturnInteger(BLOOD_COLOR_YELLOW)
 				return HAM_SUPERCEDE;
 			}
@@ -138,7 +137,7 @@ public ester_prethink(id)
 {
 	if ( sh_is_active()){
 		if(client_hittable(id)){
-			if(gHasEster[id]){
+			if(sh_user_has_hero(id,gHeroID) ){
 				if(get_user_weapon(id)==CSW_TMP) {
 					set_pev(id, pev_flTimeStepSound, 999)
 				}
@@ -165,28 +164,22 @@ public ester_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasEster[id]=(hasPowers!=0)
-	if(gHasEster[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		ester_model(id)
-		reset_ester_reborn_mode(id,0)
 		if(gTimesLeft[id]<=0){
 			reset_status(id)
 			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")
 			return
 		}
-		reset_ester_user_round(id)
-		ester_weapons(id)
 	}
 	else{
-		reset_ester_reborn_mode(id,0)
-		ester_weapons(id)
-		reset_ester_user_round(id)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
 		
 	}
+	reset_ester_reborn_mode(id,0)
+	reset_ester_user_round(id)
+	ester_weapons(id)
 	
 	
 }
@@ -204,7 +197,7 @@ stock ester_weapons(id){
 		return
 		
 	}
-	else if(gHasEster[id]){
+	else if(sh_user_has_hero(id,gHeroID) ){
 		shGiveWeaponID(id, CSW_TMP)
 	}
 	else{
@@ -228,7 +221,7 @@ public ester_model(id)
 public ester_morph(id)
 {
 	id-=ESTER_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasEster[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
 	
 	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Ready to adult & Pwn 50m3 n3wbz")
 	cs_set_user_model(id, "ester")
@@ -265,7 +258,7 @@ public ester_glow(id)
 		return
 	}
 	
-	if ( gHasEster[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -294,7 +287,7 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&gHasEster[id]){
+	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&sh_user_has_hero(id,gHeroID) ){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
@@ -321,7 +314,7 @@ public weaponChange(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	if(!gHasEster[id]){
+	if(!sh_user_has_hero(id,gHeroID) ){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -430,7 +423,7 @@ public ester_loop(id)
 {
 	id -= ESTER_GLOW_TASKID
 	
-	if ( !is_user_connected(id)||!is_user_alive(id)||!gHasEster[id]||!id){
+	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!id){
 		
 		return PLUGIN_HANDLED
 		
@@ -540,7 +533,7 @@ public Ester_revenge_loop(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 			}
-			explosion(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,1)
+			explosion(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,0)
 			reset_status(id)
 			gFinished[id]=true;
 			return
@@ -558,7 +551,7 @@ public Ester_instant(x, id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasEster[id]&&is_user_connected(id)&& sh_is_active() ) {
+	if ( sh_user_has_hero(id,gHeroID) &&is_user_connected(id)&& sh_is_active() ) {
 		if(gBuiltUpXp[id]){
 			sh_set_user_xp(id,gBuiltUpXp[id],true);
 			sh_chat_message(id,ester_get_hero_id(),ESTER_FINE_WHATEVER_YOU_SAY,gBuiltUpXp[id]);
@@ -597,7 +590,7 @@ public ester_damage(id)
 		return;
 		
 	}
-	if(gHasEster[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		if(!gUnloading[id]&&gTimesLeft[id]){
 			
 			g_ester_enemies[id][attacker]=true;
@@ -615,7 +608,7 @@ public ester_damage(id)
 public fire_weapon(id)
 {
 	
-	if ( !gHasEster[id] ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -646,11 +639,11 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
-	if(!gHasEster[attacker]){
+	if(!sh_user_has_hero(attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
 	
-	if(gHasEster[attacker]){
+	if(sh_user_has_hero(attacker,gHeroID) ){
 		new attacker_name[128]
 		new client_name[128]
 		get_user_name(attacker,attacker_name,127)
@@ -763,7 +756,7 @@ public plugin_precache()
 public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	
 	if(is_user_connected(id)){
-		if(gHasEster[id]){
+		if(sh_user_has_hero(id,gHeroID) ){
 			reset_ester_reborn_mode(id,0)
 		}
 	}
@@ -776,7 +769,7 @@ public death()
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(gHasEster[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_ester_reborn_mode(id,0)
 		ester_unmorph(id+ESTER_MORPH_TASKID)
@@ -798,7 +791,7 @@ public death()
 		
 			continue
 		}
-		if(!gHasEster[i]){
+		if(!sh_user_has_hero(i,gHeroID) ){
 		
 			continue
 		} 
@@ -824,7 +817,7 @@ public ester_kd()
 	
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	if ( !is_user_alive(id)||!gHasEster[id]||!hasRoundStarted()) {
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
@@ -875,7 +868,7 @@ public ester_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasEster[id]||!gTimesLeft[id]||!gPedalIsFloored[id]||!hasRoundStarted()) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!gPedalIsFloored[id]||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 	gPedalIsFloored[id]=false

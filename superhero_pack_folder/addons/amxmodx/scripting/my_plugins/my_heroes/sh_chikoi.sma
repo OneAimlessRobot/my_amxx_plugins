@@ -14,7 +14,6 @@ stock chikoi_death_sounds[CHIKOI_NUM_DEATH_SOUNDS][]={
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Chikoi the Maid"
-new bool:gHasChikoi[SH_MAXSLOTS+1]
 new custom_dmg_id=0;
 
 //----------------------------------------------------------------------------------------------
@@ -44,21 +43,14 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_FALL && gHasChikoi[this] ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID)  ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }
 public chikoi_init()
 {
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasChikoi[id]=(hasPowers!=0)
 	
 	
 	
@@ -70,7 +62,7 @@ stock dmg_message(id, attacker){
 
 }
 public chikoi_damage(id){
-if ( !shModActive() || !is_user_alive(id) ||!gHasChikoi[id]) return PLUGIN_CONTINUE
+if ( !shModActive() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -101,7 +93,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		return HAM_IGNORED;
 
 	}
-	if(!gHasChikoi[id]){
+	if(!sh_user_has_hero(id,gHeroID) ){
 
 		return HAM_IGNORED;
 
@@ -142,7 +134,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(gHasChikoi[victim]){
+	if(sh_user_has_hero(victim,gHeroID) ){
 		if((cs_get_user_team(victim)==cs_get_user_team(attacker))){
 			if(victim!=attacker){
 			
@@ -185,7 +177,7 @@ public death()
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(gHasChikoi[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[random_num(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
 		
 		if(is_user_connected(killer)&&(killer!=id)){

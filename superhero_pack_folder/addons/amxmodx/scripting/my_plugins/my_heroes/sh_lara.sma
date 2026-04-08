@@ -11,7 +11,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Lara"
-new gHasLara[SH_MAXSLOTS+1]
 new gNumSpears[SH_MAXSLOTS+1]
 
 
@@ -87,11 +86,7 @@ public lara_init()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasLara[id]=(hasPowers!=0)
-	if(gHasLara[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		gNumSpears[id]=num_spears
 		
 	}
@@ -119,7 +114,7 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,gHasLara[id],"hunter_spear");
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,sh_user_has_hero(id,gHeroID) ,"hunter_spear");
 
 
 
@@ -130,18 +125,12 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 public newRound(id)
 {	
 	if(is_user_alive(id) && shModActive()){
-		if ( gHasLara[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			gNumSpears[id]=num_spears
 		}
 	}
 	return PLUGIN_HANDLED
 	
-}
-public sh_client_spawn(id)
-{
-	if ( gHasLara[id] ) {
-	}
-
 }
 public sh_round_end(){
 
@@ -151,7 +140,7 @@ public sh_round_end(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!gHasLara[id] ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!shModActive()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
@@ -177,7 +166,7 @@ public plugin_precache()
 public death()
 {	
 	new id = read_data(2)
-	if(!is_user_connected(id)||!gHasLara[id]) return
+	if(!is_user_connected(id)||!sh_user_has_hero(id,gHeroID) ) return
 	
 	spear_uncharge_spear(id)
 }

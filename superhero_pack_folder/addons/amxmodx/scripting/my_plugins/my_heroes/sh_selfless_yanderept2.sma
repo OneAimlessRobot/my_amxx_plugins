@@ -98,7 +98,7 @@ public yandere_angry_idle_checks(id, uc_handle){
 
 	if(!client_hittable(id)) return FMRES_IGNORED
 
-	if(!gHasYandere[id]||!gSuperAngry[id]) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,gHeroID) ||!gSuperAngry[id]) return FMRES_IGNORED
 	static butnprs
 
 	gIdleAngry[id] = true
@@ -122,7 +122,7 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,gHasYandere[attacker]&&gSuperAngry[attacker]);
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]);
 
 
 
@@ -136,11 +136,8 @@ public yandere_init()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasYandere[id]=(hasPowers!=0)
-	if(gHasYandere[id]){
+
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		sh_reset_max_speed(id)
 		gNormalSpeed[id]=base_extra_speed
@@ -183,7 +180,7 @@ return -1;
 public yandere_sentence_loop(id){
 id-=YANDERE_ANGER_TASKID;
 
-if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&gHasYandere[id]&&gSuperAngry[id]){
+if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) &&gSuperAngry[id]){
 	
 	
 	if(gIdleAngry[id]||(get_user_health(id)>degen_health_extra_threshold)){
@@ -220,7 +217,7 @@ if(!disconnected){
 for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!client_hittable(i)) continue;
 
-	if(!gHasYandere[i]) continue;
+	if(!sh_user_has_hero(i,gHeroID) ) continue;
 	if(!(disconnected)){
 		if(!sh_clients_are_same_team(id,i)||(id==i)) continue;
 	}
@@ -239,7 +236,7 @@ public yandere_loop(id){
 id-=YANDERE_STATS_TASKID;
 
 if(client_hittable(id)){
-	if(!gHasYandere[id]){
+	if(!sh_user_has_hero(id,gHeroID) ){
 
 		return
 	}
@@ -256,7 +253,7 @@ if(client_hittable(id)){
 update_stats(id){
 
 	if(!client_hittable(id)) return
-	if(!gHasYandere[id]) return
+	if(!sh_user_has_hero(id,gHeroID) ) return
 	
 	new Float:maxspeed=get_user_maxspeed(id)
 	
@@ -275,7 +272,7 @@ public yandere_timer_transform(id){
 	if(!sh_is_active()||!client_hittable(id)){
 		return
 	}
-	if(!gHasYandere[id]){
+	if(!sh_user_has_hero(id,gHeroID) ){
 		return
 		
 	}
@@ -369,7 +366,7 @@ degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold"
 public newRound(id)
 {	if(is_user_alive(id) && shModActive()){
 		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
-		if ( gHasYandere[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
@@ -403,7 +400,7 @@ public yandere_damage(id)
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return PLUGIN_CONTINUE
 	}
-	if ( gHasYandere[attacker] ) {
+	if ( sh_user_has_hero(attacker,gHeroID) ) {
 		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
 		if (floatround(extraDamage) > 0.0){
 			
@@ -429,7 +426,7 @@ public yandere_damage(id)
 					anime_kill_fx(origin)
 					
 				}
-				if((weapon==CSW_KNIFE)&&!gHasYandere[id]){
+				if((weapon==CSW_KNIFE)&&!sh_user_has_hero(id,gHeroID) ){
 					
 					g_is_cursed[id][attacker]=true
 					
@@ -446,7 +443,7 @@ public yandere_damage(id)
 		}	
 		
 	}
-	if( gHasYandere[id] && is_user_alive(attacker)){
+	if( sh_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
 		if(g_is_cursed[attacker][id]){
 			if(random_float(0.0,1.0)<curse_pct){
 				sh_set_godmode(id,0.0)
@@ -500,7 +497,7 @@ public yandere_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id)||!gHasYandere[id]) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 
@@ -548,7 +545,7 @@ public yandere_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!gHasYandere[id]) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -566,7 +563,7 @@ public sh_round_end(){
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 	
 		if(client_hittable(i)){
-			if(gHasYandere[i]){
+			if(sh_user_has_hero(i,gHeroID) ){
 				jet_destroy(i)
 			}
 		}
@@ -586,7 +583,7 @@ public sh_round_end(){
 	}
 	new last_alive=get_first_alive()
 	if(!client_hittable(last_alive)) return
-	if(gHasYandere[last_alive]){
+	if(sh_user_has_hero(last_alive,gHeroID) ){
 		static client_name[128]
 		get_user_name(last_alive,client_name,127)
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)
@@ -596,7 +593,7 @@ public sh_round_end(){
 public fire_weapon(id)
 {
 	
-	if ( !gHasYandere[id] ||!is_user_alive(id)||!gSuperAngry[id]) return PLUGIN_CONTINUE 
+	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)||!gSuperAngry[id]) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -615,7 +612,7 @@ public fire_weapon(id)
 killyandere(id,bool:dropping=false){
 	
 	if(!is_user_connected(id)||!sh_is_active()) return
-	if(gHasYandere[id]||dropping){
+	if(sh_user_has_hero(id,gHeroID) ||dropping){
 		
 		if(gSuperAngry[id]){
 			static origin[3]
@@ -652,7 +649,7 @@ public death()
 public sh_client_death(id,attacker,headshot,const weapon_description[])
 {	
 	if(client_hittable(attacker)){
-		if(gHasYandere[attacker]&&gSuperAngry[attacker]){
+		if(sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]){
 			fx_invisible(id)
 		}
 	}
@@ -672,7 +669,7 @@ public _yandere_model(iPlugin,iParams)
 public yandere_morph(id)
 {
 	id-=YANDERE_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasYandere[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
 	
 	if(!gSuperAngry[id]){
 		cs_set_user_model(id, "yanderu")
@@ -717,7 +714,7 @@ public yandere_glow(id)
 		return
 	}
 
-	if ( gHasYandere[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -759,7 +756,7 @@ public BlowUp(id)
 public weaponChange(id)
 {
 	if ( !client_hittable(id)||!shModActive()) return
-	if(!gHasYandere[id]) return
+	if(!sh_user_has_hero(id,gHeroID) ) return
 
 	new  wpnid = get_user_weapon(id)
 

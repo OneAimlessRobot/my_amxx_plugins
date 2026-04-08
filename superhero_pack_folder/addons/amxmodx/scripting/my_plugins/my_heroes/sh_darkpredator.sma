@@ -35,7 +35,6 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 new gHeroName[]="DarkPredator" 
 
 new times_picked
-new gHasDarkPredPower[SH_MAXSLOTS+1] 
 new gHasAcess[SH_MAXSLOTS+1] 
 new gIsInvisible[SH_MAXSLOTS+1]
 new gStillTime[SH_MAXSLOTS+1]
@@ -134,18 +133,14 @@ public darkpred_init()
 	read_argv(1,temp,5) //This Checks for the ID of the person selecting/dropping this hero and saves as string
 	new id=str_to_num(temp) //This makes the string Into a num
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has darkpredator
-	read_argv(2,temp,5) //This Checks if ID has this hero
-	new hasPowers=str_to_num(temp) //This makes the string into a num
-	gHasDarkPredPower[id]=(hasPowers!=0) //Store if this person has the hero
-	gHasAcess[id]=gHasDarkPredPower[id]
+	gHasAcess[id]=sh_user_has_hero(id,gHeroID) 
 	gPlayerMaxHealth[id] = 100
-	if ( is_user_connected(id) && hasPowers){
+	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
 		
 		darkpred_pickable_check(id)
 		
 	}
-	if ( gHasDarkPredPower[id] ) //Check if person selected this hero
+	if ( sh_user_has_hero(id,gHeroID) ) //Check if person selected this hero
 	{
 		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		remInvisibility(id)
@@ -153,7 +148,7 @@ public darkpred_init()
 		darkpred_tasks(id)
 	}
 	// Got to slow down DarkPredator that lost his powers...
-	if ( !gHasDarkPredPower[id]  && is_user_connected(id) ) //Check if person dropped this hero
+	if ( !sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
 	{
 		//Do stuff to him if he just droppped it
 		shRemArmorPower(id) //Loose the AP power of this hero
@@ -168,7 +163,7 @@ public newSpawn(id)
 	remInvisibility(id)
 	if (  haveable_check(id)&&gHasAcess[id]&&is_user_alive(id) && shModActive() ) {
 		darkpred_haveable_check(id)
-		if(gHasDarkPredPower[id]){
+		if(sh_user_has_hero(id,gHeroID)){
 			gBullets[id] = get_cvar_num("darkpred_bullets")
 			gLastWeapon[id] = -1
 			set_task(0.1, "darkpred_deagle",id)
@@ -253,7 +248,7 @@ public checkButtons()
 	new butnprs
 	
 	for(new id = 1; id <= SH_MAXSLOTS; id++) {
-		if (!is_user_alive(id) || !gHasDarkPredPower[id]) continue
+		if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) continue
 		
 		setVisible = false
 		butnprs = Entvars_Get_Int(id, EV_INT_button)
@@ -296,7 +291,7 @@ public checkButtons()
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !gHasDarkPredPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -316,7 +311,7 @@ public darkpred_damage(id)
 	
 	if ( attacker < 0 || attacker > SH_MAXSLOTS||attacker == id ) return PLUGIN_CONTINUE
 	
-	if ( gHasDarkPredPower[attacker] && weapon == CSW_DEAGLE && gBullets[attacker] >= 0 && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && gBullets[attacker] >= 0 && is_user_alive(id) )
 	{ 
 		new health = get_user_health(id)
 		
@@ -401,7 +396,7 @@ public darkpred_damage(id)
 public darkpred_fire(id)
 { 
 	
-	if ( !gHasDarkPredPower[id] ) return PLUGIN_CONTINUE 
+	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE 
 	
 	new weap = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
@@ -486,7 +481,7 @@ public darkpred_esploop()
 		if (!get_user_origin(idring,vec1,0)) continue
 		for (new j = 0; j < pnum; j++) {
 			id = players[j]
-			if (!gHasDarkPredPower[id]) continue
+			if (!sh_user_has_hero(id,gHeroID)) continue
 			if (!is_user_alive(id)) continue
 			if (idring == id) continue
 			message_begin(MSG_ONE,SVC_TEMPENTITY,vec1,id)
@@ -517,7 +512,7 @@ public darkpred_loop()
 {
 	if (!shModActive()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if (  gHasDarkPredPower[id] && is_user_alive(id)  )   {
+		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id] )
@@ -547,8 +542,8 @@ public darkpred_pickable_check(id)
 
 	get_cvar_string("darkpred_adminflag", accessLevel, 9)
 
-	if ( gHasDarkPredPower[id] &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
-		gHasDarkPredPower[id] = false
+	if ( sh_user_has_hero(id,gHeroID) &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
+
 		new dropMsg[100];
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);
@@ -563,8 +558,8 @@ public darkpred_haveable_check(id)
 
 	get_cvar_string("darkpred_adminflag", accessLevel, 9)
 
-	if ( gHasDarkPredPower[id] &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
-		gHasDarkPredPower[id] = false
+	if ( sh_user_has_hero(id,gHeroID) &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
+
 		new dropMsg[100];
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);

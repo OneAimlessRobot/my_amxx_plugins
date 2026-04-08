@@ -15,7 +15,6 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Yowai"
-new bool:gHasYowai[SH_MAXSLOTS+1]
 new g_hits[SH_MAXSLOTS+1]
 new gmorphed[SH_MAXSLOTS+1]
 new bool:g_yowai_mode[SH_MAXSLOTS+1]
@@ -61,10 +60,7 @@ public Yowai_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasYowai[id]=(hasPowers!=0)
-	if(gHasYowai[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_Yowai_user(id)
 		update_max_hits(id)
@@ -131,7 +127,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( gHasYowai[id]&&is_user_alive(id) && shModActive() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() ) {
 	
 	reset_Yowai_user(id)
 	update_max_hits(id)
@@ -149,7 +145,7 @@ public Inc_hits(id){
 
 stock dmg_message(id,Float:damage){
 	if(client_hittable(id)){
-		if(gHasYowai[id]&&g_yowai_mode[id]){
+		if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 				if(!is_user_bot(id)){
 
 				sh_chat_message(id,gHeroID,"Dont worry, ... youll be fine, like always... sigh... damage: %.0f is a scratch",damage)
@@ -170,7 +166,7 @@ new CsTeams:att_team=CS_TEAM_UNASSIGNED;
 if(is_user_connected(attacker)&&is_user_alive(attacker)){
 	att_team=cs_get_user_team(attacker)
 }
-if(gHasYowai[id]&&g_yowai_mode[id]){
+if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 	
 	if(((att_team==cs_get_user_team(id))&&(id!=attacker))){
 	
@@ -204,7 +200,7 @@ public death()
 	new killer= read_data(1)
 	
 	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
-	if(gHasYowai[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		if(g_yowai_mode[id]){
 			yowai_unmorph(id+YOWAI_MORPH_TASKID)
 			
@@ -223,7 +219,7 @@ new temp[6]
 read_argv(1,temp,5)
 new id=str_to_num(temp)
 
-if ( !is_user_alive(id)||!gHasYowai[id]||g_yowai_mode[id] ) {
+if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||g_yowai_mode[id] ) {
 	return PLUGIN_HANDLED
 }
 if (sh_get_user_is_asleep(id)){
@@ -252,7 +248,7 @@ public yowai_model(id)
 public yowai_morph(id)
 {
 	id-=YOWAI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!gHasYowai[id] ) return
+	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
 
 	cs_set_user_model(id,"yowai")
 
@@ -283,7 +279,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(gHasYowai[victim]&&g_yowai_mode[victim]){
+	if(sh_user_has_hero(victim,gHeroID) &&g_yowai_mode[victim]){
 		if((cs_get_user_team(victim)==cs_get_user_team(attacker))){
 			if(victim!=attacker){
 			
@@ -318,7 +314,7 @@ public yowai_glow(id)
 		return
 	}
 
-	if ( gHasYowai[id] && is_user_alive(id)&&g_yowai_mode[id]) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)&&g_yowai_mode[id]) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}

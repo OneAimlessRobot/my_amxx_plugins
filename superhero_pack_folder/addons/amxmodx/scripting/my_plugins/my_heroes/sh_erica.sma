@@ -17,7 +17,6 @@ new gHeroID
 
 stock const gHeroName[] = "Erica Fonseca"
 
-new gHasErica[SH_MAXSLOTS+1]
 new gNumDarts[SH_MAXSLOTS+1]
 new g_erica_points[SH_MAXSLOTS+1]
 new g_erica_kills[SH_MAXSLOTS+1]
@@ -171,10 +170,7 @@ public erica_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasErica[id]=(hasPowers!=0)
-	if(gHasErica[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		g_erica_kills[id]=0;
 		g_erica_points[id]=base_er_points;
 		g_base_er_speed[id]=base_er_speed
@@ -241,7 +237,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,gHasErica[id]);
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_user_has_hero(id,gHeroID) );
 
 
 
@@ -253,7 +249,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 public newRound(id)
 {	
 	if(shModActive()&&client_hittable(id)){
-		if ( gHasErica[id]) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_reset_max_speed(id)
 			g_erica_kills[id]=0;
 			g_erica_points[id]=base_er_points;
@@ -287,7 +283,7 @@ public client_disconnected(id){
 }
 public sh_client_spawn(id)
 {
-	if ( gHasErica[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)  ) {
 		Erica_weapons(id)
 	}
 
@@ -327,7 +323,7 @@ public sh_round_end(){
 public weaponChange(id)
 {
 	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
-	if(!gHasErica[id]) return PLUGIN_CONTINUE
+	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
@@ -358,7 +354,7 @@ public erica_damage(id)
 	new headshot = bodypart == 1 ? 1 : 0
 	if ( !client_hittable(attacker)|| attacker==id  ) return
 	
-	if(!gHasErica[attacker]){
+	if(!sh_user_has_hero(attacker,gHeroID) ){
 
 		return
 	}
@@ -372,7 +368,7 @@ public erica_damage(id)
 }
 
 update_stats(id){
-	if(gHasErica[id]&&client_hittable(id)){
+	if(sh_user_has_hero(id,gHeroID) &&client_hittable(id)){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(speed_speed_er_points_pct,float(g_erica_points[id]))),max_er_speed),maxspeed),
 		set_user_maxspeed(id,g_normal_er_speed[id])
@@ -385,7 +381,7 @@ update_stats(id){
 }
 public Erica_weapons(id)
 {
-if ( sh_is_active() && gHasErica[id] &&client_hittable(id)) {
+if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 	sh_give_weapon(id,MOLLY_CLASSID,false)
 	cs_set_user_bpammo(id, MOLLY_CLASSID,num_mollies);
 	sh_give_weapon(id, CSW_ELITE)
@@ -417,7 +413,7 @@ public plugin_precache()
 public death()
 {	
 	new id = read_data(2)
-	if(gHasErica[id] && molly_get_molly_loaded(id)){
+	if(sh_user_has_hero(id,gHeroID) && molly_get_molly_loaded(id)){
 	
 		molly_uncharge_molly(id)
 	}
@@ -425,7 +421,7 @@ public death()
 	new killer= read_data(1)
 	new killer_name[128]
 	get_user_name(killer,killer_name,127)
-	if(gHasErica[killer]&&get_speed_dmg_in_radius(killer,0.0)){
+	if(sh_user_has_hero(killer,gHeroID) &&get_speed_dmg_in_radius(killer,0.0)){
 		
 		g_erica_kills[killer]++;
 		sh_chat_message(0,gHeroID,"%s: WOW! AMAZING, HUH?!",killer_name)

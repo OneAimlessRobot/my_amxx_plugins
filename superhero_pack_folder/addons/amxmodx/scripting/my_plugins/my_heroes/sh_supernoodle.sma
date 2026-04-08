@@ -19,7 +19,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
-new bool:gHasSuperNoodlePower[SH_MAXSLOTS+1]
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -36,7 +36,7 @@ public plugin_init()
 	register_cvar("SuperNoodle_scoutmult", "2.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!/Extra Damage for all these/Unlimited Ammo. Extra HP and AP.", false, "SuperNoodle_level")
+	gHeroID=shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!/Extra Damage for all these/Unlimited Ammo. Extra HP and AP.", false, "SuperNoodle_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -62,10 +62,7 @@ public SuperNoodle_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasSuperNoodlePower[id] = (hasPowers != 0)
-	if(gHasSuperNoodlePower[id]){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 			SuperNoodle_weapons(id)
 	}
@@ -84,13 +81,13 @@ public SuperNoodle_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasSuperNoodlePower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
 }
 public Ham_respawn(id){
-	if ( shModActive() && gHasSuperNoodlePower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
@@ -100,7 +97,7 @@ public Ham_respawn(id){
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) && gHasSuperNoodlePower[id] ) {
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 		d_barrel_set_d_barrel(id)
 		h_rifle_set_h_rifle(id)
 		arifle_set_arifle(id)
@@ -118,30 +115,25 @@ public SuperNoodle_damage(id)
 
 	if ( !is_user_connected(attacker)||id==attacker ) return HAM_IGNORED
 
-	if ( gHasSuperNoodlePower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "super shotgun", headshot)
 	
 	}
-	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_SCOUT && is_user_alive(id) ){
+	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "precisoin rifle", headshot)
 			
 	}
-	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_M249 && is_user_alive(id) ){
+	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M249 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "assault rifle", headshot)
 			
 	}
-	else if(gHasSuperNoodlePower[attacker] && weapon == CSW_ELITE && is_user_alive(id) ){
+	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_ELITE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "dual pistols", headshot)
 	}
 	return HAM_IGNORED
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasSuperNoodlePower[id] = false
 }
 //----------------------------------------------------------------------------------------------

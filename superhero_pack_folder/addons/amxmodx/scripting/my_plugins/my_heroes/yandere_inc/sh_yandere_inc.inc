@@ -28,7 +28,6 @@
 // GLOBAL VARIABLES
 stock gHeroID
 stock const gHeroName[] = "Yandere Mk.II"
-stock bool:gHasYandere[SH_MAXSLOTS+1]
 stock bool:gSuperAngry[SH_MAXSLOTS+1]
 stock bool:gIdleAngry[SH_MAXSLOTS+1]
 stock bool:gPlayedSound[SH_MAXSLOTS+1]

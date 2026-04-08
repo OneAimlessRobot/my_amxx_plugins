@@ -15,7 +15,6 @@
 // GLOBAL VARIABLES
 new gHeroName[] = "L96A1"
 new gHeroID;
-new bool:gHasLena[SH_MAXSLOTS+1]
 new gNumBullets[SH_MAXSLOTS+1]
 new lena_max_bullets
 
@@ -106,12 +105,7 @@ public lena_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	
-	new hasPowers = str_to_num(temp)
-	gHasLena[id]=(hasPowers!=0)
-	if(gHasLena[id])
+	if(sh_user_has_hero(id,gHeroID) )
 	{
 		new_spawn(id)
 		lena_weapons(id)
@@ -123,7 +117,7 @@ public lena_init()
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasLena[id])
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 	{
 		gNumBullets[id]=lena_max_bullets
 	}
@@ -137,7 +131,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
 {
-	if ( sh_is_active() && client_hittable(id) && gHasLena[id]) {
+	if ( sh_is_active() && client_hittable(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
@@ -145,9 +139,4 @@ lena_weapons(id)
 			cs_set_user_bpammo(id, LENA_WEAPON_CLASSID,gNumBullets[id]-CLIP_SIZE);
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasLena[id] = false
 }
