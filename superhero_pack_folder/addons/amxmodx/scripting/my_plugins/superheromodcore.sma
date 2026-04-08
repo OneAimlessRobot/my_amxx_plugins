@@ -420,6 +420,7 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
+new bool:gPlayerHasPowerTable[SH_MAXSLOTS+1][SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
 new gPlayerMenuOffset[SH_MAXSLOTS+1]
@@ -1380,7 +1381,7 @@ public _sh_user_has_hero()
 	new heroIndex = get_param(2)
 
 	if ( -1 < heroIndex < gSuperHeroCount ) {
-		return playerHasPower(id, heroIndex)
+		return playerHasPowerPt2(id, heroIndex)
 	}
 
 	return 0
@@ -1393,6 +1394,15 @@ bool:playerHasPower(id, heroIndex)
 		if ( gPlayerPowers[id][x] == heroIndex ) return true
 	}
 	return false
+}
+//----------------------------------------------------------------------------------------------
+bool:playerHasPowerPt2(id, heroIndex)
+{
+	/*
+	if(is_user_connected(id)&&!is_user_bot(id)){
+		sh_chat_message(id,heroIndex,"checking if we have power... We do, right? %s",gPlayerHasPowerTable[id][heroIndex]?"yes!":"No...")
+	}*/
+	return gPlayerHasPowerTable[id][heroIndex]
 }
 //----------------------------------------------------------------------------------------------
 //native sh_drop_weapon(id, weaponID, bool:remove = false)
@@ -1623,6 +1633,7 @@ initHero(id, heroIndex, mode)
 
 	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false	
 
+	gPlayerHasPowerTable[id][heroIndex]= mode ? true : false	
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
 		//If this is called by an added hero they must be restricted
@@ -2159,13 +2170,12 @@ clearPower(id, level)
 	new heroIndex = gPlayerPowers[id][level]
 
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return
-
+	
 	// Ok shift over any levels higher
 	new playerpowercount = getPowerCount(id)
 	for ( new x = level; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
 		if ( x != SH_MAXLEVELS ) gPlayerPowers[id][x] = gPlayerPowers[id][x + 1]
 	}
-
 	new powers = gPlayerPowers[id][0]--
 	if ( powers < 0 ) gPlayerPowers[id][0] = 0
 
@@ -2216,6 +2226,7 @@ clearAllPowers(id, bool:dispStatusText)
 		// Save heroid for init forward
 		heroIndex = gPlayerPowers[id][x]
 
+		
 		// Clear All Power slots for player
 		gPlayerPowers[id][x] = -1
 
