@@ -42,6 +42,7 @@ new ester_anti_pussy_engaged
 
 new ester_calculation_times
 new bool:g_flying[SH_MAXSLOTS+1]
+new bool:g_smashed_someone[SH_MAXSLOTS+1]
 new g_ester_respawned_attempts[SH_MAXSLOTS+1]
 new g_is_between_rounds
 new g_which_team_is_user[SH_MAXSLOTS+1]
@@ -148,7 +149,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED;
 	
 	}
-	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&g_ester_is_reborn_mode[id]){
+	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&g_ester_is_reborn_mode[id]&&!g_smashed_someone[id]){
 		
 			sh_extra_damage( attacker, id,floatround(ester_damage_reflect_coeff*damage), "Charging reflect" )
 			directed_spark(id, attacker)
@@ -258,6 +259,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 	new id=get_param(1)
 	new value=get_param(2)
 
+	g_smashed_someone[id]=!value
 	g_ester_is_reborn_mode[id]=value
 }
 public OnCmdStart(id, uc_handle, seed)
@@ -286,11 +288,6 @@ public OnCmdStart(id, uc_handle, seed)
 				emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			
 			}
-			else if(float(get_user_health(id))>1){
-			
-				emit_sound(id, CHAN_AUTO, FLIGHT_WEAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			
-			}
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
 				trail(id,COLOR_STRONG,1,10)
 			}
@@ -299,9 +296,9 @@ public OnCmdStart(id, uc_handle, seed)
 				
 				
 			}
-			
+			g_smashed_someone[id]=false
+			g_flying[id]=true;
 		}
-		g_flying[id]=true;
 		if(random(FlameAndSoundRate) <3)
 		{
 			static Float:Velocity[3]
@@ -632,7 +629,11 @@ if (!client_hittable(pToucher)){
 
 	return
 }
-if (!sh_user_has_hero(pToucher,ester_get_hero_id())||!g_ester_is_reborn_mode[pToucher]||!ester_fly_knock_enemies){
+if (!sh_user_has_hero(pToucher,ester_get_hero_id())||
+						g_smashed_someone[pToucher]||
+						!g_ester_is_reborn_mode[pToucher]||
+						!g_flying[pToucher]||
+						!ester_fly_knock_enemies){
 
 	return
 }
@@ -648,7 +649,7 @@ if(sh_clients_are_same_team(pToucher,pTouched)){
 
 	return
 }
-
+g_smashed_someone[pToucher] = true
 new Float:killer_velocity[3],Float:killer_speed
 entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
 

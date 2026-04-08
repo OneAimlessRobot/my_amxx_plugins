@@ -49,7 +49,10 @@ public Fwd_PlayerPreThink(id)
 	return FMRES_IGNORED
 }
 
+public plugin_precache(){
 
+	precache_sound(SLICERISTA_HIT_MEAT_SFX)
+}
 public on_Knife_Weapon_Change(id)
 {
 	if ( !client_hittable(id)||!shModActive()) return
@@ -144,48 +147,50 @@ public zenitsu_charge(id, uc_handle, seed)
 public vexd_pfntouch(pToucher, pTouched) {
 
 
-if (pev_valid(pToucher)!=2){
+	if (pev_valid(pToucher)!=2){
+		
+		return
+	}
+	if (!client_hittable(pToucher)){
+
+		return
+	}
+	if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
+
+		return
 	
-	return
-}
-if (!client_hittable(pToucher)){
+	}
+	if(!client_hittable(pTouched)){
+		
+		return
+	}
+	if(pTouched==pToucher){
 
-	return
-}
-if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
+		return
+	}
+	if(sh_clients_are_same_team(pToucher,pTouched)){
 
-	return
-}
-if(!client_hittable(pTouched)){
-	
-	return
-}
-if(pTouched==pToucher){
+		return
+	}
 
-	return
-}
-if(sh_clients_are_same_team(pToucher,pTouched)){
-
-	return
-}
-
-remove_user_flight_fx(pToucher)
+	remove_user_flight_fx(pToucher)
 
 
-sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],1,_,_,_,_,_,
-			SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
-			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
+	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],1,_,_,_,_,_,
+				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
 
+	new opp_health=get_user_health(pTouched);
+	if((floatround(ZENITSU_DAMAGE)>=opp_health)){
+		emit_sound(pToucher, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
+		new Float:vic_origin[3],Float:origin[3]
+		entity_get_vector(pTouched,EV_VEC_origin,vic_origin)
+		entity_get_vector(pToucher,EV_VEC_origin,origin)
+		gross_kill_gibs_fx(pTouched,vic_origin,origin)
 
-if((floatround(ZENITSU_DAMAGE)>=get_user_health(pTouched))&&!get_user_godmode(pTouched)){
-
-	new Float:vic_origin[3],Float:origin[3]
-	entity_get_vector(pTouched,pev_origin,vic_origin)
-	entity_get_vector(pToucher,pev_origin,origin)
-	gross_kill_gibs_fx(pTouched,vic_origin,origin)
-
-}
-zenitsu_set_charge_mode_engaged(pToucher,0)
+	}
+	g_zenitsu_has_touched_player[pToucher]=1
+	zenitsu_set_charge_mode_engaged(pToucher,0)
 
 }
 

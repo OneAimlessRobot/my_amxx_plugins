@@ -171,6 +171,7 @@ public ester_init()
 	if(gHasEster[id]){
 		
 		ester_model(id)
+		reset_ester_reborn_mode(id,0)
 		if(gTimesLeft[id]<=0){
 			reset_status(id)
 			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")

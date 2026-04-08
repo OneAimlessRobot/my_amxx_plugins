@@ -104,14 +104,8 @@ public zenitsu_init()
 	new hasPowers = str_to_num(temp)
 	
 	gHasZenitsu[id] = (hasPowers!=0)
-	if(gHasZenitsu[id]){
-
-	}
-	else{
-
-
-
-	}
+	
+	gChargeModeEngaged[id]=0
 }
 //----------------------------------------------------------------------------------------------
 public zenitsu_kd()
@@ -134,7 +128,7 @@ public zenitsu_kd()
 
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
-			sh_chat_message(id,gHeroID,"Charge mode already engaged!");
+			sh_chat_message(id,gHeroID,"Charge mode already used!");
 		}
 		return PLUGIN_HANDLED
 	}

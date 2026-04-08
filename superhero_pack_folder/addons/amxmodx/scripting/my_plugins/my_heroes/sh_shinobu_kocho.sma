@@ -53,6 +53,7 @@ public plugin_init()
 	register_event("Damage","shinobuDamage","b", "2!0")
 	register_srvcmd("shinobu_init", "shinobu_init")
 	shRegHeroInit(gHeroName, "shinobu_init")
+	register_event("ResetHUD","shinobu_health_newRound","b")
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
@@ -84,6 +85,20 @@ public plugin_natives(){
 }
 
 
+//----------------------------------------------------------------------------------------------
+public shinobu_health_newRound(id)
+{
+	if(!client_hittable(id)||!sh_is_active()){
+		
+		return PLUGIN_CONTINUE
+	}
+
+	if ( gHasShinobu[id]) {
+		
+		set_user_health(id,min(get_user_health(id),shinobu_max_health))
+	}
+	return PLUGIN_CONTINUE
+}
 //----------------------------------------------------------------------------------------------
 public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {

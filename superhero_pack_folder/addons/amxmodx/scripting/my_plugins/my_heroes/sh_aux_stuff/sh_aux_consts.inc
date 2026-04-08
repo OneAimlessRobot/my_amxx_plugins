@@ -42,6 +42,7 @@ stock const m_fInReload            = 54
 
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
+#define SLICERISTA_HIT_MEAT_SFX "shmod/Grimpt2/Stolen2.wav"
 #define LASER_LINE_DEFAULT_SOUND "weapons/electro5.wav"
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"

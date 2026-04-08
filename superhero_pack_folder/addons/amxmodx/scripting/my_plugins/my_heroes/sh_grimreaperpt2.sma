@@ -4,7 +4,7 @@
 
 
 #define GRIM_SWING_SFX "shmod/Grimpt2/Stolen1.wav"
-#define GRIM_HIT_MEAT_SFX "shmod/Grimpt2/Stolen2.wav"
+
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -125,8 +125,8 @@ public greaper_damage(this, attacker)
 {
 
 sh_extra_damage(this,attacker,1,dmg_source_name_long_scythe,1000,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id_scythe);
-emit_sound(attacker, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
-emit_sound(this, CHAN_WEAPON, GRIM_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
+emit_sound(attacker, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
+emit_sound(this, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 
 return;
 }
@@ -206,7 +206,7 @@ if ( file_exists(gModelScythe) ) {
 		gModelLoaded = false
 	}
 
-engfunc(EngFunc_PrecacheSound, GRIM_HIT_MEAT_SFX)
+engfunc(EngFunc_PrecacheSound, SLICERISTA_HIT_MEAT_SFX)
 engfunc(EngFunc_PrecacheSound, GRIM_SWING_SFX)
 }
 public death()
