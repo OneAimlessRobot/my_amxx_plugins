@@ -19,7 +19,7 @@ new Float:ksun_ultimate_reload_rate_mult
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
-
+new g_played_sound[SH_MAXSLOTS+1]
 new dmg_source_name_short_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
 new dmg_source_name_long_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
 new custom_dmg_id_r5
@@ -152,6 +152,20 @@ public loadCVARS()
 	ksun_ultimate_reload_rate_mult=get_cvar_float("ksun_ultimate_reload_rate_mult")
 	
 }
+sound_fiscalization(id){
+	if((g_player_supply_amount[id]==ksun_supply_capacity)){
+		
+		
+		if(!g_played_sound[id]){
+			emit_sound(id,CHAN_WEAPON,SPORE_HEAL_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+			g_played_sound[id]=1
+		}
+		
+	}	
+	else if(g_played_sound[id]){
+		g_played_sound[id]=0
+	}
+}
 calculate_untaxed_health_to_filtered_supply(supply_parcel){
 
 	return max(0,floatround(floatmul(float(supply_parcel),ksun_health_to_supply_ratio)))
@@ -162,14 +176,14 @@ public _ksun_set_player_supply_points(iPlugins, iParams){
 	new id= get_param(1)
 	new value=get_param(2)
 	g_player_supply_amount[id]= max(0,min(ksun_supply_capacity,value))
-	
+	sound_fiscalization(id)
 }
 public _ksun_dec_player_supply_points(iPlugins, iParams){
 	
 	new id= get_param(1)
 	new value=get_param(2)
 	g_player_supply_amount[id]= max(0,g_player_supply_amount[id]-value)
-	
+	sound_fiscalization(id)
 }
 public _ksun_inc_player_supply_points(iPlugins, iParams){
 	
@@ -179,8 +193,16 @@ public _ksun_inc_player_supply_points(iPlugins, iParams){
 	g_player_supply_amount[id]= max(0,
 									min(ksun_supply_capacity,g_player_supply_amount[id]+
 									calculate_untaxed_health_to_filtered_supply(value)))
-	
+	sound_fiscalization(id)
 }
+
+public plugin_precache()
+{
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_READY_SOUND)
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
+	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
+}
+
 public _ksun_get_player_supply_points(iPlugins, iParams){
 	
 	new id= get_param(1)
@@ -249,8 +271,10 @@ public unultimate_task(id){
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_READY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
+	g_played_sound[id]=0
 	g_player_supply_amount[id]=0
 	
 	
@@ -263,8 +287,10 @@ unultimate_user(id,take_away_supply=1){
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_READY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_player_in_ultimate[id]=0
+	g_played_sound[id]=0
 	g_player_supply_amount[id]=take_away_supply?0:g_player_supply_amount[id]
 	
 	
@@ -307,12 +333,6 @@ return PLUGIN_CONTINUE
 
 }
 
-public plugin_precache(){
-	
-	
-	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
-	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
-}
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){

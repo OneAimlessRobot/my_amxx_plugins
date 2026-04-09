@@ -19,9 +19,9 @@
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-stock YANDERE_MORPH_TASKID,
-		YANDERE_STATS_TASKID,
+stock YANDERE_STATS_TASKID,
 		YANDERE_ANGER_TASKID
 
 //----------------------------------------------------------------------------------------------
@@ -51,6 +51,25 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
 	
+	sh_register_superheromod_model(gHeroID,
+								"models/player/yanderu/yanderu.mdl",
+								"models/player/yanderu/yanderuT.mdl",
+								"yanderu",
+								"",
+								"")
+	sh_register_superheromod_model(gHeroID,
+								"models/player/superyanderu/superyanderu.mdl",
+								"models/player/superyanderu/superyanderuT.mdl",
+								"superyanderu",
+								"",
+								"")
+	sh_register_superheromod_model(gHeroID,
+								"models/player/yanderu_psycho/yanderu_psycho.mdl",
+								"models/player/yanderu_psycho/yanderu_psycho.mdl",
+								"yanderu_psycho",
+								"",
+								"")
+
 	register_event("Damage", "yandere_damage", "b", "2!0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
@@ -64,7 +83,6 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
-	YANDERE_MORPH_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_STATS_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_ANGER_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
@@ -74,8 +92,6 @@ public plugin_natives(){
 
 	register_native("yandere_get_is_super","_yandere_get_is_super",0);
 	register_native("yandere_get_hero_id","_yandere_get_hero_id",0);
-	register_native("yandere_unmorph","_yandere_unmorph",0);
-	register_native("yandere_model","_yandere_model",0);
 
 
 
@@ -142,7 +158,6 @@ public yandere_init()
 		gNormalSpeed[id]=base_extra_speed
 		gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
-		yandere_model(id)
 		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		
 	}
@@ -150,7 +165,6 @@ public yandere_init()
 		remove_task(id+YANDERE_ANGER_TASKID)
 		remove_task(id+YANDERE_STATS_TASKID)
 		killyandere(id,true)
-		yandere_unmorph(id)
 	}
 	
 	
@@ -204,6 +218,12 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id
 	}
 	
 }
+else{
+
+
+	remove_task(id+YANDERE_ANGER_TASKID)
+	return
+}
 
 
 }
@@ -233,18 +253,25 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
+if(!sh_user_has_hero(id,gHeroID) ){
 
+	remove_task(id+YANDERE_STATS_TASKID)
+	return
+}
 if(client_hittable(id)){
-	if(!sh_user_has_hero(id,gHeroID) ){
-
-		return
-	}
+	
 	
 	if(!is_user_bot(id)&&gTransTimerStarted[id]){
 		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 	}
 	yandere_timer_transform(id)
 	
+}
+else if(!is_user_connected(id)){
+
+
+	remove_task(id+YANDERE_STATS_TASKID)
+	return
 }
 }
 
@@ -308,8 +335,6 @@ public yandere_timer_transform(id){
 		}
 		if(gSuperAngry[id]&&client_hittable(id)){
 			gTransTimerStarted[id]=false
-			yandere_unmorph(id)
-			yandere_model(id)
 			BlowUp(id)
 			jet_destroy(id)
 			if(sh_is_inround()){
@@ -328,7 +353,6 @@ public client_disconnected(id){
 	remove_task(id+YANDERE_ANGER_TASKID)
 	remove_task(id+YANDERE_STATS_TASKID)
 	killyandere(id,true)
-	yandere_unmorph(id)
 	notify_yanderes_about_team_life(-1,1)
 }
 
@@ -378,8 +402,6 @@ public newRound(id)
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
-			yandere_unmorph(id)
-			yandere_model(id)
 		}
 		notify_yanderes_about_team_life(id,1)
 	}
@@ -467,11 +489,6 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[i])
 	
 	}
-	precache_model("models/player/yanderu/yanderu.mdl")
-	precache_model("models/player/yanderu/yanderuT.mdl")
-	precache_model("models/player/superyanderu/superyanderu.mdl")
-	precache_model("models/player/superyanderu/superyanderuT.mdl")
-	precache_model("models/player/yanderu_psycho/yanderu_psycho.mdl")
 	precache_model(YANDERE_SHOTGUN_V_MODEL)
 	precache_model(YANDERE_SHOTGUN_P_MODEL)
 	precache_model(YANDERE_KNIFE_V_MODEL)
@@ -623,9 +640,6 @@ killyandere(id,bool:dropping=false){
 			if(yandere_get_user_is_psychosis(id)){
 				yandere_unpsychosis_user(id)
 			}
-			else{
-				yandere_unmorph(id)
-			}
 			remove_task(id+YANDERE_ANGER_TASKID)
 		}
 		else if(jet_deployed(id)){
@@ -649,70 +663,6 @@ public sh_client_death(id,attacker,headshot,const weapon_description[])
 	if(client_hittable(attacker)){
 		if(sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]){
 			fx_invisible(id)
-		}
-	}
-}
-
-//----------------------------------------------------------------------------------------------
-public _yandere_model(iPlugin,iParams)
-{
-	new id= get_param(1)
-	set_task(1.0, "yandere_morph", id+YANDERE_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public yandere_morph(id)
-{
-	id-=YANDERE_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
-	
-	if(!gSuperAngry[id]){
-		cs_set_user_model(id, "yanderu")
-	}
-	else{
-		if(yandere_get_user_is_psychosis(id)){
-			cs_set_user_model(id, "yanderu_psycho")
-		}
-		else{
-			
-			cs_set_user_model(id, "superyanderu")
-		}
-	}
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public _yandere_unmorph(iPlugin,iParams)
-{
-	new id= get_param(1)
-	remove_task(id+YANDERE_MORPH_TASKID)
-	if(!is_user_connected(id)) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-	}
-}
-//----------------------------------------------------------------------------------------------
-public yandere_glow(id)
-{
-	id -= YANDERE_MORPH_TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+YANDERE_MORPH_TASKID)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
 		}
 	}
 }

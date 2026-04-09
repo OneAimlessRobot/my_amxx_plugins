@@ -26,6 +26,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 
@@ -38,7 +39,6 @@ new times_picked
 new gHasAcess[SH_MAXSLOTS+1] 
 new gIsInvisible[SH_MAXSLOTS+1]
 new gStillTime[SH_MAXSLOTS+1]
-new bool:gmorphed[SH_MAXSLOTS+1]
 new gSpriteWhite, gRadius, gBright
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
@@ -57,7 +57,12 @@ public plugin_init()
 	register_cvar("darkpred_level", "10" )
 	
 	gHeroID=shCreateHero(gHeroName, "Deagle/Invisibility (ADMIN A ONLY)", "Free deagle and invisibility. Plus ESP rings, Predator Armour and Regeneration.", false, "darkpred_level" )
-	
+	sh_register_superheromod_model(gHeroID,
+							"models/player/sh_darkpredator/sh_darkpredator.mdl",
+							"models/player/sh_darkpredator/sh_darkpredator.mdl",
+							"sh_darkpredator",
+							"You now wear your Predator battle armour.",
+							"You are not wearing your Predator battle armour.")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
 	// INIT
@@ -70,8 +75,7 @@ public plugin_init()
 	register_event("CurWeapon","changeWeapon","be","1=1")  
 	//Damage
 	register_event("Damage", "darkpred_damage", "b", "2!0")
-	//Death of Player
-	register_event("DeathMsg", "darkpred_death", "a")		
+		
 	
 	// DEFAULT THE CVARS
 	register_cvar("darkpred_armor", "400") 
@@ -114,7 +118,6 @@ public plugin_precache()
 	laser = precache_model("sprites/laserbeam.spr") 
 	laser_impact = precache_model("sprites/zerogxplode.spr") 
 	blast_shroom = precache_model("sprites/mushroom.spr")
-	precache_model("models/player/sh_darkpredator/sh_darkpredator.mdl")
 }
 
 public num_picked_check(id){
@@ -144,15 +147,13 @@ public darkpred_init()
 	{
 		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		remInvisibility(id)
-		shGiveWeapon(id,"weapon_deagle")
-		darkpred_tasks(id)
+		sh_give_weapon(id,CSW_DEAGLE)
 	}
 	// Got to slow down DarkPredator that lost his powers...
 	if ( !sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
 	{
 		//Do stuff to him if he just droppped it
 		shRemArmorPower(id) //Loose the AP power of this hero
-		darkpred_unmorph(id)
 		remInvisibility(id)
 		times_picked=clamp(times_picked-1,0,MAX_PICKED);
 	}
@@ -167,54 +168,9 @@ public newSpawn(id)
 			gBullets[id] = get_cvar_num("darkpred_bullets")
 			gLastWeapon[id] = -1
 			set_task(0.1, "darkpred_deagle",id)
-			darkpred_tasks(id)
 		}
 	}
 	return PLUGIN_HANDLED
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_tasks(id)
-{
-	set_task(1.0, "darkpred_morph", id)
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_morph(id)
-{
-	if ( gmorphed[id] || !is_user_alive(id) ) return
-	
-	#if defined AMXX_VERSION
-	cs_set_user_model(id, "sh_darkpredator")
-	#else
-	CS_SetModel(id, "sh_darkpredator")
-	#endif
-	
-	// Message
-	
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You now wear your Predator battle armour.")
-	
-	gmorphed[id] = true
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_unmorph(id)
-{
-	if ( gmorphed[id] ) {
-		
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,  "You are not wearing your Predator battle armour.")
-		
-		#if defined AMXX_VERSION
-		//cs_reset_user_model(id)
-		#else
-		//CS_ClearModel(id)
-		#endif
-		
-		gmorphed[id] = false
-	}
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_death()
-{
-	new id = read_data(2)
-	darkpred_unmorph(id)
 }
 //----------------------------------------------------------------------------------------------
 public setInvisibility(id, alpha)
@@ -529,11 +485,6 @@ public darkpred_maxhealth()
 	read_argv(2,health,8)
 	
 	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gmorphed[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public darkpred_pickable_check(id)

@@ -11,6 +11,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 // GLOBAL VARIABLES
@@ -25,7 +26,6 @@ new gEsterDmg[SH_MAXSLOTS+1]
 new gTimesLeft[SH_MAXSLOTS+1]
 new gBuiltUpXp[SH_MAXSLOTS+1]
 
-new gmorphed[SH_MAXSLOTS+1]
 
 new bool:g_ester_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
@@ -49,8 +49,7 @@ new adulting_pan_wpn_id
 new dmg_source_name_short_adulting_pan[SAFE_BUFFER_SIZE+1]="the_pan_tm"
 new dmg_source_name_long_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
 
-stock ESTER_REVENGE_TASKID,
-	ESTER_MORPH_TASKID
+stock ESTER_REVENGE_TASKID
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -81,7 +80,13 @@ public plugin_init()
 	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
-	
+	sh_register_superheromod_model(gHeroID,
+								"models/player/ester/ester.mdl",
+								"models/player/ester/esterT.mdl",
+								"ester",
+								"Ready to adult & Pwn 50m3 n3wbz",
+								"Fuck my li- *Sigh...* Spectating again")
+
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -97,7 +102,6 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "ester_prethink")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
 	ESTER_REVENGE_TASKID=allocate_typed_task_id(player_task)
-	ESTER_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 
 	init_explosion_defaults()
@@ -160,22 +164,15 @@ public ester_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if(sh_user_has_hero(id,gHeroID) ){
-		
-		ester_model(id)
-		if(gTimesLeft[id]<=0){
-			reset_status(id)
-			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")
-			return
-		}
-	}
-	else{
-		ester_unmorph(id+ESTER_MORPH_TASKID)
-		
-	}
+	ester_weapons(id)
 	reset_ester_reborn_mode(id,0)
 	reset_ester_user_round(id)
-	ester_weapons(id)
+	if(sh_user_has_hero(id,gHeroID) ){
+		
+		if(gTimesLeft[id]<=0){
+			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")
+		}
+	}
 	
 	
 }
@@ -204,66 +201,12 @@ stock ester_weapons(id){
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public ester_model(id)
-{
-	set_task(1.0, "ester_morph", id+ESTER_MORPH_TASKID)
-	
-	
-}
-//----------------------------------------------------------------------------------------------
-public ester_morph(id)
-{
-	id-=ESTER_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
-	
-	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Ready to adult & Pwn 50m3 n3wbz")
-	cs_set_user_model(id, "ester")
-	
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public ester_unmorph(id)
-{
-	id-=ESTER_MORPH_TASKID
-	if(!is_user_connected(id)) return
-	if ( gmorphed[id] ) {
-		
-		cs_reset_user_model(id)
-		
-		gmorphed[id] = false
-		
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Fuck my li- *Sigh...* Spectating again")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public ester_glow(id)
-{
-	id -= ESTER_MORPH_TASKID
-	
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+ESTER_MORPH_TASKID)
-		return
-	}
-	
-	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
-}
-
 reset_status(id){
 	
 	
 	remove_task(id+ESTER_REVENGE_TASKID)
 	if(is_user_connected(id)){
-		set_user_rendering(id,_,_,_,_,_,0)	
+		set_user_rendering(id)	
 	}
 	gFinished[id]=false
 	damage_to_do[id]=0
@@ -340,25 +283,6 @@ public reset_ester_user_round(id){
 	
 	
 }
-public status_hud(id){
-	
-	new hud_msg[200];
-	formatex(hud_msg,199,"[SH] %s:^nDischarge times left: %d^nDamage to do to %d enemies: %d^nAmmount of moralizing xp built up: %d^nNumber of attempts to matter used: %d^nAre you in respawn mode? %s^n",
-		gHeroName,
-		gTimesLeft[id],
-		count_enemies(id),
-		damage_to_do[id],
-		gBuiltUpXp[id],
-		ester_get_respawn_attempts_remaining(id),
-		ester_get_reborn_mode(id)?"Yes!":"No."
-	);
-	
-	
-	set_hudmessage(255, 255, 255,1.0, 0.3, 0, 0.0, 2.0,0.0,0.0)
-	show_hudmessage(id, "%s", hud_msg)
-	
-	
-}
 public show_targets(id){
 	
 	static hud_msg[500];
@@ -411,7 +335,15 @@ public loadCVARS()
 public Ester_revenge_loop(id)
 {
 	id-=ESTER_REVENGE_TASKID
-	if ( !sh_is_active() || !is_user_alive(id) ||!(gPedalIsFloored[id]||gUnloading[id])||gFinished[id]) return
+	if ( !sh_is_active() || !is_user_alive(id)){
+		
+		remove_task(id+ESTER_REVENGE_TASKID)
+		return
+	}
+		
+		
+	if(!(gPedalIsFloored[id]||gUnloading[id])||gFinished[id]) return
+
 	static CsArmorType:armorType
 	static userArmor,user_health
 	user_health=get_user_health(id)
@@ -480,6 +412,10 @@ public Ester_revenge_loop(id)
 				if(!is_user_bot(id)){
 					sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
 				}
+				explosion(gHeroID,id,1000.0,1000.0,default_explode_knock_force_magnitude,0)
+				reset_status(id)
+				gFinished[id]=true;
+				remove_task(id+ESTER_REVENGE_TASKID)
 			}
 		}
 		else{
@@ -489,6 +425,7 @@ public Ester_revenge_loop(id)
 			explosion(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,0)
 			reset_status(id)
 			gFinished[id]=true;
+			remove_task(id+ESTER_REVENGE_TASKID)
 			return
 			
 		}
@@ -514,7 +451,6 @@ public sh_client_spawn(id)
 		trail(id,GREEN,0,0)
 		set_user_rendering(id,_,_,_,_,_,0)
 		reset_ester_user_round(id)
-		ester_model(id)
 		
 	}
 	
@@ -674,16 +610,13 @@ public client_disconnected(id){
 	reset_ester_reborn_mode(id,0)
 	ester_weapons(id)
 	reset_ester_user_round(id)
-	ester_unmorph(id+ESTER_MORPH_TASKID)
 	
 	remove_task(id+ESTER_REVENGE_TASKID)
 	
 }
 public plugin_precache()
 {
-	
-	precache_model("models/player/ester/ester.mdl")
-	precache_model("models/player/ester/esterT.mdl")
+
 	for(new i=0;i<ESTER_NUM_WEAPON_HIT_SOUNDS;i++){
 		
 		engfunc(EngFunc_PrecacheSound, ester_weapon_hit_sounds[i])
@@ -721,7 +654,6 @@ public death()
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_ester_reborn_mode(id,0)
-		ester_unmorph(id+ESTER_MORPH_TASKID)
 		reset_status(id)
 		emit_sound(id, CHAN_VOICE, ester_death_sounds[random_num(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,random_num(95,120))
 		

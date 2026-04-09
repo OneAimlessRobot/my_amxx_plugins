@@ -1,0 +1,272 @@
+OnNewUrlLaunchParameters
+Playing Startup Videos...
+WARNING: UDP_OpenSocket: port: 27015  bind: Address already in use
+NET Ports:  server 27015, client 27005
+Could not get TCP/IP address, TCP/IP disabled
+Reason:  Socket operation on non-socket
+Connecting to 192.168.0.100:27015...
+Connection accepted by 192.168.0.100:27015
+* Password accepted
+* Privileges set
+
+BUILD 4329 SERVER (0 CRC)
+Server # 31
+THA_GOAT!!!!!!! is joining the Terrorist force[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) TH_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe :  buyxp
+
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+] amx_shsetlevel jaNe 60
+[SH] Client "Mr.JaNe" has been set to level 60
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+Time Left: 19:49 min. Next Map: de_aztec
+THA_GOAT!!!!!!! :  ehehehe
+
+Mr.JaNe :  hi
+
+ADMIN THA_GOAT!!!!!!!: set level 60 on Mr.JaNe
+Mr.JaNe:  wow admin
+
+Mr.JaNe :  where bots gone?
+
+THA_GOAT!!!!!!! :  Werent they annoying?
+
+Mr.JaNe :  nope i was fighting with them
+
+THA_GOAT!!!!!!! :  realy?
+
+Mr.JaNe :  5 min ago an other guy was online and he left
+
+THA_GOAT!!!!!!! :  btw leme check logs for errors
+
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe :  yes i was farming lvl tho
+
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+THA_GOAT!!!!!!! :  NO ERRORS LETS GOO
+
+SH](Yandere Mk.II) Jet not deployed. Action interrupted
+THA_GOAT!!!!!!! :  btw was the server lagging
+
+THA_GOAT!!!!!!! :  ?
+
+Mr.JaNe :  why should be errors?
+
+Mr.JaNe :  no just i have some ping
+
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+THA_GOAT!!!!!!! :  sometimes there are errors I have to fix
+
+THA_GOAT!!!!!!! :  like bugs
+
+Mr.JaNe :  coz of distance iu belive
+
+THA_GOAT!!!!!!! :  I own this btw
+
+THA_GOAT!!!!!!! :  I made all the custom heroes
+
+[SH](Yandere Mk.II) Jet not deployed. Action nterrupted
+Mr.JaNe :  nice
+
+THA_GOAT!!!!!!! :  and modified
+
+] rcon amx_heal Jane 1221212112
+ML_NOTFOUND: AINO_HEAL_PLAYER_SUCCESS
+
+THA_GOAT!!!!!!! :  many
+
+THA_GOAT!!!!!!! :  I made the shinobu hero yesterday
+
+Mr.JaNe :  isee :)
+
+Mr.JaNe :  usually those heroes does not exist
+
+ML_NOTFOUND: AINO_HEAL_PLAYER_CASE2
+[SH](Erica Fonseca) You just bled Mr.JaNe!!!
+[SH](Shinobu Kocho) Its not hurting... Its a cure~
+[SH](Marksman) You just bled Mr.JaNe!!!
+Mr.JaNe :  how i have 1m hp?
+
+[SH](Shinobu Kocho) I wonder i they feel lonely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shinobu Kocho) heeeeeey~
+THA_GOAT!!!!!!! :  I can teleport dhhhh
+
+[SH](Erica Fonseca) You just bled Mr.JaNe!!!
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Parsing tomfoolery files~
+[SH](Marksman) You just bled Mr.JaNe!!!
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Shinobu Kocho) I wonder if they feel lonely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH]Shinobu Kocho) heeeeeey~
+THA_GOAT!!!!!!! :  I can teleport behind ppl
+
+THA_GOAT!!!!!!! :  ok hit me with a knife
+
+Mr.JaNe :  /cam
+
+[SH](Shinobu Kocho) Awww, does tummy hurt?
+[SH](Marksman) You just bled Mr.JaNe!!!
+[SH](Shinobu Kocho) I wonder if they feel lonely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shinobu Kocho) Ai, Ai, Ai~
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe :  ,lol
+
+[SH](S.W.A.T.) Mr.JaNe shattered you!
+[SH](Yandere Mk.II) Jet not deployed. Action interrupte
+THA_GOAT!!!!!!! :  she drank a lot of poison in the show to poison whichever demon she ate
+
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+THA_GOAT!!!!!!! :  *ate her
+
+[SH] You were given 60 MercyXP points
+] condump
+console dumped to condump000.txt
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe :  :)
+
+THA_GOAT!!!!!!! :  I think shes funny
+
+Mr.JaNe :  /cam
+
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 74.00 damage
+From entity of type: player
+From attacke
+[SH] (Sefless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 53.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 38.00 damage
+From entity of type: player
+From attacke
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 22.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 22.00 damage
+rom entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 22.00 damage
+From entity of type: player
+From attacke
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2):Your jet has been damaged!!!
+You received: 22.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) Jetplane is okay now! Ready for take off!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 22.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You receive: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 22.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere Mk.II) JET loaded
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You receied: 22.00 damage
+From entity of type: player
+From attacke
+[SH](Maria) Mr.JaNe shattered you!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH](Maria) Mr.JaNe shattered you!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 31.00 damage
+From entity of type: player
+From attacke
+[SH](aria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Yandere Mk.II) jet died!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Maria) Mr.JaNe shattered you!
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe :  lol
+
+Mr.JaNe :  plane
+
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+THA_GOAT!!!!!!! :  what superhero damge actually works on plane I didnt know lol
+
+[SH] For help with SuperHero Mod, say: /help
+Mr.JaNe :  all i think
+
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe killed THA_GOAT!!!!!!! with deagle
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+* Killed by Mr.JaNe with deagle @ 9m (500hp, 182ap) >> chest: 3 stomach: 12 leftarm: 2 rightarm: 1 leftleg: 1
+* You hit Mr.JaNe 44 time(s), 1517 damage >> head: 2 stomach: 42
+[SH](Yanere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! killed Mr.JaNe with sh_generic_dmg
+[SH](Erica Fonseca) You burned Mr.JaNe!!!
+[SH] You killed: Mr.JaNe with: 39 dmg using: sh_generic_dmg
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+] condump

@@ -4,7 +4,7 @@
 #define sh_aux_funcs_misc
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
-#define SH_HUD_MSG_BUFF_SIZE 512
+#define SH_HUD_MSG_BUFF_SIZE 128
 
 stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 

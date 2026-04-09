@@ -3,6 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -353,8 +354,11 @@ if ( sh_user_has_hero(attacker,gHeroID) &&g_teliko_enemies[attacker][id]&&(weapo
 	
 	new Float:extraDamage = damage * COUNTER_DMG_Mult - damage
 	if (floatround(extraDamage)>0){
-		sh_extra_damage(id, attacker, floatround(extraDamage), "Counter-Shot", headshot)
-		
+		sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_SUPER_BULLET],
+			headshot,
+			_,_,_,_,_,
+			SH_NEW_DMG_SUPER_BULLET,
+			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SUPER_BULLET))
 	}
 	if(headshot){
 		emit_sound(attacker, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)

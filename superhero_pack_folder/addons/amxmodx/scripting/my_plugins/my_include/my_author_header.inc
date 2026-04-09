@@ -3,6 +3,7 @@
 #endif
 #define my_author_header_inc_stuff
 
+#define MINI_STRING_SIZE 32
 #define STRING_SIZE 128
 #define BIG_STRING_SIZE (STRING_SIZE*4)
 

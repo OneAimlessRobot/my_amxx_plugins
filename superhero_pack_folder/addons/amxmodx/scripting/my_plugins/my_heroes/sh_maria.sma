@@ -254,14 +254,19 @@ bool:heal_teamate(id,i){
 public maria_heal_loop(id){
 
 id-=MARIA_HEAL_TASKID
-if(!sh_is_active()||!client_hittable(id)){
-		
-		
+if(!sh_is_active()){
+	
+	
+	remove_task(id+MARIA_HEAL_TASKID)
+	return
+}
+if(!is_user_connected(id)){
+	
+	remove_task(id+MARIA_HEAL_TASKID)
 	return
 }
 if(!sh_user_has_hero(id,gHeroID) ){
-	
-	
+	remove_task(id+MARIA_HEAL_TASKID)
 	return
 }
 if(!gHealthDrainValve[id]){
@@ -348,6 +353,22 @@ public maria_loop(id){
 		gHealthDrainValveTimer[id]-=((gHealthDrainValveTimerStarted[id]&&(gHealthDrainValveTimer[id]>0.0))?heal_period:0.0)
 		
 		
+	}
+	else{
+
+
+		if(!is_user_connected(id)){
+
+
+			remove_task(id+MARIA_STATS_TASKID)
+			return
+		}
+		if(!sh_user_has_hero(id,gHeroID)){
+
+			remove_task(id+MARIA_STATS_TASKID)
+			return
+
+		}
 	}
 	
 	

@@ -139,9 +139,7 @@ public komak_init()
 		}
 	}
 	else{
-		if(!is_user_bot(id)){
-			remove_task(id+KOMAK_HUD_TASKID)
-		}
+		remove_task(id+KOMAK_HUD_TASKID)
 		remove_task(id+KOMAK_REPAIR_TASKID)
 	}
 	reset_komak(id)
@@ -235,8 +233,8 @@ public engine_repair_loop(id){
 	
 	id-=KOMAK_REPAIR_TASKID;
 	
-	if(!client_hittable(id)){
-
+	if(!is_user_connected(id)){
+		remove_task(id+KOMAK_REPAIR_TASKID)
 		return;
 	}
 	if(sh_user_has_hero(id,gHeroID) &&(gEngineRepairTimer[id]>0)){
@@ -250,7 +248,8 @@ public engine_repair_loop(id){
 }
 public komak_hud_task(id){
 	id-=KOMAK_HUD_TASKID
-	if(!client_hittable(id)){
+	if(!is_user_connected(id)){
+		remove_task(id+KOMAK_HUD_TASKID)
 
 		return;
 	}
@@ -259,7 +258,10 @@ public komak_hud_task(id){
 		
 	
 	}
-	
+	else{
+
+		remove_task(id+KOMAK_HUD_TASKID)
+	}
 
 }
 komak_hud(id){

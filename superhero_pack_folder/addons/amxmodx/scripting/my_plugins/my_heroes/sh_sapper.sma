@@ -7,11 +7,9 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
-
-#define SAPPER_MORPH_TASKID 128121
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 new gNumMines[SH_MAXSLOTS+1]
-new gmorphed[SH_MAXSLOTS+1]
 
 
 new num_mines
@@ -31,7 +29,12 @@ public plugin_init()
 	register_cvar("sapper_mine_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/sapper/sapper.mdl",
+								"models/player/sapper/sapper.mdl",
+								"sapper",
+								"Sapper ready.",
+								"Mission failed.")
 	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("sapper_init", "sapper_init")
@@ -99,16 +102,12 @@ public sapper_init()
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		sapper_weapons(id);
-		reset_sapper_user(id)
-		
-		sapper_model(id)
+
 	}
 	else{
-		reset_sapper_user(id)
 		sh_drop_weapon(id, CSW_P90, true)
-		sapper_unmorph(id+SAPPER_MORPH_TASKID)
 	}
-	
+	reset_sapper_user(id)	
 }
 public reset_sapper_user(id){
 	
@@ -153,7 +152,6 @@ if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() &&!hasRou
 	
 	reset_sapper_user(id)
 	sapper_weapons(id)
-	sapper_model(id)
 }
 return PLUGIN_HANDLED
 
@@ -164,77 +162,14 @@ public sh_round_end(){
 	clear_mines()
 
 }
-public plugin_precache()
-{
-
-
-	precache_model("models/player/sapper/sapper.mdl")
-
-
-}
 public death()
 {
 new id = read_data(2)
-sapper_unmorph(id+SAPPER_MORPH_TASKID)
 if(sh_user_has_hero(id,gHeroID) ){
 
 	mine_uncharge_mine(id)
 	mine_undisarm_mine(id)
 }
-}
-
-//----------------------------------------------------------------------------------------------
-public sapper_model(id)
-{
-	set_task(1.0, "sapper_morph", id+SAPPER_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public sapper_morph(id)
-{
-	id-=SAPPER_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
-	
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Sapper ready.")
-	cs_set_user_model(id, "sapper")
-	
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public sapper_unmorph(id)
-{
-	id-=SAPPER_MORPH_TASKID
-	if(!is_user_connected(id)) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public sapper_glow(id)
-{
-	id -= SAPPER_MORPH_TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+SAPPER_MORPH_TASKID)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
 }
 
 //----------------------------------------------------------------------------------------------

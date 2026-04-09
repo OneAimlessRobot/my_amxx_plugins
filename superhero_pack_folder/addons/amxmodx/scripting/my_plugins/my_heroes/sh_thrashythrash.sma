@@ -15,19 +15,19 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 
 #define MAX_PICKED 1
 
 // GLOBAL VARIABLES
-new const Model_Player[] = "models/player/thrash/thrash.mdl"
+#define MODEL_PLAYER "models/player/thrash/thrash.mdl"
 new const Model_Weapon_P[] = "models/shmod/thrashteen/p_superak47.mdl";
 new const Model_Weapon_V[] = "models/shmod/thrashteen/v_superak47.mdl"
 new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasAcess[SH_MAXSLOTS+1]
-new bool:gmorphed[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
 
@@ -40,7 +40,6 @@ new times_picked
 
 new blast_shroom
 new gHeroID;
-#define TASKID 532221
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
 new a_flags[10]
 //----------------------------------------------------------------------------------------------
@@ -64,6 +63,12 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Warrior (Admin acess SLAY)", "Warrior! Explode and crush and kill and THRASH!!!!!!! (supd up ak + explsns on keydown. gl :P!) ", true, "thrashy_level" )
+	sh_register_superheromod_model(gHeroID,
+								MODEL_PLAYER,
+								MODEL_PLAYER,
+								"thrash",
+								"You are now the baddest bitch on earth!",
+								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -86,11 +91,6 @@ public plugin_init()
 	sh_set_hero_hpap(gHeroID, healthcvar, 0)
 	shSetMaxSpeed(gHeroName, "thrashy_speed", "[0]")
 	times_picked=0;
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gmorphed[id] = false
 }
 
 public num_picked_check(id){
@@ -120,12 +120,9 @@ public thrashy_init()
 		
 		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		gThrashyExplosionAmmo[id]=ndynamites
-		thrashy_tasks(id)
 		switchgun(id)
-		thrashy_weapons(id+TASKID)
 	}
 	else{
-		thrashy_unmorph(id+TASKID)
 		shRemHealthPower(id)
 		shRemSpeedPower(id)
 		times_picked=clamp(times_picked-1,0,MAX_PICKED);
@@ -178,55 +175,10 @@ public fw_CmdStart( id, uc_handle, seed )
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public thrashy_tasks(id)
-{
-	set_task(1.0, "thrashy_morph", id+TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public thrashy_morph(id)
-{
-	id-=TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) ) return
-
-	cs_set_user_model(id, "thrash")
-
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You are now the baddest bitch on earth!")
-
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public thrashy_unmorph(id)
-{
-	id-=TASKID
-	if ( !is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-		// Message
-		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-	}
-}
-//----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
 	precache_model(Model_Weapon_V)
 	precache_model(Model_Weapon_P)
-	precache_model(Model_Player)
-	
-	if ( file_exists(Model_Player) ) {
-		precache_model(Model_Player)
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", gHeroName,	Model_Player)
-	}
-	
 	precache_sound("weapons/zoom.wav")
 }
 //----------------------------------------------------------------------------------------------
@@ -278,11 +230,8 @@ public newRound(id)
 		if(sh_user_has_hero(id,gHeroID) ){
 			gPlayerUltimateUsed[id]=false
 			gThrashyExplosionAmmo[id]=ndynamites
-		
-			thrashy_tasks(id)
-			set_task(0.1, "thrashy_weapons", id+TASKID)
 			switchgun(id)
-			thrashy_weapons(id+TASKID)
+			thrashy_weapons(id)
 		}
 	}
 	return PLUGIN_HANDLED
@@ -342,9 +291,9 @@ public weaponChange(id)
 //-----------------------------------------------------------------------------------------------
 public thrashy_weapons(id)
 {
-	id-=TASKID
+	
 	if ( is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_ak47")
+		sh_give_weapon(id,CSW_AK47)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -352,7 +301,6 @@ public death()
 {
 	new id = read_data(2)
 	gPlayerUltimateUsed[id]=false
-	thrashy_unmorph(id+TASKID)
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id,true)

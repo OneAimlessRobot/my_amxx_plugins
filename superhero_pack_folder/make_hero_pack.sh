@@ -24,23 +24,23 @@ hero_pack_folder_name="superhero_pack_folder"
 hero_pack_name="superhero_pack"
 
 remove_current_backup_folder_and_archive(){
-	
+
 	rm -rfv "${hero_pack_name}${backup_script_extension}"
 	rm -rfv "./${hero_pack_folder_name}"
-	
+
 }
 remove_folder_from_backup_locations(){
-	
+
 	for(( i=0; i< num_of_backup_locations; i++ ))
 	do
 		rm -rfv "${backup_locations[$i]}/${hero_pack_name}${backup_script_extension}"&
 		rm -rfv "${backup_locations[$i]}/${hero_pack_folder_name}"&
 	done
 	wait
-	
+
 }
 copy_folder_to_backup_locations(){
-	
+
 	for(( i=0; i< num_of_backup_locations; i++ ))
 	do
 		cp -rfv "${hero_pack_name}${backup_script_extension}" "${backup_locations[$i]}"&
@@ -48,7 +48,7 @@ copy_folder_to_backup_locations(){
 	done
 	wait
 	rm -rfv "/mnt/FASTstorage/GithubFAST/my_amxx_plugins/${hero_pack_name}${backup_script_extension}"
-	
+
 }
 make_empty_pack_folder(){
 	mkdir -p ./${hero_pack_folder_name}
@@ -65,6 +65,7 @@ copy_stuff_to_pack_folder(){
 	cp -rfv *.cfg "configs"&
 	cp -rfv mapcycle.txt "txtfiles"&
 	cp -rfv motd.txt "txtfiles"&
+	cp -rfv condump*.txt "txtfiles"&
 	wait
 	for(( i=0; i< num_of_subfolders_of_backup; i++ ))
 	do

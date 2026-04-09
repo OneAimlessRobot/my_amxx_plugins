@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
@@ -164,6 +165,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 			sh_bleed_user(id,attacker,BLEED_MINI,hero_id,heal_attacker)
 		}
 		sh_extra_damage(id,attacker,damage,attack_name_string,0,SH_DMG_NORM)
+		
 	}
 }
 return HAM_IGNORED
@@ -268,8 +270,9 @@ public bleed_task(array[],id){
 		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[array[0]][hud_alpha],1)
 	}
 	make_bleed_fx(id)
-	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],bleed_type_names[array[0]],0,SH_DMG_NORM)
-	
+	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],0,_,_,_,_,_,
+			SH_NEW_DMG_BLEED,
+			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLEED))
 	
 
 

@@ -223,8 +223,17 @@ public load_jetpack(id){
 }
 public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
-	if(!client_hittable(id)) return
-	if(!sh_user_has_hero(id,graciete_get_hero_id())) return
+	if(!client_hittable(id)){
+		
+		remove_task(id+GRACIETE_CHARGE_TASKID)
+		return
+	}
+	if(!sh_user_has_hero(id,graciete_get_hero_id())){
+		
+
+		remove_task(id+GRACIETE_CHARGE_TASKID)
+		return
+	}
 	
 	
 	set_user_gravity(id,g_graciete_base_gravity[id]*jet_stomp_grav_mult);

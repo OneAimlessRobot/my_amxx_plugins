@@ -459,14 +459,24 @@ public load_shield(id){
 }
 public charge_task(parm[],id){
 	id-=JAQUEO_CHARGE_TASKID
+	if(!client_hittable(id)){
+		
+		uncharge_user(id)
+		return
+	}
+	if(!sh_user_has_hero(id,jaqueo_get_hero_id())){
+		
+
+		uncharge_user(id)
+		return
+	}
+	
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
 		return
 	
 	}
-	
-	
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
 	new Float:velocity[3]

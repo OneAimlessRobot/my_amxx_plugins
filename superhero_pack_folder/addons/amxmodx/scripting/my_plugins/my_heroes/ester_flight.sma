@@ -472,6 +472,10 @@ public godmode_render_update(id){
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
 		glow(id,255,255,255,255,1)
 	}
+	else{
+
+		remove_task(id+ESTER_REBORN_GLOW_TASKID)
+	}
 	
 	
 }

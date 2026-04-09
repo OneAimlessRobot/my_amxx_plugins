@@ -4,10 +4,9 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 #define YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME "Thanks for that"
-#define YOWAI_TASKID 21232
-#define YOWAI_MORPH_TASKID 7622
 
 
 #define YOWAI_PLAYER_MODEL "models/player/yowai/yowai.mdl"
@@ -16,7 +15,6 @@
 new gHeroID
 new const gHeroName[] = "Yowai"
 new g_hits[SH_MAXSLOTS+1]
-new gmorphed[SH_MAXSLOTS+1]
 new bool:g_yowai_mode[SH_MAXSLOTS+1]
 new g_max_hits_player[SH_MAXSLOTS+1]
 
@@ -40,9 +38,14 @@ public plugin_init()
 	register_cvar("Yowai_hits_inc_lvl_gap", "5")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Meek Maid", "Accumulate hits... and... whatever I guess I dont really know", true, "Yowai_level" )
-	
+	sh_register_superheromod_model(gHeroID,
+								YOWAI_PLAYER_MODEL,
+								YOWAI_PLAYER_MODEL,
+								"yowai",
+								"",
+								"")
+
 	RegisterHam(Ham_TakeDamage, "player", "Yowai_normal_damage",_,true)
-	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("Yowai_init", "Yowai_init")
 	shRegHeroInit(gHeroName, "Yowai_init")
@@ -60,14 +63,9 @@ public Yowai_init()
 	
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		reset_Yowai_user(id)
 		update_max_hits(id)
 	}
-	else{
-		reset_Yowai_user(id)
-		yowai_unmorph(id+YOWAI_MORPH_TASKID)
-	}
-	
+	reset_Yowai_user(id)
 }
 public reset_Yowai_user(id){
 	
@@ -117,10 +115,6 @@ public loadCVARS()
 	num_weak_hits=get_cvar_num("Yowai_num_weak_hits")
 }
 
-public sh_client_spawn(id)
-{
-
-}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
@@ -186,27 +180,6 @@ if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 }
 return HAM_IGNORED
 }
-public plugin_precache()
-{
-	precache_model(YOWAI_PLAYER_MODEL)
-
-}
-public death()
-{
-	new id = read_data(2)
-	new killer= read_data(1)
-	
-	if(!is_user_connected(id)||!is_user_connected(killer)||!sh_is_active()) return
-	if(sh_user_has_hero(id,gHeroID) ){
-		if(g_yowai_mode[id]){
-			yowai_unmorph(id+YOWAI_MORPH_TASKID)
-			
-		}
-		
-		
-	}
-}
-
 
 //----------------------------------------------------------------------------------------------
 public Yowai_kd()
@@ -224,46 +197,11 @@ if (sh_get_user_is_asleep(id)){
 	return PLUGIN_HANDLED;
 }
 g_yowai_mode[id]= true;
-yowai_model(id)
 
 sh_chat_message(id,gHeroID,"Activated yowai mode.")
 		
 return PLUGIN_HANDLED
 }
-
-
-//----------------------------------------------------------------------------------------------
-public yowai_model(id)
-{
-	set_task(1.0, "yowai_morph", id+YOWAI_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public yowai_morph(id)
-{
-	id-=YOWAI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
-
-	cs_set_user_model(id,"yowai")
-
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public yowai_unmorph(id)
-{
-	id-=YOWAI_MORPH_TASKID
-	if(!is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-	}
-}
-//TODO: IT WOOOORRRKKSSSS, MAHAHAHAHAAAA!!!! I CAN DETECT DAMAGE FROM SUPER HERO MOD NOW!
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
@@ -292,25 +230,4 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		}
 	}
 	return DMG_FWD_PASS
-}
-
-//----------------------------------------------------------------------------------------------
-public yowai_glow(id)
-{
-	id -= YOWAI_MORPH_TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+YOWAI_MORPH_TASKID)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)&&g_yowai_mode[id]) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
 }

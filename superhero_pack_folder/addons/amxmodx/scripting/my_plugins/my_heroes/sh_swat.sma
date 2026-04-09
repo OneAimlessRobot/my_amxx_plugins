@@ -1,3 +1,12 @@
+#include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "chaff_grenade_inc/sh_chaff_fx.inc"
+#include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 #define SWAT_M4_P_MODEL "models/shmod/swatm4/p_m4a1.mdl"
@@ -18,25 +27,12 @@ new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
 "weapons/swatm4/m16a1/boltpull.wav",
 "weapons/swatm4/m16a1/magin.wav"}
 
-#include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
-#include "../my_include/my_author_header.inc"
-
-
 
 new gHeroName[]="S.W.A.T."
 new has_rocket[33]
 new bool:g_betweenRounds
-new bool:is_a_swat[33]
 new gHeroID
 
-stock MISSILE_TASKID,
-		WEAPONS_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -57,7 +53,12 @@ public plugin_init()
 	register_cvar("Swat_effects", "4")
 
 	gHeroID=shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/swat/swat.mdl",
+								"models/player/swat/swat.mdl",
+								"swat",
+								"",
+								"")
 	//EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
@@ -65,7 +66,6 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "swat_damage", "b", "2!0")
-	register_event("DeathMsg", "swat_modelReset", "a")
 	register_event("DeathMsg","death_event","a")	
 
 	shSetMaxHealth(gHeroName, "swat_health")
@@ -78,8 +78,6 @@ public plugin_init()
 	// INIT
 	register_srvcmd("Swat_init", "Swat_init")
 	shRegHeroInit(gHeroName, "Swat_init")
-	MISSILE_TASKID=allocate_typed_task_id(entity_task)
-	WEAPONS_TASKID=allocate_typed_task_id(player_task)
 
 
 	init_explosion_defaults()
@@ -89,7 +87,7 @@ public newRound(id)
 {
 	gPlayerUltimateUsed[id] = false
 	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
-		set_task(0.1, "swat_weapons", id+WEAPONS_TASKID)
+		swat_weapons(id)
 
 	}
 	return PLUGIN_CONTINUE
@@ -97,14 +95,9 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 public swat_weapons(id)
 {
-	id-=WEAPONS_TASKID
 	if ( shModActive() && is_user_alive(id) ) {
 		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"item_thighpack")
-		if(!is_a_swat[id]){
-			cs_set_user_model(id, "swat")
-			is_a_swat[id] = true
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -165,15 +158,6 @@ public swat_damage(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public swat_modelReset()
-{
-	new id = read_data(2)
-	if(is_a_swat[id]){
-		cs_reset_user_model(id)
-		is_a_swat[id] = false
-	}
-}
-//----------------------------------------------------------------------------------------------
 public Swat_init()
 {
 	// First Argument is an id
@@ -191,10 +175,6 @@ public Swat_init()
 		sh_drop_weapon(id,CSW_M4A1,true)
 		shRemHealthPower(id)
 		shRemArmorPower(id)
-		if(is_a_swat[id]){
-			cs_reset_user_model(id)
-			is_a_swat[id] = false
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -376,24 +356,8 @@ public make_beam(id)
 
 	trail(NewEnt,RED,10,10)
 	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
-	set_task(0.1,"guide_rocket_comm",NewEnt+MISSILE_TASKID,args,2,"b")
-
+	
 	return PLUGIN_HANDLED
-}
-//----------------------------------------------------------------------------------------------
-public guide_rocket_comm(args[],id)
-{
-	id-=MISSILE_TASKID
-	new ent = args[1]
-	if (!is_valid_ent(ent)) return
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
-	if(missile_health < 10000.0)
-		vexd_pfntouch(ent,0)
-}
-//----------------------------------------------------------------------------------------------
-public client_disconnected(id)
-{
-	remove_task(id+WEAPONS_TASKID)
 }
 //----------------------------------------------------------------------------------------------
 public round_end(){
@@ -434,8 +398,6 @@ remove_missile(id,missile){
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	has_rocket[id] = 0
 	gPlayerUltimateUsed[id]=false
-	remove_task(missile+MISSILE_TASKID)
-	remove_task(id+WEAPONS_TASKID)
 	AttachView(id,id)
 	RemoveEntity(missile)
 	return PLUGIN_CONTINUE

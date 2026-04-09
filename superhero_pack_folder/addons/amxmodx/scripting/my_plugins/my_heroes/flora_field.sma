@@ -804,10 +804,12 @@ public charge_task(parm[],id){
 	
 	
 	if(!client_hittable(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
+		uncharge_user(owner)
 		return
 	}
 	
 	if(pev_valid(field_id)!=2) {
+		uncharge_user(owner)
 		return
 	}
 	

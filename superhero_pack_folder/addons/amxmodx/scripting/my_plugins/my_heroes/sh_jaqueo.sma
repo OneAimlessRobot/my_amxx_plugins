@@ -6,8 +6,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
-
-#define JAQUEO_MORPH_TASKID 28627
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 new gHeroID
 new const gHeroName[] = "Jaqueo"
@@ -17,7 +16,6 @@ new const jaqueo_cool_scout_sounds[4][]={
 				"weapons/scouterista/tactical_clipout.wav",
 				"weapons/scouterista/tactical_fire-1.wav"}
 
-new gmorphed[SH_MAXSLOTS+1]
 new Float:scout_mult
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -34,6 +32,14 @@ public plugin_init()
 	register_cvar("jaqueo_shield_radius", "8")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Jaqueo!", "Jaqueo", true, "jaqueo_level" )
+	sh_register_superheromod_model(gHeroID,
+								"models/player/jaqueo/jaqueo.mdl",
+								"models/player/jaqueo/jaqueoT.mdl",
+								"jaqueo",
+								"",
+								"")
+	
+
 	register_event("DeathMsg","death","a")
 	register_srvcmd("jaqueo_init", "jaqueo_init")
 	shRegHeroInit(gHeroName, "jaqueo_init")
@@ -83,17 +89,13 @@ public jaqueo_init()
 	
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		reset_jaqueo_user(id)
 		jaqueo_weapons(id)
-		jaqueo_tasks(id)
 	}
 	else{
 		
 		jaqueo_drop_weapons(id)
-		reset_jaqueo_user(id)
-		jaqueo_unmorph(id+JAQUEO_MORPH_TASKID)
 	}
-	
+	reset_jaqueo_user(id)
 }
 public jaqueo_weapons(id){
 	
@@ -155,7 +157,6 @@ public newRound(id)
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
-	jaqueo_tasks(id)
 	return PLUGIN_HANDLED
 	
 }
@@ -165,7 +166,6 @@ public sh_client_spawn(id){
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
-	jaqueo_tasks(id)
 	return PLUGIN_HANDLED
 	
 	
@@ -176,7 +176,6 @@ public Ham_respawn(id){
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
-	jaqueo_tasks(id)
 	return PLUGIN_HANDLED
 	
 	
@@ -236,7 +235,6 @@ public plugin_cfg()
 public client_disconnected(id){
 	
 	jaqueo_weapons(id)
-	jaqueo_unmorph(id+JAQUEO_MORPH_TASKID)
 	reset_jaqueo_user(id)
 	
 	return PLUGIN_HANDLED
@@ -245,7 +243,6 @@ public client_disconnected(id){
 public death()
 {
 	new id = read_data(2)
-	jaqueo_unmorph(id+JAQUEO_MORPH_TASKID)
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		shield_destroy(id)
@@ -254,9 +251,6 @@ public death()
 }
 public plugin_precache(){
 	
-	
-	precache_model("models/player/jaqueo/jaqueo.mdl")
-	precache_model("models/player/jaqueot/jaqueot.mdl")
 	precache_model(JAQUEO_AK47_V_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_V_MODEL)
 	precache_model(JAQUEO_COOL_SCOUT_P_MODEL)
@@ -269,63 +263,6 @@ public plugin_precache(){
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public jaqueo_tasks(id)
-{
-	set_task(1.0, "jaqueo_morph", id+JAQUEO_MORPH_TASKID)
-	
-	
-}
-//----------------------------------------------------------------------------------------------
-public jaqueo_morph(id)
-{
-	id-=JAQUEO_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
-	
-	if ( get_user_team(id) == 1 )
-	{
-		cs_set_user_model(id, "jaqueo")
-	}
-	if ( get_user_team(id) == 2 )
-	{
-		cs_set_user_model(id, "jaqueot")
-	}
-	
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public jaqueo_unmorph(id)
-{
-	id-=JAQUEO_MORPH_TASKID
-	if(!is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-		cs_reset_user_model(id)
-		
-		gmorphed[id] = false
-		
-	}
-}
-//----------------------------------------------------------------------------------------------
-public jaqueo_glow(id)
-{
-	id -= JAQUEO_MORPH_TASKID
-	
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+JAQUEO_MORPH_TASKID)
-		return
-	}
-	
-	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
-}
 public weapon_change(id)
 {
 	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return

@@ -13,14 +13,16 @@ arcticPredator_explode_maxdamage 250
 
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
 new g_huntTimer[SH_MAXSLOTS+1]
-new gmorphed[SH_MAXSLOTS+1]
 new gHeroName[]="Arctic Predator"
 new gAlphaInvis
 new lastweap[33]
@@ -29,10 +31,11 @@ new spr_laser
 new spr_laser_impact
 new blast_shroom
 new bool:NightVisionUse[SH_MAXSLOTS+1]
-#define TASKID_LOOP 532221
-#define TASKID_GUNS 532222
-#define TASKID_REVENGE 532223
-#define TASKID_NVG 532224
+
+new TASKID_LOOP,
+	TASKID_REVENGE,
+	TASKID_NVG
+
 new NVGToggle = 0
 new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
@@ -58,7 +61,13 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
-	
+	sh_register_superheromod_model(gHeroID,
+							"models/player/arcpred/arcpred.mdl",
+							"models/player/arcpred/arcpredT.mdl",
+							"arcpred",
+							"",
+							"")
+
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -81,6 +90,9 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "arcticPredator_kd")
 	
 	register_forward(FM_PlayerPreThink, "disc_throw_check")
+	TASKID_LOOP = allocate_typed_task_id(player_task)
+	TASKID_REVENGE = allocate_typed_task_id(player_task)
+	TASKID_NVG = allocate_typed_task_id(player_task)
 }
 //----------------------------------------------------------------------------------------------
 public arcticPredator_init()
@@ -95,14 +107,12 @@ public arcticPredator_init()
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
 		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
 		gAlphaInvis = get_cvar_num("arcticPredator_invisible")
-		pred_Morph(id)
 		switchgun(id)
 		arcpredator_weapons(id)
 		discThrown[id] = false
 		gHuntMode[id] = false
 	}
 	else{
-		pred_unMorph(id)
 		g_huntTimer[id]=0
 		
 	}
@@ -110,8 +120,6 @@ public arcticPredator_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/player/arcpred/arcpred.mdl")
-	precache_model("models/player/arcpredct/arcpredct.mdl")
 	precache_model("models/shmod/predgun/predknife.mdl")
 	precache_model("models/shmod/predgun/predawp.mdl")
 	precache_model("models/shmod/predgun/preddisc.mdl")
@@ -206,40 +214,11 @@ public newRound(id)
 	if ( sh_user_has_hero(id,gHeroID) && shModActive() ) {
 		gPlayerUltimateUsed[id]=false
 		discThrown[id] = false
-		set_task(0.1, "arcpredator_weapons", id+TASKID_GUNS)
-		pred_Morph(id)
+		arcpredator_weapons(id)
 		switchgun(id)
 		g_huntTimer[id] = 0
 	}
 	return PLUGIN_HANDLED
-}
-//-----------------------------------------------------------------------------------------------
-pred_Morph(id)
-{
-	if ( gmorphed[id] ||!is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)) return
-	
-	if(sh_user_has_hero(id,gHeroID)){
-		if ( get_user_team(id) == 1 )
-		{
-			cs_set_user_model(id, "arcpredct")
-		}
-		if ( get_user_team(id) == 2 )
-		{
-			cs_set_user_model(id, "arcpred")
-		}
-		gmorphed[id] = true
-	}
-}
-//-----------------------------------------------------------------------------------------------
-pred_unMorph(id)
-{
-	if(!is_user_connected(id)) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-	}
 }
 //-----------------------------------------------------------------------------------------------
 public switchgun(id)
@@ -284,10 +263,9 @@ if ( clip == 0 ) {
 //-----------------------------------------------------------------------------------------------
 public arcpredator_weapons(id)
 {
-	id-=TASKID_GUNS
 	if ( is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
-		shGiveWeapon(id,"weapon_awp")
-		shGiveWeapon(id,"weapon_scout")
+		sh_give_weapon(id,CSW_AWP)
+		sh_give_weapon(id,CSW_SCOUT)
 	}
 }
 //-----------------------------------------------------------------------------------------------
@@ -386,7 +364,6 @@ public death()
 	
 	g_huntTimer[id] = 0
 	gPlayerUltimateUsed[id]=false
-	pred_unMorph(id)
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id)

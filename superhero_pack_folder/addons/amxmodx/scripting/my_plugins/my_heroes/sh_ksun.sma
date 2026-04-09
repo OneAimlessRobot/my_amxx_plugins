@@ -11,13 +11,11 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-
-stock KSUN_MORPH_TASKID
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
-new gmorphed[SH_MAXSLOTS+1]
 new gNumSleepNades[SH_MAXSLOTS+1]
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -45,6 +43,13 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
+	sh_register_superheromod_model(gHeroID,
+								KSUN_PLAYER_MODEL,
+								KSUN_PLAYER_MODEL,
+								"ksun",
+								"ksun: '...'",
+								"ksun: '...'")
+	
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -59,7 +64,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ksun_kd")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	register_forward(FM_PlayerPreThink, "ksun_prethink")
-	KSUN_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -374,7 +378,6 @@ public newRound(id)
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		ksun_weapons(id)
 		gNumSleepNades[id]=num_sleep_nades
-		ksun_morph(id+KSUN_MORPH_TASKID)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	return PLUGIN_HANDLED
@@ -411,24 +414,20 @@ public ksun_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( sh_user_has_hero(id,gHeroID)  )
-	{
-		spores_reset_user(id)
-		ksun_unultimate_user(id,_,1)
-		ksun_morph(id+KSUN_MORPH_TASKID)
+	if ( sh_user_has_hero(id,gHeroID)  ){
+	
+		
 		gNumSleepNades[id]=num_sleep_nades
 		ksun_weapons(id)
-		ksun_set_num_available_spores(id,0)
 		
 	
 	}
 	else{
-		spores_reset_user(id)
-		ksun_unultimate_user(id,_,1)
-		ksun_unmorph(id+KSUN_MORPH_TASKID)
 		sh_drop_weapon(id, KSUN_WEAPON_ID, true)
-		ksun_set_num_available_spores(id,0)
 	}
+	ksun_unultimate_user(id,_,1)
+	spores_reset_user(id)
+	ksun_set_num_available_spores(id,0)
 	clean_ksun_spores_from_players(1,0,id);
 }
 //----------------------------------------------------------------------------------------------
@@ -505,12 +504,6 @@ public ksun_kd()
 	return PLUGIN_HANDLED
 }
 
-public plugin_precache()
-{
-	precache_model(KSUN_PLAYER_MODEL)
-	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_READY_SOUND)
-
-}
 
 
 //----------------------------------------------------------------------------------------------
@@ -528,42 +521,6 @@ public ksun_prethink(id)
 			}
 	}
 }
-//----------------------------------------------------------------------------------------------
-public ksun_model(id)
-{
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
-	
-	set_task(1.0, "ksun_morph", id+KSUN_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public ksun_morph(id)
-{
-	id-=KSUN_MORPH_TASKID
-	if (  !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||gmorphed[id] ) return
-	
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id,  "ksun: '...'")
-	cs_set_user_model(id,"ksun")
-
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public ksun_unmorph(id)
-{
-	id-=KSUN_MORPH_TASKID
-	if(!is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-	}
-}
-
 public death()
 {
 	if(!sh_is_active()) return
@@ -591,7 +548,6 @@ stock ksun_death_handler(id){
 				sleep_nade_uncharge_sleep_nade(id)
 			}
 			
-			ksun_unmorph(id+KSUN_MORPH_TASKID)
 			if(ksun_get_when_reset_spores()&reset_on_death){
 				ksun_set_num_available_spores(id,0)
 				clean_ksun_spores_from_players(1,0,id);

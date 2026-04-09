@@ -120,12 +120,14 @@ public slitter_think(id)
 	if (!client_hittable(id)){
 	
 		remove_task(id+SLITTER_TASKID)
+	
 		return FMRES_IGNORED
 	
 	}
 	if (!sh_user_has_hero(id,teliko_get_hero_id()) ){
 	
 		remove_task(id+SLITTER_TASKID)
+	
 		return FMRES_IGNORED
 	
 	}
@@ -133,7 +135,8 @@ public slitter_think(id)
 		
 	
 	
-		remove_task(id+SLITTER_TASKID)
+		stop_dragging(id)
+	
 		return FMRES_IGNORED
 	}
 	if(!(g_dragging_who[id][1])){

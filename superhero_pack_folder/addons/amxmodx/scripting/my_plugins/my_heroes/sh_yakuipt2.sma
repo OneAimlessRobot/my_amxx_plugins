@@ -9,6 +9,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 // GLOBAL VARIABLES
@@ -17,14 +18,12 @@
 new gHeroID
 new const gHeroName[] = "Yakui Mk2"
 
-new gmorphed[SH_MAXSLOTS+1]
 new mode_change_button_pressed[SH_MAXSLOTS+1]
 
 
 new max_pills
 new max_rockets
 
-stock YAKUI_MORPH_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -38,6 +37,14 @@ public plugin_init()
 	register_cvar("yakui_rockets","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
 	gatling_set_hero_id(gHeroID)
+
+	sh_register_superheromod_model(gHeroID,
+								"models/player/yakui/yakui.mdl",
+								"models/player/yakui/yakui.mdl",
+								"yakui",
+								"Ready for a trip?",
+								"Hmpf...")
+
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
 	register_event("DeathMsg","death","a")
@@ -47,7 +54,6 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yakui_init")
 	register_srvcmd("yakui_kd", "yakui_kd")
 	shRegKeyDown(gHeroName, "yakui_kd")
-	YAKUI_MORPH_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 
@@ -90,12 +96,6 @@ public player_prethink_yakui_weapon(id, uc_handle)
 	}
 	return FMRES_IGNORED;
 }
-public plugin_precache(){
-
-
-	precache_model("models/player/yakui/yakui.mdl")
-
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -118,15 +118,11 @@ public yakui_init()
 	if(sh_user_has_hero(id,gHeroID) ){
 		init_yakui(id)
 		
-		yakui_tasks(id)
 	}
 	else{
 	
 		clear_yakui(id)
-		remove_task(id+YAKUI_MORPH_TASKID)
 	}
-	
-	register_forward(FM_SetModel, "forward_setmodel")
 	
 }
 
@@ -188,50 +184,12 @@ public sh_client_spawn(id)
 	uneffect_user_handler(id)
 	if ( sh_user_has_hero(id,gHeroID)) {
 		
-		yakui_tasks(id)
 		reset_yakui(id)
 		
 	}
 	
 }
 
-
-//----------------------------------------------------------------------------------------------
-public yakui_tasks(id)
-{
-	set_task(1.0, "yakui_morph", id+YAKUI_MORPH_TASKID)
-	
-}
-//----------------------------------------------------------------------------------------------
-public yakui_morph(id)
-{
-	id-=YAKUI_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return
-	
-	
-	cs_set_user_model(id, "yakui")
-	
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Ready for a trip?")
-	
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public yakui_unmorph(id)
-{
-	id-=YAKUI_MORPH_TASKID
-	if(!is_user_connected(id) ) return
-	if ( gmorphed[id] ) {
-		// Message
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,  "Hmpf...")
-		
-		cs_reset_user_model(id)
-		
-		gmorphed[id] = false
-		
-	}
-}
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
@@ -266,7 +224,6 @@ public death(){
 	if(!sh_is_active()) return
 	
 	uneffect_user_handler(id)
-	yakui_unmorph(id+YAKUI_MORPH_TASKID)
 
 
 }

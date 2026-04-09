@@ -6,11 +6,10 @@
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-#define GRACIETE_MORPH_TASKID 212122
 new gHeroID
 new const gHeroName[] = "Graciete"
-new gmorphed[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -29,6 +28,13 @@ public plugin_init()
 	register_cvar("graciete_power_land_charge_time", "8")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Gritty warrior!", "Gritty warrior.", false, "graciete_level" )
+	sh_register_superheromod_model(gHeroID,
+								"models/player/graciete/graciete.mdl",
+								"models/player/graciete/graciete.mdl",
+								"graciete",
+								"Graciete ready.",
+								"Mission failed.")
+
 
 	register_event("DeathMsg","death","a")
 	register_srvcmd("graciete_init", "graciete_init")
@@ -58,87 +64,22 @@ public graciete_init()
 	
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		reset_graciete_user(id)
 		q_barrel_set_q_barrel(id)
-		graciete_model(id)
-		
 	}
 	else{
-		reset_graciete_user(id)
-		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
+
 		q_barrel_unset_q_barrel(id)
 		
 	}
+	reset_graciete_user(id)
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public graciete_model(id)
-{
-	set_task(1.0, "graciete_morph", id+GRACIETE_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public graciete_morph(id)
-{
-	id-=GRACIETE_MORPH_TASKID
-	if ( gmorphed[id] || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ) return
-	
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Graciete ready.")
-	cs_set_user_model(id, "graciete")
-	
-	gmorphed[id] = true
-	
-}
-//----------------------------------------------------------------------------------------------
-public graciete_unmorph(id)
-{
-	id-=GRACIETE_MORPH_TASKID
-	if(!is_user_connected(id)) return
-	if ( gmorphed[id] ) {
-
-		cs_reset_user_model(id)
-
-		gmorphed[id] = false
-
-		// Message
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed.")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public graciete_glow(id)
-{
-	id -= GRACIETE_MORPH_TASKID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+GRACIETE_MORPH_TASKID)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	
-}
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
 	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
 			reset_graciete_user(id)
-			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -149,7 +90,6 @@ public sh_client_spawn(id){
 	
 	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
-			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -161,7 +101,6 @@ public Ham_respawn(id){
 
 	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
 			reset_graciete_user(id)
-			graciete_model(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
@@ -169,32 +108,19 @@ public Ham_respawn(id){
 
 
 }
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
 public client_disconnected(id){
 	
 	reset_graciete_user(id)
-	graciete_unmorph(id)
 	q_barrel_unset_q_barrel(id)
 	
 	return PLUGIN_HANDLED
 	
-}
-public plugin_precache(){
-
-
-	precache_model("models/player/graciete/graciete.mdl")
 }
 public death()
 {
 	new id = read_data(2)
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		graciete_unmorph(id+GRACIETE_MORPH_TASKID)
 		reset_graciete_user(id)
 	}
 }

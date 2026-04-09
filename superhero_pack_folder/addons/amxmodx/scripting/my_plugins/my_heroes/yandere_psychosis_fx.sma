@@ -232,8 +232,6 @@ psychosis_off(id)
 // Reset Zoom
 gIsPsychosis[id]=false
 g_yandere_leaped[id]=true
-yandere_unmorph(id)
-yandere_model(id)
 for(new i=0;i<sizeof yandere_pain_sounds;i++){
 	emit_sound(id, CHAN_AUTO, yandere_pain_sounds[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
 }
@@ -250,8 +248,6 @@ gPsychosisTime[id]=psychosis_time
 ultimateTimer(id, psychosis_cooldown * 1.0)
 g_yandere_leaped[id]=false
 gIsPsychosis[id]=true
-yandere_unmorph(id)
-yandere_model(id)
 cs_set_user_armor(id,cs_get_user_armor(id)+psychosis_add_ap,CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(zoom)

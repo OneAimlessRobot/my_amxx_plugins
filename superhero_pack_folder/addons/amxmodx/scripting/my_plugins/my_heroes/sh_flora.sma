@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 stock const debug_hud_mode= false
@@ -13,7 +14,6 @@ stock const debug_hud_mode= false
 
 // GLOBAL VARIABLES
 new gHeroName[]="Flora"
-new gmorphed[SH_MAXSLOTS+1]
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
 new gFloraHeroLvl
 new gHeroID
@@ -28,6 +28,13 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level" )
+	sh_register_superheromod_model(gHeroID,
+							FLORA_PLAYER_MODEL,
+							FLORA_PLAYER_MODEL,
+							"Flora",
+							"",
+							"")
+
 	register_event("ResetHUD","newRound","b")
 	
 	// INIT
@@ -98,7 +105,6 @@ public newRound(id)
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id)
 		flora_set_user_num_fields(id,flora_start_fields())
-		flora_morph(id+FLORA_MORPH_TASKID)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -124,46 +130,14 @@ public flora_init()
 	
 	if ( sh_user_has_hero(id,gHeroID)  )
 	{
-		reset_flora_user(id)
 		flora_set_user_num_fields(id,flora_start_fields())
-		flora_morph(id+FLORA_MORPH_TASKID)
 	}
-	else{
-		reset_flora_user(id)
-		flora_unmorph(id+FLORA_MORPH_TASKID)
-	}
+	reset_flora_user(id)
 }
 
-
-public plugin_precache(){
-	
-	precache_model(FLORA_PLAYER_MODEL)
-
-}
-//----------------------------------------------------------------------------------------------
-public flora_model(id)
-{
-	if ( !client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return
-	
-	set_task(1.0, "flora_morph", id+FLORA_MORPH_TASKID)
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public flora_morph(id)
-{
-	id-=FLORA_MORPH_TASKID
-	if ( gmorphed[id] || !client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return
-	
-	cs_set_user_model(id,"flora")
-
-	gmorphed[id] = true
-	
-}
 public client_disconnected(id){
 	
 	reset_flora_user(id)
-	flora_unmorph(id+FLORA_MORPH_TASKID)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -233,7 +207,6 @@ public sh_client_death(id,killer,headshot,const wpnDescription[])
 if(is_user_connected(id)){
 	if(sh_user_has_hero(id,gHeroID) ){
 		reset_flora_user(id)
-		flora_unmorph(id+FLORA_MORPH_TASKID)
 	}
 }
 }
