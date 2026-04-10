@@ -21,13 +21,15 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 
 #define TOUCHING_GROUND (1<<9)
 stock const PDATA_SAFE = 2
-stock const XO_WEAPON= 4
+stock const XO_WEAPON = 4
 stock const OFFSET_LINUX_PLAYER = 5
 stock const FL_INGROUND2=TOUCHING_GROUND
 stock const fPainShock = 108
 stock const m_flNextPrimaryAttack    = 46
 stock const m_flNextSecondaryAttack    = 47
 stock const m_fInReload            = 54
+stock const m_pNext = 42
+stock const m_rgpPlayerItems_Slot0 = 367
 
 #if !defined _reapi_included 
 	stock const m_pActiveItem = 373;

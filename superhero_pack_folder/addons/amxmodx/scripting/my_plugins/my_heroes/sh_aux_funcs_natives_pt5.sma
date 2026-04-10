@@ -11,7 +11,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
-#define SH_MAX_PLAYER_MODELS 10
+#define SH_MAX_PLAYER_MODELS 30
 
 enum player_model_array_struct{
 
@@ -45,14 +45,6 @@ public plugin_natives(){
 	register_native("sh_reset_player_hero_player_model","_sh_reset_player_hero_player_model",0);
 	register_native("sh_register_superheromod_model","_sh_register_superheromod_model",0)
 }
-// TODO: Finish this module
-/*native sh_register_superheromod_model(gHeroID,
-                        const filename_ct[STRING_SIZE],
-                        const filename_t[STRING_SIZE],
-                        const morph_string[STRING_SIZE],
-                        const hud_msg_morph[SH_HUD_MSG_BUFF_SIZE],
-                        const hud_msg_unmorph[SH_HUD_MSG_BUFF_SIZE])
-						*/
 
 
 //----------------------------------------------------------------------------------------------
@@ -108,9 +100,9 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 
 
 	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_ct_file_path])
-	server_print("Model load attempted: %s",sh_array_of_player_model_structs[result][player_model_ct_file_path])
+	server_print("Index: %d^nPlayer model load attempted: %s",result,sh_array_of_player_model_structs[result][player_model_ct_file_path])
 	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_t_file_path])
-	server_print("Model load attempted: %s",sh_array_of_player_model_structs[result][player_model_t_file_path])
+	server_print("Index: %d^nPlayer model load attempted: %s",result,sh_array_of_player_model_structs[result][player_model_t_file_path])
 	curr_num_models_logged++
 	
 	return result

@@ -511,7 +511,8 @@ public vexd_pfntouch(pToucher, pTouched)
 					if(!is_user_bot(pTouched)){
 						send_poem_function(pTouched, lena_poems[random_number]);
 					}
-					if(floatround(damage)>=health){
+					
+					if((floatround(damage)>=health)&&!is_user_alive(pTouched)){
 
 						gross_kill_gibs_fx(pTouched,vic_origin,origin)
 

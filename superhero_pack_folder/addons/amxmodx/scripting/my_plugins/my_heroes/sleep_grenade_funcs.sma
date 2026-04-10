@@ -7,8 +7,6 @@
 #include "ksun_inc/ksun_global.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
-#include <fakemeta_util>
-
 
 #define PLUGIN "Superhero ksun sleep grenades"
 #define VERSION "1.0.0"
@@ -22,9 +20,7 @@ new Float:curr_charge[SH_MAXSLOTS+1]
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock SLEEP_NADE_REM_TASKID,
-		SLEEP_NADE_BLAST_TASKID,
-		SLEEP_NADE_CHARGE_TASKID,
+stock SLEEP_NADE_CHARGE_TASKID,
 		UNSLEEP_NADE_CHARGE_TASKID
 
 
@@ -40,10 +36,7 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("ksun_sleep_nade_max_charge_time", "5.0")
 	register_cvar("ksun_sleep_nade_min_charge_time", "1.0")
-	SLEEP_NADE_REM_TASKID=allocate_typed_task_id(entity_task)
-	SLEEP_NADE_BLAST_TASKID=allocate_typed_task_id(entity_task)
 	SLEEP_NADE_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	SLEEP_NADE_REM_TASKID=allocate_typed_task_id(entity_task)
 }
 
 public plugin_natives(){
@@ -294,7 +287,6 @@ entity_set_string(parm[0], EV_SZ_viewmodel, SLEEP_NADE_V_MODEL)
 
 
 public blow_sleep_nade_up(id_sleep_nade){
-id_sleep_nade-=SLEEP_NADE_BLAST_TASKID
 
 if ( !is_valid_ent(id_sleep_nade) ) return
 
@@ -326,9 +318,7 @@ for ( i = 1; i <= SH_MAXSLOTS; i++) {
 	}
 }
 
-new parm[1]
-parm[0]=id
-remove_sleep_nade(parm,id_sleep_nade+SLEEP_NADE_REM_TASKID)
+remove_sleep_nade(id,id_sleep_nade)
 }
 
 }
@@ -346,17 +336,16 @@ if(equal(szClassName,SLEEP_NADE_CLASSNAME))
 {
 	if(pev(pTouched,pev_solid)==SOLID_BSP){
 		emit_sound(pToucher, CHAN_WEAPON, SLEEP_NADE_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		blow_sleep_nade_up(pToucher+SLEEP_NADE_BLAST_TASKID)
+		blow_sleep_nade_up(pToucher)
 	}
 	
 }
 }
 
 
-public remove_sleep_nade(parm[],id_sleep_nade){
-id_sleep_nade-=SLEEP_NADE_REM_TASKID
+public remove_sleep_nade(id,id_sleep_nade){
 if(!is_valid_ent(id_sleep_nade)) return
-sleep_nade_loaded[parm[0]]=true
+sleep_nade_loaded[id]=true
 remove_entity(id_sleep_nade)
 
 

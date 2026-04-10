@@ -8,7 +8,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
-#include <fakemeta_util>
 
 
 #define PLUGIN "Superhero molotov funcs"
@@ -24,8 +23,7 @@ new Float:curr_charge[SH_MAXSLOTS+1]
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock MOLLY_REM_TASKID,
-		MOLLY_CHARGE_TASKID,
+stock MOLLY_CHARGE_TASKID,
 		UNMOLLY_CHARGE_TASKID
 
 public plugin_init(){
@@ -41,7 +39,6 @@ public plugin_init(){
 	register_cvar("erica_molly_max_charge_time", "5.0")
 	register_cvar("erica_molly_min_charge_time", "1.0")
 
-	MOLLY_REM_TASKID=allocate_typed_task_id(entity_task)
 	MOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNMOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
@@ -296,9 +293,7 @@ for ( i = 1; i <= SH_MAXSLOTS; i++) {
 	}
 }
 
-new parm[1]
-parm[0]=id
-remove_molly(parm,id_molly+MOLLY_REM_TASKID)
+remove_molly(id,id_molly)
 }
 
 }
@@ -321,10 +316,9 @@ if(equal(szClassName,MOLLY_CLASSNAME))
 }
 
 
-public remove_molly(parm[],id_molly){
-id_molly-=MOLLY_REM_TASKID
+public remove_molly(id,id_molly){
 if(!is_valid_ent(id_molly)) return
-molly_loaded[parm[0]]=true
+molly_loaded[id]=true
 remove_entity(id_molly)
 
 

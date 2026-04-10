@@ -267,6 +267,10 @@ if(!is_user_connected(id)){
 	remove_task(id+MARIA_HEAL_TASKID)
 	return
 }
+if(!is_user_alive(id)){
+
+	return
+}
 if(!sh_user_has_hero(id,gHeroID) ){
 	remove_task(id+MARIA_HEAL_TASKID)
 	return

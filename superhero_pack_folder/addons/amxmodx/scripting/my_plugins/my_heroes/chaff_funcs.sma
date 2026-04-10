@@ -34,10 +34,9 @@ public plugin_init(){
 	arrayset(chaff_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	register_think(CHAFF_CLASSNAME,"chaff_think")
 	register_cvar("teliko_chaff_max_charge_time", "5.0")
 	register_cvar("teliko_chaff_min_charge_time", "1.0")
-	CHAFF_REM_TASKID=allocate_typed_task_id(entity_task)
-	CHAFF_BLAST_TASKID=allocate_typed_task_id(entity_task)
 	CHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNCHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
@@ -258,7 +257,7 @@ if(teliko_get_num_chaffs(id) == 0)
 }
 emit_sound(id, CHAN_WEAPON, CHAFF_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,WHITE,10,5)
-set_task(CHAFF_SHOOT_PERIOD, "blow_chaff_up",Ent+CHAFF_BLAST_TASKID,"",0)
+entity_set_float(Ent,EV_FL_nextthink,get_gametime()+CHAFF_SHOOT_PERIOD)
 
 return PLUGIN_CONTINUE
 }
@@ -274,8 +273,7 @@ entity_set_string(parm[0], EV_SZ_viewmodel, CHAFF_V_MODEL)
 }
 
 
-public blow_chaff_up(id_chaff){
-id_chaff-=CHAFF_BLAST_TASKID
+public chaff_think(id_chaff){
 
 if ( !is_valid_ent(id_chaff) ) return
 
@@ -307,9 +305,8 @@ for ( i = 1; i <= SH_MAXSLOTS; i++) {
 	}
 }
 
-new parm[1]
-parm[0]=id
-remove_chaff(parm,id_chaff+CHAFF_REM_TASKID)
+
+remove_chaff(id,id_chaff)
 }
 
 }
@@ -337,10 +334,9 @@ if(equal(szClassName,CHAFF_CLASSNAME))
 }
 }
 
-public remove_chaff(parm[],id_chaff){
-id_chaff-=CHAFF_REM_TASKID
+public remove_chaff(id,id_chaff){
 if(!is_valid_ent(id_chaff)) return
-chaff_loaded[parm[0]]=true
+chaff_loaded[id]=true
 remove_entity(id_chaff)
 
 

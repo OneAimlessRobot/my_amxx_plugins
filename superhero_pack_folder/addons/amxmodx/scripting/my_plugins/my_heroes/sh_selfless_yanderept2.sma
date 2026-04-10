@@ -440,7 +440,7 @@ public yandere_damage(id)
 				sh_set_stun(id,2.0,default_stun_speed)
 			
 				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*angry_hitheal_pct,overheal_hp_max,RED,1,_,70,1)
-				if(extraDamage>=health){
+				if((extraDamage>=health)&&!is_user_alive(id)){
 					static origin[3];
 					// player fades.. 
 					set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4); 

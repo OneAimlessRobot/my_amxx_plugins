@@ -58,14 +58,10 @@ stock GetWeaponFromSlot( id , iSlot , &iEntity )
 		return 0;
 	
 	iEntity = 0;
-	const m_rgpPlayerItems_Slot0 = 367;
-	const m_iId = 43;
-	const XO_WEAPONS = 4;
-	const XO_PLAYER = 5;
 		
-	iEntity = get_pdata_cbase( id , m_rgpPlayerItems_Slot0 + iSlot , XO_PLAYER );
+	iEntity = get_pdata_cbase( id , m_rgpPlayerItems_Slot0 + iSlot , OFFSET_LINUX_PLAYER );
 	
-	return ( iEntity > 0 ) ? get_pdata_int( iEntity , m_iId , XO_WEAPONS ) : 0;
+	return ( iEntity > 0 ) ? get_pdata_int( iEntity , m_iId , XO_WEAPON ) : 0;
 }  
 /*
  * ConnorMcLeod
@@ -123,24 +119,19 @@ stock ham_strip_user_weapon(id, iCswId, iSlot = 0, bool:bSwitchIfActive = true)
 		}
 		iSlot = iWeaponsSlots[iCswId]
 	}
-	const XTRA_OFS_PLAYER = 5
-	const m_rgpPlayerItems_Slot0 = 367
-	iWeapon = get_pdata_cbase(id, m_rgpPlayerItems_Slot0 + iSlot, XTRA_OFS_PLAYER)
-	const XTRA_OFS_WEAPON = 4
-	const m_pNext = 42
-	const m_iId = 43
+	
+	iWeapon = get_pdata_cbase(id, m_rgpPlayerItems_Slot0 + iSlot, OFFSET_LINUX_PLAYER)
 	while( iWeapon > 0 )
 	{
-		if( get_pdata_int(iWeapon, m_iId, XTRA_OFS_WEAPON) == iCswId )
+		if( get_pdata_int(iWeapon, m_iId, XO_WEAPON) == iCswId )
 		{
 			break
 		}
-		iWeapon = get_pdata_cbase(iWeapon, m_pNext, XTRA_OFS_WEAPON)
+		iWeapon = get_pdata_cbase(iWeapon, m_pNext, XO_WEAPON)
 	}
 	if( iWeapon > 0 )
 	{
-		const m_pActiveItem = 373
-		if( bSwitchIfActive && get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER) == iWeapon )
+		if( bSwitchIfActive && get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) == iWeapon )
 		{
 			ExecuteHamB(Ham_Weapon_RetireWeapon, iWeapon)
 		}

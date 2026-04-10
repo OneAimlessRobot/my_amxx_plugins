@@ -7,8 +7,6 @@
 #define MOLLY_CLASSID CSW_HEGRENADE
 #define MOLLY_WEAPON_NAME "weapon_hegrenade"
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
 
 #define MOLLY_BURST_SFX "shmod/erica/molotov/molotov_crack.wav"
 #define MOLLY_FIRE_SFX "shmod/erica/molotov/molotov_fire.wav"

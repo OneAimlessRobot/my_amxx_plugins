@@ -181,7 +181,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
 
 	new opp_health=get_user_health(pTouched);
-	if((floatround(ZENITSU_DAMAGE)>=opp_health)){
+	if((floatround(ZENITSU_DAMAGE)>=opp_health)&&!is_user_alive(pTouched)){
 		emit_sound(pToucher, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 		new Float:vic_origin[3],Float:origin[3]
 		entity_get_vector(pTouched,EV_VEC_origin,vic_origin)

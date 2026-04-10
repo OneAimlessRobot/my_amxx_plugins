@@ -610,7 +610,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				if ( vic == id ) damage = floatround(damage / 2.0)
 				new health=get_user_health(vic)
 				sh_extra_damage(vic, id, damage, damageName)
-				if((g_powerNum[id]>=3)&&(vic==pTouched)&&(damage>=health)){
+				if((g_powerNum[id]>=3)&&(vic==pTouched)&&(damage>=health)&&!is_user_alive(pTouched)){
 
 						new Float:vic_origin_f[3]
 						IVecFVec(vicOrigin,vic_origin_f)

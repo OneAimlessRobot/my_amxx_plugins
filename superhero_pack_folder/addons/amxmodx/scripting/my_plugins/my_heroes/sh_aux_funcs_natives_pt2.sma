@@ -373,7 +373,7 @@ public _gross_kill_gibs_fx(iPlugins,iParm){
 
 	new id=get_param(1)
 	if(!is_user_connected(id)) return
-
+	if(is_user_alive(id)) return
 	new Float:vic_origin[3],Float:origin[3]
 	new ivExplodeAt[3],ivicOrigin[3]
 	get_array_f(2,vic_origin,3)
