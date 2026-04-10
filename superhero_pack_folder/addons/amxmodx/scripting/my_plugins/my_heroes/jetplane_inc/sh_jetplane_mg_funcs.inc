@@ -3,8 +3,6 @@
 #endif
 #define sh_yandere_jet_mg_funcs
 
-#define GUN_SHELL_WALLHIT_SOUND "weapons/xbow_hit1.wav"
-
 #define P_MACHINEGUN_MODEL "models/shmod/yandere/jetplane/gunz/mountgun/mountgun.mdl"
 #define GUN_SHELL "models/shmod/yandere/jetplane/projectiles/rshell.mdl"
 #define MACHINE_GUN_SOUND "shmod/yandere/jetsounds/weapons/mg/m60-1.wav"

@@ -71,7 +71,7 @@ public plugin_natives(){
 public _get_jet_bombs(iPlugins,iParams){
 	new jet_id=get_param(1)
 	
-	new num_bombs=pev(jet_id,pev_iuser2)
+	new num_bombs=pev(jet_id,pev_iuser1)
 	return num_bombs;
 
 }
@@ -79,12 +79,12 @@ public _set_jet_bombs(iPlugins,iParams){
 	new jet_id=get_param(1)
 	new the_bombs=get_param(2)
 
-	set_pev(jet_id,pev_iuser2,the_bombs)
+	set_pev(jet_id,pev_iuser1,the_bombs)
 }
 public _reset_jet_bombs(iPlugins,iParams){
 	new jet_id=get_param(1)
 
-	set_pev(jet_id,pev_iuser2,jetplane_bomb_ammo)
+	set_pev(jet_id,pev_iuser1,jetplane_bomb_ammo)
 }
 public _get_user_jet_bombs(iPlugins,iParams){
 	

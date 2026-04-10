@@ -441,9 +441,7 @@ public vexd_pfntouch(pToucher, pTouched)
 		}
 		if(pev(pTouched,pev_solid)==SOLID_BSP){
 			
-			emit_sound(pToucher, CHAN_WEAPON, GUN_SHELL_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			make_sparks(origin);
-			gun_shot_decal(origin);
 			
 		}
 		remove_entity(pToucher)
@@ -461,7 +459,6 @@ public plugin_precache()
 	precache_model(GUN_SHELL)
 	precache_model(P_MACHINEGUN_MODEL)
 	engfunc(EngFunc_PrecacheSound, MACHINE_GUN_SOUND)
-	engfunc(EngFunc_PrecacheSound, GUN_SHELL_WALLHIT_SOUND)
 	
 }
 

@@ -61,7 +61,7 @@ public plugin_precache()
 public sh_hero_init(id, heroID, mode)
 {
 	if ( gHeroID != heroID ) return
-	
+	if(!sh_user_has_hero(id,gHeroID)) return
 	remove_task(id)
 	
 	if ( mode == SH_HERO_ADD ) {
@@ -141,9 +141,9 @@ switch(g_teslacoilRunning[id]) {
 }
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, gHeroID, key)
+public sh_hero_key(id, heroID, key)
 {
-if ( gHeroID != gHeroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {

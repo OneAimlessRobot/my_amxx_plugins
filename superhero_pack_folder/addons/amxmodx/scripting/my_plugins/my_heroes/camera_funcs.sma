@@ -764,6 +764,17 @@ public charge_task(id){
 		return
 	
 	}
+	if(!client_hittable(id)){
+	
+		uncharge_user(id)
+		return
+	
+	}if(!sh_user_has_hero(id,camman_get_hero_id())){
+	
+		uncharge_user(id)
+		return
+	
+	}
 	curr_charge[id]=floatadd(curr_charge[id],CAMERA_CHARGE_PERIOD)
 
 	if(!is_user_bot(id)){
