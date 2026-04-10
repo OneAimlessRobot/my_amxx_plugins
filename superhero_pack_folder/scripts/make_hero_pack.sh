@@ -17,12 +17,16 @@ num_of_subfolders_of_backup=${#subfolders_of_backup[@]}
 
 num_of_backup_locations=${#backup_locations[@]}
 
-pushd $the_dir
-
 hero_pack_folder_name="superhero_pack_folder"
 
 hero_pack_name="superhero_pack"
 
+
+remove_ztmp_files(){
+	
+	rm -rfv $(find "{the_dir}" -name "*.ztmp")	
+
+}
 remove_current_backup_folder_and_archive(){
 
 	rm -rfv "${hero_pack_name}${backup_script_extension}"
@@ -74,6 +78,11 @@ copy_stuff_to_pack_folder(){
 	wait
 	rm -rfv $(find "${hero_pack_folder_name}" -name "*.ztmp")
 }
+
+pushd $the_dir
+
+remove_ztmp_files
+
 remove_current_backup_folder_and_archive
 
 make_empty_pack_folder
