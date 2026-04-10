@@ -39,7 +39,7 @@ public plugin_init()
 	register_cvar("yandere_jetplane_law_think_period", "5")
 	register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_Think, "law_think")
+	register_think(JETPLANE_LAW_CLASSNAME, "law_think")
 	init_explosion_defaults()
 }
 public plugin_cfg(){
@@ -332,11 +332,6 @@ public law_think(ent)
 {
 	if ( !pev_valid(ent) ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, JETPLANE_LAW_CLASSNAME) ) return FMRES_IGNORED
 	
 	static Float:gametime,Float:Pos[3]
 	pev(ent, pev_origin, Pos)

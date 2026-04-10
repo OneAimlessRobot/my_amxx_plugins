@@ -133,8 +133,10 @@ public komak_init()
 	new id=str_to_num(temp)
 	
 	if(sh_user_has_hero(id,gHeroID) ){
+		remove_task(id+KOMAK_REPAIR_TASKID)
 		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
 		if(!is_user_bot(id)){
+			remove_task(id+KOMAK_HUD_TASKID)
 			set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
 		}
 	}

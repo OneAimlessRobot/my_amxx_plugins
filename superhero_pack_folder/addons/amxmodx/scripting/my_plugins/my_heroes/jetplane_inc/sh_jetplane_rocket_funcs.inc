@@ -5,10 +5,6 @@
 
 
 
-#define JETPLANE_ROCKET_CLASSNAME "yandere_rocket"
-#define JETPLANE_LAW_CLASSNAME "yandere_law"
-
-
 
 #define P_ROCKET_LAUNCHER_MODEL "models/shmod/yandere/jetplane/gunz/law/w_law.mdl"
 #define ROCKET_MODEL "models/shmod/yandere/jetplane/projectiles/GradRocket.mdl"

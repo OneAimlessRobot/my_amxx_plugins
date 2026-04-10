@@ -38,7 +38,7 @@ public plugin_init()
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	
-	register_forward(FM_Think, "scanner_think")
+	register_think(SCANNER_CLASSNAME, "scanner_think")
 }
 
 public plugin_natives(){
@@ -320,11 +320,7 @@ public _scanners_clear(iPlugins, iParms){
 public scanner_think(scanner){
 	
 	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return FMRES_IGNORED
-	static classname[32]
-	classname[0] = '^0'
-	pev(scanner, pev_classname, classname, charsmax(classname))
 	
-	if ( !equal(classname, SCANNER_CLASSNAME) ) return FMRES_IGNORED
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
 	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return FMRES_IGNORED

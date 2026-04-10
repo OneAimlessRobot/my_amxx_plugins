@@ -34,7 +34,6 @@ public plugin_init(){
 	arrayset(chaff_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_Think, CHAFF_CLASSNAME);
 	register_cvar("teliko_chaff_max_charge_time", "5.0")
 	register_cvar("teliko_chaff_min_charge_time", "1.0")
 	CHAFF_REM_TASKID=allocate_typed_task_id(entity_task)

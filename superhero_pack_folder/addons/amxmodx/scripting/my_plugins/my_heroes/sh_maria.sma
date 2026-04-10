@@ -163,6 +163,8 @@ public maria_init()
 		maria_weapons(id)
 		g_maria_points[id]=base_points;
 		g_base_radius[id]=base_radius
+		remove_task(id+MARIA_HEAL_TASKID)
+		remove_task(id+MARIA_STATS_TASKID)
 		set_task(heal_period, "maria_heal_loop", id+MARIA_HEAL_TASKID, "", 0, "b")
 		set_task(heal_period, "maria_loop", id+MARIA_STATS_TASKID, "", 0, "b")
 	}

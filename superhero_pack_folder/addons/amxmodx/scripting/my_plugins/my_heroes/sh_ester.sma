@@ -737,6 +737,7 @@ public ester_kd()
 	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	gPedalIsFloored[id]=true
+	remove_task(id+ESTER_REVENGE_TASKID)
 	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "b")
 	
 	return PLUGIN_HANDLED

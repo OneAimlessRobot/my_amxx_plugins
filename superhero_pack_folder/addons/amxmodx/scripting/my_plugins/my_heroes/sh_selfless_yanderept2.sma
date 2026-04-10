@@ -158,6 +158,7 @@ public yandere_init()
 		gNormalSpeed[id]=base_extra_speed
 		gBaseSpeed[id]=base_extra_speed
 		gPlayedSound[id]=false
+		remove_task(id+YANDERE_STATS_TASKID)
 		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		
 	}
@@ -323,6 +324,7 @@ public yandere_timer_transform(id){
 					get_user_name(id,client_name,127)
 					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
 					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
+					remove_task(id+YANDERE_ANGER_TASKID)
 					set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
 					gPlayedSound[id]=true
 				}

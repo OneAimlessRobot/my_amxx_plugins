@@ -68,8 +68,7 @@ public plugin_init()
 	arrayset(g_jetplane,-1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_sound_on,0,SH_MAXSLOTS+1)
 	hud_sync_jetplane=CreateHudSyncObj()
-	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
-	register_forward(FM_Think, "jet_think")
+	register_think(JETPLANE_FUSELAGE_CLASSNAME, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
 	
 	
@@ -258,6 +257,7 @@ public _jet_charge_user(iPlugin, iParams){
 	parm[0]=id
 	parm[1]=g_jetplane[id]
 	set_task(jetplane_cooldown,"load_jet",id+JET_LOAD_TASKID,"", 0,  "a",1)
+	remove_task(id+JET_CHARGE_TASKID)
 	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,parm, 2,  "b")
 	return
 	
@@ -431,12 +431,14 @@ public jet_deploy_task(parm[],id){
 		ham_is_on=1;
 	}
 	if(!is_user_bot(attacker)){
+		remove_task(attacker+JET_HUD_TASKID)
 		set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"b")
 	}
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
 	set_jet_engine(id,1);
 	g_jetplane_trail_engaged[attacker]=0
+	remove_task(attacker+JET_SOUND_TASKID)
 	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID,"",0,"b")
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
@@ -484,12 +486,7 @@ public FwdTouchWorld( jet, World ) {
 public jet_think(ent)
 {
 	if ( !pev_valid(ent) ) return FMRES_IGNORED
-	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, JETPLANE_FUSELAGE_CLASSNAME) ) return FMRES_IGNORED
+
 	
 	static Float:gametime,Float:Pos[3]
 	gametime = get_gametime()

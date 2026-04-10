@@ -55,7 +55,7 @@ public plugin_init(){
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 	LENA_HIT_STAGGER_TASKID=allocate_typed_task_id(player_task)
 
-	register_forward(FM_Think, "bulette_thinque")
+	register_think(LENA_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_explosion_defaults()
 	init_gravity_pcvar()
 
@@ -67,11 +67,6 @@ public bulette_thinque(ent){
 
 	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, LENA_PROJECTILE_CLASSNAME) ) return FMRES_IGNORED
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!client_hittable(owner)){

@@ -39,7 +39,7 @@ public plugin_init(){
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("sapper_mine_min_charge_time", "1.0")
-	register_forward(FM_Think, "mine_think")
+	register_think(MINE_CLASSNAME, "mine_think")
 
 
 	MINE_ARMING_TASKID=allocate_typed_task_id(entity_task)
@@ -166,15 +166,6 @@ public mine_think(mine_id){
 	
 			return FMRES_IGNORED
 	
-	}
-	static classname[32]
-	classname[0] = '^0'
-	pev(mine_id, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, MINE_CLASSNAME) ){
-		
-			
-		return FMRES_IGNORED
 	}
 	
 	new attacker=pev(mine_id,pev_owner)
@@ -423,8 +414,7 @@ if(!(butnprs&IN_DUCK)){
 
 
 }
-public charge_task(id){
-	id-=MINE_CHARGE_TASKID
+public charge_iteration(id){
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -433,7 +423,7 @@ public charge_task(id){
 	}
 	curr_charge[id]=floatadd(curr_charge[id],MINE_CHARGE_PERIOD)
 	if(!is_user_bot(id)){
-		new hud_msg[128];
+		static hud_msg[128];
 		formatex(hud_msg,127,"[SH]: Curr mine charge: %0.2f^n",
 		100.0*(curr_charge[id]/min_charge_time)
 		);
@@ -461,8 +451,6 @@ public _mine_uncharge_mine(iPlugin,iParams){
 	
 }
 public uncharge_task(id){
-	id-=UNMINE_CHARGE_TASKID
-	remove_task(id+MINE_CHARGE_TASKID)
 	mine_armed[id]=0
 	return 0
 	
@@ -471,8 +459,6 @@ public uncharge_task(id){
 }
 
 uncharge_user(id){
-	remove_task(id+UNMINE_CHARGE_TASKID)
-	remove_task(id+MINE_CHARGE_TASKID)
 	mine_armed[id]=0
 	return 0
 	

@@ -42,7 +42,7 @@ public plugin_init(){
 	arrayset(spear_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_Think, "spaar_thaank");
+	register_think(SPEAR_CLASSNAME, "spaar_thaank");
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
@@ -58,11 +58,6 @@ public spaar_thaank(ent){
 
 	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, SPEAR_CLASSNAME) ) return FMRES_IGNORED
 	
 
 	remove_entity(ent)
@@ -187,7 +182,7 @@ public loadCVARS()
 
 public charge_task(id){
 	id-=SPEAR_CHARGE_TASKID
-	new hud_msg[128];
+	static hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],SPEAR_CHARGE_PERIOD)
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 					100.0*(curr_charge[id]/max_charge_time)

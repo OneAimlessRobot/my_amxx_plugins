@@ -129,7 +129,7 @@ charge_user(id){
 	
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(id,RED,10,15)
-
+	remove_task(id+GRACIETE_CHARGE_TASKID)
 	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "b")
 	return 0
 	

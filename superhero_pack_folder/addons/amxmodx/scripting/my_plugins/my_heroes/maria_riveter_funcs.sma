@@ -37,7 +37,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 
-	register_forward(FM_Think, "rivette_thinque")
+	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
 	init_gravity_pcvar()
 
 
@@ -48,11 +48,6 @@ public rivette_thinque(ent){
 
 	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, MARIA_PROJECTILE_CLASSNAME) ) return FMRES_IGNORED
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!client_hittable(owner)){

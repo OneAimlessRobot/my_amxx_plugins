@@ -46,7 +46,7 @@ public plugin_init()
 	
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	
-	register_forward(FM_Think, "spore_think")
+	register_think(SPORE_CLASSNAME, "spore_think")
 
 }
 
@@ -387,11 +387,6 @@ public spore_think(spore){
 
 	if ( !is_valid_ent(spore) ) return FMRES_IGNORED
 
-	static classname[32]
-	classname[0] = '^0'
-	pev(spore, pev_classname, classname, charsmax(classname))
-
-	if ( !equal(classname, SPORE_CLASSNAME) ) return FMRES_IGNORED
 
 	new Float:spore_hp=float(pev(spore,pev_health))
 

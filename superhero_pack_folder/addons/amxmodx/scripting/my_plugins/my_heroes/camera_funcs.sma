@@ -58,7 +58,7 @@ public plugin_init(){
 	register_cvar("camman_camera_maxalpha", "100.0")
 	register_cvar("camman_camera_minalpha", "1000.0")
 	register_event("DeathMsg","death","a")
-	register_forward(FM_Think, "camera_think")
+	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNCAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -112,14 +112,6 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 	if(pev_valid(idinflictor)!=2){
 		return HAM_IGNORED
 	
-	}
-	static classname[32]
-	classname[31]='^0'
-	pev(this, pev_classname, classname, charsmax(classname))
-	if(!equal(classname, CAMERA_CLASSNAME)){
-		
-		return HAM_IGNORED
-		
 	}
 	set_pev(this, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 	return HAM_IGNORED
@@ -458,13 +450,10 @@ public camera_think(ent)
 {
 	if ( !pev_valid(ent) ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, CAMERA_CLASSNAME) ) return FMRES_IGNORED
 	//get phase
 	new phase=pev(ent,pev_iuser2)
+
+
 	new owner=pev(ent,pev_euser1)
 	static Float:gametime
 	gametime = get_gametime()

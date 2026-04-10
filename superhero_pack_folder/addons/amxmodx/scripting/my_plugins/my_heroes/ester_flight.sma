@@ -538,6 +538,7 @@ public ester_teleport(id)
 	
 	sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 	
+	remove_task(id+ESTER_REBORN_GLOW_TASKID)
 	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"b")
 	for(new i=0;i<3;i++){
 		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME+(float(i)*FLIGHT_GODMODE_THINK_TIME),"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)

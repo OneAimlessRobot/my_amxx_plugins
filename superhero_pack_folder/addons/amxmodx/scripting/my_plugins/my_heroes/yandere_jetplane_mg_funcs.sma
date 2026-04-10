@@ -37,7 +37,7 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_bulletspeed", "5")
 	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_Think, "mg_think")
+	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
 	
 }
 
@@ -228,11 +228,6 @@ public mg_think(ent)
 {
 	if ( !pev_valid(ent) ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, JETPLANE_MG_CLASSNAME) ) return FMRES_IGNORED
 	
 	static Float:vEnd[3], Float:gametime,Float:Pos[3]
 	pev(ent, pev_origin, Pos)

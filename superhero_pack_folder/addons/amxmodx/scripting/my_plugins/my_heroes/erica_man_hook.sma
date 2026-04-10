@@ -291,6 +291,7 @@ public CmdStart1(attacker, uc_handle)
 					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
+					remove_task(attacker+HOOK_TASKID)
 					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"b")
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)

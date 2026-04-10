@@ -16,7 +16,6 @@ new g_jaqueo_shield_cooldown[SH_MAXSLOTS+1];
 new g_jaqueo_shield_loaded[SH_MAXSLOTS+1];
 new g_jaqueo_shield_deployed[SH_MAXSLOTS+1];
 new g_jaqueo_shield[SH_MAXSLOTS+1];
-new Float:g_last_attack_release_gametime[SH_MAXSLOTS+1]
 new g_normal_ptr[SH_MAXSLOTS+1]
 
 #define MAX_BURST_FIRE_TIME 0.2
@@ -42,30 +41,15 @@ public plugin_init()
 	arrayset(g_jaqueo_shield_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_jaqueo_shield_deployed,0,SH_MAXSLOTS+1)
 	arrayset(g_normal_ptr,0,SH_MAXSLOTS+1)
-	arrayset(g_last_attack_release_gametime,0.0,SH_MAXSLOTS+1)
 	arrayset(g_jaqueo_shield,0,SH_MAXSLOTS+1)
 
-	register_forward(FM_TraceLine,"fw_traceline",1);
-	//register_forward(FM_Touch,"touch_shield")
-	register_forward(FM_PlayerPreThink, "fwPlayerPreThink")
-	register_forward(FM_Think, "shield_think")
-	//register_forward(FM_Touch, "shield_touch")
+	register_think(JAQUEO_SHIELD_CLASSNAME, "shield_think")
 	RegisterHam(Ham_TakeDamage,"player","Shield_Damage",_,true)
 	JAQUEO_LOAD_TASKID=allocate_typed_task_id(player_task)
 	JAQUEO_DEPLOY_TASKID=allocate_typed_task_id(player_task)
 	JAQUEO_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	
 	// Add your code here...
-}
-
-//----------------------------------------------------------------------------------------------
-public fwPlayerPreThink(id)
-{
-	if ((pev(id, pev_oldbuttons) & IN_ATTACK) && !(pev(id, pev_button) & IN_ATTACK)) {
-		// the primary attack button is released
-		// save the current gametime
-		g_last_attack_release_gametime[id] = get_gametime()
-	}
 }
 public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
@@ -94,124 +78,6 @@ public plugin_natives(){
 
 }
 
-public fw_traceline(const Float:start[3], const Float:dest[3],ignore_monsters,id,ptr)
-{
-	if ( !sh_is_active() ) {
-		return FMRES_IGNORED
-	}
-
-	if (ignore_monsters) {
-		return FMRES_IGNORED
-	}
-	if(!is_user_connected(id)){
-	
-		return FMRES_IGNORED
-	}
-	if(!sh_user_has_hero(id,jaqueo_get_hero_id())){
-	
-		return FMRES_IGNORED
-	}
-	if(!ptr){
-	
-		return FMRES_IGNORED
-	}
-	if (!g_normal_ptr[id]) {
-		g_normal_ptr[id] = ptr
-
-		return FMRES_IGNORED
-	}
-	if (is_user_alive(get_tr2(ptr, TR_pHit))) {
-		return FMRES_IGNORED
-	}
-	new ent=get_tr2(ptr, TR_pHit)
-	if(!pev_valid(ent)){
-		return FMRES_IGNORED
-	
-	}
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, JAQUEO_SHIELD_CLASSNAME) ) return FMRES_IGNORED
-	static clip, ammo, weapon_id
-	sh_chat_message(pev(g_jaqueo_shield[id],pev_iuser1),jaqueo_get_hero_id(),"Atingiram-te o shield!");
-	
-	// get the current weapon index
-	weapon_id = get_user_weapon(id, clip, ammo)
-
-	if (!(GUNS_BIT_SUM & (1<<weapon_id))) {
-		return FMRES_IGNORED
-	}
-
-	static Float:gametime
-
-	// get current game time
-	gametime = get_gametime()
-
-	new bool:is_hold_primary_attack = bool:(pev(id, pev_button) & IN_ATTACK)
-
-	if (!(BURSTGUNS_BIT_SUM & (1<<weapon_id))) {
-		// the current weapon isn't a burst gun
-		if (!is_hold_primary_attack) {
-			return FMRES_IGNORED
-		}
-	}
-	else {
-		// the current weapon is a burst gun
-		if (!is_hold_primary_attack) {
-			if (gametime - g_last_attack_release_gametime[id] > MAX_BURST_FIRE_TIME) {
-				return FMRES_IGNORED
-			}
-		}
-	}
-	static Float:fired_particle_start_origin[3], Float:vector[3]
-
-	// get the player's origin and view offset
-	pev(id, pev_origin, fired_particle_start_origin)
-	pev(id, pev_view_ofs, vector)
-
-	// get the fired particle start origin
-	xs_vec_add(fired_particle_start_origin, vector, fired_particle_start_origin)
-	static bool:particle_is_fired ; particle_is_fired = xs_vec_equal(fired_particle_start_origin, start)
-
-	if (particle_is_fired) {
-		static Float: vnormal[3], Float:bulletshot[3], Float:v[3], Float:t[3], Float:t2[3], Float:n[3], Float:vdotvnormal, Float:r[3]
-		static ptr2, Float:f
-
-		// get the end position of the current trace
-		get_tr2(ptr, TR_vecEndPos, vector)
-		xs_vec_copy(vector, bulletshot)
-
-		xs_vec_sub(vector, fired_particle_start_origin, vector)
-		new Float:vInit[3];
-		vInit[0]=bulletshot[0]-vnormal[0]*200
-		vInit[1]=bulletshot[1]-vnormal[1]*200
-		vInit[2]=bulletshot[2]-vnormal[2]*200
-		new Float:vEnd[3];
-		vEnd[0]=bulletshot[0]+vnormal[0]*200
-		vEnd[1]=bulletshot[1]+vnormal[1]*200
-		vEnd[2]=bulletshot[2]+vnormal[2]*200
-		get_tr2(ptr, TR_vecPlaneNormal, vnormal)
-		laser_line(id,vInit,vEnd,0)
-		// Calculate boucing bullet
-		v[0] = (bulletshot[0] - fired_particle_start_origin[0]) * -1
-		v[1] = (bulletshot[1] - fired_particle_start_origin[1]) * -1
-		v[2] = (bulletshot[2] - fired_particle_start_origin[2]) * -1
-
-		vdotvnormal = xs_vec_dot(v,vnormal) * 2.0
-		xs_vec_mul_scalar(vnormal, vdotvnormal, t)
-		xs_vec_sub(t, v, t2)
-		xs_vec_normalize(t2,r)
-		xs_vec_mul_scalar(r, 2048.0, r)
-		xs_vec_add(bulletshot, r, n)
-
-		ptr2 = create_tr2()
-		engfunc(EngFunc_TraceLine,bulletshot, n, DONT_IGNORE_MONSTERS, id, ptr2)
-		get_tr2(ptr2,TR_flFraction, f)
-		free_tr2(ptr2)
-	}
-	return FMRES_IGNORED
-}
 public _shield_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
@@ -314,13 +180,8 @@ public plugin_precache(){
 //----------------------------------------------------------------------------------------------
 public shield_think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, JAQUEO_SHIELD_CLASSNAME) ) return FMRES_IGNORED
 	
 	static Float:vEnd[3], Float:gametime,Float:Pos[3]
 	pev(ent, pev_origin, Pos)
@@ -427,6 +288,7 @@ public _shield_charge_user(iPlugin, iParams){
 	parm[0]=id
 	parm[1]=g_jaqueo_shield[id]
 	set_task(shield_cooldown,"load_shield",id+JAQUEO_LOAD_TASKID,"", 0,  "a",1)
+	remove_task(id+JAQUEO_CHARGE_TASKID)
 	set_task(JAQUEO_CHARGE_PERIOD,"charge_task",id+JAQUEO_CHARGE_TASKID,parm, 2,  "b")
 	return
 	

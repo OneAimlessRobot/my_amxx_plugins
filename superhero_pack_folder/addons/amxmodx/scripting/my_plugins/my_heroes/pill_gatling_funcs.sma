@@ -57,7 +57,7 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_logevent("event_start", 2, "1=Round_Start")
 	register_cvar("yakui_windup_time", "2.0")
-	register_forward(FM_Think, "pill_think")
+	register_think(PILL_CLASSNAME, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 
 }
@@ -466,12 +466,7 @@ public pill_think(ent)
 		return FMRES_IGNORED
 
 	}
-	new szClassName[32]
-	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
-	if(!equal(szClassName, PILL_CLASSNAME))
-	{
-		return FMRES_IGNORED
-	}
+	
 	new id=pev(ent,pev_owner)
 	if (!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) {
 		remove_entity(ent)

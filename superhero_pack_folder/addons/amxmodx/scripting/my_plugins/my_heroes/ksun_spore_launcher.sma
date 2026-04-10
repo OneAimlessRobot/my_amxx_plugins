@@ -40,7 +40,7 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
-	register_forward(FM_Think, "launcher_think")
+	register_think(LAUNCHER_CLASSNAME, "launcher_think")
 }
 
 
@@ -131,14 +131,8 @@ public loadCVARS()
 }
 public launcher_think(ent){
 	
-	if ( !pev_valid(ent)) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2) return FMRES_IGNORED
 	
-	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, LAUNCHER_CLASSNAME) ) return FMRES_IGNORED
 	
 	new Float:launcher_hp=float(pev(ent,pev_health))
 	new launcher_owner= entity_get_edict(ent,EV_ENT_euser1)

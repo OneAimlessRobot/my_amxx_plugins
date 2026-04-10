@@ -154,7 +154,7 @@ public styropyro_kd()
 
 	fire_laser(id)  // 1 immediate shot
 	if ( get_cvar_float("styropyro_multishot") >= 0.0 ) {
-		set_task(get_cvar_float("styropyro_multishot"), "fire_laser", id, "", 0, "b")  //delayed shots
+		set_task(get_cvar_float("styropyro_multishot"), "fire_laser", id)  //delayed shots
 	}
 
 	gLaserFired[id] = true

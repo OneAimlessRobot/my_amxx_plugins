@@ -56,8 +56,7 @@ stock flora_field_max_active_ammount
 
 
 stock FLORA_COOLDOWN_TASKID,
-		FLORA_LOAD_TASKID,
-		FLORA_CHARGE_TASKID
+		FLORA_LOAD_TASKID
 
 
 
@@ -100,10 +99,9 @@ public plugin_init()
 
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
-	FLORA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 
 
-	register_forward(FM_Think, "field_think")
+	register_think(FLORA_FIELD_CLASSNAME, "field_think")
 	register_forward(FM_CmdStart, "field_checks")
 	init_hud_syncs()
 
@@ -560,14 +558,9 @@ public _form_field(iPlugin,iParams)
 	
 	
 	glow(Ent,LineColors[ORANGE][0],LineColors[ORANGE][1],LineColors[ORANGE][2],100,1)
-	
-	new parm[2]
-	parm[0]=id
-	parm[1]=Ent
-	set_task(FLORA_CHARGE_PERIOD,"charge_task",id+FLORA_CHARGE_TASKID,parm, 2,  "b")
-	
-	
-	return
+	//set deployed status
+	entity_set_int(Ent,EV_INT_iuser1,0)
+	entity_set_float(Ent,EV_FL_nextthink,floatadd(get_gametime(),FLORA_CHARGE_PERIOD))
 }
 public cooldown_update_task(id){
 	
@@ -585,9 +578,8 @@ public end_cooldown_update_tasks(id){
 	
 	remove_task(id+FLORA_COOLDOWN_TASKID)
 }
-public field_deploy_task(parm[],id){
+public field_deploy_task(id,field_id){
 	
-	new field_id=parm[1];
 	if(pev_valid(field_id)!=2){
 		
 		return
@@ -698,21 +690,19 @@ public field_think(ent)
 			return FMRES_IGNORED
 	
 	}
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, FLORA_FIELD_CLASSNAME) ){
-		
-			
-		return FMRES_IGNORED
-	}
-	
 	new Float:gametime
 	static Float:ent_pos[3]
 	static ient_pos[3],entlist[33];
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
+
+	//get deployed status
+	new deployed=entity_get_int(ent,EV_INT_iuser1)
+	if(!deployed){
+
+		return charge_iteration(owner,ent)
+		
+	}
 	if (entity_get_float(ent,EV_FL_fuser2)<FIELD_ACTIVE_TIME_BUFFER) {
 		if(pev_valid(ent)==2){
 			sh_chat_message(owner,flora_get_hero_id(),"Field died!")
@@ -770,7 +760,6 @@ public field_think(ent)
 }
 uncharge_user(id){
 	
-	remove_task(id+FLORA_CHARGE_TASKID)
 	if(pev_valid(g_flora_curr_charging[id])==2){
 		
 		
@@ -797,28 +786,26 @@ public load_field(id){
 	
 	
 }
-public charge_task(parm[],id){
-	id-=FLORA_CHARGE_TASKID
-	new owner= parm[0]
-	new field_id=parm[1]
+public charge_iteration(owner,field_id){
+
 	
 	
 	if(!client_hittable(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
 		uncharge_user(owner)
-		return
+		return FMRES_IGNORED
 	}
 	
 	if(pev_valid(field_id)!=2) {
 		uncharge_user(owner)
-		return
+		return FMRES_IGNORED
 	}
 	
 	new test_edict=find_next_nearest_flora_field(owner,field_id,0.0)
 	if(is_valid_ent(test_edict)){
-		sh_sound_deny(id)
-		sh_chat_message(id,flora_get_hero_id(),"This spore is too close to another one of yours! Will not plant.")
+		sh_sound_deny(owner)
+		sh_chat_message(owner,flora_get_hero_id(),"This spore is too close to another one of yours! Will not plant.")
 		uncharge_user(owner)
-		return
+		return FMRES_IGNORED
 	}
 	
 	if(!(entity_get_int( owner, EV_INT_flags ) & FL_ONGROUND  )){
@@ -826,7 +813,7 @@ public charge_task(parm[],id){
 		sh_sound_deny(owner)
 		sh_chat_message(owner, flora_get_hero_id(), "Charging stopped. You cannot charge a field while airborne")
 		uncharge_user(owner)
-		return
+		return FMRES_IGNORED
 		
 	}
 	new Float:vOrigin[3]
@@ -845,24 +832,22 @@ public charge_task(parm[],id){
 	Entvars_Set_Vector(field_id, EV_VEC_velocity,  velocity)
 	
 	// switch to knife
-	engclient_cmd(id, "weapon_knife")
+	engclient_cmd(owner, "weapon_knife")
 	
 	new hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))
 	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/flora_charge_time)*100.0);
-	client_print(id,print_center,"%s",hud_msg)
+	client_print(owner,print_center,"%s",hud_msg)
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	if(entity_get_float(field_id,EV_FL_fuser1)>flora_charge_time){
-	
-		new parm[2]
-		parm[0]=owner
-		parm[1]=field_id
-		field_deploy_task(parm,id)
-		uncharge_user(owner)
+		//set deployed status
+		entity_set_int(field_id,EV_INT_iuser1,1)
+		field_deploy_task(owner,field_id)
 	}
-	
+	entity_set_float(field_id,EV_FL_nextthink,floatadd(get_gametime(),FLORA_CHARGE_PERIOD))
+	return FMRES_IGNORED
 	
 	
 	

@@ -18,7 +18,7 @@ new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	register_forward(FM_Think, "ball_think")
+	register_think(BALL_CLASSNAME, "ball_think")
 	
 	new const szEntity[ ][ ] = {
 		"worldspawn", "func_wall", "func_door",  "func_door_rotating",
@@ -195,17 +195,12 @@ public kick_ball(iPlugin,iParams)
 public ball_think(ent)
 {	
 	
-	if(!pev_valid(ent)){
+	if(pev_valid(ent)!=2){
 		
 		return FMRES_IGNORED
 		
 	}
-	new szClassName[32]
-	entity_get_string(ent, EV_SZ_classname, szClassName, 31)
-	if(!equal(szClassName, BALL_CLASSNAME))
-	{
-		return FMRES_IGNORED
-	}
+
 	new id=pev(ent,pev_iuser1)
 	if ( !client_hittable(id,sh_user_has_hero(id,roberto_get_hero_id()))) {
 		remove_entity(ent)

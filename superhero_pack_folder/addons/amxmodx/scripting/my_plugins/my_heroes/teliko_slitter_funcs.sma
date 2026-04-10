@@ -255,6 +255,7 @@ public CmdStart(attacker, uc_handle)
 						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
 						new Float:velocity[3]={1.0,1.0,1.0}
 						entity_set_vector(id, EV_VEC_velocity, velocity)
+						remove_task(attacker+SLITTER_TASKID)
 						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"b")
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
