@@ -127,6 +127,13 @@ public zenitsu_kd()
 		}
 		return PLUGIN_HANDLED
 	}
+	if(zenitsu_get_has_touched_player(id)){
+		if(!is_user_bot(id)){
+			playSoundDenySelect(id)
+			sh_chat_message(id,gHeroID,"You already succeeded in slaying an enemy. Wait for next respawn");
+		}
+		return PLUGIN_HANDLED
+	}
 	gChargeModeEngaged[id]=1
 	sh_sleep_user(id,id,zenitsu_get_hero_id())
 	return PLUGIN_HANDLED

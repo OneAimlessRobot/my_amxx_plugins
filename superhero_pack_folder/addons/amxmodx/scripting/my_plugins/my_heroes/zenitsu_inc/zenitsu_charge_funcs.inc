@@ -3,6 +3,7 @@
 #endif
 #define sh_zenitsu_charge_inc
 
+#define FLIGHT_IGNITION "shmod/ester/flight/flight_ignition.wav"
 #define ZENITSU_CHARGE_SPEED 3500.0
 #define ZENITSU_DAMAGE 1600.0
 

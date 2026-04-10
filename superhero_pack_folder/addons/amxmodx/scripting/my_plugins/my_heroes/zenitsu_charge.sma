@@ -51,7 +51,8 @@ public Fwd_PlayerPreThink(id)
 
 public plugin_precache(){
 
-	precache_sound(SLICERISTA_HIT_MEAT_SFX)
+	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
+	engfunc(EngFunc_PrecacheSound,SLICERISTA_HIT_MEAT_SFX)
 }
 public on_Knife_Weapon_Change(id)
 {
@@ -100,10 +101,6 @@ public zenitsu_charge(id, uc_handle, seed)
 	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!client_hittable(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
-	if (sh_get_user_is_asleep(id)){
-
-		return FMRES_IGNORED;
-	}
 	if (sh_get_user_is_chaffed(id)){
 
 		return FMRES_IGNORED;
@@ -119,6 +116,7 @@ public zenitsu_charge(id, uc_handle, seed)
 		if(!g_zenitsu_was_charging[id]){
 
 			trail(id,YELLOW,1,10)
+			emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			get_uc(uc_handle,UC_ViewAngles,g_zenitsu_curr_charge_look_direction[id])
 		}
 		if(random(FlameAndSoundRate) <3)
