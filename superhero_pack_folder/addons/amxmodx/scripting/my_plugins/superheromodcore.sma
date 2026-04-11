@@ -421,7 +421,6 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
-//new bool:gPlayerHasPowerTable[SH_MAXSLOTS+1][SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerHasPowerTable[SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
