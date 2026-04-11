@@ -263,7 +263,6 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!sh_user_has_hero(i,gHeroID) ) continue;
 	if(!(disconnected)){
 		if(!sh_clients_are_same_team(id,i)||(id==i)){
-			sh_chat_message(i,gHeroID,"We dont care about non teamates")
 			continue;	
 		}
 	}
@@ -453,7 +452,7 @@ public yandere_damage(id)
 		if (floatround(extraDamage) > 0.0){
 			
 			new health = get_user_health(id)
-			if(weapon==YANDERE_WEAPON_CLASSID){
+			if(gSuperAngry[attacker]&&(weapon==YANDERE_WEAPON_CLASSID)){
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
 								headshot,
 								_,_,_,_,_,

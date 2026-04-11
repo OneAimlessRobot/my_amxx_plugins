@@ -156,7 +156,11 @@ public track_task(array[],id){
 		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
 		aura(id,LineColors[color_const])
 		if(array[TRACK_TASK_DO_DAMAGE]){
-			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],"SH_TRACKING",0,SH_DMG_NORM)
+			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],
+							new_dmg_type_names[_:SH_NEW_DMG_RADIATION_POISON],
+							_,_,_,_,_,_,
+							SH_NEW_DMG_RADIATION_POISON,
+							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_RADIATION_POISON))
 		}
 	}
 	else{

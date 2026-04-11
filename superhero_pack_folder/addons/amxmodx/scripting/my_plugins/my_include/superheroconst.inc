@@ -113,6 +113,7 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 	SH_NEW_DMG_DARK_ARTS,
 	SH_NEW_DMG_FIRE,
+	SH_NEW_DMG_RADIATION_POISON,
 	SH_NEW_DMG_MAX_DAMAGES
 
 }
@@ -128,7 +129,8 @@ stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 	"SH_Frag_Blast",
 	"xXx_SH_DarkShadowBlade_xXx",
 	"SH_Dark_Arts",
-	"SH_Fire"
+	"SH_Fire",
+	"SH_Radiation_Poison"
 }
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed

@@ -5,6 +5,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -493,7 +494,11 @@ public poison_task(array[],id){
 
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),"Crack pill",0,SH_DMG_NORM,_,_,_,_,SH_NEW_DMG_DRUG_POISON)
+	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),
+							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
+							_,_,_,_,_,_,
+							SH_NEW_DMG_DRUG_POISON,
+							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON))
 	
 	
 
