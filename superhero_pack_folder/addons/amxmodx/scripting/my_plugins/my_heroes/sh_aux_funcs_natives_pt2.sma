@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -48,7 +47,6 @@ public plugin_natives(){
 
 public _prepare_shero_aux_lib_pt2(iPlugins, iParams){
 	
-	xs_seed(get_systime(0));
 	server_print("Shero lib pt2 innited!^n")
 }
 	

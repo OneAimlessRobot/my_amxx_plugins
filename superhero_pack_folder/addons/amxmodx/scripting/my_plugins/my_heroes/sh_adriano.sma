@@ -21,6 +21,14 @@ new Float:g_normal_radius[SH_MAXSLOTS+1]
 new g_prevWeapon[SH_MAXSLOTS+1]
 
 
+new dmg_source_name_short_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
+new dmg_source_name_long_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
+new custom_dmg_id_ethereal
+
+new dmg_source_name_short_colt_m1911[SAFE_BUFFER_SIZE+1]="colt_m1911"
+new dmg_source_name_long_colt_m1911[SAFE_BUFFER_SIZE+1]="colt_m1911"
+new custom_dmg_id_colt_m1911
+
 new const adriano_sentences[1][]={
 	
 	"HELL YEA LETS GOOOO!!!!"
@@ -64,6 +72,12 @@ public plugin_init()
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Hyped by suffering!", "Get faster from those around you and pat mates on the back for motivation!", false, "adriano_level" )
 	
+	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_long_ethereal,0)
+
+	custom_dmg_id_colt_m1911=sh_log_custom_damage_source(gHeroID,
+						dmg_source_name_short_colt_m1911,
+						dmg_source_name_long_colt_m1911,0)
+
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
@@ -199,9 +213,9 @@ public heal_teamate(id,teamate){
 public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new clip,ammo, weapon = get_user_weapon(attacker, clip,ammo)
+	new weapon = get_user_weapon(attacker)
 	
 	
 	// get ent looking at
@@ -221,24 +235,37 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 }
 public adriano_damage(id)
 {
-	if ( !shModActive() || !client_hittable(id) ) return
+	if ( !shModActive() || !client_hittable(id) ) return PLUGIN_CONTINUE
 	
 	
-	new  Float:damage= float(read_data(2))
+	new Float:damage = float(read_data(2))
 	
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
+	new headshot = (bodypart == 1)
 	
-	if (  (attacker==id) || !is_user_connected(attacker) ) return
+	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
 
 	get_speed_dmg_in_radius(id,damage)
 	
-	if(sh_user_has_hero(id,gHeroID) &&(weapon==CSW_ETHEREAL)){
-	
-		sh_extra_damage(id,attacker,floatround(damage),"Adriano Ethereal Rifle",headshot)
+	if(sh_user_has_hero(attacker,gHeroID)){
+		new Float:extraDamage = damage * 2.0- damage
+		if (floatround(extraDamage)>0){
+			switch(weapon){
+				case CSW_ETHEREAL:{
+					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SHOCK,custom_dmg_id_ethereal)
+				}
+				case CSW_FIVESEVEN:{
+					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_colt_m1911,headshot,
+								_,_,_,_,_,_,custom_dmg_id_colt_m1911)
+				}
+			}
+		}
 	
 	}
+	return PLUGIN_CONTINUE
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {

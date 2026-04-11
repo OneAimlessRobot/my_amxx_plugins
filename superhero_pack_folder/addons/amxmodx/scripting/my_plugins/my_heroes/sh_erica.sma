@@ -37,6 +37,12 @@ new const erica_knife_sounds[6][]={"weapons/cod6knife_draw.wav",
 "weapons/erica_knife/knife_slash2.wav",
 "weapons/erica_knife/knife_stab.wav"}
 
+
+
+new dmg_source_name_short_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
+new dmg_source_name_long_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
+new custom_dmg_id_hype_shot
+
 //new gHeroLevel
 new base_er_points
 new max_er_points
@@ -85,6 +91,8 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "erica_init")
 	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage",_,true)
 	
+	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
+
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 	
@@ -361,8 +369,10 @@ public erica_damage(id)
 	
 	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
 	if (floatround(extraDamage)>0){
-		sh_extra_damage(id, attacker, floatround(extraDamage), "Hype shot", headshot)
-			
+
+		sh_extra_damage(id,attacker,floatround(extraDamage),
+						dmg_source_name_short_hype_shot,headshot,_,_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,custom_dmg_id_hype_shot)
 	}
 	get_speed_dmg_in_radius(attacker,extraDamage+damage)
 }

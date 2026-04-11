@@ -12,6 +12,8 @@
 
 
 new pPlayer, pEntity, HookChain:TakeDamage
+
+//new g_Msg_WeaponList
 new is_rehlds_avail
 public plugin_precache()
 {
@@ -25,7 +27,10 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud7.spr")
 	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud114.spr")
 	engfunc(EngFunc_PrecacheGeneric, "sprites/weapon_m1911a1.txt")
+
+
 	is_rehlds_avail=is_rehlds()
+
 }
 public plugin_init()
 {
@@ -33,14 +38,16 @@ public plugin_init()
 	RegisterHam(Ham_Item_Deploy, STRN_FIVESEVEN, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_FIVESEVEN, "fw_WeaponPrimaryAttackPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, STRN_FIVESEVEN, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Item_AddToPlayer, STRN_FIVESEVEN, "fw_ItemAddToPlayerPost", 1,true)
 	RegisterHam(Ham_Weapon_WeaponIdle, STRN_FIVESEVEN, "fw_WeaponWeaponIdlePost", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, STRN_FIVESEVEN, "fw_ItemAddToPlayerPost", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHookChain(RG_CWeaponBox_SetModel, "rg_CWeaponBoxSetModelPre")
 	TakeDamage = RegisterHookChain(RG_CBasePlayer_TakeDamage, "rg_CBasePlayerTakeDamagePre")
 	DisableHookChain(TakeDamage)
 	register_clcmd("give_m1911a1", "give_m1911a1")
 	register_clcmd(STRN_M1911A1, "lastinv_m1911a1")
+
+	//g_Msg_WeaponList = get_user_msgid("WeaponList")
 }
 public plugin_natives(){
 
@@ -85,11 +92,21 @@ public fw_WeaponWeaponIdlePost(entity)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 99999.0)
 }
 
-public fw_ItemAddToPlayerPost(entity, player)
+public fw_ItemAddToPlayerPost(entity, id)
 {
+	if(!pev_valid(entity))
+		return HAM_IGNORED
+
 	new iCustom = get_entvar(entity, var_impulse)
-	if(iCustom && (iCustom != ID_M1911A1)) return
-	SendWeaponList(player, (iCustom != ID_M1911A1) ? STRN_FIVESEVEN : STRN_M1911A1, AMMOID_FIVESEVEN, MAXAMMO_FIVESEVEN, SLOT_SECONDARY, POSITION_FIVESEVEN, ID_FIVESEVEN)
+	new is_custom= (iCustom == ID_M1911A1)
+	
+	SendWeaponList(id,is_custom? STRN_M1911A1: STRN_FIVESEVEN,AMMOID_FIVESEVEN,MAXAMMO_FIVESEVEN,
+					SLOT_SECONDARY,
+					POSITION_FIVESEVEN,
+					CSW_FIVESEVEN,MSG_ONE_UNRELIABLE)
+
+
+	return HAM_HANDLED
 }
 
 public fw_ItemDeployPre(entity)

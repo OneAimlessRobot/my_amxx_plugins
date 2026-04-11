@@ -29,8 +29,6 @@ new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
 new custom_dmg_id_l96
 
 
-stock LENA_HIT_STAGGER_TASKID
-
 //new HamHook:TakeDamage
 public plugin_init(){
 	
@@ -53,7 +51,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
-	LENA_HIT_STAGGER_TASKID=allocate_typed_task_id(player_task)
+
 
 	register_think(LENA_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_explosion_defaults()
@@ -498,8 +496,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
 					sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
-					fade_screen_user(pTouched)
-					set_task(0.5,"unfade_screen_user_task",pTouched+LENA_HIT_STAGGER_TASKID)
+					unfade_screen_user(pTouched)
 					set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
 					if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
 							track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
@@ -565,16 +562,6 @@ public vexd_pfntouch(pToucher, pTouched)
 		remove_entity(pToucher)
 	}
 }
-public unfade_screen_user_task(id){
-	id-=LENA_HIT_STAGGER_TASKID
-	if(is_user_connected(id)){
-		
-		unfade_screen_user(id)
-
-	}
-
-}
-
 public plugin_precache()
 {
 

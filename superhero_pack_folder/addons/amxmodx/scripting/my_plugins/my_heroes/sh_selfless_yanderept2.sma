@@ -15,6 +15,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -85,6 +86,24 @@ public plugin_init()
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
 	YANDERE_STATS_TASKID=allocate_typed_task_id(player_task)
 	YANDERE_ANGER_TASKID=allocate_typed_task_id(player_task)
+
+	custom_dmg_id_senpai_avenger=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_senpai_avenger,
+								dmg_source_name_long_senpai_avenger,
+								0)
+
+	custom_dmg_id_drain=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_drain,
+								dmg_source_name_long_drain,
+								0)
+
+	custom_dmg_id_rage=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_rage,
+								dmg_source_name_long_rage,
+								0)
 	init_hud_syncs()
 	init_explosion_defaults()
 }
@@ -199,8 +218,7 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id
 	
 	if(gIdleAngry[id]||(get_user_health(id)>degen_health_extra_threshold)){
 		
-		new client_name[128]
-		get_user_name(id,client_name,127)
+		static client_name[128]
 		new user_health=get_user_health(id)
 		new degen_dmg_2_take= (float(user_health)>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(user_health)-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
 		if(degen_dmg_2_take>0){
@@ -208,10 +226,15 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id
 			get_user_origin(id,client_origin)
 			new Float:floatalpha=25.0+floatmax(0.0,floatmin(120.0,255.0*(float(user_health)/float(overheal_hp_max))))
 			sh_screen_fade(id, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
-			sh_extra_damage(id,id,degen_dmg_2_take,"Yandere longing")
+			
+			sh_extra_damage(id,id,degen_dmg_2_take,
+							dmg_source_name_short_drain,1,
+							_,_,_,_,_,
+							SH_NEW_DMG_DRAIN,custom_dmg_id_drain)
 			
 			fx_bleed(client_origin)
 			if(degen_iter_period>1.0){
+					get_user_name(id,client_name,127)
 					emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
 					sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
 			}
@@ -239,7 +262,10 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 
 	if(!sh_user_has_hero(i,gHeroID) ) continue;
 	if(!(disconnected)){
-		if(!sh_clients_are_same_team(id,i)||(id==i)) continue;
+		if(!sh_clients_are_same_team(id,i)||(id==i)){
+			sh_chat_message(i,gHeroID,"We dont care about non teamates")
+			continue;	
+		}
 	}
 	new mates_alive
 	sh_get_player_counts(i,1,mates_alive,g_mates_dead[i])
@@ -405,7 +431,7 @@ public newRound(id)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
 		}
-		notify_yanderes_about_team_life(id,1)
+		notify_yanderes_about_team_life(id)
 	}
 	return PLUGIN_CONTINUE
 	
@@ -428,10 +454,18 @@ public yandere_damage(id)
 			
 			new health = get_user_health(id)
 			if(weapon==YANDERE_WEAPON_CLASSID){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Jessica Mata's Senpai Avenger", headshot)
+				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_DARK_ARTS,
+								custom_dmg_id_senpai_avenger)
 			}
-			else  {
-				sh_extra_damage(id, attacker, floatround(extraDamage), "yandere rage", headshot)
+			else {
+				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_rage,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_DARK_ARTS,
+								custom_dmg_id_rage)
 			}
 			if(gSuperAngry[attacker]){
 				static attacker_name[128],client_name[128]
@@ -468,8 +502,12 @@ public yandere_damage(id)
 	if( sh_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
 		if(g_is_cursed[attacker][id]){
 			if(random_float(0.0,1.0)<curse_pct){
-				sh_set_godmode(id,0.0)
-				sh_extra_damage(attacker,id,1,"yandere curse",false,SH_DMG_KILL)
+				set_user_godmode(id,0)
+				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,SH_DMG_KILL,
+							_,_,_,_,
+							SH_NEW_DMG_DARK_ARTS,
+							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS))
+
 				g_is_cursed[attacker][id]=false
 			}
 		}
@@ -658,7 +696,7 @@ public death()
 {	
 	new id = read_data(2)
 	killyandere(id)
-	notify_yanderes_about_team_life(id,0)
+	notify_yanderes_about_team_life(id)
 }
 public sh_client_death(id,attacker,headshot,const weapon_description[])
 {	

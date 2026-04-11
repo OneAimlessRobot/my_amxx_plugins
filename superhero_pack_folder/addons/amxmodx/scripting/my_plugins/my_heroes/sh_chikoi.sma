@@ -32,8 +32,6 @@ public plugin_init()
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 	register_event("Damage", "chikoi_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
-	register_srvcmd("chikoi_init", "chikoi_init")
-	shRegHeroInit(gHeroName, "chikoi_init")
 	register_event("DeathMsg","death","a")
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,CHIKOI_THE_MAID_PHYSICAL_PROPERTY,1)
 	RegisterHam(Ham_TakeDamage,"player","ham_Chikoi_fallDamage")
@@ -47,15 +45,7 @@ public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits
 
 	return HAM_IGNORED
 }
-public chikoi_init()
-{
-	
-	
-	
-	
-	
-}
-stock dmg_message(id, attacker){
+dmg_message(id, attacker){
 	new attacker_name[128];
 	get_user_name(attacker,attacker_name,127);
 	sh_chat_message(id,gHeroID,"%s has killed Chikoi the Maid, the Small Maid, at your service.",attacker_name)
@@ -67,11 +57,7 @@ if ( !shModActive() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) retu
 
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 new headshot = bodypart == HIT_STOMACH ? 1 : 0
-if ( attacker <= 0 || attacker > SH_MAXSLOTS || attacker==id ) return PLUGIN_CONTINUE
-new attacker_name[128];
-new client_name[128];
-get_user_name(attacker,attacker_name,127);
-get_user_name(id,client_name,127);
+if ( !is_user_connected(attacker)|| attacker==id ) return PLUGIN_CONTINUE
 
 if(headshot){
 

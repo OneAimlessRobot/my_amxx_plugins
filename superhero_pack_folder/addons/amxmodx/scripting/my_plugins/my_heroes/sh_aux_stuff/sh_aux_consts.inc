@@ -28,7 +28,6 @@ stock const fPainShock = 108
 stock const m_flNextPrimaryAttack    = 46
 stock const m_flNextSecondaryAttack    = 47
 stock const m_fInReload            = 54
-stock const m_pNext = 42
 stock const m_rgpPlayerItems_Slot0 = 367
 
 #if !defined _reapi_included 
@@ -38,6 +37,7 @@ stock const m_rgpPlayerItems_Slot0 = 367
 	stock const m_szAnimExtention = 492
 	stock const m_iId                = 43
 	stock const m_pPlayer            = 41
+	stock const m_pNext = 42
 #endif
 
 #define FlameAndSoundRate 10

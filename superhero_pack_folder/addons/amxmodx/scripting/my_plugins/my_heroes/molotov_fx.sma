@@ -5,6 +5,7 @@
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
 #define PLUGIN "Superhero molotov fx"
@@ -89,7 +90,10 @@ public burn_task(array[],id)
 		return PLUGIN_CONTINUE
 	
 
-	sh_extra_damage(id,array[0],BURN_DAMAGE,"Burning",0,SH_DMG_NORM)
+	sh_extra_damage(id,array[0],BURN_DAMAGE,new_dmg_type_names[_:SH_NEW_DMG_FIRE],0,_,_,_,_,_,
+			SH_NEW_DMG_FIRE,
+			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE))
+
 	return PLUGIN_CONTINUE
 }
 

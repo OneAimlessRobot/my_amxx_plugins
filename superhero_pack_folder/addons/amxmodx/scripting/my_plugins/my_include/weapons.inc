@@ -198,9 +198,9 @@ public fw_CreateSmokeThinkPost(entity)
 #endif
 
 #if defined SENDWEAPONLIST
-SendWeaponList(player, const szName[], ammoid, maxammo, slot, position, id, flag = FLAG_NONE)
+SendWeaponList(player, const szName[], ammoid, maxammo, slot, position, id, flag = FLAG_NONE,destination= MSG_ONE)
 {
-	message_begin(MSG_ONE, MSGID_WEAPONLIST, _, player)
+	message_begin(destination, MSGID_WEAPONLIST, _, player)
 	write_string(szName)
 	write_byte(ammoid)
 	write_byte(maxammo)

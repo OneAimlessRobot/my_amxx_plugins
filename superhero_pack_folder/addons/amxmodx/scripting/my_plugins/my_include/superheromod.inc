@@ -409,7 +409,13 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0, dmgMode = SH_DMG_MULT, bool:dmgStun = false, bool:dmgFFmsg = true, const Float:dmgOrigin[3] = {0.0,0.0,0.0},dmg_type=DMG_GENERIC,sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,custom_wpn_id=-1);
+native sh_extra_damage(victim, attacker, damage, const wpnDescription[], headshot = 0,
+				dmgMode = SH_DMG_MULT,
+				bool:dmgStun = false,
+				bool:dmgFFmsg = true,
+				const Float:dmgOrigin[3] = {0.0,0.0,0.0},
+				dmg_type=DMG_GENERIC,
+				sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,custom_wpn_id=-1);
 
 /**
  * Speed stuns client for time specified. Bind powers are not usable when stunned.
