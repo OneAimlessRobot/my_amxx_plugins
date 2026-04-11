@@ -30,6 +30,7 @@ if [ -z $GAMEEXE ]; then
 	fi
 fi
 
+ulimit -c unlimited
 ulimit -n 2048
 
 # and launch the game

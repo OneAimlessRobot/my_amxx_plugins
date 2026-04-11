@@ -10,10 +10,7 @@ polaris_range 300		// How close the grenades have to be before polaris reacts
 	Special thanks to vittu for his suggestions that really improved the hero
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
-#include <csx>
-#include <engine>
 
 // GLOBAL VARIABLES
 new gHeroName[]="Polaris"

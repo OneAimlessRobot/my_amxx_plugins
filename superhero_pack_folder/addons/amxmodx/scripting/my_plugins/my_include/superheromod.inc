@@ -24,7 +24,6 @@
 #tryinclude "../../include/hamsandwich.inc"
 #tryinclude "../../include/fakemeta.inc"
 #tryinclude "../../include/engine.inc"
-#tryinclude "../../include/engine_const.inc"
 #tryinclude "../../include/fun.inc"
 #tryinclude "../../include/csx.inc"
 #tryinclude "../../include/cstrike.inc"
