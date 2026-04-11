@@ -313,7 +313,7 @@ RegisterHamsReload ()
 		// --| Don't register item/weapons which can not reload.
 		if ( !( ( 1 << i_Wpid ) & CANT_RELOAD_BITSUM ) && get_weaponname ( i_Wpid, s_WeaponName, charsmax ( s_WeaponName ) ) )
 		{
-			RegisterHam ( Ham_Weapon_Reload, s_WeaponName, "Event_OnReload", 1 )
+			RegisterHam ( Ham_Weapon_Reload, s_WeaponName, "Event_OnReload", 1,true)
 		}
 	}
 }

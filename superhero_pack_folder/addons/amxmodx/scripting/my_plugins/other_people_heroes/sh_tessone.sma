@@ -46,7 +46,7 @@ public plugin_init()
 	sh_set_hero_info(g_HeroID, "Absorbs Metal", "Become immune to bullets for X seconds")
 	sh_set_hero_bind(g_HeroID)
 	
-	RegisterHam(Ham_TakeDamage, "player", "tess_TakeDamage")
+	RegisterHam(Ham_TakeDamage, "player", "tess_TakeDamage",_,true)
 
 	set_task(1.0, "tess_loop", _, _, _, "b")
 }

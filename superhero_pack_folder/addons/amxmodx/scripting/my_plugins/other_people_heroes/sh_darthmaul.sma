@@ -75,7 +75,7 @@ public plugin_init()
 #if defined USE_WPN_MODEL
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	if ( gModelLoaded ) {
-		RegisterHam(Ham_Item_Deploy, "weapon_knife", "Ham_Knife_Deploy_Post", 1)
+		RegisterHam(Ham_Item_Deploy, "weapon_knife", "Ham_Knife_Deploy_Post", 1,true)
 	}
 #endif
 

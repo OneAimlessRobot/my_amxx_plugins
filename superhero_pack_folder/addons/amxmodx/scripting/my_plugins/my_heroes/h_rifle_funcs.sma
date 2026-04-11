@@ -614,8 +614,8 @@ public Register_SafetyFunc()
 {
 	register_event("CurWeapon", "Safety_CurWeapon", "be", "1=1")
 	
-	RegisterHam(Ham_Spawn, "player", "fw_Safety_Spawn_Post", 1)
-	RegisterHam(Ham_Killed, "player", "fw_Safety_Killed_Post", 1)
+	RegisterHam(Ham_Spawn, "player", "fw_Safety_Spawn_Post", 1,true)
+	RegisterHam(Ham_Killed, "player", "fw_Safety_Killed_Post", 1,true)
 }
 
 public Register_SafetyFuncBot(id)

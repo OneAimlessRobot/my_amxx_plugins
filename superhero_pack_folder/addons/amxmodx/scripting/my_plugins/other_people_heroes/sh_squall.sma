@@ -10,7 +10,7 @@ squall_bullets 7
 */
 
 #include "../my_include/superheromod.inc"
-#include <xs>
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 #pragma semicolon 1
 
@@ -46,14 +46,14 @@ public plugin_init()
 
 #if defined USE_MODEL
 	// Knife Model
-	RegisterHam(Ham_Item_Deploy, "weapon_knife", "fw_Item_Deploy_Post", 1);
+	RegisterHam(Ham_Item_Deploy, "weapon_knife", "fw_Item_Deploy_Post", 1,true);
 #endif
 		
 	//knife hack part
 	register_forward(FM_TraceLine,"fw_traceline");
 	//sound replacement and bullet consumption
-	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "Ham_Weapon_Attack");
-	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Attack");
+	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "Ham_Weapon_Attack",_,true);
+	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Attack",_,true);
 	register_forward(FM_EmitSound, "fw_EmitSound");
 }
 //----------------------------------------------------------------------------------------------
@@ -99,8 +99,7 @@ public fw_Item_Deploy_Post(weapon_ent)	//you'll notice that get_user_weapon does
 	if ( gModelLoaded )
 	{
 		// Get weapon's owner
-		static owner;
-		owner = get_pdata_cbase(weapon_ent, 41, 4);
+		new owner = get_pdata_cbase(weapon_ent, 41, 4);
 		
 		switch_model(owner);
 	}
@@ -137,7 +136,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	set_tr(TR_vecEndPos, flMyAim);
 	
 	// get ent looking at
-	static ent, body;
+	new ent, body;
 	get_user_aiming(id, ent, body);
 	
 	// if looking at something
@@ -156,11 +155,15 @@ public Ham_Weapon_Attack(weaponent)
 	if ( !sh_is_active() ) return HAM_IGNORED;
 	
 	new id = get_pdata_cbase(weaponent, 41, 4);
+
+	if(!client_hittable(id)) return HAM_IGNORED;
+	
 	if ( gBullets[id] >= 0 )
 	{
 		new count = --gBullets[id];		//cache the data since arrays take longer to read
-		if ( 0 < count < 5 )
+		if ( 0 < count < 5 ){
 			sh_chat_message( id, gHeroID, "You Have %d Bullet%s Left", count, count == 1 ? "" : "s" );
+		}
 	}
 	return HAM_IGNORED;
 }

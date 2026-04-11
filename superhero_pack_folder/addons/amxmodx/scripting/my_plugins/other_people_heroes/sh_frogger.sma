@@ -68,8 +68,8 @@ public plugin_init()
 
 #if defined PROTOCOL_48
 	//Bots don't longjump so no need for extra code to register cz bots
-	RegisterHam(Ham_Player_Duck, "player", "ham_Player_Duck_Pre")
-	RegisterHam(Ham_Player_Jump, "player", "ham_Player_Jump_Pre")
+	RegisterHam(Ham_Player_Duck, "player", "ham_Player_Duck_Pre",_,true)
+	RegisterHam(Ham_Player_Jump, "player", "ham_Player_Jump_Pre",_,true)
 #endif
 }
 //----------------------------------------------------------------------------------------------

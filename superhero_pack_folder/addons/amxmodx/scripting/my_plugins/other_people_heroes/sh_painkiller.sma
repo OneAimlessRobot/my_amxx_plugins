@@ -31,7 +31,7 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pCvarLevel)
 	sh_set_hero_info(gHeroID, "Fight Death!", "Once your hp reaches 0, your life will be extended for a limited amount of time with godmode")
 	
-	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage")
+	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage",_,true)
 }
 
 public client_authorized(id)

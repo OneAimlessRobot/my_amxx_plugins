@@ -43,7 +43,7 @@ public plugin_init()
 	HeroID = sh_create_hero("The Tick", pcvarLevel)
 	sh_set_hero_info(HeroID, "No Fall Damage", "SPOOOON! Take no damage from falling")
 
-	RegisterHam(Ham_TakeDamage, "player", "ham_TakeDamage")
+	RegisterHam(Ham_TakeDamage, "player", "ham_TakeDamage",_,true)
 
 	serversMaxPlayers = get_maxplayers()
 	bot_quota = get_cvar_pointer("bot_quota")
