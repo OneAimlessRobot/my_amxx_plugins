@@ -612,7 +612,7 @@ stock fm_cs_get_weapon_ent_owner(ent)
 	if (pev_valid(ent) != PDATA_SAFE)
 		return -1
 	
-	return get_pdata_cbase(ent, OFFSET_WEAPONOWNER, XO_WEAPON)
+	return get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 }
 
 stock set_weapon_anim(id, anim)

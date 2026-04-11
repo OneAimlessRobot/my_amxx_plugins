@@ -30,11 +30,6 @@ enum
 	anim_draw,
 }
 
-// MACROS
-#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
-#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
-#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
-
 
 native arifle_set_arifle(id)
 native arifle_unset_arifle(id)

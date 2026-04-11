@@ -390,6 +390,7 @@
 #include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
 #include "my_include/my_author_header.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new const SH_CORE_STR[] =  "SuperHero Core"
 
@@ -420,7 +421,8 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
-new bool:gPlayerHasPowerTable[SH_MAXSLOTS+1][SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
+//new bool:gPlayerHasPowerTable[SH_MAXSLOTS+1][SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
+new gPlayerHasPowerTable[SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
 new gPlayerMenuOffset[SH_MAXSLOTS+1]
@@ -1396,13 +1398,9 @@ bool:playerHasPower(id, heroIndex)
 	return false
 }
 //----------------------------------------------------------------------------------------------
-bool:playerHasPowerPt2(id, heroIndex)
+playerHasPowerPt2(id, heroIndex)
 {
-	/*
-	if(is_user_connected(id)&&!is_user_bot(id)){
-		sh_chat_message(id,heroIndex,"checking if we have power... We do, right? %s",gPlayerHasPowerTable[id][heroIndex]?"yes!":"No...")
-	}*/
-	return gPlayerHasPowerTable[id][heroIndex]
+	return Get_BitVar(gPlayerHasPowerTable[heroIndex],id)
 }
 //----------------------------------------------------------------------------------------------
 //native sh_drop_weapon(id, weaponID, bool:remove = false)
@@ -1632,8 +1630,15 @@ initHero(id, heroIndex, mode)
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
 
 	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false	
+	switch(mode){
+		case false:{
+			UnSet_BitVar(gPlayerHasPowerTable[heroIndex],id)
+		}
+		case true:{
 
-	gPlayerHasPowerTable[id][heroIndex]= bool:mode
+			Set_BitVar(gPlayerHasPowerTable[heroIndex],id)
+		}
+	}
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
 		//If this is called by an added hero they must be restricted

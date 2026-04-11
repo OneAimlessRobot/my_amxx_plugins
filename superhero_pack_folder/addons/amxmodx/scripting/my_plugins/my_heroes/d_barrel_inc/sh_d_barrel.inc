@@ -21,17 +21,6 @@
 
 #define SUBMODEL -1
 
-
-// MACROS
-#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
-#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
-#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
-
-
-const OFFSET_WEAPONOWNER = 41
-const m_iClip = 51
-const m_flInReload = 54
-const m_flNextAttack = 83
 native d_barrel_set_d_barrel(id)
 native d_barrel_unset_d_barrel(id)
 

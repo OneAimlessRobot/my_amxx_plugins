@@ -1,5 +1,0 @@
-L 04/11/2026 - 00:02:03: Start of error session.
-L 04/11/2026 - 00:02:03: Info (map "de_cbble") (file "addons/amxmodx/logs/error_20260411.log")
-L 04/11/2026 - 00:02:03: [HAMSANDWICH] Function fw_TraceAttack_Player not found.
-L 04/11/2026 - 00:02:03: [AMXX] Run time error 10 (plugin "ethereal_funcs.amxx") (native "RegisterHamFromEntity") - debug not enabled!
-L 04/11/2026 - 00:02:03: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

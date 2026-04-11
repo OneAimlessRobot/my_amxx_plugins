@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include <fakemeta_util>
 #include "h_rifle_inc/sh_h_rifle.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "Superhero: Supernoodle hunting rifle"

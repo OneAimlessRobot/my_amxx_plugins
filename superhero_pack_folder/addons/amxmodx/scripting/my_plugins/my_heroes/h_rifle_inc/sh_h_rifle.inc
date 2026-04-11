@@ -21,11 +21,6 @@
 #define OLD_W_MODEL "models/w_scout.mdl"
 #define OLD_EVENT "events/scout.sc"
 
-// MACROS
-#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
-#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
-#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
-
 
 
 native h_rifle_set_h_rifle(id)

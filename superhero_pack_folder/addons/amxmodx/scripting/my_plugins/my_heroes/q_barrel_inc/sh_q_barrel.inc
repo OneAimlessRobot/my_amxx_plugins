@@ -24,10 +24,6 @@
 #define OLD_EVENT "events/m3.sc"
 #define ANIM_EXT "shotgun"
 
-// MACROS
-#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
-#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
-#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
 
 
 

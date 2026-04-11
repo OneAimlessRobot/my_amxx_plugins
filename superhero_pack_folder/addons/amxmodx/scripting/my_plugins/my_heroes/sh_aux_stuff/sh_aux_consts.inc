@@ -8,6 +8,9 @@
 new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 
 
+#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
+#define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
+#define UnSet_BitVar(%1,%2) %1 &= ~(1 << (%2 & 31))
 
 #define ANTI_LAGG		7
 
@@ -29,6 +32,7 @@ stock const m_flNextPrimaryAttack    = 46
 stock const m_flNextSecondaryAttack    = 47
 stock const m_fInReload            = 54
 stock const m_rgpPlayerItems_Slot0 = 367
+stock const m_iClip = 51
 
 #if !defined _reapi_included 
 	stock const m_pActiveItem = 373;
