@@ -232,6 +232,12 @@ uncharge_user(id){
 
 public Ham_Weapon_Stab(weapon_ent)
 {
+	
+	if(pev_valid(weapon_ent)!=2){
+
+		server_print("lara spear hook to weapon faulty???");
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)

@@ -7,6 +7,7 @@
 /*new g_msgFade,victim_dmg_hud_msg_sync, attacker_dmg_hud_msg_sync
 new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 
+#define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
 #define Set_BitVar(%1,%2) %1 |= (1 << (%2 & 31))
@@ -55,6 +56,8 @@ stock const m_iClip = 51
 #define NULL_SOUND "common/null.wav"
 #define SPORE_HEAL_SFX "shmod/ration.wav"
 #define EXPLOSION_TANK_SHOT_SOUND "shmod/a_exm2.wav"
+
+
 //Colors To Pick From
 enum sh_custom_color{
 		CUSTOM=0,

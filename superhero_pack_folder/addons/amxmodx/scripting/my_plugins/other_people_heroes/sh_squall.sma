@@ -151,7 +151,12 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 //----------------------------------------------------------------------------------------------
 public Ham_Weapon_Attack(weaponent)
 {
-	if(!is_valid_ent(weaponent)) return HAM_IGNORED;
+	
+	if(pev_valid(weaponent)!=2){
+
+		server_print("Squall gunblade hook to weapon faulty???");
+		return HAM_IGNORED;
+	}
 	if ( !sh_is_active() ) return HAM_IGNORED;
 	
 	new id = get_pdata_cbase(weaponent, 41, 4);

@@ -369,6 +369,10 @@ public fw_Item_AddToPlayer_Post(ent, id)
 
 public fw_Weapon_Reload(iEnt)
 {
+	if(pev_valid(iEnt)!=2){
+
+		return HAM_IGNORED;
+	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)
 	if(!is_alive(id))
 		return HAM_IGNORED

@@ -1,8 +1,8 @@
 
 #include "../my_include/superheromod.inc"
-#include <fakemeta_util>
-#include "colt_inc/sh_colt.inc"
 #include <reapi>
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "colt_inc/sh_colt.inc"
 #include "../my_include/weapons_const.inc"
 #include "../my_include/weapons.inc"
 
@@ -80,22 +80,32 @@ public give_m1911a1(player)
 
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])
 {
+
+	ent_check(entity,HAM_IGNORED)
+
 	pEntity = get_member(entity, m_WeaponBox_rgpPlayerItems, PISTOL_SLOT)
 	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
 	SetHookChainArg(2, ATYPE_STRING, WORLDMODEL)
+
+	return HAM_IGNORED
 }
 
 public fw_WeaponWeaponIdlePost(entity)
 {
-	if(get_entvar(entity, var_impulse) != ID_M1911A1 || get_member(entity, m_Weapon_flTimeWeaponIdle) > 0.0) return
+
+	ent_check(entity,HAM_IGNORED)
+
+	if(get_entvar(entity, var_impulse) != ID_M1911A1 || get_member(entity, m_Weapon_flTimeWeaponIdle) > 0.0) return HAM_IGNORED
 	set_entvar(get_member(entity, m_pPlayer), var_weaponanim, ANIM_IDLE_EMPTY)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 99999.0)
-}
+
+	return HAM_IGNORED
+}	
 
 public fw_ItemAddToPlayerPost(entity, id)
 {
-	if(!pev_valid(entity))
-		return HAM_IGNORED
+	
+	ent_check(entity,HAM_IGNORED)
 
 	new iCustom = get_entvar(entity, var_impulse)
 	new is_custom= (iCustom == ID_M1911A1)
@@ -111,6 +121,8 @@ public fw_ItemAddToPlayerPost(entity, id)
 
 public fw_ItemDeployPre(entity)
 {
+	ent_check(entity,HAM_IGNORED)
+
 	pPlayer = get_member(entity, m_pPlayer)
 	if(get_member(pPlayer, m_pLastItem) == entity)
 	{
@@ -130,6 +142,10 @@ public fw_ItemDeployPre(entity)
 
 public fw_WeaponReloadPre(entity)
 {
+	
+	ent_check(entity,HAM_IGNORED)
+
+
 	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
 	new iClip = get_member(entity, m_Weapon_iClip)
 	pPlayer = get_member(entity, m_pPlayer)
@@ -143,10 +159,8 @@ public fw_WeaponReloadPre(entity)
 
 public fw_WeaponPrimaryAttackPre(entity)
 {
-	if(pev_valid(entity)!=2){
+	ent_check(entity,HAM_IGNORED)
 
-		return HAM_IGNORED;
-	}
 	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
 	if(get_member(entity, m_Weapon_iShotsFired)) return HAM_SUPERCEDE
 	static iClip, iTraceLine, iPlaybackEvent
