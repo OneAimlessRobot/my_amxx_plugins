@@ -6,8 +6,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -434,8 +432,6 @@ if ( !is_user_alive(id) ) {
 	return PLUGIN_HANDLED
 }
 
-if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 g_teliko_locked[id]= g_teliko_locked[id]? false:true;
 

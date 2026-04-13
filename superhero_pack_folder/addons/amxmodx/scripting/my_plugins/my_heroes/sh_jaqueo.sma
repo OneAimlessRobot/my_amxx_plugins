@@ -3,8 +3,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"
 #include "shield_inc/sh_jaqueo_shield.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -192,8 +190,6 @@ public jaqueo_kd()
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!shield_loaded(id)) {
 		return PLUGIN_CONTINUE
 	}
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	if(shield_deployed(id)){
 		

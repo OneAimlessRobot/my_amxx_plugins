@@ -4,8 +4,8 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/weapons_const.inc"
 
@@ -97,9 +97,6 @@ public CmdStart(id, uc_handle)
 		
 		return FMRES_IGNORED
 	}
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	
-	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
@@ -107,7 +104,9 @@ public CmdStart(id, uc_handle)
 		
 		if(button & IN_ATTACK)
 		{
-			if(!rivet_loaded[id]||(maria_riveter_get_num_rivets(id)<=0)){
+			if(sh_user_has_hero(id,gatling_get_hero_id())||
+						!rivet_loaded[id]||
+						(maria_riveter_get_num_rivets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE

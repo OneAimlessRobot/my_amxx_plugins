@@ -4,7 +4,6 @@
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -151,10 +150,7 @@ public flora_kd()
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_CONTINUE
 	}
-	if (sh_get_user_is_asleep(id)){
 
-		return PLUGIN_HANDLED;
-	}
 	if(!field_loaded(id)){
 		if(!is_user_bot(id)){
 			sh_sound_deny(id)

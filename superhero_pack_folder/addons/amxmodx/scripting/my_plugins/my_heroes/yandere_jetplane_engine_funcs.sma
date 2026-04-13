@@ -1,12 +1,9 @@
 
 #include "../my_include/superheromod.inc"
-#include <fakemeta_util>
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 
@@ -305,8 +302,7 @@ public OnCmdStart(id,uc_handle)
 	if(!jet_deployed(id)){
 		return FMRES_IGNORED
 	}
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 	
 	new button = get_uc(uc_handle, UC_Buttons);

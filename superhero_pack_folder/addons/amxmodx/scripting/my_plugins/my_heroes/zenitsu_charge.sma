@@ -9,8 +9,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -101,10 +99,7 @@ public zenitsu_charge(id, uc_handle, seed)
 	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!client_hittable(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
-	if (sh_get_user_is_chaffed(id)){
-
-		return FMRES_IGNORED;
-	}
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	static buttons
 
 	g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]

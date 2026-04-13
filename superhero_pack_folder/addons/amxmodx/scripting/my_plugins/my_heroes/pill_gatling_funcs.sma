@@ -6,8 +6,6 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/weapons_const.inc"
 
 #define PLUGIN "Superhero yakui mk2 pt2"
@@ -233,8 +231,7 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);

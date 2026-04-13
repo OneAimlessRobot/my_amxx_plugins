@@ -8,8 +8,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -298,8 +296,6 @@ public shinobu_kd()
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
 	

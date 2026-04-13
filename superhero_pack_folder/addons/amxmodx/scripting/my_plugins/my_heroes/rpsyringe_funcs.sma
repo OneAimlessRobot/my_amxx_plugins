@@ -6,9 +6,6 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 pt4"
@@ -52,8 +49,7 @@ public CmdStart(id, uc_handle)
 {
 	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
@@ -127,8 +123,6 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 	new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
 	
-	explode_fx(vExplodeAt,floatround(ROCKET_RADIUS))
-
 	//retrieve current rocket fx num
 
 	

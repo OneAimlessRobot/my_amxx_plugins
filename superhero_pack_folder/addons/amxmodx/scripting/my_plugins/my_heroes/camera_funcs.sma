@@ -1,14 +1,11 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "camera_inc/sh_camman_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "camera_inc/sh_camera_funcs.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
@@ -127,9 +124,7 @@ public camera_controls(id, uc_handle)
 
 	if(!camman_get_has_camera(id)) return FMRES_IGNORED
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 	if(!looking_with_camera[id]) return FMRES_IGNORED
 	

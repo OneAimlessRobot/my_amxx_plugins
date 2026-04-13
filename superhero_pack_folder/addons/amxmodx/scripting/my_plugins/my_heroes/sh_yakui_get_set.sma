@@ -16,8 +16,6 @@ new gNumRockets[SH_MAXSLOTS+1]
 new gCurrFX[SH_MAXSLOTS+1]
 
 
-new gHeroID
-
 
 public plugin_init(){
 
@@ -40,9 +38,6 @@ public plugin_natives(){
 	
 	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
 	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
-	
-	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
-	register_native("gatling_set_hero_id","_gatling_set_hero_id",0);
 	
 	register_native( "uneffect_user_handler","_uneffect_user_handler",0)
 	register_native( "make_effect","_make_effect",0)
@@ -86,12 +81,6 @@ public _uneffect_user_handler(iPlugin,iParams){
 	}
 }
 
-public _gatling_get_hero_id(iPlugin,iParams){
-	return gHeroID
-}
-public _gatling_set_hero_id(iPlugin,iParams){
-	gHeroID=get_param(1)
-}
 
 public _gatling_set_num_pills(iPlugin,iParams){
 	new id= get_param(1)

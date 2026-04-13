@@ -1,14 +1,11 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 
 
 
@@ -175,11 +172,7 @@ public CmdStart(id, uc_handle)
 	if (!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))||!hasRoundStarted()){
 			return FMRES_IGNORED;
 	}
-	if (sh_get_user_is_asleep(id)){
-
-		return FMRES_IGNORED;
-	}
-	if (sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	

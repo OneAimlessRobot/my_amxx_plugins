@@ -3,8 +3,6 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -408,8 +406,6 @@ public komak_kd()
 	
 	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	if ( gPlayerUltimateUsed[id] ) {
 		sh_chat_message(id,gHeroID,"Youve blown the engine! Wait %d more seconds!",gEngineRepairTimer[id])

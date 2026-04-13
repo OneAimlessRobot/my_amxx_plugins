@@ -7,7 +7,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero erica hook"
@@ -218,7 +217,7 @@ public CmdStart1(attacker, uc_handle)
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
 	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
 	
-	if (sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
+	if(sh_get_stun(attacker)) return FMRES_IGNORED
 	
 	new button;
 	button= get_uc(uc_handle, UC_Buttons);

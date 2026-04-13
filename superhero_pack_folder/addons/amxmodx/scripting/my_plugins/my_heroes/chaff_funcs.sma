@@ -6,7 +6,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
 
 
@@ -55,9 +54,7 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
 	if(!sh_user_has_hero(id,teliko_get_hero_id())) return FMRES_IGNORED
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	if(!hasRoundStarted()){
 	

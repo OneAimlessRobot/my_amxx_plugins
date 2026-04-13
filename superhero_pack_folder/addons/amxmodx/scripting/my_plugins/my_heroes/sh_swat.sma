@@ -3,8 +3,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -188,9 +186,6 @@ public Swat_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  ) return
-
-	if(sh_get_user_is_asleep(id)) return
-	if(sh_get_user_is_chaffed(id)) return
 
 	if ( gPlayerUltimateUsed[id] ) {
 		

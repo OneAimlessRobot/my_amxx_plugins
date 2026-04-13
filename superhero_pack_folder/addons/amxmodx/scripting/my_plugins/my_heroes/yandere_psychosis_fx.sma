@@ -3,10 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
-#include "yandere_inc/sh_yandere_inc.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 
 
@@ -140,7 +137,7 @@ public client_PostThink(id) {
 }
 public Player_TakeDamage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !gSuperAngry[id]||!(yandere_get_user_is_psychosis(id))||!client_hittable(id)) return HAM_IGNORED
+	if ( !shModActive() || !is_user_alive(id) || !yandere_get_is_super(id)||!(yandere_get_user_is_psychosis(id))||!client_hittable(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -152,8 +149,7 @@ public psychosis_leap(id, uc_handle)
 {
 	if (!sh_user_has_hero(id,yandere_get_hero_id())||!yandere_get_user_is_psychosis(id)||!hasRoundStarted()) return FMRES_IGNORED;
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	

@@ -116,9 +116,8 @@ new heal_attacker=get_param(9)
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
-
 if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
-	
+
 	if(weapon==CSW_KNIFE){
 		emit_sound(attacker, CHAN_WEAPON, blood_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		new button = pev(attacker, pev_button);

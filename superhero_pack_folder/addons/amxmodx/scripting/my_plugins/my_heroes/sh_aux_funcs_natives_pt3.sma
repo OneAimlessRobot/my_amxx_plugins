@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt3.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
@@ -242,7 +241,14 @@ public _explosion(iPlugins,iParams){
 		Float:optional_force=get_param_f(5),
 		ignore_owner=get_param(6),
 		set_stun=get_param(7),
-		Float:damage_frac_ignore_owner=get_param_f(8)
+		Float:damage_frac_ignore_owner=get_param_f(8),
+		bool:use_fx=bool:get_param(9),
+		sh_custom_color:fx_color=sh_custom_color:get_param(10),
+		bool:use_sound=bool:get_param(11)
+
+	new custom_sound_sample[128]
+
+	get_string(12,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -256,10 +262,12 @@ public _explosion(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	explode_fx(iOrigin,floatround(explosion_radius))
-
-	emit_sound(ent_id, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
+	if(use_fx){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color)
+		if(use_sound){
+			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		}
+	}
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
 	new owner_id=((is_user_connected(ent_id))?ent_id:pev(ent_id,pev_owner))
@@ -292,7 +300,14 @@ public _explosion_custom_entity(iPlugins,iParams){
 	new ent_id=get_param(1),
 		Float:explosion_radius=get_param_f(2),
 		Float:peak_power=get_param_f(3),
-		Float:optional_force=get_param_f(5)
+		Float:optional_force=get_param_f(5),
+		bool:use_fx=bool:get_param(6),
+		sh_custom_color:fx_color=sh_custom_color:get_param(7),
+		bool:use_sound=bool:get_param(8)
+
+	new custom_sound_sample[128]
+
+	get_string(9,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -307,8 +322,12 @@ public _explosion_custom_entity(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	explode_fx(iOrigin,floatround(explosion_radius))
-
+	if(use_fx){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color)
+		if(use_sound){
+			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		}
+	}
 	emit_sound(ent_id, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 	new entlist[33];

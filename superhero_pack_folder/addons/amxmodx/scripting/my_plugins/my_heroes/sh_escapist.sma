@@ -13,7 +13,6 @@ shock_armor 250			//Armor Starts with (def=250)
 */
 
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 #define TASKID 90000
@@ -267,7 +266,7 @@ public escapist_kd()
 		g_climbing[id] = 0
 		return PLUGIN_HANDLED 
 	}
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
+
 	g_climbing[id] = 1
 
 	return PLUGIN_HANDLED 

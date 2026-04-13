@@ -4,9 +4,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "camera_inc/sh_camman_get_set.inc"
 #include "camera_inc/sh_camera_funcs.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -141,11 +138,6 @@ public camman_kd()
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
-	if (sh_get_user_is_asleep(id)){
-
-		return PLUGIN_HANDLED;
-	}
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 	new camera_id
 	if(!(camera_id=player_touching_entity_of_some_classname(id,CAMERA_CLASSNAME))){
 		if(user_can_plant_camera(id)){

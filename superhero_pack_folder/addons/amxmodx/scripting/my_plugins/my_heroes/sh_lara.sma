@@ -114,7 +114,8 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,sh_user_has_hero(id,gHeroID) ,"hunter_spear");
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
+						sh_user_has_hero(attacker,gHeroID) ,"hunter_spear");
 
 
 
@@ -157,7 +158,6 @@ public weaponChange(id)
 }
 public plugin_precache()
 {
-	//m_spriteTexture = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 	engfunc(EngFunc_PrecacheModel,SPEAR_V_MODEL)
 	engfunc(EngFunc_PrecacheModel,SPEAR_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,NOSPEAR_V_MODEL)

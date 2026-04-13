@@ -8,7 +8,6 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/weapons_const.inc"
@@ -132,7 +131,7 @@ public CmdStart(id, uc_handle)
 		
 		return FMRES_IGNORED
 	}
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);

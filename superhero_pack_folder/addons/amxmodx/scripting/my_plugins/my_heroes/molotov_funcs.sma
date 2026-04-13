@@ -6,7 +6,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/stripweapons.inc"
 
 
@@ -62,7 +61,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, MOLLY_WEAPON_NAME, id);

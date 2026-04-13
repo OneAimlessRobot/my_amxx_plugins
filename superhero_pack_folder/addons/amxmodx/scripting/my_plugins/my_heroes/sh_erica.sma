@@ -245,7 +245,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_user_has_hero(id,gHeroID) );
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_user_has_hero(attacker,gHeroID) );
 
 
 

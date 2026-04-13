@@ -9,7 +9,6 @@
 #include "ksun_inc/ksun_ultimate.inc"
 #include "ksun_inc/sh_sleep_grenade_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -441,9 +440,6 @@ public ksun_kd()
 	if ( !client_hittable(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
-	
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerUltimateUsed[id] ) {

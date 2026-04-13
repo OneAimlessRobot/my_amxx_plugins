@@ -120,7 +120,7 @@ return PLUGIN_CONTINUE
 public greaper_damage(this, attacker)
 {
 
-sh_extra_damage(this,attacker,1,dmg_source_name_long_scythe,1000,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id_scythe);
+sh_extra_damage(this,attacker,1,dmg_source_name_long_scythe,1000,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_IVE_STUDIED_THE_BLADE,custom_dmg_id_scythe);
 emit_sound(attacker, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 emit_sound(this, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 

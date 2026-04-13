@@ -85,7 +85,7 @@ public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);

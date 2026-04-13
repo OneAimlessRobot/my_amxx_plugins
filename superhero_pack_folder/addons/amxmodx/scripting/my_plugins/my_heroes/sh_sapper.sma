@@ -4,8 +4,6 @@
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -184,7 +182,6 @@ public sapper_kd()
 		return PLUGIN_HANDLED
 	}
 
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 	new mine_id
 	if(!(mine_id=player_touching_entity_of_some_classname(id,MINE_CLASSNAME))){
 		if(gPlayerUltimateUsed[id]){

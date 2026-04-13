@@ -3,7 +3,6 @@
 #include <xs>
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
-#include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
@@ -198,8 +197,7 @@ public CmdStart(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
 	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
-	
-	if(sh_get_user_is_asleep(attacker)) return FMRES_IGNORED
+	if(sh_get_stun(attacker)) return FMRES_IGNORED
 
 	static button
 	button= get_uc(uc_handle, UC_Buttons);

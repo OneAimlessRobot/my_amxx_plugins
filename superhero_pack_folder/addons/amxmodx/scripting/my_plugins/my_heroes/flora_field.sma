@@ -2,13 +2,11 @@
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero flora field funcs"
@@ -384,8 +382,8 @@ public field_checks(id, uc_handle){
 
 	if(!sh_user_has_hero(id,flora_get_hero_id())) return FMRES_IGNORED
 	
-
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
+	
 	g_prev_flora_button[id]=g_curr_flora_button[id]
 	g_prev_flora_cloaked[id]=g_curr_flora_cloaked[id]
 	new button = get_uc(uc_handle, UC_Buttons);

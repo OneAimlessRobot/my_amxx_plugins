@@ -57,8 +57,7 @@ public CmdStart(id, uc_handle)
 		uncharge_user(id)
 		return FMRES_IGNORED
 	}
-	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, SLEEP_NADE_WEAPON_NAME, id);

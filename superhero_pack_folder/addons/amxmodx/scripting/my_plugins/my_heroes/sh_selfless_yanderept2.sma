@@ -16,8 +16,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -156,7 +154,8 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]);
+	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,
+				sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]);
 
 
 
@@ -553,8 +552,6 @@ public yandere_kd()
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-
 	if(gSuperAngry[id]){
 		if ( gPlayerUltimateUsed[id]||yandere_get_user_is_psychosis(id) ) {
 			
@@ -571,9 +568,6 @@ public yandere_kd()
 		yandere_psychosis_user(id)
 	}
 	else{
-	
-		
-		if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 		if(jet_deployed(id)){
 			
 			jet_destroy(id)

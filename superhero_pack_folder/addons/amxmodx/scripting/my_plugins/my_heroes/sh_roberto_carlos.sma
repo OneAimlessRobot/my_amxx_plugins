@@ -4,8 +4,6 @@
 #include <xs>
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
@@ -188,9 +186,6 @@ public roberto_kd()
 	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
-
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
-	if(sh_get_user_is_chaffed(id)) return PLUGIN_HANDLED
 
 	if(!gNumBalls[id]){
 		

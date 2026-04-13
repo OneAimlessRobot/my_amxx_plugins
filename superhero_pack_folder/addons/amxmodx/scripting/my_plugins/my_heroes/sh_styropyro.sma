@@ -9,9 +9,7 @@ styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 
 
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 // Damage Variables
@@ -135,8 +133,6 @@ public styropyro_kd()
 	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) ) return
-
-	if(sh_get_user_is_asleep(id)) return
 
 	if ( gLaserShots[id] == 0 ) {
 		

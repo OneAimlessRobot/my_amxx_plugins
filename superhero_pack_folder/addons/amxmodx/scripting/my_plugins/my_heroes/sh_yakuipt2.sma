@@ -6,8 +6,6 @@
 #include "special_fx_inc/sh_needle_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "chaff_grenade_inc/sh_chaff_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -36,7 +34,6 @@ public plugin_init()
 	register_cvar("yakui_pills","1000")
 	register_cvar("yakui_rockets","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
-	gatling_set_hero_id(gHeroID)
 
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yakui/yakui.mdl",
@@ -56,14 +53,18 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "yakui_kd")
 	init_hud_syncs()
 }
+public plugin_natives(){
+	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
+}
 
+public _gatling_get_hero_id(iPlugin,iParams){
+	return gHeroID
+}
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
-	
-	if(sh_get_user_is_asleep(id)) return FMRES_IGNORED
-	if(sh_get_user_is_chaffed(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)) return FMRES_IGNORED
 
 
 	static button;
@@ -237,7 +238,6 @@ public yakui_kd(){
 		return PLUGIN_HANDLED
 	}
 
-	if(sh_get_user_is_asleep(id)) return PLUGIN_HANDLED
 
 	
 	switch(wid){

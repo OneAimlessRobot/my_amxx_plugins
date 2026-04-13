@@ -546,7 +546,9 @@ public _gun_shot_decal(iPlugins, iParams){
 public _explode_fx(iPlugins, iParams){
 
 	new vec1[3],
-		radius=get_param(2)
+		radius=get_param(2),
+		sh_custom_color:fx_color=sh_custom_color:get_param(3),
+		alpha=get_param(4)
 	
 	get_array(1,vec1,3)
 
@@ -565,10 +567,10 @@ public _explode_fx(iPlugins, iParams){
 	write_byte( 2 ) // life 2
 	write_byte( 60 ) // width 16
 	write_byte( 0 ) // noise
-	write_byte( 255 ) // r
-	write_byte( 0 ) // g
-	write_byte( 0 ) // b
-	write_byte( 255 ) //brightness
+	write_byte( LineColors[fx_color][0] ) // r
+	write_byte( LineColors[fx_color][1] ) // g
+	write_byte( LineColors[fx_color][2]  ) // b
+	write_byte( alpha ) //brightness
 	write_byte( 0 ) // speed
 	message_end()
 	//Explosion2
