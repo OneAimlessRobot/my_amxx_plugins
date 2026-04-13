@@ -44,7 +44,6 @@ catwoman_minrounds 5		//Min rounds to wait until you can sneak, no matter your l
 
 // GLOBAL VARIABLES
 new gHeroName[]="Catwoman"
-new bool:gHasCatWomanPowers[SH_MAXSLOTS+1]
 new bool:gCatWomanmns[SH_MAXSLOTS+1] = true //im using mns = message not shown, im doing this because of the double respawn
 new bool:gCatWomanSneak[SH_MAXSLOTS+1]
 new bool:spawnPointsused[2][SH_MAXSLOTS+1]
@@ -53,6 +52,7 @@ new catround[SH_MAXSLOTS+1]
 new spawnEntString[2][] = {"info_player_deathmatch", "info_player_start"}
 new CTSkins[4][10] = {"sas", "gsg9", "urban", "gign"}
 new TSkins[4][10] = {"arctic", "leet", "guerilla", "terror"}
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -69,12 +69,8 @@ public plugin_init()
 	register_cvar("catwoman_minrounds", "5")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Sneak Into Enemies Base", "Chance Of Sneaking Into Enemies Base", false, "catwoman_level")
+	gHeroID=shCreateHero(gHeroName, "Sneak Into Enemies Base", "Chance Of Sneaking Into Enemies Base", false, "catwoman_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("catwoman_init", "catwoman_init")
-	shRegHeroInit(gHeroName, "catwoman_init")
 
 	// NEW SPAWN
 	register_event("ResetHUD", "newSpawn", "b")
@@ -82,20 +78,6 @@ public plugin_init()
 	// LEVELS
 	register_srvcmd("catwoman_levels", "catwoman_levels")
 	shRegLevels(gHeroName,"catwoman_levels")
-}
-//----------------------------------------------------------------------------------------------
-public catwoman_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	gHasCatWomanPowers[id] = (hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public catwoman_levels()
@@ -111,7 +93,7 @@ public catwoman_levels()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( gHasCatWomanPowers[id] && is_user_alive(id) && shModActive() )
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() )
 	{
 		if ( get_cvar_float("catwoman_change") > 0.0 )
 			cs_reset_user_model(id)
@@ -172,7 +154,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public catwoman_sneak(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !gHasCatWomanPowers[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new entSpawn
@@ -298,7 +280,6 @@ public catwoman_changeback(id)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasCatWomanPowers[id] = false
 	gCatWomanmns[id] = true
 	gCatWomanSneak[id] = false
 	catround[id] = 0

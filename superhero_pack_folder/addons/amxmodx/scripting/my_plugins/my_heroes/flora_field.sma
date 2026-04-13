@@ -480,14 +480,14 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 public plugin_precache(){
 
 
-	precache_model(FIELD_MDL)
+	engfunc(EngFunc_PrecacheModel,FIELD_MDL)
 	
-	precache_sound(FIELD_DEPLOYED)
-	precache_sound(FIELD_DESTROYED)
-	precache_sound(FIELD_HUM)
-	precache_sound(FIELD_TELEPORT)
-	precache_sound(FIELD_HEAL)
-	precache_sound(FIELD_CHARGING)
+	engfunc(EngFunc_PrecacheSound,FIELD_DEPLOYED)
+	engfunc(EngFunc_PrecacheSound,FIELD_DESTROYED)
+	engfunc(EngFunc_PrecacheSound,FIELD_HUM)
+	engfunc(EngFunc_PrecacheSound,FIELD_TELEPORT)
+	engfunc(EngFunc_PrecacheSound,FIELD_HEAL)
+	engfunc(EngFunc_PrecacheSound,FIELD_CHARGING)
 	
 	
 	

@@ -441,23 +441,25 @@ public spore_think(spore){
 //https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
 stock is_wall_between_points(Float:start[3], Float:end[3], ignore_ent)
 {
-    // Create the trace handle! It is best to create it!
-    new ptr = create_tr2()
-    
-    // The main traceline function!
-    // This function ignores GLASS, MISSILE and MONSTERS!
-    // Here is an example of how you should combine all the flags!
-    engfunc(EngFunc_TraceLine, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, ignore_ent, ptr)
-    
-    // We are interested in the fraction parameter
-    new Float:fraction
-    get_tr2(ptr, TR_flFraction, fraction)
-    
-    // Free the trace handle (don't forget to do this!)
-    free_tr2(ptr)
-    
-    // If = 1.0 then it didn't hit anything!
-    return (fraction != 1.0)
+// Create the trace handle! It is best to create it!
+new ptr = create_tr2()
+
+// The main traceline function!
+// This function ignores GLASS, MISSILE and MONSTERS!
+// Here is an example of how you should combine all the flags!
+
+//engfunc(EngFunc_TraceLine, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, ignore_ent, ptr)
+//(const float *v1, const float *v2, int fNoMonsters, int hullNumber, edict_t *pentToSkip, TraceResult *ptr);
+engfunc(EngFunc_TraceHull, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, HULL_HEAD,ignore_ent,ptr )
+// We are interested in the fraction parameter
+new Float:fraction
+get_tr2(ptr, TR_flFraction, fraction)
+
+// Free the trace handle (don't forget to do this!)
+free_tr2(ptr)
+
+// If = 1.0 then it didn't hit anything!
+return (fraction != 1.0)
 } 
 //----------------------------------------------------------------------------------------------
 stock entity_set_follow(entity, target,spore_owner)
@@ -474,10 +476,10 @@ stock entity_set_follow(entity, target,spore_owner)
 		return 0
 	}
 	sub_3d_vectors(fl_Origin,fl_EntOrigin,in_the_way_vector)
-	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*3.0,in_the_way_vector)
+	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*10.0,in_the_way_vector)
 	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
 
-	laser_line(spore_owner,fl_EntOrigin,entity_in_the_way_origin,0,_,false,false)
+	laser_line(spore_owner,fl_EntOrigin,fl_Origin,0,_,false,false)
 
 	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, entity)
 	if(wall_in_the_way){
@@ -553,14 +555,14 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(KSUN_SPORE_MDL)
+	engfunc(EngFunc_PrecacheModel,KSUN_SPORE_MDL)
 	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_WOUND_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );

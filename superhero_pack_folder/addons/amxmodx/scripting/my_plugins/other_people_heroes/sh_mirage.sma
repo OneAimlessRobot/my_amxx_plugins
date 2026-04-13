@@ -10,7 +10,7 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="Mirage"
-new bool:gHasMiragePowers[SH_MAXSLOTS+1]
+new gHeroID
 
 #define TASKID 10000
 
@@ -24,7 +24,7 @@ public plugin_init() {
   register_cvar("mirage_cooldown", "5")
 
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-  shCreateHero(gHeroName, "Delusion", "Turn invisible for a short time when someone aims at you", false, "mirage_level" )
+  gHeroID=shCreateHero(gHeroName, "Delusion", "Turn invisible for a short time when someone aims at you", false, "mirage_level" )
 
   // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
   register_srvcmd("mirage_init", "mirage_init")
@@ -38,10 +38,8 @@ public mirage_init() {
   new temp[6]
   read_argv(1,temp,5)
   new id=str_to_num(temp)
-  read_argv(2,temp,5)
-  new hasPowers=str_to_num(temp)
-  gHasMiragePowers[id]=(hasPowers!=0)
-  if(gHasMiragePowers[id]&&is_user_connected(id)&&is_user_alive(id)){
+  if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
+	remove_task(id+TASKID)
 	set_task(0.1,"mirage_loop",id+TASKID,"",0,"b")
   }
 }
@@ -50,7 +48,7 @@ public mirage_loop(id)
 {
 id-=TASKID
 new parm[2],i
-if (gHasMiragePowers[id]&&is_user_alive(id)&&is_user_connected(id)) 
+if (sh_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id)) 
 {
 	for (new enemy=1;enemy<=SH_MAXSLOTS;enemy++) 
 	{
@@ -76,7 +74,7 @@ return PLUGIN_CONTINUE
 
 public client_disconnected(id){
 
-	if(gHasMiragePowers[id]){
+	if(sh_user_has_hero(id,gHeroID)){
 		remove_task(id+TASKID)
 	}
 

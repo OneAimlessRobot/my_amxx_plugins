@@ -32,7 +32,6 @@
 // VARIABLES
 new gHeroID
 new const gHeroName[] = "Danimoth X"
-new bool:gHasDanimoth[SH_MAXSLOTS+1]
 new bool:is_frozen[SH_MAXSLOTS+1]
 new gIsInvisible[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -68,9 +67,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteBeam = precache_model("sprites/laserbeam.spr")
-	precache_sound("shmod/danimoth_cloak.wav")
-	precache_sound("shmod/danimoth_stasis.wav")
+	gSpriteBeam = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/danimoth_cloak.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/danimoth_stasis.wav")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -79,12 +78,8 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasDanimoth[id] = true
 			gPlayerInCooldown[id] = false
 			sh_chat_message(id, gHeroID, "We feed your presence..")
-		}
-		case SH_HERO_DROP: {
-			gHasDanimoth[id] = false
 		}
 	}
 
@@ -110,7 +105,6 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasDanimoth[id] = false
 	is_frozen[id] = false
 }
 //----------------------------------------------------------------------------------------------
@@ -120,7 +114,7 @@ public sh_hero_key(id, heroID, key)
 
 	if ( key == SH_KEYDOWN ) 
 	{
-		if ( !is_user_alive(id) || !gHasDanimoth[id] ) return
+		if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	
 		if ( gPlayerInCooldown[id] ) {
 			playSoundDenySelect(id)
@@ -193,7 +187,7 @@ public Danimoth_loop()
 {
 	if (!shModActive()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasDanimoth[id] && is_user_alive(id) ){	
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ){	
 			//Cloak Task
 			set_task(0.1,"DanimothCloak",id)
 			set_task(0.1,"DanimothDeCloak",id)

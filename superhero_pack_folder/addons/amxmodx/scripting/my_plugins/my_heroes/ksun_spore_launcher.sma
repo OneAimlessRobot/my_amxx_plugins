@@ -354,7 +354,7 @@ public death()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(KSUN_SPORE_MDL)
+	engfunc(EngFunc_PrecacheModel,KSUN_SPORE_MDL)
 	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, LAUNCHER_SCAN_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
@@ -362,7 +362,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_WOUND_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );

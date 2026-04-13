@@ -1,6 +1,3 @@
-//Library
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // -VERSION-
@@ -22,9 +19,9 @@
 
 // VARIABLES
 new gHeroName[]="Blue Blood"
-new gHasBlueBloodPower[SH_MAXSLOTS+1]
 new gHasWeapons[SH_MAXSLOTS+1]
 new gSpriteLightning
+new gHeroID
 
 // WEAPONS
 #define giveTotal 27
@@ -68,7 +65,7 @@ public plugin_init()
 	register_cvar("blueblood_cooldown", "60")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Blood Blood", "Load up your opponent with weapons when you shoot them.", false, "blueblood_level")
+	gHeroID=shCreateHero(gHeroName, "Blood Blood", "Load up your opponent with weapons when you shoot them.", false, "blueblood_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("blueblood_init", "blueblood_init")
@@ -86,11 +83,6 @@ public blueblood_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has shocker
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-
-	gHasBlueBloodPower[id] = (hasPowers != 0)
 
 	gHasWeapons[id] = false
 }
@@ -103,7 +95,7 @@ public blueblood_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 
-	if (!gHasBlueBloodPower[attacker] || gPlayerUltimateUsed[attacker] ) return
+	if (!sh_user_has_hero(attacker,gHeroID)|| gPlayerUltimateUsed[attacker] ) return
 
 	if ( is_user_alive(id) && id != attacker && is_user_connected(attacker)) {
 		playSound(id)
@@ -130,8 +122,8 @@ public newSpawn(id)
 
 public plugin_precache()
 {
-	precache_sound("shmod/blueblood.wav")
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/blueblood.wav")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
 public playSound(id)

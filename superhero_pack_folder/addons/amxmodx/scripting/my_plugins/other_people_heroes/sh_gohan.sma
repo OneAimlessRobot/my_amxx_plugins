@@ -22,14 +22,13 @@ gohan_healmax 400		//Max # HP gohan can heal to
 *         can choose how much goten will heal to now
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 #define TASKID 100000
 new gHeroName[]="Gohan"
-new bool:ghasGohanPowers[SH_MAXSLOTS+1]
 new gHealPoints, gHealAmount
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -45,7 +44,7 @@ public plugin_init()
 	register_cvar("gohan_healmax", "400")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Super Power-Up", "Start with more HP, gain even more each second. Also, has Ultra Speed and Low Gravity!", false, "gohan_level")
+	gHeroID=shCreateHero(gHeroName, "Super Power-Up", "Start with more HP, gain even more each second. Also, has Ultra Speed and Low Gravity!", false, "gohan_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -71,18 +70,13 @@ public gohan_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	//This gets run if they had the power but don't anymore
-	if ( !hasPowers && ghasGohanPowers[id] && is_user_alive(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		shRemHealthPower(id)
 		shRemGravityPower(id)
 		shRemSpeedPower(id)
 	}
-	ghasGohanPowers[id] = (hasPowers != 0)
-	
+	remove_task(id+TASKID)
 	set_task(1.0, "gohan_loop", id+TASKID, "", 0, "b")
 
 	//Sets this variable to the current status
@@ -91,7 +85,7 @@ public gohan_init()
 public gohan_loop(id)
 {
 		id-=TASKID
-		if ( ghasGohanPowers[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, gHealAmount)

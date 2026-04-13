@@ -20,8 +20,8 @@ shangchi_health 80		//Max HP Shang-Chi will reduce knife damage to (Default 80)
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new HeroID
-new bool:HasShangChi[SH_MAXSLOTS+1]
+new gHeroID
+
 new pCvarHealth
 
 #define MAX_MOVES 19
@@ -82,16 +82,9 @@ public plugin_init()
 	pCvarHealth = register_cvar("shangchi_health", "80")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	HeroID = sh_create_hero("Shang-Chi", pcvarLevel)
-	sh_set_hero_info(HeroID, "Master of Kung Fu", "Chance at counter attack when getting Knifed and take less damage from Knife")
-	sh_set_hero_hpap(HeroID, pCvarHealth, pcvarArmor)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( HeroID != heroID ) return
-
-	HasShangChi[id] = mode ? true : false
+	gHeroID = sh_create_hero("Shang-Chi", pcvarLevel)
+	sh_set_hero_info(gHeroID, "Master of Kung Fu", "Chance at counter attack when getting Knifed and take less damage from Knife")
+	sh_set_hero_hpap(gHeroID, pCvarHealth, pcvarArmor)
 }
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex, hitplace)
@@ -99,7 +92,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) ) return
 
-	if ( HasShangChi[attacker] && wpnindex == CSW_KNIFE ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex == CSW_KNIFE ) {
 		// Give him back 50% of the lost life
 		sh_add_hp(victim, (damage/2), get_pcvar_num(pCvarHealth))
 
@@ -111,14 +104,14 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 			counter_attack(attacker, victim, randomMove)
 		}
 		else {
-			sh_chat_message(victim, HeroID, "You missed your enemy")
+			sh_chat_message(victim, gHeroID, "You missed your enemy")
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public counter_attack(victim, id, moveNumber)
 {
-	if ( !shModActive() || !is_user_alive(victim) || !HasShangChi[id] )
+	if ( !shModActive() || !is_user_alive(victim) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new counterMove[32]
@@ -132,8 +125,8 @@ public counter_attack(victim, id, moveNumber)
 		copy(counterMove, 31, MoveName[moveNumber])
 	}
 
-	sh_chat_message(id, HeroID, "You hit your enemy with %s and did %i dmg", counterMove, damage)
-	sh_chat_message(victim, HeroID, "You got hit with %s and took %i dmg", counterMove, damage)
+	sh_chat_message(id, gHeroID, "You hit your enemy with %s and did %i dmg", counterMove, damage)
+	sh_chat_message(victim, gHeroID, "You got hit with %s and took %i dmg", counterMove, damage)
 
 	// Stupidity check
 	if ( !damage ) ++damage
@@ -152,10 +145,5 @@ public counter_attack(victim, id, moveNumber)
 
 	// Stun Him for 1 second
 	sh_set_stun(victim, 1.0)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	HasShangChi[id] = false
 }
 //----------------------------------------------------------------------------------------------

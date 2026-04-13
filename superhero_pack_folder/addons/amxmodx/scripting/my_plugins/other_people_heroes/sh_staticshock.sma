@@ -12,17 +12,11 @@ shock_armor 250			//Armor Starts with (def=250)
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
-#include <amxmodx> 
-#include <fun> 
-#include <cstrike>
-#include <engine> 
 #include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
 new gHeroName[]="Static Shock"
-new bool:g_hasshockPower[SH_MAXSLOTS+1]
+new gHeroID
 new g_jetPackRunning[SH_MAXSLOTS+1]
 new g_endLocation[SH_MAXSLOTS+1][3]
 new g_spriteFire
@@ -48,7 +42,7 @@ public plugin_init()
 	register_cvar("shock_armor","250")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Fly", "You are now Static Shock", true, "shock_level" )
+	gHeroID=shCreateHero(gHeroName, "Fly", "You are now Static Shock", true, "shock_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b") 
@@ -78,10 +72,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteFire = precache_model("sprites/bubble.spr")
-	precache_sound(g_Sound)
+	g_spriteFire = engfunc(EngFunc_PrecacheModel,"sprites/bubble.spr")
+	engfunc(EngFunc_PrecacheSound,g_Sound)
 	for( new i = 0; i < 1; i++ )
-		precache_model( g_szRocketModel[i] )
+		engfunc(EngFunc_PrecacheModel, g_szRocketModel[i] )
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
@@ -110,13 +104,8 @@ public shock_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Static Shock powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
 
-	g_hasshockPower[id] = (hasPowers!=0)
-
-	if ( g_hasshockPower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		remove_task(id+36485)
 		set_task( get_cvar_float("shock_timer"), "shock_loop", id+36485, "", 0, "b")
 	}
@@ -366,7 +355,7 @@ public do_this(id)
 public newRound(id)
 {
 
-  if (!g_hasshockPower[id]) return PLUGIN_CONTINUE
+  if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 
   if (ice[id]) 
   {

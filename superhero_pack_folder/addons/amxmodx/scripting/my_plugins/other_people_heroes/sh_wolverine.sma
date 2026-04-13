@@ -28,7 +28,6 @@ wolv_knifemult 1.35			//Multiplier for knife damage
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Wolverine"
-new bool:gHasWolverine[SH_MAXSLOTS+1]
 new gPcvarHealPoints
 
 #if defined USE_WEAPON_MODEL
@@ -70,7 +69,7 @@ public plugin_precache()
 {
 	// Method servers 2 purposes, moron check and optional way to not use the model
 	if ( file_exists(gModelKnife) ) {
-		precache_model(gModelKnife)
+		engfunc(EngFunc_PrecacheModel,gModelKnife)
 
 		engfunc(EngFunc_PrecacheSound,gClawsDrawSound );
 		gModelLoaded = true
@@ -88,16 +87,11 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasWolverine[id] = true
 #if defined USE_WEAPON_MODEL
 			if ( gModelLoaded ) {
 				switch_model(id)
 			}
 #endif
-		}
-
-		case SH_HERO_DROP: {
-			gHasWolverine[id] = false
 		}
 	}
 
@@ -114,7 +108,7 @@ public wolv_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( gHasWolverine[player] ) {
+		if ( sh_user_has_hero(player,gHeroID) ) {
 			sh_add_hp(player, get_pcvar_num(gPcvarHealPoints))
 		}
 	}
@@ -123,14 +117,14 @@ public wolv_loop()
 #if defined USE_WEAPON_MODEL
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !gHasWolverine[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 
 	if ( read_data(2) == CSW_KNIFE ) switch_model(id)
 }
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasWolverine[id] ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	// If user has a shield do not change model, since we don't have one with a shield
 	if ( cs_get_user_shield(id) ) return

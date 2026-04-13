@@ -630,8 +630,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,NULL_SOUND)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_CHARGE)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
-	precache_model(PAN_V_MODEL)
-	precache_model(PAN_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,PAN_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,PAN_P_MODEL)
 	
 	
 }

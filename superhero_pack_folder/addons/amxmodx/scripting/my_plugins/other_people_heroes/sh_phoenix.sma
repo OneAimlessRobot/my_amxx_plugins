@@ -26,7 +26,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 new g_heroName[]="Phoenix"
-new bool:g_hasPhoenix[SH_MAXSLOTS+1]
+new gHeroID
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
 new bool:g_betweenRounds
 new g_userTeam[SH_MAXSLOTS+1]
@@ -46,12 +46,8 @@ public plugin_init()
 	register_cvar("phoenix_maxdamage", "90")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
+	gHeroID=shCreateHero(g_heroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("phoenix_init", "phoenix_init")
-	shRegHeroInit(g_heroName, "phoenix_init")
 
 	// DEATH EVENT
 	register_event("DeathMsg", "phoenix_death", "a")
@@ -60,29 +56,16 @@ public plugin_init()
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteSmoke = precache_model("sprites/steam1.spr")
-	g_spriteRing = precache_model("sprites/white.spr")
-	g_spriteExplosion = precache_model("sprites/explode1.spr")
-	precache_sound("ambience/port_suckin1.wav")
-	precache_sound("ambience/3dmeagle.wav")
-}
-//----------------------------------------------------------------------------------------------
-public phoenix_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasPhoenix[id] = (hasPowers != 0)
+	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	g_spriteRing = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
+	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/3dmeagle.wav")
 }
 //----------------------------------------------------------------------------------------------
 public phoenix_death()
@@ -91,7 +74,7 @@ public phoenix_death()
 
 	new id = read_data(2)
 
-	if ( !is_user_connected(id) || !g_hasPhoenix[id] ) return
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	g_userTeam[id] = get_user_team(id)
 
@@ -177,7 +160,7 @@ public round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if ( g_hasPhoenix[id] ) {
+		if ( sh_user_has_hero(id,gHeroID)) {
 			// Reset the cooldown on round end, to start fresh for a new round
 			remove_task(id)
 			g_phoenixPowerUsed[id] = false
@@ -253,7 +236,7 @@ public BlowUp(id)
 
 	get_user_origin(id, origin)
 
-	superhero_protected_hud_message(0,"Someone was Re-Born using the power of the Phoenix!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+	superhero_protected_hud_message(superhero_hud_msg_sync,0,"Someone was Re-Born using the power of the Phoenix!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
 	// blowup even if dead
 	explode_effect(origin, dmgRadius)
 

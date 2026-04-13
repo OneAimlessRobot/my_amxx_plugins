@@ -19,7 +19,6 @@ bomberman_maxdamage 100		//Maximum Damage to deal		(def=100)
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Bomberman"
-new bool:gHasBomberman[SH_MAXSLOTS+1]
 new gBombEntity[SH_MAXSLOTS+1]
 new gBombAmmo[SH_MAXSLOTS+1]
 new const gSoundBombPlant[] = "weapons/c4_plant.wav"
@@ -54,12 +53,12 @@ public plugin_precache()
 		copy(gBombModel, charsmax(gBombModel), "models/w_c4.mdl")
 	}
 
-	precache_model(gBombModel)
-	precache_sound(gSoundBombPlant)
-	gSpriteExplode = precache_model("sprites/zerogxplode.spr")
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteWhite = precache_model("sprites/white.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
+	engfunc(EngFunc_PrecacheModel,gBombModel)
+	engfunc(EngFunc_PrecacheSound,gSoundBombPlant)
+	gSpriteExplode = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -68,11 +67,7 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasBomberman[id] = true
 			bomberman_newsetup(id)
-		}
-		case SH_HERO_DROP: {
-			gHasBomberman[id] = false
 		}
 	}
 
@@ -88,7 +83,7 @@ bomberman_newsetup(id)
 {
 	gPlayerInCooldown[id] = false
 
-	if ( !gHasBomberman[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) ) return
 
 	new bombent = gBombEntity[id]
 
@@ -123,7 +118,7 @@ bomberman_newsetup(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasBomberman[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	if ( gBombEntity[id] > 0 ) {
 		explode_bomb(id)
@@ -310,7 +305,6 @@ public client_connect(id)
 
 	gBombEntity[id] = 0
 	gPlayerInCooldown[id] = false
-	gHasBomberman[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
@@ -323,7 +317,6 @@ public client_disconnected(id)
 
 	gBombEntity[id] = 0
 	gPlayerInCooldown[id] = false
-	gHasBomberman[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -15,7 +15,6 @@ kamikaze_maxdamage 125			//Maximum damage to deal to a player
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Kamikaze"
-new bool:gHasKamikaze[SH_MAXSLOTS+1]
 new gFuseTime[SH_MAXSLOTS+1]
 new const gSoundCountdown[] = "buttons/blip2.wav"
 new const gSoundFvox[11][] = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
@@ -45,19 +44,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteWhite = precache_model("sprites/white.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
-	precache_sound(gSoundCountdown)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasKamikaze[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundCountdown)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -69,7 +59,7 @@ public sh_client_spawn(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasKamikaze[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerInCooldown[id] ) {
@@ -91,7 +81,7 @@ public kamikaze_check()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( !gHasKamikaze[player] ) continue
+		if ( !sh_user_has_hero(player,gHeroID)) continue
 
 		fuseTime = gFuseTime[player]
 
@@ -240,13 +230,11 @@ public sh_client_death(victim)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasKamikaze[id] = false
 	gFuseTime[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	gHasKamikaze[id] = false
 	gFuseTime[id] = 0
 }
 //----------------------------------------------------------------------------------------------

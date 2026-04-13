@@ -30,12 +30,11 @@ stick_enemyonly 0		//0=rings on all players 1=rings on enemy only
 *    Hero was Ripped from Daredevil, was orginally same as daredevil only with a larger radius.
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Stick"
-new bool:gHasStickPower[SH_MAXSLOTS+1]
+new gHeroID
 new gSpriteWhite, gRadius, gBright
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -52,7 +51,7 @@ public plugin_init()
 	register_cvar("stick_enemyonly", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Proximity Sense", "Longer ESP Rings show you when other players are approaching, also run faster.", false, "stick_level")
+	gHeroID=shCreateHero(gHeroName, "Proximity Sense", "Longer ESP Rings show you when other players are approaching, also run faster.", false, "stick_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -68,7 +67,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteWhite = precache_model("sprites/white.spr")
+	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
 }
 //----------------------------------------------------------------------------------------------
 public stick_init()
@@ -78,17 +77,11 @@ public stick_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	// This gets run if they had the power but don't anymore
-	if ( !hasPowers && gHasStickPower[id]  && is_user_alive(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		shRemSpeedPower(id)
 	}
 
-	// Sets this variable to the current status
-	gHasStickPower[id] = (hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public stick_senseloop()
@@ -105,7 +98,7 @@ public stick_senseloop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( !gHasStickPower[id] || !is_user_alive(id) ) continue
+		if ( !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) continue
 
 		for(new r = 0; r < pnum; r++) {
 			idring = players[r]
@@ -153,10 +146,5 @@ public stick_senseloop()
 			message_end()
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasStickPower[id] = false
 }
 //----------------------------------------------------------------------------------------------

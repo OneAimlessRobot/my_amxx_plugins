@@ -93,10 +93,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("weapons/gauss2.wav")
-	precache_sound("weapons/xbow_hitbod2.wav")
-	smoke = precache_model("sprites/steam1.spr")
-	laser = precache_model("sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheSound,"weapons/gauss2.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
 public styropyro_init()

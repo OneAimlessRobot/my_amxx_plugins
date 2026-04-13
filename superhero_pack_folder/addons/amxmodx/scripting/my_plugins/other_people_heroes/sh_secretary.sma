@@ -25,7 +25,6 @@ secretary_workinside 0		//Allow Ion Cannon to work inside buidings and so on
 */
 
 #include "../my_include/superheromod.inc"
-#include <engine>
 
 #define XO_WEAPON 4
 #define m_flNextPrimaryAttack 46
@@ -42,7 +41,6 @@ enum {
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Secretary of Defense"
-new bool:gHasSecretary[SH_MAXSLOTS+1]
 new bool:gHasRadio[SH_MAXSLOTS+1]
 new gLastModelKnife[SH_MAXSLOTS+1][64]
 new g_Target[SH_MAXSLOTS+1]
@@ -104,33 +102,29 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(gModelKnife)
-	precache_model(gModelBeacon)
-	precache_sound(gSoundRadioDraw)
-	precache_sound(gSoundRadioUse)
-	precache_sound(gSoundBeacon)
-	precache_sound(gSoundPlant)
-	precache_sound(gSoundBeep)
-	precache_sound(gSoundApproach)
-	precache_sound(gSoundReady)
-	precache_sound(gSoundAttack)
-	gSpriteIonBeam = precache_model("sprites/shmod/ion/ionbeam.spr")
-	gSpriteBlueFlare = precache_model("sprites/shmod/ion/bflare.spr")
-	gSpriteReadyFire = precache_model("sprites/shmod/ion/fire.spr")
-	gSpriteBlueFire = precache_model("sprites/shmod/ion/blueflame.spr")
-	gSpriteLaserFlame = precache_model("sprites/shmod/ion/ion_laserflame.spr")
-	gSpriteShockwave = precache_model("sprites/shockwave.spr")
+	engfunc(EngFunc_PrecacheModel,gModelKnife)
+	engfunc(EngFunc_PrecacheModel,gModelBeacon)
+	engfunc(EngFunc_PrecacheSound,gSoundRadioDraw)
+	engfunc(EngFunc_PrecacheSound,gSoundRadioUse)
+	engfunc(EngFunc_PrecacheSound,gSoundBeacon)
+	engfunc(EngFunc_PrecacheSound,gSoundPlant)
+	engfunc(EngFunc_PrecacheSound,gSoundBeep)
+	engfunc(EngFunc_PrecacheSound,gSoundApproach)
+	engfunc(EngFunc_PrecacheSound,gSoundReady)
+	engfunc(EngFunc_PrecacheSound,gSoundAttack)
+	gSpriteIonBeam = engfunc(EngFunc_PrecacheModel,"sprites/shmod/ion/ionbeam.spr")
+	gSpriteBlueFlare = engfunc(EngFunc_PrecacheModel,"sprites/shmod/ion/bflare.spr")
+	gSpriteReadyFire = engfunc(EngFunc_PrecacheModel,"sprites/shmod/ion/fire.spr")
+	gSpriteBlueFire = engfunc(EngFunc_PrecacheModel,"sprites/shmod/ion/blueflame.spr")
+	gSpriteLaserFlame = engfunc(EngFunc_PrecacheModel,"sprites/shmod/ion/ion_laserflame.spr")
+	gSpriteShockwave = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
 {
 	if ( gHeroID != heroID ) return
 
-	if ( mode ) {
-		gHasSecretary[id] = true
-	}
-	else {
-		gHasSecretary[id] = false
+	if ( !mode){
 		if ( gHasRadio[id] ) {
 			new iKnifeEnt = find_ent_by_owner(-1, "weapon_knife", id)
 			if ( iKnifeEnt > 0 ) {
@@ -250,7 +244,7 @@ public sh_hero_key(id, heroID, key)
 public weapon_change(id)
 {
 	if ( !sh_is_active() ) return
-	if ( !is_user_alive(id) || !gHasSecretary[id] || !gHasRadio[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return
 
 	if ( gIsCharging[id] ) {
 		stop_charging(id)
@@ -266,7 +260,7 @@ public weapon_change(id)
 public FM_CmdStart_Pre(id, uc_handle, seed)
 {
 	if ( !sh_is_active() ) return FMRES_IGNORED
-	if ( !sh_is_inround() || !is_user_alive(id) || !gHasSecretary[id] || !gHasRadio[id] ) return FMRES_IGNORED
+	if ( !sh_is_inround() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return FMRES_IGNORED
 
 	if ( get_user_weapon(id) != CSW_KNIFE ) return FMRES_IGNORED
 
@@ -774,7 +768,7 @@ remove_target(id)
 public FM_EmitSound_Pre(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)
 {
 	if ( !sh_is_active() ) return FMRES_IGNORED
-	if ( !is_user_alive(id) || !gHasSecretary[id] || !gHasRadio[id] ) return FMRES_IGNORED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !gHasRadio[id] ) return FMRES_IGNORED
 
 	if ( sample[0] == 'w' && sample[6] == 's' && sample[8] == 'k' && sample[13] == '_' && sample[14] == 'd' ) {
 		engfunc(EngFunc_EmitSound, id, channel, gSoundRadioDraw, VOL_NORM, attn, flags, pitch)

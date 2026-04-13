@@ -490,7 +490,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 public plugin_precache()
 {
 	
-	precache_model("models/shell.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shell.mdl")
 	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
 	

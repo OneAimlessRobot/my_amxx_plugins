@@ -147,7 +147,6 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Naruto Uzumaki"
-new bool:gHasNaruto[SH_MAXSLOTS+1]
 new bool:aimtargetfound[SH_MAXSLOTS+1] = false
 new bool:doingrasengan[SH_MAXSLOTS+1] = false
 new bool:rasenganover[SH_MAXSLOTS+1] = false
@@ -200,16 +199,16 @@ public plugin_init()
 
 public plugin_precache()
 {
-	precache_model("models/shmod/t800_minigun.mdl")
-	precache_model("sprites/shmod/esf_exp_blue.spr")
-	precache_sound("weapons/m249-1.wav")
-	precache_sound("shmod/naruto/rasengan1.wav")
-	precache_sound("shmod/naruto/rasengan2.wav")
-	precache_sound("shmod/naruto/rasenganexp.wav")
-	precache_sound("shmod/naruto/narutoclonesd.wav")
-	precache_sound("shmod/naruto/narutoclone.wav")
-	gSpriteCircle = precache_model("sprites/shockwave.spr")
-	gSpriteSmoke = precache_model("sprites/wall_puff4.spr")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/t800_minigun.mdl")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_blue.spr")
+	engfunc(EngFunc_PrecacheSound,"weapons/m249-1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/naruto/rasengan1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/naruto/rasengan2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/naruto/rasenganexp.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/naruto/narutoclonesd.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/naruto/narutoclone.wav")
+	gSpriteCircle = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 
 public sh_hero_init(id, heroID, mode)
@@ -218,12 +217,8 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasNaruto[id] = true
 			bot_cooldownwait[id] = 0
 			sh_chat_message(id, gHeroID, "Believe it!")
-		}
-		case SH_HERO_DROP: {
-			gHasNaruto[id] = false
 		}
 	}
 
@@ -240,7 +235,7 @@ public naruto_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( gHasNaruto[player] && player_chakra[player] < get_pcvar_num(pCvarMaxChakra) ) {
+		if (sh_user_has_hero(player,gHeroID) && player_chakra[player] < get_pcvar_num(pCvarMaxChakra) ) {
 			player_chakra[player] += 1
 		}
 	}
@@ -314,7 +309,7 @@ public botent_clearbools(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || !sh_is_inround() ) return
-	if ( !is_user_alive(id) || !gHasNaruto[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if ( key == SH_KEYDOWN ) 
 	{
@@ -415,13 +410,12 @@ public sh_hero_key(id, heroID, key)
 
 public client_authorized(id)
 {
-	gHasNaruto[id] = false
 	botEnt[id] = 0
 }
 
 public client_disconnected(id) 
 {
-	if(! gHasNaruto[id]) return 
+	if(!sh_user_has_hero(id,gHeroID)) return 
 
 	if(pev_valid(entWeapon[id]))
 	{
@@ -513,7 +507,7 @@ public FM_Think_hook(ent)
 {
 	for(new i=0;i<=SH_MAXSLOTS;i++)
 	{	
-		if(gHasNaruto[i]) 
+		if(sh_user_has_hero(i,gHeroID)) 
 		{
 			if(ent==botEnt[i])
 			{
@@ -526,7 +520,7 @@ public FM_Think_hook(ent)
 							set_pev(botEnt[i],pev_health, 5000000.0)
 						}
 					}
-					if(!pev_valid(botEnt[i]) && gHasNaruto[i] && ent==botEnt[i])
+					if(!pev_valid(botEnt[i]) && sh_user_has_hero(i,gHeroID)&& ent==botEnt[i])
 					{
 						naruto_remove_entity(entWeapon[i])
 						naruto_remove_entity(botEnt[i])

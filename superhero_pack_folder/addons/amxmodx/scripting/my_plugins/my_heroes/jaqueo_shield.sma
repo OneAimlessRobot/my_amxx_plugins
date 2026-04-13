@@ -165,11 +165,11 @@ public shield_deploy_task(parm[],id){
 public plugin_precache(){
 
 
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
-	precache_model(shield_mdl)
+	engfunc(EngFunc_PrecacheModel,  shield_mdl)
 	engfunc(EngFunc_PrecacheSound,  shield_deploy)
 	engfunc(EngFunc_PrecacheSound,  shield_hum)
 	engfunc(EngFunc_PrecacheSound,  shield_destroyed)

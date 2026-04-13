@@ -16,7 +16,7 @@ t800_paramult 5		    //how strong is the para
 #define TASKID 800
 // VARIABLES
 new gHeroName[]="T-800"
-new bool:gHasT800Power[SH_MAXSLOTS+1]
+new gHeroID
 new gT800Timer[SH_MAXSLOTS+1]
 new bool:gMorphed[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -34,7 +34,7 @@ public plugin_init()
 	register_cvar("t800_paramult", "5" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Change into a T-800", "Get a giant mini gun and you are indistructable", true, "t800_level")
+	gHeroID=shCreateHero(gHeroName, "Change into a T-800", "Get a giant mini gun and you are indistructable", true, "t800_level")
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -63,9 +63,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/t800_m249.mdl")
-	precache_model("models/shmod/t800_minigun.mdl")
-	precache_model("models/player/t800/t800.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/t800_m249.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/t800_minigun.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/player/t800/t800.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public t800_round_end()
@@ -77,7 +77,7 @@ public t800_round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		
-		if ( gHasT800Power[id] && is_user_alive(id) && shModActive() ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
 			t800_endmode(id)
 		}
 	}
@@ -90,20 +90,14 @@ public t800_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has iron man powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	
-	gHasT800Power[id]=(hasPowers!=0)
-	
-	if ( !hasPowers ) {
+	if ( !sh_user_has_hero(id,gHeroID)) {
 		if ( is_user_alive(id) && gT800Timer[id] >= 0 ) {
 			t800_endmode(id)
 		}
 	}
 	else {
 		gT800Timer[id] = -1
-		if ( is_user_connected(id) && gHasT800Power[id]){
+		if ( is_user_connected(id)){
 			
 			// LOOP
 			switchmodel(id)
@@ -121,7 +115,7 @@ public t800_death()
 	
 	gPlayerUltimateUsed[id] = false
 	gT800Timer[id]= -1
-	if (gHasT800Power[id]) {
+	if (sh_user_has_hero(id,gHeroID)) {
 		t800_endmode(id)
 	}
 }
@@ -131,7 +125,7 @@ public t800_loop(id)
 	
 	id-=TASKID
 	if (!shModActive()) return
-	if ( gHasT800Power[id] && is_user_alive(id)&& is_user_connected(id)  )  {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)&& is_user_connected(id)  )  {
 		if ( gT800Timer[id] > 0 ) {
 			gT800Timer[id]--
 			new message[128]
@@ -166,7 +160,7 @@ public t800_loop(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !gHasT800Power[id]||gT800Timer[id]<0 ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||gT800Timer[id]<0 ) return
 	
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
@@ -183,7 +177,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasT800Power[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
 	
 	new wpnid = read_data(2)
 	
@@ -200,7 +194,7 @@ public t800_damage(id)
 	
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id  ) return
 	
-	if ( gHasT800Power[attacker] && weapon == CSW_M249 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M249 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("t800_paramult") - damage)
 		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "m249", headshot )
@@ -271,7 +265,7 @@ public t800_endmode(id)
 	
 	if ( gMorphed[id] && is_user_connected(id) ) t800_unmorph(id)
 	
-	if ( gHasT800Power[id] && is_user_alive(id) ) {
+	if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_godmode(id)
 		sh_screen_fade(id,0.0,0.0,0,0,0,0)
 		drop_para(id)  

@@ -12,7 +12,6 @@ juggernaut_level 2
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Juggernaut"
-new bool:gHasJuggernaut[SH_MAXSLOTS+1]
 new bool:gRestoreVel
 new Float:vecVel[3]
 new fm_PreThink
@@ -35,15 +34,6 @@ public plugin_init()
 	fm_PreThink_Post = register_forward(FM_PlayerPreThink, "Player_PreThink_Post", 1)
 }
 
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasJuggernaut[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-
 public plugin_end()
 {
 	if(fm_PreThink)
@@ -58,7 +48,7 @@ public plugin_end()
 
 public Player_PreThink(id)
 {
-	if(gHasJuggernaut[id])
+	if(sh_user_has_hero(id,gHeroID))
 	{
 		if(pev_valid(id) && is_user_alive(id) && (FL_ONGROUND & pev(id, pev_flags)))
 		{
@@ -72,7 +62,7 @@ public Player_PreThink(id)
 
 public Player_PreThink_Post(id)
 {
-	if(gRestoreVel && gHasJuggernaut[id])
+	if(gRestoreVel && sh_user_has_hero(id,gHeroID))
 	{
 		gRestoreVel = false
 

@@ -11,22 +11,17 @@ tnt_radius 100		//damage radius from mine explosion
 
 
 
-
-
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
-#include <engine>
-#include <fakemeta>
 
 new gHeroName[] = "TNT";
-new gHasTntPowers[SH_MAXSLOTS+1];
+new gHeroID
 new gMinesLeft[SH_MAXSLOTS+1];
 new gPlanter[SH_MAXSLOTS+1];
 
 new splode_spr;
 
 public plugin_precache() {
-	splode_spr = precache_model("sprites/zerogxplode.spr");
+	splode_spr = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr");
 }
 
 public plugin_init() {
@@ -38,10 +33,8 @@ public plugin_init() {
 	register_cvar("tnt_mines", "1");
 	register_cvar("tnt_radius", "100");
 
-	shCreateHero(gHeroName, "Sploding Mines", "Drop mines to explode those who walk by!", false, "tnt_level");
+	gHeroID=shCreateHero(gHeroName, "Sploding Mines", "Drop mines to explode those who walk by!", false, "tnt_level");
 
-	register_srvcmd("tnt_init", "tnt_init");
-	shRegHeroInit(gHeroName, "tnt_init");
 	
 	register_srvcmd("tnt_kd", "tnt_kd");
 	shRegKeyDown(gHeroName, "tnt_kd"); 
@@ -50,23 +43,12 @@ public plugin_init() {
 	register_event("ResetHUD", "Event_NewRound", "b");
 }
 
-public tnt_init() {
-	new temp[6];
-	read_argv(1,temp,5);
-	new id = str_to_num(temp);
-	
-	read_argv(2,temp,5);
-	new hasPowers = str_to_num(temp);
-
-	gHasTntPowers[id] = (hasPowers != 0);
-}
-
 public tnt_kd() {
 	new temp[6];
 	read_argv(1,temp,5);
 	new id = str_to_num(temp);
 	
-	if (!is_user_alive(id) || !gHasTntPowers[id]) return;
+	if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
 	if(gMinesLeft[id] <= 0) { client_print(id, print_chat, "[SH](TNT) No Mines Left!!"); return; }
 	
 	gMinesLeft[id]--
@@ -179,7 +161,7 @@ public splode_effects(id) {
 }
 
 public Event_NewRound(id) {
-	if(!is_user_alive(id) || !gHasTntPowers[id]) return;
+	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
 	
 	gMinesLeft[id] = get_cvar_num("tnt_mines");
 }

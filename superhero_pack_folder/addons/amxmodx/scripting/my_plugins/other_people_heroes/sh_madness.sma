@@ -17,14 +17,11 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 *  Ripped from the hero - Morpheus (by RadidEskimo & Freecode).
 *  Weapon model by Eichler69 & Biohazard
 */
-
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Madness"
-new bool:gHasMadnessPower[SH_MAXSLOTS+1]
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -38,7 +35,7 @@ public plugin_init()
 	register_cvar("madness_m3mult", "2.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Dual M3's", "Dual M3's/Extra Damage/Unlimited Ammo. Extra HP and AP.", false, "madness_level")
+	gHeroID=shCreateHero(gHeroName, "Dual M3's", "Dual M3's/Extra Damage/Unlimited Ammo. Extra HP and AP.", false, "madness_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -58,7 +55,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/madness_m3.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/madness_m3.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public madness_init()
@@ -68,10 +65,6 @@ public madness_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	if (!is_user_connected(id)) return
 
 	//Reset thier shield restrict status
@@ -79,24 +72,22 @@ public madness_init()
 	shResetShield(id)
 
 	if ( is_user_alive(id) ) {
-		if ( hasPowers ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			madness_weapons(id)
 			switchmodel(id)
 		}
 		//This gets run if they had the power but don't anymore
-		else if ( !hasPowers && gHasMadnessPower[id] ) {
+		else  {
 			engclient_cmd(id, "drop", "weapon_m3")
 			shRemHealthPower(id)
 			shRemArmorPower(id)
 		}
 	}
-	//Sets this variable to the current status
-	gHasMadnessPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasMadnessPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "madness_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -128,7 +119,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasMadnessPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -153,16 +144,11 @@ public madness_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 
-	if ( gHasMadnessPower[attacker] && weapon == CSW_M3 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M3 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
 		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "m3", headshot)
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasMadnessPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

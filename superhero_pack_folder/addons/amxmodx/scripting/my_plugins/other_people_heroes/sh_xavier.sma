@@ -17,7 +17,6 @@ xavier_refreshtimer 5.0			//How often do the trails refresh
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Xavier"
-new bool:gHasXavier[SH_MAXSLOTS+1]
 new gSpriteLaserBeam
 new gPcvarTrailLength, gPcvarShowTeam, gPcvarShowEnemy, gPcvarRefreshTimer
 //----------------------------------------------------------------------------------------------
@@ -40,7 +39,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteLaserBeam = precache_model("sprites/laserbeam.spr")
+	gSpriteLaserBeam = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -52,12 +51,10 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasXavier[id] = true
 			add_all_marks(id)
 			set_task(get_pcvar_float(gPcvarRefreshTimer), "add_all_marks", id, _, _, "b")
 		}
 		case SH_HERO_DROP: {
-			gHasXavier[id] = false
 			remove_all_marks(id)
 		}
 	}
@@ -67,14 +64,14 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasXavier[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		add_all_marks(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public add_all_marks(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasXavier[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	static bool:sameTeam
@@ -129,7 +126,7 @@ make_trail(id, player, iRed, iGreen, iBlue)
 //----------------------------------------------------------------------------------------------
 remove_all_marks(id)
 {
-	if ( is_user_connected(id) && gHasXavier[id] )  {
+	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) )  {
 		new players[SH_MAXSLOTS]
 		new playerCount, player
 		get_players(players, playerCount, "ah")
@@ -164,7 +161,6 @@ public sh_client_death(victim)
 public client_disconnected(id)
 {
 	remove_task(id)
-	gHasXavier[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -25,7 +25,6 @@ new Testnr = 0
 
 // VARIABLES
 new gHeroName[]="Jaws"
-new bool:g_hasJawsPower[SH_MAXSLOTS+1]
 
 public plugin_init() {
 	register_plugin("SUPERHERO Jaws", "1.01", "K-OS")
@@ -45,9 +44,6 @@ public plugin_init() {
 	register_srvcmd("jaws_kd", "jaws_kd")
 	shRegKeyDown(gHeroName, "jaws_kd")
 	
-	// INIT
-	register_srvcmd("jaws_init", "jaws_init")
-	shRegHeroInit(gHeroName, "jaws_init")
 	
 #if defined DEBUG
 	register_clcmd("jaws","jaws_create")
@@ -57,24 +53,11 @@ public plugin_init() {
 }
 
 public plugin_precache() {
-	precache_model("models/shmod/jaws.mdl")
-	precache_sound("ichy/ichy_alert3.wav")
-	precache_sound("ichy/ichy_attack1.wav")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/jaws.mdl")
+	engfunc(EngFunc_PrecacheSound,"ichy/ichy_alert3.wav")
+	engfunc(EngFunc_PrecacheSound,"ichy/ichy_attack1.wav")
 }
 
-public jaws_init()
-{
-	new temp[128]
-	// First Argument is an id
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has wolverine skills
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-
-	g_hasJawsPower[id]=(hasPowers!=0)
-}
 
 public newRound(id)
 {

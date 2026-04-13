@@ -528,12 +528,12 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[i])
 	
 	}
-	precache_model(YANDERE_SHOTGUN_V_MODEL)
-	precache_model(YANDERE_SHOTGUN_P_MODEL)
-	precache_model(YANDERE_KNIFE_V_MODEL)
-	precache_model(YANDERE_KNIFE_P_MODEL)
-	precache_model(YANDERE_PSYCHO_KNIFE_V_MODEL)
-	precache_model(YANDERE_PSYCHO_KNIFE_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_P_MODEL)
 	for(new i=0;i<sizeof(yandere_shotgun_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,yandere_shotgun_sounds[i] );

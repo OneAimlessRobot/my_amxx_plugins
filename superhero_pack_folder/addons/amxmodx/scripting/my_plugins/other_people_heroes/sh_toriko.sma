@@ -23,7 +23,6 @@ toriko_hpgained 20    // How much health is gained on a streak
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Toriko"
-new bool:gHasToriko[SH_MAXSLOTS+1]
 new gKillCount[SH_MAXSLOTS+1]
 new pCvarKills, pCvarGain
 //----------------------------------------------------------------------------------------------
@@ -47,16 +46,9 @@ public client_connect(id)
 	gKillCount[id] = 0
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-	
-	gHasToriko[id] = mode ? true : false
-}
-//----------------------------------------------------------------------------------------------
 public sh_client_death(victim, attacker, headshot)
 {
-	if ( !sh_is_active() || !gHasToriko[attacker] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(attacker,gHeroID) ) return
 	
 	if ( is_user_connected(attacker) && is_user_connected(victim) && victim != attacker )
 	{

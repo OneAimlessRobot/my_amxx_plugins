@@ -63,13 +63,10 @@ bazooka_spawndelay 0
 // ---END OF BAZOOKA CVARS---
 */
 
-#include <amxmod>
-#include <amxmisc>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #define DT 0.1
-#define PI 3.1415926535897932384626433832795
+
 
 new beam, boom, ls_dot
 new Float:fAngleBaz
@@ -85,7 +82,8 @@ new is_heat_rocket[SH_MAXSLOTS+1]
 new radar_batt[SH_MAXSLOTS+1]
 
 new gHeroName[]="Bazooka"
-new bool:gHasBazookaPowers[SH_MAXSLOTS+1]
+
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -126,12 +124,8 @@ public plugin_init()
 	register_cvar("bazooka_spawndelay","0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Rocket-Laucher", "Fire Many Different Types of Rockets", true, "bazooka_level" )
+	gHeroID=shCreateHero(gHeroName, "Rocket-Laucher", "Fire Many Different Types of Rockets", true, "bazooka_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("bazooka_init", "bazooka_init")
-	shRegHeroInit(gHeroName, "bazooka_init")
 
 	// KEYDOWN
 	register_srvcmd("bazooka_kd", "bazooka_kd")
@@ -162,20 +156,6 @@ public plugin_init()
 	set_task(0.1,"RocketThink",0,"",0,"b")
 }
 //----------------------------------------------------------------------------------------------
-public bazooka_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has BlackLotus
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasBazookaPowers[id] = (hasPowers != 0)
-}
-//----------------------------------------------------------------------------------------------
 public bazooka_kd()
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
@@ -185,7 +165,7 @@ public bazooka_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	if ( !is_user_alive(id) || !gHasBazookaPowers[id] ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	show_main_menu(id)
 
@@ -194,18 +174,18 @@ public bazooka_kd()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("vox/_period.wav")
-	precache_sound("debris/beamstart8.wav")
-	precache_sound("weapons/explode3.wav")
-	precache_sound("weapons/rocketfire1.wav")
-	precache_sound("ambience/rocket_steam1.wav")
-	precache_sound("weapons/rocket1.wav")
-	precache_sound("ambience/particle_suck2.wav")
-	precache_model("models/rpgrocket.mdl")
+	engfunc(EngFunc_PrecacheSound,"vox/_period.wav")
+	engfunc(EngFunc_PrecacheSound,"debris/beamstart8.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/explode3.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/rocket_steam1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
+	engfunc(EngFunc_PrecacheModel,"models/rpgrocket.mdl")
 
-	beam = precache_model("sprites/smoke.spr")
-	boom = precache_model("sprites/zerogxplode.spr")
-	ls_dot = precache_model("sprites/laserdot.spr")
+	beam = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	boom = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	ls_dot = engfunc(EngFunc_PrecacheModel,"sprites/laserdot.spr")
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -340,7 +320,7 @@ public fire_missile(id)
 	if( roundfreeze || !is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	if ( !gHasBazookaPowers[id] ) {
+	if ( !sh_user_has_hero(id,gHeroID)) {
 		client_print(id,print_chat,"[SH](Bazooka) You do not have this hero")
 		return PLUGIN_HANDLED
 	}
@@ -1276,7 +1256,7 @@ public show_main_menu(id) {
 	new n = 0
 	new len = 319
 
-	if(!gHasBazookaPowers[id] || !is_user_alive(id))
+	if(!sh_user_has_hero(id,gHeroID)|| !is_user_alive(id))
 		return PLUGIN_HANDLED
 
 	n += formatex( menu_body[n],len-n,"\yFire Missile Menu^n\w^n")
@@ -1324,7 +1304,7 @@ public action_main_menu(id,key){
 	using_menu[id] = 1
 	key++
 
-	if(!gHasBazookaPowers[id] || !is_user_alive(id)) {
+	if(!sh_user_has_hero(id,gHeroID) || !is_user_alive(id)) {
 		using_menu[id] = 0
 		return PLUGIN_HANDLED
 	}
@@ -1482,7 +1462,7 @@ public SD_CircleRockets(Ent){
 	RotMatrix[2][2]=((RotMatrix[0][0])*(RotMatrix[1][1]))-((RotMatrix[0][1])*(RotMatrix[1][0]))
 
 	for (i=0; i < NUMBER_OF_ROCKETS; i++){
-		theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*PI+fAngleBaz
+		theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*MATH_PI+fAngleBaz
 		x = 0.0
 		#if !defined AMX98
 		y = floatcos(theta)*ROCKET_RADIUS
@@ -1563,8 +1543,8 @@ public RocketThink() {
 	new iTempEnt
 	fAngleBaz += ANGULAR_VELOCITY * DT
 
-	if (fAngleBaz > 2*PI)
-		fAngleBaz -= 2*PI
+	if (fAngleBaz > 2*MATH_PI)
+		fAngleBaz -= 2*MATH_PI
 
 	iCurrent = -1
 
@@ -1593,7 +1573,7 @@ public RocketThink() {
 				RotMatrix[2][0]=((RotMatrix[0][1])*(RotMatrix[1][2]))-((RotMatrix[0][2])*(RotMatrix[1][1]))
 				RotMatrix[2][1]=((RotMatrix[0][2])*(RotMatrix[1][0]))-((RotMatrix[0][0])*(RotMatrix[1][2]))
 				RotMatrix[2][2]=((RotMatrix[0][0])*(RotMatrix[1][1]))-((RotMatrix[0][1])*(RotMatrix[1][0]))
-				theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*PI+fAngleBaz
+				theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*MATH_PI+fAngleBaz
 				x = 0.0
 				#if !defined AMX98
 				y = floatcos(theta)*ROCKET_RADIUS

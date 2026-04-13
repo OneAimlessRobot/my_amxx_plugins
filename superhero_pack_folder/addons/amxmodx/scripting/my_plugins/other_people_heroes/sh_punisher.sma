@@ -13,7 +13,6 @@ punisher_rldmode 0		// Endless Ammo mode: 0-server default, 1-no reload, 2-reloa
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Punisher"
-new bool:gHasPunisher[SH_MAXSLOTS+1]
 new pCvarRldMode
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -33,18 +32,9 @@ public plugin_init()
 	register_event("CurWeapon", "change_weapon", "be", "1=1")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasPunisher[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public change_weapon(id)
 {
-	if ( !sh_is_active() || !gHasPunisher[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
 
 	//new wpnid = read_data(2)
 	new wpnslot = sh_get_weapon_slot(read_data(2))

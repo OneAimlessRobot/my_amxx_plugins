@@ -66,13 +66,11 @@ Version History:
 */
 //----------------------------------------------------------------------------------------------
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Scorpion"
-new bool:g_hasScorpionPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:g_knifeFight[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new bool:g_inKnifeFight[SH_MAXSLOTS+1]
 new g_hooked[SH_MAXSLOTS+1]
@@ -97,7 +95,7 @@ public plugin_init()
 	register_cvar("scorpion_stuntime", "2")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
+	gHeroID=shCreateHero(g_heroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -124,12 +122,12 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/scorpion_getoverhere.wav")
-	precache_sound("player/headshot3.wav")
-	precache_sound("weapons/xbow_hitbod1.wav")
-	g_spriteLine = precache_model("sprites/zbeam4.spr")
-	g_spriteBlood = precache_model("sprites/blood.spr")
-	g_spriteBldSpray = precache_model("sprites/bloodspray.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/scorpion_getoverhere.wav")
+	engfunc(EngFunc_PrecacheSound,"player/headshot3.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod1.wav")
+	g_spriteLine = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
+	g_spriteBlood = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr")
+	g_spriteBldSpray = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 }
 //----------------------------------------------------------------------------------------------
 public scorpion_init()
@@ -138,12 +136,6 @@ public scorpion_init()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasScorpionPower[id] = (hasPowers != 0)
 
 	if ( g_hooked[id] ) scorpion_hookOff(id)
 }
@@ -176,7 +168,7 @@ public scorpion_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasScorpionPower[id] || !hasRoundStarted() || !shModActive() ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !shModActive() ) return
 
 	scorpion_hookOn(id)
 }
@@ -321,7 +313,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 	if ( !is_user_alive(pToucher) || !is_user_alive(pTouched) ) return
 
-	if ( g_hasScorpionPower[pTouched] && g_hooked[pTouched] == pToucher ) {
+	if ( sh_user_has_hero(pTouched,gHeroID) && g_hooked[pTouched] == pToucher ) {
 
 		scorpion_hookOff(pTouched)
 

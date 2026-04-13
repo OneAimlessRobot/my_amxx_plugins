@@ -26,7 +26,6 @@ electro_jumpradius 500		//Radius to search for a lightning jump (Default 500)
 
 // GLOBAL VARIABLES
 new gHeroID
-new bool:gHasElectro[SH_MAXSLOTS+1]
 new bool:gLightningHit[SH_MAXSLOTS+1]
 new bool:gIsSearching[SH_MAXSLOTS+1]
 new const gSoundSearch[] = "turret/tu_ping.wav"
@@ -57,16 +56,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundSearch)
-	precache_sound(gSoundLightning)
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasElectro[id] = mode ? true : false
+	engfunc(EngFunc_PrecacheSound,gSoundSearch)
+	engfunc(EngFunc_PrecacheSound,gSoundLightning)
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -81,7 +73,7 @@ public sh_client_spawn(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasElectro[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if ( gIsSearching[id] ) return
 
@@ -112,7 +104,7 @@ public electro_search(parm[2])
 	parm[1]--
 
 	// User died or diconnected
-	if ( !is_user_alive(id) || !gHasElectro[id] )
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 	{
 		gIsSearching[id] = false
 	}
@@ -141,7 +133,7 @@ public fm_TraceLine(Float:v1[3], Float:v2[3], const noMonsters, const pentToSkip
 	if ( !is_user_alive(victim) ) return FMRES_IGNORED
 
 	//new attacker = pentToSkip
-	if ( !is_user_alive(pentToSkip) || !gHasElectro[pentToSkip] || !gIsSearching[pentToSkip] ) return FMRES_IGNORED
+	if ( !is_user_alive(pentToSkip) || !sh_user_has_hero(pentToSkip,gHeroID)|| !gIsSearching[pentToSkip] ) return FMRES_IGNORED
 	if ( cs_get_user_team(pentToSkip) == cs_get_user_team(victim) ) return FMRES_IGNORED
 
 	new damage = get_pcvar_num(gPcvarMaxDamage)

@@ -18,12 +18,10 @@ frieza_disklife 50
 
 */
 
-#include <amxmodx>
-#include <engine>
 #include "../my_include/superheromod.inc"
 
-new gHeroName[] = "Frieza" 
-new bool:g_hasfriezaPowers[SH_MAXSLOTS+1] 
+new gHeroName[] = "Frieza"
+new gHeroID
 new diskTimer[SH_MAXSLOTS+1] 
 //This variable will represent the disk being made. 
 new disk[SH_MAXSLOTS+1]
@@ -42,7 +40,7 @@ public plugin_init()
     register_cvar("frieza_disklife", "50") 
 
     //THIS LINE MAKES THE HERO SELECTABLE 
-    shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 
+    gHeroID=shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 
 
     //INITIAL ACTIONS 
     register_srvcmd("frieza_init", "frieza_init") 
@@ -67,9 +65,9 @@ public plugin_init()
 //-------------------------------------------------------------------------------------- 
 public plugin_precache() 
 { 
-    precache_model("models/shmod/frieza_friezadisc.mdl") 
-    precache_sound("shmod/frieza_destructodisc.wav") 
-    flash = precache_model("sprites/muzzleflash2.spr")
+    engfunc(EngFunc_PrecacheModel,"models/shmod/frieza_friezadisc.mdl") 
+    engfunc(EngFunc_PrecacheSound,"shmod/frieza_destructodisc.wav") 
+    flash = engfunc(EngFunc_PrecacheModel,"sprites/muzzleflash2.spr")
 } 
 //--------------------------------------------------------------------------------------- 
 public frieza_init() 
@@ -80,17 +78,12 @@ public frieza_init()
     read_argv(1,temp,5) //Converts the string to a number 
     new id = str_to_num(temp) //gets the id of the player
 
-    //Second Argument is either 0 or 1 depending on whether the person has the hero or not 
-    read_argv(2,temp,5) 
-    new hasPowers = str_to_num(temp) //Makes the string into a number 
-    g_hasfriezaPowers[id] = (hasPowers != 0) //tells if player has power or not
-
-    if(hasPowers){
+    if(sh_user_has_hero(id,gHeroID)){
 	disk[id] = 0
         diskTimer[id] = -1 
     }
 
-    if(!hasPowers && diskTimer[id] > 0){ //When a player doesn't have power anymore
+    if(!sh_user_has_hero(id,gHeroID) && diskTimer[id] > 0){ //When a player doesn't have power anymore
         diskTimer[id] = -1
         new Float: fOrigin[3]
 	new origin[3]
@@ -113,7 +106,7 @@ public frieza_kd()
     read_argv(1,temp,5) 
     new id = str_to_num(temp) //the player id
 
-    if(!is_user_alive(id) || !g_hasfriezaPowers[id]) return 
+    if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return 
 
     if(gPlayerUltimateUsed[id]){ 
         playSoundDenySelect(id) 
@@ -135,7 +128,7 @@ public newSpawn(id)
 public frieza_kill()  //triggered everytime someone dies
 {
 	new id = read_data(2)  //This tells who the victim is
-	if(g_hasfriezaPowers[id] && diskTimer[id] > 0){
+	if(sh_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
 		diskTimer[id] = -1
 		new Float: fOrigin[3]
 		new origin[3]
@@ -149,7 +142,7 @@ public frieza_kill()  //triggered everytime someone dies
 //----------------------------------------------------------------------------------------
 public frieza_disklife(){ 
     for(new id = 1; id <= SH_MAXSLOTS; id++){ 
-        if(g_hasfriezaPowers[id] && is_user_alive(id)){ 
+        if(sh_user_has_hero(id,gHeroID) && is_user_alive(id)){ 
             if(diskTimer[id] > 0){ 
                 diskTimer[id]-- 
 		new Float: fVelocity[3]
@@ -334,7 +327,7 @@ public decay_effects(NewEnt, origin[3])  //removes the entity plus adds a decayi
 //------------------------------------------------------------------------------------------
 public client_disconnected(id)  //This makes sure that the disk isn't flying after disconnect
 {
-	if(g_hasfriezaPowers[id] && diskTimer[id] > 0){
+	if(sh_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
 		new Float: fOrigin[3]
 		new origin[3]
 		entity_get_vector(disk[id], EV_VEC_origin, fOrigin)

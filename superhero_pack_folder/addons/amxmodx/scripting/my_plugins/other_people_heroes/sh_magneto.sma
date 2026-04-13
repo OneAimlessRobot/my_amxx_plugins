@@ -15,7 +15,6 @@ magneto_giveglock 1				//Give the poor victim a glock?
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Magneto"
-new bool:gHasMagneto[SH_MAXSLOTS+1]
 new const gSoundDisarm[] = "ambience/deadsignal1.wav"
 new gSpriteLightning
 new pCvarCooldown, pCvarBoost, pCvarGiveGlock
@@ -39,17 +38,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundDisarm)
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasMagneto[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	engfunc(EngFunc_PrecacheSound,gSoundDisarm)
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -62,7 +52,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !sh_is_active() ) return
 	if ( damage <= 0 || victim == attacker ) return
 	if ( !is_user_alive(victim) || !is_user_alive(attacker) ) return
-	if ( !gHasMagneto[victim] || gPlayerInCooldown[victim] ) return
+	if ( !sh_user_has_hero(victim,gHeroID) || gPlayerInCooldown[victim] ) return
 
 	new slot = sh_get_weapon_slot(wpnindex)
 

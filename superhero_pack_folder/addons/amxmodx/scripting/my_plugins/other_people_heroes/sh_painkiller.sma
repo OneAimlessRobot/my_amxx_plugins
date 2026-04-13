@@ -13,7 +13,6 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Painkiller"
-new bool:gHasPainkiller[SH_MAXSLOTS+1]
 new bool:DeathNotice[SH_MAXSLOTS+1]
 new AttackerInfo[SH_MAXSLOTS+1]
 new pCvarSeconds
@@ -40,24 +39,15 @@ public client_authorized(id)
 	AttackerInfo[id] = 0
 }
 
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasPainkiller[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-
 public Painkiller_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( gHasPainkiller[this] && ( get_user_health(this) - damage ) <= 0 ) 
+	if ( sh_user_has_hero(this,gHeroID)&& ( get_user_health(this) - damage ) <= 0 ) 
 	{
 		Death_Notice(this, idattacker)
 		AttackerInfo[this] = idattacker
 		return HAM_SUPERCEDE
 	}
-	if ( gHasPainkiller[this] && DeathNotice[this] == true ) 
+	if ( sh_user_has_hero(this,gHeroID) && DeathNotice[this] == true ) 
 	{
 		return HAM_SUPERCEDE
 	}

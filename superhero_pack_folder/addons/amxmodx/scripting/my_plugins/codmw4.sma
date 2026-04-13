@@ -705,29 +705,29 @@ public plugin_precache()
 	DispatchSpawn( Entity );
 	
 	
-	sprite_white = precache_model("sprites/white.spr") ;
-	sprite_blast = precache_model("sprites/dexplo.spr");
-	sprite_trail = precache_model("sprites/smoke.spr");
-	sprite_smoke = precache_model("sprites/steam1.spr");
+	sprite_white = engfunc(EngFunc_PrecacheModel,"sprites/white.spr") ;
+	sprite_blast = engfunc(EngFunc_PrecacheModel,"sprites/dexplo.spr");
+	sprite_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr");
+	sprite_smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr");
 	
 	
-	precache_sound("QTM_CodMod/select.wav");
-	precache_sound("QTM_CodMod/start.wav");
-	precache_sound("QTM_CodMod/start2.wav");
-	precache_sound("QTM_CodMod/levelup.wav");
+	engfunc(EngFunc_PrecacheSound,"QTM_CodMod/select.wav");
+	engfunc(EngFunc_PrecacheSound,"QTM_CodMod/start.wav");
+	engfunc(EngFunc_PrecacheSound,"QTM_CodMod/start2.wav");
+	engfunc(EngFunc_PrecacheSound,"QTM_CodMod/levelup.wav");
 	
-	precache_model("models/w_medkit.mdl");
-	precache_model("models/rpgrocket.mdl");
-	precache_model("models/mine.mdl");
-	precache_model("models/w_law.mdl");
-	precache_model("models/v_law.mdl");
-	precache_model("models/ByM_Cod/v_katana.mdl");
-	precache_model("models/ByM_Cod/v_katanainv.mdl");
-	precache_model("models/ByM_Cod/p_katana.mdl");
-	precache_model("models/ByM_Cod/v_supershotgun.mdl");
-	precache_model("models/ByM_Cod/p_supershotgun.mdl");
-	precache_model("models/p_law.mdl");
-	precache_model("models/s_grenade.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/w_medkit.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/rpgrocket.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/mine.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/w_law.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/v_law.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/ByM_Cod/v_katana.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/ByM_Cod/v_katanainv.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/ByM_Cod/p_katana.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/ByM_Cod/v_supershotgun.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/ByM_Cod/p_supershotgun.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/p_law.mdl");
+	engfunc(EngFunc_PrecacheModel,"models/s_grenade.mdl");
 }
 public pfn_keyvalue( Entity )  
 { 

@@ -10,7 +10,6 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 #define h1_dam 500 // head
@@ -20,7 +19,7 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 #define h6_dam 90  // leg
 
 new gHeroName[]="Meteorix"
-new bool:gHasMeteorixPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:MeteorixPowerUsed[SH_MAXSLOTS+1]
 new lightnings_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -42,7 +41,7 @@ public plugin_init()
 	register_cvar("meteorix_shotmult", "0.5")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
+	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD", "newSpawn", "b")
@@ -75,12 +74,12 @@ public plugin_cfg()
 public plugin_precache()
 {
 	// Sprites
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteFire = precache_model("sprites/lgtning.spr")
-	gSpriteBurning = precache_model("sprites/shmod/blue_flame.spr")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
+	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/shmod/blue_flame.spr")
 	// Sound
-	precache_sound("shmod/lightnin.wav")
-	precache_sound("weapons/xbow_hitbod2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/lightnin.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
 }
 // ----------------------------------------------------------------------------------------------
 public meteorix_init()
@@ -90,14 +89,8 @@ public meteorix_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasMeteorixPower[id] = (hasPowers!=0)
-
 	// Set max shots
-	if(gHasMeteorixPower[id]) {
+	if(sh_user_has_hero(id,gHeroID)) {
 		lightnings_shots[id] = max_shots
 	}
 }
@@ -106,7 +99,7 @@ public meteorix_death()
 {
 	new id = read_data(2)
 
-	if(!gHasMeteorixPower[id]) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 	remove_task(id)
 	MeteorixPowerUsed[id] = false
@@ -114,7 +107,7 @@ public meteorix_death()
 // ----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if(!gHasMeteorixPower[id]) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 	remove_task(id)
 	MeteorixPowerUsed[id] = false
 	lightnings_shots[id] = max_shots
@@ -268,7 +261,7 @@ public lightnings_shot(id)
 	new tid, tbody
 	new FFOn = get_cvar_num("mp_friendlyfire")
 
-	if(!is_user_alive(id) || !gHasMeteorixPower[id]) return PLUGIN_HANDLED
+	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	// If you have no lightnings
 	if(lightnings_shots[id] == 0) {
@@ -324,7 +317,6 @@ public client_disconnected(id)
 
 	// Yeah don't want any left over residuals
 	remove_task(id)
-	gHasMeteorixPower[id] = false
 }
 // ----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

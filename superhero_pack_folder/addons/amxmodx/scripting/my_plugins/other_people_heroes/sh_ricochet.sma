@@ -36,7 +36,6 @@ new bool:g_czero = false
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ricochet"
-new bool:gHasRicochet[SH_MAXSLOTS+1]
 new gPcvarExtraDmg
 new gPcvarShowRebound
 //----------------------------------------------------------------------------------------------
@@ -64,16 +63,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasRicochet[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
 // From VEN 's tutorial Detect fired particle creation/type/number/attack/obstacle/vector
@@ -87,7 +77,7 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(id) || !gHasRicochet[id]) {
+	if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) {
 		return FMRES_IGNORED
 	}
 
@@ -285,7 +275,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
-	if ( gHasRicochet[attacker] && CSW_P228 <= wpnindex <= CSW_P90 ) {
+	if ( sh_user_has_hero(attacker, gHeroID)&& CSW_P228 <= wpnindex <= CSW_P90 ) {
 		new wpn[32]
 		get_weaponname(wpnindex, wpn, charsmax(wpn))
 		replace(wpn, charsmax(wpn), "weapon_", "")
@@ -296,11 +286,6 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		new extraDamage = get_pcvar_num(gPcvarExtraDmg)
 		if ( extraDamage > 0) sh_extra_damage(victim, attacker, extraDamage, wpn, headshot)
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasRicochet[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)

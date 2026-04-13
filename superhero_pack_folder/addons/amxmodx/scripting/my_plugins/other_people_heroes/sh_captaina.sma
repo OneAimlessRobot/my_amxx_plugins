@@ -14,7 +14,6 @@ captaina_godsecs 1.0		//# of seconds of god mode
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Captain America"
-new bool:gHasCaptainAmerica[SH_MAXSLOTS+1]
 new Float:gMaxLevelFactor
 new gPcvarPctPerLev, gPcvarGodSecs
 //----------------------------------------------------------------------------------------------
@@ -42,15 +41,6 @@ public plugin_cfg()
 	gMaxLevelFactor = (10.0 / sh_get_num_lvls()) * 100.0
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasCaptainAmerica[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public captaina_loop()
 {
 	if ( !sh_is_active() ) return
@@ -67,7 +57,7 @@ public captaina_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		id = players[i]
 
-		if ( gHasCaptainAmerica[id] && !get_user_godmode(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && !get_user_godmode(id) ) {
 
 			heroLevel = floatround(sh_get_user_lvl(id) * pctperlev * gMaxLevelFactor)
 
@@ -80,10 +70,5 @@ public captaina_loop()
 			}
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasCaptainAmerica[id] = false
 }
 //----------------------------------------------------------------------------------------------

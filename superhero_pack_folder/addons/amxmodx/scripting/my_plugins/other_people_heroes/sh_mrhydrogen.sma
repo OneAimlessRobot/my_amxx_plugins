@@ -35,17 +35,12 @@ mrhydrogen_knifemult 1.10	// Multiply Knife Damage
 mrhydrogen_floattime 8.0	// Time Before Victim Drops
 
 */
-//--------------------------------------------------------------------------------------------------
-// INCLUDED HEADERS
-//--------------------------------------------------------------------------------------------------
-	#include <amxmodx>
 	#include "../my_include/superheromod.inc"
-	#include <engine>
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 //--------------------------------------------------------------------------------------------------
 	new gHeroName[]="Mr. Hydrogen"
-	new bool:gHasMrHydrogenPowers[SH_MAXSLOTS+1]
+	new gHeroID
 	new Float:HydroVelocity[SH_MAXSLOTS+1][3]
 	new gIsHitByMrHydrogen[SH_MAXSLOTS+1]
 //--------------------------------------------------------------------------------------------------
@@ -57,7 +52,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	register_cvar("mrhydrogen_level", "0")
 	register_cvar("mrhydrogen_knifemult", "1.10" )
 	register_cvar("mrhydrogen_floattime", "8.0" )
-	shCreateHero(gHeroName, "Fill Enemy With Hydrogen Gas", "Boost Knife Damage & Victim Floats When Being Hit By Your Knife", false, "mrhydrogen_level")
+	gHeroID=shCreateHero(gHeroName, "Fill Enemy With Hydrogen Gas", "Boost Knife Damage & Victim Floats When Being Hit By Your Knife", false, "mrhydrogen_level")
 	register_srvcmd("mrhydrogen_init", "mrhydrogen_init")
 	shRegHeroInit(gHeroName, "mrhydrogen_init")
 	register_event("ResetHUD", "mrhydrogen_newspawn", "b")
@@ -65,23 +60,11 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	register_event("Damage", "mrhydrogen_powers", "b", "2!0")
 	}
 //--------------------------------------------------------------------------------------------------
-// HERO EVENTS
-//--------------------------------------------------------------------------------------------------
-	public mrhydrogen_init()
-	{
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-	read_argv(2, temp, 5)
-	new hasPowers=str_to_num(temp)
-	gHasMrHydrogenPowers[id] = (hasPowers != 0)
-	}
-//--------------------------------------------------------------------------------------------------
 // PLUGIN PRECACHES
 //--------------------------------------------------------------------------------------------------
 	public plugin_precache()
 	{
-	precache_sound("player/breathe2.wav")
+	engfunc(EngFunc_PrecacheSound,"player/breathe2.wav")
 	}
 //--------------------------------------------------------------------------------------------------
 // EVENTS ON NEW SPAWN
@@ -111,7 +94,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	new headshot = bodypart == 1 ? 1 : 0
 	if (attacker <= 0 && attacker > SH_MAXSLOTS && id != attacker)
 	return PLUGIN_CONTINUE
-	if (gHasMrHydrogenPowers[attacker] && weapon == CSW_KNIFE && is_user_alive(id))
+	if (sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id))
 	{
 	new extraDamage = floatround(damage * get_cvar_float("mrhydrogen_knifemult") - damage)
 	if (extraDamage > 0)

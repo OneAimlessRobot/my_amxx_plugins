@@ -344,8 +344,7 @@ remove_entity(id_chaff)
 public plugin_precache()
 {
 
-precache_sound("ambience/particle_suck2.wav")
-precache_model("models/w_smokegrenade.mdl")
+engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
 engfunc(EngFunc_PrecacheSound, CHAFF_BOUNCE_SFX)
 engfunc(EngFunc_PrecacheSound,CHAFF_EXPLODE_SFX)
 

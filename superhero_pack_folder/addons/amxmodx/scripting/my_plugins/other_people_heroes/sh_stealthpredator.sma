@@ -16,7 +16,7 @@ stealth_speed 600			//Running Speed (default=600)
 
 // GLOBAL VARIABLES
 new gHeroName[]="Stealth Predator"
-new bool:gHasstealthPower[SH_MAXSLOTS+1]
+new gHeroID
 new gUserTeam[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
 new g_lastWeapon[SH_MAXSLOTS+1]
@@ -38,7 +38,7 @@ public plugin_init()
 	register_cvar("stealth_speed", "600" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Speed/Revive/Heal/Invisibility/No Footsteps", "Hold Keydown to go Invisible and No Footsteps ", true, "stealth_level")
+	gHeroID=shCreateHero(gHeroName, "Speed/Revive/Heal/Invisibility/No Footsteps", "Hold Keydown to go Invisible and No Footsteps ", true, "stealth_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -76,51 +76,30 @@ public stealth_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has stealth Powers
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
 	//This gets run if they had the power but don't anymore
-	if ( !hasPowers && gHasstealthPower[id] && is_user_connected(id) ){
-	// remove the power if it was used and user dropped hero
-	if ( g_powerID[id] > 0 ) {
-	remove_power(id, g_powerID[id])
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ){
+		// remove the power if it was used and user dropped hero
+		if ( g_powerID[id] > 0 ) {
+			remove_power(id, g_powerID[id])
+		}
 	}
-	}
-	// DO NOT EDIT THIS, MAY CAUSE LUNG CANCER
-	gHasstealthPower[id] = (hasPowers != 0)
 	shSetMaxSpeed(gHeroName, "stealth_speed", "[0]")
 	gPlayerMaxHealth[id] = 100
 	g_usingPower[id] = false
-
-#if defined AMX_NEW
 }
 //----------------------------------------------------------------------------------------------
 public client_prethink(id)
 {
-	if( gHasstealthPower[id] ) {
+	if( is_user_connected(id) && sh_user_has_hero(id,gHeroID)  ) {
 		Entvars_Set_Int(id, EV_INT_flTimeStepSound, 999)
 	}
 }
 
-#else
-
-	if ( hasPowers && is_user_connected(id) && g_usingPower[id] ) {
-		g_usingPower[id] = true
-		set_user_footsteps(id, 1)
-	}
-	else if ( !hasPowers && gHasstealthPower[id] && is_user_connected(id) ) {
-		set_user_footsteps(id, 0)
-		g_usingPower[id] = false
-	}
-
-}
-#endif
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/stealthoninvis.wav")
-	precache_sound("shmod/stealthrevive.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/stealthoninvis.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/stealthrevive.wav")
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -200,7 +179,7 @@ public stealth_ku()
 		return
 	}
 	
-	if ( !is_user_alive(id) || !gHasstealthPower[id] || !g_usingPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_usingPower[id] ) return
 	// Stop the sound
 	new sndStop=(1<<5)
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
@@ -210,7 +189,7 @@ public stealth_loop()
 {
 	if ( !shModActive() ) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasstealthPower[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id])
@@ -245,7 +224,7 @@ public stealth_death()
 	new id = read_data(2)
 
 	if ( gBetweenRounds ) return
-	if ( !is_user_connected(id) || !gHasstealthPower[id] ) return
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	new randNum = random_num(0, 100)
 	new pctChance = get_cvar_num("stealth_respawnpct")
@@ -298,7 +277,7 @@ public stealth_teamcheck(parm[])
 public curweapon(id)
 {
 	if ( !is_user_alive(id) || gBetweenRounds ) return
-	if ( !gHasstealthPower[id] || !g_usingPower[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !g_usingPower[id] ) return
 
 	new wpnid = read_data(2)
 
@@ -334,7 +313,7 @@ public round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasstealthPower[id] ) {
+		if (sh_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 		}
 	}
@@ -348,12 +327,6 @@ public client_disconnected(id)
 	// Yeah don't want any left over residuals
 	remove_task(id)
 
-	gHasstealthPower[id] = false
-}
-//-------------------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasstealthPower[id] = false
 }
 //-------------------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

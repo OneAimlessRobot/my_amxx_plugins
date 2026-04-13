@@ -407,7 +407,7 @@ return g_slit_kills[id]
 
 public plugin_precache()
 {
-	precache_model(SLITTER_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,SLITTER_V_MODEL)
 	for(new i=0;i<sizeof(teliko_slitter_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,teliko_slitter_sounds[i] );

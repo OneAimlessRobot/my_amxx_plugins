@@ -29,7 +29,6 @@ tessone_cooldown 45
 
 new g_HeroID
 new const g_HeroName[] = "TESS-One"
-new bool:g_HasTessOne[SH_MAXSLOTS+1]
 new bool:g_IsImmune[SH_MAXSLOTS+1]
 new g_TessTimer[SH_MAXSLOTS+1]
 new g_TessCooldown, g_TessAbsorbTime
@@ -57,12 +56,10 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			g_HasTessOne[id] = true
 			g_TessTimer[id] = -1
 		}
 
 		case SH_HERO_DROP: {
-			g_HasTessOne[id] = false
 
 			if ( g_TessTimer[id] >= 0 ) tess_endimmunity(id)
 		}
@@ -74,7 +71,7 @@ public sh_client_spawn(id)
 	gPlayerInCooldown[id] = false
 	g_TessTimer[id] = -1
 
-	if ( g_HasTessOne[id] ) tess_endimmunity(id)
+	if (sh_user_has_hero(id,g_HeroID)) tess_endimmunity(id)
 }
 
 public sh_hero_key(id, heroID, key)
@@ -96,7 +93,7 @@ public sh_hero_key(id, heroID, key)
 
 public tess_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_BULLET && g_HasTessOne[this] && g_IsImmune[this] && get_user_weapon(idattacker) != CSW_KNIFE ) {
+	if ( damagebits & DMG_BULLET &&sh_user_has_hero(this, g_HeroID)&& g_IsImmune[this] && get_user_weapon(idattacker) != CSW_KNIFE ) {
 		SetHamParamFloat(4, 0.0)
 		return HAM_SUPERCEDE
 	}
@@ -114,7 +111,7 @@ public tess_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( g_HasTessOne[player] ) {
+		if ( sh_user_has_hero(player,g_HeroID)) {
 			immuneTime = g_TessTimer[player]
 			if ( immuneTime > 0 ) {
 				g_TessTimer[player]--
@@ -142,7 +139,7 @@ public sh_client_death(victim)
 
 	g_TessTimer[victim]= -1
 
-	if ( g_HasTessOne[victim] ) tess_endimmunity(victim)
+	if (sh_user_has_hero(victim,g_HeroID) ) tess_endimmunity(victim)
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1043\\ f0\\ fs16 \n\\ par }

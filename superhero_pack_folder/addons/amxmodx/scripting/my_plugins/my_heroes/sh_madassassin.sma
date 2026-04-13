@@ -97,7 +97,7 @@ public plugin_precache()
 {
 	ModelWeaponLoaded = true
 	if ( file_exists(Model_V_Awp) ) {
-		precache_model(Model_V_Awp)
+		engfunc(EngFunc_PrecacheModel,Model_V_Awp)
 	}
 	else {
 		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_Awp)
@@ -105,7 +105,7 @@ public plugin_precache()
 	}
 
 	if ( file_exists(Model_P_Awp) ) {
-		precache_model(Model_P_Awp)
+		engfunc(EngFunc_PrecacheModel,Model_P_Awp)
 	}
 	else {
 		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_Awp)

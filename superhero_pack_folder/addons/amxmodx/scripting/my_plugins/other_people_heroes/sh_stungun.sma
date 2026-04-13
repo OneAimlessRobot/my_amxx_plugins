@@ -5,7 +5,6 @@
 
 new gHeroID
 new const gHeroName[] = "Stun Gun"
-new gHasStunPower[SH_MAXSLOTS+1]
 new bool:gHasStunned[SH_MAXSLOTS+1]
 
 //cvars
@@ -32,20 +31,13 @@ public sh_hero_init(id, heroID, mode)
 	
 	if ( mode == SH_HERO_ADD )
 	{
-		gHasStunPower[id] = true
-		
 		gHasStunned[id] = false
-	}
-	
-	else if ( mode == SH_HERO_DROP )
-	{
-		gHasStunPower[id] = false
 	}
 }
 
 public sh_client_spawn(id)
 {
-	if ( gHasStunPower[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		gHasStunned[id] = false
 		remove_task(id)
@@ -60,7 +52,7 @@ public client_damage(attacker, victim)
 	
 	if ( !gHasStunned[attacker] )
 	{
-		if ( gHasStunPower[attacker] )
+		if ( sh_user_has_hero(attacker,gHeroID) )
 		{
 			sh_set_stun(victim, get_pcvar_float(pcvarTimeToStun), get_pcvar_float(pcvarStunSpeed))
 			

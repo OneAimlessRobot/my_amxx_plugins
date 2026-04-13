@@ -10,12 +10,11 @@ leviathan_threshold 0.3     - percentage of life he must go below to flood level
 leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 */
 
-
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 
 new bubbleSprite
+new gHeroID
 new lastwpn[SH_MAXSLOTS + 1]
 new lastammo[SH_MAXSLOTS + 1]
 new check[SH_MAXSLOTS + 1]
@@ -25,8 +24,7 @@ new GrenOldOrigin[3]
 new bool:FloodOn=false
 new svgravity, leviathan_gravity, leviathan_swimspeed, leviathan_othersspeed, Float:leviathan_underwaterdmg, Float:leviathan_threshold
 
-new gHeroName[] = "Leviathan" 
-new gHeroID
+new gHeroName[] = "Leviathan"
 new bool:gHasLeviathanPowers[SH_MAXSLOTS + 1]
 new bool:gHasAcess[SH_MAXSLOTS + 1]
 
@@ -56,7 +54,7 @@ public plugin_init()
 
 public plugin_precache()
 {
-	bubbleSprite = precache_model("sprites/bubble.spr")
+	bubbleSprite = engfunc(EngFunc_PrecacheModel,"sprites/bubble.spr")
 }
 
 public client_connect(id)
@@ -72,19 +70,16 @@ public leviathan_init()
 	read_argv(1, temp, 5) 
 	new id = str_to_num(temp) 
 
-	read_argv(2, temp, 5) 
-	new hasPowers = str_to_num(temp) 
 	check[id] = 0
 	Swim[id] = false
-	gHasLeviathanPowers[id] = (hasPowers!=0)	
 	gPlayerMaxHealth[id] = 100
-	gHasAcess[id]=gHasLeviathanPowers[id];
-	if ( is_user_connected(id) && gHasLeviathanPowers[id]){
+	gHasAcess[id]=bool:sh_user_has_hero(id,gHeroID)
+	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID)){
 		
 		leviathan_admincheck(id)
 		
 	}
-	if(gHasLeviathanPowers[id]){
+	if(sh_user_has_hero(id,gHeroID)){
 		leviathan_gravity = get_cvar_num("leviathan_gravity")
 		leviathan_swimspeed = get_cvar_num("leviathan_swimspeed")
 		leviathan_othersspeed = get_cvar_num("leviathan_othersspeed")
@@ -92,7 +87,7 @@ public leviathan_init()
 		leviathan_threshold = get_cvar_float("leviathan_threshold")
 	}
 
-	if (!gHasLeviathanPowers[id] && FloodOn) remove_flood()
+	if (!sh_user_has_hero(id,gHeroID) && FloodOn) remove_flood()
 } 
 
 public newRound(id)
@@ -297,7 +292,7 @@ public leviathan_damage(id)
 
 	if (attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id) return PLUGIN_CONTINUE
 
-	if (gHasLeviathanPowers[attacker] && is_user_alive(id) && attacker!=id) {
+	if (sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker!=id) {
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)
 		if (extraDamage>0) if (get_user_health(id)>extraDamage) 
 			sh_extra_damage(id, attacker, extraDamage, "leviathan")
@@ -312,8 +307,7 @@ public leviathan_admincheck(id)
 
 	get_cvar_string("leviathan_adminflag", accessLevel, 9)
 
-	if ( gHasLeviathanPowers[id] &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
-		gHasLeviathanPowers[id] = false
+	if ( sh_user_has_hero(id,gHeroID)&&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
 		new dropMsg[100];
 		formatex(dropMsg,99,"drop %s",gHeroName);
 		_dropPower(id,dropMsg,0);

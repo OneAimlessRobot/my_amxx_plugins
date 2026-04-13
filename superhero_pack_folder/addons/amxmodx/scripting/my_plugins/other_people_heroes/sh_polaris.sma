@@ -14,7 +14,7 @@ polaris_range 300		// How close the grenades have to be before polaris reacts
 
 // GLOBAL VARIABLES
 new gHeroName[]="Polaris"
-new bool:gHasPolarisPowers[SH_MAXSLOTS+1]
+new gHeroID
 new gSpriteLightning
 new gRange, gBoost
 
@@ -29,32 +29,15 @@ public plugin_init()
 	register_cvar("polaris_range", "300" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Metal Control", "Deflect grenades", false, "polaris_level" )
+	gHeroID=shCreateHero(gHeroName, "Metal Control", "Deflect grenades", false, "polaris_level" )
 
-	// INIT
-	register_srvcmd("polaris_init", "polaris_init")
-	shRegHeroInit(gHeroName, "polaris_init")
 
 }
 
 public plugin_precache()
 {
-	precache_sound("turret/tu_fire1.wav")
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
-}
-
-public polaris_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has wolverine skills ( Wow everyone has wolverine powers :) )
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	
-	gHasPolarisPowers[id] = (hasPowers != 0)
+	engfunc(EngFunc_PrecacheSound,"turret/tu_fire1.wav")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
 public grenade_throw(index, greindex, wId)
@@ -90,7 +73,7 @@ public find_polaris(parm[])
 
 	// Find a polaris
 	for (new i = 0; i < pnum; i++) {
-		if ( !gHasPolarisPowers[players[i]] ) continue
+		if ( !sh_user_has_hero(players[i],gHeroID)) continue
 
 		if( get_entity_distance(players[i], grenadeID) < gRange ) {
 			entity_give_boost(grenadeID, players[i])

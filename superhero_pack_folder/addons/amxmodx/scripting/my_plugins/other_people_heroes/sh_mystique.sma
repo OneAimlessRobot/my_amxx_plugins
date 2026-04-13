@@ -40,7 +40,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gMystiqueSound)
+	engfunc(EngFunc_PrecacheSound,gMystiqueSound)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

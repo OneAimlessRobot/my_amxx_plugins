@@ -4,8 +4,8 @@
 
 new gHeroID
 new const gHeroName[] = "Head Shooter"
-new gHasHeadPower[SH_MAXSLOTS+1]
 new gStartHealth[SH_MAXSLOTS+1]
+
 
 public plugin_init()
 {
@@ -18,13 +18,6 @@ public plugin_init()
 	
 }
 
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-	
-	gHasHeadPower[id] = mode ? true : false
-}
-
 public sh_client_spawn(id)
 {
 	gStartHealth[id] = sh_get_max_hp(id)
@@ -32,7 +25,7 @@ public sh_client_spawn(id)
 
 public sh_client_death(victim, attacker, headshot)
 {
-	if ( gHasHeadPower[attacker] && headshot == 1 )
+	if ( sh_user_has_hero(attacker,gHeroID)&& headshot == 1 )
 	{
 		set_user_health(attacker, gStartHealth[attacker])
 	}

@@ -59,7 +59,6 @@ new const LineColors[COLORS_NUM][3] = {
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Demolition Man"
-new bool:gHasDemolitionMan[SH_MAXSLOTS+1]	//shouldn't really need this
 new bool:gBombPlanted
 new gPlayerMines[SH_MAXSLOTS+1][MAX_MINES]
 new gPlayerMinesCount[SH_MAXSLOTS+1]
@@ -92,13 +91,13 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundActivate)
-	precache_sound(gSoundCharge)
-	precache_sound(gSoundDeploy)
-	precache_model(gModelMine)
-	gSpriteBeam = precache_model("sprites/laserbeam.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundActivate)
+	engfunc(EngFunc_PrecacheSound,gSoundCharge)
+	engfunc(EngFunc_PrecacheSound,gSoundDeploy)
+	engfunc(EngFunc_PrecacheModel,gModelMine)
+	gSpriteBeam = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -106,13 +105,9 @@ public sh_hero_init(id, heroID, mode)
 	if ( gHeroID != heroID ) return
 
 	switch(mode) {
-		case SH_HERO_ADD: {
-			gHasDemolitionMan[id] = true
-		}
 
 		case SH_HERO_DROP: {
 			remove_mines(id)
-			gHasDemolitionMan[id] = false
 		}
 	}
 
@@ -125,7 +120,7 @@ public sh_hero_key(id, heroID, key)
 
 	if ( key == SH_KEYDOWN ) {
 		if ( sh_is_freezetime() || gBombPlanted ) return
-		if ( !is_user_alive(id) || !gHasDemolitionMan[id] ) return
+		if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 		create_mine(id)
 	}

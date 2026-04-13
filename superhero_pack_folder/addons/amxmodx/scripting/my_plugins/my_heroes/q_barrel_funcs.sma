@@ -81,12 +81,12 @@ public _q_barrel_unset_q_barrel(iPlugins,iParams){
 }
 public plugin_precache()
 {
-	precache_model(MODEL_V)
-	precache_model(MODEL_P)
-	precache_model(MODEL_W)
+	engfunc(EngFunc_PrecacheModel,MODEL_V)
+	engfunc(EngFunc_PrecacheModel,MODEL_P)
+	engfunc(EngFunc_PrecacheModel,MODEL_W)
 	
 	for(new i = 0; i < sizeof(WeaponSounds); i++)
-		precache_sound(WeaponSounds[i])
+		engfunc(EngFunc_PrecacheSound,WeaponSounds[i])
 	
 	register_forward(FM_PrecacheEvent, "fw_PrecacheEvent_Post", 1)	
 	g_SmokePuff_Id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")	
@@ -175,9 +175,6 @@ public Event_CurWeapon(id)
 
 public fw_SetModel(entity, model[])
 {
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
-	
 	static Classname[64]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
 	

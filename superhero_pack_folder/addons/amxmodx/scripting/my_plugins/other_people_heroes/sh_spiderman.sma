@@ -53,8 +53,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundWeb)
-	gSpriteWeb = precache_model("sprites/zbeam4.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundWeb)
+	gSpriteWeb = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

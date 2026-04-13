@@ -16,7 +16,6 @@ dracula_pctperlev 0.03	//What percent of damage to give back per level of player
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Dracula"
-new bool:gHasDracula[SH_MAXSLOTS+1]
 new gPcvarPctPerLev
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -33,22 +32,13 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Vampiric Drain", "Gain HP by attacking players - More HPs per level")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasDracula[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex)
 {
 	if ( !sh_is_active() || victim==attacker ) return
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
 	// Should nades not count? maybe remove them later
-	if ( gHasDracula[attacker] && CSW_P228 <= wpnindex <= CSW_P90 ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && CSW_P228 <= wpnindex <= CSW_P90 ) {
 		dracula_suckblood(attacker, damage)
 	}
 }
@@ -56,7 +46,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 // Leave this public so it can be called with a forward from Longshot
 public dracula_suckblood(attacker, damage)
 {
-	if ( sh_is_active() && gHasDracula[attacker] && is_user_alive(attacker) )
+	if ( sh_is_active() && sh_user_has_hero(attacker,gHeroID)&& is_user_alive(attacker) )
 	{
 		// Add some HP back!
 		new giveHPs = floatround(damage * get_pcvar_float(gPcvarPctPerLev) * sh_get_user_lvl(attacker))
@@ -71,10 +61,5 @@ public dracula_suckblood(attacker, damage)
 			sh_add_hp(attacker, giveHPs, maxHPs)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasDracula[id] = false
 }
 //----------------------------------------------------------------------------------------------

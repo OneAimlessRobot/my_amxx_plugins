@@ -82,7 +82,7 @@ public plugin_precache()
 	// Muzzleflash
 	g_Muzzleflash_Ent = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "info_target"))
 	
-	precache_model(MUZZLE_FLASH)
+	engfunc(EngFunc_PrecacheModel,MUZZLE_FLASH)
 	engfunc(EngFunc_SetModel, g_Muzzleflash_Ent, MUZZLE_FLASH)
 	set_pev(g_Muzzleflash_Ent, pev_scale, 0.2)
 	

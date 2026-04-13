@@ -7,7 +7,7 @@ highlander_level 0
 
 new gHeroID
 new const gHeroName[] = "Highlander"
-new gHasHighlanderPower[SH_MAXSLOTS+1]
+
 //-------------------------------------------------------------
 public plugin_init()
 {
@@ -19,18 +19,11 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "You can killable only with headshots.", "You will respawn until you get a headshot.")
 	
 }
-//--------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-	
-	gHasHighlanderPower[id] = mode ? true : false
-}
 //---------------------------------------------------------------------------
 public sh_client_death(victim, attacker, headshot)
 {	
 	new id = read_data(2)
-	if ( gHasHighlanderPower[victim] && !headshot )
+	if ( sh_user_has_hero(victim,gHeroID) && !headshot )
 	{
 	
 	if ( !is_user_alive(id))

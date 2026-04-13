@@ -12,13 +12,10 @@ vic15_auraradius 300		//Radius of Victim 15's ghostly aura
 
 */
 
-
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 new g_heroName[]="Victim 15/21"
-new bool:g_hasVic15[SH_MAXSLOTS+1]
+new gHeroID
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
 new bool:g_betweenRounds
 new g_userTeam[SH_MAXSLOTS+1]
@@ -38,12 +35,8 @@ public plugin_init()
 	register_cvar("vic15_auraradius", "300")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "15th Sacrament", "Deal damage to enemies merely by standing near them and always come back to life. Be careful of triggered deaths!", false, "vic15_level")
+	gHeroID=shCreateHero(g_heroName, "15th Sacrament", "Deal damage to enemies merely by standing near them and always come back to life. Be careful of triggered deaths!", false, "vic15_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("vic15_init", "vic15_init")
-	shRegHeroInit(g_heroName, "vic15_init")
 
 	// DEATH EVENT
 	register_event("DeathMsg", "vic15_death", "a")
@@ -60,22 +53,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("misc/victim15_static.wav")
-	precache_sound("misc/victim15_revive.wav")
-}
-//----------------------------------------------------------------------------------------------
-public vic15_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasVic15[id] = (hasPowers != 0)
+	engfunc(EngFunc_PrecacheSound,"misc/victim15_static.wav")
+	engfunc(EngFunc_PrecacheSound,"misc/victim15_revive.wav")
 }
 //----------------------------------------------------------------------------------------------
 public vic15_death()
@@ -84,7 +63,7 @@ public vic15_death()
 
 	new id = read_data(2)
 
-	if ( !is_user_connected(id) || !g_hasVic15[id] ) return
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	g_userTeam[id] = get_user_team(id)
 
@@ -151,7 +130,7 @@ public round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if ( g_hasVic15[id] ) {
+		if ( sh_user_has_hero(id,gHeroID)) {
 			// Reset the cooldown on round end, to start fresh for a new round
 			remove_task(id)
 			g_vic15PowerUsed[id] = false
@@ -228,7 +207,7 @@ public vic15_auraloop()
 	get_players(players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( g_hasVic15[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			//gClosestDist[id] = 1182
 
 			for (new e = 0; e < pnum; e++) {
@@ -255,7 +234,7 @@ public vic15_ringloop()
 	get_players(players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( g_hasVic15[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			//gClosestDist[id] = 1182
 
 			for (new e = 0; e < pnum; e++) {

@@ -10,15 +10,13 @@ pitch_cooldown 60			//Seconds till next available use of power
 
 //LOADS OF THNX TO FREECODE FOR GETTING THIS WORKING
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Pitch Black"
-new gHasPitchPower[SH_MAXSLOTS+1]
+new gHeroID
 new PitchTimer[SH_MAXSLOTS+1]
 new bool:NightVisionUse[SH_MAXSLOTS+1]
 new bool:lightsOut = false
@@ -36,7 +34,7 @@ public plugin_init()
 	register_cvar("pitch_cooldown", "60" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Total Darkness", "Make everything Pitch Black. Get Riddick's sight.", true, "pitch_level" )
+	gHeroID=shCreateHero(gHeroName, "Total Darkness", "Make everything Pitch Black. Get Riddick's sight.", true, "pitch_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("pitch_init", "pitch_init")
@@ -66,16 +64,10 @@ public pitch_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Pitch Black
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasPitchPower[id] = (hasPowers != 0)
-
 	PitchTimer[id] = -1
 	gPlayerUltimateUsed[id] = false
 
-	if (!gHasPitchPower[id] && PitchTimer[id] > 0) {
+	if (!sh_user_has_hero(id,gHeroID)&& PitchTimer[id] > 0) {
 		numOfPB -= 1
 		StopNVG(id)
 		if (numOfPB <= 0) {
@@ -87,8 +79,8 @@ public pitch_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound( "items/nvg_on.wav" )
-	precache_sound( "items/nvg_off.wav" )
+	engfunc(EngFunc_PrecacheSound, "items/nvg_on.wav" )
+	engfunc(EngFunc_PrecacheSound, "items/nvg_off.wav" )
 }
 //----------------------------------------------------------------------------------------------
 public pitch_kd()
@@ -98,7 +90,7 @@ public pitch_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !gHasPitchPower[id]) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	if ( gPlayerUltimateUsed[id] || PitchTimer[id] >= 0) {
 		playSoundDenySelect(id)
@@ -188,7 +180,7 @@ public lightsOn()
 //----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !shModActive() || !gHasPitchPower[id] || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -198,7 +190,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !gHasPitchPower[id] || !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() || !is_user_alive(id) ) return
 
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )

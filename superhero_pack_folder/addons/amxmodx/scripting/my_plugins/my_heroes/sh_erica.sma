@@ -407,10 +407,10 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 }
 public plugin_precache()
 {
-	precache_model(NAVALHA_V_MODEL)
-	precache_model(NAVALHA_P_MODEL)
-	precache_model(TRANQS_P_MODEL)
-	precache_model(TRANQS_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,NAVALHA_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,NAVALHA_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,TRANQS_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,TRANQS_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
 	for(new i=0;i<sizeof(erica_knife_sounds);i++){
 	

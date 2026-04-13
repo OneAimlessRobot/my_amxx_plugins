@@ -24,8 +24,6 @@ breaker_deduct 10
 
 // GLOBAL VARIABLES
 new gHeroID
-new bool:gHasBreaker[SH_MAXSLOTS+1]
-
 new pCvarChance, pCvarDeduct
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -43,13 +41,6 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Reduce Enemy AP on Hit", "You have a chance to reduce the AP of an enemy when you hit them!")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-	
-	gHasBreaker[id] = mode ? true : false
-}
-//----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex) 
 { 
 	if ( !sh_is_active() ) return 
@@ -58,7 +49,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	new armor, CsArmorType:armortype 
 	armor = cs_get_user_armor(victim, armortype) 
 	
-	if (gHasBreaker[attacker] && random_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
+	if (sh_user_has_hero(attacker,gHeroID) && random_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
 	{ 	
 		new slot=0;
 		if(wpnindex < CSW_P90){

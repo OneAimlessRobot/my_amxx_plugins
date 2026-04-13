@@ -52,16 +52,12 @@ blade_gunburndmg 3	//Amount of damage per burn from gun burn (Default 3)
 
 //------- Do not edit below this point ------//
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
-#if USE_MODEL
-	#include <fakemeta>
-#endif
 
 // GLOBAL VARIABLES
 new HeroName[] = "Blade"
-new bool:HasBlade[SH_MAXSLOTS+1]
+new gHeroID
 new bool:InKnifeBurn[SH_MAXSLOTS+1]
 new bool:InGunBurn[SH_MAXSLOTS+1]
 new VampForward
@@ -100,7 +96,7 @@ public plugin_init()
 			CvarGunDmg = register_cvar("blade_gunburndmg", "3")
 
 			// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-			shCreateHero(HeroName, "Silver Knife & Bullets", "Burn Vampires with your KNIFE or Deal Extra Burning Damage with your MAC10 or USP", false, "blade_level")
+			gHeroID=shCreateHero(HeroName, "Silver Knife & Bullets", "Burn Vampires with your KNIFE or Deal Extra Burning Damage with your MAC10 or USP", false, "blade_level")
 
 			// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 			// INIT
@@ -121,13 +117,13 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	SpriteSmoke = precache_model("sprites/steam1.spr")
-	SpriteFire = precache_model("sprites/xfire.spr")
-	precache_sound("ambience/burning1.wav")
-	precache_sound("controller/con_die2.wav")
+	SpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	SpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
+	engfunc(EngFunc_PrecacheSound,"ambience/burning1.wav")
+	engfunc(EngFunc_PrecacheSound,"controller/con_die2.wav")
 
 	#if USE_MODEL
-		precache_model("models/shmod/blade_v_mac10.mdl")
+		engfunc(EngFunc_PrecacheModel,"models/shmod/blade_v_mac10.mdl")
 	#endif
 }
 //----------------------------------------------------------------------------------------------
@@ -138,9 +134,6 @@ public blade_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
 
 #if GIVE_WEAPONS == 1
 	// Reset thier shield restrict status
@@ -148,11 +141,10 @@ public blade_init()
 	shResetShield(id)
 #endif
 
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasBlade[id] = true
 
 			if ( is_user_alive(id) )
 			{
@@ -169,7 +161,7 @@ public blade_init()
 		case false:
 		{
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) && HasBlade[id] )
+			if ( is_user_alive(id) )
 			{
 				#if GIVE_WEAPONS == 1
 					if ( cs_get_user_team(id) == CS_TEAM_T )
@@ -180,8 +172,6 @@ public blade_init()
 
 				shRemSpeedPower(id)
 			}
-
-			HasBlade[id] = false
 		}
 	}
 }
@@ -191,13 +181,13 @@ public new_spawn(id)
 	blade_reset(id)
 
 #if GIVE_WEAPONS == 1
-	if ( shModActive() && is_user_alive(id) && HasBlade[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		set_task(0.1, "blade_weapons", id)
 }
 //----------------------------------------------------------------------------------------------
 public blade_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasBlade[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	if ( cs_get_user_team(id) == CS_TEAM_T )
@@ -211,7 +201,7 @@ public blade_weapons(id)
 #if USE_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasBlade[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -223,7 +213,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasBlade[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new wpnid = read_data(2)
@@ -254,7 +244,7 @@ public blade_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if ( HasBlade[attacker] && is_user_alive(id) && is_user_vampire(id) )
+	if (sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && is_user_vampire(id) )
 	{
 		switch(weapon)
 		{
@@ -317,7 +307,7 @@ public set_knifeburn(id, attacker)
 		return
 
 	// Extra checks for use with hero Longshot
-	if ( !HasBlade[attacker] || !is_user_vampire(id) )
+	if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_vampire(id) )
 		return
 
 	new knifeBurns = get_pcvar_num(CvarKnifeBurns)
@@ -511,8 +501,6 @@ blade_reset(id)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasBlade[id] = false
-
 	blade_reset(id)
 }
 //----------------------------------------------------------------------------------------------

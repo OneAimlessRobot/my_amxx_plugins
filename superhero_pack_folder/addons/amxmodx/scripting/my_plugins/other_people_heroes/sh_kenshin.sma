@@ -12,13 +12,11 @@ kenshin_knifemult 3.0		//Multiplier for knife damage (Default 3.0)
 
 // v1.2 - vittu - code cleaned up
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Kenshin"
-new bool:g_hasKenshinPower[SH_MAXSLOTS+1]
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -31,7 +29,7 @@ public plugin_init()
 	register_cvar("kenshin_knifemult", "3.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Kenshin Sword", "Extra Knife Damage, Extra Knife Speed", false, "kenshin_level")
+	gHeroID=shCreateHero(g_heroName, "Kenshin Sword", "Extra Knife Damage, Extra Knife Speed", false, "kenshin_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -51,7 +49,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/kenshin_v_knife.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/kenshin_v_knife.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public kenshin_init()
@@ -61,23 +59,18 @@ public kenshin_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
 
-	g_hasKenshinPower[id] = (hasPowers!=0)
-
-	if ( g_hasKenshinPower[id]  && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		switchmodel(id)		
 	}
-	else if ( !g_hasKenshinPower[id]  && is_user_connected(id) ) {
+	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		shRemSpeedPower(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( g_hasKenshinPower[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 		if ( weapon != CSW_KNIFE && weapon > 0 ) {
 			new wpn[32]
@@ -89,7 +82,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !g_hasKenshinPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
@@ -105,7 +98,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !shModActive() || !g_hasKenshinPower[id] ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) ) return
 
 	new weapon = read_data(2)
 
@@ -122,7 +115,7 @@ public kenshin_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
 
-	if ( g_hasKenshinPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ) {
+	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("kenshin_knifemult") - damage)
 		if ( extraDamage > 0 ) sh_extra_damage(id, attacker, extraDamage, "knife", headshot)

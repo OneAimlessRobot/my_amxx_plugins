@@ -31,7 +31,6 @@ bass_multishot 0.1			//Delay for multishots on holding key down, set to -1 for o
 *   From original code "Based on dr.doom Hero but added gravity.."
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // Damage Variables
@@ -69,10 +68,10 @@ new BeamColors[8][3] = {
 
 // GLOBAL VARIABLES
 new gHeroName[]="Bass"
-new bool:gHasBassPower[SH_MAXSLOTS+1]
 new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -91,7 +90,7 @@ public plugin_init()
 	register_cvar("bass_multishot", "0.1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
+	gHeroID=shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -121,10 +120,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("weapons/electro5.wav")
-	precache_sound("weapons/xbow_hitbod2.wav")
-	smoke = precache_model("sprites/steam1.spr")
-	laser = precache_model("sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
 public bass_init()
@@ -134,29 +133,24 @@ public bass_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
 
 	// This gets run if they had the power but don't anymore
-	if ( hasPowers && is_user_connected(id) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		gPlayerUltimateUsed[id] = false
 		gLaserShots[id] = get_cvar_num("bass_laser_ammo")
 	}
-	else if( !hasPowers && gHasBassPower[id] && is_user_alive(id) ) {
+	else if( !sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		shRemHealthPower(id)
 		shRemGravityPower(id)
 		shRemArmorPower(id)
 		shRemSpeedPower(id)
 	}
 
-	// Sets this variable to the current status
-	gHasBassPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasBassPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		remove_task(id)
 		gPlayerUltimateUsed[id] = false
 		gLaserShots[id] = get_cvar_num("bass_laser_ammo")
@@ -361,8 +355,6 @@ public client_disconnected(id)
 
 	// Yeah don't want any left over residuals
 	remove_task(id)
-
-	gHasBassPower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

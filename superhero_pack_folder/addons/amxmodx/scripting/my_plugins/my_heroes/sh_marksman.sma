@@ -199,7 +199,7 @@ public plugin_precache()
 	for(new i=0;i<sizeof(g_dragunovModels);i++){
 	
 		if ( file_exists(g_dragunovModels[i]) ) {
-			precache_model(g_dragunovModels[i])
+			engfunc(EngFunc_PrecacheModel,g_dragunovModels[i])
 			console_print(0, "Model loaded: ^"%s^"", g_dragunovModels[i])
 			g_modelsloaded=true
 			
@@ -213,7 +213,7 @@ public plugin_precache()
 	for(new i=0;i<sizeof(g_psg1Models);i++){
 	
 		if ( file_exists(g_psg1Models[i]) ) {
-			precache_model(g_psg1Models[i])
+			engfunc(EngFunc_PrecacheModel,g_psg1Models[i])
 			console_print(0, "Model loaded: ^"%s^"", g_psg1Models[i])
 			g_modelsloaded=true
 			

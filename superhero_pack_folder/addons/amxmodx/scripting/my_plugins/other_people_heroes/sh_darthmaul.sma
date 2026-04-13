@@ -46,7 +46,6 @@ darth_knifemult 2.70		// multiplier for knife damage...
 
 // GLOBAL VARIABLES
 new gHeroID
-new bool:gHasDarthMaul[SH_MAXSLOTS+1]
 new gPcvarHealPoints
 
 #if defined USE_WPN_MODEL
@@ -90,7 +89,7 @@ public plugin_precache()
 	// Seperate checks so the model that is missing can be reported
 	gModelLoaded = true
 	if ( file_exists(gModelKnifeV) ) {
-		precache_model(gModelKnifeV)
+		engfunc(EngFunc_PrecacheModel,gModelKnifeV)
 	}
 	else {
 		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelKnifeV)
@@ -98,7 +97,7 @@ public plugin_precache()
 	}
 
 	if ( file_exists(gModelKnifeP) ) {
-		precache_model(gModelKnifeP)
+		engfunc(EngFunc_PrecacheModel,gModelKnifeP)
 	}
 	else {
 		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelKnifeP)
@@ -113,16 +112,11 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasDarthMaul[id] = true
 #if defined USE_WPN_MODEL
 			if ( gModelLoaded && get_user_weapon(id) == CSW_KNIFE ) {
 				switch_model_knife(id)
 			}
 #endif
-		}
-
-		case SH_HERO_DROP: {
-			gHasDarthMaul[id] = false
 		}
 	}
 }
@@ -139,7 +133,7 @@ public darth_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( gHasDarthMaul[player] ) {
+		if ( sh_user_has_hero(player,gHeroID) ) {
 			sh_add_hp(player, healPoints)
 		}
 	}
@@ -160,7 +154,7 @@ public Ham_Knife_Deploy_Post(wpnEntId)
 //----------------------------------------------------------------------------------------------
 switch_model_knife(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasDarthMaul[id] ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	// If user has a shield do not change model, since we don't have one with a shield
 	if ( cs_get_user_shield(id) ) return

@@ -19,7 +19,7 @@ new spr_blast_shroom
 
 // VARIABLES
 new gHeroName[]="Predator"
-new gHasPredPower[SH_MAXSLOTS+1]
+new gHeroID
 new gLastWeapon[SH_MAXSLOTS+1]
 new gDLaserFired[33] = 0
 new gDLLastWeapon[33]=0
@@ -49,7 +49,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	if ( isDebugOn() ) server_print("Attempting to create Predator Hero")
 	register_cvar("pred_level", "7")
-	shCreateHero(gHeroName, "Invisibility, LaserCannon, Lazer Deagle, SuperClaw", "Invisibility while not shooting, Super Claw, Laser Beam", true, "pred_level")
+	gHeroID=shCreateHero(gHeroName, "Invisibility, LaserCannon, Lazer Deagle, SuperClaw", "Invisibility while not shooting, Super Claw, Laser Beam", true, "pred_level")
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -93,13 +93,13 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	smoke = precache_model("sprites/steam1.spr") 
-	laser = precache_model("sprites/laserbeam.spr") 
-	precache_sound("weapons/electro5.wav") 
-	precache_sound("weapons/xbow_hitbod2.wav")
-	spr_laser = precache_model("sprites/laserbeam.spr") 
-	spr_laser_impact = precache_model("sprites/zerogxplode.spr") 
-	spr_blast_shroom = precache_model("sprites/mushroom.spr") 
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr") 
+	laser = engfunc(EngFunc_PrecacheModel,"beam.spr") 
+	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav") 
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
+	spr_laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr") 
+	spr_laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr") 
+	spr_blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr") 
 	return PLUGIN_CONTINUE 
 }
 
@@ -110,17 +110,12 @@ public pred_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has Predator
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	gHasPredPower[id]=(hasPowers!=0) 
-	
 	// Got to remove the powers if he is not Predator
-	if ( !hasPowers )
+	if ( !sh_user_has_hero(id,gHeroID))
 		uninvis(id)
 	
 	//Give Powers to the Predator
-	if ( hasPowers )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		stillInvis(id)
 		set_user_footsteps(id,1)
@@ -129,7 +124,7 @@ public pred_init()
 
 public newRound(id)
 {
-	if ( is_user_alive(id) && gHasPredPower[id]) {
+	if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID)) {
 		stillInvis(id)
 	}
 	
@@ -144,7 +139,7 @@ public newRound(id)
 	gPlayerUltimateUsed[id]=false
 	gDLLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 	
-	if (gHasPredPower[id] && get_cvar_num("pred_getdeagle")==1) {
+	if (sh_user_has_hero(id,gHeroID) && get_cvar_num("pred_getdeagle")==1) {
 		shGiveWeapon(id,"weapon_deagle") 
 	}
 }
@@ -351,10 +346,10 @@ public check_attack() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_ATTACK) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_ATTACK) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			else if (!(get_user_button(i)&IN_ATTACK) && gHasPredPower[i]) { 
+			else if (!(get_user_button(i)&IN_ATTACK) &&sh_user_has_hero(i,gHeroID)) { 
 				stillInvis(i) 
 			}
 		}
@@ -366,10 +361,10 @@ public check_two_buttons() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_USE) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_USE) && sh_user_has_hero(i,gHeroID)) { 
 				stillInvis(i) 
 			}
-			if ((get_user_button(i)&IN_ATTACK2) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_ATTACK2) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
 		}
@@ -382,19 +377,19 @@ public check_move_buttons() {
 	{
 		for(new i = 1; i <= get_maxplayers(); ++i) { 
 			if (is_user_alive(i)) { 
-				if ((get_user_button(i)&IN_BACK) && gHasPredPower[i]) { 
+				if ((get_user_button(i)&IN_BACK) && sh_user_has_hero(i,gHeroID)) { 
 					moveInvis(i) 
 				}
-				if ((get_user_button(i)&IN_MOVELEFT) && gHasPredPower[i]) { 
+				if ((get_user_button(i)&IN_MOVELEFT) && sh_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_MOVERIGHT) && gHasPredPower[i]) { 
+				if ((get_user_button(i)&IN_MOVERIGHT) && sh_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_FORWARD) && gHasPredPower[i]) { 
+				if ((get_user_button(i)&IN_FORWARD) && sh_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_RUN) && gHasPredPower[i]) { 
+				if ((get_user_button(i)&IN_RUN) && sh_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
 			}
@@ -404,19 +399,19 @@ public check_move_buttons() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_BACK) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_BACK) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_MOVELEFT) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_MOVELEFT) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_MOVERIGHT) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_MOVERIGHT) &&sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_FORWARD) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_FORWARD) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_RUN) && gHasPredPower[i]) { 
+			if ((get_user_button(i)&IN_RUN) && sh_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
 		}
@@ -433,7 +428,7 @@ public pred_damage(id)
 	
 	if ( attacker <=0 || attacker>SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 	
-	if ( gHasPredPower[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("pred_knifemult") - damage)
@@ -451,7 +446,7 @@ public pred_DLdamage(id)
 	
 	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id ) return PLUGIN_CONTINUE
 	
-	if ( gHasPredPower[attacker_id] && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
+	if ( sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
 	{ 
 		new health = get_user_health(id) 
 		
@@ -545,7 +540,7 @@ public make_tracer(id) {
 	new weap = read_data(2)        // id of the weapon 
 	new ammo = read_data(3)        // ammo left in clip 
 	
-	if ( gHasPredPower[id] && weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap 
 		
@@ -601,7 +596,7 @@ public make_tracer(id) {
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !gHasPredPower[id] || !shModActive() ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
 	

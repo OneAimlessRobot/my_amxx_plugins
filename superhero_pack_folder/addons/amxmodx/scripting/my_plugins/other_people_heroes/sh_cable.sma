@@ -11,7 +11,6 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // Damage Variables
@@ -23,10 +22,10 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 
 // GLOBAL VARIABLES
 new smoke, laser, laser_shots[SH_MAXSLOTS+1]
-new bool:gHascablePower[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gHeroName[]="Cable"
 static const burn_decal[5] = {199,200,201,202,203}
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -41,7 +40,7 @@ public plugin_init()
 	register_cvar("cable_mulishot", "0.02" ) //Delay for multishots on holding key down
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
+	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -62,9 +61,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	smoke = precache_model("sprites/steam1.spr")
-	laser = precache_model("sprites/zerogxplode.spr")
-	precache_sound("shmod/cable_laser.wav")
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	laser = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/cable_laser.wav")
 }
 //----------------------------------------------------------------------------------------------
 public cable_init()
@@ -74,13 +73,7 @@ public cable_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has cable powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-
-	gHascablePower[id] = (hasPowers!=0)
-
-	if (gHascablePower[id]) {
+	if (sh_user_has_hero(id,gHeroID)) {
 		gPlayerUltimateUsed[id] = false
 		laser_shots[id] = get_cvar_num("cable_laser_ammo")
 	}
@@ -280,7 +273,6 @@ public client_disconnected(id)
 
 	// Yeah don't want any left over residuals
 	remove_task(id+25735)
-	gHascablePower[id] = false
 }
 //----------------------------------------------------------------------------------------------
 

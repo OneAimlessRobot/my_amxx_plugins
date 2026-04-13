@@ -327,9 +327,9 @@ public plugin_precache()
 {
 	
 
-	precache_model(MOLLY_V_MODEL);
-	precache_model(MOLLY_W_MODEL);
-	precache_model(MOLLY_P_MODEL);
+	engfunc(EngFunc_PrecacheModel,MOLLY_V_MODEL);
+	engfunc(EngFunc_PrecacheModel,MOLLY_W_MODEL);
+	engfunc(EngFunc_PrecacheModel,MOLLY_P_MODEL);
 
 	engfunc(EngFunc_PrecacheSound, MOLLY_BURST_SFX)
 	engfunc(EngFunc_PrecacheSound, MOLLY_FIRE_SFX)

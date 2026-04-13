@@ -67,7 +67,7 @@ new bool:slowed[33]
 new Float:g_fMaxSpeed[33]
 
 new g_HeroName[] = "Gloce"
-new g_HasPower[SH_MAXSLOTS+1]
+new gHeroID
 
 new times_id[SH_MAXSLOTS+1]
 
@@ -95,7 +95,7 @@ public plugin_init()
 	gloce_time = register_cvar("gloce_freeze_time", "5")
 
 	//Create Hero
-	shCreateHero(g_HeroName, "Ice Glock", GLOCE_DSPT, false, "gloce_level")
+	gHeroID=shCreateHero(g_HeroName, "Ice Glock", GLOCE_DSPT, false, "gloce_level")
 
 	//Register Hero
 	register_srvcmd("gloce_init", "gloce_init")
@@ -104,11 +104,11 @@ public plugin_init()
 
 public plugin_precache()
 {
-	precache_sound(g_sound)
-	g_spriteRing = precache_model(g_sprite)
+	engfunc(EngFunc_PrecacheSound,g_sound)
+	g_spriteRing = engfunc(EngFunc_PrecacheModel,g_sprite)
 
 	#if defined USE_MODEL
-	   precache_model(g_model)
+	   engfunc(EngFunc_PrecacheModel,g_model)
 	#endif
 }
 
@@ -118,12 +118,7 @@ public gloce_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_HasPower[id] = (hasPowers != 0)
-
-	if(g_HasPower[id])
+	if(sh_user_has_hero(id,gHeroID))
 	{
 		times_id[id] = get_pcvar_num(gloce_times)
 
@@ -140,7 +135,7 @@ public gloce_v_model(id)
 		
 		new weapon = get_user_weapon(id)
 
-		if(weapon == CSW_GLOCK18 && g_HasPower[id]){
+		if(weapon == CSW_GLOCK18 &&sh_user_has_hero(id,gHeroID)){
 			set_pev(id, pev_viewmodel2, g_model)
 		}
 	}
@@ -153,7 +148,7 @@ public fwd_Ham_Spawn_post(id)
 		pev(id, pev_maxspeed, g_fMaxSpeed[id])
 
 		times_id[id] = get_pcvar_num(gloce_times)
-		if(g_HasPower[id] && get_pcvar_num(gloce_glock))
+		if(sh_user_has_hero(id,gHeroID) && get_pcvar_num(gloce_glock))
 		{
 			ham_give_weapon(id, "weapon_glock18")
 			ExecuteHam(Ham_GiveAmmo, id, 80, "9mm", 120)
@@ -175,7 +170,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 		if(fHealth - fDamage > 0.0)
 		{
 			new weapon = get_user_weapon(Attacker)
-			if((cs_get_user_team(id)!=cs_get_user_team(Attacker))&&(weapon == CSW_GLOCK18) && g_HasPower[Attacker] && (times_id[Attacker] > 0))
+			if((cs_get_user_team(id)!=cs_get_user_team(Attacker))&&(weapon == CSW_GLOCK18) && sh_user_has_hero(Attacker,gHeroID)&& (times_id[Attacker] > 0))
 			{
 				if(random_num(0, 100) <= get_pcvar_num(gloce_pct))
 				{
@@ -234,7 +229,7 @@ public weapon_event(id)
 			set_pev(id, pev_maxspeed, 130.0)
 		}
 
-		else if(slowed[id] && weaponid == CSW_GLOCK18 && g_HasPower[id])
+		else if(slowed[id] && weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 
@@ -244,7 +239,7 @@ public weapon_event(id)
 		}
 
 		#if defined USE_MODEL
-		 else if(weaponid == CSW_GLOCK18 && g_HasPower[id])
+		 else if(weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
 		 {
 			 gloce_v_model(id)
 		 }
@@ -277,13 +272,11 @@ public remove_frozen(id)
 
 public fwd_Client_Connect(id)
 {
-	g_HasPower[id] = false
 	times_id[id] = 0
 }
 
 public fwd_Client_Disconnect(id)
 {
-	g_HasPower[id] = false
 	times_id[id] = 0
 }
 

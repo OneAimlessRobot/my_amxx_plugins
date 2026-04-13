@@ -14,7 +14,6 @@ dsniper_mult 4
 
 new gHeroID
 new gHeroName[] = "Deagle Assassin"
-new bool:gHasDeaglePower[SH_MAXSLOTS+1]
 new bool:gHasZoom[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gmsgSetFOV
@@ -50,7 +49,7 @@ public plugin_init()
 
 public plugin_precache()
 {
-	precache_model(gModelDgl)
+	engfunc(EngFunc_PrecacheModel,gModelDgl)
 }
 
 public sh_hero_init(id, HeroID, mode)
@@ -64,7 +63,6 @@ public sh_hero_init(id, HeroID, mode)
 		//if they get power
 		case SH_HERO_ADD:
 		{
-			gHasDeaglePower[id] = true
 			deagle_weapon(id)
 			switch_model(id)
 		}
@@ -72,7 +70,6 @@ public sh_hero_init(id, HeroID, mode)
 		//if they lose power
 		case SH_HERO_DROP:
 		{
-			gHasDeaglePower[id] = false
 			if (is_user_alive(id))
 			{
 				sh_drop_weapon(id, CSW_DEAGLE, true)
@@ -84,7 +81,7 @@ public sh_hero_init(id, HeroID, mode)
 public sh_client_spawn(id)
 {
 	//if client has power give weapon
-	if (gHasDeaglePower[id])
+	if (sh_user_has_hero(id,gHeroID))
 	{
 		deagle_weapon(id)
 	}
@@ -93,7 +90,7 @@ public sh_client_spawn(id)
 public fakemeta_CmdStart(id, uc_handle, seed)
 {
 	// if sh is not active or user don't have the power or user is dead do nothing
-	if ( !sh_is_active() || !gHasDeaglePower[id] || !is_user_alive(id) ) return FMRES_IGNORED
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return FMRES_IGNORED
 
 	// if user use secondary attack
 	if ( (get_uc(uc_handle, UC_Buttons) & IN_ATTACK2) && !(pev(id, pev_oldbuttons) & IN_ATTACK2) )
@@ -130,7 +127,7 @@ dsniper_zoomout(id)
 switch_model(id)
 {
 	//if client does not have hero, is dead, or sh is off do nothing
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasDeaglePower[id] ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	//if client has deagle set model
 	if ( get_user_weapon(id) == CSW_DEAGLE )
@@ -142,7 +139,7 @@ switch_model(id)
 deagle_weapon(id)
 {
 	//if client is alive and has power give deagle
-	if ( sh_is_active() && is_user_alive(id) && gHasDeaglePower[id] )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		sh_give_weapon(id, CSW_DEAGLE)
 	}
@@ -151,7 +148,7 @@ deagle_weapon(id)
 public weapon_change(id)
 {
 	//do nothing if client does not have hero or sh is off
-	if ( !sh_is_active() || !gHasDeaglePower[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 
 	new weaponID = read_data(2)
 	if ( weaponID != gLastWeapon[id] )

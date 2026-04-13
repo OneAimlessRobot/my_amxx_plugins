@@ -27,7 +27,6 @@ new gHeroID
 new const gHeroName[] = "Wildcard"
 new const gEntAKBurst[] = "akBurst"
 new const gModelShell[] = "models/rshell_big.mdl"
-new bool:gHasWildcard[SH_MAXSLOTS+1]
 new g_burst_waittime[33] = 0
 new g_burst_reloadtime[33] = 0
 new gMaxPlayers
@@ -69,10 +68,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 { 
-	precache_model(gModelShell)
-	precache_sound("weapons/ak47-1.wav")
-	precache_sound("weapons/ric_conc-1.wav")
-	precache_sound("weapons/knife_hit3.wav")
+	engfunc(EngFunc_PrecacheModel,gModelShell)
+	engfunc(EngFunc_PrecacheSound,"weapons/ak47-1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/ric_conc-1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/knife_hit3.wav")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -81,13 +80,10 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasWildcard[id] = true
-
 			wildcard_weapons(id)
 		}
 
 		case SH_HERO_DROP: {
-			gHasWildcard[id] = false
 			if ( is_user_alive(id) ) {
 				sh_drop_weapon(id, CSW_AK47, true)
 			}
@@ -99,7 +95,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasWildcard[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		wildcard_weapons(id)
 		if (g_burst_waittime[id] > 1)
 		{
@@ -114,7 +110,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 wildcard_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasWildcard[id] ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, CSW_AK47)
 	}
 }
@@ -124,7 +120,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
-	if ( gHasWildcard[attacker] && wpnindex == CSW_AK47 ) {
+	if ( sh_user_has_hero(attacker,gHeroID)&& wpnindex == CSW_AK47 ) {
 		new headshot = hitplace == 1 ? 1 : 0
 
 		// do extra damage
@@ -260,7 +256,7 @@ public forward_playerprethink(id)
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 		if (entity_get_int(id, EV_INT_button) & IN_ATTACK) return FMRES_IGNORED
 		if (entity_get_int(id, EV_INT_button) & IN_RELOAD) return FMRES_IGNORED
-		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && gHasWildcard[id] )
+		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && sh_user_has_hero(id,gHeroID) )
 		{
 			wildcard_burst(id)
 			return FMRES_IGNORED
@@ -325,7 +321,7 @@ public wildcard_burstreload(id)
 //----------------------------------------------------------------------------------------------
 public wildcard_burst(id)
 {
-	if( !gHasWildcard[id] || !(is_user_alive(id)) || g_burst_reloadtime[id] == 1 )
+	if( !sh_user_has_hero(id,gHeroID) || !(is_user_alive(id)) || g_burst_reloadtime[id] == 1 )
 	return PLUGIN_CONTINUE
 
 	if (halflife_time()-g_burst_waittime[id] < 1) return PLUGIN_CONTINUE

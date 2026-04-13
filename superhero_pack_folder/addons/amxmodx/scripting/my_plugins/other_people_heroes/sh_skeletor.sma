@@ -18,7 +18,6 @@ skeletor_maxsnarks 10			// maximum amount of snarks to spawn on a player
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Skeletor"
-new bool:gHasSkeletor[SH_MAXSLOTS+1]
 new gPlayerPosition[SH_MAXSLOTS+1][3]  // keeps track of last known origin
 new gMoveTimer[SH_MAXSLOTS+1]          // incremented if player didn't move far enough
 new const gSoundSummon[] = "ambience/port_suckin1.wav"
@@ -50,16 +49,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundSummon)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasSkeletor[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	engfunc(EngFunc_PrecacheSound,gSoundSummon)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -130,7 +120,7 @@ skeletor_summon(victim)
 
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( gHasSkeletor[player] && victimTeam != cs_get_user_team(player) && !gPlayerInCooldown[player] ) {
+		if ( sh_user_has_hero(player,gHeroID)&& victimTeam != cs_get_user_team(player) && !gPlayerInCooldown[player] ) {
 			// COOL WE HAVE A SKELETOR TO STICK SNARKS ON Player id!
 			new Float:cooldown = get_pcvar_float(pCvarCooldown)
 			if ( cooldown > 0.0 ) sh_set_cooldown(player, cooldown)

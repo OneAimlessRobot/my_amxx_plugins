@@ -23,14 +23,11 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 *   Based on Jedi Force Grab plugin by SpaceDude.
 */
 
-#include <amxmodx>
-#include <engine>
-#include <cstrike>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
+new gHeroID
 new g_heroName[]="Exodus"
-new bool:g_hasExodus[SH_MAXSLOTS+1]
 new bool:g_inSearch[SH_MAXSLOTS+1]
 new g_grabbedID[SH_MAXSLOTS+1]
 new g_grabTimer[SH_MAXSLOTS+1]
@@ -50,7 +47,7 @@ public plugin_init()
 	register_cvar("exodus_toggle", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Telekinesis", "Telekinetically pick up and drag player in the air with +power key.", true, "exodus_level")
+	gHeroID=shCreateHero(g_heroName, "Telekinesis", "Telekinetically pick up and drag player in the air with +power key.", true, "exodus_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -74,7 +71,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteLightning = precache_model("sprites/lgtning.spr")
+	g_spriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
 public exodus_init()
@@ -84,18 +81,13 @@ public exodus_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	//Clear out any stale tasks
 	remove_task(id)
 
-	if ( !hasPowers && g_hasExodus[id] && is_user_connected(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
 		if ( g_inSearch[id] ) release(id)
 	}
 
-	g_hasExodus[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -117,7 +109,7 @@ public exodus_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasExodus[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	// If in toggle mode change this to a keyup event
 	if ( get_cvar_num("exodus_toggle") && g_inSearch[id] ) {
@@ -175,7 +167,7 @@ public exodus_ku()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasExodus[id] || !g_inSearch[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
 
 	if ( !g_grabbedID[id] ) client_print(id, print_center, "Exodus - Stopped Searching")
 
@@ -255,7 +247,7 @@ public set_grabbed(id, targetid)
 //----------------------------------------------------------------------------------------------
 public exodus_timeloop(id)
 {
-	if ( !g_hasExodus[id] || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
 
 	if ( g_grabTimer[id] > 0 && g_grabTimer[id] < 11 ) {
 		new message[128]
@@ -295,14 +287,14 @@ public exodus_death()
 {
 	new id = read_data(2)
 
-	if ( !g_hasExodus[id] || !g_inSearch[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !g_inSearch[id] ) return
 
 	release(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if ( !g_hasExodus[id] || !g_inSearch[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
 
 	release(id)
 }

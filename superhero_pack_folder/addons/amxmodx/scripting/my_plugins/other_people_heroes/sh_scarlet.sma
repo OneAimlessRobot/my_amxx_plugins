@@ -14,7 +14,6 @@ scarlet_wallspeed 250.0				//speed he climbs
 
 new g_heroID
 new pcvar_level
-new bool:g_hasScarlet[SH_MAXSLOTS+1]
 new bool:g_canClimb[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------
 public plugin_init() 
@@ -36,14 +35,13 @@ public sh_hero_init(id, heroID, mode)
 {
 	if ( g_heroID == heroID )
 	{
-		g_hasScarlet[id] = (mode != 0)
 		g_canClimb[id]=false
 	}
 }
 //----------------------------------------------------------------------------------------------
 public wall_walk(id) 
 {
-	if ( is_user_alive(id) && g_hasScarlet[id] && g_canClimb[id]) {
+	if ( is_user_alive(id) && sh_user_has_hero(id,g_heroID)&& g_canClimb[id]) {
 		
 		new Float:velocity[3]
 		pev(id, pev_velocity, velocity)
@@ -59,7 +57,7 @@ public wall_walk(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( g_heroID != heroID ) return PLUGIN_HANDLED
-	if ( !is_user_alive(id) || !g_hasScarlet[id] ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,g_heroID) ) return PLUGIN_HANDLED
 
 	if ( key == SH_KEYDOWN )
 	{

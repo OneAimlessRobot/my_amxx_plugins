@@ -10,12 +10,11 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Steel"
-new bool:g_HasSteelPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:g_hasSuit[SH_MAXSLOTS+1]
 new g_hpSetSuit
 //----------------------------------------------------------------------------------------------
@@ -31,7 +30,7 @@ public plugin_init()
 	register_cvar("steel_maxaps", "100")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Armored Battle Suit", "Suit activates when Health gets low: you can only get shot in the Head, regen Armor, and all weapons are 2x Damage", false, "steel_level")
+	gHeroID=shCreateHero(gHeroName, "Armored Battle Suit", "Suit activates when Health gets low: you can only get shot in the Head, regen Armor, and all weapons are 2x Damage", false, "steel_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -56,26 +55,19 @@ public steel_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	// Set this cvar since it will get called alot
 	g_hpSetSuit = get_cvar_num("steel_hpsetsuit")
 
 	// This gets run if they had the power but don't anymore
-	if ( !hasPowers && g_HasSteelPower[id] && is_user_alive(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_hitzones(0, id, 255)
 		shUnglow(id)
 	}
-
-	// Sets this variable to the current status
-	g_HasSteelPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && g_HasSteelPower[id] && is_user_alive(id) && g_hasSuit[id] ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 		set_user_hitzones(0, id, 255)
 		g_hasSuit[id] = false
 	}
@@ -86,7 +78,7 @@ public steel_loop()
 	if ( !shModActive() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( g_HasSteelPower[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new userHealth = get_user_health(id)
 			if( userHealth <= g_hpSetSuit ) {
 				// Only need to set it once, if they don't have the suit
@@ -113,7 +105,7 @@ public steel_armorloop()
 	if ( !shModActive() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( g_HasSteelPower[id] && is_user_alive(id) && g_hasSuit[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 			// Set glow here since it's called less
 			shGlow(id, 35, 40, 50)
 
@@ -138,7 +130,7 @@ public steel_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( g_HasSteelPower[attacker] && is_user_alive(id) && id != attacker && g_hasSuit[id] ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[id] ) {
 		// add the same ammount of damage caused (this will double it)
 		new extraDamage = damage
 

@@ -565,7 +565,7 @@ public vexd_pfntouch(pToucher, pTouched)
 public plugin_precache()
 {
 
-precache_model("models/grenade.mdl")
+engfunc(EngFunc_PrecacheModel,"models/grenade.mdl")
 engfunc(EngFunc_PrecacheSound, LENA_L96_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, LENA_L96_WALLHIT_SOUND)
 

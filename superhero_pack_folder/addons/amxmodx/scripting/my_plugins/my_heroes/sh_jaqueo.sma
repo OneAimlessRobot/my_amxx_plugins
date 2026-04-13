@@ -251,10 +251,10 @@ public death()
 }
 public plugin_precache(){
 	
-	precache_model(JAQUEO_AK47_V_MODEL)
-	precache_model(JAQUEO_COOL_SCOUT_V_MODEL)
-	precache_model(JAQUEO_COOL_SCOUT_P_MODEL)
-	precache_model(JAQUEO_COOL_SCOUT_W_MODEL)
+	engfunc(EngFunc_PrecacheModel,JAQUEO_AK47_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_W_MODEL)
 	for(new i=0;i<sizeof(jaqueo_cool_scout_sounds);i++){
 		
 		engfunc(EngFunc_PrecacheSound,jaqueo_cool_scout_sounds[i] );

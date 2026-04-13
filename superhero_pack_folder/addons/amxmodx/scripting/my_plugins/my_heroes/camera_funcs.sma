@@ -834,11 +834,11 @@ public _clear_cameras(iPlugin,iParams){
 public plugin_precache()
 {
 	
-	precache_model( CAMERA_WORLD_MDL );
+	engfunc(EngFunc_PrecacheModel,CAMERA_WORLD_MDL );
 	engfunc(EngFunc_PrecacheSound, CAMERA_BOOTING_SFX) 
 	engfunc(EngFunc_PrecacheSound, CAMERA_CLICK_SFX) 
 	engfunc(EngFunc_PrecacheSound, CAMERA_BOOTED_SFX)
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel,"models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );

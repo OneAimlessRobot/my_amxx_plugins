@@ -38,11 +38,11 @@ Version History:
 
 // GLOBAL VARIABLES
 new g_heroName[]="Tri-Edge"
-new bool:g_hastriedgePower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:Falling[SH_MAXSLOTS+1]
 new g_hooked[SH_MAXSLOTS+1]
 new g_hooksLeft[SH_MAXSLOTS+1]
-new g_spriteLine  
+new g_spriteLine
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -64,7 +64,7 @@ public plugin_init()
 	register_cvar("triedge_godsecs", "4")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Tri-Strike", "Perform a combo on your enemies", true, "triedge_level")
+	gHeroID=shCreateHero(g_heroName, "Tri-Strike", "Perform a combo on your enemies", true, "triedge_level")
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -89,10 +89,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-    precache_sound("player/headshot3.wav")
-    precache_sound("weapons/xbow_hitbod1.wav")
-    precache_sound("shmod/redblood.wav")
-    g_spriteLine = precache_model("sprites/lgtning.spr")
+    engfunc(EngFunc_PrecacheSound,"player/headshot3.wav")
+    engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod1.wav")
+    engfunc(EngFunc_PrecacheSound,"shmod/redblood.wav")
+    g_spriteLine = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
 public triedge_init()
@@ -102,18 +102,12 @@ public triedge_init()
     read_argv(1,temp,5)
     new id = str_to_num(temp)
 
-    // 2nd Argument is 0 or 1 depending on whether the id has the hero
-    read_argv(2,temp,5)
-    new hasPowers = str_to_num(temp)
-
-    g_hastriedgePower[id] = (hasPowers != 0)
-
     if ( g_hooked[id] ) triedge_hookOff(id)
 }
 //----------------------------------------------------------------------------------------------
 public triedge_prethink(id)
 {
-    if ( shModActive() && is_user_alive(id) && g_hastriedgePower[id] )
+    if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
     {
         new Float:fallVelocity
         pev(id, pev_flFallVelocity, fallVelocity)
@@ -124,7 +118,7 @@ public triedge_prethink(id)
 //----------------------------------------------------------------------------------------------
 public triedge_postthink(id)
 {
-    if ( shModActive() && is_user_alive(id) && g_hastriedgePower[id] )
+    if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
     {
         if ( Falling[id] )
         {
@@ -150,7 +144,7 @@ public triedge_kd()
     read_argv(1,temp,5)
     new id = str_to_num(temp)
 
-    if ( !is_user_alive(id) || !g_hastriedgePower[id] || !hasRoundStarted() || !shModActive() ) return
+    if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !shModActive() ) return
 
     triedge_hookOn(id)
 }
@@ -292,7 +286,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 	if ( !is_user_alive(pToucher) || !is_user_alive(pTouched) ) return
 	
-	if ( g_hastriedgePower[pTouched] && g_hooked[pTouched] == pToucher ) 
+	if ( sh_user_has_hero(pTouched,gHeroID)&& g_hooked[pTouched] == pToucher ) 
 	{
 		
 		triedge_hookOff(pTouched)

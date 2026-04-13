@@ -20,14 +20,13 @@ bishop_blastmult 2.50	//Energy absorbed X this cvar = damage that Energy Blast d
 *
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Bishop"
-new bool:g_hasBishop[SH_MAXSLOTS+1]
 new g_absorbedDamage[SH_MAXSLOTS+1]
 new g_spriteLaser, g_spriteExplosion
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -41,12 +40,7 @@ public plugin_init()
 	register_cvar("bishop_blastmult", "2.50")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Absorb Energy", "Absorb Damage and use it with your weapons! Or release all energy to deal even more damage.", true, "bishop_level")
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("bishop_init", "bishop_init")
-	shRegHeroInit(g_heroName, "bishop_init")
+	gHeroID=shCreateHero(g_heroName, "Absorb Energy", "Absorb Damage and use it with your weapons! Or release all energy to deal even more damage.", true, "bishop_level")
 
 	// KEY DOWN
 	register_srvcmd("bishop_kd", "bishop_kd")
@@ -64,22 +58,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteLaser = precache_model("sprites/laserbeam.spr")
-	g_spriteExplosion = precache_model("sprites/zerogxplode.spr")
-}
-//----------------------------------------------------------------------------------------------
-public bishop_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasBishop[id] = (hasPowers != 0)
+	g_spriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -97,7 +77,7 @@ public bishop_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasBishop[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	// Let them know if they have no energy
 	if ( g_absorbedDamage[id] <= 0 ) {
@@ -112,7 +92,7 @@ public bishop_kd()
 public bishop_loop()
 {
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if ( g_hasBishop[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			new message[128]
 			formatex(message, 127, "Total Energy Absorbed: %i", g_absorbedDamage[id])
 			set_hudmessage(50, 50, 255, -1.0, 0.10, 0, 1.0, 1.0, 0.0, 0.0)
@@ -130,7 +110,7 @@ public bishop_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
 
-	if ( g_hasBishop[id] && attacker != id ) {
+	if ( sh_user_has_hero(id,gHeroID)&& attacker != id ) {
 		// Absorb Damage
 		new damageAbsorbed = floatround(get_cvar_float("bishop_absorbmult") * damage)
 		g_absorbedDamage[id] += damageAbsorbed
@@ -144,7 +124,7 @@ public bishop_damage(id)
 		setScreenFlash(id, 255, 90, 102, 10, alphanum)
 	}
 
-	if ( g_hasBishop[attacker] && is_user_alive(id) && attacker != id && g_absorbedDamage[attacker] > 0 ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker != id && g_absorbedDamage[attacker] > 0 ) {
 		// headshots but not on nades
 		new headshot = (bodypart == 1 && weapon != CSW_HEGRENADE) ? 1 : 0
 		new weaponName[32]
@@ -161,7 +141,7 @@ public bishop_damage(id)
 //----------------------------------------------------------------------------------------------
 public release_energy(id)
 {
-	if ( !is_user_alive(id) || !g_hasBishop[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	new userAim[3], vicOrigin[3]
 	new FFOn = get_cvar_num("mp_friendlyfire")
@@ -196,7 +176,7 @@ public release_energy(id)
 //----------------------------------------------------------------------------------------------
 public beam_effects(id, userAim[3])
 {
-	if ( !shModActive() || !is_user_alive(id) || !g_hasBishop[id] ) return
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	new userEyesight[3]
 	get_user_origin(id, userEyesight, 1)

@@ -354,9 +354,9 @@ public plugin_precache()
 {
 	
 
-	precache_model(SLEEP_NADE_V_MODEL);
-	precache_model(SLEEP_NADE_W_MODEL);
-	precache_model(SLEEP_NADE_P_MODEL);
+	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_V_MODEL);
+	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_W_MODEL);
+	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_P_MODEL);
 
 	engfunc(EngFunc_PrecacheSound, SLEEP_NADE_BURST_SFX)
 	engfunc(EngFunc_PrecacheSound, SLEEP_NADE_THROW_SFX)

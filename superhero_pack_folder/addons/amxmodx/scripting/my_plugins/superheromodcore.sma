@@ -390,7 +390,7 @@
 #include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
 #include "my_include/my_author_header.inc"
-#include "my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 new const SH_CORE_STR[] =  "SuperHero Core"
 
@@ -743,8 +743,8 @@ public plugin_init()
 public plugin_precache()
 {
 	// Default Sounds
-	precache_sound("common/wpn_denyselect.wav")
-	precache_sound(gSoundLevel)
+	engfunc(EngFunc_PrecacheSound,"common/wpn_denyselect.wav")
+	engfunc(EngFunc_PrecacheSound,gSoundLevel)
 
 	// Create this cvar in precache incase a hero wants to create a debug msg during precache
 	sh_debug_messages = register_cvar("sh_debug_messages", "0")

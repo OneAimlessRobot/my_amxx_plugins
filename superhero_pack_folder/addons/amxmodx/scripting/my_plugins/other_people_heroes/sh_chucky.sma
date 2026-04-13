@@ -55,20 +55,16 @@ chucky_knifespeed 720    //User speed when knife is out
 #include "../my_include/superheromod.inc"
 #include "../my_include/my_author_header.inc"
 
-#if USE_MODEL
-	#include <fakemeta>
-#endif
-
 
 // GLOBAL VARIABLES
 new HeroName[] = "Chucky"
-new bool:HasChucky[SH_MAXSLOTS+1]
 new bool:HasKilledWithKnife[SH_MAXSLOTS+1]
 new bool:ChuckyPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:UserTeam[SH_MAXSLOTS+1]
 new bool:BetweenRounds
 new bool:BombPlanted
 new CvarCooldown, CvarKnifeMult
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -81,7 +77,7 @@ public plugin_init()
 	CvarCooldown = register_cvar("chucky_cooldown", "600")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Voodoo Powers", "Rise again from the dead. Get a Bloody Knife that does more damage, which you are faster with.", false, "chucky_level")
+	gHeroID=shCreateHero(HeroName, "Voodoo Powers", "Rise again from the dead. Get a Bloody Knife that does more damage, which you are faster with.", false, "chucky_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -107,12 +103,12 @@ public plugin_init()
 public plugin_precache()
 {
 	#if USE_MODEL
-		precache_model("models/shmod/chucky_knife/chucky_knife.mdl")
-		precache_model("models/shmod/chucky_knife/chucky_knife_clean.mdl")
+		engfunc(EngFunc_PrecacheModel,"models/shmod/chucky_knife/chucky_knife.mdl")
+		engfunc(EngFunc_PrecacheModel,"models/shmod/chucky_knife/chucky_knife_clean.mdl")
 	#endif
 
-	precache_sound("nihilanth/nil_comes.wav")
-	precache_sound("ambience/port_suckin1.wav")
+	engfunc(EngFunc_PrecacheSound,"nihilanth/nil_comes.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
 public chucky_init()
@@ -122,16 +118,10 @@ public chucky_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasChucky[id] = true
-
 			#if USE_MODEL
 				switch_model(id)
 			#endif
@@ -140,10 +130,9 @@ public chucky_init()
 		case false:
 		{
 			// This gets run if they had the power but don't anymore
-			if ( is_user_alive(id) && HasChucky[id] )
+			if ( is_user_alive(id) )
 				shRemSpeedPower(id)
 
-			HasChucky[id] = false
 			HasKilledWithKnife[id] = false
 		}
 	}
@@ -152,7 +141,7 @@ public chucky_init()
 #if USE_MODEL
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasChucky[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)
@@ -163,7 +152,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasChucky[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	// If user is holding a shield do not change model, since we don't have one with a shield
@@ -195,7 +184,7 @@ public chucky_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
-	if ( HasChucky[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -222,12 +211,12 @@ public chucky_death()
 	
 		return;
 	}
-	if( !(HasChucky[id]||HasChucky[attacker])) {
+	if( !(sh_user_has_hero(id,gHeroID)||sh_user_has_hero(id,gHeroID))) {
 	
 		return;
 	}
 
-	if(weapon== CSW_KNIFE&&HasChucky[attacker]){
+	if(weapon== CSW_KNIFE&&sh_user_has_hero(attacker,gHeroID)){
 	
 		HasKilledWithKnife[attacker]=true
 		switch_model(attacker)
@@ -237,7 +226,7 @@ public chucky_death()
 	UserTeam[id] = cs_get_user_team(id)
 
 	// Look for self to raise from dead
-	if ( !is_user_alive(id) && !ChuckyPowerUsed[id]&&HasChucky[id] )
+	if ( !is_user_alive(id) && !ChuckyPowerUsed[id]&&sh_user_has_hero(id,gHeroID))
 	{
 		// Chucky will raise self from dead
 		new parm[1]
@@ -349,7 +338,7 @@ public round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ )
 	{
-		if ( HasChucky[id] )
+		if ( sh_user_has_hero(id,gHeroID))
 		{
 			remove_task(id)
 			ChuckyPowerUsed[id] = false
@@ -370,8 +359,6 @@ public client_connect(id)
 	// Yeah don't want any left over residuals
 	remove_task(id)
 
-	// Incase variables are stale reset them
-	HasChucky[id] = false
 	ChuckyPowerUsed[id] = false
 	HasKilledWithKnife[id] = false
 }

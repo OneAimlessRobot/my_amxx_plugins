@@ -16,7 +16,6 @@ goblin_grenadetimer 10		//How many second delay for new grenade
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[]= "Hobgoblin"
-new bool:gHasHobgoblin[SH_MAXSLOTS+1]
 new bool:gBlockGiveTask[SH_MAXSLOTS+1]
 new gPcvarGrenadeTimer
 
@@ -47,11 +46,7 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasHobgoblin[id] = true
 			give_grenade(id)
-		}
-		case SH_HERO_DROP: {
-			gHasHobgoblin[id] = false
 		}
 	}
 
@@ -60,7 +55,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasHobgoblin[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		//Block Ammox nade give task on spawn, since you are given a nade on spawn.
 		//This must not be delayed, it must catch before inital ammox called.
 		gBlockGiveTask[id] = true
@@ -71,7 +66,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public give_grenade(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasHobgoblin[id] ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, CSW_HEGRENADE)
 	}
 }
@@ -79,7 +74,7 @@ public give_grenade(id)
 public on_ammox(id)
 {
 	//Ammox is used in case other heroes give nades so the task can be removed when nade is refilled.
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasHobgoblin[id] ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	//new iAmmoType = read_data(1)
 	if ( read_data(1) == AMMOX_HEGRENADE ) {
@@ -95,10 +90,5 @@ public on_ammox(id)
 			remove_task(id)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasHobgoblin[id] = false
 }
 //----------------------------------------------------------------------------------------------

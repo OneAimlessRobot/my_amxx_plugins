@@ -33,12 +33,11 @@ SuperAlien_knifemode 0	//1-knife only can't change weapons, 0-SuperAlien Vision 
 *
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "SuperAlien"
-new HasSuperAlien[SH_MAXSLOTS+1]
+new gHeroID
 new SuperAlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV
 new CvarKnifeMult, CvarZoomVision, CvarTint, CvarAlphaValue, CvarMode
@@ -59,7 +58,7 @@ public plugin_init()
 	CvarMode = register_cvar("SuperAlien_knifemode", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "SuperAlien Vision", "Get Alien Vision and Invisibility when using Knife but you can use other weapons", false, "SuperAlien_level")
+	gHeroID=shCreateHero(HeroName, "SuperAlien Vision", "Get Alien Vision and Invisibility when using Knife but you can use other weapons", false, "SuperAlien_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -86,42 +85,36 @@ public SuperAlien_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
+	new hasPowers=sh_user_has_hero(id,gHeroID)
 	switch(hasPowers)
 	{
 		case true:
 		{
-			HasSuperAlien[id] = true
 			weapon_change(id)
 		}
 
 		case false:
 		{
 			//This gets run if they had the power but don't anymore
-			if ( is_user_connected(id) && HasSuperAlien[id] )
+			if ( is_user_connected(id))
 			{
 				SuperAlien_vision_off(id)
 				shRemHealthPower(id)
 				shRemArmorPower(id)
 			}
-
-			HasSuperAlien[id] = false
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasSuperAlien[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		weapon_change(id)
 }
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasSuperAlien[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	//new wpnid = read_data(2)
@@ -149,7 +142,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 SuperAlien_vision_on(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasSuperAlien[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		SuperAlienModeOn[id] = true
 
@@ -186,7 +179,7 @@ public SuperAlien_loop(id)
 		return
 	}
 
-	if ( HasSuperAlien[id] && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
 	{
 		setScreenFlash(id, 0, 200, 0, 13, get_pcvar_num(CvarTint))
 		set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(CvarAlphaValue))
@@ -225,7 +218,7 @@ public SuperAlien_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id )
 		return
 
-	if ( HasSuperAlien[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -241,7 +234,7 @@ public SuperAlien_death()
 {
 	new id = read_data(2)
 
-	if ( !HasSuperAlien[id] )
+	if ( !sh_user_has_hero(id,gHeroID) )
 		return
 
 	SuperAlien_vision_off(id)
@@ -249,7 +242,6 @@ public SuperAlien_death()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasSuperAlien[id] = false
 	SuperAlienModeOn[id] = false
 
 	// Yeah don't want any left over residuals

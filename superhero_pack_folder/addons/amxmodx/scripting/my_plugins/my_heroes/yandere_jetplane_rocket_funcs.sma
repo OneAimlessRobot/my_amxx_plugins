@@ -399,11 +399,11 @@ public law_think(ent)
 public plugin_precache()
 {
 
-	precache_model( ROCKET_MODEL);
+	engfunc(EngFunc_PrecacheModel, ROCKET_MODEL);
 	
-	precache_sound("ambience/particle_suck2.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
 	engfunc(EngFunc_PrecacheSound,ROCKET_EXPLODE_SOUND)
-	precache_model(P_ROCKET_LAUNCHER_MODEL)
+	engfunc(EngFunc_PrecacheModel,P_ROCKET_LAUNCHER_MODEL)
 	engfunc(EngFunc_PrecacheSound, JETPLANE_LAW_FIRE_SOUND)
 	
 	

@@ -26,7 +26,6 @@ new const gunsound[] = "weapons/deagle-1.wav";
 
 // GLOBAL VARIABLES
 new gHeroID;
-new bool:gHasSquallPowers[SH_MAXSLOTS+1];
 new gBullets[SH_MAXSLOTS+1];
 //pcvars
 new pcvar_bullets;
@@ -66,25 +65,23 @@ public sh_hero_init(id, heroid, mode)
 		case SH_HERO_ADD:
 		{
 			gBullets[id] = get_pcvar_num(pcvar_bullets);
-			gHasSquallPowers[id] = true;
 #if defined USE_MODEL			
 			if ( gModelLoaded && get_user_weapon(id) == CSW_KNIFE )
 				switch_model(id);
 #endif
 		}
-		case SH_HERO_DROP: gHasSquallPowers[id] = false;
 	}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gunsound);
+	engfunc(EngFunc_PrecacheSound,gunsound);
 	
 #if defined USE_MODEL
 
 	gModelLoaded = true;
 	if ( file_exists(knifemodel) )
-		precache_model(knifemodel);
+		engfunc(EngFunc_PrecacheModel,knifemodel);
 	else
 	{
 		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", knifemodel);
@@ -107,7 +104,7 @@ public fw_Item_Deploy_Post(weapon_ent)	//you'll notice that get_user_weapon does
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasSquallPowers[id] ) return;
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return;
 
 	set_pev(id, pev_viewmodel2, knifemodel);
 		
@@ -115,13 +112,13 @@ switch_model(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
-	if ( gHasSquallPowers[id] && sh_is_active() )
+	if ( sh_user_has_hero(id,gHeroID) && sh_is_active() )
 		gBullets[id] = get_pcvar_num(pcvar_bullets);
 
 //----------------------------------------------------------------------------------------------
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) || !gHasSquallPowers[id] || gBullets[id] < 0 )
+	if( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || gBullets[id] < 0 )
 		return FMRES_IGNORED;
 	
  	if( get_user_weapon(id) != CSW_KNIFE )
@@ -175,7 +172,7 @@ public Ham_Weapon_Attack(weaponent)
 //----------------------------------------------------------------------------------------------
 public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)
 {
-	if ( !is_user_connected(id) || !gHasSquallPowers[id] || !sh_is_active() || gBullets[id] < 0 )
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) || !sh_is_active() || gBullets[id] < 0 )
 		return FMRES_IGNORED;
 		
 	if ( sample[0] == 'w' && sample[6] == 's' && sample[8] == 'k' && sample[13] == '_' && sample[14] != 'd' )	//9 sounds dealing with knife, 1 of which not useful

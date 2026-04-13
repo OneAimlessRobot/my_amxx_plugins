@@ -48,8 +48,6 @@ vegetto_radius_4 1500		//Max Radius of Damage for ssjlevel 4th power (Default 15
 vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 1)
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -59,7 +57,7 @@ vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"
-new bool:g_hasVegetto[SH_MAXSLOTS+1]
+new gHeroID
 new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new bool:g_inStun[SH_MAXSLOTS+1]
 new bool:g_betweenRounds
@@ -76,7 +74,6 @@ stock vegetto_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailZ
 new g_spriteExplosionG, g_spriteExplosionB, g_spriteExplosionR, g_spriteExplosionO, g_spritePowerUp
-new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -133,28 +130,28 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/vegeto_galitgun.wav")
-	precache_sound("shmod/vegeto_finalflashb.wav")
-	precache_sound("shmod/vegeto_bigbang.wav")
-	precache_sound("shmod/vegeto_deathball.wav")
-        precache_sound("shmod/vegetto_powerup1.wav")
-	precache_sound("shmod/vegetto_powerup2.wav")
-	precache_sound("shmod/vegetto_powerup3.wav")
-	precache_sound("shmod/vegetto_powerup4.wav")
-        precache_sound("player/pl_pain2.wav")
-	precache_model("sprites/shmod/gallitguna2.spr")
-        precache_model("sprites/shmod/finalflashcharge.spr")
-	precache_model("sprites/shmod/bigbang.spr")
-        precache_model("sprites/shmod/deathball2.spr")
-	g_spriteTrailY = precache_model("sprites/shmod/gallitguntrail2.spr")
-	g_spriteTrailB = precache_model("sprites/shmod/finalflashtrail.spr")
-	g_spriteTrailZ = precache_model("sprites/shmod/deathballtrail.spr")
-        g_spriteExplosionG = precache_model("sprites/shmod/gallitguna2.spr")
-	g_spriteExplosionB = precache_model("sprites/shmod/finalflashb.spr")
-	g_spriteExplosionR = precache_model("sprites/shmod/bigbangexp2.spr")
-        g_spriteExplosionO = precache_model("sprites/shmod/deathball2.spr")
-	g_spritePowerUp = precache_model("sprites/shmod/vegetto_powerup4.spr")
-	g_spriteSmoke = precache_model("sprites/wall_puff4.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_galitgun.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_finalflashb.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_bigbang.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_deathball.wav")
+        engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup3.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup4.wav")
+        engfunc(EngFunc_PrecacheSound,"player/pl_pain2.wav")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguna2.spr")
+        engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashcharge.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/bigbang.spr")
+        engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathball2.spr")
+	g_spriteTrailY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguntrail2.spr")
+	g_spriteTrailB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashtrail.spr")
+	g_spriteTrailZ = engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathballtrail.spr")
+        g_spriteExplosionG = engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguna2.spr")
+	g_spriteExplosionB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashb.spr")
+	g_spriteExplosionR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/bigbangexp2.spr")
+        g_spriteExplosionO = engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathball2.spr")
+	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/vegetto_powerup4.spr")
+	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public vegetto_init()
@@ -164,15 +161,11 @@ public vegetto_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		vegetto_setarmor(id)
 	}
 	//This gets run if they had the power but don't anymore
-	else if ( !hasPowers && g_hasVegetto[id] ) {
+	else {
 		shRemArmorPower(id)
 		shRemSpeedPower(id)
 		// remove the power if it was used and user dropped hero
@@ -180,9 +173,6 @@ public vegetto_init()
 			remove_power(id, g_powerID[id])
 		}
 	}
-
-	// Sets this variable to the current status
-	g_hasVegetto[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -208,7 +198,7 @@ public newSpawn(id)
 {
 	g_inStun[id] = false
 
-	if ( shModActive() && g_hasVegetto[id]  && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
 		set_task(0.5, "vegetto_setarmor", id)
 		g_isSaiyanLevel[id] = 0
@@ -234,7 +224,7 @@ public vegetto_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasVegetto[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -312,7 +302,7 @@ public vegetto_ku()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasVegetto[id] || !g_weaponSwitched[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 
 	// Switch back to previous weapon... Only if power was used...
 	if (g_lastWeapon[id] != CSW_KNIFE) shSwitchWeaponID(id, g_lastWeapon[id])
@@ -717,7 +707,7 @@ public vegetto_loop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( g_hasVegetto[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 
 			new userArmor = get_user_armor(id)
 
@@ -824,7 +814,7 @@ public vegetto_loop()
 //----------------------------------------------------------------------------------------------
 public ssj_boost(id){
 	
-	if ( !shModActive() || !g_hasVegetto[id] || !is_user_alive(id) || g_betweenRounds ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || g_betweenRounds ) return
 	if ( !g_isSaiyanLevel[id] ) return
 
 	// Speed Boost
@@ -848,7 +838,7 @@ public ssj_boost(id){
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !shModActive() || !g_hasVegetto[id] || !is_user_alive(id) || g_betweenRounds ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || g_betweenRounds ) return
 	if ( !g_isSaiyanLevel[id] || g_inStun[id] ) return
 
 	new wpnid = read_data(2)
@@ -908,7 +898,7 @@ public reset_instun(id)
 {
 	g_inStun[id] = false
 
-	if ( !shModActive() || !g_hasVegetto[id] || !is_user_alive(id) ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
 	switch(g_isSaiyanLevel[id]) {
 		case 1: if ( get_user_maxspeed(id) < g_ssjSpeed[0] ) set_user_maxspeed(id, g_ssjSpeed[0])
@@ -1002,7 +992,7 @@ public round_end()
 	g_betweenRounds = true
 
 	for (new id=1; id <= SH_MAXSLOTS; id++) {
-		if ( g_hasVegetto[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_isSaiyanLevel[id] = 0
 			shResetSpeed(id)
 			if ( g_powerID[id] > 0 ) {
@@ -1019,7 +1009,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if( g_hasVegetto[id] && g_powerID[id] > 0 ) {
+	if( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 		remove_power(id, g_powerID[id])
 	}
 }

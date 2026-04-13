@@ -399,8 +399,8 @@ engfunc(EngFunc_PrecacheSound, COUNTER_SHOT_SFX)
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX) 
 engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX) 
-precache_model(famas_g2_v_model)
-precache_model(famas_g2_p_model)
+engfunc(EngFunc_PrecacheModel,famas_g2_v_model)
+engfunc(EngFunc_PrecacheModel,famas_g2_p_model)
 for(new i=0;i<sizeof(famas_g2_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound, famas_g2_sounds[i])

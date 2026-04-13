@@ -61,10 +61,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
-	precache_sound(gSoundLaser)
-	precache_sound(gSoundHit)
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundLaser)
+	engfunc(EngFunc_PrecacheSound,gSoundHit)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

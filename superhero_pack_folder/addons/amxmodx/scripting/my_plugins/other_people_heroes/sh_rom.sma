@@ -12,7 +12,7 @@
 
 // VARIABLES
 new gHeroName[]="Rom"
-new bool:gHasRomPower[SH_MAXSLOTS+1]
+new gHeroID
 new beam
 new gRomTimer[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ public plugin_init()
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   register_cvar("rom_level", "0" )
-  shCreateHero(gHeroName, "Senses", "Know where the player is", true, "rom_level" )
+  gHeroID=shCreateHero(gHeroName, "Senses", "Know where the player is", true, "rom_level" )
   
   // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
   register_event("ResetHUD","newRound","b")
@@ -51,18 +51,11 @@ public rom_init()
   read_argv(1,temp,5)
   new id=str_to_num(temp)
   
-  // 2nd Argument is 0 or 1 depending on whether the id has iron man powers
-  read_argv(2,temp,5)
-  new hasPowers=str_to_num(temp)
-  
-  if ( !hasPowers )
+  if ( !sh_user_has_hero(id,gHeroID) )
   {
     rom_endtrack(id)
     gRomTimer[id]=0
   }
-    
-  gHasRomPower[id]=(hasPowers!=0)
-
 
 } 
 //----------------------------------------------------------------------------------------------
@@ -149,7 +142,7 @@ public rom_loop()
 {
   for ( new id=1; id<=SH_MAXSLOTS; id++ )
   {
-    if ( gHasRomPower[id] && is_user_alive(id)  ) 
+    if (sh_user_has_hero(id,gHeroID) && is_user_alive(id)  ) 
     {
       if ( gRomTimer[id]>0 )
       {
@@ -214,6 +207,6 @@ public rom_endtrack(id)
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-beam = precache_model("sprites/xenobeam.spr")
+beam = engfunc(EngFunc_PrecacheModel,"sprites/xenobeam.spr")
 }
 //----------------------------------------------------------------------------------------------

@@ -21,7 +21,6 @@ deva_damage 0 // How much damage should the slaps do? default = 0 (Damage is app
 
 new gHeroID
 new gHeroName[] = "Deva Path"
-new bool:gHasDeva[SH_MAXSLOTS+1]
 new gPcvarCooldown, gPcvarPercentage, gPcvarDamage
 //----------------------------------------------------------------
 public plugin_init()
@@ -39,11 +38,7 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Manipulate Gravity", "Six Paths of Pain, The Deva Path - Manipulate the Gravity of your attackers/victims.")
 }
-//----------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-	if ( gHeroID == heroID )
-		gHasDeva[id] = mode ? true : false
-	//----------------------------------------------------------------
+
 public sh_client_spawn(id)
 {
 	gPlayerInCooldown[id] = false
@@ -59,7 +54,7 @@ public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 
 	
 	// if  attacker have Deva and is not in cooldown
-	if ( gHasDeva[attacker] && !gPlayerInCooldown[attacker] && random_num(0, 100) <= percentage )
+	if ( sh_user_has_hero(attacker,gHeroID)&& !gPlayerInCooldown[attacker] && random_num(0, 100) <= percentage )
 	{
 		user_slap(victim, damage)
 		user_slap(victim, 0)
@@ -72,7 +67,7 @@ public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 		
 	}
 	// if victim have Deva and is not in coldown
-	if ( gHasDeva[victim] && !gPlayerInCooldown[victim] && random_num(0, 100) <= percentage )
+	if ( sh_user_has_hero(victim,gHeroID) && !gPlayerInCooldown[victim] && random_num(0, 100) <= percentage )
 	{
 		user_slap(attacker, damage)
 		user_slap(attacker, 0)

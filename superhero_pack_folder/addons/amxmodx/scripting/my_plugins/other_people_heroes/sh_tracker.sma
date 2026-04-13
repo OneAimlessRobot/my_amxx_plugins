@@ -22,9 +22,8 @@ tracker_refreshrate 1.0 //Ammount of time between showings of the target sprite 
 1.3 - Changed the sprite again, reduced the distance between wall and sprite, sprite no longer obscures the view of the target
 
 */
-
+new gHeroID
 new spriteTarget
-new bool:hasTrackerPowers[SH_MAXSLOTS+1]
 new bool:isTagged[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new Float:timeLeft[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new numTargets[SH_MAXSLOTS+1]
@@ -42,11 +41,8 @@ public plugin_init()
   register_cvar("tracker_timetargeted","0.0")
   register_cvar("tracker_refreshrate","1.0")
   //Hero Name- Short Description- Long Description- false=Automatic Powers true=KeyDown powers- Hero level
-  shCreateHero("Tracker", "Tracks victims", "Shooting enemies tags them so you can track them down", false, "tracker_level" )
+  gHeroID=shCreateHero("Tracker", "Tracks victims", "Shooting enemies tags them so you can track them down", false, "tracker_level" )
   
-  //Initialize the hero
-  register_srvcmd("tracker_init", "tracker_init")
-  shRegHeroInit("Tracker", "tracker_init")
   
   //Hook the events
   register_event("ResetHUD","newRound","b")
@@ -58,7 +54,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-    spriteTarget = precache_model("sprites/shmod/tracker_target.spr")
+    spriteTarget = engfunc(EngFunc_PrecacheModel,"sprites/shmod/tracker_target.spr")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -80,23 +76,6 @@ public newRound(id)
     }
 }
 //----------------------------------------------------------------------------------------------
-public tracker_init()
-{
-  new temp[128]
-  // First Argument is an id of the player
-  read_argv(1, temp, 5)
-  new id = str_to_num(temp)
-  
-  // 2nd Argument is 0 if the player doesnt have Tracker powers, 1 if the player does have Tracker powers
-  read_argv(2, temp, 5)
-  new hasPowers = str_to_num(temp)
-  
-  if(hasPowers == 1)
-    hasTrackerPowers[id] = true
-  else
-    hasTrackerPowers[id] = false
-}
-//----------------------------------------------------------------------------------------------
 public tracker_damage(id)
 {
   new victim = id
@@ -109,7 +88,7 @@ public tracker_damage(id)
     
   /*console_print(id,"Vitima: %d^nAttacker: %d^nTamanho do vetor de trackers: %d^nTamanho do numero de alvos do attacker: %d^n",victim,attacker,sizeof hasTrackerPowers,sizeof(numTargets[]))*/
   
-  if(attacker<(SH_MAXSLOTS+1) && hasTrackerPowers[attacker] && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
+  if(attacker<(SH_MAXSLOTS+1) && sh_user_has_hero(id,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
   {
     isTagged[attacker][victim] = true
     numTargets[attacker] = numTargets[attacker]++

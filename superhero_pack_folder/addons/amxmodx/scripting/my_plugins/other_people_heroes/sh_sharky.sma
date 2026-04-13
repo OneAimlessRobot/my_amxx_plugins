@@ -1,5 +1,3 @@
-#include <amxmod>
-#include <xtrafun>
 #include "../my_include/superheromod.inc"
 
 // sharky! - me!!! :)
@@ -11,7 +9,7 @@
 
 // VARIABLES
 new gHeroName[]="sharky's-confusion"
-new bool:gHasSharkyPower[SH_MAXSLOTS+1]
+new gHeroID
 new g_sharkyTimer[SH_MAXSLOTS+1]
 new gSharkyMode[33]
 new g_sharkySound[]="ambience/alien_zonerator.wav"
@@ -31,7 +29,7 @@ public plugin_init()
   register_cvar("sharky_smoke", "1" ) //1=yes 0=no
   register_cvar("sharky_ammo", "0" ) //1=always 0=Only in ninjamode
 
-  shCreateHero(gHeroName, "sharky-mode", "make confusing smoke storm,get ALL the gunz", true, "sharky_level")
+  gHeroID=shCreateHero(gHeroName, "sharky-mode", "make confusing smoke storm,get ALL the gunz", true, "sharky_level")
   register_clcmd("SharkyPower","make_fog",ADMIN_USER)
   // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
   register_event("ResetHUD","newRound","b")
@@ -52,8 +50,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-   smoke = precache_model("sprites/steam1.spr") 
-   precache_sound(g_sharkySound)
+   smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr") 
+   engfunc(EngFunc_PrecacheSound,g_sharkySound)
 }
 //----------------------------------------------------------------------------------------------
 public sharky_init()
@@ -63,23 +61,17 @@ public sharky_init()
   read_argv(1,temp,5)
   new id=str_to_num(temp)
   
-  // 2nd Argument is 0 or 1 depending on whether the id has iron man powers
-  read_argv(2,temp,5)
-  new hasPowers=str_to_num(temp)
-  
-  if ( !hasPowers )
+  if ( !sh_user_has_hero(id,gHeroID))
   {
     sharky_endmode(id)
     g_sharkyTimer[id]=0
   }
-    
-  gHasSharkyPower[id]=(hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
   gPlayerUltimateUsed[id]=false
-  if ( gHasSharkyPower[id] ) {
+  if ( sh_user_has_hero(id,gHeroID) ) {
   sharky_gunz(id)
     }
   if (g_sharkyTimer[id]>0) {
@@ -138,7 +130,7 @@ public sharky_loop()
 {
   for ( new id=1; id<=SH_MAXSLOTS; id++ )
   {
-    if ( gHasSharkyPower[id] && is_user_alive(id)  ) 
+    if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
     {
       if ( g_sharkyTimer[id]>0 )
       {
@@ -186,10 +178,10 @@ public sharky_death()
 public changeWeapon(id)
 {
 	if (get_cvar_num("sharky_ammo")==1){
-		if ( !gHasSharkyPower[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
 	}
 	else{
-		if ( !gHasSharkyPower[id] || !gSharkyMode[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !gSharkyMode[id] || !shModActive() ) return PLUGIN_CONTINUE
 	}
 
 	new  clip, ammo
@@ -271,7 +263,7 @@ public fog_this_area(origin[3]){
 //----------------------------------------------------------------------------------------------
 
 public make_fog(id){ 
-   if (gHasSharkyPower[id]==false) 
+   if (!sh_user_has_hero(id,gHeroID)) 
       return PLUGIN_HANDLED 
    if (is_user_alive(id)!=1) 
       return PLUGIN_HANDLED 

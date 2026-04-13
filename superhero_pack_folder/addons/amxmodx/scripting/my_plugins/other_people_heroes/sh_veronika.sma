@@ -35,7 +35,6 @@ new dmg_source_name_long_grenade[SAFE_BUFFER_SIZE+1]="m203_grenade"
 new custom_dmg_id_grenade
 
 #define VERONIKA_GRENADE_SPEED 1250
-new gHasVeronikaPower[SH_MAXSLOTS+1]
 new g_ammo[33]
 new g_m203_loaded[33]
 new gHeroID
@@ -92,14 +91,14 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(veronika_ak_v_mdl)
-	precache_model(veronika_ak_p_mdl)
-	precache_model("models/grenade.mdl")
-	precache_sound("shmod/glauncher.wav")
-	precache_sound("shmod/a_exm2.wav")
+	engfunc(EngFunc_PrecacheModel,veronika_ak_v_mdl)
+	engfunc(EngFunc_PrecacheModel,veronika_ak_p_mdl)
+	engfunc(EngFunc_PrecacheModel,"models/grenade.mdl")
+	engfunc(EngFunc_PrecacheSound,"shmod/glauncher.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/a_exm2.wav")
 	
-	m_iTrail = precache_model("sprites/smoke.spr")
-	xplode = precache_model("sprites/shmod/zerogxplode2.spr")
+	m_iTrail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	xplode = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
 }
 
 //----------------------------------------------------------------------------------------------
@@ -110,12 +109,6 @@ public veronika_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	
-	gHasVeronikaPower[id] = (hasPowers != 0)
-	
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
@@ -125,7 +118,7 @@ public veronika_init()
 	
 	if ( !is_user_alive(id) ) return
 	
-	if ( gHasVeronikaPower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		veronika_weapons(id)
 		switchmodel(id)
 		}
@@ -136,7 +129,7 @@ public veronika_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( gHasVeronikaPower[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		set_task(0.1, "veronika_weapons", id)
 		g_ammo[id] = get_cvar_num("veronika_grenades")
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
@@ -162,7 +155,7 @@ public veronika_weapons(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !gHasVeronikaPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_AK47) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
@@ -173,7 +166,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasVeronikaPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -198,7 +191,7 @@ public veronika_damage(id)
 	
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 	
-	if ( gHasVeronikaPower[attacker] && weapon == CSW_AK47 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_AK47 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak, headshot,_,_,_,_,_,_,custom_dmg_id_ak)
@@ -210,7 +203,7 @@ public forward_playerprethink(id)
 	if(is_user_alive(id))
 	{
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && gHasVeronikaPower[id] )
+		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && sh_user_has_hero(id,gHeroID) )
 		{
 			launch_nade(id)
 			return FMRES_IGNORED
@@ -222,7 +215,7 @@ public forward_playerprethink(id)
 
 public launch_nade(id)
 {
-	if( !gHasVeronikaPower[id] || !(is_user_alive(id)) || g_m203_loaded[id] == 0 )
+	if( !sh_user_has_hero(id,gHeroID)|| !(is_user_alive(id)) || g_m203_loaded[id] == 0 )
 		return PLUGIN_CONTINUE
 	
 	if(g_ammo[id] == 0)
@@ -438,7 +431,7 @@ g_m203_loaded[id] = 1
 
 public death(id)
 {
-if ( gHasVeronikaPower[id] )
+if ( sh_user_has_hero(id,gHeroID))
 {
 	ammo_hud(id,0)
 }

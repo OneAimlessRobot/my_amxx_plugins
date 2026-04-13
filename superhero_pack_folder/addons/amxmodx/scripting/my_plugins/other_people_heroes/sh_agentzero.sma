@@ -29,12 +29,6 @@ agentz_level 5
 // GLOBAL VARIABLES
 new gHeroID
 
-//I don't like this bitwise use as it makes it harder for new people to read
-//but since speed is imprortant to this plugin I won't change it. - vittu
-new gAgentZero
-#define SetAgentZero(%1)	gAgentZero |= 1<<(%1&31)
-#define RemoveAgentZero(%1)	gAgentZero &= ~(1<<(%1&31))
-#define GetAgentZero(%1)	(gAgentZero & 1<<(%1&31))
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -58,25 +52,13 @@ public plugin_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	if ( mode == SH_HERO_ADD ) {
-		SetAgentZero(id)
-	}
-	else {
-		RemoveAgentZero(id)
-	}
-}
-//----------------------------------------------------------------------------------------------
 public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 {
 	if ( !sh_is_active() ) return HAM_IGNORED
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
 
-	if ( GetAgentZero(owner) ) {
+	if ( sh_user_has_hero(owner,gHeroID)) {
 		set_pev(owner, pev_punchangle, {0.0, 0.0, 0.0})
 	}
 

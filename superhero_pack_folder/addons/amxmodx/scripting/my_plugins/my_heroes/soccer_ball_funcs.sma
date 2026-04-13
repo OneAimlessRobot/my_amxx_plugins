@@ -275,12 +275,12 @@ public ball_think(ent)
 }
 public plugin_precache()
 {
-	precache_model( g_szBallModel );
-	precache_sound( BALL_BOUNCE_GROUND );
+	engfunc(EngFunc_PrecacheModel, g_szBallModel );
+	engfunc(EngFunc_PrecacheSound, BALL_BOUNCE_GROUND );
 	
-	precache_sound(kicked)
-	precache_sound(gotball)
-	precache_sound(cheers)
+	engfunc(EngFunc_PrecacheSound,kicked)
+	engfunc(EngFunc_PrecacheSound,gotball)
+	engfunc(EngFunc_PrecacheSound,cheers)
 	
 	
 	

@@ -10,22 +10,17 @@ blink_delaystuck 0			//Is the user stuck in place during the delay?
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
-#if defined AMX98
-	#include <xtrafun>  //Only for the constants, doesn't use any functions
-#endif
 
 // GLOBAL VARIABLES
 new gHeroName[]="Blink"
-new bool:g_hasBlinkPower[SH_MAXSLOTS+1]
 new blinkAmount[SH_MAXSLOTS+1]
 new checkCount[SH_MAXSLOTS+1]
 new blinkSpot[SH_MAXSLOTS+1][3]
 new origBlinkSpot[SH_MAXSLOTS+1][3]
-new g_lastPosition[SH_MAXSLOTS+1][3]   // Variable to help with position checking
+new g_lastPosition[SH_MAXSLOTS+1][3]
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,7 +35,7 @@ public plugin_init()
 	register_cvar("blink_delaystuck", "0" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Instant Teleport", "Point to a location and teleport with the blink of an eye!", true, "blink_level" )
+	gHeroID=shCreateHero(gHeroName, "Instant Teleport", "Point to a location and teleport with the blink of an eye!", true, "blink_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("blink_init", "blink_init")
@@ -54,7 +49,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/blink_teleport.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/blink_teleport.wav")
 }
 
 //----------------------------------------------------------------------------------------------
@@ -64,12 +59,6 @@ public blink_init()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has Blink powers
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasBlinkPower[id] = (hasPowers != 0)
 
 	newRound(id)
 }
@@ -90,7 +79,7 @@ public blink_kd()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
-	if ( !is_user_alive(id) || !g_hasBlinkPower[id] ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	new text[128]
 	set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)

@@ -12,17 +12,11 @@ iceman2_armor 100			//How much armor does ironman start with?
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
-#include <amxmodx> 
-#include <fun> 
-#include <cstrike>
-#include <engine> 
 #include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
+new gHeroID
 new gHeroName[]="Ice Man"
-new bool:g_hasIceManPower[SH_MAXSLOTS+1]
 new g_jetPackRunning[SH_MAXSLOTS+1]
 new g_endLocation[SH_MAXSLOTS+1][3]
 new g_spriteFire
@@ -47,7 +41,7 @@ public plugin_init()
 	register_cvar("iceman2_armor","100")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Ice Man", "Ice Trail - Create a trail of ice to go wherever you want.", true, "iceman2_level" )
+	gHeroID=shCreateHero(gHeroName, "Ice Man", "Ice Trail - Create a trail of ice to go wherever you want.", true, "iceman2_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b") 
@@ -77,9 +71,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteFire = precache_model("sprites/laserbeam.spr")
+	g_spriteFire = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 	for( new i = 0; i < 1; i++ )
-		precache_model( g_szRocketModel[i] )
+		engfunc(EngFunc_PrecacheModel, g_szRocketModel[i] )
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
@@ -108,13 +102,8 @@ public iceman2_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has ice man powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
 
-	g_hasIceManPower[id] = (hasPowers!=0)
-
-	if ( g_hasIceManPower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		remove_task(id+36485)
 		set_task( get_cvar_float("iceman2_timer"), "iceman2_loop", id+36485, "", 0, "b")
 	}
@@ -364,7 +353,7 @@ public do_this(id)
 public newRound(id)
 {
 
-  if (!g_hasIceManPower[id]) return PLUGIN_CONTINUE
+  if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 
   if (ice[id]) 
   {

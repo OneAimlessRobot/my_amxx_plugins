@@ -20,12 +20,11 @@ cola_speed 500		//Running Speed (default is 500)
 *
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Cola Lover"
-new bool:HasColaLover[SH_MAXSLOTS+1] // Varible only used for power removal
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -38,7 +37,7 @@ public plugin_init()
 	register_cvar("cola_speed", "500")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Caffeine and Sugar", "Now you run Fast and have More HP", false, "cola_level")
+	gHeroID=shCreateHero(HeroName, "Caffeine and Sugar", "Now you run Fast and have More HP", false, "cola_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -57,25 +56,17 @@ public cola_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
-			HasColaLover[id] = true
-
 		case false:
 		{
 			// This gets run if they had the power but don't anymore
-			if ( is_user_alive(id) && HasColaLover[id] )
+			if ( is_user_alive(id) )
 			{
 				shRemSpeedPower(id)
 				shRemHealthPower(id)
 			}
 
-			HasColaLover[id] = false
 		}
 	}
 }

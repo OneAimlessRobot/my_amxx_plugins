@@ -13,15 +13,13 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 #pragma dynamic 100000
 
 // GLOBAL VARIABLES
 new gHeroName[]="Riddick"
-new bool:ghasRiddickPowers[SH_MAXSLOTS+1]
+new gHeroID
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
 //----------------------------------------------------------------------------------------------
@@ -37,7 +35,7 @@ public plugin_init()
 	register_cvar("riddick_knifemult", "1.35" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Auto Heal + SuperKnife", "Auto-Heal, Knife Damage, Extra Knife Speed", false, "riddick_level" )
+	gHeroID=shCreateHero(gHeroName, "Auto Heal + SuperKnife", "Auto-Heal, Knife Damage, Extra Knife Speed", false, "riddick_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("riddick_init", "riddick_init")
@@ -64,7 +62,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/riddick_knife.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/riddick_knife.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public riddick_init()
@@ -73,18 +71,12 @@ public riddick_init()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has wolverine skills
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	gPlayerMaxHealth[id] = 100
-	ghasRiddickPowers[id] = (hasPowers!=0)
 
 	switchmodel(id)
 
 	// Got to slow down a Riddick that lost his powers...
-	if ( !ghasRiddickPowers[id]  && is_user_connected(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
 		shRemSpeedPower(id)
 	}
 }
@@ -93,7 +85,7 @@ public riddick_loop()
 {
 	if (!shModActive()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if (  ghasRiddickPowers[id] && is_user_alive(id)  )   {
+		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id] )
@@ -111,7 +103,7 @@ public riddick_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
-	if ( ghasRiddickPowers[attacker] && weapon == CSW_KNIFE && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
 		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "knife", headshot )
@@ -132,7 +124,7 @@ public riddick_maxhealth()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( ghasRiddickPowers[id] && is_user_alive(id) && shModActive() ) {
+	if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 		if (wpnid != CSW_KNIFE && wpnid > 0) {
 			new wpn[32]
@@ -144,7 +136,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !ghasRiddickPowers[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
 		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/riddick_knife.mdl")
@@ -153,7 +145,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !ghasRiddickPowers[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
 
 	//new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	new wpnid = read_data(2)

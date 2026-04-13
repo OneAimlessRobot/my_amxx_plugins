@@ -14,7 +14,7 @@ shell_healmax 250		//Max # HP shell can heal to
 // GLOBAL VARIABLES
 #define TASKID 5556
 new gHeroName[]="Shell"
-new bool:ghasShellPowers[SH_MAXSLOTS+1]
+new gHeroID
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gHealPoints, gHealAmount
 new gHasPNinety
@@ -32,7 +32,7 @@ public plugin_init()
 	register_cvar("shell_giveweapon", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Noob Protection!", "The lower level you are, the more hp you have.", false, "shell_level")
+	gHeroID=shCreateHero(gHeroName, "Noob Protection!", "The lower level you are, the more hp you have.", false, "shell_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -64,14 +64,8 @@ public shell_init()
 		read_argv(1,temp,5)
 		new id = str_to_num(temp)
 
-		// 2nd Argument is 0 or 1 depending on whether the id has the hero
-		read_argv(2,temp,5)
-		new hasPowers = str_to_num(temp)
-		//This gets run if they had the power but don't anymore
-
-		ghasShellPowers[id] = (hasPowers != 0)
 		if(is_user_alive(id)){
-		if ( !ghasShellPowers[id] ) {
+		if ( !sh_user_has_hero(id,gHeroID) ) {
 			remove_task(id+TASKID)
 			shRemHealthPower(id)
 			gHasPNinety=0
@@ -88,7 +82,7 @@ public shell_init()
 }
 public shell_weapons(id){
 
-	if ( ghasShellPowers[id] && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			
 			if(gHasPNinety){
 				
@@ -106,7 +100,7 @@ public shell_weapons(id){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( ghasShellPowers[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		new gHealthMax = ( gHealAmount - (gPlayerLevels[id] * get_cvar_num("shell_hpperlev")) )
 		set_user_health(id, gHealthMax)
 		shell_weapons(id)
@@ -128,7 +122,7 @@ public shell_loop()
 {
 	if ( !shModActive() || !hasRoundStarted() ) return
 	for(new id=0;id<SH_MAXSLOTS+1;id++){
-		if ( ghasShellPowers[id] && is_user_alive(id) ) {	
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {	
 			new gHealMax = ( gHealAmount - (gPlayerLevels[id] * get_cvar_num("shell_hpperlev")) )
 			sh_add_hp(id, gHealPoints, gHealMax)
 		}

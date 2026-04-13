@@ -1,13 +1,11 @@
-#include <amxmod.inc>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 
 // VARIABLES
 new gHeroName[]="Emperor Palpatine"
-new bool:g_haspalpatinePowers[SH_MAXSLOTS+1]
 new g_palpatineTimer[SH_MAXSLOTS+1]
 new gSpriteLightning
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -16,7 +14,7 @@ public plugin_init()
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   register_cvar("palpatine_level", "8" )
-  shCreateHero(gHeroName, "Dark Lord", "Death and Decay!", true, "palpatine_level" )
+  gHeroID=shCreateHero(gHeroName, "Dark Lord", "Death and Decay!", true, "palpatine_level" )
   
   // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
   register_event("ResetHUD","newRound","b")
@@ -48,7 +46,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
 public palpatine_init()
@@ -58,16 +56,13 @@ public palpatine_init()
   read_argv(1,temp,5)
   new id=str_to_num(temp)
   
-  // 2nd Argument is 0 or 1 depending on whether the id has iron man powers
-  read_argv(2,temp,5)
-  new hasPowers=str_to_num(temp)
+  new hasPowers=sh_user_has_hero(id,gHeroID)
   
-  g_haspalpatinePowers[id]=(hasPowers!=0)
   set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
   
   if (!hasPowers)
   {
-     if ( is_user_alive(id) && g_palpatineTimer[id]>=0 && g_haspalpatinePowers[id] )
+     if ( is_user_alive(id) && g_palpatineTimer[id]>=0)
      {
 	   palpatine_endmode(id)
      }
@@ -83,7 +78,7 @@ public palpatine_init()
 public newRound(id)
 {
   gPlayerUltimateUsed[id]=false
-  if (g_haspalpatinePowers[id]) {
+  if (sh_user_has_hero(id,gHeroID)) {
     gPlayerUltimateUsed[id]=false
   }
   g_palpatineTimer[id]=0
@@ -133,13 +128,13 @@ public palpatine_kd()
   {
      if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) || x!=id )
      {
-       if (!g_haspalpatinePowers[x])
+       if (!sh_user_has_hero(x,gHeroID))
        {
          get_user_origin(x, victimOrigin)
          distanceBetween = get_distance(userOrigin, victimOrigin)
          if ( distanceBetween < palpatineDeathRadius )
          {
-           if (!g_haspalpatinePowers[x]) {
+           if (!sh_user_has_hero(x,gHeroID)) {
              palpatine_instant(x, id)
            }
            else {
@@ -161,7 +156,7 @@ public palpatine_loop()
 {
   for ( new id=1; id<=SH_MAXSLOTS; id++ )
   {
-    if ( g_haspalpatinePowers[id] && is_user_alive(id)  ) 
+    if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
     {
       // DEATH SETTINGS START HERE
       if ( g_palpatineTimer[id]>0 )
@@ -187,7 +182,7 @@ public palpatine_loop()
             dBetween = get_distance(uOrigin, vOrigin )
             if ( dBetween < palpatineDeathRadius )
             {
-              if (!g_haspalpatinePowers[x])
+              if (!sh_user_has_hero(x,gHeroID))
               {
                 palpatine_death(x, id)
               }
@@ -222,7 +217,7 @@ public palpatine_loop()
           distance = get_distance(userOrigin, enemyOrigin )
           if ( distance < palpatineDecayRadius )
           {
-            if (!g_haspalpatinePowers[eid] && get_user_health(eid) > 25)
+            if (!sh_user_has_hero(eid,gHeroID)&& get_user_health(eid) > 25)
             {
               palpatine_decay(eid, id)
             }

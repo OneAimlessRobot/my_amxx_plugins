@@ -16,7 +16,6 @@ invisman_checkonground 0	//Must player be on ground to be invisible (Default 0 =
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Invisible Man"
-new bool:gHasInvisibleMan[SH_MAXSLOTS+1]
 new gIsInvisible[SH_MAXSLOTS+1]
 new Float:gStillTime[SH_MAXSLOTS+1]
 new const gButtons = IN_ATTACK | IN_ATTACK2 | IN_RELOAD | IN_USE 
@@ -48,11 +47,7 @@ public sh_hero_init(id, heroID, mode)
 	if ( gHeroID != heroID ) return
 
 	switch(mode) {
-		case SH_HERO_ADD: {
-			gHasInvisibleMan[id] = true
-		}
 		case SH_HERO_DROP: {
-			gHasInvisibleMan[id] = false
 			remInvisibility(id)
 		}
 	}
@@ -101,7 +96,7 @@ public checkButtons()
 	for( new i = 0; i < playerCount; i++ ) {
 		id = players[i]
 
-		if ( !gHasInvisibleMan[id] ) continue
+		if ( !sh_user_has_hero(id,gHeroID) ) continue
 
 		setVisible = false
 
@@ -164,7 +159,7 @@ public checkButtons()
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim)
 {
-	if ( !sh_is_active() || !gHasInvisibleMan[victim] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(victim,gHeroID)) return
 
 	remInvisibility(victim)
 }

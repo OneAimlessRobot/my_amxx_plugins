@@ -13,7 +13,6 @@ blackpanther_level 0
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Black Panther"
-new bool:gHasBlackPanther[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -31,25 +30,11 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "blackpanther_prethink")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasBlackPanther[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public blackpanther_prethink(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasBlackPanther[id] ) {
+	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID) ) {
 		set_pev(id, pev_flTimeStepSound, 999)
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-        gHasBlackPanther[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -83,18 +83,18 @@ public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
 public _precache_native_fx_pt1(iPlugin,iParams){
 
 
-	m_trail = precache_model("sprites/smoke.spr")
-	white = precache_model("sprites/shockwave.spr")
-	blood1 = precache_model("sprites/blood.spr");
-	blood2 = precache_model("sprites/bloodspray.spr");
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteBurning = precache_model("sprites/xfire.spr")
-	g_iSmokeSprite[0] = precache_model("sprites/black_smoke3.spr");
-	g_iSmokeSprite[1] = precache_model("sprites/steam1.spr");
-	smoke = precache_model("sprites/steam1.spr")
-	g_iFireSprite = precache_model("sprites/flame.spr");
-	gSpriteLaser = precache_model("sprites/laserbeam.spr")
-	precached_explosion_sprite = precache_model("sprites/shmod/zerogxplode2.spr")
+	m_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	white = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
+	blood1 = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr");
+	blood2 = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr");
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
+	g_iSmokeSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/black_smoke3.spr");
+	g_iSmokeSprite[1] = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr");
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	g_iFireSprite = engfunc(EngFunc_PrecacheModel,"sprites/flame.spr");
+	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	precached_explosion_sprite = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
 
 	engfunc(EngFunc_PrecacheSound, LASER_LINE_DEFAULT_SOUND)
 	engfunc(EngFunc_PrecacheSound, crush_stunned)

@@ -1,7 +1,4 @@
-#include <amxmodx> 
 #include "../my_include/superheromod.inc"
-#include <fun>
-#include <cstrike>
 
 /* CVARS - copy and paste to shconfig.cfg
 
@@ -29,8 +26,8 @@ achilles_dmgmult 3.0 - multiplier of the damage he takes in the left leg; set to
 */
 
 // VARIABLES 
-new gHeroName[] = "Achilles" 
-new bool:gHasAchillesPower[SH_MAXSLOTS + 1] 
+new gHeroName[] = "Achilles"
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init() 
 {
@@ -43,7 +40,7 @@ public plugin_init()
   
    // FIRE THE EVENT TO CREATE THIS SUPERHERO!
    debugMessage("Attempting to create Achilles Hero")
-   shCreateHero(gHeroName, "Partial Immortality", "Bullets can only hit you in the left leg, but they hit you for more damage - don't fall !", false, "achilles_level") 
+   gHeroID=shCreateHero(gHeroName, "Partial Immortality", "Bullets can only hit you in the left leg, but they hit you for more damage - don't fall !", false, "achilles_level") 
   
    // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS) INIT 
    register_event("Damage", "achilles_damage", "b","2!0")
@@ -61,14 +58,10 @@ public achilles_init()
 	read_argv(1, temp, 5) 
 	new id=str_to_num(temp) 
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Achilles powers 
-	read_argv(2, temp, 5) 
-	new hasPowers=str_to_num(temp) 
 
-	gHasAchillesPower[id]=(hasPowers!=0)
 
 	if (is_user_connected(id))
-		if (gHasAchillesPower[id]) {
+		if (sh_user_has_hero(id,gHeroID)) {
 			//Since they have the power make it so that they only have left leg hitzone active (THIS DOES NOT INCLUDE KNIVES OR NADES)
 			set_user_hitzones(0, id, 64)
 			set_user_info(id,"ACHI","1")
@@ -94,7 +87,7 @@ public achilles_init()
 public achilles_damage(id) 
 {
 	//Confirm he can recieve the extra damage
-	if ( !is_user_alive(id) || !gHasAchillesPower[id] ) 
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) 
 	{
 	   return PLUGIN_HANDLED
 	}
@@ -119,7 +112,7 @@ public achilles_damage(id)
 //Inform the client that whoever has achilles
 public newRound(id)
 {
-	if ( gHasAchillesPower[id] ) 
+	if ( sh_user_has_hero(id,gHeroID) ) 
 	   	set_user_hitzones(0, id, 64)
 	else
 	    set_user_hitzones(0, id, 255)

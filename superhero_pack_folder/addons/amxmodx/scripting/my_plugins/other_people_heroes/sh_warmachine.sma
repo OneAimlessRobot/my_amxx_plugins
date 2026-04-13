@@ -31,13 +31,11 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 *   Based Iron Man, which was based on Jetpack by Lazy / Modifications by OLO
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="War Machine"
-new bool:gHasWarMachinePower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gJetPackRunning[SH_MAXSLOTS+1]
 new bool:gRegenAllowed[SH_MAXSLOTS+1]
 new gSpriteFire
@@ -63,7 +61,7 @@ public plugin_init()
 	register_cvar("warmachine_armor", "150")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Jet-Boots/Damage", "Rocket Jet Boots, jump and rocket to take off! Heavy Weaponry, Extra Damage for all weapons.", true, "warmachine_level")
+	gHeroID=shCreateHero(gHeroName, "Jet-Boots/Damage", "Rocket Jet Boots, jump and rocket to take off! Heavy Weaponry, Extra Damage for all weapons.", true, "warmachine_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -89,9 +87,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteFire = precache_model("sprites/fire.spr")
-	precache_sound("ambience/rocketflame1.wav")
-	precache_sound("debris/beamstart11.wav")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/fire.spr")
+	engfunc(EngFunc_PrecacheSound,"ambience/rocketflame1.wav")
+	engfunc(EngFunc_PrecacheSound,"debris/beamstart11.wav")
 }
 //----------------------------------------------------------------------------------------------
 public warmachine_init()
@@ -101,23 +99,16 @@ public warmachine_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the power
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	// Clear out any stale tasks
 	remove_task(id)
 
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		set_task(get_cvar_float("warmachine_timer"), "warmachine_loop", id, "", 0, "b")
 	}
 	// This gets run if they had the power but don't anymore
-	else if ( gHasWarMachinePower[id] ) {
+	else {
 		shRemArmorPower(id)
 	}
-
-	// Sets this variabl	e to the current status
-	gHasWarMachinePower[id] = (hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -266,7 +257,6 @@ public client_disconnected(id)
 	// stupid check but lets see
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
-	gHasWarMachinePower[id] = false
 	gJetPackRunning[id] = false
 	set_user_info(id, "JP", "0")
 	gRegenAllowed[id] = false
@@ -280,7 +270,6 @@ public client_connect(id)
 	// stupid check but lets see
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
-	gHasWarMachinePower[id] = false
 	gJetPackRunning[id] = false
 	set_user_info(id, "JP", "0")
 	gRegenAllowed[id] = false
@@ -299,7 +288,7 @@ public warmachine_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( gHasWarMachinePower[attacker] && is_user_alive(id) && id != attacker ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
 		new weaponName[32]
 		get_weaponname(weaponid, weaponName, 31)
 		replace(weaponName, 31, "weapon_", "")

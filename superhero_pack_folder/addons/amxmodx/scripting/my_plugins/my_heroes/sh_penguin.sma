@@ -85,9 +85,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteTrail = precache_model("sprites/smoke.spr")
-	precache_model("models/shmod/penguin_w_hegrenade.mdl")
-	precache_model("models/shmod/penguin_v_hegrenade.mdl")
+	gSpriteTrail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/penguin_w_hegrenade.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/penguin_v_hegrenade.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public penguin_init()

@@ -13,8 +13,6 @@ batgirl_maxhooks -1		//Max ammout of hooks allowed (-1 is an unlimited ammount)
 
 */
 
-#include <amxmodx>
-#include <fakemeta>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
@@ -22,7 +20,6 @@ batgirl_maxhooks -1		//Max ammout of hooks allowed (-1 is an unlimited ammount)
 #define HOOK_DELTA_T  0.1  // units per second
 
 new gHeroName[]="Batgirl"
-new bool:gHasBatgirl[SH_MAXSLOTS+1]
 new gHookLocation[SH_MAXSLOTS+1][3]
 new gHookLength[SH_MAXSLOTS+1]
 new bool:gHooked[SH_MAXSLOTS+1]
@@ -32,6 +29,7 @@ new gSpriteHookLine
 new const gSoundHook[] = "weapons/xbow_hit2.wav"
 new gPcvarMoveAcc, gPcvarReelSpeed, gPcvarHookStyle, gPcvarHookSky
 new gPcvarTeamColored, gPcvarMaxHooks, gPcvarSvGravity
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -48,7 +46,7 @@ public plugin_init()
 	gPcvarMaxHooks = register_cvar("batgirl_maxhooks", "-1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Bat-Grappling Hook", "Grappling Hook - You now have the Bat-Grapple Hook. Shoot your Hook and automatically be ziplined to the target", true, "batgirl_level")
+	gHeroID=shCreateHero(gHeroName, "Bat-Grappling Hook", "Grappling Hook - You now have the Bat-Grapple Hook. Shoot your Hook and automatically be ziplined to the target", true, "batgirl_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -74,8 +72,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundHook)
-	gSpriteHookLine = precache_model("sprites/zbeam4.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundHook)
+	gSpriteHookLine = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public batgirl_init()
@@ -85,11 +83,6 @@ public batgirl_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	gHasBatgirl[id] = (hasPowers != 0)
 	if ( gHooked[id] ) batgirl_hook_off(id)
 }
 //----------------------------------------------------------------------------------------------
@@ -106,7 +99,7 @@ public batgirl_kd()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	if ( gHooked[id] || !is_user_alive(id) || !gHasBatgirl[id] || !hasRoundStarted() ) return
+	if ( gHooked[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() ) return
 
 	if ( pass_aim_test(id) )
 	{

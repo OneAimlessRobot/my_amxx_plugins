@@ -229,8 +229,8 @@ public sh_round_end(){
 }
 public plugin_precache()
 {
-	precache_sound(round_win)
-	precache_sound(round_lose)
+	engfunc(EngFunc_PrecacheSound,round_win)
+	engfunc(EngFunc_PrecacheSound,round_lose)
 	
 	
 }

@@ -38,10 +38,10 @@ alien_knifemode 0	//1-knife only can't change weapons, 0-Alien Vision on only wh
 
 // GLOBAL VARIABLES
 new HeroName[] = "Alien"
-new HasAlien[SH_MAXSLOTS+1]
 new AlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV
 new CvarKnifeMult, CvarZoomVision, CvarTint, CvarAlphaValue, CvarMode
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -59,7 +59,7 @@ public plugin_init()
 	CvarMode = register_cvar("alien_knifemode", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Alien Vision", "Get Alien Vision and Invisibility when using Knife (but you can only use your knife)", false, "alien_level")
+	gHeroID=shCreateHero(HeroName, "Alien Vision", "Get Alien Vision and Invisibility when using Knife (but you can only use your knife)", false, "alien_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -86,42 +86,35 @@ public alien_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasAlien[id] = true
 			weapon_change(id)
 		}
 
 		case false:
 		{
 			//This gets run if they had the power but don't anymore
-			if ( is_user_connected(id) && HasAlien[id] )
+			if ( is_user_connected(id) )
 			{
 				alien_vision_off(id)
 				shRemHealthPower(id)
 				shRemArmorPower(id)
 			}
-
-			HasAlien[id] = false
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasAlien[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 		weapon_change(id)
 }
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasAlien[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	//new wpnid = read_data(2)
@@ -149,7 +142,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 alien_vision_on(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasAlien[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		AlienModeOn[id] = true
 
@@ -186,7 +179,7 @@ public alien_loop(id)
 		return
 	}
 
-	if ( HasAlien[id] && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) )
 	{
 		setScreenFlash(id, 0, 200, 0, 13, get_pcvar_num(CvarTint))
 		set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(CvarAlphaValue))
@@ -225,7 +218,7 @@ public alien_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if ( HasAlien[attacker] && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -241,7 +234,7 @@ public alien_death()
 {
 	new id = read_data(2)
 
-	if ( !HasAlien[id] )
+	if ( !sh_user_has_hero(id,gHeroID))
 		return
 
 	alien_vision_off(id)
@@ -249,7 +242,6 @@ public alien_death()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasAlien[id] = false
 	AlienModeOn[id] = false
 
 	// Yeah don't want any left over residuals

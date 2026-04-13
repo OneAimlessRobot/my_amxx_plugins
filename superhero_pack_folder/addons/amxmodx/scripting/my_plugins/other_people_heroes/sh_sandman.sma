@@ -20,9 +20,6 @@ sandman_cooldown 20		//Seconds before you can use quicksand again (Default 20)
 *   Hero Originally named Quicksand created by Freecode.
 */
 
-
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 #if defined AMX98
@@ -31,7 +28,7 @@ sandman_cooldown 20		//Seconds before you can use quicksand again (Default 20)
 
 // GLOBAL VARIABLES
 new HeroName[]="Sandman"
-new bool:HasSandman[SH_MAXSLOTS+1]
+new gHeroID
 new MSGSetFOV
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -44,12 +41,8 @@ public plugin_init()
 	register_cvar("sandman_cooldown", "20")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Quicksand", "Use +power key on Enemy in crosshair to Trap them in Quicksand", true, "sandman_level")
+	gHeroID=shCreateHero(HeroName, "Quicksand", "Use +power key on Enemy in crosshair to Trap them in Quicksand", true, "sandman_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("sandman_init", "sandman_init")
-	shRegHeroInit(HeroName, "sandman_init")
 
 	// KEY DOWN
 	register_srvcmd("sandman_kd", "sandman_kd")
@@ -60,27 +53,6 @@ public plugin_init()
 
 	// Sets field of view
 	MSGSetFOV = get_user_msgid("SetFOV")
-}
-//----------------------------------------------------------------------------------------------
-public sandman_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
-	{
-		case true:
-			HasSandman[id] = true
-
-		case false:
-			HasSandman[id] = false
-	}
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -101,7 +73,7 @@ public sandman_kd()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !HasSandman[id] )
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	if ( gPlayerUltimateUsed[id] )
@@ -115,7 +87,7 @@ public sandman_kd()
 //----------------------------------------------------------------------------------------------
 public quicksand(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasSandman[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new targetid, body
@@ -180,7 +152,7 @@ public sink(params[])
 	new targetid = params[3]
 	new id = params[4]
 
-	if ( shModActive() && is_user_connected(id) && HasSandman[id] && is_user_alive(targetid) && params[5] > 0 )
+	if ( shModActive() && is_user_connected(id) && sh_user_has_hero(id,gHeroID) && is_user_alive(targetid) && params[5] > 0 )
 	{
 		// Causes this function to repeat until it equals 0
 		--params[5]
@@ -198,7 +170,7 @@ public sink(params[])
 //----------------------------------------------------------------------------------------------
 public sinking_effects(id, targetid)
 {
-	if ( !shModActive() || !is_user_connected(id) || !is_user_alive(targetid) || !HasSandman[id] )
+	if ( !shModActive() || !is_user_connected(id) || !is_user_alive(targetid) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new targname[32], idname[32]

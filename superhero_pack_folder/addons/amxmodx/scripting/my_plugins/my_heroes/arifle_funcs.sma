@@ -1,6 +1,5 @@
 
 #include "../my_include/superheromod.inc"
-#include <fakemeta_util>
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -62,9 +61,9 @@ public plugin_natives(){
 
 public plugin_precache()
 {
-	precache_model( V_MODEL)
-	precache_model( P_MODEL)
-	precache_model( W_MODEL)
+	engfunc(EngFunc_PrecacheModel, V_MODEL)
+	engfunc(EngFunc_PrecacheModel, P_MODEL)
+	engfunc(EngFunc_PrecacheModel, W_MODEL)
 	
 
 	engfunc(EngFunc_PrecacheSound, Arifle_Sound)
@@ -77,7 +76,7 @@ public plugin_precache()
 	// Muzzleflash
 	g_Muzzleflash_Ent = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "info_target"))
 	
-	precache_model(MUZZLE_FLASH)
+	engfunc(EngFunc_PrecacheModel,MUZZLE_FLASH)
 	engfunc(EngFunc_SetModel, g_Muzzleflash_Ent, MUZZLE_FLASH)
 	set_pev(g_Muzzleflash_Ent, pev_scale, 0.2)
 	
@@ -171,9 +170,10 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 
 public fw_SetModel(entity, model[])
 {
+	
 	if(!pev_valid(entity))
 		return FMRES_IGNORED
-	
+
 	static Classname[32]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
 	
@@ -207,10 +207,8 @@ public fw_SetModel(entity, model[])
 
 public fw_Weapon_PrimaryAttack(Ent)
 {
-	if(pev_valid(Ent)!=2){
+	ent_check(Ent,HAM_IGNORED)
 
-		return HAM_IGNORED;
-	}
 	static id; id = pev(Ent, pev_owner)
 	
 	if(!client_hittable(id)){
@@ -228,10 +226,8 @@ public fw_Weapon_PrimaryAttack(Ent)
 
 public fw_Weapon_PrimaryAttack_Post(Ent)
 {
-	if(pev_valid(Ent)!=2){
+	ent_check(Ent,)
 
-		return;
-	}
 	static id; id = pev(Ent, pev_owner)
 	
 	if(Get_BitVar(g_Had_Arifle, id))
@@ -250,8 +246,9 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 public fw_Weapon_WeaponIdle_Post(Ent)
 {
-	if(pev_valid(Ent) != 2)
-		return HAM_IGNORED	
+	ent_check(Ent,HAM_IGNORED)
+
+
 	static Id; Id = get_pdata_cbase(Ent, 41, 4)
 	if(get_pdata_cbase(Id, 373) != Ent)
 		return HAM_IGNORED	
@@ -271,8 +268,8 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 
 public fw_Item_Deploy_Post(Ent)
 {
-	if(pev_valid(Ent) != 2)
-		return
+	ent_check(Ent,)
+
 	static Id; Id = get_pdata_cbase(Ent, 41, 4)
 	
 	if(!client_hittable(Id)){
@@ -323,8 +320,7 @@ public fw_CheckVisibility(iEntity, pSet)
 
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
-	if(!pev_valid(Ent))
-		return HAM_IGNORED
+	ent_check(Ent,HAM_IGNORED)
 		
 	if(pev(Ent, pev_impulse) == 184128)
 	{
@@ -349,9 +345,8 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 
 public fw_Item_PostFrame(ent)
 {
-	if(pev_valid(ent) != 2){
-		return HAM_IGNORED
-	}
+	ent_check(ent,HAM_IGNORED)
+
 	static id; id = pev(ent, pev_owner)
 	
 	if(!client_hittable(id)){
@@ -385,6 +380,8 @@ public fw_Item_PostFrame(ent)
 
 public fw_Weapon_Reload(ent)
 {
+	ent_check(ent,HAM_IGNORED)
+
 	static id; id = pev(ent, pev_owner)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
@@ -408,6 +405,8 @@ public fw_Weapon_Reload(ent)
 
 public fw_Weapon_Reload_Post(ent)
 {
+	ent_check(ent,HAM_IGNORED)
+
 	static id; id = pev(ent, pev_owner)
 	if(!is_user_alive(id))
 		return HAM_IGNORED

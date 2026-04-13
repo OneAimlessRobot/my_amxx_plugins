@@ -257,10 +257,10 @@ if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
 public plugin_precache()
 {
 
-	precache_model( BOMB_MODEL );
+	engfunc(EngFunc_PrecacheModel, BOMB_MODEL );
 		
 	
-	precache_sound("ambience/particle_suck2.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
 	engfunc(EngFunc_PrecacheSound,BOMB_EXPLODE_SOUND)
 	
 }

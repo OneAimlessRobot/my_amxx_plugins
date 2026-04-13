@@ -29,7 +29,6 @@ hawk_freewpn 1		//Free Aug if CT / Sig if T [def=1]
 *
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 
@@ -45,7 +44,7 @@ hawk_freewpn 1		//Free Aug if CT / Sig if T [def=1]
 
 // GLOBAL VARIABLES
 new g_heroName[]="Hawkeye"
-new bool:g_hasHawkeye[SH_MAXSLOTS+1]
+new gHeroID
 new g_bodyPart[7] = {
 	HEAD,
 	CHEST,
@@ -70,7 +69,7 @@ public plugin_init()
 	register_cvar("hawk_freewpn", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Sig/Aug Auto-shoot", "Auto-shoot and run faster with Sig as T or Aug as CT. Also, see Damage.", false, "hawk_level")
+	gHeroID=shCreateHero(g_heroName, "Sig/Aug Auto-shoot", "Auto-shoot and run faster with Sig as T or Aug as CT. Also, see Damage.", false, "hawk_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -99,16 +98,12 @@ public hawkeye_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	if ( hasPowers && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			hawkeye_weapons(id)
 		}
 	}
-	else if ( !hasPowers && g_hasHawkeye[id] && is_user_connected(id) ) {
+	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			if ( get_user_team(id) == 1 ) engclient_cmd(id, "drop", "weapon_sg552")
 			else engclient_cmd(id, "drop", "weapon_aug")
@@ -117,13 +112,11 @@ public hawkeye_init()
 		shRemArmorPower(id)
 		shRemSpeedPower(id)
 	}
-
-	g_hasHawkeye[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( g_hasHawkeye[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			set_task(0.1, "hawkeye_weapons", id)
 		}
@@ -150,12 +143,12 @@ public hawkeye_damage(id)
 
 		new damage = read_data(2)
 
-		if ( is_user_connected(attacker) && g_hasHawkeye[attacker] ) {
+		if ( is_user_connected(attacker) && sh_user_has_hero(attacker,gHeroID)) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(attacker, "%i", damage)
 		}
 
-		if ( is_user_connected(id) && g_hasHawkeye[id] ) {
+		if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(id, "%i", damage)
 		}
@@ -172,7 +165,7 @@ public hawkeye_aim()
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
 
-		if ( is_user_alive(id) && g_hasHawkeye[id] ) {
+		if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 			new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
 			if ( clip > 0 && ((wpnid == CSW_SG552 && get_user_team(id) == 1) || (wpnid == CSW_AUG && get_user_team(id) == 2)) ) {

@@ -51,11 +51,11 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
-	precache_sound("weapons/electro5.wav")
-	precache_sound("weapons/xbow_hitbod2.wav")
-	precache_sound(gTeslaCoilRevvingSound)
-	precache_sound(gTeslaCoilOff)
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
+	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
+	engfunc(EngFunc_PrecacheSound,gTeslaCoilRevvingSound)
+	engfunc(EngFunc_PrecacheSound,gTeslaCoilOff)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

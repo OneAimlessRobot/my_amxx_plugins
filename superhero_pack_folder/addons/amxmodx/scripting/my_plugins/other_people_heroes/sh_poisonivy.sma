@@ -35,12 +35,11 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 *    Hero orginally created by AssKicR
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"
-new bool:gHasPoisonIvyPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gIsPoisoned[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new gPoisonDamage[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
@@ -61,7 +60,7 @@ public plugin_init()
 	register_cvar("poisonivy_self", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Infect Poison", "Infect the enemy with your Poisoned Bullets or Poisoned Knife", false, "poisonivy_level")
+	gHeroID=shCreateHero(gHeroName, "Infect Poison", "Infect the enemy with your Poisoned Bullets or Poisoned Knife", false, "poisonivy_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -86,7 +85,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("hornet/ag_hornethit1.wav")
+	engfunc(EngFunc_PrecacheSound,"hornet/ag_hornethit1.wav")
 }
 //----------------------------------------------------------------------------------------------
 public poisonivy_init()
@@ -96,17 +95,12 @@ public poisonivy_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
 
 	// This gets run if they had the power but don't anymore
-	if ( !hasPowers && gHasPoisonIvyPower[id] && is_user_connected(id) ) {
+	if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		remove_poison(id)
 	}
 
-	// Sets this variable to the current status
-	gHasPoisonIvyPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public poisonivy_levels()
@@ -126,7 +120,7 @@ public newSpawn(id)
 
 		reset_poisoned(id)
 
-		if( gHasPoisonIvyPower[id] ) {
+		if( sh_user_has_hero(id,gHeroID)) {
 
 			gPlayerUltimateUsed[id] = false
 
@@ -173,10 +167,10 @@ public poisonivy_damage(id)
 
 	// Can users with Poison Ivy be poisoned
 	if ( !get_cvar_num("poisonivy_self") ) {
-		if ( gHasPoisonIvyPower[id] ) return
+		if ( sh_user_has_hero(id,gHeroID)) return
 	}
 
-	if ( gHasPoisonIvyPower[attacker] && weapon != CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] && id != attacker ) {
+	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] && id != attacker ) {
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, "hornet/ag_hornethit1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 		gIsPoisoned[id][attacker] = true
@@ -191,7 +185,7 @@ public poisonivy_loop()
 	if ( !shModActive() ) return
 
 	for ( new attacker = 1; attacker <= SH_MAXSLOTS; attacker++ ) {
-		if ( !gHasPoisonIvyPower[attacker] || !is_user_connected(attacker) ) continue
+		if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue
 
 		for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 			if ( gIsPoisoned[id][attacker] && is_user_alive(id) ) {

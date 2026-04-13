@@ -19,13 +19,13 @@ Version History:
 2.1 - Fixed minor bugs, polished code thanks to vittu.
 
 */
-#include <amxmod>
+
 #include "../my_include/superheromod.inc"
 
 //Global Variables
 
 new gHeroName[]="Rattler"
-new bool:gHasRattlerPower[SH_MAXSLOTS+1]
+new gHeroID
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gSpriteLightning
 
@@ -39,12 +39,8 @@ public plugin_init()
 	register_cvar("rattler_dmgreturn", "0.02" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Shockwave Shield", "Create a shockwave shield to deflect more dmg as level increases.", false, "rattler_level" )
+	gHeroID=shCreateHero(gHeroName, "Shockwave Shield", "Create a shockwave shield to deflect more dmg as level increases.", false, "rattler_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("rattler_init", "rattler_init")
-	shRegHeroInit(gHeroName, "rattler_init")
 
 	register_event("Damage", "rattler_damage", "b", "2!0")
 
@@ -56,23 +52,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
-public rattler_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has GreenLantern
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasRattlerPower[id] = (hasPowers!=0)
-
-}
 
 public rattler_levels()
 {
@@ -95,7 +77,7 @@ public rattler_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return PLUGIN_CONTINUE
 
-	if ( gHasRattlerPower[id] && is_user_alive(attacker) && id != attacker ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(attacker) && id != attacker ) {
 		// do extra damage
 		new returnDamage = floatround( ( gPlayerLevels[id] * get_cvar_float("rattler_dmgreturn") ) * damage )
 		if (returnDamage > 0)

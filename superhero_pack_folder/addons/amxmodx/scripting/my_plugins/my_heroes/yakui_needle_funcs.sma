@@ -204,6 +204,6 @@ public _gatling_set_needle(iPlugin,iParams){
 
 public plugin_precache()
 {
-precache_model(NEEDLE_V_MODEL)
+engfunc(EngFunc_PrecacheModel,NEEDLE_V_MODEL)
 
 }

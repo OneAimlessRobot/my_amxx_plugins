@@ -15,7 +15,6 @@ htorch_burndamage 10		//How much damage each burn does
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Human Torch"
-new bool:gHasHumanTorch[SH_MAXSLOTS+1]
 new bool:gIsBurning[SH_MAXSLOTS+1]
 new const gSoundBurning[] = "ambience/burning1.wav"
 new const gSoundScream[] = "scientist/c1a0_sci_catscream.wav"
@@ -42,21 +41,12 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
-	gSpriteBurning = precache_model("sprites/xfire.spr")
-	precache_sound(gSoundBurning)
-	precache_sound(gSoundFlameBlast)
-	precache_sound(gSoundScream)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasHumanTorch[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundBurning)
+	engfunc(EngFunc_PrecacheSound,gSoundFlameBlast)
+	engfunc(EngFunc_PrecacheSound,gSoundScream)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -69,7 +59,7 @@ public sh_client_spawn(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasHumanTorch[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	// Ludwigs flame thrower
 	if ( pev(id, pev_waterlevel) == 3 ) {
@@ -323,7 +313,6 @@ public stop_fire_sound(id)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasHumanTorch[id] = false
 	gIsBurning[id] = false
 }
 //----------------------------------------------------------------------------------------------

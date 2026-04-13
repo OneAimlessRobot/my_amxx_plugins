@@ -9,7 +9,7 @@
 
 
 new gHeroName[]="Pesk"
-new gHaspeskPower[SH_MAXSLOTS+1]
+new gHeroID
 new Beam,Fire
 new bool:InBeam[33] = false
 new smoke
@@ -23,9 +23,9 @@ public plugin_init()
 	register_cvar("pesk_maxdamage", "300" )
 	register_cvar("pesk_radius", "300" )
 
-	shCreateHero(gHeroName, "Pesk", "Shoot people when your dead", true, "pesk_level" )
-	register_srvcmd("pesk_init", "pesk_init")
-	shRegHeroInit(gHeroName, "pesk_init")
+	gHeroID=shCreateHero(gHeroName, "Pesk", "Shoot people when your dead", true, "pesk_level" )
+
+
 	register_srvcmd("pesk_kd",   "pesk_kd")
 	shRegKeyDown(gHeroName, "pesk_kd")
 	register_event("ResetHUD","newRound","b")
@@ -33,26 +33,11 @@ public plugin_init()
 	set_task(1.0,"pesk_loop",0,"",0,"b" )
 }
 
-public pesk_init()
-{
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	gHaspeskPower[id]=(hasPowers!=0)
-
-	if ( hasPowers )
-		gHaspeskPower[id]=true
-	else
-		gHaspeskPower[id]=false
-}
-
 public plugin_precache()
 {
-	Beam = precache_model("sprites/smoke.spr")
-	smoke = precache_model("sprites/steam1.spr")
-	Fire = precache_model("sprites/zerogxplode.spr")
+	Beam = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	Fire = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 }
 
 public pesk_kd()
@@ -76,7 +61,7 @@ public pesk_kd()
 
 public beamp(id)
 {
-	if ( gHaspeskPower[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		InBeam[id] = true
 		new parm[1]
@@ -204,7 +189,7 @@ public pesk_loop()
 {
 	for ( new id=1; id<=SH_MAXSLOTS; id++ )
 	{
-		if (  gHaspeskPower[id] && !is_user_alive(id)  )
+		if (  sh_user_has_hero(id,gHeroID) && !is_user_alive(id)  )
 		{
 			make_fog(id)
 		}

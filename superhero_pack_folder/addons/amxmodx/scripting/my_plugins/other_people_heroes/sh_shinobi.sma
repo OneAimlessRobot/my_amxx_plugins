@@ -57,7 +57,7 @@ public plugin_init()
 public plugin_precache()
 {
 	precache_sound(SOUND_SMOKESCREEN)
-	precache_model(MODEL_SHURIKEN)
+	engfunc(EngFunc_PrecacheModel,MODEL_SHURIKEN)
 
 	precache_sound("player/pl_shell1.wav")
 	precache_sound("player/pl_shell2.wav")
@@ -66,9 +66,9 @@ public plugin_precache()
 	precache_sound("player/headshot2.wav")
 	precache_sound("player/headshot3.wav")
 
-	sprite_beam 	= precache_model("sprites/laserbeam.spr")
-	g_blood 	= precache_model("sprites/blood.spr")
-	g_bloodspray 	= precache_model("sprites/bloodspray.spr")
+	sprite_beam 	= engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	g_blood 	= engfunc(EngFunc_PrecacheModel,"sprites/blood.spr")
+	g_bloodspray 	= engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 }
 
 public sh_hero_init(id, heroID, mode)

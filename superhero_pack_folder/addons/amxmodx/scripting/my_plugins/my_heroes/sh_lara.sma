@@ -157,10 +157,10 @@ public weaponChange(id)
 }
 public plugin_precache()
 {
-	//m_spriteTexture = precache_model("sprites/laserbeam.spr")
-	precache_model(SPEAR_V_MODEL)
-	precache_model(SPEAR_P_MODEL)
-	precache_model(NOSPEAR_V_MODEL)
+	//m_spriteTexture = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheModel,SPEAR_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,SPEAR_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,NOSPEAR_V_MODEL)
 		
 }
 public death()

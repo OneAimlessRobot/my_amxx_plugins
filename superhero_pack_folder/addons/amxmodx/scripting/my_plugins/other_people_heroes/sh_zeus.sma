@@ -23,7 +23,6 @@ zeus_workinside 0		//Allow zeus to work inside buidings and so on
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Zeus"
-new bool:gHasZeus[SH_MAXSLOTS+1]
 new bool:gIsInvisible[SH_MAXSLOTS+1]
 new gBurnDecal
 new gSpriteLightning, gSpriteSmoke
@@ -57,18 +56,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	precache_sound(gSoundThunder)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasZeus[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundThunder)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -85,7 +75,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !sh_is_active() ) return
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
-	if ( gHasZeus[attacker] && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && random_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && random_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
 		// Get the origin of the victim's feet
 		new Float:fl_Origin[3]
 		pev(victim, pev_origin, fl_Origin)

@@ -274,11 +274,11 @@ if(has_rocket[i] > 0){
 }
 public plugin_precache()
 {
-precache_sound(ROCKET_EXPLODE_SFX)
-precache_sound("ambience/particle_suck2.wav")
+engfunc(EngFunc_PrecacheSound,ROCKET_EXPLODE_SFX)
+engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
 
 
-precache_model(GATLING_P_MODEL)
-precache_model(GATLING_V_MODEL)
+engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
+engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
 
 }

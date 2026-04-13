@@ -11,14 +11,11 @@ solid_ration_health 50		// How many health you have per ration?
 
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
-#include <cstrike>
-#include <fakemeta>
-#include <fun>
+
 
 new gHeroName[] = "Solid Snake"
-new bool:gHasSolidPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gMorphed[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gMaxHealth[SH_MAXSLOTS+1]
@@ -40,7 +37,7 @@ public plugin_init()
 	register_cvar("solid_ration_health", "50")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Rations, Stealth, Snake's appearance, Socom", "You can use rations on keydown to healing, you have Snake's body, stealth camouflage and Socom instead USP", true, "solid_level")
+	gHeroID=shCreateHero(gHeroName, "Rations, Stealth, Snake's appearance, Socom", "You can use rations on keydown to healing, you have Snake's body, stealth camouflage and Socom instead USP", true, "solid_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_logevent("round_start", 2, "1=Round_Start")
@@ -69,15 +66,9 @@ public solid_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Solid Snake
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	if(!is_user_connected(id) || !shModActive()) return
 
-	gHasSolidPower[id] = (hasPowers != 0)
-
-	if(gHasSolidPower[id])
+	if(sh_user_has_hero(id,gHeroID))
 	{
 		solid_morph(id)
 	}
@@ -103,10 +94,10 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/ration.wav")
-	precache_model("models/shmod/socom_v.mdl")
-	precache_model("models/shmod/socom_p.mdl")
-	precache_model("models/player/solid/solid.mdl")
+	engfunc(EngFunc_PrecacheSound,"shmod/ration.wav")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/socom_v.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/socom_p.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/player/solid/solid.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public solid_levels()
@@ -122,7 +113,7 @@ public solid_levels()
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if(gHasSolidPower[id] && shModActive())
+	if(sh_user_has_hero(id,gHeroID)&& shModActive())
 	{
 		new wpnid = read_data(2)
 
@@ -136,7 +127,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public setSocom(id)
 {
-    if(shModActive() && is_user_alive(id) && gHasSolidPower[id])
+    if(shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 	    new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
@@ -156,7 +147,7 @@ public round_start()
 	{
 		if(is_user_alive(x))
 		{
-			if(gHasSolidPower[x])
+			if(sh_user_has_hero(x,gHeroID))
 			{
 				gMaxHealth[x] = get_user_health(x)
 				Rations[x] = maxRations
@@ -178,7 +169,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public solid_damage(id)
 {
-	if(shModActive() && is_user_alive(id) && gHasSolidPower[id])
+	if(shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		remove_task(id)
 		stealthVisible(id)
@@ -187,7 +178,7 @@ public solid_damage(id)
 //----------------------------------------------------------------------------------------------
 public giveSocom(id)
 {
-    if(!shModActive() || !is_user_alive(id) || !gHasSolidPower[id]) return
+    if(!shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
     shGiveWeapon(id, "weapon_usp")
 }
@@ -228,7 +219,7 @@ public solid_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if(!is_user_alive(id) || !gHasSolidPower[id]) return
+	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if(Rations[id] == 0)
 	{
@@ -263,7 +254,6 @@ public solid_kd()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasSolidPower[id] = false
 	gMorphed[id] = false
 }
 //----------------------------------------------------------------------------------------------

@@ -7,18 +7,13 @@ abe_level 10
 
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
-#include <fakemeta>
-#include <cstrike>
-#include <fun>
 
 new gHeroName[] = "Abe"
-new bool:gHasAbePower[SH_MAXSLOTS+1]
 new bool:AbePowerUsed[SH_MAXSLOTS+1]
 new gMorphed[SH_MAXSLOTS+1]
 new LightSprite
-
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -29,11 +24,8 @@ public plugin_init()
 	register_cvar("abe_level", "10")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Insert your spirit into enemies", "You can insert your spirit into enemies", true, "abe_level")
+	gHeroID=shCreateHero(gHeroName, "Insert your spirit into enemies", "You can insert your spirit into enemies", true, "abe_level")
 
-	// INIT
-	register_srvcmd("abe_init", "abe_init")
-	shRegHeroInit(gHeroName, "abe_init")
 
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
@@ -47,26 +39,10 @@ public plugin_init()
 public plugin_precache()
 {
 	// Precache lighting
-	LightSprite = precache_model("sprites/lgtning.spr")
+	LightSprite = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 
 	// Precache sound
-	precache_sound("shmod/abe_sound.wav")
-}
-//----------------------------------------------------------------------------------------------
-public abe_init()
-{
-
-	// First Argument is an id who has abe
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has abe
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasAbePower[id] = (hasPowers != 0)
-
+	engfunc(EngFunc_PrecacheSound,"shmod/abe_sound.wav")
 }
 //----------------------------------------------------------------------------------------------
 public abe_kd()
@@ -172,7 +148,7 @@ public abe_kd()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if(gHasAbePower[id])
+	if(sh_user_has_hero(id,gHeroID))
 	{
 		unmorph_model(id)
 		AbePowerUsed[id] = false

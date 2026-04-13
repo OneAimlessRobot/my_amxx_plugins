@@ -13,13 +13,11 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIBLES
+new gHeroID
 new g_heroName[]="BEA-03 Lancer"
-new bool:g_haslancer[SH_MAXSLOTS+1]
 new bool:g_usingPower[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]
 new bool:g_powerKeyUsed[SH_MAXSLOTS+1]
@@ -45,7 +43,7 @@ public plugin_init()
 	register_cvar("lancer_blast_decals", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Torpedo", "Hold Keydown to charge, Release to fire your torpedo.", true, "lancer_level")
+	gHeroID=shCreateHero(g_heroName, "Torpedo", "Hold Keydown to charge, Release to fire your torpedo.", true, "lancer_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -73,14 +71,14 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/lancersound1.wav")
-	precache_sound("shmod/lancersound2.wav")
-	precache_sound("shmod/lancersound3.wav")
-	precache_sound("shmod/lancersound4.wav")
-	precache_model("models/shmod/shootlancer.mdl")
-	g_spriteTrail = precache_model("sprites/laserbeam.spr")
-	g_spriteExplosion = precache_model("sprites/shmod/explodelancer.spr")
-	g_spriteSmoke = precache_model("sprites/wall_puff4.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/lancersound1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/lancersound2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/lancersound3.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/lancersound4.wav")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/shootlancer.mdl")
+	g_spriteTrail = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/shmod/explodelancer.spr")
+	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public lancer_init()
@@ -90,12 +88,8 @@ public lancer_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	//This gets run if they had the power but don't anymore
-	if ( !hasPowers && g_haslancer[id] ){
+	if ( !sh_user_has_hero(id,gHeroID)){
 
 		// remove the power if it was used and user dropped hero
 		if ( g_powerID[id] > 0 ) {
@@ -103,8 +97,6 @@ public lancer_init()
 		}
 	}
 
-	// Sets this variable to the current status
-	g_haslancer[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -124,7 +116,7 @@ public lancer_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_haslancer[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	if ( gPlayerUltimateUsed[id] ) {
 		playSoundDenySelect(id)
@@ -175,7 +167,7 @@ public lancer_ku()
 		return
 	}
 
-	if ( !is_user_alive(id) || !g_haslancer[id] || !g_powerKeyUsed[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !g_powerKeyUsed[id] ) return
 
 	// Stop the sound
 	new sndStop=(1<<5)
@@ -541,7 +533,7 @@ public round_end()
 	g_betweenRounds = true
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( g_haslancer[id] && g_powerID[id] > 0 ) {
+		if ( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
 		}
 	}
@@ -554,7 +546,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if( g_haslancer[id] && g_powerID[id] > 0) {
+	if(sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0) {
 		remove_power(id, g_powerID[id])
 	}
 }

@@ -1,5 +1,3 @@
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // MEGAMAN! = The Ultimate Hero
@@ -29,7 +27,6 @@ new laser_shots[33]
 // Megaman is an awesome superhero that has a megasuit of ultimate powers!
 
 new gHeroName[]="Megaman"
-new bool:g_hasMegamanPower[SH_MAXSLOTS+1]
 
 //----------------------------------------------------------------------------------------------------------
 public plugin_init()
@@ -50,9 +47,6 @@ public plugin_init()
   register_srvcmd("megaman_ku", "megaman_ku")
   shRegKeyUp(gHeroName, "megaman_ku")
   
-  // INIT
-  register_srvcmd("megaman_init", "megaman_init")
-  shRegHeroInit(gHeroName, "megaman_init")
   
   // DEATH
   register_event("DeathMsg", "megaman_death", "a")
@@ -70,27 +64,11 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-   smoke = precache_model("sprites/steam1.spr") 
-   laser = precache_model("sprites/laserbeam.spr") 
-   precache_sound("weapons/electro5.wav") 
-   precache_sound("weapons/xbow_hitbod2.wav") 
+   smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr") 
+   laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr") 
+   engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav") 
+   engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav") 
 }
-//----------------------------------------------------------------------------------------------------------
-public megaman_init()
-{
-  new temp[128]
-  // First Argument is an id
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-  
-  // 2nd Argument is 0 or 1 depending on whether the id has Megaman powers
-  read_argv(2,temp,5)
-  new hasPowers=str_to_num(temp)
-  
-  g_hasMegamanPower[id]=(hasPowers!=0)
-
-}
-
 //----------------------------------------------------------------------------------------------------------
 public megaman_death() 
 {

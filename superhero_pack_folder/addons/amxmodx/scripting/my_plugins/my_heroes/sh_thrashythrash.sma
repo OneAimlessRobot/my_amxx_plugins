@@ -177,9 +177,9 @@ public fw_CmdStart( id, uc_handle, seed )
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(Model_Weapon_V)
-	precache_model(Model_Weapon_P)
-	precache_sound("weapons/zoom.wav")
+	engfunc(EngFunc_PrecacheModel,Model_Weapon_V)
+	engfunc(EngFunc_PrecacheModel,Model_Weapon_P)
+	engfunc(EngFunc_PrecacheSound,"weapons/zoom.wav")
 }
 //----------------------------------------------------------------------------------------------
 public thrashy_kd()

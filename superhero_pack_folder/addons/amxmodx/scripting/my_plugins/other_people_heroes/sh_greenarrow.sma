@@ -9,13 +9,12 @@
 
  */
 
- #include <amxmod>
- #include <Vexd_Utilities>
  #include "../my_include/superheromod.inc"
 
  // VARIABLES
  new gHeroName[]="Green Arrow"
- new gHasGarrowPower[SH_MAXSLOTS+1]
+
+ new gHeroID
  new gArrows[SH_MAXSLOTS+1]
  // Test
  new gLastWeapon[SH_MAXSLOTS+1]
@@ -35,7 +34,7 @@
 	register_cvar("garrow_getscout", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Green Arrows", "You get some Explosive Arrows for your bow(scout)!", false, "garrow_level" )
+	gHeroID=shCreateHero(gHeroName, "Green Arrows", "You get some Explosive Arrows for your bow(scout)!", false, "garrow_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
@@ -61,17 +60,11 @@
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has garrow
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasGarrowPower[id]=(hasPowers!=0)
-
 	if ( !is_user_alive(id) ) return
 
 	switchmodel(id)
 
-	if ( gHasGarrowPower[id] )
+	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
 
@@ -82,17 +75,17 @@
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
  {
-	laser = precache_model("sprites/laserbeam.spr")
-	laser_impact = precache_model("sprites/zerogxplode.spr")
-	blast_shroom = precache_model("sprites/mushroom.spr")
-	precache_model("models/shmod/Greenarrow_v.mdl")
-	precache_model("models/shmod/Greenarrow_p.mdl")
+	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/Greenarrow_v.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/Greenarrow_p.mdl")
 
  }
  //----------------------------------------------------------------------------------------------
  public newRound(id)
  {
-	if ( gHasGarrowPower[id] )
+	if ( sh_user_has_hero(id,gHeroID))
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
 		gLastWeapon[id] = -1  // I think the change Weapon automatically gets called on spawn death too...
@@ -109,7 +102,7 @@
 
 	if ( attacker < 0 || attacker > SH_MAXSLOTS ||attacker == id) return PLUGIN_CONTINUE
 
-	if ( gHasGarrowPower[attacker] && weapon == CSW_SCOUT && gArrows[attacker] >= 0 && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && gArrows[attacker] >= 0 && is_user_alive(id) )
 	{
 		new health = get_user_health(id)
 
@@ -206,7 +199,7 @@
  public garrow_fire(id)
  {
 
-	if ( !gHasGarrowPower[id] ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new weap = read_data(2)		// id of the weapon
 	new ammo = read_data(3)		// ammo left in clip
@@ -272,7 +265,7 @@
  //----------------------------------------------------------------------------------------------
  public switchmodel(id)
  {
-	if ( !is_user_alive(id) || !gHasGarrowPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if (wpnid == CSW_SCOUT) {
 		// Weapon Model change for 3rd person view - vittu
@@ -284,7 +277,7 @@
  //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
-	if ( !gHasGarrowPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)

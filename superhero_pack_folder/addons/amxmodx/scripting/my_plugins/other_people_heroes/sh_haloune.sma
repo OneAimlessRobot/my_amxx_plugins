@@ -21,8 +21,7 @@ Haloune_M4A1mult 2		//Damage multiplyer for his M4A1 Default 2x
 Haloune_teamglow 0		//Teams Glows so you can tell your friends and foes ( 1=On 0=Off )
 sv_maxspeed 500
 */
-#include <amxmodx>
-#include <fakemeta>
+
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -30,7 +29,7 @@ sv_maxspeed 500
 
 // GLOBAL VARIABLES
 new HeroName[] = "Haloune Tsurgi"
-new bool:HasHaloune[SH_MAXSLOTS+1]
+new gHeroID
 new bool:HalouneModelSet[SH_MAXSLOTS+1]
 new HalouneSound[] = "shmod/frostnova.wav"
 new CvarTeamGlow, CvarM4A1DmgMult
@@ -50,7 +49,7 @@ public plugin_init()
         CvarTeamGlow = register_cvar("Haloune_teamglow", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Stealth Ninja", "Haloune - A Stealthy Ninja With Gravity/HP/AP a Super M4A1+Damage and a custom player model.", false, "Haloune_level")
+	gHeroID=shCreateHero(HeroName, "Stealth Ninja", "Haloune - A Stealthy Ninja With Gravity/HP/AP a Super M4A1+Damage and a custom player model.", false, "Haloune_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -74,10 +73,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/player/Haloune/Haloune.mdl")
-	precache_model("models/shmod/v_halounem4a1.mdl")
-	precache_model("models/shmod/p_halounem4a1.mdl")
-	precache_sound(HalouneSound)
+	engfunc(EngFunc_PrecacheModel,"models/player/Haloune/Haloune.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/v_halounem4a1.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/p_halounem4a1.mdl")
+	engfunc(EngFunc_PrecacheSound,HalouneSound)
 }
 //----------------------------------------------------------------------------------------------
 public Haloune_init()
@@ -87,20 +86,14 @@ public Haloune_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
 	// Reset thier shield restrict status
 	// Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasHaloune[id] = true
-
 			if ( is_user_alive(id) )
 			{
 				Haloune_weapons(id)
@@ -112,7 +105,7 @@ public Haloune_init()
 		case false:
 		{
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) && HasHaloune[id] )
+			if ( is_user_alive(id))
 			{
 				// This gets run if they had the power but don't anymore
 				engclient_cmd(id, "drop", "weapon_M4A1")
@@ -122,15 +115,13 @@ public Haloune_init()
 				shRemGravityPower(id)
 				shRemSpeedPower(id)
 			}
-
-			HasHaloune[id] = false
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasHaloune[id] )
+	if ( shModActive() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID) )
 	{
 		set_task(0.1, "Haloune_weapons", id)
 
@@ -149,7 +140,7 @@ Haloune_tasks(id)
 //----------------------------------------------------------------------------------------------
 public Haloune_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasHaloune[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	shGiveWeapon(id, "weapon_m4a1")
@@ -157,7 +148,7 @@ public Haloune_weapons(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasHaloune[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -171,7 +162,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasHaloune[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)
@@ -198,7 +189,7 @@ public Haloune_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
-	if ( HasHaloune[attacker] && weapon == CSW_M4A1 && is_user_alive(id) )
+	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -218,7 +209,7 @@ Haloune_sound(id)
 //----------------------------------------------------------------------------------------------
 public Haloune_morph(id)
 {
-	if ( HalouneModelSet[id] || !is_user_alive(id) || !HasHaloune[id] )
+	if ( HalouneModelSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	cs_set_user_model(id, "Haloune")
@@ -261,7 +252,7 @@ public Haloune_glow(id)
 		return
 	}
 
-	if ( HasHaloune[id] && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
 	{
 		new teamId = get_user_team(id)
 		switch(teamId)
@@ -278,7 +269,7 @@ public Haloune_death()
 {
 	new id = read_data(2)
 
-	if ( !HasHaloune[id] )
+	if ( !sh_user_has_hero(id,gHeroID))
 		return
 
 	Haloune_unmorph(id)
@@ -286,7 +277,6 @@ public Haloune_death()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasHaloune[id] = false
 	HalouneModelSet[id] = false
 }
 //----------------------------------------------------------------------------------------------

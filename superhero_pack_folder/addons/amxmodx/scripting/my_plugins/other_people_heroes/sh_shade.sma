@@ -12,7 +12,7 @@
 
 // VARIABLES
 new gHeroName[]="Shade"
-new bool:gHasShadePower[SH_MAXSLOTS+1]
+new gHeroID
 new g_shadeTimer[SH_MAXSLOTS+1]
 new gShadeMode[33]
 new g_shadeSound[]="ambience/sandfall1.wav"
@@ -26,7 +26,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	if ( isDebugOn() ) server_print("Attempting to create Shade Hero")
 	if (!cvar_exists("shade_level")) register_cvar("shade_level", "10" )
-	shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
+	gHeroID=shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
 	register_clcmd("ShadePower","make_fog",ADMIN_USER)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -54,8 +54,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	smoke = precache_model("sprites/steam1.spr")
-	precache_sound(g_shadeSound)
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	engfunc(EngFunc_PrecacheSound,g_shadeSound)
 }
 //----------------------------------------------------------------------------------------------
 public shade_init()
@@ -65,23 +65,18 @@ public shade_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has shade powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-
-	if ( !hasPowers )
+	if ( !sh_user_has_hero(id,gHeroID) )
 	{
 		shade_endmode(id)
 		g_shadeTimer[id]=0
 	}
 
-	gHasShadePower[id]=(hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
 	gPlayerUltimateUsed[id]=false
-	if ( gHasShadePower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		shade_gunz(id)
 	}
 	if (g_shadeTimer[id]>0) {
@@ -140,7 +135,7 @@ public shade_loop()
 {
 	for ( new id=1; id<=SH_MAXSLOTS; id++ )
 	{
-		if ( gHasShadePower[id] && is_user_alive(id)  )
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 		{
 			if ( g_shadeTimer[id]>0 )
 			{
@@ -202,10 +197,10 @@ public fog_this_area(origin[3])
 public changeWeapon(id)
 {
 	if (get_cvar_num("shade_ammo")==1){
-		if ( !gHasShadePower[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
 	}
 	else{
-		if ( !gHasShadePower[id] || !gShadeMode[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID)|| !gShadeMode[id] || !shModActive() ) return PLUGIN_CONTINUE
 	}
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
@@ -242,7 +237,7 @@ public shade_gunz(id)
 }
 //----------------------------------------------------------------------------------------------
 public make_fog(id){
-	if (gHasShadePower[id]==false)
+	if (!sh_user_has_hero(id,gHeroID))
 		return PLUGIN_HANDLED
 	if (is_user_alive(id)!=1)
 		return PLUGIN_HANDLED

@@ -9,7 +9,7 @@
 // VARIABLES
 
 new gHeroName[]="Luke Skywalker"
-new bool:g_hasLukePower[SH_MAXSLOTS+1]
+new gHeroID
 new saber 
 new ls_stat[33]
 //----------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ public plugin_init()
  
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	if (!cvar_exists("luke_level")) register_cvar("luke_level", "0" )
-	shCreateHero(gHeroName, "Ligthsaber", "Kill Your Enemies With The Mighty Powers Of The Force!", true, "luke_level" )
+	gHeroID=shCreateHero(gHeroName, "Ligthsaber", "Kill Your Enemies With The Mighty Powers Of The Force!", true, "luke_level" )
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -29,9 +29,6 @@ public plugin_init()
 	register_srvcmd("luke_kd", "luke_kd")
 	shRegKeyDown(gHeroName, "luke_kd")
 	
-	// INIT
-	register_srvcmd("luke_init", "luke_init")
-	shRegHeroInit(gHeroName, "luke_init")
 
 	if (!cvar_exists("luke_sabertime")) register_cvar("luke_sabertime", "20.0" )
 	if (!cvar_exists("luke_sabermode")) register_cvar("luke_sabermode", "2" ) //1=Only Kills Enemies 2=Kills Enemies And Frienlies
@@ -41,26 +38,11 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	saber = precache_model("sprites/laserbeam.spr")
-	precache_sound("ambience/zapmachine.wav")
-	precache_sound("vox/_period.wav")
+	saber = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	engfunc(EngFunc_PrecacheSound,"ambience/zapmachine.wav")
+	engfunc(EngFunc_PrecacheSound,"vox/_period.wav")
 
 	return PLUGIN_CONTINUE 
-}
-//----------------------------------------------------------------------------------------------
-public luke_init()
-{
-	new temp[6]
-	// First Argument is an id
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	// 2nd Argument is 0 or 1 depending on whether the id has Luke Skywalker powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	
-	g_hasLukePower[id]=(hasPowers!=0)
-
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -86,7 +68,7 @@ public luke_kd()
 		return PLUGIN_HANDLED 
 	}	
 
-	if (!g_hasLukePower[id]) return PLUGIN_CONTINUE
+	if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 	if ((is_user_alive(id)==0) || (ls_stat[id] != 0) ){
 //		client_print(id,print_console,"[AMX] You cannot use a light saber when you are dead or have an active one already")
 		return PLUGIN_HANDLED

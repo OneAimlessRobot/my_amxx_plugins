@@ -23,7 +23,6 @@ batman_armor 125		//defualt 125
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Batman"
-new bool:gHasBatman[SH_MAXSLOTS+1]
 new gCurrentWeapon[SH_MAXSLOTS+1]
 new gmsgSetFOV
 
@@ -68,11 +67,9 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasBatman[id] = true
 			batman_giveweapons(id)
 		}
 		case SH_HERO_DROP: {
-			gHasBatman[id] = false
 			batman_dropweapons(id)
 		}
 	}
@@ -82,7 +79,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( gHasBatman[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		batman_giveweapons(id)
 	}
 }
@@ -111,7 +108,7 @@ batman_dropweapons(id)
 //----------------------------------------------------------------------------------------------
 public change_weapon(id)
 {
-	if ( !sh_is_active() || !gHasBatman[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
 
 	new weaponid = read_data(2)
 
@@ -129,10 +126,5 @@ batman_zoomout(id)
 	message_begin(MSG_ONE, gmsgSetFOV, _, id)
 	write_byte(90)	//not Zooming
 	message_end()
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasBatman[id] = false
 }
 //----------------------------------------------------------------------------------------------

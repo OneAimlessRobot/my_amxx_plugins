@@ -128,15 +128,15 @@ public loadCVARS(){
 public plugin_precache(){
 	
 	
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_FLY_SOUND );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_BLOW_SOUND );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_IDLE_SOUND );
-	precache_model(JETPLANE_MODEL)
-	precache_model(JETPLANE_CAMERA_MODEL)
+	engfunc(EngFunc_PrecacheModel,JETPLANE_MODEL)
+	engfunc(EngFunc_PrecacheModel,JETPLANE_CAMERA_MODEL)
 	
 	
 	

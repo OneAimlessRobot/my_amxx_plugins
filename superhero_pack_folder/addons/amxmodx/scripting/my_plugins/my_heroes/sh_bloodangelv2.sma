@@ -81,7 +81,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/toxic_cat_m4.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/toxic_cat_m4.mdl")
 	
 }
 public num_picked_check(id){

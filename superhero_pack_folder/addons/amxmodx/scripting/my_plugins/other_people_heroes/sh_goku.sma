@@ -63,7 +63,6 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 
 // GLOBAL VARIBLES
 new g_heroName[]="Goku"
-new bool:g_hasGoku[SH_MAXSLOTS+1]
 new bool:g_inStun[SH_MAXSLOTS+1]
 new bool:g_betweenRounds
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
@@ -136,27 +135,27 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/goku_ki_blast.wav")
-	precache_sound("shmod/goku_kamehameha.wav")
-	precache_sound("shmod/goku_10x_kamehameha.wav")
-	precache_sound("shmod/goku_spirit_bomb.wav")
-	precache_sound("shmod/goku_powerup1.wav")
-	precache_sound("shmod/goku_powerup2.wav")
-	precache_sound("shmod/goku_powerup3.wav")
-	precache_sound("shmod/goku_powerup4.wav")
-	precache_sound("player/pl_pain2.wav")
-	precache_model("sprites/shmod/esf_ki_blast.spr")
-	precache_model("sprites/shmod/esf_kamehameha_blue.spr")
-	precache_model("sprites/shmod/esf_kamehameha_red.spr")
-	precache_model("sprites/shmod/esf_spirit_bomb.spr")
-	g_spriteTrailY = precache_model("sprites/shmod/esf_trail_yellow.spr")
-	g_spriteTrailB = precache_model("sprites/shmod/esf_trail_blue.spr")
-	g_spriteTrailR = precache_model("sprites/shmod/esf_trail_red.spr")
-	g_spriteExplosionY = precache_model("sprites/shmod/esf_exp_yellow.spr")
-	g_spriteExplosionB = precache_model("sprites/shmod/esf_exp_blue.spr")
-	g_spriteExplosionR = precache_model("sprites/shmod/esf_exp_red.spr")
-	g_spritePowerUp = precache_model("sprites/shmod/esf_powerup.spr")
-	g_spriteSmoke = precache_model("sprites/wall_puff4.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_ki_blast.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_kamehameha.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_10x_kamehameha.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_spirit_bomb.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup3.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup4.wav")
+	engfunc(EngFunc_PrecacheSound,"player/pl_pain2.wav")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_ki_blast.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_kamehameha_blue.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_kamehameha_red.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_spirit_bomb.spr")
+	g_spriteTrailY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_yellow.spr")
+	g_spriteTrailB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_blue.spr")
+	g_spriteTrailR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_red.spr")
+	g_spriteExplosionY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_yellow.spr")
+	g_spriteExplosionB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_blue.spr")
+	g_spriteExplosionR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_red.spr")
+	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_powerup.spr")
+	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public goku_init()
@@ -166,15 +165,11 @@ public goku_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		goku_setarmor(id)
 	}
 	//This gets run if they had the power but don't anymore
-	else if ( !hasPowers && g_hasGoku[id] ) {
+	else {
 		shRemArmorPower(id)
 		shRemSpeedPower(id)
 		// remove the power if it was used and user dropped hero
@@ -183,8 +178,6 @@ public goku_init()
 		}
 	}
 
-	// Sets this variable to the current status
-	g_hasGoku[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -210,7 +203,7 @@ public newSpawn(id)
 {
 	g_inStun[id] = false
 
-	if ( shModActive() && g_hasGoku[id]  && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
 		set_task(0.5, "goku_setarmor", id)
 		g_isSaiyanLevel[id] = 0
@@ -236,7 +229,7 @@ public goku_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasGoku[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -314,7 +307,7 @@ public goku_ku()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !g_hasGoku[id] || !g_weaponSwitched[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 
 	// Switch back to previous weapon... Only if power was used...
 	if (g_lastWeapon[id] != CSW_KNIFE) shSwitchWeaponID(id, g_lastWeapon[id])
@@ -721,7 +714,7 @@ public goku_loop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( g_hasGoku[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 
 			new userArmor = get_user_armor(id)
 
@@ -825,7 +818,7 @@ public goku_loop()
 //----------------------------------------------------------------------------------------------
 public ssj_boost(id)
 {
-	if ( !shModActive() || !g_hasGoku[id] || !is_user_alive(id) || g_betweenRounds ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || g_betweenRounds ) return
 	if ( !g_isSaiyanLevel[id] ) return
 
 	// Speed Boost
@@ -849,7 +842,7 @@ public ssj_boost(id)
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !shModActive() || !g_hasGoku[id] || !is_user_alive(id) || g_betweenRounds ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || g_betweenRounds ) return
 	if ( !g_isSaiyanLevel[id] || g_inStun[id] ) return
 
 	new wpnid = read_data(2)
@@ -908,7 +901,7 @@ public reset_instun(id)
 {
 	g_inStun[id] = false
 
-	if ( !shModActive() || !g_hasGoku[id] || !is_user_alive(id) ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
 
 	switch(g_isSaiyanLevel[id]) {
 		case 1: if ( get_user_maxspeed(id) < g_ssjSpeed[0] ) set_user_maxspeed(id, g_ssjSpeed[0])
@@ -1001,7 +994,7 @@ public round_end()
 	g_betweenRounds = true
 
 	for (new id=1; id <= SH_MAXSLOTS; id++) {
-		if ( g_hasGoku[id] ) {
+		if ( sh_user_has_hero(id,gHeroID)) {
 			g_isSaiyanLevel[id] = 0
 			shResetSpeed(id)
 			if ( g_powerID[id] > 0 ) {
@@ -1018,7 +1011,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if( g_hasGoku[id] && g_powerID[id] > 0 ) {
+	if( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 		remove_power(id, g_powerID[id])
 	}
 }

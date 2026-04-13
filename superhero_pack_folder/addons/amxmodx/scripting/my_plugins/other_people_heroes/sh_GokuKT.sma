@@ -50,12 +50,11 @@ gokukt_armor 1000 // How much armor does goku have in kaioken mode
 gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Gokus Kaioken technic"
-new bool:HasGokuKT[SH_MAXSLOTS+1]
+new gHeroID
 new GokuKTTimer[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
@@ -76,7 +75,7 @@ public plugin_init()
 	goku_hp = register_cvar("gokukt_health", "800")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Goku's Kaioken Technic", "Go into Kaiokenmode for X Seconds", true, "gokukt_level")
+	gHeroID=shCreateHero(HeroName, "Goku's Kaioken Technic", "Go into Kaiokenmode for X Seconds", true, "gokukt_level")
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -96,8 +95,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/kaiokenbonini.wav")
-	g_spritePowerUp = precache_model("sprites/shmod/kaiokenbonini.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/kaiokenbonini.wav")
+	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/kaiokenbonini.spr")
 }
 
 public gokukt_init()
@@ -106,17 +105,11 @@ public gokukt_init()
 	new temp[6]
 	read_argv(1, temp, 5)
 	new id=str_to_num(temp)
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	switch(hasPowers) {
-		case true: {
-			HasGokuKT[id] = true
-		}
+
+	switch(sh_user_has_hero(id,gHeroID)) {
 		case false:	{
-			if ( is_user_connected(id) && HasGokuKT[id]) {
+			if ( is_user_connected(id)) {
  				GokuKTTimer[id] = 0
-				HasGokuKT[id] = false
 			}
 		}
 	}
@@ -157,7 +150,7 @@ public gokukt_kd()
 public gokukt_loop()
 {
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( HasGokuKT[id] && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
+		if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
 			if ( GokuKTTimer[id] > 0 ) {
 				GokuKTTimer[id]--
 				shGlow(id,255,0,0)
@@ -196,7 +189,7 @@ public end_kaioken(id)
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)
 {
-	if ( HasGokuKT[id] && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		new parm[2]
 		parm[0] = id
 		parm[1] = 5

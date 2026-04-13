@@ -7,15 +7,12 @@ terrorist_level 0
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
-#include <amxmisc> 
-#include <engine>
+
 
 // GLOBAL VARIABLES
 new gHeroName[]="Terrorist"
-new bool:gHasTerroristPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:can_plant
 new gCurrentWeapon[SH_MAXSLOTS+1]
 new planter
@@ -33,7 +30,7 @@ public plugin_init()
 	register_cvar("terrorist_c4plant", "60")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Terrorist", "Plant anywhere you want + free AK", false, "terrorist_level" )
+	gHeroID=shCreateHero(gHeroName, "Terrorist", "Plant anywhere you want + free AK", false, "terrorist_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("terrorist_init", "terrorist_init")
@@ -56,34 +53,28 @@ public terrorist_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has terrorist
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	if (!is_user_connected(id)) return
 
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		terrorist_giveweapons(id)
 		create_bombtarget()
 	}
 	//This gets run if they had the power but don't anymore
-	else if ( gHasTerroristPower[id] ) {
+	else if ( sh_user_has_hero(id,gHeroID) ) {
 		terrorist_dropweapons(id)
 		remove_bombtarget()
 	}
 
-	//Sets this variable to the current status
-	gHasTerroristPower[id] = (hasPowers != 0)
-	g_state = hasPowers
+	g_state = sh_user_has_hero(id,gHeroID)
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if ( gHasTerroristPower[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
 		set_task(0.1, "terrorist_giveweapons",id)
 		set_task(get_cvar_float("terrorist_c4plant"), "enable_planting", 97564673)
 	}
@@ -152,7 +143,7 @@ public terrorist_dropweapons(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !shModActive() || !gHasTerroristPower[id] ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) ) return
 
 	new weaponid = read_data(2)
 
@@ -212,10 +203,5 @@ public client_prethink(id)
 			entity_set_int(id, EV_INT_button, entity_get_int(id, EV_INT_button) & ~IN_ATTACK)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasTerroristPower[id] = false
 }
 //----------------------------------------------------------------------------------------------

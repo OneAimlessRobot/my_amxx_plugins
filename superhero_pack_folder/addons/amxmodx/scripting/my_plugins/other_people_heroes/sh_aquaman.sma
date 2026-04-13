@@ -16,7 +16,6 @@ aquaman_bubbledamage 10			//How much damage each bubble does
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Aquaman"
-new bool:gHasAquaman[SH_MAXSLOTS+1]
 new bool:gIsBubbling[SH_MAXSLOTS+1]
 new gSpriteBubble
 new const gSoundBubbleShot[] = "player/pl_swim3.wav"
@@ -45,17 +44,16 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteBubble = precache_model("sprites/bubble.spr")
-	precache_sound(gSoundBubbleShot)
-	precache_sound(gSoundBubbling)
-	precache_sound(gSoundBubblePain)
+	gSpriteBubble = engfunc(EngFunc_PrecacheModel,"sprites/bubble.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundBubbleShot)
+	engfunc(EngFunc_PrecacheSound,gSoundBubbling)
+	engfunc(EngFunc_PrecacheSound,gSoundBubblePain)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
 {
 	if ( gHeroID != heroID ) return
 
-	gHasAquaman[id] = mode ? true : false
 
 	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
@@ -69,7 +67,7 @@ public under_the_sea()
 
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( gHasAquaman[player] ) {
+		if ( sh_user_has_hero(player,gHeroID)) {
 			if ( pev(player, pev_waterlevel) == 3 ) {
 				set_pev(player, pev_air_finished, pev(player, pev_air_finished) + 2.0)
 			}
@@ -80,7 +78,7 @@ public under_the_sea()
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasAquaman[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	if ( pev(id, pev_waterlevel) != 3 ) {
 		sh_chat_message(id, gHeroID, "You must be underwater to use the Bubble Attack")
@@ -300,7 +298,7 @@ public drowning(args[])
 
 	if ( !is_user_alive(victim) ) return
 
-	if ( !gHasAquaman[victim] ) {
+	if ( !sh_user_has_hero(victim,gHeroID)) {
 		set_pev(id, pev_air_finished, pev(id, pev_air_finished) - 1.0)
 	}
 
@@ -320,7 +318,6 @@ public stop_bubble_sound(victim)
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	gHasAquaman[id] = false
 	gIsBubbling[id] = false
 }
 //----------------------------------------------------------------------------------------------

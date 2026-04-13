@@ -14,7 +14,6 @@ dazzler_cooldown 15		//# of seconds before Dazzler can flash
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Dazzler"
-new bool:gHasDazzler[SH_MAXSLOTS+1]
 new const gSoundFlash[] = "debris/beamstart15.wav"
 new gSprite[4]
 new gPcvarRadius, gPcvarCooldown
@@ -37,20 +36,11 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSprite[0] = precache_model("sprites/flare3.spr")
-	gSprite[1] = precache_model("sprites/flare6.spr")
-	gSprite[2] = precache_model("sprites/blueflare2.spr")
-	gSprite[3] = precache_model("sprites/redflare2.spr")
+	gSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/flare3.spr")
+	gSprite[1] = engfunc(EngFunc_PrecacheModel,"sprites/flare6.spr")
+	gSprite[2] = engfunc(EngFunc_PrecacheModel,"sprites/blueflare2.spr")
+	gSprite[3] = engfunc(EngFunc_PrecacheModel,"sprites/redflare2.spr")
 	precache_sound(gSoundFlash)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasDazzler[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -61,7 +51,7 @@ public sh_client_spawn(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasDazzler[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	// Let them know they already used their ultimate if they have
 	if ( gPlayerInCooldown[id] ) {
@@ -134,10 +124,5 @@ dazzler_sprite_flash(fromOrigin[3], toOrigin[3], count, life, size, speed)
 	write_byte(speed)	// (velocity along vector in 10's)
 	write_byte(5)		// (randomness of velocity in 10's)
 	message_end()
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasDazzler[id] = false
 }
 //----------------------------------------------------------------------------------------------

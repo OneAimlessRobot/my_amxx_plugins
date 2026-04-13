@@ -378,8 +378,8 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound,colt_sounds[i] );
 	
 	}
-	precache_model(WORLDMODEL )
-	precache_model(VIEWMODEL )
-	precache_model(WEAPONMODEL )
+	engfunc(EngFunc_PrecacheModel,WORLDMODEL )
+	engfunc(EngFunc_PrecacheModel,VIEWMODEL )
+	engfunc(EngFunc_PrecacheModel,WEAPONMODEL )
 	
 }

@@ -208,24 +208,24 @@ public Swat_kd()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/player/swat/swat.mdl")
-	precache_model("models/shmod/swat_v_knife.mdl")
-	precache_model("models/shmod/swat_p_knife.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/player/swat/swat.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/swat_v_knife.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/swat_p_knife.mdl")
 	for(new i=0;i<sizeof(m4_swat_sounds);i++){
 	
 		engfunc(EngFunc_PrecacheSound,m4_swat_sounds[i] );
 	
 	}
 
-	precache_model(SWAT_M4_P_MODEL )
-	precache_model(SWAT_M4_V_MODEL )
-	precache_model(SWAT_M4_W_MODEL )
+	engfunc(EngFunc_PrecacheModel,SWAT_M4_P_MODEL )
+	engfunc(EngFunc_PrecacheModel,SWAT_M4_V_MODEL )
+	engfunc(EngFunc_PrecacheModel,SWAT_M4_W_MODEL )
 	
 
-	precache_model("models/rpgrocket.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/rpgrocket.mdl")
 
-	precache_sound("weapons/rocketfire1.wav")
-	precache_sound("weapons/rocket1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")
 }
 //----------------------------------------------------------------------------------------------
 #if defined AMX_NEW

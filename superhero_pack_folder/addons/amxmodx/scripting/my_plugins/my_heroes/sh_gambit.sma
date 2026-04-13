@@ -86,7 +86,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gGrenTrail = precache_model("sprites/zbeam5.spr")
+	gGrenTrail = engfunc(EngFunc_PrecacheModel,"sprites/zbeam5.spr")
 }
 //----------------------------------------------------------------------------------------------
 public grenade_throw(id, gid, wid)

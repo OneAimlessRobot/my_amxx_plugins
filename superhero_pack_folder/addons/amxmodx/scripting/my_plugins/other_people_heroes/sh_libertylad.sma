@@ -33,19 +33,14 @@ libertylad_green 255			//Green color of the flare light (0: None)(255: Brightest
 libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 
 */
-//--------------------------------------------------------------------------------------------------
-// INCLUDED HEADERS
-//--------------------------------------------------------------------------------------------------
-	#include <amxmodx>
 	#include "../my_include/superheromod.inc"
-	#include <engine>
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 //--------------------------------------------------------------------------------------------------
 	new gHeroName[] = "Liberty Lad"
-	new bool: gHasLibertyLadPower[SH_MAXSLOTS+1]
 	new Float: LibertyLadFlareOrigin[3]
 	new flareentity
+	new gHeroID
 //--------------------------------------------------------------------------------------------------
 // PLUGIN INITIALS
 //--------------------------------------------------------------------------------------------------
@@ -61,33 +56,20 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	register_cvar("libertylad_red", "255")
 	register_cvar("libertylad_green", "255")
 	register_cvar("libertylad_blue", "255")
-	shCreateHero(gHeroName, "Flares", "Shoot Flares on Keydown", true, "libertylad_level")
-	register_srvcmd("libertylad_init", "libertylad_init")
-	shRegHeroInit(gHeroName, "libertylad_init")
+	gHeroID=shCreateHero(gHeroName, "Flares", "Shoot Flares on Keydown", true, "libertylad_level")
+
 	register_event("ResetHUD", "libertylad_newround", "b")
 	register_srvcmd("libertylad_kd", "libertylad_kd")
 	shRegKeyDown(gHeroName, "libertylad_kd")
-	}
-//--------------------------------------------------------------------------------------------------
-// HERO INITIALS
-//--------------------------------------------------------------------------------------------------
-	public libertylad_init()
-	{
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-	gHasLibertyLadPower[id] = (hasPowers != 0)
 	}
 //--------------------------------------------------------------------------------------------------
 // PLUGIN PRECACHES
 //--------------------------------------------------------------------------------------------------
 	public plugin_precache()
 	{
-	precache_sound("weapons/rocketfire1.wav")
-	precache_model("models/w_flare.mdl")
-	precache_model("models/w_flaret.mdl")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
+	engfunc(EngFunc_PrecacheModel,"models/w_flare.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/w_flaret.mdl")
 	}
 //--------------------------------------------------------------------------------------------------
 // NEW ROUND
@@ -107,7 +89,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	new id = str_to_num(temp)
 	if (hasRoundStarted())
 	{
-	if (is_user_alive(id) && gHasLibertyLadPower[id])
+	if (is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 	if (get_cvar_float("libertylad_duration") > 60.0)
 	{

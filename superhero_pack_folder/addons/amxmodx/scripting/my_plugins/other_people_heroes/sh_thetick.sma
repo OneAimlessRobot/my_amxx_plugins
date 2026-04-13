@@ -25,7 +25,6 @@ thetick_level 0
 
 // GLOBAL VARIABLES
 new HeroID
-new bool:HasTheTick[SH_MAXSLOTS+1]
 new bool:isCzero
 new bool:czBotRegisterHam
 new serversMaxPlayers
@@ -53,16 +52,9 @@ public plugin_init()
 	isCzero = equal(mod_name, "czero", 5) ? true : false
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( HeroID != heroID ) return
-
-	HasTheTick[id] = mode ? true : false
-}
-//----------------------------------------------------------------------------------------------
 public ham_TakeDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_FALL && HasTheTick[this] ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_user_has_hero(this,HeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }

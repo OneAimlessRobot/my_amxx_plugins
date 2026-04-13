@@ -8,15 +8,14 @@ slayer_cooldown 40 - cooldown between god removals
 slayer_chance 0.05 - chance of assassination
 */
 new gHeroName[]="Slayer"
-new gHasSlayerPowers[SH_MAXSLOTS+1]
-new heroID
+
+new gHeroID
 public plugin_init()
 {
   my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)
   register_cvar("slayer_level", "6" )
-  heroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
-  register_srvcmd("slayer_init", "slayer_init")
-  shRegHeroInit(gHeroName, "slayer_init")  
+  gHeroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
+  
 
   set_task(0.1,"slayer_loop",0,"",0,"b")
 
@@ -31,21 +30,10 @@ public newRound(id)
   gPlayerUltimateUsed[id]=false
 }
 //----------------------------------------------------------------------------------------------
-public slayer_init()
-{
-  new temp[6] 
-  read_argv(1,temp,5) 
-  new id=str_to_num(temp) 
-  read_argv(2,temp,5) 
-  new hasPowers=str_to_num(temp) 
-  gHasSlayerPowers[id]=(hasPowers!=0) 
-   
-}
-//----------------------------------------------------------------------------------------------
 public slayer_loop()
 {
 	for ( new id=1; id<=SH_MAXSLOTS; id++ ){
-		if (gHasSlayerPowers[id]&&!gPlayerUltimateUsed[id]&&is_user_connected(id)&&is_user_alive(id))
+		if (sh_user_has_hero(id,gHeroID)&&!gPlayerUltimateUsed[id]&&is_user_connected(id)&&is_user_alive(id))
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
@@ -55,8 +43,8 @@ public slayer_loop()
 				new slayer_name[128]
 				get_user_name(aid,name,127)
 				get_user_name(id,slayer_name,127)
-				sh_chat_message(id, heroID,"You removed %s's godmode!",name)
-				sh_chat_message(aid, heroID,"%s removed your godmode!",slayer_name)
+				sh_chat_message(id, gHeroID,"You removed %s's godmode!",name)
+				sh_chat_message(aid, gHeroID,"%s removed your godmode!",slayer_name)
 				sh_extra_damage(id, id, get_user_health(id)/2, "Slayer Sacrifice" )
 				ultimateTimer(id, get_cvar_float("slayer_cooldown"))
 				gPlayerUltimateUsed[id]=true
@@ -73,7 +61,7 @@ public slayer_damage(id)
 
     if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
-    if ( gHasSlayerPowers[attacker] && (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
+    if ( sh_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = random_num(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
 		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2, "Slayer Sacrifice" )

@@ -13,18 +13,15 @@ black_thinktime 2 //how long victims get to pray to their god
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
-//#include <VexdUM_stock>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Black Hole"
-new bool:gHasBHPower[SH_MAXSLOTS+1]
 new gBHTimer, gCurrentBH
 new ppl[SH_MAXSLOTS], pnum
 new gRange, gForce
 new g_lastPosition[SH_MAXSLOTS+1][3]
+new gHeroID
 //-------------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -41,7 +38,7 @@ public plugin_init()
 	register_cvar("black_thinktime", "2")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Black Hole(Admin Only!)", "+power key for a black hole to suck up ur enemies", true, "black_level")
+	gHeroID=shCreateHero(g_heroName, "Black Hole(Admin Only!)", "+power key for a black hole to suck up ur enemies", true, "black_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -62,7 +59,7 @@ public plugin_init()
 //-------------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/shmod/blackhole.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/blackhole.mdl")
 }
 //-------------------------------------------------------------------------------------------------
 public black_init()
@@ -72,19 +69,14 @@ public black_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasBHPower[id] = (hasPowers != 0)
 	
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		// Make sure looop doesn't fire for them
 		gBHTimer = -1
 		black_admincheck(id)
 	}
 	//This gets run if they had the power but don't anymore
-	else if ( gHasBHPower[id] && gBHTimer >= 0 ) {
+	else if (  gBHTimer >= 0 ) {
 		black_endmode(id)
 	}
 
@@ -97,7 +89,7 @@ public black_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !gHasBHPower[id] || !hasRoundStarted() || !shModActive() ) return 
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !shModActive() ) return 
 
 	if ( gPlayerUltimateUsed[id] || gBHTimer > 0 ) {
 		playSoundDenySelect(id)
@@ -231,7 +223,7 @@ SuckPlayerIntoBH(id, Float:fl_Eye[3])
 	new Float:fl_Player[3], Float:fl_Target[3], Float:fl_Velocity[3], Float:fl_Distance
 	entity_get_vector(id, EV_VEC_origin, fl_Player)
 
-	if ( gHasBHPower[id] ) return
+	if ( sh_user_has_hero(id,gHeroID)) return
 	
 	fl_Target[0] = fl_Eye[0]
 	fl_Target[1] = fl_Eye[1]
@@ -284,7 +276,7 @@ public entity_touch(entity1, entity2)
 		if(!is_user_connected(entity2) || !is_user_alive(entity2))
 			return PLUGIN_CONTINUE
 			
-		if( gHasBHPower[entity2] )
+		if( sh_user_has_hero(entity2,gHeroID))
 			return PLUGIN_CONTINUE	
 			
 	
@@ -323,9 +315,8 @@ public black_admincheck(id)
 
 	get_cvar_string("black_adminflag", accessLevel, 9)
 
-	if ( gHasBHPower[id] &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
+	if ( sh_user_has_hero(id,gHeroID) &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
 		client_print(id, print_chat, "[SH](%s) **Admin Only** You are not authorized to use this hero", g_heroName)
-		gHasBHPower[id] = false
 		client_cmd(id, "say drop %s", g_heroName)
 	}
 }

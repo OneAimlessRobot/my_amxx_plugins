@@ -35,7 +35,6 @@ yoda_selfdmg 0		//Amount of damage using push does to self (def=0)
 
 // GLOBAL VARIABLES
 new gHeroID
-new bool:gHasYodaPower[SH_MAXSLOTS+1]
 new const gSoundPush[] = "shmod/yoda_forcepush.wav"
 new const gSoundPain[] = "player/pl_pain2.wav"
 new gPcvarCooldown,pradius,ppower,pdmg,pselfdmg
@@ -61,15 +60,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundPush)
-	precache_sound(gSoundPain)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasYodaPower[id] = mode ? true : false
+	engfunc(EngFunc_PrecacheSound,gSoundPush)
+	engfunc(EngFunc_PrecacheSound,gSoundPain)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -80,7 +72,7 @@ public sh_client_spawn(id)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !gHasYodaPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if ( gPlayerInCooldown[id] ) {
 		sh_sound_deny(id)

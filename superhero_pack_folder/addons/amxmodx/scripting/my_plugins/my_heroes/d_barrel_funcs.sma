@@ -298,9 +298,6 @@ public fw_CmdStart(id, uc_handle, seed)
 
 public fw_SetModel(entity, model[])
 {
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
-	
 	static szClassName[33]
 	pev(entity, pev_classname, szClassName, charsmax(szClassName))
 	

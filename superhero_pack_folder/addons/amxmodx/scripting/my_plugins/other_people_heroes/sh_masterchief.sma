@@ -78,8 +78,6 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 //------- Do not edit below this point ------//
 
 
-#include <amxmodx>
-#include <fakemeta>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -87,7 +85,7 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 
 // GLOBAL VARIABLES
 new HeroName[] = "Master Chief"
-new bool:HasMasterChief[SH_MAXSLOTS+1]
+new gHeroID
 new CvarP90DmgMult
 
 #if PLAYER_MODEL > 0
@@ -135,7 +133,7 @@ public plugin_init()
 	#endif
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "SPARTAN project", "Become Master Chief - get a MJOLNIR battlesuit and MA5B Assault Rifle (P90), which does more damage.", false, "masterchief_level")
+	gHeroID=shCreateHero(HeroName, "SPARTAN project", "Become Master Chief - get a MJOLNIR battlesuit and MA5B Assault Rifle (P90), which does more damage.", false, "masterchief_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -173,11 +171,11 @@ public plugin_init()
 public plugin_precache()
 {
 	#if PLAYER_MODEL > 0
-		precache_sound(MasterChiefSound)
+		engfunc(EngFunc_PrecacheSound,MasterChiefSound)
 		ModelPlayerLoaded = true
 		#if PLAYER_MODEL == 1
 			if ( file_exists(Model_Player) ) {
-				precache_model(Model_Player)
+				engfunc(EngFunc_PrecacheModel,Model_Player)
 			}
 			else {
 				log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player)
@@ -186,7 +184,7 @@ public plugin_precache()
 		#else
 			#if PLAYER_MODEL == 2
 				if ( file_exists(Model_Player_T) ) {
-					precache_model(Model_Player_T)
+					engfunc(EngFunc_PrecacheModel,Model_Player_T)
 				}
 				else {
 					log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player_T)
@@ -194,7 +192,7 @@ public plugin_precache()
 				}
 
 				if ( file_exists(Model_Player_CT) ) {
-					precache_model(Model_Player_CT)
+					engfunc(EngFunc_PrecacheModel,Model_Player_CT)
 				}
 				else {
 					log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player_CT)
@@ -207,7 +205,7 @@ public plugin_precache()
 	#if defined USE_WPN_MODEL
 		ModelWeaponLoaded = true
 		if ( file_exists(Model_V_P90) ) {
-			precache_model(Model_V_P90)
+			engfunc(EngFunc_PrecacheModel,Model_V_P90)
 		}
 		else {
 			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_P90)
@@ -215,7 +213,7 @@ public plugin_precache()
 		}
 
 		if ( file_exists(Model_P_P90) ) {
-			precache_model(Model_P_P90)
+			engfunc(EngFunc_PrecacheModel,Model_P_P90)
 		}
 		else {
 			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_P90)
@@ -232,21 +230,16 @@ public masterchief_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
 	// Reset thier shield restrict status
 	// Shield restrict MUST be before weapons are given out
 	#if defined GIVE_WEAPON
 		shResetShield(id)
 	#endif
 
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasMasterChief[id] = true
 
 			if ( is_user_alive(id) )
 			{
@@ -269,7 +262,7 @@ public masterchief_init()
 		case false:
 		{
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) && HasMasterChief[id] )
+			if ( is_user_alive(id))
 			{
 				// This gets run if they had the power but don't anymore
 				#if defined GIVE_WEAPON
@@ -286,8 +279,6 @@ public masterchief_init()
 				shRemGravityPower(id)
 				shRemSpeedPower(id)
 			}
-
-			HasMasterChief[id] = false
 		}
 	}
 }
@@ -295,7 +286,7 @@ public masterchief_init()
 #if PLAYER_MODEL > 0 || defined GIVE_WEAPON
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasMasterChief[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 	{
 		#if defined GIVE_WEAPON
 			set_task(0.1, "masterchief_weapons", id)
@@ -324,7 +315,7 @@ masterchief_tasks(id)
 #if defined GIVE_WEAPON
 public masterchief_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasMasterChief[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	shGiveWeapon(id, "weapon_p90")
@@ -334,7 +325,7 @@ public masterchief_weapons(id)
 #if defined USE_WPN_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasMasterChief[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -350,7 +341,7 @@ switch_model(id)
 #if defined USE_WPN_MODEL || AMMO_MODE < 4
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasMasterChief[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	//weaponID = read_data(2)
@@ -381,7 +372,7 @@ public masterchief_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if ( HasMasterChief[attacker] && weapon == CSW_P90 )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_P90 )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -402,7 +393,7 @@ masterchief_sound(id)
 //----------------------------------------------------------------------------------------------
 public masterchief_morph(id)
 {
-	if ( ModelPlayerSet[id] || !is_user_alive(id) || !HasMasterChief[id] )
+	if ( ModelPlayerSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	#if PLAYER_MODEL == 1
@@ -465,7 +456,7 @@ public masterchief_glow(id)
 		return
 	}
 
-	if ( HasMasterChief[id] && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
 	{
 		switch(cs_get_user_team(id))
 		{
@@ -480,7 +471,7 @@ public masterchief_death()
 {
 	new id = read_data(2)
 
-	if ( !HasMasterChief[id] )
+	if ( !sh_user_has_hero(id,gHeroID) )
 		return
 
 	if ( ModelPlayerLoaded )
@@ -490,8 +481,6 @@ public masterchief_death()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasMasterChief[id] = false
-
 	#if PLAYER_MODEL > 0
 		ModelPlayerSet[id] = false
 	#endif

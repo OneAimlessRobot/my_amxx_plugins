@@ -114,10 +114,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteWhite = precache_model("sprites/white.spr")
-	laser = precache_model("sprites/laserbeam.spr") 
-	laser_impact = precache_model("sprites/zerogxplode.spr") 
-	blast_shroom = precache_model("sprites/mushroom.spr")
+	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
+	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr") 
+	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr") 
+	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
 }
 
 public num_picked_check(id){

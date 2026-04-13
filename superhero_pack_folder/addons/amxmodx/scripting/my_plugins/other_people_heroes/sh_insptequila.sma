@@ -8,12 +8,11 @@ insptequila_level 0
 
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Inspector Tequila"
-new bool:HasInspectorTequila[SH_MAXSLOTS+1]
+new gHeroID
 
 // Temp lookup table (from csdm), will be in next sh version
 new weapon_slot[] = {
@@ -93,7 +92,7 @@ public plugin_init()
 	register_cvar("insptequila_level", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Unlimited Ammo Clips", "Endless ammo clips, reload required", false, "insptequila_level")
+	gHeroID=shCreateHero(HeroName, "Unlimited Ammo Clips", "Endless ammo clips, reload required", false, "insptequila_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -111,28 +110,19 @@ public insptequila_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasInspectorTequila[id] = true
-
 			if ( is_user_alive(id) )
 				fill_ammo(id)
 		}
-
-		case false:
-			HasInspectorTequila[id] = false
 	}
 }
 //----------------------------------------------------------------------------------------------
 fill_ammo(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasInspectorTequila[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -152,7 +142,7 @@ fill_ammo(id)
 public change_weapon(id)
 {
 	// Should prob avoid calling this during spawn
-	if ( !shModActive() || !HasInspectorTequila[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)

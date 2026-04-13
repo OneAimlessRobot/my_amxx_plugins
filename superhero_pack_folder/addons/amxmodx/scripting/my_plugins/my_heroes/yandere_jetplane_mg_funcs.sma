@@ -452,12 +452,12 @@ public plugin_precache()
 	
 	
 	
-	precache_model( "models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
-	precache_model(GUN_SHELL)
-	precache_model(P_MACHINEGUN_MODEL)
+	engfunc(EngFunc_PrecacheModel,GUN_SHELL)
+	engfunc(EngFunc_PrecacheModel,P_MACHINEGUN_MODEL)
 	engfunc(EngFunc_PrecacheSound, MACHINE_GUN_SOUND)
 	
 }

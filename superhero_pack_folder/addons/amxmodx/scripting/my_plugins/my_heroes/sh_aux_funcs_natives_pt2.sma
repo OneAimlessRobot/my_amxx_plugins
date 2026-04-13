@@ -52,7 +52,7 @@ public _prepare_shero_aux_lib_pt2(iPlugins, iParams){
 	
 public _precache_native_fx_pt2(iPlugin,iParams){
 
-	precache_sound(SUCK_IN_SOUND_FILE_NAME)
+	engfunc(EngFunc_PrecacheSound,SUCK_IN_SOUND_FILE_NAME)
 	
 	precache_gibs()
 
@@ -394,16 +394,16 @@ public _gross_kill_gibs_fx(iPlugins,iParm){
 }
 public _precache_gibs(iPlugins, iParams){
 
-	spr_blood_drop = precache_model("sprites/blood.spr")
-	spr_blood_spray = precache_model("sprites/bloodspray.spr")
+	spr_blood_drop = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr")
+	spr_blood_spray = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 
-	mdl_gib_flesh = precache_model("models/Fleshgibs.mdl")
-	mdl_gib_meat = precache_model("models/GIB_B_Gib.mdl")
-	mdl_gib_head = precache_model("models/GIB_Skull.mdl")
+	mdl_gib_flesh = engfunc(EngFunc_PrecacheModel,"models/Fleshgibs.mdl")
+	mdl_gib_meat = engfunc(EngFunc_PrecacheModel,"models/GIB_B_Gib.mdl")
+	mdl_gib_head = engfunc(EngFunc_PrecacheModel,"models/GIB_Skull.mdl")
 	
-	mdl_gib_spine = precache_model("models/GIB_B_Bone.mdl")
-	mdl_gib_lung = precache_model("models/GIB_Lung.mdl")
-	mdl_gib_legbone = precache_model("models/GIB_Legbone.mdl")
+	mdl_gib_spine = engfunc(EngFunc_PrecacheModel,"models/GIB_B_Bone.mdl")
+	mdl_gib_lung = engfunc(EngFunc_PrecacheModel,"models/GIB_Lung.mdl")
+	mdl_gib_legbone = engfunc(EngFunc_PrecacheModel,"models/GIB_Legbone.mdl")
 }
 
 public _draw_view_cone(iPlugins, iParams){

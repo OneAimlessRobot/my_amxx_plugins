@@ -24,13 +24,10 @@ UPDATES::
  - Other entities then players are now also picked up
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Cyclone"
-new bool:ghasCyclonePowers[SH_MAXSLOTS+1]
 new gCycloneTimer, gCurrentCyclone				// Allow only 1 cyclone at the time for now ( I don't know what happens if 2 cyclones get caucht in each other )
 new white, gSpriteLightning
 new gRange, gForce
@@ -56,9 +53,6 @@ public plugin_init()
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("cyclone_init", "cyclone_init")
-	shRegHeroInit(gHeroName, "cyclone_init")
 
 	// KEY DOWN
 	register_srvcmd("cyclone_kd", "cyclone_kd")
@@ -70,27 +64,14 @@ public plugin_init()
 
 public plugin_precache()
 {
-	precache_sound("ambience/thunder_clap.wav")
-	precache_sound("de_torn/tk_windStreet.wav")
-	precache_sound("de_torn/torn_Templewind.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/thunder_clap.wav")
+	engfunc(EngFunc_PrecacheSound,"de_torn/tk_windStreet.wav")
+	engfunc(EngFunc_PrecacheSound,"de_torn/torn_Templewind.wav")
 
-	white = precache_model("sprites/xssmke1.spr")
-	gSpriteLightning = precache_model("sprites/lgtning.spr")
+	white = engfunc(EngFunc_PrecacheModel,"sprites/xssmke1.spr")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
-public cyclone_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has wolverine skills
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	ghasCyclonePowers[id] = (hasPowers!=0)
-}
 
 public newRound(id)
 {

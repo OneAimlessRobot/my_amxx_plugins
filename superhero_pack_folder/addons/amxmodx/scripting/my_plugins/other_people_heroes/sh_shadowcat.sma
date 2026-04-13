@@ -15,7 +15,6 @@ shadowcat_cliptime 6		//# of seconds Shadowcat has in noclip mode.
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Shadowcat"
-new bool:gHasShadowcat[SH_MAXSLOTS+1]
 new gShadowcatTimer[SH_MAXSLOTS+1]
 new const gSoundShadowcat[] = "ambience/alien_zonerator.wav"
 new gPcvarCooldown, gPcvarClipTime
@@ -42,7 +41,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundShadowcat)
+	engfunc(EngFunc_PrecacheSound,gSoundShadowcat)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
@@ -51,14 +50,11 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasShadowcat[id] = true
-
 			// Make sure looop doesn't fire for them
 			gShadowcatTimer[id] = -1
 		}
 
 		case SH_HERO_DROP: {
-			gHasShadowcat[id] = false
 
 			if ( gShadowcatTimer[id] >= 0 ) shadowcat_endnoclip(id)
 		}
@@ -73,7 +69,7 @@ public sh_client_spawn(id)
 
 	gShadowcatTimer[id]= -1
 
-	if ( gHasShadowcat[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		shadowcat_endnoclip(id)
 	}
 }
@@ -117,7 +113,7 @@ public shadowcat_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( gHasShadowcat[player] ) {
+		if ( sh_user_has_hero(player,gHeroID)) {
 			noclipTime = gShadowcatTimer[player]
 			if ( noclipTime > 0 ) {
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.2, 0.0, 0.0, -1)
@@ -166,7 +162,7 @@ public sh_client_death(victim)
 
 	gShadowcatTimer[victim]= -1
 
-	if ( gHasShadowcat[victim] ) {
+	if (sh_user_has_hero(victim,gHeroID)) {
 		shadowcat_endnoclip(victim)
 	}
 }

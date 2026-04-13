@@ -580,15 +580,15 @@ public vexd_pfntouch(pToucher, pTouched)
 }
 public plugin_precache()
 {
-	precache_model("models/shell.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shell.mdl")
 	
-	precache_model(GATLING_P_MODEL)
-	precache_model(GATLING_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
 	g_fwid = register_forward(FM_PrecacheEvent, "fwPrecacheEvent", 1)
 	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
-	precache_sound(m_SOUND[0])
-	precache_sound(m_SOUND[1])
-	precache_sound(m_SOUND[2])
-	precache_sound(m_SOUND[3])
+	engfunc(EngFunc_PrecacheSound,m_SOUND[0])
+	engfunc(EngFunc_PrecacheSound,m_SOUND[1])
+	engfunc(EngFunc_PrecacheSound,m_SOUND[2])
+	engfunc(EngFunc_PrecacheSound,m_SOUND[3])
 
 }

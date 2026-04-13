@@ -195,7 +195,7 @@ public swing_scythe(weaponent)
 public plugin_precache()
 {
 if ( file_exists(gModelScythe) ) {
-		precache_model(gModelScythe)
+		engfunc(EngFunc_PrecacheModel,gModelScythe)
 		gModelLoaded = true
 	}
 	else {

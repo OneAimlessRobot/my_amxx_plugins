@@ -17,9 +17,6 @@ Forge_effects 2			//1 Regualy missile, no effects
 */
 
 
-#include <amxmod>
-//#include <amxmisc>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 //#if defined AMX98
@@ -27,7 +24,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 //#endif
 
 new gHeroName[]="Forge"
-new bool:g_hasForgePower[SH_MAXSLOTS+1]
+new gHeroID
 
 //new sprite, sprite1, sprite2, sprite3
 //new beam, boom
@@ -51,7 +48,7 @@ public plugin_init()
 	register_cvar("Forge_obeygravity", "1")	
 	register_cvar("Forge_effects", "4")
 
-	shCreateHero(gHeroName, "Missiles", "Fires Concussion Missiles to blow people up!", true, "Forge_level")
+	gHeroID=shCreateHero(gHeroName, "Missiles", "Fires Concussion Missiles to blow people up!", true, "Forge_level")
 
 	//EVENTS
 	//register_logevent("round_start", 2, "1=Round_Start")
@@ -64,24 +61,8 @@ public plugin_init()
 	register_srvcmd("Forge_kd", "Forge_kd")
 	shRegKeyDown(gHeroName, "Forge_kd")
 
-	// INIT
-	register_srvcmd("Forge_init", "Forge_init")
-	shRegHeroInit(gHeroName, "Forge_init")
 }
-//----------------------------------------------------------------------------------------------
-public Forge_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has BlackLotus
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasForgePower[id] = (hasPowers != 0)
-}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
 public Forge_kd()
@@ -92,7 +73,7 @@ public Forge_kd()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	if ( !is_user_alive(id) || !g_hasForgePower[id]  ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	if ( gPlayerUltimateUsed[id] ) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -106,17 +87,17 @@ public Forge_kd()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	beam = precache_model("sprites/smoke.spr")
-	//boom = precache_model("sprites/zerogxplode.spr")
-	//sprite = precache_model("sprites/zbeam6.spr")
-	sprite1 = precache_model("sprites/fire.spr")
-	sprite2 = precache_model("sprites/explode1.spr")
-	sprite3 = precache_model("sprites/steam1.spr")
+	beam = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
+	//boom = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	//sprite = engfunc(EngFunc_PrecacheModel,"sprites/zbeam6.spr")
+	sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/fire.spr")
+	sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	sprite3 = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
 
-	precache_model("models/rpgrocket.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/rpgrocket.mdl")
 
-	precache_sound("weapons/rocketfire1.wav")
-	precache_sound("weapons/rocket1.wav")	
+	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")	
 }
 //----------------------------------------------------------------------------------------------
 #if defined AMX_NEW

@@ -24,15 +24,13 @@ afterburn_burndmg 5		//How much damage each burn does
 * (takes 5.5 secs until damage can be caused again)
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="AfterBurn"
-new bool:gHasAfterBurnPower[SH_MAXSLOTS+1]
 new gIsBurning[SH_MAXSLOTS+1]
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -46,12 +44,8 @@ public plugin_init()
 	register_cvar("afterburn_burndmg", "5")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Flames From Beyond", "Shoot flames while your dead, from your dead body or while in dead spectate mode.", true, "afterburn_level")
+	gHeroID=shCreateHero(gHeroName, "Flames From Beyond", "Shoot flames while your dead, from your dead body or while in dead spectate mode.", true, "afterburn_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("afterburn_init", "afterburn_init")
-	shRegHeroInit(gHeroName, "afterburn_init")
 
 	// KEY DOWN
 	register_srvcmd("afterburn_kd", "afterburn_kd")
@@ -62,27 +56,13 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteSmoke = precache_model("sprites/steam1.spr")
-	gSpriteFire = precache_model("sprites/explode1.spr")
-	gSpriteBurning = precache_model("sprites/xfire.spr")
-	precache_sound("ambience/burning1.wav")
-	precache_sound("ambience/flameburst1.wav")
-	precache_sound("scientist/c1a0_sci_catscream.wav")
-	precache_sound("vox/_period.wav")
-}
-//----------------------------------------------------------------------------------------------
-public afterburn_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasAfterBurnPower[id] = (hasPowers != 0)
+	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
+	engfunc(EngFunc_PrecacheSound,"ambience/burning1.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/flameburst1.wav")
+	engfunc(EngFunc_PrecacheSound,"scientist/c1a0_sci_catscream.wav")
+	engfunc(EngFunc_PrecacheSound,"vox/_period.wav")
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -91,7 +71,7 @@ public newSpawn(id)
 
 	stopFireSound(id)
 
-	if ( gHasAfterBurnPower[id] ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		gPlayerUltimateUsed[id] = false
 	}
 }
@@ -108,7 +88,7 @@ public afterburn_kd()
 
 	// This is the original only change from human torch,
 	// this makes sure you are dead to use the power... wow what a rip.
-	if ( is_user_alive(id) || !gHasAfterBurnPower[id] ) return
+	if ( is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	// Check to make sure they are on a Team
 	if ( get_user_team(id) < 1 || get_user_team(id) > 2 ) return
 
@@ -357,10 +337,5 @@ public stopFireSound(id)
 	new sndStop = (1<<5)
 	gIsBurning[id] = 0
 	emit_sound(id, CHAN_ITEM, "ambience/burning1.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasAfterBurnPower[id] = false
 }
 //----------------------------------------------------------------------------------------------

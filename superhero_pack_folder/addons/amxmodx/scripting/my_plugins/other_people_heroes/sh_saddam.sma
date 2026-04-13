@@ -8,14 +8,12 @@ saddam_wait 5 // Time while in your hole def=5
 
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 
 // VARIABLES
 new gHeroName[]="Saddam Hussein" 
-new bool:gHassaddamPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gHasSpawnPoint[SH_MAXSLOTS+1]
 new userSpawn[SH_MAXSLOTS+1][3]
 new userHide[SH_MAXSLOTS+1][3]
@@ -32,7 +30,7 @@ public plugin_init()
 	register_cvar("saddam_delay", "1.0")
 	register_cvar("saddam_wait", "5.0")
 	
-	shCreateHero(gHeroName, "Escape from enemies", "Press bind key to hide in a hole for a while", true, "saddam_level" )
+	gHeroID=shCreateHero(gHeroName, "Escape from enemies", "Press bind key to hide in a hole for a while", true, "saddam_level" )
 	
 	// INIT
 	register_srvcmd("saddam_init", "saddam_init")
@@ -54,9 +52,6 @@ public saddam_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	gHassaddamPower[id]=(hasPowers!=0)
 	
 	gPlayerUltimateUsed[id] = false
 	gHasSpawnPoint[id]=false
@@ -64,13 +59,13 @@ public saddam_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("shmod/saddamtest.wav") 
+	engfunc(EngFunc_PrecacheSound,"shmod/saddamtest.wav") 
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id) 
 {
 	
-	if ( gHassaddamPower[id] && is_user_alive(id) ) 
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) 
 	{
 		
 		new origin[3]
@@ -99,7 +94,7 @@ public saddam_kd()
 	userHide[id][1]=origin[1]
 	userHide[id][2]=origin[2]
 	
-	if ( !is_user_alive(id) || !gHassaddamPower[id] || !hasRoundStarted() ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() ) return
 	
 	if ( gPlayerUltimateUsed[id] ) 
 	{

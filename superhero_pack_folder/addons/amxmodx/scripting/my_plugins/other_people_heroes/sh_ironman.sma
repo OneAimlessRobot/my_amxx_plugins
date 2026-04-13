@@ -52,9 +52,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteFire = precache_model("sprites/fire.spr")
-	precache_sound(gSoundJetpack)
-	precache_sound(gSoundJpStop)
+	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/fire.spr")
+	engfunc(EngFunc_PrecacheSound,gSoundJetpack)
+	engfunc(EngFunc_PrecacheSound,gSoundJpStop)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)

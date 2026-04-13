@@ -32,8 +32,6 @@ morpheus_mp5mult 2.0		//Damage multiplyer for his MP5
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Morpheus"
-new bool:gHasMorpheus[SH_MAXSLOTS+1]
-
 #if defined USE_WEAPON_MODEL
 	new const gModelMP5[] = "models/shmod/morpheus_mp5.mdl"
 	new bool:gModelLoaded
@@ -70,7 +68,7 @@ public plugin_precache()
 {
 	// Method servers 2 purposes, moron check and optional way to not use the model
 	if ( file_exists(gModelMP5) ) {
-		precache_model(gModelMP5)
+		engfunc(EngFunc_PrecacheModel,gModelMP5)
 		gModelLoaded = true
 	}
 	else {
@@ -86,8 +84,6 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gHasMorpheus[id] = true
-
 #if defined GIVE_WEAPON
 			morpheus_weapons(id)
 #endif
@@ -99,7 +95,6 @@ public sh_hero_init(id, heroID, mode)
 		}
 
 		case SH_HERO_DROP: {
-			gHasMorpheus[id] = false
 #if defined GIVE_WEAPON
 			if ( is_user_alive(id) ) {
 				sh_drop_weapon(id, CSW_MP5NAVY, true)
@@ -114,14 +109,14 @@ public sh_hero_init(id, heroID, mode)
 #if defined GIVE_WEAPON
 public sh_client_spawn(id)
 {
-	if ( gHasMorpheus[id] ) {
+	if ( sh_user_has_hero(id,gHeroID) ) {
 		morpheus_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 morpheus_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && gHasMorpheus[id] ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)) {
 		sh_give_weapon(id, CSW_MP5NAVY)
 	}
 }
@@ -130,7 +125,7 @@ morpheus_weapons(id)
 #if defined USE_WEAPON_MODEL
 switchmodel(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !gHasMorpheus[id] ) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if ( get_user_weapon(id) == CSW_MP5NAVY ) {
 		set_pev(id, pev_viewmodel2, gModelMP5)
@@ -141,7 +136,7 @@ switchmodel(id)
 #if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !gHasMorpheus[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
 
 	//weaponID = read_data(2)
 	if ( read_data(2) != CSW_MP5NAVY ) return

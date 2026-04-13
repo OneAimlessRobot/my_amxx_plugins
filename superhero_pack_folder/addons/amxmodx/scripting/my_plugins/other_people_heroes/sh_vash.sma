@@ -29,8 +29,6 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 *   Weapon model by Thin Red Paste & X-convinct, converted by SplinterCell.
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -38,7 +36,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 stock vash_v_deagle_model[]="models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
 new gHeroName[]="Vash the Stampede"
-new bool:gHasVashPower[SH_MAXSLOTS+1]
+new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -51,7 +49,7 @@ public plugin_init()
 	register_cvar("vash_gravity", "1.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Revolver & Evasion", "Get Vash's .45 Long Colt Revolver (DEAGLE), that does More Damage. Also, evade by removing random hitzones.", false, "vash_level")
+	gHeroID=shCreateHero(gHeroName, "Revolver & Evasion", "Get Vash's .45 Long Colt Revolver (DEAGLE), that does More Damage. Also, evade by removing random hitzones.", false, "vash_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -73,7 +71,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model(vash_v_deagle_model)
+	engfunc(EngFunc_PrecacheModel,vash_v_deagle_model)
 }
 //----------------------------------------------------------------------------------------------
 public vash_init()
@@ -83,31 +81,24 @@ public vash_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
 	if ( is_user_alive(id) ) {
-		if ( hasPowers ) {
+		if ( sh_user_has_hero(id,gHeroID)) {
 			vash_weapons(id)
 			switchmodel(id)
 		}
 		// This gets run if they had the power but don't anymore
-		else if ( !hasPowers && gHasVashPower[id] ){
+		else{
 			engclient_cmd(id, "drop", "weapon_deagle")
 			shRemGravityPower(id)
 			set_user_hitzones(0, id, 255)
 			superhero_protected_hud_message(superhero_hud_msg_sync,id, "Vash - EVASION OFF - Hitzones returned to normal")
 		}
 	}
-
-	// Sets this variable to the current status
-	gHasVashPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasVashPower[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "vash_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -170,7 +161,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasVashPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 
 	new wpnid = read_data(2)
 
@@ -189,7 +180,7 @@ public vash_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( gHasVashPower[attacker] && weapon == CSW_DEAGLE && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
 		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "deagle", headshot)
@@ -201,7 +192,7 @@ public vash_hitzones()
 	if ( !shModActive() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasVashPower[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new hitZone
 			hitZone = random_num(1, 7)
 			switch(hitZone) {

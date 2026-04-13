@@ -17,15 +17,13 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 *   Rip of old Master Chief code
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="UberGunner"
-new bool:gHasUberGunnerPower[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gmorphed[SH_MAXSLOTS+1]
 new gTaskID
 new gUberGunnerSound[]="items/suitchargeno1.wav"
@@ -46,7 +44,7 @@ public plugin_init()
 
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Wild2k", "Become UberGunner - Get an m4a1 wich does more dmg.", false, "UberGunner_level" )
+	gHeroID=shCreateHero(gHeroName, "Wild2k", "Become UberGunner - Get an m4a1 wich does more dmg.", false, "UberGunner_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -67,13 +65,15 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "UberGunner_armor")
 	shSetMinGravity(gHeroName, "UberGunner_gravity")
 	shSetMaxSpeed(gHeroName, "UberGunner_speed", "[0]")
+
+	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/player/UberGunner/UberGunner.mdl")
-	precache_model("models/shmod/usmarine_m4a1.mdl")
-	precache_sound(gUberGunnerSound)
+	engfunc(EngFunc_PrecacheModel,"models/player/UberGunner/UberGunner.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/usmarine_m4a1.mdl")
+	engfunc(EngFunc_PrecacheSound,gUberGunnerSound)
 }
 //----------------------------------------------------------------------------------------------
 public UberGunner_init()
@@ -83,18 +83,12 @@ public UberGunner_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has UberGunner
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasUberGunnerPower[id] = (hasPowers != 0)
-
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
 	if ( is_user_connected(id) ) {
-		if ( gHasUberGunnerPower[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			UberGunner_weapons(id)
 			switchmodel(id)
 			UberGunner_tasks(id)
@@ -111,7 +105,7 @@ public UberGunner_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( gHasUberGunnerPower[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
 		set_task(0.1, "UberGunner_weapons", id)
 		UberGunner_tasks(id)
 
@@ -143,7 +137,7 @@ public UberGunner_weapons(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !gHasUberGunnerPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M4A1) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
@@ -153,7 +147,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !gHasUberGunnerPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -178,7 +172,7 @@ public UberGunner_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( gHasUberGunnerPower[attacker] && weapon == CSW_M4A1 && is_user_alive(id) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
 		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "m4a1", headshot )
@@ -204,7 +198,7 @@ public UberGunner_morph(id)
 
 	UberGunner_sound(id)
 
-	superhero_protected_hud_message( id, "UberGunner - Getting Ready 2 Own!")
+	superhero_protected_hud_message(superhero_hud_msg_sync, id, "UberGunner - Getting Ready 2 Own!")
 
 	gmorphed[id] = true
 }
@@ -212,7 +206,7 @@ public UberGunner_morph(id)
 public UberGunner_unmorph(id)
 {
 	if ( gmorphed[id] ) {
-		superhero_protected_hud_message( id, "UberGunner - MODE OFF, you returned to normal self.")
+		superhero_protected_hud_message(superhero_hud_msg_sync, id, "UberGunner - MODE OFF, you returned to normal self.")
 
 		#if defined AMXX_VERSION
 		cs_reset_user_model(id)
@@ -241,7 +235,7 @@ public UberGunner_glow(id)
 		return
 	}
 
-	if ( gHasUberGunnerPower[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}

@@ -16,7 +16,6 @@ hulk_stunspeed 70		//Speed of stunned players
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "The Hulk"
-new bool:gHasHulk[SH_MAXSLOTS+1]
 new gPcvarRadius, gPcvarCooldown, gPcvarStunTime, gPcvarStunSpeed
 
 #define gHulkSoundCount 3
@@ -48,17 +47,8 @@ public plugin_precache()
 {
 	// TBD - SOUNDS!
 	for ( new x = 0; x < gHulkSoundCount; x++ ) {
-		precache_sound(gStompSound[x])
+		engfunc(EngFunc_PrecacheSound,gStompSound[x])
 	}
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasHulk[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -78,7 +68,7 @@ public sh_client_death(victim)
 public sh_hero_key(id, heroID, key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || !sh_is_inround() ) return
-	if ( !is_user_alive(id) || !gHasHulk[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	new Float:velocity[3]
 	pev(id, pev_velocity, velocity)
@@ -134,10 +124,5 @@ public sh_hero_key(id, heroID, key)
 public stomp_sound(const parm[2])
 {
 	emit_sound(parm[0], CHAN_STATIC, gStompSound[parm[1]], VOL_NORM, ATTN_NORM, 0, PITCH_HIGH)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasHulk[id] = false
 }
 //----------------------------------------------------------------------------------------------

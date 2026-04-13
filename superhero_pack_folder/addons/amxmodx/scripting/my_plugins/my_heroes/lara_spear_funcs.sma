@@ -426,7 +426,7 @@ public plugin_precache()
 {
 
 	
-	precache_model(SPEAR_W_MODEL)
+	engfunc(EngFunc_PrecacheModel,SPEAR_W_MODEL)
 	engfunc(EngFunc_PrecacheSound, SPEAR_HIT_SFX)
 	engfunc(EngFunc_PrecacheSound, SPEAR_THROW_SFX)
 	engfunc(EngFunc_PrecacheSound, SPEAR_WOUND_SFX)

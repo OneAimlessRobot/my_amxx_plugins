@@ -23,7 +23,7 @@ neo_toggle 0		//Def=0
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"
-new bool:gHasNeoPowers[SH_MAXSLOTS+1]
+new gHeroID
 new bool:gmorphed[SH_MAXSLOTS+1]
 new gTaskID
 #define TE_USERNEO	127
@@ -55,10 +55,10 @@ public plugin_init()
 	register_cvar("neo_fly_downforce","1000") 
 	register_cvar("neo_toggle","0")
 	if (get_cvar_num("neo_mode")!=1){
-		shCreateHero(gHeroName, "Neo!", "You Look Like Neo", false, "neo_level" )
+		gHeroID=shCreateHero(gHeroName, "Neo!", "You Look Like Neo", false, "neo_level" )
 	}
 	else{
-		shCreateHero(gHeroName, "Neo!", "You Look Like Neo", true, "neo_level" )
+		gHeroID=shCreateHero(gHeroName, "Neo!", "You Look Like Neo", true, "neo_level" )
 	}
 	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
@@ -96,11 +96,6 @@ public neo_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 	
-	// 2nd Argument is 0 or 1 depending on whether the id has Neo
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-	gHasNeoPowers[id] = (hasPowers!=0)
-	
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
@@ -110,7 +105,7 @@ public neo_init()
 		stop_fly(id) 
 	} 
 	if ( is_user_connected(id) ) {
-		if ( gHasNeoPowers[id] ) {
+		if (sh_user_has_hero(id,gHeroID)) {
 			neo_tasks(id)
 		}
 		else {
@@ -125,7 +120,7 @@ public neo_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_model("models/player/Neo/Neo.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/player/Neo/Neo.mdl")
 	return PLUGIN_CONTINUE 
 }
 //----------------------------------------------------------------------------------------------
@@ -158,7 +153,7 @@ public make_neo(id)
 		velocityvec[2]=velocityvec[2]*speed/length
 		
 		for(i = 0; i < n; i++)
-			if ((is_user_connected(players[i])) && (gHasNeoPowers[players[i]]==true))
+			if ((is_user_connected(players[i])) && (sh_user_has_hero(players[i],gHeroID)))
 			draw_neo_for(players[i], pteam, vec , velocityvec)
 	}
 	lastammo[id] = ammo
@@ -229,7 +224,7 @@ public neo_glow(id)
 		return
 	}
 	
-	if ( gHasNeoPowers[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}
@@ -300,7 +295,7 @@ public new_round(id)
 		stop_fly(id) 
 	} 
 	
-	if ( gHasNeoPowers[id] && is_user_alive(id) && shModActive() ) 
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) 
 	{
 		neo_tasks(id)
 	} 

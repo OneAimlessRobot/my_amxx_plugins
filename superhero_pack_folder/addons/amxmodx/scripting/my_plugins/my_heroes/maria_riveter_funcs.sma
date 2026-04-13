@@ -437,7 +437,7 @@ public vexd_pfntouch(pToucher, pTouched)
 public plugin_precache()
 {
 
-precache_model("models/shell.mdl")
+engfunc(EngFunc_PrecacheModel,"models/shell.mdl")
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_SHOTSOUND)
 engfunc(EngFunc_PrecacheSound, MARIA_RIVETER_WALLHIT_SOUND)
 

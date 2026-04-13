@@ -13,7 +13,7 @@ Bunny_level 5
 #include "../my_include/superheromod.inc"
 
 new gHeroName[]="Bunny hop"
-new bool:gHasBunnyHop[SH_MAXSLOTS+1]
+new gHeroID
 //-------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -25,36 +25,17 @@ public plugin_init()
 	register_cvar("Bunny Hop", "Auto jumping", 800)
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Bunny hop", "Start jumping like a bunnu hold jump button.", false, "bunny_level")
+	gHeroID=shCreateHero(gHeroName, "Bunny hop", "Start jumping like a bunnu hold jump button.", false, "bunny_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("bunny_init", "bunny_init")
-	shRegHeroInit(gHeroName, "bunny_init")
-
-}
-//------------------------------------------------------------------------------------
-public bunny_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasBunnyHop[id] = (hasPowers != 0)
 }
 //-----------------------------------------------------------------------------------
 public client_PreThink(id)
 {
-	if(gHasBunnyHop[id] && is_user_alive(id))
+	if(sh_user_has_hero(id,gHeroID) && is_user_alive(id))
          { 
 	entity_set_float(id, EV_FL_fuser2, 0.0)
          }
-	if((get_user_button(id) & IN_JUMP)&&gHasBunnyHop[id] )
+	if((get_user_button(id) & IN_JUMP)&&sh_user_has_hero(id,gHeroID))
          {
 		new Flags = entity_get_int(id, EV_INT_flags)
 		if(Flags | FL_WATERJUMP && entity_get_int(id, EV_INT_waterlevel) < 2 && Flags & FL_ONGROUND)

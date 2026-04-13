@@ -15,7 +15,6 @@ daredevil_bright 192		//How bright to make the rings
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Daredevil"
-new bool:gHasDaredevil[SH_MAXSLOTS+1]
 new gSpriteWhite
 new gPcvarRadius, gPcvarBright
 //----------------------------------------------------------------------------------------------
@@ -39,16 +38,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSpriteWhite = precache_model("sprites/white.spr")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasDaredevil[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
 }
 //----------------------------------------------------------------------------------------------
 public daredevil_esploop()
@@ -67,7 +57,7 @@ public daredevil_esploop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( !gHasDaredevil[player] ) continue
+		if ( !sh_user_has_hero(player,gHeroID)) continue
 
 		for ( j = 0; j < playerCount; j++ ) {
 			idRing = players[j]
@@ -98,10 +88,5 @@ public daredevil_esploop()
 			message_end()
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasDaredevil[id] = false
 }
 //----------------------------------------------------------------------------------------------

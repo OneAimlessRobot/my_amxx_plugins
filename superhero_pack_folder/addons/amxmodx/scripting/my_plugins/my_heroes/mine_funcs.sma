@@ -479,6 +479,6 @@ while(grenada) {
 public plugin_precache()
 {
 
-precache_model( MINE_WORLD_MDL );
+engfunc(EngFunc_PrecacheModel,MINE_WORLD_MDL );
 
 }

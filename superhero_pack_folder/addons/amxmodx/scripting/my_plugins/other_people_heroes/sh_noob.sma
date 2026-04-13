@@ -1,4 +1,3 @@
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GREEN ARROW - Exploding Arrows (bullets from scout)
@@ -10,7 +9,7 @@
 
 // VARIABLES
 new gHeroName[]="Noob"
-new gHasNoobPower[SH_MAXSLOTS+1]
+new gHeroID
 new gArrowsFired[33] = 0
 // Test
 new gLastWeapon[33]=0
@@ -34,12 +33,8 @@ public plugin_init()
 	register_cvar("noob_getdeagle", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "exploding deagle shots", "U WILL HAVE A DEAGE WITH 3 EXPLODING SHOTS!!", false, "noob_level")
+	gHeroID=shCreateHero(gHeroName, "exploding deagle shots", "U WILL HAVE A DEAGE WITH 3 EXPLODING SHOTS!!", false, "noob_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("noob_init", "noob_init")
-	shRegHeroInit(gHeroName, "noob_init")
 
 	register_event("ResetHUD","newRound","b")
 
@@ -53,24 +48,11 @@ public plugin_init()
 	register_event("CurWeapon","make_tracer", "be", "1=1", "3>0")
 }
 //----------------------------------------------------------------------------------------------
-public noob_init()
-{
-	new temp[128]
-	// First Argument is an id
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has garrow
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
-	gHasNoobPower[id]=(hasPowers!=0)
-}
-//----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	spr_laser = precache_model("sprites/laserbeam.spr")
-	spr_laser_impact = precache_model("sprites/zerogxplode.spr")
-	spr_blast_shroom = precache_model("sprites/mushroom.spr")
+	spr_laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
+	spr_laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
+	spr_blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
@@ -81,7 +63,7 @@ public newRound(id)
 	gPlayerUltimateUsed[id]=false
 	gLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 
-	if (gHasNoobPower[id] && get_cvar_num("noob_getdeagle")==1) {
+	if (sh_user_has_hero(id,gHeroID)&& get_cvar_num("noob_getdeagle")==1) {
 		shGiveWeapon(id,"weapon_deagle")
 	}
 }
@@ -95,7 +77,7 @@ public noob_damage(id)
 
 	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id) return PLUGIN_CONTINUE
 
-	if ( gHasNoobPower[attacker_id] && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
+	if (sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
 	{
 		new health = get_user_health(id)
 
@@ -191,7 +173,7 @@ public make_tracer(id)
 	new weap = read_data(2)        // id of the weapon
 	new ammo = read_data(3)        // ammo left in clip
 
-	if ( gHasNoobPower[id] && weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
 
 		if (lastweap[id] == 0) lastweap[id] = weap
 
@@ -246,7 +228,7 @@ public make_tracer(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !gHasNoobPower[id] || !shModActive() ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
 

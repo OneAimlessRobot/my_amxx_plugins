@@ -21,13 +21,10 @@ casper_stuckcheck 1		//Kill user if stuck in wall/ground after noclip, 0=no 1=ye
 *   Hero Created by BLU3 V1Z10N & maybe
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Casper"
-new bool:gHasCasperPower[SH_MAXSLOTS+1]
 new bool:gInGhostMode[SH_MAXSLOTS+1]
 new gUserHealth[SH_MAXSLOTS+1]
 new gUserArmor[SH_MAXSLOTS+1]
@@ -35,6 +32,7 @@ new gGhostHealth[SH_MAXSLOTS+1]
 new gGhostArmor[SH_MAXSLOTS+1]
 new g_lastPosition[SH_MAXSLOTS+1][3]
 new gCasperHealth, gCasperArmor
+new gHeroID
 //-------------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -48,7 +46,7 @@ public plugin_init()
 	register_cvar("casper_stuckcheck", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Ghost Mode", "Hold power key down for 95 percent invisibility with noclip! Low HP/AP while in Ghost Mode.", true, "casper_level")
+	gHeroID=shCreateHero(gHeroName, "Ghost Mode", "Hold power key down for 95 percent invisibility with noclip! Low HP/AP while in Ghost Mode.", true, "casper_level")
 	// INIT
 	shRegHeroInit(gHeroName, "casper_init")
 	register_srvcmd("casper_init", "casper_init")
@@ -72,20 +70,13 @@ public casper_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	if ( hasPowers && is_user_alive(id) ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		gGhostHealth[id] = get_cvar_num("casper_health")
 		gGhostArmor[id] = get_cvar_num("casper_armor")
 	}
-	else if ( !hasPowers && gHasCasperPower[id] && is_user_alive(id) && gInGhostMode[id] ) {
+	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && gInGhostMode[id] ) {
 		casper_removeghost(id)
 	}
-
-	//Sets this variable to the current status
-	gHasCasperPower[id] = (hasPowers != 0)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -102,7 +93,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasCasperPower[id] && is_user_alive(id) ) {
+	if ( shModActive() &&sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( gInGhostMode[id] ) {
 			casper_removeghost(id)
 		}
@@ -122,7 +113,7 @@ public casper_kd()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	if ( !gHasCasperPower[id] || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -139,7 +130,7 @@ public casper_kd()
 //---------------------------------------------------------------------------------------------
 public casper_setghost(id)
 {
-	if ( !gHasCasperPower[id] || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
 
 	gInGhostMode[id] = true
 
@@ -181,7 +172,7 @@ public casper_setghost(id)
 //---------------------------------------------------------------------------------------------
 public casper_loop(id)
 {
-	if ( !shModActive() || !gHasCasperPower[id] || !is_user_alive(id) || !gInGhostMode[id] ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
 	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
 
@@ -205,7 +196,7 @@ public casper_ku()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !gHasCasperPower[id] || !is_user_alive(id) || !gInGhostMode[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
 	casper_removeghost(id)
 }
@@ -294,14 +285,14 @@ public casper_death()
 {
 	new id = read_data(2)
 
-	if ( !gHasCasperPower[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) ) return
 
 	casper_removeghost(id)
 }
 //---------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if ( !gHasCasperPower[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID)) return
 
 	remove_task(id)
 	gInGhostMode[id] = false

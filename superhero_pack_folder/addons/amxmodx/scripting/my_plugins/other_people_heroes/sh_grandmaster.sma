@@ -15,7 +15,6 @@ gmaster_cooldown 600		//# of seconds for Grandmaster cooldown
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Grandmaster"
-new bool:gHasGrandmaster[SH_MAXSLOTS+1]
 new const gSoundGmaster[] = "ambience/port_suckin1.wav"
 new gPcvarCooldown
 //----------------------------------------------------------------------------------------------
@@ -36,16 +35,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound(gSoundGmaster)
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasGrandmaster[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
+	engfunc(EngFunc_PrecacheSound,gSoundGmaster)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -72,7 +62,7 @@ public sh_client_death(victim)
 	// Look for alive players with unused Grandmaster Powers on the same team
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( player != victim && gHasGrandmaster[player] && !gPlayerInCooldown[player] && idTeam == cs_get_user_team(player) ) {
+		if ( player != victim && sh_user_has_hero(player,gHeroID)&& !gPlayerInCooldown[player] && idTeam == cs_get_user_team(player) ) {
 			// We got a Grandmaster willing to raise the dead!
 			new parm[2]
 			parm[0] = victim

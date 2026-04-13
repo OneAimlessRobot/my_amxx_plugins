@@ -33,8 +33,6 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 *   Hero is a rip of Captain America, Cyclops, and Chucky with added AP/Gravity.
 */
 
-#include <amxmod>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 // Damage Variables
@@ -45,8 +43,8 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 #define h6_dam 40  //leg
 
 // GLOBAL VARIABLES
+new gHeroID
 new gHeroName[]="Dr. Strange"
-new bool:gHasDrStrangePowers[SH_MAXSLOTS+1]
 new bool:gDrStrangeReviveUsed[SH_MAXSLOTS+1]
 new bool:gUsingLaser[SH_MAXSLOTS+1]
 new bool:gBetweenRounds
@@ -76,7 +74,7 @@ public plugin_init()
 	register_cvar("drstrange_cooldown", "0.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
+	gHeroID=shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -112,12 +110,12 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	gSmokeSprite = precache_model("sprites/steam1.spr")
-	gLaserSprite = precache_model("sprites/lgtning.spr")
-	precache_sound("debris/beamstart7.wav")
-	precache_sound("weapons/xbow_hitbod2.wav")
-	precache_sound("doors/aliendoor3.wav")
-	precache_sound("ambience/port_suckin1.wav")
+	gSmokeSprite = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gLaserSprite = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
+	engfunc(EngFunc_PrecacheSound,"debris/beamstart7.wav")
+	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
+	engfunc(EngFunc_PrecacheSound,"doors/aliendoor3.wav")
+	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
 public drstrange_init()
@@ -127,29 +125,24 @@ public drstrange_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
 
-	if ( hasPowers ) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		gPlayerUltimateUsed[id] = false
 		gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		gUsingLaser[id] = false
 	}
 	//This gets run if they had the power but don't anymore
-	else if ( gHasDrStrangePowers[id] ) {
+	else {
 		shRemSpeedPower(id)
 		shRemGravityPower(id)
 		shRemArmorPower(id)
 	}
 
-	//Sets this variable to the current status
-	gHasDrStrangePowers[id] = (hasPowers!=0)
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && gHasDrStrangePowers[id] && is_user_alive(id) ) {
+	if ( shModActive() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)
 		gPlayerUltimateUsed[id] = false
 		gUsingLaser[id] = false
@@ -174,7 +167,7 @@ public drstrange_loop()
 
 	for ( new x = 0; x < count; x++ ) {
 		id = players[x]
-		if ( gHasDrStrangePowers[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new randNum = random_num(1, 100)
 			new heroLevel = floatround(gPlayerLevels[id] * get_cvar_float("drstrange_pctperlev") * 100)
 			//server_print("setting god mode: heroLevel=%d, randNum=%d", heroLevel, randNum)
@@ -196,7 +189,7 @@ public drstrange_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !gHasDrStrangePowers[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Mystical Bolts Left")
@@ -403,7 +396,7 @@ public drstrange_death()
 	remove_task(id)
 
 	if ( gBetweenRounds ) return
-	if ( !is_user_connected(id) || !gHasDrStrangePowers[id] ) return
+	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	new randNum = random_num(0, 100)
 	new pctChance = get_cvar_num("drstrange_respawnpct")
@@ -485,7 +478,7 @@ public round_start()
 	gBetweenRounds = false
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasDrStrangePowers[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		}
 	}
@@ -499,7 +492,7 @@ public round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( gHasDrStrangePowers[id] ) {
+		if ( sh_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 			gDrStrangeReviveUsed[id] = false
 		}
@@ -514,12 +507,6 @@ public client_disconnected(id)
 	// Yeah don't want any left over residuals
 	remove_task(id)
 
-	gHasDrStrangePowers[id] = false
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasDrStrangePowers[id] = false
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

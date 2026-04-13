@@ -18,12 +18,11 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 *
 */
 
-#include <amxmod>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Thor"
-new bool:g_hasThor[SH_MAXSLOTS+1]
+new gHeroID
 new g_spriteLightning
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -37,12 +36,7 @@ public plugin_init()
 	register_cvar("thor_cooldown", "45")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(g_heroName, "Thunder Bolt", "Strike Attackers with a Mighty Lightning Bolt from Thor's uru hammer Mjolnir.", false, "thor_level")
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("thor_init", "thor_init")
-	shRegHeroInit(g_heroName, "thor_init")
+	gHeroID=shCreateHero(g_heroName, "Thunder Bolt", "Strike Attackers with a Mighty Lightning Bolt from Thor's uru hammer Mjolnir.", false, "thor_level")
 
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
@@ -51,23 +45,9 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	precache_sound("ambience/thunder_clap.wav")
-	precache_sound("buttons/spark5.wav")
-	g_spriteLightning = precache_model("sprites/lgtning.spr")
-}
-//----------------------------------------------------------------------------------------------
-public thor_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	g_hasThor[id] = (hasPowers != 0)
+	engfunc(EngFunc_PrecacheSound,"ambience/thunder_clap.wav")
+	engfunc(EngFunc_PrecacheSound,"buttons/spark5.wav")
+	g_spriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -78,7 +58,7 @@ public newSpawn(id)
 public thor_damage(id)
 {
 	if ( !shModActive() || !is_user_connected(id) ) return
-	if ( !g_hasThor[id] || gPlayerUltimateUsed[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) || gPlayerUltimateUsed[id] ) return
 
 	new damage = read_data(2)
 	new attacker = get_user_attacker(id)

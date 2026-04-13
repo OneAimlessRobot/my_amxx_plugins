@@ -50,8 +50,8 @@ public molotov_newRound(id)
 }
 public plugin_precache(){
 	
-	precache_sound(gSoundBurning)
-	precache_sound(gSoundScream)
+	engfunc(EngFunc_PrecacheSound,gSoundBurning)
+	engfunc(EngFunc_PrecacheSound,gSoundScream)
 
 }
 public plugin_natives(){

@@ -3,8 +3,6 @@
  Version 0.2 Fixed by Om3g[A] ( on the original code was some compline errors )
  */ 
  
- #include <amxmodx>
- #include <xtrafun>
  #include "../my_include/superheromod.inc"
 
  #define TE_BEAMPOINTS 0
@@ -13,7 +11,7 @@
 
  // GLOBAL VARIABLES
  new gHeroName[]="Storm"
- new bool:gHasStormPower[SH_MAXSLOTS+1]
+ new gHeroID
  new gStormTimer[SH_MAXSLOTS+1]
  new lightning,Fire
  //----------------------------------------------------------------------------------------------
@@ -31,7 +29,7 @@
 	register_cvar("storm_maxdamage", "15")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )
+	gHeroID=shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -54,8 +52,8 @@
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
  {
-	lightning = precache_model("sprites/lgtning.spr")
-	Fire = precache_model("sprites/zerogxplode.spr")
+	lightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
+	Fire = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
  }
  //----------------------------------------------------------------------------------------------
  public Storm_init()
@@ -65,26 +63,19 @@
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has Storm powers
-	read_argv(2,temp,5)
-	new hasPowers=str_to_num(temp)
 
-	gHasStormPower[id] = (hasPowers!=0)
-
-	if (gHasStormPower[id]) {
+	if (sh_user_has_hero(id,gHeroID)) {
 		gPlayerUltimateUsed[id] = false
 		gStormTimer[id] = -1
 	}
-	if ( !hasPowers  && is_user_connected(id) )
-	{
-		remove_task(id+1337)
-	}
+	remove_task(id+1337)
+
  }
  //----------------------------------------------------------------------------------------------
  public Storm_death()
  {
 	new id=read_data(2)
-	if (gHasStormPower[id])
+	if (sh_user_has_hero(id,gHeroID))
 	{
 		if ( gStormTimer[id]>0 )
 		{
@@ -280,7 +271,7 @@
 
 	for ( new id=1; id<=SH_MAXSLOTS; id++ )
 	{
-		if ( gHasStormPower[id] && is_user_alive(id)  )
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 		{
 			if ( gStormTimer[id]>0 )
 			{
@@ -331,7 +322,6 @@
 
 	// Yeah don't want any left over residuals
 	remove_task(id+1337)
-	gHasStormPower[id] = false
 	gStormTimer[id] = -1
  }
  //----------------------------------------------------------------------------------------------

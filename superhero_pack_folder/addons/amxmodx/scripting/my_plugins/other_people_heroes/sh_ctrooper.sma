@@ -32,14 +32,13 @@
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
- // GLOBAL VARIABLES
- new gHeroName[]="Clone Trooper"
- new bool:gHasCTrooperPower[SH_MAXSLOTS+1]
- new bool:gmorphed[SH_MAXSLOTS+1]
- new gTaskID
- new gCTrooperSound[]="items/suitchargeno1.wav"
- new lastammo[33]
-
+// GLOBAL VARIABLES
+new gHeroName[]="Clone Trooper"
+new bool:gmorphed[SH_MAXSLOTS+1]
+new gTaskID
+new gCTrooperSound[]="items/suitchargeno1.wav"
+new lastammo[33]
+new gHeroID
  //----------------------------------------------------------------------------------------------
  public plugin_init()
  {
@@ -52,7 +51,7 @@
 	register_cvar("ctrooper_health", "150")
 	register_cvar("ctrooper_armor", "150")
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "CTrooper", "Become a Clone Trooper! - Cooler Player Model and Gun and laser bullets", false, "CTrooper_level" )
+	gHeroID=shCreateHero(gHeroName, "CTrooper", "Become a Clone Trooper! - Cooler Player Model and Gun and laser bullets", false, "CTrooper_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
@@ -74,11 +73,11 @@
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
  {
-	precache_sound("weapons/electro5.wav")
-	precache_model("models/player/clonetrooper/clonetrooper.mdl")
-	precache_model("models/shmod/clonetrooper_v_ak47.mdl")
-	precache_model("models/shmod/clonetrooper_p_ak47.mdl")
-	precache_sound(gCTrooperSound)
+	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav")
+	engfunc(EngFunc_PrecacheModel,"models/player/clonetrooper/clonetrooper.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_v_ak47.mdl")
+	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_p_ak47.mdl")
+	engfunc(EngFunc_PrecacheSound,gCTrooperSound)
  }
  //----------------------------------------------------------------------------------------------
  public CTrooper_init()
@@ -88,18 +87,12 @@
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has CTrooper
-	read_argv(2,temp,5)
-	new hasPowers = str_to_num(temp)
-
-	gHasCTrooperPower[id] = (hasPowers != 0)
-
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
 	if ( is_user_connected(id) ) {
-		if ( gHasCTrooperPower[id] ) {
+		if (sh_user_has_hero(id,gHeroID) ) {
 			CTrooper_weapons(id)
 			switchmodel(id)
 			CTrooper_tasks(id)
@@ -118,7 +111,7 @@
  public make_tracer(id)
  {
 	if(!client_hittable(id)) return PLUGIN_CONTINUE
-	if (!gHasCTrooperPower[id]) return PLUGIN_CONTINUE
+	if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 	new clip, ammo
 	new wpnid = get_user_weapon(id, clip, ammo)
 	new CsTeams:user_team=cs_get_user_team(id)
@@ -144,7 +137,7 @@
  //----------------------------------------------------------------------------------------------
  public newSpawn(id)
  {
-	if ( gHasCTrooperPower[id] && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		set_task(0.1, "CTrooper_weapons", id)
 		CTrooper_tasks(id)
 
@@ -169,7 +162,7 @@
  //----------------------------------------------------------------------------------------------
  public switchmodel(id)
  {
-	if ( !is_user_alive(id) || !gHasCTrooperPower[id] ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
@@ -183,7 +176,7 @@
  //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
-	if ( !gHasCTrooperPower[id] || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -214,9 +207,9 @@
 	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
-
-	if ( gHasCTrooperPower[attacker] && weapon == CSW_AK47 && is_user_alive(id) ) {
-		if ( gHasCTrooperPower[attacker] && is_user_alive(id) ) {
+//sh_user_has_hero(id,gHeroID)
+	if ( sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_AK47 && is_user_alive(id) ) {
+		if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("ctrooper_ak47mult") - damage)
 			if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "ak47", headshot )
@@ -281,7 +274,7 @@
 		return
 	}
 
-	if ( gHasCTrooperPower[id] && is_user_alive(id)) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)) {
 		if ( get_user_team(id) == 1 ) {
 			shGlow(id, 255, 0, 0)
 		}

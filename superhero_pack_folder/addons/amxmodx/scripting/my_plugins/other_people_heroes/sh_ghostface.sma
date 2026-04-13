@@ -45,13 +45,11 @@ ghostface_teamglow 0		//Glow Team Color when player skin in use, Default 0 (0=no
 //------- Do not edit below this point ------//
 
 
-#include <amxmodx>
-#include <fakemeta>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Ghostface (Scream)"
-new bool:HasGhostface[SH_MAXSLOTS+1]
+new gHeroID
 new PlayerMaxHealth[SH_MAXSLOTS+1]
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints
@@ -85,7 +83,7 @@ public plugin_init()
 	CvarHealPoints = register_cvar("ghostface_healpoints", "5")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Knife Dmg & HP Regen", "Become the Woodsboro Serial Killer - get a Bowie Knife that deals Extra Damage, also Regen Health.", false, "ghostface_level")
+	gHeroID=shCreateHero(HeroName, "Knife Dmg & HP Regen", "Become the Woodsboro Serial Killer - get a Bowie Knife that deals Extra Damage, also Regen Health.", false, "ghostface_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -130,7 +128,7 @@ public plugin_precache()
 		ModelPlayerLoaded = true
 
 		if ( file_exists(Model_Player) ) {
-			precache_model(Model_Player)
+			engfunc(EngFunc_PrecacheModel,Model_Player)
 		}
 		else {
 			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player)
@@ -141,7 +139,7 @@ public plugin_precache()
 	#if defined USE_WPN_MODEL
 		ModelWeaponLoaded = true
 		if ( file_exists(Model_V_Knife) ) {
-			precache_model(Model_V_Knife)
+			engfunc(EngFunc_PrecacheModel,Model_V_Knife)
 		}
 		else {
 			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_Knife)
@@ -149,7 +147,7 @@ public plugin_precache()
 		}
 
 		if ( file_exists(Model_P_Knife) ) {
-			precache_model(Model_P_Knife)
+			engfunc(EngFunc_PrecacheModel,Model_P_Knife)
 		}
 		else {
 			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_Knife)
@@ -166,16 +164,10 @@ public ghostface_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	switch(hasPowers)
+	switch(sh_user_has_hero(id,gHeroID))
 	{
 		case true:
 		{
-			HasGhostface[id] = true
-
 			if ( is_user_alive(id) )
 			{
 				#if defined USE_WPN_MODEL
@@ -193,7 +185,7 @@ public ghostface_init()
 		case false:
 		{
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) && HasGhostface[id] )
+			if ( is_user_alive(id))
 			{
 				#if defined USE_PLAYER_MODEL
 					if ( ModelPlayerLoaded )
@@ -206,7 +198,6 @@ public ghostface_init()
 				shRemSpeedPower(id)
 			}
 
-			HasGhostface[id] = false
 		}
 	}
 }
@@ -214,7 +205,7 @@ public ghostface_init()
 #if defined USE_WPN_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasGhostface[id] )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -228,7 +219,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasGhostface[id] )
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	//weaponID = read_data(2)
@@ -250,7 +241,7 @@ public ghostface_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
-	if ( HasGhostface[attacker] && weapon == CSW_KNIFE )
+	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
@@ -265,7 +256,7 @@ public ghostface_damage(id)
 #if defined USE_PLAYER_MODEL
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasGhostface[id] )
+	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 	{
 		if ( ModelPlayerLoaded )
 			ghostface_tasks(id)
@@ -282,7 +273,7 @@ ghostface_tasks(id)
 //----------------------------------------------------------------------------------------------
 public ghostface_morph(id)
 {
-	if ( ModelPlayerSet[id] || !is_user_alive(id) || !HasGhostface[id] )
+	if ( ModelPlayerSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	cs_set_user_model(id, Model_Player_Name)
@@ -317,7 +308,7 @@ public ghostface_glow(id)
 		return
 	}
 
-	if ( HasGhostface[id] && is_user_alive(id) )
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
 	{
 		switch(cs_get_user_team(id))
 		{
@@ -331,7 +322,7 @@ public ghostface_death()
 {
 	new id = read_data(2)
 
-	if ( !HasGhostface[id] )
+	if ( !sh_user_has_hero(id,gHeroID))
 		return
 
 	if ( ModelPlayerLoaded )
@@ -355,7 +346,7 @@ public heal_loop()
 	if ( !shModActive() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( HasGhostface[id] && is_user_alive(id) ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, HealPoints, PlayerMaxHealth[id])
@@ -365,8 +356,6 @@ public heal_loop()
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
 {
-	HasGhostface[id] = false
-
 	#if defined USE_PLAYER_MODEL
 		ModelPlayerSet[id] = false
 	#endif
