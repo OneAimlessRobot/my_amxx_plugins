@@ -653,7 +653,7 @@ public death()
 		
 		reset_ester_reborn_mode(id,0)
 		reset_status(id)
-		emit_sound(id, CHAN_VOICE, ester_death_sounds[random_num(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,random_num(95,120))
+		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,generate_int(95,120))
 		
 		gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
 		

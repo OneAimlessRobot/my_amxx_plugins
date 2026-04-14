@@ -520,7 +520,7 @@ stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
-	new decal = random_num(41, 45)
+	new decal = generate_int(41, 45)
 	const loop_time = 2
 	
 	static Body, Target

@@ -93,7 +93,7 @@ public grenade_throw(id, gid, wid)
 {
 	if(sh_user_has_hero(id,gHeroID) &&!gPlayerUltimateUsed[id] ){
 	if(wid == CSW_HEGRENADE){
-		gWillHit[id]=(random_float(0.0,gTotalChance)<1.0)
+		gWillHit[id]=(generate_float(0.0,gTotalChance)<1.0)
 		entity_set_int(gid,EV_INT_iuser1,gWillHit[id])
 		sh_chat_message(id,gHeroID,"GAMBLE IT ALL! You valliant survivor!")
 		if ( gWillHit[id])

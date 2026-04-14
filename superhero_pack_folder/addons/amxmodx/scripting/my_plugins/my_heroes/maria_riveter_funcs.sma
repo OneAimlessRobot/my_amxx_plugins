@@ -1,5 +1,4 @@
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -261,7 +260,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
-	set_entvar(pPlayer, var_weaponanim,  random_num(anim_shoot1,anim_shoot2))
+	set_entvar(pPlayer, var_weaponanim,  generate_int(anim_shoot1,anim_shoot2))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE
 }
@@ -293,9 +292,9 @@ stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
 	new Float:speed=VecLength(vec_to_randomize)
 	new Float:norm_random_speed;
 	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
-	norm_speed_random[0]=normal_speed[0]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[1]=normal_speed[1]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[2]=normal_speed[2]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[0]=normal_speed[0]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[1]=normal_speed[1]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[2]=normal_speed[2]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
 	norm_random_speed=VecLength(norm_speed_random);
 	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
 	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);

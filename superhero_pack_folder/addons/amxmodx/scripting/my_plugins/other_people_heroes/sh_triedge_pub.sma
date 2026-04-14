@@ -517,7 +517,7 @@ public blood_spurt(vic, id)
     write_coord(rY)
     write_coord(rZ)
     write_byte(70)     // color RED = 248 YELLOW = 196
-    write_byte(random_num(100, 200)) // speed
+    write_byte(generate_int(100, 200)) // speed
     message_end()
 }
 //----------------------------------------------------------------------------------------------
@@ -525,8 +525,8 @@ public blood_spray(vic, vicOrigin[3])
 {
 /*    new x, y
     for(new i = 0; i < 2; i++) {
-        x = random_num(-10, 10)
-        y = random_num(-10, 10)
+        x = generate_int(-10, 10)
+        y = generate_int(-10, 10)
         for(new j = 0; j < 2; j++) {
             // Blood spray
             message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -581,7 +581,7 @@ public infinity_spray(vic, id)
 	write_byte(255)		// r, g, b
 	write_byte(255)		// r, g, b
 	write_byte(255)		// r, g, b
-	write_byte(random_num(195, 205))		// brightness
+	write_byte(generate_int(195, 205))		// brightness
 	write_byte(0)			// scroll speed
 	message_end()
 
@@ -597,9 +597,9 @@ public infinity_spray(vic, id)
 	write_byte(35)	// line width
 	write_byte(18)			// noise amplitude
 	write_byte(0)		// r, g, b
-	write_byte(random_num(100, 190))		// r, g, b
-	write_byte(random_num(190, 255))		// r, g, b
-	write_byte(random_num(175, 255))		// brightness
+	write_byte(generate_int(100, 190))		// r, g, b
+	write_byte(generate_int(190, 255))		// r, g, b
+	write_byte(generate_int(175, 255))		// brightness
 	write_byte(0)			// scroll speed
 	message_end()
 }

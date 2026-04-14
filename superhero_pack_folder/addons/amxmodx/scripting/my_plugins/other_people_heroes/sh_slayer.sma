@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 // Slayer (GGXX) - founder of the Assassins guild, has an unblockable move :-"
@@ -62,7 +63,7 @@ public slayer_damage(id)
     if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
     if ( sh_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
-      new randNum = random_num(0, 100)
+      new randNum = generate_int(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
 		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2, "Slayer Sacrifice" )
 		sh_extra_damage(id, attacker, get_user_health(id), "Assassination" )		

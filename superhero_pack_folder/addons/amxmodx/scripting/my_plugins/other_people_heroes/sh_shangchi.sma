@@ -99,7 +99,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		if ( !is_user_alive(attacker) )
 			return
 
-		new randomMove = random_num(0, 30)
+		new randomMove = generate_int(0, 30)
 		if ( randomMove < MAX_MOVES ) {
 			counter_attack(attacker, victim, randomMove)
 		}
@@ -117,7 +117,7 @@ public counter_attack(victim, id, moveNumber)
 	new counterMove[32]
 	new damage = MoveDamage[moveNumber]
 	//Move numbers [16], [17], and [18] do not have Sloppy options
-	if ( moveNumber < 16 && random_num(0, 1) ) {
+	if ( moveNumber < 16 && generate_int(0, 1) ) {
 		damage /= 2
 		formatex(counterMove, 31, "Sloppy %s", MoveName[moveNumber])	 
 	}

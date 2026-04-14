@@ -363,11 +363,10 @@ fx_task_user(id,attacker,fx_num){
 public _get_fx_num(iPlugin,iParams){
 
 
-	new Float:chance=random_float(0.0,fx_rarity_weights[sizeof(fx_rarity_weights)-1])
-
+	new Float:chance=generate_float(0.0,(fx_rarity_weights[sizeof(fx_rarity_weights)-1])*0.02)
 
 	for(new fx_id:i=KILL;i<NUM_FX;i++){
-		new Float:compared=fx_rarity_weights[i];
+		new Float:compared=fx_rarity_weights[i]*0.01;
 		if(chance<compared){
 
 			return i;

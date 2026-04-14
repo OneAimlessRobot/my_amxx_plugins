@@ -21,6 +21,7 @@
 #tryinclude "../../include/amxmod.inc"
 #tryinclude "../../include/amxmodx.inc"
 #tryinclude "../../include/amxmisc.inc"
+#tryinclude "../my_include/randomx.inc"
 #tryinclude "../../include/hamsandwich.inc"
 #tryinclude "../../include/fakemeta.inc"
 #tryinclude "../../include/engine.inc"

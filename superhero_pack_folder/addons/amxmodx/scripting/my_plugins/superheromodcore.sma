@@ -2028,7 +2028,7 @@ menuSuperPowers(id, menuOffset)
 	// Choose and give a random power to a bot
 	if ( isBot && count ) {
 		// Select a random power
-		heroIndex = gPlayerMenuChoices[id][random_num(1, count)]
+		heroIndex = gPlayerMenuChoices[id][generate_int(1, count)]
 
 		// Bind Keys / Set Powers
 		gPlayerPowers[id][0] = playerpowercount + 1
@@ -4605,7 +4605,7 @@ public client_putinserver(id)
 	if ( gLongTermXP ) {
 		// Mid-round loads allowed?
 		if(is_user_bot(id)){
-			gPlayerLevel[id]=sh_set_user_lvl(id,random_num(max(0,min(gBotsMinLevel,gBotsMaxLevel)),max(0,max(gBotsMinLevel,gBotsMaxLevel))))
+			gPlayerLevel[id]=sh_set_user_lvl(id,generate_int(max(0,min(gBotsMinLevel,gBotsMaxLevel)),max(0,max(gBotsMinLevel,gBotsMaxLevel))))
 			return;
 		}
 		if ( get_pcvar_num(sh_loadimmediate) ) {

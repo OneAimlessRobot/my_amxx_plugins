@@ -120,6 +120,7 @@
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 #if defined MONITOR_HP || defined MONITOR_SPEC

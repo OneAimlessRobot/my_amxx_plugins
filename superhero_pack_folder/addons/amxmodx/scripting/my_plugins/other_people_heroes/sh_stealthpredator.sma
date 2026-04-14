@@ -226,7 +226,7 @@ public stealth_death()
 	if ( gBetweenRounds ) return
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
 
-	new randNum = random_num(0, 100)
+	new randNum = generate_int(0, 100)
 	new pctChance = get_cvar_num("stealth_respawnpct")
 	if ( pctChance < randNum ) return
 

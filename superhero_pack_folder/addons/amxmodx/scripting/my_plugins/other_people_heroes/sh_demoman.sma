@@ -414,14 +414,14 @@ laser_line(MineID, Float:vEnd[3], bool:killbeam)
 	switch(colornum)
 	{
 		case RNDLIST: {
-			colors = LineColors[random_num(0, COLORS_NUM - 1)]
+			colors = LineColors[generate_int(0, COLORS_NUM - 1)]
 		}
 
 		case RNDCOLOR: {
 			while ( colors[0] + colors[1] + colors[2] < 150 ) {
-				colors[0] = random_num(30, 255)
-				colors[1] = random_num(30, 255)
-				colors[2] = random_num(30, 255)
+				colors[0] = generate_int(30, 255)
+				colors[1] = generate_int(30, 255)
+				colors[2] = generate_int(30, 255)
 			}
 		}
 

@@ -168,7 +168,7 @@ public drstrange_loop()
 	for ( new x = 0; x < count; x++ ) {
 		id = players[x]
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-			new randNum = random_num(1, 100)
+			new randNum = generate_int(1, 100)
 			new heroLevel = floatround(gPlayerLevels[id] * get_cvar_float("drstrange_pctperlev") * 100)
 			//server_print("setting god mode: heroLevel=%d, randNum=%d", heroLevel, randNum)
 			if ( heroLevel >= randNum && !get_user_godmode(id) ) {
@@ -291,7 +291,7 @@ public fire_laser(id)
 public laserEffects(id, aimvec[3])
 {
 	new origin[3]
-	new decal_id = burn_decal[random_num(0,2)]
+	new decal_id = burn_decal[generate_int(0,2)]
 	emit_sound(id, CHAN_ITEM, "debris/beamstart7.wav", 0.6, ATTN_NORM, 0, PITCH_NORM)
 
 	get_user_origin(id, origin)
@@ -398,7 +398,7 @@ public drstrange_death()
 	if ( gBetweenRounds ) return
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
 
-	new randNum = random_num(0, 100)
+	new randNum = generate_int(0, 100)
 	new pctChance = get_cvar_num("drstrange_respawnpct")
 	if ( pctChance < randNum ) return
 

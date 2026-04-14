@@ -296,7 +296,7 @@ public leviathan_damage(id)
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)
 		if (extraDamage>0) if (get_user_health(id)>extraDamage) 
 			sh_extra_damage(id, attacker, extraDamage, "leviathan")
-		else sh_extra_damage(id, attacker, get_user_health(id)-random_num(1,6), "leviathan")
+		else sh_extra_damage(id, attacker, get_user_health(id)-generate_int(1,6), "leviathan")
 	}
 	return PLUGIN_CONTINUE
 }

@@ -136,9 +136,9 @@ CreateSmoke(type = SMOKE_WALLPUFF, Float:vecEndPos[3], Float:vecPlaneNormal[3], 
 	if(!is_valid_ent(entity)) return PLUGIN_CONTINUE
 	switch(type)
 	{
-		case SMOKE_WALLPUFF: g_SmokeType[type][17] = g_Num[random_num(0, 3)]
-		case SMOKE_RIFLE: g_SmokeType[type][19] = g_Num[random_num(0, 2)]
-		case SMOKE_PISTOL: g_SmokeType[type][20] = g_Num[random_num(0, 1)]
+		case SMOKE_WALLPUFF: g_SmokeType[type][17] = g_Num[generate_int(0, 3)]
+		case SMOKE_RIFLE: g_SmokeType[type][19] = g_Num[generate_int(0, 2)]
+		case SMOKE_PISTOL: g_SmokeType[type][20] = g_Num[generate_int(0, 1)]
 	}
 	vecEndPos[0] += vecPlaneNormal[0] * 3.0, vecEndPos[1] += vecPlaneNormal[1] * 3.0, vecEndPos[2] += vecPlaneNormal[2] * 3.0
 	set_entvar(entity, var_origin, vecEndPos)
@@ -146,13 +146,13 @@ CreateSmoke(type = SMOKE_WALLPUFF, Float:vecEndPos[3], Float:vecPlaneNormal[3], 
 	set_entvar(entity, var_framerate, framerate)
 	set_entvar(entity, var_rendermode, kRenderTransAdd)
 	set_entvar(entity, var_rendercolor, flColor)
-	set_entvar(entity, var_renderamt, random_float(100.0, 180.0))
+	set_entvar(entity, var_renderamt, generate_float(100.0, 180.0))
 	set_entvar(entity, var_scale, scale)
 	set_entvar(entity, var_spawnflags, SF_SPRITE_ONCE)
 	dllfunc(DLLFunc_Spawn, entity)
 	set_entvar(entity, var_movetype, MOVETYPE_NOCLIP)
 	set_entvar(entity, var_classname, "create_smoke")
-	vecPlaneNormal[0] *= random_float(25.0, 30.0), vecPlaneNormal[1] *= random_float(25.0, 30.0), vecPlaneNormal[2] *= random_float(25.0, 30.0)
+	vecPlaneNormal[0] *= generate_float(25.0, 30.0), vecPlaneNormal[1] *= generate_float(25.0, 30.0), vecPlaneNormal[2] *= generate_float(25.0, 30.0)
 	set_entvar(entity, var_velocity, vecPlaneNormal)
 	set_wind(entity, wind)
 	return PLUGIN_HANDLED
@@ -186,7 +186,7 @@ public fw_CreateSmokeThinkPost(entity)
 			if(flMagnitude[i] > 5.0) flMagnitude[i] = 5.0
 			if(!bDirection[i]) vOrigin[i] += flMagnitude[i]
 			else vOrigin[i] -= flMagnitude[i]
-			if(!random(10) && flMagnitude[i] > 3.0)
+			if(!generate_int(0, 10) && flMagnitude[i] > 3.0)
 			{
 				flMagnitude[i] = 0.0
 				bDirection[i] = !bDirection[i]

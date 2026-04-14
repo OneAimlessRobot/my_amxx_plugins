@@ -49,7 +49,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	new armor, CsArmorType:armortype 
 	armor = cs_get_user_armor(victim, armortype) 
 	
-	if (sh_user_has_hero(attacker,gHeroID) && random_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
+	if (sh_user_has_hero(attacker,gHeroID) && generate_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
 	{ 	
 		new slot=0;
 		if(wpnindex < CSW_P90){

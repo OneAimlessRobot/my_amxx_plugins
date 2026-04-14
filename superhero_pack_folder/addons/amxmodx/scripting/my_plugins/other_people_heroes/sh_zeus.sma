@@ -75,7 +75,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !sh_is_active() ) return
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && random_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
+	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && generate_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
 		// Get the origin of the victim's feet
 		new Float:fl_Origin[3]
 		pev(victim, pev_origin, fl_Origin)
@@ -170,7 +170,7 @@ thunder_effects(Float:fl_Origin[3])
 		engfunc(EngFunc_WriteCoord, fY)
 		engfunc(EngFunc_WriteCoord, fZ)
 		write_short(0)
-		write_byte(gBurnDecal + random(3))	// decal
+		write_byte(gBurnDecal + generate_int(0, 3))	// decal
 		message_end()
 	}
 }

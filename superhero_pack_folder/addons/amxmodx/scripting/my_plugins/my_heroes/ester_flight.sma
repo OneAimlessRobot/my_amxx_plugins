@@ -287,7 +287,7 @@ public OnCmdStart(id, uc_handle, seed)
 			g_smashed_someone[id]=false
 			g_flying[id]=true;
 		}
-		if(random(FlameAndSoundRate) <3)
+		if(generate_int(0, FlameAndSoundRate) <3)
 		{
 			static Float:Velocity[3]
 			velocity_by_aim(id, floatround(ester_flyspeed), Velocity)
@@ -406,7 +406,7 @@ public ester_reborn_loop_task(parm[]){
 		return
 		
 	}
-	new Float:chance=random_float(0.0,1.0)
+	new Float:chance=generate_float(0.0,1.0)
 	if(chance<(ester_calculation_chance_numerator/ester_calculation_chance_denominator)){
 	
 		ester_respawn(parm)
@@ -427,7 +427,7 @@ public ester_respawn(parm[])
 
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
-	sh_chat_message(id,ester_get_hero_id(), "%s",ester_sentences[random_num(0,ESTER_NUM_SENTENCES-1)])
+	sh_chat_message(id,ester_get_hero_id(), "%s",ester_sentences[generate_int(0,ESTER_NUM_SENTENCES-1)])
 	new user_name[128]
 	get_user_name(id,user_name,127)
 	sh_chat_message(0,ester_get_hero_id(), "%s! They've been reborn!",user_name)
@@ -438,7 +438,7 @@ public ester_respawn(parm[])
 	revival(id)
 	revival(id)
 	reset_ester_reborn_mode(id,1)
-	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[random_num(0,ESTER_NUM_BLOWUPSOUNDS-1)] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1)] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME

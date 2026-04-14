@@ -239,7 +239,7 @@ public find_target(parm[])
 			write_byte(rgb[0])	// r
 			write_byte(rgb[1])	// g
 			write_byte(rgb[2])	// b
-			switch(random_num(0,2)) {
+			switch(generate_int(0,2)) {
 				case 0:write_byte(64)	// brightness
 				case 1:write_byte(128)
 				case 2:write_byte(192)

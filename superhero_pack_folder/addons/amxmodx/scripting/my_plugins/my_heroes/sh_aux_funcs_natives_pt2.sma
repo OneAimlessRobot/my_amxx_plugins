@@ -95,7 +95,7 @@ public _fx_blood(iPlugins, iParams){
 	write_coord(rY) // y
 	write_coord(rZ) // z
 	write_byte(alien?BLOOD_STREAM_YELLOW:BLOOD_STREAM_RED) // color
-	write_byte(random_num(100,200)) // speed
+	write_byte(generate_int(100,200)) // speed
 	message_end()
 }
 public _strip_weapon_for_my_grenade_heroes(iPlugins, iParams){
@@ -134,11 +134,11 @@ public _fx_bleed(iPlugins, iParams){
 	write_coord(origin[0])
 	write_coord(origin[1])
 	write_coord(origin[2]+10)
-	write_coord(random_num(-360,360)) // x
-	write_coord(random_num(-360,360)) // y
+	write_coord(generate_int(-360,360)) // x
+	write_coord(generate_int(-360,360)) // y
 	write_coord(-10) // z
 	write_byte(alien?BLOOD_STREAM_YELLOW:BLOOD_STREAM_RED) // color
-	write_byte(random_num(50,100)) // speed
+	write_byte(generate_int(50,100)) // speed
 	message_end()
 }
 
@@ -153,10 +153,10 @@ public _fx_blood_small(iPlugins, iParams){
 	for (new j = 0; j < num; j++) {
 		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 		write_byte(TE_WORLDDECAL)
-		write_coord(origin[0]+random_num(-100,100))
-		write_coord(origin[1]+random_num(-100,100))
+		write_coord(origin[0]+generate_int(-100,100))
+		write_coord(origin[1]+generate_int(-100,100))
 		write_coord(origin[2]-36)
-		write_byte(blood_small_red[random_num(0,BLOOD_SM_NUM - 1)]) // index
+		write_byte(blood_small_red[generate_int(0,BLOOD_SM_NUM - 1)]) // index
 		message_end()
 	}
 }
@@ -171,10 +171,10 @@ public _fx_blood_large(iPlugins, iParams){
 	for (new i = 0; i < num; i++) {
 		message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 		write_byte(TE_WORLDDECAL)
-		write_coord(origin[0]+random_num(-50,50))
-		write_coord(origin[1]+random_num(-50,50))
+		write_coord(origin[0]+generate_int(-50,50))
+		write_coord(origin[1]+generate_int(-50,50))
 		write_coord(origin[2]-36)
-		write_byte(blood_large_red[random_num(0,BLOOD_LG_NUM - 1)]) // index
+		write_byte(blood_large_red[generate_int(0,BLOOD_LG_NUM - 1)]) // index
 		message_end()
 	}
 }
@@ -207,10 +207,10 @@ public _fx_gib_explode(iPlugins, iParams){
 	write_coord(origin[0])
 	write_coord(origin[1])
 	write_coord(origin[2]+40)
-	write_coord(rX + (rXm * random_num(0,80)))
-	write_coord(rY + (rYm * random_num(0,80)))
-	write_coord(rZ + (rZm * random_num(80,200)))
-	write_angle(random_num(0,360))
+	write_coord(rX + (rXm * generate_int(0,80)))
+	write_coord(rY + (rYm * generate_int(0,80)))
+	write_coord(rZ + (rZm * generate_int(80,200)))
+	write_angle(generate_int(0,360))
 	write_short(mdl_gib_head)
 	write_byte(0) // bounce
 	write_byte(gibtime) // life
@@ -223,11 +223,11 @@ public _fx_gib_explode(iPlugins, iParams){
 		write_coord(origin[0])
 		write_coord(origin[1])
 		write_coord(origin[2])
-		write_coord(rX + (rXm * random_num(0,80)))
-		write_coord(rY + (rYm * random_num(0,80)))
-		write_coord(rZ + (rZm * random_num(80,200)))
-		write_angle(random_num(0,360))
-		write_short(flesh[random_num(0,1)])
+		write_coord(rX + (rXm * generate_int(0,80)))
+		write_coord(rY + (rYm * generate_int(0,80)))
+		write_coord(rZ + (rZm * generate_int(80,200)))
+		write_angle(generate_int(0,360))
+		write_short(flesh[generate_int(0,1)])
 		write_byte(0) // bounce
 		write_byte(gibtime) // life
 		message_end()
@@ -239,10 +239,10 @@ public _fx_gib_explode(iPlugins, iParams){
 	write_coord(origin[0])
 	write_coord(origin[1])
 	write_coord(origin[2]+30)
-	write_coord(rX + (rXm * random_num(0,80)))
-	write_coord(rY + (rYm * random_num(0,80)))
-	write_coord(rZ + (rZm * random_num(80,200)))
-	write_angle(random_num(0,360))
+	write_coord(rX + (rXm * generate_int(0,80)))
+	write_coord(rY + (rYm * generate_int(0,80)))
+	write_coord(rZ + (rZm * generate_int(80,200)))
+	write_angle(generate_int(0,360))
 	write_short(mdl_gib_spine)
 	write_byte(0) // bounce
 	write_byte(gibtime) // life
@@ -255,10 +255,10 @@ public _fx_gib_explode(iPlugins, iParams){
 		write_coord(origin[0])
 		write_coord(origin[1])
 		write_coord(origin[2]+10)
-		write_coord(rX + (rXm * random_num(0,80)))
-		write_coord(rY + (rYm * random_num(0,80)))
-		write_coord(rZ + (rZm * random_num(80,200)))
-		write_angle(random_num(0,360))
+		write_coord(rX + (rXm * generate_int(0,80)))
+		write_coord(rY + (rYm * generate_int(0,80)))
+		write_coord(rZ + (rZm * generate_int(80,200)))
+		write_angle(generate_int(0,360))
 		write_short(mdl_gib_lung)
 		write_byte(0) // bounce
 		write_byte(gibtime) // life
@@ -272,10 +272,10 @@ public _fx_gib_explode(iPlugins, iParams){
 		write_coord(origin[0])
 		write_coord(origin[1])
 		write_coord(origin[2]-10)
-		write_coord(rX + (rXm * random_num(0,80)))
-		write_coord(rY + (rYm * random_num(0,80)))
-		write_coord(rZ + (rZm * random_num(80,200)))
-		write_angle(random_num(0,360))
+		write_coord(rX + (rXm * generate_int(0,80)))
+		write_coord(rY + (rYm * generate_int(0,80)))
+		write_coord(rZ + (rZm * generate_int(80,200)))
+		write_angle(generate_int(0,360))
 		write_short(mdl_gib_legbone)
 		write_byte(0) // bounce
 		write_byte(gibtime) // life
@@ -302,9 +302,9 @@ public _fx_extra_blood(iPlugins, iParams){
 	new x, y, z
 
 	for(new i = 0; i < 3; i++) {
-		x = random_num(-15,15)
-		y = random_num(-15,15)
-		z = random_num(-20,25)
+		x = generate_int(-15,15)
+		y = generate_int(-15,15)
+		z = generate_int(-20,25)
 		for(new j = 0; j < 2; j++) {
 			message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 			write_byte(TE_BLOODSPRITE)
@@ -345,11 +345,11 @@ public _fx_headshot(iPlugins, iParams){
 		write_coord(origin[0])
 		write_coord(origin[1])
 		write_coord(origin[2]+40)
-		write_coord(random_num(-30,30)) // x
-		write_coord(random_num(-30,30)) // y
-		write_coord(random_num(80,300)) // z
+		write_coord(generate_int(-30,30)) // x
+		write_coord(generate_int(-30,30)) // y
+		write_coord(generate_int(80,300)) // z
 		write_byte(BLOOD_STREAM_RED) // color
-		write_byte(random_num(100,200)) // speed
+		write_byte(generate_int(100,200)) // speed
 		message_end()
 	}
 }

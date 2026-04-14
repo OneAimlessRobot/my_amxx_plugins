@@ -336,7 +336,7 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
-	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / random_float(6.0, 7.0))	
+	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.0, 7.0))	
 
 	return HAM_HANDLED
 }
@@ -404,7 +404,7 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 	make_bullet(attacker, flEnd)
 	//fake_smoke(attacker, ptr)
 		
-	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / random_float(6.5, 7.0))	
+	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.5, 7.0))	
 
 	return HAM_HANDLED
 }
@@ -600,7 +600,7 @@ public update_ammo(id, csw_id, clip, bpammo)
 
 public Event_Gatling_Shoot(id)
 {
-	set_weapon_anim(id, random_num(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
+	set_weapon_anim(id, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
 }
 
 stock fm_cs_get_weapon_ent_owner(ent)
@@ -649,7 +649,7 @@ stock drop_weapons(id, dropwhat)
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
-	new decal = random_num(41, 45)
+	new decal = generate_int(41, 45)
 	const loop_time = 2
 	
 	static Body, Target

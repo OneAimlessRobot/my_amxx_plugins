@@ -1,5 +1,4 @@
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -265,7 +264,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_member(entity, m_Weapon_flNextPrimaryAttack, DART_SHOOT_PERIOD)
 	
 	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
-	set_entvar(pPlayer, var_weaponanim,  random_num(seq_shoot_left1,seq_shoot_rightlast))
+	set_entvar(pPlayer, var_weaponanim,  generate_int(seq_shoot_left1,seq_shoot_rightlast))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	
 	return HAM_SUPERCEDE

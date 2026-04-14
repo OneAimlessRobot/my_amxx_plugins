@@ -151,7 +151,7 @@ public black_create(id)
 {	
 	new Float:vAim[3], Float:vOrigin[3]
 	entity_get_vector(id, EV_VEC_origin, vOrigin)
-	VelocityByAim(id, random_num(2, 4), vAim)
+	VelocityByAim(id, generate_int(2, 4), vAim)
 	
 	vOrigin[0] += vAim[0]
 	vOrigin[1] += vAim[1]

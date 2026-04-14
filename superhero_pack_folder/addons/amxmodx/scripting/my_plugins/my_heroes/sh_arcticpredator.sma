@@ -844,8 +844,8 @@ public here_blood_spray(vic, vicOrigin[3])
 {
 	new x, y
 	for(new i = 0; i < 2; i++) {
-		x = random_num(-10, 10)
-		y = random_num(-10, 10)
+		x = generate_int(-10, 10)
+		y = generate_int(-10, 10)
 		for(new j = 0; j < 2; j++) {
 			// Blood spray
 			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

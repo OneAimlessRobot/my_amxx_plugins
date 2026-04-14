@@ -248,10 +248,10 @@ public shinobu_burst_damage_task(array[],attacker){
 	if(!sh_user_has_hero(attacker,gHeroID)  ) return
 
 	if(!is_user_bot(tg)){
-		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:random_num(0,_:MAX_DICKERY-1)])
+		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,_:MAX_DICKERY-1)])
 	}
 	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:random_num(0,_:MAX_DICKERY-1)])
+		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,_:MAX_DICKERY-1)])
 	}
 
 	new enemy_health=get_user_health(tg)
@@ -316,7 +316,7 @@ public shinobu_kd()
 		}
 		return PLUGIN_HANDLED
 	}
-	sh_chat_message(id,shinobu_get_hero_id(),"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:random_num(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
+	sh_chat_message(id,shinobu_get_hero_id(),"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
 	shinobu_teleport_init(id)
 	return PLUGIN_HANDLED
 }
@@ -348,10 +348,10 @@ public death()
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:random_num(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
+					sh_chat_message(id,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
 				}
 				if(!is_user_bot(killer)){
-					sh_chat_message(killer,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:random_num(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
+					sh_chat_message(killer,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
 				}
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}

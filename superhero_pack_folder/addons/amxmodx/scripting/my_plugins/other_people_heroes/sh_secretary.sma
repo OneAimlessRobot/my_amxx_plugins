@@ -547,7 +547,7 @@ public Trace_Start(param[])
 
 	new Float:get_random_z, Float:SkyOrigin[SH_MAXSLOTS+1][3]
 	SkyOrigin[id] = tlx_distance_to_sky(g_Target[id])
-	get_random_z = random_float(300.0, SkyOrigin[id][2])
+	get_random_z = generate_float(300.0, SkyOrigin[id][2])
 
 	// Additive sprite, plays 1 cycle
 	engfunc(EngFunc_MessageBegin, MSG_PVS, SVC_TEMPENTITY, beam_origin[id][i], 0)
@@ -613,7 +613,7 @@ public TraceAll(param[])
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][0])	// decal position (center of texture in world)
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][1])
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][2])
-		write_byte(gBigShotDecal + random(5))	// decal
+		write_byte(gBigShotDecal + generate_int(0, 5))	// decal
 		message_end()
 	}
 
@@ -699,9 +699,9 @@ public FireIonCannon(id)
 		engfunc(EngFunc_WriteCoord, ion_mid_origin[id][2] + 200)	// endposition.z
 		write_short(gSpriteBlueFlare)	// sprite index
 		write_byte(50)					// count
-		write_byte(random_num(27, 30))	// life in 0.1's
+		write_byte(generate_int(27, 30))	// life in 0.1's
 		write_byte(10)					// scale in 0.1's
-		write_byte(random_num(30, 70))	// velocity along vector in 10's
+		write_byte(generate_int(30, 70))	// velocity along vector in 10's
 		write_byte(40)					// randomness of velocity in 10's
 		message_end()
 	}
@@ -714,7 +714,7 @@ public FireIonCannon(id)
 		engfunc(EngFunc_WriteCoord, ion_mid_origin[id][1])
 		engfunc(EngFunc_WriteCoord, ion_mid_origin[id][2])
 		write_short(0)								// entity index???
-		write_byte(gScorchDecal + random(3))		// decal
+		write_byte(gScorchDecal + generate_int(0, 3))		// decal
 		message_end()
 	}
 

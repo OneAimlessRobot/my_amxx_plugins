@@ -330,7 +330,7 @@ public jaws_loop()
 						}
 						else {
 							jaws_find_target(Target)	// Find someone else to eat
-							Hunting = halflife_time() + random_num(2,6)
+							Hunting = halflife_time() + generate_int(2,6)
 						}
 					}
 				}

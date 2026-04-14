@@ -465,10 +465,10 @@ public vexd_pfntouch(pToucher, pTouched) {
 			new decal_id
 			if (blastSize <= 18) {
 				//radius ~< 216
-				decal_id = g_burnDecal[random_num(0,2)]
+				decal_id = g_burnDecal[generate_int(0,2)]
 			}
 			else {
-				decal_id = g_burnDecalBig[random_num(0,2)]
+				decal_id = g_burnDecalBig[generate_int(0,2)]
 			}
 
 			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

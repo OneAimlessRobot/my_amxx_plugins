@@ -339,7 +339,7 @@ else{
 if(sh_user_has_hero(id,gHeroID) ){
 	
 	g_teliko_enemies[id][attacker]=true;
-	if((random_float(0.0,1.0) < COUNTER_BULLET_PCT)){
+	if((generate_float(0.0,1.0) < COUNTER_BULLET_PCT)){
 		
 		emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
 		Inc_counters(id)

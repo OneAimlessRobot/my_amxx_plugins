@@ -390,9 +390,9 @@ public wildcard_burstfx(id,xcoord,zcoord,ycoord)
 		get_user_origin(id, AimVec, 3)
 		IVecFVec(AimVec, fl_EndOrigin)
 		
-		fl_EndOrigin[0] += random_num(-10, 10)
-		fl_EndOrigin[1] += random_num(-10, 10)
-		fl_EndOrigin[2] += random_num(-10, 10)
+		fl_EndOrigin[0] += generate_int(-10, 10)
+		fl_EndOrigin[1] += generate_int(-10, 10)
+		fl_EndOrigin[2] += generate_int(-10, 10)
 	
 		// Seting entSpeed higher then 2000.0 will require server to set sv_maxvelocity higher as well
 		// sh_get_velocity verifies sv_maxvelocity is set high enough if not it will lower the speed

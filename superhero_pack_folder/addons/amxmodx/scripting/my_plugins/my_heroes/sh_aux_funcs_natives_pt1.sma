@@ -189,15 +189,15 @@ public _random_fire(iPlugins, iParams){
 
 		g_g = 1;
 
-		iOrigin[0] = Origin[0] + random_num(-iRange, iRange);
-		iOrigin[1] = Origin[1] + random_num(-iRange, iRange);
+		iOrigin[0] = Origin[0] + generate_int(-iRange, iRange);
+		iOrigin[1] = Origin[1] + generate_int(-iRange, iRange);
 		iOrigin[2] = Origin[2];
 		iOrigin[2] = ground_z(iOrigin, ent);
 
 		while (get_distance(iOrigin, Origin) > iRange) {		// If iOrigin is too far away, recalculate its position
 
-			iOrigin[0] = Origin[0] + random_num(-iRange, iRange);
-			iOrigin[1] = Origin[1] + random_num(-iRange, iRange);
+			iOrigin[0] = Origin[0] + generate_int(-iRange, iRange);
+			iOrigin[1] = Origin[1] + generate_int(-iRange, iRange);
 			iOrigin[2] = Origin[2];
 
 			if (++g_g >= ANTI_LAGG) {
@@ -207,7 +207,7 @@ public _random_fire(iPlugins, iParams){
 			}
 		}
 
-		new rand = random_num(5, 15);
+		new rand = generate_int(5, 15);
 
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
 		write_byte(TE_SPRITE);
@@ -226,9 +226,9 @@ public _random_fire(iPlugins, iParams){
 	write_coord(iOrigin[0]);			// Position
 	write_coord(iOrigin[1]);
 	write_coord(iOrigin[2] + 120);
-	write_short(g_iSmokeSprite[random_num(0, 1)]);	// Sprite index
-	write_byte(random_num(10, 30));			// Scale
-	write_byte(random_num(10, 20));			// Framerate
+	write_short(g_iSmokeSprite[generate_int(0, 1)]);	// Sprite index
+	write_byte(generate_int(10, 30));			// Scale
+	write_byte(generate_int(10, 20));			// Framerate
 	message_end();
 
 }
@@ -239,9 +239,9 @@ public _make_fire(iPlugins, iParams){
 
 	new radius=floatround(rad)
 	new rx, ry, rz, Float:forigin[3]
-	rx = random_num(-radius, radius)
-	ry = random_num(-radius, radius)
-	rz = random_num(-radius, radius)
+	rx = generate_int(-radius, radius)
+	ry = generate_int(-radius, radius)
+	rz = generate_int(-radius, radius)
 
 	if(!is_valid_ent(id)) return 
 	pev(id, pev_origin, forigin)
@@ -532,7 +532,7 @@ public _gun_shot_decal(iPlugins, iParams){
 
 	get_array_f(1,vec,3)
 
-	new decal_id = burn_decal[random_num(0,4)]
+	new decal_id = burn_decal[generate_int(0,4)]
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( 109 ) // decal and ricochet sound
 	write_coord_f( vec[0] ) //pos
@@ -586,9 +586,9 @@ public _explode_fx(iPlugins, iParams){
 	//TE_Explosion
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
 	write_byte( 3 )
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2]+ random_num( -50, 50 ))
+	write_coord(vec1[0] + generate_int( -100, 100 ))
+	write_coord(vec1[1] + generate_int( -100, 100 ))
+	write_coord(vec1[2]+ generate_int( -50, 50 ))
 	write_short( fire )
 	write_byte(  radius/9  ) // byte (scale in 0.1's) 188
 	write_byte( 12 ) // byte (framerate)
@@ -598,9 +598,9 @@ public _explode_fx(iPlugins, iParams){
 	//Smoke
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
 	write_byte( 5 ) // 5
-	write_coord(vec1[0] + random_num( -100, 100 ))
-	write_coord(vec1[1] + random_num( -100, 100 ))
-	write_coord(vec1[2] + random_num( -50, 50 ))
+	write_coord(vec1[0] + generate_int( -100, 100 ))
+	write_coord(vec1[1] + generate_int( -100, 100 ))
+	write_coord(vec1[2] + generate_int( -50, 50 ))
 	write_short( smoke )
 	write_byte( radius/14 )  // 2
 	write_byte( 10 )  // 10
@@ -675,10 +675,10 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		new decal_id
 		if ( radius <= 18 ) {
 			//radius ~< 216
-			decal_id = g_burnDecal[random_num(0,2)]
+			decal_id = g_burnDecal[generate_int(0,2)]
 		}
 		else {
-			decal_id = g_burnDecalBig[random_num(0,2)]
+			decal_id = g_burnDecalBig[generate_int(0,2)]
 		}
 
 		// Create the burn decal
@@ -763,8 +763,8 @@ public _blood_spray(iPlugins, iParams){
 	new Float:x
 	new Float:y
 	for(new i = 0; i < 2; i++) {
-		x = float(random_num(-10, 10))
-		y = float(random_num(-10, 10))
+		x = float(generate_int(-10, 10))
+		y = float(generate_int(-10, 10))
 		for(new Float:j = 0.0; j < 2.0; j+=1.0) {
 			// Blood spray
 			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

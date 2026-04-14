@@ -144,7 +144,7 @@ public cable_ku()
 public laserEffects(id, aimvec[3] )
 {
 	new origin[3]
-	new decal_id = burn_decal[random_num(0,4)]
+	new decal_id = burn_decal[generate_int(0,4)]
 	emit_sound(id,CHAN_ITEM, "shmod/cable_laser.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	get_user_origin(id, origin, 1)
 

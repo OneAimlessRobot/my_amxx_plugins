@@ -249,7 +249,7 @@ public lightningEffects(id, aimvec[3])
 		write_coord(aimvec[1])
 		write_coord(aimvec[2])
 		write_short(0) // I have no idea what thats supposed to be
-		write_byte(random_num(28, 30)) // decal
+		write_byte(generate_int(28, 30)) // decal
 		message_end()
 	}
 

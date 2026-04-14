@@ -10,7 +10,7 @@ stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, 
 
 stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
-	iOrigin[2] += random_num(5, 80);
+	iOrigin[2] += generate_int(5, 80);
 
 	if (!pev_valid(ent)) {
 		return iOrigin[2];

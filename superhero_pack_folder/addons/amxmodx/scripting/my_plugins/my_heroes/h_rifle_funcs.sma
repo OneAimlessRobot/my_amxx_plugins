@@ -424,7 +424,7 @@ public fw_Item_PostFrame( iEnt )
 				set_pdata_int(iEnt, m_fInSpecialReload, 3, XTRA_OFS_WEAPON)
 			}
 			
-			emit_sound(id, CHAN_ITEM, WeaponSounds[2], 1.0, ATTN_NORM, 0, 85 + random_num(0,0x1f))
+			emit_sound(id, CHAN_ITEM, WeaponSounds[2], 1.0, ATTN_NORM, 0, 85 + generate_int(0,0x1f))
 			Set_WeaponAnim(id, ANIM_INSERT)
 
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XTRA_OFS_WEAPON)
@@ -484,7 +484,7 @@ stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
-	new decal = random_num(41, 45)
+	new decal = generate_int(41, 45)
 	const loop_time = 2
 	
 	static Body, Target

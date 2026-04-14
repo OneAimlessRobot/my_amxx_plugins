@@ -206,8 +206,8 @@ public positionChangeCheck(array[], attacker)
 		sh_end_cooldown(attacker+SH_COOLDOWN_TASKID)
 		return
 	}
-	sh_chat_message(tg,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:random_num(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
-	sh_chat_message(attacker,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:random_num(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
+	sh_chat_message(tg,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
+	sh_chat_message(attacker,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
 	Entvars_Set_Vector(attacker, EV_VEC_velocity, null_vector)
 	shinobu_set_user_tagged_player(attacker,0)
 }

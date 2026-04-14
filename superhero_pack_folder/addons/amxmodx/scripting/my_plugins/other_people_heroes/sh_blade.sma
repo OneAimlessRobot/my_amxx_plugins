@@ -435,9 +435,9 @@ burn_effect(id)
 
 	new rx, ry, rz, forigin[3]
 
-	rx = random_num(-30, 30)
-	ry = random_num(-30, 30)
-	rz = random_num(-30, 30)
+	rx = generate_int(-30, 30)
+	ry = generate_int(-30, 30)
+	rz = generate_int(-30, 30)
 
 	get_user_origin(id, forigin)
 

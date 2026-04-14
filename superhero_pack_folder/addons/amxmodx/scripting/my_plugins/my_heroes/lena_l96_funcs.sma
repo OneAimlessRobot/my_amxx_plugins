@@ -1,5 +1,4 @@
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -325,9 +324,9 @@ stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
 	new Float:speed=VecLength(vec_to_randomize)
 	new Float:norm_random_speed;
 	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
-	norm_speed_random[0]=normal_speed[0]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[1]=normal_speed[1]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[2]=normal_speed[2]+floatclamp(random_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[0]=normal_speed[0]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[1]=normal_speed[1]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
+	norm_speed_random[2]=normal_speed[2]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
 	norm_random_speed=VecLength(norm_speed_random);
 	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
 	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
@@ -502,7 +501,7 @@ public vexd_pfntouch(pToucher, pTouched)
 					}
 					
 					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
-					new random_number=random_num(0,(sizeof lena_poems)-1)
+					new random_number=generate_int(0,(sizeof lena_poems)-1)
 					
 					if(!is_user_bot(pTouched)){
 						send_poem_function(pTouched, lena_poems[random_number]);

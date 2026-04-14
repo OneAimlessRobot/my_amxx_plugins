@@ -808,7 +808,7 @@ public jet_sound_task(id){
 	if(g_jetplane_sound_on[owner]){
 		if(get_entity_velocity(jet_get_user_jet(owner))>(get_jet_speed()*0.5)){
 			
-			if(random(SoundRate) == (SoundRate-1)){ //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
+			if(generate_int(0, SoundRate) == (SoundRate-1)){ //make random chance to draw flame & play sound to reduce lag, send MSG_PVS instead of MSG_BROADCAST
 				if(get_user_fuel_ammount(owner) > 160.0){
 					emit_sound(jet_get_user_jet(owner), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_LOW+floatround(float(PITCH_HIGH-PITCH_LOW)*(get_entity_velocity(jet_get_user_jet(owner))/get_jet_speed())));
 				}

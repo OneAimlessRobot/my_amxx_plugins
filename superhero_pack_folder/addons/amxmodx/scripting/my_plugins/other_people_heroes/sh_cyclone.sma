@@ -131,14 +131,14 @@ public cyclone_loop()
 	// Random Z vector
 	new Origin[3]	
 	FVecIVec(fl_Origin, Origin)
-	Origin[2] += random(1000) - 200	// Mostly above the player
+	Origin[2] += generate_int(0, 1000) - 200	// Mostly above the player
 
-	new randomNum = 1 + random(19)
+	new randomNum = 1 + generate_int(0, 19)
 	WhiteFluffyCycloneWave(Origin, gRange/2, randomNum)
 		
 	if(randomNum == 1) {
-		Origin[0] += random(800)-400
-		Origin[1] += random(800)-400
+		Origin[0] += generate_int(0, 800)-400
+		Origin[1] += generate_int(0, 800)-400
 		Origin[2] += 600
 	
 		lightning_effect(gCurrentCyclone, Origin, 20)

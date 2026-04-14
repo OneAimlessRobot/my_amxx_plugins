@@ -1,13 +1,13 @@
+#if defined randomx_fast_random_generator
+  #endinput
+#endif
+#define randomx_fast_random_generator
 /* Number Generator
 *
 * (c) Copyright 2005 Rukia
 *
 * This file is provided as is (no warranties).
 */
-
-#pragma library RandomX
-
-
 #define CELL_MAX 2147483647
 #define FLOAT_MAX 2147483647.0
 

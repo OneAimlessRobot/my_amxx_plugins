@@ -40,14 +40,14 @@ public Thing_damage(id)
   new damage = read_data(2)
   new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)
 
-  new randNum = random_num(0, 100 )
+  new randNum = generate_int(0, 100 )
   new ThingLevel = floatround(get_cvar_float("Thing_weapon_percent") * 100)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && sh_user_has_hero(id,gHeroID)&& weapon!=CSW_KNIFE ) {
     shAddHPs(id, damage, 500 )
     set_hudmessage(0, 100, 200, 0.05, 0.60, 1, 0.1, 2.0, 0.1, 0.1)
     show_hudmessage(id, "Bullet bounces off your rock skin.")
   }
-  randNum = random_num(0, 100 )
+  randNum = generate_int(0, 100 )
   ThingLevel = floatround(get_cvar_float("Thing_knife_percent") * 100)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && sh_user_has_hero(id,gHeroID) && weapon==CSW_KNIFE && bodypart!=HIT_HEAD ) {
     shAddHPs(id, damage, 500 )

@@ -161,8 +161,6 @@ public sh_choose_model(id, level, cid)
 
 		return PLUGIN_HANDLED
 	}
-
-	server_print("Someone tried to choose a model!")
 	new the_argc=read_argc()
 	if (the_argc == 2)
 	{
@@ -192,21 +190,21 @@ public sh_choose_model(id, level, cid)
 public sh_print_models(id, level, cid)
 {
 
-
-	server_print("Someone tried to print all models!")
 	if (!cmd_access(id, level, cid, 0)){
 		return PLUGIN_HANDLED
 	}
 	console_print(id,"Available models for you:^n")
+	
+	new counter= 0
+		
 	for(new i=0;i<curr_num_models_logged;i++){
-		
-		
 		
 		
 		new inner_hero_id=sh_array_of_player_model_structs[i][player_model_hero_id]
 		
 		if(sh_user_has_hero(id,inner_hero_id)){
 			
+			counter++
 			console_print(id,"Model of id %d:^n",i)
 			
 			static hero_name[MAX_HERO_NAME_LENGTH]
@@ -214,12 +212,12 @@ public sh_print_models(id, level, cid)
 			sh_get_hero_name_from_id(inner_hero_id,hero_name)
 
 			console_print(id," - - hero name: %s^n",hero_name)
-			console_print(id," - - Model name: %s^n^n^n^n",sh_array_of_player_model_structs[i][player_model_morph_string])
+			console_print(id," - - Model name: %s^n^n",sh_array_of_player_model_structs[i][player_model_morph_string])
 		}
 		
 
 	}
-	
+	console_print(id,"We found a total of:^n%d player models for you to pick.^n^n",counter)
 
 	return PLUGIN_HANDLED
 }

@@ -101,7 +101,7 @@ mystique_morph(id)
 	if ( !sh_is_active() || !is_user_alive(id) || gMorphed[id] ) return
 
 	new newSkin[10]
-	new num = random_num(0, 3)
+	new num = generate_int(0, 3)
 	switch(cs_get_user_team(id)) {
 		case CS_TEAM_T: copy(newSkin, charsmax(newSkin), CTSkins[num])
 		case CS_TEAM_CT: copy(newSkin, charsmax(newSkin), TSkins[num])

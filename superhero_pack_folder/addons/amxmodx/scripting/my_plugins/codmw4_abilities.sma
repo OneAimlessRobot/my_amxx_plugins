@@ -89,7 +89,7 @@ public _MultiJumpExec(iPlugin,iParams ){
 			set_addr_val(numJumps,get_addr_val(numJumps)-1);
 			new Float:velocity[3];
 			pev(id, pev_velocity,velocity);
-			velocity[2] = random_float(265.0,285.0);
+			velocity[2] = generate_float(265.0,285.0);
 			set_pev(id, pev_velocity,velocity);
 		}
 		else if(flags & FL_ONGROUND)
@@ -157,7 +157,7 @@ public _JetpackJump( iPlugin,iParams ){
 		perk_info[1] = floatround(get_gametime());
 		new Float:velocity[3];
 		VelocityByAim(id, intensity, velocity);
-		velocity[2] = random_float(265.0,285.0);
+		velocity[2] = generate_float(265.0,285.0);
 		set_pev(id, pev_velocity, velocity);
 		set_array(3,perk_info,2);
 }

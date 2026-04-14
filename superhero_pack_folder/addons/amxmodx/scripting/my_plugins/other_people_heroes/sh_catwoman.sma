@@ -100,7 +100,7 @@ public newSpawn(id)
 
 		if ( get_cvar_num("catwoman_mode") == 1 )
 		{
-			new randNum = random_num(0, 100)
+			new randNum = generate_int(0, 100)
 			new level = floatround(gPlayerLevels[id] * get_cvar_float("catwoman_pctperlev") * 100)
 			if ( level > randNum )
 				gCatWomanSneak[id] = true
@@ -185,7 +185,7 @@ public catwoman_sneak(id)
 	if ( changetime > 0.0 )
 	{
 		new newSkin[32]
-		new num = random_num(0, 3)
+		new num = generate_int(0, 3)
 
 		switch(idTeam)
 		{

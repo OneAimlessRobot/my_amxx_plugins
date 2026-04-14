@@ -138,7 +138,7 @@ public laserEffects(id, aimvec[3] )
 
   emit_sound(id,CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM) 
 
-  choose_decal = random_num(0,0)
+  choose_decal = generate_int(0,0)
   switch(choose_decal)
   { 
       case 0: decal_id = 28 

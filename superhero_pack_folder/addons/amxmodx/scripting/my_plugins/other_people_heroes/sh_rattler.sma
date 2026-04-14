@@ -85,11 +85,11 @@ public rattler_damage(id)
 			sh_extra_damage( attacker, id, returnDamage, "Rattler shockwave force field" )
 
 			new iRed,iGreen,iBlue,iWidth,iNoise
-			iRed = random_num(0,100)
-			iGreen = random_num(0,100)
-			iBlue = random_num(100,255)
-			iWidth = random_num(10,40)
-			iNoise = random_num(10,40)
+			iRed = generate_int(0,100)
+			iGreen = generate_int(0,100)
+			iBlue = generate_int(100,255)
+			iWidth = generate_int(10,40)
+			iNoise = generate_int(10,40)
 
 			if(iRed > iBlue) iBlue = (iRed + 10)
 			if(iGreen > iBlue) iBlue = (iGreen + 10)

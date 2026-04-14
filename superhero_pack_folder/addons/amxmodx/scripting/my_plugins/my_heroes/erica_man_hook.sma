@@ -203,7 +203,7 @@ public hook_think(id)
 	entity_set_vector(id, EV_VEC_velocity, fl_Velocity)
 	orient_user(id,vAngles,vAngle)
 	if(!(g_dragging_who[id][1]%30)){
-		new random_number=random_num(0,NUM_SENTENCES-1);
+		new random_number=generate_int(0,NUM_SENTENCES-1);
 		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 	}
@@ -356,7 +356,7 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					get_user_name(id,vic_name,127)
 						
 					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),"Gutting")
-					new random_number=random_num(0,NUM_SENTENCES-1);
+					new random_number=generate_int(0,NUM_SENTENCES-1);
 					if(!is_user_bot(id)){
 						sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 					}

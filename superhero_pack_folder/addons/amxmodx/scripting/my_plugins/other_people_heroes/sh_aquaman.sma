@@ -279,9 +279,9 @@ public drowning(args[])
 	new victim = args[1]
 	new rx, ry, rz, Float:forigin[3]
 
-	rx = random_num(-30, 30)
-	ry = random_num(-30, 30)
-	rz = random_num(-20, 40)
+	rx = generate_int(-30, 30)
+	ry = generate_int(-30, 30)
+	rz = generate_int(-20, 40)
 
 	pev(victim, pev_origin, forigin)
 

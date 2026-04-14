@@ -1,6 +1,6 @@
 #include "../my_include/superheromod.inc"
-#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -164,7 +164,7 @@ public death()
 		return
 	}
 	if(sh_user_has_hero(id,gHeroID) ){
-		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[random_num(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
+		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[generate_int(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
 		
 		if(is_user_connected(killer)&&(killer!=id)){
 			dmg_message(id,killer)

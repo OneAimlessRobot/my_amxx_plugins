@@ -117,7 +117,7 @@ dazzler_sprite_flash(fromOrigin[3], toOrigin[3], count, life, size, speed)
 	write_coord(toOrigin[0])	// pos
 	write_coord(toOrigin[1])
 	write_coord(toOrigin[2] + 100)
-	write_short(gSprite[random_num(0, 3)])	// (sprite index)
+	write_short(gSprite[generate_int(0, 3)])	// (sprite index)
 	write_byte(count)	// (count)
 	write_byte(life)	// (life in 0.1's)
 	write_byte(size)	// byte (scale in 0.1's)

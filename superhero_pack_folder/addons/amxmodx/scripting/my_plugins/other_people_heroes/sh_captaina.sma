@@ -61,7 +61,7 @@ public captaina_loop()
 
 			heroLevel = floatround(sh_get_user_lvl(id) * pctperlev * gMaxLevelFactor)
 
-			if ( heroLevel >= random_num(0, 100) ) {
+			if ( heroLevel >= generate_int(0, 100) ) {
 
 				sh_set_godmode(id, godsecs)
 

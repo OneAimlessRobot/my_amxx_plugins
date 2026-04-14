@@ -338,7 +338,7 @@ public sh_hero_key(id, heroID, key)
 				entity_set_float(entWeapon[id], EV_FL_renderamt, 255.0)
 			}
 			
-			new rsound = random_num(1,2)
+			new rsound = generate_int(1,2)
 			
 			switch(rsound)
 			{
@@ -870,7 +870,7 @@ public target_found(ent,owner,target)
 	if (doingrasengan[owner] == false)
 	{
 		tracer(entOrigin, targetOrigin)
-		if (random_num(1,100) <= get_pcvar_num(pCvarHitChance))
+		if (generate_int(1,100) <= get_pcvar_num(pCvarHitChance))
 		{
 			duplicate_damage(target,owner)
 		}

@@ -114,7 +114,7 @@ public zenitsu_charge(id, uc_handle, seed)
 			emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			get_uc(uc_handle,UC_ViewAngles,g_zenitsu_curr_charge_look_direction[id])
 		}
-		if(random(FlameAndSoundRate) <3)
+		if(generate_int(0, FlameAndSoundRate) <3)
 		{
 			static Float:Velocity[3]
 			velocity_by_aim(id, floatround(ZENITSU_CHARGE_SPEED), Velocity)

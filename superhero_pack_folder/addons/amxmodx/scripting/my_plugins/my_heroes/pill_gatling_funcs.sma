@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include <reapi>
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
@@ -474,9 +473,11 @@ public pill_think(ent)
 	entity_get_vector( ent, EV_VEC_velocity, newVelocity );
 
 
+	new Float:rnd_floatx=generate_float(-PILL_MASS,PILL_MASS)*float(generate_bool()?-1:1),
+		Float:rnd_floaty=generate_float(-PILL_MASS,PILL_MASS)*float(generate_bool()?-1:1)
 
-	velocityVec[0] = velocityVec[0]+(random_float(-1.0,1.0)*PILL_MASS)
-	velocityVec[1] = velocityVec[1]+(random_float(-1.0,1.0)*PILL_MASS)
+	velocityVec[0] = velocityVec[0]+(rnd_floatx)
+	velocityVec[1] = velocityVec[1]+(rnd_floaty)
 
 	new Float:length = vector_length(velocityVec)
 		// Stupid Check but lets make sure you don't devide by 0

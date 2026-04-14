@@ -194,7 +194,7 @@ public vash_hitzones()
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new hitZone
-			hitZone = random_num(1, 7)
+			hitZone = generate_int(1, 7)
 			switch(hitZone) {
 				case 1: set_user_hitzones(0, id, 127)	//remove right leg hitzone
 				case 2: set_user_hitzones(0, id, 191)	//remove left leg hitzone

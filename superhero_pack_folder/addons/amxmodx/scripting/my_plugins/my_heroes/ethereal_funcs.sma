@@ -251,7 +251,7 @@ public fw_AddToFullPack_post(esState, iE, iEnt, iHost, iHostFlags, iPlayer, pSet
 		
 	if(Get_BitVar(g_Muzzleflash, iHost))
 	{
-		set_es(esState, ES_Frame, float(random_num(0, 2)))
+		set_es(esState, ES_Frame, float(generate_int(0, 2)))
 			
 		set_es(esState, ES_RenderMode, kRenderTransAdd)
 		set_es(esState, ES_RenderAmt, 255.0)
@@ -633,7 +633,7 @@ stock set_weapon_anim(id, anim)
 stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
 {
 	// Find target
-	static Decal; Decal = random_num(41, 45)
+	static Decal; Decal = generate_int(41, 45)
 	static LoopTime; 
 	
 	if(Damage > 100.0) LoopTime = 2

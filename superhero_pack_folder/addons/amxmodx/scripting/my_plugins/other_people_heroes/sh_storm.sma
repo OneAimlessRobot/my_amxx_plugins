@@ -131,15 +131,15 @@
 
 	new Float:origin[3]
 	new porigin1[3],porigin2[3],forigin[3]
-	new victim = random_num(1,inum)
-	new victim2 = random_num(1,inum)
+	new victim = generate_int(1,inum)
+	new victim2 = generate_int(1,inum)
 	get_user_origin(victim,porigin1)
 	get_user_origin(victim2,porigin2)
 	forigin[0]=(porigin1[0]+porigin2[0])/2
 	forigin[1]=(porigin1[1]+porigin2[1])/2
 	forigin[2]=(porigin1[2]+porigin2[2])/2
-	origin[0]=float(forigin[0]+random_num(1,500))
-	origin[1]=float(forigin[1]+random_num(1,500))
+	origin[0]=float(forigin[0]+generate_int(1,500))
+	origin[1]=float(forigin[1]+generate_int(1,500))
 	origin[2]=float(forigin[2])
 
 	
@@ -260,9 +260,9 @@
  {
  	new id = args[0]
 
-	set_task(random_num(1,4)*1.0,"lightningbolt",id+1337,args,1)
-	set_task(random_num(1,4)*1.0,"lightningbolt",id+1337,args,1)
-	//set_task(random_num(1,4)*1.0,"randomtime",id+1337)
+	set_task(generate_int(1,4)*1.0,"lightningbolt",id+1337,args,1)
+	set_task(generate_int(1,4)*1.0,"lightningbolt",id+1337,args,1)
+	//set_task(generate_int(1,4)*1.0,"randomtime",id+1337)
  }
  //----------------------------------------------------------------------------------------------
  public Storm_loop()

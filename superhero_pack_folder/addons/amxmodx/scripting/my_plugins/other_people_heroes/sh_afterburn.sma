@@ -283,9 +283,9 @@ public on_fire(args[])
 	if (!gIsBurning[id]) return
 
 	new rx, ry, rz, forigin[3]
-	rx = random_num(-30, 30)
-	ry = random_num(-30, 30)
-	rz = random_num(-30, 30)
+	rx = generate_int(-30, 30)
+	ry = generate_int(-30, 30)
+	rz = generate_int(-30, 30)
 	get_user_origin(id, forigin)
 
 	//TE_SPRITE - additive sprite, plays 1 cycle

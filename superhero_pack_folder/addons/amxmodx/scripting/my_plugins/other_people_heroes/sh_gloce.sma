@@ -38,8 +38,8 @@ gloce_times 5			//Amounts of time to freeze per spawn
 gloce_freeze_time 5		//How long they should be frozen
 */
 
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 #define USE_MODEL
@@ -172,7 +172,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 			new weapon = get_user_weapon(Attacker)
 			if((cs_get_user_team(id)!=cs_get_user_team(Attacker))&&(weapon == CSW_GLOCK18) && sh_user_has_hero(Attacker,gHeroID)&& (times_id[Attacker] > 0))
 			{
-				if(random_num(0, 100) <= get_pcvar_num(gloce_pct))
+				if(generate_int(0, 100) <= get_pcvar_num(gloce_pct))
 				{
 					new Float:fMaxSpeed
 					pev(id, pev_maxspeed, fMaxSpeed)
@@ -322,19 +322,4 @@ stock ham_give_weapon(id,weapon[])
 
     ExecuteHamB(Ham_Item_AttachToPlayer,wEnt,id)
     return 1;
-}
-
-stock fm_set_rendering(entity, fx = kRenderFxNone, r = 255, g = 255, b = 255, render = kRenderNormal, amount = 16)
-{
-	new Float:RenderColor[3]
-	RenderColor[0] = float(r)
-	RenderColor[1] = float(g)
-	RenderColor[2] = float(b)
-
-	set_pev(entity, pev_renderfx, fx)
-	set_pev(entity, pev_rendercolor, RenderColor)
-	set_pev(entity, pev_rendermode, render)
-	set_pev(entity, pev_renderamt, float(amount))
-
-	return 1
 }

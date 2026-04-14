@@ -235,7 +235,7 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id
 			if(degen_iter_period>1.0){
 					get_user_name(id,client_name,127)
 					emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
-					sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[random_num(0,4)])
+					sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[generate_int(0,4)])
 			}
 		}
 	}
@@ -499,7 +499,7 @@ public yandere_damage(id)
 	}
 	if( sh_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
 		if(g_is_cursed[attacker][id]){
-			if(random_float(0.0,1.0)<curse_pct){
+			if(generate_float(0.0,1.0)<curse_pct){
 				set_user_godmode(id,0)
 				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,SH_DMG_KILL,
 							_,_,_,_,
@@ -561,7 +561,7 @@ public yandere_kd()
 			playSoundDenySelect(id)
 			return PLUGIN_HANDLED
 		}
-		emit_sound(id, CHAN_AUTO, yandere_pain_sounds[random_num(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
+		emit_sound(id, CHAN_AUTO, yandere_pain_sounds[generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
 		new client_name[128]
 		get_user_name(id,client_name,127)
 		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)

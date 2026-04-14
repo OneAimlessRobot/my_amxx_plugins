@@ -262,7 +262,7 @@ laser_effects(id, aimvec[3])
 		write_coord(aimvec[1])
 		write_coord(aimvec[2])
 		write_short(0)		// I have no idea what thats supposed to be
-		write_byte(gBurnDecal + random_num(0, 4))	//decal
+		write_byte(gBurnDecal + generate_int(0, 4))	//decal
 		message_end()
 	}
 }

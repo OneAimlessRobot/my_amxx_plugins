@@ -269,9 +269,9 @@ public on_fire(args[])
 		return
 
 	new rx, ry, rz, Float:forigin[3]
-	rx = random_num(-30, 30)
-	ry = random_num(-30, 30)
-	rz = random_num(-30, 30)
+	rx = generate_int(-30, 30)
+	ry = generate_int(-30, 30)
+	rz = generate_int(-30, 30)
 
 	pev(id, pev_origin, forigin)
 

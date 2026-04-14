@@ -198,11 +198,11 @@ public heal_teamate(id,teamate){
 
 			add_speed_points(id,speed_points_heal,false)
 			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
+				sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[generate_int(0,sizeof(adriano_sentences)-1)])
 				sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
 			}
 			if(!is_user_bot(teamate)){
-				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[random_num(0,sizeof(adriano_sentences)-1)])
+				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[generate_int(0,sizeof(adriano_sentences)-1)])
 			}
 		}
 		

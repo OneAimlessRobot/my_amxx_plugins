@@ -53,6 +53,7 @@ chucky_knifespeed 720    //User speed when knife is out
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 

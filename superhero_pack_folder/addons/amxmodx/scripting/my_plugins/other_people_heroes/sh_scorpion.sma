@@ -530,7 +530,7 @@ public blood_spurt(vic, id)
 	write_coord(rY)
 	write_coord(rZ)
 	write_byte(70) 	// color RED = 248 YELLOW = 196 
-	write_byte(random_num(100, 200)) // speed
+	write_byte(generate_int(100, 200)) // speed
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
@@ -538,8 +538,8 @@ public blood_spray(vic, vicOrigin[3])
 {
 	new x, y
 	for(new i = 0; i < 2; i++) {
-		x = random_num(-10, 10)
-		y = random_num(-10, 10)
+		x = generate_int(-10, 10)
+		y = generate_int(-10, 10)
 		for(new j = 0; j < 2; j++) {
 			// Blood spray
 			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

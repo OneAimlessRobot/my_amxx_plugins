@@ -200,7 +200,7 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 				static Float: vecend[3]
 				static decal_id
 
-				decal_id = (g_czero) ? g_czero_burnDecal[random_num(0,4)] : g_cs_burnDecal[random_num(0,4)]
+				decal_id = (g_czero) ? g_czero_burnDecal[generate_int(0,4)] : g_cs_burnDecal[generate_int(0,4)]
 
 				get_tr2(ptr2, TR_vecEndPos, vecend)
 
