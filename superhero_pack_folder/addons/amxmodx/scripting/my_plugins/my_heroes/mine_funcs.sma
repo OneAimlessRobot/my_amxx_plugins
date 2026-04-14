@@ -22,8 +22,7 @@ new Float:min_charge_time
 
 
 
-stock MINE_ARMING_TASKID,
-		MINE_CHARGE_TASKID,
+stock MINE_CHARGE_TASKID,
 		UNMINE_CHARGE_TASKID,
 		MINE_DISARM_TASKID,
 		UNMINE_DISARM_TASKID
@@ -42,7 +41,6 @@ public plugin_init(){
 	register_think(MINE_CLASSNAME, "mine_think")
 
 
-	MINE_ARMING_TASKID=allocate_typed_task_id(entity_task)
 	MINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNMINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	MINE_DISARM_TASKID=allocate_typed_task_id(player_task)
@@ -147,17 +145,8 @@ public _plant_mine(iPlugins,iParams)
 	drop_to_floor(ent);
 	sapper_dec_num_mines(id);
 	sh_chat_message(id,sapper_get_hero_id(),"You have %d mines left",sapper_get_num_mines(id));
-	set_task(MINE_ARMING_TIME,"mine_arm_task",ent+MINE_ARMING_TASKID)
+	entity_set_float(ent,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 	
-}
-public mine_arm_task(mine_id){
-	
-	mine_id-=MINE_ARMING_TASKID
-	if(!is_valid_ent(mine_id)){
-	
-		return;
-	}
-	entity_set_float(mine_id,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 }
 public mine_think(mine_id){
 
@@ -220,7 +209,6 @@ public blow_mine_up(ent, id)
 public remove_mine(parm[]){
 
 if(!is_valid_ent(parm[1])) return
-remove_task(parm[1]+MINE_ARMING_TASKID);
 mine_loaded[parm[0]]=true
 remove_entity(parm[1])
 
@@ -414,7 +402,8 @@ if(!(butnprs&IN_DUCK)){
 
 
 }
-public charge_iteration(id){
+public charge_task(id){
+	id-=MINE_CHARGE_TASKID
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -451,6 +440,8 @@ public _mine_uncharge_mine(iPlugin,iParams){
 	
 }
 public uncharge_task(id){
+	id-=UNMINE_CHARGE_TASKID
+	remove_task(id+MINE_CHARGE_TASKID)
 	mine_armed[id]=0
 	return 0
 	
@@ -459,6 +450,8 @@ public uncharge_task(id){
 }
 
 uncharge_user(id){
+	remove_task(id+MINE_CHARGE_TASKID)
+	remove_task(id+UNMINE_CHARGE_TASKID)
 	mine_armed[id]=0
 	return 0
 	

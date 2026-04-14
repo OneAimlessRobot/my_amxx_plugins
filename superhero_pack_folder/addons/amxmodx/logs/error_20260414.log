@@ -1,0 +1,110 @@
+L 04/14/2026 - 04:13:07: Start of error session.
+L 04/14/2026 - 04:13:07: Info (map "de_aztec") (file "addons/amxmodx/logs/error_20260414.log")
+L 04/14/2026 - 04:13:07: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:07: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:07: Unhandled dynamic native error
+L 04/14/2026 - 04:13:07: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:09: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:09: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:09: Unhandled dynamic native error
+L 04/14/2026 - 04:13:09: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:11: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:11: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:11: Unhandled dynamic native error
+L 04/14/2026 - 04:13:11: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:11: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:13: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:13: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:13: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:13: Unhandled dynamic native error
+L 04/14/2026 - 04:13:13: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:13: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:15: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:15: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:15: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:15: Unhandled dynamic native error
+L 04/14/2026 - 04:13:15: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:15: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:18: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:18: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:18: Unhandled dynamic native error
+L 04/14/2026 - 04:13:18: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:22: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:22: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:22: Unhandled dynamic native error
+L 04/14/2026 - 04:13:22: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:22: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:22: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:22: Unhandled dynamic native error
+L 04/14/2026 - 04:13:22: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:22: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:23: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:23: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:23: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:23: Unhandled dynamic native error
+L 04/14/2026 - 04:13:23: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:23: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:23: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:23: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:23: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:23: Unhandled dynamic native error
+L 04/14/2026 - 04:13:23: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:23: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:24: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:24: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:24: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:24: Unhandled dynamic native error
+L 04/14/2026 - 04:13:24: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:24: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:24: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:24: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:24: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:24: Unhandled dynamic native error
+L 04/14/2026 - 04:13:24: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:24: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:25: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:25: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:25: Unhandled dynamic native error
+L 04/14/2026 - 04:13:25: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:28: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:28: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:28: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:28: Unhandled dynamic native error
+L 04/14/2026 - 04:13:28: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:28: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:31: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:31: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:31: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:31: Unhandled dynamic native error
+L 04/14/2026 - 04:13:31: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:31: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:33: Function is not present (function "charge_task") (plugin "mine_funcs.amxx")
+L 04/14/2026 - 04:13:33: [AMXX] Run time error 10 (plugin "mine_funcs.amxx") (native "set_task") - debug not enabled!
+L 04/14/2026 - 04:13:33: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:13:33: Unhandled dynamic native error
+L 04/14/2026 - 04:13:33: [AMXX] Run time error 10 (plugin "sh_sapper.amxx") (native "mine_charge_mine") - debug not enabled!
+L 04/14/2026 - 04:13:33: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:15:14: Start of error session.
+L 04/14/2026 - 04:15:14: Info (map "de_aztec") (file "addons/amxmodx/logs/error_20260414.log")
+L 04/14/2026 - 04:15:14: [AMXX] Run time error 4 (plugin "mine_funcs.amxx") - debug not enabled!
+L 04/14/2026 - 04:15:14: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:15:20: [AMXX] Run time error 4 (plugin "mine_funcs.amxx") - debug not enabled!
+L 04/14/2026 - 04:15:20: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:15:31: [AMXX] Run time error 4 (plugin "mine_funcs.amxx") - debug not enabled!
+L 04/14/2026 - 04:15:31: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:17:53: [AMXX] Run time error 4 (plugin "mine_funcs.amxx") - debug not enabled!
+L 04/14/2026 - 04:17:53: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/14/2026 - 04:17:58: [AMXX] Run time error 4 (plugin "mine_funcs.amxx") - debug not enabled!
+L 04/14/2026 - 04:17:58: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
