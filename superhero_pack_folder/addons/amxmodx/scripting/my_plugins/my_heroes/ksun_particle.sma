@@ -479,7 +479,6 @@ stock entity_set_follow(entity, target,spore_owner)
 	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*10.0,in_the_way_vector)
 	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
 
-	laser_line(spore_owner,fl_EntOrigin,fl_Origin,0,_,false,false)
 
 	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, entity)
 	if(wall_in_the_way){

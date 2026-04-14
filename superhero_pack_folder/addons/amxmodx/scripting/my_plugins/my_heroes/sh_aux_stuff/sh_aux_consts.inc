@@ -3,7 +3,15 @@
 #endif
 #define sh_aux_consts
 
+#define Struct enum
 
+#define STRLEN_FOR_FILES 128
+#define STRLEN_FOR_NAMES 24
+
+
+#define MINI_STRING_SIZE 32
+#define STRING_SIZE 128
+#define BIG_STRING_SIZE (STRING_SIZE*4)
 /*new g_msgFade,victim_dmg_hud_msg_sync, attacker_dmg_hud_msg_sync
 new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 

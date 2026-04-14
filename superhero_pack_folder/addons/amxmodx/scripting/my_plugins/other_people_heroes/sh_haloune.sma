@@ -24,15 +24,13 @@ sv_maxspeed 500
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 // GLOBAL VARIABLES
 new HeroName[] = "Haloune Tsurgi"
 new gHeroID
-new bool:HalouneModelSet[SH_MAXSLOTS+1]
-new HalouneSound[] = "shmod/frostnova.wav"
-new CvarTeamGlow, CvarM4A1DmgMult
+new CvarM4A1DmgMult
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -46,11 +44,16 @@ public plugin_init()
 	register_cvar("Haloune_gravity", "1.5")
 	register_cvar("Haloune_speed", "500")
 	CvarM4A1DmgMult = register_cvar("Haloune_M4A1mult", "2")
-        CvarTeamGlow = register_cvar("Haloune_teamglow", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Stealth Ninja", "Haloune - A Stealthy Ninja With Gravity/HP/AP a Super M4A1+Damage and a custom player model.", false, "Haloune_level")
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/Haloune/Haloune.mdl",
+								"models/player/Haloune/Haloune.mdl",
+								"Haloune",
+								"Haloune Stealth Suit Online",
+								"",
+								"shmod/frostnova.wav")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("Haloune_init", "Haloune_init")
@@ -73,10 +76,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,"models/player/Haloune/Haloune.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/v_halounem4a1.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/p_halounem4a1.mdl")
-	engfunc(EngFunc_PrecacheSound,HalouneSound)
 }
 //----------------------------------------------------------------------------------------------
 public Haloune_init()
@@ -98,7 +99,6 @@ public Haloune_init()
 			{
 				Haloune_weapons(id)
 				switch_model(id)
-				Haloune_tasks(id)
 			}
 		}
 
@@ -109,7 +109,6 @@ public Haloune_init()
 			{
 				// This gets run if they had the power but don't anymore
 				engclient_cmd(id, "drop", "weapon_M4A1")
-				Haloune_unmorph(id)
 				shRemHealthPower(id)
 				shRemArmorPower(id)
 				shRemGravityPower(id)
@@ -125,17 +124,7 @@ public new_spawn(id)
 	{
 		set_task(0.1, "Haloune_weapons", id)
 
-		Haloune_tasks(id)
 	}
-}
-//----------------------------------------------------------------------------------------------
-Haloune_tasks(id)
-{
-	set_task(1.0, "Haloune_morph", id)
-
-	if ( get_pcvar_num(CvarTeamGlow) )
-		set_task(1.0, "Haloune_glow", id+100, "", 0, "b")
-
 }
 //----------------------------------------------------------------------------------------------
 public Haloune_weapons(id)
@@ -199,84 +188,5 @@ public Haloune_damage(id)
 		if ( extraDamage > 0 )
 			sh_extra_damage(id, attacker, extraDamage, "M4A1", headshot)
 	}
-}
-//----------------------------------------------------------------------------------------------
-Haloune_sound(id)
-{
-	emit_sound(id, CHAN_AUTO, HalouneSound, 0.2, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, HalouneSound, 0.2, ATTN_NORM, 0, PITCH_NORM)
-}
-//----------------------------------------------------------------------------------------------
-public Haloune_morph(id)
-{
-	if ( HalouneModelSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
-		return
-
-	cs_set_user_model(id, "Haloune")
-
-	Haloune_sound(id)
-
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Haloune Stealth Suit Online")
-
-	HalouneModelSet[id] = true
-}
-//----------------------------------------------------------------------------------------------
-Haloune_unmorph(id)
-{
-	if ( HalouneModelSet[id] && is_user_connected(id) )
-	{
-
-		cs_reset_user_model(id)
-
-		Haloune_sound(id)
-
-		HalouneModelSet[id] = false
-
-		if ( get_pcvar_num(CvarTeamGlow) )
-		{
-			remove_task(id+100)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public Haloune_glow(id)
-{
-	id -= 100
-
-	if ( !shModActive() || !is_user_connected(id) )
-	{
-		//Don't want any left over residuals
-		remove_task(id+100)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
-	{
-		new teamId = get_user_team(id)
-		switch(teamId)
-		{
-			case 1:
-				shGlow(id, 100, 0, 0)
-			case 2:
-				shGlow(id, 0, 0, 100)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public Haloune_death()
-{
-	new id = read_data(2)
-
-	if ( !sh_user_has_hero(id,gHeroID))
-		return
-
-	Haloune_unmorph(id)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	HalouneModelSet[id] = false
 }
 //----------------------------------------------------------------------------------------------

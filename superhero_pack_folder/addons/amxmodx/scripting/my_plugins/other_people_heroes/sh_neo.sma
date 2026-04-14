@@ -19,13 +19,11 @@ neo_toggle 0		//Def=0
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"
 new gHeroID
-new bool:gmorphed[SH_MAXSLOTS+1]
-new gTaskID
 #define TE_USERNEO	127
 
 //Flying Ability
@@ -60,13 +58,17 @@ public plugin_init()
 	else{
 		gHeroID=shCreateHero(gHeroName, "Neo!", "You Look Like Neo", true, "neo_level" )
 	}
-	
+	sh_register_superheromod_model(gHeroID,
+								"models/player/Neo/Neo.mdl",
+								"models/player/Neo/Neo.mdl",
+								"Neo",
+								"You are now Neo",
+								"You arent Neo anymore")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("neo_init", "neo_init")
 	shRegHeroInit(gHeroName, "neo_init")
 	register_event("CurWeapon", "make_neo", "be", "1=1", "3>0")
-	register_event("DeathMsg", "neo_death", "a")
 	register_event("SendAudio","ftime_up","b","2=%!MRAD_GO","2=%!MRAD_MOVEOUT","2=%!MRAD_LETSGO","2=%!MRAD_LOCKNLOAD") 
 	register_event("SendAudio","end_round","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw") 
 	register_event("ResetHUD", "new_round", "b") 
@@ -105,11 +107,7 @@ public neo_init()
 		stop_fly(id) 
 	} 
 	if ( is_user_connected(id) ) {
-		if (sh_user_has_hero(id,gHeroID)) {
-			neo_tasks(id)
-		}
-		else {
-			neo_unmorph(id)
+		if (!sh_user_has_hero(id,gHeroID)){
 			shRemHealthPower(id)
 			shRemArmorPower(id)
 			shRemGravityPower(id)
@@ -178,73 +176,6 @@ public draw_neo_for(pl, pteam[], vec[3], velocityvec[3])
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public neo_tasks(id)
-{
-	set_task(1.0, "neo_morph", id)
-	
-	if( get_cvar_num("neo_teamglow") ){
-		set_task(1.0, "neo_glow", id+gTaskID, "", 0, "b" )
-	}
-}
-//----------------------------------------------------------------------------------------------
-public neo_morph(id)
-{
-	if ( gmorphed[id] || !is_user_alive(id) ) return
-	
-	cs_set_user_model(id, "Neo")
-	
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "You are now Neo")
-	
-	gmorphed[id] = true
-}
-//----------------------------------------------------------------------------------------------
-public neo_unmorph(id)
-{
-	if ( gmorphed[id] ) {
-		superhero_protected_hud_message(superhero_hud_msg_sync,id, "You arent Neo anymore")
-		
-		cs_reset_user_model(id)
-		
-		gmorphed[id] = false
-		
-		if ( get_cvar_num("neo_teamglow") ) {
-			remove_task(id+gTaskID)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public neo_glow(id)
-{
-	id -= gTaskID
-	
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+gTaskID)
-		return
-	}
-	
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public neo_death()
-{
-	new id = read_data(2)
-	neo_unmorph(id)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gmorphed[id] = false
-}
-//----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
 public neo_kd() 
 { 
@@ -293,12 +224,7 @@ public new_round(id)
 	if(flytoggle[id] || isflying[id]) 
 	{ 
 		stop_fly(id) 
-	} 
-	
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) 
-	{
-		neo_tasks(id)
-	} 
+	}
 } 
 //----------------------------------------------------------------------------------------------
 public end_round() 

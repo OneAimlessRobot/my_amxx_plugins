@@ -20,6 +20,7 @@
 #include "my_include/codmw4_bank.inc"
 #include "my_include/codmw4_abilities.inc"
 #include "my_include/codmw4_fakedmg.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 
 #define BOTY 1

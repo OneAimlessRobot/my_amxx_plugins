@@ -78,7 +78,7 @@ public plugin_natives(){
 public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
 	
 	xs_seed(get_systime(0));
-	server_print("Shero lib pt1 innited!^n")
+	server_print("%s innited!^n",LIBRARY_NAME)
 }
 public _precache_native_fx_pt1(iPlugin,iParams){
 

@@ -29,14 +29,11 @@
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Clone Trooper"
-new bool:gmorphed[SH_MAXSLOTS+1]
-new gTaskID
-new gCTrooperSound[]="items/suitchargeno1.wav"
 new lastammo[33]
 new gHeroID
  //----------------------------------------------------------------------------------------------
@@ -52,7 +49,12 @@ new gHeroID
 	register_cvar("ctrooper_armor", "150")
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "CTrooper", "Become a Clone Trooper! - Cooler Player Model and Gun and laser bullets", false, "CTrooper_level" )
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/clonetrooper/clonetrooper.mdl",
+								"models/player/clonetrooper/clonetrooper.mdl",
+								"clonetrooper",
+								"CTrooper - Prepared for war..SIR!",
+								"CTrooper - All systems down...")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
 	// INIT
@@ -62,7 +64,6 @@ new gHeroID
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("Damage", "CTrooper_damage", "b", "2!0")
-	register_event("DeathMsg", "CTrooper_death", "a")
 	
 	// Let Server know about Master Chief's Variables
 	shSetShieldRestrict(gHeroName)
@@ -74,10 +75,8 @@ new gHeroID
  public plugin_precache()
  {
 	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav")
-	engfunc(EngFunc_PrecacheModel,"models/player/clonetrooper/clonetrooper.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_v_ak47.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_p_ak47.mdl")
-	engfunc(EngFunc_PrecacheSound,gCTrooperSound)
  }
  //----------------------------------------------------------------------------------------------
  public CTrooper_init()
@@ -95,11 +94,9 @@ new gHeroID
 		if (sh_user_has_hero(id,gHeroID) ) {
 			CTrooper_weapons(id)
 			switchmodel(id)
-			CTrooper_tasks(id)
 		}
 		else {
 			engclient_cmd(id, "drop", "weapon_ak47")
-			CTrooper_unmorph(id)
 			shRemHealthPower(id)
 			shRemArmorPower(id)
 			shRemGravityPower(id)
@@ -139,7 +136,6 @@ new gHeroID
  {
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
 		set_task(0.1, "CTrooper_weapons", id)
-		CTrooper_tasks(id)
 
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 		if (wpnid != CSW_AK47 && wpnid > 0) {
@@ -148,16 +144,6 @@ new gHeroID
 			engclient_cmd(id,wpn)
 		}
 	}
- }
- //----------------------------------------------------------------------------------------------
- public CTrooper_tasks(id)
- {
-	set_task(1.0, "CTrooper_morph", id)
-
-	if( get_cvar_num("ctrooper_teamglow") ){
-		set_task(1.0, "CTrooper_glow", id+gTaskID, "", 0, "b" )
-	}
-
  }
  //----------------------------------------------------------------------------------------------
  public switchmodel(id)
@@ -216,85 +202,6 @@ new gHeroID
 		}
 	}
  }
- //----------------------------------------------------------------------------------------------
- public CTrooper_sound(id)
- {
-	emit_sound(id, CHAN_AUTO, gCTrooperSound, 0.2, ATTN_NORM, SND_STOP , PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, gCTrooperSound, 0.2, ATTN_NORM, 0, PITCH_NORM)
- }
- //----------------------------------------------------------------------------------------------
- public CTrooper_morph(id)
- {
-	if ( gmorphed[id] || !is_user_alive(id) ) return
-
-	#if defined AMXX_VERSION
-	cs_set_user_model(id, "clonetrooper")
-	#else
-	CS_SetModel(id, "clonetrooper")
-	#endif
-
-	CTrooper_sound(id)
-
-	// Message
-	superhero_protected_hud_message(superhero_hud_msg_sync,id,"CTrooper - Prepared for war..SIR!")
-
-	gmorphed[id] = true
- }
- //----------------------------------------------------------------------------------------------
- public CTrooper_unmorph(id)
- {
-	if ( gmorphed[id] ) {
-		// Message
-		superhero_protected_hud_message(superhero_hud_msg_sync,id,"CTrooper - All systems down...")
-
-		#if defined AMXX_VERSION
-		cs_reset_user_model(id)
-		#else
-		CS_ClearModel(id)
-		#endif
-
-		CTrooper_sound(id)
-
-		gmorphed[id] = false
-
-		if ( get_cvar_num("ctrooper_teamglow") ) {
-			remove_task(id+gTaskID)
-			set_user_rendering(id)
-		}
-	}
- }
- //----------------------------------------------------------------------------------------------
- public CTrooper_glow(id)
- {
-	id -= gTaskID
-
-	if ( !is_user_connected(id) ) {
-		//Don't want any left over residuals
-		remove_task(id+gTaskID)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)) {
-		if ( get_user_team(id) == 1 ) {
-			shGlow(id, 255, 0, 0)
-		}
-		else {
-			shGlow(id, 0, 0, 255)
-		}
-	}
- }
- //----------------------------------------------------------------------------------------------
- public CTrooper_death()
- {
-	new id = read_data(2)
-	CTrooper_unmorph(id)
- }
- //----------------------------------------------------------------------------------------------
- public client_connect(id)
- {
-	gmorphed[id] = false
- }
-
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
 */

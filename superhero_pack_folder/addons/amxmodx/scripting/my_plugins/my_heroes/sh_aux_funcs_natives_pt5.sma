@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt5.inc"
 
 
 #define PLUGIN "Superhero aux natives pt5: hero player model morph registering"
@@ -11,7 +12,6 @@
 
 
 #define SH_MAX_PLAYER_MODELS 30
-
 enum player_model_array_struct{
 
 	player_model_hero_id,
@@ -19,12 +19,14 @@ enum player_model_array_struct{
 	player_model_t_file_path[STRING_SIZE],
 	player_model_morph_string[STRING_SIZE],
 	player_model_morph_message[SH_HUD_MSG_BUFF_SIZE],
-	player_model_unmorph_message[SH_HUD_MSG_BUFF_SIZE]
+	player_model_unmorph_message[SH_HUD_MSG_BUFF_SIZE],
+	player_model_custom_morph_sound_sample[STRING_SIZE]
 
 }
 new curr_num_models_logged=0
 new gPlayersCurrHeroModelID[SH_MAXSLOTS+1]
 new sh_array_of_player_model_structs[SH_MAX_PLAYER_MODELS+1][player_model_array_struct]
+
 public plugin_init(){
 	
 	
@@ -36,7 +38,11 @@ public plugin_init(){
 	init_hud_syncs()
     
 	
-}			
+}
+public plugin_precache(){
+
+	engfunc(EngFunc_PrecacheSound, default_morph_state_sound)
+}
 public plugin_natives(){
 
 
@@ -45,7 +51,23 @@ public plugin_natives(){
 	register_native("sh_register_superheromod_model","_sh_register_superheromod_model",0)
 }
 
+play_morph_sound(id){
 
+	if(!is_user_connected(id)) return
+
+	emit_sound(id,CHAN_VOICE,
+				
+				sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_custom_morph_sound_sample],
+				
+				VOL_NORM,ATTN_NORM,SND_STOP,PITCH_NORM)
+				
+	
+	emit_sound(id,CHAN_VOICE,
+				
+				sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_custom_morph_sound_sample],
+				
+				VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+}
 //----------------------------------------------------------------------------------------------
 public sh_player_morph_task(id,hero_model_id)
 {
@@ -54,7 +76,7 @@ public sh_player_morph_task(id,hero_model_id)
 	gPlayersCurrHeroModelID[id]=hero_model_id
 	
 	cs_set_user_model(id, sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_morph_string])
-
+	play_morph_sound(id)
 	// Message
 	if(strlen(sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_morph_message])){
 			superhero_protected_hud_message(superhero_hud_msg_sync,id, "%s",
@@ -73,6 +95,7 @@ public sh_player_unmorph_task(id)
 						sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_unmorph_message])
 		}
 		cs_reset_user_model(id)
+		play_morph_sound(id)
 		gPlayersCurrHeroModelID[id]=-1
 
 	}
@@ -96,12 +119,23 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	get_string(4,sh_array_of_player_model_structs[result][player_model_morph_string],STRING_SIZE-1)
 	get_string(5,sh_array_of_player_model_structs[result][player_model_morph_message],SH_HUD_MSG_BUFF_SIZE-1)
 	get_string(6,sh_array_of_player_model_structs[result][player_model_unmorph_message],SH_HUD_MSG_BUFF_SIZE-1)
+	get_string(7,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample],STRING_SIZE-1)
 
+	server_print("Index: %d^nCT Player model load attempted: %s",result,
+								sh_array_of_player_model_structs[result][player_model_ct_file_path])
 
 	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_ct_file_path])
-	server_print("Index: %d^nPlayer model load attempted: %s",result,sh_array_of_player_model_structs[result][player_model_ct_file_path])
+
+	server_print("Index: %d^nT Player model load attempted: %s",result,
+								sh_array_of_player_model_structs[result][player_model_t_file_path])
+	
 	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_t_file_path])
-	server_print("Index: %d^nPlayer model load attempted: %s",result,sh_array_of_player_model_structs[result][player_model_t_file_path])
+	
+	server_print("Index: %d^nPlayer morph sound load attempted: %s",result,
+								sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
+	
+	engfunc(EngFunc_PrecacheSound,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
+	
 	curr_num_models_logged++
 	
 	return result
@@ -118,7 +152,7 @@ public _sh_reset_player_hero_player_model(iPlugins, iParams){
 
 public _prepare_shero_aux_lib_pt5(iPlugins, iParams){
 	
-	server_print("Shero lib pt5 innited!^n")
+	server_print("%s innited!^n",LIBRARY_NAME)
 }
 
 public sh_choose_model(id, level, cid)

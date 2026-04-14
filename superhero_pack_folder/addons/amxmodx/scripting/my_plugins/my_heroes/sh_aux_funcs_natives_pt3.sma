@@ -77,7 +77,7 @@ public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
 	
 	init_explosion_defaults()
 	xs_seed(get_systime(0));
-	server_print("Shero lib pt3 innited!^n")
+	server_print("%s innited!^n",LIBRARY_NAME)
 }
 //native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
 

@@ -389,8 +389,8 @@
 #include "../include/Vexd_Utilities.inc"
 #include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
-#include "my_include/my_author_header.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "my_include/my_author_header.inc"
 
 new const SH_CORE_STR[] =  "SuperHero Core"
 
@@ -3588,14 +3588,14 @@ public cl_say(id)
 	}
 	else if ( equali(said[pos], "helpon") ) {
 		if ( gCMDProj > 0 ) {
-			chatMessage(id, _, "Help HUD message enabled2")
+			chatMessage(id, _, "Help HUD message enabled")
 		}
 		gPlayerFlags[id] |= SH_FLAG_HUDHELP
 		return PLUGIN_HANDLED
 	}
 	else if ( equali(said[pos], "helpoff") ) {
 		if ( gCMDProj > 0 ) {
-			chatMessage(id, _, "Help HUD message disabled2")
+			chatMessage(id, _, "Help HUD message disabled")
 		}
 		gPlayerFlags[id] &= ~SH_FLAG_HUDHELP
 		return PLUGIN_HANDLED
@@ -5519,7 +5519,6 @@ createHelpMotdFile(const helpMotdFile[])
 	fputs(helpFile, "say /clearpowers	- Clears ALL powers^n")
 	fputs(helpFile, "say /drop <hero>		- Drop one power so you can pick another^n")
 	fputs(helpFile, "say /whohas <hero>		- Shows you who has a particular hero^n")
-	fputs(helpFile, "say /help_of <hero>		- Shows you a help page for a particular hero (if available)^n")
 	fputs(helpFile, "say /playerskills [@ALL|@CT|@T|name] - Shows you what heroes other players have chosen^n")
 	fputs(helpFile, "say /playerlevels [@ALL|@CT|@T|name] - Shows you what levels other players are^n^n")
 

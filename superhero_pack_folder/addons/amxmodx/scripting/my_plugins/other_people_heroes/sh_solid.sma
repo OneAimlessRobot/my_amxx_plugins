@@ -12,11 +12,12 @@ solid_ration_health 50		// How many health you have per ration?
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
 new gHeroName[] = "Solid Snake"
 new gHeroID
-new bool:gMorphed[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gMaxHealth[SH_MAXSLOTS+1]
 new Rations[SH_MAXSLOTS+1]
@@ -38,7 +39,13 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Rations, Stealth, Snake's appearance, Socom", "You can use rations on keydown to healing, you have Snake's body, stealth camouflage and Socom instead USP", true, "solid_level")
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/solid/solid.mdl",
+								"models/player/solid/solid.mdl",
+								"solid",
+								"",
+								"",
+								"items/suitchargeno1.wav")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -68,14 +75,6 @@ public solid_init()
 
 	if(!is_user_connected(id) || !shModActive()) return
 
-	if(sh_user_has_hero(id,gHeroID))
-	{
-		solid_morph(id)
-	}
-	else
-	{
-		solid_unmorph(id)
-	}
 
 }
 //----------------------------------------------------------------------------------------------
@@ -157,11 +156,6 @@ public round_start()
 				}
 				giveSocom(x)
 				setSocom(x)
-				solid_morph(x)
-			}
-			else
-			{
-				solid_unmorph(x)
 			}
 		}
 	}
@@ -191,24 +185,6 @@ public stealthInvisible(id)
 public stealthVisible(id)
 {
 	set_user_rendering(id)
-}
-//----------------------------------------------------------------------------------------------
-public solid_morph(id)
-{
-	if(!gMorphed[id])
-	{
-		cs_set_user_model(id, "solid")
-		gMorphed[id] = true
-	}
-}
-//----------------------------------------------------------------------------------------------
-public solid_unmorph(id)
-{
-	if(gMorphed[id])
-	{
-		cs_reset_user_model(id)
-		gMorphed[id] = false
-	}
 }
 //----------------------------------------------------------------------------------------------
 public solid_kd()
@@ -250,10 +226,5 @@ public solid_kd()
 		emit_sound(id, CHAN_AUTO, "shmod/ration.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gMorphed[id] = false
 }
 //----------------------------------------------------------------------------------------------

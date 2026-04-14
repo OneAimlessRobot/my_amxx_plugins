@@ -2,8 +2,6 @@
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
 #include "my_include/my_author_header.inc"
-#define STRING_SIZE 128
-#define BIG_STRING_SIZE (STRING_SIZE*4)
 
 #define PLUGIN "quick precache testing"
 #define VERSION "1.0.0"

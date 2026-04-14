@@ -17,9 +17,6 @@
 		},
 		{
 			"path": "../../yapb"
-		},
-		{
-			"path": "../../../../../../../FASTstorage/GithubFAST/my_amxx_plugins"
 		}
 	],
 	"settings": {}

@@ -35,9 +35,6 @@ ghostface_teamglow 0		//Glow Team Color when player skin in use, Default 0 (0=no
 //---------- User Changeable Defines --------//
 
 
-// Comment out to not use the player model
-#define USE_PLAYER_MODEL
-
 // Comment out to not use the Knife model
 #define USE_WPN_MODEL
 
@@ -46,6 +43,8 @@ ghostface_teamglow 0		//Glow Team Color when player skin in use, Default 0 (0=no
 
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Ghostface (Scream)"
@@ -54,13 +53,8 @@ new PlayerMaxHealth[SH_MAXSLOTS+1]
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints
 
-#if defined USE_PLAYER_MODEL
-	new bool:ModelPlayerSet[SH_MAXSLOTS+1]
-	new bool:ModelPlayerLoaded
-	new const Model_Player[] = "models/player/ghostface/ghostface.mdl"
-	new const Model_Player_Name[] = "ghostface"
-	new CvarTeamGlow
-#endif
+	new const Model_Player[STRING_SIZE] = "models/player/ghostface/ghostface.mdl"
+	new const Model_Player_Name[STRING_SIZE] = "ghostface"
 
 #if defined USE_WPN_MODEL
 	new const Model_V_Knife[] = "models/shmod/ghostface_v_knife.mdl"
@@ -84,7 +78,12 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Knife Dmg & HP Regen", "Become the Woodsboro Serial Killer - get a Bowie Knife that deals Extra Damage, also Regen Health.", false, "ghostface_level")
-
+	sh_register_superheromod_model(gHeroID,
+								Model_Player,
+								Model_Player,
+								Model_Player_Name,
+								"",
+								"")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("ghostface_init", "ghostface_init")
@@ -93,11 +92,6 @@ public plugin_init()
 	// EVENTS
 	register_event("Damage", "ghostface_damage", "b", "2!0")
 
-	#if defined USE_PLAYER_MODEL
-		CvarTeamGlow = register_cvar("ghostface_teamglow", "0")
-		register_event("ResetHUD", "new_spawn", "b")
-		register_event("DeathMsg", "ghostface_death", "a")
-	#endif
 
 	#if defined USE_WPN_MODEL
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -124,17 +118,6 @@ public plugin_cfg()
 #if defined USE_PLAYER_MODEL || defined USE_WPN_MODEL
 public plugin_precache()
 {
-	#if defined USE_PLAYER_MODEL
-		ModelPlayerLoaded = true
-
-		if ( file_exists(Model_Player) ) {
-			engfunc(EngFunc_PrecacheModel,Model_Player)
-		}
-		else {
-			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player)
-			ModelPlayerLoaded = false
-		}
-	#endif
 
 	#if defined USE_WPN_MODEL
 		ModelWeaponLoaded = true
@@ -175,10 +158,6 @@ public ghostface_init()
 						switch_model(id)
 				#endif
 
-				#if defined USE_PLAYER_MODEL
-					if ( ModelPlayerLoaded )
-						ghostface_tasks(id)
-				#endif
 			}
 		}
 
@@ -187,10 +166,6 @@ public ghostface_init()
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
 			if ( is_user_alive(id))
 			{
-				#if defined USE_PLAYER_MODEL
-					if ( ModelPlayerLoaded )
-						ghostface_unmorph(id)
-				#endif
 
 				shRemHealthPower(id)
 				shRemArmorPower(id)
@@ -252,83 +227,6 @@ public ghostface_damage(id)
 			sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
 	}
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_PLAYER_MODEL
-public new_spawn(id)
-{
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
-	{
-		if ( ModelPlayerLoaded )
-			ghostface_tasks(id)
-	}
-}
-//----------------------------------------------------------------------------------------------
-ghostface_tasks(id)
-{
-	set_task(1.0, "ghostface_morph", id)
-
-	if ( get_pcvar_num(CvarTeamGlow) )
-		set_task(1.0, "ghostface_glow", id+100, _, _, "b")
-}
-//----------------------------------------------------------------------------------------------
-public ghostface_morph(id)
-{
-	if ( ModelPlayerSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
-		return
-
-	cs_set_user_model(id, Model_Player_Name)
-
-	ModelPlayerSet[id] = true
-}
-//----------------------------------------------------------------------------------------------
-ghostface_unmorph(id)
-{
-	if ( ModelPlayerSet[id] && is_user_connected(id) )
-	{
-		cs_reset_user_model(id)
-
-		ModelPlayerSet[id] = false
-
-		if ( get_pcvar_num(CvarTeamGlow) )
-		{
-			remove_task(id+100)
-			set_user_rendering(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public ghostface_glow(id)
-{
-	id -= 100
-
-	if ( !shModActive() || !is_user_connected(id) )
-	{
-		//Don't want any left over residuals
-		remove_task(id+100)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
-	{
-		switch(cs_get_user_team(id))
-		{
-			case CS_TEAM_T: shGlow(id, 100, 0, 0)
-			case CS_TEAM_CT: shGlow(id, 0, 0, 100)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public ghostface_death()
-{
-	new id = read_data(2)
-
-	if ( !sh_user_has_hero(id,gHeroID))
-		return
-
-	if ( ModelPlayerLoaded )
-		ghostface_unmorph(id)
-}
-#endif
 //----------------------------------------------------------------------------------------------
 public ghostface_maxhealth()
 {

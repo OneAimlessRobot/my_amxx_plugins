@@ -47,7 +47,7 @@ public plugin_natives(){
 
 public _prepare_shero_aux_lib_pt2(iPlugins, iParams){
 	
-	server_print("Shero lib pt2 innited!^n")
+	server_print("%s innited!^n",LIBRARY_NAME)
 }
 	
 public _precache_native_fx_pt2(iPlugin,iParams){

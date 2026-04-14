@@ -58,10 +58,6 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 //---------- User Changeable Defines --------//
 
 
-// 0-no player model
-// 1-green master chief model + glow cvar option [Default]
-// 2-team colored master chief models t=red ct=blue (Note:Requires models from optional zip)
-#define PLAYER_MODEL 1
 
 // 0-continuous shooting, no reload [Default]
 // 1-drop weapon and get a new one with full clip
@@ -80,35 +76,13 @@ masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Master Chief"
 new gHeroID
 new CvarP90DmgMult
-
-#if PLAYER_MODEL > 0
-	new bool:ModelPlayerSet[SH_MAXSLOTS+1]
-	new bool:ModelPlayerLoaded
-	new const MasterChiefSound[] = "items/suitchargeno1.wav"
-
-	#if PLAYER_MODEL == 1
-		new const Model_Player[] = "models/player/masterchief/masterchief.mdl"
-		new const Model_Player_Name[] = "masterchief"
-		new CvarTeamGlow
-	//#elseif does not work right
-	#else
-		#if PLAYER_MODEL == 2
-			new const Model_Player_T[] = "models/player/masterchief_t/masterchief_t.mdl"
-			new const Model_Player_CT[] = "models/player/masterchief_ct/masterchief_ct.mdl"
-			new const Model_Player_Name[2][] = {
-				"masterchief_t",
-				"masterchief_ct"
-			}
-		#endif
-	#endif
-#endif
 
 #if defined USE_WPN_MODEL
 	new const Model_V_P90[] = "models/shmod/masterchief_v_p90.mdl"
@@ -128,13 +102,16 @@ public plugin_init()
 	register_cvar("masterchief_speed", "-1")
 	CvarP90DmgMult = register_cvar("masterchief_p90mult", "1.3")
 
-	#if PLAYER_MODEL == 1
-		CvarTeamGlow = register_cvar("masterchief_teamglow", "0")
-	#endif
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "SPARTAN project", "Become Master Chief - get a MJOLNIR battlesuit and MA5B Assault Rifle (P90), which does more damage.", false, "masterchief_level")
-
+	sh_register_superheromod_model(gHeroID,
+								"models/player/masterchief/masterchiefT.mdl",
+								"models/player/masterchief/masterchief.mdl",
+								"masterchief",
+								"Spartan-117 reporting for duty",
+								"CTrooper - All systems down...",
+								"items/suitchargeno1.wav")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("masterchief_init", "masterchief_init")
@@ -143,17 +120,11 @@ public plugin_init()
 	// EVENTS
 	register_event("Damage", "masterchief_damage", "b", "2!0")
 
-	#if PLAYER_MODEL > 0 || defined GIVE_WEAPON
-		register_event("ResetHUD", "new_spawn", "b")
-	#endif
 
 	#if defined USE_WPN_MODEL || AMMO_MODE < 4
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
 
-	#if PLAYER_MODEL > 0
-		register_event("DeathMsg", "masterchief_death", "a")
-	#endif
 
 	// Let Server know about the hero's variables
 	shSetMaxHealth(HeroName, "masterchief_health")
@@ -167,41 +138,9 @@ public plugin_init()
 	#endif
 }
 //----------------------------------------------------------------------------------------------
-#if PLAYER_MODEL > 0 || defined USE_WPN_MODEL
+#if defined USE_WPN_MODEL
 public plugin_precache()
 {
-	#if PLAYER_MODEL > 0
-		engfunc(EngFunc_PrecacheSound,MasterChiefSound)
-		ModelPlayerLoaded = true
-		#if PLAYER_MODEL == 1
-			if ( file_exists(Model_Player) ) {
-				engfunc(EngFunc_PrecacheModel,Model_Player)
-			}
-			else {
-				log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player)
-				ModelPlayerLoaded = false
-			}
-		#else
-			#if PLAYER_MODEL == 2
-				if ( file_exists(Model_Player_T) ) {
-					engfunc(EngFunc_PrecacheModel,Model_Player_T)
-				}
-				else {
-					log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player_T)
-					ModelPlayerLoaded = false
-				}
-
-				if ( file_exists(Model_Player_CT) ) {
-					engfunc(EngFunc_PrecacheModel,Model_Player_CT)
-				}
-				else {
-					log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_Player_CT)
-					ModelPlayerLoaded = false
-				}
-			#endif
-		#endif
-	#endif
-
 	#if defined USE_WPN_MODEL
 		ModelWeaponLoaded = true
 		if ( file_exists(Model_V_P90) ) {
@@ -252,10 +191,6 @@ public masterchief_init()
 						switch_model(id)
 				#endif
 
-				#if PLAYER_MODEL > 0
-					if ( ModelPlayerLoaded )
-						masterchief_tasks(id)
-				#endif
 			}
 		}
 
@@ -269,10 +204,6 @@ public masterchief_init()
 					engclient_cmd(id, "drop", "weapon_p90")
 				#endif
 
-				#if PLAYER_MODEL > 0
-					if ( ModelPlayerLoaded )
-						masterchief_unmorph(id)
-				#endif
 
 				shRemHealthPower(id)
 				shRemArmorPower(id)
@@ -283,7 +214,7 @@ public masterchief_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-#if PLAYER_MODEL > 0 || defined GIVE_WEAPON
+#if defined GIVE_WEAPON
 public new_spawn(id)
 {
 	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
@@ -292,23 +223,7 @@ public new_spawn(id)
 			set_task(0.1, "masterchief_weapons", id)
 		#endif
 
-		#if PLAYER_MODEL > 0
-			if ( ModelPlayerLoaded )
-				masterchief_tasks(id)
-		#endif
 	}
-}
-#endif
-//----------------------------------------------------------------------------------------------
-#if PLAYER_MODEL > 0
-masterchief_tasks(id)
-{
-	set_task(1.0, "masterchief_morph", id)
-
-	#if PLAYER_MODEL == 1
-		if ( get_pcvar_num(CvarTeamGlow) )
-			set_task(1.0, "masterchief_glow", id+100, _, _, "b")
-	#endif
 }
 #endif
 //----------------------------------------------------------------------------------------------
@@ -382,107 +297,5 @@ public masterchief_damage(id)
 		if ( extraDamage > 0 )
 			sh_extra_damage(id, attacker, extraDamage, "p90", headshot)
 	}
-}
-//----------------------------------------------------------------------------------------------
-#if PLAYER_MODEL > 0
-masterchief_sound(id)
-{
-	emit_sound(id, CHAN_AUTO, MasterChiefSound, 0.2, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, MasterChiefSound, 0.2, ATTN_NORM, 0, PITCH_NORM)
-}
-//----------------------------------------------------------------------------------------------
-public masterchief_morph(id)
-{
-	if ( ModelPlayerSet[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
-		return
-
-	#if PLAYER_MODEL == 1
-		cs_set_user_model(id, Model_Player_Name)
-	#else
-		#if PLAYER_MODEL == 2
-			// Done this way for safety (ie user is spec alive)
-			switch(cs_get_user_team(id))
-			{
-				case CS_TEAM_T: cs_set_user_model(id, Model_Player_Name[0])
-				case CS_TEAM_CT: cs_set_user_model(id, Model_Player_Name[1])
-				default: return
-			}	
-		#endif
-	#endif
-
-	masterchief_sound(id)
-
-	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Spartan-117 reporting for duty")
-
-	ModelPlayerSet[id] = true
-}
-//----------------------------------------------------------------------------------------------
-masterchief_unmorph(id)
-{
-	if ( ModelPlayerSet[id] && is_user_connected(id) )
-	{
-		if ( is_user_alive(id) )
-		{
-			// Message only shows if alive and dropping hero
-			
-			superhero_protected_hud_message(superhero_hud_msg_sync,id, "masterchief MODE OFF, you returned to normal self")
-		}
-
-		cs_reset_user_model(id)
-
-		masterchief_sound(id)
-
-		ModelPlayerSet[id] = false
-
-		#if PLAYER_MODEL == 1
-			if ( get_pcvar_num(CvarTeamGlow) )
-			{
-				remove_task(id+100)
-				set_user_rendering(id)
-			}
-		#endif
-	}
-}
-//----------------------------------------------------------------------------------------------
-#if PLAYER_MODEL == 1
-public masterchief_glow(id)
-{
-	id -= 100
-
-	if ( !shModActive() || !is_user_connected(id) )
-	{
-		//Don't want any left over residuals
-		remove_task(id+100)
-		return
-	}
-
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) )
-	{
-		switch(cs_get_user_team(id))
-		{
-			case CS_TEAM_T: shGlow(id, 100, 0, 0)
-			case CS_TEAM_CT: shGlow(id, 0, 0, 100)
-		}
-	}
-}
-#endif
-//----------------------------------------------------------------------------------------------
-public masterchief_death()
-{
-	new id = read_data(2)
-
-	if ( !sh_user_has_hero(id,gHeroID) )
-		return
-
-	if ( ModelPlayerLoaded )
-		masterchief_unmorph(id)
-}
-#endif
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	#if PLAYER_MODEL > 0
-		ModelPlayerSet[id] = false
-	#endif
 }
 //----------------------------------------------------------------------------------------------

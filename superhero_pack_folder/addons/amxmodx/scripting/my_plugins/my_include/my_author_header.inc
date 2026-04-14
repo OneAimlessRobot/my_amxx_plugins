@@ -3,13 +3,9 @@
 #endif
 #define my_author_header_inc_stuff
 
-#define MINI_STRING_SIZE 32
-#define STRING_SIZE 128
-#define BIG_STRING_SIZE (STRING_SIZE*4)
 
 #define AUTHOR "ThrashBrat"
 
-#define Struct enum
 
 ///native my_authored_register_func(const plugin_name[], const plugin_ver[], const original_author[], bool:is_modified=false, const new_author[]="")
 

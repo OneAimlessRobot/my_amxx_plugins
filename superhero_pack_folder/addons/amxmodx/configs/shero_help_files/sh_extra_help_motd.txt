@@ -1,0 +1,5 @@
+<html><head><style type="text/css">pre{color:#FFB000;}body{background:#000000;margin-left:8px;margin-top:0px;}</style></head><body><pre>
+say /help_of <hero>		- Shows you a help page for a particular hero (if available)
+(Console) sh_print_models		- Shows you a list of player model ids available depending on heroes equipped
+(Console) sh_choose_model		- pick a player model! The only parameter required is the id of it
+</pre></body></html>

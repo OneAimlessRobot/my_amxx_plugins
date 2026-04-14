@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -48,5 +49,5 @@ public _prepare_shero_aux_lib_pt4(iPlugins, iParams){
 								new_dmg_type_names[i],
 								0)
 	}
-	server_print("Shero lib pt4 innited!^n")
+	server_print("%s innited!^n",LIBRARY_NAME)
 }
