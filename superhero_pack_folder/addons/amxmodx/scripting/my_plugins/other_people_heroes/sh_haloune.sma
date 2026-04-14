@@ -18,7 +18,6 @@ Haloune_armor 300		//Default 300
 Haloune_gravity 1.5		//Default 1.5 = 1.5 = 150% 1 = 100% etc
 Haloune_speed 500		//Default 500 = Super Speed
 Haloune_M4A1mult 2		//Damage multiplyer for his M4A1 Default 2x
-Haloune_teamglow 0		//Teams Glows so you can tell your friends and foes ( 1=On 0=Off )
 sv_maxspeed 500
 */
 

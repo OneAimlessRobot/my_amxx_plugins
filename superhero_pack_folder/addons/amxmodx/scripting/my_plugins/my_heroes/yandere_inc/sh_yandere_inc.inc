@@ -72,7 +72,6 @@ Float:curse_pct;
 stock hud_sync
 stock gHeroLevel
 stock min_players
-stock teamglow_on
 stock degen_health_extra_threshold
 stock overheal_hp_max
 

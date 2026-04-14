@@ -10,7 +10,6 @@ masterchief_gravity 1.0		//Default 1.0 = no extra gravity (0.50 is 50% of normal
 masterchief_speed -1		//Default -1 = no extra speed, this cvar is for all weapons (for faster then normal speed set to 261 or higher)
 masterchief_p90mult 1.3		//Damage multiplyer for his P90
 // Below Only used if PLAYER_MODEL define = 1
-masterchief_teamglow 0		//Glow Team Color when player skin in use (0=no 1=yes)
 
 */
 

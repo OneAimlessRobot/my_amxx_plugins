@@ -9,6 +9,7 @@
             margin: 8px;
             color: #FFB000;
             font: normal 16px/20px Verdana, Tahoma, sans-serif;
+            font-size: 15px;
         }
 
         a {
@@ -23,7 +24,31 @@
 </style>
 </head>
 <body>
+<pre>
+Say commands:
+/help -> superheromod help
 
-<a href="http://lenasattic.ddns.net:11020/webcrookedstuff">link</a>
+/extra_help -> more superheromod help
+
+/helpof [part of hero name] -> get help about hero
+			(default file will be shown
+			if a specific one does not exist)
+
+Console commands:
+sh_print_models -> show a list
+			of pickable player models
+			avaliable to you
+			based on currently equipped heroes
+
+sh_choose_model [model id] -> pick one model
+			from those listed
+			by the previous command
+			(if you still have
+			said required hero equipped)
+			
+If you wish to see this file again
+Use the say command: /general_help
+
+</pre>
 </body>
 </html>

@@ -8,10 +8,11 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt6.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
-stock const help_cmd[]="extra_help"
+stock const extra_help_cmd[]="extra_help"
+stock const general_help_cmd[]="general_help"
 stock help_files_directory[STRLEN_FOR_FILES+1]
-stock const help_file_dir_name[128]="/shero_help_files/"
-stock const extra_help_file_name[128]="/sh_extra_help.txt"
+stock const help_file_dir_name[128]="/shero_extra_help/"
+stock const extra_help_file_name[128]="sh_extra_help_motd.txt"
 new extra_help_motd[1024]
 
 public plugin_init(){
@@ -45,9 +46,9 @@ createHelpMotdFile(const helpMotdFile[]){
 	fputs(extraHelpFile, "<html><head><style type=^"text/css^">pre{color:#FFB000;}body{background:#000000;margin-left:8px;margin-top:0px;}</style></head><body><pre>^n")
 
 
-	fputs(extraHelpFile, "say /help_of <hero>		- Shows you a help page for a particular hero (if available)^n")
+	fputs(extraHelpFile, "say /help_of [part of hero name] - Shows you a help page for a particular hero (if available)^n")
 	fputs(extraHelpFile, "(Console) sh_print_models		- Shows you a list of player model ids available depending on heroes equipped^n")
-	fputs(extraHelpFile, "(Console) sh_choose_model		- pick a player model! The only parameter required is the id of it^n")
+	fputs(extraHelpFile, "(Console) sh_choose_model	[model_id] - pick a player model! The only parameter required is the id of it^n")
 	
 	fputs(extraHelpFile, "</pre></body></html>")
 
@@ -61,7 +62,7 @@ showExtraHelp(id)
 //----------------------------------------------------------------------------------------------
 setupHelpMotd()
 {
-	formatex(extra_help_motd, charsmax(extra_help_motd), "%s/sh_extra_help_motd.txt",help_files_directory )
+	formatex(extra_help_motd, charsmax(extra_help_motd), "%s/%s",help_files_directory,extra_help_file_name)
 
 	if ( !file_exists(extra_help_motd) ) {
 		//Create the file if it doesn't exist
@@ -82,7 +83,7 @@ public cl_say(id){
 	remove_quotes(said)
 
 	if ( !get_cvar_num("sv_superheros") ) {
-		if ( containi(said, help_cmd) ) {
+		if ( containi(said, extra_help_cmd) ||  containi(said, general_help_cmd)  ) {
 			sh_chat_message(id, _, "SuperHero Mod is currently disabled")
 		}
 		return PLUGIN_CONTINUE
@@ -90,7 +91,10 @@ public cl_say(id){
 
 	
 	if ( containi(said, "models") != -1 || containi(said, "superhero") != -1 ) {
-		sh_chat_message(id, _, "For additional help with SuperHero Mod, say: /extra_help")
+		sh_chat_message(id, _, "For additional help with SuperHero Mod, say: /%s or /%s",
+							extra_help_cmd,
+							general_help_cmd)
+		
 		return PLUGIN_CONTINUE
 	}
 
@@ -98,10 +102,15 @@ public cl_say(id){
 	new pos=0;
 	if ( said[pos] == '/' ) pos++
 
-	if ( equali(said[pos], help_cmd, 4) ) {
+	if ( equali(said[pos], extra_help_cmd, 4) ) {
 		showExtraHelp(id)
 		return PLUGIN_HANDLED
 	}
+	if ( equali(said[pos], general_help_cmd, 4) ) {
+		show_motd(id,"motd.txt","REBORN SUPERHERO MOD general help file")
+		return PLUGIN_HANDLED
+	}
+
 
 	return PLUGIN_CONTINUE
 }

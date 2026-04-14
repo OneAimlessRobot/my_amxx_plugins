@@ -11,7 +11,6 @@ ghostface_knifespeed 290	//Speed when holding knife, Default 290 (for faster the
 ghostface_knifemult 1.5		//Damage multiplyer for his knife, Default 1.5
 ghostface_healpoints 5		//The # of HP healed per second, Default 5
 // Below only used if USE_PLAYER_MODEL is uncommented
-ghostface_teamglow 0		//Glow Team Color when player skin in use, Default 0 (0=no 1=yes)
 
 */
 

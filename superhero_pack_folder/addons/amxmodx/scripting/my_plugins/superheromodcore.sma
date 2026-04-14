@@ -821,11 +821,11 @@ public fm_GetGameDesc()
 	new mod_name[9]
 	get_modname(mod_name, charsmax(mod_name))
 	if ( equal(mod_name, "cstrike") ) {
-		forward_return(FMV_STRING, "CS - SuperHero Mod")
+		forward_return(FMV_STRING, "CS - SuperHero Mod Extd by ThrashBrat")
 	}
 	else {
 		//gIsCzero = true
-		forward_return(FMV_STRING, "CZ - SuperHero Mod")
+		forward_return(FMV_STRING, "CZ - SuperHero Mod Extd by ThrashBrat")
 	}
 
 	return FMRES_SUPERCEDE
