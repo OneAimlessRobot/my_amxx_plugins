@@ -6,6 +6,18 @@
 
 #define SH_HUD_MSG_BUFF_SIZE 128
 
+#define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
+
+stock sh_get_player_cloak_pct(id){
+
+	new Float:real_alpha,  render_mode
+
+	real_alpha=entity_get_float(id, EV_FL_renderamt)
+	render_mode=entity_get_int(id, EV_INT_rendermode)
+
+	return ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(render_mode,real_alpha)
+
+}
 stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 
 stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {

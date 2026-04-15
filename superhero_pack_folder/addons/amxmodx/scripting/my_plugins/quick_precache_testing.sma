@@ -1,6 +1,4 @@
-#include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
-#include "../include/amxmisc.inc"
 #include "my_include/randomx.inc"
 #include "my_include/my_author_header.inc"
 

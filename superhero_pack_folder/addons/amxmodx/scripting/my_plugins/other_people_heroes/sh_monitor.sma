@@ -114,8 +114,6 @@
 #define MONITOR_SPEC
 #define MONITOR_ALPHA
 
-#define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
-
 /************* Do Not Edit Below Here **************/
 
 
@@ -237,9 +235,6 @@ public monitor_think(ent)
 				static specPlayer, specPlayerLevel
 			#endif
 
-			#if defined MONITOR_ALPHA || defined MONITOR_SPEC
-				static Float:spec_alpha, Float:real_alpha, spec_render_mode, render_mode
-			#endif
 
 			#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE || defined MONITOR_ALPHA
 				static len
@@ -293,10 +288,8 @@ public monitor_think(ent)
 								len += formatex(temp[len], charsmax(temp) - len, "  |  ")
 							#endif
 
-							real_alpha=entity_get_float(id, EV_FL_renderamt)
-							render_mode=entity_get_int(id, EV_INT_rendermode)
 
-							len += formatex(temp[len], charsmax(temp) - len, "CLOAK %d%", ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(render_mode,real_alpha))
+							len += formatex(temp[len], charsmax(temp) - len, "CLOAK %d%", sh_get_player_cloak_pct(id) )
 						
 						#endif
 
@@ -333,8 +326,6 @@ public monitor_think(ent)
 
 						pev(specPlayer, pev_velocity, velocity)
 						pev(specPlayer, pev_gravity, gravity)
-						spec_alpha=entity_get_float(specPlayer, EV_FL_renderamt)
-						spec_render_mode=entity_get_int(specPlayer, EV_INT_rendermode)
 						specPlayerLevel = sh_get_user_lvl(specPlayer)
 
 						if ( specPlayerLevel < ServerMaxLevel ) {
@@ -350,7 +341,7 @@ public monitor_think(ent)
 												UserArmor[specPlayer],
 												floatround(gravity*100.0),
 												floatround(vector_length(velocity)),
-												ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(spec_render_mode,spec_alpha))
+												sh_get_player_cloak_pct(specPlayer))
 					}
 				#endif
 			}

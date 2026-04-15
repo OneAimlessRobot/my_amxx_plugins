@@ -8,6 +8,7 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt6.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
+
 stock const extra_help_cmd[]="extra_help"
 stock const general_help_cmd[]="general_help"
 stock help_files_directory[STRLEN_FOR_FILES+1]

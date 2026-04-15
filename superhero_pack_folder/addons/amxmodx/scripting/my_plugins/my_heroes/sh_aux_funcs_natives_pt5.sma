@@ -6,10 +6,12 @@
 
 #define PLUGIN "Superhero aux natives pt5: hero player model morph registering"
 #define VERSION "1.0.0"
+#define GLOBAL_GLOW_TASK_LOOP_PERIOD 1.0
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
+new GLOW_TASKID
 
 #define SH_MAX_PLAYER_MODELS 30
 enum player_model_array_struct{
@@ -24,7 +26,7 @@ enum player_model_array_struct{
 
 }
 new curr_num_models_logged=0
-new gPlayersCurrHeroModelID[SH_MAXSLOTS+1]
+new gPlayersCurrHeroModelID[SH_MAXSLOTS+1]={-1, ...}
 new sh_array_of_player_model_structs[SH_MAX_PLAYER_MODELS+1][player_model_array_struct]
 
 public plugin_init(){
@@ -34,10 +36,31 @@ public plugin_init(){
 	register_clcmd("sh_choose_model", "sh_choose_model",ADMIN_ALL,"Choose a model. The only parameter is the model_id as shown in ^"sh_print_models^"")
 	register_clcmd("sh_print_models", "sh_print_models",ADMIN_ALL,"Print all superhero models available to you")
 	
+	register_event("DeathMsg","death","a")
+	register_event("ResetHUD","newRound","b")
+
+	GLOW_TASKID=allocate_typed_task_id(generic_task)
+
 	prepare_shero_aux_lib_pt5()
 	init_hud_syncs()
+
+	set_task(GLOBAL_GLOW_TASK_LOOP_PERIOD,"global_glow_task",GLOW_TASKID,_,_,"b")
     
 	
+}
+public sh_hero_init_pt2(id,heroID,mode){
+
+	if(!is_user_connected(id)) return
+	if(gPlayersCurrHeroModelID[id]<0) return
+
+	if(mode==SH_HERO_DROP){
+		
+		if(sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_hero_id]==heroID){
+			
+			sh_player_unmorph_task(id,1)
+
+		}
+	}
 }
 public plugin_precache(){
 
@@ -45,9 +68,7 @@ public plugin_precache(){
 }
 public plugin_natives(){
 
-
 	register_native("prepare_shero_aux_lib_pt5","_prepare_shero_aux_lib_pt5",0);
-	register_native("sh_reset_player_hero_player_model","_sh_reset_player_hero_player_model",0);
 	register_native("sh_register_superheromod_model","_sh_register_superheromod_model",0)
 }
 
@@ -69,11 +90,12 @@ play_morph_sound(id){
 				VOL_NORM,ATTN_NORM,0,PITCH_NORM)
 }
 //----------------------------------------------------------------------------------------------
-public sh_player_morph_task(id,hero_model_id)
+sh_player_morph_task(id,hero_model_id)
 {
-	if ( (gPlayersCurrHeroModelID[id]>=0 )|| !is_user_alive(id)) return
+	if ( !is_user_alive(id)) return
 
 	gPlayersCurrHeroModelID[id]=hero_model_id
+
 	
 	cs_set_user_model(id, sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_morph_string])
 	play_morph_sound(id)
@@ -85,7 +107,7 @@ public sh_player_morph_task(id,hero_model_id)
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_player_unmorph_task(id)
+sh_player_unmorph_task(id,take_away_model=1)
 {
 	if ( !is_user_connected(id) ) return
 	if ( (gPlayersCurrHeroModelID[id]>=0 )) {
@@ -95,8 +117,12 @@ public sh_player_unmorph_task(id)
 						sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_unmorph_message])
 		}
 		cs_reset_user_model(id)
+		if(sh_get_player_cloak_pct(id)<=0){
+
+			set_user_rendering(id)
+		}
 		play_morph_sound(id)
-		gPlayersCurrHeroModelID[id]=-1
+		gPlayersCurrHeroModelID[id]=(take_away_model?-1:gPlayersCurrHeroModelID[id])
 
 	}
 }
@@ -139,15 +165,6 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	curr_num_models_logged++
 	
 	return result
-}
-public _sh_reset_player_hero_player_model(iPlugins, iParams){
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-
-		return 0
-	}
-	
-	return 1
 }
 
 public _prepare_shero_aux_lib_pt5(iPlugins, iParams){
@@ -220,4 +237,71 @@ public sh_print_models(id, level, cid)
 	console_print(id,"We found a total of:^n%d player models for you to pick.^n^n",counter)
 
 	return PLUGIN_HANDLED
+}
+public death(){
+	
+	new id = read_data(2)
+
+	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+
+	sh_player_unmorph_task(id,0)
+
+	return PLUGIN_CONTINUE
+}
+
+public newRound(id){
+
+	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+
+	if(gPlayersCurrHeroModelID[id]>=0){
+
+			sh_player_morph_task(id,gPlayersCurrHeroModelID[id])
+
+	}
+	return PLUGIN_CONTINUE
+
+}
+//assumes player is connected and all that
+//to be executed in the task!
+teamglow_player(id){
+
+	static CsTeams:curr_player_team
+
+
+
+	curr_player_team=cs_get_user_team(id)
+
+	switch(curr_player_team){
+		
+		case CS_TEAM_T:{
+
+			sh_set_rendering(id, 255, 0, 0, 16,kRenderFxGlowShell);
+		}
+		case CS_TEAM_CT:{
+
+			sh_set_rendering(id, 0, 0, 255, 16,kRenderFxGlowShell);
+
+		}
+
+
+
+	}
+}
+public global_glow_task(id){
+
+	
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+
+			if(!is_user_alive(i)) continue
+
+			if(gPlayersCurrHeroModelID[i]<0) continue
+			
+
+			teamglow_player(i)
+
+
+
+	}
+
+
 }

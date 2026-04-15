@@ -8,7 +8,6 @@
 
 
 native prepare_shero_aux_lib_pt5()
-native sh_reset_player_hero_player_model(id)
 native sh_register_superheromod_model(gHeroID,
                         const filename_ct[STRING_SIZE],
                         const filename_t[STRING_SIZE],

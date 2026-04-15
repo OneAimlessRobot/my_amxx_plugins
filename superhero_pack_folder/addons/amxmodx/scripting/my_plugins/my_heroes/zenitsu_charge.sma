@@ -56,6 +56,9 @@ public on_Knife_Weapon_Change(id)
 {
 	if ( !client_hittable(id)||!shModActive()) return
 	if(!sh_user_has_hero(id,zenitsu_get_hero_id())) return
+	if(g_zenitsu_is_charging[id]&&!g_zenitsu_has_touched_player[id]){
+		engclient_cmd(id, "weapon_knife")
+	}
 }
 
 //----------------------------------------------------------------------------------------------
@@ -110,6 +113,7 @@ public zenitsu_charge(id, uc_handle, seed)
 	{
 		if(!g_zenitsu_was_charging[id]){
 
+			engclient_cmd(id, "weapon_knife")
 			trail(id,YELLOW,1,10)
 			emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			get_uc(uc_handle,UC_ViewAngles,g_zenitsu_curr_charge_look_direction[id])

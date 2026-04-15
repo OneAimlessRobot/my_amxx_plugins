@@ -63,6 +63,9 @@ forward sh_extra_health_add_pre(&id,&the_health_to_add)
  * @noreturn
  */
 forward sh_hero_init(id, heroID, mode);
+
+forward sh_hero_init_pt2(id, heroID, mode); //for my player models module
+
 native sh_max_entities()
 native _dropPower(id, const said[],showmenu = 1);
 /**

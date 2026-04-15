@@ -503,7 +503,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
 new fwdReturn
-new fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
+new fwd_HeroInit, fwd_HeroInit_pt2, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShXpPre
@@ -609,6 +609,7 @@ public plugin_init()
 
 	// API - Register a bunch of forwards that heroes can use
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
+	fwd_HeroInit_pt2 = CreateMultiForward("sh_hero_init_pt2", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
 	fwd_Spawn = CreateMultiForward("sh_client_spawn", ET_IGNORE, FP_CELL, FP_CELL)		// id, newSpawn
 	fwd_Death = CreateMultiForward("sh_client_death", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL, FP_STRING)	//killer, victim, wpnindex, hitplace, TK
@@ -1701,7 +1702,7 @@ initHero(id, heroIndex, mode)
 			resetMinGravity(id)
 		}
 	}
-
+	ExecuteForward(fwd_HeroInit_pt2, fwdReturn, id, heroIndex, mode)
 	//Init the hero
 #if defined SH_BACKCOMPAT
 	if ( gEventInit[heroIndex][0] != '^0' ) {
@@ -2036,7 +2037,7 @@ menuSuperPowers(id, menuOffset)
 
 		//Init This Hero!
 		initHero(id, heroIndex, SH_HERO_ADD)
-
+		
 		//Don't show menu to bots and wait for next menu call before giving another power
 		return PLUGIN_HANDLED
 	}
