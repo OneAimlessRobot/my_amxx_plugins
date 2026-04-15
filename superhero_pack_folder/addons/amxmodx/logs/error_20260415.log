@@ -1,0 +1,15 @@
+L 04/15/2026 - 21:57:18: Start of error session.
+L 04/15/2026 - 21:57:18: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260415.log")
+L 04/15/2026 - 21:57:18: String formatted incorrectly - parameter 8 (total 7)
+L 04/15/2026 - 21:57:18: [AMXX] Run time error 25 (plugin "amx_scoreboard.amxx") - debug not enabled!
+L 04/15/2026 - 21:57:18: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/15/2026 - 21:58:14: Start of error session.
+L 04/15/2026 - 21:58:14: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260415.log")
+L 04/15/2026 - 21:58:14: String formatted incorrectly - parameter 8 (total 7)
+L 04/15/2026 - 21:58:14: [AMXX] Run time error 25 (plugin "amx_scoreboard.amxx") - debug not enabled!
+L 04/15/2026 - 21:58:14: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/15/2026 - 21:58:37: Start of error session.
+L 04/15/2026 - 21:58:37: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260415.log")
+L 04/15/2026 - 21:58:37: String formatted incorrectly - parameter 8 (total 7)
+L 04/15/2026 - 21:58:37: [AMXX] Run time error 25 (plugin "amx_scoreboard.amxx") - debug not enabled!
+L 04/15/2026 - 21:58:37: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

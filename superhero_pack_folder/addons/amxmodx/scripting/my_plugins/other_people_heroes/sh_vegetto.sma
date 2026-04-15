@@ -279,8 +279,6 @@ public vegetto_kd()
 		g_powerNum[id] = 3
 	}
 	else if ( userArmor >= g_ssjLevel[3] ) {
-		// Remove Users glowing since he was ssjlevel 4
-		set_user_rendering(id)
 
 		client_print(id,print_chat,"[SH](Vegetto) Deathball!!")
 		emit_sound(id, CHAN_STATIC, "shmod/vegeto_deathball.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -789,8 +787,6 @@ public vegetto_loop()
 				}
 			}
 			else if ( userArmor >= g_ssjLevel[3] ) {
-				// SSJ4 glows red
-				shGlow(id, 196, 000, 000)
 				// Set these items only once when armor is ssjlevel 4
 				if ( g_isSaiyanLevel[id] < 4 ) {
 					new parm[2]
