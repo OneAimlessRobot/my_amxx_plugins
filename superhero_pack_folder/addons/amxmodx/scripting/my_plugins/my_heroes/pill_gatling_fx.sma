@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -289,7 +290,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
+	new owner = get_member(weapon_ent, m_pPlayer)
 	if(!client_hittable(owner)){
 		return HAM_IGNORED
 	}

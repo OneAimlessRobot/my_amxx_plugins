@@ -1,5 +1,6 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include <reapi>
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -239,7 +240,7 @@ public Ham_Weapon_Stab(weapon_ent)
 	}
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
+	new owner = get_member(weapon_ent, m_pPlayer)
 
 	if ( (!spear_loaded[owner]||!spear_get_num_spears(owner))&&sh_user_has_hero(owner,spear_get_hero_id())) {
 		return HAM_SUPERCEDE

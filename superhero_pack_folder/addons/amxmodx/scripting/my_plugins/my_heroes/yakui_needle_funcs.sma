@@ -1,4 +1,5 @@
 #include "../my_include/superheromod.inc"
+#include <reapi>
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -72,7 +73,7 @@ public Ham_Needle_Swing(weapon_ent)
 
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
+	new owner = get_member(weapon_ent, m_pPlayer)
 
 	if ( !client_hittable(owner)) {
 		return HAM_IGNORED

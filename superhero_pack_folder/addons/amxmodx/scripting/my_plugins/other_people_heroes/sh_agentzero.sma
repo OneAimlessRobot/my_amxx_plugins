@@ -20,11 +20,10 @@ agentz_level 5
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 #define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 
-#define XO_WEAPON 4
-#define m_pPlayer 41
 
 // GLOBAL VARIABLES
 new gHeroID

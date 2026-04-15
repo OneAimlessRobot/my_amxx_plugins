@@ -49,22 +49,13 @@ const SHOTGUNS_BS	= ((1<<CSW_M3)|(1<<CSW_XM1014))
 const SILENT_BS	= ((1<<CSW_USP)|(1<<CSW_M4A1))
 
 // weapons offsets
-#define XTRA_OFS_WEAPON			4
-#define m_pPlayer				41
-#define m_iId					43
 #define m_fKnown				44
-#define m_flNextPrimaryAttack		46
-#define m_flNextSecondaryAttack	47
-#define m_flTimeWeaponIdle		48
 #define m_iPrimaryAmmoType		49
-#define m_iClip				51
-#define m_fInReload				54
 #define m_fInSpecialReload		55
 #define m_fSilent				74
 
 // players offsets
 #define XTRA_OFS_PLAYER		5
-#define m_flNextAttack		83
 #define m_rgAmmo_player_Slot0	376
 
 stock const Float:g_fDelay[CSW_P90+1] = {
@@ -273,14 +264,14 @@ public fw_CmdStart(id, uc_handle, seed)
 		return FMRES_IGNORED
 	
 	}
-	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < H_RIFLE_CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON))
+	if((PressButton & IN_RELOAD) && cs_get_weapon_ammo(iEnt) < H_RIFLE_CLIP && cs_get_user_bpammo(id, CSW_MOSIN) > 0 && !get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON))
 	{
 		set_uc(uc_handle, UC_Buttons, PressButton & ~IN_RELOAD)
 		
 		cs_set_user_zoom(id, CS_RESET_ZOOM, 1)
 		
-		set_pdata_int(iEnt, m_fInReload, 0, XTRA_OFS_WEAPON)
-		set_pdata_int(iEnt, m_fInSpecialReload, 1, XTRA_OFS_WEAPON)
+		set_pdata_int(iEnt, m_fInReload, 0, XO_WEAPON)
+		set_pdata_int(iEnt, m_fInSpecialReload, 1, XO_WEAPON)
 	}
 	
 	return FMRES_IGNORED
@@ -310,7 +301,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 		set_pdata_float(invoker, 111, get_gametime() + 0.75)
 		
 		static Ent; Ent = fm_get_user_weapon_entity(invoker, CSW_MOSIN)
-		set_pdata_int(Ent, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+		set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 		
 		return FMRES_SUPERCEDE
 	}
@@ -352,7 +343,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_weaponmodel2, MODEL_P)
 	
 	Set_WeaponAnim(Id, ANIM_DRAW)
-	set_pdata_int(Ent, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+	set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
@@ -370,14 +361,14 @@ public fw_Weapon_Reload(iEnt)
 
 		return HAM_IGNORED;
 	}
-	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)
+	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	if(!is_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Mosin, id))
 		return HAM_IGNORED	
 	
 	set_pdata_int(iEnt, m_fInReload, 0, 4)
-	set_pdata_int(iEnt, m_fInSpecialReload, 1, XTRA_OFS_WEAPON)
+	set_pdata_int(iEnt, m_fInSpecialReload, 1, XO_WEAPON)
 	
 	return HAM_SUPERCEDE
 }
@@ -387,72 +378,72 @@ public fw_Item_PostFrame( iEnt )
 	if(pev_valid(iEnt) != 2){
 		return
 	}
-	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XTRA_OFS_WEAPON)	
+	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
 
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, XTRA_OFS_PLAYER)
-	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XTRA_OFS_WEAPON)
+	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, XO_WEAPON)
+	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
 	if(get_pdata_int(id, m_flNextAttack, XTRA_OFS_PLAYER) > 0.0)
 		return
 
-	switch(get_pdata_int(iEnt, m_fInSpecialReload, XTRA_OFS_WEAPON) )
+	switch(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) )
 	{
 		case 1: // Check, Start
 		{
 			if(cs_get_weapon_ammo(iEnt) >= H_RIFLE_CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
 			{
-				set_pdata_int(iEnt, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
+				set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
 				return
 			}
 			
 			Set_WeaponAnim(id, ANIM_START_RELOAD)
 			
 			set_pdata_float(id, m_flNextAttack, 0.75, 5)
-			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.75, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.75, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.75, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.75, XO_WEAPON)
 			
-			set_pdata_int(iEnt, m_fInSpecialReload, 2, XTRA_OFS_WEAPON)
+			set_pdata_int(iEnt, m_fInSpecialReload, 2, XO_WEAPON)
 		}
 		case 2: // Insert 
 		{
 			if(cs_get_weapon_ammo(iEnt) >= H_RIFLE_CLIP || cs_get_user_bpammo(id, CSW_MOSIN) <= 0)
 			{
-				set_pdata_int(iEnt, m_fInSpecialReload, 4, XTRA_OFS_WEAPON)
+				set_pdata_int(iEnt, m_fInSpecialReload, 4, XO_WEAPON)
 				return
 			} else {
-				set_pdata_int(iEnt, m_fInSpecialReload, 3, XTRA_OFS_WEAPON)
+				set_pdata_int(iEnt, m_fInSpecialReload, 3, XO_WEAPON)
 			}
 			
 			emit_sound(id, CHAN_ITEM, WeaponSounds[2], 1.0, ATTN_NORM, 0, 85 + generate_int(0,0x1f))
 			Set_WeaponAnim(id, ANIM_INSERT)
 
-			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.45, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.45, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.45, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.45, XO_WEAPON)
 			set_pdata_float(id, m_flNextAttack, 0.45, 5)
 		}
 		case 3: // Done Insert
 		{
-			set_pdata_int(iEnt, m_iClip, iClip + 1, XTRA_OFS_WEAPON)
+			set_pdata_int(iEnt, m_iClip, iClip + 1, XO_WEAPON)
 			set_pdata_int(id, 381, iBpAmmo-1, XTRA_OFS_PLAYER)
 			cs_set_user_bpammo(id, CSW_MOSIN, cs_get_user_bpammo(id, CSW_MOSIN) - 1)
 			
-			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.1, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.1, XTRA_OFS_WEAPON)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.1, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.1, XO_WEAPON)
 			set_pdata_float(id, m_flNextAttack, 0.1, 5)
 			
-			set_pdata_int(iEnt, m_fInSpecialReload, 2, XTRA_OFS_WEAPON)
+			set_pdata_int(iEnt, m_fInSpecialReload, 2, XO_WEAPON)
 		}
 		case 4: // Stop Reload
 		{
 			Set_WeaponAnim(id, ANIM_AFTER_RELOAD)
 
-			set_pdata_int(iEnt, m_fInSpecialReload, 0, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextPrimaryAttack, 1.5, XTRA_OFS_WEAPON)
-			set_pdata_float(iEnt, m_flNextSecondaryAttack, 1.5, XTRA_OFS_WEAPON)
+			set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
+			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextPrimaryAttack, 1.5, XO_WEAPON)
+			set_pdata_float(iEnt, m_flNextSecondaryAttack, 1.5, XO_WEAPON)
 			set_pdata_float(id, m_flNextAttack, 1.5, 5)
 		}
 	}
