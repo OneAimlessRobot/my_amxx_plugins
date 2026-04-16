@@ -12,6 +12,12 @@
 #include "../my_include/my_author_header.inc"
 
 
+new g_ester_is_reborn_mode[SH_MAXSLOTS+1]
+new bool:g_flying[SH_MAXSLOTS+1]
+new bool:g_smashed_someone[SH_MAXSLOTS+1]
+new g_is_glowing[SH_MAXSLOTS+1]
+
+
 new Float:ester_flyspeed,
 Float:ester_fly_health_spend,
 Float:ester_calculation_time_period,
@@ -30,15 +36,11 @@ new ester_explosion_ignore_user
 new ester_total_respawn_attempts
 
 
-new g_ester_is_reborn_mode[SH_MAXSLOTS+1]
-
 new Float:g_ester_blow_up_time_left[SH_MAXSLOTS+1]
 
 new ester_anti_pussy_engaged
 
 new ester_calculation_times
-new bool:g_flying[SH_MAXSLOTS+1]
-new bool:g_smashed_someone[SH_MAXSLOTS+1]
 new g_ester_respawned_attempts[SH_MAXSLOTS+1]
 new g_is_between_rounds
 new g_which_team_is_user[SH_MAXSLOTS+1]
@@ -46,7 +48,6 @@ new g_saved_coords[SH_MAXSLOTS+1][3]
 new g_last_coords[SH_MAXSLOTS+1][3]
 
 
-new g_is_glowing[SH_MAXSLOTS+1]
 
 
 stock ESTER_REBORN_CALCULATION_LOOP_TASKID,

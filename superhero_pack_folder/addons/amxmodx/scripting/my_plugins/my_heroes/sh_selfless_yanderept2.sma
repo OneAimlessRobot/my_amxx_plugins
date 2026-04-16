@@ -116,8 +116,8 @@ public plugin_natives(){
 public _yandere_get_is_super(iPlugin,iParams){
 	new id= get_param(1)
 	
-	return gSuperAngry[id]
-
+	//return gSuperAngry[id]
+	return Get_BitVar(gSuperAngryMask,id)
 
 }
 public _yandere_get_hero_id(iPlugin,iParams){
@@ -130,17 +130,17 @@ public yandere_angry_idle_checks(id, uc_handle){
 
 	if(!client_hittable(id)) return FMRES_IGNORED
 
-	if(!sh_user_has_hero(id,gHeroID) ||!gSuperAngry[id]) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
 	static butnprs
 
-	gIdleAngry[id] = true
+	Set_BitVar(gIdleAngryMask,id)
 	butnprs =  get_uc(uc_handle, UC_Buttons);
 
-	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) gIdleAngry[id] = false
+	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) UnSet_BitVar(gIdleAngryMask,id)
 
-	if (butnprs&IN_JUMP) gIdleAngry[id]  = false
-	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) gIdleAngry[id] = false
-	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) gIdleAngry[id]  = false
+	if (butnprs&IN_JUMP) UnSet_BitVar(gIdleAngryMask,id)
+	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT) UnSet_BitVar(gIdleAngryMask,id)
+	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT) UnSet_BitVar(gIdleAngryMask,id)
 
 	return FMRES_IGNORED
 
@@ -155,7 +155,7 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 
 	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,
-				sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]);
+				sh_user_has_hero(attacker,gHeroID) && Get_BitVar(gSuperAngryMask,attacker));
 
 
 
@@ -175,7 +175,7 @@ public yandere_init()
 		sh_reset_max_speed(id)
 		gNormalSpeed[id]=base_extra_speed
 		gBaseSpeed[id]=base_extra_speed
-		gPlayedSound[id]=false
+		UnSet_BitVar(gPlayedSoundMask,id)
 		remove_task(id+YANDERE_STATS_TASKID)
 		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
 		
@@ -212,14 +212,14 @@ return -1;
 public yandere_sentence_loop(id){
 id-=YANDERE_ANGER_TASKID;
 
-if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) &&gSuperAngry[id]){
+if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) &&Get_BitVar(gSuperAngryMask,id)){
 	
 	
-	if(gIdleAngry[id]||(get_user_health(id)>degen_health_extra_threshold)){
+	if(Get_BitVar(gIdleAngryMask,id)||(get_user_health(id)>degen_health_extra_threshold)){
 		
 		static client_name[128]
 		new user_health=get_user_health(id)
-		new degen_dmg_2_take= (float(user_health)>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(user_health)-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(gIdleAngry[id]?2:1):0
+		new degen_dmg_2_take= (float(user_health)>yandere_get_psychosis_degen_health_threshold())?(yandere_get_user_is_psychosis(id)?200000:1)*floatround((float(user_health)-yandere_get_psychosis_degen_health_threshold())*degen_iter_period*0.01*(yandere_get_user_is_psychosis(id)?yandere_get_psychosis_degen_pct():angry_degen_pct),floatround_ceil)*(Get_BitVar(gIdleAngryMask,id)?2:1):0
 		if(degen_dmg_2_take>0){
 			new client_origin[3]
 			get_user_origin(id,client_origin)
@@ -268,7 +268,17 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	new mates_alive
 	sh_get_player_counts(i,1,mates_alive,g_mates_dead[i])
 	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
-	gTransTimerStarted[i]= (can_transform && !gSuperAngry[i])
+	if(can_transform && !Get_BitVar(gSuperAngryMask,i)){
+
+		Set_BitVar(gTransTimerStartedMask,i)
+
+	}
+	else{
+
+		UnSet_BitVar(gTransTimerStartedMask,i)
+
+	}
+	
 	update_stats(i)
 	set_user_maxspeed(i,gNormalSpeed[i])
 }
@@ -286,7 +296,7 @@ if(!sh_user_has_hero(id,gHeroID) ){
 if(client_hittable(id)){
 	
 	
-	if(!is_user_bot(id)&&gTransTimerStarted[id]){
+	if(!is_user_bot(id)&&Get_BitVar(gTransTimerStartedMask,id)){
 		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 	}
 	yandere_timer_transform(id)
@@ -308,7 +318,7 @@ update_stats(id){
 	
 	new Float:maxspeed=get_user_maxspeed(id)
 	
-	if(gSuperAngry[id]){
+	if(Get_BitVar(gSuperAngryMask,id)){
 
 		gNormalDmgMult[id]=angry_dmg_mult
 		gNormalSpeed[id]=floatmax(angry_speed,maxspeed);
@@ -327,30 +337,30 @@ public yandere_timer_transform(id){
 		return
 		
 	}
-	if(gSuperAngry[id]){
+	if(Get_BitVar(gSuperAngryMask,id)){
 
 		new Float:gravity=get_user_gravity(id)
 		set_user_gravity(id,floatmin(angry_gravity,gravity))
 	}
 	else{
-		gIdleAngry[id]=false;
-		if(gTransTimerStarted[id]){
+		UnSet_BitVar(gIdleAngryMask,id)
+		if(Get_BitVar(gTransTimerStartedMask,id)){
 
 			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
 			if(gTransTimer[id]<=0.0){
-
-				gSuperAngry[id]=true
+				
+				Set_BitVar(gSuperAngryMask,id)
 				update_stats(id)
 				sh_reset_min_gravity(id)
 				set_user_maxspeed(id,gNormalSpeed[id])
-				if(!gPlayedSound[id]){
+				if(!Get_BitVar(gPlayedSoundMask,id)){
 					static client_name[128]
 					get_user_name(id,client_name,127)
 					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
 					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
 					remove_task(id+YANDERE_ANGER_TASKID)
 					set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
-					gPlayedSound[id]=true
+					Set_BitVar(gPlayedSoundMask,id)
 				}
 				gTransTimer[id]=trans_time
 			}
@@ -359,8 +369,8 @@ public yandere_timer_transform(id){
 
 			gTransTimer[id]=trans_time
 		}
-		if(gSuperAngry[id]&&client_hittable(id)){
-			gTransTimerStarted[id]=false
+		if(Get_BitVar(gSuperAngryMask,id)&&client_hittable(id)){
+			UnSet_BitVar(gTransTimerStartedMask,id)
 			BlowUp(id)
 			jet_destroy(id)
 			if(sh_is_inround()){
@@ -413,18 +423,18 @@ degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold"
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	if(is_user_alive(id) && shModActive()){
-		arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
+		g_is_cursed_masks[id]=0
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-			gSuperAngry[id]=false;
-			gPlayedSound[id]=false
+			UnSet_BitVar(gSuperAngryMask,id)
+			UnSet_BitVar(gPlayedSoundMask,id)
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
 			set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
 			gTransTimer[id]=trans_time
-			gTransTimerStarted[id]=false
+			UnSet_BitVar(gTransTimerStartedMask,id)
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
@@ -451,7 +461,7 @@ public yandere_damage(id)
 		if (floatround(extraDamage) > 0.0){
 			
 			new health = get_user_health(id)
-			if(gSuperAngry[attacker]&&(weapon==YANDERE_WEAPON_CLASSID)){
+			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
 								headshot,
 								_,_,_,_,_,
@@ -465,7 +475,7 @@ public yandere_damage(id)
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_rage)
 			}
-			if(gSuperAngry[attacker]){
+			if(Get_BitVar(gSuperAngryMask,attacker)){
 				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
@@ -482,7 +492,7 @@ public yandere_damage(id)
 				}
 				if((weapon==CSW_KNIFE)&&!sh_user_has_hero(id,gHeroID) ){
 					
-					g_is_cursed[id][attacker]=true
+					Set_BitVar(g_is_cursed_masks[id],attacker)
 					
 					if(!is_user_bot(attacker)){
 						sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
@@ -498,15 +508,14 @@ public yandere_damage(id)
 		
 	}
 	if( sh_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
-		if(g_is_cursed[attacker][id]){
+		if(Get_BitVar(g_is_cursed_masks[attacker],id)){
 			if(generate_float(0.0,1.0)<curse_pct){
 				set_user_godmode(id,0)
 				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,SH_DMG_KILL,
 							_,_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS))
-
-				g_is_cursed[attacker][id]=false
+				UnSet_BitVar(g_is_cursed_masks[attacker],id)
 			}
 		}
 	
@@ -552,7 +561,7 @@ public yandere_kd()
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
-	if(gSuperAngry[id]){
+	if(Get_BitVar(gSuperAngryMask,id)){
 		if ( gPlayerUltimateUsed[id]||yandere_get_user_is_psychosis(id) ) {
 			
 			if(!is_user_bot(id)){
@@ -641,7 +650,7 @@ public sh_round_end(){
 public fire_weapon(id)
 {
 	
-	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)||!gSuperAngry[id]) return PLUGIN_CONTINUE 
+	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)||!Get_BitVar(gSuperAngryMask,id)) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -662,13 +671,13 @@ killyandere(id,bool:dropping=false){
 	if(!is_user_connected(id)||!sh_is_active()) return
 	if(sh_user_has_hero(id,gHeroID) ||dropping){
 		
-		if(gSuperAngry[id]){
+		if(Get_BitVar(gSuperAngryMask,id)){
 			static origin[3]
 			get_user_origin(id,origin)
 			fx_invisible(id)
 			anime_kill_fx(origin)
 			for(new i=0;i<=SH_MAXSLOTS;i++){
-				g_is_cursed[i][id]=false;
+				UnSet_BitVar(g_is_cursed_masks[i],id)
 			}
 			if(yandere_get_user_is_psychosis(id)){
 				yandere_unpsychosis_user(id)
@@ -680,10 +689,10 @@ killyandere(id,bool:dropping=false){
 			set_user_gravity(id)
 			jet_destroy(id);
 		}
-		gSuperAngry[id]=false;
+		UnSet_BitVar(gSuperAngryMask,id)
 		
 	}
-	arrayset(g_is_cursed[id],false,SH_MAXSLOTS+1)
+	g_is_cursed_masks[id]=0
 }
 public death()
 {	
@@ -694,7 +703,7 @@ public death()
 public sh_client_death(id,attacker,headshot,const weapon_description[])
 {	
 	if(client_hittable(attacker)){
-		if(sh_user_has_hero(attacker,gHeroID) &&gSuperAngry[attacker]){
+		if(sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(gSuperAngryMask,attacker)){
 			fx_invisible(id)
 		}
 	}
@@ -743,7 +752,7 @@ public weaponChange(id)
 	}
 	g_prevWeapon[id] = wpnid
 	
-	if (!gSuperAngry[id]) return
+	if (!Get_BitVar(gSuperAngryMask,id)) return
 	
 	
 	if (wpnid == YANDERE_WEAPON_CLASSID) {

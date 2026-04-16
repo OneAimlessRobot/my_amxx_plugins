@@ -110,13 +110,10 @@ public insptequila_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
-		{
-			if ( is_user_alive(id) )
-				fill_ammo(id)
-		}
+		if ( is_user_alive(id) )
+			fill_ammo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -543,7 +543,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	sh_bleed_user(victim,killer,BLEED_NORMAL,spores_ksun_hero_id())
 	ksun_heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
-	emit_sound(victim, CHAN_STATIC, SPORE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(victim, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_scanner_player_tracks_player(killer,victim,0)
 	g_times_player_spiked_player[killer][victim]++
 	g_times_player_spiked_by_player[victim][killer]++
@@ -559,7 +559,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_WOUND_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
 	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
 	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );

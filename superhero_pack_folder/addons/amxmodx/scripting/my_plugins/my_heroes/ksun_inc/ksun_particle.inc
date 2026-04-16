@@ -5,7 +5,6 @@
 
 
 #define KSUN_SPORE_MDL "models/shmod/predgun/preddisc.mdl"
-#define SPORE_WOUND_SFX  "hornet/ag_hornethit1.wav"
 #define SPORE_TRAVEL_SFX "roach/rch_smash.wav"
 
 

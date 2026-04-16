@@ -15,13 +15,12 @@ stock SLEEP_TASKID,
 		UNSLEEP_TASKID,
 		FULLY_WAKE_UP_TASKID
 
-new bool:gIsAsleep[SH_MAXSLOTS+1]
+new gIsAsleepMask
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
-arrayset(gIsAsleep,false,SH_MAXSLOTS+1)
 register_forward(FM_CmdStart, "CmdStart");
 register_event("DeathMsg","on_death_sleeping","a")
 register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
@@ -39,7 +38,7 @@ public Fwd_PlayerPreThink(id)
 		return FMRES_IGNORED
 	}
 
-	if(!gIsAsleep[id]){
+	if(!Get_BitVar(gIsAsleepMask,id)){
 		return FMRES_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
@@ -53,7 +52,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		
 		return FMRES_IGNORED
 	}
-	if(!gIsAsleep[player]){
+	if(!Get_BitVar(gIsAsleepMask,player)){
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem)
@@ -67,7 +66,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 public sleep_newRound(id)
 {	
 	if(shModActive()&&client_hittable(id)){
-		if(gIsAsleep[id]){
+		if(Get_BitVar(gIsAsleepMask,id)){
 			sh_unsleep_user(id)
 		}
 	}
@@ -80,7 +79,7 @@ public CmdStart(id, uc_handle)
 	static button; button= get_uc(uc_handle, UC_Buttons);
 	
 	
-	if ( gIsAsleep[id]) {
+	if ( Get_BitVar(gIsAsleepMask,id)) {
 		button &= ~button;
 		set_uc(uc_handle, UC_Buttons, button);
 		return FMRES_SUPERCEDE
@@ -110,10 +109,10 @@ stock sleep_user_switch_weapon(id){
 	}
 	
 }
-public bool:_sh_get_user_is_asleep(iPlugin,iParams){
+public _sh_get_user_is_asleep(iPlugin,iParams){
 
 	new id=get_param(1)
-	return gIsAsleep[id]
+	return Get_BitVar(gIsAsleepMask,id)
 
 
 }
@@ -126,7 +125,7 @@ public _sh_sleep_user(iPlugin,iParams){
 	get_user_name(attacker,attacker_name,127)
 	new user_name[128]
 	get_user_name(user,user_name,127)
-	if(!gIsAsleep[user]){
+	if(!Get_BitVar(gIsAsleepMask,user)){
 		if((user==attacker)){
 			if(user&&CAN_SELF_SLEEP){
 
@@ -185,7 +184,7 @@ sleep_user(id,attacker){
 	new array[1]
 	array[0] = attacker
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
-	gIsAsleep[id]=true
+	Set_BitVar(gIsAsleepMask,id)
 	sleep_user_switch_weapon(id)
 	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
@@ -213,7 +212,7 @@ public fully_wake_up_task(id){
 	
 	set_user_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
-	gIsAsleep[id]=false
+	UnSet_BitVar(gIsAsleepMask,id)
 	
 
 
@@ -225,7 +224,7 @@ unsleep_user(id){
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
-	gIsAsleep[id]=false
+	UnSet_BitVar(gIsAsleepMask,id)
 
 
 
@@ -235,7 +234,7 @@ public weaponChange(id)
 {
 	if ( !client_hittable(id)||!shModActive()) return
 
-	if(gIsAsleep[id]){
+	if(Get_BitVar(gIsAsleepMask,id)){
 		sleep_user_switch_weapon(id)
 	}
 }

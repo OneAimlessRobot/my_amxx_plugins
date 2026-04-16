@@ -39,12 +39,18 @@ stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
 
 #define YANDERE_CYCLE_PERIOD 0.5
 // GLOBAL VARIABLES
+//Replacing with bitmasks...
+
 stock gHeroID
 stock const gHeroName[] = "Yandere Mk.II"
-stock bool:gSuperAngry[SH_MAXSLOTS+1]
-stock bool:gIdleAngry[SH_MAXSLOTS+1]
-stock bool:gPlayedSound[SH_MAXSLOTS+1]
-stock bool:g_is_cursed[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+
+
+stock gSuperAngryMask
+stock gIdleAngryMask
+stock gPlayedSoundMask
+stock g_is_cursed_masks[SH_MAXSLOTS+1]
+stock gTransTimerStartedMask
+
 stock Float:gNormalDmgMult[SH_MAXSLOTS+1]
 stock Float:gNormalSpeed[SH_MAXSLOTS+1]
 stock Float:gBaseSpeed[SH_MAXSLOTS+1]
@@ -77,7 +83,6 @@ stock overheal_hp_max
 
 
 stock Float:gTransTimer[SH_MAXSLOTS+1]
-stock bool:gTransTimerStarted[SH_MAXSLOTS+1]
 stock Float:trans_time
 
 

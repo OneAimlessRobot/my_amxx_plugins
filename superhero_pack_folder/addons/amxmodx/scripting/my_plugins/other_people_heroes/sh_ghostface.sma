@@ -146,33 +146,29 @@ public ghostface_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
+		if ( is_user_alive(id) )
 		{
-			if ( is_user_alive(id) )
-			{
-				#if defined USE_WPN_MODEL
-					if ( ModelWeaponLoaded )
-						switch_model(id)
-				#endif
-
-			}
-		}
-
-		case false:
-		{
-			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id))
-			{
-
-				shRemHealthPower(id)
-				shRemArmorPower(id)
-				shRemGravityPower(id)
-				shRemSpeedPower(id)
-			}
+			#if defined USE_WPN_MODEL
+				if ( ModelWeaponLoaded )
+					switch_model(id)
+			#endif
 
 		}
+	}
+	else
+	{
+		// Check is needed since this gets run on clearpowers even if user didn't have this hero
+		if ( is_user_alive(id))
+		{
+
+			shRemHealthPower(id)
+			shRemArmorPower(id)
+			shRemGravityPower(id)
+			shRemSpeedPower(id)
+		}
+
 	}
 }
 //----------------------------------------------------------------------------------------------

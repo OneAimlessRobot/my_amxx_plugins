@@ -56,18 +56,16 @@ public cola_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(!sh_user_has_hero(id,gHeroID))
 	{
-		case false:
+		// This gets run if they had the power but don't anymore
+		if ( is_user_alive(id) )
 		{
-			// This gets run if they had the power but don't anymore
-			if ( is_user_alive(id) )
-			{
-				shRemSpeedPower(id)
-				shRemHealthPower(id)
-			}
-
+			shRemSpeedPower(id)
+			shRemHealthPower(id)
 		}
+
 	}
+	
 }
 //----------------------------------------------------------------------------------------------

@@ -19,8 +19,9 @@
 new g_zenitsu_has_touched_player[SH_MAXSLOTS+1]
 new g_zenitsu_is_charging[SH_MAXSLOTS+1]
 new g_zenitsu_was_charging[SH_MAXSLOTS+1]
-new Float:g_zenitsu_curr_charge_look_direction[SH_MAXSLOTS+1][3]
 new g_zenitsu_is_glowing[SH_MAXSLOTS+1]
+
+new Float:g_zenitsu_curr_charge_look_direction[SH_MAXSLOTS+1][3]
 
 public plugin_init(){
 	
@@ -176,6 +177,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 	emit_sound(pToucher, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	
+	set_user_godmode(pTouched,0)
 	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],1,_,_,_,_,_,
 				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))

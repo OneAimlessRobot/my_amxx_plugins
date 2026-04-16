@@ -90,29 +90,26 @@ public Haloune_init()
 	// Shield restrict MUST be before weapons are given out
 	shResetShield(id)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
+		if ( is_user_alive(id) )
 		{
-			if ( is_user_alive(id) )
-			{
-				Haloune_weapons(id)
-				switch_model(id)
-			}
+			Haloune_weapons(id)
+			switch_model(id)
 		}
 
-		case false:
+	}
+	else
+	{
+		// Check is needed since this gets run on clearpowers even if user didn't have this hero
+		if ( is_user_alive(id))
 		{
-			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id))
-			{
-				// This gets run if they had the power but don't anymore
-				engclient_cmd(id, "drop", "weapon_M4A1")
-				shRemHealthPower(id)
-				shRemArmorPower(id)
-				shRemGravityPower(id)
-				shRemSpeedPower(id)
-			}
+			// This gets run if they had the power but don't anymore
+			engclient_cmd(id, "drop", "weapon_M4A1")
+			shRemHealthPower(id)
+			shRemArmorPower(id)
+			shRemGravityPower(id)
+			shRemSpeedPower(id)
 		}
 	}
 }

@@ -15,17 +15,18 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ester"
-new bool:gPedalIsFloored[SH_MAXSLOTS+1]
-new bool:gUnloading[SH_MAXSLOTS+1]
-new bool:gFinished[SH_MAXSLOTS+1]
+
+new gPedalIsFlooredMask
+new gUnloadingMask
+new gFinishedMask
+new g_ester_enemies_masks[SH_MAXSLOTS+1]
+
 new gGunLastDeployed[SH_MAXSLOTS+1]
 new damage_to_do[SH_MAXSLOTS+1]
 new gEsterDmg[SH_MAXSLOTS+1]
 new gTimesLeft[SH_MAXSLOTS+1]
 new gBuiltUpXp[SH_MAXSLOTS+1]
 
-
-new bool:g_ester_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new times_per_map,Float:stun_time_at_it,Float:stun_speed_at_it,Float:period,power_cost
 new base_dmg_per_it,dmg_inc_per_inc,num_lvls_for_inc,max_dmg
 new Float:pan_dmg,Float:tmp_dmg_mult
@@ -206,11 +207,11 @@ reset_status(id){
 	if(is_user_connected(id)){
 		set_user_rendering(id)	
 	}
-	gFinished[id]=false
+	UnSet_BitVar(gFinishedMask,id)
 	damage_to_do[id]=0
 	gBuiltUpXp[id]=0
-	gPedalIsFloored[id]=false
-	gUnloading[id]=false
+	UnSet_BitVar(gPedalIsFlooredMask,id)
+	UnSet_BitVar(gUnloadingMask,id)
 	stop_sounds(id)
 	
 }
@@ -218,14 +219,14 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!gFinished[id])&&client_hittable(id)&&sh_user_has_hero(id,gHeroID) ){
+	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&client_hittable(id)&&sh_user_has_hero(id,gHeroID) ){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
 		new CsTeams:ester_user_team=cs_get_user_team(id);
 		for(new i=0;i<player_count;i++){
 			if(client_hittable(players[i])){
-				count+=((g_ester_enemies[id][players[i]])&&(players[i]!=id)&&(players[i])&&(cs_get_user_team(players[i])!=ester_user_team))?1:0;
+				count+=((Get_BitVar(g_ester_enemies_masks[id],players[i]))&&(players[i]!=id)&&(players[i])&&(cs_get_user_team(players[i])!=ester_user_team))?1:0;
 			}
 		}
 		
@@ -283,17 +284,15 @@ public reset_ester_user_round(id){
 }
 public show_targets(id){
 	
-	static hud_msg[500];
 	static client_name[128];
 	get_user_name(id,client_name,127)
-	formatex(hud_msg,500,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
+	client_print(id,print_console,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
 	for(new i=1;i<=SH_MAXSLOTS;i++){
-		if(g_ester_enemies[id][i]&&client_hittable(i)){
+		if(Get_BitVar(g_ester_enemies_masks[id],i)&&client_hittable(i)){
 			get_user_name(i,client_name,127)
-			formatex(hud_msg,500,"%s%s.^n",hud_msg,client_name);
+			client_print(id,print_console,"%s.^n",client_name);
 		}
 	} 
-	client_print(id,print_center,"%s",hud_msg)
 	
 }
 public update_max_dmg(id){
@@ -333,14 +332,14 @@ public loadCVARS()
 public Ester_revenge_loop(id)
 {
 	id-=ESTER_REVENGE_TASKID
-	if ( !sh_is_active() || !is_user_alive(id)){
+	if ( !sh_is_active() || !is_user_alive(id)||ester_get_reborn_mode(id)){
 		
 		remove_task(id+ESTER_REVENGE_TASKID)
 		return
 	}
+	
 		
-		
-	if(!(gPedalIsFloored[id]||gUnloading[id])||gFinished[id]) return
+	if(!(Get_BitVar(gPedalIsFlooredMask,id)||Get_BitVar(gUnloadingMask,id))||Get_BitVar(gFinishedMask,id)) return
 
 	static CsArmorType:armorType
 	static userArmor,user_health
@@ -348,7 +347,7 @@ public Ester_revenge_loop(id)
 	userArmor = cs_get_user_armor(id, armorType)
 	if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
 	
-	if(gPedalIsFloored[id]){
+	if(Get_BitVar(gPedalIsFlooredMask,id)){
 		
 		if (power_cost > 0 )
 		{
@@ -391,11 +390,11 @@ public Ester_revenge_loop(id)
 		aura(id,{100,100,255});
 		damage_to_do[id]+=gEsterDmg[id]
 	}
-	else if(gUnloading[id]){
+	else if(Get_BitVar(gUnloadingMask,id)){
 		if(count_enemies(id)){
 			for ( new x=1; x<=SH_MAXSLOTS; x++) 
 			{
-				if ( is_user_alive(x) && (get_user_team(id)!=get_user_team(x)) && x!=id &&(g_ester_enemies[id][x]))
+				if ( is_user_alive(x) && (get_user_team(id)!=get_user_team(x)) && x!=id &&(Get_BitVar(g_ester_enemies_masks[id],x)))
 				{
 					
 					Ester_instant(x, id)
@@ -405,14 +404,14 @@ public Ester_revenge_loop(id)
 			damage_to_do[id]-=min(power_cost,damage_to_do[id])
 			if(!damage_to_do[id]){
 				
-				gUnloading[id]=false;
-				gFinished[id]=true;
+				UnSet_BitVar(gUnloadingMask,id)
 				if(!is_user_bot(id)){
 					sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
 				}
-				explosion(gHeroID,id,1000.0,1000.0,default_explode_knock_force_magnitude,0)
+				explosion(gHeroID,id,float(get_user_health(id))+1000.0,float(get_user_health(id))+1000.0,default_explode_knock_force_magnitude,0)
 				reset_status(id)
-				gFinished[id]=true;
+				Set_BitVar(gFinishedMask,id)
+				user_kill(id,1)
 				remove_task(id+ESTER_REVENGE_TASKID)
 			}
 		}
@@ -420,9 +419,10 @@ public Ester_revenge_loop(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 			}
-			explosion(gHeroID,id,float(damage_to_do[id]),float(damage_to_do[id]),default_explode_knock_force_magnitude,0)
+			explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),default_explode_knock_force_magnitude,0)
 			reset_status(id)
-			gFinished[id]=true;
+			user_kill(id,1)
+			Set_BitVar(gFinishedMask,id)
 			remove_task(id+ESTER_REVENGE_TASKID)
 			return
 			
@@ -433,7 +433,7 @@ public Ester_revenge_loop(id)
 public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	sh_extra_damage( x, id,gEsterDmg[id], "Neuroblast" )
+	sh_extra_damage( x, id,gEsterDmg[id], "Neuroblast",1 )
 	directed_spark(id,x,30,5,200,40,PURPLE)
 }
 //----------------------------------------------------------------------------------------------
@@ -478,10 +478,10 @@ public ester_damage(id)
 		
 	}
 	if(sh_user_has_hero(id,gHeroID) ){
-		if(!gUnloading[id]&&gTimesLeft[id]){
+		if(!Get_BitVar(gUnloadingMask,id)&&gTimesLeft[id]){
 			
-			g_ester_enemies[id][attacker]=true;
-			if(gPedalIsFloored[id]){
+			Set_BitVar(g_ester_enemies_masks[id],attacker);
+			if(Get_BitVar(gPedalIsFlooredMask,id)){
 				
 				sh_extra_damage( attacker, id,floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil), "Charging reflect" )
 				emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
@@ -539,19 +539,17 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
 		switch(is_teamate){
 			case 0:{
-					if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
-							sh_effect_user_direct(id,attacker,ester_get_hero_id(),STUN);
-							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
-							}
-							if(!is_user_bot(id)){
-								sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
-							}
-						
+				if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
+					sh_effect_user_direct(id,attacker,ester_get_hero_id(),STUN);
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+					}
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
 					}
 					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,tmp_dmg_mult+1.0)):floatadd(damage,pan_dmg))
 					if (extraDamage>0){
-						
+					
 						sh_extra_damage(id,attacker,floatround(extraDamage),
 									(weapon==CSW_TMP)?dmg_source_name_short_moralizing_ray:dmg_source_name_short_adulting_pan,headshot,_,_,_,_,_,
 									_,
@@ -569,30 +567,31 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						}
 						gBuiltUpXp[attacker]+=extra_moralizing_xp
 					}
+				}
+					
 			}
 			case 1:{
-					if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
+				if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
 					if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
-							sh_effect_user_direct(id,attacker,ester_get_hero_id(),METYLPHENIDATE);
+						sh_effect_user_direct(id,attacker,ester_get_hero_id(),METYLPHENIDATE);
+						
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+						}
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+						}
+						new unextra_moralizing_xp=min(mult*(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give),gBuiltUpXp[attacker])
+						if(unextra_moralizing_xp){
 							
 							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+								sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
 							}
-							if(!is_user_bot(id)){
-								sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
-							}
-							new unextra_moralizing_xp=min(mult*(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give),gBuiltUpXp[attacker])
-							if(unextra_moralizing_xp){
-								
-								if(!is_user_bot(attacker)){
-									sh_chat_message(attacker,ester_get_hero_id(),ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
-								}
-								sh_set_user_xp(id,unextra_moralizing_xp,true);
-							}
-							gBuiltUpXp[attacker]-=unextra_moralizing_xp
+							sh_set_user_xp(id,unextra_moralizing_xp,true);
 						}
+						gBuiltUpXp[attacker]-=unextra_moralizing_xp
 					}
-					
+				}
 			}
 			default:{
 			}
@@ -655,13 +654,9 @@ public death()
 		reset_status(id)
 		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,generate_int(95,120))
 		
-		gTimesLeft[id]-=(gTimesLeft[id]&&gPedalIsFloored[id])?1:0
+		gTimesLeft[id]-=(gTimesLeft[id]&&Get_BitVar(gPedalIsFlooredMask,id))?1:0
 		
-		if(damage_to_do[id]){
-			arrayset(g_ester_enemies[id],false,SH_MAXSLOTS+1)
-		}
-		
-		reset_ester_reborn_mode(id,0)
+		g_ester_enemies_masks[id]=0
 	}
 	new dead_client_name[128]
 	get_user_name(id,dead_client_name,127)
@@ -673,8 +668,12 @@ public death()
 		if(!sh_user_has_hero(i,gHeroID) ){
 		
 			continue
-		} 
-		if(!g_ester_enemies[i][id]){
+		}
+		if(sh_clients_are_same_team(i,id)){
+
+			continue
+		}
+		if(!Get_BitVar(g_ester_enemies_masks[i],id)){
 			continue
 		}
 		new ester_wielder_name[128]
@@ -706,6 +705,12 @@ public ester_kd()
 		return PLUGIN_HANDLED
 		
 	}
+	if(ester_get_reborn_mode(id)){
+
+		sh_chat_message(id,gHeroID,"Youre in reborn mode! You cannot use that");
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+	}
 	if(!gTimesLeft[id]){
 		
 		if(!is_user_bot(id)){
@@ -714,7 +719,7 @@ public ester_kd()
 		}
 		return PLUGIN_HANDLED
 	}
-	if(gUnloading[id]){
+	if(Get_BitVar(gUnloadingMask,id)){
 		
 		if(!is_user_bot(id)){
 			sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NOw AHAHAAHAH!!!!");
@@ -732,7 +737,7 @@ public ester_kd()
 		show_targets(id)
 	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	gPedalIsFloored[id]=true
+	Set_BitVar(gPedalIsFlooredMask,id)
 	remove_task(id+ESTER_REVENGE_TASKID)
 	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "b")
 	
@@ -746,10 +751,10 @@ public ester_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!gPedalIsFloored[id]||!hasRoundStarted()) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
-	gPedalIsFloored[id]=false
+	UnSet_BitVar(gPedalIsFlooredMask,id)
 	stop_sounds(id)
 	new client_name[128]
 	get_user_name(id,client_name,127)
@@ -763,8 +768,8 @@ public ester_ku()
 		return PLUGIN_HANDLED;
 	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	if(!gFinished[id]){
-		gUnloading[id]=true
+	if(!Get_BitVar(gFinishedMask,id)){
+		Set_BitVar(gUnloadingMask,id)
 		gTimesLeft[id]--;
 	}
 	

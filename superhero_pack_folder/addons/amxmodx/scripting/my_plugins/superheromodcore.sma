@@ -1056,6 +1056,8 @@ public cvarCheck()
 	gBotsEarnXP=get_pcvar_num(sh_botsearnxp)
 	gBotsMinLevel=get_pcvar_num(sh_botsminlevel)
 	gBotsMaxLevel=get_pcvar_num(sh_botsmaxlevel)
+	gBotsMaxLevel=max(0,min(gBotsMaxLevel,gNumLevels))
+	gBotsMinLevel=max(0,min(gBotsMinLevel,gNumLevels))
 }
 public _sh_max_entities(iPlugin,iParams){
 

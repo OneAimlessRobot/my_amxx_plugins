@@ -27,6 +27,15 @@
 <pre>
 Say commands:
 /help -> superheromod help
+by the way: use lowercase when binding a power to a letter key
+Like v (not V) or e (not E)
+examples:
+power2: bind i +power2
+(use "i".
+NOT "I".)
+power1: bind q +power1
+(use "q".
+NOT "Q".)
 
 /extra_help -> more superheromod help
 

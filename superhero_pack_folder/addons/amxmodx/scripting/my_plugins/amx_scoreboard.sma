@@ -123,7 +123,7 @@ build_player_line(id,team_ordinal,buff[ROW_LENGTH]){
         formatex(buff,(sizeof buff)-1,PLAYER_LINE_FMT_OFF_GAME,
                                 id,
                                 user_name,
-                                is_user_bot(id)?"[ BOT ]":"[ HUMAN ]",
+                                is_user_bot(id)?"BOT":"HUMAN",
                                 user_authid,
                                 is_user_bot(id)?-1:ping,is_user_bot(id)?-1:loss)
     }
@@ -132,11 +132,11 @@ build_player_line(id,team_ordinal,buff[ROW_LENGTH]){
         formatex(buff,(sizeof buff)-1,PLAYER_LINE_FMT,
                                     id,
                                     user_name,
-        is_user_alive(id)?"Yes!":"Nuh.",get_user_godmode(id)?"Yes!":"Nuh.",
+        is_user_alive(id)?"ALIVE":"DEAD",get_user_godmode(id)?"GOD":"-",
                                     get_user_health(id),get_user_armor(id),
                                     cs_get_user_money(id),
                                     get_user_frags(id),get_user_deaths(id),
-                                    is_user_bot(id)?"[ BOT ]":"[ HUMAN ]",
+                                    is_user_bot(id)?"BOT":"HUMAN",
                                     user_authid,
                                     is_user_bot(id)?-1:ping,is_user_bot(id)?-1:loss)           
     }

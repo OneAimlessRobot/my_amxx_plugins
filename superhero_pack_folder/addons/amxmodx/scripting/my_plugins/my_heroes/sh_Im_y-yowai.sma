@@ -3,6 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
+#include "chikoi_inc/chikoi_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 #define YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME "Thanks for that"
@@ -191,6 +192,11 @@ new id=str_to_num(temp)
 if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||g_yowai_mode[id] ) {
 	return PLUGIN_HANDLED
 }
+if ( sh_player_has_chikoi(id)) {
+	sh_sound_deny(id)
+	sh_chat_message(id,gHeroID,"You have chikoi enabled. Will not enable")
+	return PLUGIN_HANDLED
+}
 g_yowai_mode[id]= true;
 
 sh_chat_message(id,gHeroID,"Activated yowai mode.")
@@ -213,6 +219,8 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		}
 		if(damage>=dmg_threshold||(g_hits[victim]>=g_max_hits_player[victim])){
 			
+			
+			set_user_godmode(victim,0)
 			arrayset(wpnDescription,0,sizeof wpnDescription)
 			copy(wpnDescription,strlen(YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME), YOWAI_SLAY_THANKS_FOR_THAT_ENTITY_CLASSNAME)
 			damage=get_user_health(victim)+1;

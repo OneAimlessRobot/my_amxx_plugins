@@ -89,6 +89,7 @@ public plugin_init()
 	#if USE_MODEL
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
+	register_event("ResetHUD", "newRound", "b")
 	register_event("Damage", "chucky_damage", "b", "2!0")
 	register_event("DeathMsg", "chucky_death", "a")
 
@@ -119,24 +120,27 @@ public chucky_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
-		{
-			#if USE_MODEL
-				switch_model(id)
-			#endif
-		}
-
-		case false:
-		{
-			// This gets run if they had the power but don't anymore
-			if ( is_user_alive(id) )
-				shRemSpeedPower(id)
-
-			HasKilledWithKnife[id] = false
-		}
+		enable_chucky(id)
+		#if USE_MODEL
+			switch_model(id)
+		#endif
 	}
+	else{
+		// This gets run if they had the power but don't anymore
+		if ( is_user_alive(id) )
+			shRemSpeedPower(id)
+
+	}
+	HasKilledWithKnife[id] = false
+}
+public newRound(id){
+
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+		return
+	
+	HasKilledWithKnife[id] = false
 }
 //----------------------------------------------------------------------------------------------
 #if USE_MODEL
@@ -212,11 +216,6 @@ public chucky_death()
 	
 		return;
 	}
-	if( !(sh_user_has_hero(id,gHeroID)||sh_user_has_hero(id,gHeroID))) {
-	
-		return;
-	}
-
 	if(weapon== CSW_KNIFE&&sh_user_has_hero(attacker,gHeroID)){
 	
 		HasKilledWithKnife[attacker]=true
@@ -342,8 +341,7 @@ public round_end()
 		if ( sh_user_has_hero(id,gHeroID))
 		{
 			remove_task(id)
-			ChuckyPowerUsed[id] = false
-			HasKilledWithKnife[id] = false
+			enable_chucky(id)
 			switch_model(id)
 		}
 	}

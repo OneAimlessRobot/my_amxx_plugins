@@ -18,7 +18,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	arrayset(g_yandere_leaped,true,SH_MAXSLOTS+1)
 	register_event("DeathMsg","on_death_psychosis","a")
 	register_cvar("yandere_psychosis_time", "5")
 	register_cvar("yandere_psychosis_zoom", "5")
@@ -42,7 +41,7 @@ public plugin_init(){
 public psychosis_newRound(id)
 {	
 	if(shModActive()&&client_hittable(id)){
-		if(gIsPsychosis[id]){
+		if(Get_BitVar(gIsPsychosisMask,id)){
 			yandere_unpsychosis_user(id)
 		}
 	}
@@ -53,7 +52,7 @@ public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker) ||(id==attacker)) return HAM_IGNORED
 new CsTeams:att_team,CsTeams:vic_team;
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker,vic_team,att_team)
-if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&yandere_get_user_is_psychosis(id)){
+if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
 	
 	damage=1.0+damage- (damage*psychosis_dmg_cushion)
 	SetHamParamFloat(4, damage);
@@ -100,10 +99,10 @@ public Float:_yandere_get_psychosis_degen_health_threshold(iPlugin,iParams){
 }
 
 
-public bool:_yandere_get_user_is_psychosis(iPlugin,iParams){
+public _yandere_get_user_is_psychosis(iPlugin,iParams){
 	new id= get_param(1)
 	
-	return gIsPsychosis[id]
+	return Get_BitVar(gIsPsychosisMask,id)
 
 
 }
@@ -128,16 +127,16 @@ public client_PostThink(id) {
 	if(!client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) { 
 		return
 	}
-	if(g_yandere_leaped[id]){
+	if(Get_BitVar(g_yandere_leaped_mask,id)){
 		new flags = pev(id, pev_flags)
 		if((flags  & FL_INGROUND2)){
-			g_yandere_leaped[id]=false
+			UnSet_BitVar(g_yandere_leaped_mask,id)
 		}
 	}
 }
 public Player_TakeDamage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !yandere_get_is_super(id)||!(yandere_get_user_is_psychosis(id))||!client_hittable(id)) return HAM_IGNORED
+	if ( !shModActive() || !is_user_alive(id) || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!client_hittable(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -153,7 +152,7 @@ public psychosis_leap(id, uc_handle)
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	if(!g_yandere_leaped[id]){
+	if(!Get_BitVar(g_yandere_leaped_mask,id)){
 		if(button & IN_JUMP)
 		{
 			button &= ~IN_JUMP;
@@ -161,7 +160,7 @@ public psychosis_leap(id, uc_handle)
 			pev(id,pev_velocity,velocity)
 			velocity[2]+=600.0
 			set_pev(id,pev_velocity,velocity)
-			g_yandere_leaped[id]=true
+			Set_BitVar(g_yandere_leaped_mask,id)
 			
 			
 		}
@@ -226,8 +225,9 @@ psychosis_off(id)
 
 
 // Reset Zoom
-gIsPsychosis[id]=false
-g_yandere_leaped[id]=true
+
+UnSet_BitVar(gIsPsychosisMask,id)
+Set_BitVar(g_yandere_leaped_mask,id)
 for(new i=0;i<sizeof yandere_pain_sounds;i++){
 	emit_sound(id, CHAN_AUTO, yandere_pain_sounds[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
 }
@@ -242,8 +242,8 @@ psychosis_on(id){
 
 gPsychosisTime[id]=psychosis_time
 ultimateTimer(id, psychosis_cooldown * 1.0)
-g_yandere_leaped[id]=false
-gIsPsychosis[id]=true
+UnSet_BitVar(g_yandere_leaped_mask,id)
+Set_BitVar(gIsPsychosisMask,id)
 cs_set_user_armor(id,cs_get_user_armor(id)+psychosis_add_ap,CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(zoom)

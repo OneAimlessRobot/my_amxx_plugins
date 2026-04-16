@@ -35,7 +35,7 @@ new g_teliko_locked[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
 
-new bool:g_teliko_enemies[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new g_teliko_enemies_masks[SH_MAXSLOTS+1]
 
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
 new gHeroLevel
@@ -139,7 +139,7 @@ public teliko_init()
 }
 public reset_teliko_user(id){
 	
-	arrayset(g_teliko_enemies[id],false,SH_MAXSLOTS+1)
+	g_teliko_enemies_masks[id]=0
 	arrayset(g_num_mega_counters_enemy[id],0,SH_MAXSLOTS+1)
 	g_counter_bullets[id]=0;
 	gNumChaffs[id]=num_chaffs
@@ -162,7 +162,7 @@ public give_start_counters(id){
 public remove_enemy(id){
 	
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		g_teliko_enemies[i][id]=false;
+		UnSet_BitVar(g_teliko_enemies_masks[i],id)
 		g_num_mega_counters_enemy[i][id]=0;
 		
 		
@@ -338,7 +338,7 @@ else{
 }
 if(sh_user_has_hero(id,gHeroID) ){
 	
-	g_teliko_enemies[id][attacker]=true;
+	Set_BitVar(g_teliko_enemies_masks[id],attacker)
 	if((generate_float(0.0,1.0) < COUNTER_BULLET_PCT)){
 		
 		emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
@@ -348,7 +348,7 @@ if(sh_user_has_hero(id,gHeroID) ){
 	
 }
 
-if ( sh_user_has_hero(attacker,gHeroID) &&g_teliko_enemies[attacker][id]&&(weapon == g_teliko_weapon[attacker])&&(g_counter_bullets[attacker]>0))  {
+if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[attacker],id)&&(weapon == g_teliko_weapon[attacker])&&(g_counter_bullets[attacker]>0))  {
 	
 	new Float:extraDamage = damage * COUNTER_DMG_Mult - damage
 	if (floatround(extraDamage)>0){
@@ -470,7 +470,7 @@ if(sh_user_has_hero(id,gHeroID) ){
 		switchmodel(id)
 	}
 	
-	if(g_teliko_locked[id]){
+	if(g_teliko_locked[id] || (wpnid==CSW_KNIFE)){
 		
 		return
 		

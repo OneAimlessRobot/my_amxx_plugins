@@ -86,22 +86,17 @@ public alien_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
+		weapon_change(id)
+	}
+	else{
+		//This gets run if they had the power but don't anymore
+		if ( is_user_connected(id) )
 		{
-			weapon_change(id)
-		}
-
-		case false:
-		{
-			//This gets run if they had the power but don't anymore
-			if ( is_user_connected(id) )
-			{
-				alien_vision_off(id)
-				shRemHealthPower(id)
-				shRemArmorPower(id)
-			}
+			alien_vision_off(id)
+			shRemHealthPower(id)
+			shRemArmorPower(id)
 		}
 	}
 }

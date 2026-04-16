@@ -79,7 +79,7 @@ public Painkiller_Death(id)
 	
 	if ( is_user_connected(killer) )
 	{
-		sh_extra_damage(id, killer, 256, "Death")
+		sh_extra_damage(id, killer, 256, "Death",1)
 		AttackerInfo[id] = 0
 	} else 
 	{

@@ -141,37 +141,32 @@ public blade_init()
 	shResetShield(id)
 #endif
 
-	switch(sh_user_has_hero(id,gHeroID))
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
+
+		if ( is_user_alive(id) )
 		{
+			#if GIVE_WEAPONS == 1
+				blade_weapons(id)
+			#endif
 
-			if ( is_user_alive(id) )
-			{
-				#if GIVE_WEAPONS == 1
-					blade_weapons(id)
-				#endif
-
-				#if USE_MODEL
-					switch_model(id)
-				#endif
-			}
+			#if USE_MODEL
+				switch_model(id)
+			#endif
 		}
-
-		case false:
+	}
+	else{
+		// Check is needed since this gets run on clearpowers even if user didn't have this hero
+		if ( is_user_alive(id) )
 		{
-			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) )
-			{
-				#if GIVE_WEAPONS == 1
-					if ( cs_get_user_team(id) == CS_TEAM_T )
-						engclient_cmd(id, "drop", "weapon_usp")
+			#if GIVE_WEAPONS == 1
+				if ( cs_get_user_team(id) == CS_TEAM_T )
+					engclient_cmd(id, "drop", "weapon_usp")
 
-					engclient_cmd(id, "drop", "weapon_mac10")
-				#endif
+				engclient_cmd(id, "drop", "weapon_mac10")
+			#endif
 
-				shRemSpeedPower(id)
-			}
+			shRemSpeedPower(id)
 		}
 	}
 }

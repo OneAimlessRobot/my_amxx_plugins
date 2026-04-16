@@ -187,7 +187,7 @@ public slitter_think(id)
 	sh_set_stun(g_dragging_who[id][0],2.0,default_stun_speed)
 	set_user_maxspeed(id,slitter_drag_speed)
 	
-	set_pev(g_dragging_who[id][0],pev_renderamt,255.0)
+	set_pev(g_dragging_who[id][0],pev_renderamt,255)
 	g_dragging_who[id][1]--;
 	return FMRES_IGNORED
 }

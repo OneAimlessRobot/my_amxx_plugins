@@ -43,7 +43,7 @@ stock const fx_names[_:NUM_FX][]={
 			"cocaine",
 			"blindness",
 			"metylphenidate",
-			"bath salts",
+			"bath salts"
 }
 
 stock const Float:fx_rarity_weights[_:NUM_FX]={

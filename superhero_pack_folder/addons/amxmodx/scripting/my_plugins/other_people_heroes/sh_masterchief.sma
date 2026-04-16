@@ -58,17 +58,6 @@ masterchief_p90mult 1.3		//Damage multiplyer for his P90
 
 
 
-// 0-continuous shooting, no reload [Default]
-// 1-drop weapon and get a new one with full clip
-// 4-normal cs, no reload mode
-#define AMMO_MODE 0
-
-// Comment out to not use the P90 model
-#define USE_WPN_MODEL
-
-// Comment out to not give a free P90
-#define GIVE_WEAPON
-
 
 //------- Do not edit below this point ------//
 
@@ -83,11 +72,9 @@ new HeroName[] = "Master Chief"
 new gHeroID
 new CvarP90DmgMult
 
-#if defined USE_WPN_MODEL
-	new const Model_V_P90[] = "models/shmod/masterchief_v_p90.mdl"
-	new const Model_P_P90[] = "models/shmod/masterchief_p_p90.mdl"
-	new bool:ModelWeaponLoaded
-#endif
+new const Model_V_P90[] = "models/shmod/masterchief_v_p90.mdl"
+new const Model_P_P90[] = "models/shmod/masterchief_p_p90.mdl"
+new bool:ModelWeaponLoaded
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -120,9 +107,7 @@ public plugin_init()
 	register_event("Damage", "masterchief_damage", "b", "2!0")
 
 
-	#if defined USE_WPN_MODEL || AMMO_MODE < 4
-		register_event("CurWeapon", "weapon_change", "be", "1=1")
-	#endif
+	register_event("CurWeapon", "weapon_change", "be", "1=1")
 
 
 	// Let Server know about the hero's variables
@@ -131,35 +116,27 @@ public plugin_init()
 	shSetMinGravity(HeroName, "masterchief_gravity")
 	shSetMaxSpeed(HeroName, "masterchief_speed", "[0]")
 	init_hud_syncs()
-
-	#if defined GIVE_WEAPON
-		shSetShieldRestrict(HeroName)
-	#endif
+	shSetShieldRestrict(HeroName)
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
 public plugin_precache()
 {
-	#if defined USE_WPN_MODEL
-		ModelWeaponLoaded = true
-		if ( file_exists(Model_V_P90) ) {
-			engfunc(EngFunc_PrecacheModel,Model_V_P90)
-		}
-		else {
-			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_P90)
-			ModelWeaponLoaded = false
-		}
+	ModelWeaponLoaded = true
+	if ( file_exists(Model_V_P90) ) {
+		engfunc(EngFunc_PrecacheModel,Model_V_P90)
+	}
+	else {
+		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_P90)
+		ModelWeaponLoaded = false
+	}
 
-		if ( file_exists(Model_P_P90) ) {
-			engfunc(EngFunc_PrecacheModel,Model_P_P90)
-		}
-		else {
-			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_P90)
-			ModelWeaponLoaded = false
-		}
-	#endif
+	if ( file_exists(Model_P_P90) ) {
+		engfunc(EngFunc_PrecacheModel,Model_P_P90)
+	}
+	else {
+		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_P90)
+		ModelWeaponLoaded = false
+	}
 }
-#endif
 //----------------------------------------------------------------------------------------------
 public masterchief_init()
 {
@@ -168,65 +145,42 @@ public masterchief_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	// Reset thier shield restrict status
-	// Shield restrict MUST be before weapons are given out
-	#if defined GIVE_WEAPON
-		shResetShield(id)
-	#endif
-
-	switch(sh_user_has_hero(id,gHeroID))
+	shResetShield(id)
+	if(sh_user_has_hero(id,gHeroID))
 	{
-		case true:
+		if ( is_user_alive(id) )
 		{
+			masterchief_weapons(id)
 
-			if ( is_user_alive(id) )
-			{
-				#if defined GIVE_WEAPON
-					masterchief_weapons(id)
-				#endif
-
-				#if defined USE_WPN_MODEL
-					if ( ModelWeaponLoaded )
-						switch_model(id)
-				#endif
-
+			if ( ModelWeaponLoaded ){
+				switch_model(id)
 			}
+
 		}
-
-		case false:
+	}
+	else{
+		// Check is needed since this gets run on clearpowers even if user didn't have this hero
+		if ( is_user_alive(id))
 		{
-			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id))
-			{
-				// This gets run if they had the power but don't anymore
-				#if defined GIVE_WEAPON
-					engclient_cmd(id, "drop", "weapon_p90")
-				#endif
+
+			engclient_cmd(id, "drop", "weapon_p90")
 
 
-				shRemHealthPower(id)
-				shRemArmorPower(id)
-				shRemGravityPower(id)
-				shRemSpeedPower(id)
-			}
+			shRemHealthPower(id)
+			shRemArmorPower(id)
+			shRemGravityPower(id)
+			shRemSpeedPower(id)
 		}
 	}
 }
-//----------------------------------------------------------------------------------------------
-#if defined GIVE_WEAPON
 public new_spawn(id)
 {
 	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 	{
-		#if defined GIVE_WEAPON
-			set_task(0.1, "masterchief_weapons", id)
-		#endif
+		masterchief_weapons(id)
 
 	}
 }
-#endif
-//----------------------------------------------------------------------------------------------
-#if defined GIVE_WEAPON
 public masterchief_weapons(id)
 {
 	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
@@ -234,9 +188,6 @@ public masterchief_weapons(id)
 
 	shGiveWeapon(id, "weapon_p90")
 }
-#endif
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
 switch_model(id)
 {
 	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
@@ -250,9 +201,6 @@ switch_model(id)
 		set_pev(id, pev_weaponmodel2, Model_P_P90)
 	}
 }
-#endif
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL || AMMO_MODE < 4
 public weapon_change(id)
 {
 	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
@@ -262,19 +210,14 @@ public weapon_change(id)
 	if ( read_data(2) != CSW_P90 )
 		return
 
-	#if defined USE_WPN_MODEL
-		if ( ModelWeaponLoaded )
-			switch_model(id)
-	#endif
-
-	// Never Run Out of Ammo!
-	#if AMMO_MODE < 4
-		//clip = read_data(3)
-		if ( read_data(3) == 0 )
-			shReloadAmmo(id, AMMO_MODE)
-	#endif
+	if ( ModelWeaponLoaded ){
+		switch_model(id)
+	}
+	//clip = read_data(3)
+	if ( read_data(3) == 0 ){
+		shReloadAmmo(id, 2)
+	}
 }
-#endif
 //----------------------------------------------------------------------------------------------
 public masterchief_damage(id)
 {

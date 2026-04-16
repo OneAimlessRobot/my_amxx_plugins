@@ -395,7 +395,12 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	new Float:force,Float:damage,idamage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
 	idamage=floatround(damage)
-	if(optional_force!=0.0){
+	if(optional_force!=(0.0*float(hero_id))){ 
+		//im a perfectionist.
+		//Im not using this variable.
+		//and warnings annoy me. 
+		//So it gets converted into a float
+		//and multiplied by zero
 		force=optional_force-(optional_force/2.0)*falloff_coeff
 	}
 	else{
@@ -410,11 +415,10 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 
 	if(set_stun){
 		sh_set_stun(pid,3.0,default_stun_speed)
+		sh_screen_shake(pid,10.0,3.0,10.0)
 	}
-	sh_screen_shake(pid,10.0,3.0,10.0)
+	
 	unfade_screen_user(pid)
-	sh_chat_message(owner_id,hero_id,"%s was shattered by you!",client_name);
-	sh_chat_message(pid,hero_id,"%s shattered you!",attacker_name);
 }
 stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 

@@ -36,6 +36,7 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"
@@ -81,11 +82,6 @@ public plugin_init()
 
 	gmsgDamage = get_user_msgid("Damage")
 	gmsgIcon = get_user_msgid("StatusIcon")
-}
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheSound,"hornet/ag_hornethit1.wav")
 }
 //----------------------------------------------------------------------------------------------
 public poisonivy_init()
@@ -172,7 +168,7 @@ public poisonivy_damage(id)
 
 	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] && id != attacker ) {
 		// Set a poisoned player
-		emit_sound(id, CHAN_STATIC, "hornet/ag_hornethit1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_STATIC, BLEED_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		gIsPoisoned[id][attacker] = true
 
 		// Set a cooldown if there is one until user can poison another player
@@ -188,8 +184,9 @@ public poisonivy_loop()
 		if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue
 
 		for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-			if ( gIsPoisoned[id][attacker] && is_user_alive(id) ) {
-
+			if (  is_user_alive(id) ) {
+				if(!gIsPoisoned[id][attacker]) continue
+				
 				new health = get_user_health(id)
 				new damage = gPoisonDamage[attacker]
 

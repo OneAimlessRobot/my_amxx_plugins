@@ -2,6 +2,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "ksun_inc/ksun_global.inc"
+#include "chikoi_inc/chikoi_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
@@ -37,7 +38,17 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage,"player","ham_Chikoi_fallDamage")
 	
 }
+public plugin_natives(){
 
+	register_native("sh_player_has_chikoi","_sh_player_has_chikoi",0)
+
+}
+
+public _sh_player_has_chikoi(iPlugin, iParams){
+
+	new id=get_param(1)
+	return sh_user_has_hero(id,gHeroID)
+}
 //----------------------------------------------------------------------------------------------
 public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
@@ -61,7 +72,7 @@ if ( !is_user_connected(attacker)|| attacker==id ) return PLUGIN_CONTINUE
 
 if(headshot){
 
-	
+	set_user_godmode(id,0)
 	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id)
 }
 if(weapon==CSW_HEGRENADE){
@@ -131,6 +142,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		if(headshot){
 			
 			arrayset(wpnDescription,0,sizeof wpnDescription)
+			set_user_godmode(victim,0)
 			copy(wpnDescription, strlen(CHIKOI_THE_MAID_PHYSICAL_PROPERTY),CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
 			custom_weapon_id=custom_dmg_id
 			damage=get_user_health(victim)+1;

@@ -182,7 +182,7 @@ public _sh_get_pill_color(iPlugin,iParams){
 		
 		return
 	}	
-	set_array(3,LineColors[_:NUM_FX+fx_num-1],3)
+	set_array(3,LineColors[FX_COLOR_OFFSET+fx_num],3)
 
 
 
