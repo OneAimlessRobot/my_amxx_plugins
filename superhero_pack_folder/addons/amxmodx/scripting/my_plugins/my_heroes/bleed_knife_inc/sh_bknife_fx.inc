@@ -3,8 +3,6 @@
 #endif
 #define sh_bknife_fx
 
-#define BLEED_SFX "hornet/ag_hornethit1.wav"
-
 
 
 enum fx_bleed_type{
@@ -24,7 +22,7 @@ native do_bleed_knife_attack(id,
           stab_damage,
           optional_bool=1,
           const attack_name_string[128]="def_melee_bleed",
-          const bleed_sound_sample[128]=BLEED_SFX,
+          const bleed_sound_sample[128]=PIERCE_WOUND_SFX,
           heal_attacker=1);
 
 native sh_unbleed_user(id)

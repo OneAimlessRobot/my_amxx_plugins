@@ -16,6 +16,7 @@ veronika_m203dmg 120
 
 
 #include "../my_include/superheromod.inc"
+#include "../include/Vexd_Utilities.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"

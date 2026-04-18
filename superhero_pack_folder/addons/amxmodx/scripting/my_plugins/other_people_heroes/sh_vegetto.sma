@@ -49,6 +49,7 @@ vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 
 */
 
 #include "../my_include/superheromod.inc"
+#include "../include/Vexd_Utilities.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"

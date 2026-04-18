@@ -34,6 +34,7 @@ public plugin_natives(){
 	register_native("fx_blood_small","_fx_blood_small",0);
 	register_native("fx_blood_large","_fx_blood_large",0);
 	register_native("fx_gib_explode","_fx_gib_explode",0);
+	register_native("blood_spray","_blood_spray",0);
 	register_native("fx_extra_blood","_fx_extra_blood",0);
 	register_native("fx_headshot","_fx_headshot",0);
 	register_native("anime_kill_fx","_anime_kill_fx",0);
@@ -311,7 +312,7 @@ public _fx_extra_blood(iPlugins, iParams){
 			write_coord(origin[0]+(x*j))
 			write_coord(origin[1]+(y*j))
 			write_coord(origin[2]+(z*j))
-			write_short(spr_blood_spray)
+			write_short(spr_blood_drop)
 			write_short(spr_blood_drop)
 			write_byte(BLOOD_COLOR_RED) // color index
 			write_byte(15) // size
@@ -392,6 +393,37 @@ public _gross_kill_gibs_fx(iPlugins,iParm){
 	fx_blood_small(ivicOrigin,4)
 
 }
+//----------------------------------------------------------------------------------------------
+public _blood_spray(iPlugins, iParams){
+
+
+	new Float:vicOrigin[3]
+
+	get_array_f(1,vicOrigin,3)
+
+	new scale=get_param(2)
+
+	new Float:x
+	new Float:y
+	for(new i = 0; i < 2; i++) {
+		x = float(generate_int(-10, 10))
+		y = float(generate_int(-10, 10))
+		for(new Float:j = 0.0; j < 2.0; j+=1.0) {
+			// Blood spray
+			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+			write_byte(115)				// TE_BLOODSPRITE
+			write_coord_f(vicOrigin[0]+(x*j))	// position
+			write_coord_f(vicOrigin[1]+(y*j))
+			write_coord_f(vicOrigin[2]+21.0)
+			write_short(spr_blood_drop)	// sprite1 index
+			write_short(spr_blood_spray)	// sprite2 index
+			write_byte(248) 			// color RED = 248 YELLOW = 196
+			write_byte(scale) 			// scale
+			message_end()
+		}
+	}
+}
+
 public _precache_gibs(iPlugins, iParams){
 
 	spr_blood_drop = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr")
@@ -421,7 +453,7 @@ public _draw_view_cone(iPlugins, iParams){
 	
 	entity_get_vector(player_id, EV_VEC_origin,origin_a)
 	get_player_aim_vector_raw(player_id, vec_a);
-	new Float:length_a = VecLength(vec_a);
+	new Float:length_a = vector_length(vec_a);
 	multiply_3d_vector_by_scalar(vec_a,distance_limit / length_a,  vec_a);
 	fov_to_contain = angle_convert(fov_to_contain, false);
 	rotate_vector3(vec_left, vec_a, -0.5 * (fov_to_contain));

@@ -62,8 +62,8 @@ bazooka_spawndelay 0
 
 // ---END OF BAZOOKA CVARS---
 */
-
 #include "../my_include/superheromod.inc"
+#include "../include/Vexd_Utilities.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #define DT 0.1
 

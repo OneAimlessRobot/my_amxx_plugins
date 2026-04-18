@@ -426,9 +426,5 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
-	engfunc(EngFunc_PrecacheModel,"models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	
 }

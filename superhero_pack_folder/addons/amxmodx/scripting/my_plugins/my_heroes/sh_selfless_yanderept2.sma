@@ -2,8 +2,6 @@
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <xs>
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -12,6 +10,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -628,7 +627,7 @@ public sh_round_end(){
 	}
 	
 	clear_bombs()
-	clear_shells()
+	remove_entity_name(JETPLANE_SHELL_CLASSNAME)
 	clear_rockets()
 	
 	new total_alive,total_dead;

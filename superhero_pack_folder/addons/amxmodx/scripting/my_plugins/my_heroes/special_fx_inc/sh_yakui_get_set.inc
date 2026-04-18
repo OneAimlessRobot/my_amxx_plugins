@@ -3,7 +3,7 @@
 #endif
 #define sh_get_set
 
-#define EFFECT_SHOT_SFX "shmod/Teliko/counter.wav"
+
 #define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
 #define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
 
@@ -28,8 +28,6 @@ native sh_get_pill_color(fx_num,attacker,color[3])
 
 native make_effect(vic,attacker,gHeroId,fx_num=-1,bool:override=false)
 
-
-native uneffect_user_handler(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

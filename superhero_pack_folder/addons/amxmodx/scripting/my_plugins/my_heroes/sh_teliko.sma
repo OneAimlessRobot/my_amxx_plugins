@@ -8,9 +8,6 @@
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "../my_include/my_author_header.inc"
 
-
-
-#define COUNTER_SHOT_SFX "shmod/Teliko/counter.wav"
 #define COUNTER_MEGA_SFX "shmod/Teliko/MEGA_counter.wav"
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
 #define PRE_FIRST_BLOOD_SFX "shmod/Teliko/deagle-om.wav"
@@ -367,7 +364,7 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 		Inc_counters(attacker)
 	}
 	else{
-		emit_sound(attacker, CHAN_AUTO, COUNTER_SHOT_SFX, 1.0, 0.0, 0, PITCH_NORM)
+		emit_sound(attacker, CHAN_AUTO, GLASS_BREAK_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	}
 	
 }
@@ -375,7 +372,7 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 
 public sh_round_end(){
 
-	clear_chaffs()
+	remove_entity_name(CHAFF_CLASSNAME)
 
 }
 switchmodel(id)
@@ -393,7 +390,7 @@ public plugin_precache()
 {
 
 
-engfunc(EngFunc_PrecacheSound, COUNTER_SHOT_SFX) 
+engfunc(EngFunc_PrecacheSound, GLASS_BREAK_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX) 
 engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX) 

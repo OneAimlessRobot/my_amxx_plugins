@@ -1,4 +1,5 @@
 #include "../include/amxmodx.inc"
+#include "../include/fakemeta.inc"
 #include "my_include/randomx.inc"
 #include "my_include/my_author_header.inc"
 
@@ -21,4 +22,8 @@ public plugin_precache(){
 //add stuff here to test precahing
 //Useful when I am trying to see if the sv_downloadurl is correctly set at server.cfg
 
+	engfunc(EngFunc_PrecacheModel,"models/metalgibs.mdl" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
+	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 }

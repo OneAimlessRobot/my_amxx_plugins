@@ -67,6 +67,7 @@ Version History:
 //----------------------------------------------------------------------------------------------
 
 #include "../my_include/superheromod.inc"
+#include "../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Scorpion"

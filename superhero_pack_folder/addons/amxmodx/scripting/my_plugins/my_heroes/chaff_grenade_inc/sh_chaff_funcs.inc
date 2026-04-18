@@ -10,7 +10,6 @@
 
 
 #define CHAFF_EXPLODE_SFX "shmod/Teliko/chaff/chaff_blow.wav"
-#define CHAFF_BOUNCE_SFX "shmod/Teliko/chaff/bounce.wav"
 
 #define CHAFF_SPEED 3000.0
 
@@ -22,9 +21,6 @@
 #define CHAFF_CHARGE_TIMES floatround(floatdiv(max_charge_time,CHAFF_CHARGE_PERIOD))
 
 
-
-
-native clear_chaffs()
 native chaff_get_chaff_loaded(id)
 native chaff_uncharge_chaff(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

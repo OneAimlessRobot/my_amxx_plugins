@@ -36,6 +36,9 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 
+	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
+	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
+
 	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
 	init_gravity_pcvar()
 
@@ -67,23 +70,6 @@ public rivette_thinque(ent){
 	return FMRES_IGNORED
 
 
-}
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-
-
-}//----------------------------------------------------------------------------------------------
-public plugin_natives(){
-	
-	register_native( "maria_riveter_clear_rivets","_maria_riveter_clear_rivets",0)
-	
-	
 }
 public bool:client_isnt_hitter(id){
 	
@@ -284,22 +270,6 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	xs_vec_add(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
-stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
-	
-	
-	new Float:normal_speed[3];
-	new Float:norm_speed_random[3];
-	new Float:speed=VecLength(vec_to_randomize)
-	new Float:norm_random_speed;
-	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
-	norm_speed_random[0]=normal_speed[0]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[1]=normal_speed[1]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[2]=normal_speed[2]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_random_speed=VecLength(norm_speed_random);
-	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
-	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
-	
-}
 launch_rivet(id)
 {
 
@@ -307,8 +277,6 @@ if(client_isnt_hitter(id)){
 		
 	return PLUGIN_CONTINUE
 }
-entity_set_int(id, EV_INT_weaponanim, 3)
-
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -337,7 +305,7 @@ entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
 entity_set_float(Ent,EV_FL_gravity, MARIA_PROJECTILE_GRAVITY_MULT)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
-VelocityByAim(id, floatround(MARIA_PROJECTILE_SPEED) , Velocity)
+velocity_by_aim(id, floatround(MARIA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
 new resume_zoom=get_member(id,m_bResumeZoom);
 if(!(resume_zoom)){
@@ -348,7 +316,7 @@ else{
 	new Float:user_movement_velocity[3]
 	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
 	new Float:user_maxspeed=get_user_maxspeed(id);
-	new Float:user_current_speed=VecLength(user_movement_velocity)
+	new Float:user_current_speed=vector_length(user_movement_velocity)
 	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
 	coeff_to_multiply_with=coeff_to_multiply_with_extra*MARIA_PROJECTILE_SHOOT_RANDOMNESS
 	
@@ -375,16 +343,6 @@ entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTI
 return PLUGIN_CONTINUE
 }
 
-
-public _maria_riveter_clear_rivets(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, MARIA_PROJECTILE_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, MARIA_PROJECTILE_CLASSNAME)
-}
-}
-
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
@@ -403,34 +361,24 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 }
 
 
-public vexd_pfntouch(pToucher, pTouched)
+
+public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 {
-
-	if (pev_valid(pToucher)!=2){
-		
-		return
-	}
-
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, MARIA_PROJECTILE_CLASSNAME))
-	{
-		new Float:origin[3]
-		entity_get_vector(pToucher,EV_VEC_origin,origin);
-		
-		new bool:is_direct_hit = client_hittable(pTouched);
-		new Float:rivet_launch_pos[3]
-		entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
-		new Float:distance=vector_distance(origin,rivet_launch_pos);
-		new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
-		new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+(is_direct_hit?MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS:0.0);
-		explosion(maria_get_hero_id(),pToucher,
-										MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
-										MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
-										is_direct_hit,
-										is_direct_hit)
-		remove_entity(pToucher)
-	}
+	new Float:origin[3]
+	entity_get_vector(pToucher,EV_VEC_origin,origin);
+	
+	new bool:is_direct_hit = client_hittable(pTouched);
+	new Float:rivet_launch_pos[3]
+	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
+	new Float:distance=vector_distance(origin,rivet_launch_pos);
+	new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
+	new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+(is_direct_hit?MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS:0.0);
+	explosion(maria_get_hero_id(),pToucher,
+									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
+									MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
+									is_direct_hit,
+									is_direct_hit)
+	remove_entity(pToucher)
 }
 public plugin_precache()
 {

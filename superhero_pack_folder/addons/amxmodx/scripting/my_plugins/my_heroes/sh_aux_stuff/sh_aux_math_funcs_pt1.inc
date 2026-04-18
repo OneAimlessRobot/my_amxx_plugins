@@ -9,6 +9,29 @@ stock init_gravity_pcvar(){
 	sv_gravity_pcvar=register_cvar("sv_gravity","800")
 
 }
+
+stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
+	
+	
+	new Float:normal_speed[3];
+	new Float:norm_speed_random[3];
+	new Float:speed=vector_length(vec_to_randomize)
+	new Float:norm_random_speed;
+	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
+
+	new Float:rnd_floatx=generate_float(-coeff,coeff)*float(generate_bool()?0:1),
+		Float:rnd_floaty=generate_float(-coeff,coeff)*float(generate_bool()?0:1),
+		Float:rnd_floatz=generate_float(-coeff,coeff)*float(generate_bool()?0:1)
+
+	norm_speed_random[0]=normal_speed[0]+rnd_floatx
+	norm_speed_random[1]=normal_speed[1]+rnd_floaty
+	norm_speed_random[2]=normal_speed[2]+rnd_floatz
+
+	norm_random_speed=vector_length(norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
+	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
+	
+}
 stock multiply_3d_vector_by_scalar(Float:in_vec[3],Float:scalar,Float:out_vec[3]){
 	
 	for(new i=0;i<3;i++){
@@ -165,7 +188,7 @@ stock yaw_pitch_roll_vector_to_dir(Float:input_vector[3], Float:output_vector[3]
 
 stock vector_norm(Float:vec_result[3], Float:vec_in[3]) {
 	
-	new Float:len = VecLength(vec_in);
+	new Float:len = vector_length(vec_in);
 	new Float:inv_len = 1.0 / len;
 	multiply_3d_vector_by_scalar(vec_result, inv_len, vec_in);
 	
@@ -226,7 +249,7 @@ stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mul
 	speedx=velocity[0]
 	speedy=velocity[1]
 	speedz=velocity[2]
-	new Float:velocity_num=VecLength(velocity_copy)
+	new Float:velocity_num=vector_length(velocity_copy)
 	
 	new Float:gravity_const=get_pcvar_float(sv_gravity_pcvar)*gravity_mult
 	new Float:delta_z=((drag_const*velocity_num*speedz)/gravity_const)*phys_update_time;

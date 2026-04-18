@@ -34,15 +34,19 @@ public plugin_init(){
 	arrayset(sleep_nade_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	register_think(SLEEP_NADE_CLASSNAME,"sleep_think")
+
 	register_cvar("ksun_sleep_nade_max_charge_time", "5.0")
 	register_cvar("ksun_sleep_nade_min_charge_time", "1.0")
 	SLEEP_NADE_CHARGE_TASKID=allocate_typed_task_id(player_task)
+
+
+	register_entity_as_wall_touchable(SLEEP_NADE_CLASSNAME,"sweet_dreams")
+	register_custom_touchable(SLEEP_NADE_CLASSNAME,"sweet_dreams",player_vector,1)
 }
 
 public plugin_natives(){
 	
-	
-	register_native( "clear_sleep_nades","_clear_sleep_nades",0)
 	register_native( "sleep_nade_get_sleep_nade_loaded","_sleep_nade_get_sleep_nade_loaded",0)
 	register_native( "sleep_nade_uncharge_sleep_nade","_sleep_nade_uncharge_sleep_nade",0)
 	
@@ -204,14 +208,6 @@ uncharge_user(id){
 	
 }
 
-public _clear_sleep_nades(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, SLEEP_NADE_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, SLEEP_NADE_CLASSNAME)
-}
-}
 public _sleep_nade_get_sleep_nade_loaded(iPlugin,iParams){
 
 new id=get_param(1)
@@ -220,8 +216,6 @@ return sleep_nade_loaded[id]
 }
 launch_sleep_nade(id)
 {
-entity_set_int(id, EV_INT_weaponanim, 3)
-
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -249,8 +243,7 @@ entity_set_int(Ent, EV_INT_effects, 2)
 entity_set_int(Ent, EV_INT_solid, 1)
 entity_set_int(Ent, EV_INT_movetype, 10)
 entity_set_edict(Ent, EV_ENT_owner, id)
-
-VelocityByAim(id, floatround(SLEEP_NADE_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
+velocity_by_aim(id, floatround(SLEEP_NADE_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 sleep_nade_loaded[id] = false
@@ -264,81 +257,57 @@ if(ksun_get_num_sleep_nades(id) == 0)
 	sh_drop_weapon(id,SLEEP_NADE_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-emit_sound(id, CHAN_WEAPON, SLEEP_NADE_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 if(!is_user_bot(id)){
 	sh_chat_message(id, spores_ksun_hero_id(),"Ohh! My god, darling! You are amazing... Thank you so much for this [forehead kiss]")
 }
-trail(Ent,WHITE,10,5)
-
+trail(Ent,BLUE,10,5)
+entity_set_float(Ent,EV_FL_nextthink,get_gametime()+SLEEP_NADE_SHOOT_PERIOD)
 return PLUGIN_CONTINUE
 }
 
-public sleep_nade_reload(parm[])
-{
-if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],spores_ksun_hero_id())||!is_user_connected(parm[0])) return
-sleep_nade_loaded[parm[0]] = true
-new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==SLEEP_NADE_CLASSID)&&ksun_get_num_sleep_nades(parm[0])){
-entity_set_string(parm[0], EV_SZ_viewmodel, SLEEP_NADE_V_MODEL)
-}
-}
 
-
-public blow_sleep_nade_up(id_sleep_nade){
+public sleep_think(id_sleep_nade){
 
 if ( !is_valid_ent(id_sleep_nade) ) return
 
-new szClassName[32]
-Entvars_Get_String(id_sleep_nade, EV_SZ_classname, szClassName, 31)
-
-if(equal(szClassName, SLEEP_NADE_CLASSNAME)) {
-
 new Float:fl_vExplodeAt[3]
-Entvars_Get_Vector(id_sleep_nade, EV_VEC_origin, fl_vExplodeAt)
+entity_get_vector(id_sleep_nade, EV_VEC_origin, fl_vExplodeAt)
 new vExplodeAt[3]
 vExplodeAt[0] = floatround(fl_vExplodeAt[0])
 vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-new id = Entvars_Get_Edict(id_sleep_nade, EV_ENT_owner)
-new origin[3],dist,i
-make_shockwave(vExplodeAt, SLEEP_NADE_RADIUS, {180,180,180},_,_,_,_,120)
-emit_sound(id_sleep_nade, CHAN_WEAPON, SLEEP_NADE_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+new id = entity_get_edict(id_sleep_nade, EV_ENT_owner)
+make_shockwave(vExplodeAt, SLEEP_NADE_RADIUS, LineColors[BLUE],_,_,_,_,120)
+anime_kill_fx(vExplodeAt)
+emit_sound(id_sleep_nade, CHAN_WEAPON, SMOKE_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+static entlist[33];
+new numfound = find_sphere_class(id_sleep_nade,"player", SLEEP_NADE_RADIUS ,entlist, 32);
 
-for ( i = 1; i <= SH_MAXSLOTS; i++) {
+for( new i= 0;(i< numfound);i++){
+
+	new pid = entlist[i];
+	if( !client_hittable(pid) ) continue
 	
-	if( !client_hittable(i) ) continue
-	get_user_origin(i,origin)
-	dist = get_distance(origin,vExplodeAt)
-	if (dist <= SLEEP_NADE_RADIUS) {
-		
-		sh_sleep_user(i,id,spores_ksun_hero_id())
-		
-	}
+	sh_sleep_user(pid,id,spores_ksun_hero_id())
+	
 }
-
 remove_sleep_nade(id,id_sleep_nade)
-}
 
 }
 
-public vexd_pfntouch(pToucher, pTouched)
+public sweet_dreams(pToucher, pTouched)
 {
 
+	new Float:velocity[3]
+	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	velocity[0]*=0.5
+	velocity[1]*=0.5
+	velocity[2]*=0.5
+	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
 
-if (pev_valid(pToucher)!=2 ){
-	return
-}
-new szClassName[32]
-entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-if(equal(szClassName,SLEEP_NADE_CLASSNAME))
-{
-	if(pev(pTouched,pev_solid)==SOLID_BSP){
-		emit_sound(pToucher, CHAN_WEAPON, SLEEP_NADE_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		blow_sleep_nade_up(pToucher)
-	}
-	
-}
 }
 
 
@@ -353,12 +322,10 @@ public plugin_precache()
 {
 	
 
-	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_V_MODEL);
 	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_W_MODEL);
-	engfunc(EngFunc_PrecacheModel,SLEEP_NADE_P_MODEL);
-
-	engfunc(EngFunc_PrecacheSound, SLEEP_NADE_BURST_SFX)
-	engfunc(EngFunc_PrecacheSound, SLEEP_NADE_THROW_SFX)
+	engfunc(EngFunc_PrecacheSound, SMOKE_EXPLODE_SOUND)
+	engfunc(EngFunc_PrecacheSound, CUSTOM_GRENADE_BOUNCE_SOUND)
+	engfunc(EngFunc_PrecacheSound, THROWABLE_LAUNCH_SFX)
 
 
 

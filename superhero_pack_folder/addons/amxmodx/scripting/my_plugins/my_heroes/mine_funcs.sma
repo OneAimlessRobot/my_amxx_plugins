@@ -314,7 +314,7 @@ public _mine_charge_mine(iPlugins,iParams){
 sapper_update_planting(id){
 new butnprs
 
-butnprs = Entvars_Get_Int(id, EV_INT_button)
+butnprs = entity_get_int(id, EV_INT_button)
 
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE){
 
@@ -360,7 +360,7 @@ if(!(butnprs&IN_DUCK)){
 sapper_update_disarming(id){
 new butnprs
 
-butnprs = Entvars_Get_Int(id, EV_INT_button)
+butnprs = entity_get_int(id, EV_INT_button)
 
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 

@@ -6,7 +6,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include <xs>
 
 #define PLUGIN "Superhero roberto mk2 pt2"
 #define VERSION "1.0.0"
@@ -18,35 +17,20 @@ new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
 	register_think(BALL_CLASSNAME, "ball_think")
 	
-	new const szEntity[ ][ ] = {
-		"worldspawn", "func_wall", "func_door",  "func_door_rotating",
-		"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
-		"func_illusionary", "func_button", "func_rot_button", "func_rotating"
-	}
+	register_entity_as_wall_touchable(BALL_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(BALL_CLASSNAME,"ball_touch_player",player_vector,1)
 
-	for( new i; i < sizeof szEntity; i++ )
-		register_touch( BALL_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
 }
 
 public plugin_natives(){
 	
-	
-	register_native( "clear_balls","_clear_balls",0)
+
 	register_native( "kick_the_ball","kick_ball",0)
 	
 	
-}
-
-
-public _clear_balls(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, BALL_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, BALL_CLASSNAME)
-	}
 }
 
 public FwdTouchWorld( Ball, World ) {
@@ -62,60 +46,42 @@ public FwdTouchWorld( Ball, World ) {
 		
 		emit_sound( Ball, CHAN_ITEM, BALL_BOUNCE_GROUND, 1.0, ATTN_NORM, 0, PITCH_NORM );
 	}
-	
+	entity_set_int(Ball,EV_INT_iuser2,true)
 	return PLUGIN_CONTINUE;
 }
 //
 
-public vexd_pfntouch(pToucher, pTouched){
-	
-	if (pev_valid(pToucher)!=2){
-		return
-	}
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, BALL_CLASSNAME))
-	{
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{		
-				new Float:origin[3]
-				entity_get_vector(pToucher,EV_VEC_origin,origin)
-				//get pickability status
-				new ball_pickable=entity_get_int(pToucher,EV_INT_iuser2)
-				if(sh_user_has_hero(pTouched,roberto_get_hero_id())&&(pTouched==oid)&&ball_pickable&& BALL_RETRIEVE){
-					
-					roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
-					sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
-					
-					//set pickability status
-					entity_set_int(pToucher,EV_INT_iuser2,false)
-					remove_entity(pToucher);
-					return
-					
-				}
-				else if((pTouched!=oid)){
-
-					//get "touched someone" boolean
-					new touched_someone=entity_get_int(pToucher,EV_INT_iuser3)
-					if(!touched_someone){
-						//set pickability status
-						entity_set_int(pToucher,EV_INT_iuser2,true)
-						entity_set_int(pToucher,EV_INT_iuser3,true)
-						set_velocity_from_origin(pTouched,origin,BALL_KNOCKBACK)
-						emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
-						return
-					}
-				}
-			}
-		}
-		else if(pev(pTouched,pev_solid)==SOLID_BSP){
+public ball_touch_player(Ball, Player ) {
+	new oid = entity_get_edict(Ball, EV_ENT_owner)
+	if(client_hittable(Player))
+	{		
+		new Float:origin[3]
+		entity_get_vector(Ball,EV_VEC_origin,origin)
+		//get pickability status
+		new ball_pickable=entity_get_int(Ball,EV_INT_iuser2)
+		if(sh_user_has_hero(Player,roberto_get_hero_id())&&(Player==oid)&&ball_pickable&& BALL_RETRIEVE){
+			
+			roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
+			sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
+			
 			//set pickability status
-			entity_set_int(pToucher,EV_INT_iuser2,true)
+			entity_set_int(Ball,EV_INT_iuser2,false)
+			remove_entity(Ball);
 			return
+			
+		}
+		else if((Player!=oid)){
+
+			//get "touched someone" boolean
+			new touched_someone=entity_get_int(Ball,EV_INT_iuser3)
+			if(!touched_someone){
+				//set pickability status
+				entity_set_int(Ball,EV_INT_iuser2,true)
+				entity_set_int(Ball,EV_INT_iuser3,true)
+				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
+				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+				sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
+			}
 		}
 	}
 }
@@ -132,8 +98,6 @@ public kick_ball(iPlugin,iParams)
 		return PLUGIN_HANDLED
 		
 	}
-	entity_set_int(id, EV_INT_weaponanim, 3)
-	
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 	
 	entity_get_vector(id, EV_VEC_origin , Origin)
@@ -163,7 +127,7 @@ public kick_ball(iPlugin,iParams)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	set_pev(Ent,pev_iuser1, id)
 	
-	VelocityByAim(id, floatround(BALL_SPEED) , Velocity)
+	velocity_by_aim(id, floatround(BALL_SPEED) , Velocity)
 	
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
@@ -182,10 +146,10 @@ public kick_ball(iPlugin,iParams)
 	entity_set_int( Ent, EV_INT_iuser3, false);
 						
 	emit_sound(id, CHAN_WEAPON, kicked, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	glow(Ent,ballcolor[0],ballcolor[1],ballcolor[2],255,10)
+	glow(Ent,LineColors[GREEN][0],LineColors[GREEN][1],LineColors[GREEN][2],255,10)
 	create_fired_shot_disk(Origin,id,false)
 	entity_set_float( Ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
-	trail(Ent,BLUE,10,5)
+	trail(Ent,GREEN,10,5)
 	
 	
 	return PLUGIN_CONTINUE

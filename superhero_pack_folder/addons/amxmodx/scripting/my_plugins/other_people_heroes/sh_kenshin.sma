@@ -49,7 +49,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,"models/shmod/kenshin_v_knife.mdl")
+	engfunc(EngFunc_PrecacheModel, "models/shmod/kenshin_v_knife.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public kenshin_init()
@@ -86,13 +86,13 @@ public switchmodel(id)
 
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
-	Entvars_Get_String(id, EV_SZ_viewmodel, v_mdl, 31)
+	entity_get_string(id, EV_SZ_viewmodel, v_mdl, 31)
 	if ( containi(v_mdl, "v_shield_") != -1 ) return
 
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 	if ( weapon == CSW_KNIFE ) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/kenshin_v_knife.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/kenshin_v_knife.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------

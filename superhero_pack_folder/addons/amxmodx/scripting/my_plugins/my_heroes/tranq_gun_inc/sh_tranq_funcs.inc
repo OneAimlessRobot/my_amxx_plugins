@@ -4,9 +4,7 @@
 #define sh_tranq_funcs
 
 #define DART_CLASSNAME "tranq_dart"
-#define EFFECT_SHOT_SFX "shmod/Teliko/counter.wav"
 
-#define NUM_OF_EFFECT_COLORS 10
 
 enum{
     seq_idle=0,
@@ -53,7 +51,6 @@ enum{
 #define RECOIL 0.4
 #define CLIP_SIZE 4
 
-native clear_darts()
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

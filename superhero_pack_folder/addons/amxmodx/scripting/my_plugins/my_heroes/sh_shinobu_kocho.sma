@@ -3,13 +3,14 @@
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
+stock const DEBUG=0
 
 stock SHINOBU_POISON_KICK_DELAYED_TASKID
 
@@ -126,14 +127,15 @@ public Shinobu_Limit_HP(msgid, dest, id)
 }
 public client_disconnected(id){
 
-	g_shinobu_tagged_player[id]=0
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(is_user_connected(i)){
+			
 			g_shinobu_tagged_player[i]=((g_shinobu_tagged_player[i]==id)?0:g_shinobu_tagged_player[i])
-		}
+			
+		}	
 
 	}
-
+	g_shinobu_tagged_player[id]=0
 }
 
 public _shinobu_get_user_tagged_player(iPlugin,iParams){
@@ -176,13 +178,13 @@ public shinobuDamage(id)
 		
 		if (sh_user_has_hero(victim,gHeroID)  ) {
 			
-			shinobu_burst_damage_task_bootstrap(victim,attacker)
+			shinobu_burst_damage_task_bootstrap(victim,attacker,0)
 
 		}
 		if(sh_user_has_hero(attacker,gHeroID) ){
 
 			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,0);
-			shinobu_burst_damage_task_bootstrap(attacker,victim)
+			shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 		}	
 	}
 	return PLUGIN_CONTINUE
@@ -227,18 +229,30 @@ public shinobu_init()
 	}
 	g_shinobu_tagged_player[id]=0
 }
-public shinobu_burst_damage_task_bootstrap(attacker,tg){
-	if(g_shinobu_tagged_player[attacker]==tg) return
+shinobu_burst_damage_task_bootstrap(attacker,tg,is_attacking=1){
+	if((g_shinobu_tagged_player[attacker]==tg)&&is_attacking) return
+	if(DEBUG){
+
+		sh_chat_message(tg,gHeroID,"you have been tagged by shinobu!")
+	}
 	g_shinobu_tagged_player[attacker]=tg
 	new parm[1]
 	parm[0]=tg
+	if(task_exists(attacker+SHINOBU_POISON_KICK_DELAYED_TASKID)){
+
+		if(DEBUG){
+
+			sh_chat_message(tg,gHeroID,"task already exists! Lucky!")
+		}
+		return
+	}
 	set_task(shinobu_poison_kick_delay, "shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
 
 }
 public shinobu_burst_damage_task(array[],attacker){
 	attacker-=SHINOBU_POISON_KICK_DELAYED_TASKID
 	
-	if(!client_hittable(attacker)) return
+	if(!is_user_connected(attacker)) return
 
 	new tg= array[0]
 

@@ -1,10 +1,8 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <xs>
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero teliko slitter"
@@ -156,7 +154,7 @@ public slitter_think(id)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	entity_get_vector(id, EV_VEC_angles, vAngles)
 	new Float:direction[3],Float:fl_Velocity[3], Float:length
-	VelocityByAim(id,9999,aimvec)
+	velocity_by_aim(id,9999,aimvec)
 	
 	static Float:vTrace[3], tr
 	static Float:vEnd[3],Float:newVec[3]

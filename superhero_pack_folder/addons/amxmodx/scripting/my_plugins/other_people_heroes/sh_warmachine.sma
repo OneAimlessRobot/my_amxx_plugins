@@ -32,6 +32,7 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 */
 
 #include "../my_include/superheromod.inc"
+#include "../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="War Machine"

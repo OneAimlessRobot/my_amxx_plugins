@@ -37,6 +37,14 @@ public plugin_init()
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_LAW_CLASSNAME, "law_think")
 	init_explosion_defaults()
+
+
+	register_entity_as_wall_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
+	static const jetplane_classid_vector[][]={JETPLANE_FUSELAGE_CLASSNAME}
+	register_custom_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit",jetplane_classid_vector,1)
+	register_custom_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit",player_vector,1)
+	
+
 }
 public plugin_cfg(){
 
@@ -62,7 +70,6 @@ public plugin_natives(){
 	register_native("reset_jet_rockets","_reset_jet_rockets",0);
 	register_native("get_law_think_period","_get_law_think_period",0);
 	register_native("reset_user_jet_rockets","_reset_user_jet_rockets",0);
-	register_native("clear_laws","_clear_laws",0);
 	register_native("law_destroy","_law_destroy",0);
 	register_native("spawn_jetplane_law","_spawn_jetplane_law",0);
 	register_native("get_user_law","_get_user_law",0);
@@ -158,8 +165,8 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	set_pev(law_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=190;
 	set_pev(law_id,pev_renderamt,float(alpha))
-	Entvars_Set_Vector(law_id, EV_VEC_mins,jetplane_law_min_dims)
-	Entvars_Set_Vector(law_id, EV_VEC_maxs,jetplane_law_max_dims)
+	entity_set_vector(law_id, EV_VEC_mins,jetplane_law_min_dims)
+	entity_set_vector(law_id, EV_VEC_maxs,jetplane_law_max_dims)
 	jetplane_orig[0]+=jetplane_origin_law_offsets[0]
 	jetplane_orig[1]+=jetplane_origin_law_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_law_offsets[2]
@@ -220,7 +227,7 @@ make_rocket(id)
 
 new Float:vOrigin[3]
 new Float:vAngles[3]
-if(!pev_valid(get_user_law(id))) return PLUGIN_HANDLED
+if(!is_valid_ent(get_user_law(id))) return PLUGIN_HANDLED
 entity_get_vector(get_user_law(id), EV_VEC_origin , vOrigin)
 entity_get_vector(get_user_law(id), EV_VEC_v_angle, vAngles)
 
@@ -228,39 +235,43 @@ vOrigin[0]+=(jetplane_law_max_dims[0]+10.0)
 
 
 new NewEnt
-NewEnt = CreateEntity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): rocket failure")
 return PLUGIN_HANDLED
 }
 
-Entvars_Set_String(NewEnt, EV_SZ_classname, JETPLANE_ROCKET_CLASSNAME)
-ENT_SetModel(NewEnt,ROCKET_MODEL)
+entity_set_string(NewEnt, EV_SZ_classname, JETPLANE_ROCKET_CLASSNAME)
+entity_set_model(NewEnt,ROCKET_MODEL)
 
 new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-ENT_SetOrigin(NewEnt, vOrigin)
-Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
+entity_set_vector(NewEnt, EV_VEC_angles, vAngles)
 entity_set_int(NewEnt, EV_INT_effects, 64)
-Entvars_Set_Int(NewEnt, EV_INT_solid, SOLID_TRIGGER)
+entity_set_int(NewEnt, EV_INT_solid, SOLID_TRIGGER)
 
-Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
+entity_set_int(NewEnt, EV_INT_movetype, 5)
 
 
-Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
+entity_set_edict(NewEnt, EV_ENT_owner, id)
 
-new Float:jet_velocity[3]
-pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
-new Float:jet_velocity_num=VecLength(jet_velocity);
 
-new Float:fl_iNewVelocity[3]
-velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed+jet_velocity_num), fl_iNewVelocity)
+new Float:fl_iNewVelocity[3],
+	Float:rocket_place_dir_vec[3],
+	Float:dest_origin[3]
 
-Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+velocity_by_aim(jet_get_user_jet(id), LAUNCH_SAFETY_DIST, rocket_place_dir_vec)
+
+add_3d_vectors(vOrigin,rocket_place_dir_vec,dest_origin)
+
+entity_set_origin(NewEnt, dest_origin)
+velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+
+entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 set_user_jet_rockets(id,get_user_jet_rockets(id)-1)
 
@@ -274,52 +285,20 @@ trail(NewEnt,PINK,10,5)
 emit_sound(get_user_law(id), CHAN_VOICE, JETPLANE_LAW_FIRE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 return PLUGIN_HANDLED
 }
-public vexd_pfntouch(pToucher, pTouched) {
+public rocket_hit(pToucher, pTouched) {
 
-if (pev_valid(pToucher)!=2){
-	
+new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
+if((pTouched==jet_get_user_jet(the_owner))){
+
+	remove_entity(pToucher)
 	return
-}
-new szClassName[32]
-Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
-new id = entity_get_edict(pToucher, EV_ENT_owner)
-if(equal(szClassName, JETPLANE_ROCKET_CLASSNAME))  {
-	
-	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
-		
-		return
-	}
-	if((pev(pTouched,pev_solid)==SOLID_BBOX)){
-		
-		new szClassNameJet[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
-
-		if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
-			
-			new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
-			if(client_hittable(jet_owner)){
-				new CsTeams:att_team=cs_get_user_team(id),
-					CsTeams:vic_team=cs_get_user_team(jet_owner);
-				if(att_team!=vic_team){
-					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_law_dmg)
-				}
-			}
-		}
-	}
-	if((pev(pTouched,pev_solid)==SOLID_TRIGGER)){
-		
-		new szClassNameMissile[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
-		
-		if(equal(szClassNameMissile, JETPLANE_ROCKET_CLASSNAME)) {
-			RemoveEntity(pTouched)
-		}
-	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude)
-	explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
-	RemoveEntity(pToucher)
 }
+
+explosion(yandere_get_hero_id(),pToucher,jetplane_law_radius,jetplane_law_dmg, default_explode_knock_force_magnitude)
+explosion_custom_entity(pToucher,jetplane_law_radius,jetplane_law_dmg,JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
+remove_entity(pToucher)
+
 }
 
 //----------------------------------------------------------------------------------------------
@@ -409,7 +388,7 @@ public plugin_precache()
 remove_rocket(rocket){
 
 new Float:fl_origin[3]
-Entvars_Get_Vector(rocket, EV_VEC_origin, fl_origin)
+entity_get_vector(rocket, EV_VEC_origin, fl_origin)
 
 message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 write_byte(14)
@@ -423,7 +402,7 @@ message_end()
 
 emit_sound(rocket, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-RemoveEntity(rocket)
+remove_entity(rocket)
 return PLUGIN_CONTINUE
 }
 
@@ -444,13 +423,5 @@ public _law_destroy(iPlugin,iParams){
 		draw_bbox(get_user_law(id),true)
 		remove_entity(get_user_law(id));
 		law[id]=0
-	}
-}
-public _clear_laws(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, JETPLANE_LAW_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, JETPLANE_LAW_CLASSNAME)
 	}
 }

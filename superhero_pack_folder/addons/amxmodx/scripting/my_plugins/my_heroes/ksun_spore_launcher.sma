@@ -36,7 +36,6 @@ public plugin_init()
 	register_cvar("ksun_spore_health", "100.0" )
 	register_cvar("ksun_launcher_health", "100.0" )
 	
-	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
@@ -361,9 +360,5 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
-	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	
 }

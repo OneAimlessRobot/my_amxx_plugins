@@ -150,12 +150,12 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	server_print("Index: %d^nCT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_ct_file_path])
 
-	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_ct_file_path])
+	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_ct_file_path])
 
 	server_print("Index: %d^nT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_t_file_path])
 	
-	engfunc(EngFunc_PrecacheModel,sh_array_of_player_model_structs[result][player_model_t_file_path])
+	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_t_file_path])
 	
 	server_print("Index: %d^nPlayer morph sound load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])

@@ -80,9 +80,6 @@ native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255)
 native directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
 
 
-//----------------------------------------------------------------------------------------------
-native blood_spray(Float:vicOrigin[3], scale)
-
 
 native glow(id, r, g, b,a, on)
 

@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <fakemeta_util>
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -59,7 +58,6 @@ public plugin_natives(){
 	register_native("gun_shot_decal","_gun_shot_decal",0);
 	register_native("explode_fx","_explode_fx",0);
 	register_native("directed_spark","_directed_spark",0);
-	register_native("blood_spray","_blood_spray",0);
 	register_native("glow","_glow",0);
 	register_native("suck_in_sound","_suck_in_sound",0);
 	register_native("aura","_aura",0);
@@ -77,7 +75,6 @@ public plugin_natives(){
 
 public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
 	
-	xs_seed(get_systime(0));
 	server_print("%s innited!^n",LIBRARY_NAME)
 }
 public _precache_native_fx_pt1(iPlugin,iParams){
@@ -85,8 +82,6 @@ public _precache_native_fx_pt1(iPlugin,iParams){
 
 	m_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
 	white = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
-	blood1 = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr");
-	blood2 = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr");
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
 	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
 	g_iSmokeSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/black_smoke3.spr");
@@ -455,8 +450,8 @@ public _draw_bbox(iPlugins, iParams){
 	//left= min
 	//right= max
 
-	Entvars_Get_Vector(ent_id, EV_VEC_mins,bbox_mins)
-	Entvars_Get_Vector(ent_id, EV_VEC_maxs,bbox_maxs)
+	entity_get_vector(ent_id, EV_VEC_mins,bbox_mins)
+	entity_get_vector(ent_id, EV_VEC_maxs,bbox_maxs)
 	pev(ent_id,pev_origin,ent_orig)
 	new Float:vex_rld[3],Float:vex_rlu[3],Float:vex_rrd[3],Float:vex_rru[3];
 	new Float:vex_fld[3],Float:vex_flu[3],Float:vex_frd[3],Float:vex_fru[3];
@@ -750,37 +745,6 @@ public _create_fired_shot_disk(iPlugin,iParms){
 
 }
 
-//----------------------------------------------------------------------------------------------
-public _blood_spray(iPlugins, iParams){
-
-
-	new Float:vicOrigin[3]
-
-	get_array_f(1,vicOrigin,3)
-
-	new scale=get_param(2)
-
-	new Float:x
-	new Float:y
-	for(new i = 0; i < 2; i++) {
-		x = float(generate_int(-10, 10))
-		y = float(generate_int(-10, 10))
-		for(new Float:j = 0.0; j < 2.0; j+=1.0) {
-			// Blood spray
-			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-			write_byte(115)				// TE_BLOODSPRITE
-			write_coord_f(vicOrigin[0]+(x*j))	// position
-			write_coord_f(vicOrigin[1]+(y*j))
-			write_coord_f(vicOrigin[2]+21.0)
-			write_short(blood2)	// sprite1 index
-			write_short(blood1)	// sprite2 index
-			write_byte(248) 			// color RED = 248 YELLOW = 196
-			write_byte(scale) 			// scale
-			message_end()
-		}
-	}
-}
-
 public _glow(iPlugins, iParams){
 
 	new id=get_param(1),
@@ -805,7 +769,7 @@ public _suck_in_sound(iPlugins, iParams){
 	if(!is_valid_ent(ent_id)) return PLUGIN_CONTINUE
 	
 	new Float:fl_origin[3]
-	Entvars_Get_Vector(ent_id, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent_id, EV_VEC_origin, fl_origin)
 
 	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte(14)

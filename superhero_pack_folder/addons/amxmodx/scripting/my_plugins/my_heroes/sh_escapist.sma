@@ -148,7 +148,7 @@ public Climb(id,alpha) {
 		static Float: fVelocity[ 3 ];
 		new speed
 		speed=max(gMinSpeed,min(gMaxSpeed,gMinSpeed+(gSpeedByLvlInc*(gPlayerLevel[id]-gHeroLevel))))
-		VelocityByAim( iPlayer, ( ( iButton & IN_FORWARD ) ? speed : -speed ), fVelocity );
+		velocity_by_aim( iPlayer, ( ( iButton & IN_FORWARD ) ? speed : -speed ), fVelocity );
 		entity_set_vector( iPlayer, EV_VEC_velocity, fVelocity );
 		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
 		switch_weapon(id,true);

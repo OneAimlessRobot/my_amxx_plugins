@@ -688,17 +688,6 @@ entity_set_edict(g_discID[id], EV_ENT_owner, id)
 
 entity_set_int(g_discID[id], EV_INT_solid, SOLID_TRIGGER)
 entity_set_int(g_discID[id],EV_INT_movetype, MOVETYPE_NOCLIP)
-/*
-new Float:fNewVelocity[3]
-new Float:newAngle[3]
-
-VelocityByAim(id, 390, fNewVelocity)
-fNewVelocity[2] = 0.0
-vector_to_angle(fNewVelocity, newAngle);
-
-entity_set_vector(g_discID[id], EV_VEC_angles, newAngle)
-entity_set_vector(g_discID[id], EV_VEC_velocity, fNewVelocity)
-*/
 
 new velocity[3]
 new Float:fVelocity[3]

@@ -34,6 +34,10 @@ public plugin_init(){
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(CHAFF_CLASSNAME,"chaff_think")
+
+	register_entity_as_wall_touchable(CHAFF_CLASSNAME,"chaffe_touch_things")
+	register_custom_touchable(CHAFF_CLASSNAME,"chaffe_touch_things",player_vector,1)
+
 	register_cvar("teliko_chaff_max_charge_time", "5.0")
 	register_cvar("teliko_chaff_min_charge_time", "1.0")
 	CHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -42,8 +46,6 @@ public plugin_init(){
 
 public plugin_natives(){
 	
-	
-	register_native( "clear_chaffs","_clear_chaffs",0)
 	register_native( "chaff_get_chaff_loaded","_chaff_get_chaff_loaded",0)
 	register_native( "chaff_uncharge_chaff","_chaff_uncharge_chaff",0)
 	
@@ -191,14 +193,6 @@ uncharge_user(id){
 	
 }
 
-public _clear_chaffs(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, CHAFF_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, CHAFF_CLASSNAME)
-}
-}
 public _chaff_get_chaff_loaded(iPlugin,iParams){
 
 new id=get_param(1)
@@ -207,8 +201,6 @@ return chaff_loaded[id]
 }
 launch_chaff(id)
 {
-entity_set_int(id, EV_INT_weaponanim, 3)
-
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -237,7 +229,7 @@ entity_set_int(Ent, EV_INT_solid, 1)
 entity_set_int(Ent, EV_INT_movetype, 10)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
-VelocityByAim(id, floatround(CHAFF_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
+velocity_by_aim(id, floatround(CHAFF_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 chaff_loaded[id] = false
@@ -252,83 +244,56 @@ if(teliko_get_num_chaffs(id) == 0)
 	sh_drop_weapon(id,CHAFF_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-emit_sound(id, CHAN_WEAPON, CHAFF_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,WHITE,10,5)
 entity_set_float(Ent,EV_FL_nextthink,get_gametime()+CHAFF_SHOOT_PERIOD)
 
 return PLUGIN_CONTINUE
 }
 
-public chaff_reload(parm[])
-{
-if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],teliko_get_hero_id())||!is_user_connected(parm[0])) return
-chaff_loaded[parm[0]] = true
-new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==CHAFF_CLASSID)&&teliko_get_num_chaffs(parm[0])){
-entity_set_string(parm[0], EV_SZ_viewmodel, CHAFF_V_MODEL)
-}
-}
 
 
 public chaff_think(id_chaff){
 
 if ( !is_valid_ent(id_chaff) ) return
 
-new szClassName[32]
-Entvars_Get_String(id_chaff, EV_SZ_classname, szClassName, 31)
-
-if(equal(szClassName, CHAFF_CLASSNAME)) {
-
 new Float:fl_vExplodeAt[3]
-Entvars_Get_Vector(id_chaff, EV_VEC_origin, fl_vExplodeAt)
+entity_get_vector(id_chaff, EV_VEC_origin, fl_vExplodeAt)
 new vExplodeAt[3]
 vExplodeAt[0] = floatround(fl_vExplodeAt[0])
 vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-new id = Entvars_Get_Edict(id_chaff, EV_ENT_owner)
-new origin[3],dist,i
+new id = entity_get_edict(id_chaff, EV_ENT_owner)
 make_shockwave(vExplodeAt,CHAFF_RADIUS,LineColors[WHITE],1,5,8,4)
 anime_kill_fx(vExplodeAt)
-emit_sound(id_chaff, CHAN_WEAPON, CHAFF_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-for ( i = 1; i <= SH_MAXSLOTS; i++) {
+emit_sound(id_chaff, CHAN_WEAPON, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+static entlist[33];
+new numfound = find_sphere_class(id_chaff,"player", CHAFF_RADIUS ,entlist, 32);
+
+for( new i= 0;(i< numfound);i++){
+
+	new pid = entlist[i];
+	if( !client_hittable(pid) ) continue
 	
-	if( !client_hittable(i) ) continue
-	get_user_origin(i,origin)
-	dist = get_distance(origin,vExplodeAt)
-	if (dist <= CHAFF_RADIUS) {
-		
-		sh_chaff_user(i,id,teliko_get_hero_id())
-		
-	}
+	sh_chaff_user(pid,id,teliko_get_hero_id())
+	
 }
 
 
 remove_chaff(id,id_chaff)
-}
 
 }
 
-public vexd_pfntouch(pToucher, pTouched)
+public chaffe_touch_things(pToucher, pTouched)
 {
 
-
-if (pev_valid(pToucher)!=2){
-	return
-}
-new szClassName[32]
-entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-if(equal(szClassName,CHAFF_CLASSNAME))
-{
 	new Float:velocity[3]
 	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
-	if(pev(pTouched,pev_solid)==SOLID_BSP){
-		emit_sound(pToucher, CHAN_WEAPON, CHAFF_BOUNCE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		velocity[0]*=0.5
-		velocity[1]*=0.5
-		velocity[2]*=0.5
-		entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
-	}
-}
+	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	velocity[0]*=0.5
+	velocity[1]*=0.5
+	velocity[2]*=0.5
+	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
 }
 
 public remove_chaff(id,id_chaff){
@@ -342,7 +307,8 @@ public plugin_precache()
 {
 
 engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
-engfunc(EngFunc_PrecacheSound, CHAFF_BOUNCE_SFX)
-engfunc(EngFunc_PrecacheSound,CHAFF_EXPLODE_SFX)
+engfunc(EngFunc_PrecacheSound, CUSTOM_GRENADE_BOUNCE_SOUND)
+engfunc(EngFunc_PrecacheSound, THROWABLE_LAUNCH_SFX)
+engfunc(EngFunc_PrecacheSound, crush_stunned)
 
 }

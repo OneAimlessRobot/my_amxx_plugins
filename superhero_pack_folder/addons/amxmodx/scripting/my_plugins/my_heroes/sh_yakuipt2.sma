@@ -2,6 +2,7 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -44,7 +45,6 @@ public plugin_init()
 
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange","be","1=1")
 	
 	register_srvcmd("yakui_init", "yakui_init")
@@ -145,7 +145,6 @@ reset_yakui(id){
 	
 	
 	mode_change_button_pressed[id]=0
-	clear_pills()
 	gatling_set_num_pills(id,max_pills)
 	gatling_set_num_rockets(id,max_rockets)
 	yakui_weapons(id)
@@ -158,8 +157,7 @@ clear_yakui(id){
 	gatling_set_num_pills(id,0)
 	gatling_set_num_rockets(id,0)
 	sh_drop_weapon(id, YAKUI_WEAPON_CLASSID, true)
-	clear_pills()
-	clear_missiles()
+	remove_entity_name(ROCKET_CLASSNAME)
 
 
 
@@ -182,7 +180,7 @@ public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)|| !sh_is_active()) return
 	
-	uneffect_user_handler(id)
+	sh_uneffect_user(id)
 	if ( sh_user_has_hero(id,gHeroID)) {
 		
 		reset_yakui(id)
@@ -198,8 +196,8 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == YAKUI_WEAPON_CLASSID) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, GATLING_V_MODEL)
-		Entvars_Set_String(id, EV_SZ_weaponmodel, GATLING_P_MODEL)
+		entity_set_string(id, EV_SZ_viewmodel, GATLING_V_MODEL)
+		entity_set_string(id, EV_SZ_weaponmodel, GATLING_P_MODEL)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -220,14 +218,6 @@ public weaponChange(id)
 	}
 }
 
-public death(){
-	new id=read_data(2)
-	if(!sh_is_active()) return
-	
-	uneffect_user_handler(id)
-
-
-}
 public yakui_kd(){
 	new temp[6]
 	

@@ -41,20 +41,12 @@ new const UnPrecache_ModelList[ 32][ ] =
 } 
 //Files that I want to keep go here.
 /*
-"weapons/c4_click.wav", 
-	"weapons/c4_beep1.wav", 
-	"weapons/c4_beep2.wav", 
-	"weapons/c4_beep3.wav", 
-	"weapons/c4_beep4.wav", 
-	"weapons/c4_beep5.wav", 
-	"weapons/c4_explode1.wav", 
-	"weapons/c4_plant.wav", 
-	"weapons/c4_disarm.wav", 
-	"weapons/c4_disarmed.wav", 
+	
 */
 
-new const UnPrecache_SoundList[107][] = 
+new const UnPrecache_SoundList[117][] = 
 {
+	
 	"items/suitcharge1.wav", 
 	"items/suitchargeno1.wav", 
 	"items/suitchargeok1.wav", 
@@ -149,7 +141,17 @@ new const UnPrecache_SoundList[107][] =
 	"weapons/usp_clipin.wav", 
 	"weapons/usp_silencer_on.wav", 
 	"weapons/usp_silencer_off.wav", 
-	"weapons/usp_sliderelease.wav", 
+	"weapons/usp_sliderelease.wav",
+	"weapons/c4_click.wav", 
+	"weapons/c4_beep1.wav", 
+	"weapons/c4_beep2.wav", 
+	"weapons/c4_beep3.wav", 
+	"weapons/c4_beep4.wav", 
+	"weapons/c4_beep5.wav", 
+	"weapons/c4_explode1.wav", 
+	"weapons/c4_plant.wav", 
+	"weapons/c4_disarm.wav", 
+	"weapons/c4_disarmed.wav", 
 	"weapons/usp_slideback.wav", 
 	"weapons/fiveseven_slidepull.wav", 
 	"weapons/fiveseven_sliderelease.wav", 
@@ -162,6 +164,127 @@ new const UnPrecache_SoundList[107][] =
 	"weapons/pinpull.wav", 
 	"common/bodydrop3.wav", 
 	"common/bodydrop4.wav"
+};
+
+new const UnPrecache_SoundList_Generics[117][] = 
+{
+	"sound/items/suitcharge1.wav", 
+	"sound/items/suitchargeno1.wav", 
+	"sound/items/suitchargeok1.wav", 
+	"sound/common/wpn_hudoff.wav", 
+	"sound/common/wpn_hudon.wav", 
+	"sound/common/wpn_moveselect.wav", 
+	"sound/common/wpn_denyselect.wav",
+	"sound/player/geiger6.wav", 
+	"sound/player/geiger5.wav", 
+	"sound/player/geiger4.wav", 
+	"sound/player/geiger3.wav", 
+	"sound/player/geiger2.wav", 
+	"sound/player/geiger1.wav", 
+	"sound/weapons/bullet_hit1.wav", 
+	"sound/weapons/bullet_hit2.wav", 
+	"sound/items/weapondrop1.wav", 
+	"sound/weapons/generic_reload.wav", 
+	"sound/buttons/bell1.wav", 
+	"sound/buttons/blip1.wav", 
+	"sound/buttons/blip2.wav", 
+	"sound/buttons/button11.wav", 
+	"sound/buttons/latchunlocked2.wav", 
+	"sound/buttons/lightswitch2.wav", 
+	"sound/ambience/quail1.wav", 
+	"sound/events/tutor_msg.wav", 
+	"sound/events/enemy_died.wav", 
+	"sound/events/friend_died.wav", 
+	"sound/events/task_complete.wav", 
+	"sound/weapons/ak47_clipout.wav", 
+	"sound/weapons/ak47_clipin.wav", 
+	"sound/weapons/ak47_boltpull.wav", 
+	"sound/weapons/aug_clipout.wav", 
+	"sound/weapons/aug_clipin.wav", 
+	"sound/weapons/aug_boltpull.wav", 
+	"sound/weapons/aug_boltslap.wav", 
+	"sound/weapons/aug_forearm.wav", 
+	"sound/weapons/elite_reloadstart.wav", 
+	"sound/weapons/elite_leftclipin.wav", 
+	"sound/weapons/elite_clipout.wav", 
+	"sound/weapons/elite_sliderelease.wav", 
+	"sound/weapons/elite_rightclipin.wav", 
+	"sound/weapons/elite_deploy.wav", 
+	"sound/weapons/famas_clipout.wav", 
+	"sound/weapons/famas_clipin.wav", 
+	"sound/weapons/famas_boltpull.wav", 
+	"sound/weapons/famas_boltslap.wav", 
+	"sound/weapons/famas_forearm.wav", 
+	"sound/weapons/g3sg1_slide.wav", 
+	"sound/weapons/g3sg1_clipin.wav", 
+	"sound/weapons/g3sg1_clipout.wav", 
+	"sound/weapons/galil_clipout.wav", 
+	"sound/weapons/galil_clipin.wav", 
+	"sound/weapons/galil_boltpull.wav", 
+	"sound/weapons/m4a1_clipin.wav",
+	"sound/weapons/c4_click.wav", 
+	"sound/weapons/c4_beep1.wav", 
+	"sound/weapons/c4_beep2.wav", 
+	"sound/weapons/c4_beep3.wav", 
+	"sound/weapons/c4_beep4.wav", 
+	"sound/weapons/c4_beep5.wav", 
+	"sound/weapons/c4_explode1.wav", 
+	"sound/weapons/c4_plant.wav", 
+	"sound/weapons/c4_disarm.wav", 
+	"sound/weapons/c4_disarmed.wav", 
+	"sound/weapons/m4a1_clipout.wav", 
+	"sound/weapons/m4a1_boltpull.wav", 
+	"sound/weapons/m4a1_deploy.wav", 
+	"sound/weapons/m4a1_silencer_on.wav", 
+	"sound/weapons/m4a1_silencer_off.wav", 
+	"sound/weapons/m249_boxout.wav", 
+	"sound/weapons/m249_boxin.wav", 
+	"sound/weapons/m249_chain.wav", 
+	"sound/weapons/m249_coverup.wav", 
+	"sound/weapons/m249_coverdown.wav", 
+	"sound/weapons/mac10_clipout.wav", 
+	"sound/weapons/mac10_clipin.wav", 
+	"sound/weapons/mac10_boltpull.wav", 
+	"sound/weapons/mp5_clipout.wav", 
+	"sound/weapons/mp5_clipin.wav", 
+	"sound/weapons/mp5_slideback.wav", 
+	"sound/weapons/p90_clipout.wav", 
+	"sound/weapons/p90_clipin.wav", 
+	"sound/weapons/p90_boltpull.wav", 
+	"sound/weapons/p90_cliprelease.wav", 
+	"sound/weapons/p228_clipout.wav", 
+	"sound/weapons/p228_clipin.wav", 
+	"sound/weapons/p228_sliderelease.wav", 
+	"sound/weapons/p228_slidepull.wav", 
+	"sound/weapons/scout_bolt.wav", 
+	"sound/weapons/scout_clipin.wav", 
+	"sound/weapons/scout_clipout.wav", 
+	"sound/weapons/sg550_boltpull.wav", 
+	"sound/weapons/sg550_clipin.wav", 
+	"sound/weapons/sg550_clipout.wav", 
+	"sound/weapons/sg552_clipout.wav", 
+	"sound/weapons/sg552_clipin.wav", 
+	"sound/weapons/sg552_boltpull.wav", 
+	"sound/weapons/ump45_clipout.wav", 
+	"sound/weapons/ump45_clipin.wav", 
+	"sound/weapons/ump45_boltslap.wav", 
+	"sound/weapons/usp_clipout.wav", 
+	"sound/weapons/usp_clipin.wav", 
+	"sound/weapons/usp_silencer_on.wav", 
+	"sound/weapons/usp_silencer_off.wav", 
+	"sound/weapons/usp_sliderelease.wav", 
+	"sound/weapons/usp_slideback.wav", 
+	"sound/weapons/fiveseven_slidepull.wav", 
+	"sound/weapons/fiveseven_sliderelease.wav", 
+	"sound/weapons/de_clipout.wav", 
+	"sound/weapons/de_clipin.wav", 
+	"sound/weapons/de_deploy.wav", 
+	"sound/weapons/sliderelease1.wav", 
+	"sound/weapons/slideback1.wav", 
+	"sound/weapons/357_cock1.wav", 
+	"sound/weapons/pinpull.wav", 
+	"sound/common/bodydrop3.wav", 
+	"sound/common/bodydrop4.wav"
 };
 
 public plugin_init( ) 
@@ -195,8 +318,14 @@ public fw_PrecacheModel( const Model[ ] )
 { 
 	for( new i = 0; i < sizeof( UnPrecache_ModelList ); i++ ) 
 	{ 
-		if( equal( Model, UnPrecache_ModelList[ i ] ) ) 
-			return FMRES_SUPERCEDE 
+		
+		if( equal( Model, UnPrecache_ModelList[ i ] ) ){
+			engfunc(EngFunc_PrecacheGeneric,UnPrecache_ModelList[ i ] )
+			return FMRES_SUPERCEDE
+		}
+		
+
+		
 	} 
 	
 	return FMRES_IGNORED 
@@ -228,8 +357,13 @@ public fw_PrecacheSound( const Sound[ ] )
 		return FMRES_SUPERCEDE 
 	for( new i = 0; i < sizeof(UnPrecache_SoundList); i++ )
 	{ 
-		if( equal( Sound, UnPrecache_SoundList[ i ] ) ) 
-			return FMRES_SUPERCEDE 
+		if( equal( Sound, UnPrecache_SoundList[ i ] ) ){
+			engfunc(EngFunc_PrecacheGeneric,UnPrecache_SoundList_Generics[ i ] )
+			return FMRES_SUPERCEDE
+		}
+		
+			
+	
 	} 
 	 
 	return FMRES_HANDLED 

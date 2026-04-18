@@ -45,7 +45,6 @@ stock const spear_mode_names[spear_mode_max][]={
         "Blast"
 };
 
-native clear_spears()
 native spear_get_spear_loaded(id)
 native spear_uncharge_spear(id)
 native spear_mode:spear_get_user_spear_mode(id)

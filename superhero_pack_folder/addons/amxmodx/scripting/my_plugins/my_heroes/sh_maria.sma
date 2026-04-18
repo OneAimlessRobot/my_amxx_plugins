@@ -119,7 +119,7 @@ public _maria_riveter_dec_num_rivets(iPlugin,iParams){
 }
 public sh_round_end(){
 
-	maria_riveter_clear_rivets()
+	remove_entity_name(MARIA_PROJECTILE_CLASSNAME)
 
 }
 //----------------------------------------------------------------------------------------------

@@ -55,7 +55,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,"models/shmod/madness_m3.mdl")
+	engfunc(EngFunc_PrecacheModel, "models/shmod/madness_m3.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public madness_init()
@@ -113,7 +113,7 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if ( wpnid == CSW_M3 ) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/madness_m3.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/madness_m3.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------

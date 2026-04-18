@@ -140,6 +140,7 @@ uncharge_user(id){
 	if(g_graciete_jetpack_on[id]){
 		g_graciete_jetpack_on[id]=false;
 	}
+	trail(id,RED,0,0)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	return 0
 	
@@ -159,6 +160,7 @@ public client_PostThink(id) {
 				
 				explosion(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
 				g_graciete_land_power[id]=0.0
+				
 				
 			}
 			uncharge_user(id)
@@ -245,7 +247,7 @@ public charge_task(id){
 public JetpackJump( id,intensity){
 	
 	new Float:velocity[3];
-	VelocityByAim(id, intensity, velocity);
+	velocity_by_aim(id, intensity, velocity);
 	new Float:vector_len=vector_length(velocity);
 	velocity[0]=velocity[0]/vector_len;
 	velocity[1]=velocity[1]/vector_len;

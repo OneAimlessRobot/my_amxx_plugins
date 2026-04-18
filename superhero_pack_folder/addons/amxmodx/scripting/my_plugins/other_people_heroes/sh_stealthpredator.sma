@@ -91,15 +91,15 @@ public stealth_init()
 public client_prethink(id)
 {
 	if( is_user_connected(id) && sh_user_has_hero(id,gHeroID)  ) {
-		Entvars_Set_Int(id, EV_INT_flTimeStepSound, 999)
+		entity_set_int(id, EV_INT_flTimeStepSound, 999)
 	}
 }
 
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheSound,"shmod/stealthoninvis.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/stealthrevive.wav")
+	engfunc(EngFunc_PrecacheSound, "shmod/stealthoninvis.wav")
+	engfunc(EngFunc_PrecacheSound, "shmod/stealthrevive.wav")
 }
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
@@ -297,7 +297,7 @@ public remove_power(id, powerID)
 	new sndStop=(1<<5)
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoffinvis.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 
-	RemoveEntity(powerID)
+	remove_entity(powerID)
 
 	if ( is_user_connected(id) ) {
 		// Switch back to previous weapon and reset speed...

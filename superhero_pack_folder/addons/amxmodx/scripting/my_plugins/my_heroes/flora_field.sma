@@ -362,7 +362,7 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 		new Float:other_pos[3]
 		pev(field_id, pev_origin, other_pos)
 		
-		new Float:distance_between=VecDist(pos,other_pos)
+		new Float:distance_between=vector_distance(pos,other_pos)
 		if((distance_between<distance_to_contain)&&(distance_between<best_distance)){
 			
 				best_distance=distance_between
@@ -461,7 +461,7 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME,player_id)
 	while(grenada) {
 			pev(grenada,pev_origin,field_pos)
-			new Float:distance=VecDist(pos,field_pos)
+			new Float:distance=vector_distance(pos,field_pos)
 			if(distance<field_radius){
 				field_id=grenada;
 				if(distance<field_core_radius){
@@ -817,17 +817,17 @@ public charge_iteration(owner,field_id){
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
 	new Float:velocity[3]
-	Entvars_Get_Vector(owner, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(owner, EV_VEC_v_angle, vAngles)
+	entity_get_vector(owner, EV_VEC_origin, vOrigin)
+	entity_get_vector(owner, EV_VEC_v_angle, vAngles)
 	new notFloat_vOrigin[3]
 	notFloat_vOrigin[0] = floatround(vOrigin[0])
 	notFloat_vOrigin[1] = floatround(vOrigin[1])
 	notFloat_vOrigin[2] = floatround(vOrigin[2])
 	
-	ENT_SetOrigin(field_id, vOrigin)
-	Entvars_Set_Vector(field_id, EV_VEC_angles, vAngles)
-	Entvars_Get_Vector(owner, EV_VEC_velocity, velocity)
-	Entvars_Set_Vector(field_id, EV_VEC_velocity,  velocity)
+	entity_set_origin(field_id, vOrigin)
+	entity_set_vector(field_id, EV_VEC_angles, vAngles)
+	entity_get_vector(owner, EV_VEC_velocity, velocity)
+	entity_set_vector(field_id, EV_VEC_velocity,  velocity)
 	
 	// switch to knife
 	engclient_cmd(owner, "weapon_knife")

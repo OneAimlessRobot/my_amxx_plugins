@@ -33,6 +33,9 @@ public plugin_init(){
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "zenitsu_charge")
 
+	register_custom_touchable("player","zenitsu_ele_cuerte_de_la_spada",player_vector,1)
+
+
 }
 public Fwd_PlayerPreThink(id)
 {
@@ -142,7 +145,7 @@ public zenitsu_charge(id, uc_handle, seed)
 }
 
 
-public vexd_pfntouch(pToucher, pTouched) {
+public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 
 
 	if (pev_valid(pToucher)!=2){
@@ -153,6 +156,12 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 		return
 	}
+
+	if (pev_valid(pTouched)<1){
+		
+		return
+	}
+
 	if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
 
 		return

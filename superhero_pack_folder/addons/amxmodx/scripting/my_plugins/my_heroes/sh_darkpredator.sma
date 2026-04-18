@@ -207,7 +207,7 @@ public checkButtons()
 		if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) continue
 		
 		setVisible = false
-		butnprs = Entvars_Get_Int(id, EV_INT_button)
+		butnprs = entity_get_int(id, EV_INT_button)
 		
 		//Always check these
 		if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD || butnprs&IN_USE) setVisible = true

@@ -167,13 +167,13 @@ positionChangeTimer(id,attacker)
 	if ( !client_hittable(id)||!client_hittable(attacker) ) return
 
 	new Float:velocity[3]
-	Entvars_Get_Vector(attacker, EV_VEC_velocity, velocity)
+	entity_get_vector(attacker, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(attacker, EV_VEC_velocity, velocity)
+		entity_set_vector(attacker, EV_VEC_velocity, velocity)
 	}
 	new parm[TELEPORT_TASK_NUM_INIT_ARGS]
 	parm[TELEPORT_TASK_TARGET]=id
@@ -208,7 +208,7 @@ public positionChangeCheck(array[], attacker)
 	}
 	sh_chat_message(tg,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
 	sh_chat_message(attacker,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
-	Entvars_Set_Vector(attacker, EV_VEC_velocity, null_vector)
+	entity_set_vector(attacker, EV_VEC_velocity, null_vector)
 	shinobu_set_user_tagged_player(attacker,0)
 }
 //native nani_player_behind_player(tele_player,tg_player,Float: distance_tele_tg=SHINOBU_DEFAULT_TELE_DIST)

@@ -16,7 +16,7 @@ ricochet_extradamage 5	//Additional damage (not a damage mult)
 */
 
 #include "../my_include/superheromod.inc"
-#include <xs>
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new gSpriteLaser
 
@@ -133,7 +133,7 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 	pev(id, pev_view_ofs, vector)
 
 	// get the fired particle start origin
-	xs_vec_add(fired_particle_start_origin, vector, fired_particle_start_origin)
+	add_3d_vectors(fired_particle_start_origin, vector, fired_particle_start_origin)
 	static bool:particle_is_fired ; particle_is_fired = xs_vec_equal(fired_particle_start_origin, start)
 
 	if (particle_is_fired) {

@@ -57,6 +57,13 @@ stock const m_iClip = 51
 
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
+
+#define PIERCE_WOUND_SFX "hornet/ag_hornethit1.wav"
+#define THROWABLE_LAUNCH_SFX "shmod/lara/spear/spear_throw.wav"
+#define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/Teliko/chaff/bounce.wav"
+#define SMOKE_EXPLODE_SOUND "shmod/yakui/rocket.wav"
+#define GLASS_VIAL_BREAK "shmod/erica/molotov/molotov_crack.wav"
+#define GLASS_BREAK_SFX "shmod/Teliko/counter.wav"
 #define SLICERISTA_HIT_MEAT_SFX "shmod/Grimpt2/Stolen2.wav"
 #define LASER_LINE_DEFAULT_SOUND "weapons/electro5.wav"
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
@@ -81,6 +88,7 @@ enum sh_custom_color{
 		LTGREEN,
 		INVIS,
 		BLACK,
+		MAGENTA,
 		FX_NONE,
 		FX_KILL,
 		FX_GLOW,
@@ -129,6 +137,7 @@ stock const LineColors[_:COLORS_NUM][3] = {
 	{111,255,111},      //Light Green
 	{10,10,10},      //invisible
 	{1,1,1},      //Black
+	{255,0,127},      //Magenta
 	{0,0,0}, //fx_none
 	{1, 255, 255}, //fx_cyanide
 	{255, 255, 255}, //fx_glow
@@ -147,6 +156,14 @@ stock const Float:g_fReloadDelay[CSW_P90+1] = {
 	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
 	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
 }
+
+stock const player_vector[][]={"player"}
+stock const szWallEntities[ ][ ] = {
+	"worldspawn", "func_wall", "func_door",  "func_door_rotating",
+	"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
+	"func_illusionary", "func_button", "func_rot_button", "func_rotating"
+}
+
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}
 

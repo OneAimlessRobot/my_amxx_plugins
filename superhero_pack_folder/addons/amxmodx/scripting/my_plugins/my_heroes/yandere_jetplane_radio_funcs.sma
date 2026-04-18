@@ -167,7 +167,7 @@ launch_scan(id){
 			
 			continue
 		}
-		track_user(pid,id,0,0,0.5,10.0)
+		track_user(pid,id,0,0,0.5,10.0,PINK)
 		
 	}
 

@@ -78,8 +78,8 @@
 	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/Greenarrow_v.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/Greenarrow_p.mdl")
+	engfunc(EngFunc_PrecacheModel, "models/shmod/Greenarrow_v.mdl")
+	engfunc(EngFunc_PrecacheModel, "models/shmod/Greenarrow_p.mdl")
 
  }
  //----------------------------------------------------------------------------------------------
@@ -269,9 +269,9 @@
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if (wpnid == CSW_SCOUT) {
 		// Weapon Model change for 3rd person view - vittu
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/Greenarrow_v.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/Greenarrow_v.mdl")
 		// Weapon Model change for 3rd person view - vittu
-		Entvars_Set_String(id, EV_SZ_weaponmodel, "models/shmod/Greenarrow_p.mdl")
+		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/Greenarrow_p.mdl")
 	}
  }
  //----------------------------------------------------------------------------------------------

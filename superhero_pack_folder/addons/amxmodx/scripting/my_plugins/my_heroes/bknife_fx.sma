@@ -1,6 +1,6 @@
 #include "../my_include/superheromod.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -171,7 +171,7 @@ return HAM_IGNORED
 }
 
 bleed_task_user(id,attacker,heal_user){
-	if ( !shModActive()  || !client_hittable(id)||!client_hittable(attacker)) return
+	if ( !shModActive()  || !client_hittable(id)||!is_user_connected(attacker)) return
 	new array[3]
 	array[0] = gIsBleeding[id]
 	array[1] = attacker
@@ -219,7 +219,7 @@ public _sh_bleed_user(iPlugin,iParams){
 			sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
 		
 		}
-		emit_sound(user, CHAN_STATIC, BLEED_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		gIsBleeding[user]=bleed_type
 		bleed_task_user(user,attacker,heal_user)
 	}
@@ -229,7 +229,7 @@ public _sh_bleed_user(iPlugin,iParams){
 }
 public plugin_precache(){
 	
-	engfunc(EngFunc_PrecacheSound, BLEED_SFX)
+	engfunc(EngFunc_PrecacheSound, PIERCE_WOUND_SFX)
 
 }
 

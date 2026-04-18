@@ -36,7 +36,7 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 */
 
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"
@@ -168,7 +168,7 @@ public poisonivy_damage(id)
 
 	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] && id != attacker ) {
 		// Set a poisoned player
-		emit_sound(id, CHAN_STATIC, BLEED_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		gIsPoisoned[id][attacker] = true
 
 		// Set a cooldown if there is one until user can poison another player

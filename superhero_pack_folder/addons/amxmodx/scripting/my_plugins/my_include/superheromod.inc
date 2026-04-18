@@ -28,12 +28,8 @@
 #tryinclude "../../include/fun.inc"
 #tryinclude "../../include/csx.inc"
 #tryinclude "../../include/cstrike.inc"
-#tryinclude "../../include/Vexd_Utilities.inc"
 #tryinclude "../my_include/superheroconst.inc"
 
-#if defined SH_BACKCOMPAT
-  #tryinclude "../../include/engine.inc"
-#endif
 
 
 #include "../my_heroes/sh_damage_sources_inc/sh_damage_sources_aux_code.inc"

@@ -6,6 +6,7 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 pt4"
@@ -20,6 +21,11 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
 	
+	register_entity_as_wall_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta")
+	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta",player_vector,1)
+	static const custom_vector[][]={ROCKET_CLASSNAME}
+	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_la_seringa",custom_vector,1)
+
 	arrayset(has_rocket,0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 }
@@ -29,7 +35,6 @@ public plugin_natives(){
 	
 	register_native("gatling_set_rockets","_gatling_set_rockets",0);
 	register_native("gatling_get_rockets","_gatling_get_rockets",0);
-	register_native( "clear_missiles","_clear_missiles",0)
 	
 	
 }
@@ -48,8 +53,6 @@ public _gatling_set_rockets(iPlugin,iParams){
 public CmdStart(id, uc_handle)
 {
 	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
-	
-	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
@@ -102,26 +105,20 @@ public bool:client_isnt_hitter(id){
 	
 }
 
+public seringa_toqueta_de_la_seringa(pToucher, pTouched) {
 
-public vexd_pfntouch(pToucher, pTouched) {
-
-
-if (pev_valid(pToucher)!=2 ){
-	return
+	remove_missile(pToucher)
 }
-new szClassName[32]
-Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
-if(equal(szClassName, ROCKET_CLASSNAME)) {
-	
-	
+public seringa_toqueta_de_entiteta(pToucher, pTouched) {
+
 	new Float:fl_vExplodeAt[3]
-	Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
 	new vExplodeAt[3]
 	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
 	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-	new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
 	
 	//retrieve current rocket fx num
 
@@ -135,36 +132,25 @@ if(equal(szClassName, ROCKET_CLASSNAME)) {
 		new pid = entlist[i];
 		if( !client_hittable(pid) ) continue
 		
-		make_effect(i,id,gatling_get_hero_id(),fx_num,false)
+		make_effect(pid,id,gatling_get_hero_id(),fx_num,false)
 	}
 	
+	anime_kill_fx(vExplodeAt)
 	
-	emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(pToucher, CHAN_WEAPON, SMOKE_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new color[3]
 	sh_get_pill_color(fx_num,id,color)
 	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
-	
-	if ( is_valid_ent(pTouched) ) {
-		new szClassName2[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
-		
-		if(equal(szClassName2, ROCKET_CLASSNAME)) {
-			emit_sound(pToucher, CHAN_WEAPON, ROCKET_EXPLODE_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			remove_missile(pTouched)
-		}
-	}
-	remove_missile(pToucher)	
+
+	remove_missile(pToucher)
 }
-}
-//----------------------------------------------------------------------------------------------
-//make_rocket(userindex,commandtype,missilespeed,antimissleid)
 make_rocket(id,iarg1)
 {
 
 new Float:vOrigin[3]
 new Float:vAngles[3]
-Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+entity_get_vector(id, EV_VEC_origin, vOrigin)
+entity_get_vector(id, EV_VEC_v_angle, vAngles)
 new notFloat_vOrigin[3]
 notFloat_vOrigin[0] = floatround(vOrigin[0])
 notFloat_vOrigin[1] = floatround(vOrigin[1])
@@ -172,7 +158,7 @@ notFloat_vOrigin[2]  =floatround(floatadd( vOrigin[2] , 50.0))
 
 
 new NewEnt
-NewEnt = CreateEntity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 if(!is_user_bot(id)){
 	client_print(id,print_chat,"[SH](Yakui the Maid Mk2): Rocket fail!")
@@ -180,29 +166,29 @@ if(!is_user_bot(id)){
 return PLUGIN_HANDLED
 }
 
-Entvars_Set_String(NewEnt, EV_SZ_classname, ROCKET_CLASSNAME)
-ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
+entity_set_string(NewEnt, EV_SZ_classname, ROCKET_CLASSNAME)
+entity_set_model(NewEnt, "models/rpgrocket.mdl")
 
 new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-ENT_SetOrigin(NewEnt, vOrigin)
-Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
+entity_set_origin(NewEnt, vOrigin)
+entity_set_vector(NewEnt, EV_VEC_angles, vAngles)
 entity_set_int(NewEnt, EV_INT_effects, 64)
-Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
+entity_set_int(NewEnt, EV_INT_solid, 2)
 
-Entvars_Set_Int(NewEnt, EV_INT_movetype, 10)
+entity_set_int(NewEnt, EV_INT_movetype, 10)
 
 
-Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
+entity_set_edict(NewEnt, EV_ENT_owner, id)
 
 new Float:fl_iNewVelocity[3]
 new iNewVelocity[3]
-VelocityByAim(id, iarg1, fl_iNewVelocity)
-Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+velocity_by_aim(id, iarg1, fl_iNewVelocity)
+entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 iNewVelocity[0] = floatround(fl_iNewVelocity[0])
 iNewVelocity[1] = floatround(fl_iNewVelocity[1])
 iNewVelocity[2] = floatround(fl_iNewVelocity[2])
@@ -218,7 +204,7 @@ new fx_num=sh_gen_effect()
 //this will store the fx num in the rocket ent
 entity_set_int(NewEnt,EV_INT_iuser3,fx_num)
 trail(NewEnt,FX_COLOR_OFFSET+fx_num,30,20)
-Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.50)
+entity_set_float(NewEnt, EV_FL_gravity, 0.50)
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -235,7 +221,7 @@ if(!pev_valid(missile)){
 	return PLUGIN_CONTINUE
 }
 new Float:fl_origin[3]
-Entvars_Get_Vector(missile, EV_VEC_origin, fl_origin)
+entity_get_vector(missile, EV_VEC_origin, fl_origin)
 
 message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 write_byte(TE_IMPLOSION)
@@ -247,31 +233,15 @@ write_byte (40)
 write_byte (45)
 message_end()
 
-emit_sound(missile, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-RemoveEntity(missile)
+emit_sound(missile, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+emit_sound(missile, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+remove_entity(missile)
 return PLUGIN_CONTINUE
 }
 
-public _clear_missiles(){
-
-
-for (new i=1; i <=SH_MAXSLOTS; i++) {
-if(has_rocket[i] > 0){
-	if(pev_valid(has_rocket[i])){
-		remove_missile(has_rocket[i])
-	}
-}
-
-}
-}
 public plugin_precache()
 {
-engfunc(EngFunc_PrecacheSound,ROCKET_EXPLODE_SFX)
-engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
-
-
+engfunc(EngFunc_PrecacheSound,SMOKE_EXPLODE_SOUND)
 engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
 engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
 

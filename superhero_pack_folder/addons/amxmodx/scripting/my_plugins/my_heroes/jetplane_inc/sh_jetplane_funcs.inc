@@ -12,7 +12,7 @@
 #define JETPLANE_MG_CLASSNAME "yandere_mg"
 #define JETPLANE_LAW_CLASSNAME "yandere_law"
 
-
+#define LAUNCH_SAFETY_DIST 100
 
 #define JETPLANE_MODEL "models/shmod/yandere/jetplane/fuselage/airattack_plane.mdl"
 #define JETPLANE_CAMERA_MODEL "models/shmod/camman/camera/camera.mdl"

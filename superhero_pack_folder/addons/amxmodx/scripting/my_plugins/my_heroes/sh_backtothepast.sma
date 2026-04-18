@@ -160,7 +160,7 @@ public return_to_past_fx(id){
 
 	id-=TASKID_FX
 	new Float:fl_origin[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, fl_origin)
+	entity_get_vector(id, EV_VEC_origin, fl_origin)
 
 	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte(14)

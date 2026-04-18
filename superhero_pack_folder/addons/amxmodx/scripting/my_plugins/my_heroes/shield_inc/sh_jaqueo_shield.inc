@@ -19,8 +19,6 @@
 #define shield_destroyed "shmod/jaqueo/shield/teardown.wav"
 #define shield_mdl "models/shmod/jaqueo/shield/shield.mdl"
 
-native clear_shields()
-
 native reset_jaqueo_user(id)
 native shield_get_user_shield_cooldown(id)
 native shield_loaded(id)

@@ -1,10 +1,5 @@
-de_aztec
-de_cbble
-de_dust
-cs_assault
-cs_italy
+de_inferno
+de_nuke
 de_train
-
-
-
-
+de_dust2
+de_blue

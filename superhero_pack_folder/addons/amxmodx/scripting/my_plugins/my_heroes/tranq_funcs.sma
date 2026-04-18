@@ -38,6 +38,9 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,STRN_ELITE, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, STRN_ELITE, "fw_Weapon_Reload_Post", 1,true)
 
+	register_entity_as_wall_touchable(DART_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)
+
 	register_think(DART_CLASSNAME, "tranque_thinque")
 	init_gravity_pcvar()
 
@@ -45,6 +48,16 @@ public plugin_init(){
 	
 }
 
+public FwdTouchWorld( dirt, World ) {
+	new Float:origin[3]
+	entity_get_vector(dirt,EV_VEC_origin,origin);
+
+	emit_sound(dirt, CHAN_WEAPON, GLASS_BREAK_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	make_sparks(origin);
+	gun_shot_decal(origin);
+	
+	remove_entity(dirt)
+}
 public tranque_thinque(ent){
 
 
@@ -72,19 +85,10 @@ public tranque_thinque(ent){
 
 
 }
-public plugin_natives(){
-	
-	register_native( "clear_darts","_clear_darts",0)
-	
-	
-}
-
 
 public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
-	
-	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -307,23 +311,12 @@ bool:client_isnt_hitter(pPlayer){
 	return false
 }
 
-public _clear_darts(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, DART_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, DART_CLASSNAME)
-	}
-}
 launch_dart(id)
 {
 	if(client_isnt_hitter(id)){
 			
 		return
 	}
-
-	entity_set_int(id, EV_INT_weaponanim, 3)
-	
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 	
 	entity_get_vector(id, EV_VEC_origin , Origin)
@@ -351,7 +344,7 @@ launch_dart(id)
 	entity_set_float(Ent,EV_FL_gravity, DART_GRAVITY_MULT)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
-	VelocityByAim(id, floatround(DART_SPEED) , Velocity)
+	velocity_by_aim(id, floatround(DART_SPEED) , Velocity)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	tranq_dec_num_darts(id)
@@ -375,101 +368,81 @@ launch_dart(id)
 	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
 }
 
-public vexd_pfntouch(pToucher, pTouched)
-{
+public chorazy_II_toumpaeeeehm(pToucher, pTouched)
+{		
 	
-	
-	if (pev_valid(pToucher)!=2 ){
-		return
-	}
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, DART_CLASSNAME))
-	{
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		
+	if(client_hittable(pTouched))
+	{	
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{
-				new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
-				if(dart_hurts){
-					new Float:speed
-					new Float:velocity[3]
+		new oid = entity_get_edict(pToucher, EV_ENT_owner)
+		new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
+		if(dart_hurts){
+			new Float:speed
+			new Float:velocity[3]
+			
+			
+			entity_get_vector(pToucher,EV_VEC_velocity,velocity);
+			speed=vector_length(velocity);
+			new Float:dart_launch_pos[3]
+			new Float:speed_coeff=(speed/DART_SPEED)
+			new Float:vic_origin[3];
+			new Float:vic_origin_eyes[3];
+			new vic_origin_eyes_int[3];
+			entity_get_vector(pToucher,EV_VEC_vuser1,dart_launch_pos)
+			entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+			get_user_origin(pTouched,vic_origin_eyes_int,1);
+			IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+			new Float:distance=vector_distance(vic_origin,dart_launch_pos);
+			new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+			new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
+			new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
+			new Float:damage=normal_damage*speed_coeff;
+			new headshot=0;
+			if(head_distance<DART_HEADSHOT_THRESHOLD_DIST){
+				
+				headshot=1;
+				damage*=4;
+			}
+			sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
+			new CsArmorType:armor_type;
+			cs_get_user_armor(pTouched,armor_type);
+			switch(armor_type){
+				
+				case CS_ARMOR_NONE:{
 					
 					
-					entity_get_vector(pToucher,EV_VEC_velocity,velocity);
-					speed=VecLength(velocity);
-					new Float:dart_launch_pos[3]
-					new Float:speed_coeff=(speed/DART_SPEED)
-					new Float:vic_origin[3];
-					new Float:vic_origin_eyes[3];
-					new vic_origin_eyes_int[3];
-					entity_get_vector(pToucher,EV_VEC_vuser1,dart_launch_pos)
-					entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-					get_user_origin(pTouched,vic_origin_eyes_int,1);
-					IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-					new Float:distance=vector_distance(vic_origin,dart_launch_pos);
-					new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-					new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
-					new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
-					new Float:damage=normal_damage*speed_coeff;
-					new headshot=0;
-					if(head_distance<DART_HEADSHOT_THRESHOLD_DIST){
-						
-						headshot=1;
-						damage*=4;
-					}
-					sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
-					new CsArmorType:armor_type;
-					cs_get_user_armor(pTouched,armor_type);
-					switch(armor_type){
-						
-						case CS_ARMOR_NONE:{
-							
-							
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							
-							blood_spray(origin, headshot?10:5)
-							
-							
-						}
-						case CS_ARMOR_KEVLAR:{
-							
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							
-							if(headshot){
-								blood_spray(origin, 5)
-							}
-							else{
-								
-								make_sparks(origin);
-							}
-						}
-						case CS_ARMOR_VESTHELM:{
-							emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-							make_sparks(origin);
-						}
-					}
+					emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					
+					blood_spray(origin, headshot?10:5)
+					
 					
 				}
-				sh_sleep_user(pTouched,oid,tranq_get_hero_id())
-				
+				case CS_ARMOR_KEVLAR:{
+					
+					emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					
+					if(headshot){
+						blood_spray(origin, 5)
+					}
+					else{
+						
+						make_sparks(origin);
+					}
+				}
+				case CS_ARMOR_VESTHELM:{
+					emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					make_sparks(origin);
+				}
 			}
-		}
-		if(pev(pTouched,pev_solid)==SOLID_BSP){
-			
-			emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			make_sparks(origin);
-			gun_shot_decal(origin);
-			
 			
 		}
-		remove_entity(pToucher)
+		sh_sleep_user(pTouched,oid,tranq_get_hero_id())
 		
 	}
+	remove_entity(pToucher)
 }
+
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
@@ -490,7 +463,7 @@ public plugin_precache()
 {
 	
 	engfunc(EngFunc_PrecacheModel,"models/shell.mdl")
-	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
+	engfunc(EngFunc_PrecacheSound, GLASS_BREAK_SFX)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
 	
 	

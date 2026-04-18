@@ -35,17 +35,21 @@ public plugin_init(){
 	arrayset(molly_armed,false,SH_MAXSLOTS+1)
 	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	register_think(MOLLY_CLASSNAME,"molly_think")
+
 	register_cvar("erica_molly_max_charge_time", "5.0")
 	register_cvar("erica_molly_min_charge_time", "1.0")
+
+
+	register_entity_as_wall_touchable(MOLLY_CLASSNAME,"molly_burner_um_burner")
+	register_custom_touchable(MOLLY_CLASSNAME,"molly_burner_um_burner",player_vector,1)
 
 	MOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	UNMOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
-	
-	
-	register_native( "clear_mollies","_clear_mollies",0)
+
 	register_native( "molly_get_molly_loaded","_molly_get_molly_loaded",0)
 	register_native( "molly_uncharge_molly","_molly_uncharge_molly",0)
 	
@@ -184,14 +188,6 @@ uncharge_user(id){
 	
 	
 }
-public _clear_mollies(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, MOLLY_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, MOLLY_CLASSNAME)
-}
-}
 public _molly_get_molly_loaded(iPlugin,iParams){
 
 new id=get_param(1)
@@ -200,8 +196,6 @@ return molly_loaded[id]
 }
 launch_molly(id)
 {
-entity_set_int(id, EV_INT_weaponanim, 3)
-
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -230,7 +224,7 @@ entity_set_int(Ent, EV_INT_solid, 1)
 entity_set_int(Ent, EV_INT_movetype, 10)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
-VelocityByAim(id, floatround(MOLLY_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
+velocity_by_aim(id, floatround(MOLLY_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 molly_loaded[id] = false
@@ -242,76 +236,55 @@ if(erica_get_num_mollies(id) == 0)
 	sh_drop_weapon(id,MOLLY_CLASSID,true)
 	engclient_cmd(id, "weapon_knife")
 }
-emit_sound(id, CHAN_WEAPON, MOLLY_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-trail(Ent,WHITE,10,5)
-
+emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+trail(Ent,PINK,10,5)
+entity_set_float(Ent,EV_FL_nextthink,get_gametime()+MOLLY_SHOOT_PERIOD)
 return PLUGIN_CONTINUE
 }
 
-public molly_reload(parm[])
-{
-if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],tranq_get_hero_id())||!is_user_connected(parm[0])) return
-molly_loaded[parm[0]] = true
-new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-if((wid==MOLLY_CLASSID)&&erica_get_num_mollies(parm[0])){
-entity_set_string(parm[0], EV_SZ_viewmodel, MOLLY_V_MODEL)
-}
-}
-
-public blow_molly_up(id_molly){
+public molly_think(id_molly){
 
 
 if ( !is_valid_ent(id_molly) ) return
 
-new szClassName[32]
-Entvars_Get_String(id_molly, EV_SZ_classname, szClassName, 31)
-
-if(equal(szClassName, MOLLY_CLASSNAME)) {
-
 new Float:fl_vExplodeAt[3]
-Entvars_Get_Vector(id_molly, EV_VEC_origin, fl_vExplodeAt)
+entity_get_vector(id_molly, EV_VEC_origin, fl_vExplodeAt)
 new vExplodeAt[3]
 vExplodeAt[0] = floatround(fl_vExplodeAt[0])
 vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-new id = Entvars_Get_Edict(id_molly, EV_ENT_owner)
-new origin[3],dist,i
-make_shockwave(vExplodeAt, MOLLY_RADIUS, molly_color,_,_,_,_,200)
+new id = entity_get_edict(id_molly, EV_ENT_owner)
+make_shockwave(vExplodeAt, MOLLY_RADIUS, LineColors[PINK],_,_,_,_,200)
+anime_kill_fx(vExplodeAt)
 random_fire(vExplodeAt, id_molly, MOLLY_RADIUS);
-emit_sound(id_molly, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(id_molly, CHAN_WEAPON, GLASS_VIAL_BREAK, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+static entlist[33];
+new numfound = find_sphere_class(id_molly,"player", MOLLY_RADIUS ,entlist, 32);
 
-for ( i = 1; i <= SH_MAXSLOTS; i++) {
+for( new i= 0;(i< numfound);i++){
+
+	new pid = entlist[i];
+	if( !client_hittable(pid) ) continue
 	
-	if( !client_hittable(i) ) continue
-	get_user_origin(i,origin)
-	dist = get_distance(origin,vExplodeAt)
-	if (dist <= MOLLY_RADIUS) {
-		
-		sh_molly_user(i,id,tranq_get_hero_id())
-		
-	}
+	sh_molly_user(pid,id,tranq_get_hero_id())
+	
 }
 
 remove_molly(id,id_molly)
-}
 
 }
 
-public vexd_pfntouch(pToucher, pTouched)
+public molly_burner_um_burner(pToucher, pTouched)
 {
 
-if (pev_valid(pToucher)!=2){
-	return
-}
-new szClassName[32]
-entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-if(equal(szClassName,MOLLY_CLASSNAME))
-{
-	if(pev(pTouched,pev_solid)==SOLID_BSP){
-		emit_sound(pToucher, CHAN_WEAPON, MOLLY_BURST_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		blow_molly_up(pToucher)
-	}
-}
+	new Float:velocity[3]
+	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	velocity[0]*=0.5
+	velocity[1]*=0.5
+	velocity[2]*=0.5
+	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+
 }
 
 
@@ -326,11 +299,10 @@ public plugin_precache()
 {
 	
 
-	engfunc(EngFunc_PrecacheModel,MOLLY_V_MODEL);
 	engfunc(EngFunc_PrecacheModel,MOLLY_W_MODEL);
-	engfunc(EngFunc_PrecacheModel,MOLLY_P_MODEL);
-
-	engfunc(EngFunc_PrecacheSound, MOLLY_BURST_SFX)
+	engfunc(EngFunc_PrecacheSound, THROWABLE_LAUNCH_SFX)
+	engfunc(EngFunc_PrecacheSound, CUSTOM_GRENADE_BOUNCE_SOUND)
+	engfunc(EngFunc_PrecacheSound, GLASS_VIAL_BREAK)
 	engfunc(EngFunc_PrecacheSound, MOLLY_FIRE_SFX)
 
 

@@ -39,7 +39,6 @@ public plugin_natives(){
 	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
 	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
 	
-	register_native( "uneffect_user_handler","_uneffect_user_handler",0)
 	register_native( "make_effect","_make_effect",0)
 	register_native( "sh_get_pill_color","_sh_get_pill_color",0)
 
@@ -63,23 +62,11 @@ public _make_effect(iPlugin,iParams){
 
 		return
 	}
-	sh_uneffect_user(vic,gCurrFX[vic])
+	sh_uneffect_user(vic)
 	sh_effect_user_direct(vic,attacker,hero_id,true_fx_num)
 
 }
 
-public _uneffect_user_handler(iPlugin,iParams){
-
-	new user=get_param(1)
-	if(!is_user_connected(user)){
-		
-		return
-	}
-	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<_:NUM_FX)){
-		sh_uneffect_user(user,gatling_get_fx_num(user))
-		gCurrFX[user]=0;
-	}
-}
 
 
 public _gatling_set_num_pills(iPlugin,iParams){

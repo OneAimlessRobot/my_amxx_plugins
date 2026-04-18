@@ -126,11 +126,6 @@ public loadCVARS(){
 }
 public plugin_precache(){
 	
-	
-	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_FLY_SOUND );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_BLOW_SOUND );
 	engfunc(EngFunc_PrecacheSound,JETPLANE_IDLE_SOUND );
@@ -237,8 +232,8 @@ public _jet_charge_user(iPlugin, iParams){
 	DispatchKeyValue( NewEnt, "material", material );
 	DispatchKeyValue( NewEnt, "health", health );
 	
-	Entvars_Set_Vector(g_jetplane[id], EV_VEC_mins,jetplane_min_dims)
-	Entvars_Set_Vector(g_jetplane[id], EV_VEC_maxs,jetplane_max_dims)
+	entity_set_vector(g_jetplane[id], EV_VEC_mins,jetplane_min_dims)
+	entity_set_vector(g_jetplane[id], EV_VEC_maxs,jetplane_max_dims)
 	
 	set_pev(NewEnt, pev_health, 0)
 	set_pev(NewEnt, pev_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
@@ -251,7 +246,7 @@ public _jet_charge_user(iPlugin, iParams){
 	new alpha=100
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jetplane[id],pev_owner,id)
-	ENT_SetOrigin(g_jetplane[id], Origin)
+	entity_set_origin(g_jetplane[id], Origin)
 	new parm[2]
 	parm[0]=id
 	parm[1]=g_jetplane[id]
@@ -527,11 +522,11 @@ public jet_think(ent)
 		new Float:updown_thingie=0.0;
 		new Float:rolly_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
-		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
+		entity_get_vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
 		new Float:curr_speed_stab_coeff=floatclamp(get_entity_velocity(jet_get_user_jet(owner))/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
 		new Float:curr_speed_dampening_coeff=floatclamp(((get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*get_entity_velocity(jet_get_user_jet(owner)))/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
 		sh_set_rendering(owner,0,0,0,0,kRenderFxNone,kRenderTransAlpha);
-		ENT_SetOrigin(owner, vOrigin)
+		entity_set_origin(owner, vOrigin)
 		
 		if(get_jet_upflapon(owner)||get_jet_downflapon(owner)){
 			if(get_jet_upflapon(owner)){
@@ -679,13 +674,13 @@ public jet_think(ent)
 		new Float:drag_vector[3];
 		if(jetplane_enable_air_drag){
 			arrayset(drag_vector,0,sizeof drag_vector);
-			new Float:norm= VecLength(velocity_copy);
+			new Float:norm= vector_length(velocity_copy);
 			new Float:gravity_const=get_cvar_float("sv_gravity")*JETPLANE_GRAVITY_MULT
 			drag_vector[0]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[0])/gravity_const)*jet_get_think_period();
 			drag_vector[1]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[1])/gravity_const)*jet_get_think_period();
 			drag_vector[2]=-((JETPLANE_DRAG_CONST*norm*velocity_copy[2])/gravity_const)*jet_get_think_period();
 		}
-		new Float:norm= VecLength(raw_velocity);
+		new Float:norm= vector_length(raw_velocity);
 		velocity_by_aim(jet_get_user_jet(owner),floatround(norm),raw_velocity);
 		raw_velocity[2]=velocity_copy[2]
 		for(new i=0;i<3;i++){
@@ -693,7 +688,7 @@ public jet_think(ent)
 		}
 		
 		
-		new Float:raw_speed=VecLength(raw_velocity);
+		new Float:raw_speed=vector_length(raw_velocity);
 		
 		if(jetplane_enable_speed_limiter){
 			new Float:speed_limit_thingie=(raw_speed>=get_jet_speed())?(raw_speed-get_jet_speed()+((1.0/JETPLANE_MAX_SPEED_BOUNCE_RATIO)*get_jet_speed() )):0.0
@@ -729,8 +724,8 @@ public charge_task(parm[],id){
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new notFloat_vOrigin[3]
 	notFloat_vOrigin[0] = floatround(vOrigin[0])
 	notFloat_vOrigin[1] = floatround(vOrigin[1])
@@ -739,10 +734,10 @@ public charge_task(parm[],id){
 	if(!is_valid_ent(g_jetplane[id])||(g_jetplane[id] == 0)) {
 		return
 	}
-	ENT_SetOrigin(g_jetplane[id], vOrigin)
-	Entvars_Set_Vector(g_jetplane[id], EV_VEC_angles, vAngles)
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
-	Entvars_Set_Vector(g_jetplane[id], EV_VEC_velocity,  velocity)
+	entity_set_origin(g_jetplane[id], vOrigin)
+	entity_set_vector(g_jetplane[id], EV_VEC_angles, vAngles)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
+	entity_set_vector(g_jetplane[id], EV_VEC_velocity,  velocity)
 	
 	
 	if(!is_user_bot(id)){

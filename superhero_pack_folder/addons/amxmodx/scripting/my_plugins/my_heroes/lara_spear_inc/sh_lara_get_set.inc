@@ -9,8 +9,6 @@
 #define SPEAR_P_MODEL "models/shmod/lara/spear/p_spear.mdl"
 #define NOSPEAR_V_MODEL "models/shmod/lara/spear/v_nospear.mdl"
 #define SPEAR_HIT_SFX  "shmod/lara/spear/spear_hit.wav"
-#define SPEAR_THROW_SFX  "shmod/lara/spear/spear_throw.wav"
-#define SPEAR_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
 
 
 native spear_set_num_spears(id,value_to_set)

@@ -3,8 +3,8 @@
 #include <reapi>
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
@@ -51,8 +51,19 @@ public plugin_init(){
 	UNSPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
 
 
+	
+	register_entity_as_wall_touchable(SPEAR_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(SPEAR_CLASSNAME,"spaaaaeer_touch_player",player_vector,1)
+
 }
 
+public FwdTouchWorld( Spaaaaeerr, World ) {
+	emit_sound(Spaaaaeerr, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	entity_set_vector(Spaaaaeerr, EV_VEC_velocity ,NULL_VECTOR)
+	//set pickability status
+	entity_set_int(Spaaaaeerr,EV_INT_iuser2,true)
+	entity_set_float( Spaaaaeerr, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
+}
 public spaar_thaank(ent){
 
 
@@ -68,7 +79,6 @@ public spaar_thaank(ent){
 public plugin_natives(){
 
 	
-	register_native( "clear_spears","_clear_spears",0)
 	register_native( "spear_get_spear_loaded","_spear_get_spear_loaded",0)
 	register_native( "spear_uncharge_spear","_spear_uncharge_spear",0)
 	register_native( "spear_get_user_spear_mode","_spear_get_user_spear_mode",0)
@@ -249,14 +259,6 @@ public Ham_Weapon_Stab(weapon_ent)
 	return HAM_IGNORED
 }
 
-public _clear_spears(iPlugin,iParams){
-
-	new grenada = find_ent_by_class(-1, SPEAR_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, SPEAR_CLASSNAME)
-	}
-}
 public _spear_get_spear_loaded(iPlugin,iParams){
 
 	new id=get_param(1)
@@ -271,8 +273,6 @@ public spear_mode:_spear_get_user_spear_mode(iPLugin, iParams){
 }
 launch_spear(id)
 {
-	entity_set_int(id, EV_INT_weaponanim, 3)
-
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 	entity_get_vector(id, EV_VEC_origin , Origin)
@@ -301,15 +301,15 @@ launch_spear(id)
 	entity_set_int(Ent, EV_INT_movetype, 10)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 
-	VelocityByAim(id, floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
-	//VelocityByAim(id, floatround(SPEAR_SPEED) , Velocity)
+	velocity_by_aim(id, floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
+
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 	spear_loaded[id] = false
 
 	spear_dec_num_spears(id)
 
-	emit_sound(id, CHAN_WEAPON, SPEAR_THROW_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 	//set pickability status
 	entity_set_int(Ent,EV_INT_iuser2,false)
@@ -371,55 +371,31 @@ public spear_reload(parm[])
 }
 
 
-public vexd_pfntouch(pToucher, pTouched)
+public spaaaaeer_touch_player(pToucher, pTouched)
 {
+	new oid = entity_get_edict(pToucher, EV_ENT_owner)
+	//new Float:origin[3],dist
 	
-	if (pev_valid(pToucher)!=2){
-		
-		return
-	}
-
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, SPEAR_CLASSNAME))
+	if(client_hittable(pTouched))
 	{
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		//new Float:origin[3],dist
+		//get pickability status
+		new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
+		if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
 		
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			
-			if(client_hittable(pTouched))
-			{
-				//get pickability status
-				new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
-				if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
-				
-					spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
-					sh_chat_message(oid,spear_get_hero_id(),"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
-					remove_entity(pToucher);
-				
-				}
-				else if(pTouched!=oid){
-					sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
-					sh_bleed_user(pTouched,oid,BLEED_NORMAL,spear_get_hero_id())
-					explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
-					emit_sound(pToucher, CHAN_WEAPON, SPEAR_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-					//set pickability status
-					entity_set_int(pToucher,EV_INT_iuser2,true)
-					entity_set_float( pToucher, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
-				}
-			}
-			return
+			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
+			sh_chat_message(oid,spear_get_hero_id(),"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
+			remove_entity(pToucher);
+		
 		}
-		else if(pev(pTouched,pev_solid)==SOLID_BSP){
-			emit_sound(pToucher, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			entity_set_vector(pToucher, EV_VEC_velocity ,NULL_VECTOR)
+		else if(pTouched!=oid){
+			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
+			sh_bleed_user(pTouched,oid,BLEED_NORMAL,spear_get_hero_id())
+			explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
+			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			//set pickability status
 			entity_set_int(pToucher,EV_INT_iuser2,true)
 			entity_set_float( pToucher, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
-			return
 		}
-		remove_entity(pToucher)
 	}
 }
 public plugin_precache()
@@ -428,7 +404,7 @@ public plugin_precache()
 	
 	engfunc(EngFunc_PrecacheModel,SPEAR_W_MODEL)
 	engfunc(EngFunc_PrecacheSound, SPEAR_HIT_SFX)
-	engfunc(EngFunc_PrecacheSound, SPEAR_THROW_SFX)
-	engfunc(EngFunc_PrecacheSound, SPEAR_WOUND_SFX)
+	engfunc(EngFunc_PrecacheSound, THROWABLE_LAUNCH_SFX)
+	engfunc(EngFunc_PrecacheSound, PIERCE_WOUND_SFX)
 	
 }

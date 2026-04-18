@@ -7,6 +7,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 
 #define PLUGIN "Superhero yandere JETGATLING funcs"
@@ -34,6 +35,12 @@ public plugin_init(){
 	register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
+
+
+	register_entity_as_wall_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_wall")
+	static const jetplane_classid_vector[][]={JETPLANE_FUSELAGE_CLASSNAME}
+	register_custom_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_jet",jetplane_classid_vector,1)
+	register_custom_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_player",player_vector,1)
 	
 }
 
@@ -51,8 +58,6 @@ public loadCVARS(){
 public plugin_natives(){
 	
 	register_native("get_jet_shells","_get_jet_shells",0);
-	register_native("clear_shells","_clear_shells",0);
-	register_native("clear_mgs","_clear_mgs",0);
 	register_native("mg_destroy","_mg_destroy",0);
 	register_native("spawn_jetplane_mg","_spawn_jetplane_mg",0);
 	register_native("set_jet_shells","_set_jet_shells",0);
@@ -154,8 +159,8 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	set_pev(mg_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=255;
 	set_pev(mg_id,pev_renderamt,float(alpha))
-	Entvars_Set_Vector(mg_id, EV_VEC_mins,jetplane_mg_min_dims)
-	Entvars_Set_Vector(mg_id, EV_VEC_maxs,jetplane_mg_max_dims)
+	entity_set_vector(mg_id, EV_VEC_mins,jetplane_mg_min_dims)
+	entity_set_vector(mg_id, EV_VEC_maxs,jetplane_mg_max_dims)
 	jetplane_orig[0]+=jetplane_origin_mg_offsets[0]
 	jetplane_orig[1]+=jetplane_origin_mg_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_mg_offsets[2]
@@ -208,15 +213,6 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public _clear_shells(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, JETPLANE_SHELL_CLASSNAME)
-	while(grenada) {
-		
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, JETPLANE_SHELL_CLASSNAME)
-	}
-}
 
 //----------------------------------------------------------------------------------------------
 public mg_think(ent)
@@ -248,11 +244,11 @@ public mg_think(ent)
 	if(jet_deployed(owner)){
 		
 		new Float:vOrigin[3]
-		Entvars_Get_Vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
+		entity_get_vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
 		vOrigin[0]+=jetplane_origin_mg_offsets[0]
 		vOrigin[1]+=jetplane_origin_mg_offsets[1]
 		vOrigin[2]+=jetplane_origin_mg_offsets[2]
-		ENT_SetOrigin(ent, vOrigin)
+		entity_set_origin(ent, vOrigin)
 		
 		new Float:angles[3]
 		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, angles)
@@ -280,10 +276,10 @@ public mg_think(ent)
 launch_shell(id)
 {
 	
-	entity_set_int(id, EV_INT_weaponanim, 3)
-	
+	if(!is_valid_ent(get_user_mg(id))) return PLUGIN_HANDLED
+
 	new Float: Origin[3], Float: vAngle[3], Ent
-	if(!pev_valid(get_user_mg(id))) return PLUGIN_HANDLED
+
 	entity_get_vector(get_user_mg(id), EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	
@@ -311,13 +307,17 @@ launch_shell(id)
 	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCEMISSILE)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	
+	new Float:bullet_place_dir_vec[3],
+			Float:Velocity[3],
+			Float:dest_origin[3]
 
-	new Float:jet_velocity[3]
-	pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
-	new Float:jet_velocity_num=VecLength(jet_velocity);
+	velocity_by_aim(jet_get_user_jet(id), LAUNCH_SAFETY_DIST, bullet_place_dir_vec)
+	
+	add_3d_vectors(Origin,bullet_place_dir_vec,dest_origin)
 
-	new Float:Velocity[3]
-	velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed+jet_velocity_num), Velocity)
+	entity_set_origin(Ent, dest_origin)
+
+	velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed), Velocity)
 	
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -337,120 +337,105 @@ launch_shell(id)
 	return PLUGIN_CONTINUE
 }
 
-public vexd_pfntouch(pToucher, pTouched)
-{
-	
-	
-	if (pev_valid(pToucher)!=2){
-		
-		return
-	}
-	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
-	
-	new oid = entity_get_edict(pToucher, EV_ENT_owner)
-	if(equal(szClassName, JETPLANE_SHELL_CLASSNAME)) {
-		if((pTouched==get_user_law(oid))||(pTouched==get_user_mg(oid))||(pTouched==jet_get_user_jet(oid))){
-			
-			return
-		
-		}
+public shell_hit_wall(pToucher, pTouched){
 
+
+	new Float:origin[3]
+	entity_get_vector(pToucher,EV_VEC_origin,origin);
+
+	make_sparks(origin);
+	gun_shot_decal(origin)
+
+	remove_entity(pToucher)
+
+}
+public shell_hit_player(pToucher, pTouched){
+
+	if(client_hittable(pTouched))
+	{
+		
+		new oid = entity_get_edict(pToucher, EV_ENT_owner)
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		tank_impact_shot_fx(pToucher,origin,3);
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{
-				new Float:vic_origin[3];
-				new Float:vic_origin_eyes[3];
-				new vic_origin_eyes_int[3];
-				
-				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-				get_user_origin(pTouched,vic_origin_eyes_int,1);
-				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-				new Float:damage=jetplane_mg_dmg
-				new headshot=0;
-				if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
+		new Float:vic_origin[3];
+		new Float:vic_origin_eyes[3];
+		new vic_origin_eyes_int[3];
+		
+		entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+		get_user_origin(pTouched,vic_origin_eyes_int,1);
+		IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+		new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+		new Float:damage=jetplane_mg_dmg
+		new headshot=0;
+		if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
+			
+			headshot=1;
+			damage*=4;
+		}
+		new CsTeams:att_team=cs_get_user_team(oid),
+				CsTeams:vic_team=cs_get_user_team(pTouched);
+		if(att_team!=vic_team){
+			ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
+			if(is_user_alive(pTouched)){
+				new CsArmorType:armor_type;
+				cs_get_user_armor(pTouched,armor_type);
+				switch(armor_type){
 					
-					headshot=1;
-					damage*=4;
-				}
-				new CsTeams:att_team=cs_get_user_team(oid),
-						CsTeams:vic_team=cs_get_user_team(pTouched);
-				if(att_team!=vic_team){
-					ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
-					if(is_user_alive(pTouched)){
-						new CsArmorType:armor_type;
-						cs_get_user_armor(pTouched,armor_type);
-						switch(armor_type){
+					case CS_ARMOR_NONE:{
+						
+						
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						blood_spray(origin, headshot?10:5)
+						
+						
+					}
+					case CS_ARMOR_KEVLAR:{
+						
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						if(headshot){
+							blood_spray(origin, 5)
+						}
+						else{
 							
-							case CS_ARMOR_NONE:{
-								
-								
-								emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-								
-								blood_spray(origin, headshot?10:5)
-								
-								
-							}
-							case CS_ARMOR_KEVLAR:{
-								
-								emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-								
-								if(headshot){
-									blood_spray(origin, 5)
-								}
-								else{
-									
-									make_sparks(origin);
-								}
-							}
-							case CS_ARMOR_VESTHELM:{
-								emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-								make_sparks(origin);
-							}
+							make_sparks(origin);
 						}
 					}
-			}
-				
-			}
-		}
-		if((pev(pTouched,pev_solid)==SOLID_BBOX)){
-	
-			new szClassNameJet[32]
-			Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
-	
-			if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
-				
-				new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
-				if(client_hittable(jet_owner)){
-					new CsTeams:att_team=cs_get_user_team(oid),
-						CsTeams:vic_team=cs_get_user_team(jet_owner);
-					if(att_team!=vic_team){
-						jet_hurt_user_jet(jet_owner,oid,pToucher,jetplane_mg_dmg)
+					case CS_ARMOR_VESTHELM:{
+						emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						make_sparks(origin);
 					}
 				}
 			}
 		}
-		if(pev(pTouched,pev_solid)==SOLID_BSP){
-			
-			make_sparks(origin);
-			
-		}
-		remove_entity(pToucher)
 	}
+	remove_entity(pToucher)
+}
+public shell_hit_jet(pToucher, pTouched)
+{
+	new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
+	if((pTouched==jet_get_user_jet(the_owner))){
+
+		remove_entity(pToucher)
+		return
+
+	}
+
+	new jet_owner=entity_get_edict(pTouched,EV_ENT_owner)
+
+	if(client_hittable(jet_owner)){
+		new CsTeams:att_team=cs_get_user_team(the_owner),
+			CsTeams:vic_team=cs_get_user_team(jet_owner);
+		if(att_team!=vic_team){
+			jet_hurt_user_jet(jet_owner,the_owner,pToucher,jetplane_mg_dmg)
+		}
+	}
+	remove_entity(pToucher)
 }
 public plugin_precache()
 {
-	
-	
-	
-	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	engfunc(EngFunc_PrecacheModel,GUN_SHELL)
 	engfunc(EngFunc_PrecacheModel,P_MACHINEGUN_MODEL)
 	engfunc(EngFunc_PrecacheSound, MACHINE_GUN_SOUND)
@@ -465,13 +450,5 @@ public _mg_destroy(iPlugin,iParams){
 		draw_bbox(get_user_mg(id),true)
 		remove_entity(get_user_mg(id));
 		user_mg[id]=-1;
-	}
-}
-public _clear_mgs(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, JETPLANE_MG_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, JETPLANE_MG_CLASSNAME)
 	}
 }

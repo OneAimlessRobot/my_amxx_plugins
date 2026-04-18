@@ -10,15 +10,11 @@
 #define gSoundScream "scientist/c1a0_sci_catscream.wav"
 
 
-#define BURN_PERIOD 0.25
-#define BURN_DAMAGE 30
+#define BURN_PERIOD 1.0
+#define BURN_DAMAGE 10
 #define BURN_DAMAGE_VULNERABILITY_COEFF 0.30
-#define BURN_TIME 30.0
+#define BURN_TIME 15.0
 #define BURN_TIMES floatround(floatdiv(BURN_TIME,BURN_PERIOD))
-
-
-
-stock const molly_color[3]={255, 50, 255}
 
 native sh_molly_user(id,attacker,gHeroID)
 native sh_unmolly_user(id)

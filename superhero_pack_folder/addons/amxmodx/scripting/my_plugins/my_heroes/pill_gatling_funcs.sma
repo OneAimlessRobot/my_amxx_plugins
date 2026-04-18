@@ -51,6 +51,9 @@ public plugin_init(){
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
 	
+	register_entity_as_wall_touchable(PILL_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(PILL_CLASSNAME,"pilula_sexual_penetra_player",player_vector,1)
+
 	register_forward(FM_CmdStart, "CmdStart");
 	register_logevent("event_start", 2, "1=Round_Start")
 	register_cvar("yakui_windup_time", "2.0")
@@ -59,6 +62,18 @@ public plugin_init(){
 
 }
 
+
+public FwdTouchWorld( pilula_sexualllllee, World ) {
+	new Float:origin[3]
+	entity_get_vector(pilula_sexualllllee,EV_VEC_origin,origin);
+
+
+	emit_sound(pilula_sexualllllee, CHAN_WEAPON, GLASS_BREAK_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	make_sparks(origin);
+	gun_shot_decal(origin);
+	
+	remove_entity(pilula_sexualllllee)
+}
 
 public Item_PostFrame_Post(iEnt)
 {    
@@ -208,7 +223,6 @@ public plugin_natives(){
 
 	register_native("gatling_set_pillgatling","_gatling_set_pillgatling",0);
 	register_native("gatling_get_pillgatling","_gatling_get_pillgatling",0);
-	register_native( "clear_pills","_clear_pills",0)
 
 
 }
@@ -230,8 +244,6 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
 	
-	if(sh_get_stun(id)) return FMRES_IGNORED
-
 
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
 	new clip,ammo,weapon=get_user_weapon(id,clip,ammo)
@@ -277,13 +289,6 @@ public loadCVARS()
 }
 public delayanim(id){
 	delay[id] = 0
-}
-public _clear_pills(iPlugin,iParams){
-	new grenada = find_ent_by_class(-1, PILL_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, PILL_CLASSNAME)
-	}
 }
 public fw_WeaponReloadPre(entity)
 {
@@ -398,8 +403,6 @@ fire_mode(id,entity, type) {
 }
 launch_pill(id)
 {
-	
-	entity_set_int(id, EV_INT_weaponanim, 3)
 
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
@@ -428,7 +431,7 @@ launch_pill(id)
 	entity_set_int(Ent, EV_INT_movetype, 10)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 
-	VelocityByAim(id, floatround(PILL_SPEED) , Velocity)
+	velocity_by_aim(id, floatround(PILL_SPEED) , Velocity)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 	set_pev(Ent, pev_vuser1, Velocity)
@@ -464,7 +467,7 @@ public pill_think(ent)
 	}
 	
 	new id=pev(ent,pev_owner)
-	if (!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) {
+	if (!client_hittable(id)||!sh_user_has_hero(id,gatling_get_hero_id())) {
 		remove_entity(ent)
 		return FMRES_IGNORED
 	}
@@ -534,47 +537,17 @@ public event_start(){
 		newRound(i)
 	}
 }
-public vexd_pfntouch(pToucher, pTouched)
+public pilula_sexual_penetra_player(pToucher, pTouched)
 {
+	if(client_hittable(pTouched))
+	{	
+		new id = entity_get_edict(pToucher, EV_ENT_owner);
+		//retrieve current pill fx num
 
-	if (pev_valid(pToucher)!=2){
-		
-		return
+		new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
+		make_effect(pTouched,id,gatling_get_hero_id(),fx_num,false)
 	}
-
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, PILL_CLASSNAME))
-	{
-		
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		new Float:hit_orig[3]
-
-		if (pev_valid(pTouched)!=2){
-			emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			make_sparks(hit_orig);
-			gun_shot_decal(hit_orig);
-			remove_entity(pToucher)
-			return
-		}
-		entity_get_vector(pToucher,EV_VEC_origin,hit_orig);
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{
-				//retrieve current pill fx num
-
-				new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
-				make_effect(pTouched,oid,gatling_get_hero_id(),fx_num,false)
-			}
-		}
-		else if(pev(pTouched,pev_solid)==SOLID_BSP){
-
-			emit_sound(pToucher, CHAN_WEAPON, EFFECT_SHOT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			make_sparks(hit_orig);
-			gun_shot_decal(hit_orig);
-		}
-		remove_entity(pToucher)
-	}
+	remove_entity(pToucher)
 }
 public plugin_precache()
 {
@@ -583,7 +556,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
 	g_fwid = register_forward(FM_PrecacheEvent, "fwPrecacheEvent", 1)
-	engfunc(EngFunc_PrecacheSound, EFFECT_SHOT_SFX)
+	engfunc(EngFunc_PrecacheSound, GLASS_BREAK_SFX)
 	engfunc(EngFunc_PrecacheSound,m_SOUND[0])
 	engfunc(EngFunc_PrecacheSound,m_SOUND[1])
 	engfunc(EngFunc_PrecacheSound,m_SOUND[2])

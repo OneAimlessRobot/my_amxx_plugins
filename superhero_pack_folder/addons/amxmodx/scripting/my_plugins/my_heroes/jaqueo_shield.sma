@@ -64,7 +64,6 @@ public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 }
 public plugin_natives(){
 
-	register_native("clear_shields","_clear_shields",0);
 	register_native("reset_jaqueo_user","_reset_jaqueo_user",0);
 	register_native("shield_get_user_shield_cooldown","_shield_get_user_shield_cooldown",0)
 	register_native("shield_uncharge_user","_shield_uncharge_user",0)
@@ -163,11 +162,6 @@ public shield_deploy_task(parm[],id){
 }
 public plugin_precache(){
 
-
-	engfunc(EngFunc_PrecacheModel, "models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	engfunc(EngFunc_PrecacheModel,  shield_mdl)
 	engfunc(EngFunc_PrecacheSound,  shield_deploy)
 	engfunc(EngFunc_PrecacheSound,  shield_hum)
@@ -202,17 +196,17 @@ public shield_think(ent)
 		new Float:vOrigin[3]
 		new Float:vAngles[3]
 		new Float:velocity[3]
-		Entvars_Get_Vector(owner, EV_VEC_origin, vOrigin)
-		Entvars_Get_Vector(owner, EV_VEC_v_angle, vAngles)
+		entity_get_vector(owner, EV_VEC_origin, vOrigin)
+		entity_get_vector(owner, EV_VEC_v_angle, vAngles)
 		new notFloat_vOrigin[3]
 		notFloat_vOrigin[0] = floatround(vOrigin[0])
 		notFloat_vOrigin[1] = floatround(vOrigin[1])
 		notFloat_vOrigin[2] = floatround(vOrigin[2])
 		
-		ENT_SetOrigin(g_jaqueo_shield[owner], vOrigin)
-		Entvars_Set_Vector(g_jaqueo_shield[owner], EV_VEC_angles, vAngles)
-		Entvars_Get_Vector(owner, EV_VEC_velocity, velocity)
-		Entvars_Set_Vector(g_jaqueo_shield[owner], EV_VEC_velocity,  velocity)
+		entity_set_origin(g_jaqueo_shield[owner], vOrigin)
+		entity_set_vector(g_jaqueo_shield[owner], EV_VEC_angles, vAngles)
+		entity_get_vector(owner, EV_VEC_velocity, velocity)
+		entity_set_vector(g_jaqueo_shield[owner], EV_VEC_velocity,  velocity)
 	
 	
 		
@@ -266,8 +260,8 @@ public _shield_charge_user(iPlugin, iParams){
 		fl_vecmaxsx[i]=shield_radius
 	
 	}
-	Entvars_Set_Vector(g_jaqueo_shield[id], EV_VEC_mins,fl_vecminsx)
-	Entvars_Set_Vector(g_jaqueo_shield[id], EV_VEC_maxs,fl_vecmaxsx)
+	entity_set_vector(g_jaqueo_shield[id], EV_VEC_mins,fl_vecminsx)
+	entity_set_vector(g_jaqueo_shield[id], EV_VEC_maxs,fl_vecmaxsx)
 	
 	set_pev(NewEnt, pev_health, 0)
 	set_pev(NewEnt, pev_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
@@ -281,7 +275,7 @@ public _shield_charge_user(iPlugin, iParams){
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jaqueo_shield[id],pev_euser1,id)
 
-	ENT_SetOrigin(g_jaqueo_shield[id], Origin)
+	entity_set_origin(g_jaqueo_shield[id], Origin)
 
 	new parm[2]
 	parm[0]=id
@@ -341,8 +335,8 @@ public charge_task(parm[],id){
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new notFloat_vOrigin[3]
 	notFloat_vOrigin[0] = floatround(vOrigin[0])
 	notFloat_vOrigin[1] = floatround(vOrigin[1])
@@ -351,10 +345,10 @@ public charge_task(parm[],id){
 	if(!is_valid_ent(g_jaqueo_shield[id])||(g_jaqueo_shield[id] == 0)) {
 		return
 	}
-	ENT_SetOrigin(g_jaqueo_shield[id], vOrigin)
-	Entvars_Set_Vector(g_jaqueo_shield[id], EV_VEC_angles, vAngles)
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
-	Entvars_Set_Vector(g_jaqueo_shield[id], EV_VEC_velocity,  velocity)
+	entity_set_origin(g_jaqueo_shield[id], vOrigin)
+	entity_set_vector(g_jaqueo_shield[id], EV_VEC_angles, vAngles)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
+	entity_set_vector(g_jaqueo_shield[id], EV_VEC_velocity,  velocity)
 	
 	
 	
@@ -382,12 +376,4 @@ public charge_task(parm[],id){
 	
 	
 	
-}
-public _clear_shields(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, JAQUEO_SHIELD_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada,  JAQUEO_SHIELD_CLASSNAME)
-	}
 }

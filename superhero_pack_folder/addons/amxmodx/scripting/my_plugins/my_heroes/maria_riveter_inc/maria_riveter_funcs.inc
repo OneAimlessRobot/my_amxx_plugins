@@ -74,7 +74,6 @@ enum
 }
 native maria_shoot_riveter(id);
 native maria_get_hero_id();
-native maria_riveter_clear_rivets();
 native maria_riveter_set_num_rivets(id,value_to_set)
 native maria_riveter_get_num_rivets(id)
 native maria_riveter_dec_num_rivets(id)

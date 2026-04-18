@@ -1,7 +1,6 @@
 
 
 #include "../my_include/superheromod.inc"
-#include <xs>
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
@@ -324,8 +323,8 @@ public get_speed_dmg_in_radius(id,Float:damage){
 }
 public sh_round_end(){
 
-	clear_darts()
-	clear_mollies()
+	remove_entity_name(DART_CLASSNAME)
+	remove_entity_name(MOLLY_CLASSNAME)
 
 }
 public weaponChange(id)

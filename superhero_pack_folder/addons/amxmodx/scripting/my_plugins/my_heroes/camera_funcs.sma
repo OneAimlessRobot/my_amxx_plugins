@@ -660,7 +660,7 @@ camman_update_planting(id){
 		camera_uncharge_camera(id)
 		
 	}
-	butnprs = Entvars_Get_Int(id, EV_INT_button)
+	butnprs = entity_get_int(id, EV_INT_button)
 	
 	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE){
 		
@@ -711,7 +711,7 @@ camman_update_disarming(id){
 		camera_undisarm_camera(id)
 		
 	}
-	butnprs = Entvars_Get_Int(id, EV_INT_button)
+	butnprs = entity_get_int(id, EV_INT_button)
 	
 	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 		
@@ -833,10 +833,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, CAMERA_BOOTING_SFX) 
 	engfunc(EngFunc_PrecacheSound, CAMERA_CLICK_SFX) 
 	engfunc(EngFunc_PrecacheSound, CAMERA_BOOTED_SFX)
-	engfunc(EngFunc_PrecacheModel,"models/metalgibs.mdl" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal2.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal1.wav" );
-	engfunc(EngFunc_PrecacheSound,"debris/metal3.wav" );
 	
 }
 public death()

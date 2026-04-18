@@ -5,7 +5,7 @@
 
 #define LIBRARY_NAME "Superhero library 1: special fx pt1"
 
-new m_trail, white,g_msgFade,fire,gSpriteLaser,blood1,blood2,gmsgIcon
+new m_trail, white,g_msgFade,fire,gSpriteLaser,gmsgIcon
 new gSpriteSmoke,  gSpriteBurning
 new smoke
 new g_iFireSprite, g_iSmokeSprite[2];

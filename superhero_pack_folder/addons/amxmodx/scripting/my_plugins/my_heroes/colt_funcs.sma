@@ -18,9 +18,9 @@ new is_rehlds_avail
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheSound,SHOOTSOUND);
-	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_clipin.wav")
-	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_clipout.wav")
-	engfunc(EngFunc_PrecacheGeneric, "sound/weapons/406/coltm1911a1_slideback.wav")
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipin.wav")
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipout.wav")
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_slideback.wav")
 	engfunc(EngFunc_PrecacheModel, VIEWMODEL)
 	engfunc(EngFunc_PrecacheModel, WEAPONMODEL)
 	engfunc(EngFunc_PrecacheModel, WORLDMODEL)

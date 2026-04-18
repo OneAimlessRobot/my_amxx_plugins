@@ -11,6 +11,7 @@ native fx_invisible(id)
 
 native fx_blood(origin[3],origin2[3],HitPlace,bool:alien=false)
 
+native blood_spray(Float:vicOrigin[3], scale)
 
 native strip_weapon_for_my_grenade_heroes(id,const message[]="You ran out",classid=CSW_DEAGLE,bool:optional_bool=true)
 

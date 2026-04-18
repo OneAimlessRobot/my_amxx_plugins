@@ -28,11 +28,6 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 *    HE Grenade Model by Opposing Forces Team, xinsomniacboix, Indolence, & haZaa.
 *   	Yang wrote, "Cred goez to vittu's sexiness on gambit and cheap_suit who created the original plugin".
 */
-
-#include <amxmodx>
-#include <fakemeta>
-#include <engine>
-#include <cstrike>
 #include "../my_include/superheromod.inc"
 #include "../my_include/my_author_header.inc"
 

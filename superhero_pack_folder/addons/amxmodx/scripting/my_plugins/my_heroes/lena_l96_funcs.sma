@@ -50,6 +50,8 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 
+	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(LENA_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
 
 	register_think(LENA_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_explosion_defaults()
@@ -58,6 +60,19 @@ public plugin_init(){
 
 }
 
+public FwdTouchWorld( bull_et, World ) {
+	new Float:origin[3]
+	entity_get_vector(bull_et,EV_VEC_origin,origin);
+
+	emit_sound(bull_et, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	make_sparks(origin);
+	gun_shot_decal(origin);
+
+	tank_impact_shot_fx(bull_et,origin,17)
+
+	
+	remove_entity(bull_et)
+}
 public bulette_thinque(ent){
 
 
@@ -110,12 +125,6 @@ public loadCVARS()
 	dmg_headshot_mult=get_cvar_num("lena_dmg_headshot_mult");
 
 
-}//----------------------------------------------------------------------------------------------
-public plugin_natives(){
-	
-	register_native( "lena_l96_clear_bullets","_lena_l96_clear_bullets",0)
-	
-	
 }
 public bool:client_isnt_hitter(id){
 	
@@ -130,7 +139,6 @@ public CmdStart(id, uc_handle)
 		
 		return FMRES_IGNORED
 	}
-	if(sh_get_stun(id)) return FMRES_IGNORED
 	
 	trigger_was_down[id]=trigger_is_down[id]
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -316,22 +324,6 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	xs_vec_add(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
-stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
-	
-	
-	new Float:normal_speed[3];
-	new Float:norm_speed_random[3];
-	new Float:speed=VecLength(vec_to_randomize)
-	new Float:norm_random_speed;
-	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
-	norm_speed_random[0]=normal_speed[0]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[1]=normal_speed[1]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_speed_random[2]=normal_speed[2]+floatclamp(generate_float(-coeff,coeff),0.0,1.0);
-	norm_random_speed=VecLength(norm_speed_random);
-	multiply_3d_vector_by_scalar(norm_speed_random,speed/norm_random_speed,norm_speed_random);
-	multiply_3d_vector_by_scalar(norm_speed_random,1.0,vec_to_randomize);
-	
-}
 launch_bullet(id)
 {
 
@@ -341,7 +333,6 @@ if(client_isnt_hitter(id)){
 }
 
 if(!trigger_is_down[id]) return
-entity_set_int(id, EV_INT_weaponanim, 3)
 
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
@@ -382,7 +373,7 @@ else{
 	new Float:user_movement_velocity[3]
 	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
 	new Float:user_maxspeed=get_user_maxspeed(id);
-	new Float:user_current_speed=VecLength(user_movement_velocity)
+	new Float:user_current_speed=vector_length(user_movement_velocity)
 	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
 	coeff_to_multiply_with=coeff_to_multiply_with_extra*LENA_PROJECTILE_SHOOT_RANDOMNESS
 	
@@ -411,15 +402,6 @@ entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTIL
 
 }
 
-public _lena_l96_clear_bullets(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, LENA_PROJECTILE_CLASSNAME)
-while(grenada) {
-	remove_entity(grenada)
-	grenada = find_ent_by_class(grenada, LENA_PROJECTILE_CLASSNAME)
-}
-}
-
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(client_isnt_hitter(player)){
@@ -438,127 +420,104 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 }
 
 
-public vexd_pfntouch(pToucher, pTouched)
+public bulletina_touque_playor(pToucher, pTouched)
 {
+	new Float:origin[3]
+	entity_get_vector(pToucher,EV_VEC_origin,origin);
 
-	if (pev_valid(pToucher)!=2){
+	new oid = entity_get_edict(pToucher, EV_ENT_owner)
+	new Float:vic_origin[3]
+	entity_get_vector(pToucher,EV_VEC_origin,vic_origin);
+	
+	new Float:speed
+	new Float:velocity[3]
+	
+	
+	entity_get_vector(pToucher,EV_VEC_velocity,velocity);
+	speed=vector_length(velocity);
+	new Float:bullet_launch_pos[3]
+	new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
+	new Float:vic_origin_eyes[3];
+	new vic_origin_eyes_int[3];
+	entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
+	entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
+	get_user_origin(pTouched,vic_origin_eyes_int,1);
+	IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+	new Float:distance=vector_distance(vic_origin,bullet_launch_pos);
+	new Float:head_distance=vector_distance(vic_origin_eyes,origin);
+	new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
+	new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
+	new Float:damage=normal_damage*speed_coeff;
+	new headshot=0;
+	if(head_distance<LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST){
 		
-		return
+		headshot=1;
+		damage*=dmg_headshot_mult;
 	}
+	new Float:the_period=(headshot?0.33:1.0);
+	new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
+	new CsTeams:att_team=cs_get_user_team(oid)
+	new CsTeams:vic_team=cs_get_user_team(pTouched)
+	if(att_team!=vic_team){
+		new health = get_user_health(pTouched)
+		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
+		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, LENA_PROJECTILE_CLASSNAME))
-	{
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		new Float:origin[3]
-		entity_get_vector(pToucher,EV_VEC_origin,origin);
-		if((pev(pTouched,pev_solid)==SOLID_SLIDEBOX)){
-			if(client_hittable(pTouched))
-			{
-				new Float:vic_origin[3]
-				entity_get_vector(pToucher,EV_VEC_origin,vic_origin);
-				
-				new Float:speed
-				new Float:velocity[3]
-				
-				
-				entity_get_vector(pToucher,EV_VEC_velocity,velocity);
-				speed=VecLength(velocity);
-				new Float:bullet_launch_pos[3]
-				new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
-				new Float:vic_origin_eyes[3];
-				new vic_origin_eyes_int[3];
-				entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
-				entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-				get_user_origin(pTouched,vic_origin_eyes_int,1);
-				IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-				new Float:distance=vector_distance(vic_origin,bullet_launch_pos);
-				new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-				new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
-				new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
-				new Float:damage=normal_damage*speed_coeff;
-				new headshot=0;
-				if(head_distance<LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST){
-					
-					headshot=1;
-					damage*=dmg_headshot_mult;
-				}
-				new Float:the_period=(headshot?0.33:1.0);
-				new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
-				new CsTeams:att_team=cs_get_user_team(oid)
-				new CsTeams:vic_team=cs_get_user_team(pTouched)
-				if(att_team!=vic_team){
-					new health = get_user_health(pTouched)
-					sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
-					sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
+		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
+		unfade_screen_user(pTouched)
+		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
+		if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
+				track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
+		}
+		
+		sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
+		new random_number=generate_int(0,(sizeof lena_poems)-1)
+		
+		if(!is_user_bot(pTouched)){
+			send_poem_function(pTouched, lena_poems[random_number]);
+		}
+		
+		if((floatround(damage)>=health)&&!is_user_alive(pTouched)){
 
-					sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
-					unfade_screen_user(pTouched)
-					set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
-					if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
-							track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
-					}
-					
-					sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
-					new random_number=generate_int(0,(sizeof lena_poems)-1)
-					
-					if(!is_user_bot(pTouched)){
-						send_poem_function(pTouched, lena_poems[random_number]);
-					}
-					
-					if((floatround(damage)>=health)&&!is_user_alive(pTouched)){
+			gross_kill_gibs_fx(pTouched,vic_origin,origin)
 
-						gross_kill_gibs_fx(pTouched,vic_origin,origin)
-
-					}
-				}
-				new CsArmorType:armor_type;
-				cs_get_user_armor(pTouched,armor_type);
-				switch(armor_type){
-					
-					case CS_ARMOR_NONE:{
-						
-						
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						
-						blood_spray(origin, headshot?10:5)
-						
-						
-					}
-					case CS_ARMOR_KEVLAR:{
-						
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						
-						if(headshot){
-							blood_spray(origin, 5)
-						}
-						else{
-							
-							make_sparks(origin);
-						}
-					}
-					case CS_ARMOR_VESTHELM:{
-						emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-						make_sparks(origin);
-					}
-				}
+		}
+	}
+	new CsArmorType:armor_type;
+	cs_get_user_armor(pTouched,armor_type);
+	switch(armor_type){
+		
+		case CS_ARMOR_NONE:{
+			
+			
+			emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_flesh-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			
+			blood_spray(origin, headshot?10:5)
+			
+			
+		}
+		case CS_ARMOR_KEVLAR:{
+			
+			emit_sound(pTouched, CHAN_VOICE,headshot?"player/headshot1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			
+			if(headshot){
+				blood_spray(origin, 5)
+			}
+			else{
 				
+				make_sparks(origin);
 			}
 		}
-		if(pev(pTouched,pev_solid)==SOLID_BSP){
-		
-			emit_sound(pToucher, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		case CS_ARMOR_VESTHELM:{
+			emit_sound(pTouched, CHAN_VOICE,headshot?"player/bhit_helmet-1.wav":"player/bhit_kevlar-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			make_sparks(origin);
-			gun_shot_decal(origin);
-
 		}
-
-		tank_impact_shot_fx(pToucher,origin,17)
-
-		
-		remove_entity(pToucher)
 	}
+	tank_impact_shot_fx(pToucher,origin,17)
+
+
+	remove_entity(pToucher)
+	
 }
 public plugin_precache()
 {

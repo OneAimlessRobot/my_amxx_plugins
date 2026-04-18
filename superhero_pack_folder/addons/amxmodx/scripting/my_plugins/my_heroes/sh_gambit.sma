@@ -188,21 +188,21 @@ public on_AmmoX(id)
 			if ( !gPlayerUltimateUsed[id] && gWillHit[id]) {
 				// Have to Find the current HE grenade
 				new iCurrent = -1
-				while ( ( iCurrent = FindEntity(iCurrent, "grenade") ) > 0 ) {
+				while ( ( iCurrent = find_ent_by_class(iCurrent, "grenade") ) > 0 ) {
 					new string[128]
-					Entvars_Get_String(iCurrent, EV_SZ_model, string, 127)
+					entity_get_string(iCurrent, EV_SZ_model, string, 127)
 
-					if ( id == Entvars_Get_Edict(iCurrent, EV_ENT_owner) && equal(HEGRENADE_MODEL, string)) {
+					if ( id == entity_get_edict(iCurrent, EV_ENT_owner) && equal(HEGRENADE_MODEL, string)) {
 
 						new Float:glowColor[3] = {225.0, 0.0, 20.0}
 
 						// Make the nade glow
-						Entvars_Set_Int(iCurrent, EV_INT_renderfx, kRenderFxGlowShell)
-						Entvars_Set_Vector(iCurrent, EV_VEC_rendercolor, glowColor)
+						entity_set_int(iCurrent, EV_INT_renderfx, kRenderFxGlowShell)
+						entity_set_vector(iCurrent, EV_VEC_rendercolor, glowColor)
 
 						// Make the nade a bit invisible to make glow look better
-						Entvars_Set_Int(iCurrent, EV_INT_rendermode, kRenderTransAlpha)
-						Entvars_Set_Float(iCurrent, EV_FL_renderamt, 100.0 )
+						entity_set_int(iCurrent, EV_INT_rendermode, kRenderTransAlpha)
+						entity_set_float(iCurrent, EV_FL_renderamt, 100.0 )
 
 						// Make a trail
 						message_begin(MSG_BROADCAST ,SVC_TEMPENTITY)

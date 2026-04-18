@@ -5,7 +5,6 @@
 
 stock const BALL_BOUNCE_GROUND[ ] = "shmod/roberto_carlos/kickball/bounce.wav";
 stock const g_szBallModel[ ]     = "models/shmod/roberto_carlos/kickball/ball.mdl";
-stock ballcolor[3] = { 255,200,100 }
 
 stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
 stock gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
@@ -32,7 +31,6 @@ stock ballbeam[3] = { 20,50,255 }
 
 #define CURVE_APEX_DIST 500
 
-native clear_balls()
 
 native kick_the_ball(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

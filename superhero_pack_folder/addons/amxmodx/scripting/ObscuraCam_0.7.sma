@@ -114,13 +114,13 @@ public CMD_ToggleCam(iPlayer)
         { 
             Set_CameraEnt(iPlayer) 
 
-            client_print(0, print_center, "3rd Person Mode") 
+            client_print(iPlayer, print_center, "3rd Person Mode") 
         } 
         else  
         { 
             Remove_CameraEnt(iPlayer, 1) 
              
-            client_print(0, print_center, "1st Person Mode") 
+            client_print(iPlayer, print_center, "1st Person Mode") 
         } 
     } 
     else /* He toggles when not alive */ 

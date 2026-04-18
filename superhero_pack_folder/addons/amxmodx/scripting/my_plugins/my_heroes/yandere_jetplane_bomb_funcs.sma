@@ -39,6 +39,12 @@ public plugin_init()
 
 	init_explosion_defaults()
 
+	register_entity_as_wall_touchable(JETPLANE_BOMB_CLASSNAME,"bomb_hit")
+	static const jetplane_classid_vector[][]={JETPLANE_FUSELAGE_CLASSNAME}
+	register_custom_touchable(JETPLANE_BOMB_CLASSNAME,"bomb_hit",jetplane_classid_vector,1)
+	register_custom_touchable(JETPLANE_BOMB_CLASSNAME,"bomb_hit",player_vector,1)
+	
+
 
 
 }
@@ -140,56 +146,54 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-//----------------------------------------------------------------------------------------------
-//make_rocket(userindex,commandtype,missilespeed,antimissleid)
 make_bomb(id)
 {
 
 new Float:vOrigin[3]
 new Float:vAngles[3]
-Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+entity_get_vector(id, EV_VEC_origin, vOrigin)
+entity_get_vector(id, EV_VEC_v_angle, vAngles)
 vOrigin[2]+=(jetplane_min_dims[2]-50.0)
 
 
 new NewEnt
-NewEnt = CreateEntity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): bomb failure")
 return PLUGIN_HANDLED
 }
 
-Entvars_Set_String(NewEnt, EV_SZ_classname, JETPLANE_BOMB_CLASSNAME)
-ENT_SetModel(NewEnt, BOMB_MODEL)
+entity_set_string(NewEnt, EV_SZ_classname, JETPLANE_BOMB_CLASSNAME)
+entity_set_model(NewEnt, BOMB_MODEL)
 
 new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-ENT_SetOrigin(NewEnt, vOrigin)
+entity_set_origin(NewEnt, vOrigin)
 entity_set_int(NewEnt, EV_INT_effects, 2)
-Entvars_Set_Int(NewEnt, EV_INT_solid, SOLID_TRIGGER)
+entity_set_int(NewEnt, EV_INT_solid, SOLID_TRIGGER)
 
-Entvars_Set_Int(NewEnt, EV_INT_movetype, 10)
+entity_set_int(NewEnt, EV_INT_movetype, 10)
 
 
-Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
+entity_set_edict(NewEnt, EV_ENT_owner, id)
 
 new Float:jet_velocity[3]
 pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
-new Float:jet_velocity_num=VecLength(jet_velocity);
+new Float:jet_velocity_num=vector_length(jet_velocity);
 
 new Float:fl_iNewVelocity[3]
 velocity_by_aim(jet_get_user_jet(id), floatround(jet_velocity_num), fl_iNewVelocity)
-Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 has_bomb[id] = NewEnt
 
 set_user_jet_bombs(id,get_user_jet_bombs(id)-1)
 set_task(BOMB_DROP_PERIOD,"bomb_reload",id+BOMB_RELOAD_TASKID,"",0,"a",1)
-Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -198,56 +202,20 @@ public bomb_reload(id)
 id-=BOMB_RELOAD_TASKID
 has_bomb[id] = 0
 }
-public vexd_pfntouch(pToucher, pTouched) {
+public bomb_hit(pToucher, pTouched) {
 
+new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
+if((pTouched==jet_get_user_jet(the_owner))){
 
-if (pev_valid(pToucher)!=2){
-	
+	remove_entity(pToucher)
 	return
+
 }
-new szClassName[32]
-Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
 
-new id = entity_get_edict(pToucher, EV_ENT_owner)
-if(equal(szClassName, JETPLANE_BOMB_CLASSNAME))  {
+explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg, default_explode_knock_force_magnitude)
+explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
+remove_entity(pToucher)
 
-	if((pTouched==get_user_law(id))||(pTouched==get_user_mg(id))||(pTouched==jet_get_user_jet(id))){
-		
-		return
-	}
-	if((pev(pTouched,pev_solid)==SOLID_BBOX)){
-		
-		new szClassNameJet[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameJet, 31)
-
-		if(equal(szClassNameJet, JETPLANE_FUSELAGE_CLASSNAME)) {
-			
-			new jet_owner = entity_get_edict(pToucher, EV_ENT_owner)
-			if(client_hittable(jet_owner)){
-				new CsTeams:att_team=cs_get_user_team(id),
-					CsTeams:vic_team=cs_get_user_team(jet_owner);
-				if(att_team!=vic_team){
-					jet_hurt_user_jet(jet_owner,id,pToucher,jetplane_bomb_dmg)
-					
-				}
-			}
-		}
-	}
-	if((pev(pTouched,pev_solid)==SOLID_TRIGGER)){
-		
-		new szClassNameMissile[32]
-		Entvars_Get_String(pTouched, EV_SZ_classname, szClassNameMissile, 31)
-		
-		if(equal(szClassNameMissile, JETPLANE_BOMB_CLASSNAME)) {
-			
-			RemoveEntity(pTouched)
-		}
-	}
-	explosion(yandere_get_hero_id(),pToucher,jetplane_bomb_radius,jetplane_bomb_dmg, default_explode_knock_force_magnitude)
-	explosion_custom_entity(pToucher,jetplane_bomb_radius,jetplane_bomb_dmg,JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
-	RemoveEntity(pToucher)
-	
-}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -266,7 +234,7 @@ public plugin_precache()
 remove_bomb(bomb){
 
 new Float:fl_origin[3]
-Entvars_Get_Vector(bomb, EV_VEC_origin, fl_origin)
+entity_get_vector(bomb, EV_VEC_origin, fl_origin)
 
 message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 write_byte(14)
@@ -280,7 +248,7 @@ message_end()
 
 emit_sound(bomb, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-RemoveEntity(bomb)
+remove_entity(bomb)
 return PLUGIN_CONTINUE
 }
 
@@ -288,11 +256,7 @@ public _clear_bombs(iPlugin,iParams){
 
 new grenada = find_ent_by_class(-1, JETPLANE_BOMB_CLASSNAME)
 while(grenada) {
-	new owner=Entvars_Get_Edict(grenada, EV_ENT_owner)
-	if(pev_valid(owner)==2){
-
-		remove_task(owner+BOMB_RELOAD_TASKID);
-	}
+	
 	remove_bomb(grenada)
 	grenada = find_ent_by_class(grenada, JETPLANE_BOMB_CLASSNAME)
 }

@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <xs>
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -174,7 +173,7 @@ public hook_think(id)
 	entity_get_vector(vic, EV_VEC_v_angle, vAngle)
 	entity_get_vector(vic, EV_VEC_angles, vAngles)
 	new Float:direction[3],Float:fl_Velocity[3], Float:length
-	VelocityByAim(vic,9999,aimvec)
+	velocity_by_aim(vic,9999,aimvec)
 	
 	static Float:vTrace[3], tr
 	static Float:vEnd[3],Float:newVec[3]

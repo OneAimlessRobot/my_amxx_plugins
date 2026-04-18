@@ -68,7 +68,6 @@ enum{
 	SEQ_DRAW=5
 }
 native lena_get_hero_id();
-native lena_l96_clear_bullets();
 native lena_l96_set_num_bullets(id,value_to_set)
 native lena_l96_get_num_bullets(id)
 native lena_l96_dec_num_bullets(id)

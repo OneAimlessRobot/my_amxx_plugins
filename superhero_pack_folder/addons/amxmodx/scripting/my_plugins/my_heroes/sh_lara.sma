@@ -1,10 +1,7 @@
-
-
 #include "../my_include/superheromod.inc"
-#include <xs>
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -135,7 +132,7 @@ public newRound(id)
 }
 public sh_round_end(){
 
-	clear_spears()
+	remove_entity_name(SPEAR_CLASSNAME)
 
 }
 

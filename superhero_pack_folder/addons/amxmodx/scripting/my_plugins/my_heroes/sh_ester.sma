@@ -260,7 +260,7 @@ public weaponChange(id)
 	}
 	else{
 		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
-			sh_uneffect_user(id,METYLPHENIDATE);
+			sh_uneffect_user(id);
 			
 		}
 		if (wpnid == CSW_KNIFE) {

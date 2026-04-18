@@ -76,6 +76,11 @@ public plugin_init()
 	// INIT
 	register_srvcmd("Swat_init", "Swat_init")
 	shRegHeroInit(gHeroName, "Swat_init")
+	
+	register_entity_as_wall_touchable("ICBM_missile","nuke_hit")
+	register_custom_touchable("ICBM_missile","nuke_hit",player_vector,1)
+	static const custom_vector[][]={"ICBM_missile"}
+	register_custom_touchable("ICBM_missile","nuke_hit",custom_vector,1)
 
 
 	init_explosion_defaults()
@@ -106,9 +111,9 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 	if ( wpnid == CSW_M4A1 ) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, SWAT_M4_V_MODEL)
+		entity_set_string(id, EV_SZ_viewmodel, SWAT_M4_V_MODEL)
 		// Weapon Model change for 3rd person view - vittu
-		Entvars_Set_String(id, EV_SZ_weaponmodel, SWAT_M4_P_MODEL)
+		entity_set_string(id, EV_SZ_weaponmodel, SWAT_M4_P_MODEL)
 	}
 	else if(wpnid == CSW_KNIFE){
 		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/swat_v_knife.mdl")
@@ -222,58 +227,41 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
 	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
-
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-	new pTouched = entity2
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public nuke_hit(pToucher, pTouched) {
 
 	if ( !is_valid_ent(pToucher) ) return
 
-	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	new damradius = get_cvar_num("Swat_radius")
+	new maxdamage = get_cvar_num("Swat_damage")
 
-	if(equal(szClassName, "ICBM_missile")) {
-		new damradius = get_cvar_num("Swat_radius")
-		new maxdamage = get_cvar_num("Swat_damage")
-
-		if (damradius <= 0) {
-			debugMessage("(S.W.A.T.) Damage Radius must be set higher than 0, defaulting to 240",0,0)
-			damradius = 240
-			set_cvar_num("Swat_radius",damradius)
-		}
-		if (maxdamage <= 0) {
-			debugMessage("(S.W.A.T.) Max Damage must be set higher than 0, defaulting to 14",0,0)
-			maxdamage = 14
-			set_cvar_num("Swat_damage",maxdamage)
-		}
-
-		remove_task(pToucher)
-		new Float:fl_vExplodeAt[3]
-		Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
-		if(has_rocket[id] == pToucher)
-		has_rocket[id] = 0
-
-		explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude)
-		
-
-		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		RemoveEntity(pToucher)
-
+	if (damradius <= 0) {
+		debugMessage("(S.W.A.T.) Damage Radius must be set higher than 0, defaulting to 240",0,0)
+		damradius = 240
+		set_cvar_num("Swat_radius",damradius)
 	}
+	if (maxdamage <= 0) {
+		debugMessage("(S.W.A.T.) Max Damage must be set higher than 0, defaulting to 14",0,0)
+		maxdamage = 14
+		set_cvar_num("Swat_damage",maxdamage)
+	}
+
+	remove_task(pToucher)
+	new Float:fl_vExplodeAt[3]
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	if(has_rocket[id] == pToucher)
+	has_rocket[id] = 0
+
+	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude)
+	
+
+	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	remove_entity(pToucher)
 }
 //----------------------------------------------------------------------------------------------
 public make_beam(id)
@@ -281,8 +269,8 @@ public make_beam(id)
 	new args[2]
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new NewEnt
 	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
@@ -293,55 +281,55 @@ public make_beam(id)
 		return PLUGIN_HANDLED
 	}
 
-	Entvars_Set_String(NewEnt, EV_SZ_classname, "ICBM_missile")
-	ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
+	entity_set_string(NewEnt, EV_SZ_classname, "ICBM_missile")
+	entity_set_model(NewEnt, "models/rpgrocket.mdl")
 
 	new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 	new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-	Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-	Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+	entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+	entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-	ENT_SetOrigin(NewEnt, vOrigin)
-	Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)	
-	Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
-	Entvars_Set_Int(NewEnt, EV_INT_effects, 64)
+	entity_set_origin(NewEnt, vOrigin)
+	entity_set_vector(NewEnt, EV_VEC_angles, vAngles)	
+	entity_set_int(NewEnt, EV_INT_solid, 2)
+	entity_set_int(NewEnt, EV_INT_effects, 64)
 
 	new effects = get_cvar_num("Swat_effects")	
 
 	if ( effects == 1 ){ // normal
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 2)
+		entity_set_int(NewEnt, EV_INT_effects, 2)
 	}
 	else if ( effects == 2 ){ // sprites (yellow) arround missile
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 4)
+		entity_set_int(NewEnt, EV_INT_effects, 4)
 	}
 	else if ( effects == 3 ){ // light around missile
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 1)
+		entity_set_int(NewEnt, EV_INT_effects, 1)
 	}
 	else if ( effects == 4 ){ // both light and sprites around missle (default)
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 7)
+		entity_set_int(NewEnt, EV_INT_effects, 7)
 	}
 	else {
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 64)
+		entity_set_int(NewEnt, EV_INT_effects, 64)
 	}
 
 	if(get_cvar_num("Swat_obeygravity")) {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 6)
+		entity_set_int(NewEnt, EV_INT_movetype, 6)
 	}
 	else {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
+		entity_set_int(NewEnt, EV_INT_movetype, 5)
 	}
 
-	Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
-	Entvars_Set_Float(NewEnt, EV_FL_health, 10000.0)
-	Entvars_Set_Float(NewEnt, EV_FL_takedamage, 100.0)
-	Entvars_Set_Float(NewEnt, EV_FL_dmg_take, 100.0)
+	entity_set_edict(NewEnt, EV_ENT_owner, id)
+	entity_set_float(NewEnt, EV_FL_health, 10000.0)
+	entity_set_float(NewEnt, EV_FL_takedamage, 100.0)
+	entity_set_float(NewEnt, EV_FL_dmg_take, 100.0)
 
 	new MissileVel = get_cvar_num("Swat_velocity")
 	new Float:fl_iNewVelocity[3]
 	//new iNewVelocity[3]
-	VelocityByAim(id, MissileVel, fl_iNewVelocity)
-	Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+	velocity_by_aim(id, MissileVel, fl_iNewVelocity)
+	entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
 	emit_sound(NewEnt, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(NewEnt, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -350,7 +338,7 @@ public make_beam(id)
 	args[1] = NewEnt
 
 	trail(NewEnt,RED,10,10)
-	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+	entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 	
 	return PLUGIN_HANDLED
 }
@@ -360,11 +348,10 @@ public round_end(){
         g_betweenRounds = true
 
 	new iCurrent
-	while ((iCurrent = FindEntity(-1, "ICBM_missile")) > 0) {
-		new id = Entvars_Get_Edict(iCurrent, EV_ENT_owner)
+	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
+		new id = entity_get_edict(iCurrent, EV_ENT_owner)
 		remove_missile(id,iCurrent)
 	}
-	
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -377,7 +364,7 @@ public death_event(){
 remove_missile(id,missile){
 
 	new Float:fl_origin[3]
-	Entvars_Get_Vector(missile, EV_VEC_origin, fl_origin)
+	entity_get_vector(missile, EV_VEC_origin, fl_origin)
 
 	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte(14)
@@ -393,8 +380,8 @@ remove_missile(id,missile){
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	has_rocket[id] = 0
 	gPlayerUltimateUsed[id]=false
-	AttachView(id,id)
-	RemoveEntity(missile)
+	attach_view(id,id)
+	remove_entity(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -402,8 +389,8 @@ public round_start(){
 	
 	g_betweenRounds = false
 	new iCurrent
-	while ((iCurrent = FindEntity(-1, "ICBM_missile")) > 0) {
-		new id = Entvars_Get_Edict(iCurrent, EV_ENT_owner)
+	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
+		new id = entity_get_edict(iCurrent, EV_ENT_owner)
 		remove_missile(id,iCurrent)
 	}
 }

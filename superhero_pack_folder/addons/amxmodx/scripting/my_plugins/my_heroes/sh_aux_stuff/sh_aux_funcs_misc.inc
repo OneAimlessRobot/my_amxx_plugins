@@ -8,6 +8,28 @@
 
 #define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
 
+/**
+only in plugin_init forward!!!
+*/
+stock register_entity_as_wall_touchable(const entity_name[], const func_name[]){
+
+	for( new i; i < sizeof szWallEntities; i++ ){
+		register_touch( entity_name, szWallEntities[ i ], func_name );
+	}
+}
+/**
+this one maps an entity to multiple others
+in a parameter sized array
+to a SINGLE FUNCTION!
+*/
+stock register_custom_touchable(const entity_name[], const func_name[], const tg_entities[][], tg_entities_length){
+
+	for( new i; i < tg_entities_length; i++ ){
+		register_touch( entity_name, tg_entities[ i ], func_name );
+	}
+}
+stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
+
 stock sh_get_player_cloak_pct(id){
 
 	new Float:real_alpha,  render_mode
@@ -18,8 +40,6 @@ stock sh_get_player_cloak_pct(id){
 	return ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(render_mode,real_alpha)
 
 }
-stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
-
 stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
 	iOrigin[2] += generate_int(5, 80);

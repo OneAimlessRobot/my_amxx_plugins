@@ -3,7 +3,6 @@
 #endif
 #define sh_yandere_jet_bomb_funcs
 
-#define NUM_OF_EFFECT_COLORS 10
 
 #define BOMB_DROP_PERIOD 20.0
 

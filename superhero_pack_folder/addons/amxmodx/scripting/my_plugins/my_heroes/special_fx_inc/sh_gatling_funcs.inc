@@ -6,7 +6,6 @@
 #define YAKUI_WEAPON_NAME "weapon_m249"
 #define YAKUI_WEAPON_CLASSID CSW_M249
 #define PILL_CLASSNAME "pill_gatling_pill"
-#define EFFECT_SHOT_SFX "shmod/Teliko/counter.wav"
 
 #define NUM_BARRELS 8
 #define CLIP_SIZE 100
@@ -46,7 +45,6 @@ enum {
 native gatling_set_pillgatling(id,value_to_set)
 native gatling_get_pillgatling(id)
 
-native clear_pills()
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

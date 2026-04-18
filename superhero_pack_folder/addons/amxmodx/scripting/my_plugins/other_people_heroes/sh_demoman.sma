@@ -13,45 +13,12 @@ demoman_minehealth 80		// health of mines (determines how many shots blow them u
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 //Max number of mines that can be set using the CVAR
 #define MAX_MINES 20
 
-// *** Color and Alpha for Tripline ***
-
-//Colors To Pick From
-#define CUSTOM		0
-#define RED		1
-#define GREEN		2
-#define BLUE		3
-#define LTBLUE		4
-#define YELLOW		5
-#define PURPLE		6
-#define ORANGE		7
-
-//Number of colors above (must be correct)
-#define COLORS_NUM	8	//Do not set higher than 100 or you will have problems
-
-//Special color modes
-#define RNDLIST		100	//Picks a random color from the list
-#define RNDCOLOR	101	//Picks random RBG values (may cause lag)
-#define TEAMCOLOR	102	//Colors them for what team the planter is on
-
-//Color Settings
-#define MINE_COLOR LTBLUE
 #define MINE_ALPHA 60
-
-//Color definitions
-new const LineColors[COLORS_NUM][3] = {
-	{150, 150, 150},	//Custom
-	{255, 0, 0},		//Red
-	{0, 255, 0},		//Green
-	{0, 0, 255},		//Blue
-	{0, 255, 255},		//Light Blue
-	{255, 255, 0},		//Yellow
-	{255, 0, 255},		//Purple
-	{255, 128, 0}		//Orange
-}
 
 //How often does a mine think
 #define MINE_THINK 0.05
@@ -408,40 +375,14 @@ laser_line(MineID, Float:vEnd[3], bool:killbeam)
 {
 	if ( !pev_valid(MineID) ) return
 
-	static colornum, colors[3]
-	colornum = MINE_COLOR
-
-	switch(colornum)
+	static colors[3]
+	
+	switch ( cs_get_user_team(pev(MineID, pev_iuser2)) )
 	{
-		case RNDLIST: {
-			colors = LineColors[generate_int(0, COLORS_NUM - 1)]
-		}
-
-		case RNDCOLOR: {
-			while ( colors[0] + colors[1] + colors[2] < 150 ) {
-				colors[0] = generate_int(30, 255)
-				colors[1] = generate_int(30, 255)
-				colors[2] = generate_int(30, 255)
-			}
-		}
-
-		case TEAMCOLOR: {
-			switch ( cs_get_user_team(pev(MineID, pev_iuser2)) )
-			{
-				case CS_TEAM_T: colors = LineColors[RED]
-				case CS_TEAM_CT: colors = LineColors[BLUE]
-				default: colors = LineColors[CUSTOM]
-			}
-		}
-
-		default: {
-			if ( colornum < 0 || colornum >= COLORS_NUM ) {
-				colornum = 0
-			}
-			colors = LineColors[colornum]
-		}
+		case CS_TEAM_T: colors = LineColors[RED]
+		case CS_TEAM_CT: colors = LineColors[BLUE]
+		default: colors = LineColors[CUSTOM]
 	}
-
 	//This is a little cleaner but not much
 	if ( killbeam ) {
 		//Kill the Beam

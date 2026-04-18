@@ -148,7 +148,11 @@ public plugin_natives(){
 	register_native("sh_uneffect_user","_sh_uneffect_user",0);
 	register_native("sh_get_fx_color_name","_sh_get_fx_color_name",0);
 }
+public plugin_precache(){
 
+	engfunc(EngFunc_PrecacheSound,PIERCE_WOUND_SFX)
+
+}
 public Item_PostFrame_Post(iEnt)
 {    
 	if(pev_valid(iEnt) != 2){
@@ -437,12 +441,10 @@ public _sh_effect_user(iPlugin,iParams){
 public _sh_uneffect_user(iPlugin,iParams){
 
 	new user=get_param(1)
-	new fx_num=get_param(2)
 	
 	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<=_:BATH)){
 		uneffect_user_primitive(user,true)
 	}
-	return fx_num;
 
 
 
@@ -492,15 +494,15 @@ public blind_task(array[],id){
 public poison_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
+	if ( !shModActive() ||!client_hittable(id)||!is_user_connected(array[1])) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),
 							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
 							_,_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON))
-	
-	
+	sh_set_stun(id,0.33,140.0)
+	emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 
 }
@@ -576,11 +578,9 @@ uneffect_user_primitive(id,bool:terminate_cleaner_task=false){
 	}
 	remove_task(id+fx_task_parameters[the_fx_id][fx_task_apply_id])
 	set_user_rendering(id)
-	if((fx_task_parameters[the_fx_id][fx_task_status_icon])>=0){
-
+	if(fx_task_parameters[the_fx_id][fx_task_status_icon]>=0){
 		set_damage_icon(id,0,fx_task_parameters[the_fx_id][fx_task_status_icon])
 	}
-	
 	if(the_fx_id==_:RADIOACTIVE){
 		unradioactive_user(id)
 	}
@@ -593,7 +593,7 @@ public on_death_status()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-			sh_uneffect_user(id,gatling_get_fx_num(id))
+			sh_uneffect_user(id)
 	}
 	
 }

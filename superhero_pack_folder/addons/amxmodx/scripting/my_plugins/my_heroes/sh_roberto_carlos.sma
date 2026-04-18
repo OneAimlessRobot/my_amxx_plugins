@@ -1,7 +1,6 @@
 
 
 #include "../my_include/superheromod.inc"
-#include <xs>
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
 #include "../my_include/my_author_header.inc"
@@ -219,7 +218,7 @@ public newRound(id)
 }
 public sh_round_end(){
 	
-	clear_balls()
+	remove_entity_name(BALL_CLASSNAME)
 	
 }
 public plugin_precache()

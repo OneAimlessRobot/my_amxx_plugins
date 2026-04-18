@@ -72,7 +72,6 @@ new gHeroID
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
  {
-	engfunc(EngFunc_PrecacheSound,"weapons/electro5.wav")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_v_ak47.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_p_ak47.mdl")
  }
@@ -152,9 +151,9 @@ new gHeroID
 
 	if (wpnid == CSW_AK47) {
 
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/clonetrooper_v_ak47.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/clonetrooper_v_ak47.mdl")
 		// Weapon Model change for 3rd person view - vittu
-		Entvars_Set_String(id, EV_SZ_weaponmodel, "models/shmod/clonetrooper_p_ak47.mdl")
+		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/clonetrooper_p_ak47.mdl")
 	}
  }
  //----------------------------------------------------------------------------------------------

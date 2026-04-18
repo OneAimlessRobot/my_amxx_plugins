@@ -80,6 +80,8 @@ public plugin_init()
 	register_cvar("ester_anti_pussy_engaged", "0")
 	
 	
+	register_custom_touchable("player","ester_charge_impact",player_vector,1)
+
 	register_forward(FM_CmdStart, "OnCmdStart")
 	arrayset(g_ester_is_reborn_mode,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
@@ -541,13 +543,13 @@ public positionChangeTimer(id)
 
 	get_user_origin(id, g_last_coords[id])
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
@@ -612,7 +614,7 @@ public revival(id)
 }
 //----------------------------------------------------------------------------------------------
 
-public vexd_pfntouch(pToucher, pTouched) {
+public ester_charge_impact(pToucher, pTouched) {
 
 
 if (pev_valid(pToucher)!=2){
@@ -623,6 +625,12 @@ if (!client_hittable(pToucher)){
 
 	return
 }
+
+if (pev_valid(pTouched)<1){
+	
+	return
+}
+
 if (!sh_user_has_hero(pToucher,ester_get_hero_id())||
 						g_smashed_someone[pToucher]||
 						!g_ester_is_reborn_mode[pToucher]||

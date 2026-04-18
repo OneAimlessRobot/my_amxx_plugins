@@ -90,7 +90,7 @@ public _lena_l96_dec_num_bullets(iPlugin,iParams){
 }
 public sh_round_end(){
 
-	lena_l96_clear_bullets()
+	remove_entity_name(LENA_PROJECTILE_CLASSNAME)
 
 }
 //----------------------------------------------------------------------------------------------

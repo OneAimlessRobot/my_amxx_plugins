@@ -383,7 +383,7 @@ public newRound(id)
 }
 public sh_round_end(){
 
-	clear_sleep_nades()
+	remove_entity_name(SLEEP_NADE_CLASSNAME)
 
 }
 //----------------------------------------------------------------------------------------------
