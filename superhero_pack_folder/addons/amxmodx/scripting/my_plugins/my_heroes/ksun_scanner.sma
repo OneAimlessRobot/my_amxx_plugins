@@ -356,7 +356,6 @@ public scanner_think(scanner){
 
 	new  numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
 	
-	
 	for( new i= 0;(g_player_num_victims[id]<obj_num_of_victims)&&(i< numfound);i++){
 		
 			new pid = entlist[i];

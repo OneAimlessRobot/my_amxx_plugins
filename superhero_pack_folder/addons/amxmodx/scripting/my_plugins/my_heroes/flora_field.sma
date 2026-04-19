@@ -52,6 +52,9 @@ stock flora_field_start_ammount
 stock flora_field_max_active_ammount
 
 
+new field_drain_wpn_id
+new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
+new dmg_source_name_long_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 
 stock FLORA_COOLDOWN_TASKID,
 		FLORA_LOAD_TASKID
@@ -84,7 +87,11 @@ public plugin_init()
 	register_cvar("flora_base_stun_speed","210.0")
 
  
-	
+	field_drain_wpn_id=sh_log_custom_damage_source(
+								flora_get_hero_id(),
+								dmg_source_name_short_field_drain,
+								dmg_source_name_long_field_drain,
+								0)
 	
 	arrayset(g_flora_field_cooldown,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flora_prev_inside,-1,SH_MAXSLOTS+1)
@@ -738,7 +745,9 @@ public field_think(ent)
 			if(g_flora_sheltered_value[owner]>OUTSIDE){
 				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
 				
-				sh_extra_damage(pid,owner,floatround(fdamage),"Flora field damage")
+				sh_extra_damage(pid,owner,floatround(fdamage), dmg_source_name_short_field_drain,0,_,_,_,_,_,
+									SH_NEW_DMG_DRAIN,
+									field_drain_wpn_id)
 				
 				sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
 

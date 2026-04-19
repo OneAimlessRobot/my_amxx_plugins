@@ -13,7 +13,8 @@
 #include "../my_include/my_author_header.inc"
 
 
-
+#define MIN_KSUN_PAYCUT 0.01
+#define MAX_KSUN_PAYCUT 0.6
 new Float:ksun_spore_damage, 
 	Float:ksun_spore_speed,
 	Float:ksun_heal_coeff,
@@ -111,7 +112,7 @@ public loadCVARS()
 	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
 	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
 	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
-	ksun_dmg_paycut=get_cvar_float("ksun_dmg_paycut")
+	ksun_dmg_paycut=floatclamp(get_cvar_float("ksun_dmg_paycut"),MIN_KSUN_PAYCUT,MAX_KSUN_PAYCUT)
 	ksun_spore_track_detect_distance=get_cvar_float("ksun_spore_track_detect_dist")
 }
 public bool:_ksun_heal(iPlugins, iParms){

@@ -15,7 +15,7 @@
 #define PLAYER_LINE_FMT_OFF_GAME "| [%-5d]| %-32.31s | %-10.9s | %-32.31s | %-4d/%-4d |^n"
 #define TEAM_HEADER_FMT_OFF_GAME "Team: %-32.31s^n"
 
-#define ROW_LENGTH 2561
+#define ROW_LENGTH 256
 
 #define TEAM_IS_OFF_GAME(%1)  ((%1)>1)
 

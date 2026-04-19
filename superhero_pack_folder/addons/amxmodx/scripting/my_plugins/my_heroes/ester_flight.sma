@@ -590,6 +590,9 @@ public positionChangeCheck(id)
 		g_ester_respawned_attempts[id]=ester_total_respawn_attempts
 		reset_ester_reborn_mode(id,0)
 	}
+	else if(!user_has_weapon(id,CSW_KNIFE)){
+		sh_give_weapon(id,CSW_KNIFE,true)
+	}
 }
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
@@ -606,9 +609,6 @@ public revival(id)
 	ExecuteHamB(Ham_Spawn, id) 
 	if(client_hittable(id)){
 		remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
-		if(!user_has_weapon(id,CSW_KNIFE)){
-			sh_give_weapon(id,CSW_KNIFE,true)
-		}
 		setScreenFlash(id, 0, 0, 0, 0, 255 )  //Black flash indicating revival
 	}
 }

@@ -3,6 +3,7 @@
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -48,6 +49,10 @@ new adulting_pan_wpn_id
 new dmg_source_name_short_adulting_pan[SAFE_BUFFER_SIZE+1]="the_pan_tm"
 new dmg_source_name_long_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
 
+new neuroblast_wpn_id
+new dmg_source_name_short_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
+new dmg_source_name_long_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
+
 stock ESTER_REVENGE_TASKID
 
 //----------------------------------------------------------------------------------------------
@@ -77,7 +82,7 @@ public plugin_init()
 	register_cvar("ester_moralizing_headshot_xp_mult","4");
 	register_cvar("ester_moralizing_tmp_xp_get_mult","5.0"); 
 	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
-
+	
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
 	sh_register_superheromod_model(gHeroID,
 								"models/player/ester/ester.mdl",
@@ -85,7 +90,12 @@ public plugin_init()
 								"ester",
 								"Ready to adult & Pwn 50m3 n3wbz",
 								"Fuck my li- *Sigh...* Spectating again")
-
+	
+	static hero_name_arr[STRLEN_FOR_NAMES];
+	arrayset(hero_name_arr,0,sizeof hero_name_arr)
+	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
+	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html",hero_name_arr)
+	
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -117,6 +127,11 @@ public plugin_init()
 								dmg_source_name_long_adulting_pan,
 								0)
 
+	neuroblast_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_neuroblast,
+								dmg_source_name_long_neuroblast,
+								0)
 }
 public Hook_BloodColor(id)
 {
@@ -332,12 +347,19 @@ public loadCVARS()
 public Ester_revenge_loop(id)
 {
 	id-=ESTER_REVENGE_TASKID
-	if ( !sh_is_active() || !is_user_alive(id)||ester_get_reborn_mode(id)){
+	if ( !sh_is_active() ||ester_get_reborn_mode(id)){
 		
 		remove_task(id+ESTER_REVENGE_TASKID)
 		return
 	}
-	
+	if( !is_user_alive(id)){
+
+		sh_chat_message(id,gHeroID,"You died during revenge loop.");
+		reset_status(id)
+		Set_BitVar(gFinishedMask,id)
+		remove_task(id+ESTER_REVENGE_TASKID)
+		return
+	}
 		
 	if(!(Get_BitVar(gPedalIsFlooredMask,id)||Get_BitVar(gUnloadingMask,id))||Get_BitVar(gFinishedMask,id)) return
 
@@ -433,7 +455,11 @@ public Ester_revenge_loop(id)
 public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	sh_extra_damage( x, id,gEsterDmg[id], "Neuroblast",1 )
+	
+	sh_extra_damage(x, id,gEsterDmg[id], dmg_source_name_short_neuroblast,1,_,_,_,_,_,
+									SH_NEW_DMG_ENERGY_BLAST,
+									neuroblast_wpn_id)
+
 	directed_spark(id,x,30,5,200,40,PURPLE)
 }
 //----------------------------------------------------------------------------------------------

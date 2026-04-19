@@ -27,7 +27,8 @@ public plugin_init()
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release large concussive blasts on keybind!", true, "reika_level" )
-    
+
+    register_event("ResetHUD","newRound","b")
     register_srvcmd("reika_init", "reika_init")
     shRegHeroInit(gHeroName, "reika_init")
 
@@ -37,12 +38,20 @@ public plugin_init()
     init_explosion_defaults()
 
 }
-public plugin_natives(){
-	
-	
-	
+//----------------------------------------------------------------------------------------------
+public newRound(id)
+{
+    if(!client_hittable(id)||!sh_is_active()){
+        
+        return PLUGIN_CONTINUE
+    }
+    if ( sh_user_has_hero(id,gHeroID) ) {
+        
+        gPlayerUltimateUsed[id]=false
+        sh_end_cooldown(id+SH_COOLDOWN_TASKID)
+    }
+    return PLUGIN_CONTINUE
 }
-
 
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -110,5 +119,10 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim)
 {
-	gPlayerInCooldown[victim] = false
+    if(sh_is_active()||!is_user_connected(victim)) return
+    if ( sh_user_has_hero(victim,gHeroID) ) {
+        
+        gPlayerUltimateUsed[victim]=false
+        sh_end_cooldown(victim+SH_COOLDOWN_TASKID)
+    }
 }

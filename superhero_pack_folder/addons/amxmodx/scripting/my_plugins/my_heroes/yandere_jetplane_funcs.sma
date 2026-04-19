@@ -20,8 +20,8 @@
 
 
 
-new g_jetplane_cooldown[SH_MAXSLOTS+1];
 new g_jetplane_loaded[SH_MAXSLOTS+1];
+new g_jetplane_armed[SH_MAXSLOTS+1];
 new g_jetplane_deployed[SH_MAXSLOTS+1];
 new g_jetplane[SH_MAXSLOTS+1];
 new g_jetplane_sound_on[SH_MAXSLOTS+1];
@@ -61,7 +61,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_enable_gravity", "0")
 	register_cvar("yandere_jetplane_enable_air_drag", "1")
 	register_cvar("yandere_jetplane_enable_speed_limiter", "1")
-	arrayset(g_jetplane_cooldown,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_jetplane_deployed,0,SH_MAXSLOTS+1)
 	arrayset(g_jetplane,-1,SH_MAXSLOTS+1)
@@ -101,7 +100,6 @@ public plugin_natives(){
 	
 	register_native("clear_jets","_clear_jets",0);
 	register_native("reset_jet_user","_reset_jet_user",0);
-	register_native("jet_get_user_jet_cooldown","_jet_get_user_jet_cooldown",0);
 	register_native("jet_get_think_period","_jet_get_think_period",0);
 	register_native("jet_uncharge_user","_jet_uncharge_user",0);
 	register_native("jet_charge_user","_jet_charge_user",0);
@@ -117,6 +115,7 @@ public plugin_natives(){
 }
 public loadCVARS(){
 	jetplane_cooldown=get_cvar_float("yandere_jetplane_cooldown");
+	server_print("Jet cooldown is: %0.2f seconds!",jetplane_cooldown)
 	jetplane_hp=get_cvar_float("yandere_jetplane_hp")
 	jet_think_period=get_cvar_float("yandere_jetplane_think_period")
 	jet_init_speed=get_cvar_float("yandere_jetplane_init_speed")
@@ -187,13 +186,6 @@ public _jet_deployed(iPlugin,iParams){
 	
 	
 }
-public _jet_get_user_jet_cooldown(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return g_jetplane_cooldown[id]
-	
-	
-}
 public _jet_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
@@ -207,7 +199,7 @@ public _jet_charge_user(iPlugin, iParams){
 
 	if(!g_jetplane_loaded[id]){
 		
-		sh_chat_message(id,yandere_get_hero_id(),"Shield not loaded")
+		sh_chat_message(id,yandere_get_hero_id(),"Jet not loaded")
 		return
 	}
 
@@ -216,7 +208,7 @@ public _jet_charge_user(iPlugin, iParams){
 	entity_get_vector(id, EV_VEC_origin , Origin)
 
 	g_jetplane_loaded[id]=0
-	
+	g_jetplane_armed[id]=0
 	new material[128]
 	new health[128]	
 	g_jetplane[id] = create_entity( "func_breakable" );
@@ -313,14 +305,13 @@ public _jet_uncharge_user(iPlugin,iParams){
 }
 uncharge_user(id){
 	remove_task(id+JET_CHARGE_TASKID)
-	g_jetplane_deployed[id]=0
+	if(!g_jetplane_armed[id]){
+		g_jetplane_loaded[id]=1
+	}
 	if(pev_valid(g_jetplane[id])==2){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		jet_destroy(id)
 	}
-	g_jetplane_loaded[id]=1
-	return 0
-	
 	
 	
 }
@@ -329,7 +320,7 @@ public _reset_jet_user(iPlugin,iParams){
 	
 	new id= get_param(1)
 	g_jetplane_loaded[id]=true;
-	g_jetplane_cooldown[id]=0;
+	g_jetplane_armed[id]=false
 	g_jetplane_deployed[id]=false;
 	if(is_valid_ent(g_jetplane[id])){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -381,6 +372,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_shells(jetplane_id)
 	reset_jet_rockets(jetplane_id)
 	reset_jet_scans(jetplane_id)
+	g_jetplane_armed[id]=true
 	sh_chat_message(attacker,yandere_get_hero_id(),"jet armed!");
 	camera[id] = create_entity("info_target")
 	new Float:origin[3]
@@ -925,8 +917,6 @@ public _jet_destroy(iPlugin,iParams){
 		remove_entity(camera[id])
 		camera[id] = 0
 	}
-	g_jetplane_loaded[id]=true;
-	g_jetplane_cooldown[id]=0;
 	g_jetplane_deployed[id]=false;
 }
 public _clear_jets(iPlugin,iParams){

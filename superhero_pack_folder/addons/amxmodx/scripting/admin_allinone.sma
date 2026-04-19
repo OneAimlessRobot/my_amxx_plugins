@@ -139,7 +139,7 @@ public admin_heal(id,level,cid){
 		log_amx("%L", LANG_SERVER, "AINO_LOG_HEAL_ALL", name2, arg[1])
 	}
 	else {
-		new player = cmd_target(id,arg,7)
+		new player = cmd_target(id,arg,14)
 		if (!player) return PLUGIN_HANDLED
 		new user_health = get_user_health(player)
 		set_user_health(player, str_to_num(arg2) + user_health)

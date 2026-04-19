@@ -1,6 +1,6 @@
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
@@ -48,6 +48,11 @@ public plugin_init()
 								"ksun",
 								"ksun: '...'",
 								"ksun: '...'")
+
+	static hero_name_arr[STRLEN_FOR_NAMES];
+	arrayset(hero_name_arr,0,sizeof hero_name_arr)
+	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
+	superheromod_help_link_hero(gHeroID, "ksun: Help file","ksun_folder/","ksun_help_file.html",hero_name_arr)
 	
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
@@ -108,18 +113,34 @@ stock covert_spike_damage(id){
 			}
 			new times_spiked_by_me=get_times_player_spiked_by_player(payer,id)
 			if((times_spiked_by_me>0)){
-				new Float: pctHealthLost=get_spike_base_damage_debt()*float(times_spiked_by_me)
-				new Float: healthXtracted=1.0+(float(get_user_health(payer))*pctHealthLost)
+				static Float:dmg_to_drain,
+						Float:tmp_it_pct;
+				dmg_to_drain=0.0;
+				tmp_it_pct=get_spike_base_damage_debt()
+				/*
+					if someone tells me how to do this with an exponential
+					instead of iteration,
+					I will thank them a lot.
+					I dont like this
+				*/
+				new Float:tg_health=float(get_user_health(payer))
+				for( new i=0;i<times_spiked_by_me;i++){
+					
+					dmg_to_drain+= (tg_health*tmp_it_pct)
+					tg_health-=(tg_health*tmp_it_pct)
+					
+
+				}
 				new Ent = create_entity("info_target")
 
 				if (pev_valid(Ent)!=2){
 					continue
 				}
 				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
-				ExecuteHam(Ham_TakeDamage,payer,Ent,id,healthXtracted,DMG_GENERIC);
-				sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,payer,id,true,false,floatround(healthXtracted))
+				ExecuteHam(Ham_TakeDamage,payer,Ent,id,dmg_to_drain,DMG_GENERIC);
+				sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,payer,id,true,false,floatround(dmg_to_drain))
 				remove_entity(Ent)
-				ksun_heal(id,healthXtracted)
+				ksun_heal(id,dmg_to_drain)
 				
 			}
 		}

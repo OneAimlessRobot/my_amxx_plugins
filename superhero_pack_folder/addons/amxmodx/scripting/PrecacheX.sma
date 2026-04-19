@@ -44,7 +44,7 @@ new const UnPrecache_ModelList[ 32][ ] =
 	
 */
 
-new const UnPrecache_SoundList[117][] = 
+new const UnPrecache_SoundList[107][] = 
 {
 	
 	"items/suitcharge1.wav", 
@@ -142,16 +142,6 @@ new const UnPrecache_SoundList[117][] =
 	"weapons/usp_silencer_on.wav", 
 	"weapons/usp_silencer_off.wav", 
 	"weapons/usp_sliderelease.wav",
-	"weapons/c4_click.wav", 
-	"weapons/c4_beep1.wav", 
-	"weapons/c4_beep2.wav", 
-	"weapons/c4_beep3.wav", 
-	"weapons/c4_beep4.wav", 
-	"weapons/c4_beep5.wav", 
-	"weapons/c4_explode1.wav", 
-	"weapons/c4_plant.wav", 
-	"weapons/c4_disarm.wav", 
-	"weapons/c4_disarmed.wav", 
 	"weapons/usp_slideback.wav", 
 	"weapons/fiveseven_slidepull.wav", 
 	"weapons/fiveseven_sliderelease.wav", 
@@ -165,7 +155,23 @@ new const UnPrecache_SoundList[117][] =
 	"common/bodydrop3.wav", 
 	"common/bodydrop4.wav"
 };
+/**
 
+kept files
+
+
+	"weapons/c4_click.wav", 
+	"weapons/c4_beep1.wav", 
+	"weapons/c4_beep2.wav", 
+	"weapons/c4_beep3.wav", 
+	"weapons/c4_beep4.wav", 
+	"weapons/c4_beep5.wav", 
+	"weapons/c4_explode1.wav", 
+	"weapons/c4_plant.wav", 
+	"weapons/c4_disarm.wav", 
+	"weapons/c4_disarmed.wav", 
+	 */
+/*
 new const UnPrecache_SoundList_Generics[117][] = 
 {
 	"sound/items/suitcharge1.wav", 
@@ -286,7 +292,7 @@ new const UnPrecache_SoundList_Generics[117][] =
 	"sound/common/bodydrop3.wav", 
 	"sound/common/bodydrop4.wav"
 };
-
+*/
 public plugin_init( ) 
 { 
 	register_plugin( 
@@ -320,7 +326,7 @@ public fw_PrecacheModel( const Model[ ] )
 	{ 
 		
 		if( equal( Model, UnPrecache_ModelList[ i ] ) ){
-			engfunc(EngFunc_PrecacheGeneric,UnPrecache_ModelList[ i ] )
+			//engfunc(EngFunc_PrecacheGeneric,UnPrecache_ModelList[ i ] )
 			return FMRES_SUPERCEDE
 		}
 		
@@ -353,12 +359,14 @@ public fw_PrecacheModel_Post( const Model[ ] )
 
 public fw_PrecacheSound( const Sound[ ] )
 {
-	if( Sound[ 0 ] == 'h' && Sound[1] == 'o' ) 
-		return FMRES_SUPERCEDE 
+	//let hostage sound through
+	/*if( Sound[ 0 ] == 'h' && Sound[1] == 'o' ) 
+		return FMRES_SUPERCEDE*/
+	
 	for( new i = 0; i < sizeof(UnPrecache_SoundList); i++ )
 	{ 
 		if( equal( Sound, UnPrecache_SoundList[ i ] ) ){
-			engfunc(EngFunc_PrecacheGeneric,UnPrecache_SoundList_Generics[ i ] )
+			//engfunc(EngFunc_PrecacheGeneric,UnPrecache_SoundList_Generics[ i ] )
 			return FMRES_SUPERCEDE
 		}
 		

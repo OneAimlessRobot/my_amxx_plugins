@@ -44,7 +44,6 @@ stock const Float:jetplane_origin_law_offsets[3]={0.0,0.0,30.0}
 native clear_jets()
 
 native reset_jet_user(id)
-native jet_get_user_jet_cooldown(id)
 native jet_loaded(id)
 native jet_destroy(id)
 native jet_deployed(id)

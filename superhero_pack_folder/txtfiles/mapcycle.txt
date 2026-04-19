@@ -2,4 +2,6 @@ de_inferno
 de_nuke
 de_train
 de_dust2
-de_blue
+cs_assault
+cs_militia
+cs_italy

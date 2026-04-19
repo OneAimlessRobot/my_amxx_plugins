@@ -4,6 +4,7 @@
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -33,7 +34,11 @@ public plugin_init()
 							"Flora",
 							"",
 							"")
-
+	static hero_name_arr[STRLEN_FOR_NAMES];
+	arrayset(hero_name_arr,0,sizeof hero_name_arr)
+	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
+	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html",hero_name_arr)
+	
 	register_event("ResetHUD","newRound","b")
 	
 	// INIT

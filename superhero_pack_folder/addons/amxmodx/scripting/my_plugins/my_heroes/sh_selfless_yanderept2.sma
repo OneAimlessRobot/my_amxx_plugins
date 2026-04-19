@@ -1,5 +1,3 @@
-
-
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
@@ -10,6 +8,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -48,6 +47,12 @@ public plugin_init()
 	register_cvar("yandere_min_players", "6")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
+	
+
+	static hero_name_arr[STRLEN_FOR_NAMES];
+	arrayset(hero_name_arr,0,sizeof hero_name_arr)
+	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
+	superheromod_help_link_hero(gHeroID, "Yandere: Help file","yandere_folder/","yandere_help_file.html",hero_name_arr)
 	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yanderu/yanderu.mdl",
@@ -259,14 +264,16 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 	if(!client_hittable(i)) continue;
 
 	if(!sh_user_has_hero(i,gHeroID) ) continue;
+
 	if(!(disconnected)){
-		if(!sh_clients_are_same_team(id,i)||(id==i)){
-			continue;	
+		if(!sh_clients_are_same_team(id,i)){
+			if((id!=i)){
+				continue;
+			}
 		}
 	}
-	new mates_alive
-	sh_get_player_counts(i,1,mates_alive,g_mates_dead[i])
-	new bool:can_transform= (get_playersnum(0)>=min_players)&&(mates_alive<=0)
+	sh_get_player_counts(i,1,g_mates_alive[i],g_mates_dead[i])
+	new bool:can_transform= (get_playersnum(0)>=min_players)&&(g_mates_alive[i]<=0)
 	if(can_transform && !Get_BitVar(gSuperAngryMask,i)){
 
 		Set_BitVar(gTransTimerStartedMask,i)
@@ -329,17 +336,30 @@ update_stats(id){
 	}
 }
 public yandere_timer_transform(id){
-	if(!sh_is_active()||!client_hittable(id)){
-		return
-	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_is_active()||!is_user_connected(id)||!sh_user_has_hero(id,gHeroID) ){
+		remove_task(id+YANDERE_STATS_TASKID)
 		return
 		
+	}
+	if(!is_user_alive(id)){
+
+		return
 	}
 	if(Get_BitVar(gSuperAngryMask,id)){
 
 		new Float:gravity=get_user_gravity(id)
 		set_user_gravity(id,floatmin(angry_gravity,gravity))
+		if(g_mates_alive[id]>0){
+
+			UnSet_BitVar(gSuperAngryMask,id)
+			remove_task(id+YANDERE_ANGER_TASKID)
+			update_stats(id)
+			sh_reset_min_gravity(id)
+			set_user_maxspeed(id,gNormalSpeed[id])
+			sh_chat_message(0,gHeroID,"Hah... What happened?");
+			UnSet_BitVar(gPlayedSoundMask,id)
+			return
+		}
 	}
 	else{
 		UnSet_BitVar(gIdleAngryMask,id)
@@ -564,9 +584,9 @@ public yandere_kd()
 		if ( gPlayerUltimateUsed[id]||yandere_get_user_is_psychosis(id) ) {
 			
 			if(!is_user_bot(id)){
+				playSoundDenySelect(id)
 				sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
 			}
-			playSoundDenySelect(id)
 			return PLUGIN_HANDLED
 		}
 		emit_sound(id, CHAN_AUTO, yandere_pain_sounds[generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
@@ -576,6 +596,16 @@ public yandere_kd()
 		yandere_psychosis_user(id)
 	}
 	else{
+		if(!jet_loaded(id)&&!jet_deployed(id)){
+
+			if(!is_user_bot(id)){
+				playSoundDenySelect(id)
+				sh_chat_message(id, yandere_get_hero_id(), "The jet is not loaded yet!")
+			}
+			return PLUGIN_HANDLED
+			
+		}
+
 		if(jet_deployed(id)){
 			
 			jet_destroy(id)
@@ -685,10 +715,11 @@ killyandere(id,bool:dropping=false){
 		}
 		else if(jet_deployed(id)){
 			
-			set_user_gravity(id)
 			jet_destroy(id);
 		}
 		UnSet_BitVar(gSuperAngryMask,id)
+		sh_reset_min_gravity(id)
+		
 		
 	}
 	g_is_cursed_masks[id]=0
@@ -711,29 +742,10 @@ public sh_client_death(id,attacker,headshot,const weapon_description[])
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
-	static distanceBetween
-	static origin[3], origin1[3], name[32]
-
-	get_user_origin(id, origin)
-
-	get_user_name(id, name, 31)
-	
 
 	// blowup even if dead
 	explosion(yandere_get_hero_id(),id,explode_radius,explode_maxdamage,default_explode_knock_force_magnitude,1)
-	for (new a = 1; a <= SH_MAXSLOTS; a++) {
-		if ( is_user_alive(a) && (a != id )) {
-
-			get_user_origin(a, origin1)
-
-			distanceBetween = get_distance(origin, origin1)
-			if(!is_user_bot(a)){
-				if ( distanceBetween < floatround(explode_radius) ) {
-					superhero_protected_hud_message(superhero_hud_msg_sync,a,"The CRAZY ONE! THEY'VE LOST IT!!!!!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-				}
-			}
-		}
-	}
+	
 }
 //----------------------------------------------------------------------------------------------
 
