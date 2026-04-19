@@ -130,7 +130,6 @@ thor_thunder_damage(attacker, tg){
 
 	UnSet_BitVar(gIsSearchingMask,attacker)
 
-	sh_chat_message(attacker,gHeroID,"You struck them with thor!!! Their pgid was %d^n",tg)
 	lightning_effect(attacker, tg, extraDamage)
 
 	// make target feel it

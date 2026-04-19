@@ -218,8 +218,6 @@ stock ester_weapons(id){
 
 reset_status(id){
 	
-	
-	remove_task(id+ESTER_REVENGE_TASKID)
 	if(is_user_connected(id)){
 		set_user_rendering(id)	
 	}
@@ -350,7 +348,6 @@ public Ester_revenge_loop(id)
 	id-=ESTER_REVENGE_TASKID
 	if ( !sh_is_active() ||ester_get_reborn_mode(id)){
 		
-		remove_task(id+ESTER_REVENGE_TASKID)
 		return
 	}
 	if( !is_user_alive(id)){
@@ -358,7 +355,6 @@ public Ester_revenge_loop(id)
 		sh_chat_message(id,gHeroID,"You died during revenge loop.");
 		reset_status(id)
 		Set_BitVar(gFinishedMask,id)
-		remove_task(id+ESTER_REVENGE_TASKID)
 		return
 	}
 		
@@ -404,7 +400,6 @@ public Ester_revenge_loop(id)
 					sh_sound_deny(id)
 				}
 				reset_status(id)
-				remove_task(id+ESTER_REVENGE_TASKID)
 				return
 			
 			}
@@ -435,7 +430,7 @@ public Ester_revenge_loop(id)
 				reset_status(id)
 				Set_BitVar(gFinishedMask,id)
 				user_kill(id,1)
-				remove_task(id+ESTER_REVENGE_TASKID)
+				return
 			}
 		}
 		else{
@@ -446,11 +441,11 @@ public Ester_revenge_loop(id)
 			reset_status(id)
 			user_kill(id,1)
 			Set_BitVar(gFinishedMask,id)
-			remove_task(id+ESTER_REVENGE_TASKID)
 			return
 			
 		}
 	}
+	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "a",1)
 }
 
 public Ester_instant(x, id)
@@ -639,8 +634,6 @@ public client_disconnected(id){
 	ester_weapons(id)
 	reset_ester_user_round(id)
 	
-	remove_task(id+ESTER_REVENGE_TASKID)
-	
 }
 public plugin_precache()
 {
@@ -761,16 +754,9 @@ public ester_kd()
 	}
 	new client_name[128];
 	get_user_name(id,client_name,127)
-	sh_chat_message(0,gHeroID,"%s is charging up and about to release a NEUROBLAST!!!!^n",client_name)
-	sh_chat_message(0,gHeroID,"%s: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!",client_name);
-	
-	if(!is_user_bot(id)){
-		show_targets(id)
-	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	Set_BitVar(gPedalIsFlooredMask,id)
-	remove_task(id+ESTER_REVENGE_TASKID)
-	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "b")
+	set_task(period, "Ester_revenge_loop", id+ESTER_REVENGE_TASKID, _, _, "a",1)
 	
 	return PLUGIN_HANDLED
 }

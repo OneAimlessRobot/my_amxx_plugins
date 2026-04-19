@@ -560,10 +560,8 @@ stock ksun_death_handler(id){
 	if(is_user_connected(id)){
 		if(sh_user_has_hero(id,gHeroID) ){
 			ksun_unultimate_user(id,1,0)
-			if(sleep_nade_get_sleep_nade_loaded(id)){
-		
-				sleep_nade_uncharge_sleep_nade(id)
-			}
+			
+			sleep_nade_uncharge_sleep_nade(id)
 			
 			if(ksun_get_when_reset_spores()&reset_on_death){
 				ksun_set_num_available_spores(id,0)

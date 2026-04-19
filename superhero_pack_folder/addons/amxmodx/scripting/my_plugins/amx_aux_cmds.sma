@@ -127,7 +127,7 @@ public plugin_init(){
 
         }
         if(command_ide!=0){
-            server_print("%s Command registered!^nName: %s^n",
+         /*   server_print("%s Command registered!^nName: %s^n",
                             is_client_cmd?"Client":"Console",
                             array_of_commands[i][cmd_name])
             server_print("Callback function name: %s^n",array_of_commands[i][cmd_callback_func])
@@ -137,6 +137,7 @@ public plugin_init(){
             server_print("Immunity check flags: %d^n",array_of_commands[i][obey_immunity_flags])
             server_print("Command ID on struct: %d^n",array_of_commands[i][command_id])
             server_print("Command ID returned: %d^n",command_ide)
+            */
         }
         else{
             server_print("We got 0 on command ID! What happened?")

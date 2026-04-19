@@ -2,8 +2,8 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
@@ -105,7 +105,6 @@ public plugin_natives(){
 }
 stop_dragging(id){
 	
-		remove_task(id+HOOK_TASKID)
 		if((g_dragging_who[id][0]>=0)){
 			if(client_hittable( g_dragging_who[id][0])){
 				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
@@ -122,14 +121,14 @@ public hook_think(id)
 	
 	id-=HOOK_TASKID
 	if (!client_hittable(id)){
-	
-		remove_task(id+HOOK_TASKID)
+		
+		stop_dragging(id)
 		return FMRES_IGNORED
 	
 	}
 	if (!sh_user_has_hero(id,tranq_get_hero_id())){
 	
-		remove_task(id+HOOK_TASKID)
+		stop_dragging(id)
 		return FMRES_IGNORED
 	
 	}
@@ -144,7 +143,7 @@ public hook_think(id)
 		}
 	
 	
-		remove_task(id+HOOK_TASKID)
+		stop_dragging(id)
 		return FMRES_IGNORED
 	}
 	if(!(g_dragging_who[id][1])){
@@ -207,6 +206,7 @@ public hook_think(id)
 		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 	}
 	g_dragging_who[id][1]--;
+	set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",id+HOOK_TASKID,"",0,"a",1)
 	return FMRES_IGNORED
 }
 
@@ -289,8 +289,7 @@ public CmdStart1(attacker, uc_handle)
 					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
-					remove_task(attacker+HOOK_TASKID)
-					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"b")
+					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"a",1)
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 					if(!is_user_bot(attacker)){

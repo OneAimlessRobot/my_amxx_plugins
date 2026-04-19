@@ -4,7 +4,7 @@ export STEAM_RUNTIME=0
 unset STEAM_COMPAT_CLIENT_INSTALL_PATH
 unset STEAM_COMPAT_DATA_PATH
 #bash ./server.sh -console -game cstrike +ip "192.168.0.100" +hostport "27015" +maxplayers "16"2>&1 | grep -v "WebUI"
-bash ./server.sh -console -game cstrike +ip "192.168.0.100" +hostport "27015" +maxplayers "16"
+bash ./server.sh -console -game cstrike +ip "127.0.0.1" +hostport "27015" +maxplayers "16"
 
 stty sane
 

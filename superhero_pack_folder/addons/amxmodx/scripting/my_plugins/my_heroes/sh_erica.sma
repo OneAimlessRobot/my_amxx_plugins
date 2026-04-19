@@ -422,11 +422,10 @@ public plugin_precache()
 public death()
 {	
 	new id = read_data(2)
-	if(sh_user_has_hero(id,gHeroID) && molly_get_molly_loaded(id)){
+	if(sh_user_has_hero(id,gHeroID)){
 	
 		molly_uncharge_molly(id)
 	}
-	sh_unmolly_user(id)
 	new killer= read_data(1)
 	new killer_name[128]
 	get_user_name(killer,killer_name,127)

@@ -13,27 +13,21 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new bool:molly_loaded[SH_MAXSLOTS+1]
-
-new bool:molly_armed[SH_MAXSLOTS+1]
+new molly_armed_mask
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock MOLLY_CHARGE_TASKID,
-		UNMOLLY_CHARGE_TASKID
+stock MOLLY_CHARGE_TASKID
+
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
-	
-	arrayset(molly_loaded,true,SH_MAXSLOTS+1)
-	arrayset(molly_armed,false,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
+
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(MOLLY_CLASSNAME,"molly_think")
 
@@ -45,12 +39,10 @@ public plugin_init(){
 	register_custom_touchable(MOLLY_CLASSNAME,"molly_burner_um_burner",player_vector,1)
 
 	MOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	UNMOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
 
-	register_native( "molly_get_molly_loaded","_molly_get_molly_loaded",0)
 	register_native( "molly_uncharge_molly","_molly_uncharge_molly",0)
 	
 	
@@ -61,7 +53,7 @@ public CmdStart(id, uc_handle)
 	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,tranq_get_hero_id()))) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
-		uncharge_user(id)
+		UnSet_BitVar(molly_armed_mask,id)
 		return FMRES_IGNORED
 	}
 	
@@ -76,9 +68,9 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||!molly_loaded[id]) return FMRES_IGNORED
-			if(!molly_armed[id]){
-				molly_armed[id]=true
+			if( !(is_user_alive(id))) return FMRES_IGNORED
+			if(!Get_BitVar(molly_armed_mask,id)){
+				Set_BitVar(molly_armed_mask,id)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
@@ -92,11 +84,11 @@ public CmdStart(id, uc_handle)
 					erica_get_num_mollies(id),erica_get_num_mollies(id)
 					);
 				}
-				uncharge_user(id)
+				UnSet_BitVar(molly_armed_mask,id)
 			}
 			
 		}
-		else if(molly_armed[id]){
+		else if(Get_BitVar(molly_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
 				launch_molly(id)
 				if(!is_user_bot(id)){
@@ -109,13 +101,13 @@ public CmdStart(id, uc_handle)
 				sh_chat_message(id,tranq_get_hero_id(),"Chaff not charged! Not launched...");
 				
 			}
-			uncharge_user(id)
+			UnSet_BitVar(molly_armed_mask,id)
 			
 		}
 	}
 	else
 	{
-		uncharge_user(id)
+		UnSet_BitVar(molly_armed_mask,id)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, MOLLY_CLASSID,erica_get_num_mollies(id));
@@ -146,8 +138,11 @@ public charge_task(id){
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
 	100.0*(curr_charge[id]/max_charge_time)
 	);
-	
 	client_print(id,print_center,"%s",hud_msg)
+	if(Get_BitVar(molly_armed_mask,id)){
+
+		set_task(MOLLY_CHARGE_PERIOD,"charge_task",id+MOLLY_CHARGE_TASKID,"", 0,  "a",1)
+	}
 	
 	
 	
@@ -156,8 +151,7 @@ public charge_task(id){
 	
 }
 charge_user(id){
-	set_task(MOLLY_CHARGE_PERIOD,"charge_task",id+MOLLY_CHARGE_TASKID,"", 0,  "a",MOLLY_CHARGE_TIMES)
-	set_task(floatmul(MOLLY_CHARGE_PERIOD,float(MOLLY_CHARGE_TIMES))+1.0,"uncharge_task",id+UNMOLLY_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(MOLLY_CHARGE_PERIOD,"charge_task",id+MOLLY_CHARGE_TASKID,"", 0,  "a",1)
 	return 0
 	
 	
@@ -165,35 +159,11 @@ charge_user(id){
 }
 public _molly_uncharge_molly(iPlugin,iParams){
 	new id=get_param(1)
-	uncharge_user(id)
-	
-	
-}
-public uncharge_task(id){
-	id-=UNMOLLY_CHARGE_TASKID
-	remove_task(id+MOLLY_CHARGE_TASKID)
-	molly_armed[id]=false
-	return 0
-	
+	UnSet_BitVar(molly_armed_mask,id)
 	
 	
 }
 
-uncharge_user(id){
-	remove_task(id+UNMOLLY_CHARGE_TASKID)
-	remove_task(id+MOLLY_CHARGE_TASKID)
-	molly_armed[id]=false
-	return 0
-	
-	
-	
-}
-public _molly_get_molly_loaded(iPlugin,iParams){
-
-new id=get_param(1)
-return molly_loaded[id]
-
-}
 launch_molly(id)
 {
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -227,7 +197,6 @@ entity_set_edict(Ent, EV_ENT_owner, id)
 velocity_by_aim(id, floatround(MOLLY_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
-molly_loaded[id] = false
 
 erica_dec_num_mollies(id)
 if(erica_get_num_mollies(id) == 0)
@@ -270,7 +239,8 @@ for( new i= 0;(i< numfound);i++){
 	
 }
 
-remove_molly(id,id_molly)
+remove_entity(id_molly)
+
 
 }
 
@@ -287,14 +257,6 @@ public molly_burner_um_burner(pToucher, pTouched)
 
 }
 
-
-public remove_molly(id,id_molly){
-if(!is_valid_ent(id_molly)) return
-molly_loaded[id]=true
-remove_entity(id_molly)
-
-
-}
 public plugin_precache()
 {
 	

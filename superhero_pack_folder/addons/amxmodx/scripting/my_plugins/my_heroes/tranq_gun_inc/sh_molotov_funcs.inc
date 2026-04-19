@@ -20,9 +20,7 @@
 #define MOLLY_SHOOT_PERIOD 1.0
 
 #define MOLLY_CHARGE_PERIOD 0.1
-#define MOLLY_CHARGE_TIMES floatround(floatdiv(max_charge_time,MOLLY_CHARGE_PERIOD))
 
-native molly_get_molly_loaded(id)
 native molly_uncharge_molly(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

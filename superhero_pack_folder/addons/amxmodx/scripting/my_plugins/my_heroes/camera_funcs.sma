@@ -509,6 +509,7 @@ public remove_camera(pid){
 	camman_set_has_camera(pid,0)
 	if(pev_valid(user_camera[pid])!=2) return
 	
+	camera_armed[pid]=false
 	camera_loaded[pid]=true
 	remove_entity(user_camera[pid])
 
@@ -748,6 +749,7 @@ public charge_task(id){
 	}
 	new bool:result=camman_update_planting(id)
 	if(!result){
+		camera_armed[id]=0
 		return	
 		
 	}

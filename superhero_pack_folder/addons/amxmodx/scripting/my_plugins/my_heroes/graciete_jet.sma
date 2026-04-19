@@ -40,8 +40,6 @@ public plugin_init()
 	
 	arrayset(g_graciete_jetpack_loaded,1,SH_MAXSLOTS+1)
 	arrayset(g_graciete_land_power,0.0,SH_MAXSLOTS+1)
-	arrayset(g_graciete_power_landing,false,SH_MAXSLOTS+1)
-	arrayset(g_graciete_leaped,false,SH_MAXSLOTS+1)
 	register_event("DeathMsg","death","a")
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
@@ -93,8 +91,6 @@ public _reset_graciete_user(iPlugin,iParams){
 	g_graciete_land_power[id]=0.0;
 	g_graciete_power_landing[id]=false;
 	g_graciete_leaped[id]=false;
-	remove_task(id+GRACIETE_CHARGE_TASKID)
-
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	g_graciete_jetpack_on[id]=false;
 	
@@ -117,7 +113,7 @@ public plugin_end(){
 	
 }
 charge_user(id){
-	if(!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) return 0
+	if(!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) return
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
@@ -126,23 +122,19 @@ charge_user(id){
 	
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(id,RED,10,15)
-	remove_task(id+GRACIETE_CHARGE_TASKID)
-	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "b")
-	return 0
+	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "a",1)
 	
 	
 	
 }
 
 uncharge_user(id){
-	remove_task(id+GRACIETE_CHARGE_TASKID)
 	g_graciete_power_landing[id]=false
 	if(g_graciete_jetpack_on[id]){
 		g_graciete_jetpack_on[id]=false;
 	}
 	trail(id,RED,0,0)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	return 0
 	
 	
 	
@@ -159,6 +151,7 @@ public client_PostThink(id) {
 			if(g_graciete_power_landing[id]){
 				
 				explosion(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
+				g_graciete_power_landing[id]=false
 				g_graciete_land_power[id]=0.0
 				
 				
@@ -220,17 +213,15 @@ public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
 	if(!client_hittable(id)){
 		
-		remove_task(id+GRACIETE_CHARGE_TASKID)
 		return
 	}
 	if(!sh_user_has_hero(id,graciete_get_hero_id())){
-		
 
-		remove_task(id+GRACIETE_CHARGE_TASKID)
 		return
 	}
-	
-	
+	if(!g_graciete_power_landing[id]){
+		return
+	}	
 	set_user_gravity(id,g_graciete_base_gravity[id]*jet_stomp_grav_mult);
 	
 	new hud_msg[128];
@@ -238,7 +229,9 @@ public charge_task(id){
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
 	);
 	client_print(id,print_center,"%s",hud_msg)
-	
+	if(g_graciete_power_landing[id]){
+		set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "a",1)
+	}
 	
 	
 	

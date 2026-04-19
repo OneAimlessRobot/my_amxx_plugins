@@ -81,6 +81,7 @@ public camman_init()
 }
 public reset_camman_user(id){
 	
+	camera_set_camera_armed(id,0)
 	camera_clear_user_camera(id)
 	gHasCamera[id]=false
 	

@@ -20,10 +20,7 @@
 
 
 #define SLEEP_NADE_CHARGE_PERIOD 0.1
-#define SLEEP_NADE_CHARGE_TIMES floatround(floatdiv(max_charge_time,SLEEP_NADE_CHARGE_PERIOD))
 
-
-native sleep_nade_get_sleep_nade_loaded(id)
 native sleep_nade_uncharge_sleep_nade(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

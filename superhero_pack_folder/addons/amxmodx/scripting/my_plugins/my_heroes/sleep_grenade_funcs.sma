@@ -12,27 +12,20 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new bool:sleep_nade_loaded[SH_MAXSLOTS+1]
-
-new bool:sleep_nade_armed[SH_MAXSLOTS+1]
+new sleep_nade_armed_mask
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock SLEEP_NADE_CHARGE_TASKID,
-		UNSLEEP_NADE_CHARGE_TASKID
+stock SLEEP_NADE_CHARGE_TASKID
 
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
 	
-	arrayset(sleep_nade_loaded,true,SH_MAXSLOTS+1)
-	arrayset(sleep_nade_armed,false,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SLEEP_NADE_CLASSNAME,"sleep_think")
 
@@ -47,7 +40,6 @@ public plugin_init(){
 
 public plugin_natives(){
 	
-	register_native( "sleep_nade_get_sleep_nade_loaded","_sleep_nade_get_sleep_nade_loaded",0)
 	register_native( "sleep_nade_uncharge_sleep_nade","_sleep_nade_uncharge_sleep_nade",0)
 	
 	
@@ -58,7 +50,7 @@ public CmdStart(id, uc_handle)
 	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,spores_ksun_hero_id()))) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
-		uncharge_user(id)
+		UnSet_BitVar(sleep_nade_armed_mask,id)
 		return FMRES_IGNORED
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -72,9 +64,9 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||!sleep_nade_loaded[id]) return FMRES_IGNORED
-			if(!sleep_nade_armed[id]){
-				sleep_nade_armed[id]=true
+			if( !(is_user_alive(id))) return FMRES_IGNORED
+			if(!Get_BitVar(sleep_nade_armed_mask,id)){
+				Set_BitVar(sleep_nade_armed_mask,id)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
@@ -88,11 +80,11 @@ public CmdStart(id, uc_handle)
 					ksun_get_num_sleep_nades(id),ksun_get_num_sleep_nades(id)
 					);
 				}
-				uncharge_user(id)
+				UnSet_BitVar(sleep_nade_armed_mask,id)
 			}
 			
 		}
-		else if(sleep_nade_armed[id]){
+		else if(Get_BitVar(sleep_nade_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
 				launch_sleep_nade(id)
 				if(!is_user_bot(id)){
@@ -106,12 +98,12 @@ public CmdStart(id, uc_handle)
 					sh_chat_message(id,spores_ksun_hero_id(),"You have to charge them, darling...");
 				}
 			}
-			uncharge_user(id)
+			UnSet_BitVar(sleep_nade_armed_mask,id)
 		}
 	}
 	else
 	{
-		uncharge_user(id)
+		UnSet_BitVar(sleep_nade_armed_mask,id)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,ksun_get_num_sleep_nades(id));
@@ -168,52 +160,27 @@ public charge_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	
+	if(Get_BitVar(sleep_nade_armed_mask,id)){
+		set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID,"", 0,  "a",1)
+	}
 	
 	
 	
 	
 }
 charge_user(id){
-	set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID,"", 0,  "a",SLEEP_NADE_CHARGE_TIMES)
-	set_task(floatmul(SLEEP_NADE_CHARGE_PERIOD,float(SLEEP_NADE_CHARGE_TIMES))+1.0,"uncharge_task",id+UNSLEEP_NADE_CHARGE_TASKID,"", 0,  "a",1)
-	return 0
-	
+	set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID,"", 0,  "a",1)
 	
 	
 }
 public _sleep_nade_uncharge_sleep_nade(iPlugin,iParams){
 	new id=get_param(1)
-	uncharge_user(id)
-	
-	
-}
-public uncharge_task(id){
-	id-=UNSLEEP_NADE_CHARGE_TASKID
-	remove_task(id+SLEEP_NADE_CHARGE_TASKID)
-	sleep_nade_armed[id]=false
-	return 0
-	
+	UnSet_BitVar(sleep_nade_armed_mask,id)
 	
 	
 }
 
-uncharge_user(id){
-	remove_task(id+UNSLEEP_NADE_CHARGE_TASKID)
-	remove_task(id+SLEEP_NADE_CHARGE_TASKID)
-	sleep_nade_armed[id]=false
-	return 0
-	
-	
-	
-}
 
-public _sleep_nade_get_sleep_nade_loaded(iPlugin,iParams){
-
-new id=get_param(1)
-return sleep_nade_loaded[id]
-
-}
 launch_sleep_nade(id)
 {
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -245,8 +212,6 @@ entity_set_int(Ent, EV_INT_movetype, 10)
 entity_set_edict(Ent, EV_ENT_owner, id)
 velocity_by_aim(id, floatround(SLEEP_NADE_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-sleep_nade_loaded[id] = false
 
 ksun_dec_num_sleep_nades(id)
 if(ksun_get_num_sleep_nades(id) == 0)
@@ -293,7 +258,7 @@ for( new i= 0;(i< numfound);i++){
 	sh_sleep_user(pid,id,spores_ksun_hero_id())
 	
 }
-remove_sleep_nade(id,id_sleep_nade)
+remove_entity(id_sleep_nade)
 
 }
 
@@ -310,14 +275,6 @@ public sweet_dreams(pToucher, pTouched)
 
 }
 
-
-public remove_sleep_nade(id,id_sleep_nade){
-if(!is_valid_ent(id_sleep_nade)) return
-sleep_nade_loaded[id]=true
-remove_entity(id_sleep_nade)
-
-
-}
 public plugin_precache()
 {
 	

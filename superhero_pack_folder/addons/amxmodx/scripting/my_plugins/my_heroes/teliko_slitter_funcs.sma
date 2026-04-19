@@ -1,6 +1,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
+#include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -97,7 +98,6 @@ public plugin_natives(){
 }
 stop_dragging(id){
 	
-		remove_task(id+SLITTER_TASKID)
 		if((g_dragging_who[id][0]>=0)){
 			if(client_hittable( g_dragging_who[id][0])){
 				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
@@ -116,14 +116,14 @@ public slitter_think(id)
 	id-=SLITTER_TASKID
 	if (!client_hittable(id)){
 	
-		remove_task(id+SLITTER_TASKID)
+		stop_dragging(id)
 	
 		return FMRES_IGNORED
 	
 	}
 	if (!sh_user_has_hero(id,teliko_get_hero_id()) ){
 	
-		remove_task(id+SLITTER_TASKID)
+		stop_dragging(id)
 	
 		return FMRES_IGNORED
 	
@@ -187,6 +187,7 @@ public slitter_think(id)
 	
 	set_pev(g_dragging_who[id][0],pev_renderamt,255)
 	g_dragging_who[id][1]--;
+	set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",id+SLITTER_TASKID,"",0,"a",1)					
 	return FMRES_IGNORED
 }
 
@@ -194,7 +195,7 @@ public slitter_think(id)
 public CmdStart(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 
 	static button
@@ -251,8 +252,7 @@ public CmdStart(attacker, uc_handle)
 						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
 						new Float:velocity[3]={1.0,1.0,1.0}
 						entity_set_vector(id, EV_VEC_velocity, velocity)
-						remove_task(attacker+SLITTER_TASKID)
-						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"b")
+						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"a",1)
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						if(!is_user_bot(attacker)){

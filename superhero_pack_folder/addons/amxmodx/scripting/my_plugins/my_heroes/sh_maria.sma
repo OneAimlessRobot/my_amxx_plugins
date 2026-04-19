@@ -37,8 +37,7 @@ new Float:begin_open_valve_timer;
 new gHeroID
 
 
-stock MARIA_HEAL_TASKID,
-	MARIA_STATS_TASKID
+stock MARIA_TASKID
 
 
 //----------------------------------------------------------------------------------------------
@@ -75,8 +74,7 @@ public plugin_init()
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
-	MARIA_HEAL_TASKID=allocate_typed_task_id(player_task)
-	MARIA_STATS_TASKID=allocate_typed_task_id(player_task)
+	MARIA_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -163,17 +161,12 @@ public maria_init()
 		maria_weapons(id)
 		g_maria_points[id]=base_points;
 		g_base_radius[id]=base_radius
-		remove_task(id+MARIA_HEAL_TASKID)
-		remove_task(id+MARIA_STATS_TASKID)
-		set_task(heal_period, "maria_heal_loop", id+MARIA_HEAL_TASKID, "", 0, "b")
-		set_task(heal_period, "maria_loop", id+MARIA_STATS_TASKID, "", 0, "b")
+		set_task(heal_period, "maria_loop", id+MARIA_TASKID, "", 0, "a",1)
 	}
 	else{
 		sh_drop_weapon(id,MARIA_WEAPON_CLASSID,true);
 		g_maria_points[id]=0;
 		g_base_radius[id]=0.0
-		remove_task(id+MARIA_STATS_TASKID)
-		remove_task(id+MARIA_HEAL_TASKID)
 	}
 	
 	
@@ -204,6 +197,9 @@ public new_spawn(id)
 		gHealthDrainValve[id]=false
 		gHealthDrainValveTimer[id]=begin_open_valve_timer
 		gHealthDrainValveTimerStarted[id]=true
+		if(!task_exists(id+MARIA_TASKID)){
+			set_task(heal_period, "maria_loop", id+MARIA_TASKID, "", 0, "a",1)
+		}
 	}
 }
 add_points(id,Float:damage){
@@ -216,8 +212,6 @@ public client_disconnected(id){
 
 	g_maria_points[id]=0;
 	g_base_radius[id]=0.0
-	remove_task(id+MARIA_STATS_TASKID)
-	remove_task(id+MARIA_HEAL_TASKID)
 
 }
 calculate_healing(id,Float:values[2]){
@@ -253,18 +247,14 @@ bool:heal_teamate(id,i){
 
 }
 
-public maria_heal_loop(id){
+maria_heal_loop(id){
 
-id-=MARIA_HEAL_TASKID
 if(!sh_is_active()){
-	
-	
-	remove_task(id+MARIA_HEAL_TASKID)
+
 	return
 }
 if(!is_user_connected(id)){
 	
-	remove_task(id+MARIA_HEAL_TASKID)
 	return
 }
 if(!is_user_alive(id)){
@@ -272,7 +262,6 @@ if(!is_user_alive(id)){
 	return
 }
 if(!sh_user_has_hero(id,gHeroID) ){
-	remove_task(id+MARIA_HEAL_TASKID)
 	return
 }
 if(!gHealthDrainValve[id]){
@@ -350,7 +339,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 }
 public maria_loop(id){
 	
-	id-=MARIA_STATS_TASKID;
+	id-=MARIA_TASKID;
 	if(client_hittable(id)&&sh_user_has_hero(id,gHeroID)){
 		update_stats(id)
 		if((get_user_health(id)>=health_drain_begin_threshold)){
@@ -358,23 +347,8 @@ public maria_loop(id){
 		}
 		gHealthDrainValveTimer[id]-=((gHealthDrainValveTimerStarted[id]&&(gHealthDrainValveTimer[id]>0.0))?heal_period:0.0)
 		
-		
-	}
-	else{
-
-
-		if(!is_user_connected(id)){
-
-
-			remove_task(id+MARIA_STATS_TASKID)
-			return
-		}
-		if(!sh_user_has_hero(id,gHeroID)){
-
-			remove_task(id+MARIA_STATS_TASKID)
-			return
-
-		}
+		maria_heal_loop(id)
+		set_task(heal_period, "maria_loop", id+MARIA_TASKID, "", 0, "a",1)
 	}
 	
 	

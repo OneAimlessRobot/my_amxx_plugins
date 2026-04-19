@@ -58,8 +58,9 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
     new is_generic_hero=0;
     if((hero_id<-1 )|| (hero_id >=SH_MAXHEROS+1)){
         is_generic_hero=1;
+        /*
         server_print("Invalid hero id %d at _sh_log_custom_damage_source!^nHero id must be between exactly %d and %d!^nGeneric damage source will be logged^n",hero_id,-1,SH_MAXHEROS-1)
-
+        */
     }
     new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:long_name_arr, is_a_melee, is_generic_hero?generic_dmg_source_name:short_name_arr)
     if(wpn_id>0){
@@ -74,6 +75,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid wpn_id obtained at _sh_log_custom_damage_source!^nIt came out as %d which is <= 0!^nAborting...^n",wpn_id)
         wpn_id=-1
     }
+    /*
     server_print("Valid wpn_id obtained! %d^n",wpn_id)
 
 
@@ -82,6 +84,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 
     server_print("The long name was: %s^n",
                                 sh_damage_source_long_names[wpn_id])
+    */
     return wpn_id
     
 }

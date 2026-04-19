@@ -180,13 +180,10 @@ public yandere_init()
 		gNormalSpeed[id]=base_extra_speed
 		gBaseSpeed[id]=base_extra_speed
 		UnSet_BitVar(gPlayedSoundMask,id)
-		remove_task(id+YANDERE_STATS_TASKID)
-		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "b")
+		set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "a",1)
 		
 	}
 	else{
-		remove_task(id+YANDERE_ANGER_TASKID)
-		remove_task(id+YANDERE_STATS_TASKID)
 		killyandere(id,true)
 	}
 	
@@ -216,7 +213,7 @@ return -1;
 public yandere_sentence_loop(id){
 id-=YANDERE_ANGER_TASKID;
 
-if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) &&Get_BitVar(gSuperAngryMask,id)){
+if(sh_is_active()&&is_user_connected(id)&&sh_user_has_hero(id,gHeroID) &&Get_BitVar(gSuperAngryMask,id)){
 	
 	
 	if(Get_BitVar(gIdleAngryMask,id)||(get_user_health(id)>degen_health_extra_threshold)){
@@ -243,13 +240,8 @@ if(sh_is_active()&&is_user_connected(id)&&is_user_alive(id)&&sh_user_has_hero(id
 			}
 		}
 	}
-	
-}
-else{
-
-
-	remove_task(id+YANDERE_ANGER_TASKID)
-	return
+	set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "a",1)
+					
 }
 
 
@@ -294,25 +286,18 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 public yandere_loop(id){
 
 id-=YANDERE_STATS_TASKID;
-if(!sh_user_has_hero(id,gHeroID) ){
+if(!sh_is_active()||!sh_user_has_hero(id,gHeroID) ){
 
-	remove_task(id+YANDERE_STATS_TASKID)
 	return
 }
-if(client_hittable(id)){
+if(is_user_connected(id)){
 	
 	
 	if(!is_user_bot(id)&&Get_BitVar(gTransTimerStartedMask,id)){
 		client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 	}
 	yandere_timer_transform(id)
-	
-}
-else if(!is_user_connected(id)){
-
-
-	remove_task(id+YANDERE_STATS_TASKID)
-	return
+	set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", id+YANDERE_STATS_TASKID, "", 0, "a",1)	
 }
 }
 
@@ -336,15 +321,7 @@ update_stats(id){
 	}
 }
 public yandere_timer_transform(id){
-	if(!sh_is_active()||!is_user_connected(id)||!sh_user_has_hero(id,gHeroID) ){
-		remove_task(id+YANDERE_STATS_TASKID)
-		return
-		
-	}
-	if(!is_user_alive(id)){
-
-		return
-	}
+	
 	if(Get_BitVar(gSuperAngryMask,id)){
 
 		new Float:gravity=get_user_gravity(id)
@@ -352,7 +329,6 @@ public yandere_timer_transform(id){
 		if(g_mates_alive[id]>0){
 
 			UnSet_BitVar(gSuperAngryMask,id)
-			remove_task(id+YANDERE_ANGER_TASKID)
 			update_stats(id)
 			sh_reset_min_gravity(id)
 			set_user_maxspeed(id,gNormalSpeed[id])
@@ -377,8 +353,7 @@ public yandere_timer_transform(id){
 					get_user_name(id,client_name,127)
 					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
 					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
-					remove_task(id+YANDERE_ANGER_TASKID)
-					set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "b")
+					set_task( degen_iter_period, "yandere_sentence_loop", id+YANDERE_ANGER_TASKID, "", 0, "a",1)
 					Set_BitVar(gPlayedSoundMask,id)
 				}
 				gTransTimer[id]=trans_time
@@ -404,9 +379,6 @@ public yandere_timer_transform(id){
 
 public client_disconnected(id){
 
-
-	remove_task(id+YANDERE_ANGER_TASKID)
-	remove_task(id+YANDERE_STATS_TASKID)
 	killyandere(id,true)
 	notify_yanderes_about_team_life(-1,1)
 }

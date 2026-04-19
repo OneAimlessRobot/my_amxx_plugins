@@ -199,7 +199,7 @@ public _superheromod_help_link_hero(iPlugins,iParams){
 	get_array(3, dir_name, STRLEN_FOR_FILES);
 	get_array(4, index_name, STRLEN_FOR_FILES);
 	get_array(5, hero_name, STRLEN_FOR_NAMES);
-	server_print("Trying to register help file of hero named %s!!!!^n",hero_name)
+	/*server_print("Trying to register help file of hero named %s!!!!^n",hero_name)*/
 	add(superhero_help_files[hero_id][TITLE],STRLEN_FOR_FILES,title, charsmax(title))
 	add(superhero_help_files[hero_id][HERO_NAME],STRLEN_FOR_NAMES,hero_name, charsmax(hero_name))
 	add(superhero_help_files[hero_id][DIR_NAME],STRLEN_FOR_FILES,help_files_directory, charsmax(help_files_directory))
@@ -227,8 +227,8 @@ public _superheromod_help_link_hero(iPlugins,iParams){
 			return
 		}
 	}
-	server_print("Registered help file of hero named %s sucessfully!!!!!^n",hero_name)
-	server_print_help_file(hero_id)
+	/*server_print("Registered help file of hero named %s sucessfully!!!!!^n",hero_name)*/
+	/*server_print_help_file(hero_id)*/
 	
 }
 //----------------------------------------------------------------------------------------------

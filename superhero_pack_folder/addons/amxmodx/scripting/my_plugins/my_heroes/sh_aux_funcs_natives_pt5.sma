@@ -147,19 +147,22 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	get_string(6,sh_array_of_player_model_structs[result][player_model_unmorph_message],SH_HUD_MSG_BUFF_SIZE-1)
 	get_string(7,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample],STRING_SIZE-1)
 
+	/*
 	server_print("Index: %d^nCT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_ct_file_path])
+	*/
 
 	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_ct_file_path])
-
+	/*
 	server_print("Index: %d^nT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_t_file_path])
-	
+	*/
 	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_t_file_path])
 	
+	/*
 	server_print("Index: %d^nPlayer morph sound load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
-	
+	*/
 	engfunc(EngFunc_PrecacheSound,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
 	
 	curr_num_models_logged++

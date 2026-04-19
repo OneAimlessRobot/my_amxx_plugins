@@ -461,10 +461,9 @@ public godmode_render_update(id){
 		}
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
 		glow(id,255,255,255,255,1)
-	}
-	else{
-
-		remove_task(id+ESTER_REBORN_GLOW_TASKID)
+		if(g_ester_blow_up_time_left[id]>0){
+			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"a",1)
+		}
 	}
 	
 	
@@ -528,8 +527,7 @@ public ester_teleport(id)
 	
 	sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 	
-	remove_task(id+ESTER_REBORN_GLOW_TASKID)
-	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"b")
+	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"a",1)
 	for(new i=0;i<3;i++){
 		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME+(float(i)*FLIGHT_GODMODE_THINK_TIME),"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 
@@ -555,7 +553,6 @@ public positionChangeTimer(id)
 }
 ester_remove_statuses(id,rem_explosion=1,remove_god=1){
 	
-	remove_task(id+ESTER_REBORN_GLOW_TASKID)
 	remove_task(id+ESTER_REBORN_CALCULATION_LOOP_TASKID)
 	
 	if(rem_explosion){

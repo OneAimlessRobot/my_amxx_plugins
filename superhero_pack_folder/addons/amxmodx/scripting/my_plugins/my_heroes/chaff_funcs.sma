@@ -13,25 +13,20 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new bool:chaff_loaded[SH_MAXSLOTS+1]
 
-new bool:chaff_armed[SH_MAXSLOTS+1]
+new chaff_armed_mask
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock CHAFF_CHARGE_TASKID,
-		UNCHAFF_CHARGE_TASKID
+stock CHAFF_CHARGE_TASKID
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	arrayset(chaff_loaded,true,SH_MAXSLOTS+1)
-	arrayset(chaff_armed,false,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(CHAFF_CLASSNAME,"chaff_think")
 
@@ -41,12 +36,10 @@ public plugin_init(){
 	register_cvar("teliko_chaff_max_charge_time", "5.0")
 	register_cvar("teliko_chaff_min_charge_time", "1.0")
 	CHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	UNCHAFF_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
 	
-	register_native( "chaff_get_chaff_loaded","_chaff_get_chaff_loaded",0)
 	register_native( "chaff_uncharge_chaff","_chaff_uncharge_chaff",0)
 	
 	
@@ -60,7 +53,7 @@ public CmdStart(id, uc_handle)
 	
 	if(!hasRoundStarted()){
 	
-		uncharge_user(id)
+		UnSet_BitVar(chaff_armed_mask,id)
 		return FMRES_IGNORED
 	}
 	
@@ -73,10 +66,10 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||!chaff_loaded[id]) return FMRES_IGNORED
+			if( !(is_user_alive(id))) return FMRES_IGNORED
 			
-			if(!chaff_armed[id]){
-				chaff_armed[id]=true
+			if(!Get_BitVar(chaff_armed_mask,id)){
+				Set_BitVar(chaff_armed_mask,id)
 				curr_charge[id]=0.0
 				charge_user(id)
 				
@@ -92,11 +85,11 @@ public CmdStart(id, uc_handle)
 					teliko_get_num_chaffs(id)
 					);
 				}
-				uncharge_user(id)
+				UnSet_BitVar(chaff_armed_mask,id)
 			}
 			
 		}
-		else if(chaff_armed[id]){
+		else if(Get_BitVar(chaff_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
 				launch_chaff(id)
 				
@@ -112,13 +105,11 @@ public CmdStart(id, uc_handle)
 					sh_chat_message(id,teliko_get_hero_id(),"Chaff not charged! Not launched...");
 				}
 			}
-			uncharge_user(id)
-			
+			UnSet_BitVar(chaff_armed_mask,id)
 		}
 	}
-	else
-	{
-		uncharge_user(id)
+	else{
+		UnSet_BitVar(chaff_armed_mask,id)
 	}
 	if(ent){
 		cs_set_user_bpammo(id, CHAFF_CLASSID,teliko_get_num_chaffs(id));
@@ -153,15 +144,16 @@ public charge_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	
+	if(Get_BitVar(chaff_armed_mask,id)){
+		set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID,"", 0,  "a",1)
+	}
 	
 	
 	
 	
 }
 charge_user(id){
-	set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID,"", 0,  "a",CHAFF_CHARGE_TIMES)
-	set_task(floatmul(CHAFF_CHARGE_PERIOD,float(CHAFF_CHARGE_TIMES))+1.0,"uncharge_task",id+UNCHAFF_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID,"", 0,  "a",1)
 	return 0
 	
 	
@@ -169,36 +161,11 @@ charge_user(id){
 }
 public _chaff_uncharge_chaff(iPlugin,iParams){
 	new id=get_param(1)
-	uncharge_user(id)
-	
-	
-}
-public uncharge_task(id){
-	id-=UNCHAFF_CHARGE_TASKID
-	remove_task(id+CHAFF_CHARGE_TASKID)
-	chaff_armed[id]=false
-	return 0
-	
+	UnSet_BitVar(chaff_armed_mask,id)
 	
 	
 }
 
-uncharge_user(id){
-	remove_task(id+UNCHAFF_CHARGE_TASKID)
-	remove_task(id+CHAFF_CHARGE_TASKID)
-	chaff_armed[id]=false
-	return 0
-	
-	
-	
-}
-
-public _chaff_get_chaff_loaded(iPlugin,iParams){
-
-new id=get_param(1)
-return chaff_loaded[id]
-
-}
 launch_chaff(id)
 {
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
@@ -231,9 +198,6 @@ entity_set_edict(Ent, EV_ENT_owner, id)
 
 velocity_by_aim(id, floatround(CHAFF_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-chaff_loaded[id] = false
-
 teliko_dec_num_chaffs(id)
 if(teliko_get_num_chaffs(id) == 0)
 {
@@ -280,7 +244,7 @@ for( new i= 0;(i< numfound);i++){
 }
 
 
-remove_chaff(id,id_chaff)
+remove_entity(id_chaff)
 
 }
 
@@ -296,13 +260,6 @@ public chaffe_touch_things(pToucher, pTouched)
 	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
 }
 
-public remove_chaff(id,id_chaff){
-if(!is_valid_ent(id_chaff)) return
-chaff_loaded[id]=true
-remove_entity(id_chaff)
-
-
-}
 public plugin_precache()
 {
 
