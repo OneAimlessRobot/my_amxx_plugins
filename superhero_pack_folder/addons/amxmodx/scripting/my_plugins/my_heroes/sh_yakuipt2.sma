@@ -6,6 +6,7 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -35,7 +36,11 @@ public plugin_init()
 	register_cvar("yakui_pills","1000")
 	register_cvar("yakui_rockets","5")
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
-
+	static hero_name_arr[STRLEN_FOR_NAMES];
+	arrayset(hero_name_arr,0,sizeof hero_name_arr)
+	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
+	superheromod_help_link_hero(gHeroID, "Yakui the maid: Help file","yakui_folder/","yakui_help_file.html",hero_name_arr)
+	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yakui/yakui.mdl",
 								"models/player/yakui/yakui.mdl",

@@ -25,7 +25,6 @@ public plugin_init()
 	register_cvar("camman_camera_cooldown", "10")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Camman", "Plant cameras on walls", true, "camman_level" )
-	register_event("DeathMsg","death","a")
 	
 	register_srvcmd("camman_init", "camman_init")
 	shRegHeroInit(gHeroName, "camman_init")
@@ -82,8 +81,6 @@ public camman_init()
 }
 public reset_camman_user(id){
 	
-	camera_uncharge_camera(id)
-	camera_undisarm_camera(id)
 	camera_clear_user_camera(id)
 	gHasCamera[id]=false
 	
@@ -118,15 +115,7 @@ public newRound(id)
 	return PLUGIN_HANDLED
 	
 }
-public death()
-{
-	new id = read_data(2)
-	if(sh_user_has_hero(id,gHeroID) ){
-		
-		camera_uncharge_camera(id)
-		camera_undisarm_camera(id)
-	}
-}
+
 //----------------------------------------------------------------------------------------------
 public camman_kd()
 {
@@ -138,8 +127,7 @@ public camman_kd()
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
-	new camera_id
-	if(!(camera_id=player_touching_entity_of_some_classname(id,CAMERA_CLASSNAME))){
+	if(!(player_touching_entity_of_some_classname(id,CAMERA_CLASSNAME))){
 		if(user_can_plant_camera(id)){
 			if(gPlayerUltimateUsed[id]){
 				
@@ -181,7 +169,7 @@ public camman_kd()
 	else if(disarmable){
 		if(!camera_get_camera_disarmer_on(id)){
 			camera_set_camera_disarmer_on(id,1)
-			camera_disarm_camera(id,camera_id)
+			camera_disarm_camera(id)
 		}
 		
 	}
@@ -200,8 +188,6 @@ public camman_ku()
 	}
 	if(camera_get_camera_disarming(id)&&camera_get_camera_charging(id)){
 		
-		camera_uncharge_camera(id)
-		camera_undisarm_camera(id)
 		return PLUGIN_HANDLED
 		
 		
@@ -213,20 +199,16 @@ public camman_ku()
 				if(!is_user_bot(id)){
 					sh_chat_message(id,camman_get_hero_id(),"Camera not disarmed. Action interrupted");
 				}
-				camera_undisarm_camera(id)
 				return PLUGIN_HANDLED
 			}
 			else if(camera_get_camera_charging(id)){
 				if(!is_user_bot(id)){
 					sh_chat_message(id,camman_get_hero_id(),"Camera not charged. Not planting...");
 				}
-				camera_uncharge_camera(id)
 				return PLUGIN_HANDLED
 				
 			}
 			ultimateTimer(id, float(camera_cooldown))
-			camera_uncharge_camera(id)
-			camera_undisarm_camera(id)
 		}
 	}
 	

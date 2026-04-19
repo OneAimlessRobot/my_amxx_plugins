@@ -1,6 +1,7 @@
 
 #include "../my_include/superheromod.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 /* CVARS - copy and paste to shconfig.cfg
 

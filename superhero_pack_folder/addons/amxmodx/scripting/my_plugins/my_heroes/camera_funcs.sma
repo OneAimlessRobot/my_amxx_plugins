@@ -31,9 +31,7 @@ stock HamHook:the_damage_ham_hook;
 
 
 stock CAMERA_CHARGE_TASKID,
-		UNCAMERA_CHARGE_TASKID,
-		CAMERA_DISARM_TASKID,
-		UNCAMERA_DISARM_TASKID
+		CAMERA_DISARM_TASKID
 
 public plugin_init(){
 	
@@ -58,9 +56,7 @@ public plugin_init(){
 	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	UNCAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
-	UNCAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
 
 }
 public plugin_natives(){
@@ -74,15 +70,12 @@ public plugin_natives(){
 	register_native( "camera_get_camera_armed","_camera_get_camera_armed",0)
 	register_native( "camera_get_camera_planted","_camera_get_camera_planted",0)
 	register_native( "camera_set_camera_armed","_camera_set_camera_armed",0)
-	register_native( "camera_uncharge_camera","_camera_uncharge_camera",0)
 	register_native( "camera_charge_camera","_camera_charge_camera",0)
 	register_native( "camera_disarm_camera","_camera_disarm_camera",0)
-	register_native( "camera_undisarm_camera","_camera_undisarm_camera",0)
 	register_native( "camera_get_camera_charging","_camera_get_camera_charging",0)
 	register_native( "camera_get_camera_disarming","_camera_get_camera_disarming",0)
 	register_native( "camera_get_camera_disarmer_on","_camera_get_camera_disarmer_on",0)
 	register_native( "camera_set_camera_disarmer_on","_camera_set_camera_disarmer_on",0)
-	register_native( "plant_camera","_plant_camera",0)
 	
 	
 }
@@ -282,10 +275,8 @@ public _toggle_camera_view(iPlugins,iParams){
 	
 	
 }
-public _plant_camera(iPlugins,iParams)
+public plant_camera(id)
 {
-	new id= get_param(1)
-	
 	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
 	
 	static material[128]
@@ -543,7 +534,7 @@ public loadCVARS()
 }
 
 
-public disarm_task(param[],id){
+public disarm_task(id){
 	id-=CAMERA_DISARM_TASKID
 	if(!camman_get_has_camera(id)){
 		return;
@@ -566,45 +557,23 @@ public disarm_task(param[],id){
 
 		remove_camera(id);
 	}
-	
-	
-	
-	
-	
-	
-}
-public _camera_undisarm_camera(iPlugin,iParams){
-	new id=get_param(1)
-	undisarm_user(id)
-	
-	
-}
-public undisarm_task(id){
-	id-=UNCAMERA_DISARM_TASKID
-	remove_task(id+CAMERA_DISARM_TASKID)
-	disarmer_on[id]=0
+	else{
 
+		set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"",0,  "a",1)
+	}
+	
+	
+	
+	
+	
 	
 }
 
-undisarm_user(id){
-	remove_task(id+UNCAMERA_DISARM_TASKID)
-	remove_task(id+CAMERA_DISARM_TASKID)
-	disarmer_on[id]=0
-
-}
 public _camera_disarm_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
-	new camera_id=get_param(2)
-	new cam_it=get_param(3)
-	new param[2];
-	param[0]=camera_id
-	param[1]=cam_it
 	curr_disarm_charge[id]=0.0
-	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,param, 2,  "a",CAMERA_DISARM_TIMES)
-	set_task(floatmul(CAMERA_DISARM_PERIOD,float(CAMERA_DISARM_TIMES))+1.0,"undisarm_task",id+UNCAMERA_DISARM_TASKID,"", 0,  "a",1)
-
+	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"", 0,  "a",1)
 	
 	
 }
@@ -640,8 +609,8 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
-	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",CAMERA_CHARGE_TIMES)
-	set_task(floatmul(CAMERA_CHARGE_PERIOD,float(CAMERA_CHARGE_TIMES))+1.0,"uncharge_task",id+UNCAMERA_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",1)
+	
 	return PLUGIN_HANDLED
 	
 	
@@ -649,7 +618,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 }
 
-camman_update_planting(id){
+bool:camman_update_planting(id){
 	new butnprs
 	if(!user_can_plant_camera(id)){
 		
@@ -657,7 +626,7 @@ camman_update_planting(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You looked away from a wall while planting, so your action was canceled");
 		}
-		camera_uncharge_camera(id)
+		return false
 		
 	}
 	butnprs = entity_get_int(id, EV_INT_button)
@@ -667,7 +636,7 @@ camman_update_planting(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
 		}
-		camera_uncharge_camera(id)
+		return false
 	}
 	if (butnprs&IN_JUMP){
 		
@@ -676,7 +645,7 @@ camman_update_planting(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
 		}
-		camera_uncharge_camera(id)
+		return false
 		
 	}
 	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
@@ -684,7 +653,7 @@ camman_update_planting(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
 		}
-		camera_uncharge_camera(id)
+		return false
 		
 		
 	}
@@ -693,13 +662,13 @@ camman_update_planting(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
 		}
-		camera_uncharge_camera(id)
+		return false
 	}
-	
+	return true
 	
 	
 }
-camman_update_disarming(id){
+bool:camman_update_disarming(id){
 	new butnprs
 	
 	if(!user_can_plant_camera(id)){
@@ -708,7 +677,7 @@ camman_update_disarming(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You looked away from a wall while disarming, so your action was canceled");
 		}
-		camera_undisarm_camera(id)
+		return false
 		
 	}
 	butnprs = entity_get_int(id, EV_INT_button)
@@ -719,7 +688,7 @@ camman_update_disarming(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
 		}
-		camera_undisarm_camera(id)
+		return false
 	}
 	if (butnprs&IN_JUMP){
 		
@@ -728,7 +697,7 @@ camman_update_disarming(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
 		}
-		camera_undisarm_camera(id)
+		return false
 		
 	}
 	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
@@ -736,7 +705,7 @@ camman_update_disarming(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
 		}
-		camera_undisarm_camera(id)
+		return false
 		
 		
 	}
@@ -745,28 +714,26 @@ camman_update_disarming(id){
 		if(!is_user_bot(id)){
 			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
 		}
-		camera_undisarm_camera(id)
+		return false
 	}
-	
+	return true
 	
 	
 }
 public charge_task(id){
 	id-=CAMERA_CHARGE_TASKID
 	if(!hasRoundStarted()){
-	
-		uncharge_user(id)
+		camera_armed[id]=0
 		return
 	
 	}
 	if(!client_hittable(id)){
-	
-		uncharge_user(id)
+		camera_armed[id]=0		
 		return
 	
-	}if(!sh_user_has_hero(id,camman_get_hero_id())){
-	
-		uncharge_user(id)
+	}
+	if(!sh_user_has_hero(id,camman_get_hero_id())){
+		camera_armed[id]=0
 		return
 	
 	}
@@ -779,35 +746,20 @@ public charge_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	camman_update_planting(id)
+	new bool:result=camman_update_planting(id)
+	if(!result){
+		return	
+		
+	}
 	if(!camera_get_camera_charging(id)){
 		plant_camera(id)
+		return
 	}
+	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",1)
 	
 	
 	
 	
-	
-	
-}
-public _camera_uncharge_camera(iPlugin,iParams){
-	new id=get_param(1)
-	uncharge_user(id)
-	
-	
-}
-public uncharge_task(id){
-	id-=UNCAMERA_CHARGE_TASKID
-	remove_task(id+CAMERA_CHARGE_TASKID)
-	camera_armed[id]=0
-	
-	
-	
-}
-
-uncharge_user(id){
-	remove_task(id+UNCAMERA_CHARGE_TASKID)
-	uncharge_task(id+UNCAMERA_CHARGE_TASKID)
 	
 	
 }

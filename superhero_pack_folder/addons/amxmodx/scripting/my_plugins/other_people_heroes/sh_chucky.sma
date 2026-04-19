@@ -66,6 +66,12 @@ new bool:BetweenRounds
 new bool:BombPlanted
 new CvarCooldown, CvarKnifeMult
 new gHeroID
+
+
+new dmg_source_name_short_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"
+new dmg_source_name_long_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"
+new custom_dmg_id_super_knife
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -79,7 +85,11 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Voodoo Powers", "Rise again from the dead. Get a Bloody Knife that does more damage, which you are faster with.", false, "chucky_level")
-
+	
+	custom_dmg_id_super_knife=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_super_knife,
+					dmg_source_name_long_super_knife,1)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("chucky_init", "chucky_init")
@@ -129,16 +139,18 @@ public chucky_init()
 	}
 	else{
 		// This gets run if they had the power but don't anymore
-		if ( is_user_alive(id) )
+		if ( is_user_alive(id) ){
 			shRemSpeedPower(id)
+		}
 
 	}
 	HasKilledWithKnife[id] = false
 }
 public newRound(id){
 
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ){
 		return
+	}
 	
 	HasKilledWithKnife[id] = false
 }
@@ -157,14 +169,15 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||!ChuckyPowerUsed[id] )
 		return
 
 	// If user is holding a shield do not change model, since we don't have one with a shield
 	new viewModel[32]
 	pev(id, pev_viewmodel, viewModel, 31)
-	if ( containi(viewModel, "v_shield_") != -1 )
+	if ( containi(viewModel, "v_shield_") != -1 ){
 		return
+	}
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
@@ -186,18 +199,26 @@ public chucky_damage(id)
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
+	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ){
 		return
+	}
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) && ChuckyPowerUsed[attacker] )
 	{
 		new damage = read_data(2)
 		new headshot = bodypart == 1 ? 1 : 0
 
 		// Do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
-		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
+		
+		if ( extraDamage > 0 ){
+			sh_extra_damage(id, attacker, extraDamage, 
+						dmg_source_name_long_super_knife,
+						headshot,
+						_,_,_,_,_,
+						SH_NEW_DMG_DARK_ARTS,
+						custom_dmg_id_super_knife)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

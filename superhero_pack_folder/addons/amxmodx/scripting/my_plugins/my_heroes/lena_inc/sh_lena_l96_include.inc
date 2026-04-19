@@ -11,7 +11,7 @@
 #define LENA_L96_SHOTSOUND "weapons/lena_rifle/shoot-1.wav"
 #define LENA_L96_WALLHIT_SOUND "weapons/xbow_hit1.wav"
 
-#define LENA_PROJECTILE_KNOCKBACK 760.0
+#define LENA_PROJECTILE_KNOCKBACK 300.0
 
 #define LENA_REVERB_SHOT_DELAY 0.1
 

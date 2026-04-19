@@ -41,6 +41,12 @@ new gGrenTrail
 new gHeroID;
 new Float:gTotalChance
 new const HEGRENADE_MODEL[] = "models/w_hegrenade.mdl"
+
+
+
+new dmg_source_name_short_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
+new dmg_source_name_long_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
+new custom_dmg_id_euromilhoes
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -56,6 +62,10 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Kinetically Charged Nades", "Charge your HE Grenades with Kinetic Energy for Extra Damage, refill HE Grenades. ^nYou get a random chance of causing massive damage", false, "gambit_level")
+
+	custom_dmg_id_euromilhoes = sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_euromilhoes,
+					dmg_source_name_long_euromilhoes,0)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -99,7 +109,7 @@ public grenade_throw(id, gid, wid)
 		if ( gWillHit[id])
 		{
 			
-			sh_chat_message(id,gHeroID,"BINGO!!!!!! hope it reaches someone...")
+			sh_chat_message(id,gHeroID,"Euromilhoes! A criar excentricos! Todas as semanas!")
 		}
 	}
 	}
@@ -141,7 +151,11 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("gambit_grenademult") - damage)
 			if (extraDamage > 0) {
-				sh_extra_damage(id, attacker, extraDamage, "gambit super grenade")
+				sh_extra_damage(id, attacker, extraDamage, 
+						dmg_source_name_long_euromilhoes,
+						_,_,_,_,_,_,
+						SH_NEW_DMG_ENERGY_BLAST,
+						custom_dmg_id_euromilhoes)
 			}
 		}
 		new cooldown_params[2]

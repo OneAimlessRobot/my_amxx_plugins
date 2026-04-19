@@ -29,6 +29,10 @@ new gHeroID
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gSpriteLightning
 
+new rat_wpn_id
+new dmg_source_name_short_rat[SAFE_BUFFER_SIZE+1]="rat_dmg"
+new dmg_source_name_long_rat[SAFE_BUFFER_SIZE+1]="rat_dmg"
+
 public plugin_init()
 {
 	// Plugin Info
@@ -40,7 +44,12 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Shockwave Shield", "Create a shockwave shield to deflect more dmg as level increases.", false, "rattler_level" )
-
+	
+	rat_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_rat,
+								dmg_source_name_long_rat,
+								0)
 
 	register_event("Damage", "rattler_damage", "b", "2!0")
 
@@ -82,7 +91,11 @@ public rattler_damage(id)
 		new returnDamage = floatround( ( gPlayerLevels[id] * get_cvar_float("rattler_dmgreturn") ) * damage )
 		if (returnDamage > 0)
 		{
-			sh_extra_damage( attacker, id, returnDamage, "Rattler shockwave force field" )
+			sh_extra_damage( attacker, id, returnDamage, 
+								dmg_source_name_short_rat,
+								_,_,_,_,_,_,
+								SH_NEW_DMG_DARK_ARTS,
+								rat_wpn_id)
 
 			new iRed,iGreen,iBlue,iWidth,iNoise
 			iRed = generate_int(0,100)

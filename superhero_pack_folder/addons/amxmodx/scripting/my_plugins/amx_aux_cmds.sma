@@ -190,35 +190,21 @@ public amx_revive(id,level,cid){
     new arg[32], name2[32]
     read_argv(1,arg,31)
     get_user_name(id,name2,31)
-    if (arg[0]=='@'){
-        new players[32], inum
-        get_players(players,inum,"be",arg[1])
-        if (inum==0){
-            console_print(id,"No matching clients for that team^n")
-            return PLUGIN_HANDLED
-        }
-        for(new a=0;a<inum;++a) {
-            cs_user_spawn(a)
-        }
-        console_print(id, "We sucessfully healed all members of team %s^n",arg[1])
-        log_amx("We sucessfully healed all members of team %s^n",arg[1])
-    }
-    else {
-        new player = cmd_target(id,arg,2)
-        if (!player) return PLUGIN_HANDLED
-        if(is_user_alive(player)){
-            
-            console_print(id,"That player is still alive! Rejecting^n")
-            return PLUGIN_HANDLED    
-                
-        }
-        cs_user_spawn(player)
-        new name[32]
-        get_user_name(player,name,31)
+
+    new player = cmd_target(id,arg,2)
+    if (!player) return PLUGIN_HANDLED
+    if(is_user_alive(player)){
         
-        console_print(0, "%s just respawned player named %s!^n",name2,name)
-        log_amx("%s just respawned player named %s!^n",name2,name)
+        console_print(id,"That player is still alive! Rejecting^n")
+        return PLUGIN_HANDLED    
+            
     }
+    cs_user_spawn(player)
+    new name[32]
+    get_user_name(player,name,31)
+    
+    console_print(0, "%s just respawned player named %s!^n",name2,name)
+    log_amx("%s just respawned player named %s!^n",name2,name)
     return PLUGIN_HANDLED
 }
 

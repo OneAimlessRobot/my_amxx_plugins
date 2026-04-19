@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"
@@ -509,8 +510,12 @@ public ester_damage(id)
 			Set_BitVar(g_ester_enemies_masks[id],attacker);
 			if(Get_BitVar(gPedalIsFlooredMask,id)){
 				
-				sh_extra_damage( attacker, id,floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil), "Charging reflect" )
-				emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
+				sh_extra_damage(attacker, id,
+								floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
+								new_dmg_type_names[_:SH_NEW_DMG_SHOCK],_,_,_,_,_,_,
+								SH_NEW_DMG_SHOCK,
+								get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
+
 				directed_spark(attacker, id)
 			}
 		}

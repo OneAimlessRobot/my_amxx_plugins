@@ -95,8 +95,6 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	
-	get_cvar_num("adriano_level")
 	dmg_speed_points_pct=get_cvar_float("adriano_dmg_speed_points_pct")
 	base_radius=get_cvar_float("adriano_base_radius")
 	max_radius=get_cvar_float("adriano_max_radius")

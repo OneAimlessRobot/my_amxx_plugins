@@ -5,6 +5,8 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+
 
 
 #define PLUGIN "Superhero ester flight funcs"
@@ -150,7 +152,12 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 	if(g_flying[id]&&sh_user_has_hero(id,ester_get_hero_id())&&g_ester_is_reborn_mode[id]&&!g_smashed_someone[id]){
 		
-			sh_extra_damage( attacker, id,floatround(ester_damage_reflect_coeff*damage), "Charging reflect" )
+			sh_extra_damage(attacker, id,floatround(ester_damage_reflect_coeff*damage),
+				new_dmg_type_names[_:SH_NEW_DMG_SHOCK],_,_,_,_,_,_,
+				SH_NEW_DMG_SHOCK,
+				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
+
+
 			directed_spark(id, attacker)
 			damage=1.0+damage- (damage*floatclamp(ester_damage_reflect_coeff,0.0,1.0))
 			SetHamParamFloat(4, damage);
@@ -277,13 +284,15 @@ public OnCmdStart(id, uc_handle, seed)
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
 				
 				emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			
+				
 			}
 			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
 				trail(id,COLOR_STRONG,1,10)
+				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			}
 			else{
 				trail(id,COLOR_WEAK,1,10)
+				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 				
 				
 			}
@@ -300,16 +309,6 @@ public OnCmdStart(id, uc_handle, seed)
 			sh_extra_damage(id,id,floatround(ester_fly_health_spend),"Ester bleed flying")
 			if(!g_is_glowing[id]){
 				g_is_glowing[id]=1
-				
-			}
-			
-			
-			if(float(get_user_health(id)) > ester_reborn_weak_mode_hp){
-				emit_sound(id, CHAN_BODY, FLIGHT_POWER, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			}
-			else{
-				emit_sound(id, CHAN_BODY, FLIGHT_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-				
 				
 			}
 		}

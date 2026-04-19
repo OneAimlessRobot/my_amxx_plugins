@@ -35,6 +35,10 @@
 new gHeroName[]="Clone Trooper"
 new lastammo[33]
 new gHeroID
+
+new dmg_source_name_short_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
+new dmg_source_name_long_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
+new custom_dmg_id_lazah_guun
  //----------------------------------------------------------------------------------------------
  public plugin_init()
  {
@@ -53,6 +57,10 @@ new gHeroID
 								"clonetrooper",
 								"CTrooper - Prepared for war..SIR!",
 								"CTrooper - All systems down...")
+	
+	custom_dmg_id_lazah_guun=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_lazah_guun,
+					dmg_source_name_long_lazah_guun,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
 	// INIT
@@ -195,7 +203,15 @@ new gHeroID
 		if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("ctrooper_ak47mult") - damage)
-			if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "ak47", headshot )
+			
+			if (extraDamage > 0){
+				sh_extra_damage(id, attacker, extraDamage, 
+						dmg_source_name_long_lazah_guun,
+						headshot,
+						_,_,_,_,_,
+						SH_NEW_DMG_ENERGY_BLAST,
+						custom_dmg_id_lazah_guun)
+			}
 		}
 	}
  }
