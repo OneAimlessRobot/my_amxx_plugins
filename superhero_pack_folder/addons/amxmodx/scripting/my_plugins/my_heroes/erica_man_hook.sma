@@ -37,8 +37,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	arrayset(hook_on,0,SH_MAXSLOTS+1)
-	arrayset(g_hook_kills,0,SH_MAXSLOTS+1)
 	register_cvar("hook_distance", "2.0")
 	register_cvar("max_hooks_per_life", "2.0")
 	register_cvar("hook_drag_speed", "2.0")
@@ -111,8 +109,18 @@ stop_dragging(id){
 			}
 			
 		}
-		g_dragging_who[id][1]=0
+
+		if(g_hook_kills[id]>0){
+			g_hook_kills[id]--
+		}
+		if(hook_get_hook_kills(id)){							
+				
+			if(!is_user_bot(id)){
+				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
+			}	
+		}
 		g_dragging_who[id][0]=-1
+		g_dragging_who[id][1]=0
 
 }
 //----------------------------------------------------------------------------------------------
@@ -121,43 +129,16 @@ public hook_think(id)
 	
 	id-=HOOK_TASKID
 	if (!client_hittable(id)){
-		
-		stop_dragging(id)
-		return FMRES_IGNORED
+		return
 	
 	}
 	if (!sh_user_has_hero(id,tranq_get_hero_id())){
-	
-		stop_dragging(id)
-		return FMRES_IGNORED
+		return
 	
 	}
-	if(g_dragging_who[id][0]<0){
-		
-		g_hook_kills[id]--;
-		if(hook_get_hook_kills(id)){							
-				
-			if(!is_user_bot(id)){
-				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
-			}
-		}
+	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
 	
-	
-		stop_dragging(id)
-		return FMRES_IGNORED
-	}
-	if(!(g_dragging_who[id][1])){
-		
-		g_hook_kills[id]--;
-		if(hook_get_hook_kills(id)){							
-				
-			if(!is_user_bot(id)){
-				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
-			}	
-		}
-		stop_dragging(id)
-	
-		return FMRES_IGNORED
+		return
 	
 	
 	}
@@ -207,14 +188,14 @@ public hook_think(id)
 	}
 	g_dragging_who[id][1]--;
 	set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",id+HOOK_TASKID,"",0,"a",1)
-	return FMRES_IGNORED
+	return
 }
 
 //----------------------------------------------------------------------------------------------
 public CmdStart1(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_get_hook(attacker)||!hook_get_hook_kills(attacker)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_get_hook(attacker)||(hook_get_hook_kills(attacker)<=0)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 	
@@ -278,7 +259,7 @@ public CmdStart1(attacker, uc_handle)
 				
 				if( (xs_vec_dot( vec2LOS, vecForward2D ) > hook_distance*0.8) )
 				{
-					if(!hook_get_hook_kills(attacker)){
+					if(hook_get_hook_kills(attacker)<=0){
 					
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);

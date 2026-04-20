@@ -12,7 +12,6 @@
 
 
 new CHAFF_TASKID
-new UNCHAFF_TASKID
 new DISORIENT_TASKID
 new bool:gIsChaffed[SH_MAXSLOTS+1]
 public plugin_init(){
@@ -21,7 +20,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	arrayset(gIsChaffed,false,SH_MAXSLOTS+1)
 	CHAFF_TASKID=allocate_typed_task_id(player_task)
-	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_chaffed","a")
 	register_event("ResetHUD","chaff_newRound","b")
@@ -48,7 +46,7 @@ public plugin_natives(){
 	register_native("sh_unchaff_user","_sh_unchaff_user",0);
 	register_native("sh_get_user_is_chaffed","_sh_get_user_is_chaffed",0);
 }
-public disorient_user(id)
+public disorient_user(array[1],id)
 {
 	id-=DISORIENT_TASKID
 	new Float:xAngles[3]
@@ -64,7 +62,10 @@ public disorient_user(id)
 	entity_set_vector(id, EV_VEC_velocity, xMoveDir)
 	entity_set_vector(id, EV_VEC_angles, xAngles)
 	entity_set_int( id, EV_INT_fixangle, 1);
-	
+	if(array[0]<=DISORIENT_TIMES){
+		array[0]++
+		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array),  "a",1)
+	}
 	return PLUGIN_CONTINUE
 }
 public _sh_get_user_is_chaffed(iPlugin,iParams){
@@ -91,7 +92,7 @@ public _sh_chaff_user(iPlugin,iParams){
 				if(!is_user_bot(attacker)){
 					sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
 				}
-				chaff_user(user,attacker)
+				chaff_user(user)
 			}
 		}
 		else{
@@ -103,7 +104,7 @@ public _sh_chaff_user(iPlugin,iParams){
 			if(!is_user_bot(attacker)){
 				sh_chat_message(attacker,gHeroID,"You chaffed %s!!!",user_name)
 			}
-			chaff_user(user,attacker)
+			chaff_user(user)
 		}
 	}
 	
@@ -123,53 +124,42 @@ public _sh_unchaff_user(iPlugin,iParams){
 	
 	
 }
-public chaff_task(array[],id){
+public chaff_task(array[1],id){
 	id-=CHAFF_TASKID
 	
 	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	
-	
+	if(array[0]<=CHAFF_TIMES){
+		array[0]++
+		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",1)
+	}
+	else{
+
+		callfunc_begin_i(get_func_id("unchaff_user"))
+		callfunc_push_int(id)
+		callfunc_end()
+	}
 	
 }
-chaff_user(id,attacker){
+chaff_user(id){
+	if(!sh_is_active()||!client_hittable(id)) return
 	new array[1]
-	array[0] = attacker
-	fade_screen_user(id)
+	array[0] = 0
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)
 	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),default_stun_speed)
 	gIsChaffed[id]=true
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
-	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",CHAFF_TIMES)
-	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,"", 0,  "a",DISORIENT_TIMES)
-	set_task(floatsub(CHAFF_TIME,0.1),"unchaff_task",id+UNCHAFF_TASKID,"", 0,  "a",1)
+	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",1)
+	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array), "a",1)
 	
 	
 	
 }
-public unchaff_task(id){
-	id-=UNCHAFF_TASKID
-	set_user_rendering(id)
-	remove_task(id+CHAFF_TASKID)
-	unfade_screen_user(id)
+public unchaff_user(id){
 	
-
+	set_user_rendering(id)
 	gIsChaffed[id]=false
 	set_damage_icon(id,0,DMG_ICON_SHOCK)
-	remove_task(id+DISORIENT_TASKID)
-	entity_set_int( id, EV_INT_fixangle, 0 );
-	
-	
-	
-}
-
-unchaff_user(id){
-	remove_task(id+UNCHAFF_TASKID)
-	set_user_rendering(id)
-	remove_task(id+CHAFF_TASKID)
-
-	gIsChaffed[id]=false
-	set_damage_icon(id,0,DMG_ICON_SHOCK)
-	remove_task(id+DISORIENT_TASKID)
 	entity_set_int( id, EV_INT_fixangle, 0 );
 	
 	

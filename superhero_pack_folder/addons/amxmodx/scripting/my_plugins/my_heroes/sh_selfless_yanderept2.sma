@@ -451,7 +451,6 @@ public yandere_damage(id)
 		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
 		if (floatround(extraDamage) > 0.0){
 			
-			new health = get_user_health(id)
 			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
 								headshot,
@@ -473,7 +472,7 @@ public yandere_damage(id)
 				sh_set_stun(id,2.0,default_stun_speed)
 			
 				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*angry_hitheal_pct,overheal_hp_max,RED,1,_,70,1)
-				if((extraDamage>=health)&&!is_user_alive(id)){
+				if(!is_user_alive(id)){
 					static origin[3];
 					// player fades.. 
 					set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4); 
@@ -701,14 +700,6 @@ public death()
 	new id = read_data(2)
 	killyandere(id)
 	notify_yanderes_about_team_life(id)
-}
-public sh_client_death(id,attacker,headshot,const weapon_description[])
-{	
-	if(client_hittable(attacker)){
-		if(sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(gSuperAngryMask,attacker)){
-			fx_invisible(id)
-		}
-	}
 }
 
 //----------------------------------------------------------------------------------------------

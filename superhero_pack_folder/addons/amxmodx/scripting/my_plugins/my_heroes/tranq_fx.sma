@@ -12,7 +12,6 @@
 
 
 stock SLEEP_TASKID,
-		UNSLEEP_TASKID,
 		FULLY_WAKE_UP_TASKID
 
 new gIsAsleepMask
@@ -26,7 +25,6 @@ register_event("DeathMsg","on_death_sleeping","a")
 register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 SLEEP_TASKID=allocate_typed_task_id(player_task)
-UNSLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 register_event("ResetHUD","sleep_newRound","b")
 init_explosion_defaults()

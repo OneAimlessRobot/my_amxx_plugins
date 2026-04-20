@@ -3206,7 +3206,7 @@ public _sh_extra_damage()
 		// External plugins might use this
 		// This should be set to the entity that caused the
 		// damage, but lets just set it to attacker for now
-		set_pev(victim, pev_dmg_inflictor, attacker)
+		set_pev(victim, pev_dmg_inflictor, custom_wpn_id)
 
 		set_user_health(victim, newHealth)
 

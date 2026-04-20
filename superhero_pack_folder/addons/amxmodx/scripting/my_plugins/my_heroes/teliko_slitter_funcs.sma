@@ -34,8 +34,6 @@ public plugin_init(){
 		}
 	
 	}
-	arrayset(slitter_on,0,SH_MAXSLOTS+1)
-	arrayset(g_slit_kills,0,SH_MAXSLOTS+1)
 	register_cvar("slitter_distance", "2.0")
 	register_cvar("max_slits_per_life", "2.0")
 	register_cvar("slitter_drag_speed", "2.0")
@@ -105,8 +103,8 @@ stop_dragging(id){
 			sh_reset_max_speed(id)
 			
 		}
-		g_dragging_who[id][1]=0
 		g_dragging_who[id][0]=-1
+		g_dragging_who[id][1]=0
 
 }
 
@@ -128,21 +126,11 @@ public slitter_think(id)
 		return FMRES_IGNORED
 	
 	}
-	if(g_dragging_who[id][0]<0){
-		
 	
-	
-		stop_dragging(id)
-	
-		return FMRES_IGNORED
-	}
-	if(!(g_dragging_who[id][1])){
+	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
 		
 		stop_dragging(id)
-	
 		return FMRES_IGNORED
-	
-	
 	}
 	new ammo, clip, wpnid=get_user_weapon(id,ammo,clip)
 	if(wpnid!=CSW_KNIFE){
@@ -195,7 +183,7 @@ public slitter_think(id)
 public CmdStart(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_get_slitter(attacker)||!slitter_get_slit_kills(attacker)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_get_slitter(attacker)||(slitter_get_slit_kills(attacker)<=0)) return FMRES_IGNORED;
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 
 	static button

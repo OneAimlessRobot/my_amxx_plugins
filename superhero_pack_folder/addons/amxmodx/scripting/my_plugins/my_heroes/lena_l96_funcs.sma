@@ -459,7 +459,6 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(oid)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		new health = get_user_health(pTouched)
 		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
@@ -477,7 +476,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 			send_poem_function(pTouched, lena_poems[random_number]);
 		}
 		
-		if((floatround(damage)>=health)&&!is_user_alive(pTouched)){
+		if(!is_user_alive(pTouched)){
 
 			gross_kill_gibs_fx(pTouched,vic_origin,origin)
 

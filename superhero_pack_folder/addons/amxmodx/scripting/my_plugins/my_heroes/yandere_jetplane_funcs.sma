@@ -69,16 +69,8 @@ public plugin_init()
 	register_think(JETPLANE_FUSELAGE_CLASSNAME, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
 	
+	register_entity_as_wall_touchable(JETPLANE_FUSELAGE_CLASSNAME,"FwdTouchWorld")
 	
-	new const szEntity[ ][ ] = {
-		"worldspawn", "func_wall", "func_door",  "func_door_rotating",
-		"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
-		"func_illusionary", "func_button", "func_rot_button", "func_rotating",JETPLANE_FUSELAGE_CLASSNAME
-	}
-	
-	for( new i; i < sizeof szEntity; i++ ){
-		register_touch( JETPLANE_FUSELAGE_CLASSNAME, szEntity[ i ], "FwdTouchWorld" );
-	}
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 	hud_sync_jetplane=CreateHudSyncObj();
@@ -239,15 +231,9 @@ public _jet_charge_user(iPlugin, iParams){
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jetplane[id],pev_owner,id)
 	entity_set_origin(g_jetplane[id], Origin)
-	new parm[2]
-	parm[0]=id
-	parm[1]=g_jetplane[id]
+
 	set_task(jetplane_cooldown,"load_jet",id+JET_LOAD_TASKID,"", 0,  "a",1)
-	remove_task(id+JET_CHARGE_TASKID)
-	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,parm, 2,  "b")
-	return
-	
-	
+	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,"", 0,  "a",1)
 	
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
@@ -304,7 +290,7 @@ public _jet_uncharge_user(iPlugin,iParams){
 	
 }
 uncharge_user(id){
-	remove_task(id+JET_CHARGE_TASKID)
+	
 	if(!g_jetplane_armed[id]){
 		g_jetplane_loaded[id]=1
 	}
@@ -703,7 +689,7 @@ public jet_think(ent)
 		
 	return FMRES_IGNORED
 }
-public charge_task(parm[],id){
+public charge_task(id){
 	id-=JET_CHARGE_TASKID
 	if(!hasRoundStarted()){
 	
@@ -748,9 +734,10 @@ public charge_task(parm[],id){
 		g_jetplane_deployed[id]=1;
 		set_pev(g_jetplane[id],pev_health,1000.0+pev(g_jetplane[id],pev_health))
 		jet_deploy_task(parm,id)
-		remove_task(id+JET_CHARGE_TASKID)
+		return
 	}
 	
+	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,"", 0,  "a",1)
 	
 	
 	
@@ -847,12 +834,10 @@ public jet_hud_task(id){
 	new owner=id-JET_HUD_TASKID
 	if(!client_hittable(owner)){
 		
-		remove_task(id)
 		return
 	}
 	if(!g_jetplane_deployed[owner]){
 		
-		remove_task(id)
 		return
 	}
 	new Float:abs_velocity=get_entity_velocity(jet_get_user_jet(owner))
@@ -882,9 +867,6 @@ public jet_hud_task(id){
 public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
-	if(!is_user_bot(id)){
-		remove_task(id+JET_HUD_TASKID)
-	}
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(jet_get_user_jet(id), CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);

@@ -1,0 +1,30 @@
+L 04/20/2026 - 01:11:36: Start of error session.
+L 04/20/2026 - 01:11:36: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260420.log")
+L 04/20/2026 - 01:11:36: [ENGINE] Invalid entity 524
+L 04/20/2026 - 01:11:36: [AMXX] Run time error 10 (plugin "chaff_fx.amxx") (native "entity_set_int") - debug not enabled!
+L 04/20/2026 - 01:11:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/20/2026 - 01:14:09: Start of error session.
+L 04/20/2026 - 01:14:09: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260420.log")
+L 04/20/2026 - 01:14:09: [ENGINE] Invalid entity 524
+L 04/20/2026 - 01:14:09: [AMXX] Run time error 10 (plugin "chaff_fx.amxx") (native "entity_set_int") - debug not enabled!
+L 04/20/2026 - 01:14:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/20/2026 - 01:16:36: Start of error session.
+L 04/20/2026 - 01:16:36: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260420.log")
+L 04/20/2026 - 01:16:36: [ENGINE] Entity out of range (-33)
+L 04/20/2026 - 01:16:36: [AMXX] Run time error 10 (plugin "chaff_fx.amxx") (native "entity_set_int") - debug not enabled!
+L 04/20/2026 - 01:16:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/20/2026 - 01:16:42: Public function -1 is invalid
+L 04/20/2026 - 01:16:42: [AMXX] Run time error 10 (plugin "chaff_fx.amxx") (native "callfunc_begin_i") - debug not enabled!
+L 04/20/2026 - 01:16:42: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/20/2026 - 01:18:07: Start of error session.
+L 04/20/2026 - 01:18:07: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260420.log")
+L 04/20/2026 - 01:18:07: [ENGINE] Entity out of range (-33)
+L 04/20/2026 - 01:18:07: [AMXX] Displaying debug trace (plugin "chaff_fx.amxx", version "1.0.0")
+L 04/20/2026 - 01:18:07: [AMXX] Run time error 10: native error (native "entity_set_int")
+L 04/20/2026 - 01:18:07: [AMXX]    [0] chaff_fx.sma::disorient_user (line 54)
+L 04/20/2026 - 01:20:08: Start of error session.
+L 04/20/2026 - 01:20:08: Info (map "de_dust2") (file "addons/amxmodx/logs/error_20260420.log")
+L 04/20/2026 - 01:20:08: [ENGINE] Entity out of range (-33)
+L 04/20/2026 - 01:20:08: [AMXX] Displaying debug trace (plugin "chaff_fx.amxx", version "1.0.0")
+L 04/20/2026 - 01:20:08: [AMXX] Run time error 10: native error (native "entity_set_int")
+L 04/20/2026 - 01:20:08: [AMXX]    [0] chaff_fx.sma::disorient_user (line 54)

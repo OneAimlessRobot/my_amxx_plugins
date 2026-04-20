@@ -221,6 +221,10 @@ public _sh_bleed_user(iPlugin,iParams){
 		}
 		emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		gIsBleeding[user]=bleed_type
+		if(bleed_type==_:BLEED_ULTRA){
+
+			sh_chat_message(attacker,gHeroID,"Ultra bleeding!!!")
+		}
 		bleed_task_user(user,attacker,heal_user)
 	}
 

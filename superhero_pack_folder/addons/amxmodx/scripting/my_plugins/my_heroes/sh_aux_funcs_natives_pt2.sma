@@ -64,9 +64,7 @@ public _fx_invisible(iPlugins, iParams){
 
 
 	if(is_user_connected(id)){
-		set_pev(id, pev_renderfx, kRenderFxNone)
-		set_pev(id, pev_rendermode, kRenderTransAlpha)
-		set_pev(id, pev_renderamt, 0.0)
+		set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4);			
 	}
 }
 

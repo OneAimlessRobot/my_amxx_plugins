@@ -20,6 +20,8 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Thor"
@@ -144,7 +146,14 @@ thor_thunder_damage(attacker, tg){
 	
 	setScreenFlash(tg, 255, 255, 224, 10, alphanum)
 	sh_screenShake(tg, 12, 10, 14)
+	if(!is_user_alive(tg)){
 
+		new origin[3]
+		get_user_origin(tg,origin)
+		set_user_rendering(tg, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4);
+		anime_kill_fx(origin)
+
+	}
 	if ( is_user_alive(attacker) ) {
 		// Set cooldown if Thor is still alive
 		if (thor_cooldown > 0){

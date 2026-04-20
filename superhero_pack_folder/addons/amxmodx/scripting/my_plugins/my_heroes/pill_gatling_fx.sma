@@ -67,7 +67,6 @@ enum fx_task_parameter_id{
 	Float:fx_task_time,
 	fx_task_repeats,
 	fx_task_apply_id,
-	fx_task_remove_id,
 	fx_task_apply_func_name[128],
 	fx_task_remove_func_name[128],
 	fx_task_will_glow_user_screen,
@@ -75,18 +74,18 @@ enum fx_task_parameter_id{
 }
 
 stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={	
-					{-1.0,5.0,-1,-1,-1,"","",0,-1},
-					{-1.0,5.0,-1,-1,-1,"","",0,-1},
-					{1.0,5.0,-1,-1,-1,"glow_task","uneffect_task_generic",-1,-1},
-					{1.0,5.0,-1,-1,-1,"poison_task","uneffect_task_generic",-1,DMG_ICON_POISON},
-					{0.1,5.0,1,-1,-1,"","uneffect_task_generic",-1,DMG_ICON_SHOCK},
-					{1.0,5.0,1,-1,-1,"radioactive_task","",-1,-1},
-					{1.0,5.0,-1,-1,-1,"morphine_task","uneffect_task_generic",DMG_ICON_HEALTH},
-					{1.0,5.0,-1,-1,-1,"weed_task","unweed_task",0,DMG_ICON_LONGJUMP},
-					{1.0,5.0,-1,-1,-1,"cocaine_task","uncocaine_task",1,DMG_ICON_POISON},
-					{0.5,5.0,-1,-1,-1,"blind_task","uneffect_task_generic",1,-1},
-					{1.0,5.0,-1,-1,-1,"","uneffect_task_generic",0,DMG_ICON_SHOCK},
-					{1.0,5.0,-1,-1,-1,"bath_task","uneffect_task_generic",0,DMG_ICON_ARMOR}
+					{-1.0,5.0,-1,-1,"","",0,-1},
+					{-1.0,5.0,-1,-1,"","",0,-1},
+					{1.0,2.0,-1,-1,"glow_task","uneffect_task_generic",-1,-1},
+					{1.0,8.0,-1,-1,"poison_task","uneffect_task_generic",-1,DMG_ICON_POISON},
+					{0.1,9.0,1,-1,"","uneffect_task_generic",-1,-1},
+					{1.0,5.0,1,-1,"radioactive_task","",-1,-1},
+					{1.0,10.0,-1,-1,"morphine_task","uneffect_task_generic",DMG_ICON_HEALTH},
+					{1.0,7.0,-1,-1,"weed_task","unweed_task",0,DMG_ICON_LONGJUMP},
+					{1.0,9.0,-1,-1,"cocaine_task","uncocaine_task",1,DMG_ICON_POISON},
+					{0.5,10.0,-1,-1,"blind_task","uneffect_task_generic",1,-1},
+					{1.0,20.0,-1,-1,"","uneffect_task_generic",0,DMG_ICON_SHOCK},
+					{1.0,20.0,-1,-1,"bath_task","uneffect_task_generic",0,DMG_ICON_ARMOR}
 
 }
 
@@ -119,9 +118,6 @@ for(new i=_:GLOW;i<_:NUM_FX;i++){
 	if(strlen(fx_task_parameters[i][fx_task_apply_func_name])){
 		fx_task_parameters[i][fx_task_apply_id]=allocate_typed_task_id(player_task)
 	}
-	if(strlen(fx_task_parameters[i][fx_task_remove_func_name])){
-		fx_task_parameters[i][fx_task_remove_id]=allocate_typed_task_id(player_task)
-	}
 	if(fx_task_parameters[i][fx_task_repeats]<0){
 		static Float:the_period;
 		the_period=fx_task_parameters[i][fx_task_period]
@@ -135,6 +131,7 @@ register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 register_event("DeathMsg","on_death_status","a")
+init_hud_syncs()
 }
 
 
@@ -212,7 +209,6 @@ public fx_damage(id)
 			extraDamage*=(sh_get_user_is_bleeding(id)?2.0:1.0)
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage), "Poison vuln", headshot)
-					
 			}	
 		}
 		default:{
@@ -333,9 +329,11 @@ public _sh_get_fx_color_name(iPlugins,iParams){
 }
 fx_task_user(id,attacker,fx_num){
 	if ( !shModActive() ||!client_hittable(id)) return
-	new array[2]
+	new array[3]
 	array[0] = fx_num
 	array[1] = attacker
+	//curr_num_repeats
+	array[2] = 0
 	if((fx_task_parameters[fx_num][fx_task_status_icon])>=0){
 
 		set_damage_icon(id,1,fx_task_parameters[fx_num][fx_task_status_icon],LineColors[FX_COLOR_OFFSET+fx_num])
@@ -347,23 +345,36 @@ fx_task_user(id,attacker,fx_num){
 						fx_task_parameters[fx_num][fx_task_apply_func_name],
 						id+fx_task_parameters[fx_num][fx_task_apply_id],
 						array,
-						2,
-						"a",
-						fx_task_parameters[fx_num][fx_task_repeats])
-	}
-
-	if(strlen(fx_task_parameters[fx_num][fx_task_remove_func_name])){
-			
-		set_task(floatsub(fx_task_parameters[fx_num][fx_task_time],0.1),
-						fx_task_parameters[fx_num][fx_task_remove_func_name],
-						id+fx_task_parameters[fx_num][fx_task_remove_id],
-						array,
-						1,
+						3,
 						"a",
 						1)
 	}
 
 
+
+}
+task_cycle(array[],id){
+
+
+	if(array[2]<=fx_task_parameters[array[0]][fx_task_repeats]){
+
+		array[2]++
+		set_task(fx_task_parameters[array[0]][fx_task_period],
+						fx_task_parameters[array[0]][fx_task_apply_func_name],
+						id+fx_task_parameters[array[0]][fx_task_apply_id],
+						array,
+						3,
+						"a",
+						1)
+
+	}
+	else if(strlen(fx_task_parameters[array[0]][fx_task_remove_func_name])){
+		
+		callfunc_begin_i(get_func_id(fx_task_parameters[array[0]][fx_task_remove_func_name]))
+		callfunc_push_array(array,1)
+		callfunc_push_int(id)
+		callfunc_end()
+	}
 }
 public _get_fx_num(iPlugin,iParams){
 
@@ -443,7 +454,7 @@ public _sh_uneffect_user(iPlugin,iParams){
 	new user=get_param(1)
 	
 	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<=_:BATH)){
-		uneffect_user_primitive(user,true)
+		uneffect_user_primitive(user)
 	}
 
 
@@ -469,7 +480,7 @@ public glow_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	
+	task_cycle(array,id)
 
 
 }
@@ -488,7 +499,7 @@ public blind_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],0,_,255,1)
-
+	task_cycle(array,id)
 }
 
 public poison_task(array[],id){
@@ -503,6 +514,7 @@ public poison_task(array[],id){
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON))
 	sh_set_stun(id,0.33,140.0)
 	emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
+	task_cycle(array,id)
 
 
 }
@@ -520,49 +532,49 @@ public radioactive_task(array[],id){
 public morphine_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)) return
+	generic_heal(heal_hp_hud_msg_sync,
+					id,
+					float(MORPHINE_HP_ADD),
+					sh_get_max_hp(id),FX_COLOR_OFFSET+array[0],_,_,_,
+					fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	
-	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	sh_add_hp(id,MORPHINE_HP_ADD,sh_get_max_hp(id))
-
+	task_cycle(array,id)
 }
 public weed_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	set_user_gravity(id,WEED_GRAVITY)
-
+	task_cycle(array,id)
 }
 public cocaine_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	set_user_maxspeed(id,COCAINE_SPEED)
-
+	task_cycle(array,id)
 }
 public bath_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !shModActive() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	
+	task_cycle(array,id)
 
 }
 
 public uneffect_task_generic(array[],id){
 
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
-	uneffect_user_primitive(id,false)
+	uneffect_user_primitive(id)
 }
 
 
 
 public unweed_task(array[],id){
 	uneffect_task_generic(array,id)
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
 	sh_reset_min_gravity(id)
 
 }
 public uncocaine_task(array[],id){
 	uneffect_task_generic(array,id)
-	id-=fx_task_parameters[array[0]][fx_task_remove_id]
 	sh_reset_max_speed(id)
 
 }
@@ -570,13 +582,9 @@ public uncocaine_task(array[],id){
 
 
 
-uneffect_user_primitive(id,bool:terminate_cleaner_task=false){
+uneffect_user_primitive(id){
 	if ( !shModActive() ||!is_user_connected(id)) return
 	new the_fx_id=gatling_get_fx_num(id)
-	if(terminate_cleaner_task){
-			remove_task(id+fx_task_parameters[the_fx_id][fx_task_remove_id])
-	}
-	remove_task(id+fx_task_parameters[the_fx_id][fx_task_apply_id])
 	set_user_rendering(id)
 	if(fx_task_parameters[the_fx_id][fx_task_status_icon]>=0){
 		set_damage_icon(id,0,fx_task_parameters[the_fx_id][fx_task_status_icon])

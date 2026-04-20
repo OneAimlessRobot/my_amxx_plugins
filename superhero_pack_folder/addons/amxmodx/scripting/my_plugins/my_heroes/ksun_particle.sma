@@ -25,6 +25,14 @@ new Float:ksun_spore_damage,
 new g_times_player_spiked_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
+new dmg_source_name_short_spore[SAFE_BUFFER_SIZE+1]="ksun_spore"
+new dmg_source_name_long_spore[SAFE_BUFFER_SIZE+1]="ksun_spore"
+new spore_wpn_id
+
+new dmg_source_name_short_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
+new dmg_source_name_long_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
+new slay_wpn_id
+
 
 
 public plugin_init()
@@ -49,6 +57,19 @@ public plugin_init()
 	
 	register_think(SPORE_CLASSNAME, "spore_think")
 
+
+	spore_wpn_id=sh_log_custom_damage_source(
+								spores_ksun_hero_id(),
+								dmg_source_name_short_spore,
+								dmg_source_name_long_spore,
+								0)
+
+
+	slay_wpn_id=sh_log_custom_damage_source(
+								spores_ksun_hero_id(),
+								dmg_source_name_short_slay,
+								dmg_source_name_long_slay,
+								0)
 }
 
 public plugin_natives(){
@@ -534,7 +555,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 		set_user_godmode(pTouched,!remove_godmode);
 		sh_chat_message(killer,spores_ksun_hero_id(),"You removed the godmode of your tg named %s!",tger_name);
 	}
-	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?"ksun slay":"ksun_spore")
+
 	sh_bleed_user(victim,killer,BLEED_NORMAL,spores_ksun_hero_id())
 	ksun_heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
@@ -543,6 +564,11 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	g_times_player_spiked_player[killer][victim]++
 	g_times_player_spiked_by_player[victim][killer]++
 	untrack_spore(pToucher)
+
+	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_short_slay:dmg_source_name_short_spore,
+					remove_godmode,_,_,_,_,_,
+					SH_NEW_DMG_DRAIN,
+					remove_godmode?slay_wpn_id:spore_wpn_id)
 }
 }
 
