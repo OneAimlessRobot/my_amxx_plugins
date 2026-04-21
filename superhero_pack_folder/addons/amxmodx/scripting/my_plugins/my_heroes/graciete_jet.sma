@@ -118,6 +118,7 @@ charge_user(id){
 	
 	g_graciete_jetpack_on[id]= true
 	
+	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(id,RED,10,15)
 	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "a",1)
@@ -148,6 +149,7 @@ public client_PostThink(id) {
 			g_graciete_leaped[id]=false
 			if(g_graciete_power_landing[id]){
 				
+				emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 				explosion(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
 				g_graciete_power_landing[id]=false
 				g_graciete_land_power[id]=0.0
