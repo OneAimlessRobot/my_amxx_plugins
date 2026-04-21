@@ -186,7 +186,7 @@ public psychosis_task(id){
 		sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
 	}
 	if(gPsychosisTime[id]>=0.0){
-		set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",1)
+		set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID)
 	}
 	else{
 		unpsychosis_user(id)
@@ -197,7 +197,7 @@ psychosis_user(id){
 	
 	psychosis_on(id)
 	sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
-	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",1)
+	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID)
 	
 	
 	

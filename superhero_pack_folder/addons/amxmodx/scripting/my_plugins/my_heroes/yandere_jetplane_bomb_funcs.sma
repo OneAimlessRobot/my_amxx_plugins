@@ -196,7 +196,7 @@ has_bomb[id] = 0
 set_user_jet_bombs(id,get_user_jet_bombs(id)-1)
 
 
-set_task(BOMB_DROP_PERIOD,"bomb_reload",id+BOMB_RELOAD_TASKID,"",0,"a",1)
+set_task(BOMB_DROP_PERIOD,"bomb_reload",id+BOMB_RELOAD_TASKID)
 entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 return PLUGIN_HANDLED
 }

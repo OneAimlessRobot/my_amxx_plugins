@@ -208,7 +208,7 @@ public disarm_task(param[1],id){
 		}
 	}
 	else if(result){
-		set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1,  "a",1)
+		set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1)
 	
 	}
 	
@@ -232,7 +232,7 @@ public _mine_disarm_mine(iPlugins,iParams){
 	curr_disarm_charge[id]=0.0
 	new param[1];
 	param[0]=mine_id
-	set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1,  "a",1)
+	set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1)
 	
 	
 	
@@ -243,7 +243,7 @@ public _mine_charge_mine(iPlugins,iParams){
 	new id=get_param(1);
 	mine_armed[id]=1
 	curr_charge[id]=0.0
-	set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID)
 	
 	
 	
@@ -366,7 +366,7 @@ public charge_task(id){
 		}
 	}
 	else if(result){
-		set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID,"", 0,  "a",1)
+		set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID)
 	
 	}
 	

@@ -165,7 +165,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		if(array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS]){
 			
 			array[TRACK_TASK_CURR_IT]++
-			set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",1)
+			set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 		}
 		else{
 			unradioactive_user(id);
@@ -218,7 +218,7 @@ public _track_user(iPlugins, iParams){
 			array[NUM_INIT_TRACK_PARAMS+i]=players[i]
 		}
 	}
-	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",1)
+	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 
 
 
@@ -486,7 +486,7 @@ public _remove_glow_user(iPlugin,iParams){
 	new id=get_param(1)
 	new Float:delay=get_param_f(2)
 
-	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID,"", 0,  "a",1)
+	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
 				
 
 }

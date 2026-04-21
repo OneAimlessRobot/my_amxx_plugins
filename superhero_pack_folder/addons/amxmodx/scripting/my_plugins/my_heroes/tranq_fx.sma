@@ -177,12 +177,12 @@ public sleep_task(array[1],id){
 	}
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
-	if(array[0]<(SLEEP_TIMES+9)){
+	if((array[0]<(SLEEP_TIMES+9))){
 		array[0]++
-		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",1)
+		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
 	else{
-		set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,"",0,"a",1)
+		set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID)
 	}
 
 
@@ -198,7 +198,7 @@ sleep_user(id,attacker){
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",1)
+	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 
 
 

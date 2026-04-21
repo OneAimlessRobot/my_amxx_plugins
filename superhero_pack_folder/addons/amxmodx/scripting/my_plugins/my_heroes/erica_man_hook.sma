@@ -24,6 +24,7 @@ stock const erica_sentences[NUM_SENTENCES][]={
 	"Man those are guts... those are... his lower vertebrae, I think... ",
 	"I think... AHH got it!"
 }
+#define SENTENCE_TICKS 30
 new Float:hook_distance
 new Float:gutting_dmg_mult
 new Float:hook_drag_time
@@ -195,13 +196,13 @@ public hook_think(id)
 
 	entity_set_vector(id, EV_VEC_velocity, fl_Velocity)
 	orient_user(id,vAngles,vAngle)
-	if(!(g_dragging_who[id][1]%30)){
+	if(!(g_dragging_who[id][1]%SENTENCE_TICKS)){
 		new random_number=generate_int(0,NUM_SENTENCES-1);
 		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 	}
 	g_dragging_who[id][1]--;
-	set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",id+HOOK_TASKID,"",0,"a",1)
+	set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",id+HOOK_TASKID)
 	return
 }
 
@@ -285,7 +286,7 @@ public CmdStart1(attacker, uc_handle)
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
 					entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
-					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"a",1)
+					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID)
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 					if(!is_user_bot(attacker)){

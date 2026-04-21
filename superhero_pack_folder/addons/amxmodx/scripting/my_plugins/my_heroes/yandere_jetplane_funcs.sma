@@ -228,8 +228,8 @@ public _jet_charge_user(iPlugin, iParams){
 	set_pev(g_jetplane[id],pev_owner,id)
 	entity_set_origin(g_jetplane[id], Origin)
 
-	set_task(jetplane_cooldown,"load_jet",id+JET_LOAD_TASKID,"", 0,  "a",1)
-	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(jetplane_cooldown,"load_jet",id+JET_LOAD_TASKID)
+	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID)
 	
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
@@ -399,13 +399,13 @@ public jet_deploy_task(parm[],id){
 		ham_is_on=1;
 	}
 	if(!is_user_bot(attacker)){
-		set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID,"",0,"a",1)
+		set_task(JET_HUD_PERIOD,"jet_hud_task",attacker+JET_HUD_TASKID)
 	}
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
 	set_jet_engine(id,1);
 	g_jetplane_trail_engaged[attacker]=0
-	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID,"",0,"a",1)
+	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID)
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
 public load_jet(id){
@@ -734,7 +734,7 @@ public charge_task(id){
 		return
 	}
 	
-	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID)
 	
 	
 	
@@ -798,7 +798,7 @@ public jet_sound_task(id){
 	else{
 		disengage_user_jet_throttle(owner)
 	}
-	set_task(JET_SOUND_PERIOD,"jet_sound_task",id,"",0,"a",1)
+	set_task(JET_SOUND_PERIOD,"jet_sound_task",id)
 }
 //both of these two functions assume that:
 /*
@@ -859,7 +859,7 @@ public jet_hud_task(id){
 	
 	g_jetplane_telemetry_data[owner][0]+=JET_HUD_PERIOD
 	g_jetplane_telemetry_data[owner][1]+=abs_velocity
-	set_task(JET_HUD_PERIOD,"jet_hud_task",id,"",0,"a",1)
+	set_task(JET_HUD_PERIOD,"jet_hud_task",id)
 }
 public _jet_destroy(iPlugin,iParams){
 	

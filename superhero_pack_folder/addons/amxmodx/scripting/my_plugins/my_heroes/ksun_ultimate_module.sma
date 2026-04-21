@@ -225,7 +225,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
 	g_player_in_ultimate[id]=1
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",1)
+	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID)
 }
 
 
@@ -247,7 +247,7 @@ public ultimate_task(id){
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	if(ksun_get_player_supply_points(id)>0){
-		set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",1)
+		set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID)
 	}
 	else{
 		unultimate_user(id,1)

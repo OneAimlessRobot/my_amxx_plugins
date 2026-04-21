@@ -192,7 +192,7 @@ public slitter_think(id)
 	
 	set_pev(g_dragging_who[id][0],pev_renderamt,255)
 	g_dragging_who[id][1]--;
-	set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",id+SLITTER_TASKID,"",0,"a",1)					
+	set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",id+SLITTER_TASKID)					
 	return FMRES_IGNORED
 }
 
@@ -256,7 +256,7 @@ public CmdStart(attacker, uc_handle)
 						g_dragging_who[attacker][0]=id
 						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
 						entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
-						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"a",1)
+						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID)
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						if(!is_user_bot(attacker)){

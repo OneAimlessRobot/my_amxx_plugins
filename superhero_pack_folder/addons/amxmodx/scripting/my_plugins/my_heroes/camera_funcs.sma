@@ -543,7 +543,7 @@ public disarm_task(id){
 	}
 	else if(result){
 
-		set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"",0,  "a",1)
+		set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID)
 	}
 	
 	
@@ -558,7 +558,7 @@ public _camera_disarm_camera(iPlugins,iParams){
 	new id=get_param(1);
 	disarmer_on[id]=1
 	curr_disarm_charge[id]=0.0
-	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"", 0,  "a",1)
+	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID)
 	
 	
 }
@@ -595,7 +595,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	camera_armed[id]=1
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
-	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID)
 	
 	return PLUGIN_HANDLED
 	
@@ -742,7 +742,7 @@ public charge_task(id){
 		plant_camera(id)
 		return
 	}
-	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID)
 	
 	
 	

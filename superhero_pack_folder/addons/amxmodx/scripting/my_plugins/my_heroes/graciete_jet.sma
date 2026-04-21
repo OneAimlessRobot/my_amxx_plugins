@@ -121,7 +121,7 @@ charge_user(id){
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(id,RED,10,15)
-	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID)
 	
 	
 	
@@ -199,7 +199,7 @@ public graciete_jump(id){
 	g_graciete_jetpack_loaded[id]=false;
 	g_graciete_leaped[id]=true;	
 	JetpackJump(id, floatround(jet_velocity));
-	set_task(float(jet_cooldown),"load_jetpack",id+GRACIETE_LOAD_TASKID,"",0,"a",1);
+	set_task(float(jet_cooldown),"load_jetpack",id+GRACIETE_LOAD_TASKID);
 	
 }
 public load_jetpack(id){
@@ -230,7 +230,7 @@ public charge_task(id){
 	);
 	client_print(id,print_center,"%s",hud_msg)
 	if(g_graciete_power_landing[id]){
-		set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID,"", 0,  "a",1)
+		set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID)
 	}
 	
 	

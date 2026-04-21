@@ -245,7 +245,7 @@ public _make_bleed_fx(iPlugin,iParams){
 
 public bleed_task(array[4],id){
 	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])){
+	if ( !shModActive() ||!client_hittable(id)||!is_user_connected(array[1])){
 		
 
 		unbleed_user(id)

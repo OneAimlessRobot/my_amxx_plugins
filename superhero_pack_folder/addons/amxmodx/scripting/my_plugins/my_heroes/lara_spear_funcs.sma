@@ -191,7 +191,7 @@ public charge_task(id){
 	client_print(id,print_center,"%s",hud_msg)
 	
 	if(Get_BitVar(spear_armed_mask,id)){
-		set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID,"", 0,  "a",1)
+		set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID)
 	}
 	
 
@@ -201,7 +201,7 @@ public charge_task(id){
 }
 charge_user(id){
 	curr_charge[id]=0.0
-	set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID)
 
 
 

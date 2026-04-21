@@ -125,7 +125,7 @@ public CmdStart(id, uc_handle)
 			scan_loaded[id]=false
 			launch_scan(id)
 			set_user_jet_scans(id,get_user_jet_scans(id)-1)
-			set_task(RADIO_SCAN_PERIOD,"scan_reload",id+RADIO_RELOAD_TASKID,"",0,"a",1)
+			set_task(RADIO_SCAN_PERIOD,"scan_reload",id+RADIO_RELOAD_TASKID)
 			
 		}
 	}

@@ -5,6 +5,7 @@
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -54,24 +55,22 @@ public burn_task(array[2],id)
 {
 	id-=BURN_TASKID_MAIN
 	
-	if ( !shModActive() || !client_hittable(id)||!client_hittable(array[0])){
+	if ( !shModActive() || !client_hittable(id)||!is_user_connected(array[0])){
 		unburn_user(id)
 		return
 	}
 	set_render_with_color_const(id,PINK,1,50,50,1,1)
+	remove_glow_user(id,BURN_PERIOD)
 	make_fire(id,30.0)
-	new origin[3],dist,i,burned_origin[3]
-	get_user_origin(id,burned_origin)
-	for ( i = 1; i <= SH_MAXSLOTS; i++) {
+	static players[33];
+
+	new num_players=find_sphere_class(id,"player",MOLLY_PROPAGATE_RADIUS,players,sizeof(players)-1)
+	for ( new i = 0; i < num_players; i++) {
+		new pid=players[i]
+
+		if( !client_hittable(pid) || pid==id || gIsBurning[pid] ) continue
+		sh_molly_user(pid,id,tranq_get_hero_id())
 		
-		if( !client_hittable(i) || i==id || gIsBurning[i] ) continue
-		get_user_origin(i,origin)
-		dist = get_distance(origin,burned_origin)
-		if (dist <= MOLLY_PROPAGATE_RADIUS) {
-			
-			sh_molly_user(i,id,tranq_get_hero_id())
-			
-		}
 	}
 
 	if ( pev(id, pev_waterlevel) == 3 ) {
@@ -85,7 +84,7 @@ public burn_task(array[2],id)
 	if(array[1]<BURN_TIMES){
 		array[1]++
 		emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array), "a",1)
+		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
 
 	}
 	else{
@@ -176,7 +175,7 @@ stock burn_user(id,attacker){
 	array[1] = 0
 	emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
-	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array), "a",1)
+	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
 	
 	
 	
@@ -188,7 +187,6 @@ unburn_user(id){
 	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)
-	set_user_rendering(id)
 	gIsBurning[id]=false
 	
 	

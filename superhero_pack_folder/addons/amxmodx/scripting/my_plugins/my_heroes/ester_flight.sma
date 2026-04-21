@@ -359,7 +359,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		new parm[2]
 		parm[0] = id
 		parm[1] = 0
-		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,ester_calculation_time_period-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm),"a",1)
+		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,ester_calculation_time_period-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
 	}
 	else if (!is_user_alive(id)){
 		
@@ -386,7 +386,7 @@ public ester_reborn_loop_task(parm[2]){
 	else if(parm[1]<ester_calculation_times){
 
 		parm[1]++
-		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,ester_calculation_time_period-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm),"a",1)
+		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,ester_calculation_time_period-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
 	
 
 	}
@@ -437,7 +437,7 @@ public godmode_render_update(id){
 		glow(id,255,255,255,255,1)
 		remove_glow_user(id,FLIGHT_GODMODE_THINK_TIME)
 		if(g_ester_blow_up_time_left[id]>0){
-			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"a",1)
+			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
 		}
 	}
 	
@@ -493,11 +493,10 @@ public ester_teleport(id)
 	
 	sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 	
-	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID,"",0,"a",1)
-	for(new i=0;i<3;i++){
-		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME+(float(i)*FLIGHT_GODMODE_THINK_TIME),"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-
-	}
+	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
+	new param[1]
+	param[0]=0
+	set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 }
 //----------------------------------------------------------------------------------------------
 public positionChangeTimer(id)
@@ -549,12 +548,18 @@ public positionChangeCheck(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public BlowUp(id)
+public BlowUp(param[1],id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
-	ester_remove_statuses(id)
-	explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
-	
+
+	if(client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
+		param[0]++
+		explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
+		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
+	}
+	else{
+		ester_remove_statuses(id)
+	}
 		
 	
 }

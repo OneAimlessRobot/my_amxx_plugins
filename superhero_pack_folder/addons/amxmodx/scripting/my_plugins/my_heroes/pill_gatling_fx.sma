@@ -353,7 +353,7 @@ fx_task_user(id,attacker,fx_num){
 task_cycle(array[],id){
 
 
-	if(array[2]<=fx_task_parameters[array[0]][fx_task_repeats]){
+	if((array[2]<=fx_task_parameters[array[0]][fx_task_repeats])&&client_hittable(id)){
 
 		array[2]++
 		set_task(fx_task_parameters[array[0]][fx_task_period],

@@ -161,7 +161,7 @@ public charge_task(id){
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	if(Get_BitVar(sleep_nade_armed_mask,id)){
-		set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID,"", 0,  "a",1)
+		set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID)
 	}
 	
 	
@@ -169,7 +169,7 @@ public charge_task(id){
 	
 }
 charge_user(id){
-	set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(SLEEP_NADE_CHARGE_PERIOD,"charge_task",id+SLEEP_NADE_CHARGE_TASKID)
 	
 	
 }

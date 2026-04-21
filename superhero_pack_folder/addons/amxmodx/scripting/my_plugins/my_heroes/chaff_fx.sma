@@ -63,7 +63,7 @@ public disorient_user(array[1],id)
 	entity_set_int( id, EV_INT_fixangle, 1);
 	if(array[0]<=DISORIENT_TIMES){
 		array[0]++
-		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array),  "a",1)
+		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
 	}
 	return PLUGIN_CONTINUE
 }
@@ -135,7 +135,7 @@ public chaff_task(array[1],id){
 	
 	if(array[0]<=CHAFF_TIMES){
 		array[0]++
-		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",1)
+		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array))
 	}
 	else{
 
@@ -151,8 +151,8 @@ chaff_user(id){
 	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),default_stun_speed)
 	gIsChaffed[id]=true
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
-	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array),  "a",1)
-	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array), "a",1)
+	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array))
+	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
 	
 	
 	

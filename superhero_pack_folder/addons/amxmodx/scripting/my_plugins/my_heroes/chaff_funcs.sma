@@ -145,7 +145,7 @@ public charge_task(id){
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	if(Get_BitVar(chaff_armed_mask,id)){
-		set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID,"", 0,  "a",1)
+		set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID)
 	}
 	
 	
@@ -153,7 +153,7 @@ public charge_task(id){
 	
 }
 charge_user(id){
-	set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID,"", 0,  "a",1)
+	set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID)
 	return 0
 	
 	
