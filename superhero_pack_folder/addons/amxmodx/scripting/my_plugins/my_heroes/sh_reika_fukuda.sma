@@ -1,3 +1,6 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -47,7 +50,7 @@ public newRound(id)
     }
     if ( sh_user_has_hero(id,gHeroID) ) {
         
-        gPlayerUltimateUsed[id]=false
+        sh_unset_cooldown_flag(id)
         sh_end_cooldown(id+SH_COOLDOWN_TASKID)
     }
     return PLUGIN_CONTINUE
@@ -88,7 +91,7 @@ public reika_kd()
 
     if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
-    if(gPlayerUltimateUsed[id]){
+    if(sh_get_cooldown_flag(id)){
 
         sh_sound_deny(id)
         return PLUGIN_HANDLED
@@ -122,7 +125,7 @@ public sh_client_death(victim)
     if(sh_is_active()||!is_user_connected(victim)) return
     if ( sh_user_has_hero(victim,gHeroID) ) {
         
-        gPlayerUltimateUsed[victim]=false
+        sh_unset_cooldown_flag(victim)
         sh_end_cooldown(victim+SH_COOLDOWN_TASKID)
     }
 }

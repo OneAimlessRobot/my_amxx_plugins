@@ -116,7 +116,7 @@ public gokukt_init()
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	reset_speed[id] = false
 	reset_health[id] = false
 	reset_armor[id] = false
@@ -134,7 +134,7 @@ public gokukt_kd()
 	if ( !is_user_alive(id) ) return;
 	
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return
 	}

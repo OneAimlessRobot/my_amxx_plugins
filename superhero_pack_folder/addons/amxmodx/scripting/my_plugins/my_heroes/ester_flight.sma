@@ -1,3 +1,7 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"

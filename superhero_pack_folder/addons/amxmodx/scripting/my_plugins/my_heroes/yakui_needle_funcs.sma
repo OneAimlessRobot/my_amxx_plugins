@@ -1,3 +1,6 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+
 #include "../my_include/superheromod.inc"
 #include <reapi>
 #include "special_fx_inc/sh_yakui_get_set.inc"

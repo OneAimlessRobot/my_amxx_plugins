@@ -27,7 +27,8 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 *
 *   Hero Created by Vectren
 */
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -101,7 +102,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public grenade_throw(id, gid, wid)
 {
-	if(sh_user_has_hero(id,gHeroID) &&!gPlayerUltimateUsed[id] ){
+	if(sh_user_has_hero(id,gHeroID) &&!sh_get_cooldown_flag(id)){
 	if(wid == CSW_HEGRENADE){
 		gWillHit[id]=(generate_float(0.0,gTotalChance)<1.0)
 		entity_set_int(gid,EV_INT_iuser1,gWillHit[id])
@@ -130,7 +131,7 @@ public gambit_init()
 public newSpawn(id)
 {
 	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		set_task(0.1, "gambit_weapons", id)
 		
 	}
@@ -180,7 +181,7 @@ public cooldown(parm[])
 
 	entity_set_int(grenade,EV_INT_iuser1,false)
 
-	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
+	if ( !is_user_alive(id) || sh_get_cooldown_flag(id)) return
 
 	// Cooldown will only be set if user hurts someone with a gambit nade
 	new Float:gambitCooldown = get_cvar_float("gambit_powertimer")
@@ -199,7 +200,7 @@ public on_AmmoX(id)
 		if (iAmmoCount == 0) {
 			set_task(get_cvar_float("gambit_grenadetimer"), "gambit_weapons", id)
 
-			if ( !gPlayerUltimateUsed[id] && gWillHit[id]) {
+			if ( !sh_get_cooldown_flag(id) && gWillHit[id]) {
 				// Have to Find the current HE grenade
 				new iCurrent = -1
 				while ( ( iCurrent = find_ent_by_class(iCurrent, "grenade") ) > 0 ) {

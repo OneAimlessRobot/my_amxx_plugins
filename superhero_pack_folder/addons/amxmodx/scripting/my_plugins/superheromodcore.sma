@@ -371,23 +371,11 @@
 #define gMemoryTableSize 64
 
 //Amount of heroes at a time to display in the amx_help style console listing
-#define HEROAMOUNT 10
+#define HEROAMOUNT 25
 
 //Lets includes detect if the core is loading them or a hero
 #define SHCORE
 
-#include "../include/amxmod.inc"
-#include "../include/amxmodx.inc"
-#include "../include/amxmisc.inc"
-#include "../include/hamsandwich.inc"
-#include "../include/fakemeta.inc"
-#include "../include/engine.inc"
-#include "../include/engine_const.inc"
-#include "../include/fun.inc"
-#include "../include/csx.inc"
-#include "../include/cstrike.inc"
-#include "../include/Vexd_Utilities.inc"
-#include "my_include/superheroconst.inc"
 #include "my_include/superheromod.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #include "my_include/my_author_header.inc"
@@ -395,7 +383,7 @@
 new const SH_CORE_STR[] =  "SuperHero Core"
 
 // Parms Are: Hero, Power Description, Help Info, Needs A Bind?, Level Available At
-enum enumHeros { hero[25], superpower[50], help[128], requiresKeys, availableLevel }
+enum enumHeros { hero[25], superpower[50], help[128], requiresKeys,isCorePower, availableLevel }
 
 // The Big Array that holds all of the heroes, superpowers, help, and other important info
 new gSuperHeros[SH_MAXHEROS][enumHeros]
@@ -423,6 +411,7 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerHasPowerTable[SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
+new gNumPlayerCores[SH_MAXSLOTS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
 new gPlayerMenuOffset[SH_MAXSLOTS+1]
 new gPlayerMenuChoices[SH_MAXSLOTS+1][SH_MAXHEROS+1]  // This will be filled in with # of heroes available
@@ -496,7 +485,7 @@ new gSHConfigDir[128], gBanFile[128], gSHConfig[128], gHelpMotd[1024]
 new sv_superheros, sh_adminaccess, sh_alivedrop, sh_autobalance, sh_objectivexp
 new sh_cmdprojector, sh_debug_messages, sh_endroundsave, sh_hsmult, sh_loadimmediate, sh_lvllimit
 new sh_botsearnxp, sh_botsminlevel,sh_botsmaxlevel
-new sh_maxbinds, sh_maxpowers, sh_menumode, sh_mercyxp, sh_mercyxpmode, sh_minlevel
+new sh_maxbinds, sh_maxpowers,sh_maxcores, sh_menumode, sh_mercyxp, sh_mercyxpmode, sh_minlevel
 new sh_savexp, sh_saveby, sh_xpsavedays, sh_minplrsbhxp, sh_reloadmode, sh_blockvip, sh_ffa
 new mp_friendlyfire, sv_maxspeed, sv_lan, bot_quota
 new sh_anubisdmg_check, gAnubisHero[25]
@@ -577,6 +566,7 @@ public plugin_init()
 	sh_cmdprojector = register_cvar("sh_cmdprojector", "1")
 	sh_endroundsave = register_cvar("sh_endroundsave", "1")
 	sh_hsmult = register_cvar("sh_hsmult", "1.0")
+	sh_maxcores = register_cvar("sh_maxcores", "3")
 	sh_botsearnxp = register_cvar("sh_botsearnxp", "1")
 	sh_botsminlevel = register_cvar("sh_botsminlevel", "5")
 	sh_botsmaxlevel = register_cvar("sh_botsmaxlevel", "10")
@@ -755,6 +745,7 @@ public plugin_natives()
 	register_native("sh_create_hero", "_sh_create_hero")
 	register_native("sh_set_hero_info", "_sh_set_hero_info")
 	register_native("sh_set_hero_bind", "_sh_set_hero_bind")
+	register_native("sh_set_hero_core", "_sh_set_hero_core")
 	register_native("sh_set_hero_shield", "_sh_set_hero_shield")
 	register_native("sh_set_hero_hpap", "_sh_set_hero_hpap")
 	register_native("sh_set_hero_speed", "_sh_set_hero_speed")
@@ -1602,6 +1593,17 @@ public _sh_set_hero_bind()
 	gSuperHeros[heroIndex][requiresKeys] = true
 }
 //----------------------------------------------------------------------------------------------
+public _sh_set_hero_core()
+{
+	new heroIndex = get_param(1)
+
+	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return
+
+	debugMsg(0, 3, "Create Hero-> HeroID: %d - Core: ^"TRUE^"", heroIndex)
+	gSuperHeros[heroIndex][isCorePower] = true
+}
+
+//----------------------------------------------------------------------------------------------
 public _sh_set_hero_shield()
 {
 	new heroIndex = get_param(1)
@@ -1997,6 +1999,7 @@ menuSuperPowers(id, menuOffset)
 	gPlayerMenuChoices[id][0] = 0  // <- 0 choices so far
 	new count = 0, enabled = 0
 	new MaxBinds = min(get_pcvar_num(sh_maxbinds), SH_MAXBINDPOWERS)
+	new MaxCores = min(get_pcvar_num(sh_maxcores), SH_MAXCOREPOWERS)
 	new menuMode = get_pcvar_num(sh_menumode)
 	new bool:thisEnabled
 
@@ -2005,7 +2008,11 @@ menuSuperPowers(id, menuOffset)
 		heroLevel = getHeroLevel(heroIndex)
 		thisEnabled = false
 		if ( playerLevel >= heroLevel ) {
-			if (gMaxPowersLeft[id][heroLevel] > 0 && !(gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])) {
+			if (gMaxPowersLeft[id][heroLevel] > 0
+											&&
+											!(gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])
+											&&
+											!(gNumPlayerCores[id] >= MaxCores && gSuperHeros[heroIndex][isCorePower])) {
 				thisEnabled = true
 			}
 			// Don't want to present this power if the player already has it!
@@ -2054,15 +2061,20 @@ menuSuperPowers(id, menuOffset)
 		}
 		heroIndex = gPlayerMenuChoices[id][x]
 		heroLevel = getHeroLevel(heroIndex)
-		if ( gMaxPowersLeft[id][heroLevel] <= 0 || (gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys]) ) {
+		if ( gMaxPowersLeft[id][heroLevel] <= 0
+								|| (gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])
+								||(gNumPlayerCores[id] >= MaxCores && gSuperHeros[heroIndex][isCorePower]) ) {
 			add(message,charsmax(message),"\d")
 		}
 		else {
 			add(message,charsmax(message),"\w")
 		}
 		keys |= (1<<x-menuOffset) // enable this option
-		format(temp, charsmax(temp), "%s (%d%s)", gSuperHeros[heroIndex][hero], heroLevel, gSuperHeros[heroIndex][requiresKeys] ? "b" : "")
-		format(temp, charsmax(temp), "%d. %-20s- %s^n", x - menuOffset + 1, temp, gSuperHeros[heroIndex][superpower])
+		format(temp, charsmax(temp), "%s (%d%s%s)", gSuperHeros[heroIndex][hero], heroLevel,
+								gSuperHeros[heroIndex][requiresKeys] ? "b" : "",
+								gSuperHeros[heroIndex][isCorePower] ? "c" : "")
+		format(temp, charsmax(temp), "%d. %-25s- %s^n", x - menuOffset + 1, temp,
+								gSuperHeros[heroIndex][superpower])
 		add(message, charsmax(message), temp)
 	}
 
@@ -2124,6 +2136,12 @@ public selectedSuperPower(id, key)
 
 	new heroLevel = getHeroLevel(heroIndex)
 	new MaxBinds = get_pcvar_num(sh_maxbinds)
+	new MaxCores = get_pcvar_num(sh_maxcores)
+	if ((gNumPlayerCores[id] >= MaxCores && gSuperHeros[heroIndex][isCorePower])) {
+		chatMessage(id, _, "You cannot choose more than %d heroes that are core!", MaxCores)
+		menuSuperPowers(id, gPlayerMenuOffset[id])
+		return PLUGIN_HANDLED
+	}
 	if ((gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])) {
 		chatMessage(id, _, "You cannot choose more than %d heroes that require binds", MaxBinds)
 		menuSuperPowers(id, gPlayerMenuOffset[id])
@@ -2137,10 +2155,11 @@ public selectedSuperPower(id, key)
 
 	new message[256]
 	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
-		formatex(message, charsmax(message), "AUTOMATIC POWER: %s^n%s", gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
+		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%s",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
+									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 	else {
-		formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s", gPlayerBinds[id][0]+1, gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
+		formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s%s^n%s", gPlayerBinds[id][0]+1,gSuperHeros[heroIndex][isCorePower]?"(Core Hero) ":"", gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 
 	// Show the Hero Picked
@@ -2185,6 +2204,7 @@ clearPower(id, level)
 
 	// Display Levels will have to rebind this heroes powers...
 	gPlayerBinds[id][0] = 0
+	gNumPlayerCores[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 public cl_clearpowers(id)
@@ -2212,6 +2232,7 @@ clearAllPowers(id, bool:dispStatusText)
 	// OK to fire if mod is off since we want heroes to clean themselves up
 	gPlayerPowers[id][0] = 0
 	gPlayerBinds[id][0] = 0
+	gNumPlayerCores[id] = 0
 
 	new heroIndex
 	new bool:userConnected = is_user_connected(id) ? true : false
@@ -2778,10 +2799,11 @@ displayPowers(id, bool:setThePowers)
 	testLevel(id)
 
 	new message[256], temp[256]
-	new heroIndex, MaxBinds, count, playerLevel, playerpowercount
+	new heroIndex, MaxBinds, bind_count, core_count,playerLevel, playerpowercount
 	new menuid, mkeys
 
-	count = 0
+	bind_count = 0
+	core_count = 0
 	playerLevel = gPlayerLevel[id]
 
 	if ( playerLevel < gNumLevels ) {
@@ -2802,19 +2824,31 @@ displayPowers(id, bool:setThePowers)
 	for ( new x = 1; x <= gNumLevels && x <= playerpowercount; x++ ) {
 		heroIndex = gPlayerPowers[id][x]
 		if ( -1 < heroIndex < gSuperHeroCount ) {
-			// 2 types of heroes - auto heroes and bound heroes...
-			// Bound Heroes require special work...
+			// 3 types of heroes - auto heroes, core heroes and bound heroes...
+			// The two latter require special work...
+			if ( gSuperHeros[heroIndex][isCorePower] ) {
+				core_count++
+				// Make sure this players keys are bound correctly
+				if ( core_count <= get_pcvar_num(sh_maxcores) && core_count <= SH_MAXCOREPOWERS ) {
+					gNumPlayerCores[id] = core_count
+				}
+				else {
+					clearPower(id, x)
+					continue
+				}
+			}
+
 			if ( gSuperHeros[heroIndex][requiresKeys] ) {
-				count++
-				if (count <= 3) {
+				bind_count++
+				if (bind_count <= 3) {
 					if ( message[0] != '^0') add(message, charsmax(message), " ")
-					formatex(temp, charsmax(temp), "%d=%s", count, gSuperHeros[heroIndex])
+					formatex(temp, charsmax(temp), "%d=%s", bind_count, gSuperHeros[heroIndex])
 					add(message, charsmax(message), temp)
 				}
 				// Make sure this players keys are bound correctly
-				if ( count <= get_pcvar_num(sh_maxbinds) && count <= SH_MAXBINDPOWERS ) {
-					gPlayerBinds[id][count] = heroIndex
-					gPlayerBinds[id][0] = count
+				if ( bind_count <= get_pcvar_num(sh_maxbinds) && bind_count <= SH_MAXBINDPOWERS ) {
+					gPlayerBinds[id][bind_count] = heroIndex
+					gPlayerBinds[id][0] = bind_count
 				}
 				else {
 					clearPower(id, x)
@@ -3676,7 +3710,12 @@ showHeroList(id)
 	n += copy(buffer[n], charsmax(buffer)-n, "Installed Heroes:^n^n")
 
 	for (new x = 0; x < gSuperHeroCount; x++ ) {
-		n += formatex(buffer[n], charsmax(buffer)-n, "%s (%d%s) - %s^n", gSuperHeros[x][hero], getHeroLevel(x), gSuperHeros[x][requiresKeys] ? "b" : "", gSuperHeros[x][superpower])
+		n += formatex(buffer[n], charsmax(buffer)-n, "%s (%d%s%s) - %s^n",
+									gSuperHeros[x][hero],
+									getHeroLevel(x),
+									gSuperHeros[x][requiresKeys] ? "b" : "",
+									gSuperHeros[x][isCorePower] ? "c" : "",
+									gSuperHeros[x][superpower])
 	}
 
 	copy(buffer[n], charsmax(buffer)-n, "</pre></body></html>")
@@ -4421,7 +4460,7 @@ showHeroes(id)
 			formatex(bindNumtxt, charsmax(bindNumtxt), "- POWER #%d", bindNum)
 		}
 
-		formatex(name_lvl, charsmax(name_lvl), "%s (%d)", gSuperHeros[heroIndex][hero], getHeroLevel(heroIndex))
+		formatex(name_lvl, charsmax(name_lvl), "%s%s(%d)", gSuperHeros[heroIndex][isCorePower]?" (Core) ":" ",gSuperHeros[heroIndex][hero], getHeroLevel(heroIndex))
 		n += formatex(buffer[n], charsmax(buffer)-n, "%d) %-18s- %s %s^n", x, name_lvl, gSuperHeros[heroIndex][superpower], bindNumtxt)
 	}
 
@@ -4484,7 +4523,12 @@ public showHeroListCon(id)
 		for( new x = 0; x < gSuperHeroCount; x++ ) {
 			if ( (containi(gSuperHeros[x][hero], argx) != -1) || (containi(gSuperHeros[x][help], argx) != -1) ) {
 				if ( n > start && n <= end ) {
-					console_print(id, "%3d: %s (%d%s) - %s", n, gSuperHeros[x][hero], getHeroLevel(x), gSuperHeros[x][requiresKeys] ? "b" : "", gSuperHeros[x][help])
+					console_print(id, "%3d: %s (%d%s%s) - %s", n,
+											gSuperHeros[x][hero],
+											getHeroLevel(x),
+											gSuperHeros[x][requiresKeys] ? "b" : "",
+											gSuperHeros[x][isCorePower] ? "c" : "",
+											gSuperHeros[x][help])
 				}
 				n++
 			}
@@ -4514,7 +4558,12 @@ public showHeroListCon(id)
 		end = start + HEROAMOUNT
 		if ( end > gSuperHeroCount ) end = gSuperHeroCount
 		for ( new i = start; i < end; i++ ) {
-			console_print(id, "%3d: %s (%d%s) - %s", i+1, gSuperHeros[i][hero], getHeroLevel(i), gSuperHeros[i][requiresKeys] ? "b" : "", gSuperHeros[i][help])
+			console_print(id, "%3d: %s (%d%s%s) - %s", i+1,
+											gSuperHeros[i][hero],
+											getHeroLevel(i),
+											gSuperHeros[i][requiresKeys] ? "b" : "",
+											gSuperHeros[i][isCorePower] ? "c" : "",
+											gSuperHeros[i][help])
 		}
 		console_print(id, "----- Entries %d - %d of %d -----", start+1, end, gSuperHeroCount)
 		if ( end < gSuperHeroCount ) {
@@ -4661,6 +4710,7 @@ initPlayer(id)
 	gPlayerXP[id] = 0
 	gPlayerPowers[id][0] = 0
 	gPlayerBinds[id][0] = 0
+	gNumPlayerCores[id] = 0
 	gCurrentWeapon[id] = 0
 	gPlayerStunTimer[id] = -1
 	gPlayerGodTimer[id] = -1

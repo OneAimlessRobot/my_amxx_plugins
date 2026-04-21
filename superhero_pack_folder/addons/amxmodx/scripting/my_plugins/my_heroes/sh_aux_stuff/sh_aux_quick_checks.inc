@@ -12,11 +12,7 @@ stock bool:client_hittable(vic_userid,optional_bool=1){
 		
 		return false;
 	}
-	if(!is_user_connected(vic_userid)){
-		
-		return false;
-	}
-	return (((is_user_alive(vic_userid))?true:false)&&optional_bool);
+	return bool:is_user_alive(vic_userid)&&optional_bool;
 
 }
 

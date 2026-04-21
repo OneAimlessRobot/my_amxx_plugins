@@ -53,7 +53,7 @@ public saddam_init()
 	new id=str_to_num(temp)
 	
 	
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	gHasSpawnPoint[id]=false
 }
 //----------------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ public newRound(id)
 		userSpawn[id][1]=origin[1]
 		userSpawn[id][2]=origin[2]
 		
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gHasSpawnPoint[id]=true
 	}
 }
@@ -96,7 +96,7 @@ public saddam_kd()
 	
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() ) return
 	
-	if ( gPlayerUltimateUsed[id] ) 
+	if (sh_get_cooldown_flag(id)) 
 	{
 		playSoundDenySelect(id)
 		return

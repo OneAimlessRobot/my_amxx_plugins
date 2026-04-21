@@ -74,7 +74,7 @@ public cable_init()
 	new id = str_to_num(temp)
 
 	if (sh_user_has_hero(id,gHeroID)) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		laser_shots[id] = get_cvar_num("cable_laser_ammo")
 	}
 }
@@ -89,7 +89,7 @@ public cable_death()
 public newRound(id)
 {
 	laser_shots[id] = get_cvar_num("cable_laser_ammo")
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ public cable_kd()
 		return PLUGIN_HANDLED
 	}
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}

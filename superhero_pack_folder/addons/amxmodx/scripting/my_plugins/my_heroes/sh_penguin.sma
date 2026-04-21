@@ -101,7 +101,7 @@ public penguin_init()
 public newSpawn(id)
 {
 	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		set_task(0.1, "penguin_weapons", id)
 		
 	}
@@ -116,7 +116,7 @@ public penguin_weapons(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
+	if ( !is_user_alive(id) ||sh_get_cooldown_flag(id)) return
 
 	// If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
@@ -132,7 +132,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || gPlayerUltimateUsed[id] ) return
+	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || sh_get_cooldown_flag(id) ) return
 
 	new wpnid = read_data(2)
 
@@ -153,7 +153,7 @@ public on_AmmoX(id)
 		if ( iAmmoCount == 0 ) {
 			set_task(get_cvar_float("penguin_grenadetimer"), "penguin_weapons", id)
 
-			if ( !gPlayerUltimateUsed[id] ) {
+			if ( !sh_get_cooldown_flag(id) ) {
 				new iGrenade = -1
 				while ( (iGrenade = find_ent_by_class(iGrenade, "grenade")) > 0 ) {
 					new model[32]
@@ -390,7 +390,7 @@ public cooldown(parm[])
 
 	entity_set_int(grenade,EV_INT_iuser2,false)
 
-	if ( !is_user_alive(id) || gPlayerUltimateUsed[id] ) return
+	if ( !is_user_alive(id) || sh_get_cooldown_flag(id)) return
 
 	// Cooldown will only be set if user hurts someone with a Grenader nade
 	new Float:penguinCooldown = get_cvar_float("penguin_cooldown")

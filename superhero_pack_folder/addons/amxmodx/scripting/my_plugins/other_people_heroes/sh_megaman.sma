@@ -86,7 +86,7 @@ public newRound(id)
   if ( !hasRoundStarted() )
   {
     laser_shots[id] = get_cvar_num("megaman_laser_ammo") 
-    gPlayerUltimateUsed[id]=false
+    sh_unset_cooldown_flag(id)
   }
   return PLUGIN_HANDLED
 }

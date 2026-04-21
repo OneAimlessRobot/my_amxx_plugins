@@ -16,7 +16,9 @@ neo_fly_downforce 1000 	//Def=1000
 neo_toggle 0		//Def=0
 
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -185,7 +187,7 @@ public neo_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED 
@@ -309,10 +311,10 @@ public user_fly(parm[])
 	
 	if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_JUMP)  // FORWARD + MOVERIGHT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -320,19 +322,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] -= 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // FORWARD + MOVERIGHT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -340,19 +342,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] -= 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_JUMP)  // FORWARD + MOVELEFT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -360,19 +362,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] += 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // FORWARD + MOVELEFT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -380,19 +382,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] += 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_JUMP && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_BACK)  // BACK + MOVERIGHT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -400,19 +402,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] -= 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // BACK + MOVERIGHT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -420,19 +422,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] -= 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_JUMP && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_BACK)  // BACK + MOVELEFT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -440,19 +442,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] += 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // BACK + MOVELEFT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -460,19 +462,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] += 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_FORWARD) //  MOVERIGHT  + FORWARD 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -480,19 +482,19 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] -= 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_BACK) // MOVERIGHT + BACK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -500,19 +502,19 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] -= 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_FORWARD) // MOVELEFT + FORWARD 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -520,19 +522,19 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] += 45 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_BACK) // MOVELEFT + BACK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -540,57 +542,57 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] += 135 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_JUMP)  // FORWARD + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
 		
 		xAngles[0] = -45.0 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_DUCK)  // FORWARD + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
 		
 		xAngles[0] = 45.0 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_JUMP)  // BACK + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -598,19 +600,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] += 180 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_DUCK)  // BACK + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -618,19 +620,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] += 180 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	}    
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_JUMP)  // MOVERIGHT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -638,19 +640,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] -= 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // MOVERIGHT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -658,19 +660,19 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] -= 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_JUMP)  // MOVELEFT + JUMP 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -678,19 +680,19 @@ public user_fly(parm[])
 		xAngles[0] = -45.0 
 		xAngles[1] += 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // MOVELEFT + DUCK 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -698,17 +700,17 @@ public user_fly(parm[])
 		xAngles[0] = 45.0 
 		xAngles[1] += 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD) // FORWARD 
-		VelocityByAim(id, get_cvar_num("neo_flyspeed") , Velocity[id]) 
+		velocity_by_aim(id, get_cvar_num("neo_flyspeed") , Velocity[id]) 
 	else if(get_user_button(id)&IN_BACK) // BACK 
-		VelocityByAim(id, -get_cvar_num("neo_flyspeed") , Velocity[id]) 
+		velocity_by_aim(id, -get_cvar_num("neo_flyspeed") , Velocity[id]) 
 	else if(get_user_button(id)&IN_DUCK) // DUCK 
 	{ 
 		Velocity[id][0] = 0.0 
@@ -723,10 +725,10 @@ public user_fly(parm[])
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT) // MOVERIGHT 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -734,19 +736,19 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] -= 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT) // MOVELEFT 
 	{ 
-		Entvars_Get_Vector(id, EV_VEC_v_angle, xAngles) 
-		Entvars_Get_Vector(id, EV_VEC_origin, xOrigin) 
+		entity_get_vector(id, EV_VEC_v_angle, xAngles) 
+		entity_get_vector(id, EV_VEC_origin, xOrigin) 
 		
-		xEnt = CreateEntity("info_target") 
+		xEnt = create_entity("info_target") 
 		if(xEnt == 0) { 
 			return PLUGIN_HANDLED_MAIN 
 		} 
@@ -754,12 +756,12 @@ public user_fly(parm[])
 		xAngles[0] = 0.0 
 		xAngles[1] += 90 
 		
-		ENT_SetOrigin(xEnt, xOrigin) 
-		Entvars_Set_Vector(xEnt, EV_VEC_v_angle, xAngles) 
+		entity_set_origin(xEnt, xOrigin) 
+		entity_set_vector(xEnt, EV_VEC_v_angle, xAngles) 
 		
-		VelocityByAim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
+		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		RemoveEntity(xEnt) 
+		remove_entity(xEnt) 
 	} 
 	else 
 	{ 
@@ -769,22 +771,22 @@ public user_fly(parm[])
 	} 
 	
 	
-	Entvars_Set_Vector(id, EV_VEC_velocity, Velocity[id]) 
+	entity_set_vector(id, EV_VEC_velocity, Velocity[id]) 
 	
 	new Float: pOrigin[3] 
 	new Float: zOrigin[3] 
 	new Float: zResult[3] 
 	
-	Entvars_Get_Vector(id, EV_VEC_origin, pOrigin) 
+	entity_get_vector(id, EV_VEC_origin, pOrigin) 
 	
 	zOrigin[0] = pOrigin[0] 
 	zOrigin[1] = pOrigin[1] 
 	zOrigin[2] = pOrigin[2] - 1000 
 	
-	TraceLn(id,pOrigin, zOrigin, zResult) 
+	trace_line(id,pOrigin, zOrigin, zResult) 
 	
-	if(Entvars_Get_Int(id, EV_INT_sequence) != 8 && (zResult[2] + 100) < pOrigin[2] && is_user_alive(id) && (Velocity[id][0] > 0.0 && Velocity[id][1] > 0.0 && Velocity[id][2] > 0.0)) 
-		Entvars_Set_Int(id, EV_INT_sequence, 8) 
+	if(entity_get_int(id, EV_INT_sequence) != 8 && (zResult[2] + 100) < pOrigin[2] && is_user_alive(id) && (Velocity[id][0] > 0.0 && Velocity[id][1] > 0.0 && Velocity[id][2] > 0.0)) 
+		entity_set_int(id, EV_INT_sequence, 8) 
 	
 	return PLUGIN_HANDLED 
 } 

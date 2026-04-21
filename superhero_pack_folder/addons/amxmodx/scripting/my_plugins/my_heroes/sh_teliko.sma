@@ -1,3 +1,6 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -61,7 +64,7 @@ public plugin_init()
 	register_cvar("Teliko_mega_counter_stun_time", "3.0")
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
 	register_event("ResetHUD","newRound","b")
-	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level" )
+	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level", true)
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	

@@ -1,0 +1,623 @@
+Compiling plugins from index 1 to 23
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+bknife_fx.sma(70) : error 017: undefined symbol "init_hud_syncs"
+bknife_fx.sma(77) : error 017: undefined symbol "client_hittable"
+bknife_fx.sma(115) : error 017: undefined symbol "sh_clients_are_same_team"
+bknife_fx.sma(140) : error 017: undefined symbol "xs_vec_make2d"
+bknife_fx.sma(141) : error 017: undefined symbol "xs_vec_normalize"
+bknife_fx.sma(145) : error 017: undefined symbol "xs_vec_make2d"
+bknife_fx.sma(149) : error 017: undefined symbol "xs_vec_dot"
+bknife_fx.sma(170) : error 017: undefined symbol "client_hittable"
+bknife_fx.sma(195) : error 017: undefined symbol "client_hittable"
+bknife_fx.sma(211) : error 017: undefined symbol "PIERCE_WOUND_SFX"
+bknife_fx.sma(211) : warning 215: expression has no effect
+bknife_fx.sma(211) : warning 215: expression has no effect
+bknife_fx.sma(211) : warning 215: expression has no effect
+bknife_fx.sma(211) : warning 215: expression has no effect
+bknife_fx.sma(211) : error 001: expected token: ";", but found ")"
+
+Compilation aborted.
+26 Errors.
+Could not locate output file ../../../plugins/bknife_fx.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+camera_funcs.sma(104) : error 017: undefined symbol "client_hittable"
+camera_funcs.sma(362) : error 017: undefined symbol "fm_get_aim_origin"
+camera_funcs.sma(366) : error 017: undefined symbol "xs_vec_sub"
+camera_funcs.sma(368) : error 017: undefined symbol "xs_vec_normalize"
+camera_funcs.sma(370) : error 017: undefined symbol "xs_vec_mul_scalar"
+camera_funcs.sma(370) : warning 215: expression has no effect
+camera_funcs.sma(370) : error 001: expected token: ";", but found ")"
+camera_funcs.sma(370) : error 029: invalid expression, assumed zero
+camera_funcs.sma(370) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+15 Errors.
+Could not locate output file ../../../plugins/camera_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+chaff_funcs.sma(34) : error 017: undefined symbol "register_entity_as_wall_touchable"
+chaff_funcs.sma(35) : error 017: undefined symbol "register_custom_touchable"
+chaff_funcs.sma(35) : warning 215: expression has no effect
+chaff_funcs.sma(35) : error 001: expected token: ";", but found ")"
+chaff_funcs.sma(35) : error 029: invalid expression, assumed zero
+chaff_funcs.sma(35) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+12 Errors.
+Could not locate output file ../../../plugins/chaff_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+chaff_fx.sma(25) : error 017: undefined symbol "init_explosion_defaults"
+chaff_fx.sma(32) : error 017: undefined symbol "client_hittable"
+chaff_fx.sma(129) : error 017: undefined symbol "client_hittable"
+chaff_fx.sma(147) : error 017: undefined symbol "client_hittable"
+chaff_fx.sma(153) : error 017: undefined symbol "LineColors"
+chaff_fx.sma(153) : error 017: undefined symbol "LTBLUE"
+chaff_fx.sma(153) : error 029: invalid expression, assumed zero
+chaff_fx.sma(153) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+15 Errors.
+Could not locate output file ../../../plugins/chaff_fx.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+colt_funcs.sma(92) : error 017: undefined symbol "ent_check"
+colt_funcs.sma(104) : error 017: undefined symbol "ent_check"
+colt_funcs.sma(120) : error 017: undefined symbol "ent_check"
+colt_funcs.sma(142) : error 017: undefined symbol "ent_check"
+colt_funcs.sma(158) : error 017: undefined symbol "ent_check"
+
+5 Errors.
+Could not locate output file ../../../plugins/colt_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+d_barrel_funcs.sma(164) : error 017: undefined symbol "fm_give_item"
+d_barrel_funcs.sma(167) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(197) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(226) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(236) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(250) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(262) : error 017: undefined symbol "fm_get_user_weapon_entity"
+d_barrel_funcs.sma(265) : error 017: undefined symbol "m_fInReload"
+d_barrel_funcs.sma(266) : error 017: undefined symbol "m_flNextAttack"
+d_barrel_funcs.sma(312) : error 017: undefined symbol "fm_find_ent_by_owner"
+d_barrel_funcs.sma(372) : error 017: undefined symbol "xs_vec_mul_scalar"
+d_barrel_funcs.sma(375) : error 017: undefined symbol "xs_vec_mul_scalar"
+d_barrel_funcs.sma(379) : error 017: undefined symbol "xs_vec_mul_scalar"
+d_barrel_funcs.sma(382) : error 017: undefined symbol "xs_vec_add"
+d_barrel_funcs.sma(460) : error 017: undefined symbol "m_szAnimExtention"
+d_barrel_funcs.sma(460) : warning 215: expression has no effect
+d_barrel_funcs.sma(460) : warning 215: expression has no effect
+d_barrel_funcs.sma(460) : warning 215: expression has no effect
+d_barrel_funcs.sma(460) : warning 215: expression has no effect
+d_barrel_funcs.sma(460) : error 001: expected token: ";", but found ")"
+d_barrel_funcs.sma(460) : error 029: invalid expression, assumed zero
+d_barrel_funcs.sma(460) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+18 Errors.
+Could not locate output file ../../../plugins/d_barrel_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+bleed_knife_inc/sh_bknife_fx.inc(25) : error 017: undefined symbol "PIERCE_WOUND_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+erica_man_hook.sma(65) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(83) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(112) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(137) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(148) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(198) : error 017: undefined symbol "orient_user"
+erica_man_hook.sma(212) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(240) : error 017: undefined symbol "xs_vec_make2d"
+erica_man_hook.sma(241) : error 017: undefined symbol "xs_vec_normalize"
+erica_man_hook.sma(266) : error 017: undefined symbol "sh_clients_are_same_team"
+erica_man_hook.sma(272) : error 017: undefined symbol "xs_vec_make2d"
+erica_man_hook.sma(275) : error 017: undefined symbol "xs_vec_dot"
+erica_man_hook.sma(315) : error 017: undefined symbol "client_hittable"
+erica_man_hook.sma(336) : error 017: undefined symbol "xs_vec_make2d"
+erica_man_hook.sma(337) : error 017: undefined symbol "xs_vec_normalize"
+erica_man_hook.sma(341) : error 017: undefined symbol "xs_vec_make2d"
+erica_man_hook.sma(347) : error 017: undefined symbol "xs_vec_dot"
+
+25 Errors.
+Could not locate output file ../../../plugins/erica_man_hook.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+ester_flight.sma(85) : error 017: undefined symbol "register_custom_touchable"
+ester_flight.sma(85) : warning 215: expression has no effect
+ester_flight.sma(85) : error 001: expected token: ";", but found ")"
+ester_flight.sma(85) : error 029: invalid expression, assumed zero
+ester_flight.sma(85) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+19 Errors.
+Could not locate output file ../../../plugins/ester_flight.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+ethereal_funcs.sma(123) : error 017: undefined symbol "fm_give_item"
+ethereal_funcs.sma(151) : error 017: undefined symbol "fm_get_user_weapon_entity"
+ethereal_funcs.sma(209) : error 017: undefined symbol "fm_find_ent_by_owner"
+ethereal_funcs.sma(310) : error 017: undefined symbol "xs_vec_sub"
+ethereal_funcs.sma(312) : error 017: undefined symbol "xs_vec_mul_scalar"
+ethereal_funcs.sma(313) : error 017: undefined symbol "xs_vec_add"
+ethereal_funcs.sma(672) : error 017: undefined symbol "xs_vec_mul_scalar"
+ethereal_funcs.sma(673) : error 017: undefined symbol "xs_vec_add"
+ethereal_funcs.sma(678) : error 017: undefined symbol "xs_vec_mul_scalar"
+ethereal_funcs.sma(679) : error 017: undefined symbol "xs_vec_add"
+ethereal_funcs.sma(708) : error 017: undefined symbol "xs_vec_add"
+ethereal_funcs.sma(712) : error 017: undefined symbol "xs_vec_sub"
+ethereal_funcs.sma(713) : error 017: undefined symbol "xs_vec_sub"
+ethereal_funcs.sma(718) : error 017: undefined symbol "xs_vec_mul_scalar"
+ethereal_funcs.sma(720) : error 017: undefined symbol "xs_vec_add"
+
+15 Errors.
+Could not locate output file ../../../plugins/ethereal_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+flora_inc/flora_field.inc(37) : error 017: undefined symbol "GREEN"
+flora_inc/flora_field.inc(40 -- 42) : error 008: must be a constant expression; assumed zero
+flora_field.sma(103) : error 017: undefined symbol "init_hud_syncs"
+flora_field.sma(271) : error 017: undefined symbol "client_hittable"
+flora_field.sma(335) : error 017: undefined symbol "client_hittable"
+flora_field.sma(380) : error 017: undefined symbol "client_hittable"
+flora_field.sma(445) : error 017: undefined symbol "client_hittable"
+flora_field.sma(498) : error 017: undefined symbol "client_hittable"
+flora_field.sma(557) : error 017: undefined symbol "LineColors"
+flora_field.sma(557) : error 017: undefined symbol "ORANGE"
+flora_field.sma(557) : error 029: invalid expression, assumed zero
+
+Compilation aborted.
+26 Errors.
+Could not locate output file ../../../plugins/flora_field.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+graciete_jet.sma(46) : error 017: undefined symbol "init_explosion_defaults"
+graciete_jet.sma(114) : error 017: undefined symbol "client_hittable"
+graciete_jet.sma(123) : error 017: undefined symbol "RED"
+graciete_jet.sma(123) : warning 215: expression has no effect
+graciete_jet.sma(123) : warning 215: expression has no effect
+graciete_jet.sma(123) : error 001: expected token: ";", but found ")"
+graciete_jet.sma(123) : error 029: invalid expression, assumed zero
+graciete_jet.sma(123) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+21 Errors.
+Could not locate output file ../../../plugins/graciete_jet.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+h_rifle_funcs.sma(174) : error 017: undefined symbol "fm_get_user_weapon_entity"
+h_rifle_funcs.sma(198) : error 017: undefined symbol "fm_get_user_weapon_entity"
+h_rifle_funcs.sma(236) : error 017: undefined symbol "fm_get_user_weapon_entity"
+h_rifle_funcs.sma(260) : error 017: undefined symbol "fm_get_user_weapon_entity"
+h_rifle_funcs.sma(267) : error 017: undefined symbol "XO_WEAPON"
+h_rifle_funcs.sma(273) : error 017: undefined symbol "m_fInReload"
+h_rifle_funcs.sma(273) : warning 215: expression has no effect
+h_rifle_funcs.sma(273) : error 017: undefined symbol "XO_WEAPON"
+h_rifle_funcs.sma(273) : error 029: invalid expression, assumed zero
+h_rifle_funcs.sma(273) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+9 Errors.
+Could not locate output file ../../../plugins/h_rifle_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+jaqueo_shield.sma(217) : error 017: undefined symbol "client_hittable"
+jaqueo_shield.sma(310) : error 017: undefined symbol "client_hittable"
+
+9 Errors.
+Could not locate output file ../../../plugins/jaqueo_shield.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+ksun_particle.sma(151) : error 017: undefined symbol "SPORE_HEAL_SFX"
+ksun_particle.sma(151) : warning 215: expression has no effect
+ksun_particle.sma(151) : warning 215: expression has no effect
+ksun_particle.sma(151) : warning 215: expression has no effect
+ksun_particle.sma(151) : warning 215: expression has no effect
+ksun_particle.sma(151) : error 001: expected token: ";", but found ")"
+ksun_particle.sma(151) : error 029: invalid expression, assumed zero
+ksun_particle.sma(151) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+18 Errors.
+Could not locate output file ../../../plugins/ksun_particle.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+ksun_scanner.sma(207) : error 017: undefined symbol "client_hittable"
+ksun_scanner.sma(277) : error 017: undefined symbol "client_hittable"
+ksun_scanner.sma(313) : error 017: undefined symbol "client_hittable"
+ksun_scanner.sma(320) : error 017: undefined symbol "sh_clients_are_same_team"
+ksun_scanner.sma(343) : error 017: undefined symbol "client_hittable"
+ksun_scanner.sma(361) : error 017: undefined symbol "client_hittable"
+ksun_scanner.sma(376) : error 017: undefined symbol "SPORE_HEAL_SFX"
+
+14 Errors.
+Could not locate output file ../../../plugins/ksun_scanner.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+ksun_spore_launcher.sma(209) : error 017: undefined symbol "client_hittable"
+ksun_spore_launcher.sma(225) : error 017: undefined symbol "client_hittable"
+ksun_spore_launcher.sma(316) : error 017: undefined symbol "SPORE_HEAL_SFX"
+ksun_spore_launcher.sma(316) : warning 215: expression has no effect
+ksun_spore_launcher.sma(316) : warning 215: expression has no effect
+ksun_spore_launcher.sma(316) : warning 215: expression has no effect
+ksun_spore_launcher.sma(316) : warning 215: expression has no effect
+ksun_spore_launcher.sma(316) : error 001: expected token: ";", but found ")"
+ksun_spore_launcher.sma(316) : error 029: invalid expression, assumed zero
+ksun_spore_launcher.sma(316) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+13 Errors.
+Could not locate output file ../../../plugins/ksun_spore_launcher.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+ksun_ultimate_module.sma(54) : error 017: undefined symbol "FAST_RELOAD_BITSUM"
+ksun_ultimate_module.sma(92) : error 017: undefined symbol "client_hittable"
+ksun_ultimate_module.sma(98) : error 017: undefined symbol "do_fast_reload"
+ksun_ultimate_module.sma(104) : error 017: undefined symbol "client_hittable"
+ksun_ultimate_module.sma(158) : error 017: undefined symbol "SPORE_HEAL_SFX"
+ksun_ultimate_module.sma(158) : warning 215: expression has no effect
+ksun_ultimate_module.sma(158) : warning 215: expression has no effect
+ksun_ultimate_module.sma(158) : warning 215: expression has no effect
+ksun_ultimate_module.sma(158) : warning 215: expression has no effect
+ksun_ultimate_module.sma(158) : error 001: expected token: ";", but found ")"
+ksun_ultimate_module.sma(158) : error 029: invalid expression, assumed zero
+ksun_ultimate_module.sma(158) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+15 Errors.
+Could not locate output file ../../../plugins/ksun_ultimate_module.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+lara_spear_funcs.sma(45) : error 017: undefined symbol "register_entity_as_wall_touchable"
+lara_spear_funcs.sma(46) : error 017: undefined symbol "register_custom_touchable"
+lara_spear_funcs.sma(46) : warning 215: expression has no effect
+lara_spear_funcs.sma(46) : error 001: expected token: ";", but found ")"
+lara_spear_funcs.sma(46) : error 029: invalid expression, assumed zero
+lara_spear_funcs.sma(46) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+20 Errors.
+Could not locate output file ../../../plugins/lara_spear_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+lena_l96_funcs.sma(53) : error 017: undefined symbol "register_entity_as_wall_touchable"
+lena_l96_funcs.sma(54) : error 017: undefined symbol "register_custom_touchable"
+lena_l96_funcs.sma(54) : warning 215: expression has no effect
+lena_l96_funcs.sma(54) : error 001: expected token: ";", but found ")"
+lena_l96_funcs.sma(54) : error 029: invalid expression, assumed zero
+lena_l96_funcs.sma(54) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+20 Errors.
+Could not locate output file ../../../plugins/lena_l96_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+maria_riveter_funcs.sma(36) : error 017: undefined symbol "register_entity_as_wall_touchable"
+maria_riveter_funcs.sma(37) : error 017: undefined symbol "register_custom_touchable"
+maria_riveter_funcs.sma(37) : warning 215: expression has no effect
+maria_riveter_funcs.sma(37) : error 001: expected token: ";", but found ")"
+maria_riveter_funcs.sma(37) : error 029: invalid expression, assumed zero
+maria_riveter_funcs.sma(37) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+20 Errors.
+Could not locate output file ../../../plugins/maria_riveter_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+mine_funcs.sma(38) : error 017: undefined symbol "init_explosion_defaults"
+mine_funcs.sma(95) : error 017: undefined symbol "client_hittable"
+mine_funcs.sma(137) : error 017: undefined symbol "client_hittable"
+mine_funcs.sma(163) : error 017: undefined symbol "client_hittable"
+mine_funcs.sma(170) : error 088: number of arguments does not match definition
+
+20 Errors.
+Could not locate output file ../../../plugins/mine_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+molotov_funcs.sma(38) : error 017: undefined symbol "register_entity_as_wall_touchable"
+molotov_funcs.sma(39) : error 017: undefined symbol "register_custom_touchable"
+molotov_funcs.sma(39) : warning 215: expression has no effect
+molotov_funcs.sma(39) : error 001: expected token: ";", but found ")"
+molotov_funcs.sma(39) : error 029: invalid expression, assumed zero
+molotov_funcs.sma(39) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+12 Errors.
+Could not locate output file ../../../plugins/molotov_funcs.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(51) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(53) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(60) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(62) : error 017: undefined symbol "crush_stunned"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(64) : error 017: undefined symbol "LTBLUE"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(74) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(80) : error 017: undefined symbol "SPORE_HEAL_SFX"
+sh_aux_stuff/sh_aux_stuff_natives_pt3.inc(84) : error 017: undefined symbol "SH_HUD_MSG_BUFF_SIZE"
+molotov_fx.sma(35) : error 017: undefined symbol "client_hittable"
+molotov_fx.sma(58) : error 017: undefined symbol "client_hittable"
+molotov_fx.sma(62) : error 017: undefined symbol "PINK"
+molotov_fx.sma(62) : warning 215: expression has no effect
+molotov_fx.sma(62) : warning 215: expression has no effect
+molotov_fx.sma(62) : warning 215: expression has no effect
+molotov_fx.sma(62) : warning 215: expression has no effect
+molotov_fx.sma(62) : warning 215: expression has no effect
+molotov_fx.sma(62) : error 001: expected token: ";", but found ")"
+molotov_fx.sma(62) : error 029: invalid expression, assumed zero
+molotov_fx.sma(62) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+21 Errors.
+Could not locate output file ../../../plugins/molotov_fx.amx (compile failed).
+AMX Mod X Compiler 1.10.0.5474
+Copyright (c) 1997-2006 ITB CompuPhase
+Copyright (c) 2004-2013 AMX Mod X Team
+
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(23) : error 017: undefined symbol "PINK"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(65) : error 017: undefined symbol "LTGREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "RED"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(71) : error 017: undefined symbol "LASER_LINE_DEFAULT_SOUND"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(78) : error 017: undefined symbol "WHITE"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(80) : error 017: undefined symbol "GREEN"
+sh_aux_stuff/sh_aux_stuff_natives_pt1.inc(94) : error 017: undefined symbol "CUSTOM"
+pill_gatling_funcs.sma(51) : error 017: undefined symbol "register_entity_as_wall_touchable"
+pill_gatling_funcs.sma(52) : error 017: undefined symbol "register_custom_touchable"
+pill_gatling_funcs.sma(52) : warning 215: expression has no effect
+pill_gatling_funcs.sma(52) : error 001: expected token: ";", but found ")"
+pill_gatling_funcs.sma(52) : error 029: invalid expression, assumed zero
+pill_gatling_funcs.sma(52) : fatal error 107: too many error messages on one line
+
+Compilation aborted.
+12 Errors.
+Could not locate output file ../../../plugins/pill_gatling_funcs.amx (compile failed).

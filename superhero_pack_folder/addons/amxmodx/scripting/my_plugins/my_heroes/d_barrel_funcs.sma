@@ -1,4 +1,6 @@
-
+#define I_WANT_CONSTANTS
+#define I_WANT_FAKEMETA_UTIL
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -774,7 +776,7 @@ public Register_SafetyFuncBot(id)
 
 public Safety_Connected(id)
 {
-	Set_BitVar(g_IsConnected, id)
+	Set_BitVar(g_IsConnected, id);
 	UnSet_BitVar(g_IsAlive, id)
 	
 	g_PlayerWeapon[id] = 0
@@ -782,7 +784,7 @@ public Safety_Connected(id)
 
 public Safety_Disconnected(id)
 {
-	UnSet_BitVar(g_IsConnected, id)
+	UnSet_BitVar(g_IsConnected, id);
 	UnSet_BitVar(g_IsAlive, id)
 	
 	g_PlayerWeapon[id] = 0

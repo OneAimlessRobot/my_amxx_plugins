@@ -9,7 +9,9 @@
 	thrashy_ndynamites 10
 	thrashy_cooldown 30
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -194,7 +196,7 @@ public thrashy_kd()
 		return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] || !gThrashyExplosionAmmo[id]) 
+	if ( sh_get_cooldown_flag(id) || !gThrashyExplosionAmmo[id]) 
 	{
 		playSoundDenySelect(id)
 		if ( gThrashyExplosionAmmo[id] ){
@@ -209,7 +211,7 @@ public thrashy_kd()
 	BlowUp(id,false);
 
 	new currAmmount=--gThrashyExplosionAmmo[id];
-	gPlayerUltimateUsed[id]=true
+	sh_set_cooldown_flag(id)
 	if ( 0 < currAmmount < 5 ){
 		sh_chat_message( id, gHeroID, "You Have %d Dynamites%s Left", currAmmount, currAmmount == 1 ? "" : "s" );
 	}
@@ -228,7 +230,7 @@ public newRound(id)
 	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && shModActive() ) {
 		thrashy_haveable_check(id)
 		if(sh_user_has_hero(id,gHeroID) ){
-			gPlayerUltimateUsed[id]=false
+			sh_unset_cooldown_flag(id)
 			gThrashyExplosionAmmo[id]=ndynamites
 			switchgun(id)
 			thrashy_weapons(id)
@@ -300,7 +302,7 @@ public thrashy_weapons(id)
 public death()
 {
 	new id = read_data(2)
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id,true)

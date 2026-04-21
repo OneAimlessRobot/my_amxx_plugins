@@ -91,7 +91,7 @@ public black_kd()
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !shModActive() ) return 
 
-	if ( gPlayerUltimateUsed[id] || gBHTimer > 0 ) {
+	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {
 		playSoundDenySelect(id)
 		return 
 	}
@@ -212,7 +212,7 @@ public black_loop()
 //-------------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	gBHTimer = -1
 	gCurrentBH = 0
 	black_endmode(id)

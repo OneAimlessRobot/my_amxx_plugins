@@ -11,7 +11,9 @@ arcticPredator_explode_radius 600
 arcticPredator_explode_maxdamage 250
 */
 
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -180,7 +182,7 @@ public arcticPredator_kd()
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -212,7 +214,7 @@ public newRound(id)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
 	if ( sh_user_has_hero(id,gHeroID) && shModActive() ) {
-		gPlayerUltimateUsed[id]=false
+		sh_unset_cooldown_flag(id)
 		discThrown[id] = false
 		arcpredator_weapons(id)
 		switchgun(id)
@@ -362,8 +364,8 @@ public death()
 	new id = read_data(2)
 	new attacker=read_data(1)
 	
-	g_huntTimer[id] = 0
-	gPlayerUltimateUsed[id]=false
+	g_huntTimer[id] = 0;
+	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id)

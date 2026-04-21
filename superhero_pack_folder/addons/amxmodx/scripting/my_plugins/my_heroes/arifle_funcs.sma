@@ -1,4 +1,6 @@
-
+#define I_WANT_CONSTANTS
+#define I_WANT_FAKEMETA_UTIL
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

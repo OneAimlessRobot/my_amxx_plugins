@@ -1,5 +1,5 @@
-
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"

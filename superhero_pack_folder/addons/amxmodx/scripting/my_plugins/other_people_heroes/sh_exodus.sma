@@ -94,7 +94,7 @@ public newSpawn(id)
 {
 	if ( g_inSearch[id] ) release(id)
 
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 
 	g_grabTimer[id] = -1
 }
@@ -118,7 +118,7 @@ public exodus_kd()
 		return
 	}
 
-	if ( gPlayerUltimateUsed[id] || g_grabTimer[id] >= 0 ) {
+	if ( sh_get_cooldown_flag(id) || g_grabTimer[id] >= 0 ) {
 		playSoundDenySelect(id)
 		return
 	}

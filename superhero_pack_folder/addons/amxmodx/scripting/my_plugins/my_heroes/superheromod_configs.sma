@@ -1,3 +1,4 @@
+#define I_WANT_QUICK_CHECKS
 #include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"

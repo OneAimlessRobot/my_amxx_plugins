@@ -1,3 +1,4 @@
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -28,13 +29,13 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-  gPlayerUltimateUsed[id]=false
+  sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public slayer_loop()
 {
 	for ( new id=1; id<=SH_MAXSLOTS; id++ ){
-		if (sh_user_has_hero(id,gHeroID)&&!gPlayerUltimateUsed[id]&&is_user_connected(id)&&is_user_alive(id))
+		if (sh_user_has_hero(id,gHeroID)&&!sh_get_cooldown_flag(id)&&is_user_connected(id)&&is_user_alive(id))
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
@@ -48,7 +49,7 @@ public slayer_loop()
 				sh_chat_message(aid, gHeroID,"%s removed your godmode!",slayer_name)
 				sh_extra_damage(id, id, get_user_health(id)/2, "Slayer Sacrifice" )
 				ultimateTimer(id, get_cvar_float("slayer_cooldown"))
-				gPlayerUltimateUsed[id]=true
+				sh_set_cooldown_flag(id)
 			}
 		}
 	}

@@ -60,7 +60,7 @@ public newSpawn(id)
 	if ( task_exists(id) )
 		remove_task(id)
 
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public sandman_kd()
@@ -76,7 +76,7 @@ public sandman_kd()
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return
@@ -121,7 +121,7 @@ public quicksand(id)
 				return
 			}
 
-			if ( !(Entvars_Get_Int(targetid, EV_INT_flags)&FL_ONGROUND) )
+			if ( !(entity_get_int(targetid, EV_INT_flags)&FL_ONGROUND) )
 			{
 				client_print(id, print_center, "[SH](%s) Target not on ground", HeroName)
 				playSoundDenySelect(id)

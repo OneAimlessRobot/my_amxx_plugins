@@ -41,7 +41,7 @@ public plugin_init()
 
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------
 public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
@@ -54,7 +54,7 @@ public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 
 	
 	// if  attacker have Deva and is not in cooldown
-	if ( sh_user_has_hero(attacker,gHeroID)&& !gPlayerInCooldown[attacker] && generate_int(0, 100) <= percentage )
+	if ( sh_user_has_hero(attacker,gHeroID)&& !sh_get_cooldown_flag(attacker) && generate_int(0, 100) <= percentage )
 	{
 		user_slap(victim, damage)
 		user_slap(victim, 0)
@@ -67,7 +67,7 @@ public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 		
 	}
 	// if victim have Deva and is not in coldown
-	if ( sh_user_has_hero(victim,gHeroID) && !gPlayerInCooldown[victim] && generate_int(0, 100) <= percentage )
+	if ( sh_user_has_hero(victim,gHeroID) && !sh_get_cooldown_flag(victim)&& generate_int(0, 100) <= percentage )
 	{
 		user_slap(attacker, damage)
 		user_slap(attacker, 0)

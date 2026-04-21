@@ -66,7 +66,7 @@ public blink_init()
 public newRound(id)
 {
 	remove_task(id)
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	blinkAmount[id] = get_cvar_num("blink_amount")
 }
 //----------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ public blink_kd()
 	}
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] ) {
+	if (sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -101,7 +101,7 @@ public blink_kd()
 	//Don't let them blink if they are planting the bomb
 	new wpnid, clip, ammo
 	wpnid = get_user_weapon(id, clip, ammo)
-	if (wpnid == CSW_C4 && Entvars_Get_Int(id, EV_INT_button)&IN_ATTACK) {
+	if (wpnid == CSW_C4 && entity_get_int(id, EV_INT_button)&IN_ATTACK) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -148,7 +148,7 @@ public blink_teleport(id)
 	//Don't let them blink if they are planting the bomb
 	new wpnid, clip, ammo
 	wpnid = get_user_weapon(id, clip, ammo)
-	if (wpnid == CSW_C4 && Entvars_Get_Int(id, EV_INT_button)&IN_ATTACK) {
+	if (wpnid == CSW_C4 && entity_get_int(id, EV_INT_button)&IN_ATTACK) {
 		blinkAmount[id]++
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -171,12 +171,12 @@ public positionChangeTimer(id)
 	new Float:velocity[3]
 	get_user_origin(id, g_lastPosition[id])
 
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.2,"positionChangeCheck",id)

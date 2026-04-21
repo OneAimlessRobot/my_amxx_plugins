@@ -1,5 +1,3 @@
-
-
 #include "../my_include/superheromod.inc"
 #include "../my_include/my_author_header.inc"
 

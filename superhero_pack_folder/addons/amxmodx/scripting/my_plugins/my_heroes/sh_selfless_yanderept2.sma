@@ -1,3 +1,6 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
@@ -43,7 +46,7 @@ public plugin_init()
 	register_cvar("yandere_angry_hitheal_pct", "1.0")
 	register_cvar("yandere_min_players", "6")
 	register_event("ResetHUD","newRound","b")
-	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
+	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level",true )
 	
 
 	static hero_name_arr[STRLEN_FOR_NAMES];
@@ -176,7 +179,7 @@ public yandere_init()
 		
 		sh_reset_max_speed(id)
 		gNormalSpeed[id]=base_extra_speed
-		gBaseSpeed[id]=base_extra_speed
+		gBaseSpeed[id]=base_extra_speed;
 		UnSet_BitVar(gPlayedSoundMask,id)
 		
 	}
@@ -427,12 +430,12 @@ public newRound(id)
 			
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
-			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-			UnSet_BitVar(gSuperAngryMask,id)
-			UnSet_BitVar(gPlayedSoundMask,id)
+			sh_end_cooldown(id+SH_COOLDOWN_TASKID);
+			UnSet_BitVar(gSuperAngryMask,id);
+			UnSet_BitVar(gPlayedSoundMask,id);
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
 			set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
-			gTransTimer[id]=trans_time
+			gTransTimer[id]=trans_time;
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
@@ -560,7 +563,7 @@ public yandere_kd()
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	if(Get_BitVar(gSuperAngryMask,id)){
-		if ( gPlayerUltimateUsed[id]||yandere_get_user_is_psychosis(id) ) {
+		if ( sh_get_cooldown_flag(id)||yandere_get_user_is_psychosis(id) ) {
 			
 			if(!is_user_bot(id)){
 				playSoundDenySelect(id)

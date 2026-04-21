@@ -76,8 +76,8 @@ public plugin_precache()
 public newRound(id)
 {
 	gCycloneTimer = 0
-	gCurrentCyclone = 0
-	gPlayerUltimateUsed[id] = false
+	gCurrentCyclone = 0;
+	sh_unset_cooldown_flag(id)
 }
 
 public cyclone_kd()
@@ -89,7 +89,7 @@ public cyclone_kd()
 	if(!is_user_alive(id) )
 		return PLUGIN_HANDLED
 
-	if( gCurrentCyclone || gPlayerUltimateUsed[id] ) {
+	if( gCurrentCyclone || sh_get_cooldown_flag(id) ) {
 		client_print(id,print_chat,"[SH](Cyclone) The wind has no energy, let the wind rest first!")
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -101,7 +101,7 @@ public cyclone_kd()
 	gPlayersOnly = (get_cvar_num("cyclone_playersonly")!=0)
 	gForce = get_cvar_num("cyclone_force")
 
-	gPlayerUltimateUsed[id] = true
+	sh_set_cooldown_flag(id)
 	ultimateTimer(id, float(get_cvar_num("cyclone_cooldown")))
 	
 	gRange = get_cvar_num("cyclone_range")

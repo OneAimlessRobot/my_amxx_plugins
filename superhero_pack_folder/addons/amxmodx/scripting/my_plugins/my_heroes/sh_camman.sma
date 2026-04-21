@@ -1,5 +1,7 @@
 
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "camera_inc/sh_camman_get_set.inc"
@@ -130,7 +132,7 @@ public camman_kd()
 	}
 	if(!(player_touching_entity_of_some_classname(id,CAMERA_CLASSNAME))){
 		if(user_can_plant_camera(id)){
-			if(gPlayerUltimateUsed[id]){
+			if(sh_get_cooldown_flag(id)){
 				
 				if(!is_user_bot(id)){
 					sh_chat_message(id,gHeroID,"N spammes!!!!")

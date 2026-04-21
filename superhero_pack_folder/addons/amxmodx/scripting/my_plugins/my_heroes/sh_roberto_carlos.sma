@@ -192,7 +192,7 @@ public roberto_kd()
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
-	if(gPlayerUltimateUsed[id]){
+	if(sh_get_cooldown_flag(id)){
 		
 		sh_chat_message(id,gHeroID,"Intervalo!!!!")
 		playSoundDenySelect(id)

@@ -1,3 +1,6 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
@@ -83,7 +86,7 @@ public plugin_init()
 	register_cvar("ester_moralizing_tmp_xp_get_mult","5.0"); 
 	register_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 	
-	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level" )
+	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level",true)
 	sh_register_superheromod_model(gHeroID,
 								"models/player/ester/ester.mdl",
 								"models/player/ester/esterT.mdl",
@@ -228,9 +231,9 @@ reset_status(id){
 	}
 	UnSet_BitVar(gFinishedMask,id)
 	damage_to_do[id]=0
-	gBuiltUpXp[id]=0
-	UnSet_BitVar(gPedalIsFlooredMask,id)
-	UnSet_BitVar(gUnloadingMask,id)
+	gBuiltUpXp[id]=0;
+	UnSet_BitVar(gPedalIsFlooredMask,id);
+	UnSet_BitVar(gUnloadingMask,id);
 	stop_sounds(id)
 	
 }

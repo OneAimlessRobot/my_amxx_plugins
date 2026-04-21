@@ -1,3 +1,5 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_FAKEMETA_UTIL
 
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
@@ -124,8 +126,8 @@ public Get_QuadBarrel(id)
 {
 	Remove_QuadBarrel(id)
 	
-	UnSet_BitVar(g_SpecialShot, id)
-	Set_BitVar(g_Had_QB, id)
+	UnSet_BitVar(g_SpecialShot, id);
+	Set_BitVar(g_Had_QB, id);
 	
 	give_item(id, weapon_quadbarrel)
 	cs_set_user_bpammo(id, CSW_QUADBARREL, BPAMMO)
@@ -653,16 +655,16 @@ public Register_SafetyFuncBot(id)
 
 public Safety_Connected(id)
 {
-	Set_BitVar(g_IsConnected, id)
-	UnSet_BitVar(g_IsAlive, id)
+	Set_BitVar(g_IsConnected, id);
+	UnSet_BitVar(g_IsAlive, id);
 	
 	g_PlayerWeapon[id] = 0
 }
 
 public Safety_Disconnected(id)
 {
-	UnSet_BitVar(g_IsConnected, id)
-	UnSet_BitVar(g_IsAlive, id)
+	UnSet_BitVar(g_IsConnected, id);
+	UnSet_BitVar(g_IsAlive, id);
 	
 	g_PlayerWeapon[id] = 0
 }

@@ -1,3 +1,6 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "zenitsu_inc/zenitsu_charge_funcs.inc"
 #include "zenitsu_inc/zenitsu_general_funcs.inc"

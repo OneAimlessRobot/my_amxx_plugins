@@ -21,7 +21,9 @@ darkpred_healpoints 4		//How much HP does Darkpredator heal per second? Default=
 darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"

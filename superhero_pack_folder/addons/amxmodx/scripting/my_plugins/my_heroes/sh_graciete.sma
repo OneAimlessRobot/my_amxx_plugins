@@ -1,4 +1,6 @@
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

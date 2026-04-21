@@ -1,3 +1,8 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
+#include "../../include/float.inc"
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -221,7 +226,7 @@ public _nani_behind_player(iPlugin,iParams){
 
 		return
 	}
-	if ( gPlayerUltimateUsed[tele_player] ) {
+	if ( sh_get_cooldown_flag(tele_player) ) {
 		if(!is_user_bot(tele_player)){
 			playSoundDenySelect(tele_player)
 			sh_chat_message(tele_player,shinobu_get_hero_id(),"Teleport canceled. Still on cooldown!");

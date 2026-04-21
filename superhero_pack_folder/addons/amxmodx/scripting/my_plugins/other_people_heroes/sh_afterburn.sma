@@ -72,7 +72,7 @@ public newSpawn(id)
 	stopFireSound(id)
 
 	if ( sh_user_has_hero(id,gHeroID)) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -92,13 +92,13 @@ public afterburn_kd()
 	// Check to make sure they are on a Team
 	if ( get_user_team(id) < 1 || get_user_team(id) > 2 ) return
 
-	if ( Entvars_Get_Int( id, EV_INT_waterlevel ) == 3 ) {
+	if ( entity_get_int( id, EV_INT_waterlevel ) == 3 ) {
 		client_print(id,print_chat,"[SH] You cannot use the Flame Thrower while underwater")
 		playSoundDenySelect(id)
 		return
 	}
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return
 	}
@@ -252,7 +252,7 @@ check_burnzone(id, vec[], aimvec[], speed1, speed2, radius)
 //----------------------------------------------------------------------------------------------
 public burn_victim(id, killer)
 {
-	if ( Entvars_Get_Int( id, EV_INT_waterlevel ) == 3 ) return
+	if ( entity_get_int( id, EV_INT_waterlevel ) == 3 ) return
 	if ( gIsBurning[id] ) return
 
 	gIsBurning[id] = 1
@@ -276,7 +276,7 @@ public on_fire(args[])
 		gIsBurning[id] = 0
 		return
 	}
-	if( Entvars_Get_Int( id, EV_INT_waterlevel ) == 3 ) {
+	if( entity_get_int( id, EV_INT_waterlevel ) == 3 ) {
 		gIsBurning[id] = 0
 		return
 	}

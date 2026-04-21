@@ -108,7 +108,7 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	{
 		static weapon[32],Ent
 		get_weaponname(wpnid,weapon,31)
-		Ent = fm_find_ent_by_owner(-1,weapon,id)
+		Ent = find_ent_by_owner(-1,weapon,id)
 		if(Ent)
 		{
 			if(pev_valid(Ent)!=2){

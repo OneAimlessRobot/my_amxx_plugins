@@ -46,7 +46,7 @@ public pesk_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	if ( is_user_alive(id) ) return PLUGIN_HANDLED
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -156,7 +156,7 @@ public pbeamon(id)
 
 public newRound(id)
 {
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	return PLUGIN_HANDLED
 }
 

@@ -1,3 +1,7 @@
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -88,7 +92,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		swat_weapons(id)
 
@@ -192,7 +196,7 @@ public Swat_kd()
 	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  ) return
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH](S.W.A.T.) Your next I.C.B.M. is not ready yet.")
@@ -378,8 +382,8 @@ remove_missile(id,missile){
 
 	emit_sound(missile, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	has_rocket[id] = 0
-	gPlayerUltimateUsed[id]=false
+	has_rocket[id] = 0;
+	sh_unset_cooldown_flag(id)
 	attach_view(id,id)
 	remove_entity(missile)
 	return PLUGIN_CONTINUE

@@ -75,7 +75,7 @@ public shade_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID)) {
 		shade_gunz(id)
 	}
@@ -97,7 +97,7 @@ public shade_kd()
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
@@ -177,7 +177,7 @@ public shade_death()
 {
 	new id=read_data(2)
 	shade_endmode(id)
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public fog_this_area(origin[3])

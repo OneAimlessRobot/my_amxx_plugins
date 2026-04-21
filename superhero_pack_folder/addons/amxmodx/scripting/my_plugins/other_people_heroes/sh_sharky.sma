@@ -70,7 +70,7 @@ public sharky_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-  gPlayerUltimateUsed[id]=false
+  sh_unset_cooldown_flag(id)
   if ( sh_user_has_hero(id,gHeroID) ) {
   sharky_gunz(id)
     }
@@ -92,7 +92,7 @@ public sharky_kd()
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED 
     
   // Let them know they already used their ultimate if they have
-  if ( gPlayerUltimateUsed[id] )
+  if ( sh_get_cooldown_flag(id) )
   {
     playSoundDenySelect(id)
     return PLUGIN_HANDLED 
@@ -172,7 +172,7 @@ public sharky_death()
 {
   new id=read_data(2)
   sharky_endmode(id)
-  gPlayerUltimateUsed[id]=false
+  sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)

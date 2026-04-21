@@ -1,3 +1,6 @@
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
@@ -41,7 +44,7 @@ public plugin_init()
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level" )
+	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level",true)
 	sh_register_superheromod_model(gHeroID,
 								KSUN_PLAYER_MODEL,
 								KSUN_PLAYER_MODEL,
@@ -463,7 +466,7 @@ public ksun_kd()
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
 			sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");

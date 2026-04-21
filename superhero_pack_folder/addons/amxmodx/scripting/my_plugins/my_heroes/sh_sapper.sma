@@ -1,5 +1,6 @@
-
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
@@ -184,7 +185,7 @@ public sapper_kd()
 
 	new mine_id
 	if(!(mine_id=player_touching_entity_of_some_classname(id,MINE_CLASSNAME))){
-		if(gPlayerUltimateUsed[id]){
+		if(sh_get_cooldown_flag(id)){
 			
 			sh_chat_message(id,gHeroID,"N spammes!!!!")
 			playSoundDenySelect(id)

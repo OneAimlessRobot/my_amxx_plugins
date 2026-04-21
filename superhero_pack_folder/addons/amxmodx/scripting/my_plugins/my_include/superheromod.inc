@@ -14,6 +14,11 @@
 #define MAX_HERO_NAME_LENGTH 256
 #define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
+
+#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
+#define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
+#define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
+
 //Default includes used for shero
 
 #tryinclude "../../include/amxmod.inc"
@@ -257,6 +262,14 @@ native sh_set_hero_info(heroID, const powerInfo[] = "", const powerHelp[] = "");
  * @noreturn
  */
 native sh_set_hero_bind(heroID);
+
+/**
+ * Sets the hero to be considered a core hero +power bind key
+ *
+ * @param heroID	The index of the hero.
+ * @noreturn
+ */
+native sh_set_hero_core(heroID);
 
 /**
  * Sets hero's shield restriction status. (Optional)
@@ -869,7 +882,21 @@ stock sh_get_velocity(const Float:initial[3], const Float:final[3], Float:speed,
  *
  * @noreturn
  */
-stock bool:gPlayerInCooldown[SH_MAXSLOTS+1];
+stock gPlayerInCooldownMask
+/**
+
+Cooldown mask!
+
+the first of these 3 macros retrieves its truth value
+The second macro sets it to true
+the third one sets it to false
+ */
+#define sh_get_cooldown_flag(%1) ( Get_BitVar( gPlayerInCooldownMask, %1) )
+
+#define sh_set_cooldown_flag(%1) ( Set_BitVar( gPlayerInCooldownMask, %1) )
+
+#define sh_unset_cooldown_flag(%1) ( UnSet_BitVar( gPlayerInCooldownMask, %1) )
+
 
 /**
  * Sets a cooldown in a hero.
@@ -880,7 +907,7 @@ stock bool:gPlayerInCooldown[SH_MAXSLOTS+1];
  */
 stock sh_set_cooldown(id, Float:secs)
 {
-	gPlayerInCooldown[id] = true;
+	sh_set_cooldown_flag(id);
 
 	set_task(secs, "sh_end_cooldown", id+SH_COOLDOWN_TASKID);
 
@@ -904,7 +931,7 @@ public sh_end_cooldown(id)
 	remove_task(id);
 
 	id -= SH_COOLDOWN_TASKID;
-	gPlayerInCooldown[id] = false;
+	sh_unset_cooldown_flag(id)
 
 	sh_debug_message(id, 5, "Cooldown Timer Ended");
 }
@@ -1044,13 +1071,18 @@ stock print_heapsize()
  * BACKWARD COMPATIBILITY *
  **************************/
 
-stock shCreateHero(const heroName[], const heroPower[], const heroHelp[], bool:requiresKeyEvents = false, const heroLevel[])
+stock shCreateHero(const heroName[], const heroPower[], const heroHelp[], bool:requiresKeyEvents = false, const heroLevel[], bool:is_core_hero=false)
 {
 	new heroID = sh_create_hero(heroName, get_cvar_pointer(heroLevel));
 	if ( heroID != -1 ) {
 		sh_set_hero_info(heroID, heroPower, heroHelp);
 		if ( requiresKeyEvents ) {
 			sh_set_hero_bind(heroID);
+		}
+		if( is_core_hero){
+
+			sh_set_hero_core(heroID);
+					
 		}
 	}
 	return heroID;
@@ -1229,7 +1261,7 @@ stock setScreenShake(id, amplitude, duration, frequency)
 }
 
 //cooldown stuff
-#define gPlayerUltimateUsed gPlayerInCooldown
+#define gPlayerUltimateUsedMask gPlayerInCooldownMask 
 #define ultimateTimer sh_set_cooldown
 #define enableUltimate sh_end_cooldown
 

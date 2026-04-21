@@ -1,3 +1,4 @@
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 

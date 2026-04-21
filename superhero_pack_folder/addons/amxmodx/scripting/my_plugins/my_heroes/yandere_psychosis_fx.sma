@@ -1,3 +1,7 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -217,8 +221,8 @@ psychosis_off(id)
 
 // Reset Zoom
 
-UnSet_BitVar(gIsPsychosisMask,id)
-Set_BitVar(g_yandere_leaped_mask,id)
+UnSet_BitVar(gIsPsychosisMask,id);
+Set_BitVar(g_yandere_leaped_mask,id);
 for(new i=0;i<sizeof yandere_pain_sounds;i++){
 	emit_sound(id, CHAN_AUTO, yandere_pain_sounds[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
 }
@@ -233,8 +237,8 @@ psychosis_on(id){
 
 gPsychosisTime[id]=psychosis_time
 ultimateTimer(id, psychosis_cooldown * 1.0)
-UnSet_BitVar(g_yandere_leaped_mask,id)
-Set_BitVar(gIsPsychosisMask,id)
+UnSet_BitVar(g_yandere_leaped_mask,id);
+Set_BitVar(gIsPsychosisMask,id);
 cs_set_user_armor(id,cs_get_user_armor(id)+psychosis_add_ap,CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(zoom)

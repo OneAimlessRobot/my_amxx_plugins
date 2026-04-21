@@ -1,3 +1,6 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -47,7 +50,7 @@ public plugin_init()
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level" )
+	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
 	register_event("Damage","shinobuDamage","b", "2!0")
 	register_srvcmd("shinobu_init", "shinobu_init")
 	shRegHeroInit(gHeroName, "shinobu_init")

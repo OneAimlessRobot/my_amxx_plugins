@@ -65,7 +65,7 @@
 
 
 	if (sh_user_has_hero(id,gHeroID)) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gStormTimer[id] = -1
 	}
 	remove_task(id+1337)
@@ -88,7 +88,7 @@
  //----------------------------------------------------------------------------------------------
  public newRound(id)
  {
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	remove_task(id+1337)
 	gStormTimer[id] = -1
 	return PLUGIN_HANDLED
@@ -99,7 +99,7 @@
 	new temp[6]
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED

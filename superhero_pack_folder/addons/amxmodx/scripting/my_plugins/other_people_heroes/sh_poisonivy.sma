@@ -118,7 +118,7 @@ public newSpawn(id)
 
 		if( sh_user_has_hero(id,gHeroID)) {
 
-			gPlayerUltimateUsed[id] = false
+			sh_unset_cooldown_flag(id)
 
 			// Set damage amount per user
 			if ( get_cvar_num("poisonivy_xpbased") ) {
@@ -166,7 +166,7 @@ public poisonivy_damage(id)
 		if ( sh_user_has_hero(id,gHeroID)) return
 	}
 
-	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !gPlayerUltimateUsed[attacker] && id != attacker ) {
+	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !sh_get_cooldown_flag(attacker)&& id != attacker ) {
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		gIsPoisoned[id][attacker] = true

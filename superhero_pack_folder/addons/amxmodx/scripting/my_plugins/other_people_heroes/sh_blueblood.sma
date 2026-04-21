@@ -95,7 +95,7 @@ public blueblood_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 
-	if (!sh_user_has_hero(attacker,gHeroID)|| gPlayerUltimateUsed[attacker] ) return
+	if (!sh_user_has_hero(attacker,gHeroID)|| sh_get_cooldown_flag(attacker) ) return
 
 	if ( is_user_alive(id) && id != attacker && is_user_connected(attacker)) {
 		playSound(id)
@@ -117,7 +117,7 @@ public newSpawn(id)
 
 	if (!shModActive()) return
 
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 }
 
 public plugin_precache()

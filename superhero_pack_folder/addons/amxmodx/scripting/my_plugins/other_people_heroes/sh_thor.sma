@@ -17,7 +17,8 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 *      - Changed look of effects.
 *
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -78,7 +79,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
@@ -88,7 +89,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	
 	if ( !sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 	
-	if( gPlayerUltimateUsed[id] ){
+	if(sh_get_cooldown_flag(id)){
 		return FMRES_IGNORED
 	}
 	
@@ -173,7 +174,7 @@ public sh_hero_key(id, heroID, key)
 	if ( key == SH_KEYDOWN )
 	{
 		// Let them know they already used their ultimate if they have
-		if ( gPlayerInCooldown[id] )
+		if (sh_get_cooldown_flag(id) )
 		{
 			sh_sound_deny(id)
 			return

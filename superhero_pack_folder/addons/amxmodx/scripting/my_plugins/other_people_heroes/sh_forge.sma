@@ -74,7 +74,7 @@ public Forge_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -115,7 +115,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 	if ( !is_valid_ent(pToucher) ) return
 
 	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 
 	if(equal(szClassName, "concussion_missile")) {
 		new damradius = get_cvar_num("Forge_radius")
@@ -134,12 +134,12 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 		remove_task(pToucher)
 		new Float:fl_vExplodeAt[3]
-		Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
 		new vExplodeAt[3]
 		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
 		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
+		new id = entity_get_edict(pToucher, EV_ENT_owner)
 		new origin[3],dist,i,Float:dRatio,damage
 
 		for ( i = 1; i <= SH_MAXSLOTS; i++) {
@@ -382,7 +382,7 @@ public client_disconnected(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	RemoveByClass(id)//For some reason, sometimes if you were hit with own missile, entity would not be removed, so that is what this is for
 
 	return PLUGIN_CONTINUE

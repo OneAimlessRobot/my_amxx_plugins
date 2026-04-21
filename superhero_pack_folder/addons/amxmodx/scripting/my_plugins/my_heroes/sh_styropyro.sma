@@ -106,7 +106,7 @@ public styropyro_init()
 
 	// This gets run if they had the power but don't anymore
 	if ( sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")
 	}
 
@@ -116,7 +116,7 @@ public newSpawn(id)
 {
 	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		remove_task(id)
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")
 		gLaserFired[id] = false
 	}
@@ -143,7 +143,7 @@ public styropyro_kd()
 		return
 	}
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return
 	}
@@ -165,7 +165,7 @@ public styropyro_ku()
 	
 	remove_task(id)
 
-	if ( !hasRoundStarted() || gPlayerUltimateUsed[id] || !gLaserFired[id] ) return
+	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
 
 	// Use the ultimate
 	if ( get_cvar_float("styropyro_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("styropyro_cooldown"))

@@ -61,7 +61,7 @@ public plugin_precache() {
 
 public newRound(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	jaws_destroy()
 }
 
@@ -74,13 +74,13 @@ public jaws_kd()
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	if(JawsEnt || gPlayerUltimateUsed[id]) {
+	if(JawsEnt || sh_get_cooldown_flag(id)) {
 		client_print(id,print_chat,"[SH](Jaws) Out for lunch, back in 5 minutes")
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
 	
-	gPlayerUltimateUsed[id] = true
+	sh_set_cooldown_flag(id)
 	ultimateTimer(id, float(get_cvar_num("jaws_cooldown")))
 
 	jaws_create(id)

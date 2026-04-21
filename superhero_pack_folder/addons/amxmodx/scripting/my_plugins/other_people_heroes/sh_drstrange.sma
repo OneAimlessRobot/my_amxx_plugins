@@ -127,7 +127,7 @@ public drstrange_init()
 
 
 	if ( sh_user_has_hero(id,gHeroID)) {
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		gUsingLaser[id] = false
 	}
@@ -144,7 +144,7 @@ public newSpawn(id)
 {
 	if ( shModActive() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)
-		gPlayerUltimateUsed[id] = false
+		sh_unset_cooldown_flag(id)
 		gUsingLaser[id] = false
 	}
 }
@@ -197,7 +197,7 @@ public drstrange_kd()
 		return
 	}
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return
 	}

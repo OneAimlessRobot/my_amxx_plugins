@@ -77,9 +77,9 @@ public palpatine_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-  gPlayerUltimateUsed[id]=false
+  sh_unset_cooldown_flag(id)
   if (sh_user_has_hero(id,gHeroID)) {
-    gPlayerUltimateUsed[id]=false
+    sh_unset_cooldown_flag(id)
   }
   g_palpatineTimer[id]=0
   return PLUGIN_HANDLED
@@ -99,7 +99,7 @@ public palpatine_kd()
    
     
   // Let them know they already used their ultimate if they have
-  if ( gPlayerUltimateUsed[id] )
+  if (sh_get_cooldown_flag(id))
   {
     playSoundDenySelect(id)
     return PLUGIN_HANDLED 

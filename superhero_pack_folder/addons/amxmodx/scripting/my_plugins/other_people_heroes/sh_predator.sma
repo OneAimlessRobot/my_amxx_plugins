@@ -132,11 +132,11 @@ public newRound(id)
 	{
 		laser_shots[id] = get_cvar_num("pred_laser_ammo")
 		set_user_rendering(id,kRenderGlow,0,128,0,kRenderFxNone,255)
-		gPlayerUltimateUsed[id]=false
+		sh_unset_cooldown_flag(id)
 	}
 	
-	gDLaserFired[id] = 0
-	gPlayerUltimateUsed[id]=false
+	gDLaserFired[id] = 0;
+	sh_unset_cooldown_flag(id)
 	gDLLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 	
 	if (sh_user_has_hero(id,gHeroID) && get_cvar_num("pred_getdeagle")==1) {
@@ -446,7 +446,7 @@ public pred_DLdamage(id)
 	
 	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id ) return PLUGIN_CONTINUE
 	
-	if ( sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
+	if ( sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(attacker_id)))
 	{ 
 		new health = get_user_health(id) 
 		
@@ -540,7 +540,7 @@ public make_tracer(id) {
 	new weap = read_data(2)        // id of the weapon 
 	new ammo = read_data(3)        // ammo left in clip 
 	
-	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(id)) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap 
 		
@@ -624,10 +624,10 @@ public changeWeapon(id)
 	new bullets = (get_cvar_num("pred_DLbullets")-gDLaserFired[id])
 	
 	if (bullets == 0) {
-		gPlayerUltimateUsed[id]=true
+		sh_set_cooldown_flag(id)
 	}
 	if (bullets <= 0) {
-		gPlayerUltimateUsed[id]=true
+		sh_set_cooldown_flag(id)
 	}
 	if ((bullets != 0) && bullets >= 0 ) {
 		new message[128]

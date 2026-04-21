@@ -47,7 +47,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	gPlayerUltimateUsed[id]=false
+	sh_unset_cooldown_flag(id)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ public luke_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	if ( gPlayerUltimateUsed[id] )
+	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED 
@@ -91,7 +91,7 @@ public luke_kd()
 //	set_task(20.0,"ls_off",413,tid,1)
 	ls_stat[id] = 1
 	emit_sound(id,CHAN_ITEM, "ambience/zapmachine.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-	gPlayerUltimateUsed[id]=true
+	sh_set_cooldown_flag(id)
 	ultimateTimer(id, get_cvar_num("luke_sabertime")+get_cvar_num("luke_cooldown") * 1.0)
 
 	return PLUGIN_HANDLED

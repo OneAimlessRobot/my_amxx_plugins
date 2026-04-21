@@ -59,8 +59,8 @@ public newRound(id)
 {
 	new parm[1]
 	parm[0]=id
-	gArrowsFired[id] = 0
-	gPlayerUltimateUsed[id]=false
+	gArrowsFired[id] = 0;
+	sh_unset_cooldown_flag(id)
 	gLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 
 	if (sh_user_has_hero(id,gHeroID)&& get_cvar_num("noob_getdeagle")==1) {
@@ -77,7 +77,7 @@ public noob_damage(id)
 
 	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id) return PLUGIN_CONTINUE
 
-	if (sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[attacker_id]))
+	if (sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(attacker_id)))
 	{
 		new health = get_user_health(id)
 
@@ -173,7 +173,7 @@ public make_tracer(id)
 	new weap = read_data(2)        // id of the weapon
 	new ammo = read_data(3)        // ammo left in clip
 
-	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!gPlayerUltimateUsed[id]) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(id)) ) {
 
 		if (lastweap[id] == 0) lastweap[id] = weap
 
@@ -256,10 +256,10 @@ public changeWeapon(id)
 	new arrows = (get_cvar_num("noob_arrows")-gArrowsFired[id])
 
 	if (arrows == 0) {
-		gPlayerUltimateUsed[id]=true
+		sh_set_cooldown_flag(id)
 	}
 	if (arrows <= 0) {
-		gPlayerUltimateUsed[id]=true
+		sh_set_cooldown_flag(id)
 	}
 	if ((arrows != 0) && arrows >= 0 ) {
 		new message[128]

@@ -101,7 +101,7 @@ public lancer_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	g_usingPower[id] = false
 	g_powerKeyUsed[id] = false
 }
@@ -118,7 +118,7 @@ public lancer_kd()
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		client_print(id, print_chat, "[SH](Lancer) Charge Failure, you must wait longer")
 		return

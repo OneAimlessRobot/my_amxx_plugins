@@ -108,7 +108,7 @@ public frieza_kd()
 
     if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return 
 
-    if(gPlayerUltimateUsed[id]){ 
+    if(sh_get_cooldown_flag(id)){ 
         playSoundDenySelect(id) 
         return 
     } 
@@ -122,7 +122,7 @@ public frieza_kd()
 //---------------------------------------------------------------------------------------- 
 public newSpawn(id) 
 { 
-    gPlayerUltimateUsed[id] = false  //Makes you able to use power again 
+    sh_unset_cooldown_flag(id)  //Makes you able to use power again 
 } 
 //---------------------------------------------------------------------------------------- 
 public frieza_kill()  //triggered everytime someone dies

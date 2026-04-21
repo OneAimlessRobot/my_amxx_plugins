@@ -1,5 +1,6 @@
-
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -157,7 +158,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		return return_result;
 	
 	}
-	if(gPlayerUltimateUsed[idattacker]){
+	if(sh_get_cooldown_flag(idattacker)){
 
 		return return_result;
 	}
@@ -370,7 +371,7 @@ public komak_kd()
 	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
 
-	if ( gPlayerUltimateUsed[id] ) {
+	if ( sh_get_cooldown_flag(id)) {
 		sh_chat_message(id,gHeroID,"Youve blown the engine! Wait %d more seconds!",gEngineRepairTimer[id])
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED

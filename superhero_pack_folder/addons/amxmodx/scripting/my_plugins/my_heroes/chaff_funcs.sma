@@ -3,6 +3,9 @@
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_funcs.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -153,11 +156,8 @@ public charge_task(id){
 	
 }
 charge_user(id){
+
 	set_task(CHAFF_CHARGE_PERIOD,"charge_task",id+CHAFF_CHARGE_TASKID)
-	return 0
-	
-	
-	
 }
 public _chaff_uncharge_chaff(iPlugin,iParams){
 	new id=get_param(1)

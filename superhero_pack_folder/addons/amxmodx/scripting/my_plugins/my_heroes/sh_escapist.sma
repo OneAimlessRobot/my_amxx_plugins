@@ -11,7 +11,9 @@ shock_fuelcost 2			//Armor Used (def=2)
 shock_armor 250			//Armor Starts with (def=250)
 
 */
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"

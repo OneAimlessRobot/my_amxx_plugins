@@ -72,7 +72,7 @@ public t800_round_end()
 {
 	if ( !sh_is_active() ) return
 
-	arrayset(gPlayerUltimateUsed,false,SH_MAXSLOTS+1)
+	gPlayerUltimateUsedMask=0
 	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
@@ -113,7 +113,7 @@ public t800_death()
 	
 	if(!is_user_connected(id)) return
 	
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	gT800Timer[id]= -1
 	if (sh_user_has_hero(id,gHeroID)) {
 		t800_endmode(id)
@@ -164,14 +164,14 @@ public switchmodel(id)
 	
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
-	Entvars_Get_String(id, EV_SZ_viewmodel, v_mdl, 31)
+	entity_get_string(id, EV_SZ_viewmodel, v_mdl, 31)
 	if ( containi(v_mdl, "v_shield_") != -1) return
 	
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M249) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/t800_m249.mdl")
-		Entvars_Set_String(id, EV_SZ_weaponmodel, "models/shmod/t800_minigun.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/t800_m249.mdl")
+		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/t800_minigun.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ public t800_kd()
 	if ( !is_user_alive(id) || !is_user_connected(id) ) return PLUGIN_HANDLED
 	
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerUltimateUsed[id] || gT800Timer[id] > 0 ) {
+	if ( sh_get_cooldown_flag(id) || gT800Timer[id] > 0 ) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -303,17 +303,17 @@ public drop_para(id)
 	new iCurrent = -1
 	new Float:weapvel[3]
 	
-	while ( (iCurrent = FindEntity(iCurrent, "weaponbox")) > 0 ) {
+	while ( (iCurrent = find_ent_by_class(iCurrent, "weaponbox")) > 0 ) {
 		
 		//Skip anything not owned by this client
-		if ( Entvars_Get_Edict(iCurrent, EV_ENT_owner) != id) continue
+		if ( entity_get_edict(iCurrent, EV_ENT_owner) != id) continue
 		
-		Entvars_Get_Vector(iCurrent, EV_VEC_velocity, weapvel)
+		entity_get_vector(iCurrent, EV_VEC_velocity, weapvel)
 		
 		//If Velocities are all Zero its on the ground already and should stay there
 		if (weapvel[0] == 0.0 && weapvel[1] == 0.0 && weapvel[2] == 0.0) continue
 		
-		RemoveEntity(iCurrent)
+		remove_entity(iCurrent)
 	}
 }
 //----------------------------------------------------------------------------------------------

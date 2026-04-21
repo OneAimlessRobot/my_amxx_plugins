@@ -1,3 +1,6 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -77,7 +80,6 @@ public plugin_natives(){
 public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
 	
 	init_explosion_defaults()
-	xs_seed(get_systime(0));
 	server_print("%s innited!^n",LIBRARY_NAME)
 }
 //native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);

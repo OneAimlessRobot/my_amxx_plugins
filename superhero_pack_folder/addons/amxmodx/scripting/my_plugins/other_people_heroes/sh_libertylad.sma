@@ -77,7 +77,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	public libertylad_newround(id)
 	{
 	libertylad_removeflare(flareentity)
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	}
 //--------------------------------------------------------------------------------------------------
 // KEYDOWN
@@ -101,7 +101,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	debugMessage("[SH](Liberty Lad) libertylad_duration must not be set below than 2.0, cvar defaulted to 2.0", 0, 0)
 	set_cvar_float("libertylad_duration", 2.0)
 	}
-	if (!gPlayerUltimateUsed[id])
+	if (!sh_get_cooldown_flag(id))
 	{
 	if (get_cvar_float("libertylad_duration") > 0.0)
 	{
@@ -109,9 +109,9 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	}
 	emit_sound(id, CHAN_BODY, "weapons/rocketfire1.wav", 1.0, ATTN_NORM,0,PITCH_NORM)
 	libertylad_createflare(id)
-	gPlayerUltimateUsed[id] = true
+	sh_set_cooldown_flag(id)
 	}
-	else if (gPlayerUltimateUsed[id])
+	else if (sh_get_cooldown_flag(id))
 	{
 	playSoundDenySelect(id)
 	client_print(id, print_chat, "[SH](Liberty Lad) Please Wait Until Previous Flare Goes Off")

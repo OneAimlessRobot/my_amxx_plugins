@@ -9,7 +9,9 @@ pitch_cooldown 60			//Seconds till next available use of power
 */
 
 //LOADS OF THNX TO FREECODE FOR GETTING THIS WORKING
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -64,8 +66,8 @@ public pitch_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	PitchTimer[id] = -1
-	gPlayerUltimateUsed[id] = false
+	PitchTimer[id] = -1;
+	sh_unset_cooldown_flag(id)
 
 	if (!sh_user_has_hero(id,gHeroID)&& PitchTimer[id] > 0) {
 		numOfPB -= 1
@@ -92,7 +94,7 @@ public pitch_kd()
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
-	if ( gPlayerUltimateUsed[id] || PitchTimer[id] >= 0) {
+	if (sh_get_cooldown_flag(id)|| PitchTimer[id] >= 0) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
@@ -122,7 +124,7 @@ public round_end()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	gPlayerUltimateUsed[id] = false
+	sh_unset_cooldown_flag(id)
 	PitchTimer[id] = -1
 
 	if (NightVisionUse[id]) StopNVG(id)
@@ -136,8 +138,8 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	PitchTimer[id] = -1
-	gPlayerUltimateUsed[id] = false
+	PitchTimer[id] = -1;
+	sh_unset_cooldown_flag(id)
 	remove_task(id)
 	NightVisionUse[id] = false
 }
@@ -147,8 +149,8 @@ public pitch_death()
 	new id = read_data(2)
 
 	if (PitchTimer[id] > 0) {
-		PitchTimer[id] = -1
-		gPlayerUltimateUsed[id] = false
+		PitchTimer[id] = -1;
+		sh_unset_cooldown_flag(id)
 		numOfPB -= 1
 		StopNVG(id)
 

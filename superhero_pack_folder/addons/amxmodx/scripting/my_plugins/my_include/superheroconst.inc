@@ -145,6 +145,7 @@ stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 // Potential of power1-power9 but limited by sh_maxbinds (3 default)
 #define SH_MAXBINDPOWERS 9
 
+#define SH_MAXCOREPOWERS 3
 // Comment out for new optimized coding only, old coded heroes will break
 #define SH_BACKCOMPAT
 

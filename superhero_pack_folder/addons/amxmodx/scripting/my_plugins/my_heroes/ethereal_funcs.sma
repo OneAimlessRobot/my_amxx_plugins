@@ -1,4 +1,5 @@
-
+#define I_WANT_CONSTANTS
+#define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
