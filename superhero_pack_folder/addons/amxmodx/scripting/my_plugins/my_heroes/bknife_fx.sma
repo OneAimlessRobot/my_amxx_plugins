@@ -18,9 +18,7 @@ enum bleed_task_parameter_id{
 	Float:bleed_task_time,
 	bleed_task_repeats,
 	bleed_task_apply_id,
-	bleed_task_remove_id,
-	bleed_task_apply_func_name[128],
-	bleed_task_remove_func_name[128]
+	bleed_task_apply_func_name[128]
 }
 enum bleed_alpha_type{
   hud_alpha,
@@ -45,10 +43,10 @@ stock const bleed_type_alphas[_:NUM_BLEED_TYPES][bleed_alpha_type]={
       {120,255}
 }
 stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={	
-					{-1.0,5.0,0,-1,-1,"",""},
-					{1.0,5.0,0,-1,-1,"bleed_task","unbleed_task"},
-					{1.0,5.0,0,-1,-1,"bleed_task","unbleed_task"},
-					{0.25,5.0,0,-1,-1,"bleed_task","unbleed_task"}
+					{-1.0,5.0,0,-1,""},
+					{1.0,5.0,0,-1,"bleed_task"},
+					{1.0,5.0,0,-1,"bleed_task"},
+					{0.25,5.0,0,-1,"bleed_task"}
 
 }
 
@@ -57,12 +55,10 @@ public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
-arrayset(gIsBleeding,NONE,SH_MAXSLOTS+1)
 
 for(new i=_:BLEED_MINI;i<_:NUM_BLEED_TYPES;i++){
 	
 	bleed_task_parameters[i][bleed_task_apply_id]=allocate_typed_task_id(player_task)
-	bleed_task_parameters[i][bleed_task_remove_id]=allocate_typed_task_id(player_task)
 	static Float:the_period;
 	the_period=bleed_task_parameters[i][bleed_task_period]
 	static Float:the_time;
@@ -172,23 +168,16 @@ return HAM_IGNORED
 
 bleed_task_user(id,attacker,heal_user){
 	if ( !shModActive()  || !client_hittable(id)||!is_user_connected(attacker)) return
-	new array[3]
+	new array[4]
 	array[0] = gIsBleeding[id]
 	array[1] = attacker
 	array[2] = heal_user
+	array[3] = 0
 	set_task(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
 					bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_func_name],
 					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id],
 					array,
-					3,
-					"a",
-					bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats])
-
-	set_task(floatsub(bleed_task_parameters[gIsBleeding[id]][bleed_task_time],0.1),
-					bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_func_name],
-					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_id],
-					array,
-					1,
+					sizeof(array),
 					"a",
 					1)
 
@@ -254,10 +243,14 @@ public _make_bleed_fx(iPlugin,iParams){
 	fx_blood(origin,origin,HIT_STOMACH,false)
 }
 
-public bleed_task(array[],id){
+public bleed_task(array[4],id){
 	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])) return
+	if ( !shModActive() ||!client_hittable(id)||!client_hittable(array[1])){
+		
 
+		unbleed_user(id)
+		return
+	}
 	set_render_with_color_const(id,RED,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
 	if(array[2]){
 		generic_heal(heal_hp_hud_msg_sync,
@@ -276,25 +269,27 @@ public bleed_task(array[],id){
 	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],0,_,_,_,_,_,
 			SH_NEW_DMG_BLEED,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLEED))
-	
 
+
+	if(array[3]<bleed_task_parameters[gIsBleeding[id]][bleed_task_repeats]){
+
+		array[3]++
+		set_task(bleed_task_parameters[gIsBleeding[id]][bleed_task_period],
+					bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_func_name],
+					id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id],
+					array,
+					sizeof(array),
+					"a",
+					1)
+	}
+	else{
+
+		unbleed_user(id)
+	}
 
 }
-public unbleed_task(array[],id){
-	id-=bleed_task_parameters[array[0]][bleed_task_remove_id]
-	
-	if ( !shModActive() || !is_user_connected(id)) return
-	remove_task(id+bleed_task_parameters[array[0]][bleed_task_apply_id])
-	set_user_rendering(id)
-	gIsBleeding[id]=NONE
-
-
-
-}
-
 unbleed_user(id){
-	remove_task(id+bleed_task_parameters[gIsBleeding[id]][bleed_task_remove_id])
-	remove_task(id+bleed_task_parameters[gIsBleeding[id]][bleed_task_apply_id])
+
 	if ( !shModActive() || !is_user_connected(id)) return
 	
 	set_user_rendering(id)

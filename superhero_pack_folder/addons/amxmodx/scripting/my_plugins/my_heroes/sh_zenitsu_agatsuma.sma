@@ -144,15 +144,12 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	new result= DMG_FWD_PASS
 	if((new_dmg_type==SH_NEW_DMG_ENERGY_BLAST)||(new_dmg_type==SH_NEW_DMG_SHOCK)){
 		if(sh_user_has_hero(victim,gHeroID) ){
-			sh_chat_message(victim,gHeroID,"Getting hit by an energy blast! Charge mode engaged")
-			gChargeModeEngaged[victim]=1
 			result=DMG_FWD_BLOCK
 		}
-		if(sh_user_has_hero(attacker,gHeroID) ){
-
-			damage*=2
-		}
 	}
-	
+	if(gChargeModeEngaged[attacker]&&sh_user_has_hero(attacker,gHeroID) ){
+
+		damage*=2
+	}
 	return result
 }

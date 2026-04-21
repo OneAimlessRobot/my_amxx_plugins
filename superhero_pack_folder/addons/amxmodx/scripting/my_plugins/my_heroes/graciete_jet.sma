@@ -38,8 +38,6 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	arrayset(g_graciete_jetpack_loaded,1,SH_MAXSLOTS+1)
-	arrayset(g_graciete_land_power,0.0,SH_MAXSLOTS+1)
 	register_event("DeathMsg","death","a")
 
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");

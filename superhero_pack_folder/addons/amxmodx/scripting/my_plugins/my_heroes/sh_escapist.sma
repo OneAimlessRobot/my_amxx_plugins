@@ -13,19 +13,20 @@ shock_armor 250			//Armor Starts with (def=250)
 */
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
-#define TASKID 90000
-#define TASKID_ESCAPE 90232
+
 // GLOBAL VARIABLES
 new gHeroName[]="Escapist"
-new g_climbing[SH_MAXSLOTS+1]
+new g_is_climbing[SH_MAXSLOTS+1]
+new g_was_cloaked[SH_MAXSLOTS+1]
+new g_is_cloaked[SH_MAXSLOTS+1]
+
 new Float:g_wallorigin[SH_MAXSLOTS+1][3]
 new g_lastWeapon[SH_MAXSLOTS+1]
-new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new gPlayerLevel[SH_MAXSLOTS+1],gHeroLevel,gMaxAlpha,gAlphaByLvlInc,gMinAlpha,gMaxSpeed,gMinSpeed,gSpeedByLvlInc,
 	gLvlsForFullMastery
-new bool:gIsGoTime
 new Float:gEscapeSpeed[SH_MAXSLOTS+1]
 new gFastWeapon[SH_MAXSLOTS+1]
 new gHeroID
@@ -72,8 +73,6 @@ public plugin_init()
 	register_srvcmd("escapist_kd", "escapist_kd")
 	shRegKeyDown(gHeroName, "escapist_kd")
 
-	// DEATH
-	register_event("DeathMsg", "escapist_death", "a")
 
 	// INIT
 	register_srvcmd("escapist_init", "escapist_init")
@@ -83,26 +82,45 @@ public plugin_init()
 	//Waits 4 seconds then loads cvars into variables
 	loadCVARS()
 	
-	register_forward(FM_Touch, "fw_Touch");
-	
 
+	register_entity_as_wall_touchable("player","fw_Touch")
+
+
+	set_task( 0.1, "escapist_loop", _, _, _, "b")
+
+}
+wpn_switch_primitive(id){
+
+	if ( !client_hittable(id)||!sh_user_has_hero(id,gHeroID)  ){
+		return
+	}
+
+	if(sh_is_freezetime()&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)){
+		
+		shSwitchWeaponID(id,gFastWeapon[id])
+		set_user_maxspeed(id,gEscapeSpeed[id])
+		return
+	}
+	if(g_is_climbing[id]){
+
+		shSwitchWeaponID(id,CSW_KNIFE)
+
+	}
 }
 public getFastWeaponAndSpeed(i){
-
-
-			new Float:currSpeed,clip,ammo;
-			currSpeed=get_user_maxspeed(i)
-				
-			if(currSpeed>gEscapeSpeed[i]){
-				gFastWeapon[i]=get_user_weapon(i,clip,ammo);
-				gEscapeSpeed[i]=currSpeed
-			}
-
-}
-//----------------------------------------------------------------------------------------------
-public sh_round_end() 
-{ 
-	gIsGoTime=true
+	
+	
+	if (!client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
+		return
+	}
+	
+	new Float:currSpeed = get_user_maxspeed(i)
+		
+	if(sh_is_inround()&&(currSpeed>gEscapeSpeed[i])){
+		gFastWeapon[i]=get_user_weapon(i);
+		gEscapeSpeed[i]=currSpeed
+	}
+	wpn_switch_primitive(i)
 }
 public fw_Touch(ent,id){
 
@@ -118,48 +136,38 @@ public fw_Touch(ent,id){
 
 
 public Climb(id,alpha) {
-		
+
 	
-	new iPlayer=id
-	if( !(1<=iPlayer<=32) )
-		return FMRES_IGNORED;
-	
-	if( !is_user_alive( iPlayer ) ){
-		return FMRES_IGNORED;
+	if( !is_user_alive( id ) ){
+		return
 	}
-	
 	static Float: fOrigin[ 3 ];
-	entity_get_vector( iPlayer, EV_VEC_origin, fOrigin );
-	
-	if( (get_distance_f( fOrigin, g_wallorigin[id] ) > 40.0)|| (entity_get_int( iPlayer, EV_INT_flags ) & FL_ONGROUND  )){
-		
-		g_climbing[id]=0
-		sh_set_rendering(id);
-		return FMRES_IGNORED;
-	
-	
-	}
-	
+	entity_get_vector( id, EV_VEC_origin, fOrigin );
+	static flags;
+	flags=entity_get_int(id,EV_INT_flags)
+
 	
 	static iButton;
-	iButton = entity_get_int( iPlayer, EV_INT_button );
+	iButton = entity_get_int( id, EV_INT_button );
+	g_was_cloaked[id]=g_is_cloaked[id]
+	g_is_cloaked[id]=(g_is_climbing[id]&&(get_distance_f( fOrigin, g_wallorigin[id] ) <= 40.0)&&((( iButton & IN_FORWARD ) || ( iButton & IN_BACK ))&&!(flags&FL_ONGROUND)))
 	
-	if( (( iButton & IN_FORWARD ) || ( iButton & IN_BACK )) ) {
+	
+	if( g_is_cloaked[id]) {
 		static Float: fVelocity[ 3 ];
-		new speed
-		speed=max(gMinSpeed,min(gMaxSpeed,gMinSpeed+(gSpeedByLvlInc*(gPlayerLevel[id]-gHeroLevel))))
-		velocity_by_aim( iPlayer, ( ( iButton & IN_FORWARD ) ? speed : -speed ), fVelocity );
-		entity_set_vector( iPlayer, EV_VEC_velocity, fVelocity );
-		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
-		switch_weapon(id,true);
+		new speed=max(gMinSpeed,min(gMaxSpeed,gMinSpeed+(gSpeedByLvlInc*(gPlayerLevel[id]-gHeroLevel))))
+		
+		velocity_by_aim( id, ( ( iButton & IN_FORWARD ) ? speed : -speed ), fVelocity );
+		
+		entity_set_vector( id, EV_VEC_velocity, fVelocity );
+		
+		sh_set_rendering(id,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
+		
 	}
-	
-	return FMRES_IGNORED;
-}
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	
+	else if (g_was_cloaked[id]){
+		g_is_cloaked[id]=0
+		set_user_rendering(id)
+	}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -177,26 +185,6 @@ public loadCVARS()
 	gMaxSpeed=get_cvar_num("escapist_maxspeed");
 	gMinSpeed=get_cvar_num("escapist_minspeed");
 	gLvlsForFullMastery=get_cvar_num("escapist_numlvlsmastery");
-	//gEscapeSpeed=get_cvar_num("escapist_escapespeed");
-}
-public escapist_escape_prison(id){
-
-	id-=TASKID_ESCAPE
-	
-	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ){
-	
-	
-	return
-	
-	}
-	if(gIsGoTime&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)&&is_user_connected(id)){
-		
-		set_user_maxspeed(id,gEscapeSpeed[id]);
-		shSwitchWeaponID(id,gFastWeapon[id])
-		
-	}
-
-
 }
 //----------------------------------------------------------------------------------------------
 public escapist_init()
@@ -207,48 +195,30 @@ public escapist_init()
 	new id=str_to_num(temp)
 	gPlayerLevel[id]=sh_get_user_lvl(id)
 
-	if ( sh_user_has_hero(id,gHeroID)  ) {
-		remove_task(id+TASKID)
-		remove_task(id+TASKID_ESCAPE)
-		set_task( 0.01, "escapist_loop", id+TASKID, "", 0, "b")
-		set_task( 0.1, "escapist_escape_prison", id+TASKID_ESCAPE, "", 0, "b")
-	}
-	else {
-		remove_task(id+TASKID)
-		remove_task(id+TASKID_ESCAPE)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public escapist_loop(id)
 {
-	id -= TASKID
-
-	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ){
-	
-	
-	return PLUGIN_HANDLED
-	
-	}
-	if(!g_climbing[id]){
-	
-	
-	return PLUGIN_HANDLED
-	
-	}
-	else
-	{
-		new alpha;
-		if(!(gPlayerLevel[id]-gHeroLevel)){
-			alpha=gMaxAlpha
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+		if ( !client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
 			
+			continue
+		
 		}
-		else{
-			new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[id]-gHeroLevel)
-			alpha=max(gMinAlpha,gMaxAlpha-alpharemoval)
+		else
+		{
+			new alpha;
+			if((gPlayerLevel[i]-gHeroLevel)<=0){
+				alpha=gMaxAlpha
+				
+			}
+			else{
+				new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[i]-gHeroLevel)
+				alpha=max(gMinAlpha,gMaxAlpha-alpharemoval)
+			}
+			Climb(i,alpha)
 		}
-		Climb(id,alpha)
 	}
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
@@ -263,41 +233,15 @@ public escapist_kd()
 	if ( !hasRoundStarted() || !is_user_alive(id)||!is_user_connected(id))
 	{
 		playSoundDenySelect(id)
-		g_climbing[id] = 0
 		return PLUGIN_HANDLED 
 	}
 
-	g_climbing[id] = 1
+	g_lastWeapon[id]=get_user_weapon(id)
+	sh_switch_weapon(id,CSW_KNIFE)
+	
+	g_is_climbing[id] = 1
 
 	return PLUGIN_HANDLED 
-}
-public switch_weapon(id,bool:toKnife){
-	if(toKnife){
-	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
-	g_lastWeapon[id] = weaponID
-	g_weaponSwitched[id] = true
-
-	// Switch to knife
-	engclient_cmd(id, "weapon_knife")
-	}
-	else{
-	
-	if (g_lastWeapon[id] != CSW_KNIFE) shSwitchWeaponID(id, g_lastWeapon[id])
-	g_weaponSwitched[id] = false
-	
-	
-	}
-	
-
-}
-//----------------------------------------------------------------------------------------------
-public escapist_death(id)
-{
-	new id = read_data(2)
-
-	if ( id < 0 || id > SH_MAXSLOTS ) return
-
-	g_climbing[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
@@ -307,51 +251,14 @@ public escapist_ku()
 	new temp[6]
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
-	g_climbing[id] = 0
-	sh_set_rendering(id);
-	
-	switch_weapon(id,false)
-	if (!is_user_alive(id) || g_climbing[id] != 1||!g_weaponSwitched[id]) return
+	g_is_climbing[id] = 0
+	sh_switch_weapon(id,g_lastWeapon[id])
 
-}
-//----------------------------------------------------------------------------------------------
-public client_disconnected(id)
-{
-	// stupid check but lets see
-	if ( id <=0 || id > SH_MAXSLOTS ) return
-
-	g_climbing[id] = 0
-
-	remove_task(id+TASKID)
-	remove_task(id+TASKID_ESCAPE)
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	// stupid check but lets see
-	if ( id <=0 || id > SH_MAXSLOTS ) return
-
-	g_climbing[id] = 0
-
-	remove_task(id+TASKID)
-	remove_task(id+TASKID_ESCAPE)
-}
-public sh_round_start(){
-
-
-	gIsGoTime =false
-	
-	
 }
 //---------------------------------------------------------------------------------------------- 
 public newRound(id)
 {
-	gPlayerLevel[id]=sh_get_user_lvl(id)
-	if(sh_user_has_hero(id,gHeroID)  &&gIsGoTime&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)&&is_user_alive(id)&&is_user_connected(id)){
-		sh_chat_message(id,gHeroID,"You got switched to your fastest weapon!");
-	
-	}
-	g_climbing[id] = 0
-	return PLUGIN_CONTINUE
+	g_is_climbing[id] = 0
+	wpn_switch_primitive(id)
 }
 //---------------------------------------------------------------------------------------------- 

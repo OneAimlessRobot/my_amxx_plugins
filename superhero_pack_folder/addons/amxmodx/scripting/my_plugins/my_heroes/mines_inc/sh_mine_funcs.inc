@@ -32,12 +32,8 @@
 
 
 
-native clear_mines()
 native mine_get_mine_disarmer_on(id)
-native mine_set_mine_disarmer_on(id,value_to_set)
 native mine_get_mine_armed(id)
-native mine_set_mine_armed(id,value_to_set)
-native mine_get_mine_loaded(id)
 native mine_get_mine_charging(id)
 native mine_uncharge_mine(id)
 native mine_charge_mine(id)
@@ -45,7 +41,6 @@ native mine_disarm_mine(id,mine_id)
 native mine_undisarm_mine(id)
 native mine_get_mine_disarming(id)
 
-native plant_mine(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

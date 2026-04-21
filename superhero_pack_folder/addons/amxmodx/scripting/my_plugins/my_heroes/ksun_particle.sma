@@ -77,7 +77,6 @@ public plugin_natives(){
 	
 	
 	register_native("spore_launch","_spore_launch",0)
-	register_native("spores_clear","_spores_clear",0)
 	register_native("get_times_player_spiked_player","_get_times_player_spiked_player",0)
 	register_native("inc_times_player_spiked_player","_inc_times_player_spiked_player",0)
 	register_native("dec_times_player_spiked_player","_dec_times_player_spiked_player",0)
@@ -170,15 +169,6 @@ public _ksun_glisten(iPlugins,iParms){
 	aura(id,arr)
 	
 }
-public _spores_clear(iPlugins, iParms){
-	
-	new spore = find_ent_by_class(-1, SPORE_CLASSNAME)
-	while(spore) {
-		remove_entity(spore)
-		spore = find_ent_by_class(spore, SPORE_CLASSNAME)
-	}
-	
-}
 public _clean_ksun_spores_from_players(iPlugins,iParam){
 	new dying_or_new_round=get_param(1);
 	new everyone=get_param(2);
@@ -250,7 +240,7 @@ stock clear_spores_from_player(id){
 }
 public ev_SendAudio(){
 	
-	spores_clear()
+	remove_entity_name(SPORE_CLASSNAME)
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	clean_ksun_spores_from_players(false,1,0);
 	return PLUGIN_CONTINUE
@@ -498,7 +488,7 @@ stock entity_set_follow(entity, target,spore_owner)
 		return 0
 	}
 	sub_3d_vectors(fl_Origin,fl_EntOrigin,in_the_way_vector)
-	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*10.0,in_the_way_vector)
+	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*3.0,in_the_way_vector)
 	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
 
 

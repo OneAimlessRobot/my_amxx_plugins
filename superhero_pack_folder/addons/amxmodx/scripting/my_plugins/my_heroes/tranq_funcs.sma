@@ -49,6 +49,9 @@ public plugin_init(){
 }
 
 public FwdTouchWorld( dirt, World ) {
+
+	if(!is_valid_ent(dirt)) return
+
 	new Float:origin[3]
 	entity_get_vector(dirt,EV_VEC_origin,origin);
 
@@ -369,7 +372,9 @@ launch_dart(id)
 }
 
 public chorazy_II_toumpaeeeehm(pToucher, pTouched)
-{		
+{	
+
+	if(!is_valid_ent(pToucher)) return
 	
 	if(client_hittable(pTouched))
 	{	

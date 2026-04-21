@@ -15,11 +15,8 @@ new g_jaqueo_shield_cooldown[SH_MAXSLOTS+1];
 new g_jaqueo_shield_loaded[SH_MAXSLOTS+1];
 new g_jaqueo_shield_deployed[SH_MAXSLOTS+1];
 new g_jaqueo_shield[SH_MAXSLOTS+1];
-new g_normal_ptr[SH_MAXSLOTS+1]
 
-#define MAX_BURST_FIRE_TIME 0.2
-#define GUNS_BIT_SUM ((1<<CSW_P228) | (1<<CSW_SCOUT) | (1<<CSW_XM1014) | (1<<CSW_MAC10) | (1<<CSW_AUG) | (1<<CSW_ELITE) | (1<<CSW_FIVESEVEN) | (1<<CSW_UMP45) | (1<<CSW_SG550) | (1<<CSW_GALIL) | (1<<CSW_FAMAS) | (1<<CSW_USP) | (1<<CSW_GLOCK18) | (1<<CSW_AWP) | (1<<CSW_MP5NAVY) | (1<<CSW_M249) | (1<<CSW_M3) | (1<<CSW_M4A1) | (1<<CSW_TMP) | (1<<CSW_G3SG1) | (1<<CSW_DEAGLE) | (1<<CSW_SG552) | (1<<CSW_AK47) | (1<<CSW_P90))
-#define BURSTGUNS_BIT_SUM ((1<<CSW_FAMAS) | (1<<CSW_GLOCK18))
+
 new Float:shield_cooldown
 new Float:shield_radius
 new Float:shield_max_hp
@@ -36,11 +33,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	arrayset(g_jaqueo_shield_cooldown,0,SH_MAXSLOTS+1)
 	arrayset(g_jaqueo_shield_loaded,1,SH_MAXSLOTS+1)
-	arrayset(g_jaqueo_shield_deployed,0,SH_MAXSLOTS+1)
-	arrayset(g_normal_ptr,0,SH_MAXSLOTS+1)
-	arrayset(g_jaqueo_shield,0,SH_MAXSLOTS+1)
 
 	register_think(JAQUEO_SHIELD_CLASSNAME, "shield_think")
 	RegisterHam(Ham_TakeDamage,"player","Shield_Damage",_,true)

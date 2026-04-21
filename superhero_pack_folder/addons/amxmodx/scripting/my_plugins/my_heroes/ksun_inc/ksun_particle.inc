@@ -23,7 +23,6 @@
 native get_from_player_spores(id,index)
 native Float:get_spore_base_health()
 native spore_launch(id)
-native spores_clear()
 native get_times_player_spiked_player(attacker,victim)
 native inc_times_player_spiked_player(attacker,victim)
 native dec_times_player_spiked_player(attacker,victim)

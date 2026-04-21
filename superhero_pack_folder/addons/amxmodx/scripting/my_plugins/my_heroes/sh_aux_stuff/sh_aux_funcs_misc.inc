@@ -65,7 +65,22 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
 	return floatround(fOrigin[2]);
 }
+//stock for grenades| (to reduce a bit of clutter, for now)
+stock bounce_grenade_stock(pToucher)
+{
 
+	if(!is_valid_ent(pToucher)) return FMRES_IGNORED
+
+	new Float:velocity[3]
+	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	velocity[0]*=0.5
+	velocity[1]*=0.5
+	velocity[2]*=0.5
+	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+	
+	return FMRES_IGNORED
+}
 
 stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search[],Float:touch_distance=50.0)
 {
@@ -122,11 +137,10 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload, 4) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], speed)
-		set_pdata_float(get_pdata_cbase(iEnt, m_pPlayer, 4), m_flNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, 4)
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, _:m_iId, 4)], speed)
+		set_pdata_float(get_pdata_cbase(iEnt, _:m_pPlayer, 4), _:m_flNextAttack, fDelay, 5)
+		set_pdata_float(iEnt, _:m_flTimeWeaponIdle, fDelay + 0.5, 4)
 	}
-
 }
 #else
 stock do_fast_reload(id,iEnt,Float:speed=1.0){
@@ -134,12 +148,13 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	if(!client_hittable(id)){
 		return
 	}
-	if( get_pdata_int(iEnt, m_fInReload, 4) )
+	if( get_pdata_int(iEnt, m_fInReload) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, _:m_iId, 4)], speed)
-		set_pdata_float(get_pdata_cbase(iEnt, _:m_pPlayer, 4), _:m_flNextAttack, fDelay, 5)
-		set_pdata_float(iEnt, _:m_flTimeWeaponIdle, fDelay + 0.5, 4)
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_member(iEnt, m_iId)], speed)
+		set_member(id, m_flNextAttack, fDelay)
+		set_member(iEnt, m_flTimeWeaponIdle, fDelay + 0.5)
 	}
+
 
 }
 #endif

@@ -195,7 +195,14 @@ public veronika_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_AK47 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
-		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak, headshot,_,_,_,_,_,_,custom_dmg_id_ak)
+		if (extraDamage > 0){
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_ak)
+
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

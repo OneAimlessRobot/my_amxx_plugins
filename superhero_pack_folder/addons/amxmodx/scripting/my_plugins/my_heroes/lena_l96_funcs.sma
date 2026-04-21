@@ -61,6 +61,9 @@ public plugin_init(){
 }
 
 public FwdTouchWorld( bull_et, World ) {
+
+	if(!is_valid_ent(bull_et)) return
+
 	new Float:origin[3]
 	entity_get_vector(bull_et,EV_VEC_origin,origin);
 
@@ -422,6 +425,8 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 
 public bulletina_touque_playor(pToucher, pTouched)
 {
+	if(!is_valid_ent(pToucher)) return
+	
 	new Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 

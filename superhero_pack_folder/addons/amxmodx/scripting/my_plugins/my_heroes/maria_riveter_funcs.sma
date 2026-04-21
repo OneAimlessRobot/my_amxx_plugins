@@ -11,8 +11,6 @@
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
 
-
-new bool:rivet_loaded[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
@@ -22,7 +20,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
-	arrayset(rivet_loaded,true,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
@@ -89,9 +86,7 @@ public CmdStart(id, uc_handle)
 		
 		if(button & IN_ATTACK)
 		{
-			if(sh_user_has_hero(id,gatling_get_hero_id())||
-						!rivet_loaded[id]||
-						(maria_riveter_get_num_rivets(id)<=0)){
+			if(sh_user_has_hero(id,gatling_get_hero_id())||(maria_riveter_get_num_rivets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
@@ -364,6 +359,8 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 
 public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 {
+	if(!is_valid_ent(pToucher)) return
+	
 	new Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 	

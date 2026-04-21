@@ -55,9 +55,6 @@ new Float:gear_ratio
 new hud_sync
 
 
-stock KOMAK_HUD_TASKID,
-	KOMAK_REPAIR_TASKID
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -100,10 +97,7 @@ public plugin_init()
 			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
-
-	
-	KOMAK_HUD_TASKID=allocate_typed_task_id(player_task)
-	KOMAK_REPAIR_TASKID=allocate_typed_task_id(player_task)
+	set_task(1.0, "engine_repair_loop",_,_,_, "b")
 }
 
 
@@ -130,18 +124,6 @@ public komak_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if(sh_user_has_hero(id,gHeroID) ){
-		remove_task(id+KOMAK_REPAIR_TASKID)
-		set_task(1.0, "engine_repair_loop", id+KOMAK_REPAIR_TASKID, "", 0, "b")
-		if(!is_user_bot(id)){
-			remove_task(id+KOMAK_HUD_TASKID)
-			set_task(0.1, "komak_hud_task", id+KOMAK_HUD_TASKID, "", 0, "b")
-		}
-	}
-	else{
-		remove_task(id+KOMAK_HUD_TASKID)
-		remove_task(id+KOMAK_REPAIR_TASKID)
-	}
 	reset_komak(id)
 	
 	
@@ -231,38 +213,25 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 }
 public engine_repair_loop(id){
 	
-	id-=KOMAK_REPAIR_TASKID;
-	
-	if(!is_user_connected(id)){
-		remove_task(id+KOMAK_REPAIR_TASKID)
-		return;
-	}
-	if(sh_user_has_hero(id,gHeroID) &&(gEngineRepairTimer[id]>0)){
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+		if(!client_hittable(i)){
+			continue
+		}
+		if(sh_user_has_hero(i,gHeroID)){
 		
-		gEngineRepairTimer[id]--;
-		
-		
+			if((gEngineRepairTimer[i]>0)){
+				
+				gEngineRepairTimer[i]--;
+				
+				
+			}
+			if(!is_user_bot(i)){
+				komak_hud(id)
+			}
+		}
 	}
 	
 	
-}
-public komak_hud_task(id){
-	id-=KOMAK_HUD_TASKID
-	if(!is_user_connected(id)){
-		remove_task(id+KOMAK_HUD_TASKID)
-
-		return;
-	}
-	if(sh_user_has_hero(id,gHeroID) ){
-		komak_hud(id)
-		
-	
-	}
-	else{
-
-		remove_task(id+KOMAK_HUD_TASKID)
-	}
-
 }
 komak_hud(id){
 	static hud_msg[128];
@@ -366,12 +335,6 @@ stats_komak(id){
 	gCurrReloadRatio[id]=floatadd(base_reload_ratio,floatmin(get_max_added_reload_ratio(id),get_added_reload_ratio(id)))
 }
 
-public client_disconnected(id){
-	if(!is_user_bot(id)){
-		remove_task(id+KOMAK_HUD_TASKID)
-	}
-	remove_task(id+KOMAK_REPAIR_TASKID)
-}
 public komak_gear_change(id,is_up){
 	
 	new increment= is_up?1:-1

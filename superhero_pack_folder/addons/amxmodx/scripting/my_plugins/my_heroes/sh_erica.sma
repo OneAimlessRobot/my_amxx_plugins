@@ -343,7 +343,7 @@ public weaponChange(id)
 	}
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)){
+		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()){
 			set_user_maxspeed(id, g_normal_er_speed[id])
 		}
 	}

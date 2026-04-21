@@ -11,8 +11,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock YANDERE_PSYCHOSIS_TASKID,
-	UNPSYCHOSIS_TASKID
+stock YANDERE_PSYCHOSIS_TASKID
 
 public plugin_init(){
 	
@@ -31,7 +30,6 @@ public plugin_init(){
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
 	YANDERE_PSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
-	UNPSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
 	register_event("ResetHUD","psychosis_newRound","b")
 	
@@ -172,7 +170,8 @@ public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
 
 	gPsychosisTime[id]-=1.0
-	sh_set_rendering(id, LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],255,kRenderFxGlowShell, kRenderTransAlpha)
+	set_render_with_color_const(id, PINK,1,255,_,0)
+	remove_glow_user(id,1.0)
 	aura(id,LineColors[PINK])
 
 	if(!is_user_bot(id)){
@@ -186,34 +185,26 @@ public psychosis_task(id){
 		superhero_protected_hud_message(superhero_hud_msg_sync,id,"%s", hud_msg,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
 		sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
 	}
-	
-	
+	if(gPsychosisTime[id]>=0.0){
+		set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",1)
+	}
+	else{
+		unpsychosis_user(id)
+	}
 	
 }
 psychosis_user(id){
 	
 	psychosis_on(id)
 	sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
-	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",PSYCHOSIS_TIMES)
-	set_task(floatsub(psychosis_time,0.1),"unpsychosis_task",id+UNPSYCHOSIS_TASKID,"", 0,  "a",1)
-	
-	
-	
-}
-public unpsychosis_task(id){
-	id-=UNPSYCHOSIS_TASKID
-	set_user_rendering(id)
-	remove_task(id+YANDERE_PSYCHOSIS_TASKID)
-	psychosis_off(id)
+	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID,"",0,  "a",1)
 	
 	
 	
 }
 
 public unpsychosis_user(id){
-	remove_task(id+UNPSYCHOSIS_TASKID)
 	set_user_rendering(id)
-	remove_task(id+YANDERE_PSYCHOSIS_TASKID)
 	psychosis_off(id)
 	
 	

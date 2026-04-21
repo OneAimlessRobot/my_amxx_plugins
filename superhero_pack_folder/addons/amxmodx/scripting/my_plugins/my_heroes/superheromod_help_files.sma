@@ -38,19 +38,9 @@ public plugin_init()
 
 setup_configs(){
 
-	for(new i=0;i<sizeof superhero_help_files;i++){
-		
-		arrayset(superhero_help_files[i][TITLE],0,STRLEN_FOR_FILES+1)
-		arrayset(superhero_help_files[i][INDEX_NAME],0,STRLEN_FOR_FILES+1)
-		arrayset(superhero_help_files[i][DIR_NAME],0,STRLEN_FOR_FILES+1)
-		arrayset(superhero_help_files[i][HERO_NAME],0,STRLEN_FOR_FILES+1)
-	
-	}
 	get_configsdir(help_files_directory,  charsmax(help_files_directory))
 	add(help_files_directory, charsmax(help_files_directory), config_directory_name, charsmax(config_directory_name))
 
-	arrayset(default_file,0,sizeof default_file)
-	arrayset(default_directory,0,sizeof default_directory)
 	add(default_file, charsmax(default_file), help_files_directory, charsmax(help_files_directory))
 	add(default_file, charsmax(default_file), default_directory_name, charsmax(default_directory_name))
 	add(default_file, charsmax(default_file), default_index_name, charsmax(default_index_name))

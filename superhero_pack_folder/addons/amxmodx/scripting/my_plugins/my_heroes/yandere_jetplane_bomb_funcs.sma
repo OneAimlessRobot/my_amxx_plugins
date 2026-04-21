@@ -16,13 +16,13 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
-new has_bomb[SH_MAXSLOTS+1]
 new Float:jetplane_bomb_radius,
 Float:jetplane_bomb_dmg;
 new jetplane_bomb_ammo;
 
-stock BOMB_RELOAD_TASKID
+new has_bomb[SH_MAXSLOTS+1]
+
+new BOMB_RELOAD_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -33,8 +33,10 @@ public plugin_init()
 	register_cvar("yandere_jetplane_bomb_radius", "5")
 	register_cvar("yandere_jetplane_bomb_dmg", "5")
 	register_cvar("yandere_jetplane_bomb_ammo", "5")
+	arrayset(has_bomb,1,sizeof(has_bomb))
 	register_forward(FM_CmdStart, "CmdStart");
-
+	register_think(JETPLANE_FUSELAGE_CLASSNAME,"bomb_reload_taskid")
+	
 	BOMB_RELOAD_TASKID=allocate_typed_task_id(player_task)
 
 	init_explosion_defaults()
@@ -63,7 +65,6 @@ public loadCVARS()
 public plugin_natives(){
 
 	register_native("get_jet_bombs","_get_jet_bombs",0);
-	register_native("clear_bombs","_clear_bombs",0);
 	register_native("set_jet_bombs","_set_jet_bombs",0);
 	register_native("get_user_jet_bombs","_get_user_jet_bombs",0);
 	register_native("set_user_jet_bombs","_set_user_jet_bombs",0);
@@ -81,7 +82,7 @@ public _get_jet_bombs(iPlugins,iParams){
 public _set_jet_bombs(iPlugins,iParams){
 	new jet_id=get_param(1)
 	new the_bombs=get_param(2)
-
+	
 	set_pev(jet_id,pev_iuser1,the_bombs)
 }
 public _reset_jet_bombs(iPlugins,iParams){
@@ -132,7 +133,7 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK2;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||has_bomb[id]) return FMRES_IGNORED
+			if( !(is_user_alive(id))||!has_bomb[id]) return FMRES_IGNORED
 			if(!get_user_jet_bombs(id))
 			{
 				client_print(id, print_center, "You are out of bombs!")
@@ -182,16 +183,19 @@ entity_set_int(NewEnt, EV_INT_movetype, 10)
 entity_set_edict(NewEnt, EV_ENT_owner, id)
 
 new Float:jet_velocity[3]
-pev(jet_get_user_jet(id),pev_velocity,jet_velocity);
+new user_jet=jet_get_user_jet(id)
+pev(user_jet,pev_velocity,jet_velocity);
 new Float:jet_velocity_num=vector_length(jet_velocity);
 
 new Float:fl_iNewVelocity[3]
-velocity_by_aim(jet_get_user_jet(id), floatround(jet_velocity_num), fl_iNewVelocity)
+velocity_by_aim(user_jet, floatround(jet_velocity_num), fl_iNewVelocity)
 entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
-has_bomb[id] = NewEnt
+has_bomb[id] = 0
 
 set_user_jet_bombs(id,get_user_jet_bombs(id)-1)
+
+
 set_task(BOMB_DROP_PERIOD,"bomb_reload",id+BOMB_RELOAD_TASKID,"",0,"a",1)
 entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 return PLUGIN_HANDLED
@@ -200,9 +204,11 @@ return PLUGIN_HANDLED
 public bomb_reload(id)
 {
 id-=BOMB_RELOAD_TASKID
-has_bomb[id] = 0
+has_bomb[id] = 1
 }
 public bomb_hit(pToucher, pTouched) {
+
+if(!is_valid_ent(pToucher)) return
 
 new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 if((pTouched==jet_get_user_jet(the_owner))){
@@ -227,37 +233,4 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/particle_suck2.wav")
 	engfunc(EngFunc_PrecacheSound,BOMB_EXPLODE_SOUND)
 	
-}
-//---------------------------------------------------------------------------------------------- 
-
-//----------------------------------------------------------------------------------------------
-remove_bomb(bomb){
-
-new Float:fl_origin[3]
-entity_get_vector(bomb, EV_VEC_origin, fl_origin)
-
-message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte(14)
-write_coord(floatround(fl_origin[0]))
-write_coord(floatround(fl_origin[1]))
-write_coord(floatround(fl_origin[2]))
-write_byte (200)
-write_byte (40)
-write_byte (45)
-message_end()
-
-emit_sound(bomb, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-remove_entity(bomb)
-return PLUGIN_CONTINUE
-}
-
-public _clear_bombs(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, JETPLANE_BOMB_CLASSNAME)
-while(grenada) {
-	
-	remove_bomb(grenada)
-	grenada = find_ent_by_class(grenada, JETPLANE_BOMB_CLASSNAME)
-}
 }

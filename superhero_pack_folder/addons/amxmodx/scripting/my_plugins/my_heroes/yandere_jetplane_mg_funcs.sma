@@ -242,18 +242,18 @@ public mg_think(ent)
 		return FMRES_IGNORED
 	}
 	if(jet_deployed(owner)){
-		
+		new user_jet=jet_get_user_jet(owner)
 		new Float:vOrigin[3]
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_origin, vOrigin)
+		entity_get_vector(user_jet, EV_VEC_origin, vOrigin)
 		vOrigin[0]+=jetplane_origin_mg_offsets[0]
 		vOrigin[1]+=jetplane_origin_mg_offsets[1]
 		vOrigin[2]+=jetplane_origin_mg_offsets[2]
 		entity_set_origin(ent, vOrigin)
 		
 		new Float:angles[3]
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, angles)
+		entity_get_vector(user_jet, EV_VEC_v_angle, angles)
 		entity_set_vector(ent, EV_VEC_v_angle, angles)
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
+		entity_get_vector(user_jet, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
 		new Float:current_mg_loading_time=entity_get_float(ent,EV_FL_fuser1)
@@ -310,14 +310,14 @@ launch_shell(id)
 	new Float:bullet_place_dir_vec[3],
 			Float:Velocity[3],
 			Float:dest_origin[3]
-
-	velocity_by_aim(jet_get_user_jet(id), LAUNCH_SAFETY_DIST, bullet_place_dir_vec)
+	new user_jet=jet_get_user_jet(id)
+	velocity_by_aim(user_jet, LAUNCH_SAFETY_DIST, bullet_place_dir_vec)
 	
 	add_3d_vectors(Origin,bullet_place_dir_vec,dest_origin)
 
 	entity_set_origin(Ent, dest_origin)
 
-	velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_mg_bulletspeed), Velocity)
+	velocity_by_aim(user_jet, floatround(jetplane_mg_bulletspeed), Velocity)
 	
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -340,6 +340,9 @@ launch_shell(id)
 public shell_hit_wall(pToucher, pTouched){
 
 
+	if(!is_valid_ent(pToucher)) return
+
+
 	new Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 
@@ -350,6 +353,8 @@ public shell_hit_wall(pToucher, pTouched){
 
 }
 public shell_hit_player(pToucher, pTouched){
+
+	if(!is_valid_ent(pToucher)) return
 
 	if(client_hittable(pTouched))
 	{
@@ -415,6 +420,9 @@ public shell_hit_player(pToucher, pTouched){
 }
 public shell_hit_jet(pToucher, pTouched)
 {
+
+	if(!is_valid_ent(pToucher)) return
+
 	new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 	if((pTouched==jet_get_user_jet(the_owner))){
 

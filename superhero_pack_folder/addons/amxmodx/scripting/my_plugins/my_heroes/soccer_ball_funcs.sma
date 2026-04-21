@@ -34,6 +34,8 @@ public plugin_natives(){
 }
 
 public FwdTouchWorld( Ball, World ) {
+	if(!is_valid_ent(Ball)) return
+
 	static Float:vVelocity[ 3 ];
 	entity_get_vector( Ball, EV_VEC_velocity, vVelocity );
 	
@@ -47,11 +49,13 @@ public FwdTouchWorld( Ball, World ) {
 		emit_sound( Ball, CHAN_ITEM, BALL_BOUNCE_GROUND, 1.0, ATTN_NORM, 0, PITCH_NORM );
 	}
 	entity_set_int(Ball,EV_INT_iuser2,true)
-	return PLUGIN_CONTINUE;
 }
 //
 
 public ball_touch_player(Ball, Player ) {
+
+	if(!is_valid_ent(Ball)) return
+
 	new oid = entity_get_edict(Ball, EV_ENT_owner)
 	if(client_hittable(Player))
 	{		

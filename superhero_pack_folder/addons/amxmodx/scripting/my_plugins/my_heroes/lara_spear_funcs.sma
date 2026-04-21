@@ -13,20 +13,18 @@
 #define PLUGIN "Superhero lara mk2 pt2 (spear)"
 #define VERSION "1.0.0"
 
-new bool:spear_loaded[SH_MAXSLOTS+1]
 
 new spear_mode:player_spear_mode[SH_MAXSLOTS+1]
-new bool:player_mode_button_pressed[SH_MAXSLOTS+1]
+new player_mode_button_pressed_mask
 
-new bool:spear_armed[SH_MAXSLOTS+1]
+new spear_armed_mask
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 
 new Float:min_charge_time,Float:max_charge_time
 
 
-stock SPEAR_RELOAD_TASKID,
-	SPEAR_CHARGE_TASKID,
+stock SPEAR_CHARGE_TASKID,
 	UNSPEAR_CHARGE_TASKID
 
 public plugin_init(){
@@ -35,20 +33,12 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
 
-	arrayset(spear_loaded,true,SH_MAXSLOTS+1)
-
-	arrayset(player_spear_mode,spear_mode_off,SH_MAXSLOTS+1)
-
-	arrayset(spear_armed,false,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SPEAR_CLASSNAME, "spaar_thaank");
 	register_cvar("lara_spear_max_charge_time", "5.0")
 	register_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
-	SPEAR_RELOAD_TASKID=allocate_typed_task_id(player_task)
 	SPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	UNSPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
 
 
 	
@@ -58,6 +48,9 @@ public plugin_init(){
 }
 
 public FwdTouchWorld( Spaaaaeerr, World ) {
+
+	if(!is_valid_ent(Spaaaaeerr)) return
+
 	emit_sound(Spaaaaeerr, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	entity_set_vector(Spaaaaeerr, EV_VEC_velocity ,NULL_VECTOR)
 	//set pickability status
@@ -78,8 +71,7 @@ public spaar_thaank(ent){
 }
 public plugin_natives(){
 
-	
-	register_native( "spear_get_spear_loaded","_spear_get_spear_loaded",0)
+
 	register_native( "spear_uncharge_spear","_spear_uncharge_spear",0)
 	register_native( "spear_get_user_spear_mode","_spear_get_user_spear_mode",0)
 
@@ -110,8 +102,8 @@ public CmdStart(id, uc_handle)
 	if(button & IN_ALT1){
 		button &= ~IN_ALT1;
 		if(weapon==CSW_KNIFE){
-			if(!player_mode_button_pressed[id]){
-				player_mode_button_pressed[id]=true
+			if(!Get_BitVar(player_mode_button_pressed_mask,id)){
+				Set_BitVar(player_mode_button_pressed_mask,id)
 				player_spear_mode[id]=(player_spear_mode[id]+spear_mode_launch)%spear_mode_max
 				sh_chat_message(id,spear_get_hero_id(),"The spear mode has been changed to: ^"%s^"",spear_mode_names[player_spear_mode[id]])
 			}
@@ -119,7 +111,7 @@ public CmdStart(id, uc_handle)
 	}
 	else{
 
-		player_mode_button_pressed[id]=false
+		UnSet_BitVar(player_mode_button_pressed_mask,id)
 	}
 	if(weapon==CSW_KNIFE){
 	
@@ -129,8 +121,8 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))||!spear_loaded[id]) return FMRES_IGNORED
-			if(spear_get_num_spears(id) == 0)
+			if( !(is_user_alive(id))) return FMRES_IGNORED
+			if(spear_get_num_spears(id)<=0)
 			{
 				
 				if(!is_user_bot(id)){
@@ -138,9 +130,8 @@ public CmdStart(id, uc_handle)
 				}
 				return FMRES_IGNORED
 			}
-			if(!spear_armed[id]){
-				spear_armed[id]=true
-				curr_charge[id]=0.0
+			if(!Get_BitVar(spear_armed_mask,id)){
+				Set_BitVar(spear_armed_mask,id)
 				charge_user(id)
 				
 			}
@@ -152,7 +143,7 @@ public CmdStart(id, uc_handle)
 			}
 			
 		}
-		else if(spear_armed[id]){
+		else if(Get_BitVar(spear_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
 				
 				lara_spear_decide_func(id)
@@ -198,7 +189,10 @@ public charge_task(id){
 					100.0*(curr_charge[id]/max_charge_time)
 					);
 	client_print(id,print_center,"%s",hud_msg)
-					
+	
+	if(Get_BitVar(spear_armed_mask,id)){
+		set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID,"", 0,  "a",1)
+	}
 	
 
 	
@@ -206,9 +200,8 @@ public charge_task(id){
 
 }
 charge_user(id){
-	set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID,"", 0,  "a",SPEAR_CHARGE_TIMES)
-	set_task(floatmul(SPEAR_CHARGE_PERIOD,float(SPEAR_CHARGE_TIMES))+1.0,"uncharge_task",id+UNSPEAR_CHARGE_TASKID,"", 0,  "a",1)
-	return 0
+	curr_charge[id]=0.0
+	set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID,"", 0,  "a",1)
 
 
 
@@ -216,28 +209,13 @@ charge_user(id){
 public _spear_uncharge_spear(iPlugin,iParams){
 	new id=get_param(1)
 	uncharge_user(id)
-	spear_loaded[id]=true
-
-
-}
-public uncharge_task(id){
-	id-=UNSPEAR_CHARGE_TASKID
-	remove_task(id+SPEAR_CHARGE_TASKID)
-	spear_armed[id]=false
-	return 0
-
-
 
 }
 
 uncharge_user(id){
-	remove_task(id+UNSPEAR_CHARGE_TASKID)
-	remove_task(id+SPEAR_CHARGE_TASKID)
-	spear_armed[id]=false
-	return 0
 
-
-
+	
+	UnSet_BitVar(spear_armed_mask,id)
 }
 
 public Ham_Weapon_Stab(weapon_ent)
@@ -252,19 +230,13 @@ public Ham_Weapon_Stab(weapon_ent)
 
 	new owner = get_member(weapon_ent, m_pPlayer)
 
-	if ( (!spear_loaded[owner]||!spear_get_num_spears(owner))&&sh_user_has_hero(owner,spear_get_hero_id())) {
+	if ( !spear_get_num_spears(owner)&&sh_user_has_hero(owner,spear_get_hero_id())) {
 		return HAM_SUPERCEDE
 	}
 
 	return HAM_IGNORED
 }
 
-public _spear_get_spear_loaded(iPlugin,iParams){
-
-	new id=get_param(1)
-	return spear_loaded[id]
-	
-}
 public spear_mode:_spear_get_user_spear_mode(iPLugin, iParams){
 	new id=get_param(1)
 	return player_spear_mode[id]
@@ -304,9 +276,6 @@ launch_spear(id)
 	velocity_by_aim(id, floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-	spear_loaded[id] = false
-
 	spear_dec_num_spears(id)
 
 	emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -316,11 +285,6 @@ launch_spear(id)
 	trail(Ent,WHITE,10,5)
 	entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
 	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
-
-	new parm[1]
-	parm[0] = id
-	set_task(SPEAR_SHOOT_PERIOD, "spear_reload",id+SPEAR_RELOAD_TASKID,parm,1)
-
 	return PLUGIN_CONTINUE
 }
 
@@ -348,11 +312,6 @@ public lara_spear_decide_func(id){
 							get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE),
 							get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,
 							1)
-
-			spear_loaded[id] = false
-			new parm[1]
-			parm[0]=id
-			set_task(SPEAR_SHOOT_PERIOD, "spear_reload",id+SPEAR_RELOAD_TASKID,parm,1)
 		}
 		default:{
 			return
@@ -360,19 +319,14 @@ public lara_spear_decide_func(id){
 	}
 
 }
-public spear_reload(parm[])
-{
-	if(!is_user_alive(parm[0])||!sh_user_has_hero(parm[0],spear_get_hero_id())||!is_user_connected(parm[0])) return
-	spear_loaded[parm[0]] = true
-	new clip,ammo,wid=get_user_weapon(parm[0],clip,ammo)
-	if((wid==CSW_KNIFE)&&spear_get_num_spears(parm[0])){
-		entity_set_string(parm[0], EV_SZ_viewmodel, SPEAR_V_MODEL)
-	}
-}
 
 
 public spaaaaeer_touch_player(pToucher, pTouched)
-{
+{	
+	
+	if(!is_valid_ent(pToucher)) return
+
+
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
 	//new Float:origin[3],dist
 	

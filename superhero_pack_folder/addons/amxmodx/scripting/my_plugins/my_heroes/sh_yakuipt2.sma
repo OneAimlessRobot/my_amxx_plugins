@@ -238,15 +238,17 @@ public yakui_kd(){
 	switch(wid){
 	
 		case YAKUI_WEAPON_CLASSID:{
-			
-			make_effect(id,id,gHeroID)
-			gatling_dec_num_pills(id)
+			if(gatling_get_pillgatling(id)){
+				make_effect(id,id,gHeroID)
+				gatling_dec_num_pills(id)
+			}
 			
 		}
 		case CSW_KNIFE:{
-
-			make_effect(id,id,gHeroID,gatling_get_needle_fx(id),true)
-			gatling_needle_cycle_fx(id)
+			if(gatling_get_needle(id)){
+				make_effect(id,id,gHeroID,gatling_get_needle_fx(id),true)
+				gatling_needle_cycle_fx(id)
+			}
 
 		}
 	}

@@ -1,6 +1,5 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -152,13 +151,11 @@ public plugin_precache(){
 }
 public Item_PostFrame_Post(iEnt)
 {    
-	if(pev_valid(iEnt) != 2){
+	if(pev_valid(iEnt)!=2){
 		return HAM_IGNORED
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
-	
 	if(!client_hittable(id)){
-		
 		return HAM_IGNORED
 	}
 	if (!sh_is_active()||(gatling_get_fx_num(id)!=_:COCAINE))return HAM_IGNORED
@@ -290,7 +287,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
-	new owner = get_member(weapon_ent, m_pPlayer)
+	new owner = entity_get_edict(weapon_ent, EV_ENT_owner)
 	if(!client_hittable(owner)){
 		return HAM_IGNORED
 	}

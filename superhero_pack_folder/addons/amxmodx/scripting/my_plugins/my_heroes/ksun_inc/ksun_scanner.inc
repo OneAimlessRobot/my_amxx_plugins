@@ -14,9 +14,6 @@
 
 native get_scanner_player_tracks_player(id1,id2)
 native set_scanner_player_tracks_player(id1,id2,value)
-native scanners_clear()
-native get_player_scanner(id)
-native set_player_scanner(id, scanner_id)
 native destroy_player_scanner(id)
 native get_from_player_targets(id,index)
 
@@ -39,9 +36,6 @@ native set_spore_at_player_spores(id,index,value)
 native set_target_at_player_targets(id,index,value)
 
 native spawn_scanner(id)
-native Float:get_scanner_min_radius()
-native Float:get_scanner_max_radius()
-native Float:get_scanner_traverse_time()
 native scanner_max_victims()
 
 native reset_player_targets(id)

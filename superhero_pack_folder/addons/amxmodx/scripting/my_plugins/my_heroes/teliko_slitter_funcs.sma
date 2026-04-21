@@ -21,6 +21,10 @@ new slitter_level_difference
 new max_slitter_kills_per_life
 new Float:slitter_drag_speed
 
+new dmg_source_name_short_sneak[SAFE_BUFFER_SIZE+1]="sneak_attack"
+new dmg_source_name_long_sneak[SAFE_BUFFER_SIZE+1]="sneak"
+new custom_dmg_id_sneak
+
 stock SLITTER_TASKID
 
 public plugin_init(){
@@ -44,6 +48,12 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	
+	custom_dmg_id_sneak=sh_log_custom_damage_source(teliko_get_hero_id(),
+					dmg_source_name_short_sneak,
+					dmg_source_name_long_sneak,
+					1)
+
 	SLITTER_TASKID=allocate_typed_task_id(player_task)
 	init_explosion_defaults()
 }
@@ -53,7 +63,7 @@ public weaponChange(id)
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,teliko_get_hero_id()) ||!shModActive()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if ((wpnid == CSW_KNIFE)&&slitter_get_slit_kills(id)) {
+	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
 		entity_set_string(id, EV_SZ_viewmodel, SLITTER_V_MODEL)
 	}
 	return PLUGIN_CONTINUE
@@ -89,23 +99,30 @@ public plugin_natives(){
 	
 	
 	register_native( "slitter_set_slitter","_slitter_set_slitter",0)
-	register_native( "slitter_get_slitter","_slitter_get_slitter",0)
-	register_native( "slitter_get_dragging_who","_slitter_get_dragging_who",0)
-	register_native( "slitter_get_slit_kills","_slitter_get_slit_kills",0)
 	
 }
-stop_dragging(id){
+
+stop_dragging(id,bool:deduct=false){
 	
-		if((g_dragging_who[id][0]>=0)){
-			if(client_hittable( g_dragging_who[id][0])){
-				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
-			}
-			sh_reset_max_speed(id)
-			
+		if(client_hittable( g_dragging_who[id][0])){
+			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
+		
 		g_dragging_who[id][0]=-1
 		g_dragging_who[id][1]=0
 
+		if(!deduct) return
+
+		if(g_slit_kills[id]>0){
+			g_slit_kills[id]-=deduct?1:0
+			if(g_slit_kills[id]>=0){							
+				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,teliko_get_hero_id(),"You got %d slit strikes left",g_slit_kills[id]);
+				}	
+			}
+		}
+		
 }
 
 //----------------------------------------------------------------------------------------------
@@ -129,7 +146,7 @@ public slitter_think(id)
 	
 	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
 		
-		stop_dragging(id)
+		stop_dragging(id,true)
 		return FMRES_IGNORED
 	}
 	new ammo, clip, wpnid=get_user_weapon(id,ammo,clip)
@@ -183,7 +200,7 @@ public slitter_think(id)
 public CmdStart(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_get_slitter(attacker)||(slitter_get_slit_kills(attacker)<=0)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)) return FMRES_IGNORED;
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 
 	static button
@@ -192,7 +209,7 @@ public CmdStart(attacker, uc_handle)
 	
 	if((weapon==CSW_KNIFE)){
 		if((button & IN_DUCK)){
-			button&= ~IN_DUCK
+			button &= ~IN_DUCK;
 			set_pev(attacker, pev_flTimeStepSound, 999)
 		
 		}
@@ -211,8 +228,8 @@ public CmdStart(attacker, uc_handle)
 				xs_vec_make2d( vecForward, vec2LOS );
 				xs_vec_normalize( vec2LOS, vec2LOS );
 				
-				static Float:vTrace[3], id, tr
-				static Float:vOrigin[3],Float:vEnd[3]
+				new Float:vTrace[3], id, tr
+				new Float:vOrigin[3],Float:vEnd[3]
 				pev(attacker, pev_origin, vOrigin)
 				vEnd[0]=vOrigin[0]+vecForward[0]
 				vEnd[1]=vOrigin[1]+vecForward[1]
@@ -225,21 +242,20 @@ public CmdStart(attacker, uc_handle)
 					return FMRES_IGNORED
 				
 				}
-				if(cs_get_user_team(id)==cs_get_user_team(attacker)){
+				if(sh_clients_are_same_team(id,attacker)){
 					return FMRES_IGNORED
 				}
 				velocity_by_aim(id, floatround(slitter_distance), vecForward ); 
 				
 				xs_vec_make2d( vecForward, vecForward2D );
-				new att_name[128],vic_name[128];
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
+				static att_name[128],vic_name[128];
+				if( (xs_vec_dot( vec2LOS, vecForward2D ) > slitter_distance*0.5) )
 				{
 					if((sh_get_user_lvl(attacker)-sh_get_user_lvl(id))>slitter_level_difference){
 						
 						g_dragging_who[attacker][0]=id
 						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
-						new Float:velocity[3]={1.0,1.0,1.0}
-						entity_set_vector(id, EV_VEC_velocity, velocity)
+						entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
 						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID,"",0,"a",1)
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
@@ -250,12 +266,9 @@ public CmdStart(attacker, uc_handle)
 							sh_chat_message(id,teliko_get_hero_id(),"You got snuck up on by %s!",att_name);
 						}
 					}
-					else{
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,teliko_get_hero_id(),"Level bias towards you is too small! Cannot drag opponent!");
-							sh_chat_message(attacker,teliko_get_hero_id(),"Current level difference is: %d in your favour. But needed level difference is > %d!",sh_get_user_lvl(attacker)-sh_get_user_lvl(id),slitter_level_difference)
-						}
-					}
+					else if(!is_user_bot(attacker)){
+						client_print(attacker,print_center,"You need to be more than %d levels above! Cannot drag opponent!",slitter_level_difference);
+					}	
 				}
 			}
 		}
@@ -308,7 +321,7 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 			{
 				if(g_dragging_who[attacker][0]==id){
 						
-					if(slitter_get_slit_kills(attacker)){
+					if(g_slit_kills[attacker]>0){
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						g_dragging_who[attacker][0]=-1;
@@ -324,19 +337,16 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 						else{
 							damage=get_user_health(id)*3.0
 							SetHamParamFloat(4, damage);
-							sh_extra_damage(id,attacker,floatround(damage),"Slit throat",1)
+							sh_extra_damage(id,attacker,floatround(damage),
+								dmg_source_name_short_sneak,1
+								,_,_,_,_,_,
+								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+								custom_dmg_id_sneak)
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,teliko_get_hero_id(),"You slit %s's throat!",vic_name);
 							}
 						}
-						g_slit_kills[attacker]--;
-						if(slitter_get_slit_kills(attacker)){							
-							
-							
-							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,teliko_get_hero_id(),"You got %d slit strikes left",slitter_get_slit_kills(attacker));
-							}
-						}
+						stop_dragging(id,true)
 					}
 					else{
 					
@@ -354,13 +364,6 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 return HAM_IGNORED
 
 }
-public _slitter_get_slitter(iPlugin,iParams){
-new id=get_param(1)
-
-return slitter_on[id];
-
-
-}
 public _slitter_set_slitter(iPlugin,iParams){
 new id=get_param(1)
 new value_to_set=get_param(2)
@@ -369,21 +372,6 @@ if(!prev_value&&value_to_set){
 	g_slit_kills[id]=max_slitter_kills_per_life;
 }
 slitter_on[id]=value_to_set
-
-}
-public _slitter_get_dragging_who(iPlugin,iParams){
-new id=get_param(1)
-
-return g_dragging_who[id][0]
-
-
-}
-
-public _slitter_get_slit_kills(iPlugin,iParams){
-new id=get_param(1)
-
-return g_slit_kills[id]
-
 
 }
 

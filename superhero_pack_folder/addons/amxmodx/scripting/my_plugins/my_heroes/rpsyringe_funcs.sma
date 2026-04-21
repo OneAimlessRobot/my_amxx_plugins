@@ -107,10 +107,14 @@ public bool:client_isnt_hitter(id){
 
 public seringa_toqueta_de_la_seringa(pToucher, pTouched) {
 
+	if(!is_valid_ent(pToucher)) return
+	
 	remove_missile(pToucher)
 }
 
 public seringa_toqueta_de_entiteta(pToucher, pTouched) {
+	
+	if(!is_valid_ent(pToucher)) return
 
 	new Float:fl_vExplodeAt[3]
 	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)

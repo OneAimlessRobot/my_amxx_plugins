@@ -47,8 +47,6 @@ public plugin_natives(){
 	
 	
 	register_native("scanner_max_victims","_scanner_max_victims",0)
-	register_native("get_player_scanner","_get_player_scanner",0)
-	register_native("set_player_scanner","_set_player_scanner",0)
 	
 	register_native("spawn_scanner","_spawn_scanner",0)
 	
@@ -66,9 +64,6 @@ public plugin_natives(){
 	register_native("set_player_num_launched_spores","_set_player_num_launched_spores",0)
 	register_native("dec_player_num_launched_spores","_dec_player_num_launched_spores",0)
 	
-	register_native("get_scanner_min_radius","_get_scanner_min_radius",0)
-	register_native("get_scanner_max_radius","_get_scanner_max_radius",0)
-	register_native("get_scanner_traverse_time","_get_scanner_traverse_time",0)
 	
 	register_native("get_spore_from_player_spores","_get_spore_from_player_spores",0)
 	register_native("get_target_from_player_targets","_get_target_from_player_targets",0)
@@ -78,7 +73,6 @@ public plugin_natives(){
 	
 	register_native("get_scanner_player_tracks_player","_get_scanner_player_tracks_player",0)
 	register_native("set_scanner_player_tracks_player","_set_scanner_player_tracks_player",0)
-	register_native("scanners_clear","_scanners_clear",0)
 	register_native("destroy_player_scanner","_destroy_player_scanner",0)
 	
 	
@@ -92,7 +86,7 @@ public _scanner_max_victims(iPlugin,iParams){
 public ev_SendAudio(){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE
-	scanners_clear()
+	remove_entity_name(SCANNER_CLASSNAME)
 	return PLUGIN_CONTINUE
 }
 public _get_spore_from_player_spores(iPlugin,iParams){
@@ -179,13 +173,6 @@ public _dec_player_num_launched_spores(iPlugin,iParams){
 	num_launched_spores[id]= (num_launched_spores[id]>0)? (num_launched_spores[id]-1):0
 
 }
-public Float:_get_scanner_traverse_time(iPlugin,iParms){
-	
-	
-	return ksun_track_traverse_time
-	
-	
-}
 public _reset_player_targets(iPlugin,iParams){
 		
 		new id=get_param(1)
@@ -193,20 +180,6 @@ public _reset_player_targets(iPlugin,iParams){
 		arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)	
 		arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 		arrayset(g_player_spores[id],0,SH_MAXSLOTS+1)
-}
-public Float:_get_scanner_max_radius(iPlugin,iParms){
-	
-	
-	return ksun_track_max_radius
-	
-	
-}
-public Float:_get_scanner_min_radius(iPlugin,iParms){
-	
-	
-	return ksun_track_min_radius
-	
-	
 }
 public _destroy_player_scanner(iPlugin,iParams){
 	
@@ -252,7 +225,7 @@ public _spawn_scanner(iPlugins,iParams){
 	}
 	entity_set_string(scanner, EV_SZ_classname, SCANNER_CLASSNAME)
 	entity_set_float(scanner, EV_FL_fuser1, 0.0);
-	entity_set_float(scanner, EV_FL_fuser2, get_scanner_min_radius());
+	entity_set_float(scanner, EV_FL_fuser2, ksun_track_min_radius);
 	entity_set_edict(scanner, EV_ENT_owner, id)
 	entity_set_origin(scanner, b_orig)
 	g_player_scanner[id]=scanner
@@ -278,17 +251,6 @@ public _get_scanner_player_tracks_player(iPlugins,iParams){
 	
 	
 }
-public _get_player_scanner(iPlugins, iParms){
-	new id=get_param(1)
-	return g_player_scanner[id]
-
-}
-public _set_player_scanner(iPlugins, iParms){
-	new id=get_param(1)
-	new scanner_ent_id=get_param(2)
-	g_player_scanner[id]=scanner_ent_id
-
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -303,17 +265,6 @@ public loadCVARS()
 	ksun_track_max_radius= get_cvar_float("ksun_track_max_radius")
 	ksun_track_traverse_time= get_cvar_float("ksun_track_traverse_time")
 	ksun_max_victims= get_cvar_num("ksun_max_victims")
-}
-public _scanners_clear(iPlugins, iParms){
-	
-	
-	new scanner = find_ent_by_class(-1, SCANNER_CLASSNAME)
-	while( scanner) {
-		remove_entity( scanner)
-		scanner = find_ent_by_class(scanner, SCANNER_CLASSNAME)
-	}
-	
-	
 }
 
 

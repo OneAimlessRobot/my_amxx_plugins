@@ -63,7 +63,6 @@ public loadCVARS()
 public plugin_natives(){
 
 	register_native("get_jet_rockets","_get_jet_rockets",0);
-	register_native("clear_rockets","_clear_rockets",0);
 	register_native("set_jet_rockets","_set_jet_rockets",0);
 	register_native("get_user_jet_rockets","_get_user_jet_rockets",0);
 	register_native("set_user_jet_rockets","_set_user_jet_rockets",0);
@@ -264,12 +263,14 @@ new Float:fl_iNewVelocity[3],
 	Float:rocket_place_dir_vec[3],
 	Float:dest_origin[3]
 
-velocity_by_aim(jet_get_user_jet(id), LAUNCH_SAFETY_DIST, rocket_place_dir_vec)
+new user_jet=jet_get_user_jet(id)
+
+velocity_by_aim(user_jet, LAUNCH_SAFETY_DIST, rocket_place_dir_vec)
 
 add_3d_vectors(vOrigin,rocket_place_dir_vec,dest_origin)
 
 entity_set_origin(NewEnt, dest_origin)
-velocity_by_aim(jet_get_user_jet(id), floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
+velocity_by_aim(user_jet, floatround(jetplane_law_rocketspeed), fl_iNewVelocity)
 
 entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 
@@ -332,22 +333,22 @@ public law_think(ent)
 		new Float:velocity[3]
 		new Float:ref_pos[3]
 		new Float:spawn_pos[3]
-		
+		new user_jet=jet_get_user_jet(owner)
 		// Get the origin (position) of the reference entity
-		pev(jet_get_user_jet(owner), pev_origin, ref_pos)
+		pev(user_jet, pev_origin, ref_pos)
 		
 		
 		// Set the spawn position to the left*/
 		spawn_pos[0] = ref_pos[0]
 		spawn_pos[1] = ref_pos[1]
 		spawn_pos[2] = ref_pos[2] + jetplane_origin_law_offsets[2]
-		pev(jet_get_user_jet(owner),pev_velocity,velocity)
+		pev(user_jet,pev_velocity,velocity)
 		set_pev(ent,pev_origin,spawn_pos)
 		
 		new Float:angles[3]
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_v_angle, angles)
+		entity_get_vector(user_jet, EV_VEC_v_angle, angles)
 		entity_set_vector(ent, EV_VEC_v_angle, angles)
-		entity_get_vector(jet_get_user_jet(owner), EV_VEC_angles, angles)
+		entity_get_vector(user_jet, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_angles, angles)
 		entity_set_vector(ent, EV_VEC_velocity, NULL_VECTOR)
 		new Float:current_law_loading_time=entity_get_float(ent,EV_FL_fuser1)
@@ -381,38 +382,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, JETPLANE_LAW_FIRE_SOUND)
 	
 	
-}
-//---------------------------------------------------------------------------------------------- 
-
-//----------------------------------------------------------------------------------------------
-remove_rocket(rocket){
-
-new Float:fl_origin[3]
-entity_get_vector(rocket, EV_VEC_origin, fl_origin)
-
-message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
-write_byte(14)
-write_coord(floatround(fl_origin[0]))
-write_coord(floatround(fl_origin[1]))
-write_coord(floatround(fl_origin[2]))
-write_byte (200)
-write_byte (40)
-write_byte (45)
-message_end()
-
-emit_sound(rocket, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-remove_entity(rocket)
-return PLUGIN_CONTINUE
-}
-
-public _clear_rockets(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, JETPLANE_ROCKET_CLASSNAME)
-while(grenada) {
-	remove_rocket(grenada)
-	grenada = find_ent_by_class(grenada, JETPLANE_ROCKET_CLASSNAME)
-}
 }
 
 public _law_destroy(iPlugin,iParams){

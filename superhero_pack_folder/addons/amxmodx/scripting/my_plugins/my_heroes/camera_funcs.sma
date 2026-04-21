@@ -40,13 +40,6 @@ public plugin_init(){
 	//handle when player presses attack2
 	
 	arrayset(camera_loaded,true,SH_MAXSLOTS+1)
-	arrayset(looking_with_camera,0,SH_MAXSLOTS+1)
-	arrayset(camera_armed,0,SH_MAXSLOTS+1)
-	arrayset(camera_charge,0.0,SH_MAXSLOTS+1)
-	arrayset(user_camera,0,SH_MAXSLOTS+1)
-	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
-	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("camman_camera_min_charge_time", "1.0")
 	register_cvar("camman_camera_health", "100.0")
 	register_cvar("camman_camera_charge", "1000.0")
@@ -69,7 +62,6 @@ public plugin_natives(){
 	register_native( "toggle_camera_view","_toggle_camera_view",0)
 	register_native( "camera_get_camera_armed","_camera_get_camera_armed",0)
 	register_native( "camera_get_camera_planted","_camera_get_camera_planted",0)
-	register_native( "camera_set_camera_armed","_camera_set_camera_armed",0)
 	register_native( "camera_charge_camera","_camera_charge_camera",0)
 	register_native( "camera_disarm_camera","_camera_disarm_camera",0)
 	register_native( "camera_get_camera_charging","_camera_get_camera_charging",0)
@@ -161,7 +153,6 @@ public _camera_clear_user_camera(iPlugins,iParams){
 	
 	new id=get_param(1)
 	remove_camera(id)
-	user_camera[id]=-1;
 	
 	
 	
@@ -192,14 +183,6 @@ public _camera_get_camera_planted(iPlugins,iParams){
 	
 	new id=get_param(1);
 	return camman_get_has_camera(id)
-	
-	
-}
-public _camera_set_camera_armed(iPlugins,iParams){
-	
-	new id=get_param(1);
-	new value_to_set=get_param(2)
-	camera_armed[id]=value_to_set
 	
 	
 }
@@ -509,10 +492,10 @@ public remove_camera(pid){
 	camman_set_has_camera(pid,0)
 	if(pev_valid(user_camera[pid])!=2) return
 	
-	camera_armed[pid]=false
-	camera_loaded[pid]=true
 	remove_entity(user_camera[pid])
 
+	camera_armed[pid]=false
+	camera_loaded[pid]=true
 	user_camera[pid]=-1
 }
 
@@ -549,7 +532,7 @@ public disarm_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	camman_update_disarming(id)
+	new bool:result=camman_update_disarming(id)
 	if(!camera_get_camera_disarming(id)){
 		
 		if(!is_user_bot(id)){
@@ -558,7 +541,7 @@ public disarm_task(id){
 
 		remove_camera(id);
 	}
-	else{
+	else if(result){
 
 		set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"",0,  "a",1)
 	}
@@ -573,6 +556,7 @@ public disarm_task(id){
 public _camera_disarm_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
+	disarmer_on[id]=1
 	curr_disarm_charge[id]=0.0
 	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID,"", 0,  "a",1)
 	
@@ -608,6 +592,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
 	
+	camera_armed[id]=1
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID,"", 0,  "a",1)
@@ -687,7 +672,7 @@ bool:camman_update_disarming(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 	}
@@ -696,7 +681,7 @@ bool:camman_update_disarming(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 		
@@ -704,7 +689,7 @@ bool:camman_update_disarming(id){
 	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 		
@@ -713,7 +698,7 @@ bool:camman_update_disarming(id){
 	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 	}

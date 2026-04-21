@@ -11,8 +11,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new mine_loaded[SH_MAXSLOTS+1]
-
 new mine_armed[SH_MAXSLOTS+1]
 new disarmer_on[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
@@ -23,37 +21,26 @@ new Float:min_charge_time
 
 
 stock MINE_CHARGE_TASKID,
-		UNMINE_CHARGE_TASKID,
-		MINE_DISARM_TASKID,
-		UNMINE_DISARM_TASKID
+		MINE_DISARM_TASKID
 
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	arrayset(mine_loaded,true,SH_MAXSLOTS+1)
-	arrayset(mine_armed,0,SH_MAXSLOTS+1)
-	arrayset(disarmer_on,0,SH_MAXSLOTS+1)
-	arrayset(curr_charge,0.0,SH_MAXSLOTS+1)
-	arrayset(curr_disarm_charge,0.0,SH_MAXSLOTS+1)
 	register_cvar("sapper_mine_min_charge_time", "1.0")
 	register_think(MINE_CLASSNAME, "mine_think")
 
 
 	MINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	UNMINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	MINE_DISARM_TASKID=allocate_typed_task_id(player_task)
-	UNMINE_DISARM_TASKID=allocate_typed_task_id(player_task)
 
 	init_explosion_defaults()
 }
 
 public plugin_natives(){
 	
-	
-	register_native( "clear_mines","_clear_mines",0)
-	register_native( "mine_get_mine_loaded","_mine_get_mine_loaded",0)
+
 	register_native( "mine_get_mine_armed","_mine_get_mine_armed",0)
 	register_native( "mine_set_mine_armed","_mine_set_mine_armed",0)
 	register_native( "mine_uncharge_mine","_mine_uncharge_mine",0)
@@ -63,8 +50,6 @@ public plugin_natives(){
 	register_native( "mine_get_mine_charging","_mine_get_mine_charging",0)
 	register_native( "mine_get_mine_disarming","_mine_get_mine_disarming",0)
 	register_native( "mine_get_mine_disarmer_on","_mine_get_mine_disarmer_on",0)
-	register_native( "mine_set_mine_disarmer_on","_mine_set_mine_disarmer_on",0)
-	register_native( "plant_mine","_plant_mine",0)
 	
 	
 	
@@ -105,24 +90,7 @@ public _mine_get_mine_disarmer_on(iPlugins,iParams){
 
 
 }
-public _mine_set_mine_disarmer_on(iPlugins,iParams){
-
-	new id=get_param(1);
-	new value_to_set=get_param(2)
-	disarmer_on[id]=value_to_set
-
-
-}
-public _mine_get_mine_loaded(iPlugins,iParams){
-
-	new id=get_param(1);
-	return mine_loaded[id]
-
-
-}
-public _plant_mine(iPlugins,iParams)
-{
-	new id= get_param(1)
+public plant_mine(id){
 	
 	if ( !client_hittable(id)) return
 	if(!sh_user_has_hero(id,sapper_get_hero_id()))  return
@@ -201,18 +169,7 @@ public blow_mine_up(ent, id)
 		
 		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
 		
-		new parm[2];
-		parm[0]=id;
-		parm[1]=ent;
-		remove_mine(parm)
-}
-public remove_mine(parm[]){
-
-if(!is_valid_ent(parm[1])) return
-mine_loaded[parm[0]]=true
-remove_entity(parm[1])
-
-
+		remove_entity(ent)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -230,7 +187,7 @@ public loadCVARS()
 }
 
 
-public disarm_task(param[],id){
+public disarm_task(param[1],id){
 	id-=MINE_DISARM_TASKID
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
 	if(!is_user_bot(id)){
@@ -240,17 +197,19 @@ public disarm_task(param[],id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	sapper_update_disarming(id)
+	new bool:result=sapper_update_disarming(id)
 	if(!mine_get_mine_disarming(id)){
-		new parm[2];
-		parm[1]=param[0];
-		parm[0]=id;
+
 		sapper_set_num_mines(id,sapper_get_num_mines(id)+1)
-		remove_mine(parm);
+		remove_entity(param[0]);
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));
 		}
+	}
+	else if(result){
+		set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1,  "a",1)
+	
 	}
 	
 	
@@ -261,25 +220,7 @@ public disarm_task(param[],id){
 }
 public _mine_undisarm_mine(iPlugin,iParams){
 	new id=get_param(1)
-	undisarm_user(id)
-	
-	
-}
-public undisarm_task(id){
-	id-=UNMINE_DISARM_TASKID
-	remove_task(id+MINE_DISARM_TASKID)
 	disarmer_on[id]=0
-	return 0
-	
-	
-	
-}
-
-undisarm_user(id){
-	remove_task(id+UNMINE_DISARM_TASKID)
-	remove_task(id+MINE_DISARM_TASKID)
-	disarmer_on[id]=0
-	return 0
 	
 	
 }
@@ -287,12 +228,11 @@ public _mine_disarm_mine(iPlugins,iParams){
 
 	new id=get_param(1);
 	new mine_id=get_param(2)
+	disarmer_on[id]=1
+	curr_disarm_charge[id]=0.0
 	new param[1];
 	param[0]=mine_id
-	curr_disarm_charge[id]=0.0
-	set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1,  "a",MINE_DISARM_TIMES)
-	set_task(floatmul(MINE_DISARM_PERIOD,float(MINE_DISARM_TIMES))+1.0,"undisarm_task",id+UNMINE_DISARM_TASKID,"", 0,  "a",1)
-	return 0
+	set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1,  "a",1)
 	
 	
 	
@@ -301,17 +241,15 @@ public _mine_disarm_mine(iPlugins,iParams){
 public _mine_charge_mine(iPlugins,iParams){
 
 	new id=get_param(1);
+	mine_armed[id]=1
 	curr_charge[id]=0.0
-	set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID,"", 0,  "a",MINE_CHARGE_TIMES)
-	set_task(floatmul(MINE_CHARGE_PERIOD,float(MINE_CHARGE_TIMES))+1.0,"uncharge_task",id+UNMINE_CHARGE_TASKID,"", 0,  "a",1)
-	return 0
-	
+	set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID,"", 0,  "a",1)
 	
 	
 	
 }
 
-sapper_update_planting(id){
+bool:sapper_update_planting(id){
 new butnprs
 
 butnprs = entity_get_int(id, EV_INT_button)
@@ -322,7 +260,7 @@ if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE
 	if(!is_user_bot(id)){
 		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
 	}
-	mine_uncharge_mine(id)
+	return false
 }
 if (butnprs&IN_JUMP){
 
@@ -330,14 +268,14 @@ if (butnprs&IN_JUMP){
 	if(!is_user_bot(id)){
 		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
 	}
-	mine_uncharge_mine(id)
+	return false
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 	if(!is_user_bot(id)){
 		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
 	}
-	mine_uncharge_mine(id)
+	return false
 
 
 }
@@ -345,19 +283,20 @@ if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 	if(!is_user_bot(id)){
 		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
 	}
-	mine_uncharge_mine(id)
+	return false
 }
 if(!(butnprs&IN_DUCK)){
 	if(!is_user_bot(id)){
 		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
 	}
-	mine_uncharge_mine(id)
+	return false
 }
+return true
 
 
 
 }
-sapper_update_disarming(id){
+bool:sapper_update_disarming(id){
 new butnprs
 
 butnprs = entity_get_int(id, EV_INT_button)
@@ -365,40 +304,40 @@ butnprs = entity_get_int(id, EV_INT_button)
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
 	}
-	mine_undisarm_mine(id)
+	return false
 }
 if (butnprs&IN_JUMP){
 
 
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
 	}
-	mine_undisarm_mine(id)
+	return false
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
 	}
-	mine_undisarm_mine(id)
+	return false
 
 
 }
 if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
 	}
-	mine_undisarm_mine(id)
+	return false
 }
 if(!(butnprs&IN_DUCK)){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
 	}
-	mine_undisarm_mine(id)
+	return false
 }
-
+return true
 
 
 }
@@ -418,13 +357,17 @@ public charge_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	sapper_update_planting(id)
+	new bool:result=sapper_update_planting(id)
 	if(!mine_get_mine_charging(id)){
 		plant_mine(id)
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You have %d mines left",
 			sapper_get_num_mines(id));
 		}
+	}
+	else if(result){
+		set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID,"", 0,  "a",1)
+	
 	}
 	
 	
@@ -439,35 +382,11 @@ public _mine_uncharge_mine(iPlugin,iParams){
 	
 	
 }
-public uncharge_task(id){
-	id-=UNMINE_CHARGE_TASKID
-	remove_task(id+MINE_CHARGE_TASKID)
-	mine_armed[id]=0
-	return 0
-	
-	
-	
-}
 
 uncharge_user(id){
-	remove_task(id+MINE_CHARGE_TASKID)
-	remove_task(id+UNMINE_CHARGE_TASKID)
 	mine_armed[id]=0
-	return 0
 	
 	
-}
-public _clear_mines(iPlugin,iParams){
-
-new grenada = find_ent_by_class(-1, MINE_CLASSNAME)
-while(grenada) {
-	new parm[2]
-	new owner=pev(grenada,pev_owner)
-	parm[0]=owner
-	parm[1]=grenada
-	remove_mine(parm)
-	grenada = find_ent_by_class(grenada, MINE_CLASSNAME)
-}
 }
 public plugin_precache()
 {

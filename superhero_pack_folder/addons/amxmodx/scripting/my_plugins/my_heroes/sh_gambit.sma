@@ -80,7 +80,6 @@ public plugin_init()
 
 	// FIND THROWN GRENADES
 	register_event("AmmoX", "on_AmmoX", "b")
-	arrayset(gWillHit,false,SH_MAXSLOTS+1)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

@@ -168,19 +168,29 @@ public _sh_unsleep_user(iPlugin,iParams){
 
 
 }
-public sleep_task(array[],id){
+public sleep_task(array[1],id){
 	id-=SLEEP_TASKID
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !shModActive() ||!client_hittable(id)){
+
+		unsleep_user(id)
+		return
+	}
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
-	
+	if(array[0]<(SLEEP_TIMES+9)){
+		array[0]++
+		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",1)
+	}
+	else{
+		set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,"",0,"a",1)
+	}
 
 
 }
 sleep_user(id,attacker){
 	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
-	array[0] = attacker
+	array[0] = 0
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	Set_BitVar(gIsAsleepMask,id)
 	sleep_user_switch_weapon(id)
@@ -188,37 +198,19 @@ sleep_user(id,attacker){
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",SLEEP_TIMES+9)
-	set_task(SLEEP_TIME,"unsleep_task",id+UNSLEEP_TASKID,"", 0,  "a",1)
-
-
-
-}
-public unsleep_task(id){
-	id-=UNSLEEP_TASKID
-
-	if ( !shModActive() ||!is_user_connected(id)) return
-	unfade_screen_user(id)
-	set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,"",0,"a",1)
+	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array),  "a",1)
 
 
 
 }
 public fully_wake_up_task(id){
 	id-=FULLY_WAKE_UP_TASKID
-	if ( !shModActive() ||!is_user_connected(id)) return
-	
-	set_user_rendering(id)
-	set_damage_icon(id,0,DMG_ICON_GAS)
-	UnSet_BitVar(gIsAsleepMask,id)
+	unsleep_user(id)
 	
 
 
 }
 unsleep_user(id){
-	remove_task(id+UNSLEEP_TASKID)
-	remove_task(id+SLEEP_TASKID)
-	remove_task(id+FULLY_WAKE_UP_TASKID)
 	if ( !shModActive() ||!is_user_connected(id)) return
 	set_user_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)

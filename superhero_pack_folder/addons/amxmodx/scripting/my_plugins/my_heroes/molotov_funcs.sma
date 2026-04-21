@@ -246,14 +246,7 @@ remove_entity(id_molly)
 
 public molly_burner_um_burner(pToucher, pTouched)
 {
-
-	new Float:velocity[3]
-	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
-	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	velocity[0]*=0.5
-	velocity[1]*=0.5
-	velocity[2]*=0.5
-	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+	return bounce_grenade_stock(pToucher)
 
 }
 

@@ -92,15 +92,7 @@ public plugin_init()
 								dmg_source_name_short_field_drain,
 								dmg_source_name_long_field_drain,
 								0)
-	
-	arrayset(g_flora_field_cooldown,0.0,SH_MAXSLOTS+1)
-	arrayset(g_flora_prev_inside,-1,SH_MAXSLOTS+1)
-	arrayset(g_flora_curr_inside,-1,SH_MAXSLOTS+1)
-	arrayset(g_flora_sheltered_value,0,SH_MAXSLOTS+1)
-	arrayset(g_flora_dmg_color,0,SH_MAXSLOTS+1)
-	arrayset(g_flora_curr_charging,-1,SH_MAXSLOTS+1)
-	arrayset(g_flora_num_of_active_fields,0,SH_MAXSLOTS+1)
-	arrayset(g_flora_field_loaded,1,SH_MAXSLOTS+1)
+
 
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)

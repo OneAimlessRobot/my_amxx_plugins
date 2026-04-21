@@ -22,8 +22,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	//handle when player presses attack2
 	
-	arrayset(curr_needle_fx,0,SH_MAXSLOTS+1)
-	arrayset(needle_on,0,SH_MAXSLOTS+1)
 	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")

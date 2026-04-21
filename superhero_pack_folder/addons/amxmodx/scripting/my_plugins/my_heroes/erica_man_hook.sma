@@ -31,6 +31,10 @@ new max_hook_kills_per_life
 new Float:hook_drag_speed
 
 
+new dmg_source_name_short_gutting[SAFE_BUFFER_SIZE+1]="gutting"
+new dmg_source_name_long_gutting[SAFE_BUFFER_SIZE+1]="gutting"
+new custom_dmg_id_gutting
+
 stock HOOK_TASKID
 
 public plugin_init(){
@@ -47,7 +51,11 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
 	register_event("ResetHUD","newRound","b")
-
+	custom_dmg_id_gutting=sh_log_custom_damage_source(tranq_get_hero_id(),
+					dmg_source_name_short_gutting,
+					dmg_source_name_long_gutting,
+					1)
+	
 	HOOK_TASKID=allocate_typed_task_id(player_task)
 }
 //----------------------------------------------------------------------------------------------
@@ -96,32 +104,29 @@ public plugin_natives(){
 	
 	
 	register_native( "hook_set_hook","_hook_set_hook",0)
-	register_native( "hook_get_hook","_hook_get_hook",0)
-	register_native( "hook_get_dragging_who","_hook_get_dragging_who",0)
-	register_native( "hook_get_hook_kills","_hook_get_hook_kills",0)
 	
 }
-stop_dragging(id){
+stop_dragging(id,bool:deduct=false){
 	
-		if((g_dragging_who[id][0]>=0)){
-			if(client_hittable( g_dragging_who[id][0])){
-				entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
-			}
-			
+		if(client_hittable( g_dragging_who[id][0])){
+			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
-
-		if(g_hook_kills[id]>0){
-			g_hook_kills[id]--
-		}
-		if(hook_get_hook_kills(id)){							
-				
-			if(!is_user_bot(id)){
-				sh_chat_message(id,tranq_get_hero_id(),"You got %d hook strikes left",hook_get_hook_kills(id));
-			}	
-		}
+		
 		g_dragging_who[id][0]=-1
 		g_dragging_who[id][1]=0
 
+		if(!deduct) return
+
+		if(g_hook_kills[id]>0){
+			g_hook_kills[id]-=deduct?1:0
+			if(g_hook_kills[id]>=0){							
+				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,tranq_get_hero_id(),"You've got %d hook strikes left",g_hook_kills[id]);
+				}	
+			}
+		}
+		
 }
 //----------------------------------------------------------------------------------------------
 public hook_think(id)
@@ -129,15 +134,24 @@ public hook_think(id)
 	
 	id-=HOOK_TASKID
 	if (!client_hittable(id)){
+		stop_dragging(id)
 		return
 	
 	}
 	if (!sh_user_has_hero(id,tranq_get_hero_id())){
+
+		stop_dragging(id)
 		return
 	
 	}
-	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
+	if(!client_hittable( g_dragging_who[id][0])){
 	
+		stop_dragging(id)
+		return
+	}
+	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
+		
+		stop_dragging(id,true)
 		return
 	
 	
@@ -195,7 +209,7 @@ public hook_think(id)
 public CmdStart1(attacker, uc_handle)
 {
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_get_hook(attacker)||(hook_get_hook_kills(attacker)<=0)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_on[attacker]||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 	
@@ -205,7 +219,7 @@ public CmdStart1(attacker, uc_handle)
 	
 	if((weapon==CSW_KNIFE)){
 		if((button & IN_DUCK)){
-			button&= ~IN_DUCK
+			button &= ~IN_DUCK;
 			set_pev(attacker, pev_flTimeStepSound, 999)
 		
 		}
@@ -248,28 +262,29 @@ public CmdStart1(attacker, uc_handle)
 					return FMRES_IGNORED
 				
 				}
-				if(cs_get_user_team(id)==cs_get_user_team(attacker)){
+				if(sh_clients_are_same_team(id,attacker)){
 					free_tr2(tr)
 					return FMRES_IGNORED
 				}
 				velocity_by_aim(id, floatround(hook_distance), vecForward ); 
 				
 				xs_vec_make2d( vecForward, vecForward2D );
-				new att_name[128],vic_name[128];
+				static att_name[128],vic_name[128];
 				
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > hook_distance*0.8) )
+				if( (xs_vec_dot( vec2LOS, vecForward2D ) > hook_distance*0.5) )
 				{
-					if(hook_get_hook_kills(attacker)<=0){
-					
+					if(g_hook_kills[attacker]<=0){
+
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);
 						}
 						free_tr2(tr)
 						return FMRES_IGNORED
 					}
-					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
+					sh_bleed_user(id,attacker,BLEED_MINI,tranq_get_hero_id())
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
+					entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
 					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID,"",0,"a",1)
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
@@ -328,14 +343,20 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 		
 		if(stabbing){
 			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
+			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
 			{
 				if(g_dragging_who[attacker][0]==id){
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),"Gutting")
+					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),
+								dmg_source_name_long_gutting,1
+								,_,_,_,_,_,
+								SH_NEW_DMG_BLEED,
+								custom_dmg_id_gutting)
+					
 					new random_number=generate_int(0,NUM_SENTENCES-1);
+					
 					if(!is_user_bot(id)){
 						sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 					}
@@ -344,8 +365,10 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					}
 					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					
-					process_manhook_manslaughter( attacker, id)
-					stop_dragging(attacker)	
+					if(!is_user_alive(id)){
+						process_manhook_manslaughter( attacker, id)
+						stop_dragging(attacker,true)
+					}
 				}
 			}	
 		}
@@ -353,13 +376,6 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 }
 
 return HAM_IGNORED
-
-}
-public _hook_get_hook(iPlugin,iParams){
-new id=get_param(1)
-
-return hook_on[id];
-
 
 }
 public _hook_set_hook(iPlugin,iParams){
@@ -372,23 +388,6 @@ if(!prev_value&&value_to_set){
 hook_on[id]=value_to_set
 
 }
-public _hook_get_dragging_who(iPlugin,iParams){
-new id=get_param(1)
-
-return g_dragging_who[id][0]
-
-
-}
-
-public _hook_get_hook_kills(iPlugin,iParams){
-new id=get_param(1)
-
-return g_hook_kills[id]
-
-
-}
-
-
 public plugin_precache()
 {
 	for(new i=0;i<sizeof(man_hook_sounds);i++){

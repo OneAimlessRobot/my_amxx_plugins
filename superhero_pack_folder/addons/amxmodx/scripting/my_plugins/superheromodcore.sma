@@ -508,9 +508,6 @@ new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShXpPre
 
-//new max_entities
-//new max_entities_cvar
-
 #if defined SH_BACKCOMPAT
 //Old global variables, required for backward compat
 new gEventInit[SH_MAXHEROS][20]
@@ -766,7 +763,6 @@ public plugin_natives()
 	register_native("sh_get_max_ap", "_sh_get_max_ap")
 	register_native("sh_get_max_hp", "_sh_get_max_hp")
 	register_native("sh_get_num_lvls", "_sh_get_num_lvls")
-	register_native("sh_max_entities", "_sh_max_entities",0)
 	register_native("sh_get_lvl_xp", "_sh_get_lvl_xp")
 	register_native("sh_get_user_lvl", "_sh_get_user_lvl")
 	register_native("sh_set_user_lvl", "_sh_set_user_lvl")
@@ -1058,13 +1054,6 @@ public cvarCheck()
 	gBotsMaxLevel=get_pcvar_num(sh_botsmaxlevel)
 	gBotsMaxLevel=max(0,min(gBotsMaxLevel,gNumLevels))
 	gBotsMinLevel=max(0,min(gBotsMinLevel,gNumLevels))
-}
-public _sh_max_entities(iPlugin,iParams){
-
-	//console_print(0, "MAX_ENTITIES define: %d", MAX_ENTITIES)
-	//console_print(0, "max_entities cvar value: %d", max_entities)
-	//return min(max_entities,MAX_ENTITIES)
-	return MAX_ENTITIES
 }
 //----------------------------------------------------------------------------------------------
 public loopMain()

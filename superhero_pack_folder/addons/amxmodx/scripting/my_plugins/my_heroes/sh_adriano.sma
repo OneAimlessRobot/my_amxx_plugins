@@ -330,7 +330,7 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)){
+		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)&&sh_is_inround()){
 			set_user_maxspeed(id, g_normal_speed[id])
 		}
 	}

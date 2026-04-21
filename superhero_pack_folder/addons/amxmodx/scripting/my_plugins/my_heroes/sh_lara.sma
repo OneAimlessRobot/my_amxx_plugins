@@ -142,7 +142,7 @@ public weaponChange(id)
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
-		if(spear_get_spear_loaded(id)&&spear_get_num_spears(id)){
+		if(spear_get_num_spears(id)){
 			entity_set_string(id, EV_SZ_viewmodel, SPEAR_V_MODEL)
 		}
 		else{

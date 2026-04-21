@@ -15,7 +15,6 @@
 
 
 new RADIOACTIVE_TASK_ID
-new UNRADIOACTIVE_TASK_ID
 new REMOVE_GLOW_TASKID
 
 
@@ -31,6 +30,9 @@ enum{
 	TRACK_TASK_DO_DAMAGE,
 	TRACK_TASK_DAMAGE,
 	TRACK_TASK_TRACK_COLOR,
+	TRACK_TASK_PERIOD,
+	TRACK_TASK_CURR_IT,
+	TRACK_TASK_NUM_ITS,
 	NUM_INIT_TRACK_PARAMS
 
 
@@ -42,7 +44,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
-	UNRADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_tracked","a")
 	prepare_shero_aux_lib_pt3()
@@ -112,7 +113,7 @@ public _sh_damage_display_stock(iPlugin,iParams){
 	}
 }
 
-public track_task(array[],id){
+public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	id-=RADIOACTIVE_TASK_ID
 	if(!client_hittable(id)){
 		
@@ -161,6 +162,15 @@ public track_task(array[],id){
 							SH_NEW_DMG_RADIATION_POISON,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_RADIATION_POISON))
 		}
+		if(array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS]){
+			
+			array[TRACK_TASK_CURR_IT]++
+			set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",1)
+		}
+		else{
+			unradioactive_user(id);
+
+		}
 	}
 	else{
 
@@ -193,44 +203,36 @@ public _track_user(iPlugins, iParams){
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
 
-	new array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
-	arrayset(array,-1,sizeof array)
+	new any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
 	array[TRACK_TASK_ATTACKER] = attacker
 	array[TRACK_TASK_PLAYER_COUNT] = player_count
 	array[TRACK_TASK_DO_DAMAGE] = do_damage
 	array[TRACK_TASK_DAMAGE] = damage
 	array[TRACK_TASK_TRACK_COLOR] = track_color
+	array[TRACK_TASK_CURR_IT] = 0
+	array[TRACK_TASK_NUM_ITS] = radioactive_times
+	array[TRACK_TASK_PERIOD] = period
 	for(new i=0;i<player_count;i++){
 		
 		if(client_hittable(players[i])){
 			array[NUM_INIT_TRACK_PARAMS+i]=players[i]
 		}
 	}
-	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",radioactive_times)
-	set_task(floatsub(time,0.1),"unradioactive_task",id+UNRADIOACTIVE_TASK_ID,"", 0,  "a",1)
+	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array),  "a",1)
 
 
 
 }
 public _unradioactive_user(iPlugin,iParams){
 	new id=get_param(1)
-	remove_task(id+UNRADIOACTIVE_TASK_ID)
-	unradioactive_task(id+UNRADIOACTIVE_TASK_ID)
-
-}
-
-public unradioactive_task(id){
-	id-=UNRADIOACTIVE_TASK_ID
-	remove_task(id+RADIOACTIVE_TASK_ID)
 	if(is_user_connected(id)){
 		set_user_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_RADIATION)
 		gatling_set_fx_num(id, 0)
 	}
 
-
-
 }
+
 public _explosion(iPlugins,iParams){
 
 

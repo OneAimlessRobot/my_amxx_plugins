@@ -59,7 +59,7 @@ chucky_knifespeed 720    //User speed when knife is out
 
 // GLOBAL VARIABLES
 new HeroName[] = "Chucky"
-new bool:HasKilledWithKnife[SH_MAXSLOTS+1]
+new bool:HasStabbedWithKnife[SH_MAXSLOTS+1]
 new bool:ChuckyPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:UserTeam[SH_MAXSLOTS+1]
 new bool:BetweenRounds
@@ -144,7 +144,7 @@ public chucky_init()
 		}
 
 	}
-	HasKilledWithKnife[id] = false
+	HasStabbedWithKnife[id] = false
 }
 public newRound(id){
 
@@ -152,7 +152,7 @@ public newRound(id){
 		return
 	}
 	
-	HasKilledWithKnife[id] = false
+	HasStabbedWithKnife[id] = false
 }
 //----------------------------------------------------------------------------------------------
 #if USE_MODEL
@@ -183,7 +183,7 @@ switch_model(id)
 
 	// Weapon Model change thanks to [CCC]Taz-Devil
 	if ( wpnid == CSW_KNIFE) {
-		if(!HasKilledWithKnife[id])
+		if(!HasStabbedWithKnife[id])
 			set_pev(id, pev_viewmodel2, "models/shmod/chucky_knife/chucky_knife_clean.mdl")
 		else
 			set_pev(id, pev_viewmodel2, "models/shmod/chucky_knife/chucky_knife.mdl")
@@ -211,6 +211,9 @@ public chucky_damage(id)
 		// Do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
 		
+		HasStabbedWithKnife[attacker]=true
+		switch_model(attacker)
+
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, 
 						dmg_source_name_long_super_knife,
@@ -233,16 +236,10 @@ public chucky_death()
 	if ( !shModActive() || BetweenRounds || !is_user_connected(id))
 		return
 		
-	if( (id<=0 || id >= SH_MAXSLOTS+1) || (attacker<=0 || attacker >= SH_MAXSLOTS+1)){
+	if( !is_user_connected(attacker)){
 	
 		return;
 	}
-	if(weapon== CSW_KNIFE&&sh_user_has_hero(attacker,gHeroID)){
-	
-		HasKilledWithKnife[attacker]=true
-		switch_model(attacker)
-	
-	}	
 	// What is the users team when he dies?
 	UserTeam[id] = cs_get_user_team(id)
 
@@ -252,7 +249,7 @@ public chucky_death()
 		// Chucky will raise self from dead
 		new parm[1]
 		parm[0] = id
-		HasKilledWithKnife[id]=false
+		HasStabbedWithKnife[id]=false
 		// Respawn him faster then Zues, let this power be used before Zues's
 		// never set higher then 1.9 or lower then 0.5
 		set_task(0.5, "chucky_respawn", 0, parm, 1)
@@ -288,7 +285,7 @@ public chucky_respawn(parm[])
 
 	// Double spawn prevents the no HUD glitch
 	// This should eventually be changed to use a better method
-	HasKilledWithKnife[id]=false
+	HasStabbedWithKnife[id]=false
 	spawn(id)
 	spawn(id)
 
@@ -371,7 +368,7 @@ public round_end()
 public enable_chucky(id)
 {
 	ChuckyPowerUsed[id] = false
-	HasKilledWithKnife[id] = false
+	HasStabbedWithKnife[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -380,8 +377,24 @@ public client_connect(id)
 	remove_task(id)
 
 	ChuckyPowerUsed[id] = false
-	HasKilledWithKnife[id] = false
+	HasStabbedWithKnife[id] = false
 }
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	if((custom_weapon_id==custom_dmg_id_super_knife)&&sh_user_has_hero(attacker,gHeroID)){
+
+		HasStabbedWithKnife[attacker]=true
+		switch_model(attacker)
+
+	}
+	
+	return DMG_FWD_PASS
+}
+
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

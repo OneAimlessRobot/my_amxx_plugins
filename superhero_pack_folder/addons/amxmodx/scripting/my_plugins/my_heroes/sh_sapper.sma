@@ -157,7 +157,7 @@ return PLUGIN_HANDLED
 
 public sh_round_end(){
 
-	clear_mines()
+	remove_entity_name(MINE_CLASSNAME)
 
 }
 public death()
@@ -198,14 +198,13 @@ public sapper_kd()
 		}
 		
 		if(!mine_get_mine_armed(id)){
-				mine_set_mine_armed(id,1)
+				
 				mine_charge_mine(id)
 					
 		}
 	}
 	else if(disarmable){
 		if(!mine_get_mine_disarmer_on(id)){
-			mine_set_mine_disarmer_on(id,1)
 			mine_disarm_mine(id,mine_id)
 		}
 	

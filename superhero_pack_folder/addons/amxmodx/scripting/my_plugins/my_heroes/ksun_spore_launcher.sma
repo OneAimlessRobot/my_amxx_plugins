@@ -51,7 +51,6 @@ public plugin_natives(){
 	register_native("spores_launch","_spores_launch",0)
 	register_native("launcher_deploy","_launcher_deploy",0)
 	register_native("spores_reset_user","_spores_reset_user",0)
-	register_native("launchers_clear","_launchers_clear",0)
 	register_native("spores_busy","_spores_busy",0)
 	register_native("get_player_launcher_phase","_get_player_launcher_phase",0)
 	register_native("get_player_launcher","_get_player_launcher",0)
@@ -85,17 +84,8 @@ public ev_SendAudio(){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE
 	
-	launchers_clear()
+	remove_entity_name(LAUNCHER_CLASSNAME)
 	return PLUGIN_CONTINUE
-	
-}
-public _launchers_clear(iPlugins, iParms){
-	
-	new launcher = find_ent_by_class(-1, LAUNCHER_CLASSNAME)
-	while(launcher) {
-		remove_entity(launcher)
-		launcher = find_ent_by_class(launcher, LAUNCHER_CLASSNAME)
-	}
 	
 }
 public _spores_reset_user(iPlugins, iParms){

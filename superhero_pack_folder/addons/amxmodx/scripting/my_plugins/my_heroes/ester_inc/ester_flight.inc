@@ -54,4 +54,3 @@ stock const ester_sentences[ESTER_NUM_SENTENCES][128]={
 native ester_get_reborn_mode(id)
 native ester_get_respawn_attempts_remaining(id)
 native ester_set_reborn_mode(id,value)
-native reset_ester_reborn_mode(id,enable)

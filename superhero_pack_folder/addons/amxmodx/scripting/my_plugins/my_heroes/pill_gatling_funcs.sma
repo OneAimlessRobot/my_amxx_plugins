@@ -33,9 +33,6 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	console_print(0, "maximo de entidades: %d^n", sh_max_entities())
-
-	
 	register_event("CurWeapon","event_curweapon","be", "1=1")
 	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "Ham_Weapon_PillGatling",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
@@ -64,6 +61,9 @@ public plugin_init(){
 
 
 public FwdTouchWorld( pilula_sexualllllee, World ) {
+
+	if(!is_valid_ent(pilula_sexualllllee)) return
+	
 	new Float:origin[3]
 	entity_get_vector(pilula_sexualllllee,EV_VEC_origin,origin);
 
@@ -539,6 +539,8 @@ public event_start(){
 }
 public pilula_sexual_penetra_player(pToucher, pTouched)
 {
+	if(!is_valid_ent(pToucher)) return
+
 	if(client_hittable(pTouched))
 	{	
 		new id = entity_get_edict(pToucher, EV_ENT_owner);

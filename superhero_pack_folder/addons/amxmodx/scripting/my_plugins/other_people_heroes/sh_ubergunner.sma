@@ -23,6 +23,12 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 // GLOBAL VARIABLES
 new gHeroName[]="UberGunner"
 new gHeroID
+
+new dmg_source_name_short_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
+new dmg_source_name_long_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
+new custom_dmg_id_super_m4
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -51,7 +57,9 @@ public plugin_init()
 	// INIT
 	register_srvcmd("UberGunner_init", "UberGunner_init")
 	shRegHeroInit(gHeroName, "UberGunner_init")
-
+	
+	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_long_super_m4,0)
+	
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "UberGunner_damage", "b", "2!0")
@@ -123,7 +131,7 @@ public switchmodel(id)
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M4A1) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/usmarine_m4a1.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/usmarine_m4a1.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -157,6 +165,14 @@ public UberGunner_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
-		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "m4a1", headshot )
+		if (extraDamage > 0){
+
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_m4,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_super_m4)
+		
+		}
 	}
 }

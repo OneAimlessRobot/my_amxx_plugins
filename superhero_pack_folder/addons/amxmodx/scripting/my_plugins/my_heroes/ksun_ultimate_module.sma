@@ -29,8 +29,7 @@ new g_player_supply_amount[SH_MAXSLOTS+1]
 
 new g_player_in_ultimate[SH_MAXSLOTS+1]
 
-stock KSUN_ULTIMATE_TASKID,
-		UNKSUN_ULTIMATE_TASKID
+stock KSUN_ULTIMATE_TASKID
 
 
 public plugin_init()
@@ -47,7 +46,6 @@ public plugin_init()
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 
 	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
-	UNKSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
 	
 	
 	static wpnName[32]
@@ -227,9 +225,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
 	g_player_in_ultimate[id]=1
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",KSUN_ULTIMATE_LOOP_TIMES)
-	set_task(floatmul(KSUN_ULTIMATE_LOOP_PERIOD,float(KSUN_ULTIMATE_LOOP_TIMES))+1.0,"unultimate_task",id+UNKSUN_ULTIMATE_TASKID,"", 0,  "a",1)
-	
+	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",1)
 }
 
 
@@ -250,8 +246,13 @@ public ultimate_task(id){
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
-	
-	
+	if(ksun_get_player_supply_points(id)>0){
+		set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID,"", 0,  "a",1)
+	}
+	else{
+		unultimate_user(id,1)
+
+	}
 	
 	
 	
@@ -265,26 +266,9 @@ public _ksun_unultimate_user(iPlugin,iParams){
 	
 	
 }
-public unultimate_task(id){
-	id-=UNKSUN_ULTIMATE_TASKID
-	remove_task(id+KSUN_ULTIMATE_TASKID)
-	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_READY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	g_player_in_ultimate[id]=0
-	g_played_sound[id]=0
-	g_player_supply_amount[id]=0
-	
-	
-	
-}
-
 unultimate_user(id,take_away_supply=1){
-	remove_task(id+UNKSUN_ULTIMATE_TASKID)
-	remove_task(id+KSUN_ULTIMATE_TASKID)
 	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)

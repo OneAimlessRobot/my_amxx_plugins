@@ -18,7 +18,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	arrayset(gIsChaffed,false,SH_MAXSLOTS+1)
 	CHAFF_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_chaffed","a")
@@ -127,6 +126,11 @@ public _sh_unchaff_user(iPlugin,iParams){
 public chaff_task(array[1],id){
 	id-=CHAFF_TASKID
 	
+	if(!sh_is_active()||!client_hittable(id)){
+		
+		unchaff_user(id)
+		return
+	}
 	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	
 	if(array[0]<=CHAFF_TIMES){
@@ -135,9 +139,7 @@ public chaff_task(array[1],id){
 	}
 	else{
 
-		callfunc_begin_i(get_func_id("unchaff_user"))
-		callfunc_push_int(id)
-		callfunc_end()
+		unchaff_user(id)
 	}
 	
 }

@@ -11,8 +11,6 @@
   #pragma loadlib "SuperHero Core"
 #endif
 
-
-#define MAX_ENTITIES 2048
 #define MAX_HERO_NAME_LENGTH 256
 #define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
@@ -62,7 +60,6 @@ forward sh_hero_init(id, heroID, mode);
 
 forward sh_hero_init_pt2(id, heroID, mode); //for my player models module
 
-native sh_max_entities()
 native _dropPower(id, const said[],showmenu = 1);
 /**
  * Called when a +/-power is executed.

@@ -180,8 +180,8 @@ public ester_init()
 	new id=str_to_num(temp)
 	
 	ester_weapons(id)
-	reset_ester_reborn_mode(id,0)
 	reset_ester_user_round(id)
+	ester_set_reborn_mode(id,0)
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		if(gTimesLeft[id]<=0){
@@ -630,7 +630,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 }
 public client_disconnected(id){
 
-	reset_ester_reborn_mode(id,0)
+	ester_set_reborn_mode(id,0)
 	ester_weapons(id)
 	reset_ester_user_round(id)
 	
@@ -656,16 +656,6 @@ public plugin_precache()
 	
 	
 }
-
-public sh_client_death(id, killer, headshot, const wpnDescription[]){
-	
-	if(is_user_connected(id)){
-		if(sh_user_has_hero(id,gHeroID) ){
-			reset_ester_reborn_mode(id,0)
-		}
-	}
-
-}
 public death()
 {
 	new id=read_data(2)
@@ -674,7 +664,8 @@ public death()
 	}
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		reset_ester_reborn_mode(id,0)
+		
+		ester_set_reborn_mode(id,0)
 		reset_status(id)
 		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,generate_int(95,120))
 		
