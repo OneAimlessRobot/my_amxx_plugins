@@ -19,7 +19,9 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 *
 *   Hero based on Chucky for respawn, Agent for teleport, and Kamikaze for blowing up.
 */
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -32,7 +34,6 @@ new bool:g_betweenRounds
 new g_userTeam[SH_MAXSLOTS+1]
 new g_savedOrigin[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
-new g_spriteSmoke, g_spriteRing, g_spriteExplosion
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -57,13 +58,11 @@ public plugin_init()
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 	init_hud_syncs()
+	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
-	g_spriteRing = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
-	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 	engfunc(EngFunc_PrecacheSound,"ambience/3dmeagle.wav")
 }
@@ -198,13 +197,13 @@ public positionChangeTimer(id)
 	get_user_origin(id, g_lastPosition[id])
 
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.4, "positionChangeCheck", id+100)
@@ -228,89 +227,18 @@ public positionChangeCheck(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
-	new Float:dRatio, damage, distanceBetween
-	new origin[3], origin1[3]
 	new dmgRadius = get_cvar_num("phoenix_radius")
 	new maxDamage = get_cvar_num("phoenix_maxdamage")
-	new FFOn = get_cvar_num("mp_friendlyfire")
 
-	get_user_origin(id, origin)
 
 	superhero_protected_hud_message(superhero_hud_msg_sync,0,"Someone was Re-Born using the power of the Phoenix!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-	// blowup even if dead
-	explode_effect(origin, dmgRadius)
 
-	for (new a = 1; a <= SH_MAXSLOTS; a++) {
-		if ( is_user_alive(a) && a != id && (get_user_team(id) != get_user_team(a) || FFOn) ) {
+	new name[32]
+	get_user_name(id,name,31)
+	shUnglow(id)
+	set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
+	show_dhudmessage(0,"%s has exploded.",name)
+	explosion(gHeroID,id,float(dmgRadius),float(maxDamage),_,1,_,_,_,RED)
 
-			get_user_origin(a, origin1)
-
-			distanceBetween = get_distance(origin, origin1)
-
-			if ( distanceBetween < dmgRadius ) {
-				dRatio = float(distanceBetween) / float(dmgRadius)
-				damage = maxDamage - floatround(maxDamage * dRatio)
-				sh_extra_damage(a, id, damage, "Phoenix Re-Birth")
-			}
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public explode_effect(vec1[3], dmgRadius)
-{
-	// Ring
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(21)				// TE_BEAMCYLINDER
-	write_coord(vec1[0])		// center position
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 10)
-	write_coord(vec1[0])		// axis and radius
-	write_coord(vec1[1])
-	write_coord(vec1[2] + floatround(dmgRadius*3.5))
-	write_short(g_spriteRing)	// sprite index
-	write_byte(0)		// starting frame
-	write_byte(0)		// frame rate in 0.1's
-	write_byte(2)		// life in 0.1's
-	write_byte(20)		// line width in 0.1's
-	write_byte(0)		// noise amplitude in 0.01's
-	write_byte(248)	//colour
-	write_byte(20)
-	write_byte(25)
-	write_byte(255)	// brightness
-	write_byte(0)		// scroll speed in 0.1's
-	message_end()
-
-	// Explosion2
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(12)			// TE_EXPLOSION2
-	write_coord(vec1[0])	// start position
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_byte(188)	// starting color
-	write_byte(10)		// num colors
-	message_end()
-
-	// Explosion
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(3)			// TE_EXPLOSION
-	write_coord(vec1[0])	// start position 
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(g_spriteExplosion)	// sprite index
-	write_byte(dmgRadius/9)	// scale in 0.1's 
-	write_byte(10)			// framerate
-	write_byte(0)			// flags
-	message_end()
-
-	// Smoke
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vec1)
-	write_byte(5)			// TE_SMOKE
-	write_coord(vec1[0])	// start position
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(g_spriteSmoke)	// sprite index
-	write_byte(dmgRadius/14)	// scale in 0.1's
-	write_byte(10)			// framerate
-	message_end()
 }
 //----------------------------------------------------------------------------------------------

@@ -15,13 +15,17 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 
 #include "../my_include/superheromod.inc"
 
-#pragma dynamic 100000
-
 // GLOBAL VARIABLES
 new gHeroName[]="Riddick"
 new gHeroID
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
+
+
+new dmg_source_name_short_dual_knife[SAFE_BUFFER_SIZE+1]="dual_knife"
+new dmg_source_name_long_dual_knife[SAFE_BUFFER_SIZE+1]="dual_knife"
+new custom_dmg_id_dual_knife
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -36,6 +40,10 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Auto Heal + SuperKnife", "Auto-Heal, Knife Damage, Extra Knife Speed", false, "riddick_level" )
+
+	custom_dmg_id_dual_knife=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_dual_knife,
+					dmg_source_name_long_dual_knife,1)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("riddick_init", "riddick_init")
@@ -106,7 +114,14 @@ public riddick_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
-		if (extraDamage > 0) sh_extra_damage( id, attacker, extraDamage, "knife", headshot )
+		
+		if ( extraDamage > 0 ){
+			sh_extra_damage(id, attacker, extraDamage, 
+						dmg_source_name_long_dual_knife,
+						headshot,
+						_,_,_,_,_,_,
+						custom_dmg_id_dual_knife)
+		}
 	}
 	return PLUGIN_CONTINUE
 }
@@ -139,7 +154,7 @@ public switchmodel(id)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
-		Entvars_Set_String(id, EV_SZ_viewmodel, "models/shmod/riddick_knife.mdl")
+		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/riddick_knife.mdl")
 	}
 }
 //----------------------------------------------------------------------------------------------

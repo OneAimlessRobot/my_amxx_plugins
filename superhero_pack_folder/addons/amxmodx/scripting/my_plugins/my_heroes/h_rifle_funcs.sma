@@ -96,11 +96,9 @@ public plugin_init()
 	RegisterHam(Ham_Item_AddToPlayer, weapon_mosin, "fw_Item_AddToPlayer_Post", 1,true)
 	RegisterHam(Ham_Weapon_Reload, weapon_mosin, "fw_Weapon_Reload",_,true)
 	RegisterHam(Ham_Item_PostFrame, weapon_mosin, "fw_Item_PostFrame",_,true)
-	//RegisterHam(Ham_Weapon_Reload, weapon_railcannon, "fw_Weapon_Reload_Post", 1)
 	
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
-	
-	register_clcmd("say /get", "Get_Mosin")
+
 }
 
 public plugin_natives(){

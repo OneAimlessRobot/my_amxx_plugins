@@ -87,9 +87,10 @@ public _precache_native_fx_pt1(iPlugin,iParams){
 	g_iSmokeSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/black_smoke3.spr");
 	g_iSmokeSprite[1] = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr");
 	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	precached_explosion_sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 	g_iFireSprite = engfunc(EngFunc_PrecacheModel,"sprites/flame.spr");
 	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
-	precached_explosion_sprite = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
+	precached_explosion_sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
 
 	engfunc(EngFunc_PrecacheSound, LASER_LINE_DEFAULT_SOUND)
 	engfunc(EngFunc_PrecacheSound, crush_stunned)
@@ -584,7 +585,7 @@ public _explode_fx(iPlugins, iParams){
 	write_coord(vec1[0] + generate_int( -100, 100 ))
 	write_coord(vec1[1] + generate_int( -100, 100 ))
 	write_coord(vec1[2]+ generate_int( -50, 50 ))
-	write_short( fire )
+	write_short( precached_explosion_sprite1 )
 	write_byte(  radius/9  ) // byte (scale in 0.1's) 188
 	write_byte( 12 ) // byte (framerate)
 	write_byte( 0 ) // byte flags
@@ -660,7 +661,7 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		write_coord_f(origin[0])
 		write_coord_f(origin[1])
 		write_coord_f(origin[2] + min(1,radius))
-		write_short(precached_explosion_sprite)
+		write_short(precached_explosion_sprite2)
 		write_byte(radius)
 		write_byte(200)
 		message_end()

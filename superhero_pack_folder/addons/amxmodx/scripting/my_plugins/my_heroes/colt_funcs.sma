@@ -13,7 +13,6 @@
 
 new pPlayer, pEntity, HookChain:TakeDamage
 
-//new g_Msg_WeaponList
 new is_rehlds_avail
 public plugin_precache()
 {
@@ -47,8 +46,6 @@ public plugin_init()
 	DisableHookChain(TakeDamage)
 	register_clcmd("give_m1911a1", "give_m1911a1")
 	register_clcmd(STRN_M1911A1, "lastinv_m1911a1")
-
-	//g_Msg_WeaponList = get_user_msgid("WeaponList")
 }
 public plugin_natives(){
 
@@ -72,7 +69,7 @@ public give_m1911a1(player)
 	if(!is_user_alive(player)) return
 	
 	lastinv_m1911a1(player)
-	pEntity = rg_give_custom_item(player, STRN_FIVESEVEN, GT_REPLACE, ID_M1911A1)
+	pEntity = rg_give_custom_item(player, STRN_FIVESEVEN, GT_APPEND, ID_M1911A1)
 	set_member(pEntity, m_Weapon_iClip, CLIP_M1911A1)
 	rg_set_iteminfo(pEntity, ItemInfo_iMaxClip, CLIP_M1911A1)
 	if(get_member(player, m_rgAmmo, AMMOID_FIVESEVEN) < MAXAMMO_M1911A1)

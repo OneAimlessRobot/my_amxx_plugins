@@ -95,6 +95,8 @@ public plugin_init()
 	TASKID_LOOP = allocate_typed_task_id(player_task)
 	TASKID_REVENGE = allocate_typed_task_id(player_task)
 	TASKID_NVG = allocate_typed_task_id(player_task)
+
+	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
 public arcticPredator_init()
@@ -558,7 +560,6 @@ return PLUGIN_CONTINUE
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
 {
-new Float:dRatio, damage, distanceBetween
 new damradius = get_cvar_num("arcticPredator_explode_radius")
 new maxdamage = get_cvar_num("arcticPredator_explode_maxdamage")
 
@@ -567,28 +568,8 @@ get_user_name(id,name,31)
 shUnglow(id)
 set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_dhudmessage(0,"%s has exploded.",name)
-new FFOn = get_cvar_num("mp_friendlyfire")
-new origin[3], origin1[3]
-get_user_origin(id,origin)
+explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE)
 
-explode_fx(origin,damradius) // blowup even if dead
-
-for(new a = 1; a <= SH_MAXSLOTS; a++) {
-	if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn) &&(id!=a)) {
-		
-		get_user_origin(a,origin1)
-		
-		distanceBetween = get_distance(origin, origin1 )
-		if( distanceBetween < damradius ) {
-			
-			dRatio = float(distanceBetween) / float(damradius)
-			damage = maxdamage - floatround( maxdamage * dRatio)
-			if(damage>=1){
-				sh_extra_damage(a, id, damage, "Self Destruction")
-			}
-		} // distance
-	} // alive
-} // loop
 }
 //----------------------------------------------------------------------------------------------
 public Revenge_Tracker(id)

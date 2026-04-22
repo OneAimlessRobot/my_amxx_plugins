@@ -60,8 +60,7 @@ public CmdStart(id, uc_handle)
 		UnSet_BitVar(molly_armed_mask,id)
 		return FMRES_IGNORED
 	}
-	
-	if(sh_get_stun(id)) return FMRES_IGNORED
+
 
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, MOLLY_WEAPON_NAME, id);

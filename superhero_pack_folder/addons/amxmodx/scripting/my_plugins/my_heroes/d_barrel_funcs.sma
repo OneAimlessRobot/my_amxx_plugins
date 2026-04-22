@@ -534,23 +534,6 @@ public fw_Item_AddToPlayer_Post(ent, id)
 		Set_BitVar(g_Had_Volcano, id)
 		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
 	}
-	
-	/*
-	if(Get_BitVar(g_Had_Volcano, id))
-	{
-		static MSG; if(!MSG) MSG = get_user_msgid("WeaponList")
-		message_begin(MSG_ONE_UNRELIABLE, MSG, _, id)
-		write_string("weapon_gatling")
-		write_byte(5)
-		write_byte(200)
-		write_byte(-1)
-		write_byte(-1)
-		write_byte(0)
-		write_byte(5)
-		write_byte(CSW_GATLING)
-		write_byte(0)
-		message_end()	
-	}*/
 		
 	return HAM_IGNORED
 }

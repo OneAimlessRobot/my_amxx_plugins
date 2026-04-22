@@ -52,8 +52,6 @@ public CmdStart(id, uc_handle)
 {
 	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
 	if(!sh_user_has_hero(id,teliko_get_hero_id())) return FMRES_IGNORED
-	if(sh_get_stun(id)) return FMRES_IGNORED
-	
 	if(!hasRoundStarted()){
 	
 		UnSet_BitVar(chaff_armed_mask,id)
