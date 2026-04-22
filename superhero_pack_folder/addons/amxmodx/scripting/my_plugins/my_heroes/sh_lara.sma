@@ -1,9 +1,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -29,6 +31,9 @@ public plugin_init()
 	register_cvar("lara_num_spears", "100")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "lara the hunter!", "Get a spear!", false, "lara_level" )
+
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,SPEAR_V_MODEL,SPEAR_P_MODEL)
+	
 	register_event("DeathMsg","death","a")
 	register_srvcmd("lara_init", "lara_init")
 	shRegHeroInit(gHeroName, "lara_init")
@@ -36,7 +41,8 @@ public plugin_init()
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
-	
+
+		
 }
 
 public plugin_natives(){
@@ -144,12 +150,8 @@ public weaponChange(id)
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
-		if(spear_get_num_spears(id)){
-			entity_set_string(id, EV_SZ_viewmodel, SPEAR_V_MODEL)
-		}
-		else{
+		if(!spear_get_num_spears(id)){
 			entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
-			entity_set_string(id, EV_SZ_weaponmodel, SPEAR_P_MODEL)
 		}
 	}
 	return PLUGIN_CONTINUE

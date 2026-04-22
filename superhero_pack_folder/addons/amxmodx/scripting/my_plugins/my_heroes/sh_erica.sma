@@ -1,11 +1,13 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
@@ -27,15 +29,6 @@ new Float:g_normal_er_dmg_mult[SH_MAXSLOTS+1]
 new Float:g_base_er_radius[SH_MAXSLOTS+1]
 new Float:g_normal_er_radius[SH_MAXSLOTS+1]
 new g_prevWeapon[SH_MAXSLOTS+1]
-
-
-new const erica_knife_sounds[6][]={"weapons/cod6knife_draw.wav",
-"weapons/erica_knife/knife_hit1.wav",
-"weapons/erica_knife/knife_hit2.wav",
-"weapons/erica_knife/knife_slash1.wav",
-"weapons/erica_knife/knife_slash2.wav",
-"weapons/erica_knife/knife_stab.wav"}
-
 
 
 new dmg_source_name_short_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
@@ -92,6 +85,10 @@ public plugin_init()
 	
 	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
 
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,NAVALHA_V_MODEL,NAVALHA_P_MODEL)
+	sh_register_superheromod_weapon_model(gHeroID,CSW_ELITE,TRANQS_V_MODEL,TRANQS_P_MODEL)
+	
+	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 	
@@ -332,16 +329,7 @@ public weaponChange(id)
 	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_KNIFE) {
-		entity_set_string(id, EV_SZ_viewmodel, NAVALHA_V_MODEL)
-		entity_set_string(id, EV_SZ_weaponmodel, NAVALHA_P_MODEL)
-	}
-	if (wpnid == CSW_ELITE) {
-		entity_set_string(id, EV_SZ_viewmodel,TRANQS_V_MODEL)
-		entity_set_string(id, EV_SZ_weaponmodel, TRANQS_P_MODEL)
-	}
-	
+	new wpnid = get_user_weapon(id)
 	if ( g_prevWeapon[id] != wpnid ) {
 		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()){
 			set_user_maxspeed(id, g_normal_er_speed[id])
@@ -411,13 +399,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,TRANQS_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,TRANQS_V_MODEL)
 	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
-	for(new i=0;i<sizeof(erica_knife_sounds);i++){
 	
-		engfunc(EngFunc_PrecacheSound,erica_knife_sounds[i] );
-	
-	}
-	
-		
 }
 public death()
 {	

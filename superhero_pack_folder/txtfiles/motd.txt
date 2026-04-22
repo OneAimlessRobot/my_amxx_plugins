@@ -25,39 +25,44 @@
 </head>
 <body>
 <pre>
-Say commands:
+say commands:
+/general_help -> show this again
+
 /help -> superheromod help
-by the way: use lowercase when binding a power to a letter key
-Like v (not V) or e (not E)
+
+note: use lowercase when binding a power to a letter key
 examples:
-power2: bind i +power2
-(use "i".
-NOT "I".)
-power1: bind q +power1
-(use "q".
-NOT "Q".)
+bind i +power2
+(use "i", not "I".)
 
 /extra_help -> more superheromod help
 
 /helpof [part of hero name] -> get help about hero
-			(default file will be shown
-			if a specific one does not exist)
+		(default file will be shown
+		if a specific one does not exist)
 
-Console commands:
+console:
 sh_print_models -> show a list
-			of pickable player models
-			avaliable to you
-			based on currently equipped heroes
+		of pickable player models
+		avaliable to you
+		based on currently equipped heroes
 
 sh_choose_model [model id] -> pick one model
-			from those listed
-			by the previous command
-			(if you still have
-			said required hero equipped)
+		from the model_id values listed
+		by the previous command
 			
-If you wish to see this file again
-Use the say command: /general_help
+sh_print_weapon_models -> show a list
+		of pickable weapon models
+		avaliable to you
+		based on currently equipped heroes.
+		Weapon IDs and model IDs for each weapon
+		will be shown along with hero name
 
+sh_choose_weapon_model [weapon id] [model id] ->
+		pick model of id [model_id]
+		of weapon [weapon_id]
+		valid values are listed
+		by the previous command
 </pre>
 </body>
 </html>

@@ -48,10 +48,12 @@ createHelpMotdFile(const helpMotdFile[]){
 	fputs(extraHelpFile, "<html><head><style type=^"text/css^">pre{color:#FFB000;}body{background:#000000;margin-left:8px;margin-top:0px;}</style></head><body><pre>^n")
 
 
-	fputs(extraHelpFile, "say /help_of [part of hero name] - Shows you a help page for a particular hero (if available)^n")
-	fputs(extraHelpFile, "(Console) sh_print_models		- Shows you a list of player model ids available depending on heroes equipped^n")
-	fputs(extraHelpFile, "(Console) sh_choose_model	[model_id] - pick a player model! The only parameter required is the id of it^n")
-	
+	fputs(extraHelpFile, "^n^n^nsay /help_of [part of hero name] -^n	Shows you a help page for a particular hero (if available)^n^n^n")
+	fputs(extraHelpFile, "(Console) sh_print_models -^n	Shows you a list of player model ids available^n	Depending on heroes equipped^n^n^n")
+	fputs(extraHelpFile, "(Console) sh_choose_model [model_id] -^n	pick a player model!^n	The only parameter required is the id of it^n^n^n")
+	fputs(extraHelpFile, "(Console) sh_print_weapon_models -^n	Shows you a list of weapon model ids available^n	depending on heroes equipped^n^n")
+	fputs(extraHelpFile, "(Console) sh_choose_weapon_model [weapon_id] [weapon_model_id] -^n	pick a weapon model!^n	Parameters required are:^n	- weapon_id^n	- weapon_model_id^n^n^n")
+
 	fputs(extraHelpFile, "</pre></body></html>")
 
 	fclose(extraHelpFile)

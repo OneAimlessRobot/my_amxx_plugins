@@ -1,0 +1,5 @@
+L 04/22/2026 - 18:15:55: Start of error session.
+L 04/22/2026 - 18:15:55: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260422.log")
+L 04/22/2026 - 18:15:55: Invalid weapon id 0
+L 04/22/2026 - 18:15:55: [AMXX] Run time error 10 (plugin "sh_aux_funcs_natives_pt5.amxx") (native "get_weaponname") - debug not enabled!
+L 04/22/2026 - 18:15:55: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

@@ -69,6 +69,9 @@ public plugin_init()
 							"arcpred",
 							"",
 							"")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AWP,"models/shmod/predgun/predawp.mdl","",_, false)
+	sh_register_superheromod_weapon_model(gHeroID,CSW_SCOUT,"models/shmod/predgun/v_predgun.mdl","models/shmod/predgun/p_predgun.mdl")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/predgun/predknife.mdl","")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -111,7 +114,6 @@ public arcticPredator_init()
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
 		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
 		gAlphaInvis = get_cvar_num("arcticPredator_invisible")
-		switchgun(id)
 		arcpredator_weapons(id)
 		discThrown[id] = false
 		gHuntMode[id] = false
@@ -219,30 +221,9 @@ public newRound(id)
 		sh_unset_cooldown_flag(id)
 		discThrown[id] = false
 		arcpredator_weapons(id)
-		switchgun(id)
 		g_huntTimer[id] = 0
 	}
 	return PLUGIN_HANDLED
-}
-//-----------------------------------------------------------------------------------------------
-public switchgun(id)
-{
-if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-if (wpnid == CSW_AWP) {
-	// Weapon Model change thanks to [CCC]Taz-Devil
-	entity_set_string(id, EV_SZ_viewmodel, "models/shmod/predgun/predawp.mdl")
-	entity_set_string(id, EV_SZ_weaponmodel, "")
-}
-if (wpnid == CSW_SCOUT) {
-	// Weapon Model change thanks to [CCC]Taz-Devil
-	entity_set_string(id, EV_SZ_viewmodel, "models/shmod/predgun/v_predgun.mdl")
-	entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/predgun/p_predgun.mdl")
-}
-if (wpnid == CSW_KNIFE) {
-	// Weapon Model change thanks to [CCC]Taz-Devil
-	entity_set_string(id, EV_SZ_viewmodel, "models/shmod/predgun/predknife.mdl")
-}
 }
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
@@ -257,8 +238,6 @@ if ( wpnid != CSW_AWP && wpnid != CSW_KNIFE && wpnid != CSW_SCOUT )
 	return
 }
 
-switchgun(id)
-	
 	// Never Run Out of Ammo!
 if ( clip == 0 ) {
 	shReloadAmmo(id)
