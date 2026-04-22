@@ -134,7 +134,7 @@ public plugin_init()
 								dmg_source_name_short_neuroblast,
 								dmg_source_name_long_neuroblast,
 								0)
-	set_task(period, "Ester_revenge_loop", _, _, _, "b")
+	
 }
 ester_collapse(id){
 	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),default_explode_knock_force_magnitude,0)
@@ -334,6 +334,9 @@ public loadCVARS()
 	stun_time_at_it=get_cvar_float("ester_stuntime")
 	stun_speed_at_it=get_cvar_float("ester_stunspeed")
 	period=get_cvar_float("ester_period")
+
+	set_task(period, "Ester_revenge_loop", _, _, _, "b")
+	
 	power_cost=get_cvar_num("ester_power_cost")
 	times_per_map=get_cvar_num("ester_uses_per_map")
 	base_dmg_per_it=get_cvar_num("ester_damage")

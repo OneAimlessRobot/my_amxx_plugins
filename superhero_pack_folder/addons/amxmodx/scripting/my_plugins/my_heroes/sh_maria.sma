@@ -75,7 +75,6 @@ public plugin_init()
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
 
-	set_task(heal_period, "maria_loop",_,_,_, "b")
 	
 	init_hud_syncs()
 }
@@ -147,6 +146,8 @@ public loadCVARS()
 	base_points=get_cvar_num("maria_base_points")
 	base_heal=get_cvar_float("maria_base_heal")
 	heal_period=get_cvar_float("maria_heal_period")
+
+	set_task(heal_period, "maria_loop",_,_,_, "b")
 }
 
 public maria_init()
