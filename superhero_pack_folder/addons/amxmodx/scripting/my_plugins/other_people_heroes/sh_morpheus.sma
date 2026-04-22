@@ -18,24 +18,23 @@ morpheus_mp5mult 2.0		//Damage multiplyer for his MP5
 // 4-normal cs, reload and backpack ammo depletes
 #define AMMO_MODE 1
 
-// Comment out to force not using the model, will result in a very small reduction in code/checks
-// Note: If you change anything here from default setting you must recompile the plugin
-#define USE_WEAPON_MODEL
-
 // Comment out to not give a free MP5
 #define GIVE_WEAPON
 
 //------- Do not edit below this point ------//
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Morpheus"
-#if defined USE_WEAPON_MODEL
-	new const gModelMP5[] = "models/shmod/morpheus_mp5.mdl"
-	new bool:gModelLoaded
-#endif
+
+#define gModelMP5 "models/shmod/morpheus_mp5.mdl"
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -50,33 +49,16 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Dual MP5's", "Lower Gravity/Dual MP5's/Unlimited Ammo")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_MP5NAVY,gModelMP5)
 	sh_set_hero_grav(gHeroID, pcvarGravity)
 	sh_set_hero_dmgmult(gHeroID, pcvarMP5Mult, CSW_MP5NAVY)
 
-#if defined GIVE_WEAPON
-	sh_set_hero_shield(gHeroID, true)
-#endif
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
-#if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
+#if AMMO_MODE < 4
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 #endif
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WEAPON_MODEL
-public plugin_precache()
-{
-	// Method servers 2 purposes, moron check and optional way to not use the model
-	if ( file_exists(gModelMP5) ) {
-		engfunc(EngFunc_PrecacheModel,gModelMP5)
-		gModelLoaded = true
-	}
-	else {
-		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelMP5)
-		gModelLoaded = false
-	}
-}
-#endif
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode)
 {
@@ -86,11 +68,6 @@ public sh_hero_init(id, heroID, mode)
 		case SH_HERO_ADD: {
 #if defined GIVE_WEAPON
 			morpheus_weapons(id)
-#endif
-#if defined USE_WEAPON_MODEL
-			if ( gModelLoaded ) {
-				switchmodel(id)
-			}
 #endif
 		}
 
@@ -121,31 +98,15 @@ morpheus_weapons(id)
 	}
 }
 #endif
-//----------------------------------------------------------------------------------------------
-#if defined USE_WEAPON_MODEL
-switchmodel(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
-	if ( get_user_weapon(id) == CSW_MP5NAVY ) {
-		set_pev(id, pev_viewmodel2, gModelMP5)
-	}
-}
-#endif
 //----------------------------------------------------------------------------------------------
-#if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
+#if AMMO_MODE < 4
 public weapon_change(id)
 {
 	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
 
 	//weaponID = read_data(2)
 	if ( read_data(2) != CSW_MP5NAVY ) return
-
-#if defined USE_WEAPON_MODEL
-	if ( gModelLoaded ) {
-		switchmodel(id)
-	}
-#endif
 
 #if AMMO_MODE < 4
 	// Never Run Out of Ammo!

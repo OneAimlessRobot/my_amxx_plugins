@@ -159,8 +159,6 @@ public weaponChange(id)
 }
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,SPEAR_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,SPEAR_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,NOSPEAR_V_MODEL)
 		
 }

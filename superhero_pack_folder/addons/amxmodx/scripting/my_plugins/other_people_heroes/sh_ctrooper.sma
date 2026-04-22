@@ -24,7 +24,9 @@
  //Version 2.6 - Fixed teh Laser Tracer So now Teh Laser Is Where Ya Shoot Removed Xtra Speed And Gravity And made a CZ Version
  //Version 2.7 - Fix for SND_STOP compile error
  */
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -57,7 +59,8 @@ new custom_dmg_id_lazah_guun
 								"clonetrooper",
 								"CTrooper - Prepared for war..SIR!",
 								"CTrooper - All systems down...")
-	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,"models/shmod/clonetrooper_v_ak47.mdl","models/shmod/clonetrooper_p_ak47.mdl")
+
 	custom_dmg_id_lazah_guun=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_lazah_guun,
 					dmg_source_name_long_lazah_guun,0)
@@ -78,12 +81,6 @@ new custom_dmg_id_lazah_guun
 	init_hud_syncs()
  }
  //----------------------------------------------------------------------------------------------
- public plugin_precache()
- {
-	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_v_ak47.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/clonetrooper_p_ak47.mdl")
- }
- //----------------------------------------------------------------------------------------------
  public CTrooper_init()
  {
 	// First Argument is an id
@@ -98,7 +95,6 @@ new custom_dmg_id_lazah_guun
 	if ( is_user_connected(id) ) {
 		if (sh_user_has_hero(id,gHeroID) ) {
 			CTrooper_weapons(id)
-			switchmodel(id)
 		}
 		else {
 			engclient_cmd(id, "drop", "weapon_ak47")
@@ -151,20 +147,6 @@ new custom_dmg_id_lazah_guun
 	}
  }
  //----------------------------------------------------------------------------------------------
- public switchmodel(id)
- {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-
-	if (wpnid == CSW_AK47) {
-
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/clonetrooper_v_ak47.mdl")
-		// Weapon Model change for 3rd person view - vittu
-		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/clonetrooper_p_ak47.mdl")
-	}
- }
- //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
 	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
@@ -173,8 +155,6 @@ new custom_dmg_id_lazah_guun
 	new clip = read_data(3)
 
 	if ( wpnid != CSW_AK47 ) return
-
-	switchmodel(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {

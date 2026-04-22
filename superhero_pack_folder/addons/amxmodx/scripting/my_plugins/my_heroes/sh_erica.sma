@@ -1,6 +1,5 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
@@ -391,15 +390,6 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 	hook_set_hook(id,1)
 	
 }
-}
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,NAVALHA_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,NAVALHA_P_MODEL)
-	engfunc(EngFunc_PrecacheModel,TRANQS_P_MODEL)
-	engfunc(EngFunc_PrecacheModel,TRANQS_V_MODEL)
-	engfunc(EngFunc_PrecacheSound, SILENT_TRANQS_SFX)
-	
 }
 public death()
 {	

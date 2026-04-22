@@ -4,6 +4,9 @@
 #define sh_aux_consts
 
 #define Struct enum
+#define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
+
+#define SH_HUD_MSG_BUFF_SIZE 128
 
 #define STRLEN_FOR_FILES 128
 #define STRLEN_FOR_NAMES 24

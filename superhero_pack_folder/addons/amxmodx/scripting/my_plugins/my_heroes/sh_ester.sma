@@ -94,6 +94,9 @@ public plugin_init()
 								"Ready to adult & Pwn 50m3 n3wbz",
 								"Fuck my li- *Sigh...* Spectating again")
 	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,PAN_V_MODEL,PAN_P_MODEL)
+	
+
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
@@ -284,10 +287,6 @@ public weaponChange(id)
 		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
 			sh_uneffect_user(id);
 			
-		}
-		if (wpnid == CSW_KNIFE) {
-			entity_set_string(id, EV_SZ_viewmodel, PAN_V_MODEL)
-			entity_set_string(id, EV_SZ_weaponmodel, PAN_P_MODEL)
 		}
 	}
 	if(gGunLastDeployed[id]!=wpnid){
@@ -657,11 +656,6 @@ public client_disconnected(id){
 public plugin_precache()
 {
 
-	for(new i=0;i<ESTER_NUM_WEAPON_HIT_SOUNDS;i++){
-		
-		engfunc(EngFunc_PrecacheSound, ester_weapon_hit_sounds[i])
-		
-	}
 	for(new i=0;i<ESTER_NUM_DEATH_SOUNDS;i++){
 		
 		engfunc(EngFunc_PrecacheSound, ester_death_sounds[i])
@@ -670,8 +664,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,NULL_SOUND)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_CHARGE)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
-	engfunc(EngFunc_PrecacheModel,PAN_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,PAN_P_MODEL)
 	
 	
 }

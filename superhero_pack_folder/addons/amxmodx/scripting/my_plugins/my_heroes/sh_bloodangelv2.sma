@@ -17,6 +17,7 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -50,6 +51,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Dark Angel m4!", "Get dark angels Powerfull m4! 'MUAHAHAHH FEEL THE WRATH OF MY ANGER!!!! THE MIGHT OF MY POWER!!!!' This is him speaking MAHAHAHAHAAAAAAHHHH!!!!!", false, "darkangel_level")
 	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/toxic_cat_m4.mdl")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("darkangel_init", "darkangel_init")
@@ -149,19 +151,8 @@ public darkangel_weapons(id)
 	
 	shGiveWeapon(id, "weapon_m4a1")
 }
-//----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
-		return
-	
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	
-	if ( wpnid == CSW_M4A1 )
-	{
-		set_pev(id, pev_viewmodel2, "models/shmod/toxic_cat_m4.mdl")
-	}
-}
+
+
 public do_knockback(id,Float:extraDamage){
 	new origin[3];
 	new Float:forigin[3]
@@ -184,8 +175,6 @@ public weapon_change(id)
 	if ( wpnid != CSW_M4A1 )
 		return
 	
-	switch_model(id)
-		
 	new clip = read_data(3)
 	
 	// Never Run Out of Ammo!

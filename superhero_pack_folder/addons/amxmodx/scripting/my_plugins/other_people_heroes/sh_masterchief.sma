@@ -54,14 +54,10 @@ masterchief_p90mult 1.3		//Damage multiplyer for his P90
 */
 
 
-//---------- User Changeable Defines --------//
 
-
-
-
-//------- Do not edit below this point ------//
-
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -72,9 +68,9 @@ new HeroName[] = "Master Chief"
 new gHeroID
 new CvarP90DmgMult
 
-new const Model_V_P90[] = "models/shmod/masterchief_v_p90.mdl"
-new const Model_P_P90[] = "models/shmod/masterchief_p_p90.mdl"
-new bool:ModelWeaponLoaded
+#define Model_V_P90 "models/shmod/masterchief_v_p90.mdl"
+#define Model_P_P90 "models/shmod/masterchief_p_p90.mdl"
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -98,6 +94,7 @@ public plugin_init()
 								"Spartan-117 reporting for duty",
 								"CTrooper - All systems down...",
 								"items/suitchargeno1.wav")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_P90,Model_V_P90,Model_P_P90)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("masterchief_init", "masterchief_init")
@@ -118,25 +115,6 @@ public plugin_init()
 	init_hud_syncs()
 	shSetShieldRestrict(HeroName)
 }
-public plugin_precache()
-{
-	ModelWeaponLoaded = true
-	if ( file_exists(Model_V_P90) ) {
-		engfunc(EngFunc_PrecacheModel,Model_V_P90)
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_P90)
-		ModelWeaponLoaded = false
-	}
-
-	if ( file_exists(Model_P_P90) ) {
-		engfunc(EngFunc_PrecacheModel,Model_P_P90)
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_P90)
-		ModelWeaponLoaded = false
-	}
-}
 //----------------------------------------------------------------------------------------------
 public masterchief_init()
 {
@@ -151,10 +129,6 @@ public masterchief_init()
 		if ( is_user_alive(id) )
 		{
 			masterchief_weapons(id)
-
-			if ( ModelWeaponLoaded ){
-				switch_model(id)
-			}
 
 		}
 	}
@@ -188,19 +162,6 @@ public masterchief_weapons(id)
 
 	shGiveWeapon(id, "weapon_p90")
 }
-switch_model(id)
-{
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
-		return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-
-	if ( wpnid == CSW_P90 )
-	{
-		set_pev(id, pev_viewmodel2, Model_V_P90)
-		set_pev(id, pev_weaponmodel2, Model_P_P90)
-	}
-}
 public weapon_change(id)
 {
 	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
@@ -210,9 +171,6 @@ public weapon_change(id)
 	if ( read_data(2) != CSW_P90 )
 		return
 
-	if ( ModelWeaponLoaded ){
-		switch_model(id)
-	}
 	//clip = read_data(3)
 	if ( read_data(3) == 0 ){
 		shReloadAmmo(id, 2)

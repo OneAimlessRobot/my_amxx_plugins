@@ -13,7 +13,12 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 
 */
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Riddick"
@@ -40,6 +45,8 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Auto Heal + SuperKnife", "Auto-Heal, Knife Damage, Extra Knife Speed", false, "riddick_level" )
+	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/riddick_knife.mdl")
 
 	custom_dmg_id_dual_knife=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_dual_knife,
@@ -57,7 +64,6 @@ public plugin_init()
 
 	// Kinfe Model
 	register_event("ResetHUD", "newSpawn","b")
-	register_event("CurWeapon", "weaponChange","be","1=1")
 
 	// Let Server know about Woverines max knife speed
 	shSetMaxSpeed(gHeroName, "riddick_knifespeed", "[29]" )
@@ -68,11 +74,6 @@ public plugin_init()
 	gHealPoints = get_cvar_num("riddick_healpoints")
 }
 //----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,"models/shmod/riddick_knife.mdl")
-}
-//----------------------------------------------------------------------------------------------
 public riddick_init()
 {
 	// First Argument is an id
@@ -80,8 +81,6 @@ public riddick_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	gPlayerMaxHealth[id] = 100
-
-	switchmodel(id)
 
 	// Got to slow down a Riddick that lost his powers...
 	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
@@ -147,25 +146,6 @@ public newSpawn(id)
 			engclient_cmd(id,wpn)
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_KNIFE) {
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/riddick_knife.mdl")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public weaponChange(id)
-{
-	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
-
-	//new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	new wpnid = read_data(2)
-
-	if ( wpnid == CSW_KNIFE ) switchmodel(id)
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

@@ -16,25 +16,20 @@ wolv_knifemult 1.35			//Multiplier for knife damage
 //---------- User Changeable Defines --------//
 
 
-// Comment out to force not using the model, will result in a very small reduction in code/checks
-// Note: If you change anything here from default setting you must recompile the plugin
-#define USE_WEAPON_MODEL
-
 
 //------- Do not edit below this point ------//
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Wolverine"
 new gPcvarHealPoints
 
-#if defined USE_WEAPON_MODEL
-	new const gModelKnife[] = "models/shmod/wolv_knife.mdl"
-	new const gClawsDrawSound[] = "weapons/bladesout.wav"
-	new bool:gModelLoaded
-#endif
+#define gModelKnife "models/shmod/wolv_knife.mdl"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -49,53 +44,15 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,gModelKnife)
+
 	sh_set_hero_info(gHeroID, "Auto-Heal & Claws", "Auto-Heal, Extra Knife Damage and Speed Boost")
 	sh_set_hero_speed(gHeroID, pcvarSpeed, {CSW_KNIFE})
 	sh_set_hero_dmgmult(gHeroID, pcvarKnifeMult, CSW_KNIFE)
 
-#if defined USE_WEAPON_MODEL
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
-	if ( gModelLoaded ) {
-		register_event("CurWeapon", "weapon_change", "be", "1=1")
-	}
-#endif
 
 	// HEAL LOOP
 	set_task(1.0, "wolv_loop", _, _, _, "b")
-}
-//----------------------------------------------------------------------------------------------
-#if defined USE_WEAPON_MODEL
-public plugin_precache()
-{
-	// Method servers 2 purposes, moron check and optional way to not use the model
-	if ( file_exists(gModelKnife) ) {
-		engfunc(EngFunc_PrecacheModel,gModelKnife)
-
-		engfunc(EngFunc_PrecacheSound,gClawsDrawSound );
-		gModelLoaded = true
-	}
-	else {
-		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelKnife)
-		gModelLoaded = false
-	}
-}
-#endif
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	switch(mode) {
-		case SH_HERO_ADD: {
-#if defined USE_WEAPON_MODEL
-			if ( gModelLoaded ) {
-				switch_model(id)
-			}
-#endif
-		}
-	}
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
 //----------------------------------------------------------------------------------------------
 public wolv_loop()
@@ -113,25 +70,3 @@ public wolv_loop()
 		}
 	}
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WEAPON_MODEL
-public weapon_change(id)
-{
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
-
-	if ( read_data(2) == CSW_KNIFE ) switch_model(id)
-}
-//----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-
-	// If user has a shield do not change model, since we don't have one with a shield
-	if ( cs_get_user_shield(id) ) return
-
-	if ( get_user_weapon(id) == CSW_KNIFE ) {
-		set_pev(id, pev_viewmodel2, gModelKnife)
-	}
-}
-//----------------------------------------------------------------------------------------------
-#endif

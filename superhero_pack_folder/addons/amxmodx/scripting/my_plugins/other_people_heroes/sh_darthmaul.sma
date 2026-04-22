@@ -32,27 +32,20 @@ darth_knifemult 2.70		// multiplier for knife damage...
 *   Darth Maul based on {HOJ}Batman's wolverine hero which is where most of the credit should go
 */
 
-//---------- User Changeable Defines --------//
-
-
-// Comment out to force not using the model, will result in a very small reduction in code/checks
-// Note: If you change anything here from default setting you must recompile the plugin
-#define USE_WPN_MODEL
-
-
 //------- Do not edit below this point ------//
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
 new gPcvarHealPoints
 
-#if defined USE_WPN_MODEL
-	new const gModelKnifeV[] = "models/shmod/darthmaul_knife.mdl"
-	new const gModelKnifeP[] = "models/shmod/darthmaul_p_knife.mdl"
-	new bool:gModelLoaded
-#endif
+#define gModelKnifeV "models/shmod/darthmaul_knife.mdl"
+#define gModelKnifeP "models/shmod/darthmaul_p_knife.mdl"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -68,57 +61,12 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero("Darth Maul", pcvarLevel)
 	sh_set_hero_info(gHeroID, "Sith Lightsaber & Regen", "Get a Sith Double Bladed Lightsaber with more Damage and Speed, also regenerate HP")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,gModelKnifeV,gModelKnifeP)
 	sh_set_hero_speed(gHeroID, pcvarKnifeSpeed, {CSW_KNIFE})
 	sh_set_hero_dmgmult(gHeroID, pcvarKnifeMult, CSW_KNIFE)
 
-#if defined USE_WPN_MODEL
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
-	if ( gModelLoaded ) {
-		RegisterHam(Ham_Item_Deploy, "weapon_knife", "Ham_Knife_Deploy_Post", 1,true)
-	}
-#endif
-
 	// HEAL LOOP
 	set_task(1.0, "darth_loop", _, _, _, "b")
-}
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
-public plugin_precache()
-{
-	// Method servers 2 purposes, moron check and optional way to not use the model
-	// Seperate checks so the model that is missing can be reported
-	gModelLoaded = true
-	if ( file_exists(gModelKnifeV) ) {
-		engfunc(EngFunc_PrecacheModel,gModelKnifeV)
-	}
-	else {
-		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelKnifeV)
-		gModelLoaded = false
-	}
-
-	if ( file_exists(gModelKnifeP) ) {
-		engfunc(EngFunc_PrecacheModel,gModelKnifeP)
-	}
-	else {
-		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelKnifeP)
-		gModelLoaded = false
-	}
-}
-#endif
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
-{
-	if ( gHeroID != heroID ) return
-
-	switch(mode) {
-		case SH_HERO_ADD: {
-#if defined USE_WPN_MODEL
-			if ( gModelLoaded && get_user_weapon(id) == CSW_KNIFE ) {
-				switch_model_knife(id)
-			}
-#endif
-		}
-	}
 }
 //----------------------------------------------------------------------------------------------
 public darth_loop()
@@ -138,32 +86,6 @@ public darth_loop()
 		}
 	}
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
-public Ham_Knife_Deploy_Post(wpnEntId)
-{
-	if(!is_valid_ent(wpnEntId)) return HAM_IGNORED;
-	if ( !sh_is_active() ) return HAM_IGNORED;
-	// Who is the owner of this weapon entity?
-	new owner = pev(wpnEntId, pev_owner)
-
-	switch_model_knife(owner)
-
-	return HAM_IGNORED
-}
-//----------------------------------------------------------------------------------------------
-switch_model_knife(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
-
-	// If user has a shield do not change model, since we don't have one with a shield
-	if ( cs_get_user_shield(id) ) return
-
-	set_pev(id, pev_viewmodel2, gModelKnifeV)
-	set_pev(id, pev_weaponmodel2, gModelKnifeP)
-}
-//----------------------------------------------------------------------------------------------
-#endif
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

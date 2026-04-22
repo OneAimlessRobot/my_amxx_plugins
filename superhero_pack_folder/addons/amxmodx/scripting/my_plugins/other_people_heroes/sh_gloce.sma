@@ -37,12 +37,13 @@ gloce_percent 30		//Percent to freeze enemy
 gloce_times 5			//Amounts of time to freeze per spawn
 gloce_freeze_time 5		//How long they should be frozen
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
-
-#define USE_MODEL
 
 #define gVERSION "1.1"
 #define GLOCE_DSPT "Icy Powers - Slow down your enemies with your Ice glock"
@@ -50,9 +51,7 @@ gloce_freeze_time 5		//How long they should be frozen
 new const g_sound[]	=	"shmod/frostnova.wav"
 new const g_sprite[]	=	"sprites/white.spr"
 
-#if defined USE_MODEL
- new const g_model[]	=	"models/shmod/v_gloce.mdl"
-#endif
+#define g_model "models/shmod/v_gloce.mdl"
 
 new gloce_glock
 new gloce_pct
@@ -97,6 +96,8 @@ public plugin_init()
 	//Create Hero
 	gHeroID=shCreateHero(g_HeroName, "Ice Glock", GLOCE_DSPT, false, "gloce_level")
 
+	sh_register_superheromod_weapon_model(gHeroID,CSW_GLOCK18,g_model)
+
 	//Register Hero
 	register_srvcmd("gloce_init", "gloce_init")
 	shRegHeroInit(g_HeroName, "gloce_init")
@@ -107,9 +108,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,g_sound)
 	g_spriteRing = engfunc(EngFunc_PrecacheModel,g_sprite)
 
-	#if defined USE_MODEL
-	   engfunc(EngFunc_PrecacheModel,g_model)
-	#endif
 }
 
 public gloce_init()
@@ -122,22 +120,6 @@ public gloce_init()
 	{
 		times_id[id] = get_pcvar_num(gloce_times)
 
-		#if defined USE_MODEL
-		 gloce_v_model(id)
-		#endif
-	}
-}
-
-public gloce_v_model(id)
-{
-	if(is_user_alive(id) && shModActive() && is_user_connected(id)){
-
-		
-		new weapon = get_user_weapon(id)
-
-		if(weapon == CSW_GLOCK18 &&sh_user_has_hero(id,gHeroID)){
-			set_pev(id, pev_viewmodel2, g_model)
-		}
 	}
 }
 
@@ -189,7 +171,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 					get_user_origin(id, origin)
 
 					set_pev(id, pev_maxspeed, 130.0)
-					fm_set_rendering(id, kRenderFxGlowShell, 30, 125, 255, kRenderNormal, 0)
+					set_rendering(id, kRenderFxGlowShell, 30, 125, 255, kRenderNormal, 0)
 
 					emit_sound(id, CHAN_WEAPON, g_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -233,17 +215,7 @@ public weapon_event(id)
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 
-			#if defined USE_MODEL
-			 gloce_v_model(id)
-			#endif
 		}
-
-		#if defined USE_MODEL
-		 else if(weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
-		 {
-			 gloce_v_model(id)
-		 }
-		#endif
 	}
 
 	return 0;
@@ -254,7 +226,7 @@ public remove_frozen(id)
 	if(slowed[id])
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-		fm_set_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderNormal, 0)
+		set_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderNormal, 0)
 
 		message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
 		write_short(1<<10)

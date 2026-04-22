@@ -9,20 +9,15 @@ squall_bullets 7
 
 */
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-#pragma semicolon 1
+#define knifemodel "models/shmod/gunblade.mdl"
 
-// comment to not use model
-#define USE_MODEL
-
-#if defined USE_MODEL
-	new const knifemodel[] = "models/shmod/gunblade.mdl";
-	new bool:gModelLoaded;
-#endif
-
-new const gunsound[] = "weapons/deagle-1.wav";
+#define gunsound "weapons/deagle-1.wav"
 
 // GLOBAL VARIABLES
 new gHeroID;
@@ -41,12 +36,8 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero("Squall", pcvar_lev);
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,knifemodel)
 	sh_set_hero_info(gHeroID, "Gunblade!", "Use your knife like a gun, just aim and fire");
-
-#if defined USE_MODEL
-	// Knife Model
-	RegisterHam(Ham_Item_Deploy, "weapon_knife", "fw_Item_Deploy_Post", 1,true);
-#endif
 		
 	//knife hack part
 	register_forward(FM_TraceLine,"fw_traceline");
@@ -65,10 +56,6 @@ public sh_hero_init(id, heroid, mode)
 		case SH_HERO_ADD:
 		{
 			gBullets[id] = get_pcvar_num(pcvar_bullets);
-#if defined USE_MODEL			
-			if ( gModelLoaded && get_user_weapon(id) == CSW_KNIFE )
-				switch_model(id);
-#endif
 		}
 	}
 }
@@ -76,39 +63,7 @@ public sh_hero_init(id, heroid, mode)
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheSound,gunsound);
-	
-#if defined USE_MODEL
 
-	gModelLoaded = true;
-	if ( file_exists(knifemodel) )
-		engfunc(EngFunc_PrecacheModel,knifemodel);
-	else
-	{
-		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", knifemodel);
-		gModelLoaded = false;
-	}
-}
-//----------------------------------------------------------------------------------------------
-public fw_Item_Deploy_Post(weapon_ent)	//you'll notice that get_user_weapon doesn't have updated weapon when this is called so be carefull of it's usage
-{
-	if(!is_valid_ent(weapon_ent)) return;
-	if ( !sh_is_active() ) return ;
-	if ( gModelLoaded )
-	{
-		// Get weapon's owner
-		new owner = get_pdata_cbase(weapon_ent, 41, 4);
-		
-		switch_model(owner);
-	}
-}
-//----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return;
-
-	set_pev(id, pev_viewmodel2, knifemodel);
-		
-#endif		
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

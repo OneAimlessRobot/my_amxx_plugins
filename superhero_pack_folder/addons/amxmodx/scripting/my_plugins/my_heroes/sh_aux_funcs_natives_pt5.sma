@@ -90,7 +90,10 @@ public plugin_init(){
 public weaponChange(id)
 {
 	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
-	
+
+	// If user has a shield do not change model, since we don't have one with a shield
+	if ( cs_get_user_shield(id) ) return PLUGIN_CONTINUE
+
 	new wpnid = get_user_weapon(id)
 
 	if(gPlayersCurrHeroWpnModelID[id][wpnid]< 0) return PLUGIN_CONTINUE
@@ -303,7 +306,7 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 					wpn_name,
 					wpn_id)
 
-		engfunc(EngFunc_PrecacheGeneric,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_v_model_string])
+		engfunc(EngFunc_PrecacheModel,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_v_model_string])
 	
 	}
 	get_string(4,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string],STRING_SIZE-1)
@@ -327,7 +330,7 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 					wpn_name,
 					wpn_id)
 
-		engfunc(EngFunc_PrecacheGeneric,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string])
+		engfunc(EngFunc_PrecacheModel,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string])
 		
 	}
 	

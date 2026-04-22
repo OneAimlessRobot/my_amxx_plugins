@@ -13,21 +13,6 @@
 
 #define SWAT_M4_P_MODEL "models/shmod/swatm4/p_m4a1.mdl"
 #define SWAT_M4_V_MODEL "models/shmod/swatm4/v_m4a1.mdl"
-#define SWAT_M4_W_MODEL "models/shmod/swatm4/w_m4a1.mdl"
-
-new const m4_swat_sounds[13][]={"weapons/swatm4/silencer_off.wav",
-"weapons/swatm4/silencer_on.wav",
-"weapons/swatm4/m4a1-2.wav",
-"weapons/swatm4/m4a1_unsil-1.wav",
-"weapons/swatm4/m4a1_unsil-2.wav",
-"weapons/swatm4/m4a1-1.wav",
-"weapons/swatm4/m16a1/foley.wav",
-"weapons/swatm4/m16a1/inserting.wav",
-"weapons/swatm4/m16a1/magout.wav",
-"weapons/swatm4/m16a1/magtap.wav",
-"weapons/swatm4/m16a1/m16-1.wav",
-"weapons/swatm4/m16a1/boltpull.wav",
-"weapons/swatm4/m16a1/magin.wav"}
 
 
 new gHeroName[]="S.W.A.T."
@@ -61,6 +46,9 @@ public plugin_init()
 								"swat",
 								"",
 								"")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,SWAT_M4_V_MODEL,SWAT_M4_P_MODEL)
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/swat_v_knife.mdl","models/shmod/swat_p_knife.mdl")
+
 	//EVENTS
 	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
@@ -108,23 +96,6 @@ public swat_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) ) return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	if ( wpnid == CSW_M4A1 ) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, SWAT_M4_V_MODEL)
-		// Weapon Model change for 3rd person view - vittu
-		entity_set_string(id, EV_SZ_weaponmodel, SWAT_M4_P_MODEL)
-	}
-	else if(wpnid == CSW_KNIFE){
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/swat_v_knife.mdl")
-		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/swat_p_knife.mdl")
-	}
-}
-//----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
 	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
@@ -133,9 +104,6 @@ public weaponChange(id)
 	new clip = read_data(3)
 
 	if ( (wpnid != CSW_M4A1) && (wpnid != CSW_KNIFE)) return
-
-	switchmodel(id)
-
 	// Never Run Out of Ammo!
 	if ( clip == 1 ) {
 		sh_reload_ammo(id)
@@ -176,7 +144,6 @@ public Swat_init()
 
 	if (sh_user_has_hero(id,gHeroID)) {
 		swat_weapons(id)
-		switchmodel(id)
 	}
 	else {
 		sh_drop_weapon(id,CSW_M4A1,true)
@@ -212,22 +179,7 @@ public Swat_kd()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,"models/player/swat/swat.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/swat_v_knife.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/swat_p_knife.mdl")
-	for(new i=0;i<sizeof(m4_swat_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound,m4_swat_sounds[i] );
-	
-	}
-
-	engfunc(EngFunc_PrecacheModel,SWAT_M4_P_MODEL )
-	engfunc(EngFunc_PrecacheModel,SWAT_M4_V_MODEL )
-	engfunc(EngFunc_PrecacheModel,SWAT_M4_W_MODEL )
-	
-
 	engfunc(EngFunc_PrecacheModel,"models/rpgrocket.mdl")
-
 	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
 	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")
 }

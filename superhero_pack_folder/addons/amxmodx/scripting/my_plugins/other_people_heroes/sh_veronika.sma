@@ -14,15 +14,18 @@ veronika_m203dmg 120
 // Thanx to the original code of MP5+203 Mod by PaintLancer
 
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
+#define I_WANT_MATH_FUNCS
 
 #include "../my_include/superheromod.inc"
-#include "../include/Vexd_Utilities.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
-stock veronika_ak_v_mdl[]= "models/shmod/veronika/ak47grenade.mdl"
-stock veronika_ak_p_mdl[]= "models/shmod/veronika/p_9mmar.mdl"
+#define veronika_ak_v_mdl "models/shmod/veronika/ak47grenade.mdl"
+#define veronika_ak_p_mdl "models/shmod/veronika/p_9mmar.mdl"
 
 // VARIABLES
 new gHeroName[]="Veronika"
@@ -67,6 +70,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Resident Evil", "AK Grenade Launcher Right Mouse Button.", false, "veronika_level" )
 	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47, veronika_ak_v_mdl, veronika_ak_p_mdl)
+
 	custom_dmg_id_ak=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ak,dmg_source_name_long_ak,0)
 	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_long_grenade,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
@@ -92,8 +97,6 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,veronika_ak_v_mdl)
-	engfunc(EngFunc_PrecacheModel,veronika_ak_p_mdl)
 	engfunc(EngFunc_PrecacheModel,"models/grenade.mdl")
 	engfunc(EngFunc_PrecacheSound,"shmod/glauncher.wav")
 	engfunc(EngFunc_PrecacheSound,"shmod/a_exm2.wav")
@@ -160,8 +163,8 @@ public switchmodel(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_AK47) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, veronika_ak_v_mdl)
-		Entvars_Set_String(id, EV_SZ_weaponmodel, veronika_ak_p_mdl)
+		entity_set_string(id, EV_SZ_viewmodel, veronika_ak_v_mdl)
+		entity_set_string(id, EV_SZ_weaponmodel, veronika_ak_p_mdl)
 	}
 }
 //----------------------------------------------------------------------------------------------

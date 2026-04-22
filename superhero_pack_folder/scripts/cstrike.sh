@@ -15,5 +15,10 @@
 # -w 800 -h 600
 # -dev – Developer mode
 # -dxlevel 9
-SteamEnv=1 ./hl.sh -dev -dxlevel 9 -nosync -nofbo -nomsaa -gl -freq 60 -stretchaspect -noforcemparms -game cstrike +port "27020" -windowed -32bit
+# -insecure
+# -condebug
+# -developer 1.
+
+ulimit -c unlimited
+SteamEnv=1 ./hl.sh -condebug -developer 1 -insecure -dev -dxlevel 9 -nosync -nofbo -nomsaa -gl -freq 60 -stretchaspect -noforcemparms -game cstrike +port "27020" -windowed -32bit
 

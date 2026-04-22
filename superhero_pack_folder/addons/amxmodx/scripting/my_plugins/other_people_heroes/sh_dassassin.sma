@@ -10,14 +10,19 @@ dsniper_gravity 0.3
 dsniper_mult 4
 */
 
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 new gHeroID
 new gHeroName[] = "Deagle Assassin"
 new bool:gHasZoom[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gmsgSetFOV
-new const gModelDgl[] = "models/shmod/deagle.mdl"
+
+#define gModelDgl "models/shmod/deagle.mdl"
 
 public plugin_init()
 {
@@ -34,7 +39,7 @@ public plugin_init()
 	//create hero
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Sniper Deagle", "Get a nice new deagle with scope")
-
+	sh_register_superheromod_weapon_model(gHeroID,CSW_DEAGLE,gModelDgl)
 	//set hero power
 	sh_set_hero_hpap(gHeroID, pcvarHealth, pcvarArmor)
 	sh_set_hero_grav(gHeroID, pcvarGravity)
@@ -64,7 +69,6 @@ public sh_hero_init(id, HeroID, mode)
 		case SH_HERO_ADD:
 		{
 			deagle_weapon(id)
-			switch_model(id)
 		}
 
 		//if they lose power
@@ -124,17 +128,6 @@ dsniper_zoomout(id)
 	message_end()
 }
 
-switch_model(id)
-{
-	//if client does not have hero, is dead, or sh is off do nothing
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-
-	//if client has deagle set model
-	if ( get_user_weapon(id) == CSW_DEAGLE )
-	{
-		set_pev(id, pev_viewmodel2, gModelDgl)
-	}
-}
 
 deagle_weapon(id)
 {
@@ -158,9 +151,6 @@ public weapon_change(id)
 		gLastWeapon[id] = weaponID
 	}
 	if ( weaponID != CSW_DEAGLE ) return
-
-	//go to set model
-	switch_model(id)
 
 	//unlimited ammo!
 	//read if clip is 0

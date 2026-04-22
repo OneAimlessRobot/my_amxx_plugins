@@ -7,21 +7,19 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "chaff_grenade_inc/sh_slitter_funcs.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 #define COUNTER_MEGA_SFX "shmod/Teliko/MEGA_counter.wav"
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
 #define PRE_FIRST_BLOOD_SFX "shmod/Teliko/deagle-om.wav"
 
-stock const famas_g2_v_model[]	=	"models/shmod/teliko/teliko_famas/v_famas.mdl"
-stock const famas_g2_p_model[]	=	"models/shmod/teliko/teliko_famas/p_famas.mdl"
-stock const famas_g2_sounds[5][]= {"weapons/teliko_famas/famassooom-2.wav",
-								"weapons/teliko_famas/famassooom-1.wav",
-								"weapons/teliko_famas/famas_cock.wav",
-								"weapons/teliko_famas/famas_magin.wav",
-								"weapons/teliko_famas/famas_magout.wav"}
+
+#define famas_g2_v_model "models/shmod/teliko/teliko_famas/v_famas.mdl"
+#define famas_g2_p_model "models/shmod/teliko/teliko_famas/p_famas.mdl"
 
 
 // GLOBAL VARIABLES
@@ -65,6 +63,9 @@ public plugin_init()
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level", true)
+	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
+
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	
@@ -378,17 +379,6 @@ public sh_round_end(){
 	remove_entity_name(CHAFF_CLASSNAME)
 
 }
-switchmodel(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
-	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-
-	if ( wpnid == CSW_FAMAS ) {
-		entity_set_string(id, EV_SZ_viewmodel, famas_g2_v_model)
-		entity_set_string(id, EV_SZ_weaponmodel, famas_g2_p_model)
-	}
-}
 public plugin_precache()
 {
 
@@ -396,15 +386,7 @@ public plugin_precache()
 engfunc(EngFunc_PrecacheSound, GLASS_BREAK_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_MEGA_SFX) 
 engfunc(EngFunc_PrecacheSound, COUNTER_UP_SFX) 
-engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX) 
-engfunc(EngFunc_PrecacheModel,famas_g2_v_model)
-engfunc(EngFunc_PrecacheModel,famas_g2_p_model)
-for(new i=0;i<sizeof(famas_g2_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound, famas_g2_sounds[i])
-		console_print(0, "Sound loaded: ^"%s^"", famas_g2_sounds[i])
-}
-
+engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX)
 
 
 }
@@ -464,11 +446,7 @@ return PLUGIN_CONTINUE
 public switch_weapon(id)
 {
 if(sh_user_has_hero(id,gHeroID) ){
-	new clip,ammo
-	new wpnid = get_user_weapon(id,clip,ammo)
-	if ( wpnid == CSW_FAMAS ){
-		switchmodel(id)
-	}
+	new wpnid = get_user_weapon(id)
 	
 	if(g_teliko_locked[id] || (wpnid==CSW_KNIFE)){
 		

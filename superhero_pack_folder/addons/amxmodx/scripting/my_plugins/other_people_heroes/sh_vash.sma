@@ -28,12 +28,15 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 *   Ripped from the hero - Morpheus by RadidEskimo & Freecode.
 *   Weapon model by Thin Red Paste & X-convinct, converted by SplinterCell.
 */
-
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-stock vash_v_deagle_model[]="models/shmod/vash_deagle_zk.mdl"
+#define vash_v_deagle_model "models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
 new gHeroName[]="Vash the Stampede"
 new gHeroID
@@ -50,6 +53,8 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Revolver & Evasion", "Get Vash's .45 Long Colt Revolver (DEAGLE), that does More Damage. Also, evade by removing random hitzones.", false, "vash_level")
+	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_DEAGLE, vash_v_deagle_model)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -58,7 +63,6 @@ public plugin_init()
 
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
-	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "vash_damage", "b", "2!0")
 
 	// HITZONE CHANGING LOOP
@@ -67,11 +71,6 @@ public plugin_init()
 	// Let Server know about Vash's Variables
 	shSetMinGravity(gHeroName, "vash_gravity")
 	init_hud_syncs()
-}
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,vash_v_deagle_model)
 }
 //----------------------------------------------------------------------------------------------
 public vash_init()
@@ -84,7 +83,6 @@ public vash_init()
 	if ( is_user_alive(id) ) {
 		if ( sh_user_has_hero(id,gHeroID)) {
 			vash_weapons(id)
-			switchmodel(id)
 		}
 		// This gets run if they had the power but don't anymore
 		else{
@@ -141,33 +139,6 @@ public vash_weapons(id)
 			shGiveWeapon(id, "ammo_50ae")
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) ) return
-
-	//If holding shield don't change model, since there is no custom model with shield
-	new v_mdl[32]
-	Entvars_Get_String(id, EV_SZ_viewmodel, v_mdl, 31)
-	if ( containi(v_mdl, "v_shield_") != -1 ) return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	if ( wpnid == CSW_DEAGLE ) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		Entvars_Set_String(id, EV_SZ_viewmodel, vash_v_deagle_model)
-	}
-}
-//----------------------------------------------------------------------------------------------
-public weaponChange(id)
-{
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
-
-	new wpnid = read_data(2)
-
-	if ( wpnid != CSW_DEAGLE ) return
-
-	switchmodel(id)
 }
 //----------------------------------------------------------------------------------------------
 public vash_damage(id)

@@ -2,9 +2,7 @@
   #endinput
 #endif
 #define sh_aux_funcs_misc
-#define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
-#define SH_HUD_MSG_BUFF_SIZE 128
 
 #define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
 

@@ -15,7 +15,9 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 /*
 *   Rip of old Master Chief code
 */
-
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -53,6 +55,9 @@ public plugin_init()
 								"UberGunner - Getting Ready 2 Own!",
 								"UberGunner - MODE OFF, you returned to normal self.",
 								"items/suitchargeno1.wav")
+
+	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/usmarine_m4a1.mdl")
+
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("UberGunner_init", "UberGunner_init")
@@ -74,12 +79,6 @@ public plugin_init()
 	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,"models/player/UberGunner/UberGunner.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/usmarine_m4a1.mdl")
-}
-//----------------------------------------------------------------------------------------------
 public UberGunner_init()
 {
 	// First Argument is an id
@@ -94,7 +93,6 @@ public UberGunner_init()
 	if ( is_user_connected(id) ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			UberGunner_weapons(id)
-			switchmodel(id)
 		}
 		else {
 			shRemHealthPower(id)
@@ -125,16 +123,6 @@ public UberGunner_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
-	new wpnid = read_data(2)
-	if (wpnid == CSW_M4A1) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/usmarine_m4a1.mdl")
-	}
-}
-//----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
 	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
@@ -143,8 +131,6 @@ public weaponChange(id)
 	new clip = read_data(3)
 
 	if ( wpnid != CSW_M4A1 ) return
-
-	switchmodel(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {

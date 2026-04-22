@@ -10,8 +10,8 @@
 	thrashy_cooldown 30
 */
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -25,8 +25,8 @@
 
 // GLOBAL VARIABLES
 #define MODEL_PLAYER "models/player/thrash/thrash.mdl"
-new const Model_Weapon_P[] = "models/shmod/thrashteen/p_superak47.mdl";
-new const Model_Weapon_V[] = "models/shmod/thrashteen/v_superak47.mdl"
+#define Model_Weapon_P "models/shmod/thrashteen/p_superak47.mdl"
+#define Model_Weapon_V "models/shmod/thrashteen/v_superak47.mdl"
 new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasAcess[SH_MAXSLOTS+1]
@@ -71,6 +71,7 @@ public plugin_init()
 								"thrash",
 								"You are now the baddest bitch on earth!",
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,Model_Weapon_V,Model_Weapon_P)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_event("ResetHUD","newRound","b")
@@ -122,7 +123,6 @@ public thrashy_init()
 		
 		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		gThrashyExplosionAmmo[id]=ndynamites
-		switchgun(id)
 	}
 	else{
 		shRemHealthPower(id)
@@ -179,8 +179,6 @@ public fw_CmdStart( id, uc_handle, seed )
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,Model_Weapon_V)
-	engfunc(EngFunc_PrecacheModel,Model_Weapon_P)
 	engfunc(EngFunc_PrecacheSound,"weapons/zoom.wav")
 }
 //----------------------------------------------------------------------------------------------
@@ -232,22 +230,10 @@ public newRound(id)
 		if(sh_user_has_hero(id,gHeroID) ){
 			sh_unset_cooldown_flag(id)
 			gThrashyExplosionAmmo[id]=ndynamites
-			switchgun(id)
 			thrashy_weapons(id)
 		}
 	}
 	return PLUGIN_HANDLED
-}
-//-----------------------------------------------------------------------------------------------
-public switchgun(id)
-{
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_AK47) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, Model_Weapon_V)
-		entity_set_string(id, EV_SZ_weaponmodel, Model_Weapon_P)
-	}
 }
 public make_tracer(id)
 {
@@ -282,9 +268,6 @@ public weaponChange(id)
 	{
 		return
 	}
-
-	switchgun(id)
-
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
 		shReloadAmmo(id)
