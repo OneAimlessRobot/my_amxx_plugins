@@ -340,7 +340,9 @@ public yandere_timer_transform(id){
 			if(user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
 				sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			}
-			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			for(new i=0;i<num_yandere_warcries;i++){
+				emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
+			}
 		}
 	}
 	else{
@@ -358,8 +360,10 @@ public yandere_timer_transform(id){
 					static client_name[128]
 					get_user_name(id,client_name,127)
 					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
-					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
-					emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, 0, PITCH_NORM)
+					for(new i=0;i<num_yandere_warcries;i++){
+						emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
+					}
+					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[generate_int(0,num_yandere_warcries-1)], 1.0, 0.0, 0, PITCH_NORM)
 					Set_BitVar(gPlayedSoundMask,id)
 				}
 				gTransTimer[id]=trans_time
@@ -437,7 +441,9 @@ public newRound(id)
 			set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
 			gTransTimer[id]=trans_time;
 			UnSet_BitVar(gTransTimerStartedMask,id)
-			emit_sound(id, CHAN_AUTO, YANDERE_WARCRY, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			for(new i=0;i<num_yandere_warcries;i++){
+				emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
+			}
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
 		}
@@ -526,7 +532,9 @@ public yandere_damage(id)
 }
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheSound,YANDERE_WARCRY)
+	for(new i=0;i<num_yandere_warcries;i++){
+		engfunc(EngFunc_PrecacheSound,YANDERE_WARCRIES[i])
+	}
 	engfunc(EngFunc_PrecacheSound,YANDERE_CYCLE)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST2)

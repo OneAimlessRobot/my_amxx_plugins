@@ -1,0 +1,38 @@
+L 04/23/2026 - 01:04:36: Start of error session.
+L 04/23/2026 - 01:04:36: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260423.log")
+L 04/23/2026 - 01:04:36: [ReAPI] RegisterHookChain: function (CWeaponBox_SetModel) is not available, ReGameDLL required.
+L 04/23/2026 - 01:04:36: [AMXX] Run time error 10 (plugin "colt_funcs.amxx") (native "RegisterHookChain") - debug not enabled!
+L 04/23/2026 - 01:04:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:43: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:43: [AMXX] Run time error 10 (plugin "maria_riveter_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:43: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:43: [AMXX] Run time error 10 (plugin "pill_gatling_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:43: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:44: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:44: [AMXX] Run time error 10 (plugin "maria_riveter_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:44: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:44: [AMXX] Run time error 10 (plugin "pill_gatling_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:44: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:44: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:46: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:46: [AMXX] Run time error 10 (plugin "maria_riveter_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:46: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:46: [AMXX] Run time error 10 (plugin "pill_gatling_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:46: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:47: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:47: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:47: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:47: [AMXX] Run time error 10 (plugin "maria_riveter_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:47: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:47: [AMXX] Run time error 10 (plugin "pill_gatling_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 04/23/2026 - 01:04:47: [ReAPI] ReGameDll: isn't available
+L 04/23/2026 - 01:04:47: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "get_member_s") - debug not enabled!
+L 04/23/2026 - 01:04:47: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

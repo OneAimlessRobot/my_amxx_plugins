@@ -21,7 +21,7 @@ ElectroB00M_stuntime 10 //For how long will a hit player stay stunned
 new gHeroID
 new gHeroName[]="ElectroB00M"
 new gSpriteLightning
-new const gTeslaCoilRevvingSound[] = "ambience/voltage.wav"
+new const gTeslaCoilRevvingSound[] = "ambience/techamb2.wav"
 new const gTeslaCoilOff[] = "weapons/egon_off1.wav"
 new bool:g_teslacoilRunning[SH_MAXSLOTS+1]
 new bool:gRechargeAllowed[SH_MAXSLOTS+1]
@@ -233,7 +233,8 @@ public ElectroB00M_instant(x, id)
 new ElectroB00MDamage=get_pcvar_num(pCvarElectroB00MDamage)
 lightning_effect(id, x)
 emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-sh_extra_damage( x, id, ElectroB00MDamage, "ElectroB00M 's Mad Tesla Coil" )
+sh_extra_damage( x, id, ElectroB00MDamage, new_dmg_type_names[_:SH_NEW_DMG_SHOCK],_,_,_,_,_,_,
+						SH_NEW_DMG_SHOCK,get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
