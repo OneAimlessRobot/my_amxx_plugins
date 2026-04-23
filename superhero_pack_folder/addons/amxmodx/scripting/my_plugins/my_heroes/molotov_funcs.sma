@@ -44,7 +44,6 @@ public plugin_init(){
 
 	MOLLY_CHARGE_TASKID=allocate_typed_task_id(player_task)
 }
-
 public plugin_natives(){
 
 	register_native( "molly_uncharge_molly","_molly_uncharge_molly",0)
@@ -79,9 +78,7 @@ public CmdStart(id, uc_handle)
 				
 			}
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
-				
 				launch_molly(id)
-				
 				if(!is_user_bot(id)){
 					client_print(id,print_center,"You have %d mollies left siss!!!! %d left!!!!!",
 					erica_get_num_mollies(id),erica_get_num_mollies(id)
@@ -101,9 +98,11 @@ public CmdStart(id, uc_handle)
 				}
 			}
 			else if(curr_charge[id]>0.0){
-				sh_chat_message(id,tranq_get_hero_id(),"Chaff not charged! Not launched...");
-				
+				if(!is_user_bot(id)){
+					sh_chat_message(id,tranq_get_hero_id(),"Chaff not charged! Not launched...");
+				}
 			}
+			
 			UnSet_BitVar(molly_armed_mask,id)
 			
 		}
@@ -146,10 +145,6 @@ public charge_task(id){
 
 		set_task(MOLLY_CHARGE_PERIOD,"charge_task",id+MOLLY_CHARGE_TASKID)
 	}
-	
-	
-	
-	
 	
 	
 }

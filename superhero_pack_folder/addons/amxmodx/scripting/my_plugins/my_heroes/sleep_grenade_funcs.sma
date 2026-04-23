@@ -74,8 +74,6 @@ public CmdStart(id, uc_handle)
 				
 			}
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
-				
-				
 				launch_sleep_nade(id)
 				if(!is_user_bot(id)){
 					client_print(id,print_center,"You have %d gas grenades left, darling. I repeat, %d",
@@ -185,6 +183,7 @@ public _sleep_nade_uncharge_sleep_nade(iPlugin,iParams){
 
 launch_sleep_nade(id)
 {
+
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)

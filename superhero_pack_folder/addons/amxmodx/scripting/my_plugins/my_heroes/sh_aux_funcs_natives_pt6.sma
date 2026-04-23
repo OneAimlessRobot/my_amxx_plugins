@@ -23,7 +23,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
 	register_clcmd("say", "cl_say")
-	prepare_shero_aux_lib_pt6()
     
 	
 }

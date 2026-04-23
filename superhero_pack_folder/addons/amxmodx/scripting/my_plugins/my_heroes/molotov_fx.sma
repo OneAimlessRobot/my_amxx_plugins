@@ -84,7 +84,7 @@ public burn_task(array[2],id)
 			SH_NEW_DMG_FIRE,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE))
 
-	if(array[1]<BURN_TIMES){
+	if(gIsBurning[id]&&(array[1]<BURN_TIMES)){
 		array[1]++
 		emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))

@@ -181,7 +181,7 @@ public sleep_task(array[1],id){
 	}
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
-	if((array[0]<(SLEEP_TIMES+9))){
+	if(Get_BitVar(gIsAsleepMask,id)&&(array[0]<(SLEEP_TIMES+9))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}

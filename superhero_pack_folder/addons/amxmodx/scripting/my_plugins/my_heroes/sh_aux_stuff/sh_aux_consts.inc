@@ -55,6 +55,16 @@ stock const m_iClip = 51
 
 #define FlameAndSoundRate 10
 
+
+enum cs_grenade_animation_sequences{
+
+	cs_grenade_idle = 0,
+	cs_grenade_pullpin,
+	cs_grenade_throw,
+	cs_grenade_deploy
+
+
+}
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
 

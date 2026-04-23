@@ -76,24 +76,19 @@ public CmdStart(id, uc_handle)
 				
 			}
 			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
-				
-				
+
 				launch_chaff(id)
-				
 				if(!is_user_bot(id)){
-					
 					client_print(id,print_center,"You have %d chaffs left",
 					teliko_get_num_chaffs(id)
 					);
 				}
 				UnSet_BitVar(chaff_armed_mask,id)
 			}
-			
 		}
 		else if(Get_BitVar(chaff_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
 				launch_chaff(id)
-				
 				if(!is_user_bot(id)){
 					client_print(id,print_center,"You have %d chaffs left",
 					teliko_get_num_chaffs(id)
@@ -101,7 +96,6 @@ public CmdStart(id, uc_handle)
 				}
 			}
 			else if(curr_charge[id]>0.0){
-				
 				if(!is_user_bot(id)){
 					sh_chat_message(id,teliko_get_hero_id(),"Chaff not charged! Not launched...");
 				}
@@ -109,7 +103,8 @@ public CmdStart(id, uc_handle)
 			UnSet_BitVar(chaff_armed_mask,id)
 		}
 	}
-	else{
+	else
+	{
 		UnSet_BitVar(chaff_armed_mask,id)
 	}
 	if(ent){
@@ -166,6 +161,7 @@ public _chaff_uncharge_chaff(iPlugin,iParams){
 
 launch_chaff(id)
 {
+
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)

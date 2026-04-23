@@ -136,7 +136,7 @@ public chaff_task(array[1],id){
 	}
 	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransAlpha)
 	
-	if(array[0]<=CHAFF_TIMES){
+	if(gIsChaffed[id]&&(array[0]<=CHAFF_TIMES)){
 		array[0]++
 		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array))
 	}

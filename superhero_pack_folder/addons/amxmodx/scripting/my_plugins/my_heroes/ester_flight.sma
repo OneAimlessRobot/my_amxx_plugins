@@ -48,7 +48,6 @@ new ester_anti_pussy_engaged
 
 new ester_calculation_times
 new g_ester_respawned_attempts[SH_MAXSLOTS+1]
-new g_is_between_rounds
 new g_which_team_is_user[SH_MAXSLOTS+1]
 new g_saved_coords[SH_MAXSLOTS+1][3]
 new g_last_coords[SH_MAXSLOTS+1][3]
@@ -56,7 +55,7 @@ new g_last_coords[SH_MAXSLOTS+1][3]
 
 
 
-stock ESTER_REBORN_CALCULATION_LOOP_TASKID,
+new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_POSITION_CHECK_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_TEAM_CHECK_TASKID ,
@@ -135,7 +134,7 @@ deny_next_reborn(id,bool:is_sillycide=true){
 	
 	sh_chat_message(id,ester_get_hero_id(),is_sillycide?ESTER_SUICIDE_FAIL_MSG:ESTER_RESPAWN_FAIL_MSG)
 
-	emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	emit_sound(id, CHAN_AUTO,NULL_SOUND , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 
 	emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
@@ -172,24 +171,6 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	}
 	return HAM_IGNORED
-}
-public client_kill(id){
-	
-	if(!sh_is_active()) return
-	
-	if(!is_user_connected(id)) return
-	
-	if(sh_user_has_hero(id,ester_get_hero_id())&&ester_anti_pussy_engaged){
-		
-		deny_next_reborn(id)
-		return
-		
-	}
-	else if(sh_user_has_hero(id,ester_get_hero_id())){
-		
-		sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_SCOURN_MSG)
-	}
-
 }
 inc_user_ester_respawn_attempts(id){
 	
@@ -326,7 +307,7 @@ public plugin_precache()
 //---------------------------------------------------------------------------------------------- 
 
 public sh_client_death(id, killer, headshot, const wpnDescription[]){
-	if ( g_is_between_rounds ){
+	if ( !sh_is_inround()){
 		return PLUGIN_CONTINUE
 	}
 
@@ -404,7 +385,7 @@ public ester_respawn(parm[])
 	new id = parm[0]
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( !sh_user_has_hero(id,ester_get_hero_id())) return
-	if ( (g_ester_respawned_attempts[id]>=ester_total_respawn_attempts)|| g_is_between_rounds ) return
+	if ( (g_ester_respawned_attempts[id]>=ester_total_respawn_attempts)||!sh_is_inround()) return
 	if ( g_which_team_is_user[id]!= get_user_team(id) ) return //prevents respawning spectators
 
 	sh_chat_message(id,ester_get_hero_id(), "%s",ester_sentences[generate_int(0,ESTER_NUM_SENTENCES-1)])
@@ -425,8 +406,10 @@ public ester_respawn(parm[])
 
 	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, 1)
 
-	
-	ester_teleport(id)
+	// Teleport the player
+	set_user_origin(id, g_saved_coords[id])
+
+	positionChangeTimer(id)
 }
 public godmode_render_update(id){
 	
@@ -455,14 +438,13 @@ public ester_teamcheck(parm[])
 	if ( g_which_team_is_user[id] != get_user_team(id) ) {
 		sh_chat_message(id, ester_get_hero_id(), ESTER_REBORN_TEAM_CHANGE_MSG)
 		user_kill(id,1)
-		emit_sound(id, CHAN_AUTO,ESTER_RESPAWN_FAIL_SOUND , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+		deny_next_reborn(id)
 		ester_remove_statuses(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public ester_round_start()
 {
-	g_is_between_rounds = 0
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
@@ -476,7 +458,7 @@ public ester_round_end()
 {
 	if ( !sh_is_active() ) return
 
-	g_is_between_rounds = 1
+	
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
@@ -486,21 +468,6 @@ public ester_round_end()
 		ester_remove_statuses(id)
 		ester_set_reborn_mode(id,0)
 	}
-}
-//----------------------------------------------------------------------------------------------
-public ester_teleport(id)
-{
-	// Teleport the player
-	set_user_origin(id, g_saved_coords[id])
-
-	positionChangeTimer(id)
-	
-	sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
-	
-	set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
-	new param[1]
-	param[0]=0
-	set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 }
 //----------------------------------------------------------------------------------------------
 public positionChangeTimer(id)
@@ -547,8 +514,18 @@ public positionChangeCheck(id)
 		ester_remove_statuses(id)
 		ester_set_reborn_mode(id,0)
 	}
-	else if(!user_has_weapon(id,CSW_KNIFE)){
-		sh_give_weapon(id,CSW_KNIFE,true)
+	else{
+		
+		if(!user_has_weapon(id,CSW_KNIFE)){
+			sh_give_weapon(id,CSW_KNIFE,true)
+		}
+		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
+	
+		set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
+		new param[1]
+		param[0]=0
+		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
+	
 	}
 }
 //----------------------------------------------------------------------------------------------
