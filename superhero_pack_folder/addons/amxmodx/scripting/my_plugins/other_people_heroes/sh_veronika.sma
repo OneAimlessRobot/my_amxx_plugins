@@ -124,7 +124,6 @@ public veronika_init()
 	
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		veronika_weapons(id)
-		switchmodel(id)
 		}
 	else {
 		engclient_cmd(id,"drop","weapon_ak47")
@@ -157,17 +156,6 @@ public veronika_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == CSW_AK47) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, veronika_ak_v_mdl)
-		entity_set_string(id, EV_SZ_weaponmodel, veronika_ak_p_mdl)
-	}
-}
-//----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
 	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
@@ -177,7 +165,6 @@ public weaponChange(id)
 	
 	if ( wpnid != CSW_AK47 ) return
 	
-	switchmodel(id)
 		
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {

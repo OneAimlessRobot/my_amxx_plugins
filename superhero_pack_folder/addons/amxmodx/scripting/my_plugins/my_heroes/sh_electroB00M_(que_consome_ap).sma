@@ -95,7 +95,10 @@ switch(g_teslacoilRunning[id]) {
 		// Recharge armor even if armor is not used for JP fuel
 		if ( userArmor < sh_get_max_ap(id) ) {
 			cs_set_user_armor(id, userArmor + 1, armorType)
+
 		}
+
+		emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 	
 	case true: {

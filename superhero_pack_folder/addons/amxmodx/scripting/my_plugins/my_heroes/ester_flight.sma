@@ -556,7 +556,7 @@ public BlowUp(param[1],id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 
-	if(client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
+	if(!sh_is_freezetime()&&client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
 		param[0]++
 		explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
