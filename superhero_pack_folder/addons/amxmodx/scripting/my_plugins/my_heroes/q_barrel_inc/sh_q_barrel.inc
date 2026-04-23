@@ -11,6 +11,7 @@
 #define SPEED 0.35
 #define RELOAD_TIME 3.0
 #define KNOCKPOWER 1000
+#define Q_BARREL_RECOIL 1.25
 
 #define MODEL_V "models/shmod/graciete/qbarrel/v_qbarrel.mdl"
 #define MODEL_P "models/shmod/graciete/qbarrel/p_qbarrel.mdl"

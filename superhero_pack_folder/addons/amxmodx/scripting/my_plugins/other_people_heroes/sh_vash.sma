@@ -40,6 +40,12 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 // GLOBAL VARIABLES
 new gHeroName[]="Vash the Stampede"
 new gHeroID
+
+
+new dmg_source_name_short_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"
+new dmg_source_name_long_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"
+new custom_dmg_id_revolver
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -55,6 +61,11 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Revolver & Evasion", "Get Vash's .45 Long Colt Revolver (DEAGLE), that does More Damage. Also, evade by removing random hitzones.", false, "vash_level")
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_DEAGLE, vash_v_deagle_model)
+	
+	custom_dmg_id_revolver=sh_log_custom_damage_source(gHeroID,
+							dmg_source_name_short_revolver,
+							dmg_source_name_long_revolver,0)
+	
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -154,7 +165,14 @@ public vash_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
-		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "deagle", headshot)
+		if (extraDamage > 0){
+			
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_revolver,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_revolver)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -235,20 +235,20 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	get_string(6,sh_array_of_player_model_structs[result][player_model_unmorph_message],SH_HUD_MSG_BUFF_SIZE-1)
 	get_string(7,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample],STRING_SIZE-1)
 
-	server_print("Index: %d^nCT Player model load attempted: %s",result,
+	/*server_print("Index: %d^nCT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_ct_file_path])
-
+	*/
 	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_ct_file_path])
-
+	/*
 	server_print("Index: %d^nT Player model load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_t_file_path])
-
+	*/
 	engfunc(EngFunc_PrecacheGeneric,sh_array_of_player_model_structs[result][player_model_t_file_path])
 	
-
+	/*
 	server_print("Index: %d^nPlayer morph sound load attempted: %s",result,
 								sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
-
+	*/
 	engfunc(EngFunc_PrecacheSound,sh_array_of_player_model_structs[result][player_model_custom_morph_sound_sample])
 	
 	curr_num_models_logged++
@@ -290,22 +290,23 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 	
 	if(strlen_of_v_model(wpn_id,result)<=0){
 
-	
+		/*
 		server_print("Warning: weapon model number %d from weapon %s (weapon id = %d):^nLoad attempted with empty filename on v model!^nFirst person model must be present in server!^nFirst person model will not be present...^n",
 					result,
 					wpn_name,
 					wpn_id,
 					sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_v_model_string])
-
+		*/
 	}
 	else{
 		
+		/*
 		server_print("Note: Weapon first person model load attempted: %s^nWeapon model number %d from weapon %s (weapon id = %d):^nLoaded!",
 					sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_v_model_string],
 					result,
 					wpn_name,
 					wpn_id)
-
+		*/
 		engfunc(EngFunc_PrecacheModel,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_v_model_string])
 	
 	}
@@ -314,22 +315,22 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 
 	if(strlen_of_p_model(wpn_id,result)<=0){
 
-	
+		/*
 		server_print("Warning: weapon model number %d from weapon %s (weapon id = %d):^nLoad attempted with empty filename on p model!!^nWorld model will not be present...^n",
 					result,
 					wpn_name,
 					wpn_id,
 					sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string])
-
+		*/
 	}
 	else{
-
+		/*
 		server_print("Note: Weapon world model load attempted: %s^nWeapon model number %d from weapon %s (weapon id = %d):^nLoaded!",
 					sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string],
 					result,
 					wpn_name,
 					wpn_id)
-
+		*/
 		engfunc(EngFunc_PrecacheModel,sh_array_of_wpn_model_structs[wpn_id][result][wpn_model_p_model_string])
 		
 	}
@@ -434,7 +435,7 @@ public sh_choose_weapon_model(id, level, cid)
 			return PLUGIN_HANDLED
 		}
 		gPlayersCurrHeroWpnModelID[id][wpn_id]=-1
-		if((wpn_model_id>=0)&&(wpn_model_id<SH_MAX_WPN_MODELS_PER_WPN)){
+		if((wpn_model_id>=0)&&(wpn_model_id<curr_num_models_logged_on_wpn[wpn_id])){
 
 			static the_hero_id;
 			the_hero_id=sh_array_of_wpn_model_structs[wpn_id][wpn_model_id][wpn_model_hero_id]

@@ -1,9 +1,10 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_FAKEMETA_UTIL
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "d_barrel_inc/sh_d_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "d_barrel_inc/sh_d_barrel.inc"
 
 
 #define PLUGIN "Superhero Snoodle d_barrel funcs"
@@ -16,18 +17,6 @@ new const WeaponModel[3][] =
 	"models/shmod/supernoodle/dbarrel/p_dbarrel.mdl", // P
 	"models/shmod/supernoodle/dbarrel/w_dbarrel.mdl" // W
 }
-
-new const WeaponSounds[7][] = 
-{
-	"weapons/dbarrel1.wav",
-	"weapons/dbarrel-1.wav",
-	"weapons/dbarrel_draw.wav",
-	"weapons/dbarrel_foley1.wav",
-	"weapons/dbarrel_foley2.wav",
-	"weapons/dbarrel_foley3.wav",
-	"weapons/dbarrel_foley4.wav"
-}
-
 enum
 {
 	GATLING_ANIM_IDLE = 0,
@@ -99,15 +88,8 @@ public plugin_precache()
 	
 	for(i = 0; i < sizeof(WeaponModel); i++)
 		engfunc(EngFunc_PrecacheModel, WeaponModel[i])
-	for(i = 0; i < sizeof(WeaponSounds); i++)
-		engfunc(EngFunc_PrecacheSound, WeaponSounds[i])
-	/*
-	for(new i = 0; i < sizeof(WeaponResource); i++)
-	{
-		if(i == 0) engfunc(EngFunc_PrecacheGeneric, WeaponResource[i])
-		else engfunc(EngFunc_PrecacheModel, WeaponResource[i])
-	}*/
-	
+
+
 	g_smokepuff_id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")
 	m_iBlood[0] = engfunc(EngFunc_PrecacheModel, "sprites/blood.spr")
 	m_iBlood[1] = engfunc(EngFunc_PrecacheModel, "sprites/bloodspray.spr")		
@@ -384,7 +366,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 	xs_vec_add(velocity, Dir, Dir)
 	
 	// Should knockback also affect vertical velocity?
-	Dir[2] = velocity[2]
+	//Dir[2] = velocity[2]
 	
 	// Set the knockback'd victim's velocity
 	set_pev(Ent, pev_velocity, Dir)
@@ -403,10 +385,11 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 	get_tr2(ptr, TR_vecEndPos, flEnd)
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
 	
-	make_bullet(attacker, flEnd)
-	//fake_smoke(attacker, ptr)
-		
-	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.5, 7.0))	
+	
+	if(is_entity_brush(ent)){
+		make_bullet(attacker, flEnd)
+	}
+	fake_smoke(attacker, ptr)
 
 	return HAM_HANDLED
 }
@@ -639,9 +622,6 @@ stock make_bullet(id, Float:Origin[3])
 	
 	static Body, Target
 	get_user_aiming(id, Target, Body, 999999)
-	
-	if(is_user_connected(Target))
-		return
 	
 	for(new i = 0; i < loop_time; i++)
 	{

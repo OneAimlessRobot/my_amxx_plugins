@@ -6,8 +6,10 @@
 
 #define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
 
+
+
 /**
-only in plugin_init forward!!!
+only use this at plugin_init forward!!!
 */
 stock register_entity_as_wall_touchable(const entity_name[], const func_name[]){
 
@@ -172,7 +174,25 @@ stock init_explosion_defaults(){
 	default_stun_speed=sh_get_default_stun_speed()
 
 }
+stock bool:is_entity_brush(ent_id){
+	if(!is_valid_ent(ent_id)){
 
+		return false
+	}
+
+	if(!ent_id){
+
+		return true
+	}
+	static model_name[48]
+
+	entity_get_string(ent_id, EV_SZ_model, model_name, charsmax(model_name))
+	if( contain(model_name, "*") != -1 ) {
+		return true
+	}
+
+	return false
+}
 public orient_user(id,Float:angles[3],Float:v_angle[3])
 {
 	

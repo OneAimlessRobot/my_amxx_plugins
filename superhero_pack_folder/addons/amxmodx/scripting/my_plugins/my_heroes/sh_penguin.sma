@@ -28,8 +28,9 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 *    HE Grenade Model by Opposing Forces Team, xinsomniacboix, Indolence, & haZaa.
 *   	Yang wrote, "Cred goez to vittu's sexiness on gambit and cheap_suit who created the original plugin".
 */
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include "../my_include/my_author_header.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 #define AMMOX_HEGRENADE 12
 
@@ -40,6 +41,12 @@ new gHeroName[]="Penguin"
 new Float:gNadeSpeed
 new gSpriteTrail
 new gHeroID
+
+new dmg_source_name_short_penguin[SAFE_BUFFER_SIZE+1]="hominh_he"
+new dmg_source_name_long_penguin[SAFE_BUFFER_SIZE+1]="homing_grenade"
+new custom_dmg_id_penguin_homing_grenade
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -57,6 +64,10 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Seeking HE-Penguins", "Throw HE Grenade strapped Pengiun friends that Seek out your enemy, also refill HE Grenades.", false, "penguin_level")
 
+	custom_dmg_id_penguin_homing_grenade=sh_log_custom_damage_source(gHeroID,
+							dmg_source_name_short_penguin,
+							dmg_source_name_long_penguin,0)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("penguin_init", "penguin_init")
@@ -369,7 +380,13 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		if ( is_user_alive(id) ) {
 			// do extra damage
 			new extraDamage = floatround(damage * get_cvar_float("penguin_grenademult") - damage)
-			if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "grenade")
+			if (extraDamage > 0){
+				
+				sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_penguin,
+								_,_,_,_,_,_,
+								SH_NEW_DMG_FRAG_BLAST,
+								custom_dmg_id_penguin_homing_grenade)
+			}
 		}
 
 		new parm[2]

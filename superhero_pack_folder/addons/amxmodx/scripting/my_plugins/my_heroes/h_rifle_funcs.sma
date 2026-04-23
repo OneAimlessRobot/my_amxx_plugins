@@ -311,6 +311,9 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
 {
+
+	//if(!is_valid_ent(Ent)) return HAM_IGNORED
+	
 	if(!is_connected(Attacker))
 		return HAM_IGNORED	
 	if(get_player_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))
@@ -322,7 +325,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
 			
 	make_bullet(Attacker, flEnd)
-	fake_smoke(Attacker, ptr)
+	//fake_smoke(Attacker, ptr)
 		
 	SetHamParamFloat(3, float(DAMAGE))
 		
@@ -472,6 +475,7 @@ stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 }
 
 stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)
+
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
@@ -481,8 +485,9 @@ stock make_bullet(id, Float:Origin[3])
 	static Body, Target
 	get_user_aiming(id, Target, Body, 999999)
 	
-	if(is_user_connected(Target))
+	if(is_user_connected(Target)){
 		return
+	}
 	
 	for(new i = 0; i < loop_time; i++)
 	{

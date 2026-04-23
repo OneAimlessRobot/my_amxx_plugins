@@ -155,7 +155,7 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 				sh_extra_damage(id, attacker, extraDamage, 
 						dmg_source_name_long_euromilhoes,
 						_,_,_,_,_,_,
-						SH_NEW_DMG_ENERGY_BLAST,
+						SH_NEW_DMG_DARK_ARTS,
 						custom_dmg_id_euromilhoes)
 			}
 		}

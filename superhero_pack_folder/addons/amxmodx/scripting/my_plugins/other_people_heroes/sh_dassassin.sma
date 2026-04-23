@@ -39,6 +39,8 @@ public plugin_init()
 	//create hero
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Sniper Deagle", "Get a nice new deagle with scope")
+
+
 	sh_register_superheromod_weapon_model(gHeroID,CSW_DEAGLE,gModelDgl)
 	//set hero power
 	sh_set_hero_hpap(gHeroID, pcvarHealth, pcvarArmor)

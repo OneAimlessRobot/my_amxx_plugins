@@ -1,5 +1,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_FAKEMETA_UTIL
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
@@ -10,7 +12,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new g_Had_QB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33]
+new g_Had_QB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33][3]
 new g_HamBot, g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id
 
 // Safety
@@ -264,6 +266,8 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
 {
+	//if(!is_valid_ent(Ent)) return HAM_IGNORED
+	
 	if(!is_connected(Attacker))
 		return HAM_IGNORED	
 	if(get_player_weapon(Attacker) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
@@ -274,15 +278,15 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	get_tr2(ptr, TR_vecEndPos, flEnd)
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
 	
-	if(!is_connected(Ent))
-	{
+
+	if(is_entity_brush(Ent)){
 		make_bullet(Attacker, flEnd)
-		//fake_smoke(Attacker, ptr)
 	}
+	fake_smoke(Attacker, ptr)
 	
 	SetHamParamFloat(3, float(DAMAGE) / 6.0)
 
-	return HAM_HANDLED	
+	return HAM_HANDLED
 }
 
 public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
@@ -326,7 +330,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 	xs_vec_add(velocity, Dir, Dir)
 	
 	// Should knockback also affect vertical velocity?
-	Dir[2] = velocity[2]
+	//Dir[2] = velocity[2]
 	
 	// Set the knockback'd victim's velocity
 	set_pev(Ent, pev_velocity, Dir)
@@ -481,7 +485,7 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 	pev(id, pev_punchangle, Push)
 	xs_vec_sub(Push, Recoil[id], Push)
 	
-	xs_vec_mul_scalar(Push, 0.25, Push)
+	xs_vec_mul_scalar(Push, Q_BARREL_RECOIL, Push)
 	xs_vec_add(Push, Recoil[id], Push)
 	
 	set_pev(id, pev_punchangle, Push)
@@ -518,7 +522,6 @@ stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 	set_pdata_float(entwpn, 48, TimeIdle + 0.5, 4)
 }
 
-stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
@@ -528,9 +531,9 @@ stock make_bullet(id, Float:Origin[3])
 	static Body, Target
 	get_user_aiming(id, Target, Body, 999999)
 	
-	if(is_user_connected(Target))
+	if(is_user_connected(Target)){
 		return
-	
+	}
 	for(new i = 0; i < loop_time; i++)
 	{
 		// Put decal on "world" (a wall)

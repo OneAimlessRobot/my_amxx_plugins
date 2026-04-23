@@ -4,7 +4,7 @@
 new Array:ArModel, Array:ArSound
 new GTempData[64]
 
-new const UnPrecache_ModelList[ 32][ ] = 
+new const UnPrecache_ModelList[ 22][ ] = 
 { 
 	"models/shield/p_shield_deagle.mdl", 
 	"models/shield/p_shield_fiveseven.mdl", 
@@ -27,22 +27,8 @@ new const UnPrecache_ModelList[ 32][ ] =
 	"models/w_battery.mdl",
 	"models/w_antidote.mdl", 
 	"models/w_security.mdl", 
-	"models/w_longjump.mdl", 
-	"sprites/WXplo1.spr", 
-	"sprites/bubble.spr", 
-	"sprites/eexplo.spr", 
-	"sprites/fexplo.spr", 
-	"sprites/fexplo1.spr", 
-	"sprites/b-tele1.spr", 
-	"sprites/c-tele1.spr", 
-	"sprites/ledglow.spr", 
-	"sprites/laserdot.spr", 
-	"sprites/explode1.spr" 
-} 
-//Files that I want to keep go here.
-/*
-	
-*/
+	"models/w_longjump.mdl"
+};
 
 new const UnPrecache_SoundList[107][] = 
 {
@@ -170,8 +156,18 @@ kept files
 	"weapons/c4_plant.wav", 
 	"weapons/c4_disarm.wav", 
 	"weapons/c4_disarmed.wav", 
-	 */
-/*
+	
+	"sprites/WXplo1.spr", 
+	"sprites/bubble.spr", 
+	"sprites/eexplo.spr", 
+	"sprites/fexplo.spr", 
+	"sprites/fexplo1.spr", 
+	"sprites/b-tele1.spr", 
+	"sprites/c-tele1.spr", 
+	"sprites/ledglow.spr", 
+	"sprites/laserdot.spr", 
+	"sprites/explode1.spr" 
+*/
 new const UnPrecache_SoundList_Generics[117][] = 
 {
 	"sound/items/suitcharge1.wav", 
@@ -292,7 +288,6 @@ new const UnPrecache_SoundList_Generics[117][] =
 	"sound/common/bodydrop3.wav", 
 	"sound/common/bodydrop4.wav"
 };
-*/
 public plugin_init( ) 
 { 
 	register_plugin( 
