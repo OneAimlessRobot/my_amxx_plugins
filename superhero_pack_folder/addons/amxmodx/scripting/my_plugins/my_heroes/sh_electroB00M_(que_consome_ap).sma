@@ -97,8 +97,9 @@ switch(g_teslacoilRunning[id]) {
 			cs_set_user_armor(id, userArmor + 1, armorType)
 
 		}
+		emit_sound(id, CHAN_WEAPON,gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 
-		emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		
 	}
 	
 	case true: {
@@ -109,7 +110,7 @@ switch(g_teslacoilRunning[id]) {
 				g_teslacoilRunning[id] = false
 				
 				set_user_info(id, "TC", "0")
-				
+				emit_sound(id, CHAN_WEAPON,gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 				emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				
 				if(!is_user_bot(id)){
@@ -140,6 +141,7 @@ switch(g_teslacoilRunning[id]) {
 				}
 			}
 		}
+		
 		emit_sound(id, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 }
