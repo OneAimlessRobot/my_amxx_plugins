@@ -200,7 +200,9 @@ public escapist_init()
 }
 //----------------------------------------------------------------------------------------------
 public escapist_loop(id)
-{
+{	
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if ( !client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
 			

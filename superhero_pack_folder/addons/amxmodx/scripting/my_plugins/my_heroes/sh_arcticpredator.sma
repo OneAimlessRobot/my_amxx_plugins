@@ -62,7 +62,7 @@ public plugin_init()
 	register_cvar("arcticPredator_cooldown", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level" )
+	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level", true )
 	sh_register_superheromod_model(gHeroID,
 							"models/player/arcpred/arcpred.mdl",
 							"models/player/arcpred/arcpredT.mdl",

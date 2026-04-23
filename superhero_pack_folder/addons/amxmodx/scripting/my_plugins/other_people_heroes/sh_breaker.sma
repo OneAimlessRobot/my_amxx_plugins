@@ -66,7 +66,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 		{     
 			cs_set_user_armor (victim, max(armor - get_pcvar_num(pCvarDeduct), 0), armortype) 
 			
-			sh_set_rendering(victim, 0, 255, 255, 50, kRenderFxGlowShell, kRenderGlow) 
+			sh_set_rendering(victim, 0, 255, 255, 50, kRenderFxGlowShell, kRenderTransColor) 
 			
 			set_task(1.0, "remove_rendering", victim) 
 		}

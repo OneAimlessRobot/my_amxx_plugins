@@ -355,9 +355,10 @@ public loadCVARS()
 }
 public Ester_revenge_loop(id)
 {
-
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+	
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-		if ( !sh_is_active()||!is_user_connected(i)) continue
+		if ( !is_user_connected(i)) continue
 		
 		if ( !sh_user_has_hero(i,gHeroID)){
 			

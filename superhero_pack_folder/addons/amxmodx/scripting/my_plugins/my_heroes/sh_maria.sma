@@ -339,6 +339,8 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 }
 public maria_loop(id){
 
+	if ( !sh_is_active()) return
+
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(client_hittable(i)&&sh_user_has_hero(i,gHeroID)){
 			update_stats(i)

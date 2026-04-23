@@ -213,7 +213,8 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 	
 }
 public engine_repair_loop(id){
-	
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(!client_hittable(i)){
 			continue

@@ -211,6 +211,8 @@ return -1;
 
 }
 public yandere_sentence_loop(id){
+	
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 		if(sh_is_active()&&is_user_alive(i)&&sh_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
@@ -287,13 +289,10 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 
 }
 public yandere_loop(id){
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
 
-		if(!sh_is_active()){
-
-			continue
-		}
 		if(!client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
 			continue
 		}
@@ -377,7 +376,7 @@ public yandere_timer_transform(id){
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			BlowUp(id)
 			jet_destroy(id)
-			if(sh_is_inround()){
+			if(!sh_is_freezetime()){
 				if(!user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
 					sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
 				}
@@ -438,7 +437,9 @@ public newRound(id)
 			UnSet_BitVar(gSuperAngryMask,id);
 			UnSet_BitVar(gPlayedSoundMask,id);
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
-			set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
+			if(!sh_is_freezetime()){
+				set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
+			}
 			gTransTimer[id]=trans_time;
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			for(new i=0;i<num_yandere_warcries;i++){
@@ -637,11 +638,13 @@ public yandere_ku()
 public sh_round_end(){
 	
 	for(new i=0;i<SH_MAXSLOTS+1;i++){
-	
+		
 		if(client_hittable(i)){
 			if(sh_user_has_hero(i,gHeroID) ){
 				jet_destroy(i)
+				
 			}
+			
 		}
 	
 	}
