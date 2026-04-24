@@ -176,13 +176,13 @@ public new_spawn(id)
 	blade_reset(id)
 
 #if GIVE_WEAPONS == 1
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		set_task(0.1, "blade_weapons", id)
 }
 //----------------------------------------------------------------------------------------------
 public blade_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	if ( cs_get_user_team(id) == CS_TEAM_T )
@@ -196,7 +196,7 @@ public blade_weapons(id)
 #if USE_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -208,7 +208,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new wpnid = read_data(2)
@@ -231,7 +231,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public blade_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -266,7 +266,7 @@ public blade_damage(id)
 //----------------------------------------------------------------------------------------------
 bool:is_user_vampire(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return false
 
 	new bool:isVamp
@@ -298,7 +298,7 @@ bool:is_user_vampire(id)
 // Keep public for hero Longshot to call this
 public set_knifeburn(id, attacker)
 {
-	if ( !shModActive() || !is_user_alive(id) || InKnifeBurn[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || InKnifeBurn[id] )
 		return
 
 	// Extra checks for use with hero Longshot
@@ -349,7 +349,7 @@ public knifeburn(args[])
 	new id = args[0]
 	new attacker = args[1]
 
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 	{
 		blade_reset(id)
 		return
@@ -372,7 +372,7 @@ public knifeburn(args[])
 //----------------------------------------------------------------------------------------------
 set_gunburn(id, attacker)
 {
-	if ( !shModActive() || !is_user_alive(id) || InGunBurn[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || InGunBurn[id] )
 		return
 
 	new gunBurns = get_pcvar_num(CvarGunBurns)
@@ -402,7 +402,7 @@ public gunburn(args[])
 	new id = args[0]
 	new attacker = args[1]
 
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 	{
 		blade_reset(id)
 		return

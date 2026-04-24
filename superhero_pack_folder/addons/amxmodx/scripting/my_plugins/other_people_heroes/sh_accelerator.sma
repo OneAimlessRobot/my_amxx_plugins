@@ -43,7 +43,7 @@ public new_spawn(id)
 //----------------------------------------------------------------------------------------------
 public acc_loop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ )
 	{

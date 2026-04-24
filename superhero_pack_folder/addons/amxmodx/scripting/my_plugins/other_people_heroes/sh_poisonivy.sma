@@ -112,7 +112,7 @@ public poisonivy_levels()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( is_user_alive(id) && shModActive() ) {
+	if ( is_user_alive(id) && sh_is_active() ) {
 
 		reset_poisoned(id)
 
@@ -152,7 +152,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public poisonivy_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
@@ -178,7 +178,7 @@ public poisonivy_damage(id)
 //----------------------------------------------------------------------------------------------
 public poisonivy_loop()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 
 	for ( new attacker = 1; attacker <= SH_MAXSLOTS; attacker++ ) {
 		if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue

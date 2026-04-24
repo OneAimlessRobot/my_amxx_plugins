@@ -234,7 +234,8 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 }
 
 public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
-
+	if(!sh_is_active()) return HAM_IGNORED
+	
 	if(!client_hittable(id)){
 
 		return HAM_IGNORED;
@@ -507,7 +508,8 @@ public ksun_prethink(id)
 	}
 }
 stock ksun_death_handler(id){
-
+	if(!sh_is_active()) return
+	
 	if(is_user_connected(id)){
 		if(sh_user_has_hero(id,gHeroID) ){
 			ksun_unultimate_user(id,1,0)

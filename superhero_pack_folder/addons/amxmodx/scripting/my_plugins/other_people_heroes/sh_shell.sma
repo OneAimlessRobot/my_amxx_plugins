@@ -120,7 +120,7 @@ public shell_levels()
 //----------------------------------------------------------------------------------------------
 public shell_loop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 	for(new id=0;id<SH_MAXSLOTS+1;id++){
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {	
 			new gHealMax = ( gHealAmount - (gPlayerLevels[id] * get_cvar_num("shell_hpperlev")) )

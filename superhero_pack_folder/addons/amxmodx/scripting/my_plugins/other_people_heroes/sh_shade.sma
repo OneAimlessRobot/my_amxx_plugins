@@ -197,10 +197,10 @@ public fog_this_area(origin[3])
 public changeWeapon(id)
 {
 	if (get_cvar_num("shade_ammo")==1){
-		if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 	else{
-		if ( !sh_user_has_hero(id,gHeroID)|| !gShadeMode[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID)|| !gShadeMode[id] || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);

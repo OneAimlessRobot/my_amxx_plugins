@@ -1,5 +1,7 @@
 //Stealth Predator!, Unique Predator that has Invisibility
-
+#define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -23,7 +25,6 @@ new g_lastWeapon[SH_MAXSLOTS+1]
 new bool:g_usingPower[SH_MAXSLOTS+1]
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]
-new bool:gBetweenRounds
 new gHealPoints
 //-------------------------------------------------------------------------------------------------------
 public plugin_init()
@@ -104,7 +105,6 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	gBetweenRounds = false
 	g_usingPower[id] = false
 	set_user_rendering(id)
 	set_user_footsteps(id, 0)
@@ -144,7 +144,7 @@ public stealth_kd()
 //-------------------------------------------------------------------------------------------------------
 public stealth_ku()
 {
-	if ( gBetweenRounds ) return
+	if ( !sh_is_inround() ) return
 
 	// First Argument is an id
 	new temp[6]
@@ -187,7 +187,7 @@ public stealth_ku()
 //----------------------------------------------------------------------------------------------
 public stealth_loop()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
@@ -223,7 +223,7 @@ public stealth_death()
 {
 	new id = read_data(2)
 
-	if ( gBetweenRounds ) return
+	if ( !sh_is_inround() ) return
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	new randNum = generate_int(0, 100)
@@ -248,7 +248,7 @@ public stealth_respawn(parm[])
 	new id = parm[0]
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( gBetweenRounds ) return
+	if ( !sh_is_inround() ) return
 	if ( gUserTeam[id] != get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "shmod/stealthrevive.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -276,7 +276,7 @@ public stealth_teamcheck(parm[])
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !is_user_alive(id) || gBetweenRounds ) return
+	if ( !is_user_alive(id) || !sh_is_inround()) return
 	if ( !sh_user_has_hero(id,gHeroID) || !g_usingPower[id] ) return
 
 	new wpnid = read_data(2)
@@ -307,10 +307,7 @@ public remove_power(id, powerID)
 //----------------------------------------------------------------------------------------------
 public round_end()
 {
-	if ( !shModActive() ) return
-
-	gBetweenRounds = true
-
+	if ( !sh_is_active() ) return
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if (sh_user_has_hero(id,gHeroID) ) {

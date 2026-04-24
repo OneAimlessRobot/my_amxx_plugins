@@ -14,7 +14,8 @@ black_thinktime 2 //how long victims get to pray to their god
 */
 
 #include "../my_include/superheromod.inc"
-#include "../include/Vexd_Utilities.inc"
+#include "../../include/Vexd_Utilities.inc"
+
 // GLOBAL VARIABLES
 new g_heroName[]="Black Hole"
 new gBHTimer, gCurrentBH
@@ -89,7 +90,7 @@ public black_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !shModActive() ) return 
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
 
 	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {
 		playSoundDenySelect(id)
@@ -110,7 +111,7 @@ public black_kd()
 	
 	black_create(id)
 	positionChangeTimer(id)
-	new black_hole = FindEntity(-1, "black_hole")
+	new black_hole = find_ent_by_class(-1, "black_hole")
 	gCurrentBH = black_hole
 }
 //----------------------------------------------------------------------------------------------
@@ -121,13 +122,13 @@ public positionChangeTimer(id)
 	get_user_origin(id, g_lastPosition[id])
 
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.4, "positionChangeCheck", id)
@@ -175,10 +176,10 @@ public black_loop()
 {
 	if( !gCurrentBH) return
 
-	if( !shModActive() || gBHTimer < 1) {
+	if( !sh_is_active() || gBHTimer < 1) {
 		gCurrentBH = 0
 		gBHTimer = 0
-		new black_hole = FindEntity(-1, "black_hole")
+		new black_hole = find_ent_by_class(-1, "black_hole")
 		if (is_valid_ent(black_hole)){
 			remove_entity(black_hole)
 		}
@@ -198,7 +199,7 @@ public black_loop()
 		if(get_entity_distance(ppl[i], gCurrentBH) > gRange ) 	
 			continue
 			
-		new black_hole = FindEntity(-1, "black_hole")
+		new black_hole = find_ent_by_class(-1, "black_hole")
 		if( !is_valid_ent(black_hole) ) {
 			gCurrentBH = 0
 			gBHTimer = 0
@@ -262,7 +263,7 @@ public black_endmode(id)
 	gCurrentBH = 0
 
 	
-	new black_hole = FindEntity(-1, "black_hole")
+	new black_hole = find_ent_by_class(-1, "black_hole")
 	if (is_valid_ent(black_hole)){
 		remove_entity(black_hole)
 	}

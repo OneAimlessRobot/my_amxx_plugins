@@ -164,7 +164,7 @@ public darkpred_init()
 public newSpawn(id)
 {
 	remInvisibility(id)
-	if (  haveable_check(id)&&gHasAcess[id]&&is_user_alive(id) && shModActive() ) {
+	if (  haveable_check(id)&&gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
 		darkpred_haveable_check(id)
 		if(sh_user_has_hero(id,gHeroID)){
 			gBullets[id] = get_cvar_num("darkpred_bullets")
@@ -200,7 +200,7 @@ public remInvisibility(id)
 //----------------------------------------------------------------------------------------------
 public checkButtons()
 {
-	if ( !hasRoundStarted() || !shModActive()) return
+	if ( !hasRoundStarted() || !sh_is_active()) return
 	
 	new bool:setVisible
 	new butnprs
@@ -249,7 +249,7 @@ public checkButtons()
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -262,7 +262,7 @@ public changeWeapon(id)
 //----------------------------------------------------------------------------------------------
 public darkpred_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)
@@ -422,7 +422,7 @@ public darkpred_deagle(id)
 //----------------------------------------------------------------------------------------------
 public darkpred_esploop()
 {
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 	
 	new players[SH_MAXSLOTS]
 	new pnum, vec1[3]
@@ -468,7 +468,7 @@ public darkpred_esploop()
 //----------------------------------------------------------------------------------------------
 public darkpred_loop()
 {
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it

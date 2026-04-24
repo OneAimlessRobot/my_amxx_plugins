@@ -81,13 +81,13 @@ public SuperNoodle_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
 }
 public Ham_respawn(id){
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
@@ -97,7 +97,7 @@ public Ham_respawn(id){
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 		d_barrel_set_d_barrel(id)
 		h_rifle_set_h_rifle(id)
 		arifle_set_arifle(id)
@@ -107,7 +107,7 @@ public SuperNoodle_weapons(id)
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

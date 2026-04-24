@@ -40,7 +40,7 @@ public sh_client_death(victim, attacker, headshot)
 public highlander_respawn(parm[])
 {
 	new id = parm[0]
-	if ( !shModActive() || !is_user_connected(id) || is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_connected(id) || is_user_alive(id) ) return
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	client_print(id, print_chat, "[SH](Highlander) That wasn't headshot!")
 

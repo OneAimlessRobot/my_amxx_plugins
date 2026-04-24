@@ -110,7 +110,7 @@ public loadCVARS()
 	base_points=get_cvar_num("adriano_base_points")
 }
 public Ham_respawn(id){
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		adriano_weapons(id)
 
 	}
@@ -120,7 +120,7 @@ public Ham_respawn(id){
 //----------------------------------------------------------------------------------------------
 public adriano_weapons(id)
 {
-	if ( shModActive() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
 		colt_set_colt(id)
 		ethereal_set_ethereal(id)
 	}
@@ -235,7 +235,7 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 }
 public adriano_damage(id)
 {
-	if ( !shModActive() || !client_hittable(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !client_hittable(id) ) return PLUGIN_CONTINUE
 	
 	
 	new Float:damage = float(read_data(2))
@@ -327,7 +327,7 @@ update_stats(id){
 }
 public weaponChange(id)
 {
-	if (!shModActive()&&client_hittable(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()&&client_hittable(id)) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
@@ -358,7 +358,7 @@ public adriano_kd()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()){
+	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			adriano_weapons(id)
 			sh_reset_max_speed(id)

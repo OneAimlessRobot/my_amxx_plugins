@@ -12,5 +12,10 @@
 
 #define SAFE_BUFFER_SIZE (MAX_SH_CUSTOM_DMG_SHORT_NAME_LEN)
 
+
+#define is_valid_custom_dmg_source(%1) (((%1) >0) && ((%1) < MAX_SH_CUSTOM_DMG_SOURCES))
+
+#define is_generic_dmg_source(%1) ((%1)==-1)
+
 native sh_log_custom_damage_source(hero_id=-2,short_name[SAFE_BUFFER_SIZE+1]="",long_name[SAFE_BUFFER_SIZE+1]="",is_a_melee=1);
 native sh_get_generic_dmg_source_wpn_id()

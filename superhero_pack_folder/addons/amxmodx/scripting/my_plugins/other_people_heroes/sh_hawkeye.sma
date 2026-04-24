@@ -116,7 +116,7 @@ public hawkeye_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			set_task(0.1, "hawkeye_weapons", id)
 		}
@@ -133,7 +133,7 @@ public hawkeye_weapons(id)
 //----------------------------------------------------------------------------------------------
 public hawkeye_damage(id)
 {
-	if ( !shModActive() || !is_user_connected(id) ) return
+	if ( !sh_is_active() || !is_user_connected(id) ) return
 
 	if ( get_cvar_num("hawk_showdmg") ) {
 
@@ -157,7 +157,7 @@ public hawkeye_damage(id)
 //----------------------------------------------------------------------------------------------
 public hawkeye_aim()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 
 	new players[SH_MAXSLOTS], pnum, id
 	get_players(players, pnum, "a")

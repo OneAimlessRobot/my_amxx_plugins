@@ -35,6 +35,7 @@ Version History:
 //----------------------------------------------------------------------------------------------
 
 #include "../my_include/superheromod.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Tri-Edge"
@@ -107,7 +108,7 @@ public triedge_init()
 //----------------------------------------------------------------------------------------------
 public triedge_prethink(id)
 {
-    if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+    if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
     {
         new Float:fallVelocity
         pev(id, pev_flFallVelocity, fallVelocity)
@@ -118,7 +119,7 @@ public triedge_prethink(id)
 //----------------------------------------------------------------------------------------------
 public triedge_postthink(id)
 {
-    if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+    if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
     {
         if ( Falling[id] )
         {
@@ -144,7 +145,7 @@ public triedge_kd()
     read_argv(1,temp,5)
     new id = str_to_num(temp)
 
-    if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !shModActive() ) return
+    if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
 
     triedge_hookOn(id)
 }

@@ -105,7 +105,7 @@ public UberGunner_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "UberGunner_weapons", id)
 		new wpnid = read_data(2)
 		if (wpnid != CSW_M4A1 && wpnid > 0) {
@@ -125,7 +125,7 @@ public UberGunner_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -140,7 +140,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public UberGunner_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return
+	if (!sh_is_active() || !is_user_alive(id)) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

@@ -87,7 +87,7 @@ public sandman_kd()
 //----------------------------------------------------------------------------------------------
 public quicksand(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new targetid, body
@@ -152,7 +152,7 @@ public sink(params[])
 	new targetid = params[3]
 	new id = params[4]
 
-	if ( shModActive() && is_user_connected(id) && sh_user_has_hero(id,gHeroID) && is_user_alive(targetid) && params[5] > 0 )
+	if ( sh_is_active() && is_user_connected(id) && sh_user_has_hero(id,gHeroID) && is_user_alive(targetid) && params[5] > 0 )
 	{
 		// Causes this function to repeat until it equals 0
 		--params[5]
@@ -170,7 +170,7 @@ public sink(params[])
 //----------------------------------------------------------------------------------------------
 public sinking_effects(id, targetid)
 {
-	if ( !shModActive() || !is_user_connected(id) || !is_user_alive(targetid) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_connected(id) || !is_user_alive(targetid) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new targname[32], idname[32]

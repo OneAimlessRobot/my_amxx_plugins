@@ -57,7 +57,7 @@ public slayer_loop()
 //---------------------------------------------------------------------------------------------- 
 public slayer_damage(id)
 {
-    if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+    if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 
     new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 

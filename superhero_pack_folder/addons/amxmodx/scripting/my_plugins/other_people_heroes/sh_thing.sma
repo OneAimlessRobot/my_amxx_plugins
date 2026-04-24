@@ -35,7 +35,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public Thing_damage(id)
 {
-  if (!shModActive() ) return PLUGIN_CONTINUE
+  if (!sh_is_active() ) return PLUGIN_CONTINUE
 
   new damage = read_data(2)
   new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)

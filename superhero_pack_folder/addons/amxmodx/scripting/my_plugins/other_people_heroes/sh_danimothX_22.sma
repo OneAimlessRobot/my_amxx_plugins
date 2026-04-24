@@ -185,7 +185,7 @@ public Player_PreThink(id)
 //----------------------------------------------------------------------------------------------
 public Danimoth_loop()
 {
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ){	
 			//Cloak Task

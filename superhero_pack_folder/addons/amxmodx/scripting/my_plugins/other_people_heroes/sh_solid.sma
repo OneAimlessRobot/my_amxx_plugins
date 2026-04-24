@@ -73,7 +73,7 @@ public solid_init()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if(!is_user_connected(id) || !shModActive()) return
+	if(!is_user_connected(id) || !sh_is_active()) return
 
 
 }
@@ -112,7 +112,7 @@ public solid_levels()
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if(sh_user_has_hero(id,gHeroID)&& shModActive())
+	if(sh_user_has_hero(id,gHeroID)&& sh_is_active())
 	{
 		new wpnid = read_data(2)
 
@@ -126,7 +126,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public setSocom(id)
 {
-    if(shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+    if(sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 	    new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
@@ -140,7 +140,7 @@ public setSocom(id)
 //----------------------------------------------------------------------------------------------
 public round_start()
 {
-	if(!shModActive()) return
+	if(!sh_is_active()) return
 
 	for(new x = 1; x <= SH_MAXSLOTS; x++)
 	{
@@ -163,7 +163,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public solid_damage(id)
 {
-	if(shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if(sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		remove_task(id)
 		stealthVisible(id)
@@ -172,7 +172,7 @@ public solid_damage(id)
 //----------------------------------------------------------------------------------------------
 public giveSocom(id)
 {
-    if(!shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+    if(!sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
     shGiveWeapon(id, "weapon_usp")
 }

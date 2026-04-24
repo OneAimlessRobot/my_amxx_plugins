@@ -116,7 +116,7 @@ public cyclone_loop()
 {
 	if( !gCurrentCyclone) return
 
-	if( !is_user_alive(gCurrentCyclone) || !shModActive() || gCycloneTimer < 1) {
+	if( !is_user_alive(gCurrentCyclone) || !sh_is_active() || gCycloneTimer < 1) {
 		gCurrentCyclone = 0
 		gCycloneTimer = 0
 		return

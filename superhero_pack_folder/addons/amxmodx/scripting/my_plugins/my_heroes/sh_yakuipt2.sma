@@ -212,7 +212,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive()||!is_user_alive(id)||!is_user_connected(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active()||!is_user_alive(id)||!is_user_connected(id) ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)

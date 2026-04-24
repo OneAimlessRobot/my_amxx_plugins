@@ -282,7 +282,7 @@ public leyla_kd()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()&&sh_user_has_hero(id,gHeroID) ){ 
+	if(is_user_alive(id) && sh_is_active()&&sh_user_has_hero(id,gHeroID) ){ 
 		reset_leyla(id)	
 	}
 	return PLUGIN_HANDLED	

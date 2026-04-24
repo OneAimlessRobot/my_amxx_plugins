@@ -500,7 +500,7 @@ public plugin_precache(){
 
 public _form_field(iPlugin,iParams)
 {
-	
+	if(!sh_is_active()||sh_is_freezetime()) return
 	new id= get_param(1)
 	
 	if(!client_hittable(id)) return

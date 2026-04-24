@@ -329,7 +329,7 @@ public _sh_get_fx_color_name(iPlugins,iParams){
 
 }
 fx_task_user(id,attacker,fx_num){
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	new array[3]
 	array[0] = fx_num
 	array[1] = attacker
@@ -465,7 +465,7 @@ public _sh_uneffect_user(iPlugin,iParams){
 kill_user(id,attacker){
 	
 	
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	sh_screen_fade(id, 0.1, 0.9,
 						LineColors[FX_COLOR_OFFSET+_:KILL][0],
 						LineColors[FX_COLOR_OFFSET+_:KILL][1],
@@ -479,7 +479,7 @@ kill_user(id,attacker){
 
 public glow_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	task_cycle(array,id)
 
@@ -488,7 +488,7 @@ public glow_task(array[],id){
 stun_user(id){
 
 	
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	set_render_with_color_const(id, FX_COLOR_OFFSET+_:STUN,_,_,_,fx_task_parameters[STUN][fx_task_will_glow_user_screen])
 	sh_set_stun(id, fx_task_parameters[STUN][fx_task_time], STUN_SPEED)
 	sh_screen_shake(id, 16.0, fx_task_parameters[STUN][fx_task_time], 2.0)
@@ -498,7 +498,7 @@ stun_user(id){
 }
 public blind_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],0,_,255,1)
 	task_cycle(array,id)
 }
@@ -506,7 +506,7 @@ public blind_task(array[],id){
 public poison_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 
-	if ( !shModActive() ||!client_hittable(id)||!is_user_connected(array[1])) return
+	if ( !sh_is_active() ||!client_hittable(id)||!is_user_connected(array[1])) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),
 							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
@@ -532,7 +532,7 @@ public radioactive_task(array[],id){
 }
 public morphine_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	generic_heal(heal_hp_hud_msg_sync,
 					id,
 					float(MORPHINE_HP_ADD),
@@ -549,14 +549,14 @@ public weed_task(array[],id){
 }
 public cocaine_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	set_user_maxspeed(id,COCAINE_SPEED)
 	task_cycle(array,id)
 }
 public bath_task(array[],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)) return
+	if ( !sh_is_active() ||!client_hittable(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	task_cycle(array,id)
 
@@ -584,7 +584,7 @@ public uncocaine_task(array[],id){
 
 
 uneffect_user_primitive(id){
-	if ( !shModActive() ||!is_user_connected(id)) return
+	if ( !sh_is_active() ||!is_user_connected(id)) return
 	new the_fx_id=gatling_get_fx_num(id)
 	sh_set_rendering(id)
 	if(fx_task_parameters[the_fx_id][fx_task_status_icon]>=0){
@@ -610,7 +610,7 @@ public on_death_status()
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||(gatling_get_fx_num(id)!=_:COCAINE)||!shModActive()) return
+	if ( !client_hittable(id)||(gatling_get_fx_num(id)!=_:COCAINE)||!sh_is_active()) return
 
 	new wpnid = get_user_weapon(id)
 

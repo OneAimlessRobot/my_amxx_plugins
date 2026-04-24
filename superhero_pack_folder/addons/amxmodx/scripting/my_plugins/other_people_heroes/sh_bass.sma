@@ -150,7 +150,7 @@ public bass_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		remove_task(id)
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("bass_laser_ammo")

@@ -93,8 +93,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
 
-    if((wpnid >0 && wpnid < MAX_SH_CUSTOM_DMG_SOURCES))
-    {
+    if(is_valid_custom_dmg_source(wpnid)){
         if(damage > 0){
             custom_weapon_shot(wpnid, attacker)
             custom_weapon_dmg(wpnid, attacker, victim, damage, headshot?HIT_HEAD:HIT_STOMACH)

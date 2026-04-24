@@ -214,6 +214,9 @@ public hook_think(id)
 //----------------------------------------------------------------------------------------------
 public CmdStart1(attacker, uc_handle)
 {
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
 	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
 	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_on[attacker]||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 	
@@ -317,7 +320,7 @@ public CmdStart1(attacker, uc_handle)
 }
 public Erica2_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)) return HAM_IGNORED
+if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 

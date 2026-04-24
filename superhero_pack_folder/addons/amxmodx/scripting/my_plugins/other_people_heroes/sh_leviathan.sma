@@ -285,7 +285,7 @@ public leviathan_damage(id)
 {
 	if (!FloodOn) return PLUGIN_CONTINUE
 
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

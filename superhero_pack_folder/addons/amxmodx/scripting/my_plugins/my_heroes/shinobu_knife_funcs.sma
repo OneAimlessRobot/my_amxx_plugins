@@ -54,7 +54,7 @@ public plugin_init(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	new  wpnid = get_user_weapon(id)
@@ -73,7 +73,7 @@ public _manual_cloak_check(id){
 
 	new id= get_param(1)
 
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	g_prev_shinobu_cloaked[id]=0
@@ -86,7 +86,7 @@ public _uncloak_shinobu(id){
 
 	new id= get_param(1)
 
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 
 	
 	g_curr_shinobu_cloaked[id]=0

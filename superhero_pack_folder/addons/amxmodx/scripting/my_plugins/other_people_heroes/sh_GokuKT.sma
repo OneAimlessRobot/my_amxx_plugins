@@ -218,7 +218,7 @@ public gokukt_kaiokenmode(id)
 
 public powerup_effect(parm[])
 {
-	if ( !shModActive()) return
+	if ( !sh_is_active()) return
 
 	new id = parm[0]
 

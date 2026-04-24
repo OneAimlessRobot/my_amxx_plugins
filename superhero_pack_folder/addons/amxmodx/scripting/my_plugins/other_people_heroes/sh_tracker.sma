@@ -1,5 +1,3 @@
-#include <amxmodx>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 /* CVARS - COPY AND PASTE INTO shconfig.cfg
@@ -117,8 +115,8 @@ public tracker_loop()
         source[1] = float(view[1])
         source[2] = float(view[2])
         
-        Entvars_Get_Vector(players[v],EV_VEC_origin,target)
-        new hitent=TraceLn(players[a], source, target, location)
+        entity_get_vector(players[v],EV_VEC_origin,target)
+        new hitent=trace_line(players[a], source, target, location)
         
         if(hitent!=players[v])
         {

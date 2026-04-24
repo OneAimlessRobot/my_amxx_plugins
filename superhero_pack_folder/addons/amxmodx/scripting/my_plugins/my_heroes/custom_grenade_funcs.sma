@@ -131,7 +131,7 @@ init_grenade(sh_grenade_type:type){
 						"sh_grenade_touch_things")
 	register_custom_touchable(sh_grenade_structs_arr[type][sh_grenade_classname],
 						"sh_grenade_touch_things",player_vector,1)
-
+	
 }
 public plugin_init(){
 	
@@ -147,6 +147,8 @@ public plugin_init(){
 	}
 
 	register_event("CurWeapon","event_curr_grenade","be", "1=1")
+	
+	register_event("DeathMsg","on_death_custom_grenades","a")
 }
 public event_curr_grenade(id){
 	
@@ -181,6 +183,8 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED
+
 	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
 	
 	new sh_grenade_type:gren_type=curr_user_grenade[id]
@@ -280,8 +284,12 @@ public _give_custom_grenades(iPlugin, iParams){
 
 }
 public charge_task(any:param[1],id){
+	if(!sh_is_active()||sh_is_freezetime()) return
+
 	new sh_grenade_type:the_type= sh_grenade_type:param[0]
 	id-=sh_grenade_structs_arr[the_type][sh_grenade_charge_taskid]
+
+	if(!client_hittable(id)) return
 
 	curr_charge[id][the_type]=floatadd(curr_charge[id][the_type],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
 	
@@ -477,6 +485,7 @@ public on_death_custom_grenades(){
 	if(!sh_is_active()) return
 	
 	new id = read_data(2)
+	if(!is_user_connected(id)) return
 
 	for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 		

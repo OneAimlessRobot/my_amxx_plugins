@@ -167,7 +167,10 @@ public client_PostThink(id) {
 }
 public CmdStart(id, uc_handle)
 {
-	if (!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))||!hasRoundStarted()){
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+	if (!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED

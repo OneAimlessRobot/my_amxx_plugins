@@ -110,7 +110,7 @@ public _shinobu_unweapons(iPlugins, iParam){
 
 public on_Usp_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	new  wpnid = get_user_weapon(id)

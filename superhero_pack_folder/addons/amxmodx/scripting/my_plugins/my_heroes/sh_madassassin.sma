@@ -167,7 +167,7 @@ public madassassin_init()
 #if defined GIVE_WEAPONS
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasMadAssassin[id] )
+	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] )
 	{
 		madassassin_weapons(id)
 	}
@@ -175,7 +175,7 @@ public new_spawn(id)
 //----------------------------------------------------------------------------------------------
 madassassin_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) && HasMadAssassin[id] ) {
+	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] ) {
 		shGiveWeaponID(id, CSW_AWP)
 	}
 }
@@ -184,7 +184,7 @@ madassassin_weapons(id)
 #if defined USE_WPN_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !HasMadAssassin[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || !HasMadAssassin[id] )
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -200,7 +200,7 @@ switch_model(id)
 #if defined USE_WPN_MODEL
 public weapon_change(id)
 {
-	if ( !shModActive() || !HasMadAssassin[id] || !is_user_alive(id) ||!is_user_connected(id) )
+	if ( !sh_is_active() || !HasMadAssassin[id] || !is_user_alive(id) ||!is_user_connected(id) )
 		return
 
 	//weaponID = read_data(2)
@@ -224,7 +224,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public madassassin_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ||!is_user_connected(id)){
+	if ( !sh_is_active() || !is_user_alive(id) ||!is_user_connected(id)){
 		return HAM_IGNORED
 	}
 
@@ -259,7 +259,7 @@ public madassassin_maxheal()
 //----------------------------------------------------------------------------------------------
 public madassassin_loop()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 
 	new healPoints = get_pcvar_num(CvarHealPoints)
 

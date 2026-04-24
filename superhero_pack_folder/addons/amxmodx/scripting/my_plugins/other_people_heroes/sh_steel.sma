@@ -67,7 +67,7 @@ public steel_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 		set_user_hitzones(0, id, 255)
 		g_hasSuit[id] = false
 	}
@@ -75,7 +75,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public steel_loop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
@@ -102,7 +102,7 @@ public steel_loop()
 //----------------------------------------------------------------------------------------------
 public steel_armorloop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
@@ -122,7 +122,7 @@ public steel_armorloop()
 //----------------------------------------------------------------------------------------------
 public steel_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

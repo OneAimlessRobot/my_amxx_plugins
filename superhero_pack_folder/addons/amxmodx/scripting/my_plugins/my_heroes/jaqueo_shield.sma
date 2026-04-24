@@ -45,7 +45,7 @@ public plugin_init()
 }
 public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,jaqueo_get_hero_id())) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,jaqueo_get_hero_id())) return HAM_IGNORED
 	
 	if(!g_jaqueo_shield_deployed[this]) return HAM_IGNORED
 

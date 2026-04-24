@@ -107,7 +107,7 @@ public vash_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "vash_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -121,7 +121,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public vash_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
+	if ( sh_is_active() && is_user_alive(id) ) {
 
 		
 		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Vash - EVASION ON - Removing a random hitzone every second")
@@ -154,7 +154,7 @@ public vash_weapons(id)
 //----------------------------------------------------------------------------------------------
 public vash_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -178,7 +178,7 @@ public vash_damage(id)
 //----------------------------------------------------------------------------------------------
 public vash_hitzones()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

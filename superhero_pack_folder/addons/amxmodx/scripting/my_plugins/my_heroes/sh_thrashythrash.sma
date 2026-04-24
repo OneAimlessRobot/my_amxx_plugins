@@ -225,7 +225,7 @@ public thrashy_kd()
 public newRound(id)
 {	
 	
-	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && shModActive() ) {
+	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
 		thrashy_haveable_check(id)
 		if(sh_user_has_hero(id,gHeroID) ){
 			sh_unset_cooldown_flag(id)
@@ -259,7 +259,7 @@ return PLUGIN_CONTINUE
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)  ||!shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)  ||!sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -294,7 +294,7 @@ public death()
 //-----------------------------------------------------------------------------------------------
 public thrashy_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -349,7 +349,7 @@ public thrashy_damage(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id,bool:died)
 {
-	if ( !shModActive() ||!sh_user_has_hero(id,gHeroID)){	
+	if ( !sh_is_active() ||!sh_user_has_hero(id,gHeroID)){	
 		return PLUGIN_CONTINUE;
 			
 			

@@ -23,6 +23,7 @@ veronika_m203dmg 120
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 #define veronika_ak_v_mdl "models/shmod/veronika/ak47grenade.mdl"
 #define veronika_ak_p_mdl "models/shmod/veronika/p_9mmar.mdl"
@@ -132,7 +133,7 @@ public veronika_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "veronika_weapons", id)
 		g_ammo[id] = get_cvar_num("veronika_grenades")
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
@@ -151,14 +152,14 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public veronika_weapons(id)
 {
-	if ( is_user_alive(id) && shModActive() ) {
+	if ( is_user_alive(id) && sh_is_active() ) {
 		shGiveWeapon(id,"weapon_ak47")
 	}
 }
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -174,7 +175,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public veronika_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return
+	if (!sh_is_active() || !is_user_alive(id)) return
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

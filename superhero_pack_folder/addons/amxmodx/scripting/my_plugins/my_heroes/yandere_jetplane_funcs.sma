@@ -239,7 +239,7 @@ public _jet_charge_user(iPlugin, iParams){
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!shModActive() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,yandere_get_hero_id())) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,yandere_get_hero_id())) return HAM_IGNORED
 	
 	if(!g_jetplane_deployed[this]) return HAM_IGNORED
 	
@@ -692,8 +692,15 @@ public jet_think(ent)
 	return FMRES_IGNORED
 }
 public charge_task(id){
+
+	if(!sh_is_active()||sh_is_freezetime()){
+	
+		uncharge_user(id)
+		return
+	
+	}
 	id-=JET_CHARGE_TASKID
-	if(!hasRoundStarted()){
+	if(!client_hittable(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
 	
 		uncharge_user(id)
 		return

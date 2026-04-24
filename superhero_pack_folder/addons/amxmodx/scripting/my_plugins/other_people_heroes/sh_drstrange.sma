@@ -47,7 +47,6 @@ new gHeroID
 new gHeroName[]="Dr. Strange"
 new bool:gDrStrangeReviveUsed[SH_MAXSLOTS+1]
 new bool:gUsingLaser[SH_MAXSLOTS+1]
-new bool:gBetweenRounds
 new gLaserShots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
@@ -142,7 +141,7 @@ public drstrange_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)
 		sh_unset_cooldown_flag(id)
 		gUsingLaser[id] = false
@@ -395,7 +394,7 @@ public drstrange_death()
 
 	remove_task(id)
 
-	if ( gBetweenRounds ) return
+	if ( !sh_is_inround() ) return
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
 
 	new randNum = generate_int(0, 100)
@@ -420,7 +419,7 @@ public drstrange_respawn(parm[])
 	new id = parm[0]
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( gDrStrangeReviveUsed[id] || gBetweenRounds ) return
+	if ( gDrStrangeReviveUsed[id] || !sh_is_inround() ) return
 	if ( gUserTeam[id] != get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -475,7 +474,6 @@ public enableDrStrange(id)
 //----------------------------------------------------------------------------------------------
 public round_start()
 {
-	gBetweenRounds = false
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
@@ -486,9 +484,7 @@ public round_start()
 //----------------------------------------------------------------------------------------------
 public round_end()
 {
-	if ( !shModActive() ) return
-
-	gBetweenRounds = true
+	if ( !sh_is_active() ) return
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
@@ -501,10 +497,6 @@ public round_end()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	// stupid check but lets see
-	if ( id <= 0 || id > SH_MAXSLOTS ) return
-
-	// Yeah don't want any left over residuals
 	remove_task(id)
 
 }

@@ -89,7 +89,7 @@ public plugin_init(){
 
 public weaponChange(id)
 {
-	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()||!client_hittable(id)) return PLUGIN_CONTINUE
 
 	// If user has a shield do not change model, since we don't have one with a shield
 	if ( cs_get_user_shield(id) ) return PLUGIN_CONTINUE

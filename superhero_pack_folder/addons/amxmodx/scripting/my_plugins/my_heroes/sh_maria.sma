@@ -296,7 +296,7 @@ make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40
 }
 public maria_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id)||!is_user_connected(id) ||!sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(id) ||!sh_user_has_hero(id,gHeroID) ) return
 	
 	new  Float:damage= float(read_data(2))
 	
@@ -379,7 +379,7 @@ update_stats(id){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()){
+	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_maria_points[id]=base_points;
 		}

@@ -135,7 +135,7 @@ new custom_dmg_id_lazah_guun
  //----------------------------------------------------------------------------------------------
  public newSpawn(id)
  {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "CTrooper_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
@@ -149,7 +149,7 @@ new custom_dmg_id_lazah_guun
  //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
-	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -171,7 +171,7 @@ new custom_dmg_id_lazah_guun
  //----------------------------------------------------------------------------------------------
  public CTrooper_damage(id)
  {
-	if (!shModActive() || !is_user_alive(id)) return
+	if (!sh_is_active() || !is_user_alive(id)) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

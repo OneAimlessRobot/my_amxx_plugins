@@ -70,7 +70,7 @@ public greaper2_init()
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!shModActive()||!gModelLoaded ) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()||!gModelLoaded ) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
@@ -110,7 +110,7 @@ get_cvar_num("greaper_level");
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	reset_greaper2_user(id)
 	gScytheSwings[id]=num_swings;

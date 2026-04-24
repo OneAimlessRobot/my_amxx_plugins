@@ -83,7 +83,7 @@ public newSpawn(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if ( !sh_is_inround()|| !shModActive() || !is_user_connected(id) ) return FMRES_IGNORED
+	if ( !sh_is_inround()|| !sh_is_active() || !is_user_connected(id) ) return FMRES_IGNORED
 	
 	if ( !Get_BitVar(gIsSearchingMask,id)) return FMRES_IGNORED
 	

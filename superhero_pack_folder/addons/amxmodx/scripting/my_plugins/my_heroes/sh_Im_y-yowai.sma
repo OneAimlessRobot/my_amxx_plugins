@@ -119,7 +119,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	reset_Yowai_user(id)
 	update_max_hits(id)
@@ -150,7 +150,10 @@ stock dmg_message(id,Float:damage){
 }
 public Yowai_normal_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) ) return HAM_IGNORED
+
+if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
+
+if ( !is_user_alive(id) ) return HAM_IGNORED
 
 if ( (attacker <= 0 || attacker > SH_MAXSLOTS )||!is_user_connected(attacker)) return HAM_IGNORED
 

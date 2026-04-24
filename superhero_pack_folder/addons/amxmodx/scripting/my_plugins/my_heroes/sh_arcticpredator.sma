@@ -210,7 +210,7 @@ public newRound(id)
 		remove_entity(disc)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
-	if ( sh_user_has_hero(id,gHeroID) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && sh_is_active() ) {
 		sh_unset_cooldown_flag(id)
 		discThrown[id] = false
 		arcpredator_weapons(id)
@@ -221,7 +221,7 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
+if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 new wpnid = read_data(2)
 new clip = read_data(3)
@@ -247,7 +247,7 @@ public arcpredator_weapons(id)
 //-----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 	
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -257,7 +257,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
 	
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )
@@ -481,7 +481,7 @@ public make_tracer(id)
 //-----------------------------------------------------------------------------------------------
 public predator_damage(id)
 {
-if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 
 new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

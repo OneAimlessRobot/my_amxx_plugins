@@ -17,7 +17,6 @@ vic15_auraradius 300		//Radius of Victim 15's ghostly aura
 new g_heroName[]="Victim 15/21"
 new gHeroID
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
-new bool:g_betweenRounds
 new g_userTeam[SH_MAXSLOTS+1]
 new g_savedOrigin[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
@@ -41,8 +40,6 @@ public plugin_init()
 	// DEATH EVENT
 	register_event("DeathMsg", "vic15_death", "a")
 
-	// ROUND EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 
@@ -59,7 +56,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public vic15_death()
 {
-	if ( !shModActive() || g_betweenRounds ) return
+	if ( !sh_is_active() || !sh_is_inround() ) return
 
 	new id = read_data(2)
 
@@ -85,7 +82,7 @@ public vic15_respawn(parm[])
 	new id = parm[0]
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( g_vic15PowerUsed[id] || g_betweenRounds ) return
+	if ( g_vic15PowerUsed[id] || !sh_is_inround()) return
 	if ( g_userTeam[id] != get_user_team(id) ) return //prevents respawning spectators
 
 	// Double spawn prevents the no HUD glitch
@@ -117,16 +114,9 @@ public vic15_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_start()
-{
-	g_betweenRounds = false
-}
-//----------------------------------------------------------------------------------------------
 public round_end()
 {
-	if ( !shModActive() ) return
-
-	g_betweenRounds = true
+	if ( !sh_is_active() ) return
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
@@ -168,13 +158,13 @@ public positionChangeTimer(id)
 	get_user_origin(id, g_lastPosition[id])
 
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.4, "positionChangeCheck", id+100)
@@ -198,7 +188,7 @@ public positionChangeCheck(id)
 //----------------------------------------------------------------------------------------------
 public vic15_auraloop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	new Distance, Origin[3], eOrigin[3]
 	new Radius = get_cvar_num("vic15_auraradius")
@@ -226,7 +216,7 @@ public vic15_auraloop()
 //----------------------------------------------------------------------------------------------
 public vic15_ringloop()
 {
-	if ( !shModActive() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	new Distance, Origin[3], eOrigin[3]
 	new Radius = get_cvar_num("vic15_auraradius")

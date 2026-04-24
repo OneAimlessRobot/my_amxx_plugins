@@ -421,7 +421,7 @@ public check_move_buttons() {
 
 public pred_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -439,7 +439,7 @@ public pred_damage(id)
 
 public pred_DLdamage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker_id = get_user_attacker(id,weapon,bodypart)
@@ -534,7 +534,7 @@ public pred_DLdamage(id)
 
 public make_tracer(id) { 
 	
-	if (!shModActive()) return PLUGIN_CONTINUE 
+	if (!sh_is_active()) return PLUGIN_CONTINUE 
 	
 	
 	new weap = read_data(2)        // id of the weapon 
@@ -596,7 +596,7 @@ public make_tracer(id) {
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
 	

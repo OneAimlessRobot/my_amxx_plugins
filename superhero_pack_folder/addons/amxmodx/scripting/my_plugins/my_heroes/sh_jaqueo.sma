@@ -115,7 +115,7 @@ public jaqueo_drop_weapons(id){
 }
 public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!shModActive() || client_isnt_hitter(idattacker)) return HAM_IGNORED
+	if(!sh_is_active() || client_isnt_hitter(idattacker)) return HAM_IGNORED
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0

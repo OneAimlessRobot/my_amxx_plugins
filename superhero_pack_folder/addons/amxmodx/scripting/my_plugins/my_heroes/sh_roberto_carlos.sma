@@ -207,7 +207,7 @@ public roberto_kd()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()){
+	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			gNumBalls[id]=num_balls

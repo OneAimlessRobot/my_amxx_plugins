@@ -61,7 +61,7 @@ public plugin_precache(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,zenitsu_get_hero_id())) return
 	if(g_zenitsu_is_charging[id]&&!g_zenitsu_has_touched_player[id]){
 		engclient_cmd(id, "weapon_knife")

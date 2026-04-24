@@ -42,7 +42,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public psychosis_newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if(Get_BitVar(gIsPsychosisMask,id)){
 			yandere_unpsychosis_user(id)
 		}
@@ -138,7 +138,7 @@ public client_PostThink(id) {
 }
 public Player_TakeDamage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!client_hittable(id)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!client_hittable(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 

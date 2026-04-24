@@ -1,6 +1,3 @@
-#include <amxmod>
-#include <xtrafun>
-#include <Vexd_Utilities>
 #include "../my_include/superheromod.inc"
 
 #define TE_BEAMPOINTS 0

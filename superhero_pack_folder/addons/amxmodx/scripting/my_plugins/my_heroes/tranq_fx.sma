@@ -36,6 +36,8 @@ init_explosion_defaults()
 //https://forums.alliedmods.net/showthread.php?t=258006
 public Fwd_PlayerPreThink(id)
 {
+	if(!sh_is_active()) return FMRES_IGNORED
+
 	if(!client_hittable(id)){
 		return FMRES_IGNORED
 	}
@@ -50,6 +52,8 @@ public Fwd_PlayerPreThink(id)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
+	if(!sh_is_active()) return FMRES_IGNORED
+	
 	if(!client_hittable(player)){
 		
 		return FMRES_IGNORED
@@ -67,7 +71,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 //----------------------------------------------------------------------------------------------
 public sleep_newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if(Get_BitVar(gIsAsleepMask,id)){
 			sh_unsleep_user(id)
 		}
@@ -98,7 +102,7 @@ public plugin_natives(){
 }
 stock sleep_user_switch_weapon(id){
 
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	
 	new wpnid = read_data(2)
 	new has_knife=user_has_weapon(id,CSW_KNIFE)
@@ -174,7 +178,7 @@ public _sh_unsleep_user(iPlugin,iParams){
 }
 public sleep_task(array[1],id){
 	id-=SLEEP_TASKID
-	if ( !shModActive() ||!client_hittable(id)){
+	if ( !sh_is_active() ||!client_hittable(id)){
 
 		unsleep_user(id)
 		return
@@ -192,7 +196,7 @@ public sleep_task(array[1],id){
 
 }
 sleep_user(id,attacker){
-	if ( !shModActive() ||!client_hittable(id)||!client_hittable(attacker)) return
+	if ( !sh_is_active() ||!client_hittable(id)||!client_hittable(attacker)) return
 	new array[1]
 	array[0] = 0
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
@@ -215,7 +219,7 @@ public fully_wake_up_task(id){
 
 }
 unsleep_user(id){
-	if ( !shModActive() ||!is_user_connected(id)) return
+	if ( !sh_is_active() ||!is_user_connected(id)) return
 	sh_set_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
 	UnSet_BitVar(gIsAsleepMask,id)
@@ -226,7 +230,7 @@ unsleep_user(id){
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 
 	if(Get_BitVar(gIsAsleepMask,id)){
 		sleep_user_switch_weapon(id)

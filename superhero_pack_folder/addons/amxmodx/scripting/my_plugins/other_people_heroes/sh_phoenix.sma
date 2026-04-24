@@ -30,7 +30,6 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 new g_heroName[]="Phoenix"
 new gHeroID
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
-new bool:g_betweenRounds
 new g_userTeam[SH_MAXSLOTS+1]
 new g_savedOrigin[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
@@ -53,8 +52,6 @@ public plugin_init()
 	// DEATH EVENT
 	register_event("DeathMsg", "phoenix_death", "a")
 
-	// ROUND EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 	init_hud_syncs()
@@ -69,7 +66,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public phoenix_death()
 {
-	if ( !shModActive() || g_betweenRounds ) return
+	if ( !sh_is_active() || !sh_is_inround()) return
 
 	new id = read_data(2)
 
@@ -97,7 +94,7 @@ public phoenix_respawn(parm[])
 	new id = parm[0]
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( g_phoenixPowerUsed[id] || g_betweenRounds ) return
+	if ( g_phoenixPowerUsed[id] || !sh_is_inround() ) return
 	if ( g_userTeam[id] != get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -146,17 +143,9 @@ public phoenix_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_start()
-{
-	g_betweenRounds = false
-}
-//----------------------------------------------------------------------------------------------
 public round_end()
 {
-	if ( !shModActive() ) return
-
-	g_betweenRounds = true
-
+	if ( !sh_is_active() ) return
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		if ( sh_user_has_hero(id,gHeroID)) {

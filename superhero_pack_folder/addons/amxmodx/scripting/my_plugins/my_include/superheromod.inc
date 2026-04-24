@@ -593,7 +593,9 @@ stock sh_sound_deny(id)
  * @noreturn
  */
 stock sh_switch_weapon(id, weaponID)
-{
+{		
+	if(!is_user_alive(id)) return;
+
 	if ( weaponID < CSW_P228 || weaponID > CSW_P90 ) return;
 
 	if ( user_has_weapon(id, weaponID) ) {
@@ -1192,12 +1194,8 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 #define shGiveWeaponID sh_give_weapon
 
 //stock shSwitchWeaponID(id, weaponID)
-stock shSwitchWeaponID(id, weaponID)
-{
-	if ( !is_user_alive(id) ) return;
+#define shSwitchWeaponID sh_switch_weapon
 
-	sh_switch_weapon(id, weaponID);
-}
 
 //stock shOwnsWeaponID(id, weaponID)
 #define shOwnsWeaponID user_has_weapon

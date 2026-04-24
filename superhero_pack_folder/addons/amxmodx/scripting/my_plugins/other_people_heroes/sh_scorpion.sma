@@ -67,7 +67,7 @@ Version History:
 //----------------------------------------------------------------------------------------------
 
 #include "../my_include/superheromod.inc"
-#include "../include/Vexd_Utilities.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Scorpion"
@@ -169,7 +169,7 @@ public scorpion_kd()
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !shModActive() ) return
+	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
 
 	scorpion_hookOn(id)
 }
@@ -292,7 +292,7 @@ public scorpion_reelin(parm[])
 		fl_Velocity[2] = 0.0
 	}
 
-	Entvars_Set_Vector(victim, EV_VEC_velocity, fl_Velocity)
+	entity_set_vector(victim, EV_VEC_velocity, fl_Velocity)
 }
 //----------------------------------------------------------------------------------------------
 public scorpion_hookOff(id)
@@ -354,7 +354,7 @@ public uppercut(parm[])
 	fl_vicVelocity[1] = (vicOrigin[1] - Origin[1]) / fl_Time
 	fl_vicVelocity[2] = 450.0
 
-	Entvars_Set_Vector(vic, EV_VEC_velocity, fl_vicVelocity)
+	entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
 	sh_extra_damage(vic, id, get_cvar_num("scorpion_uppercutdmg"), "Scorpion Uppercut")
 }
@@ -420,7 +420,7 @@ public scorpion_fight_off(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !shModActive() || !g_inKnifeFight[id] || !get_cvar_num("scorpion_knifefight") ) return
+	if ( !sh_is_active() || !g_inKnifeFight[id] || !get_cvar_num("scorpion_knifefight") ) return
 
 	new wpnid = read_data(2)
 

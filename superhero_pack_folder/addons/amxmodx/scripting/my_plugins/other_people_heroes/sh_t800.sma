@@ -77,7 +77,7 @@ public t800_round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
 		
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
+		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 			t800_endmode(id)
 		}
 	}
@@ -124,7 +124,7 @@ public t800_loop(id)
 {
 	
 	id-=TASKID
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)&& is_user_connected(id)  )  {
 		if ( gT800Timer[id] > 0 ) {
 			gT800Timer[id]--
@@ -177,7 +177,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	
@@ -186,7 +186,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public t800_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return
+	if (!sh_is_active() || !is_user_alive(id)) return
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

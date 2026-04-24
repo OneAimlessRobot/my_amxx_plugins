@@ -115,7 +115,7 @@ public loadCVARS()
 }
 public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
 
 		return HAM_IGNORED
 	}
@@ -130,7 +130,7 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(is_user_alive(id) && shModActive()){
+	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			gNumSpears[id]=num_spears
 		}
@@ -146,7 +146,7 @@ public sh_round_end(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {

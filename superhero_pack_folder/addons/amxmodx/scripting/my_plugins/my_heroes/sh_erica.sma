@@ -235,7 +235,7 @@ public loadCVARS()
 public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 
-	if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
 
 		return HAM_IGNORED
 	}
@@ -251,7 +251,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_reset_max_speed(id)
 			g_erica_kills[id]=0;
@@ -323,7 +323,7 @@ public sh_round_end(){
 }
 public weaponChange(id)
 {
-	if (!shModActive()||!client_hittable(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()||!client_hittable(id)) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new wpnid = get_user_weapon(id)
@@ -339,7 +339,7 @@ public weaponChange(id)
 
 public erica_damage(id)
 {
-	if ( !shModActive() || !client_hittable(id)) return
+	if ( !sh_is_active() || !client_hittable(id)) return
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -389,14 +389,9 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 }
 }
 public death()
-{	
-	new id = read_data(2)
-	if(sh_user_has_hero(id,gHeroID)){
-	
-		uncharge_custom_nade(id,GREN_MOLLY)
-	}
+{
 	new killer= read_data(1)
-	new killer_name[128]
+	static killer_name[128]
 	get_user_name(killer,killer_name,127)
 	if(sh_user_has_hero(killer,gHeroID) &&get_speed_dmg_in_radius(killer,0.0)){
 		

@@ -79,7 +79,7 @@ public rattler_levels()
 public rattler_damage(id)
 {
 
-	if ( !shModActive() || !is_user_connected(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_connected(id) ) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

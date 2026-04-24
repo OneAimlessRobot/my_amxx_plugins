@@ -87,7 +87,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 //--------------------------------------------------------------------------------------------------
 	public mrhydrogen_powers(id)
 	{
-	if (!shModActive() && !is_user_alive(id))
+	if (!sh_is_active() && !is_user_alive(id))
 	return PLUGIN_CONTINUE
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

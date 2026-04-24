@@ -89,7 +89,7 @@ public blueblood_init()
 
 public blueblood_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return
+	if (!sh_is_active() || !is_user_alive(id)) return
 
 	new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)
 
@@ -115,7 +115,7 @@ public newSpawn(id)
 {
 	gHasWeapons[id] = false
 
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 
 	sh_unset_cooldown_flag(id)
 }

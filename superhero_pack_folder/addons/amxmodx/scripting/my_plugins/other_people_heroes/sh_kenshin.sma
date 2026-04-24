@@ -70,7 +70,7 @@ public kenshin_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 		if ( weapon != CSW_KNIFE && weapon > 0 ) {
 			new wpn[32]
@@ -98,7 +98,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 
 	new weapon = read_data(2)
 
@@ -107,7 +107,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public kenshin_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

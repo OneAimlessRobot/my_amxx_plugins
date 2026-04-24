@@ -17,7 +17,6 @@
 
 new gHeroName[]="S.W.A.T."
 new has_rocket[33]
-new bool:g_betweenRounds
 new gHeroID
 
 //----------------------------------------------------------------------------------------------
@@ -81,7 +80,7 @@ public plugin_init()
 public newRound(id)
 {
 	sh_unset_cooldown_flag(id)
-	if ( shModActive() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		swat_weapons(id)
 
 	}
@@ -90,7 +89,7 @@ public newRound(id)
 //-----------------------------------------------------------------------------------------------
 public swat_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
+	if ( sh_is_active() && is_user_alive(id) ) {
 		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"item_thighpack")
 	}
@@ -98,7 +97,7 @@ public swat_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -112,7 +111,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public swat_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -155,7 +154,7 @@ public Swat_init()
 // RESPOND TO KEYDOWN
 public Swat_kd()
 {
-	if ( g_betweenRounds ) return
+	if ( !sh_is_inround() ) return
 
 	// First Argument is an id with Swat Powers!
 	new temp[6]
@@ -300,15 +299,12 @@ public make_beam(id)
 }
 //----------------------------------------------------------------------------------------------
 public round_end(){
-	
-        g_betweenRounds = true
 
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
 		new id = entity_get_edict(iCurrent, EV_ENT_owner)
 		remove_missile(id,iCurrent)
 	}
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public death_event(){
@@ -342,8 +338,7 @@ remove_missile(id,missile){
 }
 //----------------------------------------------------------------------------------------------
 public round_start(){
-	
-	g_betweenRounds = false
+
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
 		new id = entity_get_edict(iCurrent, EV_ENT_owner)

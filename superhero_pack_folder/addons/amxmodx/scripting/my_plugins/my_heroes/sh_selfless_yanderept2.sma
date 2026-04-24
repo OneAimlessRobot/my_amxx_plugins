@@ -133,6 +133,8 @@ public _yandere_get_hero_id(iPlugin,iParams){
 
 public yandere_angry_idle_checks(id, uc_handle){
 
+	if(!sh_is_active()) return FMRES_IGNORED
+	
 	if(!client_hittable(id)) return FMRES_IGNORED
 
 	if(!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
@@ -154,7 +156,7 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 
 
-	if ( !shModActive() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
 
 		return HAM_IGNORED
 	}
@@ -427,7 +429,7 @@ degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold"
 }
 //----------------------------------------------------------------------------------------------
 public newRound(id)
-{	if(is_user_alive(id) && shModActive()){
+{	if(is_user_alive(id) && sh_is_active()){
 		g_is_cursed_masks[id]=0
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			
@@ -455,7 +457,7 @@ public newRound(id)
 }
 public yandere_damage(id)
 {
-	if ( !shModActive() || !client_hittable(id)) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !client_hittable(id)) return PLUGIN_CONTINUE
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -735,7 +737,7 @@ public BlowUp(id)
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||!shModActive()) return
+	if ( !client_hittable(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID) ) return
 
 	new  wpnid = get_user_weapon(id)

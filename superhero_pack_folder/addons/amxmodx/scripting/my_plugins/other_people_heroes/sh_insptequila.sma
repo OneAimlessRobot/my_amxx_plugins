@@ -119,7 +119,7 @@ public insptequila_init()
 //----------------------------------------------------------------------------------------------
 fill_ammo(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -139,7 +139,7 @@ fill_ammo(id)
 public change_weapon(id)
 {
 	// Should prob avoid calling this during spawn
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)

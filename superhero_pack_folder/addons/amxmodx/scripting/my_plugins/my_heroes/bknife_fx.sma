@@ -79,7 +79,7 @@ init_hud_syncs()
 //----------------------------------------------------------------------------------------------
 public bleed_newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if(gIsBleeding[id]){
 			sh_unbleed_user(id)
 		}
@@ -172,7 +172,7 @@ return HAM_IGNORED
 }
 
 bleed_task_user(id,attacker,heal_user){
-	if ( !shModActive()  || !client_hittable(id)||!is_user_connected(attacker)) return
+	if ( !sh_is_active()  || !client_hittable(id)||!is_user_connected(attacker)) return
 	new array[4]
 	array[0] = gIsBleeding[id]
 	array[1] = attacker
@@ -197,7 +197,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	new bleed_type=get_param(3)
 	new gHeroID=get_param(4)
 	new heal_user=get_param(5)
-	if ( !shModActive() || !client_hittable(user)||!client_hittable(attacker)) return
+	if ( !sh_is_active() || !client_hittable(user)||!client_hittable(attacker)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
@@ -250,7 +250,7 @@ public _make_bleed_fx(iPlugin,iParams){
 
 public bleed_task(array[4],id){
 	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
-	if ( !shModActive() ||!client_hittable(id)||!is_user_connected(array[1])){
+	if ( !sh_is_active() ||!client_hittable(id)||!is_user_connected(array[1])){
 		
 
 		unbleed_user(id)
@@ -295,7 +295,7 @@ public bleed_task(array[4],id){
 }
 unbleed_user(id){
 
-	if ( !shModActive() || !is_user_connected(id)) return
+	if ( !sh_is_active() || !is_user_connected(id)) return
 	
 	sh_set_rendering(id)
 	gIsBleeding[id]=NONE

@@ -63,7 +63,6 @@ new HeroName[] = "Chucky"
 new bool:HasStabbedWithKnife[SH_MAXSLOTS+1]
 new bool:ChuckyPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:UserTeam[SH_MAXSLOTS+1]
-new bool:BetweenRounds
 new bool:BombPlanted
 new CvarCooldown, CvarKnifeMult
 new gHeroID
@@ -149,7 +148,7 @@ public chucky_init()
 }
 public newRound(id){
 
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ){
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ){
 		return
 	}
 	
@@ -159,7 +158,7 @@ public newRound(id){
 #if USE_MODEL
 public weapon_change(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)
@@ -170,7 +169,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||!ChuckyPowerUsed[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||!ChuckyPowerUsed[id] )
 		return
 
 	// If user is holding a shield do not change model, since we don't have one with a shield
@@ -195,7 +194,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public chucky_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -234,7 +233,7 @@ public chucky_death()
 	new attacker= get_user_attacker(id,weapon,body)
 	
 	
-	if ( !shModActive() || BetweenRounds || !is_user_connected(id))
+	if ( !sh_is_active() || !sh_is_inround() || !is_user_connected(id))
 		return
 		
 	if( !is_user_connected(attacker)){
@@ -261,8 +260,8 @@ public chucky_respawn(parm[])
 {
 	new id = parm[0]
 
-	if ( !shModActive() || !is_user_connected(id) || is_user_alive(id) ) return
-	if ( ChuckyPowerUsed[id] || BetweenRounds ) return
+	if ( !sh_is_active() || !is_user_connected(id) || is_user_alive(id) ) return
+	if ( ChuckyPowerUsed[id] || !sh_is_inround() ) return
 
 	// Check prevents respawning spectators, cs_get_user_team prevents team change respawning
 	if ( UserTeam[id] != cs_get_user_team(id) ) return
@@ -342,16 +341,14 @@ public bomb_planted(id)
 //----------------------------------------------------------------------------------------------
 public round_start()
 {
-	BetweenRounds = false
 	BombPlanted = false
 }
 //----------------------------------------------------------------------------------------------
 public round_end()
 {
-	BetweenRounds = true
 	BombPlanted = false
 
-	if ( !shModActive() )
+	if ( !sh_is_active() )
 		return
 
 	// Reset the cooldown on round end, to start fresh for a new round

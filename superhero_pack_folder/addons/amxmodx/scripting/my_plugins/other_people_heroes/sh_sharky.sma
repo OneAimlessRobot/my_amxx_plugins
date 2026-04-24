@@ -178,10 +178,10 @@ public sharky_death()
 public changeWeapon(id)
 {
 	if (get_cvar_num("sharky_ammo")==1){
-		if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 	else{
-		if ( !sh_user_has_hero(id,gHeroID) || !gSharkyMode[id] || !shModActive() ) return PLUGIN_CONTINUE
+		if ( !sh_user_has_hero(id,gHeroID) || !gSharkyMode[id] || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 
 	new  clip, ammo

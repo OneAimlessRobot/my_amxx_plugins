@@ -74,7 +74,7 @@ public terrorist_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && shModActive() ) {
+	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "terrorist_giveweapons",id)
 		set_task(get_cvar_float("terrorist_c4plant"), "enable_planting", 97564673)
 	}
@@ -105,7 +105,7 @@ public disable_planting()
 //----------------------------------------------------------------------------------------------
 public terrorist_giveweapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
+	if ( sh_is_active() && is_user_alive(id) ) {
 		shGiveWeapon(id,"weapon_ak47")
 	}
 
@@ -143,7 +143,7 @@ public terrorist_dropweapons(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
 
 	new weaponid = read_data(2)
 

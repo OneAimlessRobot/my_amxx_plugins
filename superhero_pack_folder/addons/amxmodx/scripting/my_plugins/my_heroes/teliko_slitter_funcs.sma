@@ -65,7 +65,7 @@ public plugin_init(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,teliko_get_hero_id()) ||!shModActive()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,teliko_get_hero_id()) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
@@ -77,7 +77,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( sh_user_has_hero(id,teliko_get_hero_id()) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,teliko_get_hero_id()) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	stop_dragging(id)
 	g_slit_kills[id]=max_slitter_kills_per_life;
@@ -289,7 +289,7 @@ public CmdStart(attacker, uc_handle)
 }
 public Teliko_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !shModActive() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 

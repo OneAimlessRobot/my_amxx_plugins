@@ -32,7 +32,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public chaff_newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if(gIsChaffed[id]){
 			sh_unchaff_user(id)
 		}

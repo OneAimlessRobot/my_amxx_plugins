@@ -125,7 +125,7 @@ public gloce_init()
 
 public fwd_Ham_Spawn_post(id)
 {
-	if(is_user_alive(id) && shModActive() && is_user_connected(id))
+	if(is_user_alive(id) && sh_is_active() && is_user_connected(id))
 	{
 		pev(id, pev_maxspeed, g_fMaxSpeed[id])
 
@@ -144,7 +144,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 {
 	if(!is_user_connected(Attacker)) return HAM_IGNORED
 
-	else if(is_user_alive(id) && shModActive() && is_user_connected(id))
+	else if(is_user_alive(id) && sh_is_active() && is_user_connected(id))
 	{
 		new Float:fHealth
 		pev(id, pev_health, fHealth)
@@ -202,7 +202,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 
 public weapon_event(id)
 {
-	if(is_user_connected(id) && shModActive())
+	if(is_user_connected(id) && sh_is_active())
 	{
 		new weaponid = read_data(2)
 

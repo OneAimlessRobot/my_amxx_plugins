@@ -34,7 +34,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public molotov_newRound(id)
 {	
-	if(shModActive()&&client_hittable(id)){
+	if(sh_is_active()&&client_hittable(id)){
 		if(gIsBurning[id]){
 			sh_unmolly_user(id)
 		}
@@ -58,7 +58,7 @@ public burn_task(array[2],id)
 {
 	id-=BURN_TASKID_MAIN
 	
-	if ( !shModActive() || !client_hittable(id)||!is_user_connected(array[0])){
+	if ( !sh_is_active() || !client_hittable(id)||!is_user_connected(array[0])){
 		unburn_user(id)
 		return
 	}
@@ -96,7 +96,7 @@ public burn_task(array[2],id)
 }
 
 public molotov_damage_vulnerability(id){
-	if ( !shModActive() || !client_hittable(id)) return
+	if ( !sh_is_active() || !client_hittable(id)) return
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
@@ -186,7 +186,7 @@ stock burn_user(id,attacker){
 
 
 unburn_user(id){
-	if ( !shModActive() ||!is_user_connected(id)) return
+	if ( !sh_is_active() ||!is_user_connected(id)) return
 	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)

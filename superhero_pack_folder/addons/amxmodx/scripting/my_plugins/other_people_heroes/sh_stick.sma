@@ -86,7 +86,7 @@ public stick_init()
 //----------------------------------------------------------------------------------------------
 public stick_senseloop()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 
 	new players[SH_MAXSLOTS], pnum
 	new idring, id, vec1[3], rgb[3]

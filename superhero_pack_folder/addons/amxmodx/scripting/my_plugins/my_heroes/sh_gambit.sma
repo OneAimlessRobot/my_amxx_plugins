@@ -130,7 +130,7 @@ public gambit_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		sh_unset_cooldown_flag(id)
 		set_task(0.1, "gambit_weapons", id)
 		
@@ -139,13 +139,13 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public gambit_weapons(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		shGiveWeapon(id, "weapon_hegrenade")
 	}
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !shModActive() || !client_hittable(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+	if ( !sh_is_active() || !client_hittable(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	new gambit_charged= entity_get_int(idinflictor,EV_INT_iuser1)
 	if ( gambit_charged ) {
 		if ( is_user_alive(id) ) {
@@ -190,7 +190,7 @@ public cooldown(parm[])
 //----------------------------------------------------------------------------------------------
 public on_AmmoX(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new iAmmoType = read_data(1)
 	new iAmmoCount = read_data(2)

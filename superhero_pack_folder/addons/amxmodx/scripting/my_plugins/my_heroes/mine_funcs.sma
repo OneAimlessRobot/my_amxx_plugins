@@ -345,8 +345,14 @@ return true
 
 }
 public charge_task(id){
+	if(!sh_is_active()||sh_is_freezetime()){
+	
+		uncharge_user(id)
+		return
+	
+	}
 	id-=MINE_CHARGE_TASKID
-	if(!hasRoundStarted()){
+	if(!client_hittable(id)||!sh_user_has_hero(id,sapper_get_hero_id())){
 	
 		uncharge_user(id)
 		return

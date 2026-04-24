@@ -93,7 +93,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() &&sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_is_active() &&sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( gInGhostMode[id] ) {
 			casper_removeghost(id)
 		}
@@ -172,7 +172,7 @@ public casper_setghost(id)
 //---------------------------------------------------------------------------------------------
 public casper_loop(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
 	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
 

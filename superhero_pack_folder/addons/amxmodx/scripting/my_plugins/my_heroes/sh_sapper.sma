@@ -147,7 +147,7 @@ if ( sh_user_has_hero(id,gHeroID) ) {
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	reset_sapper_user(id)
 	sapper_weapons(id)

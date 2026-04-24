@@ -13,7 +13,7 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-stock const DEBUG=0
+stock const DEBUG=1
 
 stock SHINOBU_POISON_KICK_DELAYED_TASKID
 
@@ -103,6 +103,8 @@ public shinobu_health_newRound(id)
 //----------------------------------------------------------------------------------------------
 public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
+	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
+
 	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
@@ -166,10 +168,22 @@ public Float:_shinobu_get_cooldown(iPlugins, iParms){
 	return shinobu_cooldown
 	
 }
+shinobu_damage_interaction(attacker,victim){
 
+	if (sh_user_has_hero(victim,gHeroID)  ) {
+		
+		shinobu_burst_damage_task_bootstrap(victim,attacker,0)
+
+	}
+	if(sh_user_has_hero(attacker,gHeroID) ){
+
+		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,0);
+		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
+	}	
+}
 public shinobuDamage(id)
 {
-	if ( !shModActive() || !client_hittable(id)) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_connected(id)) return PLUGIN_CONTINUE
 	new victim=id
 	new weapon, attacker = get_user_attacker(victim, weapon)
 	if ( !client_hittable(attacker)||!attacker) return PLUGIN_CONTINUE
@@ -178,17 +192,7 @@ public shinobuDamage(id)
 		return PLUGIN_CONTINUE
 	}	
 	if((weapon==CSW_KNIFE)){
-		
-		if (sh_user_has_hero(victim,gHeroID)  ) {
-			
-			shinobu_burst_damage_task_bootstrap(victim,attacker,0)
-
-		}
-		if(sh_user_has_hero(attacker,gHeroID) ){
-
-			do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,0);
-			shinobu_burst_damage_task_bootstrap(attacker,victim,1)
-		}	
+		shinobu_damage_interaction(attacker,victim)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -393,6 +397,15 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			generic_heal(heal_hp_hud_msg_sync,victim,float(damage),_,PURPLE,_,_,50,1,1)
 			return DMG_FWD_BLOCK
 		}
+	}
+	if(is_valid_custom_dmg_source(custom_weapon_id)){
+		new bool:is_melee = bool:xmod_is_melee_wpn(custom_weapon_id)
+		if(is_melee){
+			shinobu_damage_interaction(attacker,victim)
+		}
+	}
+	else if(is_generic_dmg_source(custom_weapon_id)){
+		shinobu_damage_interaction(attacker,victim)
 	}
 	
 	return DMG_FWD_PASS

@@ -87,7 +87,7 @@ public madness_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "madness_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -101,7 +101,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public madness_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
+	if ( sh_is_active() && is_user_alive(id) ) {
 		shGiveWeapon(id,"weapon_m3")
 	}
 }
@@ -119,7 +119,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -136,7 +136,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public madness_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

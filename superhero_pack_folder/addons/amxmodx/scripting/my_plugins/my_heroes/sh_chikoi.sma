@@ -54,6 +54,8 @@ public _sh_player_has_chikoi(iPlugin, iParams){
 //----------------------------------------------------------------------------------------------
 public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
+	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
+	
 	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID)  ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
@@ -65,7 +67,7 @@ dmg_message(id, attacker){
 
 }
 public chikoi_damage(id){
-if ( !shModActive() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
+if ( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

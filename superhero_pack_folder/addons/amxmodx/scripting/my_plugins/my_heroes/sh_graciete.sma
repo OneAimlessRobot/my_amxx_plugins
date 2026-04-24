@@ -80,7 +80,7 @@ public graciete_init()
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()&&!hasRoundStarted()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()&&!hasRoundStarted()){
 			reset_graciete_user(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
@@ -90,7 +90,7 @@ public newRound(id)
 }
 public sh_client_spawn(id){
 	
-	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
 			reset_graciete_user(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
@@ -101,7 +101,7 @@ public sh_client_spawn(id){
 }
 public Ham_respawn(id){
 
-	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive()){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
 			reset_graciete_user(id)
 			jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)

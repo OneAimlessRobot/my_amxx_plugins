@@ -14,6 +14,7 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 */
 
 #include "../my_include/superheromod.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIBLES
 new gHeroID
@@ -21,7 +22,7 @@ new g_heroName[]="BEA-03 Lancer"
 new bool:g_usingPower[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]
 new bool:g_powerKeyUsed[SH_MAXSLOTS+1]
-new bool:g_betweenRounds
+
 new g_powerID[SH_MAXSLOTS+1]
 new g_msgBarTime
 new g_spriteSmoke, g_spriteTrail, g_spriteExplosion
@@ -109,7 +110,7 @@ public newSpawn(id)
 // RESPOND TO KEYDOWN
 public lancer_kd()
 {
-	if ( g_betweenRounds ) return
+	if ( !sh_is_inround()) return
 
 	// First Argument is an id
 	new temp[6]
@@ -140,7 +141,7 @@ public lancer_kd()
 //----------------------------------------------------------------------------------------------
 public lancer_ku()
 {
-	if ( g_betweenRounds ) return
+	if ( !sh_is_inround()) return
 
 	// First Argument is an id
 	new temp[6]
@@ -206,11 +207,11 @@ public create_power(id)
 	new Float:VecMaxs[3] = {2.0,2.0,2.0}
 
 	// Get users postion and angles (angles are probably not needed in this case)
-	Entvars_Get_Vector(id, EV_VEC_origin, fl_Origin)
-	Entvars_Get_Vector(id, EV_VEC_angles, fl_Angles)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, fl_vAngle)
+	entity_get_vector(id, EV_VEC_origin, fl_Origin)
+	entity_get_vector(id, EV_VEC_angles, fl_Angles)
+	entity_get_vector(id, EV_VEC_v_angle, fl_vAngle)
 
-	new newEnt = CreateEntity("info_target")
+	new newEnt = create_entity("info_target")
 	if ( newEnt == 0 ) {
 		client_print(id, print_chat, "[SH](Lancer) Torpedo Charge Failure")
 		return
@@ -218,27 +219,27 @@ public create_power(id)
 
 	g_powerID[id] = newEnt
 
-	Entvars_Set_String(newEnt, EV_SZ_classname, "lancer_lancerz")
-	ENT_SetModel(newEnt, "models/shmod/shootlancer.mdl")
+	entity_set_string(newEnt, EV_SZ_classname, "lancer_lancerz")
+	entity_set_model(newEnt, "models/shmod/shootlancer.mdl")
 
 	// Set entity size
-	Entvars_Set_Vector(newEnt, EV_VEC_mins, VecMins)
-	Entvars_Set_Vector(newEnt, EV_VEC_maxs, VecMaxs)
+	entity_set_vector(newEnt, EV_VEC_mins, VecMins)
+	entity_set_vector(newEnt, EV_VEC_maxs, VecMaxs)
 
 	// Change height of entity origin to hands
 	fl_Origin[2] += 6
 
 	// Set entity postion and angles
-	ENT_SetOrigin(newEnt, fl_Origin)
-	Entvars_Set_Vector(newEnt, EV_VEC_angles, fl_Angles)
-	Entvars_Set_Vector(newEnt, EV_VEC_v_angle, fl_vAngle)
+	entity_set_origin(newEnt, fl_Origin)
+	entity_set_vector(newEnt, EV_VEC_angles, fl_Angles)
+	entity_set_vector(newEnt, EV_VEC_v_angle, fl_vAngle)
 
 	// Set properties of the entity
-	Entvars_Set_Int(newEnt, EV_INT_solid, 2)
-	Entvars_Set_Int(newEnt, EV_INT_movetype, 5)
-	Entvars_Set_Float( newEnt, EV_FL_renderamt, 255.0)
-	Entvars_Set_Float( newEnt, EV_FL_scale, 1.20)
-	Entvars_Set_Edict(newEnt, EV_ENT_owner, id)
+	entity_set_int(newEnt, EV_INT_solid, 2)
+	entity_set_int(newEnt, EV_INT_movetype, 5)
+	entity_set_float( newEnt, EV_FL_renderamt, 255.0)
+	entity_set_float( newEnt, EV_FL_scale, 1.20)
+	entity_set_edict(newEnt, EV_ENT_owner, id)
 
 	// Create a VelocityByAim() function, but instead of users
 	// eyesight make it start from the entity's origin - vittu
@@ -274,7 +275,7 @@ public create_power(id)
 	fl_Velocity[1] = (AimVec[1] - fl_Origin[1]) * Speed
 	fl_Velocity[2] = (AimVec[2] - fl_Origin[2]) * Speed
 
-	Entvars_Set_Vector(newEnt, EV_VEC_velocity, fl_Velocity)
+	entity_set_vector(newEnt, EV_VEC_velocity, fl_Velocity)
 
 	new iNewVelocity[3], args[6]
 	iNewVelocity[0] = floatround(fl_Velocity[0])
@@ -320,7 +321,7 @@ public guide_lancerz(args[])
 	new Float:fl_Origin[3], AimVec[3]
 
 	get_user_origin(id, AimVec, 3)
-	Entvars_Get_Vector(entID, EV_VEC_origin, fl_Origin)
+	entity_get_vector(entID, EV_VEC_origin, fl_Origin)
 
 	new iNewVelocity[3], Origin[3], velocityVec[3]
 	new  avgFactor, length
@@ -357,7 +358,7 @@ public guide_lancerz(args[])
 	fl_iNewVelocity[1] = float(iNewVelocity[1])
 	fl_iNewVelocity[2] = float(iNewVelocity[2])
 
-	Entvars_Set_Vector(entID, EV_VEC_velocity, fl_iNewVelocity)
+	entity_set_vector(entID, EV_VEC_velocity, fl_iNewVelocity)
 
 	args[3] = iNewVelocity[0]
 	args[4] = iNewVelocity[1]
@@ -379,15 +380,15 @@ public vexd_pfntouch(pToucher, pTouched) {
 	if (!is_valid_ent(pToucher)) return
 
 	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 
 	if (equal(szClassName, "lancer_lancerz")) {
-		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
+		new id = entity_get_edict(pToucher, EV_ENT_owner)
 		new dmgRadius = get_cvar_num("lancer_radius")
 		new maxDamage = get_cvar_num("lancer_damage")
 		new Float:fl_vExplodeAt[3]
 
-		Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
 
 		new vExplodeAt[3]
 		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
@@ -426,7 +427,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				fl_vicVelocity[1] = ((vicOrigin[1] - vExplodeAt[1]) / distance) * 300.0
 				fl_vicVelocity[1] = 150.0
 
-				Entvars_Set_Vector(vic, EV_VEC_velocity, fl_vicVelocity)
+				entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 				sh_screenShake(vic, 12, 12, 12)
 			}
 		}
@@ -487,7 +488,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 		emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 		emit_sound(id, CHAN_STATIC, "shmod/lancersound4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
-		RemoveEntity(pToucher)
+		remove_entity(pToucher)
 
 		if ( get_cvar_float("lancer_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("lancer_cooldown"))
 
@@ -502,7 +503,7 @@ public remove_power(id, powerID)
 {
 	new Float:fl_vOrigin[3]
 
-	Entvars_Get_Vector(powerID, EV_VEC_origin, fl_vOrigin)
+	entity_get_vector(powerID, EV_VEC_origin, fl_vOrigin)
 
 	// Create an effect of lancerz being removed
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -524,24 +525,17 @@ public remove_power(id, powerID)
 	emit_sound(powerID, CHAN_STATIC, "shmod/lancersound3.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 
-	RemoveEntity(powerID)
+	remove_entity(powerID)
 
 }
 //----------------------------------------------------------------------------------------------
 public round_end()
 {
-	g_betweenRounds = true
-
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public round_start()
-{
-	g_betweenRounds = false
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
@@ -550,7 +544,3 @@ public client_disconnected(id)
 		remove_power(id, g_powerID[id])
 	}
 }
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang10266\\ f0\\ fs16 \n\\ par }
-*/

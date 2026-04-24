@@ -135,7 +135,7 @@ public darkangel_init()
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	if (haveable_check(id)&& HasAcess[id]&&is_user_alive(id) && shModActive()) {
+	if (haveable_check(id)&& HasAcess[id]&&is_user_alive(id) && sh_is_active()) {
 		darklydark_haveable_check(id)
 		if(sh_user_has_hero(id,gHeroID) ){
 			
@@ -146,7 +146,7 @@ public new_spawn(id)
 //----------------------------------------------------------------------------------------------
 public darkangel_weapons(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
 		return
 	
 	shGiveWeapon(id, "weapon_m4a1")
@@ -167,7 +167,7 @@ public do_knockback(id,Float:extraDamage){
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
 		return
 	
 	new wpnid = read_data(2)
@@ -184,7 +184,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public darkangel_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

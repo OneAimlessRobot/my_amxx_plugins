@@ -175,7 +175,7 @@ public ghostface_init()
 #if defined USE_WPN_MODEL
 switch_model(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -189,7 +189,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
 		return
 
 	//weaponID = read_data(2)
@@ -203,7 +203,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public ghostface_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -236,7 +236,7 @@ public ghostface_maxhealth()
 //----------------------------------------------------------------------------------------------
 public heal_loop()
 {
-	if ( !shModActive() ) return
+	if ( !sh_is_active() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

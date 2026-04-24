@@ -70,7 +70,7 @@ public newRound(id)
 //----------------------------------------------------------------------------------------------
 public noob_damage(id)
 {
-	if (!shModActive()) return PLUGIN_CONTINUE
+	if (!sh_is_active()) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker_id = get_user_attacker(id,weapon,bodypart)
@@ -168,7 +168,7 @@ public noob_damage(id)
 //----------------------------------------------------------------------------------------------,
 public make_tracer(id)
 {
-	if (!shModActive()) return PLUGIN_CONTINUE
+	if (!sh_is_active()) return PLUGIN_CONTINUE
 
 	new weap = read_data(2)        // id of the weapon
 	new ammo = read_data(3)        // ammo left in clip
@@ -228,7 +228,7 @@ public make_tracer(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() ) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
 

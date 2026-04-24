@@ -18,6 +18,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 
 
 #include "../my_include/superheromod.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 //#if defined AMX98
 //  #include <cmath>
@@ -188,11 +189,11 @@ public vexd_pfntouch(pToucher, pTouched) {
 
 		forge_boom(vExplodeAt)
 
-		RemoveEntity(pToucher)
+		remove_entity(pToucher)
 
 		if ( is_valid_ent(pTouched) ) {
 			new szClassName2[32]
-			Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
+			entity_get_string(pTouched, EV_SZ_classname, szClassName2, 31)
 
 			if(equal(szClassName2, "concussion_missile")) {
 				remove_task(pTouched)
@@ -205,7 +206,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				//	is_heat_rocket[id2] = 0
 				//	is_scan_rocket[id2] = 0
 				//}
-				RemoveEntity(pTouched)
+				remove_entity(pTouched)
 			}
 		}
 	}
@@ -270,69 +271,69 @@ public make_beam(id)
 	new args[2]
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	//new notFloat_vOrigin[3]
 	//notFloat_vOrigin[0] = floatround(vOrigin[0])
 	//notFloat_vOrigin[1] = floatround(vOrigin[1])
 	//notFloat_vOrigin[2] = floatround(vOrigin[2])
 
 	new NewEnt
-	NewEnt = CreateEntity("info_target")
+	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
 		client_print(id,print_chat,"[SH](Forge) Rocket Failure")
 		return PLUGIN_HANDLED
 	}
 
-	Entvars_Set_String(NewEnt, EV_SZ_classname, "concussion_missile")
-	ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
+	entity_set_string(NewEnt, EV_SZ_classname, "concussion_missile")
+	entity_set_model(NewEnt, "models/rpgrocket.mdl")
 
 	new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 	new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-	Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-	Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+	entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+	entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-	ENT_SetOrigin(NewEnt, vOrigin)
-	Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)	
-	Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
-	//Entvars_Set_Int(NewEnt, EV_INT_effects, 64)
+	entity_set_origin(NewEnt, vOrigin)
+	entity_set_vector(NewEnt, EV_VEC_angles, vAngles)	
+	entity_set_int(NewEnt, EV_INT_solid, 2)
+	//entity_set_int(NewEnt, EV_INT_effects, 64)
 
 	new effects = get_cvar_num("Forge_effects")	
 
 	if ( effects == 1 ){ // normal
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 2)
+		entity_set_int(NewEnt, EV_INT_effects, 2)
 	}
 	else if ( effects == 2 ){ // sprites (yellow) arround missile
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 4)
+		entity_set_int(NewEnt, EV_INT_effects, 4)
 	}
 	else if ( effects == 3 ){ // light around missile
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 1)
+		entity_set_int(NewEnt, EV_INT_effects, 1)
 	}
 	else if ( effects == 4 ){ // both light and sprites around missle (default)
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 7)
+		entity_set_int(NewEnt, EV_INT_effects, 7)
 	}
 	else {
-		Entvars_Set_Int(NewEnt, EV_INT_effects, 64)
+		entity_set_int(NewEnt, EV_INT_effects, 64)
 	}
 
 	if(get_cvar_num("Forge_obeygravity")) {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 6)
+		entity_set_int(NewEnt, EV_INT_movetype, 6)
 	}
 	else {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
+		entity_set_int(NewEnt, EV_INT_movetype, 5)
 	}
 
-	Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
-	Entvars_Set_Float(NewEnt, EV_FL_health, 10000.0)
-	Entvars_Set_Float(NewEnt, EV_FL_takedamage, 100.0)
-	Entvars_Set_Float(NewEnt, EV_FL_dmg_take, 100.0)
+	entity_set_edict(NewEnt, EV_ENT_owner, id)
+	entity_set_float(NewEnt, EV_FL_health, 10000.0)
+	entity_set_float(NewEnt, EV_FL_takedamage, 100.0)
+	entity_set_float(NewEnt, EV_FL_dmg_take, 100.0)
 
 	new MissileVel = get_cvar_num("Forge_velocity")
 	new Float:fl_iNewVelocity[3]
 	//new iNewVelocity[3]
-	VelocityByAim(id, MissileVel, fl_iNewVelocity)
-	Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+	velocity_by_aim(id, MissileVel, fl_iNewVelocity)
+	entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 	//iNewVelocity[0] = floatround(fl_iNewVelocity[0])
 	//iNewVelocity[1] = floatround(fl_iNewVelocity[1])
 	//iNewVelocity[2] = floatround(fl_iNewVelocity[2])
@@ -344,7 +345,7 @@ public make_beam(id)
 	args[1] = NewEnt
 
 	make_trail(NewEnt)
-	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+	entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 	set_task(0.1,"guide_rocket_comm",NewEnt,args,2,"b")
 	//set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 
@@ -370,7 +371,7 @@ public guide_rocket_comm(args[])
 {
 	new ent = args[1]
 	if (!is_valid_ent(ent)) return
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
+	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0)
 		vexd_pfntouch(ent,0)
 }
@@ -392,16 +393,9 @@ public RemoveByClass(id)
 {
 
 	new missiles = -1
-	while((missiles = find_ent_by_class(missiles, "concussion_missile")))
+	while((missiles = find_ent_by_class(missiles, "concussion_missile"))){
 		remove_entity(missiles)
-
-//	new ent = 0
-//	do{
-//		ent = find_entity(ent,classname,"concussion_missile")
-//		if (ent > 0)
-//		RemoveEntity(ent)
-//	}
-//	while (ent)
+	}
 }
 //----------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------
@@ -410,29 +404,3 @@ public death_event(){
 	victim = read_data(2)
 	remove_task(victim)
 }
-//----------------------------------------------------------------------------------------------
-//public round_end(){
-//
-//	roundfreeze = true
-//
-//	if(has_rocket[i] > 0)
-//		remove_missile(i,has_rocket[i])
-//
-//	return PLUGIN_CONTINUE
-//}
-//----------------------------------------------------------------------------------------------
-//public round_start(){
-//
-//	roundfreeze = false
-//
-//	new iCurrent
-//	while ((iCurrent = FindEntity(-1, "bazooka_missile_ent")) > 0) {
-//		new id = Entvars_Get_Edict(iCurrent, EV_ENT_owner)
-//		remove_missile(id,iCurrent)
-//	}
-//	return PLUGIN_CONTINUE
-//}
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang10266\\ f0\\ fs16 \n\\ par }
-*/

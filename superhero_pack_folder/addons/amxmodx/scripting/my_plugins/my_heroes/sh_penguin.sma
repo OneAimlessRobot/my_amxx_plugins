@@ -111,7 +111,7 @@ public penguin_init()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_unset_cooldown_flag(id)
 		set_task(0.1, "penguin_weapons", id)
 		
@@ -120,7 +120,7 @@ public newSpawn(id)
 //----------------------------------------------------------------------------------------------
 public penguin_weapons(id)
 {
-	if ( shModActive() && is_user_alive(id) ) {
+	if ( sh_is_active() && is_user_alive(id) ) {
 		shGiveWeapon(id, "weapon_hegrenade")
 	}
 }
@@ -143,7 +143,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || sh_get_cooldown_flag(id) ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || sh_get_cooldown_flag(id) ) return
 
 	new wpnid = read_data(2)
 
@@ -154,7 +154,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public on_AmmoX(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new iAmmoType = read_data(1)
 	new iAmmoCount = read_data(2)
@@ -373,7 +373,7 @@ public fw_entity_think(ent)
 
 public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !shModActive() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
 
 	new charged=entity_get_int(idinflictor,EV_INT_iuser2)
 	if ( charged ) {

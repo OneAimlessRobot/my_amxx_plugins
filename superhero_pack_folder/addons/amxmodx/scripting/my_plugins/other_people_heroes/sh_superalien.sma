@@ -108,13 +108,13 @@ public SuperAlien_init()
 //----------------------------------------------------------------------------------------------
 public new_spawn(id)
 {
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		weapon_change(id)
 }
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !shModActive() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	//new wpnid = read_data(2)
@@ -142,7 +142,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 SuperAlien_vision_on(id)
 {
-	if ( shModActive() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
 	{
 		SuperAlienModeOn[id] = true
 
@@ -173,7 +173,7 @@ SuperAlien_vision_on(id)
 public SuperAlien_loop(id)
 {
 	// Prevents loop from running on disconnected clients
-	if ( !shModActive() || !is_user_connected(id) )
+	if ( !sh_is_active() || !is_user_connected(id) )
 	{
 		remove_task(id)
 		return
@@ -210,7 +210,7 @@ SuperAlien_vision_off(id)
 //----------------------------------------------------------------------------------------------
 public SuperAlien_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) )
+	if ( !sh_is_active() || !is_user_alive(id) )
 		return
 
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

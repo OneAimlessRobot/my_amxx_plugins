@@ -32,7 +32,6 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 */
 
 #include "../my_include/superheromod.inc"
-#include "../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="War Machine"
@@ -208,7 +207,7 @@ public warmachine_loop(id)
 			set_user_armor(id, userArmor - gFuelCost)
 		}
 
-		Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+		entity_get_vector(id, EV_VEC_velocity, velocity)
 
 		velocity[0] = velocity[0] * gMultiplier
 		velocity[1] = velocity[1] * gMultiplier
@@ -220,7 +219,7 @@ public warmachine_loop(id)
 		if ( velocity[1] < (gMaxSpeed * -1) )	velocity[1] = gMaxSpeed * -1
 		if ( velocity[2] > (gThrust * 2) )		velocity[2] = gThrust * 2
 
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 
 		get_user_origin(id, origin)
 		origin[2] -= 30
@@ -281,7 +280,7 @@ public client_connect(id)
 //----------------------------------------------------------------------------------------------
 public warmachine_damage(id)
 {
-	if ( !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new damage = read_data(2)
 	new weaponid, bodypart, attacker = get_user_attacker(id, weaponid, bodypart)

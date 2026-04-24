@@ -222,7 +222,7 @@ public teliko_unmorph(id){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && shModActive() &&!hasRoundStarted() ) {
+if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	reset_teliko_user(id)
 	update_max_bullets(id)
@@ -313,7 +313,7 @@ public Inc_counters(id){
 }
 public Teliko_damage(id)
 {
-if ( !shModActive() || !is_user_alive(id)) return
+if ( !sh_is_active() || !is_user_alive(id)) return
 
 new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)

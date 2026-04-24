@@ -47,21 +47,23 @@ vegetto_radius_4 1500		//Max Radius of Damage for ssjlevel 4th power (Default 15
 
 vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 1)
 */
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 
 #include "../my_include/superheromod.inc"
-#include "../include/Vexd_Utilities.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
+#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"
 new gHeroID
 new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new bool:g_inStun[SH_MAXSLOTS+1]
-new bool:g_betweenRounds
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
 new g_powerNum[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
@@ -119,8 +121,7 @@ public plugin_init()
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 	vegetto_hud_sync=CreateHudSyncObj()
-	// LOG EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
+	
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
 
@@ -199,7 +200,7 @@ public newSpawn(id)
 {
 	g_inStun[id] = false
 
-	if ( shModActive() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
 		set_task(0.5, "vegetto_setarmor", id)
 		g_isSaiyanLevel[id] = 0
@@ -218,7 +219,7 @@ public vegetto_setarmor(id)
 // RESPOND TO KEYDOWN
 public vegetto_kd()
 {
-	if ( g_betweenRounds ) return
+	if ( !sh_is_inround()) return
 
 	// First Argument is an id
 	new temp[6]
@@ -294,7 +295,7 @@ public vegetto_kd()
 //----------------------------------------------------------------------------------------------
 public vegetto_ku()
 {
-	if ( g_betweenRounds ) return
+	if ( !sh_is_inround()) return
 
 	// First Argument is an id
 	new temp[6]
@@ -368,15 +369,15 @@ public create_power(id)
 	}
 
 	// Get users postion and angles
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_angles, vAngles)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngle)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_angles, vAngles)
+	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 	// Change height for entity origin
 	if (g_powerNum[id] == 4) vOrigin[2] += 110
 	else vOrigin[2] += 6
 
-	new newEnt = CreateEntity("info_target")
+	new newEnt = create_entity("info_target")
 	if( newEnt == 0 ) {
 		client_print(id, print_chat, "[SH](Vegetto) Power Creation Failure")
 		return
@@ -384,22 +385,22 @@ public create_power(id)
 
 	g_powerID[id] = newEnt
 
-	Entvars_Set_String(newEnt, EV_SZ_classname, "vexd_vegetto_power")
-	ENT_SetModel(newEnt, entModel)
+	entity_set_string(newEnt, EV_SZ_classname, "vexd_vegetto_power")
+	entity_set_model(newEnt, entModel)
 
-	Entvars_Set_Vector(newEnt, EV_VEC_mins, VecMins)
-	Entvars_Set_Vector(newEnt, EV_VEC_maxs, VecMaxs)
+	entity_set_vector(newEnt, EV_VEC_mins, VecMins)
+	entity_set_vector(newEnt, EV_VEC_maxs, VecMaxs)
 
-	ENT_SetOrigin(newEnt, vOrigin)
-	Entvars_Set_Vector(newEnt, EV_VEC_angles, vAngles)
-	Entvars_Set_Vector(newEnt, EV_VEC_v_angle, vAngle)
+	entity_set_origin(newEnt, vOrigin)
+	entity_set_vector(newEnt, EV_VEC_angles, vAngles)
+	entity_set_vector(newEnt, EV_VEC_v_angle, vAngle)
 
-	Entvars_Set_Int(newEnt, EV_INT_solid, 2)
-	Entvars_Set_Int(newEnt, EV_INT_movetype, 5)
-	Entvars_Set_Int(newEnt, EV_INT_rendermode, 5)
-	Entvars_Set_Float(newEnt, EV_FL_renderamt, 255.0)
-	Entvars_Set_Float(newEnt, EV_FL_scale, entScale)
-	Entvars_Set_Edict(newEnt, EV_ENT_owner, id)
+	entity_set_int(newEnt, EV_INT_solid, 2)
+	entity_set_int(newEnt, EV_INT_movetype, 5)
+	entity_set_int(newEnt, EV_INT_rendermode, 5)
+	entity_set_float(newEnt, EV_FL_renderamt, 255.0)
+	entity_set_float(newEnt, EV_FL_scale, entScale)
+	entity_set_edict(newEnt, EV_ENT_owner, id)
 
 
 	// Create a VelocityByAim() function, but instead of users
@@ -423,7 +424,7 @@ public create_power(id)
 	fl_Velocity[1] = (AimVec[1] - vOrigin[1]) * invTime
 	fl_Velocity[2] = (AimVec[2] - vOrigin[2]) * invTime
 
-	Entvars_Set_Vector(newEnt, EV_VEC_velocity, fl_Velocity)
+	entity_set_vector(newEnt, EV_VEC_velocity, fl_Velocity)
 
 	// Set Trail on entity
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -473,7 +474,7 @@ public guide_kamehameha(args[])
 
 	get_user_origin(id, AimVec, 3)
 
-	Entvars_Get_Vector(ent, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent, EV_VEC_origin, fl_origin)
 
 	new iNewVelocity[3]
 	new origin[3]
@@ -513,7 +514,7 @@ public guide_kamehameha(args[])
 	fl_iNewVelocity[1] = float(iNewVelocity[1])
 	fl_iNewVelocity[2] = float(iNewVelocity[2])
 
-	Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+	entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 
 	args[3] = iNewVelocity[0]
 	args[4] = iNewVelocity[1]
@@ -537,10 +538,10 @@ public vexd_pfntouch(pToucher, pTouched) {
 	if (!is_valid_ent(pToucher)) return
 
 	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
 
 	if(equal(szClassName, "vexd_vegetto_power")) {
-		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
+		new id = entity_get_edict(pToucher, EV_ENT_owner)
 		new dmgRadius = g_maxRadius[id]
 		new maxDamage = g_maxDamage[id]
 		new Float:fl_vExplodeAt[3], damageName[16]
@@ -565,7 +566,7 @@ public vexd_pfntouch(pToucher, pTouched) {
                         }
 		}
 
-		Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
 
 		new vExplodeAt[3]
 		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
@@ -612,7 +613,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 				fl_vicVelocity[0] = (vicOrigin[0] - vExplodeAt[0]) / fl_Time
 				fl_vicVelocity[1] = (vicOrigin[1] - vExplodeAt[1]) / fl_Time
 				fl_vicVelocity[2] = (vicOrigin[2] - vExplodeAt[2]) / fl_Time
-				Entvars_Set_Vector(vic, EV_VEC_velocity, fl_vicVelocity)
+				entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 			}
 		}
 
@@ -666,7 +667,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 			message_end()
 		}
 
-		RemoveEntity(pToucher)
+		remove_entity(pToucher)
 
 		// Reset the Varibles
 		g_powerNum[id] = 0
@@ -678,7 +679,7 @@ public remove_power(id, powerID)
 {
 	new Float:fl_vOrigin[3]
 
-	Entvars_Get_Vector(powerID, EV_VEC_origin, fl_vOrigin)
+	entity_get_vector(powerID, EV_VEC_origin, fl_vOrigin)
 
 	// Create an effect of kamehameha being removed
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -694,12 +695,12 @@ public remove_power(id, powerID)
 	g_powerNum[id] = 0
 	g_powerID[id] = 0
 
-	RemoveEntity(powerID)
+	remove_entity(powerID)
 }
 //----------------------------------------------------------------------------------------------
 public vegetto_loop()
 {
-	if ( !shModActive() || g_betweenRounds ) return
+	if ( !sh_is_active() ||!sh_is_inround()) return
 
 	new players[SH_MAXSLOTS], pnum, id
 
@@ -812,7 +813,7 @@ public vegetto_loop()
 //----------------------------------------------------------------------------------------------
 public ssj_boost(id){
 	
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || g_betweenRounds ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !sh_is_inround()) return
 	if ( !g_isSaiyanLevel[id] ) return
 
 	// Speed Boost
@@ -836,7 +837,7 @@ public ssj_boost(id){
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || g_betweenRounds ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || !sh_is_inround() ) return
 	if ( !g_isSaiyanLevel[id] || g_inStun[id] ) return
 
 	new wpnid = read_data(2)
@@ -896,7 +897,7 @@ public reset_instun(id)
 {
 	g_inStun[id] = false
 
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
 	switch(g_isSaiyanLevel[id]) {
 		case 1: if ( get_user_maxspeed(id) < g_ssjSpeed[0] ) set_user_maxspeed(id, g_ssjSpeed[0])
@@ -908,7 +909,7 @@ public reset_instun(id)
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])
 {
-	if ( !shModActive() || g_betweenRounds ) return
+	if ( !sh_is_active() || !sh_is_inround()) return
 
 	new id = parm[0]
 
@@ -987,8 +988,6 @@ public powerup_effect(parm[])
 //----------------------------------------------------------------------------------------------
 public round_end()
 {
-	g_betweenRounds = true
-
 	for (new id=1; id <= SH_MAXSLOTS; id++) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_isSaiyanLevel[id] = 0
@@ -998,11 +997,6 @@ public round_end()
 			}
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public round_start()
-{
-	g_betweenRounds = false
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)

@@ -182,7 +182,7 @@ public lightsOn()
 //----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !shModActive() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -192,7 +192,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !shModActive() || !is_user_alive(id) ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
 
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )

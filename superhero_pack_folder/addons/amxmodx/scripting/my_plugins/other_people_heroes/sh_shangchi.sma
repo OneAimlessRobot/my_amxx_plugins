@@ -111,7 +111,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 //----------------------------------------------------------------------------------------------
 public counter_attack(victim, id, moveNumber)
 {
-	if ( !shModActive() || !is_user_alive(victim) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(victim) || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	new counterMove[32]

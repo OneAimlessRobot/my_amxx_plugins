@@ -42,7 +42,7 @@ public plugin_precache()
 
 public grenade_throw(index, greindex, wId)
 {
-   if ( !shModActive() ) return
+   if ( !sh_is_active() ) return
 
    new parm[1]
    parm[0] = greindex

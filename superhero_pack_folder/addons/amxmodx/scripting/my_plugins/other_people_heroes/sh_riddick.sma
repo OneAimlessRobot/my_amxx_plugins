@@ -90,7 +90,7 @@ public riddick_init()
 //----------------------------------------------------------------------------------------------
 public riddick_loop()
 {
-	if (!shModActive()) return
+	if (!sh_is_active()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
 		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
@@ -102,7 +102,7 @@ public riddick_loop()
 //----------------------------------------------------------------------------------------------
 public riddick_damage(id)
 {
-	if (!shModActive() || !is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -138,7 +138,7 @@ public riddick_maxhealth()
 //----------------------------------------------------------------------------------------------
 public newSpawn(id)
 {
-	if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && shModActive() ) {
+	if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 		if (wpnid != CSW_KNIFE && wpnid > 0) {
 			new wpn[32]
