@@ -2,7 +2,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "chaff_grenade_inc/sh_chaff_funcs.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -82,11 +82,6 @@ public plugin_init()
 
 public plugin_natives(){
 
-	
-	register_native("teliko_dec_num_chaffs","_teliko_dec_num_chaffs",0);
-	register_native("teliko_get_num_chaffs","_teliko_get_num_chaffs",0);
-	register_native("teliko_set_num_chaffs","_teliko_set_num_chaffs",0);
-	
 	register_native("teliko_get_hero_id","_teliko_get_hero_id",0);
 	
 
@@ -183,8 +178,7 @@ public plugin_cfg()
 Teliko_weapons(id)
 {
 if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  ) {
-	sh_give_weapon(id,CHAFF_CLASSID,false)
-	cs_set_user_bpammo(id, CHAFF_CLASSID,num_chaffs);
+	give_custom_grenades(id,GREN_CHAFF,num_chaffs)
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-gHeroLevel
 	if(level_diff>=famas_level_diff){
@@ -374,11 +368,6 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 }
 }
 
-public sh_round_end(){
-
-	remove_entity_name(CHAFF_CLASSNAME)
-
-}
 public plugin_precache()
 {
 
@@ -397,7 +386,6 @@ if(sh_user_has_hero(id,gHeroID) ){
 
 	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
 	teliko_unmorph(id)
-	chaff_uncharge_chaff(id)
 }
 
 remove_enemy(id)
@@ -454,10 +442,7 @@ if(sh_user_has_hero(id,gHeroID) ){
 		
 	}
 	g_teliko_weapon[id]=wpnid;
-	if(!teliko_get_num_chaffs(id)){
-	
-		sh_drop_weapon(id,CHAFF_CLASSID,true)
-	}
+
 }
 
 }

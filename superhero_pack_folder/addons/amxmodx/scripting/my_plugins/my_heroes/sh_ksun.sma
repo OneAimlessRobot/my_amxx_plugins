@@ -10,7 +10,7 @@
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/ksun_ultimate.inc"
-#include "ksun_inc/sh_sleep_grenade_funcs.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -18,7 +18,6 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
-new gNumSleepNades[SH_MAXSLOTS+1]
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new Float:cooldown
@@ -74,11 +73,6 @@ public plugin_init()
 	init_hud_syncs()
 }
 public plugin_natives(){
-	
-	
-	register_native("ksun_dec_num_sleep_nades","_ksun_dec_num_sleep_nades",0);
-	register_native("ksun_get_num_sleep_nades","_ksun_get_num_sleep_nades",0);
-	register_native("ksun_set_num_sleep_nades","_ksun_set_num_sleep_nades",0);
 	
 	
 	register_native("ksun_get_num_available_spores","_ksun_get_num_available_spores",0);
@@ -352,26 +346,6 @@ public _ksun_inc_num_available_spores(iPlugin,iParams){
 	gMaxSporesUsable[id]=(gMaxSporesUsable[id]>=scanner_max_victims())? scanner_max_victims():gMaxSporesUsable[id]+1
 
 }
-public _ksun_set_num_sleep_nades(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumSleepNades[id]=value_to_set;
-}
-public _ksun_get_num_sleep_nades(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumSleepNades[id]
-
-}
-
-public _ksun_dec_num_sleep_nades(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumSleepNades[id]-= (gNumSleepNades[id]>0)? 1:0
-
-}
 public _spores_ksun_hero_id(iPlugins, iParms){
 
 	return gHeroID
@@ -385,8 +359,7 @@ ksun_weapons(id)
 {
 
 if ( sh_is_active() && client_hittable(id) && sh_user_has_hero(id,gHeroID) ) {
-	cs_set_user_bpammo(id, SLEEP_NADE_CLASSID,ksun_get_num_sleep_nades(id));
-	sh_give_weapon(id,SLEEP_NADE_CLASSID,false)
+	give_custom_grenades(id,GREN_SLEEP,num_sleep_nades)
 	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
 }
@@ -400,15 +373,9 @@ public newRound(id)
 	spores_reset_user(id)
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		ksun_weapons(id)
-		gNumSleepNades[id]=num_sleep_nades
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	return PLUGIN_HANDLED
-}
-public sh_round_end(){
-
-	remove_entity_name(SLEEP_NADE_CLASSNAME)
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -438,9 +405,7 @@ public ksun_init()
 	new id=str_to_num(temp)
 	
 	if ( sh_user_has_hero(id,gHeroID)  ){
-	
-		
-		gNumSleepNades[id]=num_sleep_nades
+
 		ksun_weapons(id)
 		
 	
@@ -541,30 +506,11 @@ public ksun_prethink(id)
 			}
 	}
 }
-public death()
-{
-	if(!sh_is_active()) return
-	
-	new id = read_data(2)
-	new killer= read_data(1)
-	
-	ksun_death_handler(id)
-	if(is_user_connected(killer)&&sh_user_has_hero(killer,gHeroID) ){
-		if(ksun_kill_type_broadness_level>=3){
-			
-				ksun_multi_inc_num_available_spores(killer,ksun_spores_per_kill)
-			
-		}
-	}
-		
-}
 stock ksun_death_handler(id){
 
 	if(is_user_connected(id)){
 		if(sh_user_has_hero(id,gHeroID) ){
 			ksun_unultimate_user(id,1,0)
-			
-			sleep_nade_uncharge_sleep_nade(id)
 			
 			if(ksun_get_when_reset_spores()&reset_on_death){
 				ksun_set_num_available_spores(id,0)

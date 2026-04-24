@@ -21,11 +21,6 @@ stock gHeroID
 
 stock const gHeroName[] = "Teliko"
 
-native teliko_set_num_chaffs(id,value_to_set)
-native teliko_get_num_chaffs(id)
-
-native teliko_dec_num_chaffs(id)
-
 
 native teliko_get_hero_id()
 

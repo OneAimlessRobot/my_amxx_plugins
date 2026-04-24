@@ -5,7 +5,6 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
-#include "tranq_gun_inc/sh_molotov_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -47,6 +46,7 @@ public plugin_precache(){
 	
 	engfunc(EngFunc_PrecacheSound,gSoundBurning)
 	engfunc(EngFunc_PrecacheSound,gSoundScream)
+	engfunc(EngFunc_PrecacheSound,MOLLY_FIRE_SFX)
 
 }
 public plugin_natives(){

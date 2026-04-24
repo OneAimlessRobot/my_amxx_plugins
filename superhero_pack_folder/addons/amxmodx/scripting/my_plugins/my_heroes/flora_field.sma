@@ -101,7 +101,7 @@ public plugin_init()
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
 	FLORA_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
 
-	set_task(0.5,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
+	set_task(0.35,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
 
 	register_think(FLORA_FIELD_CLASSNAME, "field_think")
 	init_hud_syncs()

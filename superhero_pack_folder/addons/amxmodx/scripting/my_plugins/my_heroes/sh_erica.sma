@@ -8,7 +8,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
-#include "tranq_gun_inc/sh_molotov_funcs.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "../my_include/my_author_header.inc"
 // GLOBAL VARIABLES
@@ -320,8 +320,6 @@ public get_speed_dmg_in_radius(id,Float:damage){
 public sh_round_end(){
 
 	remove_entity_name(DART_CLASSNAME)
-	remove_entity_name(MOLLY_CLASSNAME)
-
 }
 public weaponChange(id)
 {
@@ -378,8 +376,7 @@ update_stats(id){
 public Erica_weapons(id)
 {
 if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
-	sh_give_weapon(id,MOLLY_CLASSID,false)
-	cs_set_user_bpammo(id, MOLLY_CLASSID,num_mollies);
+	give_custom_grenades(id,GREN_MOLLY,num_mollies)
 	sh_give_weapon(id, CSW_ELITE)
 	
 	new weapon_id=find_ent_by_owner(-1,"weapon_elite",id);
@@ -396,7 +393,7 @@ public death()
 	new id = read_data(2)
 	if(sh_user_has_hero(id,gHeroID)){
 	
-		molly_uncharge_molly(id)
+		uncharge_custom_nade(id,GREN_MOLLY)
 	}
 	new killer= read_data(1)
 	new killer_name[128]

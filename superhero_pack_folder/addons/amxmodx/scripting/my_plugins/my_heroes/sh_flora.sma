@@ -203,6 +203,20 @@ public flora_ku()
 }
 
 
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	new result= DMG_FWD_PASS
+	if((new_dmg_type==SH_NEW_DMG_FIRE)){
+		if(sh_user_has_hero(victim,flora_get_hero_id()) ){
+			damage*=3
+		}
+	}
+	return result
+}
+
 public sh_client_death(id,killer,headshot,const wpnDescription[])
 {
 if(is_user_connected(id)){

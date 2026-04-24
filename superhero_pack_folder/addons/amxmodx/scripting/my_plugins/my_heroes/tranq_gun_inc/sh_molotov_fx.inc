@@ -6,6 +6,8 @@
 
 #define CAN_SELF_MOLLY 1
 
+#define MOLLY_FIRE_SFX "shmod/erica/molotov/molotov_fire.wav"
+
 #define gSoundBurning "ambience/burning1.wav"
 #define gSoundScream "scientist/c1a0_sci_catscream.wav"
 
@@ -15,6 +17,7 @@
 #define BURN_DAMAGE_VULNERABILITY_COEFF 0.30
 #define BURN_TIME 15.0
 #define BURN_TIMES floatround(floatdiv(BURN_TIME,BURN_PERIOD))
+#define MOLLY_PROPAGATE_RADIUS 100.0
 
 native sh_molly_user(id,attacker,gHeroID)
 native sh_unmolly_user(id)
