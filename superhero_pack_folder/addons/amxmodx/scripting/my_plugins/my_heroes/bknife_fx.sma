@@ -115,7 +115,7 @@ new blood_sound_sample[128]
 get_string(8,blood_sound_sample,127)
 new heal_attacker=get_param(9)
 
-new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+new weapon=get_user_weapon(attacker)
 
 if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 

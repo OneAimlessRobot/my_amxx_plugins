@@ -113,6 +113,9 @@ public Ham_Weapon_Attack(weaponent)
 	
 	new id = get_pdata_cbase(weaponent, 41, 4);
 
+
+	if(!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
+
 	if(!client_hittable(id)) return HAM_IGNORED;
 	
 	if ( gBullets[id] >= 0 )
