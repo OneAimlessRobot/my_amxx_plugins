@@ -7,12 +7,18 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
-#define BLOCK_FRACTION 0.80
+#define BLOCK_FRACTION 0.76
 
 // GLOBAL VARIABLES
 new gHeroID
 new gHeroName[]="Reika Fukuda"
 new reika_is_parrying_mask = 0
+new mode_change_button_pressed_mask = 0
+/*
+    reika_mode_blast=0,
+    reika_mode_parry
+*/
+new mode_mask = 0
 new reika_parried_tg[SH_MAXSLOTS+1] = {0, ...}
 new Float:reika_stored_damage[SH_MAXSLOTS+1] = { 0.0, ...}
 new Float:reika_parry_mode_time
@@ -38,7 +44,7 @@ public plugin_init()
 
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-    gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release large blasts on keybind! Parry melee strikes!", true, "reika_level" )
+    gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate! Switch between and trigger them with knife deployed", true, "reika_level" )
 
     register_event("ResetHUD","newRound","b")
     register_srvcmd("reika_init", "reika_init")
@@ -49,28 +55,85 @@ public plugin_init()
     register_srvcmd("reika_kd", "reika_kd")
     shRegKeyDown(gHeroName, "reika_kd")
 
+    register_forward(FM_CmdStart, "reika_parry_switch_cmdstart_hook");
+
     REIKA_PARRY_TURN_OFF_DELAY_TASKID=allocate_typed_task_id(player_task)
 
     init_explosion_defaults()
 
 }
-parry_user(id, Float:blocked_damage, tg){
+//----------------------------------------------------------------------------------------------
+public reika_parry_switch_cmdstart_hook(id, uc_handle)
+{
+    if ( !is_user_alive(id)||!client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+
+    static button;
+    button= get_uc(uc_handle, UC_Buttons);
+    new wpnid=get_user_weapon(id)
+    if(button & IN_ALT1){
+
+        button &= ~IN_ALT1
+        set_uc(uc_handle, UC_Buttons, button)
+        if(!Get_BitVar(mode_change_button_pressed_mask,id)){
+            if(wpnid==CSW_KNIFE){
+                Set_BitVar(mode_change_button_pressed_mask,id)
+                static bool:prev_mode_value,
+                            bool:new_mode_value
+                
+                prev_mode_value= bool:Get_BitVar(mode_mask,id)
+                if(prev_mode_value){
+                    
+                    UnSet_BitVar(mode_mask,id)
+
+                }
+                else{
+
+                    Set_BitVar(mode_mask,id)
+
+                }
+                new_mode_value= bool:Get_BitVar(mode_mask,id)
+                sh_chat_message(id,gHeroID,"Mode changed from %s to %s!",
+                                prev_mode_value?"Parry":"Blast",
+                                new_mode_value?"Parry":"Blast")
+            }
+        }
+    }
+    else{
+
+        UnSet_BitVar(mode_change_button_pressed_mask,id)
+    }
+    return FMRES_IGNORED;
+}
+
+prepare_parry(id){
+
+    if(!is_user_connected(id)) return
+
+    if(!sh_user_has_hero(id,gHeroID)) return
+
+    if(!Get_BitVar(reika_is_parrying_mask,id)){
+        
+        sh_chat_message(id,gHeroID,"Preparing to parry!")
+        Set_BitVar(reika_is_parrying_mask,id);
+        set_task(reika_parry_mode_time,"parry_mode_turn_off_task",
+                                id+REIKA_PARRY_TURN_OFF_DELAY_TASKID)
+    
+    }
+    
+}
+absorb_user(id, Float:the_damage, tg){
 
     if(!is_user_connected(id)) return
 
     if(!sh_user_has_hero(id,gHeroID)) return
     
-    Set_BitVar(reika_is_parrying_mask,id);
-    reika_stored_damage[id]=blocked_damage
+    reika_stored_damage[id]=the_damage
     reika_parried_tg[id]=tg
 
     sh_chat_message(id,gHeroID,
-                        "You parried their melee strike and stored %0.1f damage! Melee 'em within %0.1f seconds for more damage!",
-                        blocked_damage,
-                        reika_parry_mode_time)
+                        "You parried their melee strike and stored %0.1f damage!",
+                        the_damage)
                 
-    set_task(reika_parry_mode_time,"parry_mode_turn_off_task",
-                        id+REIKA_PARRY_TURN_OFF_DELAY_TASKID)
 
 }
 unparry_user(id){
@@ -81,9 +144,12 @@ unparry_user(id){
     
     UnSet_BitVar(reika_is_parrying_mask,id);
     
+
+}
+clear_retaliate(id){
+
+    reika_stored_damage[id]=0.0
     reika_parried_tg[id]=0
-    
-    reika_stored_damage[id]=0.0;
 
 }
 public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage, damagebits)
@@ -102,13 +168,16 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
 
     new weapon=get_user_weapon(attacker)
     if(sh_user_has_hero(id,gHeroID)){
-        if(!Get_BitVar(reika_is_parrying_mask,id)){
+        if(Get_BitVar(reika_is_parrying_mask,id)){
 
             if(weapon==CSW_KNIFE){
                 
                 new Float:blocked_damage= (BLOCK_FRACTION*damage)
                 SetHamParamFloat(4,damage-blocked_damage)
-                parry_user(id,blocked_damage,attacker)
+                
+                absorb_user(id, blocked_damage, attacker)
+
+                unparry_user(id)
                 
                 result=HAM_HANDLED
             }
@@ -117,22 +186,21 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
 
     if(sh_user_has_hero(attacker,gHeroID)){
 
-        if(Get_BitVar(reika_is_parrying_mask,attacker)){
-            if((weapon==CSW_KNIFE)&&(id==reika_parried_tg[attacker])){
-                
-                new Float:total_damage = damage+reika_stored_damage[attacker]
+    
+        if((weapon==CSW_KNIFE)&&(id==reika_parried_tg[attacker])){
+            
+            new Float:total_damage = damage+reika_stored_damage[attacker]
 
-                SetHamParamFloat(4,total_damage)
-                
-                sh_chat_message(attacker,gHeroID,
-                                "Counter strike! %d xtra dmg dealt on strike",
-                                reika_stored_damage[attacker],
-                                reika_parry_mode_time)
+            SetHamParamFloat(4,total_damage)
+            
+            sh_chat_message(attacker,gHeroID,
+                            "Counter strike! %0.1f xtra dmg dealt on strike",
+                            reika_stored_damage[attacker],
+                            reika_parry_mode_time)
 
-                unparry_user(attacker)
+            clear_retaliate(attacker)
 
-                result= HAM_HANDLED
-            }
+            result= HAM_HANDLED
         }
     }
     return result
@@ -141,13 +209,12 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
 public parry_mode_turn_off_task(id){
 
     if(!sh_is_active()) return
-    if(!sh_is_inround()) return
 
     id-=REIKA_PARRY_TURN_OFF_DELAY_TASKID
 
     if(!is_user_connected(id)) return
 
-    sh_chat_message(id,gHeroID,"Your parry timer has fully run out!")
+    sh_chat_message(id,gHeroID,"You missed your parry!")
     
     unparry_user(id)
 
@@ -198,6 +265,8 @@ public reika_init()
 //----------------------------------------------------------------------------------------------
 public reika_kd()
 {
+    if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
+    
     new temp[6]
 
     read_argv(1,temp,5)
@@ -212,10 +281,19 @@ public reika_kd()
         sh_sound_deny(id)
         return PLUGIN_HANDLED
     }
-    explosion(gHeroID,id,reika_explosion_radius,
-                        reika_explosion_damage,
-                        reika_explosion_force,1,1)
+    new bool:curr_mode = bool:Get_BitVar(mode_mask, id)
+    if(!curr_mode){
 
+        explosion(gHeroID,id,reika_explosion_radius,
+                            reika_explosion_damage,
+                            reika_explosion_force,1,1)
+    
+    }
+    else{
+
+        prepare_parry(id)
+        
+    }
 
     sh_set_cooldown(id,reika_explosion_cooldown)
     return PLUGIN_HANDLED
@@ -244,14 +322,11 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
         if(is_valid_custom_dmg_source(custom_weapon_id)){
             is_melee = (bool:xmod_is_melee_wpn(custom_weapon_id))
         }
-        else {
-            is_melee = is_generic_dmg_source(custom_weapon_id)
-        }
     }
 
     if(sh_user_has_hero(victim,gHeroID)){
         
-        if(!Get_BitVar(reika_is_parrying_mask,victim)){
+        if(Get_BitVar(reika_is_parrying_mask,victim)){
 
             if(is_melee){
                 
@@ -259,29 +334,28 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
                 
                 damage-=blocked_damage
 
+                absorb_user(victim, float(blocked_damage), attacker)
 
-                parry_user(victim,float(blocked_damage),attacker)
-
+                unparry_user(victim)
+                
             }
         }
     }
 
     if(sh_user_has_hero(attacker,gHeroID)){
 
-        if(Get_BitVar(reika_is_parrying_mask,attacker)){
-            if(is_melee&&(victim==reika_parried_tg[attacker])){
-                
-                new total_damage = damage+floatround(reika_stored_damage[attacker])
+        if(is_melee&&(victim==reika_parried_tg[attacker])){
+            
+            new total_damage = damage+floatround(reika_stored_damage[attacker])
 
-                damage = total_damage
-                
-                sh_chat_message(attacker,gHeroID,
-                                "Counter strike! %d xtra dmg dealt on strike",
-                                floatround(reika_stored_damage[attacker]),
-                                reika_parry_mode_time)
+            damage = total_damage
+            
+            sh_chat_message(attacker,gHeroID,
+                            "Counter strike! %d xtra dmg dealt on strike",
+                            floatround(reika_stored_damage[attacker]),
+                            reika_parry_mode_time)
 
-                unparry_user(attacker)
-            }
+            clear_retaliate(attacker)
         }
     }
     return DMG_FWD_PASS

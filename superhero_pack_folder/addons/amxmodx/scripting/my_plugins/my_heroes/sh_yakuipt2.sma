@@ -78,7 +78,7 @@ public player_prethink_yakui_weapon(id, uc_handle)
 
 	static button;
 	button= get_uc(uc_handle, UC_Buttons);
-	new clip,ammo,wpnid=get_user_weapon(id,clip,ammo)
+	new wpnid=get_user_weapon(id)
 	if(button & IN_ALT1){
 
 		button &= ~IN_ALT1

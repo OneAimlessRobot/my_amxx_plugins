@@ -404,9 +404,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			shinobu_damage_interaction(attacker,victim)
 		}
 	}
-	else if(is_generic_dmg_source(custom_weapon_id)){
-		shinobu_damage_interaction(attacker,victim)
-	}
 	
 	return DMG_FWD_PASS
 }
