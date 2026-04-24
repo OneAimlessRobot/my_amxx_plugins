@@ -59,7 +59,8 @@ new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 new dmg_source_name_long_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 
 stock FLORA_COOLDOWN_TASKID,
-		FLORA_LOAD_TASKID
+		FLORA_LOAD_TASKID,
+		FLORA_GLOBAL_TASKID
 
 
 
@@ -98,10 +99,11 @@ public plugin_init()
 
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
+	FLORA_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
 
+	set_task(0.5,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
 
 	register_think(FLORA_FIELD_CLASSNAME, "field_think")
-	register_forward(FM_CmdStart, "field_checks")
 	init_hud_syncs()
 
 }
@@ -376,71 +378,75 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	return best_id
 	
 }
-public field_checks(id, uc_handle){
+public flora_checks(task_id){
+
+	if(!sh_is_active()||sh_is_freezetime()) return
 
 
-	if(!client_hittable(id)) return FMRES_IGNORED
+	for(new id=0;id<SH_MAXSLOTS+1;id++){
+		if(!client_hittable(id)) continue
 
-	if(!sh_user_has_hero(id,flora_get_hero_id())) return FMRES_IGNORED
-	
-	if(sh_get_stun(id)) return FMRES_IGNORED
-	
-	g_prev_flora_button[id]=g_curr_flora_button[id]
-	g_prev_flora_cloaked[id]=g_curr_flora_cloaked[id]
-	new button = get_uc(uc_handle, UC_Buttons);
-	g_curr_flora_button[id]=button
-
-	if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )||!(button & IN_DUCK )){
+		if(!sh_user_has_hero(id,flora_get_hero_id())) continue
 		
-		g_curr_flora_cloaked[id]=0
-		apply_cloak(id)
-		return FMRES_IGNORED
-	
-	}
-
-	if(!g_flora_field_loaded[id]){
+		if(sh_get_stun(id)) continue
 		
-		return FMRES_IGNORED
-		
-	}
-	g_flora_prev_sheltered_value[id]=g_flora_sheltered_value[id]
-	new field_id,flora_sheltered_values:flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
-	g_flora_sheltered_value[id]=flora_sheltered_value;
-	
-	if(g_flora_curr_inside[id]!=field_id){
-		g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>flora_sheltered_values:0?1.0:0.0))
-						*floatpower(flora_field_heal_mult,float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
-
-		g_flora_prev_inside[id]=g_flora_curr_inside[id]
-		g_flora_curr_inside[id]=g_flora_sheltered_value[id]<=OUTSIDE?-1:field_id
-	}
-	if(g_flora_sheltered_value[id]>flora_sheltered_values:0){
-		g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
-		switch(g_flora_sheltered_value[id]){
-			case OUTSIDE:
-			{
-				if(g_prev_flora_cloaked[id]){
-					g_curr_flora_cloaked[id]=0
-				}
-				apply_cloak(id)
-				return FMRES_IGNORED
-			}
-			case DUNGEON_DWELLER:
-			{
-				
-				if(!(g_prev_flora_button[id] & IN_DUCK)){
-					
-					apply_teleport(id,field_id)
-				}
+		if(!g_flora_field_loaded[id]){
 			
+			continue
+			
+		}
+		
+		g_prev_flora_button[id]=g_curr_flora_button[id]
+		g_prev_flora_cloaked[id]=g_curr_flora_cloaked[id]
+		new button = entity_get_int(id,EV_INT_button);
+		g_curr_flora_button[id]=button
+		
+		if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )||!(button & IN_DUCK )){
+			g_flora_sheltered_value[id]=flora_sheltered_values:0;
+			g_curr_flora_cloaked[id]=0
+			apply_cloak(id)
+			continue
+		
+		}
+		g_flora_prev_sheltered_value[id]=g_flora_sheltered_value[id]
+		new field_id,flora_sheltered_values:flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
+		g_flora_sheltered_value[id]=flora_sheltered_value;
+		
+		
+		if(g_flora_curr_inside[id]!=field_id){
+			g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>flora_sheltered_values:0?1.0:0.0))
+							*floatpower(flora_field_heal_mult,float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
+
+			g_flora_prev_inside[id]=g_flora_curr_inside[id]
+			g_flora_curr_inside[id]=g_flora_sheltered_value[id]<=OUTSIDE?-1:field_id
+		}
+		if(g_flora_sheltered_value[id]>flora_sheltered_values:0){
+			g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
+			switch(g_flora_sheltered_value[id]){
+				case OUTSIDE:
+				{
+					if(g_prev_flora_cloaked[id]){
+						g_curr_flora_cloaked[id]=0
+					}
+					apply_cloak(id)
+					continue
+				}
+				case DUNGEON_DWELLER:
+				{
+					
+					if(!(g_prev_flora_button[id] & IN_DUCK)){
+						
+						apply_teleport(id,field_id)
+					}
+				
+				}
+			}
+			if(!g_prev_flora_cloaked[id]){
+				g_curr_flora_cloaked[id]=1
+				apply_cloak(id)
 			}
 		}
-		if(!g_prev_flora_cloaked[id]){
-			g_curr_flora_cloaked[id]=1
-			apply_cloak(id)
-		}
 	}
-	return FMRES_IGNORED
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
@@ -673,11 +679,11 @@ apply_cloak(id){
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
 	if(g_curr_flora_cloaked[id]){
-		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransAlpha);
+		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransColor);
 	}
 	else{
 		
-		set_user_rendering(id)
+		sh_set_rendering(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -737,14 +743,21 @@ public field_think(ent)
 				continue
 			}
 			if(g_flora_sheltered_value[owner]>OUTSIDE){
-				new Float:fdamage=floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99))
+				new Float:fdamage=floatmin(float(get_user_health(owner)) , floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99)))
+				new Float: needs_health=float(sh_get_max_hp(owner)-get_user_health(owner))
+				new actual_damage=floatround(floatmax(0.0+(g_flora_sheltered_value[owner]>SHELTERED?1.0:0.0),floatmin(needs_health-1.0,fdamage)))
+								
+				sh_extra_damage(pid,owner,actual_damage,
+								dmg_source_name_short_field_drain,
+								0,_,_,_,_,_,
+								SH_NEW_DMG_DRAIN,
+								field_drain_wpn_id)
 				
-				sh_extra_damage(pid,owner,floatround(fdamage), dmg_source_name_short_field_drain,0,_,_,_,_,_,
-									SH_NEW_DMG_DRAIN,
-									field_drain_wpn_id)
-				
-				sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
+				if(actual_damage>0){
 
+					sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
+				
+				}
 				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1)
 				set_damage_icon(pid,2,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]])
 				unset_damage_icon(pid,DMG_ICON_POISON)

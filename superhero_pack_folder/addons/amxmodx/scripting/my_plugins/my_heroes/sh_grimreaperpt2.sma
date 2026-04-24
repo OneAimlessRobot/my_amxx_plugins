@@ -76,11 +76,11 @@ public weaponChange(id)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
 		gJustResetRendering[id]=false
 		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)
-		sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransAlpha)
+		sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransColor)
 	}
 	else if(!gJustResetRendering[id]){
 		gJustResetRendering[id]=true
-		set_user_rendering(id,_,_,_,_,_,0)
+		sh_set_rendering(id)
 	}
 	return PLUGIN_CONTINUE
 

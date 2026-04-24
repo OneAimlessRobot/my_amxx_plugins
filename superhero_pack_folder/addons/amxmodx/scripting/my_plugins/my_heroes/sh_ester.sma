@@ -230,7 +230,7 @@ stock ester_weapons(id){
 reset_status(id){
 	
 	if(is_user_connected(id)){
-		set_user_rendering(id)	
+		sh_set_rendering(id)
 	}
 	UnSet_BitVar(gFinishedMask,id)
 	damage_to_do[id]=0
@@ -488,7 +488,6 @@ public sh_client_spawn(id)
 		}
 		ester_weapons(id)
 		trail(id,GREEN,0,0)
-		set_user_rendering(id,_,_,_,_,_,0)
 		reset_ester_user_round(id)
 		
 	}

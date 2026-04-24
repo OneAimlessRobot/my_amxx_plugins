@@ -297,7 +297,7 @@ unbleed_user(id){
 
 	if ( !shModActive() || !is_user_connected(id)) return
 	
-	set_user_rendering(id)
+	sh_set_rendering(id)
 	gIsBleeding[id]=NONE
 
 

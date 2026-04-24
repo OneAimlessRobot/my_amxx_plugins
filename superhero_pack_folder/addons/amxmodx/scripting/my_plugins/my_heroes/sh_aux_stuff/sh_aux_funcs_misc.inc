@@ -4,7 +4,7 @@
 #define sh_aux_funcs_misc
 
 
-#define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) ((%1==kRenderTransAlpha)?floatround(100.0*(1.0-(%2/255.0))):0)
+#define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) (((%1==kRenderTransAlpha)||(%1==kRenderTransColor))?floatround(100.0*(1.0-(%2/255.0))):0)
 
 
 

@@ -384,7 +384,7 @@ public jet_deploy_task(parm[],id){
 		entity_set_int(camera[id], EV_INT_movetype, MOVETYPE_NOCLIP)
 		entity_set_size(camera[id], Float:{-1.0,-1.0,-1.0}, Float:{1.0,1.0,1.0})
 		entity_set_model(camera[id], JETPLANE_CAMERA_MODEL)
-		set_rendering(camera[id], kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
+		set_rendering(camera[id], kRenderFxGlowShell, 0, 0, 0, kRenderTransColor, 0)
 		
 		
 		entity_set_origin(camera[id], origin)
@@ -505,7 +505,7 @@ public jet_think(ent)
 		entity_get_vector(ent, EV_VEC_origin, vOrigin)
 		new Float:curr_speed_stab_coeff=floatclamp(get_entity_velocity(ent)/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
 		new Float:curr_speed_dampening_coeff=floatclamp(((get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*get_entity_velocity(ent))/(get_jet_speed()*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
-		sh_set_rendering(owner,0,0,0,0,kRenderFxNone,kRenderTransAlpha);
+		sh_set_rendering(owner,0,0,0,0,kRenderFxNone,kRenderTransColor);
 		entity_set_origin(owner, vOrigin)
 		
 		if(get_jet_upflapon(owner)||get_jet_downflapon(owner)){

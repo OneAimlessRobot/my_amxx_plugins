@@ -163,12 +163,12 @@ public Climb(id,alpha) {
 		
 		entity_set_vector( id, EV_VEC_velocity, fVelocity );
 		
-		sh_set_rendering(id,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
+		sh_set_rendering(id,0,0,0,alpha,kRenderFxGlowShell,kRenderTransColor);
 		
 	}
 	else if (g_was_cloaked[id]){
 		g_is_cloaked[id]=0
-		set_user_rendering(id)
+		sh_set_rendering(id)
 	}
 }
 //----------------------------------------------------------------------------------------------

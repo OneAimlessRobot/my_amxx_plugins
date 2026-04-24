@@ -208,7 +208,7 @@ psychosis_user(id){
 }
 
 public unpsychosis_user(id){
-	set_user_rendering(id)
+	sh_set_rendering(id)
 	psychosis_off(id)
 	
 	

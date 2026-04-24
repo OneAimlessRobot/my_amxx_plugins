@@ -268,7 +268,7 @@ public Crouch(id,alpha) {
 	iButton = entity_get_int( iPlayer, EV_INT_button );
 	
 	if( ( iButton & IN_DUCK ) ) {
-		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransAlpha);
+		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransColor);
 	}
 	else{
 		sh_set_rendering(iPlayer);

@@ -154,7 +154,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
 			
 		}
-		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransAlpha)
+		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
 		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
 		aura(id,LineColors[color_const])
 		if(array[TRACK_TASK_DO_DAMAGE]){
@@ -228,7 +228,7 @@ public _track_user(iPlugins, iParams){
 public _unradioactive_user(iPlugin,iParams){
 	new id=get_param(1)
 	if(is_user_connected(id)){
-		set_user_rendering(id)
+		sh_set_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_RADIATION)
 		gatling_set_fx_num(id, 0)
 	}
@@ -498,7 +498,7 @@ id-=REMOVE_GLOW_TASKID
 if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
 	return
 }
-set_user_rendering(id)
+sh_set_rendering(id)
 
 }
 

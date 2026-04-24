@@ -277,7 +277,7 @@ public removeMark(id)
 		remove_entity(ice[id])
 		ice[id] = 0
 		
-		set_user_rendering(id)
+		sh_set_rendering(id)
    }
 	return PLUGIN_HANDLED
 }
@@ -361,7 +361,7 @@ public newRound(id)
 		ice[id] = 0
 		g_jetPackRunning[id] = 0
 		set_user_info(id,"JETPACK_RUN","0")
-		set_user_rendering(id)
+		sh_set_rendering(id)
   }
   return PLUGIN_CONTINUE
 }

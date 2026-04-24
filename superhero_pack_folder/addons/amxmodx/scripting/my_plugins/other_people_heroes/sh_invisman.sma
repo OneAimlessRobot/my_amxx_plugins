@@ -63,11 +63,11 @@ public sh_client_spawn(id)
 public setInvisibility(id, alpha)
 {
 	if ( alpha < 100 ) {
-		sh_set_rendering(id, 8, 8, 8, alpha, kRenderFxGlowShell, kRenderTransAlpha)
+		sh_set_rendering(id, 8, 8, 8, alpha, kRenderFxGlowShell, kRenderTransColor)
 	}
 	else {
 		// Using FxNone, color makes no difference, straight alpha transition
-		sh_set_rendering(id, 0, 0, 0, alpha, kRenderFxNone, kRenderTransAlpha)
+		sh_set_rendering(id, 0, 0, 0, alpha, kRenderFxNone, kRenderTransColor)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -586,7 +586,7 @@ public uncocaine_task(array[],id){
 uneffect_user_primitive(id){
 	if ( !shModActive() ||!is_user_connected(id)) return
 	new the_fx_id=gatling_get_fx_num(id)
-	set_user_rendering(id)
+	sh_set_rendering(id)
 	if(fx_task_parameters[the_fx_id][fx_task_status_icon]>=0){
 		set_damage_icon(id,0,fx_task_parameters[the_fx_id][fx_task_status_icon])
 	}

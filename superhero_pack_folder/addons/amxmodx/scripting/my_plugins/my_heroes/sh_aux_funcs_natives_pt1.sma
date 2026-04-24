@@ -756,10 +756,10 @@ public _glow(iPlugins, iParams){
 		on=get_param(6)
 
 	if(on) {
-		set_rendering(id, kRenderFxGlowShell, r, g, b, kRenderTransAlpha, a)
+		sh_set_rendering(id, r, g, b, a, kRenderFxGlowShell, kRenderTransColor )
 	}
 	else{
-		set_rendering(id, kRenderFxNone, r, g, b,  kRenderTransAlpha, a)
+		sh_set_rendering(id, r, g, b, a, kRenderFxNone, kRenderTransColor )
 	}
 }
 
@@ -911,7 +911,7 @@ public _set_render_with_color_const(iPlugins,iParams){
 						LineColors[the_color_const][2],
 						(alpha<0)?255:alpha,
 						kRenderFxGlowShell,
-						kRenderTransAlpha)
+						kRenderTransColor)
 		
 		aura(id,LineColors[the_color_const])
 	}

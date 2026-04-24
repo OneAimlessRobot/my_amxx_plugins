@@ -421,7 +421,7 @@ public godmode_render_update(id){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
 		}
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
-		glow(id,255,255,255,255,1)
+		sh_set_rendering(id,255,255,255,255, kRenderFxGlowShell,kRenderTransColor)
 		remove_glow_user(id,FLIGHT_GODMODE_THINK_TIME)
 		if(g_ester_blow_up_time_left[id]>0){
 			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)

@@ -207,7 +207,7 @@ sh_player_unmorph_task(id,take_away_model=1)
 		cs_reset_user_model(id)
 		if(sh_get_player_cloak_pct(id)<=0){
 
-			set_user_rendering(id)
+			sh_set_rendering(id)
 		}
 		play_morph_sound(id)
 		gPlayersCurrHeroModelID[id]=(take_away_model?-1:gPlayersCurrHeroModelID[id])
@@ -527,6 +527,8 @@ public newRound(id){
 //to be executed in the task!
 teamglow_player(id){
 
+	if(sh_get_player_cloak_pct(id)>0) return 
+
 	static CsTeams:curr_player_team
 
 
@@ -537,11 +539,11 @@ teamglow_player(id){
 		
 		case CS_TEAM_T:{
 
-			sh_set_rendering(id, 255, 0, 0, 16,kRenderFxGlowShell);
+			sh_set_rendering(id, 255, 0, 0, 50,kRenderFxGlowShell);
 		}
 		case CS_TEAM_CT:{
 
-			sh_set_rendering(id, 0, 0, 255, 16,kRenderFxGlowShell);
+			sh_set_rendering(id, 0, 0, 255, 50,kRenderFxGlowShell);
 
 		}
 

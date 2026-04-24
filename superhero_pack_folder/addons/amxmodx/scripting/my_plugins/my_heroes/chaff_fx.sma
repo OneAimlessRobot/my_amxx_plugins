@@ -134,7 +134,7 @@ public chaff_task(array[1],id){
 		unchaff_user(id)
 		return
 	}
-	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransAlpha)
+	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransColor)
 	
 	if(gIsChaffed[id]&&(array[0]<=CHAFF_TIMES)){
 		array[0]++
@@ -162,7 +162,7 @@ chaff_user(id){
 }
 public unchaff_user(id){
 	
-	set_user_rendering(id)
+	sh_set_rendering(id)
 	gIsChaffed[id]=false
 	set_damage_icon(id,0,DMG_ICON_SHOCK)
 	entity_set_int( id, EV_INT_fixangle, 0 );

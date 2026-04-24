@@ -216,7 +216,7 @@ public fully_wake_up_task(id){
 }
 unsleep_user(id){
 	if ( !shModActive() ||!is_user_connected(id)) return
-	set_user_rendering(id)
+	sh_set_rendering(id)
 	set_damage_icon(id,0,DMG_ICON_GAS)
 	UnSet_BitVar(gIsAsleepMask,id)
 

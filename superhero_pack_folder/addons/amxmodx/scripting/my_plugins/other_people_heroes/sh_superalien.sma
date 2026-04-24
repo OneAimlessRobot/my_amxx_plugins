@@ -202,7 +202,7 @@ SuperAlien_vision_off(id)
 	message_end()
 
 	// Resets alpha
-	set_user_rendering(id)
+	sh_set_rendering(id)
 
 	// Makes sure this function is only called once, if SuperAlien mode was on
 	SuperAlienModeOn[id] = false

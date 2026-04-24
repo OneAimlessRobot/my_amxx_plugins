@@ -114,7 +114,7 @@ apply_cloak(id){
 		
 		g_curr_shinobu_cloaked[id]=0
 		g_prev_shinobu_cloaked[id]=0
-		set_user_rendering(id)
+		sh_set_rendering(id)
 		return 
 
 	}
@@ -125,12 +125,12 @@ apply_cloak(id){
 
 	if(g_curr_shinobu_cloaked[id]){
 		
-		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransAlpha);
+		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransColor);
 
 	}
 	else{
 		
-		set_user_rendering(id)
+		sh_set_rendering(id)
 	}
 }
 

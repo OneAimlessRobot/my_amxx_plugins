@@ -1,0 +1,5 @@
+L 04/24/2026 - 02:31:15: Start of error session.
+L 04/24/2026 - 02:31:15: Info (map "de_inferno") (file "addons/amxmodx/logs/error_20260424.log")
+L 04/24/2026 - 02:31:15: Function is not present (function "flora_checks") (plugin "flora_field.amxx")
+L 04/24/2026 - 02:31:15: [AMXX] Run time error 10 (plugin "flora_field.amxx") (native "set_task") - debug not enabled!
+L 04/24/2026 - 02:31:15: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

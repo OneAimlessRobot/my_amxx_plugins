@@ -30,7 +30,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level", true )
 	sh_register_superheromod_model(gHeroID,
 							FLORA_PLAYER_MODEL,
-							FLORA_PLAYER_MODEL,
+							FLORA_PLAYER_MODEL_T,
 							"Flora",
 							"",
 							"")

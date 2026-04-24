@@ -101,7 +101,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 		sh_extra_damage(victim, attacker, damage, "Lightning Bolt", 0, SH_DMG_KILL)
 
 		// Make the corpse invisible
-		sh_set_rendering(victim, 0, 0, 0, 0, kRenderFxGlowShell, kRenderTransAlpha)
+		sh_set_rendering(victim, 0, 0, 0, 0, kRenderFxGlowShell, kRenderTransColor)
 		gIsInvisible[victim] = true
 	}
 }

@@ -272,7 +272,7 @@ public release(id)
 		}
 		if ( is_user_connected(g_grabbedID[id]) ) {
 			shSetGravityPower(g_grabbedID[id])
-			set_user_rendering(g_grabbedID[id])
+			sh_set_rendering(g_grabbedID[id])
 		}
 		g_grabbedID[id] = 0
 		g_grabTimer[id] = -1

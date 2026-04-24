@@ -214,7 +214,7 @@ public casper_removeghost(id)
 		}
 	}
 
-	set_user_rendering(id)
+	sh_set_rendering(id)
 
 	if ( is_user_alive(id) && gInGhostMode[id] && hasRoundStarted() ) {
 
@@ -255,13 +255,13 @@ public positionChangeTimer(id)
 	get_user_origin(id, g_lastPosition[id])
 
 	new Float:velocity[3]
-	Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+	entity_get_vector(id, EV_VEC_velocity, velocity)
 
 	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
 		// Force a Move (small jump)
 		velocity[0] += 20.0
 		velocity[2] += 100.0
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
 	set_task(0.4, "positionChangeCheck", id)

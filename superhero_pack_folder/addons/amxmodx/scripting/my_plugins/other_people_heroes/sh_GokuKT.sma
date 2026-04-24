@@ -183,7 +183,7 @@ public end_kaioken(id)
 		set_user_armor(id, set_armor)
 		reset_armor[id] = false
 	}
-	set_user_rendering(id)
+	sh_set_rendering(id)
 }
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)

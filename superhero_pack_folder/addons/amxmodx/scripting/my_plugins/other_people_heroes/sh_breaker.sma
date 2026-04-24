@@ -77,5 +77,5 @@ public remove_rendering(victim)
 {
 	if ( !is_user_connected(victim)) return 
 	
-	set_user_rendering(victim)
+	sh_set_rendering(victim)
 }

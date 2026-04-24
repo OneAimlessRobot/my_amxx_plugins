@@ -171,7 +171,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 					get_user_origin(id, origin)
 
 					set_pev(id, pev_maxspeed, 130.0)
-					set_rendering(id, kRenderFxGlowShell, 30, 125, 255, kRenderNormal, 0)
+					sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)
 
 					emit_sound(id, CHAN_WEAPON, g_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -226,7 +226,7 @@ public remove_frozen(id)
 	if(slowed[id])
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-		set_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderNormal, 0)
+		sh_set_rendering(id,0, 0, 0, 0,kRenderFxGlowShell, kRenderNormal)
 
 		message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
 		write_short(1<<10)
