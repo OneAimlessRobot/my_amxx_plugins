@@ -93,8 +93,6 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "Ester_Knockback", 1,true)
 	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect",_,true)
 	register_logevent("ester_round_start", 2, "1=Round_Start")
-	register_logevent("ester_round_end", 2, "1=Round_End")
-	register_logevent("ester_round_end", 2, "1&Restart_Round_")
 
 	ESTER_REBORN_CALCULATION_LOOP_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_POSITION_CHECK_TASKID=allocate_typed_task_id(player_task)
@@ -445,28 +443,20 @@ public ester_teamcheck(parm[])
 //----------------------------------------------------------------------------------------------
 public ester_round_start()
 {
-	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
-			ester_set_reborn_mode(id,0)
-			ester_remove_statuses(id)
-		}
-	}
-}
-//----------------------------------------------------------------------------------------------
-public ester_round_end()
-{
+
 	if ( !sh_is_active() ) return
 
 	
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
-	
+
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id <= SH_MAXSLOTS; id++) {
-		ester_remove_statuses(id)
-		ester_set_reborn_mode(id,0)
+		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
+			ester_set_reborn_mode(id,0)
+			ester_remove_statuses(id)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -491,6 +481,7 @@ ester_remove_statuses(id){
 
 	if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 		
+		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 		set_user_godmode(id,0)
 		remove_user_flight_fx(id)
 	}

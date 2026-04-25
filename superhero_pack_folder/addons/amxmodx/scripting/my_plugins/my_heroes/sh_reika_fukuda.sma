@@ -9,6 +9,10 @@
 
 #define BLOCK_FRACTION 0.76
 
+#define reika_parry_successful_sfx "shmod/reika/parry_sfx.wav"
+#define reika_parry_knife_blocked_sfx "shmod/reika/sword_break.wav"
+#define reika_parry_equip_sfx "shmod/reika/parry_on_sound.wav"
+
 // GLOBAL VARIABLES
 new gHeroID
 new gHeroName[]="Reika Fukuda"
@@ -114,6 +118,7 @@ prepare_parry(id){
     if(!Get_BitVar(reika_is_parrying_mask,id)){
         
         sh_chat_message(id,gHeroID,"Preparing to parry!")
+        emit_sound(id,CHAN_WEAPON,reika_parry_equip_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
         Set_BitVar(reika_is_parrying_mask,id);
         set_task(reika_parry_mode_time,"parry_mode_turn_off_task",
                                 id+REIKA_PARRY_TURN_OFF_DELAY_TASKID)
@@ -133,6 +138,11 @@ absorb_user(id, Float:the_damage, tg){
     sh_chat_message(id,gHeroID,
                         "You parried their melee strike and stored %0.1f damage!",
                         the_damage)
+    emit_sound(id,CHAN_WEAPON,reika_parry_successful_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+    sh_chat_message(tg,gHeroID,
+                        "Your melee attack got parried! %0.1f damage was blocked",
+                        the_damage)
+    emit_sound(tg,CHAN_WEAPON,reika_parry_knife_blocked_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
                 
 
 }
@@ -286,7 +296,7 @@ public reika_kd()
 
         explosion(gHeroID,id,reika_explosion_radius,
                             reika_explosion_damage,
-                            reika_explosion_force,1,1)
+                            reika_explosion_force,1,1,_,sfx_show_shockwave)
     
     }
     else{
@@ -298,7 +308,13 @@ public reika_kd()
     sh_set_cooldown(id,reika_explosion_cooldown)
     return PLUGIN_HANDLED
 }
+public plugin_precache(){
 
+    engfunc(EngFunc_PrecacheSound, reika_parry_successful_sfx)
+    engfunc(EngFunc_PrecacheSound, reika_parry_knife_blocked_sfx)
+    engfunc(EngFunc_PrecacheSound, reika_parry_equip_sfx)
+
+}
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
     if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){

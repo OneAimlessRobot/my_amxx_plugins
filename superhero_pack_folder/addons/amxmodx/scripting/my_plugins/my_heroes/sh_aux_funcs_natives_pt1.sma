@@ -544,72 +544,80 @@ public _explode_fx(iPlugins, iParams){
 	new vec1[3],
 		radius=get_param(2),
 		sh_custom_color:fx_color=sh_custom_color:get_param(3),
-		alpha=get_param(4)
+		alpha=get_param(4),
+		sfx_mask=get_param(5)
 	
 	get_array(1,vec1,3)
 
-	// blast circles
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 21 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + 16)
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2] + radius*3)
-	write_short( white )
-	write_byte( 0 ) // startframe
-	write_byte( 0 ) // framerate
-	write_byte( 2 ) // life 2
-	write_byte( 60 ) // width 16
-	write_byte( 0 ) // noise
-	write_byte( LineColors[fx_color][0] ) // r
-	write_byte( LineColors[fx_color][1] ) // g
-	write_byte( LineColors[fx_color][2]  ) // b
-	write_byte( alpha ) //brightness
-	write_byte( 0 ) // speed
-	message_end()
-	//Explosion2
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 12 )
-	write_coord(vec1[0])
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_byte( radius ) // byte (scale in 0.1's) 188
-	write_byte( 10 ) // byte (framerate)
-	message_end()
+	if((sfx_mask&sfx_show_shockwave)){
+		// blast circles
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( 21 )
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2] + 16)
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2] + radius*3)
+		write_short( white )
+		write_byte( 0 ) // startframe
+		write_byte( 0 ) // framerate
+		write_byte( 2 ) // life 2
+		write_byte( 60 ) // width 16
+		write_byte( 0 ) // noise
+		write_byte( LineColors[fx_color][0] ) // r
+		write_byte( LineColors[fx_color][1] ) // g
+		write_byte( LineColors[fx_color][2]  ) // b
+		write_byte( alpha ) //brightness
+		write_byte( 0 ) // speed
+		message_end()
+		//Explosion2
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
+		write_byte( 12 )
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2])
+		write_byte( radius ) // byte (scale in 0.1's) 188
+		write_byte( 10 ) // byte (framerate)
+		message_end()
+	}
+
+	if((sfx_mask&sfx_show_fireball)){
+		//TE_Explosion
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( 3 )
+		write_coord(vec1[0] + generate_int( -100, 100 ))
+		write_coord(vec1[1] + generate_int( -100, 100 ))
+		write_coord(vec1[2]+ generate_int( -50, 50 ))
+		write_short( precached_explosion_sprite1 )
+		write_byte(  radius/9  ) // byte (scale in 0.1's) 188
+		write_byte( 12 ) // byte (framerate)
+		write_byte( 0 ) // byte flags
+		message_end()
+	}
+	if((sfx_mask&sfx_show_smoke)){
+		//Smoke
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( 5 ) // 5
+		write_coord(vec1[0] + generate_int( -100, 100 ))
+		write_coord(vec1[1] + generate_int( -100, 100 ))
+		write_coord(vec1[2] + generate_int( -50, 50 ))
+		write_short( smoke )
+		write_byte( radius/14 )  // 2
+		write_byte( 10 )  // 10
+		message_end()
+	}
+	if((sfx_mask&sfx_show_burn_decal)){
 	
-	//TE_Explosion
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 3 )
-	write_coord(vec1[0] + generate_int( -100, 100 ))
-	write_coord(vec1[1] + generate_int( -100, 100 ))
-	write_coord(vec1[2]+ generate_int( -50, 50 ))
-	write_short( precached_explosion_sprite1 )
-	write_byte(  radius/9  ) // byte (scale in 0.1's) 188
-	write_byte( 12 ) // byte (framerate)
-	write_byte( 0 ) // byte flags
-	message_end()
-	
-	//Smoke
-	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-	write_byte( 5 ) // 5
-	write_coord(vec1[0] + generate_int( -100, 100 ))
-	write_coord(vec1[1] + generate_int( -100, 100 ))
-	write_coord(vec1[2] + generate_int( -50, 50 ))
-	write_short( smoke )
-	write_byte( radius/14 )  // 2
-	write_byte( 10 )  // 10
-	message_end()
-	
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(109)		// decal and ricochet sound
-	write_coord(vec1[0])	// pos
-	write_coord(vec1[1])
-	write_coord(vec1[2])
-	write_short(0)			// I have no idea what thats supposed to be
-	write_byte(28)			// decal
-	message_end()
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(109)		// decal and ricochet sound
+		write_coord(vec1[0])	// pos
+		write_coord(vec1[1])
+		write_coord(vec1[2])
+		write_short(0)			// I have no idea what thats supposed to be
+		write_byte(28)			// decal
+		message_end()
+	}
 }
 //(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
 public _directed_spark(iPlugins, iParams){

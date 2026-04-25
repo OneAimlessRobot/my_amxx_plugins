@@ -40,26 +40,53 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 }
 
 
+
 native prepare_shero_aux_lib_pt3()
+
+
+/*
+
+Explosion sfx masks!
+
+#define sfx_show_shockwave (1<<0)
+#define sfx_show_fireball (1<<1)
+#define sfx_show_smoke (1<<2)
+#define sfx_show_burn_decal (1<<3)
+
+*/
 native explosion(hero_id,ent_id,Float:explosion_radius,
 					Float:peak_power,
 					Float:optional_force=0.0,
 					ignore_owner=1,
 					set_stun=0,
 					Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,
-					bool:use_fx=true,
+					sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
 					sh_custom_color:color_const=WHITE,
 					bool:use_sound=false,
 					const custom_sound_sample[128]=crush_stunned);
+
+/*
+
+Explosion sfx masks!
+
+
+#define sfx_show_shockwave (1<<0)
+#define sfx_show_fireball (1<<1)
+#define sfx_show_smoke (1<<2)
+#define sfx_show_burn_decal (1<<3)
+
+*/
 
 native explosion_custom_entity(ent_id,Float:explosion_radius,
 					Float:peak_power,
 					ent_classname[]="player",
 					Float:optional_force=0.0,
-					bool:use_fx=true,
+					sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
 					sh_custom_color:color_const=WHITE,
 					bool:use_sound=false,
 					const custom_sound_sample[128]=crush_stunned);
+
+
 
 native track_user(id,attacker,do_damage=0,damage=40,Float:period,Float:time,track_color=LTBLUE);
 native unradioactive_user(id)

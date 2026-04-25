@@ -246,7 +246,7 @@ public _explosion(iPlugins,iParams){
 		ignore_owner=get_param(6),
 		set_stun=get_param(7),
 		Float:damage_frac_ignore_owner=get_param_f(8),
-		bool:use_fx=bool:get_param(9),
+		sfx_mask=get_param(9),
 		sh_custom_color:fx_color=sh_custom_color:get_param(10),
 		bool:use_sound=bool:get_param(11)
 
@@ -266,8 +266,8 @@ public _explosion(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(use_fx){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color)
+	if(sfx_mask>0){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if(use_sound){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
@@ -305,7 +305,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		Float:explosion_radius=get_param_f(2),
 		Float:peak_power=get_param_f(3),
 		Float:optional_force=get_param_f(5),
-		bool:use_fx=bool:get_param(6),
+		sfx_mask=get_param(6),
 		sh_custom_color:fx_color=sh_custom_color:get_param(7),
 		bool:use_sound=bool:get_param(8)
 
@@ -326,8 +326,8 @@ public _explosion_custom_entity(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(use_fx){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color)
+	if(sfx_mask>0){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if(use_sound){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}

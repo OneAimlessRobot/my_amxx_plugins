@@ -83,6 +83,19 @@ enum cs_grenade_animation_sequences{
 #define EXPLOSION_TANK_SHOT_SOUND "shmod/a_exm2.wav"
 
 
+/**
+
+Explosion sfx masks!
+
+*/
+
+#define sfx_show_shockwave (1<<0)
+#define sfx_show_fireball (1<<1)
+#define sfx_show_smoke (1<<2)
+#define sfx_show_burn_decal (1<<3)
+
+
+
 //Colors To Pick From
 enum sh_custom_color{
 		CUSTOM=0,
