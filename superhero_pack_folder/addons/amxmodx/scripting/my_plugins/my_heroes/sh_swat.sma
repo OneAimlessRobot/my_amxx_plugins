@@ -9,6 +9,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "custom_grenades/custom_grenades.inc"
 
 
 #define SWAT_M4_P_MODEL "models/shmod/swatm4/p_m4a1.mdl"
@@ -90,6 +91,8 @@ public newRound(id)
 public swat_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) ) {
+
+		give_custom_grenades(id,GREN_SHOCK,5)
 		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"item_thighpack")
 	}

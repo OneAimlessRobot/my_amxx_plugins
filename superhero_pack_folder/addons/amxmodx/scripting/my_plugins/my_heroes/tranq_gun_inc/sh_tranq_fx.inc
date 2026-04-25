@@ -6,6 +6,8 @@
 
 #define CAN_SELF_SLEEP 1
 
+#define SHOCK_GRENADE_SOUND "shmod/custom_grenades/shock_grenade.wav"
+
 #define SLEEP_SFX "shmod/erica/sleep/snore.wav"
 
 #define SLEEP_PERIOD 0.25

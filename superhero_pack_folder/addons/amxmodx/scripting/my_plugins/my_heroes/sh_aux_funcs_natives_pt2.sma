@@ -109,11 +109,14 @@ public _strip_weapon_for_my_grenade_heroes(iPlugins, iParams){
 	get_string(2,message,127)
 
 	new classid=get_param(3)
+	if(!is_weaponid_valid(classid)){
 
+		return
+	}
 	new optional_bool=get_param(4)
 
 	if(optional_bool){
-		if(!is_user_bot(id)){
+		if(!is_user_bot(id)&&is_user_alive(id)){
 			client_print(id, print_center, message)
 		}
 		ham_strip_user_weapon(id, classid, _, false);

@@ -52,6 +52,7 @@ public plugin_precache(){
 public plugin_natives(){
 	
 	register_native("sh_molly_user","_sh_molly_user",0);
+	register_native("sh_is_user_burning","_sh_is_user_burning",0);
 	register_native("sh_unmolly_user","_sh_unmolly_user",0);
 }
 public burn_task(array[2],id)
@@ -169,6 +170,13 @@ public _sh_unmolly_user(iPlugin,iParams){
 	
 	
 	
+}
+
+public bool:_sh_is_user_burning(iPlugin,iParams){
+	new id=get_param(1)
+
+	return gIsBurning[id]
+
 }
 stock burn_user(id,attacker){
 

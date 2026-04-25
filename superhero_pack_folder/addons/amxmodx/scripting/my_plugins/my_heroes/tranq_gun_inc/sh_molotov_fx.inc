@@ -6,6 +6,8 @@
 
 #define CAN_SELF_MOLLY 1
 
+#define EXTINGUISH_FIRE_SOUND "shmod/custom_grenades/co2_grenade.wav"
+
 #define MOLLY_FIRE_SFX "shmod/erica/molotov/molotov_fire.wav"
 
 #define gSoundBurning "ambience/burning1.wav"
@@ -21,7 +23,7 @@
 
 native sh_molly_user(id,attacker,gHeroID)
 native sh_unmolly_user(id)
-
+native bool:sh_is_user_burning(id)
 
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

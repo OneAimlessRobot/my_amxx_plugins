@@ -267,7 +267,7 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 
 	new wpn_id=get_param(2)
 
-	if (wpn_id<1 || wpn_id > CSW_LAST_WEAPON){
+	if (!is_weaponid_valid(wpn_id)){
 
 		return -1
 	}
@@ -428,8 +428,8 @@ public sh_choose_weapon_model(id, level, cid)
 		read_argv(2,arg2,charsmax(arg2))
 		wpn_model_id = str_to_num(arg2)
 
-		if (wpn_id<0 || wpn_id > CSW_LAST_WEAPON){
-			console_print(id,"Invalid weapon id %d!^nInput a wpn_id from 0 to %d!^n",
+		if (!is_weaponid_valid(wpn_id)){
+			console_print(id,"Invalid weapon id %d!^nInput a wpn_id from 1 to %d!^n",
 							wpn_id,
 							CSW_LAST_WEAPON)
 			return PLUGIN_HANDLED

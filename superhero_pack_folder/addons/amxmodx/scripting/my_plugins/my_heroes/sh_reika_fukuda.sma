@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "custom_grenades/custom_grenades.inc"
 
 #define BLOCK_FRACTION 0.76
 
@@ -238,6 +239,7 @@ public newRound(id)
     }
     if ( sh_user_has_hero(id,gHeroID) ) {
         
+        give_custom_grenades(id,GREN_CO2,5)
         unparry_user(id)
         sh_unset_cooldown_flag(id)
         sh_end_cooldown(id+SH_COOLDOWN_TASKID)

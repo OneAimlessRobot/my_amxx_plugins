@@ -11,6 +11,8 @@ enum sh_grenade_type{
     GREN_MOLLY,
     GREN_CHAFF,
     GREN_SLEEP,
+    GREN_CO2,
+    GREN_SHOCK,
     GREN_MAX_TYPES
 
 }

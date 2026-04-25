@@ -20,6 +20,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
 enum sh_grenade_struct{
 
     sh_grenade_name[128],
@@ -29,6 +30,7 @@ enum sh_grenade_struct{
     sh_grenade_break_sound[128],
 	sh_grenade_weapon_classid,
     sh_grenade_charge_taskid,
+	sh_custom_color:grenade_color_num,
 	Float:blast_radius,
     Float:sh_grenade_throw_speed,
 	Float:min_charge_time,
@@ -46,6 +48,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					"",
 					0,
 					-1,
+					CUSTOM,
 					0.0,
 					0.0,
 					0.0,
@@ -59,6 +62,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					GLASS_VIAL_BREAK,
 					CSW_HEGRENADE,
 					-1,
+					PINK,
 					500.0,
 					3000.0,
 					1.0,
@@ -71,6 +75,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					crush_stunned,
 					CSW_FLASHBANG,
 					-1,
+					WHITE,
 					500.0,
 					3000.0,
 					1.0,
@@ -83,6 +88,33 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					SMOKE_EXPLODE_SOUND,
 					CSW_SMOKEGRENADE,
 					-1,
+					BLUE,
+					500.0,
+					3000.0,
+					1.0,
+					5.0,
+					1.5},
+
+	{"CO2_grenade","CO2_grenade",
+					"models/w_smokegrenade.mdl",
+					"weapon_smokegrenade",
+					EXTINGUISH_FIRE_SOUND,
+					CSW_SMOKEGRENADE,
+					-1,
+					LTGREEN,
+					500.0,
+					3000.0,
+					1.0,
+					5.0,
+					1.5},
+
+	{"shock_grenade","shock_grenade",
+					"models/w_flashbang.mdl",
+					"weapon_flashbang",
+					SHOCK_GRENADE_SOUND,
+					CSW_FLASHBANG,
+					-1,
+					LTBLUE,
 					500.0,
 					3000.0,
 					1.0,
@@ -91,7 +123,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 }
 
-new sh_grenade_type:curr_user_grenade[SH_MAXSLOTS+1]
+new sh_grenade_type:curr_user_grenade[SH_MAXSLOTS+1],
+	sh_grenade_type:prev_user_grenade[SH_MAXSLOTS+1]
 
 new sh_grenade_armed_mask[GREN_MAX_TYPES]
 
@@ -155,16 +188,31 @@ public event_curr_grenade(id){
 	if(!client_hittable(id)) return PLUGIN_CONTINUE;	
 	
 	new wpn_id=-1
-	
 	new bool:user_has_grenade=user_has_grenade_on(id, wpn_id)
 
-	if(!user_has_grenade) return PLUGIN_CONTINUE
+	prev_user_grenade[id]=curr_user_grenade[id]
+	
+	if(!user_has_grenade){
+		
+		curr_user_grenade[id]=sh_grenade_type:0;
+		return PLUGIN_CONTINUE
+	
+	}
 
 	for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 
-		if(wpn_id==sh_grenade_structs_arr[i][sh_grenade_weapon_classid]){
+		if((wpn_id==sh_grenade_structs_arr[i][sh_grenade_weapon_classid])&&(curr_grenade_ammo[id][i]>0)){
 
 				curr_user_grenade[id]=i
+				if(curr_user_grenade[id]!=prev_user_grenade[id]){
+					
+					if(!is_user_bot(id)){
+						client_print(id,print_center,"Grenade switch! (%s -> %s)",
+							sh_grenade_structs_arr[prev_user_grenade[id]][sh_grenade_name],
+							sh_grenade_structs_arr[curr_user_grenade[id]][sh_grenade_name]);
+					}
+					UnSet_BitVar(sh_grenade_armed_mask[prev_user_grenade[id]],id)
+				}
 				return PLUGIN_CONTINUE
 		}
 	}
@@ -183,22 +231,15 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED
+	if(!sh_is_active()) return FMRES_IGNORED
 
-	if ( !is_user_alive(id)||!client_hittable(id)) return FMRES_IGNORED;
+	if (!client_hittable(id)) return FMRES_IGNORED;
 	
 	new sh_grenade_type:gren_type=curr_user_grenade[id]
 	new wpn_id=-1
-	if(!hasRoundStarted()){
-	
-		UnSet_BitVar(sh_grenade_armed_mask[gren_type],id)
-		return FMRES_IGNORED
-	}
+	if(!user_has_grenade_on(id,wpn_id)||(gren_type<=GREN_NONE)){
 
-	if(!user_has_grenade_on(id,wpn_id)){
-
-
-		UnSet_BitVar(sh_grenade_armed_mask[gren_type],id)
+		UnSet_BitVar(sh_grenade_armed_mask[prev_user_grenade[id]],id);
 		return FMRES_IGNORED
 	}
 	new ent = find_ent_by_owner(-1, sh_grenade_structs_arr[gren_type][sh_grenade_weaponname], id);
@@ -395,7 +436,7 @@ if(!curr_grenade_ammo[id][the_type])
 	engclient_cmd(id, "weapon_knife")
 }
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-trail(Ent,WHITE,10,5)
+trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 entity_set_float(Ent,EV_FL_nextthink,get_gametime()+1.0)
 
 return PLUGIN_CONTINUE
@@ -435,7 +476,7 @@ vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 make_shockwave(vExplodeAt,
 			sh_grenade_structs_arr[the_type][blast_radius],
-			LineColors[WHITE],1,5,8,4)
+			LineColors[sh_grenade_structs_arr[the_type][grenade_color_num]],1,5,8,4)
 anime_kill_fx(vExplodeAt)
 
 emit_sound(id_grenade, CHAN_WEAPON,
@@ -492,6 +533,22 @@ public on_death_custom_grenades(){
 		uncharge_custom_nade(id,i)
 	}
 }
+public client_connect(id){
+
+	arrayset(curr_grenade_ammo[id],0,GREN_MAX_TYPES)
+	curr_user_grenade[id]=sh_grenade_type:0
+	prev_user_grenade[id]=sh_grenade_type:0
+	for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
+		
+		uncharge_custom_nade(id,i)
+		strip_weapon_for_my_grenade_heroes(id,_,
+					sh_grenade_structs_arr[i][sh_grenade_weapon_classid],
+					!get_custom_grenade_ammo(id,i))	
+	}
+
+	
+
+}
 public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 
 	switch(gren_type){
@@ -507,6 +564,23 @@ public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 		case GREN_MOLLY:{
 
 			sh_molly_user(tg,attacker,-1)
+		}
+		case GREN_CO2:{
+			
+			if(sh_is_user_burning(tg)){
+				sh_chat_message(tg,-1,"You got ridden of flames with %s grenade!",
+								sh_grenade_structs_arr[gren_type][sh_grenade_name])
+				sh_unmolly_user(tg)
+			}
+			
+		}
+		case GREN_SHOCK:{
+			if(sh_get_user_is_asleep(tg)){
+				sh_chat_message(tg,-1,"You got woken up with %s grenade!",
+								sh_grenade_structs_arr[gren_type][sh_grenade_name])
+				sh_unsleep_user(tg)
+			}
+			sh_set_stun(tg,1.0,180.0)
 		}
 		default:{
 			
