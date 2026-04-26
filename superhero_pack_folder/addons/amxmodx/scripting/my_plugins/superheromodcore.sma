@@ -2470,7 +2470,7 @@ public powerKeyDown(id)
 	//new Float:gametime = get_gametime()
 	//if ( gametime - gLastKeydown[id] < 0.2 ) return PLUGIN_HANDLED
 	//gLastKeydown[id] = gametime
-
+	
 	new cmd[12], whichKey
 	read_argv(0, cmd, charsmax(cmd))
 	whichKey = str_to_num(cmd[6])
@@ -2478,7 +2478,10 @@ public powerKeyDown(id)
 	if ( whichKey > SH_MAXBINDPOWERS || whichKey <= 0 ) return PLUGIN_CONTINUE
 
 	debugMsg(id, 5, "power%d Pressed", whichKey)
+	if(is_user_bot(id)){
 
+		server_print("Bot using power? They used power%d!^n",whichKey)
+	}
 	// Check if player is a VIP
 	if ( id == gXpBounsVIP && getVipFlags() & VIP_BLOCK_POWERKEYS ) {
 		sh_sound_deny(id)

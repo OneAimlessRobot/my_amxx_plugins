@@ -19,6 +19,7 @@
 
 stock hook_on[SH_MAXSLOTS+1]
 stock g_dragging_who[SH_MAXSLOTS+1][2]
+stock Float:g_prev_max_speed[SH_MAXSLOTS+1]
 stock g_hook_kills[SH_MAXSLOTS+1]
 #define NUM_SENTENCES 5
 stock const erica_sentences[NUM_SENTENCES][]={
@@ -56,7 +57,6 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
-	register_event("ResetHUD","newRound","b")
 	custom_dmg_id_gutting=sh_log_custom_damage_source(tranq_get_hero_id(),
 					dmg_source_name_short_gutting,
 					dmg_source_name_long_gutting,
@@ -65,27 +65,18 @@ public plugin_init(){
 	HOOK_TASKID=allocate_typed_task_id(player_task)
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-if ( sh_user_has_hero(id,tranq_get_hero_id())&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
-	
-	
-	erica_new_spawn_hooks(id)
-	
-}
-return PLUGIN_CONTINUE
-
-}
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
+public sh_round_end()
 {
 
-	erica_new_spawn_hooks(id)
+	for(new i=0;i<SH_MAXSLOTS+1;i++){
+
+		erica_new_spawn_hooks(i)
+	}
 }
 
 erica_new_spawn_hooks(id){
 
-if ( sh_user_has_hero(id,tranq_get_hero_id())&&client_hittable(id) && sh_is_active() &&!hasRoundStarted() ) {
+if (  sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
 stop_dragging(id)
@@ -113,26 +104,31 @@ public plugin_natives(){
 	
 }
 stop_dragging(id,bool:deduct=false){
-	
-		if(client_hittable( g_dragging_who[id][0])){
+
+		new client_is_here=is_user_alive( g_dragging_who[id][0])
+		new attacker_is_here=is_user_alive( id )
+		if(client_is_here){
 			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
-		
-		g_dragging_who[id][0]=-1
-		g_dragging_who[id][1]=0
+		if(attacker_is_here){
 
-		if(!deduct) return
-
-		if(g_hook_kills[id]>0){
-			g_hook_kills[id]-=deduct?1:0
-			if(g_hook_kills[id]>=0){							
-				
-				if(!is_user_bot(id)){
-					sh_chat_message(id,tranq_get_hero_id(),"You've got %d hook strikes left",g_hook_kills[id]);
-				}	
-			}
+			set_user_maxspeed(id,g_prev_max_speed[id])
 		}
-		
+		if(deduct&&attacker_is_here){
+			
+			if(g_hook_kills[id]>0){
+				g_hook_kills[id]-=deduct?1:0
+				if(g_hook_kills[id]>=0){							
+					
+					if(!is_user_bot(id)){
+						sh_chat_message(id,tranq_get_hero_id(),"You've got %d hook strikes left",g_hook_kills[id]);
+					}	
+				}
+			}
+			
+		}
+		g_dragging_who[id][0]=-1
+		g_dragging_who[id][1]=0		
 }
 //----------------------------------------------------------------------------------------------
 public hook_think(id)
@@ -151,11 +147,12 @@ public hook_think(id)
 	
 	}
 	if(!client_hittable( g_dragging_who[id][0])){
-	
-		stop_dragging(id)
+		
+
+		stop_dragging(id,true)
 		return
 	}
-	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
+	if((g_dragging_who[id][1])<=0){
 		
 		stop_dragging(id,true)
 		return
@@ -167,40 +164,38 @@ public hook_think(id)
 	if(wpnid!=CSW_KNIFE){
 		shSwitchWeaponID(id,CSW_KNIFE)
 	}
-	static Float:aimvec[3],Float:vAngle[3],Float:vAngles[3],Float:eOrigin[3],Float:vOrigin[3]
+	static Float:aimvec[3],Float:eOrigin[3],Float:vOrigin[3],Float:dst_origin[3]
 	pev(vic,pev_origin,vOrigin)
 	pev(id,pev_origin,eOrigin)
-	entity_get_vector(vic, EV_VEC_v_angle, vAngle)
-	entity_get_vector(vic, EV_VEC_angles, vAngles)
-	new Float:direction[3],Float:fl_Velocity[3], Float:length
+	new Float:fl_Velocity[3]
 	velocity_by_aim(vic,9999,aimvec)
 	
-	static Float:vTrace[3], tr
-	static Float:vEnd[3],Float:newVec[3]
-	for(new i=0;i<3;i++){
-		vEnd[i]=vOrigin[i]-aimvec[i]
-	}
-	tr = 0
-	engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, vic, tr)
-	get_tr2(tr, TR_vecEndPos, vTrace)
-	
-	direction[0] = vTrace[0]-vOrigin[0]
-	direction[1] = vTrace[1]-vOrigin[1]
-	direction[2] = vTrace[2]-vOrigin[2]
+	xs_vec_normalize(aimvec,aimvec)
 
-	length = vector_distance(aimvec, vOrigin)
-	if (length==0.0) length = 1.0        // avoid division by 0
+	xs_vec_add_scaled(vOrigin,aimvec,-30.0,dst_origin)
+	new Float:curr_dist=get_distance_f(eOrigin,dst_origin)
 
-	newVec[0] = vOrigin[0]+direction[0]*hook_distance/length
-	newVec[1] = vOrigin[1]+direction[1]*hook_distance/length
-	newVec[2] = vOrigin[2]+direction[2]*hook_distance/length
 
-	fl_Velocity[0] = (newVec[0]-eOrigin[0])*hook_drag_speed
-	fl_Velocity[1] = (newVec[1]-eOrigin[1])*hook_drag_speed
-	fl_Velocity[2] = (newVec[2]-eOrigin[2])*hook_drag_speed
+	new Float:speed_to_use= (curr_dist<30.0)?40.0:hook_drag_speed
 
-	entity_set_vector(id, EV_VEC_velocity, fl_Velocity)
-	orient_user(id,vAngles,vAngle)
+
+	fl_Velocity[0] = (dst_origin[0]-eOrigin[0])*(speed_to_use/curr_dist)
+	fl_Velocity[1] = (dst_origin[1]-eOrigin[1])*(speed_to_use/curr_dist)
+	fl_Velocity[2] = (dst_origin[2]-eOrigin[2])*(speed_to_use/curr_dist)
+
+	entity_set_vector(id,EV_VEC_velocity,fl_Velocity)
+
+	dst_origin[2]+=4.0
+	new Float: dst_angles[3],Float:dst_v_angles[3]
+	new Float: slight_vel[3]
+	xs_vec_sub(vOrigin, eOrigin,slight_vel)
+	xs_vec_normalize(slight_vel,slight_vel)
+	xs_vec_mul_scalar(slight_vel,100.0,slight_vel)
+	vector_to_angle(slight_vel,dst_v_angles)
+	vector_to_angle(slight_vel,dst_angles)
+	orient_user(id,dst_angles,dst_v_angles)
+	set_user_maxspeed(id,1.0)
+
 	if(!(g_dragging_who[id][1]%SENTENCE_TICKS)){
 		new random_number=generate_int(0,NUM_SENTENCES-1);
 		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
@@ -217,7 +212,17 @@ public CmdStart1(attacker, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-	if ( !hasRoundStarted()||!client_hittable(attacker)) return FMRES_IGNORED;
+	if ( !is_user_connected(attacker)){
+		
+		return FMRES_IGNORED;
+	}
+	if(!is_user_alive(attacker)||!sh_is_inround()){
+
+		
+		stop_dragging(attacker)
+		return FMRES_IGNORED;
+		
+	}
 	if ( !sh_user_has_hero(attacker,tranq_get_hero_id())||!hook_on[attacker]||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
@@ -293,7 +298,9 @@ public CmdStart1(attacker, uc_handle)
 					sh_bleed_user(id,attacker,BLEED_MINI,tranq_get_hero_id())
 					g_dragging_who[attacker][0]=id
 					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
-					entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
+					entity_set_vector(attacker, EV_VEC_velocity, Float:{0.01,0.01,0.01})
+					g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
+					set_user_maxspeed(attacker,0.1)
 					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID)
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
@@ -307,10 +314,9 @@ public CmdStart1(attacker, uc_handle)
 				free_tr2(tr)
 			}
 		}
-		else {
-		
-		
-			g_dragging_who[attacker][0]=-1
+		else if(is_user_connected(g_dragging_who[attacker][0])){
+	
+			stop_dragging(attacker)
 		
 		}
 		
@@ -347,13 +353,14 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 		velocity_by_aim(id, 1, vecForward ); 
 		
 		xs_vec_make2d( vecForward, vecForward2D );
-		new att_name[128],vic_name[128];
+		static att_name[128],vic_name[128];
 		
 		
 		if(stabbing){
 			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
+			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.2) )
 			{
+
 				if(g_dragging_who[attacker][0]==id){
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
@@ -376,9 +383,9 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					
 					if(!is_user_alive(id)){
 						process_manhook_manslaughter( attacker, id)
-						stop_dragging(attacker,true)
 					}
 				}
+				stop_dragging(attacker,true)
 			}	
 		}
 	}
