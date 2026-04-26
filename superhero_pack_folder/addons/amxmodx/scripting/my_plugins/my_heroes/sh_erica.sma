@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
@@ -20,7 +21,6 @@ stock const gHeroName[] = "Erica Fonseca"
 new gNumDarts[SH_MAXSLOTS+1]
 new g_erica_points[SH_MAXSLOTS+1]
 new g_erica_kills[SH_MAXSLOTS+1]
-new gNumMollies[SH_MAXSLOTS+1]
 new Float:g_base_er_speed[SH_MAXSLOTS+1]
 new Float:g_normal_er_speed[SH_MAXSLOTS+1]
 new Float:g_base_er_dmg_mult[SH_MAXSLOTS+1]
@@ -75,7 +75,7 @@ public plugin_init()
 	register_cvar("erica_speed_speed_points_pct", "0.1")
 	register_cvar("erica_dmg_speed_points_pct", "0.1")
 	register_event("ResetHUD","newRound","b")
-	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention and get ++ powerful!", false, "erica_level" )
+	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	register_srvcmd("erica_init", "erica_init")
@@ -101,35 +101,10 @@ public plugin_natives(){
 	register_native("tranq_set_num_darts","_tranq_set_num_darts",0);
 	
 	
-	register_native("erica_dec_num_mollies","_erica_dec_num_mollies",0);
-	register_native("erica_get_num_mollies","_erica_get_num_mollies",0);
-	register_native("erica_set_num_mollies","_erica_set_num_mollies",0);
-	
 	register_native("tranq_get_hero_id","_tranq_get_hero_id",0);
 	
 	register_native("tranq_get_is_max_points","_tranq_get_is_max_points",0);
 	
-
-}
-
-public _erica_set_num_mollies(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumMollies[id]=value_to_set;
-}
-public _erica_get_num_mollies(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumMollies[id]
-
-}
-
-public _erica_dec_num_mollies(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumMollies[id]-= (gNumMollies[id]>0)? 1:0
 
 }
 public bool:_tranq_get_is_max_points(iPlugin,iParams){
@@ -183,11 +158,11 @@ public erica_init()
 		g_normal_er_dmg_mult[id]=0.0
 		g_normal_er_speed[id]=0.0
 		gNumDarts[id]=num_er_darts
-		gNumMollies[id]=num_mollies
 		Erica_weapons(id)
 		
 	}
 	else{
+		sh_reset_max_speed(id)
 		g_erica_points[id]=0;
 		g_erica_kills[id]=0;
 		g_base_er_speed[id]=0.0
@@ -197,7 +172,6 @@ public erica_init()
 		g_normal_er_dmg_mult[id]=0.0
 		g_normal_er_speed[id]=0.0
 		gNumDarts[id]=0
-		gNumMollies[id]=0
 		if ( is_user_alive(id) ) {
 			sh_drop_weapon(id, CSW_ELITE, true)
 		}
@@ -219,18 +193,20 @@ public loadCVARS()
 	//gHeroLevel=get_cvar_num("erica_level")
 	base_er_radius=get_cvar_float("erica_base_radius")
 	max_er_radius=get_cvar_float("erica_max_radius")
-	max_er_points=get_cvar_num("erica_max_points")
-	base_er_points=get_cvar_num("erica_base_points")
 	base_er_speed=get_cvar_float("erica_base_speed")
 	max_er_speed=get_cvar_float("erica_max_speed")
-	num_er_darts=get_cvar_num("erica_num_darts")
-	num_mollies=get_cvar_num("erica_num_mollies")
 	max_dmg_er_mult=get_cvar_float("erica_max_dmg_mult")
 	base_dmg_er_mult=get_cvar_float("erica_base_dmg_mult")
 	dmg_mult_er_inc=get_cvar_float("erica_dmg_mult_inc")
 	speed_speed_er_points_pct=get_cvar_float("erica_speed_speed_points_pct")
 	speed_points_er_radius_pct=get_cvar_float("erica_speed_points_radius_pct")
 	dmg_speed_er_points_pct=get_cvar_float("erica_dmg_speed_points_pct")
+
+
+	max_er_points=get_cvar_num("erica_max_points")
+	base_er_points=get_cvar_num("erica_base_points")
+	num_er_darts=get_cvar_num("erica_num_darts")
+	num_mollies=get_cvar_num("erica_num_mollies")
 }
 public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
@@ -263,9 +239,6 @@ public newRound(id)
 			g_normal_er_dmg_mult[id]=0.0
 			g_normal_er_speed[id]=0.0
 			gNumDarts[id]=num_er_darts
-			gNumMollies[id]=num_mollies
-			
-			
 		}
 	}
 	
@@ -281,7 +254,6 @@ public client_disconnected(id){
 	g_normal_er_dmg_mult[id]=0.0
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id]=0
-	gNumMollies[id]=0
 	hook_set_hook(id,0)
 }
 public sh_client_spawn(id)
@@ -296,26 +268,6 @@ add_speed_points(id,Float:damage){
 	g_erica_points[id]=min(max_er_points,g_erica_points[id]+(floatround(damage*dmg_speed_er_points_pct)))
 	update_stats(id)
 	
-}
-public get_speed_dmg_in_radius(id,Float:damage){
-
-	new entlist[33];
-	new num_found = find_sphere_class(id,"player", g_normal_er_radius[id] ,entlist, 32);
-	new result=0;
-	for(new p=0;p<num_found;p++){
-		new i=entlist[p]
-		if(!client_hittable(i)||(i==id)) continue;
-
-		if(sh_clients_are_same_team(i,id)) continue;
-		
-		heal_stream(i, id,PINK,190)
-		aura(id,LineColors[PINK])
-		add_speed_points(id,damage)
-		result=1
-		
-		
-	}
-	return result
 }
 public sh_round_end(){
 
@@ -358,7 +310,6 @@ public erica_damage(id)
 						dmg_source_name_short_hype_shot,headshot,_,_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,custom_dmg_id_hype_shot)
 	}
-	get_speed_dmg_in_radius(attacker,extraDamage+damage)
 }
 
 update_stats(id){
@@ -388,12 +339,28 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 	
 }
 }
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	
+    if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+
+        return DMG_FWD_PASS
+    }
+    if((new_dmg_type==SH_NEW_DMG_FIRE)||(new_dmg_type==SH_NEW_DMG_BLEED)){
+        if(sh_user_has_hero(attacker,gHeroID) ){
+			aura(attacker,LineColors[PINK])
+			add_speed_points(attacker,float(damage))
+        }
+    }
+
+    return DMG_FWD_PASS
+}
 public death()
 {
 	new killer= read_data(1)
 	static killer_name[128]
 	get_user_name(killer,killer_name,127)
-	if(sh_user_has_hero(killer,gHeroID) &&get_speed_dmg_in_radius(killer,0.0)){
+	if(sh_user_has_hero(killer,gHeroID)){
 		
 		g_erica_kills[killer]++;
 		sh_chat_message(0,gHeroID,"%s: WOW! AMAZING, HUH?!",killer_name)

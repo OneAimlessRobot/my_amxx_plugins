@@ -92,7 +92,6 @@ public plugin_init()
 	
 	RegisterHam(Ham_TakeDamage, "player", "Ester_Knockback", 1,true)
 	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect",_,true)
-	register_logevent("ester_round_start", 2, "1=Round_Start")
 
 	ESTER_REBORN_CALCULATION_LOOP_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_POSITION_CHECK_TASKID=allocate_typed_task_id(player_task)
@@ -441,12 +440,9 @@ public ester_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public ester_round_start()
-{
 
-	if ( !sh_is_active() ) return
+public sh_round_end(){
 
-	
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
 	arrayset(g_flying,false,SH_MAXSLOTS+1)

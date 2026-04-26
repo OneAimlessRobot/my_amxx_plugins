@@ -92,7 +92,7 @@ public swat_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) ) {
 
-		give_custom_grenades(id,GREN_SHOCK,5)
+		give_custom_grenades(id,GREN_SHOCK,10)
 		sh_give_weapon(id,CSW_M4A1,true)
 		shGiveWeapon(id,"item_thighpack")
 	}

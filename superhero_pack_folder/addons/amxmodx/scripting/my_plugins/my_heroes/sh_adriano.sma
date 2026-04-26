@@ -4,11 +4,11 @@
 
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
-#include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
+#include "custom_grenades/custom_grenades.inc"
 
 
 
@@ -26,10 +26,6 @@ new g_prevWeapon[SH_MAXSLOTS+1]
 new dmg_source_name_short_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
 new dmg_source_name_long_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
 new custom_dmg_id_ethereal
-
-new dmg_source_name_short_colt_m1911[SAFE_BUFFER_SIZE+1]="colt_m1911"
-new dmg_source_name_long_colt_m1911[SAFE_BUFFER_SIZE+1]="colt_m1911"
-new custom_dmg_id_colt_m1911
 
 new const adriano_sentences[1][]={
 	
@@ -76,9 +72,6 @@ public plugin_init()
 	
 	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_long_ethereal,0)
 
-	custom_dmg_id_colt_m1911=sh_log_custom_damage_source(gHeroID,
-						dmg_source_name_short_colt_m1911,
-						dmg_source_name_long_colt_m1911,0)
 
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
@@ -100,13 +93,14 @@ public loadCVARS()
 	dmg_speed_points_pct=get_cvar_float("adriano_dmg_speed_points_pct")
 	base_radius=get_cvar_float("adriano_base_radius")
 	max_radius=get_cvar_float("adriano_max_radius")
-	max_points=get_cvar_num("adriano_max_points")
 	base_speed=get_cvar_float("adriano_base_speed")
 	max_speed=get_cvar_float("adriano_max_speed")
 	speed_speed_points_pct=get_cvar_float("adriano_speed_speed_points_pct")
 	speed_points_radius_pct=get_cvar_float("adriano_speed_points_radius_pct")
 	speed_points_heal=get_cvar_float("adriano_speed_points_heal")
 	speed_points_heal_coeff=get_cvar_float("adriano_speed_points_heal_coeff")
+
+	max_points=get_cvar_num("adriano_max_points")
 	base_points=get_cvar_num("adriano_base_points")
 }
 public Ham_respawn(id){
@@ -121,7 +115,7 @@ public Ham_respawn(id){
 public adriano_weapons(id)
 {
 	if ( sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
-		colt_set_colt(id)
+		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
 	}
 }
@@ -135,7 +129,6 @@ public adriano_init()
 	
 	if(sh_user_has_hero(id,gHeroID)){
 		
-		sh_reset_max_speed(id)
 		adriano_weapons(id)
 		g_adriano_points[id]=base_points;
 		g_base_speed[id]=base_speed
@@ -145,7 +138,6 @@ public adriano_init()
 	}
 	else{
 		ethereal_unset_ethereal(id)
-		colt_unset_colt(id)
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
@@ -163,24 +155,22 @@ add_speed_points(id,Float:damage,is_up){
 	
 }
 public get_speed_dmg_in_radius(id,Float:damage){
-	
-	new entlist[33];
-	new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
-	for(new p=0;p<num_found;p++){
-		new i=entlist[p]
+
+	for(new i=0; i<SH_MAXSLOTS+1;i++){
+
 		if(!client_hittable(i)||(i==id)) continue;
 
 		if(!sh_clients_are_same_team(i,id)) continue;
 
 		if(sh_user_has_hero(i,gHeroID) ){
-			heal_stream(i, id,YELLOW,200)
-			aura(i,LineColors[YELLOW])
-			add_speed_points(i,damage,true)
+			new Float:distance_between_players = float(get_entity_distance(id,i))
+			if(distance_between_players<g_normal_radius[i]){
+				heal_stream(i, id,YELLOW,200)
+				aura(i,LineColors[YELLOW])
+				add_speed_points(i,damage,true)
+			}
 		}
-		
 	}
-	
-	
 }
 public heal_teamate(id,teamate){
 	
@@ -197,10 +187,7 @@ public heal_teamate(id,teamate){
 		if(result){
 
 			add_speed_points(id,speed_points_heal,false)
-			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[generate_int(0,sizeof(adriano_sentences)-1)])
-				sh_chat_message(id,gHeroID,"%d Points deducted from %d",floatround(speed_points_heal),g_adriano_points[id]+floatround(speed_points_heal))
-			}
+
 			if(!is_user_bot(teamate)){
 				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[generate_int(0,sizeof(adriano_sentences)-1)])
 			}
@@ -235,19 +222,22 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 }
 public adriano_damage(id)
 {
+
+
 	if ( !sh_is_active() || !client_hittable(id) ) return PLUGIN_CONTINUE
 	
-	
+
 	new Float:damage = float(read_data(2))
 	
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = (bodypart == 1)
-	
-	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
 
 	get_speed_dmg_in_radius(id,damage)
 	
+	
+	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
+
 	if(sh_user_has_hero(attacker,gHeroID)){
 		new Float:extraDamage = damage * 2.0- damage
 		if (floatround(extraDamage)>0){
@@ -256,10 +246,6 @@ public adriano_damage(id)
 					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,headshot,
 								_,_,_,_,_,
 								SH_NEW_DMG_SHOCK,custom_dmg_id_ethereal)
-				}
-				case CSW_FIVESEVEN:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_colt_m1911,headshot,
-								_,_,_,_,_,_,custom_dmg_id_colt_m1911)
 				}
 			}
 		}
@@ -304,7 +290,6 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 }
 public client_disconnected(id){
 	ethereal_unset_ethereal(id)
-	colt_unset_colt(id)
 	g_adriano_points[id]=0;
 	g_base_speed[id]=0.0
 	g_base_radius[id]=0.0
@@ -361,25 +346,12 @@ public newRound(id)
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			adriano_weapons(id)
-			sh_reset_max_speed(id)
 			g_adriano_points[id]=base_points;
 			g_base_speed[id]=base_speed
 			g_normal_radius[id]=base_radius
 			g_normal_speed[id]=0.0
+			sh_reset_max_speed(id)
 		}
 	}
-	return PLUGIN_HANDLED
-	
-}
-public plugin_precache()
-{
-	for(new i=0;i<sizeof(colt_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound,colt_sounds[i] );
-	
-	}
-	engfunc(EngFunc_PrecacheModel,WORLDMODEL )
-	engfunc(EngFunc_PrecacheModel,VIEWMODEL )
-	engfunc(EngFunc_PrecacheModel,WEAPONMODEL )
 	
 }

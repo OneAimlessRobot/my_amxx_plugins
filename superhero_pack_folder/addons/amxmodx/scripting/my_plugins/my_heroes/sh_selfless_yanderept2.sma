@@ -439,9 +439,6 @@ public newRound(id)
 			UnSet_BitVar(gSuperAngryMask,id);
 			UnSet_BitVar(gPlayedSoundMask,id);
 			gNormalSpeed[id]=gBaseSpeed[id]=base_extra_speed
-			if(!sh_is_freezetime()){
-				set_user_maxspeed(id,floatmax(gNormalSpeed[id],get_user_maxspeed(id)))
-			}
 			gTransTimer[id]=trans_time;
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			for(new i=0;i<num_yandere_warcries;i++){

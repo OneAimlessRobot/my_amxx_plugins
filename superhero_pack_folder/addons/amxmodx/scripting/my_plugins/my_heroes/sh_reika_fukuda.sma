@@ -49,7 +49,7 @@ public plugin_init()
 
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-    gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate! Switch between and trigger them with knife deployed", true, "reika_level" )
+    gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate 3-fold! Switch between and trigger them with knife deployed", true, "reika_level" )
 
     register_event("ResetHUD","newRound","b")
     register_srvcmd("reika_init", "reika_init")
@@ -200,7 +200,7 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
     
         if((weapon==CSW_KNIFE)&&(id==reika_parried_tg[attacker])){
             
-            new Float:total_damage = damage+reika_stored_damage[attacker]
+            new Float:total_damage = damage+3.0*reika_stored_damage[attacker]
 
             SetHamParamFloat(4,total_damage)
             
@@ -364,7 +364,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 
         if(is_melee&&(victim==reika_parried_tg[attacker])){
             
-            new total_damage = damage+floatround(reika_stored_damage[attacker])
+            new total_damage = damage+3*floatround(reika_stored_damage[attacker])
 
             damage = total_damage
             

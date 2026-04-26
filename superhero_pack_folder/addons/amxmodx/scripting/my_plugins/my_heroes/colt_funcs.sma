@@ -69,11 +69,18 @@ public give_m1911a1(player)
 	if(!is_user_alive(player)) return
 	
 	lastinv_m1911a1(player)
-	pEntity = rg_give_custom_item(player, STRN_FIVESEVEN, GT_APPEND, ID_M1911A1)
-	set_member(pEntity, m_Weapon_iClip, CLIP_M1911A1)
+	sh_switch_weapon(player,CSW_FIVESEVEN)
+
+	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), {0, 0, 0}, id)
+	write_byte(1)
+	write_byte(CSW_FIVESEVEN)
+	write_byte(CLIP_M1911A1)
+	message_end()
+
+	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
 	rg_set_iteminfo(pEntity, ItemInfo_iMaxClip, CLIP_M1911A1)
 	if(get_member(player, m_rgAmmo, AMMOID_FIVESEVEN) < MAXAMMO_M1911A1)
-	set_member(player, m_rgAmmo, MAXAMMO_M1911A1, AMMOID_FIVESEVEN)
+	set_member_s(player, m_rgAmmo, MAXAMMO_M1911A1, AMMOID_FIVESEVEN)
 }
 
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])

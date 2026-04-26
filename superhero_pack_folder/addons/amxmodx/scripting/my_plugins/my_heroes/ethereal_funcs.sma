@@ -228,12 +228,14 @@ public fw_SetModel(entity, model[])
 
 public fw_CmdStart(id, uc_handle, seed)
 {
-	if(!is_user_alive(id))
-		return FMRES_IGNORED	
-	if(!Get_BitVar(g_Had_Ethereal, id) || get_user_weapon(id) != CSW_ETHEREAL)	
+	if(!is_user_alive(id)){
 		return FMRES_IGNORED
+	}	
+	if(!Get_BitVar(g_Had_Ethereal, id) || (get_user_weapon(id) != CSW_ETHEREAL)){
+		return FMRES_IGNORED
+	}
 		
-	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
+	new PressButton = get_uc(uc_handle, UC_Buttons)
 
 	if((PressButton & IN_ATTACK2))
 	{
@@ -252,8 +254,6 @@ public fw_AddToFullPack_post(esState, iE, iEnt, iHost, iHostFlags, iPlayer, pSet
 		
 	if(Get_BitVar(g_Muzzleflash, iHost))
 	{
-		set_es(esState, ES_Frame, float(generate_int(0, 2)))
-			
 		set_es(esState, ES_RenderMode, kRenderTransAdd)
 		set_es(esState, ES_RenderAmt, 255.0)
 		
