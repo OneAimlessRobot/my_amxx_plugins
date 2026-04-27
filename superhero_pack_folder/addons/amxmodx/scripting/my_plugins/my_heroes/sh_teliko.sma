@@ -157,7 +157,7 @@ public give_start_counters(id){
 }
 public remove_enemy(id){
 	
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		UnSet_BitVar(g_teliko_enemies_masks[i],id)
 		g_num_mega_counters_enemy[i][id]=0;
 		

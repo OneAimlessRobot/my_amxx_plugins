@@ -1,0 +1,5 @@
+L 04/27/2026 - 18:58:38: Start of error session.
+L 04/27/2026 - 18:58:38: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260427.log")
+L 04/27/2026 - 18:58:38: Function "ice_glob_new_round" was not found
+L 04/27/2026 - 18:58:38: [AMXX] Run time error 19 (plugin "girlb_ice_glob.amxx") - debug not enabled!
+L 04/27/2026 - 18:58:38: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

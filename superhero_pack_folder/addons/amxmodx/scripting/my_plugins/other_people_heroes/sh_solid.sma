@@ -142,7 +142,7 @@ public round_start()
 {
 	if(!sh_is_active()) return
 
-	for(new x = 1; x <= SH_MAXSLOTS; x++)
+	for(new x = 1; x < sh_maxplayers()+1; x++)
 	{
 		if(is_user_alive(x))
 		{

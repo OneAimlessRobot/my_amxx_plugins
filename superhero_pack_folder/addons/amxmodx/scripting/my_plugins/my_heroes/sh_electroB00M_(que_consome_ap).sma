@@ -128,7 +128,7 @@ switch(g_teslacoilRunning[id]) {
 		new ElectroB00MRadius = get_pcvar_num(pCvarElectroB00MRadius)
 		
 		get_user_origin(id,uOrigin)
-		for ( new x=1; x<=SH_MAXSLOTS; x++) 
+		for ( new x=1; x< sh_maxplayers()+1; x++) 
 		{
 			if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) && x!=id )
 			{

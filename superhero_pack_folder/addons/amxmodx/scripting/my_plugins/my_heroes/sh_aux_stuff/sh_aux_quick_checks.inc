@@ -41,7 +41,7 @@ stock sh_get_player_counts(id,discriminate_team=1, &alive, &dead)
 	dead = 0
 
 	new team = get_user_team(id)
-	for (new i = 1; i <= SH_MAXSLOTS; i++) {
+	for (new i = 1; i < sh_maxplayers()+1; i++) {
 		if ((i == id || !is_user_connected(i))&&discriminate_team) continue
 		if ((get_user_team(i) != team)&&discriminate_team) continue
 

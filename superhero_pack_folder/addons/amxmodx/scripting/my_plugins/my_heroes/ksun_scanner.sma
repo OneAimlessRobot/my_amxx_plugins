@@ -360,7 +360,7 @@ show_targets(id){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH] (ksun):Targets are:")
-			for(new i=1;i<=SH_MAXSLOTS;i++){
+			for(new i=1;i< sh_maxplayers();i++){
 				if(g_player_tracks_player[id][i]&&client_hittable(i)){
 					get_user_name(i,client_name,127)
 					client_print(id,print_chat,"- %s",client_name);

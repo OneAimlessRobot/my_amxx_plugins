@@ -89,7 +89,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_round_end()
 {
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( is_frozen[id] ) {
 			is_frozen[id] = false
 			set_user_hitzones(0,id,255)
@@ -186,7 +186,7 @@ public Player_PreThink(id)
 public Danimoth_loop()
 {
 	if (!sh_is_active()) return
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ){	
 			//Cloak Task
 			set_task(0.1,"DanimothCloak",id)
@@ -201,7 +201,7 @@ public DanimothCloak(id)
 	new origin[3]
 	get_user_origin(id,origin)
 	
-	for(new team = 1; team <= SH_MAXSLOTS; team++){
+	for(new team = 1; team < sh_maxplayers()+1; team++){
 		if( is_user_alive(team) && ( get_user_team(id) == get_user_team(team)) && gIsInvisible[team] == 0 ){
 			new origin1[3]
 			get_user_origin(team,origin1)
@@ -223,7 +223,7 @@ public DanimothDeCloak(id)
 	new origin[3]
 	get_user_origin(id,origin)
 	
-	for(new team = 1; team <= SH_MAXSLOTS; team++){
+	for(new team = 1; team < sh_maxplayers()+1; team++){
 		if( is_user_alive(team) && ( get_user_team(id) == get_user_team(team)) && gIsInvisible[team] == 1 ){
 			new origin1[3]
 			get_user_origin(team,origin1)

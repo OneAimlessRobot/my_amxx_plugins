@@ -122,8 +122,6 @@ public plugin_init()
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 	vegetto_hud_sync=CreateHudSyncObj()
 	
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 
 	// LOOP
 	set_task(1.0, "vegetto_loop", _, _, _, "b")
@@ -986,9 +984,9 @@ public powerup_effect(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
-	for (new id=1; id <= SH_MAXSLOTS; id++) {
+	for (new id=1; id < sh_maxplayers()+1; id++) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_isSaiyanLevel[id] = 0
 			shResetSpeed(id)

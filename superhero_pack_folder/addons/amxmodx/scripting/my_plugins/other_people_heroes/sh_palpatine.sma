@@ -124,7 +124,7 @@ public palpatine_kd()
   g_palpatineTimer[id]=get_cvar_num("palpatine_time")+1
   
   get_user_origin(id,userOrigin)
-  for ( new x=1; x<=SH_MAXSLOTS; x++) 
+  for ( new x=1; x< sh_maxplayers()+1; x++) 
   {
      if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) || x!=id )
      {
@@ -154,7 +154,7 @@ public palpatine_kd()
 //----------------------------------------------------------------------------------------------   
 public palpatine_loop()
 {
-  for ( new id=1; id<=SH_MAXSLOTS; id++ )
+  for ( new id=1; id< sh_maxplayers()+1; id++ )
   {
     if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
     {
@@ -174,7 +174,7 @@ public palpatine_loop()
         
         new palpatineDeathRadius=get_cvar_num("palpatine_deathradius")
         get_user_origin(id,uOrigin)
-        for ( new x=1; x<=SH_MAXSLOTS; x++) 
+        for ( new x=1; x< sh_maxplayers()+1; x++) 
         {
           if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) && x!=id )
           {
@@ -209,7 +209,7 @@ public palpatine_loop()
       new distance
       new palpatineDecayRadius=get_cvar_num("palpatine_decayradius")
       get_user_origin(id, userOrigin)
-      for ( new eid=1; eid<=SH_MAXSLOTS; eid++) 
+      for ( new eid=1; eid< sh_maxplayers()+1; eid++) 
       {
         if ( (is_user_alive(eid) && get_user_team(id)!=get_user_team(eid)) && eid!=id )
         {

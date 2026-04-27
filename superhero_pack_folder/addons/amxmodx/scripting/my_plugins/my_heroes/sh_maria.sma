@@ -341,7 +341,7 @@ public maria_loop(id){
 
 	if ( !sh_is_active()) return
 
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i < sh_maxplayers()+1;i++){
 		if(client_hittable(i)&&sh_user_has_hero(i,gHeroID)){
 			update_stats(i)
 			if((get_user_health(i)>=health_drain_begin_threshold)){

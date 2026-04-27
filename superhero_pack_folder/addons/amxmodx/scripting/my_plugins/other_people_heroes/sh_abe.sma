@@ -61,7 +61,7 @@ public abe_kd()
 
 		// Get target id
 		get_user_aiming(id, victimID, body)
-		if(get_user_team(id) != get_user_team(victimID) && victimID > 0 && victimID <= SH_MAXSLOTS)
+		if(get_user_team(id) != get_user_team(victimID) && victimID > 0 && victimID < sh_maxplayers()+1)
 		{
 			emit_sound(id, CHAN_AUTO, "shmod/abe_sound.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 

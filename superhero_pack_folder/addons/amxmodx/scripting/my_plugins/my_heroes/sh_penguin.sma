@@ -318,7 +318,7 @@ stock entity_set_follow(entity, target)
 public pfn_touch(ptr, ptd)
 {
 	// Only if penguin nade touches an enemy explode, else wait for fuse timer to run out
-	if (ptr <= SH_MAXSLOTS) return
+	if (ptr < sh_maxplayers()+1) return
 
 	if ( !is_valid_ent(ptr) || !is_valid_ent(ptd) ) return
 

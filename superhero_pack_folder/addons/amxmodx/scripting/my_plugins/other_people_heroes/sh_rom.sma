@@ -104,7 +104,7 @@ public rom_kd()
    ultimateTimer(id, get_cvar_num("rom_cooldown") * 1.0)
    new var = get_cvar_num("rom_sensetime")*10
 
-   for(new x = 1; x <= SH_MAXSLOTS; x++) 
+   for(new x = 1; x < sh_maxplayers()+1; x++) 
    { 
       if(x != id && is_user_alive(x) && get_user_team(x) != get_user_team(id)) 
       { 
@@ -140,7 +140,7 @@ public rom_kd()
 //----------------------------------------------------------------------------------------------
 public rom_loop()
 {
-  for ( new id=1; id<=SH_MAXSLOTS; id++ )
+  for ( new id=1; id< sh_maxplayers()+1; id++ )
   {
     if (sh_user_has_hero(id,gHeroID) && is_user_alive(id)  ) 
     {
@@ -153,7 +153,7 @@ public rom_loop()
         show_hudmessage( id, message)
         new var = get_cvar_num("rom_sensetime")*10 
 
-        for(new x = 1; x <= SH_MAXSLOTS; x++) 
+        for(new x = 1; x < sh_maxplayers()+1; x++) 
         { 
           if(x != id && is_user_alive(x) && get_user_team(x) != get_user_team(id)) 
           { 

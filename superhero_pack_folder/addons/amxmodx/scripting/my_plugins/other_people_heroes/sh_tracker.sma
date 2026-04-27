@@ -84,7 +84,7 @@ public tracker_damage(id)
     maxTargets =SH_MAXSLOTS
   }
 
-  if(attacker<(SH_MAXSLOTS+1) && sh_user_has_hero(attacker,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
+  if(attacker<(sh_maxplayers()+1) && sh_user_has_hero(attacker,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
   {
     isTagged[attacker][victim] = true
     numTargets[attacker] = numTargets[attacker]++

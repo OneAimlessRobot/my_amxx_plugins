@@ -58,9 +58,6 @@ public plugin_init()
 	
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
-	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
-	register_logevent("ev_SendAudio", 2, "1=Round_End")
-	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
@@ -96,7 +93,7 @@ public plugin_natives(){
 }
 
 stock covert_spike_damage(id){
-	for(new payer=0;payer<SH_MAXSLOTS+1;payer++){
+	for(new payer=1;payer< sh_maxplayers()+1;payer++){
 
 			if(!client_hittable(payer)){
 				
@@ -148,7 +145,7 @@ stock covert_spike_damage(id){
 stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 	
 	new CsTeams:att_team=cs_get_user_team(attacker)
-	for(new collector=0;collector<SH_MAXSLOTS+1;collector++){
+	for(new collector=1;collector< sh_maxplayers()+1;collector++){
 
 		if(!client_hittable(collector)){
 			
@@ -274,10 +271,10 @@ public client_disconnected(id){
 	
 }
 
-public ev_SendAudio(){
+public sh_round_end(){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE
-	for(new i=1;i<=SH_MAXSLOTS;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(!is_user_connected(i)){
 
 			continue

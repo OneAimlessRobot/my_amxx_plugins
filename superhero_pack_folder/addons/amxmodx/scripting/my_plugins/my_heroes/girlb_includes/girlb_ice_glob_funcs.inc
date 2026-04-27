@@ -1,20 +1,22 @@
-#if defined sh_soccer_funcs
+#if defined sh_glob_field
   #endinput
 #endif
-#define sh_soccer_funcs
+#define sh_glob_field
 
+#define GLOB_THINK_PERIOD 0.333333334
 
-
-stock beamspr
-stock ballbeam[3] = { 20,50,255 }
+#define GLOB_FIELD_LIFE_TIME 20.0
 
 #define GLOB_CLASSNAME "girlb_ice_glob"
+
+#define GLOB_MIN_FRICTION -0.25
+
 
 #define GLOB_SPEED 1000.0
 
 #define GLOB_DMG 100
 
-#define GLOB_RADIUS 400.0
+#define GLOB_RADIUS 800.0
 
 
 native launch_ice_glob(id)

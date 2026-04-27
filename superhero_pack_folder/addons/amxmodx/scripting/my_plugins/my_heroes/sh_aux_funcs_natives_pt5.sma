@@ -554,7 +554,7 @@ teamglow_player(id){
 public global_glow_task(id){
 
 	
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=0;i< sh_maxplayers()+1;i++){
 
 			if(!is_user_alive(i)) continue
 

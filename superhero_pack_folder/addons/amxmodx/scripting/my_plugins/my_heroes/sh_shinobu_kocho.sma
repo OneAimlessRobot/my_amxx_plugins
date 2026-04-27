@@ -132,7 +132,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 }
 public client_disconnected(id){
 
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(is_user_connected(i)){
 			
 			g_shinobu_tagged_player[i]=((g_shinobu_tagged_player[i]==id)?0:g_shinobu_tagged_player[i])

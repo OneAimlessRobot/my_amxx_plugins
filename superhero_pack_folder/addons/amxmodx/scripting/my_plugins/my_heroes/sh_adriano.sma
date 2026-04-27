@@ -156,7 +156,7 @@ add_speed_points(id,Float:damage,is_up){
 }
 public get_speed_dmg_in_radius(id,Float:damage){
 
-	for(new i=0; i<SH_MAXSLOTS+1;i++){
+	for(new i=0; i< sh_maxplayers()+1;i++){
 
 		if(!client_hittable(i)||(i==id)) continue;
 

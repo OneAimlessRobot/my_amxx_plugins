@@ -69,7 +69,7 @@ writeData(id)
 
 	nvault_set(gVaultHandle, gMemoryTableKeys[id], data)
 
-	if ( 0 < id <= SH_MAXSLOTS ) {
+	if ( 0 < id < sh_maxplayers()+1 ) {
 		gChangedHeroes[id] = false
 	}
 }

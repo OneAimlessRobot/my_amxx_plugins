@@ -43,7 +43,7 @@ public sh_round_start(){
     if(!sh_is_active()){
         return;
     }
-    for(new i=1;i<=SH_MAXSLOTS;i++){
+    for(new i=1;i< sh_maxplayers()+1;i++){
         if(is_user_connected(i)){
             for(new type=0;type<sizeof player_built_xp_this_round[];type++){
                 new xp_earned=player_built_xp_this_round[i][type]*(floatround(xp_extra_type_mults[type]));

@@ -186,7 +186,7 @@ public fwd_StartFrame() {
 	
 	gtime = get_gametime()
 	
-	for(id = 1; id <= SH_MAXSLOTS; id++) {
+	for(id = 1; id < sh_maxplayers()+1; id++) {
 		if(g_plAction[id] != act_none) {
 			
 			if(!(pev(id, pev_button) & IN_ATTACK) && !(pev(id, pev_button) & IN_USE) && g_lastShot[id] + PILL_SHOOT_PERIOD< gtime) {

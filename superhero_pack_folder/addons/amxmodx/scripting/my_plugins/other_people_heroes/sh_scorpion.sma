@@ -150,7 +150,7 @@ public newSpawn(id)
 	// Should only get run if no one dies (ie. map objective was completed)
 	if ( g_inKnifeFight[id] ) {
 		g_inKnifeFight[id] = false
-		for (new i = 1; i <= SH_MAXSLOTS; i++) {
+		for (new i = 1; i < sh_maxplayers()+1; i++) {
 			// check id for any knife fights to turn off
 			if ( g_knifeFight[id][i] ) {
 				g_knifeFight[id][i] = false
@@ -384,7 +384,7 @@ public scorpion_fight_off(id)
 {
 	g_inKnifeFight[id] = false
 
-	for (new i = 1; i <= SH_MAXSLOTS; i++) {
+	for (new i = 1; i < sh_maxplayers()+1; i++) {
 		// check id for any knife fights to turn off
 		new bool:fight_found = false
 		if ( g_knifeFight[id][i] ) {
@@ -398,7 +398,7 @@ public scorpion_fight_off(id)
 		if ( fight_found ) {
 			// check if i is in any other knife fights
 			new bool:other_fight = false
-			for (new j = 1; j <= SH_MAXSLOTS; j++) {
+			for (new j = 1; j < sh_maxplayers()+1; j++) {
 				if ( g_knifeFight[j][i] || g_knifeFight[i][j] ) {
 					other_fight = true
 					break

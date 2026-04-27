@@ -113,7 +113,7 @@ public fw_entTouch(ptr, ptd) {
 	
 	get_user_origin(ptd, m_origin);
 	
-	for(new i = 0; i < SH_MAXSLOTS; i++) {
+	for(new i = 1; i < sh_maxplayers()+1; i++) {
 		get_user_origin(i, i_origin);
 		if(get_distance(m_origin, i_origin) <= get_cvar_num("tnt_radius")) {
 			new Float:velocity[3];	

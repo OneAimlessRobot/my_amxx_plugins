@@ -52,9 +52,6 @@ public plugin_init()
 	register_cvar("ksun_dmg_paycut", "0.05" )
 	register_cvar("ksun_violence_level", "3" )
 	register_cvar("ksun_spore_health", "100.0" )
-	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
-	register_logevent("ev_SendAudio", 2, "1=Round_End")
-	register_logevent("ev_SendAudio", 2, "1&Restart_Round_")
 	
 	register_touch(SPORE_CLASSNAME, "player", "touch_event")
 	
@@ -179,7 +176,7 @@ public _clean_ksun_spores_from_players(iPlugins,iParam){
 	new player_to_reset=everyone?-1:player
 	if(ksun_get_when_reset_spores()&(dying_or_new_round?reset_on_death:reset_on_new_round)){
 		if(player<0){
-			for(new i=0;i<SH_MAXSLOTS+1;i++){
+			for(new i=0;i<sh_maxplayers()+1;i++){
 				clear_spores_from_player(i)
 			}
 		}
@@ -197,7 +194,7 @@ public _check_who_player_is_sporing(iPlugins,iParam){
 			new username[128];
 			get_user_name(id,username,127);
 			server_print("[SH] ksun: this ksun user named %s is sporing the following players...:^n",username)
-			for(new i=0;i<SH_MAXSLOTS+1;i++){
+			for(new i=0;i<sh_maxplayers()+1;i++){
 				
 				if(is_user_connected(i)){
 					
@@ -217,7 +214,7 @@ public _check_by_whom_player_spored(iPlugins,iParam){
 		new username[128];
 		get_user_name(id,username,127);
 		server_print("[SH] ksun: this player named %s is being spored by the following players...:^n",username)
-		for(new i=0;i<SH_MAXSLOTS+1;i++){
+		for(new i=0;i<sh_maxplayers()+1;i++){
 			if(is_user_connected(i)){
 				if(sh_user_has_hero(i,spores_ksun_hero_id())){
 					
@@ -234,14 +231,14 @@ stock clear_spores_from_player(id){
 	
 	if(is_user_connected(id)){
 		arrayset(g_times_player_spiked_player[id],0,SH_MAXSLOTS+1)
-		for(new i=0;i<SH_MAXSLOTS+1;i++){
+		for(new i=0;i<sh_maxplayers()+1;i++){
 			if(is_user_connected(i)){
 				g_times_player_spiked_by_player[i][id]=0;
 			}
 		}
 	}
 }
-public ev_SendAudio(){
+public sh_round_end(){
 	
 	remove_entity_name(SPORE_CLASSNAME)
 	if(!sh_is_active()) return PLUGIN_CONTINUE

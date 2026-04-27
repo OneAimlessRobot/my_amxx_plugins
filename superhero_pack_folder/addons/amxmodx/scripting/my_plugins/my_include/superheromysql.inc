@@ -129,7 +129,7 @@ public adminCopyVHelper(parm[])
 	// OK now load the XP for any players playing
 	new savekey[MAX_PLAYER_SAVE_KEY_LENGTH]
 
-	for ( new x = 1; x <= SH_MAXSLOTS; x++ ) {
+	for ( new x = 1; x < sh_maxplayers()+1; x++ ) {
 		if ( !is_user_connected(x) ) continue
 		getSaveKey(x, savekey)
 		loadXP(x, savekey)
@@ -392,7 +392,7 @@ writeData(x)
 		}
 
 		// x can be higher than max slots, however sizeof gChangedHeroes can not be
-		if ( 0 < x <= SH_MAXSLOTS ) {
+		if ( 0 < x < sh_maxplayers()+1 ) {
 			gChangedHeroes[x] = false
 		}
 	}

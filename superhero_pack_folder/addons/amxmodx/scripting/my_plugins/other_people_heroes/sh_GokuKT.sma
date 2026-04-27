@@ -148,7 +148,7 @@ public gokukt_kd()
 //----------------------------------------------------------------------------------------------
 public gokukt_loop()
 {
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
 			if ( GokuKTTimer[id] > 0 ) {
 				GokuKTTimer[id]--

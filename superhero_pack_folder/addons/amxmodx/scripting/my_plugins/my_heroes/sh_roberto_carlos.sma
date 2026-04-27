@@ -71,7 +71,7 @@ public ev_SendAudio(){
 		
 		
 	} // Draw
-	for(new id=1;id<SH_MAXSLOTS+1;id++){
+	for(new id=1;id< sh_maxplayers()+1;id++){
 		
 		if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
 			player_team=cs_get_user_team(id)

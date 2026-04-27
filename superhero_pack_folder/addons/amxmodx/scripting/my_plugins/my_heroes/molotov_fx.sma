@@ -30,7 +30,6 @@ public plugin_init(){
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
 	register_event("ResetHUD","molotov_newRound","b")
-
 }
 
 //----------------------------------------------------------------------------------------------

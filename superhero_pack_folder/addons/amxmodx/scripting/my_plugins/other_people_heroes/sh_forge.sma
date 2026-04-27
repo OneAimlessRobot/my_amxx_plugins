@@ -143,7 +143,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 		new id = entity_get_edict(pToucher, EV_ENT_owner)
 		new origin[3],dist,i,Float:dRatio,damage
 
-		for ( i = 1; i <= SH_MAXSLOTS; i++) {
+		for ( i = 1; i < sh_maxplayers()+1; i++) {
 
 			if( !is_user_alive(i) ) continue
 			get_user_origin(i,origin)

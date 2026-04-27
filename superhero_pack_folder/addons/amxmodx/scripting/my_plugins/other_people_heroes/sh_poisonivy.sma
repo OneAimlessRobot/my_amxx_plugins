@@ -180,10 +180,10 @@ public poisonivy_loop()
 {
 	if ( !sh_is_active() ) return
 
-	for ( new attacker = 1; attacker <= SH_MAXSLOTS; attacker++ ) {
+	for ( new attacker = 1; attacker < sh_maxplayers()+1; attacker++ ) {
 		if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue
 
-		for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+		for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 			if (  is_user_alive(id) ) {
 				if(!gIsPoisoned[id][attacker]) continue
 				
@@ -249,7 +249,7 @@ public poisonivy_death()
 public reset_poisoned(victim)
 {
 	// Resets poison status on victim if poisoned by any posion ivy's
-	for ( new attacker = 1; attacker <= SH_MAXSLOTS; attacker++ ) {
+	for ( new attacker = 1; attacker < sh_maxplayers()+1; attacker++ ) {
 		if ( gIsPoisoned[victim][attacker] ) {
 			gIsPoisoned[victim][attacker] = false
 		}

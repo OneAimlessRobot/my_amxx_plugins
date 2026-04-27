@@ -68,7 +68,7 @@ public plugin_init(){
 public sh_round_end()
 {
 
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=0;i< sh_maxsplayers();i++){
 
 		erica_new_spawn_hooks(i)
 	}

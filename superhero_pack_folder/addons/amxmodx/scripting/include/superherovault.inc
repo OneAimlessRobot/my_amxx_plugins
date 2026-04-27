@@ -109,7 +109,7 @@ writeData(id)
 
 	set_vaultdata(vaultSaveKey, data)
 
-	if ( 0 < id <= SH_MAXSLOTS ) {
+	if ( 0 < id < sh_maxplayers()+1 ) {
 		gChangedHeroes[id] = false
 	}
 }

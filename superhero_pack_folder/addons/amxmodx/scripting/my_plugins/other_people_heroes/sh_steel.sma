@@ -77,7 +77,7 @@ public steel_loop()
 {
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new userHealth = get_user_health(id)
 			if( userHealth <= g_hpSetSuit ) {
@@ -104,7 +104,7 @@ public steel_armorloop()
 {
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 			// Set glow here since it's called less
 			shGlow(id, 35, 40, 50)

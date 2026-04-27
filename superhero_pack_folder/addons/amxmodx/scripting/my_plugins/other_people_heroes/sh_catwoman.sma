@@ -142,7 +142,7 @@ public newSpawn(id)
 			}
 
 			// Make all spawn points possible again
-			for(new i = 0 ; i <= SH_MAXSLOTS ; i++)
+			for(new i = 0 ; i < sh_maxplayers()+1 ; i++)
 			{
 				spawnPointsused[spawnType][i] = false
 			}
@@ -233,7 +233,7 @@ find_free_spawn(spawnType, Float:spawnOrigin[3], Float:spawnAngle[3])
 			spawnsFound++
 		}
 	}
-	while (ent && spawnsFound <= SH_MAXSLOTS)
+	while (ent && spawnsFound < sh_maxplayers()+1)
 
 	new Float:vicinity = 96.0		//(32x32x96) player dimensions, 96 height?
 	new playersInVicinity

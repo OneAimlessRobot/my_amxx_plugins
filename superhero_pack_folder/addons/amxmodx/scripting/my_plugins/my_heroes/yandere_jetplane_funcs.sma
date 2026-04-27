@@ -72,9 +72,6 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
 	
 	register_entity_as_wall_touchable(JETPLANE_FUSELAGE_CLASSNAME,"FwdTouchWorld")
-	
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 	hud_sync_jetplane=CreateHudSyncObj();
 
 	JET_LOAD_TASKID=allocate_typed_task_id(player_task)
@@ -753,9 +750,9 @@ public charge_task(id){
 	
 	
 }
-public round_end(){
+public sh_round_end(){
 
-	for (new id=1; id <= SH_MAXSLOTS; id++) {
+	for (new id=1; id < sh_maxplayers()+1; id++) {
 		if ( client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) {
 			uncharge_user(id)
 		}

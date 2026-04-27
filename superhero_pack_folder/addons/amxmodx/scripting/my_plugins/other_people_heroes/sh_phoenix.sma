@@ -52,8 +52,6 @@ public plugin_init()
 	// DEATH EVENT
 	register_event("DeathMsg", "phoenix_death", "a")
 
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 	init_hud_syncs()
 	init_explosion_defaults()
 }
@@ -143,11 +141,11 @@ public phoenix_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if ( sh_user_has_hero(id,gHeroID)) {
 			// Reset the cooldown on round end, to start fresh for a new round
 			remove_task(id)

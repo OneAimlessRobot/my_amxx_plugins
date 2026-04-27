@@ -50,7 +50,7 @@ id-=TASKID
 new parm[2],i
 if (sh_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id)) 
 {
-	for (new enemy=1;enemy<=SH_MAXSLOTS;enemy++) 
+	for (new enemy=1;enemy< sh_maxplayers()+1;enemy++) 
 	{
 		if (is_user_connected(enemy)&&is_user_alive(enemy) && (get_user_team(enemy)!=get_user_team(id)) && !sh_get_cooldown_flag(id)) 
 		{

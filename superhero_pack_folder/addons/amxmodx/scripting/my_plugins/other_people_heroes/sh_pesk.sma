@@ -164,7 +164,7 @@ public AssRadiusDamage(id,origin[3])
 
 	new FFOn= get_cvar_num("mp_friendlyfire")
 
-	for(new vic = 1; vic <= SH_MAXSLOTS; vic++)
+	for(new vic = 1; vic < sh_maxplayers()+1; vic++)
 	{
 		if( is_user_alive(vic) && ( get_user_team(id) != get_user_team(vic) || FFOn != 0 || vic==id ) )
 		{
@@ -184,7 +184,7 @@ public AssRadiusDamage(id,origin[3])
 
 public pesk_loop()
 {
-	for ( new id=1; id<=SH_MAXSLOTS; id++ )
+	for ( new id=1; id< sh_maxplayers()+1; id++ )
 	{
 		if (  sh_user_has_hero(id,gHeroID) && !is_user_alive(id)  )
 		{

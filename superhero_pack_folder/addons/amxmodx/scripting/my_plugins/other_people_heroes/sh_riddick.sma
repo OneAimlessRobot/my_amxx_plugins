@@ -91,7 +91,7 @@ public riddick_init()
 public riddick_loop()
 {
 	if (!sh_is_active()) return
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.

@@ -195,7 +195,7 @@ public yandere_init()
 public get_first_alive(){
 
 
-for(new i=1;i<=SH_MAXSLOTS;i++){
+for(new i=1;i< sh_maxplayers()+1;i++){
 	
 	if(!is_user_connected(i)){
 		
@@ -216,7 +216,7 @@ public yandere_sentence_loop(id){
 	
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(sh_is_active()&&is_user_alive(i)&&sh_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
 			
 			
@@ -260,7 +260,7 @@ if(!sh_is_active()) return
 if(!disconnected){
 	if(!is_user_connected(id)) return
 }
-for(new i=1;i<=SH_MAXSLOTS;i++){
+for(new i=1;i< sh_maxplayers()+1;i++){
 	if(!client_hittable(i)) continue;
 
 	if(!sh_user_has_hero(i,gHeroID) ) continue;
@@ -293,7 +293,7 @@ for(new i=1;i<=SH_MAXSLOTS;i++){
 public yandere_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 
 		if(!client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
 			continue
@@ -636,7 +636,7 @@ public yandere_ku()
 }
 public sh_round_end(){
 	
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		
 		if(client_hittable(i)){
 			if(sh_user_has_hero(i,gHeroID) ){
@@ -697,7 +697,7 @@ killyandere(id,bool:dropping=false){
 			get_user_origin(id,origin)
 			fx_invisible(id)
 			anime_kill_fx(origin)
-			for(new i=0;i<=SH_MAXSLOTS;i++){
+			for(new i=0;i< sh_maxplayers()+1;i++){
 				UnSet_BitVar(g_is_cursed_masks[i],id)
 			}
 			if(yandere_get_user_is_psychosis(id)){

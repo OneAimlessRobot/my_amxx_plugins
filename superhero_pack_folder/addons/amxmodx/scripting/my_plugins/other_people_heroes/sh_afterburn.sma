@@ -237,7 +237,7 @@ check_burnzone(id, vec[], aimvec[], speed1, speed2, radius)
 	burnvec2[2] += vec[2]
 
 	new origin[3]
-	for (new i = 1; i <= SH_MAXSLOTS; i++){
+	for (new i = 1; i < sh_maxplayers()+1; i++){
 		if ( is_user_alive(i) && i != id && ( get_cvar_num("mp_friendly_fire") || get_user_team(id) != get_user_team(i) ) ) {
 			get_user_origin(i, origin)
 			if ( get_distance(origin, burnvec1) < radius ) {

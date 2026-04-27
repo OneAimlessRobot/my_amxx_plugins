@@ -308,7 +308,7 @@ public show_targets(id){
 	static client_name[128];
 	get_user_name(id,client_name,127)
 	client_print(id,print_console,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(Get_BitVar(g_ester_enemies_masks[id],i)&&client_hittable(i)){
 			get_user_name(i,client_name,127)
 			client_print(id,print_chat,"%s.^n",client_name);
@@ -357,7 +357,7 @@ public Ester_revenge_loop(id)
 {
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 	
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if ( !is_user_connected(i)) continue
 		
 		if ( !sh_user_has_hero(i,gHeroID)){
@@ -434,7 +434,7 @@ public Ester_revenge_loop(id)
 		}
 		else if(Get_BitVar(gUnloadingMask,i)){
 			if(count_enemies(i)){
-				for ( new x=1; x<=SH_MAXSLOTS; x++) 
+				for ( new x=1; x< sh_maxplayers()+1; x++) 
 				{
 					if ( is_user_alive(x) && (get_user_team(i)!=get_user_team(x)) && x!=i &&(Get_BitVar(g_ester_enemies_masks[i],x)))
 					{
@@ -686,7 +686,7 @@ public death()
 	}
 	new dead_client_name[128]
 	get_user_name(id,dead_client_name,127)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(!client_hittable(i)){
 		
 			continue

@@ -261,7 +261,7 @@ public vexd_pfntouch(pToucher, pTouched) {
 		if(has_rocket[id] == pToucher)
 		has_rocket[id] = 0
 
-		for ( i = 1; i <= SH_MAXSLOTS; i++) {
+		for ( i = 1; i < sh_maxplayers()+1; i++) {
 
 			if( !is_user_alive(i) ) continue
 			get_user_origin(i,origin)
@@ -468,8 +468,8 @@ public anti_missile_radar(id)
 	radarvec1[1]=radarvec1[1]*350/length + origin[1]
 	radarvec1[2]=radarvec1[2]*350/length + origin[2]
 
-	for(new i=1; i <= SH_MAXSLOTS; i++) {
-		if( (has_rocket[i] > SH_MAXSLOTS) && (i != id) && (tid < SH_MAXSLOTS) ){
+	for(new i=1; i < sh_maxplayers()+1; i++) {
+		if( (has_rocket[i] > SH_MAXSLOTS) && (i != id) && (tid < sh_maxplayers()+1) ){
 			new szClassName[32]
 			Entvars_Get_String(has_rocket[i], EV_SZ_classname, szClassName, 31)
 			if(equal(szClassName, "bazooka_missile_ent")) {

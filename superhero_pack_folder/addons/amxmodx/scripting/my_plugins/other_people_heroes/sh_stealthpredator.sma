@@ -188,7 +188,7 @@ public stealth_ku()
 public stealth_loop()
 {
 	if ( !sh_is_active() ) return
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
@@ -305,11 +305,11 @@ public remove_power(id, powerID)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 	// Reset the cooldown on round end, to start fresh for a new round
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if (sh_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 		}

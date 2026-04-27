@@ -91,9 +91,6 @@ public plugin_init()
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("DeathMsg", "drstrange_death", "a")
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 
 	// LEVELS
 	register_srvcmd("drstrange_levels", "drstrange_levels")
@@ -472,22 +469,22 @@ public enableDrStrange(id)
 	gDrStrangeReviveUsed[id] = false
 }
 //----------------------------------------------------------------------------------------------
-public round_start()
+public sh_round_start()
 {
 
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 
 	// Reset the cooldown on round end, to start fresh for a new round
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 			gDrStrangeReviveUsed[id] = false

@@ -178,7 +178,7 @@ public get_first_mate_in_radius(id){
 	new client_origin[3],teamate_origin[3],distance
 	get_user_origin(id,client_origin);
 	new CsTeams:user_team= cs_get_user_team(id)
-	for(new i=1;i<=SH_MAXSLOTS;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		
 		if((i==id)||!is_user_connected(i)||!is_user_alive(i)){
 			

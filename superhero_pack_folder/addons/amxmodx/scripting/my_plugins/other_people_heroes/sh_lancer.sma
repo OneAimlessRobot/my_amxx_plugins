@@ -62,11 +62,6 @@ public plugin_init()
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
 
-	// LOG EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
-
 	g_msgBarTime = get_user_msgid("BarTime")
 }
 //----------------------------------------------------------------------------------------------
@@ -529,9 +524,9 @@ public remove_power(id, powerID)
 
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
-	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
+	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
 		}

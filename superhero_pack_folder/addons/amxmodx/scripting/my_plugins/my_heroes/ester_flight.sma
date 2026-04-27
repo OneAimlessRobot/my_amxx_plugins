@@ -448,7 +448,7 @@ public sh_round_end(){
 	arrayset(g_flying,false,SH_MAXSLOTS+1)
 
 	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 			ester_set_reborn_mode(id,0)
 			ester_remove_statuses(id)

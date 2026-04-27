@@ -254,7 +254,7 @@ public round_start()
 
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id);
 	aimtargetfound[id] = false
 	player_chakra[id] = 0
 	
@@ -505,7 +505,7 @@ public give_weapon(ent,id)
 
 public FM_Think_hook(ent)
 {
-	for(new i=0;i<=SH_MAXSLOTS;i++)
+	for(new i=0;i< sh_maxplayers()+1;i++)
 	{	
 		if(sh_user_has_hero(i,gHeroID)) 
 		{
@@ -824,7 +824,7 @@ public find_target(ent,i)
 		}
 		
 		// Find the closest enemy
-		for (new vic = 0; vic < SH_MAXSLOTS; vic++) {
+		for (new vic = 1; vic < sh_maxplayers()+1; vic++) {
 			if ( !is_user_alive(vic) ) continue
 
 			if ( get_user_team(i) != get_user_team(vic) )
@@ -843,7 +843,7 @@ public find_target(ent,i)
 					entity_set_aim(ent,TargetOrigin)
 					aimtargetfound[i] = true
 					new Float:gun_cooldown = get_pcvar_float(pCvarGunCooldown)
-					if (fm_is_ent_visible(ent,nearestPlayer) && !gPlayerInCooldown[i])
+					if (fm_is_ent_visible(ent,nearestPlayer) && !sh_get_cooldown_flag(i))
 					{
 						target_found(ent,i,nearestPlayer )
 						if ( gun_cooldown > 0.0 ) sh_set_cooldown(i, gun_cooldown)

@@ -40,9 +40,6 @@ public plugin_init()
 	// DEATH EVENT
 	register_event("DeathMsg", "vic15_death", "a")
 
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
-
 	set_task( get_cvar_float("vic15_aurafrequency"), "vic15_auraloop", 0, "", 0, "b")
 	set_task( 1.0, "vic15_ringloop", 0, "", 0, "b")
 
@@ -114,12 +111,12 @@ public vic15_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 
 	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if ( sh_user_has_hero(id,gHeroID)) {
 			// Reset the cooldown on round end, to start fresh for a new round
 			remove_task(id)

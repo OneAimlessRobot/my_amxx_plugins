@@ -36,7 +36,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	for(new i=0;i<SH_MAXSLOTS+1;i++){
+	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(client_hittable(i)){
 			g_dragging_who[i][0]=-1;
 			g_dragging_who[i][1]=0
@@ -289,7 +289,7 @@ public CmdStart(attacker, uc_handle)
 }
 public Teliko_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker) ||!(attacker>=1 && attacker <=SH_MAXSLOTS)) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 

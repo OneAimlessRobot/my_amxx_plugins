@@ -125,7 +125,7 @@
 
 	new inum
 
-	for (new i=1; i <= SH_MAXSLOTS; i++) {
+	for (new i=1; i < sh_maxplayers()+1; i++) {
 		if (is_user_alive(i) ) inum++
 	}
 
@@ -269,7 +269,7 @@
  {
  	if (!hasRoundStarted()) return
 
-	for ( new id=1; id<=SH_MAXSLOTS; id++ )
+	for ( new id=1; id< sh_maxplayers()+1; id++ )
 	{
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 		{
@@ -294,7 +294,7 @@
 	new damage = get_cvar_num("storm_maxdamage")
 	new Float: radius = get_cvar_float("storm_radius")
 	new FFOn = get_cvar_num("mp_friendlyfire")
-	for(new vic = 1; vic <= SH_MAXSLOTS; vic++)
+	for(new vic = 1; vic < sh_maxplayers()+1; vic++)
 	{
 		if( is_user_alive(vic) && ( get_user_team(id) != get_user_team(vic) || FFOn != 0 || vic==id ) )
 		{

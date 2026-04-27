@@ -383,7 +383,7 @@ public flora_checks(task_id){
 	if(!sh_is_active()||sh_is_freezetime()) return
 
 
-	for(new id=0;id<SH_MAXSLOTS+1;id++){
+	for(new id=1;id< sh_maxplayers()+1;id++){
 		if(!client_hittable(id)) continue
 
 		if(!sh_user_has_hero(id,flora_get_hero_id())) continue

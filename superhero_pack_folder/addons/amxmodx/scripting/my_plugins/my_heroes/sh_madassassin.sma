@@ -263,7 +263,7 @@ public madassassin_loop()
 
 	new healPoints = get_pcvar_num(CvarHealPoints)
 
-	for (new id = 1; id <= SH_MAXSLOTS; id++)
+	for (new id = 1; id < sh_maxplayers()+1; id++)
 	{
 		if ( is_user_alive(id) && HasMadAssassin[id] )
 		{

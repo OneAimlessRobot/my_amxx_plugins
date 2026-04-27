@@ -75,7 +75,7 @@ public t800_round_end()
 	gPlayerUltimateUsedMask=0
 	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
 	// Reset the cooldown on round end, to start fresh for a new round
-	for (new id = 1; id <= SH_MAXSLOTS; id++) {
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 			t800_endmode(id)
