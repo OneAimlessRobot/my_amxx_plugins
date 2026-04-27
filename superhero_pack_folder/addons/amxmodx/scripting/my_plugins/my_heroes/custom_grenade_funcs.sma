@@ -13,6 +13,8 @@
 
 #include "co2_fx_inc/co2_fx.inc"
 
+#include "shock_fx_inc/shock_fx.inc"
+
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
@@ -604,12 +606,7 @@ public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 			
 		}
 		case GREN_SHOCK:{
-			if(sh_get_user_is_asleep(tg)){
-				sh_chat_message(tg,-1,"You got woken up with %s grenade!",
-								sh_grenade_structs_arr[gren_type][sh_grenade_name])
-				sh_unsleep_user(tg)
-			}
-			sh_set_stun(tg,1.0,180.0)
+			sh_shock_user(tg)
 		}
 		case GREN_FREEZE:{
 			

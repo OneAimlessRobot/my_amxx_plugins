@@ -65,6 +65,9 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
+	if(!gIsBurning[id]){
+		return
+	}
 	set_render_with_color_const(id,PINK,1,50,50,1,1)
 	remove_glow_user(id,BURN_PERIOD)
 	make_fire(id,30.0)

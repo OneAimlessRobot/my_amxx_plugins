@@ -17,10 +17,10 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock hook_on[SH_MAXSLOTS+1]
+stock hook_on[SH_MAXSLOTS+1] = { 0 , ...}
 stock g_dragging_who[SH_MAXSLOTS+1][2]
-stock Float:g_prev_max_speed[SH_MAXSLOTS+1]
-stock g_hook_kills[SH_MAXSLOTS+1]
+stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
+stock g_hook_kills[SH_MAXSLOTS+1] = { 0 , ...}
 #define NUM_SENTENCES 5
 stock const erica_sentences[NUM_SENTENCES][]={
 	
@@ -79,7 +79,7 @@ erica_new_spawn_hooks(id){
 if (  sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
-stop_dragging(id)
+stop_dragging(id,_,true)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -103,14 +103,14 @@ public plugin_natives(){
 	register_native( "hook_set_hook","_hook_set_hook",0)
 	
 }
-stop_dragging(id,bool:deduct=false){
+stop_dragging(id,bool:deduct=false,round_end=false){
 
 		new client_is_here=is_user_alive( g_dragging_who[id][0])
 		new attacker_is_here=is_user_alive( id )
 		if(client_is_here){
 			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
-		if(attacker_is_here){
+		if(attacker_is_here&&!round_end){
 
 			set_user_maxspeed(id,g_prev_max_speed[id])
 		}

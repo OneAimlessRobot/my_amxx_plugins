@@ -11,7 +11,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "track_fx_inc/track_fx.inc"
 
 
 #define PLUGIN "Superhero yandere radio funcs"

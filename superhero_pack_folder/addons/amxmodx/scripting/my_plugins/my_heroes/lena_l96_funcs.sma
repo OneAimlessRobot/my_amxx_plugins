@@ -2,15 +2,13 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#include <float>
-#include <xs>
-
 #include "../my_include/superheromod.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "track_fx_inc/track_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
@@ -328,10 +326,10 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
-	xs_vec_sub(Push, g_Recoil[id], Push)
+	sub_3d_vectors(Push, g_Recoil[id], Push)
 	
-	xs_vec_mul_scalar(Push, RECOIL, Push)
-	xs_vec_add(Push, g_Recoil[id], Push)
+	multiply_3d_vector_by_scalar(Push, RECOIL, Push)
+	add_3d_vectors(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
 launch_bullet(id)

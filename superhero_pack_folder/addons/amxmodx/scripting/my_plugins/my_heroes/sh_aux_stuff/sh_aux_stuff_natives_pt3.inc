@@ -87,9 +87,6 @@ native explosion_custom_entity(ent_id,Float:explosion_radius,
 					const custom_sound_sample[128]=crush_stunned);
 
 
-
-native track_user(id,attacker,do_damage=0,damage=40,Float:period,Float:time,track_color=LTBLUE);
-native unradioactive_user(id)
 native remove_glow_user(id,Float:delay)
 
 native sh_damage_display_stock(hud_msg_sync_vic=-1,hud_msg_sync_att=-1,victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
