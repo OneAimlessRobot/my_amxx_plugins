@@ -1,55 +1,16 @@
-/********************************************************************************
-*  AMX Mod X script.
-*
-*   SH Gloce (sh_gloce.sma)
-*   Copyright (C) 2008 Atomen
-*
-*   This program is free software; you can redistribute it and/or
-*   modify it under the terms of the GNU General Public License
-*   as published by the Free Software Foundation; either version 2
-*   of the License, or (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program; if not, write to the Free Software
-*   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*   In addition, as a special exception, the author gives permission to
-*   link the code of this program with the Half-Life Game Engine ("HL
-*   Engine") and Modified Game Libraries ("MODs") developed by Valve,
-*   L.L.C ("Valve"). You must obey the GNU General Public License in all
-*   respects for all of the code used other than the HL Engine and MODs
-*   from Valve. If you modify this file, you may extend this exception
-*   to your version of the file, but you are not obligated to do so. If
-*   you do not wish to do so, delete this exception statement from your
-*   version.
-*
-*********************************************************************************
-
-//Gloce
-gloce_level 7			//Hero Level
-gloce_glock 1			//Receive glock on (re)spawn
-gloce_percent 30		//Percent to freeze enemy
-gloce_times 5			//Amounts of time to freeze per spawn
-gloce_freeze_time 5		//How long they should be frozen
-*/
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/freeze_fx/freeze_fx.inc"
+#include "../my_heroes/custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
 
 #define gVERSION "1.1"
 #define GLOCE_DSPT "Icy Powers - Slow down your enemies with your Ice glock"
-
-new const g_sound[]	=	"shmod/frostnova.wav"
-new const g_sprite[]	=	"sprites/white.spr"
 
 #define g_model "models/shmod/v_gloce.mdl"
 
@@ -59,11 +20,8 @@ new gloce_pct
 new gloce_times
 new gloce_time
 
-new g_spriteRing
 
 
-new bool:slowed[33]
-new Float:g_fMaxSpeed[33]
 
 new g_HeroName[] = "Gloce"
 new gHeroID
@@ -103,12 +61,6 @@ public plugin_init()
 	shRegHeroInit(g_HeroName, "gloce_init")
 }
 
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheSound,g_sound)
-	g_spriteRing = engfunc(EngFunc_PrecacheModel,g_sprite)
-
-}
 
 public gloce_init()
 {
@@ -127,11 +79,11 @@ public fwd_Ham_Spawn_post(id)
 {
 	if(is_user_alive(id) && sh_is_active() && is_user_connected(id))
 	{
-		pev(id, pev_maxspeed, g_fMaxSpeed[id])
 
 		times_id[id] = get_pcvar_num(gloce_times)
 		if(sh_user_has_hero(id,gHeroID) && get_pcvar_num(gloce_glock))
 		{
+			give_custom_grenades(id,GREN_FREEZE,5)
 			ham_give_weapon(id, "weapon_glock18")
 			ExecuteHam(Ham_GiveAmmo, id, 80, "9mm", 120)
 		}
@@ -156,41 +108,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 			{
 				if(generate_int(0, 100) <= get_pcvar_num(gloce_pct))
 				{
-					new Float:fMaxSpeed
-					pev(id, pev_maxspeed, fMaxSpeed)
-
-					if(fMaxSpeed != g_fMaxSpeed[id] && fMaxSpeed != 130.0)
-					{
-						g_fMaxSpeed[id] = fMaxSpeed
-					}
-
-					if(task_exists(id))
-						remove_task(id)
-
-					new origin[3]
-					get_user_origin(id, origin)
-
-					set_pev(id, pev_maxspeed, 130.0)
-					sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)
-
-					emit_sound(id, CHAN_WEAPON, g_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-					//Make the screen blue
-					message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
-					write_short(~0)
-					write_short(~0)
-					write_short(0x0004)
-					write_byte(30)
-					write_byte(125)
-					write_byte(255)
-					write_byte(100)
-					message_end()
-
-					ring_effect(origin, 225, 5, 30, 125, 255)
-
-					slowed[id] = true
-
-					set_task(get_pcvar_float(gloce_time), "remove_frozen", id)
+					sh_freeze_user(id,get_pcvar_float(gloce_time),130.0)
 					times_id[Attacker]--
 				}
 			}
@@ -206,41 +124,20 @@ public weapon_event(id)
 	{
 		new weaponid = read_data(2)
 
-		if(slowed[id] && weaponid != CSW_GLOCK18)
+		if(sh_is_user_frozen(id) && weaponid != CSW_GLOCK18)
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 		}
 
-		else if(slowed[id] && weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
+		else if(sh_is_user_frozen(id) && weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 
 		}
 	}
 
-	return 0;
 }
 
-public remove_frozen(id)
-{
-	if(slowed[id])
-	{
-		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-		sh_set_rendering(id,0, 0, 0, 0,kRenderFxGlowShell, kRenderNormal)
-
-		message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
-		write_short(1<<10)
-		write_short(1<<10)
-		write_short(0x0000)
-		write_byte(30)
-		write_byte(125)
-		write_byte(255)
-		write_byte(100)
-		message_end()
-
-		slowed[id] = false
-	}
-}
 
 public fwd_Client_Connect(id)
 {
@@ -252,29 +149,6 @@ public fwd_Client_Disconnect(id)
 	times_id[id] = 0
 }
 
-stock ring_effect(vector[3], radius, height, red, green, blue)
-{
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY, vector)
-	write_byte(21)						// TE_BEAMCYLINDER
-	write_coord(vector[0])					// center position
-	write_coord(vector[1])
-	write_coord(vector[2] + height)
-	write_coord(vector[0])					// axis and radius
-	write_coord(vector[1])
-	write_coord(vector[2] + radius)
-	write_short(g_spriteRing)				// sprite index
-	write_byte(0)						// starting frame
-	write_byte(0)						// frame rate in 0.1's
-	write_byte(2)						// life in 0.1's
-	write_byte(20)						// line width in 0.1's
-	write_byte(0)						// noise amplitude in 0.01's
-	write_byte(red)						//colour
-	write_byte(green)
-	write_byte(blue)
-	write_byte(255)						// brightness
-	write_byte(0)						// scroll speed in 0.1's
-	message_end()
-}
 
 stock ham_give_weapon(id,weapon[])
 {

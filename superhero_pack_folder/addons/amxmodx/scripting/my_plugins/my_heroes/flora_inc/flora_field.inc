@@ -20,8 +20,8 @@
 #define FIELD_DESTROYED "shmod/flora/fields/field_destroy.wav"
 #define FIELD_CHARGING "shmod/flora/fields/field_charging.wav"
 #define FIELD_TELEPORT "shmod/flora/fields/flora_teleport.wav"
-#define FIELD_MDL "models/shmod/jaqueo/shield/shield.mdl"
 #define FIELD_NULL "common/null.wav"
+#define FIELD_MDL 
 
 
 #define FLORA_HEAL_GLOW_TIME 3.0

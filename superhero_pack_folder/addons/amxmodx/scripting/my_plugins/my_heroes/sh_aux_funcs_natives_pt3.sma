@@ -18,6 +18,7 @@
 
 
 new RADIOACTIVE_TASK_ID
+
 new REMOVE_GLOW_TASKID
 
 
@@ -55,6 +56,7 @@ public plugin_init(){
 	
 }
 public plugin_precache(){
+	engfunc(EngFunc_PrecacheSound,  FROZEN_SFX)
 
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
 	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
@@ -66,6 +68,9 @@ public plugin_natives(){
 
 
 	register_native("prepare_shero_aux_lib_pt3","_prepare_shero_aux_lib_pt3",0);
+	register_native("unradioactive_user","_unradioactive_user",0)
+	register_native("unradioactive_user","_unradioactive_user",0)
+	register_native("unradioactive_user","_unradioactive_user",0)
 	register_native("unradioactive_user","_unradioactive_user",0)
 	register_native("explosion","_explosion",0);
 	register_native("explosion_custom_entity","_explosion_custom_entity",0);
@@ -82,6 +87,7 @@ public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
 	init_explosion_defaults()
 	server_print("%s innited!^n",LIBRARY_NAME)
 }
+
 //native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
 
 public _sh_damage_display_stock(iPlugin,iParams){
@@ -234,7 +240,6 @@ public _unradioactive_user(iPlugin,iParams){
 	}
 
 }
-
 public _explosion(iPlugins,iParams){
 
 
@@ -480,7 +485,6 @@ public on_death_tracked()
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		unradioactive_user(id)
-	
 	}
 	
 }

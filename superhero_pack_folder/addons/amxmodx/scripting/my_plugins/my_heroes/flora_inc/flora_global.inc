@@ -4,8 +4,6 @@
 #define sh_flora_global_funcs
 
 
-#define FLORA_MORPH_TASKID 9762237
-#define FLORA_UNGLOW_TASKID 5612718
 #define FLORA_PLAYER_MODEL "models/player/Flora/Flora.mdl"
 #define FLORA_PLAYER_MODEL_T "models/player/Flora/FloraT.mdl"
 

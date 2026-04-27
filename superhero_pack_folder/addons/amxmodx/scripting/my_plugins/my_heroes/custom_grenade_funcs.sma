@@ -6,14 +6,24 @@
 
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 
+
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+
+#include "freeze_fx/freeze_fx.inc"
+
+#include "co2_fx_inc/co2_fx.inc"
+
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
 #include "sh_aux_stuff/sh_aux_inc.inc"
+
+#include "bleed_knife_inc/sh_bknife_fx.inc"
+
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/stripweapons.inc"
 
 #define PLUGIN "Superhero custom grenades module"
@@ -115,6 +125,19 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					CSW_FLASHBANG,
 					-1,
 					LTBLUE,
+					500.0,
+					3000.0,
+					1.0,
+					5.0,
+					1.5},
+
+	{"freeze_grenade","freeze_grenade",
+					"models/w_smokegrenade.mdl",
+					"weapon_smokegrenade",
+					FROZEN_SFX,
+					CSW_SMOKEGRENADE,
+					-1,
+					FROZEN_BLUE,
 					500.0,
 					3000.0,
 					1.0,
@@ -456,6 +479,7 @@ new owner=pev(id_grenade,pev_owner);
 
 if(!is_user_connected(owner)){
 	remove_entity(id_grenade)
+	return
 }
 static szClassname[32];
 
@@ -570,16 +594,13 @@ public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 			sh_chaff_user(tg,attacker,-1)
 		}
 		case GREN_MOLLY:{
-
+			
+			
 			sh_molly_user(tg,attacker,-1)
 		}
 		case GREN_CO2:{
 			
-			if(sh_is_user_burning(tg)){
-				sh_chat_message(tg,-1,"You got ridden of flames with %s grenade!",
-								sh_grenade_structs_arr[gren_type][sh_grenade_name])
-				sh_unmolly_user(tg)
-			}
+			sh_co2_user(tg)
 			
 		}
 		case GREN_SHOCK:{
@@ -589,6 +610,10 @@ public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 				sh_unsleep_user(tg)
 			}
 			sh_set_stun(tg,1.0,180.0)
+		}
+		case GREN_FREEZE:{
+			
+			sh_freeze_user(tg,5.0,130.0)
 		}
 		default:{
 			

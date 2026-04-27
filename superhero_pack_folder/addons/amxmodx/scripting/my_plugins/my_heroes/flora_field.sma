@@ -485,7 +485,7 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 public plugin_precache(){
 
 
-	engfunc(EngFunc_PrecacheModel,FIELD_MDL)
+	engfunc(EngFunc_PrecacheModel,SPHERE_MODEL)
 	
 	engfunc(EngFunc_PrecacheSound,FIELD_DEPLOYED)
 	engfunc(EngFunc_PrecacheSound,FIELD_DESTROYED)
@@ -538,7 +538,7 @@ public _form_field(iPlugin,iParams)
 	
 	entity_set_string(  Ent, EV_SZ_classname, FLORA_FIELD_CLASSNAME );
 	entity_set_int(  Ent , EV_INT_solid, SOLID_BBOX);
-	entity_set_model(  Ent , FIELD_MDL );
+	entity_set_model(  Ent , SPHERE_MODEL );
 	new Float:fl_vecminsx[3]
 	new Float:fl_vecmaxsx[3]
 	for (new i=0;i<3;i++){

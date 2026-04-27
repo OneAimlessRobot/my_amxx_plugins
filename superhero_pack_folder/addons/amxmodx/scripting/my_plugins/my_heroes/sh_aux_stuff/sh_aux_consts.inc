@@ -70,6 +70,7 @@ enum cs_grenade_animation_sequences{
 #define FADE_OUT	(1<<1)
 #define FADE_HOLD (1<<2)
 
+#define FROZEN_SFX "shmod/frostnova.wav" 
 #define PIERCE_WOUND_SFX "hornet/ag_hornethit1.wav"
 #define THROWABLE_LAUNCH_SFX "shmod/lara/spear/spear_throw.wav"
 #define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/Teliko/chaff/bounce.wav"
@@ -85,6 +86,8 @@ enum cs_grenade_animation_sequences{
 #define EXPLOSION_TANK_SHOT_SOUND "shmod/a_exm2.wav"
 
 
+
+#define SPHERE_MODEL "models/shmod/jaqueo/shield/shield.mdl"
 /**
 
 Explosion sfx masks!
@@ -114,6 +117,7 @@ enum sh_custom_color{
 		INVIS,
 		BLACK,
 		MAGENTA,
+		FROZEN_BLUE,
 		FX_NONE,
 		FX_KILL,
 		FX_GLOW,
@@ -163,6 +167,7 @@ stock const LineColors[_:COLORS_NUM][3] = {
 	{10,10,10},      //invisible
 	{1,1,1},      //Black
 	{255,0,127},      //Magenta
+	{5, 30, 125}, //Frozen Blue
 	{0,0,0}, //fx_none
 	{1, 255, 255}, //fx_cyanide
 	{255, 255, 255}, //fx_glow

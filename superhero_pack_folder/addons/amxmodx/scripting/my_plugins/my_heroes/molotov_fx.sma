@@ -3,6 +3,8 @@
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "co2_fx_inc/co2_fx.inc"
+#include "freeze_fx/freeze_fx.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -133,7 +135,7 @@ public _sh_molly_user(iPlugin,iParams){
 	get_user_name(attacker,attacker_name,127)
 	new user_name[128]
 	get_user_name(user,user_name,127)
-	if(!gIsBurning[user]){
+	if(!sh_get_user_is_co2(user)&&!gIsBurning[user]){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
 				
@@ -184,6 +186,10 @@ stock burn_user(id,attacker){
 	new array[2]
 	array[0] = attacker
 	array[1] = 0
+	
+	if(sh_is_user_frozen(id)){
+		sh_unfreeze_user(id)
+	}
 	emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
 	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
