@@ -149,6 +149,7 @@ public erica_init()
 	new id=str_to_num(temp)
 	
 	if(sh_user_has_hero(id,gHeroID) ){
+		sh_reset_max_speed(id)
 		g_erica_kills[id]=0;
 		g_erica_points[id]=base_er_points;
 		g_base_er_speed[id]=base_er_speed

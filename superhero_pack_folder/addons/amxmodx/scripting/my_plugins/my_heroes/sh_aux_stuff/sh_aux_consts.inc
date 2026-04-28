@@ -20,6 +20,7 @@ new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 
+#define cvar_val(%1,%2) get_pcvar_%1(%2)
 
 #define ANTI_LAGG		7
 

@@ -261,7 +261,7 @@ if(!disconnected){
 	if(!is_user_connected(id)) return
 }
 for(new i=1;i< sh_maxplayers()+1;i++){
-	if(!client_hittable(i)) continue;
+	if(!is_user_alive(i)) continue;
 
 	if(!sh_user_has_hero(i,gHeroID) ) continue;
 
@@ -295,7 +295,7 @@ public yandere_loop(id){
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
 
-		if(!client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
+		if(!is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
 			continue
 		}
 		if(!is_user_bot(i)&&Get_BitVar(gTransTimerStartedMask,i)){
@@ -638,7 +638,7 @@ public sh_round_end(){
 	
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		
-		if(client_hittable(i)){
+		if(is_user_alive(i)){
 			if(sh_user_has_hero(i,gHeroID) ){
 				jet_destroy(i)
 				
@@ -660,7 +660,7 @@ public sh_round_end(){
 		
 	}
 	new last_alive=get_first_alive()
-	if(!client_hittable(last_alive)) return
+	if(!is_user_alive(last_alive)) return
 	if(sh_user_has_hero(last_alive,gHeroID) ){
 		static client_name[128]
 		get_user_name(last_alive,client_name,127)

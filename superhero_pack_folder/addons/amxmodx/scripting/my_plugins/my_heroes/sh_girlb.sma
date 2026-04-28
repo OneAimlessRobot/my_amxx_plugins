@@ -15,12 +15,16 @@ new gHeroID
 new gHeroName[]="Girl B"
 new gNumGlobs[SH_MAXSLOTS+1] = {0, ...}
 new girlb_held_down_mask = 0
-new girlb_projectile_ammo,
-    girlb_projectile_cluster,
-    Float:girlb_projectile_fire_period,
-    Float:girlb_projectile_cluster_fire_period
+new girlb_projectile_ammo_pcvar,
+    girlb_projectile_cluster_pcvar,
+    girlb_projectile_fire_period_pcvar,
+    girlb_projectile_cluster_fire_period_pcvar,
+    girlb_fast_regen_threshold_ammo_frac_pcvar,
+    girlb_fast_regen_period_frac_pcvar,
+    girlb_regen_period_pcvar
 
 new SHOOT_GLOB_TASKID
+new REGEN_GLOB_TASKID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -28,13 +32,16 @@ public plugin_init()
     register_plugin("SUPERHERO GirlB","1.0",AUTHOR)
 
     register_cvar("girlb_level", "29" )
-    register_cvar("girlb_projectile_ammo","30")
-    register_cvar("girlb_projectile_fire_period","1.5")
-    register_cvar("girlb_projectile_cluster","3")
-    register_cvar("girlb_projectile_cluster_fire_period","0.1")
+    girlb_projectile_ammo_pcvar = register_cvar("girlb_projectile_ammo","30")
+    girlb_projectile_cluster_pcvar = register_cvar("girlb_projectile_cluster","3")
+    girlb_projectile_fire_period_pcvar = register_cvar("girlb_projectile_fire_period","1.5")
+    girlb_projectile_cluster_fire_period_pcvar = register_cvar("girlb_projectile_cluster_fire_period","0.1")
+    girlb_fast_regen_threshold_ammo_frac_pcvar = register_cvar("girlb_fast_regen_threshold_ammo_frac","0.5")
+    girlb_fast_regen_period_frac_pcvar = register_cvar("girlb_fast_regen_period_frac","0.5")
+    girlb_regen_period_pcvar = register_cvar("girlb_regen_period","1.0")
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-    gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land!", true, "girlb_level" )
+    gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land (JUMP+FORWARD)!", true, "girlb_level" )
 
     register_event("ResetHUD","newRound","b")
     register_srvcmd("girlb_init", "girlb_init")
@@ -45,6 +52,7 @@ public plugin_init()
     register_srvcmd("girlb_ku", "girlb_ku")
     shRegKeyUp(gHeroName, "girlb_ku")
     SHOOT_GLOB_TASKID=allocate_typed_task_id(player_task)
+    REGEN_GLOB_TASKID=allocate_typed_task_id(player_task)
 }
 public plugin_natives(){
 	
@@ -82,38 +90,48 @@ public _girlb_dec_num_globs(iPlugin,iParams){
 	
 }
 
+//appropriate checks assumed
+
+intitialize_girlb(id){
+
+    if(!is_user_alive(id)) return
+
+    if ( sh_user_has_hero(id,gHeroID) ) {
+        
+        gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar);
+        set_task(cvar_val(float, girlb_regen_period_pcvar),
+                    "regen_glob_task",id+REGEN_GLOB_TASKID)
+        give_custom_grenades(id,GREN_FREEZE,2)
+
+    }
+}
+//----------------------------------------------------------------------------------------------
+public sh_round_start()
+{      
+    if(!sh_is_active()){
+        
+        return
+
+    }
+
+    for(new id=1;id<sh_maxplayers()+1;id++){
+        
+        intitialize_girlb(id)
+        
+    }
+}
+
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-    if(!client_hittable(id)||!sh_is_active()){
+    if(!sh_is_active()||!sh_is_inround()){
         
         return PLUGIN_CONTINUE
     }
-    if ( sh_user_has_hero(id,gHeroID) ) {
-        
-        gNumGlobs[id]=girlb_projectile_ammo
-        give_custom_grenades(id,GREN_FREEZE,2)
-        sh_unset_cooldown_flag(id)
-        sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-
-    }
+    intitialize_girlb(id)
     return PLUGIN_CONTINUE
 }
 
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-    girlb_projectile_fire_period=get_cvar_float("girlb_projectile_fire_period")
-    girlb_projectile_ammo=get_cvar_num("girlb_projectile_ammo")
-    girlb_projectile_cluster=get_cvar_num("girlb_projectile_cluster")
-    girlb_projectile_cluster_fire_period=get_cvar_float("girlb_projectile_cluster_fire_period")
-}
 //----------------------------------------------------------------------------------------------
 public girlb_init()
 {
@@ -121,8 +139,10 @@ public girlb_init()
     new temp[6]
     read_argv(1,temp,5)
     new id=str_to_num(temp)
-
-    gNumGlobs[id]=girlb_projectile_ammo
+    
+    gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar)
+    set_task(cvar_val(float, girlb_regen_period_pcvar),
+                    "regen_glob_task",id+REGEN_GLOB_TASKID)
 
 }
 public sh_round_end(){
@@ -154,7 +174,7 @@ public girlb_kd()
     }
     Set_BitVar(girlb_held_down_mask,id);
     new param[1]
-    param[0]=girlb_projectile_cluster
+    param[0]=cvar_val(num,girlb_projectile_cluster_pcvar)
     shoot_glob_task(param,id+SHOOT_GLOB_TASKID)
     
     return PLUGIN_HANDLED
@@ -177,24 +197,50 @@ public girlb_ku()
 
     return PLUGIN_HANDLED
 }
+
+public regen_glob_task(id){
+
+    if(!sh_is_active()||!sh_is_inround()) return
+    
+    id-=REGEN_GLOB_TASKID
+
+
+    if(!sh_user_has_hero(id,gHeroID) ) return
+
+    if ( !client_hittable(id) ) return 
+    
+    new Float: curr_ammo_frac =  (float(gNumGlobs[id])/float(cvar_val(num,girlb_projectile_ammo_pcvar)))
+    new Float: delay = (curr_ammo_frac<=cvar_val(float,girlb_fast_regen_threshold_ammo_frac_pcvar))?
+                                   cvar_val(float, girlb_fast_regen_period_frac_pcvar)*cvar_val(float, girlb_regen_period_pcvar):
+                                   cvar_val(float, girlb_regen_period_pcvar)
+
+    
+    gNumGlobs[id] += (gNumGlobs[id]<cvar_val(num,girlb_projectile_ammo_pcvar))?1:0
+
+    set_task(delay,"regen_glob_task",id+REGEN_GLOB_TASKID)
+
+}
 public shoot_glob_task(param[1],id){
 
     if(!sh_is_active()||!sh_is_inround()) return
     
     id-=SHOOT_GLOB_TASKID
 
+
+    if(!sh_user_has_hero(id,gHeroID) ) return
+
     if ( !client_hittable(id) ) return 
     
     if(Get_BitVar(girlb_held_down_mask,id)&&param[0]>0){
         param[0]--
         launch_ice_glob(id)
-        set_task(girlb_projectile_cluster_fire_period,"shoot_glob_task",
+        set_task(cvar_val(float,girlb_projectile_cluster_fire_period_pcvar), "shoot_glob_task",
                         id+SHOOT_GLOB_TASKID,param,sizeof(param))
     }
     else if(Get_BitVar(girlb_held_down_mask,id)){
 
-        param[0]=girlb_projectile_cluster
-        set_task(girlb_projectile_fire_period,"shoot_glob_task",
+        param[0]=cvar_val(num,girlb_projectile_cluster_pcvar)
+        set_task(cvar_val(float,girlb_projectile_fire_period_pcvar),"shoot_glob_task",
                         id+SHOOT_GLOB_TASKID,param,sizeof(param))
     
     }

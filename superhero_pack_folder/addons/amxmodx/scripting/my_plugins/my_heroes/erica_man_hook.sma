@@ -54,6 +54,7 @@ public plugin_init(){
 	register_cvar("hook_level_difference", "10")
 	register_cvar("hook_drag_time", "3")
 	register_cvar("hook_gutting_dmg_mult", "3")
+	register_event("ResetHUD","hook_new_round","b")
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
@@ -64,11 +65,23 @@ public plugin_init(){
 	
 	HOOK_TASKID=allocate_typed_task_id(player_task)
 }
+
+//----------------------------------------------------------------------------------------------
+public hook_new_round(id)
+{	
+	if(sh_is_active()&&is_user_alive(id)){
+		g_prev_max_speed[id] = get_user_maxspeed(id)
+	}
+	
+}
 //----------------------------------------------------------------------------------------------
 public sh_round_end()
 {
+	if(!sh_is_active() ){
 
-	for(new i=0;i< sh_maxsplayers();i++){
+		return
+	}
+	for(new i=1;i< sh_maxplayers()+1;i++){
 
 		erica_new_spawn_hooks(i)
 	}
@@ -79,7 +92,7 @@ erica_new_spawn_hooks(id){
 if (  sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
-stop_dragging(id,_,true)
+stop_dragging(id)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -103,14 +116,14 @@ public plugin_natives(){
 	register_native( "hook_set_hook","_hook_set_hook",0)
 	
 }
-stop_dragging(id,bool:deduct=false,round_end=false){
+stop_dragging(id,bool:deduct=false){
 
 		new client_is_here=is_user_alive( g_dragging_who[id][0])
 		new attacker_is_here=is_user_alive( id )
 		if(client_is_here){
 			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
-		if(attacker_is_here&&!round_end){
+		if(client_is_here&&attacker_is_here){
 
 			set_user_maxspeed(id,g_prev_max_speed[id])
 		}

@@ -121,7 +121,7 @@ public zenitsu_charge(id, uc_handle, seed)
 		if(!g_zenitsu_was_charging[id]){
 
 			engclient_cmd(id, "weapon_knife")
-			trail(id,YELLOW,1,10)
+			trail(id,YELLOW,6,20)
 			emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			get_uc(uc_handle,UC_ViewAngles,g_zenitsu_curr_charge_look_direction[id])
 		}

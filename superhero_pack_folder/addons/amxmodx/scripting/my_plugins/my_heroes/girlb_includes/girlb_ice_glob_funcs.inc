@@ -3,21 +3,21 @@
 #endif
 #define sh_glob_field
 
-#define GLOB_THINK_PERIOD 0.333333334
+#define GLOB_THINK_PERIOD 0.333
 
-#define GLOB_FIELD_LIFE_TIME 6.0
+#define GLOB_FIELD_LIFE_TIME 2.0
 
 #define GLOB_CLASSNAME "girlb_ice_glob"
 
-#define GLOB_MIN_FRICTION 0.35
+#define GLOB_MIN_FRICTION 0.03333335
 
 #define GLOB_ICE_SKATE_SPEED 1000.0
 
 #define GLOB_SPEED 1000.0
 
-#define GLOB_DMG 5
+#define GLOB_DMG 12
 
-#define GLOB_RADIUS 400.0
+#define GLOB_RADIUS 600.0
 
 
 native launch_ice_glob(id)
