@@ -16,7 +16,9 @@ new gHeroName[]="Girl B"
 new gNumGlobs[SH_MAXSLOTS+1] = {0, ...}
 new girlb_held_down_mask = 0
 new girlb_projectile_ammo,
-    Float:girlb_projectile_fire_period
+    girlb_projectile_cluster,
+    Float:girlb_projectile_fire_period,
+    Float:girlb_projectile_cluster_fire_period
 
 new SHOOT_GLOB_TASKID
 //----------------------------------------------------------------------------------------------
@@ -27,8 +29,9 @@ public plugin_init()
 
     register_cvar("girlb_level", "29" )
     register_cvar("girlb_projectile_ammo","30")
-    register_cvar("girlb_projectile_fire_period","0.3")
-
+    register_cvar("girlb_projectile_fire_period","1.5")
+    register_cvar("girlb_projectile_cluster","3")
+    register_cvar("girlb_projectile_cluster_fire_period","0.1")
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land!", true, "girlb_level" )
@@ -108,6 +111,8 @@ public loadCVARS()
 {
     girlb_projectile_fire_period=get_cvar_float("girlb_projectile_fire_period")
     girlb_projectile_ammo=get_cvar_num("girlb_projectile_ammo")
+    girlb_projectile_cluster=get_cvar_num("girlb_projectile_cluster")
+    girlb_projectile_cluster_fire_period=get_cvar_float("girlb_projectile_cluster_fire_period")
 }
 //----------------------------------------------------------------------------------------------
 public girlb_init()
@@ -128,7 +133,7 @@ public sh_round_end(){
 public girlb_kd()
 {
     if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
-    
+
     new temp[6]
 
     read_argv(1,temp,5)
@@ -136,17 +141,22 @@ public girlb_kd()
 
     if ( !client_hittable(id) ) return PLUGIN_HANDLED
 
-    if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+    if(!sh_user_has_hero(id,gHeroID) ){
+        return PLUGIN_HANDLED;
+    }
 
-    if(sh_get_cooldown_flag(id)){
-
+    if(gNumGlobs[id]<=0){
+        
+        client_print(id,print_center,"You ran out of ice globs")
         sh_sound_deny(id)
         return PLUGIN_HANDLED
+        
     }
-    Set_BitVar(girlb_held_down_mask,id)
-    launch_ice_glob(id)
-    set_task(girlb_projectile_fire_period,"shoot_glob_task",id+SHOOT_GLOB_TASKID)
-    //sh_set_cooldown(id,girlb_projectile_fire_period)
+    Set_BitVar(girlb_held_down_mask,id);
+    new param[1]
+    param[0]=girlb_projectile_cluster
+    shoot_glob_task(param,id+SHOOT_GLOB_TASKID)
+    
     return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -167,7 +177,7 @@ public girlb_ku()
 
     return PLUGIN_HANDLED
 }
-public shoot_glob_task(id){
+public shoot_glob_task(param[1],id){
 
     if(!sh_is_active()||!sh_is_inround()) return
     
@@ -175,13 +185,19 @@ public shoot_glob_task(id){
 
     if ( !client_hittable(id) ) return 
     
-    if(Get_BitVar(girlb_held_down_mask,id)){
-
+    if(Get_BitVar(girlb_held_down_mask,id)&&param[0]>0){
+        param[0]--
         launch_ice_glob(id)
-        set_task(girlb_projectile_fire_period,"shoot_glob_task",id+SHOOT_GLOB_TASKID)
-
+        set_task(girlb_projectile_cluster_fire_period,"shoot_glob_task",
+                        id+SHOOT_GLOB_TASKID,param,sizeof(param))
     }
+    else if(Get_BitVar(girlb_held_down_mask,id)){
+
+        param[0]=girlb_projectile_cluster
+        set_task(girlb_projectile_fire_period,"shoot_glob_task",
+                        id+SHOOT_GLOB_TASKID,param,sizeof(param))
     
+    }
 
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
@@ -189,11 +205,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
     if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
 
         return DMG_FWD_PASS
-    }
-    if(new_dmg_type==SH_NEW_DMG_IVE_STUDIED_THE_BLADE){
-        if(sh_user_has_hero(victim,gHeroID) ){
-            return DMG_FWD_BLOCK
-        }
     }
 
     if(!sh_user_has_hero(victim,gHeroID)&&!sh_user_has_hero(attacker,gHeroID)) return DMG_FWD_PASS

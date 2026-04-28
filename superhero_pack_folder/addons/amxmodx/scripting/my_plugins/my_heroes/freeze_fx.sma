@@ -48,7 +48,7 @@ public frozen_damage(id)
 	
 	if(Get_BitVar(is_frozen_mask,id)){
 
-		new Float:extraDamage = damage * 5.0 - damage
+		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_BLUNT_TRAUMA],
 										headshot,
@@ -64,7 +64,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(is_frozen_mask,victim)){
-		new Float:extraDamage = damage * 5.0 + damage
+		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER + damage
 		if (floatround(extraDamage)>0){
 			new_dmg_type=SH_NEW_DMG_BLUNT_TRAUMA
 			damage=floatround(extraDamage)

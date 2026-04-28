@@ -10,12 +10,16 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 #define PLUGIN "Superhero girlb ice glob funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new is_flying_mask = 0
+new can_skate_mask = 0
+new is_skating_mask = 0
+new is_glowing_mask = 0
+new was_skating_mask = 0
 new Float:g_player_old_friction[SH_MAXSLOTS+1] = {0.0, ...}
 
 new ICE_GLOB_GLOBAL_TASKID
@@ -27,18 +31,105 @@ public plugin_init(){
 	
 	register_entity_as_wall_touchable(GLOB_CLASSNAME,"FwdTouch")
 	register_custom_touchable(GLOB_CLASSNAME,"player_touch",player_vector,1)
+	register_forward(FM_CmdStart, "girlb_skating")
 
 	register_event("ResetHUD","ice_glob_new_round","b")
 
-	set_task(0.35,"player_on_ice_glob_checks",ICE_GLOB_GLOBAL_TASKID,_,_,"b")
+	set_task(0.1,"player_on_ice_glob_checks",ICE_GLOB_GLOBAL_TASKID,_,_,"b")
 }
 
+public girlb_skating(id, uc_handle, seed)
+{	
+	if(!sh_is_active()){
+		return FMRES_IGNORED
+	}
+	if(sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if(!sh_user_has_hero(id,girlb_get_hero_id())||!client_hittable(id)){
+		return FMRES_IGNORED;
+	}
+	if(sh_get_stun(id)){
+		return FMRES_IGNORED
+	}
+	static buttons
+
+	if(Get_BitVar(is_skating_mask,id)){
+
+		Set_BitVar(was_skating_mask,id)
+	}
+	else{
+
+		UnSet_BitVar(was_skating_mask,id)
+
+	}
+	buttons = get_uc(uc_handle, UC_Buttons)
+	static bool:should_skate,bool:inground;
+	inground=bool:(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )
+	should_skate=(buttons &IN_JUMP)&&Get_BitVar(can_skate_mask,id)&&inground
+	new return_result = FMRES_IGNORED
+
+	if(should_skate){
+
+		Set_BitVar(is_skating_mask,id)
+		buttons &= (~(IN_JUMP))
+		set_uc(uc_handle, UC_Buttons, buttons);
+		return_result=FMRES_SUPERCEDE
+	}
+	else{
+
+		UnSet_BitVar(is_skating_mask,id)
+
+	}
+
+
+	
+	
+	if(Get_BitVar(is_skating_mask,id))
+	{
+		if(!Get_BitVar(was_skating_mask,id)){
+
+			engclient_cmd(id, "weapon_knife")
+			trail(id,FROZEN_BLUE,1,10)
+			
+			emit_sound(id, CHAN_WEAPON,FROZEN_SFX,
+					VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		}
+		if(generate_int(0, FlameAndSoundRate) <3)
+		{
+			static Float:Velocity[3],Float:our_velocity[3]
+			
+			entity_get_vector(id, EV_VEC_velocity,our_velocity)
+
+			velocity_by_aim(id, floatround(GLOB_ICE_SKATE_SPEED), Velocity)
+			
+			Velocity[2]=our_velocity[2]
+
+			
+			entity_set_vector(id, EV_VEC_velocity, Velocity)
+		
+			if(!Get_BitVar(is_glowing_mask,id)){
+				Set_BitVar(is_glowing_mask,id)
+				
+			}
+		
+        }
+		return return_result;
+    }
+	else if(Get_BitVar(is_glowing_mask,id)){//avoids calling it too many times (heavy function)
+		UnSet_BitVar(is_glowing_mask,id)
+	}
+	return return_result;
+}
 //----------------------------------------------------------------------------------------------
 public ice_glob_new_round(id)
 {	
 	if(sh_is_active()&&client_hittable(id)){
 		g_player_old_friction[id] = entity_get_float(id,EV_FL_friction);
-		UnSet_BitVar(is_flying_mask,id);
+		
+		if(sh_user_has_hero(id,girlb_get_hero_id())){
+			UnSet_BitVar(can_skate_mask,id);
+		}
 	}
 	
 }
@@ -52,11 +143,12 @@ public player_on_ice_glob_checks(task_id){
 		
 		if(sh_get_stun(id)) continue
 
-		/*if((entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
-					
+		if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
+			
+			UnSet_BitVar(can_skate_mask,id)
 			continue
 		
-		}*/
+		}
 		static entlist[33];
 		static num_found;
 		static Float:curr_player_friction
@@ -83,8 +175,10 @@ public player_on_ice_glob_checks(task_id){
 
 
 			}
-			if(!Get_BitVar(is_flying_mask,id)){
-				entity_set_int(id,EV_INT_movetype,MOVETYPE_FLY)
+			if(sh_user_has_hero(id,girlb_get_hero_id())){
+				if(!Get_BitVar(can_skate_mask,id)){
+					Set_BitVar(can_skate_mask,id)
+				}
 			}
 			static Float:clamp_to_use;
 			clamp_to_use=((get_entity_velocity(id)<1500.0)?GLOB_MIN_FRICTION:0.1)
@@ -96,8 +190,11 @@ public player_on_ice_glob_checks(task_id){
 		else{
 
 			entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
-			if(Get_BitVar(is_flying_mask,id)){
-				entity_set_int(id,EV_INT_movetype,MOVETYPE_WALK)
+			
+			if(sh_user_has_hero(id,girlb_get_hero_id())){
+				if(Get_BitVar(can_skate_mask,id)){
+					UnSet_BitVar(can_skate_mask,id)
+				}
 			}
 		}
 		
@@ -111,10 +208,14 @@ public plugin_natives(){
 	
 }
 //assumes both are valid
-public touch_shared_logic(Glob, Other_Entity){
+public bool:touch_shared_logic(Glob, Other_Entity){
 
 	static Float:glob_origin[3]
+	new owner_edict=entity_get_edict(Glob,EV_ENT_owner)
+	if(!is_user_alive(owner_edict)){
 
+		return false
+	}
 	entity_get_vector(Glob,EV_VEC_origin,glob_origin)
 	
 	new owner = entity_get_edict(Glob,EV_ENT_owner)
@@ -139,19 +240,28 @@ public touch_shared_logic(Glob, Other_Entity){
 		if( !client_hittable(pid) ) continue
 		if( pid != owner ){
 			
+			sh_extra_damage(pid, owner, GLOB_DMG,
+				new_dmg_type_names[_:SH_NEW_DMG_FREEZE],_,_,_,_,_,_,
+				SH_NEW_DMG_FREEZE,
+				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FREEZE))
+
 			sh_freeze_user(pid,7.0,130.0)
 		
 		}
 	}
+	return true
 }
 public FwdTouch( Glob, World ) {
 	if(!is_valid_ent(Glob)) return FMRES_IGNORED
 
-	
-	touch_shared_logic(Glob, World)
+
+	if(!touch_shared_logic(Glob, World)){
+		return FMRES_IGNORED
+	}
 	
 	//set field timer
-	
+	if(!is_valid_ent(Glob)) return FMRES_IGNORED
+
 	entity_set_float(Glob,EV_FL_fuser1, GLOB_FIELD_LIFE_TIME)
 
 	//set it as not landed in the ground until it does
@@ -167,7 +277,7 @@ public player_touch( Glob, Player ) {
 	if(!is_user_alive(Player)) return FMRES_IGNORED
 
 	touch_shared_logic(Glob, Player)
-	
+
 	remove_entity(Glob)
 	
 	return FMRES_IGNORED
@@ -176,6 +286,8 @@ public player_touch( Glob, Player ) {
 //----------------------------------------------------------------------------------------------
 public ice_field_think(ent)
 {
+	if(!is_valid_ent(ent)) return FMRES_IGNORED
+	
 	if ( pev_valid(ent)!=2 ){
 		
 	
@@ -185,12 +297,9 @@ public ice_field_think(ent)
 
 	static Float:ent_pos[3]
 	static ient_pos[3]
-	new owner=pev(ent,pev_owner)
 
 	if (entity_get_float(ent,EV_FL_fuser1)<0.0) {
 		if(pev_valid(ent)==2){
-			sh_chat_message(owner,girlb_get_hero_id(),"Ice field died!")
-			
 			remove_entity(ent)
 		}
 		return FMRES_IGNORED
@@ -198,7 +307,7 @@ public ice_field_think(ent)
 	else{
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
 		FVecIVec(ent_pos,ient_pos)
-		make_shockwave(ient_pos,GLOB_RADIUS,LineColors[FROZEN_BLUE],1,5,8,4,60)
+		make_shockwave(ient_pos,GLOB_RADIUS*2,LineColors[FROZEN_BLUE],1,5,8,4,60)
 
 		entity_set_float(ent,EV_FL_fuser1,floatsub(entity_get_float(ent,EV_FL_fuser1),GLOB_THINK_PERIOD))
 		entity_set_float(ent,EV_FL_nextthink,floatadd(get_gametime(),GLOB_THINK_PERIOD))
@@ -213,12 +322,6 @@ public _launch_ice_glob(iPlugin,iParams)
 	
 	if(!sh_user_has_hero(id,girlb_get_hero_id())||!is_user_alive(id)) return
 	
-	if(girlb_get_num_globs(id)<=0){
-		
-		client_print(id,print_center,"You ran out of ice globs")
-		return
-		
-	}
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 	new Float: advance[3]
 
@@ -231,8 +334,8 @@ public _launch_ice_glob(iPlugin,iParams)
 	
 	Ent = create_entity("info_target")
 	
-	if (!Ent){
-		sh_chat_message(id,girlb_get_hero_id(),"Ball failure!");
+	if (!is_valid_ent(Ent)){
+		sh_chat_message(id,girlb_get_hero_id(),"Glob failure!");
 		return
 	}
 	
@@ -241,8 +344,7 @@ public _launch_ice_glob(iPlugin,iParams)
 	entity_set_int( Ent, EV_INT_movetype, MOVETYPE_TOSS );
 	entity_set_int( Ent, EV_INT_effects, 64) //rocket shine fx
 	entity_set_int( Ent,EV_INT_rendermode,kRenderTransColor)
-	entity_set_int( Ent,EV_INT_renderfx,kRenderFxGlowShell)
-	entity_set_float(  Ent ,EV_FL_renderamt,30.0 ); //hard to see
+	glow(Ent,LineColors[FROZEN_BLUE][0],LineColors[FROZEN_BLUE][1],LineColors[FROZEN_BLUE][2],20,1)
 	entity_set_model(  Ent , SPHERE_MODEL );
 	entity_set_size(  Ent, Float:{ -2.0, -2.0, 0.0 }, Float:{ 2.0, 2.0, 2.0 } );
 	
