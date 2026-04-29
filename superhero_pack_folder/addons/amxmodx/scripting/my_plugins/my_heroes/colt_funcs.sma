@@ -11,7 +11,7 @@
 #include "../my_include/my_author_header.inc"
 
 
-new pPlayer, pEntity, HookChain:TakeDamage
+new pPlayer, HookChain:TakeDamage
 
 new is_rehlds_avail
 public plugin_precache()
@@ -69,14 +69,10 @@ public give_m1911a1(player)
 	if(!is_user_alive(player)) return
 	
 	lastinv_m1911a1(player)
-	sh_switch_weapon(player,CSW_FIVESEVEN)
 
-	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), {0, 0, 0}, id)
-	write_byte(1)
-	write_byte(CSW_FIVESEVEN)
-	write_byte(CLIP_M1911A1)
-	message_end()
-
+	new pEntity=rg_give_custom_item(player,STRN_FIVESEVEN,GT_APPEND,ID_M1911A1)
+	if(pEntity==-1) return
+	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
 	rg_set_iteminfo(pEntity, ItemInfo_iMaxClip, CLIP_M1911A1)
 	if(get_member(player, m_rgAmmo, AMMOID_FIVESEVEN) < MAXAMMO_M1911A1)
@@ -85,7 +81,7 @@ public give_m1911a1(player)
 
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])
 {
-	pEntity = get_member(entity, m_WeaponBox_rgpPlayerItems, PISTOL_SLOT)
+	new pEntity = get_member(entity, m_WeaponBox_rgpPlayerItems, PISTOL_SLOT)
 	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
 	SetHookChainArg(2, ATYPE_STRING, WORLDMODEL)
 }
@@ -200,15 +196,17 @@ public fm_TraceLinePost(Float:vecStart[3], Float:vecEnd[3], noMonsters, pentToSk
 }
 
 public fm_PlaybackEventPre() return FMRES_SUPERCEDE
-public lastinv_m1911a1(player) engclient_cmd(player, STRN_FIVESEVEN)
+public lastinv_m1911a1(player){
+	engclient_cmd(player, STRN_FIVESEVEN)
+}
 public rg_CBasePlayerTakeDamagePre(victim, inflictor, attacker, Float:flDamage) SetHookChainArg(4, ATYPE_FLOAT, flDamage * 2.0)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(!is_user_alive(player)) return FMRES_IGNORED
-	pEntity = get_member(player, m_pActiveItem)
+	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1){
-		set_cd(cd, CD_flNextAttack, get_gametime()+99999.0)
+		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 	}
 	return FMRES_HANDLED
 }

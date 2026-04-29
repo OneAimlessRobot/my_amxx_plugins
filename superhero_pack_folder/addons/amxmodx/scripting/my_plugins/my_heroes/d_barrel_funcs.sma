@@ -401,7 +401,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
 		return FMRES_IGNORED
 		
-	set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
+	set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
 	
 	return FMRES_HANDLED
 }

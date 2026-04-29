@@ -352,7 +352,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(gatling_get_pillgatling(player)&&is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED
 	}
 	return FMRES_IGNORED

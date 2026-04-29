@@ -13,8 +13,10 @@
 
 #define SPORE_CLASSNAME "ksun_spore"
 
-#define SPORE_SIZE 5.0
+#define SPORE_SIZE 10.0
+#define SPORE_RADIUS (5.0)
 
+#define WALL_BUMP_LENGTH ((CENTER_CUBE_VEX_DISTANCE(SPORE_RADIUS)))
 
 
 

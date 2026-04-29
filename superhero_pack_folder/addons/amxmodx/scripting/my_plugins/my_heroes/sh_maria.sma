@@ -306,16 +306,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)  ||is_user_bot(id))
 		return FMRES_IGNORED;
-	
-	
-	
-	// get crosshair aim
-	static iMyAim[3], Float:flMyAim[3];
-	get_user_origin(id, iMyAim, 3);
-	IVecFVec(iMyAim, flMyAim);
-	
-	// set crosshair aim
-	set_tr(TR_vecEndPos, flMyAim);
+
 	
 	// get ent looking at
 	static ent, body;

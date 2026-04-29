@@ -1,7 +1,6 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -14,6 +13,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
 // GLOBAL VARIABLES
@@ -27,6 +27,14 @@ new ksun_spore_m4_mult
 new num_sleep_nades
 new gHeroID
 stock ksun_when_reset_spores=never_reset;
+
+
+
+
+new dmg_source_name_short_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
+new dmg_source_name_long_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
+new custom_dmg_id_ksun_debt
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -56,6 +64,10 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "ksun: Help file","ksun_folder/","ksun_help_file.html",hero_name_arr)
 	
+	custom_dmg_id_ksun_debt=
+		sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ksun_debt,
+								dmg_source_name_long_ksun_debt,0)
+
 	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
@@ -95,45 +107,25 @@ public plugin_natives(){
 stock covert_spike_damage(id){
 	for(new payer=1;payer< sh_maxplayers()+1;payer++){
 
-			if(!client_hittable(payer)){
-				
-				
-				continue
-			}
-			new CsTeams:payer_team=cs_get_user_team(payer)
-			if(cs_get_user_team(id)==payer_team){
-				
-				continue
-			}
-			new times_spiked_by_me=get_times_player_spiked_by_player(payer,id)
-			if((times_spiked_by_me>0)){
+			if(!client_hittable(payer)) continue
+			
+			if(sh_clients_are_same_team(payer,id) || (payer==id)) continue
+			
+			new Float:times_spiked_by_me=float(get_times_player_spiked_by_player(payer,id))
+			if((times_spiked_by_me>0.0)){
 				static Float:dmg_to_drain,
-						Float:tmp_it_pct;
-				dmg_to_drain=0.0;
+						Float:tmp_it_pct,
+						Float:remaining,
+						Float:tg_health
+
 				tmp_it_pct=get_spike_base_damage_debt()
-				/*
-					if someone tells me how to do this with an exponential
-					instead of iteration,
-					I will thank them a lot.
-					I dont like this
-				*/
-				new Float:tg_health=float(get_user_health(payer))
-				for( new i=0;i<times_spiked_by_me;i++){
-					
-					dmg_to_drain+= (tg_health*tmp_it_pct)
-					tg_health-=(tg_health*tmp_it_pct)
-					
-
-				}
-				new Ent = create_entity("info_target")
-
-				if (pev_valid(Ent)!=2){
-					continue
-				}
-				entity_set_string(Ent, EV_SZ_classname, "ksun debt")
-				ExecuteHam(Ham_TakeDamage,payer,Ent,id,dmg_to_drain,DMG_GENERIC);
-				sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,payer,id,true,false,floatround(dmg_to_drain))
-				remove_entity(Ent)
+				tg_health=float(get_user_health(payer))
+				remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
+				dmg_to_drain = tg_health - remaining
+				
+				sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
+						dmg_source_name_short_ksun_debt,_,_,_,_,_,_,
+						SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
 				ksun_heal(id,dmg_to_drain)
 				
 			}

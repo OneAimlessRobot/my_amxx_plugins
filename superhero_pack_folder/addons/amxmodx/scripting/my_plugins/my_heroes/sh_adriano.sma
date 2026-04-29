@@ -5,6 +5,7 @@
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
@@ -117,6 +118,7 @@ public adriano_weapons(id)
 	if ( sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
+		colt_set_colt(id)
 	}
 }
 public adriano_init()
@@ -138,6 +140,7 @@ public adriano_init()
 	}
 	else{
 		ethereal_unset_ethereal(id)
+		colt_unset_colt(id)
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
@@ -258,16 +261,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) )
 		return FMRES_IGNORED;
 	
-	
-	
-	// get crosshair aim
-	static iMyAim[3], Float:flMyAim[3];
-	get_user_origin(id, iMyAim, 3);
-	IVecFVec(iMyAim, flMyAim);
-	
-	// set crosshair aim
-	set_tr(TR_vecEndPos, flMyAim);
-	
+
 	// get ent looking at
 	static ent, body;
 	get_user_aiming(id, ent, body);

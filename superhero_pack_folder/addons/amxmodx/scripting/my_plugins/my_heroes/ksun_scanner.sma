@@ -313,13 +313,10 @@ public scanner_think(scanner){
 	for( new i= 0;(g_player_num_victims[id]<obj_num_of_victims)&&(i< numfound);i++){
 		
 			new pid = entlist[i];
-			if(!client_hittable(pid)){
-				continue
+			if(!client_hittable(pid)) continue
+
+			if(pid==id) continue
 			
-			}
-			if(pid==id){
-				continue
-			}
 			if(sh_clients_are_same_team(pid,id)){
 				continue
 			}

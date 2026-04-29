@@ -7,7 +7,7 @@
 #define A_RIFLE_CLIP 100
 #define A_RIFLE_RESERVE 400
 #define A_RIFLE_SPEED 1.0
-#define A_RIFLE_RECOIL 0.75
+#define A_RIFLE_RECOIL 1.5
 
 #define CSW_ARIFLE CSW_M249
 #define weapon_arifle "weapon_m249"

@@ -2,8 +2,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#include <float>
-#include <xs>
 
 #include "../my_include/superheromod.inc"
 #include <reapi>
@@ -259,17 +257,18 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(pev_valid(Ent)!=2)
 		return
 		
-	new id; id = pev(Ent, pev_owner)
+	static id; id = pev(Ent, pev_owner)
 	if(client_isnt_hitter(id)){
 		
 		return
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
-	xs_vec_sub(Push, g_Recoil[id], Push)
+
+	sub_3d_vectors(Push, g_Recoil[id], Push)
 	
-	xs_vec_mul_scalar(Push, RECOIL, Push)
-	xs_vec_add(Push, g_Recoil[id], Push)
+	multiply_3d_vector_by_scalar(Push, RECOIL, Push)
+	add_3d_vectors(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
 launch_rivet(id)
@@ -356,7 +355,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED
 	}
 	return FMRES_IGNORED

@@ -58,7 +58,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 
 		new is_silenced=cs_get_weapon_silen(pEntity)
 		if(!is_silenced){
-			set_cd(cd, CD_flNextAttack, get_gametime()+0.001)
+			set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 			return FMRES_HANDLED
 		}
 	}	

@@ -9,6 +9,7 @@
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
+#include "ksun_inc/ksun_spore_launcher.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -312,7 +313,8 @@ if ( (wpnid ==KSUN_WEAPON_ID)&&(ksun_player_is_in_ultimate(id)))
 		
 		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
 		do_fast_shot(id,wpnid,ksun_ultimate_fire_rate_mult)
-		
+		emit_sound(id,CHAN_WEAPON,SPORE_PREPARE_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+
 	}
 	gLastClipCount[id] = ammo
 	gLastWeapon[id]=wpnid;

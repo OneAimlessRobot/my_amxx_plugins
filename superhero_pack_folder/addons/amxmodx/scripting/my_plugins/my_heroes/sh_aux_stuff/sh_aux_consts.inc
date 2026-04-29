@@ -6,6 +6,12 @@
 #define Struct enum
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
+/*
+ first param is cube side length
+
+*/
+#define CENTER_CUBE_VEX_DISTANCE(%1) (%1*floatsqroot(3.0))
+
 #define SH_HUD_MSG_BUFF_SIZE 128
 
 #define STRLEN_FOR_FILES 128

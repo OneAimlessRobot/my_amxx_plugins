@@ -8,7 +8,7 @@ unset STEAM_COMPAT_DATA_PATH
 # -appid 10 -game cstrike -port 27015 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072
 
 while [ true ]; do
-	bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "192.168.0.100" +hostport "27015" +maxplayers "16"
+	bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "127.0.0.1" +hostport "27015" +maxplayers "16"
 	echo "Server crashed at '`date`' - Restarting"
 	echo "Server crashed at '`date`' - Restarting" >> crash_timestamps.log
 	sleep 5

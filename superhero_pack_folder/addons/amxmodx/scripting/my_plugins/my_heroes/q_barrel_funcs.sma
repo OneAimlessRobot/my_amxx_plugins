@@ -242,7 +242,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	if(!is_alive(id))
 		return FMRES_IGNORED	
 	if(get_player_weapon(id) == CSW_QUADBARREL && Get_BitVar(g_Had_QB, id))
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
+		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
 	
 	return FMRES_HANDLED
 }

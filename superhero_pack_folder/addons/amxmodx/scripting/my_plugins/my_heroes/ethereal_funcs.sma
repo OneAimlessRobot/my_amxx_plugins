@@ -167,7 +167,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	if(!is_user_alive(id) || !is_user_connected(id))
 		return FMRES_IGNORED	
 	if(get_user_weapon(id) == CSW_ETHEREAL && Get_BitVar(g_Had_Ethereal, id))
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 0.001) 
+		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
 	
 	return FMRES_HANDLED
 }

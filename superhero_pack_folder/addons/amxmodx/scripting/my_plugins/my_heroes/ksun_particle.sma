@@ -53,7 +53,8 @@ public plugin_init()
 	register_cvar("ksun_violence_level", "3" )
 	register_cvar("ksun_spore_health", "100.0" )
 	
-	register_touch(SPORE_CLASSNAME, "player", "touch_event")
+	register_entity_as_wall_touchable(SPORE_CLASSNAME,"touch_wall")
+	register_custom_touchable(SPORE_CLASSNAME,"touch_player",player_vector,1)
 	
 	register_think(SPORE_CLASSNAME, "spore_think")
 
@@ -295,7 +296,7 @@ public spawn_spore(id){
 
 
 	set_pev(spore, pev_health, SPORE_DEAD_HP+ksun_spore_base_health)
-	engfunc(EngFunc_SetSize, spore, Float:{-SPORE_SIZE, -SPORE_SIZE,-SPORE_SIZE}, Float:{SPORE_SIZE, SPORE_SIZE, SPORE_SIZE})
+	engfunc(EngFunc_SetSize, spore, Float:{-SPORE_RADIUS, -SPORE_RADIUS,-SPORE_RADIUS}, Float:{SPORE_RADIUS, SPORE_RADIUS, SPORE_RADIUS})
 
 	entity_set_float( spore, EV_FL_fuser1, 0.0);
 
@@ -388,6 +389,8 @@ switch(get_player_launcher_phase(id)){
 		spore=get_spore_from_player_spores(id,get_player_num_launched_spores(id))
 		entity_set_edict(spore,EV_ENT_euser2,
 						get_target_from_player_targets(id,get_player_num_launched_spores(id)))
+		//bumped status. lets set it to off upon launch
+		entity_set_int(spore,EV_INT_iuser1,0)
 		trail(spore,PURPLE,20,3)
 		entity_set_float(spore, EV_FL_nextthink, floatadd(get_gametime() ,SPORE_THINK_PERIOD));
 	}
@@ -425,15 +428,9 @@ public spore_think(spore){
 	if(trackresult){
 
 		if(trackresult<0){
-			if(trackresult==-1){
-				untrack_spore(spore)
-				set_scanner_player_tracks_player(spore_owner,spore_target,0)
-				return FMRES_IGNORED
-			}
-			else{
-
-				entity_set_vector(spore, EV_VEC_velocity, Float:{0.0,0.0,0.0})
-			}
+			untrack_spore(spore)
+			set_scanner_player_tracks_player(spore_owner,spore_target,0)
+			return FMRES_IGNORED
 		}
 		else{
 			emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -442,61 +439,115 @@ public spore_think(spore){
 	}
 	else{
 
-		entity_set_vector(spore, EV_VEC_velocity, Float:{0.0,0.0,0.0})
+		entity_set_float(spore, EV_FL_fuser1, floatmax(0.0,floatsub(current_track_time,SPORE_THINK_PERIOD)));
 			
 	}
+	new bool:had_trail=bool:entity_get_int(spore,EV_INT_iuser2),
+		bool:has_trail=(!(bool:entity_get_int(spore,EV_INT_iuser1)))&&trackresult
+	
+	entity_set_int(spore,EV_INT_iuser2,has_trail)
 
+	if(!had_trail){
+		
+		if(has_trail){
+
+			trail(spore,PURPLE,20,3)
+			glow(spore,LineColors[PURPLE][0],
+							LineColors[PURPLE][1],
+							LineColors[PURPLE][2],
+							100,1)
+		}
+	}
+	else if(!has_trail){
+		sh_set_rendering(spore)
+
+	}
+	
 	entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
 
 	return FMRES_IGNORED
 }
+bump_spore(spore){
+
+//We bumped into a wall.
+entity_set_int(spore,EV_INT_iuser1,1)
+
+static Float:velocity[3],
+		Float:bump_reverse[3],
+		Float:origin[3],
+		Float:new_origin[3]
+
+entity_get_vector(spore,EV_VEC_velocity,velocity)
+entity_get_vector(spore,EV_VEC_origin,origin)
+
+multiply_3d_vector_by_scalar(velocity,
+				-1.0*(WALL_BUMP_LENGTH/floatmax(0.001,vector_length(velocity))),
+				bump_reverse)
+
+add_3d_vectors(origin,bump_reverse,new_origin)
+
+entity_set_origin(spore,new_origin)
+
+}
 //https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
-stock is_wall_between_points(Float:start[3], Float:end[3], ignore_ent)
+stock is_wall_between_points(Float:start[3], Float:end[3], Float:hit_end[3], &Float:stored_frac,ignore_ent)
 {
-// Create the trace handle! It is best to create it!
-new ptr = create_tr2()
+	// Create the trace handle! It is best to create it!
+	new ptr = create_tr2()
 
-// The main traceline function!
-// This function ignores GLASS, MISSILE and MONSTERS!
-// Here is an example of how you should combine all the flags!
+	// --- 1. Trace HULL (volume check) ---
+	engfunc(EngFunc_TraceHull,
+		start,
+		end,
+		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
+		HULL_HUMAN,
+		ignore_ent,
+		ptr
+	)
 
-//engfunc(EngFunc_TraceLine, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, ignore_ent, ptr)
-//(const float *v1, const float *v2, int fNoMonsters, int hullNumber, edict_t *pentToSkip, TraceResult *ptr);
-engfunc(EngFunc_TraceHull, start, end, IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE, HULL_HEAD,ignore_ent,ptr )
-// We are interested in the fraction parameter
-new Float:fraction
-get_tr2(ptr, TR_flFraction, fraction)
+	get_tr2(ptr, TR_flFraction, stored_frac)
+	get_tr2(ptr,TR_EndPos,hit_end)
+	// If hull hit → definitely blocked
+	if (stored_frac < 0.90)
+	{
+		free_tr2(ptr)
+		return true
+	}
 
-// Free the trace handle (don't forget to do this!)
-free_tr2(ptr)
+	// --- 2. Trace LINE (thin geometry / edges / corners) ---
+	engfunc(EngFunc_TraceLine,
+		start,
+		end,
+		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
+		ignore_ent,
+		ptr
+	)
 
-// If = 1.0 then it didn't hit anything!
-return (fraction != 1.0)
-} 
+
+	get_tr2(ptr, TR_flFraction, stored_frac)
+	get_tr2(ptr,TR_EndPos,hit_end)
+
+	free_tr2(ptr)
+
+	if (stored_frac < 0.90)
+	{
+		return true
+	}
+
+	return false
+}
 //----------------------------------------------------------------------------------------------
 stock entity_set_follow(entity, target,spore_owner)
 {
 	if ( !is_valid_ent(entity) || !client_hittable(target) ||!client_hittable(spore_owner)) return -1
+
 
 	new Float:fl_Origin[3], Float:fl_EntOrigin[3], Float:entity_in_the_way_origin[3],
 	Float:in_the_way_vector[3]
 	entity_get_vector(target, EV_VEC_origin, fl_Origin)
 	entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
 	new Float: distance=vector_distance(fl_Origin, fl_EntOrigin)
-	if(distance>ksun_spore_track_detect_distance){
-
-		return 0
-	}
-	sub_3d_vectors(fl_Origin,fl_EntOrigin,in_the_way_vector)
-	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*SPORE_SIZE*3.0,in_the_way_vector)
-	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
-
-
-	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, entity)
-	if(wall_in_the_way){
-		
-		return -2
-	}
+	
 	new Float:fl_InvTime = (ksun_spore_speed / distance)
 
 	new Float:fl_Distance[3]
@@ -509,16 +560,37 @@ stock entity_set_follow(entity, target,spore_owner)
 	fl_Velocity[1] = fl_Distance[1] * fl_InvTime
 	fl_Velocity[2] = fl_Distance[2] * fl_InvTime
 
-	entity_set_vector(entity, EV_VEC_velocity, fl_Velocity)
-
 	new Float:fl_NewAngle[3]
 	vector_to_angle(fl_Velocity, fl_NewAngle)
+	fl_NewAngle[0]*=-1.0
 	entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
+	entity_set_vector(entity, EV_VEC_v_angle, fl_NewAngle)
+	
+	if(distance>ksun_spore_track_detect_distance){
+
+		return 0
+	}
+
+	sub_3d_vectors(fl_Origin,fl_EntOrigin,in_the_way_vector)
+
+	//and "WALLBUMP LENGTH AS WELL"
+	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*WALL_BUMP_LENGTH*7.0,in_the_way_vector)
+	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
+	new Float:hit_end[3]
+	new Float:the_fraction=0.0
+	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, hit_end,the_fraction, entity)
+	if(wall_in_the_way&&bool:entity_get_int(entity,EV_INT_iuser1)){
+		return 0
+	}
+
+	entity_set_vector(entity, EV_VEC_velocity, fl_Velocity)
+
+	entity_set_int(entity,EV_INT_iuser1,0)
 
 	return 1
 }
 //----------------------------------------------------------------------------------------------
-public touch_event(pToucher, pTouched)  //This is triggered when two entites touch
+public touch_player(pToucher, pTouched)  //This is triggered when two entites touch
 {
 if(!is_valid_ent(pToucher)) return
 
@@ -538,7 +610,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
 	new damage_to_do=sh_get_user_is_asleep(pTouched)?get_user_health(pTouched)*10:floatround(ksun_spore_damage)
-	new bool:remove_godmode=(sh_get_user_is_asleep(pTouched)?true:false)
+	new bool:remove_godmode=bool:sh_get_user_is_asleep(pTouched)
 	
 	if(get_user_godmode(pTouched)&&remove_godmode){
 		
@@ -560,6 +632,15 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 					SH_NEW_DMG_DRAIN,
 					remove_godmode?slay_wpn_id:spore_wpn_id)
 }
+}//----------------------------------------------------------------------------------------------
+public touch_wall(pToucher, pTouched)
+{
+if(!is_valid_ent(pToucher)) return FMRES_IGNORED
+
+bump_spore(pToucher)
+
+return FMRES_IGNORED
+
 }
 
 //----------------------------------------------------------------------------------------------

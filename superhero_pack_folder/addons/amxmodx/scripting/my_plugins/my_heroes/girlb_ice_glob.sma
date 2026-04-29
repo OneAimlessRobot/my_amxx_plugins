@@ -153,12 +153,21 @@ public player_on_ice_glob_checks(task_id){
 			continue
 		
 		}
+
+		
 		static entlist[33];
 		static num_found;
 		static Float:curr_player_friction
 		curr_player_friction=entity_get_float(id,EV_FL_friction)
 		num_found = find_sphere_class(id,GLOB_CLASSNAME,GLOB_RADIUS,entlist,charsmax(entlist))
 		if((num_found>0)){
+
+			if(sh_user_has_hero(id,girlb_get_hero_id())){
+				if(!Get_BitVar(can_skate_mask,id)){
+					Set_BitVar(can_skate_mask,id)
+				}
+			}
+			
 			for(new fid=0;fid < num_found;fid++){
 				
 				new field= entlist[fid]
@@ -179,20 +188,21 @@ public player_on_ice_glob_checks(task_id){
 
 
 			}
-			if(sh_user_has_hero(id,girlb_get_hero_id())){
-				if(!Get_BitVar(can_skate_mask,id)){
-					Set_BitVar(can_skate_mask,id)
-				}
-			}
-			static Float:clamp_to_use;
-			clamp_to_use=((get_entity_velocity(id)<1500.0)?GLOB_MIN_FRICTION:0.1)
-			curr_player_friction = floatclamp(clamp_to_use,curr_player_friction,g_player_old_friction[id])
+			curr_player_friction = floatclamp(GLOB_MIN_FRICTION,curr_player_friction,g_player_old_friction[id])
 			
-			entity_set_float(id,EV_FL_friction,curr_player_friction)
-		
+			
+			if(!Get_BitVar(is_skating_mask,id)){
+			
+				entity_set_float(id,EV_FL_friction,curr_player_friction)
+			}
+			else{
+				
+
+				entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
+				
+			}
 		}
 		else{
-
 			entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
 			
 			if(sh_user_has_hero(id,girlb_get_hero_id())){
@@ -223,12 +233,11 @@ public bool:player_touch_logic(Glob, Other_Entity){
 		return false
 	}
 	if((Other_Entity != owner_edict )&&!sh_clients_are_same_team(Other_Entity,owner_edict)){
-		if(!sh_is_user_frozen(Other_Entity)){
-			sh_extra_damage(Other_Entity, owner_edict, GLOB_DMG,
+		sh_extra_damage(Other_Entity, owner_edict, GLOB_DMG,
 				new_dmg_type_names[_:SH_NEW_DMG_FREEZE],_,_,_,_,_,_,
 				SH_NEW_DMG_FREEZE,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FREEZE))
-
+		if(!sh_is_user_frozen(Other_Entity)){
 			sh_freeze_user(Other_Entity,7.0,130.0)
 		}
 	}
@@ -237,27 +246,42 @@ public bool:player_touch_logic(Glob, Other_Entity){
 public FwdTouch( Glob, World ) {
 	if(!is_valid_ent(Glob)) return FMRES_IGNORED
 
+	if(entity_get_int(Glob,EV_INT_iuser1)){
+
+		return FMRES_IGNORED
+	}
+	new owner_edict=entity_get_edict(Glob,EV_ENT_owner)
 
 	static Float:glob_origin[3]
 	entity_get_vector(Glob,EV_VEC_origin,glob_origin)
-	
-	new vExplodeAt[3]
-	vExplodeAt[0] = floatround(glob_origin[0])
-	vExplodeAt[1] = floatround(glob_origin[1])
-	vExplodeAt[2] = floatround(glob_origin[2])
-	make_shockwave(vExplodeAt,GLOB_RADIUS,
-				LineColors[FROZEN_BLUE],1,5,8,4)
 
+	static entlist[33];
+	new numfound = find_sphere_class(Glob,"player",
+					GLOB_RADIUS,
+					entlist,
+					sizeof entlist);
 
-	emit_sound(Glob, CHAN_WEAPON,FROZEN_SFX,
-					VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(Glob, CHAN_WEAPON, FROZEN_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
+	for( new i= 0;(i< numfound);i++){
 
+		new pid = entlist[i];
+		if( !client_hittable(pid) ) continue
+		
+		if(pid==owner_edict) continue
+
+		if( sh_clients_are_same_team(pid,owner_edict)) continue
+		
+		if(!sh_is_user_frozen(pid)){
+			sh_freeze_user(pid,7.0,130.0)
+		}
+
+	}
 	//set it as not landed in the ground until it does
 	//and we just did.
 	entity_set_int(Glob,EV_INT_iuser1, 1)
 	entity_set_int(Glob,EV_INT_movetype, MOVETYPE_TOSS)
-	
+
 	return FMRES_IGNORED
 }
 public player_touch( Glob, Player ) {
@@ -314,7 +338,7 @@ public ice_field_think(ent)
 		write_coord(ient_pos[2])
 		write_short(gSpriteSmoke)	// sprite index
 		write_byte(30)		// scale in 0.1's
-		write_byte(27)			// brightness
+		write_byte(40)			// brightness
 		message_end()
 
 		entity_set_float(ent,EV_FL_fuser1,floatsub(entity_get_float(ent,EV_FL_fuser1),GLOB_THINK_PERIOD))
@@ -365,7 +389,7 @@ public _launch_ice_glob(iPlugin,iParams)
 	
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
-	//set it as not landed in the ground until it does
+	//set it as not landed in the ground until it has
 	entity_set_int(Ent,EV_INT_iuser1, 0)
 	
 	girlb_dec_num_globs(id)

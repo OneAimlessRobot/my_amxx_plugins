@@ -11,13 +11,13 @@
 
 #define GLOB_MIN_FRICTION 0.03333335
 
-#define GLOB_ICE_SKATE_SPEED 1000.0
+#define GLOB_ICE_SKATE_SPEED 1500.0
 
 #define GLOB_SPEED 1000.0
 
 #define GLOB_DMG 12
 
-#define GLOB_RADIUS 600.0
+#define GLOB_RADIUS 290.0
 
 
 native launch_ice_glob(id)
