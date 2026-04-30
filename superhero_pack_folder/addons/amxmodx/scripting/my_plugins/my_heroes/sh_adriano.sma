@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -161,7 +160,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 
 	for(new i=0; i< sh_maxplayers()+1;i++){
 
-		if(!client_hittable(i)||(i==id)) continue;
+		if(!is_user_alive(i)||(i==id)) continue;
 
 		if(!sh_clients_are_same_team(i,id)) continue;
 
@@ -227,7 +226,7 @@ public adriano_damage(id)
 {
 
 
-	if ( !sh_is_active() || !client_hittable(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
 	
 
 	new Float:damage = float(read_data(2))
@@ -306,7 +305,7 @@ update_stats(id){
 }
 public weaponChange(id)
 {
-	if (!sh_is_active()&&client_hittable(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()&&is_user_alive(id)) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	

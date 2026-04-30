@@ -29,7 +29,6 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 *   Weapon model by Thin Red Paste & X-convinct, converted by SplinterCell.
 */
 #define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"

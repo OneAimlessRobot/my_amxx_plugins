@@ -17,18 +17,15 @@ Forge_effects 2			//1 Regualy missile, no effects
 */
 
 
-#include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 
-//#if defined AMX98
-//  #include <cmath>
-//#endif
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new gHeroName[]="Forge"
 new gHeroID
 
-//new sprite, sprite1, sprite2, sprite3
-//new beam, boom
 new beam, sprite1, sprite2, sprite3
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -40,9 +37,6 @@ public plugin_init()
 	register_cvar("Forge_level", "7")
 	register_cvar("Forge_cooldown", "20.0")
 	register_cvar("Forge_damage", "40")
-	//register_cvar("Forge_randmg", "1")
-	//register_cvar("Forge_mindmg", "15")
-	//register_cvar("Forge_maxdmg", "60")
 	register_cvar("Forge_velocity", "2000")
 	register_cvar("Forge_force", "500.0")		//cannot get this to function properly.
 	register_cvar("Forge_radius", "400")
@@ -51,6 +45,10 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Missiles", "Fires Concussion Missiles to blow people up!", true, "Forge_level")
 
+	register_entity_as_wall_touchable("concussion_missile","missile_touch")
+	register_custom_touchable("concussion_missile","missile_touch",player_vector,1)
+
+	
 	//EVENTS
 	//register_logevent("round_start", 2, "1=Round_Start")
 	//register_logevent("round_end", 2, "1=Round_End")
@@ -89,8 +87,6 @@ public Forge_kd()
 public plugin_precache()
 {
 	beam = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
-	//boom = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
-	//sprite = engfunc(EngFunc_PrecacheModel,"sprites/zbeam6.spr")
 	sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/fire.spr")
 	sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 	sprite3 = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
@@ -100,129 +96,80 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"weapons/rocketfire1.wav")
 	engfunc(EngFunc_PrecacheSound,"weapons/rocket1.wav")	
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
-
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-	new pTouched = entity2
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public missile_touch(pToucher, pTouched) {
 
 	if ( !is_valid_ent(pToucher) ) return
 
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	new damradius = get_cvar_num("Forge_radius")
+	new maxdamage = get_cvar_num("Forge_damage")
 
-	if(equal(szClassName, "concussion_missile")) {
-		new damradius = get_cvar_num("Forge_radius")
-		new maxdamage = get_cvar_num("Forge_damage")
+	if (damradius <= 0) {
+		debugMessage("(Forge) Damage Radius must be set higher than 0, defaulting to 240",0,0)
+		damradius = 240
+		set_cvar_num("Forge_radius",damradius)
+	}
+	if (maxdamage <= 0) {
+		debugMessage("(Forge) Max Damage must be set higher than 0, defaulting to 14",0,0)
+		maxdamage = 14
+		set_cvar_num("Forge_damage",maxdamage)
+	}
 
-		if (damradius <= 0) {
-			debugMessage("(Forge) Damage Radius must be set higher than 0, defaulting to 240",0,0)
-			damradius = 240
-			set_cvar_num("Forge_radius",damradius)
+	remove_task(pToucher)
+	new Float:fl_vExplodeAt[3]
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	new origin[3],dist,i,Float:dRatio,damage
+
+	for ( i = 1; i < sh_maxplayers()+1; i++) {
+
+		if( !is_user_alive(i) ) continue
+		get_user_origin(i,origin)
+		dist = get_distance(origin,vExplodeAt)
+		if (dist <= damradius) {
+
+			dRatio = floatdiv(float(dist),float(damradius))
+			damage = maxdamage - floatround( maxdamage * dRatio)
+
+			sh_extra_damage(i, id, damage, "Concussion Missile" )
+
+			new Float: force = get_cvar_float("Forge_force")
+								
+			new Float:fl_vicVelocity[3]
+
+			fl_vicVelocity[0] = 0.0 
+			fl_vicVelocity[1] = 0.0
+			fl_vicVelocity[2] = force - (force * dRatio)
+
+			set_pev(i, pev_velocity, fl_vicVelocity)
+
 		}
-		if (maxdamage <= 0) {
-			debugMessage("(Forge) Max Damage must be set higher than 0, defaulting to 14",0,0)
-			maxdamage = 14
-			set_cvar_num("Forge_damage",maxdamage)
-		}
+	}
+	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-		remove_task(pToucher)
-		new Float:fl_vExplodeAt[3]
-		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-		new id = entity_get_edict(pToucher, EV_ENT_owner)
-		new origin[3],dist,i,Float:dRatio,damage
+	forge_boom(vExplodeAt)
 
-		for ( i = 1; i < sh_maxplayers()+1; i++) {
+	remove_entity(pToucher)
 
-			if( !is_user_alive(i) ) continue
-			get_user_origin(i,origin)
-			dist = get_distance(origin,vExplodeAt)
-			if (dist <= damradius) {
+	if ( is_valid_ent(pTouched) ) {
+		new szClassName2[32]
+		entity_get_string(pTouched, EV_SZ_classname, szClassName2, 31)
 
-				dRatio = floatdiv(float(dist),float(damradius))
-				damage = maxdamage - floatround( maxdamage * dRatio)
-
-				sh_extra_damage(i, id, damage, "Concussion Missile" )
-
-				//cannot get this to function properly
-				new Float: force = get_cvar_float("Forge_force")
-				//new Float: force = ForgeForce - (ForgeForce * dRatio)
-									
-				new Float:fl_vicVelocity[3]
-
-				fl_vicVelocity[0] = 0.0 
-				fl_vicVelocity[1] = 0.0
-				//fl_vicVelocity[2] = 500.0 - (500.0 * dRatio)
-				fl_vicVelocity[2] = force - (force * dRatio)
-
-				set_pev(i, pev_velocity, fl_vicVelocity)
-
-				//client_print(i,print_chat,"%f = %f - ( %f * %f )", force - (force * dRatio) , force , force , dRatio)
-
-			}
-		}
-
-//		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-//		write_byte(3)
-//		write_coord(vExplodeAt[0])
-//		write_coord(vExplodeAt[1])
-//		write_coord(vExplodeAt[2])
-//		write_short(boom)
-//		write_byte(100)
-//		write_byte(15)
-//		write_byte(0)
-//		message_end()
-
-		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-		forge_boom(vExplodeAt)
-
-		remove_entity(pToucher)
-
-		if ( is_valid_ent(pTouched) ) {
-			new szClassName2[32]
-			entity_get_string(pTouched, EV_SZ_classname, szClassName2, 31)
-
-			if(equal(szClassName2, "concussion_missile")) {
-				remove_task(pTouched)
-				emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				//new id2 = Entvars_Get_Edict(pTouched, EV_ENT_owner)
-				//AttachView(id2, id2)
-				//if(has_rocket[id2] == pTouched){
-				//	has_rocket[id2] = 0
-				//	is_heat_rocket[id2] = 0
-				//	is_scan_rocket[id2] = 0
-				//}
-				remove_entity(pTouched)
-			}
+		if(equal(szClassName2, "concussion_missile")) {
+			remove_task(pTouched)
+			emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			remove_entity(pTouched)
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public forge_boom(Explorigin[])
 {
-//	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-//	write_byte(12)
-//	write_coord(Explorigin[0])
-//	write_coord(Explorigin[1])
-//	write_coord(Explorigin[2])
-//	write_byte(188)
-//	write_byte(10)
-//	message_end()
-
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( 21 )
 	write_coord(Explorigin[0])
@@ -373,7 +320,7 @@ public guide_rocket_comm(args[])
 	if (!is_valid_ent(ent)) return
 	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0)
-		vexd_pfntouch(ent,0)
+		missile_touch(ent,0)
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
@@ -384,12 +331,10 @@ public client_disconnected(id)
 public newRound(id)
 {
 	sh_unset_cooldown_flag(id)
-	RemoveByClass(id)//For some reason, sometimes if you were hit with own missile, entity would not be removed, so that is what this is for
-
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public RemoveByClass(id)
+public sh_round_end()
 {
 
 	new missiles = -1

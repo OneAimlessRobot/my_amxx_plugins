@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "custom_grenades/custom_grenades.inc"
@@ -76,7 +75,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "teliko_kd")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
-	init_hud_syncs()
 	init_explosion_defaults()
 }
 

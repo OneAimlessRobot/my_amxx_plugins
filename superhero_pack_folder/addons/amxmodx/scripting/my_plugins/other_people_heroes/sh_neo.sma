@@ -17,8 +17,6 @@ neo_toggle 0		//Def=0
 
 */
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -90,7 +88,6 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "neo_armor")
 	shSetMinGravity(gHeroName, "neo_gravity")
 	shSetMaxSpeed(gHeroName, "neo_speed", "[0]")
-	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public neo_init()

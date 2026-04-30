@@ -10,8 +10,6 @@
 	thrashy_cooldown 30
 */
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -81,7 +79,6 @@ public plugin_init()
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
-	init_hud_syncs()
 
 
 	// INIT

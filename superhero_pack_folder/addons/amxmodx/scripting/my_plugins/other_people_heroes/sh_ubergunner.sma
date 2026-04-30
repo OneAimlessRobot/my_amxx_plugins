@@ -15,8 +15,6 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 /*
 *   Rip of old Master Chief code
 */
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -75,8 +73,6 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "UberGunner_armor")
 	shSetMinGravity(gHeroName, "UberGunner_gravity")
 	shSetMaxSpeed(gHeroName, "UberGunner_speed", "[0]")
-
-	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public UberGunner_init()

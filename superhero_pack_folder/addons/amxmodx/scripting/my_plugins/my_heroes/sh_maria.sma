@@ -64,8 +64,6 @@ public plugin_init()
 	register_cvar("maria_selfless_index", "0.9")
 	register_cvar("maria_points_heal_coeff", "4")
 	register_cvar("maria_heal_period", "0.33")
-	
-	
 	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level",true )
 	
@@ -74,8 +72,6 @@ public plugin_init()
 	
 	register_srvcmd("maria_init", "maria_init")
 	shRegHeroInit(gHeroName, "maria_init")
-
-	
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -225,7 +221,7 @@ values[0]=(maria_health>value)?value:0.0;
 
 
 bool:heal_teamate(id,i){
-	if(!sh_is_active()||!client_hittable(i)||!client_hittable(id)||!hasRoundStarted()){
+	if(!sh_is_active()||!is_user_alive(i)||!is_user_alive(id)||!hasRoundStarted()){
 		
 		
 		return false
@@ -276,7 +272,7 @@ new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32)
 new bool:healed=false;
 for(new p=0;p<num_found;p++){
 	new i=entlist[p]
-	if(!client_hittable(i)||(i==id)) continue;
+	if(!is_user_alive(i)||(i==id)) continue;
 
 	if(!sh_clients_are_same_team(i,id)) continue;
 	

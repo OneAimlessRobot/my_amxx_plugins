@@ -1,55 +1,5 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * *
- * 
- * AMX (Superhero Mod) Hero: Vegetto
- * 
- *This hero is made by The Art of War, one of the clan leaders of Red Doom [RD]
- *
- *Edited - Remade - Improved by [Red-Doom]
- * Last Update: 7th April 2010
- * 
- * -Contact-
- * RD's website - http://www.reddoom.com/
- * Superhero Mods forum - http://forums.alliedmods.net/forumdisplay.php?f=30
- * 
- * -Updates-
- * v0.1 - Changed Sprites/Sounds
- * v0.2 - Changed CVars and permanent name
- * v1.0 - Fixed a CVar bug
- * v1.1 - Additional sprite changes, added custom sounds and new HUD messages
- * v1.2 - Modified the hero to play a sound and show a HUD message before any level is gained by AP.
- * 
- * -Credits-
- * Credits go to the original authors of Goku and to Mr.V (another [RD] owner) for fixing the cvars and names so it works together with Goku.
- * This is a ripp.
- * 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/* CVARS - Copy/Paste into shconfig.cfg
-//Vegetto
-vegetto_level 10			//Level required to use (Default 10)
-vegetto_aps 100			    //The amount of AP gained per second (Default 5)
-vegetto_ap_mult 500			//AP amount multiplied by ssjlevel = AP required for each ssjlevel and cost of ssjlevel power use (Default 250)
-vegetto_hp_mult 150			//HP amount multiplied by ssjlevel, ex. 30*ssj2 = +60HP (Default 30)
-vegetto_hp_max 2000			//Max HP that can be gained (Default 500)
-
-vegetto_speed_base 450		//Initial Speed boost for ssjlevel 1, only sets if you are slower (Default 300)
-vegetto_speed_add 50		//Speed added to vegetto_speedbase every next ssjlevel (Default 25)
-
-vegetto_power_1 70		    //Max Damage for ssjlevel 1 power (Default 70)
-vegetto_power_2 100		    //Max Damage for ssjlevel 2 power (Default 100)
-vegetto_power_3 175		    //Max Damage for ssjlevel 3 power (Default 175)
-vegetto_power_4 300		    //Max Damage for ssjlevel 4 power (Default 300)
-
-vegetto_radius_1 100		//Max Radius of Damage for ssjlevel 1th power (Default 100)
-vegetto_radius_2 300		//Max Radius of Damage for ssjlevel 2th power (Default 300)
-vegetto_radius_3 700		//Max Radius of Damage for ssjlevel 3th power (Default 700)
-vegetto_radius_4 1500		//Max Radius of Damage for ssjlevel 4th power (Default 1500)
-
-vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 1)
-*/
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -57,7 +7,6 @@ vegetto_decals 1		    //Show the burn decals on the walls (0-no 1-yes) (Default 
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
-#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"
@@ -103,6 +52,10 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Void Walker", "Absorb energy through the void and release the void-power in this dimension to create immense destruction!", true, "vegetto_level")
+
+
+	register_entity_as_wall_touchable("vexd_vegetto_power","vegetto_power_touch")
+	register_custom_touchable("vexd_vegetto_power","vegetto_power_touch",player_vector,1)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -466,7 +419,7 @@ public guide_kamehameha(args[])
 	if ( !is_valid_ent(ent) ) return
 
 	if ( !is_user_connected(id) ) {
-		vexd_pfntouch(ent, 0)
+		vegetto_power_touch(ent,0)
 		return
 	}
 
@@ -520,151 +473,136 @@ public guide_kamehameha(args[])
 
 	set_task(0.1, "guide_kamehameha", ent, args, 6)
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
-
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public vegetto_power_touch(pToucher, pTouched) {
 
 	if (pToucher <= 0) return
 	if (!is_valid_ent(pToucher)) return
 
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	new dmgRadius = g_maxRadius[id]
+	new maxDamage = g_maxDamage[id]
+	new Float:fl_vExplodeAt[3], damageName[16]
+	new spriteExp = g_spriteExplosionG
 
-	if(equal(szClassName, "vexd_vegetto_power")) {
-		new id = entity_get_edict(pToucher, EV_ENT_owner)
-		new dmgRadius = g_maxRadius[id]
-		new maxDamage = g_maxDamage[id]
-		new Float:fl_vExplodeAt[3], damageName[16]
-		new spriteExp = g_spriteExplosionG
+	switch(g_powerNum[id]){
+		case 1:{
+			damageName = "Galitgun"
+			spriteExp = g_spriteExplosionG
+				}
+		case 2:{
+			damageName = "Big Bang"
+			spriteExp = g_spriteExplosionR
+		}
+		case 3:{
+			damageName = "Final Flash"
+			spriteExp = g_spriteExplosionB
+		}
+		case 4:{
+			damageName = "Deathball"
+			spriteExp = g_spriteExplosionO
+				}
+	}
 
-		switch(g_powerNum[id]){
-			case 1:{
-				damageName = "Galitgun"
-			        spriteExp = g_spriteExplosionG
-                        }
-			case 2:{
-				damageName = "Big Bang"
-				spriteExp = g_spriteExplosionR
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+
+
+	// Cause the Damage
+	new vicOrigin[3], Float:dRatio,  distance, damage
+	new players[SH_MAXSLOTS], pnum, vic
+
+	get_players(players, pnum, "a")
+
+	for (new i = 0; i < pnum; i++) {
+		vic = players[i]
+		if( !is_user_alive(vic) ) continue
+		if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
+
+		get_user_origin(vic, vicOrigin)
+		distance = get_distance(vExplodeAt, vicOrigin)
+
+		if ( distance < dmgRadius ) {
+
+			dRatio = floatdiv(float(distance), float(dmgRadius))
+			damage = maxDamage - floatround(maxDamage * dRatio)
+
+			// Lessen damage taken by self by half
+			if ( vic == id ){
+				damage = floatround(damage / 2.0)
 			}
-			case 3:{
-				damageName = "Final Flash"
-				spriteExp = g_spriteExplosionB
+			sh_extra_damage(vic, id, damage, damageName)
+			if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
+
+					new Float:vic_origin_f[3]
+					IVecFVec(vicOrigin,vic_origin_f)
+					gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
 			}
-			case 4:{
-				damageName = "Deathball"
-			        spriteExp = g_spriteExplosionO
-                        }
+			// Make them feel it
+			sh_screenShake(vic, 10, 10, 10)
+			emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+			new Float:fl_Time = distance / 125.0
+			new Float:fl_vicVelocity[3]
+			fl_vicVelocity[0] = (vicOrigin[0] - vExplodeAt[0]) / fl_Time
+			fl_vicVelocity[1] = (vicOrigin[1] - vExplodeAt[1]) / fl_Time
+			fl_vicVelocity[2] = (vicOrigin[2] - vExplodeAt[2]) / fl_Time
+			entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
+		}
+	}
+
+	// Make some Effects
+	new blastSize = floatround(dmgRadius / 8.0)
+
+	// Explosion Sprite
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(23)			//TE_GLOWSPRITE
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(spriteExp)	// model
+	write_byte(01)			// life 0.x sec
+	write_byte(blastSize)	// size
+	write_byte(255)		// brightness
+	message_end()
+
+	// Explosion (smoke, sound/effects)
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(3)			//TE_EXPLOSION
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(g_spriteSmoke)		// model
+	write_byte(blastSize+5)	// scale in 0.1's
+	write_byte(20)			// framerate
+	write_byte(10)			// flags
+	message_end()
+
+	// Create Burn Decals, if they are used
+	if ( get_cvar_num("vegetto_decals") == 1 ) {
+		// Change burn decal according to blast size
+		new decal_id
+		if ( blastSize <= 18 ) {
+			//radius ~< 216
+			decal_id = g_burnDecal[generate_int(0,2)]
+		}
+		else {
+			decal_id = g_burnDecalBig[generate_int(0,2)]
 		}
 
-		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-
-
-		// Cause the Damage
-		new vicOrigin[3], Float:dRatio,  distance, damage
-		new players[SH_MAXSLOTS], pnum, vic
-
-		get_players(players, pnum, "a")
-
-		for (new i = 0; i < pnum; i++) {
-			vic = players[i]
-			if( !is_user_alive(vic) ) continue
-			if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
-
-			get_user_origin(vic, vicOrigin)
-			distance = get_distance(vExplodeAt, vicOrigin)
-
-			if ( distance < dmgRadius ) {
-
-				dRatio = floatdiv(float(distance), float(dmgRadius))
-				damage = maxDamage - floatround(maxDamage * dRatio)
-
-				// Lessen damage taken by self by half
-				if ( vic == id ){
-					damage = floatround(damage / 2.0)
-				}
-				sh_extra_damage(vic, id, damage, damageName)
-				if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
-
-						new Float:vic_origin_f[3]
-						IVecFVec(vicOrigin,vic_origin_f)
-						gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
-				}
-				// Make them feel it
-				sh_screenShake(vic, 10, 10, 10)
-				emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-				new Float:fl_Time = distance / 125.0
-				new Float:fl_vicVelocity[3]
-				fl_vicVelocity[0] = (vicOrigin[0] - vExplodeAt[0]) / fl_Time
-				fl_vicVelocity[1] = (vicOrigin[1] - vExplodeAt[1]) / fl_Time
-				fl_vicVelocity[2] = (vicOrigin[2] - vExplodeAt[2]) / fl_Time
-				entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
-			}
-		}
-
-		// Make some Effects
-		new blastSize = floatround(dmgRadius / 8.0)
-
-		// Explosion Sprite
+		// Create the burn decal
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(23)			//TE_GLOWSPRITE
+		write_byte(109)		//TE_GUNSHOTDECAL
 		write_coord(vExplodeAt[0])
 		write_coord(vExplodeAt[1])
 		write_coord(vExplodeAt[2])
-		write_short(spriteExp)	// model
-		write_byte(01)			// life 0.x sec
-		write_byte(blastSize)	// size
-		write_byte(255)		// brightness
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
 		message_end()
-
-		// Explosion (smoke, sound/effects)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(3)			//TE_EXPLOSION
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2])
-		write_short(g_spriteSmoke)		// model
-		write_byte(blastSize+5)	// scale in 0.1's
-		write_byte(20)			// framerate
-		write_byte(10)			// flags
-		message_end()
-
-		// Create Burn Decals, if they are used
-		if ( get_cvar_num("vegetto_decals") == 1 ) {
-			// Change burn decal according to blast size
-			new decal_id
-			if ( blastSize <= 18 ) {
-				//radius ~< 216
-				decal_id = g_burnDecal[generate_int(0,2)]
-			}
-			else {
-				decal_id = g_burnDecalBig[generate_int(0,2)]
-			}
-
-			// Create the burn decal
-			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-			write_byte(109)		//TE_GUNSHOTDECAL
-			write_coord(vExplodeAt[0])
-			write_coord(vExplodeAt[1])
-			write_coord(vExplodeAt[2])
-			write_short(0)			//?
-			write_byte(decal_id)	//decal
-			message_end()
-		}
-
+	
 		remove_entity(pToucher)
 
 		// Reset the Varibles

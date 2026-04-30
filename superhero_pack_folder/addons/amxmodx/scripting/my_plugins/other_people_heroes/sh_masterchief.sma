@@ -53,11 +53,7 @@ masterchief_p90mult 1.3		//Damage multiplyer for his P90
 *   Player and Weapon models by Strykerwolf (aka Alex Wright) & Grenappels
 */
 
-
-
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -112,7 +108,6 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "masterchief_armor")
 	shSetMinGravity(HeroName, "masterchief_gravity")
 	shSetMaxSpeed(HeroName, "masterchief_speed", "[0]")
-	init_hud_syncs()
 	shSetShieldRestrict(HeroName)
 }
 //----------------------------------------------------------------------------------------------

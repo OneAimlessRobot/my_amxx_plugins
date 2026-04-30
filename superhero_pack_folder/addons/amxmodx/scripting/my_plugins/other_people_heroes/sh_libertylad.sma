@@ -33,7 +33,7 @@ libertylad_green 255			//Green color of the flare light (0: None)(255: Brightest
 libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 
 */
-	#include "../my_include/superheromod.inc"
+#include "../my_include/superheromod.inc"
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 //--------------------------------------------------------------------------------------------------
@@ -169,9 +169,9 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 //--------------------------------------------------------------------------------------------------
 // REMOVE FLARE AND LIGHT
 //--------------------------------------------------------------------------------------------------
-	public libertylad_removeflare(flareentity)
-	{
-	remove_task(flareentity)
-	remove_entity(flareentity)
-	}
+public libertylad_removeflare(flareentity)
+{
+remove_task(flareentity)
+remove_entity(flareentity)
+}
 //--------------------------------------------------------------------------------------------------

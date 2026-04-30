@@ -1,6 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -21,6 +19,10 @@
 new g_shinobu_curr_ammo[SH_MAXSLOTS+1]
 
 
+new dmg_source_name_short_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
+new dmg_source_name_long_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
+new custom_weapon_shinobu_pistol
+
 public plugin_init(){
 	
 	
@@ -32,7 +34,12 @@ public plugin_init(){
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("ResetHUD","shinobu_usp_newRound","b")
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
-	init_hud_syncs()
+	
+	custom_weapon_shinobu_pistol=sh_log_custom_damage_source(
+								shinobu_get_hero_id(),
+								dmg_source_name_short_shinobu_pistol,
+								dmg_source_name_long_shinobu_pistol,
+								0)
     
 	
 }
@@ -40,7 +47,7 @@ public plugin_init(){
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	
-	if(!client_hittable(player)){
+	if(!is_user_alive(player)){
 		return FMRES_IGNORED
 	}
 
@@ -80,7 +87,7 @@ public _shinobu_weapons(iPlugins, iParam){
 
 	new id=get_param(1)
 
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return
 	}
@@ -97,7 +104,7 @@ public _shinobu_weapons(iPlugins, iParam){
 public _shinobu_unweapons(iPlugins, iParam){
 
 	new id=get_param(1)
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return
 	}
@@ -110,7 +117,7 @@ public _shinobu_unweapons(iPlugins, iParam){
 
 public on_Usp_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	new  wpnid = get_user_weapon(id)
@@ -125,7 +132,7 @@ public on_Usp_Weapon_Change(id)
 //----------------------------------------------------------------------------------------------
 public shinobu_usp_newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -139,7 +146,7 @@ public track_shinobu_usp_ammo(ent)
 	if(!is_valid_ent(ent)) return HAM_IGNORED
 
 	static id; id = pev(ent, pev_owner)
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return HAM_IGNORED
 	}
@@ -163,7 +170,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 {
 	if ( !sh_is_active()) return HAM_IGNORED
 	
-	if ( !client_hittable(idattacker)) {
+	if ( !is_user_alive(idattacker)) {
 		return HAM_IGNORED
 	}
 	if(!sh_user_has_hero(idattacker,shinobu_get_hero_id())){
@@ -196,9 +203,14 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 			damage=0.0
 
 		}
-		SetHamParamFloat(3, damage);
-		sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,this,idattacker,true,false,floatround(damage))
-				
+		SetHamParamFloat(3, 0.0);
+		
+		sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
+							is_headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_SUPER_BULLET,
+							custom_weapon_shinobu_pistol)
+		return HAM_HANDLED
 	}
 	return HAM_IGNORED
 }
@@ -207,7 +219,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 {
 	if ( !sh_is_active()) return FMRES_IGNORED
 	
-	if (!client_hittable(id))
+	if (!is_user_alive(id))
 		return FMRES_IGNORED	
 	if(get_user_weapon(id) != SHINOBU_WEAPON_CLASSID)
 		return FMRES_IGNORED

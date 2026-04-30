@@ -114,7 +114,6 @@ public plugin_init()
 	shRegKeyUp(gHeroName, "ester_ku")
 	register_forward(FM_PlayerPreThink, "ester_prethink")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
-	init_hud_syncs()
 
 	init_explosion_defaults()
 

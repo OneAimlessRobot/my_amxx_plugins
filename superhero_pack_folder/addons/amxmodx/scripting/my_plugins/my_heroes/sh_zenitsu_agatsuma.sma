@@ -1,12 +1,9 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "zenitsu_inc/zenitsu_charge_funcs.inc"
 #include "zenitsu_inc/zenitsu_general_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -36,8 +33,6 @@ public plugin_init()
 	
 	register_srvcmd("zenitsu_kd", "zenitsu_kd")
 	shRegKeyDown(gHeroName, "zenitsu_kd")
-
-	init_hud_syncs()
 }
 public plugin_natives(){
 	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id",0)
@@ -65,23 +60,10 @@ public _zenitsu_get_hero_id(iPlugins, iParms){
 	return gHeroID
 	
 }
-
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-    //nothing for now
-
-}
 //----------------------------------------------------------------------------------------------
 public zenitsu_newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -112,7 +94,7 @@ public zenitsu_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
@@ -140,7 +122,7 @@ public zenitsu_kd()
 }
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}

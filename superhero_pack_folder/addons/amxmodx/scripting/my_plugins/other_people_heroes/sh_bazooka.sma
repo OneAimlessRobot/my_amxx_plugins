@@ -62,9 +62,11 @@ bazooka_spawndelay 0
 
 // ---END OF BAZOOKA CVARS---
 */
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+
 #include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #define DT 0.1
 
 
@@ -125,6 +127,12 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Rocket-Laucher", "Fire Many Different Types of Rockets", true, "bazooka_level" )
+
+
+	static custom_touchable_vec[][]={"bazooka_missile_ent"}
+	register_entity_as_wall_touchable("bazooka_missile_ent","bazooka_missile_touch")
+	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",player_vector,1)
+	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",custom_touchable_vec,1)
 
 
 	// KEYDOWN
@@ -215,102 +223,86 @@ public client_disconnected(id)
 	is_heat_rocket[id] = 0
 	has_rocket[id] = 0
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
-
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-	new pTouched = entity2
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public bazooka_missile_touch(pToucher, pTouched) {
 
 	if ( !is_valid_ent(pToucher) ) return
 
-	new szClassName[32]
-	Entvars_Get_String(pToucher, EV_SZ_classname, szClassName, 31)
+	new damradius = get_cvar_num("bazooka_damradius")
+	new maxdamage = get_cvar_num("bazooka_maxdamage")
 
-	if(equal(szClassName, "bazooka_missile_ent")) {
-		new damradius = get_cvar_num("bazooka_damradius")
-		new maxdamage = get_cvar_num("bazooka_maxdamage")
+	if (damradius <= 0) {
+		debugMessage("(Bazooka) Damage Radius must be set higher than 0, defaulting to 240",0,0)
+		damradius = 240
+		set_cvar_num("bazooka_damradius",damradius)
+	}
+	if (maxdamage <= 0) {
+		debugMessage("(Bazooka) Max Damage must be set higher than 0, defaulting to 140",0,0)
+		maxdamage = 140
+		set_cvar_num("bazooka_maxdamage",maxdamage)
+	}
 
-		if (damradius <= 0) {
-			debugMessage("(Bazooka) Damage Radius must be set higher than 0, defaulting to 240",0,0)
-			damradius = 240
-			set_cvar_num("bazooka_damradius",damradius)
+	remove_task(pToucher)
+	new Float:fl_vExplodeAt[3]
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	new origin[3],dist,i,Float:dRatio,damage
+	attach_view(id, id)
+	if(has_rocket[id] == pToucher)
+	has_rocket[id] = 0
+
+	for ( i = 1; i < sh_maxplayers()+1; i++) {
+
+		if( !is_user_alive(i) ) continue
+		get_user_origin(i,origin)
+		dist = get_distance(origin,vExplodeAt)
+		if (dist <= damradius) {
+
+			dRatio = floatdiv(float(dist),float(damradius))
+			damage = maxdamage - floatround( maxdamage * dRatio)
+
+			sh_extra_damage(i, id, damage, "Bazooka" )
+
 		}
-		if (maxdamage <= 0) {
-			debugMessage("(Bazooka) Max Damage must be set higher than 0, defaulting to 140",0,0)
-			maxdamage = 140
-			set_cvar_num("bazooka_maxdamage",maxdamage)
-		}
+	}
 
-		remove_task(pToucher)
-		new Float:fl_vExplodeAt[3]
-		Entvars_Get_Vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-		new id = Entvars_Get_Edict(pToucher, EV_ENT_owner)
-		new origin[3],dist,i,Float:dRatio,damage
-		AttachView(id, id)
-		if(has_rocket[id] == pToucher)
-		has_rocket[id] = 0
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(3)
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(boom)
+	write_byte(100)
+	write_byte(15)
+	write_byte(0)
+	message_end()
 
-		for ( i = 1; i < sh_maxplayers()+1; i++) {
+	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-			if( !is_user_alive(i) ) continue
-			get_user_origin(i,origin)
-			dist = get_distance(origin,vExplodeAt)
-			if (dist <= damradius) {
+	remove_entity(pToucher)
+	is_heat_rocket[id] = 0
+	is_scan_rocket[id] = 0
 
-				dRatio = floatdiv(float(dist),float(damradius))
-				damage = maxdamage - floatround( maxdamage * dRatio)
+	if ( is_valid_ent(pTouched) ) {
+		new szClassName2[32]
+		entity_get_string(pTouched, EV_SZ_classname, szClassName2, 31)
 
-				sh_extra_damage(i, id, damage, "Bazooka" )
-
+		if(equal(szClassName2, "bazooka_missile_ent")) {
+			remove_task(pTouched)
+			emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			new id2 = entity_get_edict(pTouched, EV_ENT_owner)
+			attach_view(id2, id2)
+			if(has_rocket[id2] == pTouched){
+				has_rocket[id2] = 0
+				is_heat_rocket[id2] = 0
+				is_scan_rocket[id2] = 0
 			}
-		}
-
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(3)
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2])
-		write_short(boom)
-		write_byte(100)
-		write_byte(15)
-		write_byte(0)
-		message_end()
-
-		emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-
-		RemoveEntity(pToucher)
-		is_heat_rocket[id] = 0
-		is_scan_rocket[id] = 0
-
-		if ( is_valid_ent(pTouched) ) {
-			new szClassName2[32]
-			Entvars_Get_String(pTouched, EV_SZ_classname, szClassName2, 31)
-
-			if(equal(szClassName2, "bazooka_missile_ent")) {
-				remove_task(pTouched)
-				emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				new id2 = Entvars_Get_Edict(pTouched, EV_ENT_owner)
-				AttachView(id2, id2)
-				if(has_rocket[id2] == pTouched){
-					has_rocket[id2] = 0
-					is_heat_rocket[id2] = 0
-					is_scan_rocket[id2] = 0
-				}
-				RemoveEntity(pTouched)
-			}
+			remove_entity(pTouched)
 		}
 	}
 }
@@ -471,11 +463,11 @@ public anti_missile_radar(id)
 	for(new i=1; i < sh_maxplayers()+1; i++) {
 		if( (has_rocket[i] > SH_MAXSLOTS) && (i != id) && (tid < sh_maxplayers()+1) ){
 			new szClassName[32]
-			Entvars_Get_String(has_rocket[i], EV_SZ_classname, szClassName, 31)
+			entity_get_string(has_rocket[i], EV_SZ_classname, szClassName, 31)
 			if(equal(szClassName, "bazooka_missile_ent")) {
 				new rocketvec[3]
 				new Float:fl_rocketvec[3]
-				Entvars_Get_Vector(has_rocket[i], EV_VEC_origin, fl_rocketvec)
+				entity_get_vector(has_rocket[i], EV_VEC_origin, fl_rocketvec)
 				rocketvec[0] = floatround(fl_rocketvec[0])
 				rocketvec[1] = floatround(fl_rocketvec[1])
 				rocketvec[2] = floatround(fl_rocketvec[2])
@@ -527,8 +519,8 @@ make_rocket(id,icmd,iarg1,antimissile)
 	new args[16]
 	new Float:vOrigin[3]
 	new Float:vAngles[3]
-	Entvars_Get_Vector(id, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
+	entity_get_vector(id, EV_VEC_origin, vOrigin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new notFloat_vOrigin[3]
 	notFloat_vOrigin[0] = floatround(vOrigin[0])
 	notFloat_vOrigin[1] = floatround(vOrigin[1])
@@ -625,7 +617,7 @@ make_rocket(id,icmd,iarg1,antimissile)
 	using_menu[id] = 0
 
 	new NewEnt
-	NewEnt = CreateEntity("info_target")
+	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
 		client_print(id,print_chat,"[SH](Bazooka) Rocket Failure")
 		return PLUGIN_HANDLED
@@ -633,36 +625,36 @@ make_rocket(id,icmd,iarg1,antimissile)
 	has_rocket[id] = NewEnt
 	missile_inv[id][0] = 0
 
-	Entvars_Set_String(NewEnt, EV_SZ_classname, "bazooka_missile_ent")
-	ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
+	entity_set_string(NewEnt, EV_SZ_classname, "bazooka_missile_ent")
+	entity_set_model(NewEnt, "models/rpgrocket.mdl")
 
 	new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 	new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
-	Entvars_Set_Vector(NewEnt, EV_VEC_mins,fl_vecminsx)
-	Entvars_Set_Vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
+	entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
+	entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
 
-	ENT_SetOrigin(NewEnt, vOrigin)
-	Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
-	Entvars_Set_Int(NewEnt, EV_INT_effects, 64)
-	Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
+	entity_set_origin(NewEnt, vOrigin)
+	entity_set_vector(NewEnt, EV_VEC_angles, vAngles)
+	entity_set_int(NewEnt, EV_INT_effects, 64)
+	entity_set_int(NewEnt, EV_INT_solid, 2)
 
 	if(get_cvar_num("bazooka_obeygravity")) {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 6)
+		entity_set_int(NewEnt, EV_INT_movetype, 6)
 	}
 	else {
-		Entvars_Set_Int(NewEnt, EV_INT_movetype, 5)
+		entity_set_int(NewEnt, EV_INT_movetype, 5)
 	}
 
-	Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
-	Entvars_Set_Float(NewEnt, EV_FL_health, 10000.0)
-	Entvars_Set_Float(NewEnt, EV_FL_takedamage, 100.0)
-	Entvars_Set_Float(NewEnt, EV_FL_dmg_take, 100.0)
+	entity_set_edict(NewEnt, EV_ENT_owner, id)
+	entity_set_float(NewEnt, EV_FL_health, 10000.0)
+	entity_set_float(NewEnt, EV_FL_takedamage, 100.0)
+	entity_set_float(NewEnt, EV_FL_dmg_take, 100.0)
 
 	new Float:fl_iNewVelocity[3]
 	new iNewVelocity[3]
-	VelocityByAim(id, iarg1, fl_iNewVelocity)
-	Entvars_Set_Vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
+	velocity_by_aim(id, iarg1, fl_iNewVelocity)
+	entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 	iNewVelocity[0] = floatround(fl_iNewVelocity[0])
 	iNewVelocity[1] = floatround(fl_iNewVelocity[1])
 	iNewVelocity[2] = floatround(fl_iNewVelocity[2])
@@ -683,21 +675,21 @@ make_rocket(id,icmd,iarg1,antimissile)
 	switch(icmd){
 		case 1: {
 			make_trail(NewEnt,icmd)
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 			set_task(0.1,"guide_rocket_comm",NewEnt,args,16,"b")
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 		}
 		case 2: {
 			make_trail(NewEnt,icmd)
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 			set_task(0.1,"guide_rocket_las",NewEnt,args,16)
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 		}
 		case 3: {
 			make_trail(NewEnt,icmd)
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
-			Entvars_Set_Int(NewEnt, EV_INT_rendermode,1)
-			AttachView(id, NewEnt)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_int(NewEnt, EV_INT_rendermode,1)
+			attach_view(id, NewEnt)
 			args[11] = 1
 			set_task(0.1,"guide_rocket_dir",NewEnt,args,16,"b")
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
@@ -705,25 +697,25 @@ make_rocket(id,icmd,iarg1,antimissile)
 		case 4: {
 			make_trail(NewEnt,icmd)
 			args[6] = antimissile
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 			set_task(0.1,"guide_rocket_anti",NewEnt,args,16)
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 		}
 		case 5: {
 			is_heat_rocket[id] = 1
 			make_trail(NewEnt,icmd)
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 			set_task(0.1,"guide_rocket_het",NewEnt,args,16)
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 		}
 		case 6: {
 			make_trail(NewEnt,icmd)
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.25)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 			set_task(0.1,"guide_rocket_rope",NewEnt,args,16)
 			set_task(get_cvar_float("bazooka_fuel"),"rocket_fuel_timer",NewEnt,args,16)
 		}
 		case 7: {
-			Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.000001)
+			entity_set_float(NewEnt, EV_FL_gravity, 0.000001)
 			SD_CircleRockets(NewEnt)
 			set_task(0.1,"guide_rocket_swirl",NewEnt,args,16)
 			set_task(get_cvar_float("bazooka_sdfuel"),"rocket_fuel_timer",NewEnt,args,16)
@@ -797,9 +789,9 @@ public guide_rocket_comm(args[])
 {
 	new ent = args[1]
 	if (!is_valid_ent(ent)) return
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
+	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0)
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 }
 //----------------------------------------------------------------------------------------------
 public guide_rocket_dir(args[])
@@ -809,16 +801,16 @@ public guide_rocket_dir(args[])
 	new speed = args[2]
 	new Float:fl_iNewVelocity[3]
 	if (!is_valid_ent(ent)) return
-	VelocityByAim(id, speed, fl_iNewVelocity)
-	Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+	velocity_by_aim(id, speed, fl_iNewVelocity)
+	entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 
 	new Float:vAngles[3]
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngles)
-	Entvars_Set_Vector(ent, EV_VEC_angles, vAngles)
+	entity_get_vector(id, EV_VEC_v_angle, vAngles)
+	entity_set_vector(ent, EV_VEC_angles, vAngles)
 
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
+	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health <10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -843,7 +835,7 @@ public guide_rocket_las(args[])
 	write_byte( 255 )
 	message_end()
 
-	Entvars_Get_Vector(ent, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent, EV_VEC_origin, fl_origin)
 	new iNewVelocity[3]
 	new origin[3]
 	origin[0] = floatround(fl_origin[0])
@@ -872,7 +864,7 @@ public guide_rocket_las(args[])
 	fl_iNewVelocity[0] = iNewVelocity[0] + 0.0
 	fl_iNewVelocity[1] = iNewVelocity[1] + 0.0
 	fl_iNewVelocity[2] = iNewVelocity[2] + 0.0
-	Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+	entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 	args[3] = iNewVelocity[0]
 	args[4] = iNewVelocity[1]
 	args[5] = iNewVelocity[2]
@@ -882,9 +874,9 @@ public guide_rocket_las(args[])
 	set_task(0.1,"guide_rocket_las",ent,args,16)
 
 	new Float:missile_health
-	missile_health = Float:Entvars_Get_Float(ent, EV_FL_health)
+	missile_health = Float:entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -901,7 +893,7 @@ public guide_rocket_het(args[])
 	new speed = args[2]
 	new iNewVelocity[3]
 	if (!is_valid_ent(ent)) return
-	Entvars_Get_Vector(ent, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent, EV_VEC_origin, fl_origin)
 	new origin[3]
 	origin[0] = floatround(fl_origin[0])
 	origin[1] = floatround(fl_origin[1])
@@ -983,7 +975,7 @@ public guide_rocket_het(args[])
 		args[4] = iNewVelocity[1]
 		args[5] = iNewVelocity[2]
 		if(dist < 20){
-			vexd_pfntouch(ent,0)
+			bazooka_missile_touch(ent,0)
 			return
 		}
 	}
@@ -993,13 +985,13 @@ public guide_rocket_het(args[])
 	fl_iNewVelocity[1] = args[4] +0.0
 	fl_iNewVelocity[2] = args[5] +0.0
 
-	Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+	entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 	set_task(0.1,"guide_rocket_het",ent,args,16)
 
 	new Float:missile_health
-	missile_health = Float:Entvars_Get_Float(ent, EV_FL_health)
+	missile_health = Float:entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -1014,14 +1006,14 @@ public guide_rocket_anti(args[])
 	new iNewVelocity[3]
 	if (!is_valid_ent(ent)) return
 
-	Entvars_Get_Vector(ent, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent, EV_VEC_origin, fl_origin)
 	new origin[3]
 	origin[0] = floatround(fl_origin[0])
 	origin[1] = floatround(fl_origin[1])
 	origin[2] = floatround(fl_origin[2])
 
-	if(FindEntity(args[6], "bazooka_missile_ent") > 0){
-		Entvars_Get_Vector(args[6], EV_VEC_origin, fl_aimvec)
+	if(find_ent_by_class(args[6], "bazooka_missile_ent") > 0){
+		entity_get_vector(args[6], EV_VEC_origin, fl_aimvec)
 	  	new aimvec[3]
 		aimvec[0] = floatround(fl_aimvec[0])
 		aimvec[1] = floatround(fl_aimvec[1])
@@ -1047,19 +1039,19 @@ public guide_rocket_anti(args[])
 		args[4] = iNewVelocity[1]
 		args[5] = iNewVelocity[2]
 		if(get_distance(origin,aimvec) < 150){
-			vexd_pfntouch(ent,args[6])
+			bazooka_missile_touch(ent,args[6])
 			return
 		}
 		new Float:fl_iNewVelocity[3]
 		fl_iNewVelocity[0] = args[3] +0.0
 		fl_iNewVelocity[1] = args[4] +0.0
 		fl_iNewVelocity[2] = args[5] +0.0
-		Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+		entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 		set_task(0.1,"guide_rocket_anti",ent,args,16)
 	}
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
+	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health < 10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 	client_cmd(id,"spk buttons/blip2")
 }
@@ -1077,7 +1069,7 @@ public guide_rocket_rope(args[])
 	new speed = args[2]
 	new iNewVelocity[3]
 	if (!is_valid_ent(ent)) return
-	Entvars_Get_Vector(ent, EV_VEC_origin, fl_origin)
+	entity_get_vector(ent, EV_VEC_origin, fl_origin)
 	new origin[3]
 	origin[0] = floatround(fl_origin[0])
 	origin[1] = floatround(fl_origin[1])
@@ -1159,7 +1151,7 @@ public guide_rocket_rope(args[])
 		args[4] = iNewVelocity[1]
 		args[5] = iNewVelocity[2]
 		if(dist < 60){
-			vexd_pfntouch(ent,0)
+			bazooka_missile_touch(ent,0)
 			return
 		}
 	}
@@ -1169,13 +1161,13 @@ public guide_rocket_rope(args[])
 	fl_iNewVelocity[1] = args[4] +0.0
 	fl_iNewVelocity[2] = args[5] +0.0
 
-	Entvars_Set_Vector(ent, EV_VEC_velocity, fl_iNewVelocity)
+	entity_set_vector(ent, EV_VEC_velocity, fl_iNewVelocity)
 	set_task(0.1,"guide_rocket_rope",ent,args,16)
 
 	new Float:missile_health
-	missile_health = Float:Entvars_Get_Float(ent, EV_FL_health)
+	missile_health = Float:entity_get_float(ent, EV_FL_health)
 	if(missile_health <10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -1183,9 +1175,9 @@ public guide_rocket_swirl(args[]){
 	new ent = args[1]
 	if (!is_valid_ent(ent)) return
 	set_task(0.1,"guide_rocket_swirl",ent,args,16)
-	new Float:missile_health = Entvars_Get_Float(ent, EV_FL_health)
+	new Float:missile_health = entity_get_float(ent, EV_FL_health)
 	if(missile_health <10000.0) {
-		vexd_pfntouch(ent,0)
+		bazooka_missile_touch(ent,0)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -1194,10 +1186,10 @@ public rocket_fuel_timer(args[]){
 	new id = args[0]
 	remove_task(ent)
 	if (!is_valid_ent(ent)) return
-	Entvars_Set_Int(ent, EV_INT_effects, 2)
-	Entvars_Set_Int(ent, EV_INT_rendermode,0)
-	Entvars_Set_Float(ent, EV_FL_gravity, 1.0)
-	Entvars_Set_Int(ent, EV_INT_iuser1, 0)
+	entity_set_int(ent, EV_INT_effects, 2)
+	entity_set_int(ent, EV_INT_rendermode,0)
+	entity_set_float(ent, EV_FL_gravity, 1.0)
+	entity_set_int(ent, EV_INT_iuser1, 0)
 	emit_sound(ent, CHAN_WEAPON, "debris/beamstart8.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM )
 	emit_sound(ent, CHAN_VOICE, "ambience/rocket_steam1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	if(args[11] == 1){
@@ -1213,9 +1205,9 @@ public laser_check() {
 	new iarg = str_to_num(arg)
 	if(is_valid_ent(iarg)) {
 		new szClassName[32]
-		Entvars_Get_String(iarg, EV_SZ_classname, szClassName, 31)
+		entity_get_string(iarg, EV_SZ_classname, szClassName, 31)
 		if(equal(szClassName, "bazooka_missile_ent")) {
-			vexd_pfntouch(iarg,0)
+			bazooka_missile_touch(iarg,0)
 		}
 	}
 	return PLUGIN_HANDLED
@@ -1397,8 +1389,8 @@ public round_start(){
 		}
 	}
 	new iCurrent
-	while ((iCurrent = FindEntity(-1, "bazooka_missile_ent")) > 0) {
-		new id = Entvars_Get_Edict(iCurrent, EV_ENT_owner)
+	while ((iCurrent = find_ent_by_class(-1, "bazooka_missile_ent")) > 0) {
+		new id = entity_get_edict(iCurrent, EV_ENT_owner)
 		remove_missile(id,iCurrent)
 	}
 	return PLUGIN_CONTINUE
@@ -1411,7 +1403,7 @@ public roundstart_delay(){
 remove_missile(id,missile){
 
 	new Float:fl_origin[3]
-	Entvars_Get_Vector(missile, EV_VEC_origin, fl_origin)
+	entity_get_vector(missile, EV_VEC_origin, fl_origin)
 
 	message_begin(MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte(14)
@@ -1429,8 +1421,8 @@ remove_missile(id,missile){
 	is_heat_rocket[id] = 0
 	is_scan_rocket[id] = 0
 	remove_task(missile)
-	AttachView(id,id)
-	RemoveEntity(missile)
+	attach_view(id,id)
+	remove_entity(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
@@ -1444,9 +1436,9 @@ public SD_CircleRockets(Ent){
 	new Float:x, Float:y, Float:z, Float:theta
 	new i, id, NewEnt
 	if (!is_valid_ent(Ent)) return
-	Entvars_Get_Vector(Ent, EV_VEC_origin, vOrigin)
-	Entvars_Get_Vector(Ent, EV_VEC_velocity, vVelocity)
-	id = Entvars_Get_Edict(Ent, EV_ENT_owner)
+	entity_get_vector(Ent, EV_VEC_origin, vOrigin)
+	entity_get_vector(Ent, EV_VEC_velocity, vVelocity)
+	id = entity_get_edict(Ent, EV_ENT_owner)
 
 	RotMatrix[0][0]=vVelocity[0]
 	RotMatrix[0][1]=vVelocity[1]
@@ -1478,34 +1470,34 @@ public SD_CircleRockets(Ent){
 		vEntOrig[1]+=vOrigin[1]
 		vEntOrig[2]+=vOrigin[2]
 		NewEnt = SD_CreateRocket(vEntOrig, vVelocity, id)
-		Entvars_Set_Int(NewEnt, EV_INT_iuser1, Ent)
-		Entvars_Set_Int(NewEnt, EV_INT_iuser2, i)
+		entity_set_int(NewEnt, EV_INT_iuser1, Ent)
+		entity_set_int(NewEnt, EV_INT_iuser2, i)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public SD_CreateRocket(Float:vOrigin[3], Float:vVelocity[3], id)
 {
 	new Float:vAngles[3]
-	VecToAngles(vVelocity, vAngles)
-	new NewEnt = CreateEntity("info_target")
+	vector_to_angle(vVelocity, vAngles)
+	new NewEnt = create_entity("info_target")
 	if(!NewEnt) return PLUGIN_CONTINUE
-	Entvars_Set_String(NewEnt, EV_SZ_classname, "bazooka_missile_ent")
-	ENT_SetModel(NewEnt, "models/rpgrocket.mdl")
+	entity_set_string(NewEnt, EV_SZ_classname, "bazooka_missile_ent")
+	entity_set_model(NewEnt, "models/rpgrocket.mdl")
 	new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
 	new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
-	Entvars_Set_Vector(NewEnt, EV_VEC_mins, fl_vecminsx)
-	Entvars_Set_Vector(NewEnt, EV_VEC_maxs, fl_vecmaxsx)
-	ENT_SetOrigin(NewEnt, vOrigin)
-	Entvars_Set_Vector(NewEnt, EV_VEC_angles, vAngles)
-	Entvars_Set_Int(NewEnt, EV_INT_solid, 2)
-	Entvars_Set_Int(NewEnt, EV_INT_movetype, 6)
-	Entvars_Set_Edict(NewEnt, EV_ENT_owner, id)
-	Entvars_Set_Float(NewEnt, EV_FL_health, 10000.0)
-	Entvars_Set_Float(NewEnt, EV_FL_takedamage, 100.0)
-	Entvars_Set_Float(NewEnt, EV_FL_dmg_take, 100.0)
-	Entvars_Set_Vector(NewEnt, EV_VEC_velocity, vVelocity)
+	entity_set_vector(NewEnt, EV_VEC_mins, fl_vecminsx)
+	entity_set_vector(NewEnt, EV_VEC_maxs, fl_vecmaxsx)
+	entity_set_origin(NewEnt, vOrigin)
+	entity_set_vector(NewEnt, EV_VEC_angles, vAngles)
+	entity_set_int(NewEnt, EV_INT_solid, 2)
+	entity_set_int(NewEnt, EV_INT_movetype, 6)
+	entity_set_edict(NewEnt, EV_ENT_owner, id)
+	entity_set_float(NewEnt, EV_FL_health, 10000.0)
+	entity_set_float(NewEnt, EV_FL_takedamage, 100.0)
+	entity_set_float(NewEnt, EV_FL_dmg_take, 100.0)
+	entity_set_vector(NewEnt, EV_VEC_velocity, vVelocity)
 	make_trail(NewEnt,7) // 7 = Swirling Missiles
-	Entvars_Set_Float(NewEnt, EV_FL_gravity, 0.000001 )
+	entity_set_float(NewEnt, EV_FL_gravity, 0.000001 )
 
 	emit_sound(NewEnt, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(NewEnt, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -1524,7 +1516,7 @@ public SD_CreateRocket(Float:vOrigin[3], Float:vVelocity[3], id)
 //----------------------------------------------------------------------------------------------
 public SD_Normalise(Float:Vector[3]){
 	new Float:NullVector[3] = {0.0,0.0,0.0}
-	new Float:fLength = VecDist(Vector, NullVector)
+	new Float:fLength = vector_distance(Vector, NullVector)
 	Vector[0] /= fLength
 	Vector[1] /= fLength
 	Vector[2] /= fLength
@@ -1548,20 +1540,20 @@ public RocketThink() {
 
 	iCurrent = -1
 
-	while ((iCurrent = FindEntity(iCurrent, "bazooka_missile_ent")) > 0){
-		iCenterRocket = Entvars_Get_Int(iCurrent, EV_INT_iuser1)
+	while ((iCurrent = find_ent_by_class(iCurrent, "bazooka_missile_ent")) > 0){
+		iCenterRocket = entity_get_int(iCurrent, EV_INT_iuser1)
 		if (iCenterRocket){
 
 			iTempEnt = -1
-			while ((iTempEnt = FindEntity(iTempEnt, "bazooka_missile_ent")) > 0){
+			while ((iTempEnt = find_ent_by_class(iTempEnt, "bazooka_missile_ent")) > 0){
 				if (iTempEnt == iCenterRocket) break
 			}
 
 			if (iTempEnt > 0){
-				Entvars_Get_Vector(iCenterRocket, EV_VEC_origin, vOrigin)
-				Entvars_Get_Vector(iCenterRocket, EV_VEC_velocity, vVelocity)
-				Entvars_Get_Vector(iCurrent, EV_VEC_origin, vOldEntOrig)
-				i = Entvars_Get_Int(iCurrent, EV_INT_iuser2)
+				entity_get_vector(iCenterRocket, EV_VEC_origin, vOrigin)
+				entity_get_vector(iCenterRocket, EV_VEC_velocity, vVelocity)
+				entity_get_vector(iCurrent, EV_VEC_origin, vOldEntOrig)
+				i = entity_get_int(iCurrent, EV_INT_iuser2)
 				RotMatrix[0][0]=vVelocity[0]
 				RotMatrix[0][1]=vVelocity[1]
 				RotMatrix[0][2]=vVelocity[2]
@@ -1592,15 +1584,15 @@ public RocketThink() {
 				vEntOrig[1]+=vVelocity[1]*DT
 				vEntOrig[2]+=vVelocity[2]*DT
 				CalculateVelocity(vOldEntOrig, vEntOrig, fNewVelocity)
-				Entvars_Set_Vector(iCurrent, EV_VEC_velocity, fNewVelocity)
-				VecToAngles(fNewVelocity, vAngles)
-				Entvars_Set_Vector(iCurrent, EV_VEC_angles, vAngles)
-				new Float:missile_health = Entvars_Get_Float(iCurrent, EV_FL_health)
+				entity_set_vector(iCurrent, EV_VEC_velocity, fNewVelocity)
+				vector_to_angle(fNewVelocity, vAngles)
+				entity_set_vector(iCurrent, EV_VEC_angles, vAngles)
+				new Float:missile_health = entity_get_float(iCurrent, EV_FL_health)
 				if(missile_health < 10000.0)
-					vexd_pfntouch(iCurrent,0)
+					bazooka_missile_touch(iCurrent,0)
 			}
 			else {
-				Entvars_Set_Int(iCurrent, EV_INT_iuser1, 0)
+				entity_set_int(iCurrent, EV_INT_iuser1, 0)
 			}
 		}
 	}

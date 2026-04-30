@@ -1,7 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
-
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -60,7 +57,6 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "yakui_init")
 	register_srvcmd("yakui_kd", "yakui_kd")
 	shRegKeyDown(gHeroName, "yakui_kd")
-	init_hud_syncs()
 }
 public plugin_natives(){
 	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
@@ -72,7 +68,7 @@ public _gatling_get_hero_id(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 	if(sh_get_stun(id)) return FMRES_IGNORED
 
 

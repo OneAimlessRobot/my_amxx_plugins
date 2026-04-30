@@ -1,6 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -89,7 +89,7 @@ public plugin_natives(){
 //----------------------------------------------------------------------------------------------
 public shinobu_health_newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -113,7 +113,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 {
 	if(!sh_is_active()) return
 
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 
 	if(!sh_user_has_hero(id,gHeroID) ) return
 
@@ -186,7 +186,7 @@ public shinobuDamage(id)
 	if ( !sh_is_active() || !is_user_connected(id)) return PLUGIN_CONTINUE
 	new victim=id
 	new weapon, attacker = get_user_attacker(victim, weapon)
-	if ( !client_hittable(attacker)||!attacker) return PLUGIN_CONTINUE
+	if ( !is_user_alive(attacker)||!attacker) return PLUGIN_CONTINUE
 	
 	if(sh_clients_are_same_team(victim,attacker)||(victim==attacker)){
 		return PLUGIN_CONTINUE
@@ -263,7 +263,7 @@ public shinobu_burst_damage_task(array[],attacker){
 
 	new tg= array[0]
 
-	if(!client_hittable(tg)) return
+	if(!is_user_alive(tg)) return
 
 	
 	if(!sh_user_has_hero(attacker,gHeroID)  ) return
@@ -284,7 +284,7 @@ public shinobu_burst_damage_task(array[],attacker){
 					custom_weapon_damage_sharp_poison_kick_id)
 
 	
-	if(!client_hittable(tg)) return
+	if(!is_user_alive(tg)) return
 
 	user_slap(tg, shinobu_poison_kick_knockback,0)
 
@@ -313,7 +313,7 @@ public shinobu_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
@@ -328,7 +328,7 @@ public shinobu_kd()
 		}
 		return PLUGIN_HANDLED
 	}
-	else if(!client_hittable(g_shinobu_tagged_player[id])){
+	else if(!is_user_alive(g_shinobu_tagged_player[id])){
 		new tg_is_connected=is_user_connected(g_shinobu_tagged_player[id])
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
@@ -387,7 +387,7 @@ public death()
 		
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}

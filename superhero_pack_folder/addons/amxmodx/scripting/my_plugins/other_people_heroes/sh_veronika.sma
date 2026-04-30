@@ -14,16 +14,15 @@ veronika_m203dmg 120
 // Thanx to the original code of MP5+203 Mod by PaintLancer
 
 
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
-#include "../../include/Vexd_Utilities.inc"
 
 #define veronika_ak_v_mdl "models/shmod/veronika/ak47grenade.mdl"
 #define veronika_ak_p_mdl "models/shmod/veronika/p_9mmar.mdl"
@@ -67,6 +66,9 @@ public plugin_init()
 	register_cvar("veronika_m203dmg","75")  //dmg
 	register_cvar("veronika_grenades","5")  //cool down period b4 gets another one
 	
+
+	register_entity_as_wall_touchable("m203_nade","veronika_gren_touch")
+	register_custom_touchable("m203_nade","veronika_gren_touch",player_vector,1)
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Resident Evil", "AK Grenade Launcher Right Mouse Button.", false, "veronika_level" )
@@ -289,83 +291,78 @@ public m203_reload(parm[])
 	g_m203_loaded[parm[0]] = 1
 }
 
-public vexd_pfntouch(pToucher, pTouched)
+public veronika_gren_touch(pToucher, pTouched)
 {
 	
 	if (pToucher <= 0) return
 	if (!is_valid_ent(pToucher)) return
+
+	new damradius = get_cvar_num("veronika_m203rad")//200
+	new maxdamage = get_cvar_num("veronika_m203dmg")//70
 	
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
-	if(equal(szClassName, "m203_nade"))
+	new tkill = 0
+	new Float:fl_vExplodeAt[3]
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+	new oid = entity_get_edict(pToucher, EV_ENT_owner)
+	new origin[3],dist,i,Float:dRatio,damage
+	
+	for ( i = 0; i < 32; i++)
 	{
-		new damradius = get_cvar_num("veronika_m203rad")//200
-		new maxdamage = get_cvar_num("veronika_m203dmg")//70
-		
-		new tkill = 0
-		new Float:fl_vExplodeAt[3]
-		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		new origin[3],dist,i,Float:dRatio,damage
-		
-		for ( i = 0; i < 32; i++)
+		if((is_user_alive(i)))
 		{
-			if((is_user_alive(i)))
+			get_user_origin(i,origin)
+			dist = get_distance(origin,vExplodeAt)
+			if (dist <= damradius)
 			{
-				get_user_origin(i,origin)
-				dist = get_distance(origin,vExplodeAt)
-				if (dist <= damradius)
+				dRatio = floatdiv(float(dist),float(damradius))
+				damage = maxdamage - floatround(floatmul(float(maxdamage),dRatio))
+				
+				set_velocity_from_origin(i, fl_vExplodeAt, get_cvar_float("veronika_m203conc")*damage) // ThantiK's he-conc function - tried getting it to recognize m203 nades but failed so imported function
+				
+				if(i == oid){
+					do_victim(i,oid,damage,0)
+				}
+				if(cvar_exists("mp_friendlyfire"))
 				{
-					dRatio = floatdiv(float(dist),float(damradius))
-					damage = maxdamage - floatround(floatmul(float(maxdamage),dRatio))
-					
-					set_velocity_from_origin(i, fl_vExplodeAt, get_cvar_float("veronika_m203conc")*damage) // ThantiK's he-conc function - tried getting it to recognize m203 nades but failed so imported function
-					
-					if(i == oid){
-						do_victim(i,oid,damage,0)
-					}
-					if(cvar_exists("mp_friendlyfire"))
+					if( get_cvar_num("mp_friendlyfire"))
 					{
-						if( get_cvar_num("mp_friendlyfire"))
-						{
-							if(get_user_team(i) == get_user_team(oid)){
-								tkill = 1
-							}
-							do_victim(i,oid,damage,tkill)
+						if(get_user_team(i) == get_user_team(oid)){
+							tkill = 1
 						}
-						else
+						do_victim(i,oid,damage,tkill)
+					}
+					else
+					{
+						if(get_user_team(i) != get_user_team(oid))
 						{
-							if(get_user_team(i) != get_user_team(oid))
-							{
-								do_victim(i,oid,damage,0)
-							}
+							do_victim(i,oid,damage,0)
 						}
 					}
-					else if(i != oid){
-						do_victim(i,oid,damage,0)
-					}
+				}
+				else if(i != oid){
+					do_victim(i,oid,damage,0)
 				}
 			}
 		}
-		
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(17)
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2] + 60)
-		write_short(xplode)
-		write_byte(20)
-		write_byte(200)
-		message_end()
-		
-		emit_sound(pToucher, CHAN_WEAPON, "shmod/a_exm2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		
-		remove_entity(pToucher)
 	}
+	
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(17)
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2] + 60)
+	write_short(xplode)
+	write_byte(20)
+	write_byte(200)
+	message_end()
+	
+	emit_sound(pToucher, CHAN_WEAPON, "shmod/a_exm2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	
+	remove_entity(pToucher)
 }
 
 do_victim(victim,attacker,damage,tk)

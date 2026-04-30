@@ -13,8 +13,11 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 
 */
 
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+
 #include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIBLES
 new gHeroID
@@ -27,8 +30,6 @@ new g_powerID[SH_MAXSLOTS+1]
 new g_msgBarTime
 new g_spriteSmoke, g_spriteTrail, g_spriteExplosion
 
-static const g_burnDecal[3] = {28, 29, 30}
-static const g_burnDecalBig[3] = {46, 47, 48}
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -45,6 +46,10 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Torpedo", "Hold Keydown to charge, Release to fire your torpedo.", true, "lancer_level")
+
+
+	register_entity_as_wall_touchable("lancer_lancerz","torpedo_touch")
+	register_custom_touchable("lancer_lancerz","torpedo_touch",player_vector,1)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
@@ -310,7 +315,7 @@ public guide_lancerz(args[])
 	if ( !is_valid_ent(entID) ) return
 
 	if ( !is_user_connected(id) ) {
-		vexd_pfntouch(entID, 0)
+		torpedo_touch(entID,0)
 		return
 	}
 	new Float:fl_Origin[3], AimVec[3]
@@ -359,139 +364,125 @@ public guide_lancerz(args[])
 	args[4] = iNewVelocity[1]
 	args[5] = iNewVelocity[2]
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
 
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public torpedo_touch(pToucher, pTouched) {
 
 	if (pToucher <= 0) return
 	if (!is_valid_ent(pToucher)) return
 
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	new dmgRadius = get_cvar_num("lancer_radius")
+	new maxDamage = get_cvar_num("lancer_damage")
+	new Float:fl_vExplodeAt[3]
 
-	if (equal(szClassName, "lancer_lancerz")) {
-		new id = entity_get_edict(pToucher, EV_ENT_owner)
-		new dmgRadius = get_cvar_num("lancer_radius")
-		new maxDamage = get_cvar_num("lancer_damage")
-		new Float:fl_vExplodeAt[3]
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
 
-		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 
 
-		// Cause the Damage
-		new vicOrigin[3], Float:dRatio,  distance, damage
-		new players[SH_MAXSLOTS], pnum, vic
+	// Cause the Damage
+	new vicOrigin[3], Float:dRatio,  distance, damage
+	new players[SH_MAXSLOTS], pnum, vic
 
-		get_players(players, pnum, "a")
+	get_players(players, pnum, "a")
 
-		for (new i = 0; i < pnum; i++) {
-			vic = players[i]
-			if( !is_user_alive(vic) ) continue
-			if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
+	for (new i = 0; i < pnum; i++) {
+		vic = players[i]
+		if( !is_user_alive(vic) ) continue
+		if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
 
-			get_user_origin(vic, vicOrigin)
-			distance = get_distance(vicOrigin, vExplodeAt)
+		get_user_origin(vic, vicOrigin)
+		distance = get_distance(vicOrigin, vExplodeAt)
 
-			if ( distance < dmgRadius ) {
+		if ( distance < dmgRadius ) {
 
-				dRatio = floatdiv(float(distance), float(dmgRadius))
-				damage = maxDamage - floatround(maxDamage * dRatio)
+			dRatio = floatdiv(float(distance), float(dmgRadius))
+			damage = maxDamage - floatround(maxDamage * dRatio)
 
-				// Lessen damage taken by self by half
-				if( vic == id ) damage = floatround(damage / 2.0)
+			// Lessen damage taken by self by half
+			if( vic == id ) damage = floatround(damage / 2.0)
 
-				// Need hurt sound and small screen shake
-				sh_extra_damage(vic, id, damage, "lancerz")
+			// Need hurt sound and small screen shake
+			sh_extra_damage(vic, id, damage, "lancerz")
 
-				// Make them feel it
-				new Float:fl_vicVelocity[3]
-				fl_vicVelocity[0] = ((vicOrigin[0] - vExplodeAt[0]) / distance) * 300.0
-				fl_vicVelocity[1] = ((vicOrigin[1] - vExplodeAt[1]) / distance) * 300.0
-				fl_vicVelocity[1] = 150.0
+			// Make them feel it
+			new Float:fl_vicVelocity[3]
+			fl_vicVelocity[0] = ((vicOrigin[0] - vExplodeAt[0]) / distance) * 300.0
+			fl_vicVelocity[1] = ((vicOrigin[1] - vExplodeAt[1]) / distance) * 300.0
+			fl_vicVelocity[1] = 150.0
 
-				entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
-				sh_screenShake(vic, 12, 12, 12)
-			}
+			entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
+			sh_screenShake(vic, 12, 12, 12)
+		}
+	}
+
+
+	// Make some Effects
+	new blastSize = floatround(dmgRadius / 12.0)
+
+	// Explosion Sprite
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(23)			//TE_GLOWSPRITE
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2] + 60)
+	write_short(g_spriteExplosion)	// model
+	write_byte(01)			// life 0.x sec
+	write_byte(blastSize)	// size
+	write_byte(255)		// brightness
+	message_end()
+
+	// Explosion (smoke, sound/effects)
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(3)			//TE_EXPLOSION
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(g_spriteSmoke)		// model
+	write_byte(blastSize+5)	// scale in 0.1's
+	write_byte(22)			// framerate
+	write_byte(10)			// flags
+	message_end()
+
+	// Create Burn Decals, if they are used
+	if (get_cvar_num("lancer_blast_decals") == 1) {
+		// Change burn decal according to blast size
+		new decal_id
+		if (blastSize <= 18) {
+			//radius ~< 216
+			decal_id = g_burnDecal[generate_int(0,2)]
+		}
+		else {
+			decal_id = g_burnDecalBig[generate_int(0,2)]
 		}
 
-
-		// Make some Effects
-		new blastSize = floatround(dmgRadius / 12.0)
-
-		// Explosion Sprite
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(23)			//TE_GLOWSPRITE
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2] + 60)
-		write_short(g_spriteExplosion)	// model
-		write_byte(01)			// life 0.x sec
-		write_byte(blastSize)	// size
-		write_byte(255)		// brightness
-		message_end()
-
-		// Explosion (smoke, sound/effects)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(3)			//TE_EXPLOSION
+		write_byte(109)		//TE_GUNSHOTDECAL
 		write_coord(vExplodeAt[0])
 		write_coord(vExplodeAt[1])
 		write_coord(vExplodeAt[2])
-		write_short(g_spriteSmoke)		// model
-		write_byte(blastSize+5)	// scale in 0.1's
-		write_byte(22)			// framerate
-		write_byte(10)			// flags
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
 		message_end()
-
-		// Create Burn Decals, if they are used
-		if (get_cvar_num("lancer_blast_decals") == 1) {
-			// Change burn decal according to blast size
-			new decal_id
-			if (blastSize <= 18) {
-				//radius ~< 216
-				decal_id = g_burnDecal[generate_int(0,2)]
-			}
-			else {
-				decal_id = g_burnDecalBig[generate_int(0,2)]
-			}
-
-			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-			write_byte(109)		//TE_GUNSHOTDECAL
-			write_coord(vExplodeAt[0])
-			write_coord(vExplodeAt[1])
-			write_coord(vExplodeAt[2])
-			write_short(0)			//?
-			write_byte(decal_id)	//decal
-			message_end()
-		}
-
-		// Stop the sounds
-		new sndStop=(1<<5)
-		emit_sound(pToucher, CHAN_STATIC, "shmod/lancersound3.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
-		emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
-		emit_sound(id, CHAN_STATIC, "shmod/lancersound4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-		remove_entity(pToucher)
-
-		if ( get_cvar_float("lancer_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("lancer_cooldown"))
-
-		// Reset the Varible
-		g_powerID[id] = 0
-		g_usingPower[id] = false
-
 	}
+
+	// Stop the sounds
+	new sndStop=(1<<5)
+	emit_sound(pToucher, CHAN_STATIC, "shmod/lancersound3.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
+	emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
+	emit_sound(id, CHAN_STATIC, "shmod/lancersound4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+	remove_entity(pToucher)
+
+	if ( get_cvar_float("lancer_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("lancer_cooldown"))
+
+	// Reset the Varible
+	g_powerID[id] = 0
+	g_usingPower[id] = false
+
 }
 //----------------------------------------------------------------------------------------------
 public remove_power(id, powerID)

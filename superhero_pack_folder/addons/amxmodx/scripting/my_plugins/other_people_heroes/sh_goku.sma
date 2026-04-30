@@ -53,14 +53,12 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
-#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIBLES
 new g_heroName[]="Goku"
@@ -106,6 +104,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
+	register_entity_as_wall_touchable("vexd_goku_power","goku_power_touch")
+	register_custom_touchable("vexd_goku_power","goku_power_touch",player_vector,1)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("goku_init", "goku_init")
@@ -122,6 +122,7 @@ public plugin_init()
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "curweapon", "be", "1=1")
+
 
 	goku_hud_sync=CreateHudSyncObj()
 	// LOOP
@@ -470,7 +471,7 @@ public guide_kamehameha(args[])
 	if ( !is_valid_ent(ent) ) return
 
 	if ( !is_user_connected(id) ) {
-		vexd_pfntouch(ent, 0)
+		goku_power_touch(ent,0)
 		return
 	}
 
@@ -524,156 +525,141 @@ public guide_kamehameha(args[])
 
 	set_task(0.1, "guide_kamehameha", ent, args, 6)
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public vexd_pfntouch(pToucher, pTouched) {
-	entity_touch(pToucher, pTouched)
-}
-
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public goku_power_touch(pToucher, pTouched) {
 
 	if (pToucher <= 0) return
 	if (!is_valid_ent(pToucher)) return
 
-	new szClassName[32]
-	entity_get_string(pToucher, EV_SZ_classname, szClassName, 31)
+	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	new dmgRadius = g_maxRadius[id]
+	new maxDamage = g_maxDamage[id]
+	new Float:fl_vExplodeAt[3], damageName[16]
+	new spriteExp = g_spriteExplosionY
 
-	if(equal(szClassName, "vexd_goku_power")) {
-		new id = entity_get_edict(pToucher, EV_ENT_owner)
-		new dmgRadius = g_maxRadius[id]
-		new maxDamage = g_maxDamage[id]
-		new Float:fl_vExplodeAt[3], damageName[16]
-		new spriteExp = g_spriteExplosionY
-
-		switch(g_powerNum[id]){
-			case 1:{
-				damageName = "Ki Blast"
-			}
-			case 2:{
-				damageName = "Kamehameha"
-				spriteExp = g_spriteExplosionB
-			}
-			case 3:{
-				damageName = "10x Kamehameha"
-				spriteExp = g_spriteExplosionR
-			}
-			case 4:{
-				damageName = "Spirit Bomb"
-			}
+	switch(g_powerNum[id]){
+		case 1:{
+			damageName = "Ki Blast"
 		}
-
-		entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-
-		new vExplodeAt[3]
-		vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-		vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-		vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-
-
-		// Cause the Damage
-		new vicOrigin[3], Float:dRatio,  distance, damage
-		new players[SH_MAXSLOTS], pnum, vic
-
-		get_players(players, pnum, "a")
-
-		for (new i = 0; i < pnum; i++) {
-			vic = players[i]
-			if( !is_user_alive(vic) ) continue
-			if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
-
-			get_user_origin(vic, vicOrigin)
-			distance = get_distance(vExplodeAt, vicOrigin)
-
-			if ( distance < dmgRadius ) {
-
-				dRatio = floatdiv(float(distance), float(dmgRadius))
-				damage = maxDamage - floatround(maxDamage * dRatio)
-
-				// Lessen damage taken by self by half
-				if ( vic == id ){
-					damage = floatround(damage / 2.0)
-				}
-				sh_extra_damage(vic, id, damage, damageName)
-				if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
-
-						new Float:vic_origin_f[3]
-						IVecFVec(vicOrigin,vic_origin_f)
-						gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
-				}
-
-				// Make them feel it
-				sh_screenShake(vic, 10, 10, 10)
-				emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-				new Float:fl_Time = distance / 125.0
-				new Float:fl_vicVelocity[3]
-				fl_vicVelocity[0] = (vicOrigin[0] - vExplodeAt[0]) / fl_Time
-				fl_vicVelocity[1] = (vicOrigin[1] - vExplodeAt[1]) / fl_Time
-				fl_vicVelocity[2] = (vicOrigin[2] - vExplodeAt[2]) / fl_Time
-				entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
-			}
+		case 2:{
+			damageName = "Kamehameha"
+			spriteExp = g_spriteExplosionB
 		}
-
-		// Make some Effects
-		new blastSize = floatround(dmgRadius / 12.0)
-
-		// Explosion Sprite
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(23)			//TE_GLOWSPRITE
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2])
-		write_short(spriteExp)	// model
-		write_byte(01)			// life 0.x sec
-		write_byte(blastSize)	// size
-		write_byte(255)		// brightness
-		message_end()
-
-		// Explosion (smoke, sound/effects)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(3)			//TE_EXPLOSION
-		write_coord(vExplodeAt[0])
-		write_coord(vExplodeAt[1])
-		write_coord(vExplodeAt[2])
-		write_short(g_spriteSmoke)		// model
-		write_byte(blastSize+5)	// scale in 0.1's
-		write_byte(20)			// framerate
-		write_byte(10)			// flags
-		message_end()
-
-		// Create Burn Decals, if they are used
-		if ( get_cvar_num("goku_blast_decals") == 1 ) {
-			// Change burn decal according to blast size
-			new decal_id
-			if ( blastSize <= 18 ) {
-				//radius ~< 216
-				decal_id = g_burnDecal[generate_int(0,2)]
-			}
-			else {
-				decal_id = g_burnDecalBig[generate_int(0,2)]
-			}
-
-			// Create the burn decal
-			message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-			write_byte(109)		//TE_GUNSHOTDECAL
-			write_coord(vExplodeAt[0])
-			write_coord(vExplodeAt[1])
-			write_coord(vExplodeAt[2])
-			write_short(0)			//?
-			write_byte(decal_id)	//decal
-			message_end()
+		case 3:{
+			damageName = "10x Kamehameha"
+			spriteExp = g_spriteExplosionR
 		}
-
-		remove_entity(pToucher)
-
-		// Reset the Varibles
-		g_powerNum[id] = 0
-		g_powerID[id] = 0
+		case 4:{
+			damageName = "Spirit Bomb"
+		}
 	}
+
+	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
+
+	new vExplodeAt[3]
+	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
+	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
+	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
+
+
+	// Cause the Damage
+	new vicOrigin[3], Float:dRatio,  distance, damage
+	new players[SH_MAXSLOTS], pnum, vic
+
+	get_players(players, pnum, "a")
+
+	for (new i = 0; i < pnum; i++) {
+		vic = players[i]
+		if( !is_user_alive(vic) ) continue
+		if ( get_user_team(id) == get_user_team(vic) && !get_cvar_num("mp_friendlyfire") && id != vic ) continue
+
+		get_user_origin(vic, vicOrigin)
+		distance = get_distance(vExplodeAt, vicOrigin)
+
+		if ( distance < dmgRadius ) {
+
+			dRatio = floatdiv(float(distance), float(dmgRadius))
+			damage = maxDamage - floatround(maxDamage * dRatio)
+
+			// Lessen damage taken by self by half
+			if ( vic == id ){
+				damage = floatround(damage / 2.0)
+			}
+			sh_extra_damage(vic, id, damage, damageName)
+			if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
+
+					new Float:vic_origin_f[3]
+					IVecFVec(vicOrigin,vic_origin_f)
+					gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
+			}
+
+			// Make them feel it
+			sh_screenShake(vic, 10, 10, 10)
+			emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+			new Float:fl_Time = distance / 125.0
+			new Float:fl_vicVelocity[3]
+			fl_vicVelocity[0] = (vicOrigin[0] - vExplodeAt[0]) / fl_Time
+			fl_vicVelocity[1] = (vicOrigin[1] - vExplodeAt[1]) / fl_Time
+			fl_vicVelocity[2] = (vicOrigin[2] - vExplodeAt[2]) / fl_Time
+			entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
+		}
+	}
+
+	// Make some Effects
+	new blastSize = floatround(dmgRadius / 12.0)
+
+	// Explosion Sprite
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(23)			//TE_GLOWSPRITE
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(spriteExp)	// model
+	write_byte(01)			// life 0.x sec
+	write_byte(blastSize)	// size
+	write_byte(255)		// brightness
+	message_end()
+
+	// Explosion (smoke, sound/effects)
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(3)			//TE_EXPLOSION
+	write_coord(vExplodeAt[0])
+	write_coord(vExplodeAt[1])
+	write_coord(vExplodeAt[2])
+	write_short(g_spriteSmoke)		// model
+	write_byte(blastSize+5)	// scale in 0.1's
+	write_byte(20)			// framerate
+	write_byte(10)			// flags
+	message_end()
+
+	// Create Burn Decals, if they are used
+	if ( get_cvar_num("goku_blast_decals") == 1 ) {
+		// Change burn decal according to blast size
+		new decal_id
+		if ( blastSize <= 18 ) {
+			//radius ~< 216
+			decal_id = g_burnDecal[generate_int(0,2)]
+		}
+		else {
+			decal_id = g_burnDecalBig[generate_int(0,2)]
+		}
+
+		// Create the burn decal
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(109)		//TE_GUNSHOTDECAL
+		write_coord(vExplodeAt[0])
+		write_coord(vExplodeAt[1])
+		write_coord(vExplodeAt[2])
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
+		message_end()
+	}
+
+	remove_entity(pToucher)
+
+	// Reset the Varibles
+	g_powerNum[id] = 0
+	g_powerID[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 public remove_power(id, powerID)

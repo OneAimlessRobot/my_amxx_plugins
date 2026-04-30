@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
@@ -43,7 +42,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "sapper_kd")
 	register_srvcmd("sapper_ku", "sapper_ku")
 	shRegKeyUp(gHeroName, "sapper_ku")
-	init_hud_syncs()
 }
 
 public plugin_natives(){

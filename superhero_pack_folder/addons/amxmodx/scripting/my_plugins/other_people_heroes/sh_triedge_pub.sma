@@ -34,8 +34,11 @@ Version History:
 */
 //----------------------------------------------------------------------------------------------
 
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+
 #include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Tri-Edge"
@@ -67,6 +70,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Tri-Strike", "Perform a combo on your enemies", true, "triedge_level")
 	
+	register_custom_touchable("player","tri_edge_beat_down",player_vector,1)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("triedge_init", "triedge_init")
@@ -92,7 +96,6 @@ public plugin_precache()
 {
     engfunc(EngFunc_PrecacheSound,"player/headshot3.wav")
     engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod1.wav")
-    engfunc(EngFunc_PrecacheSound,"shmod/redblood.wav")
     g_spriteLine = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
@@ -276,14 +279,8 @@ public triedge_hookOff(id)
 
     remove_task(id)
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public entity_touch(entity1, entity2) {
-    new pToucher = entity1
-    new pTouched = entity2
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+
+public tri_edge_beat_down(pToucher, pTouched) {
 
 	if ( !is_user_alive(pToucher) || !is_user_alive(pTouched) ) return
 	
@@ -404,8 +401,6 @@ public Infinity_Finisher(parm[])
     get_user_origin(id, Origin)
     get_user_origin(vic, vicOrigin)
 
-    emit_sound(vic, CHAN_BODY, "shmod/redblood.wav", 1.0, ATTN_NORM, 0, PITCH_LOW)
-    emit_sound(id, CHAN_BODY, "shmod/redblood.wav", 1.0, ATTN_NORM, 0, PITCH_LOW)
     infinity_spray(vic, id)
     if ( !get_user_godmode(vic) ) blood_spray(vic, vicOrigin)
 

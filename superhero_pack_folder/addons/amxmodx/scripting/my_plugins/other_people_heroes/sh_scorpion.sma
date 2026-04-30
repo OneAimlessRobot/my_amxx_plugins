@@ -1,73 +1,9 @@
-// SCORPION! - from the Mortal Kombat series, known for his spear move and saying "Get Over Here" 
 
-//----------------------------------------------------------------------------------------------
-// Scorpion - This is about a 80% code change from the original one
-// + alot of extra added code to make this workable lol.
-//
-// Rewritten by DuPeR aka yang
-//
-// Big THANKS TO VITTU FOR MAKING THE UPPERCUT TO WORK/OPTIMIZING USELESS CODES, BIG FUCKING SEXY THANKS :D
-// Also BIG thanx to the makers of super hero Batgirl for the cheapreel code and basic script core (sharky/JTP10181)
-// This was originally done by Revengist but his apperantly didn't work. Which is why I remade it.
-//
-//----------------------------------------------------------------------------------------------
-
-/* CVARS - copy and paste to shconfig.cfg
-
-//Scorpion
-scorpion_level 9
-scorpion_maxhooks 30		//Max ammout of spears/hooks allowed, -1 is an unlimited ammount (Default 30)
-scorpion_reelspeed 1000		//How fast hook line reels speared users in (Default 1000)
-scorpion_dragmates 0		//Drag teammates, 0-no 1-yes
-scorpion_knifefight 0		//Knife only with enemies you speared til death, 0-no 1-yes (Default 0)
-scorpion_mode 1			//0-no xtra mode/dmg, 1-uppercut dmg, 2-line dmg and stun, 3-both 1 and 2 (Default 1)
-//If scorpion_mode 1 or 3, this gets used:
-scorpion_uppercutdmg 20		//Amount of Damage for uppercut performed when speared user is touched (Default 20)
-//If scorpion_mode 2 or 3, these get used:
-scorpion_speardmg 20		//Amount of Damage done when user is speared (Default 20)
-scorpion_stuntime 2			//Seconds of stun when user is speared (Default 2)
-
-*/
-
-//----------------------------------------------------------------------------------------------
-/*
-
-Version History:
-
-2.0    - PSX2 Version of Scorpion born.
-
-2.01   - Fixed Emp's hold down button bug.
-
-2.1    - Added allow drag teammates. 
-				 Minor bug fix/optimization.
-
-2.15   - Fixed code to reflect standards of sh making.
-				 Added correct credits on top of script.
-				 Added small distortion to line.
-				 Cleaned up small codes.
-
-2.2   - vittu - 12/9/2005
-				Code cleaned up and reworked
-				Fixed blood splash look and added second one for spear damage
-				Changed so speared user is let go if touched
-				Changed so both damage modes can be used
-				Added amx support
-				Added Knife Fight mode, forced knife fights til user/s in fight die
-				Added sounds for uppercut and spear hit
-
-2.3   - vittu - 5/31/2006
-				Fixed small issue where pToucher should have been pTouched, however
-					recoded that part anyway to a simpler form.
-				Also fixed misnamed cvar so spear damage works now, not sure why
-					no one noticed.
-2.4   - vittu - 7/6/2007
-				Fixed uppercut from being called on non-alive/non-connected players.
-				Will fully convert to amxmodx on next update.
-*/
-//----------------------------------------------------------------------------------------------
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Scorpion"
@@ -98,6 +34,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
 
+	register_custom_touchable("player","scorpion_shank",player_vector,1)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("scorpion_init", "scorpion_init")
@@ -303,14 +240,7 @@ public scorpion_hookOff(id)
 
 	remove_task(id)
 }
-//----------------------------------------------------------------------------------------------
-#if defined AMX_NEW
-public entity_touch(entity1, entity2) {
-	new pToucher = entity1
-	new pTouched = entity2
-#else
-public vexd_pfntouch(pToucher, pTouched) {
-#endif
+public scorpion_shank(pToucher, pTouched) {
 
 	if ( !is_user_alive(pToucher) || !is_user_alive(pTouched) ) return
 

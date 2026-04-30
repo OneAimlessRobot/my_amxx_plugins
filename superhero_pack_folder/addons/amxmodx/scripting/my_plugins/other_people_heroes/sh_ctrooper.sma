@@ -24,9 +24,7 @@
  //Version 2.6 - Fixed teh Laser Tracer So now Teh Laser Is Where Ya Shoot Removed Xtra Speed And Gravity And made a CZ Version
  //Version 2.7 - Fix for SND_STOP compile error
  */
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -78,7 +76,6 @@ new custom_dmg_id_lazah_guun
 	shSetShieldRestrict(gHeroName)
 	shSetMaxHealth(gHeroName, "ctrooper_health")
 	shSetMaxArmor(gHeroName, "ctrooper_armor")
-	init_hud_syncs()
  }
  //----------------------------------------------------------------------------------------------
  public CTrooper_init()
@@ -108,7 +105,7 @@ new custom_dmg_id_lazah_guun
  //----------------------------------------------------------------------------------------------
  public make_tracer(id)
  {
-	if(!client_hittable(id)) return PLUGIN_CONTINUE
+	if(!is_user_alive(id)) return PLUGIN_CONTINUE
 	if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 	new clip, ammo
 	new wpnid = get_user_weapon(id, clip, ammo)

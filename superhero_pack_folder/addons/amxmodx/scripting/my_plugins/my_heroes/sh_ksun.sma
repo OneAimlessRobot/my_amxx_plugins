@@ -1,7 +1,5 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
-
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
@@ -81,7 +79,6 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "ksun_kd")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
 	register_forward(FM_PlayerPreThink, "ksun_prethink")
-	init_hud_syncs()
 }
 public plugin_natives(){
 	
