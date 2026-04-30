@@ -10,7 +10,7 @@ solid_rations 5				// How many rations do you have? (-1 to unlimited)
 solid_ration_health 50		// How many health you have per ration?
 
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -96,7 +96,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/ration.wav")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/socom_v.mdl")
 	engfunc(EngFunc_PrecacheModel,"models/shmod/socom_p.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/player/solid/solid.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public solid_levels()

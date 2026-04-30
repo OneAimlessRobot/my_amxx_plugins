@@ -545,7 +545,7 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return
 
-	if(client_hittable(pTouched))
+	if(is_user_alive(pTouched))
 	{	
 		new id = entity_get_edict(pToucher, EV_ENT_owner);
 		//retrieve current pill fx num

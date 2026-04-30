@@ -60,7 +60,7 @@ public ball_touch_player(Ball, Player ) {
 	if(!is_valid_ent(Ball)) return
 
 	new oid = entity_get_edict(Ball, EV_ENT_owner)
-	if(client_hittable(Player))
+	if(is_user_alive(Player))
 	{		
 		new Float:origin[3]
 		entity_get_vector(Ball,EV_VEC_origin,origin)

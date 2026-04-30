@@ -16,8 +16,6 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 (#define I_WANT_MISC_FUNCS) -> enables misc stocks
 
 */
-#include "../my_include/superheromod.inc"
-
 #if defined I_WANT_FAKEMETA_UTIL
 #include <fakemeta_util>
 #endif

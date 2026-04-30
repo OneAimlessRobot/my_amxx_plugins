@@ -152,13 +152,13 @@ public noob_damage(id)
 			// diff. team;    $attacker_id gets credited for the kill and $250 and XP.
 			//        $id gets their suicidal -1 frag back.
 			set_user_frags(attacker_id, get_user_frags(attacker_id)+1)
-			set_user_money(attacker_id, get_user_money(attacker_id)+150)
+			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)+150)
 			shAddXP(attacker_id, id, 1.0)
 		}
 		else {
 			// same team;    $attacker loses a frag and $500 and XP.
 			set_user_frags(attacker_id, get_user_frags(attacker_id)-1)
-			set_user_money(attacker_id, get_user_money(attacker_id)-500, 0)
+			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)-500, 0)
 			shAddXP(attacker_id, id, -1.0)
 		}
 		return PLUGIN_CONTINUE

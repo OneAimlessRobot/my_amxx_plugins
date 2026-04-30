@@ -368,14 +368,14 @@ public fire_missile(id)
 	if(get_cvar_num("bazooka_buy") == 1) {
 		new cvarname[32]
 		formatex(cvarname,31,"bazooka_cost%d",icmd)
-		new umoney = get_user_money(id)
+		new umoney = cs_get_user_money(id)
 		new m_cost = get_cvar_num(cvarname)
 		if(umoney < m_cost){
 			client_print(id,print_chat,"[SH](Bazooka) Insufficient funds. Each of these missiles costs %d money",m_cost)
 			return PLUGIN_HANDLED
 		}
 		else {
-			set_user_money(id,umoney-m_cost,1)
+			cs_set_user_money(id,umoney-m_cost,1)
 		}
 	}
 	else {
@@ -565,9 +565,9 @@ make_rocket(id,icmd,iarg1,antimissile)
 			client_print(id,print_chat,"[SH](Bazooka) Cannot fire Heat-Seeking Missile, no running JetPacks in view.")
 
 			if(get_cvar_num("bazooka_buy") == 1){
-				new umoney = get_user_money(id)
+				new umoney = cs_get_user_money(id)
 				new m_cost = get_cvar_num("bazooka_cost5")
-				set_user_money(id,umoney+m_cost,1)
+				cs_set_user_money(id,umoney+m_cost,1)
 			}
 			else {
 				missile_inv[id][5] += 1
@@ -608,9 +608,9 @@ make_rocket(id,icmd,iarg1,antimissile)
 			client_print(id,print_chat,"[SH](Bazooka) Cannot fire Rope-Seeking Missile, no Ropes in view.")
 
 			if(get_cvar_num("bazooka_buy") == 1){
-				new umoney = get_user_money(id)
+				new umoney = cs_get_user_money(id)
 				new m_cost = get_cvar_num("bazooka_cost6")
-				set_user_money(id,umoney+m_cost,1)
+				cs_set_user_money(id,umoney+m_cost,1)
 			}
 			else {
 				missile_inv[id][6] += 1
@@ -1331,7 +1331,7 @@ public action_main_menu(id,key){
 		if(get_cvar_num("bazooka_buy")){
 			new costcvar[32]
 			formatex(costcvar,31,"bazooka_cost%d",key)
-			if(get_user_money(id) < get_cvar_num(costcvar))
+			if(cs_get_user_money(id) < get_cvar_num(costcvar))
  	 			show_main_menu(id)
 		}
 		else {

@@ -1,7 +1,7 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "freeze_fx/freeze_fx.inc"
@@ -47,7 +47,7 @@ public girlb_skating(id, uc_handle, seed)
 	if(sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(id,girlb_get_hero_id())||!client_hittable(id)){
+	if(!sh_user_has_hero(id,girlb_get_hero_id())||!is_user_alive(id)){
 		return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)){
@@ -127,7 +127,7 @@ public girlb_skating(id, uc_handle, seed)
 //----------------------------------------------------------------------------------------------
 public ice_glob_new_round(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
+	if(sh_is_active()&&is_user_alive(id)){
 		g_player_old_friction[id] = entity_get_float(id,EV_FL_friction);
 		
 		if(sh_user_has_hero(id,girlb_get_hero_id())){
@@ -266,7 +266,7 @@ public FwdTouch( Glob, World ) {
 	for( new i= 0;(i< numfound);i++){
 
 		new pid = entlist[i];
-		if( !client_hittable(pid) ) continue
+		if( !is_user_alive(pid) ) continue
 		
 		if(pid==owner_edict) continue
 

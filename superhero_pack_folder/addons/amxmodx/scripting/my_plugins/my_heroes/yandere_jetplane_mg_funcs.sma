@@ -1,4 +1,6 @@
-
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
@@ -173,7 +175,7 @@ public CmdStart(id, uc_handle)
 
 		return FMRES_IGNORED
 	}
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED
 	}
@@ -356,7 +358,7 @@ public shell_hit_player(pToucher, pTouched){
 
 	if(!is_valid_ent(pToucher)) return
 
-	if(client_hittable(pTouched))
+	if(is_user_alive(pTouched))
 	{
 		
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
@@ -433,7 +435,7 @@ public shell_hit_jet(pToucher, pTouched)
 
 	new jet_owner=entity_get_edict(pTouched,EV_ENT_owner)
 
-	if(client_hittable(jet_owner)){
+	if(is_user_alive(jet_owner)){
 		new CsTeams:att_team=cs_get_user_team(the_owner),
 			CsTeams:vic_team=cs_get_user_team(jet_owner);
 		if(att_team!=vic_team){

@@ -346,7 +346,7 @@ public shinobu_kd()
 public shinobu_prethink(id)
 {
 	if ( sh_is_active()){
-		if(client_hittable(id)){
+		if(is_user_alive(id)){
 			if(sh_user_has_hero(id,gHeroID) ){
 				static weapon;
 				weapon=cs_get_user_weapon(id)

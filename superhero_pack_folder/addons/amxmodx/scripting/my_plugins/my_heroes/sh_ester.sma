@@ -2,7 +2,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -12,7 +11,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -148,7 +146,7 @@ ester_collapse(id){
 public Hook_BloodColor(id)
 {
 	if ( sh_is_active()){
-		if(client_hittable(id)){
+		if(is_user_alive(id)){
 			if(sh_user_has_hero(id,gHeroID) ){
 				SetHamReturnInteger(BLOOD_COLOR_YELLOW)
 				return HAM_SUPERCEDE;
@@ -162,7 +160,7 @@ public Hook_BloodColor(id)
 public ester_prethink(id)
 {
 	if ( sh_is_active()){
-		if(client_hittable(id)){
+		if(is_user_alive(id)){
 			if(sh_user_has_hero(id,gHeroID) ){
 				if(get_user_weapon(id)==CSW_TMP) {
 					set_pev(id, pev_flTimeStepSound, 999)
@@ -211,7 +209,7 @@ stock stop_sounds(id){
 	}
 }
 stock ester_weapons(id){
-	if(!sh_is_active()||!client_hittable(id)){
+	if(!sh_is_active()||!is_user_alive(id)){
 		
 		return
 		
@@ -244,13 +242,13 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&client_hittable(id)&&sh_user_has_hero(id,gHeroID) ){
+	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
 		new CsTeams:ester_user_team=cs_get_user_team(id);
 		for(new i=0;i<player_count;i++){
-			if(client_hittable(players[i])){
+			if(is_user_alive(players[i])){
 				count+=((Get_BitVar(g_ester_enemies_masks[id],players[i]))&&(players[i]!=id)&&(players[i])&&(cs_get_user_team(players[i])!=ester_user_team))?1:0;
 			}
 		}
@@ -267,7 +265,7 @@ stock count_enemies(id){
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||!sh_is_active()){
+	if ( !is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -309,7 +307,7 @@ public show_targets(id){
 	get_user_name(id,client_name,127)
 	client_print(id,print_console,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
 	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(Get_BitVar(g_ester_enemies_masks[id],i)&&client_hittable(i)){
+		if(Get_BitVar(g_ester_enemies_masks[id],i)&&is_user_alive(i)){
 			get_user_name(i,client_name,127)
 			client_print(id,print_chat,"%s.^n",client_name);
 		}
@@ -495,12 +493,12 @@ public sh_client_spawn(id)
 }
 public ester_damage(id)
 {
-	if ( !sh_is_active() || !client_hittable(id)) return
+	if ( !sh_is_active() || !is_user_alive(id)) return
 	
 	new damage= read_data(2)
 	new hitpoint, weapon
 	new attacker = get_user_attacker(id,weapon,hitpoint)
-	if ( !client_hittable(attacker)||attacker == id) return
+	if ( !is_user_alive(attacker)||attacker == id) return
 	new origin[3]
 	get_user_origin(id,origin)
 	new origin2[3]
@@ -560,7 +558,7 @@ public fire_weapon(id)
 public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
 	
-	if(!client_hittable(attacker)||!client_hittable(id)){
+	if(!is_user_alive(attacker)||!is_user_alive(id)){
 		return HAM_IGNORED	
 	}
 	new hitgroup=get_tr2(Ptr,TR_iHitgroup)
@@ -687,7 +685,7 @@ public death()
 	new dead_client_name[128]
 	get_user_name(id,dead_client_name,127)
 	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(!client_hittable(i)){
+		if(!is_user_alive(i)){
 		
 			continue
 		}

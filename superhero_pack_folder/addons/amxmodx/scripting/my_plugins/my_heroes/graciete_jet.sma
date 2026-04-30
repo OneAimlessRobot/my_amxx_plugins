@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
@@ -42,7 +41,13 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
 	register_event("DeathMsg","death","a")
-
+	register_cvar("graciete_jet_velocity", "8")
+	register_cvar("graciete_jet_cooldown", "8")
+	register_cvar("graciete_jet_max_power", "8")
+	register_cvar("graciete_jet_stomp_grav_mult", "8")
+	register_cvar("graciete_land_explosion_radius", "8")
+	
+	
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -114,7 +119,7 @@ public plugin_end(){
 	
 }
 charge_user(id){
-	if(!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) return
+	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
@@ -143,9 +148,8 @@ uncharge_user(id){
 }
 public client_PostThink(id) {
 	
-	if( !client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))) { 
-		return
-	}
+	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return
+
 	if(g_graciete_leaped[id]){
 		new flags = pev(id, pev_flags)
 		if((flags  & FL_INGROUND2)){
@@ -170,7 +174,7 @@ public CmdStart(id, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-	if (!client_hittable(id,sh_user_has_hero(id,graciete_get_hero_id()))){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -217,7 +221,7 @@ public load_jetpack(id){
 }
 public charge_task(id){
 	id-=GRACIETE_CHARGE_TASKID
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return
 	}

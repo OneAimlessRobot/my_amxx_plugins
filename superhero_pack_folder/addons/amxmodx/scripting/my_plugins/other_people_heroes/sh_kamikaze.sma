@@ -52,7 +52,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 	gFuseTime[id] = 0
 }
 //----------------------------------------------------------------------------------------------
@@ -62,12 +62,12 @@ public sh_hero_key(id, heroID, key)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerInCooldown[id] ) {
+	if ( sh_get_cooldown_flag(id) ) {
 		sh_sound_deny(id)
 		return
 	}
 
-	gPlayerInCooldown[id] = true
+	sh_set_cooldown_flag(id)
 	gFuseTime[id] = get_pcvar_num(pCvarFuse)
 }
 //----------------------------------------------------------------------------------------------

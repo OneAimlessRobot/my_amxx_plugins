@@ -1,6 +1,5 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "chaff_grenade_inc/sh_teliko_get_set.inc"
 #include "chaff_grenade_inc/sh_chaff_fx.inc"
@@ -32,7 +31,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public chaff_newRound(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
+	if(sh_is_active()&&is_user_alive(id)){
 		if(gIsChaffed[id]){
 			sh_unchaff_user(id)
 		}
@@ -129,7 +128,7 @@ public _sh_unchaff_user(iPlugin,iParams){
 public chaff_task(array[1],id){
 	id-=CHAFF_TASKID
 	
-	if(!sh_is_active()||!client_hittable(id)){
+	if(!sh_is_active()||!is_user_alive(id)){
 		
 		unchaff_user(id)
 		return
@@ -147,7 +146,7 @@ public chaff_task(array[1],id){
 	
 }
 chaff_user(id){
-	if(!sh_is_active()||!client_hittable(id)) return
+	if(!sh_is_active()||!is_user_alive(id)) return
 	new array[1]
 	array[0] = 0
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)

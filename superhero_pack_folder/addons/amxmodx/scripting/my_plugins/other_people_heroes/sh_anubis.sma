@@ -14,7 +14,8 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 *	- Added ablily to disable the ghostchat like function
 *		for servers that already have ghostchat
 */
-
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"

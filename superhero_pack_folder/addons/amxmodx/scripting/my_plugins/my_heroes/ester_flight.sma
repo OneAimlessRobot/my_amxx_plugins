@@ -1,7 +1,7 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
@@ -147,7 +147,7 @@ public plugin_natives(){
 }
 public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)||(id==attacker)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)||(id==attacker)) return HAM_IGNORED
 
 	if(cs_get_user_team(id)==cs_get_user_team(attacker)){
 	
@@ -180,7 +180,7 @@ inc_user_ester_respawn_attempts(id){
 }
 public Ester_Knockback(id)
 {
-	if ( !sh_is_active() ||!client_hittable(id)|| !g_ester_is_reborn_mode[id]) return HAM_IGNORED
+	if ( !sh_is_active() ||!is_user_alive(id)|| !g_ester_is_reborn_mode[id]) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -231,7 +231,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 }
 public OnCmdStart(id, uc_handle, seed)
 {
-	if(!sh_user_has_hero(id,ester_get_hero_id())||!client_hittable(id)||!g_ester_is_reborn_mode[id]||sh_get_stun(id)){
+	if(!sh_user_has_hero(id,ester_get_hero_id())||!is_user_alive(id)||!g_ester_is_reborn_mode[id]||sh_get_stun(id)){
 			return FMRES_IGNORED;
 	}
 	static buttons,oldbuttons; 
@@ -412,7 +412,7 @@ public godmode_render_update(id){
 	
 	id-=ESTER_REBORN_GLOW_TASKID
 	
-	if(client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())){
+	if(is_user_alive(id)&&sh_user_has_hero(id,ester_get_hero_id())){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
@@ -520,7 +520,7 @@ public BlowUp(param[1],id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 
-	if(!sh_is_freezetime()&&client_hittable(id)&&sh_user_has_hero(id,ester_get_hero_id())&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
+	if(!sh_is_freezetime()&&is_user_alive(id)&&sh_user_has_hero(id,ester_get_hero_id())&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
 		param[0]++
 		explosion(ester_get_hero_id(),id,ester_explosion_radius,ester_explosion_damage,default_explode_knock_force_magnitude,ester_explosion_ignore_user)
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
@@ -534,7 +534,7 @@ public BlowUp(param[1],id)
 public revival(id)
 {
 	ExecuteHamB(Ham_Spawn, id) 
-	if(client_hittable(id)){
+	if(is_user_alive(id)){
 		setScreenFlash(id, 0, 0, 0, 0, 255 )  //Black flash indicating revival
 	}
 }
@@ -547,7 +547,7 @@ if (pev_valid(pToucher)!=2){
 	
 	return
 }
-if (!client_hittable(pToucher)){
+if (!is_user_alive(pToucher)){
 
 	return
 }
@@ -565,7 +565,7 @@ if (!sh_user_has_hero(pToucher,ester_get_hero_id())||
 
 	return
 }
-if(!client_hittable(pTouched)){
+if(!is_user_alive(pTouched)){
 	
 	return
 }

@@ -334,7 +334,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
 	//new Float:origin[3],dist
 	
-	if(client_hittable(pTouched))
+	if(is_user_alive(pTouched))
 	{
 		//get pickability status
 		new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)

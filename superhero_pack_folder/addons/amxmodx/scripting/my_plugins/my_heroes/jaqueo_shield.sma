@@ -1,3 +1,4 @@
+#define I_WANT_CONSTANTS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -214,7 +215,7 @@ public _shield_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
 
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 
 	if(!sh_user_has_hero(id,jaqueo_get_hero_id())) return
 
@@ -307,7 +308,7 @@ public load_shield(id){
 }
 public charge_task(parm[],id){
 	id-=JAQUEO_CHARGE_TASKID
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		uncharge_user(id)
 		return

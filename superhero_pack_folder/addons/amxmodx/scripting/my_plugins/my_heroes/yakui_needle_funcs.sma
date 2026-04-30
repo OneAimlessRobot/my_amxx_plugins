@@ -137,7 +137,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 }
 public playertrail(pid)
 {
-	if (client_hittable(pid))
+	if (is_user_alive(pid))
 	{
 		trail(pid,FX_COLOR_OFFSET+curr_needle_fx[pid],10,5,40)
 	}
@@ -192,7 +192,7 @@ public _gatling_set_needle(iPlugin,iParams){
 		weaponChange(id)
 	
 	}
-	else if (client_hittable(id))
+	else if (is_user_alive(id))
 	{
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 		write_byte(TE_KILLBEAM)	// TE_KILLBEAM

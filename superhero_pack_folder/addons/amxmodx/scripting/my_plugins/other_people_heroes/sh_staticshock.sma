@@ -154,7 +154,7 @@ public shock_loop(id)
 
 		get_user_origin(id, user_origin)
 
-		Entvars_Get_Vector(id, EV_VEC_velocity, velocity)
+		entity_get_vector(id, EV_VEC_velocity, velocity)
 
 		new distance
 		distance = get_distance( g_endLocation[id], user_origin )
@@ -162,7 +162,7 @@ public shock_loop(id)
 		velocity[1] = (g_endLocation[id][1] - user_origin[1]) * ( 1.0 * gMaxSpeed / distance)
 		velocity[2] = (g_endLocation[id][2] - user_origin[2]) * ( 1.0 * gMaxSpeed / distance)
 
-		Entvars_Set_Vector(id, EV_VEC_velocity, velocity)
+		entity_set_vector(id, EV_VEC_velocity, velocity)
 
   		new distance2[2] 
 
@@ -179,7 +179,7 @@ public shock_loop(id)
 		b_orig[1] = float(aimvec[1]); 
 		b_orig[2] = float(aimvec[2]); 
 		
-		ENT_SetOrigin(ice[id], b_orig)
+		entity_set_origin(ice[id], b_orig)
 
 
 		get_user_origin(id, origin, 1)
@@ -292,14 +292,14 @@ public make_trail(id,origin2[3])
   	
 	remove_entity(ice[id])
 
-	Entvars_Get_Vector(id, EV_VEC_origin , Origin)
-	Entvars_Get_Vector(id, EV_VEC_v_angle, vAngle)
+	entity_get_vector(id, EV_VEC_origin , Origin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngle)
      
 	ice[id] = create_entity("info_target")
 	
 	entity_set_string(ice[id], EV_SZ_classname, "ice_sheet") 
 
-	ENT_SetModel(ice[id], g_szRocketModel[0])
+	entity_set_model(ice[id], g_szRocketModel[0])
 
 	new Float:MinBox[3] 
 	new Float:MaxBox[3] 
@@ -309,18 +309,18 @@ public make_trail(id,origin2[3])
 	MaxBox[0] = 1.0 
 	MaxBox[1] = 1.0 
 	MaxBox[2] = 3.0 
-	Entvars_Set_Vector(ice[id], EV_VEC_mins, MinBox) 
-	Entvars_Set_Vector(ice[id], EV_VEC_maxs, MaxBox)
+	entity_set_vector(ice[id], EV_VEC_mins, MinBox) 
+	entity_set_vector(ice[id], EV_VEC_maxs, MaxBox)
    
-	ENT_SetOrigin(ice[id], Origin)
-	Entvars_Set_Vector(ice[id], EV_VEC_angles, vAngle)
+	entity_set_origin(ice[id], Origin)
+	entity_set_vector(ice[id], EV_VEC_angles, vAngle)
 
 	entity_set_int(ice[id], EV_INT_solid, 0) 
 	entity_set_int(ice[id], EV_INT_movetype, 5)
-	Entvars_Set_Edict(ice[id], EV_ENT_owner, id)
+	entity_set_edict(ice[id], EV_ENT_owner, id)
    
-	VelocityByAim(id, 0 , Velocity)
-	Entvars_Set_Vector(ice[id], EV_VEC_velocity ,Velocity)
+	velocity_by_aim(id, 0 , Velocity)
+	entity_set_vector(ice[id], EV_VEC_velocity ,Velocity)
    
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY) 

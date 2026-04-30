@@ -58,7 +58,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		unradioactive_user(id);
 		return
 	}
-	if(client_hittable(array[TRACK_TASK_ATTACKER])){
+	if(is_user_alive(array[TRACK_TASK_ATTACKER])){
 		new client_name[128]
 		new origin[3], eorigin[3],att_origin[3]
 		new Float:Pos[3],Float:vEnd[3]
@@ -152,7 +152,7 @@ public _track_user(iPlugins, iParams){
 	array[TRACK_TASK_PERIOD] = period
 	for(new i=0;i<player_count;i++){
 		
-		if(client_hittable(players[i])){
+		if(is_user_alive(players[i])){
 			array[NUM_INIT_TRACK_PARAMS+i]=players[i]
 		}
 	}

@@ -14,7 +14,9 @@ ricochet_extradamage 5	//Additional damage (not a damage mult)
 *    (warcs_ricochet.sma)
 *    Requested by fikstress.
 */
-
+#define I_WANT_MATH_FUNCS
+#include <float>
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 

@@ -55,8 +55,8 @@ public plugin_precache()
 public sh_client_spawn(id)
 {
 	remove_task(id)
-	gMoveTimer[id] = 0
-	gPlayerInCooldown[id] = false
+	gMoveTimer[id] = 0;
+	sh_unset_cooldown_flag(id)
 
 	get_user_origin(id, gPlayerPosition[id])
 }
@@ -120,7 +120,7 @@ skeletor_summon(victim)
 
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( sh_user_has_hero(player,gHeroID)&& victimTeam != cs_get_user_team(player) && !gPlayerInCooldown[player] ) {
+		if ( sh_user_has_hero(player,gHeroID)&& victimTeam != cs_get_user_team(player) && !sh_get_cooldown_flag(player)) {
 			// COOL WE HAVE A SKELETOR TO STICK SNARKS ON Player id!
 			new Float:cooldown = get_pcvar_float(pCvarCooldown)
 			if ( cooldown > 0.0 ) sh_set_cooldown(player, cooldown)

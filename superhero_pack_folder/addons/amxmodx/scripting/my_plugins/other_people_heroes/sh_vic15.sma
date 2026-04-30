@@ -243,7 +243,7 @@ public vic15_ringloop()
 public revival(id)
 {
 	if(is_user_connected(id)){
-		user_spawn(id)
+		ExecuteHamB(Ham_Spawn, id) 
 		setScreenFlash(id, 0, 0, 0, 10, 255 )  //Black flash indicating revival
 	}
 }

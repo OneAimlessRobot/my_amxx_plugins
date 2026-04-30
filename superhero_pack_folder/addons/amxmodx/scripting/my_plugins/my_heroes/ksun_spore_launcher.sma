@@ -1,6 +1,4 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
-
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -209,7 +207,7 @@ public launcher_think(ent){
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
-	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}
@@ -225,7 +223,7 @@ public _launcher_deploy(iPlugin,iParams)
 {
 
 new id= get_param(1)
-if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 	
 	return
 }

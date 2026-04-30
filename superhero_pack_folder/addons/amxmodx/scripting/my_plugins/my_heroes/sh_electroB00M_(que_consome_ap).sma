@@ -3,19 +3,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
-/* CVARS - copy and paste to shconfig.cfg
-
-//ElectroB00M
-ElectroB00M_level 20
-ElectroB00M_armor 400		//How much armor does ElectroB00M start with
-ElectroB00M_period 0.1		//How often (seconds) to run the loop
-ElectroB00M_stunspeed 100        //How fast can a target move when hit by a spark
-ElectroB00M_teslacoildamage 30		//Damage per spark
-ElectroB00M_radius 200		//Danger radius around a switched on player
-ElectroB00M_powercost 5		//How much armor does it cost per spark, set 0 for free energy device
-ElectroB00M_stuntime 10 //For how long will a hit player stay stunned
-
-*/
 
 // VARIABLES
 new gHeroID

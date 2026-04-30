@@ -138,7 +138,7 @@ public komak_is_top_speed(id){
 public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	new return_result=HAM_IGNORED;
-	new client_is_hittable_here=client_hittable(this)
+	new client_is_hittable_here=is_user_alive(this)
 	if(client_is_hittable_here){
 		if(sh_user_has_hero(this,gHeroID) ){
 

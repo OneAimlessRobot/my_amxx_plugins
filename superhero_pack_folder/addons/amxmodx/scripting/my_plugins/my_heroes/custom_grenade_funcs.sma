@@ -18,7 +18,6 @@
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -210,7 +209,7 @@ public plugin_init(){
 }
 public event_curr_grenade(id){
 	
-	if(!client_hittable(id)) return PLUGIN_CONTINUE;	
+	if(!is_user_alive(id)) return PLUGIN_CONTINUE;	
 	
 	new wpn_id=-1
 	new bool:user_has_grenade=user_has_grenade_on(id, wpn_id)
@@ -258,7 +257,7 @@ public CmdStart(id, uc_handle)
 {
 	if(!sh_is_active()) return FMRES_IGNORED
 
-	if (!client_hittable(id)) return FMRES_IGNORED;
+	if (!is_user_alive(id)) return FMRES_IGNORED;
 	
 	new sh_grenade_type:gren_type=curr_user_grenade[id]
 	new wpn_id=-1
@@ -338,7 +337,7 @@ public _give_custom_grenades(iPlugin, iParams){
 	new id=get_param(1)
 	new sh_grenade_type:gren_type= sh_grenade_type:get_param(2)
 	new grenade_ammount= get_param(3)
-	if ( sh_is_active() && client_hittable(id)){
+	if ( sh_is_active() && is_user_alive(id)){
 
 		new ammo=cs_get_user_bpammo(id,
 					sh_grenade_structs_arr[gren_type][sh_grenade_weapon_classid]);
@@ -359,7 +358,7 @@ public charge_task(any:param[1],id){
 	new sh_grenade_type:the_type= sh_grenade_type:param[0]
 	id-=sh_grenade_structs_arr[the_type][sh_grenade_charge_taskid]
 
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 
 	curr_charge[id][the_type]=floatadd(curr_charge[id][the_type],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
 	
@@ -522,7 +521,7 @@ new numfound = find_sphere_class(id_grenade,"player",
 for( new i= 0;(i< numfound);i++){
 
 	new pid = entlist[i];
-	if( !client_hittable(pid) ) continue
+	if( !is_user_alive(pid) ) continue
 	
 	gren_effect_user(pid,owner,the_type)
 }

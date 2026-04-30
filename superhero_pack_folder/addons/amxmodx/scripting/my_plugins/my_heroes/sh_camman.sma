@@ -111,7 +111,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if (client_hittable(id)&&sh_is_active() &&!hasRoundStarted() ) {
+	if (is_user_alive(id)&&sh_is_active() &&!hasRoundStarted() ) {
 		
 		reset_camman_user(id)
 	}

@@ -1,6 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -8,9 +6,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "special_fx_inc/sh_yakui_get_set.inc"
 
 
 #define PLUGIN "Superhero freeze fx"
@@ -48,7 +44,7 @@ public plugin_precache(){
 
 public frozen_damage(id)
 {
-	if ( !sh_is_active() || !client_hittable(id)) return
+	if ( !sh_is_active() || !is_user_alive(id)) return
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
@@ -70,7 +66,7 @@ public frozen_damage(id)
 }
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
+	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(is_frozen_mask,victim)){
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER + damage

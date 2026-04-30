@@ -315,7 +315,7 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 		force=damage
 	}
 	new this_ent_owner = entity_get_edict(tg_id, EV_ENT_owner)
-	if(client_hittable(this_ent_owner)){
+	if(is_user_alive(this_ent_owner)){
 		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
 	if(!is_valid_ent(tg_id)){

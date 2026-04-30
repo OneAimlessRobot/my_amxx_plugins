@@ -44,7 +44,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex)
@@ -52,7 +52,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !sh_is_active() ) return
 	if ( damage <= 0 || victim == attacker ) return
 	if ( !is_user_alive(victim) || !is_user_alive(attacker) ) return
-	if ( !sh_user_has_hero(victim,gHeroID) || gPlayerInCooldown[victim] ) return
+	if ( !sh_user_has_hero(victim,gHeroID) || sh_get_cooldown_flag(victim)) return
 
 	new slot = sh_get_weapon_slot(wpnindex)
 

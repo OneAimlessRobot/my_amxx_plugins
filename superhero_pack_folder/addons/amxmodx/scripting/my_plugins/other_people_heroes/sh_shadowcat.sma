@@ -65,7 +65,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 
 	gShadowcatTimer[id]= -1
 
@@ -80,7 +80,7 @@ public sh_hero_key(id, heroID, key)
 
 	// Make sure they're not in the middle of clip already
 	// Let them know they already used their ultimate if they have
-	if ( gPlayerInCooldown[id] || gShadowcatTimer[id] >= 0 ) {
+	if ( sh_get_cooldown_flag(id) || gShadowcatTimer[id] >= 0 ) {
 		sh_sound_deny(id)
 		return
 	}
@@ -158,7 +158,7 @@ shadowcat_endnoclip(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim)
 {
-	gPlayerInCooldown[victim] = false
+	sh_unset_cooldown_flag(victim)
 
 	gShadowcatTimer[victim]= -1
 

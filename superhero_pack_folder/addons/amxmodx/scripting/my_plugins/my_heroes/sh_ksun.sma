@@ -1,6 +1,8 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+
+#include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -107,7 +109,7 @@ public plugin_natives(){
 stock covert_spike_damage(id){
 	for(new payer=1;payer< sh_maxplayers()+1;payer++){
 
-			if(!client_hittable(payer)) continue
+			if(!is_user_alive(payer)) continue
 			
 			if(sh_clients_are_same_team(payer,id) || (payer==id)) continue
 			
@@ -139,7 +141,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 	new CsTeams:att_team=cs_get_user_team(attacker)
 	for(new collector=1;collector< sh_maxplayers()+1;collector++){
 
-		if(!client_hittable(collector)){
+		if(!is_user_alive(collector)){
 			
 			
 			continue
@@ -172,7 +174,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 }
 public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !client_hittable(id) || !client_hittable(attacker)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
 	new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 	
@@ -225,7 +227,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
 	if(!sh_is_active()) return HAM_IGNORED
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 
 		return HAM_IGNORED;
 
@@ -348,7 +350,7 @@ public Float:_spores_cooldown(iPlugins, iParms){
 ksun_weapons(id)
 {
 
-if ( sh_is_active() && client_hittable(id) && sh_user_has_hero(id,gHeroID) ) {
+if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 	give_custom_grenades(id,GREN_SLEEP,num_sleep_nades)
 	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
@@ -356,7 +358,7 @@ if ( sh_is_active() && client_hittable(id) && sh_user_has_hero(id,gHeroID) ) {
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -416,7 +418,7 @@ public ksun_kd()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
@@ -485,7 +487,7 @@ public ksun_kd()
 public ksun_prethink(id)
 {
 	if ( sh_is_active()){
-		if(client_hittable(id)){
+		if(is_user_alive(id)){
 			if(sh_user_has_hero(id,gHeroID) ){
 				new alive=0,dead=0
 				sh_get_player_counts(id,1,alive,dead)
@@ -515,7 +517,7 @@ stock ksun_death_handler(id){
 public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	
 	ksun_death_handler(id)
-	if(client_hittable(killer)&&is_user_connected(id)){
+	if(is_user_alive(killer)&&is_user_connected(id)){
 		if(sh_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
 			if(ksun_kill_type_broadness_level<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
@@ -541,7 +543,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}

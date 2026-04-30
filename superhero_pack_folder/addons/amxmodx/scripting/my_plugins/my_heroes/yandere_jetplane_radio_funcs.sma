@@ -168,7 +168,7 @@ launch_scan(id){
 		if(cs_get_user_team(pid)==idTeam){
 			continue
 		}
-		else if(!(client_hittable(pid))){
+		else if(!(is_user_alive(pid))){
 			
 			continue
 		}

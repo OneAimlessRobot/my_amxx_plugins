@@ -39,8 +39,7 @@ ghostface_healpoints 5		//The # of HP healed per second, Default 5
 
 
 //------- Do not edit below this point ------//
-
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -52,14 +51,12 @@ new PlayerMaxHealth[SH_MAXSLOTS+1]
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints
 
-	new const Model_Player[STRING_SIZE] = "models/player/ghostface/ghostface.mdl"
-	new const Model_Player_Name[STRING_SIZE] = "ghostface"
+new const Model_Player[STRING_SIZE] = "models/player/ghostface/ghostface.mdl"
+new const Model_Player_Name[STRING_SIZE] = "ghostface"
 
-#if defined USE_WPN_MODEL
-	new const Model_V_Knife[] = "models/shmod/ghostface_v_knife.mdl"
-	new const Model_P_Knife[] = "models/shmod/ghostface_p_knife.mdl"
-	new bool:ModelWeaponLoaded
-#endif
+#define Model_V_Knife "models/shmod/ghostface_v_knife.mdl"
+#define Model_P_Knife "models/shmod/ghostface_p_knife.mdl"
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -83,6 +80,9 @@ public plugin_init()
 								Model_Player_Name,
 								"",
 								"")
+	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,Model_V_Knife,Model_P_Knife)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("ghostface_init", "ghostface_init")
@@ -90,11 +90,6 @@ public plugin_init()
 
 	// EVENTS
 	register_event("Damage", "ghostface_damage", "b", "2!0")
-
-
-	#if defined USE_WPN_MODEL
-		register_event("CurWeapon", "weapon_change", "be", "1=1")
-	#endif
 
 	// Let Server know about the hero's variables
 	shSetMaxHealth(HeroName, "ghostface_health")
@@ -114,31 +109,6 @@ public plugin_cfg()
 	HealPoints = get_pcvar_num(CvarHealPoints)	
 }
 //----------------------------------------------------------------------------------------------
-#if defined USE_PLAYER_MODEL || defined USE_WPN_MODEL
-public plugin_precache()
-{
-
-	#if defined USE_WPN_MODEL
-		ModelWeaponLoaded = true
-		if ( file_exists(Model_V_Knife) ) {
-			engfunc(EngFunc_PrecacheModel,Model_V_Knife)
-		}
-		else {
-			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_Knife)
-			ModelWeaponLoaded = false
-		}
-
-		if ( file_exists(Model_P_Knife) ) {
-			engfunc(EngFunc_PrecacheModel,Model_P_Knife)
-		}
-		else {
-			log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_Knife)
-			ModelWeaponLoaded = false
-		}
-	#endif
-}
-#endif
-//----------------------------------------------------------------------------------------------
 public ghostface_init()
 {
 	// First Argument is an id
@@ -146,19 +116,7 @@ public ghostface_init()
 	read_argv(1, temp, 5)
 	new id = str_to_num(temp)
 
-	if(sh_user_has_hero(id,gHeroID))
-	{
-		if ( is_user_alive(id) )
-		{
-			#if defined USE_WPN_MODEL
-				if ( ModelWeaponLoaded )
-					switch_model(id)
-			#endif
-
-		}
-	}
-	else
-	{
+	if(!sh_user_has_hero(id,gHeroID)){
 		// Check is needed since this gets run on clearpowers even if user didn't have this hero
 		if ( is_user_alive(id))
 		{
@@ -171,35 +129,6 @@ public ghostface_init()
 
 	}
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
-		return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-
-	if ( wpnid == CSW_KNIFE )
-	{
-		set_pev(id, pev_viewmodel2, Model_V_Knife)
-		set_pev(id, pev_weaponmodel2, Model_P_Knife)
-	}
-}
-//----------------------------------------------------------------------------------------------
-public weapon_change(id)
-{
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
-		return
-
-	//weaponID = read_data(2)
-	if ( read_data(2) != CSW_KNIFE )
-		return
-
-	if ( ModelWeaponLoaded )
-		switch_model(id)
-}
-#endif
 //----------------------------------------------------------------------------------------------
 public ghostface_damage(id)
 {
@@ -245,12 +174,5 @@ public heal_loop()
 			shAddHPs(id, HealPoints, PlayerMaxHealth[id])
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	#if defined USE_PLAYER_MODEL
-		ModelPlayerSet[id] = false
-	#endif
 }
 //----------------------------------------------------------------------------------------------

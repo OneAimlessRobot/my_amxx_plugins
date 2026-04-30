@@ -160,8 +160,8 @@ public sh_client_spawn(id)
 		}
 		gHasRadio[id] = false
 	}
-	gIsCharging[id] = false
-	gPlayerInCooldown[id] = false
+	gIsCharging[id] = false;
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end()
@@ -292,7 +292,7 @@ public FM_CmdStart_Pre(id, uc_handle, seed)
 				return FMRES_HANDLED
 			}
 
-			if ( gPlayerInCooldown[id] ) {
+			if ( sh_get_cooldown_flag(id) ) {
 				sh_chat_message(id, gHeroID, "Ion cannon is recharging, you must wait longer")
 				return FMRES_HANDLED
 			}

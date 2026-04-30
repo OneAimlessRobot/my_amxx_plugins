@@ -37,7 +37,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(client_hittable(i)){
+		if(is_user_alive(i)){
 			g_dragging_who[i][0]=-1;
 			g_dragging_who[i][1]=0
 		}
@@ -109,7 +109,7 @@ public plugin_natives(){
 
 stop_dragging(id,bool:deduct=false){
 	
-		if(client_hittable( g_dragging_who[id][0])){
+		if(is_user_alive( g_dragging_who[id][0])){
 			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
 		}
 		

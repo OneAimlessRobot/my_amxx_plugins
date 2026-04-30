@@ -85,7 +85,7 @@ stock bounce_grenade_stock(pToucher)
 stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search[],Float:touch_distance=50.0)
 {
 	
-	if (!client_hittable(id)||!sh_is_active()) return 0
+	if (!is_user_alive(id)||!sh_is_active()) return 0
 	//Its an ""entlist""
 	new entlist[1];
 	new num_found = find_sphere_class(id,the_entity_classname_to_search, touch_distance ,entlist, 1);
@@ -99,7 +99,7 @@ stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search
 }
 stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return
 	}
 	static Float:N_Speed
@@ -132,7 +132,7 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 #if !defined _reapi_included 
 stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return
 	}
 	if( get_pdata_int(iEnt, m_fInReload, 4) )
@@ -145,7 +145,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 #else
 stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return
 	}
 	if( get_pdata_int(iEnt, m_fInReload) )
@@ -196,7 +196,7 @@ stock bool:is_entity_brush(ent_id){
 public orient_user(id,Float:angles[3],Float:v_angle[3])
 {
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return
 	}
 	entity_set_int( id, EV_INT_fixangle, 0 );

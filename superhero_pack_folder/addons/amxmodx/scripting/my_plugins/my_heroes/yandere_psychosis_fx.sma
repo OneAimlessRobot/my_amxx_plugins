@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -42,7 +41,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public psychosis_newRound(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
+	if(sh_is_active()&&is_user_alive(id)){
 		if(Get_BitVar(gIsPsychosisMask,id)){
 			yandere_unpsychosis_user(id)
 		}
@@ -51,9 +50,8 @@ public psychosis_newRound(id)
 }
 public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker) ||(id==attacker)) return HAM_IGNORED
-new CsTeams:att_team,CsTeams:vic_team;
-new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker,vic_team,att_team)
+if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==attacker)) return HAM_IGNORED
+new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
 if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
 	
 	damage=1.0+damage- (damage*psychosis_dmg_cushion)
@@ -126,7 +124,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 
 public client_PostThink(id) {
 	
-	if(!client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) { 
+	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) { 
 		return
 	}
 	if(Get_BitVar(g_yandere_leaped_mask,id)){
@@ -138,7 +136,7 @@ public client_PostThink(id) {
 }
 public Player_TakeDamage(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!client_hittable(id)) return HAM_IGNORED
+	if ( !sh_is_active() || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!is_user_alive(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 

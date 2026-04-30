@@ -254,8 +254,8 @@ public stealth_respawn(parm[])
 	emit_sound(id, CHAN_STATIC, "shmod/stealthrevive.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 	// Double spawn prevents the no HUD glitch
-	user_spawn(id)
-	user_spawn(id)
+	ExecuteHamB(Ham_Spawn, id) 
+	ExecuteHamB(Ham_Spawn, id) 
 
 	set_task(1.0, "stealth_teamcheck", 0, parm, 1)
 }

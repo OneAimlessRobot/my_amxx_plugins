@@ -53,7 +53,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id);
 
 	remove_task(id)
 }
@@ -75,7 +75,7 @@ public sh_hero_key(id, heroID, key)
 
 	// Hulk should technically be standing still to do this...  (i.e. no jump or air)
 	// Let them know they already used their ultimate if they have
-	if ( velocity[2] < -10.0 || velocity[2] > 10.0 || gPlayerInCooldown[id] ) {
+	if ( velocity[2] < -10.0 || velocity[2] > 10.0 || sh_get_cooldown_flag(id)) {
 		sh_sound_deny(id)
 		return
 	}

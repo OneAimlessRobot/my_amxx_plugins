@@ -104,7 +104,7 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 //----------------------------------------------------------------------------------------------
 public camera_controls(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id)){
+	if ( !is_user_alive(id)){
 		return FMRES_IGNORED;
 	}
 
@@ -716,7 +716,7 @@ public charge_task(id){
 		return
 	
 	}
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		camera_armed[id]=0		
 		return
 	

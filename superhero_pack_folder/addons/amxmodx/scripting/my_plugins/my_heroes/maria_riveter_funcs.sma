@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
@@ -54,7 +53,7 @@ public rivette_thinque(ent){
 	
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 
 		remove_entity(ent)	
 		return FMRES_IGNORED
@@ -75,7 +74,7 @@ public rivette_thinque(ent){
 }
 public bool:client_isnt_hitter(id){
 	
-	return !client_hittable(id,sh_user_has_hero(id,maria_get_hero_id()))
+	return !is_user_alive(id)||!sh_user_has_hero(id,maria_get_hero_id())
 	
 }
 public CmdStart(id, uc_handle)
@@ -370,7 +369,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 	new Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 	
-	new bool:is_direct_hit = client_hittable(pTouched);
+	new bool:is_direct_hit = bool:is_user_alive(pTouched);
 	new Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);

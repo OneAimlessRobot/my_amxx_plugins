@@ -880,7 +880,7 @@ public _jet_destroy(iPlugin,iParams){
 	remove_task(id+JET_SOUND_TASKID)
 	
 	if(is_valid_ent(g_jetplane[id])){
-		if(client_hittable(id)){
+		if(is_user_alive(id)){
 			set_pev(id, pev_takedamage, DAMAGE_YES)
 			set_pev(id, pev_solid, SOLID_SLIDEBOX)
 			sh_set_rendering(id);

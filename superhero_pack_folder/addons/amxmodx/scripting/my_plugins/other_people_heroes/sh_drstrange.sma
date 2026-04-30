@@ -424,8 +424,8 @@ public drstrange_respawn(parm[])
 	client_print(id, print_chat, "[SH](Dr. Strange) You used the Ressurection Stone to come back to life!")
 
 	// Double spawn prevents the no HUD glitch
-	user_spawn(id)
-	user_spawn(id)
+	ExecuteHamB(Ham_Spawn, id)
+	ExecuteHamB(Ham_Spawn, id)
 
 	// Respawned by Dr. Strange, it's ok to set cooldown now.
 	new Float:drStrangeCooldown = get_cvar_float("drstrange_respawncooldown")

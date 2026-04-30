@@ -1,5 +1,4 @@
-#include <amxmodx>
-#include <engine>
+
 #include "../my_include/superheromod.inc"
 
 new const SOUND_SMOKESCREEN[]	= "weapons/sg_explode.wav"
@@ -95,7 +94,7 @@ public sh_hero_key(id, heroID, key)
 		return PLUGIN_CONTINUE
 
 	new Float:shinobiCooldown = get_pcvar_float(cvar_smoke_delay)
-	if(gPlayerInCooldown[id])
+	if(sh_get_cooldown_flag(id))
 	{
 		sh_sound_deny(id)
 		sh_chat_message(id, g_heroID, "You must wait %.1f seconds after a Smoke Screen Ninjutsu", shinobiCooldown)
@@ -130,7 +129,7 @@ public sh_client_spawn(id)
 	while((shurikens = find_ent_by_class(shurikens, "shuriken")))
 		remove_entity(shurikens)
 
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 }
 
 public Event_Damage(id)

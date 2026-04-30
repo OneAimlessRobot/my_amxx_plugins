@@ -22,8 +22,6 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 */
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -109,7 +107,6 @@ public plugin_init()
 	shRegMaxHealth(gHeroName, "darkpred_maxhealth" )
 	gHealPoints = get_cvar_num("darkpred_healpoints")
 	times_picked=0;
-	init_hud_syncs()
 	// BULLETS FIRED
 	register_event("CurWeapon","darkpred_fire", "be", "1=1", "3>0") 
 }
@@ -337,13 +334,13 @@ public darkpred_damage(id)
 			// diff. team;	$attacker gets credited for the kill and $250 and XP.
 			//		$id gets their suicidal -1 frag back. 
 			set_user_frags(attacker, get_user_frags(attacker)+1)
-			set_user_money(attacker, get_user_money(attacker)+150)
+			cs_set_user_money(attacker, cs_get_user_money(attacker)+150)
 			shAddXP(attacker, id, 1.0)
 		} 
 		else{
 			// same team;	$attacker loses a frag and $500 and XP.
 			set_user_frags(attacker, get_user_frags(attacker)-1)
-			set_user_money(attacker, get_user_money(attacker)-500, 0)
+			cs_set_user_money(attacker, cs_get_user_money(attacker)-500, 0)
 			shAddXP(attacker, id, -1.0)
 		}
 		return PLUGIN_CONTINUE

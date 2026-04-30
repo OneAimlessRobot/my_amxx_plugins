@@ -380,7 +380,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 	if(!is_valid_ent(pToucher)) return
 
-	if(client_hittable(pTouched))
+	if(is_user_alive(pTouched))
 	{
 		new Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);

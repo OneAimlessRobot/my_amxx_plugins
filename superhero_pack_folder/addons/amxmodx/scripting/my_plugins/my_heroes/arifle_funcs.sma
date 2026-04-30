@@ -1,6 +1,5 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_FAKEMETA_UTIL
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -213,7 +212,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 
 	static id; id = pev(Ent, pev_owner)
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return HAM_IGNORED
 	}
@@ -274,7 +273,7 @@ public fw_Item_Deploy_Post(Ent)
 
 	static Id; Id = get_pdata_cbase(Ent, 41, 4)
 	
-	if(!client_hittable(Id)){
+	if(!is_user_alive(Id)){
 		
 		return
 	}
@@ -351,7 +350,7 @@ public fw_Item_PostFrame(ent)
 
 	static id; id = pev(ent, pev_owner)
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return HAM_IGNORED
 	}

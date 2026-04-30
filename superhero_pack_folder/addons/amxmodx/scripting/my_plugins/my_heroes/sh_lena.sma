@@ -127,7 +127,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
 {
-	if ( sh_is_active() && client_hittable(id) && sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){

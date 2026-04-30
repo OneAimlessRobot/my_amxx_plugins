@@ -115,7 +115,7 @@ public Ham_respawn(id){
 //----------------------------------------------------------------------------------------------
 public adriano_weapons(id)
 {
-	if ( sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
 		colt_set_colt(id)

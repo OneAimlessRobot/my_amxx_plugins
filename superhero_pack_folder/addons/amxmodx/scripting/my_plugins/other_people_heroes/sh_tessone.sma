@@ -68,7 +68,7 @@ public sh_hero_init(id, heroID, mode)
 
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 	g_TessTimer[id] = -1
 
 	if (sh_user_has_hero(id,g_HeroID)) tess_endimmunity(id)
@@ -79,7 +79,7 @@ public sh_hero_key(id, heroID, key)
 	if ( g_HeroID != heroID || sh_is_freezetime() || !is_user_alive(id) ) return
 
 	if ( key == SH_KEYDOWN ) {
-		if ( gPlayerInCooldown[id] || g_TessTimer[id] >= 0 ) {
+		if ( sh_get_cooldown_flag(id)|| g_TessTimer[id] >= 0 ) {
 			sh_sound_deny(id)
 			return
 		}
@@ -135,7 +135,7 @@ tess_endimmunity(id)
 
 public sh_client_death(victim)
 {
-	gPlayerInCooldown[victim] = false
+	sh_unset_cooldown_flag(victim)
 
 	g_TessTimer[victim]= -1
 

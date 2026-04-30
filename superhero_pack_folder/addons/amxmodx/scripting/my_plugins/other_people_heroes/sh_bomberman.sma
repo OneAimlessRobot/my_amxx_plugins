@@ -81,7 +81,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 bomberman_newsetup(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 
 	if ( !sh_user_has_hero(id,gHeroID) ) return
 
@@ -138,7 +138,7 @@ plant_bomb(id)
 		return
 	}
 
-	if ( gPlayerInCooldown[id]) {
+	if (sh_get_cooldown_flag(id)) {
 		sh_sound_deny(id)
 		return
 	}
@@ -303,8 +303,8 @@ public client_connect(id)
 		engfunc(EngFunc_RemoveEntity, bombent)
 	}
 
-	gBombEntity[id] = 0
-	gPlayerInCooldown[id] = false
+	gBombEntity[id] = 0;
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
@@ -315,8 +315,8 @@ public client_disconnected(id)
 		engfunc(EngFunc_RemoveEntity, bombent)
 	}
 
-	gBombEntity[id] = 0
-	gPlayerInCooldown[id] = false
+	gBombEntity[id] = 0;
+	sh_unset_cooldown_flag(id);
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

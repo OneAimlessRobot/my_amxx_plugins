@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -272,7 +271,7 @@ Float:get_player_alpha(id){
 	
 	new Float:alphaMult=1.0;
 	new player_lvl,hero_lvl,lvl_diff;
-	if(client_hittable(id)){
+	if(is_user_alive(id)){
 		if(sh_user_has_hero(id,flora_get_hero_id())){
 			player_lvl=sh_get_user_lvl(id)
 			hero_lvl=flora_get_hero_lvl()
@@ -336,7 +335,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 }
 find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	
-	if ( !client_hittable(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
+	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
 		
 	
 			return -1
@@ -384,7 +383,7 @@ public flora_checks(task_id){
 
 
 	for(new id=1;id< sh_maxplayers()+1;id++){
-		if(!client_hittable(id)) continue
+		if(!is_user_alive(id)) continue
 
 		if(!sh_user_has_hero(id,flora_get_hero_id())) continue
 		
@@ -450,7 +449,7 @@ public flora_checks(task_id){
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
-	if ( !client_hittable(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
+	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
 		
 	
 			field_id=-1
@@ -503,7 +502,7 @@ public _form_field(iPlugin,iParams)
 	if(!sh_is_active()||sh_is_freezetime()) return
 	new id= get_param(1)
 	
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 
 	if(!sh_user_has_hero(id,flora_get_hero_id())) return
 	
@@ -614,7 +613,7 @@ public apply_teleport(id,field_inside) {
 		return
 	
 	}
-	if(!client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,flora_get_hero_id())){
 		
 		return
 
@@ -664,7 +663,7 @@ public apply_teleport(id,field_inside) {
 
 apply_cloak(id){
 	
-	if(!client_hittable(id)||!sh_user_has_hero(id,flora_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,flora_get_hero_id())){
 		
 		g_curr_flora_cloaked[id]=0
 		g_prev_flora_cloaked[id]=0
@@ -730,7 +729,7 @@ public field_think(ent)
 
 				continue
 			}
-			if(!client_hittable(pid)){
+			if(!is_user_alive(pid)){
 				if(is_user_connected(pid)){
 					set_render_with_color_const(pid,INVIS,1,10,_,0)
 				}
@@ -804,7 +803,7 @@ public charge_iteration(owner,field_id){
 
 	
 	
-	if(!client_hittable(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
+	if(!is_user_alive(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
 		uncharge_user(owner)
 		return FMRES_IGNORED
 	}

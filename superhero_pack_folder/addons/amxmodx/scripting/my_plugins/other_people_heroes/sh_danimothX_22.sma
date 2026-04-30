@@ -78,7 +78,7 @@ public sh_hero_init(id, heroID, mode)
 
 	switch(mode) {
 		case SH_HERO_ADD: {
-			gPlayerInCooldown[id] = false
+			sh_unset_cooldown_flag(id)
 			sh_chat_message(id, gHeroID, "We feed your presence..")
 		}
 	}
@@ -99,7 +99,7 @@ public sh_round_end()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ public sh_hero_key(id, heroID, key)
 	{
 		if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 	
-		if ( gPlayerInCooldown[id] ) {
+		if ( sh_get_cooldown_flag(id)) {
 			playSoundDenySelect(id)
 			sh_chat_message(id, gHeroID, "Not Enough Energy..")
 			return

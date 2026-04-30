@@ -11,7 +11,7 @@ demoman_maxmines 2		// max ammount of mines that can be placed at once
 demoman_minehealth 80		// health of mines (determines how many shots blow them up)
 
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 

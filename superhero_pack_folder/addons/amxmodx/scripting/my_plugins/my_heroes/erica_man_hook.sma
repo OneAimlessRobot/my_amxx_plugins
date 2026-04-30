@@ -1,6 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -89,7 +89,7 @@ public sh_round_end()
 
 erica_new_spawn_hooks(id){
 
-if (  sh_is_active() && client_hittable(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
+if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
 	g_hook_kills[id]=max_hook_kills_per_life;
 }
 stop_dragging(id)
@@ -148,7 +148,7 @@ public hook_think(id)
 {
 	
 	id-=HOOK_TASKID
-	if (!client_hittable(id)){
+	if (!is_user_alive(id)){
 		stop_dragging(id)
 		return
 	
@@ -159,7 +159,7 @@ public hook_think(id)
 		return
 	
 	}
-	if(!client_hittable( g_dragging_who[id][0])){
+	if(!is_user_alive( g_dragging_who[id][0])){
 		
 
 		stop_dragging(id,true)
@@ -339,7 +339,7 @@ public CmdStart1(attacker, uc_handle)
 }
 public Erica2_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)) return HAM_IGNORED
 
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 

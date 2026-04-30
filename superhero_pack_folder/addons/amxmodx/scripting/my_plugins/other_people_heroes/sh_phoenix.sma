@@ -100,8 +100,8 @@ public phoenix_respawn(parm[])
 	client_print(id, print_chat, "[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!")
 	
 	// Double spawn prevents the no HUD glitch
-	user_spawn(id)
-	user_spawn(id)
+	ExecuteHamB(Ham_Spawn, id) 
+	ExecuteHamB(Ham_Spawn, id) 
 
 	// Respawned by Phoenix, it's ok to set cooldown now.
 	new Float:phoenixCooldown = get_cvar_float("phoenix_cooldown")

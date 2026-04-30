@@ -387,7 +387,7 @@ public _laser_line(iPlugins, iParams){
 	get_string(8,sound_sample,127)
 
 	static  colors[3]
-	if(client_hittable(pev(ent_id, pev_owner))){
+	if(is_user_alive(pev(ent_id, pev_owner))){
 	
 		switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
 		{
@@ -396,7 +396,7 @@ public _laser_line(iPlugins, iParams){
 					default: colors = LineColors[color_constants[2]]
 		}
 	}
-	else if(client_hittable(ent_id)){
+	else if(is_user_alive(ent_id)){
 		switch ( cs_get_user_team(ent_id) )
 		{
 			case CS_TEAM_T: colors = LineColors[color_constants[0]]

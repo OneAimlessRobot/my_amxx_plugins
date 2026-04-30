@@ -72,7 +72,7 @@ public sh_hero_init(id, heroID, mode)
 	if ( gHeroID != heroID ) return
 
 	if ( mode == SH_HERO_ADD ) {
-		gPlayerInCooldown[id] = false
+		sh_unset_cooldown_flag(id);
 		gLaserShots[id] = get_pcvar_num(gPcvarLaserAmmo)
 	}
 
@@ -84,9 +84,9 @@ public sh_client_spawn(id)
 	remove_task(id)
 	gUsingLaser[id] = false
 
-	gLaserShots[id] = get_pcvar_num(gPcvarLaserAmmo)
+	gLaserShots[id] = get_pcvar_num(gPcvarLaserAmmo);
 
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim)
@@ -111,7 +111,7 @@ public sh_hero_key(id, heroID, key)
 				return
 			}
 
-			if ( gPlayerInCooldown[id] ) {
+			if ( sh_get_cooldown_flag(id) ) {
 				sh_sound_deny(id)
 				return
 			}

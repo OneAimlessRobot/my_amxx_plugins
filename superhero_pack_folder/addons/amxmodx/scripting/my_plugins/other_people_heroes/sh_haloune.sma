@@ -20,16 +20,23 @@ Haloune_speed 500		//Default 500 = Super Speed
 Haloune_M4A1mult 2		//Damage multiplyer for his M4A1 Default 2x
 sv_maxspeed 500
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+
 
 
 // GLOBAL VARIABLES
 new HeroName[] = "Haloune Tsurgi"
 new gHeroID
 new CvarM4A1DmgMult
+
+
+new dmg_source_name_short_ninja_m4[SAFE_BUFFER_SIZE+1]="M4A1"
+new dmg_source_name_long_ninja_m4[SAFE_BUFFER_SIZE+1]="M4A1"
+new custom_dmg_id_ninja_m4
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -47,12 +54,18 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Stealth Ninja", "Haloune - A Stealthy Ninja With Gravity/HP/AP a Super M4A1+Damage and a custom player model.", false, "Haloune_level")
 	sh_register_superheromod_model(gHeroID,
-								"models/player/Haloune/Haloune.mdl",
-								"models/player/Haloune/Haloune.mdl",
-								"Haloune",
+								"models/player/haloune/haloune.mdl",
+								"models/player/haloune/haloune.mdl",
+								"haloune",
 								"Haloune Stealth Suit Online",
 								"",
 								"shmod/frostnova.wav")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,
+						"models/shmod/v_halounem4a1.mdl",
+						"models/shmod/p_halounem4a1.mdl")
+	custom_dmg_id_ninja_m4=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_ninja_m4,dmg_source_name_long_ninja_m4,0)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("Haloune_init", "Haloune_init")
@@ -62,7 +75,6 @@ public plugin_init()
 	register_event("ResetHUD", "new_spawn", "b")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "Haloune_damage", "b", "2!0")
-	register_event("DeathMsg", "Haloune_death", "a")
 
 	// Let Server know about the hero's variables
 	shSetShieldRestrict(HeroName)
@@ -70,13 +82,6 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "Haloune_armor")
 	shSetMinGravity(HeroName, "Haloune_gravity")
 	shSetMaxSpeed(HeroName, "Haloune_speed", "[0]")
-	init_hud_syncs()
-}
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,"models/shmod/v_halounem4a1.mdl")
-	engfunc(EngFunc_PrecacheModel,"models/shmod/p_halounem4a1.mdl")
 }
 //----------------------------------------------------------------------------------------------
 public Haloune_init()
@@ -95,7 +100,6 @@ public Haloune_init()
 		if ( is_user_alive(id) )
 		{
 			Haloune_weapons(id)
-			switch_model(id)
 		}
 
 	}
@@ -131,20 +135,6 @@ public Haloune_weapons(id)
 	shGiveWeapon(id, "weapon_m4a1")
 }
 //----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
-		return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-
-	if ( wpnid == CSW_M4A1 )
-	{
-		set_pev(id, pev_viewmodel2, "models/shmod/v_halounem4a1.mdl")
-		set_pev(id, pev_weaponmodel2, "models/shmod/p_halounem4a1.mdl")
-	}
-}
-//----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
 	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
@@ -154,8 +144,6 @@ public weapon_change(id)
 
 	if ( wpnid != CSW_M4A1 )
 		return
-
-	switch_model(id)
 
 	new clip = read_data(3)
 
@@ -181,8 +169,13 @@ public Haloune_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarM4A1DmgMult) - damage)
-		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "M4A1", headshot)
+		if ( extraDamage > 0 ){
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ninja_m4,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_ninja_m4)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

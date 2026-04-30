@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -10,11 +9,6 @@
 
 new gHeroID
 new const gHeroName[] = "Jaqueo"
-new const jaqueo_cool_scout_sounds[4][]={
-				"weapons/scouterista/tactical_clipin.wav",
-				"weapons/scouterista/tactical_bolt.wav",
-				"weapons/scouterista/tactical_clipout.wav",
-				"weapons/scouterista/tactical_fire-1.wav"}
 
 new Float:scout_mult
 //----------------------------------------------------------------------------------------------
@@ -38,7 +32,11 @@ public plugin_init()
 								"jaqueo",
 								"",
 								"")
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,JAQUEO_AK47_V_MODEL)
 	
+	sh_register_superheromod_weapon_model(gHeroID,CSW_SCOUT,
+							JAQUEO_COOL_SCOUT_V_MODEL,
+							JAQUEO_COOL_SCOUT_P_MODEL)
 
 	register_event("DeathMsg","death","a")
 	register_srvcmd("jaqueo_init", "jaqueo_init")
@@ -49,24 +47,8 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "jaqueo_kd")
 	register_srvcmd("jaqueo_ku", "jaqueo_ku")
 	shRegKeyUp(gHeroName, "jaqueo_ku")
-	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	
 	// Add your code here...
-}
-//----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
-	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	
-	if ( wpnid == CSW_SCOUT ) {
-		entity_set_string(id, EV_SZ_viewmodel, JAQUEO_COOL_SCOUT_V_MODEL)
-		entity_set_string(id,EV_SZ_weaponmodel, JAQUEO_COOL_SCOUT_P_MODEL)
-	}
-	else if(wpnid == CSW_AK47){
-		entity_set_string(id, EV_SZ_viewmodel, JAQUEO_AK47_V_MODEL)
-	}
 }
 public plugin_natives(){
 	
@@ -141,7 +123,7 @@ public loadCVARS()
 }
 public client_isnt_hitter(gatling_user){
 	
-	new bool:result=(!client_hittable(gatling_user))
+	new bool:result=(!is_user_alive(gatling_user))
 	if(result) return true
 	
 	return !sh_user_has_hero(gatling_user,gHeroID) 
@@ -246,32 +228,4 @@ public death()
 		shield_destroy(id)
 		jaqueo_drop_weapons(id)
 	}
-}
-public plugin_precache(){
-	
-	engfunc(EngFunc_PrecacheModel,JAQUEO_AK47_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_P_MODEL)
-	engfunc(EngFunc_PrecacheModel,JAQUEO_COOL_SCOUT_W_MODEL)
-	for(new i=0;i<sizeof(jaqueo_cool_scout_sounds);i++){
-		
-		engfunc(EngFunc_PrecacheSound,jaqueo_cool_scout_sounds[i] );
-		
-	}
-	
-}
-
-public weapon_change(id)
-{
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
-	
-	new weapon= read_data(2)
-	//weaponID = read_data(2)
-	if ( (weapon != CSW_SCOUT) && (weapon != CSW_AK47)){
-		
-		return
-		
-	}
-	switch_model(id)
-		
 }

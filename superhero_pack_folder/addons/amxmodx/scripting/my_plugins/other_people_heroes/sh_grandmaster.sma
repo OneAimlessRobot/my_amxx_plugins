@@ -41,11 +41,11 @@ public plugin_precache()
 public sh_client_spawn(id)
 {
 	if ( sh_is_freezetime() ) {
-		gPlayerInCooldown[id] = false
+		sh_unset_cooldown_flag(id)
 	}
 	else {
 		// dead Grandmaster's loose their revive power...
-		gPlayerInCooldown[id] = true
+		sh_set_cooldown_flag(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ public sh_client_death(victim)
 	// Look for alive players with unused Grandmaster Powers on the same team
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( player != victim && sh_user_has_hero(player,gHeroID)&& !gPlayerInCooldown[player] && idTeam == cs_get_user_team(player) ) {
+		if ( player != victim && sh_user_has_hero(player,gHeroID)&& !sh_get_cooldown_flag(player)&& idTeam == cs_get_user_team(player) ) {
 			// We got a Grandmaster willing to raise the dead!
 			new parm[2]
 			parm[0] = victim
@@ -79,7 +79,7 @@ public gmaster_respawn(parm[])
 	new dead = parm[0]
 	new gmaster = parm[1]
 
-	if ( gPlayerInCooldown[gmaster] || !is_user_alive(gmaster) ) return
+	if ( sh_get_cooldown_flag(gmaster)|| !is_user_alive(gmaster) ) return
 	if ( !is_user_connected(dead) || is_user_alive(dead) ) return
 	if ( cs_get_user_team(dead) != cs_get_user_team(gmaster) ) return
 

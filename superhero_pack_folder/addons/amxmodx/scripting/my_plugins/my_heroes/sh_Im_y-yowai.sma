@@ -136,7 +136,7 @@ public Inc_hits(id){
 }
 
 stock dmg_message(id,Float:damage){
-	if(client_hittable(id)){
+	if(is_user_alive(id)){
 		if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 				if(!is_user_bot(id)){
 

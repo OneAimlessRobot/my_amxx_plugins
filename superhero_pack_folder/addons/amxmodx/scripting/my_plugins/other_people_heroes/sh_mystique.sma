@@ -56,7 +56,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	gPlayerInCooldown[id] = false
+	sh_unset_cooldown_flag(id)
 
 	if ( gMorphed[id] ) {
 		cs_reset_user_model(id)
@@ -79,7 +79,7 @@ public sh_hero_key(id, heroID, key)
 			}
 
 			// Let them know they already used their ultimate if they have
-			if ( gPlayerInCooldown[id] ) {
+			if (sh_get_cooldown_flag(id)) {
 				sh_sound_deny(id)
 				return
 			}

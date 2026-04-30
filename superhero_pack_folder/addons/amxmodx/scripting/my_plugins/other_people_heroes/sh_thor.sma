@@ -108,7 +108,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	// if looking at something
 	if( pev_valid(ent))
 	{
-		if(client_hittable(ent)&&!sh_clients_are_same_team(ent,id)&&(ent!=id)){
+		if(is_user_alive(ent)&&!sh_clients_are_same_team(ent,id)&&(ent!=id)){
 			
 			thor_thunder_damage(id, ent)
 			

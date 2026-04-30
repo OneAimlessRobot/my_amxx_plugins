@@ -176,7 +176,7 @@ public maria_init()
 //----------------------------------------------------------------------------------------------
 maria_weapons(id)
 {
-	if ( sh_is_active() && client_hittable(id)&&sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=find_ent_by_owner(-1,MARIA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
@@ -333,7 +333,7 @@ public maria_loop(id){
 	if ( !sh_is_active()) return
 
 	for(new i=1;i < sh_maxplayers()+1;i++){
-		if(client_hittable(i)&&sh_user_has_hero(i,gHeroID)){
+		if(is_user_alive(i)&&sh_user_has_hero(i,gHeroID)){
 			update_stats(i)
 			if((get_user_health(i)>=health_drain_begin_threshold)){
 					gHealthDrainValveTimerStarted[i]=true

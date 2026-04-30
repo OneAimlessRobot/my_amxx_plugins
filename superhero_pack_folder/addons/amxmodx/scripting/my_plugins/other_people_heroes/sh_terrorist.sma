@@ -126,18 +126,18 @@ public terrorist_dropweapons(id)
 	new iCurrent = -1
 	new Float:weapvel[3]
 
-	while ( (iCurrent = FindEntity(iCurrent, "weaponbox")) > 0 ) {
+	while ( (iCurrent = find_ent_by_class(iCurrent, "weaponbox")) > 0 ) {
 
 		//Skip anything not owned by this client
-		if ( Entvars_Get_Edict(iCurrent, EV_ENT_owner) != id) continue
+		if ( entity_get_edict(iCurrent, EV_ENT_owner) != id) continue
 
 		//Get Weapon velocites
-		Entvars_Get_Vector(iCurrent, EV_VEC_velocity, weapvel)
+		entity_get_vector(iCurrent, EV_VEC_velocity, weapvel)
 
 		//If Velocities are all Zero its on the ground already and should stay there
 		if (weapvel[0] == 0.0 && weapvel[1] == 0.0 && weapvel[2] == 0.0) continue
 
-		RemoveEntity(iCurrent)
+		remove_entity(iCurrent)
 	}
 }
 //----------------------------------------------------------------------------------------------

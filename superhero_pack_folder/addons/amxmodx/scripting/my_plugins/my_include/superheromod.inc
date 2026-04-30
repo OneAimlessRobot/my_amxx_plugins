@@ -21,7 +21,6 @@
 
 //Default includes used for shero
 
-#tryinclude "../../include/amxmod.inc"
 #tryinclude "../../include/amxmodx.inc"
 #tryinclude "../../include/amxmisc.inc"
 #tryinclude "../my_include/randomx.inc"

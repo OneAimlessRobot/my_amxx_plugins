@@ -1,6 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "co2_fx_inc/co2_fx.inc"
@@ -31,7 +29,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public co2_newround(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
+	if(sh_is_active()&&is_user_alive(id)){
 		if(Get_BitVar(is_cO2_mask,id)){
 			sh_unco2_user(id)
 		}
@@ -85,7 +83,7 @@ public unco2_task(id){
 	
 }
 co2_user(id){
-	if(!sh_is_active()||!client_hittable(id)) return
+	if(!sh_is_active()||!is_user_alive(id)) return
 	sh_unmolly_user(id)
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,1)
 	remove_glow_user(id,CO2_TIME)

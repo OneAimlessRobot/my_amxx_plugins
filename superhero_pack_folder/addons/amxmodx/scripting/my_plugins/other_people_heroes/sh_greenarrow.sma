@@ -9,7 +9,10 @@
 
  */
 
- #include "../my_include/superheromod.inc"
+#define I_WANT_CONSTANTS
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
  // VARIABLES
  new gHeroName[]="Green Arrow"
@@ -36,6 +39,9 @@
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Green Arrows", "You get some Explosive Arrows for your bow(scout)!", false, "garrow_level" )
 
+	sh_register_superheromod_weapon_model(gHeroID,CSW_SCOUT,
+						"models/shmod/Greenarrow_v.mdl",
+						"models/shmod/Greenarrow_p.mdl")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
 	// INIT
@@ -78,8 +84,6 @@
 	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
-	engfunc(EngFunc_PrecacheModel, "models/shmod/Greenarrow_v.mdl")
-	engfunc(EngFunc_PrecacheModel, "models/shmod/Greenarrow_p.mdl")
 
  }
  //----------------------------------------------------------------------------------------------

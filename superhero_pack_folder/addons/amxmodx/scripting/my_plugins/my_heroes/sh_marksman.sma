@@ -22,13 +22,15 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 #define GIVE_WEAPON
 
 //------- Do not edit below this point ------//
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
-#define MARKSMAN_TASKID 12812
+new MARKSMAN_TASKID
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Marksman"
@@ -36,31 +38,7 @@ new const gHeroName[] = "Marksman"
 new gLastWeapon[SH_MAXSLOTS+1]
 new marksman_bullets[ SH_MAXSLOTS+1 ]
 
-
-
-
-new const g_psg1Sounds[6][]={
-	"weapons/marksmania/psg1_marksmania/psg1_boltpull1.wav",
-	"weapons/marksmania/psg1_marksmania/psg1_boltpull2.wav",
-	"weapons/marksmania/psg1_marksmania/psg1_boltrelease.wav",
-	"weapons/marksmania/psg1_marksmania/psg1_clipin.wav",
-	"weapons/marksmania/psg1_marksmania/psg1_clipout.wav",
-	"weapons/marksmania/psg1_marksmania/psg1_draw.wav"
-}
-new const g_dragunovSounds[6][]={
-	"weapons/marksmania/svd_marksmania/svd-1.wav",
-	"weapons/marksmania/svd_marksmania/svdnew-1.wav",
-	"weapons/marksmania/svd_marksmania/svd_boltpull.wav",
-	"weapons/marksmania/svd_marksmania/svd_clipin.wav",
-	"weapons/marksmania/svd_marksmania/svd_clipout.wav",
-	"weapons/marksmania/svd_marksmania/svd_clipon.wav"
-
-	}
-
-new const g_psg1Models[2][]={"models/shmod/marksman/psg1/v_sg550.mdl","models/shmod/marksman/psg1/p_sg550.mdl"}
-new const g_dragunovModels[2][]={"models/shmod/marksman/dragunov/v_g3sg1.mdl","models/shmod/marksman/dragunov/p_g3sg1.mdl"}
 new gPlayerLevel[SH_MAXSLOTS+1]
-new bool:g_modelsloaded
 new gHeroLevel
 new Float:PSG1_DMG_Mult
 new Float:DRAGUNOV_DMG_Mult
@@ -86,13 +64,22 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "G3SG1", "Receive a Dragunov (CT) or a PSG1 (T)")
 	
-	#if defined GIVE_WEAPON
-	sh_set_hero_shield(gHeroID, true)
-	#endif
+	sh_register_superheromod_weapon_model(gHeroID,CSW_G3SG1,
+									"models/shmod/marksman/dragunov/v_g3sg1.mdl",
+									"models/shmod/marksman/dragunov/p_g3sg1.mdl")
+
+	sh_register_superheromod_weapon_model(gHeroID,CSW_SG550,
+									"models/shmod/marksman/psg1/v_sg550.mdl",
+									"models/shmod/marksman/psg1/p_sg550.mdl")
+	
 	register_event("Damage", "Marksman_damage", "b", "2!0")
 	
+	MARKSMAN_TASKID=allocate_typed_task_id(player_task)
+
+	set_task( 1.0, "marksman_loop", MARKSMAN_TASKID,_,_,"b")
+
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO!
-	#if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
+	#if AMMO_MODE < 4
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
@@ -105,8 +92,6 @@ public sh_hero_init(id, heroID, mode)
 	
 	switch(mode) {
 		case SH_HERO_ADD: {
-			set_task( 0.3, "marksman_loop", id+MARKSMAN_TASKID, "", 0, "b")
-			
 			#if defined GIVE_WEAPON
 			Marksman_weapons(id)
 			#endif
@@ -119,8 +104,6 @@ public sh_hero_init(id, heroID, mode)
 				sh_drop_weapon(id, CSW_SG550, true)
 			}
 			#endif
-			remove_task(id+MARKSMAN_TASKID)
-			
 		}
 	}
 	
@@ -142,27 +125,24 @@ public loadCVARS()
 	gMinAlpha=get_cvar_num("Marksman_minalpha");
 }
 //----------------------------------------------------------------------------------------------
-public marksman_loop(id)
+public marksman_loop(task_id)
 {
-	id -= MARKSMAN_TASKID
+	if(!sh_is_active()||!sh_is_freezetime()) return
 
-	if ( !is_user_connected(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ){
-	
-	
-	return PLUGIN_HANDLED
-	
+	for(new id=1;id<sh_maxplayers()+1;id++){
+		if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) continue
+		
+		new alpha;
+		if(!(gPlayerLevel[id]-gHeroLevel)){
+			alpha=gMaxAlpha
+				
+		}
+		else{
+			new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[id]-gHeroLevel)
+			alpha=max(gMinAlpha,gMaxAlpha-alpharemoval)
+		}
+		Crouch(id,alpha)
 	}
-	new alpha;
-	if(!(gPlayerLevel[id]-gHeroLevel)){
-		alpha=gMaxAlpha
-			
-	}
-	else{
-		new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[id]-gHeroLevel)
-		alpha=max(gMinAlpha,gMaxAlpha-alpharemoval)
-	}
-	Crouch(id,alpha)
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 #if defined GIVE_WEAPON
@@ -193,53 +173,6 @@ public Marksman_damage(id)
 		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "PSG-1", headshot)
 			
 	}
-}
-public plugin_precache()
-{
-	for(new i=0;i<sizeof(g_dragunovModels);i++){
-	
-		if ( file_exists(g_dragunovModels[i]) ) {
-			engfunc(EngFunc_PrecacheModel,g_dragunovModels[i])
-			console_print(0, "Model loaded: ^"%s^"", g_dragunovModels[i])
-			g_modelsloaded=true
-			
-		}
-		else{
-			console_print(0, "Aborted loading ^"%s^", file does not exist on server", g_dragunovModels[i])
-			g_modelsloaded= false
-		}
-	
-	}
-	for(new i=0;i<sizeof(g_psg1Models);i++){
-	
-		if ( file_exists(g_psg1Models[i]) ) {
-			engfunc(EngFunc_PrecacheModel,g_psg1Models[i])
-			console_print(0, "Model loaded: ^"%s^"", g_psg1Models[i])
-			g_modelsloaded=true
-			
-		}
-		else{
-			console_print(0, "Aborted loading ^"%s^", file does not exist on server", g_psg1Models[i])
-			g_modelsloaded= false
-		}
-	
-	}
-	console_print(0, "Models loaded? %d", g_modelsloaded)
-	for(new i=0;i<sizeof(g_psg1Sounds);i++){
-	
-			engfunc(EngFunc_PrecacheSound, g_psg1Sounds[i])
-			console_print(0, "Sound loaded: ^"%s^"", g_psg1Sounds[i])
-	}
-	for(new i=0;i<sizeof(g_dragunovSounds);i++){
-	
-			engfunc(EngFunc_PrecacheSound, g_dragunovSounds[i])
-			console_print(0, "Sound loaded: ^"%s^"", g_dragunovSounds[i])
-	}
-	
-}
-public client_disconnected(id){
-
-		remove_task(id+MARKSMAN_TASKID)
 }
 
 public Crouch(id,alpha) {
@@ -279,23 +212,6 @@ public Crouch(id,alpha) {
 	return FMRES_IGNORED;
 }
 //----------------------------------------------------------------------------------------------
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ||!is_user_connected(id) ) return
-	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-
-	if ( wpnid == CSW_SG550 ) {
-		entity_set_string(id, EV_SZ_viewmodel, g_psg1Models[0])
-		entity_set_string(id, EV_SZ_weaponmodel, g_psg1Models[1])
-	}
-	else if(wpnid == CSW_G3SG1){
-		entity_set_string(id, EV_SZ_viewmodel, g_dragunovModels[0])
-		entity_set_string(id, EV_SZ_weaponmodel, g_dragunovModels[1])
-	}
-}
-
-//----------------------------------------------------------------------------------------------
 Marksman_weapons(id)
 {
 if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
@@ -333,7 +249,7 @@ return PLUGIN_CONTINUE
 }
 #endif
 //----------------------------------------------------------------------------------------------
-#if AMMO_MODE < 4 || defined USE_WEAPON_MODEL
+#if AMMO_MODE < 4
 public weapon_change(id)
 {
 if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
@@ -343,11 +259,6 @@ new weapon= read_data(2)
 if ( (weapon != CSW_G3SG1) && (weapon != CSW_SG550)){
 	
 	return
-
-}
-if ( ((weapon == CSW_SG550 )||(weapon == CSW_G3SG1 )) && g_modelsloaded){
-	
-	switch_model(id)
 
 }
 #if AMMO_MODE < 4

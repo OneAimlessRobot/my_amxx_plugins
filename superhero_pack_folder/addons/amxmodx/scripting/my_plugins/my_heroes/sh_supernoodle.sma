@@ -20,6 +20,23 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
 new gHeroID
+
+new dmg_source_name_short_super_shotgun[SAFE_BUFFER_SIZE+1]="2Barrel"
+new dmg_source_name_long_super_shotgun[SAFE_BUFFER_SIZE+1]="2Barrel"
+new custom_dmg_id_super_shotgun
+
+new dmg_source_name_short_hunt_rifle[SAFE_BUFFER_SIZE+1]="hunting_rifle"
+new dmg_source_name_long_hunt_rifle[SAFE_BUFFER_SIZE+1]="hunting_rifle"
+new custom_dmg_id_hunt_rifle
+
+new dmg_source_name_short_arifle[SAFE_BUFFER_SIZE+1]="assault_rifle"
+new dmg_source_name_long_arifle[SAFE_BUFFER_SIZE+1]="assault_rifle"
+new custom_dmg_id_arifle
+
+new dmg_source_name_short_the_pistols[SAFE_BUFFER_SIZE+1]="the_pistols"
+new dmg_source_name_long_the_pistols[SAFE_BUFFER_SIZE+1]="the_pistols"
+new custom_dmg_id_the_pistols
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -38,6 +55,23 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!/Extra Damage for all these/Unlimited Ammo. Extra HP and AP.", false, "SuperNoodle_level")
 
+
+	custom_dmg_id_super_shotgun=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_super_shotgun,
+				dmg_source_name_long_super_shotgun,0)
+	
+	custom_dmg_id_hunt_rifle=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_hunt_rifle,
+				dmg_source_name_long_hunt_rifle,0)
+	
+	custom_dmg_id_arifle=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_arifle,
+				dmg_source_name_long_arifle,0)
+	
+	custom_dmg_id_the_pistols=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_the_pistols,
+				dmg_source_name_long_the_pistols,0)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("SuperNoodle_init", "SuperNoodle_init")
@@ -107,33 +141,58 @@ public SuperNoodle_weapons(id)
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_damage(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
 
-	if ( !is_user_connected(attacker)||id==attacker ) return HAM_IGNORED
+	if ( !is_user_connected(attacker)||id==attacker ) return PLUGIN_CONTINUE
 
 	if ( sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
-		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "super shotgun", headshot)
-	
+		if (extraDamage > 0){
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_shotgun,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_super_shotgun)
+		}
 	}
 	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
-		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "precisoin rifle", headshot)
-			
+		if(extraDamage > 0){
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_hunt_rifle,
+								headshot,
+								_,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_hunt_rifle)
+		}
 	}
 	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M249 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
-		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "assault rifle", headshot)
-			
+		if(extraDamage > 0){
+
+			sh_extra_damage( id, attacker, extraDamage,
+							dmg_source_name_long_arifle,
+							headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_SUPER_BULLET,
+							custom_dmg_id_arifle)
+		}
 	}
 	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_ELITE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
-		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "dual pistols", headshot)
+		if(extraDamage > 0){
+
+			sh_extra_damage( id, attacker, extraDamage,
+							dmg_source_name_long_the_pistols,
+							headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_SUPER_BULLET,
+							custom_dmg_id_the_pistols)
+		}
 	}
-	return HAM_IGNORED
+	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
