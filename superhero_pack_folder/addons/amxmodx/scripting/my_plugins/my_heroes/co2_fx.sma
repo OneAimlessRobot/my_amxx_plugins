@@ -2,6 +2,7 @@
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "co2_fx_inc/co2_fx.inc"
+#include "tomie_yu_inc/tomie_yu.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -76,10 +77,17 @@ co2_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_cO2_mask,id)) return
 	sh_unmolly_user(id)
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,1)
-	remove_glow_user(id,CO2_TIME)
+	
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+
+	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
+	
+	remove_glow_user(id,CO2_TIME*time_to_apply_mult)
 	Set_BitVar(is_cO2_mask,id)
 	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[LTGREEN])
-	set_task(CO2_TIME,"unco2_task",id+UNCO2_TASKID)
+	
+	
+	set_task(CO2_TIME*time_to_apply_mult,"unco2_task",id+UNCO2_TASKID)
 	
 	
 	

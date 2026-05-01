@@ -13,10 +13,15 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new fwd_gore_pre;
+
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	
+	fwd_gore_pre = CreateMultiForward("sh_gore_effect_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_ARRAY,FP_ARRAY)
+
 	prepare_shero_aux_lib_pt2()
 
 }
@@ -372,7 +377,6 @@ public _anime_kill_fx(iPlugins, iParams){
 public _gross_kill_gibs_fx(iPlugins,iParm){
 
 	new id=get_param(1)
-	if(!is_user_connected(id)) return
 	if(is_user_alive(id)) return
 	new Float:vic_origin[3],Float:origin[3]
 	new ivExplodeAt[3],ivicOrigin[3]
@@ -380,20 +384,41 @@ public _gross_kill_gibs_fx(iPlugins,iParm){
 	get_array_f(3,origin,3)
 
 
-	fx_invisible(id)
+	new preparedVictimOrigin=PrepareArray(_:vic_origin,3,1)
+	new preparedKillerOrigin=PrepareArray(_:origin,3,1)
 
-	FVecIVec(vic_origin,ivicOrigin)
-	FVecIVec(origin,ivExplodeAt)
-	fx_gib_explode(ivicOrigin,ivExplodeAt)
-	fx_blood_large(ivicOrigin,4)
-	fx_blood_small(ivicOrigin,4)
+	new gore_fwd_return_type:the_gore_return_value=gore_fwd_pass
+	if (!ExecuteForward(fwd_gore_pre, the_gore_return_value,
+								id,
+								preparedVictimOrigin,
+								preparedKillerOrigin)){
 
-	fx_blood_small(ivicOrigin,8)
-	fx_extra_blood(ivicOrigin)
-	fx_blood_large(ivExplodeAt,2)
-	fx_blood_small(ivicOrigin,4)
+		server_print("Sh gore forward execute error.");
+	}
+	switch(the_gore_return_value){
+		case gore_fwd_pass:{
+			fx_invisible(id)
+
+			FVecIVec(vic_origin,ivicOrigin)
+			FVecIVec(origin,ivExplodeAt)
+			fx_gib_explode(ivicOrigin,ivExplodeAt)
+			fx_blood_large(ivicOrigin,4)
+			fx_blood_small(ivicOrigin,4)
+
+			fx_blood_small(ivicOrigin,8)
+			fx_extra_blood(ivicOrigin)
+			fx_blood_large(ivExplodeAt,2)
+			fx_blood_small(ivicOrigin,4)
+		}
+		default:{
+			
+			sh_chat_message(id,_,"Gore blocked!")
+
+		}
+	}
 
 }
+
 //----------------------------------------------------------------------------------------------
 public _blood_spray(iPlugins, iParams){
 

@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"

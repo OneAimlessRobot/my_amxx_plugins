@@ -348,7 +348,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
         return DMG_FWD_PASS
     }
     if((new_dmg_type==SH_NEW_DMG_FIRE)||(new_dmg_type==SH_NEW_DMG_BLEED)){
-        if(sh_user_has_hero(attacker,gHeroID) ){
+        if((attacker!=victim) && sh_user_has_hero(attacker,gHeroID) ){
 			aura(attacker,LineColors[PINK])
 			add_speed_points(attacker,float(damage))
         }

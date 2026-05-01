@@ -4,6 +4,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "co2_fx_inc/co2_fx.inc"
+#include "tomie_yu_inc/tomie_yu.inc"
 #include "freeze_fx/freeze_fx.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
@@ -68,17 +69,21 @@ public burn_task(array[2],id)
 	set_render_with_color_const(id,PINK,1,50,50,1,1)
 	remove_glow_user(id,BURN_PERIOD)
 	make_fire(id,30.0)
-	static players[33];
 
-	new num_players=find_sphere_class(id,"player",MOLLY_PROPAGATE_RADIUS,players,sizeof(players)-1)
-	for ( new i = 0; i < num_players; i++) {
-		new pid=players[i]
+	
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+	if(!is_tomie_user){
+		static players[33];
 
-		if( !is_user_alive(pid) || pid==id || Get_BitVar(gIsBurningMask,pid)) continue
-		sh_molly_user(pid,id,tranq_get_hero_id())
-		
+		new num_players=find_sphere_class(id,"player",MOLLY_PROPAGATE_RADIUS,players,sizeof(players)-1)
+		for ( new i = 0; i < num_players; i++) {
+			new pid=players[i]
+
+			if( !is_user_alive(pid) || pid==id || Get_BitVar(gIsBurningMask,pid)) continue
+			sh_molly_user(pid,id,tranq_get_hero_id())
+			
+		}
 	}
-
 	if ( pev(id, pev_waterlevel) == 3 ) {
 		unburn_user(id)
 		return
@@ -187,14 +192,18 @@ stock burn_user(id,attacker){
 	if(Get_BitVar(gIsBurningMask,id)) return
 
 	Set_BitVar(gIsBurningMask,id)
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
 	new array[2]
 	array[0] = attacker
-	array[1] = 0
+	array[1] = sh_user_has_hero(id,tomie_yu_hero_id())?times_if_tomie_user:0
 	
 	if(sh_is_user_frozen(id)){
 		sh_unfreeze_user(id)
 	}
-	emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	if(!is_tomie_user){
+		emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
 	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
 	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
 	
