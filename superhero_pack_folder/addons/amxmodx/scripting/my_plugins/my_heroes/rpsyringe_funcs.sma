@@ -96,7 +96,7 @@ public CmdStart(id, uc_handle)
 }
 public bool:client_isnt_hitter(id){
 	
-	if ( !client_hittable(id)){
+	if ( !is_user_alive(id)){
 		
 		return true
 	}
@@ -138,7 +138,7 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 	for (new i=0; i < numfound; i++)
 	{		
 		new pid = entlist[i];
-		if( !client_hittable(pid) ) continue
+		if( !is_user_alive(pid) ) continue
 		
 		make_effect(pid,id,gatling_get_hero_id(),fx_num,false)
 	}

@@ -104,7 +104,7 @@ public CmdStart(id, uc_handle)
 
 		return FMRES_IGNORED
 	}
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED
 	}
@@ -142,7 +142,7 @@ launch_scan(id){
 
 
 	
-	if(!client_hittable(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
 	
 		return 
 	

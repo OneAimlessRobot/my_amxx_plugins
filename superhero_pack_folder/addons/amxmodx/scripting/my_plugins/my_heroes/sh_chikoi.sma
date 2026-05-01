@@ -89,7 +89,7 @@ return PLUGIN_CONTINUE
 
 public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
 
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 
 		return HAM_IGNORED;
 

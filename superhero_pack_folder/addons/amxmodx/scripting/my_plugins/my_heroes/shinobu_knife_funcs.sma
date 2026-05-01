@@ -54,7 +54,7 @@ public plugin_init(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	new  wpnid = get_user_weapon(id)
@@ -73,7 +73,7 @@ public _manual_cloak_check(id){
 
 	new id= get_param(1)
 
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	g_prev_shinobu_cloaked[id]=0
@@ -86,7 +86,7 @@ public _uncloak_shinobu(id){
 
 	new id= get_param(1)
 
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 
 	
 	g_curr_shinobu_cloaked[id]=0
@@ -96,7 +96,7 @@ public _uncloak_shinobu(id){
 public shinobu_cloak(id, uc_handle){
 
 
-	if(!client_hittable(id)) return FMRES_IGNORED
+	if(!is_user_alive(id)) return FMRES_IGNORED
 
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return FMRES_IGNORED
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -110,7 +110,7 @@ public shinobu_cloak(id, uc_handle){
 
 apply_cloak(id){
 	
-	if(!client_hittable(id)||!sh_user_has_hero(id,shinobu_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,shinobu_get_hero_id())){
 		
 		g_curr_shinobu_cloaked[id]=0
 		g_prev_shinobu_cloaked[id]=0
@@ -137,7 +137,7 @@ apply_cloak(id){
 //----------------------------------------------------------------------------------------------
 public teleport_newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -169,7 +169,7 @@ shinobu_teleport(id,attacker)
 //----------------------------------------------------------------------------------------------
 positionChangeTimer(id,attacker)
 {
-	if ( !client_hittable(id)||!client_hittable(attacker) ) return
+	if ( !is_user_alive(id)||!is_user_alive(attacker) ) return
 
 	new Float:velocity[3]
 	entity_get_vector(attacker, EV_VEC_velocity, velocity)
@@ -222,7 +222,7 @@ public _nani_behind_player(iPlugin,iParams){
 	tg_player= get_param(2),
 	Float:distance_tele_tg=get_param_f(3)
 
-	if(!client_hittable(tele_player)||!client_hittable(tg_player)){
+	if(!is_user_alive(tele_player)||!is_user_alive(tg_player)){
 
 		return
 	}

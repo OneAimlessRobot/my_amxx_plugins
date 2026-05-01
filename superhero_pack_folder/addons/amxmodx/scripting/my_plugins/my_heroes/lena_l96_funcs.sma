@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
@@ -88,7 +87,7 @@ public bulette_thinque(ent){
 	
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 
 		remove_entity(ent)	
 		return FMRES_IGNORED
@@ -136,7 +135,7 @@ public loadCVARS()
 }
 public bool:client_isnt_hitter(id){
 	
-	return !client_hittable(id,sh_user_has_hero(id,lena_get_hero_id()))
+	return !is_user_alive(id)||!sh_user_has_hero(id,lena_get_hero_id())
 	
 }
 public CmdStart(id, uc_handle)

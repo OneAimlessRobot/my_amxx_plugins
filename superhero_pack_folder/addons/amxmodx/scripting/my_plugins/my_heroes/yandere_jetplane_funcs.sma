@@ -1,6 +1,4 @@
-
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 
@@ -142,7 +140,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(pev_valid(damage_entity)!=2){
 		return
 	}
-	if(!client_hittable(id)||!client_hittable(attacker)){
+	if(!is_user_alive(id)||!is_user_alive(attacker)){
 		return
 	}
 	if(!sh_user_has_hero(attacker,yandere_get_hero_id())){
@@ -182,7 +180,7 @@ public _jet_charge_user(iPlugin, iParams){
 
 
 
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 
 	if(!sh_user_has_hero(id,yandere_get_hero_id())) return
 
@@ -330,7 +328,7 @@ public jet_deploy_task(parm[],id){
 		
 		return;
 	}
-	if(!client_hittable(attacker)){
+	if(!is_user_alive(attacker)){
 		
 		return
 	}
@@ -429,7 +427,7 @@ public FwdTouchWorld( jet, World ) {
 		return FMRES_IGNORED;
 	}
 	new owner=pev(jet,pev_owner)
-	if(client_hittable(owner,sh_user_has_hero(owner,yandere_get_hero_id()))){
+	if(is_user_alive(owner)||!sh_user_has_hero(owner,yandere_get_hero_id())){
 
 		if((get_entity_velocity(jet)/get_jet_speed())>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
@@ -464,7 +462,7 @@ public jet_think(ent)
 	pev(ent, pev_origin, Pos)
 	new owner=pev(ent,pev_owner)
 	
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 
 		return FMRES_IGNORED
 	}
@@ -697,7 +695,7 @@ public charge_task(id){
 	
 	}
 	id-=JET_CHARGE_TASKID
-	if(!client_hittable(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
 	
 		uncharge_user(id)
 		return
@@ -753,7 +751,7 @@ public charge_task(id){
 public sh_round_end(){
 
 	for (new id=1; id < sh_maxplayers()+1; id++) {
-		if ( client_hittable(id,sh_user_has_hero(id,yandere_get_hero_id()))) {
+		if ( is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) {
 			uncharge_user(id)
 		}
 	}
@@ -761,7 +759,7 @@ public sh_round_end(){
 }
 public jet_sound_task(id){
 	new owner=id-JET_SOUND_TASKID
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 		
 		return
 	}
@@ -838,7 +836,7 @@ disengage_user_jet_throttle(owner){
 public jet_hud_task(id){
 	
 	new owner=id-JET_HUD_TASKID
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 		
 		return
 	}

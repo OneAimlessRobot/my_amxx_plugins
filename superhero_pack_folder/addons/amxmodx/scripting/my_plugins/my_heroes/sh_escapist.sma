@@ -93,7 +93,7 @@ public plugin_init()
 }
 wpn_switch_primitive(id){
 
-	if ( !client_hittable(id)||!sh_user_has_hero(id,gHeroID)  ){
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ){
 		return
 	}
 
@@ -112,7 +112,7 @@ wpn_switch_primitive(id){
 public getFastWeaponAndSpeed(i){
 	
 	
-	if (!client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
+	if (!is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
 		return
 	}
 	
@@ -204,7 +204,7 @@ public escapist_loop(id)
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=0;i< sh_maxplayers()+1;i++){
-		if ( !client_hittable(i)||!sh_user_has_hero(i,gHeroID)){
+		if ( !is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
 			
 			continue
 		

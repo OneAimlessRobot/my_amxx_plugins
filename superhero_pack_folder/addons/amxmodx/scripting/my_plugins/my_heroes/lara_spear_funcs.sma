@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
@@ -88,7 +87,7 @@ Float:get_charge_index_from_id(id){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,spear_get_hero_id()))) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,spear_get_hero_id())) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -295,7 +294,7 @@ launch_spear(id)
 
 public lara_spear_decide_func(id){
 
-	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,spear_get_hero_id()))) return ;
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,spear_get_hero_id())) return ;
 
 	new spear_mode:the_mode=spear_get_user_spear_mode(id);
 	switch(the_mode){

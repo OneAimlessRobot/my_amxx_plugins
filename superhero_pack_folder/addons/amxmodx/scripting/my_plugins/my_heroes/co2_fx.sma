@@ -30,12 +30,10 @@ public plugin_init(){
 public co2_newround(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		if(Get_BitVar(is_cO2_mask,id)){
-			sh_unco2_user(id)
-		}
+		unco2_user(id)
+		
 
 	}
-	
 }
 
 public plugin_natives(){
@@ -59,9 +57,6 @@ public _sh_co2_user(iPlugin,iParams){
 	
 	
 }
-public plugin_precache(){
-	
-}
 
 public _sh_unco2_user(iPlugin,iParams){
 	
@@ -70,20 +65,15 @@ public _sh_unco2_user(iPlugin,iParams){
 	
 	
 	
-	
 }
 public unco2_task(id){
 	id-=UNCO2_TASKID
-	
-	if(!sh_is_active()||!is_user_connected(id)){
-		
-		return
-	}
+
 	unco2_user(id)
-	
+
 }
 co2_user(id){
-	if(!sh_is_active()||!is_user_alive(id)) return
+	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_cO2_mask,id)) return
 	sh_unmolly_user(id)
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,1)
 	remove_glow_user(id,CO2_TIME)
@@ -96,10 +86,13 @@ co2_user(id){
 }
 public unco2_user(id){
 	
-	sh_set_rendering(id)
-	UnSet_BitVar(is_cO2_mask,id)
-	set_damage_icon(id,0,DMG_ICON_GAS)
-	
+	if(!sh_is_active()||!is_user_connected(id)) return
+
+	if(Get_BitVar(is_cO2_mask,id)){
+		sh_set_rendering(id)
+		UnSet_BitVar(is_cO2_mask,id)
+		set_damage_icon(id,0,DMG_ICON_GAS)
+	}
 	
 	
 }
@@ -107,10 +100,7 @@ public unco2_user(id){
 public on_death_co2()
 {	
 	new id = read_data(2)
-	
-	if(is_user_connected(id)&&sh_is_active()){
-		sh_unco2_user(id)
-	
-	}
+
+	unco2_user(id)
 	
 }

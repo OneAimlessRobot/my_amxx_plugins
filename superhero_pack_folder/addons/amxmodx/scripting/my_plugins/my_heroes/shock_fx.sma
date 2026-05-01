@@ -17,7 +17,7 @@
 
 
 new UNSHOCK_TASKID
-new is_shock_mask=0
+new is_shock_mask = 0
 
 public plugin_init(){
 	
@@ -32,13 +32,8 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public stun_newround(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
-		if(Get_BitVar(is_shock_mask,id)){
-			sh_unshock_user(id)
-		}
+	unshock_user(id)
 
-	}
-	
 }
 
 public plugin_natives(){
@@ -77,17 +72,13 @@ public _sh_unshock_user(iPlugin,iParams){
 }
 public unshock_task(id){
 	id-=UNSHOCK_TASKID
-	
-	if(!sh_is_active()||!is_user_connected(id)){
-		
-		return
-	}
+
 	unshock_user(id)
 	
 }
 shock_user(id){
 	
-    if(!sh_is_active()||!client_hittable(id)) return
+    if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_shock_mask,id)) return
 
 
     emit_sound(id, CHAN_WEAPON,SHOCK_GRENADE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -99,7 +90,7 @@ shock_user(id){
 
         new pid = entlist[i];
         
-        if( !client_hittable(pid) ) continue
+        if( !is_user_alive(pid) ) continue
         
         if( Get_BitVar(is_shock_mask, pid)) continue
         
@@ -125,10 +116,14 @@ shock_user(id){
 }
 public unshock_user(id){
 	
-	sh_set_rendering(id)
-	UnSet_BitVar(is_shock_mask,id)
-	set_damage_icon(id,0,DMG_ICON_SHOCK)
-	
+	if ( !sh_is_active() ||!is_user_connected(id)) return
+
+
+	if(Get_BitVar(is_shock_mask,id)){
+		sh_set_rendering(id)
+		UnSet_BitVar(is_shock_mask,id)
+		set_damage_icon(id,0,DMG_ICON_SHOCK)
+	}
 	
 	
 }
@@ -137,9 +132,6 @@ public on_death_shock()
 {	
 	new id = read_data(2)
 	
-	if(is_user_connected(id)&&sh_is_active()){
-		sh_unshock_user(id)
-	
-	}
+	unshock_user(id)
 	
 }

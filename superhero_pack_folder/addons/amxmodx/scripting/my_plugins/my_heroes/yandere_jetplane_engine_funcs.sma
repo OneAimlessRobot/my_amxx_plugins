@@ -299,7 +299,7 @@ public OnCmdStart(id,uc_handle)
 
 		return FMRES_IGNORED
 	}
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED
 	}

@@ -53,7 +53,7 @@ public plugin_natives(){
 }
 public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	id-=RADIOACTIVE_TASK_ID
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		unradioactive_user(id);
 		return
@@ -79,7 +79,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		}
 		laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
 		for(new i=0;i<array[1];i++){
-			if(!client_hittable(array[i+NUM_INIT_TRACK_PARAMS])){
+			if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
 			
 				continue
 			}

@@ -155,10 +155,10 @@ new att_team=get_user_team(Att);
 for(new i=0;i<num_ents;i++){
 
 	Vic=ent_list[i];
-	if(!client_hittable(Vic)){
+	if(!is_user_alive(Vic)){
 		continue
 	}
-	if(!client_hittable(Att)){
+	if(!is_user_alive(Att)){
 		continue
 	}
 	if(get_user_team(Vic)==att_team){
@@ -180,7 +180,7 @@ public swing_scythe(weaponent)
 		return HAM_IGNORED
 	}
 	new id = get_pdata_cbase(weaponent, 41, 4);
-	if (!client_hittable(id)){
+	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}
 	if (!sh_user_has_hero(id,gHeroID) ){

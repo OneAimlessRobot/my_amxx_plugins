@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
@@ -95,7 +94,7 @@ public _mine_get_mine_disarmer_on(iPlugins,iParams){
 }
 public plant_mine(id){
 	
-	if ( !client_hittable(id)) return
+	if ( !is_user_alive(id)) return
 	if(!sh_user_has_hero(id,sapper_get_hero_id()))  return
 
 	new Float:origin[3];
@@ -137,7 +136,7 @@ public mine_think(mine_id){
 		new pid = entlist[i];
 			
 		
-		if (!is_user_alive(pid) ||!client_hittable(pid)){
+		if (!is_user_alive(pid) ||!is_user_alive(pid)){
 			continue;
 		}
 		if((get_user_team(attacker) == get_user_team(pid))){
@@ -163,7 +162,7 @@ public blow_mine_up(ent, id)
 			return;
 		}
 		new attacker = entity_get_edict(ent, EV_ENT_owner);
-		if(!client_hittable(attacker,sh_user_has_hero(attacker,sapper_get_hero_id()))){
+		if(!is_user_alive(attacker)||!sh_user_has_hero(attacker,sapper_get_hero_id())){
 		
 			return
 		}
@@ -352,7 +351,7 @@ public charge_task(id){
 	
 	}
 	id-=MINE_CHARGE_TASKID
-	if(!client_hittable(id)||!sh_user_has_hero(id,sapper_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,sapper_get_hero_id())){
 	
 		uncharge_user(id)
 		return

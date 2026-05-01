@@ -145,7 +145,7 @@ public gambit_weapons(id)
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !client_hittable(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	new gambit_charged= entity_get_int(idinflictor,EV_INT_iuser1)
 	if ( gambit_charged ) {
 		if ( is_user_alive(id) ) {

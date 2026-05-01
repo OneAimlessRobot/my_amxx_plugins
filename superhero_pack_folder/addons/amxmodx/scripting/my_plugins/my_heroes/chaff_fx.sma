@@ -15,7 +15,7 @@
 
 new CHAFF_TASKID
 new DISORIENT_TASKID
-new bool:gIsChaffed[SH_MAXSLOTS+1]
+new gIsChaffedMask = 0
 public plugin_init(){
 	
 	
@@ -31,12 +31,7 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public chaff_newRound(id)
 {	
-	if(sh_is_active()&&is_user_alive(id)){
-		if(gIsChaffed[id]){
-			sh_unchaff_user(id)
-		}
-
-	}
+	unchaff_user(id)
 	
 }
 
@@ -71,18 +66,18 @@ public disorient_user(array[1],id)
 }
 public _sh_get_user_is_chaffed(iPlugin,iParams){
 	new id= get_param(1);
-	return gIsChaffed[id]
+	return Get_BitVar(gIsChaffedMask,id)
 }
 public _sh_chaff_user(iPlugin,iParams){
 	
 	new user=get_param(1)
-	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	new attacker_name[128]
-	get_user_name(attacker,attacker_name,127)
-	new user_name[128]
-	get_user_name(user,user_name,127)
-	if(!gIsChaffed[user]){
+	if(!Get_BitVar(gIsChaffedMask,user)){
+		new attacker=get_param(2)
+		new gHeroID=get_param(3)
+		new attacker_name[128]
+		get_user_name(attacker,attacker_name,127)
+		new user_name[128]
+		get_user_name(user,user_name,127)
 		if((user==attacker)){
 			if(CAN_SELF_CHAFF&&user){
 				
@@ -112,9 +107,6 @@ public _sh_chaff_user(iPlugin,iParams){
 	
 	
 }
-public plugin_precache(){
-	
-}
 
 public _sh_unchaff_user(iPlugin,iParams){
 	
@@ -135,7 +127,7 @@ public chaff_task(array[1],id){
 	}
 	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransColor)
 	
-	if(gIsChaffed[id]&&(array[0]<=CHAFF_TIMES)){
+	if(Get_BitVar(gIsChaffedMask,id)&&(array[0]<=CHAFF_TIMES)){
 		array[0]++
 		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array))
 	}
@@ -151,7 +143,7 @@ chaff_user(id){
 	array[0] = 0
 	sh_screen_shake(id,10.0,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),10.0)
 	sh_set_stun(id,floatmul(CHAFF_PERIOD,float(CHAFF_TIMES)),default_stun_speed)
-	gIsChaffed[id]=true
+	Set_BitVar(gIsChaffedMask,id)
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
 	set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array, sizeof(array))
 	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
@@ -161,11 +153,14 @@ chaff_user(id){
 }
 public unchaff_user(id){
 	
-	sh_set_rendering(id)
-	gIsChaffed[id]=false
-	set_damage_icon(id,0,DMG_ICON_SHOCK)
-	entity_set_int( id, EV_INT_fixangle, 0 );
-	
+	if(!sh_is_active()||!is_user_connected(id)) return
+
+	if(Get_BitVar(gIsChaffedMask,id)){
+		sh_set_rendering(id)
+		UnSet_BitVar(gIsChaffedMask,id)
+		set_damage_icon(id,0,DMG_ICON_SHOCK)
+		entity_set_int( id, EV_INT_fixangle, 0 );
+	}
 	
 	
 }
@@ -173,10 +168,6 @@ public unchaff_user(id){
 public on_death_chaffed()
 {	
 	new id = read_data(2)
-	
-	if(is_user_connected(id)&&sh_is_active()){
-		sh_unchaff_user(id)
-	
-	}
+	unchaff_user(id)
 	
 }

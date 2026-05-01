@@ -9,7 +9,6 @@ squall_bullets 7
 
 */
 
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -116,7 +115,7 @@ public Ham_Weapon_Attack(weaponent)
 
 	if(!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
 
-	if(!client_hittable(id)) return HAM_IGNORED;
+	if(!is_user_alive(id)) return HAM_IGNORED;
 	
 	if ( gBullets[id] >= 0 )
 	{

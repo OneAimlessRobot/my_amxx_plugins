@@ -135,7 +135,7 @@ public yandere_angry_idle_checks(id, uc_handle){
 
 	if(!sh_is_active()) return FMRES_IGNORED
 	
-	if(!client_hittable(id)) return FMRES_IGNORED
+	if(!is_user_alive(id)) return FMRES_IGNORED
 
 	if(!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
 	static butnprs
@@ -156,7 +156,7 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 
 
-	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED
 	}
@@ -308,7 +308,7 @@ public yandere_loop(id){
 
 update_stats(id){
 
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 	if(!sh_user_has_hero(id,gHeroID) ) return
 	
 	new Float:maxspeed=get_user_maxspeed(id)
@@ -374,7 +374,7 @@ public yandere_timer_transform(id){
 
 			gTransTimer[id]=trans_time
 		}
-		if(Get_BitVar(gSuperAngryMask,id)&&client_hittable(id)){
+		if(Get_BitVar(gSuperAngryMask,id)&&is_user_alive(id)){
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			BlowUp(id)
 			jet_destroy(id)
@@ -454,12 +454,12 @@ public newRound(id)
 }
 public yandere_damage(id)
 {
-	if ( !sh_is_active() || !client_hittable(id)) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = (bodypart == 1 ? 1 : 0)
-	if ( !client_hittable(attacker)) return PLUGIN_CONTINUE
+	if ( !is_user_alive(attacker)) return PLUGIN_CONTINUE
 	
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return PLUGIN_CONTINUE
@@ -734,7 +734,7 @@ public BlowUp(id)
 
 public weaponChange(id)
 {
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID) ) return
 
 	new  wpnid = get_user_weapon(id)

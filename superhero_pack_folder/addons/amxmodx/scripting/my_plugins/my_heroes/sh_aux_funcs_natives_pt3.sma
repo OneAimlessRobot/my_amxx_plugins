@@ -138,7 +138,7 @@ public _explosion(iPlugins,iParams){
 	for (new i=0; i < numfound; i++)
 	{		
 		new pid = entlist[i];
-		if(!client_hittable(pid)){
+		if(!is_user_alive(pid)){
 			continue
 		
 		}

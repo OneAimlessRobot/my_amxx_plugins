@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
@@ -94,7 +93,7 @@ public Item_PostFrame_Post(iEnt)
 		return HAM_IGNORED
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
 	if (!sh_is_active()||!sh_user_has_hero(id,spores_ksun_hero_id())||!ksun_player_is_in_ultimate(id)){
@@ -106,7 +105,7 @@ public Item_PostFrame_Post(iEnt)
 }
 public ksun_ultimate_damage_hook(id, idinflictor, attacker, Float:damage, damagebits)
 {
-if ( !sh_is_active() || !client_hittable(id) || !client_hittable(attacker)) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
 if(!sh_user_has_hero(id,spores_ksun_hero_id())&&!sh_user_has_hero(attacker,spores_ksun_hero_id())) return HAM_IGNORED
 
@@ -225,7 +224,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
 	new id= get_param(1)
 	
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 	if(!sh_user_has_hero(id,spores_ksun_hero_id())) return
 	
 	g_player_in_ultimate[id]=1
@@ -236,7 +235,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 
 public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
-	if(!client_hittable(id)) return
+	if(!is_user_alive(id)) return
 	
 	if(!ksun_player_is_in_ultimate(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return
 	new hud_msg[128];
@@ -297,7 +296,7 @@ public _ksun_player_is_ultimate_ready(iPlugins, iParams){
 public ksun_rifle_laser(id)
 {
 
-if(!client_hittable(id)) return PLUGIN_CONTINUE 
+if(!is_user_alive(id)) return PLUGIN_CONTINUE 
 if ( !sh_user_has_hero(id,spores_ksun_hero_id())) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 

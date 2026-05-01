@@ -109,7 +109,7 @@ public Item_PostFrame_Post(iEnt)
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return HAM_IGNORED
 	}
@@ -153,7 +153,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		}
 	}
 	
-	if( !sh_is_active() ||!client_hittable(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
+	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
 		
 		return return_result;
 	
@@ -216,7 +216,7 @@ public engine_repair_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(!client_hittable(i)){
+		if(!is_user_alive(i)){
 			continue
 		}
 		if(sh_user_has_hero(i,gHeroID)){

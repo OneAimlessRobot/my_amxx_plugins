@@ -80,9 +80,7 @@ init_hud_syncs()
 public bleed_newRound(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		if(gIsBleeding[id]){
-			sh_unbleed_user(id)
-		}
+		unbleed_user(id)
 	}
 	
 }
@@ -199,32 +197,27 @@ public _sh_bleed_user(iPlugin,iParams){
 	new bleed_type=get_param(3)
 	new gHeroID=get_param(4)
 	new heal_user=get_param(5)
-	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)) return
+	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||gIsBleeding[user]) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
 	new user_name[128]
 	get_user_name(user,user_name,127)
-	if(!gIsBleeding[user]){
 		
-		
-		if(!is_user_bot(user)){
-			sh_chat_message(user,gHeroID,"%s has bled you!!!",attacker_name)
-		}
-		if(!is_user_bot(attacker)){
-			sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
-		
-		}
-		emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		gIsBleeding[user]=bleed_type
-		if(bleed_type==_:BLEED_ULTRA){
-
-			sh_chat_message(attacker,gHeroID,"Ultra bleeding!!!")
-		}
-		bleed_task_user(user,attacker,heal_user)
+	if(!is_user_bot(user)){
+		sh_chat_message(user,gHeroID,"%s has bled you!!!",attacker_name)
 	}
+	if(!is_user_bot(attacker)){
+		sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
+	
+	}
+	emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	gIsBleeding[user]=bleed_type
+	if(bleed_type==_:BLEED_ULTRA){
 
-
+		sh_chat_message(attacker,gHeroID,"Ultra bleeding!!!")
+	}
+	bleed_task_user(user,attacker,heal_user)
 
 }
 public plugin_precache(){
@@ -297,7 +290,7 @@ public bleed_task(array[4],id){
 }
 unbleed_user(id){
 
-	if ( !sh_is_active() || !is_user_connected(id)) return
+	if ( !sh_is_active() || !is_user_connected(id)||!gIsBleeding[id]) return
 	
 	sh_set_rendering(id)
 	gIsBleeding[id]=NONE
@@ -311,7 +304,7 @@ public on_death_bleeding()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		sh_unbleed_user(id)
+		unbleed_user(id)
 	
 	}
 	

@@ -212,7 +212,7 @@ public loadCVARS()
 public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 
-	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED
 	}
@@ -228,7 +228,7 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
+	if(sh_is_active()&&is_user_alive(id)){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_reset_max_speed(id)
 			g_erica_kills[id]=0;
@@ -276,7 +276,7 @@ public sh_round_end(){
 }
 public weaponChange(id)
 {
-	if (!sh_is_active()||!client_hittable(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()||!is_user_alive(id)) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new wpnid = get_user_weapon(id)
@@ -292,12 +292,12 @@ public weaponChange(id)
 
 public erica_damage(id)
 {
-	if ( !sh_is_active() || !client_hittable(id)) return
+	if ( !sh_is_active() || !is_user_alive(id)) return
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if ( !client_hittable(attacker)|| attacker==id  ) return
+	if ( !is_user_alive(attacker)|| attacker==id  ) return
 	
 	if(!sh_user_has_hero(attacker,gHeroID) ){
 
@@ -314,7 +314,7 @@ public erica_damage(id)
 }
 
 update_stats(id){
-	if(sh_user_has_hero(id,gHeroID) &&client_hittable(id)){
+	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id)){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(speed_speed_er_points_pct,float(g_erica_points[id]))),max_er_speed),maxspeed),
 		set_user_maxspeed(id,g_normal_er_speed[id])
@@ -327,7 +327,7 @@ update_stats(id){
 }
 public Erica_weapons(id)
 {
-if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
+if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 	give_custom_grenades(id,GREN_MOLLY,num_mollies)
 	sh_give_weapon(id, CSW_ELITE)
 	
@@ -343,7 +343,7 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&client_hittable(id)) {
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
-    if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+    if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
         return DMG_FWD_PASS
     }

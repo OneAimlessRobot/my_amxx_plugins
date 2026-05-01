@@ -247,7 +247,7 @@ public sh_round_end(){
 	return PLUGIN_CONTINUE
 }
 public spawn_spore(id){
-	if(!sh_user_has_hero(id,spores_ksun_hero_id())||!client_hittable(id)){
+	if(!sh_user_has_hero(id,spores_ksun_hero_id())||!is_user_alive(id)){
 	
 		return 0
 	}
@@ -367,7 +367,7 @@ public _dec_times_player_spiked_by_player(iPlugin,iParms){
 public _spore_launch(iPlugins,iParms)
 {
 new id= get_param(1)
-if(!sh_user_has_hero(id,spores_ksun_hero_id())||!client_hittable(id)){
+if(!sh_user_has_hero(id,spores_ksun_hero_id())||!is_user_alive(id)){
 	
 	return
 }
@@ -410,8 +410,8 @@ public spore_think(spore){
 
 	new Float:current_track_time=entity_get_float(spore, EV_FL_fuser1)
 
-	if ( (spore_hp<SPORE_DEAD_HP)|| !client_hittable(spore_owner) ||
-						!client_hittable(spore_target)){
+	if ( (spore_hp<SPORE_DEAD_HP)|| !is_user_alive(spore_owner) ||
+						!is_user_alive(spore_target)){
 		
 		untrack_spore(spore)
 		return FMRES_IGNORED
@@ -539,7 +539,7 @@ stock is_wall_between_points(Float:start[3], Float:end[3], Float:hit_end[3], &Fl
 //----------------------------------------------------------------------------------------------
 stock entity_set_follow(entity, target,spore_owner)
 {
-	if ( !is_valid_ent(entity) || !client_hittable(target) ||!client_hittable(spore_owner)) return -1
+	if ( !is_valid_ent(entity) || !is_user_alive(target) ||!is_user_alive(spore_owner)) return -1
 
 
 	new Float:fl_Origin[3], Float:fl_EntOrigin[3], Float:entity_in_the_way_origin[3],
@@ -594,13 +594,13 @@ public touch_player(pToucher, pTouched)  //This is triggered when two entites to
 {
 if(!is_valid_ent(pToucher)) return
 
-if(!client_hittable(pTouched)){
+if(!is_user_alive(pTouched)){
 	return
 }
 
 new killer = entity_get_edict(pToucher, EV_ENT_euser1)
 
-if(!client_hittable(killer)) return
+if(!is_user_alive(killer)) return
 
 new victim = pTouched
 new ffOn = get_cvar_num("mp_friendlyfire")

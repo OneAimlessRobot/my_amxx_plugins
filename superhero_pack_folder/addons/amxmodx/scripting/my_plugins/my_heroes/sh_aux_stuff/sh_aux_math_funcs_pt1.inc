@@ -145,7 +145,7 @@ stock bool:check_in_fov(player_id, player_hit, Float:fov_to_check, Float:distanc
 }
 
 stock get_entity_direction_vector_raw(player_id, aimed_at_entity, Float:raw_aim_dir[3]) {
-	if (!client_hittable(player_id) || !client_hittable(aimed_at_entity)) {
+	if (!is_user_alive(player_id) || !is_user_alive(aimed_at_entity)) {
 		return;
 	}
 	new Float:tg_aim_vector_raw[3];
@@ -165,7 +165,7 @@ stock get_entity_direction_vector_raw(player_id, aimed_at_entity, Float:raw_aim_
 }
 
 stock get_player_aim_vector_raw(player_id, Float:raw_aim_dir[3]) {
-	if (!client_hittable(player_id)) {
+	if (!is_user_alive(player_id)) {
 		return;
 	}
 	new Float:user_coords[3];

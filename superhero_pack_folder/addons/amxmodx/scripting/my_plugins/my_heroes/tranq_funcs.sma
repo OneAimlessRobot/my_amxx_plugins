@@ -72,7 +72,7 @@ public tranque_thinque(ent){
 
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
-	if(!client_hittable(owner)){
+	if(!is_user_alive(owner)){
 
 		remove_entity(ent)
 		return FMRES_IGNORED
@@ -253,7 +253,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	}
 	new pPlayer = get_member(entity, m_pPlayer)
 
-	if ( !client_hittable(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
 
 		return HAM_IGNORED
@@ -306,7 +306,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 bool:client_isnt_hitter(pPlayer){
 
-	if ( !client_hittable(pPlayer)){
+	if ( !is_user_alive(pPlayer)){
 
 		return true
 	}

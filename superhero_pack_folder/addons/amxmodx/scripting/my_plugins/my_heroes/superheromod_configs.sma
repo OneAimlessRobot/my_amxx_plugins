@@ -48,7 +48,7 @@ public plugin_natives(){
 
 public newRound(id){
 
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}

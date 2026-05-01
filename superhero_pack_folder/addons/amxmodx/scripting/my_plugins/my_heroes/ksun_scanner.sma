@@ -207,7 +207,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 }
 public _spawn_scanner(iPlugins,iParams){
 	new id= get_param(1)
-	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}
@@ -277,7 +277,7 @@ public scanner_think(scanner){
 	
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return FMRES_IGNORED
+	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return FMRES_IGNORED
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
@@ -313,7 +313,7 @@ public scanner_think(scanner){
 	for( new i= 0;(g_player_num_victims[id]<obj_num_of_victims)&&(i< numfound);i++){
 		
 			new pid = entlist[i];
-			if(!client_hittable(pid)) continue
+			if(!is_user_alive(pid)) continue
 
 			if(pid==id) continue
 			
@@ -340,7 +340,7 @@ public scanner_think(scanner){
 
 show_targets(id){
 
-	if(!client_hittable(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
 		
 		return
 	}
@@ -358,7 +358,7 @@ show_targets(id){
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH] (ksun):Targets are:")
 			for(new i=1;i< sh_maxplayers();i++){
-				if(g_player_tracks_player[id][i]&&client_hittable(i)){
+				if(g_player_tracks_player[id][i]&&is_user_alive(i)){
 					get_user_name(i,client_name,127)
 					client_print(id,print_chat,"- %s",client_name);
 				}

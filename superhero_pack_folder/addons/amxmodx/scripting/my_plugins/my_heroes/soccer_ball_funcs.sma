@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -173,7 +172,7 @@ public ball_think(ent)
 	}
 
 	new id=pev(ent,pev_iuser1)
-	if ( !client_hittable(id,sh_user_has_hero(id,roberto_get_hero_id()))) {
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,roberto_get_hero_id())) {
 		remove_entity(ent)
 		return FMRES_IGNORED
 	}

@@ -70,7 +70,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public reika_parry_switch_cmdstart_hook(id, uc_handle)
 {
-    if ( !is_user_alive(id)||!client_hittable(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+    if ( !is_user_alive(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
     static button;
     button= get_uc(uc_handle, UC_Buttons);
@@ -167,7 +167,7 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
 {
 
 
-    if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
+    if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
     return HAM_IGNORED
     }
@@ -233,7 +233,7 @@ public parry_mode_turn_off_task(id){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-    if(!client_hittable(id)||!sh_is_active()){
+    if(!is_user_alive(id)||!sh_is_active()){
         
         return PLUGIN_CONTINUE
     }
@@ -284,7 +284,7 @@ public reika_kd()
     read_argv(1,temp,5)
     new id=str_to_num(temp)
 
-    if ( !client_hittable(id) ) return PLUGIN_HANDLED
+    if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
     if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
@@ -319,7 +319,7 @@ public plugin_precache(){
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
-    if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+    if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
         return DMG_FWD_PASS
     }

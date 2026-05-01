@@ -102,7 +102,7 @@ public _flora_get_hero_id(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -187,7 +187,7 @@ public flora_ku()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if ( !client_hittable(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -204,7 +204,7 @@ public flora_ku()
 
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}

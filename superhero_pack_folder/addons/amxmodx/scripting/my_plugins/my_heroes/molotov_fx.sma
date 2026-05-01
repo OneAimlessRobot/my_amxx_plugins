@@ -20,7 +20,8 @@
 stock MOLLY_TASKID,
 		BURN_TASKID_MAIN
 
-new bool:gIsBurning[SH_MAXSLOTS+1]
+new gIsBurningMask = 0
+
 public plugin_init(){
 	
 	
@@ -35,11 +36,8 @@ public plugin_init(){
 //----------------------------------------------------------------------------------------------
 public molotov_newRound(id)
 {	
-	if(sh_is_active()&&client_hittable(id)){
-		if(gIsBurning[id]){
-			sh_unmolly_user(id)
-		}
-
+	if(sh_is_active()&&is_user_alive(id)){
+		unburn_user(id)
 	}
 	
 }
@@ -60,11 +58,11 @@ public burn_task(array[2],id)
 {
 	id-=BURN_TASKID_MAIN
 	
-	if ( !sh_is_active() || !client_hittable(id)||!is_user_connected(array[0])){
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(array[0])){
 		unburn_user(id)
 		return
 	}
-	if(!gIsBurning[id]){
+	if(!Get_BitVar(gIsBurningMask,id)){
 		return
 	}
 	set_render_with_color_const(id,PINK,1,50,50,1,1)
@@ -76,7 +74,7 @@ public burn_task(array[2],id)
 	for ( new i = 0; i < num_players; i++) {
 		new pid=players[i]
 
-		if( !client_hittable(pid) || pid==id || gIsBurning[pid] ) continue
+		if( !is_user_alive(pid) || pid==id || Get_BitVar(gIsBurningMask,pid)) continue
 		sh_molly_user(pid,id,tranq_get_hero_id())
 		
 	}
@@ -89,7 +87,7 @@ public burn_task(array[2],id)
 			SH_NEW_DMG_FIRE,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE))
 
-	if(gIsBurning[id]&&(array[1]<BURN_TIMES)){
+	if(Get_BitVar(gIsBurningMask,id)&&(array[1]<BURN_TIMES)){
 		array[1]++
 		emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
@@ -101,11 +99,11 @@ public burn_task(array[2],id)
 }
 
 public molotov_damage_vulnerability(id){
-	if ( !sh_is_active() || !client_hittable(id)) return
+	if ( !sh_is_active() || !is_user_alive(id)) return
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
-	if(gIsBurning[id]){
+	if(Get_BitVar(gIsBurningMask,id)){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(id, attacker, floatround(extraDamage), "Burn vuln", headshot)
@@ -115,9 +113,9 @@ public molotov_damage_vulnerability(id){
 	
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
-	if (!sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)) return DMG_FWD_PASS
+	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
-	if(gIsBurning[victim]){
+	if(Get_BitVar(gIsBurningMask,victim)){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF  + damage
 		if (floatround(extraDamage)>0){
 			damage=floatround(extraDamage)
@@ -137,7 +135,7 @@ public _sh_molly_user(iPlugin,iParams){
 	get_user_name(attacker,attacker_name,127)
 	new user_name[128]
 	get_user_name(user,user_name,127)
-	if(!sh_get_user_is_co2(user)&&!gIsBurning[user]){
+	if(!sh_get_user_is_co2(user)&&!Get_BitVar(gIsBurningMask,user)){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
 				
@@ -169,22 +167,26 @@ public _sh_molly_user(iPlugin,iParams){
 public _sh_unmolly_user(iPlugin,iParams){
 	
 	new user=get_param(1)
-	unburn_user(user)
 	
+	if(Get_BitVar(gIsBurningMask,user)){
+		unburn_user(user)
+	}
 	
 	
 	
 }
 
-public bool:_sh_is_user_burning(iPlugin,iParams){
+public _sh_is_user_burning(iPlugin,iParams){
 	new id=get_param(1)
 
-	return gIsBurning[id]
+	return Get_BitVar(gIsBurningMask,id)
 
 }
 stock burn_user(id,attacker){
 
-	gIsBurning[id]=true
+	if(Get_BitVar(gIsBurningMask,id)) return
+
+	Set_BitVar(gIsBurningMask,id)
 	new array[2]
 	array[0] = attacker
 	array[1] = 0
@@ -197,16 +199,16 @@ stock burn_user(id,attacker){
 	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
 	
 	
-	
 }
 
 
 unburn_user(id){
-	if ( !sh_is_active() ||!is_user_connected(id)) return
+	if ( !sh_is_active() ||!is_user_connected(id)||!Get_BitVar(gIsBurningMask,id)) return
+
 	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)
-	gIsBurning[id]=false
+	UnSet_BitVar(gIsBurningMask,id)
 	
 	
 	
@@ -215,10 +217,6 @@ unburn_user(id){
 public on_death_burning()
 {	
 	new id = read_data(2)
-	
-	if(is_user_connected(id)&&sh_is_active()){
-		sh_unmolly_user(id)
-	
-	}
+	unburn_user(id)
 	
 }

@@ -77,7 +77,7 @@ public Ham_Needle_Swing(weapon_ent)
 
 	new owner = get_member(weapon_ent, m_pPlayer)
 
-	if ( !client_hittable(owner)) {
+	if ( !is_user_alive(owner)) {
 		return HAM_IGNORED
 	}
 	if(!sh_user_has_hero(owner,gatling_get_hero_id()) ){
@@ -96,7 +96,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active()) return HAM_IGNORED
 	
-	if ( !client_hittable(attacker)) {
+	if ( !is_user_alive(attacker)) {
 		return HAM_IGNORED
 	}
 	if(!sh_user_has_hero(attacker,gatling_get_hero_id()) ){
@@ -170,7 +170,7 @@ public _gatling_get_needle_fx(iPlugin,iParams){
 public _gatling_needle_cycle_fx(iPlugin,iParams){
 	new id=get_param(1)
 
-	if ( !client_hittable(id)) {
+	if ( !is_user_alive(id)) {
 		return
 	}
 	if(!sh_user_has_hero(id,gatling_get_hero_id()) ){

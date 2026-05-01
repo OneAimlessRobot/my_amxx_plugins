@@ -32,7 +32,11 @@ public plugin_init(){
 public freeze_new_round(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
+		if(Get_BitVar(is_frozen_mask,id)){
+			unfreeze_user(id)
+		}
 		g_fMaxSpeed[id] = get_user_maxspeed(id)
+
 	}
 	
 }
@@ -94,10 +98,9 @@ public _sh_freeze_user(iPlugins,iParams){
 
     new id=get_param(1)
 
-    if(!is_user_alive(id)){
+    if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_frozen_mask,id)) return
 
-        return
-    }
+
     if(sh_get_user_is_asleep(id)){
         sh_unsleep_user(id)
     }
@@ -200,7 +203,7 @@ public on_death_freeze()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		sh_unfreeze_user(id)
+		unfreeze_user(id)
 	
 	}
 	

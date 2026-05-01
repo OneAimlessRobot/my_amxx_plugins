@@ -390,7 +390,7 @@ public fw_Item_PostFrame(iEnt)
 	}
 	static id; id = get_pdata_cbase(iEnt, 41, 4)
 	
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		
 		return
 	}

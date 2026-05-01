@@ -42,7 +42,7 @@ public plugin_init(){
 }
 public Fwd_PlayerPreThink(id)
 {
-	if(!client_hittable(id)){
+	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
 
@@ -61,7 +61,7 @@ public plugin_precache(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !client_hittable(id)||!sh_is_active()) return
+	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,zenitsu_get_hero_id())) return
 	if(g_zenitsu_is_charging[id]&&!g_zenitsu_has_touched_player[id]){
 		engclient_cmd(id, "weapon_knife")
@@ -71,7 +71,7 @@ public on_Knife_Weapon_Change(id)
 //----------------------------------------------------------------------------------------------
 public zenitsu_newRound(id)
 {
-	if(!client_hittable(id)||!sh_is_active()){
+	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -106,7 +106,7 @@ public _zenitsu_get_has_touched_player(iPlugin,iParams){
 }
 public zenitsu_charge(id, uc_handle, seed)
 {
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!client_hittable(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!is_user_alive(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -155,7 +155,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		
 		return
 	}
-	if (!client_hittable(pToucher)){
+	if (!is_user_alive(pToucher)){
 
 		return
 	}
@@ -170,7 +170,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		return
 	
 	}
-	if(!client_hittable(pTouched)){
+	if(!is_user_alive(pTouched)){
 		
 		return
 	}

@@ -159,7 +159,7 @@ public girlb_kd()
     read_argv(1,temp,5)
     new id=str_to_num(temp)
 
-    if ( !client_hittable(id) ) return PLUGIN_HANDLED
+    if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
     if(!sh_user_has_hero(id,gHeroID) ){
         return PLUGIN_HANDLED;
@@ -189,7 +189,7 @@ public girlb_ku()
     read_argv(1,temp,5)
     new id=str_to_num(temp)
 
-    if ( !client_hittable(id) ) return PLUGIN_HANDLED
+    if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
     if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED;
 
@@ -207,7 +207,7 @@ public regen_glob_task(id){
 
     if(!sh_user_has_hero(id,gHeroID) ) return
 
-    if ( !client_hittable(id) ) return 
+    if ( !is_user_alive(id) ) return 
     
     new Float: curr_ammo_frac =  (float(gNumGlobs[id])/float(cvar_val(num,girlb_projectile_ammo_pcvar)))
     new Float: delay = (curr_ammo_frac<=cvar_val(float,girlb_fast_regen_threshold_ammo_frac_pcvar))?
@@ -229,7 +229,7 @@ public shoot_glob_task(param[1],id){
 
     if(!sh_user_has_hero(id,gHeroID) ) return
 
-    if ( !client_hittable(id) ) return 
+    if ( !is_user_alive(id) ) return 
     
     if(Get_BitVar(girlb_held_down_mask,id)&&param[0]>0){
         param[0]--
@@ -248,7 +248,7 @@ public shoot_glob_task(param[1],id){
 }
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
-    if ( !sh_is_active() || !client_hittable(victim) || !client_hittable(attacker)){
+    if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
         return DMG_FWD_PASS
     }

@@ -115,7 +115,7 @@ public loadCVARS()
 }
 public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !client_hittable(id)||!client_hittable(attacker)){
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED
 	}
