@@ -149,8 +149,8 @@ thor_thunder_damage(attacker, tg){
 	sh_screenShake(tg, 12, 10, 14)
 	if(!is_user_alive(tg)){
 
-		new origin[3]
-		get_user_origin(tg,origin)
+		static Float:origin[3]
+		entity_get_vector(tg,EV_VEC_origin,origin)
 		set_user_rendering(tg, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4);
 		anime_kill_fx(origin)
 

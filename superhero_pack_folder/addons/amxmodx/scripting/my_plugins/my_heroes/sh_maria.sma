@@ -265,9 +265,9 @@ if(!gHealthDrainValve[id]){
 
 	return;
 }
-new entlist[33];
-new client_origin[3]
-get_user_origin(id,client_origin)
+static entlist[33];
+static Float:client_origin[3]
+entity_get_vector(id,EV_VEC_origin,client_origin)
 new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
 new bool:healed=false;
 for(new p=0;p<num_found;p++){

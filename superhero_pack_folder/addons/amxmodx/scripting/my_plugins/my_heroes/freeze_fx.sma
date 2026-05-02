@@ -125,8 +125,8 @@ public _sh_freeze_user(iPlugins,iParams){
 		remove_task(id+FREEZE_TASK_ID)
 	}
 
-	new origin[3]
-	get_user_origin(id, origin)
+	new Float:origin[3]
+	entity_get_vector(id,EV_VEC_origin, origin)
 
 	set_pev(id, pev_maxspeed, 130.0)
 	sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)

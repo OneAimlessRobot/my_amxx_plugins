@@ -540,6 +540,16 @@ entity_set_int(Ent, EV_INT_solid, 1)
 entity_set_int(Ent, EV_INT_movetype, 10)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
+/*
+
+set grenade type!
+
+Its iuser3!
+
+*/
+
+entity_set_int(Ent,EV_INT_iuser3,_:the_type)
+
 velocity_by_aim(id, floatround(
 				sh_grenade_structs_arr[the_type][sh_grenade_throw_speed]*
 				(curr_charge[id][the_type]/sh_grenade_structs_arr[the_type][max_charge_time])),
@@ -595,9 +605,23 @@ if(!is_user_connected(owner)){
 	remove_entity(id_grenade)
 	return FMRES_IGNORED
 }
+static bool:prev_touched_wall,
+		bool:curr_touched_wall,
+		sh_grenade_type:the_type 
+
+//get grenade type!
+the_type = sh_grenade_type:entity_get_int(id_grenade,EV_INT_iuser3)
+
+if(the_type<=sh_grenade_type:0){
+
+
+	remove_entity(id_grenade)
+	return FMRES_IGNORED
+
+}
+
 //get touched wall state of grenade
 
-static bool:prev_touched_wall,bool:curr_touched_wall;
 
 prev_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser2)
 curr_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser1)
@@ -616,38 +640,23 @@ return FMRES_IGNORED
 
 
 }
-static szClassname[32];
+if(!prev_touched_wall){
 
-entity_get_string(id_grenade,EV_SZ_classname,szClassname,charsmax(szClassname))
+	entity_set_float(id_grenade,EV_FL_nextthink,
+		get_gametime()+sh_grenade_structs_arr[the_type][after_touch_fuse])
+	return FMRES_IGNORED
 
-new sh_grenade_type:the_type=GREN_NONE
-
-for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
-
-	if(equal(sh_grenade_structs_arr[i][sh_grenade_classname],szClassname)){
-
-			the_type=i
-			if(!prev_touched_wall){
-
-				entity_set_float(id_grenade,EV_FL_nextthink,
-						get_gametime()+sh_grenade_structs_arr[i][after_touch_fuse])
-				return FMRES_IGNORED
-
-			}
-			break;
-	}
 }
 
-new Float:fl_vExplodeAt[3]
+static Float:fl_vExplodeAt[3]
 entity_get_vector(id_grenade, EV_VEC_origin, fl_vExplodeAt)
-new vExplodeAt[3]
-vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-vExplodeAt[2] = floatround(fl_vExplodeAt[2])
-make_shockwave(vExplodeAt,
+
+fl_vExplodeAt[2] = fl_vExplodeAt[2]+30.0
+make_shockwave(fl_vExplodeAt,
 			sh_grenade_structs_arr[the_type][blast_radius],
 			LineColors[sh_grenade_structs_arr[the_type][grenade_color_num]],1,5,8,4)
-anime_kill_fx(vExplodeAt)
+
+anime_kill_fx(fl_vExplodeAt)
 
 emit_sound(id_grenade, CHAN_WEAPON,
 				sh_grenade_structs_arr[the_type][sh_grenade_break_sound],

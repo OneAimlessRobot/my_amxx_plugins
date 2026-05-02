@@ -293,11 +293,6 @@ public scanner_think(scanner){
 		
 	}
 	
-	new iOrigin[3];
-	for(new i=0;i<3;i++){
-		iOrigin[i] = floatround(fOrigin[i]);
-	}
-	
 	arrayset(g_player_tracks_player[id],false,SH_MAXSLOTS+1)
 	num_deployed_spores[id]=0
 	num_launched_spores[id]=0
@@ -305,7 +300,7 @@ public scanner_think(scanner){
 	g_player_num_victims[id]=0
 
 	new obj_num_of_victims=min(ksun_get_num_available_spores(id),ksun_max_victims)
-	make_shockwave(iOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
+	make_shockwave(fOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
 	static entlist[33];
 
 	new  numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);

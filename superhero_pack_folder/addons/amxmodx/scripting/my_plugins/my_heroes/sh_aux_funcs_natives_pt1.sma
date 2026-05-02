@@ -268,7 +268,7 @@ public _make_fire(iPlugins, iParams){
 }
 public _make_shockwave(iPlugins, iParams){
 
-	new point[3],
+	new Float:point[3],
 	Float:radius=get_param_f(2),
 	color[3],
 	shockwave_frame_rate=get_param(4),
@@ -277,18 +277,18 @@ public _make_shockwave(iPlugins, iParams){
 	shockwave_amplitude=get_param(7),
 	alpha=get_param(8)
 
-	get_array(1,point,3)
+	get_array_f(1,point,3)
 	get_array(3,color,3)
 
 
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( TE_BEAMCYLINDER)
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + 16)
-	write_coord(point[0])
-	write_coord(point[1])
-	write_coord(point[2] + floatround(radius))
+	write_coord_f(point[0])
+	write_coord_f(point[1])
+	write_coord_f(point[2] + 16.0)
+	write_coord_f(point[0])
+	write_coord_f(point[1])
+	write_coord_f(point[2] + radius)
 	write_short( white )
 	write_byte( 0 )
 	write_byte(shockwave_frame_rate)		// frame rate in 0.1's

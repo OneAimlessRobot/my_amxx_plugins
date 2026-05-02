@@ -696,7 +696,7 @@ public field_think(ent)
 	}
 	new Float:gametime
 	static Float:ent_pos[3]
-	static ient_pos[3],entlist[33];
+	static entlist[33];
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
 
@@ -717,9 +717,8 @@ public field_think(ent)
 	}
 	else{//60
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
-		FVecIVec(ent_pos,ient_pos)
-		make_shockwave(ient_pos,field_radius,{255, 255, 0},_,_,_,_,60)
-		make_shockwave(ient_pos,field_core_radius,{255, 128, 0},_,_,_,_,60)
+		make_shockwave(ent_pos,field_radius,{255, 255, 0},_,_,_,_,60)
+		make_shockwave(ent_pos,field_core_radius,{255, 128, 0},_,_,_,_,60)
 		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
 
 		for( new i= 0;(i< numfound);i++){

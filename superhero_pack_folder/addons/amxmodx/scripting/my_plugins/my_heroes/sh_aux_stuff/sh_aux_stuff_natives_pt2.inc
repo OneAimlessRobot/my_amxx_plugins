@@ -32,7 +32,7 @@ native fx_extra_blood(origin[3])
 
 native fx_headshot(origin[3])
 
-native anime_kill_fx(origin[3])
+native anime_kill_fx(Float:origin[3])
 
 enum gore_fwd_return_type{
     

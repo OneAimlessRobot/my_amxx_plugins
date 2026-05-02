@@ -120,12 +120,8 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 	
 	if(!is_valid_ent(pToucher)) return
 
-	new Float:fl_vExplodeAt[3]
+	static Float:fl_vExplodeAt[3]
 	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
-	new vExplodeAt[3]
-	vExplodeAt[0] = floatround(fl_vExplodeAt[0])
-	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
-	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 	new id = entity_get_edict(pToucher, EV_ENT_owner)
 	
 	//retrieve current rocket fx num
@@ -143,12 +139,12 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 		make_effect(pid,id,gatling_get_hero_id(),fx_num,false)
 	}
 	
-	anime_kill_fx(vExplodeAt)
+	anime_kill_fx(fl_vExplodeAt)
 	
 	emit_sound(pToucher, CHAN_WEAPON, SMOKE_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	new color[3]
 	sh_get_pill_color(fx_num,id,color)
-	make_shockwave(vExplodeAt,ROCKET_RADIUS,color)
+	make_shockwave(fl_vExplodeAt,ROCKET_RADIUS,color)
 
 	remove_missile(pToucher)
 }

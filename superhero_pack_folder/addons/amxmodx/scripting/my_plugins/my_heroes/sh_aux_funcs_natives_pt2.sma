@@ -362,15 +362,15 @@ public _fx_headshot(iPlugins, iParams){
 }
 
 public _anime_kill_fx(iPlugins, iParams){
-	new origin[3]
+	new Float:origin[3]
 
-	get_array(1,origin,3)
+	get_array_f(1,origin,3)
 
 	message_begin(MSG_ALL, SVC_TEMPENTITY) 
 	write_byte(10)	// TE_LAVASPLASH 
-	write_coord(origin[0]) 
-	write_coord(origin[1]) 
-	write_coord(origin[2]-26) 
+	write_coord_f(origin[0]) 
+	write_coord_f(origin[1]) 
+	write_coord_f(origin[2]-26.0) 
 	message_end() 
 
 }

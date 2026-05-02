@@ -490,10 +490,10 @@ public yandere_damage(id)
 			
 				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*angry_hitheal_pct,overheal_hp_max,RED,1,_,70,1)
 				if(!is_user_alive(id)){
-					static origin[3];
+					static Float:origin[3];
 					// player fades.. 
 					set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4); 
-					get_user_origin(id,origin)
+					entity_get_vector(id,EV_VEC_origin,origin)
 					anime_kill_fx(origin)
 					
 				}
@@ -693,8 +693,8 @@ killyandere(id,bool:dropping=false){
 	if(sh_user_has_hero(id,gHeroID) ||dropping){
 		
 		if(Get_BitVar(gSuperAngryMask,id)){
-			static origin[3]
-			get_user_origin(id,origin)
+			static Float:origin[3]
+			entity_get_vector(id,EV_VEC_origin,origin)
 			fx_invisible(id)
 			anime_kill_fx(origin)
 			for(new i=0;i< sh_maxplayers()+1;i++){

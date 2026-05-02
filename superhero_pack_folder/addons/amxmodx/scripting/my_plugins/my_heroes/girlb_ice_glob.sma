@@ -313,7 +313,6 @@ public ice_field_think(ent)
 	}
 
 	static Float:ent_pos[3]
-	static ient_pos[3]
 
 	if (entity_get_float(ent,EV_FL_fuser1)<0.0) {
 		if(pev_valid(ent)==2){
@@ -323,19 +322,18 @@ public ice_field_think(ent)
 	}
 	else{
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
-		FVecIVec(ent_pos,ient_pos)
 		
 		//get landed status to produce shockwave in that case
 		if(entity_get_int(ent,EV_INT_iuser1)){
-			make_shockwave(ient_pos,GLOB_RADIUS*2,LineColors[FROZEN_BLUE],1,5,8,4,60)
+			make_shockwave(ent_pos,GLOB_RADIUS*2,LineColors[FROZEN_BLUE],1,5,8,4,60)
 		}
 
 		// Steam sprite
-		message_begin(MSG_ALL, SVC_TEMPENTITY, ient_pos, 0)
+		message_begin(MSG_ALL, SVC_TEMPENTITY, {0,0,0}, 0)
 		write_byte(TE_SPRITE)			// TE_SPRITE
-		write_coord(ient_pos[0])	// center position
-		write_coord(ient_pos[1])
-		write_coord(ient_pos[2])
+		write_coord_f(ent_pos[0])	// center position
+		write_coord_f(ent_pos[1])
+		write_coord_f(ent_pos[2])
 		write_short(gSpriteSmoke)	// sprite index
 		write_byte(30)		// scale in 0.1's
 		write_byte(40)			// brightness
