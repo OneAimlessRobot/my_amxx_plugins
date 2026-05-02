@@ -7,7 +7,50 @@
 #define ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(%1,%2) (((%1==kRenderTransAlpha)||(%1==kRenderTransColor))?floatround(100.0*(1.0-(%2/255.0))):0)
 
 
+stock g_msgBarTime
 
+/*
+
+only exec in plugin_init() forward!
+the var which will be initialized is
+the "g_msgBarTime" variable.
+The entire code of this function is:
+
+stock g_msgBarTime
+
+stock init_progress_bar_msg_var(){
+
+	g_msgBarTime = get_user_msgid("BarTime")
+}
+
+It is located in the sh_aux_funcs_misc.inc header
+
+This is meant to setup the "progressBar" stock
+
+Its entire code is just:
+
+stock progressBar(id, seconds)
+{
+	message_begin(MSG_ONE, g_msgBarTime, {0,0,0}, id)
+	write_byte(seconds)
+	write_byte(0)
+	message_end()
+}
+
+
+*/
+stock init_progress_bar_msg_var(){
+
+	g_msgBarTime = get_user_msgid("BarTime")
+}
+//----------------------------------------------------------------------------------------------
+stock progressBar(id, seconds)
+{
+	message_begin(MSG_ONE, g_msgBarTime, {0,0,0}, id)
+	write_byte(seconds)
+	write_byte(0)
+	message_end()
+}
 /**
 only use this at plugin_init forward!!!
 */
@@ -64,22 +107,6 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 	pev(ent, pev_origin, fOrigin);
 
 	return floatround(fOrigin[2]);
-}
-//stock for grenades| (to reduce a bit of clutter, for now)
-stock bounce_grenade_stock(pToucher)
-{
-
-	if(!is_valid_ent(pToucher)) return FMRES_IGNORED
-
-	new Float:velocity[3]
-	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
-	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	velocity[0]*=0.5
-	velocity[1]*=0.5
-	velocity[2]*=0.5
-	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
-	
-	return FMRES_IGNORED
 }
 
 stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search[],Float:touch_distance=50.0)

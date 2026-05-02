@@ -359,9 +359,10 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 public death()
 {
 	new killer= read_data(1)
+	new killed= read_data(2)
 	static killer_name[128]
 	get_user_name(killer,killer_name,127)
-	if(sh_user_has_hero(killer,gHeroID)){
+	if(sh_user_has_hero(killer,gHeroID)&&(killed!=killer)){
 		
 		g_erica_kills[killer]++;
 		sh_chat_message(0,gHeroID,"%s: WOW! AMAZING, HUH?!",killer_name)

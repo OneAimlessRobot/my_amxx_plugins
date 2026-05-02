@@ -27,7 +27,6 @@ new bool:g_chargeOver[SH_MAXSLOTS+1]
 new bool:g_powerKeyUsed[SH_MAXSLOTS+1]
 
 new g_powerID[SH_MAXSLOTS+1]
-new g_msgBarTime
 new g_spriteSmoke, g_spriteTrail, g_spriteExplosion
 
 //----------------------------------------------------------------------------------------------
@@ -66,8 +65,7 @@ public plugin_init()
 
 	// EVENTS
 	register_event("ResetHUD", "newSpawn", "b")
-
-	g_msgBarTime = get_user_msgid("BarTime")
+	init_progress_bar_msg_var()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -187,14 +185,6 @@ public lancer_ku()
 public powerCharged(id)
 {
 	g_chargeOver[id] = true
-}
-//----------------------------------------------------------------------------------------------
-progressBar(id, seconds)
-{
-	message_begin(MSG_ONE, g_msgBarTime, {0,0,0}, id)
-	write_byte(seconds)
-	write_byte(0)
-	message_end()
 }
 //----------------------------------------------------------------------------------------------
 public create_power(id)

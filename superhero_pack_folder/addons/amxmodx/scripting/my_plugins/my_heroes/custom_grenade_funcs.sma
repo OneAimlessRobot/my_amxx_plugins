@@ -46,7 +46,8 @@ enum sh_grenade_struct{
     Float:sh_grenade_throw_speed,
 	Float:min_charge_time,
 	Float:max_charge_time,
-	Float:throw_period
+	Float:throw_period,
+	Float:after_touch_fuse
 
 
 }
@@ -64,7 +65,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					0.0,
 					0.0,
 					0.0,
-					9999999.0},
+					9999999.0,
+					12211.0},
 	
 	
 	{"molotov_cocktail","molotov_grenade",
@@ -78,7 +80,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5},
+					1.5,
+					3.0},
 
 	{"chaff_grenade","chaff_grenade",
 					"models/w_flashbang.mdl",
@@ -91,7 +94,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5},
+					1.5,
+					0.5},
 
 	{"sleep_grenade","sleep_grenade",
 					"models/w_smokegrenade.mdl",
@@ -104,7 +108,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5},
+					1.5,
+					6.0},
 
 	{"CO2_grenade","CO2_grenade",
 					"models/w_smokegrenade.mdl",
@@ -117,7 +122,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5},
+					1.5,
+					3.5},
 
 	{"shock_grenade","shock_grenade",
 					"models/w_flashbang.mdl",
@@ -130,7 +136,8 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5},
+					1.5,
+					0.5},
 
 	{"freeze_grenade","freeze_grenade",
 					"models/w_smokegrenade.mdl",
@@ -143,20 +150,43 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3000.0,
 					1.0,
 					5.0,
-					1.5}
+					1.5,
+					2.33}
 
 }
 
 new sh_grenade_type:curr_user_grenade[SH_MAXSLOTS+1],
 	sh_grenade_type:prev_user_grenade[SH_MAXSLOTS+1]
 
+new grenade_change_button_pressed_mask = 0
+
 new sh_grenade_armed_mask[GREN_MAX_TYPES]
 
 new Float:curr_charge[SH_MAXSLOTS+1][GREN_MAX_TYPES]
 
 new curr_grenade_ammo[SH_MAXSLOTS+1][GREN_MAX_TYPES]
+/**
 
 
+enum cs_grenade_animation_sequences{
+
+	cs_grenade_idle = 0,
+	cs_grenade_pullpin,
+	cs_grenade_throw,
+	cs_grenade_deploy
+
+
+}
+
+ */
+switch_grenade_animation_on_player(id, cs_grenade_animation_sequences:the_sequence_id){
+
+
+
+	entity_set_int(id,EV_INT_weaponanim,_:the_sequence_id)
+
+	
+}
 bool:is_weapon_id_grenade(wpn_id){
 
 	return ((wpn_id==CSW_HEGRENADE)||(wpn_id==CSW_SMOKEGRENADE)||(wpn_id==CSW_FLASHBANG))
@@ -186,8 +216,6 @@ init_grenade(sh_grenade_type:type){
 
 	register_entity_as_wall_touchable(sh_grenade_structs_arr[type][sh_grenade_classname],
 						"sh_grenade_touch_things")
-	register_custom_touchable(sh_grenade_structs_arr[type][sh_grenade_classname],
-						"sh_grenade_touch_things",player_vector,1)
 	
 }
 public plugin_init(){
@@ -202,10 +230,28 @@ public plugin_init(){
 		init_grenade(i)
 
 	}
+	init_progress_bar_msg_var()
 
 	register_event("CurWeapon","event_curr_grenade","be", "1=1")
 	
 	register_event("DeathMsg","on_death_custom_grenades","a")
+}
+
+public plugin_natives(){
+	
+	register_native( "uncharge_custom_nade","_uncharge_custom_nade",0)
+	register_native( "set_custom_grenade_ammo","_set_custom_grenade_ammo",0)
+	register_native( "get_custom_grenade_ammo","_get_custom_grenade_ammo",0)
+	register_native( "give_custom_grenades","_give_custom_grenades",0)
+	
+	
+}
+grenade_switch_notification(id){
+	if(!is_user_bot(id)){
+		client_print(id,print_center,"Grenade switch! (%s -> %s)",
+			sh_grenade_structs_arr[prev_user_grenade[id]][sh_grenade_name],
+			sh_grenade_structs_arr[curr_user_grenade[id]][sh_grenade_name]);
+	}
 }
 public event_curr_grenade(id){
 	
@@ -218,6 +264,8 @@ public event_curr_grenade(id){
 	
 	if(!user_has_grenade){
 		
+		progressBar(id,0)
+		UnSet_BitVar(sh_grenade_armed_mask[prev_user_grenade[id]],id)
 		curr_user_grenade[id]=sh_grenade_type:0;
 		return PLUGIN_CONTINUE
 	
@@ -230,11 +278,10 @@ public event_curr_grenade(id){
 				curr_user_grenade[id]=i
 				if(curr_user_grenade[id]!=prev_user_grenade[id]){
 					
-					if(!is_user_bot(id)){
-						client_print(id,print_center,"Grenade switch! (%s -> %s)",
-							sh_grenade_structs_arr[prev_user_grenade[id]][sh_grenade_name],
-							sh_grenade_structs_arr[curr_user_grenade[id]][sh_grenade_name]);
-					}
+					grenade_switch_notification(id)
+					progressBar(id,0)
+
+					curr_charge[id][prev_user_grenade[id]]=0.0;
 					UnSet_BitVar(sh_grenade_armed_mask[prev_user_grenade[id]],id)
 				}
 				return PLUGIN_CONTINUE
@@ -243,14 +290,48 @@ public event_curr_grenade(id){
 	curr_user_grenade[id]=sh_grenade_type:0
 	return PLUGIN_CONTINUE
 }
-public plugin_natives(){
+//execute inside cmd start only!!
+
+bool:handle_grenade_change_button(id,wpn_id,sh_grenade_type:the_tipe_of_groonada,uc_handle, button){
 	
-	register_native( "uncharge_custom_nade","_uncharge_custom_nade",0)
-	register_native( "set_custom_grenade_ammo","_set_custom_grenade_ammo",0)
-	register_native( "get_custom_grenade_ammo","_get_custom_grenade_ammo",0)
-	register_native( "give_custom_grenades","_give_custom_grenades",0)
+	static bool:changed_greande;
 	
+	changed_greande=false;
 	
+	if(button & IN_ALT1){
+
+		button &= ~IN_ALT1
+		set_uc(uc_handle, UC_Buttons, button)
+		if(!Get_BitVar(grenade_change_button_pressed_mask,id)){
+			Set_BitVar(grenade_change_button_pressed_mask,id)
+			for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
+
+				if((wpn_id==sh_grenade_structs_arr[i][sh_grenade_weapon_classid])&&
+									(curr_grenade_ammo[id][i]>0)){
+						if((i!=the_tipe_of_groonada)&&(i!=prev_user_grenade[id])){
+							changed_greande=true
+							prev_user_grenade[id]=curr_user_grenade[id]
+							curr_user_grenade[id]=i
+
+							switch_grenade_animation_on_player(id,
+											cs_grenade_deploy)
+							grenade_switch_notification(id)
+							progressBar(id,0)
+							curr_charge[id][prev_user_grenade[id]]=0.0;
+							curr_charge[id][curr_user_grenade[id]]=0.0;
+							UnSet_BitVar(sh_grenade_armed_mask[prev_user_grenade[id]],id);
+							UnSet_BitVar(sh_grenade_armed_mask[curr_user_grenade[id]],id);
+							break;
+						}
+				}
+			}
+		}
+	}
+	else{
+
+		UnSet_BitVar(grenade_change_button_pressed_mask,id)
+	}
+	return changed_greande
 }
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
@@ -268,39 +349,51 @@ public CmdStart(id, uc_handle)
 	}
 	new ent = find_ent_by_owner(-1, sh_grenade_structs_arr[gren_type][sh_grenade_weaponname], id);
 
-
-
+	static button;
+	button = get_uc(uc_handle, UC_Buttons);
 	
-	new button = get_uc(uc_handle, UC_Buttons);
+	static bool:changed_custom_grenade,bool:attk2_pressed,bool:is_same_grenade;
+	changed_custom_grenade=handle_grenade_change_button(id,wpn_id,gren_type,uc_handle,button)
+	is_same_grenade=(!changed_custom_grenade)
+	
+	if(!is_same_grenade) return FMRES_IGNORED
+	
+	attk2_pressed= bool:(button & IN_ATTACK2)
+	if(attk2_pressed){
 
-	if(button & IN_ATTACK)
-	{
-		button &= ~IN_ATTACK;
+		button &= ~IN_ATTACK2;
 		set_uc(uc_handle, UC_Buttons, button);
+	}
+	if(attk2_pressed)
+	{
+
 		if( !(is_user_alive(id))) return FMRES_IGNORED
 		
 		if(!Get_BitVar(sh_grenade_armed_mask[gren_type],id)){
 			Set_BitVar(sh_grenade_armed_mask[gren_type],id)
 			curr_charge[id][gren_type]=0.0
+			switch_grenade_animation_on_player(id,cs_grenade_pullpin)
+			progressBar(id,
+					floatround(sh_grenade_structs_arr[gren_type][max_charge_time]))
 			charge_user(id,gren_type)
-			
+
 		}
 		else if(((100.0*(curr_charge[id][gren_type]/sh_grenade_structs_arr[gren_type][max_charge_time])))>95.0){
 
 			launch_custom_grenade(id,gren_type)
+			progressBar(id,0)
 			UnSet_BitVar(sh_grenade_armed_mask[gren_type],id)
 		}
 	}
 	else if(Get_BitVar(sh_grenade_armed_mask[gren_type],id)){
-		if(curr_charge[id][gren_type]>=sh_grenade_structs_arr[gren_type][min_charge_time]){
+		if((curr_charge[id][gren_type]>=sh_grenade_structs_arr[gren_type][min_charge_time])){
 			launch_custom_grenade(id,gren_type)
 		}
 		else if(curr_charge[id][gren_type]>0.0){
-			if(!is_user_bot(id)){
-				sh_chat_message(id,-1,"%s grenade not charged! Not launched...",
-				sh_grenade_structs_arr[gren_type][sh_grenade_name]);
-			}
+			switch_grenade_animation_on_player(id,
+											cs_grenade_idle)
 		}
+		progressBar(id,0)
 		UnSet_BitVar(sh_grenade_armed_mask[gren_type],id)
 	}
 	if(ent){
@@ -313,7 +406,9 @@ public CmdStart(id, uc_handle)
 					total_classid_nades+=curr_grenade_ammo[id][i]
 			}
 		}
-		cs_set_user_bpammo(id,wpn_id,total_classid_nades)
+
+		cs_set_user_bpammo(id,wpn_id,min(total_classid_nades,
+						cs_get_user_bpammo(id,wpn_id)))
 		if(total_classid_nades<=0){
 			strip_weapon_for_my_grenade_heroes(id,_,wpn_id,true)
 		}
@@ -360,9 +455,14 @@ public charge_task(any:param[1],id){
 
 	if(!is_user_alive(id)) return
 
+
+	new wpn_id=get_user_weapon(id)
+
 	curr_charge[id][the_type]=floatadd(curr_charge[id][the_type],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
 	
-	if(Get_BitVar(sh_grenade_armed_mask[the_type],id)){
+	if(((wpn_id==sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid])&&
+				curr_user_grenade[id]==the_type)&&
+				Get_BitVar(sh_grenade_armed_mask[the_type],id)){
 		set_task(SH_CUSTOM_GRENADE_CHARGE_PERIOD,"charge_task",id+sh_grenade_structs_arr[the_type][sh_grenade_charge_taskid],param,sizeof(param))
 	}
 	
@@ -406,6 +506,8 @@ public _get_custom_grenade_ammo(iPlugin,iParams){
 launch_custom_grenade(id,sh_grenade_type:the_type)
 {
 
+switch_grenade_animation_on_player(id,cs_grenade_throw)
+
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -445,6 +547,13 @@ velocity_by_aim(id, floatround(
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 curr_grenade_ammo[id][the_type]=max(0,curr_grenade_ammo[id][the_type]-1)
+new prev_vanilla_ammo=
+	cs_get_user_bpammo(id,
+	sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid])
+
+cs_set_user_bpammo(id,sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid],
+	prev_vanilla_ammo-1)
+
 if(!curr_grenade_ammo[id][the_type])
 {
 	
@@ -465,6 +574,10 @@ else{
 }
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
+//set curr grenade touched wall -> 0 as a start
+//set prev grenade touched wall -> 0 as a start
+entity_set_int(Ent,EV_INT_iuser1,0)
+entity_set_int(Ent,EV_INT_iuser2,0)
 entity_set_float(Ent,EV_FL_nextthink,get_gametime()+1.0)
 
 return PLUGIN_CONTINUE
@@ -474,13 +587,34 @@ return PLUGIN_CONTINUE
 
 public sh_grenade_think(id_grenade){
 
-if ( !is_valid_ent(id_grenade) ) return
+if ( !is_valid_ent(id_grenade) ) return FMRES_IGNORED
 
-new owner=pev(id_grenade,pev_owner);
+new owner=entity_get_edict(id_grenade,EV_ENT_owner);
 
 if(!is_user_connected(owner)){
 	remove_entity(id_grenade)
-	return
+	return FMRES_IGNORED
+}
+//get touched wall state of grenade
+
+static bool:prev_touched_wall,bool:curr_touched_wall;
+
+prev_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser2)
+curr_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser1)
+entity_set_int(id_grenade,EV_INT_iuser2, _:curr_touched_wall)
+
+if(!curr_touched_wall){
+
+/*
+if we havent touched a wall
+keep waiting for the flag to be set by the touch hook
+for the fuse to activate
+*/
+
+entity_set_float(id_grenade,EV_FL_nextthink,get_gametime()+1.0)
+return FMRES_IGNORED
+
+
 }
 static szClassname[32];
 
@@ -493,6 +627,13 @@ for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 	if(equal(sh_grenade_structs_arr[i][sh_grenade_classname],szClassname)){
 
 			the_type=i
+			if(!prev_touched_wall){
+
+				entity_set_float(id_grenade,EV_FL_nextthink,
+						get_gametime()+sh_grenade_structs_arr[i][after_touch_fuse])
+				return FMRES_IGNORED
+
+			}
 			break;
 	}
 }
@@ -528,13 +669,28 @@ for( new i= 0;(i< numfound);i++){
 
 
 remove_entity(id_grenade)
+return FMRES_IGNORED
 
 }
 
 public sh_grenade_touch_things(pToucher, pTouched)
 {
 	
-	return bounce_grenade_stock(pToucher)
+	
+	if(!is_valid_ent(pToucher)) return FMRES_IGNORED
+	if(!(bool:entity_get_int(pToucher,EV_INT_iuser1))){
+
+		entity_set_int(pToucher,EV_INT_iuser1,1)
+	}
+	new Float:velocity[3]
+	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	velocity[0]*=0.5
+	velocity[1]*=0.5
+	velocity[2]*=0.5
+	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+	
+	return FMRES_IGNORED
 }
 
 public plugin_precache()
