@@ -252,6 +252,7 @@ public bleed_task(array[4],id){
 		return
 	}
 	set_render_with_color_const(id,RED,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
+	remove_glow_user(id,bleed_task_parameters[gIsBleeding[id]][bleed_task_period])
 	if(array[2]){
 		generic_heal(heal_hp_hud_msg_sync,
 					array[1],
@@ -290,7 +291,7 @@ public bleed_task(array[4],id){
 }
 unbleed_user(id){
 
-	if ( !sh_is_active() || !is_user_connected(id)||!gIsBleeding[id]) return
+	if ( !sh_is_active() || !is_user_connected(id)) return
 	
 	sh_set_rendering(id)
 	gIsBleeding[id]=NONE

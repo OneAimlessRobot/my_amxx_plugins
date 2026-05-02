@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
@@ -7,7 +6,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define PLUGIN "Superhero tranq fx"
@@ -182,6 +181,7 @@ public sleep_task(array[1],id){
 	}
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
+	remove_glow_user(id,SLEEP_PERIOD)
 	if(Get_BitVar(gIsAsleepMask,id)&&(array[0]<(SLEEP_TIMES+9))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))

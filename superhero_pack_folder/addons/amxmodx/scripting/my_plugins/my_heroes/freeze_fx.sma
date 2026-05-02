@@ -5,6 +5,7 @@
 #include "freeze_fx/freeze_fx.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
@@ -96,58 +97,60 @@ public plugin_natives(){
 public _sh_freeze_user(iPlugins,iParams){
 	
 
-    new id=get_param(1)
+	new id=get_param(1)
 
-    if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_frozen_mask,id)) return
-
-
-    if(sh_get_user_is_asleep(id)){
-        sh_unsleep_user(id)
-    }
-    if(sh_get_user_is_bleeding(id)){
-        sh_unbleed_user(id)
-    }
-    new Float:the_time=get_param_f(2)
-
-    new Float:speed=get_param_f(3)
+	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_frozen_mask,id)) return
 
 
-    new Float:fMaxSpeed
-    pev(id, pev_maxspeed, fMaxSpeed)
+	if(sh_get_user_is_asleep(id)){
+		sh_unsleep_user(id)
+	}
+	if(sh_get_user_is_bleeding(id)){
+		sh_unbleed_user(id)
+	}
+	new Float:the_time=get_param_f(2)
 
-    if(fMaxSpeed != g_fMaxSpeed[id] && fMaxSpeed != speed)
-    {
-        g_fMaxSpeed[id] = fMaxSpeed
-    }
+	new Float:speed=get_param_f(3)
 
-    if(task_exists(id+FREEZE_TASK_ID)){
-        remove_task(id+FREEZE_TASK_ID)
-    }
 
-    new origin[3]
-    get_user_origin(id, origin)
+	new Float:fMaxSpeed
+	pev(id, pev_maxspeed, fMaxSpeed)
 
-    set_pev(id, pev_maxspeed, 130.0)
-    sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)
+	if(fMaxSpeed != g_fMaxSpeed[id] && fMaxSpeed != speed)
+	{
+		g_fMaxSpeed[id] = fMaxSpeed
+	}
 
-    emit_sound(id, CHAN_WEAPON, FROZEN_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
+	if(task_exists(id+FREEZE_TASK_ID)){
+		remove_task(id+FREEZE_TASK_ID)
+	}
 
-    //Make the screen blue
-    message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
-    write_short(~0)
-    write_short(~0)
-    write_short(0x0004)
-    write_byte(30)
-    write_byte(125)
-    write_byte(255)
-    write_byte(100)
-    message_end()
+	new origin[3]
+	get_user_origin(id, origin)
 
-    make_shockwave(origin, 225.0, LineColors[FROZEN_BLUE], 0,2,20,0,255)
+	set_pev(id, pev_maxspeed, 130.0)
+	sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)
 
-    Set_BitVar(is_frozen_mask,id)
+	remove_glow_user(id,the_time)
 
-    set_task(the_time, "remove_frozen", id+FREEZE_TASK_ID)
+	emit_sound(id, CHAN_WEAPON, FROZEN_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+	//Make the screen blue
+	message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
+	write_short(~0)
+	write_short(~0)
+	write_short(0x0004)
+	write_byte(30)
+	write_byte(125)
+	write_byte(255)
+	write_byte(100)
+	message_end()
+
+	make_shockwave(origin, 225.0, LineColors[FROZEN_BLUE], 0,2,20,0,255)
+
+	Set_BitVar(is_frozen_mask,id)
+
+	set_task(the_time, "remove_frozen", id+FREEZE_TASK_ID)
 }
 public _sh_is_user_frozen(iPlugin,iParams){
 

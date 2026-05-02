@@ -6,6 +6,7 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define PLUGIN "Superhero chaff fx"
@@ -126,6 +127,7 @@ public chaff_task(array[1],id){
 		return
 	}
 	sh_set_rendering(id, chaff_color[0], chaff_color[1], chaff_color[2], chaff_color[3],kRenderFxGlowShell, kRenderTransColor)
+	remove_glow_user(id,CHAFF_PERIOD)
 	
 	if(Get_BitVar(gIsChaffedMask,id)&&(array[0]<=CHAFF_TIMES)){
 		array[0]++

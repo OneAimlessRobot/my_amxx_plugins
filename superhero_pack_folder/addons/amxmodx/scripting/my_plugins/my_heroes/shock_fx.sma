@@ -83,6 +83,17 @@ shock_user(id){
 
     emit_sound(id, CHAN_WEAPON,SHOCK_GRENADE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
+
+    sh_unsleep_user(id)
+    sh_set_stun(id,SHOCK_TIME,180.0)
+
+    set_render_with_color_const(id,LTBLUE,1,50,50,1,1)
+
+    remove_glow_user(id,SHOCK_TIME)
+
+
+    Set_BitVar(is_shock_mask,id)
+
     static entlist[33];
     new numfound = find_sphere_class(id,"player",SHOCK_RADIUS, entlist ,charsmax(entlist));
 
@@ -96,17 +107,6 @@ shock_user(id){
         
         shock_user(pid)
     }
-
-
-    sh_unsleep_user(id)
-    sh_set_stun(id,SHOCK_TIME,180.0)
-
-    set_render_with_color_const(id,LTBLUE,1,50,50,1,1)
-
-    remove_glow_user(id,SHOCK_TIME)
-
-
-    Set_BitVar(is_shock_mask,id)
 
     set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
     set_task(SHOCK_TIME,"unshock_task",id+UNSHOCK_TASKID)
