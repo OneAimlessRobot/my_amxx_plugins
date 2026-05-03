@@ -32,7 +32,6 @@ public plugin_init() {
 	register_srvcmd("speed_kd", "speed_kd");
 	shRegKeyDown(gHeroName, "speed_kd");
 
-	register_event("ResetHUD", "speed_NewRound", "b");
 
 	shSetMaxSpeed(gHeroName, "speed_speed", "[0]");
 }
@@ -55,7 +54,7 @@ public speed_kd() {
 	gCanJump[id] = false
 }
 
-public speed_NewRound(id) {
+public sh_client_spawn(id) {
 	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted()) return;
 
 	gCanJump[id] = true

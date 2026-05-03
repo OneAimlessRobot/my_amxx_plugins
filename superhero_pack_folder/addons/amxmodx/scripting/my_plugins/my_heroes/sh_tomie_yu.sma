@@ -19,8 +19,6 @@ public plugin_init()
 
 	register_cvar("tomie_level", "5" )
 
-	register_event("ResetHUD","newRound","b")
-
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Boring, Anime fan", "Fire retardant hair! Drain resistance! You wont spread fire! CO2 lasts longer!", false, "tomie_level")
 
@@ -45,18 +43,17 @@ public _tomie_yu_hero_id(iPlugin,iParams){
 }
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
     if(!is_user_alive(id)||!sh_is_active()){
         
-        return PLUGIN_CONTINUE
+        return
     }
     if ( sh_user_has_hero(id,gHeroID) ) {
         
         give_custom_grenades(id,GREN_CO2,5)
 
     }
-    return PLUGIN_CONTINUE
 }
 public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 	if ( !sh_is_active() || !is_user_connected(gored_id)){

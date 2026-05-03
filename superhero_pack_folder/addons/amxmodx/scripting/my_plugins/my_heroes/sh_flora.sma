@@ -38,7 +38,6 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html",hero_name_arr)
 	
-	register_event("ResetHUD","newRound","b")
 	
 	// INIT
 	register_srvcmd("flora_init", "flora_init")
@@ -99,17 +98,16 @@ public _flora_get_hero_id(iPlugin,iParams){
 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id)
 		flora_set_user_num_fields(id,flora_start_fields())
 	}
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

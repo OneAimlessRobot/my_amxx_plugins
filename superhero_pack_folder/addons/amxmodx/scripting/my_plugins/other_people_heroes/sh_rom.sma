@@ -25,8 +25,6 @@ public plugin_init()
   register_cvar("rom_level", "0" )
   gHeroID=shCreateHero(gHeroName, "Senses", "Know where the player is", true, "rom_level" )
   
-  // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  register_event("ResetHUD","newRound","b")
   register_event("DeathMsg","death","a")
   // LOOP
   register_srvcmd("rom_loop", "rom_loop")
@@ -59,7 +57,7 @@ public rom_init()
 
 } 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
   message_begin(MSG_ONE, SVC_TEMPENTITY, {0,0,0}, id) 

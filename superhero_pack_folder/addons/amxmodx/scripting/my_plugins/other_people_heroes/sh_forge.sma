@@ -48,12 +48,6 @@ public plugin_init()
 	register_entity_as_wall_touchable("concussion_missile","missile_touch")
 	register_custom_touchable("concussion_missile","missile_touch",player_vector,1)
 
-	
-	//EVENTS
-	//register_logevent("round_start", 2, "1=Round_Start")
-	//register_logevent("round_end", 2, "1=Round_End")
-	//register_logevent("round_end", 2, "1&Restart_Round_")
-	register_event("ResetHUD","newRound","b")
 	register_event("DeathMsg","death_event","a")	
 
 	// KEY DOWN
@@ -328,7 +322,7 @@ public client_disconnected(id)
 	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	return PLUGIN_CONTINUE

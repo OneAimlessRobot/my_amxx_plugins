@@ -68,8 +68,6 @@ public plugin_init()
 	register_srvcmd("poisonivy_init", "poisonivy_init")
 	shRegHeroInit(gHeroName, "poisonivy_init")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("Damage", "poisonivy_damage", "b", "2!0")
 	register_event("DeathMsg", "poisonivy_death", "a")
 
@@ -110,7 +108,7 @@ public poisonivy_levels()
 	gPlayerLevels[str_to_num(id)] = str_to_num(lev)
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( is_user_alive(id) && sh_is_active() ) {
 

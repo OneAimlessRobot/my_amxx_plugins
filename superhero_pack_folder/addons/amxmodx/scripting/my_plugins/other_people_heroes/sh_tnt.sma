@@ -40,7 +40,6 @@ public plugin_init() {
 	shRegKeyDown(gHeroName, "tnt_kd"); 
 	
 	register_forward(FM_Touch, "fw_entTouch");
-	register_event("ResetHUD", "Event_NewRound", "b");
 }
 
 public tnt_kd() {
@@ -59,8 +58,6 @@ public tnt_kd() {
 
 public spawn_mine(id) {
 	/*FAKEMETA: */
-	
-	//new mine = create_entity("info_target");
 	new mine = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "info_target")); //create mine ent
 	
 	if(!mine) {
@@ -78,21 +75,6 @@ public spawn_mine(id) {
 	set_pev(mine, pev_classname, "tnt_mine"); //set classname
 	engfunc(EngFunc_SetModel, mine, "models/w_c4.mdl"); //set model
 
-	 /*ENGINE:
-	new mine = create_entity("info_target"); //create mine
-	
-	new Float:origin[3]	
-	entity_get_vector(id,EV_VEC_origin,origin); //get player origin
-	origin[2] = 0.0; //set the mine on the ground
-	
-	entity_set_origin(mine,origin); //set the origin of mine.
-	
-	new Float:maxs[3] = {9.0,9.0,9.0};
-	new Float:mins[3] = {0.0,0.0,0.0};
-	entity_set_size(mine,mins,maxs); //set size of mine
-	
-	entity_set_string(mine,EV_SZ_classname,"tnt_mine"); //name the mines classname
-	entity_set_model(mine, "models\w_c4.mdl"); //set model to c4*/
 	
 }
 
@@ -160,7 +142,7 @@ public splode_effects(id) {
 	return;
 }
 
-public Event_NewRound(id) {
+public sh_client_spawn(id) {
 	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
 	
 	gMinesLeft[id] = get_cvar_num("tnt_mines");

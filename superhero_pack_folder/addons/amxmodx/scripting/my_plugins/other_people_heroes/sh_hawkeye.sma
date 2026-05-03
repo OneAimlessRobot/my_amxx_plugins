@@ -76,9 +76,6 @@ public plugin_init()
 	register_srvcmd("hawkeye_init", "hawkeye_init")
 	shRegHeroInit(g_heroName, "hawkeye_init")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
-
 	// DAMAGE
 	register_event("Damage", "hawkeye_damage", "b", "2!0", "3=0", "4!0")
 
@@ -114,7 +111,7 @@ public hawkeye_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		if ( get_cvar_num("hawk_freewpn") ) {

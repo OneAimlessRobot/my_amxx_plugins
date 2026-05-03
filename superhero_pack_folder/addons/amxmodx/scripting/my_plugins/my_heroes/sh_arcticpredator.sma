@@ -74,7 +74,6 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/predgun/predknife.mdl","")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "predator_damage", "b", "2!0")
 	
@@ -203,7 +202,7 @@ public arcticPredator_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	new disc = find_ent_by_class(-1, "pred_disc")
 	while(disc) {
@@ -216,7 +215,6 @@ public newRound(id)
 		arcpredator_weapons(id)
 		g_huntTimer[id] = 0
 	}
-	return PLUGIN_HANDLED
 }
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)

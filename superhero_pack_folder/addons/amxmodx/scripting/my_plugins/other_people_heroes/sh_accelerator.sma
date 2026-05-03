@@ -16,7 +16,6 @@ public plugin_init()
 	register_srvcmd("acc_init", "acc_init")
 	shRegHeroInit(gHeroName, "acc_init")
 
-	register_event("ResetHUD", "new_spawn", "b")
 
 	set_task(1.0, "acc_loop", 0, "", 0, "b")
 }
@@ -36,7 +35,7 @@ public acc_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	shRemSpeedPower(id)
 }

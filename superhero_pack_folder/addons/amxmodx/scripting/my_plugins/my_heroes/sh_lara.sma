@@ -29,7 +29,6 @@ public plugin_init()
 	register_cvar("lara_level", "8")
 	
 	register_cvar("lara_num_spears", "100")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "lara the hunter!", "Get a spear!", false, "lara_level" )
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,SPEAR_V_MODEL,SPEAR_P_MODEL)
@@ -128,14 +127,13 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			gNumSpears[id]=num_spears
 		}
 	}
-	return PLUGIN_HANDLED
 	
 }
 public sh_round_end(){

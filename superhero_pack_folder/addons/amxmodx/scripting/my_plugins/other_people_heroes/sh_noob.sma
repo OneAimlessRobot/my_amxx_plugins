@@ -36,8 +36,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "exploding deagle shots", "U WILL HAVE A DEAGE WITH 3 EXPLODING SHOTS!!", false, "noob_level")
 
 
-	register_event("ResetHUD","newRound","b")
-
 	// GREEN ARROW DAMAGE
 	register_event("Damage", "noob_damage", "b", "2!0")
 
@@ -55,7 +53,7 @@ public plugin_precache()
 	spr_blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	new parm[1]
 	parm[0]=id

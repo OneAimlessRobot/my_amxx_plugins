@@ -99,7 +99,6 @@ public plugin_init()
 	#if USE_MODEL
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
-	register_event("ResetHUD", "newRound", "b")
 	register_event("Damage", "chucky_damage", "b", "2!0")
 	register_event("DeathMsg", "chucky_death", "a")
 
@@ -146,7 +145,7 @@ public chucky_init()
 	}
 	HasStabbedWithKnife[id] = false
 }
-public newRound(id){
+public sh_client_spawn(id){
 
 	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ){
 		return

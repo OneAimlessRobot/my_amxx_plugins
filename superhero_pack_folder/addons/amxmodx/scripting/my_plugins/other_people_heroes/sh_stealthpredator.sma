@@ -103,7 +103,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, "shmod/stealthrevive.wav")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	g_usingPower[id] = false
 	set_user_rendering(id)

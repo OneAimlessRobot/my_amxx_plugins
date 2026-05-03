@@ -70,8 +70,6 @@ public plugin_init()
 	register_srvcmd("vegetto_ku", "vegetto_ku")
 	shRegKeyUp(g_heroName, "vegetto_ku")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 	vegetto_hud_sync=CreateHudSyncObj()
 	
@@ -147,7 +145,7 @@ public loadCVARS()
 	g_ssjSpeed[3] = g_ssjSpeed[2] + get_cvar_float("vegetto_speed_add")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	g_inStun[id] = false
 

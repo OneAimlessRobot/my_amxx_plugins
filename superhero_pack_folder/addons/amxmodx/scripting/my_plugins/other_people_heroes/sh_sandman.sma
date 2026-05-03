@@ -48,14 +48,12 @@ public plugin_init()
 	register_srvcmd("sandman_kd", "sandman_kd")
 	shRegKeyDown(HeroName, "sandman_kd")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// Sets field of view
 	MSGSetFOV = get_user_msgid("SetFOV")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( task_exists(id) )
 		remove_task(id)

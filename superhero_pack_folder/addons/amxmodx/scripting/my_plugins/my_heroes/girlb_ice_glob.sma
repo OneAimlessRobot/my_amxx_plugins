@@ -34,7 +34,6 @@ public plugin_init(){
 	register_custom_touchable(GLOB_CLASSNAME,"player_touch",player_vector,1)
 	register_forward(FM_CmdStart, "girlb_skating")
 
-	register_event("ResetHUD","ice_glob_new_round","b")
 
 	set_task(0.333,"player_on_ice_glob_checks",ICE_GLOB_GLOBAL_TASKID,_,_,"b")
 }
@@ -125,7 +124,7 @@ public girlb_skating(id, uc_handle, seed)
 	return return_result;
 }
 //----------------------------------------------------------------------------------------------
-public ice_glob_new_round(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		g_player_old_friction[id] = entity_get_float(id,EV_FL_friction);

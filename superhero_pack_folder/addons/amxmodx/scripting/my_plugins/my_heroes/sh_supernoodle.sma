@@ -76,16 +76,13 @@ public plugin_init()
 	// INIT
 	register_srvcmd("SuperNoodle_init", "SuperNoodle_init")
 	shRegHeroInit(gHeroName, "SuperNoodle_init")
-
-	// EVENTS
-	register_event("ResetHUD", "newSpawn","b")
+	
 	register_event("Damage", "SuperNoodle_damage", "b", "2!0")
 
 	// Let Server know about SuperNoodle's Variable
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
-	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -113,20 +110,12 @@ public SuperNoodle_init()
 	
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
-}
-public Ham_respawn(id){
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		SuperNoodle_weapons(id)
-
-	}
-
-
 }
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)

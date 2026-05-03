@@ -71,8 +71,6 @@ public plugin_init()
 	register_srvcmd("vash_init", "vash_init")
 	shRegHeroInit(gHeroName, "vash_init")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("Damage", "vash_damage", "b", "2!0")
 
 	// HITZONE CHANGING LOOP
@@ -104,7 +102,7 @@ public vash_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "vash_weapons", id)

@@ -23,13 +23,12 @@ public plugin_init(){
 	DISRUPT_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_disrupted","a")
-	register_event("ResetHUD","disrupt_newRound","b")
 	init_explosion_defaults()
 
 }
 
 //----------------------------------------------------------------------------------------------
-public disrupt_newRound(id)
+public sh_client_spawn(id)
 {	
 	undisrupt_user(id)
 	

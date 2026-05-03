@@ -42,8 +42,6 @@ public plugin_init()
 	register_srvcmd("madness_init", "madness_init")
 	shRegHeroInit(gHeroName, "madness_init")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "madness_damage", "b", "2!0")
 
@@ -85,7 +83,7 @@ public madness_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "madness_weapons", id)

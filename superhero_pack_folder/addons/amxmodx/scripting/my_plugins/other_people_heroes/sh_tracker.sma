@@ -42,8 +42,6 @@ public plugin_init()
   gHeroID=shCreateHero("Tracker", "Tracks victims", "Shooting enemies tags them so you can track them down", false, "tracker_level" )
   
   
-  //Hook the events
-  register_event("ResetHUD","newRound","b")
   register_event("Damage", "tracker_damage", "b", "2!0")
   
   //Start the loop
@@ -55,7 +53,7 @@ public plugin_precache()
     spriteTarget = engfunc(EngFunc_PrecacheModel,"sprites/shmod/tracker_target.spr")
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   new players[SH_MAXSLOTS], num
   

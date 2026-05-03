@@ -22,12 +22,12 @@ public plugin_init()
   set_task(0.1,"slayer_loop",0,"",0,"b")
 
   register_event("Damage", "slayer_damage", "b", "2!0")
-  register_event("ResetHUD","newRound","b") 
+  
   register_cvar("slayer_cooldown", "40.0" )
   register_cvar("slayer_chance", "0.05" )
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
 }

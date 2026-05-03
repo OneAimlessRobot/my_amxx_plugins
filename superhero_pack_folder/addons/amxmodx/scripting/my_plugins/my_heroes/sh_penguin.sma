@@ -73,8 +73,6 @@ public plugin_init()
 	register_srvcmd("penguin_init", "penguin_init")
 	shRegHeroInit(gHeroName, "penguin_init")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// EXTRA NADE DAMAGE
 	RegisterHam(Ham_TakeDamage,"player","penguin_damage",_,true)
@@ -109,7 +107,7 @@ public penguin_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_unset_cooldown_flag(id)

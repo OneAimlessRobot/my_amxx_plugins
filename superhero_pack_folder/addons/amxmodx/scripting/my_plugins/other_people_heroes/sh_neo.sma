@@ -69,9 +69,6 @@ public plugin_init()
 	register_srvcmd("neo_init", "neo_init")
 	shRegHeroInit(gHeroName, "neo_init")
 	register_event("CurWeapon", "make_neo", "be", "1=1", "3>0")
-	register_event("SendAudio","ftime_up","b","2=%!MRAD_GO","2=%!MRAD_MOVEOUT","2=%!MRAD_LETSGO","2=%!MRAD_LOCKNLOAD") 
-	register_event("SendAudio","end_round","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw") 
-	register_event("ResetHUD", "new_round", "b") 
 	
 	// KEY UP
 	register_srvcmd("neo_ku",   "neo_ku")
@@ -218,7 +215,7 @@ public neo_ku()
 	return PLUGIN_HANDLED 
 } 
 //----------------------------------------------------------------------------------------------
-public new_round(id) 
+public sh_client_spawn(id) 
 { 
 	if(flytoggle[id] || isflying[id]) 
 	{ 
@@ -226,17 +223,14 @@ public new_round(id)
 	}
 } 
 //----------------------------------------------------------------------------------------------
-public end_round() 
+public sh_round_end() 
 { 
 	ftime = true 
-	
-	return PLUGIN_HANDLED 
 } 
 //----------------------------------------------------------------------------------------------
-public ftime_up() 
+public sh_round_start() 
 { 
-	ftime = false 
-	return PLUGIN_HANDLED 
+	ftime = false
 } 
 //----------------------------------------------------------------------------------------------
 public make_fly(id) 

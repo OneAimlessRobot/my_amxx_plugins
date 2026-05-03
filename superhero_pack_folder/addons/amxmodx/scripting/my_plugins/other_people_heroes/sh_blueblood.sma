@@ -71,8 +71,6 @@ public plugin_init()
 	register_srvcmd("blueblood_init", "blueblood_init")
 	shRegHeroInit(gHeroName, "blueblood_init")
 
-	//EXTRA EVENTS
-	register_event("ResetHUD","newSpawn","b")
 	register_event("Damage", "blueblood_damage", "b", "2!0")
 }
 
@@ -111,7 +109,7 @@ public blueblood_damage(id)
 	}
 }
 
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	gHasWeapons[id] = false
 

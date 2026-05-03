@@ -38,8 +38,6 @@ public plugin_init()
   if (!cvar_exists("Megaman_level")) register_cvar("megaman_level", "10" )
   shCreateHero(gHeroName, "Photon Cannon", "Blazing Cannon and Megasuit", true, "megaman_level" )
   
-  // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  register_event("ResetHUD","newRound","b")
 
   // KEY DOWN
   register_srvcmd("megaman_kd", "megaman_kd")
@@ -81,7 +79,7 @@ public megaman_death()
 }
 
 //----------------------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   if ( !hasRoundStarted() )
   {

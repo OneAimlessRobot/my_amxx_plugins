@@ -62,9 +62,6 @@ public plugin_init()
 	// EXTRA KNIFE DAMAGE
 	register_event("Damage", "riddick_damage", "b", "2!0")
 
-	// Kinfe Model
-	register_event("ResetHUD", "newSpawn","b")
-
 	// Let Server know about Woverines max knife speed
 	shSetMaxSpeed(gHeroName, "riddick_knifespeed", "[29]" )
 
@@ -136,7 +133,7 @@ public riddick_maxhealth()
 	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)

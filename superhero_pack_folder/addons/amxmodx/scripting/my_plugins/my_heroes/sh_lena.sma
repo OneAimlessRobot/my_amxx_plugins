@@ -31,7 +31,6 @@ public plugin_init()
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("lena_init", "lena_init")
-	register_event("ResetHUD","new_spawn","b")
 	shRegHeroInit(gHeroName, "lena_init")
 }
 public plugin_natives(){
@@ -104,7 +103,6 @@ public lena_init()
 
 	if(sh_user_has_hero(id,gHeroID) )
 	{
-		new_spawn(id)
 		lena_weapons(id)
 	}
 	else 
@@ -112,16 +110,8 @@ public lena_init()
 		sh_drop_weapon(id,LENA_WEAPON_CLASSID,true);
 	}
 }
-public new_spawn(id)
-{
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
-	{
-		gNumBullets[id]=lena_max_bullets
-	}
-}
 public sh_client_spawn(id)
 {
-	new_spawn(id)
 	lena_weapons(id)
 
 }
@@ -129,6 +119,7 @@ public sh_client_spawn(id)
 lena_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+		gNumBullets[id]=lena_max_bullets
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
 		give_custom_grenades(id,GREN_MARKER,6)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);

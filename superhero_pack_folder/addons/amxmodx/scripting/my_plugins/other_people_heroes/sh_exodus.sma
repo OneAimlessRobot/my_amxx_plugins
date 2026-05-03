@@ -62,8 +62,6 @@ public plugin_init()
 	register_srvcmd("exodus_ku", "exodus_ku")
 	shRegKeyUp(g_heroName, "exodus_ku")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// DEATH
 	register_event("DeathMsg", "exodus_death", "a")
@@ -90,7 +88,7 @@ public exodus_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( g_inSearch[id] ) release(id)
 

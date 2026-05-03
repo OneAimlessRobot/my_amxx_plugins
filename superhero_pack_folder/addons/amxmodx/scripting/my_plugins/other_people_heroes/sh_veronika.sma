@@ -84,7 +84,6 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "veronika_init")
 	
 	register_event("DeathMsg","death","a")
-	register_event("ResetHUD", "newSpawn","b")
 	register_event("CurWeapon", "weaponChange","be","1=1")
 	register_event("Damage", "veronika_damage","b","2!0")
 	
@@ -133,7 +132,7 @@ public veronika_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "veronika_weapons", id)

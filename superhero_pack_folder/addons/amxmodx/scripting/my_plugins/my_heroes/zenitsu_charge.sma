@@ -31,7 +31,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_event("DeathMsg","on_death_cleanup","a")
-	register_event("ResetHUD","zenitsu_newRound","b")
 	register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "zenitsu_charge")
@@ -69,11 +68,11 @@ public on_Knife_Weapon_Change(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public zenitsu_newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 
 	if ( sh_user_has_hero(id,zenitsu_get_hero_id())) {
@@ -81,7 +80,7 @@ public zenitsu_newRound(id)
 		g_zenitsu_has_touched_player[id]=0
 		g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]=0
 	}
-	return PLUGIN_CONTINUE
+	return
 }
 remove_user_flight_fx(id){
 	

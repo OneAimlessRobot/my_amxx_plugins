@@ -31,8 +31,6 @@
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 
 	// KEY DOWN
 	register_srvcmd("Storm_kd", "Storm_kd")
@@ -86,7 +84,7 @@
 	return PLUGIN_HANDLED
  }
  //----------------------------------------------------------------------------------------------
- public newRound(id)
+ public sh_client_spawn(id)
  {
 	sh_unset_cooldown_flag(id)
 	remove_task(id+1337)

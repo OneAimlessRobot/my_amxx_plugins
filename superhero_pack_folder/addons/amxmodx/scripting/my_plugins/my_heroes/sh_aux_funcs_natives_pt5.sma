@@ -74,7 +74,6 @@ public plugin_init(){
 						"Print all superhero weapon models available to you.")
 	
 	register_event("DeathMsg","death","a")
-	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	GLOW_TASKID=allocate_typed_task_id(generic_task)
@@ -511,16 +510,15 @@ public client_connect(id){
 	arrayset(gPlayersCurrHeroWpnModelID[id],-1,sizeof gPlayersCurrHeroWpnModelID[])
 
 }
-public newRound(id){
+public sh_client_spawn(id){
 
-	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+	if(!is_user_connected(id)) return
 
 	if(gPlayersCurrHeroModelID[id]>=0){
 
 			sh_player_morph_task(id,gPlayersCurrHeroModelID[id])
 
 	}
-	return PLUGIN_CONTINUE
 
 }
 //assumes player is connected and all that

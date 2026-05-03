@@ -40,7 +40,6 @@ public plugin_init()
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("blink_init", "blink_init")
 	shRegHeroInit(gHeroName, "blink_init")
-	register_event("ResetHUD","newRound","b")
 
 	// KEY DOWN
 	register_srvcmd("blink_kd", "blink_kd")
@@ -60,10 +59,10 @@ public blink_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 
-	newRound(id)
+	sh_client_spawn(id,false)
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	remove_task(id)
 	sh_unset_cooldown_flag(id)

@@ -63,7 +63,6 @@ public plugin_init()
 	
 	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_long_super_m4,0)
 	
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "UberGunner_damage", "b", "2!0")
 
@@ -99,7 +98,7 @@ public UberGunner_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "UberGunner_weapons", id)

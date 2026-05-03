@@ -23,12 +23,11 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	UNCO2_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_co2","a")
-	register_event("ResetHUD","co2_newround","b")
 
 }
 
 //----------------------------------------------------------------------------------------------
-public co2_newround(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		unco2_user(id)

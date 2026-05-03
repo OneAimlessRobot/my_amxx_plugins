@@ -50,8 +50,6 @@ public plugin_init()
     register_srvcmd("frieza_kd", "frieza_kd") 
     shRegKeyDown(gHeroName, "frieza_kd") 
 
-    //SPAWNING EVENT 
-    register_event("ResetHUD", "newSpawn", "b") 
 
     //THIS EVENT IS TRIGGERED WHEN SOMEONE DIES
     register_event("DeathMsg", "frieza_kill", "a")
@@ -120,7 +118,7 @@ public frieza_kd()
         ultimateTimer(id, get_cvar_float("frieza_cooldown")) //cooldown timer
 } 
 //---------------------------------------------------------------------------------------- 
-public newSpawn(id) 
+public sh_client_spawn(id) 
 { 
     sh_unset_cooldown_flag(id)  //Makes you able to use power again 
 } 

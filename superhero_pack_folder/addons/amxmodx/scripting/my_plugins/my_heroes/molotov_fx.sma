@@ -31,11 +31,10 @@ public plugin_init(){
 	register_event("DeathMsg","on_death_burning","a")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
-	register_event("ResetHUD","molotov_newRound","b")
 }
 
 //----------------------------------------------------------------------------------------------
-public molotov_newRound(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		unburn_user(id)

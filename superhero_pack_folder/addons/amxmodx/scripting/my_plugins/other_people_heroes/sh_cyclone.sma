@@ -50,8 +50,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	shCreateHero(gHeroName, "Tornado", "You become a cyclone and you sux", true, "cyclone_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 
 
 	// KEY DOWN
@@ -73,7 +71,7 @@ public plugin_precache()
 }
 
 
-public newRound(id)
+public sh_client_spawn(id)
 {
 	gCycloneTimer = 0
 	gCurrentCyclone = 0;

@@ -50,8 +50,6 @@ public plugin_init()
 	register_srvcmd("black_kd", "black_kd")
 	shRegKeyDown(g_heroName, "black_kd")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 	
 	// LOOP
 	set_task(1.0, "black_loop", 0, "", 0, "b")
@@ -211,7 +209,7 @@ public black_loop()
 	
 }
 //-------------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	gBHTimer = -1

@@ -60,7 +60,6 @@ public plugin_init()
 	register_cvar("Teliko_start_counter_bullets", "30")
 	register_cvar("Teliko_mega_counter_stun_time", "3.0")
 	register_cvar("Teliko_mega_counter_effects_threshold", "3")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", true, "teliko_level", true)
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
@@ -202,13 +201,7 @@ max_inc_lvl_inc=get_cvar_num("Teliko_max_plus_lvl_inc")
 max_bullets_p_inc=get_cvar_num("Teliko_max_bullets_per_inc")
 start_counter_bullets=get_cvar_num("Teliko_start_counter_bullets")
 }
-public sh_client_spawn(id)
-{
-if ( sh_user_has_hero(id,gHeroID) ) {
-	Teliko_weapons(id)
-}
 
-}
 public teliko_morph(id){
 
 	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Roger? Teliko here. Ready to go. Over.")
@@ -218,17 +211,17 @@ public teliko_unmorph(id){
 	superhero_protected_hud_message(superhero_hud_msg_sync,id,"Mission failed. Im down. Come pick me up.")
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
+	Teliko_weapons(id)
 	reset_teliko_user(id)
 	update_max_bullets(id)
 	give_start_counters(id)
 	teliko_morph(id)
 	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
 }
-return PLUGIN_HANDLED
 
 }
 public Teliko_counter_drop_weapon(id,enemy){

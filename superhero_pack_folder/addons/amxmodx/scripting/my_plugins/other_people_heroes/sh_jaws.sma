@@ -37,8 +37,6 @@ public plugin_init() {
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	shCreateHero(gHeroName, "Summon Jaws", "Jaws will hunt down and eat your enemies", true, "jaws_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 
 	// KEY DOWN
 	register_srvcmd("jaws_kd", "jaws_kd")
@@ -59,7 +57,7 @@ public plugin_precache() {
 }
 
 
-public newRound(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	jaws_destroy()

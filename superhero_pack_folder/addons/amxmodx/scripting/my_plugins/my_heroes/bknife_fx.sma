@@ -71,13 +71,12 @@ for(new fx_bleed_type:i=BLEED_MINI;i<NUM_BLEED_TYPES;i++){
 	bleed_task_parameters[i][bleed_task_repeats]=floatround(floatdiv(the_time,the_period))
 }
 register_event("DeathMsg","on_death_bleeding","a")
-register_event("ResetHUD","bleed_newRound","b")
 init_hud_syncs()
 
 }
 
 //----------------------------------------------------------------------------------------------
-public bleed_newRound(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		unbleed_user(id)

@@ -66,8 +66,7 @@ public plugin_init()
 								0)
 
 	register_forward(FM_TraceLine,"fw_traceline");
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -77,7 +76,7 @@ public plugin_precache()
 	g_spriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 }
@@ -92,14 +91,6 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if(sh_get_cooldown_flag(id)){
 		return FMRES_IGNORED
 	}
-	
-	// get crosshair aim
-	static iMyAim[3], Float:flMyAim[3];
-	get_user_origin(id, iMyAim, 3);
-	IVecFVec(iMyAim, flMyAim);
-	
-	// set crosshair aim
-	set_tr(TR_vecEndPos, flMyAim);
 	
 	// get ent looking at
 	static ent, body;

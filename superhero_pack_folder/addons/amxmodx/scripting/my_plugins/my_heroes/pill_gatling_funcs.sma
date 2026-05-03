@@ -44,7 +44,6 @@ public plugin_init(){
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
 	register_forward(FM_PlayerPostThink, "fwPlayerPostThink", 1)
-	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_Item_PostFrame, YAKUI_WEAPON_NAME, "Item_PostFrame_Post", 1,true)
 		
 	RegisterHam(Ham_Weapon_Reload,YAKUI_WEAPON_NAME, "fw_WeaponReloadPre",_,true)
@@ -56,7 +55,6 @@ public plugin_init(){
 	register_custom_touchable(PILL_CLASSNAME,"pilula_sexual_penetra_player",player_vector,1)
 
 	register_forward(FM_CmdStart, "CmdStart");
-	register_logevent("event_start", 2, "1=Round_Start")
 	register_cvar("yakui_windup_time", "2.0")
 	register_think(PILL_CLASSNAME, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
@@ -523,23 +521,14 @@ public fw_ItemDeployPre(entity)
 }
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))){
 		atk1[id]=0;
 		atk2[id]=0;
 		g_plAction[id]=act_none;
 	}
-	return PLUGIN_HANDLED
 	
-}
-
-public event_start(){
-	static iPlayers[32], iPlayersNum, i 
-	get_players(iPlayers, iPlayersNum, "a") 
-	for (i = 0; i <= iPlayersNum; ++i){
-		newRound(i)
-	}
 }
 public pilula_sexual_penetra_player(pToucher, pTouched)
 {

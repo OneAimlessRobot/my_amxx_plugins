@@ -22,8 +22,6 @@ public plugin_init()
 	if (!cvar_exists("luke_level")) register_cvar("luke_level", "0" )
 	gHeroID=shCreateHero(gHeroName, "Ligthsaber", "Kill Your Enemies With The Mighty Powers Of The Force!", true, "luke_level" )
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 
 	// KEY DOWN
 	register_srvcmd("luke_kd", "luke_kd")
@@ -45,7 +43,7 @@ public plugin_precache()
 	return PLUGIN_CONTINUE 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	return PLUGIN_HANDLED

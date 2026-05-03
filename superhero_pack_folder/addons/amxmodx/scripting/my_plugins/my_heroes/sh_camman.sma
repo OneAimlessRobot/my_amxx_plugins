@@ -25,7 +25,6 @@ public plugin_init()
 	register_cvar("camman_level", "8")
 	register_cvar("camman_disarmable", "1")
 	register_cvar("camman_camera_cooldown", "10")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Camman", "Plant cameras on walls", true, "camman_level" )
 	
 	register_srvcmd("camman_init", "camman_init")
@@ -104,21 +103,11 @@ public loadCVARS()
 public sh_client_spawn(id)
 {
 	if (sh_user_has_hero(id,gHeroID)  ) {
+		reset_camman_user(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	
 }
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-	if (is_user_alive(id)&&sh_is_active() &&!hasRoundStarted() ) {
-		
-		reset_camman_user(id)
-	}
-	return PLUGIN_HANDLED
-	
-}
-
 //----------------------------------------------------------------------------------------------
 public camman_kd()
 {

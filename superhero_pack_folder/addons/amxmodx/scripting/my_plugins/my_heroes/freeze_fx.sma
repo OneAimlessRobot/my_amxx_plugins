@@ -25,12 +25,11 @@ public plugin_init(){
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
 	register_event("Damage", "frozen_damage", "b", "2!0")
 	register_event("DeathMsg","on_death_freeze","a")
-	register_event("ResetHUD","freeze_new_round","b")
     
 	
 }
 //----------------------------------------------------------------------------------------------
-public freeze_new_round(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		if(Get_BitVar(is_frozen_mask,id)){

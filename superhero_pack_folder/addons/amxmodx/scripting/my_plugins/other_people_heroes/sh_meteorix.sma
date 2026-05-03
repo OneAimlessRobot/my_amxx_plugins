@@ -43,8 +43,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// KEY DOWN
 	register_srvcmd("meteorix_kd", "meteorix_kd")
@@ -105,7 +103,7 @@ public meteorix_death()
 	MeteorixPowerUsed[id] = false
 }
 // ----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if(!sh_user_has_hero(id,gHeroID)) return
 	remove_task(id)

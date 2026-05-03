@@ -32,7 +32,6 @@ public plugin_init(){
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
 	RegisterHam(Ham_Weapon_Reload, SHINOBU_WEAPON_CLASSNAME, "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	register_event("ResetHUD","shinobu_usp_newRound","b")
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	
 	custom_weapon_shinobu_pistol=sh_log_custom_damage_source(
@@ -130,16 +129,14 @@ public on_Usp_Weapon_Change(id)
 
 }
 //----------------------------------------------------------------------------------------------
-public shinobu_usp_newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 
 	shinobu_weapons(id)
-
-	return PLUGIN_CONTINUE
 }
 public track_shinobu_usp_ammo(ent)
 {

@@ -26,7 +26,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Thunder Hashira", "When all that is left is you...", true, "shinobu_level" )
 	
-	register_event("ResetHUD","zenitsu_newRound","b")
 	register_srvcmd("zenitsu_init", "zenitsu_init")
 	shRegHeroInit(gHeroName, "zenitsu_init")
 
@@ -61,11 +60,11 @@ public _zenitsu_get_hero_id(iPlugins, iParms){
 	
 }
 //----------------------------------------------------------------------------------------------
-public zenitsu_newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 
 	if ( sh_user_has_hero(id,gHeroID) ) {
@@ -73,7 +72,6 @@ public zenitsu_newRound(id)
 		gChargeModeEngaged[id]=0
 
 	}
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 public zenitsu_init()

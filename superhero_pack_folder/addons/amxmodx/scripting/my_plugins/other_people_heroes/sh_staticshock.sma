@@ -44,8 +44,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Fly", "You are now Static Shock", true, "shock_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b") 
 
 	// KEY UP
 	register_srvcmd("shock_ku",   "shock_ku")
@@ -352,7 +350,7 @@ public do_this(id)
 	get_user_origin(id, g_endLocation[id], 3)
 }
 //---------------------------------------------------------------------------------------------- 
-public newRound(id)
+public sh_client_spawn(id)
 {
 
   if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE

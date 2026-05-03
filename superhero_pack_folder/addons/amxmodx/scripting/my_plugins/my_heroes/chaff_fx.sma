@@ -23,12 +23,11 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_chaffed","a")
-	register_event("ResetHUD","chaff_newround","b")
 
 }
 
 //----------------------------------------------------------------------------------------------
-public chaff_newround(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		unchaff_user(id)

@@ -48,8 +48,6 @@ public plugin_init()
 	register_srvcmd("scorpion_kd", "scorpion_kd")
 	shRegKeyDown(g_heroName, "scorpion_kd")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// DEATH
 	register_event("DeathMsg", "scorpion_death", "a")
@@ -78,7 +76,7 @@ public scorpion_init()
 	if ( g_hooked[id] ) scorpion_hookOff(id)
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	g_hooksLeft[id] = get_cvar_num("scorpion_maxhooks")
 

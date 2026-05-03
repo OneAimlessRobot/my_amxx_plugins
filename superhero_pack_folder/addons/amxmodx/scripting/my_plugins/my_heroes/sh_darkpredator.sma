@@ -69,8 +69,6 @@ public plugin_init()
 	register_srvcmd("darkpred_init", "darkpred_init") 
 	shRegHeroInit(gHeroName, "darkpred_init")
 	
-	// NEW ROUND
-	register_event("ResetHUD","newSpawn","b") //Called on a New Spawn
 	// WEAPON EVENT To give DarkPredator unlimited deagle ammo
 	register_event("CurWeapon","changeWeapon","be","1=1")  
 	//Damage
@@ -158,7 +156,7 @@ public darkpred_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	remInvisibility(id)
 	if (  haveable_check(id)&&gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
@@ -169,7 +167,6 @@ public newSpawn(id)
 			set_task(0.1, "darkpred_deagle",id)
 		}
 	}
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 public setInvisibility(id, alpha)

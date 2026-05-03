@@ -33,7 +33,6 @@ public plugin_init()
 	register_cvar("leyla_default_give_money", "1000")
 	register_cvar("leyla_default_give_radius", "300.0")
 	register_concmd("leyla_stats","print_leyla_stats")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Rich walking bank girl!", "Infinite max money! Donate it to teammates, by going next to them! Set the money with the cmd 'set_leyla_money'! Damage also rewards you!", true, "leyla_level" )
 	register_event("Money","leyla_money","b")
 	register_event("DeathMsg","death","a")
@@ -280,12 +279,11 @@ public leyla_kd()
 
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()&&sh_user_has_hero(id,gHeroID) ){ 
 		reset_leyla(id)	
-	}
-	return PLUGIN_HANDLED	
+	}	
 }
 public death()
 {	

@@ -16,8 +16,6 @@ public plugin_init()
   register_cvar("palpatine_level", "8" )
   gHeroID=shCreateHero(gHeroName, "Dark Lord", "Death and Decay!", true, "palpatine_level" )
   
-  // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  register_event("ResetHUD","newRound","b")
   
   // KEY DOWN
   register_srvcmd("palpatine_kd", "palpatine_kd")
@@ -75,7 +73,7 @@ public palpatine_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
   if (sh_user_has_hero(id,gHeroID)) {

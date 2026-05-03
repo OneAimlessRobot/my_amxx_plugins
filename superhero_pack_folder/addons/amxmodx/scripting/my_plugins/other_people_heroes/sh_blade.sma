@@ -103,8 +103,6 @@ public plugin_init()
 			register_srvcmd("blade_init", "blade_init")
 			shRegHeroInit(HeroName, "blade_init")
 
-			// EVENTS
-			register_event("ResetHUD", "new_spawn", "b")
 			register_event("CurWeapon", "weapon_change", "be", "1=1")
 			register_event("Damage", "blade_damage", "b", "2!0")
 
@@ -171,7 +169,7 @@ public blade_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	blade_reset(id)
 

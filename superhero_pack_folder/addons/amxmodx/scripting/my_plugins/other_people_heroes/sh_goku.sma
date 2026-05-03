@@ -119,8 +119,6 @@ public plugin_init()
 	register_srvcmd("goku_ku", "goku_ku")
 	shRegKeyUp(g_heroName, "goku_ku")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
 
@@ -196,7 +194,7 @@ public loadCVARS()
 	g_ssjSpeed[3] = g_ssjSpeed[2] + get_cvar_float("goku_speedadd")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	g_inStun[id] = false
 

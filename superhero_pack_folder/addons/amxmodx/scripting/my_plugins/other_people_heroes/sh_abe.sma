@@ -27,9 +27,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Insert your spirit into enemies", "You can insert your spirit into enemies", true, "abe_level")
 
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
-
 	// KEYDOWN
 	register_srvcmd("abe_kd", "abe_kd")
 	shRegKeyDown(gHeroName, "abe_kd")
@@ -146,7 +143,7 @@ public abe_kd()
 
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if(sh_user_has_hero(id,gHeroID))
 	{

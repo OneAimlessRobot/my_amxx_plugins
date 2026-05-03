@@ -34,12 +34,11 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "psychosis_leap")
 	YANDERE_PSYCHOSIS_TASKID=allocate_typed_task_id(player_task)
 	init_hud_syncs()
-	register_event("ResetHUD","psychosis_newRound","b")
 	
 }
 
 //----------------------------------------------------------------------------------------------
-public psychosis_newRound(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		if(Get_BitVar(gIsPsychosisMask,id)){

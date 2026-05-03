@@ -51,7 +51,6 @@ public plugin_init()
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate 3-fold! Switch between and trigger them with knife deployed", true, "reika_level" )
 
-    register_event("ResetHUD","newRound","b")
     register_srvcmd("reika_init", "reika_init")
     shRegHeroInit(gHeroName, "reika_init")
 
@@ -231,11 +230,11 @@ public parry_mode_turn_off_task(id){
 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
     if(!is_user_alive(id)||!sh_is_active()){
         
-        return PLUGIN_CONTINUE
+        return
     }
     if ( sh_user_has_hero(id,gHeroID) ) {
         
@@ -245,7 +244,6 @@ public newRound(id)
         sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 
     }
-    return PLUGIN_CONTINUE
 }
 
 //----------------------------------------------------------------------------------------------

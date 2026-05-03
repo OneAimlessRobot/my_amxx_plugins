@@ -51,7 +51,6 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart");
 	register_event("DeathMsg","death","a")
-	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 	custom_dmg_id_sneak=sh_log_custom_damage_source(teliko_get_hero_id(),
@@ -75,14 +74,13 @@ public weaponChange(id)
 	
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 if ( sh_user_has_hero(id,teliko_get_hero_id()) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	stop_dragging(id)
 	g_slit_kills[id]=max_slitter_kills_per_life;
 }
-return PLUGIN_HANDLED
 
 }
 //----------------------------------------------------------------------------------------------

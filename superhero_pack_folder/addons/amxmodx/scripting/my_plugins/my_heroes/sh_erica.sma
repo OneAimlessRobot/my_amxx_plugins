@@ -74,7 +74,6 @@ public plugin_init()
 	register_cvar("erica_num_mollies", "181288")
 	register_cvar("erica_speed_speed_points_pct", "0.1")
 	register_cvar("erica_dmg_speed_points_pct", "0.1")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
@@ -226,10 +225,11 @@ public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		if ( sh_user_has_hero(id,gHeroID) ) {
+			Erica_weapons(id)
 			sh_reset_max_speed(id)
 			g_erica_kills[id]=0;
 			g_erica_points[id]=base_er_points;
@@ -256,13 +256,6 @@ public client_disconnected(id){
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id]=0
 	hook_set_hook(id,0)
-}
-public sh_client_spawn(id)
-{
-	if ( sh_user_has_hero(id,gHeroID)  ) {
-		Erica_weapons(id)
-	}
-
 }
 add_speed_points(id,Float:damage){
 	

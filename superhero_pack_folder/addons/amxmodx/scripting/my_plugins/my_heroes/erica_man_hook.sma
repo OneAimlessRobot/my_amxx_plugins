@@ -54,7 +54,6 @@ public plugin_init(){
 	register_cvar("hook_level_difference", "10")
 	register_cvar("hook_drag_time", "3")
 	register_cvar("hook_gutting_dmg_mult", "3")
-	register_event("ResetHUD","hook_new_round","b")
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
@@ -67,7 +66,7 @@ public plugin_init(){
 }
 
 //----------------------------------------------------------------------------------------------
-public hook_new_round(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		g_prev_max_speed[id] = get_user_maxspeed(id)

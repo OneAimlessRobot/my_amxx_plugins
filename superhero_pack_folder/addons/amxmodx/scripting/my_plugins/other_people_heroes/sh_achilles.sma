@@ -44,7 +44,6 @@ public plugin_init()
   
    // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS) INIT 
    register_event("Damage", "achilles_damage", "b","2!0")
-   register_event("ResetHUD","newRound","b")
 
    // INIT
    register_srvcmd("achilles_init", "achilles_init") 
@@ -110,13 +109,12 @@ public achilles_damage(id)
 }
 //----------------------------------------------------------------------------------------------
 //Inform the client that whoever has achilles
-public newRound(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID) ) 
 	   	set_user_hitzones(0, id, 64)
 	else
 	    set_user_hitzones(0, id, 255)
 
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------

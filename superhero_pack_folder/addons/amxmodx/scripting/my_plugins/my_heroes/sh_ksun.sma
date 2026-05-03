@@ -68,7 +68,6 @@ public plugin_init()
 		sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ksun_debt,
 								dmg_source_name_long_ksun_debt,0)
 
-	register_event("ResetHUD","newRound","b")
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
 	// INIT
@@ -353,18 +352,18 @@ if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 }
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 	spores_reset_user(id)
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		ksun_weapons(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
-	return PLUGIN_HANDLED
+	return
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

@@ -76,8 +76,6 @@ public plugin_init()
 	register_srvcmd("warmachine_kd", "warmachine_kd")
 	shRegKeyDown(gHeroName, "warmachine_kd")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("DeathMsg", "warmachine_death", "a")
 	register_event("Damage", "warmachine_damage", "b", "2!0")
 
@@ -126,7 +124,7 @@ public loadCVARS()
 	gWarMachineArmor = get_cvar_num("warmachine_armor")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	gRegenAllowed[id] = false
 	set_task(1.0, "spawnDelay", id)

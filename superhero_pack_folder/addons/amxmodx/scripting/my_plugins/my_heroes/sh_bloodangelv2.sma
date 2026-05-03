@@ -58,7 +58,7 @@ public plugin_init()
 	shRegHeroInit(HeroName, "darkangel_init")
 	
 	// EVENTS
-	register_event("ResetHUD", "new_spawn", "b")
+	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "darkangel_damage", "b", "2!0")
 	// Let Server know about the hero's variables
@@ -133,7 +133,7 @@ public darkangel_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	if (haveable_check(id)&& HasAcess[id]&&is_user_alive(id) && sh_is_active()) {
 		darklydark_haveable_check(id)

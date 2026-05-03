@@ -49,11 +49,6 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,SWAT_M4_V_MODEL,SWAT_M4_P_MODEL)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/swat_v_knife.mdl","models/shmod/swat_p_knife.mdl")
 
-	//EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
-	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "swat_damage", "b", "2!0")
 	register_event("DeathMsg","death_event","a")	
@@ -78,14 +73,13 @@ public plugin_init()
 	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		swat_weapons(id)
 
 	}
-	return PLUGIN_CONTINUE
 }
 //-----------------------------------------------------------------------------------------------
 public swat_weapons(id)
@@ -301,7 +295,7 @@ public make_beam(id)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public round_end(){
+public sh_round_end(){
 
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
@@ -340,7 +334,7 @@ remove_missile(id,missile){
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public round_start(){
+public sh_round_start(){
 
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {

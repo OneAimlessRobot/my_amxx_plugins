@@ -48,8 +48,6 @@
 	register_srvcmd("garrow_init", "garrow_init")
 	shRegHeroInit(gHeroName, "garrow_init")
 
-	// NEW ROUND
-	register_event("ResetHUD","newRound","b")
 
 	// GREEN ARROW DAMAGE
 	register_event("Damage", "garrow_damage", "b", "2!0")
@@ -87,7 +85,7 @@
 
  }
  //----------------------------------------------------------------------------------------------
- public newRound(id)
+ public sh_client_spawn(id)
  {
 	if ( sh_user_has_hero(id,gHeroID))
 	{

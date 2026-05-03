@@ -64,7 +64,6 @@ public plugin_init()
 	register_cvar("maria_selfless_index", "0.9")
 	register_cvar("maria_points_heal_coeff", "4")
 	register_cvar("maria_heal_period", "0.33")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level",true )
 	
 	register_forward(FM_TraceLine,"fw_traceline");
@@ -155,11 +154,15 @@ public maria_init()
 	new id=str_to_num(temp)
 	
 	if(sh_user_has_hero(id,gHeroID) ){
-		
-		new_spawn(id)
-		maria_weapons(id)
+
+
 		g_maria_points[id]=base_points;
 		g_base_radius[id]=base_radius
+		gNumRivets[id]=maria_max_rivets
+		gHealthDrainValve[id]=false
+		gHealthDrainValveTimer[id]=begin_open_valve_timer
+		gHealthDrainValveTimerStarted[id]=true
+		maria_weapons(id)
 	}
 	else{
 		sh_drop_weapon(id,MARIA_WEAPON_CLASSID,true);
@@ -179,23 +182,6 @@ maria_weapons(id)
 			cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
 			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-CLIP_SIZE);
 		}
-	}
-}
-public sh_client_spawn(id)
-{
-	new_spawn(id)
-	maria_weapons(id)
-
-}
-public new_spawn(id)
-{
-	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  )
-	{
-		gNumRivets[id]=maria_max_rivets
-		gHealthDrainValve[id]=false
-		gHealthDrainValveTimer[id]=begin_open_valve_timer
-		gHealthDrainValveTimerStarted[id]=true
-		
 	}
 }
 add_points(id,Float:damage){
@@ -364,13 +350,17 @@ update_stats(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
+
+			gNumRivets[id]=maria_max_rivets
+			gHealthDrainValve[id]=false
+			gHealthDrainValveTimer[id]=begin_open_valve_timer
+			gHealthDrainValveTimerStarted[id]=true
 			g_maria_points[id]=base_points;
 		}
 	}
-	return PLUGIN_HANDLED
 	
 }

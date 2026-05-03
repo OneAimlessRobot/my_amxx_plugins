@@ -59,7 +59,6 @@ public plugin_init()
 	register_srvcmd("casper_ku", "casper_ku")
 	shRegKeyUp(gHeroName, "casper_ku")
 
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("DeathMsg", "casper_death", "a")
 }
 //---------------------------------------------------------------------------------------------
@@ -91,7 +90,7 @@ public loadCVARS()
 	gCasperArmor = get_cvar_num("casper_armor")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() &&sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( gInGhostMode[id] ) {

@@ -25,12 +25,11 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	UNSHOCK_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_shock","a")
-	register_event("ResetHUD","stun_newround","b")
 
 }
 
 //----------------------------------------------------------------------------------------------
-public stun_newround(id)
+public sh_client_spawn(id)
 {	
 	unshock_user(id)
 

@@ -46,8 +46,6 @@ public plugin_init()
 	register_srvcmd("bishop_kd", "bishop_kd")
 	shRegKeyDown(g_heroName, "bishop_kd")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// ABSORB ENERGY!
 	register_event("Damage", "bishop_damage", "b", "2!0")
@@ -62,7 +60,7 @@ public plugin_precache()
 	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	g_absorbedDamage[id] = 0
 }

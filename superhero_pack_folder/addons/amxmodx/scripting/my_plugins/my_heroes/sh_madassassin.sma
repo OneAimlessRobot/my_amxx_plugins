@@ -30,30 +30,25 @@ madassassin_healpoints 5	//The # of HP healed per second
 // 4-normal cs, reload and backpack ammo depletes
 #define AMMO_MODE 0
 
-// Comment out to not use the Awp model
-#define USING_WPN_MODEL 1
-
-#define USE_WPN_MODEL (USING_WPN_MODEL>=1)
-
 // Comment out to not give a free Awp
 #define GIVE_WEAPONS
 
 
 //------- Do not edit below this point ------//
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Mad Assassin"
 new bool:HasMadAssassin[SH_MAXSLOTS+1]
 new PlayerMaxHealth[SH_MAXSLOTS+1]
 new CvarAwpDmgMult, CvarHealPoints
+new gHeroID
+#define Model_V_Awp "models/shmod/madassassin_v_awp.mdl"
+#define Model_P_Awp "models/shmod/madassassin_p_awp.mdl"
 
-#if defined USE_WPN_MODEL
-	new const Model_V_Awp[] = "models/shmod/madassassin_v_awp.mdl"
-	new const Model_P_Awp[] = "models/shmod/madassassin_p_awp.mdl"
-	new bool:ModelWeaponLoaded
-#endif
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -66,22 +61,20 @@ public plugin_init()
 	CvarHealPoints = register_cvar("madassassin_healpoints", "5")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(HeroName, "Powerful AWP", "Faster Healing", false, "madassassin_level")
+	gHeroID = shCreateHero(HeroName, "Powerful AWP", "Faster Healing", false, "madassassin_level")
 
+	sh_register_superheromod_weapon_model(gHeroID,CSW_AWP,Model_V_Awp,Model_P_Awp)
+	
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	// INIT
 	register_srvcmd("madassassin_init", "madassassin_init")
 	shRegHeroInit(HeroName, "madassassin_init")
 
-	// EVENTS
-#if defined USE_WPN_MODEL
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-#endif
 
 	register_event("Damage", "madassassin_damage", "b", "2!0")
 
 #if defined GIVE_WEAPONS
-	register_event("ResetHUD", "new_spawn", "b")
 	shSetShieldRestrict(HeroName)
 #endif
 
@@ -91,28 +84,6 @@ public plugin_init()
 	register_srvcmd("madassassin_maxheal", "madassassin_maxheal")
 	shRegMaxHealth(HeroName, "madassassin_maxheal")
 }
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
-public plugin_precache()
-{
-	ModelWeaponLoaded = true
-	if ( file_exists(Model_V_Awp) ) {
-		engfunc(EngFunc_PrecacheModel,Model_V_Awp)
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_V_Awp)
-		ModelWeaponLoaded = false
-	}
-
-	if ( file_exists(Model_P_Awp) ) {
-		engfunc(EngFunc_PrecacheModel,Model_P_Awp)
-	}
-	else {
-		log_amx("[SH](%s)Aborted loading ^"%s^", file does not exist on server", HeroName, Model_P_Awp)
-		ModelWeaponLoaded = false
-	}
-}
-#endif
 //----------------------------------------------------------------------------------------------
 public madassassin_init()
 {
@@ -142,10 +113,6 @@ public madassassin_init()
 				#if defined GIVE_WEAPONS
 					madassassin_weapons(id)
 				#endif
-
-				#if defined USE_WPN_MODEL
-					switch_model(id)
-				#endif
 			}
 		}
 
@@ -165,7 +132,7 @@ public madassassin_init()
 }
 //----------------------------------------------------------------------------------------------
 #if defined GIVE_WEAPONS
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] )
 	{
@@ -180,24 +147,6 @@ madassassin_weapons(id)
 	}
 }
 #endif
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
-switch_model(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) || !HasMadAssassin[id] )
-		return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-
-	if ( wpnid == CSW_AWP )
-	{
-		set_pev(id, pev_viewmodel2, Model_V_Awp)
-		set_pev(id, pev_weaponmodel2, Model_P_Awp)
-	}
-}
-#endif
-//----------------------------------------------------------------------------------------------
-#if defined USE_WPN_MODEL
 public weapon_change(id)
 {
 	if ( !sh_is_active() || !HasMadAssassin[id] || !is_user_alive(id) ||!is_user_connected(id) )
@@ -207,11 +156,6 @@ public weapon_change(id)
 	if ( read_data(2) != CSW_AWP )
 		return
 
-#if defined USE_WPN_MODEL
-	if ( ModelWeaponLoaded )
-		switch_model(id)
-#endif
-
 #if AMMO_MODE < 4
 	// Never Run Out of Ammo!
 	//clip = read_data(3)
@@ -220,7 +164,6 @@ public weapon_change(id)
 	}
 #endif
 }
-#endif
 //----------------------------------------------------------------------------------------------
 public madassassin_damage(id)
 {

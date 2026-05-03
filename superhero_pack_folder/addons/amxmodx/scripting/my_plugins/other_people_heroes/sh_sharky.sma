@@ -31,8 +31,7 @@ public plugin_init()
 
   gHeroID=shCreateHero(gHeroName, "sharky-mode", "make confusing smoke storm,get ALL the gunz", true, "sharky_level")
   register_clcmd("SharkyPower","make_fog",ADMIN_USER)
-  // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  register_event("ResetHUD","newRound","b")
+  
   register_event("CurWeapon","changeWeapon","be","0=0")  
   // KEY DOWN
   register_srvcmd("sharky_kd", "sharky_kd")
@@ -68,7 +67,7 @@ public sharky_init()
   }
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
   if ( sh_user_has_hero(id,gHeroID) ) {

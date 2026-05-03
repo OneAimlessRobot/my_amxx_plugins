@@ -65,8 +65,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Climb and sneak away!", "You are now a prison escapist. Get better every level!", true, "escapist_level" )
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
   	// KEY UP
 	register_srvcmd("escapist_ku",   "escapist_ku")
 	shRegKeyUp(gHeroName, "escapist_ku")
@@ -260,7 +258,7 @@ public escapist_ku()
 
 }
 //---------------------------------------------------------------------------------------------- 
-public newRound(id)
+public sh_client_spawn(id)
 {
 	g_is_climbing[id] = 0
 	wpn_switch_primitive(id)

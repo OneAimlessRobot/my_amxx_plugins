@@ -88,8 +88,6 @@ public plugin_init()
 	register_srvcmd("drstrange_ku", "drstrange_ku")
 	shRegKeyUp(gHeroName, "drstrange_ku")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("DeathMsg", "drstrange_death", "a")
 
 	// LEVELS
@@ -136,7 +134,7 @@ public drstrange_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)

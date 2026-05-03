@@ -38,7 +38,6 @@ public plugin_init()
 	register_cvar("Yowai_max_hits", "90")
 	register_cvar("Yowai_max_hits_per_inc", "5")
 	register_cvar("Yowai_hits_inc_lvl_gap", "5")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Meek Maid", "Accumulate hits... and... whatever I guess I dont really know", true, "Yowai_level" )
 	sh_register_superheromod_model(gHeroID,
 								YOWAI_PLAYER_MODEL,
@@ -118,7 +117,7 @@ public loadCVARS()
 }
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
@@ -126,7 +125,6 @@ if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	reset_Yowai_user(id)
 	update_max_hits(id)
 }
-return PLUGIN_HANDLED
 
 }
 public Inc_hits(id){

@@ -45,7 +45,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	TELEPORT_CHECK_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_cleanup","a")
-	register_event("ResetHUD","teleport_newRound","b")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "shinobu_cloak")
 
@@ -135,11 +134,11 @@ apply_cloak(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public teleport_newRound(id)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
 
 	if ( sh_user_has_hero(id,shinobu_get_hero_id())) {
@@ -148,7 +147,6 @@ public teleport_newRound(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
 	}
-	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
 shinobu_teleport(id,attacker)

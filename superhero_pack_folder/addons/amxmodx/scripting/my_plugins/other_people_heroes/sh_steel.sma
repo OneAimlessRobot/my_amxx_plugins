@@ -37,8 +37,6 @@ public plugin_init()
 	register_srvcmd("steel_init", "steel_init")
 	shRegHeroInit(gHeroName, "steel_init")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("Damage", "steel_damage", "b", "2!0")
 
 	// LOOP
@@ -65,7 +63,7 @@ public steel_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 		set_user_hitzones(0, id, 255)

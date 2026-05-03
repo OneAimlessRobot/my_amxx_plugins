@@ -65,8 +65,6 @@ public plugin_init()
 	register_srvcmd("SuperAlien_init", "SuperAlien_init")
 	shRegHeroInit(HeroName, "SuperAlien_init")
 
-	// EVENTS
-	register_event("ResetHUD", "new_spawn", "b")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("DeathMsg", "SuperAlien_death", "a")
 	register_event("Damage", "SuperAlien_damage", "b", "2!0")
@@ -106,7 +104,7 @@ public SuperAlien_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		weapon_change(id)

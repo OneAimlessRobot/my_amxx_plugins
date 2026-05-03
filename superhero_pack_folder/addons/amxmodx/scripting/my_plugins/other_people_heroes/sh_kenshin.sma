@@ -39,8 +39,6 @@ public plugin_init()
 	// EXTRA KNIFE DAMAGE
 	register_event("Damage", "kenshin_damage", "b", "2!0")
 
-	// Kinfe Model
-	register_event("ResetHUD", "newSpawn","b")
 	register_event("CurWeapon", "weaponChange","be","1=1")
 
 	// Let Server know about Kenshins max knife speed
@@ -68,7 +66,7 @@ public kenshin_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, weapon = get_user_weapon(id, clip, ammo)

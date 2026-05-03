@@ -51,8 +51,6 @@ public plugin_init()
 	register_cvar("pred_level", "7")
 	gHeroID=shCreateHero(gHeroName, "Invisibility, LaserCannon, Lazer Deagle, SuperClaw", "Invisibility while not shooting, Super Claw, Laser Beam", true, "pred_level")
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 	// LASER DEAGLE DAMAGE
 	register_event("Damage", "pred_DLdamage", "b", "2!0")
 	// COUTING Laser
@@ -122,7 +120,7 @@ public pred_init()
 	}
 }
 
-public newRound(id)
+public sh_client_spawn(id)
 {
 	if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID)) {
 		stillInvis(id)

@@ -30,7 +30,6 @@ public plugin_init()
     register_plugin(PLUGIN, VERSION, AUTHOR)
 
     server_print("Superhero configs manager not yet implemented. But loading!")
-    register_event("ResetHUD","newRound","b")
     initialize_settings()
     setupConfig()
     loadConfig()
@@ -46,16 +45,12 @@ public plugin_natives(){
 
 }
 
-public newRound(id){
+public sh_client_spawn(id){
 
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return PLUGIN_CONTINUE
+		return
 	}
-	if(!is_user_bot(id)){
-        
-    }
-	return PLUGIN_CONTINUE
 
 
 }

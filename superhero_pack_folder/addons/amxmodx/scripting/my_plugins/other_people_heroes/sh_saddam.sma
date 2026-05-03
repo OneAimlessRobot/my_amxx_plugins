@@ -41,8 +41,6 @@ public plugin_init()
 	register_srvcmd("saddam_kd", "saddam_kd")
 	shRegKeyDown(gHeroName, "saddam_kd")
 	
-	// NEW ROUND
-	register_event("ResetHUD","newRound","b")
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -62,7 +60,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/saddamtest.wav") 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id) 
+public sh_client_spawn(id) 
 {
 	
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) 

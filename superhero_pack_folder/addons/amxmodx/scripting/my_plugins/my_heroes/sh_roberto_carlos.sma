@@ -34,7 +34,6 @@ public plugin_init()
 	register_cvar("roberto_level", "8")
 	register_cvar("roberto_num_balls", "100")
 	register_cvar("roberto_ball_cooldown", "1.0")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
 	register_srvcmd("roberto_init", "roberto_init")
 	shRegHeroInit(gHeroName, "roberto_init")
@@ -205,7 +204,7 @@ public roberto_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
@@ -213,7 +212,6 @@ public newRound(id)
 			gNumBalls[id]=num_balls
 		}
 	}
-	return PLUGIN_HANDLED
 	
 }
 public sh_round_end(){

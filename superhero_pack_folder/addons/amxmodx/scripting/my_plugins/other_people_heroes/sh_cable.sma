@@ -42,8 +42,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 
 	// KEY DOWN
 	register_srvcmd("cable_kd", "cable_kd")
@@ -86,7 +84,7 @@ public cable_death()
 	remove_task(id+25735)
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	laser_shots[id] = get_cvar_num("cable_laser_ammo")
 	sh_unset_cooldown_flag(id)

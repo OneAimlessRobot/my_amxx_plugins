@@ -39,7 +39,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Strategic mastermind!", "Return to the past! bind some key to type 'bind j jeremystats' in console for overview", true, "jeremy_level")
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 	// INIT
 	register_srvcmd("jeremy_init", "jeremy_init")
 	shRegHeroInit(gHeroName, "jeremy_init")
@@ -271,7 +270,7 @@ public force_end(id)
 	}
 	
 }
-public newRound(id){
+public sh_client_spawn(id){
 
 	if(gPowerBeingUsed){
 		gPowerBeingUsed=false

@@ -51,7 +51,6 @@ public plugin_init()
 	register_srvcmd("afterburn_kd", "afterburn_kd")
 	shRegKeyDown(gHeroName, "afterburn_kd")
 
-	register_event("ResetHUD", "newSpawn", "b")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -65,7 +64,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"vox/_period.wav")
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	gIsBurning[id] = 0
 

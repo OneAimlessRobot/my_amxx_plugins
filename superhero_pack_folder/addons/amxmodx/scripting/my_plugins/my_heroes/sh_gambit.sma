@@ -74,9 +74,6 @@ public plugin_init()
 	register_srvcmd("gambit_init", "gambit_init")
 	shRegHeroInit(gHeroName, "gambit_init")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
-
 	// EXTRA NADE DAMAGE
 	RegisterHam(Ham_TakeDamage,"player","gambit_damage",_,true)
 
@@ -128,7 +125,7 @@ public gambit_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		sh_unset_cooldown_flag(id)

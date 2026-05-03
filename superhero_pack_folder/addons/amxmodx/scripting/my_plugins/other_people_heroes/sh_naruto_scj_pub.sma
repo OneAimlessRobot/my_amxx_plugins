@@ -185,10 +185,6 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Shadow Clone Jutsu", "Summon a shadow clone which follows you and shoots down any nearby enemies with his gun, press keydown again to use the rasengan")
 	sh_set_hero_bind(gHeroID)
 	
-	// EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 	
 	// LOOP
 	set_task(1.0, "naruto_loop", _, _, _, "b")
@@ -241,7 +237,7 @@ public naruto_loop()
 	}
 }
 
-public round_start()
+public sh_round_start()
 {
 	roundfreeze = false
 	
@@ -269,7 +265,7 @@ public roundstart_delay()
 	round_delay = 0
 }
 
-public round_end()
+public sh_round_end()
 {
 	roundfreeze = true
 }

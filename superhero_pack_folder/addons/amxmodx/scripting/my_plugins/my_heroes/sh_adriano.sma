@@ -67,7 +67,6 @@ public plugin_init()
 	register_cvar("adriano_speed_points_heal", "100")
 	register_cvar("adriano_speed_points_heal_coeff", "4")
 	
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Hyped by suffering!", "Get faster from those around you and pat mates on the back for motivation!", false, "adriano_level" )
 	
 	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_long_ethereal,0)
@@ -102,14 +101,6 @@ public loadCVARS()
 
 	max_points=get_cvar_num("adriano_max_points")
 	base_points=get_cvar_num("adriano_base_points")
-}
-public Ham_respawn(id){
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		adriano_weapons(id)
-
-	}
-
-
 }
 //----------------------------------------------------------------------------------------------
 public adriano_weapons(id)
@@ -334,7 +325,7 @@ public adriano_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {

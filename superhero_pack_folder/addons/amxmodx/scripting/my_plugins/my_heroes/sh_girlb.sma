@@ -43,7 +43,6 @@ public plugin_init()
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land (JUMP+FORWARD)!", true, "girlb_level" )
 
-    register_event("ResetHUD","newRound","b")
     register_srvcmd("girlb_init", "girlb_init")
     shRegHeroInit(gHeroName, "girlb_init")
 
@@ -122,14 +121,13 @@ public sh_round_start()
 }
 
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
     if(!sh_is_active()||!sh_is_inround()){
         
-        return PLUGIN_CONTINUE
+        return
     }
     intitialize_girlb(id)
-    return PLUGIN_CONTINUE
 }
 
 //----------------------------------------------------------------------------------------------

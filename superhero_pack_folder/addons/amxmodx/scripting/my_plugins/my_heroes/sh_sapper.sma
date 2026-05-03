@@ -25,7 +25,6 @@ public plugin_init()
 	register_cvar("sapper_mines", "8")
 	register_cvar("sapper_disarmable", "1")
 	register_cvar("sapper_mine_cooldown", "10")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Sapper", "Get a P90 and plant mines", true, "sapper_level" )
 	sh_register_superheromod_model(gHeroID,
 								"models/player/sapper/sapper.mdl",
@@ -137,20 +136,10 @@ disarmable=get_cvar_num("sapper_disarmable");
 public sh_client_spawn(id)
 {
 if ( sh_user_has_hero(id,gHeroID) ) {
+	reset_sapper_user(id)
 	sapper_weapons(id)
 	sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 }
-
-}
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
-	
-	reset_sapper_user(id)
-	sapper_weapons(id)
-}
-return PLUGIN_HANDLED
 
 }
 

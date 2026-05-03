@@ -45,7 +45,6 @@ public plugin_init()
 	register_cvar("yandere_degen_health_extra_threshold", "500.0")
 	register_cvar("yandere_angry_hitheal_pct", "1.0")
 	register_cvar("yandere_min_players", "6")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level",true )
 	
 
@@ -428,7 +427,7 @@ overheal_hp_max=get_cvar_num("yandere_overheal_hp_max")
 degen_health_extra_threshold=get_cvar_num("yandere_degen_health_extra_threshold")
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	if(is_user_alive(id) && sh_is_active()){
 		g_is_cursed_masks[id]=0
 		if ( sh_user_has_hero(id,gHeroID) ) {
@@ -449,7 +448,6 @@ public newRound(id)
 		}
 		notify_yanderes_about_team_life(id)
 	}
-	return PLUGIN_CONTINUE
 	
 }
 public yandere_damage(id)

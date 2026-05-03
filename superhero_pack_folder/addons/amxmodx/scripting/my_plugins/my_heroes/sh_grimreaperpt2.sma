@@ -35,7 +35,6 @@ public plugin_init()
 	register_cvar("greaper2_inf_swings", "0")
 	register_cvar("greaper2_range", "1000.0")
 	register_cvar("greaper2_num_swings", "8")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Death!", "One deathscythe kill", false, "greaper2_level" )
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -108,14 +107,13 @@ num_swings=get_cvar_num("greaper2_num_swings")
 get_cvar_num("greaper_level");
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	reset_greaper2_user(id)
 	gScytheSwings[id]=num_swings;
 }
-return PLUGIN_CONTINUE
 
 }
 

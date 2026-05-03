@@ -72,8 +72,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Sneak Into Enemies Base", "Chance Of Sneaking Into Enemies Base", false, "catwoman_level")
 
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// LEVELS
 	register_srvcmd("catwoman_levels", "catwoman_levels")
@@ -91,7 +89,7 @@ public catwoman_levels()
 	gPlayerLevels[str_to_num(id)] = str_to_num(lev)
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() )
 	{

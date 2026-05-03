@@ -64,8 +64,6 @@ public plugin_init()
 	// DEATH
 	register_event("DeathMsg", "batgirl_death", "a")  // Re-uses KeyUp!
 
-	// Reset the HookCounts every round (regardless of batgirlpower)
-	register_event("ResetHUD", "new_spawn", "b")
 
 	gPcvarSvGravity = get_cvar_pointer("sv_gravity")
 }
@@ -86,7 +84,7 @@ public batgirl_init()
 	if ( gHooked[id] ) batgirl_hook_off(id)
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	gHooksLeft[id] = get_pcvar_num(gPcvarMaxHooks)
 

@@ -77,7 +77,6 @@ public plugin_init()
 	register_cvar("komak_reload_ratio_per_hit", "0.2")
 	register_cvar("komak_red_line", "20")
 	register_cvar("komak_blown_engine_cooldown", "30" )
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Mechanical maid", "Change gears, hit players and hit faster!", true, "komak_level" )
 	hud_sync=CreateHudSyncObj()
 	register_srvcmd("komak_init", "komak_init")
@@ -428,12 +427,11 @@ public Event_CurWeapon(id)
 }
 	
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 if(is_user_alive(id) && sh_is_active()&&sh_user_has_hero(id,gHeroID) ){ 
 	reset_komak(id)	
 }
-return PLUGIN_CONTINUE
 }
 public plugin_precache()
 {

@@ -63,8 +63,6 @@ public plugin_init()
 	register_srvcmd("lancer_ku", "lancer_ku")
 	shRegKeyUp(g_heroName, "lancer_ku")
 
-	// EVENTS
-	register_event("ResetHUD", "newSpawn", "b")
 	init_progress_bar_msg_var()
 }
 //----------------------------------------------------------------------------------------------
@@ -98,7 +96,7 @@ public lancer_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	g_usingPower[id] = false

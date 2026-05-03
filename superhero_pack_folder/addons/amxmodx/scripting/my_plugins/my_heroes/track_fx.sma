@@ -43,7 +43,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_tracked","a")
-	register_event("ResetHUD","tracked_newround","b")
 
 }
 
@@ -180,7 +179,7 @@ public _unradioactive_user(iPlugin,iParams){
 }
 
 //----------------------------------------------------------------------------------------------
-public tracked_newround(id)
+public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		unradioactive_user(id)

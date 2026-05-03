@@ -28,8 +28,7 @@ public plugin_init()
 	if (!cvar_exists("shade_level")) register_cvar("shade_level", "10" )
 	gHeroID=shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
 	register_clcmd("ShadePower","make_fog",ADMIN_USER)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
+	
 	register_event("CurWeapon","changeWeapon","be","1=1")
 	// KEY DOWN
 	register_srvcmd("shade_kd", "shade_kd")
@@ -73,7 +72,7 @@ public shade_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID)) {

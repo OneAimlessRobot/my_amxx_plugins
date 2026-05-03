@@ -69,7 +69,6 @@ new custom_dmg_id_lazah_guun
 	shRegHeroInit(gHeroName, "CTrooper_init")
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("ResetHUD", "newSpawn", "b")
 	register_event("Damage", "CTrooper_damage", "b", "2!0")
 	
 	// Let Server know about Master Chief's Variables
@@ -130,7 +129,7 @@ new custom_dmg_id_lazah_guun
 	return PLUGIN_CONTINUE
  }
  //----------------------------------------------------------------------------------------------
- public newSpawn(id)
+ public sh_client_spawn(id)
  {
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "CTrooper_weapons", id)

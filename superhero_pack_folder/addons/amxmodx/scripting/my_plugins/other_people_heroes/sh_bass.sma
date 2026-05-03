@@ -105,8 +105,6 @@ public plugin_init()
 	register_srvcmd("bass_ku", "bass_ku")
 	shRegKeyUp(gHeroName, "bass_ku")
 
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 
 	// DEATH
 	register_event("DeathMsg", "bass_death", "a")
@@ -148,7 +146,7 @@ public bass_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		remove_task(id)

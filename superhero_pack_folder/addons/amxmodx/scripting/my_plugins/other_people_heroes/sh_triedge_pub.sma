@@ -84,8 +84,6 @@ public plugin_init()
 	register_srvcmd("triedge_kd", "triedge_kd")
 	shRegKeyDown(g_heroName, "triedge_kd")
 	
-	// NEW SPAWN
-	register_event("ResetHUD", "newSpawn", "b")
 	
 	// FORWARDS
 	register_forward(FM_PlayerPreThink, "triedge_prethink")
@@ -134,7 +132,7 @@ public triedge_postthink(id)
     }
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {   
     g_hooksLeft[id] = get_cvar_num("triedge_maxhooks")
 

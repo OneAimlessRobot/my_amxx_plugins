@@ -71,8 +71,6 @@ public plugin_init()
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,Model_Weapon_V,Model_Weapon_P)
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	register_event("Damage", "thrashy_damage", "b", "2!0")
@@ -219,7 +217,7 @@ public thrashy_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {	
 	
 	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
@@ -230,7 +228,6 @@ public newRound(id)
 			thrashy_weapons(id)
 		}
 	}
-	return PLUGIN_HANDLED
 }
 public make_tracer(id)
 {

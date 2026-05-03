@@ -46,7 +46,6 @@ public plugin_init()
 	register_srvcmd("pitch_kd", "pitch_kd")
 	shRegKeyDown(gHeroName, "pitch_kd")
 
-	register_event("ResetHUD","newSpawn","b")
 	register_event("DeathMsg", "pitch_death", "a")
 	register_logevent("round_end", 2, "1=Round_End")
 	register_logevent("round_end", 2, "1&Restart_Round_")
@@ -122,7 +121,7 @@ public round_end()
 	FirstSpawn = true
 }
 //----------------------------------------------------------------------------------------------
-public newSpawn(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	PitchTimer[id] = -1

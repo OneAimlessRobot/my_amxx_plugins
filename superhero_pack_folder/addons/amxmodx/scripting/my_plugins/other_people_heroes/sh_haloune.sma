@@ -71,8 +71,6 @@ public plugin_init()
 	register_srvcmd("Haloune_init", "Haloune_init")
 	shRegHeroInit(HeroName, "Haloune_init")
 
-	// EVENTS
-	register_event("ResetHUD", "new_spawn", "b")
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "Haloune_damage", "b", "2!0")
 
@@ -118,7 +116,7 @@ public Haloune_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID) )
 	{

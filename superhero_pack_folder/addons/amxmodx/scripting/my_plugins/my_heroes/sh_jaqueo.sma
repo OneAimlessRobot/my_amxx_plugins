@@ -24,7 +24,6 @@ public plugin_init()
 	register_cvar("jaqueo_shield_cooldown", "8")
 	register_cvar("jaqueo_shield_max_hp", "8")
 	register_cvar("jaqueo_shield_radius", "8")
-	register_event("ResetHUD","newRound","b")
 	gHeroID=shCreateHero(gHeroName, "Jaqueo!", "Jaqueo", true, "jaqueo_level" )
 	sh_register_superheromod_model(gHeroID,
 								"models/player/jaqueo/jaqueo.mdl",
@@ -41,7 +40,6 @@ public plugin_init()
 	register_event("DeathMsg","death","a")
 	register_srvcmd("jaqueo_init", "jaqueo_init")
 	shRegHeroInit(gHeroName, "jaqueo_init")
-	RegisterHam(Ham_CS_RoundRespawn,"player","Ham_respawn",_,true)
 	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",_,true)
 	register_srvcmd("jaqueo_kd", "jaqueo_kd")
 	shRegKeyDown(gHeroName, "jaqueo_kd")
@@ -130,36 +128,12 @@ public client_isnt_hitter(gatling_user){
 	
 }
 
-
-//----------------------------------------------------------------------------------------------
-public newRound(id)
-{	
-	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
-	
-	reset_jaqueo_user(id)
-	jaqueo_weapons(id)
-	return PLUGIN_HANDLED
-	
-}
 public sh_client_spawn(id){
 	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
-	return PLUGIN_HANDLED
-	
-	
-}
-public Ham_respawn(id){
-	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return PLUGIN_HANDLED
-	
-	reset_jaqueo_user(id)
-	jaqueo_weapons(id)
-	return PLUGIN_HANDLED
-	
 	
 }
 

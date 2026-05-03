@@ -35,7 +35,7 @@ public plugin_init()
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_srvcmd("terrorist_init", "terrorist_init")
 	shRegHeroInit(gHeroName, "terrorist_init")
-	register_event("ResetHUD","newRound","b")
+	
 	register_event("CurWeapon","changeWeapon","be","1=1")
 	register_event("TextMsg", "game_restart", "a", "1=4", "2&#Game_C", "2&#Game_w")
 	register_event("SendAudio", "round_end", "a", "2=%!MRAD_terwin", "2=%!MRAD_ctwin", "2=%!MRAD_rounddraw")
@@ -72,7 +72,7 @@ public terrorist_init()
 	g_state = sh_user_has_hero(id,gHeroID)
 }
 //----------------------------------------------------------------------------------------------
-public newRound(id)
+public sh_client_spawn(id)
 {
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "terrorist_giveweapons",id)

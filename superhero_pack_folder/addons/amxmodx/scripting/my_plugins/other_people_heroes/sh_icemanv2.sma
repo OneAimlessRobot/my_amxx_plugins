@@ -42,9 +42,7 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Ice Man", "Ice Trail - Create a trail of ice to go wherever you want.", true, "iceman2_level" )
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_event("ResetHUD","newRound","b") 
+	
 
 	// KEY UP
 	register_srvcmd("iceman2_ku",   "iceman2_ku")
@@ -350,7 +348,7 @@ public do_this(id)
 	get_user_origin(id, g_endLocation[id], 3)
 }
 //---------------------------------------------------------------------------------------------- 
-public newRound(id)
+public sh_client_spawn(id)
 {
 
   if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE

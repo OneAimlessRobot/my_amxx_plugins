@@ -48,7 +48,6 @@ public plugin_init()
 	shRegHeroInit(gHeroName, "leviathan_init") 
 	register_srvcmd("leviathan_maxhealth", "leviathan_maxhealth")
 	shRegMaxHealth(gHeroName, "leviathan_maxhealth" )
-	register_event("ResetHUD", "newRound", "b")
 	register_event("Damage", "leviathan_damage", "b", "2!0") 
 }
 
@@ -90,7 +89,7 @@ public leviathan_init()
 	if (!sh_user_has_hero(id,gHeroID) && FloodOn) remove_flood()
 } 
 
-public newRound(id)
+public sh_client_spawn(id)
 { 
 	if (/*gHasLeviathanPowers[id] && */FloodOn) { 
 		//client_print(id, print_center, "FLOOD REMOVED %i", svgravity) 

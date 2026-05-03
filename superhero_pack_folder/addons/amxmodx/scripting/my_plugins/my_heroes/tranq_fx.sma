@@ -29,7 +29,6 @@ register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
-register_event("ResetHUD","sleep_newRound","b")
 init_explosion_defaults()
 }
 //https://forums.alliedmods.net/showthread.php?t=258006
@@ -68,7 +67,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
-public sleep_newRound(id)
+public sh_client_spawn(id)
 {
 	
 	unsleep_user(id)

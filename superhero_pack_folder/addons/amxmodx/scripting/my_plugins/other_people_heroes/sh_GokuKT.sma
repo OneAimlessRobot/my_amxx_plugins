@@ -86,7 +86,6 @@ public plugin_init()
 	register_srvcmd("gokukt_kd", "gokukt_kd")
 	shRegKeyDown(HeroName, "gokukt_kd")
 	
-	register_event("ResetHUD", "new_spawn", "b")
 	
 	// LOOP
 	set_task(1.0, "gokukt_loop", 0, "", 0, "b") //forever loop
@@ -114,7 +113,7 @@ public gokukt_init()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public new_spawn(id)
+public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
 	reset_speed[id] = false
