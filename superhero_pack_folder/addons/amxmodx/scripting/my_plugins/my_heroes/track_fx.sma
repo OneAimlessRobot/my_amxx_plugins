@@ -5,6 +5,7 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "chaff_fx_inc/chaff_fx.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -42,6 +43,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_tracked","a")
+	register_event("ResetHUD","tracked_newround","b")
 
 }
 
@@ -58,41 +60,47 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		unradioactive_user(id);
 		return
 	}
-	if(is_user_alive(array[TRACK_TASK_ATTACKER])){
-		new client_name[128]
-		new origin[3], eorigin[3],att_origin[3]
-		new Float:Pos[3],Float:vEnd[3]
-		new color_const=array[TRACK_TASK_TRACK_COLOR]
-		get_user_name(id,client_name,127)
-		
-		get_user_origin(id, eorigin)
-		get_user_origin(array[TRACK_TASK_ATTACKER], origin)
-		get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)			
-		
-		detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
-		IVecFVec(origin,Pos)
-		IVecFVec(eorigin,vEnd)
-		new color_const_arr[3];
-		for(new i=0;i<sizeof color_const_arr;i++){
+	if(gatling_get_fx_num(id)!=RADIOACTIVE){
 
-			color_const_arr[i]=color_const
-		}
-		laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
-		for(new i=0;i<array[1];i++){
-			if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
+		return
+	}
+	if(is_user_alive(array[TRACK_TASK_ATTACKER])){
+		if(!sh_get_user_is_chaffed(id)){
+			static client_name[128]
+			static origin[3], eorigin[3],att_origin[3]
+			static Float:Pos[3],Float:vEnd[3]
+			new color_const=array[TRACK_TASK_TRACK_COLOR]
+			get_user_name(id,client_name,127)
 			
-				continue
-			}
-			get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
+			get_user_origin(id, eorigin)
+			get_user_origin(array[TRACK_TASK_ATTACKER], origin)
+			get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)			
 			
-			detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+			detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
 			IVecFVec(origin,Pos)
-			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
-			
+			IVecFVec(eorigin,vEnd)
+			new color_const_arr[3];
+			for(new i=0;i<sizeof color_const_arr;i++){
+
+				color_const_arr[i]=color_const
+			}
+			laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
+			for(new i=0;i<array[1];i++){
+				if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
+				
+					continue
+				}
+				get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
+				
+				detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+				IVecFVec(origin,Pos)
+				laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
+				
+			}
+			sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
+			sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
+			aura(id,LineColors[color_const])
 		}
-		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
-		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
-		aura(id,LineColors[color_const])
 		if(array[TRACK_TASK_DO_DAMAGE]){
 			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],
 							new_dmg_type_names[_:SH_NEW_DMG_RADIATION_POISON],
@@ -166,9 +174,19 @@ public _unradioactive_user(iPlugin,iParams){
 	if(is_user_connected(id)){
 		sh_set_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_RADIATION)
-		gatling_set_fx_num(id, 0)
+		gatling_set_fx_num(id, FX_ID_NONE)
 	}
 
+}
+
+//----------------------------------------------------------------------------------------------
+public tracked_newround(id)
+{	
+	if(sh_is_active()&&is_user_alive(id)){
+		unradioactive_user(id)
+		
+
+	}
 }
 public on_death_tracked()
 {	

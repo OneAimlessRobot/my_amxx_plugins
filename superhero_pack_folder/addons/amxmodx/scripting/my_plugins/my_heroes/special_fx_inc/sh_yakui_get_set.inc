@@ -1,7 +1,7 @@
-#if defined sh_get_set
+#if defined sh_yakui_get_set
   #endinput
 #endif
-#define sh_get_set
+#define sh_yakui_get_set
 
 
 #define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
@@ -14,8 +14,8 @@ native gatling_get_num_pills(id)
 native gatling_set_num_rockets(id,value_to_set)
 native gatling_get_num_rockets(id)
 
-native gatling_set_fx_num(id,value_to_set)
-native gatling_get_fx_num(id)
+native gatling_set_fx_num(id,fx_id:value_to_set)
+native fx_id:gatling_get_fx_num(id)
 
 native gatling_dec_num_pills(id)
 native gatling_dec_num_rockets(id)

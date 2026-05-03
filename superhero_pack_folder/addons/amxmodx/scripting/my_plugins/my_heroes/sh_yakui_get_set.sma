@@ -15,7 +15,7 @@
 
 new gNumPills[SH_MAXSLOTS+1]
 new gNumRockets[SH_MAXSLOTS+1]
-new gCurrFX[SH_MAXSLOTS+1]
+new fx_id:gCurrFX[SH_MAXSLOTS+1]
 
 
 
@@ -51,16 +51,16 @@ public _make_effect(iPlugin,iParams){
 	new vic= get_param(1)
 	new attacker= get_param(2)
 	new hero_id=get_param(3)
-	new fx_num= get_param(4)
+	new fx_id:fx_num= fx_id:get_param(4)
 	new override=get_param(5)
 
-	new true_fx_num= (fx_num<=0)?sh_gen_effect():fx_num
+	new fx_id:true_fx_num= (fx_num<=fx_id:FX_ID_NONE)?sh_gen_effect():fx_num
 	
 	if(!is_user_connected(vic)||!is_user_connected(attacker)){
 		
 		return
 	}
-	if((sh_get_user_effect(vic)>=_:GLOW)&&(sh_get_user_effect(vic)<=_:BATH)&&!override){
+	if((sh_get_user_effect(vic)>=GLOW)&&(sh_get_user_effect(vic)<=BATH)&&!override){
 
 		return
 	}
@@ -145,7 +145,7 @@ public _gatling_get_fx_num(iPlugin,iParams){
 	new id= get_param(1)
 	if(!is_user_connected(id)){
 		
-		return NONE
+		return FX_ID_NONE
 	}
 	return gCurrFX[id]
 
@@ -155,7 +155,7 @@ public _gatling_set_fx_num(iPlugin,iParams){
 
 
 	new id= get_param(1)
-	new value_to_set= get_param(2)
+	new fx_id:value_to_set= fx_id:get_param(2)
 	if(!is_user_connected(id)){
 		
 		return

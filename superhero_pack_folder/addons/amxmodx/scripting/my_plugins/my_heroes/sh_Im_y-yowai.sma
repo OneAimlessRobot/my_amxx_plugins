@@ -4,6 +4,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "chikoi_inc/chikoi_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -121,6 +122,7 @@ public newRound(id)
 {
 if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
+	give_custom_grenades(id,GREN_SHRAPNEL,6)
 	reset_Yowai_user(id)
 	update_max_hits(id)
 }
@@ -155,25 +157,17 @@ if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
 
 if ( !is_user_alive(id) ) return HAM_IGNORED
 
-if ( (attacker <= 0 || attacker > SH_MAXSLOTS )||!is_user_connected(attacker)) return HAM_IGNORED
+if (!is_user_connected(attacker)) return HAM_IGNORED
 
-new CsTeams:att_team=CS_TEAM_UNASSIGNED;
-if(is_user_connected(attacker)&&is_user_alive(attacker)){
-	att_team=cs_get_user_team(attacker)
-}
 if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 	
-	if(((att_team==cs_get_user_team(id))&&(id!=attacker))){
-	
-		return HAM_IGNORED;
-	
-	}
-	if((damage>=dmg_threshold||(g_hits[id]>=g_max_hits_player[id]))){
+	if(g_hits[id]>=g_max_hits_player[id]){
 		
+		set_user_godmode(id,0)
 		sh_extra_damage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
 		
 	}
-	else if((damage<dmg_threshold&&(g_hits[id]<g_max_hits_player[id]))){
+	else if(damage<=dmg_threshold){
 		
 		dmg_message(id,damage)
 		damage=0.0
@@ -214,14 +208,8 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		return DMG_FWD_PASS
 	}
 	if(sh_user_has_hero(victim,gHeroID) &&g_yowai_mode[victim]){
-		if((cs_get_user_team(victim)==cs_get_user_team(attacker))){
-			if(victim!=attacker){
-			
-				return DMG_FWD_PASS
-			}
 		
-		}
-		if(damage>=dmg_threshold||(g_hits[victim]>=g_max_hits_player[victim])){
+		if((g_hits[victim]>=g_max_hits_player[victim])){
 			
 			
 			set_user_godmode(victim,0)
@@ -231,7 +219,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			dmgMode=SH_DMG_KILL
 			return DMG_FWD_PASS
 		}
-		else if((damage<dmg_threshold&&(g_hits[victim]<g_max_hits_player[victim]))){
+		else if(damage<=dmg_threshold){
 			dmg_message(victim,float(damage))
 			return DMG_FWD_BLOCK
 		}

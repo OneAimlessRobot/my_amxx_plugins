@@ -11,14 +11,13 @@
 #include "track_fx_inc/track_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 #define PLUGIN "Superhero yakui pt2 pt1"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock const fx_remove_strings[_:NUM_FX][]={
+stock const fx_remove_strings[NUM_FX][]={
 			"We have removed nothing!",
 			"We have removed nothing! You should be dead...",
 			"Removed ur glow bro!",
@@ -162,7 +161,7 @@ public Item_PostFrame_Post(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||(gatling_get_fx_num(id)!=_:COCAINE))return HAM_IGNORED
+	if (!sh_is_active()||(gatling_get_fx_num(id)!=COCAINE))return HAM_IGNORED
 	
 	do_fast_reload(id,iEnt,COCAINE_RELOAD_RATE_MULT)
 	return HAM_IGNORED
@@ -260,7 +259,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 public fire_weapon(id)
 {
 	
-	if (!is_user_connected(id)||!is_user_alive(id)||!((gatling_get_fx_num(id)==_:POISON)||(gatling_get_fx_num(id)==_:COCAINE))) return PLUGIN_CONTINUE 
+	if (!is_user_connected(id)||!is_user_alive(id)||!((gatling_get_fx_num(id)==POISON)||(gatling_get_fx_num(id)==COCAINE))) return PLUGIN_CONTINUE 
 	new wpnid = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
 	
@@ -269,8 +268,8 @@ public fire_weapon(id)
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		
-		draw_aim_vector(id,(gatling_get_fx_num(id)==_:POISON)?{GREEN,GREEN,GREEN}:{PINK,PINK,PINK})
-		if((gatling_get_fx_num(id)==_:COCAINE)){
+		draw_aim_vector(id,(gatling_get_fx_num(id)==POISON)?{GREEN,GREEN,GREEN}:{PINK,PINK,PINK})
+		if((gatling_get_fx_num(id)==COCAINE)){
 		
 			do_fast_shot(id,wpnid,COCAINE_FIRE_RATE_MULT)
 		}
@@ -295,7 +294,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
 	}
-	if (gatling_get_fx_num(owner)==_:METYLPHENIDATE) {
+	if (gatling_get_fx_num(owner)==METYLPHENIDATE) {
 		set_pev(owner, pev_punchangle, {0.0, 0.0, 0.0})
 	}
 
@@ -303,16 +302,16 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 }
 public Player_TakeDamage(id)
 {
- if ( !sh_is_active() || !is_user_alive(id) || !(gatling_get_fx_num(id)==_:BATH)) return
+ if ( !sh_is_active() || !is_user_alive(id) || !(gatling_get_fx_num(id)==BATH)) return
  
  set_pdata_float(id, fPainShock, 1.0, 5)
 } 
-public _sh_get_user_effect(iPlugins,iParams){
+public fx_id:_sh_get_user_effect(iPlugins,iParams){
 	
 	new id=get_param(1)
 	if(!is_user_alive(id)||!sh_is_active()){
 		
-		return NONE;
+		return fx_id:FX_ID_NONE;
 	}
 	
 	return gatling_get_fx_num(id)
@@ -321,9 +320,9 @@ public _sh_get_user_effect(iPlugins,iParams){
 
 public _sh_get_fx_color_name(iPlugins,iParams){
 	
-	new fx_num=get_param(1)
-	set_array(2,LineColors[FX_COLOR_OFFSET+fx_num],3)
-	set_array(3,fx_names[fx_num],128)
+	new fx_num=fx_id:get_param(1)
+	set_array(2,LineColors[FX_COLOR_OFFSET+_:fx_num],3)
+	set_array(3,fx_names[_:fx_num],128)
 	
 
 
@@ -390,16 +389,16 @@ public _get_fx_num(iPlugin,iParams){
 		}
 
 	}
-	return NONE
+	return FX_ID_NONE
 
 }
-public _sh_effect_user_direct(iPlugin,iParams){
+public fx_id:_sh_effect_user_direct(iPlugin,iParams){
 
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
-	new fx_num=get_param(4)
-	if(fx_num==_:KILL){
+	new fx_id:fx_num=fx_id:get_param(4)
+	if(fx_num==KILL){
 
 		if(user==attacker){
 			new attacker_name[128]
@@ -412,15 +411,15 @@ public _sh_effect_user_direct(iPlugin,iParams){
 	}
 	else if(fx_num){
 		gatling_set_fx_num(user,fx_num)
-		fx_task_user(user,attacker,fx_num)
-		if(fx_num==_:STUN){
+		fx_task_user(user,attacker,fx_id:fx_num)
+		if(fx_num==STUN){
 
 
 			stun_user(user)
-			remove_glow_user(user,fx_task_parameters[_:STUN][fx_task_time])
+			remove_glow_user(user,fx_task_parameters[STUN][fx_task_time])
 		}
 		else{
-			if(fx_num==_:COCAINE){
+			if(fx_num==COCAINE){
 
 				sh_bleed_user(user,attacker,BLEED_MINI,gHeroID,0)
 
@@ -434,9 +433,9 @@ public _sh_effect_user_direct(iPlugin,iParams){
 
 
 }
-public _sh_effect_user(iPlugin,iParams){
+public fx_id:_sh_effect_user(iPlugin,iParams){
 
-	new fx_num=sh_gen_effect()
+	new fx_id:fx_num=sh_gen_effect()
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new gHeroID=get_param(3)
@@ -454,7 +453,7 @@ public _sh_uneffect_user(iPlugin,iParams){
 
 	new user=get_param(1)
 	
-	if((gatling_get_fx_num(user)>_:KILL)&&(gatling_get_fx_num(user)<=_:BATH)){
+	if((gatling_get_fx_num(user)>KILL)&&(gatling_get_fx_num(user)<=BATH)){
 		uneffect_user_primitive(user)
 	}
 
@@ -471,7 +470,7 @@ kill_user(id,attacker){
 						LineColors[FX_COLOR_OFFSET+_:KILL][1],
 						LineColors[FX_COLOR_OFFSET+_:KILL][2], 50)
 	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
-	gatling_set_fx_num(id, NONE)
+	gatling_set_fx_num(id,FX_ID_NONE)
 
 
 }
@@ -593,7 +592,7 @@ uneffect_user_primitive(id){
 	if(the_fx_id==_:RADIOACTIVE){
 		unradioactive_user(id)
 	}
-	gatling_set_fx_num(id, 0)
+	gatling_set_fx_num(id, FX_ID_NONE)
 
 }
 
@@ -610,7 +609,7 @@ public on_death_status()
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||(gatling_get_fx_num(id)!=_:COCAINE)||!sh_is_active()) return
+	if ( !is_user_alive(id)||(gatling_get_fx_num(id)!=COCAINE)||!sh_is_active()) return
 
 	new wpnid = get_user_weapon(id)
 

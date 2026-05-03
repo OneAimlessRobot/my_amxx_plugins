@@ -6,7 +6,7 @@
 
 
 enum fx_bleed_type{
-	NONE=0,
+	BLEED_NONE=0,
   BLEED_MINI,
   BLEED_NORMAL,
   BLEED_ULTRA,

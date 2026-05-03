@@ -297,7 +297,7 @@ public shinobu_burst_damage_task(array[],attacker){
 	
 	sh_bleed_user(tg,attacker,BLEED_MINI,gHeroID,0)
 	
-	sh_effect_user_direct(tg,attacker,gHeroID,_:POISON)
+	sh_effect_user_direct(tg,attacker,gHeroID,POISON)
 }
 shinobu_teleport_init(id){
 

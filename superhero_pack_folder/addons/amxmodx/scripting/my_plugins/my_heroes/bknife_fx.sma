@@ -29,25 +29,25 @@ enum bleed_alpha_type{
   hud_alpha,
   render_alpha
 }
-stock const bleed_type_names[_:NUM_BLEED_TYPES][]={
+stock const bleed_type_names[NUM_BLEED_TYPES][]={
 			"no bleeding",
-      "mini bleeding",
-      "bleeding",
-      "ultrableeding"
+			"mini bleeding",
+			"bleeding",
+			"ultrableeding"
 }
-stock const bleed_type_damages[_:NUM_BLEED_TYPES]={
+stock const bleed_type_damages[NUM_BLEED_TYPES]={
 			0,
-      10,
-      40,
-      40
+			10,
+			40,
+			40
 }
-stock const bleed_type_alphas[_:NUM_BLEED_TYPES][bleed_alpha_type]={
+stock const bleed_type_alphas[NUM_BLEED_TYPES][bleed_alpha_type]={
 			{0,0},
-      {50,255},
-      {75,255},
-      {120,255}
+			{50,255},
+			{75,255},
+			{120,255}
 }
-stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={	
+stock bleed_task_parameters[NUM_BLEED_TYPES][bleed_task_parameter_id]={	
 					{-1.0,5.0,0,-1,""},
 					{1.0,5.0,0,-1,"bleed_task"},
 					{1.0,5.0,0,-1,"bleed_task"},
@@ -55,13 +55,13 @@ stock bleed_task_parameters[_:NUM_BLEED_TYPES][bleed_task_parameter_id]={
 
 }
 
-new gIsBleeding[SH_MAXSLOTS+1]
+new fx_bleed_type:gIsBleeding[SH_MAXSLOTS+1]
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 
-for(new i=_:BLEED_MINI;i<_:NUM_BLEED_TYPES;i++){
+for(new fx_bleed_type:i=BLEED_MINI;i<NUM_BLEED_TYPES;i++){
 	
 	bleed_task_parameters[i][bleed_task_apply_id]=allocate_typed_task_id(player_task)
 	static Float:the_period;
@@ -194,7 +194,7 @@ public _sh_bleed_user(iPlugin,iParams){
 
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new bleed_type=get_param(3)
+	new fx_bleed_type:bleed_type=fx_bleed_type:get_param(3)
 	new gHeroID=get_param(4)
 	new heal_user=get_param(5)
 	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||gIsBleeding[user]) return
@@ -213,7 +213,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	}
 	emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	gIsBleeding[user]=bleed_type
-	if(bleed_type==_:BLEED_ULTRA){
+	if(bleed_type==BLEED_ULTRA){
 
 		sh_chat_message(attacker,gHeroID,"Ultra bleeding!!!")
 	}
@@ -244,30 +244,30 @@ public _make_bleed_fx(iPlugin,iParams){
 }
 
 public bleed_task(array[4],id){
-	id-=bleed_task_parameters[array[0]][bleed_task_apply_id]
+	id-=bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_apply_id]
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_connected(array[1])){
 		
 
 		unbleed_user(id)
 		return
 	}
-	set_render_with_color_const(id,RED,1,bleed_type_alphas[array[0]][render_alpha],bleed_type_alphas[array[0]][hud_alpha])
+	set_render_with_color_const(id,RED,1,bleed_type_alphas[fx_bleed_type:array[0]][render_alpha],bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha])
 	remove_glow_user(id,bleed_task_parameters[gIsBleeding[id]][bleed_task_period])
 	if(array[2]){
 		generic_heal(heal_hp_hud_msg_sync,
 					array[1],
-					float(bleed_type_damages[array[0]]),
+					float(bleed_type_damages[fx_bleed_type:array[0]]),
 					_,
 					RED,
 					_,
 					_,
-					bleed_type_alphas[array[0]][hud_alpha],1,0)
+					bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha],1,0)
 	}
 	else{
-		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[array[0]][hud_alpha],1)
+		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha],1)
 	}
 	make_bleed_fx(id)
-	sh_extra_damage(id,array[1],bleed_type_damages[array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],0,_,_,_,_,_,
+	sh_extra_damage(id,array[1],bleed_type_damages[fx_bleed_type:array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],0,_,_,_,_,_,
 			SH_NEW_DMG_BLEED,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLEED))
 
@@ -294,7 +294,7 @@ unbleed_user(id){
 	if ( !sh_is_active() || !is_user_connected(id)) return
 	
 	sh_set_rendering(id)
-	gIsBleeding[id]=NONE
+	gIsBleeding[id]=BLEED_NONE
 
 
 

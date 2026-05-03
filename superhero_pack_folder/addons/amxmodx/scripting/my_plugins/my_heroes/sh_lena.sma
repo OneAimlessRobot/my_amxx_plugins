@@ -3,6 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
 
 #define PLUGIN_VER "1.0"
@@ -129,6 +130,7 @@ lena_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
+		give_custom_grenades(id,GREN_MARKER,6)
 		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
 		if(is_valid_ent(weapon_id)){
 			cs_set_weapon_ammo(weapon_id, CLIP_SIZE);

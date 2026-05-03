@@ -275,13 +275,13 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_TMP) {
 		if(gGunLastDeployed[id]!=wpnid){
-			if(sh_get_user_effect(id)!=_:METYLPHENIDATE){
-				sh_effect_user_direct(id,id,ester_get_hero_id(),_:METYLPHENIDATE);
+			if(sh_get_user_effect(id)!=METYLPHENIDATE){
+				sh_effect_user_direct(id,id,ester_get_hero_id(),METYLPHENIDATE);
 			}
 		}
 	}
 	else{
-		if(sh_get_user_effect(id)==_:METYLPHENIDATE){
+		if(sh_get_user_effect(id)==METYLPHENIDATE){
 			sh_uneffect_user(id);
 			
 		}
@@ -580,7 +580,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
 		switch(is_teamate){
 			case 0:{
-				if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
+				if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 					sh_effect_user_direct(id,attacker,ester_get_hero_id(),STUN);
 					if(!is_user_bot(attacker)){
 						sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
@@ -613,7 +613,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			}
 			case 1:{
 				if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?moralizing_tmp_xp_give:moralizing_pan_xp_give)){
-					if((sh_get_user_effect(id)<_:KILL)||(sh_get_user_effect(id)>_:BATH)){
+					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 						sh_effect_user_direct(id,attacker,ester_get_hero_id(),METYLPHENIDATE);
 						
 						if(!is_user_bot(attacker)){

@@ -14,6 +14,9 @@ enum sh_grenade_type{
     GREN_CO2,
     GREN_SHOCK,
     GREN_FREEZE,
+    GREN_DISRUPT,
+    GREN_SHRAPNEL,
+    GREN_MARKER,
     GREN_MAX_TYPES
 
 }

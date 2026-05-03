@@ -7,8 +7,8 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
-#include "chaff_grenade_inc/sh_slitter_funcs.inc"
-#include "chaff_grenade_inc/sh_teliko_get_set.inc"
+#include "teliko_stuff_inc/sh_slitter_funcs.inc"
+#include "teliko_stuff_inc/sh_teliko_get_set.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 

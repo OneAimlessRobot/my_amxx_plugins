@@ -369,7 +369,7 @@ entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
 entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT*0.5)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
-VelocityByAim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
+velocity_by_aim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
 new resume_zoom=get_member(id,m_bResumeZoom);
 if(!(resume_zoom)){
@@ -473,9 +473,9 @@ public bulletina_touque_playor(pToucher, pTouched)
 
 		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
 		unfade_screen_user(pTouched)
-		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK*(35.0*falloff_coeff))
+		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
 		if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
-				track_user(pTouched,oid,0,_,the_period,the_time,ORANGE)
+				track_user(pTouched,oid,1,3,the_period,the_time,ORANGE)
 		}
 		
 		sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);

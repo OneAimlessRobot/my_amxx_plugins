@@ -5,9 +5,9 @@
 #include <xs>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include "chaff_grenade_inc/sh_teliko_get_set.inc"
+#include "teliko_stuff_inc/sh_teliko_get_set.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
-#include "chaff_grenade_inc/sh_slitter_funcs.inc"
+#include "teliko_stuff_inc/sh_slitter_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
