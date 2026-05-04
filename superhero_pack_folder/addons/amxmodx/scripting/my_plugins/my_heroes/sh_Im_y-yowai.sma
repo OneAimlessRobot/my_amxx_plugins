@@ -163,15 +163,15 @@ if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
 		
 		set_user_godmode(id,0)
 		sh_extra_damage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
-		
+		return HAM_IGNORED
 	}
-	else if(damage<=dmg_threshold){
+	else if(damage>=dmg_threshold){
 		
 		dmg_message(id,damage)
-		damage=0.0
-		SetHamParamFloat(4, damage);
 			
 	}
+	damage=0.0
+	SetHamParamFloat(4, damage);
 	
 }
 return HAM_IGNORED
@@ -217,10 +217,10 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			dmgMode=SH_DMG_KILL
 			return DMG_FWD_PASS
 		}
-		else if(damage<=dmg_threshold){
+		else if(damage>=dmg_threshold){
 			dmg_message(victim,float(damage))
-			return DMG_FWD_BLOCK
 		}
+		return DMG_FWD_BLOCK
 	}
 	return DMG_FWD_PASS
 }

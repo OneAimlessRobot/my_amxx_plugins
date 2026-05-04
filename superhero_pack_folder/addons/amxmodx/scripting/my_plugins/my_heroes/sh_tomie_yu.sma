@@ -75,7 +75,7 @@ public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 
 		if(sh_user_has_hero(pid,gHeroID)){
 			
-			sh_chat_message(pid,gHeroID,"Wooow! Thats so coool... I- I mean-- oh nooo")
+			sh_chat_message(pid,gHeroID,"(reacting to gore): Wooow! Thats so coool... I- I mean-- oh nooo")
 		
 		}
 	}
