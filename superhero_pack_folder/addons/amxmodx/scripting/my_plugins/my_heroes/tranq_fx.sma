@@ -44,8 +44,9 @@ public Fwd_PlayerPreThink(id)
 		return FMRES_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
+	entity_set_vector( id, EV_VEC_v_angle, gKeepAngles[id] )
 	entity_set_int( id, EV_INT_fixangle, 1 )
-	return FMRES_IGNORED
+	return FMRES_SUPERCEDE
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)

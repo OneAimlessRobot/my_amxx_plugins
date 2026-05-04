@@ -49,6 +49,7 @@ public Fwd_PlayerPreThink(id)
 		return FMRES_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, g_zenitsu_curr_charge_look_direction[id] )
+	entity_set_vector( id, EV_VEC_v_angle, g_zenitsu_curr_charge_look_direction[id] )
 	entity_set_int( id, EV_INT_fixangle, 1 )
 	return FMRES_IGNORED
 }
