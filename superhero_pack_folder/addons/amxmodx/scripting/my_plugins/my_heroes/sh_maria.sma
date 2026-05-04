@@ -360,6 +360,7 @@ public sh_client_spawn(id)
 			gHealthDrainValveTimer[id]=begin_open_valve_timer
 			gHealthDrainValveTimerStarted[id]=true
 			g_maria_points[id]=base_points;
+			maria_weapons(id)
 		}
 	}
 	

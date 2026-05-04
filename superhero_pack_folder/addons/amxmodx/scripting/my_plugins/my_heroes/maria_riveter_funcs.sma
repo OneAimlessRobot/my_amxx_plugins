@@ -18,6 +18,9 @@
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
+new maria_riveter_wpn_id
+new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
+new dmg_source_name_long_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 
 public plugin_init(){
 	
@@ -41,6 +44,14 @@ public plugin_init(){
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
 
 	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
+
+
+	maria_riveter_wpn_id=sh_log_custom_damage_source(
+								maria_get_hero_id(),
+								dmg_source_name_short_riveter,
+								dmg_source_name_long_riveter,
+								1)
+
 	init_gravity_pcvar()
 
 
@@ -379,7 +390,9 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
 									MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
 									is_direct_hit,
-									is_direct_hit)
+									is_direct_hit,
+									_,_,_,_,
+									maria_riveter_wpn_id)
 	remove_entity(pToucher)
 }
 public plugin_precache()

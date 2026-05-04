@@ -98,7 +98,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			}
 			case SH_NEW_DMG_DRAIN:{
 				
-				damage*=0.5
+				damage = floatround(float(damage)*0.5)
 
 			}
 		}

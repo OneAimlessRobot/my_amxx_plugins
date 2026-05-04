@@ -4,6 +4,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt3.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
@@ -104,12 +105,13 @@ public _explosion(iPlugins,iParams){
 		set_stun=get_param(7),
 		Float:damage_frac_ignore_owner=get_param_f(8),
 		sfx_mask=get_param(9),
-		sh_custom_color:fx_color=sh_custom_color:get_param(10),
-		bool:use_sound=bool:get_param(11)
+		sh_custom_color:fx_color=sh_custom_color:get_param(10)
 
 	new custom_sound_sample[128]
 
-	get_string(12,custom_sound_sample,(sizeof custom_sound_sample)-1)
+	get_string(11,custom_sound_sample,(sizeof custom_sound_sample)-1)
+
+	new custom_weapon_id = get_param(12)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -125,7 +127,7 @@ public _explosion(iPlugins,iParams){
 
 	if(sfx_mask>0){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
-		if(use_sound){
+		if((sfx_mask & sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}
@@ -148,7 +150,7 @@ public _explosion(iPlugins,iParams){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,damage_frac_ignore_owner)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
 
 	}
 }
@@ -163,12 +165,11 @@ public _explosion_custom_entity(iPlugins,iParams){
 		Float:peak_power=get_param_f(3),
 		Float:optional_force=get_param_f(5),
 		sfx_mask=get_param(6),
-		sh_custom_color:fx_color=sh_custom_color:get_param(7),
-		bool:use_sound=bool:get_param(8)
+		sh_custom_color:fx_color=sh_custom_color:get_param(7)
 
 	new custom_sound_sample[128]
 
-	get_string(9,custom_sound_sample,(sizeof custom_sound_sample)-1)
+	get_string(8,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -185,7 +186,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 
 	if(sfx_mask>0){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
-		if(use_sound){
+		if((sfx_mask & sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}
@@ -210,7 +211,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER){
+stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -267,10 +268,19 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	else{
 		force=damage
 	}
+	static custom_weapon_dmg_name[128];
 
-	sh_extra_damage(pid,owner_id,idamage,new_dmg_type_names[_:SH_NEW_DMG_FRAG_BLAST],0,_,_,_,_,_,
+	if(!is_valid_custom_dmg_source(custom_weapon_id)){
+	
+		custom_weapon_id=get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
+	
+	}
+	
+	xmod_get_wpnname(custom_weapon_id,custom_weapon_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
+	
+	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,0,_,_,_,_,_,
 			SH_NEW_DMG_FRAG_BLAST,
-			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST))
+			custom_weapon_id)
 	
 	set_velocity_from_origin(pid,mine_origin,force)
 

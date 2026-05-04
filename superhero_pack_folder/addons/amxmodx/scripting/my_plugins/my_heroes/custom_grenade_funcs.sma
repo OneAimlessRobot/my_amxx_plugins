@@ -289,11 +289,14 @@ public event_curr_grenade(id){
 		
 		progressBar(id,0)
 		UnSet_BitVar(sh_grenade_armed_mask,id)
-		curr_user_grenade[id]=sh_grenade_type:0;
 		return PLUGIN_CONTINUE
 	
 	}
+	if(wpn_id==sh_grenade_structs_arr[prev_user_grenade[id]][sh_grenade_weapon_classid]){
 
+		curr_user_grenade[id]=prev_user_grenade[id]
+		return PLUGIN_CONTINUE
+	}
 	for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 
 		if((wpn_id==sh_grenade_structs_arr[i][sh_grenade_weapon_classid])&&(curr_grenade_ammo[id][i]>0)){

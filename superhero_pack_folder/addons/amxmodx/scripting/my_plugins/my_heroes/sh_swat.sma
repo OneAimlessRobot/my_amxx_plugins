@@ -16,6 +16,15 @@
 #define SWAT_M4_V_MODEL "models/shmod/swatm4/v_m4a1.mdl"
 
 
+new M4Swat_weapon_id
+new dmg_source_name_short_M4Swat[SAFE_BUFFER_SIZE+1]="M4Swat"
+new dmg_source_name_long_M4Swat[SAFE_BUFFER_SIZE+1]="M4Swat"
+
+new tactical_knife_weapon_id
+new dmg_source_name_short_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
+new dmg_source_name_long_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
+
+
 new gHeroName[]="S.W.A.T."
 new has_rocket[33]
 new gHeroID
@@ -64,6 +73,18 @@ public plugin_init()
 	register_srvcmd("Swat_init", "Swat_init")
 	shRegHeroInit(gHeroName, "Swat_init")
 	
+	M4Swat_weapon_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_M4Swat,
+								dmg_source_name_long_M4Swat,
+								0)
+
+	tactical_knife_weapon_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_tactical_knife,
+								dmg_source_name_long_tactical_knife,
+								1)
+								
 	register_entity_as_wall_touchable("ICBM_missile","nuke_hit")
 	register_custom_touchable("ICBM_missile","nuke_hit",player_vector,1)
 	static const custom_vector[][]={"ICBM_missile"}
@@ -119,12 +140,23 @@ public swat_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
-		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "swat_m4a1", headshot)
+		if (extraDamage > 0){
+			
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat, headshot,
+											_,_,_,_,_,
+											SH_NEW_DMG_SUPER_BULLET,
+											M4Swat_weapon_id)
+		}
 	}
 
 	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
-		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "tactical_knife", headshot)
+		if(extraDamage > 0){
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,headshot,
+											_,_,_,_,_,
+											SH_NEW_DMG_BLEED,
+											tactical_knife_weapon_id)
+		}
 	}
 	return PLUGIN_CONTINUE
 }

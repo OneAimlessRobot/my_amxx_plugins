@@ -3,6 +3,7 @@
 #define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "grim_reaper_inc/grim_reaper_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -12,8 +13,7 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Grim Reaper pt2"
-new bool:gUsedScythe[SH_MAXSLOTS+1]
-new bool:gJustResetRendering[SH_MAXSLOTS+1]
+new gJustResetRenderingMask = 0 
 new gScytheSwings[SH_MAXSLOTS+1]
 
 new dmg_source_name_short_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
@@ -21,7 +21,6 @@ new dmg_source_name_long_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
 new custom_dmg_id_scythe
 
 new const gModelScythe[] = "models/shmod/v_scythe.mdl"
-new gModelLoaded
 new num_swings,Float:g_reaper_range,inf_swings
 
 //----------------------------------------------------------------------------------------------
@@ -49,7 +48,15 @@ public plugin_init()
 	
 	
 }
+public plugin_natives(){
 
+
+	register_native("sh_get_death_scythe_wpn_id","_sh_get_death_scythe_wpn_id",0)
+}
+public _sh_get_death_scythe_wpn_id(iPlugin,iParams){
+
+	return custom_dmg_id_scythe
+}
 public greaper2_init()
 {
 	
@@ -69,25 +76,23 @@ public greaper2_init()
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()||!gModelLoaded ) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
-		gJustResetRendering[id]=false
+		UnSet_BitVar(gJustResetRenderingMask,id)
 		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)
 		sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransColor)
 	}
-	else if(!gJustResetRendering[id]){
-		gJustResetRendering[id]=true
+	else if(!Get_BitVar(gJustResetRenderingMask,id)){
+		Set_BitVar(gJustResetRenderingMask,id)
 		sh_set_rendering(id)
 	}
 	return PLUGIN_CONTINUE
 
 }
 public reset_greaper2_user(id){
-	
-	
-	gUsedScythe[id]=false;
+
 	gScytheSwings[id]=0;
 	
 	
@@ -187,7 +192,7 @@ public swing_scythe(weaponent)
 	if (gScytheSwings[id]>0) 
 	{
 		emit_sound(id, CHAN_WEAPON, GRIM_SWING_SFX, 1.0, 0.0, 0, PITCH_NORM)
-		gUsedScythe[id]=true
+
 		gScytheSwings[id]= (inf_swings? gScytheSwings[id]:max(0,gScytheSwings[id]-1));
 		swing_connected(id)
 		
@@ -198,11 +203,9 @@ public plugin_precache()
 {
 if ( file_exists(gModelScythe) ) {
 		engfunc(EngFunc_PrecacheModel,gModelScythe)
-		gModelLoaded = true
 	}
 	else {
 		sh_debug_message(0, 0, "Aborted loading ^"%s^", file does not exist on server", gModelScythe)
-		gModelLoaded = false
 	}
 
 engfunc(EngFunc_PrecacheSound, SLICERISTA_HIT_MEAT_SFX)

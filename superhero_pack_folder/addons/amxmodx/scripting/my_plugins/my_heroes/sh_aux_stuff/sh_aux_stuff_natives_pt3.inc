@@ -44,7 +44,7 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 native prepare_shero_aux_lib_pt3()
 
 
-/*
+/** 
 
 Explosion sfx masks!
 
@@ -52,6 +52,7 @@ Explosion sfx masks!
 #define sfx_show_fireball (1<<1)
 #define sfx_show_smoke (1<<2)
 #define sfx_show_burn_decal (1<<3)
+#define sfx_show_custom_sound (1<<4)
 
 */
 native explosion(hero_id,ent_id,Float:explosion_radius,
@@ -62,8 +63,8 @@ native explosion(hero_id,ent_id,Float:explosion_radius,
 					Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,
 					sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
 					sh_custom_color:color_const=WHITE,
-					bool:use_sound=false,
-					const custom_sound_sample[128]=crush_stunned);
+					const custom_sound_sample[128]=crush_stunned,
+					custom_weapon_id=-1);
 
 /*
 
@@ -74,6 +75,7 @@ Explosion sfx masks!
 #define sfx_show_fireball (1<<1)
 #define sfx_show_smoke (1<<2)
 #define sfx_show_burn_decal (1<<3)
+#define sfx_show_custom_sound (1<<4)
 
 */
 
@@ -83,7 +85,6 @@ native explosion_custom_entity(ent_id,Float:explosion_radius,
 					Float:optional_force=0.0,
 					sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
 					sh_custom_color:color_const=WHITE,
-					bool:use_sound=false,
 					const custom_sound_sample[128]=crush_stunned);
 
 

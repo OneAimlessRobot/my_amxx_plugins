@@ -5,6 +5,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 #include "custom_grenades/custom_grenades.inc"
+#include "grim_reaper_inc/grim_reaper_inc.inc"
 #include "chikoi_inc/chikoi_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -17,7 +18,7 @@
 new gHeroID
 new const gHeroName[] = "Yowai"
 new g_hits[SH_MAXSLOTS+1]
-new bool:g_yowai_mode[SH_MAXSLOTS+1]
+new g_yowai_mode_mask = 0
 new g_max_hits_player[SH_MAXSLOTS+1]
 
 new gHeroLevel
@@ -72,7 +73,7 @@ public reset_Yowai_user(id){
 	
 	g_max_hits_player[id]=0;
 	g_hits[id]=0;
-	g_yowai_mode[id]=false;
+	UnSet_BitVar(g_yowai_mode_mask,id)
 	
 	if(!is_user_bot(id)){
 		sh_chat_message(id,gHeroID,"WAAAAAAhhhhhh~.... Sir? When is the end of my shift?")
@@ -91,7 +92,7 @@ public status_hud(id){
 	new chat_msg[130];
 	
 	if(!is_user_bot(id)){
-		if(g_yowai_mode[id]){
+		if(Get_BitVar(g_yowai_mode_mask,id)){
 			formatex(chat_msg,129,"%d hit%s out of %d left until you finally die^n",
 								g_hits[id],
 								g_hits[id] == 1 ? "" : "s", 
@@ -137,7 +138,7 @@ public Inc_hits(id){
 
 stock dmg_message(id,Float:damage){
 	if(is_user_alive(id)){
-		if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
+		if(sh_user_has_hero(id,gHeroID) &&Get_BitVar(g_yowai_mode_mask,id)){
 				if(!is_user_bot(id)){
 
 				sh_chat_message(id,gHeroID,"Dont worry, ... youll be fine, like always... sigh... damage: %.0f is a scratch",damage)
@@ -157,15 +158,16 @@ if ( !is_user_alive(id) ) return HAM_IGNORED
 
 if (!is_user_connected(attacker)) return HAM_IGNORED
 
-if(sh_user_has_hero(id,gHeroID) &&g_yowai_mode[id]){
+if(sh_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
 	
+	new Float:tg_damage=floatmin(float(get_user_health(id)),float(dmg_threshold))
 	if(g_hits[id]>=g_max_hits_player[id]){
 		
 		set_user_godmode(id,0)
 		sh_extra_damage(id, attacker, 1, "Thanks for that", false,SH_DMG_KILL)
 		return HAM_IGNORED
 	}
-	else if(damage>=dmg_threshold){
+	else if(damage>=tg_damage){
 		
 		dmg_message(id,damage)
 			
@@ -185,7 +187,7 @@ new temp[6]
 read_argv(1,temp,5)
 new id=str_to_num(temp)
 
-if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||g_yowai_mode[id] ) {
+if (sh_is_freezetime() || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||Get_BitVar(g_yowai_mode_mask,id) ) {
 	return PLUGIN_HANDLED
 }
 if ( sh_player_has_chikoi(id)) {
@@ -193,7 +195,7 @@ if ( sh_player_has_chikoi(id)) {
 	sh_chat_message(id,gHeroID,"You have chikoi enabled. Will not enable")
 	return PLUGIN_HANDLED
 }
-g_yowai_mode[id]= true;
+Set_BitVar(g_yowai_mode_mask,id)
 
 sh_chat_message(id,gHeroID,"Activated yowai mode.")
 		
@@ -205,9 +207,10 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) &&g_yowai_mode[victim]){
-		
-		if((g_hits[victim]>=g_max_hits_player[victim])){
+	if(sh_user_has_hero(victim,gHeroID) &&Get_BitVar(g_yowai_mode_mask,victim)){
+		new tg_damage=min(get_user_health(victim),dmg_threshold)
+		if((g_hits[victim]>=g_max_hits_player[victim])||
+			(custom_weapon_id==sh_get_death_scythe_wpn_id())){
 			
 			
 			set_user_godmode(victim,0)
@@ -217,7 +220,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			dmgMode=SH_DMG_KILL
 			return DMG_FWD_PASS
 		}
-		else if(damage>=dmg_threshold){
+		else if(damage>=tg_damage){
 			dmg_message(victim,float(damage))
 		}
 		return DMG_FWD_BLOCK

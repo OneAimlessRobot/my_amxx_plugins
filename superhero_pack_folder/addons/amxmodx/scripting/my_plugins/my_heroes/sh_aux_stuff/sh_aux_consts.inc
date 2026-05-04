@@ -105,6 +105,7 @@ Explosion sfx masks!
 #define sfx_show_fireball (1<<1)
 #define sfx_show_smoke (1<<2)
 #define sfx_show_burn_decal (1<<3)
+#define sfx_show_custom_sound (1<<4)
 
 
 

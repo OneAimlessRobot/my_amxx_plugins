@@ -14,6 +14,10 @@ vic15_auraradius 300		//Radius of Victim 15's ghostly aura
 
 #include "../my_include/superheromod.inc"
 
+new victim_drain_aura_weapon_id
+new dmg_source_name_short_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
+new dmg_source_name_long_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
+
 new g_heroName[]="Victim 15/21"
 new gHeroID
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
@@ -37,6 +41,12 @@ public plugin_init()
 	gHeroID=shCreateHero(g_heroName, "15th Sacrament", "Deal damage to enemies merely by standing near them and always come back to life. Be careful of triggered deaths!", false, "vic15_level")
 
 
+	
+	victim_drain_aura_weapon_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_victim_drain_aura,
+								dmg_source_name_long_victim_drain_aura,
+								0)
 	// DEATH EVENT
 	register_event("DeathMsg", "vic15_death", "a")
 
@@ -204,7 +214,11 @@ public vic15_auraloop()
 				get_user_origin(enemy, eOrigin)
 				Distance = get_distance(Origin, eOrigin)
 				if (Distance < Radius){
-					sh_extra_damage(enemy, id, Pain, "Victim 15/21 Aura")
+
+					sh_extra_damage(enemy, id, Pain, dmg_source_name_short_victim_drain_aura,
+											_,_,_,_,_,_,
+											SH_NEW_DMG_DARK_ARTS,
+											victim_drain_aura_weapon_id)
 				} //distance
 			} //enemy loop
 		} //power check

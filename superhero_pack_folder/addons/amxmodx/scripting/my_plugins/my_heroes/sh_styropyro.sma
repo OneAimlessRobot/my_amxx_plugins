@@ -8,8 +8,9 @@ styropyro_cooldown 0.0			//Cooldown timer between laser use
 styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 for only 1 shot per keydown (Default 0.1)
 
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 // Damage Variables
@@ -19,31 +20,6 @@ styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 
 #define h4_dam 400	// arm
 #define h6_dam 400	// leg
 
-//Colors To Pick From ***DO NOT MODIFY***
-#define CUSTOM		0
-#define RED		1
-#define GREEN		2
-#define BLUE		3
-#define LTBLUE		4
-#define YELLOW		5
-#define PURPLE		6
-#define ORANGE		7
-
-//Color Settings ***CHANGE COLOR HERE***
-#define BEAM_COLOR CUSTOM		// Set beam color here, use color names from above (Default GREEN)
-#define BEAM_ALPHA 255		// alpha value, visibility from 0-255 (Default 200)
-
-//Color definitions
-new BeamColors[8][3] = {
-	{255, 0, 43},	// Custom, edit this one for a custom rgb value
-	{255, 0, 0},		// Red
-	{0, 255, 0},		// Green
-	{0, 0, 255},		// Blue
-	{0, 255, 255},		// Light Blue
-	{255, 255, 0},		// Yellow
-	{255, 0, 255},		// Purple
-	{255, 128, 0}		// Orange
-}
 
 // GLOBAL VARIABLES
 new gHeroName[]="styropyro"
@@ -235,14 +211,6 @@ public laserEffects(id, aimvec[3])
 
 	get_user_origin(id, origin, 1)
 
-	new colornum = BEAM_COLOR
-	new colors[3]
-
-	if (colornum < 0 || colornum >= 8) {
-		//If invalid value set it to default green
-		colornum = 2
-	}
-	colors = BeamColors[colornum]
 
 	// DELIGHT
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -273,10 +241,10 @@ public laserEffects(id, aimvec[3])
 	write_byte(10)			// life
 	write_byte(45)			// width
 	write_byte(0)			// noise
-	write_byte(colors[0])	// Red
-	write_byte(colors[1])	// Green
-	write_byte(colors[2])	// Blue
-	write_byte(BEAM_ALPHA)	// brightness
+	write_byte(LineColors[RED][0])	// Red
+	write_byte(LineColors[RED][1])	// Green
+	write_byte(LineColors[RED][2])	// Blue
+	write_byte(255)	// brightness
 	write_byte(200)		// speed
 	message_end()
 

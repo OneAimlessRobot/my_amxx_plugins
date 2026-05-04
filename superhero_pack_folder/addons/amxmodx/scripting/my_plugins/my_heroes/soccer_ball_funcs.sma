@@ -16,15 +16,22 @@
 
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
+new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"
+new dmg_source_name_long_free_kick[SAFE_BUFFER_SIZE+1]="free_kick"
+new custom_dmg_id_free_kick
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	register_think(BALL_CLASSNAME, "ball_think")
 	
+	custom_dmg_id_free_kick=sh_log_custom_damage_source(roberto_get_hero_id(),
+					dmg_source_name_short_free_kick,
+					dmg_source_name_long_free_kick,
+					0)
 	register_entity_as_wall_touchable(BALL_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(BALL_CLASSNAME,"ball_touch_player",player_vector,1)
-
+	init_explosion_defaults()
 }
 
 public plugin_natives(){
@@ -85,6 +92,13 @@ public ball_touch_player(Ball, Player ) {
 				entity_set_int(Ball,EV_INT_iuser2,true)
 				entity_set_int(Ball,EV_INT_iuser3,true)
 				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
+
+				sh_extra_damage(Player,oid,BALL_DMG,
+						dmg_source_name_short_free_kick,1
+						,_,_,_,_,_,
+						SH_NEW_DMG_BLUNT_TRAUMA,
+						custom_dmg_id_free_kick)
+				sh_set_stun(Player,3.0,default_stun_speed)
 				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 			}
@@ -221,11 +235,6 @@ public ball_think(ent)
 	end_point[1]=Pos[1]+AimDirVector[1]
 	end_point[2]=Pos[2]+AimDirVector[2]
 	
-	
-	
-	//velocityVec[0] = 0
-	//velocityVec[0]=AimVec[0]-origin[0]
-	//velocityVec[0] = velocityVec[0]+(AimVec[0])
 	velocityVec[0] = velocityVec[0]+((AimDirVector[0])/BALL_MASS)
 	velocityVec[1] = velocityVec[1]+((AimDirVector[1])/BALL_MASS)
 	
