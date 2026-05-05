@@ -19,11 +19,14 @@
 
 
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
-new trigger_is_down[SH_MAXSLOTS+1]
-new trigger_was_down[SH_MAXSLOTS+1]
+new trigger_is_down_mask = 0
+new trigger_was_down_mask = 0
 new g_Tranq_Clip[SH_MAXSLOTS+1]
 
 
+new super_dart_weapon_id
+new dmg_source_name_short_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
+new dmg_source_name_long_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
 
 
 public plugin_init(){
@@ -46,6 +49,15 @@ public plugin_init(){
 	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)
 
 	register_think(DART_CLASSNAME, "tranque_thinque")
+
+
+
+	super_dart_weapon_id=sh_log_custom_damage_source(
+								tranq_get_hero_id(),
+								dmg_source_name_short_super_dart,
+								dmg_source_name_long_super_dart,
+								0)
+
 	init_gravity_pcvar()
 
 
@@ -97,16 +109,31 @@ public CmdStart(id, uc_handle)
 {
 	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 
-	trigger_was_down[id]=trigger_is_down[id]
+	
+	if(Get_BitVar(trigger_is_down_mask, id)){
+		Set_BitVar(trigger_was_down_mask, id)
+	}
+	else{
+
+		UnSet_BitVar(trigger_was_down_mask, id)
+	}
 	new button = get_uc(uc_handle, UC_Buttons);
-	trigger_is_down[id]=(button & IN_ATTACK)
+	
+	if((button & IN_ATTACK)){
+
+		Set_BitVar(trigger_is_down_mask, id)
+	}
+	else{
+		
+		UnSet_BitVar(trigger_is_down_mask, id)
+	}
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if(weapon==CSW_ELITE){
-		if(trigger_is_down[id])
+		if(Get_BitVar(trigger_is_down_mask, id))
 		{
 
 			button &= ~IN_ATTACK;
-			if(trigger_was_down[id]||(tranq_get_num_darts(id)<=0)){
+			if(Get_BitVar(trigger_was_down_mask, id)||(tranq_get_num_darts(id)<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -413,7 +440,10 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				headshot=1;
 				damage*=4;
 			}
-			sh_extra_damage(pTouched,oid,floatround(damage),"Rage tranq",headshot);
+			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,headshot,
+						_,_,_,_,_,
+						SH_NEW_DMG_BLEED,super_dart_weapon_id)
+						
 			new CsArmorType:armor_type;
 			cs_get_user_armor(pTouched,armor_type);
 			switch(armor_type){

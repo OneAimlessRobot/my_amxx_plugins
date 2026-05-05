@@ -171,10 +171,9 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if(!hasRoundStarted()){
-
-		return FMRES_IGNORED
-	}
+	
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	
 	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED

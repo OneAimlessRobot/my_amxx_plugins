@@ -19,8 +19,8 @@
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
 
-new trigger_is_down[SH_MAXSLOTS+1]
-new trigger_was_down[SH_MAXSLOTS+1]
+new trigger_is_down_mask = 0
+new trigger_was_down_mask = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_L96_clip[SH_MAXSLOTS+1]
 new dmg_headshot_mult,
@@ -142,21 +142,37 @@ public CmdStart(id, uc_handle)
 {
 
 	
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
 	if(client_isnt_hitter(id)){
 		
 		return FMRES_IGNORED
 	}
 	
-	trigger_was_down[id]=trigger_is_down[id]
+	if(Get_BitVar(trigger_is_down_mask, id)){
+		Set_BitVar(trigger_was_down_mask, id)
+	}
+	else{
+
+		UnSet_BitVar(trigger_was_down_mask, id)
+	}
 	new button = get_uc(uc_handle, UC_Buttons);
-	trigger_is_down[id]=(button & IN_ATTACK)
+	
+	if((button & IN_ATTACK)){
+
+		Set_BitVar(trigger_is_down_mask, id)
+	}
+	else{
+		
+		UnSet_BitVar(trigger_is_down_mask, id)
+	}
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==LENA_WEAPON_CLASSID)){
-		if(trigger_is_down[id])
+		if(Get_BitVar(trigger_is_down_mask, id))
 		{
 
 			button &= ~IN_ATTACK;
-			if(trigger_was_down[id]||(lena_l96_get_num_bullets(id)<=0)){
+			if(Get_BitVar(trigger_was_down_mask, id)||(lena_l96_get_num_bullets(id)<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -339,8 +355,6 @@ if(client_isnt_hitter(id)){
 	return
 }
 
-if(!trigger_is_down[id]) return
-
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
@@ -474,7 +488,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
 		unfade_screen_user(pTouched)
 		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
-		if(gatling_get_fx_num(pTouched)!=_:RADIOACTIVE){
+		if(gatling_get_fx_num(pTouched)!=RADIOACTIVE){
 				track_user(pTouched,oid,1,3,the_period,the_time,ORANGE)
 		}
 		

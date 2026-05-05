@@ -145,9 +145,13 @@ public loadCVARS()
 	ak_dmgmult=get_cvar_float("thrashy_akmult")
 }
 public fw_CmdStart( id, uc_handle, seed )
-{
-	if( !is_user_alive( id ) ) 
-		return PLUGIN_HANDLED
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+	if( !is_user_alive( id ) ) {
+		return FMRES_IGNORED
+	}
 	
 	if( ( get_uc( uc_handle, UC_Buttons ) & IN_ATTACK2 ) && !( pev( id, pev_oldbuttons ) & IN_ATTACK2 ) )
 	{
@@ -169,7 +173,7 @@ public fw_CmdStart( id, uc_handle, seed )
 		}
 		
 	}
-	return PLUGIN_HANDLED
+	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

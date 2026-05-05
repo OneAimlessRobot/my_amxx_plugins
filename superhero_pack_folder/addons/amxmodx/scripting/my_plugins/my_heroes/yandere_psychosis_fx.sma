@@ -36,7 +36,7 @@ public plugin_init(){
 	pcvar_psychosis_dmg_cushion = register_cvar("yandere_psychosis_dmg_cushion", "5")
 	pcvar_psychosis_cooldown = register_cvar("yandere_psychosis_cooldown", "30")
 	pcvar_psychosis_degen_health_threshold = register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
-	RegisterHam(Ham_Think,"player","Ham_Think_Post",1,true)
+	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
@@ -116,7 +116,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 public Ham_Think_Post(id) {
 	
 	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) { 
-		return
+		return HAM_IGNORED
 	}
 	if(Get_BitVar(g_yandere_leaped_mask,id)){
 		new flags = pev(id, pev_flags)
@@ -124,6 +124,7 @@ public Ham_Think_Post(id) {
 			UnSet_BitVar(g_yandere_leaped_mask,id)
 		}
 	}
+	return HAM_IGNORED
 }
 public Player_TakeDamage(id)
 {
@@ -137,7 +138,11 @@ public Player_TakeDamage(id)
 //----------------------------------------------------------------------------------------------
 public psychosis_leap(id, uc_handle)
 {
-	if (!sh_user_has_hero(id,yandere_get_hero_id())||!yandere_get_user_is_psychosis(id)||!hasRoundStarted()) return FMRES_IGNORED;
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+
+	if (!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	

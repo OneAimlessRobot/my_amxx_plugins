@@ -17,8 +17,11 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+#define ERICA_HOOK_DUMMY_ENTITY_CLASSNAME "erica_hook"
+
+
 stock hook_on[SH_MAXSLOTS+1] = { 0 , ...}
-stock g_dragging_who[SH_MAXSLOTS+1][2]
+stock g_player_hook[SH_MAXSLOTS+1]
 stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
 stock g_hook_kills[SH_MAXSLOTS+1] = { 0 , ...}
 #define NUM_SENTENCES 5
@@ -42,7 +45,38 @@ new dmg_source_name_short_gutting[SAFE_BUFFER_SIZE+1]="gutting"
 new dmg_source_name_long_gutting[SAFE_BUFFER_SIZE+1]="gutting"
 new custom_dmg_id_gutting
 
-stock HOOK_TASKID
+//stock HOOK_TASKID
+spawn_erica_hook(id,target){
+
+	if(!sh_is_active()) return
+
+	if(!is_user_alive(id) || !is_user_alive(id)) return
+	
+	if(!sh_user_has_hero(id,tranq_get_hero_id())) return
+
+	if(is_valid_ent(g_player_hook[id])){
+		return
+	}
+	new erica_hook_to_be_spawned= create_entity("info_target")
+	if(!erica_hook_to_be_spawned){
+
+		return
+	}
+	g_player_hook[id]=erica_hook_to_be_spawned
+	entity_set_string(erica_hook_to_be_spawned, EV_SZ_classname, ERICA_HOOK_DUMMY_ENTITY_CLASSNAME)
+
+	entity_set_edict(erica_hook_to_be_spawned, EV_ENT_owner, id)
+
+	//the target
+	entity_set_edict(erica_hook_to_be_spawned,EV_ENT_euser1,target)
+
+	//the times
+	entity_set_int(erica_hook_to_be_spawned, EV_INT_iuser1,floatround(HOOK_DRAG_THINK_TIMES))
+
+	entity_set_float(erica_hook_to_be_spawned, EV_FL_nextthink,
+				get_gametime()+HOOK_DRAG_THINK_PERIOD)
+}
+
 
 public plugin_init(){
 	
@@ -54,6 +88,7 @@ public plugin_init(){
 	hook_drag_time_pcvar=register_cvar("hook_drag_time", "3")
 	gutting_dmg_mult_pcvar=register_cvar("hook_gutting_dmg_mult", "3")
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
+	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
 	custom_dmg_id_gutting=sh_log_custom_damage_source(tranq_get_hero_id(),
@@ -61,7 +96,7 @@ public plugin_init(){
 					dmg_source_name_long_gutting,
 					1)
 	
-	HOOK_TASKID=allocate_typed_task_id(player_task)
+	//HOOK_TASKID=allocate_typed_task_id(player_task)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -83,6 +118,8 @@ public sh_round_end()
 
 		erica_new_spawn_hooks(i)
 	}
+
+	remove_entity_name(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME)
 }
 
 erica_new_spawn_hooks(id){
@@ -90,7 +127,7 @@ erica_new_spawn_hooks(id){
 if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
 	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar);
 }
-stop_dragging(id)
+stop_dragging(id,-1)
 
 }
 public plugin_natives(){
@@ -99,12 +136,12 @@ public plugin_natives(){
 	register_native( "hook_set_hook","_hook_set_hook",0)
 	
 }
-stop_dragging(id,bool:deduct=false){
+stop_dragging(id,target=-1,bool:deduct=false){
 
-		new client_is_here=is_user_alive( g_dragging_who[id][0])
+		new client_is_here=is_user_alive( target)
 		new attacker_is_here=is_user_alive( id )
 		if(client_is_here){
-			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
+			entity_set_int( target, EV_INT_fixangle, 0 );
 		}
 		if(client_is_here&&attacker_is_here){
 
@@ -123,39 +160,46 @@ stop_dragging(id,bool:deduct=false){
 			}
 			
 		}
-		g_dragging_who[id][0]=-1
-		g_dragging_who[id][1]=0		
+		if(is_valid_ent(g_player_hook[id])){
+
+			remove_entity(g_player_hook[id])
+			g_player_hook[id]=-1
+		}
 }
 //----------------------------------------------------------------------------------------------
-public hook_think(id)
+public hook_think(ent)
 {
-	
-	id-=HOOK_TASKID
+	if(!is_valid_ent(ent)){
+
+		return FMRES_IGNORED
+	}
+	new id=entity_get_edict(ent,EV_ENT_owner),
+		vic=entity_get_edict(ent,EV_ENT_euser1),
+		times_left=entity_get_int(ent,EV_INT_iuser1)
 	if (!is_user_alive(id)){
-		stop_dragging(id)
-		return
+		stop_dragging(id,vic)
+		return FMRES_IGNORED
 	
 	}
 	if (!sh_user_has_hero(id,tranq_get_hero_id())){
 
-		stop_dragging(id)
-		return
+		stop_dragging(id,vic)
+		return FMRES_IGNORED
 	
 	}
-	if(!is_user_alive( g_dragging_who[id][0])){
+	if(!is_user_alive( vic)){
 		
 
-		stop_dragging(id,true)
-		return
+		stop_dragging(id,vic,true)
+		return FMRES_IGNORED
 	}
-	if((g_dragging_who[id][1])<=0){
+	if(times_left<=0){
 		
-		stop_dragging(id,true)
-		return
+		stop_dragging(id,vic,true)
+		return FMRES_IGNORED
 	
 	
 	}
-	new vic=g_dragging_who[id][0]
 	new ammo, clip, wpnid=get_user_weapon(id,ammo,clip)
 	if(wpnid!=CSW_KNIFE){
 		shSwitchWeaponID(id,CSW_KNIFE)
@@ -192,14 +236,15 @@ public hook_think(id)
 	orient_user(id,dst_angles,dst_v_angles)
 	set_user_maxspeed(id,1.0)
 
-	if(!(g_dragging_who[id][1]%SENTENCE_TICKS)){
+	if(!(times_left%SENTENCE_TICKS)){
 		new random_number=generate_int(0,NUM_SENTENCES-1);
 		sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 		sh_chat_message(vic,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 	}
-	g_dragging_who[id][1]--;
-	set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",id+HOOK_TASKID)
-	return
+	times_left--;
+	entity_set_int(ent,EV_INT_iuser1,times_left)
+	entity_set_float(ent,EV_FL_nextthink,get_gametime()+HOOK_DRAG_THINK_PERIOD)
+	return FMRES_IGNORED
 }
 
 //----------------------------------------------------------------------------------------------
@@ -235,7 +280,7 @@ public CmdStart1(attacker, uc_handle)
 		}
 		if((button & IN_RELOAD))
 		{
-			if((g_dragging_who[attacker][0]<0)){
+			if((!is_valid_ent(g_player_hook[attacker]))){
 				button &= ~IN_RELOAD;
 				set_uc(uc_handle, UC_Buttons, button);
 				
@@ -292,12 +337,11 @@ public CmdStart1(attacker, uc_handle)
 						return FMRES_IGNORED
 					}
 					sh_bleed_user(id,attacker,BLEED_MINI,tranq_get_hero_id())
-					g_dragging_who[attacker][0]=id
-					g_dragging_who[attacker][1]=floatround(HOOK_DRAG_THINK_TIMES)
+
 					entity_set_vector(attacker, EV_VEC_velocity, Float:{0.01,0.01,0.01})
 					g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
 					set_user_maxspeed(attacker,0.1)
-					set_task((HOOK_DRAG_THINK_PERIOD),"hook_think",attacker+HOOK_TASKID)
+					spawn_erica_hook(attacker,id)
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 					if(!is_user_bot(attacker)){
@@ -310,9 +354,11 @@ public CmdStart1(attacker, uc_handle)
 				free_tr2(tr)
 			}
 		}
-		else if(is_user_connected(g_dragging_who[attacker][0])){
-	
-			stop_dragging(attacker)
+		else if(is_valid_ent(g_player_hook[attacker])){
+			new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
+			if(is_user_alive(target)){
+				stop_dragging(attacker,target)
+			}
 		
 		}
 		
@@ -327,7 +373,7 @@ if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)) return HAM
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_team)){
+if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_hook[attacker])){
 	
 	if(weapon==CSW_KNIFE){
 		new button = pev(attacker, pev_button);
@@ -356,12 +402,14 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 			
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.2) )
 			{
+				new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
+				
+				if(is_user_alive(target)){
 
-				if(g_dragging_who[attacker][0]==id){
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(id,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
+					sh_extra_damage(target,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
 								dmg_source_name_long_gutting,1
 								,_,_,_,_,_,
 								SH_NEW_DMG_BLEED,
@@ -369,19 +417,19 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					
 					new random_number=generate_int(0,NUM_SENTENCES-1);
 					
-					if(!is_user_bot(id)){
-						sh_chat_message(id,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
+					if(!is_user_bot(target)){
+						sh_chat_message(target,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 					}
 					if(!is_user_bot(attacker)){
 						sh_chat_message(attacker,tranq_get_hero_id(),"%s",erica_sentences[random_number]);
 					}
-					sh_bleed_user(id,attacker,BLEED_ULTRA,tranq_get_hero_id())
+					sh_bleed_user(target,attacker,BLEED_ULTRA,tranq_get_hero_id())
 					
-					if(!is_user_alive(id)){
-						process_manhook_manslaughter( attacker, id)
+					if(!is_user_alive(target)){
+						process_manhook_manslaughter( attacker, target)
 					}
 				}
-				stop_dragging(attacker,true)
+				stop_dragging(attacker,target,true)
 			}	
 		}
 	}

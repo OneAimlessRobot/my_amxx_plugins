@@ -116,11 +116,6 @@ public camman_kd()
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
-	sh_chat_message(id,gHeroID,"Has camera: %d, Camera armed: %d, disarmer on: %d disarmabale: %d",
-				Get_BitVar(gHasCameraMask,id),
-				camera_get_camera_armed(id),
-				camera_get_camera_disarmer_on(id),
-				cvar_val(bool,pcvar_disarmable))
 
 	if(!(player_touching_entity_of_some_classname(id,CAMERA_CLASSNAME))){
 		if(user_can_plant_camera(id)){

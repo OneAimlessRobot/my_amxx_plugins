@@ -175,7 +175,7 @@ public Ester_Knockback(id)
 
 remove_user_flight_fx(id){
 	
-	if(!sh_user_has_hero(id,ester_get_hero_id())||!is_user_connected(id)||!sh_is_active()) return
+	if(!is_user_connected(id)||!sh_user_has_hero(id,ester_get_hero_id())||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
 	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
@@ -225,8 +225,12 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 	}
 }
 public OnCmdStart(id, uc_handle, seed)
-{
-	if(!sh_user_has_hero(id,ester_get_hero_id())||!is_user_alive(id)||
+{	
+	if(!sh_is_active()) return FMRES_IGNORED
+
+	if(sh_is_freezetime()) return FMRES_IGNORED
+
+	if(!is_user_alive(id)||!sh_user_has_hero(id,ester_get_hero_id())||
 			!Get_BitVar(g_ester_is_reborn_mode_mask,id)||
 			sh_get_stun(id)){
 			return FMRES_IGNORED;
@@ -305,19 +309,20 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	if ( !sh_is_inround()){
 		return PLUGIN_CONTINUE
 	}
-
-	if ( !is_user_connected(id) || !sh_user_has_hero(id,ester_get_hero_id())||!is_user_connected(killer)){
+	new has_hero=sh_user_has_hero(id,ester_get_hero_id())
+	if ( !is_user_connected(id) || !has_hero||!is_user_connected(killer)){
 		return PLUGIN_CONTINUE
 	}
+	
 	if(killer==id){
-		if(sh_user_has_hero(id,ester_get_hero_id())&&
+		if(has_hero&&
 				cvar_val(bool,pcvar_ester_anti_pussy_engaged)){
 			
 			deny_next_reborn(id)
 			return PLUGIN_CONTINUE
 			
 		}
-		else if(sh_user_has_hero(id,ester_get_hero_id())){
+		else if(has_hero){
 			
 			sh_chat_message(id,ester_get_hero_id(),ESTER_SUICIDE_SCOURN_MSG)
 			

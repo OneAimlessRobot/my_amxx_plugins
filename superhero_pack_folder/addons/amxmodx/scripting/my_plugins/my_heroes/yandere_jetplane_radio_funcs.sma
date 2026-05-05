@@ -101,10 +101,10 @@ public _reset_user_jet_scans(iPlugins,iParams){
 }
 public CmdStart(id, uc_handle)
 {
-	if(!hasRoundStarted()){
+	
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-		return FMRES_IGNORED
-	}
+	
 	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED

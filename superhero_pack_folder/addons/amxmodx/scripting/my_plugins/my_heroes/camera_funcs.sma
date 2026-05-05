@@ -106,7 +106,8 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 }
 //----------------------------------------------------------------------------------------------
 public camera_controls(id, uc_handle)
-{
+{	
+	if(!sh_is_active()) return FMRES_IGNORED
 	if ( !is_user_alive(id)){
 		return FMRES_IGNORED;
 	}
@@ -540,6 +541,10 @@ public remove_camera(pid){
 public disarm_task(id){
 	id-=CAMERA_DISARM_TASKID
 	if(!camman_get_has_camera(id)){
+		return;
+
+	}
+	if(!Get_BitVar(disarmer_on_mask,id)){
 		return;
 
 	}

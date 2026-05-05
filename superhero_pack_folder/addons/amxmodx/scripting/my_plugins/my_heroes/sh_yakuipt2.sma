@@ -69,8 +69,11 @@ public _gatling_get_hero_id(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
+
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
-	if(sh_get_stun(id)) return FMRES_IGNORED
 
 
 	static button;

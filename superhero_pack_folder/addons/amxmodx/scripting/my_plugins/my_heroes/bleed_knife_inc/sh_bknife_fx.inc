@@ -21,8 +21,9 @@ native do_bleed_knife_attack(id,
           slash_damage,
           stab_damage,
           optional_bool=1,
-          const attack_name_string[128]="def_melee_bleed",
-          const bleed_sound_sample[128]=PIERCE_WOUND_SFX,
+          custom_wpn_id=-1,
+          const attack_name_string[SAFE_BUFFER_SIZE+1]="def_melee_bleed",
+          const bleed_sound_sample[SAFE_BUFFER_SIZE+1]=PIERCE_WOUND_SFX,
           heal_attacker=1);
 
 native sh_unbleed_user(id)

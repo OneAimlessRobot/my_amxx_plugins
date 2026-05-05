@@ -243,7 +243,11 @@ public _gatling_set_pillgatling(iPlugin,iParams){
 
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
-{
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+	
 	if ( !is_user_alive(id)||!client_hittable(id,sh_user_has_hero(id,gatling_get_hero_id()))) return FMRES_IGNORED;
 	
 

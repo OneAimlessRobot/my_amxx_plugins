@@ -177,7 +177,7 @@ shinobu_damage_interaction(attacker,victim){
 	}
 	if(sh_user_has_hero(attacker,gHeroID) ){
 
-		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,0);
+		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,_,0);
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
 }

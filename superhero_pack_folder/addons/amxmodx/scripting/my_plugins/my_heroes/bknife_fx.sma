@@ -55,6 +55,10 @@ stock bleed_task_parameters[NUM_BLEED_TYPES][bleed_task_parameter_id]={
 
 }
 
+new dmg_source_name_short_shanking[SAFE_BUFFER_SIZE+1]="shanking"
+new dmg_source_name_long_shanking[SAFE_BUFFER_SIZE+1]="shanking"
+new custom_dmg_id_shanking
+
 new fx_bleed_type:gIsBleeding[SH_MAXSLOTS+1]
 public plugin_init(){
 
@@ -70,6 +74,11 @@ for(new fx_bleed_type:i=BLEED_MINI;i<NUM_BLEED_TYPES;i++){
 	the_time=bleed_task_parameters[i][bleed_task_time]
 	bleed_task_parameters[i][bleed_task_repeats]=floatround(floatdiv(the_time,the_period))
 }
+
+custom_dmg_id_shanking=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_shanking,
+				dmg_source_name_long_shanking,
+				0)
 register_event("DeathMsg","on_death_bleeding","a")
 init_hud_syncs()
 
@@ -108,9 +117,10 @@ new stab_damage=get_param(5)
 new optional_bool=get_param(6)
 new attack_name_string[128]
 get_string(7,attack_name_string,127)
+new custom_wpn_id=get_param(8)
 new blood_sound_sample[128]
-get_string(8,blood_sound_sample,127)
-new heal_attacker=get_param(9)
+get_string(9,blood_sound_sample,127)
+new heal_attacker=get_param(10)
 
 if(!is_user_alive(attacker)||!is_user_alive(id)) return HAM_IGNORED
 
@@ -163,8 +173,13 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 			
 			sh_bleed_user(id,attacker,BLEED_MINI,hero_id,heal_attacker)
 		}
-		sh_extra_damage(id,attacker,damage,attack_name_string,0,SH_DMG_NORM)
-		
+		new is_valid_dmg_src=is_valid_custom_dmg_source(custom_wpn_id)
+		sh_extra_damage(id,attacker,damage,
+								is_valid_dmg_src?attack_name_string:dmg_source_name_long_shanking,0
+								,_,_,_,_,_,
+								SH_NEW_DMG_BLEED,
+								is_valid_dmg_src?custom_wpn_id:custom_dmg_id_shanking)
+								
 	}
 }
 return HAM_IGNORED

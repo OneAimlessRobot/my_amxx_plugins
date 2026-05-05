@@ -50,7 +50,7 @@ public plugin_init(){
 								maria_get_hero_id(),
 								dmg_source_name_short_riveter,
 								dmg_source_name_long_riveter,
-								1)
+								0)
 
 	init_gravity_pcvar()
 
@@ -89,7 +89,11 @@ public bool:client_isnt_hitter(id){
 	
 }
 public CmdStart(id, uc_handle)
-{
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+
 	if(client_isnt_hitter(id)){
 		
 		return FMRES_IGNORED

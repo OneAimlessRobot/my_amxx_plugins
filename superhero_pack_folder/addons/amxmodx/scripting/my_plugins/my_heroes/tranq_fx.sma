@@ -76,7 +76,9 @@ public sh_client_spawn(id)
 }
 public CmdStart(id, uc_handle)
 {
-	if (!sh_is_active()||!is_user_alive(id)) return FMRES_IGNORED;
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+	if (!is_user_alive(id)) return FMRES_IGNORED;
 	
 	static button; button= get_uc(uc_handle, UC_Buttons);
 	

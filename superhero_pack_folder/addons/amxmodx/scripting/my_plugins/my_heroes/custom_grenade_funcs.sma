@@ -278,6 +278,7 @@ grenade_switch_notification(id){
 }
 public event_curr_grenade(id){
 	
+	if(!sh_is_active()) return PLUGIN_CONTINUE;	
 	if(!is_user_alive(id)) return PLUGIN_CONTINUE;	
 	
 	new wpn_id=-1

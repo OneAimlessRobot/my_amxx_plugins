@@ -152,7 +152,8 @@ public _yandere_get_hero_id(iPlugin,iParams){
 
 public yandere_angry_idle_checks(id, uc_handle){
 
-	if(!sh_is_active()) return FMRES_IGNORED
+	
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
 	if(!is_user_alive(id)) return FMRES_IGNORED
 

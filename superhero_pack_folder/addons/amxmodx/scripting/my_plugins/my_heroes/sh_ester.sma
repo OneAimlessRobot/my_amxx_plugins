@@ -276,8 +276,8 @@ public weaponChange(id)
 			if(sh_get_user_effect(id)!=METYLPHENIDATE){
 				sh_effect_user_direct(id,id,gHeroID,METYLPHENIDATE);
 			}
-			set_pev(id, pev_flTimeStepSound, 999.0)
 		}
+		set_pev(id, pev_flTimeStepSound, 999.0)
 	}
 	else{
 		if(sh_get_user_effect(id)==METYLPHENIDATE){

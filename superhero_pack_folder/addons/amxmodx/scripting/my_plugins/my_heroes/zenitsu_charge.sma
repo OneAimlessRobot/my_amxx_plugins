@@ -105,8 +105,11 @@ public _zenitsu_get_has_touched_player(iPlugin,iParams){
 
 }
 public zenitsu_charge(id, uc_handle, seed)
-{
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!is_user_alive(id)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	
+	if(!is_user_alive(id)||!sh_user_has_hero(id,zenitsu_get_hero_id())||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED

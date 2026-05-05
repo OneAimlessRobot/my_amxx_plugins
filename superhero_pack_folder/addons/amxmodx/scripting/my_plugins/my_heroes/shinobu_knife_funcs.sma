@@ -103,7 +103,7 @@ public shinobu_cloak(id, uc_handle){
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return FMRES_IGNORED
-	if(sh_get_stun(id)) return FMRES_IGNORED
+
 
 	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
 	new button = get_uc(uc_handle, UC_Buttons)

@@ -201,8 +201,12 @@ public slitter_think(id)
 
 //----------------------------------------------------------------------------------------------
 public CmdStart(attacker, uc_handle)
-{
-	if ( !hasRoundStarted()||!is_user_alive(attacker)) return FMRES_IGNORED;
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+
+
+	if (!is_user_alive(attacker)) return FMRES_IGNORED;
 	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)) return FMRES_IGNORED;
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 

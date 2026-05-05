@@ -55,7 +55,10 @@ public _gatling_set_rockets(iPlugin,iParams){
 	gRocketsEngaged[id]=value_to_set;
 }
 public CmdStart(id, uc_handle)
-{
+{	
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	
 	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
