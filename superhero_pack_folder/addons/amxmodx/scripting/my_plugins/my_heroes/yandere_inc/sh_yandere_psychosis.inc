@@ -19,15 +19,7 @@ stock g_yandere_leaped_mask
 stock Float:gPsychosisTime[SH_MAXSLOTS+1]
 
 stock MsgSetFOV
-stock Float:psychosis_time
-stock psychosis_cooldown
-stock zoom
 
-stock psychosis_add_ap
-stock Float:psychosis_degen_pct
-stock Float:psychosis_dmg_cushion
-stock Float:psychosis_degen_health_threshold
-stock Float:degen_iter_period
 
 
 native bool:yandere_get_user_is_psychosis(id);

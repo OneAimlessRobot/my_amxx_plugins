@@ -8,6 +8,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
+#include "shinobu_knife/shinobu_usp_funcs.inc"
 
 #define PLUGIN "Shinobu knife funcs"
 #define VERSION "1.0.0"
@@ -57,6 +58,10 @@ public on_Knife_Weapon_Change(id)
 	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
 
 	new  wpnid = get_user_weapon(id)
+
+	if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
+		set_pev(id, pev_flTimeStepSound, 999.0)
+	}
 	g_shinobu_using_knife[id]=(wpnid == CSW_KNIFE)
 }
 public plugin_natives(){

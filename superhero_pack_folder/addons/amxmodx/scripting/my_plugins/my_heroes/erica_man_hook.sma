@@ -31,11 +31,11 @@ stock const erica_sentences[NUM_SENTENCES][]={
 	"I think... AHH got it!"
 }
 #define SENTENCE_TICKS 30
-new Float:hook_distance
-new Float:gutting_dmg_mult
-new Float:hook_drag_time
-new max_hook_kills_per_life
-new Float:hook_drag_speed
+new hook_distance_pcvar
+new gutting_dmg_mult_pcvar
+new hook_drag_time_pcvar
+new max_hook_kills_per_life_pcvar
+new hook_drag_speed_pcvar
 
 
 new dmg_source_name_short_gutting[SAFE_BUFFER_SIZE+1]="gutting"
@@ -48,12 +48,11 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	register_cvar("hook_distance", "2.0")
-	register_cvar("max_hooks_per_life", "2.0")
-	register_cvar("hook_drag_speed", "2.0")
-	register_cvar("hook_level_difference", "10")
-	register_cvar("hook_drag_time", "3")
-	register_cvar("hook_gutting_dmg_mult", "3")
+	hook_distance_pcvar=register_cvar("hook_distance", "2.0")
+	max_hook_kills_per_life_pcvar=register_cvar("max_hooks_per_life", "2.0")
+	hook_drag_speed_pcvar=register_cvar("hook_drag_speed", "2.0")
+	hook_drag_time_pcvar=register_cvar("hook_drag_time", "3")
+	gutting_dmg_mult_pcvar=register_cvar("hook_gutting_dmg_mult", "3")
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
@@ -89,25 +88,10 @@ public sh_round_end()
 erica_new_spawn_hooks(id){
 
 if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,tranq_get_hero_id())) {
-	g_hook_kills[id]=max_hook_kills_per_life;
+	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar);
 }
 stop_dragging(id)
 
-}
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	hook_distance=get_cvar_float("hook_distance")
-	hook_drag_time=get_cvar_float("hook_drag_time")
-	hook_drag_speed=get_cvar_float("hook_drag_speed")
-	max_hook_kills_per_life=get_cvar_num("max_hooks_per_life")
-	gutting_dmg_mult=get_cvar_float("hook_gutting_dmg_mult")
 }
 public plugin_natives(){
 	
@@ -188,7 +172,7 @@ public hook_think(id)
 	new Float:curr_dist=get_distance_f(eOrigin,dst_origin)
 
 
-	new Float:speed_to_use= (curr_dist<30.0)?40.0:hook_drag_speed
+	new Float:speed_to_use= (curr_dist<30.0)?40.0:cvar_val(float,hook_drag_speed_pcvar)
 
 
 	fl_Velocity[0] = (dst_origin[0]-eOrigin[0])*(speed_to_use/curr_dist)
@@ -260,7 +244,7 @@ public CmdStart1(attacker, uc_handle)
 				new Float: vecForward[3];
 				new Float: vecForward2D[2];
 				
-				velocity_by_aim( attacker, floatround(hook_distance), vecForward );
+				velocity_by_aim( attacker, floatround(cvar_val(float,hook_distance_pcvar)), vecForward );
 				
 				xs_vec_make2d( vecForward, vec2LOS );
 				xs_vec_normalize( vec2LOS, vec2LOS );
@@ -292,17 +276,17 @@ public CmdStart1(attacker, uc_handle)
 					free_tr2(tr)
 					return FMRES_IGNORED
 				}
-				velocity_by_aim(id, floatround(hook_distance), vecForward ); 
+				velocity_by_aim(id, floatround(cvar_val(float,hook_distance_pcvar)), vecForward ); 
 				
 				xs_vec_make2d( vecForward, vecForward2D );
 				static att_name[128],vic_name[128];
 				
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > hook_distance*0.5) )
+				if( (xs_vec_dot( vec2LOS, vecForward2D ) > cvar_val(float,hook_distance_pcvar)*0.5) )
 				{
 					if(g_hook_kills[attacker]<=0){
 
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",max_hook_kills_per_life);
+							sh_chat_message(attacker,tranq_get_hero_id(),"Already hit %d hooks this life!",cvar_val(num,max_hook_kills_per_life_pcvar));
 						}
 						free_tr2(tr)
 						return FMRES_IGNORED
@@ -377,7 +361,7 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(id,attacker,floatround(damage*gutting_dmg_mult),
+					sh_extra_damage(id,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
 								dmg_source_name_long_gutting,1
 								,_,_,_,_,_,
 								SH_NEW_DMG_BLEED,
@@ -411,7 +395,7 @@ new id=get_param(1)
 new value_to_set=get_param(2)
 new prev_value=hook_on[id]
 if(!prev_value&&value_to_set){
-	g_hook_kills[id]=max_hook_kills_per_life
+	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar)
 }
 hook_on[id]=value_to_set
 

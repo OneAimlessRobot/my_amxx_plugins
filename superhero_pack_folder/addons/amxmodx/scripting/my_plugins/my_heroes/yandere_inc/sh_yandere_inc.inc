@@ -69,28 +69,9 @@ stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 stock gLastWeapon[SH_MAXSLOTS+1]
 stock gLastClipCount[SH_MAXSLOTS+1]
 
-stock Float:base_dmg_mult,
-Float:dmg_pct_per_inc,
-Float:base_extra_speed,
-Float:speed_inc_per_inc
-
-stock Float:angry_speed,
-Float:angry_dmg_mult,
-Float:angry_gravity,
-Float:angry_degen_pct,
-Float:angry_hitheal_pct,
-Float:explode_radius,
-Float:explode_maxdamage,
-Float:curse_pct;
-stock hud_sync
-stock gHeroLevel
-stock min_players
-stock degen_health_extra_threshold
-stock overheal_hp_max
 
 
 stock Float:gTransTimer[SH_MAXSLOTS+1]
-stock Float:trans_time
 
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

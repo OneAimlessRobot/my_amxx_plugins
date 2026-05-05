@@ -14,7 +14,7 @@ stock const debug_hud_mode= false
 // GLOBAL VARIABLES
 new gHeroName[]="Flora"
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
-new gFloraHeroLvl
+new pcvar_gFloraHeroLvl
 new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -22,7 +22,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
-	register_cvar("flora_level", "39" )
+	pcvar_gFloraHeroLvl = register_cvar("flora_level", "39" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -68,7 +68,7 @@ public plugin_natives(){
 public _flora_get_hero_lvl(iPlugins,iParams){
 	
 	
-	return gFloraHeroLvl
+	return cvar_val(num, pcvar_gFloraHeroLvl)
 	
 	
 }
@@ -110,18 +110,6 @@ public sh_client_spawn(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	gFloraHeroLvl=get_cvar_num("flora_level")
-	
-}
-//----------------------------------------------------------------------------------------------
 public flora_init()
 {
 	// First Argument is an id
@@ -156,7 +144,7 @@ public flora_kd()
 	if(!field_loaded(id)){
 		if(!is_user_bot(id)){
 			sh_sound_deny(id)
-			sh_chat_message(id, flora_get_hero_id(), "Field deployment still in cooldown! Wait %0.2f more seconds!",field_get_user_field_cooldown(id))
+			sh_chat_message(id, gHeroID, "Field deployment still in cooldown! Wait %0.2f more seconds!",field_get_user_field_cooldown(id))
 		
 		}
 		return PLUGIN_HANDLED
@@ -168,7 +156,7 @@ public flora_kd()
 		
 		
 		if(!is_user_bot(id)){
-				sh_chat_message(id, flora_get_hero_id(), "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),flora_max_fields())
+				sh_chat_message(id, gHeroID, "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),flora_max_fields())
 		}
 		return PLUGIN_HANDLED
 		
@@ -207,7 +195,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	}
 	new result= DMG_FWD_PASS
 	if((new_dmg_type==SH_NEW_DMG_FIRE)){
-		if(sh_user_has_hero(victim,flora_get_hero_id()) ){
+		if(sh_user_has_hero(victim,gHeroID) ){
 			damage*=3
 		}
 	}

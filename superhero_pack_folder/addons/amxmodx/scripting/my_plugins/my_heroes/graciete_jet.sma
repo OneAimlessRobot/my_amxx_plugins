@@ -16,17 +16,19 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new g_graciete_jetpack_loaded_mask = 0;
+new g_graciete_jetpack_on_mask = 0;
+new g_graciete_power_landing_mask = 0;
+new g_graciete_leaped_mask = 0;
+
+new pcvar_jet_cooldown
+new pcvar_land_explosion_radius
+new pcvar_jet_velocity
+new pcvar_jet_max_power
+new pcvar_jet_stomp_grav_mult
+
 new Float:g_graciete_base_gravity[SH_MAXSLOTS+1];
-new g_graciete_jetpack_loaded[SH_MAXSLOTS+1];
-new bool:g_graciete_jetpack_on[SH_MAXSLOTS+1]
 new Float:g_graciete_land_power[SH_MAXSLOTS+1];
-new bool:g_graciete_power_landing[SH_MAXSLOTS+1];
-new bool:g_graciete_leaped[SH_MAXSLOTS+1];
-new jet_cooldown
-new Float:land_explosion_radius
-new Float:jet_velocity
-new Float:jet_max_power
-new Float:jet_stomp_grav_mult
 new cmd_forward
 
 
@@ -41,13 +43,13 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
 	register_event("DeathMsg","death","a")
-	register_cvar("graciete_jet_velocity", "8")
-	register_cvar("graciete_jet_cooldown", "8")
-	register_cvar("graciete_jet_max_power", "8")
-	register_cvar("graciete_jet_stomp_grav_mult", "8")
-	register_cvar("graciete_land_explosion_radius", "8")
+	pcvar_jet_velocity = register_cvar("graciete_jet_velocity", "8")
+	pcvar_jet_cooldown = register_cvar("graciete_jet_cooldown", "8")
+	pcvar_jet_max_power = register_cvar("graciete_jet_max_power", "8")
+	pcvar_jet_stomp_grav_mult = register_cvar("graciete_jet_stomp_grav_mult", "8")
+	pcvar_land_explosion_radius = register_cvar("graciete_land_explosion_radius", "8")
 	
-	
+	RegisterHam(Ham_Think,"player","Ham_Think_Post",1,true)
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -74,31 +76,19 @@ public _jet_uncharge_user(iPlugin,iParams){
 public _jet_get_user_power_landing(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_graciete_power_landing[id]
+	return Get_BitVar(g_graciete_power_landing_mask, id)
 
 
 }
-public plugin_cfg(){
-
-	loadCVARS();
-}
-public loadCVARS(){
-	jet_cooldown=get_cvar_num("graciete_jet_cooldown");
-	land_explosion_radius=get_cvar_float("graciete_land_explosion_radius");
-	jet_velocity=get_cvar_float("graciete_jet_velocity");
-	jet_max_power=get_cvar_float("graciete_jet_max_power")
-	jet_stomp_grav_mult=get_cvar_float("graciete_jet_stomp_grav_mult")
-}
-
 public _reset_graciete_user(iPlugin,iParams){
 	
 	new id= get_param(1)
-	g_graciete_jetpack_loaded[id]=true;
+	Set_BitVar(g_graciete_jetpack_loaded_mask,id);
+	UnSet_BitVar(g_graciete_power_landing_mask,id);
+	UnSet_BitVar(g_graciete_leaped_mask,id);
+	UnSet_BitVar(g_graciete_jetpack_on_mask,id);
 	g_graciete_land_power[id]=0.0;
-	g_graciete_power_landing[id]=false;
-	g_graciete_leaped[id]=false;
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	g_graciete_jetpack_on[id]=false;
 	
 	
 }
@@ -124,7 +114,7 @@ charge_user(id){
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
 	
-	g_graciete_jetpack_on[id]= true
+	Set_BitVar(g_graciete_jetpack_on_mask,id);
 	
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -136,9 +126,9 @@ charge_user(id){
 }
 
 uncharge_user(id){
-	g_graciete_power_landing[id]=false
-	if(g_graciete_jetpack_on[id]){
-		g_graciete_jetpack_on[id]=false;
+	UnSet_BitVar(g_graciete_power_landing_mask,id);
+	if(Get_BitVar(g_graciete_jetpack_on_mask,id)){
+		UnSet_BitVar(g_graciete_jetpack_on_mask,id);
 	}
 	trail(id,RED,0,0)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -146,19 +136,20 @@ uncharge_user(id){
 	
 	
 }
-public client_PostThink(id) {
+public Ham_Think_Post(id) {
 	
 	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return
 
-	if(g_graciete_leaped[id]){
+	if(Get_BitVar(g_graciete_leaped_mask, id)){
 		new flags = pev(id, pev_flags)
 		if((flags  & FL_INGROUND2)){
-			g_graciete_leaped[id]=false
-			if(g_graciete_power_landing[id]){
+			UnSet_BitVar(g_graciete_leaped_mask, id)
+			if(Get_BitVar(g_graciete_power_landing_mask,id)){
 				
 				emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-				explosion(graciete_get_hero_id(),id,land_explosion_radius,g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
-				g_graciete_power_landing[id]=false
+				explosion(graciete_get_hero_id(),id,
+						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
+				UnSet_BitVar(g_graciete_power_landing_mask,id);
 				g_graciete_land_power[id]=0.0
 				
 				
@@ -185,17 +176,17 @@ public CmdStart(id, uc_handle)
 	if((flags  & FL_INGROUND2)){
 		if((button & IN_DUCK)&&(button&IN_JUMP))
 		{
-			if(g_graciete_jetpack_loaded[id]){
+			if(Get_BitVar(g_graciete_jetpack_loaded_mask, id)){
 				graciete_jump(id)
 			}
 		}
 		return FMRES_IGNORED
 	}
-	if(g_graciete_leaped[id]){
+	if(Get_BitVar(g_graciete_leaped_mask, id)){
 		
 			if((weapon==CSW_KNIFE)&&(button & IN_ATTACK2)&&(button & IN_DUCK)){
-				if(!g_graciete_power_landing[id]){
-					g_graciete_power_landing[id]=true
+				if(!Get_BitVar(g_graciete_power_landing_mask, id)){
+					Set_BitVar(g_graciete_power_landing_mask, id);
 					charge_user(id)
 					return FMRES_IGNORED
 				}
@@ -205,17 +196,17 @@ public CmdStart(id, uc_handle)
 }
 public graciete_jump(id){
 	
-	emit_sound(id, CHAN_WEAPON, jp_jump, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	g_graciete_jetpack_loaded[id]=false;
-	g_graciete_leaped[id]=true;	
-	JetpackJump(id, floatround(jet_velocity));
-	set_task(float(jet_cooldown),"load_jetpack",id+GRACIETE_LOAD_TASKID);
+	emit_sound(id, CHAN_WEAPON, jp_jump, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	UnSet_BitVar(g_graciete_jetpack_loaded_mask, id);
+	Set_BitVar(g_graciete_leaped_mask, id);
+	JetpackJump(id, floatround(cvar_val(float, pcvar_jet_velocity)));
+	set_task(float(cvar_val(num, pcvar_jet_cooldown)),"load_jetpack",id+GRACIETE_LOAD_TASKID);
 	
 }
 public load_jetpack(id){
-	id-=GRACIETE_LOAD_TASKID
+	id-=GRACIETE_LOAD_TASKID;
 	
-	g_graciete_jetpack_loaded[id]=true;	
+	Set_BitVar(g_graciete_jetpack_loaded_mask, id);	
 	
 	
 }
@@ -229,17 +220,19 @@ public charge_task(id){
 
 		return
 	}
-	if(!g_graciete_power_landing[id]){
+	if(!Get_BitVar(g_graciete_power_landing_mask, id)){
 		return
 	}	
-	set_user_gravity(id,g_graciete_base_gravity[id]*jet_stomp_grav_mult);
+	set_user_gravity(id,g_graciete_base_gravity[id]*
+			cvar_val(float, pcvar_jet_stomp_grav_mult));
 	
 	new hud_msg[128];
-	g_graciete_land_power[id]=floatmin(jet_max_power,floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
+	g_graciete_land_power[id]=floatmin(
+				cvar_val(float, pcvar_jet_max_power),floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])
 	);
 	client_print(id,print_center,"%s",hud_msg)
-	if(g_graciete_power_landing[id]){
+	if(Get_BitVar(g_graciete_power_landing_mask, id)){
 		set_task(GRACIETE_CHARGE_PERIOD,"charge_task",id+GRACIETE_CHARGE_TASKID)
 	}
 	

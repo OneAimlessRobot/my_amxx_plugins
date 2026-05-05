@@ -20,19 +20,20 @@ stock SHINOBU_POISON_KICK_DELAYED_TASKID
 // GLOBAL VARIABLES
 new gHeroName[]="Shinobu Kocho"
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
-new Float:shinobu_cooldown
-new Float:shinobu_poison_kick_delay
 new gHeroID
 new dmg_source_name_short_poison_kick[SAFE_BUFFER_SIZE+1]="poison_kick"
 new dmg_source_name_long_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
 new custom_weapon_damage_sharp_poison_kick_id
 
-new Float:shinobu_poison_kick_stun_time,
-	Float:shinobu_poison_kick_stun_speed,
-	shinobu_max_health
+new pcvar_shinobu_poison_kick_stun_time,
+	pcvar_shinobu_poison_kick_stun_speed,
+	pcvar_shinobu_max_health
+
+new pcvar_shinobu_cooldown
+new pcvar_shinobu_poison_kick_delay
 
 
-new shinobu_poison_kick_knockback
+new pcvar_shinobu_poison_kick_knockback
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -41,12 +42,12 @@ public plugin_init()
 	register_plugin("SUPERHERO Shinobu Kocho","1.0",AUTHOR)
 	
 	register_cvar("shinobu_level", "19" )
-	register_cvar("shinobu_cooldown", "10.0" )
-	register_cvar("shinobu_max_health", "100" )
-	register_cvar("shinobu_poison_kick_delay","2.0")
-	register_cvar("shinobu_poison_kick_stun_time", "10.0" )
-	register_cvar("shinobu_poison_kick_stun_speed", "110.0" )
-	register_cvar("shinobu_poison_kick_knockback","1")
+	pcvar_shinobu_cooldown = register_cvar("shinobu_cooldown", "10.0" )
+	pcvar_shinobu_max_health = register_cvar("shinobu_max_health", "100" )
+	pcvar_shinobu_poison_kick_delay = register_cvar("shinobu_poison_kick_delay","2.0")
+	pcvar_shinobu_poison_kick_stun_time = register_cvar("shinobu_poison_kick_stun_time", "10.0" )
+	pcvar_shinobu_poison_kick_stun_speed = register_cvar("shinobu_poison_kick_stun_speed", "110.0" )
+	pcvar_shinobu_poison_kick_knockback = register_cvar("shinobu_poison_kick_knockback","1")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -58,11 +59,9 @@ public plugin_init()
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
 
-	
 	register_srvcmd("shinobu_kd", "shinobu_kd")
 	shRegKeyDown(gHeroName, "shinobu_kd")
 
-	register_forward(FM_PlayerPreThink, "shinobu_prethink")
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
@@ -95,7 +94,8 @@ public sh_client_spawn(id)
 
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		
-		set_user_health(id,min(get_user_health(id),shinobu_max_health))
+		set_user_health(id,min(get_user_health(id),
+					cvar_val(num, pcvar_shinobu_max_health)))
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -119,7 +119,9 @@ public Shinobu_Limit_HP(msgid, dest, id)
 	the_health_to_be_set = get_msg_arg_int(1)
 
 	static the_resulting_health;
-	the_resulting_health=min(shinobu_max_health,the_health_to_be_set)
+	the_resulting_health=min(
+					cvar_val(num, pcvar_shinobu_max_health),
+						the_health_to_be_set)
 	
 	set_user_health(id,the_resulting_health)
 	
@@ -158,12 +160,12 @@ public _shinobu_get_hero_id(iPlugins, iParms){
 }
 public _shinobu_get_max_hp(iPlugins, iParms){
 	
-	return shinobu_max_health
+	return cvar_val(num, pcvar_shinobu_max_health)
 	
 }
 public Float:_shinobu_get_cooldown(iPlugins, iParms){
 	
-	return shinobu_cooldown
+	return cvar_val(float, pcvar_shinobu_cooldown)
 	
 }
 shinobu_damage_interaction(attacker,victim){
@@ -195,23 +197,6 @@ public shinobuDamage(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	shinobu_cooldown = get_cvar_float("shinobu_cooldown")
-	shinobu_max_health = get_cvar_num("shinobu_max_health")
-	shinobu_poison_kick_delay = get_cvar_float("shinobu_poison_kick_delay")
-	shinobu_poison_kick_stun_time = get_cvar_float("shinobu_poison_kick_stun_time")
-	shinobu_poison_kick_stun_speed = get_cvar_float("shinobu_poison_kick_stun_speed")
-	shinobu_poison_kick_knockback = get_cvar_num("shinobu_poison_kick_knockback")
-
-}
-//----------------------------------------------------------------------------------------------
 public shinobu_init()
 {
 	// First Argument is an id
@@ -222,7 +207,7 @@ public shinobu_init()
 	if(sh_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
-		set_user_health(id,min(sh_get_max_hp(id),shinobu_max_health))
+		set_user_health(id,min(sh_get_max_hp(id),cvar_val(num, pcvar_shinobu_max_health)))
 		manual_cloak_check(id)
 	}
 	else{
@@ -251,7 +236,8 @@ shinobu_burst_damage_task_bootstrap(attacker,tg,is_attacking=1){
 		}
 		return
 	}
-	set_task(shinobu_poison_kick_delay, "shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
+	set_task(cvar_val(float, pcvar_shinobu_poison_kick_delay),
+				"shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
 
 }
 public shinobu_burst_damage_task(array[],attacker){
@@ -284,14 +270,16 @@ public shinobu_burst_damage_task(array[],attacker){
 	
 	if(!is_user_alive(tg)) return
 
-	user_slap(tg, shinobu_poison_kick_knockback,0)
+	user_slap(tg, cvar_val(num, pcvar_shinobu_poison_kick_knockback),0)
 
 	generic_heal(heal_hp_hud_msg_sync,attacker,float(damage_to_cause),_,PURPLE,_,_,50,1,1)
 
 
 	sh_screen_shake(tg, 14.0, 14.0, 14.0)
 	
-	sh_set_stun(tg,shinobu_poison_kick_stun_time,shinobu_poison_kick_stun_speed)
+	sh_set_stun(tg,
+		cvar_val(float, pcvar_shinobu_poison_kick_stun_time),
+		cvar_val(float, pcvar_shinobu_poison_kick_stun_speed))
 	
 	sh_bleed_user(tg,attacker,BLEED_MINI,gHeroID,0)
 	
@@ -335,26 +323,11 @@ public shinobu_kd()
 		}
 		return PLUGIN_HANDLED
 	}
-	sh_chat_message(id,shinobu_get_hero_id(),"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
+	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
 	shinobu_teleport_init(id)
 	return PLUGIN_HANDLED
 }
 
-//----------------------------------------------------------------------------------------------
-public shinobu_prethink(id)
-{
-	if ( sh_is_active()){
-		if(is_user_alive(id)){
-			if(sh_user_has_hero(id,gHeroID) ){
-				static weapon;
-				weapon=cs_get_user_weapon(id)
-				if((weapon==CSW_KNIFE)||(weapon==SHINOBU_WEAPON_CLASSID)) {
-					set_pev(id, pev_flTimeStepSound, 999)
-					}
-				}
-			}
-	}
-}
 public death()
 {
 	if(!sh_is_active()) return

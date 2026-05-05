@@ -1,6 +1,6 @@
-
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
 #include "../my_include/my_author_header.inc"
@@ -16,8 +16,8 @@ new gNumBalls[SH_MAXSLOTS+1]
 new round_win[] = "shmod/roberto_carlos/cheers/round_win.wav"
 new round_lose[] = "shmod/roberto_carlos/cheers/round_lose.wav"
 
-new num_balls
-new Float:ball_cooldown
+new pcvar_num_balls
+new pcvar_ball_cooldown
 
 
 //----------------------------------------------------------------------------------------------
@@ -32,8 +32,10 @@ public plugin_init()
 	register_srvcmd("roberto_kd", "roberto_kd")
 	shRegKeyDown(gHeroName, "roberto_kd")
 	register_cvar("roberto_level", "8")
-	register_cvar("roberto_num_balls", "100")
-	register_cvar("roberto_ball_cooldown", "1.0")
+	
+	pcvar_num_balls = register_cvar("roberto_num_balls", "100")
+	pcvar_ball_cooldown = register_cvar("roberto_ball_cooldown", "1.0")
+	
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
 	register_srvcmd("roberto_init", "roberto_init")
 	shRegHeroInit(gHeroName, "roberto_init")
@@ -78,7 +80,7 @@ public ev_SendAudio(){
 				if(!playing_win_sound){
 					playing_win_sound=true
 					emit_sound(id, CHAN_VOICE, round_win, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-					sh_chat_message(id,roberto_get_hero_id(),"Your team has won!");
+					sh_chat_message(id,gHeroID,"Your team has won!");
 				
 				}
 				else{
@@ -92,7 +94,7 @@ public ev_SendAudio(){
 				if(!playing_lose_sound){
 					playing_lose_sound=true
 					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-					sh_chat_message(id,roberto_get_hero_id(),"Your team has lost!");
+					sh_chat_message(id,gHeroID,"Your team has lost!");
 				}
 				else{
 					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -152,7 +154,7 @@ public roberto_init()
 	new id=str_to_num(temp)
 	
 	if(sh_user_has_hero(id,gHeroID) ){
-		gNumBalls[id]=num_balls
+		gNumBalls[id]=cvar_val(num, pcvar_num_balls)
 		
 	}
 	else{
@@ -160,19 +162,6 @@ public roberto_init()
 	}
 	
 	
-}
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	num_balls=get_cvar_num("roberto_num_balls")
-	ball_cooldown=get_cvar_float("roberto_ball_cooldown")
 }
 
 public roberto_kd()
@@ -198,7 +187,7 @@ public roberto_kd()
 		return PLUGIN_HANDLED
 	}
 	
-	ultimateTimer(id, ball_cooldown)
+	ultimateTimer(id, cvar_val(float, pcvar_ball_cooldown))
 	kick_the_ball(id)
 	
 	return PLUGIN_HANDLED
@@ -209,7 +198,7 @@ public sh_client_spawn(id)
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-			gNumBalls[id]=num_balls
+			gNumBalls[id] = cvar_val(num, pcvar_num_balls)
 		}
 	}
 	

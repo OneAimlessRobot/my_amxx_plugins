@@ -10,7 +10,7 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="Zenitsu Agatsuma"
-new gChargeModeEngaged[SH_MAXSLOTS+1]
+new gChargeModeEngagedMask = 0
 
 new gHeroID
 
@@ -44,13 +44,18 @@ public plugin_natives(){
 
 public _zenitsu_get_charge_mode_engaged(iPlugins, iParms){
 	new id=get_param(1)
-	return gChargeModeEngaged[id]
+	return Get_BitVar(gChargeModeEngagedMask,id)
 	
 }
 public _zenitsu_set_charge_mode_engaged(iPlugins, iParms){
 	new id=get_param(1)
 	new value=get_param(2)
-	gChargeModeEngaged[id]=value
+	if(value){
+		Set_BitVar(gChargeModeEngagedMask,id)
+	}
+	else{
+		UnSet_BitVar(gChargeModeEngagedMask,id)
+	}
 	
 }
 
@@ -69,7 +74,7 @@ public sh_client_spawn(id)
 
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		
-		gChargeModeEngaged[id]=0
+		UnSet_BitVar(gChargeModeEngagedMask,id)
 
 	}
 }
@@ -82,7 +87,7 @@ public zenitsu_init()
 	new id=str_to_num(temp)
 	
 	
-	gChargeModeEngaged[id]=0
+	UnSet_BitVar(gChargeModeEngagedMask,id)
 }
 //----------------------------------------------------------------------------------------------
 public zenitsu_kd()
@@ -99,7 +104,7 @@ public zenitsu_kd()
 
 	// Let them know they already used their ultimate if they have
 	
-	if(gChargeModeEngaged[id]){
+	if(Get_BitVar(gChargeModeEngagedMask,id)){
 
 		if(!is_user_bot(id)){
 			playSoundDenySelect(id)
@@ -114,8 +119,8 @@ public zenitsu_kd()
 		}
 		return PLUGIN_HANDLED
 	}
-	gChargeModeEngaged[id]=1
-	sh_sleep_user(id,id,zenitsu_get_hero_id())
+	Set_BitVar(gChargeModeEngagedMask,id)
+	sh_sleep_user(id,id,gHeroID)
 	return PLUGIN_HANDLED
 }
 
@@ -130,7 +135,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			result=DMG_FWD_BLOCK
 		}
 	}
-	if(gChargeModeEngaged[attacker]&&sh_user_has_hero(attacker,gHeroID) ){
+	if(Get_BitVar(gChargeModeEngagedMask, attacker)&&sh_user_has_hero(attacker,gHeroID) ){
 
 		damage*=2
 	}

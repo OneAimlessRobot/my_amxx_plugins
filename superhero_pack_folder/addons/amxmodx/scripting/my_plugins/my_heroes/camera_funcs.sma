@@ -14,24 +14,26 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 const m_iFOV = 363;
-new camera_loaded[SH_MAXSLOTS+1]
+new camera_loaded_mask = 0xFFFF
 
-new camera_armed[SH_MAXSLOTS+1]
-new bool:looking_with_camera[SH_MAXSLOTS+1]
-new disarmer_on[SH_MAXSLOTS+1]
+new camera_planting_mask = 0
+new camera_armed_mask = 0
+new looking_with_camera_mask = 0
+new disarmer_on_mask = 0
+
 new Float:curr_charge[SH_MAXSLOTS+1]
 new Float:curr_disarm_charge[SH_MAXSLOTS+1]
-new Float:min_charge_time
 new user_camera[SH_MAXSLOTS+1]
 new Float:camera_charge[SH_MAXSLOTS+1]
-new Float:camera_hp
-new camman_camera_maxalpha
-new camman_camera_minalpha
-new Float:max_camera_charge
 stock ham_is_here=0
 stock ham_is_on=0
 stock HamHook:the_damage_ham_hook;
 
+new pcvar_min_charge_time
+new pcvar_camman_camera_maxalpha
+new pcvar_camman_camera_minalpha
+new pcvar_max_camera_charge
+new pcvar_camera_hp
 
 stock CAMERA_CHARGE_TASKID,
 		CAMERA_DISARM_TASKID
@@ -40,14 +42,13 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
-	
-	arrayset(camera_loaded,true,SH_MAXSLOTS+1)
-	register_cvar("camman_camera_min_charge_time", "1.0")
-	register_cvar("camman_camera_health", "100.0")
-	register_cvar("camman_camera_charge", "1000.0")
-	register_cvar("camman_camera_maxalpha", "100.0")
-	register_cvar("camman_camera_minalpha", "1000.0")
+
+	pcvar_min_charge_time = register_cvar("camman_camera_min_charge_time", "1.0")
+	pcvar_camera_hp = register_cvar("camman_camera_health", "100.0")
+	pcvar_max_camera_charge = register_cvar("camman_camera_charge", "1000.0")
+	pcvar_camman_camera_maxalpha = register_cvar("camman_camera_maxalpha", "100.0")
+	pcvar_camman_camera_minalpha = register_cvar("camman_camera_minalpha", "1000.0")
+
 	register_event("DeathMsg","death","a")
 	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
@@ -71,6 +72,8 @@ public plugin_natives(){
 	register_native( "camera_get_camera_disarming","_camera_get_camera_disarming",0)
 	register_native( "camera_get_camera_disarmer_on","_camera_get_camera_disarmer_on",0)
 	register_native( "camera_set_camera_disarmer_on","_camera_set_camera_disarmer_on",0)
+	register_native( "camera_set_camera_planting", "_camera_set_camera_planting",0)
+	register_native( "camera_get_camera_planting", "_camera_get_camera_planting",0)
 	
 	
 }
@@ -114,7 +117,7 @@ public camera_controls(id, uc_handle)
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 
-	if(!looking_with_camera[id]) return FMRES_IGNORED
+	if(!Get_BitVar(looking_with_camera_mask, id)) return FMRES_IGNORED
 	
 	new Float:zoom;
 	pev(id,pev_fov,zoom)
@@ -164,21 +167,45 @@ public _camera_clear_user_camera(iPlugins,iParams){
 public _camera_get_camera_charging(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return curr_charge[id]<min_charge_time;
+	return curr_charge[id]<cvar_val(float, pcvar_min_charge_time);
 	
 	
 }
 public _camera_get_camera_disarming(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return curr_disarm_charge[id]<min_charge_time;
+	return curr_disarm_charge[id]<cvar_val(float, pcvar_min_charge_time);
 	
 	
 }
 public _camera_get_camera_armed(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return camera_armed[id]
+	return Get_BitVar(camera_armed_mask,id)
+	
+	
+}
+public _camera_set_camera_planting(iPlugins,iParams){
+	
+	new id=get_param(1);
+	new value_to_set=get_param(2)
+	if(value_to_set){
+
+		Set_BitVar(camera_planting_mask,id)
+	}
+	else{
+
+		UnSet_BitVar(camera_planting_mask,id)
+	}
+	
+	
+}
+public _camera_get_camera_planting(iPlugins,iParams){
+	
+	new id=get_param(1);
+
+	return Get_BitVar(camera_planting_mask,id)
+
 	
 	
 }
@@ -192,7 +219,7 @@ public _camera_get_camera_planted(iPlugins,iParams){
 public _camera_get_camera_disarmer_on(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return disarmer_on[id]
+	return Get_BitVar(disarmer_on_mask,id)
 	
 	
 }
@@ -200,50 +227,58 @@ public _camera_set_camera_disarmer_on(iPlugins,iParams){
 	
 	new id=get_param(1);
 	new value_to_set=get_param(2)
-	disarmer_on[id]=value_to_set
+	if(value_to_set){
+
+		Set_BitVar(disarmer_on_mask,id)
+	}
+	else{
+
+		UnSet_BitVar(disarmer_on_mask,id)
+	}
 	
 	
 }
 public _camera_get_camera_loaded(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return camera_loaded[id]
+	
+	return Get_BitVar(camera_loaded_mask,id)
 	
 	
 }
 public _toggle_camera_view(iPlugins,iParams){
 	new id=get_param(1);
 	
-	if(!looking_with_camera[id]){
+	if(!Get_BitVar(looking_with_camera_mask, id)){
 		new camera_id=user_camera[id]
 		
 		if(!pev_valid(camera_id)){
 			
 			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
-			looking_with_camera[id]=false;
+			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 			
 		}
 		else if(!pev(camera_id, pev_iuser1)){
 			
 			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
-			looking_with_camera[id]=false;
+			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 			
 		}
 		
-		new Float: battery_pct=camera_charge[id]*(100.0/max_camera_charge)
+		new Float: battery_pct=camera_charge[id]*(100.0/cvar_val(float, pcvar_max_camera_charge))
 		if(battery_pct<25.0){
 			
 			
 			
 			sh_chat_message(id,camman_get_hero_id(),"Not enough charge (%0.2f)! Replant your camera!",battery_pct);
-			looking_with_camera[id]=false
+			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 		}
 		new Float: cam_health;
 		pev(camera_id,pev_health,cam_health)
-		looking_with_camera[id]=true
+		Set_BitVar(looking_with_camera_mask, id)
 		attach_view(id,camera_id)
 		set_pev(camera_id, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 		sh_chat_message(id,camman_get_hero_id(),"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
@@ -252,7 +287,7 @@ public _toggle_camera_view(iPlugins,iParams){
 	}
 	else {
 		
-		looking_with_camera[id]=false;
+		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
 		attach_view(id,id)
@@ -272,13 +307,13 @@ public plant_camera(id)
 	
 	set_pev(NewEnt, pev_classname, CAMERA_CLASSNAME)
 	engfunc(EngFunc_SetModel, NewEnt, CAMERA_WORLD_MDL)
-	float_to_str(camera_hp+1000.0,health,127)
+	float_to_str(cvar_val(float, pcvar_camera_hp)+1000.0,health,127)
 	num_to_str(2,material,127)
 	DispatchKeyValue( NewEnt, "material", material );
 	DispatchKeyValue( NewEnt, "health", health );
 	
 	
-	set_pev(NewEnt, pev_health, camera_hp+1000.0)
+	set_pev(NewEnt, pev_health, cvar_val(float, pcvar_camera_hp)+1000.0)
 	engfunc(EngFunc_SetSize, NewEnt, Float:{-HALF_CAMERA_SIZE, -HALF_CAMERA_SIZE, -HALF_CAMERA_SIZE},
 									Float:{HALF_CAMERA_SIZE, HALF_CAMERA_SIZE, HALF_CAMERA_SIZE})
 	set_pev(NewEnt, pev_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
@@ -293,13 +328,15 @@ public plant_camera(id)
 	set_camera_aiming(id,NewEnt)
 	set_pev(NewEnt, pev_euser1, id)
 	camman_set_has_camera(id,1)
+	UnSet_BitVar(camera_planting_mask,id);
+	UnSet_BitVar(disarmer_on_mask,id)
 	user_camera[id]=NewEnt
 	
 	new parm[2];
 	parm[0]=id;
 	parm[1]=NewEnt
 	
-	camera_charge[id]=max_camera_charge
+	camera_charge[id]=cvar_val(float, pcvar_max_camera_charge)
 	set_pev(NewEnt, pev_nextthink, get_gametime() + CAMERA_ARMING_TIME)
 	return PLUGIN_HANDLED
 }
@@ -390,11 +427,6 @@ public laser_on_player_think(ent){
 	
 	if ( !ent||!pev_valid(ent)) return
 	
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, charsmax(classname))
-	
-	if ( !equal(classname, CAMERA_CLASSNAME) ) return
 	new owner=pev(ent,pev_euser1)
 	
 	static Float:vTrace[3], iHit, tr
@@ -438,7 +470,7 @@ public camera_think(ent)
 			emit_sound(ent,CHAN_VOICE, CAMERA_BOOTED_SFX, 1.0, 0.0, 0, PITCH_NORM)
 			set_pev(ent,pev_rendermode,kRenderTransAlpha)
 			set_pev(ent,pev_renderfx,kRenderFxGlowShell)
-			new alpha=camman_camera_maxalpha
+			new alpha=cvar_val(num, pcvar_camman_camera_maxalpha)
 			set_pev(ent,pev_renderamt,float(alpha))
 			if(!ham_is_here){
 				the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","Camera_Damage",_,true)
@@ -458,9 +490,9 @@ public camera_think(ent)
 		case 1:{
 
 			new alpha=pev(ent,pev_renderamt)
-			alpha=max(alpha-ALPHA_INC,camman_camera_minalpha)
+			alpha=max(alpha-ALPHA_INC,cvar_val(num, pcvar_camman_camera_minalpha))
 			set_pev(ent,pev_renderamt,float(alpha))
-			if(alpha==camman_camera_minalpha){
+			if(alpha==cvar_val(num, pcvar_camman_camera_minalpha)){
 				
 				set_pev(ent,pev_iuser2,2)
 			}
@@ -479,7 +511,7 @@ public camera_think(ent)
 				remove_camera(owner);
 				return FMRES_IGNORED
 			}
-			if(looking_with_camera[owner]){
+			if(Get_BitVar(looking_with_camera_mask,owner)){
 				camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
 				laser_on_player_think(ent)
 				update_camera_aiming(owner,ent)
@@ -497,27 +529,11 @@ public remove_camera(pid){
 	
 	remove_entity(user_camera[pid])
 
-	camera_armed[pid]=false
-	camera_loaded[pid]=true
+	UnSet_BitVar(looking_with_camera_mask,pid);
+	UnSet_BitVar(camera_armed_mask,pid);
+	UnSet_BitVar(camera_planting_mask,pid);
+	Set_BitVar(camera_loaded_mask,pid)
 	user_camera[pid]=-1
-}
-
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	
-	min_charge_time=get_cvar_float("camman_camera_min_charge_time")
-	camera_hp=get_cvar_float("camman_camera_health")
-	max_camera_charge=get_cvar_float("camman_camera_charge")
-	camman_camera_maxalpha=get_cvar_num("camman_camera_maxalpha")
-	camman_camera_minalpha=get_cvar_num("camman_camera_minalpha")
 }
 
 
@@ -531,7 +547,7 @@ public disarm_task(id){
 	if(!is_user_bot(id)){
 		curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],CAMERA_DISARM_PERIOD)
 		formatex(hud_msg,127,"[SH]: DISARMING CAMERA: %0.2f^n",
-		100.0*(curr_disarm_charge[id]/min_charge_time)
+		100.0*(curr_disarm_charge[id]/cvar_val(float, pcvar_min_charge_time))
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
@@ -559,7 +575,7 @@ public disarm_task(id){
 public _camera_disarm_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
-	disarmer_on[id]=1
+	Set_BitVar(disarmer_on_mask,id)
 	curr_disarm_charge[id]=0.0
 	set_task(CAMERA_DISARM_PERIOD,"disarm_task",id+CAMERA_DISARM_TASKID)
 	
@@ -587,15 +603,16 @@ public _user_can_plant_camera(iPlugins,iParams){
 	if ( fraction >= 1.0 ) {
 		return 0
 	}
-	return !looking_with_camera[id]
+	return !Get_BitVar(looking_with_camera_mask,id)
 }
 public _camera_charge_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
 	
-	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED;
 	
-	camera_armed[id]=1
+	Set_BitVar(camera_planting_mask,id);
+	Set_BitVar(camera_armed_mask,id);
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID)
@@ -712,32 +729,37 @@ bool:camman_update_disarming(id){
 public charge_task(id){
 	id-=CAMERA_CHARGE_TASKID
 	if(!hasRoundStarted()){
-		camera_armed[id]=0
+		UnSet_BitVar(camera_armed_mask, id)
 		return
 	
 	}
 	if(!is_user_alive(id)){
-		camera_armed[id]=0		
+		UnSet_BitVar(camera_armed_mask, id)
 		return
 	
 	}
 	if(!sh_user_has_hero(id,camman_get_hero_id())){
-		camera_armed[id]=0
+		UnSet_BitVar(camera_armed_mask, id)
 		return
 	
+	}
+	if(!Get_BitVar(camera_planting_mask,id)){
+		
+		UnSet_BitVar(camera_armed_mask, id)
+		return
 	}
 	curr_charge[id]=floatadd(curr_charge[id],CAMERA_CHARGE_PERIOD)
 
 	if(!is_user_bot(id)){
 		new hud_msg[128];
 		formatex(hud_msg,127,"[SH]: Curr camera charge: %0.2f^n",
-		100.0*(curr_charge[id]/min_charge_time)
+		100.0*(curr_charge[id]/cvar_val(float, pcvar_min_charge_time))
 		);
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new bool:result=camman_update_planting(id)
 	if(!result){
-		camera_armed[id]=0
+		UnSet_BitVar(camera_armed_mask, id)
 		return	
 		
 	}
@@ -783,7 +805,7 @@ public death()
 	if(sh_user_has_hero(id,camman_get_hero_id())&&is_user_connected(id)){
 		
 		
-		looking_with_camera[id]=false;
+		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
 		attach_view(id,id)

@@ -58,7 +58,10 @@ native user_can_plant_camera(id)
 native camera_get_camera_charging(id)
 native camera_charge_camera(id)
 native camera_disarm_camera(id)
+native camera_set_camera_armed(id,value_to_set)
 native camera_clear_user_camera(id)
+native camera_set_camera_planting(id,value_to_set)
+native camera_get_camera_planting(id)
 native camera_get_camera_disarming(id)
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

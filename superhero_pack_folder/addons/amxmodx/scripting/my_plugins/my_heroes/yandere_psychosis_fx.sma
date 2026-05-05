@@ -14,21 +14,29 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock YANDERE_PSYCHOSIS_TASKID
+new pcvar_psychosis_cooldown
+new pcvar_zoom
+new pcvar_psychosis_time
+new pcvar_psychosis_add_ap
+new pcvar_psychosis_dmg_cushion
+new pcvar_psychosis_degen_health_threshold
+new pcvar_psychosis_degen_pct
+
+new YANDERE_PSYCHOSIS_TASKID
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_event("DeathMsg","on_death_psychosis","a")
-	register_cvar("yandere_psychosis_time", "5")
-	register_cvar("yandere_psychosis_zoom", "5")
-	register_cvar("yandere_psychosis_add_ap", "5")
-	register_cvar("yandere_psychosis_dmg_cushion", "5")
-	register_cvar("yandere_psychosis_cooldown", "30")
-	register_cvar("yandere_psychosis_cooldown", "30")
-	register_cvar("yandere_psychosis_degen_mult", "30")
-	register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
+	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
+	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
+	pcvar_psychosis_degen_pct = register_cvar("yandere_psychosis_degen_pct", "20.0")
+	pcvar_psychosis_add_ap = register_cvar("yandere_psychosis_add_ap", "5")
+	pcvar_psychosis_dmg_cushion = register_cvar("yandere_psychosis_dmg_cushion", "5")
+	pcvar_psychosis_cooldown = register_cvar("yandere_psychosis_cooldown", "30")
+	pcvar_psychosis_degen_health_threshold = register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
+	RegisterHam(Ham_Think,"player","Ham_Think_Post",1,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
@@ -53,7 +61,8 @@ if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==atta
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
 if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
 	
-	damage=1.0+damage- (damage*psychosis_dmg_cushion)
+	damage=1.0+damage- (damage*
+		cvar_val(float, pcvar_psychosis_dmg_cushion))
 	SetHamParamFloat(4, damage);
 }
 return HAM_IGNORED
@@ -71,30 +80,13 @@ public plugin_natives(){
 
 
 }
-public plugin_cfg(){
-
-
-	loadCVARS()
-}
-loadCVARS(){
-
-
-zoom=get_cvar_num("yandere_psychosis_zoom")
-psychosis_time=get_cvar_float("yandere_psychosis_time")
-psychosis_cooldown=get_cvar_num("yandere_psychosis_cooldown")
-psychosis_dmg_cushion=get_cvar_float("yandere_psychosis_dmg_cushion")
-psychosis_degen_pct=get_cvar_float("yandere_psychosis_degen_pct");
-psychosis_degen_health_threshold=get_cvar_float("yandere_psychosis_degen_health_threshold")
-psychosis_add_ap=get_cvar_num("yandere_psychosis_add_ap")
-
-}
 public Float:_yandere_get_psychosis_degen_pct(iPlugin,iParams){
 
-	return psychosis_degen_pct
+	return cvar_val(float, pcvar_psychosis_degen_pct)
 }
 public Float:_yandere_get_psychosis_degen_health_threshold(iPlugin,iParams){
 
-	return psychosis_degen_health_threshold
+	return cvar_val(float, pcvar_psychosis_degen_health_threshold)
 }
 
 
@@ -121,7 +113,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 
 }
 
-public client_PostThink(id) {
+public Ham_Think_Post(id) {
 	
 	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) { 
 		return
@@ -232,13 +224,13 @@ message_end()
 }
 psychosis_on(id){
 
-gPsychosisTime[id]=psychosis_time
-ultimateTimer(id, psychosis_cooldown * 1.0)
+gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
+ultimateTimer(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
 UnSet_BitVar(g_yandere_leaped_mask,id);
 Set_BitVar(gIsPsychosisMask,id);
-cs_set_user_armor(id,cs_get_user_armor(id)+psychosis_add_ap,CS_ARMOR_VESTHELM)
+cs_set_user_armor(id,cs_get_user_armor(id)+cvar_val(num, pcvar_psychosis_add_ap),CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
-write_byte(zoom)
+write_byte(cvar_val(num, pcvar_zoom))
 message_end()
 
 }

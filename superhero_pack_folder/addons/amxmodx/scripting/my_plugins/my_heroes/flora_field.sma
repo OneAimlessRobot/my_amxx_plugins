@@ -34,23 +34,21 @@ stock g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
 
-stock Float:field_cooldown
-stock Float:field_radius
-stock Float:field_core_radius
-stock Float:flora_field_time
-stock Float:flora_charge_time
-stock Float:flora_dmg_coeff
-stock Float:flora_core_heal_mult
-stock Float:flora_field_heal_mult
-stock Float:flora_stun_time
-stock Float:flora_invis_alpha_max
-stock Float:flora_base_stun_speed
-stock Float:flora_invis_alpha_min
-stock Float:flora_invis_alpha_dec_per_lvl
-stock Float:flora_teleport_crouch_time
-stock Float:flora_teleport_reach_max_distance
-stock flora_field_start_ammount
-stock flora_field_max_active_ammount
+new pcvar_field_cooldown
+new pcvar_field_radius
+new pcvar_field_core_radius
+new pcvar_flora_field_time
+new pcvar_flora_charge_time
+new pcvar_flora_dmg_coeff
+new pcvar_flora_field_heal_mult
+new pcvar_flora_stun_time
+new pcvar_flora_invis_alpha_max
+new pcvar_flora_base_stun_speed
+new pcvar_flora_invis_alpha_min
+new pcvar_flora_invis_alpha_dec_per_lvl
+new pcvar_flora_teleport_reach_max_distance
+new pcvar_flora_field_start_ammount
+new pcvar_flora_field_max_active_ammount
 
 
 new field_drain_wpn_id
@@ -69,24 +67,21 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	register_cvar("flora_field_max_active_ammount", "10" )
-	register_cvar("flora_field_start_ammount", "10" )
-	register_cvar("flora_field_cooldown" ,"9.0" )
-	register_cvar("flora_field_radius" ,"1000.0")
-	register_cvar("flora_field_core_radius" ,"1000.0")
-	register_cvar("flora_field_time" ,"30.0" )
-	register_cvar("flora_dmg_coeff" ,"0.5" )
-	register_cvar("flora_core_heal_mult" ,"0.5" )
-	register_cvar("flora_field_heal_mult" ,"0.5" )
-	register_cvar("flora_dmg_coeff" ,"0.5" )
-	register_cvar("flora_charge_time" ,"30.0" )
-	register_cvar("flora_stun_time" ,"30.0" )
-	register_cvar("flora_teleport_crouch_time" ,"2.5" )
-	register_cvar("flora_teleport_reach_max_distance" ,"1000.0" )
-	register_cvar("flora_invis_alpha_max" ,"0.5" )
-	register_cvar("flora_invis_alpha_min" ,"0.1" )
-	register_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
-	register_cvar("flora_base_stun_speed","210.0")
+	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
+	pcvar_flora_field_start_ammount = register_cvar("flora_field_start_ammount", "10" )
+	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
+	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
+	pcvar_field_core_radius = register_cvar("flora_field_core_radius" ,"1000.0")
+	pcvar_flora_field_time = register_cvar("flora_field_time" ,"30.0" )
+	pcvar_flora_dmg_coeff = register_cvar("flora_dmg_coeff" ,"0.5" )
+	pcvar_flora_field_heal_mult = register_cvar("flora_field_heal_mult" ,"0.5" )
+	pcvar_flora_charge_time = register_cvar("flora_charge_time" ,"30.0" )
+	pcvar_flora_stun_time = register_cvar("flora_stun_time" ,"30.0" )
+	pcvar_flora_teleport_reach_max_distance = register_cvar("flora_teleport_reach_max_distance" ,"1000.0" )
+	pcvar_flora_invis_alpha_max = register_cvar("flora_invis_alpha_max" ,"0.5" )
+	pcvar_flora_invis_alpha_min = register_cvar("flora_invis_alpha_min" ,"0.1" )
+	pcvar_flora_invis_alpha_dec_per_lvl = register_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
+	pcvar_flora_base_stun_speed = register_cvar("flora_base_stun_speed","210.0")
 
  
 	field_drain_wpn_id=sh_log_custom_damage_source(
@@ -157,7 +152,9 @@ public _flora_inc_user_num_active_fields(iPlugin,iParams){
 	new id=get_param(1)
 	new value=get_param(2)
 
-	g_flora_num_of_active_fields[id]=((g_flora_num_of_active_fields[id]+value)>=flora_field_max_active_ammount)? flora_field_max_active_ammount:g_flora_num_of_active_fields[id]+value
+	g_flora_num_of_active_fields[id]=((g_flora_num_of_active_fields[id]+value)>=
+		cvar_val(num,pcvar_flora_field_max_active_ammount))?
+		cvar_val(num,pcvar_flora_field_max_active_ammount):g_flora_num_of_active_fields[id]+value
 
 }
 public _field_uncharge_user(iPlugin,iParams){
@@ -175,17 +172,17 @@ public _field_loaded(iPlugin,iParams){
 }
 public _flora_max_fields(iPlugins, iParams){
 	
-	return flora_field_max_active_ammount
+	return cvar_val(num,pcvar_flora_field_max_active_ammount)
 	
 }
 public _flora_start_fields(iPlugins, iParams){
 	
-	return flora_field_start_ammount
+	return cvar_val(num,pcvar_flora_field_start_ammount)
 	
 }
 public Float:_flora_get_cooldown(iPlugins, iParams){
 	
-	return field_cooldown
+	return cvar_val(float,pcvar_field_cooldown)
 	
 }
 public _clear_user_fields(iPlugin,iParams){
@@ -244,29 +241,6 @@ public _flora_get_prev_inside(iPlugin,iParams){
 
 
 }
-public plugin_cfg(){
-
-	loadCVARS();
-}
-public loadCVARS(){
-	flora_field_start_ammount=get_cvar_num("flora_field_start_ammount")
-	flora_field_max_active_ammount=get_cvar_num("flora_field_max_active_ammount")
-	field_cooldown=get_cvar_float("flora_field_cooldown");
-	field_radius=get_cvar_float("flora_field_radius");
-	field_core_radius=get_cvar_float("flora_field_core_radius");
-	flora_field_time=get_cvar_float("flora_field_time")
-	flora_stun_time=get_cvar_float("flora_stun_time")
-	flora_charge_time=get_cvar_float("flora_charge_time")
-	flora_dmg_coeff=get_cvar_float("flora_dmg_coeff")
-	flora_core_heal_mult=get_cvar_float("flora_core_heal_mult")
-	flora_field_heal_mult=get_cvar_float("flora_field_heal_mult")
-	flora_invis_alpha_max=get_cvar_float("flora_invis_alpha_max")
-	flora_invis_alpha_min=get_cvar_float("flora_invis_alpha_min")
-	flora_invis_alpha_dec_per_lvl=get_cvar_float("flora_invis_alpha_dec_per_lvl")
-	flora_teleport_reach_max_distance=get_cvar_float("flora_teleport_reach_max_distance")+field_radius
-	flora_teleport_crouch_time=get_cvar_float("flora_teleport_crouch_time")
-	flora_base_stun_speed=get_cvar_float("flora_base_stun_speed")
-}
 Float:get_player_alpha(id){
 	
 	new Float:alphaMult=1.0;
@@ -276,7 +250,11 @@ Float:get_player_alpha(id){
 			player_lvl=sh_get_user_lvl(id)
 			hero_lvl=flora_get_hero_lvl()
 			lvl_diff=player_lvl-hero_lvl
-			alphaMult=floatmax(flora_invis_alpha_min,flora_invis_alpha_max-(float(lvl_diff)*flora_invis_alpha_dec_per_lvl))
+			alphaMult=floatmax(
+				cvar_val(float, pcvar_flora_invis_alpha_min),
+				cvar_val(float, pcvar_flora_invis_alpha_max)-
+				(float(lvl_diff)*
+				cvar_val(float, pcvar_flora_invis_alpha_dec_per_lvl)))
 		}
 	}
 	return alphaMult
@@ -341,7 +319,9 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 			return -1
 	
 	}
-	new Float:distance_to_contain=floatmin(flora_teleport_reach_max_distance,floatmax(distance,field_radius*2.0))
+	new Float:distance_to_contain=floatmin(
+		cvar_val(float,pcvar_flora_teleport_reach_max_distance),floatmax(distance,
+				cvar_val(float,pcvar_field_radius)*2.0))
 	
 	
 	new Float:pos[3]
@@ -414,7 +394,8 @@ public flora_checks(task_id){
 		
 		if(g_flora_curr_inside[id]!=field_id){
 			g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>flora_sheltered_values:0?1.0:0.0))
-							*floatpower(flora_field_heal_mult,float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
+							*floatpower(
+							cvar_val(float,pcvar_flora_field_heal_mult),float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
 
 			g_flora_prev_inside[id]=g_flora_curr_inside[id]
 			g_flora_curr_inside[id]=g_flora_sheltered_value[id]<=OUTSIDE?-1:field_id
@@ -468,9 +449,9 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	while(grenada) {
 			pev(grenada,pev_origin,field_pos)
 			new Float:distance=vector_distance(pos,field_pos)
-			if(distance<field_radius){
+			if(distance<cvar_val(float,pcvar_field_radius)){
 				field_id=grenada;
-				if(distance<field_core_radius){
+				if(distance<cvar_val(float,pcvar_field_core_radius)){
 					return DUNGEON_DWELLER
 				}
 				return SHELTERED
@@ -541,8 +522,8 @@ public _form_field(iPlugin,iParams)
 	new Float:fl_vecminsx[3]
 	new Float:fl_vecmaxsx[3]
 	for (new i=0;i<3;i++){
-		fl_vecminsx[i]=-field_core_radius
-		fl_vecmaxsx[i]=field_core_radius
+		fl_vecminsx[i]=-cvar_val(float,pcvar_field_core_radius)
+		fl_vecmaxsx[i]=cvar_val(float,pcvar_field_core_radius)
 	
 	}
 	entity_set_vector(Ent, EV_VEC_mins,fl_vecminsx)
@@ -596,10 +577,12 @@ public field_deploy_task(id,field_id){
 	flora_inc_user_num_active_fields(id,1)
 	
 	client_print(id,print_center,"You have %d fields left!",flora_get_user_num_fields(id))
-	g_flora_field_cooldown[id]=field_cooldown
-	set_task(FLORA_CHARGE_PERIOD,"cooldown_update_task",id+FLORA_COOLDOWN_TASKID,"", 0,  "a",floatround(field_cooldown/FLORA_CHARGE_PERIOD)+1)
+	g_flora_field_cooldown[id]=cvar_val(float,pcvar_field_cooldown)
+	set_task(FLORA_CHARGE_PERIOD,"cooldown_update_task",id+FLORA_COOLDOWN_TASKID,"", 0,  "a",
+			floatround(cvar_val(float,pcvar_field_cooldown)/FLORA_CHARGE_PERIOD)+1)
 	
-	entity_set_float(field_id,EV_FL_fuser2,floatadd(flora_field_time,FIELD_ACTIVE_TIME_BUFFER))
+	entity_set_float(field_id,EV_FL_fuser2,floatadd(
+			cvar_val(float,pcvar_flora_field_time),FIELD_ACTIVE_TIME_BUFFER))
 	g_flora_curr_charging[id]=-1
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -629,7 +612,7 @@ public apply_teleport(id,field_inside) {
 			entity_set_vector( id, EV_VEC_origin, other_field_origin );
 			emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			static entlist[33];
-			new numfound = find_sphere_class(field_id,"player", field_radius ,entlist, 32);
+			new numfound = find_sphere_class(field_id,"player", cvar_val(float,pcvar_field_radius) ,entlist, 32);
 
 			for( new i= 0;(i< numfound);i++){
 			
@@ -717,9 +700,9 @@ public field_think(ent)
 	}
 	else{//60
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
-		make_shockwave(ent_pos,field_radius,{255, 255, 0},_,_,_,_,60)
-		make_shockwave(ent_pos,field_core_radius,{255, 128, 0},_,_,_,_,60)
-		new numfound = find_sphere_class(ent,"player", field_radius ,entlist, 32);
+		make_shockwave(ent_pos,cvar_val(float,pcvar_field_radius),{255, 255, 0},_,_,_,_,60)
+		make_shockwave(ent_pos,cvar_val(float,pcvar_field_core_radius),{255, 128, 0},_,_,_,_,60)
+		new numfound = find_sphere_class(ent,"player", cvar_val(float,pcvar_field_radius) ,entlist, 32);
 
 		for( new i= 0;(i< numfound);i++){
 		
@@ -741,7 +724,7 @@ public field_think(ent)
 				continue
 			}
 			if(g_flora_sheltered_value[owner]>OUTSIDE){
-				new Float:fdamage=floatmin(float(get_user_health(owner)) , floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,flora_dmg_coeff*g_flora_curr_dmg_mult[owner]),0.99)))
+				new Float:fdamage=floatmin(float(get_user_health(owner)) , floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,cvar_val(float,pcvar_flora_dmg_coeff)*g_flora_curr_dmg_mult[owner]),0.99)))
 				new Float: needs_health=float(sh_get_max_hp(owner)-get_user_health(owner))
 				new actual_damage=floatround(floatmax(0.0+(g_flora_sheltered_value[owner]>SHELTERED?1.0:0.0),floatmin(needs_health-1.0,fdamage)))
 								
@@ -753,13 +736,13 @@ public field_think(ent)
 				
 				if(actual_damage>0){
 
-					sh_set_stun(pid,flora_stun_time*g_flora_curr_dmg_mult[owner],flora_base_stun_speed/g_flora_curr_dmg_mult[owner])
+					sh_set_stun(pid,cvar_val(float,pcvar_flora_stun_time)*g_flora_curr_dmg_mult[owner],cvar_val(float,pcvar_flora_base_stun_speed)/g_flora_curr_dmg_mult[owner])
 				
 				}
 				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1)
 				set_damage_icon(pid,2,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]])
 				unset_damage_icon(pid,DMG_ICON_POISON)
-				remove_glow_user(pid,flora_stun_time*g_flora_curr_dmg_mult[owner])
+				remove_glow_user(pid,cvar_val(float,pcvar_flora_stun_time)*g_flora_curr_dmg_mult[owner])
 				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}
@@ -848,12 +831,12 @@ public charge_iteration(owner,field_id){
 	
 	new hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))
-	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/flora_charge_time)*100.0);
+	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/cvar_val(float,pcvar_flora_charge_time))*100.0);
 	client_print(owner,print_center,"%s",hud_msg)
 	
 	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
-	if(entity_get_float(field_id,EV_FL_fuser1)>flora_charge_time){
+	if(entity_get_float(field_id,EV_FL_fuser1)>cvar_val(float,pcvar_flora_charge_time)){
 		//set deployed status
 		entity_set_int(field_id,EV_INT_iuser1,1)
 		field_deploy_task(owner,field_id)
