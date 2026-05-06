@@ -17,7 +17,7 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Yowai"
-new g_hits[SH_MAXSLOTS+1]
+new g_hits[SH_MAXSLOTS+1] = {0, ...}
 new g_yowai_mode_mask = 0
 new g_max_hits_player[SH_MAXSLOTS+1]
 

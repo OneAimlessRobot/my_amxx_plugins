@@ -246,6 +246,21 @@ public adriano_damage(id)
 	}
 	return PLUGIN_CONTINUE
 }
+
+public sh_round_start(){
+
+	for(new id=1;id<sh_maxplayers()+1;id++){
+
+		if(!is_user_alive(id)) return
+
+		if ( sh_user_has_hero(id,gHeroID) ) {
+			if(get_user_maxspeed(id)<g_base_speed[id]){
+				set_user_maxspeed(id,g_base_speed[id])
+			}
+		}
+
+	}
+}
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) )
@@ -301,7 +316,7 @@ public weaponChange(id)
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)&&sh_is_inround()){
+		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()&&!sh_is_freezetime()){
 			set_user_maxspeed(id, g_normal_speed[id])
 		}
 	}
@@ -334,7 +349,6 @@ public sh_client_spawn(id)
 			g_base_speed[id]=base_speed
 			g_normal_radius[id]=base_radius
 			g_normal_speed[id]=0.0
-			sh_reset_max_speed(id)
 		}
 	}
 	

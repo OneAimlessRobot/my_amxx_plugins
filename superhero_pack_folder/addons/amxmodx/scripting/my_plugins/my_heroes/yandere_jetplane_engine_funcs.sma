@@ -25,16 +25,16 @@ Float:max_turn_const,
 Float:stabilizer_mushyness,
 Float:jetplane_fuel,
 Float:jet_innertia_speed_frac;
-new g_jetplane_throttle[SH_MAXSLOTS+1]
-new g_jetplane_airbrakes[SH_MAXSLOTS+1]
-new g_jetplane_leftflapon[SH_MAXSLOTS+1]
-new g_jetplane_rightflapon[SH_MAXSLOTS+1]
-new g_jetplane_upflapon[SH_MAXSLOTS+1]
-new g_jetplane_downflapon[SH_MAXSLOTS+1]
-new g_jetplane_left_rollflapon[SH_MAXSLOTS+1]
-new g_jetplane_right_rollflapon[SH_MAXSLOTS+1]
-new g_jetplane_flying[SH_MAXSLOTS+1];
-new g_jetplane_engine[SH_MAXSLOTS+1];
+new g_jetplane_throttle_mask = 0
+new g_jetplane_airbrakes_mask = 0
+new g_jetplane_leftflapon_mask = 0
+new g_jetplane_rightflapon_mask = 0
+new g_jetplane_upflapon_mask = 0
+new g_jetplane_downflapon_mask = 0
+new g_jetplane_left_rollflapon_mask = 0
+new g_jetplane_right_rollflapon_mask = 0
+new g_jetplane_flying_mask = 0
+new g_jetplane_engine_mask = 0
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -136,70 +136,82 @@ public Float:_jet_get_stabilizer_mushyness(iPlugins,iParams){
 }
 public _set_jet_left_rollflapon(iPlugins,iParams){
 	new id=get_param(1)
-	new on_or_off=get_param(2)
-	g_jetplane_left_rollflapon[id]=on_or_off
+	new on_or_off=get_param(2);
+	Assign_BitVar( g_jetplane_left_rollflapon_mask,id, on_or_off)
+
 }
 public _get_jet_left_rollflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_left_rollflapon[id]
+	return Get_BitVar(g_jetplane_left_rollflapon_mask, id)
 }
 
 public _set_jet_right_rollflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_right_rollflapon[id]=on_or_off
+	
+	Assign_BitVar( g_jetplane_right_rollflapon_mask,id,on_or_off)
+
+	
 }
 public _get_jet_right_rollflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_right_rollflapon[id]
+	return Get_BitVar(g_jetplane_right_rollflapon_mask,id)
 }
 
 
 public _set_jet_leftflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_leftflapon[id]=on_or_off
+
+	Assign_BitVar( g_jetplane_leftflapon_mask,id, on_or_off)
+
 }
 public _get_jet_leftflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_leftflapon[id]
+	return Get_BitVar(g_jetplane_leftflapon_mask,id)
 }
 
 public _set_jet_rightflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_rightflapon[id]=on_or_off
+
+	Assign_BitVar( g_jetplane_rightflapon_mask,id, on_or_off)
+
 }
 public _get_jet_rightflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_rightflapon[id]
+	return Get_BitVar(g_jetplane_rightflapon_mask,id)
 }
 
 
 public _set_jet_upflapon(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_upflapon[id]=on_or_off
+	
+	Assign_BitVar( g_jetplane_upflapon_mask,id, on_or_off)
+
 }
 public _get_jet_upflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_upflapon[id]
+	return Get_BitVar(g_jetplane_upflapon_mask,id)
 }
 
 public _set_jet_downflapon(iPlugins,iParams){
 	new id=get_param(1)
-	new on_or_off=get_param(2)
-	g_jetplane_downflapon[id]=on_or_off
+	new on_or_off=get_param(2);
+	
+	Assign_BitVar( g_jetplane_downflapon_mask,id,on_or_off)
+
 }
 public _get_jet_downflapon(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_downflapon[id]
+	return Get_BitVar(g_jetplane_downflapon_mask,id)
 }
 
 
@@ -210,42 +222,51 @@ public _get_jet_downflapon(iPlugins,iParams){
 public _set_jet_throttle(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_throttle[id]=on_or_off
+	
+	Assign_BitVar(g_jetplane_throttle_mask,id,on_or_off)
+
 }
 public _get_jet_throttle(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_throttle[id]
+	return Get_BitVar(g_jetplane_throttle_mask,id)
 }
 public _get_jet_flying(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_flying[id]
+	return Get_BitVar(g_jetplane_flying_mask,id)
 }
 public _set_jet_engine(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_engine[id]=on_or_off
+	
+	Assign_BitVar( g_jetplane_engine_mask,id, on_or_off)
+
 }
 public _get_jet_engine(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_engine[id]
+	return Get_BitVar(g_jetplane_engine_mask,id)
 }
 public _set_jet_flying(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_flying[id]=on_or_off
+	
+	Assign_BitVar( g_jetplane_flying_mask,id, on_or_off)
+
+
 }
 public _set_jet_airbrakes(iPlugins,iParams){
 	new id=get_param(1)
 	new on_or_off=get_param(2)
-	g_jetplane_airbrakes[id]=on_or_off
+	
+	Assign_BitVar(g_jetplane_airbrakes_mask,id, on_or_off)
+
 }
 public _get_jet_airbrakes(iPlugins,iParams){
 	new id=get_param(1)
 
-	return g_jetplane_airbrakes[id]
+	return Get_BitVar(g_jetplane_airbrakes_mask,id)
 }
 public Float:_get_jet_speed(iPlugins,iParams){
 	return jetplane_speed
@@ -312,15 +333,15 @@ public OnCmdStart(id,uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	new old_button= pev(id,pev_oldbuttons);
 	if((button & IN_RELOAD)&&!(old_button & IN_RELOAD)){
-			g_jetplane_engine[id]=!g_jetplane_engine[id];
+			Assign_BitVar(g_jetplane_engine_mask,id,!Get_BitVar(g_jetplane_engine_mask,id))
 	}
-	g_jetplane_airbrakes[id]=(button &  IN_DUCK)
-	g_jetplane_upflapon[id]=(button & IN_FORWARD)
-	g_jetplane_downflapon[id]=(button &  IN_BACK)
-	g_jetplane_leftflapon[id]=(button & IN_LEFT)
-	g_jetplane_rightflapon[id]=(button &  IN_RIGHT)
-	g_jetplane_left_rollflapon[id]=(button & IN_MOVELEFT)
-	g_jetplane_right_rollflapon[id]=(button &  IN_MOVERIGHT)
+	Assign_BitVar(g_jetplane_airbrakes_mask, id, (button &  IN_DUCK));
+	Assign_BitVar(g_jetplane_upflapon_mask, id ,(button & IN_FORWARD));
+	Assign_BitVar(g_jetplane_downflapon_mask, id ,(button &  IN_BACK));
+	Assign_BitVar(g_jetplane_leftflapon_mask, id ,(button & IN_LEFT));
+	Assign_BitVar(g_jetplane_rightflapon_mask, id ,(button &  IN_RIGHT));
+	Assign_BitVar(g_jetplane_left_rollflapon_mask, id ,(button & IN_MOVELEFT));
+	Assign_BitVar(g_jetplane_right_rollflapon_mask, id ,(button &  IN_MOVERIGHT));
 	if((button & IN_FORWARD)){
 		
 		button&=~IN_FORWARD
@@ -351,25 +372,25 @@ public OnCmdStart(id,uc_handle)
 	}
 
 	if(!get_jet_engine(id)||(get_user_fuel_ammount(id) < fuel_spend)){
-		if(g_jetplane_flying[id]){
+		if(Get_BitVar(g_jetplane_flying_mask,id)){
 				sh_chat_message(id,yandere_get_hero_id(),"Jetplane too weak! Forcing a landing...");
-				g_jetplane_flying[id]=0;
+				Assign_BitVar(g_jetplane_flying_mask,id,false_for_macro);
 		}
 	}
 	else if((get_user_fuel_ammount(id) > (jetplane_fuel*0.25))&&get_jet_engine(id)){
-		if(!g_jetplane_flying[id]){
+		if(!Get_BitVar(g_jetplane_flying_mask,id)){
 		
 			sh_chat_message(id,yandere_get_hero_id(),"Jetplane is okay now! Ready for take off!");
-			g_jetplane_flying[id]=1;
+			Assign_BitVar(g_jetplane_flying_mask,id,true_for_macro);
 		}
 	}
-	if(g_jetplane_flying[id]){
+	if(Get_BitVar(g_jetplane_flying_mask,id)){
 		
-		g_jetplane_throttle[id]=(button & IN_JUMP)
+		Assign_BitVar(g_jetplane_throttle_mask, id, (button & IN_JUMP));
 		if((button & IN_JUMP)){
 			
 			button&=~IN_JUMP
-			set_user_fuel_ammount(id,floatmax(0.0,get_user_fuel_ammount(id)-(fuel_spend+((JETPLANE_THOTTLE_FUEL_SPEND_MULT*float(g_jetplane_throttle[id]))*fuel_spend))))
+			set_user_fuel_ammount(id,floatmax(0.0,get_user_fuel_ammount(id)-(fuel_spend+((JETPLANE_THOTTLE_FUEL_SPEND_MULT*fuel_spend)))))
 		}
 	
 	}

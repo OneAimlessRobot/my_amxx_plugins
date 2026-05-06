@@ -198,8 +198,7 @@ public yandere_init()
 	new id=str_to_num(temp)
 
 	if(sh_user_has_hero(id,gHeroID) ){
-		
-		sh_reset_max_speed(id)
+	
 		gNormalSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
 		gBaseSpeed[id]=cvar_val(float,pcvar_base_extra_speed);
 		UnSet_BitVar(gPlayedSoundMask,id)
@@ -234,7 +233,7 @@ return -1;
 }
 public yandere_sentence_loop(id){
 	
-	if ( !sh_is_active() || sh_is_freezetime() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ||!sh_is_inround()) return
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(sh_is_active()&&is_user_alive(i)&&sh_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
@@ -296,7 +295,7 @@ for(new i=1;i< sh_maxplayers()+1;i++){
 	}
 	sh_get_player_counts(i,1,g_mates_alive[i],g_mates_dead[i])
 	new bool:can_transform= (get_playersnum(0)>=cvar_val(num,pcvar_min_players))&&(g_mates_alive[i]<=0)
-	if(can_transform && !Get_BitVar(gSuperAngryMask,i)){
+	if(can_transform && !Get_BitVar(gSuperAngryMask,i) && sh_is_inround() &&!sh_is_freezetime()){
 
 		Set_BitVar(gTransTimerStartedMask,i)
 
@@ -308,6 +307,9 @@ for(new i=1;i< sh_maxplayers()+1;i++){
 	}
 	
 	update_stats(i)
+	if(!sh_is_freezetime()&&!sh_get_stun(i)){
+		set_user_maxspeed(i,gNormalSpeed[i])
+	}
 }
 
 
@@ -377,7 +379,7 @@ public yandere_timer_transform(id){
 		if(Get_BitVar(gTransTimerStartedMask,id)){
 
 			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
-			if(gTransTimer[id]<=0.0){
+			if((gTransTimer[id]<=0.0)){
 				
 				Set_BitVar(gSuperAngryMask,id)
 				update_stats(id)
@@ -434,8 +436,22 @@ degen_iter_period=get_cvar_float("yandere_degen_iter_period")
 set_task( degen_iter_period, "yandere_sentence_loop", _, _, _, "b")
 
 }
+public sh_round_start(){
+
+	for(new id=1;id<sh_maxplayers()+1;id++){
+
+		if(!is_user_alive(id)) return
+
+		if ( sh_user_has_hero(id,gHeroID) ) {
+			if(get_user_maxspeed(id)<gNormalSpeed[id]){
+				set_user_maxspeed(id,gNormalSpeed[id])
+			}
+		}
+
+	}
+}
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
+public sh_client_spawn(id, bool:newRound)
 {	if(is_user_alive(id) && sh_is_active()){
 		g_is_cursed_masks[id]=0
 		if ( sh_user_has_hero(id,gHeroID) ) {
@@ -453,8 +469,12 @@ public sh_client_spawn(id)
 			}
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			if(!newRound&&(get_user_maxspeed(id)<gBaseSpeed[id])){
+				set_user_maxspeed(id,gBaseSpeed[id])
+			}
 		}
 		notify_yanderes_about_team_life(id)
+		
 	}
 	
 }
@@ -649,7 +669,6 @@ public sh_round_end(){
 		if(is_user_alive(i)){
 			if(sh_user_has_hero(i,gHeroID) ){
 				jet_destroy(i)
-				
 			}
 			
 		}
@@ -718,6 +737,7 @@ killyandere(id,bool:dropping=false){
 		}
 		UnSet_BitVar(gSuperAngryMask,id)
 		sh_reset_min_gravity(id)
+		sh_reset_max_speed(id)
 		
 		
 	}
@@ -751,7 +771,7 @@ public weaponChange(id)
 	new  wpnid = get_user_weapon(id)
 
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ((get_user_maxspeed(id) < gNormalSpeed[id])&&!sh_get_stun(id)&&sh_is_inround()){
+		if ((get_user_maxspeed(id) < gNormalSpeed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()){
 			set_user_maxspeed(id, gNormalSpeed[id])
 		}
 	}

@@ -23,14 +23,14 @@
 
 
 
-new g_jetplane_loaded[SH_MAXSLOTS+1];
-new g_jetplane_armed[SH_MAXSLOTS+1];
-new g_jetplane_deployed[SH_MAXSLOTS+1];
+new g_jetplane_loaded_mask = 0xFFFF
+new g_jetplane_armed_mask = 0
+new g_jetplane_deployed_mask = 0
+new g_jetplane_trail_engaged_mask = 0
+new g_jetplane_sound_on_mask = 0
 new g_jetplane[SH_MAXSLOTS+1];
-new g_jetplane_sound_on[SH_MAXSLOTS+1];
 new Float:g_jetplane_turn_data[SH_MAXSLOTS+1][4];
 new Float:g_jetplane_telemetry_data[SH_MAXSLOTS+1][4];
-new g_jetplane_trail_engaged[SH_MAXSLOTS+1]
 new camera[SH_MAXSLOTS+1]
 new Float:jetplane_cooldown,
 Float:jetplane_hp;
@@ -64,7 +64,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_enable_gravity", "0")
 	register_cvar("yandere_jetplane_enable_air_drag", "1")
 	register_cvar("yandere_jetplane_enable_speed_limiter", "1")
-	arrayset(g_jetplane_loaded,1,SH_MAXSLOTS+1)
 	hud_sync_jetplane=CreateHudSyncObj()
 	register_think(JETPLANE_FUSELAGE_CLASSNAME, "jet_think")
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
@@ -149,7 +148,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(pev_valid(g_jetplane[id])!=2){
 		return
 	}
-	if(!g_jetplane_deployed[id]){
+	if(!Get_BitVar(g_jetplane_deployed_mask, id)){
 		return
 	}
 	ExecuteHam(Ham_TakeDamage, g_jetplane[id], damage_entity, attacker, damage_to_do, 0);
@@ -163,14 +162,14 @@ public Float:_jet_get_think_period(iPlugin,iParams){
 public _jet_loaded(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_jetplane_loaded[id]
+	return Get_BitVar(g_jetplane_loaded_mask, id)
 	
 	
 }
 public _jet_deployed(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_jetplane_deployed[id]
+	return Get_BitVar(g_jetplane_deployed_mask, id)
 	
 	
 }
@@ -185,7 +184,7 @@ public _jet_charge_user(iPlugin, iParams){
 	if(!sh_user_has_hero(id,yandere_get_hero_id())) return
 
 
-	if(!g_jetplane_loaded[id]){
+	if(!Get_BitVar(g_jetplane_loaded_mask, id)){
 		
 		sh_chat_message(id,yandere_get_hero_id(),"Jet not loaded")
 		return
@@ -195,8 +194,8 @@ public _jet_charge_user(iPlugin, iParams){
 	
 	entity_get_vector(id, EV_VEC_origin , Origin)
 
-	g_jetplane_loaded[id]=0
-	g_jetplane_armed[id]=0
+	UnSet_BitVar(g_jetplane_loaded_mask, id);
+	UnSet_BitVar(g_jetplane_armed_mask, id);
 	new material[128]
 	new health[128]	
 	g_jetplane[id] = create_entity( "func_breakable" );
@@ -236,7 +235,7 @@ public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,yandere_get_hero_id())) return HAM_IGNORED
 	
-	if(!g_jetplane_deployed[this]) return HAM_IGNORED
+	if(!Get_BitVar(g_jetplane_deployed_mask, this)) return HAM_IGNORED
 	
 	damage=0.0;
 	return HAM_SUPERCEDE
@@ -287,8 +286,8 @@ public _jet_uncharge_user(iPlugin,iParams){
 }
 uncharge_user(id){
 	
-	if(!g_jetplane_armed[id]){
-		g_jetplane_loaded[id]=1
+	if(!Get_BitVar(g_jetplane_armed_mask, id)){
+		Set_BitVar(g_jetplane_loaded_mask, id)
 	}
 	if(pev_valid(g_jetplane[id])==2){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -301,9 +300,9 @@ uncharge_user(id){
 public _reset_jet_user(iPlugin,iParams){
 	
 	new id= get_param(1)
-	g_jetplane_loaded[id]=true;
-	g_jetplane_armed[id]=false
-	g_jetplane_deployed[id]=false;
+	Set_BitVar(g_jetplane_loaded_mask, id);
+	UnSet_BitVar(g_jetplane_armed_mask, id);
+	UnSet_BitVar(g_jetplane_deployed_mask, id);
 	if(is_valid_ent(g_jetplane[id])){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		remove_entity(g_jetplane[id]);
@@ -354,7 +353,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_shells(jetplane_id)
 	reset_jet_rockets(jetplane_id)
 	reset_jet_scans(jetplane_id)
-	g_jetplane_armed[id]=true
+	Set_BitVar(g_jetplane_armed_mask, id)
 	sh_chat_message(attacker,yandere_get_hero_id(),"jet armed!");
 	camera[id] = create_entity("info_target")
 	new Float:origin[3]
@@ -404,14 +403,14 @@ public jet_deploy_task(parm[],id){
 	arrayset(g_jetplane_telemetry_data[attacker],0.0,sizeof g_jetplane_telemetry_data[]);
 	arrayset(g_jetplane_turn_data[attacker],0.0,sizeof g_jetplane_turn_data[]);
 	set_jet_engine(id,1);
-	g_jetplane_trail_engaged[attacker]=0
+	UnSet_BitVar(g_jetplane_trail_engaged_mask, attacker);
 	set_task(JET_SOUND_PERIOD,"jet_sound_task",attacker+JET_SOUND_TASKID)
 	set_pev(jetplane_id, pev_nextthink, get_gametime() + jet_get_think_period())
 }
 public load_jet(id){
-	id-=JET_LOAD_TASKID
+	id-=JET_LOAD_TASKID;
 	
-	g_jetplane_loaded[id]=1;	
+	Set_BitVar(g_jetplane_loaded_mask,id);
 	sh_chat_message(id,yandere_get_hero_id(),"JET loaded");
 	
 	
@@ -466,7 +465,7 @@ public jet_think(ent)
 
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(owner,yandere_get_hero_id())||!g_jetplane_deployed[owner]){
+	if(!sh_user_has_hero(owner,yandere_get_hero_id())||!Get_BitVar(g_jetplane_deployed_mask,owner)){
 
 		return FMRES_IGNORED
 	}
@@ -481,7 +480,7 @@ public jet_think(ent)
 		}
 		return FMRES_IGNORED
 	}
-	if(g_jetplane_deployed[owner]){
+	if(Get_BitVar(g_jetplane_deployed_mask,owner)){
 		
 		new wpnid=get_user_weapon(owner)
 		if(wpnid!=CSW_KNIFE){
@@ -689,8 +688,7 @@ public jet_think(ent)
 public charge_task(id){
 
 	if(!sh_is_active()||sh_is_freezetime()){
-	
-		uncharge_user(id)
+
 		return
 	
 	}
@@ -721,10 +719,9 @@ public charge_task(id){
 	entity_get_vector(id, EV_VEC_velocity, velocity)
 	entity_set_vector(g_jetplane[id], EV_VEC_velocity,  velocity)
 	
-	
+	set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
 	if(!is_user_bot(id)){
 		new hud_msg[128];
-		set_pev(g_jetplane[id],pev_health,floatmin(jetplane_hp,floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
 		formatex(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
 		client_print(id,print_center,"%s",hud_msg)
 	}
@@ -735,7 +732,7 @@ public charge_task(id){
 	emit_sound(g_jetplane[id], CHAN_ITEM,JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	if((pev(g_jetplane[id],pev_health))>=floatround(jetplane_hp)){
 		
-		g_jetplane_deployed[id]=1;
+		Set_BitVar(g_jetplane_deployed_mask,id);
 		set_pev(g_jetplane[id],pev_health,1000.0+pev(g_jetplane[id],pev_health))
 		jet_deploy_task(parm,id)
 		return
@@ -753,6 +750,7 @@ public sh_round_end(){
 	for (new id=1; id < sh_maxplayers()+1; id++) {
 		if ( is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) {
 			uncharge_user(id)
+			g_jetplane_loaded_mask=0xFFFF
 		}
 	}
 
@@ -763,25 +761,25 @@ public jet_sound_task(id){
 		
 		return
 	}
-	if(!g_jetplane_deployed[owner]){
+	if(!Get_BitVar(g_jetplane_deployed_mask,owner)){
 		
 		return
 	}
 	if(get_jet_engine(owner)&&get_jet_throttle(owner)){
-		g_jetplane_sound_on[owner]=1;
+		Set_BitVar(g_jetplane_sound_on_mask,owner);
 	}
 	else{
-		if(g_jetplane_sound_on[owner]){
+		if(Get_BitVar(g_jetplane_sound_on_mask,owner)){
 		
 			emit_sound(g_jetplane[owner], CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 			emit_sound(g_jetplane[owner], CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 			emit_sound(g_jetplane[owner], CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 			emit_sound(g_jetplane[owner], CHAN_WEAPON, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-			g_jetplane_sound_on[owner]=0;
+			UnSet_BitVar(g_jetplane_sound_on_mask,owner);
 		
 		}
 	}
-	if(g_jetplane_sound_on[owner]){
+	if(Get_BitVar(g_jetplane_sound_on_mask,owner)){
 		new Float:this_jet_speed=get_entity_velocity(g_jetplane[owner])
 		if(this_jet_speed>(get_jet_speed()*0.5)){
 			
@@ -821,14 +819,14 @@ Im tired of polluting my code with shitty checks
 */
 //-----------------------------------------------------------------------------------------------
 engage_user_jet_throttle(owner){
-	if(!g_jetplane_trail_engaged[owner]){
-		g_jetplane_trail_engaged[owner]=1;
+	if(!Get_BitVar(g_jetplane_trail_engaged_mask,owner)){
+		Set_BitVar(g_jetplane_trail_engaged_mask,owner)
 		trail(g_jetplane[owner],PINK,JET_TRAIL_LIFE_INPUT_VALUE,15)
 	}
 }
 disengage_user_jet_throttle(owner){
-	if(g_jetplane_trail_engaged[owner]){
-		g_jetplane_trail_engaged[owner]=0;
+	if(Get_BitVar(g_jetplane_trail_engaged_mask,owner)){
+		UnSet_BitVar(g_jetplane_trail_engaged_mask,owner)
 		kill_all_entity_beams(g_jetplane[owner])
 	}
 }
@@ -840,7 +838,7 @@ public jet_hud_task(id){
 		
 		return
 	}
-	if(!g_jetplane_deployed[owner]){
+	if(!Get_BitVar(g_jetplane_deployed_mask,owner)){
 		
 		return
 	}
@@ -882,7 +880,7 @@ public _jet_destroy(iPlugin,iParams){
 			set_pev(id, pev_takedamage, DAMAGE_YES)
 			set_pev(id, pev_solid, SOLID_SLIDEBOX)
 			sh_set_rendering(id);
-			if(g_jetplane_deployed[id]){
+			if(Get_BitVar(g_jetplane_deployed_mask,id)){
 				new Float:origin[3],Float:plane_orig[3]
 				pev(id,pev_origin,origin)
 				pev(g_jetplane[id],pev_origin,plane_orig)
@@ -903,7 +901,7 @@ public _jet_destroy(iPlugin,iParams){
 		remove_entity(camera[id])
 		camera[id] = 0
 	}
-	g_jetplane_deployed[id]=false;
+	UnSet_BitVar(g_jetplane_deployed_mask,id)
 }
 public _clear_jets(iPlugin,iParams){
 	

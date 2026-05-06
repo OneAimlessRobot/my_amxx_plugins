@@ -36,7 +36,8 @@ public plugin_init(){
 	pcvar_psychosis_dmg_cushion = register_cvar("yandere_psychosis_dmg_cushion", "5")
 	pcvar_psychosis_cooldown = register_cvar("yandere_psychosis_cooldown", "30")
 	pcvar_psychosis_degen_health_threshold = register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
-	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
+	
+	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
@@ -50,7 +51,7 @@ public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
 		if(Get_BitVar(gIsPsychosisMask,id)){
-			yandere_unpsychosis_user(id)
+			unpsychosis_user(id)
 		}
 	}
 	
@@ -113,8 +114,9 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 
 }
 
-public Ham_Think_Post(id) {
-	
+public Ham_Think_Pre(id) {
+	if(!sh_is_active()) return HAM_IGNORED
+
 	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) { 
 		return HAM_IGNORED
 	}
@@ -171,7 +173,20 @@ public psychosis_task(id){
 	set_render_with_color_const(id, PINK,1,255,_,0)
 	remove_glow_user(id,1.0)
 	aura(id,LineColors[PINK])
-
+	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
+		if(is_user_connected(id)){
+			unpsychosis_user(id)
+		}
+		return
+	}
+	if(!Get_BitVar(gIsPsychosisMask,id)){
+		unpsychosis_user(id)
+		return
+	}
+	if(!yandere_get_is_super(id)){
+		unpsychosis_user(id)
+		return
+	}
 	if(!is_user_bot(id)){
 		static hud_msg[SH_HUD_MSG_BUFF_SIZE];
 		static hero_name_arr[MAX_HERO_NAME_LENGTH]

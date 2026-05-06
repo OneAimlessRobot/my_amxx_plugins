@@ -160,7 +160,6 @@ public erica_init()
 	new id=str_to_num(temp)
 	
 	if(sh_user_has_hero(id,gHeroID) ){
-		sh_reset_max_speed(id)
 		prepare_erica(id)
 		Erica_weapons(id)
 		
@@ -207,7 +206,6 @@ public sh_client_spawn(id)
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			Erica_weapons(id)
 			prepare_erica(id)
-			sh_reset_max_speed(id)
 		}
 	}
 	
@@ -224,6 +222,22 @@ public client_disconnected(id){
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id]=0
 	hook_set_hook(id,0)
+}
+
+
+public sh_round_start(){
+
+	for(new id=1;id<sh_maxplayers()+1;id++){
+
+		if(!is_user_alive(id)) return
+
+		if ( sh_user_has_hero(id,gHeroID) ) {
+			if(get_user_maxspeed(id)<g_base_er_speed[id]){
+				set_user_maxspeed(id,g_base_er_speed[id])
+			}
+		}
+
+	}
 }
 add_speed_points(id,Float:damage){
 	
@@ -244,7 +258,7 @@ public weaponChange(id)
 
 	new wpnid = get_user_weapon(id)
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()){
+		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()){
 			set_user_maxspeed(id, g_normal_er_speed[id])
 		}
 	}

@@ -1622,16 +1622,10 @@ initHero(id, heroIndex, mode)
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
 
-	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false	
-	switch(mode){
-		case false:{
-			UnSet_BitVar(gPlayerHasPowerTable[heroIndex],id)
-		}
-		case true:{
+	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false;
+	
+	Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode)
 
-			Set_BitVar(gPlayerHasPowerTable[heroIndex],id)
-		}
-	}
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
 		//If this is called by an added hero they must be restricted

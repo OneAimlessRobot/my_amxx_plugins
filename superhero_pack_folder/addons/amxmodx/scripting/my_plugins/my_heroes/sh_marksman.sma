@@ -44,6 +44,17 @@ new Float:PSG1_DMG_Mult
 new Float:DRAGUNOV_DMG_Mult
 new gMaxAlpha,gAlphaByLvlInc,gMinAlpha
 
+
+new evil_rifle_wpn_id
+new dmg_source_name_short_evil_rifle[SAFE_BUFFER_SIZE+1]="PSG-1"
+new dmg_source_name_long_evil_rifle[SAFE_BUFFER_SIZE+1]="PSG-1"
+
+new good_rifle_wpn_id
+new dmg_source_name_short_good_rifle[SAFE_BUFFER_SIZE+1]="SVD-dragunov"
+new dmg_source_name_long_good_rifle[SAFE_BUFFER_SIZE+1]="SVD-dragunov"
+
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -72,6 +83,17 @@ public plugin_init()
 									"models/shmod/marksman/psg1/v_sg550.mdl",
 									"models/shmod/marksman/psg1/p_sg550.mdl")
 	
+	evil_rifle_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_evil_rifle,
+								dmg_source_name_long_evil_rifle,
+								0)
+
+	good_rifle_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_good_rifle,
+								dmg_source_name_long_good_rifle,
+								0)
 	register_event("Damage", "Marksman_damage", "b", "2!0")
 	
 	MARKSMAN_TASKID=allocate_typed_task_id(player_task)
@@ -127,7 +149,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public marksman_loop(task_id)
 {
-	if(!sh_is_active()||!sh_is_freezetime()) return
+	if(!sh_is_active()||sh_is_freezetime()) return
 
 	for(new id=1;id<sh_maxplayers()+1;id++){
 		if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) continue
@@ -165,13 +187,19 @@ public Marksman_damage(id)
 
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
-		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "SVD-Dragunov", headshot)
-	
+		if (extraDamage > 0){
+			sh_extra_damage(id, attacker, extraDamage,
+						dmg_source_name_short_good_rifle,headshot,_,_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,good_rifle_wpn_id)
+		}
 	}
 	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SG550 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * PSG1_DMG_Mult - damage)
-		if(extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, "PSG-1", headshot)
-			
+		if(extraDamage > 0){
+			sh_extra_damage(id, attacker, extraDamage,
+						dmg_source_name_short_evil_rifle,headshot,_,_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,evil_rifle_wpn_id)
+		}
 	}
 }
 
@@ -185,10 +213,6 @@ public Crouch(id,alpha) {
 	if( !is_user_alive( iPlayer ) ){
 		return FMRES_IGNORED;
 	}
-	
-	static Float: fOrigin[ 3 ];
-	entity_get_vector( iPlayer, EV_VEC_origin, fOrigin );
-	
 	if( !(entity_get_int( iPlayer, EV_INT_flags ) & FL_ONGROUND  )){
 		sh_set_rendering(iPlayer);
 		return FMRES_IGNORED;
@@ -205,7 +229,6 @@ public Crouch(id,alpha) {
 	}
 	else{
 		sh_set_rendering(iPlayer);
-		return FMRES_IGNORED;
 		
 	}
 	

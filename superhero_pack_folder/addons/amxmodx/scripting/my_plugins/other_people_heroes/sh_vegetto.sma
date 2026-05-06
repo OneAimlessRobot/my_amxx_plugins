@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
@@ -795,12 +796,12 @@ public shake_n_stun(id)
 	get_user_origin(id, idOrigin)
 
 	get_players(players, pnum, "a")
-	//expolosione
 
-	// Shake and Stun all alive users in radius inluding self
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
 		if ( !is_user_alive(vic) ) continue
+
+		if ( sh_clients_are_same_team(id,vic) ) continue
 
 		get_user_origin(vic, vicOrigin)
 

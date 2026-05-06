@@ -49,7 +49,7 @@ public plugin_init()
 	pcvar_jet_stomp_grav_mult = register_cvar("graciete_jet_stomp_grav_mult", "8")
 	pcvar_land_explosion_radius = register_cvar("graciete_land_explosion_radius", "8")
 	
-	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
+	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -136,7 +136,9 @@ uncharge_user(id){
 	
 	
 }
-public Ham_Think_Post(id) {
+public Ham_Think_Pre(id) {
+	
+	if(!sh_is_active()) return HAM_IGNORED
 	
 	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return HAM_IGNORED
 

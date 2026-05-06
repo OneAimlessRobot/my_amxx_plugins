@@ -118,6 +118,8 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("DeathMsg","death","a")
 	
+	RegisterHam(Ham_Player_PreThink,"player","ester_step_silent",_,true)
+
 	register_srvcmd("ester_init", "ester_init")
 	shRegHeroInit(gHeroName, "ester_init")
 	register_srvcmd("ester_kd", "ester_kd")
@@ -146,6 +148,22 @@ public plugin_init()
 								dmg_source_name_long_neuroblast,
 								0)
 	
+}
+
+
+//----------------------------------------------------------------------------------------------
+public ester_step_silent(id)
+{
+	if (! sh_is_active()) return
+	if(is_user_alive(id)){
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+			if(sh_user_has_hero(id,gHeroID) ){
+				if (get_user_weapon(id) == CSW_TMP) {
+					entity_set_int(id, EV_INT_flTimeStepSound, 999)
+				}
+			}
+		}
+	}
 }
 ester_collapse(id){
 	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),default_explode_knock_force_magnitude,0)
@@ -270,14 +288,13 @@ public weaponChange(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = get_user_weapon(id)
 	if (wpnid == CSW_TMP) {
 		if(gGunLastDeployed[id]!=wpnid){
 			if(sh_get_user_effect(id)!=METYLPHENIDATE){
 				sh_effect_user_direct(id,id,gHeroID,METYLPHENIDATE);
 			}
 		}
-		set_pev(id, pev_flTimeStepSound, 999.0)
 	}
 	else{
 		if(sh_get_user_effect(id)==METYLPHENIDATE){

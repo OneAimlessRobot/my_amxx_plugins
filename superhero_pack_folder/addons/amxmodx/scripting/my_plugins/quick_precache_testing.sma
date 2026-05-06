@@ -1,7 +1,7 @@
 #include "../include/amxmodx.inc"
 #include "../include/fakemeta.inc"
-#include "my_include/randomx.inc"
 #include "my_include/my_author_header.inc"
+#include "my_include/auxiliar_stuff.inc"
 
 #define PLUGIN "quick precache testing"
 #define VERSION "1.0.0"
@@ -9,6 +9,7 @@
 public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	server_print("Macro test: %d^n",MUL_TWO(8,9))
 }
 
 

@@ -25,14 +25,14 @@ public plugin_init(){
 register_plugin(PLUGIN, VERSION, AUTHOR);
 register_forward(FM_CmdStart, "CmdStart");
 register_event("DeathMsg","on_death_sleeping","a")
-register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
+RegisterHam(Ham_Player_PreThink,"player","Ham_PlayerPreThink",_,true)
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 init_explosion_defaults()
 }
 //https://forums.alliedmods.net/showthread.php?t=258006
-public Fwd_PlayerPreThink(id)
+public Ham_PlayerPreThink(id)
 {
 	if(!sh_is_active()) return FMRES_IGNORED
 
@@ -46,7 +46,7 @@ public Fwd_PlayerPreThink(id)
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	entity_set_vector( id, EV_VEC_v_angle, gKeepAngles[id] )
 	entity_set_int( id, EV_INT_fixangle, 1 )
-	return FMRES_SUPERCEDE
+	return FMRES_IGNORED
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
@@ -79,13 +79,9 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
 	if (!is_user_alive(id)) return FMRES_IGNORED;
-	
-	static button; button= get_uc(uc_handle, UC_Buttons);
-	
-	
+
 	if ( Get_BitVar(gIsAsleepMask,id)) {
-		button &= ~button;
-		set_uc(uc_handle, UC_Buttons, button);
+		set_uc(uc_handle, UC_Buttons, 0);
 		return FMRES_SUPERCEDE
 	}
 	
@@ -184,7 +180,7 @@ public sleep_task(array[1],id){
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
 	remove_glow_user(id,SLEEP_PERIOD)
-	if(Get_BitVar(gIsAsleepMask,id)&&(array[0]<(SLEEP_TIMES+9))){
+	if(Get_BitVar(gIsAsleepMask,id)&&(array[0]<(SLEEP_TIMES))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}

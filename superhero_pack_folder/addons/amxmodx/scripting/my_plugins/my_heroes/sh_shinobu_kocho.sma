@@ -62,6 +62,9 @@ public plugin_init()
 	register_srvcmd("shinobu_kd", "shinobu_kd")
 	shRegKeyDown(gHeroName, "shinobu_kd")
 
+
+	RegisterHam(Ham_Player_PreThink,"player","shinobu_step_silent",_,true)
+
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
@@ -83,6 +86,23 @@ public plugin_natives(){
 	
 }
 
+
+//----------------------------------------------------------------------------------------------
+public shinobu_step_silent(id)
+{
+	if (! sh_is_active()) return
+	if(is_user_alive(id)){
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+			if(sh_user_has_hero(id,gHeroID) ){
+				static wpnid
+				wpnid=get_user_weapon(id)
+				if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
+					entity_set_int(id, EV_INT_flTimeStepSound, 999)
+				}
+			}
+		}
+	}
+}
 
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

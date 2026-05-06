@@ -52,6 +52,7 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 *     and some sounds from http://www.esf-world.com/
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -844,13 +845,15 @@ public shake_n_stun(id)
 
 	get_players(players, pnum, "a")
 
-
-	// Shake and Stun all alive users in radius inluding self
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
 		if ( !is_user_alive(vic) ) continue
 
 		get_user_origin(vic, vicOrigin)
+
+
+		if ( sh_clients_are_same_team(id,vic) ) continue
+
 
 		new distance = get_distance(idOrigin, vicOrigin)
 

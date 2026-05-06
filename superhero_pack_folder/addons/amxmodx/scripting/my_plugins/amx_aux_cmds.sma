@@ -1,13 +1,16 @@
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
+#include "../include/amxconst.inc"
 #include "../include/engine.inc"
 #include "../include/fakemeta.inc"
+#include "../include/xs.inc"
 #include "../include/hamsandwich.inc"
 #include "../include/fun.inc"
 #include "../include/reapi.inc"
 #include "../include/fakemeta.inc"
 #include "../include/cstrike.inc"
 #include "my_include/my_author_header.inc"
+#include "my_include/auxiliar_stuff.inc"
 
 #define PLUGIN "amx aux admin cmds"
 #define VERSION "1.0.0"
@@ -70,13 +73,13 @@ public admin_heal(id,level,cid){
 }
 
 */
-
 enum CMD_IDS{
 
     AUX_CMD_REVIVE_USER=0,
     AUX_CMD_STAGE_MURDER,
     AUX_CMD_STAGE_ASSAULT,
     AUX_CMD_MINIMAP_TRACK,
+    AUX_CMD_STAGE_HIT,
     MAX_CUSTOM_CMD_IDS
 }
 
@@ -96,7 +99,8 @@ new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
     {"amx_revive","amx_revive","Revive a player.",1,ADMIN_LEVEL_A,CMDTARGET_ALLOW_SELF,false,0},
     {"amx_stage_murder","amx_stage_murder","Stage a murder between two players!",2,ADMIN_LEVEL_A,0,false,0},
     {"amx_stage_assault","amx_stage_assault","Make one player damage another!",3,ADMIN_LEVEL_A,0,false,0},
-    {"amx_minimap_track","amx_minimap_track","see where a player is on your radar!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
+    {"amx_minimap_track","amx_minimap_track","see where a player is on your radar!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
+    {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
 
 
 
@@ -290,5 +294,76 @@ public amx_stage_assault(id,level,cid){
     
     console_print(0, "(Shocked gasps) %s just BELIGERANTELY assaulted a player named %s! (%0.2f damage)^n",name,name2,damage)
     log_amx("(Shocked gasps) %s just BELIGERANTELY assaulted a player named (%0.2f damage)%s!^n",name,name2,damage)
+    return PLUGIN_HANDLED
+}
+public amx_stage_hit(id,level,cid){
+
+    if (!cmd_access(id,level,cid,4))
+        return PLUGIN_HANDLED
+
+    new arg[32], arg2[32],arg3[8],arg4[8]
+    read_argv(1,arg,31)
+    read_argv(2,arg2,31)
+    read_argv(3,arg3,8)
+    read_argv(4,arg4,8)
+
+    new player = cmd_target(id,arg,2)
+    
+    if (!player) return PLUGIN_HANDLED
+    
+    new player2 = cmd_target(id,arg2,2)
+    
+    if (!player2) return PLUGIN_HANDLED
+    
+    if(!is_user_alive(player2)){
+        
+        console_print(id,"That player is dead! People are not stupid...^n")
+        return PLUGIN_HANDLED    
+            
+    }
+    new Float:damage=str_to_float(arg3)
+    new hitgroup=str_to_num(arg4)
+
+    if(!is_valid_hitzone(hitgroup)){
+        
+        console_print(id,"The hitzone should be between 0 (and including) and %d (and including)^n",HIT_SHIELD)
+        return PLUGIN_HANDLED    
+    }
+
+    new dmg_entity = create_entity("info_target")
+    if (pev_valid(dmg_entity)!=2){
+        console_print(id,"Error while creating hitter entity!^n")
+        return PLUGIN_HANDLED    
+    }
+    entity_set_string(dmg_entity, EV_SZ_classname, "some_serious_harm")
+    new tr_handle=create_tr2()
+    static Float:origin_1[3],Float:origin_2[3],Float:dir_vec[3]
+
+    entity_get_vector(player2,EV_VEC_origin,origin_2)
+    entity_get_vector(player,EV_VEC_origin,origin_1)
+    entity_set_edict(dmg_entity, EV_ENT_owner,player)
+
+    xs_vec_sub(origin_2,origin_1,dir_vec)
+    xs_vec_normalize(dir_vec,dir_vec)
+    xs_vec_mul_scalar(dir_vec,entity_range(player2,player)*2,dir_vec)
+    
+    set_tr2(tr_handle, TR_pHit, player2);
+    set_tr2(tr_handle, TR_iHitgroup, hitgroup);
+
+    rg_multidmg_clear()
+    ExecuteHamB(Ham_TraceAttack, player2,player,damage,dir_vec, tr_handle, DMG_BULLET)
+    
+    rg_multidmg_apply(dmg_entity,player)
+
+    remove_entity(dmg_entity)
+
+    free_tr2(tr_handle)
+    new name[32]
+    get_user_name(player,name,31)
+    new name2[32]
+    get_user_name(player2,name2,31)
+    
+    console_print(0, "%s just hit %s in hitzone %d, which is %s, with damage %0.2f!^n",name,name2,hitgroup,hitzone_names[hitgroup],damage)
+    log_amx("%s just hit %s in hitzone %d, which is %s, with damage %0.2f!^n",name,name2,hitgroup,hitzone_names[hitgroup],damage)
     return PLUGIN_HANDLED
 }

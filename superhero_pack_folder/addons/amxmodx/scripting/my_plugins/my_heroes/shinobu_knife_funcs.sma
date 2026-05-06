@@ -59,9 +59,6 @@ public on_Knife_Weapon_Change(id)
 
 	new  wpnid = get_user_weapon(id)
 
-	if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
-		set_pev(id, pev_flTimeStepSound, 999.0)
-	}
 	g_shinobu_using_knife[id]=(wpnid == CSW_KNIFE)
 }
 public plugin_natives(){

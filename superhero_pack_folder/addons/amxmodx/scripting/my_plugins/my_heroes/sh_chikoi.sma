@@ -3,9 +3,9 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
-#include "ksun_inc/ksun_global.inc"
 #include "chikoi_inc/chikoi_inc.inc"
 #include "../my_include/my_author_header.inc"
+#include "../my_include/auxiliar_stuff.inc"
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
 
@@ -33,11 +33,11 @@ public plugin_init()
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
-	register_event("Damage", "chikoi_damage", "b", "2!0")
+
+	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	register_event("DeathMsg","death","a")
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,CHIKOI_THE_MAID_PHYSICAL_PROPERTY,1)
-	RegisterHam(Ham_TakeDamage,"player","ham_Chikoi_fallDamage")
 	
 }
 public plugin_natives(){
@@ -54,10 +54,7 @@ public _sh_player_has_chikoi(iPlugin, iParams){
 //----------------------------------------------------------------------------------------------
 public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
 	
-	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID)  ) return HAM_SUPERCEDE
-
 	return HAM_IGNORED
 }
 dmg_message(id, attacker){
@@ -66,25 +63,25 @@ dmg_message(id, attacker){
 	sh_chat_message(id,gHeroID,"%s has killed Chikoi the Maid, the Small Maid, at your service.",attacker_name)
 
 }
-public chikoi_damage(id){
-if ( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
+public chikoi_damage(id, idinflictor, attacker, Float:damage, damagebits){
 
-new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-new headshot = bodypart == HIT_STOMACH ? 1 : 0
-if ( !is_user_connected(attacker)|| attacker==id ) return PLUGIN_CONTINUE
+	
+if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 
-if(headshot){
-
-	set_user_godmode(id,0)
-	sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, headshot,SH_DMG_KILL,_,_,_,_,_,custom_dmg_id)
+if ( damagebits & DMG_FALL && sh_user_has_hero(id,gHeroID)  ){
+	return HAM_SUPERCEDE
 }
-if(weapon==CSW_HEGRENADE){
 
-	return PLUGIN_HANDLED
+static inflictor_classname[64];
+
+entity_get_string(idinflictor,EV_SZ_classname,inflictor_classname,63)
+
+if(equal(inflictor_classname,"grenade")){
+
+	return HAM_SUPERCEDE
 }
-return PLUGIN_CONTINUE
-
+return HAM_IGNORED
 }
 
 public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
@@ -104,24 +101,14 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
+	sh_chat_message(id,gHeroID,"We got hit in the %s",hitzone_names[hitgroup])
 	switch(hitgroup){
-		case HIT_STOMACH:{
+		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
-		}
-		case HIT_HEAD:{
+			set_user_godmode(id,0)
+			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, 1,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_SQUASHED,custom_dmg_id)
 
-			
-			if(!sh_user_has_hero(id,spores_ksun_hero_id())){
-				return HAM_SUPERCEDE
-			}
-		}
-		case HIT_CHEST:{
-
-			
-			if(!sh_user_has_hero(id,spores_ksun_hero_id())){
-				return HAM_SUPERCEDE
-			}
 		}
 		default:{
 			return HAM_SUPERCEDE

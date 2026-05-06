@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "chikoi_inc/chikoi_inc.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
@@ -14,6 +15,7 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "../my_include/auxiliar_stuff.inc"
 
 new pcvar_cooldown
 new pcvar_ksun_kill_type_broadness_level
@@ -77,7 +79,7 @@ public plugin_init()
 	register_srvcmd("ksun_kd", "ksun_kd")
 	shRegKeyDown(gHeroName, "ksun_kd")
 
-	set_task(1.0,"ksun_step_silent",_,_,_,"b")
+	RegisterHam(Ham_Player_PreThink,"player","ksun_step_silent",_,true)
 }
 public plugin_natives(){
 	
@@ -233,18 +235,21 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_IGNORED;
 
 	}
+	if(sh_player_has_chikoi(id)\){
+
+		return HAM_IGNORED;
+
+	}
 	if(sh_clients_are_same_team(id,attacker)){
 
 		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
+	sh_chat_message(id,gHeroID,"We got hit in the %s",hitzone_names[hitgroup])
 	switch(hitgroup){
-		case HIT_STOMACH:{
+		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
-		}
-		case HIT_CHEST:{
-			return HAM_SUPERCEDE
 		}
 		case HIT_HEAD:{
 			return HAM_SUPERCEDE
@@ -465,14 +470,13 @@ public ksun_kd()
 public ksun_step_silent(id)
 {
 	if (! sh_is_active()) return
-	for(new id=1; id<sh_maxplayers()+1;id++){
-
-		if(is_user_alive(id)){
+	if(is_user_alive(id)){
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
 			if(sh_user_has_hero(id,gHeroID) ){
 				new alive=0,dead=0
 				sh_get_player_counts(id,1,alive,dead)
 				if((alive<=0)) {
-					set_pev(id, pev_flTimeStepSound, 999.0)
+					entity_set_int(id, EV_INT_flTimeStepSound, 999)
 				}
 			}
 		}
