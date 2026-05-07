@@ -10,6 +10,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
+#include "../my_include/auxiliar_stuff.inc"
 #include "../my_include/weapons_const.inc"
 
 
@@ -94,6 +95,13 @@ public tranque_thinque(ent){
 	new parm[2]
 	parm[0] = ent
 	parm[1] = owner
+
+	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
+	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
+	vector_to_angle(fl_Velocity, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+
 
 	projectile_air_drag_update_speed(parm,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
 
@@ -397,7 +405,7 @@ launch_dart(id)
 	parm2[0]= id
 	emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-	trail(Ent,dart_hurts?RED:WHITE,3,5)
+	trail(Ent,dart_hurts?RED:WHITE,3,2)
 
 	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
 }
@@ -409,33 +417,49 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 	if(is_user_alive(pTouched))
 	{
-		new Float:origin[3]
+		
+		static Float:origin[3]
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
 		new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
 		if(dart_hurts){
-			new Float:speed
-			new Float:velocity[3]
+			
+			static Float:vic_origin[3],
+				Float:velocity[3],
+				Float:dart_launch_pos[3],
+				Float:trace_vector_direction[3],
+				Float:trace_vector_end[3],
+				Float:speed,
+				hitgroup
+		
 
 
 			entity_get_vector(pToucher,EV_VEC_velocity,velocity);
 			speed=vector_length(velocity);
-			new Float:dart_launch_pos[3]
 			new Float:speed_coeff=(speed/DART_SPEED)
-			new Float:vic_origin[3];
-			new Float:vic_origin_eyes[3];
 			new vic_origin_eyes_int[3];
 			entity_get_vector(pToucher,EV_VEC_vuser1,dart_launch_pos)
-			entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
 			get_user_origin(pTouched,vic_origin_eyes_int,1);
-			IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
 			new Float:distance=vector_distance(vic_origin,dart_launch_pos);
-			new Float:head_distance=vector_distance(vic_origin_eyes,origin);
 			new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
 			new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
 			new Float:damage=normal_damage*speed_coeff;
+			new tr_handle=create_tr2()
+			multiply_3d_vector_by_scalar(velocity,
+							(DART_HEADSHOT_THRESHOLD_DIST*3.0)/speed,trace_vector_direction)
+			add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
+			engfunc(EngFunc_TraceLine,
+				origin,
+				trace_vector_end,
+				0,
+				pToucher,
+				tr_handle
+			)
+			hitgroup = get_tr2(tr_handle, TR_iHitgroup)
+
+			free_tr2(tr_handle)
 			new headshot=0;
-			if(head_distance<DART_HEADSHOT_THRESHOLD_DIST){
+			if(hitgroup==HIT_HEAD){
 
 				headshot=1;
 				damage*=4;

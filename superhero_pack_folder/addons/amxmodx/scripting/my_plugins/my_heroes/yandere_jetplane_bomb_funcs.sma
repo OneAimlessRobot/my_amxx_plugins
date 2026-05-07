@@ -38,7 +38,6 @@ public plugin_init()
 	register_cvar("yandere_jetplane_bomb_ammo", "5")
 	arrayset(has_bomb,1,sizeof(has_bomb))
 	register_forward(FM_CmdStart, "CmdStart");
-	register_think(JETPLANE_FUSELAGE_CLASSNAME,"bomb_reload_taskid")
 	
 	BOMB_RELOAD_TASKID=allocate_typed_task_id(player_task)
 

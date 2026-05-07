@@ -13,6 +13,7 @@
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
 #include "../my_include/my_author_header.inc"
+#include "../my_include/auxiliar_stuff.inc"
 #include "../my_include/weapons_const.inc"
 
 #define PLUGIN_VER "1.0"
@@ -111,6 +112,14 @@ public bulette_thinque(ent){
 
 		}
 	}
+	
+	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
+	
+	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
+	vector_to_angle(fl_Velocity, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+
 	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
@@ -416,7 +425,7 @@ parm2[0]= id
 emit_sound(id, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 create_fired_shot_disk(Origin,id,true)
 
-trail(Ent,ORANGE,6,13,200)
+trail(Ent,ORANGE,6,4,200)
 
 
 entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
@@ -445,34 +454,46 @@ public bulletina_touque_playor(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return
 	
-	new Float:origin[3]
+	static Float:origin[3],
+		Float:vic_origin[3],
+		Float:velocity[3],
+		Float:bullet_launch_pos[3],
+		Float:trace_vector_direction[3],
+		Float:trace_vector_end[3],
+		Float:speed,
+		hitgroup
+		
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 
 	new oid = entity_get_edict(pToucher, EV_ENT_owner)
-	new Float:vic_origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,vic_origin);
-	
-	new Float:speed
-	new Float:velocity[3]
 	
 	
 	entity_get_vector(pToucher,EV_VEC_velocity,velocity);
 	speed=vector_length(velocity);
-	new Float:bullet_launch_pos[3]
 	new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
-	new Float:vic_origin_eyes[3];
-	new vic_origin_eyes_int[3];
 	entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
 	entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-	get_user_origin(pTouched,vic_origin_eyes_int,1);
-	IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
+	new tr_handle=create_tr2()
+	multiply_3d_vector_by_scalar(velocity,
+					(LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0)/speed,trace_vector_direction)
+	add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
+	engfunc(EngFunc_TraceLine,
+		origin,
+		trace_vector_end,
+		0,
+		pToucher,
+		tr_handle
+	)
+	hitgroup = get_tr2(tr_handle, TR_iHitgroup)
+	
+	free_tr2(tr_handle)
 	new Float:distance=vector_distance(vic_origin,bullet_launch_pos);
-	new Float:head_distance=vector_distance(vic_origin_eyes,origin);
 	new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
 	new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
 	new Float:damage=normal_damage*speed_coeff;
 	new headshot=0;
-	if(head_distance<LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST){
+	if(hitgroup==HIT_HEAD){
 		
 		headshot=1;
 		damage*=dmg_headshot_mult;
@@ -535,7 +556,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 			make_sparks(origin);
 		}
 	}
-	tank_impact_shot_fx(pToucher,origin,17)
+	tank_impact_shot_fx(pToucher,origin,9)
 
 
 	remove_entity(pToucher)

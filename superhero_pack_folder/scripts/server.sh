@@ -39,7 +39,7 @@ cd "$GAMEROOT"
 STATUS=42
 #DEBUGGER="gdb"
 while [ $STATUS -eq 42 ]; do
-	${DEBUGGER} "${GAMEROOT}"/${GAMEEXE} $@
+	taskset -c 0 ${DEBUGGER} ${GAMEROOT}/${GAMEEXE} ${@}
 	STATUS=$?
 done
 exit $STATUS

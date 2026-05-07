@@ -74,6 +74,13 @@ public rivette_thinque(ent){
 	parm[0] = ent
 	parm[1] = owner
 
+	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
+	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
+	vector_to_angle(fl_Velocity, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+
+
 	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 

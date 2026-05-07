@@ -15,7 +15,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "../my_include/auxiliar_stuff.inc"
 
 new pcvar_cooldown
 new pcvar_ksun_kill_type_broadness_level
@@ -245,17 +244,15 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
-	sh_chat_message(id,gHeroID,"We got hit in the %s",hitzone_names[hitgroup])
 	switch(hitgroup){
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
-			SetHamParamTraceResult(5,tracehandle)
 		}
 		case HIT_HEAD:{
 			return HAM_SUPERCEDE
 		}
 	}
-	return HAM_HANDLED;
+	return HAM_IGNORED;
 }
 public client_disconnected(id){
 	

@@ -145,8 +145,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 			switch(hitgroup){
 				case HIT_RIGHTARM:{
 					set_tr2(traceresult,TR_iHitgroup,HIT_SHIELD);
-					SetHamParamTraceResult(5,traceresult)
-					return_result=HAM_HANDLED
+					return_result=HAM_IGNORED
 				}
 			}
 
@@ -167,10 +166,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 	get_user_aiming(idattacker, this, body);
 	if( pev_valid(this)&&!gClutchDown[idattacker])
 	{
-		set_tr(TR_flFraction, 0.1); // 1.0 == no hit, < 1.0 == hit
-		set_tr(TR_pHit, this); // entity hit
-		set_tr(TR_iHitgroup, body); // bodypart hit
-		if((pev(this,pev_solid)==SOLID_SLIDEBOX)){
+		if(client_is_hittable_here){
 			if(sh_clients_are_same_team(this,idattacker)){
 
 				return return_result;
@@ -197,7 +193,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 			
 		}
 	}
-	else if(((pev(this,pev_solid)!=SOLID_SLIDEBOX)&&!gClutchDown[idattacker]&&RESET_ON_MISS)){
+	else if((client_is_hittable_here&&!gClutchDown[idattacker]&&RESET_ON_MISS)){
 
 		if(!komak_is_top_speed(idattacker)){
 			emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -228,7 +224,7 @@ public engine_repair_loop(id){
 				
 			}
 			if(!is_user_bot(i)){
-				komak_hud(id)
+				komak_hud(i)
 			}
 		}
 	}

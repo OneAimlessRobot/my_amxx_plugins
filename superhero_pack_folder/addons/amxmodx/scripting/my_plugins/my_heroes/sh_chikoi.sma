@@ -5,7 +5,6 @@
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "chikoi_inc/chikoi_inc.inc"
 #include "../my_include/my_author_header.inc"
-#include "../my_include/auxiliar_stuff.inc"
 
 #define CHIKOI_THE_MAID_PHYSICAL_PROPERTY "Smallness"
 
@@ -101,11 +100,9 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(tracehandle,TR_iHitgroup);
-	sh_chat_message(id,gHeroID,"We got hit in the %s",hitzone_names[hitgroup])
 	switch(hitgroup){
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
-			SetHamParamTraceResult(5,tracehandle)
 			set_user_godmode(id,0)
 			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, 1,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_SQUASHED,custom_dmg_id)
 
@@ -114,7 +111,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 			return HAM_SUPERCEDE
 		}
 	}
-	return HAM_HANDLED;
+	return HAM_IGNORED;
 }
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
