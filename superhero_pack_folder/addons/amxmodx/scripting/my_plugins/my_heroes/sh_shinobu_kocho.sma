@@ -15,7 +15,8 @@
 
 stock const DEBUG=1
 
-stock SHINOBU_POISON_KICK_DELAYED_TASKID
+stock SHINOBU_POISON_KICK_DELAYED_TASKID,
+	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP
 
 // GLOBAL VARIABLES
 new gHeroName[]="Shinobu Kocho"
@@ -63,15 +64,17 @@ public plugin_init()
 	shRegKeyDown(gHeroName, "shinobu_kd")
 
 
-	RegisterHam(Ham_Player_PreThink,"player","shinobu_step_silent",_,true)
+	//RegisterHam(Ham_Player_PreThink,"player","shinobu_step_silent",_,true)
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
+	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP=allocate_typed_task_id(generic_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_poison_kick,
 								dmg_source_name_long_poison_kick,
 								0)
+	set_task(1.0,"shinobu_step_silent",SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP,_,_,"b")
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -88,16 +91,18 @@ public plugin_natives(){
 
 
 //----------------------------------------------------------------------------------------------
-public shinobu_step_silent(id)
+public shinobu_step_silent(task_id)
 {
 	if (! sh_is_active()) return
-	if(is_user_alive(id)){
-		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-			if(sh_user_has_hero(id,gHeroID) ){
-				static wpnid
-				wpnid=get_user_weapon(id)
-				if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
-					entity_set_int(id, EV_INT_flTimeStepSound, 999)
+	for(new id=1;id<sh_maxplayers()+1;id++){
+		if(is_user_alive(id)){
+			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+				if(sh_user_has_hero(id,gHeroID) ){
+					static wpnid
+					wpnid=get_user_weapon(id)
+					if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
+						entity_set_int(id, EV_INT_flTimeStepSound, 2000)
+					}
 				}
 			}
 		}

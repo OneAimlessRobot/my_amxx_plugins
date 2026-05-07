@@ -118,7 +118,7 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("DeathMsg","death","a")
 	
-	RegisterHam(Ham_Player_PreThink,"player","ester_step_silent",_,true)
+	//RegisterHam(Ham_Player_PreThink,"player","ester_step_silent",_,true)
 
 	register_srvcmd("ester_init", "ester_init")
 	shRegHeroInit(gHeroName, "ester_init")
@@ -158,9 +158,7 @@ public ester_step_silent(id)
 	if(is_user_alive(id)){
 		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
 			if(sh_user_has_hero(id,gHeroID) ){
-				if (get_user_weapon(id) == CSW_TMP) {
-					entity_set_int(id, EV_INT_flTimeStepSound, 999)
-				}
+				
 			}
 		}
 	}
@@ -369,7 +367,12 @@ public Ester_revenge_loop(id)
 			
 			continue
 		}
-			
+		if( is_user_alive(i)){
+			if (get_user_weapon(i) == CSW_TMP) {
+				entity_set_int(i, EV_INT_flTimeStepSound, 2000)
+			}
+		}
+		
 		if(!(Get_BitVar(gPedalIsFlooredMask,i)||Get_BitVar(gUnloadingMask,i))||Get_BitVar(gFinishedMask,i)) continue
 
 
@@ -380,7 +383,8 @@ public Ester_revenge_loop(id)
 			Set_BitVar(gFinishedMask,i)
 			continue
 		}
-
+		static enemy_count;
+		enemy_count=count_enemies(i)
 		static CsArmorType:armorType
 		static userArmor,user_health
 		user_health=get_user_health(i)
@@ -391,7 +395,7 @@ public Ester_revenge_loop(id)
 			
 			if (cvar_val(num,pcvar_power_cost) > 0 )
 			{
-				if(count_enemies(i)){
+				if(enemy_count>0){
 					if ( (userArmor < cvar_val(num,pcvar_power_cost))) {
 						if ( user_health< cvar_val(num,pcvar_power_cost) ) {
 							if(!is_user_bot(i)){
@@ -433,7 +437,7 @@ public Ester_revenge_loop(id)
 			damage_to_do[i]+=gEsterDmg[i]
 		}
 		else if(Get_BitVar(gUnloadingMask,i)){
-			if(count_enemies(i)){
+			if(enemy_count>0){
 				for ( new x=1; x< sh_maxplayers()+1; x++) 
 				{
 					if ( is_user_alive(x) && (get_user_team(i)!=get_user_team(x)) && x!=i &&(Get_BitVar(g_ester_enemies_masks[i],x)))

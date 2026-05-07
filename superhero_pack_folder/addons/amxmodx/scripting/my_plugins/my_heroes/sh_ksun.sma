@@ -79,7 +79,7 @@ public plugin_init()
 	register_srvcmd("ksun_kd", "ksun_kd")
 	shRegKeyDown(gHeroName, "ksun_kd")
 
-	RegisterHam(Ham_Player_PreThink,"player","ksun_step_silent",_,true)
+	set_task(1.0,"ksun_step_silent",_,_,_,"b")
 }
 public plugin_natives(){
 	
@@ -235,7 +235,7 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_IGNORED;
 
 	}
-	if(sh_player_has_chikoi(id)\){
+	if(sh_player_has_chikoi(id)){
 
 		return HAM_IGNORED;
 
@@ -467,16 +467,18 @@ public ksun_kd()
 
 
 //----------------------------------------------------------------------------------------------
-public ksun_step_silent(id)
+public ksun_step_silent(task_id)
 {
 	if (! sh_is_active()) return
-	if(is_user_alive(id)){
-		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-			if(sh_user_has_hero(id,gHeroID) ){
-				new alive=0,dead=0
-				sh_get_player_counts(id,1,alive,dead)
-				if((alive<=0)) {
-					entity_set_int(id, EV_INT_flTimeStepSound, 999)
+	for(new id=1;id<sh_maxplayers()+1;id++){
+		if(is_user_alive(id)){
+			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+				if(sh_user_has_hero(id,gHeroID) ){
+					new alive=0,dead=0
+					sh_get_player_counts(id,1,alive,dead)
+					if((alive<=0)) {
+						entity_set_int(id, EV_INT_flTimeStepSound, 2000)
+					}
 				}
 			}
 		}
