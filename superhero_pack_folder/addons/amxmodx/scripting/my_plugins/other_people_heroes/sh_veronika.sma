@@ -20,6 +20,7 @@ veronika_m203dmg 120
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
@@ -46,11 +47,8 @@ new gHeroID
 new m_iTrail
 new xplode
 
-#define ICON_HIDE 0
-#define ICON_SHOW 1
 #define TE_BEAMFOLLOW 22
 
-new gMsgID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -91,10 +89,7 @@ public plugin_init()
 	register_forward(FM_PlayerPreThink, "forward_playerprethink")
 	
 	
-	// Let Server know about Lara's Variable
 	shSetShieldRestrict(gHeroName)
-	
-	gMsgID = get_user_msgid("StatusIcon")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -269,14 +264,13 @@ public launch_nade(id)
 	
 	g_m203_loaded[id] = 0
 	
-	ammo_hud(id,0)
+	ammo_hud(id,g_ammo[id],0)
 	g_ammo[id]--
-	ammo_hud(id,1)
+	ammo_hud(id,g_ammo[id],1)
 	
 	new parm[1]
 	parm[0] = Ent
 	
-	//if(get_cvar_num("veronika_m203trail"))
 	set_task(0.2, "grentrail",id,parm,1)
 	
 	parm[0] = id
@@ -369,33 +363,6 @@ do_victim(victim,attacker,damage,tk)
 	sh_extra_damage(victim,attacker,damage, dmg_source_name_long_grenade,_,_,_,tk?true:false,_,_,_,custom_dmg_id_grenade)
 }
 
-ammo_hud(id, sw)
-{
-new s_sprite[33]
-formatex(s_sprite,32,"number_%d",g_ammo[id])
-
-if(sw)
-{
-	message_begin( MSG_ONE, gMsgID, {0,0,0}, id )
-	write_byte( ICON_SHOW ) // status
-	write_string( s_sprite ) // sprite name
-	write_byte( 0 ) // red
-	write_byte( 160 ) // green
-	write_byte( 0 ) // blue
-	message_end()
-}
-else
-{
-	message_begin( MSG_ONE, gMsgID, {0,0,0}, id )
-	write_byte( ICON_HIDE ) // status
-	write_string( s_sprite ) // sprite name
-	write_byte( 0 ) // red
-	write_byte( 160 ) // green
-	write_byte( 0 ) // blue
-	message_end()
-}
-}
-
 
 public grentrail(parm[])
 {
@@ -428,7 +395,7 @@ public death(id)
 {
 if ( sh_user_has_hero(id,gHeroID))
 {
-	ammo_hud(id,0)
+	ammo_hud(id,g_ammo[id],0)
 }
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

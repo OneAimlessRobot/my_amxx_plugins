@@ -16,14 +16,12 @@
 #include "../my_include/my_author_header.inc"
 
 
-#define MIN_KSUN_PAYCUT 0.01
-#define MAX_KSUN_PAYCUT 0.6
-new Float:ksun_spore_damage, 
-	Float:ksun_spore_speed,
-	Float:ksun_heal_coeff,
-	Float:ksun_dmg_paycut,
-	Float:ksun_spore_track_detect_distance,
-	Float:ksun_spore_base_health;
+new pcvar_ksun_spore_damage, 
+	pcvar_ksun_spore_speed,
+	pcvar_ksun_heal_coeff,
+	pcvar_particle_follow_time,
+	pcvar_ksun_spore_track_detect_distance,
+	pcvar_ksun_spore_base_health;
 
 new g_times_player_spiked_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -36,22 +34,19 @@ new dmg_source_name_short_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
 new dmg_source_name_long_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
 new slay_wpn_id
 
-
+//cvar_val(float, pcvar_
 
 public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spores","1.1",AUTHOR)
 	
-	register_cvar("ksun_spore_damage", "100.0" )
-	register_cvar("ksun_spore_speed", "900.0" )
-	register_cvar("ksun_follow_time", "5.0")
-	register_cvar("ksun_spore_track_detect_dist", "500.0")
-	register_cvar("ksun_hold_time", "5.0")
-	register_cvar("ksun_heal_coeff", "0.5" )
-	register_cvar("ksun_dmg_paycut", "0.05" )
-	register_cvar("ksun_violence_level", "3" )
-	register_cvar("ksun_spore_health", "100.0" )
+	pcvar_ksun_spore_damage = register_cvar("ksun_spore_damage", "100.0" )
+	pcvar_ksun_spore_speed = register_cvar("ksun_spore_speed", "900.0" )
+	pcvar_particle_follow_time = register_cvar("ksun_follow_time", "5.0")
+	pcvar_ksun_spore_track_detect_distance = register_cvar("ksun_spore_track_detect_dist", "500.0")
+	pcvar_ksun_heal_coeff = register_cvar("ksun_heal_coeff", "0.5" )
+	pcvar_ksun_spore_base_health = register_cvar("ksun_spore_health", "100.0" )
 	
 	register_entity_as_wall_touchable(SPORE_CLASSNAME,"touch_wall")
 	register_custom_touchable(SPORE_CLASSNAME,"touch_player",player_vector,1)
@@ -85,7 +80,6 @@ public plugin_natives(){
 	register_native("get_times_player_spiked_by_player","_get_times_player_spiked_by_player",0)
 	register_native("inc_times_player_spiked_by_player","_inc_times_player_spiked_by_player",0)
 	register_native("dec_times_player_spiked_by_player","_dec_times_player_spiked_by_player",0)
-	register_native("get_spike_base_damage_debt","_get_spike_base_damage_debt",0)
 	register_native("ksun_heal","_ksun_heal",0)
 	
 	register_native("ksun_glisten","_ksun_glisten",0)
@@ -97,11 +91,6 @@ public plugin_natives(){
 	
 	
 }
-public Float:_get_spike_base_damage_debt(iPlugins, iParms){
-	
-	return ksun_dmg_paycut
-}
-	
 //----------------------------------------------------------------------------------------------
 untrack_spore(spore){
 	if(pev_valid(spore)){
@@ -119,23 +108,6 @@ untrack_spore(spore){
 	return 0
 
 }
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	ksun_spore_damage= get_cvar_float("ksun_spore_damage")
-	ksun_spore_speed= get_cvar_float("ksun_spore_speed")
-	ksun_heal_coeff= get_cvar_float("ksun_heal_coeff")
-	ksun_spore_base_health= get_cvar_float("ksun_spore_health")
-	ksun_dmg_paycut=floatclamp(get_cvar_float("ksun_dmg_paycut"),MIN_KSUN_PAYCUT,MAX_KSUN_PAYCUT)
-	ksun_spore_track_detect_distance=get_cvar_float("ksun_spore_track_detect_dist")
-}
 public bool:_ksun_heal(iPlugins, iParms){
 	new id= get_param(1)
 	new Float:damage=get_param_f(2)
@@ -145,7 +117,7 @@ public bool:_ksun_heal(iPlugins, iParms){
 		return false
 	
 	}
-	damage*=ksun_heal_coeff
+	damage*=cvar_val(float, pcvar_ksun_heal_coeff)
 	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
 	ksun_glisten(id)
 	ksun_inc_player_supply_points(id,new_damage)
@@ -289,13 +261,13 @@ public spawn_spore(id){
 
 	entity_set_model(spore, KSUN_SPORE_MDL)
 
-	float_to_str(SPORE_DEAD_HP+ksun_spore_base_health,health,127)
+	float_to_str(SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health),health,127)
 	num_to_str(2,material,127)
 	DispatchKeyValue( spore, "material", material );
 	DispatchKeyValue( spore, "health", health );
 
 
-	set_pev(spore, pev_health, SPORE_DEAD_HP+ksun_spore_base_health)
+	set_pev(spore, pev_health, SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health))
 	engfunc(EngFunc_SetSize, spore, Float:{-SPORE_RADIUS, -SPORE_RADIUS,-SPORE_RADIUS}, Float:{SPORE_RADIUS, SPORE_RADIUS, SPORE_RADIUS})
 
 	entity_set_float( spore, EV_FL_fuser1, 0.0);
@@ -418,7 +390,7 @@ public spore_think(spore){
 		
 	}
 
-	else if(current_track_time>get_follow_time()){
+	else if(current_track_time>cvar_val(float, pcvar_particle_follow_time)){
 		untrack_spore(spore)
 		return FMRES_IGNORED
 	}
@@ -548,7 +520,7 @@ stock entity_set_follow(entity, target,spore_owner)
 	entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
 	new Float: distance=vector_distance(fl_Origin, fl_EntOrigin)
 	
-	new Float:fl_InvTime = (ksun_spore_speed / distance)
+	new Float:fl_InvTime = (cvar_val(float, pcvar_ksun_spore_speed) / distance)
 
 	new Float:fl_Distance[3]
 	fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
@@ -566,7 +538,7 @@ stock entity_set_follow(entity, target,spore_owner)
 	entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
 	entity_set_vector(entity, EV_VEC_v_angle, fl_NewAngle)
 	
-	if(distance>ksun_spore_track_detect_distance){
+	if(distance> cvar_val(float, pcvar_ksun_spore_track_detect_distance)){
 
 		return 0
 	}
@@ -609,7 +581,8 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	new tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
-	new damage_to_do=sh_get_user_is_asleep(pTouched)?get_user_health(pTouched)*10:floatround(ksun_spore_damage)
+	new damage_to_do=sh_get_user_is_asleep(pTouched)?get_user_health(pTouched)*10:
+						floatround(cvar_val(float, pcvar_ksun_spore_damage))
 	new bool:remove_godmode=bool:sh_get_user_is_asleep(pTouched)
 	
 	if(get_user_godmode(pTouched)&&remove_godmode){

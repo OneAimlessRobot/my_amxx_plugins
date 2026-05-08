@@ -10,9 +10,8 @@
 #include "ksun_inc/ksun_ultimate.inc"
 #include "../my_include/my_author_header.inc"
 
-new Float:ksun_hold_time,
-	Float:ksun_launcher_base_health,
-	Float:ksun_follow_time;
+new pcvar_ksun_hold_time,
+	pcvar_ksun_launcher_base_health;
 
 
 
@@ -30,12 +29,8 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1",AUTHOR)
 	
-	register_cvar("ksun_follow_time", "5.0")
-	register_cvar("ksun_hold_time", "5.0")
-	register_cvar("ksun_heal_coeff", "0.5" )
-	register_cvar("ksun_violence_level", "3" )
-	register_cvar("ksun_spore_health", "100.0" )
-	register_cvar("ksun_launcher_health", "100.0" )
+	pcvar_ksun_hold_time = register_cvar("ksun_hold_time", "5.0")
+	pcvar_ksun_launcher_base_health = register_cvar("ksun_launcher_health", "100.0" )
 	
 	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
@@ -57,16 +52,8 @@ public plugin_natives(){
 	register_native("get_player_launcher","_get_player_launcher",0)
 	
 	
-	register_native("get_follow_time","_get_follow_time",0)
 	
 	
-	
-	
-}
-public Float:_get_follow_time(iPlugins,iParms){
-	
-	return ksun_follow_time;
-
 }
 
 public _get_player_launcher_phase(iPlugins, iParms){ 
@@ -105,20 +92,6 @@ public bool:_spores_busy(iPlugins, iParms){
 	return (get_player_num_victims(id)>0)
 	
 }
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	ksun_hold_time= get_cvar_float("ksun_hold_time")
-	ksun_follow_time= get_cvar_float("ksun_follow_time")
-	ksun_launcher_base_health= get_cvar_float("ksun_launcher_health")
-}
 public launcher_think(ent){
 	
 	if ( pev_valid(ent)!=2) return FMRES_IGNORED
@@ -140,7 +113,7 @@ public launcher_think(ent){
 		case PHASE_IDLE:{
 			
 			g_launcher_timer[launcher_owner]=floatadd(g_launcher_timer[launcher_owner],LAUNCHER_THINK_PERIOD)
-			if(g_launcher_timer[launcher_owner]>ksun_hold_time){
+			if(g_launcher_timer[launcher_owner]>cvar_val(float, pcvar_ksun_hold_time)){
 				
 				g_launcher_phase[launcher_owner]=PHASE_SEND
 				set_pev(ent, pev_takedamage, DAMAGE_YES)
@@ -168,7 +141,7 @@ public launcher_think(ent){
 		}
 		case PHASE_HOLD:{
 			g_launcher_timer[launcher_owner]=floatadd(g_launcher_timer[launcher_owner],LAUNCHER_THINK_PERIOD)
-			if(g_launcher_timer[launcher_owner]>ksun_hold_time){
+			if(g_launcher_timer[launcher_owner]>cvar_val(float, pcvar_ksun_hold_time)){
 				
 				g_launcher_phase[launcher_owner]=PHASE_SEND
 				emit_sound(g_player_launcher[launcher_owner], CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -270,13 +243,13 @@ entity_set_string(launcher, EV_SZ_classname, LAUNCHER_CLASSNAME)
 
 entity_set_model(launcher, KSUN_SPORE_MDL)
 
-float_to_str(LAUNCHER_DEAD_HP+ksun_launcher_base_health,health,127)
+float_to_str(LAUNCHER_DEAD_HP+ cvar_val(float, pcvar_ksun_launcher_base_health),health,127)
 num_to_str(2,material,127)
 DispatchKeyValue( launcher, "material", material );
 DispatchKeyValue( launcher, "health", health );
 
 
-set_pev(launcher, pev_health, LAUNCHER_DEAD_HP+ksun_launcher_base_health)
+set_pev(launcher, pev_health, LAUNCHER_DEAD_HP + cvar_val(float, pcvar_ksun_launcher_base_health))
 engfunc(EngFunc_SetSize, launcher, Float:{-LAUNCHER_SIZE, -LAUNCHER_SIZE,-LAUNCHER_SIZE}, Float:{LAUNCHER_SIZE, LAUNCHER_SIZE, LAUNCHER_SIZE})
 
 

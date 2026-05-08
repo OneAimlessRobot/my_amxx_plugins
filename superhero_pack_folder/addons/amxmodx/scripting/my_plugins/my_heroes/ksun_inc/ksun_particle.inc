@@ -23,7 +23,6 @@
 #define SPORE_DEAD_HP 1000.0
 
 native get_from_player_spores(id,index)
-native Float:get_spore_base_health()
 native spore_launch(id)
 native get_times_player_spiked_player(attacker,victim)
 native inc_times_player_spiked_player(attacker,victim)
@@ -32,7 +31,6 @@ native dec_times_player_spiked_player(attacker,victim)
 native get_times_player_spiked_by_player(victim,attacker)
 native inc_times_player_spiked_by_player(victim,attacker)
 native dec_times_player_spiked_by_player(victim,attacker)
-native Float:get_spike_base_damage_debt()
 native bool:ksun_heal(id, Float:damage)
 
 native clean_ksun_spores_from_players(dying_or_new_round,everyone,player)

@@ -66,9 +66,9 @@ dmg_message(id, attacker){
 public chikoi_damage(id, idinflictor, attacker, Float:damage, damagebits){
 
 	
-if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return HAM_IGNORED
 
-if ( damagebits & DMG_FALL && sh_user_has_hero(id,gHeroID)  ){
+if ( damagebits & DMG_FALL ){
 	return HAM_SUPERCEDE
 }
 

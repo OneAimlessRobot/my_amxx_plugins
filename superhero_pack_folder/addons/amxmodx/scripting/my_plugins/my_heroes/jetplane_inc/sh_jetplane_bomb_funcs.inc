@@ -17,12 +17,9 @@
 #define JETPLANE_BOMB_CLASSNAME "yandere_bomb"
 #define BOMB_MODEL "models/shmod/yandere/jetplane/projectiles/airattack_nuke.mdl"
 
-native get_jet_bombs(jet_id)
-native set_jet_bombs(jet_id,num_bombs)
 native reset_jet_bombs(jet_id)
 native get_user_jet_bombs(id)
 native set_user_jet_bombs(id,num_bombs)
-native reset_user_jet_bombs(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

@@ -24,8 +24,8 @@ new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_L96_clip[SH_MAXSLOTS+1]
-new dmg_headshot_mult,
-	xp_distance_mult;
+new pcvar_dmg_headshot_mult,
+	pcvar_xp_distance_mult;
 
 new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="L96A1"
 new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
@@ -36,8 +36,8 @@ new custom_dmg_id_l96
 public plugin_init(){
 	
 	
-	register_cvar("lena_xp_distance_mult","4")
-	register_cvar("lena_dmg_headshot_mult","5")
+	pcvar_dmg_headshot_mult = register_cvar("lena_xp_distance_mult","4")
+	pcvar_xp_distance_mult = register_cvar("lena_dmg_headshot_mult","5")
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 	
@@ -126,19 +126,6 @@ public bulette_thinque(ent){
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
 
 	return FMRES_IGNORED
-
-
-}
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	xp_distance_mult=get_cvar_num("lena_xp_distance_mult");
-	dmg_headshot_mult=get_cvar_num("lena_dmg_headshot_mult");
 
 
 }
@@ -496,10 +483,10 @@ public bulletina_touque_playor(pToucher, pTouched)
 	if(hitgroup==HIT_HEAD){
 		
 		headshot=1;
-		damage*=dmg_headshot_mult;
+		damage*=cvar_val(num, pcvar_dmg_headshot_mult);
 	}
 	new Float:the_period=(headshot?0.33:1.0);
-	new Float:the_time=(headshot?float(dmg_headshot_mult):the_period)*10.0;
+	new Float:the_time=(headshot?float(cvar_val(num, pcvar_dmg_headshot_mult)):the_period)*10.0;
 	new CsTeams:att_team=cs_get_user_team(oid)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
@@ -513,7 +500,9 @@ public bulletina_touque_playor(pToucher, pTouched)
 				track_user(pTouched,oid,1,3,the_period,the_time,ORANGE)
 		}
 		
-		sh_set_user_xp(oid,floatround(distance)*(headshot?dmg_headshot_mult:1)*xp_distance_mult,true);
+		sh_set_user_xp(oid,floatround(distance)*(headshot?
+				cvar_val(num, pcvar_dmg_headshot_mult):1)*
+				cvar_val(num, pcvar_xp_distance_mult),true);
 		new random_number=generate_int(0,(sizeof lena_poems)-1)
 		
 		if(!is_user_bot(pTouched)){

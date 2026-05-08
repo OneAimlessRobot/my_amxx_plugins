@@ -12,10 +12,9 @@
 
 
 
-new Float:ksun_track_max_radius,
-	Float:ksun_track_min_radius,
-	Float:ksun_track_traverse_time;
-new ksun_max_victims
+new pcvar_ksun_track_max_radius,
+	pcvar_ksun_track_min_radius,
+	pcvar_ksun_track_traverse_time;
 
 new num_launched_spores[SH_MAXSLOTS+1]
 new num_deployed_spores[SH_MAXSLOTS+1]
@@ -27,29 +26,22 @@ new g_player_targets[SH_MAXSLOTS+1][SH_MAXSLOTS+2]
 new g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
 new g_player_scanner[SH_MAXSLOTS+1]
-
+//cvar_val(float, pcvar_
 
 public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun scanner","1.1",AUTHOR)
 	
-	register_cvar("ksun_track_max_radius", "2000.0")
-	register_cvar("ksun_track_min_radius", "500.0")
-	register_cvar("ksun_track_traverse_time", "2.0")
-	register_cvar("ksun_max_victims", "4" )
-	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
-	
+	pcvar_ksun_track_max_radius = register_cvar("ksun_track_max_radius", "2000.0")
+	pcvar_ksun_track_min_radius = register_cvar("ksun_track_min_radius", "500.0")
+	pcvar_ksun_track_traverse_time = register_cvar("ksun_track_traverse_time", "2.0")
 	
 	register_think(SCANNER_CLASSNAME, "scanner_think")
 }
 
 public plugin_natives(){
-	
-	
-	
-	
-	register_native("scanner_max_victims","_scanner_max_victims",0)
+
 	
 	register_native("spawn_scanner","_spawn_scanner",0)
 	
@@ -81,16 +73,13 @@ public plugin_natives(){
 	
 	
 }
-public _scanner_max_victims(iPlugin,iParams){
+public sh_round_end(){
 	
-	
-		return ksun_max_victims
-}
-public ev_SendAudio(){
-	
-	if(!sh_is_active()) return PLUGIN_CONTINUE
+	if(!sh_is_active()) return
+
 	remove_entity_name(SCANNER_CLASSNAME)
-	return PLUGIN_CONTINUE
+	
+	return
 }
 public _get_spore_from_player_spores(iPlugin,iParams){
 	new id=get_param(1)
@@ -228,7 +217,7 @@ public _spawn_scanner(iPlugins,iParams){
 	}
 	entity_set_string(scanner, EV_SZ_classname, SCANNER_CLASSNAME)
 	entity_set_float(scanner, EV_FL_fuser1, 0.0);
-	entity_set_float(scanner, EV_FL_fuser2, ksun_track_min_radius);
+	entity_set_float(scanner, EV_FL_fuser2, cvar_val(float, pcvar_ksun_track_min_radius));
 	entity_set_edict(scanner, EV_ENT_owner, id)
 	entity_set_origin(scanner, b_orig)
 	g_player_scanner[id]=scanner
@@ -254,23 +243,6 @@ public _get_scanner_player_tracks_player(iPlugins,iParams){
 	
 	
 }
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	ksun_track_min_radius= get_cvar_float("ksun_track_min_radius")
-	ksun_track_max_radius= get_cvar_float("ksun_track_max_radius")
-	ksun_track_traverse_time= get_cvar_float("ksun_track_traverse_time")
-	ksun_max_victims= get_cvar_num("ksun_max_victims")
-}
-
-
 public scanner_think(scanner){
 	
 	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return FMRES_IGNORED
@@ -281,7 +253,7 @@ public scanner_think(scanner){
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
-	if(entity_get_float(scanner, EV_FL_fuser2)>=ksun_track_max_radius){
+	if(entity_get_float(scanner, EV_FL_fuser2)>=cvar_val(float, pcvar_ksun_track_max_radius)){
 		
 		show_targets(id)
 		if(g_player_num_victims[id]>0){
@@ -299,7 +271,7 @@ public scanner_think(scanner){
 	arrayset(g_player_targets[id],0,SH_MAXSLOTS+1)
 	g_player_num_victims[id]=0
 
-	new obj_num_of_victims=min(ksun_get_num_available_spores(id),ksun_max_victims)
+	new obj_num_of_victims=ksun_get_num_available_spores(id)
 	make_shockwave(fOrigin,entity_get_float(scanner, EV_FL_fuser2),{255, 0, 255},_,_,_,_,50)
 	static entlist[33];
 

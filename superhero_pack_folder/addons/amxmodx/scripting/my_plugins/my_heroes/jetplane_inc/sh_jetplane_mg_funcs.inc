@@ -20,13 +20,7 @@ stock Float:jetplane_mg_min_dims[3]={-30.0,-30.0,-30.0}
 stock Float:jetplane_mg_max_dims[3]={30.0,30.0,30.0}
 
 
-native get_jet_shells(jet_id)
-native set_jet_shells(jet_id,num_shells)
 native reset_jet_shells(jet_id)
 native get_user_jet_shells(id)
-native set_user_jet_shells(id,num_shells)
-native reset_user_jet_shells(id)
 native mg_destroy(id)
 native spawn_jetplane_mg(id)
-native get_user_mg(id)
-native Float:get_mg_think_period()

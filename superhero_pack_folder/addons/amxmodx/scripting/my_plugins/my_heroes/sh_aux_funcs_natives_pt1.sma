@@ -31,6 +31,9 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	g_msgFade = get_user_msgid("ScreenFade");
+
+	
+	gMsgID_Status_icon = get_user_msgid("StatusIcon")
 	gmsgIcon = get_user_msgid("StatusIcon")
 	prepare_shero_aux_lib_pt1()
 	REMOVE_DAMAGE_ICON_TASKID=allocate_typed_task_id(player_task)
@@ -61,6 +64,7 @@ public plugin_natives(){
 	register_native("glow","_glow",0);
 	register_native("suck_in_sound","_suck_in_sound",0);
 	register_native("aura","_aura",0);
+	register_native("ammo_hud","_ammo_hud",0);
 	register_native("detect_user","_detect_user",0);
 	register_native("create_fired_shot_disk","_create_fired_shot_disk",0);
 	register_native("draw_aim_vector","_draw_aim_vector",0);
@@ -71,6 +75,37 @@ public plugin_natives(){
 	register_native("set_damage_icon","_set_damage_icon",0)
 	register_native("unset_damage_icon","_unset_damage_icon",0)
 
+}
+
+public _ammo_hud(iPlugins, iParams){
+
+	new id=get_param(1),
+		number=get_param(2),
+		sw=get_param(3)
+
+	new s_sprite[33]
+	formatex(s_sprite,32,"number_%d",number)
+
+	if(sw)
+	{
+		message_begin( MSG_ONE, gMsgID_Status_icon, {0,0,0}, id )
+		write_byte( ICON_SHOW ) // status
+		write_string( s_sprite ) // sprite name
+		write_byte( 0 ) // red
+		write_byte( 160 ) // green
+		write_byte( 0 ) // blue
+		message_end()
+	}
+	else
+	{
+		message_begin( MSG_ONE, gMsgID_Status_icon, {0,0,0}, id )
+		write_byte( ICON_HIDE ) // status
+		write_string( s_sprite ) // sprite name
+		write_byte( 0 ) // red
+		write_byte( 160 ) // green
+		write_byte( 0 ) // blue
+		message_end()
+	}
 }
 
 public _prepare_shero_aux_lib_pt1(iPlugins, iParams){

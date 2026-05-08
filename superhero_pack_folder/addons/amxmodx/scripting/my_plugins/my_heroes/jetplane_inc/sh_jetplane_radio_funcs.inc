@@ -8,10 +8,6 @@
 
 #define RADIO_RADIUS 500.0
 
-
-
-native get_jet_scans(jet_id)
-native set_jet_scans(jet_id,num_scans)
 native reset_jet_scans(jet_id)
 native get_user_jet_scans(id)
 native set_user_jet_scans(id,num_scans)

@@ -16,11 +16,16 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
+#define MIN_KSUN_PAYCUT 0.01
+#define MAX_KSUN_PAYCUT 0.6
+
 new pcvar_cooldown
 new pcvar_ksun_kill_type_broadness_level
 new pcvar_ksun_spores_per_kill
 new pcvar_ksun_spore_m4_mult
+new pcvar_ksun_dmg_paycut
 new pcvar_num_sleep_nades
+new pcvar_ksun_max_victims
 new pcvar_ksun_when_reset_spores=never_reset;
 
 // GLOBAL VARIABLES
@@ -30,7 +35,7 @@ new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new gHeroID
 
 
-
+//cvar_val(float, pcvar_
 
 new dmg_source_name_short_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
 new dmg_source_name_long_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
@@ -44,11 +49,15 @@ public plugin_init()
 	
 	register_cvar("ksun_level", "12" )
 	pcvar_cooldown = register_cvar("ksun_cooldown", "10.0" )
+	pcvar_ksun_dmg_paycut = register_cvar("ksun_dmg_paycut", "0.05" )
+	set_pcvar_bounds(pcvar_ksun_dmg_paycut,CvarBound_Lower,true,MIN_KSUN_PAYCUT)
+	set_pcvar_bounds(pcvar_ksun_dmg_paycut,CvarBound_Upper,true,MAX_KSUN_PAYCUT)
 	pcvar_num_sleep_nades = register_cvar("ksun_num_of_sleep_nades","6")
 	pcvar_ksun_kill_type_broadness_level = register_cvar("ksun_kill_type_broadness_level","0")
 	pcvar_ksun_spores_per_kill = register_cvar("ksun_spores_per_kill","0")
 	pcvar_ksun_spore_m4_mult = register_cvar("ksun_spore_m4_mult","0")
 	pcvar_ksun_when_reset_spores = register_cvar("ksun_when_reset_spores","0")
+	pcvar_ksun_max_victims = register_cvar("ksun_max_victims", "4" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -69,7 +78,7 @@ public plugin_init()
 		sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ksun_debt,
 								dmg_source_name_long_ksun_debt,0)
 
-	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",1,true)
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
 	// INIT
 	register_srvcmd("ksun_init", "ksun_init")
@@ -117,7 +126,7 @@ stock covert_spike_damage(id){
 						Float:remaining,
 						Float:tg_health
 
-				tmp_it_pct=get_spike_base_damage_debt()
+				tmp_it_pct=cvar_val(float,pcvar_ksun_dmg_paycut)
 				tg_health=float(get_user_health(payer))
 				remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
 				dmg_to_drain = tg_health - remaining
@@ -152,7 +161,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 		new times_spiked_by_them=get_times_player_spiked_player(collector,attacker)
 		if((times_spiked_by_them>0)){
 			
-			new Float: pctDmgLost=get_spike_base_damage_debt()*float(times_spiked_by_them)
+			new Float: pctDmgLost=cvar_val(float,pcvar_ksun_dmg_paycut)*float(times_spiked_by_them)
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
 			ksun_heal(collector,dmgSnatched)
@@ -319,7 +328,9 @@ public _ksun_multi_inc_num_available_spores(iPlugin,iParams){
 
 	new id= get_param(1)
 	new value= get_param(2)
-	gMaxSporesUsable[id]=((gMaxSporesUsable[id]+value)>=scanner_max_victims())? scanner_max_victims():gMaxSporesUsable[id]+value
+	gMaxSporesUsable[id]=((gMaxSporesUsable[id]+value)>=
+			cvar_val(num, pcvar_ksun_max_victims))? 
+				cvar_val(num, pcvar_ksun_max_victims):gMaxSporesUsable[id]+value
 
 }
 public _ksun_dec_num_available_spores(iPlugin,iParams){
@@ -333,7 +344,9 @@ public _ksun_inc_num_available_spores(iPlugin,iParams){
 
 
 	new id= get_param(1)
-	gMaxSporesUsable[id]=(gMaxSporesUsable[id]>=scanner_max_victims())? scanner_max_victims():gMaxSporesUsable[id]+1
+	gMaxSporesUsable[id]=(gMaxSporesUsable[id]>=
+			cvar_val(num, pcvar_ksun_max_victims))? 
+				cvar_val(num, pcvar_ksun_max_victims):gMaxSporesUsable[id]+1
 
 }
 public _spores_ksun_hero_id(iPlugins, iParms){

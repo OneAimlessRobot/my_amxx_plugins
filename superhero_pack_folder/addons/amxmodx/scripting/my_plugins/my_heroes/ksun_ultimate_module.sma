@@ -13,13 +13,12 @@
 
 
 
-new Float:ksun_health_to_supply_ratio,
-	ksun_supply_capacity;
-	
-new Float:ksun_dmg_absorption_index
+new pcvar_ksun_supply_capacity;
+new pcvar_ksun_health_to_supply_ratio
+new pcvar_ksun_dmg_absorption_index
 
-new Float:ksun_ultimate_fire_rate_mult
-new Float:ksun_ultimate_reload_rate_mult
+new pcvar_ksun_ultimate_fire_rate_mult
+new pcvar_ksun_ultimate_reload_rate_mult
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
@@ -41,11 +40,12 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun supply","1.1",AUTHOR)
 	
-	register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
-	register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
-	register_cvar("ksun_health_to_supply_ratio", "1.0" )
-	register_cvar("ksun_dmg_absorption_index", "1.0" )
-	register_cvar("ksun_supply_capacity", "1000" )
+	pcvar_ksun_ultimate_fire_rate_mult = register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
+	pcvar_ksun_ultimate_reload_rate_mult = register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
+	pcvar_ksun_dmg_absorption_index = register_cvar("ksun_dmg_absorption_index", "1.0" )
+	pcvar_ksun_supply_capacity = register_cvar("ksun_supply_capacity", "1000" )
+	pcvar_ksun_health_to_supply_ratio = register_cvar("ksun_health_to_supply_ratio","0.25")
+	
 	RegisterHam(Ham_TakeDamage, "player", "ksun_ultimate_damage_hook",_,true)
 	register_event("CurWeapon", "ksun_rifle_laser", "be", "1=1", "3>0")
 
@@ -99,7 +99,7 @@ public Item_PostFrame_Post(iEnt)
 	if (!sh_is_active()||!sh_user_has_hero(id,spores_ksun_hero_id())||!ksun_player_is_in_ultimate(id)){
 		return HAM_IGNORED
 	}
-	do_fast_reload(id,iEnt,ksun_ultimate_reload_rate_mult)
+	do_fast_reload(id,iEnt,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
 
 	return HAM_IGNORED
 }
@@ -116,7 +116,7 @@ new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 if(sh_user_has_hero(id,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(id)){
 
-	new Float:dmgSnatched= damage*ksun_dmg_absorption_index
+	new Float:dmgSnatched= damage* cvar_val(float, pcvar_ksun_dmg_absorption_index)
 	
 	new Float:newDamage=damage- dmgSnatched
 	SetHamParamFloat(4, newDamage);
@@ -127,7 +127,7 @@ if(sh_user_has_hero(attacker,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(
 
 	
 	if(weapon==KSUN_WEAPON_ID){
-		new Float:dmgAdded= damage*ksun_dmg_absorption_index
+		new Float:dmgAdded= damage*cvar_val(float, pcvar_ksun_dmg_absorption_index)
 		new Float:newDamage=damage+ dmgAdded
 		SetHamParamFloat(4, 0.0);
 		sh_extra_damage(id,attacker,floatround(newDamage),dmg_source_name_long_r5,1,_,_,_,_,_,_,custom_dmg_id_r5)
@@ -137,25 +137,8 @@ return HAM_IGNORED
 
 }	
 
-//----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-	
-	ksun_health_to_supply_ratio= get_cvar_float("ksun_health_to_supply_ratio")
-	ksun_dmg_absorption_index= get_cvar_float("ksun_dmg_absorption_index")
-	ksun_supply_capacity= get_cvar_num("ksun_supply_capacity")
-	ksun_ultimate_fire_rate_mult=get_cvar_float("ksun_ultimate_fire_rate_mult")
-	ksun_ultimate_reload_rate_mult=get_cvar_float("ksun_ultimate_reload_rate_mult")
-	
-}
 sound_fiscalization(id){
-	if((g_player_supply_amount[id]==ksun_supply_capacity)){
+	if((g_player_supply_amount[id]==cvar_val(num, pcvar_ksun_supply_capacity))){
 		
 		
 		if(!g_played_sound[id]){
@@ -170,14 +153,15 @@ sound_fiscalization(id){
 }
 calculate_untaxed_health_to_filtered_supply(supply_parcel){
 
-	return max(0,floatround(floatmul(float(supply_parcel),ksun_health_to_supply_ratio)))
+	return max(0,floatround(floatmul(float(supply_parcel),cvar_val(float, pcvar_ksun_health_to_supply_ratio))))
 	
 }
 public _ksun_set_player_supply_points(iPlugins, iParams){
 	
 	new id= get_param(1)
 	new value=get_param(2)
-	g_player_supply_amount[id]= max(0,min(ksun_supply_capacity,value))
+	g_player_supply_amount[id]= max(0,min(cvar_val(num, pcvar_ksun_supply_capacity),
+											value))
 	sound_fiscalization(id)
 }
 public _ksun_dec_player_supply_points(iPlugins, iParams){
@@ -193,7 +177,8 @@ public _ksun_inc_player_supply_points(iPlugins, iParams){
 	new value=get_param(2)
 	
 	g_player_supply_amount[id]= max(0,
-									min(ksun_supply_capacity,g_player_supply_amount[id]+
+									min(cvar_val(num, pcvar_ksun_supply_capacity),
+									g_player_supply_amount[id]+
 									calculate_untaxed_health_to_filtered_supply(value)))
 	sound_fiscalization(id)
 }
@@ -238,17 +223,17 @@ public ultimate_task(id){
 	if(!is_user_alive(id)) return
 	
 	if(!ksun_player_is_in_ultimate(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return
-	new hud_msg[128];
-	new origin[3]
-	get_user_origin(id,origin,0)
+	static hud_msg[128];
 	ksun_dec_player_supply_points(id,KSUN_ULTIMATE_LOOP_DEC)
 	ksun_glisten(id)
 	
 	if(!is_user_bot(id)){
 		formatex(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
-		100.0*(floatdiv(float(g_player_supply_amount[id]),float(ksun_supply_capacity)))
+		100.0*(floatdiv(float(g_player_supply_amount[id]),
+				float(cvar_val(num, pcvar_ksun_supply_capacity))))
 		);
 		client_print(id,print_center,"%s",hud_msg)
+
 	}
 	if(ksun_get_player_supply_points(id)>0){
 		set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID)
@@ -289,7 +274,7 @@ public _ksun_player_is_ultimate_ready(iPlugins, iParams){
 	new id=get_param(1)
 	
 	
-	return g_player_supply_amount[id]>=ksun_supply_capacity
+	return g_player_supply_amount[id]>=cvar_val(num, pcvar_ksun_supply_capacity)
 	
 }
 
@@ -311,7 +296,7 @@ if ( (wpnid ==KSUN_WEAPON_ID)&&(ksun_player_is_in_ultimate(id)))
 		
 		
 		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
-		do_fast_shot(id,wpnid,ksun_ultimate_fire_rate_mult)
+		do_fast_shot(id,wpnid,cvar_val(float, pcvar_ksun_ultimate_fire_rate_mult))
 		emit_sound(id,CHAN_WEAPON,SPORE_PREPARE_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
 
 	}

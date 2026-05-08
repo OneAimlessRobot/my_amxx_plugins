@@ -756,7 +756,7 @@ public charge_task(id){
 	curr_charge[id]=floatadd(curr_charge[id],CAMERA_CHARGE_PERIOD)
 
 	if(!is_user_bot(id)){
-		new hud_msg[128];
+		static hud_msg[128];
 		formatex(hud_msg,127,"[SH]: Curr camera charge: %0.2f^n",
 		100.0*(curr_charge[id]/cvar_val(float, pcvar_min_charge_time))
 		);

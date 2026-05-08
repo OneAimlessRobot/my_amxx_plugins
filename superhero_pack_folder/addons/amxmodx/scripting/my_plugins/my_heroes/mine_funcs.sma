@@ -193,7 +193,7 @@ public disarm_task(param[1],id){
 	id-=MINE_DISARM_TASKID
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
 	if(!is_user_bot(id)){
-		new hud_msg[128];
+		static hud_msg[128];
 		formatex(hud_msg,127,"[SH]: DISARMING MINE: %0.2f^n",
 		100.0*(curr_disarm_charge[id]/min_charge_time)
 		);

@@ -9,7 +9,7 @@
 #define LAUNCHER_SCAN_SFX "shmod/ksun/launcher/scanner_wash.wav"
 
 #define SCAN_LOOP_PERIOD 0.2
-#define SCAN_DIST_INC floatmul(floatsub(ksun_track_max_radius,ksun_track_min_radius),floatdiv(SCAN_LOOP_PERIOD,ksun_track_traverse_time))
+#define SCAN_DIST_INC floatmul(floatsub(cvar_val(float, pcvar_ksun_track_max_radius),cvar_val(float, pcvar_ksun_track_min_radius)),floatdiv(SCAN_LOOP_PERIOD,cvar_val(float, pcvar_ksun_track_traverse_time)))
 
 
 native get_scanner_player_tracks_player(id1,id2)
@@ -36,7 +36,6 @@ native set_spore_at_player_spores(id,index,value)
 native set_target_at_player_targets(id,index,value)
 
 native spawn_scanner(id)
-native scanner_max_victims()
 
 native reset_player_targets(id)
 

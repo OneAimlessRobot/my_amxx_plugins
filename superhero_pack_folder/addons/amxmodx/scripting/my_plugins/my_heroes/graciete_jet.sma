@@ -229,7 +229,7 @@ public charge_task(id){
 	set_user_gravity(id,g_graciete_base_gravity[id]*
 			cvar_val(float, pcvar_jet_stomp_grav_mult));
 	
-	new hud_msg[128];
+	static hud_msg[128];
 	g_graciete_land_power[id]=floatmin(
 				cvar_val(float, pcvar_jet_max_power),floatadd(g_graciete_land_power[id],GRACIETE_CHARGE_RATE))
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",(g_graciete_land_power[id])

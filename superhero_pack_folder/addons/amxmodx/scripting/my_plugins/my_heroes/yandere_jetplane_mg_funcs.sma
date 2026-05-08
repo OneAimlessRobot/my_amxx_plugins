@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
@@ -17,24 +18,26 @@
 #include "../my_include/my_author_header.inc"
 
 
-new Float:jetplane_mg_dmg,
-Float:jetplane_mg_bulletspeed;
-stock Float:mg_think_period
 new user_mg[SH_MAXSLOTS+1]
-new jetplane_mg_ammo;
 
 
+new pcvar_jetplane_mg_dmg,
+pcvar_jetplane_mg_bulletspeed,
+pcvar_mg_think_period,
+pcvar_jetplane_mg_ammo;
 
+
+//cvar_val(float, pcvar_
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	register_cvar("yandere_jetplane_mg_ammo", "5")
-	register_cvar("yandere_jetplane_mg_dmg", "5")
-	register_cvar("yandere_jetplane_mg_bulletspeed", "5")
-	register_cvar("yandere_jetplane_mg_think_period", "5")
+	pcvar_jetplane_mg_ammo = register_cvar("yandere_jetplane_mg_ammo", "5")
+	pcvar_jetplane_mg_dmg = register_cvar("yandere_jetplane_mg_dmg", "5")
+	pcvar_jetplane_mg_bulletspeed = register_cvar("yandere_jetplane_mg_bulletspeed", "5")
+	pcvar_mg_think_period = register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
 
@@ -46,53 +49,28 @@ public plugin_init(){
 	
 }
 
-
-public plugin_cfg(){
-	
-	loadCVARS()
-}
-public loadCVARS(){
-	jetplane_mg_dmg=get_cvar_float("yandere_jetplane_mg_dmg");
-	jetplane_mg_bulletspeed=get_cvar_float("yandere_jetplane_mg_bulletspeed");
-	jetplane_mg_ammo=get_cvar_num("yandere_jetplane_mg_ammo");
-	mg_think_period=get_cvar_float("yandere_jetplane_mg_think_period");
-}
 public plugin_natives(){
-	
-	register_native("get_jet_shells","_get_jet_shells",0);
+
 	register_native("mg_destroy","_mg_destroy",0);
 	register_native("spawn_jetplane_mg","_spawn_jetplane_mg",0);
-	register_native("set_jet_shells","_set_jet_shells",0);
-	register_native("get_mg_think_period","_get_mg_think_period",0);
 	register_native("get_user_jet_shells","_get_user_jet_shells",0);
-	register_native("set_user_jet_shells","_set_user_jet_shells",0);
 	register_native("reset_jet_shells","_reset_jet_shells",0);
-	register_native("reset_user_jet_shells","_reset_user_jet_shells",0);
-	register_native("get_user_mg","_get_user_mg",0);
 	
 }
-public _get_jet_shells(iPlugins,iParams){
-	new jet_id=get_param(1)
-	
+get_jet_shells(jet_id){
+
 	new num_shells=pev(jet_id,pev_iuser2)
 	return num_shells;
 	
 }
-public Float:_get_mg_think_period(iPlugins,iParams){
-	
-	return mg_think_period
-	
-}
-public _set_jet_shells(iPlugins,iParams){
-	new jet_id=get_param(1)
-	new the_shells=get_param(2)
-	
+set_jet_shells(jet_id, the_shells){
+
 	set_pev(jet_id,pev_iuser2,the_shells)
 }
 public _reset_jet_shells(iPlugins,iParams){
 	new jet_id=get_param(1)
 	
-	set_pev(jet_id,pev_iuser2,jetplane_mg_ammo)
+	set_pev(jet_id,pev_iuser2,cvar_val(num, pcvar_jetplane_mg_ammo))
 }
 public _get_user_jet_shells(iPlugins,iParams){
 	
@@ -100,35 +78,9 @@ public _get_user_jet_shells(iPlugins,iParams){
 	return get_jet_shells(jet_get_user_jet(id))
 	
 }
-public _set_user_jet_shells(iPlugins,iParams){
-	
-	new id=get_param(1)
-	new the_shells=get_param(2)
-	return set_jet_shells(jet_get_user_jet(id),the_shells)
-	
-}
-public _reset_user_jet_shells(iPlugins,iParams){
-	
-	new id=get_param(1)
-	return reset_jet_shells(jet_get_user_jet(id))
-	
-}
-public _get_user_mg(iPlugins,iParams){
-	new id=get_param(1)
-	new result=is_user_connected(id)
-	if(result){
-		new result2=pev_valid(jet_get_user_jet(id))
-		if(result2){
-			
-			
-			return user_mg[id]
-		}
-		else{
-			return -1
-			
-		}
-	}
-	return -1
+set_user_jet_shells(id, the_shells){
+
+	set_jet_shells(jet_get_user_jet(id),the_shells)
 	
 }
 public _spawn_jetplane_mg(iPlugins,iParams){
@@ -167,7 +119,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	jetplane_orig[1]+=jetplane_origin_mg_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_mg_offsets[2]
 	set_pev(mg_id,pev_origin,jetplane_orig)
-	set_pev(mg_id, pev_nextthink, get_gametime() + get_mg_think_period())
+	set_pev(mg_id, pev_nextthink, get_gametime() + cvar_val(float, pcvar_mg_think_period))
 }
 public CmdStart(id, uc_handle)
 {
@@ -187,7 +139,7 @@ public CmdStart(id, uc_handle)
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
 	if((weapon==CSW_KNIFE)&&jet_deployed(id)){
-		if(get_user_mg(id)>0){
+		if(user_mg[id]>0){
 			if(button & IN_ATTACK)
 			{
 				button &= ~IN_ATTACK;
@@ -261,7 +213,7 @@ public mg_think(ent)
 		if(!entity_get_int(ent,EV_INT_iuser1)){
 		
 			if(current_mg_loading_time>0.0){
-				entity_set_float(ent,EV_FL_fuser1,current_mg_loading_time-MG_THINK_PERIOD)
+				entity_set_float(ent,EV_FL_fuser1,current_mg_loading_time-cvar_val(float, pcvar_mg_think_period))
 			}
 			else{
 				entity_set_int(ent,EV_INT_iuser1,1)
@@ -269,7 +221,7 @@ public mg_think(ent)
 
 			}
 		}
-		set_pev(ent, pev_nextthink, gametime + (MG_THINK_PERIOD))
+		set_pev(ent, pev_nextthink, gametime + (cvar_val(float, pcvar_mg_think_period)))
 	}
 	return FMRES_IGNORED
 }
@@ -277,11 +229,11 @@ public mg_think(ent)
 launch_shell(id)
 {
 	
-	if(!is_valid_ent(get_user_mg(id))) return PLUGIN_HANDLED
+	if(!is_valid_ent(user_mg[id])) return PLUGIN_HANDLED
 
 	new Float: Origin[3], Float: vAngle[3], Ent
 
-	entity_get_vector(get_user_mg(id), EV_VEC_origin , Origin)
+	entity_get_vector(user_mg[id], EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	
 	Origin[2]+=(jetplane_mg_max_dims[2]+10.0)
@@ -318,7 +270,7 @@ launch_shell(id)
 
 	entity_set_origin(Ent, dest_origin)
 
-	velocity_by_aim(user_jet, floatround(jetplane_mg_bulletspeed), Velocity)
+	velocity_by_aim(user_jet, floatround(cvar_val(float, pcvar_jetplane_mg_bulletspeed)), Velocity)
 	
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -360,29 +312,40 @@ public shell_hit_player(pToucher, pTouched){
 	if(is_user_alive(pTouched))
 	{
 		
-		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		new Float:origin[3]
+		static Float:origin[3],
+			Float:velocity[3],
+			Float:trace_vector_direction[3],
+			Float:trace_vector_end[3],
+			Float:speed,
+			hitgroup
+			
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
-		tank_impact_shot_fx(pToucher,origin,3);
-		new Float:vic_origin[3];
-		new Float:vic_origin_eyes[3];
-		new vic_origin_eyes_int[3];
+		entity_get_vector(pToucher,EV_VEC_velocity,velocity)
+		new oid = entity_get_edict(pToucher, EV_ENT_owner)
+		new tr_handle=create_tr2()
+		multiply_3d_vector_by_scalar(velocity,
+						(MG_SHELL_HEADSHOT_DIST_THRESHOLD*3.0)/speed,trace_vector_direction)
+		add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
+		engfunc(EngFunc_TraceLine,
+			origin,
+			trace_vector_end,
+			0,
+			pToucher,
+			tr_handle
+		)
+		hitgroup = get_tr2(tr_handle, TR_iHitgroup)
 		
-		entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-		get_user_origin(pTouched,vic_origin_eyes_int,1);
-		IVecFVec(vic_origin_eyes_int,vic_origin_eyes);
-		new Float:head_distance=vector_distance(vic_origin_eyes,origin);
-		new Float:damage=jetplane_mg_dmg
+		free_tr2(tr_handle)
+		new Float:damage=cvar_val(float, pcvar_jetplane_mg_dmg);
 		new headshot=0;
-		if(head_distance<MG_SHELL_HEADSHOT_DIST_THRESHOLD){
+		if(hitgroup==HIT_HEAD){
 			
 			headshot=1;
 			damage*=4;
 		}
-		new CsTeams:att_team=cs_get_user_team(oid),
-				CsTeams:vic_team=cs_get_user_team(pTouched);
-		if(att_team!=vic_team){
-			ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,damage,DMG_BULLET);
+		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)){
+			new bool:tg_will_die= (damage>float(get_user_health(pTouched)))
+			ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,tg_will_die?50000.0:damage,DMG_BULLET);
 			if(is_user_alive(pTouched)){
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
@@ -415,6 +378,7 @@ public shell_hit_player(pToucher, pTouched){
 					}
 				}
 			}
+			
 		}
 	}
 	remove_entity(pToucher)
@@ -438,7 +402,7 @@ public shell_hit_jet(pToucher, pTouched)
 		new CsTeams:att_team=cs_get_user_team(the_owner),
 			CsTeams:vic_team=cs_get_user_team(jet_owner);
 		if(att_team!=vic_team){
-			jet_hurt_user_jet(jet_owner,the_owner,pToucher,jetplane_mg_dmg)
+			jet_hurt_user_jet(jet_owner,the_owner,pToucher,cvar_val(float, pcvar_jetplane_mg_dmg))
 		}
 	}
 	remove_entity(pToucher)
@@ -455,9 +419,9 @@ public _mg_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
 	
-	if(is_valid_ent(get_user_mg(id))){
-		draw_bbox(get_user_mg(id),true)
-		remove_entity(get_user_mg(id));
+	if(is_valid_ent(user_mg[id])){
+		draw_bbox(user_mg[id],true)
+		remove_entity(user_mg[id]);
 		user_mg[id]=-1;
 	}
 }

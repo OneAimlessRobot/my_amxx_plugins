@@ -829,7 +829,7 @@ public charge_iteration(owner,field_id){
 	// switch to knife
 	engclient_cmd(owner, "weapon_knife")
 	
-	new hud_msg[128];
+	static hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))
 	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/cvar_val(float,pcvar_flora_charge_time))*100.0);
 	client_print(owner,print_center,"%s",hud_msg)

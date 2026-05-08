@@ -14,6 +14,7 @@ enum damage_icon_types{
   DMG_ICON_LONGJUMP,
   DMG_ICON_MAX //this_value bounds an internal array. dont use it
 }
+native ammo_hud(id,number,sw)
 
 native precache_native_fx_pt1()
 native prepare_shero_aux_lib_pt1()
