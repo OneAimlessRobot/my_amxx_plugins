@@ -8,6 +8,7 @@
 GAMEROOT=$(cd "${0%/*}" && echo "${PWD}")
 
 export LD_LIBRARY_PATH=${GAMEROOT}:$LD_LIBRARY_PATH
+echo $LD_LIBRARY_PATH
 ulimit -c unlimited
 ulimit -n 2048
 
@@ -17,7 +18,7 @@ cd "$GAMEROOT"
 STATUS=42
 #DEBUGGER="gdb"
 while [ $STATUS -eq 42 ]; do
-	${DEBUGGER} ${GAMEROOT}/hlds_linux ${@}
+	${DEBUGGER} ${GAMEROOT}/hltv ${@}
 	STATUS=$?
 done
 exit $STATUS
