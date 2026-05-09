@@ -51,8 +51,6 @@ public plugin_init()
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate 3-fold! Switch between and trigger them with knife deployed", true, "reika_level" )
 
-    register_srvcmd("reika_init", "reika_init")
-    shRegHeroInit(gHeroName, "reika_init")
 
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 
@@ -265,25 +263,28 @@ public loadCVARS()
     reika_parry_mode_time=get_cvar_float("reika_parry_mode_time")
 }
 //----------------------------------------------------------------------------------------------
-public reika_init()
-{
-    // First Argument is an id
-    new temp[6]
-    read_argv(1,temp,5)
-    new id=str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	
     unparry_user(id)
 
 }
+
 //----------------------------------------------------------------------------------------------
-public reika_kd()
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		reika_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public reika_kd(id)
 {
     if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
-    
-    new temp[6]
-
-    read_argv(1,temp,5)
-    new id=str_to_num(temp)
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 

@@ -198,12 +198,6 @@ public fx_damage(id)
 	}
 	switch(fx_num_vic){
 
-		case RADIOACTIVE:{
-			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
-			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Radiation vuln", headshot)
-			}	
-		}
 		case POISON:{
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
 			extraDamage*=(sh_get_user_is_bleeding(id)?2.0:1.0)
@@ -222,7 +216,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_att=(gatling_get_fx_num(attacker));
-	new fx_num_vic=(gatling_get_fx_num(victim));
 	switch (fx_num_att){
 		case POISON:{
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
@@ -238,19 +231,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		}
 		default:{
 		
-		}
-	}
-	switch(fx_num_vic){
-
-		case RADIOACTIVE:{
-			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF + damage
-			if (floatround(extraDamage)>0){
-				damage=floatround(extraDamage)
-				
-			}	
-		}
-		default:{
-			
 		}
 	}
 	return DMG_FWD_PASS

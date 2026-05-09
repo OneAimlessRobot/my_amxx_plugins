@@ -96,12 +96,6 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("DeathMsg","death","a")
 	
-	register_srvcmd("yandere_init", "yandere_init")
-	shRegHeroInit(gHeroName, "yandere_init")
-	register_srvcmd("yandere_kd", "yandere_kd")
-	shRegKeyDown(gHeroName, "yandere_kd")
-	register_srvcmd("yandere_ku", "yandere_ku")
-	shRegKeyUp(gHeroName, "yandere_ku")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
@@ -189,14 +183,9 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	return ham_result
 	
 }
-public yandere_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
 	if(sh_user_has_hero(id,gHeroID) ){
 	
 		gNormalSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
@@ -588,13 +577,26 @@ public plugin_precache()
 	
 }
 
-public yandere_kd()
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		yandere_kd(id)
+	}
 	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+	case SH_KEYUP: {
+		
+		yandere_ku(id)
+	}
+}
+}
+public yandere_kd(id)
+{
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
@@ -642,12 +644,8 @@ public yandere_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public yandere_ku()
+public yandere_ku(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED

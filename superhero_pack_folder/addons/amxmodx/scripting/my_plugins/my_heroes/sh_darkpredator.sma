@@ -63,11 +63,7 @@ public plugin_init()
 							"sh_darkpredator",
 							"You now wear your Predator battle armour.",
 							"You are not wearing your Predator battle armour.")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
-	// INIT
-	register_srvcmd("darkpred_init", "darkpred_init") 
-	shRegHeroInit(gHeroName, "darkpred_init")
 	
 	// WEAPON EVENT To give DarkPredator unlimited deagle ammo
 	register_event("CurWeapon","changeWeapon","be","1=1")  
@@ -125,14 +121,10 @@ public haveable_check(id){
 	return (times_picked<=MAX_PICKED)
 
 }
+
 //----------------------------------------------------------------------------------------------
-public darkpred_init()
-{
-	new temp[6] //Variable to store temp info in
-	// First Argument is an id
-	read_argv(1,temp,5) //This Checks for the ID of the person selecting/dropping this hero and saves as string
-	new id=str_to_num(temp) //This makes the string Into a num
-	
+public sh_hero_init(id, heroID, mode){
+
 	gHasAcess[id]=sh_user_has_hero(id,gHeroID) 
 	gPlayerMaxHealth[id] = 100
 	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){

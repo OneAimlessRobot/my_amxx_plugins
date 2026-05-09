@@ -63,6 +63,7 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level", true )
+	
 	sh_register_superheromod_model(gHeroID,
 							"models/player/arcpred/arcpred.mdl",
 							"models/player/arcpred/arcpredT.mdl",
@@ -83,15 +84,10 @@ public plugin_init()
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
 	
-	// INIT
-	register_srvcmd("arcticPredator_init", "arcticPredator_init")
-	shRegHeroInit(gHeroName, "arcticPredator_init")
 	register_srvcmd("arcticPredator_loop", "arcticPredator_loop")
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	
-	register_srvcmd("arcticPredator_kd", "arcticPredator_kd")
-	shRegKeyDown(gHeroName, "arcticPredator_kd")
 	
 	register_forward(FM_PlayerPreThink, "disc_throw_check")
 	TASKID_LOOP = allocate_typed_task_id(player_task)
@@ -100,16 +96,12 @@ public plugin_init()
 
 	init_explosion_defaults()
 }
+
 //----------------------------------------------------------------------------------------------
-public arcticPredator_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
-	if ( sh_user_has_hero(id,gHeroID) )
-	{
+	if(sh_user_has_hero(id, gHeroID)){
+
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
 		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
 		gAlphaInvis = get_cvar_num("arcticPredator_invisible")
@@ -166,40 +158,42 @@ public hunt_endmode(id)
 		gHuntMode[id] = false
 	}
 }
+
 //----------------------------------------------------------------------------------------------
-public arcticPredator_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
-	
-	// Let them know they already used their ultimate if they have
-	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		if ( sh_is_freezetime() || !is_user_alive(id) ) return
+		
+		// Let them know they already used their ultimate if they have
+		if ( sh_get_cooldown_flag(id)) {
+			playSoundDenySelect(id)
+			return
+		}
+
+		// Make sure they're not in the middle of GOD already
+		if ( g_huntTimer[id]>0 ) return
+
+		g_huntTimer[id]=get_cvar_num("arcticPredator_huntmode")+1
+		StopNVG(id)
+		ToggleNVG(id)
+		ultimateTimer(id, get_cvar_num("arcticPredator_cooldown") * 1.0)
+
+		gHuntMode[id] = true
+		// colussus Messsage
+		new message[128]
+		formatex(message, 127, "Entered Hunting Mode" )
+		set_dhudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
+		show_dhudmessage(id, message)
+		//  emit_sound(id,CHAN_STATIC, g_colussusSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
+
 	}
-	
-	// Make sure they're not in the middle of GOD already
-	if ( g_huntTimer[id]>0 ) return PLUGIN_HANDLED
-	
-	g_huntTimer[id]=get_cvar_num("arcticPredator_huntmode")+1
-	StopNVG(id)
-	ToggleNVG(id)
-	ultimateTimer(id, get_cvar_num("arcticPredator_cooldown") * 1.0)
-	
-	gHuntMode[id] = true
-	// colussus Messsage
-	new message[128]
-	formatex(message, 127, "Entered Hunting Mode" )
-	set_dhudmessage(255,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
-	show_dhudmessage(id, message)
-	//  emit_sound(id,CHAN_STATIC, g_colussusSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
-	
-	return PLUGIN_HANDLED
+
+}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

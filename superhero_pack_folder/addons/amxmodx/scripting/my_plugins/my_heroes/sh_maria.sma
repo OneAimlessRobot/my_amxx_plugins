@@ -68,9 +68,7 @@ public plugin_init()
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
-	
-	register_srvcmd("maria_init", "maria_init")
-	shRegHeroInit(gHeroName, "maria_init")
+
 	init_hud_syncs()
 }
 public plugin_natives(){
@@ -129,15 +127,10 @@ public loadCVARS()
 	set_task(heal_period, "maria_loop",_,_,_, "b")
 }
 
-public maria_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 
 		UnSet_BitVar(gHealthDrainValveMask,id);
 		Set_BitVar(gHealthDrainValveTimerStartedMask,id);

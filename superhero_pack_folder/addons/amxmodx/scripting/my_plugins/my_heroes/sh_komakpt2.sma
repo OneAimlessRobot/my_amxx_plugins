@@ -79,14 +79,9 @@ public plugin_init()
 	register_cvar("komak_blown_engine_cooldown", "30" )
 	gHeroID=shCreateHero(gHeroName, "Mechanical maid", "Change gears, hit players and hit faster!", true, "komak_level" )
 	hud_sync=CreateHudSyncObj()
-	register_srvcmd("komak_init", "komak_init")
-	shRegHeroInit(gHeroName, "komak_init")
+
 	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakerypt2",_,true)
 	RegisterHam(Ham_TraceAttack,"player","trace_komakerypt2",_,true)
-	register_srvcmd("komak_kd", "komak_kd")
-	shRegKeyDown(gHeroName, "komak_kd")
-	register_srvcmd("komak_ku", "komak_ku")
-	shRegKeyUp(gHeroName, "komak_ku")
 	
 	
 	static wpnName[32]
@@ -116,13 +111,8 @@ public Item_PostFrame_Post(iEnt)
 	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
 	return HAM_IGNORED
 } 
-public komak_init()
-{
-	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
 	reset_komak(id)
 	
@@ -357,14 +347,25 @@ public komak_gear_change(id,is_up){
 	
 }
 
-public komak_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		komak_kd(id)
+	}
 	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+	case SH_KEYUP: {
+		
+		komak_ku(id)
+	}
+}
+}
+public komak_kd(id)
+{
 	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
 
@@ -382,13 +383,8 @@ public komak_pitch(id){
 	return floatround(float(g_komak_hits[id])/float(max_rpm)*float(150))
 
 }
-public komak_ku()
+public komak_ku(id)
 {
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!gClutchDown[id]) return PLUGIN_HANDLED
 	

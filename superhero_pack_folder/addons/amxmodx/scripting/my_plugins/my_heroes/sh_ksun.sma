@@ -80,12 +80,7 @@ public plugin_init()
 
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",1,true)
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
-	// INIT
-	register_srvcmd("ksun_init", "ksun_init")
-	shRegHeroInit(gHeroName, "ksun_init")
-	
-	register_srvcmd("ksun_kd", "ksun_kd")
-	shRegKeyDown(gHeroName, "ksun_kd")
+
 
 	set_task(1.0,"ksun_step_silent",_,_,_,"b")
 }
@@ -381,14 +376,9 @@ public sh_client_spawn(id)
 	return
 }
 //----------------------------------------------------------------------------------------------
-public ksun_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
-	if ( sh_user_has_hero(id,gHeroID)  ){
+	if(sh_user_has_hero(id, gHeroID)){
 
 		ksun_weapons(id)
 		
@@ -402,13 +392,22 @@ public ksun_init()
 	ksun_set_num_available_spores(id,0)
 	clean_ksun_spores_from_players(1,0,id);
 }
+
 //----------------------------------------------------------------------------------------------
-public ksun_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		ksun_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public ksun_kd(id)
+{
 	
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	

@@ -1,4 +1,6 @@
+
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 /* CVARS - COPY AND PASTE INTO shconfig.cfg
 
@@ -22,7 +24,7 @@ tracker_refreshrate 1.0 //Ammount of time between showings of the target sprite 
 */
 new gHeroID
 new spriteTarget
-new bool:isTagged[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new isTaggedMask[SH_MAXSLOTS+1] = {0, ...}
 new Float:timeLeft[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new numTargets[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------
@@ -61,13 +63,13 @@ public sh_client_spawn(id)
   
   numTargets[id] = 0
   
-  for(new v=0; v<num; v++)
-    isTagged[id][players[v]] = false
-  
+  for(new v=0; v<num; v++){
+    Assign_BitVar(isTaggedMask[id],players[v],false_for_macro)
+  }
   for(new a=0; a<num; a++)
-    if(isTagged[players[a]][id])
+    if(Get_BitVar(isTaggedMask[players[a]],id))
     {
-      isTagged[players[a]][id] = false
+      Assign_BitVar(isTaggedMask[players[a]],id,false_for_macro)
       numTargets[players[a]] = numTargets[players[a]]--
     }
 }
@@ -84,7 +86,7 @@ public tracker_damage(id)
 
   if(attacker<(sh_maxplayers()+1) && sh_user_has_hero(attacker,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
   {
-    isTagged[attacker][victim] = true
+    Assign_BitVar(isTaggedMask[attacker],victim, true_for_macro)
     numTargets[attacker] = numTargets[attacker]++
     timeLeft[attacker][victim] = get_cvar_float("tracker_timetargeted")
     if(timeLeft[attacker][victim]==0.0)
@@ -104,7 +106,7 @@ public tracker_loop()
   {
     for(new v=0; v<num; v++)
     {
-      if(isTagged[players[a]][players[v]] && (timeLeft[players[a]][players[v]]>0.0 || timeLeft[players[a]][players[v]]==-1.0))
+      if(Get_BitVar(isTaggedMask[players[a]],players[v]) && (timeLeft[players[a]][players[v]]>0.0 || timeLeft[players[a]][players[v]]==-1.0))
       {
         new Float:source[3], Float:target[3], Float:location[3], view[3], hit[3]
         get_user_origin(players[a],view,1)

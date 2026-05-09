@@ -38,13 +38,7 @@ public plugin_init()
 							JAQUEO_COOL_SCOUT_P_MODEL)
 
 	register_event("DeathMsg","death","a")
-	register_srvcmd("jaqueo_init", "jaqueo_init")
-	shRegHeroInit(gHeroName, "jaqueo_init")
 	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",_,true)
-	register_srvcmd("jaqueo_kd", "jaqueo_kd")
-	shRegKeyDown(gHeroName, "jaqueo_kd")
-	register_srvcmd("jaqueo_ku", "jaqueo_ku")
-	shRegKeyUp(gHeroName, "jaqueo_ku")
 	
 	// Add your code here...
 }
@@ -59,15 +53,10 @@ public _jaqueo_get_hero_id(iPlugin,iParams){
 	return gHeroID;
 	
 }
-public jaqueo_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		jaqueo_weapons(id)
 	}
@@ -76,6 +65,24 @@ public jaqueo_init()
 		jaqueo_drop_weapons(id)
 	}
 	reset_jaqueo_user(id)
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		jaqueo_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		jaqueo_ku(id)
+	}
+}
 }
 public jaqueo_weapons(id){
 	
@@ -138,12 +145,8 @@ public sh_client_spawn(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public jaqueo_kd()
+public jaqueo_kd(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!shield_loaded(id)) {
 		return PLUGIN_CONTINUE
@@ -159,12 +162,8 @@ public jaqueo_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public jaqueo_ku()
+public jaqueo_ku(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED

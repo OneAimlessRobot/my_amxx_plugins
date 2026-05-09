@@ -69,10 +69,6 @@ public plugin_init()
 					dmg_source_name_short_euromilhoes,
 					dmg_source_name_long_euromilhoes,0)
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("gambit_init", "gambit_init")
-	shRegHeroInit(gHeroName, "gambit_init")
 
 	// EXTRA NADE DAMAGE
 	RegisterHam(Ham_TakeDamage,"player","gambit_damage",_,true)
@@ -113,14 +109,9 @@ public grenade_throw(id, gid, wid)
 	}
 } 
 //----------------------------------------------------------------------------------------------
-public gambit_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID) && is_user_alive(id) ) {
 		gambit_weapons(id)
 	}
 }

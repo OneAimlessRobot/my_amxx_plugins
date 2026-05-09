@@ -33,14 +33,6 @@ public plugin_init()
 								"Sapper ready.",
 								"Mission failed.")
 	register_event("DeathMsg","death","a")
-	
-	register_srvcmd("sapper_init", "sapper_init")
-	shRegHeroInit(gHeroName, "sapper_init")
-	
-	register_srvcmd("sapper_kd", "sapper_kd")
-	shRegKeyDown(gHeroName, "sapper_kd")
-	register_srvcmd("sapper_ku", "sapper_ku")
-	shRegKeyUp(gHeroName, "sapper_ku")
 }
 
 public plugin_natives(){
@@ -87,15 +79,10 @@ public _sapper_dec_num_mines(iPlugin,iParams){
 
 }
 
-public sapper_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		sapper_weapons(id);
 
@@ -104,6 +91,24 @@ public sapper_init()
 		sh_drop_weapon(id, CSW_P90, true)
 	}
 	reset_sapper_user(id)	
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		sapper_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		sapper_ku(id)
+	}
+}
 }
 public reset_sapper_user(id){
 	
@@ -147,12 +152,8 @@ if(sh_user_has_hero(id,gHeroID) ){
 }
 
 //----------------------------------------------------------------------------------------------
-public sapper_kd()
+public sapper_kd(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
@@ -189,12 +190,8 @@ public sapper_kd()
 }
 
 //----------------------------------------------------------------------------------------------
-public sapper_ku()
+public sapper_ku(id)
 {
-	new temp[6]
-
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED

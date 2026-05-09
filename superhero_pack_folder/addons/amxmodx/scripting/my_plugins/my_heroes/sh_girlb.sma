@@ -43,13 +43,6 @@ public plugin_init()
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land (JUMP+FORWARD)!", true, "girlb_level" )
 
-    register_srvcmd("girlb_init", "girlb_init")
-    shRegHeroInit(gHeroName, "girlb_init")
-
-    register_srvcmd("girlb_kd", "girlb_kd")
-    shRegKeyDown(gHeroName, "girlb_kd")
-    register_srvcmd("girlb_ku", "girlb_ku")
-    shRegKeyUp(gHeroName, "girlb_ku")
     SHOOT_GLOB_TASKID=allocate_typed_task_id(player_task)
     REGEN_GLOB_TASKID=allocate_typed_task_id(player_task)
 }
@@ -131,31 +124,40 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public girlb_init()
-{
-    // First Argument is an id
-    new temp[6]
-    read_argv(1,temp,5)
-    new id=str_to_num(temp)
-    
-    gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar)
-    set_task(cvar_val(float, girlb_regen_period_pcvar),
-                    "regen_glob_task",id+REGEN_GLOB_TASKID)
-
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID)){
+        gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar)
+        set_task(cvar_val(float, girlb_regen_period_pcvar),
+                        "regen_glob_task",id+REGEN_GLOB_TASKID)
+    }
 }
 public sh_round_end(){
 
     remove_entity_name(GLOB_CLASSNAME)
 }
+
 //----------------------------------------------------------------------------------------------
-public girlb_kd()
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		girlb_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		girlb_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public girlb_kd(id)
 {
     if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
-
-    new temp[6]
-
-    read_argv(1,temp,5)
-    new id=str_to_num(temp)
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
@@ -178,14 +180,10 @@ public girlb_kd()
     return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public girlb_ku()
+public girlb_ku(id)
 {
     if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
-    
-    new temp[6]
 
-    read_argv(1,temp,5)
-    new id=str_to_num(temp)
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 

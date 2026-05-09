@@ -40,8 +40,6 @@ public plugin_init()
 	
 	custom_dmg_id_scythe=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_scythe,dmg_source_name_long_scythe,1)
 
-	register_srvcmd("greaper2_init", "greaper2_init")
-	shRegHeroInit(gHeroName, "greaper2_init")
 	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "swing_scythe",_,true)
 	
@@ -57,22 +55,10 @@ public _sh_get_death_scythe_wpn_id(iPlugin,iParams){
 
 	return custom_dmg_id_scythe
 }
-public greaper2_init()
-{
-	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
-		
-		reset_greaper2_user(id)
-	}
-	else{
-		reset_greaper2_user(id)
-	}
-	
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+
+		reset_greaper2_user(id)	
 }
 public weaponChange(id)
 {

@@ -27,14 +27,6 @@ public plugin_init()
 	pcvar_camera_cooldown = register_cvar("camman_camera_cooldown", "10")
 	
 	gHeroID=shCreateHero(gHeroName, "Camman", "Plant cameras on walls", true, "camman_level" )
-	
-	register_srvcmd("camman_init", "camman_init")
-	shRegHeroInit(gHeroName, "camman_init")
-	
-	register_srvcmd("camman_kd", "camman_kd")
-	shRegKeyDown(gHeroName, "camman_kd")
-	register_srvcmd("camman_ku", "camman_ku")
-	shRegKeyUp(gHeroName, "camman_ku")
 }
 
 public plugin_natives(){
@@ -76,15 +68,13 @@ public _camman_get_has_camera(iPlugin,iParams){
 	
 }
 
-public camman_init()
-{
-	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	reset_camman_user(id)
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+
+	if(sh_user_has_hero(id, gHeroID)){
+		reset_camman_user(id)
+	}
 
 	
 }
@@ -105,13 +95,25 @@ public sh_client_spawn(id)
 	}
 	
 }
+
 //----------------------------------------------------------------------------------------------
-public camman_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		camman_kd(id)	
+	}
 	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+	case SH_KEYUP: {
+		camman_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public camman_kd(id){
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
@@ -165,13 +167,8 @@ public camman_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public camman_ku()
+public camman_ku(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
 		return PLUGIN_HANDLED
 	}

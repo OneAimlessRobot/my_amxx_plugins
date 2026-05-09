@@ -67,11 +67,6 @@ public plugin_init()
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
 	
-	register_srvcmd("teliko_init", "teliko_init")
-	shRegHeroInit(gHeroName, "teliko_init")
-	
-	register_srvcmd("teliko_kd", "teliko_kd")
-	shRegKeyDown(gHeroName, "teliko_kd")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
 	init_explosion_defaults()
@@ -107,23 +102,16 @@ public _teliko_dec_num_chaffs(iPlugin,iParams){
 	gNumChaffs[id]-= (gNumChaffs[id]>0)? 1:0
 
 }
-
-public teliko_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	reset_teliko_user(id)
+	if(sh_user_has_hero(id, gHeroID)){
 		
-		Teliko_weapons(id);
-		reset_teliko_user(id)
+		Teliko_weapons(id)
 		update_max_bullets(id)
 	}
 	else{
-		reset_teliko_user(id)
 		sh_drop_weapon(id, TELIKO_SIDEARM_CLASSID, true)
 		sh_drop_weapon(id, TELIKO_RIFLE_CLASSID, true)
 		slitter_set_slitter(id,0)
@@ -381,14 +369,23 @@ if(sh_user_has_hero(id,gHeroID) ){
 
 remove_enemy(id)
 }
+
+
 //----------------------------------------------------------------------------------------------
-public teliko_kd()
+public sh_hero_key(id, heroID, key)
 {
-new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
-read_argv(1,temp,5)
-new id=str_to_num(temp)
-
+switch(key)
+{
+	case SH_KEYDOWN: {
+		teliko_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public teliko_kd(id)
+{
 if ( !is_user_alive(id) ) {
 	return PLUGIN_HANDLED
 }

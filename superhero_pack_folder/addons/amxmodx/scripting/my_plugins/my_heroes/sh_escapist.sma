@@ -64,19 +64,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Climb and sneak away!", "You are now a prison escapist. Get better every level!", true, "escapist_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  	// KEY UP
-	register_srvcmd("escapist_ku",   "escapist_ku")
-	shRegKeyUp(gHeroName, "escapist_ku")
-
-	// KEY DOWN
-	register_srvcmd("escapist_kd", "escapist_kd")
-	shRegKeyDown(gHeroName, "escapist_kd")
-
-
-	// INIT
-	register_srvcmd("escapist_init", "escapist_init")
-	shRegHeroInit(gHeroName, "escapist_init")
+	
 	register_event("CurWeapon", "getFastWeaponAndSpeed", "be", "1=1")
 
 	//Waits 4 seconds then loads cvars into variables
@@ -186,15 +174,30 @@ public loadCVARS()
 	gMinSpeed=get_cvar_num("escapist_minspeed");
 	gLvlsForFullMastery=get_cvar_num("escapist_numlvlsmastery");
 }
-//----------------------------------------------------------------------------------------------
-public escapist_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	gPlayerLevel[id]=sh_get_user_lvl(id)
 
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(sh_user_has_hero(id, gHeroID)){
+		gPlayerLevel[id]=sh_get_user_lvl(id)
+	}
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		escapist_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		escapist_ku(id)
+	}
+}
 }
 //----------------------------------------------------------------------------------------------
 public escapist_loop(id)
@@ -222,9 +225,10 @@ public escapist_loop(id)
 		}
 	}
 }
+
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public escapist_kd()
+public escapist_kd(id)
 {
 
 	// First Argument is an id with shock Powers!
@@ -235,7 +239,7 @@ public escapist_kd()
 	if ( !hasRoundStarted() || !is_user_alive(id)||!is_user_connected(id))
 	{
 		playSoundDenySelect(id)
-		return PLUGIN_HANDLED 
+		return
 	}
 
 	g_lastWeapon[id]=get_user_weapon(id)
@@ -243,16 +247,12 @@ public escapist_kd()
 	
 	g_is_climbing[id] = 1
 
-	return PLUGIN_HANDLED 
+	return
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public escapist_ku()
+public escapist_ku(id)
 {
-	// First Argument is an id with Ironman Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	g_is_climbing[id] = 0
 	sh_switch_weapon(id,g_lastWeapon[id])
 

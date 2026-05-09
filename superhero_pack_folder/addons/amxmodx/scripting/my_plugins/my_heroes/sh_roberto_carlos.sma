@@ -37,8 +37,7 @@ public plugin_init()
 	pcvar_ball_cooldown = register_cvar("roberto_ball_cooldown", "1.0")
 	
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
-	register_srvcmd("roberto_init", "roberto_init")
-	shRegHeroInit(gHeroName, "roberto_init")
+
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	
@@ -144,16 +143,10 @@ public _roberto_dec_num_balls(iPlugin,iParams){
 	
 }
 
-
-public roberto_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		gNumBalls[id]=cvar_val(num, pcvar_num_balls)
 		
 	}
@@ -164,13 +157,20 @@ public roberto_init()
 	
 }
 
-public roberto_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		roberto_kd(id)
+	}
+}
+}
+public roberto_kd(id)
+{
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 

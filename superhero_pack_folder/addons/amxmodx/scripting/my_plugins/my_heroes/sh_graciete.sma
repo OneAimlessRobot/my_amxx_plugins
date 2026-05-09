@@ -29,8 +29,6 @@ public plugin_init()
 
 
 	register_event("DeathMsg","death","a")
-	register_srvcmd("graciete_init", "graciete_init")
-	shRegHeroInit(gHeroName, "graciete_init")
 	
 	// Add your code here...
 }
@@ -44,15 +42,10 @@ public _graciete_get_hero_id(iPlugin,iParams){
 	return gHeroID;
 
 }
-public graciete_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		q_barrel_set_q_barrel(id)
 	}

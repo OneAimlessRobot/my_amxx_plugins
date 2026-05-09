@@ -52,10 +52,7 @@ public plugin_init()
 	gHeroID=shCreateHero(HeroName, "Dark Angel m4!", "Get dark angels Powerfull m4! 'MUAHAHAHH FEEL THE WRATH OF MY ANGER!!!! THE MIGHT OF MY POWER!!!!' This is him speaking MAHAHAHAHAAAAAAHHHH!!!!!", false, "darkangel_level")
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/toxic_cat_m4.mdl")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("darkangel_init", "darkangel_init")
-	shRegHeroInit(HeroName, "darkangel_init")
+	
 	
 	// EVENTS
 	
@@ -96,13 +93,10 @@ public haveable_check(id){
 	return!(times_picked>MAX_PICKED)
 
 }
+
 //----------------------------------------------------------------------------------------------
-public darkangel_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+
 	
 	HasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
 	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){

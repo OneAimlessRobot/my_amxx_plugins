@@ -23,6 +23,11 @@ stock MOLLY_TASKID,
 
 new gIsBurningMask = 0
 
+
+new dmg_source_name_short_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
+new dmg_source_name_long_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
+new custom_dmg_id_fire_vuln
+
 public plugin_init(){
 	
 	
@@ -31,6 +36,11 @@ public plugin_init(){
 	register_event("DeathMsg","on_death_burning","a")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
+
+	custom_dmg_id_fire_vuln=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_fire_vuln,
+				dmg_source_name_long_fire_vuln,
+				0)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -110,7 +120,14 @@ public molotov_damage_vulnerability(id){
 	if(Get_BitVar(gIsBurningMask,id)){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
-			sh_extra_damage(id, attacker, floatround(extraDamage), "Burn vuln", headshot)
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id, attacker, floatround(extraDamage),
+							dmg_source_name_short_fire_vuln,
+							headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_FIRE,
+							custom_dmg_id_fire_vuln)
+			}
 		}
 	}
 
@@ -120,8 +137,11 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){
-		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF  + damage
+		
+		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF - damage
 		if (floatround(extraDamage)>0){
+			new_dmg_type=SH_NEW_DMG_FIRE
+			custom_weapon_id=custom_dmg_id_fire_vuln
 			damage=floatround(extraDamage)
 		}
 	}

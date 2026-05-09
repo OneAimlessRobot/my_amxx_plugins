@@ -53,11 +53,7 @@ public plugin_init()
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
 	register_event("CurWeapon", "weaponChange","be","1=1")
-	
-	register_srvcmd("yakui_init", "yakui_init")
-	shRegHeroInit(gHeroName, "yakui_init")
-	register_srvcmd("yakui_kd", "yakui_kd")
-	shRegKeyDown(gHeroName, "yakui_kd")
+
 }
 public plugin_natives(){
 	register_native("gatling_get_hero_id","_gatling_get_hero_id",0);
@@ -106,15 +102,11 @@ public player_prethink_yakui_weapon(id, uc_handle)
 	}
 	return FMRES_IGNORED;
 }
-public yakui_init()
-{
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		init_yakui(id)
 		
 	}
@@ -215,11 +207,20 @@ public weaponChange(id)
 	}
 }
 
-public yakui_kd(){
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		yakui_kd(id)
+	}
+}
+}
+public yakui_kd(id){
+
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
 		return PLUGIN_HANDLED

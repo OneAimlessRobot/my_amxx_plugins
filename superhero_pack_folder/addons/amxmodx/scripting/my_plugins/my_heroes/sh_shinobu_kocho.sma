@@ -54,14 +54,10 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
 	register_event("Damage","shinobuDamage","b", "2!0")
-	register_srvcmd("shinobu_init", "shinobu_init")
-	shRegHeroInit(gHeroName, "shinobu_init")
+
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
-
-	register_srvcmd("shinobu_kd", "shinobu_kd")
-	shRegKeyDown(gHeroName, "shinobu_kd")
 
 
 	//RegisterHam(Ham_Player_PreThink,"player","shinobu_step_silent",_,true)
@@ -222,12 +218,7 @@ public shinobuDamage(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public shinobu_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
 	if(sh_user_has_hero(id,gHeroID) ){
 
@@ -316,14 +307,23 @@ shinobu_teleport_init(id){
 	nani_behind_player(id,g_shinobu_tagged_player[id],80.0)
 
 }
+
 //----------------------------------------------------------------------------------------------
-public shinobu_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		shinobu_kd(id)
+	}
 	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+}
+}
+//----------------------------------------------------------------------------------------------
+public shinobu_kd(id)
+{
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED

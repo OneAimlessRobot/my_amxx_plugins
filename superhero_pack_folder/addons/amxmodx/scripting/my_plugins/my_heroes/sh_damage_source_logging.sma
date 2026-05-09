@@ -8,7 +8,7 @@
 
 
 stock generic_dmg_source_wpn_id;
-const generic_dmg_source_is_melee=1;
+const generic_dmg_source_is_melee=0;
 stock generic_dmg_hero_name[MAX_HERO_NAME_LENGTH]="some_hero"
 stock generic_dmg_source_name[SAFE_BUFFER_SIZE-1]="sh_generic_dmg";
 stock generic_dmg_source_long_name[SAFE_BUFFER_SIZE-1]="sh_generic_dmg";

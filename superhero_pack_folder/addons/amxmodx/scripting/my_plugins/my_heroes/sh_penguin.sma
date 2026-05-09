@@ -68,10 +68,6 @@ public plugin_init()
 							dmg_source_name_short_penguin,
 							dmg_source_name_long_penguin,0)
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("penguin_init", "penguin_init")
-	shRegHeroInit(gHeroName, "penguin_init")
 
 
 	// EXTRA NADE DAMAGE
@@ -94,13 +90,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,"models/shmod/penguin_v_hegrenade.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public penguin_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	
 	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		penguin_weapons(id)
 		switchmodel(id)

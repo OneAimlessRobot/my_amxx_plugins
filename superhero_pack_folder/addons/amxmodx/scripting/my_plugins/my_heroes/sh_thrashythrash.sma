@@ -79,13 +79,7 @@ public plugin_init()
 	register_forward( FM_CmdStart, "fw_CmdStart" )
 
 
-	// INIT
-	register_srvcmd("thrashy_init", "thrashy_init")
-	shRegHeroInit(gHeroName, "thrashy_init")
-
-	register_srvcmd("thrashy_kd", "thrashy_kd")
 	shSetShieldRestrict(gHeroName)
-	shRegKeyDown(gHeroName, "thrashy_kd")
 	sh_set_hero_hpap(gHeroID, healthcvar, 0)
 	shSetMaxSpeed(gHeroName, "thrashy_speed", "[0]")
 	times_picked=0;
@@ -100,13 +94,7 @@ public haveable_check(id){
 
 }
 //----------------------------------------------------------------------------------------------
-public thrashy_init()
-{
-		
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
 	gHasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
 	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
@@ -180,15 +168,22 @@ public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheSound,"weapons/zoom.wav")
 }
+
 //----------------------------------------------------------------------------------------------
-public thrashy_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
+switch(key)
+{
+	case SH_KEYDOWN: {
+		thrashy_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public thrashy_kd(id)
+{
 	if ( !is_user_alive(id) ) 
 		return PLUGIN_HANDLED
 

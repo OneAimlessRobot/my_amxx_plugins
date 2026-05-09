@@ -75,9 +75,7 @@ public plugin_init()
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
-	
-	register_srvcmd("adriano_init", "adriano_init")
-	shRegHeroInit(gHeroName, "adriano_init")
+
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	init_hud_syncs()
 }
@@ -111,15 +109,10 @@ public adriano_weapons(id)
 		colt_set_colt(id)
 	}
 }
-public adriano_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		adriano_weapons(id)
 		g_adriano_points[id]=base_points;

@@ -78,8 +78,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
 	register_event("Damage", "erica_damage", "b", "2!0")
 	register_event("DeathMsg","death","a")
-	register_srvcmd("erica_init", "erica_init")
-	shRegHeroInit(gHeroName, "erica_init")
 	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage",_,true)
 	
 	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
@@ -151,15 +149,10 @@ prepare_erica(id){
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id] = cvar_val(num, pcvar_num_er_darts)
 }
-public erica_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		prepare_erica(id)
 		Erica_weapons(id)
 		

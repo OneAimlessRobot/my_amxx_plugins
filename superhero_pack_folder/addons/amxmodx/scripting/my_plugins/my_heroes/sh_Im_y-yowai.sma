@@ -49,21 +49,11 @@ public plugin_init()
 
 	RegisterHam(Ham_TakeDamage, "player", "Yowai_normal_damage",_,true)
 	
-	register_srvcmd("Yowai_init", "Yowai_init")
-	shRegHeroInit(gHeroName, "Yowai_init")
-	
-	register_srvcmd("Yowai_kd", "Yowai_kd")
-	shRegKeyDown(gHeroName, "Yowai_kd")
 }
-public Yowai_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		update_max_hits(id)
 	}
@@ -180,12 +170,20 @@ return HAM_IGNORED
 }
 
 //----------------------------------------------------------------------------------------------
-public Yowai_kd()
+public sh_hero_key(id, heroID, key)
 {
-new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
-read_argv(1,temp,5)
-new id=str_to_num(temp)
+switch(key)
+{
+	case SH_KEYDOWN: {
+		Yowai_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public Yowai_kd(id)
+{
 
 if (sh_is_freezetime() || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||Get_BitVar(g_yowai_mode_mask,id) ) {
 	return PLUGIN_HANDLED

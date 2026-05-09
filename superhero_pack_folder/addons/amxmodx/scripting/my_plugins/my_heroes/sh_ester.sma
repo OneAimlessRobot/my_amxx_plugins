@@ -118,14 +118,6 @@ public plugin_init()
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("DeathMsg","death","a")
 	
-	//RegisterHam(Ham_Player_PreThink,"player","ester_step_silent",_,true)
-
-	register_srvcmd("ester_init", "ester_init")
-	shRegHeroInit(gHeroName, "ester_init")
-	register_srvcmd("ester_kd", "ester_kd")
-	shRegKeyDown(gHeroName, "ester_kd")
-	register_srvcmd("ester_ku", "ester_ku")
-	shRegKeyUp(gHeroName, "ester_ku")
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor")
 
 	init_explosion_defaults()
@@ -193,23 +185,18 @@ public _ester_get_hero_id(iPlugins, iParms){
 	
 	return gHeroID
 }
-public ester_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	ester_weapons(id)
-	reset_ester_user_round(id)
-	ester_set_reborn_mode(id,0)
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 		if(gTimesLeft[id]<=0){
 			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")
 		}
 	}
+	ester_weapons(id)
+	reset_ester_user_round(id)
+	ester_set_reborn_mode(id,0)
 	
 	
 }
@@ -722,12 +709,25 @@ public death()
 }	
 
 //----------------------------------------------------------------------------------------------
-public ester_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		ester_kd(id)
+	}
 	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+	case SH_KEYUP: {
+		
+		ester_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public ester_kd(id)
+{
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
@@ -770,13 +770,8 @@ public ester_kd()
 	return PLUGIN_HANDLED
 }
 
-public ester_ku()
+public ester_ku(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}

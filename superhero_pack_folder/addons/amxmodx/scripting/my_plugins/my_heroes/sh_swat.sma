@@ -65,13 +65,6 @@ public plugin_init()
 	shSetMaxHealth(gHeroName, "swat_health")
 	shSetMaxArmor(gHeroName, "swat_armor")
 	shSetShieldRestrict(gHeroName)
-	// KEY DOWN
-	register_srvcmd("Swat_kd", "Swat_kd")
-	shRegKeyDown(gHeroName, "Swat_kd")
-
-	// INIT
-	register_srvcmd("Swat_init", "Swat_init")
-	shRegHeroInit(gHeroName, "Swat_init")
 	
 	M4Swat_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -161,16 +154,10 @@ public swat_damage(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public Swat_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID)){
 
-	shResetShield(id)
-
-	if (sh_user_has_hero(id,gHeroID)) {
 		swat_weapons(id)
 	}
 	else {
@@ -178,17 +165,27 @@ public Swat_init()
 		shRemHealthPower(id)
 		shRemArmorPower(id)
 	}
+	shResetShield(id)
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		Swat_kd(id)
+	}
+}
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public Swat_kd()
+public Swat_kd(id)
 {
 	if ( !sh_is_inround() ) return
 
-	// First Argument is an id with Swat Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  ) return
 
 	if ( sh_get_cooldown_flag(id)) {

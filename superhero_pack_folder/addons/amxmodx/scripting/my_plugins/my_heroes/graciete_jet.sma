@@ -49,7 +49,7 @@ public plugin_init()
 	pcvar_jet_stomp_grav_mult = register_cvar("graciete_jet_stomp_grav_mult", "8")
 	pcvar_land_explosion_radius = register_cvar("graciete_land_explosion_radius", "8")
 	
-	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
+	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -136,7 +136,7 @@ uncharge_user(id){
 	
 	
 }
-public Ham_Think_Pre(id) {
+public Ham_Think_Post(id) {
 	
 	if(!sh_is_active()) return HAM_IGNORED
 	
@@ -186,14 +186,14 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	if(Get_BitVar(g_graciete_leaped_mask, id)){
-		
-			if((weapon==CSW_KNIFE)&&(button & IN_ATTACK2)&&(button & IN_DUCK)){
-				if(!Get_BitVar(g_graciete_power_landing_mask, id)){
-					Set_BitVar(g_graciete_power_landing_mask, id);
-					charge_user(id)
-					return FMRES_IGNORED
-				}
+	
+		if((weapon==CSW_KNIFE)&&(button & IN_ATTACK2)&&(button & IN_DUCK)){
+			if(!Get_BitVar(g_graciete_power_landing_mask, id)){
+				Set_BitVar(g_graciete_power_landing_mask, id);
+				charge_user(id)
+				return FMRES_IGNORED
 			}
+		}
 	}
 	return FMRES_IGNORED;
 }

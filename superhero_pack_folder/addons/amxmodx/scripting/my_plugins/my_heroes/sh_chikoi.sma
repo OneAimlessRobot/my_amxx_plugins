@@ -120,14 +120,12 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		return DMG_FWD_PASS
 	}
 	if(sh_user_has_hero(victim,gHeroID) ){
-		if((cs_get_user_team(victim)==cs_get_user_team(attacker))){
-			if(victim!=attacker){
-			
-				return DMG_FWD_PASS
-			}
+		if(sh_clients_are_same_team(victim,attacker)){
+			return DMG_FWD_PASS
 		
 		}
-		if(headshot){
+		new bool:is_self_drain_damage= ((victim==attacker)&&(new_dmg_type==SH_NEW_DMG_DRAIN))
+		if(headshot&&!is_self_drain_damage){
 			
 			arrayset(wpnDescription,0,sizeof wpnDescription)
 			set_user_godmode(victim,0)

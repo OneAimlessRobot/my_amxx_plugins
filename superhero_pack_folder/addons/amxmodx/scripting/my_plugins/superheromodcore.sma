@@ -365,7 +365,7 @@
 
 //By default, plugins have 4KB of stack space.
 //This gives the plugin a little more memory to work with (6144 or 24KB is sh default)
-#pragma dynamic (6144*4)
+#pragma dynamic (6144*8)
 
 //Sets the size of the memory table to hold data until the next save
 #define gMemoryTableSize 64

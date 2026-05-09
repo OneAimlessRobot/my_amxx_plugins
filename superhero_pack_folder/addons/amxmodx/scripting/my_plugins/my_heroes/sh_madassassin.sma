@@ -65,10 +65,6 @@ public plugin_init()
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AWP,Model_V_Awp,Model_P_Awp)
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("madassassin_init", "madassassin_init")
-	shRegHeroInit(HeroName, "madassassin_init")
 
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 
@@ -85,16 +81,9 @@ public plugin_init()
 	shRegMaxHealth(HeroName, "madassassin_maxheal")
 }
 //----------------------------------------------------------------------------------------------
-public madassassin_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
-	// 2nd Argument is 0 or 1 depending on whether the id has the hero
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	
+	new hasPowers = sh_user_has_hero(id, gHeroID)
 
 #if defined GIVE_WEAPONS
 	// Reset thier shield restrict status

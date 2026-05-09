@@ -42,25 +42,8 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Stay safe n' happy lazing", "Press the +power key to fire your your 10 kJ C.R.L.C (crazy ruby laser cannon)", true, "styropyro_level")
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("styropyro_init", "styropyro_init")
-	shRegHeroInit(gHeroName, "styropyro_init")
-
-	// KEY DOWN
-	register_srvcmd("styropyro_kd", "styropyro_kd")
-	shRegKeyDown(gHeroName, "styropyro_kd")
-
-	// KEY UP
-	register_srvcmd("styropyro_ku", "styropyro_ku")
-	shRegKeyUp(gHeroName, "styropyro_ku")
-
-
 	// DEATH
 	register_event("DeathMsg", "styropyro_death", "a")
-
-	// Let Server know about styropyro's Variables
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -71,15 +54,9 @@ public plugin_precache()
 	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
-public styropyro_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	// This gets run if they had the power but don't anymore
-	if ( sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) {
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID)&& is_user_connected(id) ) {
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")
 	}
@@ -95,16 +72,29 @@ public sh_client_spawn(id)
 		gLaserFired[id] = false
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		styropyro_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		styropyro_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public styropyro_kd()
+public styropyro_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) ) return
 
@@ -130,12 +120,8 @@ public styropyro_kd()
 	gLaserFired[id] = true
 }
 //----------------------------------------------------------------------------------------------
-public styropyro_ku()
+public styropyro_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	
 	remove_task(id)
 

@@ -37,11 +37,19 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "../my_heroes/special_fx_inc/sh_yakui_get_set.inc"
+#include "../my_heroes/special_fx_inc/sh_gatling_special_fx.inc"
+
+
+
+new dmg_source_name_short_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
+new dmg_source_name_long_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
+new custom_dmg_id_poison_ivy_drain
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"
 new gHeroID
-new bool:gIsPoisoned[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+new gIsPoisonedMask[SH_MAXSLOTS+1] = {0, ...}
 new gPoisonDamage[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
 new gmsgDamage, gmsgIcon
@@ -63,10 +71,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Infect Poison", "Infect the enemy with your Poisoned Bullets or Poisoned Knife", false, "poisonivy_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("poisonivy_init", "poisonivy_init")
-	shRegHeroInit(gHeroName, "poisonivy_init")
 
 	register_event("Damage", "poisonivy_damage", "b", "2!0")
 	register_event("DeathMsg", "poisonivy_death", "a")
@@ -80,16 +84,16 @@ public plugin_init()
 
 	gmsgDamage = get_user_msgid("Damage")
 	gmsgIcon = get_user_msgid("StatusIcon")
+
+	custom_dmg_id_poison_ivy_drain=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_poison_ivy_drain,
+				dmg_source_name_long_poison_ivy_drain,
+				0)
+
 }
 //----------------------------------------------------------------------------------------------
-public poisonivy_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-
+public sh_hero_init(id, heroID, mode){
+	
 	// This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		remove_poison(id)
@@ -157,7 +161,7 @@ public poisonivy_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
 	// If already poisoned no need to set it twice
-	if( gIsPoisoned[id][attacker] ) return
+	if( Get_BitVar(gIsPoisonedMask[id],attacker) ) return
 
 	// Can users with Poison Ivy be poisoned
 	if ( !get_cvar_num("poisonivy_self") ) {
@@ -167,10 +171,13 @@ public poisonivy_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !sh_get_cooldown_flag(attacker)&& id != attacker ) {
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
-		gIsPoisoned[id][attacker] = true
+		Assign_BitVar(gIsPoisonedMask[id],attacker,true_for_macro) 
+		gatling_set_fx_num(id,POISON)
 
 		// Set a cooldown if there is one until user can poison another player
-		if (get_cvar_float("poisonivy_cooldown") > 0.0) ultimateTimer(attacker, get_cvar_float("poisonivy_cooldown"))
+		if (get_cvar_float("poisonivy_cooldown") > 0.0){
+			ultimateTimer(attacker, get_cvar_float("poisonivy_cooldown"))
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -183,18 +190,15 @@ public poisonivy_loop()
 
 		for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 			if (  is_user_alive(id) ) {
-				if(!gIsPoisoned[id][attacker]) continue
-				
-				new health = get_user_health(id)
+				if(!Get_BitVar(gIsPoisonedMask[id],attacker) ) continue
+
 				new damage = gPoisonDamage[attacker]
 
-				//Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
-				if(health - damage  <= 0) {
-					sh_extra_damage(id, attacker, damage, "Poison Infection")
-				}
-				else {
-						set_user_health(id, health - damage)
-				}
+				sh_extra_damage(id, attacker, damage,
+											dmg_source_name_short_poison_ivy_drain,
+											_,_,_,_,_,_,
+											SH_NEW_DMG_DRAIN,
+											custom_dmg_id_poison_ivy_drain)
 
 				new origin[3]
 				get_user_origin(id, origin)
@@ -248,8 +252,8 @@ public reset_poisoned(victim)
 {
 	// Resets poison status on victim if poisoned by any posion ivy's
 	for ( new attacker = 1; attacker < sh_maxplayers()+1; attacker++ ) {
-		if ( gIsPoisoned[victim][attacker] ) {
-			gIsPoisoned[victim][attacker] = false
+		if ( Get_BitVar(gIsPoisonedMask[victim],attacker)  ) {
+			Assign_BitVar(gIsPoisonedMask[victim],attacker,false_for_macro) 
 		}
 	}
 }
@@ -262,8 +266,11 @@ public remove_poison(attacker)
 	// Removes poison on alive players that the attacker poisoned
 	for (new i = 0; i < pnum; i++) {
 		victim = players[i]
-		if ( gIsPoisoned[victim][attacker] ) {
-			gIsPoisoned[victim][attacker] = false
+		if ( Get_BitVar(gIsPoisonedMask[victim],attacker)  ) {
+			Assign_BitVar(gIsPoisonedMask[victim],attacker,false_for_macro) 
+			if(gatling_get_fx_num(victim)==POISON){
+				gatling_set_fx_num(victim,FX_ID_NONE)
+			}
 		}
 	}
 }

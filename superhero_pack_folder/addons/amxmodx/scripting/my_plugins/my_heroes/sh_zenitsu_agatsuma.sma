@@ -25,13 +25,7 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Thunder Hashira", "When all that is left is you...", true, "shinobu_level" )
-	
-	register_srvcmd("zenitsu_init", "zenitsu_init")
-	shRegHeroInit(gHeroName, "zenitsu_init")
 
-	
-	register_srvcmd("zenitsu_kd", "zenitsu_kd")
-	shRegKeyDown(gHeroName, "zenitsu_kd")
 }
 public plugin_natives(){
 	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id",0)
@@ -79,24 +73,27 @@ public sh_client_spawn(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public zenitsu_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
 	
 	UnSet_BitVar(gChargeModeEngagedMask,id)
 }
+
 //----------------------------------------------------------------------------------------------
-public zenitsu_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		zenitsu_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public zenitsu_kd(id)
+{	
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED

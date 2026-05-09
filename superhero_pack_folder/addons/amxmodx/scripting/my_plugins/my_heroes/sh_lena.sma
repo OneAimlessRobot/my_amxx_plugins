@@ -28,10 +28,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "L96A1", "become Lena de Verias! Get her A.W.P.!", false, "lena_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("lena_init", "lena_init")
-	shRegHeroInit(gHeroName, "lena_init")
 }
 public plugin_natives(){
 
@@ -90,19 +86,10 @@ public sh_round_end(){
 
 }
 //----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-}
-//----------------------------------------------------------------------------------------------
-public lena_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID)){
 
-	if(sh_user_has_hero(id,gHeroID) )
-	{
 		lena_weapons(id)
 	}
 	else 

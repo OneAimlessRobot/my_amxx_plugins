@@ -72,11 +72,6 @@ public plugin_init()
 				dmg_source_name_short_the_pistols,
 				dmg_source_name_long_the_pistols,0)
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("SuperNoodle_init", "SuperNoodle_init")
-	shRegHeroInit(gHeroName, "SuperNoodle_init")
-	
 	register_event("Damage", "SuperNoodle_damage", "b", "2!0")
 
 	// Let Server know about SuperNoodle's Variable
@@ -86,14 +81,9 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public SuperNoodle_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		
 			SuperNoodle_weapons(id)
 	}

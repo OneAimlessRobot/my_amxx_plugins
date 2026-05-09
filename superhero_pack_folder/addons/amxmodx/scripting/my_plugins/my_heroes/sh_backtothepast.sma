@@ -37,12 +37,7 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Strategic mastermind!", "Return to the past! bind some key to type 'bind j jeremystats' in console for overview", true, "jeremy_level")
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("jeremy_init", "jeremy_init")
-	shRegHeroInit(gHeroName, "jeremy_init")
-
+	
 
 	// KEY DOWN
 	register_srvcmd("jeremy_kd", "jeremy_kd")
@@ -127,14 +122,9 @@ public getTeamNumFromEnum(CsTeams: team){
 
 }
 //----------------------------------------------------------------------------------------------
-public jeremy_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
+public sh_hero_init(id, heroID, mode){
+	
+	if(sh_user_has_hero(id, gHeroID)){
 	
 		gUserTeam[id]=getTeamNumFromEnum(cs_get_user_team(id))
 	}

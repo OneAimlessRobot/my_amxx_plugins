@@ -4,11 +4,7 @@
 #define sh_graciete_rocket_funcs
 
 
-#define GROUND_THRESHOLD 20.0
-
 #define GRACIETE_CHARGE_PERIOD 0.1
-#define GRACIETE_CHARGE_TIMES floatround(floatdiv(power_land_charge_time,GRACIETE_CHARGE_PERIOD))
-
 #define GRACIETE_MAX_DAMAGE jet_max_power
 
 #define GRACIETE_CHARGE_RATE 100.0

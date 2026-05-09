@@ -20,6 +20,8 @@
 new RADIOACTIVE_TASK_ID
 
 
+
+
 enum{
 	
 	TRACK_TASK_ATTACKER=0,
@@ -36,14 +38,23 @@ enum{
 	
 }
 
+new dmg_source_name_short_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
+new dmg_source_name_long_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
+new custom_dmg_id_tracked_vuln
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
+	register_event("Damage", "tracked_damage", "b", "2!0")
 	register_event("DeathMsg","on_death_tracked","a")
 
+
+	custom_dmg_id_tracked_vuln=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_tracked_vuln,
+				dmg_source_name_long_tracked_vuln,
+				0)
 }
 
 
@@ -52,6 +63,53 @@ public plugin_natives(){
 	register_native("unradioactive_user","_unradioactive_user",0)
 	register_native("track_user","_track_user",0);
 }
+
+public tracked_damage(id)
+{
+	if ( !sh_is_active() || !is_user_alive(id)) return
+	
+	new  Float:damage= float(read_data(2))
+	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new headshot = bodypart == 1 ? 1 : 0
+	if ( !is_user_connected(attacker)) return
+	
+	new fx_num_vic=(gatling_get_fx_num(id));
+	switch(fx_num_vic){
+
+		case RADIOACTIVE:{
+			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_short_tracked_vuln,
+											headshot,
+											_,_,_,_,_,
+											SH_NEW_DMG_RADIATION_POISON,
+											custom_dmg_id_tracked_vuln)
+			}
+		}
+	
+	}
+	
+}
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
+
+	new fx_num_vic=(gatling_get_fx_num(victim));
+	switch(fx_num_vic){
+
+		case RADIOACTIVE:{
+			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
+			if (floatround(extraDamage)>0){
+				new_dmg_type=SH_NEW_DMG_RADIATION_POISON
+				custom_weapon_id=custom_dmg_id_tracked_vuln
+				damage=floatround(extraDamage)
+			}
+		}
+	}
+
+	return DMG_FWD_PASS
+}
+
 public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	id-=RADIOACTIVE_TASK_ID
 	if(!is_user_alive(id)){

@@ -38,15 +38,6 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html",hero_name_arr)
 	
-	
-	// INIT
-	register_srvcmd("flora_init", "flora_init")
-	shRegHeroInit(gHeroName, "flora_init")
-	
-	register_srvcmd("flora_kd", "flora_kd")
-	shRegKeyDown(gHeroName, "flora_kd")
-	register_srvcmd("flora_ku", "flora_ku")
-	shRegKeyUp(gHeroName, "flora_ku")
 }
 
 
@@ -106,20 +97,15 @@ public sh_client_spawn(id)
 	}
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id)
-		flora_set_user_num_fields(id,flora_start_fields())
+		g_flora_num_of_fields[id]=flora_start_fields()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public flora_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
 	
-	if ( sh_user_has_hero(id,gHeroID)  )
-	{
-		flora_set_user_num_fields(id,flora_start_fields())
+	if(sh_user_has_hero(id, gHeroID)){
+
+		g_flora_num_of_fields[id]=flora_start_fields()
 	}
 	reset_flora_user(id)
 }
@@ -129,14 +115,27 @@ public client_disconnected(id){
 	reset_flora_user(id)
 
 }
+
 //----------------------------------------------------------------------------------------------
-public flora_kd()
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		flora_kd(id)
+	}
 	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+	case SH_KEYUP: {
+		
+		flora_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public flora_kd(id)
+{
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_CONTINUE
 	}
@@ -165,12 +164,8 @@ public flora_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public flora_ku()
+public flora_ku(id)
 {
-	new temp[6]
-	
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED

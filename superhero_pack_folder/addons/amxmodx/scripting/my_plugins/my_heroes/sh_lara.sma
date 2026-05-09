@@ -43,8 +43,6 @@ public plugin_init()
 			dmg_source_name_long_lara_spear,1)
 
 	register_event("DeathMsg","death","a")
-	register_srvcmd("lara_init", "lara_init")
-	shRegHeroInit(gHeroName, "lara_init")
 	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -92,14 +90,10 @@ public _spear_dec_num_spears(iPlugin,iParams){
 }
 
 
-public lara_init()
-{
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
 	
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_user_has_hero(id, gHeroID)){
 		gNumSpears[id]=cvar_val(num, pcvar_num_spears)
 		
 	}
