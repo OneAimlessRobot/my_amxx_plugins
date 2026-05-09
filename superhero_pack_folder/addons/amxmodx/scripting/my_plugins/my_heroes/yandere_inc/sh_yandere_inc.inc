@@ -12,7 +12,7 @@ stock const YANDERE_WARCRIES[num_yandere_warcries][128]={
   "shmod/yandere/Yanderu_war_cry.wav",
   "shmod/yandere/MAKKA.wav"
 }
-
+stock curr_player_sound[SH_MAXSLOTS+1]
 #define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
 #define YANDERE_THELAST "shmod/yandere/Yandere_thelast.wav"
 #define YANDERE_THELAST2 "shmod/yandere/Yandere_thelast2.wav"
@@ -63,6 +63,8 @@ stock Float:gBaseSpeed[SH_MAXSLOTS+1]
 stock g_prevWeapon[SH_MAXSLOTS+1]
 stock g_mates_dead[SH_MAXSLOTS+1]
 stock g_mates_alive[SH_MAXSLOTS+1]
+
+stock g_curr_sound[SH_MAXSLOTS+1] = {-1, ...}
 
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 

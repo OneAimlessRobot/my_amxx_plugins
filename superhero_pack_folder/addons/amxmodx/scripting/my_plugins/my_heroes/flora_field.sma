@@ -47,9 +47,7 @@ new pcvar_flora_base_stun_speed
 new pcvar_flora_invis_alpha_min
 new pcvar_flora_invis_alpha_dec_per_lvl
 new pcvar_flora_teleport_reach_max_distance
-new pcvar_flora_field_start_ammount
 new pcvar_flora_field_max_active_ammount
-
 
 new field_drain_wpn_id
 new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
@@ -68,7 +66,6 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
 	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
-	pcvar_flora_field_start_ammount = register_cvar("flora_field_start_ammount", "10" )
 	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
 	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
 	pcvar_field_core_radius = register_cvar("flora_field_core_radius" ,"1000.0")
@@ -111,8 +108,6 @@ public plugin_natives(){
 	register_native("form_field","_form_field",0)
 	register_native("field_loaded","_field_loaded",0)
 	register_native("clear_user_fields","_clear_user_fields",0)
-	register_native("flora_max_fields","_flora_max_fields",0)
-	register_native("flora_start_fields","_flora_start_fields",0)
 	register_native("flora_get_cooldown","_flora_get_cooldown",0)
 	register_native("flora_get_user_num_active_fields","_flora_get_user_num_active_fields",0)
 	register_native("flora_set_user_num_active_fields","_flora_set_user_num_active_fields",0)
@@ -170,16 +165,6 @@ public _field_loaded(iPlugin,iParams){
 
 
 }
-public _flora_max_fields(iPlugins, iParams){
-	
-	return cvar_val(num,pcvar_flora_field_max_active_ammount)
-	
-}
-public _flora_start_fields(iPlugins, iParams){
-	
-	return cvar_val(num,pcvar_flora_field_start_ammount)
-	
-}
 public Float:_flora_get_cooldown(iPlugins, iParams){
 	
 	return cvar_val(float,pcvar_field_cooldown)
@@ -195,9 +180,7 @@ public _clear_user_fields(iPlugin,iParams){
 		grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME, id);
 	}
 	if(is_user_connected(id)){
-		emit_sound(id, CHAN_VOICE, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(id, CHAN_VOICE, FIELD_HEAL, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(id, CHAN_AUTO, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	}
 	
@@ -286,7 +269,6 @@ destroy_field(field_id,make_sound=0,planting=0){
 			emit_sound(field_id, CHAN_AUTO, FIELD_DESTROYED, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 		suck_in_sound(field_id,0)
-		emit_sound(field_id, CHAN_ITEM, FIELD_NULL, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(is_user_connected(owner)){
@@ -757,8 +739,6 @@ uncharge_user(id){
 	
 	if(pev_valid(g_flora_curr_charging[id])==2){
 		
-		
-		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		destroy_field(g_flora_curr_charging[id],0,1)
 		g_flora_field_loaded[id]=1

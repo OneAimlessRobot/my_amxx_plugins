@@ -3024,6 +3024,8 @@ public _sh_extra_damage()
 	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,1)
 	new preparedWpnDescription=PrepareArray(wpnDescription,32,1)
 	
+	new abused_wpn_id=custom_wpn_id
+
 	new the_dmg_return_value=DMG_FWD_PASS
 	if (!ExecuteForward(fwd_ShDamagePre, 
 					the_dmg_return_value, 
@@ -3037,9 +3039,13 @@ public _sh_extra_damage()
 					preparedWpnDmgOriginInt,
 					dmg_type,
 					thrashbrat_dmg_type,
-					custom_wpn_id)){
+					abused_wpn_id)){
 		
 		server_print("Sh damage forward execute error.");
+	}
+	if(abused_wpn_id!=custom_wpn_id){
+
+		xmod_get_wpnlogname(abused_wpn_id,wpnDescription,charsmax(wpnDescription))
 	}
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
@@ -3131,21 +3137,30 @@ public _sh_extra_damage()
 		// Kill the victim and block the message
 		set_msg_block(gmsgScoreInfo, BLOCK_ONCE)
 
+
 		gXrtaDmgClientKill = true
 		// Save info to change HUD death message and send forward with correct info
 		copy(gXrtaDmgWpnName, charsmax(gXrtaDmgWpnName), wpnDescription)
+		
 		gXrtaDmgAttacker = attacker
 		gXrtaDmgHeadshot = headshot
 		// Kill the victim
 		// pev_dmg_inflictor not set becase this will be self even if we did set it
+		
 		dllfunc(DLLFunc_ClientKill, victim)
+
+		custom_weapon_shot(abused_wpn_id, attacker)
+		custom_weapon_dmg(abused_wpn_id, gXrtaDmgAttacker, victim, damage_after, gXrtaDmgHeadshot?HIT_HEAD:HIT_STOMACH)
+
+
 		gXrtaDmgClientKill = false
 
 		// Log the Kill
 		logKill(attacker, victim, wpnDescription)
-
+		
 		// Make camera turn toward attacker on death, thx Emp`
 		set_pev(victim, pev_iuser3, attacker)
+
 
 		// ClientKill removes a frag, give it back if not self inflicted
 		new victimFrags = get_user_frags(victim)
@@ -3261,6 +3276,7 @@ public _sh_extra_damage()
 		engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
+		
 		}
 	}
 }

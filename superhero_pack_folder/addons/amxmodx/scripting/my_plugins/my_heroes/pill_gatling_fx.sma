@@ -95,6 +95,14 @@ new gLastWeapon[SH_MAXSLOTS+1]
 new g_last_weapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
 
+new dmg_source_name_short_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
+new dmg_source_name_long_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
+new custom_dmg_id_poison_vuln
+
+new dmg_source_name_short_crackhead_rage[SAFE_BUFFER_SIZE+1]="crackhead_rage"
+new dmg_source_name_long_crackhead_rage[SAFE_BUFFER_SIZE+1]="crackhead_rage"
+new custom_dmg_id_crackhead_rage
+
 public plugin_init(){
 
 
@@ -128,6 +136,17 @@ for(new i=_:GLOW;i<_:NUM_FX;i++){
 		fx_task_parameters[i][fx_task_repeats]=floatround(floatdiv(the_time,the_period))
 	}
 }
+
+custom_dmg_id_poison_vuln=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_poison_vuln,
+				dmg_source_name_long_poison_vuln,
+				0)
+
+custom_dmg_id_crackhead_rage=sh_log_custom_damage_source(-1,
+				dmg_source_name_short_crackhead_rage,
+				dmg_source_name_long_crackhead_rage,
+				0)
+
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
 register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
@@ -182,8 +201,13 @@ public fx_damage(id)
 		case POISON:{
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
 			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Crackhead rage", headshot)
-					
+				
+				sh_extra_damage(id, attacker, floatround(extraDamage),
+							dmg_source_name_long_crackhead_rage,
+							headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_DRUG_POISON,
+							custom_dmg_id_crackhead_rage)
 			}	
 		}
 		case METYLPHENIDATE:{
@@ -202,8 +226,14 @@ public fx_damage(id)
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
 			extraDamage*=(sh_get_user_is_bleeding(id)?2.0:1.0)
 			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage), "Poison vuln", headshot)
-			}	
+			
+				sh_extra_damage(id, attacker, floatround(extraDamage),
+							dmg_source_name_long_poison_vuln,
+							headshot,
+							_,_,_,_,_,
+							SH_NEW_DMG_DRUG_POISON,
+							custom_dmg_id_poison_vuln)
+		}	
 		}
 		default:{
 

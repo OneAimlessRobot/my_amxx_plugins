@@ -9,6 +9,7 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 
+stock curr_player_pain_sound[SH_MAXSLOTS+1]
 
 #define PLUGIN "Superhero psychosis fx"
 #define VERSION "1.0.0"
@@ -19,8 +20,6 @@ new pcvar_zoom
 new pcvar_psychosis_time
 new pcvar_psychosis_add_ap
 new pcvar_psychosis_dmg_cushion
-new pcvar_psychosis_degen_health_threshold
-new pcvar_psychosis_degen_pct
 
 new YANDERE_PSYCHOSIS_TASKID
 
@@ -31,12 +30,10 @@ public plugin_init(){
 	register_event("DeathMsg","on_death_psychosis","a")
 	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
 	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
-	pcvar_psychosis_degen_pct = register_cvar("yandere_psychosis_degen_pct", "20.0")
 	pcvar_psychosis_add_ap = register_cvar("yandere_psychosis_add_ap", "5")
 	pcvar_psychosis_dmg_cushion = register_cvar("yandere_psychosis_dmg_cushion", "5")
 	pcvar_psychosis_cooldown = register_cvar("yandere_psychosis_cooldown", "30")
-	pcvar_psychosis_degen_health_threshold = register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
-	
+
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
@@ -76,20 +73,9 @@ public plugin_natives(){
 	register_native("yandere_get_user_is_psychosis","_yandere_get_user_is_psychosis",0);
 	register_native("yandere_psychosis_user","_yandere_psychosis_user",0);
 	register_native("yandere_unpsychosis_user","_yandere_unpsychosis_user",0);
-	register_native("yandere_get_psychosis_degen_pct","_yandere_get_psychosis_degen_pct",0);
-	register_native("yandere_get_psychosis_degen_health_threshold","_yandere_get_psychosis_degen_health_threshold",0);
 
 
 }
-public Float:_yandere_get_psychosis_degen_pct(iPlugin,iParams){
-
-	return cvar_val(float, pcvar_psychosis_degen_pct)
-}
-public Float:_yandere_get_psychosis_degen_health_threshold(iPlugin,iParams){
-
-	return cvar_val(float, pcvar_psychosis_degen_health_threshold)
-}
-
 
 public _yandere_get_user_is_psychosis(iPlugin,iParams){
 	new id= get_param(1)
@@ -232,10 +218,9 @@ psychosis_off(id)
 
 UnSet_BitVar(gIsPsychosisMask,id);
 Set_BitVar(g_yandere_leaped_mask,id);
-for(new i=0;i<sizeof yandere_pain_sounds;i++){
-	emit_sound(id, CHAN_AUTO, yandere_pain_sounds[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
-}
-emit_sound(id, CHAN_AUTO, NULL_SOUND, 1.0, 0.0, 0, PITCH_NORM)
+
+emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+
 cs_set_user_armor(id,0,CS_ARMOR_NONE)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(90)	//Normal, not Zooming
@@ -246,6 +231,8 @@ psychosis_on(id){
 
 gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
 ultimateTimer(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
+curr_player_pain_sound[id]=generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)
+emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 UnSet_BitVar(g_yandere_leaped_mask,id);
 Set_BitVar(gIsPsychosisMask,id);
 cs_set_user_armor(id,cs_get_user_armor(id)+cvar_val(num, pcvar_psychosis_add_ap),CS_ARMOR_VESTHELM)

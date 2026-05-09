@@ -23,7 +23,6 @@ new user_mg[SH_MAXSLOTS+1]
 
 new pcvar_jetplane_mg_dmg,
 pcvar_jetplane_mg_bulletspeed,
-pcvar_mg_think_period,
 pcvar_jetplane_mg_ammo;
 
 
@@ -37,7 +36,6 @@ public plugin_init(){
 	pcvar_jetplane_mg_ammo = register_cvar("yandere_jetplane_mg_ammo", "5")
 	pcvar_jetplane_mg_dmg = register_cvar("yandere_jetplane_mg_dmg", "5")
 	pcvar_jetplane_mg_bulletspeed = register_cvar("yandere_jetplane_mg_bulletspeed", "5")
-	pcvar_mg_think_period = register_cvar("yandere_jetplane_mg_think_period", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
 
@@ -119,7 +117,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	jetplane_orig[1]+=jetplane_origin_mg_offsets[1]
 	jetplane_orig[2]+=jetplane_origin_mg_offsets[2]
 	set_pev(mg_id,pev_origin,jetplane_orig)
-	set_pev(mg_id, pev_nextthink, get_gametime() + cvar_val(float, pcvar_mg_think_period))
+	set_pev(mg_id, pev_nextthink, get_gametime() + MG_THINK_PERIOD)
 }
 public CmdStart(id, uc_handle)
 {
@@ -213,7 +211,7 @@ public mg_think(ent)
 		if(!entity_get_int(ent,EV_INT_iuser1)){
 		
 			if(current_mg_loading_time>0.0){
-				entity_set_float(ent,EV_FL_fuser1,current_mg_loading_time-cvar_val(float, pcvar_mg_think_period))
+				entity_set_float(ent,EV_FL_fuser1,current_mg_loading_time-MG_THINK_PERIOD)
 			}
 			else{
 				entity_set_int(ent,EV_INT_iuser1,1)
@@ -221,7 +219,7 @@ public mg_think(ent)
 
 			}
 		}
-		set_pev(ent, pev_nextthink, gametime + (cvar_val(float, pcvar_mg_think_period)))
+		set_pev(ent, pev_nextthink, gametime + MG_THINK_PERIOD)
 	}
 	return FMRES_IGNORED
 }
@@ -420,7 +418,6 @@ public _mg_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(user_mg[id])){
-		draw_bbox(user_mg[id],true)
 		remove_entity(user_mg[id]);
 		user_mg[id]=-1;
 	}

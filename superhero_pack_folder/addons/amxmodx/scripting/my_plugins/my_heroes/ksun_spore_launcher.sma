@@ -102,8 +102,7 @@ public launcher_think(ent){
 	
 	
 	if ( (launcher_hp<LAUNCHER_DEAD_HP) || !is_valid_ent(launcher_owner) ){
-		
-		draw_bbox(ent,1)
+	
 		destroy_player_launcher(launcher_owner)
 		return FMRES_IGNORED
 		
@@ -172,7 +171,6 @@ public launcher_think(ent){
 		
 	}
 	
-	draw_bbox(ent,0)
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,think_time));
 	
 	return FMRES_IGNORED
@@ -288,7 +286,6 @@ public destroy_player_launcher(id){
 			
 			emit_sound(id, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-			draw_bbox(g_player_launcher[id],1)
 			remove_entity(g_player_launcher[id])
 			g_player_launcher[id]=0
 		

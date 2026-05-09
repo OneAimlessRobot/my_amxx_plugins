@@ -27,7 +27,9 @@ new Float:degen_iter_period
 new pcvar_base_dmg_mult,
 pcvar_dmg_pct_per_inc,
 pcvar_base_extra_speed,
-pcvar_speed_inc_per_inc
+pcvar_speed_inc_per_inc,
+pcvar_psychosis_degen_health_threshold,
+pcvar_psychosis_degen_pct
 
 new pcvar_angry_speed,
 pcvar_angry_dmg_mult,
@@ -53,6 +55,8 @@ public plugin_init()
 	pcvar_dmg_pct_per_inc = register_cvar("yandere_dmg_pct_per_inc", "0.35")
 	pcvar_explode_radius = register_cvar("yandere_explode_radius", "1")
 	pcvar_explode_maxdamage = register_cvar("yandere_explode_maxdamage", "1")
+	pcvar_psychosis_degen_pct = register_cvar("yandere_psychosis_degen_pct", "20.0")
+	pcvar_psychosis_degen_health_threshold = register_cvar("yandere_psychosis_degen_health_threshold", "50.0")
 	pcvar_trans_time = register_cvar("yandere_trans_time", "4.0")
 	pcvar_base_extra_speed = register_cvar("yandere_base_extra_speed", "500")
 	pcvar_speed_inc_per_inc = register_cvar("yandere_speed_inc_per_inc", "50")
@@ -226,18 +230,17 @@ public yandere_sentence_loop(id){
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(sh_is_active()&&is_user_alive(i)&&sh_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
-			
-			
+
 			if(Get_BitVar(gIdleAngryMask,i)||(get_user_health(i)>
 						cvar_val(num,pcvar_degen_health_extra_threshold))){
 				
 				static client_name[128]
 				new user_health=get_user_health(i)
-				new degen_dmg_2_take= (float(user_health)>yandere_get_psychosis_degen_health_threshold())?
-											floatround((float(user_health)-yandere_get_psychosis_degen_health_threshold())*
+				new degen_dmg_2_take= (float(user_health)>cvar_val(float, pcvar_psychosis_degen_pct))?
+											floatround((float(user_health)-cvar_val(float, pcvar_psychosis_degen_health_threshold))*
 														degen_iter_period*
 														0.01*
-														(yandere_get_user_is_psychosis(i)?yandere_get_psychosis_degen_pct():
+														(yandere_get_user_is_psychosis(i)?cvar_val(float, pcvar_psychosis_degen_pct):
 															cvar_val(float,pcvar_angry_degen_pct)),floatround_ceil)*
 														(Get_BitVar(gIdleAngryMask,i)?2:1):0
 	
@@ -358,9 +361,9 @@ public yandere_timer_transform(id){
 			if(user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
 				sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			}
-			for(new i=0;i<num_yandere_warcries;i++){
-				emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
-			}
+
+			emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],
+				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 		}
 	}
 	else{
@@ -378,10 +381,11 @@ public yandere_timer_transform(id){
 					static client_name[128]
 					get_user_name(id,client_name,127)
 					sh_chat_message(0,gHeroID,"%s: Ok. NOW Im mad!",client_name);
-					for(new i=0;i<num_yandere_warcries;i++){
-						emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
-					}
-					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[generate_int(0,num_yandere_warcries-1)], 1.0, 0.0, 0, PITCH_NORM)
+					
+					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],
+						VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+					curr_player_sound[id]=generate_int(0,num_yandere_warcries-1)
+					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]], 1.0, 0.0, 0, PITCH_NORM)
 					Set_BitVar(gPlayedSoundMask,id)
 				}
 				gTransTimer[id]=cvar_val(float,pcvar_trans_time)
@@ -453,9 +457,6 @@ public sh_client_spawn(id, bool:newRound)
 			gNormalSpeed[id]=gBaseSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
 			gTransTimer[id]=cvar_val(float,pcvar_trans_time);
 			UnSet_BitVar(gTransTimerStartedMask,id)
-			for(new i=0;i<num_yandere_warcries;i++){
-				emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[i], 1.0, 0.0, SND_STOP, PITCH_NORM)
-			}
 			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
 			if(!newRound&&(get_user_maxspeed(id)<gBaseSpeed[id])){
@@ -609,7 +610,6 @@ public yandere_kd(id)
 			}
 			return PLUGIN_HANDLED
 		}
-		emit_sound(id, CHAN_AUTO, yandere_pain_sounds[generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)], 1.0, 0.0, 0, PITCH_NORM)
 		new client_name[128]
 		get_user_name(id,client_name,127)
 		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)

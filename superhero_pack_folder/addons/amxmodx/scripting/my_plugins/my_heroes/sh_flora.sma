@@ -16,6 +16,9 @@ new gHeroName[]="Flora"
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
 new pcvar_gFloraHeroLvl
 new gHeroID
+
+new pcvar_flora_field_start_ammount,
+	pcvar_flora_field_max_active_ammount
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -23,6 +26,8 @@ public plugin_init()
 	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
 	pcvar_gFloraHeroLvl = register_cvar("flora_level", "39" )
+	pcvar_flora_field_start_ammount = register_cvar("flora_field_start_ammount", "10" )
+	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -97,7 +102,7 @@ public sh_client_spawn(id)
 	}
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id)
-		g_flora_num_of_fields[id]=flora_start_fields()
+		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -105,7 +110,7 @@ public sh_hero_init(id, heroID, mode){
 	
 	if(sh_user_has_hero(id, gHeroID)){
 
-		g_flora_num_of_fields[id]=flora_start_fields()
+		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
 	reset_flora_user(id)
 }
@@ -151,11 +156,12 @@ public flora_kd(id)
 		
 	}
 	
-	if(flora_get_user_num_active_fields(id)>=flora_max_fields()){
+	if(flora_get_user_num_active_fields(id)>=cvar_val(num,pcvar_flora_field_max_active_ammount)){
 		
 		
 		if(!is_user_bot(id)){
-				sh_chat_message(id, gHeroID, "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),flora_max_fields())
+				sh_chat_message(id, gHeroID, "Already at %d fields out of %d (the max)",flora_get_user_num_active_fields(id),
+							cvar_val(num,pcvar_flora_field_max_active_ammount))
 		}
 		return PLUGIN_HANDLED
 		
@@ -171,7 +177,8 @@ public flora_ku(id)
 		return PLUGIN_HANDLED
 	}
 	
-	if(flora_get_user_num_active_fields(id)<flora_max_fields()){
+	if(flora_get_user_num_active_fields(id)<
+			cvar_val(num,pcvar_flora_field_max_active_ammount)){
 		
 		field_uncharge_user(id)
 		

@@ -203,7 +203,6 @@ public sh_hero_init(id, heroID, mode){
 stock stop_sounds(id){
 	
 	if(is_user_connected(id)){
-		emit_sound(id, CHAN_WEAPON,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 		emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, 0.0,SND_STOP,PITCH_NORM)
 	}
@@ -655,7 +654,6 @@ public plugin_precache()
 		engfunc(EngFunc_PrecacheSound, ester_death_sounds[i])
 		
 	}
-	engfunc(EngFunc_PrecacheSound,NULL_SOUND)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_CHARGE)
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_RELEASE)
 	

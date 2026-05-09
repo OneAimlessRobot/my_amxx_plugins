@@ -178,15 +178,11 @@ remove_user_flight_fx(id){
 	if(!is_user_connected(id)||!sh_user_has_hero(id,ester_get_hero_id())||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
-	emit_sound(id, CHAN_AUTO,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-	emit_sound(id, CHAN_AUTO,FLIGHT_WEAK, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-	emit_sound(id, CHAN_AUTO,FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	emit_sound(id, CHAN_BODY,FLIGHT_POWER, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-	emit_sound(id, CHAN_BODY,FLIGHT_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
-		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[i] , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);	
-	}
+
+	emit_sound(id, CHAN_AUTO, ester_blowup_sounds[curr_player_sound[id]],
+				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	
 	UnSet_BitVar(g_is_glowing_mask, id);
 	UnSet_BitVar(g_flying_mask, id);
 	
@@ -298,6 +294,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_WEAK );
 	engfunc(EngFunc_PrecacheSound,ESTER_RESPAWN_FAIL_SOUND );
+	
 	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
 		engfunc(EngFunc_PrecacheSound,ester_blowup_sounds[i] );	
 	}
@@ -408,7 +405,8 @@ public ester_respawn(parm[])
 	revival(id)
 	revival(id)
 	ester_set_reborn_mode(id,1)
-	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1)] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	curr_player_sound[id]=generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1)
+	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME

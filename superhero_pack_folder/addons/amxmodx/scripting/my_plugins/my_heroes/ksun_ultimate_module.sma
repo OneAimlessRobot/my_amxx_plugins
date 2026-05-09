@@ -256,12 +256,10 @@ public _ksun_unultimate_user(iPlugin,iParams){
 	
 }
 unultimate_user(id,take_away_supply=1){
-	emit_sound(id, CHAN_STATIC, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_READY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	
 	g_player_in_ultimate[id]=0
 	g_played_sound[id]=0
 	g_player_supply_amount[id]=take_away_supply?0:g_player_supply_amount[id]

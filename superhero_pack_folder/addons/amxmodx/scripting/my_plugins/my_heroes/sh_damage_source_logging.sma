@@ -75,7 +75,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid wpn_id obtained at _sh_log_custom_damage_source!^nIt came out as %d which is <= 0!^nAborting...^n",wpn_id)
         wpn_id=-1
     }
-    /*
+    
     server_print("Valid wpn_id obtained! %d^n",wpn_id)
 
 
@@ -84,7 +84,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 
     server_print("The long name was: %s^n",
                                 sh_damage_source_long_names[wpn_id])
-    */
+    
     return wpn_id
     
 }
@@ -92,22 +92,17 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
-
-    if(is_valid_custom_dmg_source(wpnid)){
-        if(damage > 0){
-            custom_weapon_shot(wpnid, attacker)
-            custom_weapon_dmg(wpnid, attacker, victim, damage, headshot?HIT_HEAD:HIT_STOMACH)
+    
+    if(damage > 0){
+        new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
+        if(private_wpn_id==generic_dmg_source_wpn_id){
+            arrayset(wpnDescription,0,sizeof(wpnDescription))
+            strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
+        }
+        if((damage<get_user_health(victim))&&(dmgMode!=SH_DMG_KILL)){
+            custom_weapon_shot(private_wpn_id, attacker)
+            custom_weapon_dmg(private_wpn_id, attacker, victim, damage, headshot?HIT_HEAD:HIT_STOMACH)
         }
     }
-    else if(damage > 0){
-
-        arrayset(wpnDescription,0,sizeof(wpnDescription))
-        strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
-        custom_weapon_shot(generic_dmg_source_wpn_id, attacker)
-        custom_weapon_dmg(generic_dmg_source_wpn_id, attacker, victim, damage, headshot?HIT_HEAD:HIT_STOMACH)
-    }
-
-    return DMG_FWD_PASS
-
-
+    return DMG_FWD_PASS;
 }

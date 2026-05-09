@@ -1,30 +1,70 @@
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt7: player tools for debugging"
+#define PLUGIN "Superhero aux natives pt7: sh player custom sound effects tools"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt7.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt7.inc"
 
+#define is_valid_sound(%1) ((%1)>=0)
 
-stock const player_click_cmd[]="player_cmdclick"
-stock const player_hold_cmd[]="player_cmdhold"
+#define is_player_playing_sound(%1,%2) (is_valid_sound( g_last_played_sound[%1][%2])) 
 
+#define SH_MAX_CUSTOM_SOUNDS 90
+#define MAX_CHANNELS 8
+/**
 
-new CMD_RELEASE_TASKID
+#define CHAN_AUTO       0
+#define CHAN_WEAPON     1
+#define CHAN_VOICE      2
+#define CHAN_ITEM       3
+#define CHAN_BODY       4
+#define CHAN_STREAM     5   // allocate stream channel from the static or dynamic area
+#define CHAN_STATIC     6   // allocate channel from the static area 
+#define CHAN_NETWORKVOICE_BASE  7   // voice data coming across the network
+
+*/
+// emit_sound:
+
+/**
+	returns nothing!
+	void engfunc(EngFunc_EmitSound, 
+					entity,
+					int channel,
+					const char *sample,
+					float volume,
+					float attenuation,
+					int fFlags,
+					int pitch)
+ */
+// precache_sound:
+
+/**
+	returns sound id!
+
+	int engfunc(EngFunc_PrecacheSound, const char *sample);
+
+ */
+enum sh_custom_sound_struct{
+
+	sound_precache_id,
+	sound_file_name[STRING_SIZE]
+
+}
+new curr_sound_count = 0
+
+new g_sound_structs_arr[SH_MAX_CUSTOM_SOUNDS][sh_custom_sound_struct]
+
+new g_last_played_sound[SH_MAXSLOTS+1][MAX_CHANNELS]
+
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_concmd(player_click_cmd,"player_cmdclick",ADMIN_IMMUNITY,"param 1: playername. param2: cmd name")
-	register_concmd(player_hold_cmd,"player_cmdhold",ADMIN_IMMUNITY,"param 1: playername. param2: cmd name. param3: time")
-
-	CMD_RELEASE_TASKID=allocate_typed_task_id(player_task)
 
 }
 public plugin_cfg(){
@@ -38,6 +78,9 @@ public plugin_natives(){
 
 
 	register_native("prepare_shero_aux_lib_pt7","_prepare_shero_aux_lib_pt7",0);
+	register_native("sh_play_custom_sound","_sh_play_custom_sound",0);
+	register_native("sh_register_custom_sound","_sh_register_custom_sound",0);
+	register_native("sh_stop_custom_sound","_sh_stop_custom_sound",0);
 }
 
 public _prepare_shero_aux_lib_pt7(iPlugins, iParams){
@@ -45,94 +88,152 @@ public _prepare_shero_aux_lib_pt7(iPlugins, iParams){
 
 	server_print("%s innited!^n",LIBRARY_NAME)
 }
-public player_cmdhold(id,level,cid){
+/**
 
-	if (!cmd_access(id,level,cid,5))
-		return PLUGIN_HANDLED
+native sh_play_custom_sound(id,sound_id,channel,
+            Float:volume=VOL_NORM,
+            Float:attenuation=ATTN_NONE,
+            flags=0,
+            pitch=PITCH_NORM)
 
-	new arg[32], arg2[32],arg3[8],arg4[8]
-	read_argv(1,arg,31)
-	read_argv(2,arg2,31)
-	read_argv(3,arg3,8)
-	read_argv(4,arg4,8)
+native sh_stop_custom_sound(id,sound_id,channel)
 
-	new player = cmd_target(id,arg,6)
+ */
 
-	if (!player) return PLUGIN_HANDLED
+play_custom_sound_primitive(id,sound_id,channel,
+            Float:volume=VOL_NORM,
+            Float:attenuation=ATTN_NONE,
+            flags=0,
+            pitch=PITCH_NORM){
 
-	static player_cmd_string[128]
+	if(!is_user_alive(id)) return
 
-	formatex(player_cmd_string,charsmax(player_cmd_string),"+%s",arg2)
+	if(!is_valid_sound(sound_id)) return
 
-	new bool:use_engcmd=bool:str_to_num(arg4)
-	if(use_engcmd){
-		amxclient_cmd(player,player_cmd_string)
-	}
-	else{
-		engclient_cmd(player,player_cmd_string)
-	}
-	new param[33]
-
-	copy(param,31,arg2)
-	param[32]=_:use_engcmd
-	new Float: time_held = str_to_float(arg3)
-	if(!task_exists(player+CMD_RELEASE_TASKID)){
-		set_task(time_held,"player_cmd_off_task",player+CMD_RELEASE_TASKID,param,sizeof param)
-	}
-	else{
-		remove_task(player+CMD_RELEASE_TASKID)
-		player_cmd_off_task(param,player+CMD_RELEASE_TASKID)
-	}
-	server_print("Bot with player id %d held command %s for %0.2f seconds!!^n",player,arg2, time_held)
-
-	log_amx("Bot with player id %d held command %s for %0.2f seconds!!^n",player,arg2, time_held)
+	if(is_player_playing_sound(id,channel)) return
 	
-	return PLUGIN_HANDLED
-}
-public player_cmdclick(id,level,cid){
+	engfunc(EngFunc_EmitSound, 
+					id,
+					channel,
+					g_sound_structs_arr[sound_id][sound_file_name],
+					volume,
+					attenuation,
+					flags,
+					pitch)
 
-	if (!cmd_access(id,level,cid,4))
-		return PLUGIN_HANDLED
-
-	new arg[32], arg2[32], arg3[8]
-	read_argv(1,arg,31)
-	read_argv(2,arg2,31)
-	read_argv(3,arg3,8)
-
-	new player = cmd_target(id,arg,6)
-
-	if (!player) return PLUGIN_HANDLED
-
-	static player_cmd_string[128]
-
-	formatex(player_cmd_string,charsmax(player_cmd_string),"%s",arg2)
-
-	new bool:use_engcmd=bool:str_to_num(arg3)
-	if(use_engcmd){
-		amxclient_cmd(player,player_cmd_string)
-	}
-	else{
-		engclient_cmd(player,player_cmd_string)
-	}
-
-	server_print("Bot with player id %d clicks command %s!^n",player,arg2)
-
-	log_amx("Bot with player id %d clicks command %s!^n",player,arg2)
+	g_last_played_sound[id][channel] = sound_id
 	
-	return PLUGIN_HANDLED
+
 }
-public player_cmd_off_task(param[33],id){
-	id-=CMD_RELEASE_TASKID
+public plugin_precache(){
 
-	new player_cmd_string[128]
+	engfunc(EngFunc_PrecacheSound,NULL_SOUND)
 
-	formatex(player_cmd_string,charsmax(player_cmd_string),"-%s",param)
-	new bool:use_engcmd= bool:param[32]
+}
+stop_curr_sound_on_player_channel(id,channel){
 
-	if(use_engcmd){
-		engclient_cmd(id,player_cmd_string)
+
+	if(!is_player_playing_sound(id,channel)) return
+		
+	new the_curr_channel_sound=g_last_played_sound[id][channel]
+	engfunc(EngFunc_EmitSound, 
+				id,
+				channel,
+				g_sound_structs_arr[the_curr_channel_sound][sound_file_name],
+				VOL_NORM,
+				ATTN_NORM,
+				SND_STOP,
+				PITCH_NORM)
+	engfunc(EngFunc_EmitSound, 
+				id,
+				channel,
+				NULL_SOUND,
+				VOL_NORM,
+				ATTN_NORM,
+				0,
+				PITCH_NORM)
+
+
+	g_last_played_sound[id][channel] = -1
+}
+stop_all_player_sounds_primitive(id){
+
+	for(new i=0;i<MAX_CHANNELS;i++){
+		if(!is_player_playing_sound(id,i)) continue
+		
+		stop_curr_sound_on_player_channel(id,i)
+
 	}
-	else{
-		amxclient_cmd(id,player_cmd_string)
+	
+	
+
+	
+
+}
+public _sh_play_custom_sound(iPlugins, iParams){
+	new id = get_param(1),
+		channel = get_param(2),
+		sound_id = get_param(3),
+		Float:volume = get_param_f(4),
+		Float:attenuation = get_param_f(5),
+		flags = get_param(6),
+		pitch = get_param(7)
+
+	play_custom_sound_primitive(id,sound_id,channel,
+					volume,
+					attenuation,
+					flags,
+					pitch)
+
+
+		
+
+}
+
+public _sh_stop_custom_sound(iPlugins, iParams){
+
+	new id = get_param(1),
+		channel = get_param(2)
+
+	stop_curr_sound_on_player_channel(id,channel)
+
+}
+public _sh_register_custom_sound(iPlugins, iParams){
+
+
+	if(curr_sound_count>=SH_MAX_CUSTOM_SOUNDS){
+
+		return -1
 	}
+	get_string(1,
+			g_sound_structs_arr[curr_sound_count][sound_file_name],
+			STRING_SIZE)
+
+	g_sound_structs_arr[curr_sound_count][sound_precache_id] = engfunc(EngFunc_PrecacheSound,
+					g_sound_structs_arr[curr_sound_count][sound_file_name]);
+	
+	new returned_value=curr_sound_count
+	
+	curr_sound_count++
+
+	return returned_value
+	
+}
+
+public sh_round_end(){
+	stop_all_player_sounds_primitive(0)
+	
+	for(new i=1;i<sh_maxplayers()+1;i++){
+
+		stop_all_player_sounds_primitive(i)
+
+	}
+	
+}
+public sh_client_death(victim,attacker,headshot,const wpnDescription[]){
+
+	
+	stop_all_player_sounds_primitive(victim)
+
+	
 }

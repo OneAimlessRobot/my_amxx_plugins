@@ -231,11 +231,6 @@ public escapist_loop(id)
 public escapist_kd(id)
 {
 
-	// First Argument is an id with shock Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
 	if ( !hasRoundStarted() || !is_user_alive(id)||!is_user_connected(id))
 	{
 		playSoundDenySelect(id)

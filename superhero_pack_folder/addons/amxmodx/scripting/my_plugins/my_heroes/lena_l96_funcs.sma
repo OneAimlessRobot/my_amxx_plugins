@@ -107,7 +107,6 @@ public bulette_thinque(ent){
 		else{
 			entity_set_int(ent,EV_INT_iuser1,1)
 			entity_set_float(ent,EV_FL_fuser1,0.0)
-			emit_sound(owner, CHAN_WEAPON, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			emit_sound(owner, CHAN_WEAPON, LENA_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 		}

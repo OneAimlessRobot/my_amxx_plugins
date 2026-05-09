@@ -20,11 +20,7 @@
 
 #define ROCKET_SHOOT_PERIOD 6.0
 
-
 #define ROCKET_RADIUS 500.0
-
-
-#define LAW_THINK_PERIOD 0.1
 
 #define ROCKET_SPEED 2000.0
 

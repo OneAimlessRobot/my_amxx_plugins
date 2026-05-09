@@ -20,7 +20,6 @@
 #define FIELD_DESTROYED "shmod/flora/fields/field_destroy.wav"
 #define FIELD_CHARGING "shmod/flora/fields/field_charging.wav"
 #define FIELD_TELEPORT "shmod/flora/fields/flora_teleport.wav"
-#define FIELD_NULL "common/null.wav"
 #define FIELD_MDL 
 
 
@@ -55,8 +54,6 @@ native field_loaded(id)
 native clear_user_fields(id)
 
 native flora_max_fields()
-
-native flora_start_fields()
 
 native Float:flora_get_cooldown()
 

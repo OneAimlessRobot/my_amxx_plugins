@@ -21,7 +21,6 @@
 new pcvar_jetplane_law_radius,
 pcvar_jetplane_law_rocketspeed,
 pcvar_jetplane_law_dmg,
-pcvar_law_think_period,
 pcvar_jetplane_law_ammo;
 
 new law[SH_MAXSLOTS+1]
@@ -37,7 +36,6 @@ public plugin_init()
 	pcvar_jetplane_law_ammo = register_cvar("yandere_jetplane_law_ammo", "5")
 	pcvar_jetplane_law_dmg = register_cvar("yandere_jetplane_law_dmg", "5")
 	pcvar_jetplane_law_radius= register_cvar("yandere_jetplane_law_radius", "5")
-	pcvar_law_think_period = register_cvar("yandere_jetplane_law_think_period", "5")
 	pcvar_jetplane_law_rocketspeed = register_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_LAW_CLASSNAME, "law_think")
@@ -321,9 +319,8 @@ public law_think(ent)
 
 			}
 		}
-		
-		//draw_bbox(ent,0)
-		set_pev(ent, pev_nextthink, gametime + cvar_val(float, pcvar_law_think_period))
+
+		set_pev(ent, pev_nextthink, gametime + LAW_THINK_PERIOD)
 	}
 	return FMRES_IGNORED
 }
@@ -347,7 +344,6 @@ public _law_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(law[id])&&law[id]){
-		draw_bbox(law[id],true)
 		remove_entity(law[id]);
 		law[id]=0
 	}
