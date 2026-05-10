@@ -172,7 +172,9 @@ public poisonivy_damage(id)
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		Assign_BitVar(gIsPoisonedMask[id],attacker,true_for_macro) 
-		gatling_set_fx_num(id,POISON)
+		if((gatling_get_fx_num(id)>KILL)&&(gatling_get_fx_num(id)<NUM_FX)){
+			gatling_set_fx_num(id,POISON)
+		}
 
 		// Set a cooldown if there is one until user can poison another player
 		if (get_cvar_float("poisonivy_cooldown") > 0.0){

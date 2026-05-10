@@ -3043,6 +3043,7 @@ public _sh_extra_damage()
 		
 		server_print("Sh damage forward execute error.");
 	}
+	
 	if(abused_wpn_id!=custom_wpn_id){
 
 		xmod_get_wpnlogname(abused_wpn_id,wpnDescription,charsmax(wpnDescription))
@@ -3149,14 +3150,10 @@ public _sh_extra_damage()
 		
 		dllfunc(DLLFunc_ClientKill, victim)
 
-		custom_weapon_shot(abused_wpn_id, attacker)
-		custom_weapon_dmg(abused_wpn_id, gXrtaDmgAttacker, victim, damage_after, gXrtaDmgHeadshot?HIT_HEAD:HIT_STOMACH)
-
-
 		gXrtaDmgClientKill = false
 
 		// Log the Kill
-		logKill(attacker, victim, wpnDescription)
+		logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,headshot)
 		
 		// Make camera turn toward attacker on death, thx Emp`
 		set_pev(victim, pev_iuser3, attacker)
@@ -3287,7 +3284,7 @@ public fm_AlertMessage(atype, const msg[])
 	 return gXrtaDmgClientKill ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 //---------------------------------------------------------------------------------------------
-logKill(id, victim, const weaponDescription[32])
+logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,headshot)
 {
 	new namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
@@ -3311,6 +3308,11 @@ logKill(id, victim, const weaponDescription[32])
 		log_message("^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
 			namea, auserid, authida, teama, weaponDescription)
 	}
+
+	custom_weapon_shot(abused_wpn_id, id)
+	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, headshot?HIT_HEAD:HIT_STOMACH)
+
+
 }
 //----------------------------------------------------------------------------------------------
 public msg_DeathMsg()
