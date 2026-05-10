@@ -1,0 +1,30 @@
+L 05/10/2026 - 16:31:49: -------- Mapchange to de_train --------
+L 05/10/2026 - 16:31:50: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 16:31:50: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 16:31:50: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 16:31:50: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:31:50: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 16:31:50: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:31:50: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 16:31:50: [admin.amxx] Login: "TerezkaBroucku<85><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 16:31:54: [admincmd.amxx] Cmd: "REBORN SUPERHERO [SH] 60LVL | E<0><><>" set cvar (name "yb_quota") (value "14")
+L 05/10/2026 - 16:34:32: -------- Mapchange to de_train --------
+L 05/10/2026 - 16:34:33: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 16:34:33: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 16:34:33: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 16:34:33: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:34:33: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 16:34:33: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:34:33: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 16:34:34: [admin.amxx] Login: "TerezkaBroucku<85><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 16:34:37: [admincmd.amxx] Cmd: "REBORN SUPERHERO [SH] 60LVL | E<0><><>" set cvar (name "yb_quota") (value "14")
+L 05/10/2026 - 16:37:32: [admincmd.amxx] Cmd: "REBORN SUPERHERO [SH] 60LVL | E<0><><>" set cvar (name "yb_quota") (value "14")
+L 05/10/2026 - 16:37:32: [admincmd.amxx] Cmd: "REBORN SUPERHERO [SH] 60LVL | E<0><><>" set cvar (name "sv_unlag") (value "1")
+L 05/10/2026 - 16:39:23: -------- Mapchange to de_train --------
+L 05/10/2026 - 16:39:24: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 16:39:24: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 16:39:24: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 16:39:24: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:39:24: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 16:39:24: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:39:25: [walkguard.amxx] no zone-file found
