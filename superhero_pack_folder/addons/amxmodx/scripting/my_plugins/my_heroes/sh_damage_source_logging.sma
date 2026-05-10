@@ -76,6 +76,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         wpn_id=-1
     }
     
+    /*
     server_print("Valid wpn_id obtained! %d^n",wpn_id)
 
 
@@ -84,7 +85,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 
     server_print("The long name was: %s^n",
                                 sh_damage_source_long_names[wpn_id])
-    
+    */
     return wpn_id
     
 }
@@ -93,7 +94,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
     new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
-    if(damage > 0){
+    if((damage > 0)&&(attacker!=victim)){
         new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
         if(private_wpn_id==generic_dmg_source_wpn_id){
             arrayset(wpnDescription,0,sizeof(wpnDescription))

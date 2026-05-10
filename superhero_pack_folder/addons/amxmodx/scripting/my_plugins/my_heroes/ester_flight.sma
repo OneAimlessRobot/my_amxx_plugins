@@ -40,17 +40,16 @@ new pcvar_ester_explosion_ignore_user
 new pcvar_ester_total_respawn_attempts
 new pcvar_ester_anti_pussy_engaged
 
-
-
-
 new Float:g_ester_blow_up_time_left[SH_MAXSLOTS+1]
-
-
 new g_ester_respawned_attempts[SH_MAXSLOTS+1]
 new g_which_team_is_user[SH_MAXSLOTS+1]
 new g_saved_coords[SH_MAXSLOTS+1][3]
 new g_last_coords[SH_MAXSLOTS+1][3]
 
+
+new dmg_source_name_short_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
+new dmg_source_name_long_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
+new ester_flight_drain_wpn_id
 
 
 
@@ -58,7 +57,8 @@ new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_POSITION_CHECK_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_TEAM_CHECK_TASKID ,
-		ESTER_REBORN_EXPLOSION_DELAY_TASKID 
+		ESTER_REBORN_EXPLOSION_DELAY_TASKID,
+		ESTER_FLIGHT_DRAIN_GLOBAL_TASKID
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -97,9 +97,44 @@ public plugin_init()
 	ESTER_REBORN_GLOW_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_TEAM_CHECK_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_EXPLOSION_DELAY_TASKID=allocate_typed_task_id(player_task)
-	
+	ESTER_FLIGHT_DRAIN_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
+
+	ester_flight_drain_wpn_id=sh_log_custom_damage_source(
+								ester_get_hero_id(),
+								dmg_source_name_short_ester_flight_drain,
+								dmg_source_name_long_ester_flight_drain,
+								0)
+
+	set_task(FLIGHT_DRAIN_INFLICT_PERIOD,"ester_drain_loop",ESTER_FLIGHT_DRAIN_GLOBAL_TASKID,_,_,"b")
+}
+
+public ester_drain_loop(task_id){
+
+	if(!sh_is_active()) return
+
+	if(sh_is_freezetime()) return
+
+	for(new id=1;id<sh_maxplayers()+1;id++){
 
 
+		if(!is_user_alive(id)||!sh_user_has_hero(id,ester_get_hero_id())||
+				!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
+				continue;
+		}
+		if(get_user_godmode(id)){
+			
+			continue
+		
+		}
+		sh_extra_damage(id, id, cvar_val(num,pcvar_ester_fly_health_spend),
+					dmg_source_name_short_ester_flight_drain,
+					_,_,_,_,_,_,
+					SH_NEW_DMG_DRAIN,
+					ester_flight_drain_wpn_id)
+
+
+
+	}
 }
 deny_next_reborn(id,bool:is_sillycide=true){
 	
@@ -178,7 +213,7 @@ remove_user_flight_fx(id){
 	if(!is_user_connected(id)||!sh_user_has_hero(id,ester_get_hero_id())||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
-	emit_sound(id, CHAN_BODY,FLIGHT_POWER, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 	emit_sound(id, CHAN_AUTO, ester_blowup_sounds[curr_player_sound[id]],
 				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -227,9 +262,18 @@ public OnCmdStart(id, uc_handle, seed)
 	if(sh_is_freezetime()) return FMRES_IGNORED
 
 	if(!is_user_alive(id)||!sh_user_has_hero(id,ester_get_hero_id())||
-			!Get_BitVar(g_ester_is_reborn_mode_mask,id)||
-			sh_get_stun(id)){
+			!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
 			return FMRES_IGNORED;
+	}
+
+	if(sh_get_stun(id)){
+		UnSet_BitVar(g_flying_mask,id)
+		if(Get_BitVar(g_is_glowing_mask,id)){
+			UnSet_BitVar(g_is_glowing_mask,id)
+			remove_user_flight_fx(id)
+			
+		}
+		return FMRES_IGNORED;
 	}
 	static buttons,oldbuttons; 
 	buttons = get_uc(uc_handle, UC_Buttons)
@@ -264,7 +308,6 @@ public OnCmdStart(id, uc_handle, seed)
 		
 			entity_set_vector(id, EV_VEC_velocity, Velocity)
 		
-			sh_extra_damage(id,id,floatround(cvar_val(float,pcvar_ester_fly_health_spend)),"Ester bleed flying")
 			if(!Get_BitVar(g_is_glowing_mask,id)){
 				Set_BitVar(g_is_glowing_mask,id)
 				
@@ -311,6 +354,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		return PLUGIN_CONTINUE
 	}
 	
+	ester_remove_statuses(id)
 	if(killer==id){
 		if(has_hero&&
 				cvar_val(bool,pcvar_ester_anti_pussy_engaged)){
@@ -327,7 +371,6 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		}
 	}
 	g_ester_blow_up_time_left[id]=0.0
-	ester_remove_statuses(id)
 
 	ester_set_reborn_mode(id,1)
 
@@ -481,7 +524,8 @@ public positionChangeTimer(id)
 		entity_set_vector(id, EV_VEC_velocity, velocity)
 	}
 
-	set_task(0.4, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
+	set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,
+			cvar_val(float,pcvar_ester_calculation_time_period)-PRE_RESPAWN_MESSAGE_RELAY) * 0.5, "positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
 }
 ester_remove_statuses(id){
 

@@ -28,3 +28,279 @@ L 05/10/2026 - 16:39:24: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg 
 L 05/10/2026 - 16:39:24: [superheromod_configs.amxx] Loading shero_configs.cfg
 L 05/10/2026 - 16:39:24: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
 L 05/10/2026 - 16:39:25: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 16:48:46: GameConfig CRC computed engine=284E221C (/mnt/REBORN/half_life_stuff/Half-Life/engine_i486.so)
+L 05/10/2026 - 16:48:46: GameConfig CRC computed server=CE0E6226 (/mnt/REBORN/half_life_stuff/Half-Life/cstrike/dlls/cs.so)
+L 05/10/2026 - 16:48:46: GameConfig CRC mismatch for game "*" section "*" library "engine" platform "<unknown>" expected ???????? got 284E221C
+L 05/10/2026 - 16:48:46: GameConfig CRC mismatch for game "*" section "*" library "engine" platform "<unknown>" expected ???????? got 284E221C
+L 05/10/2026 - 16:48:46: -------- Mapchange to de_dust --------
+L 05/10/2026 - 16:48:46: GameConfig CRC mismatch for game "*" section "*" library "server" platform "<unknown>" expected ???????? got CE0E6226
+L 05/10/2026 - 16:48:46: [GEOIP] Database info: GeoLite2 City database 2.0
+L 05/10/2026 - 16:48:47: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 16:48:47: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 16:48:47: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 16:48:48: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:48:48: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 16:48:48: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 16:48:49: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 17:06:49: [mapchooser.amxx] Vote: Voting for the nextmap started
+L 05/10/2026 - 17:07:05: [mapchooser.amxx] Vote: Voting for the nextmap finished. The nextmap will be de_inferno
+L 05/10/2026 - 17:09:09: -------- Mapchange to de_inferno --------
+L 05/10/2026 - 17:09:09: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 17:09:09: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 17:09:09: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 17:09:09: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:09:09: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 17:09:09: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:09:10: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 17:27:09: [mapchooser.amxx] Vote: Voting for the nextmap started
+L 05/10/2026 - 17:27:24: [mapchooser.amxx] Vote: Voting for the nextmap finished. The nextmap will be de_nuke
+L 05/10/2026 - 17:29:28: -------- Mapchange to de_nuke --------
+L 05/10/2026 - 17:29:29: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 17:29:29: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 17:29:29: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 17:29:29: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:29:29: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 17:29:29: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:29:29: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 17:47:28: [mapchooser.amxx] Vote: Voting for the nextmap started
+L 05/10/2026 - 17:47:43: [mapchooser.amxx] Vote: Voting for the nextmap finished. The nextmap will be de_train
+L 05/10/2026 - 17:49:52: -------- Mapchange to de_train --------
+L 05/10/2026 - 17:49:52: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 17:49:52: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 17:49:52: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 17:49:52: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:49:52: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 17:49:52: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 17:49:53: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 18:07:53: [mapchooser.amxx] Vote: Voting for the nextmap started
+L 05/10/2026 - 18:08:08: [mapchooser.amxx] Vote: Voting for the nextmap finished. The nextmap will be de_dust2
+L 05/10/2026 - 18:10:12: -------- Mapchange to de_dust2 --------
+L 05/10/2026 - 18:10:12: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 18:10:12: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 18:10:12: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 18:10:12: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 18:10:12: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 18:10:12: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 18:10:13: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 18:28:12: [mapchooser.amxx] Vote: Voting for the nextmap started
+L 05/10/2026 - 18:28:27: [mapchooser.amxx] Vote: Voting for the nextmap finished. The nextmap will be cs_assault
+L 05/10/2026 - 18:30:31: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 18:30:31: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 18:30:31: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 18:30:31: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 18:30:31: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 18:30:31: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 18:30:31: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 18:30:32: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 18:45:48: [admin.amxx] Login: "TerezkaBroucku<76><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:01:21: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 19:01:21: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:01:21: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:01:21: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:01:21: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:01:22: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:01:22: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:01:22: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:01:23: [admin.amxx] Login: "TerezkaBroucku<76><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:01:23: [admin.amxx] Login: "TerezkaBroucku<81><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:01:59: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 19:01:59: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:01:59: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:01:59: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:01:59: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:01:59: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:01:59: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:02:00: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:02:00: [admin.amxx] Login: "TerezkaBroucku<81><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:02:01: [admin.amxx] Login: "TerezkaBroucku<92><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:02:37: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 1, which is head, with damage 2000.00!
+
+L 05/10/2026 - 19:02:38: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:02:41: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:03:05: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:03:43: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 1, which is head, with damage 2000.00!
+
+L 05/10/2026 - 19:03:47: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:03:55: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:04:05: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:04:10: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:04:32: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:04:37: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:04:45: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:08:57: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 19:08:58: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:08:58: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:08:58: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:08:58: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:08:58: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:08:58: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:08:58: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:08:59: [admin.amxx] Login: "TerezkaBroucku<92><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:09:47: [amx_aux_cmds.amxx] Cabeca de boca just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:09:56: [amx_aux_cmds.amxx] Cabeca de boca just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:10:42: [amx_aux_cmds.amxx] Cabeca de boca just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:10:45: [amx_aux_cmds.amxx] Cabeca de boca just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:11:09: [amx_aux_cmds.amxx] NymphomaniacBrat just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:11:10: [amx_aux_cmds.amxx] NymphomaniacBrat just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:11:12: [amx_aux_cmds.amxx] NymphomaniacBrat just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:11:22: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:11:52: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:19: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:24: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:28: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:32: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:40: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:12:42: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:14:54: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 19:14:54: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:14:54: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:14:54: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:14:54: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:14:54: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:14:54: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:14:55: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:14:55: [admin.amxx] Login: "TerezkaBroucku<92><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:15:30: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:15:33: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:15:38: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:15:40: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:00: [amx_aux_cmds.amxx] HartemBenArfa just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:07: [amx_aux_cmds.amxx] aberracao drogada just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:08: [amx_aux_cmds.amxx] aberracao drogada just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:08: [amx_aux_cmds.amxx] aberracao drogada just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:08: [amx_aux_cmds.amxx] aberracao drogada just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:15: [amx_aux_cmds.amxx] DoubleDMelons just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:16:19: [amx_aux_cmds.amxx] DoubleDMelons just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:18:27: -------- Mapchange to cs_assault --------
+L 05/10/2026 - 19:18:27: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:18:27: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:18:27: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:18:27: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:18:28: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:18:28: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:18:28: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:18:28: [admin.amxx] Login: "TerezkaBroucku<92><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:18:55: [amx_aux_cmds.amxx] DoubleDMelons just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:01: [amx_aux_cmds.amxx] Cabeca de boca just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:09: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:12: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:14: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:16: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:19: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:21: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:23: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:25: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:28: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:30: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:32: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:35: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:37: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:39: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:41: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:43: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:19:45: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:20:39: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:21:05: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:21:07: [amx_aux_cmds.amxx] SNIFFTHATLINE just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:40:53: GameConfig CRC computed engine=284E221C (/mnt/REBORN/half_life_stuff/Half-Life/engine_i486.so)
+L 05/10/2026 - 19:40:53: GameConfig CRC computed server=CE0E6226 (/mnt/REBORN/half_life_stuff/Half-Life/cstrike/dlls/cs.so)
+L 05/10/2026 - 19:40:53: GameConfig CRC mismatch for game "*" section "*" library "engine" platform "<unknown>" expected ???????? got 284E221C
+L 05/10/2026 - 19:40:53: GameConfig CRC mismatch for game "*" section "*" library "engine" platform "<unknown>" expected ???????? got 284E221C
+L 05/10/2026 - 19:40:53: -------- Mapchange to de_dust --------
+L 05/10/2026 - 19:40:53: GameConfig CRC mismatch for game "*" section "*" library "server" platform "<unknown>" expected ???????? got CE0E6226
+L 05/10/2026 - 19:40:53: [GEOIP] Database info: GeoLite2 City database 2.0
+L 05/10/2026 - 19:40:55: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:40:55: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:40:55: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:40:55: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:40:55: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:40:55: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:40:56: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:41:25: [admin.amxx] Login: "TerezkaBroucku<12><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:41:50: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:41:53: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:41:55: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:42:06: [amx_aux_cmds.amxx] TerezkaBroucku just respawned player named TerezkaBroucku!
+
+L 05/10/2026 - 19:42:12: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:43:37: [amx_aux_cmds.amxx] NymphomaniacBrat just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:43:50: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:43:53: [amx_aux_cmds.amxx] Maria chupa-beatas just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:47:05: -------- Mapchange to de_dust --------
+L 05/10/2026 - 19:47:05: [plugin_task_allocator.amxx] Loading allocator.cfg
+L 05/10/2026 - 19:47:05: [AMXX] Failed to open dictionary file: cstrike/addons/amxmodx/data/lang/admin_allinone.txt
+L 05/10/2026 - 19:47:05: [level_gen.amxx] Loading levels.cfg
+L 05/10/2026 - 19:47:05: [superheromodcore.amxx] Exec: (1) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:47:05: [superheromod_configs.amxx] Loading shero_configs.cfg
+L 05/10/2026 - 19:47:05: [superheromodcore.amxx] Exec: (2) Loading shconfig.cfg (message should be seen twice)
+L 05/10/2026 - 19:47:06: [walkguard.amxx] no zone-file found
+L 05/10/2026 - 19:47:06: [admin.amxx] Login: "TerezkaBroucku<12><STEAM_0:0:168953284><>" became an admin (account "STEAM_0:0:168953284") (access "abcdefghijklmnopqrstu") (address "85.138.81.153")
+L 05/10/2026 - 19:47:36: [amx_aux_cmds.amxx] gaja malfodida just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+
+L 05/10/2026 - 19:47:39: [amx_aux_cmds.amxx] gaja malfodida just hit TerezkaBroucku in hitzone 2, which is chest, with damage 2000.00!
+

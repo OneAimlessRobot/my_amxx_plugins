@@ -3309,7 +3309,7 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,head
 			namea, auserid, authida, teama, weaponDescription)
 	}
 
-	if(damage_after<=0){
+	if((damage_after<=0)||(id==victim)){
 		
 		return
 	}
