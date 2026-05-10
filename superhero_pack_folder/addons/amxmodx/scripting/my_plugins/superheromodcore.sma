@@ -3309,9 +3309,12 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,head
 			namea, auserid, authida, teama, weaponDescription)
 	}
 
+	if(damage_after<=0){
+		
+		return
+	}
 	custom_weapon_shot(abused_wpn_id, id)
 	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, headshot?HIT_HEAD:HIT_STOMACH)
-
 
 }
 //----------------------------------------------------------------------------------------------
