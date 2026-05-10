@@ -128,18 +128,13 @@ public bulette_thinque(ent){
 
 
 }
-public bool:client_isnt_hitter(id){
-	
-	return !is_user_alive(id)||!sh_user_has_hero(id,lena_get_hero_id())
-	
-}
 public CmdStart(id, uc_handle)
 {
 
 	
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, lena_get_hero_id())){
 		
 		return FMRES_IGNORED
 	}
@@ -199,7 +194,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static id; id = pev(ent, pev_owner)
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, lena_get_hero_id())){
 		
 		return HAM_IGNORED
 	}
@@ -231,7 +226,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(client_isnt_hitter(pPlayer)){
+	if(!client_is_hero_user(pPlayer, lena_get_hero_id())){
 		
 		return HAM_IGNORED
 	}
@@ -254,7 +249,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = pev(ent, pev_owner)
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, lena_get_hero_id())){
 		
 		return HAM_IGNORED
 	}
@@ -278,7 +273,7 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(client_isnt_hitter(pPlayer)){
+	if(!client_is_hero_user(pPlayer, lena_get_hero_id())){
 		
 		return HAM_IGNORED
 	}
@@ -296,8 +291,9 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 		
 	new pPlayer = get_member(entity, m_pPlayer)
-	if(client_isnt_hitter(pPlayer)||!hasRoundStarted()){
-		
+	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if(!sh_user_has_hero(pPlayer,lena_get_hero_id())){
+
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
@@ -330,7 +326,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = pev(Ent, pev_owner)
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, lena_get_hero_id())){
 		
 		return
 	}
@@ -345,7 +341,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 launch_bullet(id)
 {
 
-if(client_isnt_hitter(id)){
+if(!client_is_hero_user(id, lena_get_hero_id())){
 		
 	return
 }
@@ -420,7 +416,7 @@ entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTIL
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(client_isnt_hitter(player)){
+	if(!client_is_hero_user(player, lena_get_hero_id())){
 		
 		return FMRES_IGNORED
 	}

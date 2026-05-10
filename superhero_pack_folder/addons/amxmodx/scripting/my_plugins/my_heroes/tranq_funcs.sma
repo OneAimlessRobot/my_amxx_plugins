@@ -115,7 +115,7 @@ public tranque_thinque(ent){
 
 public CmdStart(id, uc_handle)
 {
-	if (!hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if (!hasRoundStarted()||!client_is_hero_user(id, tranq_get_hero_id())) return FMRES_IGNORED;
 
 	
 	if(Get_BitVar(trigger_is_down_mask, id)){
@@ -177,13 +177,9 @@ public fw_Item_PostFrame(ent)
 
 	}
 	static id; id = pev(ent, pev_owner)
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, tranq_get_hero_id())){
 
 		return HAM_IGNORED;
-	}
-	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
-
-		return HAM_IGNORED
 	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ELITE)
@@ -215,11 +211,7 @@ public fw_WeaponReloadPre(entity)
 
 	new pPlayer = get_member(entity, m_pPlayer)
 
-	if(client_isnt_hitter(pPlayer)){
-
-		return HAM_IGNORED
-	}
-	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id()) ){
+	if(!client_is_hero_user(pPlayer, tranq_get_hero_id())){
 
 		return HAM_IGNORED
 	}
@@ -243,11 +235,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 	}
 	static id; id = pev(ent, pev_owner)
-	if(client_isnt_hitter(id)){
-
-		return HAM_IGNORED
-	}
-	if(!sh_user_has_hero(id,tranq_get_hero_id()) ){
+	if(!client_is_hero_user(id, tranq_get_hero_id())){
 
 		return HAM_IGNORED
 	}
@@ -323,12 +311,8 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	}
 
 	static id; id = pev(Ent, pev_owner)
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, tranq_get_hero_id())){
 		return;
-	}
-	if(!sh_user_has_hero(id,tranq_get_hero_id())){
-
-		return
 	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
@@ -338,24 +322,9 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	add_3d_vectors(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }
-
-bool:client_isnt_hitter(pPlayer){
-
-	if ( !is_user_alive(pPlayer)){
-
-		return true
-	}
-	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
-
-
-		return true;
-	}
-	return false
-}
-
 launch_dart(id)
 {
-	if(client_isnt_hitter(id)){
+	if(!client_is_hero_user(id, tranq_get_hero_id())){
 
 		return
 	}
@@ -508,7 +477,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(client_isnt_hitter(player)){
+	if(!client_is_hero_user(player, tranq_get_hero_id())){
 		return FMRES_IGNORED
 	}
 	new weapon = get_user_weapon(player);

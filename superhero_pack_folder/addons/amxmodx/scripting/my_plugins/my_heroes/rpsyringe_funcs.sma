@@ -59,7 +59,7 @@ public CmdStart(id, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
-	if ( !hasRoundStarted()||client_isnt_hitter(id)) return FMRES_IGNORED;
+	if ( !hasRoundStarted()||!client_is_hero_user(id, gatling_get_hero_id())) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
@@ -97,21 +97,6 @@ public CmdStart(id, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-public bool:client_isnt_hitter(id){
-	
-	if ( !is_user_alive(id)){
-		
-		return true
-	}
-	if(!sh_user_has_hero(id,gatling_get_hero_id())){
-		
-		
-		return true;
-	}
-	return false
-	
-}
-
 public seringa_toqueta_de_la_seringa(pToucher, pTouched) {
 
 	if(!is_valid_ent(pToucher)) return

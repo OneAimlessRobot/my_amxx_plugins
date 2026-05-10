@@ -21,8 +21,21 @@
 #define MINI_STRING_SIZE 32
 #define STRING_SIZE 128
 #define BIG_STRING_SIZE (STRING_SIZE*4)
-/*new g_msgFade,victim_dmg_hud_msg_sync, attacker_dmg_hud_msg_sync
-new white, fire,gSpriteLaser,blood1,blood2,g_iFireSprite, g_iSmokeSprite[2];*/
+/**
+
+	Useful macro to shorten code!
+	the first parameter is the user.
+	We will first check if they are alive
+	And then the next parameter is the hero id.
+	We will they check if they have that hero!
+	It can be a hero that obtains a hero id
+	Or an actual hero id
+	It does not matter as long as the result is anything
+	previously returned by either
+	shCreateHero
+	Or sh_create_hero
+ */
+#define client_is_hero_user(%1,%2) (is_user_alive(%1)&&sh_user_has_hero(%1,%2))
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 

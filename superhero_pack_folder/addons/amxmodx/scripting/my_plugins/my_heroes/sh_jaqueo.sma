@@ -102,7 +102,7 @@ public jaqueo_drop_weapons(id){
 }
 public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || client_isnt_hitter(idattacker)) return HAM_IGNORED
+	if(!sh_is_active() || !client_is_hero_user(idattacker, jaqueo_get_hero_id())) return HAM_IGNORED
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	new headshot = bodypart == 1 ? 1 : 0
@@ -126,18 +126,10 @@ public loadCVARS()
 {
 	scout_mult=get_cvar_float("jaqueo_scout_mult")
 }
-public client_isnt_hitter(gatling_user){
-	
-	new bool:result=(!is_user_alive(gatling_user))
-	if(result) return true
-	
-	return !sh_user_has_hero(gatling_user,gHeroID) 
-	
-}
 
 public sh_client_spawn(id){
 	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
+	if(!sh_is_active()||!is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )return
 	
 	reset_jaqueo_user(id)
 	jaqueo_weapons(id)
