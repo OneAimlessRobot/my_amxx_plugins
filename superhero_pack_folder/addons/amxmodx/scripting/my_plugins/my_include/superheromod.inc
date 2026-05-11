@@ -35,6 +35,7 @@ stock bool:true_for_macro=true,
 #tryinclude "../../include/fun.inc"
 #tryinclude "../../include/csx.inc"
 #tryinclude "../../include/cstrike.inc"
+#tryinclude "../my_include/auxiliar_stuff.inc"
 #tryinclude "../my_include/superheroconst.inc"
 
 
@@ -49,7 +50,7 @@ stock bool:true_for_macro=true,
  *        FORWARDS        *
  **************************/
 
-forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_wpn_id);
+forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_wpn_id);
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 
@@ -422,7 +423,7 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], bodypart = HIT_GENERIC,
+native sh_extra_damage(victim, attacker, damage, const wpnDescription[], my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
 				dmgMode = SH_DMG_MULT,
 				bool:dmgStun = false,
 				bool:dmgFFmsg = true,

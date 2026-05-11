@@ -104,7 +104,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			set_user_godmode(id,0)
-			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, HIT_HEAD,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_SQUASHED,custom_dmg_id)
+			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, MY_HIT_HEAD,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_SQUASHED,custom_dmg_id)
 
 		}
 		default:{
@@ -114,7 +114,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
@@ -124,7 +124,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			return DMG_FWD_PASS
 		
 		}
-		new bool:headshot= (bodypart==HIT_HEAD)
+		new bool:headshot= (bodypart==MY_HIT_HEAD)
 		new bool:is_self_drain_damage= ((victim==attacker)&&(new_dmg_type==SH_NEW_DMG_DRAIN))
 		if(headshot&&!is_self_drain_damage){
 			

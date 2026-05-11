@@ -156,7 +156,7 @@ if(sh_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
 	if(g_hits[id]>=g_max_hits_player[id]){
 		
 		set_user_godmode(id,0)
-		sh_extra_damage(id, attacker, 1, "Thanks for that", HIT_HEAD,SH_DMG_KILL)
+		sh_extra_damage(id, attacker, 1, "Thanks for that", MY_HIT_HEAD,SH_DMG_KILL)
 		return HAM_IGNORED
 	}
 	else if(damage>=tg_damage){
@@ -202,7 +202,7 @@ sh_chat_message(id,gHeroID,"Activated yowai mode.")
 return PLUGIN_HANDLED
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

@@ -200,7 +200,8 @@ public darkangel_damage(id)
 		}
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", bodypart)
+			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty",
+					my_hitpoint_enum:bodypart)
 		}
 		do_knockback(id,extraDamage);
 	}

@@ -183,20 +183,24 @@ public Marksman_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
 	if ( !is_user_connected(attacker) ||id==attacker) return
-
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_G3SG1 && is_user_alive(id) ) {
+	new has_hero=sh_user_has_hero(attacker,gHeroID)
+	if ( has_hero && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
 		if (extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
-						dmg_source_name_short_good_rifle,bodypart,_,_,_,_,_,
+						dmg_source_name_short_good_rifle,
+						my_hitpoint_enum:bodypart
+						,_,_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,good_rifle_wpn_id)
 		}
 	}
-	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SG550 && is_user_alive(id) ){
+	else if( has_hero && weapon == CSW_SG550 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * PSG1_DMG_Mult - damage)
 		if(extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
-						dmg_source_name_short_evil_rifle,bodypart,_,_,_,_,_,
+						dmg_source_name_short_evil_rifle,
+						my_hitpoint_enum:bodypart
+						,_,_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,evil_rifle_wpn_id)
 		}
 	}

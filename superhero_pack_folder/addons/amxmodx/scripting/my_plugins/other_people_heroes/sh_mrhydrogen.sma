@@ -88,14 +88,14 @@ mrhydrogen_stop_powers(id)
 	return PLUGIN_CONTINUE
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
+
 	if (attacker <= 0 && attacker > SH_MAXSLOTS && id != attacker)
 	return PLUGIN_CONTINUE
 	if (sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id))
 	{
 	new extraDamage = floatround(damage * get_cvar_float("mrhydrogen_knifemult") - damage)
 	if (extraDamage > 0)
-	sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
+	sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
 	if (!gIsHitByMrHydrogen[id])
 	{
 	gIsHitByMrHydrogen[id] = true

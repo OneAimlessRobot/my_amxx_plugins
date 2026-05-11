@@ -111,7 +111,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	if((weapon==CSW_SCOUT)&&sh_user_has_hero(idattacker,gHeroID) ){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
-			sh_extra_damage(this, idattacker, floatround(extraDamage), "Jaqueo scout", bodypart)
+			sh_extra_damage(this, idattacker, floatround(extraDamage), "Jaqueo scout", my_hitpoint_enum:bodypart)
 			
 		}
 	}

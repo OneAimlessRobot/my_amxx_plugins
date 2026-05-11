@@ -175,7 +175,7 @@ public veronika_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak,
-								bodypart,
+								my_hitpoint_enum:bodypart ,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_ak)

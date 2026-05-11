@@ -328,7 +328,7 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 	new Float:extraDamage = damage * COUNTER_DMG_Mult - damage
 	if (floatround(extraDamage)>0){
 		sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_SUPER_BULLET],
-			bodypart,
+			my_hitpoint_enum:bodypart,
 			_,_,_,_,_,
 			SH_NEW_DMG_SUPER_BULLET,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SUPER_BULLET))

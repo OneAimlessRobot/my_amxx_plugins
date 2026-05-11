@@ -135,7 +135,8 @@ public swat_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
 		if (extraDamage > 0){
 			
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat, bodypart,
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat,
+											my_hitpoint_enum:bodypart,
 											_,_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
 											M4Swat_weapon_id)
@@ -145,7 +146,8 @@ public swat_damage(id)
 	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
 		if(extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,bodypart,
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,
+											my_hitpoint_enum:bodypart,
 											_,_,_,_,_,
 											SH_NEW_DMG_BLEED,
 											tactical_knife_weapon_id)

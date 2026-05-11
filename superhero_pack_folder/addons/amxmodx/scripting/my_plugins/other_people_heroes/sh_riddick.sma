@@ -96,7 +96,6 @@ public riddick_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
@@ -107,7 +106,7 @@ public riddick_damage(id)
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, 
 						dmg_source_name_long_dual_knife,
-						headshot,
+						my_hitpoint_enum:bodypart,
 						_,_,_,_,_,_,
 						custom_dmg_id_dual_knife)
 		}

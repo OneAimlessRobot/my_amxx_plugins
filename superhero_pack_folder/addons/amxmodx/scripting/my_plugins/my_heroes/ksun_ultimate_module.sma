@@ -132,7 +132,7 @@ if(has_hero&&ksun_player_is_in_ultimate(attacker)){
 		new Float:dmgAdded= damage*cvar_val(float, pcvar_ksun_dmg_absorption_index)
 		new Float:newDamage=damage+ dmgAdded
 		SetHamParamFloat(4, 0.0);
-		sh_extra_damage(id,attacker,floatround(newDamage),dmg_source_name_long_r5,HIT_HEAD,_,_,_,_,_,_,custom_dmg_id_r5)
+		sh_extra_damage(id,attacker,floatround(newDamage),dmg_source_name_long_r5,MY_HIT_HEAD,_,_,_,_,_,_,custom_dmg_id_r5)
 	}
 }
 return HAM_IGNORED
@@ -307,7 +307,7 @@ return PLUGIN_CONTINUE
 
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){
 	

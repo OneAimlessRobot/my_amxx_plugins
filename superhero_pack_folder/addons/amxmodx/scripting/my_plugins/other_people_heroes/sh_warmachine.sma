@@ -274,7 +274,6 @@ public warmachine_damage(id)
 
 	new damage = read_data(2)
 	new weaponid, bodypart, attacker = get_user_attacker(id, weaponid, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
@@ -285,7 +284,9 @@ public warmachine_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("warmachine_dmgmult") - damage)
-		if (extraDamage > 0) sh_extra_damage(id, attacker, extraDamage, weaponName, headshot)
+		if (extraDamage > 0){
+			sh_extra_damage(id, attacker, extraDamage, weaponName, my_hitpoint_enum:bodypart )
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -516,7 +516,7 @@ if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[atta
 	
 	// do extra damage
 	new extraDamage = 1000
-	sh_extra_damage( id, attacker, extraDamage, "predator gun", bodypart )
+	sh_extra_damage( id, attacker, extraDamage, "predator gun", my_hitpoint_enum:bodypart  )
 }
 return PLUGIN_CONTINUE
 }

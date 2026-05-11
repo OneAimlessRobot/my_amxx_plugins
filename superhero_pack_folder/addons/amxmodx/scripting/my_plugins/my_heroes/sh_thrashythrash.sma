@@ -323,7 +323,7 @@ public thrashy_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(float(damage)*ak_dmgmult-float(damage));
-		sh_extra_damage( id, attacker, extraDamage, "supermegaEPICTHRASHER", bodypart )
+		sh_extra_damage( id, attacker, extraDamage, "supermegaEPICTHRASHER", my_hitpoint_enum:bodypart )
 		if(extraDamage>=health){
 			set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 0);
 			// do turn down that awful racket..to be replaced by a blood spurt!

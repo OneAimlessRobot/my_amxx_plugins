@@ -93,7 +93,7 @@ public rattler_damage(id)
 		{
 			sh_extra_damage( attacker, id, returnDamage, 
 								dmg_source_name_short_rat,
-								_,_,_,_,_,_,
+								my_hitpoint_enum:bodypart,_,_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								rat_wpn_id)
 

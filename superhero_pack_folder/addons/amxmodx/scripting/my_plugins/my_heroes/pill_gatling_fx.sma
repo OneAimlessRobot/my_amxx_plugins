@@ -204,7 +204,7 @@ public fx_damage(id)
 				
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 							dmg_source_name_long_crackhead_rage,
-							bodypart,
+							my_hitpoint_enum:bodypart ,
 							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_crackhead_rage)
@@ -229,7 +229,7 @@ public fx_damage(id)
 			
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 							dmg_source_name_long_poison_vuln,
-							bodypart,
+							my_hitpoint_enum:bodypart ,
 							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_poison_vuln)
@@ -242,7 +242,7 @@ public fx_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_att=(gatling_get_fx_num(attacker));
@@ -479,7 +479,7 @@ kill_user(id,attacker){
 						LineColors[FX_COLOR_OFFSET+_:KILL][0],
 						LineColors[FX_COLOR_OFFSET+_:KILL][1],
 						LineColors[FX_COLOR_OFFSET+_:KILL][2], 50)
-	sh_extra_damage(id,attacker,1,"Cyanide Pill",0,SH_DMG_KILL)
+	sh_extra_damage(id,attacker,1,"Cyanide Pill",_,SH_DMG_KILL)
 	gatling_set_fx_num(id,FX_ID_NONE)
 
 

@@ -426,7 +426,7 @@ public pred_damage(id)
 	{
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("pred_knifemult") - damage)
-		sh_extra_damage( id, attacker, extraDamage, "Super Knife" )
+		sh_extra_damage( id, attacker, extraDamage, "Super Knife", my_hitpoint_enum:bodypart)
 	}
 	return PLUGIN_CONTINUE
 }

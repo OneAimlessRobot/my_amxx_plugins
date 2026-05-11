@@ -133,7 +133,7 @@ public SuperNoodle_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_shotgun,
-								bodypart,
+								my_hitpoint_enum:bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_shotgun)
@@ -143,7 +143,7 @@ public SuperNoodle_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
 		if(extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_hunt_rifle,
-								bodypart,
+								my_hitpoint_enum:bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_hunt_rifle)
@@ -155,7 +155,7 @@ public SuperNoodle_damage(id)
 
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_arifle,
-							bodypart,
+							my_hitpoint_enum:bodypart,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_arifle)
@@ -167,7 +167,7 @@ public SuperNoodle_damage(id)
 
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_the_pistols,
-							bodypart,
+							my_hitpoint_enum:bodypart,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_the_pistols)

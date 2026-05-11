@@ -20,6 +20,35 @@
 */
 #define is_valid_hitzone(%1) ((%1)>=0 && (%1)<=8)
 
+
+/*
+
+#define HIT_GENERIC     0
+#define HIT_HEAD        1
+#define HIT_CHEST       2
+#define HIT_STOMACH     3
+#define HIT_LEFTARM     4
+#define HIT_RIGHTARM    5
+#define HIT_LEFTLEG     6
+#define HIT_RIGHTLEG    7
+#define HIT_SHIELD      8 // CS only
+#define MAX_BODYHITS    9
+
+*/
+enum my_hitpoint_enum{
+
+	MY_HIT_GENERIC=0,
+	MY_HIT_HEAD,
+    MY_HIT_CHEST,
+    MY_HIT_STOMACH,
+    MY_HIT_LEFTARM,
+    MY_HIT_RIGHTARM,
+    MY_HIT_LEFTLEG,
+    MY_HIT_RIGHTLEG,
+    MY_HIT_SHIELD,
+    MY_MAX_HITPOINT
+
+}
 #define MUL_TWO(%0,%1)                                                          \
     (                                                                           \
         (%0)                                                                    \

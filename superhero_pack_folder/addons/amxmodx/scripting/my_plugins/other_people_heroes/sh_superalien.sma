@@ -210,12 +210,11 @@ public SuperAlien_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
-
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
-		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "knife", headshot)
+		if ( extraDamage > 0 ){
+			sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

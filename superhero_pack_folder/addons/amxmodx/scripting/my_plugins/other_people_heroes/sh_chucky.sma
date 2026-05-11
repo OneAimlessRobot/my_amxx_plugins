@@ -192,8 +192,6 @@ public chucky_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) && ChuckyPowerUsed[attacker] )
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
-
 		// Do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
 		
@@ -203,7 +201,7 @@ public chucky_damage(id)
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, 
 						dmg_source_name_long_super_knife,
-						headshot,
+						my_hitpoint_enum:bodypart,
 						_,_,_,_,_,
 						SH_NEW_DMG_DARK_ARTS,
 						custom_dmg_id_super_knife)
@@ -364,7 +362,7 @@ public client_connect(id)
 	HasStabbedWithKnife[id] = false
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

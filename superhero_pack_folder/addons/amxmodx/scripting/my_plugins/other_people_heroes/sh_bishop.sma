@@ -126,16 +126,16 @@ public bishop_damage(id)
 	}
 
 	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker != id && g_absorbedDamage[attacker] > 0 ) {
-		// headshots but not on nades
-		new headshot = (bodypart == 1 && weapon != CSW_HEGRENADE) ? 1 : 0
+
 		new weaponName[32]
 		get_weaponname(weapon, weaponName, 31)
 		replace(weaponName, 31, "weapon_", "")
 
 		// Deal Extra Damage
 		new energyDamage = floatround(get_cvar_float("bishop_damagemult") * g_absorbedDamage[attacker])
-		if ( energyDamage > 0 ) sh_extra_damage(id, attacker, energyDamage, weaponName, headshot)
-
+		if ( energyDamage > 0 ){
+			sh_extra_damage(id, attacker, energyDamage, weaponName, my_hitpoint_enum:bodypart)
+		}
 		// Should extra weapon damage be made to cost energy points?
 	}
 }

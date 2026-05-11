@@ -164,23 +164,20 @@ public sh_hero_init(id, heroID, mode){
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
 //sh_user_has_hero(id,gHeroID)
-	if ( sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_AK47 && is_user_alive(id) ) {
-		if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) ) {
-			// do extra damage
-			new extraDamage = floatround(damage * get_cvar_float("ctrooper_ak47mult") - damage)
-			
-			if (extraDamage > 0){
-				sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_long_lazah_guun,
-						headshot,
-						_,_,_,_,_,
-						SH_NEW_DMG_ENERGY_BLAST,
-						custom_dmg_id_lazah_guun)
-			}
+	new bool:has_hero= sh_user_has_hero(attacker,gHeroID)
+	if ( has_hero && weapon == CSW_AK47 && is_user_alive(id) ) {
+		new extraDamage = floatround(damage * get_cvar_float("ctrooper_ak47mult") - damage)
+		
+		if (extraDamage > 0){
+			sh_extra_damage(id, attacker, extraDamage, 
+					dmg_source_name_long_lazah_guun,
+					my_hitpoint_enum:bodypart,
+					_,_,_,_,_,
+					SH_NEW_DMG_ENERGY_BLAST,
+					custom_dmg_id_lazah_guun)
 		}
 	}
  }

@@ -122,12 +122,11 @@ public masterchief_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_P90 )
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
-
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarP90DmgMult) - damage)
-		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "p90", headshot)
+		if ( extraDamage > 0 ){
+			sh_extra_damage(id, attacker, extraDamage, "p90", my_hitpoint_enum:bodypart)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

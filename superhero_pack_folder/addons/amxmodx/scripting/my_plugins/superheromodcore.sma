@@ -430,16 +430,6 @@ new Float:gReloadTime[SH_MAXSLOTS+1]
 new gInPowerDown[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]
 new gMaxHealth[SH_MAXSLOTS+1]
 new gMaxArmor[SH_MAXSLOTS+1]
-//new bool:gPlayerPutInServer[SH_MAXSLOTS+1]
-//new bool:gNewRoundSpawn[SH_MAXSLOTS+1]
-//new bool:gIsPowerBanned[SH_MAXSLOTS+1]
-//new bool:gInMenu[SH_MAXSLOTS+1]
-//new bool:gReadXPNextRound[SH_MAXSLOTS+1]
-//new bool:gFirstRound[SH_MAXSLOTS+1]
-//new bool:gShieldRestrict[SH_MAXSLOTS+1]
-//new bool:gBlockMercyXp[SH_MAXSLOTS+1]
-//new bool:gChangedHeroes[SH_MAXSLOTS+1]
-//new bool:gHasAnubis[SH_MAXSLOTS+1]
 new gPlayerPutInServerMask = 0
 new gNewRoundSpawnMask = 0
 new gIsPowerBannedMask = 0
@@ -3029,7 +3019,7 @@ public _sh_extra_damage()
 	new wpnDescription[32]
 	get_string(4, wpnDescription, charsmax(wpnDescription))
 	
-	new bodypart = get_param(5)
+	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_param(5)
 	new Float:dmgOrigin[3]
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
@@ -3112,7 +3102,7 @@ public _sh_extra_damage()
 		}
 		else if ( victimTeam != attackerTeam || ( FFon && freeforall ) ) {
 			kill = true
-			new headshot=(bodypart==HIT_HEAD)
+			new headshot=(bodypart==MY_HIT_HEAD)
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
 			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(attacker, xp_to_add)
@@ -3299,7 +3289,7 @@ public fm_AlertMessage(atype, const msg[])
 	 return gXrtaDmgClientKill ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 //---------------------------------------------------------------------------------------------
-logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,bodypart)
+logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,my_hitpoint_enum:bodypart)
 {
 	new namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
@@ -3329,7 +3319,7 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,body
 		return
 	}
 	custom_weapon_shot(abused_wpn_id, id)
-	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, bodypart)
+	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, _:bodypart)
 
 }
 //----------------------------------------------------------------------------------------------

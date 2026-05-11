@@ -82,7 +82,7 @@ public blueblood_damage(id)
 {
 	if (!sh_is_active() || !is_user_alive(id)) return
 
-	new weapon, bodypart, attacker = get_user_attacker(id,weapon,bodypart)
+	new weapon, attacker = get_user_attacker(id,weapon)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 

@@ -67,7 +67,7 @@ public slayer_damage(id)
       new randNum = generate_int(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
 		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2, "Slayer Sacrifice" )
-		sh_extra_damage(id, attacker, get_user_health(id), "Assassination" )		
+		sh_extra_damage(id, attacker, get_user_health(id), "Assassination",my_hitpoint_enum:bodypart )		
       }
     }
     return PLUGIN_CONTINUE
