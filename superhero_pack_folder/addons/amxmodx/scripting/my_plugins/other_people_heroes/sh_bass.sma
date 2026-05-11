@@ -117,12 +117,6 @@ public sh_hero_init(id, heroID, mode){
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("bass_laser_ammo")
 	}
-	else if( !sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
-		shRemHealthPower(id)
-		shRemGravityPower(id)
-		shRemArmorPower(id)
-		shRemSpeedPower(id)
-	}
 
 }
 //----------------------------------------------------------------------------------------------

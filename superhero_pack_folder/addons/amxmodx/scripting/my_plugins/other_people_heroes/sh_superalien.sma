@@ -88,8 +88,6 @@ public sh_hero_init(id, heroID, mode){
 			if ( is_user_connected(id))
 			{
 				SuperAlien_vision_off(id)
-				shRemHealthPower(id)
-				shRemArmorPower(id)
 			}
 		}
 	}

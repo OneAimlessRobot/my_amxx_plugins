@@ -52,9 +52,6 @@ public sh_hero_init(id, heroID, mode){
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		switchmodel(id)		
 	}
-	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
-		shRemSpeedPower(id)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

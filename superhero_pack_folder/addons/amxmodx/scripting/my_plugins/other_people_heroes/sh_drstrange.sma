@@ -106,12 +106,6 @@ public sh_hero_init(id, heroID, mode){
 		gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		gUsingLaser[id] = false
 	}
-	//This gets run if they had the power but don't anymore
-	else {
-		shRemSpeedPower(id)
-		shRemGravityPower(id)
-		shRemArmorPower(id)
-	}
 
 }
 //----------------------------------------------------------------------------------------------

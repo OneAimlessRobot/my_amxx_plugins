@@ -119,10 +119,6 @@ public sh_hero_init(id, heroID, mode){
 		{
 			// This gets run if they had the power but don't anymore
 			engclient_cmd(id, "drop", "weapon_m4a1")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
 			times_picked=clamp(times_picked-1,0,MAX_PICKED);
 		}
 	}

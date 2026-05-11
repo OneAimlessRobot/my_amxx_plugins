@@ -58,7 +58,6 @@ public sh_hero_init(id, heroID, mode){
 	if(is_user_alive(id)){
 		if ( !sh_user_has_hero(id,gHeroID) ) {
 			remove_task(id+TASKID)
-			shRemHealthPower(id)
 			gHasPNinety=0
 		
 		}

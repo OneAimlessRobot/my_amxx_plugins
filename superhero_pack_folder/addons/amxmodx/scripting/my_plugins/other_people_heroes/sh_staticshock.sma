@@ -86,13 +86,9 @@ public jetPackFireEffect(origin[3])
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
+	remove_task(id+36485)
 	if ( sh_user_has_hero(id,gHeroID)) {
-		remove_task(id+36485)
 		set_task( get_cvar_float("shock_timer"), "shock_loop", id+36485, "", 0, "b")
-	}
-	else {
-		shRemArmorPower(id)
-		remove_task(id+36485)
 	}
 }
 //----------------------------------------------------------------------------------------------

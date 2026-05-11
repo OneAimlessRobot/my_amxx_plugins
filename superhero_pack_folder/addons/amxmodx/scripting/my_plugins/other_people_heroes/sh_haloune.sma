@@ -80,9 +80,6 @@ public plugin_init()
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	// Reset thier shield restrict status
-	// Shield restrict MUST be before weapons are given out
-	shResetShield(id)
 
 	if(sh_user_has_hero(id,gHeroID))
 	{
@@ -99,10 +96,6 @@ public sh_hero_init(id, heroID, mode){
 		{
 			// This gets run if they had the power but don't anymore
 			engclient_cmd(id, "drop", "weapon_M4A1")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
 		}
 	}
 }

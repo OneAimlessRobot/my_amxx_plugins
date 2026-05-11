@@ -86,7 +86,6 @@ public sh_hero_init(id, heroID, mode){
 		// This gets run if they had the power but don't anymore
 		else{
 			engclient_cmd(id, "drop", "weapon_deagle")
-			shRemGravityPower(id)
 			set_user_hitzones(0, id, 255)
 			superhero_protected_hud_message(superhero_hud_msg_sync,id, "Vash - EVASION OFF - Hitzones returned to normal")
 		}

@@ -101,8 +101,6 @@ public sh_hero_init(id, heroID, mode){
 	}
 	//This gets run if they had the power but don't anymore
 	else {
-		shRemArmorPower(id)
-		shRemSpeedPower(id)
 		// remove the power if it was used and user dropped hero
 		if ( g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
@@ -657,7 +655,7 @@ public vegetto_loop()
 			if ( userArmor < g_ssjLevel[0] ) {
 				// run it this way so it doesn't check all the elses
 				if ( g_isSaiyanLevel[id] > 0 ) {
-					shResetSpeed(id)
+					sh_reset_max_speed(id)
 					set_hudmessage(204, 0, 204, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
 					show_hudmessage(id, "Vegetto - You are now gathering nether energy")
 
@@ -916,7 +914,7 @@ public sh_round_end()
 	for (new id=1; id < sh_maxplayers()+1; id++) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			g_isSaiyanLevel[id] = 0
-			shResetSpeed(id)
+			sh_reset_max_speed(id)
 			if ( g_powerID[id] > 0 ) {
 				remove_power(id, g_powerID[id])
 			}

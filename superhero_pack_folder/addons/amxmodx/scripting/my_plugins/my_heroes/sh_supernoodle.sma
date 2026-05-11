@@ -95,8 +95,6 @@ public sh_hero_init(id, heroID, mode){
 		d_barrel_unset_d_barrel(id)
 		sh_drop_weapon(id, CSW_M249,true)
 		sh_drop_weapon(id, CSW_ELITE,true)
-		shRemHealthPower(id)
-		shRemArmorPower(id)
 	}
 	
 }

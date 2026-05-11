@@ -63,7 +63,6 @@ public leyla_init()
 	else{
 		gLeylaUserMoney[id]=0
 		gLeylaGiveMoney[id]=0
-		shRemArmorPower(id)
 	}
 	
 	

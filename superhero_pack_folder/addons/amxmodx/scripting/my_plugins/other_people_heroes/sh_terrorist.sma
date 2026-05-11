@@ -47,16 +47,11 @@ public sh_hero_init(id, heroID, mode){
 
 	if (!is_user_connected(id)) return
 
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-
 	if ( sh_user_has_hero(id,gHeroID)) {
 		terrorist_giveweapons(id)
 		create_bombtarget()
 	}
-	//This gets run if they had the power but don't anymore
-	else if ( sh_user_has_hero(id,gHeroID) ) {
+	else {
 		terrorist_dropweapons(id)
 		remove_bombtarget()
 	}

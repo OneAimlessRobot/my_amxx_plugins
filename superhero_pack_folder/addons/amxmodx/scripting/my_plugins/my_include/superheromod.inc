@@ -1292,45 +1292,7 @@ stock shRegHeroInit(const heroName[], const initFunction[])
 {
 	server_cmd("sh_regInit ^"%s^" ^"%s^"", heroName, initFunction);
 }
-
-//These stocks should now be ignored since removal upon hero drop is done in core
-//Kept to allow heroes to compile without error
-stock shResetShield(id)
-{
-	return id;
-}
-stock shRemHealthPower(id)
-{
-	return id;
-}
-
-stock shRemArmorPower(id)
-{
-	return id;
-}
-
-stock shRemGravityPower(id)
-{
-	return id;
-}
-
-stock shRemSpeedPower(id)
-{
-	return id;
-}
-
-//This is pointless, kept for backward compat only
-stock bool:isDebugOn()
-{
-	static sh_debug_messages;
-
-	if ( !sh_debug_messages ) {
-		sh_debug_messages = get_cvar_pointer("sh_debug_messages");
-	}
-
-	return (get_pcvar_num(sh_debug_messages) > 0 ? true : false);
-}
-
+//These stocks
 //------------
 // Depreciated stocks
 //------------

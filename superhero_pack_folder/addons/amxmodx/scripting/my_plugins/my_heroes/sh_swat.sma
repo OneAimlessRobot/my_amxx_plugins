@@ -165,10 +165,7 @@ public sh_hero_init(id, heroID, mode){
 	}
 	else {
 		sh_drop_weapon(id,CSW_M4A1,true)
-		shRemHealthPower(id)
-		shRemArmorPower(id)
 	}
-	shResetShield(id)
 }
 
 //----------------------------------------------------------------------------------------------

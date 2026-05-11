@@ -102,10 +102,6 @@ public plugin_precache()
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-	
 	g_ammo[id] = get_cvar_num("veronika_grenades")
 	g_m203_loaded[id] = 1
 	

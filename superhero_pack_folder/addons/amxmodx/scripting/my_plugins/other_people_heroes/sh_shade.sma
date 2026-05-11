@@ -23,8 +23,6 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Shade","1.0","[SiN]")
 
-	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	if ( isDebugOn() ) server_print("Attempting to create Shade Hero")
 	if (!cvar_exists("shade_level")) register_cvar("shade_level", "10" )
 	gHeroID=shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
 	register_clcmd("ShadePower","make_fog",ADMIN_USER)
@@ -166,7 +164,6 @@ public shade_endmode(id)
 	{
 		// Turn it off
 		set_user_footsteps(id,0)
-		shRemSpeedPower(id)
 		set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
 		gShadeMode[id]=false
 	}

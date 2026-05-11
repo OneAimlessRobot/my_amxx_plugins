@@ -62,12 +62,6 @@ public plugin_init()
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 	
-	//This gets run if they had the power but don't anymore
-	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		shRemHealthPower(id)
-		shRemGravityPower(id)
-		shRemSpeedPower(id)
-	}
 	remove_task(id+TASKID)
 	set_task(1.0, "gohan_loop", id+TASKID, "", 0, "b")
 

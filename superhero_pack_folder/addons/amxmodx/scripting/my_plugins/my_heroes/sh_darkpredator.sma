@@ -52,8 +52,6 @@ public plugin_init()
 {
 	my_authored_register_func("SUPERHERO DarkPredator","1.0","kanu | DarkPredator",true,AUTHOR )
 	
-	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	if ( isDebugOn() ) server_print("Attempting to create DarkPredator Hero")
 	register_cvar("darkpred_level", "10" )
 	
 	gHeroID=shCreateHero(gHeroName, "Deagle/Invisibility (ADMIN A ONLY)", "Free deagle and invisibility. Plus ESP rings, Predator Armour and Regeneration.", false, "darkpred_level" )
@@ -142,8 +140,6 @@ public sh_hero_init(id, heroID, mode){
 	// Got to slow down DarkPredator that lost his powers...
 	if ( !sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
 	{
-		//Do stuff to him if he just droppped it
-		shRemArmorPower(id) //Loose the AP power of this hero
 		remInvisibility(id)
 		times_picked=clamp(times_picked-1,0,MAX_PICKED);
 	}

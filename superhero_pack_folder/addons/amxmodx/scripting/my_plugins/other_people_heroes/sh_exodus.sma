@@ -259,7 +259,7 @@ public release(id)
 			if (get_cvar_float("exodus_cooldown") > 0.0) ultimateTimer(id, get_cvar_float("exodus_cooldown"))
 		}
 		if ( is_user_connected(g_grabbedID[id]) ) {
-			shSetGravityPower(g_grabbedID[id])
+			sh_reset_min_gravity(g_grabbedID[id])
 			sh_set_rendering(g_grabbedID[id])
 		}
 		g_grabbedID[id] = 0

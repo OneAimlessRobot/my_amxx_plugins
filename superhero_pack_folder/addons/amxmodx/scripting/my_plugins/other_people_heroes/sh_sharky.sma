@@ -159,7 +159,6 @@ public sharky_endmode(id)
   {
     // Turn it off
 	set_user_footsteps(id,0)
-	shRemSpeedPower(id)
 	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
 	gSharkyMode[id]=false
   }

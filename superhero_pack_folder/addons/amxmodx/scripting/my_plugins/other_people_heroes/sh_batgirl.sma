@@ -298,7 +298,7 @@ batgirl_hook_off(id)
 
 	killbeam(id)
 
-	if ( is_user_connected(id) ) shSetGravityPower(id)
+	if ( is_user_connected(id) ) sh_reset_min_gravity(id)
 
 	remove_task(id)
 }

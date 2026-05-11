@@ -86,11 +86,6 @@ public sh_hero_init(id, heroID, mode){
 
 	new hasPowers = sh_user_has_hero(id, gHeroID)
 
-#if defined GIVE_WEAPONS
-	// Reset thier shield restrict status
-	// Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-#endif
 
 	switch(hasPowers)
 	{

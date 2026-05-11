@@ -123,13 +123,6 @@ public sh_hero_init(id, heroID, mode){
 			switch_model(id)
 		#endif
 	}
-	else{
-		// This gets run if they had the power but don't anymore
-		if ( is_user_alive(id) ){
-			shRemSpeedPower(id)
-		}
-
-	}
 	HasStabbedWithKnife[id] = false
 }
 public sh_client_spawn(id){

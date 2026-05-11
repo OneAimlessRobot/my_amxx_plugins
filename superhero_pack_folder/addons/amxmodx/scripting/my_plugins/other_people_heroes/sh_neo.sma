@@ -80,21 +80,9 @@ public plugin_init()
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-	
 	if(flytoggle[id] || isflying[id]) 
 	{ 
 		stop_fly(id) 
-	} 
-	if ( is_user_connected(id) ) {
-		if (!sh_user_has_hero(id,gHeroID)){
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -270,8 +258,8 @@ public stop_fly(id)
 	if(get_cvar_num("neo_toggle")==1) flytoggle[id] = false
 	client_print(id,print_center,"") 
 	
-	shSetGravityPower(id)
-	shResetSpeed(id)
+	sh_reset_min_gravity(id)
+	sh_reset_max_speed(id)
 	
 	isflying[id] = false 
 	flytoggle[id] = false 

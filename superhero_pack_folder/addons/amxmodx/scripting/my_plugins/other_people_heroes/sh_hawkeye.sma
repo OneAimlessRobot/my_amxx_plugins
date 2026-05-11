@@ -97,9 +97,6 @@ public sh_hero_init(id, heroID, mode){
 			if ( get_user_team(id) == 1 ) engclient_cmd(id, "drop", "weapon_sg552")
 			else engclient_cmd(id, "drop", "weapon_aug")
 		}
-		shRemHealthPower(id)
-		shRemArmorPower(id)
-		shRemSpeedPower(id)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -46,8 +46,6 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Predator","1.14.4","norma jean")
 	
-	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	if ( isDebugOn() ) server_print("Attempting to create Predator Hero")
 	register_cvar("pred_level", "7")
 	gHeroID=shCreateHero(gHeroName, "Invisibility, LaserCannon, Lazer Deagle, SuperClaw", "Invisibility while not shooting, Super Claw, Laser Beam", true, "pred_level")
 	

@@ -128,8 +128,6 @@ public stealth_kd(id)
 	gHealPoints = false
 	g_usingPower[id] = true
 	set_user_footsteps(id, 1)
-	shRemSpeedPower(id)
-	
 
 	
 	superhero_protected_hud_message(superhero_hud_msg_sync,id, "Stealth Mode")
@@ -158,9 +156,6 @@ public stealth_ku(id)
 
 		set_user_rendering(id)
 		set_user_footsteps(id, 0)
-		shRemSpeedPower(id)
-		
-
 		
 		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Normal Mode")
 		

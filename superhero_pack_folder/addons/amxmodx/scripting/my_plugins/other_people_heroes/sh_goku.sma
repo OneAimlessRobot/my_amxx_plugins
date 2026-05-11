@@ -150,8 +150,6 @@ public sh_hero_init(id, heroID, mode){
 	}
 	//This gets run if they had the power but don't anymore
 	else {
-		shRemArmorPower(id)
-		shRemSpeedPower(id)
 		// remove the power if it was used and user dropped hero
 		if ( g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
@@ -709,7 +707,7 @@ public goku_loop()
 			if ( userArmor < g_ssjLevel[0] ) {
 				// run it this way so it doesn't check all the elses
 				if ( g_isSaiyanLevel[id] > 0 ) {
-					shResetSpeed(id)
+					sh_reset_max_speed(id)
 					g_isSaiyanLevel[id] = 0
 				}
 			}
@@ -966,7 +964,7 @@ public sh_round_end()
 	for (new id=1; id < sh_maxplayers()+1; id++) {
 		if ( sh_user_has_hero(id,gHeroID)) {
 			g_isSaiyanLevel[id] = 0
-			shResetSpeed(id)
+			sh_reset_max_speed(id)
 			if ( g_powerID[id] > 0 ) {
 				remove_power(id, g_powerID[id])
 			}

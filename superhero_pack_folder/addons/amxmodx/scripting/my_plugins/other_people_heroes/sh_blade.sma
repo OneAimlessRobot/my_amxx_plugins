@@ -122,12 +122,6 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if  (heroID!=gHeroID) return
-	
-#if GIVE_WEAPONS == 1
-	// Reset thier shield restrict status
-	// Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-#endif
 
 	if(sh_user_has_hero(id,gHeroID))
 	{
@@ -153,8 +147,6 @@ public sh_hero_init(id, heroID, mode){
 
 				engclient_cmd(id, "drop", "weapon_mac10")
 			#endif
-
-			shRemSpeedPower(id)
 		}
 	}
 }

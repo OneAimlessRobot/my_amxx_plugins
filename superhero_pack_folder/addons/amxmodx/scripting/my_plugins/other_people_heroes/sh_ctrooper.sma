@@ -77,9 +77,6 @@ new custom_dmg_id_lazah_guun
 public sh_hero_init(id, heroID, mode){
 	if  (heroID!=gHeroID) return
 	
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
 
 	if ( is_user_connected(id) ) {
 		if (sh_user_has_hero(id,gHeroID) ) {
@@ -87,10 +84,6 @@ public sh_hero_init(id, heroID, mode){
 		}
 		else {
 			engclient_cmd(id, "drop", "weapon_ak47")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
 		}
 	}
  }

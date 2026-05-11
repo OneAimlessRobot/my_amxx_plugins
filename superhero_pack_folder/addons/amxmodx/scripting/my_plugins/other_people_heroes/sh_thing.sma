@@ -22,8 +22,7 @@ new gHeroID
 public plugin_init()
 {
   register_plugin("SUPERHERO Thing","1.1","Corvae aka TheRaven")
-  if ( isDebugOn() ) server_print("Attempting to create Thing Hero")
-  
+ 
   register_cvar("Thing_level", "5" )
   register_cvar("Thing_weapon_percent", "0.25" )
   register_cvar("Thing_knife_percent", "1.00" )

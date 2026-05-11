@@ -18,20 +18,6 @@ public plugin_init()
 	set_task(1.0, "acc_loop", 0, "", 0, "b")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
-	if  (heroID!=gHeroID) return
-	
-	if ( !sh_user_has_hero(id,gHeroID)   && is_user_connected(id) )
-	{
-		shRemSpeedPower(id)
-	}
-}
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	shRemSpeedPower(id)
-}
-//----------------------------------------------------------------------------------------------
 public acc_loop()
 {
 	if ( !sh_is_active() || !hasRoundStarted() ) return

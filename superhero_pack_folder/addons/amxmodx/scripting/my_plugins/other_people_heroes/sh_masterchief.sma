@@ -55,7 +55,6 @@ public plugin_init()
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	shResetShield(id)
 	if(sh_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_alive(id) )
@@ -71,11 +70,6 @@ public sh_hero_init(id, heroID, mode){
 
 			engclient_cmd(id, "drop", "weapon_p90")
 
-
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
 		}
 	}
 }

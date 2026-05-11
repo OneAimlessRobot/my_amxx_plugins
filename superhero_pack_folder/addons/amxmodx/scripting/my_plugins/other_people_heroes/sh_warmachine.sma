@@ -86,10 +86,6 @@ public sh_hero_init(id, heroID, mode){
 	if ( sh_user_has_hero(id,gHeroID)) {
 		set_task(get_cvar_float("warmachine_timer"), "warmachine_loop", id, "", 0, "b")
 	}
-	// This gets run if they had the power but don't anymore
-	else {
-		shRemArmorPower(id)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()

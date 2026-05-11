@@ -24,7 +24,6 @@ cola_speed 500		//Running Speed (default is 500)
 
 // GLOBAL VARIABLES
 new HeroName[] = "Cola Lover"
-new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -37,27 +36,11 @@ public plugin_init()
 	register_cvar("cola_speed", "500")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(HeroName, "Caffeine and Sugar", "Now you run Fast and have More HP", false, "cola_level")
+	shCreateHero(HeroName, "Caffeine and Sugar", "Now you run Fast and have More HP", false, "cola_level")
 
 
 	// Let Server know about Cola Lover's max speed
 	shSetMaxSpeed(HeroName, "cola_speed", "[0]")
 	shSetMaxHealth(HeroName, "cola_health")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
-	if  (heroID!=gHeroID) return
-	
-	if(!sh_user_has_hero(id,gHeroID))
-	{
-		// This gets run if they had the power but don't anymore
-		if ( is_user_alive(id) )
-		{
-			shRemSpeedPower(id)
-			shRemHealthPower(id)
-		}
-
-	}
-	
 }
 //----------------------------------------------------------------------------------------------

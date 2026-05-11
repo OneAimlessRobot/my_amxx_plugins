@@ -72,20 +72,10 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
-
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
-
+	
 	if ( is_user_connected(id) ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			UberGunner_weapons(id)
-		}
-		else {
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
 		}
 	}
 }

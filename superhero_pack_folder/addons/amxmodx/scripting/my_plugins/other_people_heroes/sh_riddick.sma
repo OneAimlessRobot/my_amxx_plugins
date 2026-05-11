@@ -72,10 +72,6 @@ public sh_hero_init(id, heroID, mode){
 
 	gPlayerMaxHealth[id] = 100
 
-	// Got to slow down a Riddick that lost his powers...
-	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
-		shRemSpeedPower(id)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public riddick_loop()

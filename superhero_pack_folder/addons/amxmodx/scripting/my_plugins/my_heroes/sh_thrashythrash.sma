@@ -109,8 +109,6 @@ public sh_hero_init(id, heroID, mode){
 		gThrashyExplosionAmmo[id]=ndynamites
 	}
 	else{
-		shRemHealthPower(id)
-		shRemSpeedPower(id)
 		times_picked=clamp(times_picked-1,0,MAX_PICKED);
 	}
 	

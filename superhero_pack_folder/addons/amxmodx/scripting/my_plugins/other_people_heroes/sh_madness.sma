@@ -57,9 +57,6 @@ public sh_hero_init(id, heroID, mode){
 
 	if (!is_user_connected(id)) return
 
-	//Reset thier shield restrict status
-	//Shield restrict MUST be before weapons are given out
-	shResetShield(id)
 
 	if ( is_user_alive(id) ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
@@ -69,8 +66,6 @@ public sh_hero_init(id, heroID, mode){
 		//This gets run if they had the power but don't anymore
 		else  {
 			engclient_cmd(id, "drop", "weapon_m3")
-			shRemHealthPower(id)
-			shRemArmorPower(id)
 		}
 	}
 }

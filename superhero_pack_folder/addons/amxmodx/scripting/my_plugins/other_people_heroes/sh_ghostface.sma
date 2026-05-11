@@ -105,23 +105,6 @@ public plugin_cfg()
 	HealPoints = get_pcvar_num(CvarHealPoints)	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
-	if(heroID!=gHeroID) return
-	
-	if(!sh_user_has_hero(id,gHeroID)){
-		// Check is needed since this gets run on clearpowers even if user didn't have this hero
-		if ( is_user_alive(id))
-		{
-
-			shRemHealthPower(id)
-			shRemArmorPower(id)
-			shRemGravityPower(id)
-			shRemSpeedPower(id)
-		}
-
-	}
-}
-//----------------------------------------------------------------------------------------------
 public ghostface_damage(id)
 {
 	if ( !sh_is_active() || !is_user_alive(id) )

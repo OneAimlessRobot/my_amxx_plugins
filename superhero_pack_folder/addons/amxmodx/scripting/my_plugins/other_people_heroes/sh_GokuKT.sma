@@ -167,7 +167,7 @@ public end_kaioken(id)
 	if ( set_armor < 1 ) set_armor = 100;
 	
 	if ( reset_speed[id] ) {
-		shResetSpeed(id)
+		sh_reset_max_speed(id)
 		reset_speed[id] = false
 	}
 	if ( reset_health[id] ) {
