@@ -465,7 +465,7 @@ new bool:gXrtaDmgClientKill
 new gServersMaxPlayers
 new gXrtaDmgWpnName[32]
 new gXrtaDmgAttacker
-new gXrtaDmgHeadshot
+new gXrtaDmgBodypart
 //new bool:gIsCzero
 new bool:gCZBotRegisterHam
 new bool:gMonsterModRunning
@@ -3015,7 +3015,7 @@ public _sh_extra_damage()
 	new wpnDescription[32]
 	get_string(4, wpnDescription, charsmax(wpnDescription))
 	
-	new headshot = get_param(5)
+	new bodypart = get_param(5)
 	new Float:dmgOrigin[3]
 	get_array_f(9, dmgOrigin, 3)
 	new dmg_type=get_param(10)
@@ -3032,7 +3032,8 @@ public _sh_extra_damage()
 					victim,
 					attacker,
 					damage_after,
-					preparedWpnDescription,headshot,
+					preparedWpnDescription,
+					bodypart,
 					mode,
 					dmgStun,
 					dmgFFmsg,
@@ -3097,7 +3098,7 @@ public _sh_extra_damage()
 		}
 		else if ( victimTeam != attackerTeam || ( FFon && freeforall ) ) {
 			kill = true
-
+			new headshot=(bodypart==HIT_HEAD)
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
 			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(attacker, xp_to_add)
@@ -3144,7 +3145,7 @@ public _sh_extra_damage()
 		copy(gXrtaDmgWpnName, charsmax(gXrtaDmgWpnName), wpnDescription)
 		
 		gXrtaDmgAttacker = attacker
-		gXrtaDmgHeadshot = headshot
+		gXrtaDmgBodypart = bodypart
 		// Kill the victim
 		// pev_dmg_inflictor not set becase this will be self even if we did set it
 		
@@ -3153,7 +3154,7 @@ public _sh_extra_damage()
 		gXrtaDmgClientKill = false
 
 		// Log the Kill
-		logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,headshot)
+		logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,bodypart)
 		
 		// Make camera turn toward attacker on death, thx Emp`
 		set_pev(victim, pev_iuser3, attacker)
@@ -3284,7 +3285,7 @@ public fm_AlertMessage(atype, const msg[])
 	 return gXrtaDmgClientKill ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 //---------------------------------------------------------------------------------------------
-logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,headshot)
+logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,bodypart)
 {
 	new namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
@@ -3314,7 +3315,7 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,head
 		return
 	}
 	custom_weapon_shot(abused_wpn_id, id)
-	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, headshot?HIT_HEAD:HIT_STOMACH)
+	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, bodypart)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -3322,27 +3323,27 @@ public msg_DeathMsg()
 {
 	// Send out the sh death forwards and change the hud death message for sh_extra_damage kill
 	// Run this even with sh off so forward can still run and clean up what it needs to
-	new attacker, headshot
+	new attacker, bodypart
 	static wpnDescription[32]
 
 	if ( !gXrtaDmgClientKill ) {
 		attacker = get_msg_arg_int(1)
-		headshot = get_msg_arg_int(3)
+		bodypart = (get_msg_arg_int(3)?HIT_HEAD:HIT_GENERIC)
 		get_msg_arg_string(4, wpnDescription, charsmax(wpnDescription))
 	}
 	else {
 		attacker = gXrtaDmgAttacker
-		headshot = gXrtaDmgHeadshot
+		bodypart = gXrtaDmgBodypart
 		copy(wpnDescription, charsmax(wpnDescription), gXrtaDmgWpnName)
 
 		// Change HUD death message to show extradamage kill correctly
 		set_msg_arg_int(1, ARG_BYTE, attacker)
-		set_msg_arg_int(3, ARG_BYTE, headshot)
+		set_msg_arg_int(3, ARG_BYTE, (bodypart==HIT_HEAD))
 		set_msg_arg_string(4, wpnDescription)
 	}
 
 	// Send the sh_client_death forward
-	ExecuteForward(fwd_Death, fwdReturn, get_msg_arg_int(2), attacker, headshot, wpnDescription)
+	ExecuteForward(fwd_Death, fwdReturn, get_msg_arg_int(2), attacker, (bodypart==HIT_HEAD), wpnDescription)
 }
 //---------------------------------------------------------------------------------------------
 // Must use death event since csx client_death does not catch worldspawn or suicides

@@ -168,12 +168,11 @@ public madassassin_damage(id)
 	if ( HasMadAssassin[attacker] && weapon == CSW_AWP )
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarAwpDmgMult) - damage)
 		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "awp", headshot)
+			sh_extra_damage(id, attacker, extraDamage, "awp", bodypart)
 	}
 	return HAM_IGNORED
 }

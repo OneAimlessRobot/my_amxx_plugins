@@ -155,7 +155,6 @@ public vash_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
@@ -165,7 +164,7 @@ public vash_damage(id)
 		if (extraDamage > 0){
 			
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_revolver,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_revolver)

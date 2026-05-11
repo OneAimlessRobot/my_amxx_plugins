@@ -291,7 +291,6 @@ public thrashy_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
@@ -323,7 +322,7 @@ public thrashy_damage(id)
 
 		// do extra damage
 		new extraDamage = floatround(float(damage)*ak_dmgmult-float(damage));
-		sh_extra_damage( id, attacker, extraDamage, "supermegaEPICTHRASHER", headshot )
+		sh_extra_damage( id, attacker, extraDamage, "supermegaEPICTHRASHER", bodypart )
 		if(extraDamage>=health){
 			set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 0);
 			// do turn down that awful racket..to be replaced by a blood spurt!

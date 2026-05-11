@@ -712,7 +712,7 @@ public field_think(ent)
 								
 				sh_extra_damage(pid,owner,actual_damage,
 								dmg_source_name_short_field_drain,
-								0,_,_,_,_,_,
+								_,_,_,_,_,_,
 								SH_NEW_DMG_DRAIN,
 								field_drain_wpn_id)
 				

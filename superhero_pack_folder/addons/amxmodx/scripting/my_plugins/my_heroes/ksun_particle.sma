@@ -601,7 +601,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	untrack_spore(pToucher)
 
 	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_short_slay:dmg_source_name_short_spore,
-					remove_godmode,_,_,_,_,_,
+					remove_godmode?HIT_HEAD:HIT_GENERIC,_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					remove_godmode?slay_wpn_id:spore_wpn_id)
 }

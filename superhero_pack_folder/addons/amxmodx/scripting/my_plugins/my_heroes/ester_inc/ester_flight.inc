@@ -28,7 +28,7 @@ stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 	
 	"shmod/ester/flight/IT_AINT_THE_END_OF_ME.wav"
 }
-new curr_player_sound[SH_MAXSLOTS+1]
+stock curr_player_sound[SH_MAXSLOTS+1]
 #define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
 
 #define ESTER_RESPAWN_FAIL_MSG "You're done. You get no more chances."

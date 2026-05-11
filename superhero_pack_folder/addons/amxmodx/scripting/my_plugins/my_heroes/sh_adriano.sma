@@ -217,8 +217,6 @@ public adriano_damage(id)
 	
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = (bodypart == 1)
-
 	get_speed_dmg_in_radius(id,damage)
 	
 	
@@ -229,7 +227,7 @@ public adriano_damage(id)
 		if (floatround(extraDamage)>0){
 			switch(weapon){
 				case CSW_ETHEREAL:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,headshot,
+					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SHOCK,custom_dmg_id_ethereal)
 				}

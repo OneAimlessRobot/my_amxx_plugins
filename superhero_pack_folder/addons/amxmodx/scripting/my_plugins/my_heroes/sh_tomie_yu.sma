@@ -82,12 +82,12 @@ public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 	return gore_result
 
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-
+	new bool:headshot = (bodypart==HIT_HEAD)
 	if(sh_user_has_hero(victim,gHeroID) ){
 		switch(new_dmg_type){
 			

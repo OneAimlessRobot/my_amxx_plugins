@@ -70,7 +70,6 @@ public tracked_damage(id)
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 	if ( !is_user_connected(attacker)) return
 	
 	new fx_num_vic=(gatling_get_fx_num(id));
@@ -80,7 +79,7 @@ public tracked_damage(id)
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_short_tracked_vuln,
-											headshot,
+											bodypart,
 											_,_,_,_,_,
 											SH_NEW_DMG_RADIATION_POISON,
 											custom_dmg_id_tracked_vuln)
@@ -91,7 +90,7 @@ public tracked_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));

@@ -477,11 +477,10 @@ if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
 
 new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-new headshot = bodypart == 1 ? 1 : 0
 
 if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
-
-if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
+new bool:has_hero=bool:sh_user_has_hero(attacker,gHeroID)
+if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
 {
 	new health = get_user_health(id)
 	
@@ -516,7 +515,7 @@ if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && is_user_alive(
 	
 	// do extra damage
 	new extraDamage = 1000
-	sh_extra_damage( id, attacker, extraDamage, "predator gun", headshot )
+	sh_extra_damage( id, attacker, extraDamage, "predator gun", bodypart )
 }
 return PLUGIN_CONTINUE
 }

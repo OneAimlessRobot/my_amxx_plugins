@@ -175,8 +175,7 @@ public veronika_damage(id)
 	
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
-	
+
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 	
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_AK47 && is_user_alive(id) ) {
@@ -184,7 +183,7 @@ public veronika_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_ak)

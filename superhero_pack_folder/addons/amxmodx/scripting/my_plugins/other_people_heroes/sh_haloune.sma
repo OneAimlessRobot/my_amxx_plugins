@@ -163,13 +163,12 @@ public Haloune_damage(id)
 	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) )
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarM4A1DmgMult) - damage)
 		if ( extraDamage > 0 ){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ninja_m4,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_ninja_m4)

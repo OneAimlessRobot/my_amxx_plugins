@@ -52,7 +52,6 @@ public frozen_damage(id)
 	
 	new  Float:damage= float(read_data(2))
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 	if ( !is_user_connected(attacker)) return
 	
 	if(Get_BitVar(is_frozen_mask,id)){
@@ -60,7 +59,7 @@ public frozen_damage(id)
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_BLUNT_TRAUMA],
-										headshot,
+										bodypart,
 										_,_,_,_,_,
 										SH_NEW_DMG_BLUNT_TRAUMA,
 										get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_TRAUMA))
@@ -69,7 +68,7 @@ public frozen_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(is_frozen_mask,victim)){

@@ -88,8 +88,9 @@ public burn_task(array[2],id)
 		for ( new i = 0; i < num_players; i++) {
 			new pid=players[i]
 
-			if( !is_user_alive(pid) || pid==id || Get_BitVar(gIsBurningMask,pid)) continue
-			sh_molly_user(pid,id,tranq_get_hero_id())
+			if( !is_user_alive(pid) || pid==array[0] || Get_BitVar(gIsBurningMask,pid)) continue
+			
+			sh_molly_user(pid,array[0],tranq_get_hero_id())
 			
 		}
 	}
@@ -133,7 +134,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){

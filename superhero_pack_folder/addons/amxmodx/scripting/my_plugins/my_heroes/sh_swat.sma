@@ -126,26 +126,26 @@ public swat_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
+	new bool:has_hero= bool:sh_user_has_hero(attacker,gHeroID) 
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
+	if ( has_hero&& weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
 		if (extraDamage > 0){
 			
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat, headshot,
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat, bodypart,
 											_,_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
 											M4Swat_weapon_id)
 		}
 	}
 
-	else if(sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ){
+	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
 		if(extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,headshot,
+			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,bodypart,
 											_,_,_,_,_,
 											SH_NEW_DMG_BLEED,
 											tactical_knife_weapon_id)

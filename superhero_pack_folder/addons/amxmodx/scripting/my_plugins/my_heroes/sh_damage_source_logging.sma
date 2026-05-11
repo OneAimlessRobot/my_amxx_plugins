@@ -91,7 +91,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &headshot,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
     new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
     if((damage > 0)&&(attacker!=victim)){
@@ -102,7 +102,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
         }
         if((damage<get_user_health(victim))&&(dmgMode!=SH_DMG_KILL)){
             custom_weapon_shot(private_wpn_id, attacker)
-            custom_weapon_dmg(private_wpn_id, attacker, victim, damage, headshot?HIT_HEAD:HIT_STOMACH)
+            custom_weapon_dmg(private_wpn_id, attacker, victim, damage, bodypart)
         }
     }
     wpnid=private_wpn_id

@@ -175,7 +175,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		}
 		new is_valid_dmg_src=is_valid_custom_dmg_source(custom_wpn_id)
 		sh_extra_damage(id,attacker,damage,
-								is_valid_dmg_src?attack_name_string:dmg_source_name_long_shanking,0
+								is_valid_dmg_src?attack_name_string:dmg_source_name_long_shanking,_
 								,_,_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								is_valid_dmg_src?custom_wpn_id:custom_dmg_id_shanking)
@@ -281,7 +281,7 @@ public bleed_task(array[4],id){
 		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha],1)
 	}
 	make_bleed_fx(id)
-	sh_extra_damage(id,array[1],bleed_type_damages[fx_bleed_type:array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],0,_,_,_,_,_,
+	sh_extra_damage(id,array[1],bleed_type_damages[fx_bleed_type:array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],_,_,_,_,_,_,
 			SH_NEW_DMG_BLEED,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLEED))
 

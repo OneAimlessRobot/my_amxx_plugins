@@ -203,7 +203,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 		SetHamParamFloat(3, 0.0);
 		
 		sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
-							is_headshot,
+							hitzone,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_weapon_shinobu_pistol)

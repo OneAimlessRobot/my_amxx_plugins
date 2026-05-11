@@ -251,7 +251,7 @@ public yandere_sentence_loop(id){
 					sh_screen_fade(i, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
 					
 					sh_extra_damage(i,i,degen_dmg_2_take,
-									dmg_source_name_short_drain,1,
+									dmg_source_name_short_drain,HIT_HEAD,
 									_,_,_,_,_,
 									SH_NEW_DMG_DRAIN,custom_dmg_id_drain)
 					
@@ -474,7 +474,6 @@ public yandere_damage(id)
 	
 	new  damage= read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = (bodypart == 1 ? 1 : 0)
 	if ( !is_user_alive(attacker)) return PLUGIN_CONTINUE
 	
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
@@ -486,14 +485,14 @@ public yandere_damage(id)
 			
 			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_senpai_avenger)
 			}
 			else {
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_rage,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_rage)

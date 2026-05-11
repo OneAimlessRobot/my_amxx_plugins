@@ -124,49 +124,49 @@ public SuperNoodle_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( !is_user_connected(attacker)||id==attacker ) return PLUGIN_CONTINUE
+	new bool:user_has_hero=bool:sh_user_has_hero(attacker,gHeroID)
 
-	if ( sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M3 && is_user_alive(id) ) {
+	if ( user_has_hero&& weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_shotgun,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_shotgun)
 		}
 	}
-	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_SCOUT && is_user_alive(id) ){
+	else if(user_has_hero && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
 		if(extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_hunt_rifle,
-								headshot,
+								bodypart,
 								_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_hunt_rifle)
 		}
 	}
-	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_M249 && is_user_alive(id) ){
+	else if(user_has_hero && weapon == CSW_M249 && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_arifle,
-							headshot,
+							bodypart,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_arifle)
 		}
 	}
-	else if(sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_ELITE && is_user_alive(id) ){
+	else if(user_has_hero && weapon == CSW_ELITE && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_the_pistols,
-							headshot,
+							bodypart,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_the_pistols)

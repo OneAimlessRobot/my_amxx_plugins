@@ -124,14 +124,12 @@ public steel_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
-
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
 	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[attacker] ) {
 
 		sh_extra_damage(id, attacker, damage, 
-								dmg_source_name_short_super_steel_bullet,headshot
+								dmg_source_name_short_super_steel_bullet,bodypart
 								,_,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_steel_bullet)

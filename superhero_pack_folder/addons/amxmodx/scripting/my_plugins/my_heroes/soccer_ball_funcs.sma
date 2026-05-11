@@ -94,7 +94,7 @@ public ball_touch_player(Ball, Player ) {
 				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
 
 				sh_extra_damage(Player,oid,BALL_DMG,
-						dmg_source_name_short_free_kick,1
+						dmg_source_name_short_free_kick,HIT_HEAD
 						,_,_,_,_,_,
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)

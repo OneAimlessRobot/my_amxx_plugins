@@ -615,11 +615,12 @@ add_attacker_hits(id, iAttacker, sBuffer[MAX_BUFFER_LENGTH + 1])
 
 			iLen += formatex(sBuffer[iLen], charsmax(sBuffer) - iLen, "%L:^n", id, "HITS_YOU_IN", t_sName)
 
-			for (new i = 1; i < sizeof(izBody); i++)
-			{
+			for (new i = 0; i < sizeof(izBody); i++)
+			{	
+
 				if (!izBody[i])
 					continue
-
+					
 				iLen += formatex(sBuffer[iLen], charsmax(sBuffer) - iLen, "%L: %d^n", id, BODY_PART[i], izBody[i])
 			}
 		}
@@ -648,8 +649,9 @@ format_kill_ainfo(id, iKiller, sBuffer[MAX_BUFFER_LENGTH + 1])
 
 		if (izStats[STATSX_HITS])
 		{
-			for (new i = 1; i < sizeof(izBody); i++)
+			for (new i = 0; i < sizeof(izBody); i++)
 			{
+
 				if (!izBody[i])
 					continue
 
@@ -688,7 +690,7 @@ format_kill_vinfo(id, iKiller, sBuffer[MAX_BUFFER_LENGTH + 1])
 
 	if (izStats[STATSX_HITS])
 	{
-		for (new i = 1; i < sizeof(izBody); i++)
+		for (new i = 0; i < sizeof(izBody); i++)
 		{
 			if (!izBody[i])
 				continue
@@ -765,13 +767,13 @@ format_rankstats(id, sBuffer[MAX_BUFFER_LENGTH + 1], iMyId = 0)
 
 	new L_BODY_PART[MAX_BODYHITS][32]
 
-	for (new i = 1; i < sizeof(L_BODY_PART); i++)
+	for (new i = 0; i < sizeof(L_BODY_PART); i++)
 	{
 		formatex(L_BODY_PART[i], charsmax(L_BODY_PART[]), "%L", id, BODY_PART[i])
 	}
 
-	iLen += formatex(sBuffer[iLen], charsmax(sBuffer) - iLen, "%10s:^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d", "HITS",
-					L_BODY_PART[HIT_HEAD], izBody[HIT_HEAD], L_BODY_PART[HIT_CHEST], izBody[HIT_CHEST], L_BODY_PART[HIT_STOMACH], izBody[HIT_STOMACH], L_BODY_PART[HIT_LEFTARM], izBody[HIT_LEFTARM], L_BODY_PART[HIT_RIGHTARM],
+	iLen += formatex(sBuffer[iLen], charsmax(sBuffer) - iLen, "%10s:^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d^n%10s: %d", "HITS",
+					L_BODY_PART[HIT_GENERIC], izBody[HIT_GENERIC],L_BODY_PART[HIT_HEAD], izBody[HIT_HEAD], L_BODY_PART[HIT_CHEST], izBody[HIT_CHEST], L_BODY_PART[HIT_STOMACH], izBody[HIT_STOMACH], L_BODY_PART[HIT_LEFTARM], izBody[HIT_LEFTARM], L_BODY_PART[HIT_RIGHTARM],
 					izBody[HIT_RIGHTARM], L_BODY_PART[HIT_LEFTLEG], izBody[HIT_LEFTLEG], L_BODY_PART[HIT_RIGHTLEG], izBody[HIT_RIGHTLEG])
 }
 

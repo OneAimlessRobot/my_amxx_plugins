@@ -19,6 +19,7 @@
 
 
 new g_ester_is_reborn_mode_mask = 0
+new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_smashed_someone_mask = 0
 new g_is_glowing_mask = 0
@@ -147,7 +148,8 @@ deny_next_reborn(id,bool:is_sillycide=true){
 	g_ester_respawned_attempts[id]=is_sillycide?
 				cvar_val(num, pcvar_ester_total_respawn_attempts):
 				g_ester_respawned_attempts[id]
-
+	
+	Assign_BitVar(g_ester_is_denied_mask,id,true_for_macro)
 }
 public plugin_natives(){
 
@@ -353,7 +355,10 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	if ( !is_user_connected(id) || !has_hero||!is_user_connected(killer)){
 		return PLUGIN_CONTINUE
 	}
-	
+	if(Get_BitVar(g_ester_is_denied_mask, id)){
+
+		return PLUGIN_CONTINUE
+	}
 	ester_remove_statuses(id)
 	if(killer==id){
 		if(has_hero&&
@@ -493,13 +498,16 @@ public ester_teamcheck(parm[])
 	}
 }
 //----------------------------------------------------------------------------------------------
+public sh_round_new(){
 
+	g_ester_is_denied_mask = 0
+
+}
 public sh_round_end(){
 
 	arrayset(g_ester_respawned_attempts,0,SH_MAXSLOTS+1)
 	arrayset(g_ester_blow_up_time_left,0.0,SH_MAXSLOTS+1)
-	g_flying_mask=0
-
+	g_flying_mask = 0
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if(is_user_connected(id)&&sh_user_has_hero(id,ester_get_hero_id())){

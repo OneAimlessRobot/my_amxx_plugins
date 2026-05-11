@@ -345,7 +345,7 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 							damage=get_user_health(id)*3.0
 							SetHamParamFloat(4, damage);
 							sh_extra_damage(id,attacker,floatround(damage),
-								dmg_source_name_short_sneak,1
+								dmg_source_name_short_sneak,HIT_HEAD
 								,_,_,_,_,_,
 								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 								custom_dmg_id_sneak)

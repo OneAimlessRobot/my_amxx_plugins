@@ -188,7 +188,6 @@ public darkangel_damage(id)
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
 	{
 		new damage = read_data(2)
-		new headshot = bodypart == 1 ? 1 : 0
 		
 		// do extra damage
 		//also... it bypasses godmode.
@@ -200,7 +199,7 @@ public darkangel_damage(id)
 		}
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", headshot)
+			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty", bodypart)
 		}
 		do_knockback(id,extraDamage);
 	}

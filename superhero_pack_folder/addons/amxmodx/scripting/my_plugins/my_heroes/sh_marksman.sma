@@ -181,7 +181,6 @@ public Marksman_damage(id)
 
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new headshot = bodypart == 1 ? 1 : 0
 
 	if ( !is_user_connected(attacker) ||id==attacker) return
 
@@ -189,7 +188,7 @@ public Marksman_damage(id)
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
 		if (extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
-						dmg_source_name_short_good_rifle,headshot,_,_,_,_,_,
+						dmg_source_name_short_good_rifle,bodypart,_,_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,good_rifle_wpn_id)
 		}
 	}
@@ -197,7 +196,7 @@ public Marksman_damage(id)
 		new extraDamage = floatround(damage * PSG1_DMG_Mult - damage)
 		if(extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
-						dmg_source_name_short_evil_rifle,headshot,_,_,_,_,_,
+						dmg_source_name_short_evil_rifle,bodypart,_,_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,evil_rifle_wpn_id)
 		}
 	}

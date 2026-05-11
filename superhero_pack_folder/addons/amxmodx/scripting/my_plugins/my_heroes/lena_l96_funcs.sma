@@ -485,7 +485,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(oid)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, headshot,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
+		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, hitgroup,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
 		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)

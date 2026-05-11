@@ -1,0 +1,26 @@
+L 05/11/2026 - 13:44:53: Start of error session.
+L 05/11/2026 - 13:44:53: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260511.log")
+L 05/11/2026 - 13:44:53: String formatted incorrectly - parameter 21 (total 20)
+L 05/11/2026 - 13:44:53: [AMXX] Run time error 25 (plugin "statsx.amxx") - debug not enabled!
+L 05/11/2026 - 13:44:53: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/11/2026 - 13:50:06: Start of error session.
+L 05/11/2026 - 13:50:06: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260511.log")
+L 05/11/2026 - 13:50:06: [CSX] Invalid aim 1000
+L 05/11/2026 - 13:50:06: [AMXX] Run time error 10 (plugin "superheromodcore.amxx") (native "custom_weapon_dmg") - debug not enabled!
+L 05/11/2026 - 13:50:06: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/11/2026 - 13:50:06: Unhandled dynamic native error
+L 05/11/2026 - 13:50:06: [AMXX] Run time error 10 (plugin "sh_grimreaperpt2.amxx") (native "read_data") - debug not enabled!
+L 05/11/2026 - 13:50:06: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/11/2026 - 13:52:13: Start of error session.
+L 05/11/2026 - 13:52:13: Info (map "de_dust") (file "addons/amxmodx/logs/error_20260511.log")
+L 05/11/2026 - 13:52:13: [CSX] Invalid aim 1000
+L 05/11/2026 - 13:52:13: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.0.16")
+L 05/11/2026 - 13:52:13: [AMXX] Run time error 10: native error (native "custom_weapon_dmg")
+L 05/11/2026 - 13:52:13: [AMXX]    [0] superheromodcore.sma::logKill (line 3318)
+L 05/11/2026 - 13:52:13: [AMXX]    [1] superheromodcore.sma::_sh_extra_damage (line 3157)
+L 05/11/2026 - 13:52:13: Unhandled dynamic native error
+L 05/11/2026 - 13:52:13: [AMXX] Displaying debug trace (plugin "sh_grimreaperpt2.amxx", version "1.0")
+L 05/11/2026 - 13:52:13: [AMXX] Run time error 10: native error (native "read_data")
+L 05/11/2026 - 13:52:13: [AMXX]    [0] sh_grimreaperpt2.sma::greaper_damage (line 116)
+L 05/11/2026 - 13:52:13: [AMXX]    [1] sh_grimreaperpt2.sma::swing_connected (line 157)
+L 05/11/2026 - 13:52:13: [AMXX]    [2] sh_grimreaperpt2.sma::swing_scythe (line 183)

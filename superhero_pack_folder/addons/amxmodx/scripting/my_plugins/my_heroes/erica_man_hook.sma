@@ -410,7 +410,7 @@ if(sh_user_has_hero(attacker,tranq_get_hero_id())&&!(cs_get_user_team(id)==att_t
 					get_user_name(id,vic_name,127)
 						
 					sh_extra_damage(target,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
-								dmg_source_name_long_gutting,1
+								dmg_source_name_long_gutting,HIT_CHEST
 								,_,_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								custom_dmg_id_gutting)

@@ -433,7 +433,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				headshot=1;
 				damage*=4;
 			}
-			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,headshot,
+			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,hitgroup,
 						_,_,_,_,_,
 						SH_NEW_DMG_BLEED,super_dart_weapon_id)
 						

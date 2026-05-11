@@ -348,7 +348,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 		
 		}
 		else if(pTouched!=oid){
-			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",0,SH_DMG_NORM)
+			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",HIT_GENERIC,SH_DMG_NORM)
 			sh_bleed_user(pTouched,oid,BLEED_NORMAL,spear_get_hero_id())
 			explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
