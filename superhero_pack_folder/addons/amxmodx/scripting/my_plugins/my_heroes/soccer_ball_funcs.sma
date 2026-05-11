@@ -13,7 +13,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+new gHeroID = 0
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"
@@ -23,9 +23,11 @@ new custom_dmg_id_free_kick
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
+	gHeroID = roberto_get_hero_id()
+
 	register_think(BALL_CLASSNAME, "ball_think")
 	
-	custom_dmg_id_free_kick=sh_log_custom_damage_source(roberto_get_hero_id(),
+	custom_dmg_id_free_kick=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_free_kick,
 					dmg_source_name_long_free_kick,
 					0)
@@ -72,10 +74,10 @@ public ball_touch_player(Ball, Player ) {
 		entity_get_vector(Ball,EV_VEC_origin,origin)
 		//get pickability status
 		new ball_pickable=entity_get_int(Ball,EV_INT_iuser2)
-		if(sh_user_has_hero(Player,roberto_get_hero_id())&&(Player==oid)&&ball_pickable&& BALL_RETRIEVE){
+		if(sh_user_has_hero(Player,gHeroID)&&(Player==oid)&&ball_pickable&& BALL_RETRIEVE){
 			
 			roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
-			sh_chat_message(oid,roberto_get_hero_id(),"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
+			sh_chat_message(oid,gHeroID,"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
 			
 			//set pickability status
 			entity_set_int(Ball,EV_INT_iuser2,false)
@@ -94,13 +96,13 @@ public ball_touch_player(Ball, Player ) {
 				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
 
 				sh_extra_damage(Player,oid,BALL_DMG,
-						dmg_source_name_short_free_kick,HIT_HEAD
+						dmg_source_name_short_free_kick,my_hitpoint_enum:HIT_HEAD
 						,_,_,_,_,_,
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)
 				sh_set_stun(Player,3.0,default_stun_speed)
 				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				sh_chat_message(oid,roberto_get_hero_id(),"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
+				sh_chat_message(oid,gHeroID,"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 			}
 		}
 	}
@@ -110,7 +112,7 @@ public kick_ball(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!sh_user_has_hero(id,roberto_get_hero_id())||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
 	
 	if(!roberto_get_num_balls(id)){
 		
@@ -127,7 +129,7 @@ public kick_ball(iPlugin,iParams)
 	Ent = create_entity("info_target")
 	
 	if (!Ent){
-		sh_chat_message(id,roberto_get_hero_id(),"Ball failure!");
+		sh_chat_message(id,gHeroID,"Ball failure!");
 		return PLUGIN_HANDLED
 	}
 	
@@ -186,7 +188,7 @@ public ball_think(ent)
 	}
 
 	new id=pev(ent,pev_iuser1)
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,roberto_get_hero_id())) {
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) {
 		remove_entity(ent)
 		return FMRES_IGNORED
 	}

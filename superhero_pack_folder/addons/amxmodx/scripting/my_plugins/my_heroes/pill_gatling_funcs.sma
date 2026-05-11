@@ -14,7 +14,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+new gHeroID = 0
 new atk2[SH_MAXSLOTS+1]
 new atk1[SH_MAXSLOTS+1]
 new delay[SH_MAXSLOTS+1]
@@ -36,6 +36,9 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID = gatling_get_hero_id()
+
 	register_event("CurWeapon","event_curweapon","be", "1=1")
 	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "Ham_Weapon_PillGatling",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
@@ -86,7 +89,7 @@ public Item_PostFrame_Post(iEnt)
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
 	
-	if(!client_is_hero_user(id, gatling_get_hero_id())||!gatling_get_pillgatling(id)){
+	if(!client_is_hero_user(id, gHeroID)||!gatling_get_pillgatling(id)){
 		
 		return HAM_IGNORED
 	}
@@ -125,14 +128,14 @@ public Ham_Weapon_PillGatling(weapon_ent)
 
 	
 	new owner = get_member(weapon_ent, m_pPlayer)
-	if(!client_is_hero_user(owner, gatling_get_hero_id())) return HAM_IGNORED
+	if(!client_is_hero_user(owner, gHeroID)) return HAM_IGNORED
 	if(!gatling_get_pillgatling(owner)||(g_plAction[owner]!=act_run)){
 		return HAM_SUPERCEDE
 	}
 	return HAM_IGNORED
 }
 public fwPlaybackEvent(flags, invoker, eventid) {
-	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_hero_user(invoker, gatling_get_hero_id())||!gatling_get_pillgatling(invoker)){
+	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_hero_user(invoker, gHeroID)||!gatling_get_pillgatling(invoker)){
 		return FMRES_IGNORED
 	}
 
@@ -150,7 +153,7 @@ public fwPlayerPostThink(id) {
 	return FMRES_IGNORED
 }
 public event_curweapon(id){
-	if(!client_is_hero_user(id, gatling_get_hero_id())) return PLUGIN_CONTINUE;	
+	if(!client_is_hero_user(id, gHeroID)) return PLUGIN_CONTINUE;	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 	if(weapon == YAKUI_WEAPON_CLASSID){
 		if(!gatling_get_pillgatling(id)){
@@ -211,7 +214,7 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gatling_get_hero_id())||!gatling_get_pillgatling(idattacker)){
+	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)||!gatling_get_pillgatling(idattacker)){
 		return HAM_IGNORED
 	}
 	
@@ -247,7 +250,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
 	
-	if ( !client_is_hero_user(id, gatling_get_hero_id())) return FMRES_IGNORED;
+	if ( !client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
 
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
@@ -301,7 +304,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, gatling_get_hero_id())||!gatling_get_pillgatling(pPlayer)){
+	if(!client_is_hero_user(pPlayer, gHeroID)||!gatling_get_pillgatling(pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -324,7 +327,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, gatling_get_hero_id())||!gatling_get_pillgatling(id)){
+	if(!client_is_hero_user(id, gHeroID)||!gatling_get_pillgatling(id)){
 		
 		return HAM_IGNORED
 	}
@@ -344,7 +347,7 @@ public fw_Weapon_Reload_Post(ent)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_is_hero_user(player, gatling_get_hero_id())){
+	if(!client_is_hero_user(player, gHeroID)){
 		
 		return FMRES_IGNORED
 	}
@@ -472,7 +475,7 @@ public pill_think(ent)
 	}
 	
 	new id=pev(ent,pev_owner)
-	if (!client_is_hero_user(id, gatling_get_hero_id())) {
+	if (!client_is_hero_user(id, gHeroID)) {
 		remove_entity(ent)
 		return FMRES_IGNORED
 	}
@@ -510,7 +513,7 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, gatling_get_hero_id())||!gatling_get_pillgatling(pPlayer)){
+	if(!client_is_hero_user(pPlayer, gHeroID)||!gatling_get_pillgatling(pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -526,7 +529,7 @@ public fw_ItemDeployPre(entity)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	
-	if(sh_is_active()&&!client_is_hero_user(id, gatling_get_hero_id())){
+	if(sh_is_active()&&!client_is_hero_user(id, gHeroID)){
 		atk1[id]=0;
 		atk2[id]=0;
 		g_plAction[id]=act_none;
@@ -543,7 +546,7 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 		//retrieve current pill fx num
 
 		new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
-		make_effect(pTouched,id,gatling_get_hero_id(),fx_num,false)
+		make_effect(pTouched,id,gHeroID,fx_num,false)
 	}
 	remove_entity(pToucher)
 }

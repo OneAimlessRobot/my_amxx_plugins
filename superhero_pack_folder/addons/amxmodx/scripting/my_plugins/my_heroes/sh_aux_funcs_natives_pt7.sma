@@ -2,7 +2,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
-
 #define PLUGIN "Superhero aux natives pt7: sh player custom sound effects tools"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"

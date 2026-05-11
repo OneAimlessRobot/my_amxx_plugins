@@ -14,7 +14,10 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+
 new TELEPORT_CHECK_TASKID
+new SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID
 
 new g_shinobu_positions[SH_MAXSLOTS+1][3],
 	g_shinobu_dst_positions[SH_MAXSLOTS+1][3]
@@ -44,18 +47,22 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	TELEPORT_CHECK_TASKID=allocate_typed_task_id(player_task)
+
+	gHeroID = shinobu_get_hero_id()
+	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
+	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
 	register_event("DeathMsg","on_death_cleanup","a")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
-	register_forward(FM_CmdStart, "shinobu_cloak")
+	register_forward(FM_CmdStart, "shinobu_cloak_conditions")
 
     
-	
+	set_task(1.0,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
 }
+
 public on_Knife_Weapon_Change(id)
 {
 	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 	new  wpnid = get_user_weapon(id)
 
@@ -75,7 +82,7 @@ public _manual_cloak_check(id){
 	new id= get_param(1)
 
 	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 	g_prev_shinobu_cloaked[id]=0
 	g_shinobu_using_knife[id]= ((get_user_weapon(id)==CSW_KNIFE))
@@ -94,24 +101,34 @@ public _uncloak_shinobu(id){
 	g_prev_shinobu_cloaked[id]=1
 	apply_cloak(id)
 }
-public shinobu_cloak(id, uc_handle){
+public shinobu_cloak_conditions(id, uc_handle){
 
 
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
 
 	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
 	new button = get_uc(uc_handle, UC_Buttons)
 	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
-	apply_cloak(id)
 	return FMRES_IGNORED
 }
+public shinobu_cloak_apply(task_id){
 
+
+	if (! sh_is_active()) return
+	for(new id=1;id<sh_maxplayers()+1;id++){
+		if(is_user_alive(id)){
+			if(sh_user_has_hero(id,gHeroID) ){
+				apply_cloak(id)
+			}
+		}
+	}
+}
 apply_cloak(id){
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,shinobu_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		g_curr_shinobu_cloaked[id]=0
 		g_prev_shinobu_cloaked[id]=0
@@ -119,11 +136,6 @@ apply_cloak(id){
 		return 
 
 	}
-	if(!(g_curr_shinobu_cloaked[id]-g_prev_shinobu_cloaked[id])){
-
-		return
-	}
-
 	if(g_curr_shinobu_cloaked[id]){
 		
 		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransColor);
@@ -143,7 +155,7 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,shinobu_get_hero_id())) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		
 		manual_cloak_check(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
@@ -196,7 +208,7 @@ public positionChangeCheck(array[], attacker)
 
 	if(!is_user_alive(attacker) ) return
 
-	if(!sh_user_has_hero(attacker,shinobu_get_hero_id())) return
+	if(!sh_user_has_hero(attacker,gHeroID)) return
 
 
 	new tg=array[TELEPORT_TASK_TARGET]
@@ -207,12 +219,12 @@ public positionChangeCheck(array[], attacker)
 	if ( g_shinobu_dst_positions[attacker][0] == origin[0] && g_shinobu_dst_positions[attacker][1] == origin[1] && g_shinobu_dst_positions[attacker][2] == origin[2]) {
 		set_user_origin(attacker,g_shinobu_positions[attacker])
 		orient_user(attacker,g_shinobu_angles[attacker],g_shinobu_v_angles[attacker])
-		sh_chat_message(attacker,shinobu_get_hero_id(),"Finalizing teleport would have gotten you stuck! Aborting...")
+		sh_chat_message(attacker,gHeroID,"Finalizing teleport would have gotten you stuck! Aborting...")
 		sh_end_cooldown(attacker+SH_COOLDOWN_TASKID)
 		return
 	}
-	sh_chat_message(tg,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
-	sh_chat_message(attacker,shinobu_get_hero_id(),"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
+	sh_chat_message(tg,gHeroID,"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
+	sh_chat_message(attacker,gHeroID,"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,_:MAX_SHINOBU_FWEND_SENTENCES-1)])	
 	entity_set_vector(attacker, EV_VEC_velocity, null_vector)
 	shinobu_set_user_tagged_player(attacker,0)
 }
@@ -229,7 +241,7 @@ public _nani_behind_player(iPlugin,iParams){
 	if ( sh_get_cooldown_flag(tele_player) ) {
 		if(!is_user_bot(tele_player)){
 			playSoundDenySelect(tele_player)
-			sh_chat_message(tele_player,shinobu_get_hero_id(),"Teleport canceled. Still on cooldown!");
+			sh_chat_message(tele_player,gHeroID,"Teleport canceled. Still on cooldown!");
 		}
 		return
 	}
@@ -282,7 +294,7 @@ public on_death_cleanup()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		if(sh_user_has_hero(id,shinobu_get_hero_id())){
+		if(sh_user_has_hero(id,gHeroID)){
 
 			remove_task(id+TELEPORT_CHECK_TASKID)
 		}

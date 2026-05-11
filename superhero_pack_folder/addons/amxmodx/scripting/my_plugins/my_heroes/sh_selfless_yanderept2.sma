@@ -21,6 +21,7 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
+new gHeroID
 stock hud_sync
 new Float:degen_iter_period
 

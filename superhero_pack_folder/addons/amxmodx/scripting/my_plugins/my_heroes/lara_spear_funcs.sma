@@ -16,6 +16,7 @@
 #define PLUGIN "Superhero lara mk2 pt2 (spear)"
 #define VERSION "1.0.0"
 
+new gHeroID = 0
 
 new spear_mode:player_spear_mode[SH_MAXSLOTS+1]
 new player_mode_button_pressed_mask
@@ -34,7 +35,8 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
+
+	gHeroID = spear_get_hero_id()
 
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SPEAR_CLASSNAME, "spaar_thaank");
@@ -90,7 +92,7 @@ public CmdStart(id, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,spear_get_hero_id())) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -111,7 +113,7 @@ public CmdStart(id, uc_handle)
 			if(!Get_BitVar(player_mode_button_pressed_mask,id)){
 				Set_BitVar(player_mode_button_pressed_mask,id)
 				player_spear_mode[id]=(player_spear_mode[id]+spear_mode_launch)%spear_mode_max
-				sh_chat_message(id,spear_get_hero_id(),"The spear mode has been changed to: ^"%s^"",spear_mode_names[player_spear_mode[id]])
+				sh_chat_message(id,gHeroID,"The spear mode has been changed to: ^"%s^"",spear_mode_names[player_spear_mode[id]])
 			}
 		}
 	}
@@ -158,7 +160,7 @@ public CmdStart(id, uc_handle)
 			else if(curr_charge[id]>0.0){
 				
 				if(!is_user_bot(id)){
-					sh_chat_message(id,spear_get_hero_id(),"Spear not charged! Spear not launched...");
+					sh_chat_message(id,gHeroID,"Spear not charged! Spear not launched...");
 				}
 			}
 			uncharge_user(id)
@@ -236,7 +238,7 @@ public Ham_Weapon_Stab(weapon_ent)
 
 	new owner = get_member(weapon_ent, m_pPlayer)
 
-	if ( !spear_get_num_spears(owner)&&sh_user_has_hero(owner,spear_get_hero_id())) {
+	if ( !spear_get_num_spears(owner)&&sh_user_has_hero(owner,gHeroID)) {
 		return HAM_SUPERCEDE
 	}
 
@@ -297,7 +299,7 @@ launch_spear(id)
 
 public lara_spear_decide_func(id){
 
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,spear_get_hero_id())) return ;
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return ;
 
 	new spear_mode:the_mode=spear_get_user_spear_mode(id);
 	switch(the_mode){
@@ -313,7 +315,7 @@ public lara_spear_decide_func(id){
 		case spear_mode_blast:{
 
 			
-			explosion(spear_get_hero_id(),id,
+			explosion(gHeroID,id,
 							get_charge_index_from_id(id)*SPEAR_SMASH_EXPLODE_RADIUS,
 							get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE),
 							get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,
@@ -340,17 +342,17 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 	{
 		//get pickability status
 		new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
-		if(sh_user_has_hero(pTouched,spear_get_hero_id())&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
+		if(sh_user_has_hero(pTouched,gHeroID)&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
 		
 			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
-			sh_chat_message(oid,spear_get_hero_id(),"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
+			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
 			remove_entity(pToucher);
 		
 		}
 		else if(pTouched!=oid){
-			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",HIT_GENERIC,SH_DMG_NORM)
-			sh_bleed_user(pTouched,oid,BLEED_NORMAL,spear_get_hero_id())
-			explosion(spear_get_hero_id(),pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
+			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",MY_HIT_GENERIC,SH_DMG_NORM)
+			sh_bleed_user(pTouched,oid,BLEED_NORMAL,gHeroID)
+			explosion(gHeroID,pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			//set pickability status
 			entity_set_int(pToucher,EV_INT_iuser2,true)

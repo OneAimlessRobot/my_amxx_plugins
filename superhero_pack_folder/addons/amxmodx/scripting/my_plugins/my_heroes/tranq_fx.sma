@@ -99,11 +99,7 @@ stock sleep_user_switch_weapon(id){
 	if ( !is_user_alive(id)||!sh_is_active()) return
 	
 	new wpnid = read_data(2)
-	new has_knife=user_has_weapon(id,CSW_KNIFE)
-	if(!has_knife){
-		sh_give_weapon(id,CSW_KNIFE,true)
-	}
-	else if(wpnid!=CSW_KNIFE){
+	if(wpnid!=CSW_KNIFE){
 		sh_switch_weapon(id,CSW_KNIFE)
 		set_user_maxspeed(id,default_stun_speed)
 	}

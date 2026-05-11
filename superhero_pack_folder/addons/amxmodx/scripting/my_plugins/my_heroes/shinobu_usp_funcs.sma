@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
 
+new gHeroID = 0
 #define AMMO_TYPE_45ACP 6
 #define START_MAX_AMMO 0
 
@@ -27,7 +28,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-
+	gHeroID = shinobu_get_hero_id()
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
 	RegisterHam(Ham_Weapon_Reload, SHINOBU_WEAPON_CLASSNAME, "track_shinobu_usp_ammo",_,true)
@@ -35,7 +36,7 @@ public plugin_init(){
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	
 	custom_weapon_shinobu_pistol=sh_log_custom_damage_source(
-								shinobu_get_hero_id(),
+								gHeroID,
 								dmg_source_name_short_shinobu_pistol,
 								dmg_source_name_long_shinobu_pistol,
 								0)
@@ -50,7 +51,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 
-	if(!sh_user_has_hero(player,shinobu_get_hero_id())){
+	if(!sh_user_has_hero(player,gHeroID)){
 
 		return FMRES_IGNORED
 	}
@@ -90,7 +91,7 @@ public _shinobu_weapons(iPlugins, iParam){
 		
 		return
 	}
-	if(sh_user_has_hero(id,shinobu_get_hero_id())){
+	if(sh_user_has_hero(id,gHeroID)){
 
 		if(!user_has_weapon(id,SHINOBU_WEAPON_CLASSID)){
 			sh_give_weapon(id,SHINOBU_WEAPON_CLASSID,true)
@@ -117,7 +118,7 @@ public _shinobu_unweapons(iPlugins, iParam){
 public on_Usp_Weapon_Change(id)
 {
 	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 	new  wpnid = get_user_weapon(id)
 
@@ -148,7 +149,7 @@ public track_shinobu_usp_ammo(ent)
 		return HAM_IGNORED
 	}
 
-	if( !sh_user_has_hero(id,shinobu_get_hero_id()) ) return HAM_IGNORED
+	if( !sh_user_has_hero(id,gHeroID) ) return HAM_IGNORED
 
 	g_shinobu_curr_ammo[id] = -1
 		
@@ -170,7 +171,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 	if ( !is_user_alive(idattacker)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(idattacker,shinobu_get_hero_id())){
+	if(!sh_user_has_hero(idattacker,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -203,7 +204,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 		SetHamParamFloat(3, 0.0);
 		
 		sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
-							hitzone,
+							my_hitpoint_enum:hitzone,
 							_,_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_weapon_shinobu_pistol)
@@ -220,7 +221,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 		return FMRES_IGNORED	
 	if(get_user_weapon(id) != SHINOBU_WEAPON_CLASSID)
 		return FMRES_IGNORED
-	if(!sh_user_has_hero(id,shinobu_get_hero_id())){
+	if(!sh_user_has_hero(id,gHeroID)){
 
 		return FMRES_IGNORED
 	}

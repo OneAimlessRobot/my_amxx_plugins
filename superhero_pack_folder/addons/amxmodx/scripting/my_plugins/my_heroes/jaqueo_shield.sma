@@ -12,6 +12,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+
 new g_jaqueo_shield_cooldown[SH_MAXSLOTS+1];
 new g_jaqueo_shield_loaded[SH_MAXSLOTS+1];
 new g_jaqueo_shield_deployed[SH_MAXSLOTS+1];
@@ -34,6 +36,8 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
+	gHeroID = jaqueo_get_hero_id()
+
 	arrayset(g_jaqueo_shield_loaded,1,SH_MAXSLOTS+1)
 
 	register_think(JAQUEO_SHIELD_CLASSNAME, "shield_think")
@@ -46,7 +50,7 @@ public plugin_init()
 }
 public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,jaqueo_get_hero_id())) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,gHeroID)) return HAM_IGNORED
 	
 	if(!g_jaqueo_shield_deployed[this]) return HAM_IGNORED
 
@@ -150,7 +154,7 @@ public shield_deploy_task(parm[],id){
 	set_pev(shield_id,pev_owner,pev(shield_id,pev_euser1))
 	new alpha=190
 	set_pev(shield_id,pev_renderamt,float(alpha))
-	sh_chat_message(attacker,jaqueo_get_hero_id(),"Shield armed!");
+	sh_chat_message(attacker,gHeroID,"Shield armed!");
 	emit_sound(shield_id, CHAN_ITEM,shield_deploy, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_pev(shield_id, pev_nextthink, get_gametime() + JAQUEO_THINK_PERIOD)
 }
@@ -180,7 +184,7 @@ public shield_think(ent)
 	if ( (shield_health<1000.0)) {
 		if(g_jaqueo_shield[owner]){
 			emit_sound(ent, CHAN_ITEM,shield_destroyed, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			sh_chat_message(owner,jaqueo_get_hero_id(),"Shield died!")
+			sh_chat_message(owner,gHeroID,"Shield died!")
 			uncharge_user(owner)
 		}
 		return FMRES_IGNORED
@@ -217,12 +221,12 @@ public _shield_charge_user(iPlugin, iParams){
 
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,jaqueo_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 	if(!g_jaqueo_shield_loaded[id]){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,jaqueo_get_hero_id(),"Shield not loaded")
+			sh_chat_message(id,gHeroID,"Shield not loaded")
 		}
 		return
 	}
@@ -302,7 +306,7 @@ public load_shield(id){
 	g_jaqueo_shield_loaded[id]=1;	
 	
 	if(!is_user_bot(id)){
-		sh_chat_message(id,jaqueo_get_hero_id(),"Shield loaded");
+		sh_chat_message(id,gHeroID,"Shield loaded");
 	}
 	
 }
@@ -313,7 +317,7 @@ public charge_task(parm[],id){
 		uncharge_user(id)
 		return
 	}
-	if(!sh_user_has_hero(id,jaqueo_get_hero_id())){
+	if(!sh_user_has_hero(id,gHeroID)){
 		
 
 		uncharge_user(id)

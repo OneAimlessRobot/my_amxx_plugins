@@ -15,6 +15,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
 
 new pcvar_ksun_spore_damage, 
 	pcvar_ksun_spore_speed,
@@ -40,7 +41,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spores","1.1",AUTHOR)
-	
+	gHeroID = spores_ksun_hero_id()
 	pcvar_ksun_spore_damage = register_cvar("ksun_spore_damage", "100.0" )
 	pcvar_ksun_spore_speed = register_cvar("ksun_spore_speed", "900.0" )
 	pcvar_particle_follow_time = register_cvar("ksun_follow_time", "5.0")
@@ -55,14 +56,14 @@ public plugin_init()
 
 
 	spore_wpn_id=sh_log_custom_damage_source(
-								spores_ksun_hero_id(),
+								gHeroID,
 								dmg_source_name_short_spore,
 								dmg_source_name_long_spore,
 								0)
 
 
 	slay_wpn_id=sh_log_custom_damage_source(
-								spores_ksun_hero_id(),
+								gHeroID,
 								dmg_source_name_short_slay,
 								dmg_source_name_long_slay,
 								0)
@@ -162,7 +163,7 @@ public _clean_ksun_spores_from_players(iPlugins,iParam){
 public _check_who_player_is_sporing(iPlugins,iParam){
 	new id=get_param(1);
 	if(is_user_connected(id)){
-		if(sh_user_has_hero(id,spores_ksun_hero_id())){
+		if(sh_user_has_hero(id,gHeroID)){
 			
 			new username[128];
 			get_user_name(id,username,127);
@@ -189,7 +190,7 @@ public _check_by_whom_player_spored(iPlugins,iParam){
 		server_print("[SH] ksun: this player named %s is being spored by the following players...:^n",username)
 		for(new i=0;i<sh_maxplayers()+1;i++){
 			if(is_user_connected(i)){
-				if(sh_user_has_hero(i,spores_ksun_hero_id())){
+				if(sh_user_has_hero(i,gHeroID)){
 					
 					new tgname[128];
 					get_user_name(i, tgname,127);
@@ -219,7 +220,7 @@ public sh_round_end(){
 	return PLUGIN_CONTINUE
 }
 public spawn_spore(id){
-	if(!sh_user_has_hero(id,spores_ksun_hero_id())||!is_user_alive(id)){
+	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){
 	
 		return 0
 	}
@@ -339,7 +340,7 @@ public _dec_times_player_spiked_by_player(iPlugin,iParms){
 public _spore_launch(iPlugins,iParms)
 {
 new id= get_param(1)
-if(!sh_user_has_hero(id,spores_ksun_hero_id())||!is_user_alive(id)){
+if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){
 	
 	return
 }
@@ -588,10 +589,10 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	if(get_user_godmode(pTouched)&&remove_godmode){
 		
 		set_user_godmode(pTouched,!remove_godmode);
-		sh_chat_message(killer,spores_ksun_hero_id(),"You removed the godmode of your tg named %s!",tger_name);
+		sh_chat_message(killer,gHeroID,"You removed the godmode of your tg named %s!",tger_name);
 	}
 
-	sh_bleed_user(victim,killer,BLEED_NORMAL,spores_ksun_hero_id())
+	sh_bleed_user(victim,killer,BLEED_NORMAL,gHeroID)
 	ksun_heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
 	emit_sound(victim, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -601,7 +602,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	untrack_spore(pToucher)
 
 	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_short_slay:dmg_source_name_short_spore,
-					remove_godmode?HIT_HEAD:HIT_GENERIC,_,_,_,_,_,
+					remove_godmode?MY_HIT_HEAD:MY_HIT_GENERIC,_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					remove_godmode?slay_wpn_id:spore_wpn_id)
 }

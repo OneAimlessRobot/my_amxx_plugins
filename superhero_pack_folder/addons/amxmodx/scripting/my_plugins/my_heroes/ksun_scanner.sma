@@ -10,7 +10,7 @@
 #include "ksun_inc/ksun_scanner.inc"
 #include "../my_include/my_author_header.inc"
 
-
+new gHeroID = 0
 
 new pcvar_ksun_track_max_radius,
 	pcvar_ksun_track_min_radius,
@@ -32,7 +32,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun scanner","1.1",AUTHOR)
-	
+	gHeroID = spores_ksun_hero_id()
 	pcvar_ksun_track_max_radius = register_cvar("ksun_track_max_radius", "2000.0")
 	pcvar_ksun_track_min_radius = register_cvar("ksun_track_min_radius", "500.0")
 	pcvar_ksun_track_traverse_time = register_cvar("ksun_track_traverse_time", "2.0")
@@ -180,7 +180,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
 
-	if(sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(sh_user_has_hero(id,gHeroID)){
 		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
 			
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -196,7 +196,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 }
 public _spawn_scanner(iPlugins,iParams){
 	new id= get_param(1)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		return
 	}
@@ -249,7 +249,7 @@ public scanner_think(scanner){
 	
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return FMRES_IGNORED
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
@@ -307,7 +307,7 @@ public scanner_think(scanner){
 
 show_targets(id){
 
-	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		return
 	}

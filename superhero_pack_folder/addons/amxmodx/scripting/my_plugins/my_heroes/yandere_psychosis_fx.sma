@@ -10,6 +10,7 @@
 #include "yandere_inc/sh_yandere_psychosis.inc"
 
 stock curr_player_pain_sound[SH_MAXSLOTS+1]
+new gHeroID = 0
 
 #define PLUGIN "Superhero psychosis fx"
 #define VERSION "1.0.0"
@@ -27,6 +28,9 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID = yandere_get_hero_id()
+
 	register_event("DeathMsg","on_death_psychosis","a")
 	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
 	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
@@ -57,7 +61,7 @@ public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==attacker)) return HAM_IGNORED
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
-if(sh_user_has_hero(id,yandere_get_hero_id())&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
+if(sh_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
 	
 	damage=1.0+damage- (damage*
 		cvar_val(float, pcvar_psychosis_dmg_cushion))
@@ -103,7 +107,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 public Ham_Think_Pre(id) {
 	if(!sh_is_active()) return HAM_IGNORED
 
-	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) { 
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) { 
 		return HAM_IGNORED
 	}
 	if(Get_BitVar(g_yandere_leaped_mask,id)){
@@ -130,7 +134,7 @@ public psychosis_leap(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
 
-	if (!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
+	if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	
@@ -159,7 +163,7 @@ public psychosis_task(id){
 	set_render_with_color_const(id, PINK,1,255,_,0)
 	remove_glow_user(id,1.0)
 	aura(id,LineColors[PINK])
-	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		if(is_user_connected(id)){
 			unpsychosis_user(id)
 		}
@@ -176,7 +180,7 @@ public psychosis_task(id){
 	if(!is_user_bot(id)){
 		static hud_msg[SH_HUD_MSG_BUFF_SIZE];
 		static hero_name_arr[MAX_HERO_NAME_LENGTH]
-		sh_get_hero_name_from_id(yandere_get_hero_id(),hero_name_arr)
+		sh_get_hero_name_from_id(gHeroID,hero_name_arr)
 		formatex(hud_msg,99,"[SH] %s:^nPsychosis mode for %0.1f more seconds!",
 		hero_name_arr,
 		gPsychosisTime[id]

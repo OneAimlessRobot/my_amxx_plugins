@@ -13,7 +13,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+new gHeroID = 0
 new UNCO2_TASKID
 new is_cO2_mask=0
 
@@ -21,6 +21,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	gHeroID = tomie_yu_hero_id()
 	UNCO2_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_co2","a")
 
@@ -77,7 +78,7 @@ co2_user(id){
 	sh_unmolly_user(id)
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,1)
 	
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
 
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
 	

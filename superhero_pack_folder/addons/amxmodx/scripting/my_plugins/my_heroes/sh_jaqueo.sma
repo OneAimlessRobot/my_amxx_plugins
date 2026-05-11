@@ -103,7 +103,7 @@ public jaqueo_drop_weapons(id){
 }
 public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || !client_is_hero_user(idattacker, jaqueo_get_hero_id())) return HAM_IGNORED
+	if(!sh_is_active() || !client_is_hero_user(idattacker, gHeroID)) return HAM_IGNORED
 	
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED

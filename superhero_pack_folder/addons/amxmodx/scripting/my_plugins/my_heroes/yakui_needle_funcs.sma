@@ -15,6 +15,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+
 new fx_id:curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on[SH_MAXSLOTS+1]
 
@@ -23,8 +25,9 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
 	
+	gHeroID = gatling_get_hero_id()
+
 	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -41,7 +44,7 @@ public plugin_natives(){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gatling_get_hero_id()) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
@@ -62,7 +65,7 @@ notify_fx_user(id){
 	trail(id,RED,0,0)
 	playertrail(id)
 	if(!is_user_bot(id)){
-		sh_chat_message(id,gatling_get_hero_id(),"Effect switched! On next swing, you will inject: %s fluid",needle_name)
+		sh_chat_message(id,gHeroID,"Effect switched! On next swing, you will inject: %s fluid",needle_name)
 	}
 }
 public Ham_Needle_Swing(weapon_ent)
@@ -80,7 +83,7 @@ public Ham_Needle_Swing(weapon_ent)
 	if ( !is_user_alive(owner)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(owner,gatling_get_hero_id()) ){
+	if(!sh_user_has_hero(owner,gHeroID) ){
 
 		return HAM_IGNORED
 	}
@@ -99,7 +102,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 	if ( !is_user_alive(attacker)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(attacker,gatling_get_hero_id()) ){
+	if(!sh_user_has_hero(attacker,gHeroID) ){
 
 		return HAM_IGNORED
 	}
@@ -129,7 +132,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 		SetHamParamFloat(4, damage);
 		if(stabbing){
 
-			make_effect(id,attacker,gatling_get_hero_id(),curr_needle_fx[attacker],false)
+			make_effect(id,attacker,gHeroID,curr_needle_fx[attacker],false)
 		}
 	}
 	
@@ -173,7 +176,7 @@ public _gatling_needle_cycle_fx(iPlugin,iParams){
 	if ( !is_user_alive(id)) {
 		return
 	}
-	if(!sh_user_has_hero(id,gatling_get_hero_id()) ){
+	if(!sh_user_has_hero(id,gHeroID) ){
 
 		return
 	}

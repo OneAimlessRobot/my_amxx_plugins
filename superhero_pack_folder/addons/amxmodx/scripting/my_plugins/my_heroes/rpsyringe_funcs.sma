@@ -16,6 +16,7 @@
 #define PLUGIN "Superhero yakui mk2 pt4"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+new gHeroID = 0
 
 new gRocketsEngaged[SH_MAXSLOTS+1]
 new has_rocket[SH_MAXSLOTS+1]
@@ -23,8 +24,9 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	//handle when player presses attack2
 	
+	gHeroID = gatling_get_hero_id()
+
 	register_entity_as_wall_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta")
 	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta",player_vector,1)
 	static const custom_vector[][]={ROCKET_CLASSNAME}
@@ -59,7 +61,7 @@ public CmdStart(id, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
-	if ( !hasRoundStarted()||!client_is_hero_user(id, gatling_get_hero_id())) return FMRES_IGNORED;
+	if ( !hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
@@ -124,7 +126,7 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 		new pid = entlist[i];
 		if( !is_user_alive(pid) ) continue
 		
-		make_effect(pid,id,gatling_get_hero_id(),fx_num,false)
+		make_effect(pid,id,gHeroID,fx_num,false)
 	}
 	
 	anime_kill_fx(fl_vExplodeAt)

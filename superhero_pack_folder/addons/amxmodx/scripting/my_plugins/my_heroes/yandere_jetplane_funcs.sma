@@ -44,6 +44,7 @@ pcvar_jetplane_enable_gravity,
 pcvar_jetplane_enable_air_drag,
 pcvar_jetplane_enable_speed_limiter;
 
+new gHeroID = 0
 
 new pcvar_jetplane_speed,
 pcvar_accelerate_const,
@@ -65,7 +66,8 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	
+	gHeroID = yandere_get_hero_id()
+
 	pcvar_jetplane_hp = register_cvar("yandere_jetplane_hp", "5")
 	pcvar_jetplane_cooldown = register_cvar("yandere_jetplane_cooldown", "5")
 	pcvar_jet_init_speed = register_cvar("yandere_jetplane_init_speed", "5")
@@ -140,7 +142,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(!is_user_alive(id)||!is_user_alive(attacker)){
 		return
 	}
-	if(!sh_user_has_hero(attacker,yandere_get_hero_id())){
+	if(!sh_user_has_hero(attacker,gHeroID)){
 		return
 	}
 	if(pev_valid(g_jetplane[id])!=2){
@@ -174,12 +176,12 @@ public _jet_charge_user(iPlugin, iParams){
 
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,yandere_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 
 
 	if(!Get_BitVar(g_jetplane_loaded_mask, id)){
 		
-		sh_chat_message(id,yandere_get_hero_id(),"Jet not loaded")
+		sh_chat_message(id,gHeroID,"Jet not loaded")
 		return
 	}
 
@@ -226,7 +228,7 @@ public _jet_charge_user(iPlugin, iParams){
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,yandere_get_hero_id())) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,gHeroID)) return HAM_IGNORED
 	
 	if(!Get_BitVar(g_jetplane_deployed_mask, this)) return HAM_IGNORED
 	
@@ -324,7 +326,7 @@ public jet_deploy_task(parm[],id){
 		
 		return
 	}
-	if(!sh_user_has_hero(attacker,yandere_get_hero_id())){
+	if(!sh_user_has_hero(attacker,gHeroID)){
 		
 		return
 	}
@@ -347,7 +349,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_rockets(jetplane_id)
 	reset_jet_scans(jetplane_id)
 	Set_BitVar(g_jetplane_armed_mask, id)
-	sh_chat_message(attacker,yandere_get_hero_id(),"jet armed!");
+	sh_chat_message(attacker,gHeroID,"jet armed!");
 	camera[id] = create_entity("info_target")
 	new Float:origin[3]
 	new Float:init_speed[3]
@@ -404,7 +406,7 @@ public load_jet(id){
 	id-=JET_LOAD_TASKID;
 	
 	Set_BitVar(g_jetplane_loaded_mask,id);
-	sh_chat_message(id,yandere_get_hero_id(),"JET loaded");
+	sh_chat_message(id,gHeroID,"JET loaded");
 	
 	
 }
@@ -419,12 +421,12 @@ public FwdTouchWorld( jet, World ) {
 		return FMRES_IGNORED;
 	}
 	new owner=pev(jet,pev_owner)
-	if(is_user_alive(owner)||!sh_user_has_hero(owner,yandere_get_hero_id())){
+	if(is_user_alive(owner)||!sh_user_has_hero(owner,gHeroID)){
 
 		if((get_entity_velocity(jet)/cvar_val(float, pcvar_jetplane_speed))>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
 
-			explosion(yandere_get_hero_id(),jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp), default_explode_knock_force_magnitude)
+			explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp), default_explode_knock_force_magnitude)
 			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME)
 			jet_destroy(owner)
 			user_kill(owner)
@@ -458,7 +460,7 @@ public jet_think(ent)
 
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(owner,yandere_get_hero_id())||!Get_BitVar(g_jetplane_deployed_mask,owner)){
+	if(!sh_user_has_hero(owner,gHeroID)||!Get_BitVar(g_jetplane_deployed_mask,owner)){
 
 		return FMRES_IGNORED
 	}
@@ -468,7 +470,7 @@ public jet_think(ent)
 	if ( (jet_health<1000.0)) {
 		if(g_jetplane[owner]){
 			jet_destroy(owner)
-			sh_chat_message(owner,yandere_get_hero_id(),"jet died!")
+			sh_chat_message(owner,gHeroID,"jet died!")
 			uncharge_user(owner)
 		}
 		return FMRES_IGNORED
@@ -686,7 +688,7 @@ public charge_task(id){
 	
 	}
 	id-=JET_CHARGE_TASKID
-	if(!is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 	
 		uncharge_user(id)
 		return
@@ -736,7 +738,7 @@ public charge_task(id){
 public sh_round_end(){
 
 	for (new id=1; id < sh_maxplayers()+1; id++) {
-		if ( is_user_alive(id)||!sh_user_has_hero(id,yandere_get_hero_id())) {
+		if ( is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) {
 			uncharge_user(id)
 			g_jetplane_loaded_mask=0xFFFF
 		}

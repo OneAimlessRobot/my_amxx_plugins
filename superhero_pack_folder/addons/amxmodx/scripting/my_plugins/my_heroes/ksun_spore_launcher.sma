@@ -10,6 +10,8 @@
 #include "ksun_inc/ksun_ultimate.inc"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0 
+
 new pcvar_ksun_hold_time,
 	pcvar_ksun_launcher_base_health;
 
@@ -29,6 +31,8 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1",AUTHOR)
 	
+	gHeroID = spores_ksun_hero_id()
+
 	pcvar_ksun_hold_time = register_cvar("ksun_hold_time", "5.0")
 	pcvar_ksun_launcher_base_health = register_cvar("ksun_launcher_health", "100.0" )
 	
@@ -178,7 +182,7 @@ public launcher_think(ent){
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		return
 	}
@@ -194,7 +198,7 @@ public _launcher_deploy(iPlugin,iParams)
 {
 
 new id= get_param(1)
-if(!is_user_alive(id)||!sh_user_has_hero(id,spores_ksun_hero_id())){
+if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 	
 	return
 }
@@ -274,7 +278,7 @@ public destroy_player_launcher(id){
 	
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
-	if(sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(sh_user_has_hero(id,gHeroID)){
 		reset_player_targets(id)
 		set_player_num_deployed_spores(id,0);
 		set_player_num_launched_spores(id,0);
@@ -302,7 +306,7 @@ public death()
 {
 	new id = read_data(2)
 	
-	if(sh_user_has_hero(id,spores_ksun_hero_id())){
+	if(sh_user_has_hero(id,gHeroID)){
 	
 		if(ksun_get_when_reset_spores()&reset_on_death){
 			spores_reset_user(id)

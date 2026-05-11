@@ -12,6 +12,7 @@
 #include "../my_include/my_author_header.inc"
 
 
+new gHeroID = 0
 
 new pcvar_ksun_supply_capacity;
 new pcvar_ksun_health_to_supply_ratio
@@ -39,7 +40,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun supply","1.1",AUTHOR)
-	
+	gHeroID = spores_ksun_hero_id()
 	pcvar_ksun_ultimate_fire_rate_mult = register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
 	pcvar_ksun_ultimate_reload_rate_mult = register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
 	pcvar_ksun_dmg_absorption_index = register_cvar("ksun_dmg_absorption_index", "1.0" )
@@ -60,7 +61,7 @@ public plugin_init()
 			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
-	custom_dmg_id_r5=sh_log_custom_damage_source(spores_ksun_hero_id(),dmg_source_name_short_r5,dmg_source_name_long_r5,0)
+	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_long_r5,0)
 	
 }
 
@@ -96,7 +97,7 @@ public Item_PostFrame_Post(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!sh_user_has_hero(id,spores_ksun_hero_id())||!ksun_player_is_in_ultimate(id)){
+	if (!sh_is_active()||!sh_user_has_hero(id,gHeroID)||!ksun_player_is_in_ultimate(id)){
 		return HAM_IGNORED
 	}
 	do_fast_reload(id,iEnt,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
@@ -107,9 +108,9 @@ public ksun_ultimate_damage_hook(id, idinflictor, attacker, Float:damage, damage
 {
 if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
-new bool:has_hero=bool:sh_user_has_hero(id,spores_ksun_hero_id())
+new bool:has_hero=bool:sh_user_has_hero(id,gHeroID)
 
-if(!has_hero&&!sh_user_has_hero(attacker,spores_ksun_hero_id())) return HAM_IGNORED
+if(!has_hero&&!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 
 
 
@@ -212,7 +213,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	new id= get_param(1)
 	
 	if(!is_user_alive(id)) return
-	if(!sh_user_has_hero(id,spores_ksun_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 	
 	g_player_in_ultimate[id]=1
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -224,7 +225,7 @@ public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
 	if(!is_user_alive(id)) return
 	
-	if(!ksun_player_is_in_ultimate(id)||!sh_user_has_hero(id,spores_ksun_hero_id())) return
+	if(!ksun_player_is_in_ultimate(id)||!sh_user_has_hero(id,gHeroID)) return
 	static hud_msg[128];
 	ksun_dec_player_supply_points(id,KSUN_ULTIMATE_LOOP_DEC)
 	ksun_glisten(id)
@@ -282,7 +283,7 @@ public ksun_rifle_laser(id)
 {
 
 if(!is_user_alive(id)) return PLUGIN_CONTINUE 
-if ( !sh_user_has_hero(id,spores_ksun_hero_id())) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -313,7 +314,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,spores_ksun_hero_id())&&ksun_player_is_in_ultimate(victim)){
+	if(sh_user_has_hero(victim,gHeroID)&&ksun_player_is_in_ultimate(victim)){
 
 	
 		return DMG_FWD_BLOCK

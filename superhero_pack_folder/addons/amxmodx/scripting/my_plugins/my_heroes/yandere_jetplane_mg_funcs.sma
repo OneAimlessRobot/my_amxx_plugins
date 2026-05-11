@@ -20,6 +20,7 @@
 
 new user_mg[SH_MAXSLOTS+1]
 
+new gHeroID = 0
 
 new pcvar_jetplane_mg_dmg,
 pcvar_jetplane_mg_bulletspeed,
@@ -32,7 +33,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	
+	gHeroID = yandere_get_hero_id()
 	pcvar_jetplane_mg_ammo = register_cvar("yandere_jetplane_mg_ammo", "5")
 	pcvar_jetplane_mg_dmg = register_cvar("yandere_jetplane_mg_dmg", "5")
 	pcvar_jetplane_mg_bulletspeed = register_cvar("yandere_jetplane_mg_bulletspeed", "5")
@@ -94,7 +95,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	new mg_id = create_entity( "func_breakable" );
 	if(!is_valid_ent(mg_id)||(mg_id <= 0)) {
 		
-		sh_chat_message(id,yandere_get_hero_id(),"Mg failed to spawn")
+		sh_chat_message(id,gHeroID,"Mg failed to spawn")
 		return
 	}
 	user_mg[id]=mg_id
@@ -179,7 +180,7 @@ public mg_think(ent)
 	if ( !jet_deployed(owner)) {
 		if(pev_valid(ent)){
 			mg_destroy(owner)
-			sh_chat_message(owner,yandere_get_hero_id(),"jet mg died cuz of plane dying!!")
+			sh_chat_message(owner,gHeroID,"jet mg died cuz of plane dying!!")
 		}
 		return FMRES_IGNORED
 	}
@@ -188,7 +189,7 @@ public mg_think(ent)
 	if ( (mg_health<1000.0)) {
 		if(pev_valid(ent)){
 			mg_destroy(owner)
-			sh_chat_message(owner,yandere_get_hero_id(),"jet mg died!")
+			sh_chat_message(owner,gHeroID,"jet mg died!")
 		}
 		return FMRES_IGNORED
 	}
@@ -239,7 +240,7 @@ launch_shell(id)
 	Ent = create_entity("info_target")
 	
 	if (!Ent){
-		sh_chat_message(id,yandere_get_hero_id(),"shell failed!");
+		sh_chat_message(id,gHeroID,"shell failed!");
 		return PLUGIN_HANDLED
 	}
 	entity_set_string(Ent, EV_SZ_classname, JETPLANE_SHELL_CLASSNAME)

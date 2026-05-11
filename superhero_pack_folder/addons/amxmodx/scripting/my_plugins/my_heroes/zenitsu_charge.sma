@@ -19,6 +19,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+
 new g_zenitsu_has_touched_player[SH_MAXSLOTS+1]
 new g_zenitsu_is_charging[SH_MAXSLOTS+1]
 new g_zenitsu_was_charging[SH_MAXSLOTS+1]
@@ -30,6 +32,9 @@ public plugin_init(){
 	
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID = zenitsu_get_hero_id()
+
 	register_event("DeathMsg","on_death_cleanup","a")
 	register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
@@ -62,7 +67,7 @@ public plugin_precache(){
 public on_Knife_Weapon_Change(id)
 {
 	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 	if(g_zenitsu_is_charging[id]&&!g_zenitsu_has_touched_player[id]){
 		engclient_cmd(id, "weapon_knife")
 	}
@@ -76,7 +81,7 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,zenitsu_get_hero_id())) {
+	if ( sh_user_has_hero(id,gHeroID)) {
 		
 		g_zenitsu_has_touched_player[id]=0
 		g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]=0
@@ -85,7 +90,7 @@ public sh_client_spawn(id)
 }
 remove_user_flight_fx(id){
 	
-	if(!sh_user_has_hero(id,zenitsu_get_hero_id())||!is_user_connected(id)||!sh_is_active()) return
+	if(!sh_user_has_hero(id,gHeroID)||!is_user_connected(id)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
 	g_zenitsu_is_glowing[id]=0;
@@ -109,7 +114,7 @@ public zenitsu_charge(id, uc_handle, seed)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,zenitsu_get_hero_id())||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -168,7 +173,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		return
 	}
 
-	if (!sh_user_has_hero(pToucher,zenitsu_get_hero_id())||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
+	if (!sh_user_has_hero(pToucher,gHeroID)||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
 
 		return
 	
@@ -192,7 +197,8 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 	emit_sound(pToucher, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	
 	set_user_godmode(pTouched,0)
-	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],HIT_HEAD,_,_,_,_,_,
+	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],
+				MY_HIT_HEAD,_,_,_,_,_,
 				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
 
@@ -214,7 +220,7 @@ public on_death_cleanup()
 	new id = read_data(2)
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		if(sh_user_has_hero(id,zenitsu_get_hero_id())){
+		if(sh_user_has_hero(id,gHeroID)){
 
 			zenitsu_set_charge_mode_engaged(id,0)
 		}

@@ -16,7 +16,7 @@
 #include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
-
+new gHeroID = 0
 new REMOVE_GLOW_TASKID
 
 
@@ -28,6 +28,7 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	gHeroID = shinobu_get_hero_id()
 	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
 	prepare_shero_aux_lib_pt3()
 
@@ -278,7 +279,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	xmod_get_wpnname(custom_weapon_id,custom_weapon_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
 	
-	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,HIT_GENERIC,_,_,_,_,_,
+	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,_,_,_,_,_,_,
 			SH_NEW_DMG_FRAG_BLAST,
 			custom_weapon_id)
 	
@@ -381,7 +382,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
-	if(sh_user_has_hero(id,shinobu_get_hero_id())&&(floatround(mate_health)>=shinobu_get_max_hp())){
+	if(sh_user_has_hero(id,gHeroID)&&(floatround(mate_health)>=shinobu_get_max_hp())){
 
 		return false
 	}

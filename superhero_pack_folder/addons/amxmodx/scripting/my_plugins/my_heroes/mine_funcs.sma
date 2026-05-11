@@ -13,6 +13,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
 new mine_armed[SH_MAXSLOTS+1]
 new disarmer_on[SH_MAXSLOTS+1]
 new Float:curr_charge[SH_MAXSLOTS+1]
@@ -30,6 +31,8 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID = sapper_get_hero_id()
 	register_cvar("sapper_mine_min_charge_time", "1.0")
 	register_think(MINE_CLASSNAME, "mine_think")
 
@@ -95,7 +98,7 @@ public _mine_get_mine_disarmer_on(iPlugins,iParams){
 public plant_mine(id){
 	
 	if ( !is_user_alive(id)) return
-	if(!sh_user_has_hero(id,sapper_get_hero_id()))  return
+	if(!sh_user_has_hero(id,gHeroID))  return
 
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
@@ -114,7 +117,7 @@ public plant_mine(id){
 	glow(ent,1,1,1,120,1)
 	drop_to_floor(ent);
 	sapper_dec_num_mines(id);
-	sh_chat_message(id,sapper_get_hero_id(),"You have %d mines left",sapper_get_num_mines(id));
+	sh_chat_message(id,gHeroID,"You have %d mines left",sapper_get_num_mines(id));
 	entity_set_float(ent,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 	
 }
@@ -162,14 +165,14 @@ public blow_mine_up(ent, id)
 			return;
 		}
 		new attacker = entity_get_edict(ent, EV_ENT_owner);
-		if(!is_user_alive(attacker)||!sh_user_has_hero(attacker,sapper_get_hero_id())){
+		if(!is_user_alive(attacker)||!sh_user_has_hero(attacker,gHeroID)){
 		
 			return
 		}
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		explosion(sapper_get_hero_id(),ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
+		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
 		
 		remove_entity(ent)
 }
@@ -260,7 +263,7 @@ if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE
 
 	
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 	}
 	return false
 }
@@ -268,14 +271,14 @@ if (butnprs&IN_JUMP){
 
 
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 	}
 	return false
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 	}
 	return false
 
@@ -283,13 +286,13 @@ if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT
 }
 if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while planting, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 	}
 	return false
 }
 if(!(butnprs&IN_DUCK)){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while planting, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You werent ducked while planting, so your action was canceled");
 	}
 	return false
 }
@@ -306,7 +309,7 @@ butnprs = entity_get_int(id, EV_INT_button)
 if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while disarming, so your action was canceled");
 	}
 	return false
 }
@@ -314,14 +317,14 @@ if (butnprs&IN_JUMP){
 
 
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while disarming, so your action was canceled");
 	}
 	return false
 
 }
 if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while disarming, so your action was canceled");
 	}
 	return false
 
@@ -329,13 +332,13 @@ if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT
 }
 if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You moved while disarming, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You moved while disarming, so your action was canceled");
 	}
 	return false
 }
 if(!(butnprs&IN_DUCK)){
 	if(!is_user_bot(id)){
-		sh_chat_message(id,sapper_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
+		sh_chat_message(id,gHeroID,"You werent ducked while disarming, so your action was canceled");
 	}
 	return false
 }
@@ -351,7 +354,7 @@ public charge_task(id){
 	
 	}
 	id-=MINE_CHARGE_TASKID
-	if(!is_user_alive(id)||!sh_user_has_hero(id,sapper_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 	
 		uncharge_user(id)
 		return

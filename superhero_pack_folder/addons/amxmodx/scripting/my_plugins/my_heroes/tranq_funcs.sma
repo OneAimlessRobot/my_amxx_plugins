@@ -18,7 +18,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+new gHeroID = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
@@ -34,6 +34,8 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	
+	gHeroID = tranq_get_hero_id()
 
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre",_,true)
@@ -54,7 +56,7 @@ public plugin_init(){
 
 
 	super_dart_weapon_id=sh_log_custom_damage_source(
-								tranq_get_hero_id(),
+								gHeroID,
 								dmg_source_name_short_super_dart,
 								dmg_source_name_long_super_dart,
 								0)
@@ -115,7 +117,7 @@ public tranque_thinque(ent){
 
 public CmdStart(id, uc_handle)
 {
-	if (!hasRoundStarted()||!client_is_hero_user(id, tranq_get_hero_id())) return FMRES_IGNORED;
+	if (!hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 
 	
 	if(Get_BitVar(trigger_is_down_mask, id)){
@@ -158,7 +160,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED
 	}
-	if(get_user_weapon(Attacker) != CSW_ELITE || !sh_user_has_hero(Attacker,tranq_get_hero_id()) ){
+	if(get_user_weapon(Attacker) != CSW_ELITE || !sh_user_has_hero(Attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
 
@@ -177,7 +179,7 @@ public fw_Item_PostFrame(ent)
 
 	}
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, tranq_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 
 		return HAM_IGNORED;
 	}
@@ -211,7 +213,7 @@ public fw_WeaponReloadPre(entity)
 
 	new pPlayer = get_member(entity, m_pPlayer)
 
-	if(!client_is_hero_user(pPlayer, tranq_get_hero_id())){
+	if(!client_is_hero_user(pPlayer, gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -235,7 +237,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 	}
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, tranq_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -257,7 +259,7 @@ public fw_ItemDeployPre(entity)
 	}
 	new pPlayer = get_member(entity, m_pPlayer)
 
-	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id()) ){
+	if(!sh_user_has_hero(pPlayer,gHeroID) ){
 
 		return HAM_IGNORED
 	}
@@ -277,7 +279,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	new pPlayer = get_member(entity, m_pPlayer)
 
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,tranq_get_hero_id())){
+	if(!sh_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -311,7 +313,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	}
 
 	static id; id = pev(Ent, pev_owner)
-	if(!client_is_hero_user(id, tranq_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		return;
 	}
 	static Float:Push[3]
@@ -324,7 +326,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 }
 launch_dart(id)
 {
-	if(!client_is_hero_user(id, tranq_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 
 		return
 	}
@@ -433,7 +435,8 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				headshot=1;
 				damage*=4;
 			}
-			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,hitgroup,
+			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,
+						my_hitpoint_enum:hitgroup,
 						_,_,_,_,_,
 						SH_NEW_DMG_BLEED,super_dart_weapon_id)
 						
@@ -469,7 +472,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			}
 
 		}
-		sh_sleep_user(pTouched,oid,tranq_get_hero_id())
+		sh_sleep_user(pTouched,oid,gHeroID)
 
 	}
 	remove_entity(pToucher)
@@ -477,7 +480,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_is_hero_user(player, tranq_get_hero_id())){
+	if(!client_is_hero_user(player, gHeroID)){
 		return FMRES_IGNORED
 	}
 	new weapon = get_user_weapon(player);

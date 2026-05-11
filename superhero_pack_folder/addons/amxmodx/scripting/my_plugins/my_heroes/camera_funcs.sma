@@ -15,7 +15,6 @@
 #include "../my_include/my_author_header.inc"
 const m_iFOV = 363;
 new camera_loaded_mask = 0xFFFF
-
 new camera_planting_mask = 0
 new camera_armed_mask = 0
 new looking_with_camera_mask = 0
@@ -38,10 +37,13 @@ new pcvar_camera_hp
 stock CAMERA_CHARGE_TASKID,
 		CAMERA_DISARM_TASKID
 
+new gHeroID = 0
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID=camman_get_hero_id()
 
 	pcvar_min_charge_time = register_cvar("camman_camera_min_charge_time", "1.0")
 	pcvar_camera_hp = register_cvar("camman_camera_health", "100.0")
@@ -112,7 +114,7 @@ public camera_controls(id, uc_handle)
 		return FMRES_IGNORED;
 	}
 
-	if(!sh_user_has_hero(id,camman_get_hero_id())) return FMRES_IGNORED
+	if(!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
 	if(!camman_get_has_camera(id)) return FMRES_IGNORED
 	
@@ -255,14 +257,14 @@ public _toggle_camera_view(iPlugins,iParams){
 		
 		if(!pev_valid(camera_id)){
 			
-			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
+			sh_chat_message(id,gHeroID,"No available cameras!");
 			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 			
 		}
 		else if(!pev(camera_id, pev_iuser1)){
 			
-			sh_chat_message(id,camman_get_hero_id(),"No available cameras!");
+			sh_chat_message(id,gHeroID,"No available cameras!");
 			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 			
@@ -273,7 +275,7 @@ public _toggle_camera_view(iPlugins,iParams){
 			
 			
 			
-			sh_chat_message(id,camman_get_hero_id(),"Not enough charge (%0.2f)! Replant your camera!",battery_pct);
+			sh_chat_message(id,gHeroID,"Not enough charge (%0.2f)! Replant your camera!",battery_pct);
 			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 		}
@@ -282,7 +284,7 @@ public _toggle_camera_view(iPlugins,iParams){
 		Set_BitVar(looking_with_camera_mask, id)
 		attach_view(id,camera_id)
 		set_pev(camera_id, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
-		sh_chat_message(id,camman_get_hero_id(),"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
+		sh_chat_message(id,gHeroID,"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
 		return
 		
 	}
@@ -299,7 +301,7 @@ public _toggle_camera_view(iPlugins,iParams){
 }
 public plant_camera(id)
 {
-	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED
+	if(!sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 	
 	static material[128]
 	static health[128]	
@@ -444,7 +446,7 @@ public laser_on_player_think(ent){
 	if ( is_user_alive(iHit) ) {
 		
 		if(!sh_clients_are_same_team(owner,iHit)&&(iHit!=owner)){
-			make_effect(iHit,owner,camman_get_hero_id(),GLOW,false)
+			make_effect(iHit,owner,gHeroID,GLOW,false)
 
 				
 		}
@@ -482,7 +484,7 @@ public camera_think(ent)
 				ham_is_on=1;
 			}
 			if(!is_user_bot(owner)){
-				sh_chat_message(owner,camman_get_hero_id(),"The camera is armed!");
+				sh_chat_message(owner,gHeroID,"The camera is armed!");
 			}
 			set_pev(ent,pev_iuser2,1)
 
@@ -614,7 +616,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
 	
-	if(!sh_user_has_hero(id,camman_get_hero_id())) return PLUGIN_HANDLED;
+	if(!sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED;
 	
 	Set_BitVar(camera_planting_mask,id);
 	Set_BitVar(camera_armed_mask,id);
@@ -635,7 +637,7 @@ bool:camman_update_planting(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You looked away from a wall while planting, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You looked away from a wall while planting, so your action was canceled");
 		}
 		return false
 		
@@ -645,7 +647,7 @@ bool:camman_update_planting(id){
 	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 		}
 		return false
 	}
@@ -654,7 +656,7 @@ bool:camman_update_planting(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 		}
 		return false
 		
@@ -662,7 +664,7 @@ bool:camman_update_planting(id){
 	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 		}
 		return false
 		
@@ -671,7 +673,7 @@ bool:camman_update_planting(id){
 	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You moved while planting, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You moved while planting, so your action was canceled");
 		}
 		return false
 	}
@@ -686,7 +688,7 @@ bool:camman_update_disarming(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You looked away from a wall while disarming, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You looked away from a wall while disarming, so your action was canceled");
 		}
 		return false
 		
@@ -697,7 +699,7 @@ bool:camman_update_disarming(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 	}
@@ -706,7 +708,7 @@ bool:camman_update_disarming(id){
 		
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 		
@@ -714,7 +716,7 @@ bool:camman_update_disarming(id){
 	if (butnprs&IN_FORWARD || butnprs&IN_BACK || butnprs&IN_LEFT || butnprs&IN_RIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 		
@@ -723,7 +725,7 @@ bool:camman_update_disarming(id){
 	if (butnprs&IN_MOVELEFT || butnprs&IN_MOVERIGHT){
 		
 		if(!is_user_bot(id)){
-			sh_chat_message(id,camman_get_hero_id(),"You werent ducked while disarming, so your action was canceled");
+			sh_chat_message(id,gHeroID,"You werent ducked while disarming, so your action was canceled");
 		}
 		return false
 	}
@@ -743,7 +745,7 @@ public charge_task(id){
 		return
 	
 	}
-	if(!sh_user_has_hero(id,camman_get_hero_id())){
+	if(!sh_user_has_hero(id,gHeroID)){
 		UnSet_BitVar(camera_armed_mask, id)
 		return
 	
@@ -807,7 +809,7 @@ public plugin_precache()
 public death()
 {	
 	new id=read_data(2)
-	if(sh_user_has_hero(id,camman_get_hero_id())&&is_user_connected(id)){
+	if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)){
 		
 		
 		UnSet_BitVar(looking_with_camera_mask, id)

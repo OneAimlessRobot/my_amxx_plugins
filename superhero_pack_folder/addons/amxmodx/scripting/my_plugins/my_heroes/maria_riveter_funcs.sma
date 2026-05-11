@@ -15,6 +15,8 @@
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
 
+new gHeroID = 0
+new gHeroID_yakui = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
@@ -26,6 +28,9 @@ public plugin_init(){
 	
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
+
+	gHeroID = maria_get_hero_id()
+	gHeroID_yakui = gatling_get_hero_id()
 
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
@@ -47,7 +52,7 @@ public plugin_init(){
 
 
 	maria_riveter_wpn_id=sh_log_custom_damage_source(
-								maria_get_hero_id(),
+								gHeroID,
 								dmg_source_name_short_riveter,
 								dmg_source_name_long_riveter,
 								0)
@@ -96,7 +101,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
 
-	if(!client_is_hero_user(id, maria_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return FMRES_IGNORED
 	}
@@ -107,7 +112,7 @@ public CmdStart(id, uc_handle)
 		
 		if(button & IN_ATTACK)
 		{
-			if(sh_user_has_hero(id,gatling_get_hero_id())||(maria_riveter_get_num_rivets(id)<=0)){
+			if(sh_user_has_hero(id,gHeroID_yakui)||(maria_riveter_get_num_rivets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
@@ -124,7 +129,7 @@ public Ham_TraceAttackMariaRiveter(id, idattacker, Float:damage, Float:direction
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,maria_get_hero_id())){
+	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
 		
@@ -142,7 +147,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, maria_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -173,7 +178,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, maria_get_hero_id())){
+	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -196,7 +201,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, maria_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -220,7 +225,7 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, maria_get_hero_id())){
+	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -240,7 +245,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	if (!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,maria_get_hero_id())){
+	if(!sh_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -275,7 +280,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = pev(Ent, pev_owner)
-	if(!client_is_hero_user(id, maria_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return
 	}
@@ -291,7 +296,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 launch_rivet(id)
 {
 
-if(!client_is_hero_user(id, maria_get_hero_id())){
+if(!client_is_hero_user(id, gHeroID)){
 		
 	return PLUGIN_CONTINUE
 }
@@ -363,7 +368,7 @@ return PLUGIN_CONTINUE
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_is_hero_user(player, maria_get_hero_id())){
+	if(!client_is_hero_user(player, gHeroID)){
 		
 		return FMRES_IGNORED
 	}
@@ -393,7 +398,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);
 	new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
 	new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+(is_direct_hit?MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS:0.0);
-	explosion(maria_get_hero_id(),pToucher,
+	explosion(gHeroID,pToucher,
 									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
 									MARIA_PROJECTILE_EXPLODE_FORCE-(is_direct_hit?MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED:0.0),
 									is_direct_hit,

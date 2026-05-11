@@ -47,7 +47,6 @@ stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
 // GLOBAL VARIABLES
 //Replacing with bitmasks...
 
-stock gHeroID
 stock const gHeroName[] = "Yandere Mk.II"
 
 

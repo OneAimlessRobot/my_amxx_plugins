@@ -19,7 +19,7 @@
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
-
+new gHeroID = 0
 new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
@@ -36,11 +36,14 @@ new custom_dmg_id_l96
 public plugin_init(){
 	
 	
+	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
+	
+	gHeroID = lena_get_hero_id()
+
+
 	pcvar_dmg_headshot_mult = register_cvar("lena_xp_distance_mult","4")
 	pcvar_xp_distance_mult = register_cvar("lena_dmg_headshot_mult","5")
 
-	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
-	
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
@@ -53,7 +56,7 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
-	custom_dmg_id_l96=sh_log_custom_damage_source(lena_get_hero_id(),dmg_source_name_short_l96,dmg_source_name_long_l96,0)
+	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 
 	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(LENA_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
@@ -134,7 +137,7 @@ public CmdStart(id, uc_handle)
 	
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-	if(!client_is_hero_user(id, lena_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return FMRES_IGNORED
 	}
@@ -178,7 +181,7 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,lena_get_hero_id())){
+	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
 		
@@ -194,7 +197,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, lena_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -226,7 +229,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, lena_get_hero_id())){
+	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -249,7 +252,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = pev(ent, pev_owner)
-	if(!client_is_hero_user(id, lena_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -273,7 +276,7 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	
-	if(!client_is_hero_user(pPlayer, lena_get_hero_id())){
+	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
 		return HAM_IGNORED
 	}
@@ -292,7 +295,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 	new pPlayer = get_member(entity, m_pPlayer)
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,lena_get_hero_id())){
+	if(!sh_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -326,7 +329,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = pev(Ent, pev_owner)
-	if(!client_is_hero_user(id, lena_get_hero_id())){
+	if(!client_is_hero_user(id, gHeroID)){
 		
 		return
 	}
@@ -341,7 +344,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 launch_bullet(id)
 {
 
-if(!client_is_hero_user(id, lena_get_hero_id())){
+if(!client_is_hero_user(id, gHeroID)){
 		
 	return
 }
@@ -394,7 +397,7 @@ randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 lena_l96_dec_num_bullets(id)
-sh_chat_message(id, lena_get_hero_id(),"%d l96 bullets left",lena_l96_get_num_bullets(id))
+sh_chat_message(id, gHeroID,"%d l96 bullets left",lena_l96_get_num_bullets(id))
 
 //bullet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)
@@ -416,7 +419,7 @@ entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTIL
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
-	if(!client_is_hero_user(player, lena_get_hero_id())){
+	if(!client_is_hero_user(player, gHeroID)){
 		
 		return FMRES_IGNORED
 	}
@@ -485,7 +488,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(oid)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, hitgroup,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
+		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, my_hitpoint_enum:hitgroup,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
 		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)

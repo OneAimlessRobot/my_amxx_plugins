@@ -18,6 +18,9 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+
+new gHeroID_erica = 0
 stock MOLLY_TASKID,
 		BURN_TASKID_MAIN
 
@@ -32,6 +35,9 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	
+	gHeroID = tomie_yu_hero_id()
+	gHeroID_erica = tranq_get_hero_id()
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	register_event("DeathMsg","on_death_burning","a")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
@@ -80,7 +86,7 @@ public burn_task(array[2],id)
 	make_fire(id,30.0)
 
 	
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
 	if(!is_tomie_user){
 		static players[33];
 
@@ -90,7 +96,7 @@ public burn_task(array[2],id)
 
 			if( !is_user_alive(pid) || pid==array[0] || Get_BitVar(gIsBurningMask,pid)) continue
 			
-			sh_molly_user(pid,array[0],tranq_get_hero_id())
+			sh_molly_user(pid,array[0],gHeroID_erica)
 			
 		}
 	}
@@ -212,11 +218,11 @@ stock burn_user(id,attacker){
 	if(Get_BitVar(gIsBurningMask,id)) return
 
 	Set_BitVar(gIsBurningMask,id)
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,tomie_yu_hero_id())
+	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
 	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
 	new array[2]
 	array[0] = attacker
-	array[1] = sh_user_has_hero(id,tomie_yu_hero_id())?times_if_tomie_user:0
+	array[1] = sh_user_has_hero(id,gHeroID)?times_if_tomie_user:0
 	
 	if(sh_is_user_frozen(id)){
 		sh_unfreeze_user(id)

@@ -33,6 +33,7 @@ stock flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
 stock g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
+new gHeroID = 0
 
 new pcvar_field_cooldown
 new pcvar_field_radius
@@ -64,7 +65,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	
+	gHeroID = flora_get_hero_id()
 	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
 	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
 	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
@@ -82,7 +83,7 @@ public plugin_init()
 
  
 	field_drain_wpn_id=sh_log_custom_damage_source(
-								flora_get_hero_id(),
+								gHeroID,
 								dmg_source_name_short_field_drain,
 								dmg_source_name_long_field_drain,
 								0)
@@ -229,7 +230,7 @@ Float:get_player_alpha(id){
 	new Float:alphaMult=1.0;
 	new player_lvl,hero_lvl,lvl_diff;
 	if(is_user_alive(id)){
-		if(sh_user_has_hero(id,flora_get_hero_id())){
+		if(sh_user_has_hero(id,gHeroID)){
 			player_lvl=sh_get_user_lvl(id)
 			hero_lvl=flora_get_hero_lvl()
 			lvl_diff=player_lvl-hero_lvl
@@ -272,7 +273,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(is_user_connected(owner)){
-			if(sh_user_has_hero(owner,flora_get_hero_id())){
+			if(sh_user_has_hero(owner,gHeroID)){
 				if(!planting){
 					flora_dec_user_num_active_fields(owner,1)
 				}
@@ -295,7 +296,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 }
 find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	
-	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
+	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,gHeroID) ){
 		
 	
 			return -1
@@ -347,7 +348,7 @@ public flora_checks(task_id){
 	for(new id=1;id< sh_maxplayers()+1;id++){
 		if(!is_user_alive(id)) continue
 
-		if(!sh_user_has_hero(id,flora_get_hero_id())) continue
+		if(!sh_user_has_hero(id,gHeroID)) continue
 		
 		if(sh_get_stun(id)) continue
 		
@@ -412,7 +413,7 @@ public flora_checks(task_id){
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
-	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,flora_get_hero_id()) ){
+	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,gHeroID) ){
 		
 	
 			field_id=-1
@@ -467,7 +468,7 @@ public _form_field(iPlugin,iParams)
 	
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,flora_get_hero_id())) return
+	if(!sh_user_has_hero(id,gHeroID)) return
 	
 	if(!flora_get_user_num_fields(id)){
 		
@@ -477,7 +478,7 @@ public _form_field(iPlugin,iParams)
 	}
 	if(!g_flora_field_loaded[id]){
 		
-		sh_chat_message(id,flora_get_hero_id(),"Field not loaded")
+		sh_chat_message(id,gHeroID,"Field not loaded")
 		return
 	}
 
@@ -494,7 +495,7 @@ public _form_field(iPlugin,iParams)
 	
 	if(pev_valid(Ent)!=2){
 		
-		sh_chat_message(id,flora_get_hero_id(),"Field failure!");
+		sh_chat_message(id,gHeroID,"Field failure!");
 		return
 	}
 	
@@ -578,7 +579,7 @@ public apply_teleport(id,field_inside) {
 		return
 	
 	}
-	if(!is_user_alive(id)||!sh_user_has_hero(id,flora_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		return
 
@@ -605,21 +606,21 @@ public apply_teleport(id,field_inside) {
 				}
 				if(sh_clients_are_same_team(id,pid)){
 
-					sh_chat_message(pid, flora_get_hero_id(),"Flora asks: ^"Hey! Do you like bugs?^"")
+					sh_chat_message(pid, gHeroID,"Flora asks: ^"Hey! Do you like bugs?^"")
 					break;
 				}
 
 			}
 		}
 		else{
-			sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (too far)")
+			sh_chat_message(id,gHeroID,"Teleporting was not possible (too far)")
 			
 			
 		}
 	}
 	else{
 		
-		sh_chat_message(id,flora_get_hero_id(),"Teleporting was not possible (no other fields)")
+		sh_chat_message(id,gHeroID,"Teleporting was not possible (no other fields)")
 			
 			
 	}
@@ -628,7 +629,7 @@ public apply_teleport(id,field_inside) {
 
 apply_cloak(id){
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,flora_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		
 		g_curr_flora_cloaked[id]=0
 		g_prev_flora_cloaked[id]=0
@@ -674,7 +675,7 @@ public field_think(ent)
 	}
 	if (entity_get_float(ent,EV_FL_fuser2)<FIELD_ACTIVE_TIME_BUFFER) {
 		if(pev_valid(ent)==2){
-			sh_chat_message(owner,flora_get_hero_id(),"Field died!")
+			sh_chat_message(owner,gHeroID,"Field died!")
 			
 			destroy_field(ent,1)
 		}
@@ -757,7 +758,7 @@ public load_field(id){
 	id-=FLORA_LOAD_TASKID
 	
 	g_flora_field_loaded[id]=1;	
-	sh_chat_message(id,flora_get_hero_id(),"Field loaded");
+	sh_chat_message(id,gHeroID,"Field loaded");
 	
 	
 }
@@ -765,7 +766,7 @@ public charge_iteration(owner,field_id){
 
 	
 	
-	if(!is_user_alive(owner)||!sh_user_has_hero(owner,flora_get_hero_id())){
+	if(!is_user_alive(owner)||!sh_user_has_hero(owner,gHeroID)){
 		uncharge_user(owner)
 		return FMRES_IGNORED
 	}
@@ -778,7 +779,7 @@ public charge_iteration(owner,field_id){
 	new test_edict=find_next_nearest_flora_field(owner,field_id,0.0)
 	if(is_valid_ent(test_edict)){
 		sh_sound_deny(owner)
-		sh_chat_message(owner,flora_get_hero_id(),"This spore is too close to another one of yours! Will not plant.")
+		sh_chat_message(owner,gHeroID,"This spore is too close to another one of yours! Will not plant.")
 		uncharge_user(owner)
 		return FMRES_IGNORED
 	}
@@ -786,7 +787,7 @@ public charge_iteration(owner,field_id){
 	if(!(entity_get_int( owner, EV_INT_flags ) & FL_ONGROUND  )){
 		
 		sh_sound_deny(owner)
-		sh_chat_message(owner, flora_get_hero_id(), "Charging stopped. You cannot charge a field while airborne")
+		sh_chat_message(owner, gHeroID, "Charging stopped. You cannot charge a field while airborne")
 		uncharge_user(owner)
 		return FMRES_IGNORED
 		

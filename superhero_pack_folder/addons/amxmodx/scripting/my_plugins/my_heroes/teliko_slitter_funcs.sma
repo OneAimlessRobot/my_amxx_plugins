@@ -15,6 +15,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gHeroID = 0
+new gHeroID_erica = 0
 new slitter_on[SH_MAXSLOTS+1]
 
 new g_dragging_who[SH_MAXSLOTS+1][2]
@@ -36,6 +38,10 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	gHeroID = teliko_get_hero_id()
+	gHeroID_erica = tranq_get_hero_id()
+	
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(is_user_alive(i)){
 			g_dragging_who[i][0]=-1;
@@ -53,7 +59,7 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
-	custom_dmg_id_sneak=sh_log_custom_damage_source(teliko_get_hero_id(),
+	custom_dmg_id_sneak=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_sneak,
 					dmg_source_name_long_sneak,
 					1)
@@ -64,7 +70,7 @@ public plugin_init(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,teliko_get_hero_id()) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
@@ -76,7 +82,7 @@ public weaponChange(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-if ( sh_user_has_hero(id,teliko_get_hero_id()) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
+if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	stop_dragging(id)
 	g_slit_kills[id]=max_slitter_kills_per_life;
@@ -121,7 +127,7 @@ stop_dragging(id,bool:deduct=false){
 			if(g_slit_kills[id]>=0){							
 				
 				if(!is_user_bot(id)){
-					sh_chat_message(id,teliko_get_hero_id(),"You got %d slit strikes left",g_slit_kills[id]);
+					sh_chat_message(id,gHeroID,"You got %d slit strikes left",g_slit_kills[id]);
 				}	
 			}
 		}
@@ -139,7 +145,7 @@ public slitter_think(id)
 		return FMRES_IGNORED
 	
 	}
-	if (!sh_user_has_hero(id,teliko_get_hero_id()) ){
+	if (!sh_user_has_hero(id,gHeroID) ){
 	
 		stop_dragging(id)
 	
@@ -207,7 +213,7 @@ public CmdStart(attacker, uc_handle)
 
 
 	if (!is_user_alive(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,teliko_get_hero_id()) ||sh_user_has_hero(attacker,tranq_get_hero_id()) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)) return FMRES_IGNORED;
+	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)) return FMRES_IGNORED;
 	if(sh_get_stun(attacker)) return FMRES_IGNORED
 
 	static button
@@ -267,10 +273,10 @@ public CmdStart(attacker, uc_handle)
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,teliko_get_hero_id(),"Snuck up on %s!",vic_name);
+							sh_chat_message(attacker,gHeroID,"Snuck up on %s!",vic_name);
 						}
 						if(!is_user_bot(id)){
-							sh_chat_message(id,teliko_get_hero_id(),"You got snuck up on by %s!",att_name);
+							sh_chat_message(id,gHeroID,"You got snuck up on by %s!",att_name);
 						}
 					}
 					else if(!is_user_bot(attacker)){
@@ -296,7 +302,7 @@ if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_a
 new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att_team)){
+if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)){
 	
 	if(weapon==CSW_KNIFE){
 		new button = pev(attacker, pev_button);
@@ -337,7 +343,7 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 						
 							
 							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,teliko_get_hero_id(),"You removed %s's godmode!!",vic_name);
+								sh_chat_message(attacker,gHeroID,"You removed %s's godmode!!",vic_name);
 							}
 							set_user_godmode(id,0)
 						}
@@ -345,12 +351,12 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 							damage=get_user_health(id)*3.0
 							SetHamParamFloat(4, damage);
 							sh_extra_damage(id,attacker,floatround(damage),
-								dmg_source_name_short_sneak,HIT_HEAD
+								dmg_source_name_short_sneak,MY_HIT_HEAD
 								,_,_,_,_,_,
 								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 								custom_dmg_id_sneak)
 							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,teliko_get_hero_id(),"You slit %s's throat!",vic_name);
+								sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
 							}
 						}
 						stop_dragging(id,true)
@@ -359,7 +365,7 @@ if(sh_user_has_hero(attacker,teliko_get_hero_id()) &&!(cs_get_user_team(id)==att
 					
 						
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,teliko_get_hero_id(),"Already hit %d slit kills this life!",max_slitter_kills_per_life);
+							sh_chat_message(attacker,gHeroID,"Already hit %d slit kills this life!",max_slitter_kills_per_life);
 						}
 					}
 				}
@@ -398,7 +404,7 @@ public plugin_precache()
 public death()
 {	
 	new id = read_data(2)
-	if(sh_user_has_hero(id,teliko_get_hero_id()) ){
+	if(sh_user_has_hero(id,gHeroID) ){
 		
 		stop_dragging(id)
 	

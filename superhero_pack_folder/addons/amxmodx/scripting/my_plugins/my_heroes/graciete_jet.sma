@@ -16,6 +16,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+new gHeroID = 0
 new g_graciete_jetpack_loaded_mask = 0;
 new g_graciete_jetpack_on_mask = 0;
 new g_graciete_power_landing_mask = 0;
@@ -41,7 +43,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	
+	gHeroID = graciete_get_hero_id()
 	register_event("DeathMsg","death","a")
 	pcvar_jet_velocity = register_cvar("graciete_jet_velocity", "8")
 	pcvar_jet_cooldown = register_cvar("graciete_jet_cooldown", "8")
@@ -109,7 +111,7 @@ public plugin_end(){
 	
 }
 charge_user(id){
-	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
@@ -140,7 +142,7 @@ public Ham_Think_Post(id) {
 	
 	if(!sh_is_active()) return HAM_IGNORED
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())) return HAM_IGNORED
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
 
 	if(Get_BitVar(g_graciete_leaped_mask, id)){
 		new flags = pev(id, pev_flags)
@@ -149,7 +151,7 @@ public Ham_Think_Post(id) {
 			if(Get_BitVar(g_graciete_power_landing_mask,id)){
 				
 				emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-				explosion(graciete_get_hero_id(),id,
+				explosion(gHeroID,id,
 						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
 				UnSet_BitVar(g_graciete_power_landing_mask,id);
 				g_graciete_land_power[id]=0.0
@@ -168,7 +170,7 @@ public CmdStart(id, uc_handle)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 
-	if(!is_user_alive(id)||!sh_user_has_hero(id,graciete_get_hero_id())){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -219,7 +221,7 @@ public charge_task(id){
 		
 		return
 	}
-	if(!sh_user_has_hero(id,graciete_get_hero_id())){
+	if(!sh_user_has_hero(id,gHeroID)){
 
 		return
 	}
@@ -263,7 +265,7 @@ public JetpackJump( id,intensity){
 public death()
 {
 	new id = read_data(2)
-	if(!is_user_connected(id)||!sh_is_active()||!sh_user_has_hero(id,graciete_get_hero_id())) return
+	if(!is_user_connected(id)||!sh_is_active()||!sh_user_has_hero(id,gHeroID)) return
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	
 }
