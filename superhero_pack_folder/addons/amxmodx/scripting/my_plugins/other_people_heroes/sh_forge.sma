@@ -50,22 +50,26 @@ public plugin_init()
 
 	register_event("DeathMsg","death_event","a")	
 
-	// KEY DOWN
-	register_srvcmd("Forge_kd", "Forge_kd")
-	shRegKeyDown(gHeroName, "Forge_kd")
-
 }
 
 //----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		Forge_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public Forge_kd()
+public Forge_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
 
-	// First Argument is an id with Forge Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)

@@ -125,7 +125,8 @@ public sh_client_spawn(id)
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
         gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar)
         set_task(cvar_val(float, girlb_regen_period_pcvar),

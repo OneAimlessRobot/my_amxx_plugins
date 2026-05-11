@@ -477,7 +477,7 @@ native sh_get_hero_id(const heroName[]);
  * @param heroID	The index of the hero.
  * @return		Returns 1 if client has hero, otherwise 0.
  */
-native sh_user_has_hero(id, heroID);
+native bool:sh_user_has_hero(id, heroID);
 
 /**
  * Reset client's max speed according to heroes they have.

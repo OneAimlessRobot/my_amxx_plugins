@@ -30,12 +30,8 @@ public plugin_init()
 	register_clcmd("ShadePower","make_fog",ADMIN_USER)
 	
 	register_event("CurWeapon","changeWeapon","be","1=1")
-	// KEY DOWN
-	register_srvcmd("shade_kd", "shade_kd")
-	shRegKeyDown(gHeroName, "shade_kd")
-	// INIT
-	register_srvcmd("shade_init", "shade_init")
-	shRegHeroInit(gHeroName, "shade_init")
+
+
 	// LOOP
 	register_srvcmd("shade_loop", "shade_loop")
 	//  shRegLoop1P0(gHeroName, "shade_loop", "ac" )
@@ -57,12 +53,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,g_shadeSound)
 }
 //----------------------------------------------------------------------------------------------
-public shade_init()
-{
-	new temp[128]
-	// First Argument is an id
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( !sh_user_has_hero(id,gHeroID) )
 	{
@@ -83,15 +75,23 @@ public sh_client_spawn(id)
 	}
 	return PLUGIN_HANDLED
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		shade_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public shade_kd()
+public shade_kd(id)
 {
-	new temp[6]
-
-	// First Argument is an id with shade Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 

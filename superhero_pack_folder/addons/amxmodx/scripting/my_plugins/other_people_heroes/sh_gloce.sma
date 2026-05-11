@@ -56,18 +56,12 @@ public plugin_init()
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_GLOCK18,g_model)
 
-	//Register Hero
-	register_srvcmd("gloce_init", "gloce_init")
-	shRegHeroInit(g_HeroName, "gloce_init")
 }
 
-
-public gloce_init()
-{
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+	
 	if(sh_user_has_hero(id,gHeroID))
 	{
 		times_id[id] = get_pcvar_num(gloce_times)

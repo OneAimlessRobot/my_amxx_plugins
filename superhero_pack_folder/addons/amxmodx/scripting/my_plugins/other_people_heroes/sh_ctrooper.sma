@@ -62,11 +62,8 @@ new custom_dmg_id_lazah_guun
 	custom_dmg_id_lazah_guun=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_lazah_guun,
 					dmg_source_name_long_lazah_guun,0)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
-	// INIT
-	register_srvcmd("CTrooper_init", "CTrooper_init")
-	shRegHeroInit(gHeroName, "CTrooper_init")
+
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "CTrooper_damage", "b", "2!0")
@@ -76,14 +73,10 @@ new custom_dmg_id_lazah_guun
 	shSetMaxHealth(gHeroName, "ctrooper_health")
 	shSetMaxArmor(gHeroName, "ctrooper_armor")
  }
- //----------------------------------------------------------------------------------------------
- public CTrooper_init()
- {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)

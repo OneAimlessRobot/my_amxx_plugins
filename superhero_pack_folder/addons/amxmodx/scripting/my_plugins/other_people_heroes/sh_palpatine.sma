@@ -16,19 +16,12 @@ public plugin_init()
   register_cvar("palpatine_level", "8" )
   gHeroID=shCreateHero(gHeroName, "Dark Lord", "Death and Decay!", true, "palpatine_level" )
   
-  
-  // KEY DOWN
-  register_srvcmd("palpatine_kd", "palpatine_kd")
-  shRegKeyDown(gHeroName, "palpatine_kd")
+
   
   register_srvcmd("palpatine_loop", "palpatine_loop")
   //  shRegLoop1P0(gHeroName, "palpatine_loop", "ac" ) // Alive palpatineHeros="ac"
   set_task(1.0,"palpatine_loop",0,"",0,"b") //forever loop
   
-  // INIT
-  register_srvcmd("palpatine_init", "palpatine_init")
-  shRegHeroInit(gHeroName, "palpatine_init")
-
   // DEFAULT THE CVARS
   register_cvar("palpatine_cooldown", "45" )
   register_cvar("palpatine_time", "5" )
@@ -47,29 +40,26 @@ public plugin_precache()
 	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 
-public palpatine_init()
-{
-  new temp[6]
-  // First Argument is an id
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-  
-  new hasPowers=sh_user_has_hero(id,gHeroID)
-  
-  set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
-  
-  if (!hasPowers)
-  {
-     if ( is_user_alive(id) && g_palpatineTimer[id]>=0)
-     {
-	   palpatine_endmode(id)
-     }
-  }
-  else
-  {
-   	g_palpatineTimer[id]=-1  // Make sure looop doesn't fire for em...
-   	set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
-  }
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+    if(heroID!=gHeroID) return
+
+    new hasPowers=sh_user_has_hero(id,gHeroID)
+    
+    set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
+    
+    if (!hasPowers)
+    {
+      if ( is_user_alive(id) && g_palpatineTimer[id]>=0)
+      {
+      palpatine_endmode(id)
+      }
+    }
+    else
+    {
+      g_palpatineTimer[id]=-1  // Make sure looop doesn't fire for em...
+      set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
+    }
 
 }
 //----------------------------------------------------------------------------------------------
@@ -82,17 +72,26 @@ public sh_client_spawn(id)
   g_palpatineTimer[id]=0
   return PLUGIN_HANDLED
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		palpatine_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public palpatine_kd() 
-{ 
-  new temp[6]
-  
+public palpatine_kd(id) 
+{
   if ( !hasRoundStarted() ) return PLUGIN_HANDLED
   
-  // First Argument is an id with Carnage Powers!
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
+
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED
    
     

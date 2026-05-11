@@ -77,16 +77,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Goku's Kaioken Technic", "Go into Kaiokenmode for X Seconds", true, "gokukt_level")
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("gokukt_init", "gokukt_init")
-	shRegHeroInit(HeroName, "gokukt_init")
-	
-	// KEY DOWN
-	register_srvcmd("gokukt_kd", "gokukt_kd")
-	shRegKeyDown(HeroName, "gokukt_kd")
-	
-	
 	// LOOP
 	set_task(1.0, "gokukt_loop", 0, "", 0, "b") //forever loop
 	 
@@ -98,13 +88,10 @@ public plugin_precache()
 	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/kaiokenbonini.spr")
 }
 
-public gokukt_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id=str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+	
 	if(!sh_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_connected(id)) {
@@ -120,16 +107,25 @@ public sh_client_spawn(id)
 	reset_health[id] = false
 	reset_armor[id] = false
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		gokukt_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public gokukt_kd()
+public gokukt_kd(id)
 {
 	if ( !hasRoundStarted() ) return;
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+	
 	if ( !is_user_alive(id) ) return;
 	
 	// Let them know they already used their ultimate if they have

@@ -32,13 +32,8 @@ public plugin_init()
   gHeroID=shCreateHero(gHeroName, "sharky-mode", "make confusing smoke storm,get ALL the gunz", true, "sharky_level")
   register_clcmd("SharkyPower","make_fog",ADMIN_USER)
   
-  register_event("CurWeapon","changeWeapon","be","0=0")  
-  // KEY DOWN
-  register_srvcmd("sharky_kd", "sharky_kd")
-  shRegKeyDown(gHeroName, "sharky_kd")
-  // INIT
-  register_srvcmd("sharky_init", "sharky_init")
-  shRegHeroInit(gHeroName, "sharky_init")
+  register_event("CurWeapon","changeWeapon","be","0=0")
+
   // LOOP
   register_srvcmd("sharky_loop", "sharky_loop")
   //  shRegLoop1P0(gHeroName, "sharky_loop", "ac" ) // Alive sharkyHeros="ac"
@@ -53,13 +48,9 @@ public plugin_precache()
    engfunc(EngFunc_PrecacheSound,g_sharkySound)
 }
 //----------------------------------------------------------------------------------------------
-public sharky_init()
-{
-  new temp[128]
-  // First Argument is an id
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-  
+public sh_hero_init(id, heroID, mode){
+  if(heroID!=gHeroID) return
+
   if ( !sh_user_has_hero(id,gHeroID))
   {
     sharky_endmode(id)
@@ -78,16 +69,23 @@ public sh_client_spawn(id)
   }
   return PLUGIN_HANDLED
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		sharky_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public sharky_kd() 
-{ 
-  new temp[6]
-  
-  // First Argument is an id with sharky Powers!
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-
+public sharky_kd(id) 
+{
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED 
     
   // Let them know they already used their ultimate if they have

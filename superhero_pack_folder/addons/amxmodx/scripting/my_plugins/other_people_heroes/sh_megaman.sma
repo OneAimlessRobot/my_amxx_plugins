@@ -27,7 +27,7 @@ new laser_shots[33]
 // Megaman is an awesome superhero that has a megasuit of ultimate powers!
 
 new gHeroName[]="Megaman"
-
+new gHeroID
 //----------------------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -36,14 +36,8 @@ public plugin_init()
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   if (!cvar_exists("Megaman_level")) register_cvar("megaman_level", "10" )
-  shCreateHero(gHeroName, "Photon Cannon", "Blazing Cannon and Megasuit", true, "megaman_level" )
+  gHeroID=shCreateHero(gHeroName, "Photon Cannon", "Blazing Cannon and Megasuit", true, "megaman_level" )
   
-
-  // KEY DOWN
-  register_srvcmd("megaman_kd", "megaman_kd")
-  shRegKeyDown(gHeroName, "megaman_kd")
-  register_srvcmd("megaman_ku", "megaman_ku")
-  shRegKeyUp(gHeroName, "megaman_ku")
   
   
   // DEATH
@@ -89,17 +83,29 @@ public sh_client_spawn(id)
   return PLUGIN_HANDLED
 }
 
-//----------------------------------------------------------------------------------------------------------
-// RESPOND TO KEYDOWN
-public megaman_kd() 
-{ 
-  new temp[6] 
 
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		megaman_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		megaman_ku(id)
+	}
+}
+}
+
+public megaman_kd(id) 
+{
   if ( !hasRoundStarted() ) return PLUGIN_HANDLED 
 
-  // First Argument is an id with Megaman Powers! 
-  read_argv(1,temp,5) 
-  new id=str_to_num(temp) 
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED   
   
   // Let them know they already used their ultimate if they have 
@@ -118,14 +124,8 @@ public megamanFire(parm[])
 }
 
 //----------------------------------------------------------------------------------------------------------
-public megaman_ku()
+public megaman_ku(id)
 {
-  new temp[6] 
-
-  // First Argument is an id with Megaman Powers! 
-  read_argv(1,temp,5) 
-  new id=str_to_num(temp) 
-  
   remove_task(id)
 } 
 

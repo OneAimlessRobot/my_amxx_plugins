@@ -55,7 +55,8 @@ public plugin_precache()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)&& is_user_connected(id) ) {
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("styropyro_laser_ammo")

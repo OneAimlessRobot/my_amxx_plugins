@@ -36,12 +36,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Change into a T-800", "Get a giant mini gun and you are indistructable", true, "t800_level")
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("t800_init", "t800_init")
-	shRegHeroInit(gHeroName, "t800_init")
-	
-	
 	// DEATH
 	register_event("DeathMsg", "t800_death", "a")
 	
@@ -50,14 +44,7 @@ public plugin_init()
 	
 	// Extra Damage
 	register_event("Damage", "t800_damage", "b", "2!0")
-	register_logevent("t800_round_end", 2, "1=Round_End")
-	register_logevent("t800_round_end", 2, "1&Restart_Round_")
-	
-	
-	// KEY DOWN
-	register_srvcmd("t800_kd", "t800_kd")
-	shRegKeyDown(gHeroName, "t800_kd")
-	
+
 	gmsgScreenFade = get_user_msgid("ScreenFade")
 }
 //----------------------------------------------------------------------------------------------
@@ -68,7 +55,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,"models/player/t800/t800.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public t800_round_end()
+public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 
@@ -83,13 +70,9 @@ public t800_round_end()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public t800_init()
-{
-	// First Argument is an id
-	new temp[128]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	if ( !sh_user_has_hero(id,gHeroID)) {
 		if ( is_user_alive(id) && gT800Timer[id] >= 0 ) {
 			t800_endmode(id)
@@ -201,15 +184,22 @@ public t800_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		t800_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public t800_kd()
+public t800_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
-	
-	// First Argument is an id with NightCrawler Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	if ( !is_user_alive(id) || !is_user_connected(id) ) return PLUGIN_HANDLED
 	

@@ -37,13 +37,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Instant Teleport", "Point to a location and teleport with the blink of an eye!", true, "blink_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("blink_init", "blink_init")
-	shRegHeroInit(gHeroName, "blink_init")
-
-	// KEY DOWN
-	register_srvcmd("blink_kd", "blink_kd")
-	shRegKeyDown(gHeroName, "blink_kd")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -52,13 +45,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public blink_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	sh_client_spawn(id,false)
 }
 //----------------------------------------------------------------------------------------------
@@ -68,16 +57,25 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 	blinkAmount[id] = get_cvar_num("blink_amount")
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		blink_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public blink_kd()
+public blink_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
 
-	// First Argument is an id with Blink Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	new text[128]

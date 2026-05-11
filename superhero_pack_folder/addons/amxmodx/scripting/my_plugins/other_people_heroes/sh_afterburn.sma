@@ -46,11 +46,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Flames From Beyond", "Shoot flames while your dead, from your dead body or while in dead spectate mode.", true, "afterburn_level")
 
-
-	// KEY DOWN
-	register_srvcmd("afterburn_kd", "afterburn_kd")
-	shRegKeyDown(gHeroName, "afterburn_kd")
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -74,16 +69,24 @@ public sh_client_spawn(id)
 		sh_unset_cooldown_flag(id)
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		afterburn_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // Ludwigs flame thrower
-public afterburn_kd()
+public afterburn_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	// This is the original only change from human torch,
 	// this makes sure you are dead to use the power... wow what a rip.

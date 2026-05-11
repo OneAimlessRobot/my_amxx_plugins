@@ -92,20 +92,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("bass_init", "bass_init")
-	shRegHeroInit(gHeroName, "bass_init")
-
-	// KEY DOWN
-	register_srvcmd("bass_kd", "bass_kd")
-	shRegKeyDown(gHeroName, "bass_kd")
-
-	// KEY UP
-	register_srvcmd("bass_ku", "bass_ku")
-	shRegKeyUp(gHeroName, "bass_ku")
-
-
 	// DEATH
 	register_event("DeathMsg", "bass_death", "a")
 
@@ -124,14 +110,8 @@ public plugin_precache()
 	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
-public bass_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-
+public sh_hero_init(id, heroID, mode){
+	
 	// This gets run if they had the power but don't anymore
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		sh_unset_cooldown_flag(id)
@@ -155,16 +135,29 @@ public sh_client_spawn(id)
 		gLaserFired[id] = false
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		bass_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		bass_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public bass_kd()
+public bass_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) ) return
 
@@ -187,13 +180,8 @@ public bass_kd()
 	gLaserFired[id] = true
 }
 //----------------------------------------------------------------------------------------------
-public bass_ku()
+public bass_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
 	remove_task(id)
 
 	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return

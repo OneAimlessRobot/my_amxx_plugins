@@ -64,20 +64,10 @@ public plugin_init()
 								"Neo",
 								"You are now Neo",
 								"You arent Neo anymore")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("neo_init", "neo_init")
-	shRegHeroInit(gHeroName, "neo_init")
+
+
 	register_event("CurWeapon", "make_neo", "be", "1=1", "3>0")
-	
-	// KEY UP
-	register_srvcmd("neo_ku",   "neo_ku")
-	shRegKeyUp(gHeroName, "neo_ku")
-	
-	// KEY DOWN
-	register_srvcmd("neo_kd", "neo_kd")
-	shRegKeyDown(gHeroName, "neo_kd")
-	
+
 	
 	// Let Server know about neo Zero Variables
 	shSetShieldRestrict(gHeroName)
@@ -87,13 +77,9 @@ public plugin_init()
 	shSetMaxSpeed(gHeroName, "neo_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public neo_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-	
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)
@@ -171,15 +157,28 @@ public draw_neo_for(pl, pteam[], vec[3], velocityvec[3])
 	message_end()
 	return PLUGIN_CONTINUE
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		neo_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		neo_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public neo_kd() 
-{ 
-	new temp[6]
-	
-	// First Argument is an id with neo Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public neo_kd(id) 
+{
 	
 	if ( sh_get_cooldown_flag(id))
 	{
@@ -200,16 +199,10 @@ public neo_kd()
 } 
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public neo_ku() 
-{ 
-	new temp[6]
-	
+public neo_ku(id) 
+{
 	// toggle mode - keyup doesn't do anything!
 	if ( get_cvar_num("neo_toggle") ) return PLUGIN_HANDLED
-	
-	// First Argument is an id with neo Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 	
 	stop_fly(id)
 	return PLUGIN_HANDLED 

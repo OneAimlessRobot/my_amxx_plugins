@@ -23,11 +23,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Ligthsaber", "Kill Your Enemies With The Mighty Powers Of The Force!", true, "luke_level" )
 	
 
-	// KEY DOWN
-	register_srvcmd("luke_kd", "luke_kd")
-	shRegKeyDown(gHeroName, "luke_kd")
-	
-
 	if (!cvar_exists("luke_sabertime")) register_cvar("luke_sabertime", "20.0" )
 	if (!cvar_exists("luke_sabermode")) register_cvar("luke_sabermode", "2" ) //1=Only Kills Enemies 2=Kills Enemies And Frienlies
 	if (!cvar_exists("luke_cooldown")) register_cvar("luke_cooldown", "20" )
@@ -48,17 +43,23 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 	return PLUGIN_HANDLED
 }
+
 //----------------------------------------------------------------------------------------------
-// RESPOND TO KEYDOWN
-public luke_kd() 
-{ 
-	new temp[6]
-	
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		luke_kd(id)
+	}
+}
+}
+
+public luke_kd(id) 
+{
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
-	
-	// First Argument is an id with luke Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 
 	if ( sh_get_cooldown_flag(id))
 	{

@@ -33,7 +33,7 @@ new white, gSpriteLightning
 new gRange, gForce
 new bool:gPlayersOnly
 new players[SH_MAXSLOTS], pnum
-
+new gHeroID 
 public plugin_init()
 {
 	// Plugin Info
@@ -48,13 +48,9 @@ public plugin_init()
 	register_cvar("cyclone_playersonly", "1" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Tornado", "You become a cyclone and you sux", true, "cyclone_level" )
+	gHeroID=shCreateHero(gHeroName, "Tornado", "You become a cyclone and you sux", true, "cyclone_level" )
 
 
-
-	// KEY DOWN
-	register_srvcmd("cyclone_kd", "cyclone_kd")
-	shRegKeyDown(gHeroName, "cyclone_kd")
 
 	// LOOP
 	set_task(0.15,"cyclone_loop",0,"",0,"b" )
@@ -78,12 +74,21 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 }
 
-public cyclone_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
+switch(key)
+{
+	case SH_KEYDOWN: {
+		cyclone_kd(id)
+	}
+}
+}
+
+public cyclone_kd(id)
+{
 	if(!is_user_alive(id) )
 		return PLUGIN_HANDLED
 

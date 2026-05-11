@@ -31,19 +31,6 @@
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )
 
-
-	// KEY DOWN
-	register_srvcmd("Storm_kd", "Storm_kd")
-	shRegKeyDown(gHeroName, "Storm_kd")
-	
-	//LOOP
-	//set_task(1.0,"Storm_loop",0,"",0,"b" )
-	//register_srvcmd("Storm_loop", "Storm_loop")
-
-	// INIT
-	register_srvcmd("Storm_init", "Storm_init")
-	shRegHeroInit(gHeroName, "Storm_init")
-
 	// DEATH
 	register_event("DeathMsg", "Storm_death", "a")
  }
@@ -53,14 +40,9 @@
 	lightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 	Fire = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
  }
- //----------------------------------------------------------------------------------------------
- public Storm_init()
- {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if (sh_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
@@ -83,20 +65,31 @@
 	}
 	return PLUGIN_HANDLED
  }
- //----------------------------------------------------------------------------------------------
- public sh_client_spawn(id)
- {
-	sh_unset_cooldown_flag(id)
-	remove_task(id+1337)
-	gStormTimer[id] = -1
-	return PLUGIN_HANDLED
- }
+//----------------------------------------------------------------------------------------------
+public sh_client_spawn(id)
+{
+sh_unset_cooldown_flag(id)
+remove_task(id+1337)
+gStormTimer[id] = -1
+return PLUGIN_HANDLED
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		Storm_kd(id)
+	}
+}
+}
  //----------------------------------------------------------------------------------------------
  // RESPOND TO KEYDOWN
- public Storm_kd() {
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+ public Storm_kd(id) {
+
 	if ( sh_get_cooldown_flag(id))
 	{
 		playSoundDenySelect(id)

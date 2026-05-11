@@ -113,7 +113,8 @@ public Item_PostFrame_Post(iEnt)
 } 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	reset_komak(id)
 	
 	

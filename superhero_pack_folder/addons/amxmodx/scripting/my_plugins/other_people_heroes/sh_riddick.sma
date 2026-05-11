@@ -52,10 +52,6 @@ public plugin_init()
 					dmg_source_name_short_dual_knife,
 					dmg_source_name_long_dual_knife,1)
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("riddick_init", "riddick_init")
-	shRegHeroInit(gHeroName, "riddick_init")
-
 	// HEAL LOOP
 	set_task(1.0,"riddick_loop",0,"",0,"b" )
 
@@ -71,12 +67,9 @@ public plugin_init()
 	gHealPoints = get_cvar_num("riddick_healpoints")
 }
 //----------------------------------------------------------------------------------------------
-public riddick_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	gPlayerMaxHealth[id] = 100
 
 	// Got to slow down a Riddick that lost his powers...

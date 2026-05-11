@@ -157,8 +157,8 @@ stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 // DO NOT EDIT BELOW HERE
 //----------------------------------------------------------------------------------------------
 
-#define SH_VERSION		1.20
-stock const SH_VERSION_STR[] =	"1.2.0.16";
+#define SH_VERSION		1.21
+stock const SH_VERSION_STR[] =	"1.2.1.0b";
 
 // Cooldown task id, required to allow core to stop task
 #define SH_COOLDOWN_TASKID	572910
@@ -177,7 +177,7 @@ stock sh_default_stun_speed_pcvar;
 stock Float:default_stun_speed=SH_DEFAULT_STUN_SPEED;
 
 // Max player slots
-#define SH_MAXSLOTS		32
+const SH_MAXSLOTS = 32 //the holy number
 
 // sh_hero_init(id, heroID, mode) modes
 #define SH_HERO_DROP		0	//Hero is dropped

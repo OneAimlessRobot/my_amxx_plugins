@@ -42,15 +42,6 @@ public plugin_init()
     //THIS LINE MAKES THE HERO SELECTABLE 
     gHeroID=shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 
 
-    //INITIAL ACTIONS 
-    register_srvcmd("frieza_init", "frieza_init") 
-    shRegHeroInit(gHeroName, "frieza_init") 
-
-    //KEY DOWN COMMAND 
-    register_srvcmd("frieza_kd", "frieza_kd") 
-    shRegKeyDown(gHeroName, "frieza_kd") 
-
-
     //THIS EVENT IS TRIGGERED WHEN SOMEONE DIES
     register_event("DeathMsg", "frieza_kill", "a")
 
@@ -66,43 +57,45 @@ public plugin_precache()
     engfunc(EngFunc_PrecacheModel,"models/shmod/frieza_friezadisc.mdl") 
     engfunc(EngFunc_PrecacheSound,"shmod/frieza_destructodisc.wav") 
     flash = engfunc(EngFunc_PrecacheModel,"sprites/muzzleflash2.spr")
-} 
-//--------------------------------------------------------------------------------------- 
-public frieza_init() 
-{ 
-    new temp[6] //To store temporary information 
-
-    //First Argument is the id of the player 
-    read_argv(1,temp,5) //Converts the string to a number 
-    new id = str_to_num(temp) //gets the id of the player
+}
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+    if(heroID!=gHeroID) return
 
     if(sh_user_has_hero(id,gHeroID)){
-	disk[id] = 0
+        disk[id] = 0
         diskTimer[id] = -1 
     }
 
     if(!sh_user_has_hero(id,gHeroID) && diskTimer[id] > 0){ //When a player doesn't have power anymore
         diskTimer[id] = -1
         new Float: fOrigin[3]
-	new origin[3]
-	if(is_valid_ent(disk[id])){
-		entity_get_vector(disk[id], EV_VEC_origin, fOrigin)
-		FVecIVec(fOrigin, origin)
-		decay_effects(disk[id], origin)
-	}
+        new origin[3]
+        if(is_valid_ent(disk[id])){
+            entity_get_vector(disk[id], EV_VEC_origin, fOrigin)
+            FVecIVec(fOrigin, origin)
+            decay_effects(disk[id], origin)
+        }
     } 
 
-} 
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		frieza_kd(id)
+	}
+}
+}
 //--------------------------------------------------------------------------------------- 
-public frieza_kd() 
+public frieza_kd(id) 
 { 
     if(!hasRoundStarted()) return 
-
-    new temp[6] 
-
-    //Get the id of the player 
-    read_argv(1,temp,5) 
-    new id = str_to_num(temp) //the player id
 
     if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return 
 

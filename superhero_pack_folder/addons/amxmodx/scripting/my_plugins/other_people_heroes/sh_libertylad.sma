@@ -58,8 +58,6 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	register_cvar("libertylad_blue", "255")
 	gHeroID=shCreateHero(gHeroName, "Flares", "Shoot Flares on Keydown", true, "libertylad_level")
 
-	register_srvcmd("libertylad_kd", "libertylad_kd")
-	shRegKeyDown(gHeroName, "libertylad_kd")
 	}
 //--------------------------------------------------------------------------------------------------
 // PLUGIN PRECACHES
@@ -78,14 +76,22 @@ public sh_client_spawn(id)
 libertylad_removeflare(flareentity)
 sh_unset_cooldown_flag(id)
 }
-//--------------------------------------------------------------------------------------------------
-// KEYDOWN
-//--------------------------------------------------------------------------------------------------
-	public libertylad_kd()
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		libertylad_kd(id)
+	}
+}
+}
+
+public libertylad_kd(id)
 	{
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 	if (hasRoundStarted())
 	{
 	if (is_user_alive(id) && sh_user_has_hero(id,gHeroID))

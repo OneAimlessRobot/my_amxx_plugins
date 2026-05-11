@@ -29,19 +29,24 @@ public plugin_init() {
 
 	gHeroID=shCreateHero(gHeroName, "Go Speed Racer", "Upgraded Speed and Super Jump!", false, "speed_level");
 
-	register_srvcmd("speed_kd", "speed_kd");
-	shRegKeyDown(gHeroName, "speed_kd");
-
-
 	shSetMaxSpeed(gHeroName, "speed_speed", "[0]");
 }
 
 
-public speed_kd() {
-	new temp[5];
-	read_argv(1, temp, 4);
-	new id = str_to_num(temp);
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
 
+switch(key)
+{
+	case SH_KEYDOWN: {
+		speed_kd(id)
+	}
+}
+}
+public speed_kd(id) {
+	
 	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
 	if(!gCanJump[id]) { playSoundDenySelect(id); client_print(id, print_chat, "[SH](Speed Racer) You can only Super-Jump once per round!"); return; }
 

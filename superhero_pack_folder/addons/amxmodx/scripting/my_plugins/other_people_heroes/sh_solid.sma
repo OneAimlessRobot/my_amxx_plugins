@@ -46,35 +46,13 @@ public plugin_init()
 								"",
 								"",
 								"items/suitchargeno1.wav")
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_logevent("round_start", 2, "1=Round_Start")
+								
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "solid_damage", "b", "2!0")
-
-	// INIT
-	register_srvcmd("solid_init", "solid_init")
-	shRegHeroInit(gHeroName, "solid_init")
 
 	// LEVELS
 	register_srvcmd("solid_levels", "solid_levels")
 	shRegLevels(gHeroName, "solid_levels")
-
-	// KEYDOWN
-	register_srvcmd("solid_kd", "solid_kd")
-	shRegKeyDown(gHeroName, "solid_kd")
-
-}
-//----------------------------------------------------------------------------------------------
-public solid_init()
-{
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-	if(!is_user_connected(id) || !sh_is_active()) return
-
 
 }
 //----------------------------------------------------------------------------------------------
@@ -137,7 +115,7 @@ public setSocom(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public round_start()
+public sh_round_start()
 {
 	if(!sh_is_active()) return
 
@@ -185,14 +163,22 @@ public stealthVisible(id)
 {
 	set_user_rendering(id)
 }
-//----------------------------------------------------------------------------------------------
-public solid_kd()
-{
 
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		solid_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public solid_kd(id)
+{
 
 	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 

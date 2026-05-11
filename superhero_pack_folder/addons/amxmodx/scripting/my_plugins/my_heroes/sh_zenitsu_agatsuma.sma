@@ -74,8 +74,8 @@ public sh_client_spawn(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
-	
+	if(heroID!=gHeroID) return
+
 	UnSet_BitVar(gChargeModeEngagedMask,id)
 }
 

@@ -38,17 +38,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Total Darkness", "Make everything Pitch Black. Get Riddick's sight.", true, "pitch_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("pitch_init", "pitch_init")
-	shRegHeroInit(gHeroName, "pitch_init")
-
-	// KEY DOWN
-	register_srvcmd("pitch_kd", "pitch_kd")
-	shRegKeyDown(gHeroName, "pitch_kd")
 
 	register_event("DeathMsg", "pitch_death", "a")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 
 	set_task(1.0, "pitch_loop", 0, "", 0, "b")
 
@@ -58,12 +49,8 @@ public plugin_init()
 	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
-public pitch_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	PitchTimer[id] = -1;
 	sh_unset_cooldown_flag(id)
@@ -84,12 +71,20 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, "items/nvg_off.wav" )
 }
 //----------------------------------------------------------------------------------------------
-public pitch_kd()
+public sh_hero_key(id, heroID, key)
 {
-	// First Argument is an id with Pitch Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		pitch_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public pitch_kd(id)
+{
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
@@ -116,7 +111,7 @@ public pitch_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	FirstSpawn = true
 }

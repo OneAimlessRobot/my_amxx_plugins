@@ -66,11 +66,6 @@ public plugin_init()
 	custom_dmg_id_ninja_m4=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_ninja_m4,dmg_source_name_long_ninja_m4,0)
 	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("Haloune_init", "Haloune_init")
-	shRegHeroInit(HeroName, "Haloune_init")
-
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "Haloune_damage", "b", "2!0")
 
@@ -82,12 +77,8 @@ public plugin_init()
 	shSetMaxSpeed(HeroName, "Haloune_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public Haloune_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	// Reset thier shield restrict status
 	// Shield restrict MUST be before weapons are given out

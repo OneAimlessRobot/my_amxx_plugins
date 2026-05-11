@@ -39,23 +39,15 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Caffeine and Sugar", "Now you run Fast and have More HP", false, "cola_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("cola_init", "cola_init")
-	shRegHeroInit(HeroName, "cola_init")
 
 	// Let Server know about Cola Lover's max speed
 	shSetMaxSpeed(HeroName, "cola_speed", "[0]")
 	shSetMaxHealth(HeroName, "cola_health")
 }
 //----------------------------------------------------------------------------------------------
-public cola_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if(!sh_user_has_hero(id,gHeroID))
 	{
 		// This gets run if they had the power but don't anymore

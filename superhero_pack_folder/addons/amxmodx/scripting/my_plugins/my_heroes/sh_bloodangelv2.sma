@@ -96,6 +96,7 @@ public haveable_check(id){
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	
 	HasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 

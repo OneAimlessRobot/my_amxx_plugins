@@ -31,11 +31,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Kenshin Sword", "Extra Knife Damage, Extra Knife Speed", false, "kenshin_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("kenshin_init", "kenshin_init")
-	shRegHeroInit(g_heroName, "kenshin_init")
-
 	// EXTRA KNIFE DAMAGE
 	register_event("Damage", "kenshin_damage", "b", "2!0")
 
@@ -50,12 +45,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, "models/shmod/kenshin_v_knife.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public kenshin_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

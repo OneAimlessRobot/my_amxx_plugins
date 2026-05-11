@@ -32,10 +32,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Terrorist", "Plant anywhere you want + free AK", false, "terrorist_level" )
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("terrorist_init", "terrorist_init")
-	shRegHeroInit(gHeroName, "terrorist_init")
-	
 	register_event("CurWeapon","changeWeapon","be","1=1")
 	register_event("TextMsg", "game_restart", "a", "1=4", "2&#Game_C", "2&#Game_w")
 	register_event("SendAudio", "round_end", "a", "2=%!MRAD_terwin", "2=%!MRAD_ctwin", "2=%!MRAD_rounddraw")
@@ -46,12 +42,8 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public terrorist_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if (!is_user_connected(id)) return
 

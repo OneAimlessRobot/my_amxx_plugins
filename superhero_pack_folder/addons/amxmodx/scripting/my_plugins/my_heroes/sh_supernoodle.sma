@@ -82,7 +82,8 @@ public plugin_init()
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 			SuperNoodle_weapons(id)

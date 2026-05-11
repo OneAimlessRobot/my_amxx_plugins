@@ -44,21 +44,9 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Fly", "You are now Static Shock", true, "shock_level" )
 
-
-	// KEY UP
-	register_srvcmd("shock_ku",   "shock_ku")
-	shRegKeyUp(gHeroName, "shock_ku")
-
-	// KEY DOWN
-	register_srvcmd("shock_kd", "shock_kd")
-	shRegKeyDown(gHeroName, "shock_kd")
-
 	// DEATH
 	register_event("DeathMsg", "shock_death", "a")
 
-	// INIT
-	register_srvcmd("shock_init", "shock_init")
-	shRegHeroInit(gHeroName, "shock_init")
 
 	//Waits 4 seconds then loads cvars into variables
 	set_task(4.0,"loadCVARS")
@@ -95,13 +83,8 @@ public jetPackFireEffect(origin[3])
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
-public shock_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( sh_user_has_hero(id,gHeroID)) {
 		remove_task(id+36485)
@@ -185,15 +168,28 @@ public shock_loop(id)
 	}
 	return PLUGIN_CONTINUE
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		shock_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		shock_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public shock_kd()
+public shock_kd(id)
 {
-
-	// First Argument is an id with shock Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 
 	if ( !hasRoundStarted() || !is_user_alive(id))
 	{
@@ -223,12 +219,8 @@ public shock_death(id)
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public shock_ku()
+public shock_ku(id)
 {
-	// First Argument is an id with Ironman Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	
 	if (g_jetPackRunning[id] != 1) return
 

@@ -58,15 +58,6 @@ public plugin_init()
 	// MAKE A TRAIL OF THE Laser
 	register_event("CurWeapon","make_tracer", "be", "1=1", "3>0")   
 	
-	// INIT
-	shRegHeroInit(gHeroName, "pred_init")  
-	register_srvcmd("pred_init", "pred_init")
-	
-	// KEY DOWN
-	register_srvcmd("pred_kd", "pred_kd")
-	shRegKeyDown(gHeroName, "pred_kd")
-	register_srvcmd("pred_ku", "pred_ku")
-	shRegKeyUp(gHeroName, "pred_ku")
 	
 	// Laser
 	register_cvar("pred_laser_ammo", "1")  // total # of shots...
@@ -101,13 +92,10 @@ public plugin_precache()
 	return PLUGIN_CONTINUE 
 }
 
-public pred_init()
-{
-	new temp[128]
-	// First Argument is an id
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	// Got to remove the powers if he is not Predator
 	if ( !sh_user_has_hero(id,gHeroID))
 		uninvis(id)
@@ -142,15 +130,28 @@ public sh_client_spawn(id)
 	}
 }
 
-public pred_kd() 
-{ 
-	new temp[6] 
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		pred_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		pred_ku(id)
+	}
+}
+}
+public pred_kd(id) 
+{
 	
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED 
-	
-	// First Argument is an id with Pred Powers! 
-	read_argv(1,temp,5) 
-	new id=str_to_num(temp) 
+
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED 
 	
 	// Remember this weapon...
@@ -174,13 +175,8 @@ public predFire(parm[])
 }
 
 //----------------------------------------------------------------------------------------------
-public pred_ku()
+public pred_ku(id)
 {
-	new temp[6] 
-	
-	// First Argument is an id with Predator Powers! 
-	read_argv(1,temp,5) 
-	new id=str_to_num(temp) 
 	
 	remove_task(id)
 	

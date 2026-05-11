@@ -99,7 +99,8 @@ public plugin_init()
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")

@@ -107,7 +107,8 @@ public sh_client_spawn(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 
 		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)

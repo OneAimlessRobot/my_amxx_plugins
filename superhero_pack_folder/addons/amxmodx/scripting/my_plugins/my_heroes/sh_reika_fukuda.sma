@@ -54,9 +54,6 @@ public plugin_init()
 
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 
-    register_srvcmd("reika_kd", "reika_kd")
-    shRegKeyDown(gHeroName, "reika_kd")
-
     register_forward(FM_CmdStart, "reika_parry_switch_cmdstart_hook");
 
     REIKA_PARRY_TURN_OFF_DELAY_TASKID=allocate_typed_task_id(player_task)
@@ -264,7 +261,8 @@ public loadCVARS()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+    if(heroID!=gHeroID) return
+
     unparry_user(id)
 
 }

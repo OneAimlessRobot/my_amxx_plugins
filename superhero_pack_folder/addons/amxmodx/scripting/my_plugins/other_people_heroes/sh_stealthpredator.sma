@@ -40,20 +40,7 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Speed/Revive/Heal/Invisibility/No Footsteps", "Hold Keydown to go Invisible and No Footsteps ", true, "stealth_level")
-
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("stealth_init", "stealth_init")
-	shRegHeroInit(gHeroName, "stealth_init")
-
-	// Key Down
-	register_srvcmd("stealth_kd", "stealth_kd")
-	shRegKeyDown(gHeroName, "stealth_kd")
-
-	// Key Up
-	register_srvcmd("stealth_ku", "stealth_ku")
-	shRegKeyUp(gHeroName, "stealth_ku")
-
+	
 	// Death
 	register_event("DeathMsg", "stealth_death", "a")
 
@@ -70,12 +57,8 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public stealth_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	//This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ){
@@ -109,16 +92,29 @@ public sh_client_spawn(id)
 	set_user_rendering(id)
 	set_user_footsteps(id, 0)
 }
+
 //----------------------------------------------------------------------------------------------
-public stealth_kd()
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		stealth_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		stealth_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public stealth_kd(id)
 {
 	if ( !hasRoundStarted() )
 		return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
 	// Remember this weapon...
 	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
@@ -142,14 +138,9 @@ public stealth_kd()
 
 }
 //-------------------------------------------------------------------------------------------------------
-public stealth_ku()
+public stealth_ku(id)
 {
 	if ( !sh_is_inround() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_connected(id) ) return
 

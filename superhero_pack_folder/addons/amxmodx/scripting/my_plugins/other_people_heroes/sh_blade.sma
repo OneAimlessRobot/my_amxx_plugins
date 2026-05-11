@@ -98,11 +98,6 @@ public plugin_init()
 			// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 			gHeroID=shCreateHero(HeroName, "Silver Knife & Bullets", "Burn Vampires with your KNIFE or Deal Extra Burning Damage with your MAC10 or USP", false, "blade_level")
 
-			// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-			// INIT
-			register_srvcmd("blade_init", "blade_init")
-			shRegHeroInit(HeroName, "blade_init")
-
 			register_event("CurWeapon", "weapon_change", "be", "1=1")
 			register_event("Damage", "blade_damage", "b", "2!0")
 
@@ -125,14 +120,9 @@ public plugin_precache()
 	#endif
 }
 //----------------------------------------------------------------------------------------------
-public blade_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 #if GIVE_WEAPONS == 1
 	// Reset thier shield restrict status
 	// Shield restrict MUST be before weapons are given out

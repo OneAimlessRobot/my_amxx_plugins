@@ -29,8 +29,8 @@ new Float:g_wallorigin[SH_MAXSLOTS+1][3]
 new g_lastWeapon[SH_MAXSLOTS+1]
 new gPlayerLevel[SH_MAXSLOTS+1],gHeroLevel,gMaxAlpha,gAlphaByLvlInc,gMinAlpha,gMaxSpeed,gMinSpeed,gSpeedByLvlInc,
 	gLvlsForFullMastery
-new Float:gEscapeSpeed[SH_MAXSLOTS+1]
-new gFastWeapon[SH_MAXSLOTS+1]
+new Float:gEscapeSpeed[SH_MAXSLOTS+1] = {0.0, ...}
+new gFastWeapon[SH_MAXSLOTS+1] = {-1, ...}
 new gHeroID
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -84,9 +84,10 @@ wpn_switch_primitive(id){
 	}
 
 	if(sh_is_freezetime()&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)){
-		
-		shSwitchWeaponID(id,gFastWeapon[id])
-		set_user_maxspeed(id,gEscapeSpeed[id])
+		if(gFastWeapon[id]>0){
+			shSwitchWeaponID(id,gFastWeapon[id])
+			set_user_maxspeed(id,gEscapeSpeed[id])
+		}
 		return
 	}
 	if(g_is_climbing[id]){
@@ -103,7 +104,7 @@ public getFastWeaponAndSpeed(i){
 	}
 	
 	new Float:currSpeed = get_user_maxspeed(i)
-		
+	
 	if(sh_is_inround()&&(currSpeed>gEscapeSpeed[i])){
 		gFastWeapon[i]=get_user_weapon(i);
 		gEscapeSpeed[i]=currSpeed
@@ -177,6 +178,8 @@ public loadCVARS()
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		gPlayerLevel[id]=sh_get_user_lvl(id)
 	}
@@ -251,6 +254,9 @@ public escapist_ku(id)
 	g_is_climbing[id] = 0
 	sh_switch_weapon(id,g_lastWeapon[id])
 
+}
+public client_connect(id){
+	gFastWeapon[id]=-1
 }
 //---------------------------------------------------------------------------------------------- 
 public sh_client_spawn(id)

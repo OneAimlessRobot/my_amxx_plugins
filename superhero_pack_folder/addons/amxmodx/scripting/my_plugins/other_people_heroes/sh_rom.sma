@@ -29,26 +29,16 @@ public plugin_init()
   // LOOP
   register_srvcmd("rom_loop", "rom_loop")
   set_task(1.0,"rom_loop",0,"",0,"b")
-  // KEY DOWN
-  register_srvcmd("rom_kd", "rom_kd")
-  shRegKeyDown(gHeroName, "rom_kd")
-  
-  // INIT
-  register_srvcmd("rom_init", "rom_init")
-  shRegHeroInit(gHeroName, "rom_init")
   
   // DEFAULT THE CVARS
   register_cvar("rom_cooldown", "15" )
   register_cvar("rom_sensetime","20")
 }
 //----------------------------------------------------------------------------------------------
-public rom_init() 
-{ 
-  new temp[6]
-  // First Argument is an id
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-  
+public sh_hero_init(id, heroID, mode){
+  if(heroID!=gHeroID) return
+
+
   if ( !sh_user_has_hero(id,gHeroID) )
   {
     rom_endtrack(id)
@@ -77,15 +67,24 @@ write_short(id)
 message_end()
 gRomTimer[id]=0
 }
+
 //----------------------------------------------------------------------------------------------
-public rom_kd() 
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		rom_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public rom_kd(id) 
 { 
-   new temp[6] 
    if(!hasRoundStarted()) return PLUGIN_HANDLED 
 
-   // First Argument is an id with Carnage Powers! 
-   read_argv(1, temp, 5) 
-   new id = strtonum(temp) 
    if(!is_user_alive(id)) return PLUGIN_HANDLED 
 
    // Let them know they already used their ultimate if they have 

@@ -63,19 +63,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Jet-Boots/Damage", "Rocket Jet Boots, jump and rocket to take off! Heavy Weaponry, Extra Damage for all weapons.", true, "warmachine_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("warmachine_init", "warmachine_init")
-	shRegHeroInit(gHeroName, "warmachine_init")
-
-	// KEY UP
-	register_srvcmd("warmachine_ku", "warmachine_ku")
-	shRegKeyUp(gHeroName, "warmachine_ku")
-
-	// KEY DOWN
-	register_srvcmd("warmachine_kd", "warmachine_kd")
-	shRegKeyDown(gHeroName, "warmachine_kd")
-
 	register_event("DeathMsg", "warmachine_death", "a")
 	register_event("Damage", "warmachine_damage", "b", "2!0")
 
@@ -90,12 +77,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"debris/beamstart11.wav")
 }
 //----------------------------------------------------------------------------------------------
-public warmachine_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	// Clear out any stale tasks
 	remove_task(id)
@@ -134,15 +117,28 @@ public spawnDelay(id)
 {
 	gRegenAllowed[id] = true
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		warmachine_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		warmachine_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public warmachine_kd()
+public warmachine_kd(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
 	if ( !is_user_alive(id) || !hasRoundStarted() ) return
 
 	gJetPackRunning[id] = true
@@ -153,12 +149,8 @@ public warmachine_kd()
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public warmachine_ku()
+public warmachine_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !gJetPackRunning[id] ) return
 

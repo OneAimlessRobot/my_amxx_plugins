@@ -60,11 +60,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "SuperAlien Vision", "Get Alien Vision and Invisibility when using Knife but you can use other weapons", false, "SuperAlien_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("SuperAlien_init", "SuperAlien_init")
-	shRegHeroInit(HeroName, "SuperAlien_init")
-
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("DeathMsg", "SuperAlien_death", "a")
 	register_event("Damage", "SuperAlien_damage", "b", "2!0")
@@ -76,12 +71,8 @@ public plugin_init()
 	MsgSetFOV = get_user_msgid("SetFOV")
 }
 //----------------------------------------------------------------------------------------------
-public SuperAlien_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	new hasPowers=sh_user_has_hero(id,gHeroID)
 	switch(hasPowers)

@@ -77,10 +77,6 @@ public plugin_init()
 	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_long_grenade,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
-	// INIT
-	register_srvcmd("veronika_init", "veronika_init")
-	shRegHeroInit(gHeroName, "veronika_init")
-	
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange","be","1=1")
 	register_event("Damage", "veronika_damage","b","2!0")
@@ -103,13 +99,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public veronika_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out
 	shResetShield(id)

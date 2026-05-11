@@ -35,18 +35,6 @@ public plugin_init()
 	gHeroID=shCreateHero(g_heroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
 
 	register_custom_touchable("player","scorpion_shank",player_vector,1)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("scorpion_init", "scorpion_init")
-	shRegHeroInit(g_heroName, "scorpion_init")
-
-	// KEY UP
-	register_srvcmd("scorpion_ku", "scorpion_ku")
-	shRegKeyUp(g_heroName, "scorpion_ku")
-
-	// KEY DOWN
-	register_srvcmd("scorpion_kd", "scorpion_kd")
-	shRegKeyDown(g_heroName, "scorpion_kd")
 
 
 	// DEATH
@@ -66,12 +54,8 @@ public plugin_precache()
 	g_spriteBldSpray = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 }
 //----------------------------------------------------------------------------------------------
-public scorpion_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( g_hooked[id] ) scorpion_hookOff(id)
 }
@@ -96,25 +80,35 @@ public sh_client_spawn(id)
 		}
 	}
 }
+
 //----------------------------------------------------------------------------------------------
-public scorpion_kd()
+public sh_hero_key(id, heroID, key)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		scorpion_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		scorpion_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public scorpion_kd(id)
+{
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
 
 	scorpion_hookOn(id)
 }
 //----------------------------------------------------------------------------------------------
-public scorpion_ku()
+public scorpion_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	scorpion_hookOff(id)
 }

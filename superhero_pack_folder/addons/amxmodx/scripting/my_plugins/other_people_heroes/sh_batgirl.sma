@@ -48,19 +48,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Bat-Grappling Hook", "Grappling Hook - You now have the Bat-Grapple Hook. Shoot your Hook and automatically be ziplined to the target", true, "batgirl_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("batgirl_init", "batgirl_init")
-	shRegHeroInit(gHeroName, "batgirl_init")
-
-	// KEY UP
-	register_srvcmd("batgirl_ku", "batgirl_ku")
-	shRegKeyUp(gHeroName, "batgirl_ku")
-
-	// KEY DOWN
-	register_srvcmd("batgirl_kd", "batgirl_kd")
-	shRegKeyDown(gHeroName, "batgirl_kd")
-
 	// DEATH
 	register_event("DeathMsg", "batgirl_death", "a")  // Re-uses KeyUp!
 
@@ -74,13 +61,9 @@ public plugin_precache()
 	gSpriteHookLine = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public batgirl_init()
-{
-	new temp[6]
-	// First Argument is an id
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if ( gHooked[id] ) batgirl_hook_off(id)
 }
 //----------------------------------------------------------------------------------------------
@@ -90,13 +73,28 @@ public sh_client_spawn(id)
 
 	if ( gHooked[id] ) batgirl_hook_off(id)
 }
-//----------------------------------------------------------------------------------------------
-public batgirl_kd()
-{
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		batgirl_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		batgirl_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public batgirl_kd(id)
+{
 	if ( gHooked[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() ) return
 
 	if ( pass_aim_test(id) )
@@ -156,11 +154,8 @@ bool:pass_aim_test(id)
 	return true
 }
 //----------------------------------------------------------------------------------------------
-public batgirl_ku()
+public batgirl_ku(id)
 {
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
 	if ( gHooked[id] ) batgirl_hook_off(id)
 }

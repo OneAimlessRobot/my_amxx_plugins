@@ -71,10 +71,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Sig/Aug Auto-shoot", "Auto-shoot and run faster with Sig as T or Aug as CT. Also, see Damage.", false, "hawk_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("hawkeye_init", "hawkeye_init")
-	shRegHeroInit(g_heroName, "hawkeye_init")
 
 	// DAMAGE
 	register_event("Damage", "hawkeye_damage", "b", "2!0", "3=0", "4!0")
@@ -88,12 +84,8 @@ public plugin_init()
 	shSetMaxSpeed(g_heroName, "hawk_speed", "[8][27]")
 }
 //----------------------------------------------------------------------------------------------
-public hawkeye_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( get_cvar_num("hawk_freewpn") ) {

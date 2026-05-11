@@ -36,11 +36,7 @@ public plugin_init()
 								"CTrooper - All systems down...",
 								"items/suitchargeno1.wav")
 	sh_register_superheromod_weapon_model(gHeroID,CSW_P90,Model_V_P90,Model_P_P90)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("masterchief_init", "masterchief_init")
-	shRegHeroInit(HeroName, "masterchief_init")
-
+	
 	// EVENTS
 	register_event("Damage", "masterchief_damage", "b", "2!0")
 
@@ -56,12 +52,8 @@ public plugin_init()
 	shSetShieldRestrict(HeroName)
 }
 //----------------------------------------------------------------------------------------------
-public masterchief_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	shResetShield(id)
 	if(sh_user_has_hero(id,gHeroID))

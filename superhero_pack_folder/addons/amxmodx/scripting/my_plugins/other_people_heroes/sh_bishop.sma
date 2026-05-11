@@ -41,12 +41,7 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Absorb Energy", "Absorb Damage and use it with your weapons! Or release all energy to deal even more damage.", true, "bishop_level")
-
-	// KEY DOWN
-	register_srvcmd("bishop_kd", "bishop_kd")
-	shRegKeyDown(g_heroName, "bishop_kd")
-
-
+	
 	// ABSORB ENERGY!
 	register_event("Damage", "bishop_damage", "b", "2!0")
 
@@ -64,16 +59,24 @@ public sh_client_spawn(id)
 {
 	g_absorbedDamage[id] = 0
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		bishop_kd(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public bishop_kd()
+public bishop_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 

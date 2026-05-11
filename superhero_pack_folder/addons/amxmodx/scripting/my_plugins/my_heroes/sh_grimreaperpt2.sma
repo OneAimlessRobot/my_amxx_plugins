@@ -57,8 +57,9 @@ public _sh_get_death_scythe_wpn_id(iPlugin,iParams){
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
-		reset_greaper2_user(id)	
+	reset_greaper2_user(id)	
 }
 public weaponChange(id)
 {

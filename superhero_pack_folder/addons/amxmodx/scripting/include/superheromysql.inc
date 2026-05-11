@@ -344,7 +344,7 @@ writeData(x)
 	}
 	SQL_FreeHandle(query)
 
-	if ( !is_user_connected(x) || gChangedHeroes[x] ) {
+	if ( !is_user_connected(x) || Get_BitVar(gChangedHeroesMask, x) ) {
 
 		// Remove all saved powers for this user
 		sql[0] = '^0'
@@ -392,9 +392,7 @@ writeData(x)
 		}
 
 		// x can be higher than max slots, however sizeof gChangedHeroes can not be
-		if ( 0 < x < sh_maxplayers()+1) {
-			gChangedHeroes[x] = false
-		}
+		gChangedHeroesMask = 0
 	}
 
 	//Closes the connection if set not to be persistent

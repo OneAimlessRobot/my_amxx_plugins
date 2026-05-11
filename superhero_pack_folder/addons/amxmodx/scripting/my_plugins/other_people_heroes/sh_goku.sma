@@ -107,18 +107,6 @@ public plugin_init()
 
 	register_entity_as_wall_touchable("vexd_goku_power","goku_power_touch")
 	register_custom_touchable("vexd_goku_power","goku_power_touch",player_vector,1)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("goku_init", "goku_init")
-	shRegHeroInit(g_heroName, "goku_init")
-
-	// KEY DOWN
-	register_srvcmd("goku_kd", "goku_kd")
-	shRegKeyDown(g_heroName, "goku_kd")
-
-	// KEY UP
-	register_srvcmd("goku_ku", "goku_ku")
-	shRegKeyUp(g_heroName, "goku_ku")
 
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
@@ -154,13 +142,9 @@ public plugin_precache()
 	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public goku_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+	
 	if ( sh_user_has_hero(id,gHeroID)) {
 		goku_setarmor(id)
 	}
@@ -214,16 +198,29 @@ public goku_setarmor(id)
 		set_user_armor(id, 100)
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		goku_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		goku_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public goku_kd()
+public goku_kd(id)
 {
 	if (!sh_is_inround()) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
@@ -292,14 +289,9 @@ public goku_kd()
 	create_power(id)
 }
 //----------------------------------------------------------------------------------------------
-public goku_ku()
+public goku_ku(id)
 {
 	if ( !sh_is_inround() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 

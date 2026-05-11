@@ -219,7 +219,8 @@ public shinobuDamage(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
@@ -385,6 +386,9 @@ public death()
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
+		return DMG_FWD_PASS
+	}
+	if(sh_clients_are_same_team(victim,attacker)||(victim==attacker)){
 		return DMG_FWD_PASS
 	}
 	if(new_dmg_type==SH_NEW_DMG_DRUG_POISON){

@@ -124,6 +124,7 @@ public haveable_check(id){
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	gHasAcess[id]=sh_user_has_hero(id,gHeroID) 
 	gPlayerMaxHealth[id] = 100

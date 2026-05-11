@@ -105,7 +105,8 @@ public player_prethink_yakui_weapon(id, uc_handle)
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		init_yakui(id)
 		

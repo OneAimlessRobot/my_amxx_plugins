@@ -89,11 +89,7 @@ public plugin_init()
 	custom_dmg_id_super_knife=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_super_knife,
 					dmg_source_name_long_super_knife,1)
-	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("chucky_init", "chucky_init")
-	shRegHeroInit(HeroName, "chucky_init")
+
 
 	// EVENTS
 	#if USE_MODEL
@@ -101,11 +97,6 @@ public plugin_init()
 	#endif
 	register_event("Damage", "chucky_damage", "b", "2!0")
 	register_event("DeathMsg", "chucky_death", "a")
-
-	// LOG EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 
 	// Let Server know about Chucky's Variables
 	shSetMaxSpeed(HeroName, "chucky_knifespeed", "[29]")
@@ -122,13 +113,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
-public chucky_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if(sh_user_has_hero(id,gHeroID))
 	{
 		enable_chucky(id)
@@ -338,12 +325,12 @@ public bomb_planted(id)
 	BombPlanted = true
 }
 //----------------------------------------------------------------------------------------------
-public round_start()
+public sh_round_start()
 {
 	BombPlanted = false
 }
 //----------------------------------------------------------------------------------------------
-public round_end()
+public sh_round_end()
 {
 	BombPlanted = false
 

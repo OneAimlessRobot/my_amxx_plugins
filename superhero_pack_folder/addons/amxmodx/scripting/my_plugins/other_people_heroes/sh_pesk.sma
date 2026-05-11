@@ -22,9 +22,6 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Pesk", "Shoot people when your dead", true, "pesk_level" )
 
-
-	register_srvcmd("pesk_kd",   "pesk_kd")
-	shRegKeyDown(gHeroName, "pesk_kd")
 	register_srvcmd("pesk_loop", "pesk_loop")
 	set_task(1.0,"pesk_loop",0,"",0,"b" )
 }
@@ -36,11 +33,20 @@ public plugin_precache()
 	Fire = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
 }
 
-public pesk_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		pesk_kd(id)
+	}
+}
+}
+public pesk_kd(id)
+{
 	if ( is_user_alive(id) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id))
 	{

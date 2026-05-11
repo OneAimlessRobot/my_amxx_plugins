@@ -34,7 +34,6 @@ public plugin_init()
 	register_cvar("leviathan_level", "5")
 
 	gHeroID=shCreateHero(gHeroName, "Flood (ADMIN LEVEL A)", "Flood the map when you are on low health; then, swim fast and shoot hard; tap forward to swim", false, "leviathan_level") 
-	register_srvcmd("leviathan_init", "leviathan_init") 
 	register_event("CurWeapon", "BulletEffect", "be", "3>0") 
 
 	register_cvar("leviathan_gravity", "200")
@@ -45,7 +44,6 @@ public plugin_init()
 	register_cvar("leviathan_underwaterdmg", "1.5")
 	svgravity=get_cvar_num("sv_gravity")
 
-	shRegHeroInit(gHeroName, "leviathan_init") 
 	register_srvcmd("leviathan_maxhealth", "leviathan_maxhealth")
 	shRegMaxHealth(gHeroName, "leviathan_maxhealth" )
 	register_event("Damage", "leviathan_damage", "b", "2!0") 
@@ -62,12 +60,9 @@ public client_connect(id)
 	Swim[id] = false
 }
 
-public leviathan_init() 
-{ 
-	new temp[128] 
-	// First Argument is an id 
-	read_argv(1, temp, 5) 
-	new id = str_to_num(temp) 
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	check[id] = 0
 	Swim[id] = false

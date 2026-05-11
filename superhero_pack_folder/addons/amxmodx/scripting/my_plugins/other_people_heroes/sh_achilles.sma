@@ -45,20 +45,11 @@ public plugin_init()
    // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS) INIT 
    register_event("Damage", "achilles_damage", "b","2!0")
 
-   // INIT
-   register_srvcmd("achilles_init", "achilles_init") 
-   shRegHeroInit(gHeroName, "achilles_init") 
-} 
+}
 //----------------------------------------------------------------------------------------------
-public achilles_init() 
-{ 
-	new temp[6] 
-	// First Argument is an id 
-	read_argv(1, temp, 5) 
-	new id=str_to_num(temp) 
-
-
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if (is_user_connected(id))
 		if (sh_user_has_hero(id,gHeroID)) {
 			//Since they have the power make it so that they only have left leg hitzone active (THIS DOES NOT INCLUDE KNIVES OR NADES)

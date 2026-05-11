@@ -111,7 +111,8 @@ public adriano_weapons(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 		adriano_weapons(id)
@@ -314,21 +315,6 @@ public weaponChange(id)
 	g_prevWeapon[id] = wpnid
 	return PLUGIN_CONTINUE
 
-}
-
-public adriano_kd()
-{
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
-	
-	heal_teamate(id,id)
-	
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

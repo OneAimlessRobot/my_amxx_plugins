@@ -258,13 +258,20 @@ public reset_leyla(id){
 	}
 	
 }
-public leyla_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	
-	// First Argument is an id with colussus Powers!
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		leyla_kd(id)
+	}
+}
+}
+public leyla_kd(id)
+{
 	
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	new i

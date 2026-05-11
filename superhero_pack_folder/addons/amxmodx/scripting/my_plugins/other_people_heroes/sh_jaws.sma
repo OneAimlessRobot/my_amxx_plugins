@@ -17,6 +17,7 @@ new Target = 0
 new GoreHP = 200
 new Float:CircularMotion = 0.0
 new Float:LastFind, Float:Hunting
+new gHeroID
 
 #if defined DEBUG
 new TestEnt[5] = 0
@@ -35,12 +36,7 @@ public plugin_init() {
 	register_cvar("jaws_range", "2000")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	shCreateHero(gHeroName, "Summon Jaws", "Jaws will hunt down and eat your enemies", true, "jaws_level")
-
-
-	// KEY DOWN
-	register_srvcmd("jaws_kd", "jaws_kd")
-	shRegKeyDown(gHeroName, "jaws_kd")
+	gHeroID=shCreateHero(gHeroName, "Summon Jaws", "Jaws will hunt down and eat your enemies", true, "jaws_level")
 	
 	
 #if defined DEBUG
@@ -63,11 +59,20 @@ public sh_client_spawn(id)
 	jaws_destroy()
 }
 
-public jaws_kd()
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		jaws_kd(id)
+	}
+}
+}
+public jaws_kd(id)
+{
 
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED

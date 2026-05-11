@@ -104,7 +104,8 @@ public _teliko_dec_num_chaffs(iPlugin,iParams){
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	reset_teliko_user(id)
 	if(sh_user_has_hero(id, gHeroID)){
 		

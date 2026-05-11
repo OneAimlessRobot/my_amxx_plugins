@@ -67,21 +67,14 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Blood Blood", "Load up your opponent with weapons when you shoot them.", false, "blueblood_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	register_srvcmd("blueblood_init", "blueblood_init")
-	shRegHeroInit(gHeroName, "blueblood_init")
 
 	register_event("Damage", "blueblood_damage", "b", "2!0")
 }
 
-public blueblood_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	gHasWeapons[id] = false
 }
 

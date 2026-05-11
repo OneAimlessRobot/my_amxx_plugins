@@ -409,7 +409,7 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
-new gPlayerHasPowerTable[SH_MAXHEROS+1]      // List of all Powers - Slot 0 is the superpower count
+new gPlayerHasPowerTable[SH_MAXHEROS+1] = {0, ...}      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gNumPlayerCores[SH_MAXSLOTS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
@@ -426,22 +426,32 @@ new gPlayerLevel[SH_MAXSLOTS+1]
 new gPlayerXP[SH_MAXSLOTS+1]
 new gXPLevel[SH_MAXLEVELS+1]
 new gXPGiven[SH_MAXLEVELS+1]
-new bool:gNewRoundSpawn[SH_MAXSLOTS+1]
-new bool:gIsPowerBanned[SH_MAXSLOTS+1]
-new bool:gInMenu[SH_MAXSLOTS+1]
-new bool:gReadXPNextRound[SH_MAXSLOTS+1]
-new bool:gFirstRound[SH_MAXSLOTS+1]
-new bool:gShieldRestrict[SH_MAXSLOTS+1]
-new bool:gBlockMercyXp[SH_MAXSLOTS+1]
 new Float:gReloadTime[SH_MAXSLOTS+1]
 new gInPowerDown[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]
-new bool:gChangedHeroes[SH_MAXSLOTS+1]
 new gMaxHealth[SH_MAXSLOTS+1]
 new gMaxArmor[SH_MAXSLOTS+1]
-new bool:gPlayerPutInServer[SH_MAXSLOTS+1]
+//new bool:gPlayerPutInServer[SH_MAXSLOTS+1]
+//new bool:gNewRoundSpawn[SH_MAXSLOTS+1]
+//new bool:gIsPowerBanned[SH_MAXSLOTS+1]
+//new bool:gInMenu[SH_MAXSLOTS+1]
+//new bool:gReadXPNextRound[SH_MAXSLOTS+1]
+//new bool:gFirstRound[SH_MAXSLOTS+1]
+//new bool:gShieldRestrict[SH_MAXSLOTS+1]
+//new bool:gBlockMercyXp[SH_MAXSLOTS+1]
+//new bool:gChangedHeroes[SH_MAXSLOTS+1]
+//new bool:gHasAnubis[SH_MAXSLOTS+1]
+new gPlayerPutInServerMask = 0
+new gNewRoundSpawnMask = 0
+new gIsPowerBannedMask = 0
+new gInMenuMask = 0
+new gReadXPNextRoundMask = 0
+new gFirstRoundMask = 0
+new gShieldRestrictMask = 0
+new gBlockMercyXpMask = 0
+new gChangedHeroesMask = 0
+new gHasAnubisMask = 0
+
 new gXpBounsVIP
-//new Float:gLastKeydown[SH_MAXSLOTS+1]
-new bool:gHasAnubis[SH_MAXSLOTS+1]
 
 
 // Other miscellaneous global variables
@@ -1227,7 +1237,7 @@ chatMessage(id, heroIndex = -1, const msg[], any:...)
 	if ( !id ) {
 		new i
 		while ( i < gServersMaxPlayers ) {
-			if ( gPlayerPutInServer[++i] ) {
+			if ( Get_BitVar(gPlayerPutInServerMask, ++i) ) {
 				index = i
 				break
 			}
@@ -1239,7 +1249,7 @@ chatMessage(id, heroIndex = -1, const msg[], any:...)
 	}
 	else {
 		// Make sure this id is actually in the server
-		if ( !gPlayerPutInServer[id] ) return
+		if ( !Get_BitVar(gPlayerPutInServerMask, id) ) return
 
 		msgType = MSG_ONE_UNRELIABLE
 		index = id
@@ -1622,15 +1632,17 @@ initHero(id, heroIndex, mode)
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
 
-	if ( equal(gAnubisHero, "Anubis") ) gHasAnubis[id] = mode ? true : false;
-	
+	if ( equal(gAnubisHero, "Anubis") ){
+		Assign_BitVar(gHasAnubisMask,id, mode);
+	}
+
 	Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode)
 
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
 		//If this is called by an added hero they must be restricted
 		if ( mode == SH_HERO_ADD ) {
-			gShieldRestrict[id] = true
+			Assign_BitVar(gShieldRestrictMask,id, true_for_macro);
 		}
 		else {
 			new heroIndex, bool:restricted = false
@@ -1645,11 +1657,11 @@ initHero(id, heroIndex, mode)
 					break
 				}
 			}
-			gShieldRestrict[id] = restricted
+			Assign_BitVar(gShieldRestrictMask,id, restricted);
 		}
 
 		//If they are alive make sure they don't have a shield already
-		if ( gShieldRestrict[id] && is_user_alive(id) ) {
+		if ( Get_BitVar(gShieldRestrictMask, id) && is_user_alive(id) ) {
 			if ( cs_get_user_shield(id) ) {
 				engclient_cmd(id, "drop", "weapon_shield")
 			}
@@ -1703,7 +1715,7 @@ initHero(id, heroIndex, mode)
 	}
 #endif
 
-	gChangedHeroes[id] = true
+	Assign_BitVar(gChangedHeroesMask, id, true_for_macro);
 }
 //----------------------------------------------------------------------------------------------
 //native sh_set_hero_hpap(heroID, pcvarHealth, pcvarArmor)
@@ -1935,14 +1947,14 @@ getBindNumber(id, heroIndex)
 menuSuperPowers(id, menuOffset)
 {
 	// Don't show menu if mod off or they're not connected
-	if ( !get_pcvar_num(sv_superheros) || !is_user_connected(id) || gReadXPNextRound[id] ) return PLUGIN_HANDLED
+	if ( !get_pcvar_num(sv_superheros) || !is_user_connected(id) || Get_BitVar(gReadXPNextRoundMask, id) ) return PLUGIN_HANDLED;
 
-	gInMenu[id] = false
+	Assign_BitVar(gInMenuMask, id, false_for_macro);
 	gPlayerMenuOffset[id] = 0
 
 	new bool:isBot = is_user_bot(id) ? true : false
 
-	if ( gIsPowerBanned[id] ) {
+	if ( Get_BitVar(gIsPowerBannedMask, id)) {
 		if ( !isBot ) client_print(id, print_center, "You are not allowed to have powers")
 		return PLUGIN_HANDLED // Just don't show the gui menu
 	}
@@ -2085,9 +2097,9 @@ menuSuperPowers(id, menuOffset)
 	add(message, charsmax(message), "\w^n0. Cancel")
 	keys |= MENU_KEY_0
 
-	if ( (count > 0 && enabled > 0) || gInMenu[id] ) {
+	if ( (count > 0 && enabled > 0) || Get_BitVar(gInMenuMask, id)) {
 		debugMsg(id, 8, "Displaying Menu - offset: %d - count: %d - enabled: %d", menuOffset, count, enabled)
-		gInMenu[id] = true
+		Assign_BitVar(gInMenuMask, id, true_for_macro);
 		show_menu(id, keys, message)
 		
 	}
@@ -2097,11 +2109,11 @@ menuSuperPowers(id, menuOffset)
 //----------------------------------------------------------------------------------------------
 public selectedSuperPower(id, key)
 {
-	if ( !gInMenu[id] || !get_pcvar_num(sv_superheros) ) return PLUGIN_HANDLED
+	if ( !Get_BitVar(gInMenuMask, id) || !get_pcvar_num(sv_superheros) ) return PLUGIN_HANDLED;
 
-	gInMenu[id] = false
+	Assign_BitVar(gInMenuMask, id, false_for_macro);
 
-	if ( gIsPowerBanned[id] ) {
+	if ( Get_BitVar(gIsPowerBannedMask, id)) {
 		client_print(id, print_center, "You are not allowed to have powers")
 		return PLUGIN_HANDLED
 	}
@@ -2270,8 +2282,9 @@ public ham_PlayerSpawn_Post(id)
 	if ( cs_get_user_team(id) == CS_TEAM_UNASSIGNED ) return HAM_IGNORED
 
 	//Prevents non-saved XP servers from having loading issues
-	if ( !gLongTermXP ) gReadXPNextRound[id] = false
-
+	if ( !gLongTermXP ){
+		Assign_BitVar(gReadXPNextRoundMask, id, false_for_macro);
+	}
 	//Cancel the ultimate timer task on any new spawn
 	//It is up to the hero to set the variable back to false
 	remove_task(id+SH_COOLDOWN_TASKID, 1)		// 1 = look outside this plugin
@@ -2286,7 +2299,7 @@ public ham_PlayerSpawn_Post(id)
 	getMaxArmor(id)
 
 	//Prevents this whole function from being called if its not a new round
-	if ( !gNewRoundSpawn[id] ) {
+	if ( !Get_BitVar(gNewRoundSpawnMask, id) ) {
 		displayPowers(id, true)
 
 		//Let heroes know someone just spawned mid-round
@@ -2298,15 +2311,15 @@ public ham_PlayerSpawn_Post(id)
 	if ( !gBetweenRounds ) setSpeedPowers(id, false)
 
 	// Read the XP!
-	if ( gFirstRound[id] ) {
-		gFirstRound[id] = false
+	if ( Get_BitVar(gFirstRoundMask,id) ) {
+		Assign_BitVar(gFirstRoundMask, id, false_for_macro)
 	}
-	else if ( gReadXPNextRound[id] ) {
+	else if (  Get_BitVar(gReadXPNextRoundMask, id) ) {
 		readXP(id)
 	}
 
 	//MercyXP system
-	if ( gGiveMercyXP && !gReadXPNextRound[id] && !gBlockMercyXp[id] ) {
+	if ( gGiveMercyXP && !Get_BitVar(gReadXPNextRoundMask, id)&& !Get_BitVar(gBlockMercyXpMask, id) ) {
 		new mercyxpmode = get_pcvar_num(sh_mercyxpmode)
 
 		if ( mercyxpmode != 0 && gPlayerStartXP[id] >= gPlayerXP[id] && get_playersnum() > get_pcvar_num(sh_minplrsbhxp) ) {
@@ -2333,15 +2346,15 @@ public ham_PlayerSpawn_Post(id)
 	displayPowers(id, true)
 
 	//Shows menu if the person is not in it already, always show for bots to choose powers
-	if ( !gInMenu[id] && (is_user_bot(id) || !(gPlayerFlags[id] & SH_FLAG_NOAUTOMENU)) ) {
+	if ( !Get_BitVar(gInMenuMask, id) && (is_user_bot(id) || !(gPlayerFlags[id] & SH_FLAG_NOAUTOMENU)) ) {
 		menuSuperPowers(id, gPlayerMenuOffset[id])
 	}
 
 	//Prevents resetHUD from getting called twice in a round
-	gNewRoundSpawn[id] = false
+	Assign_BitVar(gNewRoundSpawnMask,id, false_for_macro);
 
 	//Reset this check for the mercyxp system
-	gBlockMercyXp[id] = false
+	Assign_BitVar(gBlockMercyXpMask, id, false_for_macro);
 
 	//Prevents People from going invisible randomly
 	set_user_rendering(id)
@@ -2419,7 +2432,8 @@ public round_End()
 	new CsTeams:idTeam
 
 	for (new id = 1; id <= gServersMaxPlayers; id++) {
-		gNewRoundSpawn[id] = true
+
+		Assign_BitVar(gNewRoundSpawnMask,id,true_for_macro)
 
 		if ( !is_user_connected(id) ) continue
 
@@ -2427,13 +2441,13 @@ public round_End()
 
 		if ( idTeam == CS_TEAM_UNASSIGNED ) continue
 
-		gFirstRound[id] = false
+		Assign_BitVar(gFirstRoundMask, id, false_for_macro)
 
 		// Player must be on a team beyond this point
 		// Find if anyone needs mercy xp to avoid the more expenisve check during spawn
 		if ( idTeam == CS_TEAM_SPECTATOR ) continue
 
-		if ( !gBlockMercyXp[id] ) {
+		if ( !Get_BitVar(gBlockMercyXpMask, id) ) {
 			gGiveMercyXP = true
 		}
 	}
@@ -2622,7 +2636,7 @@ public _sh_reset_max_speed()
 setSpeedPowers(id, bool:checkDefault)
 {
 	if ( !get_pcvar_num(sv_superheros) ) return
-	if ( !is_user_alive(id) || gRoundFreeze || gReadXPNextRound[id] ) return
+	if ( !is_user_alive(id) || gRoundFreeze || Get_BitVar(gReadXPNextRoundMask, id) ) return
 
 	if ( gPlayerStunTimer[id] > 0 ) {
 		new Float:stunSpeed = gPlayerStunSpeed[id]
@@ -2666,7 +2680,7 @@ setSpeedPowers(id, bool:checkDefault)
 setHealthPowers(id)
 {
 	if ( !get_pcvar_num(sv_superheros) ) return
-	if ( !is_user_alive(id) || gReadXPNextRound[id] ) return
+	if ( !is_user_alive(id) || Get_BitVar(gReadXPNextRoundMask, id)) return
 
 	new oldHealth = get_user_health(id)
 	new newHealth = getMaxHealth(id)
@@ -2695,7 +2709,7 @@ public msg_Health(msgid, dest, id)
 setArmorPowers(id)
 {
 	if ( !get_pcvar_num(sv_superheros) ) return
-	if ( !is_user_alive(id) || gReadXPNextRound[id] ) return
+	if ( !is_user_alive(id) || Get_BitVar(gReadXPNextRoundMask, id)) return
 
 	new CsArmorType:armorType
 	new oldArmor = cs_get_user_armor(id, armorType)
@@ -2738,7 +2752,7 @@ resetMinGravity(id)
 setGravityPowers(id)
 {
 	if ( !get_pcvar_num(sv_superheros) ) return
-	if ( !is_user_alive(id) || gRoundFreeze || gReadXPNextRound[id] ) return
+	if ( !is_user_alive(id) || gRoundFreeze || Get_BitVar(gReadXPNextRoundMask, id)) return
 
 	new Float:oldGravity = 1.0
 	new Float:newGravity = getMinGravity(id)
@@ -2779,12 +2793,12 @@ displayPowers(id, bool:setThePowers)
 	if ( !get_pcvar_num(sv_superheros) || !is_user_connected(id) ) return
 
 	// To avoid recursion - displayPowers will call clearPowers<->Display Power Loop if we don't check for player powers
-	if ( gIsPowerBanned[id] ) {
+	if ( Get_BitVar(gIsPowerBannedMask, id)) {
 		clearAllPowers(id, false) // Avoids Recursion with false
 		writeStatusMessage(id, "[SH] You are banned from using powers")
 		return
 	}
-	else if ( gReadXPNextRound[id] ) {
+	else if ( Get_BitVar(gReadXPNextRoundMask, id) ) {
 		debugMsg(id, 5, "XP will load next round")
 		writeStatusMessage(id, "[SH] Your XP will be loaded next round")
 		return
@@ -2863,7 +2877,7 @@ displayPowers(id, bool:setThePowers)
 	// or user is no longer in menu
 	get_user_menu(id, menuid, mkeys)
 	if ( menuid != gMenuID ) {
-		gInMenu[id] = false
+		Assign_BitVar(gInMenuMask, id, false_for_macro); 
 	}
 	else {
 		menuSuperPowers(id, gPlayerMenuOffset[id])
@@ -3119,7 +3133,7 @@ public _sh_extra_damage()
 
 			localAddXP(attacker, -gXPGiven[gPlayerLevel[attacker]])
 
-			gBlockMercyXp[attacker] = true
+			Assign_BitVar(gBlockMercyXpMask, attacker, true_for_macro);
 
 			set_user_frags(attacker, --attackerFrags)
 
@@ -3181,13 +3195,13 @@ public _sh_extra_damage()
 		get_user_name(victim,victim_name,127)
 		get_user_name(attacker,attacker_name,127)
 		
-		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
+		if ( Get_BitVar(gHasAnubisMask, attacker) && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage_after)
 			sh_chat_message(attacker, -1, "You killed: %s with: %d dmg using: %s",victim_name,damage_after,wpnDescription)
 		}
 
-		if ( gHasAnubis[victim] && get_pcvar_num(sh_anubisdmg_check) ) {
+		if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(victim, gMsgSync1, "%d", damage_after)
 			sh_chat_message(victim, -1, "You were killed by: %s with: %d dmg using: %s",attacker_name,damage_after,wpnDescription)
@@ -3226,12 +3240,12 @@ public _sh_extra_damage()
 			return
 		}
 
-		if ( gHasAnubis[attacker] && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
+		if ( Get_BitVar(gHasAnubisMask, attacker)  && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(attacker, gMsgSync2, "%d", damage_after)
 		}
 
-		if ( gHasAnubis[victim] && get_pcvar_num(sh_anubisdmg_check) ) {
+		if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
 			ShowSyncHudMsg(victim, gMsgSync2, "%d", damage_after)
 		}
@@ -3359,7 +3373,7 @@ public event_DeathMsg()
 
 		if ( cs_get_user_team(killer) == cs_get_user_team(victim) && !get_pcvar_num(sh_ffa) ) {
 			// Killed teammate
-			gBlockMercyXp[killer] = true
+			Assign_BitVar(gBlockMercyXpMask, killer, true_for_macro);
 			localAddXP(killer, -gXPGiven[gPlayerLevel[killer]])
 		}
 		else {
@@ -4179,7 +4193,7 @@ public adminBanXP(id, level, cid)
 	get_user_name(player, name, charsmax(name))
 	get_user_authid(player, authid, charsmax(authid))
 
-	if ( gIsPowerBanned[player] ) {
+	if ( Get_BitVar(gIsPowerBannedMask, player)) {
 		console_print(id, "[SH] Client is already SuperHero banned: ^"%s<%d><%s>^"", name, userid, authid)
 		return PLUGIN_HANDLED
 	}
@@ -4209,7 +4223,7 @@ public adminBanXP(id, level, cid)
 	get_user_name(id, name2, charsmax(name2))
 	get_user_authid(id, authid2, charsmax(authid2))
 
-	gIsPowerBanned[player] = true
+	Assign_BitVar(gIsPowerBannedMask, player,true_for_macro)
 	clearAllPowers(player, false)	// Avoids Recursion with false
 	writeStatusMessage(player, "You are banned from using powers")
 
@@ -4254,7 +4268,7 @@ public adminUnbanXP(id, level, cid)
 		get_user_authid(player, authid, charsmax(authid))
 		new userid = get_user_userid(player)
 
-		if ( !gIsPowerBanned[player] ) {
+		if ( !Get_BitVar(gIsPowerBannedMask,player)) {
 			console_print(id, "[SH] Client is not SuperHero banned: ^"%s<%d><%s><>^"", name, userid, authid)
 			return PLUGIN_HANDLED
 		}
@@ -4264,9 +4278,9 @@ public adminUnbanXP(id, level, cid)
 			return PLUGIN_HANDLED
 		}
 
-		if ( !removeBanFromFile(id, bankey) ) return PLUGIN_HANDLED
+		if ( !removeBanFromFile(id, bankey) ) return PLUGIN_HANDLED;
 
-		gIsPowerBanned[player] = false
+		Assign_BitVar(gIsPowerBannedMask,player,false_for_macro);
 
 		show_activity(id, name2, "unbanned %s from using superhero powers", name) 
 
@@ -4620,13 +4634,13 @@ showHelpHud()
 //Called when a client chooses a "team", not a "class type" (could be used to self kill)
 public team_chosen(id)
 {
-	gBlockMercyXp[id] = true
+	Assign_BitVar(gBlockMercyXpMask,id, true_for_macro)
 }
 //----------------------------------------------------------------------------------------------
 //Called when a client types "kill" in the console
 public client_kill(id)
 {
-	gBlockMercyXp[id] = true
+	Assign_BitVar(gBlockMercyXpMask,id, true_for_macro)
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -4639,14 +4653,14 @@ public client_disconnected(id)
 {
 	// Don't want any left over residuals
 	initPlayer(id)
-	gPlayerPutInServer[id] = false
+	Assign_BitVar(gPlayerPutInServerMask, id, false_for_macro );
 }
 //----------------------------------------------------------------------------------------------
 public client_putinserver(id)
 {
 	if ( id < 1 || id > gServersMaxPlayers ) return
 
-	gPlayerPutInServer[id] = true
+	Assign_BitVar(gPlayerPutInServerMask, id, true_for_macro );
 
 	// Find a czero bot to register Ham_Spawn
 	/*if ( get_pcvar_num(bot_quota) > 0 && !gCZBotRegisterHam ) {
@@ -4659,7 +4673,7 @@ public client_putinserver(id)
 	}*/
 
 	// Don't want to mess up already loaded XP
-	if ( !gReadXPNextRound[id] && gLongTermXP ) return
+	if ( !Get_BitVar(gReadXPNextRoundMask, id) && gLongTermXP ) return
 
 	// Load up XP if LongTerm is enabled
 	if ( gLongTermXP ) {
@@ -4672,7 +4686,7 @@ public client_putinserver(id)
 			readXP(id)
 		}
 		else {
-			gReadXPNextRound[id] = true
+			Assign_BitVar(gReadXPNextRoundMask, id, true_for_macro);
 		}
 	}
 	// If autobalance is on - promote this player by avg XP
@@ -4734,12 +4748,13 @@ initPlayer(id)
 	gPlayerStunTimer[id] = -1
 	gPlayerGodTimer[id] = -1
 	setLevel(id, 0)
-	gShieldRestrict[id] = false
-	gPlayerFlags[id] = SH_FLAG_HUDHELP
-	gFirstRound[id] = true
-	gNewRoundSpawn[id] = true
-	gIsPowerBanned[id] = false
-	gReadXPNextRound[id] = gLongTermXP
+	Assign_BitVar(gShieldRestrictMask, id, false_for_macro);
+	gPlayerFlags[id] = SH_FLAG_HUDHELP;
+
+	Assign_BitVar(gFirstRoundMask, id, true_for_macro);
+	Assign_BitVar(gNewRoundSpawnMask, id, true_for_macro);
+	Assign_BitVar(gIsPowerBannedMask,id, false_for_macro);
+	Assign_BitVar(gReadXPNextRoundMask, id, gLongTermXP);
 
 	clearAllPowers(id, false)
 }
@@ -4749,7 +4764,7 @@ public fm_Touch(ptr, ptd)
 	if ( !get_pcvar_num(sv_superheros) ) return FMRES_IGNORED
 	if ( !pev_valid(ptr) || !pev_valid(ptd) ) return FMRES_IGNORED
 	if ( ptd < 1 || ptd > gServersMaxPlayers ) return FMRES_IGNORED
-	if ( !gShieldRestrict[ptd] ) return FMRES_IGNORED
+	if ( !Get_BitVar(gShieldRestrictMask, ptd) ) return FMRES_IGNORED
 
 	static entclass[32]
 	entclass[0] = '^0'
@@ -4769,7 +4784,7 @@ public shieldbuy(id)
 	if ( !get_pcvar_num(sv_superheros) ) return PLUGIN_CONTINUE
 	if ( id < 1 || id > gServersMaxPlayers ) return PLUGIN_CONTINUE
 
-	if ( gShieldRestrict[id] ) {
+	if ( Get_BitVar(gShieldRestrictMask, id) ) {
 		engclient_cmd(id, "menuselect", "10")
 		client_print(id, print_center, "You are not allowed to buy a SHIELD due to a hero selection you have made")
 		return PLUGIN_HANDLED
@@ -4784,7 +4799,7 @@ public shieldqbuy(id)
 	if ( !get_pcvar_num(sv_superheros) ) return PLUGIN_CONTINUE
 	if ( id < 1 || id > gServersMaxPlayers ) return PLUGIN_CONTINUE
 
-	if ( gShieldRestrict[id] && cs_get_user_team(id) == CS_TEAM_CT ) {
+	if ( Get_BitVar(gShieldRestrictMask, id) && cs_get_user_team(id) == CS_TEAM_CT ) {
 		console_print(id, "[SH] You are not allowed to buy a SHIELD due to a hero selection you have made")
 		client_print(id, print_center, "You are not allowed to buy a SHIELD due to a hero selection you have made")
 		return PLUGIN_HANDLED
@@ -4800,7 +4815,7 @@ public fn_autobuy(id)
 	if ( !get_pcvar_num(sv_superheros) ) return PLUGIN_CONTINUE
 	if ( id < 1 || id > gServersMaxPlayers ) return PLUGIN_CONTINUE
 
-	if ( gShieldRestrict[id] ) {
+	if ( Get_BitVar(gShieldRestrictMask, id) ) {
 		console_print(id, "[SH] You are not allowed to use AUTOBUY due to a hero selection you have made")
 		client_print(id, print_center, "You are not allowed to use AUTOBUY due to a hero selection you have made")
 		return PLUGIN_HANDLED
@@ -5083,7 +5098,7 @@ getPlayerLevel(id)
 	// Now make sure this level is between the ranges
 	new minLevel = clamp(get_pcvar_num(sh_minlevel), 0, gNumLevels)
 
-	if ( newLevel < minLevel && !gReadXPNextRound[id] ) {
+	if ( newLevel < minLevel && !Get_BitVar(gReadXPNextRoundMask, id) ) {
 		newLevel = minLevel
 		gPlayerXP[id] = gXPLevel[newLevel]
 	}
@@ -5154,7 +5169,7 @@ public readXP(id)
 	if ( !gLongTermXP ) return
 
 	// Players XP already loaded, no need to do this again
-	if ( !gReadXPNextRound[id] ) return
+	if ( !Get_BitVar(gReadXPNextRoundMask, id)) return
 
 	static savekey[MAX_PLAYER_SAVE_KEY_LENGTH]
 
@@ -5182,7 +5197,7 @@ public readXP(id)
 		return
 	}
 
-	gReadXPNextRound[id] = false
+	Assign_BitVar(gReadXPNextRoundMask, id, false_for_macro);
 	memoryTableUpdate(id)
 }
 //----------------------------------------------------------------------------------------------
@@ -5278,7 +5293,7 @@ public _sh_get_player_save_key_on_db(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 checkBan(id, const bankey[MAX_PLAYER_SAVE_KEY_LENGTH])
 {
-	if ( !file_exists(gBanFile) || gIsPowerBanned[id] ) return
+	if ( !file_exists(gBanFile) || Get_BitVar(gIsPowerBannedMask,id)) return
 
 	new bool:idBanned, data[32]
 
@@ -5300,7 +5315,8 @@ checkBan(id, const bankey[MAX_PLAYER_SAVE_KEY_LENGTH])
 		}
 
 		if ( equali(data, bankey) ) {
-			gIsPowerBanned[id] = idBanned = true
+			idBanned = true;
+			Assign_BitVar(gIsPowerBannedMask,id, true_for_macro);
 			debugMsg(id, 1, "Ban loaded from banlist for this player")
 		}
 	}
@@ -5311,7 +5327,7 @@ checkBan(id, const bankey[MAX_PLAYER_SAVE_KEY_LENGTH])
 memoryTableUpdate(id)
 {
 	if ( !get_pcvar_num(sv_superheros) || !gLongTermXP ) return
-	if ( gIsPowerBanned[id] || gReadXPNextRound[id] ) return
+	if ( Get_BitVar(gIsPowerBannedMask,id) || Get_BitVar(gReadXPNextRoundMask, id)) return
 
 	// Update this XP line in Memory Table
 	static savekey[MAX_PLAYER_SAVE_KEY_LENGTH], x, powerCount

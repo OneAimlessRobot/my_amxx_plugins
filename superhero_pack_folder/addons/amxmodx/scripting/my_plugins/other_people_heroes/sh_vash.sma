@@ -66,11 +66,6 @@ public plugin_init()
 							dmg_source_name_long_revolver,0)
 	
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("vash_init", "vash_init")
-	shRegHeroInit(gHeroName, "vash_init")
-
 	register_event("Damage", "vash_damage", "b", "2!0")
 
 	// HITZONE CHANGING LOOP
@@ -81,13 +76,9 @@ public plugin_init()
 	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
-public vash_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if ( is_user_alive(id) ) {
 		if ( sh_user_has_hero(id,gHeroID)) {
 			vash_weapons(id)

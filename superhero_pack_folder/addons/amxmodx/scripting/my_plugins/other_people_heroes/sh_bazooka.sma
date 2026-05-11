@@ -133,12 +133,7 @@ public plugin_init()
 	register_entity_as_wall_touchable("bazooka_missile_ent","bazooka_missile_touch")
 	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",player_vector,1)
 	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",custom_touchable_vec,1)
-
-
-	// KEYDOWN
-	register_srvcmd("bazooka_kd", "bazooka_kd")
-	shRegKeyDown(gHeroName, "bazooka_kd")
-
+	
 	//CLIENT QUICK COMMANDS
 	register_clcmd("bazooka_missile","fire_missile")
 	register_clcmd("bazooka_laserguided_missile","fire_missile")
@@ -148,10 +143,6 @@ public plugin_init()
 	register_clcmd("bazooka_ropeseeking_missile","fire_missile")
 	register_clcmd("bazooka_swirlingdeath_missile","fire_missile")
 
-	//EVENTS
-	register_logevent("round_start", 2, "1=Round_Start")
-	register_logevent("round_end", 2, "1=Round_End")
-	register_logevent("round_end", 2, "1&Restart_Round_")
 	register_event("DeathMsg","death_event","a")
 
 	//MISSILE MENU
@@ -163,15 +154,23 @@ public plugin_init()
 	//SWIRLING DEATH MISSILES
 	set_task(0.1,"RocketThink",0,"",0,"b")
 }
+
 //----------------------------------------------------------------------------------------------
-public bazooka_kd()
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		bazooka_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public bazooka_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
-
-	// First Argument is an id with bazooka
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
@@ -1345,7 +1344,7 @@ public death_event(){
 	using_menu[victim] = 0
 }
 //----------------------------------------------------------------------------------------------
-public round_end(){
+public sh_round_end(){
 
 	roundfreeze = true
 
@@ -1367,7 +1366,7 @@ public round_end(){
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public round_start(){
+public sh_round_start(){
 
 	roundfreeze = false
 

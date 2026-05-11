@@ -44,9 +44,6 @@
 						"models/shmod/Greenarrow_p.mdl")
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 
-	// INIT
-	register_srvcmd("garrow_init", "garrow_init")
-	shRegHeroInit(gHeroName, "garrow_init")
 
 
 	// GREEN ARROW DAMAGE
@@ -56,18 +53,12 @@
 	register_event("CurWeapon","garrow_fire", "be", "1=1", "3>0")
 	register_event("CurWeapon","weaponChange","be","1=1")
  }
- //----------------------------------------------------------------------------------------------
- public garrow_init()
- {
-	// First Argument is an id
-	new temp[128]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( !is_user_alive(id) ) return
-
-	switchmodel(id)
-
+	
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
@@ -265,18 +256,6 @@
 	return PLUGIN_CONTINUE
  }
  //----------------------------------------------------------------------------------------------
- public switchmodel(id)
- {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	if (wpnid == CSW_SCOUT) {
-		// Weapon Model change for 3rd person view - vittu
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/Greenarrow_v.mdl")
-		// Weapon Model change for 3rd person view - vittu
-		entity_set_string(id, EV_SZ_weaponmodel, "models/shmod/Greenarrow_p.mdl")
-	}
- }
- //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
 	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
@@ -284,9 +263,8 @@
 	new wpnid = read_data(2)
 	new clip = read_data(3)
 
-	if ( wpnid == CSW_SCOUT ) switchmodel(id)
+	if ( wpnid != CSW_SCOUT ) return
 
-	switchmodel(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {

@@ -44,7 +44,8 @@ public _graciete_get_hero_id(iPlugin,iParams){
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 		q_barrel_set_q_barrel(id)

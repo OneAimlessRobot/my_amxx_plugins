@@ -82,11 +82,7 @@ public plugin_init()
 								"")
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,Model_V_Knife,Model_P_Knife)
-	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("ghostface_init", "ghostface_init")
-	shRegHeroInit(HeroName, "ghostface_init")
+
 
 	// EVENTS
 	register_event("Damage", "ghostface_damage", "b", "2!0")
@@ -109,13 +105,9 @@ public plugin_cfg()
 	HealPoints = get_pcvar_num(CvarHealPoints)	
 }
 //----------------------------------------------------------------------------------------------
-public ghostface_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+	
 	if(!sh_user_has_hero(id,gHeroID)){
 		// Check is needed since this gets run on clearpowers even if user didn't have this hero
 		if ( is_user_alive(id))

@@ -50,18 +50,6 @@ public plugin_init()
 	register_entity_as_wall_touchable("lancer_lancerz","torpedo_touch")
 	register_custom_touchable("lancer_lancerz","torpedo_touch",player_vector,1)
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("lancer_init", "lancer_init")
-	shRegHeroInit(g_heroName, "lancer_init")
-
-	// KEY DOWN
-	register_srvcmd("lancer_kd", "lancer_kd")
-	shRegKeyDown(g_heroName, "lancer_kd")
-
-	// KEY UP
-	register_srvcmd("lancer_ku", "lancer_ku")
-	shRegKeyUp(g_heroName, "lancer_ku")
 
 	init_progress_bar_msg_var()
 }
@@ -77,13 +65,27 @@ public plugin_precache()
 	g_spriteExplosion = engfunc(EngFunc_PrecacheModel,"sprites/shmod/explodelancer.spr")
 	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
+
 //----------------------------------------------------------------------------------------------
-public lancer_init()
+public sh_hero_key(id, heroID, key)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		lancer_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		lancer_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	//This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID)){
@@ -104,14 +106,9 @@ public sh_client_spawn(id)
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public lancer_kd()
+public lancer_kd(id)
 {
 	if ( !sh_is_inround()) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
@@ -135,14 +132,9 @@ public lancer_kd()
 	set_task(1.0, "powerCharged", id)
 }
 //----------------------------------------------------------------------------------------------
-public lancer_ku()
+public lancer_ku(id)
 {
 	if ( !sh_is_inround()) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_connected(id) ) return
 

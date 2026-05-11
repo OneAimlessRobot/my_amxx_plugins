@@ -47,28 +47,13 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Ghost Mode", "Hold power key down for 95 percent invisibility with noclip! Low HP/AP while in Ghost Mode.", true, "casper_level")
-	// INIT
-	shRegHeroInit(gHeroName, "casper_init")
-	register_srvcmd("casper_init", "casper_init")
-
-	// KEYDOWN
-	register_srvcmd("casper_kd", "casper_kd")
-	shRegKeyDown(gHeroName, "casper_kd")
-
-	// KEYUP
-	register_srvcmd("casper_ku", "casper_ku")
-	shRegKeyUp(gHeroName, "casper_ku")
 
 	register_event("DeathMsg", "casper_death", "a")
 }
-//---------------------------------------------------------------------------------------------
-public casper_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		gGhostHealth[id] = get_cvar_num("casper_health")
 		gGhostArmor[id] = get_cvar_num("casper_armor")
@@ -102,15 +87,28 @@ public sh_client_spawn(id)
 		gGhostArmor[id] = gCasperArmor
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		casper_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		casper_ku(id)
+	}
+}
+}
 //-----------------------------------------------------------------------------------------------
-public casper_kd()
+public casper_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
 	if ( !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
@@ -186,14 +184,9 @@ public casper_loop(id)
 	}
 }
 //------------------------------------------------------------------------------------------------
-public casper_ku()
+public casper_ku(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 

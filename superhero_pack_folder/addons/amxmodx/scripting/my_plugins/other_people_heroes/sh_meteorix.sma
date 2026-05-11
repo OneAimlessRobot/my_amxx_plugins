@@ -44,18 +44,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
 
-	// KEY DOWN
-	register_srvcmd("meteorix_kd", "meteorix_kd")
-	shRegKeyDown(gHeroName, "meteorix_kd")
-
-	// KEY UP
-	register_srvcmd("meteorix_ku", "meteorix_ku")
-	shRegKeyUp(gHeroName, "meteorix_ku")
-
-	// INIT
-	register_srvcmd("meteorix_init", "meteorix_init")
-	shRegHeroInit(gHeroName, "meteorix_init")
-
 	// DEATH
 	register_event("DeathMsg", "meteorix_death", "a")
 
@@ -79,13 +67,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/lightnin.wav")
 	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
 }
-// ----------------------------------------------------------------------------------------------
-public meteorix_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	// Set max shots
 	if(sh_user_has_hero(id,gHeroID)) {
@@ -110,14 +94,28 @@ public sh_client_spawn(id)
 	MeteorixPowerUsed[id] = false
 	lightnings_shots[id] = max_shots
 }
-// ----------------------------------------------------------------------------------------------
-public meteorix_kd()
-{
 
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		meteorix_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		meteorix_ku(id)
+	}
+}
+}
+
+// ----------------------------------------------------------------------------------------------
+public meteorix_kd(id)
+{
 
 	// Get weapon to saving
 	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
@@ -134,12 +132,8 @@ public meteorix_kd()
 	return PLUGIN_HANDLED
 }
 // ----------------------------------------------------------------------------------------------
-public meteorix_ku()
+public meteorix_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	// Stop using lightnings
 	remove_task(id)

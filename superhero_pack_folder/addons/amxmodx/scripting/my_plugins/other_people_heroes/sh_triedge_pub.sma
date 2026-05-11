@@ -71,19 +71,6 @@ public plugin_init()
 	gHeroID=shCreateHero(g_heroName, "Tri-Strike", "Perform a combo on your enemies", true, "triedge_level")
 	
 	register_custom_touchable("player","tri_edge_beat_down",player_vector,1)
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("triedge_init", "triedge_init")
-	shRegHeroInit(g_heroName, "triedge_init")
-	
-	// KEY UP
-	register_srvcmd("triedge_ku", "triedge_ku")
-	shRegKeyUp(g_heroName, "triedge_ku")
-	
-	// KEY DOWN
-	register_srvcmd("triedge_kd", "triedge_kd")
-	shRegKeyDown(g_heroName, "triedge_kd")
-	
 	
 	// FORWARDS
 	register_forward(FM_PlayerPreThink, "triedge_prethink")
@@ -97,12 +84,8 @@ public plugin_precache()
     g_spriteLine = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
-public triedge_init()
-{
-    // First Argument is an id
-    new temp[6]
-    read_argv(1,temp,5)
-    new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+    if(heroID!=gHeroID) return
 
     if ( g_hooked[id] ) triedge_hookOff(id)
 }
@@ -138,25 +121,34 @@ public sh_client_spawn(id)
 
     if ( g_hooked[id] ) triedge_hookOff(id)
 }
-//----------------------------------------------------------------------------------------------
-public triedge_kd()
-{
-    // First Argument is an id
-    new temp[6]
-    read_argv(1,temp,5)
-    new id = str_to_num(temp)
 
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		triedge_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		triedge_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public triedge_kd(id)
+{
     if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
 
     triedge_hookOn(id)
 }
 //----------------------------------------------------------------------------------------------
-public triedge_ku()
+public triedge_ku(id)
 {
-    // First Argument is an id
-    new temp[6]
-    read_argv(1,temp,5)
-    new id = str_to_num(temp)
 
     triedge_hookOff(id)
 }

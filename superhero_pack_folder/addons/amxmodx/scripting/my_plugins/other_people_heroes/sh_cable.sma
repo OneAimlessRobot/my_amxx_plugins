@@ -42,17 +42,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
-
-	// KEY DOWN
-	register_srvcmd("cable_kd", "cable_kd")
-	shRegKeyDown(gHeroName, "cable_kd")
-	register_srvcmd("cable_ku", "cable_ku")
-	shRegKeyUp(gHeroName, "cable_ku")
-
-	// INIT
-	register_srvcmd("cable_init", "cable_init")
-	shRegHeroInit(gHeroName, "cable_init")
-
 	// DEATH
 	register_event("DeathMsg", "cable_death", "a")
 }
@@ -64,13 +53,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/cable_laser.wav")
 }
 //----------------------------------------------------------------------------------------------
-public cable_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
 	if (sh_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
 		laser_shots[id] = get_cvar_num("cable_laser_ammo")
@@ -90,16 +75,30 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		cable_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		cable_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public cable_kd()
+public cable_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
 
-	// First Argument is an id with cable Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
 	if ( laser_shots[id] <= 0 ) {
@@ -125,13 +124,8 @@ public cable_kd()
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public cable_ku()
+public cable_ku(id)
 {
-	// First Argument is an id with cable's Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
 	remove_task(id+25735)
 
 	// Use the ultimate

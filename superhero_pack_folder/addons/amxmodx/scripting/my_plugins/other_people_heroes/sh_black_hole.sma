@@ -41,16 +41,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Black Hole(Admin Only!)", "+power key for a black hole to suck up ur enemies", true, "black_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("black_init", "black_init")
-	shRegHeroInit(g_heroName, "black_init")
-	
-	// KEY DOWN
-	register_srvcmd("black_kd", "black_kd")
-	shRegKeyDown(g_heroName, "black_kd")
-
-	
 	// LOOP
 	set_task(1.0, "black_loop", 0, "", 0, "b")
 	
@@ -60,14 +50,9 @@ public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,"models/shmod/blackhole.mdl")
 }
-//-------------------------------------------------------------------------------------------------
-public black_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
 	
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		// Make sure looop doesn't fire for them
@@ -80,14 +65,22 @@ public black_init()
 	}
 
 }
-//----------------------------------------------------------------------------------------------
-public black_kd()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		black_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public black_kd(id)
+{
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
 
 	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {

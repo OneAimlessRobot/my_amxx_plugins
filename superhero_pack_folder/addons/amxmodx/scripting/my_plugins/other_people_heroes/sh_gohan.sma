@@ -46,10 +46,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Super Power-Up", "Start with more HP, gain even more each second. Also, has Ultra Speed and Low Gravity!", false, "gohan_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("gohan_init", "gohan_init")
-	shRegHeroInit(gHeroName, "gohan_init")
 
 	// HEAL LOOP
 
@@ -63,13 +59,9 @@ public plugin_init()
 	gHealAmount = get_cvar_num("gohan_healmax")
 }
 //----------------------------------------------------------------------------------------------
-public gohan_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+	
 	//This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		shRemHealthPower(id)

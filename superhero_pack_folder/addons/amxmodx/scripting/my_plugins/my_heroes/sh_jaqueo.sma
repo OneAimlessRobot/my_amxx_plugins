@@ -55,7 +55,8 @@ public _jaqueo_get_hero_id(iPlugin,iParams){
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 		jaqueo_weapons(id)

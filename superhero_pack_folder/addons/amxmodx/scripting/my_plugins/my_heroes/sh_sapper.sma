@@ -81,7 +81,8 @@ public _sapper_dec_num_mines(iPlugin,iParams){
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 		sapper_weapons(id);

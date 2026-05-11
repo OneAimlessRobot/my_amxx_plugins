@@ -52,12 +52,14 @@ public plugin_init()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		
 		update_max_hits(id)
+		reset_Yowai_user(id)
 	}
-	reset_Yowai_user(id)
+	
 }
 public reset_Yowai_user(id){
 	

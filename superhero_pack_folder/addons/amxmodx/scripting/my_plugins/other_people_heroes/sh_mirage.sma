@@ -26,22 +26,18 @@ public plugin_init() {
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   gHeroID=shCreateHero(gHeroName, "Delusion", "Turn invisible for a short time when someone aims at you", false, "mirage_level" )
 
-  // REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-  register_srvcmd("mirage_init", "mirage_init")
-  shRegHeroInit(gHeroName, "mirage_init")
-
   register_srvcmd("mirage_loop", "mirage_loop")
 
 }
 
-public mirage_init() {
-  new temp[6]
-  read_argv(1,temp,5)
-  new id=str_to_num(temp)
-  if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
-	remove_task(id+TASKID)
-	set_task(0.1,"mirage_loop",id+TASKID,"",0,"b")
-  }
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
+	if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
+		remove_task(id+TASKID)
+		set_task(0.1,"mirage_loop",id+TASKID,"",0,"b")
+	}
 }
 
 public mirage_loop(id)

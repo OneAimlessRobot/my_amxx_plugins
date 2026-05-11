@@ -26,11 +26,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Insert your spirit into enemies", "You can insert your spirit into enemies", true, "abe_level")
 
-
-	// KEYDOWN
-	register_srvcmd("abe_kd", "abe_kd")
-	shRegKeyDown(gHeroName, "abe_kd")
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -41,14 +36,22 @@ public plugin_precache()
 	// Precache sound
 	engfunc(EngFunc_PrecacheSound,"shmod/abe_sound.wav")
 }
-//----------------------------------------------------------------------------------------------
-public abe_kd()
-{
-	// First Argument is an id who has abe
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		abe_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public abe_kd(id)
+{
 	// Use power once per round
 	if(!AbePowerUsed[id])
 	{

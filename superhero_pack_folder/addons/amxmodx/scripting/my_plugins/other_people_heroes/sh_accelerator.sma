@@ -13,23 +13,15 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Accelerate", "Get Faster Every Second", false, "acc_level")
 
-	register_srvcmd("acc_init", "acc_init")
-	shRegHeroInit(gHeroName, "acc_init")
 
 
 	set_task(1.0, "acc_loop", 0, "", 0, "b")
 }
 //----------------------------------------------------------------------------------------------
-public acc_init()
-{
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
-
-	read_argv(2, temp, 5)
-	new hasPowers = str_to_num(temp)
-
-	if ( !hasPowers  && is_user_connected(id) )
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
+	
+	if ( !sh_user_has_hero(id,gHeroID)   && is_user_connected(id) )
 	{
 		shRemSpeedPower(id)
 	}

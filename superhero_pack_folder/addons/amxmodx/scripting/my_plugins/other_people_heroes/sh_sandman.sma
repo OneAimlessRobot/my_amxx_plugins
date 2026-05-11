@@ -44,10 +44,6 @@ public plugin_init()
 	gHeroID=shCreateHero(HeroName, "Quicksand", "Use +power key on Enemy in crosshair to Trap them in Quicksand", true, "sandman_level")
 
 
-	// KEY DOWN
-	register_srvcmd("sandman_kd", "sandman_kd")
-	shRegKeyDown(HeroName, "sandman_kd")
-
 
 	// Sets field of view
 	MSGSetFOV = get_user_msgid("SetFOV")
@@ -61,15 +57,22 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
-public sandman_kd()
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		sandman_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public sandman_kd(id)
 {
 	if ( !hasRoundStarted() )
 		return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return

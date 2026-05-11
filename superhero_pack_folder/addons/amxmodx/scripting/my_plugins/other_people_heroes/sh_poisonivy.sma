@@ -93,7 +93,8 @@ public plugin_init()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	// This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		remove_poison(id)

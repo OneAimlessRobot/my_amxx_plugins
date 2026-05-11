@@ -42,22 +42,9 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Ice Man", "Ice Trail - Create a trail of ice to go wherever you want.", true, "iceman2_level" )
-	
-
-	// KEY UP
-	register_srvcmd("iceman2_ku",   "iceman2_ku")
-	shRegKeyUp(gHeroName, "iceman2_ku")
-
-	// KEY DOWN
-	register_srvcmd("iceman2_kd", "iceman2_kd")
-	shRegKeyDown(gHeroName, "iceman2_kd")
 
 	// DEATH
 	register_event("DeathMsg", "iceman2_death", "a")
-
-	// INIT
-	register_srvcmd("iceman2_init", "iceman2_init")
-	shRegHeroInit(gHeroName, "iceman2_init")
 
 	//Waits 4 seconds then loads cvars into variables
 	set_task(4.0,"loadCVARS")
@@ -93,13 +80,8 @@ public jetPackFireEffect(origin[3])
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
-public iceman2_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( sh_user_has_hero(id,gHeroID) ) {
 		remove_task(id+36485)
@@ -183,16 +165,28 @@ public iceman2_loop(id)
 	}
 	return PLUGIN_CONTINUE
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		iceman2_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		iceman2_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public iceman2_kd()
+public iceman2_kd(id)
 {
-
-	// First Argument is an id with Iceman Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-
 	if ( !hasRoundStarted() || !is_user_alive(id))
 	{
 		playSoundDenySelect(id)
@@ -222,12 +216,8 @@ public iceman2_death()
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public iceman2_ku()
+public iceman2_ku(id)
 {
-	// First Argument is an id with Ironman Powers!
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 	
 	if (g_jetPackRunning[id] != 1) return
 

@@ -53,11 +53,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Proximity Sense", "Longer ESP Rings show you when other players are approaching, also run faster.", false, "stick_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("stick_init", "stick_init")
-	shRegHeroInit(gHeroName, "stick_init")
-
 	//ESP Rings Task
 	set_task(2.0, "stick_senseloop", 0, "", 0, "b")
 
@@ -70,12 +65,8 @@ public plugin_precache()
 	gSpriteWhite = engfunc(EngFunc_PrecacheModel,"sprites/white.spr")
 }
 //----------------------------------------------------------------------------------------------
-public stick_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	// This gets run if they had the power but don't anymore
 	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

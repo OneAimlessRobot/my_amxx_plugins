@@ -32,25 +32,13 @@ public plugin_init()
 	
 	gHeroID=shCreateHero(gHeroName, "Escape from enemies", "Press bind key to hide in a hole for a while", true, "saddam_level" )
 	
-	// INIT
-	register_srvcmd("saddam_init", "saddam_init")
-	shRegHeroInit(gHeroName, "saddam_init")
-	
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// KEY DOWN
-	register_srvcmd("saddam_kd", "saddam_kd")
-	shRegKeyDown(gHeroName, "saddam_kd")
 	
 	
 }
 //----------------------------------------------------------------------------------------------
-public saddam_init()
-{
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
-	
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
+
 	sh_unset_cooldown_flag(id)
 	gHasSpawnPoint[id]=false
 }
@@ -78,13 +66,22 @@ public sh_client_spawn(id)
 		gHasSpawnPoint[id]=true
 	}
 }
+
 //----------------------------------------------------------------------------------------------
-public saddam_kd() 
+public sh_hero_key(id, heroID, key)
 {
-	new temp[6]
-	read_argv(1,temp,5)
-	new id=str_to_num(temp)
-	
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		saddam_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+public saddam_kd(id) 
+{
 	new origin[3] 
 	get_user_origin(id, origin, 0) 
 	

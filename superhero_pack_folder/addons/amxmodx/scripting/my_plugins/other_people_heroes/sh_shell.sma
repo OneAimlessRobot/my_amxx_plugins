@@ -34,11 +34,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Noob Protection!", "The lower level you are, the more hp you have.", false, "shell_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("shell_init", "shell_init")
-	shRegHeroInit(gHeroName, "shell_init")
-
 	
 	set_task(1.0, "shell_loop", 0, "", 0, "b")
 	// LEVELS
@@ -57,14 +52,10 @@ public loadCVARS(){
 
 }
 //----------------------------------------------------------------------------------------------
-public shell_init()
-{
-		// First Argument is an id
-		new temp[6]
-		read_argv(1,temp,5)
-		new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
-		if(is_user_alive(id)){
+	if(is_user_alive(id)){
 		if ( !sh_user_has_hero(id,gHeroID) ) {
 			remove_task(id+TASKID)
 			shRemHealthPower(id)
@@ -76,8 +67,8 @@ public shell_init()
 			gHasPNinety=1
 			shell_weapons(id)
 		}
-		}
-		//Sets this variable to the current status
+	}
+	//Sets this variable to the current status
 		
 }
 public shell_weapons(id){

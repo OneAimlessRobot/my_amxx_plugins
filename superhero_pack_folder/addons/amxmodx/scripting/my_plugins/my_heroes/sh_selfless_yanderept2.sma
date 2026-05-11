@@ -189,7 +189,8 @@ public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id,gHeroID) ){
 	
 		gNormalSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
@@ -685,7 +686,7 @@ public sh_round_end(){
 	}
 	new last_alive=get_first_alive()
 	if(!is_user_alive(last_alive)) return
-	if(sh_user_has_hero(last_alive,gHeroID) ){
+	if(sh_user_has_hero(last_alive,gHeroID) && Get_BitVar(gSuperAngryMask,last_alive) ){
 		static client_name[128]
 		get_user_name(last_alive,client_name,127)
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)

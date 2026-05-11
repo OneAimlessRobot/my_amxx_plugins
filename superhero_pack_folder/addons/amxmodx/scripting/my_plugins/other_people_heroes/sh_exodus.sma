@@ -49,20 +49,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Telekinesis", "Telekinetically pick up and drag player in the air with +power key.", true, "exodus_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("exodus_init", "exodus_init")
-	shRegHeroInit(g_heroName, "exodus_init")
-
-	// KEY DOWN
-	register_srvcmd("exodus_kd", "exodus_kd")
-	shRegKeyDown(g_heroName, "exodus_kd")
-
-	// KEY UP
-	register_srvcmd("exodus_ku", "exodus_ku")
-	shRegKeyUp(g_heroName, "exodus_ku")
-
-
 	// DEATH
 	register_event("DeathMsg", "exodus_death", "a")
 }
@@ -72,13 +58,8 @@ public plugin_precache()
 	g_spriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
-public exodus_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
 	//Clear out any stale tasks
 	remove_task(id)
 
@@ -87,6 +68,7 @@ public exodus_init()
 	}
 
 }
+
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
@@ -96,16 +78,29 @@ public sh_client_spawn(id)
 
 	g_grabTimer[id] = -1
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		exodus_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		exodus_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public exodus_kd()
+public exodus_kd(id)
 {
 	if ( !hasRoundStarted() ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
 
@@ -153,17 +148,12 @@ public exodus_kd()
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYUP
-public exodus_ku()
+public exodus_ku(id)
 {
 	if ( !hasRoundStarted() ) return
 
 	// Toggle mode - keyup doesn't do anything!
 	if ( get_cvar_num("exodus_toggle") ) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
 

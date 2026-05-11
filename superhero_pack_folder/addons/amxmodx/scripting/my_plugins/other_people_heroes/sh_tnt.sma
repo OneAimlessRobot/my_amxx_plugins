@@ -35,17 +35,22 @@ public plugin_init() {
 
 	gHeroID=shCreateHero(gHeroName, "Sploding Mines", "Drop mines to explode those who walk by!", false, "tnt_level");
 
-	
-	register_srvcmd("tnt_kd", "tnt_kd");
-	shRegKeyDown(gHeroName, "tnt_kd"); 
-	
 	register_forward(FM_Touch, "fw_entTouch");
 }
 
-public tnt_kd() {
-	new temp[6];
-	read_argv(1,temp,5);
-	new id = str_to_num(temp);
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		tnt_kd(id)
+	}
+}
+}
+public tnt_kd(id) {
 	
 	if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
 	if(gMinesLeft[id] <= 0) { client_print(id, print_chat, "[SH](TNT) No Mines Left!!"); return; }

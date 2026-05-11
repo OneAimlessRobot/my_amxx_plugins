@@ -37,10 +37,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Dual M3's", "Dual M3's/Extra Damage/Unlimited Ammo. Extra HP and AP.", false, "madness_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("madness_init", "madness_init")
-	shRegHeroInit(gHeroName, "madness_init")
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "madness_damage", "b", "2!0")
@@ -56,12 +52,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, "models/shmod/madness_m3.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public madness_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if (!is_user_connected(id)) return
 

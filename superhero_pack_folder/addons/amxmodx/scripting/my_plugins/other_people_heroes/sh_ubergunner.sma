@@ -56,10 +56,6 @@ public plugin_init()
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/usmarine_m4a1.mdl")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("UberGunner_init", "UberGunner_init")
-	shRegHeroInit(gHeroName, "UberGunner_init")
 	
 	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_long_super_m4,0)
 	
@@ -74,12 +70,8 @@ public plugin_init()
 	shSetMaxSpeed(gHeroName, "UberGunner_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public UberGunner_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	//Reset thier shield restrict status
 	//Shield restrict MUST be before weapons are given out

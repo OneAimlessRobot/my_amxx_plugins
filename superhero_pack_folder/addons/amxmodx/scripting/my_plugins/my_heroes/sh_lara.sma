@@ -92,7 +92,8 @@ public _spear_dec_num_spears(iPlugin,iParams){
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
-	
+	if(heroID!=gHeroID) return
+
 	if(sh_user_has_hero(id, gHeroID)){
 		gNumSpears[id]=cvar_val(num, pcvar_num_spears)
 		

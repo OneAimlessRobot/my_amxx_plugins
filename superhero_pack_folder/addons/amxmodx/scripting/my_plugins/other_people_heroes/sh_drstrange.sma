@@ -75,19 +75,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("drstrange_init", "drstrange_init")
-	shRegHeroInit(gHeroName, "drstrange_init")
-
-	// KEY DOWN
-	register_srvcmd("drstrange_kd", "drstrange_kd")
-	shRegKeyDown(gHeroName, "drstrange_kd")
-
-	// KEY UP
-	register_srvcmd("drstrange_ku", "drstrange_ku")
-	shRegKeyUp(gHeroName, "drstrange_ku")
-
 	register_event("DeathMsg", "drstrange_death", "a")
 
 	// LEVELS
@@ -112,14 +99,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
-public drstrange_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
-
-
+public sh_hero_init(id, heroID, mode){
+	if  (heroID!=gHeroID) return
 	if ( sh_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
@@ -172,16 +153,30 @@ public drstrange_loop()
 		}
 	}
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		drstrange_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		drstrange_ku(id)
+	}
+}
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public drstrange_kd()
+public drstrange_kd(id)
 {
 	if ( !hasRoundStarted() ) return
 
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
@@ -211,12 +206,8 @@ public drstrange_kd()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public drstrange_ku()
+public drstrange_ku(id)
 {
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	remove_task(id)
 

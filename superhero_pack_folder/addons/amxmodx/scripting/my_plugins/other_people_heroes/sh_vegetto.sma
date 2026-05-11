@@ -58,19 +58,6 @@ public plugin_init()
 	register_entity_as_wall_touchable("vexd_vegetto_power","vegetto_power_touch")
 	register_custom_touchable("vexd_vegetto_power","vegetto_power_touch",player_vector,1)
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("vegetto_init", "vegetto_init")
-	shRegHeroInit(g_heroName, "vegetto_init")
-
-	// KEY DOWN
-	register_srvcmd("vegetto_kd", "vegetto_kd")
-	shRegKeyDown(g_heroName, "vegetto_kd")
-
-	// KEY UP
-	register_srvcmd("vegetto_ku", "vegetto_ku")
-	shRegKeyUp(g_heroName, "vegetto_ku")
-
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 	vegetto_hud_sync=CreateHudSyncObj()
 	
@@ -106,12 +93,8 @@ public plugin_precache()
 	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public vegetto_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if ( sh_user_has_hero(id,gHeroID)) {
 		vegetto_setarmor(id)
@@ -166,15 +149,27 @@ public vegetto_setarmor(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		vegetto_kd(id)
+	}
+	
+	case SH_KEYUP: {
+		
+		vegetto_ku(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public vegetto_kd()
+public vegetto_kd(id)
 {
 	if ( !sh_is_inround()) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
@@ -243,14 +238,9 @@ public vegetto_kd()
 	create_power(id)
 }
 //----------------------------------------------------------------------------------------------
-public vegetto_ku()
+public vegetto_ku(id)
 {
 	if ( !sh_is_inround()) return
-
-	// First Argument is an id
-	new temp[6]
-	read_argv(1,temp,5)
-	new id = str_to_num(temp)
 
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 

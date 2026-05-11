@@ -94,21 +94,13 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Unlimited Ammo Clips", "Endless ammo clips, reload required", false, "insptequila_level")
 
-	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
-	// INIT
-	register_srvcmd("insptequila_init", "insptequila_init")
-	shRegHeroInit(HeroName, "insptequila_init")
 
 	// EVENTS
 	register_event("CurWeapon", "change_weapon", "be", "1=1")
 }
 //----------------------------------------------------------------------------------------------
-public insptequila_init()
-{
-	// First Argument is an id
-	new temp[6]
-	read_argv(1, temp, 5)
-	new id = str_to_num(temp)
+public sh_hero_init(id, heroID, mode){
+	if(heroID!=gHeroID) return
 
 	if(sh_user_has_hero(id,gHeroID))
 	{
