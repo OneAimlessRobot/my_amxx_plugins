@@ -48,7 +48,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = shinobu_get_hero_id()
 	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
 	register_event("DeathMsg","on_death_cleanup","a")
@@ -58,7 +57,10 @@ public plugin_init(){
     
 	set_task(1.0,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
 }
+public plugin_cfg(){
 
+	gHeroID = shinobu_get_hero_id()
+}
 public on_Knife_Weapon_Change(id)
 {
 	if ( !is_user_alive(id)||!sh_is_active()) return

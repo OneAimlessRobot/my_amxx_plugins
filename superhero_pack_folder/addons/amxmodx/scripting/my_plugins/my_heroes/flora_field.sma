@@ -65,7 +65,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	gHeroID = flora_get_hero_id()
 	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
 	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
 	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
@@ -80,13 +79,6 @@ public plugin_init()
 	pcvar_flora_invis_alpha_min = register_cvar("flora_invis_alpha_min" ,"0.1" )
 	pcvar_flora_invis_alpha_dec_per_lvl = register_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
 	pcvar_flora_base_stun_speed = register_cvar("flora_base_stun_speed","210.0")
-
- 
-	field_drain_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								dmg_source_name_short_field_drain,
-								dmg_source_name_long_field_drain,
-								0)
 
 
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
@@ -123,6 +115,17 @@ public plugin_natives(){
 
 	
 
+}
+public plugin_cfg(){
+
+	gHeroID = flora_get_hero_id()
+
+	field_drain_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_field_drain,
+								dmg_source_name_long_field_drain,
+								0)
+								
 }
 public _flora_get_user_num_active_fields(iPlugin,iParams){
 	new id=get_param(1)

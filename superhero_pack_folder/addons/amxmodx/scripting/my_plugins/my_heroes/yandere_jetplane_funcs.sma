@@ -66,7 +66,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	gHeroID = yandere_get_hero_id()
 
 	pcvar_jetplane_hp = register_cvar("yandere_jetplane_hp", "5")
 	pcvar_jetplane_cooldown = register_cvar("yandere_jetplane_cooldown", "5")
@@ -109,6 +108,10 @@ public plugin_natives(){
 	register_native("jet_hurt_user_jet","_jet_hurt_user_jet",0);
 
 	
+}
+public plugin_cfg(){
+
+	gHeroID = yandere_get_hero_id()
 }
 public plugin_precache(){
 	

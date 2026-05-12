@@ -28,7 +28,6 @@ new ICE_GLOB_GLOBAL_TASKID
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID = girlb_get_hero_id()
 	register_think(GLOB_CLASSNAME, "ice_field_think")
 	
 	register_entity_as_wall_touchable(GLOB_CLASSNAME,"FwdTouch")
@@ -38,7 +37,10 @@ public plugin_init(){
 
 	set_task(0.333,"player_on_ice_glob_checks",ICE_GLOB_GLOBAL_TASKID,_,_,"b")
 }
+public plugin_cfg(){
 
+	gHeroID = girlb_get_hero_id()
+}
 public girlb_skating(id, uc_handle, seed)
 {	
 	if(!sh_is_active()){

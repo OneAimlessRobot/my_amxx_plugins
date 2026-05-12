@@ -38,9 +38,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-
-	gHeroID = teliko_get_hero_id()
-	gHeroID_erica = tranq_get_hero_id()
 	
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if(is_user_alive(i)){
@@ -59,10 +56,6 @@ public plugin_init(){
 	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
-	custom_dmg_id_sneak=sh_log_custom_damage_source(gHeroID,
-					dmg_source_name_short_sneak,
-					dmg_source_name_long_sneak,
-					1)
 
 	SLITTER_TASKID=allocate_typed_task_id(player_task)
 	init_explosion_defaults()
@@ -97,7 +90,15 @@ public plugin_cfg()
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
-{
+{	
+
+	gHeroID = teliko_get_hero_id()
+	gHeroID_erica = tranq_get_hero_id()
+	
+	custom_dmg_id_sneak=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_sneak,
+					dmg_source_name_long_sneak,
+					1)
 	slitter_distance=get_cvar_float("slitter_distance")
 	slitter_level_difference=get_cvar_num("slitter_level_difference")
 	slitter_drag_time=get_cvar_float("slitter_drag_time")

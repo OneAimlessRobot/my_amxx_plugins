@@ -43,8 +43,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID=camman_get_hero_id()
-
 	pcvar_min_charge_time = register_cvar("camman_camera_min_charge_time", "1.0")
 	pcvar_camera_hp = register_cvar("camman_camera_health", "100.0")
 	pcvar_max_camera_charge = register_cvar("camman_camera_charge", "1000.0")
@@ -79,7 +77,12 @@ public plugin_natives(){
 	
 	
 }
+public plugin_cfg(){
 
+
+	gHeroID=camman_get_hero_id()
+
+}
 public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 {
 	if(!sh_is_active()){

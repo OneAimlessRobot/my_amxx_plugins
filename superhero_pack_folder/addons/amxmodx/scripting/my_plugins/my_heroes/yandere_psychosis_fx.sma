@@ -29,8 +29,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = yandere_get_hero_id()
-
 	register_event("DeathMsg","on_death_psychosis","a")
 	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
 	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
@@ -46,7 +44,11 @@ public plugin_init(){
 	init_hud_syncs()
 	
 }
+public plugin_cfg(){
 
+	gHeroID = yandere_get_hero_id()
+
+}
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	

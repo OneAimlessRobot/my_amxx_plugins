@@ -37,7 +37,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = gatling_get_hero_id()
 
 	register_event("CurWeapon","event_curweapon","be", "1=1")
 	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "Ham_Weapon_PillGatling",_,true)
@@ -62,7 +61,6 @@ public plugin_init(){
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 
 }
-
 
 public FwdTouchWorld( pilula_sexualllllee, World ) {
 
@@ -293,6 +291,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 
+	gHeroID = gatling_get_hero_id()
 	windup_time=get_cvar_float("yakui_windup_time")
 }
 public delayanim(id){

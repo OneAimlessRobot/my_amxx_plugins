@@ -23,14 +23,8 @@ new custom_dmg_id_free_kick
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = roberto_get_hero_id()
-
 	register_think(BALL_CLASSNAME, "ball_think")
 	
-	custom_dmg_id_free_kick=sh_log_custom_damage_source(gHeroID,
-					dmg_source_name_short_free_kick,
-					dmg_source_name_long_free_kick,
-					0)
 	register_entity_as_wall_touchable(BALL_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(BALL_CLASSNAME,"ball_touch_player",player_vector,1)
 	init_explosion_defaults()
@@ -43,7 +37,14 @@ public plugin_natives(){
 	
 	
 }
+public plugin_cfg(){
 
+	gHeroID = roberto_get_hero_id()
+	custom_dmg_id_free_kick=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_free_kick,
+					dmg_source_name_long_free_kick,
+					0)
+}
 public FwdTouchWorld( Ball, World ) {
 	if(!is_valid_ent(Ball)) return
 

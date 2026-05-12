@@ -31,8 +31,6 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1",AUTHOR)
 	
-	gHeroID = spores_ksun_hero_id()
-
 	pcvar_ksun_hold_time = register_cvar("ksun_hold_time", "5.0")
 	pcvar_ksun_launcher_base_health = register_cvar("ksun_launcher_health", "100.0" )
 	
@@ -59,7 +57,11 @@ public plugin_natives(){
 	
 	
 }
+public plugin_cfg(){
 
+	gHeroID = spores_ksun_hero_id()
+
+}
 public _get_player_launcher_phase(iPlugins, iParms){ 
 	
 	new id= get_param(1)

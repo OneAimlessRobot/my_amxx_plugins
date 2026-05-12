@@ -41,7 +41,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spores","1.1",AUTHOR)
-	gHeroID = spores_ksun_hero_id()
 	pcvar_ksun_spore_damage = register_cvar("ksun_spore_damage", "100.0" )
 	pcvar_ksun_spore_speed = register_cvar("ksun_spore_speed", "900.0" )
 	pcvar_particle_follow_time = register_cvar("ksun_follow_time", "5.0")
@@ -54,19 +53,6 @@ public plugin_init()
 	
 	register_think(SPORE_CLASSNAME, "spore_think")
 
-
-	spore_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								dmg_source_name_short_spore,
-								dmg_source_name_long_spore,
-								0)
-
-
-	slay_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								dmg_source_name_short_slay,
-								dmg_source_name_long_slay,
-								0)
 }
 
 public plugin_natives(){
@@ -91,6 +77,25 @@ public plugin_natives(){
 	
 	
 	
+}
+public plugin_cfg(){
+
+
+	gHeroID = spores_ksun_hero_id()
+
+
+	spore_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_spore,
+								dmg_source_name_long_spore,
+								0)
+
+
+	slay_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_slay,
+								dmg_source_name_long_slay,
+								0)
 }
 //----------------------------------------------------------------------------------------------
 untrack_spore(spore){

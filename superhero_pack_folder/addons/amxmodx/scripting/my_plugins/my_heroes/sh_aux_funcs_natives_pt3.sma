@@ -28,12 +28,15 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID = shinobu_get_hero_id()
 	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
 	prepare_shero_aux_lib_pt3()
 
     
 	
+}
+public plugin_cfg(){
+
+	gHeroID = shinobu_get_hero_id()
 }
 public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)

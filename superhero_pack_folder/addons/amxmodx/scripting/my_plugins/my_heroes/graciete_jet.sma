@@ -43,7 +43,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	gHeroID = graciete_get_hero_id()
 	register_event("DeathMsg","death","a")
 	pcvar_jet_velocity = register_cvar("graciete_jet_velocity", "8")
 	pcvar_jet_cooldown = register_cvar("graciete_jet_cooldown", "8")
@@ -66,6 +65,10 @@ public plugin_natives(){
 
 	
 
+}
+public plugin_cfg(){
+
+	gHeroID = graciete_get_hero_id()
 }
 public _jet_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)

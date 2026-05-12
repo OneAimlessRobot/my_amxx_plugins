@@ -40,7 +40,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun supply","1.1",AUTHOR)
-	gHeroID = spores_ksun_hero_id()
 	pcvar_ksun_ultimate_fire_rate_mult = register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
 	pcvar_ksun_ultimate_reload_rate_mult = register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
 	pcvar_ksun_dmg_absorption_index = register_cvar("ksun_dmg_absorption_index", "1.0" )
@@ -61,8 +60,7 @@ public plugin_init()
 			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
 		}
 	}
-	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_long_r5,0)
-	
+
 }
 
 public plugin_natives(){
@@ -87,7 +85,12 @@ public plugin_natives(){
 	register_native("ksun_unultimate_user","_ksun_unultimate_user",0)
 	
 }
+public plugin_cfg(){
 
+	gHeroID = spores_ksun_hero_id()
+	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_long_r5,0)
+	
+}
 public Item_PostFrame_Post(iEnt)
 {    
 	if(pev_valid(iEnt)!=2){

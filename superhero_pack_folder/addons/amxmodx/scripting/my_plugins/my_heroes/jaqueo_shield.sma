@@ -36,8 +36,6 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	gHeroID = jaqueo_get_hero_id()
-
 	arrayset(g_jaqueo_shield_loaded,1,SH_MAXSLOTS+1)
 
 	register_think(JAQUEO_SHIELD_CLASSNAME, "shield_think")
@@ -73,7 +71,6 @@ public plugin_natives(){
 	
 
 }
-
 public _shield_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
@@ -118,6 +115,8 @@ public plugin_cfg(){
 	loadCVARS();
 }
 public loadCVARS(){
+
+	gHeroID = jaqueo_get_hero_id()
 	shield_cooldown=get_cvar_float("jaqueo_shield_cooldown");
 	shield_radius=get_cvar_float("jaqueo_shield_radius");
 	shield_max_hp=get_cvar_float("jaqueo_shield_max_hp")

@@ -28,22 +28,25 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID = shinobu_get_hero_id()
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
 	RegisterHam(Ham_Weapon_Reload, SHINOBU_WEAPON_CLASSNAME, "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	
+    
+	
+}
+public plugin_cfg(){
+
+	gHeroID = shinobu_get_hero_id()
+
 	custom_weapon_shinobu_pistol=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_shinobu_pistol,
 								dmg_source_name_long_shinobu_pistol,
 								0)
-    
-	
 }
-
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	

@@ -82,7 +82,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID=tranq_get_hero_id()
 	hook_distance_pcvar=register_cvar("hook_distance", "2.0")
 	max_hook_kills_per_life_pcvar=register_cvar("max_hooks_per_life", "2.0")
 	hook_drag_speed_pcvar=register_cvar("hook_drag_speed", "2.0")
@@ -92,14 +91,19 @@ public plugin_init(){
 	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart1")
 	register_event("DeathMsg","death","a")
+	
+	//HOOK_TASKID=allocate_typed_task_id(player_task)
+}
+public plugin_cfg(){
+
+
+	gHeroID=tranq_get_hero_id()
+
 	custom_dmg_id_gutting=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_gutting,
 					dmg_source_name_long_gutting,
 					1)
-	
-	//HOOK_TASKID=allocate_typed_task_id(player_task)
 }
-
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	

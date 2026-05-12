@@ -36,19 +36,21 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	gHeroID = tomie_yu_hero_id()
-	gHeroID_erica = tranq_get_hero_id()
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	register_event("DeathMsg","on_death_burning","a")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
 
+}
+public plugin_cfg(){
+
+	gHeroID = tomie_yu_hero_id()
+	gHeroID_erica = tranq_get_hero_id()
 	custom_dmg_id_fire_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_fire_vuln,
 				dmg_source_name_long_fire_vuln,
 				0)
 }
-
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	

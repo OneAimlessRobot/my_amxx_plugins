@@ -35,7 +35,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	gHeroID = tranq_get_hero_id()
 
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre",_,true)
@@ -53,20 +52,21 @@ public plugin_init(){
 
 	register_think(DART_CLASSNAME, "tranque_thinque")
 
+	init_gravity_pcvar()
 
 
+
+}
+public plugin_cfg(){
+
+	gHeroID = tranq_get_hero_id()
 	super_dart_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_super_dart,
 								dmg_source_name_long_super_dart,
 								0)
 
-	init_gravity_pcvar()
-
-
-
 }
-
 public FwdTouchWorld( dirt, World ) {
 
 	if(!is_valid_ent(dirt)) return

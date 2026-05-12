@@ -33,7 +33,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID = yandere_get_hero_id()
 	pcvar_jetplane_mg_ammo = register_cvar("yandere_jetplane_mg_ammo", "5")
 	pcvar_jetplane_mg_dmg = register_cvar("yandere_jetplane_mg_dmg", "5")
 	pcvar_jetplane_mg_bulletspeed = register_cvar("yandere_jetplane_mg_bulletspeed", "5")
@@ -55,6 +54,10 @@ public plugin_natives(){
 	register_native("get_user_jet_shells","_get_user_jet_shells",0);
 	register_native("reset_jet_shells","_reset_jet_shells",0);
 	
+}
+public plugin_cfg(){
+
+	gHeroID = yandere_get_hero_id()
 }
 get_jet_shells(jet_id){
 

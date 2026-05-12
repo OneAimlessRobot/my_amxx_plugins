@@ -29,9 +29,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
-	gHeroID = maria_get_hero_id()
-	gHeroID_yakui = gatling_get_hero_id()
-
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
@@ -50,6 +47,15 @@ public plugin_init(){
 
 	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
 
+	init_gravity_pcvar()
+
+
+}
+public plugin_cfg(){
+
+
+	gHeroID = maria_get_hero_id()
+	gHeroID_yakui = gatling_get_hero_id()
 
 	maria_riveter_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -57,11 +63,7 @@ public plugin_init(){
 								dmg_source_name_long_riveter,
 								0)
 
-	init_gravity_pcvar()
-
-
 }
-
 public rivette_thinque(ent){
 
 

@@ -37,9 +37,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
-	
-	gHeroID = lena_get_hero_id()
-
 
 	pcvar_dmg_headshot_mult = register_cvar("lena_xp_distance_mult","4")
 	pcvar_xp_distance_mult = register_cvar("lena_dmg_headshot_mult","5")
@@ -56,8 +53,7 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
-	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_long_l96,0)
-
+	
 	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(LENA_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
 
@@ -67,7 +63,12 @@ public plugin_init(){
 
 
 }
+public plugin_cfg(){
 
+	gHeroID = lena_get_hero_id()
+	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_long_l96,0)
+
+}
 public FwdTouchWorld( bull_et, World ) {
 
 	if(!is_valid_ent(bull_et)) return

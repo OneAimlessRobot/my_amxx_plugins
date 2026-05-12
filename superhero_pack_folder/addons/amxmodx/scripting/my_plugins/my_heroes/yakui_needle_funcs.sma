@@ -26,8 +26,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	gHeroID = gatling_get_hero_id()
-
 	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -148,12 +146,7 @@ public playertrail(pid)
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
+	gHeroID = gatling_get_hero_id()
 	
 }
 public _gatling_get_needle(iPlugin,iParams){

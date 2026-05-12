@@ -32,7 +32,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = sapper_get_hero_id()
 	register_cvar("sapper_mine_min_charge_time", "1.0")
 	register_think(MINE_CLASSNAME, "mine_think")
 
@@ -188,6 +187,7 @@ public loadCVARS()
 {
 	
 	
+	gHeroID = sapper_get_hero_id()
 	min_charge_time=get_cvar_float("sapper_mine_min_charge_time")
 }
 

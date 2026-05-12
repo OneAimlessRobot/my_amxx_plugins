@@ -24,8 +24,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	
-	gHeroID = gatling_get_hero_id()
 
 	register_entity_as_wall_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta")
 	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta",player_vector,1)
@@ -44,7 +42,10 @@ public plugin_natives(){
 	
 	
 }
+public plugin_cfg(){
 
+	gHeroID = gatling_get_hero_id()
+}
 public _gatling_get_rockets(iPlugin,iParams){
 	new id=get_param(1)
 	return gRocketsEngaged[id]

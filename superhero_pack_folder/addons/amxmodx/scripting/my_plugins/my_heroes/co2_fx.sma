@@ -13,6 +13,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
 new gHeroID = 0
 new UNCO2_TASKID
 new is_cO2_mask=0
@@ -21,12 +22,15 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	gHeroID = tomie_yu_hero_id()
 	UNCO2_TASKID=allocate_typed_task_id(player_task)
 	register_event("DeathMsg","on_death_co2","a")
 
 }
+public plugin_cfg(){
 
+
+	gHeroID = tomie_yu_hero_id()
+}
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	

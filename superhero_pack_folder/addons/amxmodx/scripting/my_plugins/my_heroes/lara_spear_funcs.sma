@@ -36,7 +36,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = spear_get_hero_id()
 
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SPEAR_CLASSNAME, "spaar_thaank");
@@ -51,7 +50,6 @@ public plugin_init(){
 	register_custom_touchable(SPEAR_CLASSNAME,"spaaaaeer_touch_player",player_vector,1)
 
 }
-
 public FwdTouchWorld( Spaaaaeerr, World ) {
 
 	if(!is_valid_ent(Spaaaaeerr)) return
@@ -184,6 +182,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	
+	gHeroID = spear_get_hero_id()
 	max_charge_time=get_cvar_float("lara_spear_max_charge_time")
 	min_charge_time=get_cvar_float("lara_spear_min_charge_time")
 }

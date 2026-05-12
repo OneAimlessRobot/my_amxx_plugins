@@ -33,8 +33,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	gHeroID = zenitsu_get_hero_id()
-
 	register_event("DeathMsg","on_death_cleanup","a")
 	register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
@@ -58,7 +56,11 @@ public Fwd_PlayerPreThink(id)
 	entity_set_int( id, EV_INT_fixangle, 1 )
 	return FMRES_IGNORED
 }
+public plugin_cfg(){
 
+	gHeroID = zenitsu_get_hero_id()
+
+}
 public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
