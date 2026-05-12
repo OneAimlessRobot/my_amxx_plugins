@@ -38,8 +38,8 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
-	pcvar_dmg_headshot_mult = register_cvar("lena_xp_distance_mult","4")
-	pcvar_xp_distance_mult = register_cvar("lena_dmg_headshot_mult","5")
+	pcvar_dmg_headshot_mult = register_cvar("lena_dmg_headshot_mult","5")
+	pcvar_xp_distance_mult = register_cvar("lena_xp_distance_mult","4")
 
 	register_forward(FM_CmdStart, "CmdStart");
 	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre",_,true)
