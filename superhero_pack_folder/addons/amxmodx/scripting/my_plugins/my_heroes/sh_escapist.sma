@@ -115,11 +115,10 @@ public fw_Touch(ent,id){
 
 
 	if(!is_user_alive(ent) || !sh_user_has_hero(ent,gHeroID)  || !pev_valid(ent)||!is_valid_ent( ent ) )
-		return FMRES_IGNORED
+		return
 	
 	entity_get_vector( ent, EV_VEC_origin, g_wallorigin[ ent ] );
 
-	return FMRES_IGNORED
 }
 
 

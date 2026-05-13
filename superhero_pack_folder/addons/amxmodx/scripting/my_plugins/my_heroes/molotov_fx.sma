@@ -106,7 +106,8 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
-	sh_extra_damage(id,array[0],BURN_DAMAGE,new_dmg_type_names[_:SH_NEW_DMG_FIRE],_,_,_,_,_,_,
+	sh_extra_damage(id,array[0],BURN_DAMAGE,new_dmg_type_names[_:SH_NEW_DMG_FIRE],
+			_,_,_,_,_,
 			SH_NEW_DMG_FIRE,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE))
 
@@ -133,7 +134,7 @@ public molotov_damage_vulnerability(id){
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 							dmg_source_name_short_fire_vuln,
 							my_hitpoint_enum:bodypart,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_FIRE,
 							custom_dmg_id_fire_vuln)
 			}
@@ -142,7 +143,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){

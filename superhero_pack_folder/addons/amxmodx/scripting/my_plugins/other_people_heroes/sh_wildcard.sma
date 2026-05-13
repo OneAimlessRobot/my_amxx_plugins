@@ -121,11 +121,11 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
 	if ( sh_user_has_hero(attacker,gHeroID)&& wpnindex == CSW_AK47 ) {
-		new headshot = hitplace == 1 ? 1 : 0
-
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(pCvarAK47Mult) - damage)
-		if ( extraDamage > 0) sh_extra_damage(victim, attacker, extraDamage, "AK47", headshot)
+		if ( extraDamage > 0){
+			sh_extra_damage(victim, attacker, extraDamage, "AK47", my_hitpoint_enum:hitplace)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ public fm_Touch(ptr, ptd)
 				if (victim == id) damage = floatround(damage / 2.0)
 
 				if ( !damage ) damage = 1	// Incase damage cvar is really low cause something if within the radius 
-				sh_extra_damage(victim, id, damage, "AK47 Burst", _, SH_DMG_NORM, true, _, fl_vExplodeAt)
+				sh_extra_damage(victim, id, damage, "AK47 Burst", _, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN, fl_vExplodeAt)
 				
 				emit_sound(id, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				emit_sound(ptr, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

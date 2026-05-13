@@ -118,7 +118,7 @@ thor_thunder_damage(attacker, tg){
 	new extraDamage = floatround(thor_dmg_to_do )
 	
 	sh_extra_damage(tg, attacker, extraDamage, dmg_source_name_short_thors_hammer,
-								_,_,_,_,_,_,
+								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								thors_hammer_wpn_id)
 

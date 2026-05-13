@@ -268,7 +268,7 @@ remove_entity(pToucher)
 //----------------------------------------------------------------------------------------------
 public law_think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( !pev_valid(ent) ) return
 	
 	
 	static Float:gametime,Float:Pos[3]
@@ -280,7 +280,7 @@ public law_think(ent)
 			law_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet law died cuz of plane dying!!")
 		}
-		return FMRES_IGNORED
+		return
 	}
 	new Float:law_health=float(pev(ent,pev_health))
 	
@@ -289,7 +289,7 @@ public law_think(ent)
 			law_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet law died!")
 		}
-		return FMRES_IGNORED
+		return
 	}
 	if(jet_deployed(owner)){
 		
@@ -329,7 +329,6 @@ public law_think(ent)
 
 		set_pev(ent, pev_nextthink, gametime + LAW_THINK_PERIOD)
 	}
-	return FMRES_IGNORED
 }
 
 //----------------------------------------------------------------------------------------------

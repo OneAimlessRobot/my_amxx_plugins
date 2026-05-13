@@ -15,6 +15,9 @@
 #define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
 
+#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
+#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
 #define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
 #define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
@@ -41,6 +44,14 @@ stock bool:true_for_macro=true,
 
 
 #include "../my_heroes/sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
+
+/**
+
+
+#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
+#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+
+ */
 //----------------------------------------------------------------------------------------------
 // IMPORTANT FUNCTIONS - WHAT EVENTS CAN THE SUPERHEROES REGISTER FOR?
 //----------------------------------------------------------------------------------------------
@@ -49,8 +60,25 @@ stock bool:true_for_macro=true,
 /**************************
  *        FORWARDS        *
  **************************/
+/**
+the flags:
 
-forward sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_wpn_id);
+#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
+#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+
+ */
+forward sh_extra_damage_fwd_pre(
+			&victim, 
+			&attacker, 
+			&damage,
+			wpnDescription[32], 
+			&my_hitpoint_enum:bodypart,
+			&dmgMode,
+			&sh_extra_dmg_flags,
+			const Float:dmgOrigin[3],
+			&dmg_type,
+			&sh_thrash_brat_dmg_type:new_dmg_type,
+			&custom_wpn_id);
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 
@@ -423,13 +451,25 @@ native sh_reload_ammo(id, mode = 0);
  * @param dmgOrigin		Origin of damage bits direction (red flash indicators).
  * @noreturn
  */
-native sh_extra_damage(victim, attacker, damage, const wpnDescription[], my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
+
+/**
+the flags
+
+#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
+#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+
+ */
+native sh_extra_damage(victim,
+				attacker,
+				damage,
+				const wpnDescription[],
+				my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
 				dmgMode = SH_DMG_MULT,
-				bool:dmgStun = false,
-				bool:dmgFFmsg = true,
+				sh_extra_damage_flags=0,
 				const Float:dmgOrigin[3] = {0.0,0.0,0.0},
 				dmg_type=DMG_GENERIC,
-				sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,custom_wpn_id=-1);
+				sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,
+				custom_wpn_id=-1);
 
 /**
  * Speed stuns client for time specified. Bind powers are not usable when stunned.

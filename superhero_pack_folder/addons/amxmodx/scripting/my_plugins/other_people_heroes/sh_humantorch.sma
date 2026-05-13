@@ -297,7 +297,7 @@ public on_fire(args[])
 	write_byte(15)		// byte (framerate)
 	message_end()
 
-	sh_extra_damage(id, attacker, get_pcvar_num(pCvarBurnDamage), "flame blast", _, SH_DMG_NORM, _, false, forigin)
+	sh_extra_damage(id, attacker, get_pcvar_num(pCvarBurnDamage), "flame blast", _, SH_DMG_NORM, _, forigin)
 }
 //----------------------------------------------------------------------------------------------
 public fire_scream(id)

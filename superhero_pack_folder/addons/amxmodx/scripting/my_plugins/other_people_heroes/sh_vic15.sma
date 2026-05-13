@@ -216,7 +216,7 @@ public vic15_auraloop()
 				if (Distance < Radius){
 
 					sh_extra_damage(enemy, id, Pain, dmg_source_name_short_victim_drain_aura,
-											_,_,_,_,_,_,
+											_,_,_,_,_,
 											SH_NEW_DMG_DARK_ARTS,
 											victim_drain_aura_weapon_id)
 				} //distance

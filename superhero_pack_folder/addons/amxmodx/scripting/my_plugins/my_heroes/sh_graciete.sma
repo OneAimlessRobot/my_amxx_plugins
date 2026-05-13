@@ -63,7 +63,7 @@ public sh_client_spawn(id){
 	
 	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
 			reset_graciete_user(id)
-			jet_uncharge_user(id)
+			graciete_jet_uncharge_user(id)
 			q_barrel_set_q_barrel(id)
 	}
 

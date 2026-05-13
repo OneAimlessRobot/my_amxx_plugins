@@ -67,14 +67,14 @@ public plugin_cfg(){
 public rivette_thinque(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return
 	
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!is_user_alive(owner)){
 
 		remove_entity(ent)	
-		return FMRES_IGNORED
+		return
 	}
 
 	new parm[2]
@@ -93,7 +93,6 @@ public rivette_thinque(ent){
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
 
-	return FMRES_IGNORED
 
 
 }

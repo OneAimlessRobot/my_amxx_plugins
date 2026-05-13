@@ -98,9 +98,10 @@ public ball_touch_player(Ball, Player ) {
 
 				sh_extra_damage(Player,oid,BALL_DMG,
 						dmg_source_name_short_free_kick,my_hitpoint_enum:HIT_HEAD
-						,_,_,_,_,_,
+						,_,_,_,_,
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)
+				
 				sh_set_stun(Player,3.0,default_stun_speed)
 				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				sh_chat_message(oid,gHeroID,"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");

@@ -208,7 +208,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 		
 		sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
 							my_hitpoint_enum:hitzone,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_weapon_shinobu_pistol)
 		return HAM_HANDLED

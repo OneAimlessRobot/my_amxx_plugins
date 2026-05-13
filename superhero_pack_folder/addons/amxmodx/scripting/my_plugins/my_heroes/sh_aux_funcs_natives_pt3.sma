@@ -282,7 +282,8 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	xmod_get_wpnname(custom_weapon_id,custom_weapon_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
 	
-	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,_,_,_,_,_,_,
+	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,
+			_,_,_,_,_,
 			SH_NEW_DMG_FRAG_BLAST,
 			custom_weapon_id)
 	

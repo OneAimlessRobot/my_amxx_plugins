@@ -199,8 +199,10 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 	emit_sound(pToucher, CHAN_WEAPON, SLICERISTA_HIT_MEAT_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	
 	set_user_godmode(pTouched,0)
-	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],
-				MY_HIT_HEAD,_,_,_,_,_,
+	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),
+				new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],
+				MY_HIT_HEAD,
+				_,_,_,_,
 				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
 

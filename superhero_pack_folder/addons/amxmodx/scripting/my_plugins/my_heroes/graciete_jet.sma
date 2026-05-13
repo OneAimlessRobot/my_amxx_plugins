@@ -61,7 +61,7 @@ public plugin_natives(){
 
 	register_native("reset_graciete_user","_reset_graciete_user",0);
 	register_native("jet_get_user_power_landing","_jet_get_user_power_landing",0)
-	register_native("jet_uncharge_user","_jet_uncharge_user",0)
+	register_native("graciete_jet_uncharge_user","_graciete_jet_uncharge_user",0)
 
 	
 
@@ -70,7 +70,7 @@ public plugin_cfg(){
 
 	gHeroID = graciete_get_hero_id()
 }
-public _jet_uncharge_user(iPlugin,iParams){
+public _graciete_jet_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
 	uncharge_user(id)

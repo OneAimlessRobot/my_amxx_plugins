@@ -88,14 +88,14 @@ public FwdTouchWorld( bull_et, World ) {
 public bulette_thinque(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return
 	
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!is_user_alive(owner)){
 
 		remove_entity(ent)	
-		return FMRES_IGNORED
+		return
 	}
 
 
@@ -127,8 +127,6 @@ public bulette_thinque(ent){
 	
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,LENA_PROJECTILE_PHYS_UPDATE_TIME));
-
-	return FMRES_IGNORED
 
 
 }
@@ -489,7 +487,13 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(oid)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, my_hitpoint_enum:hitgroup,_,_,_,_,DMG_BULLET,_,custom_dmg_id_l96);
+		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, 
+			my_hitpoint_enum:hitgroup,
+			_,_,_,
+			DMG_BULLET,
+			SH_NEW_DMG_SUPER_BULLET,
+			custom_dmg_id_l96);
+
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
 		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)

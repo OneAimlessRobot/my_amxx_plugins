@@ -10,8 +10,8 @@
 stock generic_dmg_source_wpn_id;
 const generic_dmg_source_is_melee=0;
 stock generic_dmg_hero_name[MAX_HERO_NAME_LENGTH]="some_hero"
-stock generic_dmg_source_name[SAFE_BUFFER_SIZE-1]="sh_generic_dmg";
-stock generic_dmg_source_long_name[SAFE_BUFFER_SIZE-1]="sh_generic_dmg";
+stock const generic_dmg_source_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
+stock const generic_dmg_source_long_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
 
 //These are indexed by "SH_CUSTOM_DMG_WPN_ID"
 //and the max number of weapons is "MAX_SH_CUSTOM_DMG_SOURCES"
@@ -29,8 +29,8 @@ public plugin_init(){
     register_plugin(PLUGIN, VERSION, AUTHOR);
     arrayset(sh_damage_source_hero_ids,0,sizeof(sh_damage_source_hero_ids))
     for(new i=0;i<MAX_SH_CUSTOM_DMG_SOURCES;i++){
-        arrayset(sh_damage_source_short_names[i],0,sizeof(sh_damage_source_short_names))
-        arrayset(sh_damage_source_long_names[i],0,sizeof(sh_damage_source_long_names))
+        arrayset(sh_damage_source_short_names[i],0,sizeof(sh_damage_source_short_names[]))
+        arrayset(sh_damage_source_long_names[i],0,sizeof(sh_damage_source_long_names[]))
     }
     generic_dmg_source_wpn_id=sh_log_custom_damage_source();
 }
@@ -62,12 +62,12 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid hero id %d at _sh_log_custom_damage_source!^nHero id must be between exactly %d and %d!^nGeneric damage source will be logged^n",hero_id,-1,SH_MAXHEROS-1)
         */
     }
-    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:long_name_arr, is_a_melee, is_generic_hero?generic_dmg_source_name:short_name_arr)
+    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_a_melee, is_generic_hero?generic_dmg_source_long_name:long_name_arr)
     if(wpn_id>0){
         sh_damage_source_hero_ids[wpn_id]=is_generic_hero?-1:hero_id;
         sh_damage_source_is_a_melee[wpn_id]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
-        copy(sh_damage_source_short_names[wpn_id],SAFE_BUFFER_SIZE-1,is_generic_hero?generic_dmg_source_name:short_name_arr)
-        copy(sh_damage_source_long_names[wpn_id],SAFE_BUFFER_SIZE-1,is_generic_hero?generic_dmg_source_name:long_name_arr)
+        copy(sh_damage_source_short_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_name:short_name_arr)
+        copy(sh_damage_source_long_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_long_name:long_name_arr)
         
     }
     else{
@@ -76,22 +76,37 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         wpn_id=-1
     }
     
+    
     /*
-    server_print("Valid wpn_id obtained! %d^n",wpn_id)
+    server_print("^nValid wpn_id obtained! %d^n",wpn_id)
 
+    static hero_name[MAX_HERO_NAME_LENGTH]
+    if(sh_damage_source_hero_ids[wpn_id]>=0){
+        sh_get_hero_name_from_id(hero_id, hero_name)
 
-    server_print("The short name was: %s^n",
+    }
+    else{
+
+        server_print("It is for a generic hero!");
+    }
+    server_print("The hero name is: %s",
+            is_generic_hero?generic_dmg_hero_name:hero_name)
+
+    server_print("The short name was: %s",
                                 sh_damage_source_short_names[wpn_id])
 
-    server_print("The long name was: %s^n",
+    server_print("The long name was: %s",
                                 sh_damage_source_long_names[wpn_id])
+
+    server_print("This weapon is%sa melee!",
+                                sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
     */
     return wpn_id
     
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
     new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
     if((damage > 0)&&(attacker!=victim)){

@@ -155,7 +155,7 @@ public vash_damage(id)
 			
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_revolver,
 								my_hitpoint_enum:bodypart ,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_revolver)
 		}

@@ -189,8 +189,8 @@ public Marksman_damage(id)
 		if (extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
 						dmg_source_name_short_good_rifle,
-						my_hitpoint_enum:bodypart
-						,_,_,_,_,_,
+						my_hitpoint_enum:bodypart,
+						_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,good_rifle_wpn_id)
 		}
 	}
@@ -199,8 +199,8 @@ public Marksman_damage(id)
 		if(extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage,
 						dmg_source_name_short_evil_rifle,
-						my_hitpoint_enum:bodypart
-						,_,_,_,_,_,
+						my_hitpoint_enum:bodypart,
+						_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,evil_rifle_wpn_id)
 		}
 	}

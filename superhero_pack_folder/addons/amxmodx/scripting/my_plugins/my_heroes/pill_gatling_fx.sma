@@ -205,7 +205,7 @@ public fx_damage(id)
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 							dmg_source_name_long_crackhead_rage,
 							my_hitpoint_enum:bodypart ,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_crackhead_rage)
 			}	
@@ -230,7 +230,7 @@ public fx_damage(id)
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 							dmg_source_name_long_poison_vuln,
 							my_hitpoint_enum:bodypart ,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_poison_vuln)
 		}	
@@ -242,7 +242,7 @@ public fx_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_att=(gatling_get_fx_num(attacker));
@@ -519,9 +519,10 @@ public poison_task(array[],id){
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
 	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),
 							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
-							_,_,_,_,_,_,
+							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON))
+	
 	sh_set_stun(id,0.33,140.0)
 	emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	task_cycle(array,id)

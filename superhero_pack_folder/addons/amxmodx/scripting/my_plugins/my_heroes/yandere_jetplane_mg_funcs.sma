@@ -172,7 +172,7 @@ public CmdStart(id, uc_handle)
 //----------------------------------------------------------------------------------------------
 public mg_think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( !pev_valid(ent) ) return
 	
 	
 	static Float:vEnd[3], Float:gametime,Float:Pos[3]
@@ -185,7 +185,7 @@ public mg_think(ent)
 			mg_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet mg died cuz of plane dying!!")
 		}
-		return FMRES_IGNORED
+		return
 	}
 	new Float:mg_health=float(pev(ent,pev_health))
 	
@@ -194,7 +194,7 @@ public mg_think(ent)
 			mg_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet mg died!")
 		}
-		return FMRES_IGNORED
+		return
 	}
 	if(jet_deployed(owner)){
 		new user_jet=jet_get_user_jet(owner)
@@ -225,7 +225,6 @@ public mg_think(ent)
 		}
 		set_pev(ent, pev_nextthink, gametime + MG_THINK_PERIOD)
 	}
-	return FMRES_IGNORED
 }
 
 launch_shell(id)

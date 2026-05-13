@@ -172,7 +172,7 @@ public veronika_damage(id)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak,
 								my_hitpoint_enum:bodypart ,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_ak)
 
@@ -347,7 +347,7 @@ public veronika_gren_touch(pToucher, pTouched)
 
 do_victim(victim,attacker,damage,tk)
 {	
-	sh_extra_damage(victim,attacker,damage, dmg_source_name_long_grenade,_,_,_,tk?true:false,_,_,_,custom_dmg_id_grenade)
+	sh_extra_damage(victim,attacker,damage, dmg_source_name_long_grenade,_,_,tk?SH_EXTRA_DMG_FLAG_dmgFFmsg:0,_,_,_,custom_dmg_id_grenade)
 }
 
 

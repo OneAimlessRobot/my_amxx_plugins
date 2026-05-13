@@ -10,6 +10,10 @@
 new gHeroID
 new const gHeroName[] = "Jaqueo"
 
+new dmg_source_name_short_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
+new dmg_source_name_long_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
+new custom_dmg_id_jaqueo_scout
+
 new Float:scout_mult
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -31,6 +35,11 @@ public plugin_init()
 								"jaqueo",
 								"",
 								"")
+	
+	custom_dmg_id_jaqueo_scout=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_badass_scout,
+				dmg_source_name_long_badass_scout,
+				0)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,JAQUEO_AK47_V_MODEL)
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_SCOUT,
@@ -111,7 +120,12 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	if((weapon==CSW_SCOUT)&&sh_user_has_hero(idattacker,gHeroID) ){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
-			sh_extra_damage(this, idattacker, floatround(extraDamage), "Jaqueo scout", my_hitpoint_enum:bodypart)
+			sh_extra_damage(this, idattacker, floatround(extraDamage),
+						dmg_source_name_short_badass_scout,
+						my_hitpoint_enum:bodypart,
+						_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,
+						custom_dmg_id_jaqueo_scout)
 			
 		}
 	}

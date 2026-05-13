@@ -90,8 +90,8 @@ public Painkiller_Death(id)
 	{
 		sh_extra_damage(id, killer, get_user_health(id)+4,
 						dmg_source_name_long_painkiller_death,
-						1,
-						_,_,_,_,_,_,
+						MY_HIT_HEAD,
+						_,_,_,_,_,
 						custom_dmg_id_painkiller_death)
 
 		AttackerInfo[id] = 0

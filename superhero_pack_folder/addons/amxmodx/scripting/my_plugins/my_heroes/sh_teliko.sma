@@ -20,6 +20,7 @@
 #define famas_g2_v_model "models/shmod/teliko/teliko_famas/v_famas.mdl"
 #define famas_g2_p_model "models/shmod/teliko/teliko_famas/p_famas.mdl"
 
+new gHeroID
 
 // GLOBAL VARIABLES
 new gNumChaffs[SH_MAXSLOTS+1]
@@ -329,7 +330,7 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 	if (floatround(extraDamage)>0){
 		sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_SUPER_BULLET],
 			my_hitpoint_enum:bodypart,
-			_,_,_,_,_,
+			_,_,_,_,
 			SH_NEW_DMG_SUPER_BULLET,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SUPER_BULLET))
 	}

@@ -36,7 +36,10 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	register_event("DeathMsg","death","a")
-	custom_dmg_id=sh_log_custom_damage_source(gHeroID,CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,CHIKOI_THE_MAID_PHYSICAL_PROPERTY,1)
+	custom_dmg_id=sh_log_custom_damage_source(gHeroID,
+			CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,
+			CHIKOI_THE_MAID_PHYSICAL_PROPERTY,
+			0)
 	
 }
 public plugin_natives(){
@@ -104,7 +107,9 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			set_user_godmode(id,0)
-			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, MY_HIT_HEAD,SH_DMG_KILL,_,_,_,_,SH_NEW_DMG_SQUASHED,custom_dmg_id)
+			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, MY_HIT_HEAD,SH_DMG_KILL,
+						_,_,_,
+						SH_NEW_DMG_SQUASHED,custom_dmg_id)
 
 		}
 		default:{
@@ -114,7 +119,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

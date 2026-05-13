@@ -132,7 +132,7 @@ public ester_drain_loop(task_id){
 		}
 		sh_extra_damage(id, id, cvar_val(num,pcvar_ester_fly_health_spend),
 					dmg_source_name_short_ester_flight_drain,
-					_,_,_,_,_,_,
+					_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					ester_flight_drain_wpn_id)
 
@@ -142,6 +142,9 @@ public ester_drain_loop(task_id){
 }
 deny_next_reborn(id,bool:is_sillycide=true){
 	
+	if(Get_BitVar(g_ester_is_denied_mask,id)){
+		return
+	}
 	sh_chat_message(id,gHeroID,is_sillycide?ESTER_SUICIDE_FAIL_MSG:ESTER_RESPAWN_FAIL_MSG)
 
 	emit_sound(id, CHAN_AUTO,NULL_SOUND , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -177,7 +180,8 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		
 			sh_extra_damage(attacker, id,floatround(
 					cvar_val(float, pcvar_ester_damage_reflect_coeff)*damage),
-				new_dmg_type_names[_:SH_NEW_DMG_SHOCK],_,_,_,_,_,_,
+				new_dmg_type_names[_:SH_NEW_DMG_SHOCK],
+				_,_,_,_,_,
 				SH_NEW_DMG_SHOCK,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
 

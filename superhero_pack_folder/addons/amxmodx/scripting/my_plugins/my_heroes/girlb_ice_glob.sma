@@ -236,7 +236,8 @@ public bool:player_touch_logic(Glob, Other_Entity){
 	}
 	if((Other_Entity != owner_edict )&&!sh_clients_are_same_team(Other_Entity,owner_edict)){
 		sh_extra_damage(Other_Entity, owner_edict, GLOB_DMG,
-				new_dmg_type_names[_:SH_NEW_DMG_FREEZE],_,_,_,_,_,_,
+				new_dmg_type_names[_:SH_NEW_DMG_FREEZE],
+				_,_,_,_,_,
 				SH_NEW_DMG_FREEZE,
 				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FREEZE))
 		if(!sh_is_user_frozen(Other_Entity)){
@@ -246,11 +247,11 @@ public bool:player_touch_logic(Glob, Other_Entity){
 	return true
 }
 public FwdTouch( Glob, World ) {
-	if(!is_valid_ent(Glob)) return FMRES_IGNORED
+	if(!is_valid_ent(Glob)) return
 
 	if(entity_get_int(Glob,EV_INT_iuser1)){
 
-		return FMRES_IGNORED
+		return
 	}
 	new owner_edict=entity_get_edict(Glob,EV_ENT_owner)
 
@@ -284,33 +285,33 @@ public FwdTouch( Glob, World ) {
 	entity_set_int(Glob,EV_INT_iuser1, 1)
 	entity_set_int(Glob,EV_INT_movetype, MOVETYPE_TOSS)
 
-	return FMRES_IGNORED
+	return
 }
 public player_touch( Glob, Player ) {
-	if(!is_valid_ent(Glob)) return FMRES_IGNORED
+	if(!is_valid_ent(Glob)) return
 
 	if(player_touch_logic(Glob, Player)){
 		
-		if(!is_valid_ent(Glob)) return FMRES_IGNORED
+		if(!is_valid_ent(Glob)) return
 
 		new owner= entity_get_edict(Glob,EV_ENT_owner)
 		if(Player==owner){
-			return FMRES_IGNORED
+			return
 		}
 
 	}
-	return FMRES_IGNORED
+	return
 }
 
 //----------------------------------------------------------------------------------------------
 public ice_field_think(ent)
 {
-	if(!is_valid_ent(ent)) return FMRES_IGNORED
+	if(!is_valid_ent(ent)) return
 	
 	if ( pev_valid(ent)!=2 ){
 		
 	
-			return FMRES_IGNORED
+			return
 	
 	}
 
@@ -320,7 +321,7 @@ public ice_field_think(ent)
 		if(pev_valid(ent)==2){
 			remove_entity(ent)
 		}
-		return FMRES_IGNORED
+		return
 	}
 	else{
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
@@ -345,7 +346,6 @@ public ice_field_think(ent)
 		entity_set_float(ent,EV_FL_nextthink,floatadd(get_gametime(),GLOB_THINK_PERIOD))
 	
 	}
-	return FMRES_IGNORED
 }
 public _launch_ice_glob(iPlugin,iParams)
 {

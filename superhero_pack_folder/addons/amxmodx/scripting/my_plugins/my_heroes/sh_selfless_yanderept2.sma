@@ -255,7 +255,7 @@ public yandere_sentence_loop(id){
 					sh_extra_damage(i,i,degen_dmg_2_take,
 									dmg_source_name_short_drain,
 									MY_HIT_HEAD,
-									_,_,_,_,_,
+									_,_,_,_,
 									SH_NEW_DMG_DRAIN,custom_dmg_id_drain)
 					
 					fx_bleed(client_origin)
@@ -489,14 +489,14 @@ public yandere_damage(id)
 			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
 								my_hitpoint_enum:bodypart,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_senpai_avenger)
 			}
 			else {
 				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_rage,
 								my_hitpoint_enum:bodypart,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_rage)
 			}
@@ -538,8 +538,9 @@ public yandere_damage(id)
 		if(Get_BitVar(g_is_cursed_masks[attacker],id)){
 			if(generate_float(0.0,1.0)<cvar_val(float,pcvar_curse_pct)){
 				set_user_godmode(id,0)
-				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,SH_DMG_KILL,
-							_,_,_,_,
+				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,
+							SH_DMG_KILL,
+							_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS))
 				UnSet_BitVar(g_is_cursed_masks[attacker],id)
@@ -601,7 +602,7 @@ switch(key)
 public yandere_kd(id)
 {
 	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
 
 	if(Get_BitVar(gSuperAngryMask,id)){
 		if ( sh_get_cooldown_flag(id)||yandere_get_user_is_psychosis(id) ) {
@@ -610,7 +611,7 @@ public yandere_kd(id)
 				playSoundDenySelect(id)
 				sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
 			}
-			return PLUGIN_HANDLED
+			return
 		}
 		new client_name[128]
 		get_user_name(id,client_name,127)
@@ -624,7 +625,7 @@ public yandere_kd(id)
 				playSoundDenySelect(id)
 				sh_chat_message(id, gHeroID, "The jet is not loaded yet!")
 			}
-			return PLUGIN_HANDLED
+			return
 			
 		}
 
@@ -635,32 +636,26 @@ public yandere_kd(id)
 			if(!is_user_bot(id)){
 				sh_chat_message(id, gHeroID, "You J-ed out!!")
 			}
-			return PLUGIN_HANDLED
+			return
 			
 		}
-		jet_charge_user(id)
+		yandere_jet_charge_user(id)
 	
 	
 	}
-	
-	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
 public yandere_ku(id)
 {
 	
 	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
-		return PLUGIN_HANDLED
+		return
 	}
 	
 	if(!jet_deployed(id)){
 		
-		jet_uncharge_user(id)
-		return PLUGIN_HANDLED
+		yandere_jet_uncharge_user(id)
 	}
-	
-	
-	return PLUGIN_HANDLED
 }
 public sh_round_end(){
 	

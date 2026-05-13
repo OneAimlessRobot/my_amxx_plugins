@@ -153,7 +153,7 @@ public Haloune_damage(id)
 		if ( extraDamage > 0 ){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ninja_m4,
 								my_hitpoint_enum:bodypart,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_ninja_m4)
 		}

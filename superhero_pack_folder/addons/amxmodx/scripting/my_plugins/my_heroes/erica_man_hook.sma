@@ -416,7 +416,7 @@ if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_val
 						
 					sh_extra_damage(target,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
 								dmg_source_name_long_gutting,MY_HIT_HEAD
-								,_,_,_,_,_,
+								,_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								custom_dmg_id_gutting)
 					

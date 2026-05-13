@@ -458,7 +458,7 @@ public laser_on_player_think(ent){
 //----------------------------------------------------------------------------------------------
 public camera_think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( !pev_valid(ent) ) return PLUGIN_CONTINUE
 	
 	//get phase
 	new phase=pev(ent,pev_iuser2)
@@ -515,7 +515,7 @@ public camera_think(ent)
 			if ( (cameraHealth<1000.0)) {
 				
 				remove_camera(owner);
-				return FMRES_IGNORED
+				return PLUGIN_CONTINUE
 			}
 			if(Get_BitVar(looking_with_camera_mask,owner)){
 				camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
@@ -526,7 +526,7 @@ public camera_think(ent)
 		}
 	}
 	
-	return FMRES_IGNORED
+	return PLUGIN_CONTINUE
 }
 public remove_camera(pid){
 	if(!is_user_connected(pid)) return

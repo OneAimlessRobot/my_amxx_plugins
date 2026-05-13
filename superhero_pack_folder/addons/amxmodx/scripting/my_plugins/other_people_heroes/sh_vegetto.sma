@@ -27,6 +27,15 @@ stock vegetto_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailZ
 new g_spriteExplosionG, g_spriteExplosionB, g_spriteExplosionR, g_spriteExplosionO, g_spritePowerUp
+
+new vegetto_dmgs_arr[4][sh_extra_damage_struct] = {
+	{"vegetto_galick_gun", "vegetto_galick_gun", -1},
+	{"vegetto_big_bang_attack", "vegetto_big_bang_attack", -1},
+	{"vegetto_final_flash", "vegetto_final_flash", -1},
+	{"vegetto_death_ball", "vegetto_death_ball", -1}
+
+}
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -54,6 +63,13 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Void Walker", "Absorb energy through the void and release the void-power in this dimension to create immense destruction!", true, "vegetto_level")
 
+	for(new i=0;i<sizeof vegetto_dmgs_arr;i++){
+
+		vegetto_dmgs_arr[i][custom_wpn_id] = sh_log_custom_damage_source(gHeroID,
+				vegetto_dmgs_arr[i][short_dmg_name],
+				vegetto_dmgs_arr[i][long_dmg_name],
+				0)
+	}
 
 	register_entity_as_wall_touchable("vexd_vegetto_power","vegetto_power_touch")
 	register_custom_touchable("vexd_vegetto_power","vegetto_power_touch",player_vector,1)
@@ -292,7 +308,7 @@ public create_power(id)
 		}
 		case 4:{
 			entModel = "sprites/shmod/deathball2.spr"
-			entScale = 0.23
+			entScale = 0.40
 			entSpeed = 850.0
 			trailModel = g_spriteTrailZ
 			trailLength = 100
@@ -468,24 +484,20 @@ public vegetto_power_touch(pToucher, pTouched) {
 	new id = entity_get_edict(pToucher, EV_ENT_owner)
 	new dmgRadius = g_maxRadius[id]
 	new maxDamage = g_maxDamage[id]
-	new Float:fl_vExplodeAt[3], damageName[16]
+	new Float:fl_vExplodeAt[3]
 	new spriteExp = g_spriteExplosionG
 
 	switch(g_powerNum[id]){
 		case 1:{
-			damageName = "Galitgun"
 			spriteExp = g_spriteExplosionG
 				}
 		case 2:{
-			damageName = "Big Bang"
 			spriteExp = g_spriteExplosionR
 		}
 		case 3:{
-			damageName = "Final Flash"
 			spriteExp = g_spriteExplosionB
 		}
 		case 4:{
-			damageName = "Deathball"
 			spriteExp = g_spriteExplosionO
 				}
 	}
@@ -521,12 +533,19 @@ public vegetto_power_touch(pToucher, pTouched) {
 			if ( vic == id ){
 				damage = floatround(damage / 2.0)
 			}
-			sh_extra_damage(vic, id, damage, damageName)
-			if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
+		
+			sh_extra_damage(vic, id, damage,
+								vegetto_dmgs_arr[g_powerNum[id]-1][short_dmg_name],
+								_,_,_,_,_,
+								SH_NEW_DMG_ENERGY_BLAST,
+								vegetto_dmgs_arr[g_powerNum[id]-1][custom_wpn_id])
+
+
+			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
 
 					new Float:vic_origin_f[3]
 					IVecFVec(vicOrigin,vic_origin_f)
-					gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
+					gross_kill_gibs_fx(vic,vic_origin_f,fl_vExplodeAt)
 			}
 			// Make them feel it
 			sh_screenShake(vic, 10, 10, 10)

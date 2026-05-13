@@ -83,14 +83,14 @@ public FwdTouchWorld( dirt, World ) {
 public tranque_thinque(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return
 
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!is_user_alive(owner)){
 
 		remove_entity(ent)
-		return FMRES_IGNORED
+		return
 	}
 
 
@@ -109,8 +109,6 @@ public tranque_thinque(ent){
 
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
-
-	return FMRES_IGNORED
 
 
 }
@@ -437,8 +435,9 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			}
 			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,
 						my_hitpoint_enum:hitgroup,
-						_,_,_,_,_,
-						SH_NEW_DMG_BLEED,super_dart_weapon_id)
+						_,_,_,_,
+						SH_NEW_DMG_BLEED,
+						super_dart_weapon_id)
 						
 			new CsArmorType:armor_type;
 			cs_get_user_armor(pTouched,armor_type);

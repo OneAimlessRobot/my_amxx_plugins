@@ -73,7 +73,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 	
 	
 	{"molotov_cocktail",
-					"models/w_hegrenade.mdl",
+					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					"weapon_hegrenade",
 					GLASS_VIAL_BREAK,
 					CSW_HEGRENADE,
@@ -85,7 +85,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					1.5,
 					3.0},
 
-	{"chaff_grenade","models/w_smokegrenade.mdl",
+	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"weapon_smokegrenade",
 					crush_stunned,
 					CSW_SMOKEGRENADE,
@@ -97,7 +97,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					1.5,
 					0.5},
 
-	{"sleep_grenade","models/w_smokegrenade.mdl",
+	{"sleep_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"weapon_smokegrenade",
 					SMOKE_EXPLODE_SOUND,
 					CSW_SMOKEGRENADE,
@@ -110,7 +110,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					6.0},
 
 	{"CO2_grenade",
-					"models/w_smokegrenade.mdl",
+					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"weapon_smokegrenade",
 					EXTINGUISH_FIRE_SOUND,
 					CSW_SMOKEGRENADE,
@@ -123,7 +123,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3.5},
 
 	{"shock_grenade",
-					"models/w_flashbang.mdl",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
 					"weapon_flashbang",
 					SHOCK_GRENADE_SOUND,
 					CSW_FLASHBANG,
@@ -136,7 +136,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					0.5},
 
 	{"freeze_grenade",
-					"models/w_smokegrenade.mdl",
+					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"weapon_smokegrenade",
 					FROZEN_SFX,
 					CSW_SMOKEGRENADE,
@@ -149,7 +149,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					2.33},
 
 	{"disrupt_grenade",
-					"models/w_flashbang.mdl",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
 					"weapon_flashbang",
 					crush_stunned,
 					CSW_FLASHBANG,
@@ -162,7 +162,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					0.5},
 
 	{"shrapnel_grenade",
-					"models/w_hegrenade.mdl",
+					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					"weapon_hegrenade",
 					PIERCE_WOUND_SFX,
 					CSW_HEGRENADE,
@@ -175,7 +175,7 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					2.6},
 
 	{"marker_grenade",
-					"models/w_hegrenade.mdl",
+					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					"weapon_hegrenade",
 					"shmod/komak/fast_shot.wav",
 					CSW_HEGRENADE,
@@ -627,13 +627,13 @@ return PLUGIN_CONTINUE
 
 public sh_grenade_think(id_grenade){
 
-if ( !is_valid_ent(id_grenade) ) return FMRES_IGNORED
+if ( !is_valid_ent(id_grenade) ) return PLUGIN_CONTINUE
 
 new owner=entity_get_edict(id_grenade,EV_ENT_owner);
 
 if(!is_user_connected(owner)){
 	remove_entity(id_grenade)
-	return FMRES_IGNORED
+	return PLUGIN_CONTINUE
 }
 static bool:prev_touched_wall,
 		bool:curr_touched_wall,
@@ -646,7 +646,7 @@ if(the_type<=sh_grenade_type:0){
 
 
 	remove_entity(id_grenade)
-	return FMRES_IGNORED
+	return PLUGIN_CONTINUE
 
 }
 
@@ -666,7 +666,7 @@ for the fuse to activate
 */
 
 entity_set_float(id_grenade,EV_FL_nextthink,get_gametime()+1.0)
-return FMRES_IGNORED
+return PLUGIN_CONTINUE
 
 
 }
@@ -674,7 +674,7 @@ if(!prev_touched_wall){
 
 	entity_set_float(id_grenade,EV_FL_nextthink,
 		get_gametime()+sh_grenade_structs_arr[the_type][after_touch_fuse])
-	return FMRES_IGNORED
+	return PLUGIN_CONTINUE
 
 }
 
@@ -708,7 +708,7 @@ for( new i= 0;(i< numfound);i++){
 
 
 remove_entity(id_grenade)
-return FMRES_IGNORED
+return PLUGIN_CONTINUE
 
 }
 
@@ -716,7 +716,7 @@ public sh_grenade_touch_things(pToucher, pTouched)
 {
 	
 	
-	if(!is_valid_ent(pToucher)) return FMRES_IGNORED
+	if(!is_valid_ent(pToucher)) return PLUGIN_CONTINUE
 	if(!(bool:entity_get_int(pToucher,EV_INT_iuser1))){
 
 		entity_set_int(pToucher,EV_INT_iuser1,1)
@@ -729,7 +729,7 @@ public sh_grenade_touch_things(pToucher, pTouched)
 	velocity[2]*=0.5
 	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
 	
-	return FMRES_IGNORED
+	return PLUGIN_CONTINUE
 }
 
 public plugin_precache()
@@ -742,6 +742,7 @@ engfunc(EngFunc_PrecacheSound, THROWABLE_LAUNCH_SFX)
 for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 
 	engfunc(EngFunc_PrecacheSound, sh_grenade_structs_arr[i][sh_grenade_break_sound])
+	engfunc(EngFunc_PrecacheModel, sh_grenade_structs_arr[i][sh_grenade_modelname])
 }
 
 

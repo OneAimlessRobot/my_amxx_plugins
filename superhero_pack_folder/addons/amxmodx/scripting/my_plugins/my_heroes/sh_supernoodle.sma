@@ -132,7 +132,7 @@ public SuperNoodle_damage(id)
 		if (extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_shotgun,
 								my_hitpoint_enum:bodypart,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_shotgun)
 		}
@@ -142,7 +142,7 @@ public SuperNoodle_damage(id)
 		if(extraDamage > 0){
 			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_hunt_rifle,
 								my_hitpoint_enum:bodypart,
-								_,_,_,_,_,
+								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_hunt_rifle)
 		}
@@ -154,7 +154,7 @@ public SuperNoodle_damage(id)
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_arifle,
 							my_hitpoint_enum:bodypart,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_arifle)
 		}
@@ -166,7 +166,7 @@ public SuperNoodle_damage(id)
 			sh_extra_damage( id, attacker, extraDamage,
 							dmg_source_name_long_the_pistols,
 							my_hitpoint_enum:bodypart,
-							_,_,_,_,_,
+							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
 							custom_dmg_id_the_pistols)
 		}

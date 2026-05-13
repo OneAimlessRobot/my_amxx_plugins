@@ -85,7 +85,7 @@ public plugin_init()
 	gmsgDamage = get_user_msgid("Damage")
 	gmsgIcon = get_user_msgid("StatusIcon")
 
-	custom_dmg_id_poison_ivy_drain=sh_log_custom_damage_source(-1,
+	custom_dmg_id_poison_ivy_drain=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_poison_ivy_drain,
 				dmg_source_name_long_poison_ivy_drain,
 				0)
@@ -199,7 +199,7 @@ public poisonivy_loop()
 
 				sh_extra_damage(id, attacker, damage,
 											dmg_source_name_short_poison_ivy_drain,
-											_,_,_,_,_,_,
+											_,_,_,_,_,
 											SH_NEW_DMG_DRAIN,
 											custom_dmg_id_poison_ivy_drain)
 

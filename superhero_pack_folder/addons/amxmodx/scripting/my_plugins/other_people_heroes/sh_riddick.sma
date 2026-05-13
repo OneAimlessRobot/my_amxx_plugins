@@ -103,7 +103,8 @@ public riddick_damage(id)
 			sh_extra_damage(id, attacker, extraDamage, 
 						dmg_source_name_long_dual_knife,
 						my_hitpoint_enum:bodypart,
-						_,_,_,_,_,_,
+						_,_,_,_,
+						SH_NEW_DMG_SUPER_MELEE,
 						custom_dmg_id_dual_knife)
 		}
 	}

@@ -320,7 +320,7 @@ blow_up(id, Float:vExplodeAt[3])
 				dRatio = distanceBetween / dmgRadius
 				damage = maxDamage - floatround(maxDamage * dRatio)
 				if ( !damage ) damage = 1	// Incase damage cvar is really low cause something if within the radius 
-				sh_extra_damage(player, id, damage, "tripmine", _, SH_DMG_NORM, true, _, vExplodeAt)
+				sh_extra_damage(player, id, damage, "tripmine", _, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN, vExplodeAt)
 			}
 
 			// Add some push and shake effects instead of dmgStun later, and cause it on everyone within radius

@@ -353,9 +353,10 @@ if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)){
 							SetHamParamFloat(4, damage);
 							sh_extra_damage(id,attacker,floatround(damage),
 								dmg_source_name_short_sneak,MY_HIT_HEAD
-								,_,_,_,_,_,
+								,_,_,_,_,
 								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 								custom_dmg_id_sneak)
+							
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
 							}

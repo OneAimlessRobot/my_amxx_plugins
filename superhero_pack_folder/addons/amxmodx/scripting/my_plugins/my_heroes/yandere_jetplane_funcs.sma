@@ -99,8 +99,8 @@ public plugin_natives(){
 	
 	register_native("clear_jets","_clear_jets",0);
 	register_native("reset_jet_user","_reset_jet_user",0);
-	register_native("jet_uncharge_user","_jet_uncharge_user",0);
-	register_native("jet_charge_user","_jet_charge_user",0);
+	register_native("yandere_jet_uncharge_user","_yandere_jet_uncharge_user",0);
+	register_native("yandere_jet_charge_user","_yandere_jet_charge_user",0);
 	register_native("jet_loaded","_jet_loaded",0);
 	register_native("jet_deployed","_jet_deployed",0);
 	register_native("jet_destroy","_jet_destroy",0);
@@ -171,7 +171,7 @@ public _jet_deployed(iPlugin,iParams){
 	
 	
 }
-public _jet_charge_user(iPlugin, iParams){
+public _yandere_jet_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
 
@@ -275,7 +275,7 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 	return HAM_IGNORED;
 }
 
-public _jet_uncharge_user(iPlugin,iParams){
+public _yandere_jet_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
 	uncharge_user(id)
@@ -417,11 +417,11 @@ public load_jet(id){
 public FwdTouchWorld( jet, World ) {
 	
 
-	if(!is_valid_ent(jet)) return FMRES_IGNORED
+	if(!is_valid_ent(jet)) return
 
 	if(pev_valid(jet)!=2){
 
-		return FMRES_IGNORED;
+		return
 	}
 	new owner=pev(jet,pev_owner)
 	if(is_user_alive(owner)||!sh_user_has_hero(owner,gHeroID)){
@@ -433,7 +433,7 @@ public FwdTouchWorld( jet, World ) {
 			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME)
 			jet_destroy(owner)
 			user_kill(owner)
-			return FMRES_IGNORED
+			return
 			
 		}
 		if(get_entity_velocity(jet)>((JET_MINIMUM_SPEED*(1.0+JET_RESTITUTION_COEFF))+10.0)){
@@ -444,14 +444,11 @@ public FwdTouchWorld( jet, World ) {
 
 		}
 	}
-	
-	
-	return FMRES_IGNORED;
 }
 //----------------------------------------------------------------------------------------------
 public jet_think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
+	if ( !pev_valid(ent) ) return
 
 	
 	static Float:gametime,Float:Pos[3]
@@ -461,11 +458,11 @@ public jet_think(ent)
 	
 	if(!is_user_alive(owner)){
 
-		return FMRES_IGNORED
+		return
 	}
 	if(!sh_user_has_hero(owner,gHeroID)||!Get_BitVar(g_jetplane_deployed_mask,owner)){
 
-		return FMRES_IGNORED
+		return
 	}
 		
 	new Float:jet_health=float(pev(ent,pev_health)),
@@ -476,7 +473,7 @@ public jet_think(ent)
 			sh_chat_message(owner,gHeroID,"jet died!")
 			uncharge_user(owner)
 		}
-		return FMRES_IGNORED
+		return 
 	}
 	if(Get_BitVar(g_jetplane_deployed_mask,owner)){
 		
@@ -680,8 +677,6 @@ public jet_think(ent)
 		set_pev(ent, pev_velocity, raw_velocity)
 		set_pev(ent, pev_nextthink, gametime + JET_THINK_PERIOD)
 	}
-		
-	return FMRES_IGNORED
 }
 public charge_task(id){
 

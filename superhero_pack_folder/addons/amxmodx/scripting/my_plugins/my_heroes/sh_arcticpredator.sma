@@ -530,8 +530,8 @@ new maxdamage = get_cvar_num("arcticPredator_explode_maxdamage")
 new name[32]
 get_user_name(id,name,31)
 shUnglow(id)
-set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
-show_dhudmessage(0,"%s has exploded.",name)
+set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
+show_hudmessage(0,"%s has exploded.",name)
 explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE)
 
 }

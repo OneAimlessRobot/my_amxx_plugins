@@ -79,6 +79,16 @@ stock goku_hud_sync
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailR
 new g_spriteExplosionY, g_spriteExplosionB, g_spriteExplosionR, g_spritePowerUp
 new gHeroID
+
+
+new goku_dmgs_arr[4][sh_extra_damage_struct] = {
+	{"goku_ki_blast", "goku_ki_blast", -1},
+	{"goku_kamehameha", "goku_kamehameha", -1},
+	{"goku_super_kamehameha", "goku_super_kamehameha", -1},
+	{"spirit_bomb", "spirit_bomb", -1}
+
+}
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -104,6 +114,15 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
+
+
+	for(new i=0;i<sizeof goku_dmgs_arr;i++){
+
+		goku_dmgs_arr[i][custom_wpn_id] = sh_log_custom_damage_source(gHeroID,
+				goku_dmgs_arr[i][short_dmg_name],
+				goku_dmgs_arr[i][long_dmg_name],
+				0)
+	}
 
 	register_entity_as_wall_touchable("vexd_goku_power","goku_power_touch")
 	register_custom_touchable("vexd_goku_power","goku_power_touch",player_vector,1)
@@ -522,23 +541,15 @@ public goku_power_touch(pToucher, pTouched) {
 	new id = entity_get_edict(pToucher, EV_ENT_owner)
 	new dmgRadius = g_maxRadius[id]
 	new maxDamage = g_maxDamage[id]
-	new Float:fl_vExplodeAt[3], damageName[16]
+	new Float:fl_vExplodeAt[3]
 	new spriteExp = g_spriteExplosionY
 
 	switch(g_powerNum[id]){
-		case 1:{
-			damageName = "Ki Blast"
-		}
 		case 2:{
-			damageName = "Kamehameha"
 			spriteExp = g_spriteExplosionB
 		}
 		case 3:{
-			damageName = "10x Kamehameha"
 			spriteExp = g_spriteExplosionR
-		}
-		case 4:{
-			damageName = "Spirit Bomb"
 		}
 	}
 
@@ -573,12 +584,17 @@ public goku_power_touch(pToucher, pTouched) {
 			if ( vic == id ){
 				damage = floatround(damage / 2.0)
 			}
-			sh_extra_damage(vic, id, damage, damageName)
-			if((g_powerNum[id]>=3)&&(vic==pTouched)&&!is_user_alive(pTouched)){
+			sh_extra_damage(vic, id, damage,
+								goku_dmgs_arr[g_powerNum[id]-1][short_dmg_name],
+								_,_,_,_,_,
+								SH_NEW_DMG_ENERGY_BLAST,
+								goku_dmgs_arr[g_powerNum[id]-1][custom_wpn_id])
+			
+			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
 
 					new Float:vic_origin_f[3]
 					IVecFVec(vicOrigin,vic_origin_f)
-					gross_kill_gibs_fx(pTouched,vic_origin_f,fl_vExplodeAt)
+					gross_kill_gibs_fx(vic,vic_origin_f,fl_vExplodeAt)
 			}
 
 			// Make them feel it

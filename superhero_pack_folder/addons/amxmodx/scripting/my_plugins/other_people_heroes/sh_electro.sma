@@ -250,7 +250,7 @@ electro_attack(const victim, const attacker, const damage, const linewidth, cons
 	pev(beamStartID, pev_origin, beamOrigin)
 
 	// Damage the user
-	sh_extra_damage(victim, attacker, damage, "chain lightning", 0, SH_DMG_NORM, true, false, beamOrigin)
+	sh_extra_damage(victim, attacker, damage, "chain lightning", MY_HIT_GENERIC, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN, beamOrigin)
 
 	// Create the lightning
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

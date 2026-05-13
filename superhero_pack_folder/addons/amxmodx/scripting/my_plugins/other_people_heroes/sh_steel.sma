@@ -132,7 +132,7 @@ public steel_damage(id)
 		sh_extra_damage(id, attacker, damage, 
 								dmg_source_name_short_super_steel_bullet,
 								my_hitpoint_enum:bodypart
-								,_,_,_,_,_,
+								,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_steel_bullet)
 	}

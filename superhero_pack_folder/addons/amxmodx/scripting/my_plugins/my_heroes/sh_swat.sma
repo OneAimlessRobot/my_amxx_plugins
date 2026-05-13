@@ -137,7 +137,7 @@ public swat_damage(id)
 			
 			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat,
 											my_hitpoint_enum:bodypart,
-											_,_,_,_,_,
+											_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
 											M4Swat_weapon_id)
 		}
@@ -148,7 +148,7 @@ public swat_damage(id)
 		if(extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,
 											my_hitpoint_enum:bodypart,
-											_,_,_,_,_,
+											_,_,_,_,
 											SH_NEW_DMG_BLEED,
 											tactical_knife_weapon_id)
 		}

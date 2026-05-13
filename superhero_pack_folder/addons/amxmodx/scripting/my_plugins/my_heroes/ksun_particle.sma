@@ -607,18 +607,17 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	untrack_spore(pToucher)
 
 	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_short_slay:dmg_source_name_short_spore,
-					remove_godmode?MY_HIT_HEAD:MY_HIT_GENERIC,_,_,_,_,_,
+					remove_godmode?MY_HIT_HEAD:MY_HIT_GENERIC,
+					_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					remove_godmode?slay_wpn_id:spore_wpn_id)
 }
 }//----------------------------------------------------------------------------------------------
 public touch_wall(pToucher, pTouched)
 {
-if(!is_valid_ent(pToucher)) return FMRES_IGNORED
+if(!is_valid_ent(pToucher)) return
 
 bump_spore(pToucher)
-
-return FMRES_IGNORED
 
 }
 

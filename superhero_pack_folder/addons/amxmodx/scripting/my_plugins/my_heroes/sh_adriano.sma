@@ -230,8 +230,9 @@ public adriano_damage(id)
 				case CSW_ETHEREAL:{
 					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,
 								my_hitpoint_enum:bodypart ,
-								_,_,_,_,_,
-								SH_NEW_DMG_SHOCK,custom_dmg_id_ethereal)
+								_,_,_,_,
+								SH_NEW_DMG_SHOCK,
+								custom_dmg_id_ethereal)
 				}
 			}
 		}

@@ -738,7 +738,7 @@ public FireIonCannon(id)
 				dRatio = distanceBetween / dmgRadius
 				damage = maxDamage - floatround(maxDamage * dRatio)
 				if ( !damage ) damage = 1	// Incase damage cvar is really low cause something if within the radius
-				sh_extra_damage(player, id, damage, "Ion Cannon", _, SH_DMG_NORM, true, _, ion_mid_origin[id])
+				sh_extra_damage(player, id, damage, "Ion Cannon", _, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN, ion_mid_origin[id])
 			}
 		}
 		message_begin(MSG_ONE_UNRELIABLE, gmsgScreenShake, _, player)

@@ -63,12 +63,11 @@ public FwdTouchWorld( Spaaaaeerr, World ) {
 public spaar_thaank(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return
 	
 	
 
 	remove_entity(ent)
-	return FMRES_IGNORED
 
 
 }
@@ -349,7 +348,6 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 		
 		}
 		else if(pTouched!=oid){
-			sh_extra_damage(pTouched,oid,SPEAR_LAUNCH_DAMAGE,"Hunter Spear launch",MY_HIT_GENERIC,SH_DMG_NORM)
 			sh_bleed_user(pTouched,oid,BLEED_NORMAL,gHeroID)
 			explosion(gHeroID,pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

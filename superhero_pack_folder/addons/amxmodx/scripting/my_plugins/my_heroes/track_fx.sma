@@ -80,7 +80,7 @@ public tracked_damage(id)
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_short_tracked_vuln,
 											my_hitpoint_enum:bodypart,
-											_,_,_,_,_,
+											_,_,_,_,
 											SH_NEW_DMG_RADIATION_POISON,
 											custom_dmg_id_tracked_vuln)
 			}
@@ -90,7 +90,7 @@ public tracked_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &bool:dmgStun, &bool:dmgFFmsg, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));
@@ -160,7 +160,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		if(array[TRACK_TASK_DO_DAMAGE]){
 			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],
 							new_dmg_type_names[_:SH_NEW_DMG_RADIATION_POISON],
-							_,_,_,_,_,_,
+							_,_,_,_,_,
 							SH_NEW_DMG_RADIATION_POISON,
 							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_RADIATION_POISON))
 		}
