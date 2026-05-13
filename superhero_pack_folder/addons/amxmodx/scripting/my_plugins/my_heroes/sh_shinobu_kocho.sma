@@ -55,12 +55,10 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
 	register_event("Damage","shinobuDamage","b", "2!0")
 
-	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage")
+	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage",_, true)
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
 
-
-	//RegisterHam(Ham_Player_PreThink,"player","shinobu_step_silent",_,true)
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP=allocate_typed_task_id(generic_task)

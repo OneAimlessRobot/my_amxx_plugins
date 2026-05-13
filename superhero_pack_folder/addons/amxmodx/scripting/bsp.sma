@@ -11,15 +11,15 @@
 new g_freezetime
 new Float:g_time1
 new Float:g_flSpawned[33]
-new Float:g_spawndelay = 2.0 // Should not be set lower. Higher values may reduce rare 'second spawn kills'.
+new Float:g_spawndelay = 6.0 // Should not be set lower. Higher values may reduce rare 'second spawn kills'.
 
 public plugin_init()
 {         
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	register_cvar(PLUGIN, VERSION, FCVAR_SPONLY | FCVAR_SERVER)
 
-	RegisterHam(Ham_Spawn,  "player", "FwdHamPlayerSpawn", 1)
-	RegisterHam(Ham_Killed, "player", "FwdHamPlayerKilled")
+	RegisterHam(Ham_Spawn,  "player", "FwdHamPlayerSpawn", 1, true)
+	RegisterHam(Ham_Killed, "player", "FwdHamPlayerKilled", _, true)
 	
 	g_freezetime = get_cvar_pointer("mp_freezetime")
 	g_time1 = get_pcvar_num(g_freezetime) + g_spawndelay

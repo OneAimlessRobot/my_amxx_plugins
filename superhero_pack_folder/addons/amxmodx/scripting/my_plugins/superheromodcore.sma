@@ -641,8 +641,8 @@ public plugin_init()
 
 	// Must use post or else is_user_alive will return false when dead player respawns
 	// cz bots won't hook here must RegisterHamFromEntity
-	RegisterHam(Ham_Spawn, "player", "ham_PlayerSpawn_Post", 1)
-	RegisterHam(Ham_TakeDamage, "player", "ham_TakeDamage_Pre")
+	RegisterHam(Ham_Spawn, "player", "ham_PlayerSpawn_Post", 1, true)
+	RegisterHam(Ham_TakeDamage, "player", "ham_TakeDamage_Pre",_, true)
 
 	// Events to catch shield buying
 	// Old Style Menus

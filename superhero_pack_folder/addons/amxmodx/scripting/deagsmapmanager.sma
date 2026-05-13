@@ -54,7 +54,7 @@ new const VERSION[] = "3.23";
 new const AUTHOR[]  = "Deags/AMXX Community";
 
 // Comment out the following line to disable the dedicated log file
-#define DEDICATED_LOG_ENABLED
+//#define DEDICATED_LOG_ENABLED
 
 #define MAX_MAPS_AMOUNT 600
 #define ADMIN_DMAP ADMIN_LEVEL_A
