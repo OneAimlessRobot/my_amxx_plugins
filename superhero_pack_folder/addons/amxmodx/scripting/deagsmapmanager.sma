@@ -45,9 +45,9 @@
 */
 
 
-#pragma semicolon 1
 #include <amxmodx>
 #include <amxmisc>
+#include "my_plugins/task_allocator_inc/task_allocator_aux_stuff.inc"
 
 new const PLUGIN[]  = "DeagsMapManager";
 new const VERSION[] = "3.23";
@@ -68,6 +68,47 @@ new const DMAP_MENU_TITLE[] = "DMAP_MENU_TITLE";
 // non-DEFINE ids currently used:
 // 123400, 123450, 123452, 127600(+id), 127600(+idreal),333333, 444444, 454500,
 // 454510, 459100, 459200, 765100, 986100, 986200, 987111, 987300, 987456
+
+
+/*
+generics:
+---------------------------------------------------------------------------
+messagethree == 987300 //done
+askfornextmap == 987456 //done
+loopmessages == 987111 //done
+messagemaps == 986200 //done
+messagenominated == 986100 //done
+rock_it_now == 765100 //done
+timedvote == 459200 //done
+getready == 459100 //done
+timeddisplay == 454510 //done
+timeddis3 == 454500 //done
+delayedChange == 444444 //done
+roundmode == 333333 //done
+stopperson == 123450 //done
+countdown == 123400 //done
+endroundtaskid == 123452 //done
+-------------------------------------------------------------------------
+player_tasks:
+morelistmaps == 127600
+*/
+new ask_for_nextmap_taskid = 0,
+	message_three_taskid = 0,
+	timed_display_taskid = 0,
+	loop_messages_taskid = 0,
+	message_maps_taskid = 0,
+	message_nominated_taskid = 0,
+	rock_it_now_taskid = 0,
+	timedvote_taskid = 0,
+	get_ready_taskid = 0,
+	timeddis3_taskid = 0,
+	delayedChange_taskid = 0,
+	round_mode_taskid = 0,
+	stopperson_taskid = 0,
+	count_down_taskid = 0,
+	endround_taskid = 0,
+	more_list_maps_player_taskid = 0
+
 
 new maps_to_select, isbuytime = 0, isbetween = 0;
 new ban_last_maps = 0, quiet = 0;	//quiet=0 (words and sounds) quiet=1 (words only, no sound) quiet=2 (no sound, no words)
@@ -152,10 +193,10 @@ public loopmessages() {
 	new partialtime = timeleft % 370;
 	new maintime = timeleft % 600;
 	if ((maintime > 122 && maintime < 128) && timeleft > 114) {
-		set_task(1.0, "timedisplay", 454510, "", 0, "a", 5);
+		set_task(1.0, "timedisplay", timed_display_taskid, "", 0, "a", 5);
 	}
 	if ((partialtime > 320 && partialtime < 326) && !cycle) {
-		set_task(3.0, "messagethree", 987300);	//, "", 0, "a", 4)
+		set_task(3.0, "messagethree", message_three_taskid);	//, "", 0, "a", 4)
 		return PLUGIN_HANDLED;
 	}
 	return PLUGIN_HANDLED;
@@ -166,14 +207,14 @@ public timedisplay() {
 	new seconds = timeleft % 60;
 	new minutes = floatround((timeleft - seconds) / 60.0);
 	if (timeleft < 1) {
-		remove_task(454510);
-		remove_task(454500);
-		remove_task(123452);
+		remove_task(timed_display_taskid);
+		remove_task(timeddis3_taskid);
+		remove_task(endround_taskid);
 		remove_task(123499);
 		return PLUGIN_HANDLED;
 	}
 	if (timeleft > 140) {
-		remove_task(454500);
+		remove_task(timeddis3_taskid);
 	}
 	if (timeleft > 30) {
 		set_hudmessage(255, 255, 220, 0.02, 0.2, 0, 1.0, 1.04, 0.0, 0.05, 3);
@@ -223,7 +264,7 @@ public client_putinserver(id) {
 
 public client_disconnected(id) {
 	remove_task(987600 + id);
-	remove_task(127600 + id);
+	remove_task(more_list_maps_player_taskid + id);
 	if (is_user_bot(id)) {
 		return PLUGIN_CONTINUE;
 	}
@@ -326,7 +367,7 @@ public list_maps(id) {
 		new kIdfake[32];
 		num_to_str((id + 50 * (iteration + 1)), kIdfake, 31);
 		client_print(id, print_console, "%L", id, "DMAP_LISTMAPS_MORE");
-		set_task(4.0, "more_list_maps", 127600 + id, kIdfake, 6);
+		set_task(4.0, "more_list_maps", more_list_maps_player_taskid + id, kIdfake, 6);
 	}
 	return PLUGIN_CONTINUE;
 }
@@ -361,7 +402,7 @@ public more_list_maps(idfakestr[]) {
 		new kIdfake[32];
 		num_to_str((idreal + 50 * (iteration + 1)), kIdfake, 31);
 		client_print(idreal, print_console, "%L", idreal, "DMAP_LISTMAPS_MORE");
-		set_task(2.0, "more_list_maps", 127600 + idreal, kIdfake, 6);
+		set_task(2.0, "more_list_maps", more_list_maps_player_taskid + idreal, kIdfake, 6);
 	} else {	//Base case has been reached
 		client_print(idreal, print_console, "%L", idreal, "DMAP_LISTMAPS_FINISHED", totalmaps);
 	}
@@ -408,7 +449,7 @@ public check_if_need() {
 			hasbeenrocked = 1;
 			inprogress = 1;
 			mselected = false;
-			set_task(10.0, "rock_it_now", 765100);
+			set_task(10.0, "rock_it_now", rock_it_now_taskid);
 		}
 	}
 }
@@ -480,7 +521,7 @@ public rock_the_vote(id) {
 		hasbeenrocked = 1;
 		inprogress = 1;
 		mselected = false;
-		set_task(15.0, "rock_it_now", 765100);
+		set_task(15.0, "rock_it_now", rock_it_now_taskid);
 	} else {
 		client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_RTV_NEEDED", ((needed-rocks) > (minimum-needed)) ? (needed-rocks) : (minimum-rocks));
 	}
@@ -496,8 +537,8 @@ public rock_it_now() {
 	new Float:minutesplayed = currentlimit-minutesleft;
 	new Float:timelimit;
 	counttovote = 0;
-	remove_task(459200);
-	remove_task(459100);
+	remove_task(timedvote_taskid);
+	remove_task(timedvote_taskid);
 	timelimit = float(floatround(minutesplayed + 1.5));
 	if (timelimit > 0.4) {
 		oldtimelimit = get_cvar_float("mp_timelimit");
@@ -535,10 +576,10 @@ public rock_it_now() {
 	if (quiet == 0) {
 		client_cmd(0, "spk ^"get red(e80) ninety(s45) to check(e20) use _comma(e10) bay(s18) mass(e42) cap(s50)^"");
 	}
-	set_task(3.5, "getready", 459100);
+	set_task(3.5, "getready", get_ready_taskid);
 	set_task(10.0, "startthevote");
-	remove_task(454500);
-	remove_task(123452);
+	remove_task(timeddis3_taskid);
+	remove_task(endround_taskid);
 	rocks = 0;
 	new inum, players[32], i;
 	get_players(players, inum, "c");
@@ -582,19 +623,19 @@ public admin_rockit(id, level, cid) {
 			case 1: client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_REVOTE");
 		}
 	}
-	remove_task(123450);
-	remove_task(123400);
-	remove_task(123452);
+	remove_task(stopperson_taskid);
+	remove_task(count_down_taskid);
+	remove_task(endround_taskid);
 	remove_task(123499);
 	counttovote = 0;
-	remove_task(459200);
-	remove_task(459100);
+	remove_task(timedvote_taskid);
+	remove_task(get_ready_taskid);
 #if defined DEDICATED_LOG_ENABLED
 	log_to_file(logfilename, "Admin: <%s> calls rockthevote with %d seconds left on map", kName, timeleft);
 #endif
 	inprogress = 1;
 	mselected = false;
-	set_task(15.0, "rock_it_now", 765100);
+	set_task(15.0, "rock_it_now", rock_it_now_taskid);
 	set_task(0.18, "calculate_custom");
 	return PLUGIN_HANDLED;
 }
@@ -671,16 +712,16 @@ public check_votes() {
 	inprogress = waited = 0;
 	isend = 1;
 	//WE ARE near END OF MAP; time to invoke Round mode ALgorithm
-	//set_task(2.0, "endofround", 123452, "", 0, "b");
+	set_task(2.0, "endofround", endround_taskid, "", 0, "b");
 	new waituntilready = timeleft - 60;
 	if (waituntilready > 30) {
 		waituntilready = 30;
 	}
 	if (waituntilready <= 0 || get_cvar_num("mp_winlimit")) {
 		addthiswait = 4;
-		set_task(4.0, "RoundMode", 333333);
+		set_task(4.0, "RoundMode", round_mode_taskid);
 	} else {
-		set_task(float(waituntilready), "RoundMode", 333333);
+		set_task(float(waituntilready), "RoundMode", round_mode_taskid);
 		addthiswait = waituntilready;
 	}
 	nmaps_num = nbeforefill;
@@ -690,7 +731,7 @@ public check_votes() {
 }
 
 public show_timer() {
-	set_task(1.0, "timedis2", 454500, "", 0, "b");
+	set_task(1.0, "timedis2", timeddis3_taskid, "", 0, "b");
 }
 
 public timedis2() {
@@ -734,12 +775,12 @@ public timedis3() {
 
 public RoundMode() {
 	if (get_cvar_float("mp_timelimit") > 0.1 && get_pcvar_num(pEnforceTimelimit)) {
-		remove_task(333333);
-		remove_task(454500);
+		remove_task(round_mode_taskid);
+		remove_task(timeddis3_taskid);
 		new timeleft = get_timeleft();
 		if (timeleft < 200) {
 			set_task(float(timeleft) - 5.8, "endofround");
-			set_task(1.0, "timedis3", 454500, "", 0, "b");
+			set_task(1.0, "timedis3", timeddis3_taskid, "", 0, "b");
 		}
 		return PLUGIN_HANDLED;
 	} else {
@@ -747,8 +788,8 @@ public RoundMode() {
 			set_task(1.0, "show_timer");
 		}
 		if (isbetween || isbuytime || (waited + addthiswait) > 190 || (!bIsCstrike && (waited + addthiswait) >= 30) || activeplayers < 2) {	//Time to switch maps!!!!!!!!
-			remove_task(333333);
-			remove_task(454500);
+			remove_task(round_mode_taskid);
+			remove_task(timeddis3_taskid);
 			if (isbetween) {
 				set_task(3.9, "endofround");
 			} else {
@@ -764,7 +805,7 @@ public RoundMode() {
 					client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_FINISHING_CUR_ROUND");
 				}
 			}
-			set_task(5.0, "RoundMode", 333333);
+			set_task(5.0, "RoundMode", round_mode_taskid);
 		}
 	}
 	return PLUGIN_HANDLED;
@@ -802,7 +843,7 @@ public dmapcancelvote(id, level, cid) {
 	if (!cmd_access(id, level, cid, 0)) {
 		return PLUGIN_HANDLED ;
 	}
-	if (task_exists(765100, 1)) { 
+	if (task_exists(rock_it_now_taskid, 1)) { 
 		new authid[32], name[32];
 
 		get_user_authid(id, authid, 31) ;
@@ -811,7 +852,7 @@ public dmapcancelvote(id, level, cid) {
 		log_to_file(logfilename, "ADMIN <%s> cancelled the map vote.", name);
 #endif
 		client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_ADMIN_CANCELLED", name);
-		remove_task(765100, 1);
+		remove_task(rock_it_now_taskid, 1);
 		set_hudmessage(222, 70,0, -1.0, 0.3, 1, 10.0, 10.0, 2.0, 4.0, 8);
 		show_hudmessage(0, "%L", LANG_PLAYER, "DMAP_ADMIN_CANCELLED", name);
 		hasbeenrocked = 0;
@@ -860,12 +901,12 @@ public levelchange() {
 		}
 	}
 	//If we are unable to achieve automatic level change, FORCE it.
-	set_task(2.1, "DelayedChange", 444444);
+	set_task(2.1, "DelayedChange", delayedChange_taskid);
 }
 
 public changeMap() {	//Default event copied from nextmap.amx, and changed around.
 	set_cvar_float("mp_chattime", 3.0);	// make sure mp_chattime is long
-	remove_task(444444);
+	remove_task(delayedChange_taskid);
 	set_task(1.85, "DelayedChange");
 }
 
@@ -876,18 +917,18 @@ public DelayedChange() {
 }
 
 public endofround() {	//Call when ready to switch maps in (?) seconds
-	remove_task(123452);
-	remove_task(987111);
-	remove_task(333333);
-	remove_task(454510);
-	remove_task(454500);
+	remove_task(endround_taskid);
+	remove_task(loop_messages_taskid);
+	remove_task(round_mode_taskid);
+	remove_task(timed_display_taskid);
+	remove_task(timeddis3_taskid);
 	remove_task(123499);
 	new smap[32];
 	get_cvar_string("amx_nextmap", smap, 31);
 	set_task(6.0, "levelchange");	//used to be 7.0
 	if (quiet != 2) {
 		countnum = 0;
-		set_task(1.0, "countdown", 123400, "", 0, "a", 6);
+		set_task(1.0, "countdown", count_down_taskid, "", 0, "a", 6);
 		if (quiet != 1) {
 			client_cmd(0, "speak ^"loading environment on to your computer^"");
 		}
@@ -912,7 +953,7 @@ public endofround() {	//Call when ready to switch maps in (?) seconds
 		}
 	}
 	if (dofreeze) {
-		set_task(1.1, "stopperson", 123450, "", 0, "a", 2);
+		set_task(1.1, "stopperson", stopperson_taskid, "", 0, "a", 2);
 	}
 	return PLUGIN_HANDLED;
 }
@@ -951,11 +992,11 @@ public display_message() {
 	}
 	//if (parttime > 310 && parttime < 326 && timeleft > 132)
 	if (parttime > (40 + addition) && parttime < (56 + addition) && timeleft > 132) {
-		set_task(3.0, "messagenominated", 986100);	//, "", 0, "a", 4)
+		set_task(3.0, "messagenominated", message_nominated_taskid);	//, "", 0, "a", 4)
 	} else {
 		//if (parttime > 155 && parttime < 171 && timeleft > 132)
 		if (parttime > 30 && parttime < 46 && timeleft > 132) {
-			set_task(10.0, "messagemaps", 986200, "", 0, "a", 1);
+			set_task(10.0, "messagemaps", message_maps_taskid, "", 0, "a", 1);
 		} else if (timeleft >= 117 && timeleft < 132) {
 			messagefifteen();
 		}
@@ -1123,13 +1164,13 @@ public messagefifteen() {
 	if (quiet == 0) {
 		client_cmd(0, "spk ^"get red(e80) ninety(s45) to check(e20) use bay(s18) mass(e42) cap(s50)^"");
 	}
-	set_task(8.7, "getready", 459100);
+	set_task(8.7, "getready", get_ready_taskid);
 	return PLUGIN_HANDLED;
 }
 
 public getready() {
 	if (!cycle) {
-		set_task(0.93, "timetovote", 459200, "", 0, "a", 5);
+		set_task(0.93, "timetovote", timedvote_taskid, "", 0, "a", 5);
 	}
 }
 
@@ -1139,8 +1180,8 @@ public timetovote() {
 
 	if (get_timeleft() > 132 || counttovote > 5 || cycle || isbuytime) {
 		counttovote = 0;
-		remove_task(459200);
-		remove_task(459100);
+		remove_task(timedvote_taskid);
+		remove_task(get_ready_taskid);
 		return PLUGIN_HANDLED;
 	} else {
 		if (counttovote > 0 && counttovote <= 5) {
@@ -1187,24 +1228,24 @@ public askfornextmap() {
 	}
 	if (timeleft > 300) {
 		isend = 0;
-		remove_task(123452);
+		remove_task(endround_taskid);
 	}
 	new mp_winlimit = get_cvar_num("mp_winlimit");
 	if (mp_winlimit) {
 		new s = mp_winlimit - 2;
 		if ((s > teamscore[0] && s > teamscore[1]) && (timeleft > 114 || timeleft < 1)) {
-			remove_task(454500);
+			remove_task(timeddis3_taskid);
 			mselected = false;
 			return PLUGIN_HANDLED;
 		}
 	} else {
 		if (timeleft > 114 || timeleft < 1) {
 			if (timeleft > 135) {
-				remove_task(454510);
-				remove_task(454500);
+				remove_task(timed_display_taskid);
+				remove_task(timeddis3_taskid);
 				remove_task(123499);
 			} else {
-				remove_task(454500);
+				remove_task(timeddis3_taskid);
 			}
 			mselected = false;
 			return PLUGIN_HANDLED;
@@ -1222,7 +1263,7 @@ public askfornextmap() {
 			if (quiet != 1) {
 				client_cmd(0, "spk ^"get red(e80) ninety(s45) to check(e20) use bay(s18) mass(e42) cap(s50)^"");
 			}
-			set_task(4.2, "getready", 459100);
+			set_task(4.2, "getready", get_ready_taskid);
 			set_task(10.0, "startthevote");
 		} else {
 			set_task(1.0, "startthevote");
@@ -1238,8 +1279,8 @@ public startthevote() {
 	if (cycle) {
 		inprogress = 0;
 		mselected = false;
-		remove_task(459200);
-		remove_task(459100);
+		remove_task(timedvote_taskid);
+		remove_task(get_ready_taskid);
 		new smap[32];
 		get_cvar_string("amx_nextmap", smap, 31);
 		client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_NEXTMAP2", smap);
@@ -1254,17 +1295,17 @@ public startthevote() {
 	if ((isbuytime || isbetween) && get_timeleft() && get_timeleft() > 54 && get_pcvar_num(pWeaponDelay)) {
 		client_print(0, print_chat, "%L", LANG_PLAYER, "DMAP_VOTING_DELAYED");
 		if (isbetween) {
-			set_task(15.0, "getready", 459100);
+			set_task(15.0, "getready", get_ready_taskid);
 			set_task(21.0, "startthevote");
 		} else {
-			set_task(8.0, "getready", 459100);
+			set_task(8.0, "getready", get_ready_taskid);
 			set_task(14.0, "startthevote");
 		}
 		return PLUGIN_HANDLED;
 	}	//else startthevote anyways..., regardless of buytime
 
-	remove_task(459200);
-	remove_task(459100);
+	remove_task(timedvote_taskid);
+	remove_task(get_ready_taskid);
 
 	if (quiet != 2) {
 		if (bIsCstrike) {
@@ -3139,8 +3180,25 @@ public plugin_init() {
 	//set_task(2.0, "get_listing");	//loads mapcycle / allmaps.txt
 	set_task(14.0, "load_defaultmaps");	//loads standardmaps.ini
 	//set_task(17.0, "load_maps");	//loads mapchoice.ini
-	set_task(15.0, "askfornextmap", 987456, "", 0, "b");
-	set_task(5.0, "loopmessages", 987111, "", 0, "b");
+	ask_for_nextmap_taskid = allocate_typed_task_id(generic_task)
+	message_three_taskid = allocate_typed_task_id(generic_task)
+	timed_display_taskid = allocate_typed_task_id(generic_task)
+	loop_messages_taskid = allocate_typed_task_id(generic_task)
+	message_maps_taskid = allocate_typed_task_id(generic_task)
+	message_nominated_taskid = allocate_typed_task_id(generic_task)
+	rock_it_now_taskid = allocate_typed_task_id(generic_task)
+	timedvote_taskid = allocate_typed_task_id(generic_task)
+	get_ready_taskid = allocate_typed_task_id(generic_task)
+	timeddis3_taskid = allocate_typed_task_id(generic_task)
+	delayedChange_taskid = allocate_typed_task_id(generic_task)
+	round_mode_taskid = allocate_typed_task_id(generic_task)
+	stopperson_taskid = allocate_typed_task_id(generic_task)
+	count_down_taskid = allocate_typed_task_id(generic_task)
+	endround_taskid = allocate_typed_task_id(generic_task)
+	more_list_maps_player_taskid = allocate_typed_task_id(player_task)
+
+	set_task(15.0, "askfornextmap", ask_for_nextmap_taskid, "", 0, "b");
+	set_task(5.0, "loopmessages", loop_messages_taskid, "", 0, "b");
 	set_task(34.0, "gen_maphelphtml");	//Writes to help file, which is read every time that dmap_help is called by ANY player
 	oldtimelimit = get_cvar_float("mp_timelimit");
 	get_localinfo("amx_lastmap", last_map, 31);

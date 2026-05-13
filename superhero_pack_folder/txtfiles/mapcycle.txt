@@ -1,4 +1,9 @@
-de_cbble
+de_aztec
+de_tuscan
+de_kabul
+de_dust2002
+de_dust4ever
+de_mirage
 de_inferno
 de_nuke
 de_train
@@ -6,3 +11,7 @@ de_dust2
 cs_assault
 cs_militia
 cs_italy
+cs_alpin
+de_dust2_2006
+de_cache
+cs_backalley

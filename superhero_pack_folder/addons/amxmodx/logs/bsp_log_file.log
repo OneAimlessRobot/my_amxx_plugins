@@ -1,2 +1,4 @@
 L 05/12/2026 - 10:10:57: Log file started (file "cstrike/addons/amxmodx/logs/bsp_log_file.log") (game "cstrike") (amx "1.10.0.5474")
 L 05/12/2026 - 10:10:57: [BSP] Check de_cbble map, it may contain some bad spawn points.
+L 05/13/2026 - 03:52:02: [BSP] Check de_inferno map, it may contain some bad spawn points.
+L 05/13/2026 - 12:07:04: [BSP] Check de_train map, it may contain some bad spawn points.
