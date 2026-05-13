@@ -37,7 +37,7 @@ public plugin_init()
 	
 	custom_dmg_id_painkiller_death=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_painkiller_death,
-					dmg_source_name_long_painkiller_death,1)
+					dmg_source_name_long_painkiller_death,0)
 	
 	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage",_,true)
 }

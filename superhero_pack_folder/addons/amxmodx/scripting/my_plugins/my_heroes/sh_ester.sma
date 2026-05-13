@@ -122,18 +122,19 @@ public plugin_init()
 
 	init_explosion_defaults()
 
-	moralizing_ray_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								dmg_source_name_short_moralizing_ray,
-								dmg_source_name_long_moralizing_ray,
-								1)
 
 	adulting_pan_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_adulting_pan,
 								dmg_source_name_long_adulting_pan,
-								0)
+								1)
 
+	moralizing_ray_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_moralizing_ray,
+								dmg_source_name_long_moralizing_ray,
+								0)
+								
 	neuroblast_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_neuroblast,

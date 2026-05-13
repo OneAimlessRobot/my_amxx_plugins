@@ -76,31 +76,31 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         wpn_id=-1
     }
     
-    
-    /*
-    server_print("^nValid wpn_id obtained! %d^n",wpn_id)
+    if(sh_damage_source_is_a_melee[wpn_id]){
+        
+        server_print("^nValid wpn_id obtained! %d^n",wpn_id)
 
-    static hero_name[MAX_HERO_NAME_LENGTH]
-    if(sh_damage_source_hero_ids[wpn_id]>=0){
-        sh_get_hero_name_from_id(hero_id, hero_name)
+        static hero_name[MAX_HERO_NAME_LENGTH]
+        if(sh_damage_source_hero_ids[wpn_id]>=0){
+            sh_get_hero_name_from_id(hero_id, hero_name)
 
+        }
+        else{
+
+            server_print("It is for a generic hero!");
+        }
+        server_print("The hero name is: %s",
+                is_generic_hero?generic_dmg_hero_name:hero_name)
+
+        server_print("The short name was: %s",
+                                    sh_damage_source_short_names[wpn_id])
+
+        server_print("The long name was: %s",
+                                    sh_damage_source_long_names[wpn_id])
+
+        server_print("This weapon is%sa melee!",
+                                    sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
     }
-    else{
-
-        server_print("It is for a generic hero!");
-    }
-    server_print("The hero name is: %s",
-            is_generic_hero?generic_dmg_hero_name:hero_name)
-
-    server_print("The short name was: %s",
-                                sh_damage_source_short_names[wpn_id])
-
-    server_print("The long name was: %s",
-                                sh_damage_source_long_names[wpn_id])
-
-    server_print("This weapon is%sa melee!",
-                                sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
-    */
     return wpn_id
     
 }
