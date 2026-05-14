@@ -44,7 +44,7 @@
 
 
 
-#define CLIP_SIZE 25
+#define CLIP_SIZE 79
 
 /*
 enum

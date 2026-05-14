@@ -235,9 +235,7 @@ public Ham_Weapon_Stab(weapon_ent)
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(owner, gHeroID)){
-		if(!is_user_alive(owner)){
-			server_print("LARA CRASH!!!!! INVALID PLAYER! WE CAUGHT IT!")
-		}
+		
 		return HAM_IGNORED
 	}
 	if ( !spear_get_num_spears(owner)) {
