@@ -243,8 +243,8 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 	new pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	if (!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,gHeroID)){
-
+	if(!client_is_hero_user(pPlayer, gHeroID)){
+		
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
