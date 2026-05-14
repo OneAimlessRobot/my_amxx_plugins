@@ -2,7 +2,6 @@
 #define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
-#include <reapi>
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
@@ -91,21 +90,21 @@ public Item_PostFrame_Post(iEnt)
 		
 		return HAM_IGNORED
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, _:m_flNextAttack, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, YAKUI_WEAPON_CLASSID)
 	
-	static iClip; iClip = get_pdata_int(iEnt, 51, 4)
-	static fInReload; fInReload = get_pdata_int(iEnt, _:m_fInReload , 4)
+	static iClip; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(iEnt, _:m_fInReload , XO_WEAPON)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(CLIP_SIZE - iClip, bpammo)
 
-		set_pdata_int(iEnt, 51, iClip + temp1, 4)
+		set_pdata_int(iEnt, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID, bpammo - temp1)		
 		
-		set_pdata_int(iEnt, m_fInReload , 0, 4)
+		set_pdata_int(iEnt, m_fInReload , 0, XO_WEAPON)
 		
 		fInReload = 0
 	}
@@ -125,7 +124,7 @@ public Ham_Weapon_PillGatling(weapon_ent)
 	if ( !sh_is_active() ) return HAM_IGNORED
 
 	
-	new owner = get_member(weapon_ent, m_pPlayer)
+	new owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(owner, gHeroID)) return HAM_IGNORED
 	if(!gatling_get_pillgatling(owner)||(g_plAction[owner]!=act_run)){
 		return HAM_SUPERCEDE
@@ -301,7 +300,7 @@ public fw_WeaponReloadPre(entity)
 {
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)||!gatling_get_pillgatling(pPlayer)){
 		
@@ -309,7 +308,7 @@ public fw_WeaponReloadPre(entity)
 	}
 	g_Pillgatling_clip[pPlayer] = -1
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, YAKUI_WEAPON_CLASSID)
-	static iClip; iClip = get_pdata_int(entity, 51, 4)
+	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
 	if(BPAmmo < 0){
 		return HAM_SUPERCEDE
@@ -325,7 +324,7 @@ public fw_Weapon_Reload_Post(ent)
 	if(pev_valid(ent)!=2)
 		return HAM_IGNORED
 		
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)||!gatling_get_pillgatling(id)){
 		
 		return HAM_IGNORED
@@ -353,7 +352,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if((get_user_weapon(player) != YAKUI_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_member(player, m_pActiveItem)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
 	if(gatling_get_pillgatling(player)&&is_valid_ent(pEntity)){
 		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED
@@ -390,8 +389,8 @@ fire_mode(id,entity, type) {
 		if(type == 0 && g_Pillgatling_clip[id]>0){
 			g_Pillgatling_clip[id]=get_pdata_int(entity, 51, 4)
 			launch_pill(id)
-			set_member(entity, m_Weapon_flTimeWeaponIdle, PILL_SHOOT_PERIOD)
-			set_member(entity, m_Weapon_flNextPrimaryAttack, PILL_SHOOT_PERIOD)
+			set_pdata_float(entity, m_flTimeWeaponIdle, PILL_SHOOT_PERIOD, XO_WEAPON)
+			set_pdata_float(entity, m_flNextPrimaryAttack, PILL_SHOOT_PERIOD, XO_WEAPON)
 			emit_sound(id, CHAN_WEAPON, m_SOUND[0], 1.0, ATTN_NORM, 0, PITCH_NORM)
 			native_playanim(id, anim_spinfire)
 		} 
@@ -510,7 +509,7 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)||!gatling_get_pillgatling(pPlayer)){
 		
@@ -519,9 +518,9 @@ public fw_ItemDeployPre(entity)
 
 	native_playanim(pPlayer, anim_draw)
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_member(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, PILL_DEPLOY_TIME)
-	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
+	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
+	set_pdata_float(entity, m_flTimeWeaponIdle, PILL_DEPLOY_TIME ,XO_WEAPON)
+	set_pdata_int(entity, m_iClip,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	return HAM_SUPERCEDE
 }
 

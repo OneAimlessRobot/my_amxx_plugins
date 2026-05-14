@@ -64,9 +64,9 @@ stock const m_flNextSecondaryAttack    = 47
 stock const m_fInReload            = 54
 stock const m_rgpPlayerItems_Slot0 = 367
 stock const m_iClip = 51
-
 #if !defined _reapi_included 
 	stock const m_pActiveItem = 373;
+	stock const m_bResumeZoom = 440;
 	stock const m_flTimeWeaponIdle        = 48
 	stock const m_flNextAttack = 83
 	stock const m_szAnimExtention = 492

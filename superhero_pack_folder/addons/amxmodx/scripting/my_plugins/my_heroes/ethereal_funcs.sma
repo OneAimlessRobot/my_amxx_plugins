@@ -282,7 +282,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 
 		return HAM_IGNORED;
 	}
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
 	
 	if (!is_user_connected(id)){
 		return HAM_IGNORED
@@ -291,7 +291,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 		return HAM_IGNORED
 	}
 	
-	pev(id, pev_punchangle, g_Recoil[id])
+	entity_get_vector(id, EV_VEC_punchangle, g_Recoil[id])
 	
 	return HAM_IGNORED
 }
@@ -302,17 +302,18 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 		return;
 	}
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
 	
 	if(Get_BitVar(g_Had_Ethereal, id))
 	{
 		static Float:Push[3]
-		pev(id, pev_punchangle, Push)
+		entity_get_vector(id, EV_VEC_punchangle, Push)
 		xs_vec_sub(Push, g_Recoil[id], Push)
 		
 		xs_vec_mul_scalar(Push, RECOIL, Push)
 		xs_vec_add(Push, g_Recoil[id], Push)
-		set_pev(id, pev_punchangle, Push)
+		
+		entity_set_vector(id, EV_VEC_punchangle,Push)
 		
 		Event_CurWeapon(id)
 		Set_BitVar(g_Muzzleflash, id)
@@ -323,8 +324,8 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 {
 	if(pev_valid(Ent) != 2)
 		return HAM_IGNORED	
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Ethereal, Id))
 		return HAM_IGNORED	
@@ -344,8 +345,8 @@ public fw_Item_Deploy_Post(Ent)
 {
 	if(pev_valid(Ent) != 2)
 		return
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Ethereal, Id))
 		return
@@ -388,27 +389,27 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 		
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Ethereal, id))
 		return HAM_IGNORED	
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ETHEREAL)
 	
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
-	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(CLIP - iClip, bpammo)
 
-		set_pdata_int(ent, 51, iClip + temp1, 4)
+		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, CSW_ETHEREAL, bpammo - temp1)		
 		
-		set_pdata_int(ent, 54, 0, 4)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		
 		fInReload = 0
 	}		
@@ -421,7 +422,7 @@ public fw_Weapon_Reload(ent)
 	if(pev_valid(ent)!=2)
 		return HAM_IGNORED
 		
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Ethereal, id))
@@ -430,7 +431,7 @@ public fw_Weapon_Reload(ent)
 	g_Ethereal_Clip[id] = -1
 		
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(id, CSW_ETHEREAL)
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 		
 	if(BPAmmo <= 0)
 		return HAM_SUPERCEDE
@@ -444,18 +445,18 @@ public fw_Weapon_Reload(ent)
 
 public fw_Weapon_Reload_Post(ent)
 {
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Ethereal, id))
 		return HAM_IGNORED	
 		
-	if((get_pdata_int(ent, 54, 4) == 1))
+	if((get_pdata_int(ent, m_fInReload, XO_WEAPON)== 1))
 	{ // Reload
 		if(g_Ethereal_Clip[id] == -1)
 			return HAM_IGNORED
 		
-		set_pdata_int(ent, 51, g_Ethereal_Clip[id], 4)
+		set_pdata_int(ent, m_iClip, g_Ethereal_Clip[id], XO_WEAPON)
 		set_weapon_anim(id, E_ANIM_RELOAD)
 	}
 	
@@ -588,7 +589,7 @@ public give_ammo(id, silent, CSWID, Max)
 	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
 }
 
-stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
+stock Eject_Shell(id, Shell_ModelIndex, Float:Time)
 {
 	static Ent; Ent = get_pdata_cbase(id, 373, 5)
 	if(!pev_valid(Ent))

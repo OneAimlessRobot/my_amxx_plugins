@@ -2,7 +2,6 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
-#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -195,7 +194,7 @@ public fw_Item_PostFrame(ent)
 	if(pev_valid(ent) != 2){
 		return HAM_IGNORED
 	}
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
@@ -226,7 +225,8 @@ public fw_WeaponReloadPre(entity)
 {
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
-	new pPlayer = get_member(entity, m_pPlayer)
+	
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,4)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
@@ -250,18 +250,18 @@ public fw_Weapon_Reload_Post(ent)
 	if(pev_valid(ent)!=2)
 		return HAM_IGNORED
 		
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		
 		return HAM_IGNORED
 	}
-	if((get_pdata_int(ent, 54, 4) == 1))
+	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
 	{ 
 	
 		if(g_L96_clip[id] == -1)
 			return HAM_IGNORED
 		
-		set_pdata_int(ent, 51, g_L96_clip[id], 4)
+		set_pdata_int(ent, m_iClip, g_L96_clip[id], XO_WEAPON)
 	}
 	
 	
@@ -273,16 +273,16 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_member(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_DEPLOY_TIME)
-	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
+	set_pdata_float(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
+	set_pdata_float(entity, m_flTimeWeaponIdle, LENA_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
+	set_pdata_int(entity, m_iClip ,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	return HAM_SUPERCEDE
 }
 
@@ -292,14 +292,14 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
-	iClip = get_member(entity, m_Weapon_iClip)
+	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
 	{
 		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
@@ -310,12 +310,12 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_SUPERCEDE
 	}
 	launch_bullet(pPlayer)
-	g_L96_clip[pPlayer]=get_pdata_int(entity, 51, 4)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD)
-	set_member(entity, m_Weapon_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD)
+	g_L96_clip[pPlayer]=get_pdata_int(entity, m_iClip, XO_WEAPON)
+	set_pdata_float(entity, m_flNextPrimaryAttack, LENA_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
+	set_pdata_float(entity, m_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
 	
-	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
-	set_entvar(pPlayer, var_weaponanim,  SEQ_SHOOT1)
+	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
+	entity_set_int(pPlayer, EV_INT_weaponanim,  SEQ_SHOOT1)
 	
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE
@@ -327,18 +327,18 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(pev_valid(Ent)!=2)
 		return
 		
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		
 		return
 	}
 	static Float:Push[3]
-	pev(id, pev_punchangle, Push)
+	entity_get_vector(id, EV_VEC_punchangle, Push)
 	sub_3d_vectors(Push, g_Recoil[id], Push)
 	
 	multiply_3d_vector_by_scalar(Push, RECOIL, Push)
 	add_3d_vectors(Push, g_Recoil[id], Push)
-	set_pev(id, pev_punchangle, Push)
+	entity_set_vector(id, EV_VEC_punchangle, Push)
 }
 launch_bullet(id)
 {
@@ -371,14 +371,14 @@ entity_set_origin(Ent, Origin)
 entity_set_vector(Ent, EV_VEC_angles, vAngle)
 
 entity_set_int(Ent, EV_INT_effects, 2)
-entity_set_int(Ent, EV_INT_solid, 2)
+entity_set_int(Ent, EV_INT_solid, SOLID_BBOX)
 entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
 entity_set_float(Ent,EV_FL_gravity, LENA_PROJECTILE_GRAVITY_MULT*0.5)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 velocity_by_aim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
-new resume_zoom=get_member(id,m_bResumeZoom);
+new resume_zoom=get_pdata_bool(id,m_bResumeZoom,OFFSET_LINUX_PLAYER*4)
 if(!(resume_zoom)){
 	coeff_to_multiply_with=LENA_PROJECTILE_SHOOT_RANDOMNESS;
 }
@@ -425,7 +425,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if((get_user_weapon(player) != LENA_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_member(player, m_pActiveItem)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
 	if(is_valid_ent(pEntity)){
 		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED

@@ -165,7 +165,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	if( get_pdata_int(iEnt, m_fInReload, 4) )
 	{
 		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, _:m_iId, 4)], speed)
-		set_pdata_float(get_pdata_cbase(iEnt, _:m_pPlayer, 4), _:m_flNextAttack, fDelay, 5)
+		set_pdata_float(get_pdata_cbase(iEnt, _:m_pPlayer, 4), _:m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
 		set_pdata_float(iEnt, _:m_flTimeWeaponIdle, fDelay + 0.5, 4)
 	}
 }

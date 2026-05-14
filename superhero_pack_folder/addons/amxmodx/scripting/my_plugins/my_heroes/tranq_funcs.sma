@@ -4,7 +4,6 @@
 #define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
-#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -176,26 +175,26 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 
 	}
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 
 		return HAM_IGNORED;
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ELITE)
 
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
-	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(CLIP_SIZE - iClip, bpammo)
 
-		set_pdata_int(ent, 51, iClip + temp1, 4)
+		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, CSW_ELITE, bpammo - temp1)
 
-		set_pdata_int(ent, 54, 0, 4)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 
 		fInReload = 0
 	}
@@ -209,7 +208,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 
@@ -218,7 +217,7 @@ public fw_WeaponReloadPre(entity)
 	g_Tranq_Clip[pPlayer] = -1
 
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, CSW_ELITE)
-	static iClip; iClip = get_pdata_int(entity, 51, 4)
+	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
@@ -234,17 +233,17 @@ public fw_Weapon_Reload_Post(ent)
 	if(pev_valid(ent)!=2){
 		return HAM_IGNORED
 	}
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 
 		return HAM_IGNORED
 	}
-	if((get_pdata_int(ent, 54, 4) == 1))
+	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
 	{ // Reload
 		if(g_Tranq_Clip[id] == -1)
 		return HAM_IGNORED
 
-		set_pdata_int(ent, 51, g_Tranq_Clip[id], 4)
+		set_pdata_int(ent, m_iClip, g_Tranq_Clip[id], XO_WEAPON)
 	}
 
 
@@ -255,16 +254,16 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer =get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if(!sh_user_has_hero(pPlayer,gHeroID) ){
 
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_member(pPlayer, m_flNextAttack, DART_DEPLOY_TIME)
-	set_member(entity, m_Weapon_flTimeWeaponIdle,  DART_DEPLOY_TIME)
-	set_pdata_int(entity, 51,min(CLIP_SIZE,get_pdata_int(entity, 51, 4)), 4)
+	set_pdata_float(entity, m_flNextPrimaryAttack, DART_DEPLOY_TIME ,XO_WEAPON)
+	set_pdata_float(entity, m_flTimeWeaponIdle, DART_DEPLOY_TIME ,XO_WEAPON)
+	set_pdata_int(entity, m_iClip,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	return HAM_SUPERCEDE
 }
 
@@ -274,7 +273,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	new pPlayer = get_member(entity, m_pPlayer)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,gHeroID)){
@@ -282,7 +281,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent
-	iClip = get_member(entity, m_Weapon_iClip)
+	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
 	{
 		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
@@ -293,12 +292,12 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_SUPERCEDE
 	}
 	launch_dart(pPlayer)
-	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, 51, 4)
-	set_member(entity, m_Weapon_flTimeWeaponIdle, DART_SHOOT_PERIOD)
-	set_member(entity, m_Weapon_flNextPrimaryAttack, DART_SHOOT_PERIOD)
-
-	pev(pPlayer, pev_punchangle, g_Recoil[pPlayer])
-	set_entvar(pPlayer, var_weaponanim,  generate_int(seq_shoot_left1,seq_shoot_rightlast))
+	g_Tranq_Clip[pPlayer]=get_pdata_int(entity, m_iClip, XO_WEAPON)
+	
+	set_pdata_float(entity, m_flNextPrimaryAttack, DART_SHOOT_PERIOD ,XO_WEAPON)
+	set_pdata_float(entity, m_flTimeWeaponIdle, DART_SHOOT_PERIOD ,XO_WEAPON)
+	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
+	entity_set_int(pPlayer, EV_INT_weaponanim,  generate_int(seq_shoot_left1,seq_shoot_rightlast))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 
 	return HAM_SUPERCEDE
@@ -310,7 +309,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 	}
 
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		return;
 	}
@@ -486,7 +485,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(weapon!=CSW_ELITE){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_member(player, m_pActiveItem)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
 	if(is_valid_ent(pEntity)){
 		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED

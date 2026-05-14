@@ -1,6 +1,5 @@
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -63,7 +62,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 	
-	new pEntity = get_member(player, m_pActiveItem)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem, OFFSET_LINUX_PLAYER)
 	if(is_valid_ent(pEntity)){
 
 		new is_silenced=cs_get_weapon_silen(pEntity)
@@ -146,7 +145,7 @@ public track_shinobu_usp_ammo(ent)
 {
 	if(!is_valid_ent(ent)) return HAM_IGNORED
 
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id)){
 		
 		return HAM_IGNORED
@@ -231,7 +230,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	if(button & IN_ATTACK)
 	{
-		new weapon_ent = get_member( id , m_pActiveItem ) 
+		new weapon_ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER)
 		new is_silenced=cs_get_weapon_silen(weapon_ent)
 		if(!is_silenced){
 			button &= ~IN_ATTACK;

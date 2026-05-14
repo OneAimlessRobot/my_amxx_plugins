@@ -49,6 +49,11 @@ new pcvar_dmg_mult
 new dmg_source_name_short_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
 new dmg_source_name_long_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
 new custom_dmg_id_euromilhoes
+
+
+new user_hegrenade_count[SH_MAXSLOTS+1] = {0, ...},
+	prev_user_hegrenade_count[SH_MAXSLOTS+1] = {0, ...}
+	
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -182,11 +187,12 @@ public on_AmmoX(id)
 	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new iAmmoType = read_data(1)
-	new iAmmoCount = read_data(2)
 
-	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID)  ) {
+	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID) ) {
+		prev_user_hegrenade_count[id] = user_hegrenade_count[id]
+		user_hegrenade_count[id] = read_data(2)
+		if ( (user_hegrenade_count[id]<prev_user_hegrenade_count[id])) {
 
-		if (iAmmoCount == 0) {
 			set_task(get_cvar_float("gambit_grenadetimer"), "gambit_weapons", id)
 
 			if ( !sh_get_cooldown_flag(id) && gWillHit[id]) {
@@ -224,7 +230,7 @@ public on_AmmoX(id)
 				}
 			}
 		}
-		else if (iAmmoCount > 0) {
+		if (user_hegrenade_count[id] > 0) {
 			// Got a new nade remove the timer
 			remove_task(id)
 		}

@@ -220,7 +220,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 		return HAM_IGNORED
 	}
 	
-	pev(id, pev_punchangle, g_Recoil[id])
+	entity_get_vector(id, EV_VEC_punchangle,  g_Recoil[id])
 	
 	return HAM_IGNORED
 }
@@ -234,7 +234,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(Get_BitVar(g_Had_Arifle, id))
 	{
 		static Float:Push[3]
-		pev(id, pev_punchangle, Push)
+		entity_get_vector(id, EV_VEC_punchangle,  Push)
 		xs_vec_sub(Push, g_Recoil[id], Push)
 		
 		xs_vec_mul_scalar(Push, A_RIFLE_RECOIL, Push)
@@ -250,8 +250,8 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	ent_check(Ent,HAM_IGNORED)
 
 
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(Id, m_pActiveItem,5) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return HAM_IGNORED	
@@ -271,13 +271,13 @@ public fw_Item_Deploy_Post(Ent)
 {
 	ent_check(Ent,)
 
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(Id)){
 		
 		return
 	}
-	if(get_pdata_cbase(Id, 373) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, 5) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return

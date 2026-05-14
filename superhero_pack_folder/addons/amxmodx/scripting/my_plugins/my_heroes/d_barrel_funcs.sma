@@ -450,7 +450,7 @@ public fw_Weapon_Reload_Post(ent)
 
 		return HAM_IGNORED;
 	}
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 
 	if(Get_BitVar(g_Had_Volcano, id))
 	{
@@ -479,7 +479,7 @@ public fw_Item_PostFrame(ent)
 	if(pev_valid(ent)!=2){
 		return
 	}
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
@@ -524,7 +524,7 @@ public fw_Weapon_PrimaryAttack(ent)
 {
 	ent_check(ent,)
 
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		
@@ -535,7 +535,7 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 {
 	ent_check(ent,)
 	
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		

@@ -48,6 +48,8 @@ new custom_dmg_id_penguin_homing_grenade
 
 new pcvar_dmg_mult
 
+new user_hegrenade_count[SH_MAXSLOTS+1] = {0, ...},
+	prev_user_hegrenade_count[SH_MAXSLOTS+1] = {0, ...}
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -152,19 +154,20 @@ public on_AmmoX(id)
 	if ( !sh_is_active() || !is_user_alive(id) ) return
 
 	new iAmmoType = read_data(1)
-	new iAmmoCount = read_data(2)
 
 	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID) ) {
 
-		if ( iAmmoCount == 0 ) {
+		prev_user_hegrenade_count[id] = user_hegrenade_count[id]
+		user_hegrenade_count[id] = read_data(2)
+		if ( (user_hegrenade_count[id]<prev_user_hegrenade_count[id])) {
 			set_task(get_cvar_float("penguin_grenadetimer"), "penguin_weapons", id)
 
 			if ( !sh_get_cooldown_flag(id) ) {
 				new iGrenade = -1
 				while ( (iGrenade = find_ent_by_class(iGrenade, "grenade")) > 0 ) {
-					new model[32]
-					entity_get_string(iGrenade, EV_SZ_model, model, 31)
-					if ( id == entity_get_edict(iGrenade, EV_ENT_owner) && equal(model, "models/w_hegrenade.mdl") ) {
+					new string[128]
+					entity_get_string(iGrenade, EV_SZ_model, string, 127)
+					if ( id == entity_get_edict(iGrenade, EV_ENT_owner) && equal(string, "models/w_hegrenade.mdl") ) {
 						entity_set_model(iGrenade, "models/shmod/penguin_w_hegrenade.mdl")
 
 						// Set speed here since it gets called so much
@@ -187,7 +190,7 @@ public on_AmmoX(id)
 				}
 			}
 		}
-		else if ( iAmmoCount > 0 ) {
+		if ( user_hegrenade_count[id] > 0 ) {
 			// Got a new nade remove the timer
 			remove_task(id)
 		}
