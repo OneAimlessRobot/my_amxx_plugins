@@ -152,13 +152,13 @@ public Event_CurWeapon(id)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(!pev_valid(Ent)) return
 	
-	Delay = get_pdata_float(Ent, 46, 4) * SPEED
-	Delay2 = get_pdata_float(Ent, 47, 4) * SPEED
+	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * SPEED
+	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * SPEED
 	
 	if(Delay > 0.0)
 	{
-		set_pdata_float(Ent, 46, Delay, 4)
-		set_pdata_float(Ent, 47, Delay2, 4)
+		set_pdata_float(Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
+		set_pdata_float(Ent, m_flNextSecondaryAttack, Delay2, XO_WEAPON)
 	}
 }
 
@@ -330,11 +330,11 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(!Get_BitVar(g_Had_Ethereal, Id))
 		return HAM_IGNORED	
 		
-	if(get_pdata_float(Ent, 48, 4) <= 0.1) 
+	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
 		set_weapon_anim(Id, E_ANIM_IDLE)
 		
-		set_pdata_float(Ent, 48, 20.0, 4)
+		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
 		set_pdata_string(Id, (492) * 4, PLAYER_ANIMEXT, -1 , 20)
 	}
 	
@@ -591,7 +591,7 @@ public give_ammo(id, silent, CSWID, Max)
 
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time)
 {
-	static Ent; Ent = get_pdata_cbase(id, 373, 5)
+	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER)
 	if(!pev_valid(Ent))
 		return
 
@@ -727,9 +727,9 @@ stock Set_Player_NextAttack(id, CSWID, Float:NextTime)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSWID)
 	if(!pev_valid(Ent)) return
 	
-	set_pdata_float(id, 83, NextTime, 5)
+	set_pdata_float(id, m_flNextAttack, NextTime, OFFSET_LINUX_PLAYER)
 	
-	set_pdata_float(Ent, 46 , NextTime, 4)
-	set_pdata_float(Ent, 47, NextTime, 4)
-	set_pdata_float(Ent, 48, NextTime, 4)
+	set_pdata_float(Ent, m_fl_NextPrimaryAttack , NextTime, XO_WEAPON)
+	set_pdata_float(Ent, m_flNextSecondaryAttack, NextTime, XO_WEAPON)
+	set_pdata_float(Ent, m_flTimeWeaponIdle, NextTime, XO_WEAPON)
 }

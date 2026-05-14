@@ -22,6 +22,7 @@ new g_ester_is_reborn_mode_mask = 0
 new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_smashed_someone_mask = 0
+new g_smashed_breakable_mask = 0
 new g_is_glowing_mask = 0
 
 
@@ -84,6 +85,8 @@ public plugin_init()
 	pcvar_ester_anti_pussy_engaged = register_cvar("ester_anti_pussy_engaged", "0")
 	
 	
+	static const custom_vector[][]={"func_breakable"}
+	register_custom_touchable("player","ester_break_shit",custom_vector, 1)
 	register_custom_touchable("player","ester_charge_impact",player_vector,1)
 
 	register_forward(FM_CmdStart, "OnCmdStart")
@@ -255,11 +258,13 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 	if(!value){
 
 		Set_BitVar(g_smashed_someone_mask,id);
+		Set_BitVar(g_smashed_breakable_mask,id);
 		UnSet_BitVar(g_ester_is_reborn_mode_mask,id)	
 	}
 	else{
 
 		UnSet_BitVar(g_smashed_someone_mask,id);
+		UnSet_BitVar(g_smashed_breakable_mask,id);
 		Set_BitVar(g_ester_is_reborn_mode_mask,id)	
 
 	}
@@ -308,6 +313,7 @@ public OnCmdStart(id, uc_handle, seed)
 				
 			}
 			UnSet_BitVar(g_smashed_someone_mask,id);
+			UnSet_BitVar(g_smashed_breakable_mask,id);
 			Set_BitVar(g_flying_mask,id)
 		}
 		if(generate_int(0, FlameAndSoundRate) <3)
@@ -608,7 +614,50 @@ public revival(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
+public ester_break_shit(pToucher,pTouched){
 
+	if (pev_valid(pToucher)!=2){
+		
+		return
+	}
+	if (!is_user_alive(pToucher)){
+
+		return
+	}
+
+	if (pev_valid(pTouched)<1){
+		
+		return
+	}
+
+	if (!sh_user_has_hero(pToucher,gHeroID)||
+							Get_BitVar(g_smashed_breakable_mask,pToucher)||
+							!Get_BitVar(g_ester_is_reborn_mode_mask,pToucher)||
+							!Get_BitVar(g_flying_mask,pToucher)){
+
+		return
+	}
+	Set_BitVar(g_smashed_breakable_mask, pToucher)
+	sh_set_stun(pToucher,1.0,200.0)
+
+	static Float:killer_velocity[3],Float:killer_origin[3],Float:killer_speed
+	
+	entity_get_vector(pToucher,EV_VEC_origin,killer_origin)
+	entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+
+	killer_speed=floatmax(1.0,vector_length(killer_velocity))
+
+	explosion_custom_entity(pToucher,
+							150.0,(0.2*killer_speed),
+							"func_breakable",
+							cvar_val(float, pcvar_ester_fly_knock_enemies_force))
+
+	entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+	multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
+	set_velocity_from_origin(pToucher,killer_origin,killer_speed)
+
+
+}
 public ester_charge_impact(pToucher, pTouched) {
 
 
@@ -646,17 +695,22 @@ if(sh_clients_are_same_team(pToucher,pTouched)){
 
 	return
 }
+
+sh_set_stun(pToucher,1.0,200.0)
+
 Set_BitVar(g_smashed_someone_mask, pToucher)
-new Float:killer_velocity[3],Float:killer_speed
+static Float:killer_velocity[3],Float:killer_origin[3],Float:killer_speed
+
+entity_get_vector(pToucher,EV_VEC_origin,killer_origin)
 entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
 
-killer_speed=vector_length(killer_velocity)
+killer_speed=floatmax(1.0,vector_length(killer_velocity))
 
 explosion(gHeroID,pToucher,150.0,(0.2*killer_speed),
 		cvar_val(float, pcvar_ester_fly_knock_enemies_force),1)
 entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
 multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
-entity_set_vector(pToucher,EV_VEC_velocity,killer_velocity)
+set_velocity_from_origin(pToucher,killer_origin,killer_speed)
 
 
 }

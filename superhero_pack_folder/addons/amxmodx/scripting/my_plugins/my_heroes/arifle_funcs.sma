@@ -148,13 +148,13 @@ public Event_CurWeapon(id)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(!pev_valid(Ent)) return
 	
-	Delay = get_pdata_float(Ent, 46, 4) * A_RIFLE_SPEED
-	Delay2 = get_pdata_float(Ent, 47, 4) * A_RIFLE_SPEED
+	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * A_RIFLE_SPEED
+	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * A_RIFLE_SPEED
 	
 	if(Delay > 0.0)
 	{
-		set_pdata_float(Ent, 46, Delay, 4)
-		set_pdata_float(Ent, 47, Delay2, 4)
+		set_pdata_float(Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
+		set_pdata_float(Ent, m_flNextSecondaryAttack, Delay2, XO_WEAPON)
 	}
 }
 
@@ -256,11 +256,11 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return HAM_IGNORED	
 		
-	if(get_pdata_float(Ent, 48, 4) <= 0.1) 
+	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
 		set_weapon_anim(Id, anim_idle)
 		
-		set_pdata_float(Ent, 48, 20.0, 4)
+		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
 		set_pdata_string(Id, (492) * 4, PLAYER_ANIMEXT, -1 , 20)
 	}
 	
@@ -357,21 +357,21 @@ public fw_Item_PostFrame(ent)
 	if(!Get_BitVar(g_Had_Arifle, id))
 		return HAM_IGNORED	
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ARIFLE)
 	
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
-	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(A_RIFLE_CLIP - iClip, bpammo)
 
-		set_pdata_int(ent, 51, iClip + temp1, 4)
+		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, CSW_ARIFLE, bpammo - temp1)		
 		
-		set_pdata_int(ent, 54, 0, 4)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		
 		fInReload = 0
 	}		
@@ -392,7 +392,7 @@ public fw_Weapon_Reload(ent)
 	g_Arifle_Clip[id] = -1
 		
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(id, CSW_ARIFLE)
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 		
 	if(BPAmmo <= 0)
 		return HAM_SUPERCEDE
@@ -414,12 +414,12 @@ public fw_Weapon_Reload_Post(ent)
 	if(!Get_BitVar(g_Had_Arifle, id))
 		return HAM_IGNORED	
 		
-	if((get_pdata_int(ent, 54, 4) == 1))
+	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
 	{ // Reload
 		if(g_Arifle_Clip[id] == -1)
 			return HAM_IGNORED
 		
-		set_pdata_int(ent, 51, g_Arifle_Clip[id], 4)
+		set_pdata_int(ent, m_iClip, g_Arifle_Clip[id], XO_WEAPON)
 		set_weapon_anim(id, anim_reload)
 	}
 	
@@ -548,7 +548,7 @@ public give_ammo(id, silent, CSWID, Max)
 
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
 {
-	static Ent; Ent = get_pdata_cbase(id, 373, 5)
+	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, 5)
 	if(!pev_valid(Ent))
 		return
 
@@ -684,9 +684,9 @@ stock Set_Player_NextAttack(id, CSWID, Float:NextTime)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSWID)
 	if(!pev_valid(Ent)) return
 	
-	set_pdata_float(id, 83, NextTime, 5)
+	set_pdata_float(id, m_flNextAttack, NextTime, OFFSET_LINUX_PLAYER)
 	
-	set_pdata_float(Ent, 46 , NextTime, 4)
-	set_pdata_float(Ent, 47, NextTime, 4)
-	set_pdata_float(Ent, 48, NextTime, 4)
+	set_pdata_float(Ent, m_flNextPrimaryAttack , NextTime, XO_WEAPON)
+	set_pdata_float(Ent, m_flNextSecondaryAttack, NextTime, XO_WEAPON)
+	set_pdata_float(Ent, m_flTimeWeaponIdle, NextTime, XO_WEAPON)
 }

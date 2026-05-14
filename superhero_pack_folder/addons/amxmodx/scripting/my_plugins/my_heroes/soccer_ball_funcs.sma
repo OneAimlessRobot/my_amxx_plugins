@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -92,12 +93,34 @@ public ball_touch_player(Ball, Player ) {
 			new touched_someone=entity_get_int(Ball,EV_INT_iuser3)
 			if(!touched_someone){
 				//set pickability status
+				static Float:velocity[3],
+						Float:speed,
+						my_hitpoint_enum:the_hitpoint,
+						damage
+					
+				entity_get_vector(Ball,EV_VEC_velocity,velocity)
+				speed= floatmax(1.0,vector_length(velocity))
 				entity_set_int(Ball,EV_INT_iuser2,true)
 				entity_set_int(Ball,EV_INT_iuser3,true)
 				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
 
-				sh_extra_damage(Player,oid,BALL_DMG,
-						dmg_source_name_short_free_kick,my_hitpoint_enum:HIT_HEAD
+				the_hitpoint= get_projectile_hit_hitpoint(Ball,
+										velocity,
+										20.0*3.0,
+										speed)
+				damage=BALL_DMG
+				if(the_hitpoint==MY_HIT_HEAD){
+	
+					damage*=4;
+				}
+				else if((the_hitpoint==MY_HIT_LEFTARM)||(the_hitpoint==MY_HIT_RIGHTARM)){
+
+
+					sh_chat_message(oid,gHeroID,"EIO PANELEIRO! FOI MAO, CARALHO");
+				}
+
+				sh_extra_damage(Player,oid,damage,
+						dmg_source_name_short_free_kick,the_hitpoint
 						,_,_,_,_,
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)
@@ -150,7 +173,7 @@ public kick_ball(iPlugin,iParams)
 	
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	set_pev(Ent,pev_iuser1, id)
-	
+	drop_to_floor(Ent)
 	velocity_by_aim(id, floatround(BALL_SPEED) , Velocity)
 	
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -185,14 +208,14 @@ public ball_think(ent)
 	
 	if(pev_valid(ent)!=2){
 		
-		return FMRES_IGNORED
+		return
 		
 	}
 
 	new id=pev(ent,pev_iuser1)
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) {
 		remove_entity(ent)
-		return FMRES_IGNORED
+		return
 	}
 	//get removal timer
 	new Float:removal_timer=entity_get_float( ent, EV_FL_fuser1);
@@ -203,7 +226,7 @@ public ball_think(ent)
 	else{
 
 		remove_entity(ent)
-		return FMRES_IGNORED
+		return
 
 	}
 	
@@ -253,8 +276,10 @@ public ball_think(ent)
 	
 	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
 	set_pev(ent, pev_vuser1, newVelocity)
+
+	orient_entity_with_move_vector(ent)
+
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
-	return FMRES_IGNORED
 }
 public plugin_precache()
 {

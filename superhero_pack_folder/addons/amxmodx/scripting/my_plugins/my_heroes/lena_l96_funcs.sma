@@ -53,6 +53,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
 	
+	
 	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(LENA_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
 
@@ -67,22 +68,6 @@ public plugin_cfg(){
 	gHeroID = lena_get_hero_id()
 	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_long_l96,0)
 
-}
-public FwdTouchWorld( bull_et, World ) {
-
-	if(!is_valid_ent(bull_et)) return
-
-	new Float:origin[3]
-	entity_get_vector(bull_et,EV_VEC_origin,origin);
-
-	emit_sound(bull_et, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	make_sparks(origin);
-	gun_shot_decal(origin);
-
-	tank_impact_shot_fx(bull_et,origin,17)
-
-	
-	remove_entity(bull_et)
 }
 public bulette_thinque(ent){
 
@@ -115,12 +100,7 @@ public bulette_thinque(ent){
 		}
 	}
 	
-	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
-	
-	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
-	vector_to_angle(fl_Velocity, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+	orient_entity_with_move_vector(ent)
 
 	projectile_air_drag_update_speed(parm,LENA_PROJECTILE_DRAG_CONST,LENA_PROJECTILE_GRAVITY_MULT,LENA_PROJECTILE_PHYS_UPDATE_TIME)
 	
@@ -199,21 +179,21 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, LENA_WEAPON_CLASSID)
 	
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
-	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(CLIP_SIZE - iClip, bpammo)
 
-		set_pdata_int(ent, 51, iClip + temp1, 4)
+		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, LENA_WEAPON_CLASSID, bpammo - temp1)		
 		
-		set_pdata_int(ent, 54, 0, 4)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		
 		fInReload = 0
 	}		
@@ -234,7 +214,7 @@ public fw_WeaponReloadPre(entity)
 	}
 	g_L96_clip[pPlayer] = -1
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, LENA_WEAPON_CLASSID)
-	static iClip; iClip = get_pdata_int(entity, 51, 4)
+	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
@@ -434,61 +414,94 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 }
 
 
+public FwdTouchWorld( bull_et, World ) {
+
+	if(!is_valid_ent(bull_et)) return
+
+	static Float:origin[3]
+	entity_get_vector(bull_et,EV_VEC_origin,origin);
+
+	emit_sound(bull_et, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	make_sparks(origin);
+	gun_shot_decal(origin);
+
+	tank_impact_shot_fx(bull_et,origin,17)
+	
+	if(!is_valid_ent(World)){
+		
+		remove_entity(bull_et)
+		return
+	}
+	
+	static szClassname[32]
+	entity_get_string(World,EV_SZ_classname,szClassname, charsmax(szClassname))
+	if(equal(szClassname,"func_breakable")){
+		static Float:bullet_launch_pos[3]
+				
+		entity_get_vector(bull_et,EV_VEC_vuser1,bullet_launch_pos)
+
+		new Float:damage = calculate_nuanced_projectile_damage(bull_et,
+							bullet_launch_pos,
+							LENA_PROJECTILE_DAMAGE,
+							LENA_PROJECTILE_DAMAGE_FALLOFF_DIST,
+							LENA_PROJECTILE_SPEED)
+
+		new owner=entity_get_edict(bull_et,EV_ENT_owner)
+		ExecuteHam(Ham_TakeDamage, World, bull_et, owner, damage, 0);
+
+	} 
+	remove_entity(bull_et)
+}
 public bulletina_touque_playor(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return
-	
-	static Float:origin[3],
-		Float:vic_origin[3],
-		Float:velocity[3],
-		Float:bullet_launch_pos[3],
-		Float:trace_vector_direction[3],
-		Float:trace_vector_end[3],
-		Float:speed,
-		hitgroup
-		
-	entity_get_vector(pToucher,EV_VEC_origin,origin);
 
-	new oid = entity_get_edict(pToucher, EV_ENT_owner)
-	entity_get_vector(pToucher,EV_VEC_origin,vic_origin);
+	static Float:bullet_launch_pos[3],
+		Float:origin[3],
+		Float:velocity[3],
+		Float:speed,
+		Float:damage,
+		Float:falloff_coeff,
+		Float:distance,
+		my_hitpoint_enum:the_hitpoint,
+		bool:headshot=false,
+		owner
+
+
 	
-	
-	entity_get_vector(pToucher,EV_VEC_velocity,velocity);
-	speed=vector_length(velocity);
-	new Float:speed_coeff=(speed/LENA_PROJECTILE_SPEED)
+	entity_get_vector(pToucher,EV_VEC_origin,origin);
+				
 	entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
-	entity_get_vector(pTouched,EV_VEC_origin,vic_origin);
-	new tr_handle=create_tr2()
-	multiply_3d_vector_by_scalar(velocity,
-					(LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0)/speed,trace_vector_direction)
-	add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
-	engfunc(EngFunc_TraceLine,
-		origin,
-		trace_vector_end,
-		0,
-		pToucher,
-		tr_handle
-	)
-	hitgroup = get_tr2(tr_handle, TR_iHitgroup)
-	
-	free_tr2(tr_handle)
-	new Float:distance=vector_distance(vic_origin,bullet_launch_pos);
-	new Float:falloff_coeff= floatmin(1.0,distance/LENA_PROJECTILE_DAMAGE_FALLOFF_DIST);
-	new Float:normal_damage=LENA_PROJECTILE_DAMAGE-(35.0*falloff_coeff);
-	new Float:damage=normal_damage*speed_coeff;
-	new headshot=0;
-	if(hitgroup==HIT_HEAD){
+
+	entity_get_vector(pToucher,EV_VEC_velocity,velocity)
+
+	speed=floatmax(1.0,vector_length(velocity))
+
+	damage = calculate_nuanced_projectile_damage(pToucher,
+						bullet_launch_pos,
+						LENA_PROJECTILE_DAMAGE,
+						LENA_PROJECTILE_DAMAGE_FALLOFF_DIST,
+						LENA_PROJECTILE_SPEED,
+						distance,
+						falloff_coeff)
+
+	owner=entity_get_edict(pToucher,EV_ENT_owner)
+	the_hitpoint= get_projectile_hit_hitpoint(pToucher,
+										velocity,
+										LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0,
+										speed)
+	if(the_hitpoint==MY_HIT_HEAD){
 		
-		headshot=1;
-		damage*=cvar_val(num, pcvar_dmg_headshot_mult);
+		headshot=true;
+		damage*=float(cvar_val(num, pcvar_dmg_headshot_mult));
 	}
 	new Float:the_period=(headshot?0.33:1.0);
 	new Float:the_time=(headshot?float(cvar_val(num, pcvar_dmg_headshot_mult)):the_period)*10.0;
-	new CsTeams:att_team=cs_get_user_team(oid)
+	new CsTeams:att_team=cs_get_user_team(owner)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_long_l96, 
-			my_hitpoint_enum:hitgroup,
+		sh_extra_damage(pTouched,owner,floatround(damage),dmg_source_name_long_l96, 
+			the_hitpoint,
 			_,_,_,
 			DMG_BULLET,
 			SH_NEW_DMG_SUPER_BULLET,
@@ -500,10 +513,10 @@ public bulletina_touque_playor(pToucher, pTouched)
 		unfade_screen_user(pTouched)
 		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
 		if(gatling_get_fx_num(pTouched)!=RADIOACTIVE){
-				track_user(pTouched,oid,1,3,the_period,the_time,ORANGE)
+				track_user(pTouched,owner,1,3,the_period,the_time,ORANGE)
 		}
 		
-		sh_set_user_xp(oid,floatround(distance)*(headshot?
+		sh_set_user_xp(owner,floatround(distance)*(headshot?
 				cvar_val(num, pcvar_dmg_headshot_mult):1)*
 				cvar_val(num, pcvar_xp_distance_mult),true);
 		new random_number=generate_int(0,(sizeof lena_poems)-1)
@@ -514,7 +527,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 		
 		if(!is_user_alive(pTouched)){
 
-			gross_kill_gibs_fx(pTouched,vic_origin,origin)
+			gross_kill_gibs_fx(pTouched,origin,origin)
 
 		}
 	}

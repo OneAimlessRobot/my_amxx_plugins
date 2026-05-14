@@ -194,7 +194,6 @@ public _explosion_custom_entity(iPlugins,iParams){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}
-	emit_sound(ent_id, CHAN_VOICE, crush_stunned, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
@@ -329,8 +328,8 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	else{
 		force=damage
 	}
-	new this_ent_owner = entity_get_edict(tg_id, EV_ENT_owner)
-	if(is_user_alive(this_ent_owner)){
+	if(is_user_alive(owner_id)||(is_user_alive(ent_id))){
+
 		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
 	if(!is_valid_ent(tg_id)){

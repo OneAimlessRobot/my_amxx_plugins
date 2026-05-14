@@ -80,13 +80,10 @@ public rivette_thinque(ent){
 	parm[0] = ent
 	parm[1] = owner
 
-	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
-	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
-	vector_to_angle(fl_Velocity, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+	
+	orient_entity_with_move_vector(ent)
 
-
+	
 	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
@@ -154,18 +151,18 @@ public fw_Item_PostFrame(ent)
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, MARIA_WEAPON_CLASSID)
 	
-	static iClip; iClip = get_pdata_int(ent, 51, 4)
-	static fInReload; fInReload = get_pdata_int(ent, 54, 4)
+	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 	
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
 		temp1 = min(CLIP_SIZE - iClip, bpammo)
 
-		set_pdata_int(ent, 51, iClip + temp1, 4)
+		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID, bpammo - temp1)		
 		
-		set_pdata_int(ent, 54, 0, 4)
+		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		
 		fInReload = 0
 	}
@@ -185,7 +182,7 @@ public fw_WeaponReloadPre(entity)
 	}
 	g_Riveter_clip[pPlayer] = -1
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, MARIA_WEAPON_CLASSID)
-	static iClip; iClip = get_pdata_int(entity, m_iClip, 4)
+	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
@@ -399,6 +396,11 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									is_direct_hit,
 									_,_,_,_,
 									maria_riveter_wpn_id)
+	explosion_custom_entity(pToucher,
+									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
+									"func_breakable",
+									MARIA_PROJECTILE_EXPLODE_FORCE,0)
+	
 	remove_entity(pToucher)
 }
 public plugin_precache()

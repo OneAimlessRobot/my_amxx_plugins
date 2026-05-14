@@ -97,11 +97,7 @@ public tranque_thinque(ent){
 	parm[0] = ent
 	parm[1] = owner
 
-	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
-	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
-	vector_to_angle(fl_Velocity, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
-	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+	orient_entity_with_move_vector(ent)
 
 
 	projectile_air_drag_update_speed(parm,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
@@ -385,55 +381,48 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 	if(is_user_alive(pTouched))
 	{
-		
-		static Float:origin[3]
-		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
 		new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
 		if(dart_hurts){
-			
-			static Float:vic_origin[3],
+			static Float:bullet_launch_pos[3],
+				Float:origin[3],
 				Float:velocity[3],
-				Float:dart_launch_pos[3],
-				Float:trace_vector_direction[3],
-				Float:trace_vector_end[3],
 				Float:speed,
-				hitgroup
-		
+				Float:damage,
+				Float:falloff_coeff,
+				Float:distance,
+				my_hitpoint_enum:the_hitpoint,
+				bool:headshot=false
 
 
-			entity_get_vector(pToucher,EV_VEC_velocity,velocity);
-			speed=vector_length(velocity);
-			new Float:speed_coeff=(speed/DART_SPEED)
-			new vic_origin_eyes_int[3];
-			entity_get_vector(pToucher,EV_VEC_vuser1,dart_launch_pos)
-			get_user_origin(pTouched,vic_origin_eyes_int,1);
-			new Float:distance=vector_distance(vic_origin,dart_launch_pos);
-			new Float:falloff_coeff= floatmin(1.0,distance/DART_DAMAGE_FALLOFF_DIST);
-			new Float:normal_damage=DART_DAMAGE-(35.0*falloff_coeff);
-			new Float:damage=normal_damage*speed_coeff;
-			new tr_handle=create_tr2()
-			multiply_3d_vector_by_scalar(velocity,
-							(DART_HEADSHOT_THRESHOLD_DIST*3.0)/speed,trace_vector_direction)
-			add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
-			engfunc(EngFunc_TraceLine,
-				origin,
-				trace_vector_end,
-				0,
-				pToucher,
-				tr_handle
-			)
-			hitgroup = get_tr2(tr_handle, TR_iHitgroup)
 
-			free_tr2(tr_handle)
-			new headshot=0;
-			if(hitgroup==HIT_HEAD){
+			entity_get_vector(pToucher,EV_VEC_origin,origin);
+						
+			entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
 
-				headshot=1;
-				damage*=4;
+			entity_get_vector(pToucher,EV_VEC_velocity,velocity)
+
+			speed=floatmax(1.0,vector_length(velocity))
+
+			damage = calculate_nuanced_projectile_damage(pToucher,
+								bullet_launch_pos,
+								DART_DAMAGE,
+								DART_DAMAGE_FALLOFF_DIST,
+								DART_SPEED,
+								distance,
+								falloff_coeff)
+
+			the_hitpoint= get_projectile_hit_hitpoint(pToucher,
+												velocity,
+												DART_HEADSHOT_THRESHOLD_DIST*3.0,
+												speed)
+			if(the_hitpoint==MY_HIT_HEAD){
+
+				headshot=true;
+				damage*=4.0;
 			}
 			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,
-						my_hitpoint_enum:hitgroup,
+						the_hitpoint,
 						_,_,_,_,
 						SH_NEW_DMG_BLEED,
 						super_dart_weapon_id)

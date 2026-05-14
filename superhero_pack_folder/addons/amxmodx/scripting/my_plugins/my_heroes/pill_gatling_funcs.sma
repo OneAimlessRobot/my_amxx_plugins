@@ -329,13 +329,13 @@ public fw_Weapon_Reload_Post(ent)
 		
 		return HAM_IGNORED
 	}
-	if((get_pdata_int(ent, 54, 4) == 1))
+	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
 	{ 
 	
 		if(g_Pillgatling_clip[id] == -1)
 			return HAM_IGNORED
 		
-		set_pdata_int(ent, 51, g_Pillgatling_clip[id], 4)
+		set_pdata_int(ent, m_iClip, g_Pillgatling_clip[id], XO_WEAPON)
 	}
 	
 	
@@ -387,7 +387,7 @@ fire_mode(id,entity, type) {
 	if(g_plAction[id] == act_run) {
 
 		if(type == 0 && g_Pillgatling_clip[id]>0){
-			g_Pillgatling_clip[id]=get_pdata_int(entity, 51, 4)
+			g_Pillgatling_clip[id]=get_pdata_int(entity, m_iClip, XO_WEAPON)
 			launch_pill(id)
 			set_pdata_float(entity, m_flTimeWeaponIdle, PILL_SHOOT_PERIOD, XO_WEAPON)
 			set_pdata_float(entity, m_flNextPrimaryAttack, PILL_SHOOT_PERIOD, XO_WEAPON)

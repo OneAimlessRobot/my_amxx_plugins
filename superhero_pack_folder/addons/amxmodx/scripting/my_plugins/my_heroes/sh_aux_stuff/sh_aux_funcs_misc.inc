@@ -124,6 +124,75 @@ stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search
 	
 	return entlist[0]
 }
+
+stock Float:calculate_nuanced_projectile_damage(bull_et,
+				Float:bullet_launch_pos[3],
+				Float:base_damage,
+				Float:falloff_distance,
+				Float:peak_projectile_speed,
+				&Float:distance = 0.0,
+				&Float:falloff_coeff = 0.0){
+
+	static Float:velocity[3],
+		Float:hitter_origin[3],
+		Float:speed_coeff,
+		Float:speed,
+		Float:normal_damage,
+		Float:damage
+				
+	entity_get_vector(bull_et,EV_VEC_origin,hitter_origin)
+	entity_get_vector(bull_et,EV_VEC_velocity,velocity);
+	speed_coeff=(speed/peak_projectile_speed)
+	speed=vector_length(velocity);
+	distance=vector_distance(hitter_origin,bullet_launch_pos);
+	falloff_coeff= floatmin(1.0,distance/falloff_distance);
+	normal_damage=base_damage-(35.0*falloff_coeff);
+	damage=normal_damage*speed_coeff;
+
+	return damage
+}
+
+stock my_hitpoint_enum:get_projectile_hit_hitpoint(hitting_entity,
+				Float:velocity[3],
+				Float:threshold_distance_for_hit,
+				Float:projectile_speed){
+
+	static Float:trace_vector_direction[3],
+		Float:trace_vector_end[3],
+		Float:hitter_origin[3]
+
+	entity_get_vector(hitting_entity,EV_VEC_origin,hitter_origin)
+	new tr_handle=create_tr2()
+	multiply_3d_vector_by_scalar(velocity,
+					(threshold_distance_for_hit)/projectile_speed,
+					trace_vector_direction)
+	
+	add_3d_vectors(hitter_origin,trace_vector_direction,trace_vector_end)
+	
+	engfunc(EngFunc_TraceLine,
+		hitter_origin,
+		trace_vector_end,
+		0,
+		hitting_entity,
+		tr_handle
+	)
+	new my_hitpoint_enum:hitpoint =
+				my_hitpoint_enum:get_tr2(tr_handle, TR_iHitgroup)
+	
+	free_tr2(tr_handle)
+
+	return hitpoint;
+}
+stock orient_entity_with_move_vector(ent){
+
+
+	static Float:fl_NewAngle[3],Float:fl_Velocity[3]
+	entity_get_vector(ent,EV_VEC_velocity,fl_Velocity)
+	vector_to_angle(fl_Velocity, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_angles, fl_NewAngle)
+	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
+
+}
 stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	
 	if(!is_user_alive(id)){
@@ -144,12 +213,12 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 
 			}
 			static Float:Delay,Float:M_Delay
-			Delay =floatdiv(get_pdata_float( Ent, 46, 4) ,N_Speed)
-			M_Delay =floatdiv(get_pdata_float( Ent, 47, 4) ,N_Speed)
+			Delay =floatdiv(get_pdata_float( Ent, m_flNextPrimaryAttack, XO_WEAPON) ,N_Speed)
+			M_Delay =floatdiv(get_pdata_float( Ent, m_flNextSecondaryAttack, XO_WEAPON) ,N_Speed)
 			if (Delay > 0.0)
 			{
-				set_pdata_float( Ent, 46, Delay, 4)
-				set_pdata_float( Ent, 47, M_Delay, 4)
+				set_pdata_float( Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
+				set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
 			}
 		}
 	}
@@ -164,9 +233,9 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload, 4) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, _:m_iId, 4)], speed)
-		set_pdata_float(get_pdata_cbase(iEnt, _:m_pPlayer, 4), _:m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
-		set_pdata_float(iEnt, _:m_flTimeWeaponIdle, fDelay + 0.5, 4)
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], speed)
+		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
+		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}
 }
 #else

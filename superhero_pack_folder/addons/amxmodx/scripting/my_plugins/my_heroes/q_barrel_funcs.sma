@@ -167,8 +167,11 @@ public Event_CurWeapon(id)
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
 		if(pev_valid(Ent)) 
 		{
-			set_pdata_float(Ent, 46, get_pdata_float(Ent, 46, 4) * SPEED, 4)
-			set_pdata_float(Ent, 47, get_pdata_float(Ent, 47, 4) * SPEED, 4)
+			set_pdata_float(Ent, m_flNextPrimaryAttack,
+						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * SPEED, XO_WEAPON)
+	
+			set_pdata_float(Ent, m_flNextSecondaryAttack,
+						get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * SPEED, XO_WEAPON)
 		}
 	}
 	
@@ -221,7 +224,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
 	if(!pev_valid(Ent)) return
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
 	if(NewButton & IN_ATTACK2)
@@ -342,8 +345,8 @@ public fw_Item_Deploy_Post(Ent)
 {
 	if(pev_valid(Ent) != 2)
 		return
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(Id, m_pActiveItem) != Ent)
 		return
 	if(!Get_BitVar(g_Had_QB, Id))
 		return
@@ -369,17 +372,17 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 	if(pev_valid(iEnt) != 2){
 		return 
 	}
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
 	
-	static SpecialReload; SpecialReload = get_pdata_int(iEnt, 55, 4)
-	if(!SpecialReload && get_pdata_float(iEnt, 48, 4) <= 0.25)
+	static SpecialReload; SpecialReload = get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON)
+	if(!SpecialReload && get_pdata_float(iEnt, m_flTimeWeaponIdle, XO_WEAPON) <= 0.25)
 	{
 		Set_WeaponAnim(id, ANIM_IDLE)
-		set_pdata_float(iEnt, 48, 20.0, 4)
+		set_pdata_float(iEnt, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
 	}	
 }
 
@@ -388,31 +391,38 @@ public fw_Item_PostFrame(iEnt)
 	if(pev_valid(iEnt) != 2){
 		return 
 	}
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
 		return
 	}
-	if(get_pdata_cbase(id, 373) != iEnt)
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
 		return
-	if(!Get_BitVar(g_Had_QB, id))
+	}
+	if(!Get_BitVar(g_Had_QB, id)){
 		return
+	}
 
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, 5)
-	static iClip ; iClip = get_pdata_int(iEnt, 51, 4)
+	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_QUADBARREL)
+	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = CLIP
 
-	if(get_pdata_int(iEnt, 54, 4) && get_pdata_float(id, 83, 5) <= 0.0)
+	if(get_pdata_int(iEnt, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
-		set_pdata_int(iEnt, 51, iClip + j, 4)
-		set_pdata_int(id, 381, iBpAmmo-j, 5)
+		set_pdata_int(iEnt, m_iClip, iClip + j, XO_WEAPON)
+
+		cs_set_user_bpammo(id, CSW_QUADBARREL, iBpAmmo-j)
 		
-		set_pdata_int(iEnt, 54, 0, 4)
-		if(iBpAmmo > CLIP) cs_set_weapon_ammo(iEnt, min(iBpAmmo, CLIP))
-		else cs_set_weapon_ammo(iEnt, iClip + iBpAmmo)
-	
+		set_pdata_int(iEnt, m_fInReload, 0, XO_WEAPON)
+		if(iBpAmmo > CLIP){
+			cs_set_weapon_ammo(iEnt, min(iBpAmmo, CLIP))
+		}
+		else{
+			cs_set_weapon_ammo(iEnt, iClip + iBpAmmo)
+		}
+
 		// Update the fucking ammo hud
 		message_begin(MSG_ONE_UNRELIABLE, g_MsgCurWeapon, _, id)
 		write_byte(1)
@@ -433,8 +443,8 @@ public fw_Weapon_Reload_Post(iEnt)
 {
 	if(pev_valid(iEnt) != 2)
 		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
+	static id; id = get_pdata_cbase(iEnt,m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
@@ -443,12 +453,12 @@ public fw_Weapon_Reload_Post(iEnt)
 	if(CurBpAmmo  <= 0)
 		return
 
-	set_pdata_int(iEnt, 55, 0, 4)
-	set_pdata_float(id, 83, RELOAD_TIME, 5)
-	set_pdata_float(iEnt, 48, RELOAD_TIME + 0.5, 4)
-	set_pdata_float(iEnt, 46, RELOAD_TIME + 0.25, 4)
-	set_pdata_float(iEnt, 47, RELOAD_TIME + 0.25, 4)
-	set_pdata_int(iEnt, 54, 1, 4)
+	set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
+	set_pdata_float(id, m_flNextAttack, RELOAD_TIME, OFFSET_LINUX_PLAYER)
+	set_pdata_float(iEnt, m_flTimeWeaponIdle, RELOAD_TIME + 0.5, XO_WEAPON)
+	set_pdata_float(iEnt, m_flNextPrimaryAttack, RELOAD_TIME + 0.25, XO_WEAPON)
+	set_pdata_float(iEnt, m_flNextSecondaryAttack, RELOAD_TIME + 0.25, XO_WEAPON)
+	set_pdata_int(iEnt, m_fInReload, 1, XO_WEAPON)
 	
 	Set_WeaponAnim(id, ANIM_RELOAD)
 }
@@ -458,8 +468,8 @@ public fw_Weapon_PrimaryAttack(iEnt)
 {
 	if(pev_valid(iEnt) != 2)
 		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
@@ -473,8 +483,8 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 {
 	if(pev_valid(iEnt) != 2)
 		return 
-	static id; id = get_pdata_cbase(iEnt, 41, 4)
-	if(get_pdata_cbase(id, 373) != iEnt)
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
@@ -517,9 +527,9 @@ stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 	if(!pev_valid(entwpn)) 
 		return
 		
-	set_pdata_float(entwpn, 46, TimeIdle, 4)
-	set_pdata_float(entwpn, 47, TimeIdle, 4)
-	set_pdata_float(entwpn, 48, TimeIdle + 0.5, 4)
+	set_pdata_float(entwpn, m_flNextPrimaryAttack, TimeIdle, XO_WEAPON)
+	set_pdata_float(entwpn, m_flNextSecondaryAttack, TimeIdle, XO_WEAPON)
+	set_pdata_float(entwpn, m_flTimeWeaponIdle, TimeIdle + 0.5, XO_WEAPON)
 }
 
 stock make_bullet(id, Float:Origin[3])

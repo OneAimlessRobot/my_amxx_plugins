@@ -209,10 +209,10 @@ public Event_CurWeapon(id)
 			set_pev(id, pev_viewmodel2, "")
 		}
 		
-		static Float:TargetTime; TargetTime = get_pdata_float(Ent, 46, 4) * H_RIFLE_SPEED
+		static Float:TargetTime; TargetTime = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * H_RIFLE_SPEED
 		
-		set_pdata_float(Ent, 46, TargetTime, 4)
-		set_pdata_float(id, 83, TargetTime, 5)
+		set_pdata_float(Ent, m_flNextPrimaryAttack, TargetTime, XO_WEAPON)
+		set_pdata_float(id, m_flNextAttack, TargetTime, OFFSET_LINUX_PLAYER)
 	}
 	
 	g_Old_Weapon[id] = get_user_weapon(id)
@@ -336,8 +336,8 @@ public fw_Item_Deploy_Post(Ent)
 {
 	if(pev_valid(Ent) != 2)
 		return
-	static Id; Id = get_pdata_cbase(Ent, 41, 4)
-	if(get_pdata_cbase(Id, 373) != Ent)
+	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	if(get_pdata_cbase(Id, m_pActiveItem, OFFSET_LINUX_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Mosin, Id))
 		return
@@ -383,7 +383,7 @@ public fw_Item_PostFrame( iEnt )
 	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
 
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, XO_WEAPON)
+	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_MOSIN)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
 	if(get_pdata_int(id, m_flNextAttack, XTRA_OFS_PLAYER) > 0.0)
@@ -429,7 +429,7 @@ public fw_Item_PostFrame( iEnt )
 		case 3: // Done Insert
 		{
 			set_pdata_int(iEnt, m_iClip, iClip + 1, XO_WEAPON)
-			set_pdata_int(id, 381, iBpAmmo-1, XTRA_OFS_PLAYER)
+			cs_set_user_bpammo(id, CSW_MOSIN, iBpAmmo-1)
 			cs_set_user_bpammo(id, CSW_MOSIN, cs_get_user_bpammo(id, CSW_MOSIN) - 1)
 			
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XO_WEAPON)
@@ -469,12 +469,12 @@ stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 		return
 	}
 		
-	set_pdata_float(entwpn, 46, TimeIdle, 4)
-	set_pdata_float(entwpn, 47, TimeIdle, 4)
-	set_pdata_float(entwpn, 48, TimeIdle + 0.5, 4)
+	set_pdata_float(entwpn, m_flNextPrimaryAttack, TimeIdle, XO_WEAPON)
+	set_pdata_float(entwpn, m_flNextSecondaryAttack, TimeIdle, XO_WEAPON)
+	set_pdata_float(entwpn, m_flTimeWeaponIdle, TimeIdle + 0.5, XO_WEAPON)
 }
 
-stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)
+stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, m_flNextAttack, NextTime, OFFSET_LINUX_PLAYER)
 
 stock make_bullet(id, Float:Origin[3])
 {
@@ -596,7 +596,7 @@ stock PlaySound(id, const sound[])
 
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
 {
-	static Ent; Ent = get_pdata_cbase(id, 373, 5)
+	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER))
 	if(!pev_valid(Ent))
 		return
 

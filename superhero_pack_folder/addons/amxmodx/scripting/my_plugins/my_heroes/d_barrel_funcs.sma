@@ -186,13 +186,13 @@ public Event_CurWeapon(id)
 		
 		static Float:Delay, Float:Delay2
 		
-		Delay = get_pdata_float(Ent, 46, 4) * D_BARREL_SPEED
-		Delay2 = get_pdata_float(Ent, 47, 4) * D_BARREL_SPEED
+		Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * D_BARREL_SPEED
+		Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * D_BARREL_SPEED
 		
 		if(Delay > 0.0)
 		{
-		set_pdata_float(Ent, 46, Delay, 4)
-		set_pdata_float(Ent, 47, Delay2, 4)
+		set_pdata_float(Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
+		set_pdata_float(Ent, m_flNextSecondaryAttack, Delay2, XO_WEAPON)
 		}
 	} else if(CSWID != CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) {
 		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
@@ -233,7 +233,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
 	if(!pev_valid(Ent)) return
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, 83, 5)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
 	
@@ -459,11 +459,11 @@ public fw_Weapon_Reload_Post(ent)
 		if(CurBpAmmo  <= 0)
 			return HAM_IGNORED
 
-		set_pdata_int(ent, 55, 0, XO_WEAPON)
-		set_pdata_float(id, 83, D_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
-		set_pdata_float(ent, 48, D_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
-		set_pdata_float(ent, 46, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
-		set_pdata_float(ent, 47, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
+		set_pdata_int(ent, m_fInSpecialReload, 0, XO_WEAPON)
+		set_pdata_float(id, m_flNextAttack, D_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
+		set_pdata_float(ent, m_flTimeWeaponIdle, D_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
+		set_pdata_float(ent, m_flNextPrimaryAttack, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
+		set_pdata_float(ent, m_flNextSecondaryAttack, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
 		set_pdata_int(ent, m_fInReload, 1, XO_WEAPON)
 		
 		set_weapon_anim(id, GATLING_ANIM_RELOAD1)			
@@ -487,7 +487,7 @@ public fw_Item_PostFrame(ent)
 	}
 	if(!Get_BitVar(g_Had_Volcano, id)) return
 
-	static iBpAmmo ; iBpAmmo = get_pdata_int(id, 381, OFFSET_LINUX_PLAYER)
+	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = D_BARREL_DEFAULT_CLIP
 
@@ -495,7 +495,7 @@ public fw_Item_PostFrame(ent)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
 		set_pdata_int(ent, m_iClip, iClip + j, XO_WEAPON)
-		set_pdata_int(id, 381, iBpAmmo-j, OFFSET_LINUX_PLAYER)
+		cs_set_user_bpammo(id, CSW_GATLING, iBpAmmo-j)
 		
 		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)

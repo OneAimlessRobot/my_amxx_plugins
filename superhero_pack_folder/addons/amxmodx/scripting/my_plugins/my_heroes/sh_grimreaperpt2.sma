@@ -174,7 +174,7 @@ public swing_scythe(weaponent)
 		server_print("Grim reaper hook to weapon faulty???");
 		return HAM_IGNORED
 	}
-	new id = get_pdata_cbase(weaponent, 41, 4);
+	new id = get_pdata_cbase(weaponent, m_pPlayer, XO_WEAPON)
 	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}

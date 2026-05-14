@@ -430,7 +430,15 @@ public FwdTouchWorld( jet, World ) {
 
 
 			explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp), default_explode_knock_force_magnitude)
-			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME)
+			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
+						default_explode_knock_force_magnitude,0)
+
+			explosion_custom_entity(jet,
+				cvar_val(float, pcvar_jetplane_hp),
+				cvar_val(float, pcvar_jetplane_hp),
+				"func_breakable",
+				default_explode_knock_force_magnitude,0)
+			
 			jet_destroy(owner)
 			user_kill(owner)
 			return

@@ -6,8 +6,6 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
-#include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
-#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -208,7 +206,14 @@ explosion(gHeroID,pToucher,
 explosion_custom_entity(pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),
 	cvar_val(float, pcvar_jetplane_bomb_dmg),
-	JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude)
+	JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude,0)
+
+explosion_custom_entity(pToucher,
+	cvar_val(float, pcvar_jetplane_bomb_radius),
+	cvar_val(float, pcvar_jetplane_bomb_dmg),
+	"func_breakable",
+	default_explode_knock_force_magnitude,0)
+	
 remove_entity(pToucher)
 
 }

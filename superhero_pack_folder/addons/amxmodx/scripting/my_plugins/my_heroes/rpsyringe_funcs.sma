@@ -90,9 +90,9 @@ public CmdStart(id, uc_handle)
 			set_uc(uc_handle, UC_Buttons, button);
 			
 			set_pev(id, pev_weaponanim, 0);
-			set_pdata_float(id, 83, 0.5, 4);
+			set_pdata_float(id, m_flNextAttack, 0.5, OFFSET_LINUX_PLAYER);
 			if(ent){
-				set_pdata_float(ent, 48, 0.5+ROCKET_SHOOT_PERIOD, 4);
+				set_pdata_float(ent, m_flTimeWeaponIdle, 0.5+ROCKET_SHOOT_PERIOD, OFFSET_LINUX_PLAYER);
 			}
 			has_rocket[id] = 0
 		}

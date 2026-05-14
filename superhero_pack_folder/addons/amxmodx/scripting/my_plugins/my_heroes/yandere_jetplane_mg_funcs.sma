@@ -27,7 +27,9 @@ pcvar_jetplane_mg_bulletspeed,
 pcvar_jetplane_mg_ammo;
 
 
-//cvar_val(float, pcvar_
+new dmg_source_name_short_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
+new dmg_source_name_long_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
+new custom_dmg_id_mg_gatling
 
 public plugin_init(){
 	
@@ -58,6 +60,11 @@ public plugin_natives(){
 public plugin_cfg(){
 
 	gHeroID = yandere_get_hero_id()
+
+	custom_dmg_id_mg_gatling=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_mg_gatling,
+				dmg_source_name_long_mg_gatling,
+				0)
 }
 get_jet_shells(jet_id){
 
@@ -303,6 +310,26 @@ public shell_hit_wall(pToucher, pTouched){
 	make_sparks(origin);
 	gun_shot_decal(origin)
 
+	if(!is_valid_ent(pTouched)){
+		
+		remove_entity(pToucher)
+		return
+	}
+	
+	static szClassname[32]
+	entity_get_string(pTouched,EV_SZ_classname,szClassname, charsmax(szClassname))
+	if(equal(szClassname,"func_breakable")){
+		static Float:bullet_launch_pos[3]
+				
+		entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
+
+		new owner=entity_get_edict(pToucher,EV_ENT_owner)
+		
+		ExecuteHam(Ham_TakeDamage, pTouched, pToucher, owner,
+				cvar_val(float, pcvar_jetplane_mg_dmg),
+				0);
+
+	} 
 	remove_entity(pToucher)
 
 }
@@ -315,38 +342,35 @@ public shell_hit_player(pToucher, pTouched){
 		
 		static Float:origin[3],
 			Float:velocity[3],
-			Float:trace_vector_direction[3],
-			Float:trace_vector_end[3],
 			Float:speed,
-			hitgroup
+			my_hitpoint_enum:the_hitpoint,
+			bool:headshot=false
 			
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		entity_get_vector(pToucher,EV_VEC_velocity,velocity)
+		speed=floatmin(1.0,vector_length(velocity))
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
-		new tr_handle=create_tr2()
-		multiply_3d_vector_by_scalar(velocity,
-						(MG_SHELL_HEADSHOT_DIST_THRESHOLD*3.0)/speed,trace_vector_direction)
-		add_3d_vectors(origin,trace_vector_direction,trace_vector_end)
-		engfunc(EngFunc_TraceLine,
-			origin,
-			trace_vector_end,
-			0,
-			pToucher,
-			tr_handle
-		)
-		hitgroup = get_tr2(tr_handle, TR_iHitgroup)
 		
-		free_tr2(tr_handle)
 		new Float:damage=cvar_val(float, pcvar_jetplane_mg_dmg);
-		new headshot=0;
-		if(hitgroup==HIT_HEAD){
+		the_hitpoint= get_projectile_hit_hitpoint(pToucher,
+											velocity,
+											20.0*3.0,
+											speed)
+		if(the_hitpoint==MY_HIT_HEAD){
 			
-			headshot=1;
+			headshot=true;
 			damage*=4;
 		}
 		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)){
-			new bool:tg_will_die= (damage>float(get_user_health(pTouched)))
-			ExecuteHam(Ham_TakeDamage,pTouched,pToucher,oid,tg_will_die?50000.0:damage,DMG_BULLET);
+			sh_extra_damage(pTouched,oid,floatround(damage),
+				dmg_source_name_short_mg_gatling, 
+				the_hitpoint,
+				SH_DMG_NORM,
+				_,_,
+				DMG_BULLET,
+				SH_NEW_DMG_SUPER_BULLET,
+				custom_dmg_id_mg_gatling);
+
 			if(is_user_alive(pTouched)){
 				new CsArmorType:armor_type;
 				cs_get_user_armor(pTouched,armor_type);
