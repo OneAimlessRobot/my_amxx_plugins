@@ -224,7 +224,9 @@ public fw_ItemDeployPre(entity)
 	new pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
-		
+		if(!is_user_alive(pPlayer)){
+			server_print("MARIA CRASH!!!!! INVALID PLAYER! WE CAUGHT IT!")
+		}
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
@@ -244,7 +246,9 @@ public fw_WeaponPrimaryAttackPre(entity)
 	new pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	if (!hasRoundStarted()) return HAM_IGNORED;
 	if(!client_is_hero_user(pPlayer, gHeroID)){
-		
+		if(!is_user_alive(pPlayer)){
+			server_print("MARIA CRASH!!!!! INVALID PLAYER! WE CAUGHT IT!")
+		}
 		return HAM_IGNORED
 	}
 	static iClip, iPlaybackEvent

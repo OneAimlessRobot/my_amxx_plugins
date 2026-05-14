@@ -539,6 +539,12 @@ public goku_power_touch(pToucher, pTouched) {
 	if (!is_valid_ent(pToucher)) return
 
 	new id = entity_get_edict(pToucher, EV_ENT_owner)
+	if(!is_user_alive(id)){
+		return
+	}
+	if(!is_valid_ent(g_powerID[id]) ||(g_powerID[id] <=0)||(g_powerNum[id]<=0)){
+		return
+	}
 	new dmgRadius = g_maxRadius[id]
 	new maxDamage = g_maxDamage[id]
 	new Float:fl_vExplodeAt[3]
