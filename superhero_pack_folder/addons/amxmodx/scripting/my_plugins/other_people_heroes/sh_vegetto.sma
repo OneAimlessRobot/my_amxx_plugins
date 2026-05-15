@@ -65,7 +65,7 @@ public plugin_init()
 
 	for(new i=0;i<sizeof vegetto_dmgs_arr;i++){
 
-		vegetto_dmgs_arr[i][custom_wpn_id] = sh_log_custom_damage_source(gHeroID,
+		vegetto_dmgs_arr[i][the_wpn_id] = sh_log_custom_damage_source(gHeroID,
 				vegetto_dmgs_arr[i][short_dmg_name],
 				vegetto_dmgs_arr[i][long_dmg_name],
 				0)
@@ -550,7 +550,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 								vegetto_dmgs_arr[g_powerNum[id]-1][short_dmg_name],
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
-								vegetto_dmgs_arr[g_powerNum[id]-1][custom_wpn_id])
+								vegetto_dmgs_arr[g_powerNum[id]-1][the_wpn_id])
 
 
 			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){

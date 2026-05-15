@@ -210,12 +210,15 @@ stock const Float:g_fReloadDelay[CSW_P90+1] = {
 	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
 }
 
-stock const player_vector[][]={"player"}
-stock const szWallEntities[ ][ ] = {
-	"worldspawn", "func_wall", "func_door",  "func_door_rotating",
-	"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
-	"func_illusionary", "func_button", "func_rot_button", "func_rotating"
-}
+stock const player_vector[][]={"player"},
+			breakable_vector[][]={"hostage_entity"},
+			hostage_vector[][]={"hostage_entity"},
+			hurtable_vector[][]={"func_breakable","hostage_entity"},
+			szWallEntities[][] = {
+					"worldspawn", "func_wall", "func_door",  "func_door_rotating",
+					"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
+					"func_illusionary", "func_button", "func_rot_button", "func_rotating"
+				}
 
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}

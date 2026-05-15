@@ -285,7 +285,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	// if looking at something
 	if( pev_valid(ent))
 	{
-		if((pev(ent,pev_solid)==SOLID_SLIDEBOX)&&(get_user_team(id)==get_user_team(ent))){
+		if(is_user_alive(ent)&&sh_clients_are_same_team(id,ent)){
 			static hud_msg[128]
 			static client_name[127]
 			get_user_name(ent,client_name,127)

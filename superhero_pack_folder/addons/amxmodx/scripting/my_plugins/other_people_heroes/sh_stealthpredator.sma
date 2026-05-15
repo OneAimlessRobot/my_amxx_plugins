@@ -71,13 +71,6 @@ public sh_hero_init(id, heroID, mode){
 	gPlayerMaxHealth[id] = 100
 	g_usingPower[id] = false
 }
-//----------------------------------------------------------------------------------------------
-public client_prethink(id)
-{
-	if( is_user_connected(id) && sh_user_has_hero(id,gHeroID)  ) {
-		entity_set_int(id, EV_INT_flTimeStepSound, 999)
-	}
-}
 
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

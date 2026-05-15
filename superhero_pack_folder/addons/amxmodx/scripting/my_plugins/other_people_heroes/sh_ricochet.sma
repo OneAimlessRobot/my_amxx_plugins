@@ -282,11 +282,11 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		get_weaponname(wpnindex, wpn, charsmax(wpn))
 		replace(wpn, charsmax(wpn), "weapon_", "")
 
-		new headshot = hitplace == 1 ? 1 : 0
-
 		// do extra damage
 		new extraDamage = get_pcvar_num(gPcvarExtraDmg)
-		if ( extraDamage > 0) sh_extra_damage(victim, attacker, extraDamage, wpn, headshot)
+		if ( extraDamage > 0){
+			sh_extra_damage(victim, attacker, extraDamage, wpn, my_hitpoint_enum:hitplace)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -298,12 +298,19 @@ public client_disconnected(id)
 }
 //----------------------------------------------------------------------------------------------
 public fwPlayerPreThink(id)
-{
+{	
+	if(!is_user_alive(id)){
+		return FMRES_IGNORED
+	}
+	if(!sh_user_has_hero(id,gHeroID)){
+		return FMRES_IGNORED
+	}
 	if ((pev(id, pev_oldbuttons) & IN_ATTACK) && !(pev(id, pev_button) & IN_ATTACK)) {
 		// the primary attack button is released
 		// save the current gametime
 		g_last_attack_release_gametime[id] = get_gametime()
 	}
+	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

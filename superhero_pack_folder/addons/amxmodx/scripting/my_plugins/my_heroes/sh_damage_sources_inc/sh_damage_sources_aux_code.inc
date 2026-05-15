@@ -18,7 +18,7 @@ enum sh_extra_damage_struct{
 
   short_dmg_name[SAFE_BUFFER_SIZE+1],
   long_dmg_name[SAFE_BUFFER_SIZE+1],
-  custom_wpn_id
+  the_wpn_id
 
 
 }
@@ -36,7 +36,7 @@ stock fill_up_dmg_struct(short_wpn_name[SAFE_BUFFER_SIZE+1],
             
             copy(dmg_struct[long_dmg_name],charsmax(dmg_struct[long_dmg_name]),long_wpn_name)
             
-            dmg_struct[custom_wpn_id]=wpn_id
+            dmg_struct[the_wpn_id]=wpn_id
 }
 
 native sh_log_custom_damage_source(hero_id=-2,short_name[SAFE_BUFFER_SIZE+1]="",long_name[SAFE_BUFFER_SIZE+1]="",is_a_melee=1);

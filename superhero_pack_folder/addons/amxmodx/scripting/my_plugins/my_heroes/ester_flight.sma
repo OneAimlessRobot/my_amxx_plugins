@@ -85,8 +85,7 @@ public plugin_init()
 	pcvar_ester_anti_pussy_engaged = register_cvar("ester_anti_pussy_engaged", "0")
 	
 	
-	static const custom_vector[][]={"func_breakable"}
-	register_custom_touchable("player","ester_break_shit",custom_vector, 1)
+	register_custom_touchable("player","ester_break_shit",breakable_vector,1)
 	register_custom_touchable("player","ester_charge_impact",player_vector,1)
 
 	register_forward(FM_CmdStart, "OnCmdStart")

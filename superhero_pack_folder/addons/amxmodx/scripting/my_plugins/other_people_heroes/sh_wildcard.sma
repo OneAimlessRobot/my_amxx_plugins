@@ -49,7 +49,7 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Burst fire AK47", "Use ATTACK2 with your ak47 to shoot 5 bullets at once, those bullets also follow your crosshair.")
 
 	// REGISTER EVENTS
-	register_forward(FM_PlayerPreThink, "forward_playerprethink")
+	register_forward(FM_CmdStart, "CmdStart")
 	register_forward(FM_Think, "fm_Think")
 	register_forward(FM_Touch, "fm_Touch")
 	
@@ -249,18 +249,28 @@ public fm_Touch(ptr, ptd)
 	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
-public forward_playerprethink(id)
+public CmdStart(id, uc_handle)
 {
-	if(is_user_alive(id))
-	{
-		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-		if (entity_get_int(id, EV_INT_button) & IN_ATTACK) return FMRES_IGNORED
-		if (entity_get_int(id, EV_INT_button) & IN_RELOAD) return FMRES_IGNORED
-		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && sh_user_has_hero(id,gHeroID) )
-		{
-			wildcard_burst(id)
-			return FMRES_IGNORED
-		}
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	
+	if(!is_user_alive(id)){
+			
+		return FMRES_IGNORED
+	}
+
+	if(!sh_user_has_hero(id,gHeroID)){
+			
+		return FMRES_IGNORED
+	}
+
+	new button = get_uc(uc_handle, UC_Buttons);
+	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
+
+	if((button& IN_ATTACK) ||(button& IN_RELOAD)) return FMRES_IGNORED
+
+	if((weapon==CSW_AK47)&& (button& IN_ATTACK2 )){
+
+		wildcard_burst(id)
 	}
 	return FMRES_IGNORED
 }

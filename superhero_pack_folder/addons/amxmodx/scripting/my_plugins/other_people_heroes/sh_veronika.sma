@@ -82,7 +82,7 @@ public plugin_init()
 	register_event("Damage", "veronika_damage","b","2!0")
 	
 	//handle when player presses attack2
-	register_forward(FM_PlayerPreThink, "forward_playerprethink")
+	register_forward(FM_CmdStart, "CmdStart")
 	
 	
 	shSetShieldRestrict(gHeroName)
@@ -180,16 +180,28 @@ public veronika_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public forward_playerprethink(id)
+public CmdStart(id, uc_handle)
 {
-	if(is_user_alive(id))
-	{
-		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-		if (entity_get_int(id, EV_INT_button) & IN_ATTACK2 && wpnid == CSW_AK47 && sh_user_has_hero(id,gHeroID) )
-		{
+
+	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	
+	if(!is_user_alive(id)){
+			
+		return FMRES_IGNORED
+	}
+
+	if(!sh_user_has_hero(id,gHeroID)){
+			
+		return FMRES_IGNORED
+	}
+
+	new button = get_uc(uc_handle, UC_Buttons);
+	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
+	
+	if((weapon==CSW_AK47)&& (button& IN_ATTACK2 )){
+
 			launch_nade(id)
 			return FMRES_IGNORED
-		}
 	}
 	return FMRES_IGNORED
 }

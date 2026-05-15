@@ -48,44 +48,49 @@ public plugin_end()
 
 public Player_PreThink(id)
 {
-	if(sh_user_has_hero(id,gHeroID))
-	{
-		if(pev_valid(id) && is_user_alive(id) && (FL_ONGROUND & pev(id, pev_flags)))
+	if(is_user_alive(id) ){
+		if(sh_user_has_hero(id,gHeroID))
 		{
-			pev(id, pev_velocity, vecVel)
-			gRestoreVel = true
+			if((FL_ONGROUND & pev(id, pev_flags)))
+			{
+				pev(id, pev_velocity, vecVel)
+				gRestoreVel = true
+			}
+			return FMRES_HANDLED
 		}
-		return FMRES_HANDLED
 	}
 	return FMRES_IGNORED
 }
 
 public Player_PreThink_Post(id)
 {
-	if(gRestoreVel && sh_user_has_hero(id,gHeroID))
-	{
-		gRestoreVel = false
-
-		if(!(FL_ONTRAIN & pev(id, pev_flags)))
+	if(is_user_alive(id) ){
+		if(gRestoreVel && sh_user_has_hero(id,gHeroID))
 		{
-			static iGEnt
-			
-			iGEnt = pev(id, pev_groundentity)
-			if(pev_valid(iGEnt) && (FL_CONVEYOR & pev(iGEnt, pev_flags)))
-			{
-				static Float:vecTemp[3]
-				
-				pev(id, pev_basevelocity, vecTemp)
-				
-				vecVel[0] += vecTemp[0]
-				vecVel[1] += vecTemp[1]
-				vecVel[2] += vecTemp[2]
-			}				
+			gRestoreVel = false
 
-			set_pev(id, pev_velocity, vecVel)
-			
-			return FMRES_HANDLED
+			if(!(FL_ONTRAIN & pev(id, pev_flags)))
+			{
+				static iGEnt
+				
+				iGEnt = pev(id, pev_groundentity)
+				if(pev_valid(iGEnt) && (FL_CONVEYOR & pev(iGEnt, pev_flags)))
+				{
+					static Float:vecTemp[3]
+					
+					pev(id, pev_basevelocity, vecTemp)
+					
+					vecVel[0] += vecTemp[0]
+					vecVel[1] += vecTemp[1]
+					vecVel[2] += vecTemp[2]
+				}				
+
+				set_pev(id, pev_velocity, vecVel)
+				
+				return FMRES_HANDLED
+			}
 		}
+		return FMRES_IGNORED
 	}
 	return FMRES_IGNORED
 }

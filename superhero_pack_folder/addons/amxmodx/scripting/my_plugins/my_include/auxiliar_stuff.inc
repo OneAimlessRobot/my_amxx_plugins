@@ -4,6 +4,15 @@
 #define auxiliar_stuff_inc
 
 
+#define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
+#define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
+#define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
+
+stock bool:true_for_macro=true,
+	bool:false_for_macro=false
+
+#define Assign_BitVar(%1,%2,%3) ((%1) = ((%3)) ?(%1 | (1 << (%2 & 31))) : (%1 & ~(1 << (%2 & 31))) )
+
 /**
  * Parts of body for hits
 

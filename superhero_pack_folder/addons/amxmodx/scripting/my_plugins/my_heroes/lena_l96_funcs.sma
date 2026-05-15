@@ -412,8 +412,6 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	return FMRES_IGNORED
 }
-
-
 public FwdTouchWorld( bull_et, World ) {
 
 	if(!is_valid_ent(bull_et)) return

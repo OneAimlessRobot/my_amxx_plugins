@@ -80,6 +80,7 @@ enum CMD_IDS{
     AUX_CMD_STAGE_ASSAULT,
     AUX_CMD_MINIMAP_TRACK,
     AUX_CMD_STAGE_HIT,
+    AUX_CMD_ENTITY_DETECT_TOGGLE,
     MAX_CUSTOM_CMD_IDS
 }
 
@@ -100,15 +101,17 @@ new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
     {"amx_stage_murder","amx_stage_murder","Stage a murder between two players!",2,ADMIN_LEVEL_A,0,false,0},
     {"amx_stage_assault","amx_stage_assault","Make one player damage another!",3,ADMIN_LEVEL_A,0,false,0},
     {"amx_minimap_track","amx_minimap_track","see where a player is on your radar!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
-    {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
+    {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
+    {"amx_entity_detector_mode","amx_entity_detector_mode","get entity names by looking at them! No parameters except player to toggle",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
 
 
 
 }
+new is_entity_scanner_mode = 0
 public plugin_init(){
 
     register_plugin(PLUGIN, VERSION, AUTHOR);
-    
+
     for(new i=0;i<_:MAX_CUSTOM_CMD_IDS;i++){
         new command_ide=0;
         new is_client_cmd=array_of_commands[i][is_client_command]
@@ -131,7 +134,7 @@ public plugin_init(){
 
         }
         if(command_ide!=0){
-         /*   server_print("%s Command registered!^nName: %s^n",
+            /*   server_print("%s Command registered!^nName: %s^n",
                             is_client_cmd?"Client":"Console",
                             array_of_commands[i][cmd_name])
             server_print("Callback function name: %s^n",array_of_commands[i][cmd_callback_func])
@@ -147,7 +150,36 @@ public plugin_init(){
             server_print("We got 0 on command ID! What happened?")
 
         }
-   }
+    }
+    register_forward(FM_TraceLine, "entity_target_tracing")
+}
+
+public entity_target_tracing(Float:v1[3],Float:v2[3],noMonsters,id,trace)
+{
+    if( !is_user_alive(id) || !Get_BitVar(is_entity_scanner_mode, id )||is_user_bot(id)){
+        return FMRES_IGNORED;
+    }
+
+    new entity = get_tr2(trace, TR_pHit);
+
+    // if looking at something
+    if( is_valid_ent(entity))
+    {
+
+        static hud_msg[128]
+        static entity_classname[127]
+        entity_get_string(entity,EV_SZ_classname,entity_classname,charsmax(entity_classname))
+
+        formatex(hud_msg,127,"Classname of entity %d: %s",entity,entity_classname)
+        client_print(id,print_center,"%s",hud_msg)
+                    
+    }
+    else{
+
+        client_print(id,print_chat,"Invalid entity %d",entity)
+
+    }
+    return FMRES_IGNORED;
 }
 detect_user(id,enemy,Float:origin[3]){
 
@@ -186,6 +218,31 @@ public amx_minimap_track(id,level,cid){
     return PLUGIN_HANDLED
 
 
+}
+public amx_entity_detector_mode(id,level,cid){
+
+    if (!cmd_access(id,level,cid,2))
+        return PLUGIN_HANDLED
+
+    static arg[32], name2[32]
+    read_argv(1,arg,31)
+    get_user_name(id,name2,31)
+
+    new player = cmd_target(id,arg,2)
+    if (!player) return PLUGIN_HANDLED
+    if(!is_user_alive(player)){
+        
+        console_print(id,"That player is still alive! Rejecting^n")
+        return PLUGIN_HANDLED    
+            
+    }
+    static player_name[128]
+    get_user_name(player, player_name, charsmax(player_name));
+    new bool:we_are_on = bool:Get_BitVar(is_entity_scanner_mode, player );
+    Assign_BitVar(is_entity_scanner_mode, player , !we_are_on);
+    console_print(0, "%s just toggled entity scanner mode on player named %s!^nIt is now %s",name2,player_name, !we_are_on?"On":"Off")
+    log_amx("%s just toggled entity scanner mode on player named %s!^nIt is now %s",name2,player_name, !we_are_on?"On":"Off")
+    return PLUGIN_HANDLED
 }
 public amx_revive(id,level,cid){
 

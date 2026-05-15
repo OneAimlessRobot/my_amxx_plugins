@@ -171,8 +171,9 @@ public Danimoth_Unfreeze(target)
 //----------------------------------------------------------------------------------------------
 public Player_PreThink(id)
 {
-	if ( ! is_user_alive(id) )
-	is_frozen[id] = false
+	if ( ! is_user_alive(id) ){
+		is_frozen[id] = false
+	}
 
 	if ( is_frozen[id] ){
 		client_cmd(id,"+strafe")
