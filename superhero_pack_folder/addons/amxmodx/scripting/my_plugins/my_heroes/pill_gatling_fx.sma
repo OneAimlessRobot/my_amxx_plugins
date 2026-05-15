@@ -79,7 +79,7 @@ stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={
 					{-1.0,5.0,-1,-1,"","",0,-1},
 					{-1.0,5.0,-1,-1,"","",0,-1},
 					{1.0,2.0,-1,-1,"glow_task","uneffect_task_generic",-1,-1},
-					{1.0,8.0,-1,-1,"poison_task","uneffect_task_generic",-1,DMG_ICON_POISON},
+					{0.5,4.0,-1,-1,"poison_task","uneffect_task_generic",-1,DMG_ICON_POISON},
 					{0.1,9.0,1,-1,"","uneffect_task_generic",-1,-1},
 					{1.0,5.0,1,-1,"radioactive_task","",-1,-1},
 					{1.0,10.0,-1,-1,"morphine_task","uneffect_task_generic",DMG_ICON_HEALTH},
@@ -517,7 +517,8 @@ public poison_task(array[],id){
 
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_connected(array[1])) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET+array[0],_,_,_,fx_task_parameters[array[0]][fx_task_will_glow_user_screen])
-	sh_extra_damage(id,array[1],POISON_DAMAGE*((sh_get_user_is_bleeding(id)?2:1)),
+	sh_extra_damage(id,array[1],floatround(float(get_user_health(id))*
+							(POISON_DAMAGE_PCT*((sh_get_user_is_bleeding(id)?2.0:1.0)))),
 							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
 							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,

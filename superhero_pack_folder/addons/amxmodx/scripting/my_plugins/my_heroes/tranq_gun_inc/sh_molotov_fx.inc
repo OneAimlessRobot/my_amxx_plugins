@@ -14,9 +14,9 @@
 #define gSoundScream "scientist/c1a0_sci_catscream.wav"
 
 
-#define BURN_PERIOD 1.0
-#define BURN_DAMAGE 10
-#define BURN_DAMAGE_VULNERABILITY_COEFF 0.30
+#define BURN_PERIOD 0.33
+#define BURN_DAMAGE 6
+#define BURN_DAMAGE_VULNERABILITY_COEFF 0.8
 #define BURN_TIME 15.0
 #define BURN_TIMES floatround(floatdiv(BURN_TIME,BURN_PERIOD))
 #define MOLLY_PROPAGATE_RADIUS 100.0

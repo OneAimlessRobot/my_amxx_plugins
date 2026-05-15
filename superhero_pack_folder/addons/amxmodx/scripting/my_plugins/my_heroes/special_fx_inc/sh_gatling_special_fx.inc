@@ -5,7 +5,7 @@
 
 
 #define POISON_DMG_MULT 2.0
-#define POISON_DAMAGE 40
+#define POISON_DAMAGE_PCT 0.05
 
 
 

@@ -47,7 +47,7 @@ public _prepare_shero_aux_lib_pt4(iPlugins, iParams){
 								-1,
 								new_dmg_type_names[i],
 								new_dmg_type_names[i],
-								0)
+								generic_dmg_type_is_melee[i])
 	}
 	server_print("%s innited!^n",LIBRARY_NAME)
 }

@@ -138,6 +138,24 @@ stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 	"SH_Freeze",
 	"SH_Super_Melee"
 }
+stock const bool:generic_dmg_type_is_melee[_:SH_NEW_DMG_MAX_DAMAGES]={
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	true,
+	false,
+	false,
+	true,
+	false,
+	false,
+	false,
+	false,
+	false,
+	true,
+}
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed
 //----------------------------------------------------------------------------------------------

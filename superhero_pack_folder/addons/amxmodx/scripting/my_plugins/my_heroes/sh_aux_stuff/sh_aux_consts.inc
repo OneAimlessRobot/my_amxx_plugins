@@ -211,7 +211,7 @@ stock const Float:g_fReloadDelay[CSW_P90+1] = {
 }
 
 stock const player_vector[][]={"player"},
-			breakable_vector[][]={"hostage_entity"},
+			breakable_vector[][]={"func_breakable"},
 			hostage_vector[][]={"hostage_entity"},
 			hurtable_vector[][]={"func_breakable","hostage_entity"},
 			szWallEntities[][] = {

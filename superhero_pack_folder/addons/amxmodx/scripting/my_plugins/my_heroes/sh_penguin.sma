@@ -113,7 +113,6 @@ public sh_hero_init(id, heroID, mode){
 
 	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		penguin_weapons(id)
-		switchmodel(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -243,11 +242,7 @@ public find_target(parm[])
 			write_byte(rgb[0])	// r
 			write_byte(rgb[1])	// g
 			write_byte(rgb[2])	// b
-			switch(generate_int(0,2)) {
-				case 0:write_byte(64)	// brightness
-				case 1:write_byte(128)
-				case 2:write_byte(192)
-			}
+			write_byte(192)
 			message_end()
 
 			parm[2] = nearestPlayer

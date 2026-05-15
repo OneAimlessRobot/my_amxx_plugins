@@ -6,11 +6,12 @@
 #include "../include/xs.inc"
 #include "../include/hamsandwich.inc"
 #include "../include/fun.inc"
-#include "../include/reapi.inc"
 #include "../include/fakemeta.inc"
 #include "../include/cstrike.inc"
 #include "my_include/my_author_header.inc"
 #include "my_include/auxiliar_stuff.inc"
+#include <orpheu>
+#include <orpheu_stocks>
 
 #define PLUGIN "amx aux admin cmds"
 #define VERSION "1.0.0"
@@ -108,7 +109,14 @@ new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
 
 }
 new is_entity_scanner_mode = 0
-public plugin_init(){
+
+new OrpheuFunction:handleApplyMultiDamage;
+new OrpheuFunction:handleClearMultiDamage;
+
+public plugin_init()
+{
+    handleClearMultiDamage = OrpheuGetFunction("ClearMultiDamage");
+    handleApplyMultiDamage = OrpheuGetFunction("ApplyMultiDamage");
 
     register_plugin(PLUGIN, VERSION, AUTHOR);
 
@@ -406,11 +414,12 @@ public amx_stage_hit(id,level,cid){
     
     set_tr2(tr_handle, TR_pHit, player2);
     set_tr2(tr_handle, TR_iHitgroup, hitgroup);
-
-    rg_multidmg_clear()
-    ExecuteHamB(Ham_TraceAttack, player2,player,damage,dir_vec, tr_handle, DMG_BULLET)
     
-    rg_multidmg_apply(dmg_entity,player)
+    OrpheuCall(handleClearMultiDamage);
+    
+    ExecuteHamB(Ham_TraceAttack, player2,player,damage,dir_vec, tr_handle, DMG_BULLET)
+
+    OrpheuCall(handleApplyMultiDamage, dmg_entity,player)
 
     remove_entity(dmg_entity)
 

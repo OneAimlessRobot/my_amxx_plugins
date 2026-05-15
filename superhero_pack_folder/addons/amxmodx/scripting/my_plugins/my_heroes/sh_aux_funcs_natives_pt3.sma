@@ -332,6 +332,9 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 
 		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
+	if(entity_get_float(tg_id,EV_FL_health)<=0.0){
+		return
+	}
 	if(!is_valid_ent(tg_id)){
 		
 		return;
