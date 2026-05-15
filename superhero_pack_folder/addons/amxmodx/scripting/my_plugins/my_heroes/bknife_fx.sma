@@ -35,11 +35,11 @@ stock const bleed_type_names[NUM_BLEED_TYPES][]={
 			"bleeding",
 			"ultrableeding"
 }
-stock const bleed_type_damages[NUM_BLEED_TYPES]={
-			0,
-			10,
-			40,
-			40
+stock const Float:bleed_type_damage_pcts[NUM_BLEED_TYPES]={
+			0.0,
+			0.01,
+			0.04,
+			0.04
 }
 stock const bleed_type_alphas[NUM_BLEED_TYPES][bleed_alpha_type]={
 			{0,0},
@@ -265,12 +265,15 @@ public bleed_task(array[4],id){
 		unbleed_user(id)
 		return
 	}
+	new Float:victim_hp=float(get_user_health(id)),
+		Float:damage_to_deal=victim_hp*
+							bleed_type_damage_pcts[fx_bleed_type:array[0]]
 	set_render_with_color_const(id,RED,1,bleed_type_alphas[fx_bleed_type:array[0]][render_alpha],bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha])
 	remove_glow_user(id,bleed_task_parameters[gIsBleeding[id]][bleed_task_period])
 	if(array[2]){
 		generic_heal(heal_hp_hud_msg_sync,
 					array[1],
-					float(bleed_type_damages[fx_bleed_type:array[0]]),
+					damage_to_deal,
 					_,
 					RED,
 					_,
@@ -281,7 +284,9 @@ public bleed_task(array[4],id){
 		set_render_with_color_const(array[1],RED,0,_,bleed_type_alphas[fx_bleed_type:array[0]][hud_alpha],1)
 	}
 	make_bleed_fx(id)
-	sh_extra_damage(id,array[1],bleed_type_damages[fx_bleed_type:array[0]],new_dmg_type_names[_:SH_NEW_DMG_BLEED],
+	sh_extra_damage(id,array[1],
+							floatround(damage_to_deal),
+							new_dmg_type_names[_:SH_NEW_DMG_BLEED],
 			_,_,_,_,_,
 			SH_NEW_DMG_BLEED,
 			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLEED))

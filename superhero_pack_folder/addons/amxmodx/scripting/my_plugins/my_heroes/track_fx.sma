@@ -27,7 +27,7 @@ enum{
 	TRACK_TASK_ATTACKER=0,
 	TRACK_TASK_PLAYER_COUNT,
 	TRACK_TASK_DO_DAMAGE,
-	TRACK_TASK_DAMAGE,
+	TRACK_TASK_DAMAGE_HEALTH_PCT,
 	TRACK_TASK_TRACK_COLOR,
 	TRACK_TASK_PERIOD,
 	TRACK_TASK_CURR_IT,
@@ -158,7 +158,9 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			aura(id,LineColors[color_const])
 		}
 		if(array[TRACK_TASK_DO_DAMAGE]){
-			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],array[TRACK_TASK_DAMAGE],
+			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(
+									float(get_user_health(id))*
+									Float:array[TRACK_TASK_DAMAGE_HEALTH_PCT]),
 							new_dmg_type_names[_:SH_NEW_DMG_RADIATION_POISON],
 							_,_,_,_,_,
 							SH_NEW_DMG_RADIATION_POISON,
@@ -186,7 +188,7 @@ public _track_user(iPlugins, iParams){
 	new id=get_param(1),
 		attacker=get_param(2),
 		do_damage=get_param(3),
-		damage=get_param(4),
+		Float:damage_health_pct=get_param_f(4),
 		Float:period=get_param_f(5),
 		Float:time=get_param_f(6),
 		track_color=get_param(7)
@@ -209,7 +211,7 @@ public _track_user(iPlugins, iParams){
 	array[TRACK_TASK_ATTACKER] = attacker
 	array[TRACK_TASK_PLAYER_COUNT] = player_count
 	array[TRACK_TASK_DO_DAMAGE] = do_damage
-	array[TRACK_TASK_DAMAGE] = damage
+	array[TRACK_TASK_DAMAGE_HEALTH_PCT] = damage_health_pct
 	array[TRACK_TASK_TRACK_COLOR] = track_color
 	array[TRACK_TASK_CURR_IT] = 0
 	array[TRACK_TASK_NUM_ITS] = radioactive_times

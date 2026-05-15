@@ -161,7 +161,7 @@ launch_scan(id){
 		}
 		if(!sh_get_user_is_chaffed(pid)){
 			
-			track_user(pid,id,0,0,0.5,10.0,PINK)
+			track_user(pid,id,0,0.0,0.5,10.0,PINK)
 		
 		}
 	}

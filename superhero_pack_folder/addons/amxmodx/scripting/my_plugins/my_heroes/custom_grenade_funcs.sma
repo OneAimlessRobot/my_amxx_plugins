@@ -817,7 +817,7 @@ public gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 		}
 		case GREN_MARKER:{
 			
-			track_user(tg,attacker,1,3,0.5,20.0,
+			track_user(tg,attacker,1,0.07,0.5,20.0,
 					sh_grenade_structs_arr[gren_type][grenade_color_num])
 		}
 		default:{

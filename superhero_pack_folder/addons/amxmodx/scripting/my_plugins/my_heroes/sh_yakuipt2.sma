@@ -2,10 +2,12 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
-#include "special_fx_inc/sh_gatling_funcs.inc"
+/**
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
+ */
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -18,10 +20,11 @@
 
 new gHeroID
 new const gHeroName[] = "Yakui Mk2"
-
+/*
 new mode_change_button_pressed_mask = 0
 
 
+*/
 new pcvar_max_pills
 new pcvar_max_rockets
 
@@ -38,7 +41,7 @@ public plugin_init()
 	pcvar_max_rockets = register_cvar("yakui_rockets","5")
 	
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
-	static hero_name_arr[STRLEN_FOR_NAMES];
+	/*static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Yakui the maid: Help file","yakui_folder/","yakui_help_file.html",hero_name_arr)
@@ -52,7 +55,7 @@ public plugin_init()
 
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
-	register_event("CurWeapon", "weaponChange","be","1=1")
+	register_event("CurWeapon", "weaponChange","be","1=1")*/
 
 }
 public plugin_natives(){
@@ -62,6 +65,7 @@ public plugin_natives(){
 public _gatling_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
+/*
 //----------------------------------------------------------------------------------------------
 public player_prethink_yakui_weapon(id, uc_handle)
 {
@@ -233,6 +237,7 @@ public yakui_kd(id){
 	
 		case YAKUI_WEAPON_CLASSID:{
 			if(gatling_get_pillgatling(id)){
+				static playername[128]
 				make_effect(id,id,gHeroID)
 				gatling_dec_num_pills(id)
 			}
@@ -249,3 +254,4 @@ public yakui_kd(id){
 
 	return PLUGIN_HANDLED
 }
+*/

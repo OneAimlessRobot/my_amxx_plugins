@@ -55,7 +55,7 @@ public plugin_cfg(){
 
 	gHeroID = maria_get_hero_id()
 	gHeroID_yakui = gatling_get_hero_id()
-
+	
 	maria_riveter_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_riveter,

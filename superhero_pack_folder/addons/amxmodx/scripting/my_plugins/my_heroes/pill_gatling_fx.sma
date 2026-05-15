@@ -536,7 +536,7 @@ public radioactive_task(array[],id){
 	new attacker=array[1]
 	track_user(id,attacker,
 						1,
-						RADIOACTIVE_DAMAGE,
+						RADIOACTIVE_DAMAGE_HEALTH_PCT,
 						fx_task_parameters[array[0]][fx_task_period],
 						fx_task_parameters[array[0]][fx_task_time],
 						FX_COLOR_OFFSET+array[0])

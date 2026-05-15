@@ -511,7 +511,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 		unfade_screen_user(pTouched)
 		set_velocity_from_origin(pTouched,origin,LENA_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
 		if(gatling_get_fx_num(pTouched)!=RADIOACTIVE){
-				track_user(pTouched,owner,1,3,the_period,the_time,ORANGE)
+				track_user(pTouched,owner,1,0.07,the_period,the_time,ORANGE)
 		}
 		
 		sh_set_user_xp(owner,floatround(distance)*(headshot?
