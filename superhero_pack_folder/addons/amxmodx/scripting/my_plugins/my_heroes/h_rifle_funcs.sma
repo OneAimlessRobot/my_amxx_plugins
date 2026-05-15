@@ -337,6 +337,10 @@ public fw_Item_Deploy_Post(Ent)
 	if(pev_valid(Ent) != 2)
 		return
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(Id)){
+		return
+	}
 	if(get_pdata_cbase(Id, m_pActiveItem, OFFSET_LINUX_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Mosin, Id))
@@ -381,7 +385,11 @@ public fw_Item_PostFrame( iEnt )
 	if(pev_valid(iEnt) != 2){
 		return
 	}
-	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
+	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(id)){
+		return
+	}
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_MOSIN)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)

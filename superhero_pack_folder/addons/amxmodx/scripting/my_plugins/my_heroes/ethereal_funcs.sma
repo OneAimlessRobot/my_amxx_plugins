@@ -284,7 +284,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 	}
 	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
 	
-	if (!is_user_connected(id)){
+	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}
 	if(get_user_weapon(id) != CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, id)){
@@ -303,7 +303,9 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return;
 	}
 	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
-	
+	if (!is_user_alive(id)){
+		return
+	}
 	if(Get_BitVar(g_Had_Ethereal, id))
 	{
 		static Float:Push[3]
@@ -325,6 +327,10 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(pev_valid(Ent) != 2)
 		return HAM_IGNORED	
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(Id)){
+		return HAM_IGNORED
+	}
 	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Ethereal, Id))
@@ -346,6 +352,10 @@ public fw_Item_Deploy_Post(Ent)
 	if(pev_valid(Ent) != 2)
 		return
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(Id)){
+		return
+	}
 	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Ethereal, Id))

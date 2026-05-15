@@ -346,6 +346,10 @@ public fw_Item_Deploy_Post(Ent)
 	if(pev_valid(Ent) != 2)
 		return
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(Id)){
+		return
+	}
 	if(get_pdata_cbase(Id, m_pActiveItem) != Ent)
 		return
 	if(!Get_BitVar(g_Had_QB, Id))
@@ -373,6 +377,10 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 		return 
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(id)){
+		return
+	}
 	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
@@ -444,6 +452,10 @@ public fw_Weapon_Reload_Post(iEnt)
 	if(pev_valid(iEnt) != 2)
 		return 
 	static id; id = get_pdata_cbase(iEnt,m_pPlayer, XO_WEAPON)
+
+	if (!is_user_alive(id)){
+		return
+	}
 	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
@@ -469,14 +481,17 @@ public fw_Weapon_PrimaryAttack(iEnt)
 	if(pev_valid(iEnt) != 2)
 		return 
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
+	if(!is_user_alive(id)){
 		return
-	if(!Get_BitVar(g_Had_QB, id))
+	}
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
 		return
+	}
+	if(!Get_BitVar(g_Had_QB, id)){
+		return
+	}
 		
 	pev(id, pev_punchangle, Recoil[id])
-	
-	return
 }
 
 public fw_Weapon_PrimaryAttack_Post(iEnt)
@@ -484,12 +499,18 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 	if(pev_valid(iEnt) != 2)
 		return 
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
+	if(!is_user_alive(id)){
 		return
-	if(!Get_BitVar(g_Had_QB, id))
+	}
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
 		return
-	if(!Get_BitVar(g_SpecialShot, id))
+	}
+	if(!Get_BitVar(g_Had_QB, id)){
 		return
+	}
+	if(!Get_BitVar(g_SpecialShot, id)){
+		return
+	}
 		
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)

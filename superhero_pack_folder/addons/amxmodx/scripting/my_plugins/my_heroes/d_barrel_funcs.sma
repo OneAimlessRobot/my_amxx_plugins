@@ -451,7 +451,9 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED;
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-
+	if(!is_user_alive(id)){
+		return HAM_IGNORED
+	}
 	if(Get_BitVar(g_Had_Volcano, id))
 	{
 		static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
@@ -525,6 +527,9 @@ public fw_Weapon_PrimaryAttack(ent)
 	ent_check(ent,)
 
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
+	if(!is_user_alive(id)){
+		return
+	}
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		
@@ -536,6 +541,9 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 	ent_check(ent,)
 	
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
+	if(!is_user_alive(id)){
+		return
+	}
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		

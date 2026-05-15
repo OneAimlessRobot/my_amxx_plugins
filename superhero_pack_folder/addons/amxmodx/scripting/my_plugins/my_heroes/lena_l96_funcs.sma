@@ -206,7 +206,7 @@ public fw_WeaponReloadPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 	
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,4)
+	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		

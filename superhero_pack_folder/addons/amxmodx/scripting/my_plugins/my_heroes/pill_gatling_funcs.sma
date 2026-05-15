@@ -141,6 +141,9 @@ public fwPlaybackEvent(flags, invoker, eventid) {
 	return FMRES_HANDLED
 }
 public fwPlayerPostThink(id) {
+	if(!is_user_alive(id)){
+		return FMRES_IGNORED
+	}
 	if (g_fix_punchangle[id]) {
 		g_fix_punchangle[id] = 0
 		set_pev(id, pev_punchangle, Float:{0.0, 0.0, 0.0})

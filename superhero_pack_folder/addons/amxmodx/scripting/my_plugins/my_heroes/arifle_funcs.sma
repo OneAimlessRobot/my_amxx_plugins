@@ -231,6 +231,9 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 	static id; id = pev(Ent, pev_owner)
 	
+	if(!is_user_alive(id)){
+		return
+	}
 	if(Get_BitVar(g_Had_Arifle, id))
 	{
 		static Float:Push[3]
@@ -251,6 +254,10 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 
 
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+
+	if(!is_user_alive(Id)){
+		return HAM_IGNORED
+	}
 	if(get_pdata_cbase(Id, m_pActiveItem,5) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Arifle, Id))
