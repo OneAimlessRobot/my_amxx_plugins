@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
@@ -44,7 +45,6 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
-	register_clcmd("weapon_ethereal", "Hook_Weapon")
 	
 }
 
@@ -137,12 +137,6 @@ public Remove_Ethereal(id)
 	UnSet_BitVar(g_Had_Ethereal, id)
 }
 
-public Hook_Weapon(id)
-{
-	engclient_cmd(id, weapon_ethereal)
-	return PLUGIN_HANDLED
-}
-
 public Event_CurWeapon(id)
 {
 	if(!Get_BitVar(g_Had_Ethereal, id))	
@@ -183,7 +177,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	
 	engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		
-	set_weapon_anim(invoker, E_ANIM_SHOOT1)
+	native_playanim(invoker, E_ANIM_SHOOT1)
 	
 	emit_sound(invoker, CHAN_WEAPON, Ethereal_Sounds[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
@@ -203,7 +197,7 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static iOwner
-	iOwner = pev(entity, pev_owner)
+	iOwner = entity_get_edict(entity, EV_ENT_owner)
 	
 	if(equal(model, ETHEREAL_OLDMODEL))
 	{
@@ -338,10 +332,10 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 		
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
-		set_weapon_anim(Id, E_ANIM_IDLE)
+		native_playanim(Id, E_ANIM_IDLE)
 		
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
-		set_pdata_string(Id, (492) * 4, PLAYER_ANIMEXT, -1 , 20)
+		set_pdata_string(Id, (m_szAnimExtention) * 4, PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER* 4)
 	}
 	
 	return HAM_IGNORED	
@@ -364,7 +358,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_viewmodel2, V_MODEL)
 	set_pev(Id, pev_weaponmodel2, P_MODEL)
 	
-	set_weapon_anim(Id, E_ANIM_DRAW)
+	native_playanim(Id, E_ANIM_DRAW)
 }
 
 public fw_Item_AddToPlayer_Post(Ent, id)
@@ -467,7 +461,7 @@ public fw_Weapon_Reload_Post(ent)
 			return HAM_IGNORED
 		
 		set_pdata_int(ent, m_iClip, g_Ethereal_Clip[id], XO_WEAPON)
-		set_weapon_anim(id, E_ANIM_RELOAD)
+		native_playanim(id, E_ANIM_RELOAD)
 	}
 	
 	return HAM_HANDLED
@@ -599,16 +593,6 @@ public give_ammo(id, silent, CSWID, Max)
 	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
 }
 
-stock Eject_Shell(id, Shell_ModelIndex, Float:Time)
-{
-	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER)
-	if(!pev_valid(Ent))
-		return
-
-        set_pdata_int(Ent, 57, Shell_ModelIndex, 4)
-        set_pdata_float(id, 111, get_gametime() + Time)
-}
-
 // Drop primary/secondary weapons
 stock drop_weapons(id, dropwhat)
 {
@@ -632,15 +616,6 @@ stock drop_weapons(id, dropwhat)
 	}
 }
 
-stock set_weapon_anim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
-	message_end()
-}
 
 stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
 {

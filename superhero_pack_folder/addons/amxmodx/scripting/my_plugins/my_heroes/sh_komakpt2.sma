@@ -6,9 +6,6 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
-
-//https://forums.alliedmods.net/showthread.php?p=777018#post777018
-
 #define KOMAK_MISSED_SHOT "shmod/komak/missed_shot.wav"
 #define KOMAK_GEAR_UP "shmod/komak/gear_up.wav"
 #define KOMAK_BLOWN_ENGINE "shmod/komak/engine_down.wav"
@@ -16,11 +13,6 @@
 
 #define BLOW_ENGINE 0
 #define RESET_ON_MISS 1
-/*
-*/
-
-
-//https://forums.alliedmods.net/showthread.php?p=777018#post777018
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -147,10 +139,6 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		
 		return return_result;
 	
-	}
-	if(sh_get_cooldown_flag(idattacker)){
-
-		return return_result;
 	}
 	// get ent looking at
 	static  body;

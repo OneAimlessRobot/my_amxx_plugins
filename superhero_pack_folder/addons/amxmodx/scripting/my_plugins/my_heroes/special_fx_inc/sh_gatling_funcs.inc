@@ -11,7 +11,7 @@
 #define CLIP_SIZE 100
 #define PILL_SPEED 1350.0
 
-#define PILL_SHOOT_PERIOD_BASE 1.0
+#define PILL_SHOOT_PERIOD_BASE 0.33
 #define PILL_SHOOT_PERIOD (PILL_SHOOT_PERIOD_BASE/float(NUM_BARRELS))
 
 #define PILL_DEPLOY_TIME 1.0
@@ -22,7 +22,7 @@
 #define PILL_MASS 100.0
 
 enum {
-	anim_idle,
+	anim_idle = 0,
 	anim_idle2,
 	anim_gentleidle,
 	anim_stillidle,

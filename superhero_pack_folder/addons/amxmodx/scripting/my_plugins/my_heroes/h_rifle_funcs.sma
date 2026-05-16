@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
@@ -43,38 +44,7 @@ new g_MsgCurWeapon
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 
-// Reload Shotgun Style
 
-// Shotgun Reload Style
-const NOCLIP_WPN_BS	= ((1<<CSW_HEGRENADE)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_KNIFE)|(1<<CSW_C4))
-const SHOTGUNS_BS	= ((1<<CSW_M3)|(1<<CSW_XM1014))
-const SILENT_BS	= ((1<<CSW_USP)|(1<<CSW_M4A1))
-
-// weapons offsets
-#define m_fKnown				44
-#define m_iPrimaryAmmoType		49
-#define m_fInSpecialReload		55
-#define m_fSilent				74
-
-// players offsets
-#define XTRA_OFS_PLAYER		5
-#define m_rgAmmo_player_Slot0	376
-
-stock const Float:g_fDelay[CSW_P90+1] = {
-	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
-		 2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
-		 0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
-}
-
-new stock const g_iDftMaxClip[CSW_P90+1] = {
-	-1,  13, -1, 10,  1,  7,    1, 30, 30,  1,  30, 
-		20, 25, 30, 35, 25,   12, 20, 10, 30, 100, 
-		8 , 30, 30, 20,  2,    7, 30, 30, -1,  50}
-
-stock const g_iReloadAnims[CSW_P90+1] = {
-	-1,  5, -1, 3, -1,  6,   -1, 1, 1, -1, 14, 
-		4,  2, 3,  1,  1,   13, 7, 4,  1,  3, 
-		6, 11, 1,  3, -1,    4, 1, 1, -1,  1}
 
 public plugin_init() 
 {
@@ -228,7 +198,7 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static id
-	id = pev(entity, pev_owner)
+	id = entity_get_edict(entity, EV_ENT_owner)
 	
 	if(equal(model, OLD_W_MODEL))
 	{
@@ -295,10 +265,10 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
-		Set_WeaponAnim(invoker, ANIM_SHOOT)
+		native_playanim(invoker, ANIM_SHOOT)
 		emit_sound(invoker, CHAN_WEAPON, WeaponSounds[0], 1.0, ATTN_NORM, 0, PITCH_NORM)	
 
-		set_pdata_float(invoker, 111, get_gametime() + 0.75)
+		set_pdata_float(invoker, m_flEjectBrass, get_gametime() + 0.75, XO_WEAPON)
 		
 		static Ent; Ent = fm_get_user_weapon_entity(invoker, CSW_MOSIN)
 		set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
@@ -349,7 +319,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_viewmodel2, MODEL_V)
 	set_pev(Id, pev_weaponmodel2, MODEL_P)
 	
-	Set_WeaponAnim(Id, ANIM_DRAW)
+	native_playanim(Id, ANIM_DRAW)
 	set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 }
 
@@ -374,7 +344,7 @@ public fw_Weapon_Reload(iEnt)
 	if(!Get_BitVar(g_Had_Mosin, id))
 		return HAM_IGNORED	
 	
-	set_pdata_int(iEnt, m_fInReload, 0, 4)
+	set_pdata_int(iEnt, m_fInReload, 0, XO_WEAPON)
 	set_pdata_int(iEnt, m_fInSpecialReload, 1, XO_WEAPON)
 	
 	return HAM_SUPERCEDE
@@ -407,9 +377,9 @@ public fw_Item_PostFrame( iEnt )
 				return
 			}
 			
-			Set_WeaponAnim(id, ANIM_START_RELOAD)
+			native_playanim(id, ANIM_START_RELOAD)
 			
-			set_pdata_float(id, m_flNextAttack, 0.75, 5)
+			set_pdata_float(id, m_flNextAttack, 0.75, XTRA_OFS_PLAYER)
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.75, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.75, XO_WEAPON)
@@ -427,12 +397,12 @@ public fw_Item_PostFrame( iEnt )
 			}
 			
 			emit_sound(id, CHAN_ITEM, WeaponSounds[2], 1.0, ATTN_NORM, 0, 85 + generate_int(0,0x1f))
-			Set_WeaponAnim(id, ANIM_INSERT)
+			native_playanim(id, ANIM_INSERT)
 
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.45, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.45, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 0.45, 5)
+			set_pdata_float(id, m_flNextAttack, 0.45, XTRA_OFS_PLAYER)
 		}
 		case 3: // Done Insert
 		{
@@ -443,33 +413,22 @@ public fw_Item_PostFrame( iEnt )
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.1, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.1, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 0.1, 5)
+			set_pdata_float(id, m_flNextAttack, 0.1, XTRA_OFS_PLAYER)
 			
 			set_pdata_int(iEnt, m_fInSpecialReload, 2, XO_WEAPON)
 		}
 		case 4: // Stop Reload
 		{
-			Set_WeaponAnim(id, ANIM_AFTER_RELOAD)
+			native_playanim(id, ANIM_AFTER_RELOAD)
 
 			set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 1.5, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 1.5, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 1.5, 5)
+			set_pdata_float(id, m_flNextAttack, 1.5, XTRA_OFS_PLAYER)
 		}
 	}
 }
-
-stock Set_WeaponAnim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
-	message_end()
-}
-
 stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 {
 	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
@@ -600,16 +559,6 @@ stock PlaySound(id, const sound[])
 {
 	if(equal(sound[strlen(sound)-4], ".mp3")) client_cmd(id, "mp3 play ^"sound/%s^"", sound)
 	else client_cmd(id, "spk ^"%s^"", sound)
-}
-
-stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
-{
-	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER))
-	if(!pev_valid(Ent))
-		return
-
-        set_pdata_int(Ent, 57, Shell_ModelIndex, 4)
-        set_pdata_float(id, 111, get_gametime() + Time)
 }
 
 /* ===============================

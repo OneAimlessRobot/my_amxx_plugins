@@ -137,7 +137,7 @@ public _explosion(iPlugins,iParams){
 	}
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
-	new owner_id=((is_user_connected(ent_id))?ent_id:pev(ent_id,pev_owner))
+	new owner_id=((is_user_connected(ent_id))?ent_id:entity_get_edict(ent_id,EV_ENT_owner))
 
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
@@ -198,7 +198,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 	new entlist[33];
 	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
 
-	new owner_id=pev(ent_id,pev_owner)
+	new owner_id=entity_get_edict(ent_id,EV_ENT_owner)
 	for (new i=0; i < numfound; i++)
 	{		
 		new eid = entlist[i];

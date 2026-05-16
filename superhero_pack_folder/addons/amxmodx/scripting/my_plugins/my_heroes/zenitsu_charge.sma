@@ -21,10 +21,10 @@
 
 new gHeroID = 0
 
-new g_zenitsu_has_touched_player[SH_MAXSLOTS+1]
-new g_zenitsu_is_charging[SH_MAXSLOTS+1]
-new g_zenitsu_was_charging[SH_MAXSLOTS+1]
-new g_zenitsu_is_glowing[SH_MAXSLOTS+1]
+new g_zenitsu_has_touched_player_mask = 0
+new g_zenitsu_is_charging_mask = 0
+new g_zenitsu_was_charging_mask = 0
+new g_zenitsu_is_glowing_mask = 0
 
 new Float:g_zenitsu_curr_charge_look_direction[SH_MAXSLOTS+1][3]
 
@@ -48,7 +48,7 @@ public Fwd_PlayerPreThink(id)
 		return FMRES_IGNORED
 	}
 
-	if(!g_zenitsu_is_charging[id]){
+	if(!Get_BitVar(g_zenitsu_is_charging_mask, id)){
 		return FMRES_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, g_zenitsu_curr_charge_look_direction[id] )
@@ -70,7 +70,7 @@ public on_Knife_Weapon_Change(id)
 {
 	if ( !is_user_alive(id)||!sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID)) return
-	if(g_zenitsu_is_charging[id]&&!g_zenitsu_has_touched_player[id]){
+	if(Get_BitVar(g_zenitsu_is_charging_mask, id)&&!Get_BitVar(g_zenitsu_has_touched_player_mask, id)){
 		engclient_cmd(id, "weapon_knife")
 	}
 }
@@ -84,9 +84,10 @@ public sh_client_spawn(id)
 	}
 
 	if ( sh_user_has_hero(id,gHeroID)) {
-		
-		g_zenitsu_has_touched_player[id]=0
-		g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]=0
+	
+		Assign_BitVar(g_zenitsu_has_touched_player_mask, id, false_for_macro);
+		Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
+		Assign_BitVar(g_zenitsu_was_charging_mask, id, false_for_macro);
 	}
 	return
 }
@@ -94,9 +95,10 @@ remove_user_flight_fx(id){
 	
 	if(!sh_user_has_hero(id,gHeroID)||!is_user_connected(id)||!sh_is_active()) return
 	
-	trail(id,GREEN,0,0)
-	g_zenitsu_is_glowing[id]=0;
-	g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]=0
+	trail(id,GREEN,0,0);
+	Assign_BitVar(g_zenitsu_is_glowing_mask, id, false_for_macro);
+	Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
+	Assign_BitVar(g_zenitsu_was_charging_mask, id, false_for_macro);
 	
 	
 }
@@ -108,7 +110,7 @@ public plugin_natives(){
 public _zenitsu_get_has_touched_player(iPlugin,iParams){
 	
 	new id= get_param(1)
-	return g_zenitsu_has_touched_player[id]
+	return Get_BitVar(g_zenitsu_has_touched_player_mask, id)
 
 }
 public zenitsu_charge(id, uc_handle, seed)
@@ -116,19 +118,22 @@ public zenitsu_charge(id, uc_handle, seed)
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||g_zenitsu_has_touched_player[id]||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	static buttons
 
-	g_zenitsu_was_charging[id]=g_zenitsu_is_charging[id]
-	buttons = get_uc(uc_handle, UC_Buttons)
-	g_zenitsu_is_charging[id]=((buttons & IN_DUCK)&&(buttons &IN_JUMP))
 	
-	if(g_zenitsu_is_charging[id])
+	Assign_BitVar(g_zenitsu_was_charging_mask, id, Get_BitVar(g_zenitsu_is_charging_mask,id));
+
+	buttons = get_uc(uc_handle, UC_Buttons)
+
+	Assign_BitVar(g_zenitsu_is_charging_mask, id, ((buttons & IN_DUCK)&&(buttons &IN_JUMP)))
+
+	if(Get_BitVar(g_zenitsu_is_charging_mask, id))
 	{
-		if(!g_zenitsu_was_charging[id]){
+		if(!Get_BitVar(g_zenitsu_was_charging_mask, id)){
 
 			engclient_cmd(id, "weapon_knife")
 			trail(id,YELLOW,6,20)
@@ -142,16 +147,16 @@ public zenitsu_charge(id, uc_handle, seed)
 		
 			entity_set_vector(id, EV_VEC_velocity, Velocity)
 		
-			if(!g_zenitsu_is_glowing[id]){
-				g_zenitsu_is_glowing[id]=1
+			if(!Get_BitVar(g_zenitsu_is_glowing_mask,id)){
+				Assign_BitVar(g_zenitsu_is_glowing_mask,id, true_for_macro)
 				
 			}
 		
         }
 		return FMRES_SUPERCEDE;
     }
-	else if(g_zenitsu_is_glowing[id]){//avoids calling it too many times (heavy function)
-		g_zenitsu_is_glowing[id]=0;
+	else if(Get_BitVar(g_zenitsu_is_glowing_mask,id)){//avoids calling it too many times (heavy function)
+		Assign_BitVar(g_zenitsu_is_glowing_mask,id, false_for_macro)
 		remove_user_flight_fx(id)
 	}
 	return FMRES_IGNORED;
@@ -175,7 +180,9 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		return
 	}
 
-	if (!sh_user_has_hero(pToucher,gHeroID)||!zenitsu_get_charge_mode_engaged(pToucher)||!g_zenitsu_is_charging[pToucher]||g_zenitsu_has_touched_player[pToucher]){
+	if (!sh_user_has_hero(pToucher,gHeroID)||!zenitsu_get_charge_mode_engaged(pToucher)||
+						!Get_BitVar(g_zenitsu_is_charging_mask, pToucher)||
+						Get_BitVar(g_zenitsu_has_touched_player_mask, pToucher)){
 
 		return
 	
@@ -213,7 +220,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		gross_kill_gibs_fx(pTouched,vic_origin,origin)
 
 	}
-	g_zenitsu_has_touched_player[pToucher]=1
+	Assign_BitVar(g_zenitsu_has_touched_player_mask,pToucher, true_for_macro)
 	zenitsu_set_charge_mode_engaged(pToucher,0)
 
 }

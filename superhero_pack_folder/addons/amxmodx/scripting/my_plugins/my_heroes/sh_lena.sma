@@ -1,4 +1,3 @@
-#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lena_inc/sh_lena_l96_include.inc"

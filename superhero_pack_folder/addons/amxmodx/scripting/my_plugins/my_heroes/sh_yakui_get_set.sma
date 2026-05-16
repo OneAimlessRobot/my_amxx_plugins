@@ -13,8 +13,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gNumPills[SH_MAXSLOTS+1]
-new gNumRockets[SH_MAXSLOTS+1]
 new fx_id:gCurrFX[SH_MAXSLOTS+1]
 
 
@@ -30,13 +28,6 @@ arrayset(gCurrFX,0,SH_MAXSLOTS+1)
 public plugin_natives(){
 
 
-	register_native("gatling_set_num_pills","_gatling_set_num_pills",0);
-	register_native("gatling_get_num_pills","_gatling_get_num_pills",0);
-	register_native("gatling_dec_num_pills","_gatling_dec_num_pills",0);
-	
-	register_native("gatling_set_num_rockets","_gatling_set_num_rockets",0);
-	register_native("gatling_get_num_rockets","_gatling_get_num_rockets",0);
-	register_native("gatling_dec_num_rockets","_gatling_dec_num_rockets",0);
 	
 	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
 	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
@@ -71,74 +62,7 @@ public _make_effect(iPlugin,iParams){
 
 
 
-public _gatling_set_num_pills(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	if(!is_user_connected(id)){
-		
-		return
-	}
-	gNumPills[id]=value_to_set;
-}
-public _gatling_get_num_pills(iPlugin,iParams){
 
-
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return -1
-	}
-	return gNumPills[id]
-
-}
-
-public _gatling_dec_num_pills(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return
-	}
-	gNumPills[id]-= (gNumPills[id]>0)? 1:0
-
-}
-
-public _gatling_set_num_rockets(iPlugin,iParams){
-
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	if(!is_user_connected(id)){
-		
-		return
-	}
-	gNumRockets[id]=value_to_set;
-
-}
-
-public _gatling_get_num_rockets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return -1
-	}
-	return gNumRockets[id]
-
-}
-
-public _gatling_dec_num_rockets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return
-	}
-	gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
-
-}
 public _gatling_get_fx_num(iPlugin,iParams){
 
 

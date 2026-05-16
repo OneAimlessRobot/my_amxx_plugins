@@ -65,7 +65,7 @@ enum my_hitpoint_enum{
         (%1)                                                                    \
     )
 
-stock const hitzone_names[MAX_BODYHITS][128] = {
+stock const hitzone_names[MAX_BODYHITS][28] = {
 
     "generic",
     "head",

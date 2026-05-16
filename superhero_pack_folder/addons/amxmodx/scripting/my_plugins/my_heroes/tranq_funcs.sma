@@ -293,7 +293,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_pdata_float(entity, m_flNextPrimaryAttack, DART_SHOOT_PERIOD ,XO_WEAPON)
 	set_pdata_float(entity, m_flTimeWeaponIdle, DART_SHOOT_PERIOD ,XO_WEAPON)
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
-	entity_set_int(pPlayer, EV_INT_weaponanim,  generate_int(seq_shoot_left1,seq_shoot_rightlast))
+	native_playanim(pPlayer, generate_int(seq_shoot_left1,seq_shoot_rightlast))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 
 	return HAM_SUPERCEDE

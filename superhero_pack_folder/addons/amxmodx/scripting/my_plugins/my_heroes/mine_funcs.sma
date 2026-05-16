@@ -129,7 +129,7 @@ public mine_think(mine_id){
 	
 	}
 	
-	new attacker=pev(mine_id,pev_owner)
+	new attacker=entity_get_edict(mine_id,EV_ENT_owner)
 	new entlist[33];
 	new numfound = find_sphere_class(mine_id,"player", DETECT_RADIUS ,entlist, 32);
 		

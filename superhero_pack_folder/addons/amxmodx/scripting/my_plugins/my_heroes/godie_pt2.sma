@@ -109,14 +109,6 @@ public Item_PostFrame_Post(iEnt)
 		fInReload = 0
 	}
 	return HAM_IGNORED
-} 
-public native_playanim(player,anim)
-{
-	set_pev(player, pev_weaponanim, anim)
-	message_begin(MSG_ONE, SVC_WEAPONANIM, {0, 0, 0}, player)
-	write_byte(anim)
-	write_byte(pev(player, pev_body))
-	message_end()
 }
 
 public Ham_Weapon_PillGatling(weapon_ent)
@@ -474,8 +466,7 @@ public pill_think(ent)
 		return FMRES_IGNORED
 
 	}
-	
-	new id=pev(ent,pev_owner)
+	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_hero_user(id, gHeroID)) {
 		remove_entity(ent)
 		return FMRES_IGNORED

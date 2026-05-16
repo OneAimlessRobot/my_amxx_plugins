@@ -420,11 +420,13 @@ public _laser_line(iPlugins, iParams){
 	get_array_f(3,vEnd,3)
 	get_array(5,color_constants,3)
 	get_string(8,sound_sample,127)
-
-	static  colors[3]
-	if(is_user_alive(pev(ent_id, pev_owner))){
 	
-		switch ( cs_get_user_team(pev(ent_id, pev_owner)) )
+	static  colors[3]
+	static owner;
+	owner= entity_get_edict(ent_id,EV_ENT_owner)
+	if(is_user_alive(owner)){
+	
+		switch ( cs_get_user_team(owner) )
 		{
 			case CS_TEAM_T: colors = LineColors[color_constants[0]]
 				case CS_TEAM_CT: colors = LineColors[color_constants[1]]

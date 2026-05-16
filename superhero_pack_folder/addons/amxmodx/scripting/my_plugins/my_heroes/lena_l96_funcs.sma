@@ -295,7 +295,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_pdata_float(entity, m_flTimeWeaponIdle, LENA_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
 	
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
-	entity_set_int(pPlayer, EV_INT_weaponanim,  SEQ_SHOOT1)
+	native_playanim(pPlayer, SEQ_SHOOT1)
 	
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE

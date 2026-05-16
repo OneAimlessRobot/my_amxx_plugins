@@ -9,18 +9,13 @@ wildcard_damage 20		//Damage AK47 burst fire does
 wildcard_radius 50		//Radius of the burst fire bullets
 
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-//#include <ostk_tools>
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 #define MAX_WEAPONS       30   // --| Max number of weapons. ( cs1.6/cz )
 
 #define sg_start_reload   5    // --| Shotgun start reload sequence.
-#define m_iId             43   // --| Weapon offset. ( return CSW_* )
-#define m_fInReload       54   // --| Weapon offset.
-
-#define CANT_RELOAD_BITSUM  ( 1 << CSW_HEGRENADE | 1 << CSW_SMOKEGRENADE | 1<<CSW_FLASHBANG | 1 << CSW_KNIFE | 1 << CSW_C4 )
-#define SHOTGUNS_BITSUM     ( 1 << CSW_XM1014 | 1 << CSW_M3 )
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -295,7 +290,7 @@ public Event_OnReload ( const i_WeaponIndex )
 UTIL_IsWeaponReloading ( const id, const i_Ent )
 {	
 	// --| If we're holding a shotgun.
-	if ( 1 << get_pdata_int ( i_Ent, m_iId, 4 ) & SHOTGUNS_BITSUM )
+	if ( 1 << get_pdata_int ( i_Ent, m_iId, 4 ) & NOCLIP_WPN_BS )
 	{
 		// --| We check its animation instead of m_fInSpecialReload because
 		// --| Event_OnReload will be called 3 times by ball and it's a pain to
@@ -317,7 +312,7 @@ RegisterHamsReload ()
 	for ( new i_Wpid = 1; i_Wpid <= MAX_WEAPONS; i_Wpid++ )
 	{
 		// --| Don't register item/weapons which can not reload.
-		if ( !( ( 1 << i_Wpid ) & CANT_RELOAD_BITSUM ) && get_weaponname ( i_Wpid, s_WeaponName, charsmax ( s_WeaponName ) ) )
+		if ( !( ( 1 << i_Wpid ) & NOCLIP_WPN_BS ) && get_weaponname ( i_Wpid, s_WeaponName, charsmax ( s_WeaponName ) ) )
 		{
 			RegisterHam ( Ham_Weapon_Reload, s_WeaponName, "Event_OnReload", 1,true)
 		}

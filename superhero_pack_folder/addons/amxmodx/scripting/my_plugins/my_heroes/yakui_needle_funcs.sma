@@ -1,6 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-
 #include "../my_include/superheromod.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -17,7 +15,7 @@
 new gHeroID = 0
 
 new fx_id:curr_needle_fx[SH_MAXSLOTS+1]
-new needle_on[SH_MAXSLOTS+1]
+new needle_on_mask = 0
 
 
 public plugin_init(){
@@ -151,7 +149,7 @@ public plugin_cfg()
 public _gatling_get_needle(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return needle_on[id];
+	return Get_BitVar(needle_on_mask, id);
 
 
 }
@@ -194,7 +192,7 @@ public _gatling_set_needle(iPlugin,iParams){
 		write_short(id)
 		message_end()
 	}
-	needle_on[id]=value_to_set
+	Assign_BitVar(needle_on_mask, id, value_to_set);
 
 
 }

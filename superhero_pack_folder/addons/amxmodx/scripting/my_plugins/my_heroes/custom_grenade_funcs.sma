@@ -217,7 +217,7 @@ switch_grenade_animation_on_player(id, cs_grenade_animation_sequences:the_sequen
 
 
 
-	entity_set_int(id,EV_INT_weaponanim,_:the_sequence_id)
+	native_playanim(id,_:the_sequence_id)
 
 	
 }

@@ -61,7 +61,6 @@ public plugin_init()
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
-	register_clcmd("weapon_gatling", "hook_weapon")
 }
 public plugin_natives(){
 	
@@ -162,11 +161,6 @@ public remove_gatling(id)
 	UnSet_BitVar(g_Had_Volcano, id)
 }
 
-public hook_weapon(id)
-{
-	client_cmd(id, weapon_gatling)
-	return PLUGIN_HANDLED
-}
 
 public Event_CurWeapon(id)
 {
@@ -253,13 +247,13 @@ public fw_CmdStart(id, uc_handle, seed)
 			
 		if (fInReload)
 		{
-			set_weapon_anim(id, GATLING_ANIM_IDLE)
+			native_playanim(id, GATLING_ANIM_IDLE)
 			return
 		}
 		
 		if(cs_get_weapon_ammo(ent) >= D_BARREL_DEFAULT_CLIP)
 		{
-			set_weapon_anim(id, GATLING_ANIM_IDLE)
+			native_playanim(id, GATLING_ANIM_IDLE)
 			return
 		}
 			
@@ -287,7 +281,7 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static id
-	id = pev(entity, pev_owner)
+	id = entity_get_edict(entity, EV_ENT_owner)
 	
 	if(equal(model, DEFAULT_W_MODEL))
 	{
@@ -413,7 +407,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(get_player_weapon(invoker) == CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
-		Event_Gatling_Shoot(invoker)	
+		native_playanim(invoker, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
 
 		return FMRES_SUPERCEDE
 	}
@@ -440,7 +434,7 @@ public fw_Item_Deploy_Post(ent)
 	set_pev(id, pev_viewmodel2, WeaponModel[0])
 	set_pev(id, pev_weaponmodel2, SubModel != -1 ? "" : WeaponModel[1])
 		
-	set_weapon_anim(id, GATLING_ANIM_DRAW)
+	native_playanim(id, GATLING_ANIM_DRAW)
 	set_pdata_string(id, m_szAnimExtention * 4, WEAPON_ANIMEXT, -1 , 20)
 }
 
@@ -468,7 +462,7 @@ public fw_Weapon_Reload_Post(ent)
 		set_pdata_float(ent, m_flNextSecondaryAttack, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
 		set_pdata_int(ent, m_fInReload, 1, XO_WEAPON)
 		
-		set_weapon_anim(id, GATLING_ANIM_RELOAD1)			
+		native_playanim(id, GATLING_ANIM_RELOAD1)			
 		
 		return HAM_HANDLED
 	}
@@ -573,11 +567,6 @@ public update_ammo(id, csw_id, clip, bpammo)
 	message_end()
 }
 
-public Event_Gatling_Shoot(id)
-{
-	set_weapon_anim(id, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
-}
-
 stock fm_cs_get_weapon_ent_owner(ent)
 {
 	if (pev_valid(ent) != PDATA_SAFE)
@@ -585,20 +574,6 @@ stock fm_cs_get_weapon_ent_owner(ent)
 	
 	return get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 }
-
-stock set_weapon_anim(id, anim)
-{
-	if(!is_user_alive(id))
-		return
-		
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, _, id)
-	write_byte(anim)
-	write_byte(0)
-	message_end()	
-}
-
 stock drop_weapons(id, dropwhat)
 {
 	static weapons[32], num, i, weaponid

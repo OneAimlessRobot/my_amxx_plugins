@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
@@ -18,8 +17,13 @@
 #include "../my_include/my_author_header.inc"
 new gHeroID = 0
 
-new gRocketsEngaged[SH_MAXSLOTS+1]
-new has_rocket[SH_MAXSLOTS+1]
+new gNumRockets[SH_MAXSLOTS+1]
+
+new RPSYRINGE_RELOAD_TIMER_TASKID = 0
+
+new gRocketsEngaged_mask = 0
+new has_rocket[SH_MAXSLOTS+1] = {0, ...}
+
 public plugin_init(){
 	
 	
@@ -30,32 +34,71 @@ public plugin_init(){
 	static const custom_vector[][]={ROCKET_CLASSNAME}
 	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_la_seringa",custom_vector,1)
 
-	arrayset(has_rocket,0,SH_MAXSLOTS+1)
 	register_forward(FM_CmdStart, "CmdStart");
+	RPSYRINGE_RELOAD_TIMER_TASKID =allocate_typed_task_id(player_task)
 }
 
 public plugin_natives(){
-	
-	
+
+	register_native("gatling_set_num_rockets","_gatling_set_num_rockets",0);
+	register_native("gatling_get_num_rockets","_gatling_get_num_rockets",0);
+	register_native("gatling_dec_num_rockets","_gatling_dec_num_rockets",0);
+
 	register_native("gatling_set_rockets","_gatling_set_rockets",0);
 	register_native("gatling_get_rockets","_gatling_get_rockets",0);
 	
 	
 }
+
 public plugin_cfg(){
 
 	gHeroID = gatling_get_hero_id()
 }
 public _gatling_get_rockets(iPlugin,iParams){
 	new id=get_param(1)
-	return gRocketsEngaged[id]
-	
+	return Get_BitVar(gRocketsEngaged_mask,id)	
 }
 public _gatling_set_rockets(iPlugin,iParams){
 	
 	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gRocketsEngaged[id]=value_to_set;
+	new value_to_set= get_param(2);
+	Assign_BitVar(gRocketsEngaged_mask,id, value_to_set)	
+}
+
+public _gatling_set_num_rockets(iPlugin,iParams){
+
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
+	gNumRockets[id]=value_to_set;
+
+}
+
+public _gatling_get_num_rockets(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return -1
+	}
+	return gNumRockets[id]
+
+}
+
+public _gatling_dec_num_rockets(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return
+	}
+	gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
+
 }
 public CmdStart(id, uc_handle)
 {	
@@ -65,7 +108,6 @@ public CmdStart(id, uc_handle)
 	if ( !hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
-	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
 	if(weapon==YAKUI_WEAPON_CLASSID){
@@ -73,8 +115,8 @@ public CmdStart(id, uc_handle)
 		{
 			button &= ~IN_ATTACK2;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !gatling_get_rockets(id) || !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
-			if(gatling_get_num_rockets(id) == 0)
+			if( !Get_BitVar(gRocketsEngaged_mask,id) || !(is_user_alive(id))||has_rocket[id]) return FMRES_IGNORED
+			if(gNumRockets[id] == 0)
 			{
 				if(!is_user_bot(id)){
 					client_print(id, print_center, "You are out of rockets")
@@ -83,18 +125,6 @@ public CmdStart(id, uc_handle)
 			}
 			make_rocket(id,floatround(ROCKET_SPEED))
 			
-		}
-		else
-		{
-			button &= ~IN_ATTACK2;
-			set_uc(uc_handle, UC_Buttons, button);
-			
-			set_pev(id, pev_weaponanim, 0);
-			set_pdata_float(id, m_flNextAttack, 0.5, OFFSET_LINUX_PLAYER);
-			if(ent){
-				set_pdata_float(ent, m_flTimeWeaponIdle, 0.5+ROCKET_SHOOT_PERIOD, OFFSET_LINUX_PLAYER);
-			}
-			has_rocket[id] = 0
 		}
 	}
 	
@@ -192,15 +222,27 @@ emit_sound(NewEnt, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, 
 emit_sound(NewEnt, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 has_rocket[id] = NewEnt
 
-gatling_dec_num_rockets(id)
+gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
 
 new fx_num=sh_gen_effect()
 
 //this will store the fx num in the rocket ent
 entity_set_int(NewEnt,EV_INT_iuser3,fx_num)
 trail(NewEnt,FX_COLOR_OFFSET+fx_num,30,20)
-entity_set_float(NewEnt, EV_FL_gravity, 0.50)
+entity_set_float(NewEnt, EV_FL_gravity, 0.75)
+set_task(ROCKET_SHOOT_PERIOD,"reload_rocket_task",id+RPSYRINGE_RELOAD_TIMER_TASKID)
+
 return PLUGIN_HANDLED
+}
+public reload_rocket_task(id){
+
+	id-=RPSYRINGE_RELOAD_TIMER_TASKID
+
+	if(is_user_connected(id)){
+		has_rocket[id]=0
+	}
+
+
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
@@ -215,6 +257,7 @@ if(!pev_valid(missile)){
 	
 	return PLUGIN_CONTINUE
 }
+
 new Float:fl_origin[3]
 entity_get_vector(missile, EV_VEC_origin, fl_origin)
 
@@ -228,6 +271,7 @@ write_byte (40)
 write_byte (45)
 message_end()
 
+emit_sound(missile, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 emit_sound(missile, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 emit_sound(missile, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 remove_entity(missile)

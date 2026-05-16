@@ -109,7 +109,7 @@ public CmdStart(id, uc_handle)
 		
 		if(button & IN_ATTACK)
 		{
-			if(sh_user_has_hero(id,gHeroID_yakui)||(maria_riveter_get_num_rivets(id)<=0)){
+			if((maria_riveter_get_num_rivets(id)<=0)){
 				button &= ~IN_ATTACK;
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
@@ -247,6 +247,10 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		return HAM_IGNORED
 	}
+	if(sh_user_has_hero(pPlayer,gHeroID_yakui)){
+		return HAM_SUPERCEDE
+
+	}
 	static iClip, iPlaybackEvent
 	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
@@ -266,7 +270,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
-	entity_set_int(pPlayer, EV_INT_weaponanim,  generate_int(anim_shoot1,anim_shoot2))
+	native_playanim(pPlayer, generate_int(anim_shoot1,anim_shoot2))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE
 }
@@ -280,6 +284,10 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	new id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		return
+	}
+	if(sh_user_has_hero(id,gHeroID_yakui)){
+		return
+
 	}
 	static Float:Push[3]
 	entity_get_vector(id, EV_VEC_punchangle, Push)

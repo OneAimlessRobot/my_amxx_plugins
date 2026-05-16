@@ -51,6 +51,27 @@ stock progressBar(id, seconds)
 	write_byte(0)
 	message_end()
 }
+
+stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
+{
+	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
+	if(!pev_valid(Ent))
+		return
+
+	set_pdata_int(Ent, m_iShellId, Shell_ModelIndex, XO_WEAPON)
+	set_pdata_float(id, m_flEjectBrass, get_gametime() + Time, XTRA_OFS_PLAYER)
+}
+stock native_playanim(id,anim)
+{	
+	if(!is_user_alive(id)){
+		return
+	}
+	set_pev(id, pev_weaponanim, anim)
+	message_begin(MSG_ONE, SVC_WEAPONANIM, {0, 0, 0}, id)
+	write_byte(anim)
+	write_byte(pev(id, pev_body))
+	message_end()
+}
 /**
 only use this at plugin_init forward!!!
 */
@@ -231,9 +252,14 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	if(!is_user_alive(id)){
 		return
 	}
-	if( get_pdata_int(iEnt, m_fInReload, 4) )
+	if(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) ){
+
+		return
+
+	}
+	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, 4)], speed)
+		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, XO_WEAPON)], speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
 		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}

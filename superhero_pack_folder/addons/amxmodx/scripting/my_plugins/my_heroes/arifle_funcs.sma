@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
@@ -46,7 +47,6 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
-	register_clcmd("weapon_arifle", "Hook_Weapon")
 	
 }
 
@@ -133,11 +133,6 @@ public Remove_Arifle(id)
 	UnSet_BitVar(g_Had_Arifle, id)
 }
 
-public Hook_Weapon(id)
-{
-	engclient_cmd(id, weapon_arifle)
-	return PLUGIN_HANDLED
-}
 
 public Event_CurWeapon(id)
 {
@@ -182,7 +177,7 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static iOwner
-	iOwner = pev(entity, pev_owner)
+	iOwner = entity_get_edict(entity, EV_ENT_owner)
 	
 	if(equal(model, ARIFLE_OLDMODEL))
 	{
@@ -210,7 +205,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 {
 	ent_check(Ent,HAM_IGNORED)
 
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent,  m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
@@ -229,7 +224,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 {
 	ent_check(Ent,)
 
-	static id; id = pev(Ent, pev_owner)
+	static id; id = get_pdata_cbase(Ent,  m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		return
@@ -258,17 +253,17 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(!is_user_alive(Id)){
 		return HAM_IGNORED
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem,5) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return HAM_IGNORED	
 		
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
-		set_weapon_anim(Id, anim_idle)
+		native_playanim(Id, anim_idle)
 		
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
-		set_pdata_string(Id, (492) * 4, PLAYER_ANIMEXT, -1 , 20)
+		set_pdata_string(Id, (m_szAnimExtention) * 4, PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER * 4)
 	}
 	
 	return HAM_IGNORED	
@@ -284,7 +279,7 @@ public fw_Item_Deploy_Post(Ent)
 		
 		return
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem, 5) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return
@@ -292,7 +287,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_viewmodel2, V_MODEL)
 	set_pev(Id, pev_weaponmodel2, P_MODEL)
 	
-	set_weapon_anim(Id, anim_draw)
+	native_playanim(Id, anim_draw)
 }
 
 public fw_AddToFullPack_post(esState, iE, iEnt, iHost, iHostFlags, iPlayer, pSet)
@@ -355,7 +350,7 @@ public fw_Item_PostFrame(ent)
 {
 	ent_check(ent,HAM_IGNORED)
 
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
@@ -390,14 +385,15 @@ public fw_Weapon_Reload(ent)
 {
 	ent_check(ent,HAM_IGNORED)
 
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent,  m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Arifle, id))
 		return HAM_IGNORED	
 
 	g_Arifle_Clip[id] = -1
-		
+	
+	
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(id, CSW_ARIFLE)
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 		
@@ -415,7 +411,7 @@ public fw_Weapon_Reload_Post(ent)
 {
 	ent_check(ent,HAM_IGNORED)
 
-	static id; id = pev(ent, pev_owner)
+	static id; id = get_pdata_cbase(ent,  m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Arifle, id))
@@ -427,7 +423,7 @@ public fw_Weapon_Reload_Post(ent)
 			return HAM_IGNORED
 		
 		set_pdata_int(ent, m_iClip, g_Arifle_Clip[id], XO_WEAPON)
-		set_weapon_anim(id, anim_reload)
+		native_playanim(id, anim_reload)
 	}
 	
 	return HAM_HANDLED
@@ -442,7 +438,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(eventid != g_Event_Arifle)
 		return FMRES_IGNORED
 	
-	set_weapon_anim(invoker, anim_shoot1)
+	native_playanim(invoker, anim_shoot1)
 	
 	emit_sound(invoker, CHAN_WEAPON, Arifle_Sound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
@@ -553,15 +549,6 @@ public give_ammo(id, silent, CSWID, Max)
 	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
 }
 
-stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
-{
-	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, 5)
-	if(!pev_valid(Ent))
-		return
-
-        set_pdata_int(Ent, 57, Shell_ModelIndex, 4)
-        set_pdata_float(id, 111, get_gametime() + Time)
-}
 
 // Drop primary/secondary weapons
 stock drop_weapons(id, dropwhat)
@@ -584,16 +571,6 @@ stock drop_weapons(id, dropwhat)
 			engclient_cmd(id, "drop", wname)
 		}
 	}
-}
-
-stock set_weapon_anim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
-	message_end()
 }
 
 stock Make_BulletHole(id, Float:Origin[3], Float:Damage)

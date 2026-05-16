@@ -48,34 +48,86 @@
 
 #define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+#define NOCLIP_WPN_BS	((1<<CSW_HEGRENADE)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_KNIFE)|(1<<CSW_C4))
+#define SHOTGUNS_BS	((1<<CSW_M3)|(1<<CSW_XM1014))
+#define SILENT_BS	((1<<CSW_USP)|(1<<CSW_M4A1))
 
 #define is_weaponid_valid(%1) ((%1>0)&&(%1<=CSW_LAST_WEAPON))
 
-// weapons offsets
+//entity constants
+
+stock const PDATA_SAFE = 2
+
+//player flags
 
 #define TOUCHING_GROUND (1<<9)
-stock const PDATA_SAFE = 2
-stock const XO_WEAPON = 4
-stock const OFFSET_LINUX_PLAYER = 5
-stock const FL_INGROUND2=TOUCHING_GROUND
-stock const fPainShock = 108
-stock const m_flNextPrimaryAttack    = 46
-stock const m_flNextSecondaryAttack    = 47
-stock const m_fInReload            = 54
-stock const m_rgpPlayerItems_Slot0 = 367
-stock const m_iClip = 51
-stock const m_fInSpecialReload = 55
+#define FL_INGROUND2 TOUCHING_GROUND
+//player offsets
 
-#if !defined _reapi_included 
-	stock const m_pActiveItem = 373;
-	stock const m_bResumeZoom = 440;
-	stock const m_flTimeWeaponIdle        = 48
-	stock const m_flNextAttack = 83
-	stock const m_szAnimExtention = 492
-	stock const m_iId                = 43
-	stock const m_pPlayer            = 41
-	stock const m_pNext = 42
-#endif
+#define XTRA_OFS_PLAYER	5 // linux offset to be used on pdatas with player entities
+#define OFFSET_LINUX_PLAYER 5 // linux offset to be used on pdatas with player entities
+
+									//add these offsets in the correct parameter
+
+
+#define fPainShock 108					//player pain shock offset
+#define m_rgAmmo_player_Slot0  376			//how much ammo does player have in slot 0?
+/**
+Example in how to use this:
+
+if(iWeaponEntity > 0)
+{
+	iAmmoType = m_rgAmmo_player_Slot0 + 
+			get_pdata_int(iWeaponEntity, m_iPrimaryAmmoType, XTRA_OFS_WEAPON)
+	
+	iAmmo = get_pdata_int(iWeaponEntity, m_iClip, XTRA_OFS_WEAPON)
+	
+	iMagazine = get_pdata_int(iBotIdentity, iAmmoType, XTRA_OFS_PLAYER)
+	
+	give_item(iPlayer, szWeaponName)
+	
+	set_pdata_int(iPlayer, iAmmoType, iMagazine, XTRA_OFS_PLAYER)
+	
+	set_pdata_int(iWeaponEntity, m_iClip, iAmmo, XTRA_OFS_WEAPON)
+}
+
+ */
+
+#define m_flNextAttack 83					//when is next user attack allowed with any weapon?
+
+#define m_rgpPlayerItems_Slot0 367		//what item id does player have in slot 0?
+#define m_pActiveItem 373				//what item is user holding?
+
+#define m_bResumeZoom 440				//the linux offset should be multiplied by 4 
+												//as well as this constant.
+												//as it refers to a place in memory which is a single byte in size
+
+#define m_szAnimExtention 492             //its animation related, definitely
+												//this is also multiplied by 4
+												//as it is byte sized. (its a string)
+
+// weapons offsets
+
+#define XO_WEAPON  4 						//linux offset to be used on pdatas with weapon/item entities
+
+
+#define m_flNextPrimaryAttack    46		//when is the next weapon primary attack?
+
+#define m_fKnown 44 						//idk what this is
+#define m_iPrimaryAmmoType	49			//ammo type in current weapon.
+												// 5.56 nato box in Colt m4a1 for example
+#define m_fSilent 74						//is weapon silenced?
+
+#define m_flNextSecondaryAttack    47		//when is the next weapon secondary attack?
+#define m_fInReload            54 		//is magazine weapon reloading? 
+#define m_iClip 51 						//number of ammo in clip
+#define m_fInSpecialReload 55 			//is shotgun reloading? (1 by 1)
+#define m_pNext 42
+#define m_flTimeWeaponIdle        48
+#define m_iId                43 			// pdata offset for item id (CSW_AWP, CSW_KNIFE, etc.)
+#define m_pPlayer            41 			// pdata offset for item owner
+#define m_iShellId			57 				// shell id for this weapon
+#define m_flEjectBrass     111              // eject brass delay for this weapon
 
 #define FlameAndSoundRate 10
 
@@ -164,6 +216,7 @@ enum sh_custom_color{
 #define BLOOD_STREAM_YELLOW	60
 #define BLOOD_SM_NUM 8
 #define BLOOD_LG_NUM 2
+
 stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 	blood_small_red[BLOOD_SM_NUM] = {190,191,192,193,194,195,196,197}
 
@@ -204,10 +257,23 @@ stock const LineColors[_:COLORS_NUM][3] = {
 	{10, 10, 10},  //fx_metylphenidate
 	{179, 66, 5} //fx_bath
 }
-stock const Float:g_fReloadDelay[CSW_P90+1] = {
+
+stock const Float:g_fReloadDelay[CSW_LAST_WEAPON+1] = {
 	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
 	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
 	0.55, 3.05, 2.12, 3.50, 0.00,   2.20, 3.00, 2.45, 0.00, 3.40
+}
+
+new stock const g_iDftMaxClip[CSW_LAST_WEAPON+1] = {
+	-1,  13, -1, 10,  1,  7,    1, 30, 30,  1,  30, 
+		20, 25, 30, 35, 25,   12, 20, 10, 30, 100, 
+		8 , 30, 30, 20,  2,    7, 30, 30, -1,  50
+}
+
+stock const g_iReloadAnims[CSW_LAST_WEAPON+1] = {
+	-1,  5, -1, 3, -1,  6,   -1, 1, 1, -1, 14, 
+		4,  2, 3,  1,  1,   13, 7, 4,  1,  3, 
+		6, 11, 1,  3, -1,    4, 1, 1, -1,  1
 }
 
 stock const player_vector[][]={"player"},

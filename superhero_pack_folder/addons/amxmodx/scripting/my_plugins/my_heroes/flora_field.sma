@@ -268,7 +268,7 @@ public _reset_flora_user(iPlugin,iParams){
 destroy_field(field_id,make_sound=0,planting=0){
 
 	if(is_valid_ent(field_id)){
-		new owner=pev(field_id,pev_owner);
+		new owner=entity_get_edict(field_id,EV_ENT_owner)
 		if(make_sound){
 			emit_sound(field_id, CHAN_AUTO, FIELD_DESTROYED, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
@@ -667,7 +667,7 @@ public field_think(ent)
 	static Float:ent_pos[3]
 	static entlist[33];
 	gametime = get_gametime()
-	new owner=pev(ent,pev_owner)
+	new owner=entity_get_edict(ent,EV_ENT_owner)
 
 	//get deployed status
 	new deployed=entity_get_int(ent,EV_INT_iuser1)

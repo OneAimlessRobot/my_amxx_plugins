@@ -2,10 +2,10 @@
 #define I_WANT_MISC_FUNCS
 
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_include/weapons_const.inc"
 
@@ -14,21 +14,27 @@
 #include "../my_include/my_author_header.inc"
 
 new gHeroID = 0
-new atk2[SH_MAXSLOTS+1]
-new atk1[SH_MAXSLOTS+1]
-new delay[SH_MAXSLOTS+1]
+new gNumPills[SH_MAXSLOTS+1]
 new g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]
 new Float:g_lastShot[SH_MAXSLOTS+1]
-new gPillGatlingEngaged[SH_MAXSLOTS+1]
 new g_Pillgatling_clip[SH_MAXSLOTS+1]
+
+
+new atk2_mask = 0
+//new g_fix_punchangle_mask = 0
+new atk1_mask = 0
+new delay_mask = 0
+new gPillGatlingEngaged_mask = 0
+new g_fwid = 0
+new g_guns_eventids_bitsum = 0
 // Sounds
 new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmod/yakui/hw_spinup.wav", "shmod/yakui/hw_spindown.wav"}
 
 new Float:windup_time
+new const g_guns_events[][] = {"events/m249.sc"}
 
 public plugin_init(){
-
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
@@ -38,6 +44,7 @@ public plugin_init(){
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHam(Ham_Item_Deploy, YAKUI_WEAPON_NAME, "fw_ItemDeployPre",_,true)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
+	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
 	register_forward(FM_PlayerPostThink, "fwPlayerPostThink", 1)
 	RegisterHam(Ham_Item_PostFrame, YAKUI_WEAPON_NAME, "Item_PostFrame_Post", 1,true)
 		
@@ -52,6 +59,7 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_cvar("yakui_windup_time", "2.0")
 	register_think(PILL_CLASSNAME, "pill_think")
+	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 
 }
 
@@ -80,7 +88,7 @@ public Item_PostFrame_Post(iEnt)
 	}
 	new id = entity_get_edict(iEnt, EV_ENT_owner);
 	
-	if(!client_is_hero_user(id, gHeroID)||!gPillGatlingEngaged[id]){
+	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
 		return HAM_IGNORED
 	}
@@ -103,28 +111,17 @@ public Item_PostFrame_Post(iEnt)
 		fInReload = 0
 	}
 	return HAM_IGNORED
-} 
-public native_playanim(player,anim)
-{
-	set_pev(player, pev_weaponanim, anim)
-	message_begin(MSG_ONE, SVC_WEAPONANIM, {0, 0, 0}, player)
-	write_byte(anim)
-	write_byte(pev(player, pev_body))
-	message_end()
 }
 
 public Ham_Weapon_PillGatling(weapon_ent)
 {
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	sh_chat_message(0,gHeroID, "Did we shoot the weapon?")
-	
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(owner, gHeroID)) return HAM_IGNORED
 
-	sh_chat_message(owner,gHeroID, "Did we shoot the weapon?")
 
-	if(!gPillGatlingEngaged[owner]||(g_plAction[owner]!=act_run)){
+	if(!Get_BitVar(gPillGatlingEngaged_mask,owner)||(g_plAction[owner]!=act_run)){
 		return HAM_SUPERCEDE
 	}
 	return HAM_IGNORED
@@ -135,9 +132,10 @@ public event_curweapon(id){
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 	if(weapon == YAKUI_WEAPON_CLASSID){
 
-		sh_chat_message(id,gHeroID, "Did we shoot the weapon?")
-		if(!gPillGatlingEngaged[id]){
-			atk2[id]=atk1[id]=0
+		if(!Get_BitVar(gPillGatlingEngaged_mask,id)){
+
+			Assign_BitVar(atk1_mask,id,false_for_macro);
+			Assign_BitVar(atk2_mask,id,false_for_macro);
 			return PLUGIN_HANDLED
 		}
 		if(g_plAction[id] == act_run){
@@ -148,10 +146,10 @@ public event_curweapon(id){
 		{
 			do_fast_shot(id,weapon,PILL_SHOOT_PERIOD)
 		}
-		if(atk1[id]){
+		if(Get_BitVar(atk1_mask,id)){
 			fire_mode(id,Ent, 0)
 		}
-		if(atk2[id]){
+		if(Get_BitVar(atk2_mask,id)){
 			fire_mode(id,Ent, 1)
 		}
 	}
@@ -169,7 +167,7 @@ public fwd_StartFrame() {
 	for(id = 1; id < sh_maxplayers()+1; id++) {
 		if(g_plAction[id] != act_none) {
 			
-			if(!(pev(id, pev_button) & IN_ATTACK) && !(pev(id, pev_button) & IN_USE) && g_lastShot[id] + PILL_SHOOT_PERIOD< gtime) {
+			if(!(pev(id, pev_button) & IN_ATTACK) && !(pev(id, pev_button) & IN_USE) && g_lastShot[id] + PILL_SHOOT_PERIOD < gtime) {
 				native_playanim(id, anim_spinidledown)
 				emit_sound(id, CHAN_WEAPON, m_SOUND[3], 1.0, ATTN_NORM, 0, PITCH_NORM)
 				g_nextSound[id] = gtime + windup_time
@@ -184,7 +182,9 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)||!gPillGatlingEngaged[idattacker]){
+	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID||
+					!sh_user_has_hero(idattacker,gHeroID)||
+					!Get_BitVar(gPillGatlingEngaged_mask,idattacker)){
 		return HAM_IGNORED
 	}
 	
@@ -194,6 +194,10 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 }
 public plugin_natives(){
 
+	
+	register_native("gatling_set_num_pills","_gatling_set_num_pills",0);
+	register_native("gatling_get_num_pills","_gatling_get_num_pills",0);
+	register_native("gatling_dec_num_pills","_gatling_dec_num_pills",0);
 
 	register_native("gatling_set_pillgatling","_gatling_set_pillgatling",0);
 	register_native("gatling_get_pillgatling","_gatling_get_pillgatling",0);
@@ -202,17 +206,49 @@ public plugin_natives(){
 }
 public _gatling_get_pillgatling(iPlugin,iParams){
 	new id=get_param(1)
-	return gPillGatlingEngaged[id]
+	return Get_BitVar(gPillGatlingEngaged_mask,id)
 
 }
 public _gatling_set_pillgatling(iPlugin,iParams){
 
 	new id= get_param(1)
-	new value_to_set= get_param(2)
-	gPillGatlingEngaged[id]=value_to_set;
+	new value_to_set= get_param(2);
+	Assign_BitVar(gPillGatlingEngaged_mask,id, value_to_set);
 }
 
 
+public _gatling_set_num_pills(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	if(!is_user_connected(id)){
+		
+		return
+	}
+	gNumPills[id]=value_to_set;
+}
+public _gatling_get_num_pills(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return -1
+	}
+	return gNumPills[id]
+
+}
+
+public _gatling_dec_num_pills(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	if(!is_user_connected(id)){
+		
+		return
+	}
+	gNumPills[id]-= (gNumPills[id]>0)? 1:0
+
+}
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {	
@@ -225,28 +261,29 @@ public CmdStart(id, uc_handle)
 
 	new ent = find_ent_by_owner(-1, YAKUI_WEAPON_NAME, id);
 	new clip,ammo,weapon=get_user_weapon(id,clip,ammo)
+
 	if((weapon==YAKUI_WEAPON_CLASSID)){
 		static buttons;
 		buttons= get_uc(uc_handle, UC_Buttons);
 		if(buttons & IN_ATTACK)
 		{
-			atk1[id] = gPillGatlingEngaged[id]
-			atk2[id] = 0
+			buttons &= ~IN_ATTACK;
+			Assign_BitVar(atk1_mask, id, Get_BitVar(gPillGatlingEngaged_mask,id));
+			Assign_BitVar(atk2_mask, id, false_for_macro)
 			
 		}
-		else if(buttons & IN_USE){
-
-			atk2[id] = gPillGatlingEngaged[id]
-			atk1[id] = 0
-
+		if(buttons & IN_USE){
+			
+			buttons &= ~IN_USE;
+			Assign_BitVar(atk2_mask, id, Get_BitVar(gPillGatlingEngaged_mask,id));
+			Assign_BitVar(atk1_mask, id, false_for_macro)
 		}
-		if(atk1[id] && !atk2[id] && (g_plAction[id] == act_none || g_plAction[id] == act_load_up) && g_Pillgatling_clip[id]>0){
-			buttons &= ~IN_ATTACK
-			buttons &= ~IN_USE
+		if(Get_BitVar(atk1_mask,id) && !Get_BitVar(atk2_mask,id) && (g_plAction[id] == act_none || g_plAction[id] == act_load_up) && g_Pillgatling_clip[id]>0){
 			
 			set_uc(uc_handle, UC_Buttons, buttons)
 			fire_mode(id,ent,0)
-		} else if(atk2[id] || atk1[id] && g_Pillgatling_clip[id]==0){
+		
+		} else if((Get_BitVar(atk2_mask,id) || Get_BitVar(atk1_mask,id)) && g_Pillgatling_clip[id]==0){
 			fire_mode(id,ent,1)
 		}
 	}
@@ -267,7 +304,7 @@ public loadCVARS()
 	windup_time=get_cvar_float("yakui_windup_time")
 }
 public delayanim(id){
-	delay[id] = 0
+	Assign_BitVar(delay_mask,id, false_for_macro)
 }
 public fw_WeaponReloadPre(entity)
 {
@@ -275,7 +312,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)||!gPillGatlingEngaged[pPlayer]){
+	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -283,14 +320,14 @@ public fw_WeaponReloadPre(entity)
 	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, YAKUI_WEAPON_CLASSID)
 	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
-	if(BPAmmo < 0){
+	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
 	}
 	if(iClip >= CLIP_SIZE){
 		return HAM_SUPERCEDE		
 	}
 	g_Pillgatling_clip[pPlayer] = iClip
-	return HAM_IGNORED
+	return HAM_HANDLED
 }
 public fw_Weapon_Reload_Post(ent)
 {
@@ -298,7 +335,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)||!gPillGatlingEngaged[id]){
+	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
 		return HAM_IGNORED
 	}
@@ -316,6 +353,13 @@ public fw_Weapon_Reload_Post(ent)
 }
 
 
+public fwPlaybackEvent(flags, invoker, eventid) {
+	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_hero_user(invoker, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, invoker)){
+		return FMRES_IGNORED
+	}
+	return FMRES_HANDLED
+}
+
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(!client_is_hero_user(player, gHeroID)){
@@ -326,7 +370,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
-	if(gPillGatlingEngaged[player]&&is_valid_ent(pEntity)){
+	if(Get_BitVar(gPillGatlingEngaged_mask,player)&&is_valid_ent(pEntity)){
 		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED
 	}
@@ -368,17 +412,17 @@ fire_mode(id,entity, type) {
 			native_playanim(id, anim_spinfire)
 		} 
 		else { 
-			if(!delay[id]) {
+			if(!Get_BitVar(delay_mask,id)) {
 				emit_sound(id, CHAN_WEAPON, m_SOUND[1], 1.0, ATTN_NORM, 0, PITCH_NORM)
 				native_playanim(id, anim_spinidle)
 				set_task(GAT_WINDUP_PERIOD,"delayanim",id)
 				
-				delay[id] = 1
+				Assign_BitVar(delay_mask,id, true_for_macro)
 			}
 		}
 	}
-	atk1[id] = 0
-	atk2[id] = 0
+	Assign_BitVar(atk1_mask,id,false_for_macro);
+	Assign_BitVar(atk2_mask,id,false_for_macro);
 }
 launch_pill(id)
 {
@@ -416,7 +460,8 @@ launch_pill(id)
 	set_pev(Ent, pev_vuser1, Velocity)
 	
 
-	gatling_dec_num_pills(id)
+	gNumPills[id]-= (gNumPills[id]>0)? 1:0
+
 	new fx_num=sh_gen_effect()
 	
 	//this will store the fx num in the pill ent
@@ -445,7 +490,7 @@ public pill_think(ent)
 
 	}
 	
-	new id=pev(ent,pev_owner)
+	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_hero_user(id, gHeroID)) {
 		remove_entity(ent)
 		return FMRES_IGNORED
@@ -484,13 +529,13 @@ public fw_ItemDeployPre(entity)
 		
 	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)||!gPillGatlingEngaged[pPlayer]){
+	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, pPlayer)){
 		
 		return HAM_IGNORED
 	}
 
-	native_playanim(pPlayer, anim_draw)
 	ExecuteHam(Ham_Item_Deploy, entity)
+	native_playanim(pPlayer, anim_draw)
 	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, PILL_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
@@ -501,8 +546,9 @@ public fw_ItemDeployPre(entity)
 public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&!client_is_hero_user(id, gHeroID)){
-		atk1[id]=0;
-		atk2[id]=0;
+		
+		Assign_BitVar(atk1_mask,id,false_for_macro);
+		Assign_BitVar(atk2_mask,id,false_for_macro);
 		g_plAction[id]=act_none;
 	}
 	
@@ -521,12 +567,23 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 	}
 	remove_entity(pToucher)
 }
+public fwPrecacheEvent(type, const name[]) {
+	for (new i = 0; i < sizeof g_guns_events; ++i) {
+		if (equal(g_guns_events[i], name)) {
+			g_guns_eventids_bitsum |= (1<<get_orig_retval())
+			return FMRES_HANDLED
+		}
+	}
+
+	return FMRES_IGNORED
+}
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,"models/shell.mdl")
 	
 	engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
+	g_fwid = register_forward(FM_PrecacheEvent, "fwPrecacheEvent", 1)
 	engfunc(EngFunc_PrecacheSound, GLASS_BREAK_SFX)
 	engfunc(EngFunc_PrecacheSound,m_SOUND[0])
 	engfunc(EngFunc_PrecacheSound,m_SOUND[1])

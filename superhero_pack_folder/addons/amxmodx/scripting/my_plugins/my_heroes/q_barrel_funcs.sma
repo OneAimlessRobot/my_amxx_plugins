@@ -149,11 +149,6 @@ public Remove_QuadBarrel(id)
 	UnSet_BitVar(g_Had_QB, id)
 }
 
-public Hook_Weapon(id)
-{
-	engclient_cmd(id, weapon_quadbarrel)
-	return PLUGIN_HANDLED
-}
 
 public Event_CurWeapon(id)
 {
@@ -188,7 +183,7 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static id
-	id = pev(entity, pev_owner)
+	id = entity_get_edict(entity, EV_ENT_owner)
 	
 	if(equal(model, OLD_W_MODEL))
 	{
@@ -258,7 +253,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
-		Set_WeaponAnim(invoker, ANIM_SHOOT1)
+		native_playanim(invoker, ANIM_SHOOT1)
 		emit_sound(invoker, CHAN_WEAPON, WeaponSounds[0], 1.0, ATTN_NORM, 0, PITCH_LOW)	
 
 		return FMRES_SUPERCEDE
@@ -358,8 +353,8 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_viewmodel2, MODEL_V)
 	set_pev(Id, pev_weaponmodel2, MODEL_P)
 	
-	Set_WeaponAnim(Id, ANIM_DRAW)
-	set_pdata_string(Id, (492) * 4, ANIM_EXT, -1 , 20)
+	native_playanim(Id, ANIM_DRAW)
+	set_pdata_string(Id, (m_szAnimExtention) * 4,  ANIM_EXT, -1 ,  XTRA_OFS_PLAYER * 4)
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
@@ -389,7 +384,7 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 	static SpecialReload; SpecialReload = get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON)
 	if(!SpecialReload && get_pdata_float(iEnt, m_flTimeWeaponIdle, XO_WEAPON) <= 0.25)
 	{
-		Set_WeaponAnim(id, ANIM_IDLE)
+		native_playanim(id, ANIM_IDLE)
 		set_pdata_float(iEnt, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
 	}	
 }
@@ -472,7 +467,7 @@ public fw_Weapon_Reload_Post(iEnt)
 	set_pdata_float(iEnt, m_flNextSecondaryAttack, RELOAD_TIME + 0.25, XO_WEAPON)
 	set_pdata_int(iEnt, m_fInReload, 1, XO_WEAPON)
 	
-	Set_WeaponAnim(id, ANIM_RELOAD)
+	native_playanim(id, ANIM_RELOAD)
 }
 
 
@@ -532,15 +527,6 @@ public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)
 	get_tr2(TraceID, TR_vecEndPos, Result)
 }
 
-stock Set_WeaponAnim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
-	message_end()
-}
 
 stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
 {

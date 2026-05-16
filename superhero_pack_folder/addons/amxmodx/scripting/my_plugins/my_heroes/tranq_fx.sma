@@ -60,7 +60,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(!Get_BitVar(gIsAsleepMask,player)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem, XTRA_OFS_PLAYER)
 	if(is_valid_ent(pEntity)){
 		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
 		return FMRES_HANDLED
