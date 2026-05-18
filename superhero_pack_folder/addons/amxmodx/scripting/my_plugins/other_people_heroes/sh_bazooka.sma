@@ -1453,7 +1453,7 @@ public SD_CircleRockets(Ent){
 	RotMatrix[2][2]=((RotMatrix[0][0])*(RotMatrix[1][1]))-((RotMatrix[0][1])*(RotMatrix[1][0]))
 
 	for (i=0; i < NUMBER_OF_ROCKETS; i++){
-		theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*MATH_PI+fAngleBaz
+		theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*M_PI+fAngleBaz
 		x = 0.0
 		#if !defined AMX98
 		y = floatcos(theta)*ROCKET_RADIUS
@@ -1534,8 +1534,8 @@ public RocketThink() {
 	new iTempEnt
 	fAngleBaz += ANGULAR_VELOCITY * DT
 
-	if (fAngleBaz > 2*MATH_PI)
-		fAngleBaz -= 2*MATH_PI
+	if (fAngleBaz > 2*M_PI)
+		fAngleBaz -= 2*M_PI
 
 	iCurrent = -1
 
@@ -1564,7 +1564,7 @@ public RocketThink() {
 				RotMatrix[2][0]=((RotMatrix[0][1])*(RotMatrix[1][2]))-((RotMatrix[0][2])*(RotMatrix[1][1]))
 				RotMatrix[2][1]=((RotMatrix[0][2])*(RotMatrix[1][0]))-((RotMatrix[0][0])*(RotMatrix[1][2]))
 				RotMatrix[2][2]=((RotMatrix[0][0])*(RotMatrix[1][1]))-((RotMatrix[0][1])*(RotMatrix[1][0]))
-				theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*MATH_PI+fAngleBaz
+				theta = (float(i)/float(NUMBER_OF_ROCKETS))*2*M_PI+fAngleBaz
 				x = 0.0
 				#if !defined AMX98
 				y = floatcos(theta)*ROCKET_RADIUS

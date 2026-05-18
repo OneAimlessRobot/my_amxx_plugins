@@ -86,8 +86,9 @@ Float:get_charge_index_from_id(id){
 public CmdStart(id, uc_handle)
 {
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	

@@ -45,7 +45,7 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
-	
+	register_clcmd("weapon_ethereal", "Hook_Weapon")
 }
 
 public plugin_natives(){
@@ -113,6 +113,11 @@ public client_putinserver(id)
 	}
 }
 
+public Hook_Weapon(id)
+{
+	engclient_cmd(id, weapon_ethereal)
+	return PLUGIN_HANDLED
+}
 public Do_Register_HamBot(id)
 {
 	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Player")
@@ -127,7 +132,7 @@ public Get_Ethereal(id)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), {0, 0, 0}, id)
 	write_byte(1)
-	write_byte(CSW_M4A1)
+	write_byte(CSW_ETHEREAL)
 	write_byte(30)
 	message_end()
 }
@@ -222,6 +227,10 @@ public fw_SetModel(entity, model[])
 
 public fw_CmdStart(id, uc_handle, seed)
 {
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}	
@@ -350,8 +359,9 @@ public fw_Item_Deploy_Post(Ent)
 	if (!is_user_alive(Id)){
 		return
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent){
 		return
+	}
 	if(!Get_BitVar(g_Had_Ethereal, Id))
 		return
 	
@@ -444,7 +454,7 @@ public fw_Weapon_Reload(ent)
 			
 	g_Ethereal_Clip[id] = iClip	
 	
-	return HAM_HANDLED
+	return HAM_IGNORED
 }
 
 public fw_Weapon_Reload_Post(ent)
@@ -454,17 +464,17 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Ethereal, id))
 		return HAM_IGNORED	
-		
-	if((get_pdata_int(ent, m_fInReload, XO_WEAPON)== 1))
-	{ // Reload
-		if(g_Ethereal_Clip[id] == -1)
-			return HAM_IGNORED
-		
-		set_pdata_int(ent, m_iClip, g_Ethereal_Clip[id], XO_WEAPON)
-		native_playanim(id, E_ANIM_RELOAD)
-	}
 	
-	return HAM_HANDLED
+
+	if(g_Ethereal_Clip[id] == -1)
+		return HAM_IGNORED
+
+	
+	set_pdata_int(ent, m_iClip, g_Ethereal_Clip[id], XO_WEAPON)
+	set_pdata_int(ent, m_fInReload, 1, XO_WEAPON);
+
+	native_playanim(id, E_ANIM_RELOAD)
+	return HAM_IGNORED
 }
 
 public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)

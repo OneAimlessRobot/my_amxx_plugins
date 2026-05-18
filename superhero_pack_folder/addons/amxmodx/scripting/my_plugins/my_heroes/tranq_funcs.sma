@@ -110,7 +110,12 @@ public tranque_thinque(ent){
 
 public CmdStart(id, uc_handle)
 {
-	if (!hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
+
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+
+	if (!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 
 	
 	if(Get_BitVar(trigger_is_down_mask, id)){
@@ -185,7 +190,7 @@ public fw_Item_PostFrame(ent)
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
-		temp1 = min(CLIP_SIZE - iClip, bpammo)
+		temp1 = min(DART_PISTOL_CLIP_SIZE - iClip, bpammo)
 
 		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, CSW_ELITE, bpammo - temp1)
@@ -218,7 +223,7 @@ public fw_WeaponReloadPre(entity)
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
 	}
-	if(iClip >= CLIP_SIZE){
+	if(iClip >= DART_PISTOL_CLIP_SIZE){
 		return HAM_SUPERCEDE
 	}
 	g_Tranq_Clip[pPlayer] = iClip
@@ -234,16 +239,15 @@ public fw_Weapon_Reload_Post(ent)
 
 		return HAM_IGNORED
 	}
-	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
-	{ // Reload
-		if(g_Tranq_Clip[id] == -1)
+
+	if(g_Tranq_Clip[id] == -1)
 		return HAM_IGNORED
 
-		set_pdata_int(ent, m_iClip, g_Tranq_Clip[id], XO_WEAPON)
-	}
-
-
-	return HAM_HANDLED
+	
+	set_pdata_int(ent, m_iClip, g_Tranq_Clip[id], XO_WEAPON)
+	set_pdata_int(ent, m_fInReload, 1, XO_WEAPON);
+	
+	return HAM_IGNORED
 }
 public fw_ItemDeployPre(entity)
 {
@@ -259,7 +263,7 @@ public fw_ItemDeployPre(entity)
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(entity, m_flNextPrimaryAttack, DART_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_float(entity, m_flTimeWeaponIdle, DART_DEPLOY_TIME ,XO_WEAPON)
-	set_pdata_int(entity, m_iClip,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_pdata_int(entity, m_iClip,min(DART_PISTOL_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	return HAM_SUPERCEDE
 }
 
@@ -313,7 +317,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	pev(id, pev_punchangle, Push)
 	sub_3d_vectors(Push, g_Recoil[id], Push)
 
-	multiply_3d_vector_by_scalar(Push, RECOIL, Push)
+	multiply_3d_vector_by_scalar(Push, DART_PISTOL_RECOIL, Push)
 	add_3d_vectors(Push, g_Recoil[id], Push)
 	set_pev(id, pev_punchangle, Push)
 }

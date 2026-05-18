@@ -76,11 +76,11 @@ public shell_weapons(id){
 			
 			if(gHasPNinety){
 				
-				shGiveWeapon(id,"weapon_p90");
+				sh_give_weapon(id,CSW_P90);
 			}
 			else{
 				
-				engclient_cmd(id, "drop", "weapon_p90")
+				sh_drop_weapon(id, CSW_P90, true)
 				
 			
 		

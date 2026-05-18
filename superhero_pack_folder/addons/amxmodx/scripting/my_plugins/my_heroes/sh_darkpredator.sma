@@ -27,6 +27,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 
 
 
@@ -35,14 +36,13 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 // VARIABLES
 new gHeroName[]="DarkPredator" 
 
-new times_picked
-new gHasAcess[SH_MAXSLOTS+1] 
 new gIsInvisible[SH_MAXSLOTS+1]
 new gStillTime[SH_MAXSLOTS+1]
 new gSpriteWhite, gRadius, gBright
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
 new gHeroID
+new accessLevel[10]
 new gBullets[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
@@ -98,7 +98,6 @@ public plugin_init()
 	register_srvcmd("darkpred_maxhealth", "darkpred_maxhealth")
 	shRegMaxHealth(gHeroName, "darkpred_maxhealth" )
 	gHealPoints = get_cvar_num("darkpred_healpoints")
-	times_picked=0;
 	// BULLETS FIRED
 	register_event("CurWeapon","darkpred_fire", "be", "1=1", "3>0") 
 }
@@ -110,30 +109,14 @@ public plugin_precache()
 	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr") 
 	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
 }
-
-public num_picked_check(id){
-	return!(times_picked>=MAX_PICKED)
-
-}
-public haveable_check(id){
-	return (times_picked<=MAX_PICKED)
-
-}
-
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	gHasAcess[id]=sh_user_has_hero(id,gHeroID) 
 	gPlayerMaxHealth[id] = 100
-	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
-		
-		darkpred_pickable_check(id)
-		
-	}
+	
 	if ( sh_user_has_hero(id,gHeroID) ) //Check if person selected this hero
 	{
-		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		remInvisibility(id)
 		sh_give_weapon(id,CSW_DEAGLE)
 	}
@@ -141,15 +124,13 @@ public sh_hero_init(id, heroID, mode){
 	if ( !sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
 	{
 		remInvisibility(id)
-		times_picked=clamp(times_picked-1,0,MAX_PICKED);
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
 	remInvisibility(id)
-	if (  haveable_check(id)&&gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
-		darkpred_haveable_check(id)
+	if (is_user_alive(id) && sh_is_active() ) {
 		if(sh_user_has_hero(id,gHeroID)){
 			gBullets[id] = get_cvar_num("darkpred_bullets")
 			gLastWeapon[id] = -1
@@ -239,8 +220,16 @@ public changeWeapon(id)
 	
 	// Never Run Out of Ammo!
 	if ( wpnid == CSW_DEAGLE && clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
+}
+public plugin_cfg(){
+
+
+	get_cvar_string("leviathan_adminflag", accessLevel, 9)
+	sh_register_admin_only_hero(gHeroID,read_flags(accessLevel),MAX_PICKED,
+			"You are not an admin. No acess was granted")
+
 }
 //----------------------------------------------------------------------------------------------
 public darkpred_damage(id)
@@ -400,7 +389,7 @@ public darkpred_fire(id)
 //----------------------------------------------------------------------------------------------
 public darkpred_deagle(id)
 {
-	shGiveWeapon(id,"weapon_deagle")
+		sh_give_weapon(id, CSW_DEAGLE)
 }
 //----------------------------------------------------------------------------------------------
 public darkpred_esploop()
@@ -470,36 +459,4 @@ public darkpred_maxhealth()
 	read_argv(2,health,8)
 	
 	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_pickable_check(id)
-{
-	new accessLevel[10]
-
-	get_cvar_string("darkpred_adminflag", accessLevel, 9)
-
-	if ( sh_user_has_hero(id,gHeroID) &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
-
-		new dropMsg[100];
-		formatex(dropMsg,99,"drop %s",gHeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "You are not an admin. No acess was granted")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_haveable_check(id)
-{
-	new accessLevel[10]
-
-	get_cvar_string("darkpred_adminflag", accessLevel, 9)
-
-	if ( sh_user_has_hero(id,gHeroID) &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel))) ) {
-
-		new dropMsg[100];
-		formatex(dropMsg,99,"drop %s",gHeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "You are not an admin. No acess was granted")
-	}
 }

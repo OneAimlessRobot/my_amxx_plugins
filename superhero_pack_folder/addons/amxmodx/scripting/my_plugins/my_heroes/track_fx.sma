@@ -48,7 +48,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
 	register_event("Damage", "tracked_damage", "b", "2!0")
-	register_event("DeathMsg","on_death_tracked","a")
 
 
 	custom_dmg_id_tracked_vuln=sh_log_custom_damage_source(-1,
@@ -246,9 +245,7 @@ public sh_client_spawn(id)
 
 	}
 }
-public on_death_tracked()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		unradioactive_user(id)

@@ -24,7 +24,6 @@ public plugin_init(){
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 register_forward(FM_CmdStart, "CmdStart");
-register_event("DeathMsg","on_death_sleeping","a")
 RegisterHam(Ham_Player_PreThink,"player","Ham_PlayerPreThink",_,true)
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 SLEEP_TASKID=allocate_typed_task_id(player_task)
@@ -76,8 +75,10 @@ public sh_client_spawn(id)
 }
 public CmdStart(id, uc_handle)
 {
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if (!is_user_alive(id)) return FMRES_IGNORED;
 
 	if ( Get_BitVar(gIsAsleepMask,id)) {
@@ -229,9 +230,8 @@ public weaponChange(id)
 		sleep_user_switch_weapon(id)
 	}
 }
-public on_death_sleeping()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
+	
 	
 	unsleep_user(id)	
 }

@@ -43,10 +43,7 @@ public plugin_cfg(){
 }
 public girlb_skating(id, uc_handle, seed)
 {	
-	if(!sh_is_active()){
-		return FMRES_IGNORED
-	}
-	if(sh_is_freezetime()){
+	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
 	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){

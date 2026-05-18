@@ -40,10 +40,9 @@ public plugin_init()
 	register_cvar("styropyro_cooldown", "0.0")
 	register_cvar("styropyro_multishot", "0.1")
 
-	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Stay safe n' happy lazing", "Press the +power key to fire your your 10 kJ C.R.L.C (crazy ruby laser cannon)", true, "styropyro_level")
-	// DEATH
-	register_event("DeathMsg", "styropyro_death", "a")
+
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -267,11 +266,8 @@ public laserEffects(id, aimvec[3])
 	}
 
 }
-//----------------------------------------------------------------------------------------------
-public styropyro_death()
-{
-	new id = read_data(2)
-
+public sh_client_death(id){
+	
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
 	remove_task(id)

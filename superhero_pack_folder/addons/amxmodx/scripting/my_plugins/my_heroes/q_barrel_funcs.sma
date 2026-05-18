@@ -208,23 +208,33 @@ public fw_SetModel(entity, model[])
 }
 
 public fw_CmdStart(id, uc_handle, seed)
-{
-	if(!is_alive(id))
-		return
-	if(get_player_weapon(id) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, id))
-		return
+{	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+
+	if(!is_alive(id)){
+		return FMRES_IGNORED
+	}
+	if(get_player_weapon(id) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, id)){
+		return FMRES_IGNORED
+	}
 		
 	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-	if(!pev_valid(Ent)) return
+	if(!pev_valid(Ent)){
+		return FMRES_IGNORED
+	}
 	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
 	if(NewButton & IN_ATTACK2)
 	{
-		if(flNextAttack > 0.0) return
+		if(flNextAttack > 0.0){
+			return FMRES_IGNORED
+		}
 		
 		for(new i = 0; i < Ammo; i++)
 		{
@@ -232,7 +242,8 @@ public fw_CmdStart(id, uc_handle, seed)
 			ExecuteHamB(Ham_Weapon_PrimaryAttack, Ent)
 			UnSet_BitVar(g_SpecialShot, id)
 		}
-	} 
+	}
+	return FMRES_IGNORED
 }
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)

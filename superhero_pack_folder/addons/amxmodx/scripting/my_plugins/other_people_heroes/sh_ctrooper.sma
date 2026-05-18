@@ -85,7 +85,7 @@ public sh_hero_init(id, heroID, mode){
 			CTrooper_weapons(id)
 		}
 		else {
-			engclient_cmd(id, "drop", "weapon_ak47")
+			sh_drop_weapon(id, CSW_AK47)
 		}
 	}
  }
@@ -142,14 +142,14 @@ public sh_hero_init(id, heroID, mode){
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
  }
  //----------------------------------------------------------------------------------------------
  public CTrooper_weapons(id)
  {
 	if ( is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_ak47")
+		sh_give_weapon(id,CSW_AK47)
 	}
  }
  //----------------------------------------------------------------------------------------------

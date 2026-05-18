@@ -34,7 +34,6 @@ public plugin_init()
 	pcvar_ksun_hold_time = register_cvar("ksun_hold_time", "5.0")
 	pcvar_ksun_launcher_base_health = register_cvar("ksun_launcher_health", "100.0" )
 	
-	register_event("DeathMsg","death","a")
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	
 	register_think(LAUNCHER_CLASSNAME, "launcher_think")
@@ -304,10 +303,8 @@ public destroy_player_launcher(id){
 
 }
 
-public death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-	
 	if(sh_user_has_hero(id,gHeroID)){
 	
 		if(ksun_get_when_reset_spores()&reset_on_death){

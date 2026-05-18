@@ -144,7 +144,7 @@ public switchmodel(id)
 public penguin_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) ) {
-		shGiveWeapon(id, "weapon_hegrenade")
+		sh_give_weapon(id, CSW_HEGRENADE)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -85,7 +85,7 @@ public sh_hero_init(id, heroID, mode){
 		}
 		// This gets run if they had the power but don't anymore
 		else{
-			engclient_cmd(id, "drop", "weapon_deagle")
+			sh_drop_weapon(id, CSW_DEAGLE)
 			set_user_hitzones(0, id, 255)
 			superhero_protected_hud_message(superhero_hud_msg_sync,id, "Vash - EVASION OFF - Hitzones returned to normal")
 		}
@@ -113,28 +113,28 @@ public vash_weapons(id)
 		
 		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Vash - EVASION ON - Removing a random hitzone every second")
 
-		shGiveWeapon(id, "weapon_deagle")
+		sh_give_weapon(id, CSW_DEAGLE)
 
 		//Give him just enough ammo so as to not effect a no-reload hero
 		new clip, ammo
 		get_user_ammo(id, 26, clip, ammo)
 		if( ammo <= 6 ) {
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
 		}
 		else if( ammo > 6 && ammo <= 13 ) {
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
 		}
 		else if( ammo > 13 && ammo <= 20 ) {
-			shGiveWeapon(id, "ammo_50ae")
-			shGiveWeapon(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
 		}
 		else if( ammo > 20 && ammo <= 27 ) {
-			shGiveWeapon(id, "ammo_50ae")
+			sh_give_item(id, "ammo_50ae")
 		}
 	}
 }

@@ -22,7 +22,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	DISRUPT_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
-	register_event("DeathMsg","on_death_disrupted","a")
 	init_explosion_defaults()
 
 }
@@ -165,9 +164,8 @@ public undisrupt_user(id){
 	
 }
 
-public on_death_disrupted()
-{	
-	new id = read_data(2)
+public sh_client_death(id)
+{
 	undisrupt_user(id)
 	
 }

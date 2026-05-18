@@ -17,11 +17,21 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 *  Ripped from the hero - Morpheus (by RadidEskimo & Freecode).
 *  Weapon model by Eichler69 & Biohazard
 */
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 // GLOBAL VARIABLES
 new gHeroName[]="Madness"
 new gHeroID
+
+
+new dmg_source_name_short_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
+new dmg_source_name_long_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
+new custom_dmg_id_madness_dual_shotgun
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -37,6 +47,11 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Dual M3's", "Dual M3's/Extra Damage/Unlimited Ammo. Extra HP and AP.", false, "madness_level")
 
+	sh_register_superheromod_weapon_model(gHeroID,CSW_M3,"models/shmod/madness_m3.mdl")
+
+	custom_dmg_id_madness_dual_shotgun=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_madness_dual_shotgun,
+				dmg_source_name_long_madness_dual_shotgun,0)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "madness_damage", "b", "2!0")
@@ -61,11 +76,10 @@ public sh_hero_init(id, heroID, mode){
 	if ( is_user_alive(id) ) {
 		if ( sh_user_has_hero(id,gHeroID) ) {
 			madness_weapons(id)
-			switchmodel(id)
 		}
 		//This gets run if they had the power but don't anymore
 		else  {
-			engclient_cmd(id, "drop", "weapon_m3")
+			sh_drop_weapon(id, CSW_M3)
 		}
 	}
 }
@@ -74,31 +88,13 @@ public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "madness_weapons", id)
-
-		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-		if (wpnid != CSW_M3 && wpnid > 0) {
-			new wpn[32]
-			get_weaponname(wpnid, wpn, 31)
-			engclient_cmd(id, wpn)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public madness_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_m3")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) ) return
-
-	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
-	if ( wpnid == CSW_M3 ) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, "models/shmod/madness_m3.mdl")
+		sh_give_weapon(id,CSW_M3)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -111,11 +107,9 @@ public weaponChange(id)
 
 	if ( wpnid != CSW_M3 ) return
 
-	switchmodel(id)
-
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -132,7 +126,12 @@ public madness_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, "m3", my_hitpoint_enum:bodypart)
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_madness_dual_shotgun,
+								my_hitpoint_enum:bodypart,
+								_,_,_,_,
+								SH_NEW_DMG_BLEED,
+								custom_dmg_id_madness_dual_shotgun)
+			sh_bleed_user(id, attacker, BLEED_MINI, gHeroID)
 		}
 	}
 }

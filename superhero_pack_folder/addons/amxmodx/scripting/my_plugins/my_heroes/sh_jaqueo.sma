@@ -46,7 +46,6 @@ public plugin_init()
 							JAQUEO_COOL_SCOUT_V_MODEL,
 							JAQUEO_COOL_SCOUT_P_MODEL)
 
-	register_event("DeathMsg","death","a")
 	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",_,true)
 	
 	// Add your code here...
@@ -199,9 +198,8 @@ public client_disconnected(id){
 	return PLUGIN_HANDLED
 	
 }
-public death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		shield_destroy(id)

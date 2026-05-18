@@ -90,9 +90,6 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
 	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart1")
-	register_event("DeathMsg","death","a")
-	
-	//HOOK_TASKID=allocate_typed_task_id(player_task)
 }
 public plugin_cfg(){
 
@@ -464,10 +461,8 @@ public plugin_precache()
 
 }
 
-public death()
-{	
-	new id = read_data(2)
-	
+public sh_client_death(id)
+{
 	if(sh_user_has_hero(id,gHeroID)){
 				
 		stop_dragging(id);

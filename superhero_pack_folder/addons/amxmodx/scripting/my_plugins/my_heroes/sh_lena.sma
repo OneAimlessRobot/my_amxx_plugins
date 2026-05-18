@@ -1,3 +1,5 @@
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
@@ -107,12 +109,13 @@ lena_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
 		gNumBullets[id]=lena_max_bullets
-		sh_give_weapon(id, LENA_WEAPON_CLASSID,false)
+		sh_give_weapon(id, LENA_WEAPON_CLASSID,true)
 		give_custom_grenades(id,GREN_MARKER,6)
-		new weapon_id=find_ent_by_owner(-1,LENA_WEAPON,id);
+		new weapon_id=get_weapon_ent_of_player(id,LENA_WEAPON_CLASSID)
 		if(is_valid_ent(weapon_id)){
-			cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
-			cs_set_user_bpammo(id, LENA_WEAPON_CLASSID,gNumBullets[id]-CLIP_SIZE);
+
+			set_pdata_int(weapon_id, m_iClip, LENA_L96_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, LENA_WEAPON_CLASSID,gNumBullets[id]-LENA_L96_CLIP_SIZE);
 		}
 	}
 }

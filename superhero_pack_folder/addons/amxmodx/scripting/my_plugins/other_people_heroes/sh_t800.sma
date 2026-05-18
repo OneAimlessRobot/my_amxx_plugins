@@ -119,8 +119,7 @@ public t800_loop(id)
 			// Make sure still on para
 			new clip,ammo,weaponID = get_user_weapon(id,clip,ammo)
 			if ( weaponID != CSW_M249 ) {
-				shGiveWeapon(id,"weapon_m249",true)
-				engclient_cmd(id,"weapon_m249")
+				sh_give_weapon(id,CSW_M249,true)
 			}
 			
 			message_begin(MSG_ONE,gmsgScreenFade,{0,0,0},id)
@@ -144,11 +143,6 @@ public t800_loop(id)
 public switchmodel(id)
 {
 	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||gT800Timer[id]<0 ) return
-	
-	//If user is holding a shield do not change model, since we don't have one with a shield
-	new v_mdl[32]
-	entity_get_string(id, EV_SZ_viewmodel, v_mdl, 31)
-	if ( containi(v_mdl, "v_shield_") != -1) return
 	
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M249) {
@@ -221,7 +215,7 @@ public t800_kd(id)
 	}
 	
 	gT800Timer[id] = get_cvar_num("t800_time")+1
-	shGiveWeapon(id,"weapon_m249",true) 
+	sh_give_weapon(id,CSW_M249) 
 	set_user_godmode(id,1)
 	t800_morph(id)
 	gKills = get_user_frags(id)
@@ -260,7 +254,8 @@ public t800_endmode(id)
 	if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_godmode(id)
 		sh_screen_fade(id,0.0,0.0,0,0,0,0)
-		drop_para(id)  
+		sh_drop_weapon(id,CSW_M249, true)   
+
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -287,28 +282,3 @@ public t800_unmorph(id)
 		gMorphed[id] = false
 	}
 }
-//----------------------------------------------------------------------------------------------
-public drop_para(id)
-{
-	engclient_cmd(id,"drop","weapon_m249")   
-	
-	new iCurrent = -1
-	new Float:weapvel[3]
-	
-	while ( (iCurrent = find_ent_by_class(iCurrent, "weaponbox")) > 0 ) {
-		
-		//Skip anything not owned by this client
-		if ( entity_get_edict(iCurrent, EV_ENT_owner) != id) continue
-		
-		entity_get_vector(iCurrent, EV_VEC_velocity, weapvel)
-		
-		//If Velocities are all Zero its on the ground already and should stay there
-		if (weapvel[0] == 0.0 && weapvel[1] == 0.0 && weapvel[2] == 0.0) continue
-		
-		remove_entity(iCurrent)
-	}
-}
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
-*/

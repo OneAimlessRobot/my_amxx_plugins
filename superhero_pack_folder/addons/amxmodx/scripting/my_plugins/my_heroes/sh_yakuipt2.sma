@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -68,8 +69,9 @@ public player_prethink_yakui_weapon(id, uc_handle)
 {
 
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
 
@@ -156,11 +158,11 @@ clear_yakui(id){
 public yakui_weapons(id){
 
 if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
-	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,false)
-	new weapon_id=find_ent_by_owner(-1,YAKUI_WEAPON_NAME,id);
+	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,true)
+	new weapon_id=get_weapon_ent_of_player(id,YAKUI_WEAPON_CLASSID)
 	if(is_valid_ent(weapon_id)){
-		cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
-		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gatling_get_num_pills(id)-CLIP_SIZE);
+		set_pdata_int(weapon_id, m_iClip, PILLGATLING_CLIP_SIZE, XO_WEAPON);
+		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gatling_get_num_pills(id)-PILLGATLING_CLIP_SIZE);
 		
 	}
 }
@@ -198,16 +200,10 @@ public weaponChange(id)
 	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active()||!is_user_alive(id)||!is_user_connected(id) ) return
 
 	new wpnid = read_data(2)
-	new clip = read_data(3)
 
 	if ( wpnid != YAKUI_WEAPON_CLASSID && (!gatling_get_pillgatling(id) ||!gatling_get_rockets(id)) ) return
 
 	switchmodel(id)
-
-	// Never Run Out of Ammo!
-	if ( clip == 0 ) {
-		shReloadAmmo(id)
-	}
 }
 
 //----------------------------------------------------------------------------------------------

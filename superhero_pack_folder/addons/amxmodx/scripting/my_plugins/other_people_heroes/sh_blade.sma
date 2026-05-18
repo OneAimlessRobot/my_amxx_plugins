@@ -142,10 +142,11 @@ public sh_hero_init(id, heroID, mode){
 		if ( is_user_alive(id) )
 		{
 			#if GIVE_WEAPONS == 1
-				if ( cs_get_user_team(id) == CS_TEAM_T )
-					engclient_cmd(id, "drop", "weapon_usp")
+				if ( cs_get_user_team(id) == CS_TEAM_T ){
+					sh_drop_weapon(id, CSW_USP)
+				}
 
-				engclient_cmd(id, "drop", "weapon_mac10")
+				sh_drop_weapon(id, CSW_MAC10)
 			#endif
 		}
 	}
@@ -165,10 +166,11 @@ public blade_weapons(id)
 	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
 		return
 
-	if ( cs_get_user_team(id) == CS_TEAM_T )
-		shGiveWeapon(id, "weapon_usp")
+	if ( cs_get_user_team(id) == CS_TEAM_T ){
+		sh_give_weapon(id, CSW_USP)
+	}
 
-	shGiveWeapon(id, "weapon_mac10")
+	sh_give_weapon(id, CSW_MAC10)
 
 #endif
 }
@@ -205,7 +207,7 @@ public weapon_change(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 )
-		shReloadAmmo(id, AMMO_MODE)
+		sh_reload_ammo(id, AMMO_MODE)
 #endif
 }
 //----------------------------------------------------------------------------------------------

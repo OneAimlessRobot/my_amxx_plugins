@@ -43,12 +43,12 @@
 
 #define ANTI_LAGG		7
 
-#define MATH_PI  3.1415926535897932384626433832795028841971
-
 
 #define NO_RECOIL_WEAPONS_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
+#define GUNS_BIT_SUM ((1<<CSW_P228) | (1<<CSW_SCOUT) | (1<<CSW_XM1014) | (1<<CSW_MAC10) | (1<<CSW_AUG) | (1<<CSW_ELITE) | (1<<CSW_FIVESEVEN) | (1<<CSW_UMP45) | (1<<CSW_SG550) | (1<<CSW_GALIL) | (1<<CSW_FAMAS) | (1<<CSW_USP) | (1<<CSW_GLOCK18) | (1<<CSW_AWP) | (1<<CSW_MP5NAVY) | (1<<CSW_M249) | (1<<CSW_M3) | (1<<CSW_M4A1) | (1<<CSW_TMP) | (1<<CSW_G3SG1) | (1<<CSW_DEAGLE) | (1<<CSW_SG552) | (1<<CSW_AK47) | (1<<CSW_P90))
 #define FAST_RELOAD_BITSUM ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_C4))
 #define NOCLIP_WPN_BS	((1<<CSW_HEGRENADE)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_KNIFE)|(1<<CSW_C4))
+#define BURSTGUNS_BIT_SUM ((1<<CSW_FAMAS) | (1<<CSW_GLOCK18))
 #define SHOTGUNS_BS	((1<<CSW_M3)|(1<<CSW_XM1014))
 #define SILENT_BS	((1<<CSW_USP)|(1<<CSW_M4A1))
 
@@ -224,6 +224,9 @@ stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 stock const burn_decal[5] = {199,200,201,202,203}
 stock const g_burnDecal[3] = {28, 29, 30}
 stock const g_burnDecalBig[3] = {46, 47, 48}
+stock const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
+stock const g_cs_burnDecal[5] = {41, 42, 43, 44, 45}
+
 
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 

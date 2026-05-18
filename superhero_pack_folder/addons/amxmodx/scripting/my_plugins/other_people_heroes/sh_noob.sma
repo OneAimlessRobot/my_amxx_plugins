@@ -62,7 +62,7 @@ public sh_client_spawn(id)
 	gLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 
 	if (sh_user_has_hero(id,gHeroID)&& get_cvar_num("noob_getdeagle")==1) {
-		shGiveWeapon(id,"weapon_deagle")
+		sh_give_weapon(id,CSW_DEAGLE)
 	}
 }
 //----------------------------------------------------------------------------------------------

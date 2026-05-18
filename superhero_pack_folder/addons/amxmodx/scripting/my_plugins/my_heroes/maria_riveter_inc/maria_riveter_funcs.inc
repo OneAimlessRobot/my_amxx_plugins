@@ -36,43 +36,32 @@
 #define MARIA_PROJECTILE_MASS 1.0
 #define MARIA_PROJECTILE_CAR 0.4292
 #define MARIA_PROJECTILE_DIAMETER 2.0
-#define MARIA_PROJECTILE_AREA ((MARIA_PROJECTILE_DIAMETER*MARIA_PROJECTILE_DIAMETER)*MATH_PI)
+#define MARIA_PROJECTILE_AREA ((MARIA_PROJECTILE_DIAMETER*MARIA_PROJECTILE_DIAMETER)*M_PI)
 #define MARIA_AIR_RESISTANCE 0.25
 #define MARIA_PROJECTILE_DRAG_CONST (MARIA_PROJECTILE_AREA*MARIA_PROJECTILE_CAR*MARIA_AIR_RESISTANCE)
 
-#define RECOIL 2.0
+#define RIVETER_RECOIL 2.0
 
 
 
-#define CLIP_SIZE 79
+#define RIVETER_CLIP_SIZE 190
 
-/*
-enum
-{
-    CS_RESET_ZOOM = 0,      // Reset any zoom blocking (mode has no effect)
-    CS_SET_NO_ZOOM,         // Disable any sort of zoom
-    CS_SET_FIRST_ZOOM,      // Set first zoom level (AWP style)
-    CS_SET_SECOND_ZOOM,     // Set second zoom level (AWP style)
-    CS_SET_AUGSG552_ZOOM,   // Set AUG/SG552 zoom style
-};
-*/
-
-enum{
+enum {
 	MARIA_NO_ZOOM=0,
 	MARIA_FIRST_ZOOM=1,
 	MARIA_SECOND_ZOOM=2,
 	MARIA_MAX_ZOOM=3
 }
 
-enum
+enum maria_riveter_anims
 {
-	anim_idle,
-	anim_shoot1,
-	anim_shoot2,
-	anim_reload,
-	anim_draw,
+	maria_riveter_anim_idle = 0,
+	maria_riveter_anim_shoot1,
+	maria_riveter_anim_shoot2,
+	maria_riveter_anim_reload,
+	maria_riveter_anim_draw,
 }
-native maria_shoot_riveter(id);
+
 native maria_get_hero_id();
 native maria_riveter_set_num_rivets(id,value_to_set)
 native maria_riveter_get_num_rivets(id)

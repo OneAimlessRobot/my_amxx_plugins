@@ -227,9 +227,9 @@ public changeWeapon(id)
 //----------------------------------------------------------------------------------------------
 public shade_gunz(id)
 {
-	shGiveWeapon(id,"weapon_deagle")
-	shGiveWeapon(id,"ammo_7mm")
-	shGiveWeapon(id,"ammo_7mm")
+	sh_give_weapon(id,CSW_DEAGLE)
+	sh_give_item(id,"ammo_7mm")
+	sh_give_item(id,"ammo_7mm")
 }
 //----------------------------------------------------------------------------------------------
 public make_fog(id){

@@ -1,6 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_FAKEMETA_UTIL
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
@@ -77,7 +77,7 @@ public plugin_init()
 	
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
 	register_event("Damage", "erica_damage", "b", "2!0")
-	register_event("DeathMsg","death","a")
+	
 	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage",_,true)
 	
 	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
@@ -303,12 +303,13 @@ public Erica_weapons(id)
 {
 if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 	give_custom_grenades(id,GREN_MOLLY,cvar_val(num, pcvar_num_mollies))
-	sh_give_weapon(id, CSW_ELITE)
+	sh_give_weapon(id, CSW_ELITE,true)
 	
-	new weapon_id=find_ent_by_owner(-1,"weapon_elite",id);
+	new weapon_id=get_weapon_ent_of_player(id,CSW_ELITE)
 	if(is_valid_ent(weapon_id)){
-		cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
-		cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-CLIP_SIZE);
+		
+		set_pdata_int(weapon_id, m_iClip, DART_PISTOL_CLIP_SIZE, XO_WEAPON);
+		cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-DART_PISTOL_CLIP_SIZE);
 	}
 	hook_set_hook(id,1)
 	
@@ -330,10 +331,9 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 
     return DMG_FWD_PASS
 }
-public death()
+public sh_client_death(killed,killer)
 {
-	new killer= read_data(1)
-	new killed= read_data(2)
+
 	static killer_name[128]
 	get_user_name(killer,killer_name,127)
 	if(sh_user_has_hero(killer,gHeroID)&&(killed!=killer)){

@@ -14,7 +14,7 @@ ricochet_extradamage 5	//Additional damage (not a damage mult)
 *    (warcs_ricochet.sma)
 *    Requested by fikstress.
 */
-#define I_WANT_MATH_FUNCS
+#define I_WANT_CONSTANTS
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -24,14 +24,7 @@ new gSpriteLaser
 
 new Float:g_last_attack_release_gametime[SH_MAXSLOTS+1]
 new g_normal_ptr[SH_MAXSLOTS+1]
-static const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
-static const g_cs_burnDecal[5] = {41, 42, 43, 44, 45}
-
 #define MAX_BURST_FIRE_TIME 0.2
-
-#define GUNS_BIT_SUM ((1<<CSW_P228) | (1<<CSW_SCOUT) | (1<<CSW_XM1014) | (1<<CSW_MAC10) | (1<<CSW_AUG) | (1<<CSW_ELITE) | (1<<CSW_FIVESEVEN) | (1<<CSW_UMP45) | (1<<CSW_SG550) | (1<<CSW_GALIL) | (1<<CSW_FAMAS) | (1<<CSW_USP) | (1<<CSW_GLOCK18) | (1<<CSW_AWP) | (1<<CSW_MP5NAVY) | (1<<CSW_M249) | (1<<CSW_M3) | (1<<CSW_M4A1) | (1<<CSW_TMP) | (1<<CSW_G3SG1) | (1<<CSW_DEAGLE) | (1<<CSW_SG552) | (1<<CSW_AK47) | (1<<CSW_P90))
-#define BURSTGUNS_BIT_SUM ((1<<CSW_FAMAS) | (1<<CSW_GLOCK18))
-#define SHOTGUNS_BIT_SUM ((1<<CSW_XM1014) | (1<<CSW_M3))
 
 new bool:g_czero = false
 
@@ -40,6 +33,12 @@ new gHeroID
 new const gHeroName[] = "Ricochet"
 new gPcvarExtraDmg
 new gPcvarShowRebound
+
+
+new dmg_source_name_short_ricochet_bullet[SAFE_BUFFER_SIZE+1]="ricochet_bullet"
+new dmg_source_name_long_ricochet_bullet[SAFE_BUFFER_SIZE+1]="ricochet_bullet"
+new custom_dmg_id_ricochet_bullet
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -54,6 +53,10 @@ public plugin_init()
 	// FIRE THE EVENTS TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Bouncing bullets", "Make every bullets bouncing upon walls, floor or objects. Also additional damage !")
+
+
+	custom_dmg_id_ricochet_bullet=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_ricochet_bullet,dmg_source_name_long_ricochet_bullet,0)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_forward(FM_TraceLine, "fwTraceLine", 1)
@@ -135,7 +138,7 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 	pev(id, pev_view_ofs, vector)
 
 	// get the fired particle start origin
-	add_3d_vectors(fired_particle_start_origin, vector, fired_particle_start_origin)
+	xs_vec_add(fired_particle_start_origin, vector, fired_particle_start_origin)
 	static bool:particle_is_fired ; particle_is_fired = xs_vec_equal(fired_particle_start_origin, start)
 
 	if (particle_is_fired) {
@@ -285,7 +288,11 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		// do extra damage
 		new extraDamage = get_pcvar_num(gPcvarExtraDmg)
 		if ( extraDamage > 0){
-			sh_extra_damage(victim, attacker, extraDamage, wpn, my_hitpoint_enum:hitplace)
+			sh_extra_damage( victim, attacker, extraDamage,  dmg_source_name_long_ricochet_bullet,
+								my_hitpoint_enum:hitplace,
+								_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_ricochet_bullet)
 		}
 	}
 }

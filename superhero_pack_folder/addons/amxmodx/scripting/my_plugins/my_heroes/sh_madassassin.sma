@@ -107,7 +107,7 @@ public sh_hero_init(id, heroID, mode){
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
 			if ( is_user_alive(id) && HasMadAssassin[id] )
 			{
-				engclient_cmd(id, "drop", "weapon_awp")
+				sh_drop_weapon(id, CSW_AWP)
 			}
 			#endif
 
@@ -128,7 +128,7 @@ public sh_client_spawn(id)
 madassassin_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] ) {
-		shGiveWeaponID(id, CSW_AWP)
+		sh_give_weapon(id, CSW_AWP)
 	}
 }
 #endif
@@ -145,7 +145,7 @@ public weapon_change(id)
 	// Never Run Out of Ammo!
 	//clip = read_data(3)
 	if ( read_data(3) == 0 ) {
-		shReloadAmmo(id, AMMO_MODE)
+		sh_reload_ammo(id, AMMO_MODE)
 	}
 #endif
 }

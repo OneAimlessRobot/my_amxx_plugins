@@ -60,7 +60,6 @@ public plugin_init()
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "swat_damage", "b", "2!0")
-	register_event("DeathMsg","death_event","a")	
 
 	shSetMaxHealth(gHeroName, "swat_health")
 	shSetMaxArmor(gHeroName, "swat_armor")
@@ -102,7 +101,7 @@ public swat_weapons(id)
 
 		give_custom_grenades(id,GREN_SHOCK,10)
 		sh_give_weapon(id,CSW_M4A1,true)
-		shGiveWeapon(id,"item_thighpack")
+		sh_give_item(id,"item_thighpack")
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -332,10 +331,8 @@ public sh_round_end(){
 		remove_missile(id,iCurrent)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public death_event(){
-	new victim
-	victim = read_data(2)
+public sh_client_death(victim){
+	
 	remove_task(victim)
 }
 //----------------------------------------------------------------------------------------------

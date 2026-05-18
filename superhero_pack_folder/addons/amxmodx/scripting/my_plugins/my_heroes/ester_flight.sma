@@ -270,10 +270,9 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 }
 public OnCmdStart(id, uc_handle, seed)
 {	
-	if(!sh_is_active()) return FMRES_IGNORED
-
-	if(sh_is_freezetime()) return FMRES_IGNORED
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||
 			!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
 			return FMRES_IGNORED;

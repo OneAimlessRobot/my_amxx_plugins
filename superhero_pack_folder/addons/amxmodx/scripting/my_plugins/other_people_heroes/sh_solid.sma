@@ -151,7 +151,7 @@ public giveSocom(id)
 {
     if(!sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
 
-    shGiveWeapon(id, "weapon_usp")
+    sh_give_weapon(id, CSW_USP)
 }
 //----------------------------------------------------------------------------------------------
 public stealthInvisible(id)

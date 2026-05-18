@@ -94,8 +94,7 @@ public sh_hero_init(id, heroID, mode){
 		// Check is needed since this gets run on clearpowers even if user didn't have this hero
 		if ( is_user_alive(id))
 		{
-			// This gets run if they had the power but don't anymore
-			engclient_cmd(id, "drop", "weapon_M4A1")
+			sh_drop_weapon(id, CSW_M4A1)
 		}
 	}
 }
@@ -114,7 +113,7 @@ public Haloune_weapons(id)
 	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
 		return
 
-	shGiveWeapon(id, "weapon_m4a1")
+	sh_give_weapon(id, CSW_M4A1)
 }
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
@@ -131,7 +130,7 @@ public weapon_change(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 )
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 }
 //----------------------------------------------------------------------------------------------
 public Haloune_damage(id)

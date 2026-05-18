@@ -63,8 +63,9 @@ public sh_hero_init(id, heroID, mode){
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
 
-		if ( get_cvar_num("garrow_getscout") == 1 )
-		shGiveWeapon(id,"weapon_scout")
+		if ( get_cvar_num("garrow_getscout") == 1 ){
+			sh_give_weapon(id,CSW_SCOUT)
+		}
 	}
  }
  //----------------------------------------------------------------------------------------------
@@ -83,8 +84,9 @@ public sh_hero_init(id, heroID, mode){
 		gArrows[id] = get_cvar_num("garrow_arrows")
 		gLastWeapon[id] = -1  // I think the change Weapon automatically gets called on spawn death too...
 
-		if ( get_cvar_num("garrow_getscout") == 1 )
-		shGiveWeapon(id,"weapon_scout")
+		if ( get_cvar_num("garrow_getscout") == 1 ){
+			sh_give_weapon(id,CSW_SCOUT)
+		}
 	}
  }
  //----------------------------------------------------------------------------------------------
@@ -268,7 +270,7 @@ public sh_hero_init(id, heroID, mode){
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
  }
  //----------------------------------------------------------------------------------------------

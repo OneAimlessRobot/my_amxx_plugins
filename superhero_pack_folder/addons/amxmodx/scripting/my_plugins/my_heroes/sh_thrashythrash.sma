@@ -16,6 +16,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 
 
 
@@ -27,16 +28,11 @@
 #define Model_Weapon_V "models/shmod/thrashteen/v_superak47.mdl"
 new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
-new bool:gHasAcess[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
 
 new thrash_bullets[ SH_MAXSLOTS+1 ]
 new gLastWeapon[SH_MAXSLOTS+1]
-
-
-new times_picked
-
 
 new blast_shroom
 new gHeroID;
@@ -72,7 +68,6 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("DeathMsg","death","a")
 	register_event("Damage", "thrashy_damage", "b", "2!0")
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	register_forward(FM_TraceLine,"fw_traceline");
@@ -82,34 +77,15 @@ public plugin_init()
 	shSetShieldRestrict(gHeroName)
 	sh_set_hero_hpap(gHeroID, healthcvar, 0)
 	shSetMaxSpeed(gHeroName, "thrashy_speed", "[0]")
-	times_picked=0;
-}
-
-public num_picked_check(id){
-	return!(times_picked>=MAX_PICKED)
-
-}
-public haveable_check(id){
-	return!(times_picked>MAX_PICKED)
-
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	gHasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
-	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
-		
-		thrashy_pickable_check(id)
-		
-	}
+	
 	if(sh_user_has_hero(id,gHeroID) ){
 		
-		times_picked=clamp(times_picked+1,0,MAX_PICKED);
 		gThrashyExplosionAmmo[id]=ndynamites
-	}
-	else{
-		times_picked=clamp(times_picked-1,0,MAX_PICKED);
 	}
 	
 }
@@ -129,13 +105,17 @@ public loadCVARS()
 	ndynamites=get_cvar_num("thrashy_ndynamites")
 	cooldown=get_cvar_num("thrashy_cooldown")
 	get_cvar_string("thrashy_adminflag",a_flags,9)
+	sh_register_admin_only_hero(gHeroID,read_flags(a_flags),MAX_PICKED,
+				"STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!!")
+
 	ak_dmgmult=get_cvar_float("thrashy_akmult")
 }
 public fw_CmdStart( id, uc_handle, seed )
 {	
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if( !is_user_alive( id ) ) {
 		return FMRES_IGNORED
 	}
@@ -218,8 +198,8 @@ public thrashy_kd(id)
 public sh_client_spawn(id)
 {	
 	
-	if (haveable_check(id)&& gHasAcess[id]&&is_user_alive(id) && sh_is_active() ) {
-		thrashy_haveable_check(id)
+	if (is_user_alive(id) && sh_is_active() ) {
+
 		if(sh_user_has_hero(id,gHeroID) ){
 			sh_unset_cooldown_flag(id)
 			gThrashyExplosionAmmo[id]=ndynamites
@@ -262,7 +242,7 @@ public weaponChange(id)
 	}
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
 }
 //-----------------------------------------------------------------------------------------------
@@ -273,10 +253,8 @@ public thrashy_weapons(id)
 		sh_give_weapon(id,CSW_AK47)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public death()
-{
-	new id = read_data(2)
+public sh_client_death(id){
+	
 	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID) )
 	{
@@ -384,27 +362,4 @@ public BlowUp(id,bool:died)
 		} // alive
 	} // loop
 	return PLUGIN_CONTINUE;
-}
-//----------------------------------------------------------------------------------------------
-public thrashy_pickable_check(id)
-{
-
-	if ( sh_user_has_hero(id,gHeroID) &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
-
-		static dropMsg[100];
-		formatex(dropMsg,99,"drop %s",gHeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!! Num picked: %d^n",times_picked)
-	}
-}public thrashy_haveable_check(id)
-{
-
-	if ( sh_user_has_hero(id,gHeroID) &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(a_flags)))) {
-		static dropMsg[100];
-		formatex(dropMsg,99,"drop %s",gHeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "STOOOOPPPP!!!! YOURE NOT AEDMIN!!!!!11111")
-	}
 }

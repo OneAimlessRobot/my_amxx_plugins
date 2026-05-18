@@ -257,7 +257,6 @@ public plugin_init(){
 
 	register_event("CurWeapon","event_curr_grenade","be", "1=1")
 	
-	register_event("DeathMsg","on_death_custom_grenades","a")
 }
 
 public plugin_natives(){
@@ -371,8 +370,10 @@ bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if(!sh_is_active()) return FMRES_IGNORED
-
+	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if (!is_user_alive(id)) return FMRES_IGNORED;
 	
 	new sh_grenade_type:gren_type=curr_user_grenade[id]
@@ -747,10 +748,10 @@ for(new sh_grenade_type:i=sh_grenade_type:1;i<GREN_MAX_TYPES;i++){
 
 
 }
-public on_death_custom_grenades(){
+public sh_client_death(id)
+{
 	if(!sh_is_active()) return
-	
-	new id = read_data(2)
+
 	if(!is_user_connected(id)) return
 	
 	arrayset(curr_grenade_ammo[id],0,GREN_MAX_TYPES)

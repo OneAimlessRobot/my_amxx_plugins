@@ -198,6 +198,10 @@ public fw_SetModel(entity, model[])
 
 public fw_CmdStart(id, uc_handle, seed)
 {
+
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_alive(id)){
 		return FMRES_IGNORED
 	}

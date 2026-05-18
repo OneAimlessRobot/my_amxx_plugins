@@ -35,7 +35,7 @@ public plugin_init()
 	register_concmd("leyla_stats","print_leyla_stats")
 	gHeroID=shCreateHero(gHeroName, "Rich walking bank girl!", "Infinite max money! Donate it to teammates, by going next to them! Set the money with the cmd 'set_leyla_money'! Damage also rewards you!", true, "leyla_level" )
 	register_event("Money","leyla_money","b")
-	register_event("DeathMsg","death","a")
+	
 	register_srvcmd("leyla_init", "leyla_init")
 	shRegHeroInit(gHeroName, "leyla_init")
 	register_srvcmd("leyla_kd", "leyla_kd")
@@ -291,10 +291,8 @@ public sh_client_spawn(id)
 		reset_leyla(id)	
 	}	
 }
-public death()
-{	
-	//new id = read_data(2)
-	new killer= read_data(1)
+public sh_client_death(id,killer)
+{
 	if(sh_user_has_hero(killer,gHeroID) ){
 		
 		unpoor_teamate(killer,killer,-1,CHANGE)

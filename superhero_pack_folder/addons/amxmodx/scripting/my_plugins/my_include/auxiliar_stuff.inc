@@ -13,6 +13,13 @@ stock bool:true_for_macro=true,
 
 #define Assign_BitVar(%1,%2,%3) ((%1) = ((%3)) ?(%1 | (1 << (%2 & 31))) : (%1 & ~(1 << (%2 & 31))) )
 
+#define SIZE_OF_BYTE 8
+
+#define SIZE_OF_SHORT 16
+
+#define SIZE_OF_INT 32
+
+#define nth_power_of_two(%1) (1<<%1)
 /**
  * Parts of body for hits
 

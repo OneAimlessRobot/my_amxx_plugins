@@ -33,7 +33,6 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_event("DeathMsg","on_death_cleanup","a")
 	register_forward(FM_PlayerPreThink, "Fwd_PlayerPreThink")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "zenitsu_charge")
@@ -115,9 +114,9 @@ public _zenitsu_get_has_touched_player(iPlugin,iParams){
 }
 public zenitsu_charge(id, uc_handle, seed)
 {	
-
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
@@ -226,9 +225,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 }
 
 
-public on_death_cleanup()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		if(sh_user_has_hero(id,gHeroID)){

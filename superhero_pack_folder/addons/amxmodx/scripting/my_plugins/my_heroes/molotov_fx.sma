@@ -37,7 +37,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
-	register_event("DeathMsg","on_death_burning","a")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
 
@@ -252,9 +251,8 @@ unburn_user(id){
 	
 }
 
-public on_death_burning()
-{	
-	new id = read_data(2)
+public sh_client_death(id)
+{
 	unburn_user(id)
 	
 }

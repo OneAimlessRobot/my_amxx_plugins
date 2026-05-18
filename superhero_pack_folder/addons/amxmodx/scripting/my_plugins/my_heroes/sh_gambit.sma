@@ -134,7 +134,7 @@ public sh_client_spawn(id)
 public gambit_weapons(id)
 {
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		shGiveWeapon(id, "weapon_hegrenade")
+		sh_give_weapon(id, CSW_HEGRENADE)
 	}
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)

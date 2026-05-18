@@ -86,7 +86,7 @@ stock fx_task_parameters[_:NUM_FX][fx_task_parameter_id]={
 					{1.0,7.0,-1,-1,"weed_task","unweed_task",0,DMG_ICON_LONGJUMP},
 					{1.0,9.0,-1,-1,"cocaine_task","uncocaine_task",1,DMG_ICON_POISON},
 					{0.5,10.0,-1,-1,"blind_task","uneffect_task_generic",1,-1},
-					{1.0,20.0,-1,-1,"","uneffect_task_generic",0,DMG_ICON_SHOCK},
+					{20.0,20.0,-1,-1,"uneffect_task_methylphenidate","",0,DMG_ICON_SHOCK},
 					{1.0,20.0,-1,-1,"bath_task","uneffect_task_generic",0,DMG_ICON_ARMOR}
 
 }
@@ -151,7 +151,6 @@ RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true)
 register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
-register_event("DeathMsg","on_death_status","a")
 init_hud_syncs()
 }
 
@@ -355,9 +354,7 @@ fx_task_user(id,attacker,fx_num){
 						fx_task_parameters[fx_num][fx_task_apply_func_name],
 						id+fx_task_parameters[fx_num][fx_task_apply_id],
 						array,
-						3,
-						"a",
-						1)
+						3)
 	}
 
 
@@ -579,6 +576,13 @@ public uneffect_task_generic(array[],id){
 }
 
 
+public uneffect_task_methylphenidate(array[],id){
+	id-=fx_task_parameters[array[0]][fx_task_apply_id]
+
+	uneffect_user_primitive(id)
+}
+
+
 
 public unweed_task(array[],id){
 	uneffect_task_generic(array,id)
@@ -608,10 +612,8 @@ uneffect_user_primitive(id){
 
 }
 
-public on_death_status()
-{	
-	new id = read_data(2)
-	
+public sh_client_death(id)
+{
 	if(is_user_connected(id)&&sh_is_active()){
 			sh_uneffect_user(id)
 	}

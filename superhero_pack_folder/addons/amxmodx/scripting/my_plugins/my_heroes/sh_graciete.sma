@@ -26,9 +26,6 @@ public plugin_init()
 								"graciete",
 								"Graciete ready.",
 								"Mission failed.")
-
-
-	register_event("DeathMsg","death","a")
 	
 	// Add your code here...
 }
@@ -76,9 +73,8 @@ public client_disconnected(id){
 	return PLUGIN_HANDLED
 	
 }
-public death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		reset_graciete_user(id)

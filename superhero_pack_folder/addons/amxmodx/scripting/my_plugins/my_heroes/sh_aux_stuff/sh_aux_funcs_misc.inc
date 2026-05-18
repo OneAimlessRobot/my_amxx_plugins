@@ -219,13 +219,16 @@ stock do_fast_shot(id,wpnid,Float:speed=1.0){
 	if(!is_user_alive(id)){
 		return
 	}
+	if(get_user_weapon(id)!=wpnid){
+		return
+	}
 	static Float:N_Speed
 	N_Speed =speed
 	if(N_Speed != 1.0)
 	{
 		static weapon[32],Ent
 		get_weaponname(wpnid,weapon,31)
-		Ent = find_ent_by_owner(-1,weapon,id)
+		Ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
 		if(Ent)
 		{
 			if(pev_valid(Ent)!=2){
@@ -280,6 +283,21 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 
 }
 #endif
+
+//get weapon id entity of player
+stock get_weapon_ent_of_player(id,wpnid=0)
+{	
+	new weap = wpnid;
+	if (!weap && !(weap = get_user_weapon(id)))
+		return 0;
+	
+	static class[32];
+	get_weaponname(weap, class, sizeof class - 1);
+
+	return find_ent_by_owner(-1,class,id);
+} 
+
+
 stock init_hud_syncs(){
 
 	attacker_dmg_hud_msg_sync=CreateHudSyncObj()

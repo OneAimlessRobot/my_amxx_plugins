@@ -1,14 +1,14 @@
-#if defined sh_gat_funcs
+#if defined sh_pill_gat_funcs
   #endinput
 #endif
-#define sh_gat_funcs
+#define sh_pill_gat_funcs
 
 #define YAKUI_WEAPON_NAME "weapon_m249"
 #define YAKUI_WEAPON_CLASSID CSW_M249
 #define PILL_CLASSNAME "pill_gatling_pill"
 
 #define NUM_BARRELS 8
-#define CLIP_SIZE 100
+#define PILLGATLING_CLIP_SIZE 100
 #define PILL_SPEED 1350.0
 
 #define PILL_SHOOT_PERIOD_BASE 0.33
@@ -18,27 +18,32 @@
 
 #define PILL_SHOOT_RANDOMNESS 0.0
 
-
+#define SHUTDOWN_TIME 1.7
 #define PILL_MASS 100.0
 
-enum {
-	anim_idle = 0,
-	anim_idle2,
-	anim_gentleidle,
-	anim_stillidle,
-	anim_draw,
-	anim_holster,
-	anim_spinup,
-	anim_spindown,
-	anim_spinidle,
-	anim_spinfire,
-	anim_spinidledown
+enum yakui_pillgatling_anims{
+	yakui_pillgatling_anim_idle = 0,
+	yakui_pillgatling_anim_idle2,
+	yakui_pillgatling_anim_gentleidle,
+	yakui_pillgatling_anim_stillidle,
+	yakui_pillgatling_anim_draw,
+	yakui_pillgatling_anim_holster,
+	yakui_pillgatling_anim_spinup,
+	yakui_pillgatling_anim_spindown,
+	yakui_pillgatling_anim_spinidle,
+	yakui_pillgatling_anim_spinfire,
+	yakui_pillgatling_anim_spinidledown
 }
 
-enum {
-	act_none,
+enum gatling_action{
+	act_none = 0,
 	act_load_up,
 	act_run
+}
+enum fire_mode_enum{
+	spin_shoot=0,
+	spin_only
+
 }
 #define GAT_WINDUP_PERIOD 0.2
 

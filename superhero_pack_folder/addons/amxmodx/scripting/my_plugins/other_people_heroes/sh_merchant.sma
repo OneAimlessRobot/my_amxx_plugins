@@ -80,7 +80,7 @@
 #include <fun>
 
 
-#define APP_VER "1.17"
+#define APP_VER "1.21b"
 
 //defines used for the check function
 #define CHECK_OK 1	//returned if all checks are ok
@@ -139,7 +139,7 @@ public plugin_init(){
 	new temp[6]
 	read_argv(1,temp,5)
 	new id = str_to_num(temp)
-	console_print(0, "[SHM APP_VER] %d - Merchant initialized", id)
+	console_print(0, "[SHM %s] %d - Merchant initialized", APP_VER, id)
 
 	return PLUGIN_CONTINUE
 }

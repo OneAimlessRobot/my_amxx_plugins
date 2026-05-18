@@ -93,9 +93,14 @@ public sh_hero_init(id, heroID, mode){
 		}
 	}
 	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
+		
 		if ( get_cvar_num("hawk_freewpn") ) {
-			if ( get_user_team(id) == 1 ) engclient_cmd(id, "drop", "weapon_sg552")
-			else engclient_cmd(id, "drop", "weapon_aug")
+			if ( get_user_team(id) == 1 ){
+				sh_drop_weapon(id, CSW_SG552)
+			}
+			else{
+				sh_drop_weapon(id, CSW_AUG)
+			}
 		}
 	}
 }
@@ -112,8 +117,12 @@ public sh_client_spawn(id)
 public hawkeye_weapons(id)
 {
 	if ( is_user_alive(id) ) {
-		if ( get_user_team(id) == 1 ) shGiveWeapon(id, "weapon_sg552")
-		else shGiveWeapon(id, "weapon_aug")
+		if ( get_user_team(id) == 1 ){
+			sh_give_weapon(id, CSW_SG552)
+		}
+		else{
+			sh_give_weapon(id, CSW_AUG)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

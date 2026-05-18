@@ -157,10 +157,10 @@ maria_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
-		new weapon_id=find_ent_by_owner(-1,MARIA_WEAPON,id);
+		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
 		if(is_valid_ent(weapon_id)){
-			cs_set_weapon_ammo(weapon_id, CLIP_SIZE);
-			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-CLIP_SIZE);
+			set_pdata_int(weapon_id, m_iClip, RIVETER_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-RIVETER_CLIP_SIZE);
 		}
 	}
 }

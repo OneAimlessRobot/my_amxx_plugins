@@ -42,7 +42,6 @@ public plugin_init()
 			dmg_source_name_short_lara_spear,
 			dmg_source_name_long_lara_spear,1)
 
-	register_event("DeathMsg","death","a")
 	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -154,9 +153,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,NOSPEAR_V_MODEL)
 		
 }
-public death()
-{	
-	new id = read_data(2)
+public sh_client_death(id)
+{
 	if(!is_user_connected(id)||!sh_user_has_hero(id,gHeroID) ) return
 	
 	spear_uncharge_spear(id)

@@ -29,7 +29,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_event("DeathMsg","on_death_psychosis","a")
 	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
 	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
 	pcvar_psychosis_add_ap = register_cvar("yandere_psychosis_add_ap", "5")
@@ -132,9 +131,9 @@ public Player_TakeDamage(id)
 //----------------------------------------------------------------------------------------------
 public psychosis_leap(id, uc_handle)
 {
-
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 
 	if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
 	
@@ -249,9 +248,7 @@ message_end()
 }
 
 
-public on_death_psychosis()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		unpsychosis_user(id)

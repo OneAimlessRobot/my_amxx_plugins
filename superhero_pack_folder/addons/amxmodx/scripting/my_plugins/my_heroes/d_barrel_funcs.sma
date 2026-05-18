@@ -218,15 +218,21 @@ public Draw_NewWeapon(id, CSW_ID)
 
 public fw_CmdStart(id, uc_handle, seed)
 {
-	if(!is_alive(id))
-		return
-	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
-		return 
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if(!is_alive(id)){
+		return FMRES_IGNORED
+	}
+	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
+		return FMRES_IGNORED
+	}
 
 	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-	if(!pev_valid(Ent)) return
-	
+	if(!pev_valid(Ent)){
+		return FMRES_IGNORED
+	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
@@ -237,39 +243,43 @@ public fw_CmdStart(id, uc_handle, seed)
 		set_uc(uc_handle, UC_Buttons, CurButton)
 		
 		static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		if(!pev_valid(ent)) return
-		
+		if(!pev_valid(ent)){
+			return FMRES_IGNORED
+		}
 		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 		
-		if (flNextAttack > 0.0)
-			return
+		if (flNextAttack > 0.0){
+			return FMRES_IGNORED
+		}
 			
 		if (fInReload)
 		{
 			native_playanim(id, GATLING_ANIM_IDLE)
-			return
+			return FMRES_IGNORED
 		}
 		
 		if(cs_get_weapon_ammo(ent) >= D_BARREL_DEFAULT_CLIP)
 		{
 			native_playanim(id, GATLING_ANIM_IDLE)
-			return
+			return FMRES_IGNORED
 		}
 			
 		fw_Weapon_Reload_Post(ent)
 	}
 	if(CurButton & IN_ATTACK2)
 	{
-		if(flNextAttack > 0.0) return
-		
+		if(flNextAttack > 0.0){
+			return FMRES_IGNORED
+		}
 		for(new i = 0; i < Ammo; i++)
 		{
 			Set_BitVar(g_SpecialShot, id)
 			ExecuteHamB(Ham_Weapon_PrimaryAttack, Ent)
 			UnSet_BitVar(g_SpecialShot, id)
 		}
-	} 
+	}
+	return FMRES_IGNORED
 }
 
 public fw_SetModel(entity, model[])

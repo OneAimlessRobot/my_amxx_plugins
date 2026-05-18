@@ -111,7 +111,7 @@ public weaponChange(id)
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -714,25 +714,6 @@ public delayhutmsg(id){
 	delayhud[id]= false
 }
 
-//get weapon id
-stock get_weapon_ent(id,wpnid=0,wpnName[]="")
-{
-	// who knows what wpnName will be
-	static newName[24];
-
-	// need to find the name
-	if(wpnid) get_weaponname(wpnid,newName,23);
-
-	// go with what we were told
-	else formatex(newName,23,"%s",wpnName);
-
-	// prefix it if we need to
-	if(!equal(newName,"weapon_",7))
-		format(newName,23,"weapon_%s",newName);
-
-	return fm_find_ent_by_owner(get_maxplayers(),newName,id);
-} 
-
 fix_recoil_trace(id, const Float:start[], ptr) {
 	static Float:dest[3]
 	pev(id, pev_v_angle, dest)

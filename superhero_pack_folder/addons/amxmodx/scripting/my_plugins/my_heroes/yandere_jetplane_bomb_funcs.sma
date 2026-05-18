@@ -93,8 +93,10 @@ public _set_user_jet_bombs(iPlugins,iParams){
 public CmdStart(id, uc_handle)
 {
 	
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	
 	if(!is_user_alive(id)){
 			

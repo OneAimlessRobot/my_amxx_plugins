@@ -95,12 +95,18 @@ public rivette_thinque(ent){
 public CmdStart(id, uc_handle)
 {	
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 
 	if(!client_is_hero_user(id, gHeroID)){
 		
 		return FMRES_IGNORED
+	}
+
+	if(sh_user_has_hero(id,gHeroID_yakui)){
+		return FMRES_IGNORED
+
 	}
 	new button = get_uc(uc_handle, UC_Buttons);
 	
@@ -157,7 +163,7 @@ public fw_Item_PostFrame(ent)
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
-		temp1 = min(CLIP_SIZE - iClip, bpammo)
+		temp1 = min( RIVETER_CLIP_SIZE - iClip, bpammo)
 
 		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID, bpammo - temp1)		
@@ -187,11 +193,11 @@ public fw_WeaponReloadPre(entity)
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
 	}
-	if(iClip >= CLIP_SIZE){
+	if(iClip >= RIVETER_CLIP_SIZE){
 		return HAM_SUPERCEDE		
 	}
 	g_Riveter_clip[pPlayer] = iClip		
-	return HAM_HANDLED
+	return HAM_IGNORED
 }
 public fw_Weapon_Reload_Post(ent)
 {
@@ -203,17 +209,15 @@ public fw_Weapon_Reload_Post(ent)
 		
 		return HAM_IGNORED
 	}
-	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
-	{ 
+
+	if(g_Riveter_clip[id] == -1)
+		return HAM_IGNORED
+
 	
-		if(g_Riveter_clip[id] == -1)
-			return HAM_IGNORED
-		
-		set_pdata_int(ent, m_iClip, g_Riveter_clip[id], XO_WEAPON)
-	}
+	set_pdata_int(ent, m_iClip, g_Riveter_clip[id] , XO_WEAPON)
+	set_pdata_int(ent, m_fInReload, 1, XO_WEAPON);
 	
-	
-	return HAM_HANDLED
+	return HAM_IGNORED
 }
 
 public fw_ItemDeployPre(entity)
@@ -229,7 +233,7 @@ public fw_ItemDeployPre(entity)
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(pPlayer, m_flNextAttack, MARIA_PROJECTILE_DEPLOY_TIME,OFFSET_LINUX_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, MARIA_PROJECTILE_DEPLOY_TIME,XO_WEAPON)
-	set_pdata_int(entity, m_iClip,min(CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_pdata_int(entity, m_iClip,min(RIVETER_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	return HAM_SUPERCEDE
 }
 
@@ -247,8 +251,9 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		return HAM_IGNORED
 	}
+
 	if(sh_user_has_hero(pPlayer,gHeroID_yakui)){
-		return HAM_SUPERCEDE
+		return HAM_IGNORED
 
 	}
 	static iClip, iPlaybackEvent
@@ -270,7 +275,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
-	native_playanim(pPlayer, generate_int(anim_shoot1,anim_shoot2))
+	native_playanim(pPlayer, generate_int(maria_riveter_anim_shoot1,maria_riveter_anim_shoot2))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE
 }
@@ -285,6 +290,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(!client_is_hero_user(id, gHeroID)){
 		return
 	}
+
 	if(sh_user_has_hero(id,gHeroID_yakui)){
 		return
 
@@ -294,7 +300,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 	sub_3d_vectors(Push, g_Recoil[id], Push)
 	
-	multiply_3d_vector_by_scalar(Push, RECOIL, Push)
+	multiply_3d_vector_by_scalar(Push, RIVETER_RECOIL, Push)
 	add_3d_vectors(Push, g_Recoil[id], Push)
 	entity_set_vector(id, EV_VEC_punchangle, Push)
 }

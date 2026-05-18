@@ -10,6 +10,7 @@ wildcard_radius 50		//Radius of the burst fire bullets
 
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -24,8 +25,18 @@ new const gEntAKBurst[] = "akBurst"
 new const gModelShell[] = "models/rshell_big.mdl"
 new g_burst_waittime[33] = 0
 new g_burst_reloadtime[33] = 0
-new gMaxPlayers
 new pCvarAK47Mult, gPcvarMaxDamage, gPcvarRadius, gPcvarSpeed
+
+
+new dmg_source_name_short_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
+new dmg_source_name_long_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
+new wildcard_burst_wpn_id
+
+new dmg_source_name_short_wildcard_superak[SAFE_BUFFER_SIZE+1]="wildcard_superak"
+new dmg_source_name_long_wildcard_superak[SAFE_BUFFER_SIZE+1]="wildcard_superak"
+new wildcard_superak_wpn_id
+
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -42,24 +53,26 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Burst fire AK47", "Use ATTACK2 with your ak47 to shoot 5 bullets at once, those bullets also follow your crosshair.")
-
-	// REGISTER EVENTS
-	register_forward(FM_CmdStart, "CmdStart")
-	register_forward(FM_Think, "fm_Think")
-	register_forward(FM_Touch, "fm_Touch")
 	
-	gMaxPlayers = get_maxplayers()
+	wildcard_burst_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_wildcard_burst,
+								dmg_source_name_long_wildcard_burst,
+								0)
+
+	wildcard_superak_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_wildcard_superak,
+								dmg_source_name_long_wildcard_superak,
+								0)
+
+	register_forward(FM_CmdStart, "CmdStart")
+	register_think(gEntAKBurst, "fm_Think")
+	register_entity_as_wall_touchable(gEntAKBurst, "fm_Touch_World")
+	register_custom_touchable(gEntAKBurst, "fm_Touch_Player", player_vector, 1)
+
 	RegisterHamsReload ()
 }
-//----------------------------------------------------------------------------------------------
-/*public plugin_natives()
-{
-	register_library("ostk_tools")
-
-	register_native("set_user_weap_clip", "_set_user_weap_clip")
-	register_native("get_user_weap_index", "_get_user_weap_index")
-	register_native("get_user_weap_clip", "_get_user_weap_clip")	
-}*/
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 { 
@@ -119,26 +132,26 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(pCvarAK47Mult) - damage)
 		if ( extraDamage > 0){
-			sh_extra_damage(victim, attacker, extraDamage, "AK47", my_hitpoint_enum:hitplace)
+
+			sh_extra_damage(victim, attacker, extraDamage, 
+						dmg_source_name_short_wildcard_superak,
+						my_hitpoint_enum:hitplace,
+						_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,
+						wildcard_superak_wpn_id)
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
 public fm_Think(ent)
 {
-	if ( !pev_valid(ent) ) return FMRES_IGNORED
-
-	static classname[32]
-	classname[0] = '^0'
-	pev(ent, pev_classname, classname, 31)
-
-	if ( !equal(classname, gEntAKBurst) ) return FMRES_IGNORED
-
+	if ( !pev_valid(ent) ) return
+	
 	new id = pev(ent, pev_owner)
 
 	if ( !is_user_connected(id) ) {
-		fm_Touch(ent, 0)
-		return FMRES_IGNORED
+		remove_entity(ent)
+		return
 	}
 
 	new Float:fl_Origin[3], AimVec[3], Float:fl_EndOrigin[3], Float:fl_Velocity[3], Float:fl_OldVelocity[3]
@@ -172,82 +185,108 @@ public fm_Think(ent)
 
 	set_pev(ent, pev_velocity, fl_Velocity)
 
-	/*new Float:gametime
-	global_get(glb_time, gametime)
-	set_pev(ent, pev_nextthink, gametime + 0.1)*/
+	set_pev(ent, pev_nextthink, get_gametime() + 0.1)
 
-	return FMRES_IGNORED
 }
 //----------------------------------------------------------------------------------------------
-public fm_Touch(ptr, ptd)
+public fm_Touch_Player(ptr, ptd)
 {
-	if ( !sh_is_active() ) return FMRES_IGNORED
-	if ( !pev_valid(ptr) ) return FMRES_IGNORED
+	if ( !sh_is_active() ) return
 
-	static classname[32]
-	classname[0] = '^0'
-	pev(ptr, pev_classname, classname, 31)
+	if ( !pev_valid(ptr) ) return
 
-	// Lets block the picking up of a shield
-	if ( equal(classname, gEntAKBurst) ) {
-		new id = pev(ptr, pev_owner)
+	if( !is_user_alive(ptd)) return
 
-		new Float:dRatio, Float:distanceBetween, damage
-		new Float:dmgRadius = get_pcvar_float(gPcvarRadius)
-		new maxDamage = get_pcvar_num(gPcvarMaxDamage)
-		new CsTeams:idTeam = cs_get_user_team(id)
-		new FFOn = sh_friendlyfire_on()
-		new Float:vicOrigin[3]
-		new Float:fl_vExplodeAt[3]
+	new id = pev(ptr, pev_owner)
 
-		pev(ptr, pev_origin, fl_vExplodeAt)
+	new Float:dRatio, Float:distanceBetween, damage
+	new Float:dmgRadius = get_pcvar_float(gPcvarRadius)
+	new maxDamage = get_pcvar_num(gPcvarMaxDamage)
+	new CsTeams:idTeam = cs_get_user_team(id)
+	new FFOn = sh_friendlyfire_on()
+	new Float:vicOrigin[3]
+	static entlist[33];
 
-		for ( new victim = 1; victim <= gMaxPlayers; victim++ )
+	new Float:fl_vExplodeAt[3]
+
+	pev(ptr, pev_origin, fl_vExplodeAt)
+
+	new numfound = find_sphere_class(ptr,"player",
+					dmgRadius,
+					entlist,
+					charsmax(entlist));
+	for ( new i = 0; i < numfound ; i++ )
+	{	
+		new victim = entlist[i]
+		if ( !is_user_alive(victim) ) continue
+		if ( idTeam == cs_get_user_team(victim) && !FFOn && id != victim ) continue
+
+		pev(victim, pev_origin, vicOrigin)
+		distanceBetween = vector_distance(fl_vExplodeAt, vicOrigin)
+
+		if ( distanceBetween <= dmgRadius )
 		{
-			if ( !is_user_alive(victim) ) continue
-			if ( idTeam == cs_get_user_team(victim) && !FFOn && id != victim ) continue
+			dRatio = distanceBetween / dmgRadius
+			damage = maxDamage - floatround(maxDamage * dRatio)
 
-			pev(victim, pev_origin, vicOrigin)
-			distanceBetween = vector_distance(fl_vExplodeAt, vicOrigin)
-
-			if ( distanceBetween <= dmgRadius )
-			{
-				dRatio = distanceBetween / dmgRadius
-				damage = maxDamage - floatround(maxDamage * dRatio)
-
-				// Lessen damage taken by self
-				if (victim == id) damage = floatround(damage / 2.0)
-
-				if ( !damage ) damage = 1	// Incase damage cvar is really low cause something if within the radius 
-				sh_extra_damage(victim, id, damage, "AK47 Burst", _, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN, fl_vExplodeAt)
-				
-				emit_sound(id, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				emit_sound(ptr, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			// Lessen damage taken by self
+			if (victim == id){
+				damage = floatround(damage / 2.0)
 			}
+			if ( !damage ){
+				damage = 1	// Incase damage cvar is really low cause something if within the radius 
+			}
+			sh_extra_damage(victim, id, damage,
+						dmg_source_name_short_wildcard_burst,
+						_,
+						SH_DMG_NORM,
+						SH_EXTRA_DMG_FLAG_STUN,
+						fl_vExplodeAt,
+						_,
+						SH_NEW_DMG_SUPER_BULLET,
+						wildcard_burst_wpn_id)
+			
+			emit_sound(id, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(ptr, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
-
-		emit_sound(ptr, CHAN_VOICE, "weapons/ric_conc-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(ptr, CHAN_VOICE, "weapons/ric_conc-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)	//109
-		engfunc(EngFunc_WriteCoord, fl_vExplodeAt[0])
-		engfunc(EngFunc_WriteCoord, fl_vExplodeAt[1])
-		engfunc(EngFunc_WriteCoord, fl_vExplodeAt[2])
-		write_short(0)			//?
-		write_byte(41)			//Bullet decal
-		message_end()
-
-		engfunc(EngFunc_RemoveEntity, ptr)
 	}
+	engfunc(EngFunc_RemoveEntity, ptr)
 
-	return FMRES_IGNORED
+}
+
+//----------------------------------------------------------------------------------------------
+public fm_Touch_World(ptr, ptd)
+{
+	if ( !sh_is_active() ) return
+
+	if ( !pev_valid(ptr) ) return
+
+
+	new Float:fl_vExplodeAt[3]
+
+	pev(ptr, pev_origin, fl_vExplodeAt)
+
+	emit_sound(ptr, CHAN_VOICE, "weapons/ric_conc-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(ptr, CHAN_VOICE, "weapons/ric_conc-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(TE_GUNSHOTDECAL)	//109
+	engfunc(EngFunc_WriteCoord, fl_vExplodeAt[0])
+	engfunc(EngFunc_WriteCoord, fl_vExplodeAt[1])
+	engfunc(EngFunc_WriteCoord, fl_vExplodeAt[2])
+	write_short(0)			//?
+	write_byte(41)			//Bullet decal
+	message_end()
+
+	engfunc(EngFunc_RemoveEntity, ptr)
+
 }
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED
@@ -361,7 +400,7 @@ public wildcard_burstfx(id,xcoord,zcoord,ycoord)
 		}
 		set_pev(newEnt, pev_classname, gEntAKBurst)
 		engfunc(EngFunc_SetModel, newEnt, gModelShell)
-		engfunc(EngFunc_SetSize, newEnt, {-0.1, -0.1, -0.1}, {0.1, 0.1, 0.1})
+		engfunc(EngFunc_SetSize, newEnt, {-2.0, -12.0, -10.0}, {4.0, 4.0, 14.0})
 
 		new Float:fl_Origin[3], Float:fl_Angles[3], Float:fl_vAngle[3]
 		// Get users postion and angles (angles are probably not needed in this case)
@@ -409,9 +448,7 @@ public wildcard_burstfx(id,xcoord,zcoord,ycoord)
 		emit_sound(newEnt, CHAN_VOICE, "weapons/ak47-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(id, CHAN_VOICE, "weapons/ak47-1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
-		/*new Float:gametime
-		global_get(glb_time, gametime)
-		set_pev(newEnt, pev_nextthink, gametime + 0.1)*/
+		set_pev(newEnt, pev_nextthink, get_gametime() + 0.1)
 	}
 	return PLUGIN_HANDLED
 }
@@ -420,77 +457,6 @@ public eng_get_ent_by_class(entid, classname[])
 {
 	return engfunc(EngFunc_FindEntityByString, entid, "classname", classname);
 }
-//----------------------------------------------------------------------------------------------
-//Natives
-/*
-public _get_user_weap_clip(plugin,params)
-{
-	if (params != 1)
-		return 0
-	
-	new id = get_param(1)
-	
-	new clip, ammo
-	
-	get_user_weapon(id, clip, ammo)
-	
-	return clip
-}
-//----------------------------------------------------------------------------------------------
-public _set_user_weap_clip(plugin,params)
-{
-	new id
-	if(params>=1)
-	{
-		id = get_param(1)
-		if(!is_user_alive(id))
-			return 0
-	}
-	
-	new weapid
-	
-	weapid = get_user_weap_index(id)
-	
-	if (params != 3)
-	{
-		return 0
-	}
-	
-	weapid = get_param(2)
-	new amount = get_param(3)
-	
-	if(weapid==CSW_C4||weapid==CSW_KNIFE)
-		return 0
-	
-	new weapname[33]
-	get_weaponname(weapid , weapname , 32)
-	new weap = -1;
-	
-	while((weap = eng_get_ent_by_class(weap, weapname)) != 0)
-	{
-		if(id == pev(weap,pev_owner))
-		{
-			cs_set_weapon_ammo(weap , amount)
-			break;
-		}
-	}
-	
-	return 1
-}
-//----------------------------------------------------------------------------------------------
-public _get_user_weap_index(plugin,params)
-{
-	if (params != 1)
-		return 0
-	
-	new id = get_param(1)
-	
-	new clip, ammo, weap
-	
-	weap = get_user_weapon(id, clip, ammo)
-	
-	return weap
-}*/
 //----------------------------------------------------------------------------------------------
 public get_user_weap_clip(id)
 {	

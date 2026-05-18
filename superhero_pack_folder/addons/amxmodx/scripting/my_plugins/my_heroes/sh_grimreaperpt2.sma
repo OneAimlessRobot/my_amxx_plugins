@@ -35,7 +35,6 @@ public plugin_init()
 	register_cvar("greaper2_range", "1000.0")
 	register_cvar("greaper2_num_swings", "8")
 	gHeroID=shCreateHero(gHeroName, "Death!", "One deathscythe kill", false, "greaper2_level" )
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 	custom_dmg_id_scythe=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_scythe,dmg_source_name_long_scythe,1)
@@ -203,8 +202,7 @@ if ( file_exists(gModelScythe) ) {
 engfunc(EngFunc_PrecacheSound, SLICERISTA_HIT_MEAT_SFX)
 engfunc(EngFunc_PrecacheSound, GRIM_SWING_SFX)
 }
-public death()
+public sh_client_death(id)
 {
-	new id=read_data(2)
 	reset_greaper2_user(id)
 }

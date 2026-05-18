@@ -24,7 +24,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
 	register_event("Damage", "frozen_damage", "b", "2!0")
-	register_event("DeathMsg","on_death_freeze","a")
     
 	
 }
@@ -199,10 +198,8 @@ public remove_frozen(id)
 	}
 }
 
-public on_death_freeze()
-{	
-	new id = read_data(2)
-	
+public sh_client_death(id)
+{
 	if(is_user_connected(id)&&sh_is_active()){
 		unfreeze_user(id)
 	

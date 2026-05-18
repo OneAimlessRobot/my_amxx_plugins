@@ -23,7 +23,6 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	UNCO2_TASKID=allocate_typed_task_id(player_task)
-	register_event("DeathMsg","on_death_co2","a")
 
 }
 public plugin_cfg(){
@@ -109,10 +108,8 @@ public unco2_user(id){
 	
 }
 
-public on_death_co2()
-{	
-	new id = read_data(2)
-
+public sh_client_death(id)
+{
 	unco2_user(id)
 	
 }

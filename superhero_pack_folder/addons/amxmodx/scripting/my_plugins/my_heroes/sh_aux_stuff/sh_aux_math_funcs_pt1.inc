@@ -105,14 +105,14 @@ stock Float:cross_product(Float:result[3], Float:input_a[3], Float:input_b[3]) {
 stock dir_vector_to_yaw_pitch_roll(Float:result[3], Float:input_a[3]) {
 	
 	vector_norm(input_a, input_a);
-	result[0] = -1.0 * (1.0 * floatsin(input_a[2])) * (180.0 / MATH_PI);
-	result[1] = floatatan2((1.0 * input_a[1]), (1.0 * input_a[0]),degrees) * (180.0 / MATH_PI);
+	result[0] = -1.0 * (1.0 * floatsin(input_a[2])) * (180.0 / M_PI);
+	result[1] = floatatan2((1.0 * input_a[1]), (1.0 * input_a[0]),degrees) * (180.0 / M_PI);
 	result[2] = 0.0;
 }
 
 stock Float:angle_convert(Float:angle, bool:false_for_degrees_to_radians_true_for_radians_to_degrees = true) {
 	
-	return (false_for_degrees_to_radians_true_for_radians_to_degrees ? (angle * (180.0 / MATH_PI)):(angle * (MATH_PI / 180.0)));
+	return (false_for_degrees_to_radians_true_for_radians_to_degrees ? (angle * (180.0 / M_PI)):(angle * (M_PI / 180.0)));
 	
 }
 

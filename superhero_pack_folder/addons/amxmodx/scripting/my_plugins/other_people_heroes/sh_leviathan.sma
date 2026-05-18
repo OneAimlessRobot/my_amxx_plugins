@@ -10,8 +10,14 @@ leviathan_threshold 0.3     - percentage of life he must go below to flood level
 leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 */
 
+#define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
+#include "../my_include/my_author_header.inc"
 
 new bubbleSprite
 new gHeroID
@@ -20,13 +26,13 @@ new lastammo[SH_MAXSLOTS + 1]
 new check[SH_MAXSLOTS + 1]
 new bool:Swim[SH_MAXSLOTS + 1]
 new gPlayerMaxHealth[SH_MAXSLOTS+1]
+new accessLevel[10]
 new GrenOldOrigin[3]
 new bool:FloodOn=false
 new svgravity, leviathan_gravity, leviathan_swimspeed, leviathan_othersspeed, Float:leviathan_underwaterdmg, Float:leviathan_threshold
 
 new gHeroName[] = "Leviathan"
 new bool:gHasLeviathanPowers[SH_MAXSLOTS + 1]
-new bool:gHasAcess[SH_MAXSLOTS + 1]
 
 public plugin_init()
 {
@@ -59,7 +65,13 @@ public client_connect(id)
 	check[id] = 0
 	Swim[id] = false
 }
+public plugin_cfg(){
 
+
+	get_cvar_string("leviathan_adminflag", accessLevel, 9)
+	sh_register_admin_only_hero(gHeroID,read_flags(accessLevel),3,"You are not an admin. No acess was granted")
+
+}
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
@@ -67,12 +79,7 @@ public sh_hero_init(id, heroID, mode){
 	check[id] = 0
 	Swim[id] = false
 	gPlayerMaxHealth[id] = 100
-	gHasAcess[id]=bool:sh_user_has_hero(id,gHeroID)
-	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID)){
-		
-		leviathan_admincheck(id)
-		
-	}
+	
 	if(sh_user_has_hero(id,gHeroID)){
 		leviathan_gravity = get_cvar_num("leviathan_gravity")
 		leviathan_swimspeed = get_cvar_num("leviathan_swimspeed")
@@ -293,21 +300,6 @@ public leviathan_damage(id)
 		else sh_extra_damage(id, attacker, get_user_health(id)-generate_int(1,6), "leviathan")
 	}
 	return PLUGIN_CONTINUE
-}
-//----------------------------------------------------------------------------------------------
-public leviathan_admincheck(id)
-{
-	new accessLevel[10]
-
-	get_cvar_string("leviathan_adminflag", accessLevel, 9)
-
-	if ( sh_user_has_hero(id,gHeroID)&&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
-		new dropMsg[100];
-		formatex(dropMsg,99,"drop %s",gHeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "You are not an admin. No acess was granted")
-	}
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }

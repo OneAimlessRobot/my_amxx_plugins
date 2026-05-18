@@ -116,7 +116,6 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
-	register_event("DeathMsg","death","a")
 	
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor",_, true)
 
@@ -216,11 +215,11 @@ stock ester_weapons(id){
 		
 	}
 	else if(sh_user_has_hero(id,gHeroID) ){
-		shGiveWeaponID(id, CSW_TMP)
+		sh_give_weapon(id, CSW_TMP, true)
 	}
 	else{
 		
-		engclient_cmd(id, "drop", "weapon_tmp");
+		sh_drop_weapon(id, CSW_TMP,true);
 		
 	}
 	
@@ -672,9 +671,8 @@ public plugin_precache()
 	
 	
 }
-public death()
+public sh_client_death(id)
 {
-	new id=read_data(2)
 	if ( !is_user_connected(id)){
 		return
 	}

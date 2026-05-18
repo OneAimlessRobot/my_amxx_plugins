@@ -75,8 +75,8 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid wpn_id obtained at _sh_log_custom_damage_source!^nIt came out as %d which is <= 0!^nAborting...^n",wpn_id)
         wpn_id=-1
     }
-    /*
-    if(sh_damage_source_is_a_melee[wpn_id]){
+    
+    /*if(sh_damage_source_is_a_melee[wpn_id]){
         
         server_print("^nValid wpn_id obtained! %d^n",wpn_id)
 
@@ -102,7 +102,6 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
                                     sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
     }*/
     return wpn_id
-    
 }
 
 

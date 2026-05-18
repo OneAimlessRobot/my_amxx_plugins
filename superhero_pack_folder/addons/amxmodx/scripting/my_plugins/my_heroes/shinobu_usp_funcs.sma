@@ -217,12 +217,15 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 
 public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 {
-	if ( !sh_is_active()) return FMRES_IGNORED
-	
-	if (!is_user_alive(id))
-		return FMRES_IGNORED	
-	if(get_user_weapon(id) != SHINOBU_WEAPON_CLASSID)
+	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
+	}
+	if (!is_user_alive(id)){
+		return FMRES_IGNORED
+	}
+	if(get_user_weapon(id) != SHINOBU_WEAPON_CLASSID){
+		return FMRES_IGNORED
+	}
 	if(!sh_user_has_hero(id,gHeroID)){
 
 		return FMRES_IGNORED

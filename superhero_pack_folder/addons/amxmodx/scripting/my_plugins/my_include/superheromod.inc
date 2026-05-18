@@ -85,11 +85,13 @@ forward sh_extra_health_add_pre(&id,&the_health_to_add)
  * @param mode			The heroID is being added or dropped.
  * @noreturn
  */
+
+forward sh_hero_init_pre(id, heroID, &mode);
+
 forward sh_hero_init(id, heroID, mode);
 
 forward sh_hero_init_pt2(id, heroID, mode); //for my player models module
 
-native _dropPower(id, const said[],showmenu = 1);
 /**
  * Called when a +/-power is executed.
  * See superheroconst.inc for key types.
@@ -190,6 +192,8 @@ native sh_get_lvl_xp(level);
  * @return		The current level of the client, else -1 if not a valid id.
  */
 native sh_get_user_lvl(id);
+
+native sh_strip_user_hero(id,hero_id);
 
 /**
  * Sets the client's current level.

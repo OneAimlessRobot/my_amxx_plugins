@@ -18,6 +18,7 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -25,9 +26,7 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #define DARK_TASKID 13213
 // GLOBAL VARIABLES
 new HeroName[] = "Dark angel v2"
-new bool:HasAcess[SH_MAXSLOTS+1]
 new gHeroID
-new times_picked
 new Float: MEGA_DARK_KNOCKBACK
 new a_flags[10]
 new Float:m4dmgmult
@@ -53,7 +52,6 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/toxic_cat_m4.mdl")
 	
-	
 	// EVENTS
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -64,7 +62,6 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "darkangel_armor")
 	shSetMinGravity(HeroName, "darkangel_gravity")
 	shSetMaxSpeed(HeroName, "darkangel_speed", "[22]")
-	times_picked=0;
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -74,64 +71,33 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	get_cvar_num("darkangel_level")
 	get_cvar_string("darkangel_adminflag",a_flags,9)
+
+	sh_register_admin_only_hero(gHeroID,read_flags(a_flags),MAX_PICKED,
+					"HOW DARE YOU CHALLENGE THE DARK LOOOOOORRDDD!!!! STUPID IDIOT IMBECILE JOCK!")
+	
 	m4dmgmult=get_cvar_float("darkangel_m4a1mult")
 	MEGA_DARK_KNOCKBACK=get_cvar_float("darkangel_knockback")
-}
-//----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,"models/shmod/toxic_cat_m4.mdl")
-	
-}
-public num_picked_check(id){
-	return!(times_picked>=MAX_PICKED)
-
-}
-public haveable_check(id){
-	return!(times_picked>MAX_PICKED)
-
 }
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
-	
-	HasAcess[id]=bool:sh_user_has_hero(id,gHeroID) 
-	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ){
-		
-		darklydark_pickable_check(id)
-		
-	}
 	if(sh_user_has_hero(id,gHeroID) )
 	{
-		if ( is_user_alive(id) )
-		{
-			times_picked=clamp(times_picked+1,0,MAX_PICKED);
 			darkangel_weapons(id)
-		}
 	}
 	else{
-		// Check is needed since this gets run on clearpowers even if user didn't have this hero
-		if ( is_user_alive(id) )
-		{
-			// This gets run if they had the power but don't anymore
-			engclient_cmd(id, "drop", "weapon_m4a1")
-			times_picked=clamp(times_picked-1,0,MAX_PICKED);
-		}
+			sh_drop_weapon(id, CSW_M4A1)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if (haveable_check(id)&& HasAcess[id]&&is_user_alive(id) && sh_is_active()) {
-		darklydark_haveable_check(id)
-		if(sh_user_has_hero(id,gHeroID) ){
-			
-			darkangel_weapons(id)
-		}
+	if(sh_user_has_hero(id,gHeroID) ){
+		
+		darkangel_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -140,7 +106,7 @@ public darkangel_weapons(id)
 	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
 		return
 	
-	shGiveWeapon(id, "weapon_m4a1")
+	sh_give_weapon(id, CSW_M4A1)
 }
 
 
@@ -169,8 +135,9 @@ public weapon_change(id)
 	new clip = read_data(3)
 	
 	// Never Run Out of Ammo!
-	if ( clip == 0 )
-		shReloadAmmo(id)
+	if ( clip == 0 ){
+		sh_reload_ammo(id)
+	}
 }
 //----------------------------------------------------------------------------------------------
 public darkangel_damage(id)
@@ -200,36 +167,5 @@ public darkangel_damage(id)
 					my_hitpoint_enum:bodypart)
 		}
 		do_knockback(id,extraDamage);
-	}
-}
-//----------------------------------------------------------------------------------------------
-public darklydark_pickable_check(id)
-{
-	new accessLevel[10]
-	
-	get_cvar_string("darkangel_adminflag", accessLevel, 9)
-	
-	if ( sh_user_has_hero(id,gHeroID)  &&  (!num_picked_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
-		static dropMsg[100];
-		formatex(dropMsg,99,"drop %s",HeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "HOW DARE YOU CHALLENGE THE DARK LOOOOOORRDDD!!!! STUPID IDIOT IMBECILE JOCK!")
-	}
-}
-//----------------------------------------------------------------------------------------------
-public darklydark_haveable_check(id)
-{
-	new accessLevel[10]
-	
-	get_cvar_string("darkangel_adminflag", accessLevel, 9)
-	
-	if ( sh_user_has_hero(id,gHeroID)  &&  (!haveable_check(id)||!(get_user_flags(id)&read_flags(accessLevel)))) {
-
-		static dropMsg[100];
-		formatex(dropMsg,99,"drop %s",HeroName);
-		_dropPower(id,dropMsg,0);
-		
-		sh_chat_message(id, gHeroID, "HOW DARE YOU CHALLENGE THE DARK LOOOOOORRDDD!!!! STUPID IDIOT IMBECILE JOCK!")
 	}
 }

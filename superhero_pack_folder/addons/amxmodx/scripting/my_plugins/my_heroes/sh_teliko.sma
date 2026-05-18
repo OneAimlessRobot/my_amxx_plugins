@@ -66,7 +66,6 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
 
 	register_event("Damage", "Teliko_damage", "b", "2!0")
-	register_event("DeathMsg","death","a")
 	
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
@@ -360,16 +359,15 @@ engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX)
 
 
 }
-public death()
-{
-new id = read_data(2)
-if(sh_user_has_hero(id,gHeroID) ){
+public sh_client_death(id){
+	
+	if(sh_user_has_hero(id,gHeroID) ){
 
-	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
-	teliko_unmorph(id)
-}
+		emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
+		teliko_unmorph(id)
+	}
 
-remove_enemy(id)
+	remove_enemy(id)
 }
 
 

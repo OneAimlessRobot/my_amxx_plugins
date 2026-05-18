@@ -111,7 +111,7 @@ public sh_hero_init(id, heroID, mode){
 		veronika_weapons(id)
 		}
 	else {
-		engclient_cmd(id,"drop","weapon_ak47")
+		sh_drop_weapon(id,CSW_AK47)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public sh_client_spawn(id)
 public veronika_weapons(id)
 {
 	if ( is_user_alive(id) && sh_is_active() ) {
-		shGiveWeapon(id,"weapon_ak47")
+		sh_give_weapon(id,CSW_AK47)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ public weaponChange(id)
 		
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
-		shReloadAmmo(id)
+		sh_reload_ammo(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -183,8 +183,9 @@ public veronika_damage(id)
 public CmdStart(id, uc_handle)
 {
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)){
 			
 		return FMRES_IGNORED

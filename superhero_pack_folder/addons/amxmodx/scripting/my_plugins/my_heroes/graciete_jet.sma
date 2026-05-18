@@ -43,7 +43,6 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	register_event("DeathMsg","death","a")
 	pcvar_jet_velocity = register_cvar("graciete_jet_velocity", "8")
 	pcvar_jet_cooldown = register_cvar("graciete_jet_cooldown", "8")
 	pcvar_jet_max_power = register_cvar("graciete_jet_max_power", "8")
@@ -171,8 +170,9 @@ public Ham_Think_Post(id) {
 public CmdStart(id, uc_handle)
 {
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 			return FMRES_IGNORED;
 	}
@@ -265,10 +265,11 @@ public JetpackJump( id,intensity){
 }
 
 
-public death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-	if(!is_user_connected(id)||!sh_is_active()||!sh_user_has_hero(id,gHeroID)) return
+	if(!is_user_connected(id)||!sh_is_active()){
+		return
+	}
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	
 }

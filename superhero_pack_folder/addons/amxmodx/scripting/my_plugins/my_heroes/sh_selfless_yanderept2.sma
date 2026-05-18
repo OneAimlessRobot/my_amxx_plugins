@@ -99,7 +99,6 @@ public plugin_init()
 
 	register_event("Damage", "yandere_damage", "b", "2!0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("DeathMsg","death","a")
 	
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
@@ -152,8 +151,9 @@ public _yandere_get_hero_id(iPlugin,iParams){
 public yandere_angry_idle_checks(id, uc_handle){
 
 	
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
 	if(!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
@@ -738,9 +738,8 @@ killyandere(id,bool:dropping=false){
 	}
 	g_is_cursed_masks[id]=0
 }
-public death()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
+	
 	killyandere(id)
 	notify_yanderes_about_team_life(id)
 }

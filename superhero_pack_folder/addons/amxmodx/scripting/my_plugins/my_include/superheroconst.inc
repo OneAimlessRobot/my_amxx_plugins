@@ -8,15 +8,19 @@
 
 
 enum {
+	INIT_FWD_PASS=0,
+	INIT_FWD_BLOCK
+
+
+}
+enum {
 	DMG_FWD_PASS=0,
-	DMG_FWD_OVERRIDE,
 	DMG_FWD_BLOCK
 
 
 }
 enum {
 	XP_FWD_PASS=0,
-	XP_FWD_OVERRIDE,
 	XP_FWD_BLOCK
 
 

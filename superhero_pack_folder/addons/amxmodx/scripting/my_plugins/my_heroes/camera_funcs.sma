@@ -49,7 +49,6 @@ public plugin_init(){
 	pcvar_camman_camera_maxalpha = register_cvar("camman_camera_maxalpha", "100.0")
 	pcvar_camman_camera_minalpha = register_cvar("camman_camera_minalpha", "1000.0")
 
-	register_event("DeathMsg","death","a")
 	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -112,7 +111,10 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 //----------------------------------------------------------------------------------------------
 public camera_controls(id, uc_handle)
 {	
-	if(!sh_is_active()) return FMRES_IGNORED
+	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if ( !is_user_alive(id)){
 		return FMRES_IGNORED;
 	}
@@ -809,9 +811,8 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, CAMERA_BOOTED_SFX)
 	
 }
-public death()
-{	
-	new id=read_data(2)
+public sh_client_death(id)
+{
 	if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)){
 		
 		

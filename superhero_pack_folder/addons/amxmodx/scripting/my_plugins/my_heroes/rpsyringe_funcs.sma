@@ -103,8 +103,9 @@ public _gatling_dec_num_rockets(iPlugin,iParams){
 public CmdStart(id, uc_handle)
 {	
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
-	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 	if ( !hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);

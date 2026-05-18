@@ -35,7 +35,7 @@ public plugin_init()
 
 	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
-	register_event("DeathMsg","death","a")
+	
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,
 			CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,
 			CHIKOI_THE_MAID_PHYSICAL_PROPERTY,
@@ -160,10 +160,8 @@ public plugin_precache()
 	}
 	
 }
-public death()
+public sh_client_death(id,killer)
 {
-	new id=read_data(2)
-	new killer=read_data(1)
 	if ( !is_user_connected(id)){
 		return
 	}

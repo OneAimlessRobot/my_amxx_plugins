@@ -80,7 +80,6 @@ public plugin_init()
 	
 	register_touch("pred_disc", "player", "touch_event")
 	
-	register_event("DeathMsg","death","a")
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
 	
@@ -226,7 +225,7 @@ if ( wpnid != CSW_AWP && wpnid != CSW_KNIFE && wpnid != CSW_SCOUT )
 
 	// Never Run Out of Ammo!
 if ( clip == 0 ) {
-	shReloadAmmo(id)
+	sh_reload_ammo(id)
 }
 }
 //-----------------------------------------------------------------------------------------------
@@ -326,11 +325,8 @@ public RunRedNVG(id)
 	//Darkens it a little
 	setScreenFlash(id, 180, 10, 0, 12, 50)
 }
-public death()
+public sh_client_death(id,attacker)
 {
-	new id = read_data(2)
-	new attacker=read_data(1)
-	
 	g_huntTimer[id] = 0;
 	sh_unset_cooldown_flag(id)
 	if ( sh_user_has_hero(id,gHeroID) )

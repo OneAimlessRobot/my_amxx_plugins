@@ -93,17 +93,19 @@ public disable_planting()
 public terrorist_giveweapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) ) {
-		shGiveWeapon(id,"weapon_ak47")
+		sh_give_weapon(id,CSW_AK47)
 	}
 
 
 	if ( get_user_team(id) == 1 )
 	{
-		shGiveWeapon(id,"weapon_c4") 	// Give Ts a Bomb
+		sh_give_weapon(id,CSW_C4) 	// Give Ts a Bomb
 		cs_set_user_plant(id,1,1) 	// Make bomb useable
 	}
 
-	if ( get_user_team(id) == 2 ) shGiveWeapon(id,"item_thighpack")
+	if ( get_user_team(id) == 2 ){
+		sh_give_item(id,"item_thighpack")
+	}
 }
 //----------------------------------------------------------------------------------------------
 public terrorist_dropweapons(id)

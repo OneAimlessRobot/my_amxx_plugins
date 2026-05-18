@@ -73,7 +73,6 @@ public plugin_init(){
 	register_clcmd("sh_print_weapon_models", "sh_print_weapon_models",ADMIN_ALL,
 						"Print all superhero weapon models available to you.")
 	
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	GLOW_TASKID=allocate_typed_task_id(generic_task)
@@ -495,15 +494,12 @@ public sh_print_weapon_models(id, level, cid)
 
 	return PLUGIN_HANDLED
 }
-public death(){
-	
-	new id = read_data(2)
-
-	if(!is_user_connected(id)) return PLUGIN_CONTINUE
+public sh_client_death(id)
+{
+	if(!is_user_connected(id)) return
 
 	sh_player_unmorph_task(id,0)
 
-	return PLUGIN_CONTINUE
 }
 public client_connect(id){
 

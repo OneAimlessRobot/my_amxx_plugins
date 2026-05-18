@@ -53,7 +53,6 @@ public plugin_init(){
 	register_cvar("slitter_drag_time", "3")
 	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage",_,true)
 	register_forward(FM_CmdStart, "CmdStart");
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 
@@ -210,12 +209,19 @@ public slitter_think(id)
 public CmdStart(attacker, uc_handle)
 {	
 
-	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
 
-
-	if (!is_user_alive(attacker)) return FMRES_IGNORED;
-	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)) return FMRES_IGNORED;
-	if(sh_get_stun(attacker)) return FMRES_IGNORED
+	if (!is_user_alive(attacker)){
+		return FMRES_IGNORED
+	}
+	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)){
+		return FMRES_IGNORED
+	}
+	if(sh_get_stun(attacker)){
+		return FMRES_IGNORED
+	}
 
 	static button
 	button= get_uc(uc_handle, UC_Buttons);
@@ -403,9 +409,8 @@ public plugin_precache()
 
 }
 
-public death()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
+	
 	if(sh_user_has_hero(id,gHeroID) ){
 		
 		stop_dragging(id)

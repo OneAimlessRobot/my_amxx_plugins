@@ -79,7 +79,7 @@ custom_dmg_id_shanking=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_shanking,
 				dmg_source_name_long_shanking,
 				0)
-register_event("DeathMsg","on_death_bleeding","a")
+
 init_hud_syncs()
 
 }
@@ -115,9 +115,9 @@ new hero_id= get_param(3)
 new slash_damage=get_param(4)
 new stab_damage=get_param(5)
 new optional_bool=get_param(6)
+new custom_wpn_id=get_param(7)
 new attack_name_string[128]
-get_string(7,attack_name_string,127)
-new custom_wpn_id=get_param(8)
+get_string(8,attack_name_string,127)
 new blood_sound_sample[128]
 get_string(9,blood_sound_sample,127)
 new heal_attacker=get_param(10)
@@ -320,9 +320,8 @@ unbleed_user(id){
 
 }
 
-public on_death_bleeding()
-{	
-	new id = read_data(2)
+public sh_client_death(id)
+{
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		unbleed_user(id)

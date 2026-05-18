@@ -50,7 +50,6 @@ public plugin_init(){
 
 	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
-	register_event("DeathMsg","on_death_cleanup","a")
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "shinobu_cloak_conditions")
 
@@ -104,7 +103,7 @@ public _uncloak_shinobu(id){
 	apply_cloak(id)
 }
 public shinobu_cloak_conditions(id, uc_handle){
-
+	
 
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
@@ -291,9 +290,7 @@ public _nani_behind_player(iPlugin,iParams){
 }
 
 
-public on_death_cleanup()
-{	
-	new id = read_data(2)
+public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
 		if(sh_user_has_hero(id,gHeroID)){

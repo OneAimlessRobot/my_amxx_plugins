@@ -33,7 +33,6 @@ public plugin_init()
 								"sapper",
 								"Sapper ready.",
 								"Mission failed.")
-	register_event("DeathMsg","death","a")
 }
 
 public plugin_natives(){
@@ -143,14 +142,13 @@ public sh_round_end(){
 	remove_entity_name(MINE_CLASSNAME)
 
 }
-public death()
-{
-new id = read_data(2)
-if(sh_user_has_hero(id,gHeroID) ){
+public sh_client_death(id){
 
-	mine_uncharge_mine(id)
-	mine_undisarm_mine(id)
-}
+	if(sh_user_has_hero(id,gHeroID) ){
+
+		mine_uncharge_mine(id)
+		mine_undisarm_mine(id)
+	}
 }
 
 //----------------------------------------------------------------------------------------------

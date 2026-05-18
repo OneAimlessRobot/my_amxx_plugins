@@ -51,7 +51,7 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
-new gPlayerHasPowerTable[SH_MAXHEROS+1] = {0, ...}      // List of all Powers - Slot 0 is the superpower count
+new gPlayerHasPowerTable[SH_MAXHEROS] = {0, ...}      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gNumPlayerCores[SH_MAXSLOTS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
@@ -134,7 +134,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
 new fwdReturn
-new fwd_HeroInit, fwd_HeroInit_pt2, fwd_HeroKey, fwd_Spawn, fwd_Death
+new fwd_HeroInit_Pre, fwd_HeroInit, fwd_HeroInit_pt2, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShXpPre
@@ -237,6 +237,7 @@ public plugin_init()
 
 
 	// API - Register a bunch of forwards that heroes can use
+	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_VAL_BYREF)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroInit_pt2 = CreateMultiForward("sh_hero_init_pt2", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
@@ -357,6 +358,7 @@ public plugin_init()
 
 	// Block committed suicide hl log messages caused by extradamage
 	register_forward(FM_AlertMessage, "fm_AlertMessage")
+
 	register_message(gmsgDeathMsg, "msg_DeathMsg")
 
 	// Block player names from overwriting StatusText sent by core
@@ -400,13 +402,13 @@ public plugin_natives()
 	register_native("sh_get_user_lvl", "_sh_get_user_lvl")
 	register_native("sh_set_user_lvl", "_sh_set_user_lvl")
 	register_native("sh_get_user_xp", "_sh_get_user_xp")
+	register_native("sh_strip_user_hero", "_sh_strip_user_hero")
 	register_native("sh_set_user_xp", "_sh_set_user_xp")
 	register_native("sh_add_kill_xp", "_sh_add_kill_xp")
 	register_native("sh_get_hero_id", "_sh_get_hero_id")
 	register_native("sh_get_hero_name_from_id", "_sh_get_hero_name_from_id",0)
 	register_native("sh_user_has_hero", "_sh_user_has_hero")
 	register_native("sh_get_player_save_key_on_db","_sh_get_player_save_key_on_db",0)
-	register_native("_dropPower", "dropPower_",0)
 	register_native("sh_chat_message", "_sh_chat_message")
 	register_native("sh_debug_message", "_sh_debug_message")
 	register_native("sh_extra_damage", "_sh_extra_damage")
@@ -1264,10 +1266,23 @@ initHero(id, heroIndex, mode)
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
 
+	new the_init_return_value=INIT_FWD_PASS
+	if(!ExecuteForward(fwd_HeroInit_Pre, the_init_return_value, id, heroIndex, mode)){
+
+		server_print("Hero init pre forward execution error!!!")
+		return
+	}
+	if(the_init_return_value==INIT_FWD_BLOCK){
+
+		server_print("Hero picking blocked? I Really hope so")
+		mode=SH_HERO_DROP;
+		Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode);
+		return
+	}
+
 	if ( equal(gAnubisHero, "Anubis") ){
 		Assign_BitVar(gHasAnubisMask,id, mode);
 	}
-
 	Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode)
 
 	// Reset Shield Restriction if needed for this hero
@@ -1333,7 +1348,11 @@ initHero(id, heroIndex, mode)
 			resetMinGravity(id)
 		}
 	}
-	ExecuteForward(fwd_HeroInit_pt2, fwdReturn, id, heroIndex, mode)
+	if(!ExecuteForward(fwd_HeroInit_pt2, fwdReturn, id, heroIndex, mode)){
+
+		server_print("Hero init pt2 forward execution error!!!")
+		return
+	}
 	//Init the hero
 #if defined SH_BACKCOMPAT
 	if ( gEventInit[heroIndex][0] != '^0' ) {
@@ -1341,7 +1360,11 @@ initHero(id, heroIndex, mode)
 	}
 	else {
 #endif
-		ExecuteForward(fwd_HeroInit, fwdReturn, id, heroIndex, mode)
+	if(!ExecuteForward(fwd_HeroInit, fwdReturn, id, heroIndex, mode)){
+
+		server_print("Hero init post forward execution error!!!")
+		return
+	}
 
 #if defined SH_BACKCOMPAT
 	}
@@ -3301,17 +3324,22 @@ public cl_say(id)
 
 	return PLUGIN_CONTINUE
 }
-//----------------------------------------------------------------------------------------------
-public dropPower_(iPlugin,iParams){
+public _sh_strip_user_hero(iPlugin, iParams){
+	new id= get_param(1),
+		hero_id=get_param(2)
 
-	new id=get_param(1)
-	new said[101];
-	get_array(2,said,99)
-	new showmenu = get_param(3)
-	dropPower(id,said,showmenu,true);
+	new playerpowercount = getPowerCount(id)
+	for ( new x = 1; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
+		if(hero_id == gPlayerPowers[id][x]){
+
+			
+			clearPower(id, x)
+
+		}
+	}
+
 
 }
-
 //----------------------------------------------------------------------------------------------
 dropPower(id, const said[], showmenu,bool:from_plugin=false)
 {

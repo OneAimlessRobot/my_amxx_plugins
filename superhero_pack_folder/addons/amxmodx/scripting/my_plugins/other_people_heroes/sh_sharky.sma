@@ -209,39 +209,35 @@ public changeWeapon(id)
 //----------------------------------------------------------------------------------------------
 public sharky_gunz(id)
 {
-  shGiveWeapon(id,"weapon_mp5navy")
+  sh_give_weapon(id,CSW_MP5NAVY)
 
-  shGiveWeapon(id,"weapon_sg552") 
-  shGiveWeapon(id,"weapon_m4a1") 
-  shGiveWeapon(id,"weapon_awp") 
+  sh_give_weapon(id,CSW_SG552) 
+  sh_give_weapon(id,CSW_M4A1) 
+  sh_give_weapon(id,CSW_AWP) 
   
    
-  shGiveWeapon(id,"weapon_usp") 
-  shGiveWeapon(id,"weapon_mac10") 
+  sh_give_weapon(id,CSW_USP) 
+  sh_give_weapon(id,CSW_MAC10) 
  
 
-  shGiveWeapon(id,"weapon_elite")
-  //give_item(id,"weapon_mp5navy") 
-  //give_item(id,"weapon_deagle") 
-   
-  shGiveWeapon(id,"weapon_fiveseven")
-  shGiveWeapon(id,"weapon_p90") 
+  sh_give_weapon(id,CSW_ELITE)
+  sh_give_weapon(id,CSW_FIVESEVEN)
+  sh_give_weapon(id,CSW_P90) 
   
    
-  shGiveWeapon(id,"weapon_scout") 
-  shGiveWeapon(id,"weapon_g3sg1") 
-  //give_item(id,"weapon_sg552") 
-  //give_item(id,"weapon_m4a1") 
-  shGiveWeapon(id,"weapon_aug") 
-  shGiveWeapon(id,"weapon_sig550") 
+  sh_give_weapon(id,CSW_SCOUT) 
+  sh_give_weapon(id,CSW_G3SG1)
+  sh_give_weapon(id,CSW_AUG) 
+  sh_give_weapon(id,CSW_SG550) 
   
-  shGiveWeapon(id,"weapon_m249") 
-  shGiveWeapon(id,"weapon_hegrenade")
+  sh_give_weapon(id,CSW_M249) 
+  sh_give_weapon(id,CSW_HEGRENADE)
    
   
   // Give CTs a Defuse Kit
-  if ( get_user_team(id) == 2 ) shGiveWeapon(id,"item_thighpack")
-
+  if ( get_user_team(id) == 2 ){
+    sh_give_item(id,"item_thighpack")
+  }
   return
 }
 //----------------------------------------------------------------------------------------------
