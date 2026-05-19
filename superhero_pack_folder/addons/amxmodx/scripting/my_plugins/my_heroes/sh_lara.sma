@@ -42,7 +42,7 @@ public plugin_init()
 			dmg_source_name_short_lara_spear,
 			dmg_source_name_long_lara_spear,1)
 
-	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","Lara_ham_trace_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
@@ -103,16 +103,21 @@ public sh_hero_init(id, heroID, mode){
 	
 	
 }
-public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
+
+	
+	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
 	}
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
-						sh_user_has_hero(attacker,gHeroID),
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
+						sh_user_has_hero(Attacker,gHeroID),
 								custom_dmg_id_lara_spear,
-								dmg_source_name_short_lara_spear);
+								dmg_source_name_short_lara_spear,_,_,the_hitpoint);
 
 
 

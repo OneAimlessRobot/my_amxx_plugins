@@ -4,7 +4,6 @@
 #define I_WANT_MATH_FUNCS
 
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
@@ -147,7 +146,7 @@ public CmdStart(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if((weapon==CSW_KNIFE )&& jet_deployed(id)){
+	if((weapon==CSW_KNIFE )){
 		if(law[id]>0){
 			if(button & IN_ALT1)
 			{
@@ -282,7 +281,10 @@ public law_think(ent)
 	pev(ent, pev_origin, Pos)
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
-	if ( !jet_deployed(owner)) {
+	
+	new bool:jet_deployed_here = bool:jet_deployed(owner)
+
+	if ( !jet_deployed_here) {
 		if(pev_valid(ent)){
 			law_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet law died cuz of plane dying!!")
@@ -298,7 +300,7 @@ public law_think(ent)
 		}
 		return
 	}
-	if(jet_deployed(owner)){
+	if(jet_deployed_here){
 		
 		new Float:velocity[3]
 		new Float:ref_pos[3]

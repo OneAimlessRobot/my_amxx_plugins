@@ -30,7 +30,7 @@ stock g_flora_curr_inside[SH_MAXSLOTS+1]
 stock g_flora_curr_charging[SH_MAXSLOTS+1]
 stock flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
 stock flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
-stock g_flora_dmg_color[SH_MAXSLOTS+1]
+stock sh_custom_color:g_flora_dmg_color[SH_MAXSLOTS+1]
 stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
 new gHeroID = 0
@@ -725,10 +725,9 @@ public field_think(ent)
 					sh_set_stun(pid,cvar_val(float,pcvar_flora_stun_time)*g_flora_curr_dmg_mult[owner],cvar_val(float,pcvar_flora_base_stun_speed)/g_flora_curr_dmg_mult[owner])
 				
 				}
-				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1)
-				set_damage_icon(pid,2,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]])
-				unset_damage_icon(pid,DMG_ICON_POISON)
-				remove_glow_user(pid,cvar_val(float,pcvar_flora_stun_time)*g_flora_curr_dmg_mult[owner])
+				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1,_,
+								cvar_val(float,pcvar_flora_stun_time)*g_flora_curr_dmg_mult[owner])
+				set_damage_icon(pid,2,DMG_ICON_POISON,LineColors[g_flora_dmg_color[owner]],1.0)
 				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}

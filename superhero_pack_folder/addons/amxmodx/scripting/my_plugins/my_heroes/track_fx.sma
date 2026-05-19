@@ -124,7 +124,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			static client_name[128]
 			static origin[3], eorigin[3],att_origin[3]
 			static Float:Pos[3],Float:vEnd[3]
-			new color_const=array[TRACK_TASK_TRACK_COLOR]
+			new sh_custom_color:color_const=sh_custom_color:array[TRACK_TASK_TRACK_COLOR]
 			get_user_name(id,client_name,127)
 			
 			get_user_origin(id, eorigin)
@@ -134,11 +134,9 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
 			IVecFVec(origin,Pos)
 			IVecFVec(eorigin,vEnd)
-			new color_const_arr[3];
-			for(new i=0;i<sizeof color_const_arr;i++){
-
-				color_const_arr[i]=color_const
-			}
+			new sh_custom_color:color_const_arr[3];
+			arrayset(color_const_arr,color_const,sizeof color_const_arr)
+			
 			laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
 			for(new i=0;i<array[1];i++){
 				if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
@@ -190,7 +188,7 @@ public _track_user(iPlugins, iParams){
 		Float:damage_health_pct=get_param_f(4),
 		Float:period=get_param_f(5),
 		Float:time=get_param_f(6),
-		track_color=get_param(7)
+		sh_custom_color:track_color=sh_custom_color:get_param(7)
 
 	
 	if(!is_user_connected(id)||!is_user_connected(attacker)) return 

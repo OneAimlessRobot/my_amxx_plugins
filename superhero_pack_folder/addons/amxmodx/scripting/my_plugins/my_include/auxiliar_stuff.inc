@@ -84,3 +84,77 @@ stock const hitzone_names[MAX_BODYHITS][28] = {
     "rightleg",
     "shield"
 };
+/**
+
+ * IDs of weapons in CS
+
+#define CSW_NONE            0
+#define CSW_P228            1
+#define CSW_GLOCK           2  // Unused by game, See CSW_GLOCK18.
+#define CSW_SCOUT           3
+#define CSW_HEGRENADE       4
+#define CSW_XM1014          5
+#define CSW_C4              6
+#define CSW_MAC10           7
+#define CSW_AUG             8
+#define CSW_SMOKEGRENADE    9
+#define CSW_ELITE           10
+#define CSW_FIVESEVEN       11
+#define CSW_UMP45           12
+#define CSW_SG550           13
+#define CSW_GALIL           14
+#define CSW_FAMAS           15
+#define CSW_USP             16
+#define CSW_GLOCK18         17
+#define CSW_AWP             18
+#define CSW_MP5NAVY         19
+#define CSW_M249            20
+#define CSW_M3              21
+#define CSW_M4A1            22
+#define CSW_TMP             23
+#define CSW_G3SG1           24
+#define CSW_FLASHBANG       25
+#define CSW_DEAGLE          26
+#define CSW_SG552           27
+#define CSW_AK47            28
+#define CSW_KNIFE           29
+#define CSW_P90             30
+#define CSW_VEST            31  // Custom
+#define CSW_VESTHELM        32  // Custom
+#define CSW_SHIELDGUN       99
+#define CSW_LAST_WEAPON     CSW_P90
+
+ */
+stock const weapon_names_stock_arr[CSW_LAST_WEAPON+1][] = {
+    "",
+    "weapon_p228",
+    "",
+    "weapon_scout",
+    "weapon_hegrenade",
+    "weapon_xm1014",
+    "weapon_c4",
+    "weapon_mac10",
+    "weapon_aug",
+    "weapon_smokegrenade",
+    "weapon_elite",
+    "weapon_fiveseven",
+    "weapon_ump45",
+    "weapon_sg550",
+    "weapon_galil",
+    "weapon_famas",
+    "weapon_usp",
+    "weapon_glock18",
+    "weapon_awp",
+    "weapon_mp5navy",
+    "weapon_m249",
+    "weapon_m3",
+    "weapon_m4a1",
+    "weapon_tmp",
+    "weapon_g3sg1",
+    "weapon_flashbang",
+    "weapon_deagle",
+    "weapon_sg552",
+    "weapon_ak47",
+    "weapon_knife",
+    "weapon_p90"
+}

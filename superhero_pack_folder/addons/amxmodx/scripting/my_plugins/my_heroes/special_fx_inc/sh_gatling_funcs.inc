@@ -21,6 +21,8 @@
 #define SHUTDOWN_TIME 1.7
 #define PILL_MASS 100.0
 
+#define PILLGATLING_RECOIL 0.1
+
 enum yakui_pillgatling_anims{
 	yakui_pillgatling_anim_idle = 0,
 	yakui_pillgatling_anim_idle2,

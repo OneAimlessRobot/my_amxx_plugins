@@ -137,7 +137,7 @@ public playertrail(pid)
 {
 	if (is_user_alive(pid))
 	{
-		trail(pid,FX_COLOR_OFFSET+_:curr_needle_fx[pid],10,5,40)
+		trail(pid,FX_COLOR_OFFSET(curr_needle_fx[pid]),10,5,40)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ public _gatling_get_needle(iPlugin,iParams){
 
 
 }
-public _gatling_get_needle_fx(iPlugin,iParams){
+public fx_id:_gatling_get_needle_fx(iPlugin,iParams){
 	new id=get_param(1)
 	
 	return curr_needle_fx[id]

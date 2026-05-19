@@ -37,7 +37,7 @@ stock curr_player_sound[SH_MAXSLOTS+1]
 
 #define ESTER_SUICIDE_SCOURN_MSG "Wow, they really do not make gods like they used to. Forgiven for taking your own life? Alright, enjoy the rest of the round."
 
-#define FLIGHT_GODMODE_THINK_TIME 0.3
+#define FLIGHT_GODMODE_THINK_TIME 1.0
 
 #define ESTER_WALL_STUCK_MSG "You were eliminated completely. Dont get stuck on walls, numbskull."
 #define ESTER_REBORN_TEAM_CHANGE_MSG "You changed teams and were reborn as ester, now you shall die"

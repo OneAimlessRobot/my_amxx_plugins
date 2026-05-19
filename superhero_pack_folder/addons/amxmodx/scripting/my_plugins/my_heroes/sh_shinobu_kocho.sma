@@ -187,7 +187,7 @@ public Float:_shinobu_get_cooldown(iPlugins, iParms){
 	return cvar_val(float, pcvar_shinobu_cooldown)
 	
 }
-shinobu_damage_interaction(attacker,victim){
+shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
 
 	if (sh_user_has_hero(victim,gHeroID)  ) {
 		
@@ -196,7 +196,8 @@ shinobu_damage_interaction(attacker,victim){
 	}
 	if(sh_user_has_hero(attacker,gHeroID) ){
 
-		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,_,0);
+		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,_,0,
+					hitpoint);
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
 }
@@ -204,14 +205,14 @@ public shinobuDamage(id)
 {
 	if ( !sh_is_active() || !is_user_connected(id)) return PLUGIN_CONTINUE
 	new victim=id
-	new weapon, attacker = get_user_attacker(victim, weapon)
+	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	if ( !is_user_alive(attacker)||!attacker) return PLUGIN_CONTINUE
 	
 	if(sh_clients_are_same_team(victim,attacker)||(victim==attacker)){
 		return PLUGIN_CONTINUE
 	}	
 	if((weapon==CSW_KNIFE)){
-		shinobu_damage_interaction(attacker,victim)
+		shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:bodypart)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -268,10 +269,12 @@ public shinobu_burst_damage_task(array[],attacker){
 	if(!sh_user_has_hero(attacker,gHeroID)  ) return
 
 	if(!is_user_bot(tg)){
-		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,_:MAX_DICKERY-1)])
+		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,
+																								sizeof(shinobu_shinobu_shinobu_shinobu_dickery_sentences)-1)])
 	}
 	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,_:MAX_DICKERY-1)])
+		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,
+																								sizeof(shinobu_shinobu_shinobu_shinobu_dickery_sentences)-1)])
 	}
 
 	new enemy_health=get_user_health(tg)
@@ -348,7 +351,7 @@ public shinobu_kd(id)
 		}
 		return PLUGIN_HANDLED
 	}
-	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,_:MAX_SHINOBU_VISITING_SENTENCES-1)])	
+	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,sizeof(shinobu_visiting_sentences)-1)])	
 	shinobu_teleport_init(id)
 	return PLUGIN_HANDLED
 }
@@ -365,10 +368,10 @@ public death()
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
+					sh_chat_message(id,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,sizeof(happy_sentences)-1)])
 				}
 				if(!is_user_bot(killer)){
-					sh_chat_message(killer,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,_:MAX_SHINOBU_HAPPY_SENTENCES-1)])
+					sh_chat_message(killer,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,sizeof(happy_sentences)-1)])
 				}
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}
@@ -400,7 +403,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &
 	if(is_valid_custom_dmg_source(custom_weapon_id)){
 		new bool:is_melee = bool:xmod_is_melee_wpn(custom_weapon_id)
 		if(is_melee){
-			shinobu_damage_interaction(attacker,victim)
+			shinobu_damage_interaction(attacker,victim,bodypart)
 		}
 	}
 	

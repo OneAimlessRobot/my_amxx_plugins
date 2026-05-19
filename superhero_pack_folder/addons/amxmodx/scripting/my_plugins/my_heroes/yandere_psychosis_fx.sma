@@ -161,8 +161,7 @@ public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
 
 	gPsychosisTime[id]-=1.0
-	set_render_with_color_const(id, PINK,1,255,_,0)
-	remove_glow_user(id,1.0)
+	set_render_with_color_const(id, PINK,1,255,_,0,_,1.0)
 	aura(id,LineColors[PINK])
 	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
 		if(is_user_connected(id)){

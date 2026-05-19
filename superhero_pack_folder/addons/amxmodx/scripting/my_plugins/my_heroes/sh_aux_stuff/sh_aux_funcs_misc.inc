@@ -297,6 +297,16 @@ stock get_weapon_ent_of_player(id,wpnid=0)
 	return find_ent_by_owner(-1,class,id);
 } 
 
+stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true){
+
+	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
+{
+	if ( !(weapon_bitsum & (1<<wpnId)) && strlen(weapon_names_stock_arr[wpnId]))
+	{
+			RegisterHam(ham_constant, weapon_names_stock_arr[wpnId], function_name, is_it_post,is_it_special_bot) 
+	}
+}
+}
 
 stock init_hud_syncs(){
 

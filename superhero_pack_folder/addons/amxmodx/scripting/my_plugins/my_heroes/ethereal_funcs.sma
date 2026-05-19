@@ -309,8 +309,15 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if (!is_user_alive(id)){
 		return
 	}
+
 	if(Get_BitVar(g_Had_Ethereal, id))
 	{
+
+		static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
+		if(iClip<=0){
+
+			return
+		}
 		static Float:Push[3]
 		entity_get_vector(id, EV_VEC_punchangle, Push)
 		xs_vec_sub(Push, g_Recoil[id], Push)

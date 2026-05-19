@@ -550,7 +550,14 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 	}
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
-		
+	
+
+	static iClip;iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
+	if(iClip<=0){
+
+		return
+	}
+
 	static Float:push[3]
 	pev(id, pev_punchangle, push)
 	xs_vec_sub(push, g_punchangles[id], push)

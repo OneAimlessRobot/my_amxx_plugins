@@ -74,11 +74,9 @@ public unchaff_task(id){
 chaff_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_chaff_mask,id)) return
 
-	set_render_with_color_const(id,WHITE,1,50,50,1,1)
-	
-	remove_glow_user(id,CHAFF_TIME)
+	set_render_with_color_const(id,WHITE,1,50,50,1,_,CHAFF_TIME)
 	Set_BitVar(is_chaff_mask,id)
-	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[WHITE])
+	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[WHITE],CHAFF_TIME)
 	
 	
 	set_task(CHAFF_TIME,"unchaff_task",id+UNCHAFF_TASKID)

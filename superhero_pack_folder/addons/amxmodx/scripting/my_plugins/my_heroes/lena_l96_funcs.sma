@@ -311,6 +311,12 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		
 		return
 	}
+
+	static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
+	if(iClip<=0){
+
+		return
+	}
 	static Float:Push[3]
 	entity_get_vector(id, EV_VEC_punchangle, Push)
 	sub_3d_vectors(Push, g_Recoil[id], Push)

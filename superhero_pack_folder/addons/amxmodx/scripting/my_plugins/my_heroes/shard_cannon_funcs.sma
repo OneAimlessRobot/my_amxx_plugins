@@ -343,7 +343,14 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 	if(!Get_BitVar(g_Had_SHARD_CANNON, Id))
 		return
-		
+	
+
+	static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
+	if(iClip<=0){
+
+		return
+	}
+	
 	static Float:Push[3]
 	
 	pev(Id, pev_punchangle, Push)

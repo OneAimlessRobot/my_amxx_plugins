@@ -8,7 +8,7 @@
 
 native gatling_set_needle(id,value_to_set)
 native gatling_get_needle(id)
-native gatling_get_needle_fx(id)
+native fx_id:gatling_get_needle_fx(id)
 native gatling_needle_cycle_fx(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

@@ -440,7 +440,7 @@ launch_pill(id)
 	
 
 	gatling_dec_num_pills(id)
-	new fx_num=sh_gen_effect()
+	new fx_id:fx_num=sh_gen_effect()
 	
 	//this will store the fx num in the pill ent
 	entity_set_int(Ent,EV_INT_iuser3,fx_num)

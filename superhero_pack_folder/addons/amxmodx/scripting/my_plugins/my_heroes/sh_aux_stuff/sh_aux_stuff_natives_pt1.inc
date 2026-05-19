@@ -11,8 +11,7 @@ enum damage_icon_types{
   DMG_ICON_HEAT,
   DMG_ICON_HEALTH,
   DMG_ICON_ARMOR,
-  DMG_ICON_LONGJUMP,
-  DMG_ICON_MAX //this_value bounds an internal array. dont use it
+  DMG_ICON_LONGJUMP
 }
 native ammo_hud(id,number,sw)
 
@@ -21,7 +20,7 @@ native prepare_shero_aux_lib_pt1()
 
 native trail_custom(ent_id,color[3]={255,255,255},life=3,width=10,alpha=255)
 
-native trail(ent_id,color_const=PINK,life=3,width=10,alpha=120)
+native trail(ent_id,sh_custom_color:color_const=PINK,life=3,width=10,alpha=120)
 
 native make_sparks(Float:the_pos[3])
 
@@ -43,14 +42,19 @@ enum damage_icon_types{
   DMG_ICON_HEAT,
   DMG_ICON_HEALTH,
   DMG_ICON_ARMOR,
-  DMG_ICON_LONGJUMP,
-  DMG_ICON_MAX //this_value bounds an internal array. dont use it
+  DMG_ICON_LONGJUMP
 }
 
 
  */
-native set_damage_icon(id,hide_show_or_flash=0,the_type_of_icon=DMG_ICON_POISON,const color[3]={0,0,0})
-native unset_damage_icon(id,the_type_of_icon,Float:delay=1.0)
+native set_damage_icon(id,hide_show_or_flash=0,
+          damage_icon_types:the_type_of_icon=DMG_ICON_POISON,
+          const color[3]={0,0,0},
+          Float:the_remove_timer=0.0)
+
+native unset_damage_icon(id,
+        damage_icon_types:the_type_of_icon,
+        Float:delay=1.0)
 
 /** 
 remember:
@@ -63,13 +67,18 @@ or small decals (otherwise)
 
 */
 native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18)
-native heal_stream(id, x,color_index=LTGREEN,alpha=255)
+native heal_stream(id, x,
+    sh_custom_color:color_index=LTGREEN,alpha=255)
 
 native unfade_screen_user(id)
 
 native fade_screen_user(id)
 //----------------------------------------------------------------------------------------------
-native laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,color_constants[3]={RED,BLUE,CUSTOM},bool:for_one=false,bool:make_sound=false,const default_sound_sample[]=LASER_LINE_DEFAULT_SOUND);
+native laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,
+      sh_custom_color:color_constants[3]={RED,BLUE,CUSTOM},
+      bool:for_one=false,
+      bool:make_sound=false,
+      const default_sound_sample[]=LASER_LINE_DEFAULT_SOUND);
 
 native draw_bbox(ent_id,killbeam)
 
@@ -105,7 +114,7 @@ native aura(id,const color[3]={255,255,255},life=3,decay=1)
 native detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0})
 
 
-native draw_aim_vector(id,color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM});
+native draw_aim_vector(id,sh_custom_color:color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM});
 
 /**
 true for torus
@@ -114,4 +123,5 @@ false for disk
 */
 native create_fired_shot_disk(Float:Pos[3],ent,bool:torus_or_disk=true)
 
-native set_render_with_color_const(id,the_color_num,glow_on_user=1,alpha=-1,the_hud_alpha=-1,glow_user_hud=1,is_sleep=0)
+native set_render_with_color_const(id,sh_custom_color:the_color_num,glow_on_user=1,alpha=-1,the_hud_alpha=-1,glow_user_hud=1,is_sleep=0,
+    Float:unglow_timer=0.0)

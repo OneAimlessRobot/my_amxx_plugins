@@ -3,7 +3,6 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
@@ -149,7 +148,7 @@ public CmdStart(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if((weapon==CSW_KNIFE)&&jet_deployed(id)){
+	if((weapon==CSW_KNIFE)){
 		if(user_mg[id]>0){
 			if(button & IN_ATTACK)
 			{
@@ -181,7 +180,7 @@ public CmdStart(id, uc_handle)
 //----------------------------------------------------------------------------------------------
 public mg_think(ent)
 {
-	if ( !pev_valid(ent) ) return
+	if ( !is_valid_ent(ent) ) return
 	
 	
 	static Float:vEnd[3], Float:gametime,Float:Pos[3]
@@ -189,7 +188,9 @@ public mg_think(ent)
 	pev(ent, pev_vuser1, vEnd)
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
-	if ( !jet_deployed(owner)) {
+	new bool:jet_deployed_here = bool:jet_deployed(owner)
+
+	if ( !jet_deployed_here) {
 		if(pev_valid(ent)){
 			mg_destroy(owner)
 			sh_chat_message(owner,gHeroID,"jet mg died cuz of plane dying!!")
@@ -205,7 +206,7 @@ public mg_think(ent)
 		}
 		return
 	}
-	if(jet_deployed(owner)){
+	if(jet_deployed_here){
 		new user_jet=jet_get_user_jet(owner)
 		new Float:vOrigin[3]
 		entity_get_vector(user_jet, EV_VEC_origin, vOrigin)

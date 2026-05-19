@@ -78,7 +78,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
 	register_event("Damage", "erica_damage", "b", "2!0")
 	
-	RegisterHam(Ham_TakeDamage,"player","Erica_ham_damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","Erica_ham_trace_damage",_,true)
 	
 	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
 
@@ -177,15 +177,17 @@ public sh_hero_init(id, heroID, mode){
 	
 	
 }
-public Erica_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
+	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_user_has_hero(attacker,gHeroID) );
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,30,40,sh_user_has_hero(Attacker,gHeroID),_,_,_,1,the_hitpoint)
 
 
 

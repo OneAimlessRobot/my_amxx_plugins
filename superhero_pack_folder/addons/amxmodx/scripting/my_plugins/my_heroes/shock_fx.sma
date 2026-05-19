@@ -85,9 +85,7 @@ shock_user(id){
     sh_unsleep_user(id)
     sh_set_stun(id,SHOCK_TIME,180.0)
 
-    set_render_with_color_const(id,LTBLUE,1,50,50,1,1)
-
-    remove_glow_user(id,SHOCK_TIME)
+    set_render_with_color_const(id,LTBLUE,1,50,50,1,1,SHOCK_TIME)
 
 
     Set_BitVar(is_shock_mask,id)

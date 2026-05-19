@@ -30,6 +30,12 @@ new gHeroID
 new Float: MEGA_DARK_KNOCKBACK
 new a_flags[10]
 new Float:m4dmgmult
+
+
+new dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E[SAFE_BUFFER_SIZE+1]="darkly_dark_d"
+new dmg_source_name_long_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E[SAFE_BUFFER_SIZE+1]="darkly_dark_d"
+new custom_dmg_id_darkly_dark_d
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -52,6 +58,10 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/toxic_cat_m4.mdl")
 	
+	custom_dmg_id_darkly_dark_d=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
+				dmg_source_name_long_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
+				0)
 	// EVENTS
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -147,7 +157,7 @@ public darkangel_damage(id)
 	
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return
+	if ( (attacker==id)||!is_user_connected(attacker)) return
 	
 	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
 	{
@@ -163,8 +173,12 @@ public darkangel_damage(id)
 		}
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, floatround(extraDamage), "dark darkness m4a1 of cruelty",
-					my_hitpoint_enum:bodypart)
+			sh_extra_damage(id,attacker,floatround(extraDamage),
+								dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
+								my_hitpoint_enum:bodypart ,
+								_,_,_,_,
+								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+								custom_dmg_id_darkly_dark_d)
 		}
 		do_knockback(id,extraDamage);
 	}

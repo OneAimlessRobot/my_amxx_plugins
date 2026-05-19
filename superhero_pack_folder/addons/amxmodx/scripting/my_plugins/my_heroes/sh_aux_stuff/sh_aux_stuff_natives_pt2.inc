@@ -11,7 +11,7 @@ native prepare_shero_aux_lib_pt2()
 
 native fx_invisible(id)
 
-native fx_blood(origin[3],origin2[3],HitPlace,bool:alien=false)
+native fx_blood(origin[3],origin2[3],my_hitpoint_enum:HitPlace,bool:alien=false)
 
 native blood_spray(Float:vicOrigin[3], scale)
 

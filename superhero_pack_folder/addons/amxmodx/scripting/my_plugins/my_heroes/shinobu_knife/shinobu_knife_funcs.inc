@@ -12,12 +12,11 @@ enum shinobu_happy_sentence_id{
     MI_MI_MI,
     I_COULDNT_CATCH_THAT,
     DID_IT_HELP,
-    OOPS,
-    MAX_SHINOBU_HAPPY_SENTENCES
+    OOPS
 }
 
 
-stock const happy_sentences[MAX_SHINOBU_HAPPY_SENTENCES][]={
+stock const happy_sentences[shinobu_happy_sentence_id][]={
 
     "Ara ara~ Enjoy the nap ^^-^^",
     "Hmm? What was that? ^"Mi Mi Mi^"?",
@@ -31,12 +30,11 @@ enum shinobu_fwend_sentence_id{
 
     AI_AI_AI=0,
     HEEEEEY,
-    AM_I_INTERRUPTING,
-    MAX_SHINOBU_FWEND_SENTENCES
+    AM_I_INTERRUPTING
 }
 
 
-stock const fwend_sentences[MAX_SHINOBU_FWEND_SENTENCES][]={
+stock const fwend_sentences[shinobu_fwend_sentence_id][]={
 
     "Ai, Ai, Ai~",
     "heeeeeey~",
@@ -49,13 +47,12 @@ enum shinobu_shinobu_shinobu_shinobu_dickery_sentences_id{
     TUMMY_HURT=0,
     I_TAKE_IT_AS_A_SUPPLEMENT,
     FONKY_MEDICINE,
-    PARSING_TOMFOOLERY_FILES,
-    MAX_DICKERY
+    PARSING_TOMFOOLERY_FILES
 
 
 }
 
-stock const shinobu_shinobu_shinobu_shinobu_dickery_sentences[MAX_DICKERY][]={
+stock const shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id][]={
 
     "Awww, does tummy hurt?",
     "I drink this stuff daily~ Is it really that bad?",
@@ -67,14 +64,13 @@ stock const shinobu_shinobu_shinobu_shinobu_dickery_sentences[MAX_DICKERY][]={
 enum shinobu_visiting_sentences_id{
 
     MAKE_THEM_FEEL_AT_HOME=0,
-    THEY_LOOK_LONELY,
-    MAX_SHINOBU_VISITING_SENTENCES
+    THEY_LOOK_LONELY
 
 
 }
 
 
-stock const shinobu_visiting_sentences[MAX_SHINOBU_VISITING_SENTENCES][]={
+stock const shinobu_visiting_sentences[shinobu_visiting_sentences_id][]={
 
     "Lets go make them feel at home",
     "I wonder if they feel lonely..."

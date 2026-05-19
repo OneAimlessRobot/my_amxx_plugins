@@ -79,15 +79,18 @@ public unco2_task(id){
 co2_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_cO2_mask,id)) return
 	sh_unmolly_user(id)
-	set_render_with_color_const(id,LTGREEN,1,50,50,1,1)
 	
+	Set_BitVar(is_cO2_mask,id)
+
 	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
 
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
 	
-	remove_glow_user(id,CO2_TIME*time_to_apply_mult)
-	Set_BitVar(is_cO2_mask,id)
-	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[LTGREEN])
+	set_render_with_color_const(id,LTGREEN,1,50,50,1,_,
+							CO2_TIME*time_to_apply_mult)
+	
+	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[LTGREEN],
+							CO2_TIME*time_to_apply_mult)
 	
 	
 	set_task(CO2_TIME*time_to_apply_mult,"unco2_task",id+UNCO2_TASKID)

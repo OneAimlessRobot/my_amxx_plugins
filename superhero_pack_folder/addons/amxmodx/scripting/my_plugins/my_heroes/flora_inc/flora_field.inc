@@ -32,7 +32,7 @@ enum flora_sheltered_values{
   MAX_FLORA_SHELTERED
 }
 
-stock const flora_damage_colors[MAX_FLORA_SHELTERED]={
+stock const sh_custom_color:flora_damage_colors[MAX_FLORA_SHELTERED]={
   GREEN,
   GREEN,
   YELLOW,

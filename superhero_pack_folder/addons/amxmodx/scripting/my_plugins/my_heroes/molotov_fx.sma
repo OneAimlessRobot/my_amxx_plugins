@@ -82,8 +82,7 @@ public burn_task(array[2],id)
 	if(!Get_BitVar(gIsBurningMask,id)){
 		return
 	}
-	set_render_with_color_const(id,PINK,1,50,50,1,1)
-	remove_glow_user(id,BURN_PERIOD)
+	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD)
 	make_fire(id,30.0)
 
 	

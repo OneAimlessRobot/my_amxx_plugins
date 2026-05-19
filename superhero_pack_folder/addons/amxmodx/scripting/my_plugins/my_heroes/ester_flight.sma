@@ -489,8 +489,15 @@ public godmode_render_update(id){
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
 		sh_set_rendering(id,255,255,255,255, kRenderFxGlowShell,kRenderTransColor)
 		remove_glow_user(id,FLIGHT_GODMODE_THINK_TIME)
-		if(g_ester_blow_up_time_left[id]>0){
+		if(g_ester_blow_up_time_left[id]>0.0){
 			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
+		}
+		else{
+
+
+			new param[1]
+			param[0]=0
+			BlowUp(param,id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 		}
 	}
 	
@@ -577,10 +584,7 @@ public positionChangeCheck(id)
 	else{
 		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 	
-		set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
-		new param[1]
-		param[0]=0
-		set_task(ESTER_REBORN_EXPLOSION_DELAY_TIME,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
+		godmode_render_update(id+ESTER_REBORN_GLOW_TASKID)
 	
 	}
 }

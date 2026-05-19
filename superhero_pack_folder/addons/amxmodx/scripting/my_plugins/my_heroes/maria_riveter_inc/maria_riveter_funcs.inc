@@ -3,9 +3,9 @@
 #endif
 #define sh_maria_riveter_funcs
 
-#define MARIA_WEAPON "weapon_m249"
-#define MARIA_WEAPON_CLASSID CSW_M249
-#define MARIA_PROJECTILE_CLASSNAME "maria_riveter"
+#define MARIA_WEAPON "weapon_ump45"
+#define MARIA_WEAPON_CLASSID CSW_UMP45
+#define MARIA_PROJECTILE_CLASSNAME "maria_rivet"
 
 
 #define MARIA_RIVETER_SHOTSOUND "weapons/m60-1.wav"
@@ -24,7 +24,7 @@
 
 
 #define MARIA_PROJECTILE_DEPLOY_TIME 1.0
-#define MARIA_PROJECTILE_SHOOT_PERIOD 0.1
+#define MARIA_PROJECTILE_SHOOT_PERIOD 0.25
 
 #define MARIA_PROJECTILE_SHOOT_RANDOMNESS 0.3
 
@@ -34,17 +34,17 @@
 #define MARIA_PROJECTILE_PHYS_UPDATE_TIME 0.05
 
 #define MARIA_PROJECTILE_MASS 1.0
-#define MARIA_PROJECTILE_CAR 0.4292
+#define MARIA_PROJECTILE_CAR 0.1073
 #define MARIA_PROJECTILE_DIAMETER 2.0
 #define MARIA_PROJECTILE_AREA ((MARIA_PROJECTILE_DIAMETER*MARIA_PROJECTILE_DIAMETER)*M_PI)
 #define MARIA_AIR_RESISTANCE 0.25
 #define MARIA_PROJECTILE_DRAG_CONST (MARIA_PROJECTILE_AREA*MARIA_PROJECTILE_CAR*MARIA_AIR_RESISTANCE)
 
-#define RIVETER_RECOIL 2.0
+#define RIVETER_RECOIL 3.0
 
 
 
-#define RIVETER_CLIP_SIZE 190
+#define RIVETER_CLIP_SIZE 117
 
 enum {
 	MARIA_NO_ZOOM=0,
@@ -56,10 +56,11 @@ enum {
 enum maria_riveter_anims
 {
 	maria_riveter_anim_idle = 0,
-	maria_riveter_anim_shoot1,
-	maria_riveter_anim_shoot2,
 	maria_riveter_anim_reload,
 	maria_riveter_anim_draw,
+	maria_riveter_anim_shoot1,
+	maria_riveter_anim_shoot2,
+	maria_riveter_anim_shoot3
 }
 
 native maria_get_hero_id();

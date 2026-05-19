@@ -2,7 +2,6 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -257,8 +256,7 @@ for(new p=0;p<num_found;p++){
 }
 if(healed){
 
-	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1)
-	remove_glow_user(id,heal_period)
+	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
 	
 }
 make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)

@@ -533,7 +533,7 @@ public ester_damage(id)
 				directed_spark(attacker, id)
 			}
 		}
-		fx_blood(origin,origin2,hitpoint,true);
+		fx_blood(origin,origin2,my_hitpoint_enum:hitpoint,true);
 	}
 }
 
@@ -550,7 +550,7 @@ public fire_weapon(id)
 		
 		if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 		{
-			draw_aim_vector(id,{GREEN,GREEN,GREEN})
+			draw_aim_vector(id,sh_custom_color:{GREEN,GREEN,GREEN})
 		}
 		gLastClipCount[id] = ammo
 		gLastWeapon[id]=wpnid;

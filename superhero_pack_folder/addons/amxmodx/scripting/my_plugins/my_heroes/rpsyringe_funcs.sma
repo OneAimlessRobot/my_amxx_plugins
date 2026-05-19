@@ -149,7 +149,7 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 	//retrieve current rocket fx num
 
 	
-	new fx_num=entity_get_int(pToucher,EV_INT_iuser3)
+	new fx_id:fx_num=fx_id:entity_get_int(pToucher,EV_INT_iuser3)
 	new entlist[33];
 	new numfound = find_sphere_class(pToucher,"player", ROCKET_RADIUS ,entlist, 32);
 		
@@ -225,11 +225,11 @@ has_rocket[id] = NewEnt
 
 gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
 
-new fx_num=sh_gen_effect()
+new fx_id:fx_num=sh_gen_effect()
 
 //this will store the fx num in the rocket ent
 entity_set_int(NewEnt,EV_INT_iuser3,fx_num)
-trail(NewEnt,FX_COLOR_OFFSET+fx_num,30,20)
+trail(NewEnt,FX_COLOR_OFFSET(fx_num),30,20)
 entity_set_float(NewEnt, EV_FL_gravity, 0.75)
 set_task(ROCKET_SHOOT_PERIOD,"reload_rocket_task",id+RPSYRINGE_RELOAD_TIMER_TASKID)
 

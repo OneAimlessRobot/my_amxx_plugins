@@ -2,7 +2,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -101,7 +100,7 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
-	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","Yandere_ham_trace_damage",_,true)
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
 
 	custom_dmg_id_senpai_avenger=sh_log_custom_damage_source(
@@ -171,17 +170,19 @@ public yandere_angry_idle_checks(id, uc_handle){
 	return FMRES_IGNORED
 
 }
-public Yandere_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public Yandere_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 
 
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
+	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
 	}
 
-	new ham_result=do_bleed_knife_attack(id,attacker,gHeroID,15,65,
-				sh_user_has_hero(attacker,gHeroID) && Get_BitVar(gSuperAngryMask,attacker));
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,15,65,
+				sh_user_has_hero(Attacker,gHeroID) && Get_BitVar(gSuperAngryMask,Attacker),_,_,_,_,the_hitpoint)
 
 
 
@@ -619,7 +620,8 @@ public yandere_kd(id)
 		yandere_psychosis_user(id)
 	}
 	else{
-		if(!jet_loaded(id)&&!jet_deployed(id)){
+		new bool:jet_deployed_here=bool:jet_deployed(id)
+		if(!jet_loaded(id)&&!jet_deployed_here){
 
 			if(!is_user_bot(id)){
 				playSoundDenySelect(id)
@@ -629,7 +631,7 @@ public yandere_kd(id)
 			
 		}
 
-		if(jet_deployed(id)){
+		if(jet_deployed_here){
 			
 			jet_destroy(id)
 			
@@ -701,7 +703,7 @@ public fire_weapon(id)
 	
 	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
-		draw_aim_vector(id,{RED,RED,RED})
+		draw_aim_vector(id,sh_custom_color:{RED,RED,RED})
 		
 	}
 	gLastClipCount[id] = ammo

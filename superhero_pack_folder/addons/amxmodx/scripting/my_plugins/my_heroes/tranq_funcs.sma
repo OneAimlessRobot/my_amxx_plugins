@@ -313,6 +313,12 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(!client_is_hero_user(id, gHeroID)){
 		return;
 	}
+
+	static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
+	if(iClip<=0){
+
+		return
+	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
 	sub_3d_vectors(Push, g_Recoil[id], Push)

@@ -3,6 +3,7 @@
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
@@ -13,7 +14,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new const damage_icon_strings_arr[_:DMG_ICON_MAX][]={
+new const damage_icon_strings_arr[damage_icon_types][]={
 	"dmg_poison",
 	"dmg_rad",
 	"dmg_shock",
@@ -167,7 +168,7 @@ public _trail(iPlugins, iParams){
 		new ent_id=get_param(1)
 
 		if(!is_valid_ent(ent_id)) return 
-		new color_const= get_param(2)
+		new sh_custom_color:color_const= sh_custom_color:get_param(2)
 
 		new life = get_param(3)
 		new width = get_param(4)
@@ -344,7 +345,7 @@ public _heal_stream(iPlugins, iParams){
 	new id=get_param(1)
 
 	new x=get_param(2)
-	new color_index=get_param(3)
+	new sh_custom_color:color_index=sh_custom_color:get_param(3)
 
 	new alpha= get_param(4)
 	new origin[3]
@@ -409,7 +410,7 @@ public _laser_line(iPlugins, iParams){
 		Float:Pos[3],
 		Float:vEnd[3],
 		killbeam=get_param(4),
-		color_constants[3],
+		sh_custom_color:color_constants[3],
 		for_one=get_param(6),
 		make_sound=get_param(7),
 		sound_sample[128]
@@ -665,7 +666,7 @@ public _directed_spark(iPlugins, iParams){
 		veins=get_param(4),
 		glowing=get_param(5),
 		ramming_pace=get_param(6),
-		color_constant=get_param(7)
+		sh_custom_color:color_constant = sh_custom_color:get_param(7)
 
 	if(!is_valid_ent(init_id)||!is_valid_ent(end_id)) return 
 	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -867,7 +868,9 @@ public _set_damage_icon(iPlugins, iParams){
 	if ( !is_user_connected(id) ) return
 	new hide_show_or_flash=get_param(2)
 
-	new the_icon_type_to_show=get_param(3)
+	new damage_icon_types:the_icon_type_to_show = damage_icon_types:get_param(3)
+
+	new Float:the_remove_timer=get_param_f(4)
 	new color[3]
 
 	get_array(4,color,3)
@@ -882,6 +885,11 @@ public _set_damage_icon(iPlugins, iParams){
 	write_byte(color[1])	// green
 	write_byte(color[2])		// blue
 	message_end()
+	
+	if(the_remove_timer>0.1){
+		
+		  unset_damage_icon(id,the_icon_type_to_show,the_remove_timer)
+	}
 }
 
 /*
@@ -919,7 +927,7 @@ public _draw_aim_vector(iPlugin,iParams){
 
 	if(!is_valid_ent(id)) return 
 	
-	new color_vector_indices[3]
+	new sh_custom_color:color_vector_indices[3]
 	get_array(2,color_vector_indices,3)
 
 	new Float:fvec1[3], Float:fvec2[3],vec1[3],vec2[3]
@@ -936,12 +944,14 @@ public _set_render_with_color_const(iPlugins,iParams){
 	if(!is_valid_ent(id)) return 
 
 
-	new the_color_const=get_param(2)
-	new glow_on_user=get_param(3)
-	new alpha=get_param(4)
-	new the_hud_alpha=get_param(5)
-	new glow_user_hud=get_param(6)
-	new is_sleep=get_param(7)
+	new sh_custom_color:the_color_const=sh_custom_color:get_param(2),
+		glow_on_user=get_param(3),
+		alpha=get_param(4),
+		the_hud_alpha=get_param(5),
+		glow_user_hud=get_param(6),
+		is_sleep=get_param(7),
+		Float:the_glow_timer=get_param_f(8)
+
 	if(is_sleep||(glow_user_hud&&!sh_get_user_is_asleep(id))){
 			sh_screen_fade(id, 0.1, 0.9,
 					LineColors[the_color_const][0],
@@ -960,6 +970,9 @@ public _set_render_with_color_const(iPlugins,iParams){
 		
 		aura(id,LineColors[the_color_const])
 	}
+	if(the_glow_timer>0.1){
+		remove_glow_user(id,the_glow_timer)
+	}
 }
 public _unset_damage_icon(iPlugins,iParams){
 
@@ -976,8 +989,10 @@ public _unset_damage_icon(iPlugins,iParams){
 public remove_damage_icon_task(array[],id){
 
 	id-=REMOVE_DAMAGE_ICON_TASKID
+	
 	if(!is_user_connected(id)) return
-	set_damage_icon(id,_,array[0])
+
+	set_damage_icon(id,_,damage_icon_types:array[0])
 
 
 }

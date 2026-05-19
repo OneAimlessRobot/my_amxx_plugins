@@ -371,7 +371,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		id= get_param(2),
 		Float:added_hp=get_param_f(3),
 		max_hp_to_clamp=get_param(4),
-		color_const=get_param(5),
+		sh_custom_color:color_const=sh_custom_color:get_param(5),
 		user_will_glow=get_param(6),
 		Float:glow_remove_timer=get_param_f(7),
 		hud_alpha=get_param(8),
@@ -401,9 +401,8 @@ public bool:_generic_heal(iPlugins, iParms){
 	}
 	new Float: new_health=floatadd(mate_health,added_hp)
 	set_user_health(id,min((max_hp_to_clamp>0)?max_hp_to_clamp:sh_get_max_hp(id),floatround(new_health)))
-	set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow)
 	if(user_will_glow>0){
-		remove_glow_user(id,glow_remove_timer)
+		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer)
 	}
 	if(hud_msg_sync>0){
 		

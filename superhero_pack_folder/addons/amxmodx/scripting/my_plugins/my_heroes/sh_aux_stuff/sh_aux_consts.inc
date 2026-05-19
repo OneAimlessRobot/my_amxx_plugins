@@ -4,6 +4,9 @@
 #define sh_aux_consts
 
 #define Struct enum
+
+#define enum_zero (any:0)
+
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 
 /*
@@ -205,7 +208,6 @@ enum sh_custom_color{
 		FX_BLIND,
 		FX_METYLPHENIDATE,
 		FX_BATH,
-		COLORS_NUM
 }
 
 
@@ -231,7 +233,7 @@ stock const g_cs_burnDecal[5] = {41, 42, 43, 44, 45}
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 
 //Color definitions
-stock const LineColors[_:COLORS_NUM][3] = {
+stock const LineColors[sh_custom_color][3] = {
 	{150, 150, 150},	//Custom
 	{255, 0, 0},		//Red
 	{0, 255, 0},		//Green

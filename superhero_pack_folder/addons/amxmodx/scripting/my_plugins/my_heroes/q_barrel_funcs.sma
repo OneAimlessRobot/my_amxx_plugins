@@ -517,7 +517,12 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 	if(!Get_BitVar(g_SpecialShot, id)){
 		return
 	}
-		
+
+	static iClip;iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
+	if(iClip<=0){
+
+		return
+	}
 	static Float:Push[3]
 	pev(id, pev_punchangle, Push)
 	xs_vec_sub(Push, Recoil[id], Push)
@@ -526,8 +531,6 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 	xs_vec_add(Push, Recoil[id], Push)
 	
 	set_pev(id, pev_punchangle, Push)
-	
-	return
 }
 
 public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)

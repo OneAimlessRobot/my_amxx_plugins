@@ -106,7 +106,7 @@ public CmdStart(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
-	if((weapon==CSW_KNIFE )&& jet_deployed(id)){
+	if((weapon==CSW_KNIFE )){
 		if(button & IN_USE)
 		{
 			button &= ~IN_USE;

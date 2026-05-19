@@ -56,7 +56,7 @@ public disorient_user(array[1],id)
 	entity_set_vector(id, EV_VEC_velocity, xMoveDir)
 	entity_set_vector(id, EV_VEC_angles, xAngles)
 	entity_set_int( id, EV_INT_fixangle, 1);
-	if(array[0]<=DISORIENT_TIMES){
+	if(array[0]<DISORIENT_TIMES){
 		array[0]++
 		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
 	}
@@ -126,7 +126,7 @@ public disrupt_task(array[1],id){
 	sh_set_rendering(id, disrupt_color[0], disrupt_color[1], disrupt_color[2], disrupt_color[3],kRenderFxGlowShell, kRenderTransColor)
 	remove_glow_user(id,DISRUPT_PERIOD)
 	
-	if(Get_BitVar(gIsDisruptedMask,id)&&(array[0]<=DISRUPT_TIMES)){
+	if(Get_BitVar(gIsDisruptedMask,id)&&(array[0]<DISRUPT_TIMES)){
 		array[0]++
 		set_task(DISRUPT_PERIOD,"disrupt_task",id+DISRUPT_TASKID,array, sizeof(array))
 	}
@@ -144,8 +144,8 @@ disrupt_user(id){
 	sh_set_stun(id,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),default_stun_speed)
 	Set_BitVar(gIsDisruptedMask,id)
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
-	set_task(DISRUPT_PERIOD,"disrupt_task",id+DISRUPT_TASKID,array, sizeof(array))
-	set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
+	disrupt_task(array,id+DISRUPT_TASKID)
+	disorient_user(array,id+DISORIENT_TASKID)
 	
 	
 	

@@ -15,7 +15,6 @@
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
 
 new gHeroID = 0
-new gHeroID_yakui = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
 
@@ -54,7 +53,6 @@ public plugin_cfg(){
 
 
 	gHeroID = maria_get_hero_id()
-	gHeroID_yakui = gatling_get_hero_id()
 	
 	maria_riveter_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -104,10 +102,6 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if(sh_user_has_hero(id,gHeroID_yakui)){
-		return FMRES_IGNORED
-
-	}
 	new button = get_uc(uc_handle, UC_Buttons);
 	
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
@@ -252,10 +246,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	}
 
-	if(sh_user_has_hero(pPlayer,gHeroID_yakui)){
-		return HAM_IGNORED
-
-	}
 	static iClip, iPlaybackEvent
 	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
@@ -275,7 +265,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
-	native_playanim(pPlayer, generate_int(maria_riveter_anim_shoot1,maria_riveter_anim_shoot2))
+	native_playanim(pPlayer, generate_int(maria_riveter_anim_shoot1,maria_riveter_anim_shoot3))
 	unregister_forward(FM_PlaybackEvent, iPlaybackEvent)
 	return HAM_SUPERCEDE
 }
@@ -291,9 +281,10 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 	}
 
-	if(sh_user_has_hero(id,gHeroID_yakui)){
-		return
+	static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
+	if(iClip<=0){
 
+		return
 	}
 	static Float:Push[3]
 	entity_get_vector(id, EV_VEC_punchangle, Push)

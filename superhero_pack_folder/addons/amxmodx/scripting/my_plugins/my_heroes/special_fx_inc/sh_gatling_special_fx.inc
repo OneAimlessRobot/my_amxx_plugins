@@ -20,7 +20,7 @@
 
 #define WEED_GRAVITY 0.1
 
-
+#define METYLPHENIDATE_RECOIL_COEFF 0.2
 
 
 #define COCAINE_SPEED 1000.0
@@ -46,12 +46,11 @@ enum fx_id{
 	COCAINE,
 	BLIND,
 	METYLPHENIDATE,
-	BATH,
-	NUM_FX
+	BATH
 }
 
 
-stock const FX_COLOR_OFFSET= (_:COLORS_NUM-_:NUM_FX)
+#define FX_COLOR_OFFSET(%1) (sh_custom_color-sh_custom_color:fx_id+sh_custom_color:_:%1)
 
 native sh_effect_user(id,attacker,gHeroID)
 native fx_id:sh_gen_effect()
