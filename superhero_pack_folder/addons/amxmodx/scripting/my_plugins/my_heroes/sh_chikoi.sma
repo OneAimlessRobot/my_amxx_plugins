@@ -88,6 +88,9 @@ return HAM_IGNORED
 
 public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
 
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	if(!is_user_alive(id)){
 
 		return HAM_IGNORED;
@@ -106,6 +109,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	switch(hitgroup){
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
+			SetHamParamTraceResult(5,tracehandle)
 			set_user_godmode(id,0)
 			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, MY_HIT_HEAD,SH_DMG_KILL,
 						_,_,_,
@@ -149,7 +153,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	}
 	return DMG_FWD_PASS
 }
-
+	
 public plugin_precache()
 {
 	

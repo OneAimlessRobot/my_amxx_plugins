@@ -106,6 +106,9 @@ public sh_hero_init(id, heroID, mode){
 public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 	
 	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 

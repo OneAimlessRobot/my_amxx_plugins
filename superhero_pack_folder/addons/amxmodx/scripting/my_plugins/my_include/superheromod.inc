@@ -70,6 +70,28 @@ forward sh_extra_damage_fwd_pre(
 			&dmg_type,
 			&sh_thrash_brat_dmg_type:new_dmg_type,
 			&custom_wpn_id);
+/**
+the flags:
+
+#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
+#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+
+
+return value is ignored
+parameters are immutable
+ */
+forward sh_extra_damage_fwd_post(
+			victim, 
+			attacker, 
+			damage,
+			wpnDescription[32], 
+			my_hitpoint_enum:bodypart,
+			dmgMode,
+			sh_extra_dmg_flags,
+			const Float:dmgOrigin[3],
+			dmg_type,
+			sh_thrash_brat_dmg_type:new_dmg_type,
+			custom_wpn_id);
 
 forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
 

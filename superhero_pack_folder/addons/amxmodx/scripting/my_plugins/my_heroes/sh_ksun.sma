@@ -227,6 +227,11 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 }
 
 public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
+	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	if(!sh_is_active()) return HAM_IGNORED
 	
 	if(!is_user_alive(id)){
@@ -553,14 +558,15 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) &&COVERT_ABUSE_ENABLED){
+	new bool:victim_has_hero=sh_user_has_hero(victim,gHeroID)
+	if(victim_has_hero&&COVERT_ABUSE_ENABLED){
 
 	
 		covert_spike_damage(victim)
 
 	}
 
-	if((damage>0.0)&&OVERT_ABUSE_ENABLED){
+	if((damage>0)&&OVERT_ABUSE_ENABLED){
 		new Float:flDamage=float(damage)
 		overt_spike_damage(attacker,flDamage,0)
 		damage=floatround(flDamage)

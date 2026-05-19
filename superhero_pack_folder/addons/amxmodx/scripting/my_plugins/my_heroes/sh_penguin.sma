@@ -386,6 +386,10 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 public cooldown(parm[])
 {
 	new grenade = parm[0]
+	
+	if(!is_valid_ent(grenade)){
+		return
+	}
 	new id = parm[1]
 
 	entity_set_int(grenade,EV_INT_iuser2,false)

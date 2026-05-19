@@ -8,6 +8,16 @@
 #define VERSION "1.0.0"
 #include "my_include/my_author_header.inc"
 
+public plugin_end(){
+
+	/*remove every 0 id task (it shouldnt be necessary, though.
+	just to test, for now
+	Any "bloat complainers" 
+	will have to answer back if my server crashes
+	I actually want to hear from them*/
+
+	remove_task(0, 1)
+}
 initialize_default_stuff(){
 
 

@@ -317,7 +317,11 @@ public fw_SetModel(entity, model[])
 }
 
 public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageType)
-{
+{	
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	if(!is_alive(attacker))
 		return HAM_IGNORED	
 	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
@@ -329,7 +333,11 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 }
 
 public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
-{
+{	
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	if(!is_connected(Attacker))
 		return HAM_IGNORED	
 	if(get_player_weapon(Attacker) != CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))

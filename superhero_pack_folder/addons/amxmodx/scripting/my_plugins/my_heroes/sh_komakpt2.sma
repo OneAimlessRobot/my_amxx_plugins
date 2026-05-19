@@ -76,14 +76,7 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack,"player","trace_komakerypt2",_,true)
 	
 	
-	static wpnName[32]
-	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
-	{
-		if ( !(FAST_RELOAD_BITSUM & (1<<wpnId)) && get_weaponname(wpnId, wpnName, charsmax(wpnName)) )
-		{
-			RegisterHam(Ham_Item_PostFrame, wpnName, "Item_PostFrame_Post", 1,true)
-		}
-	}
+	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,FAST_RELOAD_BITSUM,"Item_PostFrame_Post",1, true)
 	set_task(1.0, "engine_repair_loop",_,_,_, "b")
 }
 
@@ -119,6 +112,10 @@ public komak_is_top_speed(id){
 
 public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	new return_result=HAM_IGNORED;
 	new client_is_hittable_here=is_user_alive(this)
 	if(client_is_hittable_here){
@@ -128,6 +125,7 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 			switch(hitgroup){
 				case HIT_RIGHTARM:{
 					set_tr2(traceresult,TR_iHitgroup,HIT_SHIELD);
+					SetHamParamTraceResult(5,traceresult)
 					return_result=HAM_IGNORED
 				}
 			}
@@ -388,6 +386,28 @@ public komak_ku(id)
 	komak_gear_change(id,true)
 	
 	return PLUGIN_HANDLED
+}
+
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	if(sh_user_has_hero(victim,gHeroID) ){
+		if(sh_clients_are_same_team(victim,attacker)){
+			return DMG_FWD_PASS
+		
+		}
+		switch(bodypart){
+			case MY_HIT_RIGHTARM:{
+				bodypart=MY_HIT_SHIELD
+				damage=0
+			}
+		}
+
+	}
+	return DMG_FWD_PASS
 }
 public Event_CurWeapon(id) 
 { 

@@ -6,13 +6,14 @@
 wildcard_level 15
 wildcard_ak47mult 1.0		//Damage multiplyer for his AK47
 wildcard_damage 20		//Damage AK47 burst fire does
-wildcard_radius 50		//Radius of the burst fire bullets
 
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 
 #define MAX_WEAPONS       30   // --| Max number of weapons. ( cs1.6/cz )
 
@@ -25,7 +26,7 @@ new const gEntAKBurst[] = "akBurst"
 new const gModelShell[] = "models/rshell_big.mdl"
 new g_burst_waittime[33] = 0
 new g_burst_reloadtime[33] = 0
-new pCvarAK47Mult, gPcvarMaxDamage, gPcvarRadius, gPcvarSpeed
+new pCvarAK47Mult, gPcvarMaxDamage, gPcvarSpeed
 
 
 new dmg_source_name_short_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
@@ -47,7 +48,6 @@ public plugin_init()
 	new pcvarLevel = register_cvar("wildcard_level", "15")
 	pCvarAK47Mult = register_cvar("wildcard_ak47mult", "1.0")
 	gPcvarMaxDamage = register_cvar("wildcard_damage", "20")
-	gPcvarRadius = register_cvar("wildcard_radius", "50")
 	gPcvarSpeed = register_cvar("wildcard_speed", "2000.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -71,7 +71,7 @@ public plugin_init()
 	register_entity_as_wall_touchable(gEntAKBurst, "fm_Touch_World")
 	register_custom_touchable(gEntAKBurst, "fm_Touch_Player", player_vector, 1)
 
-	RegisterHamsReload ()
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,NOCLIP_WPN_BS,"Event_OnReload",1, true)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -128,7 +128,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID)&& wpnindex == CSW_AK47 ) {
+	if ( sh_user_has_hero(attacker,gHeroID)&& (wpnindex == CSW_AK47) && (victim!=attacker) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(pCvarAK47Mult) - damage)
 		if ( extraDamage > 0){
@@ -197,59 +197,55 @@ public fm_Touch_Player(ptr, ptd)
 
 	if( !is_user_alive(ptd)) return
 
-	new id = pev(ptr, pev_owner)
-
-	new Float:dRatio, Float:distanceBetween, damage
-	new Float:dmgRadius = get_pcvar_float(gPcvarRadius)
-	new maxDamage = get_pcvar_num(gPcvarMaxDamage)
-	new CsTeams:idTeam = cs_get_user_team(id)
 	new FFOn = sh_friendlyfire_on()
-	new Float:vicOrigin[3]
-	static entlist[33];
+	new id = pev(ptr, pev_owner)
+	new CsTeams:idTeam = cs_get_user_team(id)
+
+	new victim = ptd
+
+	if ( !is_user_alive(victim) ) return
+	if ( idTeam == cs_get_user_team(victim) && !FFOn && id != victim ) return
+
+	new maxDamage = get_pcvar_num(gPcvarMaxDamage)
 
 	new Float:fl_vExplodeAt[3]
 
 	pev(ptr, pev_origin, fl_vExplodeAt)
 
-	new numfound = find_sphere_class(ptr,"player",
-					dmgRadius,
-					entlist,
-					charsmax(entlist));
-	for ( new i = 0; i < numfound ; i++ )
-	{	
-		new victim = entlist[i]
-		if ( !is_user_alive(victim) ) continue
-		if ( idTeam == cs_get_user_team(victim) && !FFOn && id != victim ) continue
+	
+		
+	//set pickability status
+	static Float:velocity[3],
+			Float:speed,
+			my_hitpoint_enum:the_hitpoint
+		
+	entity_get_vector(ptr,EV_VEC_velocity,velocity)
+	speed= floatmax(1.0,vector_length(velocity))
 
-		pev(victim, pev_origin, vicOrigin)
-		distanceBetween = vector_distance(fl_vExplodeAt, vicOrigin)
+	the_hitpoint= get_projectile_hit_hitpoint(ptr,
+							velocity,
+							20.0*3.0,
+							speed)
 
-		if ( distanceBetween <= dmgRadius )
-		{
-			dRatio = distanceBetween / dmgRadius
-			damage = maxDamage - floatround(maxDamage * dRatio)
+	if(the_hitpoint==MY_HIT_HEAD){
 
-			// Lessen damage taken by self
-			if (victim == id){
-				damage = floatround(damage / 2.0)
-			}
-			if ( !damage ){
-				damage = 1	// Incase damage cvar is really low cause something if within the radius 
-			}
-			sh_extra_damage(victim, id, damage,
-						dmg_source_name_short_wildcard_burst,
-						_,
-						SH_DMG_NORM,
-						SH_EXTRA_DMG_FLAG_STUN,
-						fl_vExplodeAt,
-						_,
-						SH_NEW_DMG_SUPER_BULLET,
-						wildcard_burst_wpn_id)
-			
-			emit_sound(id, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(ptr, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		}
+		maxDamage*=4;
 	}
+
+	sh_extra_damage(victim, id, maxDamage,
+				dmg_source_name_short_wildcard_burst,
+				the_hitpoint,
+				SH_DMG_NORM,
+				SH_EXTRA_DMG_FLAG_STUN,
+				fl_vExplodeAt,
+				_,
+				SH_NEW_DMG_BLEED,
+				wildcard_burst_wpn_id)
+	
+	sh_bleed_user(victim,id,BLEED_MINI,gHeroID,0,the_hitpoint)
+	emit_sound(id, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(ptr, CHAN_VOICE, "weapons/knife_hit3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 	engfunc(EngFunc_RemoveEntity, ptr)
 
 }
@@ -340,23 +336,7 @@ UTIL_IsWeaponReloading ( const id, const i_Ent )
 	// --| Other weapons.
 	return get_pdata_int ( i_Ent, m_fInReload, 4 )
 }
-//----------------------------------------------------------------------------------------------
-RegisterHamsReload ()
-{
-	// --| Need to loop through all weapons because Ham sucks. :p
-	// --| As 'post' is necessary, otherwise the offset will not work.
-	
-	new s_WeaponName[ 24 ]
-	
-	for ( new i_Wpid = 1; i_Wpid <= MAX_WEAPONS; i_Wpid++ )
-	{
-		// --| Don't register item/weapons which can not reload.
-		if ( !( ( 1 << i_Wpid ) & NOCLIP_WPN_BS ) && get_weaponname ( i_Wpid, s_WeaponName, charsmax ( s_WeaponName ) ) )
-		{
-			RegisterHam ( Ham_Weapon_Reload, s_WeaponName, "Event_OnReload", 1,true)
-		}
-	}
-}
+
 //----------------------------------------------------------------------------------------------
 public wildcard_burstreload(id)
 {
@@ -400,7 +380,7 @@ public wildcard_burstfx(id,xcoord,zcoord,ycoord)
 		}
 		set_pev(newEnt, pev_classname, gEntAKBurst)
 		engfunc(EngFunc_SetModel, newEnt, gModelShell)
-		engfunc(EngFunc_SetSize, newEnt, {-2.0, -12.0, -10.0}, {4.0, 4.0, 14.0})
+		engfunc(EngFunc_SetSize, newEnt, {-0.1, -0.1, -0.1}, {0.1, 0.1, 0.1})
 
 		new Float:fl_Origin[3], Float:fl_Angles[3], Float:fl_vAngle[3]
 		// Get users postion and angles (angles are probably not needed in this case)

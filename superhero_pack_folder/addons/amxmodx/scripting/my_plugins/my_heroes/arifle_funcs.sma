@@ -473,7 +473,11 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 }
 
 public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{
+{	
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
 	if(get_user_weapon(Attacker) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))

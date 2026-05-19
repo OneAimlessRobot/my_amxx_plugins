@@ -60,6 +60,7 @@ public plugin_init()
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "swat_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","swat_damage",_,true)
 
 	shSetMaxHealth(gHeroName, "swat_health")
 	shSetMaxArmor(gHeroName, "swat_armor")
@@ -119,40 +120,61 @@ public weaponChange(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public swat_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
+public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	new bool:has_hero= bool:sh_user_has_hero(attacker,gHeroID) 
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
-	if ( has_hero&& weapon == CSW_M4A1 && is_user_alive(id) ) {
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	static weapon;
+	get_user_attacker(Victim, weapon)
+	new bool:has_hero= bool:sh_user_has_hero(Attacker,gHeroID) 
+
+	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
+
+
+	if(Get_BitVar(hit_region_not_head,_:the_hitpoint)&&sh_user_has_hero(Victim,gHeroID) ){
+
+		set_tr2(Ptr,TR_iHitgroup,_:MY_HIT_SHIELD)
+
+		SetHamParamTraceResult(5,Ptr)
+
+		Damage*=0.3		
+		SetHamParamFloat(3,Damage)
+		the_hitpoint=MY_HIT_SHIELD
+	}
+
+	if ( has_hero&& weapon == CSW_M4A1 && is_user_alive(Victim) ) {
 		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("swat_m4a1mult") - damage)
+		new Float:extraDamage = Damage * get_cvar_float("swat_m4a1mult") - Damage
 		if (extraDamage > 0){
 			
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_M4Swat,
-											my_hitpoint_enum:bodypart,
+			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_short_M4Swat,
+											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
 											M4Swat_weapon_id)
 		}
 	}
 
-	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(id) ){
-		new extraDamage = floatround(damage * get_cvar_float("swat_knifemult") - damage)
+	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(Victim) ){
+		new Float:extraDamage =  Damage *  get_cvar_float("swat_knifemult") - Damage
 		if(extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, dmg_source_name_short_tactical_knife,
-											my_hitpoint_enum:bodypart,
+			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_short_tactical_knife,
+											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_BLEED,
 											tactical_knife_weapon_id)
 		}
 	}
-	return PLUGIN_CONTINUE
+
+	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
@@ -369,3 +391,23 @@ public sh_round_start(){
 	}
 }
 //----------------------------------------------------------------------------------------------
+
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)||(victim==attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	if(sh_user_has_hero(victim,gHeroID) ){
+		if(sh_clients_are_same_team(victim,attacker)){
+			return DMG_FWD_PASS
+		
+		}
+		if(Get_BitVar(hit_region_not_head,_:bodypart)){
+			new Float:damage_float=float(damage)
+			damage_float *=0.3
+			damage=floatround(damage_float)
+			bodypart=MY_HIT_SHIELD
+		}
+	}
+	return DMG_FWD_PASS
+}

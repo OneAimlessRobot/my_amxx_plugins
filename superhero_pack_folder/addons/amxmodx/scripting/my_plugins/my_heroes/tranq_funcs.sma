@@ -162,8 +162,6 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 		return HAM_IGNORED
 	}
 
-	Damage=0.0;
-
 	return HAM_SUPERCEDE
 }
 

@@ -156,6 +156,9 @@ public CmdStart(id, uc_handle)
 
 public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
 {
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
@@ -163,10 +166,6 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
-		
-		
-	
-	damage=0.0;
 	return HAM_SUPERCEDE
 	
 }

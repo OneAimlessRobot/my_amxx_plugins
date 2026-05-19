@@ -4,6 +4,8 @@
 #define auxiliar_stuff_inc
 
 
+#define enum_zero (any:0)
+
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
 #define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
 #define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
@@ -20,22 +22,6 @@ stock bool:true_for_macro=true,
 #define SIZE_OF_INT 32
 
 #define nth_power_of_two(%1) (1<<%1)
-/**
- * Parts of body for hits
-
-#define HIT_GENERIC     0 //none
-#define HIT_HEAD        1
-#define HIT_CHEST       2
-#define HIT_STOMACH     3
-#define HIT_LEFTARM     4
-#define HIT_RIGHTARM    5
-#define HIT_LEFTLEG     6
-#define HIT_RIGHTLEG    7
-#define HIT_SHIELD      8
-#define MAX_BODYHITS    9
-*/
-#define is_valid_hitzone(%1) ((%1)>=0 && (%1)<=8)
-
 
 /*
 
@@ -61,10 +47,51 @@ enum my_hitpoint_enum{
     MY_HIT_RIGHTARM,
     MY_HIT_LEFTLEG,
     MY_HIT_RIGHTLEG,
-    MY_HIT_SHIELD,
-    MY_MAX_HITPOINT
+    MY_HIT_SHIELD
 
 }
+
+//boring primitive hit_regions
+const hit_region_nowhere = 0
+const hit_region_just_generic = (1<<_:MY_HIT_GENERIC)
+const hit_region_just_head = (1<<_:MY_HIT_HEAD)
+const hit_region_just_chest = (1<<_:MY_HIT_CHEST)
+const hit_region_just_stomach = (1<<_:MY_HIT_STOMACH)
+const hit_region_just_leftarm = (1<<_:MY_HIT_LEFTARM)
+const hit_region_just_rightarm = (1<<_:MY_HIT_RIGHTARM)
+const hit_region_just_leftleg = (1<<_:MY_HIT_LEFTLEG)
+const hit_region_just_rightleg = (1<<_:MY_HIT_RIGHTLEG)
+const hit_region_just_shield = (1<<_:MY_HIT_SHIELD)
+
+//custom hitregions for plugins ^ ^ (bitsums of primitive hit_region defines)
+const hit_region_anywhere   =        (
+                                        hit_region_just_generic|hit_region_just_head|
+                                        hit_region_just_chest|hit_region_just_stomach|
+                                        hit_region_just_leftarm|hit_region_just_rightarm|
+                                        hit_region_just_leftleg|hit_region_just_rightleg|
+                                        hit_region_just_shield
+                                        )                                                         
+
+const hit_region_notbody        =           (hit_region_just_generic|hit_region_just_shield)
+
+const hit_region_body          =            (hit_region_anywhere&(~hit_region_notbody))
+
+const hit_region_limbs        =             (
+                                        hit_region_just_leftarm|hit_region_just_rightarm|
+                                        hit_region_just_leftleg|hit_region_just_rightleg
+                                        )                                                     
+
+const hit_region_upper_body      =          (hit_region_just_head|hit_region_just_chest)
+
+const hit_region_lower_body      =          (
+                                        hit_region_just_stomach|hit_region_just_leftleg|
+                                        hit_region_just_rightleg)                                                      
+
+const hit_region_not_head      =            (hit_region_body&(~hit_region_just_head))
+
+
+
+
 #define MUL_TWO(%0,%1)                                                          \
     (                                                                           \
         (%0)                                                                    \
@@ -72,7 +99,7 @@ enum my_hitpoint_enum{
         (%1)                                                                    \
     )
 
-stock const hitzone_names[MAX_BODYHITS][28] = {
+stock const hitzone_names[my_hitpoint_enum][28] = {
 
     "generic",
     "head",
@@ -84,6 +111,23 @@ stock const hitzone_names[MAX_BODYHITS][28] = {
     "rightleg",
     "shield"
 };
+
+/**
+ * Parts of body for hits
+
+#define HIT_GENERIC     0 //none
+#define HIT_HEAD        1
+#define HIT_CHEST       2
+#define HIT_STOMACH     3
+#define HIT_LEFTARM     4
+#define HIT_RIGHTARM    5
+#define HIT_LEFTLEG     6
+#define HIT_RIGHTLEG    7
+#define HIT_SHIELD      8
+#define MAX_BODYHITS    9
+*/
+#define is_valid_hitzone(%1) ((%1)>=enum_zero && (%1)<=my_hitpoint_enum)
+
 /**
 
  * IDs of weapons in CS

@@ -5,7 +5,6 @@
 
 #define Struct enum
 
-#define enum_zero (any:0)
 
 #define MAX_MAP_DIST_POSSIBLE (8192.0*floatsqroot(3.0))
 

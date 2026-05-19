@@ -17,7 +17,6 @@
 
 
 new gHeroID = 0
-new gHeroID_maria = 0
 new gNumPills[SH_MAXSLOTS+1]
 new gatling_action:g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]
@@ -210,7 +209,10 @@ public fwd_StartFrame() {
 }
 public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
 {
-	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
@@ -220,7 +222,6 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 		return HAM_IGNORED
 	}
 	
-	damage=0.0;
 	return HAM_SUPERCEDE
 	
 }
@@ -292,10 +293,6 @@ public CmdStart(id, uc_handle)
 	
 	if ( !client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
-	if(client_is_hero_user(id, gHeroID_maria)){
-		
-		return FMRES_IGNORED
-	}
 	if(!Get_BitVar(gPillGatlingEngaged_mask,id)){
 
 		return FMRES_IGNORED
@@ -345,7 +342,6 @@ public loadCVARS()
 {
 
 	gHeroID = gatling_get_hero_id()
-	gHeroID_maria = maria_get_hero_id()
 	windup_time=get_cvar_float("yakui_windup_time")
 }
 public delayanim(id){

@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "../../yapb"
+		},
+		{
+			"path": "../data/lang"
 		}
 	],
 	"settings": {}

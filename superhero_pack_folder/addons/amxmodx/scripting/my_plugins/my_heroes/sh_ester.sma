@@ -559,7 +559,10 @@ public fire_weapon(id)
 	
 }
 public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
-{
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	
 	if(!is_user_alive(attacker)||!is_user_alive(id)){
 		return HAM_IGNORED	

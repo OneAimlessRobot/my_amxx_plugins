@@ -44,7 +44,7 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 					
 					{0.1,9.0,40.0,1,-1,"","uneffect_task_generic","stunner","Removed ur stun bro!",1,damage_icon_types:-1},
 					
-					{1.0,5.0,50.0,1,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,-damage_icon_types:1},
+					{1.0,5.0,50.0,1,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,DMG_ICON_RADIATION},
 					
 					{1.0,10.0,60.0,-1,-1,"morphine_task","uneffect_task_generic","morphine","Removed ur heals!",1,DMG_ICON_HEALTH},
 					
@@ -364,7 +364,7 @@ task_cycle(array[3],id){
 				fx_task_parameters[fx_id:array[0]][fx_task_period])
 	}
 
-	if((array[2]<fx_task_parameters[fx_id:array[0]][fx_task_repeats])&&is_user_alive(id)){
+	if((array[2]<fx_task_parameters[fx_id:array[0]][fx_task_repeats])&&is_user_alive(id)&&sh_is_inround()&&(gatling_get_fx_num(id)==fx_id:array[0])){
 
 		array[2]++
 		set_task(fx_task_parameters[fx_id:array[0]][fx_task_period],
@@ -475,7 +475,6 @@ kill_user(id,attacker){
 						LineColors[FX_COLOR_OFFSET(KILL)][0],
 						LineColors[FX_COLOR_OFFSET(KILL)][1],
 						LineColors[FX_COLOR_OFFSET(KILL)][2], 50)
-	sh_extra_damage(id,attacker,1,"Cyanide Pill",_,SH_DMG_KILL)
 
 	sh_extra_damage(id,attacker,1,
 				dmg_source_name_long_cyanide,
@@ -591,10 +590,12 @@ uneffect_user_primitive(id){
 	if(fx_task_parameters[the_fx_id][fx_task_status_icon]>=enum_zero){
 		set_damage_icon(id,0,fx_task_parameters[the_fx_id][fx_task_status_icon])
 	}
-	if(the_fx_id==RADIOACTIVE){
-		unradioactive_user(id)
-	}
-	if(task_exists(id+fx_task_parameters[the_fx_id][fx_task_apply_id])){
+	new bool:will_remove_task
+				=
+				bool:task_exists(id+fx_task_parameters[the_fx_id][fx_task_apply_id])
+
+	if(will_remove_task){
+		
 		remove_task(id+fx_task_parameters[the_fx_id][fx_task_apply_id])
 	}
 	gatling_set_fx_num(id, FX_ID_NONE)
@@ -602,6 +603,18 @@ uneffect_user_primitive(id){
 }
 
 public sh_client_death(id)
+{
+	if(is_user_connected(id)&&sh_is_active()){
+		
+		new fx_id:the_fx=gatling_get_fx_num(id)
+
+		if((the_fx>KILL)&&(the_fx<=BATH)){
+			uneffect_user_primitive(id)
+		}
+	}
+	
+}
+public sh_client_spawn(id)
 {
 	if(is_user_connected(id)&&sh_is_active()){
 		

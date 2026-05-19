@@ -284,9 +284,9 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
 {
-
-	//if(!is_valid_ent(Ent)) return HAM_IGNORED
-	
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 	if(!is_connected(Attacker))
 		return HAM_IGNORED	
 	if(get_player_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))

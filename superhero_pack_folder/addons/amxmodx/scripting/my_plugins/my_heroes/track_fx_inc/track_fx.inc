@@ -7,4 +7,3 @@
 #define RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF 0.40
 
 native track_user(id,attacker,do_damage=0,Float:damage_health_pct=0.1,Float:period,Float:time,sh_custom_color:track_color=LTBLUE);
-native unradioactive_user(id)

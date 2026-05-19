@@ -387,7 +387,7 @@ public amx_stage_hit(id,level,cid){
             
     }
     new Float:damage=str_to_float(arg3)
-    new hitgroup=str_to_num(arg4)
+    new my_hitpoint_enum:hitgroup=my_hitpoint_enum:str_to_num(arg4)
 
     if(!is_valid_hitzone(hitgroup)){
         

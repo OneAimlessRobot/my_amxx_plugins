@@ -168,6 +168,9 @@ public track_shinobu_usp_ammo(ent)
 
 public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active()) return HAM_IGNORED
 	
 	if ( !is_user_alive(idattacker)) {

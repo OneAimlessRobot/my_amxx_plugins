@@ -91,7 +91,6 @@ public unchaff_user(id){
 	if(Get_BitVar(is_chaff_mask,id)){
 		sh_set_rendering(id)
 		UnSet_BitVar(is_chaff_mask,id)
-		set_damage_icon(id,0,DMG_ICON_GAS)
 	}
 	
 	

@@ -137,6 +137,7 @@ new fwdReturn
 new fwd_HeroInit_Pre, fwd_HeroInit, fwd_HeroInit_pt2, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
+new fwd_ShDamagePost
 new fwd_ShXpPre
 
 #if defined SH_BACKCOMPAT
@@ -247,6 +248,7 @@ public plugin_init()
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF)
+	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
 	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 
 
@@ -2714,7 +2716,7 @@ public _sh_extra_damage()
 					thrashbrat_dmg_type,
 					abused_wpn_id)){
 		
-		server_print("Sh damage forward execute error.");
+		server_print("Sh damage forward pre execute error.");
 	}
 	
 	if(abused_wpn_id!=custom_wpn_id){
@@ -2760,193 +2762,210 @@ public _sh_extra_damage()
 	new CsTeams:attackerTeam = cs_get_user_team(attacker)
 	
 	if(the_dmg_return_value!=DMG_FWD_BLOCK){
-	if ( newHealth < 1 ) {
-		new bool:kill
-		new attackerFrags = get_user_frags(attacker)
-		new attackerMoney = cs_get_user_money(attacker)
+		if ( newHealth < 1 ) {
+			new bool:kill
+			new attackerFrags = get_user_frags(attacker)
+			new attackerMoney = cs_get_user_money(attacker)
 
-		if ( victim == attacker ) {
-			kill = true
-		}
-		else if ( victimTeam != attackerTeam || ( FFon && freeforall ) ) {
-			kill = true
-			new headshot=(bodypart==MY_HIT_HEAD)
-			new Float:hsmult = get_pcvar_float(sh_hsmult)
-			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
-			localAddXP(attacker, xp_to_add)
-			new the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
-				server_print("Sh xp forward execute error.");
+			if ( victim == attacker ) {
+				kill = true
 			}
-			set_user_frags(attacker, ++attackerFrags)
+			else if ( victimTeam != attackerTeam || ( FFon && freeforall ) ) {
+				kill = true
+				new headshot=(bodypart==MY_HIT_HEAD)
+				new Float:hsmult = get_pcvar_float(sh_hsmult)
+				new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
+				localAddXP(attacker, xp_to_add)
+				new the_xp_return_value=XP_FWD_PASS
+				if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
+					server_print("Sh xp forward execute error.");
+				}
+				set_user_frags(attacker, ++attackerFrags)
 
-			// Frag gives $300, make sure not to go over max
-			if ( attackerMoney < 16000 ) {
-				new money = min((attackerMoney + 300), 16000)
-				cs_set_user_money(attacker, money, 1)
+				// Frag gives $300, make sure not to go over max
+				if ( attackerMoney < 16000 ) {
+					new money = min((attackerMoney + 300), 16000)
+					cs_set_user_money(attacker, money, 1)
+				}
 			}
-		}
-		else if ( FFon ) {
-			kill = true
+			else if ( FFon ) {
+				kill = true
 
-			localAddXP(attacker, -gXPGiven[gPlayerLevel[attacker]])
+				localAddXP(attacker, -gXPGiven[gPlayerLevel[attacker]])
 
-			Assign_BitVar(gBlockMercyXpMask, attacker, true_for_macro);
+				Assign_BitVar(gBlockMercyXpMask, attacker, true_for_macro);
 
-			set_user_frags(attacker, --attackerFrags)
+				set_user_frags(attacker, --attackerFrags)
 
-			client_print(attacker, print_center, "You killed a teammate")
+				client_print(attacker, print_center, "You killed a teammate")
 
-			// Teamkill removes $3300, make sure not to go under min
-			if ( attackerMoney > 0 ) {
-				new money = max((attackerMoney - 3300), 0)
-				cs_set_user_money(attacker, money, 1)
+				// Teamkill removes $3300, make sure not to go under min
+				if ( attackerMoney > 0 ) {
+					new money = max((attackerMoney - 3300), 0)
+					cs_set_user_money(attacker, money, 1)
+				}
 			}
-		}
 
-		if ( !kill ){
-			return
-		}
+			if ( !kill ){
+				return
+			}
 
-		// Kill the victim and block the message
-		set_msg_block(gmsgScoreInfo, BLOCK_ONCE)
-
-
-		gXrtaDmgClientKill = true
-		// Save info to change HUD death message and send forward with correct info
-		copy(gXrtaDmgWpnName, charsmax(gXrtaDmgWpnName), wpnDescription)
-		
-		gXrtaDmgAttacker = attacker
-		gXrtaDmgBodypart = bodypart
-		// Kill the victim
-		// pev_dmg_inflictor not set becase this will be self even if we did set it
-		
-		dllfunc(DLLFunc_ClientKill, victim)
-
-		gXrtaDmgClientKill = false
-
-		// Log the Kill
-		logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,bodypart)
-		
-		// Make camera turn toward attacker on death, thx Emp`
-		set_pev(victim, pev_iuser3, attacker)
+			// Kill the victim and block the message
+			set_msg_block(gmsgScoreInfo, BLOCK_ONCE)
 
 
-		// ClientKill removes a frag, give it back if not self inflicted
-		new victimFrags = get_user_frags(victim)
-		if ( victim != attacker ) {
-			set_user_frags(victim, ++victimFrags)
+			gXrtaDmgClientKill = true
+			// Save info to change HUD death message and send forward with correct info
+			copy(gXrtaDmgWpnName, charsmax(gXrtaDmgWpnName), wpnDescription)
+			
+			gXrtaDmgAttacker = attacker
+			gXrtaDmgBodypart = bodypart
+			// Kill the victim
+			// pev_dmg_inflictor not set becase this will be self even if we did set it
+			
+			dllfunc(DLLFunc_ClientKill, victim)
 
-			// Update attacker's statustext since his xp changed
+			gXrtaDmgClientKill = false
 
-			// Update victims scoreboard with correct info
+			// Log the Kill
+			logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,bodypart)
+			
+			// Make camera turn toward attacker on death, thx Emp`
+			set_pev(victim, pev_iuser3, attacker)
+
+
+			// ClientKill removes a frag, give it back if not self inflicted
+			new victimFrags = get_user_frags(victim)
+			if ( victim != attacker ) {
+				set_user_frags(victim, ++victimFrags)
+
+				// Update attacker's statustext since his xp changed
+
+				// Update victims scoreboard with correct info
+				message_begin(MSG_ALL, gmsgScoreInfo)
+				write_byte(victim)
+				write_short(victimFrags)
+				write_short(cs_get_user_deaths(victim))
+				write_short(0)
+				write_short(_:victimTeam)
+				message_end()
+			}
+			new victim_name[128];
+			new attacker_name[128];
+			get_user_name(victim,victim_name,127)
+			get_user_name(attacker,attacker_name,127)
+			
+			if ( Get_BitVar(gHasAnubisMask, attacker) && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
+				set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
+				ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage_after)
+				sh_chat_message(attacker, -1, "You killed: %s with: %d dmg using: %s",victim_name,damage_after,wpnDescription)
+			}
+
+			if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
+				set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
+				ShowSyncHudMsg(victim, gMsgSync1, "%d", damage_after)
+				sh_chat_message(victim, -1, "You were killed by: %s with: %d dmg using: %s",attacker_name,damage_after,wpnDescription)
+			}
+
+			// Update killers scoreboard with new info
 			message_begin(MSG_ALL, gmsgScoreInfo)
-			write_byte(victim)
-			write_short(victimFrags)
-			write_short(cs_get_user_deaths(victim))
+			write_byte(attacker)
+			write_short(attackerFrags)
+			write_short(cs_get_user_deaths(attacker))
 			write_short(0)
-			write_short(_:victimTeam)
+			write_short(_:attackerTeam)
 			message_end()
-		}
-		new victim_name[128];
-		new attacker_name[128];
-		get_user_name(victim,victim_name,127)
-		get_user_name(attacker,attacker_name,127)
-		
-		if ( Get_BitVar(gHasAnubisMask, attacker) && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, gMsgSync1, "%d", damage_after)
-			sh_chat_message(attacker, -1, "You killed: %s with: %d dmg using: %s",victim_name,damage_after,wpnDescription)
-		}
-
-		if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, gMsgSync1, "%d", damage_after)
-			sh_chat_message(victim, -1, "You were killed by: %s with: %d dmg using: %s",attacker_name,damage_after,wpnDescription)
-		}
-
-		// Update killers scoreboard with new info
-		message_begin(MSG_ALL, gmsgScoreInfo)
-		write_byte(attacker)
-		write_short(attackerFrags)
-		write_short(cs_get_user_deaths(attacker))
-		write_short(0)
-		write_short(_:attackerTeam)
-		message_end()
-		
-		
-		if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
-			// Damage origin is attacker
-			pev(attacker, pev_origin, dmgOrigin)
-		}
-	}
-	else {
-		new bool:hurt = false
-		if ( victimTeam != attackerTeam || victim == attacker || ( FFon && freeforall ) ) {
-			hurt = true
-		}
-		else if ( FFon ) {
-			hurt = true
-			if ( get_param(8) ) {
-				new name[32]
-				get_user_name(attacker, name, charsmax(name))
-				client_print(0, print_chat, "%s attacked a teammate", name)
+			
+			
+			if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
+				// Damage origin is attacker
+				pev(attacker, pev_origin, dmgOrigin)
 			}
 		}
+		else 
+		{
+			new bool:hurt = false
+			if ( victimTeam != attackerTeam || victim == attacker || ( FFon && freeforall ) ) {
+				hurt = true
+			}
+			else if ( FFon ) {
+				hurt = true
+				if ( get_param(8) ) {
+					new name[32]
+					get_user_name(attacker, name, charsmax(name))
+					client_print(0, print_chat, "%s attacked a teammate", name)
+				}
+			}
 
-		if ( !hurt ){
-			return
-		}
+			if ( !hurt ){
+				return
+			}
 
-		if ( Get_BitVar(gHasAnubisMask, attacker)  && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker, gMsgSync2, "%d", damage_after)
-		}
+			if ( Get_BitVar(gHasAnubisMask, attacker)  && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
+				set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
+				ShowSyncHudMsg(attacker, gMsgSync2, "%d", damage_after)
+			}
 
-		if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, gMsgSync2, "%d", damage_after)
-		}
+			if ( Get_BitVar(gHasAnubisMask, victim) && get_pcvar_num(sh_anubisdmg_check) ) {
+				set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
+				ShowSyncHudMsg(victim, gMsgSync2, "%d", damage_after)
+			}
 
-		// External plugins might use this
-		// This should be set to the entity that caused the
-		// damage, but lets just set it to attacker for now
-		set_pev(victim, pev_dmg_inflictor, attacker)
+			// External plugins might use this
+			// This should be set to the entity that caused the
+			// damage, but lets just set it to attacker for now
+			set_pev(victim, pev_dmg_inflictor, attacker)
 
-		set_user_health(victim, newHealth)
+			set_user_health(victim, newHealth)
 
-		cs_set_user_armor(victim, plrArmor, armorType)
+			cs_set_user_armor(victim, plrArmor, armorType)
 
-		// Slow down from damage, does not effect z vector
-		if ( dmgStun && pev(victim, pev_movetype) & MOVETYPE_WALK ) {
+			// Slow down from damage, does not effect z vector
+			if ( dmgStun && pev(victim, pev_movetype) & MOVETYPE_WALK ) {
 
-			// Fake a slowdown from damage
-			// Method needs improvement can not find how cs does it
-			// possibly use a sh_get_velocity type of method adding to current velocity
-			new Float:velocity[3]
-			pev(victim, pev_velocity, velocity)
-			velocity[0] = 0.0
-			velocity[1] = 0.0
-			// Keep [2] the same as current velocity
-			set_pev(victim, pev_velocity, velocity)
-		}
-	
+				// Fake a slowdown from damage
+				// Method needs improvement can not find how cs does it
+				// possibly use a sh_get_velocity type of method adding to current velocity
+				new Float:velocity[3]
+				pev(victim, pev_velocity, velocity)
+				velocity[0] = 0.0
+				velocity[1] = 0.0
+				// Keep [2] the same as current velocity
+				set_pev(victim, pev_velocity, velocity)
+			}
 		
-		if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
-			// Damage origin is attacker
-			pev(attacker, pev_origin, dmgOrigin)
-		}
+			
+			if ( dmgOrigin[0] == 0.0 && dmgOrigin[1] == 0.0 && dmgOrigin[2] == 0.0 ) {
+				// Damage origin is attacker
+				pev(attacker, pev_origin, dmgOrigin)
+			}
 
-		// Damage message for showing damage bits only
-		message_begin(MSG_ONE_UNRELIABLE, gmsgDamage, _, victim)
-		write_byte(0)		// dmg_save
-		write_byte(damage_after)	// dmg_take
-		write_long(dmg_type)	// visibleDamageBits
-		engfunc(EngFunc_WriteCoord, dmgOrigin[0])	// damageOrigin.x
-		engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
-		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
-		message_end()
-		
+			// Damage message for showing damage bits only
+			message_begin(MSG_ONE_UNRELIABLE, gmsgDamage, _, victim)
+			write_byte(0)		// dmg_save
+			write_byte(damage_after)	// dmg_take
+			write_long(dmg_type)	// visibleDamageBits
+			engfunc(EngFunc_WriteCoord, dmgOrigin[0])	// damageOrigin.x
+			engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
+			engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
+			message_end()
+			if (!ExecuteForward(fwd_ShDamagePost, 
+							fwdReturn, 
+							victim,
+							attacker,
+							damage_after,
+							preparedWpnDescription,
+							bodypart,
+							mode,
+							sh_extra_dmg_flags,
+							preparedWpnDmgOriginInt,
+							dmg_type,
+							thrashbrat_dmg_type,
+							abused_wpn_id)){
+				
+				server_print("Sh damage forward post execute error.");
+			}
+			
 		}
 	}
 }

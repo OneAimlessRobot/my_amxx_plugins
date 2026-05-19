@@ -58,8 +58,7 @@ public plugin_init(){
 
 
 public plugin_natives(){
-	
-	register_native("unradioactive_user","_unradioactive_user",0)
+
 	register_native("track_user","_track_user",0);
 }
 
@@ -112,7 +111,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	id-=RADIOACTIVE_TASK_ID
 	if(!is_user_alive(id)){
 		
-		unradioactive_user(id);
+		sh_uneffect_user(id);
 		return
 	}
 	if(gatling_get_fx_num(id)!=RADIOACTIVE){
@@ -169,13 +168,13 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 		}
 		else{
-			unradioactive_user(id);
+			sh_uneffect_user(id);
 
 		}
 	}
 	else{
 
-		unradioactive_user(id);
+		sh_uneffect_user(id);
 	}
 }
 
@@ -223,30 +222,4 @@ public _track_user(iPlugins, iParams){
 
 
 
-}
-public _unradioactive_user(iPlugin,iParams){
-	new id=get_param(1)
-	if(is_user_connected(id)){
-		sh_set_rendering(id)
-		set_damage_icon(id,0,DMG_ICON_RADIATION)
-		gatling_set_fx_num(id, FX_ID_NONE)
-	}
-
-}
-
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{	
-	if(sh_is_active()&&is_user_alive(id)){
-		unradioactive_user(id)
-		
-
-	}
-}
-public sh_client_death(id){
-	
-	if(is_user_connected(id)&&sh_is_active()){
-		unradioactive_user(id)
-	}
-	
 }

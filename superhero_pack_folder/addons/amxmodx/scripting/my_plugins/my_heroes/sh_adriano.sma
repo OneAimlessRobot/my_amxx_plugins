@@ -194,7 +194,11 @@ public heal_teamate(id,teamate){
 	
 }
 public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	

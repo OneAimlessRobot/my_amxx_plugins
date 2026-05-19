@@ -7,6 +7,7 @@ LEFTARM = leftarm
 RIGHTARM = rightarm
 LEFTLEG = leftleg
 RIGHTLEG = rightleg
+SHIELD = shield
 MODE_SET_TO = "amx_statsx_mode" set to "%s"
 ATTACKERS = Attackers
 ACC = acc.
