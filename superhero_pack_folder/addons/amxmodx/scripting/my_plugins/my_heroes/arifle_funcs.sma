@@ -34,14 +34,14 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_arifle, "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_arifle, "fw_Weapon_PrimaryAttack_Post", 1,true)
-	RegisterHam(Ham_Item_Deploy, weapon_arifle, "fw_Item_Deploy_Post", 1, true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_arifle, "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_arifle, "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_arifle, "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_Deploy_Post", 1, true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -117,7 +117,7 @@ public Do_Register_HamBot(id)
 public Get_Arifle(id)
 {
 	Set_BitVar(g_Had_Arifle, id)
-	fm_give_item(id, weapon_arifle)
+	fm_give_item(id, weapon_names_stock_arr[CSW_ARIFLE])
 	
 	Give_RealAmmo(id, CSW_ARIFLE)
 	
@@ -181,7 +181,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ARIFLE_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_arifle, entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ARIFLE], entity)
 		
 		if(!pev_valid(weapon))
 			return FMRES_IGNORED;
@@ -339,7 +339,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	}		
 	
 	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
-	write_string(Get_BitVar(g_Had_Arifle, id) ? weapon_arifle : "weapon_m249")
+	write_string(weapon_names_stock_arr[CSW_ARIFLE])
 	write_byte(4) // PrimaryAmmoID
 	write_byte(A_RIFLE_CLIP) // PrimaryAmmoMaxAmount
 	write_byte(A_RIFLE_RESERVE) // SecondaryAmmoID

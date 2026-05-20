@@ -6,6 +6,7 @@
 
 #define enum_zero (any:0)
 
+
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))
 #define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
 #define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
@@ -22,6 +23,8 @@ stock bool:true_for_macro=true,
 #define SIZE_OF_INT 32
 
 #define nth_power_of_two(%1) (1<<%1)
+
+#define exhausted_bitsum (((nth_power_of_two(SIZE_OF_INT-1)-1))+nth_power_of_two(SIZE_OF_INT-1))
 
 /*
 
@@ -89,7 +92,60 @@ const hit_region_lower_body      =          (
 
 const hit_region_not_head      =            (hit_region_body&(~hit_region_just_head))
 
+/**
 
+amx errors to help me debug
+
+out of bounds is 4
+
+
+its all from 0
+in err none
+
+to whatever the last one is
+
+1 by 1
+
+err exit is 1
+
+err assert is 2, etc.
+
+
+enum {
+  AMX_ERR_NONE,
+  // reserve the first 15 error codes for exit codes of the abstract machine //
+  AMX_ERR_EXIT,         // forced exit //
+  AMX_ERR_ASSERT,       // assertion failed //
+  AMX_ERR_STACKERR,     // stack/heap collision //
+  AMX_ERR_BOUNDS,       // index out of bounds //
+  AMX_ERR_MEMACCESS,    // invalid memory access //
+  AMX_ERR_INVINSTR,     // invalid instruction //
+  AMX_ERR_STACKLOW,     // stack underflow //
+  AMX_ERR_HEAPLOW,      // heap underflow //
+  AMX_ERR_CALLBACK,     // no callback, or invalid callback //
+  AMX_ERR_NATIVE,       // native function failed //
+  AMX_ERR_DIVIDE,       // divide by zero //
+  AMX_ERR_SLEEP,        // go into sleepmode - code can be restarted //
+  AMX_ERR_INVSTATE,     // invalid state for this access //
+  AMX_ERR_INVNATIVE,    // invalid native was used //
+
+  AMX_ERR_MEMORY = 16,  // out of memory //
+  AMX_ERR_FORMAT,       // invalid file format //
+  AMX_ERR_VERSION,      // file is for a newer version of the AMX //
+  AMX_ERR_NOTFOUND,     // function not found //
+  AMX_ERR_INDEX,        // invalid index parameter (bad entry point) //
+  AMX_ERR_DEBUG,        // debugger cannot run //
+  AMX_ERR_INIT,         // AMX not initialized (or doubly initialized) //
+  AMX_ERR_USERDATA,     // unable to set user data field (table full) //
+  AMX_ERR_INIT_JIT,     // cannot initialize the JIT //
+  AMX_ERR_PARAMS,       // parameter error //
+  AMX_ERR_DOMAIN,       // domain error, expression result does not fit in range //
+  AMX_ERR_GENERAL,      // general error (unknown or unspecific error) 
+};
+
+
+
+ */
 
 
 #define MUL_TWO(%0,%1)                                                          \
@@ -201,4 +257,48 @@ stock const weapon_names_stock_arr[CSW_LAST_WEAPON+1][] = {
     "weapon_ak47",
     "weapon_knife",
     "weapon_p90"
+}
+
+stock list_weapons_in_bitsum(weapon_bitsum,bool:exclude_mode=false){
+	
+	static count=0
+	new bit_sum_to_actually_do = exclude_mode ? (~(weapon_bitsum)): (weapon_bitsum)
+	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
+	{	
+		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
+		if ( do_eht && (strlen(weapon_names_stock_arr[wpnId])>0))
+		{	
+			count++
+			server_print("The weapon number %d (with id %d) in this bitsum is called: %s",count,wpnId,weapon_names_stock_arr[wpnId]);	
+		}
+	}
+}
+
+stock list_hitboxes_in_bitsum(hitbox_bitsum,bool:exclude_mode=false){
+	
+	static count=0
+	new bit_sum_to_actually_do = exclude_mode ? (~(hitbox_bitsum)): (hitbox_bitsum)
+	for ( new my_hitpoint_enum:hit_point = enum_zero; hit_point < my_hitpoint_enum; hit_point++ )
+	{	
+		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<_:hit_point)))
+		if ( do_eht && (strlen(hitzone_names[hit_point])>0))
+		{	
+			count++
+			server_print("The hitbox %d (with id %d) in this bitsum is called: %s",count,_:hit_point,hitzone_names[hit_point]);	
+		}
+	}
+}
+stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
+	
+	static count=0
+	new bit_sum_to_actually_do = exclude_mode ? (~(generic_bitsum)): (generic_bitsum)
+	for ( new i=0;i<32;i++)
+	{	
+		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<i)))
+		if ( do_eht )
+		{	
+			count++
+			server_print("The bit %d (on %d position) in this bitsum is the number: %d",count,i,(1<<i));	
+		}
+	}
 }

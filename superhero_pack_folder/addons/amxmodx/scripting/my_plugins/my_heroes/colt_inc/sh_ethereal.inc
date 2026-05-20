@@ -9,7 +9,6 @@
 #define RECOIL 0.75
 
 #define CSW_ETHEREAL CSW_M4A1
-#define weapon_ethereal "weapon_m4a1"
 #define PLAYER_ANIMEXT "carbine"
 #define ETHEREAL_OLDMODEL "models/w_m4a1.mdl"
 

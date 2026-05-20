@@ -54,12 +54,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_gatling, "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_gatling, "fw_Weapon_Reload_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_gatling, "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_gatling, "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_gatling, "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_GATLING], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_GATLING], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_GATLING], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_GATLING], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_GATLING], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_GATLING], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 }
 public plugin_natives(){
@@ -143,7 +143,7 @@ public Mileage_WeaponRemove(id, ItemID)
 public get_gatling(id)
 {
 	Set_BitVar(g_Had_Volcano, id)
-	fm_give_item(id, weapon_gatling)
+	fm_give_item(id, weapon_names_stock_arr[CSW_GATLING])
 	
 	// Set Clip
 	static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
@@ -296,7 +296,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, DEFAULT_W_MODEL))
 	{
 		static weapon
-		weapon = fm_find_ent_by_owner(-1, weapon_gatling, entity)
+		weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_GATLING], entity)
 		
 		if(!pev_valid(weapon))
 			return FMRES_IGNORED

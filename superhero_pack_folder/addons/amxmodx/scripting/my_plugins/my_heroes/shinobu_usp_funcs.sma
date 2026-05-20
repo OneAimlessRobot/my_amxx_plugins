@@ -29,7 +29,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
-	RegisterHam(Ham_Weapon_Reload, SHINOBU_WEAPON_CLASSNAME, "track_shinobu_usp_ammo",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[SHINOBU_WEAPON_CLASSID], "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	
@@ -200,19 +200,17 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 			g_shinobu_curr_ammo[idattacker] = min(g_shinobu_curr_ammo[idattacker],MAX_AMMO)
 			cs_set_user_bpammo(idattacker,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[idattacker])
 			
+			sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
+								my_hitpoint_enum:hitzone,
+								_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_weapon_shinobu_pistol)
 			
 		}
 		else{
 			damage=0.0
-
+			SetHamParamFloat(3,damage)
 		}
-		SetHamParamFloat(3, 0.0);
-		
-		sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
-							my_hitpoint_enum:hitzone,
-							_,_,_,_,
-							SH_NEW_DMG_SUPER_BULLET,
-							custom_weapon_shinobu_pistol)
 		return HAM_HANDLED
 	}
 	return HAM_IGNORED

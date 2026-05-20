@@ -3,7 +3,6 @@
 #endif
 #define sh_pill_gat_funcs
 
-#define YAKUI_WEAPON_NAME "weapon_m249"
 #define YAKUI_WEAPON_CLASSID CSW_M249
 #define PILL_CLASSNAME "pill_gatling_pill"
 

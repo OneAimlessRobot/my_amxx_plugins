@@ -270,15 +270,16 @@ public maria_damage(id)
 	
 	add_points(id,damage)
 }
-public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
+public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 {
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)  ||is_user_bot(id))
 		return FMRES_IGNORED;
 
 	
 	// get ent looking at
-	static ent, body;
-	get_user_aiming(id, ent, body);
+	static ent;
+
+	ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something
 	if( pev_valid(ent))

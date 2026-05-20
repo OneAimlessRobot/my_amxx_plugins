@@ -33,7 +33,6 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="Clone Trooper"
-new lastammo[33]
 new gHeroID
 
 new dmg_source_name_short_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
@@ -66,7 +65,8 @@ new pcvar_extra_lazadmg
 					dmg_source_name_long_lazah_guun,0)
 
 
-	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_AK47], "make_tracer",_,true)
+
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "CTrooper_damage", "b", "2!0")
 	
@@ -90,31 +90,38 @@ public sh_hero_init(id, heroID, mode){
 	}
  }
  //----------------------------------------------------------------------------------------------
- public make_tracer(id)
+ public make_tracer(entity)
  {
-	if(!is_user_alive(id)) return PLUGIN_CONTINUE
-	if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
-	new clip, ammo
-	new wpnid = get_user_weapon(id, clip, ammo)
-	new CsTeams:user_team=cs_get_user_team(id)
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
 
-	if ((lastammo[id] > clip) && (wpnid == CSW_AK47) ) {
 
-		new vec1[3], vec2[3]
-		new Float:fvec1[3], Float:fvec2[3]
-		get_user_origin(id, vec1, 1) // origin; your camera point.
-		get_user_origin(id, vec2, 3) // termina; where your bullet goes (4 is cs-only)
-
-		IVecFVec(vec1,fvec1)
-		IVecFVec(vec2,fvec2)
-
-		laser_line(id,fvec1,fvec2,false,{RED,GREEN,GREEN},_,true)
-		aura(id,LineColors[((user_team==CS_TEAM_CT)?GREEN:RED)])
+	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+	
+	if(!client_is_hero_user(id, gHeroID)){
+		return HAM_IGNORED
 	}
 
-	lastammo[id] = clip
+	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
+	if(iClip<=0){
 
-	return PLUGIN_CONTINUE
+		return HAM_SUPERCEDE
+
+	}
+	new CsTeams:user_team=cs_get_user_team(id)
+
+	new vec1[3], vec2[3]
+	new Float:fvec1[3], Float:fvec2[3]
+	get_user_origin(id, vec1, 1) // origin; your camera point.
+	get_user_origin(id, vec2, 3) // termina; where your bullet goes (4 is cs-only)
+
+	IVecFVec(vec1,fvec1)
+	IVecFVec(vec2,fvec2)
+
+	laser_line(id,fvec1,fvec2,false,sh_custom_color:{RED,GREEN,GREEN},_,true)
+	aura(id,LineColors[((user_team==CS_TEAM_CT)?GREEN:RED)])
+
+	return HAM_IGNORED
  }
  //----------------------------------------------------------------------------------------------
  public sh_client_spawn(id)

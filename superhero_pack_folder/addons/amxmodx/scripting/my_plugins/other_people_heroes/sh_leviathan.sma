@@ -25,7 +25,6 @@ new lastwpn[SH_MAXSLOTS + 1]
 new lastammo[SH_MAXSLOTS + 1]
 new check[SH_MAXSLOTS + 1]
 new bool:Swim[SH_MAXSLOTS + 1]
-new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new accessLevel[10]
 new GrenOldOrigin[3]
 new bool:FloodOn=false
@@ -50,8 +49,6 @@ public plugin_init()
 	register_cvar("leviathan_underwaterdmg", "1.5")
 	svgravity=get_cvar_num("sv_gravity")
 
-	register_srvcmd("leviathan_maxhealth", "leviathan_maxhealth")
-	shRegMaxHealth(gHeroName, "leviathan_maxhealth" )
 	register_event("Damage", "leviathan_damage", "b", "2!0") 
 }
 
@@ -78,7 +75,6 @@ public sh_hero_init(id, heroID, mode){
 
 	check[id] = 0
 	Swim[id] = false
-	gPlayerMaxHealth[id] = 100
 	
 	if(sh_user_has_hero(id,gHeroID)){
 		leviathan_gravity = get_cvar_num("leviathan_gravity")
@@ -105,7 +101,7 @@ public client_PreThink(id)
 	if(!is_user_connected(id) || !is_user_alive(id))
 		return PLUGIN_CONTINUE
 		
-	if(!FloodOn && (get_user_health(id)%512)<=floatround(gPlayerMaxHealth[id]*leviathan_threshold) && gHasLeviathanPowers[id]) {
+	if(!FloodOn && (get_user_health(id)%512)<=floatround(sh_get_max_hp(id)*leviathan_threshold) && gHasLeviathanPowers[id]) {
 		new pstr[2]
 		pstr[0] = id
 		set_task(0.2, "make_flood", 0, pstr, 1)
@@ -256,7 +252,7 @@ public make_flood(pstr[])
 {
 	if (FloodOn) return
 	new id = pstr[0]
-	if ((get_user_health(id)%512)<=floatround(gPlayerMaxHealth[id]*leviathan_threshold)) {
+	if ((get_user_health(id)%512)<=floatround(sh_get_max_hp(id)*leviathan_threshold)) {
 		FloodOn=true
 		client_print(id, print_center, "[Leviathan] - Level Flooded")
 		svgravity=get_cvar_num("sv_gravity")
@@ -269,17 +265,6 @@ public remove_flood()
 	if (!FloodOn) return
 	FloodOn=false
 	set_cvar_num("sv_gravity", svgravity)
-}
-
-public leviathan_maxhealth()
-{
-	new id[6]
-	new health[9]
-
-	read_argv(1,id,5)
-	read_argv(2,health,8)
-
-	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 
 public leviathan_damage(id)

@@ -34,12 +34,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)	
 	
-	RegisterHam(Ham_Item_Deploy, weapon_shard_cannon, "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_shard_cannon, "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_shard_cannon, "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_shard_cannon, "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_shard_cannon, "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_shard_cannon, "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
 	
@@ -110,7 +110,7 @@ public Get_Shard_Cannon(id)
 	
 	Set_BitVar(g_Had_SHARD_CANNON, id)
 	
-	give_item(id, weapon_shard_cannon)
+	give_item(id,  weapon_names_stock_arr[CSW_SHARD_CANNON])
 	cs_set_user_bpammo(id, CSW_SHARD_CANNON, SHARD_CANNON_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_SHARD_CANNON)

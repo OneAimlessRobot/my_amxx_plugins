@@ -79,7 +79,7 @@ public plugin_init()
 								dmg_source_name_long_ksun_debt,0)
 
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",1,true)
-	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
+	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",1,true)
 
 
 	set_task(1.0,"ksun_step_silent",_,_,_,"b")
@@ -211,7 +211,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 				new CsTeams:att_team=cs_get_user_team(attacker)
 				if(att_team!=payer_team){
 					ksun_inc_player_supply_points(attacker,floatround(damage))
-					if(sh_user_has_hero(id,gHeroID) ){
+					if(sh_user_has_hero(id,gHeroID) && (ksun_get_player_supply_points(id)>0)){
 						ksun_dec_player_supply_points(id,floatround(damage))
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))

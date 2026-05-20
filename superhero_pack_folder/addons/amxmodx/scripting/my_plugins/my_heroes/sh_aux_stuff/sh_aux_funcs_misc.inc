@@ -214,38 +214,36 @@ stock orient_entity_with_move_vector(ent){
 	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
 
 }
-stock do_fast_shot(id,wpnid,Float:speed=1.0){
+stock do_fast_shot(Ent,Float:speed=1.0){
 	
-	if(!is_user_alive(id)){
-		return
-	}
-	if(get_user_weapon(id)!=wpnid){
-		return
-	}
 	static Float:N_Speed
 	N_Speed =speed
 	if(N_Speed != 1.0)
 	{
-		static weapon[32],Ent
-		get_weaponname(wpnid,weapon,31)
-		Ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
-		if(Ent)
+		if(pev_valid(Ent)!=2){
+
+			server_print("Hook faulty??!!! attempted to change firing speed of invalid weapon!^n")
+			return HAM_IGNORED
+		}
+		ExecuteHam(Ham_Weapon_PrimaryAttack, Ent)
+		if(get_pdata_int(Ent, m_iClip, XO_WEAPON)<=0){
+
+			return HAM_SUPERCEDE
+		}
+		static Float:Delay,Float:M_Delay
+		Delay =floatdiv(g_fPrimaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)] ,N_Speed)
+		M_Delay =floatdiv(g_fSecondaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)]  ,N_Speed)
+
+		if (Delay > 0.0)
 		{
-			if(pev_valid(Ent)!=2){
-
-				server_print("Hook faulty??!!! attempted to change firing speed of invalid weapon!^n")
-
-			}
-			static Float:Delay,Float:M_Delay
-			Delay =floatdiv(get_pdata_float( Ent, m_flNextPrimaryAttack, XO_WEAPON) ,N_Speed)
-			M_Delay =floatdiv(get_pdata_float( Ent, m_flNextSecondaryAttack, XO_WEAPON) ,N_Speed)
-			if (Delay > 0.0)
-			{
-				set_pdata_float( Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
-				set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
-			}
+			set_pdata_float( Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
+		}
+		if (M_Delay > 0.0)
+		{
+			set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
 		}
 	}
+	return HAM_SUPERCEDE
 
 }
 
@@ -296,16 +294,20 @@ stock get_weapon_ent_of_player(id,wpnid=0)
 
 	return find_ent_by_owner(-1,class,id);
 } 
-
-stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true){
-
+/**
+exclude mode == 0 for include guns outside of the bitsum. 1 to include only those on the bitsum
+*/
+stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true, bool:exclude_mode=false){
+	
+	new bit_sum_to_actually_do = exclude_mode ? (~(weapon_bitsum)): (weapon_bitsum)
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
-{
-	if ( !(weapon_bitsum & (1<<wpnId)) && strlen(weapon_names_stock_arr[wpnId]))
-	{
-			RegisterHam(ham_constant, weapon_names_stock_arr[wpnId], function_name, is_it_post,is_it_special_bot) 
+	{	
+		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
+		if ( do_eht && (strlen(weapon_names_stock_arr[wpnId])>0))
+		{
+				RegisterHam(ham_constant, weapon_names_stock_arr[wpnId], function_name, is_it_post,is_it_special_bot) 
+		}
 	}
-}
 }
 
 stock init_hud_syncs(){

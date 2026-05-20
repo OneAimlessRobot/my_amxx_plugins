@@ -47,7 +47,6 @@ ghostface_healpoints 5		//The # of HP healed per second, Default 5
 // GLOBAL VARIABLES
 new HeroName[] = "Ghostface (Scream)"
 new gHeroID
-new PlayerMaxHealth[SH_MAXSLOTS+1]
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints
 
@@ -92,10 +91,6 @@ public plugin_init()
 	shSetMaxArmor(HeroName, "ghostface_armor")
 	shSetMinGravity(HeroName, "ghostface_gravity")
 	shSetMaxSpeed(HeroName, "ghostface_knifespeed", "[29]")
-
-	register_srvcmd("ghostface_maxhealth", "ghostface_maxhealth")
-	shRegMaxHealth(HeroName, "ghostface_maxhealth")
-
 	// HEAL LOOP
 	set_task(1.0, "heal_loop", _, _, _, "b")
 }
@@ -119,20 +114,10 @@ public ghostface_damage(id)
 	{
 		new damage = read_data(2)
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeDmgMult) - damage)
-		if ( extraDamage > 0 )
+		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
+		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public ghostface_maxhealth()
-{
-	new id[6]
-	new health[9]
-
-	read_argv(1,id,5)
-	read_argv(2,health,8)
-
-	PlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 //----------------------------------------------------------------------------------------------
 public heal_loop()
@@ -143,7 +128,7 @@ public heal_loop()
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, HealPoints, PlayerMaxHealth[id])
+			shAddHPs(id, HealPoints, sh_get_max_hp(id))
 		}
 	}
 }

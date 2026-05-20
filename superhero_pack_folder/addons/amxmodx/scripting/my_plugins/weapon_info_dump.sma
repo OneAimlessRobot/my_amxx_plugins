@@ -16,8 +16,14 @@
 
 #include <amxmodx>
 #include <amxmisc>
+#include <hamsandwich>
 #include <fakemeta>
 #include <cstrike>
+#include <engine>
+#include "my_include/randomx.inc"
+#include "my_include/auxiliar_stuff.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_funcs_misc.inc"
 
 #define PLUGIN_NAME "Weapon Info Dump"
 #define PLUGIN_VERSION "0.1"
@@ -41,6 +47,9 @@ new _aid[WNUM]
 new _acost[WNUM]
 new _ammo[WNUM]
 new _speed[WNUM]
+new Float:_fire_period[WNUM]
+new Float:_fire2_period[WNUM]
+new Float:_reload_period[WNUM]
 new _buyname[WNUM][32]
 new _buyname2[WNUM][32]
 
@@ -151,7 +160,6 @@ public clcmdDump(id, level, cid) {
 
 	return PLUGIN_HANDLED
 }
-
 public tskWeaponInfo(params[2]) {
 	new id = params[0]
 	new i = params[1]
@@ -161,10 +169,22 @@ public tskWeaponInfo(params[2]) {
 		fm_strip_user_weapons(id)
 
 		//                       ID NAME SPEED CLIP AMMO AID ANAME COST ACOST BUYNAME BUYNAME2
-		log_to_file(g_dump_file, "%-2s %-19s %-5s %-4s %-4s %-3s %-15s %-4s %-5s %-7s %-11s", "ID", "NAME", "SPEED", "CLIP", "AMMO", "AID", "ANAME", "COST", "ACOST", "BUYNAME", "BUYNAME2")
-		for (new x = START_WID; x < WNUM; ++x)
-			log_to_file(g_dump_file, "%2d %-19s %5d %4d %4d %3d %-15s %4d %5d %-7s %-11s", x, _name[x], _speed[x], _clip[x], _ammo[x], _aid[x], _aname[x], _cost[x], _acost[x], _buyname[x], _buyname2[x])
-
+		log_to_file(g_dump_file, "%-2s %-19s %-5s %-4s %-4s %-3s %-15s %-4s %-5s %-7s %-11s %-12s %-12s", "ID", "NAME", "SPEED", "CLIP", "AMMO", "AID", "ANAME", "COST", "ACOST", "BUYNAME", "BUYNAME2", "FIRE_PERIOD", "RELOAD_PERIOD")
+		for (new x = START_WID; x < WNUM; ++x){
+			log_to_file(g_dump_file, "%2d %-19s %5d %4d %4d %3d %-15s %4d %5d %-7s %-11s %0.6f %0.6f", x, _name[x], _speed[x], _clip[x], _ammo[x], _aid[x], _aname[x], _cost[x], _acost[x], _buyname[x], _buyname2[x], _fire_period[x], _reload_period[x])
+		}
+		server_print("Here are the reload rates:^n^n")
+		for (new x = START_WID; x < WNUM; ++x){
+			server_print("%0.6f", _reload_period[x])
+		}
+		server_print("Here are the fire rates:^n^n")
+		for (new x = START_WID; x < WNUM; ++x){
+			server_print("%0.6f", _fire_period[x])
+		}
+		server_print("Here are the secondary fire rates:^n^n")
+		for (new x = START_WID; x < WNUM; ++x){
+			server_print("%0.6f", _fire2_period[x])
+		}
 		log_to_file(g_dump_file, "[WI] Note that there are also ^"especial^" weapons: ^"weapon_c4^" (ID=6, SPEED=250, AID=14), ^"weapon_knife^" (ID=29, SPEED=250), ^"weapon_shield^" (COST=2200)")
 
 		client_print(id, print_chat, "[WI] End of dump. Look into ^"%s^"", g_dump_file)
@@ -215,8 +235,18 @@ WeaponInfo(id, i) {
 	_buyname2[g_id] = g_buy2[i]
 
 	_name[g_id] = g_name
-	if (pev_valid(g_ent))
+	if (pev_valid(g_ent)){
 		_clip[g_id] = cs_get_weapon_ammo(g_ent)
+		
+		ExecuteHam(Ham_Weapon_PrimaryAttack, g_ent)
+		// NOW read the freshly updated variable from memory!
+		_fire_period[g_id] = get_pdata_float(g_ent, m_flNextPrimaryAttack, XO_WEAPON)
+		
+		ExecuteHam(Ham_Weapon_SecondaryAttack, g_ent)
+		_fire2_period[g_id] = get_pdata_float(g_ent, m_flNextSecondaryAttack, XO_WEAPON)
+		
+		_reload_period[g_id] = g_fReloadDelay[g_id]
+	}
 	_cost[g_id] = START_MONEY - cs_get_user_money(id)
 
 	g_name[0] = 0

@@ -39,7 +39,6 @@ new gHeroName[]="DarkPredator"
 new gIsInvisible[SH_MAXSLOTS+1]
 new gStillTime[SH_MAXSLOTS+1]
 new gSpriteWhite, gRadius, gBright
-new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
 new gHeroID
 new accessLevel[10]
@@ -94,9 +93,6 @@ public plugin_init()
 	//ESP Rings Task
 	set_task(2.0, "darkpred_esploop", 0, "", 0, "b")
 	
-	//Makes superhero tell DarkPredator a players max health
-	register_srvcmd("darkpred_maxhealth", "darkpred_maxhealth")
-	shRegMaxHealth(gHeroName, "darkpred_maxhealth" )
 	gHealPoints = get_cvar_num("darkpred_healpoints")
 	// BULLETS FIRED
 	register_event("CurWeapon","darkpred_fire", "be", "1=1", "3>0") 
@@ -112,8 +108,6 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
-
-	gPlayerMaxHealth[id] = 100
 	
 	if ( sh_user_has_hero(id,gHeroID) ) //Check if person selected this hero
 	{
@@ -445,18 +439,7 @@ public darkpred_loop()
 		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id] )
+			shAddHPs(id, gHealPoints,sh_get_max_hp(id))
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public darkpred_maxhealth()
-{
-	new id[6]
-	new health[9]
-	
-	read_argv(1,id,5)
-	read_argv(2,health,8)
-	
-	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }

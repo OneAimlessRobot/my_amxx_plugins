@@ -54,7 +54,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
 	register_event("Damage","shinobuDamage","b", "2!0")
-
+	
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage",_, true)
 
 	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
@@ -149,6 +149,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 	}
 
 }
+
 public client_disconnected(id){
 
 	for(new i=1;i< sh_maxplayers()+1;i++){

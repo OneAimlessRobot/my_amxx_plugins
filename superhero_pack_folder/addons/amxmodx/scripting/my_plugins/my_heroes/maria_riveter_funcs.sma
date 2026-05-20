@@ -9,7 +9,6 @@
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"
-#include "../my_include/weapons_const.inc"
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
@@ -17,6 +16,12 @@
 new gHeroID = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
+
+new trigger_is_down_mask = 0
+new trigger_was_down_mask = 0
+new semi_automatic_mode_mask = 0
+new mode_selector_is_down_mask = 0
+new mode_selector_was_down_mask = 0
 
 new maria_riveter_wpn_id
 new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
@@ -28,17 +33,17 @@ public plugin_init(){
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, MARIA_WEAPON, "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, MARIA_WEAPON, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_PostFrame, MARIA_WEAPON, "fw_Item_PostFrame",_,true)	
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_Item_PostFrame",_,true)	
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
 	
-	RegisterHam(Ham_Weapon_Reload,MARIA_WEAPON, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, MARIA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[MARIA_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
@@ -102,19 +107,44 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
+	
+	Assign_BitVar(mode_selector_was_down_mask, id,Get_BitVar(mode_selector_is_down_mask, id));
+	
+	Assign_BitVar(trigger_was_down_mask, id,Get_BitVar(trigger_is_down_mask, id));
+
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
+
+	Assign_BitVar(mode_selector_is_down_mask, id,(button & IN_ATTACK2));
+	
+	Assign_BitVar(trigger_is_down_mask, id,(button & IN_ATTACK));
+	
+	new  weapon = get_user_weapon(id);
 	if((weapon==MARIA_WEAPON_CLASSID)){
 		
-		if(button & IN_ATTACK)
-		{
-			if((maria_riveter_get_num_rivets(id)<=0)){
-				button &= ~IN_ATTACK;
+		if(Get_BitVar(trigger_is_down_mask, id))
+		{	
+			new bool:cant_shoot = ((maria_riveter_get_num_rivets(id)<=0)) ||
+					(Get_BitVar(semi_automatic_mode_mask,id)?(bool:Get_BitVar(trigger_was_down_mask, id)):false)
+			
+			button &= ~IN_ATTACK;
+			if(cant_shoot){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
 			
+		}
+		if(Get_BitVar(mode_selector_is_down_mask, id)){
+			
+			button &= ~IN_ATTACK2;
+			if(!Get_BitVar(mode_selector_was_down_mask,id)){
+				set_uc(uc_handle, UC_Buttons, button);
+				if(!is_user_bot(id)){
+					client_print(id,print_center,"You have %s semi automatic mode",Get_BitVar(semi_automatic_mode_mask, id)?"disengaged":"engaged")
+				}
+				Assign_BitVar(semi_automatic_mode_mask,id,!Get_BitVar(semi_automatic_mode_mask, id))
+
+			}
 		}
 	}
 	return FMRES_IGNORED;
@@ -132,6 +162,10 @@ public Ham_TraceAttackMariaRiveter(id, idattacker, Float:damage, Float:direction
 	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
+
+	damage= 0.0
+	SetHamParamFloat(3,damage)
+	
 	return HAM_SUPERCEDE
 	
 }
@@ -330,15 +364,18 @@ entity_set_float(Ent,EV_FL_gravity, MARIA_PROJECTILE_GRAVITY_MULT*0.1)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
 velocity_by_aim(id, floatround(MARIA_PROJECTILE_SPEED) , Velocity)
-new Float:coeff_to_multiply_with = 0.0
-new Float:user_movement_velocity[3]
-entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
-new Float:user_maxspeed=get_user_maxspeed(id);
-new Float:user_current_speed=vector_length(user_movement_velocity)
-new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
-coeff_to_multiply_with=coeff_to_multiply_with_extra*MARIA_PROJECTILE_SHOOT_RANDOMNESS
+if(!Get_BitVar(semi_automatic_mode_mask, id)){
 
-randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
+	new Float:coeff_to_multiply_with = 0.0
+	new Float:user_movement_velocity[3]
+	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
+	new Float:user_maxspeed=get_user_maxspeed(id);
+	new Float:user_current_speed=vector_length(user_movement_velocity)
+	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
+	coeff_to_multiply_with=coeff_to_multiply_with_extra*MARIA_PROJECTILE_SHOOT_RANDOMNESS
+
+	randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
+}
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 maria_riveter_dec_num_rivets(id)

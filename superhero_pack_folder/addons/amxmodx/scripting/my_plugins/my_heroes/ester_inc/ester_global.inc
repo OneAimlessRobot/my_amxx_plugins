@@ -3,6 +3,7 @@
 #endif
 #define sh_ester_global_funcs
 
+#define MORALIZER_WEAPON_ID CSW_TMP
 
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
 #define NEUROBLAST_CHARGE "shmod/ester/ester_buildup.wav"

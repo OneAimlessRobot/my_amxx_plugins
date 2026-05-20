@@ -13,7 +13,6 @@
 #include "lena_inc/sh_lena_general_include.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/auxiliar_stuff.inc"
-#include "../my_include/weapons_const.inc"
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
@@ -121,23 +120,14 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
-	if(Get_BitVar(trigger_is_down_mask, id)){
-		Set_BitVar(trigger_was_down_mask, id)
-	}
-	else{
+	Assign_BitVar(trigger_was_down_mask, id,Get_BitVar(trigger_is_down_mask, id))
 
-		UnSet_BitVar(trigger_was_down_mask, id)
-	}
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	if((button & IN_ATTACK)){
+	
+	Assign_BitVar(trigger_is_down_mask, id,(button & IN_ATTACK))
 
-		Set_BitVar(trigger_is_down_mask, id)
-	}
-	else{
-		
-		UnSet_BitVar(trigger_is_down_mask, id)
-	}
+
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if((weapon==LENA_WEAPON_CLASSID)){
 		if(Get_BitVar(trigger_is_down_mask, id))
@@ -166,6 +156,10 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
+
+	damage= 0.0
+	SetHamParamFloat(3,damage)
+	
 	return HAM_SUPERCEDE
 	
 }

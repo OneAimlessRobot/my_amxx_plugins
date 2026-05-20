@@ -34,7 +34,7 @@ public plugin_init()
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 
 	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
-	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
+	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",0,true)
 	
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,
 			CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,

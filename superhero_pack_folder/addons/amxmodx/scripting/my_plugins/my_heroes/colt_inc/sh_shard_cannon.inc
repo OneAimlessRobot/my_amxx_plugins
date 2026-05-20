@@ -38,7 +38,6 @@ enum
 }
 
 #define CSW_SHARD_CANNON CSW_DEAGLE
-#define weapon_shard_cannon "weapon_deagle"
 
 #define WEAPON_SECRETCODE 24062015
 #define OLD_W_MODEL "models/w_deagle.mdl"

@@ -98,8 +98,7 @@ public plugin_init()
 
 	register_event("Damage", "yandere_damage", "b", "2!0")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	
-	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
+
 	RegisterHam(Ham_TraceAttack,"player","Yandere_ham_trace_damage",_,true)
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
 
@@ -121,6 +120,9 @@ public plugin_init()
 								dmg_source_name_long_rage,
 								0)
 	
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Yandere_Fire_Weapon",1, true, false)
+
+
 	set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", _, _, _, "b")
 
 	init_hud_syncs()
@@ -694,24 +696,33 @@ public sh_round_end(){
 		
 	}
 }
-public fire_weapon(id)
+
+public Yandere_Fire_Weapon(entity)
 {
+
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+
+
+	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)||!Get_BitVar(gSuperAngryMask,id)) return PLUGIN_CONTINUE 
-	new wpnid = read_data(2)		// id of the weapon 
-	new ammo = read_data(3)		// ammo left in clip 
-	
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-	
-	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
-	{
-		draw_aim_vector(id,sh_custom_color:{RED,RED,RED})
-		
+	if(!client_is_hero_user(id, gHeroID)){
+		return HAM_IGNORED
 	}
-	gLastClipCount[id] = ammo
-	gLastWeapon[id]=wpnid;
-	return PLUGIN_CONTINUE 
-	
+	if(!Get_BitVar(gSuperAngryMask,id)){
+		return HAM_IGNORED
+	}
+	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
+
+	if(iClip<=0){
+
+		return HAM_SUPERCEDE
+
+	}
+	draw_aim_vector(id,sh_custom_color:{RED,RED,RED})
+
+	return HAM_IGNORED
+
 }
 killyandere(id,bool:dropping=false){
 	

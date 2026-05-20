@@ -27,29 +27,29 @@ enum{
 
 
 
-#define DART_DAMAGE 70.0
+#define DART_DAMAGE 35.0
 #define DART_DAMAGE_FALLOFF_DIST 2500.0
 #define DART_HEADSHOT_THRESHOLD_DIST 20.0
-#define DART_SPEED 3100.0
+#define DART_SPEED 2100.0
 
-#define DART_SHOOT_PERIOD 0.5
+#define DART_SHOOT_PERIOD 0.15
 #define DART_DEPLOY_TIME 1.0
 
 #define DART_SHOOT_RANDOMNESS 0.0
 
 
-#define DART_GRAVITY_MULT 1.0
+#define DART_GRAVITY_MULT 0.3
 #define DART_PHYS_UPDATE_TIME 0.05
 
 #define DART_MASS 1.0
-#define DART_CAR 0.4292
+#define DART_CAR 0.2146
 #define DART_DIAMETER 2.0
 #define DART_AREA ((DART_DIAMETER*DART_DIAMETER)*M_PI)
 #define TRANQ_AIR_RESISTANCE 0.25
 #define DART_DRAG_CONST (DART_AREA*DART_CAR*TRANQ_AIR_RESISTANCE)
 
 #define DART_PISTOL_RECOIL 0.4
-#define DART_PISTOL_CLIP_SIZE 4
+#define DART_PISTOL_CLIP_SIZE 17
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

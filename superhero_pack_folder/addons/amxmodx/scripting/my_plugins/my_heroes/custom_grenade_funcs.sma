@@ -43,7 +43,6 @@ enum sh_grenade_struct{
 
     sh_grenade_name[128],
     sh_grenade_modelname[128],
-	sh_grenade_weaponname[128],
     sh_grenade_break_sound[128],
 	sh_grenade_weapon_classid,
 	sh_custom_color:grenade_color_num,
@@ -61,7 +60,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"none","",
 					"",
-					"",
 					0,
 					CUSTOM,
 					0.0,
@@ -74,7 +72,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 	
 	{"molotov_cocktail",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					"weapon_hegrenade",
 					GLASS_VIAL_BREAK,
 					CSW_HEGRENADE,
 					PINK,
@@ -86,7 +83,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					3.0},
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					"weapon_smokegrenade",
 					crush_stunned,
 					CSW_SMOKEGRENADE,
 					WHITE,
@@ -98,7 +94,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					0.5},
 
 	{"sleep_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					"weapon_smokegrenade",
 					SMOKE_EXPLODE_SOUND,
 					CSW_SMOKEGRENADE,
 					BLUE,
@@ -107,11 +102,10 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					6.0},
+					1.0},
 
 	{"CO2_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					"weapon_smokegrenade",
 					EXTINGUISH_FIRE_SOUND,
 					CSW_SMOKEGRENADE,
 					LTGREEN,
@@ -124,7 +118,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"shock_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
-					"weapon_flashbang",
 					SHOCK_GRENADE_SOUND,
 					CSW_FLASHBANG,
 					LTBLUE,
@@ -137,7 +130,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"freeze_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					"weapon_smokegrenade",
 					FROZEN_SFX,
 					CSW_SMOKEGRENADE,
 					FROZEN_BLUE,
@@ -150,7 +142,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"disrupt_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
-					"weapon_flashbang",
 					crush_stunned,
 					CSW_FLASHBANG,
 					YELLOW,
@@ -163,7 +154,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"shrapnel_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					"weapon_hegrenade",
 					PIERCE_WOUND_SFX,
 					CSW_HEGRENADE,
 					RED,
@@ -176,7 +166,6 @@ new sh_grenade_structs_arr[GREN_MAX_TYPES][sh_grenade_struct]={
 
 	{"marker_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					"weapon_hegrenade",
 					"shmod/komak/fast_shot.wav",
 					CSW_HEGRENADE,
 					ORANGE,
@@ -383,7 +372,7 @@ public CmdStart(id, uc_handle)
 		UnSet_BitVar(sh_grenade_armed_mask,id);
 		return FMRES_IGNORED
 	}
-	new ent = find_ent_by_owner(-1, sh_grenade_structs_arr[gren_type][sh_grenade_weaponname], id);
+	new ent = find_ent_by_owner(-1, weapon_names_stock_arr[wpn_id], id);
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);

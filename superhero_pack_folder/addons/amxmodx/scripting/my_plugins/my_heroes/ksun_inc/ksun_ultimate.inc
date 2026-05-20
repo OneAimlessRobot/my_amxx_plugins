@@ -4,7 +4,6 @@
 #define sh_ksun_ultimate_funcs
 
 #define KSUN_WEAPON_ID CSW_GALIL
-#define KSUN_WEAPON_NAME "weapon_galil"
 
 #define KSUN_ULTIMATE_LOOP_PERIOD 0.4
 #define KSUN_ULTIMATE_LOOP_DEC 30

@@ -71,7 +71,7 @@ public plugin_init()
 	register_entity_as_wall_touchable(gEntAKBurst, "fm_Touch_World")
 	register_custom_touchable(gEntAKBurst, "fm_Touch_Player", player_vector, 1)
 
-	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,NOCLIP_WPN_BS,"Event_OnReload",1, true)
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,(1<<CSW_AK47),"Event_OnReload",1, true, false)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

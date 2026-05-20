@@ -9,7 +9,6 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "../my_include/weapons_const.inc"
 
 #define PLUGIN "Superhero yakui mk2 pt2"
 #define VERSION "1.0.0"
@@ -42,16 +41,16 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "fw_Weapon_PrimaryAttack_Post",1,true)
-	RegisterHam(Ham_Item_Deploy, YAKUI_WEAPON_NAME, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_Weapon_PrimaryAttack_Post",1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
 	register_forward(FM_PlayerPostThink, "fwPlayerPostThink", 1)
-	RegisterHam(Ham_Item_PostFrame, YAKUI_WEAPON_NAME, "Item_PostFrame_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "Item_PostFrame_Post", 1,true)
 		
-	RegisterHam(Ham_Weapon_Reload,YAKUI_WEAPON_NAME, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, YAKUI_WEAPON_NAME, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
 	
@@ -221,6 +220,8 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 					!Get_BitVar(gPillGatlingEngaged_mask,idattacker)){
 		return HAM_IGNORED
 	}
+	damage= 0.0
+	SetHamParamFloat(3,damage)
 	
 	return HAM_SUPERCEDE
 	

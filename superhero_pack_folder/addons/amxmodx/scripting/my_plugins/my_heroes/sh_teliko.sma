@@ -30,9 +30,6 @@ new g_num_mega_counters_enemy[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_teliko_weapon[SH_MAXSLOTS+1]
 new g_teliko_locked[SH_MAXSLOTS+1]
 
-new gLastWeapon[SH_MAXSLOTS+1]
-new gLastClipCount[SH_MAXSLOTS+1]
-
 new g_teliko_enemies_masks[SH_MAXSLOTS+1]
 
 new max_counter_bullets,max_inc_lvl_inc,max_bullets_p_inc,start_counter_bullets
@@ -65,9 +62,10 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
 
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Teliko_Fire_Weapon",1, true, false)
+
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	
-	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 	register_event("CurWeapon", "switch_weapon", "be", "1=1")
 	init_explosion_defaults()
 }
@@ -396,26 +394,34 @@ g_teliko_locked[id]= g_teliko_locked[id]? false:true;
 return PLUGIN_HANDLED
 }
 
-public fire_weapon(id)
+public Teliko_Fire_Weapon(entity)
 {
-	
-if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
-new wpnid = read_data(2)		// id of the weapon 
-new ammo = read_data(3)		// ammo left in clip 
 
-if ( (wpnid ==g_teliko_weapon[id]))
-{
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+
+
+	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)&&(g_counter_bullets[id])) 
-	{
-		draw_aim_vector(id)
-		g_counter_bullets[id]--;
+	if(!client_is_hero_user(id, gHeroID)){
+		return HAM_IGNORED
 	}
-	gLastClipCount[id] = ammo
-	gLastWeapon[id]=wpnid;
-}
-return PLUGIN_CONTINUE 
+	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
+
+	if(iClip<=0){
+
+		return HAM_SUPERCEDE
+
+	}
+	new wpnid= get_user_weapon(id)
+	if(wpnid ==g_teliko_weapon[id]){
+		if ((g_counter_bullets[id])) 
+		{
+			draw_aim_vector(id)
+			g_counter_bullets[id]--;
+		}
+	}
+	return HAM_IGNORED
 
 }
 

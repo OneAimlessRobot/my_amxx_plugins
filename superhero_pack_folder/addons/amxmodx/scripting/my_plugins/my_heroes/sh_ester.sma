@@ -115,7 +115,8 @@ public plugin_init()
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
+	
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[MORALIZER_WEAPON_ID], "fire_weapon",_,true)
 	
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor",_, true)
 
@@ -215,11 +216,11 @@ stock ester_weapons(id){
 		
 	}
 	else if(sh_user_has_hero(id,gHeroID) ){
-		sh_give_weapon(id, CSW_TMP, true)
+		sh_give_weapon(id, MORALIZER_WEAPON_ID, true)
 	}
 	else{
 		
-		sh_drop_weapon(id, CSW_TMP,true);
+		sh_drop_weapon(id, MORALIZER_WEAPON_ID,true);
 		
 	}
 	
@@ -274,7 +275,7 @@ public weaponChange(id)
 		return PLUGIN_CONTINUE
 	}
 	new wpnid = get_user_weapon(id)
-	if (wpnid == CSW_TMP) {
+	if (wpnid == MORALIZER_WEAPON_ID) {
 		if(gGunLastDeployed[id]!=wpnid){
 			if(sh_get_user_effect(id)!=METYLPHENIDATE){
 				sh_effect_user_direct(id,id,gHeroID,METYLPHENIDATE);
@@ -355,7 +356,7 @@ public Ester_revenge_loop(id)
 			continue
 		}
 		if( is_user_alive(i)){
-			if (get_user_weapon(i) == CSW_TMP) {
+			if (get_user_weapon(i) == MORALIZER_WEAPON_ID) {
 				entity_set_int(i, EV_INT_flTimeStepSound, 2000)
 			}
 		}
@@ -537,27 +538,31 @@ public ester_damage(id)
 	}
 }
 
-public fire_weapon(id)
+public fire_weapon(entity)
 {
+
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+
+
+	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
-	new wpnid = read_data(2)		// id of the weapon 
-	new ammo = read_data(3)		// ammo left in clip 
-	
-	if ( (wpnid ==CSW_TMP))
-	{
-		if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-		
-		if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
-		{
-			draw_aim_vector(id,sh_custom_color:{GREEN,GREEN,GREEN})
-		}
-		gLastClipCount[id] = ammo
-		gLastWeapon[id]=wpnid;
+	if(!client_is_hero_user(id, gHeroID)){
+		return HAM_IGNORED
 	}
-	return PLUGIN_CONTINUE 
-	
+	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
+
+	if(iClip<=0){
+
+		return HAM_SUPERCEDE
+
+	}
+	draw_aim_vector(id,sh_custom_color:{GREEN,GREEN,GREEN})
+
+	return HAM_IGNORED
+
 }
+
 public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {	
 	if(damage<=0.0){
@@ -584,29 +589,29 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		get_user_name(attacker,attacker_name,127)
 		get_user_name(id,client_name,127)
 		new is_teamate=(vic_team==att_team)
-		if((weapon==CSW_KNIFE)||(weapon==CSW_TMP)){
+		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
 		switch(is_teamate){
 			case 0:{
 				if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 					sh_effect_user_direct(id,attacker,gHeroID,STUN);
 					if(!is_user_bot(attacker)){
-						sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+						sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 					}
 					if(!is_user_bot(id)){
-						sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+						sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
 					}
-					new Float:extraDamage = (weapon==CSW_TMP?(floatmul(damage,
+					new Float:extraDamage = (weapon==MORALIZER_WEAPON_ID?(floatmul(damage,
 										cvar_val(float,pcvar_tmp_dmg_mult)+1.0)):floatadd(damage,cvar_val(float,pcvar_pan_dmg)))
 					if (extraDamage>0){
 					
 						sh_extra_damage(id,attacker,floatround(extraDamage),
-									(weapon==CSW_TMP)?dmg_source_name_short_moralizing_ray:dmg_source_name_short_adulting_pan,
+									(weapon==MORALIZER_WEAPON_ID)?dmg_source_name_short_moralizing_ray:dmg_source_name_short_adulting_pan,
 									my_hitpoint_enum:hitgroup,
 									_,_,_,_,_,
-									(weapon==CSW_TMP)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
+									(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
 						
 
-						new extra_moralizing_xp=max(0,min((weapon==CSW_TMP?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
+						new extra_moralizing_xp=max(0,min((weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
 									mult*floatround(extraDamage+damage),
 									cvar_val(num,pcvar_max_moralizing_xp)-gBuiltUpXp[attacker]))
 						if(extra_moralizing_xp){
@@ -623,17 +628,17 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					
 			}
 			case 1:{
-				if(gBuiltUpXp[attacker]>(weapon==CSW_TMP?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
+				if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
 					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
 						sh_effect_user_direct(id,attacker,gHeroID,METYLPHENIDATE);
 						
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,(weapon==CSW_TMP?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+							sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 						}
 						if(!is_user_bot(id)){
-							sh_chat_message(id,gHeroID,(weapon==CSW_TMP?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
 						}
-						new unextra_moralizing_xp=min(mult*(weapon==CSW_TMP?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
+						new unextra_moralizing_xp=min(mult*(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
 						if(unextra_moralizing_xp){
 							
 							if(!is_user_bot(attacker)){
@@ -644,8 +649,6 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						gBuiltUpXp[attacker]-=unextra_moralizing_xp
 					}
 				}
-			}
-			default:{
 			}
 		}
 		

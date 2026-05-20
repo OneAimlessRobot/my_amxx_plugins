@@ -67,8 +67,6 @@ stock g_curr_sound[SH_MAXSLOTS+1] = {-1, ...}
 
 stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
 
-stock gLastWeapon[SH_MAXSLOTS+1]
-stock gLastClipCount[SH_MAXSLOTS+1]
 
 
 

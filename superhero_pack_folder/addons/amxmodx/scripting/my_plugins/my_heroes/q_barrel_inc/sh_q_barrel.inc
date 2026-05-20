@@ -18,7 +18,6 @@
 #define MODEL_W "models/shmod/graciete/qbarrel/w_qbarrel.mdl"
 
 #define CSW_QUADBARREL CSW_M3
-#define weapon_quadbarrel "weapon_m3"
 
 #define WEAPON_SECRETCODE 20132014
 #define OLD_W_MODEL "models/w_m3.mdl"

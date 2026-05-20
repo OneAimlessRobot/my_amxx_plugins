@@ -30,10 +30,6 @@ new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
-
-new thrash_bullets[ SH_MAXSLOTS+1 ]
-new gLastWeapon[SH_MAXSLOTS+1]
-
 new blast_shroom
 new gHeroID;
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
@@ -69,10 +65,13 @@ public plugin_init()
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "thrashy_damage", "b", "2!0")
-	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
+
+
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
 
+
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_AK47], "make_tracer",_,true)
 
 	shSetShieldRestrict(gHeroName)
 	sh_set_hero_hpap(gHeroID, healthcvar, 0)
@@ -207,27 +206,31 @@ public sh_client_spawn(id)
 		}
 	}
 }
-public make_tracer(id)
-{
-	
-if ( !sh_user_has_hero(id,gHeroID)  ||!is_user_alive(id)) return PLUGIN_CONTINUE 
-new wpnid = read_data(2)		// id of the weapon 
-new ammo = read_data(3)		// ammo left in clip 
 
-if ( wpnid  == CSW_AK47)
+ //----------------------------------------------------------------------------------------------
+public make_tracer(entity)
 {
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-	
-	if ((thrash_bullets[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
-	{
-		draw_aim_vector(id,{PURPLE,PURPLE,PURPLE})
+	if(pev_valid(entity)!=2)
+		return HAM_IGNORED
+
+
+	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+
+	if(!client_is_hero_user(id, gHeroID)){
+		return HAM_IGNORED
 	}
-	thrash_bullets[id] = ammo
-	gLastWeapon[id]=wpnid;
-}
-return PLUGIN_CONTINUE 
+	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
 
+	if(iClip<=0){
+
+		return HAM_SUPERCEDE
+
+	}
+	draw_aim_vector(id,sh_custom_color:{PURPLE,PURPLE,PURPLE})
+
+	return HAM_IGNORED
 }
+
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {

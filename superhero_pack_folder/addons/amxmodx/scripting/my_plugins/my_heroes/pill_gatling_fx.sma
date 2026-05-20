@@ -17,7 +17,7 @@
 #define PLUGIN "Superhero yakui pt2 pt1"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-
+new g_last_weapon[SH_MAXSLOTS+1]
 enum fx_task_parameter_id{
 	Float:fx_task_period,
 	Float:fx_task_time,
@@ -60,9 +60,6 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 
 }
 
-new gLastWeapon[SH_MAXSLOTS+1]
-new g_last_weapon[SH_MAXSLOTS+1]
-new gLastClipCount[SH_MAXSLOTS+1]
 new Float:myeloma_doenca_cancro_morte_demonio_recoil_vector[SH_MAXSLOTS+1][3]
 
 new dmg_source_name_short_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
@@ -82,9 +79,14 @@ public plugin_init(){
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 
-register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true)
-register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Pre",0, true)
-register_ham_for_weapon_bitsum(Ham_Item_PostFrame,FAST_RELOAD_BITSUM,"Item_PostFrame_Post",1, true)
+register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true, true)
+//register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon",_, true, false)
+
+register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Pre",_, true, true)
+
+
+
+register_ham_for_weapon_bitsum(Ham_Item_PostFrame,FAST_RELOAD_BITSUM,"Item_PostFrame_Post",1, true, true)
 
 for(new fx_id:i=GLOW;i<fx_id;i++){
 	
@@ -115,8 +117,8 @@ custom_dmg_id_cyanide=sh_log_custom_damage_source(-1,
 
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
 register_event("Damage", "fx_damage", "b", "2!0")
-register_event("CurWeapon", "fire_weapon", "be", "1=1", "3>0")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
+
 init_hud_syncs()
 }
 
@@ -218,36 +220,10 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 			new new_xp= gained_xp+ current_xp;
 			sh_set_user_xp(attacker,new_xp);
 		}
-		default:{
-		
-		}
 	}
 	return DMG_FWD_PASS
 }
 
-public fire_weapon(id)
-{
-	
-	if (!is_user_connected(id)||!is_user_alive(id)||!((gatling_get_fx_num(id)==POISON)||(gatling_get_fx_num(id)==COCAINE))) return PLUGIN_CONTINUE 
-	new wpnid = read_data(2)		// id of the weapon 
-	new ammo = read_data(3)		// ammo left in clip 
-	
-	if (gLastWeapon[id] == 0) gLastWeapon[id] = wpnid
-	
-	if ((gLastClipCount[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
-	{
-		
-		draw_aim_vector(id,(gatling_get_fx_num(id)==POISON)?(sh_custom_color:{GREEN,GREEN,GREEN}):(sh_custom_color:{PINK,PINK,PINK}))
-		if((gatling_get_fx_num(id)==COCAINE)){
-		
-			do_fast_shot(id,wpnid,COCAINE_FIRE_RATE_MULT)
-		}
-	}
-	gLastClipCount[id] = ammo
-	gLastWeapon[id]=wpnid;
-	return PLUGIN_CONTINUE 
-	
-}
 
 //----------------------------------------------------------------------------------------------
 public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
@@ -263,11 +239,19 @@ public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
 	}
-	if (gatling_get_fx_num(owner)==METYLPHENIDATE) {
+	new fx_id:fx_num_of_owner=gatling_get_fx_num(owner)
+	switch(fx_num_of_owner){
+		case METYLPHENIDATE:{
 
-		entity_get_vector(owner, EV_VEC_punchangle,myeloma_doenca_cancro_morte_demonio_recoil_vector[owner])
+			entity_get_vector(owner, EV_VEC_punchangle,myeloma_doenca_cancro_morte_demonio_recoil_vector[owner])
+		}
+		case COCAINE:{
+			
+			return do_fast_shot(weapon_ent,COCAINE_FIRE_RATE_MULT)
+		}
+		
+		
 	}
-
 	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
@@ -284,17 +268,34 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
 	}
-	if (gatling_get_fx_num(owner)==METYLPHENIDATE) {
-		
-		static Float:Push[3]
-		entity_get_vector(owner, EV_VEC_punchangle, Push)
 
-		sub_3d_vectors(Push, myeloma_doenca_cancro_morte_demonio_recoil_vector[owner], Push)
-		
-		multiply_3d_vector_by_scalar(Push, METYLPHENIDATE_RECOIL_COEFF, Push)
-		add_3d_vectors(Push, myeloma_doenca_cancro_morte_demonio_recoil_vector[owner], Push)
-		entity_set_vector(owner, EV_VEC_punchangle, Push)
+	new iClip= get_pdata_int(weapon_ent,m_iClip,XO_WEAPON)
+
+	if(iClip<=0){
+
+		return HAM_SUPERCEDE
+
 	}
+	new fx_id:fx_num_of_owner=gatling_get_fx_num(owner)
+	switch(fx_num_of_owner){
+		case METYLPHENIDATE:{
+
+			static Float:Push[3]
+			entity_get_vector(owner, EV_VEC_punchangle, Push)
+
+			sub_3d_vectors(Push, myeloma_doenca_cancro_morte_demonio_recoil_vector[owner], Push)
+			
+			multiply_3d_vector_by_scalar(Push, METYLPHENIDATE_RECOIL_COEFF, Push)
+			add_3d_vectors(Push, myeloma_doenca_cancro_morte_demonio_recoil_vector[owner], Push)
+			entity_set_vector(owner, EV_VEC_punchangle, Push)
+		
+		}
+	}
+	if(!((fx_num_of_owner==POISON)||(fx_num_of_owner==COCAINE))){
+		return HAM_IGNORED
+	}
+	draw_aim_vector(owner,(fx_num_of_owner==POISON)?(sh_custom_color:{GREEN,GREEN,GREEN}):(sh_custom_color:{PINK,PINK,PINK}))
+	
 
 	return HAM_IGNORED
 }

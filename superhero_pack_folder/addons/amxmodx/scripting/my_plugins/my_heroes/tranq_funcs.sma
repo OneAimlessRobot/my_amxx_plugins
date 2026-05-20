@@ -10,7 +10,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "../my_include/auxiliar_stuff.inc"
-#include "../my_include/weapons_const.inc"
+#include "special_fx_inc/sh_gatling_special_fx.inc"
 
 
 #define PLUGIN "Superhero erica tranq funcs"
@@ -36,15 +36,15 @@ public plugin_init(){
 	
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, STRN_ELITE, "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_ELITE, "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ELITE], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ELITE], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ELITE], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
-	RegisterHam(Ham_Item_PostFrame, STRN_ELITE, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ELITE], "fw_Item_PostFrame",_,true)
 
-	RegisterHam(Ham_Weapon_Reload,STRN_ELITE, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, STRN_ELITE, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,weapon_names_stock_arr[CSW_ELITE], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ELITE], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(DART_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)
@@ -118,23 +118,14 @@ public CmdStart(id, uc_handle)
 	if (!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 
 	
-	if(Get_BitVar(trigger_is_down_mask, id)){
-		Set_BitVar(trigger_was_down_mask, id)
-	}
-	else{
+	
+	Assign_BitVar(trigger_was_down_mask, id,Get_BitVar(trigger_is_down_mask, id))
 
-		UnSet_BitVar(trigger_was_down_mask, id)
-	}
 	new button = get_uc(uc_handle, UC_Buttons);
 	
-	if((button & IN_ATTACK)){
+	
+	Assign_BitVar(trigger_is_down_mask, id,(button & IN_ATTACK))
 
-		Set_BitVar(trigger_is_down_mask, id)
-	}
-	else{
-		
-		UnSet_BitVar(trigger_is_down_mask, id)
-	}
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	if(weapon==CSW_ELITE){
 		if(Get_BitVar(trigger_is_down_mask, id))
@@ -155,12 +146,18 @@ public CmdStart(id, uc_handle)
 public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED
 	}
 	if(get_user_weapon(Attacker) != CSW_ELITE || !sh_user_has_hero(Attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
+
+	Damage= 0.0
+	SetHamParamFloat(3,Damage)
 
 	return HAM_SUPERCEDE
 }
@@ -434,7 +431,11 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 						_,_,_,_,
 						SH_NEW_DMG_BLEED,
 						super_dart_weapon_id)
-						
+			
+			if(sh_user_has_hero(oid,gHeroID)){
+
+				sh_effect_user_direct(oid,oid,gHeroID,COCAINE)
+			}
 			new CsArmorType:armor_type;
 			cs_get_user_armor(pTouched,armor_type);
 			switch(armor_type){

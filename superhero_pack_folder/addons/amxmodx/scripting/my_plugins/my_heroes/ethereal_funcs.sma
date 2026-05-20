@@ -32,20 +32,20 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_ethereal, "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_ethereal, "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_ethereal, "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_Deploy, weapon_ethereal, "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_ethereal, "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_ethereal, "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_ethereal, "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_ethereal, "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
-	register_clcmd("weapon_ethereal", "Hook_Weapon")
+	register_clcmd(weapon_names_stock_arr[CSW_ETHEREAL], "Hook_Weapon")
 }
 
 public plugin_natives(){
@@ -115,7 +115,7 @@ public client_putinserver(id)
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_ethereal)
+	engclient_cmd(id, weapon_names_stock_arr[CSW_ETHEREAL])
 	return PLUGIN_HANDLED
 }
 public Do_Register_HamBot(id)
@@ -126,7 +126,7 @@ public Do_Register_HamBot(id)
 public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)
-	fm_give_item(id, weapon_ethereal)
+	fm_give_item(id, weapon_names_stock_arr[CSW_ETHEREAL])
 	
 	Give_RealAmmo(id, CSW_ETHEREAL)
 	
@@ -206,7 +206,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ETHEREAL_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_ethereal, entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ETHEREAL], entity)
 		
 		if(!pev_valid(weapon))
 			return FMRES_IGNORED;
@@ -390,7 +390,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	}		
 	
 	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
-	write_string(Get_BitVar(g_Had_Ethereal, id) ? "weapon_ethereal" : "weapon_m4a1")
+	write_string(weapon_names_stock_arr[CSW_ETHEREAL])
 	write_byte(4) // PrimaryAmmoID
 	write_byte(90) // PrimaryAmmoMaxAmount
 	write_byte(-1) // SecondaryAmmoID

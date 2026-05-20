@@ -10,7 +10,6 @@
 #define A_RIFLE_RECOIL 1.5
 
 #define CSW_ARIFLE CSW_M249
-#define weapon_arifle "weapon_m249"
 #define PLAYER_ANIMEXT "m249"
 #define ARIFLE_OLDMODEL "models/w_m249.mdl"
 

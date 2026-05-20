@@ -23,7 +23,6 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 // GLOBAL VARIABLES
 new gHeroName[]="Riddick"
 new gHeroID
-new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new gHealPoints
 
 
@@ -61,17 +60,7 @@ public plugin_init()
 	// Let Server know about Woverines max knife speed
 	shSetMaxSpeed(gHeroName, "riddick_knifespeed", "[29]" )
 
-	//Makes superhero tell wolverine a players max health
-	register_srvcmd("riddick_maxhealth", "riddick_maxhealth")
-	shRegMaxHealth(gHeroName, "riddick_maxhealth" )
 	gHealPoints = get_cvar_num("riddick_healpoints")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
-	if(heroID!=gHeroID) return
-
-	gPlayerMaxHealth[id] = 100
-
 }
 //----------------------------------------------------------------------------------------------
 public riddick_loop()
@@ -81,7 +70,7 @@ public riddick_loop()
 		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id] )
+			shAddHPs(id, gHealPoints, sh_get_max_hp(id))
 		}
 	}
 }
@@ -109,17 +98,6 @@ public riddick_damage(id)
 		}
 	}
 	return PLUGIN_CONTINUE
-}
-//----------------------------------------------------------------------------------------------
-public riddick_maxhealth()
-{
-	new id[6]
-	new health[9]
-
-	read_argv(1,id,5)
-	read_argv(2,health,8)
-
-	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

@@ -15,22 +15,20 @@ stock const lena_poems[LENA_NUM_POEMS][]={
 	"Sabes?^nUm erro categorico ^nque a malta aqui comete?^nE assumir que sou normal^nQue regulo bem,^nQue funciono como deve ser^nQue ainda tenho^nos fusiveis todos^nde desde que nasci^n",
 };
 
-
 stock send_poem_function( target, poem[]){
 	
 	new poem_len=strlen(poem)
 	new total=0;
-	new printed=0;
 	new buff[CHUNK_SIZE+1];
 	
 	for(;total<poem_len;){
 	
-		new len=min(sizeof buff-1,poem_len-total);
-		arrayset(buff,0,sizeof buff)
-		copy(buff,len,poem[total]);
-		printed=console_print(target,"%s",buff);
-		if (strlen(buff)<= 0) break;
-		total+=printed;
+		new len=min(charsmax(buff),poem_len-total);
+		copy(buff,len + 1 ,poem[total]);
+		
+		console_print(target,"%s",buff);
+		
+		total+=strlen(buff);
 	}
 	
 	

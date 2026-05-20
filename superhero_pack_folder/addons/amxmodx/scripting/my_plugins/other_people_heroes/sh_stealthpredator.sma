@@ -23,7 +23,6 @@ new gUserTeam[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
 new g_lastWeapon[SH_MAXSLOTS+1]
 new bool:g_usingPower[SH_MAXSLOTS+1]
-new gPlayerMaxHealth[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]
 new gHealPoints
 //-------------------------------------------------------------------------------------------------------
@@ -47,8 +46,7 @@ public plugin_init()
 	//EVENTS
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
-	register_srvcmd("stealth_maxhealth", "stealth_maxhealth")
-	shRegMaxHealth(gHeroName, "stealth_maxhealth" )
+
 	gHealPoints = get_cvar_num("stealth_healpoints")
 
 	//HEAL LOOP
@@ -68,7 +66,6 @@ public sh_hero_init(id, heroID, mode){
 		}
 	}
 	shSetMaxSpeed(gHeroName, "stealth_speed", "[0]")
-	gPlayerMaxHealth[id] = 100
 	g_usingPower[id] = false
 }
 
@@ -171,31 +168,14 @@ public stealth_loop()
 		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, gHealPoints, gPlayerMaxHealth[id])
+			shAddHPs(id, gHealPoints, sh_get_max_hp(id))
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public stealth_mypowers(id)
-{
-	shRegMaxHealth(gHeroName, "stealth_maxhealth")
-	shAddHPs(id, gHealPoints, gPlayerMaxHealth[id])
 }
 //----------------------------------------------------------------------------------------------
 public powerCharged(id)
 {
 	g_chargeOver[id] = true
-}
-//----------------------------------------------------------------------------------------------
-public stealth_maxhealth()
-{
-	new id[6]
-	new health[9]
-
-	read_argv(1,id,5)
-	read_argv(2,health,8)
-
-	gPlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 //----------------------------------------------------------------------------------------------
 public stealth_death()

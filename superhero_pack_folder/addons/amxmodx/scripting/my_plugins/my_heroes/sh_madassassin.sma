@@ -42,8 +42,6 @@ madassassin_healpoints 5	//The # of HP healed per second
 
 // GLOBAL VARIABLES
 new HeroName[] = "Mad Assassin"
-new bool:HasMadAssassin[SH_MAXSLOTS+1]
-new PlayerMaxHealth[SH_MAXSLOTS+1]
 new CvarAwpDmgMult, CvarHealPoints
 new gHeroID
 #define Model_V_Awp "models/shmod/madassassin_v_awp.mdl"
@@ -77,8 +75,6 @@ public plugin_init()
 	// HEAL LOOP
 	set_task(1.0, "madassassin_loop", _, _, _, "b")
 
-	register_srvcmd("madassassin_maxheal", "madassassin_maxheal")
-	shRegMaxHealth(HeroName, "madassassin_maxheal")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
@@ -91,7 +87,6 @@ public sh_hero_init(id, heroID, mode){
 	{
 		case true:
 		{
-			HasMadAssassin[id] = true
 
 			if ( is_user_alive(id) )
 			{
@@ -105,13 +100,11 @@ public sh_hero_init(id, heroID, mode){
 		{
 			#if defined GIVE_WEAPONS
 			// Check is needed since this gets run on clearpowers even if user didn't have this hero
-			if ( is_user_alive(id) && HasMadAssassin[id] )
+			if ( is_user_alive(id) )
 			{
 				sh_drop_weapon(id, CSW_AWP)
 			}
 			#endif
-
-			HasMadAssassin[id] = false
 		}
 	}
 }
@@ -119,7 +112,7 @@ public sh_hero_init(id, heroID, mode){
 #if defined GIVE_WEAPONS
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] )
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  )
 	{
 		madassassin_weapons(id)
 	}
@@ -127,14 +120,14 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 madassassin_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && HasMadAssassin[id] ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 		sh_give_weapon(id, CSW_AWP)
 	}
 }
 #endif
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !HasMadAssassin[id] || !is_user_alive(id) ||!is_user_connected(id) )
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)  || !is_user_alive(id) ||!is_user_connected(id) )
 		return
 
 	//weaponID = read_data(2)
@@ -161,27 +154,17 @@ public madassassin_damage(id)
 	if ( !is_user_connected(attacker) ||id==attacker )
 		return HAM_IGNORED
 
-	if ( HasMadAssassin[attacker] && weapon == CSW_AWP )
+	if (sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_AWP )
 	{
 		new damage = read_data(2)
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarAwpDmgMult) - damage)
-		if ( extraDamage > 0 )
+		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, "awp", my_hitpoint_enum:bodypart )
+		}
 	}
 	return HAM_IGNORED
-}
-//----------------------------------------------------------------------------------------------
-public madassassin_maxheal()
-{
-	new id[6]
-	new health[9]
-
-	read_argv(1, id, 5)
-	read_argv(2, health, 8)
-
-	PlayerMaxHealth[str_to_num(id)] = str_to_num(health)
 }
 //----------------------------------------------------------------------------------------------
 public madassassin_loop()
@@ -192,15 +175,10 @@ public madassassin_loop()
 
 	for (new id = 1; id < sh_maxplayers()+1; id++)
 	{
-		if ( is_user_alive(id) && HasMadAssassin[id] )
+		if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
 		{
-			shAddHPs(id, healPoints, PlayerMaxHealth[id])
+			shAddHPs(id, healPoints, sh_get_max_hp(id))
 		}
 	}
-}
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	HasMadAssassin[id] = false
 }
 //----------------------------------------------------------------------------------------------

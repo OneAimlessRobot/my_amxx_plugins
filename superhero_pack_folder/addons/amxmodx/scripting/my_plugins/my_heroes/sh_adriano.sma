@@ -204,10 +204,7 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 	
 	new weapon = get_user_weapon(attacker)
 	
-	
-	// get ent looking at
-	static  body;
-	get_user_aiming(attacker, id, body);
+
 	if( pev_valid(id))
 	{
 		if(is_user_alive(id)&& (weapon==CSW_KNIFE)){
@@ -273,15 +270,16 @@ public sh_round_start(){
 
 	}
 }
-public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
+public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 {
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) )
 		return FMRES_IGNORED;
 	
 
 	// get ent looking at
-	static ent, body;
-	get_user_aiming(id, ent, body);
+	static ent
+
+	ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something
 	if( pev_valid(ent))

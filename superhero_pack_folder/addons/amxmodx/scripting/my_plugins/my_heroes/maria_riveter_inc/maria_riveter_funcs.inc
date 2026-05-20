@@ -3,7 +3,6 @@
 #endif
 #define sh_maria_riveter_funcs
 
-#define MARIA_WEAPON "weapon_ump45"
 #define MARIA_WEAPON_CLASSID CSW_UMP45
 #define MARIA_PROJECTILE_CLASSNAME "maria_rivet"
 
