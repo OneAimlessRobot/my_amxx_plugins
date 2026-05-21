@@ -17,7 +17,7 @@ enum sh_grenade_type{
     GREN_DISRUPT,
     GREN_SHRAPNEL,
     GREN_MARKER,
-    GREN_MAX_TYPES
+    GREN_CONC
 
 }
 native get_custom_grenade_ammo(id, sh_grenade_type:gren_type)

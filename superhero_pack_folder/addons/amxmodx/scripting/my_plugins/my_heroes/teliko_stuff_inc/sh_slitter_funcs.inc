@@ -7,7 +7,7 @@
 
 stock const teliko_slitter_sounds[1][]={"weapons/teliko_slitter/knife_stab.wav"}
 #define SLITTER_DRAG_THINK_PERIOD 0.1
-#define SLITTER_DRAG_THINK_TIMES (slitter_drag_time/SLITTER_DRAG_THINK_PERIOD)
+#define SLITTER_DRAG_THINK_TIMES (cvar_val(float,pcvar_slitter_drag_time)/SLITTER_DRAG_THINK_PERIOD)
 #define DRAG_FORCE 10.0
 native slitter_set_slitter(id,value_to_set)
 

@@ -6,7 +6,6 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define PLUGIN "Superhero tranq fx"
@@ -194,7 +193,7 @@ sleep_user(id,attacker){
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	Set_BitVar(gIsAsleepMask,id)
 	sleep_user_switch_weapon(id)
-	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[WHITE])
+	set_damage_icon(id,2,DMG_ICON_CHEM,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -215,11 +214,9 @@ unsleep_user(id){
 	
 	if(Get_BitVar(gIsAsleepMask,id)){
 		sh_set_rendering(id)
-		set_damage_icon(id,0,DMG_ICON_GAS)
+		set_damage_icon(id,0,DMG_ICON_CHEM)
 		UnSet_BitVar(gIsAsleepMask,id)
 	}
-
-
 }
 
 public weaponChange(id)

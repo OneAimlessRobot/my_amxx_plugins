@@ -15,7 +15,7 @@
 #define PLUGIN "Superhero yakui mk2 pt4"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-new gHeroID = 0
+new gHeroID = -1
 
 new gNumRockets[SH_MAXSLOTS+1]
 

@@ -18,8 +18,8 @@
 
 #define ERICA_HOOK_DUMMY_ENTITY_CLASSNAME "erica_hook"
 
-new gHeroID = 0
-stock hook_on[SH_MAXSLOTS+1] = { 0 , ...}
+new gHeroID = -1
+stock hook_on_mask = 0
 stock g_player_hook[SH_MAXSLOTS+1]
 stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
 stock g_hook_kills[SH_MAXSLOTS+1] = { 0 , ...}
@@ -86,9 +86,9 @@ public plugin_init(){
 	hook_drag_speed_pcvar=register_cvar("hook_drag_speed", "2.0")
 	hook_drag_time_pcvar=register_cvar("hook_drag_time", "3")
 	gutting_dmg_mult_pcvar=register_cvar("hook_gutting_dmg_mult", "3")
-	RegisterHam(Ham_TakeDamage,"player","Erica2_ham_damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","Erica2_ham_trace_damage",_,true)
 	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
-	register_forward(FM_CmdStart, "CmdStart1")
+	register_forward(FM_CmdStart, "CmdStart")
 }
 public plugin_cfg(){
 
@@ -172,38 +172,38 @@ public hook_think(ent)
 {
 	if(!is_valid_ent(ent)){
 
-		return FMRES_IGNORED
+		return
 	}
 	new id=entity_get_edict(ent,EV_ENT_owner),
 		vic=entity_get_edict(ent,EV_ENT_euser1),
 		times_left=entity_get_int(ent,EV_INT_iuser1)
 	if (!is_user_alive(id)){
 		stop_dragging(id,vic)
-		return FMRES_IGNORED
+		return
 	
 	}
 	if (!sh_user_has_hero(id,gHeroID)){
 
 		stop_dragging(id,vic)
-		return FMRES_IGNORED
+		return
 	
 	}
 	if(!is_user_alive( vic)){
 		
 
 		stop_dragging(id,vic,true)
-		return FMRES_IGNORED
+		return
 	}
 	if(times_left<=0){
 		
 		stop_dragging(id,vic,true)
-		return FMRES_IGNORED
+		return
 	
 	
 	}
-	new ammo, clip, wpnid=get_user_weapon(id,ammo,clip)
+	new wpnid=get_user_weapon(id)
 	if(wpnid!=CSW_KNIFE){
-		shSwitchWeaponID(id,CSW_KNIFE)
+		sh_switch_weapon(id,CSW_KNIFE)
 	}
 	static Float:aimvec[3],Float:eOrigin[3],Float:vOrigin[3],Float:dst_origin[3]
 	pev(vic,pev_origin,vOrigin)
@@ -245,11 +245,11 @@ public hook_think(ent)
 	times_left--;
 	entity_set_int(ent,EV_INT_iuser1,times_left)
 	entity_set_float(ent,EV_FL_nextthink,get_gametime()+HOOK_DRAG_THINK_PERIOD)
-	return FMRES_IGNORED
+	return
 }
 
 //----------------------------------------------------------------------------------------------
-public CmdStart1(attacker, uc_handle)
+public CmdStart(attacker, uc_handle)
 {
 
 	if(!sh_is_active()||sh_is_freezetime()) return FMRES_IGNORED;
@@ -265,13 +265,12 @@ public CmdStart1(attacker, uc_handle)
 		return FMRES_IGNORED;
 		
 	}
-	if ( !sh_user_has_hero(attacker,gHeroID)||!hook_on[attacker]||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
-	
-	if(sh_get_stun(attacker)) return FMRES_IGNORED
+	if ( !sh_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
+
 	
 	new button;
 	button= get_uc(uc_handle, UC_Buttons);
-	new clip, ammo, weapon = get_user_weapon(attacker, clip, ammo);
+	new weapon = get_user_weapon(attacker);
 	
 	if((weapon==CSW_KNIFE)){
 		if((button & IN_DUCK)){
@@ -286,17 +285,22 @@ public CmdStart1(attacker, uc_handle)
 				set_uc(uc_handle, UC_Buttons, button);
 				
 				
-				new Float: vec2LOS[2];
-				new Float: vecForward[3];
-				new Float: vecForward2D[2];
+				new Float:vec2LOS[2],
+						Float:vecForward[3],
+						Float:vecForward2D[2],
+						Float:vOrigin[3],
+						Float:vEnd[3],
+						Float:vTrace[3]
 				
+				new id, tr
+
 				velocity_by_aim( attacker, floatround(cvar_val(float,hook_distance_pcvar)), vecForward );
 				
 				xs_vec_make2d( vecForward, vec2LOS );
 				xs_vec_normalize( vec2LOS, vec2LOS );
 				
-				new Float:vTrace[3], id, tr
-				new Float:vOrigin[3],Float:vEnd[3]
+				
+				
 				pev(attacker, pev_origin, vOrigin)
 				vEnd[0]=vOrigin[0]+vecForward[0]
 				vEnd[1]=vOrigin[1]+vecForward[1]
@@ -308,10 +312,6 @@ public CmdStart1(attacker, uc_handle)
 				engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
 				get_tr2(tr, TR_vecEndPos, vTrace)
 				id = get_tr2(tr, TR_pHit)
-				if (!is_user_alive(get_tr2(tr, TR_pHit))) {
-					free_tr2(tr)
-					return FMRES_IGNORED
-				}
 				
 				if (!is_user_alive(id) ){
 					free_tr2(tr)
@@ -322,12 +322,13 @@ public CmdStart1(attacker, uc_handle)
 					free_tr2(tr)
 					return FMRES_IGNORED
 				}
-				velocity_by_aim(id, floatround(cvar_val(float,hook_distance_pcvar)), vecForward ); 
+				velocity_by_aim(id, 1, vecForward ); 
 				
 				xs_vec_make2d( vecForward, vecForward2D );
+				xs_vec_normalize( vecForward2D, vecForward2D );
 				static att_name[128],vic_name[128];
 				
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > cvar_val(float,hook_distance_pcvar)*0.5) )
+				if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
 				{
 					if(g_hook_kills[attacker]<=0){
 
@@ -367,16 +368,22 @@ public CmdStart1(attacker, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-public Erica2_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public Erica2_ham_trace_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)) return HAM_IGNORED
 
-new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+new weapon=get_user_weapon(attacker)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
 if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_hook[attacker])){
 	
-	if(weapon==CSW_KNIFE){
+	new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
+	if((weapon==CSW_KNIFE)){
+		if((id!=target)||!(is_user_alive(target))){
+
+			stop_dragging(attacker,target,true)
+			return HAM_IGNORED
+		}
 		new button = pev(attacker, pev_button);
 		new bool:stabbing;
 		if((button & IN_ATTACK2)){
@@ -384,16 +391,16 @@ if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_val
 			button &= ~IN_ATTACK2;
 			stabbing=true;
 		}
-		new Float: vec2LOS[2];
-		new Float: vecForward[3];
-		new Float: vecForward2D[2];
+		static Float: vec2LOS[2],
+				Float: vecForward[3],
+				Float: vecForward2D[2];
 		
 		velocity_by_aim( attacker, 1, vecForward );
 		
 		xs_vec_make2d( vecForward, vec2LOS );
 		xs_vec_normalize( vec2LOS, vec2LOS );
 		
-		velocity_by_aim(id, 1, vecForward ); 
+		velocity_by_aim(target, 1, vecForward ); 
 		
 		xs_vec_make2d( vecForward, vecForward2D );
 		static att_name[128],vic_name[128];
@@ -403,7 +410,6 @@ if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_val
 			
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.2) )
 			{
-				new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
 				
 				if(is_user_alive(target)){
 
@@ -442,11 +448,12 @@ return HAM_IGNORED
 public _hook_set_hook(iPlugin,iParams){
 new id=get_param(1)
 new value_to_set=get_param(2)
-new prev_value=hook_on[id]
+new prev_value=Get_BitVar(hook_on_mask, id)
+
 if(!prev_value&&value_to_set){
 	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar)
 }
-hook_on[id]=value_to_set
+Assign_BitVar(hook_on_mask, id,value_to_set)
 
 }
 public plugin_precache()

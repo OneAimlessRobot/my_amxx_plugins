@@ -17,7 +17,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new pcvar_jetplane_bomb_radius,
 pcvar_jetplane_bomb_dmg,

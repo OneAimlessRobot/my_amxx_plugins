@@ -10,7 +10,7 @@
 #include "ksun_inc/ksun_scanner.inc"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new pcvar_ksun_track_max_radius,
 	pcvar_ksun_track_min_radius,

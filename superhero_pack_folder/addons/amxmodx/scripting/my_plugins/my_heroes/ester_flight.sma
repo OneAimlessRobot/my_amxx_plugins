@@ -16,7 +16,7 @@
 #define PLUGIN "Superhero ester flight funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-new gHeroID = 0
+new gHeroID = -1
 
 new g_ester_is_reborn_mode_mask = 0
 new g_ester_is_denied_mask = 0
@@ -442,7 +442,7 @@ public ester_reborn_loop_task(parm[2]){
 	
 }
 //----------------------------------------------------------------------------------------------
-public ester_respawn(parm[])
+public ester_respawn(parm[2])
 {
 	new id = parm[0]
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
@@ -470,7 +470,7 @@ public ester_respawn(parm[])
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
-	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, 1)
+	set_task(1.0, "ester_teamcheck", id+ESTER_REBORN_TEAM_CHECK_TASKID, parm, sizeof(parm))
 
 	// Teleport the player
 	set_user_origin(id, g_saved_coords[id])
@@ -504,7 +504,7 @@ public godmode_render_update(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-public ester_teamcheck(parm[])
+public ester_teamcheck(parm[2])
 {
 	new id = parm[0]
 

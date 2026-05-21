@@ -12,7 +12,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new fx_id:curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on_mask = 0

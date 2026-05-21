@@ -16,8 +16,7 @@
 #include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
-new gHeroID = 0
-new REMOVE_GLOW_TASKID
+new gHeroID = -1
 
 
 #define PLUGIN "Superhero aux natives pt3"
@@ -28,7 +27,6 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	REMOVE_GLOW_TASKID=allocate_typed_task_id(player_task)
 	prepare_shero_aux_lib_pt3()
 
     
@@ -52,7 +50,6 @@ public plugin_natives(){
 	register_native("explosion","_explosion",0);
 	register_native("explosion_custom_entity","_explosion_custom_entity",0);
 	register_native("sh_damage_display_stock","_sh_damage_display_stock",0)
-	register_native("remove_glow_user","_remove_glow_user",0)
 	register_native("generic_heal","_generic_heal",0)
 	register_native("superhero_protected_hud_message","_superhero_protected_hud_message",0)
 }
@@ -346,24 +343,6 @@ stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_o
 	}
 	set_velocity_from_origin(tg_id,mine_origin,force)
 	
-}
-
-public _remove_glow_user(iPlugin,iParams){
-	new id=get_param(1)
-	new Float:delay=get_param_f(2)
-
-	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
-				
-
-}
-public remove_glow_task(id){
-
-id-=REMOVE_GLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
-	return
-}
-sh_set_rendering(id)
-
 }
 
 public bool:_generic_heal(iPlugins, iParms){

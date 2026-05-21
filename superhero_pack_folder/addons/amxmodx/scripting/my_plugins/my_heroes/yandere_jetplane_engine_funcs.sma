@@ -18,7 +18,7 @@
 new pcvar_jetplane_fuel,
 pcvar_fuel_spend
 
-new gHeroID = 0
+new gHeroID = -1
 
 new g_jetplane_throttle_mask = 0
 new g_jetplane_airbrakes_mask = 0

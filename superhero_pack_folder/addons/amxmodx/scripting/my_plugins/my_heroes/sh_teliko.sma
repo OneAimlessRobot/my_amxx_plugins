@@ -39,6 +39,8 @@ new base_counter_bullets
 new Float:COUNTER_DMG_Mult,Float:COUNTER_BULLET_PCT,Float:MEGA_COUNTER_STUN_TIME,MEGA_COUNTER_EFFECTS_THRESHOLD
 new num_chaffs
 
+new bool:sound_t_played= false,
+	bool:sound_ct_played= false
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -166,7 +168,7 @@ if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  ) {
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-gHeroLevel
 	if(level_diff>=famas_level_diff){
-		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,TELIKO_RIFLE_WEAPON_NAME);
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_names_stock_arr[TELIKO_RIFLE_CLASSID]);
 		sh_give_weapon(id, TELIKO_RIFLE_CLASSID)
 	}
 	slitter_set_slitter(id,1)
@@ -207,9 +209,31 @@ if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRou
 	update_max_bullets(id)
 	give_start_counters(id)
 	teliko_morph(id)
-	emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
+	if(sound_ct_played&&sound_ct_played){
+		return
+	}
+	new CsTeams:the_team=cs_get_user_team(id)
+	switch(the_team){
+		case CS_TEAM_CT:{
+
+			if(!sound_ct_played){
+				emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
+				sound_ct_played = true
+			}
+		}
+		case CS_TEAM_T:{
+			if(!sound_t_played){
+				emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
+				sound_t_played = true
+			}
+		}
+	}
 }
 
+}
+public sh_round_end(){
+
+	sound_t_played=sound_ct_played= false
 }
 public Teliko_counter_drop_weapon(id,enemy){
 

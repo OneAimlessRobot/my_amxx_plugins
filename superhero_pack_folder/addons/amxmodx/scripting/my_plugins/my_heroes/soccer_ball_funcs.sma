@@ -13,7 +13,8 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
+
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"

@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
 
 new gHealthDrainValveMask = 0
@@ -155,9 +156,11 @@ public sh_hero_init(id, heroID, mode){
 maria_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
+		give_custom_grenades(id,GREN_CONC,5)
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
 		if(is_valid_ent(weapon_id)){
+			
 			set_pdata_int(weapon_id, m_iClip, RIVETER_CLIP_SIZE, XO_WEAPON);
 			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-RIVETER_CLIP_SIZE);
 		}

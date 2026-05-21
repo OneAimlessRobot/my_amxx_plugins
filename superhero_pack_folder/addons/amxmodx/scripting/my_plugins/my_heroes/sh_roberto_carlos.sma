@@ -39,7 +39,6 @@ public plugin_init()
 	
 	
 }
-
 public ev_SendAudio(){
 	
 	new sTeam[22];
@@ -63,10 +62,6 @@ public ev_SendAudio(){
 		lose_team=CS_TEAM_T
 		
 	}
-	else {
-		
-		
-	} // Draw
 	for(new id=1;id< sh_maxplayers()+1;id++){
 		
 		if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
@@ -78,11 +73,6 @@ public ev_SendAudio(){
 					sh_chat_message(id,gHeroID,"Your team has won!");
 				
 				}
-				else{
-					emit_sound(id, CHAN_VOICE, round_win, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-					emit_sound(id, CHAN_VOICE, round_win, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				
-				}
 			
 			}
 			else if(player_team==lose_team){
@@ -90,11 +80,6 @@ public ev_SendAudio(){
 					playing_lose_sound=true
 					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 					sh_chat_message(id,gHeroID,"Your team has lost!");
-				}
-				else{
-					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				
 				}
 			}
 			

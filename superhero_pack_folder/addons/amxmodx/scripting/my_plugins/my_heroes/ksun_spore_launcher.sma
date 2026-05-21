@@ -9,7 +9,7 @@
 #include "ksun_inc/ksun_ultimate.inc"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0 
+new gHeroID = -1
 
 new pcvar_ksun_hold_time,
 	pcvar_ksun_launcher_base_health;

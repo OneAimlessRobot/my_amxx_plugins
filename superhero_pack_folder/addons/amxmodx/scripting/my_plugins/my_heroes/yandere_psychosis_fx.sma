@@ -10,7 +10,8 @@
 #include "yandere_inc/sh_yandere_psychosis.inc"
 
 stock curr_player_pain_sound[SH_MAXSLOTS+1]
-new gHeroID = 0
+
+new gHeroID = -1
 
 #define PLUGIN "Superhero psychosis fx"
 #define VERSION "1.0.0"

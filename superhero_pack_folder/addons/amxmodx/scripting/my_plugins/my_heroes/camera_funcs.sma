@@ -37,7 +37,7 @@ new pcvar_camera_hp
 stock CAMERA_CHARGE_TASKID,
 		CAMERA_DISARM_TASKID
 
-new gHeroID = 0
+new gHeroID = -1
 public plugin_init(){
 	
 	

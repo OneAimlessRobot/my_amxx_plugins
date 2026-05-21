@@ -13,7 +13,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 new atk2[SH_MAXSLOTS+1]
 new atk1[SH_MAXSLOTS+1]
 new delay[SH_MAXSLOTS+1]

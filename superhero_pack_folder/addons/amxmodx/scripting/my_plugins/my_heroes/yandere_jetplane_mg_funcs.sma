@@ -19,7 +19,7 @@
 
 new user_mg[SH_MAXSLOTS+1]
 
-new gHeroID = 0
+new gHeroID = -1
 
 new pcvar_jetplane_mg_dmg,
 pcvar_jetplane_mg_bulletspeed,

@@ -256,7 +256,7 @@ public laserEffects(id, aimvec[3])
 	if ( get_cvar_num("styropyro_laser_burndecals") == 1 ) {
 		//TE_GUNSHOTDECAL
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(109)		// decal and ricochet sound
+		write_byte(TE_GUNSHOTDECAL)		// decal and ricochet sound
 		write_coord(aimvec[0])	// pos
 		write_coord(aimvec[1])
 		write_coord(aimvec[2])

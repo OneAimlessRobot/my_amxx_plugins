@@ -17,7 +17,7 @@
 #include "../my_include/my_author_header.inc"
 
 
-new gHeroID = 0
+new gHeroID = -1
 new g_graciete_jetpack_loaded_mask = 0;
 new g_graciete_jetpack_on_mask = 0;
 new g_graciete_power_landing_mask = 0;

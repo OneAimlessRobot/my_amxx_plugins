@@ -523,7 +523,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 		if(sh_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
-					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",KSUN_WEAPON_NAME)
+					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",weapon_names_stock_arr[KSUN_WEAPON_ID])
 					sh_chat_message(killer,gHeroID,"You got %d spores for your kill!",
 						cvar_val(num, pcvar_ksun_spores_per_kill))
 					ksun_multi_inc_num_available_spores(killer,
@@ -538,7 +538,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 					sh_chat_message(killer,gHeroID,"You got %d extra spores for an %s kill!",
 					((cvar_val(num, pcvar_ksun_spores_per_kill)*
 							cvar_val(num, pcvar_ksun_spore_m4_mult))-
-							cvar_val(num, pcvar_ksun_spores_per_kill)),KSUN_WEAPON_NAME)
+							cvar_val(num, pcvar_ksun_spores_per_kill)),weapon_names_stock_arr[KSUN_WEAPON_ID])
 					ksun_multi_inc_num_available_spores(killer,
 					cvar_val(num, pcvar_ksun_spores_per_kill)*
 					cvar_val(num, pcvar_ksun_spore_m4_mult))

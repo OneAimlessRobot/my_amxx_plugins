@@ -15,7 +15,7 @@
 #define PLUGIN "Superhero lara mk2 pt2 (spear)"
 #define VERSION "1.0.0"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new spear_mode:player_spear_mode[SH_MAXSLOTS+1]
 new player_mode_button_pressed_mask

@@ -76,7 +76,7 @@ chaff_user(id){
 
 	set_render_with_color_const(id,WHITE,1,50,50,1,_,CHAFF_TIME)
 	Set_BitVar(is_chaff_mask,id)
-	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[WHITE],CHAFF_TIME)
+	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_TIME)
 	
 	
 	set_task(CHAFF_TIME,"unchaff_task",id+UNCHAFF_TASKID)

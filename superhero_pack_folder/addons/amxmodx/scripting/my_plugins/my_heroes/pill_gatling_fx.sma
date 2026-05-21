@@ -42,7 +42,7 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 					
 					{0.5,4.0,30.0,-1,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON},
 					
-					{0.1,9.0,40.0,1,-1,"","uneffect_task_generic","stunner","Removed ur stun bro!",1,damage_icon_types:-1},
+					{9.0,9.0,40.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN},
 					
 					{1.0,5.0,50.0,1,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,DMG_ICON_RADIATION},
 					
@@ -419,18 +419,19 @@ public fx_id:_sh_effect_user_direct(iPlugin,iParams){
 	else if(fx_num){
 		gatling_set_fx_num(user,fx_num)
 		fx_task_user(user,attacker,fx_id:fx_num)
-		if(fx_num==STUN){
-
-
-			stun_user(user)
-			remove_glow_user(user,fx_task_parameters[STUN][fx_task_time])
-		}
-		else{
-			if(fx_num==COCAINE){
-
-				sh_bleed_user(user,attacker,BLEED_MINI,gHeroID,0)
-
+		switch(fx_num){
+			case STUN:{
+				
+				stun_user(user)
+			
 			}
+			case COCAINE:{
+				
+				sh_bleed_user(user,attacker,BLEED_MINI,gHeroID,0)
+			
+			}
+
+
 		}
 	}
 

@@ -4,7 +4,6 @@
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "teliko_stuff_inc/sh_teliko_get_set.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "teliko_stuff_inc/sh_slitter_funcs.inc"
@@ -15,51 +14,116 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
-new gHeroID_erica = 0
-new slitter_on[SH_MAXSLOTS+1]
 
-new g_dragging_who[SH_MAXSLOTS+1][2]
-new g_slit_kills[SH_MAXSLOTS+1]
+#define TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME "teliko_slitter"
+new gHeroID = -1
+new gHeroID_erica = -1
+new slitter_on_mask = 0
+new g_player_slitter[SH_MAXSLOTS + 1]
+new g_slit_kills[SH_MAXSLOTS + 1]
 
-new Float:slitter_distance
-new Float:slitter_drag_time
-new slitter_level_difference
-new max_slitter_kills_per_life
-new Float:slitter_drag_speed
+new Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
+
+
+//floats
+new pcvar_slitter_distance
+new pcvar_slitter_drag_time
+new pcvar_slitter_drag_speed
+
+//nums
+new pcvar_max_slitter_kills_per_life
 
 new dmg_source_name_short_sneak[SAFE_BUFFER_SIZE+1]="sneak_attack"
 new dmg_source_name_long_sneak[SAFE_BUFFER_SIZE+1]="sneak"
 new custom_dmg_id_sneak
 
-stock SLITTER_TASKID
 
+//stock HOOK_TASKID
+spawn_teliko_slitter(id,target){
+
+	if(!sh_is_active()) return
+
+	if(!is_user_alive(id) || !is_user_alive(id)) return
+	
+	if(!sh_user_has_hero(id,gHeroID)) return
+
+	if(is_valid_ent(g_player_slitter[id])){
+		return
+	}
+	new teliko_hook_to_be_spawned= create_entity("info_target")
+	if(!teliko_hook_to_be_spawned){
+
+		return
+	}
+	g_player_slitter[id]=teliko_hook_to_be_spawned
+	entity_set_string(teliko_hook_to_be_spawned, EV_SZ_classname, TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME)
+
+	entity_set_edict(teliko_hook_to_be_spawned, EV_ENT_owner, id)
+
+	//the target
+	entity_set_edict(teliko_hook_to_be_spawned,EV_ENT_euser1,target)
+
+	//the times
+	entity_set_int(teliko_hook_to_be_spawned, EV_INT_iuser1,floatround(SLITTER_DRAG_THINK_TIMES))
+
+	entity_set_float(teliko_hook_to_be_spawned, EV_FL_nextthink,
+				get_gametime()+SLITTER_DRAG_THINK_PERIOD)
+}
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	
-	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(is_user_alive(i)){
-			g_dragging_who[i][0]=-1;
-			g_dragging_who[i][1]=0
-		}
-	
-	}
-	register_cvar("slitter_distance", "2.0")
-	register_cvar("max_slits_per_life", "2.0")
-	register_cvar("slitter_drag_speed", "2.0")
-	register_cvar("slitter_level_difference", "10")
-	register_cvar("slitter_drag_time", "3")
-	RegisterHam(Ham_TakeDamage,"player","Teliko_ham_damage",_,true)
-	register_forward(FM_CmdStart, "CmdStart");
+	pcvar_slitter_distance = register_cvar("slitter_distance", "2.0")
+	pcvar_slitter_drag_time = register_cvar("slitter_drag_time", "3")
+	pcvar_slitter_drag_speed = register_cvar("slitter_drag_speed", "2.0")
+	pcvar_max_slitter_kills_per_life = register_cvar("max_slits_per_life", "2.0")
+	RegisterHam(Ham_TraceAttack,"player","Teliko_ham_trace_damage",_,true)
+	register_think(TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME,"slitter_think")
+	register_forward(FM_CmdStart, "CmdStart")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
 
-	SLITTER_TASKID=allocate_typed_task_id(player_task)
 	init_explosion_defaults()
 }
 
+stop_dragging(id,target=-1,bool:deduct=false){
+
+		new client_is_here=is_user_alive( target)
+		new attacker_is_here=is_user_alive( id )
+		if(client_is_here){
+			entity_set_int( target, EV_INT_fixangle, 0 );
+		}
+		if(client_is_here&&attacker_is_here){
+
+			set_user_maxspeed(id,g_prev_max_speed[id])
+		}
+		if(deduct&&attacker_is_here){
+			
+			if(g_slit_kills[id]>0){
+				g_slit_kills[id]-=deduct?1:0
+				if(g_slit_kills[id]>=0){							
+					
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,"You've got %d slit kills left",g_slit_kills[id]);
+					}	
+				}
+			}
+			
+		}
+		if(is_valid_ent(g_player_slitter[id])){
+
+			remove_entity(g_player_slitter[id])
+			g_player_slitter[id]=-1
+		}
+}
+teliko_new_spawn_slits(id){
+
+if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID)) {
+	g_slit_kills[id]=cvar_val(num,pcvar_max_slitter_kills_per_life);
+}
+stop_dragging(id,-1)
+
+}
 public weaponChange(id)
 {
 	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
@@ -73,14 +137,27 @@ public weaponChange(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
-{
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
+{	
+	if(sh_is_active()&&is_user_alive(id)){
+		g_prev_max_speed[id] = get_user_maxspeed(id)
+	}
 	
-	stop_dragging(id)
-	g_slit_kills[id]=max_slitter_kills_per_life;
+}
+//----------------------------------------------------------------------------------------------
+public sh_round_end()
+{
+	if(!sh_is_active() ){
+
+		return
+	}
+	for(new i=1;i< sh_maxplayers()+1;i++){
+
+		teliko_new_spawn_slits(i)
+	}
+
+	remove_entity_name(TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME)
 }
 
-}
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
@@ -98,11 +175,6 @@ public loadCVARS()
 					dmg_source_name_short_sneak,
 					dmg_source_name_long_sneak,
 					1)
-	slitter_distance=get_cvar_float("slitter_distance")
-	slitter_level_difference=get_cvar_num("slitter_level_difference")
-	slitter_drag_time=get_cvar_float("slitter_drag_time")
-	slitter_drag_speed=get_cvar_float("slitter_drag_speed")
-	max_slitter_kills_per_life=get_cvar_num("max_slits_per_life")
 }
 public plugin_natives(){
 	
@@ -111,60 +183,48 @@ public plugin_natives(){
 	
 }
 
-stop_dragging(id,bool:deduct=false){
-	
-		if(is_user_alive( g_dragging_who[id][0])){
-			entity_set_int( g_dragging_who[id][0], EV_INT_fixangle, 0 );
-		}
-		
-		g_dragging_who[id][0]=-1
-		g_dragging_who[id][1]=0
-
-		if(!deduct) return
-
-		if(g_slit_kills[id]>0){
-			g_slit_kills[id]-=deduct?1:0
-			if(g_slit_kills[id]>=0){							
-				
-				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"You got %d slit strikes left",g_slit_kills[id]);
-				}	
-			}
-		}
-		
-}
 
 //----------------------------------------------------------------------------------------------
-public slitter_think(id)
+public slitter_think(ent)
 {
-	id-=SLITTER_TASKID
+	if(!is_valid_ent(ent)){
+
+		return
+	}
+	new id=entity_get_edict(ent,EV_ENT_owner),
+		vic=entity_get_edict(ent,EV_ENT_euser1),
+		times_left=entity_get_int(ent,EV_INT_iuser1)
 	if (!is_user_alive(id)){
-	
-		stop_dragging(id)
-	
-		return FMRES_IGNORED
+		stop_dragging(id,vic)
+		return
 	
 	}
-	if (!sh_user_has_hero(id,gHeroID) ){
-	
-		stop_dragging(id)
-	
-		return FMRES_IGNORED
+	if (!sh_user_has_hero(id,gHeroID)){
+
+		stop_dragging(id,vic)
+		return
 	
 	}
-	
-	if((g_dragging_who[id][0]<0)||(g_dragging_who[id][1])<=0){
+	if(!is_user_alive( vic)){
 		
-		stop_dragging(id,true)
-		return FMRES_IGNORED
+
+		stop_dragging(id,vic,true)
+		return
 	}
-	new ammo, clip, wpnid=get_user_weapon(id,ammo,clip)
+	if(times_left<=0){
+		
+		stop_dragging(id,vic,true)
+		return
+	
+	
+	}
+	new wpnid=get_user_weapon(id)
 	if(wpnid!=CSW_KNIFE){
-		shSwitchWeaponID(id,CSW_KNIFE)
+		sh_switch_weapon(id,CSW_KNIFE)
 	}
 	static Float:aimvec[3],Float:vAngle[3],Float:vAngles[3],Float:eOrigin[3],Float:vOrigin[3]
 	pev(id,pev_origin,vOrigin)
-	pev(g_dragging_who[id][0],pev_origin,eOrigin)
+	pev(vic,pev_origin,eOrigin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	entity_get_vector(id, EV_VEC_angles, vAngles)
 	new Float:direction[3],Float:fl_Velocity[3], Float:length
@@ -186,23 +246,22 @@ public slitter_think(id)
 	length = vector_distance(aimvec, vOrigin)
 	if (length==0.0) length = 1.0        // avoid division by 0
 
-	newVec[0] = vOrigin[0]+direction[0]*slitter_distance/length
-	newVec[1] = vOrigin[1]+direction[1]*slitter_distance/length
+	newVec[0] = vOrigin[0]+direction[0]*cvar_val(float, pcvar_slitter_distance)/length
+	newVec[1] = vOrigin[1]+direction[1]*cvar_val(float, pcvar_slitter_distance)/length
 
 	fl_Velocity[0] = (newVec[0]-eOrigin[0])*DRAG_FORCE
 	fl_Velocity[1] = (newVec[1]-eOrigin[1])*DRAG_FORCE
 	fl_Velocity[2] = -DRAG_FORCE
 
-	entity_set_vector(g_dragging_who[id][0], EV_VEC_velocity, fl_Velocity)
+	entity_set_vector(vic, EV_VEC_velocity, fl_Velocity)
 	
-	orient_user(g_dragging_who[id][0],vAngles,vAngle)
-	sh_set_stun(g_dragging_who[id][0],2.0,default_stun_speed)
-	set_user_maxspeed(id,slitter_drag_speed)
-	
-	set_pev(g_dragging_who[id][0],pev_renderamt,255)
-	g_dragging_who[id][1]--;
-	set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",id+SLITTER_TASKID)					
-	return FMRES_IGNORED
+	orient_user(vic,vAngles,vAngle)
+	sh_set_stun(vic,2.0,default_stun_speed)
+	set_user_maxspeed(id,cvar_val(float, pcvar_slitter_drag_speed))
+
+	times_left--;
+	entity_set_int(ent,EV_INT_iuser1,times_left)
+	entity_set_float(ent,EV_FL_nextthink,get_gametime()+SLITTER_DRAG_THINK_PERIOD)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -213,19 +272,19 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(attacker)){
+	if(!is_user_alive(attacker)||!sh_is_inround()){
+
+		
+		stop_dragging(attacker)
 		return FMRES_IGNORED
 	}
-	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!slitter_on[attacker]||(g_slit_kills[attacker]<=0)){
-		return FMRES_IGNORED
-	}
-	if(sh_get_stun(attacker)){
+	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
 		return FMRES_IGNORED
 	}
 
 	static button
 	button= get_uc(uc_handle, UC_Buttons);
-	new clip, ammo, weapon = get_user_weapon(attacker, clip, ammo);
+	new weapon = get_user_weapon(attacker);
 	
 	if((weapon==CSW_KNIFE)){
 		if((button & IN_DUCK)){
@@ -235,83 +294,105 @@ public CmdStart(attacker, uc_handle)
 		}
 		if((button & IN_RELOAD))
 		{
-			if((g_dragging_who[attacker][0]<0)){
+			if(!is_valid_ent(g_player_slitter[attacker])){
 				button &= ~IN_RELOAD;
 				set_uc(uc_handle, UC_Buttons, button);
 				
-				new Float: vec2LOS[2];
-				new Float: vecForward[3];
-				new Float: vecForward2D[2];
+				new Float:vec2LOS[2],
+						Float:vecForward[3],
+						Float:vecForward2D[2],
+						Float:vOrigin[3],
+						Float:vEnd[3],
+						Float:vTrace[3]
+				
+				new id,
+					tr,
+					Float:slitter_distance= cvar_val(float,pcvar_slitter_distance)
 				
 				velocity_by_aim( attacker, floatround(slitter_distance), vecForward );
 				
 				xs_vec_make2d( vecForward, vec2LOS );
 				xs_vec_normalize( vec2LOS, vec2LOS );
-				
-				new Float:vTrace[3], id, tr
-				new Float:vOrigin[3],Float:vEnd[3]
+
 				pev(attacker, pev_origin, vOrigin)
+				
 				vEnd[0]=vOrigin[0]+vecForward[0]
 				vEnd[1]=vOrigin[1]+vecForward[1]
 				vEnd[2]=vOrigin[2]+vecForward[2]
-				tr = 0
+				tr = create_tr2()
+				if(tr<=0){
+					return FMRES_IGNORED
+				}
 				engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
 				get_tr2(tr, TR_vecEndPos, vTrace)
 				id = get_tr2(tr, TR_pHit)
 				if (!is_user_alive(id) ){
+					free_tr2(tr)
 					return FMRES_IGNORED
 				
 				}
 				if(sh_clients_are_same_team(id,attacker)){
 					return FMRES_IGNORED
 				}
-				velocity_by_aim(id, floatround(slitter_distance), vecForward ); 
+				velocity_by_aim(id, 1, vecForward ); 
 				
 				xs_vec_make2d( vecForward, vecForward2D );
+				xs_vec_normalize( vecForward2D, vecForward2D );
 				static att_name[128],vic_name[128];
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > slitter_distance*0.5) )
-				{
-					if((sh_get_user_lvl(attacker)-sh_get_user_lvl(id))>slitter_level_difference){
-						
-						g_dragging_who[attacker][0]=id
-						g_dragging_who[attacker][1]=floatround(SLITTER_DRAG_THINK_TIMES)
-						entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
-						set_task((SLITTER_DRAG_THINK_PERIOD),"slitter_think",attacker+SLITTER_TASKID)
-						get_user_name(attacker,att_name,127)
-						get_user_name(id,vic_name,127)
+
+				sh_chat_message(attacker,gHeroID, "Did we get here? The dot product: %0.2f The target value: %0.2f",xs_vec_dot( vec2LOS, vecForward2D ),0.5 )
+				if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
+				{	
+					if(g_slit_kills[attacker]<=0){
+
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"Snuck up on %s!",vic_name);
+							sh_chat_message(attacker,gHeroID,"Already hit %d slit attacks this life!",cvar_val(num,pcvar_max_slitter_kills_per_life));
 						}
-						if(!is_user_bot(id)){
-							sh_chat_message(id,gHeroID,"You got snuck up on by %s!",att_name);
-						}
+						free_tr2(tr)
+						return FMRES_IGNORED
 					}
-					else if(!is_user_bot(attacker)){
-						client_print(attacker,print_center,"You need to be more than %d levels above! Cannot drag opponent!",slitter_level_difference);
-					}	
+					entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
+					g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
+					spawn_teliko_slitter(attacker,id)
+					get_user_name(attacker,att_name,127)
+					get_user_name(id,vic_name,127)
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,"Snuck up on %s!",vic_name);
+					}
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,"You got snuck up on by %s!",att_name);
+					}
 				}
+				free_tr2(tr)
 			}
 		}
-		else {
-		
-		
-			g_dragging_who[attacker][0]=-1
+		else if(is_valid_ent(g_player_slitter[attacker])){
+			new target=entity_get_edict(g_player_slitter[attacker],EV_ENT_euser1)
+			if(is_user_alive(target)){
+				stop_dragging(attacker,target)
+			}
 		
 		}
 		
 	}
 	return FMRES_IGNORED;
 }
-public Teliko_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public Teliko_ham_trace_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
 if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_alive(attacker) ||!is_user_connected(attacker)) return HAM_IGNORED
 
-new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+new weapon=get_user_weapon(attacker)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)){
+if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_slitter[attacker])){
 	
-	if(weapon==CSW_KNIFE){
+	new target=entity_get_edict(g_player_slitter[attacker],EV_ENT_euser1)
+	if((weapon==CSW_KNIFE)){
+		if((id!=target)||!(is_user_alive(target))){
+
+			stop_dragging(attacker,target,true)
+			return HAM_IGNORED
+		}
 		new button = pev(attacker, pev_button);
 		new bool:slashing;
 		if((button & IN_ATTACK)&&(button & IN_DUCK)){
@@ -320,9 +401,9 @@ if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)){
 			button &= ~IN_DUCK;
 			slashing=true;
 		}
-		new Float: vec2LOS[2];
-		new Float: vecForward[3];
-		new Float: vecForward2D[2];
+		static Float: vec2LOS[2],
+				Float: vecForward[3],
+				Float: vecForward2D[2];
 		
 		velocity_by_aim( attacker, 1, vecForward );
 		
@@ -332,51 +413,46 @@ if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)){
 		velocity_by_aim(id, 1, vecForward ); 
 		
 		xs_vec_make2d( vecForward, vecForward2D );
-		new att_name[128],vic_name[128];
+		static att_name[128],vic_name[128];
 		
 		
 		if(slashing){
 			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
+			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.2) )
 			{
-				if(g_dragging_who[attacker][0]==id){
-						
-					if(g_slit_kills[attacker]>0){
-						get_user_name(attacker,att_name,127)
-						get_user_name(id,vic_name,127)
-						g_dragging_who[attacker][0]=-1;
-						g_dragging_who[attacker][1]=0;
-						if(get_user_godmode(id)){
-						
-							
-							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,"You removed %s's godmode!!",vic_name);
-							}
-							set_user_godmode(id,0)
-						}
-						else{
-							damage=get_user_health(id)*3.0
-							SetHamParamFloat(4, damage);
-							sh_extra_damage(id,attacker,floatround(damage),
-								dmg_source_name_short_sneak,MY_HIT_HEAD
-								,_,_,_,_,
-								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
-								custom_dmg_id_sneak)
-							
-							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
-							}
-						}
-						stop_dragging(id,true)
-					}
-					else{
+				if(g_slit_kills[attacker]>0){
+					get_user_name(attacker,att_name,127)
+					get_user_name(target,vic_name,127)
+					if(get_user_godmode(target)){
 					
 						
 						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"Already hit %d slit kills this life!",max_slitter_kills_per_life);
+							sh_chat_message(attacker,gHeroID,"You removed %s's godmode!!",vic_name);
+						}
+						set_user_godmode(target,0)
+					}
+					else{
+						SetHamParamFloat(3, 0.0);
+						damage=get_user_health(id)*3.0
+						sh_extra_damage(target,attacker,floatround(damage),
+							dmg_source_name_short_sneak,MY_HIT_HEAD
+							,_,_,_,_,
+							SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+							custom_dmg_id_sneak)
+						
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
 						}
 					}
 				}
+				else{
+					
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,"Already hit %d slit kills this life!",
+								cvar_val(num, pcvar_max_slitter_kills_per_life));
+					}
+				}
+				stop_dragging(attacker,target,true)
 			}	
 		}
 	}
@@ -388,12 +464,11 @@ return HAM_IGNORED
 public _slitter_set_slitter(iPlugin,iParams){
 new id=get_param(1)
 new value_to_set=get_param(2)
-new prev_value=slitter_on[id]
+new prev_value=Get_BitVar(slitter_on_mask, id)
 if(!prev_value&&value_to_set){
-	g_slit_kills[id]=max_slitter_kills_per_life;
+	g_slit_kills[id]=cvar_val(num,pcvar_max_slitter_kills_per_life);
 }
-slitter_on[id]=value_to_set
-
+Assign_BitVar(slitter_on_mask, id,value_to_set)
 }
 
 

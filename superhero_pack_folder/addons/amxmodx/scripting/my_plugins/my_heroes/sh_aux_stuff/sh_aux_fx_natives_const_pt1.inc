@@ -8,7 +8,7 @@
 #define ICON_HIDE 0
 #define ICON_SHOW 1
 
-new m_trail, white,g_msgFade,gSpriteLaser,gmsgIcon,gMsgID_Status_icon
+new m_trail, white,g_msgFade,gSpriteLaser,gMsgID_Status_icon
 new gSpriteSmoke,  gSpriteBurning
 new smoke
 new g_iFireSprite, g_iSmokeSprite[2];

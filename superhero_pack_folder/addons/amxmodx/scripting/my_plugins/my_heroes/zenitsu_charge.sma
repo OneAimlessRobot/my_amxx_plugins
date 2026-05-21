@@ -18,7 +18,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new g_zenitsu_has_touched_player_mask = 0
 new g_zenitsu_is_charging_mask = 0

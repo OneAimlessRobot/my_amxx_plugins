@@ -12,7 +12,7 @@
 #include "../my_include/my_author_header.inc"
 
 
-new gHeroID = 0
+new gHeroID = -1
 
 new pcvar_ksun_supply_capacity;
 new pcvar_ksun_health_to_supply_ratio

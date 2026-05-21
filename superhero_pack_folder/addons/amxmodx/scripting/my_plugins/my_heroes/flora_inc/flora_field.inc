@@ -28,11 +28,10 @@ enum flora_sheltered_values{
   NONE=0,
   OUTSIDE,
   SHELTERED,
-  DUNGEON_DWELLER,
-  MAX_FLORA_SHELTERED
+  DUNGEON_DWELLER
 }
 
-stock const sh_custom_color:flora_damage_colors[MAX_FLORA_SHELTERED]={
+stock const sh_custom_color:flora_damage_colors[flora_sheltered_values]={
   GREEN,
   GREEN,
   YELLOW,

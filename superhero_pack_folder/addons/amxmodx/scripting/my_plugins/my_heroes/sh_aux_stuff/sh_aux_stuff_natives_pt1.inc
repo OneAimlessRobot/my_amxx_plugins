@@ -11,9 +11,16 @@ enum damage_icon_types{
   DMG_ICON_HEAT,
   DMG_ICON_HEALTH,
   DMG_ICON_ARMOR,
-  DMG_ICON_LONGJUMP
+  DMG_ICON_LONGJUMP,
+  DMG_ICON_BIO,
+  DMG_ICON_CHEM,
+  DMG_ICON_DROWN,
+	DMG_ICON_BATTERY
 }
 native ammo_hud(id,number,sw)
+
+
+native remove_glow_user(id,Float:delay)
 
 native precache_native_fx_pt1()
 native prepare_shero_aux_lib_pt1()
@@ -42,7 +49,12 @@ enum damage_icon_types{
   DMG_ICON_HEAT,
   DMG_ICON_HEALTH,
   DMG_ICON_ARMOR,
-  DMG_ICON_LONGJUMP
+  DMG_ICON_LONGJUMP,
+  DMG_ICON_BIO,
+  DMG_ICON_CHEM,
+  DMG_ICON_DROWN,
+	DMG_ICON_BATTERY
+
 }
 
 
@@ -52,9 +64,6 @@ native set_damage_icon(id,hide_show_or_flash=0,
           const color[3]={0,0,0},
           Float:the_remove_timer=0.0)
 
-native unset_damage_icon(id,
-        damage_icon_types:the_type_of_icon,
-        Float:delay=1.0)
 
 /** 
 remember:
@@ -83,6 +92,8 @@ native laser_line(ent_id,Float:Pos[3], Float:vEnd[3],killbeam,
 native draw_bbox(ent_id,killbeam)
 
 native gun_shot_decal(Float:vec[3])
+
+native big_gun_shot_decal(Float:vec[3], radius=18)
 
 //-----------------------------------------------------------------------------------------------
 

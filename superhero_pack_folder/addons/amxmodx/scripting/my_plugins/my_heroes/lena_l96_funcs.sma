@@ -17,7 +17,8 @@
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Lena de Verias: L96 weapon_thingie"
 
-new gHeroID = 0
+new gHeroID = -1
+
 new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]

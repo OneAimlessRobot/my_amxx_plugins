@@ -14,9 +14,6 @@
 #define TELIKO_SIDEARM_CLASSID CSW_P228
 #define TELIKO_RIFLE_CLASSID CSW_FAMAS
 
-#define TELIKO_SIDEARM_WEAPON_NAME "weapon_p228"
-#define TELIKO_RIFLE_WEAPON_NAME "weapon_famas"
-
 stock const gHeroName[] = "Teliko"
 
 

@@ -22,10 +22,17 @@ new const damage_icon_strings_arr[damage_icon_types][]={
 	"dmg_heat",
 	"item_healthkit",
 	"suit_full",
-	"item_longjump"
+	"item_longjump",
+	"dmg_bio",
+	"dmg_chem",
+	"dmg_drown",
+	"item_battery"
 }
 
-stock REMOVE_DAMAGE_ICON_TASKID
+new REMOVE_GLOW_TASKID,
+	REMOVE_DAMAGE_ICON_TASKID
+
+
 
 public plugin_init(){
 	
@@ -35,9 +42,11 @@ public plugin_init(){
 
 	
 	gMsgID_Status_icon = get_user_msgid("StatusIcon")
-	gmsgIcon = get_user_msgid("StatusIcon")
 	prepare_shero_aux_lib_pt1()
+
 	REMOVE_DAMAGE_ICON_TASKID=allocate_typed_task_id(player_task)
+
+	REMOVE_GLOW_TASKID=allocate_typed_task_id(entity_task)
 
 }
 public plugin_precache(){
@@ -73,8 +82,11 @@ public plugin_natives(){
 	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1",0);
 	register_native("set_render_with_color_const","_set_render_with_color_const",0)
 	register_native("tank_impact_shot_fx","_tank_impact_shot_fx",0)
+	register_native("big_gun_shot_decal","_big_gun_shot_decal",0)
+	
+	register_native("remove_glow_user","_remove_glow_user",0)
+
 	register_native("set_damage_icon","_set_damage_icon",0)
-	register_native("unset_damage_icon","_unset_damage_icon",0)
 
 }
 
@@ -559,7 +571,34 @@ public _draw_bbox(iPlugins, iParams){
 
 }
 
+public _big_gun_shot_decal(iPlugins, iParams){
 
+		new Float:origin[3]
+
+		get_array_f(1,origin,3)
+		new radius=get_param(2)
+	
+		new decal_id
+		if ( radius <= 18 ) {
+
+			decal_id = g_burnDecal[generate_int(0,2)]
+		}
+		else {
+			decal_id = g_burnDecalBig[generate_int(0,2)]
+		}
+
+		// Create the burn decal
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)		//TE_GUNSHOTDECAL
+		write_coord_f(origin[0])
+		write_coord_f(origin[1])
+		write_coord_f(origin[2])
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
+		message_end()
+
+
+}
 public _gun_shot_decal(iPlugins, iParams){
 
 	new Float:vec[3]
@@ -568,7 +607,7 @@ public _gun_shot_decal(iPlugins, iParams){
 
 	new decal_id = burn_decal[generate_int(0,4)]
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-	write_byte( 109 ) // decal and ricochet sound
+	write_byte( TE_GUNSHOTDECAL ) // decal and ricochet sound
 	write_coord_f( vec[0] ) //pos
 	write_coord_f( vec[1] )
 	write_coord_f( vec[2] )
@@ -648,7 +687,7 @@ public _explode_fx(iPlugins, iParams){
 	if((sfx_mask&sfx_show_burn_decal)){
 	
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(109)		// decal and ricochet sound
+		write_byte(TE_GUNSHOTDECAL)		// decal and ricochet sound
 		write_coord(vec1[0])	// pos
 		write_coord(vec1[1])
 		write_coord(vec1[2])
@@ -716,7 +755,7 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 
 		new decal_id
 		if ( radius <= 18 ) {
-			//radius ~< 216
+			
 			decal_id = g_burnDecal[generate_int(0,2)]
 		}
 		else {
@@ -866,19 +905,21 @@ public _set_damage_icon(iPlugins, iParams){
 
 	new id= get_param(1)
 	if ( !is_user_connected(id) ) return
+
+
+	if(task_exists(id+REMOVE_DAMAGE_ICON_TASKID)) return
+	
 	new hide_show_or_flash=get_param(2)
 
 	new damage_icon_types:the_icon_type_to_show = damage_icon_types:get_param(3)
 
-	new Float:the_remove_timer=get_param_f(4)
-	new color[3]
+	static color[3]
 
 	get_array(4,color,3)
 
+	new Float:the_remove_timer=get_param_f(5)
 
-// Poison HUD Icon
-
-	message_begin(MSG_ONE, gmsgIcon, {0,0,0}, id)
+	message_begin(MSG_ONE, gMsgID_Status_icon, {0,0,0}, id)
 	write_byte(hide_show_or_flash)				// status (0=hide, 1=show, 2=flash)
 	write_string(damage_icon_strings_arr[the_icon_type_to_show])	// sprite name
 	write_byte(color[0])		// red
@@ -941,8 +982,12 @@ public _draw_aim_vector(iPlugin,iParams){
 public _set_render_with_color_const(iPlugins,iParams){
 	new id=get_param(1)
 
-	if(!is_valid_ent(id)) return 
-
+	if(!is_valid_ent(id)){
+		return 
+	}
+	if(task_exists(id+REMOVE_GLOW_TASKID)){
+		return
+	}
 
 	new sh_custom_color:the_color_const=sh_custom_color:get_param(2),
 		glow_on_user=get_param(3),
@@ -974,16 +1019,33 @@ public _set_render_with_color_const(iPlugins,iParams){
 		remove_glow_user(id,the_glow_timer)
 	}
 }
-public _unset_damage_icon(iPlugins,iParams){
 
+public _remove_glow_user(iPlugin,iParams){
 	new id=get_param(1)
-	if(!is_user_connected(id)) return
-	new the_icon_to_remove=get_param(2)
+	new Float:delay=get_param_f(2)
 
-	new Float:delay=get_param_f(3)
+	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
+				
+
+}
+public remove_glow_task(id){
+
+id-=REMOVE_GLOW_TASKID
+if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
+	return
+}
+sh_set_rendering(id)
+
+}
+unset_damage_icon(id, the_icon_to_remove, Float:delay=1.0){
+
+	if(!is_user_connected(id)) return
+
 	new parm[1]
 	parm[0]=the_icon_to_remove
-	set_task(delay,"remove_damage_icon_task",id+REMOVE_DAMAGE_ICON_TASKID,parm,1)
+	set_task(delay,"remove_damage_icon_task",id+REMOVE_DAMAGE_ICON_TASKID,
+				parm,
+				sizeof(parm))
 
 }
 public remove_damage_icon_task(array[],id){
@@ -992,7 +1054,15 @@ public remove_damage_icon_task(array[],id){
 	
 	if(!is_user_connected(id)) return
 
-	set_damage_icon(id,_,damage_icon_types:array[0])
+	sh_chat_message(id,-1,"Are we removing your %s icon? we must be!",damage_icon_strings_arr[damage_icon_types:array[0]])
+	
+	message_begin(MSG_ONE, gMsgID_Status_icon, {0,0,0}, id)
+	write_byte(0)				// status (0=hide, 1=show, 2=flash)
+	write_string(damage_icon_strings_arr[damage_icon_types:array[0]])	// sprite name
+	write_byte(0)		// red
+	write_byte(0)	// green
+	write_byte(0)		// blue
+	message_end()
 
 
 }

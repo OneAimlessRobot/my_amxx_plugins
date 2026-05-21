@@ -15,7 +15,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new pcvar_ksun_spore_damage, 
 	pcvar_ksun_spore_speed,

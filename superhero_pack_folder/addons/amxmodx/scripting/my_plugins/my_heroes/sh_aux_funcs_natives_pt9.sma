@@ -124,11 +124,11 @@ public bool:_sh_register_admin_only_hero(iPlugins, iParams){
 	sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times] = the_number_of_times_to_allow
 
 	get_string(4, sh_pickable_hero_struct_arr[the_hero_id_to_register][unable_to_pick_string], STRING_SIZE-1)
-
+	/*
 	server_print("Hero with id %d successfully registered as admin only!^nIt is pickable 3 times in total^nAnd its admin flag bitsum is: %d^n",
 				the_hero_id_to_register,
 				sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times],
 				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])
-
+	*/
 	return true
 }

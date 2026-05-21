@@ -12,7 +12,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = 0
+new gHeroID = -1
 
 new g_jaqueo_shield_cooldown[SH_MAXSLOTS+1];
 new g_jaqueo_shield_loaded[SH_MAXSLOTS+1];
@@ -279,8 +279,7 @@ public _shield_charge_user(iPlugin, iParams){
 	parm[1]=g_jaqueo_shield[id]
 	set_task(shield_cooldown,"load_shield",id+JAQUEO_LOAD_TASKID,"", 0,  "a",1)
 	remove_task(id+JAQUEO_CHARGE_TASKID)
-	set_task(JAQUEO_CHARGE_PERIOD,"charge_task",id+JAQUEO_CHARGE_TASKID,parm, 2,  "b")
-	return
+	set_task(JAQUEO_CHARGE_PERIOD,"charge_task",id+JAQUEO_CHARGE_TASKID,parm, sizeof parm,  "b")
 	
 	
 	
