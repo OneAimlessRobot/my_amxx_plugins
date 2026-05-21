@@ -1054,8 +1054,6 @@ public remove_damage_icon_task(array[],id){
 	
 	if(!is_user_connected(id)) return
 
-	sh_chat_message(id,-1,"Are we removing your %s icon? we must be!",damage_icon_strings_arr[damage_icon_types:array[0]])
-	
 	message_begin(MSG_ONE, gMsgID_Status_icon, {0,0,0}, id)
 	write_byte(0)				// status (0=hide, 1=show, 2=flash)
 	write_string(damage_icon_strings_arr[damage_icon_types:array[0]])	// sprite name

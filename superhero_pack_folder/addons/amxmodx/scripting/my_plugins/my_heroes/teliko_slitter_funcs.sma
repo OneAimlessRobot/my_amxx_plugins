@@ -340,7 +340,6 @@ public CmdStart(attacker, uc_handle)
 				xs_vec_normalize( vecForward2D, vecForward2D );
 				static att_name[128],vic_name[128];
 
-				sh_chat_message(attacker,gHeroID, "Did we get here? The dot product: %0.2f The target value: %0.2f",xs_vec_dot( vec2LOS, vecForward2D ),0.5 )
 				if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
 				{	
 					if(g_slit_kills[attacker]<=0){
