@@ -3,7 +3,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "chikoi_inc/chikoi_inc.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_global.inc"
@@ -14,7 +13,6 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 #define MIN_KSUN_PAYCUT 0.01
 #define MAX_KSUN_PAYCUT 0.6
@@ -203,7 +201,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 		if(weapon==KSUN_WEAPON_ID){
 			if(sh_get_user_is_asleep(id)){
 			
-				new tger_name[128], vic_name[128]
+				static tger_name[128], vic_name[128]
 				get_user_name(attacker,vic_name,127)
 				get_user_name(id,tger_name,127)
 				ksun_heal(attacker,damage)

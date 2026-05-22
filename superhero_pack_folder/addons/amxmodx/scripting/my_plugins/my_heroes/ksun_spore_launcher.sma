@@ -98,7 +98,7 @@ public bool:_spores_busy(iPlugins, iParms){
 }
 public launcher_think(ent){
 	
-	if ( pev_valid(ent)!=2) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2) return
 	
 	
 	new Float:launcher_hp=float(pev(ent,pev_health))
@@ -108,7 +108,7 @@ public launcher_think(ent){
 	if ( (launcher_hp<LAUNCHER_DEAD_HP) || !is_valid_ent(launcher_owner) ){
 	
 		destroy_player_launcher(launcher_owner)
-		return FMRES_IGNORED
+		return
 		
 	}
 	new Float: think_time
@@ -170,14 +170,13 @@ public launcher_think(ent){
 		
 	
 			destroy_player_launcher(launcher_owner)
-			return FMRES_IGNORED;
+			return
 		}
 		
 	}
 	
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,think_time));
-	
-	return FMRES_IGNORED
+
 }
 public _spores_launch(iPlugin,iParms){
 	

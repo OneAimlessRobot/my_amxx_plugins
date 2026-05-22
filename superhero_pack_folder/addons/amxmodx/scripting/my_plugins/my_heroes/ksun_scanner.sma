@@ -248,11 +248,11 @@ public _get_scanner_player_tracks_player(iPlugins,iParams){
 }
 public scanner_think(scanner){
 	
-	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return FMRES_IGNORED
+	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return
 	
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
+	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
@@ -264,7 +264,7 @@ public scanner_think(scanner){
 			launcher_deploy(id)
 		}
 		destroy_player_scanner(id)
-		return FMRES_IGNORED
+		return
 		
 	}
 	
@@ -303,8 +303,6 @@ public scanner_think(scanner){
 	entity_set_float( scanner, EV_FL_fuser2, floatadd(entity_get_float(scanner, EV_FL_fuser2) ,SCAN_DIST_INC));
 	entity_set_float( scanner, EV_FL_fuser1, floatadd(entity_get_float(scanner, EV_FL_fuser1) ,SCAN_LOOP_PERIOD));
 	entity_set_float( scanner, EV_FL_nextthink, floatadd(get_gametime( ) ,SCAN_LOOP_PERIOD));
-	
-	return FMRES_IGNORED
 }
 
 

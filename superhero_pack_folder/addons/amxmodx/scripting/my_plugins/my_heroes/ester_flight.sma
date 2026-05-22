@@ -12,7 +12,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
-
 #define PLUGIN "Superhero ester flight funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"

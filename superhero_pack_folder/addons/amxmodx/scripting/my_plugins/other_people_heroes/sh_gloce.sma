@@ -4,7 +4,6 @@
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_heroes/freeze_fx/freeze_fx.inc"
 #include "../my_heroes/custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
@@ -35,10 +34,7 @@ public plugin_init()
 	//Register Events
 	register_event("CurWeapon", "weapon_event", "be", "1=1")
 
-	register_forward(FM_ClientConnect, "fwd_Client_Connect")
-	register_forward(FM_ClientDisconnect, "fwd_Client_Disconnect")
 
-	RegisterHam(Ham_Spawn, "player", "fwd_Ham_Spawn_post", 1,true)
 	RegisterHam(Ham_TakeDamage, "player", "fwd_Ham_TakeDamage_post",1,true)
 
 	//Register Cvars
@@ -69,7 +65,7 @@ public sh_hero_init(id, heroID, mode){
 	}
 }
 
-public fwd_Ham_Spawn_post(id)
+public sh_client_spawn(id)
 {
 	if(is_user_alive(id) && sh_is_active() && is_user_connected(id))
 	{
@@ -133,12 +129,12 @@ public weapon_event(id)
 }
 
 
-public fwd_Client_Connect(id)
+public client_connect(id)
 {
 	times_id[id] = 0
 }
 
-public fwd_Client_Disconnect(id)
+public client_disconnected(id)
 {
 	times_id[id] = 0
 }

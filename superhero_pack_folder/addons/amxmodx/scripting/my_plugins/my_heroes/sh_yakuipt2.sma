@@ -6,10 +6,8 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
-
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 

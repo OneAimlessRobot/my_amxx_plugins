@@ -5,7 +5,6 @@
 
 
 #define YANDERE_WEAPON_CLASSID CSW_XM1014
-#define YANDERE_WEAPON_NAME "weapon_xm1014"
 #define num_yandere_warcries 2
 stock const YANDERE_WARCRIES[num_yandere_warcries][128]={
 

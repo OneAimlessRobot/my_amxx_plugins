@@ -125,7 +125,7 @@ public mine_think(mine_id){
 	if ( pev_valid(mine_id)!=2 ){
 		
 	
-			return FMRES_IGNORED
+			return
 	
 	}
 	
@@ -149,12 +149,10 @@ public mine_think(mine_id){
 			continue
 		}
 		blow_mine_up(mine_id,pid);
-		return FMRES_IGNORED
+		return
 	}
 
 	entity_set_float(mine_id,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
-
-	return FMRES_IGNORED
 }
 
 public blow_mine_up(ent, id)

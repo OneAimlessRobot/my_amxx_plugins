@@ -24,7 +24,8 @@ public plugin_init(){
 register_plugin(PLUGIN, VERSION, AUTHOR);
 register_forward(FM_CmdStart, "CmdStart");
 RegisterHam(Ham_Player_PreThink,"player","Ham_PlayerPreThink",_,true)
-register_event("CurWeapon", "weaponChange", "be", "1=1")
+register_event("CurWeapon", "weaponChange", "be", "1=1")	
+
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 init_explosion_defaults()

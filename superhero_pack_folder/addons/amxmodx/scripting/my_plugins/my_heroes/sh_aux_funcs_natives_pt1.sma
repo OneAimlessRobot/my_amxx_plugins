@@ -3,7 +3,6 @@
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
@@ -907,7 +906,6 @@ public _set_damage_icon(iPlugins, iParams){
 	if ( !is_user_connected(id) ) return
 
 
-	if(task_exists(id+REMOVE_DAMAGE_ICON_TASKID)) return
 	
 	new hide_show_or_flash=get_param(2)
 
@@ -927,9 +925,14 @@ public _set_damage_icon(iPlugins, iParams){
 	write_byte(color[2])		// blue
 	message_end()
 	
-	if(the_remove_timer>0.1){
+	if((the_remove_timer>0.1)&&(hide_show_or_flash>0)){
 		
-		  unset_damage_icon(id,the_icon_type_to_show,the_remove_timer)
+		if(task_exists(id+REMOVE_DAMAGE_ICON_TASKID)){
+
+			remove_task(id+REMOVE_DAMAGE_ICON_TASKID)
+		}
+		
+		unset_damage_icon(id,the_icon_type_to_show,the_remove_timer)
 	}
 }
 
@@ -985,9 +988,6 @@ public _set_render_with_color_const(iPlugins,iParams){
 	if(!is_valid_ent(id)){
 		return 
 	}
-	if(task_exists(id+REMOVE_GLOW_TASKID)){
-		return
-	}
 
 	new sh_custom_color:the_color_const=sh_custom_color:get_param(2),
 		glow_on_user=get_param(3),
@@ -1015,7 +1015,11 @@ public _set_render_with_color_const(iPlugins,iParams){
 		
 		aura(id,LineColors[the_color_const])
 	}
-	if(the_glow_timer>0.1){
+	if((the_glow_timer>0.1)&&glow_on_user){
+
+		if(task_exists(id+REMOVE_GLOW_TASKID)){
+			remove_task(id+REMOVE_GLOW_TASKID)
+		}
 		remove_glow_user(id,the_glow_timer)
 	}
 }

@@ -24,7 +24,6 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"

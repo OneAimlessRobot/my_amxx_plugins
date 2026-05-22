@@ -41,17 +41,17 @@ public plugin_init(){
 	pcvar_xp_distance_mult = register_cvar("lena_xp_distance_mult","4")
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, LENA_WEAPON, "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, LENA_WEAPON, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_PostFrame, LENA_WEAPON, "fw_Item_PostFrame",_,true)	
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_Item_PostFrame",_,true)	
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaL96",_,true)
 	
-	RegisterHam(Ham_Weapon_Reload,LENA_WEAPON, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, LENA_WEAPON, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[LENA_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
 	
 	
 	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")

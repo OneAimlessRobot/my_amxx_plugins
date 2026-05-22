@@ -1,5 +1,4 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 

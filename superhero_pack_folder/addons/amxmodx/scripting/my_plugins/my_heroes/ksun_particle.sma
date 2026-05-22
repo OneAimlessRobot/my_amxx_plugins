@@ -377,7 +377,7 @@ switch(get_player_launcher_phase(id)){
 
 public spore_think(spore){
 
-	if ( !is_valid_ent(spore) ) return FMRES_IGNORED
+	if ( !is_valid_ent(spore) ) return
 
 
 	new Float:spore_hp=float(pev(spore,pev_health))
@@ -391,13 +391,13 @@ public spore_think(spore){
 						!is_user_alive(spore_target)){
 		
 		untrack_spore(spore)
-		return FMRES_IGNORED
+		return
 		
 	}
 
 	else if(current_track_time>cvar_val(float, pcvar_particle_follow_time)){
 		untrack_spore(spore)
-		return FMRES_IGNORED
+		return
 	}
 
 	new trackresult=entity_set_follow(spore, spore_target,spore_owner)
@@ -407,7 +407,7 @@ public spore_think(spore){
 		if(trackresult<0){
 			untrack_spore(spore)
 			set_scanner_player_tracks_player(spore_owner,spore_target,0)
-			return FMRES_IGNORED
+			return
 		}
 		else{
 			emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -441,8 +441,6 @@ public spore_think(spore){
 	}
 	
 	entity_set_float( spore, EV_FL_nextthink, floatadd(get_gametime( ) ,SPORE_THINK_PERIOD));
-
-	return FMRES_IGNORED
 }
 bump_spore(spore){
 

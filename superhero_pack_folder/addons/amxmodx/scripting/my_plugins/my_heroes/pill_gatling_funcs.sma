@@ -46,7 +46,6 @@ public plugin_init(){
 	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
-	register_forward(FM_PlayerPostThink, "fwPlayerPostThink", 1)
 	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "Item_PostFrame_Post", 1,true)
 		
 	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
@@ -93,6 +92,13 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	}
 
+	if(!Get_BitVar(can_fire_mask,pPlayer)){
+		return HAM_SUPERCEDE
+	}
+
+	if(g_plAction[pPlayer]!=act_run){
+		return HAM_SUPERCEDE
+	}
 	static iClip, iPlaybackEvent
 	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
@@ -100,12 +106,6 @@ public fw_WeaponPrimaryAttackPre(entity)
 		iPlaybackEvent = register_forward(FM_PlaybackEvent, "fm_PlaybackEventPre")
 		
 		
-	}
-	if(!Get_BitVar(can_fire_mask,pPlayer)){
-		return HAM_SUPERCEDE
-	}
-	if(g_plAction[pPlayer]!=act_run){
-		return HAM_SUPERCEDE
 	}
 	ExecuteHam(Ham_Weapon_PrimaryAttack, entity)
 	if(!iClip){
@@ -292,10 +292,14 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
-	if ( !client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
-	
+	if ( !client_is_hero_user(id, gHeroID)){
+		
+		return FMRES_IGNORED;
+	}
+
 	if(!Get_BitVar(gPillGatlingEngaged_mask,id)){
 
+		Assign_BitVar(can_fire_mask, id, false_for_macro);
 		return FMRES_IGNORED
 
 	}
@@ -526,14 +530,14 @@ public pill_think(ent)
 
 	if(pev_valid(ent)!=2){
 
-		return FMRES_IGNORED
+		return
 
 	}
 	
 	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_hero_user(id, gHeroID)) {
 		remove_entity(ent)
-		return FMRES_IGNORED
+		return
 	}
 	new Float:newVelocity[3],Float:velocityVec[ 3 ]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
@@ -558,8 +562,6 @@ public pill_think(ent)
 	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
 	set_pev(ent, pev_vuser1, newVelocity)
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
-
-	return FMRES_IGNORED
 }
 
 public fw_ItemDeployPre(entity)

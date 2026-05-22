@@ -62,7 +62,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid hero id %d at _sh_log_custom_damage_source!^nHero id must be between exactly %d and %d!^nGeneric damage source will be logged^n",hero_id,-1,SH_MAXHEROS-1)
         */
     }
-    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_a_melee, is_generic_hero?generic_dmg_source_long_name:long_name_arr)
+    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_generic_hero?generic_dmg_source_is_melee:is_a_melee, is_generic_hero?generic_dmg_source_long_name:long_name_arr)
     if(wpn_id>0){
         sh_damage_source_hero_ids[wpn_id]=is_generic_hero?-1:hero_id;
         sh_damage_source_is_a_melee[wpn_id]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
@@ -104,12 +104,10 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
     return wpn_id
 }
 
-
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
     new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
     if((damage > 0)&&(attacker!=victim)){
-        new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
         if(private_wpn_id==generic_dmg_source_wpn_id){
             arrayset(wpnDescription,0,sizeof(wpnDescription))
             strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
@@ -119,6 +117,8 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
             custom_weapon_dmg(private_wpn_id, attacker, victim, damage, _:bodypart)
         }
     }
+    
     wpnid=private_wpn_id
+    
     return DMG_FWD_PASS;
 }

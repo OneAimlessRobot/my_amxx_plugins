@@ -2,7 +2,6 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
 
 new gHeroID = -1

@@ -170,7 +170,7 @@ public plugin_precache(){
 //----------------------------------------------------------------------------------------------
 public shield_think(ent)
 {
-	if ( pev_valid(ent)!=2 ) return FMRES_IGNORED
+	if ( pev_valid(ent)!=2 ) return
 	
 	
 	static Float:vEnd[3], Float:gametime,Float:Pos[3]
@@ -186,7 +186,7 @@ public shield_think(ent)
 			sh_chat_message(owner,gHeroID,"Shield died!")
 			uncharge_user(owner)
 		}
-		return FMRES_IGNORED
+		return
 	}
 	if(g_jaqueo_shield_deployed[owner]){
 		
@@ -212,7 +212,6 @@ public shield_think(ent)
 		}
 	}
 	set_pev(ent, pev_nextthink, gametime + (JAQUEO_THINK_PERIOD))
-	return FMRES_IGNORED
 }
 public _shield_charge_user(iPlugin, iParams){
 	

@@ -14,9 +14,6 @@
 new const Arifle_Sound[] = "weapons/m60-1.wav"
 
 
-const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_AUG)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_GALIL)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
-const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN)|(1<<CSW_USP)|(1<<CSW_GLOCK18)|(1<<CSW_DEAGLE)
-
 new g_Had_Arifle, g_Arifle_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Arifle, g_Msg_WeaponList, g_SmokePuff_SprId, g_ham_bot
 new g_Muzzleflash_Ent, g_Muzzleflash

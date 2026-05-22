@@ -130,6 +130,7 @@ new sh_botsearnxp, sh_botsminlevel,sh_botsmaxlevel
 new sh_maxbinds, sh_maxpowers,sh_maxcores, sh_menumode, sh_mercyxp, sh_mercyxpmode, sh_minlevel
 new sh_savexp, sh_saveby, sh_xpsavedays, sh_minplrsbhxp, sh_reloadmode, sh_blockvip, sh_ffa
 new mp_friendlyfire, sv_maxspeed, sv_lan, bot_quota
+new sh_enable_custom_weapon_logging
 new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
@@ -216,6 +217,7 @@ public plugin_init()
 	sh_loadimmediate = register_cvar("sh_loadimmediate", "0")
 	sh_lvllimit = register_cvar("sh_lvllimit", "1")
 	sh_maxbinds = register_cvar("sh_maxbinds", "3")
+	sh_enable_custom_weapon_logging = register_cvar("sh_enable_custom_weapon_logging", "0")
 	sh_maxpowers = register_cvar("sh_maxpowers", "20")
 	sh_menumode = register_cvar("sh_menumode", "1")
 	sh_mercyxp = register_cvar("sh_mercyxp", "0")
@@ -2681,6 +2683,8 @@ public _sh_extra_damage()
 	new damage_after;
 	damage_after = get_param(3)
 
+	new Float:flArmor = 0.0
+
 	static wpnDescription[32]
 	get_string(4, wpnDescription, charsmax(wpnDescription))
 
@@ -2737,7 +2741,7 @@ public _sh_extra_damage()
 		// *** Note: this is not exactly CS damage method because we do not have that sdk ***
 		new Float:flDamage = float(damage_after)
 		new Float:flNewDamage = flDamage * SH_ARMOR_RATIO
-		new Float:flArmor = (flDamage - flNewDamage) * SH_ARMOR_BONUS
+		flArmor = (flDamage - flNewDamage) * SH_ARMOR_BONUS
 
 		// Does this use more armor than we have figured for?
 		if ( flArmor > float(plrArmor) ) {
@@ -2965,9 +2969,85 @@ public _sh_extra_damage()
 				
 				server_print("Sh damage forward post execute error.");
 			}
-			
+			else if(cvar_val(bool,sh_enable_custom_weapon_logging)){
+				/* I made this switchable.
+
+				It generates.
+				A
+				LOT
+				Of logs
+				Specially with victim and poison damage and such */
+				
+				logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart)
+			}
 		}
 	}
+}
+/*
+
+repurposed from core to be used to log hits and not just kills!
+
+"Oh.. b- but thats bloat!
+Its...
+Its too much bloat!"
+
+Awww...
+Come on...
+Come tell momm--
+I mean daddy that sh-
+I mean she--
+I mean he is bad.
+Come on.
+Come tell me that I am bad ~
+
+This is the format:
+
+//L 05/22/2026 - 13:11:15: "Maria chupa-beatas<263><BOT><CT>" attacked "LoveBleedingBubble<265><BOT><TERRORIST>" with "deagle" (damage "117") (damage_armor "19") (health "-68") (armor "252")
+
+
+*/
+
+logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hitpoint_enum:bodypart)
+{
+	static namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
+
+	static armor, health
+	// Info On Attacker
+	get_user_name(id, namea, charsmax(namea))
+	get_user_team(id, teama, charsmax(teama))
+	get_user_authid(id, authida, charsmax(authida))
+	new auserid = get_user_userid(id)
+
+	// Info On Victim
+	get_user_name(victim, namev, charsmax(namev))
+	get_user_team(victim, teamv, charsmax(teamv))
+	get_user_authid(victim, authidv, charsmax(authidv))
+	
+	health=get_user_health(victim)
+	armor=get_user_armor(victim)
+
+/*"^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, weaponDescription, damage_after, armor_damage,health,armor )
+	,
+*/
+	// Info on vitals and damage
+	// Log This Hit
+	if ( id != victim ) {
+		log_message("^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
+	
+	}
+	else {
+		log_message("^"%s<%d><%s><%s>^" attacked themselves on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+			namea, auserid, authida, teama, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
+	
+	}
+
+	if((damage_after<=0)||(id==victim)){
+		
+		return
+	}
+
 }
 //---------------------------------------------------------------------------------------------
 public fm_AlertMessage(atype, const msg[])
@@ -2978,7 +3058,7 @@ public fm_AlertMessage(atype, const msg[])
 //---------------------------------------------------------------------------------------------
 logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,my_hitpoint_enum:bodypart)
 {
-	new namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
+	static namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
 	// Info On Attacker
 	get_user_name(id, namea, charsmax(namea))

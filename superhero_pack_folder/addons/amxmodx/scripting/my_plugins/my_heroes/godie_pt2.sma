@@ -38,16 +38,16 @@ public plugin_init(){
 
 
 	register_event("CurWeapon","event_curweapon","be", "1=1")
-	RegisterHam(Ham_Weapon_PrimaryAttack, YAKUI_WEAPON_NAME, "Ham_Weapon_PillGatling",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "Ham_Weapon_PillGatling",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_Deploy, YAKUI_WEAPON_NAME, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Item_Deploy,  weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
 	register_forward(FM_PlayerPostThink, "fwPlayerPostThink", 1)
-	RegisterHam(Ham_Item_PostFrame, YAKUI_WEAPON_NAME, "Item_PostFrame_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame,  weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "Item_PostFrame_Post", 1,true)
 		
-	RegisterHam(Ham_Weapon_Reload,YAKUI_WEAPON_NAME, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, YAKUI_WEAPON_NAME, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload,  weapon_names_stock_arr[YAKUI_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
 	
@@ -464,13 +464,13 @@ public pill_think(ent)
 
 	if(pev_valid(ent)!=2){
 
-		return FMRES_IGNORED
+		return
 
 	}
 	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_hero_user(id, gHeroID)) {
 		remove_entity(ent)
-		return FMRES_IGNORED
+		return
 	}
 	new Float:newVelocity[3],Float:velocityVec[ 3 ]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
@@ -496,7 +496,6 @@ public pill_think(ent)
 	set_pev(ent, pev_vuser1, newVelocity)
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + 0.05 );
 
-	return FMRES_IGNORED
 }
 
 public fw_ItemDeployPre(entity)

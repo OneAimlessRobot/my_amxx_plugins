@@ -3,7 +3,6 @@
 #endif
 #define sh_lena_l96_include
 
-#define LENA_WEAPON "weapon_awp"
 #define LENA_WEAPON_CLASSID CSW_AWP
 #define LENA_PROJECTILE_CLASSNAME "lena_projectile"
 
