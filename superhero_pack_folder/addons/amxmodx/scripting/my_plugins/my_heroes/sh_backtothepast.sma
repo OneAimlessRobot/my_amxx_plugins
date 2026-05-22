@@ -160,10 +160,6 @@ public getTeamNumFromChar(team){
 		return 1;
 	case 'T':
 		return 2;
-	case 'S':
-		return 3;
-	default:
-		return 0
 	}
 	return 0;
 
@@ -180,10 +176,6 @@ public getTeamNumFromEnum(CsTeams: team){
 		return 1;
 	case CS_TEAM_T:
 		return 2;
-	case CS_TEAM_SPECTATOR:
-		return 3;
-	default:
-		return 0;
 	}
 	return 0;
 
@@ -239,7 +231,7 @@ public return_to_past_now(id){
 	sh_chat_message(0,gHeroID, "%s: Purging current game in...",playerName)
 	new parm[1]
 	parm[0] = gCountdown
-	set_task(1.0,"count_down",id+TASKID_COUNT,parm,sizeof parm)
+	set_task(1.0,"count_down",TASKID_COUNT,parm,sizeof parm)
 	gJeremyPowerUsedTimes[id]++
 	gTeamUseCount[gUserTeam[id]]++
 	gGameUseCount++;
@@ -286,21 +278,21 @@ else{
 		playSoundDenySelect(id)
 		return
 	}
-	if(gJeremyPowerUsedTimes[id]==gMaxPerPlayer){
+	if(gJeremyPowerUsedTimes[id]>=gMaxPerPlayer){
 	
 		
 		sh_chat_message(id,gHeroID,"You have already used this power %d times this game. No more", gJeremyPowerUsedTimes[id] )
 		playSoundDenySelect(id)
 		return
 	}
-	if(gTeamUseCount[gUserTeam[id]]==gMaxPerTeam){
+	if(gTeamUseCount[gUserTeam[id]]>=gMaxPerTeam){
 	
 		
 		sh_chat_message(id,gHeroID,"Your team has already used this power %d times this game. No more", gTeamUseCount[gUserTeam[id]] )
 		playSoundDenySelect(id)
 		return
 	}
-	if(gGameUseCount==gMaxPerGame){
+	if(gGameUseCount>=gMaxPerGame){
 	
 		
 		sh_chat_message(id,gHeroID,"The power has already been used %d times this game. No more", gGameUseCount )
