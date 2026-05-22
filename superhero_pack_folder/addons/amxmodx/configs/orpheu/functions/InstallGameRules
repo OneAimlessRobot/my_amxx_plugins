@@ -16,7 +16,7 @@
         {
             "os"    : "linux",
             "mod"   : "cstrike",
-            "value" : "InstallGameRules__Fv"
+            "value" : "_Z25InstallGameRules_OrigFuncv"
         },
         {
             "os"    : "windows",

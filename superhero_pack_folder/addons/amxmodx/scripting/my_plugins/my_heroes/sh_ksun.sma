@@ -77,7 +77,7 @@ public plugin_init()
 								dmg_source_name_long_ksun_debt,0)
 
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",1,true)
-	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",1,true)
+	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
 
 
 	set_task(1.0,"ksun_step_silent",_,_,_,"b")

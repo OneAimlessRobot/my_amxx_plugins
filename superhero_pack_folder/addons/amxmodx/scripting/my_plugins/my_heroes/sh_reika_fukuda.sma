@@ -26,11 +26,13 @@ new mode_change_button_pressed_mask = 0
 new mode_mask = 0
 new reika_parried_tg[SH_MAXSLOTS+1] = {0, ...}
 new Float:reika_stored_damage[SH_MAXSLOTS+1] = { 0.0, ...}
-new Float:reika_parry_mode_time
-new Float:reika_explosion_cooldown
-new Float:reika_explosion_radius
-new Float:reika_explosion_force
-new Float:reika_explosion_damage
+
+//Floats
+new pcvar_reika_parry_mode_time
+new pcvar_reika_explosion_cooldown
+new pcvar_reika_explosion_radius
+new pcvar_reika_explosion_force
+new pcvar_reika_explosion_damage
 
 new REIKA_PARRY_TURN_OFF_DELAY_TASKID
 
@@ -41,11 +43,11 @@ public plugin_init()
     register_plugin("SUPERHERO Reika Fukuda","1.0",AUTHOR)
 
     register_cvar("reika_level", "12" )
-    register_cvar("reika_explosion_cooldown","30.0")
-    register_cvar("reika_explosion_radius","300.0")
-    register_cvar("reika_explosion_force","250.0")
-    register_cvar("reika_explosion_damage","80.0")
-    register_cvar("reika_parry_mode_time","6.0")
+    pcvar_reika_explosion_cooldown = register_cvar("reika_explosion_cooldown","30.0")
+    pcvar_reika_explosion_radius = register_cvar("reika_explosion_radius","300.0")
+    pcvar_reika_explosion_force = register_cvar("reika_explosion_force","250.0")
+    pcvar_reika_explosion_damage = register_cvar("reika_explosion_damage","80.0")
+    pcvar_reika_parry_mode_time = register_cvar("reika_parry_mode_time","6.0")
 
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -119,7 +121,8 @@ prepare_parry(id){
         sh_chat_message(id,gHeroID,"Preparing to parry!")
         emit_sound(id,CHAN_WEAPON,reika_parry_equip_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
         Set_BitVar(reika_is_parrying_mask,id);
-        set_task(reika_parry_mode_time,"parry_mode_turn_off_task",
+        set_task(
+            cvar_val(float, pcvar_reika_parry_mode_time),"parry_mode_turn_off_task",
                                 id+REIKA_PARRY_TURN_OFF_DELAY_TASKID)
     
     }
@@ -204,8 +207,7 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
             
             sh_chat_message(attacker,gHeroID,
                             "Counter strike! %0.1f xtra dmg dealt on strike",
-                            reika_stored_damage[attacker],
-                            reika_parry_mode_time)
+                            reika_stored_damage[attacker])
 
             clear_retaliate(attacker)
 
@@ -246,21 +248,6 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public plugin_cfg()
-{
-	loadCVARS();
-	
-}
-//----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-    reika_explosion_cooldown=get_cvar_float("reika_explosion_cooldown")
-    reika_explosion_radius=get_cvar_float("reika_explosion_radius")
-    reika_explosion_force=get_cvar_float("reika_explosion_force")
-    reika_explosion_damage=get_cvar_float("reika_explosion_damage")
-    reika_parry_mode_time=get_cvar_float("reika_parry_mode_time")
-}
-//----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
     if(heroID!=gHeroID) return
 
@@ -283,23 +270,25 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public reika_kd(id)
 {
-    if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
+    if(!sh_is_active()||!sh_is_inround()) return
 
-    if ( !is_user_alive(id) ) return PLUGIN_HANDLED
+    if ( !is_user_alive(id) ) return
 
-    if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+    if(!sh_user_has_hero(id,gHeroID) ) return
 
     if(sh_get_cooldown_flag(id)){
 
         sh_sound_deny(id)
-        return PLUGIN_HANDLED
+        return
     }
     new bool:curr_mode = bool:Get_BitVar(mode_mask, id)
     if(!curr_mode){
 
-        explosion(gHeroID,id,reika_explosion_radius,
-                            reika_explosion_damage,
-                            reika_explosion_force,1,1,_,sfx_show_shockwave)
+        explosion(gHeroID,id,
+                        cvar_val(float, pcvar_reika_explosion_radius),
+                        cvar_val(float, pcvar_reika_explosion_damage),
+                        cvar_val(float, pcvar_reika_explosion_force)
+                        ,1,1,_,sfx_show_shockwave)
     
     }
     else{
@@ -308,8 +297,7 @@ public reika_kd(id)
         
     }
 
-    sh_set_cooldown(id,reika_explosion_cooldown)
-    return PLUGIN_HANDLED
+    sh_set_cooldown(id,cvar_val(float, pcvar_reika_explosion_cooldown))
 }
 public plugin_precache(){
 
@@ -371,8 +359,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
             
             sh_chat_message(attacker,gHeroID,
                             "Counter strike! %d xtra dmg dealt on strike",
-                            floatround(reika_stored_damage[attacker]),
-                            reika_parry_mode_time)
+                            floatround(reika_stored_damage[attacker]))
 
             clear_retaliate(attacker)
         }

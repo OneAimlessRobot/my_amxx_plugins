@@ -19,6 +19,9 @@ new gHeroID = -1
 new TELEPORT_CHECK_TASKID
 new SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID
 
+//nums
+new pcvar_shinobu_alpha
+
 new g_shinobu_positions[SH_MAXSLOTS+1][3],
 	g_shinobu_dst_positions[SH_MAXSLOTS+1][3]
 
@@ -50,6 +53,10 @@ public plugin_init(){
 
 	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
+
+	pcvar_shinobu_alpha = register_cvar("shinobu_alpha","10")
+	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Lower,true,0.0)
+	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Upper,true,255.0)
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 	register_forward(FM_CmdStart, "shinobu_cloak_conditions")
 
@@ -139,7 +146,7 @@ apply_cloak(id){
 	}
 	if(g_curr_shinobu_cloaked[id]){
 		
-		sh_set_rendering(id,0,0,0,10,kRenderFxGlowShell,kRenderTransColor);
+		sh_set_rendering(id,0,0,0,cvar_val(num, pcvar_shinobu_alpha),kRenderFxGlowShell,kRenderTransColor);
 
 	}
 	else{

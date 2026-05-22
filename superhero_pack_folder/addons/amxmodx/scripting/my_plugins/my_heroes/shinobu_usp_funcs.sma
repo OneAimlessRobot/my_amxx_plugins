@@ -194,8 +194,8 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 			speed=(is_headshot?40.0:220.0)
 			sh_set_stun(this,stun_time,speed)
 			
-			damage*=(is_headshot?2.5:1.5)
-			ammo+=(is_headshot?3:1)
+			damage*=(is_headshot?5.5:3.5)
+			ammo+=(is_headshot?5:3)
 			g_shinobu_curr_ammo[idattacker] = ammo
 			g_shinobu_curr_ammo[idattacker] = min(g_shinobu_curr_ammo[idattacker],MAX_AMMO)
 			cs_set_user_bpammo(idattacker,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[idattacker])

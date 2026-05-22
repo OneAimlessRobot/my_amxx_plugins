@@ -20,7 +20,7 @@
         {
             "os"    : "linux",
             "mod"   : "cstrike",
-            "value" : "EndRoundMessage__FPCci"
+            "value" : "_ZN18CHalfLifeMultiplay15EndRoundMessageEPKc21ScenarioEventEndRound"
         }
     ]
 }

@@ -130,7 +130,7 @@ public _allocate_typed_task_id(iPlugin,iParams){
 	task_id_to_give += ((slots_per_task_type[the_type]+1)+(3*stack_ammount))
 	curr_num_of_tasks++;
 
-	//print_allocator_state()
+	print_allocator_state()
 	
 	return prev_task_id_given;
 

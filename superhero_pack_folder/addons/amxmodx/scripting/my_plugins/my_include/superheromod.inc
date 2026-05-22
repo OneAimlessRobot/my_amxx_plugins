@@ -946,7 +946,7 @@ stock sh_get_velocity(const Float:initial[3], const Float:final[3], Float:speed,
  *
  * @noreturn
  */
-stock gPlayerInCooldownMask
+stock gPlayerInCooldownMask = 0
 /**
 
 Cooldown mask!
@@ -996,7 +996,6 @@ public sh_end_cooldown(id)
 
 	id -= SH_COOLDOWN_TASKID;
 	sh_unset_cooldown_flag(id)
-
 	sh_debug_message(id, 5, "Cooldown Timer Ended");
 }
 

@@ -1,14 +1,26 @@
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include <reapi>
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include <orpheu_memory>
+#include <orpheu_stocks>
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "../my_include/my_author_header.inc"
 
 #define BUILDUP_SFX "shmod/jeremy/jeremybuildup.wav"
-#define TASKID 12213
-#define TASKID_PAST 1323
-#define TASKID_COUNT 1324
-#define TASKID_FX 1212
+
+#define set_mp_pdata(%1,%2)  ( OrpheuMemorySetAtAddress( g_pGameRules, %1, 1, %2 ) )
+#define get_mp_pdata(%1)     ( OrpheuMemoryGetAtAddress( g_pGameRules, %1 ) )
+
+new is_rehlds_avail
 // GLOBAL VARIABLES
 new gHeroName[]="Jeremy"
-new gJeremyPowerUsedTimes[SH_MAXSLOTS+1]
+new gJeremyPowerUsedTimes[SH_MAXSLOTS+1] = {0, ...},
+	g_player_deaths[SH_MAXSLOTS+1] = {0, ...},
+	g_player_frags[SH_MAXSLOTS+1] = {0, ...}
+
+new g_player_cooldown_mask = 0
+
 new gUserTeam[ SH_MAXSLOTS+1 ]
 new gHeroID
 new gTeamUseCount[3]
@@ -16,9 +28,55 @@ new gGameUseCount,
 	gMaxPerPlayer,
 	gMaxPerTeam,
 	gMaxPerGame;
-new gCurrCountDown;
 new gCountdown
+
+new g_pGameRules;
+
+new pcvar_gCooldown
 new bool:gPowerBeingUsed
+new TASKID_COUNT,
+	RESTORE_POWER_ON_USER
+enum
+{
+	Event_TargetBombed = 1,
+	Event_VIPEscaped,
+	Event_VIPAssassinated,
+	Event_TerroristsEscaped,
+	Event_CTsPreventEscape,
+	Event_EscapingTerroNeutralized,
+	Event_BombDefused,
+	Event_CTsWin,
+	Event_TerroristsWin,
+	Event_RoundDraw,
+	Event_AllHostagesRescued,
+	Event_TargetSaved,
+	Event_HostagesNotRescued,
+	Event_TerroristsNotEscaped,
+	Event_VIPNotEscaped
+};
+
+enum
+{
+	WinStatus_Ct = 1,
+	WinStatus_Terrorist,
+	WinStatus_RoundDraw
+};
+
+new const CSGameRules_Members:team_scores_consts[_:CS_TEAM_SPECTATOR+1]={
+    CSGameRules_Members:-1,
+	m_iNumTerroristWins,
+	m_iNumCTWins,
+    CSGameRules_Members:-1
+
+}
+new g_teamscores[_:CS_TEAM_SPECTATOR+1]={0, ...}
+
+
+public OnInstallGameRules()
+{
+	g_pGameRules = OrpheuGetReturn();
+}
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -31,19 +89,28 @@ public plugin_init()
 	register_cvar("jeremy_maxrounds_team", "4")
 	register_cvar("jeremy_maxrounds_game", "10");
 	register_cvar("jeremy_countdown", "10")
+	pcvar_gCooldown = register_cvar("jeremy_cooldown", "60.0")
+
+
 	register_concmd("jeremystats","print_jeremy_stats")
 	
 	register_event( "TeamInfo" , "fw_EvTeamInfo" , "a" );
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Strategic mastermind!", "Return to the past! bind some key to type 'bind j jeremystats' in console for overview", true, "jeremy_level")
-  
+	gHeroID=shCreateHero(gHeroName, "Strategic rewind!", "Return to the past! bind some key to type 'bind j jeremystats' in console for overview", true, "jeremy_level")
+	TASKID_COUNT=allocate_typed_task_id(generic_task)
+	RESTORE_POWER_ON_USER=allocate_typed_task_id(player_task)
+
+
 	init_everything()
 }
 public plugin_precache(){
-
-
+	
 	engfunc(EngFunc_PrecacheSound, BUILDUP_SFX)
+	is_rehlds_avail=is_rehlds()
+	if(!is_rehlds_avail){
+		OrpheuRegisterHook( OrpheuGetFunction( "InstallGameRules" ), "OnInstallGameRules", OrpheuHookPost );
+	}
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -101,6 +168,12 @@ public getTeamNumFromChar(team){
 	return 0;
 
 }
+public unset_jeremy_cooldown_task(taskid){
+
+	new id= taskid-RESTORE_POWER_ON_USER;
+	Assign_BitVar(g_player_cooldown_mask,id, false_for_macro)
+
+}
 public getTeamNumFromEnum(CsTeams: team){
 	switch(team){
 	case CS_TEAM_CT:
@@ -125,22 +198,19 @@ public sh_hero_init(id, heroID, mode){
 	}
 	
 }
-public count_down(id){
+public count_down(parm[1],taskid){
 
-	id-=TASKID_COUNT
-	new message[128]
-	
-	new players[SH_MAXSLOTS],num;
-	get_players(players,num);
-	formatex(message, 127, "%i",gCurrCountDown--)
-	for(new i=0;i<num;i++){
-		sh_chat_message(players[i],gHeroID,"%s",message);
+	sh_chat_message(0,gHeroID,"%d",parm[0])
+	if(parm[0]>0){
+		parm[0]--
+		set_task(1.0,"count_down",TASKID_COUNT,parm,sizeof parm)
 	}
-
+	else {
+		purge_game_state()
+	}
 }
 public return_to_past_fx(id){
 
-	id-=TASKID_FX
 	new Float:fl_origin[3]
 	entity_get_vector(id, EV_VEC_origin, fl_origin)
 
@@ -159,16 +229,17 @@ public return_to_past_fx(id){
 }
 public return_to_past_now(id){
 	
-	new message[1024]
-	new playerName[256];
-	get_user_name(id,playerName,256)
-	formatex(message, 1023, "player %s is RETURNING THE SERVER TO THE PAST NOW! IN...",playerName)
-	sh_chat_message(0,gHeroID,"%s",message);
-	gCurrCountDown=gCountdown;
+	static playerName[256];
+
+	get_user_name(id,playerName,charsmax(playerName))
+
+	sh_chat_message(0,gHeroID, "%s: Returning to the past, now.",playerName)
 	gPowerBeingUsed=true
-	set_task(0.0,"return_to_past_fx",id+TASKID_FX)
-	set_task(floatadd(float(gCountdown),1.0),"force_end",id+TASKID_PAST)
-	set_task(1.0,"count_down",id+TASKID_COUNT,_,_,"a",gCurrCountDown)
+	return_to_past_fx(id)
+	sh_chat_message(0,gHeroID, "%s: Purging current game in...",playerName)
+	new parm[1]
+	parm[0] = gCountdown
+	set_task(1.0,"count_down",id+TASKID_COUNT,parm,sizeof parm)
 	gJeremyPowerUsedTimes[id]++
 	gTeamUseCount[gUserTeam[id]]++
 	gGameUseCount++;
@@ -178,6 +249,19 @@ public return_to_past_now(id){
 
 
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, key)
+{
+	if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+
+	switch(key)
+	{
+		case SH_KEYDOWN: {
+			jeremy_kd(id)	
+		}
+	}
+}
 // RESPOND TO KEYDOWN
 public jeremy_kd(id) 
 {
@@ -185,7 +269,7 @@ public jeremy_kd(id)
 if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!is_user_connected(id))
 {
 	playSoundDenySelect(id)
-	return PLUGIN_HANDLED 
+	return 
 }
 else{
 	if(gPowerBeingUsed){
@@ -193,34 +277,41 @@ else{
 		
 		sh_chat_message(id,gHeroID,"Someone else is already going back to the past!!!!")
 		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+		return
 	
+	}
+	if(Get_BitVar(g_player_cooldown_mask,id)){
+		sh_chat_message(id,gHeroID,"Youre still in cooldown! The cooldown is %0.2f seconds", 
+					cvar_val(float, pcvar_gCooldown))
+		playSoundDenySelect(id)
+		return
 	}
 	if(gJeremyPowerUsedTimes[id]==gMaxPerPlayer){
 	
 		
 		sh_chat_message(id,gHeroID,"You have already used this power %d times this game. No more", gJeremyPowerUsedTimes[id] )
 		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+		return
 	}
 	if(gTeamUseCount[gUserTeam[id]]==gMaxPerTeam){
 	
 		
 		sh_chat_message(id,gHeroID,"Your team has already used this power %d times this game. No more", gTeamUseCount[gUserTeam[id]] )
 		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+		return
 	}
 	if(gGameUseCount==gMaxPerGame){
 	
 		
 		sh_chat_message(id,gHeroID,"The power has already been used %d times this game. No more", gGameUseCount )
 		playSoundDenySelect(id)
-		return PLUGIN_HANDLED
+		return
 	}
 	return_to_past_now(id)
+	Assign_BitVar(g_player_cooldown_mask,id, true_for_macro)
+	set_task( cvar_val(float, pcvar_gCooldown), "unset_jeremy_cooldown_task", id+RESTORE_POWER_ON_USER)
 	
 }
-return PLUGIN_HANDLED
 }
 //-----------------------------------------------------------------------------------------------
 public print_jeremy_stats(id)
@@ -234,29 +325,131 @@ public print_jeremy_stats(id)
 	}
 	return PLUGIN_HANDLED
 }
-//----------------------------------------------------------------------------------------------
-public force_end(id)
-{
-	id-=TASKID_PAST
-	new g_players[SH_MAXSLOTS], num;
+restore_game_state(){
+		
+	for(new i=0;i<sizeof g_teamscores;i++){
+		if(team_scores_consts[i]!=CSGameRules_Members:-1){
+			set_member_game(team_scores_consts[i],g_teamscores[i])
+		}
+	}
+
+	static g_players[SH_MAXSLOTS], num;
 	get_players(g_players, num);
-	
-	new x;
+
+
+	static x;
 	for(new i = 0; i < num; i++)
 	{
 		x = g_players[i];
-		
-		user_silentkill(x);
-		cs_set_user_deaths(x, get_user_deaths(x) - 1);
+
+		cs_set_user_deaths(x,	g_player_deaths[x])
+		set_user_frags(x, g_player_frags[x])
 
 	}
-	
 }
-public sh_client_spawn(id){
+save_game_state(){
+
+	for(new i=0;i<sizeof g_teamscores;i++){
+		if(team_scores_consts[i]!=CSGameRules_Members:-1){
+			g_teamscores[i]=get_member_game(team_scores_consts[i])
+		}
+	}
+	static g_players[SH_MAXSLOTS], num;
+	get_players(g_players, num);
+	
+	static x;
+	for(new i = 0; i < num; i++)
+	{
+		x = g_players[i];
+
+		g_player_deaths[x] = get_user_deaths(x)
+		g_player_frags[x] = get_user_frags(x)
+		
+
+	}
+}
+purge_game_state(){
+	
+	if(!is_rehlds_avail){
+		BroadcastAudio( .senderID = 0, .audioCode = "%!MRAD_ROUNDDRAW", .pitch = 100, .notifyAllPlugins = true );
+		EndRoundMessage( "#Round_Draw", .event = Event_RoundDraw, .notifyAllPlugins = true );
+		RoundTerminating( .winStatus = WinStatus_RoundDraw, .delay = 5.0 );
+	}
+	else{
+
+		rg_round_end(5.0,WINSTATUS_DRAW,ROUND_END_DRAW,"Rewind this!",_,true)
+	}
+	static g_players[SH_MAXSLOTS], num;
+	get_players(g_players, num);
+	
+	static x;
+	for(new i = 0; i < num; i++)
+	{
+		x = g_players[i];
+		user_silentkill(x,1);
+	}
+}
+public sh_round_new(){
 
 	if(gPowerBeingUsed){
+		
+		sh_chat_message(0,gHeroID, "World state restoration attempted...")
+
+		restore_game_state()
+		
+		sh_chat_message(0,gHeroID, "World state restoration terminated with code 0 (success.)")
+		
 		gPowerBeingUsed=false
 	}
-	
 
+	sh_chat_message(0,gHeroID, "Archiving game state!")
+	save_game_state()
+	sh_chat_message(0,gHeroID, "Operation sucessfull.")
+
+}
+
+
+BroadcastAudio ( const senderID, const audioCode[], const pitch, const bool:notifyAllPlugins = false )
+{
+	static messageSendAudio;
+
+	if ( messageSendAudio || ( messageSendAudio = get_user_msgid( "SendAudio" ) ) )
+	{
+		if ( notifyAllPlugins )
+		{
+			emessage_begin( MSG_BROADCAST, messageSendAudio );
+			ewrite_byte( senderID );
+			ewrite_string( audioCode );
+			ewrite_short( pitch );
+			emessage_end();
+		}
+		else
+		{
+			message_begin( MSG_BROADCAST, messageSendAudio );
+			write_byte( senderID );
+			write_string( audioCode );
+			write_short( pitch );
+			message_end();
+		}
+	}
+}
+EndRoundMessage ( const message[], const event, const bool:notifyAllPlugins = false )
+{
+	static OrpheuFunction:handleFuncEndRoundMessage;
+
+	if ( !handleFuncEndRoundMessage )
+	{
+		handleFuncEndRoundMessage = OrpheuGetFunction( "EndRoundMessage" );
+	}
+
+	( notifyAllPlugins ) ?
+
+		OrpheuCallSuper( handleFuncEndRoundMessage, message, event ) :
+		OrpheuCall( handleFuncEndRoundMessage, message, event );
+}
+RoundTerminating( const winStatus, const Float:delay )
+{
+	set_mp_pdata( "m_iRoundWinStatus"  , winStatus );
+	set_mp_pdata( "m_fTeamCount"       , get_gametime() + delay );
+	set_mp_pdata( "m_bRoundTerminating", true );
 }
