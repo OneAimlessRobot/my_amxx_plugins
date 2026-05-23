@@ -50,7 +50,7 @@ new bool:gUsingLaser[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
-new gUserTeam[SH_MAXSLOTS+1]
+new CsTeams:gUserTeam[SH_MAXSLOTS+1]
 new gSmokeSprite, gLaserSprite
 static const burn_decal[3] = {28, 29, 30}
 //----------------------------------------------------------------------------------------------
@@ -75,9 +75,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
 
-	register_event("DeathMsg", "drstrange_death", "a")
 
-	// LEVELS
+
 	register_srvcmd("drstrange_levels", "drstrange_levels")
 	shRegLevels(gHeroName, "drstrange_levels")
 
@@ -366,9 +365,8 @@ public laserEffects(id, aimvec[3])
 	}
 }
 //----------------------------------------------------------------------------------------------
-public drstrange_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
@@ -381,7 +379,7 @@ public drstrange_death()
 	new pctChance = get_cvar_num("drstrange_respawnpct")
 	if ( pctChance < randNum ) return
 
-	gUserTeam[id] = get_user_team(id)
+	gUserTeam[id] = cs_get_user_team(id)
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && !gDrStrangeReviveUsed[id] ) {
@@ -400,7 +398,7 @@ public drstrange_respawn(parm[])
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( gDrStrangeReviveUsed[id] || !sh_is_inround() ) return
-	if ( gUserTeam[id] != get_user_team(id) ) return //prevents respawning spectators
+	if ( gUserTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -421,28 +419,12 @@ public drstrange_respawn(parm[])
 
 	shGlow(id, 0, 240, 100)
 	set_task(3.0, "drstrange_unglow", 0, parm, 1)
-	set_task(1.0, "drstrange_teamcheck", 0, parm, 1)
 }
 //----------------------------------------------------------------------------------------------
 public drstrange_unglow(parm[])
 {
 	new id = parm[0]
 	shUnglow(id)
-}
-//----------------------------------------------------------------------------------------------
-public drstrange_teamcheck(parm[])
-{
-	new id = parm[0]
-
-	if ( gUserTeam[id] != get_user_team(id) ) {
-		client_print(id, print_chat, "[SH](Dr. Strange) You changed teams and used Ressurection Stone, now you shall die!")
-
-		user_kill(id, 1)
-
-		// Stop Dr. Strange from respawning until round ends
-		remove_task(177+id)
-		gDrStrangeReviveUsed[id] = true
-	}
 }
 //----------------------------------------------------------------------------------------------
 public enableDrStrange(id)

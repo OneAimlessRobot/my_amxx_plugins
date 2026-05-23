@@ -29,8 +29,6 @@
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )
 
-	// DEATH
-	register_event("DeathMsg", "Storm_death", "a")
  }
  //----------------------------------------------------------------------------------------------
  public plugin_precache()
@@ -50,9 +48,8 @@ public sh_hero_init(id, heroID, mode){
 
  }
  //----------------------------------------------------------------------------------------------
- public Storm_death()
+ public sh_client_death(id)
  {
-	new id=read_data(2)
 	if (sh_user_has_hero(id,gHeroID))
 	{
 		if ( gStormTimer[id]>0 )

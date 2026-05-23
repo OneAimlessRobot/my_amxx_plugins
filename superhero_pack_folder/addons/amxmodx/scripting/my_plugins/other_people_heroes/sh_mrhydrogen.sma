@@ -53,7 +53,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	register_cvar("mrhydrogen_knifemult", "1.10" )
 	register_cvar("mrhydrogen_floattime", "8.0" )
 	gHeroID=shCreateHero(gHeroName, "Fill Enemy With Hydrogen Gas", "Boost Knife Damage & Victim Floats When Being Hit By Your Knife", false, "mrhydrogen_level")
-	register_event("DeathMsg", "mrhydrogen_death", "a")
+	
 	register_event("Damage", "mrhydrogen_powers", "b", "2!0")
 	}
 //--------------------------------------------------------------------------------------------------
@@ -74,11 +74,10 @@ mrhydrogen_stop_powers(id)
 //--------------------------------------------------------------------------------------------------
 // EVENTS ON DEATH
 //--------------------------------------------------------------------------------------------------
-	public mrhydrogen_death()
-	{
-	new id = read_data(2)
-	mrhydrogen_stop_powers(id)
-	}
+public sh_client_death(id)
+{
+mrhydrogen_stop_powers(id)
+}
 //--------------------------------------------------------------------------------------------------
 // HERO POWERS
 //--------------------------------------------------------------------------------------------------

@@ -143,7 +143,6 @@ public plugin_init()
 	register_clcmd("bazooka_ropeseeking_missile","fire_missile")
 	register_clcmd("bazooka_swirlingdeath_missile","fire_missile")
 
-	register_event("DeathMsg","death_event","a")
 
 	//MISSILE MENU
 	register_menucmd(register_menuid("Fire Missile Menu"),1023,"action_main_menu")
@@ -1336,9 +1335,8 @@ public action_main_menu(id,key){
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public death_event(){
-	new victim
-	victim = read_data(2)
+public sh_client_death(victim){
+
 	remove_task(victim)
 	is_scan_rocket[victim] = 0
 	using_menu[victim] = 0

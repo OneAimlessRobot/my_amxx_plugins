@@ -43,8 +43,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Ice Man", "Ice Trail - Create a trail of ice to go wherever you want.", true, "iceman2_level" )
 
-	// DEATH
-	register_event("DeathMsg", "iceman2_death", "a")
 
 	//Waits 4 seconds then loads cvars into variables
 	set_task(4.0,"loadCVARS")
@@ -199,10 +197,8 @@ public iceman2_kd(id)
 	return PLUGIN_HANDLED 
 }
 //----------------------------------------------------------------------------------------------
-public iceman2_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-
 	if ( id < 0 || id > SH_MAXSLOTS ) return
 
 	g_jetPackRunning[id] = 0

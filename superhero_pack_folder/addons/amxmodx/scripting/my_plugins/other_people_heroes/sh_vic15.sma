@@ -21,7 +21,7 @@ new dmg_source_name_long_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aur
 new g_heroName[]="Victim 15/21"
 new gHeroID
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
-new g_userTeam[SH_MAXSLOTS+1]
+new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new g_savedOrigin[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
 //----------------------------------------------------------------------------------------------
@@ -47,8 +47,7 @@ public plugin_init()
 								dmg_source_name_short_victim_drain_aura,
 								dmg_source_name_long_victim_drain_aura,
 								0)
-	// DEATH EVENT
-	register_event("DeathMsg", "vic15_death", "a")
+
 
 	set_task( get_cvar_float("vic15_aurafrequency"), "vic15_auraloop", 0, "", 0, "b")
 	set_task( 1.0, "vic15_ringloop", 0, "", 0, "b")
@@ -61,15 +60,13 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"misc/victim15_revive.wav")
 }
 //----------------------------------------------------------------------------------------------
-public vic15_death()
+public sh_client_death(id)
 {
 	if ( !sh_is_active() || !sh_is_inround() ) return
 
-	new id = read_data(2)
-
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
 
-	g_userTeam[id] = get_user_team(id)
+	g_userTeam[id] = cs_get_user_team(id)
 
 	// Save users origin on death
 	get_user_origin(id, g_savedOrigin[id])
@@ -90,7 +87,7 @@ public vic15_respawn(parm[])
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( g_vic15PowerUsed[id] || !sh_is_inround()) return
-	if ( g_userTeam[id] != get_user_team(id) ) return //prevents respawning spectators
+	if ( g_userTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
 
 	// Double spawn prevents the no HUD glitch
 	//user_spawn(id)
@@ -98,27 +95,8 @@ public vic15_respawn(parm[])
 	set_task(0.1, "revival", id)
 	set_task(0.3, "revival", id)
 
-	set_task(1.0, "vic15_teamcheck", 0, parm, 1)
 
 	set_task(0.4, "vic15_teleport", id)
-}
-//----------------------------------------------------------------------------------------------
-public vic15_teamcheck(parm[])
-{
-	new id = parm[0]
-
-	
-	if(is_user_alive(id)){
-		if ( g_userTeam[id] != get_user_team(id) ) {
-			client_print(id, print_chat, "[SH](Victim 15/21) You cannot respawn after switcing teams. Wait until the next round.")
-
-			user_kill(id, 1)
-
-			// StopVictim15 from respawning until round ends
-			remove_task(id)
-			g_vic15PowerUsed[id] = false
-		}
-	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end()

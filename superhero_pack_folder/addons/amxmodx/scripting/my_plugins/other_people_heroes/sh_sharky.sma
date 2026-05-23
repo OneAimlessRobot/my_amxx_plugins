@@ -38,8 +38,7 @@ public plugin_init()
   register_srvcmd("sharky_loop", "sharky_loop")
   //  shRegLoop1P0(gHeroName, "sharky_loop", "ac" ) // Alive sharkyHeros="ac"
   set_task(1.0,"sharky_loop",0,"",0,"b") //forever loop
-  // DEATH
-  register_event("DeathMsg", "sharky_death", "a")
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -164,9 +163,8 @@ public sharky_endmode(id)
   }
 }
 //----------------------------------------------------------------------------------------------
-public sharky_death()
+public sh_client_death(id)
 {
-  new id=read_data(2)
   sharky_endmode(id)
   sh_unset_cooldown_flag(id)
 }

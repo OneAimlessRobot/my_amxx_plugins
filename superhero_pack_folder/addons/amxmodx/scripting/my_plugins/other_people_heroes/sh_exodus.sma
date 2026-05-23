@@ -49,8 +49,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Telekinesis", "Telekinetically pick up and drag player in the air with +power key.", true, "exodus_level")
 
-	// DEATH
-	register_event("DeathMsg", "exodus_death", "a")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -271,9 +269,8 @@ public release(id)
 	g_inSearch[id] = false
 }
 //----------------------------------------------------------------------------------------------
-public exodus_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( !sh_user_has_hero(id,gHeroID) || !g_inSearch[id] ) return
 

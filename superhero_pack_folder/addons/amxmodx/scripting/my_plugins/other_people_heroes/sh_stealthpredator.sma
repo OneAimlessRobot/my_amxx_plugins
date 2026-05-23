@@ -19,7 +19,7 @@ stealth_speed 600			//Running Speed (default=600)
 // GLOBAL VARIABLES
 new gHeroName[]="Stealth Predator"
 new gHeroID
-new gUserTeam[SH_MAXSLOTS+1]
+new CsTeams:gUserTeam[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
 new g_lastWeapon[SH_MAXSLOTS+1]
 new bool:g_usingPower[SH_MAXSLOTS+1]
@@ -40,13 +40,12 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Speed/Revive/Heal/Invisibility/No Footsteps", "Hold Keydown to go Invisible and No Footsteps ", true, "stealth_level")
 	
-	// Death
-	register_event("DeathMsg", "stealth_death", "a")
 
 	//EVENTS
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
 
+	
 	gHealPoints = get_cvar_num("stealth_healpoints")
 
 	//HEAL LOOP
@@ -178,9 +177,8 @@ public powerCharged(id)
 	g_chargeOver[id] = true
 }
 //----------------------------------------------------------------------------------------------
-public stealth_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( !sh_is_inround() ) return
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
@@ -189,7 +187,7 @@ public stealth_death()
 	new pctChance = get_cvar_num("stealth_respawnpct")
 	if ( pctChance < randNum ) return
 
-	gUserTeam[id] = get_user_team(id)
+	gUserTeam[id] = cs_get_user_team(id)
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) ) {
@@ -208,29 +206,13 @@ public stealth_respawn(parm[])
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( !sh_is_inround() ) return
-	if ( gUserTeam[id] != get_user_team(id) ) return //prevents respawning spectators
+	if ( gUserTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "shmod/stealthrevive.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 	// Double spawn prevents the no HUD glitch
 	ExecuteHamB(Ham_Spawn, id) 
-	ExecuteHamB(Ham_Spawn, id) 
-
-	set_task(1.0, "stealth_teamcheck", 0, parm, 1)
-}
-//-------------------------------------------------------------------------------------------------------
-public stealth_teamcheck(parm[])
-{
-	new id = parm[0]
-
-	if ( gUserTeam[id] != get_user_team(id) ) {
-		client_print(id, print_chat, "[SH] You changed teams and can't revive and so you die")
-
-		user_kill(id, 1)
-
-		// Stop stealth from respawning until round ends
-		remove_task(177+id)
-	}
+	ExecuteHamB(Ham_Spawn, id)
 }
 //----------------------------------------------------------------------------------------------
 public curweapon(id)

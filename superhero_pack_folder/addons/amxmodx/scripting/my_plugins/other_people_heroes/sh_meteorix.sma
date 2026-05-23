@@ -44,8 +44,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
 
-	// DEATH
-	register_event("DeathMsg", "meteorix_death", "a")
 
 }
 // ----------------------------------------------------------------------------------------------
@@ -77,10 +75,8 @@ public sh_hero_init(id, heroID, mode){
 	}
 }
 // ----------------------------------------------------------------------------------------------
-public meteorix_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-
 	if(!sh_user_has_hero(id,gHeroID)) return
 
 	remove_task(id)

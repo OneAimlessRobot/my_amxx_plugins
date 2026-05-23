@@ -42,8 +42,6 @@ public plugin_init()
     //THIS LINE MAKES THE HERO SELECTABLE 
     gHeroID=shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 
 
-    //THIS EVENT IS TRIGGERED WHEN SOMEONE DIES
-    register_event("DeathMsg", "frieza_kill", "a")
 
     //SET THE LIFE OF THE DISK 
     set_task(0.1, "frieza_disklife", 0, "", 0, "b") 
@@ -116,9 +114,8 @@ public sh_client_spawn(id)
     sh_unset_cooldown_flag(id)  //Makes you able to use power again 
 } 
 //---------------------------------------------------------------------------------------- 
-public frieza_kill()  //triggered everytime someone dies
+public sh_client_death(id)  //triggered everytime someone dies
 {
-	new id = read_data(2)  //This tells who the victim is
 	if(sh_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
 		diskTimer[id] = -1
 		new Float: fOrigin[3]

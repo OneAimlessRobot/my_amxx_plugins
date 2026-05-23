@@ -40,8 +40,6 @@ public plugin_init()
   
   
   
-  // DEATH
-  register_event("DeathMsg", "megaman_death", "a")
   
   // THE DEFAULT OF THE CVARS
   register_cvar("megaman_laser_ammo", "100")      // - Ammo that the Photon Cannon has - //Default-  150 //
@@ -62,9 +60,8 @@ public plugin_precache()
    engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav") 
 }
 //----------------------------------------------------------------------------------------------------------
-public megaman_death() 
+public sh_client_death(id) 
 {
-  new id=read_data(2)
 
   if ( id<0 || id>SH_MAXSLOTS ) return PLUGIN_CONTINUE
   remove_task(id)

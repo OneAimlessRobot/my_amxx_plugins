@@ -34,8 +34,7 @@ public plugin_init()
 	register_srvcmd("shade_loop", "shade_loop")
 	//  shRegLoop1P0(gHeroName, "shade_loop", "ac" )
 	set_task(1.0,"shade_loop",0,"",0,"b") //forever loop
-	// DEATH
-	register_event("DeathMsg", "shade_death", "a")
+	
 	// DEFAULT THE CVARS
 	if (!cvar_exists("shade_cooldown")) register_cvar("shade_cooldown", "0" ) //CoolDown
 	if (!cvar_exists("shade_time")) register_cvar("shade_time", "1" )
@@ -169,9 +168,8 @@ public shade_endmode(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public shade_death()
+public sh_client_death(id)
 {
-	new id=read_data(2)
 	shade_endmode(id)
 	sh_unset_cooldown_flag(id)
 }

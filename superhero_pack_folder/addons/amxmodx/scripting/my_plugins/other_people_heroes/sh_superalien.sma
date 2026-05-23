@@ -61,7 +61,7 @@ public plugin_init()
 	gHeroID=shCreateHero(HeroName, "SuperAlien Vision", "Get Alien Vision and Invisibility when using Knife but you can use other weapons", false, "SuperAlien_level")
 
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-	register_event("DeathMsg", "SuperAlien_death", "a")
+	
 	register_event("Damage", "SuperAlien_damage", "b", "2!0")
 
 	// Let Server know about SuperAlien's Variables
@@ -216,10 +216,8 @@ public SuperAlien_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public SuperAlien_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-
 	if ( !sh_user_has_hero(id,gHeroID) )
 		return
 

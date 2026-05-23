@@ -48,8 +48,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Bat-Grappling Hook", "Grappling Hook - You now have the Bat-Grapple Hook. Shoot your Hook and automatically be ziplined to the target", true, "batgirl_level")
 
-	// DEATH
-	register_event("DeathMsg", "batgirl_death", "a")  // Re-uses KeyUp!
 
 
 	gPcvarSvGravity = get_cvar_pointer("sv_gravity")
@@ -348,9 +346,8 @@ killbeam(id)
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
-public batgirl_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 

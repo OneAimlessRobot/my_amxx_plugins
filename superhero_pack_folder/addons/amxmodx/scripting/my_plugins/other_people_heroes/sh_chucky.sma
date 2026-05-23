@@ -96,7 +96,6 @@ public plugin_init()
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
 	register_event("Damage", "chucky_damage", "b", "2!0")
-	register_event("DeathMsg", "chucky_death", "a")
 
 	// Let Server know about Chucky's Variables
 	shSetMaxSpeed(HeroName, "chucky_knifespeed", "[29]")
@@ -202,10 +201,8 @@ public chucky_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public chucky_death()
+public sh_client_death(id)
 {
-	
-	new id = read_data(2)
 	new weapon,body;
 	new attacker= get_user_attacker(id,weapon,body)
 	
@@ -278,7 +275,7 @@ public chucky_respawn(parm[])
 
 	shGlow(id, 75, 75, 255)
 	set_task(3.0, "chucky_unglow", 0, parm, 1)
-	set_task(1.0, "chucky_teamcheck", 0, parm, 1)
+	
 }
 //----------------------------------------------------------------------------------------------
 public chucky_unglow(parm[])
@@ -289,26 +286,6 @@ public chucky_unglow(parm[])
 		return
 
 	shUnglow(id)
-}
-//----------------------------------------------------------------------------------------------
-// This function should now be useless because of using cs_get_user_team rather than get_user_team
-public chucky_teamcheck(parm[])
-{
-	new id = parm[0]
-
-	if ( !is_user_connected(id) )
-		return
-
-	if ( UserTeam[id] != cs_get_user_team(id) )
-	{
-		client_print(id, print_chat, "[SH](%s) You changed teams and used %s Respawn, now you shall die", HeroName, HeroName)
-
-		user_kill(id, 1)
-
-		// Stop Chucky from respawning until round ends
-		remove_task(id)
-		ChuckyPowerUsed[id] = true
-	}
 }
 //----------------------------------------------------------------------------------------------
 public bomb_planted(id)

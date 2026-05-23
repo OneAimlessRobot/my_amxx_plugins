@@ -39,7 +39,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Total Darkness", "Make everything Pitch Black. Get Riddick's sight.", true, "pitch_level" )
 
 
-	register_event("DeathMsg", "pitch_death", "a")
 
 	set_task(1.0, "pitch_loop", 0, "", 0, "b")
 
@@ -138,9 +137,8 @@ public client_disconnected(id)
 	NightVisionUse[id] = false
 }
 //----------------------------------------------------------------------------------------------
-public pitch_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if (PitchTimer[id] > 0) {
 		PitchTimer[id] = -1;

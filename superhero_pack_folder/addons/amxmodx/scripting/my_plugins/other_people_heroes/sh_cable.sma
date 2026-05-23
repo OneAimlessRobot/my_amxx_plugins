@@ -42,8 +42,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
-	// DEATH
-	register_event("DeathMsg", "cable_death", "a")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -62,9 +60,8 @@ public sh_hero_init(id, heroID, mode){
 	}
 }
 //----------------------------------------------------------------------------------------------
-public cable_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 	if ( id < 0 || id > SH_MAXSLOTS ) return
 	remove_task(id+25735)
 }

@@ -8,7 +8,7 @@
 #define FLIGHT_HUM "shmod/ester/flight/flight_hum.wav"
 #define FLIGHT_WEAK "shmod/ester/flight/flight_weak.wav"
 
-#define FLIGHT_DRAIN_INFLICT_PERIOD 1.0
+#define FLIGHT_DRAIN_INFLICT_PERIOD 0.33
 
 #define COLOR_STRONG WHITE
 #define COLOR_WEAK GREEN

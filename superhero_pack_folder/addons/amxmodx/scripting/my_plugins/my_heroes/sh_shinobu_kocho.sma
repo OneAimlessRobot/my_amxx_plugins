@@ -357,12 +357,10 @@ public shinobu_kd(id)
 	return PLUGIN_HANDLED
 }
 
-public death()
+public sh_client_death(id,killer)
 {
 	if(!sh_is_active()) return
 	
-	new id = read_data(2)
-	new killer= read_data(1)
 	
 	if(is_user_connected(killer)&&is_user_connected(id)){
 		if(sh_user_has_hero(killer,gHeroID) ){

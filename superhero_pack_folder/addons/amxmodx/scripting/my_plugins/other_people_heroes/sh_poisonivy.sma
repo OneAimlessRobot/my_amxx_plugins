@@ -34,7 +34,6 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 *
 *    Hero orginally created by AssKicR
 */
-
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #include "../my_heroes/special_fx_inc/sh_yakui_get_set.inc"
@@ -73,7 +72,6 @@ public plugin_init()
 
 
 	register_event("Damage", "poisonivy_damage", "b", "2!0")
-	register_event("DeathMsg", "poisonivy_death", "a")
 
 	// LOOP
 	set_task(1.0, "poisonivy_loop", 0, "", 0, "b")
@@ -173,7 +171,7 @@ public poisonivy_damage(id)
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		Assign_BitVar(gIsPoisonedMask[id],attacker,true_for_macro) 
-		if((gatling_get_fx_num(id)>KILL)&&(gatling_get_fx_num(id)<NUM_FX)){
+		if((gatling_get_fx_num(id)>KILL)&&(gatling_get_fx_num(id)<fx_id)){
 			gatling_set_fx_num(id,POISON)
 		}
 
@@ -244,9 +242,8 @@ public client_disconnected(id)
 	reset_poisoned(id)
 }
 //----------------------------------------------------------------------------------------------
-public poisonivy_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	reset_poisoned(id)
 }

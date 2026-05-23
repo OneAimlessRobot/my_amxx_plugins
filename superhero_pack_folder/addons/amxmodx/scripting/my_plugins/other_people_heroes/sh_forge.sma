@@ -48,7 +48,6 @@ public plugin_init()
 	register_entity_as_wall_touchable("concussion_missile","missile_touch")
 	register_custom_touchable("concussion_missile","missile_touch",player_vector,1)
 
-	register_event("DeathMsg","death_event","a")	
 
 }
 
@@ -342,8 +341,6 @@ public sh_round_end()
 }
 //----------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------
-public death_event(){
-	new victim
-	victim = read_data(2)
+public sh_client_death(victim){
 	remove_task(victim)
 }

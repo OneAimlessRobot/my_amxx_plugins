@@ -77,7 +77,6 @@ public plugin_init()
 	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_long_grenade,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
-	register_event("DeathMsg","death","a")
 	register_event("CurWeapon", "weaponChange","be","1=1")
 	register_event("Damage", "veronika_damage","b","2!0")
 	
@@ -391,7 +390,7 @@ public client_connect(id)
 g_m203_loaded[id] = 1
 }
 
-public death(id)
+public sh_client_death(id)
 {
 if ( sh_user_has_hero(id,gHeroID))
 {

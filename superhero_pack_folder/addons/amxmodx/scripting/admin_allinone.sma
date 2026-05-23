@@ -139,7 +139,7 @@ public admin_heal(id,level,cid){
 		log_amx("%L", LANG_SERVER, "AINO_LOG_HEAL_ALL", name2, arg[1])
 	}
 	else {
-		new player = cmd_target(id,arg,14)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		new user_health = get_user_health(player)
 		set_user_health(player, str_to_num(arg2) + user_health)
@@ -217,7 +217,7 @@ public admin_godmode(id,level,cid) {
 		log_amx("%L", LANG_SERVER, "AINO_LOG_GODMODE_ALL", name2, arg[1])
 	}
 	else {
-		new player = cmd_target(id,arg,3)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		set_user_godmode(player,str_to_num(arg2))
 		new name[32]
@@ -260,7 +260,7 @@ public admin_noclip(id,level,cid) {
 		log_amx("%L", LANG_SERVER, "AINO_LOG_NOCLIP_ALL",name2,arg[1]) 
 	} 
 	else { 
-		new player = cmd_target(id,arg,7) 
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED 
 		set_user_noclip(player,str_to_num(arg2))
 		new name[32] 
@@ -297,7 +297,7 @@ public admin_teleport(id,level,cid) {
    else {
    	origin = storedorigin
    }
-   new player = cmd_target(id,arg,7)
+   new player = cmd_target(id,arg,2)
    if (!player) return PLUGIN_HANDLED
    set_user_origin(player, origin)
    new name[32]
@@ -316,7 +316,7 @@ public admin_userorigin(id,level,cid) {
       return PLUGIN_HANDLED
    new arg[32], origin[3]
    read_argv(1,arg,31)
-   new player = cmd_target(id,arg,3)
+   new player = cmd_target(id,arg,2)
    if (!player) return PLUGIN_HANDLED
    get_user_origin(player, origin)
    storedorigin = origin
@@ -336,7 +336,7 @@ public admin_stack(id,level,cid){
    new arg[32], name2[32] 
    read_argv(1,arg,31) 
    get_user_name(id,name2,31) 
-   new player = cmd_target(id,arg,7) 
+   new player = cmd_target(id,arg,2)
    if (!player) return PLUGIN_HANDLED 
        
    new sttype[2], name[32], origin[3], inum, players[32] 
@@ -716,7 +716,7 @@ public take_money(id,level,cid){
     read_argv(2,arg2,7)
     new adminname[32]
 
-    new player = cmd_target(id,arg1,1)
+    new player = cmd_target(id,arg1,2)
     if (!player) return PLUGIN_HANDLED
 
     get_user_name(player,name2,31)
@@ -799,7 +799,7 @@ public amx_gag(id,level,cid) {
 
 	new arg[32]
 	read_argv(1,arg,31)
-	new player = cmd_target(id,arg,1)
+	new player = cmd_target(id,arg,2)
 	if (!player) return PLUGIN_HANDLED
 
 	new sflags[4]
@@ -836,7 +836,7 @@ public amx_ungag(id,level,cid) {
 		return PLUGIN_HANDLED
 	new arg[32]
 	read_argv(1,arg,31)
-	new player = cmd_target(id,arg,1)
+	new player = cmd_target(id,arg,2)
 	if (!player) return PLUGIN_HANDLED
 	new param[2]
 	param[0] = player
@@ -924,7 +924,7 @@ public admin_glow(id,level,cid) {
       log_amx("%L", LANG_SERVER, "AINO_LOG_GLOW_ALL", name2, arg[1])
    }
    else {
-      new player = cmd_target(id,arg,7)
+      new player = cmd_target(id,arg,2)
       if (!player) return PLUGIN_HANDLED
       set_user_rendering(player,kRenderFxGlowShell,
          ired,igreen,iblue,kRenderTransAlpha,ialpha)
@@ -988,7 +988,7 @@ public admin_bury(id,level,cid){
 		log_amx("%L", LANG_SERVER, "AINO_LOG_BURY_ALL", admin_name, arg[1])
 	}
 	else	{
-		new player = cmd_target(id,arg,7)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		bury_player(id,player)
 		get_user_name(player,player_name,31)
@@ -1038,7 +1038,7 @@ public admin_unbury(id,level,cid){
 		log_amx("%L", LANG_SERVER, "AINO_LOG_UNBURY_ALL", name2, arg[1])
 	}
 	else	{
-		new player = cmd_target(id,arg,7)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		unbury_player(id,player)
 		get_user_name(player,player_name,31)
@@ -1092,7 +1092,7 @@ public admin_disarm(id,level,cid) {
 		}
 	}
 	else {
-		new player = cmd_target(id,arg,5)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		disarm_player(id,player)
 	}
@@ -1109,7 +1109,7 @@ public admin_slap(id,level,cid){
 	new name[32], name2[32]
 	new arg[32]
 	read_argv(1,arg,31)
-	new player = cmd_target(id,arg,5)
+	new player = cmd_target(id,arg,2)
 	if (!player)
 	return PLUGIN_HANDLED
 
@@ -1212,7 +1212,7 @@ public admin_slay(id,level,cid) {
 		}
 	}
 	else {
-		new player = cmd_target(id,arg,5)
+		new player = cmd_target(id,arg,2)
 		if (!player) return PLUGIN_HANDLED
 		slay_player(id,player,type)
 	}
@@ -1420,7 +1420,7 @@ public fire_player(id,level,cid) {
 	new arg[32]
 	read_argv(1,arg,31)
 	
-	new victim = cmd_target(id,arg,7) 
+	new victim = cmd_target(id,arg,2)
 	if (!victim) 
 		return PLUGIN_HANDLED 
 
@@ -1607,7 +1607,7 @@ public rocket_player(id,level,cid) {
 		}
 	}
 	else {
-		new player = cmd_target(id,arg,5)
+		new player = cmd_target(id,arg,2)
 		if (!player)
 			return PLUGIN_HANDLED
 		new sPlayer[2]

@@ -92,8 +92,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
 
-	// DEATH
-	register_event("DeathMsg", "bass_death", "a")
 
 	// Let Server know about Bass's Variables
 	shSetMaxHealth(gHeroName, "bass_health")
@@ -319,9 +317,8 @@ public laserEffects(id, aimvec[3])
 
 }
 //----------------------------------------------------------------------------------------------
-public bass_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 

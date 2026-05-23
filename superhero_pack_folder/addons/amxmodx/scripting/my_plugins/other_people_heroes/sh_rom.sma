@@ -25,7 +25,6 @@ public plugin_init()
   register_cvar("rom_level", "0" )
   gHeroID=shCreateHero(gHeroName, "Senses", "Know where the player is", true, "rom_level" )
   
-  register_event("DeathMsg","death","a")
   // LOOP
   register_srvcmd("rom_loop", "rom_loop")
   set_task(1.0,"rom_loop",0,"",0,"b")
@@ -58,9 +57,8 @@ public sh_client_spawn(id)
   return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public death()
+public sh_client_death(id)
 {
-new id=read_data(2)
 message_begin(MSG_ONE, SVC_TEMPENTITY, {0,0,0}, id) 
 write_byte(99) // TE_KILLBEAM 
 write_short(id) 

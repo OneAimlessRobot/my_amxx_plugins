@@ -44,8 +44,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Fly", "You are now Static Shock", true, "shock_level" )
 
-	// DEATH
-	register_event("DeathMsg", "shock_death", "a")
 
 
 	//Waits 4 seconds then loads cvars into variables
@@ -203,10 +201,8 @@ public shock_kd(id)
 	return PLUGIN_HANDLED 
 }
 //----------------------------------------------------------------------------------------------
-public shock_death(id)
+public sh_client_death(id)
 {
-	new id = read_data(2)
-
 	if ( id < 0 || id > SH_MAXSLOTS ) return
 
 	g_jetPackRunning[id] = 0

@@ -21,15 +21,14 @@ public plugin_init()
 }
 //---------------------------------------------------------------------------
 public sh_client_death(victim, attacker, headshot)
-{	
-	new id = read_data(2)
+{
 	if ( sh_user_has_hero(victim,gHeroID) && !headshot )
 	{
 	
-	if ( !is_user_alive(id))
+	if ( !is_user_alive(victim))
 	{
 		new parm[1]
-		parm[0] = id
+		parm[0] = victim
 		
 		set_task(0.5, "highlander_respawn", 0, parm, 1)
 	}

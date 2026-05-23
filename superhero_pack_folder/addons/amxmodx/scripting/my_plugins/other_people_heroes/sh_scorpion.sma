@@ -37,9 +37,6 @@ public plugin_init()
 	register_custom_touchable("player","scorpion_shank",player_vector,1)
 
 
-	// DEATH
-	register_event("DeathMsg", "scorpion_death", "a")
-
 	// WEAPON CHANGE
 	register_event("CurWeapon", "changeWeapon", "be", "1=1")
 }
@@ -351,9 +348,8 @@ public changeWeapon(id)
 	client_cmd(id, "weapon_knife")
 }
 //----------------------------------------------------------------------------------------------
-public scorpion_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( g_hooked[id] ) scorpion_hookOff(id)
 

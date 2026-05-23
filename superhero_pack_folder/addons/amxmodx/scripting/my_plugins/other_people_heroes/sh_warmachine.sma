@@ -63,7 +63,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Jet-Boots/Damage", "Rocket Jet Boots, jump and rocket to take off! Heavy Weaponry, Extra Damage for all weapons.", true, "warmachine_level")
 
-	register_event("DeathMsg", "warmachine_death", "a")
 	register_event("Damage", "warmachine_damage", "b", "2!0")
 
 	// Let Server know about War Machine's varibles
@@ -227,9 +226,8 @@ public jetPackFireEffect(location[3])
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
-public warmachine_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 

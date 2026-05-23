@@ -36,8 +36,6 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Change into a T-800", "Get a giant mini gun and you are indistructable", true, "t800_level")
 	
-	// DEATH
-	register_event("DeathMsg", "t800_death", "a")
 	
 	// Model Change
 	register_event("CurWeapon","weaponChange","be","1=1")
@@ -90,9 +88,8 @@ public sh_hero_init(id, heroID, mode){
 	}
 }
 //----------------------------------------------------------------------------------------------
-public t800_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
 	
 	if(!is_user_connected(id)) return
 	

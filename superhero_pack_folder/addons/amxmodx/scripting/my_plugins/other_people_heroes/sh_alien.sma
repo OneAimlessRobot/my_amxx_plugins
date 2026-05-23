@@ -63,7 +63,7 @@ public plugin_init()
 
 
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-	register_event("DeathMsg", "alien_death", "a")
+	
 	register_event("Damage", "alien_damage", "b", "2!0")
 
 	// Let Server know about Alien's Variables
@@ -211,10 +211,8 @@ public alien_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public alien_death()
+public sh_client_death(id)
 {
-	new id = read_data(2)
-
 	if ( !sh_user_has_hero(id,gHeroID))
 		return
 

@@ -30,7 +30,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 new g_heroName[]="Phoenix"
 new gHeroID
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
-new g_userTeam[SH_MAXSLOTS+1]
+new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new g_savedOrigin[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
 //----------------------------------------------------------------------------------------------
@@ -49,8 +49,6 @@ public plugin_init()
 	gHeroID=shCreateHero(g_heroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
 
 
-	// DEATH EVENT
-	register_event("DeathMsg", "phoenix_death", "a")
 
 	init_hud_syncs()
 	init_explosion_defaults()
@@ -62,15 +60,14 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/3dmeagle.wav")
 }
 //----------------------------------------------------------------------------------------------
-public phoenix_death()
+public sh_client_death(id)
 {
 	if ( !sh_is_active() || !sh_is_inround()) return
 
-	new id = read_data(2)
 
 	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
 
-	g_userTeam[id] = get_user_team(id)
+	g_userTeam[id] = cs_get_user_team(id)
 
 	// Save users origin on death
 	get_user_origin(id, g_savedOrigin[id])
@@ -93,7 +90,7 @@ public phoenix_respawn(parm[])
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( g_phoenixPowerUsed[id] || !sh_is_inround() ) return
-	if ( g_userTeam[id] != get_user_team(id) ) return //prevents respawning spectators
+	if ( g_userTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
 
 	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -114,7 +111,6 @@ public phoenix_respawn(parm[])
 
 	shGlow(id, 248, 20, 25)
 	set_task(3.0, "phoenix_unglow", 0, parm, 1)
-	set_task(1.0, "phoenix_teamcheck", 0, parm, 1)
 
 	set_user_health(id, 75)
 	phoenix_teleport(id)
@@ -124,21 +120,6 @@ public phoenix_unglow(parm[])
 {
 	new id = parm[0]
 	shUnglow(id)
-}
-//----------------------------------------------------------------------------------------------
-public phoenix_teamcheck(parm[])
-{
-	new id = parm[0]
-
-	if ( g_userTeam[id] != get_user_team(id) ) {
-		client_print(id, print_chat, "[SH](Phoenix) You changed teams and used Phoenix Respawn, now you shall die")
-
-		user_kill(id, 1)
-
-		// Stop Phoenix from respawning until round ends
-		remove_task(id)
-		g_phoenixPowerUsed[id] = false
-	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end()

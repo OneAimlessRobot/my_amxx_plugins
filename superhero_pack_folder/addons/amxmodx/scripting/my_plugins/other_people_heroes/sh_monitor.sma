@@ -256,7 +256,7 @@ public monitor_think(ent)
 					#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE
 						len = 0
 						#if defined MONITOR_HP
-							len += formatex(temp, charsmax(temp), "HP %d", UserHealth[id])
+							len += formatex(temp, charsmax(temp), "HP %d/%d", UserHealth[id],sh_get_max_hp(id))
 						#endif
 
 						#if defined MONITOR_AP
@@ -264,7 +264,7 @@ public monitor_think(ent)
 								len += formatex(temp[len], charsmax(temp) - len, "  |  ")
 							#endif
 
-							len += formatex(temp[len], charsmax(temp) - len, "AP %d", UserArmor[id])
+							len += formatex(temp[len], charsmax(temp) - len, "AP %d/%d", UserArmor[id],sh_get_max_ap(id))
 						#endif
 
 						#if defined MONITOR_GRAVITY
