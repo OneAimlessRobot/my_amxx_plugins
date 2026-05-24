@@ -3,9 +3,7 @@
 #define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
-#include "colt_inc/sh_shard_cannon.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
@@ -25,12 +23,9 @@ new g_prevWeapon[SH_MAXSLOTS+1]
 
 
 new dmg_source_name_short_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
-new dmg_source_name_long_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
+new dmg_source_name_log_ethereal[SAFE_BUFFER_SIZE+1]="ethereal_rifle"
 new custom_dmg_id_ethereal
 
-new dmg_source_name_short_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"
-new dmg_source_name_long_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"
-new custom_dmg_id_shard_cannon
 
 new const adriano_sentences[1][]={
 	
@@ -74,12 +69,8 @@ public plugin_init()
 	
 	gHeroID=shCreateHero(gHeroName, "Hyped by suffering!", "Get faster from those around you and pat mates on the back for motivation!", false, "adriano_level" )
 	
-	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_long_ethereal,0)
+	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_log_ethereal,0)
 	
-	custom_dmg_id_shard_cannon=sh_log_custom_damage_source(gHeroID,
-				dmg_source_name_short_shard_cannon,
-				dmg_source_name_long_shard_cannon,
-				0)
 
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "adriano_damage", "b", "2!0")
@@ -115,7 +106,6 @@ public adriano_weapons(id)
 	if ( sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
-		shard_cannon_set_shard_cannon(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -133,7 +123,6 @@ public sh_hero_init(id, heroID, mode){
 	}
 	else{
 		ethereal_unset_ethereal(id)
-		shard_cannon_unset_shard_cannon(id)
 		g_adriano_points[id]=0;
 		g_base_speed[id]=0.0
 		g_base_radius[id]=0.0
@@ -235,19 +224,11 @@ public adriano_damage(id)
 		if (floatround(extraDamage)>0){
 			switch(weapon){
 				case CSW_ETHEREAL:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_ethereal,
+					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_log_ethereal,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SHOCK,
 								custom_dmg_id_ethereal)
-				}
-				case CSW_SHARD_CANNON:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_short_shard_cannon,
-								my_hitpoint_enum:bodypart ,
-								_,_,_,_,
-								SH_NEW_DMG_BLEED,
-								custom_dmg_id_shard_cannon)
-					sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
 				}
 			}
 		}
@@ -321,7 +302,7 @@ update_stats(id){
 }
 public weaponChange(id)
 {
-	if (!sh_is_active()&&is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	

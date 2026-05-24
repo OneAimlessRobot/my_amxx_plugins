@@ -30,11 +30,11 @@ new pCvarAK47Mult, gPcvarMaxDamage, gPcvarSpeed
 
 
 new dmg_source_name_short_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
-new dmg_source_name_long_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
+new dmg_source_name_log_wildcard_burst[SAFE_BUFFER_SIZE+1]="wildcard_burst"
 new wildcard_burst_wpn_id
 
 new dmg_source_name_short_wildcard_superak[SAFE_BUFFER_SIZE+1]="wildcard_superak"
-new dmg_source_name_long_wildcard_superak[SAFE_BUFFER_SIZE+1]="wildcard_superak"
+new dmg_source_name_log_wildcard_superak[SAFE_BUFFER_SIZE+1]="wildcard_superak"
 new wildcard_superak_wpn_id
 
 
@@ -57,13 +57,13 @@ public plugin_init()
 	wildcard_burst_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_wildcard_burst,
-								dmg_source_name_long_wildcard_burst,
+								dmg_source_name_log_wildcard_burst,
 								0)
 
 	wildcard_superak_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_wildcard_superak,
-								dmg_source_name_long_wildcard_superak,
+								dmg_source_name_log_wildcard_superak,
 								0)
 
 	register_forward(FM_CmdStart, "CmdStart")

@@ -69,7 +69,7 @@ public plugin_cfg(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()) return
+	if ( !sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID)) return
 
 	new  wpnid = get_user_weapon(id)

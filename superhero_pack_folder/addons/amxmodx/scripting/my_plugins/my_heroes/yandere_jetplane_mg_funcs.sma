@@ -27,7 +27,7 @@ pcvar_jetplane_mg_ammo;
 
 
 new dmg_source_name_short_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
-new dmg_source_name_long_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
+new dmg_source_name_log_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
 new custom_dmg_id_mg_gatling
 
 public plugin_init(){
@@ -62,7 +62,7 @@ public plugin_cfg(){
 
 	custom_dmg_id_mg_gatling=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_mg_gatling,
-				dmg_source_name_long_mg_gatling,
+				dmg_source_name_log_mg_gatling,
 				0)
 }
 get_jet_shells(jet_id){

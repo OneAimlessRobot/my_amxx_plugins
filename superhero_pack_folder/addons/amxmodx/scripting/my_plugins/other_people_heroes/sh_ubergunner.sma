@@ -25,7 +25,7 @@ new gHeroName[]="UberGunner"
 new gHeroID
 
 new dmg_source_name_short_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
-new dmg_source_name_long_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
+new dmg_source_name_log_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
 new custom_dmg_id_super_m4
 
 
@@ -57,7 +57,7 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/usmarine_m4a1.mdl")
 
 	
-	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_long_super_m4,0)
+	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_log_super_m4,0)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "UberGunner_damage", "b", "2!0")
@@ -129,7 +129,7 @@ public UberGunner_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
 		if (extraDamage > 0){
 
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_m4,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_super_m4,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

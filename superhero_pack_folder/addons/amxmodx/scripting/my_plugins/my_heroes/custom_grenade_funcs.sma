@@ -279,7 +279,6 @@ grenade_switch_notification(id){
 public event_curr_grenade(id){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE;	
-	if(!is_user_alive(id)) return PLUGIN_CONTINUE;	
 	
 	new wpn_id=-1
 	new bool:user_has_grenade=user_has_grenade_on(id, wpn_id)
@@ -831,7 +830,7 @@ bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origi
 			tank_impact_shot_fx(grenade_ent,the_origin_of_expolosion,
 						floatround(0.04*sh_grenade_structs_arr[gren_type][blast_radius]))
 
-			explosion(-1,grenade_ent,sh_grenade_structs_arr[gren_type][blast_radius],100.0,2000.0,0,1,_,0)
+			explosion(-1,grenade_ent,sh_grenade_structs_arr[gren_type][blast_radius],100.0,2000.0,0,1,_,sfx_show_nothing)
 			return false
 		}
 		default:{

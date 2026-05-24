@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -8,6 +9,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -63,15 +65,15 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 new Float:myeloma_doenca_cancro_morte_demonio_recoil_vector[SH_MAXSLOTS+1][3]
 
 new dmg_source_name_short_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
-new dmg_source_name_long_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
+new dmg_source_name_log_poison_vuln[SAFE_BUFFER_SIZE+1]="poison_vuln"
 new custom_dmg_id_poison_vuln
 
 new dmg_source_name_short_crackhead_rage[SAFE_BUFFER_SIZE+1]="crackhead_rage"
-new dmg_source_name_long_crackhead_rage[SAFE_BUFFER_SIZE+1]="crackhead_rage"
+new dmg_source_name_log_crackhead_rage[SAFE_BUFFER_SIZE+1]="crackhead_rage"
 new custom_dmg_id_crackhead_rage
 
 new dmg_source_name_short_cyanide[SAFE_BUFFER_SIZE+1]="cyanide"
-new dmg_source_name_long_cyanide[SAFE_BUFFER_SIZE+1]="cyanide"
+new dmg_source_name_log_cyanide[SAFE_BUFFER_SIZE+1]="cyanide"
 new custom_dmg_id_cyanide
 
 public plugin_init(){
@@ -81,6 +83,13 @@ register_plugin(PLUGIN, VERSION, AUTHOR);
 
 register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true, true)
 //register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon",_, true, false)
+
+register_ham_hook_multiple(Ham_TraceAttack,
+					full_entity_array_for_trace_attack,
+					length_of_trace_attack_entity_array,
+					"make_tracer",
+					1,
+					true)
 
 register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Pre",_, true, true)
 
@@ -102,17 +111,17 @@ for(new fx_id:i=GLOW;i<fx_id;i++){
 
 custom_dmg_id_poison_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_poison_vuln,
-				dmg_source_name_long_poison_vuln,
+				dmg_source_name_log_poison_vuln,
 				0)
 
 custom_dmg_id_crackhead_rage=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_crackhead_rage,
-				dmg_source_name_long_crackhead_rage,
+				dmg_source_name_log_crackhead_rage,
 				0)
 				
 custom_dmg_id_cyanide=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_cyanide,
-				dmg_source_name_long_cyanide,
+				dmg_source_name_log_cyanide,
 				0)
 
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
@@ -170,7 +179,7 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 				
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							dmg_source_name_long_crackhead_rage,
+							dmg_source_name_log_crackhead_rage,
 							my_hitpoint_enum:bodypart ,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
@@ -192,7 +201,7 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 		
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							dmg_source_name_long_poison_vuln,
+							dmg_source_name_log_poison_vuln,
 							my_hitpoint_enum:bodypart ,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
@@ -203,7 +212,7 @@ public fx_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_att=(gatling_get_fx_num(attacker));
@@ -235,7 +244,7 @@ public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
 	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
-	new owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
+	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
 	}
@@ -264,16 +273,17 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	if ( !sh_is_active() ){
 		return HAM_IGNORED
 	}
-	new owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
+	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
 	}
 
-	new iClip= get_pdata_int(weapon_ent,m_iClip,XO_WEAPON)
-
+	
+	static iClip; iClip= get_pdata_int(weapon_ent,m_iClip,XO_WEAPON)
+	
 	if(iClip<=0){
 
-		return HAM_SUPERCEDE
+		return HAM_IGNORED
 
 	}
 	new fx_id:fx_num_of_owner=gatling_get_fx_num(owner)
@@ -291,13 +301,25 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 		
 		}
 	}
-	if(!((fx_num_of_owner==POISON)||(fx_num_of_owner==COCAINE))){
-		return HAM_IGNORED
-	}
-	draw_aim_vector(owner,(fx_num_of_owner==POISON)?(sh_custom_color:{GREEN,GREEN,GREEN}):(sh_custom_color:{PINK,PINK,PINK}))
 	
 
 	return HAM_IGNORED
+}
+
+public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{
+	if(!is_user_alive(Attacker)){
+		return
+	}
+	new fx_id:fx_num_of_owner=gatling_get_fx_num(Attacker)
+
+	generic_weapon_tracer_logic(Attacker,((fx_num_of_owner==POISON)||(fx_num_of_owner==COCAINE)),
+				-1,
+				-1,
+				true,
+				(fx_num_of_owner==POISON)?
+				(sh_custom_color:{GREEN,GREEN,GREEN}):
+				(sh_custom_color:{PINK,PINK,PINK}))
 }
 public Player_TakeDamage(id)
 {
@@ -479,7 +501,7 @@ kill_user(id,attacker){
 						LineColors[FX_COLOR_OFFSET(KILL)][2], 50)
 
 	sh_extra_damage(id,attacker,1,
-				dmg_source_name_long_cyanide,
+				dmg_source_name_log_cyanide,
 				_,
 				SH_DMG_KILL,
 				_,_,_,
@@ -632,7 +654,7 @@ public sh_client_spawn(id)
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||(gatling_get_fx_num(id)!=COCAINE)||!sh_is_active()) return
+	if ( (gatling_get_fx_num(id)!=COCAINE)||!sh_is_active()) return
 
 	new wpnid = get_user_weapon(id)
 

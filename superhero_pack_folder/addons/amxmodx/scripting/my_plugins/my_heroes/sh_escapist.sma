@@ -98,7 +98,7 @@ wpn_switch_primitive(id){
 public getFastWeaponAndSpeed(i){
 	
 	
-	if (!is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
+	if (!sh_user_has_hero(i,gHeroID)){
 		return
 	}
 	

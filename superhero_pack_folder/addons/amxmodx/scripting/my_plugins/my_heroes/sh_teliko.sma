@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "teliko_stuff_inc/sh_slitter_funcs.inc"
 #include "teliko_stuff_inc/sh_teliko_get_set.inc"
 #include "../my_include/my_author_header.inc"
@@ -73,7 +74,12 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
 
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Teliko_Fire_Weapon",1, true, false)
+	register_ham_hook_multiple(Ham_TraceAttack,
+						full_entity_array_for_trace_attack,
+						length_of_trace_attack_entity_array,
+						"Teliko_Fire_Weapon",
+						1,
+						true)
 
 	register_event("Damage", "Teliko_damage", "b", "2!0")
 	
@@ -372,34 +378,16 @@ public sh_client_death(id){
 }
 
 
-public Teliko_Fire_Weapon(entity)
-{
-
-	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
-
-
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+public Teliko_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
+	if(!is_user_alive(Attacker)){
+		return
+	}
+	new bool:the_bool_to_use=((g_counter_bullets[Attacker])>0)
+	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true)
 	
-	if(!client_is_hero_user(id, gHeroID)){
-		return HAM_IGNORED
+	if(the_result){
+		g_counter_bullets[Attacker]--
 	}
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	if ((g_counter_bullets[id])) 
-	{
-		draw_aim_vector(id)
-		g_counter_bullets[id]--;
-	}
-	return HAM_IGNORED
 
 }
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

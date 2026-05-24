@@ -3,25 +3,25 @@
 #endif
 #define sh_q_barrel_funcs
 
-#define DAMAGE 325 // 325 for Zombie / 85 for Human
+#define Q_BARREL_DAMAGE 325 // 325 for Zombie / 85 for Human
 
-#define CLIP 4
-#define BPAMMO 100
+#define Q_BARREL_CLIP 4
+#define Q_BARREL_BPAMMO 100
 
-#define SPEED 0.35
-#define RELOAD_TIME 3.0
-#define KNOCKPOWER 1000
+#define Q_BARREL_SPEED 0.35
+#define Q_BARREL_RELOAD_TIME 3.0
+#define Q_BARREL_KNOCKPOWER 1000
 #define Q_BARREL_RECOIL 1.25
 
-#define MODEL_V "models/shmod/graciete/qbarrel/v_qbarrel.mdl"
-#define MODEL_P "models/shmod/graciete/qbarrel/p_qbarrel.mdl"
-#define MODEL_W "models/shmod/graciete/qbarrel/w_qbarrel.mdl"
+#define Q_BARREL_MODEL_V "models/shmod/graciete/qbarrel/v_qbarrel.mdl"
+#define Q_BARREL_MODEL_P "models/shmod/graciete/qbarrel/p_qbarrel.mdl"
+#define Q_BARREL_MODEL_W "models/shmod/graciete/qbarrel/w_qbarrel.mdl"
 
 #define CSW_QUADBARREL CSW_M3
 
-#define WEAPON_SECRETCODE 20132014
-#define OLD_W_MODEL "models/w_m3.mdl"
-#define OLD_EVENT "events/m3.sc"
+#define QUAD_BARREL_WEAPON_SECRETCODE 20132014
+#define OLD_W_MODEL_Q_BARREL "models/w_m3.mdl"
+#define OLD_EVENT_Q_BARREL "events/m3.sc"
 #define ANIM_EXT "shotgun"
 
 

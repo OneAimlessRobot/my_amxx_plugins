@@ -5,13 +5,15 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
+//By default, plugins have 4KB of stack space.
+//This gives the plugin a little more memory to work with (6144 or 24KB is sh default)
+#pragma dynamic (6144*8)
 
 stock generic_dmg_source_wpn_id;
 const generic_dmg_source_is_melee=0;
 stock generic_dmg_hero_name[MAX_HERO_NAME_LENGTH]="some_hero"
 stock const generic_dmg_source_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
-stock const generic_dmg_source_long_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
+stock const generic_dmg_source_log_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
 
 //These are indexed by "SH_CUSTOM_DMG_WPN_ID"
 //and the max number of weapons is "MAX_SH_CUSTOM_DMG_SOURCES"
@@ -19,7 +21,7 @@ stock const generic_dmg_source_long_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
 stock sh_damage_source_hero_ids[MAX_SH_CUSTOM_DMG_SOURCES]
 stock sh_damage_source_is_a_melee[MAX_SH_CUSTOM_DMG_SOURCES]
 stock sh_damage_source_short_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
-stock sh_damage_source_long_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
+stock sh_damage_source_log_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
 
 //returns wpn_id to be used in calls to sh_extra_damage if desired
 
@@ -30,7 +32,7 @@ public plugin_init(){
     arrayset(sh_damage_source_hero_ids,0,sizeof(sh_damage_source_hero_ids))
     for(new i=0;i<MAX_SH_CUSTOM_DMG_SOURCES;i++){
         arrayset(sh_damage_source_short_names[i],0,sizeof(sh_damage_source_short_names[]))
-        arrayset(sh_damage_source_long_names[i],0,sizeof(sh_damage_source_long_names[]))
+        arrayset(sh_damage_source_log_names[i],0,sizeof(sh_damage_source_log_names[]))
     }
     generic_dmg_source_wpn_id=sh_log_custom_damage_source();
 }
@@ -62,12 +64,12 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid hero id %d at _sh_log_custom_damage_source!^nHero id must be between exactly %d and %d!^nGeneric damage source will be logged^n",hero_id,-1,SH_MAXHEROS-1)
         */
     }
-    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_generic_hero?generic_dmg_source_is_melee:is_a_melee, is_generic_hero?generic_dmg_source_long_name:long_name_arr)
+    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_generic_hero?generic_dmg_source_is_melee:is_a_melee, is_generic_hero?generic_dmg_source_log_name:long_name_arr)
     if(wpn_id>0){
         sh_damage_source_hero_ids[wpn_id]=is_generic_hero?-1:hero_id;
         sh_damage_source_is_a_melee[wpn_id]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
         copy(sh_damage_source_short_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_name:short_name_arr)
-        copy(sh_damage_source_long_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_long_name:long_name_arr)
+        copy(sh_damage_source_log_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_log_name:long_name_arr)
         
     }
     else{
@@ -96,7 +98,7 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
                                     sh_damage_source_short_names[wpn_id])
 
         server_print("The long name was: %s",
-                                    sh_damage_source_long_names[wpn_id])
+                                    sh_damage_source_log_names[wpn_id])
 
         server_print("This weapon is%sa melee!",
                                     sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
@@ -104,18 +106,13 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
     return wpn_id
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
 
     new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
-    if((damage > 0)&&(attacker!=victim)){
-        if(private_wpn_id==generic_dmg_source_wpn_id){
-            arrayset(wpnDescription,0,sizeof(wpnDescription))
-            strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
-        }
-        if((damage<get_user_health(victim))&&(dmgMode!=SH_DMG_KILL)){
-            custom_weapon_shot(private_wpn_id, attacker)
-            custom_weapon_dmg(private_wpn_id, attacker, victim, damage, _:bodypart)
-        }
+
+    if(private_wpn_id==generic_dmg_source_wpn_id){
+        arrayset(wpnDescription,0,sizeof(wpnDescription))
+        strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
     }
     
     wpnid=private_wpn_id

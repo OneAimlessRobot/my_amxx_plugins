@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -15,8 +16,10 @@ new const Arifle_Sound[] = "weapons/m60-1.wav"
 
 
 new g_Had_Arifle, g_Arifle_Clip[33], Float:g_Recoil[33][3]
-new g_Event_Arifle, g_Msg_WeaponList, g_SmokePuff_SprId, g_ham_bot
+new g_Event_Arifle, g_SmokePuff_SprId, g_ham_bot
 new g_Muzzleflash_Ent, g_Muzzleflash
+
+new weapon_secret_code = ARIFLE_SECRET_CODE
 
 public plugin_init()
 {
@@ -43,8 +46,8 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
-	g_Msg_WeaponList = get_user_msgid("WeaponList")
 	
+	weapon_secret_code = allocate_weapon_secret_code()
 }
 
 public plugin_natives(){
@@ -59,9 +62,9 @@ public plugin_natives(){
 
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel, V_MODEL)
-	engfunc(EngFunc_PrecacheModel, P_MODEL)
-	engfunc(EngFunc_PrecacheModel, W_MODEL)
+	engfunc(EngFunc_PrecacheModel, ARIFLE_V_MODEL)
+	engfunc(EngFunc_PrecacheModel, ARIFLE_P_MODEL)
+	engfunc(EngFunc_PrecacheModel, ARIFLE_W_MODEL)
 	
 
 	engfunc(EngFunc_PrecacheSound, Arifle_Sound)
@@ -116,13 +119,16 @@ public Get_Arifle(id)
 	Set_BitVar(g_Had_Arifle, id)
 	fm_give_item(id, weapon_names_stock_arr[CSW_ARIFLE])
 	
-	Give_RealAmmo(id, CSW_ARIFLE)
+	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
+	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, A_RIFLE_CLIP)
+
+	// Set BpAmmo
+	cs_set_user_bpammo(id, CSW_ARIFLE, A_RIFLE_RESERVE)
 	
-	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), {0, 0, 0}, id)
-	write_byte(1)
-	write_byte(CSW_ARIFLE)
-	write_byte(30)
-	message_end()
+	// Update Ammo
+	update_ammo(id, CSW_ARIFLE, A_RIFLE_CLIP, A_RIFLE_RESERVE)
+
+	
 }
 
 public Remove_Arifle(id)
@@ -139,7 +145,7 @@ public Event_CurWeapon(id)
 	static Float:Delay, Float:Delay2
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(!pev_valid(Ent)) return
-	
+
 	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * A_RIFLE_SPEED
 	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * A_RIFLE_SPEED
 	
@@ -154,8 +160,9 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
 	if(!is_user_alive(id) || !is_user_connected(id))
 		return FMRES_IGNORED	
-	if(get_user_weapon(id) == CSW_ARIFLE && Get_BitVar(g_Had_Arifle, id))
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
+	if(get_user_weapon(id) == CSW_ARIFLE && Get_BitVar(g_Had_Arifle, id)){
+		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0)
+	}
 	
 	return FMRES_HANDLED
 }
@@ -187,8 +194,8 @@ public fw_SetModel(entity, model[])
 		{
 			Remove_Arifle(iOwner)
 			
-			set_pev(weapon, pev_impulse, 184128)
-			engfunc(EngFunc_SetModel, entity, W_MODEL)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
+			engfunc(EngFunc_SetModel, entity,ARIFLE_W_MODEL)
 			
 			return FMRES_SUPERCEDE
 		}
@@ -208,6 +215,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 		
 		return HAM_IGNORED
 	}
+
 	if(get_user_weapon(id) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, id)){
 		return HAM_IGNORED
 	}
@@ -226,7 +234,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(!is_user_alive(id)){
 		return
 	}
-	
+
 	if(Get_BitVar(g_Had_Arifle, id))
 	{
 
@@ -260,14 +268,14 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
 		return HAM_IGNORED	
 	if(!Get_BitVar(g_Had_Arifle, Id))
-		return HAM_IGNORED	
-		
+		return HAM_IGNORED
+
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
 		native_playanim(Id, anim_idle)
 		
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
-		set_pdata_string(Id, (m_szAnimExtention) * 4, PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER * 4)
+		set_pdata_string(Id, (m_szAnimExtention) * 4, ARIFLE_PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER * 4)
 	}
 	
 	return HAM_IGNORED	
@@ -285,11 +293,13 @@ public fw_Item_Deploy_Post(Ent)
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
 		return
+	
+
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return
 	
-	set_pev(Id, pev_viewmodel2, V_MODEL)
-	set_pev(Id, pev_weaponmodel2, P_MODEL)
+	set_pev(Id, pev_viewmodel2, ARIFLE_V_MODEL)
+	set_pev(Id, pev_weaponmodel2, ARIFLE_P_MODEL)
 	
 	native_playanim(Id, anim_draw)
 }
@@ -329,23 +339,13 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 {
 	ent_check(Ent,HAM_IGNORED)
 		
-	if(pev(Ent, pev_impulse) == 184128)
+	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Arifle, id)
 		set_pev(Ent, pev_impulse, 0)
 	}		
 	
-	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
-	write_string(weapon_names_stock_arr[CSW_ARIFLE])
-	write_byte(4) // PrimaryAmmoID
-	write_byte(A_RIFLE_CLIP) // PrimaryAmmoMaxAmount
-	write_byte(A_RIFLE_RESERVE) // SecondaryAmmoID
-	write_byte(A_RIFLE_RESERVE) // SecondaryAmmoMaxAmount
-	write_byte(0) // SlotID (0...N)
-	write_byte(6) // NumberInSlot (1...N)
-	write_byte(Get_BitVar(g_Had_Arifle, id) ? CSW_ARIFLE : CSW_M249) // WeaponID
-	write_byte(0) // Flags
-	message_end()
+	
 
 	return HAM_HANDLED	
 }
@@ -354,7 +354,7 @@ public fw_Item_PostFrame(ent)
 {
 	ent_check(ent,HAM_IGNORED)
 
-	static id; id = get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
+	static id ; id = get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
@@ -363,6 +363,7 @@ public fw_Item_PostFrame(ent)
 	if(!Get_BitVar(g_Had_Arifle, id))
 		return HAM_IGNORED	
 	
+
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ARIFLE)
 	
@@ -486,76 +487,6 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 }
 
 
-public Give_RealAmmo(id, CSWID)
-{
-	static Amount, Max
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 10; Max = 104;}
-		case CSW_SCOUT: {Amount = 6; Max = 180;}
-		case CSW_XM1014: {Amount = 8; Max = 64;}
-		case CSW_MAC10: {Amount = 16; Max = 200;}
-		case CSW_AUG: {Amount = 6; Max = 180;}
-		case CSW_ELITE: {Amount = 16; Max = 200;}
-		case CSW_FIVESEVEN: {Amount = 4; Max = 200;}
-		case CSW_UMP45: {Amount = 16; Max = 200;}
-		case CSW_SG550: {Amount = 6; Max = 180;}
-		case CSW_GALIL: {Amount = 6; Max = 180;}
-		case CSW_FAMAS: {Amount = 6; Max = 180;}
-		case CSW_USP: {Amount = 18; Max = 200;}
-		case CSW_GLOCK18: {Amount = 16; Max = 200;}
-		case CSW_AWP: {Amount = 6; Max = 60;}
-		case CSW_MP5NAVY: {Amount = 16; Max = 200;}
-		case CSW_M249: {Amount = 4; Max = 200;}
-		case CSW_M3: {Amount = 8; Max = 64;}
-		case CSW_M4A1: {Amount = 7; Max = 180;}
-		case CSW_TMP: {Amount = 7; Max = 200;}
-		case CSW_G3SG1: {Amount = 7; Max = 180;}
-		case CSW_DEAGLE: {Amount = 10; Max = 70;}
-		case CSW_SG552: {Amount = 7; Max = 180;}
-		case CSW_AK47: {Amount = 7; Max = 180;}
-		case CSW_P90: {Amount = 4; Max = 200;}
-		default: {Amount = 3; Max = 200;}
-	}
-
-	for(new i = 0; i < Amount; i++) give_ammo(id, 0, CSWID, Max)
-}
-
-public give_ammo(id, silent, CSWID, Max)
-{
-	static Amount, Name[32]
-		
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 13; formatex(Name, sizeof(Name), "357sig");}
-		case CSW_SCOUT: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_XM1014: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_MAC10: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_AUG: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_ELITE: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_FIVESEVEN: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-		case CSW_UMP45: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_SG550: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_GALIL: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_FAMAS: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_USP: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_GLOCK18: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_AWP: {Amount = 10; formatex(Name, sizeof(Name), "338magnum");}
-		case CSW_MP5NAVY: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_M249: {Amount = 30; formatex(Name, sizeof(Name), "556natobox");}
-		case CSW_M3: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_M4A1: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_TMP: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_G3SG1: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_DEAGLE: {Amount = 7; formatex(Name, sizeof(Name), "50ae");}
-		case CSW_SG552: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_AK47: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_P90: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-	}
-	
-	if(!silent) emit_sound(id, CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
-}
 
 
 // Drop primary/secondary weapons

@@ -4,7 +4,7 @@
 #define sh_tranq_funcs
 
 #define DART_CLASSNAME "tranq_dart"
-
+#define DART_GUN_WEAPON_CLASSID CSW_ELITE
 
 enum{
     seq_idle=0,

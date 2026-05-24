@@ -43,7 +43,7 @@ new gSpriteTrail
 new gHeroID
 
 new dmg_source_name_short_penguin[SAFE_BUFFER_SIZE+1]="hominh_he"
-new dmg_source_name_long_penguin[SAFE_BUFFER_SIZE+1]="homing_grenade"
+new dmg_source_name_log_penguin[SAFE_BUFFER_SIZE+1]="homing_grenade"
 new custom_dmg_id_penguin_homing_grenade
 
 new pcvar_dmg_mult
@@ -70,7 +70,7 @@ public plugin_init()
 
 	custom_dmg_id_penguin_homing_grenade=sh_log_custom_damage_source(gHeroID,
 							dmg_source_name_short_penguin,
-							dmg_source_name_long_penguin,0)
+							dmg_source_name_log_penguin,0)
 	
 
 
@@ -365,7 +365,7 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			new extraDamage = floatround(damage * cvar_val(float, pcvar_dmg_mult) - damage)
 			if (extraDamage > 0){
 				
-				sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_penguin,
+				sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_penguin,
 								_,_,_,_,_,
 								SH_NEW_DMG_FRAG_BLAST,
 								custom_dmg_id_penguin_homing_grenade)

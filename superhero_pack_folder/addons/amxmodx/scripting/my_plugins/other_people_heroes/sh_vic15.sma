@@ -16,7 +16,7 @@ vic15_auraradius 300		//Radius of Victim 15's ghostly aura
 
 new victim_drain_aura_weapon_id
 new dmg_source_name_short_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
-new dmg_source_name_long_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
+new dmg_source_name_log_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
 
 new g_heroName[]="Victim 15/21"
 new gHeroID
@@ -45,7 +45,7 @@ public plugin_init()
 	victim_drain_aura_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_victim_drain_aura,
-								dmg_source_name_long_victim_drain_aura,
+								dmg_source_name_log_victim_drain_aura,
 								0)
 
 
@@ -193,7 +193,7 @@ public vic15_auraloop()
 				Distance = get_distance(Origin, eOrigin)
 				if (Distance < Radius){
 
-					sh_extra_damage(enemy, id, Pain, dmg_source_name_short_victim_drain_aura,
+					sh_extra_damage(enemy, id, Pain, dmg_source_name_log_victim_drain_aura,
 											_,_,_,_,_,
 											SH_NEW_DMG_DARK_ARTS,
 											victim_drain_aura_weapon_id)

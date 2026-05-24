@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_FAKEMETA_UTIL
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
@@ -9,6 +10,7 @@
 #define PLUGIN "Superhero Snoodle d_barrel funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
 
 new const WeaponModel[3][] =
 {
@@ -35,6 +37,7 @@ new g_SpecialShot
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 
 
+new weapon_secret_code = CSW_GATLING_SECRET_CODE
 
 public plugin_init()
 {
@@ -60,7 +63,10 @@ public plugin_init()
 	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_GATLING], "fw_Item_AddToPlayer_Post", 1,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_GATLING], "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_GATLING], "fw_Weapon_PrimaryAttack_Post", 1,true)
-	
+
+
+	weapon_secret_code = allocate_weapon_secret_code()
+
 }
 public plugin_natives(){
 	
@@ -152,8 +158,6 @@ public get_gatling(id)
 	// Set BpAmmo
 	cs_set_user_bpammo(id, CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
 	
-	// Update Ammo
-	update_ammo(id, CSW_GATLING, D_BARREL_DEFAULT_CLIP, D_BARREL_DEFAULT_BPAMMO)
 }
 
 public remove_gatling(id)
@@ -164,56 +168,23 @@ public remove_gatling(id)
 
 public Event_CurWeapon(id)
 {
+	
 	static CSWID; CSWID = read_data(2)
-	static SubModel; SubModel = SUBMODEL
 
-	if((CSWID == CSW_GATLING && g_OldWeapon[id] != CSW_GATLING) && Get_BitVar(g_Had_Volcano, id))
+	if((CSWID == CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
 	{
-		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
-	} else if((CSWID == CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) {
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		if(!pev_valid(Ent))
+		if(pev_valid(Ent)) 
 		{
-			g_OldWeapon[id] = get_user_weapon(id)
-			return
+			set_pdata_float(Ent, m_flNextPrimaryAttack,
+						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * D_BARREL_SPEED, XO_WEAPON)
+	
+			set_pdata_float(Ent, m_flNextSecondaryAttack,
+						get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * D_BARREL_SPEED, XO_WEAPON)
 		}
-		
-		static Float:Delay, Float:Delay2
-		
-		Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * D_BARREL_SPEED
-		Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * D_BARREL_SPEED
-		
-		if(Delay > 0.0)
-		{
-		set_pdata_float(Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
-		set_pdata_float(Ent, m_flNextSecondaryAttack, Delay2, XO_WEAPON)
-		}
-	} else if(CSWID != CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) {
-		if(SubModel != -1) Draw_NewWeapon(id, CSWID)
 	}
 	
-	g_OldWeapon[id] = get_user_weapon(id)
-}
-
-public Draw_NewWeapon(id, CSW_ID)
-{
-	if(CSW_ID == CSW_GATLING)
-	{
-		static ent
-		ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		
-		if(pev_valid(ent) && Get_BitVar(g_Had_Volcano, id))
-		{
-			set_pev(ent, pev_effects, pev(ent, pev_effects) &~ EF_NODRAW) 
-			engfunc(EngFunc_SetModel, ent, WeaponModel[1])	
-			set_pev(ent, pev_body, SUBMODEL)
-		}
-	} else {
-		static ent
-		ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		
-		if(pev_valid(ent)) set_pev(ent, pev_effects, pev(ent, pev_effects) | EF_NODRAW) 			
-	}
+	g_OldWeapon[id] = CSWID
 }
 
 public fw_CmdStart(id, uc_handle, seed)
@@ -303,9 +274,9 @@ public fw_SetModel(entity, model[])
 		
 		if(Get_BitVar(g_Had_Volcano, id))
 		{
-			set_pev(weapon, pev_impulse, WEAPON_SECRET_CODE)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
 			engfunc(EngFunc_SetModel, entity, WeaponModel[2])
-			set_pev(entity, pev_body, SUBMODEL)
+			set_pev(entity, pev_body, D_BARREL_SUBMODEL)
 			
 			remove_gatling(id)
 			
@@ -447,11 +418,16 @@ public fw_Item_Deploy_Post(ent)
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
 		
-	static SubModel; SubModel = SUBMODEL
+	static SubModel; SubModel = D_BARREL_SUBMODEL
 	
 	set_pev(id, pev_viewmodel2, WeaponModel[0])
 	set_pev(id, pev_weaponmodel2, SubModel != -1 ? "" : WeaponModel[1])
-		
+	static SpecialReload; SpecialReload = get_pdata_int(ent, m_fInSpecialReload, XO_WEAPON)
+	if(!SpecialReload && get_pdata_float(ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.25)
+	{
+		native_playanim(id, GATLING_ANIM_IDLE)
+		set_pdata_float(ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
+	}	
 	native_playanim(id, GATLING_ANIM_DRAW)
 	set_pdata_string(id, m_szAnimExtention * 4, WEAPON_ANIMEXT, -1 , 20)
 }
@@ -515,8 +491,6 @@ public fw_Item_PostFrame(ent)
 		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
-	
-		return
 	}
 }
 
@@ -525,10 +499,10 @@ public fw_Item_AddToPlayer_Post(ent, id)
 	if(!pev_valid(ent))
 		return HAM_IGNORED
 		
-	if(pev(ent, pev_impulse) == WEAPON_SECRET_CODE)
+	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Volcano, id)
-		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
+		set_pev(ent, pev_impulse, 0)
 	}
 		
 	return HAM_IGNORED
@@ -540,6 +514,10 @@ public fw_Weapon_PrimaryAttack(ent)
 
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id)){
+		return
+	}
+
+	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != ent){
 		return
 	}
 	if(!Get_BitVar(g_Had_Volcano, id))
@@ -573,23 +551,6 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 	xs_vec_mul_scalar(push, D_BARREL_RECOIL, push)
 	xs_vec_add(push, g_punchangles[id], push)
 	set_pev(id, pev_punchangle, push)	
-}
-
-public update_ammo(id, csw_id, clip, bpammo)
-{
-	if(!is_user_alive(id))
-		return
-		
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), _, id)
-	write_byte(1)
-	write_byte(csw_id)
-	write_byte(clip)
-	message_end()
-	
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("AmmoX"), _, id)
-	write_byte(3)
-	write_byte(bpammo)
-	message_end()
 }
 
 stock fm_cs_get_weapon_ent_owner(ent)
@@ -762,8 +723,6 @@ public Safety_Disconnected(id)
 
 public Safety_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
 		
 	static CSW; CSW = read_data(2)
 	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW

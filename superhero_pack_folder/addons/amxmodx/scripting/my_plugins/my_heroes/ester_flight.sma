@@ -55,7 +55,7 @@ new g_last_coords[SH_MAXSLOTS+1][3]
 
 
 new dmg_source_name_short_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
-new dmg_source_name_long_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
+new dmg_source_name_log_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
 new ester_flight_drain_wpn_id
 
 
@@ -116,7 +116,7 @@ public plugin_cfg(){
 	ester_flight_drain_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_ester_flight_drain,
-								dmg_source_name_long_ester_flight_drain,
+								dmg_source_name_log_ester_flight_drain,
 								0)
 }
 public ester_drain_loop(task_id){

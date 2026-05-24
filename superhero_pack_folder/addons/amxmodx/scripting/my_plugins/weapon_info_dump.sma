@@ -185,6 +185,10 @@ public tskWeaponInfo(params[2]) {
 		for (new x = START_WID; x < WNUM; ++x){
 			server_print("%0.6f", _fire2_period[x])
 		}
+		server_print("Here are the ammo ids:^n^n")
+		for (new x = START_WID; x < WNUM; ++x){
+			server_print("%d", _aid[x])
+		}
 		log_to_file(g_dump_file, "[WI] Note that there are also ^"especial^" weapons: ^"weapon_c4^" (ID=6, SPEED=250, AID=14), ^"weapon_knife^" (ID=29, SPEED=250), ^"weapon_shield^" (COST=2200)")
 
 		client_print(id, print_chat, "[WI] End of dump. Look into ^"%s^"", g_dump_file)

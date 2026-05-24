@@ -31,7 +31,7 @@ new gSpriteLightning
 
 new rat_wpn_id
 new dmg_source_name_short_rat[SAFE_BUFFER_SIZE+1]="rat_dmg"
-new dmg_source_name_long_rat[SAFE_BUFFER_SIZE+1]="rat_dmg"
+new dmg_source_name_log_rat[SAFE_BUFFER_SIZE+1]="rat_dmg"
 
 public plugin_init()
 {
@@ -48,7 +48,7 @@ public plugin_init()
 	rat_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_rat,
-								dmg_source_name_long_rat,
+								dmg_source_name_log_rat,
 								0)
 
 	register_event("Damage", "rattler_damage", "b", "2!0")

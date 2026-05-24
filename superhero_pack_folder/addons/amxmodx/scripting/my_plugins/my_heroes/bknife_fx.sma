@@ -41,7 +41,7 @@ stock bleed_task_parameters[fx_bleed_type][bleed_task_parameter_id]={
 }
 
 new dmg_source_name_short_shanking[SAFE_BUFFER_SIZE+1]="shanking"
-new dmg_source_name_long_shanking[SAFE_BUFFER_SIZE+1]="shanking"
+new dmg_source_name_log_shanking[SAFE_BUFFER_SIZE+1]="shanking"
 new custom_dmg_id_shanking
 
 new fx_bleed_type:gIsBleeding[SH_MAXSLOTS+1]
@@ -62,7 +62,7 @@ for(new fx_bleed_type:i=BLEED_MINI;i<fx_bleed_type;i++){
 
 custom_dmg_id_shanking=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_shanking,
-				dmg_source_name_long_shanking,
+				dmg_source_name_log_shanking,
 				0)
 
 init_hud_syncs()
@@ -160,7 +160,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		}
 		new is_valid_dmg_src=is_valid_custom_dmg_source(custom_wpn_id)
 		sh_extra_damage(id,attacker,damage,
-								is_valid_dmg_src?attack_name_string:dmg_source_name_long_shanking,
+								is_valid_dmg_src?attack_name_string:dmg_source_name_log_shanking,
 								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_BLEED,

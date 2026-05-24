@@ -25,18 +25,21 @@
  //Version 2.7 - Fix for SND_STOP compile error
  */
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
+#define CTROOPER_LASERGUN_CLASSID CSW_AK47 
 // GLOBAL VARIABLES
 new gHeroName[]="Clone Trooper"
 new gHeroID
 
 new dmg_source_name_short_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
-new dmg_source_name_long_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
+new dmg_source_name_log_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
 new custom_dmg_id_lazah_guun
 
 new pcvar_extra_lazadmg
@@ -58,14 +61,18 @@ new pcvar_extra_lazadmg
 								"clonetrooper",
 								"CTrooper - Prepared for war..SIR!",
 								"CTrooper - All systems down...")
-	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,"models/shmod/clonetrooper_v_ak47.mdl","models/shmod/clonetrooper_p_ak47.mdl")
-
+	sh_register_superheromod_weapon_model(gHeroID,CTROOPER_LASERGUN_CLASSID,"models/shmod/clonetrooper_v_ak47.mdl","models/shmod/clonetrooper_p_ak47.mdl")
+	
+	register_ham_hook_multiple(Ham_TraceAttack,
+							full_entity_array_for_trace_attack,
+							length_of_trace_attack_entity_array,
+							"ctrooper_laser_gun",
+							1,
+							true)
+	
 	custom_dmg_id_lazah_guun=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_lazah_guun,
-					dmg_source_name_long_lazah_guun,0)
-
-
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_AK47], "make_tracer",_,true)
+					dmg_source_name_log_lazah_guun,0)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "CTrooper_damage", "b", "2!0")
@@ -85,43 +92,20 @@ public sh_hero_init(id, heroID, mode){
 			CTrooper_weapons(id)
 		}
 		else {
-			sh_drop_weapon(id, CSW_AK47)
+			sh_drop_weapon(id, CTROOPER_LASERGUN_CLASSID)
 		}
 	}
  }
  //----------------------------------------------------------------------------------------------
- public make_tracer(entity)
+ public ctrooper_laser_gun(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
  {
-	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
-
-
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+	new bool:the_result=generic_weapon_tracer_logic(Attacker,_,CTROOPER_LASERGUN_CLASSID,gHeroID,true,sh_custom_color:{RED,GREEN,GREEN})
 	
-	if(!client_is_hero_user(id, gHeroID)){
-		return HAM_IGNORED
+
+	if(the_result){
+		emit_sound(Attacker,CHAN_BODY,LASER_LINE_DEFAULT_SOUND,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+		aura(Attacker,LineColors[((cs_get_user_team(Attacker)==CS_TEAM_CT)?GREEN:RED)])
 	}
-
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	new CsTeams:user_team=cs_get_user_team(id)
-
-	new vec1[3], vec2[3]
-	new Float:fvec1[3], Float:fvec2[3]
-	get_user_origin(id, vec1, 1) // origin; your camera point.
-	get_user_origin(id, vec2, 3) // termina; where your bullet goes (4 is cs-only)
-
-	IVecFVec(vec1,fvec1)
-	IVecFVec(vec2,fvec2)
-
-	laser_line(id,fvec1,fvec2,false,sh_custom_color:{RED,GREEN,GREEN},_,true)
-	aura(id,LineColors[((user_team==CS_TEAM_CT)?GREEN:RED)])
-
-	return HAM_IGNORED
  }
  //----------------------------------------------------------------------------------------------
  public sh_client_spawn(id)
@@ -130,7 +114,7 @@ public sh_hero_init(id, heroID, mode){
 		set_task(0.1, "CTrooper_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-		if (wpnid != CSW_AK47 && wpnid > 0) {
+		if (wpnid != CTROOPER_LASERGUN_CLASSID && wpnid > 0) {
 			new wpn[32]
 			get_weaponname(wpnid,wpn,31)
 			engclient_cmd(id,wpn)
@@ -145,7 +129,7 @@ public sh_hero_init(id, heroID, mode){
 	new wpnid = read_data(2)
 	new clip = read_data(3)
 
-	if ( wpnid != CSW_AK47 ) return
+	if ( wpnid != CTROOPER_LASERGUN_CLASSID ) return
 
 	// Never Run Out of Ammo!
 	if ( clip == 0 ) {
@@ -156,7 +140,7 @@ public sh_hero_init(id, heroID, mode){
  public CTrooper_weapons(id)
  {
 	if ( is_user_alive(id) ) {
-		sh_give_weapon(id,CSW_AK47)
+		sh_give_weapon(id,CTROOPER_LASERGUN_CLASSID)
 	}
  }
  //----------------------------------------------------------------------------------------------
@@ -170,12 +154,12 @@ public sh_hero_init(id, heroID, mode){
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
 //sh_user_has_hero(id,gHeroID)
 	new bool:has_hero= sh_user_has_hero(attacker,gHeroID)
-	if ( has_hero && weapon == CSW_AK47 && is_user_alive(id) ) {
+	if ( has_hero && weapon == CTROOPER_LASERGUN_CLASSID && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * cvar_val(float, pcvar_extra_lazadmg) - damage)
 		
 		if (extraDamage > 0){
 			sh_extra_damage(id, attacker, extraDamage, 
-					dmg_source_name_long_lazah_guun,
+					dmg_source_name_log_lazah_guun,
 					my_hitpoint_enum:bodypart,
 					_,_,_,_,
 					SH_NEW_DMG_ENERGY_BLAST,

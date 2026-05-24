@@ -39,7 +39,7 @@ enum{
 }
 
 new dmg_source_name_short_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
-new dmg_source_name_long_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
+new dmg_source_name_log_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
 new custom_dmg_id_tracked_vuln
 
 public plugin_init(){
@@ -52,7 +52,7 @@ public plugin_init(){
 
 	custom_dmg_id_tracked_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_tracked_vuln,
-				dmg_source_name_long_tracked_vuln,
+				dmg_source_name_log_tracked_vuln,
 				0)
 }
 
@@ -76,7 +76,7 @@ public tracked_damage(id)
 		case RADIOACTIVE:{
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
 			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_short_tracked_vuln,
+				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_log_tracked_vuln,
 											my_hitpoint_enum:bodypart,
 											_,_,_,_,
 											SH_NEW_DMG_RADIATION_POISON,
@@ -88,7 +88,7 @@ public tracked_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));

@@ -92,6 +92,7 @@ stock register_custom_touchable(const entity_name[], const func_name[], const tg
 		register_touch( entity_name, tg_entities[ i ], func_name );
 	}
 }
+
 stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 
 stock sh_get_player_cloak_pct(id){
@@ -134,7 +135,6 @@ stock player_touching_entity_of_some_classname(id,the_entity_classname_to_search
 {
 	
 	if (!is_user_alive(id)||!sh_is_active()) return 0
-	//Its an ""entlist""
 	new entlist[1];
 	new num_found = find_sphere_class(id,the_entity_classname_to_search, touch_distance ,entlist, 1);
 	
@@ -214,37 +214,59 @@ stock orient_entity_with_move_vector(ent){
 	entity_set_vector(ent, EV_VEC_v_angle, fl_NewAngle)
 
 }
+
+stock print_entity_info(id, ent){
+
+	if(!is_user_connected(id)){
+
+		return
+	}
+
+
+	if(!is_valid_ent(ent)){
+
+		client_print(id, print_center, "That entity with id %d is an invalid entity!^n",ent)
+		return
+	}
+
+	static Float:health=0.0,
+			szClassname[128]
+	
+
+	entity_get_string(ent, EV_SZ_classname,szClassname,(sizeof szClassname) -2)
+	
+	pev(ent, pev_health, health)
+
+	client_print(id, print_center, "That entity with id %d...^n - is a(n) ^"%s^"^nThese are its properties:^n- Has %0.5f health points",ent,szClassname,health)
+
+
+}
+
+
+
 stock do_fast_shot(Ent,Float:speed=1.0){
 	
-	static Float:N_Speed
-	N_Speed =speed
-	if(N_Speed != 1.0)
+	
+	static Float:Delay,Float:M_Delay
+	Delay =floatdiv(g_fPrimaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)] ,speed)
+	M_Delay =floatdiv(g_fSecondaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)]  ,speed)
+
+	if (Delay > 0.0)
 	{
-		if(pev_valid(Ent)!=2){
-
-			server_print("Hook faulty??!!! attempted to change firing speed of invalid weapon!^n")
-			return HAM_IGNORED
-		}
-		ExecuteHam(Ham_Weapon_PrimaryAttack, Ent)
-		if(get_pdata_int(Ent, m_iClip, XO_WEAPON)<=0){
-
-			return HAM_SUPERCEDE
-		}
-		static Float:Delay,Float:M_Delay
-		Delay =floatdiv(g_fPrimaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)] ,N_Speed)
-		M_Delay =floatdiv(g_fSecondaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)]  ,N_Speed)
-
-		if (Delay > 0.0)
-		{
-			set_pdata_float( Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
-		}
-		if (M_Delay > 0.0)
-		{
-			set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
-		}
+		set_pdata_float( Ent, m_flNextPrimaryAttack, Delay, XO_WEAPON)
 	}
-	return HAM_SUPERCEDE
-
+	if (M_Delay > 0.0)
+	{
+		set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
+	}
+	
+	
+	static secret_code = -1;
+	secret_code= get_weapon_secret_code(Ent)
+	if(secret_code>=0){
+		return HAM_SUPERCEDE
+	}
+	return HAM_IGNORED
 }
 
 #if !defined _reapi_included 
@@ -282,7 +304,9 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 }
 #endif
 
-//get weapon id entity of player
+/*
+get weapon id entity of player
+*/
 stock get_weapon_ent_of_player(id,wpnid=0)
 {	
 	new weap = wpnid;
@@ -293,7 +317,17 @@ stock get_weapon_ent_of_player(id,wpnid=0)
 	get_weaponname(weap, class, sizeof class - 1);
 
 	return find_ent_by_owner(-1,class,id);
-} 
+}
+/**
+hook several entities with given Ham enum in one go
+*/
+stock register_ham_hook_multiple(Ham:the_enum_to_hook,  const tg_entities[][], tg_entities_length, const func_name[], is_it_post=0, bool:is_it_special_bot=true){
+
+	for( new i; i < tg_entities_length; i++ ){
+		RegisterHam(the_enum_to_hook, tg_entities[ i ], func_name, is_it_post, is_it_special_bot);
+	}
+}
+
 /**
 exclude mode == 0 for include guns outside of the bitsum. 1 to include only those on the bitsum
 */
@@ -309,7 +343,6 @@ stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const functi
 		}
 	}
 }
-
 stock init_hud_syncs(){
 
 	attacker_dmg_hud_msg_sync=CreateHudSyncObj()
@@ -378,3 +411,150 @@ stock kill_all_entity_beams(ent_id){
 		message_end()
 	}
 }
+
+stock update_ammo(id, csw_id, clip, bpammo)
+{
+	if(!is_user_alive(id))
+		return
+		
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), _, id)
+	write_byte(1)
+	write_byte(csw_id)
+	write_byte(clip)
+	message_end()
+	
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("AmmoX"), _, id)
+	write_byte(g_ammo_ids_for_weapon_ids[csw_id])
+	write_byte(bpammo)
+	message_end()
+}
+/**
+
+GetPlayerFlags constants to be used (from get_players_ex())
+
+enum GetPlayersFlags (<<= 1)
+{
+	GetPlayers_None = 0,           // No filter (Default)
+	GetPlayers_ExcludeDead = 1,    // Do not include dead clients
+	GetPlayers_ExcludeAlive,       // Do not include alive clients
+	GetPlayers_ExcludeBots,        // Do not include bots
+	GetPlayers_ExcludeHuman,       // Do not include human clients
+	GetPlayers_MatchTeam,          // Match with team
+	GetPlayers_MatchNameSubstring, // Match with part of name
+	GetPlayers_CaseInsensitive,    // Match case insensitive
+	GetPlayers_ExcludeHLTV,        // Do not include HLTV proxies
+	GetPlayers_IncludeConnecting   // Include connecting clients
+};
+
+
+ */
+stock pick_random_player(GetPlayersFlags:the_wanted_flags){
+
+	/*This will always suffice.
+	Aint nobody got time to change netcode
+	And expand slots beyond 32*/
+
+	static the_player_arr[MAX_PLAYERS],
+		num_of_players,
+		num_times_to_it
+
+	get_players_ex(the_player_arr,num_of_players,the_wanted_flags)
+	
+	num_times_to_it = generate_int(0, num_of_players)
+	
+	static curr_n,curr_p
+	for( curr_n =0 ; curr_n< num_times_to_it; curr_n++){
+		
+		curr_p = the_player_arr[curr_n]
+
+	}
+
+	return curr_p
+
+
+
+
+}
+stock Give_RealAmmo(id, CSWID)
+{
+	static Amount, Max
+	switch(CSWID)
+	{
+		case CSW_P228: {Amount = 10; Max = 104;}
+		case CSW_SCOUT: {Amount = 6; Max = 180;}
+		case CSW_XM1014: {Amount = 8; Max = 64;}
+		case CSW_MAC10: {Amount = 16; Max = 200;}
+		case CSW_AUG: {Amount = 6; Max = 180;}
+		case CSW_ELITE: {Amount = 16; Max = 200;}
+		case CSW_FIVESEVEN: {Amount = 4; Max = 200;}
+		case CSW_UMP45: {Amount = 16; Max = 200;}
+		case CSW_SG550: {Amount = 6; Max = 180;}
+		case CSW_GALIL: {Amount = 6; Max = 180;}
+		case CSW_FAMAS: {Amount = 6; Max = 180;}
+		case CSW_USP: {Amount = 18; Max = 200;}
+		case CSW_GLOCK18: {Amount = 16; Max = 200;}
+		case CSW_AWP: {Amount = 6; Max = 60;}
+		case CSW_MP5NAVY: {Amount = 16; Max = 200;}
+		case CSW_M249: {Amount = 4; Max = 200;}
+		case CSW_M3: {Amount = 8; Max = 64;}
+		case CSW_M4A1: {Amount = 7; Max = 180;}
+		case CSW_TMP: {Amount = 7; Max = 200;}
+		case CSW_G3SG1: {Amount = 7; Max = 180;}
+		case CSW_DEAGLE: {Amount = 10; Max = 70;}
+		case CSW_SG552: {Amount = 7; Max = 180;}
+		case CSW_AK47: {Amount = 7; Max = 180;}
+		case CSW_P90: {Amount = 4; Max = 200;}
+		default: {Amount = 3; Max = 200;}
+	}
+
+	for(new i = 0; i < Amount; i++) give_ammo(id, 0, CSWID, Max)
+}
+
+stock give_ammo(id, silent, CSWID, Max)
+{
+	static Amount, Name[32]
+		
+	switch(CSWID)
+	{
+		case CSW_P228: {Amount = 13; formatex(Name, sizeof(Name), "357sig");}
+		case CSW_SCOUT: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
+		case CSW_XM1014: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
+		case CSW_MAC10: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
+		case CSW_AUG: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_ELITE: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
+		case CSW_FIVESEVEN: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
+		case CSW_UMP45: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
+		case CSW_SG550: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_GALIL: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_FAMAS: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_USP: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
+		case CSW_GLOCK18: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
+		case CSW_AWP: {Amount = 10; formatex(Name, sizeof(Name), "338magnum");}
+		case CSW_MP5NAVY: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
+		case CSW_M249: {Amount = 30; formatex(Name, sizeof(Name), "556natobox");}
+		case CSW_M3: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
+		case CSW_M4A1: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_TMP: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
+		case CSW_G3SG1: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
+		case CSW_DEAGLE: {Amount = 7; formatex(Name, sizeof(Name), "50ae");}
+		case CSW_SG552: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
+		case CSW_AK47: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
+		case CSW_P90: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
+	}
+	
+	if(!silent) emit_sound(id, CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
+}
+
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/
+
+/*
+this is meant to be used
+exclusively
+in Ham_TraceAttack POST hooks
+(because it has no return type)
+
+*/
+

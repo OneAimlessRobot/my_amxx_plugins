@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -44,6 +45,7 @@ new g_MsgCurWeapon
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 
+new weapon_secret_code = H_RIFLE_SECRET_CODE
 
 
 public plugin_init() 
@@ -62,11 +64,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_mosin, "fw_Item_Deploy_Post", 1,true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_mosin, "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_mosin, "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_mosin, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_MOSIN], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_PostFrame",_,true)
 	
+	weapon_secret_code = allocate_weapon_secret_code()
+
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
 
 }
@@ -83,9 +87,9 @@ public plugin_natives(){
 
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,MODEL_V)
-	engfunc(EngFunc_PrecacheModel,MODEL_P)
-	engfunc(EngFunc_PrecacheModel,MODEL_W)
+	engfunc(EngFunc_PrecacheModel,H_RIFLE_MODEL_V)
+	engfunc(EngFunc_PrecacheModel,H_RIFLE_MODEL_P)
+	engfunc(EngFunc_PrecacheModel,H_RIFLE_MODEL_W)
 	
 	for(new i = 0; i < sizeof(WeaponSounds); i++)
 		engfunc(EngFunc_PrecacheSound,WeaponSounds[i])
@@ -97,7 +101,7 @@ public plugin_precache()
 
 public fw_PrecacheEvent_Post(type, const name[])
 {
-	if(equal(OLD_EVENT, name))
+	if(equal(OLD_EVENT_H_RIFLE, name))
 		g_Event_MS = get_orig_retval()
 }
 
@@ -138,7 +142,7 @@ public Get_Mosin(id)
 	
 	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_mosin)
+	give_item(id, weapon_names_stock_arr[CSW_MOSIN])
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
@@ -158,8 +162,6 @@ public Remove_Mosin(id)
 
 public Event_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
 	
 	static CSWID; CSWID = read_data(2)
 	
@@ -174,7 +176,7 @@ public Event_CurWeapon(id)
 		
 		if(cs_get_user_zoom(id) == 1)
 		{
-			set_pev(id, pev_viewmodel2, MODEL_V)
+			set_pev(id, pev_viewmodel2, H_RIFLE_MODEL_V)
 		} else if(cs_get_user_zoom(id) == 2 || cs_get_user_zoom(id) == 3) {
 			set_pev(id, pev_viewmodel2, "")
 		}
@@ -200,7 +202,7 @@ public fw_SetModel(entity, model[])
 	static id
 	id = entity_get_edict(entity, EV_ENT_owner)
 	
-	if(equal(model, OLD_W_MODEL))
+	if(equal(model, OLD_W_MODEL_H_RIFLE))
 	{
 		static weapon
 		weapon = fm_get_user_weapon_entity(entity, CSW_MOSIN)
@@ -210,8 +212,8 @@ public fw_SetModel(entity, model[])
 		
 		if(Get_BitVar(g_Had_Mosin, id))
 		{
-			set_pev(weapon, pev_impulse, WEAPON_SECRETCODE)
-			engfunc(EngFunc_SetModel, entity, MODEL_W)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
+			engfunc(EngFunc_SetModel, entity, H_RIFLE_MODEL_W)
 			
 			Remove_Mosin(id)
 			
@@ -300,7 +302,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	make_bullet(Attacker, flEnd)
 	//fake_smoke(Attacker, ptr)
 		
-	SetHamParamFloat(3, float(DAMAGE))
+	SetHamParamFloat(3, float(H_RIFLE_DAMAGE))
 		
 	return HAM_HANDLED	
 }
@@ -319,8 +321,8 @@ public fw_Item_Deploy_Post(Ent)
 	if(!Get_BitVar(g_Had_Mosin, Id))
 		return
 
-	set_pev(Id, pev_viewmodel2, MODEL_V)
-	set_pev(Id, pev_weaponmodel2, MODEL_P)
+	set_pev(Id, pev_viewmodel2, H_RIFLE_MODEL_V)
+	set_pev(Id, pev_weaponmodel2, H_RIFLE_MODEL_P)
 	
 	native_playanim(Id, ANIM_DRAW)
 	set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
@@ -328,7 +330,7 @@ public fw_Item_Deploy_Post(Ent)
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
-	if(pev(ent, pev_impulse) == WEAPON_SECRETCODE)
+	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Mosin, id)
 		set_pev(ent, pev_impulse, 0)
@@ -599,8 +601,6 @@ public Safety_Disconnected(id)
 
 public Safety_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
 		
 	static CSW; CSW = read_data(2)
 	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW

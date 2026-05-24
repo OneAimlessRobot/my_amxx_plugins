@@ -36,6 +36,9 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include "sh_aux_funcs_misc.inc"
 #endif
 
+#if defined I_WANT_CUSTOM_WEAPONS
+#include "sh_custom_weapons_logic.inc"
+#endif
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }

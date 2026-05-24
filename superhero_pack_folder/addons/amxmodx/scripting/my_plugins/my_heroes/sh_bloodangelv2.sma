@@ -33,7 +33,7 @@ new Float:m4dmgmult
 
 
 new dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E[SAFE_BUFFER_SIZE+1]="darkly_dark_d"
-new dmg_source_name_long_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E[SAFE_BUFFER_SIZE+1]="darkly_dark_d"
+new dmg_source_name_log_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E[SAFE_BUFFER_SIZE+1]="darkly_dark_d"
 new custom_dmg_id_darkly_dark_d
 
 //----------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ public plugin_init()
 	
 	custom_dmg_id_darkly_dark_d=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
-				dmg_source_name_long_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
+				dmg_source_name_log_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
 				0)
 	// EVENTS
 	

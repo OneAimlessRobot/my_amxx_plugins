@@ -33,8 +33,8 @@ new pcvar_slitter_drag_speed
 //nums
 new pcvar_max_slitter_kills_per_life
 
-new dmg_source_name_short_sneak[SAFE_BUFFER_SIZE+1]="sneak_attack"
-new dmg_source_name_long_sneak[SAFE_BUFFER_SIZE+1]="sneak"
+new dmg_source_name_short_sneak[SAFE_BUFFER_SIZE+1]="sneak"
+new dmg_source_name_log_sneak[SAFE_BUFFER_SIZE+1]="sneak_attack"
 new custom_dmg_id_sneak
 
 
@@ -126,7 +126,7 @@ stop_dragging(id,-1)
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if ( !sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
@@ -173,7 +173,7 @@ public loadCVARS()
 	
 	custom_dmg_id_sneak=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_sneak,
-					dmg_source_name_long_sneak,
+					dmg_source_name_log_sneak,
 					1)
 }
 public plugin_natives(){
@@ -431,17 +431,16 @@ if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&is_va
 						set_user_godmode(target,0)
 					}
 					else{
-						SetHamParamFloat(3, 0.0);
-						damage=get_user_health(id)*3.0
 						sh_extra_damage(target,attacker,floatround(damage),
-							dmg_source_name_short_sneak,MY_HIT_HEAD
-							,_,_,_,_,
+							dmg_source_name_short_sneak,MY_HIT_HEAD,
+							SH_DMG_KILL,_,_,_,
 							SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 							custom_dmg_id_sneak)
 						
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
 						}
+						return HAM_SUPERCEDE
 					}
 				}
 				else{

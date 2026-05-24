@@ -52,7 +52,7 @@ new pcvar_flora_field_max_active_ammount
 
 new field_drain_wpn_id
 new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
-new dmg_source_name_long_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
+new dmg_source_name_log_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 
 stock FLORA_COOLDOWN_TASKID,
 		FLORA_LOAD_TASKID,
@@ -123,7 +123,7 @@ public plugin_cfg(){
 	field_drain_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_field_drain,
-								dmg_source_name_long_field_drain,
+								dmg_source_name_log_field_drain,
 								0)
 								
 }

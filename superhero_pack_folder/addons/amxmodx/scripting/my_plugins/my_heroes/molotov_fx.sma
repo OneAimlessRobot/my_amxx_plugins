@@ -27,7 +27,7 @@ new gIsBurningMask = 0
 
 
 new dmg_source_name_short_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
-new dmg_source_name_long_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
+new dmg_source_name_log_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
 new custom_dmg_id_fire_vuln
 
 public plugin_init(){
@@ -46,7 +46,7 @@ public plugin_cfg(){
 	gHeroID_erica = tranq_get_hero_id()
 	custom_dmg_id_fire_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_fire_vuln,
-				dmg_source_name_long_fire_vuln,
+				dmg_source_name_log_fire_vuln,
 				0)
 }
 //----------------------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){

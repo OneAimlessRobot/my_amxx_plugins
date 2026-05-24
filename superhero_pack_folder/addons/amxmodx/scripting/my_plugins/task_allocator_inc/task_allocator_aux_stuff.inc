@@ -7,7 +7,6 @@
 #define ALLOCATOR_CFG_FILENAME "allocator.cfg"
 #define ALLOCATOR_CFG_DIRECTORY "/task_allocator"
 
-stock const max_integer_limit= (power(2,31)-1);
 
 
 // the_taskid= allocate_typed_task_id(generic_task)

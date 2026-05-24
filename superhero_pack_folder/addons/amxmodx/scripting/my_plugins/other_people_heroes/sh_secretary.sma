@@ -244,7 +244,7 @@ public sh_hero_key(id, heroID, key)
 public weapon_change(id)
 {
 	if ( !sh_is_active() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return
+	if ( !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return
 
 	if ( gIsCharging[id] ) {
 		stop_charging(id)

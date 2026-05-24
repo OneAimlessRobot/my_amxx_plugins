@@ -42,7 +42,7 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 
 
 new dmg_source_name_short_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
-new dmg_source_name_long_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
+new dmg_source_name_log_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
 new custom_dmg_id_poison_ivy_drain
 
 // GLOBAL VARIABLES
@@ -85,7 +85,7 @@ public plugin_init()
 
 	custom_dmg_id_poison_ivy_drain=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_poison_ivy_drain,
-				dmg_source_name_long_poison_ivy_drain,
+				dmg_source_name_log_poison_ivy_drain,
 				0)
 
 }

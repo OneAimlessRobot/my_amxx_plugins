@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_shard_cannon.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -17,6 +18,8 @@ new g_MsgCurWeapon
 
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
+
+new weapon_secret_code = SHARD_CANNON_SECRETCODE
 
 public plugin_init() 
 {
@@ -41,6 +44,8 @@ public plugin_init()
 	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_names_stock_arr[CSW_SHARD_CANNON], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
+	weapon_secret_code = allocate_weapon_secret_code()
+
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
 	
 }
@@ -130,8 +135,6 @@ public Remove_Shard_Cannon(id)
 
 public Event_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
 	
 	static CSWID; CSWID = read_data(2)
 	
@@ -184,7 +187,7 @@ public fw_SetModel(entity, model[])
 		
 		if(Get_BitVar(g_Had_SHARD_CANNON, id))
 		{
-			set_pev(weapon, pev_impulse, WEAPON_SECRETCODE)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
 			engfunc(EngFunc_SetModel, entity, SHARD_CANNON_MODEL_W)
 			
 			Remove_Shard_Cannon(id)
@@ -284,6 +287,10 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
 {	
 
+	if(pev_valid(Ent) != 2){
+		return HAM_IGNORED
+	}
+
 	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
@@ -370,8 +377,12 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
-{
-	if(pev(ent, pev_impulse) == WEAPON_SECRETCODE)
+{	
+	if(pev_valid(ent) != 2){
+		return
+	}
+
+	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_SHARD_CANNON, id)
 		set_pev(ent, pev_impulse, 0)
@@ -380,6 +391,9 @@ public fw_Item_AddToPlayer_Post(ent, id)
 
 public fw_Weapon_Reload(iEnt)
 {
+	if(pev_valid(iEnt) != 2){
+		return HAM_IGNORED
+	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	if(!is_alive(id))
 		return HAM_IGNORED
@@ -396,7 +410,10 @@ public fw_Weapon_Reload(iEnt)
 
 public fw_Item_PostFrame( iEnt )
 {
-	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
+	if(pev_valid(iEnt) != 2){
+		return 
+	}
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id,CSW_SHARD_CANNON)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
@@ -640,9 +657,6 @@ public Safety_Disconnected(id)
 
 public Safety_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
-		
 	static CSW; CSW = read_data(2)
 	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW
 }

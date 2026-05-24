@@ -217,7 +217,7 @@ public stealth_respawn(parm[])
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !is_user_alive(id) || !sh_is_inround()) return
+	if ( !sh_is_inround()) return
 	if ( !sh_user_has_hero(id,gHeroID) || !g_usingPower[id] ) return
 
 	new wpnid = read_data(2)

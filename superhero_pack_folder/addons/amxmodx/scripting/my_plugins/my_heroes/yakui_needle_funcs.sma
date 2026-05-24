@@ -39,7 +39,7 @@ public plugin_natives(){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
@@ -73,7 +73,7 @@ public Ham_Needle_Swing(weapon_ent)
 
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
+	static owner; owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
 
 	if ( !is_user_alive(owner)) {
 		return HAM_IGNORED

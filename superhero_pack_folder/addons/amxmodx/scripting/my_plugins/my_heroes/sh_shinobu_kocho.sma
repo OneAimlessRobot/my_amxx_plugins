@@ -23,13 +23,13 @@ new gHeroName[]="Shinobu Kocho"
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
 new gHeroID
 new dmg_source_name_short_poison_kick[SAFE_BUFFER_SIZE+1]="poison_kick"
-new dmg_source_name_long_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
+new dmg_source_name_log_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
 new custom_weapon_damage_sharp_poison_kick_id
 
 new pcvar_shinobu_poison_kick_stun_time,
 	pcvar_shinobu_poison_kick_stun_speed,
 	pcvar_shinobu_max_health
-
+new gMessageID_Health
 new pcvar_shinobu_cooldown
 new pcvar_shinobu_poison_kick_delay
 
@@ -56,8 +56,10 @@ public plugin_init()
 	register_event("Damage","shinobuDamage","b", "2!0")
 	
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage",_, true)
+	
+	gMessageID_Health = get_user_msgid("Health")
 
-	register_message(get_user_msgid("Health"), "Shinobu_Limit_HP")
+	register_message(gMessageID_Health, "Shinobu_Limit_HP")
 
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
@@ -66,7 +68,7 @@ public plugin_init()
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_poison_kick,
-								dmg_source_name_long_poison_kick,
+								dmg_source_name_log_poison_kick,
 								0)
 	set_task(1.0,"shinobu_step_silent",SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP,_,_,"b")
 	init_hud_syncs()
@@ -112,9 +114,15 @@ public sh_client_spawn(id)
 	}
 
 	if ( sh_user_has_hero(id,gHeroID) ) {
+		new the_health_to_send = min(get_user_health(id),cvar_val(num, pcvar_shinobu_max_health))
+
+		set_user_health(id, the_health_to_send)
 		
-		set_user_health(id,min(get_user_health(id),
-					cvar_val(num, pcvar_shinobu_max_health)))
+		message_begin(MSG_ONE_UNRELIABLE, gMessageID_Health, {0,0,0}, id);
+		
+		write_byte(the_health_to_send);
+		
+		message_end();
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -282,7 +290,7 @@ public shinobu_burst_damage_task(array[],attacker){
 
 	new damage_to_cause=floatround((float(enemy_health)/2.0)-1.0,floatround_floor)
 
-	sh_extra_damage(tg,attacker,damage_to_cause,dmg_source_name_long_poison_kick,
+	sh_extra_damage(tg,attacker,damage_to_cause,dmg_source_name_log_poison_kick,
 					_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					custom_weapon_damage_sharp_poison_kick_id)
@@ -384,7 +392,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
@@ -394,7 +402,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &
 	}
 	if(new_dmg_type==SH_NEW_DMG_DRUG_POISON){
 		if(sh_user_has_hero(victim,gHeroID) ){
-			sh_chat_message(victim,gHeroID,"Awww? That was a [nice] try! But I drank it like pina colada ;)")
 			generic_heal(heal_hp_hud_msg_sync,victim,float(damage),_,PURPLE,_,_,50,1,1)
 			return DMG_FWD_BLOCK
 		}

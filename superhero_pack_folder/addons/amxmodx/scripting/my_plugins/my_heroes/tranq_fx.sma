@@ -222,7 +222,7 @@ unsleep_user(id){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()) return
+	if ( !sh_is_active()) return
 
 	if(Get_BitVar(gIsAsleepMask,id)){
 		sleep_user_switch_weapon(id)

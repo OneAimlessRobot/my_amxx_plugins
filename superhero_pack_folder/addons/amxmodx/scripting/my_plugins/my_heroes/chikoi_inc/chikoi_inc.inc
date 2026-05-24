@@ -3,4 +3,4 @@
 #endif
 #define sh_chikoi_stuff_inc
 
-native sh_player_has_chikoi(id)
+native chikoi_get_hero_id()

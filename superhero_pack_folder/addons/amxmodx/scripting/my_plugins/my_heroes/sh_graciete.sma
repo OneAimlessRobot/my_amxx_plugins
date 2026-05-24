@@ -1,7 +1,8 @@
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include "q_barrel_inc/sh_q_barrel.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "colt_inc/sh_shard_cannon.inc"
+#include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
 #include "../my_include/my_author_header.inc"
@@ -9,6 +10,11 @@
 
 new gHeroID
 new const gHeroName[] = "Graciete"
+
+new dmg_source_name_short_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"
+new dmg_source_name_log_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"
+new custom_dmg_id_shard_cannon
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -26,6 +32,11 @@ public plugin_init()
 								"Graciete ready.",
 								"Mission failed.")
 	
+	register_event("Damage", "graciete_damage", "b", "2!0")
+	custom_dmg_id_shard_cannon=sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_shard_cannon,
+				dmg_source_name_log_shard_cannon,
+				0)
 	// Add your code here...
 }
 public plugin_natives(){
@@ -44,11 +55,11 @@ public sh_hero_init(id, heroID, mode){
 
 	if(sh_user_has_hero(id, gHeroID)){
 		
-		q_barrel_set_q_barrel(id)
+		shard_cannon_set_shard_cannon(id)
 	}
 	else{
 
-		q_barrel_unset_q_barrel(id)
+		shard_cannon_set_shard_cannon(id)
 		
 	}
 	reset_graciete_user(id)
@@ -60,14 +71,48 @@ public sh_client_spawn(id){
 	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
 			reset_graciete_user(id)
 			graciete_jet_uncharge_user(id)
-			q_barrel_set_q_barrel(id)
+			shard_cannon_set_shard_cannon(id)
 	}
 
+}
+
+public graciete_damage(id)
+{
+
+
+	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	
+
+	new Float:damage = float(read_data(2))
+	
+	
+	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+
+	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
+
+	if(sh_user_has_hero(attacker,gHeroID)){
+		new Float:extraDamage = damage * 2.0- damage
+		if (floatround(extraDamage)>0){
+			switch(weapon){
+				
+				case CSW_SHARD_CANNON:{
+					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_log_shard_cannon,
+								my_hitpoint_enum:bodypart ,
+								_,_,_,_,
+								SH_NEW_DMG_BLEED,
+								custom_dmg_id_shard_cannon)
+					sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
+				}
+			}
+		}
+	
+	}
+	return PLUGIN_CONTINUE
 }
 public client_disconnected(id){
 	
 	reset_graciete_user(id)
-	q_barrel_unset_q_barrel(id)
+	shard_cannon_unset_shard_cannon(id)
 	
 	return PLUGIN_HANDLED
 	

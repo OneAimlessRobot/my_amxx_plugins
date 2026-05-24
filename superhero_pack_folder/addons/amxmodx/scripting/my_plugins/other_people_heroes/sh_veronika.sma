@@ -32,11 +32,11 @@ veronika_m203dmg 120
 new gHeroName[]="Veronika"
 
 new dmg_source_name_short_ak[SAFE_BUFFER_SIZE+1]="ak_gl"
-new dmg_source_name_long_ak[SAFE_BUFFER_SIZE+1]="ak47_glauncher"
+new dmg_source_name_log_ak[SAFE_BUFFER_SIZE+1]="ak47_glauncher"
 new custom_dmg_id_ak
 
 new dmg_source_name_short_grenade[SAFE_BUFFER_SIZE+1]="m203"
-new dmg_source_name_long_grenade[SAFE_BUFFER_SIZE+1]="m203_grenade"
+new dmg_source_name_log_grenade[SAFE_BUFFER_SIZE+1]="m203_grenade"
 new custom_dmg_id_grenade
 
 #define VERONIKA_GRENADE_SPEED 1250
@@ -73,8 +73,8 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47, veronika_ak_v_mdl, veronika_ak_p_mdl)
 
-	custom_dmg_id_ak=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ak,dmg_source_name_long_ak,0)
-	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_long_grenade,0)
+	custom_dmg_id_ak=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ak,dmg_source_name_log_ak,0)
+	custom_dmg_id_grenade=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_grenade,dmg_source_name_log_grenade,0)
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	
 	register_event("CurWeapon", "weaponChange","be","1=1")
@@ -169,7 +169,7 @@ public veronika_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ak,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_ak,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -359,7 +359,7 @@ public veronika_gren_touch(pToucher, pTouched)
 
 do_victim(victim,attacker,damage,tk)
 {	
-	sh_extra_damage(victim,attacker,damage, dmg_source_name_long_grenade,_,_,tk?SH_EXTRA_DMG_FLAG_dmgFFmsg:0,_,_,_,custom_dmg_id_grenade)
+	sh_extra_damage(victim,attacker,damage, dmg_source_name_log_grenade,_,_,tk?SH_EXTRA_DMG_FLAG_dmgFFmsg:SH_EXTRA_DMG_FLAG_NONE,_,_,_,custom_dmg_id_grenade)
 }
 
 

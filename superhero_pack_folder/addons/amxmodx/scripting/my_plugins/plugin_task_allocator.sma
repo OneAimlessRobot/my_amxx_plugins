@@ -87,7 +87,7 @@ loadConfig()
 	//Load SH Config File
 	if ( file_exists(allocator_cfg_file) ) {
 		
-		log_amx("Loading allocator.cfg")
+		log_amx("Loading %s",ALLOCATOR_CFG_FILENAME)
 
 		server_cmd("exec %s", allocator_cfg_file)
 

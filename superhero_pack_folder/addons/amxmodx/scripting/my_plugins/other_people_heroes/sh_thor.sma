@@ -33,7 +33,7 @@ new gIsSearchingMask
 
 new thors_hammer_wpn_id
 new dmg_source_name_short_thors_hammer[SAFE_BUFFER_SIZE+1]="thors_hammer"
-new dmg_source_name_long_thors_hammer[SAFE_BUFFER_SIZE+1]="thors_hammer"
+new dmg_source_name_log_thors_hammer[SAFE_BUFFER_SIZE+1]="thors_hammer"
 
 new const gSoundThunder[] = "shmod/zeus_lightningbolt.wav"
 new const gSoundSearch[] = "turret/tu_ping.wav"
@@ -62,7 +62,7 @@ public plugin_init()
 	thors_hammer_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_thors_hammer,
-								dmg_source_name_long_thors_hammer,
+								dmg_source_name_log_thors_hammer,
 								0)
 
 	register_forward(FM_TraceLine,"fw_traceline");
@@ -117,7 +117,7 @@ thor_thunder_damage(attacker, tg){
 
 	new extraDamage = floatround(thor_dmg_to_do )
 	
-	sh_extra_damage(tg, attacker, extraDamage, dmg_source_name_short_thors_hammer,
+	sh_extra_damage(tg, attacker, extraDamage, dmg_source_name_log_thors_hammer,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								thors_hammer_wpn_id)

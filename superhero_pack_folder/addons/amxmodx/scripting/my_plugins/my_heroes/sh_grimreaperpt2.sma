@@ -17,7 +17,7 @@ new gJustResetRenderingMask = 0
 new gScytheSwings[SH_MAXSLOTS+1]
 
 new dmg_source_name_short_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
-new dmg_source_name_long_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
+new dmg_source_name_log_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
 new custom_dmg_id_scythe
 
 new const gModelScythe[] = "models/shmod/v_scythe.mdl"
@@ -37,7 +37,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Death!", "One deathscythe kill", false, "greaper2_level" )
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
-	custom_dmg_id_scythe=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_scythe,dmg_source_name_long_scythe,1)
+	custom_dmg_id_scythe=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_scythe,dmg_source_name_log_scythe,1)
 
 	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "swing_scythe",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "swing_scythe",_,true)
@@ -62,7 +62,7 @@ public sh_hero_init(id, heroID, mode){
 }
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
@@ -113,7 +113,7 @@ public greaper_damage(this, attacker)
 {
 
 set_user_godmode(this,0)
-sh_extra_damage(this,attacker,1000,dmg_source_name_long_scythe,MY_HIT_HEAD,
+sh_extra_damage(this,attacker,1000,dmg_source_name_log_scythe,MY_HIT_HEAD,
 				SH_DMG_KILL,
 				_,_,_,
 				SH_NEW_DMG_DARK_ARTS,
@@ -173,7 +173,7 @@ public swing_scythe(weaponent)
 		server_print("Grim reaper hook to weapon faulty???");
 		return HAM_IGNORED
 	}
-	new id = get_pdata_cbase(weaponent, m_pPlayer, XO_WEAPON)
+	static id; id = get_pdata_cbase(weaponent, m_pPlayer, XO_WEAPON)
 	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}

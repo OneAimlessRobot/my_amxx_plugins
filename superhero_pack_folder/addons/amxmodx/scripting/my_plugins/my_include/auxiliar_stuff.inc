@@ -26,6 +26,7 @@ stock bool:true_for_macro=true,
 
 #define exhausted_bitsum (((nth_power_of_two(SIZE_OF_INT-1)-1))+nth_power_of_two(SIZE_OF_INT-1))
 
+#define max_integer_limit (power(2,31)-1);
 /*
 
 #define HIT_GENERIC     0

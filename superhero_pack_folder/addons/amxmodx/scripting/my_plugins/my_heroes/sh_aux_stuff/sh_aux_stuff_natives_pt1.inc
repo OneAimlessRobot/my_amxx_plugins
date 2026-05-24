@@ -98,22 +98,24 @@ native big_gun_shot_decal(Float:vec[3], radius=18)
 //-----------------------------------------------------------------------------------------------
 
 /**
-
 Explosion sfx masks!
 
 
-#define sfx_show_shockwave (1<<0)
-#define sfx_show_fireball (1<<1)
-#define sfx_show_smoke (1<<2)
-#define sfx_show_burn_decal (1<<3)
+enum explosion_sfx_flags (<<= 1){
+	sfx_show_nothing = 0,
+	sfx_show_shockwave = 1,
+	sfx_show_fireball,
+	sfx_show_smoke,
+	sfx_show_burn_decal,
+	sfx_show_custom_sound
+
+}
 
 */
 native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
-            sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal))
+            explosion_sfx_flags:sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal))
 
 native directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
-
-
 
 native glow(id, r, g, b,a, on)
 

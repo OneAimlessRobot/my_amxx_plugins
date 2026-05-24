@@ -39,7 +39,7 @@ enum
 
 #define CSW_SHARD_CANNON CSW_DEAGLE
 
-#define WEAPON_SECRETCODE 24062015
+#define SHARD_CANNON_SECRETCODE 24062015
 #define OLD_W_MODEL "models/w_deagle.mdl"
 #define OLD_EVENT "events/deagle.sc"
 

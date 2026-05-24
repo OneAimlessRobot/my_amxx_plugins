@@ -177,11 +177,15 @@ Explosion sfx masks!
 
 */
 
-#define sfx_show_shockwave (1<<0)
-#define sfx_show_fireball (1<<1)
-#define sfx_show_smoke (1<<2)
-#define sfx_show_burn_decal (1<<3)
-#define sfx_show_custom_sound (1<<4)
+enum explosion_sfx_flags (<<= 1){
+	sfx_show_nothing = 0,
+	sfx_show_shockwave = 1,
+	sfx_show_fireball,
+	sfx_show_smoke,
+	sfx_show_burn_decal,
+	sfx_show_custom_sound
+
+}
 
 
 
@@ -334,6 +338,39 @@ stock const Float:g_fSecondaryAttackDelay[CSW_LAST_WEAPON+1] = {
 					0.000000,
 					0.065999
 }
+stock const g_ammo_ids_for_weapon_ids[CSW_LAST_WEAPON+1]={
+					9,
+					0,
+					2,
+					12,
+					5,
+					0,
+					6,
+					4,
+					13,
+					10,
+					7,
+					6,
+					4,
+					4,
+					4,
+					6,
+					10,
+					1,
+					10,
+					3,
+					5,
+					4,
+					10,
+					2,
+					11,
+					8,
+					4,
+					2,
+					0,
+					7
+
+}
 stock const Float:g_fReloadDelay[CSW_LAST_WEAPON+1] = {
 	0.00, 2.70, 0.00, 2.00, 0.00, 0.55,   0.00, 3.15, 3.30, 0.00, 4.50, 
 	2.70, 3.50, 3.35, 2.45, 3.30,   2.70, 2.20, 2.50, 2.63, 4.70, 
@@ -360,7 +397,30 @@ stock const player_vector[][]={"player"},
 					"worldspawn", "func_wall", "func_door",  "func_door_rotating",
 					"func_wall_toggle", "func_breakable", "func_pushable", "func_train",
 					"func_illusionary", "func_button", "func_rot_button", "func_rotating"
-				}
+				},
+			
+			full_entity_array_for_trace_attack[][] = {
+				
+				"player",
+				"worldspawn",
+				"func_wall",
+				"func_door",
+				"func_door_rotating",
+				"func_wall_toggle",
+				"func_breakable",
+				"func_pushable",
+				"func_train",
+				"func_illusionary",
+				"func_button",
+				"func_rot_button",
+				"func_rotating",
+				"func_breakable",
+				"hostage_entity"
+
+
+
+			}
+#define length_of_trace_attack_entity_array 15
 
 stock Float:null_vector[3]={0.0,0.0,0.0}
 stock null_iVector[3]={0,0,0}

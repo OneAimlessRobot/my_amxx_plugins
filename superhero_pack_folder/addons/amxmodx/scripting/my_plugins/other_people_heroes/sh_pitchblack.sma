@@ -8,7 +8,6 @@ pitch_cooldown 60			//Seconds till next available use of power
 
 */
 
-//LOADS OF THNX TO FREECODE FOR GETTING THIS WORKING
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS

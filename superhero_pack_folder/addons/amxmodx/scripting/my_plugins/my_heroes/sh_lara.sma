@@ -19,7 +19,7 @@ new pcvar_num_spears
 
 
 new dmg_source_name_short_lara_spear[SAFE_BUFFER_SIZE+1]="lara_spear"
-new dmg_source_name_long_lara_spear[SAFE_BUFFER_SIZE+1]="lara_spear"
+new dmg_source_name_log_lara_spear[SAFE_BUFFER_SIZE+1]="lara_spear"
 new custom_dmg_id_lara_spear
 
 //----------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public plugin_init()
 	
 	custom_dmg_id_lara_spear=sh_log_custom_damage_source(gHeroID,
 			dmg_source_name_short_lara_spear,
-			dmg_source_name_long_lara_spear,1)
+			dmg_source_name_log_lara_spear,1)
 
 	RegisterHam(Ham_TraceAttack,"player","Lara_ham_trace_damage",_,true)
 	
@@ -105,11 +105,6 @@ public sh_hero_init(id, heroID, mode){
 }
 public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-
-	if(Damage<=0.0){
-		return HAM_IGNORED
-	}
-	
 	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
@@ -117,14 +112,10 @@ public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
+	return do_bleed_knife_attack(Victim,Attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
 						sh_user_has_hero(Attacker,gHeroID),
 								custom_dmg_id_lara_spear,
 								dmg_source_name_short_lara_spear,_,_,the_hitpoint);
-
-
-
-	return ham_result
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -145,7 +136,7 @@ public sh_round_end(){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {

@@ -335,12 +335,13 @@ public monitor_think(ent)
 						}
 
 						set_hudmessage(255, 255, 255, 0.018, 0.9, 2, 0.05, 0.1, 0.01, 3.0)
-						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d  |  Armor: %d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
+						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d/%d  |  Armor: %d/%d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
 												specPlayerLevel,
 												ServerMaxLevel,
 												sh_get_user_xp(specPlayer),
-												temp, UserHealth[specPlayer],
-												UserArmor[specPlayer],
+												temp,
+												UserHealth[specPlayer],sh_get_max_hp(specPlayer),
+												UserArmor[specPlayer],sh_get_max_ap(specPlayer),
 												floatround(gravity*100.0),
 												floatround(vector_length(velocity)),
 												sh_get_player_cloak_pct(specPlayer))

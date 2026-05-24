@@ -21,7 +21,7 @@ new pcvarg_hpSetSuit
 
 
 new dmg_source_name_short_super_steel_bullet[SAFE_BUFFER_SIZE+1]="super_steel_bullet"
-new dmg_source_name_long_super_steel_bullet[SAFE_BUFFER_SIZE+1]="super_steel_bullet"
+new dmg_source_name_log_super_steel_bullet[SAFE_BUFFER_SIZE+1]="super_steel_bullet"
 new custom_dmg_id_super_steel_bullet
 
 //----------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public plugin_init()
 
 	custom_dmg_id_super_steel_bullet=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_super_steel_bullet,
-					dmg_source_name_long_super_steel_bullet,
+					dmg_source_name_log_super_steel_bullet,
 					0)
 					
 	register_event("Damage", "steel_damage", "b", "2!0")

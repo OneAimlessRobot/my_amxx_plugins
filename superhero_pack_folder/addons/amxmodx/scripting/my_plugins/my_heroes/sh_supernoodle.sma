@@ -12,7 +12,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 */
 
 #include "../my_include/superheromod.inc"
-#include "d_barrel_inc/sh_d_barrel.inc"
+#include "q_barrel_inc/sh_q_barrel.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "../my_include/my_author_header.inc"
@@ -21,20 +21,21 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 new gHeroName[]="SuperNoodle"
 new gHeroID
 
-new dmg_source_name_short_super_shotgun[SAFE_BUFFER_SIZE+1]="2Barrel"
-new dmg_source_name_long_super_shotgun[SAFE_BUFFER_SIZE+1]="2Barrel"
+
+new dmg_source_name_short_super_shotgun[SAFE_BUFFER_SIZE+1]="4arrel"
+new dmg_source_name_log_super_shotgun[SAFE_BUFFER_SIZE+1]="4Barrel"
 new custom_dmg_id_super_shotgun
 
 new dmg_source_name_short_hunt_rifle[SAFE_BUFFER_SIZE+1]="hunting_rifle"
-new dmg_source_name_long_hunt_rifle[SAFE_BUFFER_SIZE+1]="hunting_rifle"
+new dmg_source_name_log_hunt_rifle[SAFE_BUFFER_SIZE+1]="hunting_rifle"
 new custom_dmg_id_hunt_rifle
 
 new dmg_source_name_short_arifle[SAFE_BUFFER_SIZE+1]="assault_rifle"
-new dmg_source_name_long_arifle[SAFE_BUFFER_SIZE+1]="assault_rifle"
+new dmg_source_name_log_arifle[SAFE_BUFFER_SIZE+1]="assault_rifle"
 new custom_dmg_id_arifle
 
 new dmg_source_name_short_the_pistols[SAFE_BUFFER_SIZE+1]="the_pistols"
-new dmg_source_name_long_the_pistols[SAFE_BUFFER_SIZE+1]="the_pistols"
+new dmg_source_name_log_the_pistols[SAFE_BUFFER_SIZE+1]="the_pistols"
 new custom_dmg_id_the_pistols
 
 //----------------------------------------------------------------------------------------------
@@ -58,19 +59,19 @@ public plugin_init()
 
 	custom_dmg_id_super_shotgun=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_super_shotgun,
-				dmg_source_name_long_super_shotgun,0)
+				dmg_source_name_log_super_shotgun,0)
 	
 	custom_dmg_id_hunt_rifle=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_hunt_rifle,
-				dmg_source_name_long_hunt_rifle,0)
+				dmg_source_name_log_hunt_rifle,0)
 	
 	custom_dmg_id_arifle=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_arifle,
-				dmg_source_name_long_arifle,0)
+				dmg_source_name_log_arifle,0)
 	
 	custom_dmg_id_the_pistols=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_the_pistols,
-				dmg_source_name_long_the_pistols,0)
+				dmg_source_name_log_the_pistols,0)
 	
 	register_event("Damage", "SuperNoodle_damage", "b", "2!0")
 
@@ -79,7 +80,6 @@ public plugin_init()
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
 }
-
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
@@ -92,7 +92,7 @@ public sh_hero_init(id, heroID, mode){
 	else {
 		h_rifle_unset_h_rifle(id)
 		arifle_unset_arifle(id)
-		d_barrel_unset_d_barrel(id)
+		q_barrel_unset_q_barrel(id)
 		sh_drop_weapon(id, CSW_M249,true)
 		sh_drop_weapon(id, CSW_ELITE,true)
 	}
@@ -110,7 +110,7 @@ public sh_client_spawn(id)
 public SuperNoodle_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
-		d_barrel_set_d_barrel(id)
+		q_barrel_set_q_barrel(id)
 		h_rifle_set_h_rifle(id)
 		arifle_set_arifle(id)
 		sh_give_weapon(id, CSW_ELITE)
@@ -130,7 +130,7 @@ public SuperNoodle_damage(id)
 	if ( user_has_hero&& weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_super_shotgun,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_super_shotgun,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -140,7 +140,7 @@ public SuperNoodle_damage(id)
 	else if(user_has_hero && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
 		if(extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_hunt_rifle,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_hunt_rifle,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -152,7 +152,7 @@ public SuperNoodle_damage(id)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
-							dmg_source_name_long_arifle,
+							dmg_source_name_log_arifle,
 							my_hitpoint_enum:bodypart,
 							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
@@ -164,7 +164,7 @@ public SuperNoodle_damage(id)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
-							dmg_source_name_long_the_pistols,
+							dmg_source_name_log_the_pistols,
 							my_hitpoint_enum:bodypart,
 							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,

@@ -28,11 +28,11 @@ new g_times_player_spiked_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new g_times_player_spiked_by_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
 new dmg_source_name_short_spore[SAFE_BUFFER_SIZE+1]="ksun_spore"
-new dmg_source_name_long_spore[SAFE_BUFFER_SIZE+1]="ksun_spore"
+new dmg_source_name_log_spore[SAFE_BUFFER_SIZE+1]="ksun_spore"
 new spore_wpn_id
 
 new dmg_source_name_short_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
-new dmg_source_name_long_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
+new dmg_source_name_log_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
 new slay_wpn_id
 
 //cvar_val(float, pcvar_
@@ -87,14 +87,14 @@ public plugin_cfg(){
 	spore_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_spore,
-								dmg_source_name_long_spore,
+								dmg_source_name_log_spore,
 								0)
 
 
 	slay_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_slay,
-								dmg_source_name_long_slay,
+								dmg_source_name_log_slay,
 								0)
 }
 //----------------------------------------------------------------------------------------------
@@ -603,7 +603,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	g_times_player_spiked_by_player[victim][killer]++
 	untrack_spore(pToucher)
 
-	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_short_slay:dmg_source_name_short_spore,
+	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_log_slay:dmg_source_name_log_spore,
 					remove_godmode?MY_HIT_HEAD:MY_HIT_GENERIC,
 					_,_,_,_,
 					SH_NEW_DMG_DRAIN,

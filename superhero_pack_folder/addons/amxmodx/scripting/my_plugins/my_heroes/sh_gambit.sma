@@ -47,7 +47,7 @@ new pcvar_dmg_mult
 
 
 new dmg_source_name_short_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
-new dmg_source_name_long_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
+new dmg_source_name_log_euromilhoes[SAFE_BUFFER_SIZE+1]="euromilhoes"
 new custom_dmg_id_euromilhoes
 
 
@@ -72,7 +72,7 @@ public plugin_init()
 
 	custom_dmg_id_euromilhoes = sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_euromilhoes,
-					dmg_source_name_long_euromilhoes,0)
+					dmg_source_name_log_euromilhoes,0)
 
 
 	// EXTRA NADE DAMAGE
@@ -147,7 +147,7 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			new extraDamage = floatround(damage * cvar_val(float, pcvar_dmg_mult) - damage)
 			if (extraDamage > 0) {
 				sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_long_euromilhoes,
+						dmg_source_name_log_euromilhoes,
 						_,_,_,_,_,
 						SH_NEW_DMG_DARK_ARTS,
 						custom_dmg_id_euromilhoes)

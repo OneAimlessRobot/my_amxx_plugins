@@ -28,7 +28,7 @@ new gHeroID
 
 
 new dmg_source_name_short_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
-new dmg_source_name_long_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
+new dmg_source_name_log_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
 new custom_dmg_id_madness_dual_shotgun
 
 
@@ -51,7 +51,7 @@ public plugin_init()
 
 	custom_dmg_id_madness_dual_shotgun=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_madness_dual_shotgun,
-				dmg_source_name_long_madness_dual_shotgun,0)
+				dmg_source_name_log_madness_dual_shotgun,0)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "madness_damage", "b", "2!0")
@@ -126,7 +126,7 @@ public madness_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_madness_dual_shotgun,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_madness_dual_shotgun,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_BLEED,

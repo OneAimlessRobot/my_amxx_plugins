@@ -47,11 +47,11 @@ new gMaxAlpha,gAlphaByLvlInc,gMinAlpha
 
 new evil_rifle_wpn_id
 new dmg_source_name_short_evil_rifle[SAFE_BUFFER_SIZE+1]="PSG-1"
-new dmg_source_name_long_evil_rifle[SAFE_BUFFER_SIZE+1]="PSG-1"
+new dmg_source_name_log_evil_rifle[SAFE_BUFFER_SIZE+1]="PSG-1"
 
 new good_rifle_wpn_id
 new dmg_source_name_short_good_rifle[SAFE_BUFFER_SIZE+1]="SVD-dragunov"
-new dmg_source_name_long_good_rifle[SAFE_BUFFER_SIZE+1]="SVD-dragunov"
+new dmg_source_name_log_good_rifle[SAFE_BUFFER_SIZE+1]="SVD-dragunov"
 
 
 
@@ -86,13 +86,13 @@ public plugin_init()
 	evil_rifle_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_evil_rifle,
-								dmg_source_name_long_evil_rifle,
+								dmg_source_name_log_evil_rifle,
 								0)
 
 	good_rifle_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_good_rifle,
-								dmg_source_name_long_good_rifle,
+								dmg_source_name_log_good_rifle,
 								0)
 	register_event("Damage", "Marksman_damage", "b", "2!0")
 	
@@ -253,7 +253,7 @@ if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 public make_tracer(id)
 {
 	
-if ( !sh_user_has_hero(id,gHeroID) ||!is_user_alive(id)) return PLUGIN_CONTINUE 
+if ( !sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -265,7 +265,7 @@ if ( (wpnid == CSW_SG550)||(wpnid == CSW_G3SG1))
 	if ((marksman_bullets[id] > ammo)&&(gLastWeapon[id] == wpnid)) 
 	{
 		
-			draw_aim_vector(id,{RED,BLUE,WHITE})
+			draw_aim_vector(id,sh_custom_color:{RED,BLUE,WHITE})
 	}
 	marksman_bullets[id] = ammo
 	gLastWeapon[id]=wpnid;

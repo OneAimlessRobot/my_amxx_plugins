@@ -1,6 +1,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_WEAPONS
+
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -21,7 +23,8 @@ new g_komak_hits[SH_MAXSLOTS+1]
 new g_komak_gear[SH_MAXSLOTS+1]
 new Float:gCurrReloadRatio[SH_MAXSLOTS+1]
 new Float:gCurrFireRatio[SH_MAXSLOTS+1]
-new bool:gClutchDown[SH_MAXSLOTS+1]
+new gClutchDown_mask = 0
+new LastShotMissed_mask = 0
 new gEngineRepairTimer[SH_MAXSLOTS+1]
 
 new const redline_color[4]={255,1,1,1}
@@ -72,10 +75,11 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Mechanical maid", "Change gears, hit players and hit faster!", true, "komak_level" )
 	hud_sync=CreateHudSyncObj()
 
-	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakerypt2",0,true)
-	RegisterHam(Ham_TraceAttack,"player","trace_komakerypt2",0,true)
-	
-	
+	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_on_right_arm",0,true)
+
+	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_player_post",1,true)
+	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakery_hit_worldspawn_post",1,true)
+						
 	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon",_, true, false)
 
 	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,single_shot_wpns_bs,"Item_PostFrame_Post",1, true, false)
@@ -120,16 +124,18 @@ public Komak_Fire_Weapon(entity)
 		return HAM_IGNORED
 
 
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+	static id; id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
 	if(!client_is_hero_user(id, gHeroID)){
 		return HAM_IGNORED
 	}
-
+	if(gCurrFireRatio[id]<=1.0){
+		return HAM_IGNORED
+	}
 	return do_fast_shot(entity,gCurrFireRatio[id])
 
 }
-public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -151,46 +157,81 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 
 		}
 	}
-	
+	return return_result
+}
+public trace_komakery_hit_player_post(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{
+
+	if(damage<=0.0){
+		return
+	}
+
+
 	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
 		
-		return return_result;
+		return
 	
 	}
 	
 	static blown_engine_cooldown;
 	blown_engine_cooldown = cvar_val(num, pcvar_blown_engine_cooldown)
 	
-	if(client_is_hittable_here && !gClutchDown[idattacker])
-	{
-		if(sh_clients_are_same_team(this,idattacker)){
+	print_entity_info(idattacker,this)
+	
+	if(!is_user_alive(this)||sh_clients_are_same_team(this,idattacker)||Get_BitVar(gClutchDown_mask, idattacker)){
 
-			return return_result;
-		}
-		if(g_komak_hits[idattacker]>red_line){
-		
-			emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
-		
-		}
-		
-		if(!komak_is_top_speed(idattacker)){
-			g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1, max_rpm);
-		}
-		if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
-		
-			reset_komak(idattacker)
-			ultimateTimer(idattacker, blown_engine_cooldown * 1.0)
-			gEngineRepairTimer[idattacker]=blown_engine_cooldown
-			sh_chat_message(idattacker,gHeroID,"Blown engine!!!!")
-			emit_sound(idattacker,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-		
-			
-		}
+		return
 	}
-	else if(!gClutchDown[idattacker]&&RESET_ON_MISS){
+	if(g_komak_hits[idattacker]>red_line){
+		
+		if(Get_BitVar(LastShotMissed_mask,idattacker)){
+			Assign_BitVar(LastShotMissed_mask, idattacker,false_for_macro)
+		}
+		emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
+	
+	}
+	
+	if(!komak_is_top_speed(idattacker)){
+		g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1, max_rpm);
+	}
+	if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
+	
+		reset_komak(idattacker)
+		ultimateTimer(idattacker, blown_engine_cooldown * 1.0)
+		gEngineRepairTimer[idattacker]=blown_engine_cooldown
+		sh_chat_message(idattacker,gHeroID,"Blown engine!!!!")
+		emit_sound(idattacker,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
+	
+		
+	}
+
+	stats_komak(idattacker)
+	
+}
+public trace_komakery_hit_worldspawn_post(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{
+
+	if(damage<=0.0){
+		return
+	}
+
+	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
+		
+		return
+	
+	}
+	print_entity_info(idattacker,this)
+	
+	if(!Get_BitVar(gClutchDown_mask, idattacker)&&RESET_ON_MISS){
+		
 
 		if(!komak_is_top_speed(idattacker)){
-			emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+			if(!Get_BitVar(LastShotMissed_mask,idattacker)){
+				Assign_BitVar(LastShotMissed_mask, idattacker,true_for_macro)
+				emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
+			}
+			
 			g_komak_hits[idattacker]=max(0,g_komak_hits[idattacker]-1);
 			if(!g_komak_hits[idattacker]){
 				komak_gear_change(idattacker,false)
@@ -199,7 +240,6 @@ public trace_komakerypt2(this, idattacker, Float:damage, Float:direction[3], tra
 		
 	}
 	stats_komak(idattacker)
-	return return_result;
 	
 }
 public engine_repair_loop(id){
@@ -283,6 +323,7 @@ public reset_komak(id){
 		g_komak_gear[id]=1;
 		gCurrFireRatio[id]=cvar_val(float,pcvar_base_fire_ratio);
 		gCurrReloadRatio[id]=cvar_val(float,pcvar_base_reload_ratio);
+		Assign_BitVar(LastShotMissed_mask, id, false_for_macro)
 	}
 
 }
@@ -384,21 +425,24 @@ public komak_kd(id)
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED
 	}
-	gClutchDown[id]=true;
+	Assign_BitVar(gClutchDown_mask, id,true_for_macro);
 	
-	return PLUGIN_HANDLED
+	return PLUGIN_HANDLED;
 }
 public komak_pitch(id){
 
-	return floatround(float(g_komak_hits[id])/float(max_rpm)*float(150))
+	return max(60,floatround(float(g_komak_hits[id])/float(max_rpm)*float(150)))
 
 }
 public komak_ku(id)
 {
 	
-	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!gClutchDown[id]) return PLUGIN_HANDLED
+	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gClutchDown_mask, id)){
+		return PLUGIN_HANDLED;
+	}
+
+	Assign_BitVar(gClutchDown_mask, id,false_for_macro);
 	
-	gClutchDown[id]=false
 	if(g_komak_hits[id]<red_line){
 		
 		playSoundDenySelect(id)
@@ -412,7 +456,7 @@ public komak_ku(id)
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

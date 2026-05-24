@@ -532,7 +532,7 @@ public make_tracer(id) {
 	new weap = read_data(2)        // id of the weapon 
 	new ammo = read_data(3)        // ammo left in clip 
 	
-	if ( sh_user_has_hero(id,gHeroID)&& weap == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(id)) ) {
+	if ( sh_user_has_hero(id,gHeroID)&& (weap == CSW_DEAGLE )&& (!sh_get_cooldown_flag(id)) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap 
 		

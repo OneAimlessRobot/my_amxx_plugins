@@ -31,7 +31,7 @@ new g_prevWeapon[SH_MAXSLOTS+1]
 
 
 new dmg_source_name_short_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
-new dmg_source_name_long_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
+new dmg_source_name_log_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
 new custom_dmg_id_hype_shot
 
 //new gHeroLevel
@@ -80,7 +80,7 @@ public plugin_init()
 	
 	RegisterHam(Ham_TraceAttack,"player","Erica_ham_trace_damage",_,true)
 	
-	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_long_hype_shot,0)
+	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_log_hype_shot,0)
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,NAVALHA_V_MODEL,NAVALHA_P_MODEL)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_ELITE,TRANQS_V_MODEL,TRANQS_P_MODEL)
@@ -179,10 +179,6 @@ public sh_hero_init(id, heroID, mode){
 }
 public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-
-	if(Damage<=0.0){
-		return HAM_IGNORED
-	}
 	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
@@ -190,11 +186,8 @@ public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3]
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,30,40,sh_user_has_hero(Attacker,gHeroID),_,_,_,1,the_hitpoint)
+	return do_bleed_knife_attack(Victim,Attacker,gHeroID,30,40,sh_user_has_hero(Attacker,gHeroID),_,_,_,1,the_hitpoint)
 
-
-
-	return ham_result
 
 	
 }
@@ -252,7 +245,7 @@ public sh_round_end(){
 }
 public weaponChange(id)
 {
-	if (!sh_is_active()||!is_user_alive(id)) return PLUGIN_CONTINUE
+	if (!sh_is_active()) return PLUGIN_CONTINUE
 	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new wpnid = get_user_weapon(id)
@@ -321,7 +314,7 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 }
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
     if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 

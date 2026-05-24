@@ -65,7 +65,7 @@ public plugin_precache(){
 }
 public on_Knife_Weapon_Change(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()) return
+	if ( !sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID)) return
 	if(Get_BitVar(g_zenitsu_is_charging_mask, id)&&!Get_BitVar(g_zenitsu_has_touched_player_mask, id)){
 		engclient_cmd(id, "weapon_knife")

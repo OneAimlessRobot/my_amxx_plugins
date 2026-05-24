@@ -7,7 +7,7 @@
 
 //By default, plugins have 4KB of stack space.
 //This gives the plugin a little more memory to work with (6144 or 24KB is sh default)
-#pragma dynamic (6144*8)
+#pragma dynamic (6144)
 
 //Sets the size of the memory table to hold data until the next save
 #define gMemoryTableSize 64
@@ -30,6 +30,8 @@ enum enumHeros { hero[25], superpower[50], help[128], requiresKeys,isCorePower, 
 // The Big Array that holds all of the heroes, superpowers, help, and other important info
 new gSuperHeros[SH_MAXHEROS][enumHeros]
 new gSuperHeroCount = 0
+
+
 
 // Changed these from CVARS to straight numbers...
 new gHeroMaxSpeed[SH_MAXHEROS]
@@ -2685,12 +2687,12 @@ public _sh_extra_damage()
 
 	new Float:flArmor = 0.0
 
-	static wpnDescription[32]
+	new wpnDescription[32]
 	get_string(4, wpnDescription, charsmax(wpnDescription))
 
 	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_param(5)
 	new mode = get_param(6)
-	new sh_extra_dmg_flags = get_param(7)
+	new sh_extra_damage_flags:sh_extra_dmg_flags = sh_extra_damage_flags:get_param(7)
 
 	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN)/*,
 		bool:dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);*/
@@ -2723,10 +2725,6 @@ public _sh_extra_damage()
 		server_print("Sh damage forward pre execute error.");
 	}
 	
-	if(abused_wpn_id!=custom_wpn_id){
-
-		xmod_get_wpnlogname(abused_wpn_id,wpnDescription,charsmax(wpnDescription))
-	}
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
 	new plrArmor = cs_get_user_armor(victim, armorType)
@@ -2766,6 +2764,7 @@ public _sh_extra_damage()
 	new CsTeams:attackerTeam = cs_get_user_team(attacker)
 	
 	if(the_dmg_return_value!=DMG_FWD_BLOCK){
+
 		if ( newHealth < 1 ) {
 			new bool:kill
 			new attackerFrags = get_user_frags(attacker)
@@ -2832,8 +2831,9 @@ public _sh_extra_damage()
 			gXrtaDmgClientKill = false
 
 			// Log the Kill
-			logKill(attacker, victim, wpnDescription,abused_wpn_id,damage_after,bodypart)
+			logKill(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,abused_wpn_id)
 			
+
 			// Make camera turn toward attacker on death, thx Emp`
 			set_pev(victim, pev_iuser3, attacker)
 
@@ -2914,7 +2914,8 @@ public _sh_extra_damage()
 				set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
 				ShowSyncHudMsg(victim, gMsgSync2, "%d", damage_after)
 			}
-
+			
+			
 			// External plugins might use this
 			// This should be set to the entity that caused the
 			// damage, but lets just set it to attacker for now
@@ -2953,7 +2954,8 @@ public _sh_extra_damage()
 			engfunc(EngFunc_WriteCoord, dmgOrigin[1])	// damageOrigin.y
 			engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 			message_end()
-			if (!ExecuteForward(fwd_ShDamagePost, 
+			
+			(!ExecuteForward(fwd_ShDamagePost, 
 							fwdReturn, 
 							victim,
 							attacker,
@@ -2965,41 +2967,15 @@ public _sh_extra_damage()
 							preparedWpnDmgOriginInt,
 							dmg_type,
 							thrashbrat_dmg_type,
-							abused_wpn_id)){
-				
-				server_print("Sh damage forward post execute error.");
-			}
-			else if(cvar_val(bool,sh_enable_custom_weapon_logging)){
-				/* I made this switchable.
-
-				It generates.
-				A
-				LOT
-				Of logs
-				Specially with victim and poison damage and such */
-				
-				logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart)
-			}
+							abused_wpn_id))?
+							
+			(server_print("Sh damage forward post execute error.")):
+			logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,abused_wpn_id)
 		}
 	}
 }
+
 /*
-
-repurposed from core to be used to log hits and not just kills!
-
-"Oh.. b- but thats bloat!
-Its...
-Its too much bloat!"
-
-Awww...
-Come on...
-Come tell momm--
-I mean daddy that sh-
-I mean she--
-I mean he is bad.
-Come on.
-Come tell me that I am bad ~
-
 This is the format:
 
 //L 05/22/2026 - 13:11:15: "Maria chupa-beatas<263><BOT><CT>" attacked "LoveBleedingBubble<265><BOT><TERRORIST>" with "deagle" (damage "117") (damage_armor "19") (health "-68") (armor "252")
@@ -3007,8 +2983,32 @@ This is the format:
 
 */
 
-logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hitpoint_enum:bodypart)
+logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hitpoint_enum:bodypart,wpnid)
 {
+	/* I made this switchable.
+
+		It generates.
+		A
+		LOT
+		Of logs
+		Specially with victim and poison damage and such 
+	*/
+		
+	
+	// Log This Hit
+	if(damage_after<=0){
+		return
+	}
+
+	if ( (id != victim) ) {
+
+		custom_weapon_shot(wpnid, id)
+		custom_weapon_dmg(wpnid, id, victim, damage_after, _:bodypart)
+	}
+	if(!cvar_val(bool,sh_enable_custom_weapon_logging)){
+
+		return
+	}
 	static namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
 	static armor, health
@@ -3026,13 +3026,7 @@ logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hi
 	health=get_user_health(victim)
 	armor=get_user_armor(victim)
 
-/*"^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
-			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, weaponDescription, damage_after, armor_damage,health,armor )
-	,
-*/
-	// Info on vitals and damage
-	// Log This Hit
-	if ( id != victim ) {
+	if ( (id != victim) ) {
 		log_message("^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
 			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
@@ -3042,11 +3036,7 @@ logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hi
 			namea, auserid, authida, teama, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
 	}
-
-	if((damage_after<=0)||(id==victim)){
-		
-		return
-	}
+	
 
 }
 //---------------------------------------------------------------------------------------------
@@ -3056,7 +3046,7 @@ public fm_AlertMessage(atype, const msg[])
 	 return gXrtaDmgClientKill ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 //---------------------------------------------------------------------------------------------
-logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,my_hitpoint_enum:bodypart)
+logKill(id, victim, const weaponDescription[32],damage_after,armor_damage,my_hitpoint_enum:the_hitpart,abused_weapon_id)
 {
 	static namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
@@ -3071,6 +3061,7 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,my_h
 	get_user_team(victim, teamv, charsmax(teamv))
 	get_user_authid(victim, authidv, charsmax(authidv))
 
+	logHit(id, victim, weaponDescription,damage_after, armor_damage,the_hitpart,abused_weapon_id)
 	// Log This Kill
 	if ( id != victim ) {
 		log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
@@ -3080,13 +3071,6 @@ logKill(id, victim, const weaponDescription[32],abused_wpn_id, damage_after,my_h
 		log_message("^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
 			namea, auserid, authida, teama, weaponDescription)
 	}
-
-	if((damage_after<=0)||(id==victim)){
-		
-		return
-	}
-	custom_weapon_shot(abused_wpn_id, id)
-	custom_weapon_dmg(abused_wpn_id, id, victim, damage_after, _:bodypart)
 
 }
 //----------------------------------------------------------------------------------------------

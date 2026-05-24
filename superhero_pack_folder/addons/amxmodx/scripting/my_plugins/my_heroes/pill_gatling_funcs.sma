@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -34,6 +35,9 @@ new g_guns_eventids_bitsum = 0
 // Sounds
 new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmod/yakui/hw_spinup.wav", "shmod/yakui/hw_spindown.wav"}
 
+
+new weapon_secret_code = -1
+
 new Float:windup_time
 new const g_guns_events[][] = {"events/m249.sc"}
 public plugin_init(){
@@ -60,6 +64,8 @@ public plugin_init(){
 	register_cvar("yakui_windup_time", "2.0")
 	register_think(PILL_CLASSNAME, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
+	
+	weapon_secret_code = allocate_weapon_secret_code()
 
 }
 
@@ -86,7 +92,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 	if (!hasRoundStarted()) return HAM_IGNORED;
 
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		return HAM_IGNORED
@@ -128,7 +134,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	if(pev_valid(Ent)!=2)
 		return
 		
-	new id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
+	static id; id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	if(!client_is_hero_user(id, gHeroID)){
 		return
 	}
@@ -162,7 +168,7 @@ public Item_PostFrame_Post(iEnt)
 	if(pev_valid(iEnt) != 2){
 		return HAM_IGNORED
 	}
-	new id = entity_get_edict(iEnt, EV_ENT_owner);
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
@@ -356,7 +362,8 @@ public fw_WeaponReloadPre(entity)
 {
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,pPlayer)){
 		
@@ -569,10 +576,11 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, pPlayer)){
 		
+		remove_weapon_secret_code(entity,weapon_secret_code)
 		return HAM_IGNORED
 	}
 
@@ -580,6 +588,7 @@ public fw_ItemDeployPre(entity)
 	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, PILL_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(PILLGATLING_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 

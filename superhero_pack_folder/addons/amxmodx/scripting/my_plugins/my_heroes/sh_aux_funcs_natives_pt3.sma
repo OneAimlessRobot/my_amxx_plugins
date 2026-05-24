@@ -105,7 +105,7 @@ public _explosion(iPlugins,iParams){
 		ignore_owner=get_param(6),
 		set_stun=get_param(7),
 		Float:damage_frac_ignore_owner=get_param_f(8),
-		sfx_mask=get_param(9),
+		explosion_sfx_flags:sfx_mask=explosion_sfx_flags:get_param(9),
 		sh_custom_color:fx_color=sh_custom_color:get_param(10)
 
 	new custom_sound_sample[128]
@@ -126,7 +126,7 @@ public _explosion(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(sfx_mask>0){
+	if(sfx_mask>sfx_show_nothing){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if((sfx_mask & sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -165,7 +165,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		Float:explosion_radius=get_param_f(2),
 		Float:peak_power=get_param_f(3),
 		Float:optional_force=get_param_f(5),
-		sfx_mask=get_param(6),
+		explosion_sfx_flags:sfx_mask= explosion_sfx_flags:get_param(6),
 		sh_custom_color:fx_color=sh_custom_color:get_param(7)
 
 	new custom_sound_sample[128]
@@ -185,7 +185,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(sfx_mask>0){
+	if(sfx_mask>sfx_show_nothing){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if((sfx_mask & sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -268,7 +268,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	else{
 		force=damage
 	}
-	static custom_weapon_dmg_name[128];
+	static custom_dmg_name[128];
 
 	if(!is_valid_custom_dmg_source(custom_weapon_id)){
 	
@@ -276,9 +276,9 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	}
 	
-	xmod_get_wpnname(custom_weapon_id,custom_weapon_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
+	xmod_get_wpnlogname(custom_weapon_id,custom_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
 	
-	sh_extra_damage(pid,owner_id,idamage,custom_weapon_dmg_name,
+	sh_extra_damage(pid,owner_id,idamage,custom_dmg_name,
 			_,_,_,_,_,
 			SH_NEW_DMG_FRAG_BLAST,
 			custom_weapon_id)

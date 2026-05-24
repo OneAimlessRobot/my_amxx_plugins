@@ -14,9 +14,13 @@
 #define MAX_HERO_NAME_LENGTH 256
 #define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
+//extra_damage_flags!
+enum sh_extra_damage_flags (<<= 1){
+	SH_EXTRA_DMG_FLAG_NONE = 0,
+	SH_EXTRA_DMG_FLAG_STUN = 1,
+	SH_EXTRA_DMG_FLAG_dmgFFmsg
 
-#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
-#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+}
 
 //Default includes used for shero
 
@@ -36,13 +40,6 @@
 
 #include "../my_heroes/sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
 
-/**
-
-
-#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
-#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
-
- */
 //----------------------------------------------------------------------------------------------
 // IMPORTANT FUNCTIONS - WHAT EVENTS CAN THE SUPERHEROES REGISTER FOR?
 //----------------------------------------------------------------------------------------------
@@ -52,11 +49,13 @@
  *        FORWARDS        *
  **************************/
 /**
-the flags:
+//extra_damage_flags!
+enum sh_extra_damage_flags (<<= 1){
+	SH_EXTRA_DMG_FLAG_NONE = 0,
+	SH_EXTRA_DMG_FLAG_STUN = 1,
+	SH_EXTRA_DMG_FLAG_dmgFFmsg
 
-#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
-#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
-
+}
  */
 forward sh_extra_damage_fwd_pre(
 			&victim, 
@@ -65,17 +64,19 @@ forward sh_extra_damage_fwd_pre(
 			wpnDescription[32], 
 			&my_hitpoint_enum:bodypart,
 			&dmgMode,
-			&sh_extra_dmg_flags,
+			&sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			&dmg_type,
 			&sh_thrash_brat_dmg_type:new_dmg_type,
 			&custom_wpn_id);
 /**
-the flags:
+//extra_damage_flags!
+enum sh_extra_damage_flags (<<= 1){
+	SH_EXTRA_DMG_FLAG_NONE = 0,
+	SH_EXTRA_DMG_FLAG_STUN = 1,
+	SH_EXTRA_DMG_FLAG_dmgFFmsg
 
-#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
-#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
-
+}
 
 return value is ignored
 parameters are immutable
@@ -87,7 +88,7 @@ forward sh_extra_damage_fwd_post(
 			wpnDescription[32], 
 			my_hitpoint_enum:bodypart,
 			dmgMode,
-			sh_extra_dmg_flags,
+			sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			dmg_type,
 			sh_thrash_brat_dmg_type:new_dmg_type,
@@ -470,10 +471,13 @@ native sh_reload_ammo(id, mode = 0);
  */
 
 /**
-the flags
+//extra_damage_flags!
+enum sh_extra_damage_flags (<<= 1){
+	SH_EXTRA_DMG_FLAG_NONE = 0,
+	SH_EXTRA_DMG_FLAG_STUN = 1,
+	SH_EXTRA_DMG_FLAG_dmgFFmsg
 
-#define SH_EXTRA_DMG_FLAG_STUN (1<<0)
-#define SH_EXTRA_DMG_FLAG_dmgFFmsg (1<<1)
+}
 
  */
 native sh_extra_damage(victim,
@@ -482,7 +486,7 @@ native sh_extra_damage(victim,
 				const wpnDescription[],
 				my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
 				dmgMode = SH_DMG_MULT,
-				sh_extra_damage_flags=0,
+				sh_extra_damage_flags:sh_extra_damage_flags=SH_EXTRA_DMG_FLAG_NONE,
 				const Float:dmgOrigin[3] = {0.0,0.0,0.0},
 				dmg_type=DMG_GENERIC,
 				sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,

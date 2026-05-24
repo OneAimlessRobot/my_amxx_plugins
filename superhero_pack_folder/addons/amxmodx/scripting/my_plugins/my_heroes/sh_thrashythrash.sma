@@ -10,15 +10,18 @@
 	thrashy_cooldown 30
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 
 
+#define THRASHER_WEAPON_ID CSW_AK47
 
 #define MAX_PICKED 1
 
@@ -61,7 +64,7 @@ public plugin_init()
 								"thrash",
 								"You are now the baddest bitch on earth!",
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
-	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,Model_Weapon_V,Model_Weapon_P)
+	sh_register_superheromod_weapon_model(gHeroID,THRASHER_WEAPON_ID,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "thrashy_damage", "b", "2!0")
@@ -70,8 +73,12 @@ public plugin_init()
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
 
-
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_AK47], "make_tracer",_,true)
+	register_ham_hook_multiple(Ham_TraceAttack,
+						full_entity_array_for_trace_attack,
+						length_of_trace_attack_entity_array,
+						"make_tracer",
+						1,
+						true)
 
 	shSetShieldRestrict(gHeroName)
 	sh_set_hero_hpap(gHeroID, healthcvar, 0)
@@ -124,14 +131,14 @@ public fw_CmdStart( id, uc_handle, seed )
 		new szClip, szAmmo
 		new szWeapID = get_user_weapon( id, szClip, szAmmo )
 		
-		if( szWeapID == CSW_AK47 && sh_user_has_hero(id,gHeroID) && !gHasThrashZoom[id] == true)
+		if( szWeapID == THRASHER_WEAPON_ID && sh_user_has_hero(id,gHeroID) && !gHasThrashZoom[id] == true)
 		{
 			gHasThrashZoom[id] = true
 			cs_set_user_zoom( id, CS_SET_AUGSG552_ZOOM, 0 )
 			emit_sound( id, CHAN_ITEM, "weapons/zoom.wav", 0.20, 2.40, 0, 100 )
 		}
 		
-		else if ( szWeapID == CSW_AK47 && sh_user_has_hero(id,gHeroID) && gHasThrashZoom[id])
+		else if ( szWeapID == THRASHER_WEAPON_ID && sh_user_has_hero(id,gHeroID) && gHasThrashZoom[id])
 		{
 			gHasThrashZoom[ id ] = false
 			cs_set_user_zoom( id, CS_RESET_ZOOM, 0 )
@@ -207,28 +214,10 @@ public sh_client_spawn(id)
 	}
 }
 
- //----------------------------------------------------------------------------------------------
-public make_tracer(entity)
-{
-	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
+public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
+	generic_weapon_tracer_logic(Attacker,_,THRASHER_WEAPON_ID,gHeroID,true,sh_custom_color:{PINK,PINK,PINK})
 
-
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
-
-	if(!client_is_hero_user(id, gHeroID)){
-		return HAM_IGNORED
-	}
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	draw_aim_vector(id,sh_custom_color:{PURPLE,PURPLE,PURPLE})
-
-	return HAM_IGNORED
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -239,7 +228,7 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 	new clip = read_data(3)
 
-	if ( wpnid != CSW_AK47)
+	if ( wpnid != THRASHER_WEAPON_ID)
 	{
 		return
 	}
@@ -253,7 +242,7 @@ public thrashy_weapons(id)
 {
 	
 	if ( is_user_alive(id) ) {
-		sh_give_weapon(id,CSW_AK47)
+		sh_give_weapon(id,THRASHER_WEAPON_ID)
 	}
 }
 public sh_client_death(id){
@@ -274,7 +263,7 @@ public thrashy_damage(id)
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(attacker,gHeroID)&&weapon == CSW_AK47 && is_user_alive(id)  )
+	if ( sh_user_has_hero(attacker,gHeroID)&&weapon == THRASHER_WEAPON_ID && is_user_alive(id)  )
 	{
 		new health = get_user_health(id)
 

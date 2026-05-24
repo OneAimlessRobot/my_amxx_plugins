@@ -19,7 +19,7 @@ new pCvarSeconds
 
 
 new dmg_source_name_short_painkiller_death[SAFE_BUFFER_SIZE+1]="painkiller"
-new dmg_source_name_long_painkiller_death[SAFE_BUFFER_SIZE+1]="painkiller_die"
+new dmg_source_name_log_painkiller_death[SAFE_BUFFER_SIZE+1]="painkiller_die"
 new custom_dmg_id_painkiller_death
 
 public plugin_init()
@@ -37,7 +37,7 @@ public plugin_init()
 	
 	custom_dmg_id_painkiller_death=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_painkiller_death,
-					dmg_source_name_long_painkiller_death,0)
+					dmg_source_name_log_painkiller_death,0)
 	
 	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage",_,true)
 }
@@ -89,7 +89,7 @@ public Painkiller_Death(id)
 	if ( is_user_connected(killer) )
 	{
 		sh_extra_damage(id, killer, get_user_health(id)+4,
-						dmg_source_name_long_painkiller_death,
+						dmg_source_name_log_painkiller_death,
 						MY_HIT_HEAD,
 						_,_,_,_,_,
 						custom_dmg_id_painkiller_death)

@@ -621,8 +621,8 @@ public _explode_fx(iPlugins, iParams){
 		radius=get_param(2),
 		sh_custom_color:fx_color=sh_custom_color:get_param(3),
 		alpha=get_param(4),
-		sfx_mask=get_param(5)
-	
+		explosion_sfx_flags:sfx_mask=explosion_sfx_flags:get_param(5)
+
 	get_array(1,vec1,3)
 
 	if((sfx_mask&sfx_show_shockwave)){

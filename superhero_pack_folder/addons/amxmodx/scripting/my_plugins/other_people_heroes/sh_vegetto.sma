@@ -811,7 +811,7 @@ public ssj_boost(id){
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || !sh_is_inround() ) return
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !sh_is_inround() ) return
 	if ( !g_isSaiyanLevel[id] || g_inStun[id] ) return
 
 	new wpnid = read_data(2)

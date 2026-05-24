@@ -34,7 +34,7 @@ public plugin_init()
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 
 	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
-	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",0,true)
+	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,
 			CHIKOI_THE_MAID_PHYSICAL_PROPERTY ,
@@ -44,14 +44,13 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("sh_player_has_chikoi","_sh_player_has_chikoi",0)
+	register_native("chikoi_get_hero_id","_chikoi_get_hero_id",0)
 
 }
 
-public _sh_player_has_chikoi(iPlugin, iParams){
+public _chikoi_get_hero_id(iPlugin, iParams){
 
-	new id=get_param(1)
-	return sh_user_has_hero(id,gHeroID)
+	return gHeroID
 }
 //----------------------------------------------------------------------------------------------
 public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
@@ -123,7 +122,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

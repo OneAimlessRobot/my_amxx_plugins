@@ -18,11 +18,11 @@
 
 new M4Swat_weapon_id
 new dmg_source_name_short_M4Swat[SAFE_BUFFER_SIZE+1]="M4Swat"
-new dmg_source_name_long_M4Swat[SAFE_BUFFER_SIZE+1]="M4Swat"
+new dmg_source_name_log_M4Swat[SAFE_BUFFER_SIZE+1]="M4Swat"
 
 new tactical_knife_weapon_id
 new dmg_source_name_short_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
-new dmg_source_name_long_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
+new dmg_source_name_log_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
 
 
 new gHeroName[]="S.W.A.T."
@@ -69,13 +69,13 @@ public plugin_init()
 	M4Swat_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_M4Swat,
-								dmg_source_name_long_M4Swat,
+								dmg_source_name_log_M4Swat,
 								0)
 
 	tactical_knife_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_tactical_knife,
-								dmg_source_name_long_tactical_knife,
+								dmg_source_name_log_tactical_knife,
 								1)
 								
 	register_entity_as_wall_touchable("ICBM_missile","nuke_hit")
@@ -155,7 +155,7 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 		new Float:extraDamage = Damage * get_cvar_float("swat_m4a1mult") - Damage
 		if (extraDamage > 0){
 			
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_short_M4Swat,
+			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_log_M4Swat,
 											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
@@ -166,7 +166,7 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(Victim) ){
 		new Float:extraDamage =  Damage *  get_cvar_float("swat_knifemult") - Damage
 		if(extraDamage > 0){
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_short_tactical_knife,
+			sh_extra_damage(Victim, Attacker, floatround(extraDamage), dmg_source_name_log_tactical_knife,
 											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_BLEED,
@@ -392,7 +392,7 @@ public sh_round_start(){
 }
 //----------------------------------------------------------------------------------------------
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)||(victim==attacker)){
 	
 		return DMG_FWD_PASS

@@ -29,16 +29,16 @@ stock curr_player_sound[SH_MAXSLOTS+1]
 
 
 stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
-    dmg_source_name_long_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avenger",
+    dmg_source_name_log_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avenger",
     custom_dmg_id_senpai_avenger,
     
     dmg_source_name_short_drain[SAFE_BUFFER_SIZE+1]="slowburn",
-    dmg_source_name_long_drain[SAFE_BUFFER_SIZE+1]="slowburn",
+    dmg_source_name_log_drain[SAFE_BUFFER_SIZE+1]="slowburn",
     custom_dmg_id_drain,
 
 
     dmg_source_name_short_rage[SAFE_BUFFER_SIZE+1]="manic_rage",
-    dmg_source_name_long_rage[SAFE_BUFFER_SIZE+1]="manic_rage",
+    dmg_source_name_log_rage[SAFE_BUFFER_SIZE+1]="manic_rage",
     custom_dmg_id_rage
 
 

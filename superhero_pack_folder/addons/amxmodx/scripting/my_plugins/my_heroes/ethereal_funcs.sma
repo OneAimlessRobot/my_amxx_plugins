@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -10,13 +11,11 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
-const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_AUG)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_GALIL)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
-const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN)|(1<<CSW_USP)|(1<<CSW_GLOCK18)|(1<<CSW_DEAGLE)
-
 new g_Had_Ethereal, g_Ethereal_Clip[33], Float:g_Recoil[33][3]
-new g_Event_Ethereal, g_Msg_WeaponList, g_SmokePuff_SprId, g_ham_bot, g_Beam_SprID
+new g_Event_Ethereal, g_SmokePuff_SprId, g_ham_bot, g_Beam_SprID
 new g_Muzzleflash_Ent, g_Muzzleflash
+
+new weapon_secret_code = ETHEREAL_SECRET_CODE
 
 public plugin_init()
 {
@@ -43,8 +42,9 @@ public plugin_init()
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
-	
-	g_Msg_WeaponList = get_user_msgid("WeaponList")
+
+	weapon_secret_code = allocate_weapon_secret_code()
+
 	register_clcmd(weapon_names_stock_arr[CSW_ETHEREAL], "Hook_Weapon")
 }
 
@@ -60,9 +60,9 @@ public plugin_natives(){
 
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel, V_MODEL)
-	engfunc(EngFunc_PrecacheModel, P_MODEL)
-	engfunc(EngFunc_PrecacheModel, W_MODEL)
+	engfunc(EngFunc_PrecacheModel, ETHEREAL_V_MODEL)
+	engfunc(EngFunc_PrecacheModel, ETHEREAL_P_MODEL)
+	engfunc(EngFunc_PrecacheModel, ETHEREAL_W_MODEL)
 	
 	new i
 	for(i = 0; i < sizeof(Ethereal_Sounds); i++)
@@ -128,13 +128,14 @@ public Get_Ethereal(id)
 	Set_BitVar(g_Had_Ethereal, id)
 	fm_give_item(id, weapon_names_stock_arr[CSW_ETHEREAL])
 	
-	Give_RealAmmo(id, CSW_ETHEREAL)
+	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
+	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, ETHEREAL_CLIP)
 	
-	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), {0, 0, 0}, id)
-	write_byte(1)
-	write_byte(CSW_ETHEREAL)
-	write_byte(30)
-	message_end()
+	// Set BpAmmo
+	cs_set_user_bpammo(id, CSW_ETHEREAL, ETHEREAL_RESERVE)
+	// Update Ammo
+	update_ammo(id, CSW_ETHEREAL, ETHEREAL_CLIP, ETHEREAL_RESERVE)
+	
 }
 
 public Remove_Ethereal(id)
@@ -151,8 +152,8 @@ public Event_CurWeapon(id)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(!pev_valid(Ent)) return
 	
-	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * SPEED
-	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * SPEED
+	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * ETHEREAL_SPEED
+	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * ETHEREAL_SPEED
 	
 	if(Delay > 0.0)
 	{
@@ -215,8 +216,8 @@ public fw_SetModel(entity, model[])
 		{
 			Remove_Ethereal(iOwner)
 			
-			set_pev(weapon, pev_impulse, 1712015)
-			engfunc(EngFunc_SetModel, entity, W_MODEL)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
+			engfunc(EngFunc_SetModel, entity, ETHEREAL_W_MODEL)
 			
 			return FMRES_SUPERCEDE
 		}
@@ -322,7 +323,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		entity_get_vector(id, EV_VEC_punchangle, Push)
 		xs_vec_sub(Push, g_Recoil[id], Push)
 		
-		xs_vec_mul_scalar(Push, RECOIL, Push)
+		xs_vec_mul_scalar(Push, ETHEREAL_RECOIL, Push)
 		xs_vec_add(Push, g_Recoil[id], Push)
 		
 		entity_set_vector(id, EV_VEC_punchangle,Push)
@@ -351,7 +352,7 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 		native_playanim(Id, E_ANIM_IDLE)
 		
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
-		set_pdata_string(Id, (m_szAnimExtention) * 4, PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER* 4)
+		set_pdata_string(Id, (m_szAnimExtention) * 4, ETHEREAL_PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER* 4)
 	}
 	
 	return HAM_IGNORED	
@@ -372,34 +373,22 @@ public fw_Item_Deploy_Post(Ent)
 	if(!Get_BitVar(g_Had_Ethereal, Id))
 		return
 	
-	set_pev(Id, pev_viewmodel2, V_MODEL)
-	set_pev(Id, pev_weaponmodel2, P_MODEL)
+	set_pev(Id, pev_viewmodel2, ETHEREAL_V_MODEL)
+	set_pev(Id, pev_weaponmodel2, ETHEREAL_P_MODEL)
 	
 	native_playanim(Id, E_ANIM_DRAW)
 }
 
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
-	if(!pev_valid(Ent))
-		return HAM_IGNORED
+	ent_check(Ent,HAM_IGNORED)
 		
-	if(pev(Ent, pev_impulse) == 1712015)
+	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Ethereal, id)
 		set_pev(Ent, pev_impulse, 0)
-	}		
 	
-	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
-	write_string(weapon_names_stock_arr[CSW_ETHEREAL])
-	write_byte(4) // PrimaryAmmoID
-	write_byte(90) // PrimaryAmmoMaxAmount
-	write_byte(-1) // SecondaryAmmoID
-	write_byte(-1) // SecondaryAmmoMaxAmount
-	write_byte(0) // SlotID (0...N)
-	write_byte(6) // NumberInSlot (1...N)
-	write_byte(Get_BitVar(g_Had_Ethereal, id) ? CSW_ETHEREAL : CSW_M4A1) // WeaponID
-	write_byte(0) // Flags
-	message_end()
+	}		
 
 	return HAM_HANDLED	
 }
@@ -425,7 +414,7 @@ public fw_Item_PostFrame(ent)
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
-		temp1 = min(CLIP - iClip, bpammo)
+		temp1 = min(ETHEREAL_CLIP - iClip, bpammo)
 
 		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
 		cs_set_user_bpammo(id, CSW_ETHEREAL, bpammo - temp1)		
@@ -456,7 +445,7 @@ public fw_Weapon_Reload(ent)
 		
 	if(BPAmmo <= 0)
 		return HAM_SUPERCEDE
-	if(iClip >= CLIP)
+	if(iClip >= ETHEREAL_CLIP)
 		return HAM_SUPERCEDE		
 			
 	g_Ethereal_Clip[id] = iClip	
@@ -500,7 +489,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 	Make_LaserLine(Attacker, flEnd)
 	Make_BulletSmoke(Attacker, Ptr)
 
-	SetHamParamFloat(3, float(DAMAGE))
+	SetHamParamFloat(3, float(ETHEREAL_DAMAGE))
 	
 	return HAM_IGNORED
 }
@@ -516,7 +505,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(get_user_weapon(Attacker) != CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, Attacker))
 		return HAM_IGNORED
 		
-	SetHamParamFloat(3, float(DAMAGE))
+	SetHamParamFloat(3, float(ETHEREAL_DAMAGE))
 	
 	return HAM_IGNORED
 }
@@ -543,76 +532,6 @@ public Make_LaserLine(id, Float:Origin[3])
 	message_end()
 }
 
-public Give_RealAmmo(id, CSWID)
-{
-	static Amount, Max
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 10; Max = 104;}
-		case CSW_SCOUT: {Amount = 6; Max = 180;}
-		case CSW_XM1014: {Amount = 8; Max = 64;}
-		case CSW_MAC10: {Amount = 16; Max = 200;}
-		case CSW_AUG: {Amount = 6; Max = 180;}
-		case CSW_ELITE: {Amount = 16; Max = 200;}
-		case CSW_FIVESEVEN: {Amount = 4; Max = 200;}
-		case CSW_UMP45: {Amount = 16; Max = 200;}
-		case CSW_SG550: {Amount = 6; Max = 180;}
-		case CSW_GALIL: {Amount = 6; Max = 180;}
-		case CSW_FAMAS: {Amount = 6; Max = 180;}
-		case CSW_USP: {Amount = 18; Max = 200;}
-		case CSW_GLOCK18: {Amount = 16; Max = 200;}
-		case CSW_AWP: {Amount = 6; Max = 60;}
-		case CSW_MP5NAVY: {Amount = 16; Max = 200;}
-		case CSW_M249: {Amount = 4; Max = 200;}
-		case CSW_M3: {Amount = 8; Max = 64;}
-		case CSW_M4A1: {Amount = 7; Max = 180;}
-		case CSW_TMP: {Amount = 7; Max = 200;}
-		case CSW_G3SG1: {Amount = 7; Max = 180;}
-		case CSW_DEAGLE: {Amount = 10; Max = 70;}
-		case CSW_SG552: {Amount = 7; Max = 180;}
-		case CSW_AK47: {Amount = 7; Max = 180;}
-		case CSW_P90: {Amount = 4; Max = 200;}
-		default: {Amount = 3; Max = 200;}
-	}
-
-	for(new i = 0; i < Amount; i++) give_ammo(id, 0, CSWID, Max)
-}
-
-public give_ammo(id, silent, CSWID, Max)
-{
-	static Amount, Name[32]
-		
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 13; formatex(Name, sizeof(Name), "357sig");}
-		case CSW_SCOUT: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_XM1014: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_MAC10: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_AUG: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_ELITE: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_FIVESEVEN: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-		case CSW_UMP45: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_SG550: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_GALIL: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_FAMAS: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_USP: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_GLOCK18: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_AWP: {Amount = 10; formatex(Name, sizeof(Name), "338magnum");}
-		case CSW_MP5NAVY: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_M249: {Amount = 30; formatex(Name, sizeof(Name), "556natobox");}
-		case CSW_M3: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_M4A1: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_TMP: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_G3SG1: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_DEAGLE: {Amount = 7; formatex(Name, sizeof(Name), "50ae");}
-		case CSW_SG552: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_AK47: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_P90: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-	}
-	
-	if(!silent) emit_sound(id, CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
-}
 
 // Drop primary/secondary weapons
 stock drop_weapons(id, dropwhat)

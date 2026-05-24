@@ -34,7 +34,7 @@ new CvarM4A1DmgMult
 
 
 new dmg_source_name_short_ninja_m4[SAFE_BUFFER_SIZE+1]="M4A1"
-new dmg_source_name_long_ninja_m4[SAFE_BUFFER_SIZE+1]="M4A1"
+new dmg_source_name_log_ninja_m4[SAFE_BUFFER_SIZE+1]="M4A1"
 new custom_dmg_id_ninja_m4
 
 //----------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ public plugin_init()
 						"models/shmod/v_halounem4a1.mdl",
 						"models/shmod/p_halounem4a1.mdl")
 	custom_dmg_id_ninja_m4=sh_log_custom_damage_source(gHeroID,
-				dmg_source_name_short_ninja_m4,dmg_source_name_long_ninja_m4,0)
+				dmg_source_name_short_ninja_m4,dmg_source_name_log_ninja_m4,0)
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
 	register_event("Damage", "Haloune_damage", "b", "2!0")
@@ -150,7 +150,7 @@ public Haloune_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarM4A1DmgMult) - damage)
 		if ( extraDamage > 0 ){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_ninja_m4,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_ninja_m4,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

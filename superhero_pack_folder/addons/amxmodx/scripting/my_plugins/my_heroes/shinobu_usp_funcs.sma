@@ -16,11 +16,14 @@ new gHeroID = -1
 #include "../my_include/my_author_header.inc"
 
 
-new g_shinobu_curr_ammo[SH_MAXSLOTS+1]
-
+new g_shinobu_curr_ammo[SH_MAXSLOTS+1],
+	g_shinobu_old_acp_ammo[SH_MAXSLOTS+1],
+	g_shinobu_curr_acp_ammo[SH_MAXSLOTS+1],
+	g_prev_weapon[SH_MAXSLOTS+1],
+	g_curr_weapon[SH_MAXSLOTS+1]
 
 new dmg_source_name_short_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
-new dmg_source_name_long_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
+new dmg_source_name_log_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
 new custom_weapon_shinobu_pistol
 
 public plugin_init(){
@@ -32,6 +35,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[SHINOBU_WEAPON_CLASSID], "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
+	register_event("AmmoX", "acp_ammo_handling", "be", "1=1")
 	
     
 	
@@ -43,7 +47,7 @@ public plugin_cfg(){
 	custom_weapon_shinobu_pistol=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_shinobu_pistol,
-								dmg_source_name_long_shinobu_pistol,
+								dmg_source_name_log_shinobu_pistol,
 								0)
 }
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
@@ -116,18 +120,30 @@ public _shinobu_unweapons(iPlugins, iParam){
 	}
 }
 
+/*
+ump uses same ammo pool as usp
 
+Fortunately the bug is easy to understand.
+lets fix it
+
+*/
+public acp_ammo_handling(id){
+
+
+
+	
+}
 public on_Usp_Weapon_Change(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()) return
+	if (!sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID)) return
 
-	new  wpnid = get_user_weapon(id)
 
-	if(wpnid==SHINOBU_WEAPON_CLASSID){
-		if(cs_get_user_bpammo(id,SHINOBU_WEAPON_CLASSID)>g_shinobu_curr_ammo[id]){
-			cs_set_user_bpammo(id,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[id])
-		}
+	g_prev_weapon[id] = g_curr_weapon[id]
+	g_curr_weapon[id] = read_data(2)
+	
+	if(cs_get_user_bpammo(id,SHINOBU_WEAPON_CLASSID)>g_shinobu_curr_ammo[id]){
+		cs_set_user_bpammo(id,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[id])
 	}
 
 }
@@ -200,7 +216,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 			g_shinobu_curr_ammo[idattacker] = min(g_shinobu_curr_ammo[idattacker],MAX_AMMO)
 			cs_set_user_bpammo(idattacker,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[idattacker])
 			
-			sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_long_shinobu_pistol,
+			sh_extra_damage( this, idattacker, floatround(damage), dmg_source_name_log_shinobu_pistol,
 								my_hitpoint_enum:hitzone,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

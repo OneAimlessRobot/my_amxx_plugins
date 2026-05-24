@@ -13,6 +13,7 @@
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -100,28 +101,34 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	RegisterHam(Ham_TraceAttack,"player","Yandere_ham_trace_damage",_,true)
+
+	register_ham_hook_multiple(Ham_TraceAttack,
+						full_entity_array_for_trace_attack,
+						length_of_trace_attack_entity_array,
+						"Yandere_Fire_Weapon",
+						1,
+						true)
+	
+
 	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
 
 	custom_dmg_id_senpai_avenger=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_senpai_avenger,
-								dmg_source_name_long_senpai_avenger,
+								dmg_source_name_log_senpai_avenger,
 								0)
 
 	custom_dmg_id_drain=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_drain,
-								dmg_source_name_long_drain,
+								dmg_source_name_log_drain,
 								0)
 
 	custom_dmg_id_rage=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_rage,
-								dmg_source_name_long_rage,
+								dmg_source_name_log_rage,
 								0)
-	
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Yandere_Fire_Weapon",1, true, false)
-
 
 	set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", _, _, _, "b")
 
@@ -174,10 +181,6 @@ public yandere_angry_idle_checks(id, uc_handle){
 }
 public Yandere_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if(Damage<=0.0){
-		return HAM_IGNORED
-	}
-
 	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
 
 		return HAM_IGNORED
@@ -185,12 +188,9 @@ public Yandere_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	new ham_result=do_bleed_knife_attack(Victim,Attacker,gHeroID,15,65,
+	return do_bleed_knife_attack(Victim,Attacker,gHeroID,15,65,
 				sh_user_has_hero(Attacker,gHeroID) && Get_BitVar(gSuperAngryMask,Attacker),_,_,_,_,the_hitpoint)
 
-
-
-	return ham_result
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -492,14 +492,14 @@ public yandere_damage(id)
 		if (floatround(extraDamage) > 0.0){
 			
 			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
-				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_senpai_avenger,
+				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_log_senpai_avenger,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_senpai_avenger)
 			}
 			else {
-				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_short_rage,
+				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_log_rage,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
@@ -697,33 +697,12 @@ public sh_round_end(){
 	}
 }
 
-public Yandere_Fire_Weapon(entity)
+public Yandere_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-
-	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
-
-
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
-	
-	if(!client_is_hero_user(id, gHeroID)){
-		return HAM_IGNORED
-	}
-	if(!Get_BitVar(gSuperAngryMask,id)){
-		return HAM_IGNORED
-	}
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	draw_aim_vector(id,sh_custom_color:{RED,RED,RED})
-
-	return HAM_IGNORED
+	generic_weapon_tracer_logic(Attacker,bool:Get_BitVar(gSuperAngryMask,Attacker),_,gHeroID,true,sh_custom_color:{RED,RED,RED})
 
 }
+
 killyandere(id,bool:dropping=false){
 	
 	if(!is_user_connected(id)||!sh_is_active()) return
@@ -774,7 +753,7 @@ public BlowUp(id)
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()) return
+	if (!sh_is_active()) return
 	if(!sh_user_has_hero(id,gHeroID) ) return
 
 	new  wpnid = get_user_weapon(id)

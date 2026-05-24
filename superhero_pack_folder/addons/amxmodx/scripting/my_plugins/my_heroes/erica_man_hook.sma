@@ -41,7 +41,7 @@ new hook_drag_speed_pcvar
 
 
 new dmg_source_name_short_gutting[SAFE_BUFFER_SIZE+1]="gutting"
-new dmg_source_name_long_gutting[SAFE_BUFFER_SIZE+1]="gutting"
+new dmg_source_name_log_gutting[SAFE_BUFFER_SIZE+1]="gutting"
 new custom_dmg_id_gutting
 
 //stock HOOK_TASKID
@@ -97,7 +97,7 @@ public plugin_cfg(){
 
 	custom_dmg_id_gutting=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_gutting,
-					dmg_source_name_long_gutting,
+					dmg_source_name_log_gutting,
 					1)
 }
 //----------------------------------------------------------------------------------------------
@@ -417,7 +417,7 @@ if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_val
 					get_user_name(id,vic_name,127)
 						
 					sh_extra_damage(target,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
-								dmg_source_name_long_gutting,MY_HIT_HEAD
+								dmg_source_name_log_gutting,MY_HIT_HEAD
 								,_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								custom_dmg_id_gutting)

@@ -110,7 +110,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 
 public weapon_event(id)
 {
-	if(is_user_connected(id) && sh_is_active())
+	if(sh_is_active())
 	{
 		new weaponid = read_data(2)
 

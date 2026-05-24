@@ -31,12 +31,13 @@ new gHeroName[]="ksun"
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new gHeroID
+new gHeroID_chikoi = -1
 
 
 //cvar_val(float, pcvar_
 
 new dmg_source_name_short_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
-new dmg_source_name_long_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
+new dmg_source_name_log_ksun_debt[SAFE_BUFFER_SIZE+1]="ksun_debt"
 new custom_dmg_id_ksun_debt
 
 //----------------------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ public plugin_init()
 	
 	custom_dmg_id_ksun_debt=
 		sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ksun_debt,
-								dmg_source_name_long_ksun_debt,0)
+								dmg_source_name_log_ksun_debt,0)
 
 	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_debt",1,true)
 	RegisterHam(Ham_TraceAttack,"player","ksun_physical_body",_,true)
@@ -104,7 +105,10 @@ public plugin_natives(){
 	
 	
 }
+public plugin_cfg(){
 
+	gHeroID_chikoi = chikoi_get_hero_id()
+}
 stock covert_spike_damage(id){
 	for(new payer=1;payer< sh_maxplayers()+1;payer++){
 
@@ -242,7 +246,7 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_IGNORED;
 
 	}
-	if(sh_player_has_chikoi(id)){
+	if(sh_user_has_hero(id,gHeroID_chikoi)){
 
 		return HAM_IGNORED;
 
@@ -551,7 +555,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

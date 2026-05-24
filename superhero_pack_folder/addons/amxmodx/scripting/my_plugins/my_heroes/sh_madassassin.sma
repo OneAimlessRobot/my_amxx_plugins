@@ -127,7 +127,7 @@ madassassin_weapons(id)
 #endif
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)  || !is_user_alive(id) ||!is_user_connected(id) )
+	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
 		return
 
 	//weaponID = read_data(2)

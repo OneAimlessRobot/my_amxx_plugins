@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -57,15 +58,15 @@ new pcvar_moralizing_pan_xp_get_mult;
 
 new moralizing_ray_wpn_id
 new dmg_source_name_short_moralizing_ray[SAFE_BUFFER_SIZE+1]="moralizing_ray"
-new dmg_source_name_long_moralizing_ray[SAFE_BUFFER_SIZE+1]="ester_moralizer"
+new dmg_source_name_log_moralizing_ray[SAFE_BUFFER_SIZE+1]="ester_moralizer"
 
 new adulting_pan_wpn_id
 new dmg_source_name_short_adulting_pan[SAFE_BUFFER_SIZE+1]="the_pan_tm"
-new dmg_source_name_long_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
+new dmg_source_name_log_adulting_pan[SAFE_BUFFER_SIZE+1]="ester_adulter"
 
 new neuroblast_wpn_id
 new dmg_source_name_short_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
-new dmg_source_name_long_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
+new dmg_source_name_log_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
 
 
 //----------------------------------------------------------------------------------------------
@@ -115,9 +116,13 @@ public plugin_init()
 	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[MORALIZER_WEAPON_ID], "fire_weapon",_,true)
-	
+	register_ham_hook_multiple(Ham_TraceAttack,
+						full_entity_array_for_trace_attack,
+						length_of_trace_attack_entity_array,
+						"ester_moralizer_ray_laser",
+						1,
+						true)
+
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor",_, true)
 
 	init_explosion_defaults()
@@ -126,19 +131,19 @@ public plugin_init()
 	adulting_pan_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_adulting_pan,
-								dmg_source_name_long_adulting_pan,
+								dmg_source_name_log_adulting_pan,
 								1)
 
 	moralizing_ray_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_moralizing_ray,
-								dmg_source_name_long_moralizing_ray,
+								dmg_source_name_log_moralizing_ray,
 								0)
 								
 	neuroblast_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_neuroblast,
-								dmg_source_name_long_neuroblast,
+								dmg_source_name_log_neuroblast,
 								0)
 	
 }
@@ -266,7 +271,7 @@ stock count_enemies(id){
 
 public weaponChange(id)
 {
-	if ( !is_user_alive(id)||!sh_is_active()){
+	if ( !sh_is_active()){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -389,7 +394,7 @@ public Ester_revenge_loop(id)
 							if(!is_user_bot(i)){
 								sh_chat_message(i,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
 							}
-							sh_extra_damage(i,i,1, dmg_source_name_short_neuroblast,
+							sh_extra_damage(i,i,1, dmg_source_name_log_neuroblast,
 											MY_HIT_HEAD,
 											SH_DMG_KILL,
 											_,_,_,
@@ -398,7 +403,7 @@ public Ester_revenge_loop(id)
 							continue;
 						}
 						sh_extra_damage(i,i,cvar_val(num,pcvar_power_cost), 
-										dmg_source_name_short_neuroblast,
+										dmg_source_name_log_neuroblast,
 										MY_HIT_HEAD,
 										_,_,_,_,
 										SH_NEW_DMG_ENERGY_BLAST,
@@ -469,7 +474,7 @@ public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
-	sh_extra_damage(x, id,gEsterDmg[id], dmg_source_name_short_neuroblast,
+	sh_extra_damage(x, id,gEsterDmg[id], dmg_source_name_log_neuroblast,
 									MY_HIT_HEAD,
 									_,_,_,_,
 									SH_NEW_DMG_ENERGY_BLAST,
@@ -538,28 +543,9 @@ public ester_damage(id)
 	}
 }
 
-public fire_weapon(entity)
+public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-
-	if(pev_valid(entity)!=2)
-		return HAM_IGNORED
-
-
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
-	
-	if(!client_is_hero_user(id, gHeroID)){
-		return HAM_IGNORED
-	}
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	draw_aim_vector(id,sh_custom_color:{GREEN,GREEN,GREEN})
-
-	return HAM_IGNORED
+	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,true,sh_custom_color:{GREEN,GREEN,GREEN})
 
 }
 
@@ -570,7 +556,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	}
 	
 	if(!is_user_alive(attacker)||!is_user_alive(id)){
-		return HAM_IGNORED	
+		return HAM_IGNORED
 	}
 	new hitgroup=get_tr2(Ptr,TR_iHitgroup)
 	new headshot=(hitgroup==1)

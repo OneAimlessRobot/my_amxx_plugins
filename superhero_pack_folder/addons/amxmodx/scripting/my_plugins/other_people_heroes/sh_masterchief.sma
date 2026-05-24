@@ -13,7 +13,7 @@ new CvarP90DmgMult
 #define Model_P_P90 "models/shmod/masterchief_p_p90.mdl"
 
 new dmg_source_name_short_mjolnir_rifle[SAFE_BUFFER_SIZE+1]="mjolnir_rifle"
-new dmg_source_name_long_mjolnir_rifle[SAFE_BUFFER_SIZE+1]="mjolnir_rifle"
+new dmg_source_name_log_mjolnir_rifle[SAFE_BUFFER_SIZE+1]="mjolnir_rifle"
 new custom_dmg_id_mjolnir_rifle
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -41,7 +41,7 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_P90,Model_V_P90,Model_P_P90)
 
 	custom_dmg_id_mjolnir_rifle=sh_log_custom_damage_source(gHeroID,
-				dmg_source_name_short_mjolnir_rifle,dmg_source_name_long_mjolnir_rifle,0)
+				dmg_source_name_short_mjolnir_rifle,dmg_source_name_log_mjolnir_rifle,0)
 	
 	// EVENTS
 	register_event("Damage", "masterchief_damage", "b", "2!0")
@@ -125,7 +125,7 @@ public masterchief_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarP90DmgMult) - damage)
 		if ( extraDamage > 0 ){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_mjolnir_rifle,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_mjolnir_rifle,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

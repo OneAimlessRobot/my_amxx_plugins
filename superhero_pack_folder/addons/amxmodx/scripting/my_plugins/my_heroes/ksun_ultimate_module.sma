@@ -1,10 +1,12 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
@@ -27,7 +29,7 @@ new g_played_sound_mask = 0
 new g_player_in_ultimate_mask = 0
 
 new dmg_source_name_short_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
-new dmg_source_name_long_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
+new dmg_source_name_log_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
 new custom_dmg_id_r5
 
 
@@ -49,8 +51,14 @@ public plugin_init()
 	pcvar_ksun_dmg_mult_super_weapon = register_cvar("ksun_dmg_mult_super_weapon","0.25")
 
 	RegisterHam(Ham_TraceAttack, "player", "ksun_trace_attack_damage_hook",_,true)
-
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,(1<<KSUN_WEAPON_ID),"ksun_rifle_laser",_, true, false)
+	
+	register_ham_hook_multiple(Ham_TraceAttack,
+						full_entity_array_for_trace_attack,
+						length_of_trace_attack_entity_array,
+						"ksun_rifle_laser",
+						1,
+						true)
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,(1<<KSUN_WEAPON_ID),"ksun_rifle_fast_shot",_, true, false)
 
 	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
 	
@@ -83,7 +91,7 @@ public plugin_natives(){
 public plugin_cfg(){
 
 	gHeroID = spores_ksun_hero_id()
-	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_long_r5,0)
+	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_log_r5,0)
 	
 }
 public Item_PostFrame_Post(iEnt)
@@ -134,7 +142,7 @@ if(attacker_has_hero&&Get_BitVar(g_player_in_ultimate_mask, Attacker)){
 		new Float:dmgAdded= Damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
 		new Float:newDamage=Damage+ dmgAdded
 		sh_extra_damage(Victim,Attacker,floatround(newDamage),
-			dmg_source_name_long_r5,
+			dmg_source_name_log_r5,
 			the_hitpoint,
 			_,_,_,_,
 			SH_NEW_DMG_DARK_ARTS,
@@ -299,14 +307,25 @@ public _ksun_player_is_ultimate_ready(iPlugins, iParams){
 	
 }
 
-public ksun_rifle_laser(entity)
+public ksun_rifle_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{
+	new bool:the_bool_to_use=bool:Get_BitVar(g_player_in_ultimate_mask, Attacker);
+		
+	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE})
+	
+
+	if(the_result){
+		emit_sound(Attacker,CHAN_BODY,SPORE_PREPARE_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+	}
+}
+public ksun_rifle_fast_shot(entity)
 {
 
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 
 
-	new id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
+	static id; id = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 
 	if(!client_is_hero_user(id, gHeroID)){
 		return HAM_IGNORED
@@ -315,20 +334,11 @@ public ksun_rifle_laser(entity)
 		return HAM_IGNORED
 	}
 
-	new iClip= get_pdata_int(entity,m_iClip,XO_WEAPON)
-
-	if(iClip<=0){
-
-		return HAM_SUPERCEDE
-
-	}
-	draw_aim_vector(id,sh_custom_color:{PURPLE,PURPLE,PURPLE})
-	emit_sound(entity,CHAN_WEAPON,SPORE_PREPARE_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
 	return do_fast_shot(entity,cvar_val(float, pcvar_ksun_ultimate_fire_rate_mult))
 
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){
 	

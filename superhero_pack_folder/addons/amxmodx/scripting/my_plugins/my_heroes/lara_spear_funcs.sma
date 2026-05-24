@@ -234,7 +234,7 @@ public Ham_Weapon_Stab(weapon_ent)
 	}
 	if ( !sh_is_active() ) return HAM_IGNORED
 
-	new owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
+	static owner; owner = get_pdata_cbase(weapon_ent, m_pPlayer,XO_WEAPON)
 	if(!client_is_hero_user(owner, gHeroID)){
 		
 		return HAM_IGNORED

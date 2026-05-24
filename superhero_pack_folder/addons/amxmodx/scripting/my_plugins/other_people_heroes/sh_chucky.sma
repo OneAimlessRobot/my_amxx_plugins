@@ -69,7 +69,7 @@ new gHeroID
 
 
 new dmg_source_name_short_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"
-new dmg_source_name_long_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"
+new dmg_source_name_log_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"
 new custom_dmg_id_super_knife
 
 //----------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ public plugin_init()
 	
 	custom_dmg_id_super_knife=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_super_knife,
-					dmg_source_name_long_super_knife,1)
+					dmg_source_name_log_super_knife,1)
 
 
 	// EVENTS
@@ -192,7 +192,7 @@ public chucky_damage(id)
 
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_long_super_knife,
+						dmg_source_name_log_super_knife,
 						my_hitpoint_enum:bodypart,
 						_,_,_,_,
 						SH_NEW_DMG_DARK_ARTS,
@@ -332,7 +332,7 @@ public client_connect(id)
 	HasStabbedWithKnife[id] = false
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

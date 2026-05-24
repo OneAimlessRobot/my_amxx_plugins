@@ -1,0 +1,10 @@
+TODO
+dom 24 mai 2026 21:26:04 WEST:
+
+- fix custom damage. (The objective is to get SH_Frag_Blast self destruction kills to behave normally in the killfeed again)
+(They are not showing up, but should)
+- fix trace attack system so that komak the maid works properly
+(Player hits with rifles do not increase rpm for some reason)
+
+- fix shinobu's usp
+so that it is possible to deploy it without deleting UMP45 ammo (which has the same id)

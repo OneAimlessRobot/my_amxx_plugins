@@ -101,7 +101,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active()|| !sh_user_has_hero(id,gHeroID) )
 		return
 
 	//new wpnid = read_data(2)

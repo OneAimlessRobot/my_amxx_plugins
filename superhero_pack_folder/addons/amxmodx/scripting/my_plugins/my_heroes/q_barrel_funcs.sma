@@ -2,6 +2,7 @@
 #define I_WANT_FAKEMETA_UTIL
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
@@ -17,6 +18,9 @@ new g_HamBot, g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id
 
 // Safety
 new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
+
+new weapon_secret_code = QUAD_BARREL_WEAPON_SECRETCODE
+
 new const WeaponSounds[5][] = 
 {
 	"weapons/qbarrel_shoot.wav",
@@ -69,6 +73,7 @@ public plugin_init()
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
+	weapon_secret_code = allocate_weapon_secret_code()
 	// Cache
 	g_MsgCurWeapon = get_user_msgid("CurWeapon")
 	g_MsgAmmoX = get_user_msgid("AmmoX")
@@ -84,9 +89,9 @@ public _q_barrel_unset_q_barrel(iPlugins,iParams){
 }
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,MODEL_V)
-	engfunc(EngFunc_PrecacheModel,MODEL_P)
-	engfunc(EngFunc_PrecacheModel,MODEL_W)
+	engfunc(EngFunc_PrecacheModel,Q_BARREL_MODEL_V)
+	engfunc(EngFunc_PrecacheModel,Q_BARREL_MODEL_P)
+	engfunc(EngFunc_PrecacheModel,Q_BARREL_MODEL_W)
 	
 	for(new i = 0; i < sizeof(WeaponSounds); i++)
 		engfunc(EngFunc_PrecacheSound,WeaponSounds[i])
@@ -97,7 +102,7 @@ public plugin_precache()
 
 public fw_PrecacheEvent_Post(type, const name[])
 {
-	if(equal(OLD_EVENT, name))
+	if(equal(OLD_EVENT_Q_BARREL, name))
 		g_Event_QB = get_orig_retval()
 }
 
@@ -132,15 +137,15 @@ public Get_QuadBarrel(id)
 	Set_BitVar(g_Had_QB, id);
 	
 	give_item(id, weapon_names_stock_arr[CSW_QUADBARREL])
-	cs_set_user_bpammo(id, CSW_QUADBARREL, BPAMMO)
+	cs_set_user_bpammo(id, CSW_QUADBARREL, Q_BARREL_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, CLIP)
+	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, Q_BARREL_CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
 	write_byte(1)
 	write_byte(CSW_QUADBARREL)
-	write_byte(CLIP)
+	write_byte(Q_BARREL_CLIP)
 	message_end()
 }
 
@@ -152,9 +157,6 @@ public Remove_QuadBarrel(id)
 
 public Event_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
-	
 	static CSWID; CSWID = read_data(2)
 
 	if((CSWID == CSW_QUADBARREL && g_OldWeapon[id] == CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
@@ -163,10 +165,10 @@ public Event_CurWeapon(id)
 		if(pev_valid(Ent)) 
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
-						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * SPEED, XO_WEAPON)
+						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * Q_BARREL_SPEED, XO_WEAPON)
 	
 			set_pdata_float(Ent, m_flNextSecondaryAttack,
-						get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * SPEED, XO_WEAPON)
+						get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * Q_BARREL_SPEED, XO_WEAPON)
 		}
 	}
 	
@@ -185,7 +187,7 @@ public fw_SetModel(entity, model[])
 	static id
 	id = entity_get_edict(entity, EV_ENT_owner)
 	
-	if(equal(model, OLD_W_MODEL))
+	if(equal(model, OLD_W_MODEL_Q_BARREL))
 	{
 		static weapon
 		weapon = fm_get_user_weapon_entity(entity, CSW_QUADBARREL)
@@ -195,8 +197,8 @@ public fw_SetModel(entity, model[])
 		
 		if(Get_BitVar(g_Had_QB, id))
 		{
-			set_pev(weapon, pev_impulse, WEAPON_SECRETCODE)
-			engfunc(EngFunc_SetModel, entity, MODEL_W)
+			set_pev(weapon, pev_impulse, weapon_secret_code)
+			engfunc(EngFunc_SetModel, entity, Q_BARREL_MODEL_W)
 			
 			Remove_QuadBarrel(id)
 			
@@ -295,7 +297,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	}
 	fake_smoke(Attacker, ptr)
 	
-	SetHamParamFloat(3, float(DAMAGE) / 6.0)
+	SetHamParamFloat(3, float(Q_BARREL_DAMAGE) / 6.0)
 
 	return HAM_HANDLED
 }
@@ -335,7 +337,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 	xs_vec_mul_scalar(Dir, Damage, Dir)
 	
 	// Use weapon power on knockback calculation
-	xs_vec_mul_scalar(Dir, float(KNOCKPOWER), Dir)
+	xs_vec_mul_scalar(Dir, float(Q_BARREL_KNOCKPOWER), Dir)
 	
 	// Apply ducking knockback multiplier
 	new ducking = pev(Ent, pev_flags) & (FL_DUCKING | FL_ONGROUND) == (FL_DUCKING | FL_ONGROUND)
@@ -367,8 +369,8 @@ public fw_Item_Deploy_Post(Ent)
 	if(!Get_BitVar(g_Had_QB, Id))
 		return
 
-	set_pev(Id, pev_viewmodel2, MODEL_V)
-	set_pev(Id, pev_weaponmodel2, MODEL_P)
+	set_pev(Id, pev_viewmodel2, Q_BARREL_MODEL_V)
+	set_pev(Id, pev_weaponmodel2, Q_BARREL_MODEL_P)
 	
 	native_playanim(Id, ANIM_DRAW)
 	set_pdata_string(Id, (m_szAnimExtention) * 4,  ANIM_EXT, -1 ,  XTRA_OFS_PLAYER * 4)
@@ -376,7 +378,7 @@ public fw_Item_Deploy_Post(Ent)
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
-	if(pev(ent, pev_impulse) == WEAPON_SECRETCODE)
+	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_QB, id)
 		set_pev(ent, pev_impulse, 0)
@@ -426,7 +428,7 @@ public fw_Item_PostFrame(iEnt)
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_QUADBARREL)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
-	static iMaxClip ; iMaxClip = CLIP
+	static iMaxClip ; iMaxClip = Q_BARREL_CLIP
 
 	if(get_pdata_int(iEnt, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
 	{
@@ -436,8 +438,8 @@ public fw_Item_PostFrame(iEnt)
 		cs_set_user_bpammo(id, CSW_QUADBARREL, iBpAmmo-j)
 		
 		set_pdata_int(iEnt, m_fInReload, 0, XO_WEAPON)
-		if(iBpAmmo > CLIP){
-			cs_set_weapon_ammo(iEnt, min(iBpAmmo, CLIP))
+		if(iBpAmmo > Q_BARREL_CLIP){
+			cs_set_weapon_ammo(iEnt, min(iBpAmmo, Q_BARREL_CLIP))
 		}
 		else{
 			cs_set_weapon_ammo(iEnt, iClip + iBpAmmo)
@@ -447,11 +449,11 @@ public fw_Item_PostFrame(iEnt)
 		message_begin(MSG_ONE_UNRELIABLE, g_MsgCurWeapon, _, id)
 		write_byte(1)
 		write_byte(CSW_QUADBARREL)
-		write_byte(CLIP)
+		write_byte(Q_BARREL_CLIP)
 		message_end()
 		
 		message_begin(MSG_ONE_UNRELIABLE, g_MsgAmmoX, _, id)
-		write_byte(3)
+		write_byte(g_ammo_ids_for_weapon_ids[CSW_QUADBARREL])
 		write_byte(cs_get_user_bpammo(id, CSW_QUADBARREL))
 		message_end()
 	
@@ -478,10 +480,10 @@ public fw_Weapon_Reload_Post(iEnt)
 		return
 
 	set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
-	set_pdata_float(id, m_flNextAttack, RELOAD_TIME, OFFSET_LINUX_PLAYER)
-	set_pdata_float(iEnt, m_flTimeWeaponIdle, RELOAD_TIME + 0.5, XO_WEAPON)
-	set_pdata_float(iEnt, m_flNextPrimaryAttack, RELOAD_TIME + 0.25, XO_WEAPON)
-	set_pdata_float(iEnt, m_flNextSecondaryAttack, RELOAD_TIME + 0.25, XO_WEAPON)
+	set_pdata_float(id, m_flNextAttack, Q_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
+	set_pdata_float(iEnt, m_flTimeWeaponIdle, Q_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
+	set_pdata_float(iEnt, m_flNextPrimaryAttack, Q_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
+	set_pdata_float(iEnt, m_flNextSecondaryAttack, Q_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
 	set_pdata_int(iEnt, m_fInReload, 1, XO_WEAPON)
 	
 	native_playanim(id, ANIM_RELOAD)
@@ -545,18 +547,6 @@ public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)
 	engfunc(EngFunc_TraceLine, Start, End, DONT_IGNORE_MONSTERS, IgnoreEnt, TraceID)
 	
 	get_tr2(TraceID, TR_vecEndPos, Result)
-}
-
-
-stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
-{
-	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
-	if(!pev_valid(entwpn)) 
-		return
-		
-	set_pdata_float(entwpn, m_flNextPrimaryAttack, TimeIdle, XO_WEAPON)
-	set_pdata_float(entwpn, m_flNextSecondaryAttack, TimeIdle, XO_WEAPON)
-	set_pdata_float(entwpn, m_flTimeWeaponIdle, TimeIdle + 0.5, XO_WEAPON)
 }
 
 stock make_bullet(id, Float:Origin[3])
@@ -711,9 +701,6 @@ public Safety_Disconnected(id)
 
 public Safety_CurWeapon(id)
 {
-	if(!is_alive(id))
-		return
-		
 	static CSW; CSW = read_data(2)
 	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW
 }

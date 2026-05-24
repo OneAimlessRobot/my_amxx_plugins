@@ -27,7 +27,7 @@ new gHealPoints
 
 
 new dmg_source_name_short_dual_knife[SAFE_BUFFER_SIZE+1]="dual_knife"
-new dmg_source_name_long_dual_knife[SAFE_BUFFER_SIZE+1]="dual_knife"
+new dmg_source_name_log_dual_knife[SAFE_BUFFER_SIZE+1]="dual_knife"
 new custom_dmg_id_dual_knife
 
 //----------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ public plugin_init()
 
 	custom_dmg_id_dual_knife=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_dual_knife,
-					dmg_source_name_long_dual_knife,1)
+					dmg_source_name_log_dual_knife,1)
 
 	// HEAL LOOP
 	set_task(1.0,"riddick_loop",0,"",0,"b" )
@@ -90,7 +90,7 @@ public riddick_damage(id)
 		
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_long_dual_knife,
+						dmg_source_name_log_dual_knife,
 						my_hitpoint_enum:bodypart,
 						_,_,_,_,
 						SH_NEW_DMG_SUPER_MELEE,

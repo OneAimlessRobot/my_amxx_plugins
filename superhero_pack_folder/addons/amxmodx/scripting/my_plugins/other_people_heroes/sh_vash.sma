@@ -42,7 +42,7 @@ new gHeroID
 
 
 new dmg_source_name_short_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"
-new dmg_source_name_long_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"
+new dmg_source_name_log_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"
 new custom_dmg_id_revolver
 
 //----------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public plugin_init()
 	
 	custom_dmg_id_revolver=sh_log_custom_damage_source(gHeroID,
 							dmg_source_name_short_revolver,
-							dmg_source_name_long_revolver,0)
+							dmg_source_name_log_revolver,0)
 	
 
 	register_event("Damage", "vash_damage", "b", "2!0")
@@ -153,7 +153,7 @@ public vash_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
 		if (extraDamage > 0){
 			
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_long_revolver,
+			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_revolver,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

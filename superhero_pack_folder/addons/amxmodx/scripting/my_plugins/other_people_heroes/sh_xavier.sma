@@ -1,4 +1,3 @@
-// XAVIER! - BASED ON SPACEDUDE'S NEW XTRAFUNMOD - FORGOT WHERE I FOUND THE TRACEME CODE
 // 1.14.4 - significant change - no xtrafun needed for this now...
 
 /* CVARS - copy and paste to shconfig.cfg

@@ -36,7 +36,7 @@ new gPcvarShowRebound
 
 
 new dmg_source_name_short_ricochet_bullet[SAFE_BUFFER_SIZE+1]="ricochet_bullet"
-new dmg_source_name_long_ricochet_bullet[SAFE_BUFFER_SIZE+1]="ricochet_bullet"
+new dmg_source_name_log_ricochet_bullet[SAFE_BUFFER_SIZE+1]="ricochet_bullet"
 new custom_dmg_id_ricochet_bullet
 
 //----------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ public plugin_init()
 
 
 	custom_dmg_id_ricochet_bullet=sh_log_custom_damage_source(gHeroID,
-				dmg_source_name_short_ricochet_bullet,dmg_source_name_long_ricochet_bullet,0)
+				dmg_source_name_short_ricochet_bullet,dmg_source_name_log_ricochet_bullet,0)
 
 	// REGISTER EVENTS THIS HERO WILL RESPOND TO! (AND SERVER COMMANDS)
 	register_forward(FM_TraceLine, "fwTraceLine", 1)
@@ -288,7 +288,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		// do extra damage
 		new extraDamage = get_pcvar_num(gPcvarExtraDmg)
 		if ( extraDamage > 0){
-			sh_extra_damage( victim, attacker, extraDamage,  dmg_source_name_long_ricochet_bullet,
+			sh_extra_damage( victim, attacker, extraDamage,  dmg_source_name_log_ricochet_bullet,
 								my_hitpoint_enum:hitplace,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

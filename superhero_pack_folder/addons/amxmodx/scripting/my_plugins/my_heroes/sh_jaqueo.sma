@@ -11,7 +11,7 @@ new gHeroID
 new const gHeroName[] = "Jaqueo"
 
 new dmg_source_name_short_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
-new dmg_source_name_long_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
+new dmg_source_name_log_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
 new custom_dmg_id_jaqueo_scout
 
 new Float:scout_mult
@@ -40,7 +40,7 @@ public plugin_init()
 	
 	custom_dmg_id_jaqueo_scout=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_badass_scout,
-				dmg_source_name_long_badass_scout,
+				dmg_source_name_log_badass_scout,
 				0)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AK47,JAQUEO_AK47_V_MODEL)
 	

@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -27,10 +28,10 @@ new pcvar_dmg_headshot_mult,
 	pcvar_xp_distance_mult;
 
 new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="L96A1"
-new dmg_source_name_long_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
+new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Lena_s_L96A1"
 new custom_dmg_id_l96
 
-
+new weapon_secret_code = -1
 //new HamHook:TakeDamage
 public plugin_init(){
 	
@@ -61,12 +62,13 @@ public plugin_init(){
 	init_explosion_defaults()
 	init_gravity_pcvar()
 
+	weapon_secret_code = allocate_weapon_secret_code()
 
 }
 public plugin_cfg(){
 
 	gHeroID = lena_get_hero_id()
-	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_long_l96,0)
+	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_log_l96,0)
 
 }
 public bulette_thinque(ent){
@@ -201,7 +203,7 @@ public fw_WeaponReloadPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 	
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
@@ -246,9 +248,11 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
+		
+		remove_weapon_secret_code(entity,weapon_secret_code)
 		
 		return HAM_IGNORED
 	}
@@ -256,6 +260,7 @@ public fw_ItemDeployPre(entity)
 	set_pdata_float(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, LENA_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip ,min(LENA_L96_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 
@@ -265,7 +270,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,gHeroID)){
 
@@ -497,7 +502,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(owner)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,owner,floatround(damage),dmg_source_name_long_l96, 
+		sh_extra_damage(pTouched,owner,floatround(damage),dmg_source_name_log_l96, 
 			the_hitpoint,
 			_,_,_,
 			DMG_BULLET,

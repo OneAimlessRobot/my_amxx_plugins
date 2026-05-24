@@ -18,7 +18,7 @@ new gHeroID = -1
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"
-new dmg_source_name_long_free_kick[SAFE_BUFFER_SIZE+1]="free_kick"
+new dmg_source_name_log_free_kick[SAFE_BUFFER_SIZE+1]="free_kick"
 new custom_dmg_id_free_kick
 
 public plugin_init(){
@@ -43,7 +43,7 @@ public plugin_cfg(){
 	gHeroID = roberto_get_hero_id()
 	custom_dmg_id_free_kick=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_free_kick,
-					dmg_source_name_long_free_kick,
+					dmg_source_name_log_free_kick,
 					0)
 }
 public FwdTouchWorld( Ball, World ) {

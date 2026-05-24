@@ -3,19 +3,20 @@
 #endif
 #define sh_arifle_funcs
 
+#define ARIFLE_SECRET_CODE 184128
 #define A_RIFLE_DAMAGE 50
-#define A_RIFLE_CLIP 100
-#define A_RIFLE_RESERVE 400
+#define A_RIFLE_CLIP 120
+#define A_RIFLE_RESERVE 100
 #define A_RIFLE_SPEED 1.0
 #define A_RIFLE_RECOIL 1.5
 
 #define CSW_ARIFLE CSW_M249
-#define PLAYER_ANIMEXT "m249"
+#define ARIFLE_PLAYER_ANIMEXT "m249"
 #define ARIFLE_OLDMODEL "models/w_m249.mdl"
 
-#define V_MODEL "models/shmod/supernoodle/arifle/v_arifle.mdl"
-#define P_MODEL "models/shmod/supernoodle/arifle/p_arifle.mdl"
-#define W_MODEL "models/shmod/supernoodle/arifle/w_arifle.mdl"
+#define ARIFLE_V_MODEL "models/shmod/supernoodle/arifle/v_arifle.mdl"
+#define ARIFLE_P_MODEL "models/shmod/supernoodle/arifle/p_arifle.mdl"
+#define ARIFLE_W_MODEL "models/shmod/supernoodle/arifle/w_arifle.mdl"
 
 #define MUZZLE_FLASH "sprites/muzzleflash7.spr"
 

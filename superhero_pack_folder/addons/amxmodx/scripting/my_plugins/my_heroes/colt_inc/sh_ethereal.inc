@@ -3,18 +3,20 @@
 #endif
 #define sh_ethereal_funcs
 
-#define DAMAGE 26
-#define CLIP 30
-#define SPEED 1.0
-#define RECOIL 0.75
+#define ETHEREAL_SECRET_CODE 1712015
+#define ETHEREAL_DAMAGE 26
+#define ETHEREAL_CLIP 60
+#define ETHEREAL_RESERVE 200
+#define ETHEREAL_SPEED 1.0
+#define ETHEREAL_RECOIL 0.75
 
 #define CSW_ETHEREAL CSW_M4A1
-#define PLAYER_ANIMEXT "carbine"
+#define ETHEREAL_PLAYER_ANIMEXT "carbine"
 #define ETHEREAL_OLDMODEL "models/w_m4a1.mdl"
 
-#define V_MODEL "models/shmod/adriano/ethereal/v_ethereal.mdl"
-#define P_MODEL "models/shmod/adriano/ethereal/p_ethereal.mdl"
-#define W_MODEL "models/shmod/adriano/ethereal/w_ethereal.mdl"
+#define ETHEREAL_V_MODEL "models/shmod/adriano/ethereal/v_ethereal.mdl"
+#define ETHEREAL_P_MODEL "models/shmod/adriano/ethereal/p_ethereal.mdl"
+#define ETHEREAL_W_MODEL "models/shmod/adriano/ethereal/w_ethereal.mdl"
 
 stock const Ethereal_Sounds[4][] = 
 {

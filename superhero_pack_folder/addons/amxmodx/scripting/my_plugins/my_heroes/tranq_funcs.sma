@@ -2,6 +2,8 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
+
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -26,9 +28,9 @@ new g_Tranq_Clip[SH_MAXSLOTS+1]
 
 new super_dart_weapon_id
 new dmg_source_name_short_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
-new dmg_source_name_long_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
+new dmg_source_name_log_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
 
-
+new weapon_secret_code = -1
 public plugin_init(){
 
 
@@ -36,15 +38,15 @@ public plugin_init(){
 	
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ELITE], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ELITE], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ELITE], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ELITE], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Item_PostFrame",_,true)
 
-	RegisterHam(Ham_Weapon_Reload,weapon_names_stock_arr[CSW_ELITE], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ELITE], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(DART_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)
@@ -53,6 +55,7 @@ public plugin_init(){
 
 	init_gravity_pcvar()
 
+	weapon_secret_code = allocate_weapon_secret_code()
 
 
 }
@@ -62,7 +65,7 @@ public plugin_cfg(){
 	super_dart_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_super_dart,
-								dmg_source_name_long_super_dart,
+								dmg_source_name_log_super_dart,
 								0)
 
 }
@@ -127,7 +130,7 @@ public CmdStart(id, uc_handle)
 	Assign_BitVar(trigger_is_down_mask, id,(button & IN_ATTACK))
 
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	if(weapon==CSW_ELITE){
+	if(weapon==DART_GUN_WEAPON_CLASSID){
 		if(Get_BitVar(trigger_is_down_mask, id))
 		{
 
@@ -152,7 +155,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED
 	}
-	if(get_user_weapon(Attacker) != CSW_ELITE || !sh_user_has_hero(Attacker,gHeroID) ){
+	if(get_user_weapon(Attacker) != DART_GUN_WEAPON_CLASSID || !sh_user_has_hero(Attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
 
@@ -167,7 +170,6 @@ public fw_Item_PostFrame(ent)
 	new validity=pev_valid(ent);
 	if(validity!=2){
 
-		server_print("weapon_elite entity has invalid private data @ fw_Item_PostFrame.^nValidity is: %d^n",validity)
 		return HAM_IGNORED
 
 	}
@@ -177,7 +179,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED;
 	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
-	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ELITE)
+	static bpammo; bpammo = cs_get_user_bpammo(id, DART_GUN_WEAPON_CLASSID)
 
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
@@ -188,7 +190,7 @@ public fw_Item_PostFrame(ent)
 		temp1 = min(DART_PISTOL_CLIP_SIZE - iClip, bpammo)
 
 		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
-		cs_set_user_bpammo(id, CSW_ELITE, bpammo - temp1)
+		cs_set_user_bpammo(id, DART_GUN_WEAPON_CLASSID, bpammo - temp1)
 
 		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 
@@ -204,7 +206,7 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 
@@ -212,7 +214,7 @@ public fw_WeaponReloadPre(entity)
 	}
 	g_Tranq_Clip[pPlayer] = -1
 
-	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, CSW_ELITE)
+	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, DART_GUN_WEAPON_CLASSID)
 	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 
 	if(BPAmmo <= 0){
@@ -249,16 +251,17 @@ public fw_ItemDeployPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	new pPlayer =get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer =get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if(!client_is_hero_user(pPlayer, gHeroID)){
-		
+		remove_weapon_secret_code(entity,weapon_secret_code)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(entity, m_flNextPrimaryAttack, DART_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_float(entity, m_flTimeWeaponIdle, DART_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(DART_PISTOL_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 
@@ -268,7 +271,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2){
 		return HAM_IGNORED
 	}
-	new pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
+	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
 	if(!sh_user_has_hero(pPlayer,gHeroID)){
@@ -426,7 +429,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				headshot=true;
 				damage*=4.0;
 			}
-			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_short_super_dart,
+			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_log_super_dart,
 						the_hitpoint,
 						_,_,_,_,
 						SH_NEW_DMG_BLEED,
@@ -480,7 +483,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 	new weapon = get_user_weapon(player);
-	if(weapon!=CSW_ELITE){
+	if(weapon!=DART_GUN_WEAPON_CLASSID){
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)

@@ -110,12 +110,12 @@ public Ham_Weapon_Attack(weaponent)
 	}
 	if ( !sh_is_active() ) return HAM_IGNORED;
 	
-	new id = get_pdata_cbase(weaponent, 41, 4);
+	static id; id = get_pdata_cbase(weaponent, m_pPlayer, XO_WEAPON);
 
+	if(!is_user_alive(id)) return HAM_IGNORED;
 
 	if(!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
 
-	if(!is_user_alive(id)) return HAM_IGNORED;
 	
 	if ( gBullets[id] >= 0 )
 	{
