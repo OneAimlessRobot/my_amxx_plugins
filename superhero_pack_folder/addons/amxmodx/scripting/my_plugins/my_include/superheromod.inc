@@ -111,7 +111,6 @@ forward sh_hero_init_pre(id, heroID, &mode);
 
 forward sh_hero_init(id, heroID, mode);
 
-forward sh_hero_init_pt2(id, heroID, mode); //for my player models module
 
 /**
  * Called when a +/-power is executed.

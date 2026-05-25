@@ -17,8 +17,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "arcticpredator_inc/arcticpredator.inc"
 
-new gHeroID_shinobu = -1,
-	gHeroID_arcticpredator = -1
+new gHeroID_shinobu = -1
 
 new generic_frag_blast_wpn_id = -1
 
@@ -38,7 +37,6 @@ public plugin_init(){
 public plugin_cfg(){
 
 	gHeroID_shinobu = shinobu_get_hero_id()
-	gHeroID_arcticpredator = arcticpredator_get_hero_id()
 	generic_frag_blast_wpn_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
 }
 public plugin_precache(){
@@ -245,10 +243,6 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 		
 		
 	
-	}
-	if(hero_id==gHeroID_arcticpredator){
-
-		server_print("It seems not... Are we the owner? %s^n", pid==owner_id?"Yes!":"No...")
 	}
 	static client_name[128];
 	static attacker_name[128];

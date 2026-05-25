@@ -33,7 +33,7 @@ new gEngineRepairTimer[SH_MAXSLOTS+1]
 new const redline_color[4]={255,1,1,1}
 new const broken_color[4]={10,10,10,0}
 new const good_color[4]={1,255,1,0}
-new const top_speed_color[4]={1,1,255,1}
+new const top_speed_color[4]={1,90,255,1}
 
 #define MAX_GEARS 10
 new Float:gear_ratios[MAX_GEARS]

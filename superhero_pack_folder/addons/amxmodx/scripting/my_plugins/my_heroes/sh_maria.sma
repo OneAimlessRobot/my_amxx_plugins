@@ -37,8 +37,7 @@ new pcvar_maria_alpha
 new pcvar_health_drain_begin_threshold
 new pcvar_health_drain_end_threshold
 new pcvar_begin_open_valve_timer;
-new gHeroID
-
+new gHeroID = -1
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -123,7 +122,6 @@ public plugin_cfg()
 public loadCVARS()
 {
 	heal_period=get_cvar_float("maria_heal_period")
-
 	set_task(heal_period, "maria_loop",_,_,_, "b")
 }
 
@@ -132,6 +130,8 @@ public sh_hero_init(id, heroID, mode){
 	if(heroID!=gHeroID) return
 
 	if(sh_user_has_hero(id, gHeroID)){
+		
+		
 
 		UnSet_BitVar(gHealthDrainValveMask,id);
 		Set_BitVar(gHealthDrainValveTimerStartedMask,id);
@@ -260,9 +260,9 @@ for(new p=0;p<num_found;p++){
 if(healed){
 
 	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
-	
+	make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
 }
-make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
+
 
 }
 public maria_damage(id)

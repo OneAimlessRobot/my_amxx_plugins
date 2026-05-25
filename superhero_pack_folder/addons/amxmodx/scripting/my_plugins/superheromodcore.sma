@@ -141,7 +141,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
 new fwdReturn
-new fwd_HeroInit_Pre, fwd_HeroInit, fwd_HeroInit_pt2, fwd_HeroKey, fwd_Spawn, fwd_Death
+new fwd_HeroInit_Pre, fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShDamagePost
@@ -248,7 +248,6 @@ public plugin_init()
 	// API - Register a bunch of forwards that heroes can use
 	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_VAL_BYREF)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
-	fwd_HeroInit_pt2 = CreateMultiForward("sh_hero_init_pt2", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
 	fwd_Spawn = CreateMultiForward("sh_client_spawn", ET_IGNORE, FP_CELL, FP_CELL)		// id, newSpawn
 	fwd_Death = CreateMultiForward("sh_client_death", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL, FP_CELL)	//killer, victim, wpnindex, hitplace, TK
@@ -1288,7 +1287,6 @@ initHero(id, heroIndex, mode)
 	}
 	if(the_init_return_value==INIT_FWD_BLOCK){
 
-		server_print("Hero picking blocked? I Really hope so")
 		mode=SH_HERO_DROP;
 		Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode);
 		return
@@ -1361,11 +1359,6 @@ initHero(id, heroIndex, mode)
 		if ( gHeroMinGravity[heroIndex] != 0 ) {
 			resetMinGravity(id)
 		}
-	}
-	if(!ExecuteForward(fwd_HeroInit_pt2, fwdReturn, id, heroIndex, mode)){
-
-		server_print("Hero init pt2 forward execution error!!!")
-		return
 	}
 	//Init the hero
 #if defined SH_BACKCOMPAT

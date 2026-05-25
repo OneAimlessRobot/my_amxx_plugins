@@ -14,26 +14,9 @@ use this stock to confirm whether or not the entity is an actual CS weapon!
 */
 
 
-#define WEAPON_SECRET_CODE_GENERATOR_CFG_FILENAME "weapon_identifier.cfg"
-#define WEAPON_SECRET_CODE_GENERATOR_CFG_DIRECTORY "/weapon_identifier"
-
-
-
-stock generator_cfg_folder[128],generator_cfg_file[128]
-
-
-
 const default_starting_secret_code =1000
-stock starting_secret_code = default_starting_secret_code;
 
 
-stock curr_num_of_custom_weapons,
-        prev_task_weapon_id_given,
-        weapon_id_to_give;
-
-
-
-stock starting_secret_code_pcvar
 
 stock bool:entity_is_weapon(ent, bit_mask_to_check=(GUNS_BIT_SUM|CSW_KNIFE)){
 

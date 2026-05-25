@@ -9,6 +9,23 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+#define WEAPON_SECRET_CODE_GENERATOR_CFG_FILENAME "weapon_identifier.cfg"
+#define WEAPON_SECRET_CODE_GENERATOR_CFG_DIRECTORY "/weapon_identifier"
+
+
+
+stock generator_cfg_folder[128],generator_cfg_file[128]
+stock starting_secret_code = default_starting_secret_code;
+
+
+stock starting_secret_code_pcvar
+
+stock curr_num_of_custom_weapons,
+        prev_task_weapon_id_given,
+        weapon_id_to_give;
+
+
 initialize_default_stuff(){
 
 

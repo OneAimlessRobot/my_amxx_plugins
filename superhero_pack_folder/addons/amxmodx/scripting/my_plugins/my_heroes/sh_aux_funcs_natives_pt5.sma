@@ -121,7 +121,7 @@ public weaponChange(id)
 
 }
 
-public sh_hero_init_pt2(id,heroID,mode){
+public sh_hero_init(id,heroID,mode){
 
 	if(!is_user_connected(id)) return
 
