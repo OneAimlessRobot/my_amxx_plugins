@@ -6,6 +6,7 @@
 
 // VARIABLES
 new gHeroID
+new generic_dmg_shock
 new gHeroName[]="ElectroB00M"
 new gSpriteLightning
 new const gTeslaCoilRevvingSound[] = "ambience/techamb2.wav"
@@ -66,6 +67,7 @@ public plugin_cfg()
 loadCVARS()
 {
 gPowerCost = get_pcvar_num(pCvarPowerCost)
+generic_dmg_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
 }
 //----------------------------------------------------------------------------------------------   
 public ElectroB00M_loop(id)
@@ -225,9 +227,10 @@ public ElectroB00M_instant(x, id)
 new ElectroB00MDamage=get_pcvar_num(pCvarElectroB00MDamage)
 lightning_effect(id, x)
 emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-sh_extra_damage( x, id, ElectroB00MDamage, new_dmg_type_names[_:SH_NEW_DMG_SHOCK],
+sh_extra_damage( x, id, ElectroB00MDamage,
 						_,_,_,_,_,
-						SH_NEW_DMG_SHOCK,get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
+						SH_NEW_DMG_SHOCK,
+						generic_dmg_shock)
 return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------

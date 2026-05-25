@@ -61,14 +61,13 @@ forward sh_extra_damage_fwd_pre(
 			&victim, 
 			&attacker, 
 			&damage,
-			wpnDescription[32], 
 			&my_hitpoint_enum:bodypart,
 			&dmgMode,
 			&sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			&dmg_type,
 			&sh_thrash_brat_dmg_type:new_dmg_type,
-			&custom_wpn_id);
+			custom_wpn_id);
 /**
 //extra_damage_flags!
 enum sh_extra_damage_flags (<<= 1){
@@ -85,7 +84,6 @@ forward sh_extra_damage_fwd_post(
 			victim, 
 			attacker, 
 			damage,
-			wpnDescription[32], 
 			my_hitpoint_enum:bodypart,
 			dmgMode,
 			sh_extra_damage_flags:sh_extra_dmg_flags,
@@ -145,7 +143,7 @@ forward sh_client_spawn(id, bool:newRound);
  * @param wpnDescription	Name of the weapon that killed the victim.
  * @noreturn
  */
-forward sh_client_death(victim, attacker, headshot, const wpnDescription[]);
+forward sh_client_death(victim, attacker, my_hitpoint_enum:bodypart, custom_wpn_id);
 
 /**
  * Called every new round (start of freezetime).
@@ -483,7 +481,6 @@ enum sh_extra_damage_flags (<<= 1){
 native sh_extra_damage(victim,
 				attacker,
 				damage,
-				const wpnDescription[],
 				my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
 				dmgMode = SH_DMG_MULT,
 				sh_extra_damage_flags:sh_extra_damage_flags=SH_EXTRA_DMG_FLAG_NONE,

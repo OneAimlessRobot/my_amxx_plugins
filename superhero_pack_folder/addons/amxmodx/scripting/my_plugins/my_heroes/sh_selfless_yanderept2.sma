@@ -44,6 +44,7 @@ new pcvar_min_players
 new pcvar_degen_health_extra_threshold
 new pcvar_overheal_hp_max
 new pcvar_trans_time
+new generic_dmg_dark_arts = -1
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -258,7 +259,6 @@ public yandere_sentence_loop(id){
 					sh_screen_fade(i, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
 					
 					sh_extra_damage(i,i,degen_dmg_2_take,
-									dmg_source_name_short_drain,
 									MY_HIT_HEAD,
 									_,_,_,_,
 									SH_NEW_DMG_DRAIN,custom_dmg_id_drain)
@@ -432,6 +432,7 @@ loadCVARS();
 public loadCVARS()
 {
 degen_iter_period=get_cvar_float("yandere_degen_iter_period")
+generic_dmg_dark_arts = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS)
 
 
 set_task( degen_iter_period, "yandere_sentence_loop", _, _, _, "b")
@@ -492,14 +493,14 @@ public yandere_damage(id)
 		if (floatround(extraDamage) > 0.0){
 			
 			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
-				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_log_senpai_avenger,
+				sh_extra_damage(id, attacker, floatround(extraDamage),
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
 								custom_dmg_id_senpai_avenger)
 			}
 			else {
-				sh_extra_damage(id, attacker, floatround(extraDamage), dmg_source_name_log_rage,
+				sh_extra_damage(id, attacker, floatround(extraDamage),
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,
@@ -543,11 +544,11 @@ public yandere_damage(id)
 		if(Get_BitVar(g_is_cursed_masks[attacker],id)){
 			if(generate_float(0.0,1.0)<cvar_val(float,pcvar_curse_pct)){
 				set_user_godmode(id,0)
-				sh_extra_damage(attacker,id,1,new_dmg_type_names[_:SH_NEW_DMG_DARK_ARTS],_,
+				sh_extra_damage(attacker,id,1,_,
 							SH_DMG_KILL,
 							_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
-							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS))
+							generic_dmg_dark_arts)
 				UnSet_BitVar(g_is_cursed_masks[attacker],id)
 			}
 		}

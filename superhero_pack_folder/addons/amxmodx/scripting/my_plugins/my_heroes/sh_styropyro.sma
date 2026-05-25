@@ -185,7 +185,7 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage, "styropyro C.R.L.C")
+		sh_extra_damage(tid, id, damage)
 	}
 }
 //----------------------------------------------------------------------------------------------

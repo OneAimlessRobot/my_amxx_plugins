@@ -181,7 +181,7 @@ public AssRadiusDamage(id,origin[3])
 				multiplier=(get_cvar_num("pesk_maxdamage")*get_cvar_num("pesk_maxdamage"))/get_cvar_num("pesk_radius")
 				damage=(get_cvar_num("pesk_radius")-distanceBetween)*multiplier
 				damage=sqrt(damage)
-				sh_extra_damage(vic, id, damage, "Pesk")
+				sh_extra_damage(vic, id, damage)
 			} // distance
 		} // alive target...
 	} // loop

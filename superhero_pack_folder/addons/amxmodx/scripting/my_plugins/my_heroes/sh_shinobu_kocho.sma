@@ -13,7 +13,7 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-stock const DEBUG=1
+stock const DEBUG= 0
 
 stock SHINOBU_POISON_KICK_DELAYED_TASKID,
 	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP
@@ -261,13 +261,16 @@ shinobu_burst_damage_task_bootstrap(attacker,tg,is_attacking=1){
 		}
 		return
 	}
+	else if(DEBUG){
+
+		sh_chat_message(tg,gHeroID,"prepare for trouble, scumbag")
+	}
 	set_task(cvar_val(float, pcvar_shinobu_poison_kick_delay),
 				"shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
 
 }
-public shinobu_burst_damage_task(array[],attacker){
+public shinobu_burst_damage_task(array[1],attacker){
 	attacker-=SHINOBU_POISON_KICK_DELAYED_TASKID
-	
 	if(!is_user_connected(attacker)) return
 
 	new tg= array[0]
@@ -290,7 +293,7 @@ public shinobu_burst_damage_task(array[],attacker){
 
 	new damage_to_cause=floatround((float(enemy_health)/2.0)-1.0,floatround_floor)
 
-	sh_extra_damage(tg,attacker,damage_to_cause,dmg_source_name_log_poison_kick,
+	sh_extra_damage(tg,attacker,damage_to_cause,
 					_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					custom_weapon_damage_sharp_poison_kick_id)
@@ -392,7 +395,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

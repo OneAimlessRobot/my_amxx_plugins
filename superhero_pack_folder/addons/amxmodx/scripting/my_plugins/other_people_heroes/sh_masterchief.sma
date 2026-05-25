@@ -125,7 +125,7 @@ public masterchief_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarP90DmgMult) - damage)
 		if ( extraDamage > 0 ){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_mjolnir_rifle,
+			sh_extra_damage( id, attacker, extraDamage,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

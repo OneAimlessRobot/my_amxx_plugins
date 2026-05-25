@@ -224,7 +224,7 @@ public adriano_damage(id)
 		if (floatround(extraDamage)>0){
 			switch(weapon){
 				case CSW_ETHEREAL:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_log_ethereal,
+					sh_extra_damage(id,attacker,floatround(extraDamage),
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SHOCK,

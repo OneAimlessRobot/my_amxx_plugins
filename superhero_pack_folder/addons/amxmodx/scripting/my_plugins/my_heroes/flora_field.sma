@@ -715,7 +715,6 @@ public field_think(ent)
 				new actual_damage=floatround(floatmax(0.0+(g_flora_sheltered_value[owner]>SHELTERED?1.0:0.0),floatmin(needs_health-1.0,fdamage)))
 								
 				sh_extra_damage(pid,owner,actual_damage,
-								dmg_source_name_short_field_drain,
 								_,_,_,_,_,
 								SH_NEW_DMG_DRAIN,
 								field_drain_wpn_id)

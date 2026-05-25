@@ -117,7 +117,7 @@ public force_push(id)
 					// Do damage to Yoda?
 					new selfdamage = get_pcvar_num(pselfdmg)
 					if ( selfdamage > 0 ) {
-						sh_extra_damage(id, id, selfdamage, "Force Push")
+						sh_extra_damage(id, id, selfdamage)
 					}
 					enemyPushed = true
 				}
@@ -165,7 +165,7 @@ public move_enemy(parm[])
 
 		if ( !is_user_alive(victim) ) return
 
-		sh_extra_damage(victim, id, damage, "Force Push")
+		sh_extra_damage(victim, id, damage)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -20,18 +20,18 @@ public plugin_init()
 	
 }
 //---------------------------------------------------------------------------
-public sh_client_death(victim, attacker, headshot)
+public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
-	if ( sh_user_has_hero(victim,gHeroID) && !headshot )
+	if ( sh_user_has_hero(victim,gHeroID) && (bodypart!=MY_HIT_HEAD) )
 	{
 	
-	if ( !is_user_alive(victim))
-	{
-		new parm[1]
-		parm[0] = victim
-		
-		set_task(0.5, "highlander_respawn", 0, parm, 1)
-	}
+		if ( !is_user_alive(victim))
+		{
+			new parm[1]
+			parm[0] = victim
+			
+			set_task(0.5, "highlander_respawn", 0, parm, 1)
+		}
 	}
 }
 

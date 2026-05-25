@@ -432,7 +432,7 @@ if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&is_va
 					}
 					else{
 						sh_extra_damage(target,attacker,floatround(damage),
-							dmg_source_name_short_sneak,MY_HIT_HEAD,
+							MY_HIT_HEAD,
 							SH_DMG_KILL,_,_,_,
 							SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 							custom_dmg_id_sneak)

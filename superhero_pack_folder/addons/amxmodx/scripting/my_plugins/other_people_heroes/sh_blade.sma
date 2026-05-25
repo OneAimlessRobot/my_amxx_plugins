@@ -346,7 +346,7 @@ public knifeburn(args[])
 
 		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 		if ( hpAfterDmg <= 0 )
-			sh_extra_damage(id, attacker, knifeDmg, "silver knife")
+			sh_extra_damage(id, attacker, knifeDmg)
 		else
 			set_user_health(id, hpAfterDmg)
 	}
@@ -399,7 +399,7 @@ public gunburn(args[])
 
 		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 		if ( hpAfterDmg <= 0 )
-			sh_extra_damage(id, attacker, gunDmg, "silver bullet")
+			sh_extra_damage(id, attacker, gunDmg)
 		else
 			set_user_health(id, hpAfterDmg)
 	}

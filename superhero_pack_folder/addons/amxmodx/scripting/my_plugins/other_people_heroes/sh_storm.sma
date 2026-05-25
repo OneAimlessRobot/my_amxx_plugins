@@ -274,7 +274,6 @@ switch(key)
 				new Float: dRatio = distanceBetween / radius
 				new adjdmg = damage - floatround(damage * dRatio)
 				sh_extra_damage(vic, id, adjdmg,
-								dmg_source_name_short_lightning_bolt,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								lightning_bolt_wpn_id)

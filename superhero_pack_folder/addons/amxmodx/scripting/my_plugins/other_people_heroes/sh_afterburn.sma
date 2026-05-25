@@ -317,7 +317,7 @@ public on_fire(args[])
 
 	//Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
 	if(health - damage  <= 0) {
-		sh_extra_damage(id, killer, damage, "AfterBurn")
+		sh_extra_damage(id, killer, damage)
 	}
 	else {
 		set_user_health(id, health - damage)

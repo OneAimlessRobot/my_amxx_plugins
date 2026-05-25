@@ -15,9 +15,12 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "arcticpredator_inc/arcticpredator.inc"
 
-new gHeroID = -1
+new gHeroID_shinobu = -1,
+	gHeroID_arcticpredator = -1
 
+new generic_frag_blast_wpn_id = -1
 
 #define PLUGIN "Superhero aux natives pt3"
 #define VERSION "1.0.0"
@@ -34,7 +37,9 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	gHeroID = shinobu_get_hero_id()
+	gHeroID_shinobu = shinobu_get_hero_id()
+	gHeroID_arcticpredator = arcticpredator_get_hero_id()
+	generic_frag_blast_wpn_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
 }
 public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
@@ -151,7 +156,11 @@ public _explosion(iPlugins,iParams){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,ignore_owner,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
+		else if(ignore_owner){
+
+			continue
+		}
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
 
 	}
 }
@@ -211,7 +220,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
-stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
+damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -231,20 +240,16 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	}
 	if(is_user_connected(pid)&&(pid==owner_id)){
 		
-		if(ignore_owner){
-			
-			return
-			
-		}
-		else{
 
-			peak_power=peak_power*damage_frac_ignore_owner
-		}
+		peak_power=peak_power*damage_frac_ignore_owner
 		
 		
 	
 	}
+	if(hero_id==gHeroID_arcticpredator){
 
+		server_print("It seems not... Are we the owner? %s^n", pid==owner_id?"Yes!":"No...")
+	}
 	static client_name[128];
 	static attacker_name[128];
 	get_user_name(pid,client_name,127);
@@ -268,17 +273,14 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	else{
 		force=damage
 	}
-	static custom_dmg_name[128];
 
 	if(!is_valid_custom_dmg_source(custom_weapon_id)){
 	
-		custom_weapon_id=get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
+		custom_weapon_id=generic_frag_blast_wpn_id
 	
 	}
 	
-	xmod_get_wpnlogname(custom_weapon_id,custom_dmg_name,MAX_SH_CUSTOM_DMG_LONG_NAME_LEN-1)
-	
-	sh_extra_damage(pid,owner_id,idamage,custom_dmg_name,
+	sh_extra_damage(pid,owner_id,idamage,
 			_,_,_,_,_,
 			SH_NEW_DMG_FRAG_BLAST,
 			custom_weapon_id)
@@ -292,7 +294,7 @@ stock damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,ig
 	
 	unfade_screen_user(pid)
 }
-stock damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
+damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 
 
 	if((pev_valid(ent_id)!=2)||(pev_valid(tg_id)!=2)){
@@ -367,7 +369,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
-	if(sh_user_has_hero(id,gHeroID)&&(floatround(mate_health)>=shinobu_get_max_hp())){
+	if(sh_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_get_max_hp())){
 
 		return false
 	}

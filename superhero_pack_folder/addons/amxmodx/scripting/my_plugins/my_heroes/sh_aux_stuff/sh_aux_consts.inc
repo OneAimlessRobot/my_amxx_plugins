@@ -63,7 +63,7 @@
 
 //entity constants
 
-stock const PDATA_SAFE = 2
+#define PDATA_SAFE  2
 
 //player flags
 
@@ -272,8 +272,11 @@ stock const LineColors[sh_custom_color][3] = {
 	{50, 50, 50},  //fx_metylphenidate
 	{179, 66, 5} //fx_bath
 }
+
+
 stock const Float:g_fPrimaryAttackDelay[CSW_LAST_WEAPON+1] = {
 					
+					0.000000,
 					0.150000,
 					0.000000,
 					1.250000,
@@ -307,6 +310,7 @@ stock const Float:g_fPrimaryAttackDelay[CSW_LAST_WEAPON+1] = {
 }
 stock const Float:g_fSecondaryAttackDelay[CSW_LAST_WEAPON+1] = {
 					
+					0.000000,
 					0.150000,
 					0.000000,
 					0.300000,
@@ -339,6 +343,7 @@ stock const Float:g_fSecondaryAttackDelay[CSW_LAST_WEAPON+1] = {
 					0.065999
 }
 stock const g_ammo_ids_for_weapon_ids[CSW_LAST_WEAPON+1]={
+					0,
 					9,
 					0,
 					2,
@@ -419,6 +424,12 @@ stock const player_vector[][]={"player"},
 
 
 
+			},
+
+			player_worldspawn_array[][]={
+				
+				"worldspawn",
+				"player"
 			}
 #define length_of_trace_attack_entity_array 15
 

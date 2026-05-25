@@ -386,7 +386,7 @@ public torpedo_touch(pToucher, pTouched) {
 			if( vic == id ) damage = floatround(damage / 2.0)
 
 			// Need hurt sound and small screen shake
-			sh_extra_damage(vic, id, damage, "lancerz")
+			sh_extra_damage(vic, id, damage)
 
 			// Make them feel it
 			new Float:fl_vicVelocity[3]

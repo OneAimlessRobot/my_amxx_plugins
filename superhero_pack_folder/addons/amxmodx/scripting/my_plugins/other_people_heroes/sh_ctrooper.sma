@@ -158,8 +158,7 @@ public sh_hero_init(id, heroID, mode){
 		new extraDamage = floatround(damage * cvar_val(float, pcvar_extra_lazadmg) - damage)
 		
 		if (extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, 
-					dmg_source_name_log_lazah_guun,
+			sh_extra_damage(id, attacker, extraDamage,
 					my_hitpoint_enum:bodypart,
 					_,_,_,_,
 					SH_NEW_DMG_ENERGY_BLAST,

@@ -19,6 +19,7 @@
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ester"
+new generic_dmg_shock = -1
 
 new gPedalIsFlooredMask
 new gUnloadingMask
@@ -338,6 +339,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 	period=get_cvar_float("ester_period")
+	generic_dmg_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
 	arrayset(gTimesLeft,cvar_val(num,pcvar_times_per_map),SH_MAXSLOTS+1)
 
 	set_task(period, "Ester_revenge_loop", _, _, _, "b")
@@ -394,7 +396,7 @@ public Ester_revenge_loop(id)
 							if(!is_user_bot(i)){
 								sh_chat_message(i,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
 							}
-							sh_extra_damage(i,i,1, dmg_source_name_log_neuroblast,
+							sh_extra_damage(i,i,1,
 											MY_HIT_HEAD,
 											SH_DMG_KILL,
 											_,_,_,
@@ -402,8 +404,7 @@ public Ester_revenge_loop(id)
 											neuroblast_wpn_id)
 							continue;
 						}
-						sh_extra_damage(i,i,cvar_val(num,pcvar_power_cost), 
-										dmg_source_name_log_neuroblast,
+						sh_extra_damage(i,i,cvar_val(num,pcvar_power_cost),
 										MY_HIT_HEAD,
 										_,_,_,_,
 										SH_NEW_DMG_ENERGY_BLAST,
@@ -474,7 +475,7 @@ public Ester_instant(x, id)
 {
 	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
-	sh_extra_damage(x, id,gEsterDmg[id], dmg_source_name_log_neuroblast,
+	sh_extra_damage(x, id,gEsterDmg[id],
 									MY_HIT_HEAD,
 									_,_,_,_,
 									SH_NEW_DMG_ENERGY_BLAST,
@@ -530,11 +531,10 @@ public ester_damage(id)
 				
 				sh_extra_damage(attacker, id,
 								floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
-								new_dmg_type_names[_:SH_NEW_DMG_SHOCK],
 								my_hitpoint_enum:hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SHOCK,
-								get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
+								generic_dmg_shock)
 
 				directed_spark(attacker, id)
 			}
@@ -591,7 +591,6 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 					if (extraDamage>0){
 					
 						sh_extra_damage(id,attacker,floatround(extraDamage),
-									(weapon==MORALIZER_WEAPON_ID)?dmg_source_name_short_moralizing_ray:dmg_source_name_short_adulting_pan,
 									my_hitpoint_enum:hitgroup,
 									_,_,_,_,_,
 									(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)

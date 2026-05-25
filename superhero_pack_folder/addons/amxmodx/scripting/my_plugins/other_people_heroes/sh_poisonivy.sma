@@ -196,7 +196,6 @@ public poisonivy_loop()
 				new damage = gPoisonDamage[attacker]
 
 				sh_extra_damage(id, attacker, damage,
-											dmg_source_name_short_poison_ivy_drain,
 											_,_,_,_,_,
 											SH_NEW_DMG_DRAIN,
 											custom_dmg_id_poison_ivy_drain)

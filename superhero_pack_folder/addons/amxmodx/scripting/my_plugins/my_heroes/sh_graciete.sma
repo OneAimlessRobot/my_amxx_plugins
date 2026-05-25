@@ -96,11 +96,12 @@ public graciete_damage(id)
 			switch(weapon){
 				
 				case CSW_SHARD_CANNON:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),dmg_source_name_log_shard_cannon,
+					sh_extra_damage(id,attacker,floatround(extraDamage),
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								custom_dmg_id_shard_cannon)
+								
 					sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
 				}
 			}

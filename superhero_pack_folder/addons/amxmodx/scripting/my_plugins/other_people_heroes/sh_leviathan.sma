@@ -279,9 +279,14 @@ public leviathan_damage(id)
 
 	if (sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker!=id) {
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)
-		if (extraDamage>0) if (get_user_health(id)>extraDamage) 
-			sh_extra_damage(id, attacker, extraDamage, "leviathan")
-		else sh_extra_damage(id, attacker, get_user_health(id)-generate_int(1,6), "leviathan")
+		if (extraDamage>0){
+			if (get_user_health(id)>extraDamage){
+				sh_extra_damage(id, attacker, extraDamage)
+			}
+		}
+		else{
+			sh_extra_damage(id, attacker, get_user_health(id)-generate_int(1,6))
+		}
 	}
 	return PLUGIN_CONTINUE
 }

@@ -209,7 +209,7 @@ bool:heal_teamate(id,i){
 	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*
 			cvar_val(float, pcvar_points_heal_coeff),_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
-		sh_extra_damage(id,id,floatround(values[0]),"Selflessness")
+		sh_extra_damage(id,id,floatround(values[0]))
 		heal_stream(id,i,_,190)
 	}
 	return result

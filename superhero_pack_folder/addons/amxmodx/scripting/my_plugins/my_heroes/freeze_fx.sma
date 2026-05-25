@@ -17,6 +17,7 @@ new is_frozen_mask = 0
 new Float:g_fMaxSpeed[SH_MAXSLOTS+1]
 new FREEZE_TASK_ID
 
+new custom_dmg_source_blunt_trauma = -1
 public plugin_init(){
 	
 	
@@ -25,6 +26,9 @@ public plugin_init(){
 	register_event("Damage", "frozen_damage", "b", "2!0")
     
 	
+}
+public plugin_cfg(){
+	custom_dmg_source_blunt_trauma = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_TRAUMA)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -56,17 +60,17 @@ public frozen_damage(id)
 
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
 		if (floatround(extraDamage)>0){
-			sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_BLUNT_TRAUMA],
+			sh_extra_damage(id, attacker, floatround(extraDamage),
 										my_hitpoint_enum:bodypart ,
 										_,_,_,_,
 										SH_NEW_DMG_BLUNT_TRAUMA,
-										get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_TRAUMA))
+										custom_dmg_source_blunt_trauma)
 		}
 	}
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(is_frozen_mask,victim)){

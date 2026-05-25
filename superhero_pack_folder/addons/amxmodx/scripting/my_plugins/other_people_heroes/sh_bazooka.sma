@@ -262,7 +262,7 @@ public bazooka_missile_touch(pToucher, pTouched) {
 			dRatio = floatdiv(float(dist),float(damradius))
 			damage = maxdamage - floatround( maxdamage * dRatio)
 
-			sh_extra_damage(i, id, damage, "Bazooka" )
+			sh_extra_damage(i, id, damage)
 
 		}
 	}

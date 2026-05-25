@@ -76,13 +76,14 @@ new dmg_source_name_short_cyanide[SAFE_BUFFER_SIZE+1]="cyanide"
 new dmg_source_name_log_cyanide[SAFE_BUFFER_SIZE+1]="cyanide"
 new custom_dmg_id_cyanide
 
+new generic_dmg_poison_id = -1
+
 public plugin_init(){
 
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 
 register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true, true)
-//register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon",_, true, false)
 
 register_ham_hook_multiple(Ham_TraceAttack,
 					full_entity_array_for_trace_attack,
@@ -131,7 +132,9 @@ register_event("CurWeapon", "weaponChange", "be", "1=1")
 init_hud_syncs()
 }
 
-
+public plugin_cfg(){
+	generic_dmg_poison_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON)
+}
 public plugin_natives(){
 
 
@@ -179,7 +182,6 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 				
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							dmg_source_name_log_crackhead_rage,
 							my_hitpoint_enum:bodypart ,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
@@ -201,7 +203,6 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 		
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							dmg_source_name_log_poison_vuln,
 							my_hitpoint_enum:bodypart ,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
@@ -212,7 +213,7 @@ public fx_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_att=(gatling_get_fx_num(attacker));
@@ -268,14 +269,14 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 {
 	if(pev_valid(weapon_ent)!=2){
 
-		return HAM_IGNORED;
+		return
 	}
 	if ( !sh_is_active() ){
-		return HAM_IGNORED
+		return
 	}
 	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(owner)){
-		return HAM_IGNORED
+		return
 	}
 
 	
@@ -283,7 +284,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 	
 	if(iClip<=0){
 
-		return HAM_IGNORED
+		return
 
 	}
 	new fx_id:fx_num_of_owner=gatling_get_fx_num(owner)
@@ -301,9 +302,6 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 		
 		}
 	}
-	
-
-	return HAM_IGNORED
 }
 
 public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
@@ -501,7 +499,6 @@ kill_user(id,attacker){
 						LineColors[FX_COLOR_OFFSET(KILL)][2], 50)
 
 	sh_extra_damage(id,attacker,1,
-				dmg_source_name_log_cyanide,
 				_,
 				SH_DMG_KILL,
 				_,_,_,
@@ -537,10 +534,9 @@ public poison_task(any:array[3],id){
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_connected(array[1])) return
 	sh_extra_damage(id,array[1],floatround(float(get_user_health(id))*
 							(POISON_DAMAGE_PCT*((sh_get_user_is_bleeding(id)?2.0:1.0)))),
-							new_dmg_type_names[_:SH_NEW_DMG_DRUG_POISON],
 							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
-							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON))
+							generic_dmg_poison_id)
 	
 	sh_set_stun(id,0.33,140.0)
 	emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)

@@ -104,7 +104,7 @@ public kenshin_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("kenshin_knifemult") - damage)
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
+			sh_extra_damage(id, attacker, extraDamage, my_hitpoint_enum:bodypart)
 		}
 	}
 }

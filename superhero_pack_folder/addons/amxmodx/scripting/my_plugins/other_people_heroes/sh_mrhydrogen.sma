@@ -94,7 +94,7 @@ mrhydrogen_stop_powers(id)
 	{
 	new extraDamage = floatround(damage * get_cvar_float("mrhydrogen_knifemult") - damage)
 	if (extraDamage > 0)
-	sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
+	sh_extra_damage(id, attacker, extraDamage,  my_hitpoint_enum:bodypart)
 	if (!gIsHitByMrHydrogen[id])
 	{
 	gIsHitByMrHydrogen[id] = true

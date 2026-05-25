@@ -19,7 +19,7 @@
 
 new RADIOACTIVE_TASK_ID
 
-
+new generic_dmg_id_radiation_poison = -1
 
 
 enum{
@@ -56,7 +56,10 @@ public plugin_init(){
 				0)
 }
 
+public plugin_cfg(){
 
+	generic_dmg_id_radiation_poison = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_RADIATION_POISON)
+}
 public plugin_natives(){
 
 	register_native("track_user","_track_user",0);
@@ -76,7 +79,7 @@ public tracked_damage(id)
 		case RADIOACTIVE:{
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
 			if (floatround(extraDamage)>0){
-				sh_extra_damage(id, attacker, floatround(extraDamage),dmg_source_name_log_tracked_vuln,
+				sh_extra_damage(id, attacker, floatround(extraDamage),
 											my_hitpoint_enum:bodypart,
 											_,_,_,_,
 											SH_NEW_DMG_RADIATION_POISON,
@@ -88,7 +91,7 @@ public tracked_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));
@@ -98,7 +101,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
 			if (floatround(extraDamage)>0){
 				new_dmg_type=SH_NEW_DMG_RADIATION_POISON
-				custom_weapon_id=custom_dmg_id_tracked_vuln
 				damage=floatround(extraDamage)
 			}
 		}
@@ -157,10 +159,9 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(
 									float(get_user_health(id))*
 									Float:array[TRACK_TASK_DAMAGE_HEALTH_PCT]),
-							new_dmg_type_names[_:SH_NEW_DMG_RADIATION_POISON],
 							_,_,_,_,_,
 							SH_NEW_DMG_RADIATION_POISON,
-							get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_RADIATION_POISON))
+							generic_dmg_id_radiation_poison)
 		}
 		if(array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS]){
 			

@@ -603,7 +603,7 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	g_times_player_spiked_by_player[victim][killer]++
 	untrack_spore(pToucher)
 
-	sh_extra_damage(victim, killer, damage_to_do, remove_godmode?dmg_source_name_log_slay:dmg_source_name_log_spore,
+	sh_extra_damage(victim, killer, damage_to_do,
 					remove_godmode?MY_HIT_HEAD:MY_HIT_GENERIC,
 					_,_,_,_,
 					SH_NEW_DMG_DRAIN,

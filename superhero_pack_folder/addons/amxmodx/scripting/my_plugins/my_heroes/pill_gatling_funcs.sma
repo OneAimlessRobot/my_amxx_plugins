@@ -163,16 +163,16 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 public Item_PostFrame_Post(iEnt)
 {    
 	if (!sh_is_active()){
-		return HAM_IGNORED
+		return
 	}
 	if(pev_valid(iEnt) != 2){
-		return HAM_IGNORED
+		return
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer,XO_WEAPON)
 	
 	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
-		return HAM_IGNORED
+		return
 	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, YAKUI_WEAPON_CLASSID)
@@ -192,7 +192,6 @@ public Item_PostFrame_Post(iEnt)
 		
 		fInReload = 0
 	}
-	return HAM_IGNORED
 }
 //sound and anim
 public fwd_StartFrame() {

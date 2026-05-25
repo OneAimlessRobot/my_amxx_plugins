@@ -46,7 +46,7 @@ public client_connect(id)
 	gKillCount[id] = 0
 }
 //----------------------------------------------------------------------------------------------
-public sh_client_death(victim, attacker, headshot)
+public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
 	if ( !sh_is_active() || !sh_user_has_hero(attacker,gHeroID) ) return
 	
@@ -60,7 +60,7 @@ public sh_client_death(victim, attacker, headshot)
 			
 			sh_add_hp(attacker, get_pcvar_num(pCvarGain), true)
 		}
-		else if ( gKillCount[attacker] <= get_pcvar_num(pCvarKills) && headshot )
+		else if ( gKillCount[attacker] <= get_pcvar_num(pCvarKills) && (bodypart==MY_HIT_HEAD) )
 		{
 			gKillCount[attacker] = 0
 

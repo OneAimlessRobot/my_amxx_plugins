@@ -58,7 +58,7 @@ new dmg_source_name_short_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_d
 new dmg_source_name_log_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
 new ester_flight_drain_wpn_id
 
-
+new generic_dmg_source_shock = -1
 
 new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_POSITION_CHECK_TASKID,
@@ -118,6 +118,7 @@ public plugin_cfg(){
 								dmg_source_name_short_ester_flight_drain,
 								dmg_source_name_log_ester_flight_drain,
 								0)
+	generic_dmg_source_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
 }
 public ester_drain_loop(task_id){
 
@@ -170,7 +171,6 @@ public ester_drain_loop(task_id){
 					+1
 		
 		sh_extra_damage(id, id, lost_hp,
-					dmg_source_name_short_ester_flight_drain,
 					_,_,_,_,_,
 					SH_NEW_DMG_DRAIN,
 					ester_flight_drain_wpn_id)
@@ -219,10 +219,9 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		
 			sh_extra_damage(attacker, id,floatround(
 					cvar_val(float, pcvar_ester_damage_reflect_coeff)*damage),
-				new_dmg_type_names[_:SH_NEW_DMG_SHOCK],
 				_,_,_,_,_,
 				SH_NEW_DMG_SHOCK,
-				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK))
+				generic_dmg_source_shock)
 
 
 			directed_spark(id, attacker)
@@ -418,7 +417,7 @@ public plugin_precache()
 }
 //---------------------------------------------------------------------------------------------- 
 
-public sh_client_death(id, killer, headshot, const wpnDescription[]){
+public sh_client_death(id, killer){
 	if ( !sh_is_inround()){
 		return PLUGIN_CONTINUE
 	}

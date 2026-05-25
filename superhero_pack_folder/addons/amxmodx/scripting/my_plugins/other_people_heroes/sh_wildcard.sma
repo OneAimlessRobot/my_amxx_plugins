@@ -133,8 +133,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		new extraDamage = floatround(damage * get_pcvar_float(pCvarAK47Mult) - damage)
 		if ( extraDamage > 0){
 
-			sh_extra_damage(victim, attacker, extraDamage, 
-						dmg_source_name_short_wildcard_superak,
+			sh_extra_damage(victim, attacker, extraDamage,
 						my_hitpoint_enum:hitplace,
 						_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,
@@ -233,7 +232,6 @@ public fm_Touch_Player(ptr, ptd)
 	}
 
 	sh_extra_damage(victim, id, maxDamage,
-				dmg_source_name_short_wildcard_burst,
 				the_hitpoint,
 				SH_DMG_NORM,
 				SH_EXTRA_DMG_FLAG_STUN,

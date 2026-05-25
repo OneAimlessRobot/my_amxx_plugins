@@ -429,7 +429,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				headshot=true;
 				damage*=4.0;
 			}
-			sh_extra_damage(pTouched,oid,floatround(damage),dmg_source_name_log_super_dart,
+			sh_extra_damage(pTouched,oid,floatround(damage),
 						the_hitpoint,
 						_,_,_,_,
 						SH_NEW_DMG_BLEED,

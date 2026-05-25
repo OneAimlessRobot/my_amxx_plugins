@@ -30,6 +30,8 @@ new g_num_mega_counters_enemy[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
 new g_teliko_enemies_masks[SH_MAXSLOTS+1]
 
+new generic_dmg_super_bullet = -1
+
 new bool:sound_t_played= false,
 	bool:sound_ct_played= false
 
@@ -85,7 +87,11 @@ public plugin_init()
 	
 	init_explosion_defaults()
 }
+public plugin_cfg(){
+	
+	generic_dmg_super_bullet = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SUPER_BULLET)
 
+}
 public plugin_natives(){
 
 	register_native("teliko_get_hero_id","_teliko_get_hero_id",0);
@@ -335,11 +341,11 @@ if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[atta
 	
 	new Float:extraDamage = damage * cvar_val(float, pcvar_COUNTER_DMG_Mult) - damage
 	if (floatround(extraDamage)>0){
-		sh_extra_damage(id, attacker, floatround(extraDamage),new_dmg_type_names[_:SH_NEW_DMG_SUPER_BULLET],
+		sh_extra_damage(id, attacker, floatround(extraDamage),
 			my_hitpoint_enum:bodypart,
 			_,_,_,_,
 			SH_NEW_DMG_SUPER_BULLET,
-			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SUPER_BULLET))
+			generic_dmg_super_bullet)
 	}
 	if(headshot){
 		emit_sound(attacker, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)

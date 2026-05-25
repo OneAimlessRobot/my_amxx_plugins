@@ -139,7 +139,7 @@ public scorpion_hookOn(id)
 
 			if ( mode >= 2 ) {
 				if ( !get_user_godmode(hooktarget) ) blood_spurt(hooktarget, id)
-				sh_extra_damage(hooktarget, id, get_cvar_num("scorpion_speardmg"), "Scorpion Spear")
+				sh_extra_damage(hooktarget, id, get_cvar_num("scorpion_speardmg"))
 				shStun(hooktarget, get_cvar_num("scorpion_stuntime"))
 				set_user_maxspeed(hooktarget, 100.0)
 			}
@@ -158,7 +158,7 @@ public scorpion_hookOn(id)
 			new ffOn = get_cvar_num("mp_friendlyfire")
 			if ( ffOn && mode >= 2 ) {
 				if ( !get_user_godmode(hooktarget) ) blood_spurt(hooktarget, id)
-				sh_extra_damage(hooktarget, id, get_cvar_num("scorpion_speardmg"), "Scorpion Spear")
+				sh_extra_damage(hooktarget, id, get_cvar_num("scorpion_speardmg"))
 				shStun(hooktarget, get_cvar_num("scorpion_stuntime"))
 				set_user_maxspeed(hooktarget, 100.0)
 			}
@@ -275,7 +275,7 @@ public uppercut(parm[])
 
 	entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
 
-	sh_extra_damage(vic, id, get_cvar_num("scorpion_uppercutdmg"), "Scorpion Uppercut")
+	sh_extra_damage(vic, id, get_cvar_num("scorpion_uppercutdmg"))
 }
 //----------------------------------------------------------------------------------------------
 public scorpion_fight_on(id, enemy)

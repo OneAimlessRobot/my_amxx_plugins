@@ -110,7 +110,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
 			set_user_godmode(id,0)
-			sh_extra_damage(id, attacker, 1, CHIKOI_THE_MAID_PHYSICAL_PROPERTY, MY_HIT_HEAD,SH_DMG_KILL,
+			sh_extra_damage(id, attacker, 1, MY_HIT_HEAD,SH_DMG_KILL,
 						_,_,_,
 						SH_NEW_DMG_SQUASHED,custom_dmg_id)
 
@@ -122,7 +122,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
@@ -136,10 +136,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		new bool:is_self_drain_damage= ((victim==attacker)&&(new_dmg_type==SH_NEW_DMG_DRAIN))
 		if(headshot&&!is_self_drain_damage){
 			
-			arrayset(wpnDescription,0,sizeof wpnDescription)
 			set_user_godmode(victim,0)
-			copy(wpnDescription, strlen(CHIKOI_THE_MAID_PHYSICAL_PROPERTY),CHIKOI_THE_MAID_PHYSICAL_PROPERTY)
-			custom_weapon_id=custom_dmg_id
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
 			new_dmg_type=SH_NEW_DMG_SQUASHED
@@ -163,14 +160,15 @@ public plugin_precache()
 	}
 	
 }
-public sh_client_death(id,killer)
+public sh_client_death(id,killer,my_hitpoint_enum:hitpoint,custom_wpn_id)
 {
 	if ( !is_user_connected(id)){
 		return
 	}
 	if(sh_user_has_hero(id,gHeroID) ){
-		emit_sound(id, CHAN_VOICE, chikoi_death_sounds[generate_int(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
-		
+		if(custom_wpn_id==custom_dmg_id){
+			emit_sound(id, CHAN_VOICE, chikoi_death_sounds[generate_int(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
+		}
 		if(is_user_connected(killer)&&(killer!=id)){
 			dmg_message(id,killer)
 		}

@@ -24,6 +24,8 @@ new g_zenitsu_is_charging_mask = 0
 new g_zenitsu_was_charging_mask = 0
 new g_zenitsu_is_glowing_mask = 0
 
+new generic_super_emo = -1
+
 new Float:g_zenitsu_curr_charge_look_direction[SH_MAXSLOTS+1][3]
 
 public plugin_init(){
@@ -56,7 +58,7 @@ public Fwd_PlayerPreThink(id)
 public plugin_cfg(){
 
 	gHeroID = zenitsu_get_hero_id()
-
+	generic_super_emo = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE)
 }
 public plugin_precache(){
 
@@ -204,11 +206,10 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 	
 	set_user_godmode(pTouched,0)
 	sh_extra_damage(pTouched,pToucher,floatround(ZENITSU_DAMAGE),
-				new_dmg_type_names[_:SH_NEW_DMG_IVE_STUDIED_THE_BLADE],
 				MY_HIT_HEAD,
 				_,_,_,_,
 				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
-				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_IVE_STUDIED_THE_BLADE))
+				generic_super_emo)
 
 	if(!is_user_alive(pTouched)){
 		new Float:vic_origin[3],Float:origin[3]

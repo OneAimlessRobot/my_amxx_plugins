@@ -129,7 +129,6 @@ stock covert_spike_damage(id){
 				dmg_to_drain = tg_health - remaining
 				
 				sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
-						dmg_source_name_short_ksun_debt,
 						_,_,_,_,_,
 						SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
 				ksun_heal(id,dmg_to_drain)
@@ -518,7 +517,7 @@ stock ksun_death_handler(id){
 	}
 
 }
-public sh_client_death(id, killer, headshot, const wpnDescription[]){
+public sh_client_death(id, killer){
 	
 	ksun_death_handler(id)
 	if(is_user_alive(killer)&&is_user_connected(id)){
@@ -555,7 +554,7 @@ public sh_client_death(id, killer, headshot, const wpnDescription[]){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

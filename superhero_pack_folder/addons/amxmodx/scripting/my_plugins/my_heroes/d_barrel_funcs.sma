@@ -467,15 +467,15 @@ public fw_Weapon_Reload_Post(ent)
 public fw_Item_PostFrame(ent)
 {
 	if(pev_valid(ent)!=2){
-		return
+		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
-		return
+		return HAM_IGNORED
 	}
-	if(!Get_BitVar(g_Had_Volcano, id)) return
+	if(!Get_BitVar(g_Had_Volcano, id)) return HAM_IGNORED
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
@@ -492,6 +492,7 @@ public fw_Item_PostFrame(ent)
 	
 		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
 	}
+	return HAM_IGNORED
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)

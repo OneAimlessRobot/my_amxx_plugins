@@ -246,26 +246,24 @@ public fw_PrimaryAttack(entity)
 public fw_PrimaryAttack_Post(entity)
 {
 	if (!is_valid_ent(entity))
-		return HAM_IGNORED;
+		return
 
 	new id = get_pdata_cbase(entity, 41, 4);
 
 	if (!is_user_alive(id))
-		return HAM_IGNORED;
+		return
 
 	if (!g_has_speargun[id])
-		return HAM_IGNORED;
+		return
 
 	if (!g_speargun_clip[id])
-		return HAM_IGNORED;
+		return
 
 	g_primary_attack = false;
 
 	UTIL_PlayWeaponAnim(id, random_num(1, 2));
 
 	emit_sound(id, CHAN_WEAPON, SPEAR_SOUNDS[0], VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-
-	return HAM_IGNORED;
 }
 
 public fw_Item_Deploy_Post(entity)

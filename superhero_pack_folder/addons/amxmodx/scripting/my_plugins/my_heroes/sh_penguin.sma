@@ -365,7 +365,7 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			new extraDamage = floatround(damage * cvar_val(float, pcvar_dmg_mult) - damage)
 			if (extraDamage > 0){
 				
-				sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_penguin,
+				sh_extra_damage( id, attacker, extraDamage,
 								_,_,_,_,_,
 								SH_NEW_DMG_FRAG_BLAST,
 								custom_dmg_id_penguin_homing_grenade)

@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CUSTOM_WEAPONS
 
@@ -13,14 +14,16 @@
 #define KOMAK_BLOWN_ENGINE "shmod/komak/engine_down.wav"
 #define KOMAK_FAST_SHOT "shmod/komak/fast_shot.wav"
 
-#define BLOW_ENGINE 0
-#define RESET_ON_MISS 1
+new BLOW_ENGINE = 0
+new RESET_ON_MISS = 1
 
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Komak the Maid Mk. II"
 new g_komak_hits[SH_MAXSLOTS+1]
 new g_komak_gear[SH_MAXSLOTS+1]
+new Float:komakeria_recoil_vector[SH_MAXSLOTS+1][3]
+new Float:gCurrRecoilRatio[SH_MAXSLOTS+1]
 new Float:gCurrReloadRatio[SH_MAXSLOTS+1]
 new Float:gCurrFireRatio[SH_MAXSLOTS+1]
 new gClutchDown_mask = 0
@@ -35,10 +38,13 @@ new const top_speed_color[4]={1,1,255,1}
 #define MAX_GEARS 10
 new Float:gear_ratios[MAX_GEARS]
 
+new pcvar_base_recoil_ratio
 new pcvar_base_reload_ratio
 new pcvar_base_fire_ratio
+new pcvar_max_recoil_ratio
 new pcvar_max_reload_ratio
 new pcvar_max_fire_ratio
+new pcvar_recoil_ratio_per_hit
 new pcvar_reload_ratio_per_hit
 new pcvar_fire_ratio_per_hit
 new pcvar_blown_engine_cooldown
@@ -63,28 +69,40 @@ public plugin_init()
 	register_cvar("komak_max_gears", "5")
 	register_cvar("komak_red_line", "20")
 	register_cvar("komak_gear_ratio", "3")
-	
+	//recoil_ratio
+	pcvar_base_recoil_ratio = register_cvar("komak_base_recoil_ratio", "0.2")
 	pcvar_base_reload_ratio = register_cvar("komak_base_reload_ratio", "0.2")
 	pcvar_base_fire_ratio = register_cvar("komak_base_fire_ratio", "0.2")
+
+	pcvar_max_recoil_ratio = register_cvar("komak_max_recoil_ratio", "0.2")
 	pcvar_max_reload_ratio = register_cvar("komak_max_reload_ratio", "0.2")
 	pcvar_max_fire_ratio = register_cvar("komak_max_fire_ratio", "0.2")
+	
+	pcvar_recoil_ratio_per_hit = register_cvar("komak_recoil_ratio_per_hit", "0.2")
 	pcvar_fire_ratio_per_hit = register_cvar("komak_fire_ratio_per_hit", "0.2")
 	pcvar_reload_ratio_per_hit = register_cvar("komak_reload_ratio_per_hit", "0.2")
+	
 	pcvar_blown_engine_cooldown = register_cvar("komak_blown_engine_cooldown", "30" )
 	
 	gHeroID=shCreateHero(gHeroName, "Mechanical maid", "Change gears, hit players and hit faster!", true, "komak_level" )
 	hud_sync=CreateHudSyncObj()
 
+	//register_forward(FM_TraceLine,"trace_komakery_hit_on_right_arm");
 	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_on_right_arm",0,true)
-
-	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_player_post",1,true)
-	RegisterHam(Ham_TraceAttack,"worldspawn","trace_komakery_hit_worldspawn_post",1,true)
+	register_ham_hook_multiple(Ham_TraceAttack,
+					full_entity_array_for_trace_attack,
+					length_of_trace_attack_entity_array,
+					"trace_komakery_hit",
+					1,
+					true)
 						
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon",_, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Pre",_, true, false)
+		
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Post",1, true, false)
 
 	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,single_shot_wpns_bs,"Item_PostFrame_Post",1, true, false)
 
-	set_task(1.0, "engine_repair_loop",_,_,_, "b")
+	set_task(1.0, "komak_loop",_,_,_, "b")
 }
 
 
@@ -115,9 +133,10 @@ public sh_hero_init(id, heroID, mode){
 public komak_is_top_speed(id){
 
 	return !((gCurrFireRatio[id]<cvar_val(float, pcvar_max_fire_ratio))||
-			(gCurrReloadRatio[id]<cvar_val(float, pcvar_max_reload_ratio)))
+			(gCurrReloadRatio[id]<cvar_val(float, pcvar_max_reload_ratio))||
+			(gCurrRecoilRatio[id]<cvar_val(float, pcvar_max_recoil_ratio)))
 }
-public Komak_Fire_Weapon(entity)
+public Komak_Fire_Weapon_Pre(entity)
 {
 
 	if(pev_valid(entity)!=2)
@@ -129,12 +148,52 @@ public Komak_Fire_Weapon(entity)
 	if(!client_is_hero_user(id, gHeroID)){
 		return HAM_IGNORED
 	}
-	if(gCurrFireRatio[id]<=1.0){
+	if(g_komak_hits[id]<=0){
 		return HAM_IGNORED
 	}
+	entity_get_vector(id, EV_VEC_punchangle,komakeria_recoil_vector[id])
+		
 	return do_fast_shot(entity,gCurrFireRatio[id])
 
 }
+
+//----------------------------------------------------------------------------------------------
+public Komak_Fire_Weapon_Post(weapon_ent)
+{
+	if(pev_valid(weapon_ent)!=2){
+
+		return
+	}
+	if ( !sh_is_active() ){
+		return
+	}
+	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
+	if(!client_is_hero_user(owner,gHeroID)){
+		return
+	}
+	if(g_komak_hits[owner]<=0){
+		return
+	}
+	static iClip; iClip= get_pdata_int(weapon_ent,m_iClip,XO_WEAPON)
+	
+	if(iClip<=0){
+
+		return
+
+	}
+
+	gCurrRecoilRatio[owner] = (gCurrRecoilRatio[owner]<=0.0)?1.0:gCurrRecoilRatio[owner]
+	static Float:Push[3]
+	entity_get_vector(owner, EV_VEC_punchangle, Push)
+
+	sub_3d_vectors(Push, komakeria_recoil_vector[owner], Push)
+	
+	multiply_3d_vector_by_scalar(Push, 1.0/gCurrRecoilRatio[owner], Push)
+	add_3d_vectors(Push, komakeria_recoil_vector[owner], Push)
+	entity_set_vector(owner, EV_VEC_punchangle, Push)
+
+}
+
 public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 	if(damage<=0.0){
@@ -159,7 +218,7 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 	}
 	return return_result
 }
-public trace_komakery_hit_player_post(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 
 	if(damage<=0.0){
@@ -167,62 +226,67 @@ public trace_komakery_hit_player_post(this, idattacker, Float:damage, Float:dire
 	}
 
 
-	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
+	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ||Get_BitVar(gClutchDown_mask, idattacker) ){
 		
 		return
 	
 	}
 	
+	new tr_handle_thing = create_tr2()
+	if(tr_handle_thing<=0){
+		return
+	}
+	// it can be any other TR handle (such as one from a TR hook)
+	//EngFunc_TraceLine,	// void ) (const float *v1, const float *v2, int fNoMonsters, edict_t *pentToSkip, TraceResult *ptr);
+	static Float:trace_start_vector[3],
+			Float:trace_end_vector[3],
+			Float:true_trace_end_vector[3]
+
+	entity_get_vector(idattacker,EV_VEC_origin,trace_start_vector)
+
+	multiply_3d_vector_by_scalar(direction,9999.0,direction)
+
+	add_3d_vectors(trace_start_vector,direction,trace_end_vector)
+
+	engfunc(EngFunc_TraceLine, trace_start_vector, trace_end_vector, 0,idattacker,tr_handle_thing)
+
+	get_tr2(tr_handle_thing,TR_vecEndPos, true_trace_end_vector)
+
+	new the_entity = get_tr2(tr_handle_thing, TR_pHit)
+
+	free_tr2(tr_handle_thing)
+
 	static blown_engine_cooldown;
 	blown_engine_cooldown = cvar_val(num, pcvar_blown_engine_cooldown)
 	
-	print_entity_info(idattacker,this)
+	new bool:client_hittable_here= (is_user_alive(the_entity)&&!sh_clients_are_same_team(the_entity,idattacker))
 	
-	if(!is_user_alive(this)||sh_clients_are_same_team(this,idattacker)||Get_BitVar(gClutchDown_mask, idattacker)){
+	if(client_hittable_here){
 
-		return
-	}
-	if(g_komak_hits[idattacker]>red_line){
+		if(g_komak_hits[idattacker]>red_line){
+			
+			if(Get_BitVar(LastShotMissed_mask,idattacker)){
+				Assign_BitVar(LastShotMissed_mask, idattacker,false_for_macro)
+			}
+			emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
 		
-		if(Get_BitVar(LastShotMissed_mask,idattacker)){
-			Assign_BitVar(LastShotMissed_mask, idattacker,false_for_macro)
 		}
-		emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
-	
-	}
-	
-	if(!komak_is_top_speed(idattacker)){
-		g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1, max_rpm);
-	}
-	if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
-	
-		reset_komak(idattacker)
-		ultimateTimer(idattacker, blown_engine_cooldown * 1.0)
-		gEngineRepairTimer[idattacker]=blown_engine_cooldown
-		sh_chat_message(idattacker,gHeroID,"Blown engine!!!!")
-		emit_sound(idattacker,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	
 		
-	}
-
-	stats_komak(idattacker)
-	
-}
-public trace_komakery_hit_worldspawn_post(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{
-
-	if(damage<=0.0){
-		return
-	}
-
-	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ){
+		if(!komak_is_top_speed(idattacker)){
+			g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1, max_rpm);
+		}
+		if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
 		
-		return
-	
+			reset_komak(idattacker)
+			ultimateTimer(idattacker, blown_engine_cooldown * 1.0)
+			gEngineRepairTimer[idattacker]=blown_engine_cooldown
+			sh_chat_message(idattacker,gHeroID,"Blown engine!!!!")
+			emit_sound(idattacker,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
+		
+			
+		}
 	}
-	print_entity_info(idattacker,this)
-	
-	if(!Get_BitVar(gClutchDown_mask, idattacker)&&RESET_ON_MISS){
+	else if(RESET_ON_MISS){
 		
 
 		if(!komak_is_top_speed(idattacker)){
@@ -240,9 +304,8 @@ public trace_komakery_hit_worldspawn_post(this, idattacker, Float:damage, Float:
 		
 	}
 	stats_komak(idattacker)
-	
 }
-public engine_repair_loop(id){
+public komak_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
@@ -266,8 +329,8 @@ public engine_repair_loop(id){
 	
 }
 komak_hud(id){
-	static hud_msg[128];
-	formatex(hud_msg,127,"[SH] %s:^nGear: %d|%d^nCurr rpm: %d|%d^nCurrent fire ration: %0.2f^nCurrent reload ration: %0.2f^nEngine broken? %s^n",
+	static hud_msg[200];
+	formatex(hud_msg,charsmax(hud_msg),"[SH] %s:^nGear: %d|%d^nCurr rpm: %d|%d^nCurrent fire ratio: %0.2f^nCurrent reload ratio: %0.2f^nCurrent recoil ratio: %0.2f^nEngine broken? %s^n",
 					gHeroName,
 					g_komak_gear[id],
 					max_gears,
@@ -275,6 +338,7 @@ komak_hud(id){
 					max_rpm,
 					gCurrFireRatio[id],
 					gCurrReloadRatio[id],
+					gCurrRecoilRatio[id],
 					gEngineRepairTimer[id]>0? "Yeah...":"Nope... ALL ready!"
 					);
 	
@@ -327,13 +391,13 @@ public reset_komak(id){
 	}
 
 }
-Float:get_max_added_fire_ratio(id){
+Float:get_max_added_recoil_ratio(id){
 
 	
-	return floatmin(cvar_val(float, pcvar_max_fire_ratio),
+	return floatmin(cvar_val(float, pcvar_max_recoil_ratio),
 				floatmul(floatmul(gear_ratios[clamp(0,g_komak_gear[id]-1)],
 						float(max_rpm)),
-						cvar_val(float, pcvar_fire_ratio_per_hit)))
+						cvar_val(float, pcvar_recoil_ratio_per_hit)))
 	
 
 }
@@ -348,13 +412,25 @@ Float:get_max_added_reload_ratio(id){
 	
 
 }
-Float:get_added_fire_ratio(id){
+Float:get_max_added_fire_ratio(id){
+
+	
+	return floatmin(cvar_val(float, pcvar_max_fire_ratio),
+				floatmul(floatmul(gear_ratios[clamp(0,g_komak_gear[id]-1)],
+						float(max_rpm)),
+						cvar_val(float, pcvar_fire_ratio_per_hit)))
+	
+
+}
+
+
+Float:get_added_recoil_ratio(id){
 
 	
 	new Float:float_hits=float(g_komak_hits[id])
 	
 	return floatmul(float_hits*gear_ratios[clamp(0,g_komak_gear[id]-1)],
-		cvar_val(float, pcvar_fire_ratio_per_hit))
+		cvar_val(float, pcvar_recoil_ratio_per_hit))
 	
 
 }
@@ -367,11 +443,23 @@ Float:get_added_reload_ratio(id){
 	
 
 }
+Float:get_added_fire_ratio(id){
+
+	
+	new Float:float_hits=float(g_komak_hits[id])
+	
+	return floatmul(float_hits*gear_ratios[clamp(0,g_komak_gear[id]-1)],
+		cvar_val(float, pcvar_fire_ratio_per_hit))
+	
+
+}
 stats_komak(id){
 	gCurrFireRatio[id]=floatadd(
 				cvar_val(float, pcvar_base_fire_ratio),floatmin(get_max_added_fire_ratio(id),get_added_fire_ratio(id)))
 	gCurrReloadRatio[id]=floatadd(
 				cvar_val(float, pcvar_base_reload_ratio),floatmin(get_max_added_reload_ratio(id),get_added_reload_ratio(id)))
+	gCurrRecoilRatio[id]=floatadd(
+				cvar_val(float, pcvar_base_recoil_ratio),floatmin(get_max_added_recoil_ratio(id),get_added_recoil_ratio(id)))
 }
 
 public komak_gear_change(id,is_up){
@@ -456,7 +544,7 @@ public komak_ku(id)
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
@@ -478,9 +566,9 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 }
 	
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
+public sh_client_death(id)
 {	
-if(is_user_alive(id) && sh_is_active()&&sh_user_has_hero(id,gHeroID) ){ 
+if(sh_is_active()){ 
 	reset_komak(id)	
 }
 }

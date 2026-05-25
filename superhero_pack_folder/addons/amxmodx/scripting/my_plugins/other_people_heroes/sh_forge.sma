@@ -131,7 +131,7 @@ public missile_touch(pToucher, pTouched) {
 			dRatio = floatdiv(float(dist),float(damradius))
 			damage = maxdamage - floatround( maxdamage * dRatio)
 
-			sh_extra_damage(i, id, damage, "Concussion Missile" )
+			sh_extra_damage(i, id, damage)
 
 			new Float: force = get_cvar_float("Forge_force")
 								

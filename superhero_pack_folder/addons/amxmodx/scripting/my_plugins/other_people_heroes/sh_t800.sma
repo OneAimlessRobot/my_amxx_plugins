@@ -171,7 +171,7 @@ public t800_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("t800_paramult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, "m249",
+			sh_extra_damage( id, attacker, extraDamage,
 					my_hitpoint_enum:bodypart )
 		}
 	}

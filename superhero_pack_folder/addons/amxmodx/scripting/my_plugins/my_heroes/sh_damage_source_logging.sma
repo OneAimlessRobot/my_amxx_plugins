@@ -5,10 +5,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-//By default, plugins have 4KB of stack space.
-//This gives the plugin a little more memory to work with (6144 or 24KB is sh default)
-#pragma dynamic (6144*8)
-
 stock generic_dmg_source_wpn_id;
 const generic_dmg_source_is_melee=0;
 stock generic_dmg_hero_name[MAX_HERO_NAME_LENGTH]="some_hero"
@@ -104,18 +100,4 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
                                     sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
     }*/
     return wpn_id
-}
-
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&wpnid){
-
-    new private_wpn_id = (is_valid_custom_dmg_source(wpnid))?wpnid:generic_dmg_source_wpn_id
-
-    if(private_wpn_id==generic_dmg_source_wpn_id){
-        arrayset(wpnDescription,0,sizeof(wpnDescription))
-        strcat(wpnDescription,generic_dmg_source_name,sizeof(wpnDescription)-1)
-    }
-    
-    wpnid=private_wpn_id
-    
-    return DMG_FWD_PASS;
 }

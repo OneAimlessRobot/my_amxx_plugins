@@ -113,7 +113,8 @@ public greaper_damage(this, attacker)
 {
 
 set_user_godmode(this,0)
-sh_extra_damage(this,attacker,1000,dmg_source_name_log_scythe,MY_HIT_HEAD,
+sh_extra_damage(this,attacker,1000,
+				MY_HIT_HEAD,
 				SH_DMG_KILL,
 				_,_,_,
 				SH_NEW_DMG_DARK_ARTS,

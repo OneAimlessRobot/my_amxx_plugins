@@ -23,9 +23,9 @@ public sh_client_spawn(id)
 	gStartHealth[id] = sh_get_max_hp(id)
 }
 
-public sh_client_death(victim, attacker, headshot)
+public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
-	if ( sh_user_has_hero(attacker,gHeroID)&& headshot == 1 )
+	if ( sh_user_has_hero(attacker,gHeroID)&& (bodypart == MY_HIT_HEAD) )
 	{
 		set_user_health(attacker, gStartHealth[attacker])
 	}

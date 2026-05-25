@@ -257,18 +257,18 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 
 public fw_Weapon_WeaponIdle_Post(Ent)
 {
-	ent_check(Ent,HAM_IGNORED)
+	ent_check(Ent,)
 
 
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 
 	if(!is_user_alive(Id)){
-		return HAM_IGNORED
+		return
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
-		return HAM_IGNORED	
+		return
 	if(!Get_BitVar(g_Had_Arifle, Id))
-		return HAM_IGNORED
+		return
 
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
 	{
@@ -277,8 +277,6 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
 		set_pdata_string(Id, (m_szAnimExtention) * 4, ARIFLE_PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER * 4)
 	}
-	
-	return HAM_IGNORED	
 }
 
 public fw_Item_Deploy_Post(Ent)
@@ -337,17 +335,13 @@ public fw_CheckVisibility(iEntity, pSet)
 
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
-	ent_check(Ent,HAM_IGNORED)
+	ent_check(Ent,)
 		
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Arifle, id)
 		set_pev(Ent, pev_impulse, 0)
-	}		
-	
-	
-
-	return HAM_HANDLED	
+	}
 }
 
 public fw_Item_PostFrame(ent)

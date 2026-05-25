@@ -21,6 +21,7 @@ arcticPredator_explode_maxdamage 250
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "arcticpredator_inc/arcticpredator.inc"
 
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
@@ -37,6 +38,11 @@ new bool:NightVisionUse[SH_MAXSLOTS+1]
 new TASKID_LOOP,
 	TASKID_REVENGE,
 	TASKID_NVG
+
+
+new arctic_predator_self_destroy_id
+new dmg_source_name_short_self_destroy[SAFE_BUFFER_SIZE+1]="self_destroy"
+new dmg_source_name_log_self_destroy[SAFE_BUFFER_SIZE+1]="self_destroy"
 
 new NVGToggle = 0
 new bool:discThrown[SH_MAXSLOTS+1]
@@ -70,6 +76,13 @@ public plugin_init()
 							"arcpred",
 							"",
 							"")
+
+	arctic_predator_self_destroy_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_self_destroy,
+								dmg_source_name_log_self_destroy,
+								0)
+
 	sh_register_superheromod_weapon_model(gHeroID,CSW_AWP,"models/shmod/predgun/predawp.mdl","",_, false)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_SCOUT,"models/shmod/predgun/v_predgun.mdl","models/shmod/predgun/p_predgun.mdl")
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/predgun/predknife.mdl","")
@@ -113,6 +126,17 @@ public sh_hero_init(id, heroID, mode){
 		g_huntTimer[id]=0
 		
 	}
+}
+
+public plugin_natives(){
+
+	register_native("arcticpredator_get_hero_id","_arcticpredator_get_hero_id",0)
+
+}
+
+public _arcticpredator_get_hero_id(iPlugin, iParams){
+
+	return gHeroID
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -512,7 +536,7 @@ if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[atta
 	
 	// do extra damage
 	new extraDamage = 1000
-	sh_extra_damage( id, attacker, extraDamage, "predator gun", my_hitpoint_enum:bodypart  )
+	sh_extra_damage( id, attacker, extraDamage, my_hitpoint_enum:bodypart  )
 }
 return PLUGIN_CONTINUE
 }
@@ -528,7 +552,7 @@ get_user_name(id,name,31)
 shUnglow(id)
 set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_hudmessage(0,"%s has exploded.",name)
-explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE)
+explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_predator_self_destroy_id)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -729,7 +753,7 @@ else
 	new ffOn = get_cvar_num("mp_friendlyfire")
 	if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	{
-		sh_extra_damage(victim, killer, damage, "Predator's Hunter Disc")
+		sh_extra_damage(victim, killer, damage)
 		get_user_origin(victim, vicOrigin)
 		here_blood_spray(victim, vicOrigin)
 	}

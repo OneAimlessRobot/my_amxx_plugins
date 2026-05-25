@@ -288,7 +288,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 		// do extra damage
 		new extraDamage = get_pcvar_num(gPcvarExtraDmg)
 		if ( extraDamage > 0){
-			sh_extra_damage( victim, attacker, extraDamage,  dmg_source_name_log_ricochet_bullet,
+			sh_extra_damage( victim, attacker, extraDamage,
 								my_hitpoint_enum:hitplace,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

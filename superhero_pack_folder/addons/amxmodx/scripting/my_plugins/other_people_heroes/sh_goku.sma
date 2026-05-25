@@ -63,7 +63,6 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 
 // GLOBAL VARIBLES
 new g_heroName[]="Goku"
-new bool:g_inStun[SH_MAXSLOTS+1]
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
 new g_powerNum[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
@@ -218,7 +217,6 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	g_inStun[id] = false
 
 	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
@@ -615,7 +613,6 @@ public goku_power_touch(pToucher, pTouched) {
 				damage = floatround(damage / 2.0)
 			}
 			sh_extra_damage(vic, id, damage,
-								goku_dmgs_arr[g_powerNum[id]][short_dmg_name],
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								goku_dmgs_arr[g_powerNum[id]][the_wpn_id])
@@ -837,7 +834,7 @@ public ssj_boost(id)
 
 	// Speed Boost
 	new speedNum = g_isSaiyanLevel[id] - 1
-	if ( get_user_maxspeed(id) < g_ssjSpeed[speedNum] && !g_inStun[id] ) {
+	if ( get_user_maxspeed(id) < g_ssjSpeed[speedNum] && !sh_get_stun(id)) {
 		set_user_maxspeed(id, g_ssjSpeed[speedNum])
 	}
 
@@ -857,7 +854,7 @@ public ssj_boost(id)
 public curweapon(id)
 {
 	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !sh_is_inround()) return
-	if ( !g_isSaiyanLevel[id] || g_inStun[id] ) return
+	if ( !g_isSaiyanLevel[id] || sh_get_stun(id) ) return
 
 	new wpnid = read_data(2)
 
@@ -895,12 +892,6 @@ public shake_n_stun(id)
 
 		if ( distance <= cvar_val(num,pcvar_radius4)) {
 			sh_screenShake(vic, 14, 14, 14)
-			g_inStun[vic] = true
-
-			shStun(vic, 5)
-			set_user_maxspeed(vic, 150.0)
-
-			set_task(5.0, "reset_instun", vic)
 
 			if ( vic == id ) continue
 			// Let them know why they get shaken and stunned, except the person that leveled
@@ -911,20 +902,6 @@ public shake_n_stun(id)
 		}
 	}
 	explosion(gHeroID,id,float(cvar_val(num, pcvar_powerup_explode_radius_ssj4)),100.0,default_explode_knock_force_magnitude*0.25,_,1)
-}
-//----------------------------------------------------------------------------------------------
-public reset_instun(id)
-{
-	g_inStun[id] = false
-
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
-
-	switch(g_isSaiyanLevel[id]) {
-		case 1: if ( get_user_maxspeed(id) < g_ssjSpeed[0] ) set_user_maxspeed(id, g_ssjSpeed[0])
-		case 2: if ( get_user_maxspeed(id) < g_ssjSpeed[1] ) set_user_maxspeed(id, g_ssjSpeed[1])
-		case 3: if ( get_user_maxspeed(id) < g_ssjSpeed[2] ) set_user_maxspeed(id, g_ssjSpeed[2])
-		case 4: if ( get_user_maxspeed(id) < g_ssjSpeed[3] ) set_user_maxspeed(id, g_ssjSpeed[3])
-	}
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])

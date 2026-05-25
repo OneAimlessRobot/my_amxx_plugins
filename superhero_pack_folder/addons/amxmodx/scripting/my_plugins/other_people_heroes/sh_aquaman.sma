@@ -302,7 +302,7 @@ public drowning(args[])
 		set_pev(id, pev_air_finished, pev(id, pev_air_finished) - 1.0)
 	}
 
-	sh_extra_damage(victim, id, get_pcvar_num(gPcvarBubbleDamage), "bubble attack", _, SH_DMG_NORM, 0, forigin)
+	sh_extra_damage(victim, id, get_pcvar_num(gPcvarBubbleDamage), _, SH_DMG_NORM, _, forigin)
 }
 //----------------------------------------------------------------------------------------------
 public drown_scream(victim)

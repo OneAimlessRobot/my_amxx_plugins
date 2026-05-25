@@ -193,7 +193,7 @@ public vic15_auraloop()
 				Distance = get_distance(Origin, eOrigin)
 				if (Distance < Radius){
 
-					sh_extra_damage(enemy, id, Pain, dmg_source_name_log_victim_drain_aura,
+					sh_extra_damage(enemy, id, Pain,
 											_,_,_,_,_,
 											SH_NEW_DMG_DARK_ARTS,
 											victim_drain_aura_weapon_id)

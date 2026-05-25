@@ -254,7 +254,7 @@ public lightning_effect(id, eid, linewidth)
 public palpatine_instant(x, id)
 {
   new palpatineInstantDamage=get_cvar_num("palpatine_instantdamage")
-  sh_extra_damage( x, id, palpatineInstantDamage, "Emperor Palpatine Instant Damage" )
+  sh_extra_damage( x, id, palpatineInstantDamage)
 }
 //----------------------------------------------------------------------------------------------
 public palpatine_noinstant(x, id)

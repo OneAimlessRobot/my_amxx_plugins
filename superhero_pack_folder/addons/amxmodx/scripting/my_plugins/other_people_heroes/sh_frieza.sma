@@ -283,7 +283,7 @@ public special_effects(pToucher, pTouched, aimvec[3]) //effects for when disk to
 
 		damage = get_cvar_num("frieza_damage")
 		new victim = pTouched
-		sh_extra_damage(victim, killer, damage, "Frieza's Energy Disk")
+		sh_extra_damage(victim, killer, damage)
 	}
 	//Same link for here to http://shero.rocks-hideout.com/forums/viewtopic.php?t=1941
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

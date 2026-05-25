@@ -120,7 +120,7 @@ public ball_touch_player(Ball, Player ) {
 				}
 
 				sh_extra_damage(Player,oid,damage,
-						dmg_source_name_short_free_kick,the_hitpoint
+						the_hitpoint
 						,_,_,_,_,
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)

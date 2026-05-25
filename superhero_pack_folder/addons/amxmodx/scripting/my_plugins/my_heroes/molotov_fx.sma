@@ -29,6 +29,7 @@ new gIsBurningMask = 0
 new dmg_source_name_short_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
 new dmg_source_name_log_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
 new custom_dmg_id_fire_vuln
+new generic_dmg_source_fire = -1
 
 public plugin_init(){
 	
@@ -48,6 +49,7 @@ public plugin_cfg(){
 				dmg_source_name_short_fire_vuln,
 				dmg_source_name_log_fire_vuln,
 				0)
+	generic_dmg_source_fire = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -103,10 +105,10 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
-	sh_extra_damage(id,array[0],BURN_DAMAGE,new_dmg_type_names[_:SH_NEW_DMG_FIRE],
+	sh_extra_damage(id,array[0],BURN_DAMAGE,
 			_,_,_,_,_,
 			SH_NEW_DMG_FIRE,
-			get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FIRE))
+			generic_dmg_source_fire)
 
 	if(Get_BitVar(gIsBurningMask,id)&&(array[1]<BURN_TIMES)){
 		array[1]++
@@ -129,7 +131,6 @@ public molotov_damage_vulnerability(id){
 		if (floatround(extraDamage)>0){
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							dmg_source_name_short_fire_vuln,
 							my_hitpoint_enum:bodypart,
 							_,_,_,_,
 							SH_NEW_DMG_FIRE,
@@ -140,7 +141,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){
@@ -148,7 +149,6 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF - damage
 		if (floatround(extraDamage)>0){
 			new_dmg_type=SH_NEW_DMG_FIRE
-			custom_weapon_id=custom_dmg_id_fire_vuln
 			damage=floatround(extraDamage)
 		}
 	}

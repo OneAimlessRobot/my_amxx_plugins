@@ -104,7 +104,6 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(this, idattacker, floatround(extraDamage),
-						dmg_source_name_short_badass_scout,
 						my_hitpoint_enum:bodypart,
 						_,_,_,_,
 						SH_NEW_DMG_SUPER_BULLET,

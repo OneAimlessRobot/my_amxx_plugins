@@ -37,7 +37,7 @@ new const g_dump_file[] = "weaponinfo.log"
 #define DUMP_INTERVAL 0.1
 #define START_MONEY 10000
 #define WNUM 31
-#define START_WID 1
+#define START_WID 0
 
 new _name[WNUM][32]
 new _clip[WNUM]

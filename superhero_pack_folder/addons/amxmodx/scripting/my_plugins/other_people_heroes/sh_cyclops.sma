@@ -187,7 +187,7 @@ public fire_laser(id)
 		emit_sound(tid, CHAN_BODY, gSoundHit, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, lDamage[tbody-1], "optic blast", tbody == 1 ? 1 : 0, SH_DMG_NORM, true)
+		sh_extra_damage(tid, id, lDamage[tbody-1], my_hitpoint_enum:tbody, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -385,8 +385,9 @@ public touch_Shuriken(ent, id)
 	emit_sound(ent, CHAN_BODY, SOUND_HIT, 0.5, ATTN_NORM, 0, PITCH_NORM)
 
 	new attacker = entity_get_edict(ent, EV_ENT_owner)
-	if(get_user_team(attacker) != get_user_team(id))
-		sh_extra_damage(id, attacker, get_pcvar_num(cvar_shur_damage), "shuriken", 0)
+	if(get_user_team(attacker) != get_user_team(id)){
+		sh_extra_damage(id, attacker, get_pcvar_num(cvar_shur_damage))
+	}
 	remove_entity(ent)
 
 	return PLUGIN_CONTINUE

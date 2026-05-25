@@ -191,8 +191,7 @@ public chucky_damage(id)
 		switch_model(attacker)
 
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_log_super_knife,
+			sh_extra_damage(id, attacker, extraDamage,
 						my_hitpoint_enum:bodypart,
 						_,_,_,_,
 						SH_NEW_DMG_DARK_ARTS,
@@ -332,7 +331,7 @@ public client_connect(id)
 	HasStabbedWithKnife[id] = false
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32], &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

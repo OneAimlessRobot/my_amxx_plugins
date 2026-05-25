@@ -142,7 +142,6 @@ if(attacker_has_hero&&Get_BitVar(g_player_in_ultimate_mask, Attacker)){
 		new Float:dmgAdded= Damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
 		new Float:newDamage=Damage+ dmgAdded
 		sh_extra_damage(Victim,Attacker,floatround(newDamage),
-			dmg_source_name_log_r5,
 			the_hitpoint,
 			_,_,_,_,
 			SH_NEW_DMG_DARK_ARTS,
@@ -338,7 +337,7 @@ public ksun_rifle_fast_shot(entity)
 
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,wpnDescription[32],  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,&custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){
 	

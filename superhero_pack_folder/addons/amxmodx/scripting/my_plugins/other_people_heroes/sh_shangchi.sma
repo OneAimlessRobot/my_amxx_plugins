@@ -131,7 +131,7 @@ public counter_attack(victim, id, moveNumber)
 	// Stupidity check
 	if ( !damage ) ++damage
 
-	sh_extra_damage(victim, id, damage, "kick boxing")
+	sh_extra_damage(victim, id, damage)
 
 	// Make sure he's still alive
 	if ( !is_user_alive(victim) )

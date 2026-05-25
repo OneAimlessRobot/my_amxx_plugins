@@ -146,8 +146,7 @@ public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			// do extra damage
 			new extraDamage = floatround(damage * cvar_val(float, pcvar_dmg_mult) - damage)
 			if (extraDamage > 0) {
-				sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_log_euromilhoes,
+				sh_extra_damage(id, attacker, extraDamage,
 						_,_,_,_,_,
 						SH_NEW_DMG_DARK_ARTS,
 						custom_dmg_id_euromilhoes)

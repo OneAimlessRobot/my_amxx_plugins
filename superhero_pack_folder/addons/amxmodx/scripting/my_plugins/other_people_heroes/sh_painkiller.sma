@@ -89,7 +89,6 @@ public Painkiller_Death(id)
 	if ( is_user_connected(killer) )
 	{
 		sh_extra_damage(id, killer, get_user_health(id)+4,
-						dmg_source_name_log_painkiller_death,
 						MY_HIT_HEAD,
 						_,_,_,_,_,
 						custom_dmg_id_painkiller_death)

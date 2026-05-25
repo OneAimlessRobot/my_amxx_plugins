@@ -227,7 +227,7 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage, "Bass Energy Beam")
+		sh_extra_damage(tid, id, damage)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -260,7 +260,7 @@ public fire_laser(id)
     }
 
     // Deal the Damage
-    sh_extra_damage(tid, id, damage, "Photon Cannon")
+    sh_extra_damage(tid, id, damage)
   }  
 }  
 

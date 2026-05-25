@@ -169,7 +169,7 @@ public veronika_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_ak,
+			sh_extra_damage( id, attacker, extraDamage,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -359,7 +359,7 @@ public veronika_gren_touch(pToucher, pTouched)
 
 do_victim(victim,attacker,damage,tk)
 {	
-	sh_extra_damage(victim,attacker,damage, dmg_source_name_log_grenade,_,_,tk?SH_EXTRA_DMG_FLAG_dmgFFmsg:SH_EXTRA_DMG_FLAG_NONE,_,_,_,custom_dmg_id_grenade)
+	sh_extra_damage(victim,attacker,damage,_,_,tk?SH_EXTRA_DMG_FLAG_dmgFFmsg:SH_EXTRA_DMG_FLAG_NONE,_,_,_,custom_dmg_id_grenade)
 }
 
 

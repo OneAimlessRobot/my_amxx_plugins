@@ -129,7 +129,7 @@ public UberGunner_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
 		if (extraDamage > 0){
 
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_super_m4,
+			sh_extra_damage( id, attacker, extraDamage,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

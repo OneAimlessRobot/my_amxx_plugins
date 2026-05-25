@@ -130,7 +130,7 @@ public SuperNoodle_damage(id)
 	if ( user_has_hero&& weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_super_shotgun,
+			sh_extra_damage( id, attacker, extraDamage,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -140,7 +140,7 @@ public SuperNoodle_damage(id)
 	else if(user_has_hero && weapon == CSW_SCOUT && is_user_alive(id) ){
 		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
 		if(extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_hunt_rifle,
+			sh_extra_damage( id, attacker, extraDamage,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
@@ -152,7 +152,6 @@ public SuperNoodle_damage(id)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
-							dmg_source_name_log_arifle,
 							my_hitpoint_enum:bodypart,
 							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
@@ -164,7 +163,6 @@ public SuperNoodle_damage(id)
 		if(extraDamage > 0){
 
 			sh_extra_damage( id, attacker, extraDamage,
-							dmg_source_name_log_the_pistols,
 							my_hitpoint_enum:bodypart,
 							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,

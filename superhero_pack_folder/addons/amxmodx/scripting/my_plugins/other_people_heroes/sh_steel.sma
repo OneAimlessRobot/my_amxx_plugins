@@ -129,8 +129,7 @@ public steel_damage(id)
 
 	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[attacker] ) {
 
-		sh_extra_damage(id, attacker, damage, 
-								dmg_source_name_short_super_steel_bullet,
+		sh_extra_damage(id, attacker, damage,
 								my_hitpoint_enum:bodypart
 								,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

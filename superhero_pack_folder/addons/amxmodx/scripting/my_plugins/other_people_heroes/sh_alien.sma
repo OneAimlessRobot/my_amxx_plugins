@@ -207,7 +207,7 @@ public alien_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
 		if ( extraDamage > 0 )
-			sh_extra_damage(id, attacker, extraDamage, "knife", my_hitpoint_enum:bodypart)
+			sh_extra_damage(id, attacker, extraDamage, my_hitpoint_enum:bodypart)
 	}
 }
 //----------------------------------------------------------------------------------------------

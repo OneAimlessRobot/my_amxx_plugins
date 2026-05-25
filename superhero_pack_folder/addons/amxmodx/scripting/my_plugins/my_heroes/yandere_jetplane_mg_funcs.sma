@@ -366,7 +366,6 @@ public shell_hit_player(pToucher, pTouched){
 		}
 		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)){
 			sh_extra_damage(pTouched,oid,floatround(damage),
-				dmg_source_name_short_mg_gatling, 
 				the_hitpoint,
 				SH_DMG_NORM,
 				_,_,

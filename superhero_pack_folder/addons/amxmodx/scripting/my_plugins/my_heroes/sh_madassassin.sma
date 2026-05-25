@@ -161,7 +161,7 @@ public madassassin_damage(id)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarAwpDmgMult) - damage)
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage, "awp", my_hitpoint_enum:bodypart )
+			sh_extra_damage(id, attacker, extraDamage, my_hitpoint_enum:bodypart )
 		}
 	}
 	return HAM_IGNORED

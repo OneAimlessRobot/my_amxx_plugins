@@ -92,7 +92,6 @@ public rattler_damage(id)
 		if (returnDamage > 0)
 		{
 			sh_extra_damage( attacker, id, returnDamage, 
-								dmg_source_name_short_rat,
 								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_DARK_ARTS,

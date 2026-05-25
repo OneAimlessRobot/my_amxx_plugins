@@ -225,7 +225,7 @@ stock print_entity_info(id, ent){
 
 	if(!is_valid_ent(ent)){
 
-		client_print(id, print_center, "That entity with id %d is an invalid entity!^n",ent)
+		client_print(id, print_chat, "That entity with id %d is an invalid entity!^n",ent)
 		return
 	}
 
@@ -237,7 +237,7 @@ stock print_entity_info(id, ent){
 	
 	pev(ent, pev_health, health)
 
-	client_print(id, print_center, "That entity with id %d...^n - is a(n) ^"%s^"^nThese are its properties:^n- Has %0.5f health points",ent,szClassname,health)
+	client_print(id, print_chat, "That entity with id %d...^n - is a(n) ^"%s^"^nThese are its properties:^n- Has %0.5f health points",ent,szClassname,health)
 
 
 }
@@ -246,7 +246,12 @@ stock print_entity_info(id, ent){
 
 stock do_fast_shot(Ent,Float:speed=1.0){
 	
-	
+	static secret_code = -1;
+	secret_code= get_weapon_secret_code(Ent)
+	if(secret_code<0){
+
+		ExecuteHam(Ham_Weapon_PrimaryAttack,Ent)
+	}
 	static Float:Delay,Float:M_Delay
 	Delay =floatdiv(g_fPrimaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)] ,speed)
 	M_Delay =floatdiv(g_fSecondaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)]  ,speed)
@@ -260,13 +265,7 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 		set_pdata_float( Ent, m_flNextSecondaryAttack, M_Delay, XO_WEAPON)
 	}
 	
-	
-	static secret_code = -1;
-	secret_code= get_weapon_secret_code(Ent)
-	if(secret_code>=0){
-		return HAM_SUPERCEDE
-	}
-	return HAM_IGNORED
+	return HAM_SUPERCEDE
 }
 
 #if !defined _reapi_included 

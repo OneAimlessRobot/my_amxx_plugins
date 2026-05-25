@@ -131,7 +131,7 @@ public blow_up(id)
 	// Kill id first, if alive, because he is the bomb
 	if ( is_user_alive(id) ) {
 		set_pev(id, pev_takedamage, DAMAGE_AIM)		// Make sure they dont have godmode so we can kill them
-		sh_extra_damage(id, id, 0, "suicide bomb", _, SH_DMG_KILL)
+		sh_extra_damage(id, id, 0, _, SH_DMG_KILL)
 	}
 
 	get_user_name(id, name, 31)
@@ -152,7 +152,7 @@ public blow_up(id)
 				dRatio = distanceBetween / dmgRadius
 				damage = maxDamage - floatround(maxDamage * dRatio)
 				if ( !damage ) damage = 1	// Incase damage cvar is really low cause something if within the radius 
-				sh_extra_damage(player, id, damage, "kamikaze bomb", _, SH_DMG_NORM, true)
+				sh_extra_damage(player, id, damage, _, SH_DMG_NORM, SH_EXTRA_DMG_FLAG_STUN)
 			}
 
 			// Add some push and shake effects instead of dmgStun later, and cause it on everyone within radius

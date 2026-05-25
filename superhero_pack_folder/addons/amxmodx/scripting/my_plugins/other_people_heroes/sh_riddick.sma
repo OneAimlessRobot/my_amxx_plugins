@@ -89,8 +89,7 @@ public riddick_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
 		
 		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage, 
-						dmg_source_name_log_dual_knife,
+			sh_extra_damage(id, attacker, extraDamage,
 						my_hitpoint_enum:bodypart,
 						_,_,_,_,
 						SH_NEW_DMG_SUPER_MELEE,

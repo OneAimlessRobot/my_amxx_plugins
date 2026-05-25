@@ -229,7 +229,7 @@ public sh_round_end(){
 	}
 	
 }
-public sh_client_death(victim,attacker,headshot,const wpnDescription[]){
+public sh_client_death(victim){
 
 	
 	stop_all_player_sounds_primitive(victim)

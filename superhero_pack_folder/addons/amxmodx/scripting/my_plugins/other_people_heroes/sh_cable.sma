@@ -250,7 +250,7 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage, "cable Laser")
+		sh_extra_damage(tid, id, damage)
 	}
 	return PLUGIN_CONTINUE
 }

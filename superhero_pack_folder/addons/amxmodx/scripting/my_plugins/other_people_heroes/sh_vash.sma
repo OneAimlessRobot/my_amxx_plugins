@@ -153,8 +153,8 @@ public vash_damage(id)
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
 		if (extraDamage > 0){
 			
-			sh_extra_damage( id, attacker, extraDamage, dmg_source_name_log_revolver,
-								my_hitpoint_enum:bodypart ,
+			sh_extra_damage( id, attacker, extraDamage,
+								my_hitpoint_enum:bodypart,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_revolver)

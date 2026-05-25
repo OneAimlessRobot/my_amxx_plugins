@@ -25,6 +25,7 @@ new Float:g_player_old_friction[SH_MAXSLOTS+1] = {0.0, ...}
 #define STEAM_SPRITE_FILENAME "sprites/steam1.spr"
 new gSpriteSmoke = 0
 new ICE_GLOB_GLOBAL_TASKID
+new generic_dmg_source_freezing = -1
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -40,6 +41,7 @@ public plugin_init(){
 public plugin_cfg(){
 
 	gHeroID = girlb_get_hero_id()
+	generic_dmg_source_freezing = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FREEZE)
 }
 public girlb_skating(id, uc_handle, seed)
 {	
@@ -233,10 +235,10 @@ public bool:player_touch_logic(Glob, Other_Entity){
 	}
 	if((Other_Entity != owner_edict )&&!sh_clients_are_same_team(Other_Entity,owner_edict)){
 		sh_extra_damage(Other_Entity, owner_edict, GLOB_DMG,
-				new_dmg_type_names[_:SH_NEW_DMG_FREEZE],
 				_,_,_,_,_,
 				SH_NEW_DMG_FREEZE,
-				get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FREEZE))
+				generic_dmg_source_freezing)
+
 		if(!sh_is_user_frozen(Other_Entity)){
 			sh_freeze_user(Other_Entity,7.0,130.0)
 		}

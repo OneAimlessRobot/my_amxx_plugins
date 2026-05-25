@@ -174,7 +174,6 @@ public darkangel_damage(id)
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0 ){
 			sh_extra_damage(id,attacker,floatround(extraDamage),
-								dmg_source_name_short_MEGA_DARK_DARKLY_DAKR_DARKNESS_DESPAIR_E,
 								my_hitpoint_enum:bodypart ,
 								_,_,_,_,
 								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
