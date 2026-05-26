@@ -107,7 +107,7 @@ public plugin_init()
 	#endif
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 	gPlayerLevel[id]=sh_get_user_lvl(id)
@@ -152,7 +152,7 @@ public marksman_loop(task_id)
 	if(!sh_is_active()||sh_is_freezetime()) return
 
 	for(new id=1;id<sh_maxplayers()+1;id++){
-		if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) continue
+		if (!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) continue
 		
 		new alpha;
 		if(!(gPlayerLevel[id]-gHeroLevel)){
@@ -170,7 +170,7 @@ public marksman_loop(task_id)
 #if defined GIVE_WEAPON
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		Marksman_weapons(id)
 	}
 
@@ -183,7 +183,7 @@ public Marksman_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
 	if ( !is_user_connected(attacker) ||id==attacker) return
-	new has_hero=sh_user_has_hero(attacker,gHeroID)
+	new has_hero=sh_get_user_has_hero(attacker,gHeroID)
 	if ( has_hero && weapon == CSW_G3SG1 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * DRAGUNOV_DMG_Mult - damage)
 		if (extraDamage > 0){
@@ -238,7 +238,7 @@ public Crouch(id,alpha) {
 //----------------------------------------------------------------------------------------------
 Marksman_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
+if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)  ) {
 	if ( cs_get_user_team(id) == CS_TEAM_CT ){
 		sh_give_weapon(id, CSW_G3SG1)
 	}
@@ -251,7 +251,7 @@ if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
 public make_tracer(id)
 {
 	
-if ( !sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE 
+if ( !sh_get_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE 
 new wpnid = read_data(2)		// id of the weapon 
 new ammo = read_data(3)		// ammo left in clip 
 
@@ -276,7 +276,7 @@ return PLUGIN_CONTINUE
 #if AMMO_MODE < 4
 public weapon_change(id)
 {
-if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
+if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) ) return
 
 new weapon= read_data(2)
 //weaponID = read_data(2)

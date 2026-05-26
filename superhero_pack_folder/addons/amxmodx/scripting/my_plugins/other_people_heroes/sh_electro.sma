@@ -70,10 +70,10 @@ public sh_client_spawn(id)
 	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if ( gIsSearching[id] ) return
 
@@ -104,7 +104,7 @@ public electro_search(parm[2])
 	parm[1]--
 
 	// User died or diconnected
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) )
 	{
 		gIsSearching[id] = false
 	}
@@ -133,7 +133,7 @@ public fm_TraceLine(Float:v1[3], Float:v2[3], const noMonsters, const pentToSkip
 	if ( !is_user_alive(victim) ) return FMRES_IGNORED
 
 	//new attacker = pentToSkip
-	if ( !is_user_alive(pentToSkip) || !sh_user_has_hero(pentToSkip,gHeroID)|| !gIsSearching[pentToSkip] ) return FMRES_IGNORED
+	if ( !is_user_alive(pentToSkip) || !sh_get_user_has_hero(pentToSkip,gHeroID)|| !gIsSearching[pentToSkip] ) return FMRES_IGNORED
 	if ( cs_get_user_team(pentToSkip) == cs_get_user_team(victim) ) return FMRES_IGNORED
 
 	new damage = get_pcvar_num(gPcvarMaxDamage)

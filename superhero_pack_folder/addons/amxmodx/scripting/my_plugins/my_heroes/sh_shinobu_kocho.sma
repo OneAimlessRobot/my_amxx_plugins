@@ -93,7 +93,7 @@ public shinobu_step_silent(task_id)
 	for(new id=1;id<sh_maxplayers()+1;id++){
 		if(is_user_alive(id)){
 			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-				if(sh_user_has_hero(id,gHeroID) ){
+				if(sh_get_user_has_hero(id,gHeroID) ){
 					static wpnid
 					wpnid=get_user_weapon(id)
 					if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
@@ -113,7 +113,7 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		new the_health_to_send = min(get_user_health(id),cvar_val(num, pcvar_shinobu_max_health))
 
 		set_user_health(id, the_health_to_send)
@@ -130,7 +130,7 @@ public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebit
 {
 	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
 
-	if ( damagebits & DMG_FALL && sh_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }
@@ -140,7 +140,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,gHeroID) ) return
+	if(!sh_get_user_has_hero(id,gHeroID) ) return
 
 	static the_health_to_be_set
 	the_health_to_be_set = get_msg_arg_int(1)
@@ -198,14 +198,14 @@ public Float:_shinobu_get_cooldown(iPlugins, iParms){
 }
 shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
 
-	if (sh_user_has_hero(victim,gHeroID)  ) {
+	if (sh_get_user_has_hero(victim,gHeroID)  ) {
 		
 		shinobu_burst_damage_task_bootstrap(victim,attacker,0)
 
 	}
-	if(sh_user_has_hero(attacker,gHeroID) ){
+	if(sh_get_user_has_hero(attacker,gHeroID) ){
 
-		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_user_has_hero(attacker,gHeroID) ,_,_,_,0,
+		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_get_user_has_hero(attacker,gHeroID) ,_,_,_,0,
 					hitpoint);
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
@@ -226,10 +226,10 @@ public shinobuDamage(id)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
 		set_user_health(id,min(sh_get_max_hp(id),cvar_val(num, pcvar_shinobu_max_health)))
@@ -278,7 +278,7 @@ public shinobu_burst_damage_task(array[1],attacker){
 	if(!is_user_alive(tg)) return
 
 	
-	if(!sh_user_has_hero(attacker,gHeroID)  ) return
+	if(!sh_get_user_has_hero(attacker,gHeroID)  ) return
 
 	if(!is_user_bot(tg)){
 		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,
@@ -324,9 +324,9 @@ shinobu_teleport_init(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -341,7 +341,7 @@ public shinobu_kd(id)
 {
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
-	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
 
 	// Let them know they already used their ultimate if they have
@@ -374,7 +374,7 @@ public sh_client_death(id,killer)
 	
 	
 	if(is_user_connected(killer)&&is_user_connected(id)){
-		if(sh_user_has_hero(killer,gHeroID) ){
+		if(sh_get_user_has_hero(killer,gHeroID) ){
 			
 			if(g_shinobu_tagged_player[killer]==id){
 				if(!is_user_bot(id)){
@@ -386,7 +386,7 @@ public sh_client_death(id,killer)
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}
 		}
-		if(sh_user_has_hero(id,gHeroID) ){
+		if(sh_get_user_has_hero(id,gHeroID) ){
 			
 			g_shinobu_tagged_player[id]=0
 			remove_task(id+SHINOBU_POISON_KICK_DELAYED_TASKID)
@@ -395,7 +395,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
@@ -404,7 +404,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bo
 		return DMG_FWD_PASS
 	}
 	if(new_dmg_type==SH_NEW_DMG_DRUG_POISON){
-		if(sh_user_has_hero(victim,gHeroID) ){
+		if(sh_get_user_has_hero(victim,gHeroID) ){
 			generic_heal(heal_hp_hud_msg_sync,victim,float(damage),_,PURPLE,_,_,50,1,1)
 			return DMG_FWD_BLOCK
 		}

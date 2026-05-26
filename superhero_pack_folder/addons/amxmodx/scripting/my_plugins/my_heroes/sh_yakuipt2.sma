@@ -69,7 +69,7 @@ public player_prethink_yakui_weapon(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
 
 	static button;
@@ -104,10 +104,10 @@ public player_prethink_yakui_weapon(id, uc_handle)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		init_yakui(id)
 		
 	}
@@ -132,7 +132,7 @@ init_yakui(id){
 }
 reset_yakui(id){
 
-	if(!sh_is_active()||!sh_user_has_hero(id,gHeroID)) return;
+	if(!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)) return;
 	
 	UnSet_BitVar(mode_change_button_pressed_mask, id);
 	gatling_set_num_pills(id,cvar_val(num, pcvar_max_pills))
@@ -154,7 +154,7 @@ clear_yakui(id){
 }
 public yakui_weapons(id){
 
-if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,true)
 	new weapon_id=get_weapon_ent_of_player(id,YAKUI_WEAPON_CLASSID)
 	if(is_valid_ent(weapon_id)){
@@ -172,7 +172,7 @@ public sh_client_spawn(id)
 	if(!is_user_alive(id)|| !sh_is_active()) return
 	
 	sh_uneffect_user(id)
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		
 		reset_yakui(id)
 		
@@ -183,7 +183,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == YAKUI_WEAPON_CLASSID) {
 		// Weapon Model change thanks to [CCC]Taz-Devil
@@ -194,7 +194,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 
@@ -204,9 +204,9 @@ public weaponChange(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -218,7 +218,7 @@ switch(key)
 public yakui_kd(id){
 
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
 		return PLUGIN_HANDLED
 	}
 

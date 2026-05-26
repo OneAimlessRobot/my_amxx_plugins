@@ -75,7 +75,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !sh_is_active() ) return
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && generate_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && wpnindex != (CSW_KNIFE | CSW_HEGRENADE) && generate_float(0.0, 1.0) <= get_pcvar_float(gPcvarChance) ) {
 		// Get the origin of the victim's feet
 		new Float:fl_Origin[3]
 		pev(victim, pev_origin, fl_Origin)

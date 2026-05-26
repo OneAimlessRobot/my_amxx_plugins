@@ -72,7 +72,7 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
 	gHasWeapons[id] = false
@@ -86,7 +86,7 @@ public blueblood_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 
-	if (!sh_user_has_hero(attacker,gHeroID)|| sh_get_cooldown_flag(attacker) ) return
+	if (!sh_get_user_has_hero(attacker,gHeroID)|| sh_get_cooldown_flag(attacker) ) return
 
 	if ( is_user_alive(id) && id != attacker && is_user_connected(attacker)) {
 		playSound(id)

@@ -56,12 +56,12 @@ public plugin_precache()
 	g_spriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	//Clear out any stale tasks
 	remove_task(id)
 
-	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
+	if ( !sh_get_user_has_hero(id,gHeroID) && is_user_connected(id) ) {
 		if ( g_inSearch[id] ) release(id)
 	}
 
@@ -78,9 +78,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -100,7 +100,7 @@ public exodus_kd(id)
 {
 	if ( !hasRoundStarted() ) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	// If in toggle mode change this to a keyup event
 	if ( get_cvar_num("exodus_toggle") && g_inSearch[id] ) {
@@ -153,7 +153,7 @@ public exodus_ku(id)
 	// Toggle mode - keyup doesn't do anything!
 	if ( get_cvar_num("exodus_toggle") ) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
 
 	if ( !g_grabbedID[id] ) client_print(id, print_center, "Exodus - Stopped Searching")
 
@@ -233,7 +233,7 @@ public set_grabbed(id, targetid)
 //----------------------------------------------------------------------------------------------
 public exodus_timeloop(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
 
 	if ( g_grabTimer[id] > 0 && g_grabTimer[id] < 11 ) {
 		new message[128]
@@ -272,14 +272,14 @@ public release(id)
 public sh_client_death(id)
 {
 
-	if ( !sh_user_has_hero(id,gHeroID) || !g_inSearch[id] ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !g_inSearch[id] ) return
 
 	release(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !g_inSearch[id] ) return
 
 	release(id)
 }

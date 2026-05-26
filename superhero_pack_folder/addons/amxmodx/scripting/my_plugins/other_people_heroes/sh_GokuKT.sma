@@ -89,10 +89,10 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
-	if(!sh_user_has_hero(id,gHeroID))
+	if(!sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_connected(id)) {
 			GokuKTTimer[id] = 0
@@ -109,9 +109,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -144,7 +144,7 @@ public gokukt_kd(id)
 public gokukt_loop()
 {
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
+		if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
 			if ( GokuKTTimer[id] > 0 ) {
 				GokuKTTimer[id]--
 				shGlow(id,255,0,0)
@@ -183,7 +183,7 @@ public end_kaioken(id)
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		new parm[2]
 		parm[0] = id
 		parm[1] = 5

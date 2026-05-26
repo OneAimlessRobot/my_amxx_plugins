@@ -57,15 +57,15 @@ public plugin_precache()
     flash = engfunc(EngFunc_PrecacheModel,"sprites/muzzleflash2.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
 
-    if(sh_user_has_hero(id,gHeroID)){
+    if(sh_get_user_has_hero(id,gHeroID)){
         disk[id] = 0
         diskTimer[id] = -1 
     }
 
-    if(!sh_user_has_hero(id,gHeroID) && diskTimer[id] > 0){ //When a player doesn't have power anymore
+    if(!sh_get_user_has_hero(id,gHeroID) && diskTimer[id] > 0){ //When a player doesn't have power anymore
         diskTimer[id] = -1
         new Float: fOrigin[3]
         new origin[3]
@@ -79,9 +79,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -95,7 +95,7 @@ public frieza_kd(id)
 { 
     if(!hasRoundStarted()) return 
 
-    if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return 
+    if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return 
 
     if(sh_get_cooldown_flag(id)){ 
         playSoundDenySelect(id) 
@@ -116,7 +116,7 @@ public sh_client_spawn(id)
 //---------------------------------------------------------------------------------------- 
 public sh_client_death(id)  //triggered everytime someone dies
 {
-	if(sh_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
+	if(sh_get_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
 		diskTimer[id] = -1
 		new Float: fOrigin[3]
 		new origin[3]
@@ -130,7 +130,7 @@ public sh_client_death(id)  //triggered everytime someone dies
 //----------------------------------------------------------------------------------------
 public frieza_disklife(){ 
     for(new id = 1; id < sh_maxplayers()+1; id++){ 
-        if(sh_user_has_hero(id,gHeroID) && is_user_alive(id)){ 
+        if(sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)){ 
             if(diskTimer[id] > 0){ 
                 diskTimer[id]-- 
 		new Float: fVelocity[3]
@@ -315,7 +315,7 @@ public decay_effects(NewEnt, origin[3])  //removes the entity plus adds a decayi
 //------------------------------------------------------------------------------------------
 public client_disconnected(id)  //This makes sure that the disk isn't flying after disconnect
 {
-	if(sh_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
+	if(sh_get_user_has_hero(id,gHeroID)&& diskTimer[id] > 0){
 		new Float: fOrigin[3]
 		new origin[3]
 		entity_get_vector(disk[id], EV_VEC_origin, fOrigin)

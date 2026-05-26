@@ -41,7 +41,7 @@ public plugin_precache()
 	gSpriteLaserBeam = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -63,14 +63,14 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		add_all_marks(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public add_all_marks(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	static bool:sameTeam
@@ -125,7 +125,7 @@ make_trail(id, player, iRed, iGreen, iBlue)
 //----------------------------------------------------------------------------------------------
 remove_all_marks(id)
 {
-	if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) )  {
+	if ( is_user_connected(id) && sh_get_user_has_hero(id,gHeroID) )  {
 		new players[SH_MAXSLOTS]
 		new playerCount, player
 		get_players(players, playerCount, "ah")

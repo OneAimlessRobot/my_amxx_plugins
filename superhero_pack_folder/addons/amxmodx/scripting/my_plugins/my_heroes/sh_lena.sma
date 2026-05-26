@@ -87,10 +87,10 @@ public sh_round_end(){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 
 		lena_weapons(id)
 	}
@@ -107,7 +107,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 lena_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 		gNumBullets[id]=lena_max_bullets
 		sh_give_weapon(id, LENA_WEAPON_CLASSID,true)
 		give_custom_grenades(id,GREN_MARKER,6)

@@ -64,10 +64,10 @@ public _jaqueo_get_hero_id(iPlugin,iParams){
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		jaqueo_weapons(id)
 	}
@@ -79,7 +79,7 @@ public sh_hero_init(id, heroID, mode){
 }
 public jaqueo_weapons(id){
 	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
+	if(!sh_get_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_give_weapon(id,CSW_SCOUT)
 	sh_give_weapon(id,CSW_AK47)
@@ -87,7 +87,7 @@ public jaqueo_weapons(id){
 }
 public jaqueo_drop_weapons(id){
 	
-	if(!sh_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
+	if(!sh_get_user_has_hero(id,gHeroID) ||!is_user_alive(id) ||!sh_is_active()) return
 	
 	sh_drop_weapon(id,CSW_SCOUT,true)
 	sh_drop_weapon(id,CSW_AK47,true)
@@ -100,7 +100,7 @@ public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
 	
-	if((weapon==CSW_SCOUT)&&sh_user_has_hero(idattacker,gHeroID) ){
+	if((weapon==CSW_SCOUT)&&sh_get_user_has_hero(idattacker,gHeroID) ){
 		new Float:extraDamage = damage * scout_mult - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(this, idattacker, floatround(extraDamage),
@@ -125,7 +125,7 @@ public loadCVARS()
 
 public sh_client_spawn(id){
 	
-	if(!sh_is_active()||!is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )return
+	if(!sh_is_active()||!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) )return
 	
 	//reset_jaqueo_user(id)
 	jaqueo_weapons(id)
@@ -134,9 +134,9 @@ public sh_client_spawn(id){
 
 /*
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -154,7 +154,7 @@ switch(key)
 public jaqueo_kd(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)||!shield_loaded(id)) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID)||!shield_loaded(id)) {
 		return PLUGIN_CONTINUE
 	}
 
@@ -171,7 +171,7 @@ public jaqueo_kd(id)
 public jaqueo_ku(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -201,7 +201,7 @@ public client_disconnected(id){
 }
 public sh_client_death(id)
 {
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		//shield_destroy(id)
 		jaqueo_drop_weapons(id)

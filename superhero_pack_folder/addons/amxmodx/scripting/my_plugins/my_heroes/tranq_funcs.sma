@@ -155,7 +155,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 	if(!is_user_connected(Attacker)){
 		return HAM_IGNORED
 	}
-	if(get_user_weapon(Attacker) != DART_GUN_WEAPON_CLASSID || !sh_user_has_hero(Attacker,gHeroID) ){
+	if(get_user_weapon(Attacker) != DART_GUN_WEAPON_CLASSID || !sh_get_user_has_hero(Attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
 
@@ -274,7 +274,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,gHeroID)){
+	if(!sh_get_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -435,7 +435,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 						SH_NEW_DMG_BLEED,
 						super_dart_weapon_id)
 			
-			if(sh_user_has_hero(oid,gHeroID)){
+			if(sh_get_user_has_hero(oid,gHeroID)){
 
 				sh_effect_user_direct(oid,oid,gHeroID,COCAINE)
 			}

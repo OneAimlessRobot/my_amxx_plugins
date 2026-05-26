@@ -38,7 +38,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !is_user_connected(victim) || !is_user_alive(attacker) ) return
 
 	// Should nades not count? maybe remove them later
-	if ( sh_user_has_hero(attacker,gHeroID) && CSW_P228 <= wpnindex <= CSW_P90 ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && CSW_P228 <= wpnindex <= CSW_P90 ) {
 		dracula_suckblood(attacker, damage)
 	}
 }
@@ -46,7 +46,7 @@ public client_damage(attacker, victim, damage, wpnindex)
 // Leave this public so it can be called with a forward from Longshot
 public dracula_suckblood(attacker, damage)
 {
-	if ( sh_is_active() && sh_user_has_hero(attacker,gHeroID)&& is_user_alive(attacker) )
+	if ( sh_is_active() && sh_get_user_has_hero(attacker,gHeroID)&& is_user_alive(attacker) )
 	{
 		// Add some HP back!
 		new giveHPs = floatround(damage * get_pcvar_float(gPcvarPctPerLev) * sh_get_user_lvl(attacker))

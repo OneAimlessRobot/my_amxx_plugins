@@ -156,7 +156,7 @@ public ester_step_silent(id)
 	if (! sh_is_active()) return
 	if(is_user_alive(id)){
 		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-			if(sh_user_has_hero(id,gHeroID) ){
+			if(sh_get_user_has_hero(id,gHeroID) ){
 				
 			}
 		}
@@ -172,7 +172,7 @@ public Hook_BloodColor(id)
 {
 	if ( sh_is_active()){
 		if(is_user_alive(id)){
-			if(sh_user_has_hero(id,gHeroID) ){
+			if(sh_get_user_has_hero(id,gHeroID) ){
 				SetHamReturnInteger(BLOOD_COLOR_YELLOW)
 				return HAM_SUPERCEDE;
 			}
@@ -193,10 +193,10 @@ public _ester_get_hero_id(iPlugins, iParms){
 	return gHeroID
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		if(gTimesLeft[id]<=0){
 			sh_chat_message(id,gHeroID,"Youve already used up Ester this map. Have fun with the pan and tmp, tho!!!")
@@ -221,7 +221,7 @@ stock ester_weapons(id){
 		return
 		
 	}
-	else if(sh_user_has_hero(id,gHeroID) ){
+	else if(sh_get_user_has_hero(id,gHeroID) ){
 		sh_give_weapon(id, MORALIZER_WEAPON_ID, true)
 	}
 	else{
@@ -249,7 +249,7 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ){
+	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
@@ -276,7 +276,7 @@ public weaponChange(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 		
 		return PLUGIN_CONTINUE
 	}
@@ -352,7 +352,7 @@ public Ester_revenge_loop(id)
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if ( !is_user_connected(i)) continue
 		
-		if ( !sh_user_has_hero(i,gHeroID)){
+		if ( !sh_get_user_has_hero(i,gHeroID)){
 			
 			continue
 
@@ -486,7 +486,7 @@ public Ester_instant(x, id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) &&is_user_connected(id)&& sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID) &&is_user_connected(id)&& sh_is_active() ) {
 		if(gBuiltUpXp[id]){
 			sh_set_user_xp(id,gBuiltUpXp[id],true);
 			sh_chat_message(id,gHeroID,ESTER_FINE_WHATEVER_YOU_SAY,gBuiltUpXp[id]);
@@ -523,7 +523,7 @@ public ester_damage(id)
 		return;
 		
 	}
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		if(!Get_BitVar(gUnloadingMask,id)&&gTimesLeft[id]){
 			
 			Set_BitVar(g_ester_enemies_masks[id],attacker);
@@ -565,11 +565,11 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
-	if(!sh_user_has_hero(attacker,gHeroID) ){
+	if(!sh_get_user_has_hero(attacker,gHeroID) ){
 		return HAM_IGNORED
 	}
 	
-	if(sh_user_has_hero(attacker,gHeroID) ){
+	if(sh_get_user_has_hero(attacker,gHeroID) ){
 		new attacker_name[128]
 		new client_name[128]
 		get_user_name(attacker,attacker_name,127)
@@ -667,7 +667,7 @@ public sh_client_death(id)
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		
 		ester_set_reborn_mode(id,0)
@@ -685,7 +685,7 @@ public sh_client_death(id)
 		
 			continue
 		}
-		if(!sh_user_has_hero(i,gHeroID) ){
+		if(!sh_get_user_has_hero(i,gHeroID) ){
 		
 			continue
 		}
@@ -709,9 +709,9 @@ public sh_client_death(id)
 }	
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -728,7 +728,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public ester_kd(id)
 {
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!hasRoundStarted()) {
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 
@@ -772,7 +772,7 @@ public ester_kd(id)
 
 public ester_ku(id)
 {
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||!hasRoundStarted()) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||!hasRoundStarted()) {
 		return PLUGIN_HANDLED
 	}
 	UnSet_BitVar(gPedalIsFlooredMask,id)

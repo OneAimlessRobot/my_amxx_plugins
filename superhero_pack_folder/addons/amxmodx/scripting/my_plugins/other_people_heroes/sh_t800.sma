@@ -62,16 +62,16 @@ public sh_round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 			t800_endmode(id)
 		}
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if ( !sh_user_has_hero(id,gHeroID)) {
+	if ( !sh_get_user_has_hero(id,gHeroID)) {
 		if ( is_user_alive(id) && gT800Timer[id] >= 0 ) {
 			t800_endmode(id)
 		}
@@ -95,7 +95,7 @@ public sh_client_death(id)
 	
 	sh_unset_cooldown_flag(id)
 	gT800Timer[id]= -1
-	if (sh_user_has_hero(id,gHeroID)) {
+	if (sh_get_user_has_hero(id,gHeroID)) {
 		t800_endmode(id)
 	}
 }
@@ -105,7 +105,7 @@ public t800_loop(id)
 	
 	id-=TASKID
 	if (!sh_is_active()) return
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)&& is_user_connected(id)  )  {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)&& is_user_connected(id)  )  {
 		if ( gT800Timer[id] > 0 ) {
 			gT800Timer[id]--
 			new message[128]
@@ -139,7 +139,7 @@ public t800_loop(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||gT800Timer[id]<0 ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)||gT800Timer[id]<0 ) return
 	
 	new wpnid = read_data(2)
 	if (wpnid == CSW_M249) {
@@ -151,7 +151,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	
@@ -167,7 +167,7 @@ public t800_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id  ) return
 	
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M249 && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M249 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("t800_paramult") - damage)
 		if (extraDamage > 0){
@@ -177,9 +177,9 @@ public t800_damage(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -248,7 +248,7 @@ public t800_endmode(id)
 	
 	if ( gMorphed[id] && is_user_connected(id) ) t800_unmorph(id)
 	
-	if (sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_godmode(id)
 		sh_screen_fade(id,0.0,0.0,0,0,0,0)
 		sh_drop_weapon(id,CSW_M249, true)   

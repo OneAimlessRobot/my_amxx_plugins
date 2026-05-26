@@ -47,10 +47,10 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gTeslaCoilOff)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 	remove_task(id)
 	
 	if ( mode == SH_HERO_ADD ) {
@@ -73,7 +73,7 @@ generic_dmg_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
 public ElectroB00M_loop(id)
 {
 
-if ( !sh_is_active() || !is_user_alive(id) || !gRechargeAllowed[id] ||!sh_user_has_hero(id,gHeroID) ) return
+if ( !sh_is_active() || !is_user_alive(id) || !gRechargeAllowed[id] ||!sh_get_user_has_hero(id,gHeroID) ) return
 static CsArmorType:armorType
 static userArmor
 userArmor = cs_get_user_armor(id, armorType)
@@ -136,9 +136,9 @@ switch(g_teslacoilRunning[id]) {
 }
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {

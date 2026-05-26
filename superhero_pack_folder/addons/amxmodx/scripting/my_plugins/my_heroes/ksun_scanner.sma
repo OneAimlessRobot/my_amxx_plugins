@@ -183,7 +183,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
 
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 		if(is_valid_ent(g_player_scanner[id]) && (g_player_scanner[id]>0)){
 			
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
@@ -199,7 +199,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 }
 public _spawn_scanner(iPlugins,iParams){
 	new id= get_param(1)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		return
 	}
@@ -252,7 +252,7 @@ public scanner_think(scanner){
 	
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return
 
 	new Float:fOrigin[3];
 	entity_get_vector( id, EV_VEC_origin, fOrigin);
@@ -308,7 +308,7 @@ public scanner_think(scanner){
 
 show_targets(id){
 
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		return
 	}

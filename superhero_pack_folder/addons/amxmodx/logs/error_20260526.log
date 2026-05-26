@@ -1,0 +1,74 @@
+L 05/26/2026 - 17:30:07: Start of error session.
+L 05/26/2026 - 17:30:07: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260526.log")
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "tranq_fx.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "disrupt_fx.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "yandere_jetplane_rocket_funcs.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "yandere_jetplane_bomb_funcs.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "sh_anubis.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "sh_spiderman.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "sh_colalover.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "sh_monitor.amxx") (native "sh_get_num_lvls") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "yandere_jetplane_mg_funcs.amxx") (native "yandere_get_hero_id") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:30:07: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:30:07: [AMXX] Run time error 10 (plugin "yandere_jetplane_engine_funcs.amxx") (native "yandere_get_hero_id") - debug not enabled!
+L 05/26/2026 - 17:30:07: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Start of error session.
+L 05/26/2026 - 17:33:25: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260526.log")
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "tranq_fx.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "disrupt_fx.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "yandere_jetplane_rocket_funcs.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "yandere_jetplane_bomb_funcs.amxx") (native "sh_get_max_force_knockback_explosion") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "sh_anubis.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "sh_spiderman.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "sh_colalover.amxx") (native "sh_create_hero") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "sh_monitor.amxx") (native "sh_get_num_lvls") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "yandere_jetplane_mg_funcs.amxx") (native "yandere_get_hero_id") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:33:25: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:33:25: [AMXX] Run time error 10 (plugin "yandere_jetplane_engine_funcs.amxx") (native "yandere_get_hero_id") - debug not enabled!
+L 05/26/2026 - 17:33:25: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:46:19: Start of error session.
+L 05/26/2026 - 17:46:19: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260526.log")
+L 05/26/2026 - 17:46:19: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:46:19: [AMXX] Run time error 10 (plugin "arifle_funcs.amxx") (native "allocate_weapon_secret_code") - debug not enabled!
+L 05/26/2026 - 17:46:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 17:46:58: Start of error session.
+L 05/26/2026 - 17:46:58: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260526.log")
+L 05/26/2026 - 17:46:58: Called dynanative into a paused plugin.
+L 05/26/2026 - 17:46:58: [AMXX] Run time error 10 (plugin "arifle_funcs.amxx") (native "allocate_weapon_secret_code") - debug not enabled!
+L 05/26/2026 - 17:46:58: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

@@ -91,15 +91,15 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	// Got to remove the powers if he is not Predator
-	if ( !sh_user_has_hero(id,gHeroID))
+	if ( !sh_get_user_has_hero(id,gHeroID))
 		uninvis(id)
 	
 	//Give Powers to the Predator
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		stillInvis(id)
 		set_user_footsteps(id,1)
@@ -108,7 +108,7 @@ public sh_hero_init(id, heroID, mode){
 
 public sh_client_spawn(id)
 {
-	if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID)) {
+	if ( is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)) {
 		stillInvis(id)
 	}
 	
@@ -123,15 +123,15 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 	gDLLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 	
-	if (sh_user_has_hero(id,gHeroID) && get_cvar_num("pred_getdeagle")==1) {
+	if (sh_get_user_has_hero(id,gHeroID) && get_cvar_num("pred_getdeagle")==1) {
 		sh_give_weapon(id,CSW_DEAGLE)
 	}
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -338,10 +338,10 @@ public check_attack() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_ATTACK) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_ATTACK) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			else if (!(get_user_button(i)&IN_ATTACK) &&sh_user_has_hero(i,gHeroID)) { 
+			else if (!(get_user_button(i)&IN_ATTACK) &&sh_get_user_has_hero(i,gHeroID)) { 
 				stillInvis(i) 
 			}
 		}
@@ -353,10 +353,10 @@ public check_two_buttons() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_USE) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_USE) && sh_get_user_has_hero(i,gHeroID)) { 
 				stillInvis(i) 
 			}
-			if ((get_user_button(i)&IN_ATTACK2) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_ATTACK2) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
 		}
@@ -369,19 +369,19 @@ public check_move_buttons() {
 	{
 		for(new i = 1; i <= get_maxplayers(); ++i) { 
 			if (is_user_alive(i)) { 
-				if ((get_user_button(i)&IN_BACK) && sh_user_has_hero(i,gHeroID)) { 
+				if ((get_user_button(i)&IN_BACK) && sh_get_user_has_hero(i,gHeroID)) { 
 					moveInvis(i) 
 				}
-				if ((get_user_button(i)&IN_MOVELEFT) && sh_user_has_hero(i,gHeroID)) { 
+				if ((get_user_button(i)&IN_MOVELEFT) && sh_get_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_MOVERIGHT) && sh_user_has_hero(i,gHeroID)) { 
+				if ((get_user_button(i)&IN_MOVERIGHT) && sh_get_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_FORWARD) && sh_user_has_hero(i,gHeroID)) { 
+				if ((get_user_button(i)&IN_FORWARD) && sh_get_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
-				if ((get_user_button(i)&IN_RUN) && sh_user_has_hero(i,gHeroID)) { 
+				if ((get_user_button(i)&IN_RUN) && sh_get_user_has_hero(i,gHeroID)) { 
 					moveInvis(i)
 				}
 			}
@@ -391,19 +391,19 @@ public check_move_buttons() {
 	
 	for(new i = 1; i <= get_maxplayers(); ++i) { 
 		if (is_user_alive(i)) { 
-			if ((get_user_button(i)&IN_BACK) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_BACK) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_MOVELEFT) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_MOVELEFT) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_MOVERIGHT) &&sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_MOVERIGHT) &&sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_FORWARD) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_FORWARD) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
-			if ((get_user_button(i)&IN_RUN) && sh_user_has_hero(i,gHeroID)) { 
+			if ((get_user_button(i)&IN_RUN) && sh_get_user_has_hero(i,gHeroID)) { 
 				uninvis(i) 
 			}
 		}
@@ -420,7 +420,7 @@ public pred_damage(id)
 	
 	if ( attacker <=0 || attacker>SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 	
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("pred_knifemult") - damage)
@@ -438,7 +438,7 @@ public pred_DLdamage(id)
 	
 	if ( attacker_id <=0 || attacker_id>SH_MAXSLOTS ||attacker_id == id ) return PLUGIN_CONTINUE
 	
-	if ( sh_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(attacker_id)))
+	if ( sh_get_user_has_hero(attacker_id,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) && (!sh_get_cooldown_flag(attacker_id)))
 	{ 
 		new health = get_user_health(id) 
 		
@@ -532,7 +532,7 @@ public make_tracer(id) {
 	new weap = read_data(2)        // id of the weapon 
 	new ammo = read_data(3)        // ammo left in clip 
 	
-	if ( sh_user_has_hero(id,gHeroID)&& (weap == CSW_DEAGLE )&& (!sh_get_cooldown_flag(id)) ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& (weap == CSW_DEAGLE )&& (!sh_get_cooldown_flag(id)) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap 
 		
@@ -588,7 +588,7 @@ public make_tracer(id) {
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	new  clip, ammo
 	new wpn_id=get_user_weapon(id, clip, ammo);
 	

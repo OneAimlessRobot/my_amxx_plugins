@@ -119,7 +119,7 @@ public camera_controls(id, uc_handle)
 		return FMRES_IGNORED;
 	}
 
-	if(!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
+	if(!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
 	if(!camman_get_has_camera(id)) return FMRES_IGNORED
 	
@@ -306,7 +306,7 @@ public _toggle_camera_view(iPlugins,iParams){
 }
 public plant_camera(id)
 {
-	if(!sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 	
 	static material[128]
 	static health[128]	
@@ -621,7 +621,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
 	
-	if(!sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED;
+	if(!sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED;
 	
 	Set_BitVar(camera_planting_mask,id);
 	Set_BitVar(camera_armed_mask,id);
@@ -750,7 +750,7 @@ public charge_task(id){
 		return
 	
 	}
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 		UnSet_BitVar(camera_armed_mask, id)
 		return
 	
@@ -813,7 +813,7 @@ public plugin_precache()
 }
 public sh_client_death(id)
 {
-	if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)){
+	if(sh_get_user_has_hero(id,gHeroID)&&is_user_connected(id)){
 		
 		
 		UnSet_BitVar(looking_with_camera_mask, id)

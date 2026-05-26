@@ -123,11 +123,11 @@ public _teliko_dec_num_chaffs(iPlugin,iParams){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	reset_teliko_user(id)
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		Teliko_weapons(id)
 		update_max_bullets(id)
@@ -180,7 +180,7 @@ public remove_enemy(id){
 
 Teliko_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  ) {
+if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 	give_custom_grenades(id,GREN_CHAFF,cvar_val(num, pcvar_num_chaffs))
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-cvar_val(num, pcvar_gHeroLevel)
@@ -195,7 +195,7 @@ if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID)  ) {
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-if (sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
+if (sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
 	
 	Teliko_weapons(id)
 	reset_teliko_user(id)
@@ -325,7 +325,7 @@ else{
 	copy(weapon_name,strlen("NONE"),"NONE");
 	
 }
-if(sh_user_has_hero(id,gHeroID) ){
+if(sh_get_user_has_hero(id,gHeroID) ){
 	
 	Set_BitVar(g_teliko_enemies_masks[id],attacker)
 	if((generate_float(0.0,1.0) < cvar_val(float, pcvar_COUNTER_BULLET_PCT))){
@@ -337,7 +337,7 @@ if(sh_user_has_hero(id,gHeroID) ){
 	
 }
 
-if ( sh_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[attacker],id)&&(g_counter_bullets[attacker]>0))  {
+if ( sh_get_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[attacker],id)&&(g_counter_bullets[attacker]>0))  {
 	
 	new Float:extraDamage = damage * cvar_val(float, pcvar_COUNTER_DMG_Mult) - damage
 	if (floatround(extraDamage)>0){
@@ -375,7 +375,7 @@ engfunc(EngFunc_PrecacheSound, PRE_FIRST_BLOOD_SFX)
 }
 public sh_client_death(id){
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, SND_STOP, PITCH_NORM)
 	}

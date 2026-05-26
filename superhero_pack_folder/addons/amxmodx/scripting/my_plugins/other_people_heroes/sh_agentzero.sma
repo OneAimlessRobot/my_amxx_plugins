@@ -57,7 +57,7 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 
 	new owner = get_pdata_cbase(weapon_ent, m_pPlayer, XO_WEAPON)
 
-	if ( sh_user_has_hero(owner,gHeroID)) {
+	if ( sh_get_user_has_hero(owner,gHeroID)) {
 		set_pev(owner, pev_punchangle, {0.0, 0.0, 0.0})
 	}
 

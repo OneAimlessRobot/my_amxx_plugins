@@ -110,7 +110,7 @@ public ghostface_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
-	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE )
+	if (sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE )
 	{
 		new damage = read_data(2)
 		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeDmgMult) - damage)
@@ -125,7 +125,7 @@ public heal_loop()
 	if ( !sh_is_active() ) return
 
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, HealPoints, sh_get_max_hp(id))

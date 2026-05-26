@@ -50,7 +50,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundBubblePain)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -67,7 +67,7 @@ public under_the_sea()
 
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( sh_user_has_hero(player,gHeroID)) {
+		if ( sh_get_user_has_hero(player,gHeroID)) {
 			if ( pev(player, pev_waterlevel) == 3 ) {
 				set_pev(player, pev_air_finished, pev(player, pev_air_finished) + 2.0)
 			}
@@ -75,10 +75,10 @@ public under_the_sea()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	if ( pev(id, pev_waterlevel) != 3 ) {
 		sh_chat_message(id, gHeroID, "You must be underwater to use the Bubble Attack")
@@ -298,7 +298,7 @@ public drowning(args[])
 
 	if ( !is_user_alive(victim) ) return
 
-	if ( !sh_user_has_hero(victim,gHeroID)) {
+	if ( !sh_get_user_has_hero(victim,gHeroID)) {
 		set_pev(id, pev_air_finished, pev(id, pev_air_finished) - 1.0)
 	}
 

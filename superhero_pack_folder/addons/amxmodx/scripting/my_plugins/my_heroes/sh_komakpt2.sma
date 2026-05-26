@@ -117,7 +117,7 @@ public Item_PostFrame_Post(iEnt)
 		
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!sh_user_has_hero(id,gHeroID) )return HAM_IGNORED
+	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID) )return HAM_IGNORED
 
 	if(g_komak_hits[id]<=0){
 		return HAM_IGNORED
@@ -127,7 +127,7 @@ public Item_PostFrame_Post(iEnt)
 	return HAM_IGNORED
 } 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	reset_komak(id)
@@ -208,7 +208,7 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 	new return_result=HAM_IGNORED;
 	new client_is_hittable_here=is_user_alive(this)
 	if(client_is_hittable_here){
-		if(sh_user_has_hero(this,gHeroID) ){
+		if(sh_get_user_has_hero(this,gHeroID) ){
 
 			new hitgroup=get_tr2(traceresult,TR_iHitgroup);
 			switch(hitgroup){
@@ -231,7 +231,7 @@ public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], tr
 	}
 
 
-	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_user_has_hero(idattacker,gHeroID) ||Get_BitVar(gClutchDown_mask, idattacker) ){
+	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_get_user_has_hero(idattacker,gHeroID) ||Get_BitVar(gClutchDown_mask, idattacker) ){
 		
 		return
 	
@@ -317,7 +317,7 @@ public komak_loop(id){
 		if(!is_user_alive(i)){
 			continue
 		}
-		if(sh_user_has_hero(i,gHeroID)){
+		if(sh_get_user_has_hero(i,gHeroID)){
 		
 			if((gEngineRepairTimer[i]>0)){
 				
@@ -387,7 +387,7 @@ public loadCVARS()
 }
 public reset_komak(id){
 
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		g_komak_hits[id]=0;
 		g_komak_gear[id]=1;
 		gCurrFireRatio[id]=cvar_val(float,pcvar_base_fire_ratio);
@@ -493,9 +493,9 @@ public komak_gear_change(id,is_up){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -511,7 +511,7 @@ switch(key)
 }
 public komak_kd(id)
 {
-	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
+	if ( !sh_is_active()||!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||(g_komak_gear[id]==max_gears)) return PLUGIN_HANDLED
 	
 
 	if ( sh_get_cooldown_flag(id)) {
@@ -531,7 +531,7 @@ public komak_pitch(id){
 public komak_ku(id)
 {
 	
-	if ( !sh_is_active()||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gClutchDown_mask, id)){
+	if ( !sh_is_active()||!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||!Get_BitVar(gClutchDown_mask, id)){
 		return PLUGIN_HANDLED;
 	}
 
@@ -550,12 +550,12 @@ public komak_ku(id)
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) ){
+	if(sh_get_user_has_hero(victim,gHeroID) ){
 		if(sh_clients_are_same_team(victim,attacker)){
 			return DMG_FWD_PASS
 		

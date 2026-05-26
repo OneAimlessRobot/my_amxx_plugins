@@ -84,7 +84,7 @@ public plugin_precache()
     g_spriteLine = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
 
     if ( g_hooked[id] ) triedge_hookOff(id)
@@ -92,7 +92,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public triedge_prethink(id)
 {
-    if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+    if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
     {
         new Float:fallVelocity
         pev(id, pev_flFallVelocity, fallVelocity)
@@ -103,7 +103,7 @@ public triedge_prethink(id)
 //----------------------------------------------------------------------------------------------
 public triedge_postthink(id)
 {
-    if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+    if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
     {
         if ( Falling[id] )
         {
@@ -123,9 +123,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -142,7 +142,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public triedge_kd(id)
 {
-    if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
+    if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
 
     triedge_hookOn(id)
 }
@@ -274,7 +274,7 @@ public tri_edge_beat_down(pToucher, pTouched) {
 
 	if ( !is_user_alive(pToucher) || !is_user_alive(pTouched) ) return
 	
-	if ( sh_user_has_hero(pTouched,gHeroID)&& g_hooked[pTouched] == pToucher ) 
+	if ( sh_get_user_has_hero(pTouched,gHeroID)&& g_hooked[pTouched] == pToucher ) 
 	{
 		
 		triedge_hookOff(pTouched)

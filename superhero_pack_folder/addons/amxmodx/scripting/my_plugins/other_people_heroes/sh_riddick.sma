@@ -67,7 +67,7 @@ public riddick_loop()
 {
 	if (!sh_is_active()) return
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
+		if (  sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, sh_get_max_hp(id))
@@ -84,7 +84,7 @@ public riddick_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
 		
@@ -101,7 +101,7 @@ public riddick_damage(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
+	if (sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 		if (wpnid != CSW_KNIFE && wpnid > 0) {
 			new wpn[32]

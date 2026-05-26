@@ -45,18 +45,18 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, "models/shmod/kenshin_v_knife.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		switchmodel(id)		
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		new clip, ammo, weapon = get_user_weapon(id, clip, ammo)
 		if ( weapon != CSW_KNIFE && weapon > 0 ) {
 			new wpn[32]
@@ -68,7 +68,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public switchmodel(id)
 {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	//If user is holding a shield do not change model, since we don't have one with a shield
 	new v_mdl[32]
@@ -84,7 +84,7 @@ public switchmodel(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new weapon = read_data(2)
 
@@ -100,7 +100,7 @@ public kenshin_damage(id)
 	
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
 
-	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
+	if (sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("kenshin_knifemult") - damage)
 		if ( extraDamage > 0 ){

@@ -56,10 +56,10 @@ public sh_client_spawn(id)
 	gFuseTime[id] = 0
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id) ) {
@@ -81,7 +81,7 @@ public kamikaze_check()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( !sh_user_has_hero(player,gHeroID)) continue
+		if ( !sh_get_user_has_hero(player,gHeroID)) continue
 
 		fuseTime = gFuseTime[player]
 

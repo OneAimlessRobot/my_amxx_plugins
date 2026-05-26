@@ -103,7 +103,7 @@ public Item_PostFrame_Post(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!sh_user_has_hero(id,gHeroID)||!Get_BitVar(g_player_in_ultimate_mask, id)){
+	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)||!Get_BitVar(g_player_in_ultimate_mask, id)){
 		return HAM_IGNORED
 	}
 	do_fast_reload(id,iEnt,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
@@ -114,8 +114,8 @@ public ksun_trace_attack_damage_hook(Victim, Attacker, Float:Damage, Float:Direc
 {
 if ( !sh_is_active() || !is_user_alive(Victim) || !is_user_alive(Attacker)) return HAM_IGNORED
 
-new bool:victim_has_hero = bool:sh_user_has_hero(Victim,gHeroID),
-		bool:attacker_has_hero = bool:sh_user_has_hero(Attacker,gHeroID)
+new bool:victim_has_hero = bool:sh_get_user_has_hero(Victim,gHeroID),
+		bool:attacker_has_hero = bool:sh_get_user_has_hero(Attacker,gHeroID)
 
 if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
 
@@ -240,7 +240,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	new id= get_param(1)
 	
 	if(!is_user_alive(id)) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 	
 	Assign_BitVar(g_player_in_ultimate_mask, id, true_for_macro);
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -252,7 +252,7 @@ public ultimate_task(id){
 	id-=KSUN_ULTIMATE_TASKID
 	if(!is_user_alive(id)) return
 	
-	if(!Get_BitVar(g_player_in_ultimate_mask, id)||!sh_user_has_hero(id,gHeroID)) return
+	if(!Get_BitVar(g_player_in_ultimate_mask, id)||!sh_get_user_has_hero(id,gHeroID)) return
 	static hud_msg[128];
 	g_player_supply_amount[id]= max(0,g_player_supply_amount[id]-KSUN_ULTIMATE_LOOP_DEC)
 	ksun_glisten(id)
@@ -337,14 +337,14 @@ public ksun_rifle_fast_shot(entity)
 
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){
 	
 		return DMG_FWD_PASS
 	}
 
-	if(sh_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)){
+	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)){
 
 	
 		return DMG_FWD_BLOCK

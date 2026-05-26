@@ -48,7 +48,7 @@ public client_connect(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(attacker,gHeroID) ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(attacker,gHeroID) ) return
 	
 	if ( is_user_connected(attacker) && is_user_connected(victim) && victim != attacker )
 	{

@@ -57,7 +57,7 @@ public captaina_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		id = players[i]
 
-		if ( sh_user_has_hero(id,gHeroID) && !get_user_godmode(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && !get_user_godmode(id) ) {
 
 			heroLevel = floatround(sh_get_user_lvl(id) * pctperlev * gMaxLevelFactor)
 

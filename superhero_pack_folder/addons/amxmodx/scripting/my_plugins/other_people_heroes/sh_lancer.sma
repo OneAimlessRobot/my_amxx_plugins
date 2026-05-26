@@ -67,9 +67,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -84,11 +84,11 @@ switch(key)
 }
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	//This gets run if they had the power but don't anymore
-	if ( !sh_user_has_hero(id,gHeroID)){
+	if ( !sh_get_user_has_hero(id,gHeroID)){
 
 		// remove the power if it was used and user dropped hero
 		if ( g_powerID[id] > 0 ) {
@@ -110,7 +110,7 @@ public lancer_kd(id)
 {
 	if ( !sh_is_inround()) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
@@ -156,7 +156,7 @@ public lancer_ku(id)
 		return
 	}
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !g_powerKeyUsed[id] ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !g_powerKeyUsed[id] ) return
 
 	// Stop the sound
 	new sndStop=(1<<5)
@@ -498,7 +498,7 @@ public remove_power(id, powerID)
 public sh_round_end()
 {
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
 		}
 	}
@@ -506,7 +506,7 @@ public sh_round_end()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if(sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0) {
+	if(sh_get_user_has_hero(id,gHeroID) && g_powerID[id] > 0) {
 		remove_power(id, g_powerID[id])
 	}
 }

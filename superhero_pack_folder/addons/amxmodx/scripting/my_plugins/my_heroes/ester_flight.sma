@@ -131,7 +131,7 @@ public ester_drain_loop(task_id){
 	for(new id=1;id<sh_maxplayers()+1;id++){
 
 
-		if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||
+		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
 				!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
 				continue;
 		}
@@ -143,7 +143,7 @@ public ester_drain_loop(task_id){
 		if(!Get_BitVar(g_flying_mask,id)){
 			continue
 		}
-		max_hp_to_use = (sh_user_has_hero(id,gHeroID_shinobu)?shinobu_get_max_hp():sh_get_max_hp(id))
+		max_hp_to_use = (sh_get_user_has_hero(id,gHeroID_shinobu)?shinobu_get_max_hp():sh_get_max_hp(id))
 
 		curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
 		
@@ -213,7 +213,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	}
 	if(Get_BitVar(g_flying_mask,id)&&
-		sh_user_has_hero(id,gHeroID)&&
+		sh_get_user_has_hero(id,gHeroID)&&
 		Get_BitVar(g_ester_is_reborn_mode_mask,id)&&
 		!Get_BitVar(g_smashed_someone_mask,id)){
 		
@@ -235,7 +235,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 }
 inc_user_ester_respawn_attempts(id){
 	
-	if(is_user_connected(id)&&sh_is_active()&&sh_user_has_hero(id,gHeroID)){
+	if(is_user_connected(id)&&sh_is_active()&&sh_get_user_has_hero(id,gHeroID)){
 		
 		g_ester_respawned_attempts[id]=g_ester_respawned_attempts[id]<
 				cvar_val(num, pcvar_ester_total_respawn_attempts)?
@@ -257,7 +257,7 @@ public Ester_Knockback(id)
 
 remove_user_flight_fx(id){
 	
-	if(!is_user_connected(id)||!sh_user_has_hero(id,gHeroID)||!sh_is_active()) return
+	if(!is_user_connected(id)||!sh_get_user_has_hero(id,gHeroID)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0)
 	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
@@ -310,7 +310,7 @@ public OnCmdStart(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
 			!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
 			return FMRES_IGNORED;
 	}
@@ -362,7 +362,7 @@ public OnCmdStart(id, uc_handle, seed)
 						Float:flight_speed_if_desperate,
 						max_hp_to_use
 			
-			max_hp_to_use = (sh_user_has_hero(id,gHeroID_shinobu)?shinobu_get_max_hp():sh_get_max_hp(id))
+			max_hp_to_use = (sh_get_user_has_hero(id,gHeroID_shinobu)?shinobu_get_max_hp():sh_get_max_hp(id))
 
 			curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
 			
@@ -421,7 +421,7 @@ public sh_client_death(id, killer){
 	if ( !sh_is_inround()){
 		return PLUGIN_CONTINUE
 	}
-	new has_hero=sh_user_has_hero(id,gHeroID)
+	new has_hero=sh_get_user_has_hero(id,gHeroID)
 	if ( !is_user_connected(id) || !has_hero||!is_user_connected(killer)){
 		return PLUGIN_CONTINUE
 	}
@@ -474,7 +474,7 @@ public sh_client_death(id, killer){
 public ester_reborn_loop_task(parm[2]){
 	
 	new id= parm[0]
-	if(is_user_alive(id)&&sh_user_has_hero(id,gHeroID)){
+	if(is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		return
 		
@@ -503,7 +503,7 @@ public ester_respawn(parm[2])
 {
 	new id = parm[0]
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
-	if ( !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_get_user_has_hero(id,gHeroID)) return
 	if ( (g_ester_respawned_attempts[id]>=
 				cvar_val(num,pcvar_ester_total_respawn_attempts))||
 				!sh_is_inround()) return
@@ -536,7 +536,7 @@ public godmode_render_update(id){
 	
 	id-=ESTER_REBORN_GLOW_TASKID
 	
-	if(is_user_alive(id)&&sh_user_has_hero(id,gHeroID)){
+	if(is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
@@ -571,7 +571,7 @@ public sh_round_end(){
 	g_flying_mask = 0
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
-		if(is_user_connected(id)&&sh_user_has_hero(id,gHeroID)){
+		if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
 			ester_set_reborn_mode(id,0)
 			ester_remove_statuses(id)
 		}
@@ -603,7 +603,7 @@ public positionChangeTimer(id)
 }
 ester_remove_statuses(id){
 
-	if(is_user_connected(id)&&sh_user_has_hero(id,gHeroID)){
+	if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
 		set_user_godmode(id,0)
@@ -635,7 +635,7 @@ public BlowUp(param[1],id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 
-	if(!sh_is_freezetime()&&is_user_alive(id)&&sh_user_has_hero(id,gHeroID)&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
+	if(!sh_is_freezetime()&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
 		param[0]++
 		explosion(gHeroID,id,
 			cvar_val(float,pcvar_ester_explosion_radius),
@@ -674,7 +674,7 @@ public ester_break_shit(pToucher,pTouched){
 		return
 	}
 
-	if (!sh_user_has_hero(pToucher,gHeroID)||
+	if (!sh_get_user_has_hero(pToucher,gHeroID)||
 							Get_BitVar(g_smashed_breakable_mask,pToucher)||
 							!Get_BitVar(g_ester_is_reborn_mode_mask,pToucher)||
 							!Get_BitVar(g_flying_mask,pToucher)){
@@ -719,7 +719,7 @@ if (pev_valid(pTouched)<1){
 	return
 }
 
-if (!sh_user_has_hero(pToucher,gHeroID)||
+if (!sh_get_user_has_hero(pToucher,gHeroID)||
 						Get_BitVar(g_smashed_someone_mask,pToucher)||
 						!Get_BitVar(g_ester_is_reborn_mode_mask,pToucher)||
 						!Get_BitVar(g_flying_mask,pToucher)||

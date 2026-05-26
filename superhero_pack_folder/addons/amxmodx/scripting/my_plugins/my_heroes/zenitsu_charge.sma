@@ -68,7 +68,7 @@ public plugin_precache(){
 public on_Knife_Weapon_Change(id)
 {
 	if ( !sh_is_active()) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 	if(Get_BitVar(g_zenitsu_is_charging_mask, id)&&!Get_BitVar(g_zenitsu_has_touched_player_mask, id)){
 		engclient_cmd(id, "weapon_knife")
 	}
@@ -82,7 +82,7 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 	
 		Assign_BitVar(g_zenitsu_has_touched_player_mask, id, false_for_macro);
 		Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
@@ -92,7 +92,7 @@ public sh_client_spawn(id)
 }
 remove_user_flight_fx(id){
 	
-	if(!sh_user_has_hero(id,gHeroID)||!is_user_connected(id)||!sh_is_active()) return
+	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_connected(id)||!sh_is_active()) return
 	
 	trail(id,GREEN,0,0);
 	Assign_BitVar(g_zenitsu_is_glowing_mask, id, false_for_macro);
@@ -117,7 +117,7 @@ public zenitsu_charge(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -179,7 +179,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		return
 	}
 
-	if (!sh_user_has_hero(pToucher,gHeroID)||!zenitsu_get_charge_mode_engaged(pToucher)||
+	if (!sh_get_user_has_hero(pToucher,gHeroID)||!zenitsu_get_charge_mode_engaged(pToucher)||
 						!Get_BitVar(g_zenitsu_is_charging_mask, pToucher)||
 						Get_BitVar(g_zenitsu_has_touched_player_mask, pToucher)){
 
@@ -227,7 +227,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 
 			zenitsu_set_charge_mode_engaged(id,0)
 		}

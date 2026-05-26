@@ -51,7 +51,7 @@ spawn_erica_hook(id,target){
 
 	if(!is_user_alive(id) || !is_user_alive(id)) return
 	
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	if(is_valid_ent(g_player_hook[id])){
 		return
@@ -125,7 +125,7 @@ public sh_round_end()
 
 erica_new_spawn_hooks(id){
 
-if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID)) {
+if (  sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID)) {
 	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar);
 }
 stop_dragging(id,-1)
@@ -182,7 +182,7 @@ public hook_think(ent)
 		return
 	
 	}
-	if (!sh_user_has_hero(id,gHeroID)){
+	if (!sh_get_user_has_hero(id,gHeroID)){
 
 		stop_dragging(id,vic)
 		return
@@ -265,7 +265,7 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED;
 		
 	}
-	if ( !sh_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
+	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 
 	
 	new button;
@@ -375,7 +375,7 @@ if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)) return HAM
 new weapon=get_user_weapon(attacker)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(sh_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_hook[attacker])){
+if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_hook[attacker])){
 	
 	new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
 	if((weapon==CSW_KNIFE)){
@@ -469,7 +469,7 @@ public plugin_precache()
 
 public sh_client_death(id)
 {
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 				
 		stop_dragging(id);
 	

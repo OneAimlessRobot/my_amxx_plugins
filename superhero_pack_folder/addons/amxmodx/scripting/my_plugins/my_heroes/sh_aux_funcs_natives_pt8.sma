@@ -67,7 +67,7 @@ public push_incompatibility_pair(hero_a,hero_b){
 	
 	filled_pair_count++
 }
-safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
+safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode:mode){
 
 
 	if(mode==SH_HERO_DROP){
@@ -85,7 +85,7 @@ safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
 	
 	}
 	new other_hero = is_a ? heroID_b : heroID_a
-	if(!sh_user_has_hero(id,other_hero)){
+	if(!sh_get_user_has_hero(id,other_hero)){
 
 		return INIT_FWD_PASS
 
@@ -105,7 +105,7 @@ safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
 
 	
 }
-public sh_hero_init_pre(id,heroID,mode){
+public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	new true_return_result = INIT_FWD_PASS
 
 	for(new i=0;i<filled_pair_count;i++){

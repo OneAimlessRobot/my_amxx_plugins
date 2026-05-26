@@ -58,10 +58,10 @@ public plugin_init()
 	shSetShieldRestrict(HeroName)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_alive(id) )
 		{
@@ -81,7 +81,7 @@ public sh_hero_init(id, heroID, mode){
 }
 public new_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 	{
 		masterchief_weapons(id)
 
@@ -89,14 +89,14 @@ public new_spawn(id)
 }
 public masterchief_weapons(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	sh_give_weapon(id, CSW_P90)
 }
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	//weaponID = read_data(2)
@@ -119,7 +119,7 @@ public masterchief_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_P90 )
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_P90 )
 	{
 		new damage = read_data(2)
 		// do extra damage

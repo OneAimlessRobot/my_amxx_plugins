@@ -90,7 +90,7 @@ public plugin_init()
 public sh_client_spawn(id)
 {
 	sh_unset_cooldown_flag(id)
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		swat_weapons(id)
 
 	}
@@ -108,7 +108,7 @@ public swat_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -134,12 +134,12 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 
 	static weapon;
 	get_user_attacker(Victim, weapon)
-	new bool:has_hero= bool:sh_user_has_hero(Attacker,gHeroID) 
+	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
 
 	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
 
 
-	if(Get_BitVar(hit_region_not_head,_:the_hitpoint)&&sh_user_has_hero(Victim,gHeroID) ){
+	if(Get_BitVar(hit_region_not_head,_:the_hitpoint)&&sh_get_user_has_hero(Victim,gHeroID) ){
 
 		set_tr2(Ptr,TR_iHitgroup,_:MY_HIT_SHIELD)
 
@@ -177,10 +177,10 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 
 		swat_weapons(id)
 	}
@@ -190,9 +190,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -207,7 +207,7 @@ public Swat_kd(id)
 {
 	if ( !sh_is_inround() ) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)  ) return
 
 	if ( sh_get_cooldown_flag(id)) {
 		
@@ -392,12 +392,12 @@ public sh_round_start(){
 }
 //----------------------------------------------------------------------------------------------
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)||(victim==attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) ){
+	if(sh_get_user_has_hero(victim,gHeroID) ){
 		if(sh_clients_are_same_team(victim,attacker)){
 			return DMG_FWD_PASS
 		

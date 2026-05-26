@@ -67,14 +67,14 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, "models/shmod/madness_m3.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	if (!is_user_connected(id)) return
 
 
 	if ( is_user_alive(id) ) {
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			madness_weapons(id)
 		}
 		//This gets run if they had the power but don't anymore
@@ -86,7 +86,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "madness_weapons", id)
 	}
 }
@@ -100,7 +100,7 @@ public madness_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -122,7 +122,7 @@ public madness_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M3 && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M3 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
 		if (extraDamage > 0){

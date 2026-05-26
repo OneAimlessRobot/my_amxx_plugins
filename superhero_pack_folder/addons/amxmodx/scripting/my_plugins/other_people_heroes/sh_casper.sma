@@ -50,14 +50,14 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		gGhostHealth[id] = get_cvar_num("casper_health")
 		gGhostArmor[id] = get_cvar_num("casper_armor")
 	}
-	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && gInGhostMode[id] ) {
+	else if ( !sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && gInGhostMode[id] ) {
 		casper_removeghost(id)
 	}
 }
@@ -76,7 +76,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() &&sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_is_active() &&sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( gInGhostMode[id] ) {
 			casper_removeghost(id)
 		}
@@ -88,9 +88,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -109,7 +109,7 @@ public casper_kd(id)
 {
 	if ( !hasRoundStarted() ) return
 
-	if ( !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -126,7 +126,7 @@ public casper_kd(id)
 //---------------------------------------------------------------------------------------------
 public casper_setghost(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) ) return
 
 	gInGhostMode[id] = true
 
@@ -168,7 +168,7 @@ public casper_setghost(id)
 //---------------------------------------------------------------------------------------------
 public casper_loop(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
 	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
 
@@ -187,7 +187,7 @@ public casper_ku(id)
 {
 	if ( !hasRoundStarted() ) return
 
-	if ( !sh_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
 	casper_removeghost(id)
 }
@@ -274,14 +274,14 @@ public positionChangeCheck(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_death(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) ) return
 
 	casper_removeghost(id)
 }
 //---------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_get_user_has_hero(id,gHeroID)) return
 
 	remove_task(id)
 	gInGhostMode[id] = false

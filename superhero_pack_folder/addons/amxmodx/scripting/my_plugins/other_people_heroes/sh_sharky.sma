@@ -47,10 +47,10 @@ public plugin_precache()
    engfunc(EngFunc_PrecacheSound,g_sharkySound)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
   if(heroID!=gHeroID) return
 
-  if ( !sh_user_has_hero(id,gHeroID))
+  if ( !sh_get_user_has_hero(id,gHeroID))
   {
     sharky_endmode(id)
     g_sharkyTimer[id]=0
@@ -60,7 +60,7 @@ public sh_hero_init(id, heroID, mode){
 public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
-  if ( sh_user_has_hero(id,gHeroID) ) {
+  if ( sh_get_user_has_hero(id,gHeroID) ) {
   sharky_gunz(id)
     }
   if (g_sharkyTimer[id]>0) {
@@ -70,9 +70,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -126,7 +126,7 @@ public sharky_loop()
 {
   for ( new id=1; id< sh_maxplayers()+1; id++ )
   {
-    if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
+    if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
     {
       if ( g_sharkyTimer[id]>0 )
       {
@@ -172,10 +172,10 @@ public sh_client_death(id)
 public changeWeapon(id)
 {
 	if (get_cvar_num("sharky_ammo")==1){
-		if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
+		if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 	else{
-		if ( !sh_user_has_hero(id,gHeroID) || !gSharkyMode[id] || !sh_is_active() ) return PLUGIN_CONTINUE
+		if ( !sh_get_user_has_hero(id,gHeroID) || !gSharkyMode[id] || !sh_is_active() ) return PLUGIN_CONTINUE
 	}
 
 	new  clip, ammo
@@ -253,7 +253,7 @@ public fog_this_area(origin[3]){
 //----------------------------------------------------------------------------------------------
 
 public make_fog(id){ 
-   if (!sh_user_has_hero(id,gHeroID)) 
+   if (!sh_get_user_has_hero(id,gHeroID)) 
       return PLUGIN_HANDLED 
    if (is_user_alive(id)!=1) 
       return PLUGIN_HANDLED 

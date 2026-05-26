@@ -110,10 +110,10 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 
 		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
 		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
@@ -152,7 +152,7 @@ public plugin_precache()
 public arcticPredator_loop(id)
 {
 	id-=TASKID_LOOP
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 	{
 		if ( g_huntTimer[id]>0 )
 		{
@@ -184,9 +184,9 @@ public hunt_endmode(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -227,7 +227,7 @@ public sh_client_spawn(id)
 		remove_entity(disc)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
-	if ( sh_user_has_hero(id,gHeroID) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && sh_is_active() ) {
 		sh_unset_cooldown_flag(id)
 		discThrown[id] = false
 		arcpredator_weapons(id)
@@ -237,7 +237,7 @@ public sh_client_spawn(id)
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 new wpnid = read_data(2)
 new clip = read_data(3)
@@ -255,7 +255,7 @@ if ( clip == 0 ) {
 //-----------------------------------------------------------------------------------------------
 public arcpredator_weapons(id)
 {
-	if ( is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
+	if ( is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id,CSW_AWP)
 		sh_give_weapon(id,CSW_SCOUT)
 	}
@@ -263,7 +263,7 @@ public arcpredator_weapons(id)
 //-----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 	
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -273,7 +273,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
 	
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )
@@ -353,7 +353,7 @@ public sh_client_death(id,attacker)
 {
 	g_huntTimer[id] = 0;
 	sh_unset_cooldown_flag(id)
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id)
 		gHuntMode[id] = false
@@ -362,10 +362,10 @@ public sh_client_death(id,attacker)
 	if ( killer[id] != id ) {
 		new namea[32]
 		get_user_name(killer[id],namea,31)
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			client_print(id,print_chat,"[SH Predator] Tracking %s next round, hunt him down.", namea)
 		}
-		if(sh_user_has_hero(killer[id],gHeroID)&&killer[killer[id]]==id){
+		if(sh_get_user_has_hero(killer[id],gHeroID)&&killer[killer[id]]==id){
 			
 			new namea[32]
 			get_user_name(id,namea,31)
@@ -383,12 +383,12 @@ public sh_client_death(id,attacker)
 //----------------------------------------------------------------------------------------------
 public make_tracer(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
+	if ( !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	
 	new weap = read_data(2)        // id of the weapon
 	new ammo = read_data(3)        // ammo left in clip
 	
-	if ( sh_user_has_hero(id,gHeroID) && weap == CSW_SCOUT && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && weap == CSW_SCOUT && is_user_alive(id) ) {
 		
 		if (lastweap[id] == 0) lastweap[id] = weap
 		
@@ -438,7 +438,7 @@ public make_tracer(id)
 		return PLUGIN_CONTINUE
 		
 	}
-	if ( sh_user_has_hero(id,gHeroID) && weap == CSW_AWP && is_user_alive(id) )
+	if ( sh_get_user_has_hero(id,gHeroID) && weap == CSW_AWP && is_user_alive(id) )
 	{
 		if (lastweap[id] == 0) lastweap[id] = weap
 		
@@ -500,7 +500,7 @@ new damage = read_data(2)
 new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
 if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
-new bool:has_hero=bool:sh_user_has_hero(attacker,gHeroID)
+new bool:has_hero=bool:sh_get_user_has_hero(attacker,gHeroID)
 if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[attacker] > 0 ) )
 {
 	new health = get_user_health(id)
@@ -559,7 +559,7 @@ explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_p
 public Revenge_Tracker(id)
 {
 id-=TASKID_REVENGE
-if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
+if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
 {
 	new distance, origin[3], eorigin[3]
 	
@@ -581,7 +581,7 @@ if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) 
 //----------------------------------------------------------------------------------------------
 public disc_throw_check(id)
 {
-if(is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+if(is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 {
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (entity_get_int(id, EV_INT_button) & IN_USE && wpnid == CSW_KNIFE && discThrown[id] == false )
@@ -766,7 +766,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	if(!is_user_alive(id))
 		return FMRES_IGNORED;
 	
-	if(!sh_user_has_hero(id,gHeroID))
+	if(!sh_get_user_has_hero(id,gHeroID))
 		return FMRES_IGNORED;
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)

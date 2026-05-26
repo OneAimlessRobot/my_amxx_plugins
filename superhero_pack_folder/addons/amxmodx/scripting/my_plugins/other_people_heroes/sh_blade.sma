@@ -120,10 +120,10 @@ public plugin_precache()
 	#endif
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 
 		if ( is_user_alive(id) )
@@ -157,13 +157,13 @@ public sh_client_spawn(id)
 	blade_reset(id)
 
 #if GIVE_WEAPONS == 1
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 		set_task(0.1, "blade_weapons", id)
 }
 //----------------------------------------------------------------------------------------------
 public blade_weapons(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	if ( cs_get_user_team(id) == CS_TEAM_T ){
@@ -178,7 +178,7 @@ public blade_weapons(id)
 #if USE_MODEL
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -190,7 +190,7 @@ switch_model(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	new wpnid = read_data(2)
@@ -221,7 +221,7 @@ public blade_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if (sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && is_user_vampire(id) )
+	if (sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && is_user_vampire(id) )
 	{
 		switch(weapon)
 		{
@@ -284,7 +284,7 @@ public set_knifeburn(id, attacker)
 		return
 
 	// Extra checks for use with hero Longshot
-	if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_vampire(id) )
+	if ( !sh_get_user_has_hero(attacker,gHeroID) || !is_user_vampire(id) )
 		return
 
 	new knifeBurns = get_pcvar_num(CvarKnifeBurns)

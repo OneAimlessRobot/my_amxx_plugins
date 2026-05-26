@@ -120,7 +120,7 @@ skeletor_summon(victim)
 
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( sh_user_has_hero(player,gHeroID)&& victimTeam != cs_get_user_team(player) && !sh_get_cooldown_flag(player)) {
+		if ( sh_get_user_has_hero(player,gHeroID)&& victimTeam != cs_get_user_team(player) && !sh_get_cooldown_flag(player)) {
 			// COOL WE HAVE A SKELETOR TO STICK SNARKS ON Player id!
 			new Float:cooldown = get_pcvar_float(pCvarCooldown)
 			if ( cooldown > 0.0 ) sh_set_cooldown(player, cooldown)

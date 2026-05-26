@@ -45,7 +45,7 @@ spawn_teliko_slitter(id,target){
 
 	if(!is_user_alive(id) || !is_user_alive(id)) return
 	
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	if(is_valid_ent(g_player_slitter[id])){
 		return
@@ -118,7 +118,7 @@ stop_dragging(id,target=-1,bool:deduct=false){
 }
 teliko_new_spawn_slits(id){
 
-if (  sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID)) {
+if (  sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID)) {
 	g_slit_kills[id]=cvar_val(num,pcvar_max_slitter_kills_per_life);
 }
 stop_dragging(id,-1)
@@ -126,7 +126,7 @@ stop_dragging(id,-1)
 }
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if ( !sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
@@ -199,7 +199,7 @@ public slitter_think(ent)
 		return
 	
 	}
-	if (!sh_user_has_hero(id,gHeroID)){
+	if (!sh_get_user_has_hero(id,gHeroID)){
 
 		stop_dragging(id,vic)
 		return
@@ -278,7 +278,7 @@ public CmdStart(attacker, uc_handle)
 		stop_dragging(attacker)
 		return FMRES_IGNORED
 	}
-	if ( !sh_user_has_hero(attacker,gHeroID) ||sh_user_has_hero(attacker,gHeroID_erica) ||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
+	if ( !sh_get_user_has_hero(attacker,gHeroID) ||sh_get_user_has_hero(attacker,gHeroID_erica) ||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
 		return FMRES_IGNORED
 	}
 
@@ -383,7 +383,7 @@ if ( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)||!is_user_a
 new weapon=get_user_weapon(attacker)
 
 new CsTeams:att_team=cs_get_user_team(attacker)
-if(sh_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_slitter[attacker])){
+if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_slitter[attacker])){
 	
 	new target=entity_get_edict(g_player_slitter[attacker],EV_ENT_euser1)
 	if((weapon==CSW_KNIFE)){
@@ -484,7 +484,7 @@ public plugin_precache()
 
 public sh_client_death(id){
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		stop_dragging(id)
 	

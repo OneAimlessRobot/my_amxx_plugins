@@ -81,7 +81,7 @@ co2_user(id){
 	
 	Set_BitVar(is_cO2_mask,id)
 
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
+	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
 	

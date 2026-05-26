@@ -89,7 +89,7 @@ public solid_levels()
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if(sh_user_has_hero(id,gHeroID)&& sh_is_active())
+	if(sh_get_user_has_hero(id,gHeroID)&& sh_is_active())
 	{
 		new wpnid = read_data(2)
 
@@ -103,7 +103,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 public setSocom(id)
 {
-    if(sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+    if(sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{
 	    new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
@@ -123,7 +123,7 @@ public sh_round_start()
 	{
 		if(is_user_alive(x))
 		{
-			if(sh_user_has_hero(x,gHeroID))
+			if(sh_get_user_has_hero(x,gHeroID))
 			{
 				gMaxHealth[x] = get_user_health(x)
 				Rations[x] = maxRations
@@ -140,7 +140,7 @@ public sh_round_start()
 //----------------------------------------------------------------------------------------------
 public solid_damage(id)
 {
-	if(sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if(sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{
 		remove_task(id)
 		stealthVisible(id)
@@ -149,7 +149,7 @@ public solid_damage(id)
 //----------------------------------------------------------------------------------------------
 public giveSocom(id)
 {
-    if(!sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+    if(!sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
     sh_give_weapon(id, CSW_USP)
 }
@@ -165,9 +165,9 @@ public stealthVisible(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -180,7 +180,7 @@ switch(key)
 public solid_kd(id)
 {
 
-	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if(Rations[id] == 0)
 	{

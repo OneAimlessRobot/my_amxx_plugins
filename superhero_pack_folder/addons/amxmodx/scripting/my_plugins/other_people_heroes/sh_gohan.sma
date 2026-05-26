@@ -59,7 +59,7 @@ public plugin_init()
 	gHealAmount = get_cvar_num("gohan_healmax")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
 	remove_task(id+TASKID)
@@ -71,7 +71,7 @@ public sh_hero_init(id, heroID, mode){
 public gohan_loop(id)
 {
 		id-=TASKID
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, gHealAmount)

@@ -54,11 +54,11 @@ public plugin_init()
 	set_task(1.0, "steel_armorloop", 0, "", 0, "b")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	// This gets run if they had the power but don't anymore
-	if ( !sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( !sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_hitzones(0, id, 255)
 		shUnglow(id)
 	}
@@ -66,7 +66,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 		set_user_hitzones(0, id, 255)
 		g_hasSuit[id] = false
 	}
@@ -77,7 +77,7 @@ public steel_loop()
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new userHealth = get_user_health(id)
 			if( userHealth <= cvar_val(num,pcvarg_hpSetSuit) ) {
 				// Only need to set it once, if they don't have the suit
@@ -104,7 +104,7 @@ public steel_armorloop()
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 			// Set glow here since it's called less
 			shGlow(id, 35, 40, 50)
 
@@ -127,7 +127,7 @@ public steel_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[attacker] ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[attacker] ) {
 
 		sh_extra_damage(id, attacker, damage,
 								my_hitpoint_enum:bodypart

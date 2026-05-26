@@ -66,18 +66,18 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"weapons/xbow_hitbod2.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	// Set max shots
-	if(sh_user_has_hero(id,gHeroID)) {
+	if(sh_get_user_has_hero(id,gHeroID)) {
 		lightnings_shots[id] = max_shots
 	}
 }
 // ----------------------------------------------------------------------------------------------
 public sh_client_death(id)
 {
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	remove_task(id)
 	MeteorixPowerUsed[id] = false
@@ -85,16 +85,16 @@ public sh_client_death(id)
 // ----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 	remove_task(id)
 	MeteorixPowerUsed[id] = false
 	lightnings_shots[id] = max_shots
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -249,7 +249,7 @@ public lightnings_shot(id)
 	new tid, tbody
 	new FFOn = get_cvar_num("mp_friendlyfire")
 
-	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	// If you have no lightnings
 	if(lightnings_shots[id] == 0) {

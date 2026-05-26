@@ -92,7 +92,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && wpnindex == CSW_KNIFE ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && wpnindex == CSW_KNIFE ) {
 		// Give him back 50% of the lost life
 		sh_add_hp(victim, (damage/2), get_pcvar_num(pCvarHealth))
 
@@ -111,7 +111,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 //----------------------------------------------------------------------------------------------
 public counter_attack(victim, id, moveNumber)
 {
-	if ( !sh_is_active() || !is_user_alive(victim) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(victim) || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	new counterMove[32]

@@ -133,7 +133,7 @@ launch_scan(id){
 
 
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 	
 		return 
 	

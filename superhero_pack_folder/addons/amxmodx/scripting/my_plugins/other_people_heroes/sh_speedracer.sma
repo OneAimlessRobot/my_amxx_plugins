@@ -34,9 +34,9 @@ public plugin_init() {
 
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -47,7 +47,7 @@ switch(key)
 }
 public speed_kd(id) {
 	
-	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return;
 	if(!gCanJump[id]) { playSoundDenySelect(id); client_print(id, print_chat, "[SH](Speed Racer) You can only Super-Jump once per round!"); return; }
 
 	new Float:velocity[3]
@@ -60,7 +60,7 @@ public speed_kd(id) {
 }
 
 public sh_client_spawn(id) {
-	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted()) return;
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted()) return;
 
 	gCanJump[id] = true
 }

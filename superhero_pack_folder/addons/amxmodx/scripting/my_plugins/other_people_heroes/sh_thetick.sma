@@ -54,7 +54,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public ham_TakeDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_FALL && sh_user_has_hero(this,HeroID) ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,HeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }

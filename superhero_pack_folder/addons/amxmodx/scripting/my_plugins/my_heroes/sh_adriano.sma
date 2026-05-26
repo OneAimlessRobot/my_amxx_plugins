@@ -103,16 +103,16 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public adriano_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id)&& sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		adriano_weapons(id)
 		g_adriano_points[id]=base_points;
@@ -147,7 +147,7 @@ public get_speed_dmg_in_radius(id,Float:damage){
 
 		if(!sh_clients_are_same_team(i,id)) continue;
 
-		if(sh_user_has_hero(i,gHeroID) ){
+		if(sh_get_user_has_hero(i,gHeroID) ){
 			new Float:distance_between_players = float(get_entity_distance(id,i))
 			if(distance_between_players<g_normal_radius[i]){
 				heal_stream(i, id,YELLOW,200)
@@ -189,7 +189,7 @@ public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult
 	}
 	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
-	if ( (attacker==id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
 	new weapon = get_user_weapon(attacker)
 	
@@ -219,7 +219,7 @@ public adriano_damage(id)
 	
 	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
 
-	if(sh_user_has_hero(attacker,gHeroID)){
+	if(sh_get_user_has_hero(attacker,gHeroID)){
 		new Float:extraDamage = damage * 2.0- damage
 		if (floatround(extraDamage)>0){
 			switch(weapon){
@@ -243,7 +243,7 @@ public sh_round_start(){
 
 		if(!is_user_alive(id)) return
 
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			if(get_user_maxspeed(id)<g_base_speed[id]){
 				set_user_maxspeed(id,g_base_speed[id])
 			}
@@ -253,7 +253,7 @@ public sh_round_start(){
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||is_user_bot(id) )
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||is_user_bot(id) )
 		return FMRES_IGNORED;
 	
 
@@ -290,7 +290,7 @@ public client_disconnected(id){
 }
 update_stats(id){
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
 		set_user_maxspeed(id,g_normal_speed[id])
@@ -303,7 +303,7 @@ update_stats(id){
 public weaponChange(id)
 {
 	if (!sh_is_active()) return PLUGIN_CONTINUE
-	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
+	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
@@ -319,7 +319,7 @@ public weaponChange(id)
 public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			adriano_weapons(id)
 			g_adriano_points[id]=base_points;
 			g_base_speed[id]=base_speed

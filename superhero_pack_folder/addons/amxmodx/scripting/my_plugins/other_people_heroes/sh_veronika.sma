@@ -98,7 +98,7 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	g_ammo[id] = get_cvar_num("veronika_grenades")
@@ -106,7 +106,7 @@ public sh_hero_init(id, heroID, mode){
 	
 	if ( !is_user_alive(id) ) return
 	
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		veronika_weapons(id)
 		}
 	else {
@@ -116,7 +116,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "veronika_weapons", id)
 		g_ammo[id] = get_cvar_num("veronika_grenades")
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
@@ -142,7 +142,7 @@ public veronika_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -165,7 +165,7 @@ public veronika_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 	
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_AK47 && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_AK47 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("veronika_akmulti") - damage)
 		if (extraDamage > 0){
@@ -190,7 +190,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 			
 		return FMRES_IGNORED
 	}
@@ -209,7 +209,7 @@ public CmdStart(id, uc_handle)
 
 public launch_nade(id)
 {
-	if( !sh_user_has_hero(id,gHeroID)|| !(is_user_alive(id)) || g_m203_loaded[id] == 0 )
+	if( !sh_get_user_has_hero(id,gHeroID)|| !(is_user_alive(id)) || g_m203_loaded[id] == 0 )
 		return PLUGIN_CONTINUE
 	
 	if(g_ammo[id] == 0)
@@ -392,7 +392,7 @@ g_m203_loaded[id] = 1
 
 public sh_client_death(id)
 {
-if ( sh_user_has_hero(id,gHeroID))
+if ( sh_get_user_has_hero(id,gHeroID))
 {
 	ammo_hud(id,g_ammo[id],0)
 }

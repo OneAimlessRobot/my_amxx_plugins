@@ -57,7 +57,7 @@ public daredevil_esploop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( !sh_user_has_hero(player,gHeroID)) continue
+		if ( !sh_get_user_has_hero(player,gHeroID)) continue
 
 		for ( j = 0; j < playerCount; j++ ) {
 			idRing = players[j]

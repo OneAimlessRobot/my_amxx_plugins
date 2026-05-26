@@ -98,9 +98,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
 		gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		gUsingLaser[id] = false
@@ -110,7 +110,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)
 		sh_unset_cooldown_flag(id)
 		gUsingLaser[id] = false
@@ -135,7 +135,7 @@ public drstrange_loop()
 
 	for ( new x = 0; x < count; x++ ) {
 		id = players[x]
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new randNum = generate_int(1, 100)
 			new heroLevel = floatround(gPlayerLevels[id] * get_cvar_float("drstrange_pctperlev") * 100)
 			//server_print("setting god mode: heroLevel=%d, randNum=%d", heroLevel, randNum)
@@ -148,9 +148,9 @@ public drstrange_loop()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -171,7 +171,7 @@ public drstrange_kd(id)
 	if ( !hasRoundStarted() ) return
 
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Mystical Bolts Left")
@@ -373,7 +373,7 @@ public sh_client_death(id)
 	remove_task(id)
 
 	if ( !sh_is_inround() ) return
-	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_connected(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new randNum = generate_int(0, 100)
 	new pctChance = get_cvar_num("drstrange_respawnpct")
@@ -438,7 +438,7 @@ public sh_round_start()
 {
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			gLaserShots[id] = get_cvar_num("drstrange_bolt_ammo")
 		}
 	}
@@ -450,7 +450,7 @@ public sh_round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 			gDrStrangeReviveUsed[id] = false
 		}

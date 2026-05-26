@@ -97,7 +97,7 @@ public _mine_get_mine_disarmer_on(iPlugins,iParams){
 public plant_mine(id){
 	
 	if ( !is_user_alive(id)) return
-	if(!sh_user_has_hero(id,gHeroID))  return
+	if(!sh_get_user_has_hero(id,gHeroID))  return
 
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
@@ -162,7 +162,7 @@ public blow_mine_up(ent, id)
 			return;
 		}
 		new attacker = entity_get_edict(ent, EV_ENT_owner);
-		if(!is_user_alive(attacker)||!sh_user_has_hero(attacker,gHeroID)){
+		if(!is_user_alive(attacker)||!sh_get_user_has_hero(attacker,gHeroID)){
 		
 			return
 		}
@@ -352,7 +352,7 @@ public charge_task(id){
 	
 	}
 	id-=MINE_CHARGE_TASKID
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 	
 		uncharge_user(id)
 		return

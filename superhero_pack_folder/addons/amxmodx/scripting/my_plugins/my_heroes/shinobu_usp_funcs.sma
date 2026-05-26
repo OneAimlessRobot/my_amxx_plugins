@@ -52,7 +52,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 
-	if(!sh_user_has_hero(player,gHeroID)){
+	if(!sh_get_user_has_hero(player,gHeroID)){
 
 		return FMRES_IGNORED
 	}
@@ -92,7 +92,7 @@ public _shinobu_weapons(iPlugins, iParam){
 		
 		return
 	}
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 
 		if(!user_has_weapon(id,SHINOBU_WEAPON_CLASSID)){
 			sh_give_weapon(id,SHINOBU_WEAPON_CLASSID,true)
@@ -118,7 +118,7 @@ public _shinobu_unweapons(iPlugins, iParam){
 public on_Usp_Weapon_Change(id)
 {
 	if (!sh_is_active()) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	if(read_data(2)==SHINOBU_WEAPON_CLASSID){
 		if(cs_get_user_bpammo(id,SHINOBU_WEAPON_CLASSID)>g_shinobu_curr_ammo[id]){
@@ -147,7 +147,7 @@ public track_shinobu_usp_ammo(ent)
 		return HAM_IGNORED
 	}
 
-	if( !sh_user_has_hero(id,gHeroID) ) return HAM_IGNORED
+	if( !sh_get_user_has_hero(id,gHeroID) ) return HAM_IGNORED
 
 	g_shinobu_curr_ammo[id] = -1
 		
@@ -172,7 +172,7 @@ public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], tra
 	if ( !is_user_alive(idattacker)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(idattacker,gHeroID)){
+	if(!sh_get_user_has_hero(idattacker,gHeroID)){
 
 		return HAM_IGNORED
 	}
@@ -223,7 +223,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 	if(get_user_weapon(id) != SHINOBU_WEAPON_CLASSID){
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 
 		return FMRES_IGNORED
 	}

@@ -189,7 +189,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	{
 		gWeaponPlayerKilledPlayerWith[attacker][id] = weapon;
 	}
-	if(sh_user_has_hero(id,gHeroID) &&COVERT_ABUSE_ENABLED){
+	if(sh_get_user_has_hero(id,gHeroID) &&COVERT_ABUSE_ENABLED){
 
 	
 		covert_spike_damage(id)
@@ -200,7 +200,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 		overt_spike_damage(attacker,damage,1)
 	}
 
-	if(sh_user_has_hero(attacker,gHeroID) ){
+	if(sh_get_user_has_hero(attacker,gHeroID) ){
 		if(weapon==KSUN_WEAPON_ID){
 			if(sh_get_user_is_asleep(id)){
 			
@@ -212,7 +212,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 				new CsTeams:att_team=cs_get_user_team(attacker)
 				if(att_team!=payer_team){
 					ksun_inc_player_supply_points(attacker,floatround(damage))
-					if(sh_user_has_hero(id,gHeroID) && (ksun_get_player_supply_points(id)>0)){
+					if(sh_get_user_has_hero(id,gHeroID) && (ksun_get_player_supply_points(id)>0)){
 						ksun_dec_player_supply_points(id,floatround(damage))
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
@@ -240,12 +240,12 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_IGNORED;
 
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 
 		return HAM_IGNORED;
 
 	}
-	if(sh_user_has_hero(id,gHeroID_chikoi)){
+	if(sh_get_user_has_hero(id,gHeroID_chikoi)){
 
 		return HAM_IGNORED;
 
@@ -282,7 +282,7 @@ public sh_round_end(){
 
 			continue
 		}
-		if(!sh_user_has_hero(i,gHeroID) ){
+		if(!sh_get_user_has_hero(i,gHeroID) ){
 
 			continue
 		}
@@ -363,7 +363,7 @@ public Float:_spores_cooldown(iPlugins, iParms){
 ksun_weapons(id)
 {
 
-if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 	give_custom_grenades(id,GREN_SLEEP,cvar_val(num, pcvar_num_sleep_nades))
 	sh_give_weapon(id, KSUN_WEAPON_ID)
 }
@@ -376,17 +376,17 @@ public sh_client_spawn(id)
 		return
 	}
 	spores_reset_user(id)
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		ksun_weapons(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	return
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 
 		ksun_weapons(id)
 		
@@ -402,9 +402,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -419,7 +419,7 @@ public ksun_kd(id)
 	
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
-	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id)) {
@@ -490,7 +490,7 @@ public ksun_step_silent(task_id)
 	for(new id=1;id<sh_maxplayers()+1;id++){
 		if(is_user_alive(id)){
 			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-				if(sh_user_has_hero(id,gHeroID) ){
+				if(sh_get_user_has_hero(id,gHeroID) ){
 					new alive=0,dead=0
 					sh_get_player_counts(id,1,alive,dead)
 					if((alive<=0)) {
@@ -505,7 +505,7 @@ stock ksun_death_handler(id){
 	if(!sh_is_active()) return
 	
 	if(is_user_connected(id)){
-		if(sh_user_has_hero(id,gHeroID) ){
+		if(sh_get_user_has_hero(id,gHeroID) ){
 			ksun_unultimate_user(id,1,0)
 			
 			if(ksun_get_when_reset_spores()&reset_on_death){
@@ -521,7 +521,7 @@ public sh_client_death(id, killer){
 	
 	ksun_death_handler(id)
 	if(is_user_alive(killer)&&is_user_connected(id)){
-		if(sh_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
+		if(sh_get_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
 					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",weapon_names_stock_arr[KSUN_WEAPON_ID])
@@ -554,12 +554,12 @@ public sh_client_death(id, killer){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	new bool:victim_has_hero=sh_user_has_hero(victim,gHeroID)
+	new bool:victim_has_hero=sh_get_user_has_hero(victim,gHeroID)
 	if(victim_has_hero&&COVERT_ABUSE_ENABLED){
 
 	

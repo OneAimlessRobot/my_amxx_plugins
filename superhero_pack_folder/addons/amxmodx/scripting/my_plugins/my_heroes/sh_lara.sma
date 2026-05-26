@@ -90,10 +90,10 @@ public _spear_dec_num_spears(iPlugin,iParams){
 
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		gNumSpears[id]=cvar_val(num, pcvar_num_spears)
 		
 	}
@@ -113,7 +113,7 @@ public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3],
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
 	return do_bleed_knife_attack(Victim,Attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
-						sh_user_has_hero(Attacker,gHeroID),
+						sh_get_user_has_hero(Attacker,gHeroID),
 								custom_dmg_id_lara_spear,
 								dmg_source_name_short_lara_spear,_,_,the_hitpoint);
 	
@@ -122,7 +122,7 @@ public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3],
 public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			gNumSpears[id]=cvar_val(num, pcvar_num_spears)
 		}
 	}
@@ -136,7 +136,7 @@ public sh_round_end(){
 
 public weaponChange(id)
 {
-	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE) {
@@ -154,7 +154,7 @@ public plugin_precache()
 }
 public sh_client_death(id)
 {
-	if(!is_user_connected(id)||!sh_user_has_hero(id,gHeroID) ) return
+	if(!is_user_connected(id)||!sh_get_user_has_hero(id,gHeroID) ) return
 	
 	spear_uncharge_spear(id)
 }

@@ -59,10 +59,10 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,gModelDgl)
 }
 
-public sh_hero_init(id, HeroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	//if no power return
-	if (gHeroID != HeroID) return
+	if (gHeroID != heroID) return
 
 	//check if they get or lose power
 	switch(mode)
@@ -87,7 +87,7 @@ public sh_hero_init(id, HeroID, mode)
 public sh_client_spawn(id)
 {
 	//if client has power give weapon
-	if (sh_user_has_hero(id,gHeroID))
+	if (sh_get_user_has_hero(id,gHeroID))
 	{
 		deagle_weapon(id)
 	}
@@ -96,7 +96,7 @@ public sh_client_spawn(id)
 public fakemeta_CmdStart(id, uc_handle, seed)
 {
 	// if sh is not active or user don't have the power or user is dead do nothing
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return FMRES_IGNORED
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return FMRES_IGNORED
 
 	// if user use secondary attack
 	if ( (get_uc(uc_handle, UC_Buttons) & IN_ATTACK2) && !(pev(id, pev_oldbuttons) & IN_ATTACK2) )
@@ -134,7 +134,7 @@ dsniper_zoomout(id)
 deagle_weapon(id)
 {
 	//if client is alive and has power give deagle
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{
 		sh_give_weapon(id, CSW_DEAGLE)
 	}
@@ -143,7 +143,7 @@ deagle_weapon(id)
 public weapon_change(id)
 {
 	//do nothing if client does not have hero or sh is off
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new weaponID = read_data(2)
 	if ( weaponID != gLastWeapon[id] )

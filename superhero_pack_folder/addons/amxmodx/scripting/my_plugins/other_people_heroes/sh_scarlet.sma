@@ -31,7 +31,7 @@ public plugin_init()
 	sh_set_hero_bind(g_heroID)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( g_heroID == heroID )
 	{
@@ -41,7 +41,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public wall_walk(id) 
 {
-	if ( is_user_alive(id) && sh_user_has_hero(id,g_heroID)&& g_canClimb[id]) {
+	if ( is_user_alive(id) && sh_get_user_has_hero(id,g_heroID)&& g_canClimb[id]) {
 		
 		new Float:velocity[3]
 		pev(id, pev_velocity, velocity)
@@ -54,10 +54,10 @@ public wall_walk(id)
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( g_heroID != heroID ) return PLUGIN_HANDLED
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,g_heroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,g_heroID) ) return PLUGIN_HANDLED
 
 	if ( key == SH_KEYDOWN )
 	{

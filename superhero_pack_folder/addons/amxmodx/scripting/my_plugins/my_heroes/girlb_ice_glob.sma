@@ -48,7 +48,7 @@ public girlb_skating(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){
+	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)){
 		return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)){
@@ -131,7 +131,7 @@ public sh_client_spawn(id)
 	if(sh_is_active()&&is_user_alive(id)){
 		g_player_old_friction[id] = entity_get_float(id,EV_FL_friction);
 		
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 			UnSet_BitVar(can_skate_mask,id);
 		}
 	}
@@ -163,7 +163,7 @@ public player_on_ice_glob_checks(task_id){
 		num_found = find_sphere_class(id,GLOB_CLASSNAME,GLOB_RADIUS,entlist,charsmax(entlist))
 		if((num_found>0)){
 
-			if(sh_user_has_hero(id,gHeroID)){
+			if(sh_get_user_has_hero(id,gHeroID)){
 				if(!Get_BitVar(can_skate_mask,id)){
 					Set_BitVar(can_skate_mask,id)
 				}
@@ -206,7 +206,7 @@ public player_on_ice_glob_checks(task_id){
 		else{
 			entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
 			
-			if(sh_user_has_hero(id,gHeroID)){
+			if(sh_get_user_has_hero(id,gHeroID)){
 				if(Get_BitVar(can_skate_mask,id)){
 					UnSet_BitVar(can_skate_mask,id)
 				}
@@ -351,7 +351,7 @@ public _launch_ice_glob(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)) return
+	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)) return
 	
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 	new Float: advance[3]

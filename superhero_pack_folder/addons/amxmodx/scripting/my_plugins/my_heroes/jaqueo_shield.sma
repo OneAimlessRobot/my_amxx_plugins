@@ -48,7 +48,7 @@ public plugin_init()
 }
 public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,gHeroID)) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_get_user_has_hero(this,gHeroID)) return HAM_IGNORED
 	
 	if(!g_jaqueo_shield_deployed[this]) return HAM_IGNORED
 
@@ -219,7 +219,7 @@ public _shield_charge_user(iPlugin, iParams){
 
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	if(!g_jaqueo_shield_loaded[id]){
 		
@@ -314,7 +314,7 @@ public charge_task(parm[],id){
 		uncharge_user(id)
 		return
 	}
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 		
 
 		uncharge_user(id)

@@ -82,7 +82,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"weapons/knife_hit3.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -103,7 +103,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		wildcard_weapons(id)
 		if (g_burst_waittime[id] > 1)
 		{
@@ -118,7 +118,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 wildcard_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 		sh_give_weapon(id, CSW_AK47)
 	}
 }
@@ -128,7 +128,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID)&& (wpnindex == CSW_AK47) && (victim!=attacker) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID)&& (wpnindex == CSW_AK47) && (victim!=attacker) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(pCvarAK47Mult) - damage)
 		if ( extraDamage > 0){
@@ -286,7 +286,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 			
 		return FMRES_IGNORED
 	}
@@ -343,7 +343,7 @@ public wildcard_burstreload(id)
 //----------------------------------------------------------------------------------------------
 public wildcard_burst(id)
 {
-	if( !sh_user_has_hero(id,gHeroID) || !(is_user_alive(id)) || g_burst_reloadtime[id] == 1 )
+	if( !sh_get_user_has_hero(id,gHeroID) || !(is_user_alive(id)) || g_burst_reloadtime[id] == 1 )
 	return PLUGIN_CONTINUE
 
 	if (halflife_time()-g_burst_waittime[id] < 1) return PLUGIN_CONTINUE

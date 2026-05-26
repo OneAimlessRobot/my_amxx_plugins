@@ -22,7 +22,7 @@ public plugin_init()
 //---------------------------------------------------------------------------
 public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
-	if ( sh_user_has_hero(victim,gHeroID) && (bodypart!=MY_HIT_HEAD) )
+	if ( sh_get_user_has_hero(victim,gHeroID) && (bodypart!=MY_HIT_HEAD) )
 	{
 	
 		if ( !is_user_alive(victim))

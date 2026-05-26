@@ -165,7 +165,7 @@ public yandere_angry_idle_checks(id, uc_handle){
 	}
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
-	if(!sh_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
+	if(!sh_get_user_has_hero(id,gHeroID) ||!Get_BitVar(gSuperAngryMask,id)) return FMRES_IGNORED
 	static butnprs
 
 	Set_BitVar(gIdleAngryMask,id)
@@ -190,15 +190,15 @@ public Yandere_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
 	return do_bleed_knife_attack(Victim,Attacker,gHeroID,15,65,
-				sh_user_has_hero(Attacker,gHeroID) && Get_BitVar(gSuperAngryMask,Attacker),_,_,_,_,the_hitpoint)
+				sh_get_user_has_hero(Attacker,gHeroID) && Get_BitVar(gSuperAngryMask,Attacker),_,_,_,_,the_hitpoint)
 
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 	
 		gNormalSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
 		gBaseSpeed[id]=cvar_val(float,pcvar_base_extra_speed);
@@ -237,7 +237,7 @@ public yandere_sentence_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ||!sh_is_inround()) return
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(sh_is_active()&&is_user_alive(i)&&sh_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
+		if(sh_is_active()&&is_user_alive(i)&&sh_get_user_has_hero(i,gHeroID) &&Get_BitVar(gSuperAngryMask,i)){
 
 			if(Get_BitVar(gIdleAngryMask,i)||(get_user_health(i)>
 						cvar_val(num,pcvar_degen_health_extra_threshold))){
@@ -284,7 +284,7 @@ if(!disconnected){
 for(new i=1;i< sh_maxplayers()+1;i++){
 	if(!is_user_alive(i)) continue;
 
-	if(!sh_user_has_hero(i,gHeroID) ) continue;
+	if(!sh_get_user_has_hero(i,gHeroID) ) continue;
 
 	if(!(disconnected)){
 		if(!sh_clients_are_same_team(id,i)){
@@ -319,7 +319,7 @@ public yandere_loop(id){
 
 	for(new i=1;i< sh_maxplayers()+1;i++){
 
-		if(!is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
+		if(!is_user_alive(i)||!sh_get_user_has_hero(i,gHeroID)){
 			continue
 		}
 		if(!is_user_bot(i)&&Get_BitVar(gTransTimerStartedMask,i)){
@@ -333,7 +333,7 @@ public yandere_loop(id){
 update_stats(id){
 
 	if(!is_user_alive(id)) return
-	if(!sh_user_has_hero(id,gHeroID) ) return
+	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	
 	new Float:maxspeed=get_user_maxspeed(id)
 	
@@ -444,7 +444,7 @@ public sh_round_start(){
 
 		if(!is_user_alive(id)) return
 
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			if(get_user_maxspeed(id)<gNormalSpeed[id]){
 				set_user_maxspeed(id,gNormalSpeed[id])
 			}
@@ -456,7 +456,7 @@ public sh_round_start(){
 public sh_client_spawn(id, bool:newRound)
 {	if(is_user_alive(id) && sh_is_active()){
 		g_is_cursed_masks[id]=0
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
 			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
 			yandere_unpsychosis_user(id)
@@ -488,7 +488,7 @@ public yandere_damage(id)
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return PLUGIN_CONTINUE
 	}
-	if ( sh_user_has_hero(attacker,gHeroID) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) ) {
 		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
 		if (floatround(extraDamage) > 0.0){
 			
@@ -523,7 +523,7 @@ public yandere_damage(id)
 					anime_kill_fx(origin)
 					
 				}
-				if((weapon==CSW_KNIFE)&&!sh_user_has_hero(id,gHeroID) ){
+				if((weapon==CSW_KNIFE)&&!sh_get_user_has_hero(id,gHeroID) ){
 					
 					Set_BitVar(g_is_cursed_masks[id],attacker)
 					
@@ -540,7 +540,7 @@ public yandere_damage(id)
 		}	
 		
 	}
-	if( sh_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
+	if( sh_get_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
 		if(Get_BitVar(g_is_cursed_masks[attacker],id)){
 			if(generate_float(0.0,1.0)<cvar_val(float,pcvar_curse_pct)){
 				set_user_godmode(id,0)
@@ -589,9 +589,9 @@ public plugin_precache()
 
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -608,7 +608,7 @@ switch(key)
 public yandere_kd(id)
 {
 	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return
 
 	if(Get_BitVar(gSuperAngryMask,id)){
 		if ( sh_get_cooldown_flag(id)||yandere_get_user_is_psychosis(id) ) {
@@ -655,7 +655,7 @@ public yandere_kd(id)
 public yandere_ku(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return
 	}
 	
@@ -669,7 +669,7 @@ public sh_round_end(){
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		
 		if(is_user_alive(i)){
-			if(sh_user_has_hero(i,gHeroID) ){
+			if(sh_get_user_has_hero(i,gHeroID) ){
 				jet_destroy(i)
 			}
 			
@@ -690,7 +690,7 @@ public sh_round_end(){
 	}
 	new last_alive=get_first_alive()
 	if(!is_user_alive(last_alive)) return
-	if(sh_user_has_hero(last_alive,gHeroID) && Get_BitVar(gSuperAngryMask,last_alive) ){
+	if(sh_get_user_has_hero(last_alive,gHeroID) && Get_BitVar(gSuperAngryMask,last_alive) ){
 		static client_name[128]
 		get_user_name(last_alive,client_name,127)
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)
@@ -707,7 +707,7 @@ public Yandere_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], P
 killyandere(id,bool:dropping=false){
 	
 	if(!is_user_connected(id)||!sh_is_active()) return
-	if(sh_user_has_hero(id,gHeroID) ||dropping){
+	if(sh_get_user_has_hero(id,gHeroID) ||dropping){
 		
 		if(Get_BitVar(gSuperAngryMask,id)){
 			static Float:origin[3]
@@ -755,7 +755,7 @@ public BlowUp(id)
 public weaponChange(id)
 {
 	if (!sh_is_active()) return
-	if(!sh_user_has_hero(id,gHeroID) ) return
+	if(!sh_get_user_has_hero(id,gHeroID) ) return
 
 	new  wpnid = get_user_weapon(id)
 

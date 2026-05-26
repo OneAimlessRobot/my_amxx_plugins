@@ -100,7 +100,7 @@ public weaponChange(id)
 	
 	new the_hero_id=sh_array_of_wpn_model_structs[wpnid][wpn_id_of_player][wpn_model_hero_id]
 
-	if(!sh_user_has_hero(id,the_hero_id)){
+	if(!sh_get_user_has_hero(id,the_hero_id)){
 
 		gPlayersCurrHeroWpnModelID[id][wpnid]=-1
 		return PLUGIN_CONTINUE
@@ -121,7 +121,7 @@ public weaponChange(id)
 
 }
 
-public sh_hero_init(id,heroID,mode){
+public sh_hero_init(id,heroID, sh_init_mode:mode){
 
 	if(!is_user_connected(id)) return
 
@@ -361,7 +361,7 @@ public sh_choose_model(id, level, cid)
 
 			static the_hero_id;
 			the_hero_id=sh_array_of_player_model_structs[hero_model_id][player_model_hero_id]
-			if(sh_user_has_hero(id,the_hero_id)){
+			if(sh_get_user_has_hero(id,the_hero_id)){
 				sh_player_morph_task(id,hero_model_id)
 			}
 			return PLUGIN_HANDLED
@@ -390,7 +390,7 @@ public sh_print_models(id, level, cid)
 		
 		new inner_hero_id=sh_array_of_player_model_structs[i][player_model_hero_id]
 		
-		if(sh_user_has_hero(id,inner_hero_id)){
+		if(sh_get_user_has_hero(id,inner_hero_id)){
 			
 			counter++
 			console_print(id,"Model of id %d:^n",i)
@@ -437,7 +437,7 @@ public sh_choose_weapon_model(id, level, cid)
 
 			static the_hero_id;
 			the_hero_id=sh_array_of_wpn_model_structs[wpn_id][wpn_model_id][wpn_model_hero_id]
-			if(sh_user_has_hero(id,the_hero_id)){
+			if(sh_get_user_has_hero(id,the_hero_id)){
 				gPlayersCurrHeroWpnModelID[id][wpn_id]=wpn_model_id
 			}
 			return PLUGIN_HANDLED
@@ -471,7 +471,7 @@ public sh_print_weapon_models(id, level, cid)
 				
 				new inner_hero_id=sh_array_of_wpn_model_structs[wpn_id][i][wpn_model_hero_id]
 				
-				if(sh_user_has_hero(id,inner_hero_id)){
+				if(sh_get_user_has_hero(id,inner_hero_id)){
 					
 					static hero_name[MAX_HERO_NAME_LENGTH]
 					

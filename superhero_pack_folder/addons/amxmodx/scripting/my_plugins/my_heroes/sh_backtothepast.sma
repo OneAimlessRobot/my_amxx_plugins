@@ -181,10 +181,10 @@ public getTeamNumFromEnum(CsTeams: team){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 	
 		gUserTeam[id]=getTeamNumFromEnum(cs_get_user_team(id))
 	}
@@ -243,9 +243,9 @@ public return_to_past_now(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-	if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+	if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 	switch(key)
 	{
@@ -258,7 +258,7 @@ public sh_hero_key(id, heroID, key)
 public jeremy_kd(id) 
 {
 
-if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!is_user_connected(id))
+if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!is_user_connected(id))
 {
 	playSoundDenySelect(id)
 	return 
@@ -308,7 +308,7 @@ else{
 //-----------------------------------------------------------------------------------------------
 public print_jeremy_stats(id)
 {
-	if (  is_user_alive(id) &&sh_user_has_hero(id,gHeroID) &&is_user_connected(id))
+	if (  is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID) &&is_user_connected(id))
 	{
 		sh_chat_message(id,gHeroID,"You have currently used this power %d times", gJeremyPowerUsedTimes[id] )
 		sh_chat_message(id,gHeroID,"Your team used it %d times", gTeamUseCount[gUserTeam[id]])
@@ -394,9 +394,7 @@ public sh_round_new(){
 		gPowerBeingUsed=false
 	}
 
-	sh_chat_message(0,gHeroID, "Archiving game state!")
 	save_game_state()
-	sh_chat_message(0,gHeroID, "Operation sucessfull.")
 
 }
 

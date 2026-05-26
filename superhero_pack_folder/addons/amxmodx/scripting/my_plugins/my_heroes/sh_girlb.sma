@@ -88,7 +88,7 @@ intitialize_girlb(id){
 
     if(!is_user_alive(id)) return
 
-    if ( sh_user_has_hero(id,gHeroID) ) {
+    if ( sh_get_user_has_hero(id,gHeroID) ) {
         
         gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar);
         set_task(cvar_val(float, girlb_regen_period_pcvar),
@@ -124,10 +124,10 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
         gNumGlobs[id]=cvar_val(num,girlb_projectile_ammo_pcvar)
         set_task(cvar_val(float, girlb_regen_period_pcvar),
                         "regen_glob_task",id+REGEN_GLOB_TASKID)
@@ -139,9 +139,9 @@ public sh_round_end(){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -162,7 +162,7 @@ public girlb_kd(id)
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
-    if(!sh_user_has_hero(id,gHeroID) ){
+    if(!sh_get_user_has_hero(id,gHeroID) ){
         return PLUGIN_HANDLED;
     }
 
@@ -188,7 +188,7 @@ public girlb_ku(id)
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
-    if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED;
+    if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED;
 
     UnSet_BitVar(girlb_held_down_mask,id);
 
@@ -202,7 +202,7 @@ public regen_glob_task(id){
     id-=REGEN_GLOB_TASKID
 
 
-    if(!sh_user_has_hero(id,gHeroID) ) return
+    if(!sh_get_user_has_hero(id,gHeroID) ) return
 
     if ( !is_user_alive(id) ) return 
     
@@ -224,7 +224,7 @@ public shoot_glob_task(param[1],id){
     id-=SHOOT_GLOB_TASKID
 
 
-    if(!sh_user_has_hero(id,gHeroID) ) return
+    if(!sh_get_user_has_hero(id,gHeroID) ) return
 
     if ( !is_user_alive(id) ) return 
     

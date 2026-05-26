@@ -34,7 +34,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public change_weapon(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)) return
 
 	//new wpnid = read_data(2)
 	new wpnslot = sh_get_weapon_slot(read_data(2))

@@ -55,7 +55,7 @@ public leyla_init()
 	read_argv(1,temp,5)
 	new id=str_to_num(temp)
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		gLeylaUserMoney[id]=starting_money
 		gLeylaGiveMoney[id]=default_money
 		
@@ -74,7 +74,7 @@ public leyla_money(id){
 	if ( !is_user_connected(id)||!is_user_bot(id)){
 		return PLUGIN_CONTINUE
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 		return PLUGIN_CONTINUE
 	}
 	new prev_money= cs_get_user_money(id)
@@ -90,7 +90,7 @@ public print_leyla_stats(id)
 {
 	if (  is_user_alive(id) &&is_user_connected(id))
 	{
-		if(sh_user_has_hero(id,gHeroID) ){
+		if(sh_get_user_has_hero(id,gHeroID) ){
 			sh_chat_message(id,gHeroID,"You currently have %d backup money", gLeylaUserMoney[id] )
 			sh_chat_message(id,gHeroID,"And you can give %d money per key down", gLeylaGiveMoney[id])
 		}	
@@ -121,7 +121,7 @@ public unpoor_teamate(id,teamate,ammount,type_of_trade){
 		new mate_money=cs_get_user_money(teamate)
 		new normal_leyla_money=cs_get_user_money(id)
 		
-		if(!sh_user_has_hero(teamate,gHeroID) ){
+		if(!sh_get_user_has_hero(teamate,gHeroID) ){
 			new new_money=min(MAX_MONEY,mate_money+real_ammount)
 			cs_set_user_money(teamate,new_money,1)
 		}
@@ -201,7 +201,7 @@ public get_first_mate_in_radius(id){
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)  ||is_user_bot(id))
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID)  ||is_user_bot(id))
 		return FMRES_IGNORED;
 	
 	// get crosshair aim
@@ -250,7 +250,7 @@ public loadCVARS()
 }
 public reset_leyla(id){
 	
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		
 		gLeylaGiveMoney[id]=default_money
 		unpoor_teamate(id,id,-1,CHANGE)
@@ -258,9 +258,9 @@ public reset_leyla(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -272,7 +272,7 @@ switch(key)
 public leyla_kd(id)
 {
 	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	new i
 	if((i=get_first_mate_in_radius(id))>0){
 		
@@ -287,13 +287,13 @@ public leyla_kd(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	
-	if(is_user_alive(id) && sh_is_active()&&sh_user_has_hero(id,gHeroID) ){ 
+	if(is_user_alive(id) && sh_is_active()&&sh_get_user_has_hero(id,gHeroID) ){ 
 		reset_leyla(id)	
 	}	
 }
 public sh_client_death(id,killer)
 {
-	if(sh_user_has_hero(killer,gHeroID) ){
+	if(sh_get_user_has_hero(killer,gHeroID) ){
 		
 		unpoor_teamate(killer,killer,-1,CHANGE)
 		

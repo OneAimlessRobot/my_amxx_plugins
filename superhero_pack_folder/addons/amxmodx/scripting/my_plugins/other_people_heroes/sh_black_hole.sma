@@ -51,10 +51,10 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,"models/shmod/blackhole.mdl")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		// Make sure looop doesn't fire for them
 		gBHTimer = -1
 		black_admincheck(id)
@@ -67,9 +67,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -81,7 +81,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public black_kd(id)
 {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
 
 	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {
 		playSoundDenySelect(id)
@@ -215,7 +215,7 @@ SuckPlayerIntoBH(id, Float:fl_Eye[3])
 	new Float:fl_Player[3], Float:fl_Target[3], Float:fl_Velocity[3], Float:fl_Distance
 	entity_get_vector(id, EV_VEC_origin, fl_Player)
 
-	if ( sh_user_has_hero(id,gHeroID)) return
+	if ( sh_get_user_has_hero(id,gHeroID)) return
 	
 	fl_Target[0] = fl_Eye[0]
 	fl_Target[1] = fl_Eye[1]
@@ -268,7 +268,7 @@ public entity_touch(entity1, entity2)
 		if(!is_user_connected(entity2) || !is_user_alive(entity2))
 			return PLUGIN_CONTINUE
 			
-		if( sh_user_has_hero(entity2,gHeroID))
+		if( sh_get_user_has_hero(entity2,gHeroID))
 			return PLUGIN_CONTINUE	
 			
 	
@@ -307,7 +307,7 @@ public black_admincheck(id)
 
 	get_cvar_string("black_adminflag", accessLevel, 9)
 
-	if ( sh_user_has_hero(id,gHeroID) &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
 		client_print(id, print_chat, "[SH](%s) **Admin Only** You are not authorized to use this hero", g_heroName)
 		client_cmd(id, "say drop %s", g_heroName)
 	}

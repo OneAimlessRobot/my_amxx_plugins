@@ -47,11 +47,11 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
 	if (is_user_connected(id))
-		if (sh_user_has_hero(id,gHeroID)) {
+		if (sh_get_user_has_hero(id,gHeroID)) {
 			//Since they have the power make it so that they only have left leg hitzone active (THIS DOES NOT INCLUDE KNIVES OR NADES)
 			set_user_hitzones(0, id, 64)
 			set_user_info(id,"ACHI","1")
@@ -77,7 +77,7 @@ public sh_hero_init(id, heroID, mode){
 public achilles_damage(id) 
 {
 	//Confirm he can recieve the extra damage
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) 
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) 
 	{
 	   return PLUGIN_HANDLED
 	}
@@ -102,7 +102,7 @@ public achilles_damage(id)
 //Inform the client that whoever has achilles
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) ) 
+	if ( sh_get_user_has_hero(id,gHeroID) ) 
 	   	set_user_hitzones(0, id, 64)
 	else
 	    set_user_hitzones(0, id, 255)

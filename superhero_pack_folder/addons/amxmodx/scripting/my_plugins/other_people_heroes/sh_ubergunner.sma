@@ -70,11 +70,11 @@ public plugin_init()
 	shSetMaxSpeed(gHeroName, "UberGunner_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
 	if ( is_user_connected(id) ) {
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			UberGunner_weapons(id)
 		}
 	}
@@ -82,7 +82,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "UberGunner_weapons", id)
 		new wpnid = read_data(2)
 		if (wpnid != CSW_M4A1 && wpnid > 0) {
@@ -102,7 +102,7 @@ public UberGunner_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -124,7 +124,7 @@ public UberGunner_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
 		if (extraDamage > 0){

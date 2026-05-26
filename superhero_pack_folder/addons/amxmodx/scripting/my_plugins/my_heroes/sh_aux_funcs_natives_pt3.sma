@@ -363,7 +363,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
-	if(sh_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_get_max_hp())){
+	if(sh_get_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_get_max_hp())){
 
 		return false
 	}

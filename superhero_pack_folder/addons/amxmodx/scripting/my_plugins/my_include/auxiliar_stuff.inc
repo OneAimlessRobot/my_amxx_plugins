@@ -11,10 +11,18 @@
 #define Set_BitVar(%1,%2) (%1 |= (1 << (%2 & 31)))
 #define UnSet_BitVar(%1,%2) (%1 &= ~(1 << (%2 & 31)))
 
+
+#define Assign_BitVar(%1,%2,%3) ((%3) ? Set_BitVar(%1,%2) : UnSet_BitVar(%1,%2))
+
 stock bool:true_for_macro=true,
 	bool:false_for_macro=false
 
+/*
 #define Assign_BitVar(%1,%2,%3) ((%1) = ((%3)) ?(%1 | (1 << (%2 & 31))) : (%1 & ~(1 << (%2 & 31))) )
+
+Im gonna try this one, instead
+
+*/
 
 #define SIZE_OF_BYTE 8
 

@@ -91,7 +91,7 @@ public catwoman_levels()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() )
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() )
 	{
 		if ( get_cvar_float("catwoman_change") > 0.0 )
 			cs_reset_user_model(id)
@@ -152,7 +152,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public catwoman_sneak(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	new entSpawn

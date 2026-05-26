@@ -55,14 +55,14 @@ public _sh_get_death_scythe_wpn_id(iPlugin,iParams){
 	return custom_dmg_id_scythe
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	reset_greaper2_user(id)	
 }
 public weaponChange(id)
 {
-	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
@@ -100,7 +100,7 @@ get_cvar_num("greaper_level");
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
+if ( sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	reset_greaper2_user(id)
 	gScytheSwings[id]=num_swings;
@@ -178,7 +178,7 @@ public swing_scythe(weaponent)
 	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_user_has_hero(id,gHeroID) ){
+	if (!sh_get_user_has_hero(id,gHeroID) ){
 		return HAM_IGNORED
 	}
 	if (gScytheSwings[id]>0) 

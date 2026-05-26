@@ -221,7 +221,7 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 		return HAM_IGNORED	
 	}
 	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID||
-					!sh_user_has_hero(idattacker,gHeroID)||
+					!sh_get_user_has_hero(idattacker,gHeroID)||
 					!Get_BitVar(gPillGatlingEngaged_mask,idattacker)){
 		return HAM_IGNORED
 	}

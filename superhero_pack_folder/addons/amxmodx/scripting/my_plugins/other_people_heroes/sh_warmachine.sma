@@ -76,13 +76,13 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"debris/beamstart11.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	// Clear out any stale tasks
 	remove_task(id)
 
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		set_task(get_cvar_float("warmachine_timer"), "warmachine_loop", id, "", 0, "b")
 	}
 }
@@ -114,9 +114,9 @@ public spawnDelay(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -271,7 +271,7 @@ public warmachine_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
 		new weaponName[32]
 		get_weaponname(weaponid, weaponName, 31)
 		replace(weaponName, 31, "weapon_", "")

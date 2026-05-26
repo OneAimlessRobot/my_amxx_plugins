@@ -64,7 +64,7 @@ public ev_SendAudio(){
 	}
 	for(new id=1;id< sh_maxplayers()+1;id++){
 		
-		if(sh_user_has_hero(id,gHeroID) &&is_user_connected(id)){
+		if(sh_get_user_has_hero(id,gHeroID) &&is_user_connected(id)){
 			player_team=cs_get_user_team(id)
 			if(player_team==win_team){
 				if(!playing_win_sound){
@@ -125,10 +125,10 @@ public _roberto_dec_num_balls(iPlugin,iParams){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		gNumBalls[id]=cvar_val(num, pcvar_num_balls)
 		
 	}
@@ -140,9 +140,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -154,7 +154,7 @@ switch(key)
 public roberto_kd(id)
 {
 	
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	if(!gNumBalls[id]){
 		
@@ -178,7 +178,7 @@ public roberto_kd(id)
 public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			gNumBalls[id] = cvar_val(num, pcvar_num_balls)
 		}

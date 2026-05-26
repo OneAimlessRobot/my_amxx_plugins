@@ -41,10 +41,10 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
 
-    new hasPowers=sh_user_has_hero(id,gHeroID)
+    new hasPowers=sh_get_user_has_hero(id,gHeroID)
     
     set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
     
@@ -66,7 +66,7 @@ public sh_hero_init(id, heroID, mode){
 public sh_client_spawn(id)
 {
   sh_unset_cooldown_flag(id)
-  if (sh_user_has_hero(id,gHeroID)) {
+  if (sh_get_user_has_hero(id,gHeroID)) {
     sh_unset_cooldown_flag(id)
   }
   g_palpatineTimer[id]=0
@@ -74,9 +74,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -125,13 +125,13 @@ public palpatine_kd(id)
   {
      if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) || x!=id )
      {
-       if (!sh_user_has_hero(x,gHeroID))
+       if (!sh_get_user_has_hero(x,gHeroID))
        {
          get_user_origin(x, victimOrigin)
          distanceBetween = get_distance(userOrigin, victimOrigin)
          if ( distanceBetween < palpatineDeathRadius )
          {
-           if (!sh_user_has_hero(x,gHeroID)) {
+           if (!sh_get_user_has_hero(x,gHeroID)) {
              palpatine_instant(x, id)
            }
            else {
@@ -153,7 +153,7 @@ public palpatine_loop()
 {
   for ( new id=1; id< sh_maxplayers()+1; id++ )
   {
-    if (sh_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
+    if (sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id)  ) 
     {
       // DEATH SETTINGS START HERE
       if ( g_palpatineTimer[id]>0 )
@@ -179,7 +179,7 @@ public palpatine_loop()
             dBetween = get_distance(uOrigin, vOrigin )
             if ( dBetween < palpatineDeathRadius )
             {
-              if (!sh_user_has_hero(x,gHeroID))
+              if (!sh_get_user_has_hero(x,gHeroID))
               {
                 palpatine_death(x, id)
               }
@@ -214,7 +214,7 @@ public palpatine_loop()
           distance = get_distance(userOrigin, enemyOrigin )
           if ( distance < palpatineDecayRadius )
           {
-            if (!sh_user_has_hero(eid,gHeroID)&& get_user_health(eid) > 25)
+            if (!sh_get_user_has_hero(eid,gHeroID)&& get_user_health(eid) > 25)
             {
               palpatine_decay(eid, id)
             }

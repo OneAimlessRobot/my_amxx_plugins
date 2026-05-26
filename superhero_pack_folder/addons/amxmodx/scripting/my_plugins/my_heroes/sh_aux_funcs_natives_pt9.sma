@@ -36,7 +36,7 @@ public plugin_natives(){
 	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero",0)
 }
 
-public sh_hero_init_pre(id,heroID,mode){
+public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 
 	if(!client_is_within_range(id)) return INIT_FWD_PASS
 
@@ -82,7 +82,7 @@ public sh_hero_init_pre(id,heroID,mode){
 		}
 
 	}
-	else if(sh_user_has_hero(id,heroID)){
+	else if(sh_get_user_has_hero(id,heroID)){
 
 		
 		if(is_user_connected(id)){

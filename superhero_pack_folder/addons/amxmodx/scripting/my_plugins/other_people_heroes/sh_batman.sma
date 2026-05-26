@@ -61,7 +61,7 @@ public plugin_init()
 	gmsgSetFOV = get_user_msgid("SetFOV")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -79,7 +79,7 @@ public sh_hero_init(id, heroID, mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		batman_giveweapons(id)
 	}
 }
@@ -108,7 +108,7 @@ batman_dropweapons(id)
 //----------------------------------------------------------------------------------------------
 public change_weapon(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)) return
 
 	new weaponid = read_data(2)
 

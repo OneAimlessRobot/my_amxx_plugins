@@ -65,10 +65,10 @@ public sh_client_death(victim)
 	remove_task(victim)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || !sh_is_inround() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new Float:velocity[3]
 	pev(id, pev_velocity, velocity)

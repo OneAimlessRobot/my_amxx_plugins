@@ -112,10 +112,10 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"ambience/port_suckin1.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		enable_chucky(id)
 		#if USE_MODEL
@@ -126,7 +126,7 @@ public sh_hero_init(id, heroID, mode){
 }
 public sh_client_spawn(id){
 
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ){
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ){
 		return
 	}
 	
@@ -136,7 +136,7 @@ public sh_client_spawn(id){
 #if USE_MODEL
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)
@@ -147,7 +147,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 switch_model(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)||!ChuckyPowerUsed[id] )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)||!ChuckyPowerUsed[id] )
 		return
 
 	// If user is holding a shield do not change model, since we don't have one with a shield
@@ -181,7 +181,7 @@ public chucky_damage(id)
 		return
 	}
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) && ChuckyPowerUsed[attacker] )
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) && ChuckyPowerUsed[attacker] )
 	{
 		new damage = read_data(2)
 		// Do extra damage
@@ -217,7 +217,7 @@ public sh_client_death(id)
 	UserTeam[id] = cs_get_user_team(id)
 
 	// Look for self to raise from dead
-	if ( !is_user_alive(id) && !ChuckyPowerUsed[id]&&sh_user_has_hero(id,gHeroID))
+	if ( !is_user_alive(id) && !ChuckyPowerUsed[id]&&sh_get_user_has_hero(id,gHeroID))
 	{
 		// Chucky will raise self from dead
 		new parm[1]
@@ -307,7 +307,7 @@ public sh_round_end()
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ )
 	{
-		if ( sh_user_has_hero(id,gHeroID))
+		if ( sh_get_user_has_hero(id,gHeroID))
 		{
 			remove_task(id)
 			enable_chucky(id)
@@ -331,12 +331,12 @@ public client_connect(id)
 	HasStabbedWithKnife[id] = false
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if((custom_weapon_id==custom_dmg_id_super_knife)&&sh_user_has_hero(attacker,gHeroID)){
+	if((custom_weapon_id==custom_dmg_id_super_knife)&&sh_get_user_has_hero(attacker,gHeroID)){
 
 		HasStabbedWithKnife[attacker]=true
 		switch_model(attacker)

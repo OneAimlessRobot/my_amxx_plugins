@@ -90,11 +90,11 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	// This gets run if they had the power but don't anymore
-	if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
+	if ( !sh_get_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		remove_poison(id)
 	}
 
@@ -117,7 +117,7 @@ public sh_client_spawn(id)
 
 		reset_poisoned(id)
 
-		if( sh_user_has_hero(id,gHeroID)) {
+		if( sh_get_user_has_hero(id,gHeroID)) {
 
 			sh_unset_cooldown_flag(id)
 
@@ -164,10 +164,10 @@ public poisonivy_damage(id)
 
 	// Can users with Poison Ivy be poisoned
 	if ( !get_cvar_num("poisonivy_self") ) {
-		if ( sh_user_has_hero(id,gHeroID)) return
+		if ( sh_get_user_has_hero(id,gHeroID)) return
 	}
 
-	if ( sh_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !sh_get_cooldown_flag(attacker)&& id != attacker ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID)&& weapon != CSW_HEGRENADE && is_user_alive(id) && !sh_get_cooldown_flag(attacker)&& id != attacker ) {
 		// Set a poisoned player
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		Assign_BitVar(gIsPoisonedMask[id],attacker,true_for_macro) 
@@ -187,7 +187,7 @@ public poisonivy_loop()
 	if ( !sh_is_active() ) return
 
 	for ( new attacker = 1; attacker < sh_maxplayers()+1; attacker++ ) {
-		if ( !sh_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue
+		if ( !sh_get_user_has_hero(attacker,gHeroID) || !is_user_connected(attacker) ) continue
 
 		for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 			if (  is_user_alive(id) ) {

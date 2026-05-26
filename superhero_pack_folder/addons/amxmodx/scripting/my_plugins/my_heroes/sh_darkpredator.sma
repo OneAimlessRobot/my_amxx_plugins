@@ -105,16 +105,16 @@ public plugin_precache()
 	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
-	if ( sh_user_has_hero(id,gHeroID) ) //Check if person selected this hero
+	if ( sh_get_user_has_hero(id,gHeroID) ) //Check if person selected this hero
 	{
 		remInvisibility(id)
 		sh_give_weapon(id,CSW_DEAGLE)
 	}
 	// Got to slow down DarkPredator that lost his powers...
-	if ( !sh_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
+	if ( !sh_get_user_has_hero(id,gHeroID)  && is_user_connected(id) ) //Check if person dropped this hero
 	{
 		remInvisibility(id)
 	}
@@ -124,7 +124,7 @@ public sh_client_spawn(id)
 {
 	remInvisibility(id)
 	if (is_user_alive(id) && sh_is_active() ) {
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 			gBullets[id] = get_cvar_num("darkpred_bullets")
 			gLastWeapon[id] = -1
 			set_task(0.1, "darkpred_deagle",id)
@@ -163,7 +163,7 @@ public checkButtons()
 	new butnprs
 	
 	for(new id = 1; id < sh_maxplayers()+1; id++) {
-		if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) continue
+		if (!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) continue
 		
 		setVisible = false
 		butnprs = entity_get_int(id, EV_INT_button)
@@ -206,7 +206,7 @@ public checkButtons()
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
 	
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -234,7 +234,7 @@ public darkpred_damage(id)
 	
 	if ( attacker < 0 || attacker > SH_MAXSLOTS||attacker == id ) return PLUGIN_CONTINUE
 	
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && gBullets[attacker] >= 0 && is_user_alive(id) )
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && gBullets[attacker] >= 0 && is_user_alive(id) )
 	{ 
 		new health = get_user_health(id)
 		
@@ -319,7 +319,7 @@ public darkpred_damage(id)
 public darkpred_fire(id)
 { 
 	
-	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE 
+	if ( !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE 
 	
 	new weap = read_data(2)		// id of the weapon 
 	new ammo = read_data(3)		// ammo left in clip 
@@ -404,7 +404,7 @@ public darkpred_esploop()
 		if (!get_user_origin(idring,vec1,0)) continue
 		for (new j = 0; j < pnum; j++) {
 			id = players[j]
-			if (!sh_user_has_hero(id,gHeroID)) continue
+			if (!sh_get_user_has_hero(id,gHeroID)) continue
 			if (!is_user_alive(id)) continue
 			if (idring == id) continue
 			message_begin(MSG_ONE,SVC_TEMPENTITY,vec1,id)
@@ -435,7 +435,7 @@ public darkpred_loop()
 {
 	if (!sh_is_active()) return
 	for ( new id = 1; id <= SH_MAXSLOTS; id++ ) {
-		if (  sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
+		if (  sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints,sh_get_max_hp(id))

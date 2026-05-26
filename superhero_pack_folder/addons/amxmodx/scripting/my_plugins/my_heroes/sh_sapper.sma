@@ -80,10 +80,10 @@ public _sapper_dec_num_mines(iPlugin,iParams){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		sapper_weapons(id);
 
@@ -95,9 +95,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -123,13 +123,13 @@ public reset_sapper_user(id){
 
 sapper_weapons(id)
 {
-if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 	sh_give_weapon(id, CSW_P90)
 }
 }
 public sh_client_spawn(id)
 {
-if ( sh_user_has_hero(id,gHeroID) ) {
+if ( sh_get_user_has_hero(id,gHeroID) ) {
 	reset_sapper_user(id)
 	sapper_weapons(id)
 	sh_end_cooldown(id+SH_COOLDOWN_TASKID)
@@ -144,7 +144,7 @@ public sh_round_end(){
 }
 public sh_client_death(id){
 
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		mine_uncharge_mine(id)
 		mine_undisarm_mine(id)
@@ -155,7 +155,7 @@ public sh_client_death(id){
 public sapper_kd(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 
@@ -193,7 +193,7 @@ public sapper_kd(id)
 public sapper_ku(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(mine_get_mine_disarming(id)&&mine_get_mine_charging(id)){

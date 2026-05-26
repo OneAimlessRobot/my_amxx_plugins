@@ -38,9 +38,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -148,7 +148,7 @@ public abe_kd(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		unmorph_model(id)
 		AbePowerUsed[id] = false

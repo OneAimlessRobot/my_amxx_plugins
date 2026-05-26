@@ -65,15 +65,15 @@ public sh_client_spawn(id)
 
 	stopFireSound(id)
 
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
 	}
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -90,7 +90,7 @@ public afterburn_kd(id)
 
 	// This is the original only change from human torch,
 	// this makes sure you are dead to use the power... wow what a rip.
-	if ( is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 	// Check to make sure they are on a Team
 	if ( get_user_team(id) < 1 || get_user_team(id) > 2 ) return
 

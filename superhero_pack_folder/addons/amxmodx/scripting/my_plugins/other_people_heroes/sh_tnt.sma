@@ -39,9 +39,9 @@ public plugin_init() {
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -52,7 +52,7 @@ switch(key)
 }
 public tnt_kd(id) {
 	
-	if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
+	if (!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return;
 	if(gMinesLeft[id] <= 0) { client_print(id, print_chat, "[SH](TNT) No Mines Left!!"); return; }
 	
 	gMinesLeft[id]--
@@ -148,7 +148,7 @@ public splode_effects(id) {
 }
 
 public sh_client_spawn(id) {
-	if(!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return;
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return;
 	
 	gMinesLeft[id] = get_cvar_num("tnt_mines");
 }

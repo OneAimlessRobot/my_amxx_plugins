@@ -82,7 +82,7 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) {
+	if (!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) {
 		return FMRES_IGNORED
 	}
 
@@ -280,7 +280,7 @@ public client_damage(attacker, victim, damage, wpnindex, hitplace)
 	if ( !sh_is_active() ) return
 	if ( !is_user_alive(victim) || !is_user_connected(attacker) ) return
 
-	if ( sh_user_has_hero(attacker, gHeroID)&& CSW_P228 <= wpnindex <= CSW_P90 ) {
+	if ( sh_get_user_has_hero(attacker, gHeroID)&& CSW_P228 <= wpnindex <= CSW_P90 ) {
 		new wpn[32]
 		get_weaponname(wpnindex, wpn, charsmax(wpn))
 		replace(wpn, charsmax(wpn), "weapon_", "")
@@ -309,7 +309,7 @@ public fwPlayerPreThink(id)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 		return FMRES_IGNORED
 	}
 	if ((pev(id, pev_oldbuttons) & IN_ATTACK) && !(pev(id, pev_button) & IN_ATTACK)) {

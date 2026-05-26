@@ -54,11 +54,11 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	//This gets run if they had the power but don't anymore
-	if ( !sh_user_has_hero(id,gHeroID) && is_user_connected(id) ){
+	if ( !sh_get_user_has_hero(id,gHeroID) && is_user_connected(id) ){
 		// remove the power if it was used and user dropped hero
 		if ( g_powerID[id] > 0 ) {
 			remove_power(id, g_powerID[id])
@@ -83,9 +83,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -154,7 +154,7 @@ public stealth_ku(id)
 		return
 	}
 	
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_usingPower[id] ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !g_usingPower[id] ) return
 	// Stop the sound
 	new sndStop=(1<<5)
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
@@ -164,7 +164,7 @@ public stealth_loop()
 {
 	if ( !sh_is_active() ) return
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
 			shAddHPs(id, gHealPoints, sh_get_max_hp(id))
@@ -181,7 +181,7 @@ public sh_client_death(id)
 {
 
 	if ( !sh_is_inround() ) return
-	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_connected(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	new randNum = generate_int(0, 100)
 	new pctChance = get_cvar_num("stealth_respawnpct")
@@ -218,7 +218,7 @@ public stealth_respawn(parm[])
 public curweapon(id)
 {
 	if ( !sh_is_inround()) return
-	if ( !sh_user_has_hero(id,gHeroID) || !g_usingPower[id] ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !g_usingPower[id] ) return
 
 	new wpnid = read_data(2)
 
@@ -251,7 +251,7 @@ public sh_round_end()
 	if ( !sh_is_active() ) return
 	// Reset the cooldown on round end, to start fresh for a new round
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if (sh_user_has_hero(id,gHeroID) ) {
+		if (sh_get_user_has_hero(id,gHeroID) ) {
 			remove_task(177+id)
 		}
 	}

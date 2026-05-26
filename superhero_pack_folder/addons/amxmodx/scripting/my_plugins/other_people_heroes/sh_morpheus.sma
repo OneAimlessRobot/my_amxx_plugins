@@ -60,7 +60,7 @@ public plugin_init()
 #endif
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -86,14 +86,14 @@ public sh_hero_init(id, heroID, mode)
 #if defined GIVE_WEAPON
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		morpheus_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 morpheus_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)) {
 		sh_give_weapon(id, CSW_MP5NAVY)
 	}
 }
@@ -103,7 +103,7 @@ morpheus_weapons(id)
 #if AMMO_MODE < 4
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)) return
 
 	//weaponID = read_data(2)
 	if ( read_data(2) != CSW_MP5NAVY ) return

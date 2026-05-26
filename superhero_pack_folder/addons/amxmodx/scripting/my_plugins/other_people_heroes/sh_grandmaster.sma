@@ -62,7 +62,7 @@ public sh_client_death(victim)
 	// Look for alive players with unused Grandmaster Powers on the same team
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]
-		if ( player != victim && sh_user_has_hero(player,gHeroID)&& !sh_get_cooldown_flag(player)&& idTeam == cs_get_user_team(player) ) {
+		if ( player != victim && sh_get_user_has_hero(player,gHeroID)&& !sh_get_cooldown_flag(player)&& idTeam == cs_get_user_team(player) ) {
 			// We got a Grandmaster willing to raise the dead!
 			new parm[2]
 			parm[0] = victim

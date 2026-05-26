@@ -31,11 +31,11 @@ public plugin_init()
 //-----------------------------------------------------------------------------------
 public client_PreThink(id)
 {
-	if(sh_user_has_hero(id,gHeroID) && is_user_alive(id))
+	if(sh_get_user_has_hero(id,gHeroID) && is_user_alive(id))
          { 
 	entity_set_float(id, EV_FL_fuser2, 0.0)
          }
-	if((get_user_button(id) & IN_JUMP)&&sh_user_has_hero(id,gHeroID))
+	if((get_user_button(id) & IN_JUMP)&&sh_get_user_has_hero(id,gHeroID))
          {
 		new Flags = entity_get_int(id, EV_INT_flags)
 		if(Flags | FL_WATERJUMP && entity_get_int(id, EV_INT_waterlevel) < 2 && Flags & FL_ONGROUND)

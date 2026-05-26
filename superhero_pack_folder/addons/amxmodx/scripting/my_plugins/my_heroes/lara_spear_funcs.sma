@@ -89,7 +89,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED;
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED;
 	if(!hasRoundStarted()){
 	
 		uncharge_user(id)
@@ -300,7 +300,7 @@ launch_spear(id)
 
 public lara_spear_decide_func(id){
 
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return ;
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return ;
 
 	new spear_mode:the_mode=spear_get_user_spear_mode(id);
 	switch(the_mode){
@@ -343,7 +343,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 	{
 		//get pickability status
 		new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
-		if(sh_user_has_hero(pTouched,gHeroID)&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
+		if(sh_get_user_has_hero(pTouched,gHeroID)&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
 		
 			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))

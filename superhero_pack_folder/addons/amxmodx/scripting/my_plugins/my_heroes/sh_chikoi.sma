@@ -68,7 +68,7 @@ dmg_message(id, attacker){
 public chikoi_damage(id, idinflictor, attacker, Float:damage, damagebits){
 
 	
-if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return HAM_IGNORED
+if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return HAM_IGNORED
 
 if ( damagebits & DMG_FALL ){
 	return HAM_SUPERCEDE
@@ -95,7 +95,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		return HAM_IGNORED;
 
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 
 		return HAM_IGNORED;
 
@@ -122,12 +122,12 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) ){
+	if(sh_get_user_has_hero(victim,gHeroID) ){
 		if(sh_clients_are_same_team(victim,attacker)){
 			return DMG_FWD_PASS
 		
@@ -165,7 +165,7 @@ public sh_client_death(id,killer,my_hitpoint_enum:hitpoint,custom_wpn_id)
 	if ( !is_user_connected(id)){
 		return
 	}
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		if(custom_wpn_id==custom_dmg_id){
 			emit_sound(id, CHAN_VOICE, chikoi_death_sounds[generate_int(0,(sizeof chikoi_death_sounds) -1)], 1.0, 0.0,0,PITCH_NORM)
 		}

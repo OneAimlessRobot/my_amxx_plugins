@@ -73,10 +73,10 @@ public plugin_init()
 	MsgSetFOV = get_user_msgid("SetFOV")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		weapon_change(id)
 	}
@@ -91,13 +91,13 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 		weapon_change(id)
 }
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	//new wpnid = read_data(2)
@@ -125,7 +125,7 @@ public weapon_change(id)
 //----------------------------------------------------------------------------------------------
 alien_vision_on(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{
 		AlienModeOn[id] = true
 
@@ -162,7 +162,7 @@ public alien_loop(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) )
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) )
 	{
 		setScreenFlash(id, 0, 200, 0, 13, get_pcvar_num(CvarTint))
 		set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(CvarAlphaValue))
@@ -201,7 +201,7 @@ public alien_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
 		return
 
-	if ( sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id) )
+	if ( sh_get_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 		// do extra damage
@@ -213,7 +213,7 @@ public alien_damage(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_death(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID))
+	if ( !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	alien_vision_off(id)

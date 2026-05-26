@@ -5,7 +5,7 @@
 
 #define PLUGIN "player cmd tools for debugging"
 #define VERSION "1.0.0"
-#include "../my_include/my_author_header.inc"
+#include "my_include/my_author_header.inc"
 
 
 stock const player_click_cmd[]="player_cmdclick"

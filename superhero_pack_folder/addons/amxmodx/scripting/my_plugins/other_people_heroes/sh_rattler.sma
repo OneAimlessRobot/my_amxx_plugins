@@ -86,7 +86,7 @@ public rattler_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(attacker) && id != attacker ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(attacker) && id != attacker ) {
 		// do extra damage
 		new returnDamage = floatround( ( gPlayerLevels[id] * get_cvar_float("rattler_dmgreturn") ) * damage )
 		if (returnDamage > 0)

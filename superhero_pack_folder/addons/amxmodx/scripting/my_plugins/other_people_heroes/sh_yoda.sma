@@ -69,10 +69,10 @@ public sh_client_spawn(id)
 	gPlayerInCooldown[id] = false
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if ( gPlayerInCooldown[id] ) {
 		sh_sound_deny(id)

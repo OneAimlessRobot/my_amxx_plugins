@@ -55,10 +55,10 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		times_id[id] = get_pcvar_num(gloce_times)
 
@@ -71,7 +71,7 @@ public sh_client_spawn(id)
 	{
 
 		times_id[id] = get_pcvar_num(gloce_times)
-		if(sh_user_has_hero(id,gHeroID) && get_pcvar_num(gloce_glock))
+		if(sh_get_user_has_hero(id,gHeroID) && get_pcvar_num(gloce_glock))
 		{
 			give_custom_grenades(id,GREN_FREEZE,5)
 			ham_give_weapon(id, "weapon_glock18")
@@ -94,7 +94,7 @@ public fwd_Ham_TakeDamage_post(id, nothing, Attacker, Float:fDamage)
 		if(fHealth - fDamage > 0.0)
 		{
 			new weapon = get_user_weapon(Attacker)
-			if((cs_get_user_team(id)!=cs_get_user_team(Attacker))&&(weapon == CSW_GLOCK18) && sh_user_has_hero(Attacker,gHeroID)&& (times_id[Attacker] > 0))
+			if((cs_get_user_team(id)!=cs_get_user_team(Attacker))&&(weapon == CSW_GLOCK18) && sh_get_user_has_hero(Attacker,gHeroID)&& (times_id[Attacker] > 0))
 			{
 				if(generate_int(0, 100) <= get_pcvar_num(gloce_pct))
 				{
@@ -119,7 +119,7 @@ public weapon_event(id)
 			set_pev(id, pev_maxspeed, 130.0)
 		}
 
-		else if(sh_is_user_frozen(id) && weaponid == CSW_GLOCK18 && sh_user_has_hero(id,gHeroID))
+		else if(sh_is_user_frozen(id) && weaponid == CSW_GLOCK18 && sh_get_user_has_hero(id,gHeroID))
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 

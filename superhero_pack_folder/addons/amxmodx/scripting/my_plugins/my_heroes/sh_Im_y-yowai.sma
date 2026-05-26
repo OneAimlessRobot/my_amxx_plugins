@@ -65,10 +65,10 @@ public plugin_init()
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		update_max_hits(id)
 		reset_Yowai_user(id)
@@ -130,7 +130,7 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-if ( sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
+if ( sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	give_custom_grenades(id,GREN_SHRAPNEL,6)
 	reset_Yowai_user(id)
@@ -148,7 +148,7 @@ public Inc_hits(id){
 
 stock dmg_message(id,Float:damage){
 	if(is_user_alive(id)){
-		if(sh_user_has_hero(id,gHeroID) &&Get_BitVar(g_yowai_mode_mask,id)){
+		if(sh_get_user_has_hero(id,gHeroID) &&Get_BitVar(g_yowai_mode_mask,id)){
 				if(!is_user_bot(id)){
 
 				sh_chat_message(id,gHeroID,"Dont worry, ... youll be fine, like always... sigh... damage: %.0f is a scratch",damage)
@@ -168,7 +168,7 @@ if ( !is_user_alive(id) ) return HAM_IGNORED
 
 if (!is_user_connected(attacker)) return HAM_IGNORED
 
-if(sh_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
+if(sh_get_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
 	
 	new Float:tg_damage=floatmin(float(get_user_health(id)),float(dmg_threshold))
 	if(g_hits[id]>=g_max_hits_player[id]){
@@ -196,9 +196,9 @@ return HAM_IGNORED
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -211,10 +211,10 @@ switch(key)
 public Yowai_kd(id)
 {
 
-if (sh_is_freezetime() || !is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ||Get_BitVar(g_yowai_mode_mask,id) ) {
+if (sh_is_freezetime() || !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||Get_BitVar(g_yowai_mode_mask,id) ) {
 	return PLUGIN_HANDLED
 }
-if ( sh_user_has_hero(id,gHeroID_chikoi)) {
+if ( sh_get_user_has_hero(id,gHeroID_chikoi)) {
 	sh_sound_deny(id)
 	sh_chat_message(id,gHeroID,"You have chikoi enabled. Will not enable")
 	return PLUGIN_HANDLED
@@ -226,12 +226,12 @@ sh_chat_message(id,gHeroID,"Activated yowai mode.")
 return PLUGIN_HANDLED
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_user_has_hero(victim,gHeroID) &&Get_BitVar(g_yowai_mode_mask,victim)){
+	if(sh_get_user_has_hero(victim,gHeroID) &&Get_BitVar(g_yowai_mode_mask,victim)){
 		new tg_damage=min(get_user_health(victim),dmg_threshold)
 		if((g_hits[victim]>=g_max_hits_player[victim])||
 			(custom_weapon_id==sh_get_death_scythe_wpn_id())){

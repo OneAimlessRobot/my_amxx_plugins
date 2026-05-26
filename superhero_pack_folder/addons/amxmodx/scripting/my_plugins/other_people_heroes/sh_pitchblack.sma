@@ -47,13 +47,13 @@ public plugin_init()
 	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	PitchTimer[id] = -1;
 	sh_unset_cooldown_flag(id)
 
-	if (!sh_user_has_hero(id,gHeroID)&& PitchTimer[id] > 0) {
+	if (!sh_get_user_has_hero(id,gHeroID)&& PitchTimer[id] > 0) {
 		numOfPB -= 1
 		StopNVG(id)
 		if (numOfPB <= 0) {
@@ -69,9 +69,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound, "items/nvg_off.wav" )
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -84,7 +84,7 @@ switch(key)
 public pitch_kd(id)
 {
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	if (sh_get_cooldown_flag(id)|| PitchTimer[id] >= 0) {
 		playSoundDenySelect(id)
@@ -173,7 +173,7 @@ public lightsOn()
 //----------------------------------------------------------------------------------------------
 public ToggleNVG(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return PLUGIN_CONTINUE
 
 	if (NightVisionUse[id])		StopNVG(id)
 	else						StartNVG(id)
@@ -183,7 +183,7 @@ public ToggleNVG(id)
 //----------------------------------------------------------------------------------------------
 public StartNVG(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() || !is_user_alive(id) ) return
 
 	message_begin(MSG_ONE, NVGToggle, {0,0,0}, id)
 	write_byte( 0 )

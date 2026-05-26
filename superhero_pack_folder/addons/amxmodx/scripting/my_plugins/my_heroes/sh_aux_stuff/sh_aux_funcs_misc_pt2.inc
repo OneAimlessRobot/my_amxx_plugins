@@ -9,7 +9,7 @@ stock bool:generic_weapon_tracer_logic(Attacker,bool:custom_boolean=true,weapon_
         return false
     }
     if(hero_id>=0){
-        if(!sh_user_has_hero(Attacker, hero_id)){
+        if(!sh_get_user_has_hero(Attacker, hero_id)){
             return false
         }
     }

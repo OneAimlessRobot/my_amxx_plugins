@@ -99,10 +99,10 @@ public plugin_init()
 	register_event("CurWeapon", "change_weapon", "be", "1=1")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_alive(id) )
 			fill_ammo(id)
@@ -111,7 +111,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 fill_ammo(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -131,7 +131,7 @@ fill_ammo(id)
 public change_weapon(id)
 {
 	// Should prob avoid calling this during spawn
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)

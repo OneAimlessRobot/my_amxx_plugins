@@ -90,7 +90,7 @@ mrhydrogen_stop_powers(id)
 
 	if (attacker <= 0 && attacker > SH_MAXSLOTS && id != attacker)
 	return PLUGIN_CONTINUE
-	if (sh_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id))
+	if (sh_get_user_has_hero(attacker,gHeroID)&& weapon == CSW_KNIFE && is_user_alive(id))
 	{
 	new extraDamage = floatround(damage * get_cvar_float("mrhydrogen_knifemult") - damage)
 	if (extraDamage > 0)

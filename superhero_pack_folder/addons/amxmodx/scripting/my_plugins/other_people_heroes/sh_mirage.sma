@@ -31,10 +31,10 @@ public plugin_init() {
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
+	if(sh_get_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
 		remove_task(id+TASKID)
 		set_task(0.1,"mirage_loop",id+TASKID,"",0,"b")
 	}
@@ -44,7 +44,7 @@ public mirage_loop(id)
 {
 id-=TASKID
 new parm[2],i
-if (sh_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id)) 
+if (sh_get_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id)) 
 {
 	for (new enemy=1;enemy< sh_maxplayers()+1;enemy++) 
 	{
@@ -70,7 +70,7 @@ return PLUGIN_CONTINUE
 
 public client_disconnected(id){
 
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 		remove_task(id+TASKID)
 	}
 

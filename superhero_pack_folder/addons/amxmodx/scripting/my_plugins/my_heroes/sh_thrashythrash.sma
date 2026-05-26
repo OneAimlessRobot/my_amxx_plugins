@@ -85,11 +85,11 @@ public plugin_init()
 	shSetMaxSpeed(gHeroName, "thrashy_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		gThrashyExplosionAmmo[id]=ndynamites
 	}
@@ -131,14 +131,14 @@ public fw_CmdStart( id, uc_handle, seed )
 		new szClip, szAmmo
 		new szWeapID = get_user_weapon( id, szClip, szAmmo )
 		
-		if( szWeapID == THRASHER_WEAPON_ID && sh_user_has_hero(id,gHeroID) && !gHasThrashZoom[id] == true)
+		if( szWeapID == THRASHER_WEAPON_ID && sh_get_user_has_hero(id,gHeroID) && !gHasThrashZoom[id] == true)
 		{
 			gHasThrashZoom[id] = true
 			cs_set_user_zoom( id, CS_SET_AUGSG552_ZOOM, 0 )
 			emit_sound( id, CHAN_ITEM, "weapons/zoom.wav", 0.20, 2.40, 0, 100 )
 		}
 		
-		else if ( szWeapID == THRASHER_WEAPON_ID && sh_user_has_hero(id,gHeroID) && gHasThrashZoom[id])
+		else if ( szWeapID == THRASHER_WEAPON_ID && sh_get_user_has_hero(id,gHeroID) && gHasThrashZoom[id])
 		{
 			gHasThrashZoom[ id ] = false
 			cs_set_user_zoom( id, CS_RESET_ZOOM, 0 )
@@ -155,9 +155,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -206,7 +206,7 @@ public sh_client_spawn(id)
 	
 	if (is_user_alive(id) && sh_is_active() ) {
 
-		if(sh_user_has_hero(id,gHeroID) ){
+		if(sh_get_user_has_hero(id,gHeroID) ){
 			sh_unset_cooldown_flag(id)
 			gThrashyExplosionAmmo[id]=ndynamites
 			thrashy_weapons(id)
@@ -223,7 +223,7 @@ public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 //-----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_user_has_hero(id,gHeroID)  ||!sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)  ||!sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -248,7 +248,7 @@ public thrashy_weapons(id)
 public sh_client_death(id){
 	
 	sh_unset_cooldown_flag(id)
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		BlowUp(id,true)
 	}
@@ -263,7 +263,7 @@ public thrashy_damage(id)
 
 	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(attacker,gHeroID)&&weapon == THRASHER_WEAPON_ID && is_user_alive(id)  )
+	if ( sh_get_user_has_hero(attacker,gHeroID)&&weapon == THRASHER_WEAPON_ID && is_user_alive(id)  )
 	{
 		new health = get_user_health(id)
 
@@ -310,7 +310,7 @@ public thrashy_damage(id)
 //----------------------------------------------------------------------------------------------
 public BlowUp(id,bool:died)
 {
-	if ( !sh_is_active() ||!sh_user_has_hero(id,gHeroID)){	
+	if ( !sh_is_active() ||!sh_get_user_has_hero(id,gHeroID)){	
 		return PLUGIN_CONTINUE;
 			
 			

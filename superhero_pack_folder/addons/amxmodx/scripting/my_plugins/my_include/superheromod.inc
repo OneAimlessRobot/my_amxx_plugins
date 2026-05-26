@@ -6,6 +6,8 @@
 #endif
 #define _shero_included
 
+
+
 #pragma reqlib "SuperHero Core"
 #if !defined AMXMODX_NOAUTOLOAD
   #pragma loadlib "SuperHero Core"
@@ -34,6 +36,7 @@ enum sh_extra_damage_flags (<<= 1){
 #tryinclude "../../include/csx.inc"
 #tryinclude "../../include/cstrike.inc"
 #tryinclude "../my_include/auxiliar_stuff.inc"
+#tryinclude "../my_include/sh_hero_array_module.inc"
 #tryinclude "../my_include/superheroconst.inc"
 
 
@@ -62,7 +65,7 @@ forward sh_extra_damage_fwd_pre(
 			&attacker, 
 			&damage,
 			&my_hitpoint_enum:bodypart,
-			&dmgMode,
+			&sh_damage_mode:dmgMode,
 			&sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			&dmg_type,
@@ -85,7 +88,7 @@ forward sh_extra_damage_fwd_post(
 			attacker, 
 			damage,
 			my_hitpoint_enum:bodypart,
-			dmgMode,
+			sh_damage_mode:dmgMode,
 			sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			dmg_type,
@@ -107,9 +110,9 @@ forward sh_extra_health_add_pre(&id,&the_health_to_add)
  * @noreturn
  */
 
-forward sh_hero_init_pre(id, heroID, mode);
+forward sh_hero_init_pre(id, heroID, sh_init_mode:mode);
 
-forward sh_hero_init(id, heroID, mode);
+forward sh_hero_init(id, heroID, sh_init_mode:mode);
 
 
 /**
@@ -121,7 +124,7 @@ forward sh_hero_init(id, heroID, mode);
  * @param key			The heroID power key function, key down or key up.
  * @noreturn
  */
-forward sh_hero_key(id, heroID, key);
+forward sh_hero_key(id, heroID, sh_key_mode:key);
 
 /**
  * Called post player spawn.
@@ -481,7 +484,7 @@ native sh_extra_damage(victim,
 				attacker,
 				damage,
 				my_hitpoint_enum:bodypart = MY_HIT_GENERIC,
-				dmgMode = SH_DMG_MULT,
+				sh_damage_mode:dmgMode = SH_DMG_MULT,
 				sh_extra_damage_flags:sh_extra_damage_flags=SH_EXTRA_DMG_FLAG_NONE,
 				const Float:dmgOrigin[3] = {0.0,0.0,0.0},
 				dmg_type=DMG_GENERIC,
@@ -527,15 +530,6 @@ native sh_set_godmode(id, Float:howLong);
  * @return		Returns hero's index, -1 on failure
  */
 native sh_get_hero_id(const heroName[]);
-
-/**
- * Checks if the client has the hero.
- *
- * @param id		The index of the client.
- * @param heroID	The index of the hero.
- * @return		Returns 1 if client has hero, otherwise 0.
- */
-native bool:sh_user_has_hero(id, heroID);
 
 /**
  * Reset client's max speed according to heroes they have.
@@ -961,7 +955,45 @@ the third one sets it to false
 
 #define sh_unset_cooldown_flag(%1) ( UnSet_BitVar( gPlayerInCooldownMask, %1) )
 
+/*
 
+Im gonna try to use this the following way:
+Every time "sh_hero_init" gets called,
+I will set this to the appropriate value
+Id is the player's id (Who the hero picking forward got called on)
+"mode" is whatever the name of the "SH_HERO_ADD/DROP" variable
+is on that handle callback
+By using "Assign_BitVar(gPlayerHasHeroMask, id, mode)"
+Which,
+in practice,
+Avoids calling "sh_get_user_has_hero(id, hero_id)"
+every time.
+
+sh_get_user_has_hero(id,hero_id)
+accesses an array of bitmasks
+(Declared as a global like this: "gPlayerHasHeroMasks[SH_MAXHEROS]= {0, ...}")
+Which gets used like this:
+
+Assign_BitVar(gPlayerHasHeroMasks[hero_id], id, the_boolean_value)
+
+the boolean value is used
+in a ternary operation
+to choose between:
+Set_BitVar(var_mask, id)
+And
+UnSet_BitVar(var_mask, id)
+That's it.
+
+
+And then I simply use the Mask
+instead of calling the native every time!
+Im gonna try to only do this on main modules, for now
+And will leave things like custom weapons
+And ability modules unchanged
+(Which is by using the native)
+
+*/
+stock gPlayerHasHeroMask = 0
 /**
  * Sets a cooldown in a hero.
  *

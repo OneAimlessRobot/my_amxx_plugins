@@ -67,7 +67,7 @@ public plugin_precache()
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -81,13 +81,13 @@ public sh_hero_init(id, heroID, mode)
 	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 
 	if ( key == SH_KEYDOWN ) {
 		if ( sh_is_freezetime() || gBombPlanted ) return
-		if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+		if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 		create_mine(id)
 	}

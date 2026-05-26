@@ -77,7 +77,7 @@ public plugin_init()
 	shSetMaxSpeed(gHeroName, "neo_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	if(flytoggle[id] || isflying[id]) 
@@ -121,7 +121,7 @@ public make_neo(id)
 		velocityvec[2]=velocityvec[2]*speed/length
 		
 		for(i = 0; i < n; i++)
-			if ((is_user_connected(players[i])) && (sh_user_has_hero(players[i],gHeroID)))
+			if ((is_user_connected(players[i])) && (sh_get_user_has_hero(players[i],gHeroID)))
 			draw_neo_for(players[i], pteam, vec , velocityvec)
 	}
 	lastammo[id] = ammo
@@ -147,9 +147,9 @@ public draw_neo_for(pl, pteam[], vec[3], velocityvec[3])
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {

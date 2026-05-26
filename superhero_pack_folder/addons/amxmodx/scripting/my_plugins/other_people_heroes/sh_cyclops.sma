@@ -67,7 +67,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundHit)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -96,7 +96,7 @@ public sh_client_death(victim)
 	remove_task(victim)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 

@@ -42,12 +42,12 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	if (!is_user_connected(id)) return
 
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		terrorist_giveweapons(id)
 		create_bombtarget()
 	}
@@ -56,12 +56,12 @@ public sh_hero_init(id, heroID, mode){
 		remove_bombtarget()
 	}
 
-	g_state = sh_user_has_hero(id,gHeroID)
+	g_state = sh_get_user_has_hero(id,gHeroID)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "terrorist_giveweapons",id)
 		set_task(get_cvar_float("terrorist_c4plant"), "enable_planting", 97564673)
 	}
@@ -132,7 +132,7 @@ public terrorist_dropweapons(id)
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new weaponid = read_data(2)
 

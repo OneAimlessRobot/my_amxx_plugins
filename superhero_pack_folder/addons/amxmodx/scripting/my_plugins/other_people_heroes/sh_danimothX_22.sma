@@ -72,7 +72,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/danimoth_stasis.wav")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -107,13 +107,13 @@ public client_connect(id)
 	is_frozen[id] = false
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 
 	if ( key == SH_KEYDOWN ) 
 	{
-		if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+		if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 	
 		if ( sh_get_cooldown_flag(id)) {
 			playSoundDenySelect(id)
@@ -187,7 +187,7 @@ public Danimoth_loop()
 {
 	if (!sh_is_active()) return
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ){	
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ){	
 			//Cloak Task
 			set_task(0.1,"DanimothCloak",id)
 			set_task(0.1,"DanimothDeCloak",id)

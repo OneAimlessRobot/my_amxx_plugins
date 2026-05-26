@@ -41,7 +41,7 @@ public Thing_damage(id)
 
   new randNum = generate_int(0, 100 )
   new ThingLevel = floatround(get_cvar_float("Thing_weapon_percent") * 100)
-  new bool:has_hero= sh_user_has_hero(id,gHeroID)
+  new bool:has_hero= sh_get_user_has_hero(id,gHeroID)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && has_hero&& weapon!=CSW_KNIFE ) {
     shAddHPs(id, damage, 500 )
     set_hudmessage(0, 100, 200, 0.05, 0.60, 1, 0.1, 2.0, 0.1, 0.1)

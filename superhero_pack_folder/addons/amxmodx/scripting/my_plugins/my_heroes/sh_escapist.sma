@@ -78,7 +78,7 @@ public plugin_init()
 }
 wpn_switch_primitive(id){
 
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)  ){
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)  ){
 		return
 	}
 
@@ -98,7 +98,7 @@ wpn_switch_primitive(id){
 public getFastWeaponAndSpeed(i){
 	
 	
-	if (!sh_user_has_hero(i,gHeroID)){
+	if (!sh_get_user_has_hero(i,gHeroID)){
 		return
 	}
 	
@@ -113,7 +113,7 @@ public getFastWeaponAndSpeed(i){
 public fw_Touch(ent,id){
 
 
-	if(!is_user_alive(ent) || !sh_user_has_hero(ent,gHeroID)  || !pev_valid(ent)||!is_valid_ent( ent ) )
+	if(!is_user_alive(ent) || !sh_get_user_has_hero(ent,gHeroID)  || !pev_valid(ent)||!is_valid_ent( ent ) )
 		return
 	
 	entity_get_vector( ent, EV_VEC_origin, g_wallorigin[ ent ] );
@@ -175,18 +175,18 @@ public loadCVARS()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		gPlayerLevel[id]=sh_get_user_lvl(id)
 	}
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -206,7 +206,7 @@ public escapist_loop(id)
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for(new i=0;i< sh_maxplayers()+1;i++){
-		if ( !is_user_alive(i)||!sh_user_has_hero(i,gHeroID)){
+		if ( !is_user_alive(i)||!sh_get_user_has_hero(i,gHeroID)){
 			
 			continue
 		

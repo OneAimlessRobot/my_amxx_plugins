@@ -66,23 +66,23 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		
 		UnSet_BitVar(gChargeModeEngagedMask,id)
 
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	UnSet_BitVar(gChargeModeEngagedMask,id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -96,7 +96,7 @@ public zenitsu_kd(id)
 {	
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
-	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	
 
 	// Let them know they already used their ultimate if they have
@@ -121,18 +121,18 @@ public zenitsu_kd(id)
 	return PLUGIN_HANDLED
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
 	new result= DMG_FWD_PASS
 	if((new_dmg_type==SH_NEW_DMG_ENERGY_BLAST)||(new_dmg_type==SH_NEW_DMG_SHOCK)){
-		if(sh_user_has_hero(victim,gHeroID) ){
+		if(sh_get_user_has_hero(victim,gHeroID) ){
 			result=DMG_FWD_BLOCK
 		}
 	}
-	if(Get_BitVar(gChargeModeEngagedMask, attacker)&&sh_user_has_hero(attacker,gHeroID) ){
+	if(Get_BitVar(gChargeModeEngagedMask, attacker)&&sh_get_user_has_hero(attacker,gHeroID) ){
 
 		damage*=2
 	}

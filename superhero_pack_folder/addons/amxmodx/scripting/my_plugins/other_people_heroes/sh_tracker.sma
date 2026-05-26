@@ -84,7 +84,7 @@ public tracker_damage(id)
     maxTargets =SH_MAXSLOTS
   }
 
-  if(attacker<(sh_maxplayers()+1) && sh_user_has_hero(attacker,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
+  if(attacker<(sh_maxplayers()+1) && sh_get_user_has_hero(attacker,gHeroID) && attacker!=victim && get_user_team(attacker)!=get_user_team(victim) && numTargets[attacker]<maxTargets)
   {
     Assign_BitVar(isTaggedMask[attacker],victim, true_for_macro)
     numTargets[attacker] = numTargets[attacker]++

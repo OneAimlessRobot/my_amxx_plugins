@@ -63,7 +63,7 @@ public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==attacker)) return HAM_IGNORED
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
-if(sh_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
+if(sh_get_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
 	
 	damage=1.0+damage- (damage*
 		cvar_val(float, pcvar_psychosis_dmg_cushion))
@@ -109,7 +109,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 public Ham_Think_Pre(id) {
 	if(!sh_is_active()) return HAM_IGNORED
 
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) { 
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) { 
 		return HAM_IGNORED
 	}
 	if(Get_BitVar(g_yandere_leaped_mask,id)){
@@ -136,7 +136,7 @@ public psychosis_leap(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
+	if (!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	
@@ -164,7 +164,7 @@ public psychosis_task(id){
 	gPsychosisTime[id]-=1.0
 	set_render_with_color_const(id, PINK,1,255,_,0,_,1.0)
 	aura(id,LineColors[PINK])
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		if(is_user_connected(id)){
 			unpsychosis_user(id)
 		}

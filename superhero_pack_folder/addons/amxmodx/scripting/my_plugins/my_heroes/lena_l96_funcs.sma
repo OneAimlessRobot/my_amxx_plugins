@@ -156,7 +156,7 @@ public Ham_TraceAttackLenaL96(id, idattacker, Float:damage, Float:direction[3], 
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
+	if(get_user_weapon(idattacker) != LENA_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
 
@@ -272,7 +272,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
-	if(!sh_user_has_hero(pPlayer,gHeroID)){
+	if(!sh_get_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
 	}

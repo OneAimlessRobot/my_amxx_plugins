@@ -39,7 +39,7 @@ public plugin_natives(){
 }
 public weaponChange(id)
 {
-	if (!sh_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
+	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
@@ -78,7 +78,7 @@ public Ham_Needle_Swing(weapon_ent)
 	if ( !is_user_alive(owner)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(owner,gHeroID) ){
+	if(!sh_get_user_has_hero(owner,gHeroID) ){
 
 		return HAM_IGNORED
 	}
@@ -97,7 +97,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 	if ( !is_user_alive(attacker)) {
 		return HAM_IGNORED
 	}
-	if(!sh_user_has_hero(attacker,gHeroID) ){
+	if(!sh_get_user_has_hero(attacker,gHeroID) ){
 
 		return HAM_IGNORED
 	}
@@ -166,7 +166,7 @@ public _gatling_needle_cycle_fx(iPlugin,iParams){
 	if ( !is_user_alive(id)) {
 		return
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 
 		return
 	}

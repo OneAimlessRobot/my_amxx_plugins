@@ -61,7 +61,7 @@ public plugin_precache()
 	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -83,7 +83,7 @@ bomberman_newsetup(id)
 {
 	sh_unset_cooldown_flag(id)
 
-	if ( !sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new bombent = gBombEntity[id]
 
@@ -115,10 +115,10 @@ bomberman_newsetup(id)
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	if ( gBombEntity[id] > 0 ) {
 		explode_bomb(id)

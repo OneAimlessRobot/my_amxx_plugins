@@ -84,15 +84,15 @@ public plugin_init()
 	shSetMaxSpeed(g_heroName, "hawk_speed", "[8][27]")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			hawkeye_weapons(id)
 		}
 	}
-	else if ( !sh_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
+	else if ( !sh_get_user_has_hero(id,gHeroID)&& is_user_connected(id) ) {
 		
 		if ( get_cvar_num("hawk_freewpn") ) {
 			if ( get_user_team(id) == 1 ){
@@ -107,7 +107,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		if ( get_cvar_num("hawk_freewpn") ) {
 			set_task(0.1, "hawkeye_weapons", id)
 		}
@@ -138,12 +138,12 @@ public hawkeye_damage(id)
 
 		new damage = read_data(2)
 
-		if ( is_user_connected(attacker) && sh_user_has_hero(attacker,gHeroID)) {
+		if ( is_user_connected(attacker) && sh_get_user_has_hero(attacker,gHeroID)) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(attacker, "%i", damage)
 		}
 
-		if ( is_user_connected(id) && sh_user_has_hero(id,gHeroID) ) {
+		if ( is_user_connected(id) && sh_get_user_has_hero(id,gHeroID) ) {
 			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 4.0, 0.02, 0.02)
 			show_hudmessage(id, "%i", damage)
 		}
@@ -160,7 +160,7 @@ public hawkeye_aim()
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
 
-		if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+		if ( is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 			new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
 
 			if ( clip > 0 && ((wpnid == CSW_SG552 && get_user_team(id) == 1) || (wpnid == CSW_AUG && get_user_team(id) == 2)) ) {

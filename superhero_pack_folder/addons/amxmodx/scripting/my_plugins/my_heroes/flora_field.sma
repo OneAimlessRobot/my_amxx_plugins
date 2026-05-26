@@ -233,7 +233,7 @@ Float:get_player_alpha(id){
 	new Float:alphaMult=1.0;
 	new player_lvl,hero_lvl,lvl_diff;
 	if(is_user_alive(id)){
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 			player_lvl=sh_get_user_lvl(id)
 			hero_lvl=flora_get_hero_lvl()
 			lvl_diff=player_lvl-hero_lvl
@@ -276,7 +276,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(is_user_connected(owner)){
-			if(sh_user_has_hero(owner,gHeroID)){
+			if(sh_get_user_has_hero(owner,gHeroID)){
 				if(!planting){
 					flora_dec_user_num_active_fields(owner,1)
 				}
@@ -299,7 +299,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 }
 find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	
-	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,gHeroID) ){
+	if ( !is_user_alive(player_id)||!sh_get_user_has_hero(player_id,gHeroID) ){
 		
 	
 			return -1
@@ -351,7 +351,7 @@ public flora_checks(task_id){
 	for(new id=1;id< sh_maxplayers()+1;id++){
 		if(!is_user_alive(id)) continue
 
-		if(!sh_user_has_hero(id,gHeroID)) continue
+		if(!sh_get_user_has_hero(id,gHeroID)) continue
 		
 		if(sh_get_stun(id)) continue
 		
@@ -416,7 +416,7 @@ public flora_checks(task_id){
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
-	if ( !is_user_alive(player_id)||!sh_user_has_hero(player_id,gHeroID) ){
+	if ( !is_user_alive(player_id)||!sh_get_user_has_hero(player_id,gHeroID) ){
 		
 	
 			field_id=-1
@@ -471,7 +471,7 @@ public _form_field(iPlugin,iParams)
 	
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 	
 	if(!flora_get_user_num_fields(id)){
 		
@@ -582,7 +582,7 @@ public apply_teleport(id,field_inside) {
 		return
 	
 	}
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		return
 
@@ -632,7 +632,7 @@ public apply_teleport(id,field_inside) {
 
 apply_cloak(id){
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		g_curr_flora_cloaked[id]=0
 		g_prev_flora_cloaked[id]=0
@@ -767,7 +767,7 @@ public charge_iteration(owner,field_id){
 
 	
 	
-	if(!is_user_alive(owner)||!sh_user_has_hero(owner,gHeroID)){
+	if(!is_user_alive(owner)||!sh_get_user_has_hero(owner,gHeroID)){
 		uncharge_user(owner)
 		return FMRES_IGNORED
 	}

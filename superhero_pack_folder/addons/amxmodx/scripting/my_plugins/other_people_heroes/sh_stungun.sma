@@ -24,7 +24,7 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Stunning shots", "Stun gun slow down enemy on hit")
 }
 
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 	
@@ -36,7 +36,7 @@ public sh_hero_init(id, heroID, mode)
 
 public sh_client_spawn(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		gHasStunned[id] = false
 		remove_task(id)
@@ -51,7 +51,7 @@ public client_damage(attacker, victim)
 	
 	if ( !gHasStunned[attacker] )
 	{
-		if ( sh_user_has_hero(attacker,gHeroID) )
+		if ( sh_get_user_has_hero(attacker,gHeroID) )
 		{
 			sh_set_stun(victim, get_pcvar_float(pcvarTimeToStun), get_pcvar_float(pcvarStunSpeed))
 			

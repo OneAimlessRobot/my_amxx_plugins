@@ -70,10 +70,10 @@ public _camman_get_has_camera(iPlugin,iParams){
 
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		reset_camman_user(id)
 	}
 
@@ -90,7 +90,7 @@ public reset_camman_user(id){
 }
 public sh_client_spawn(id)
 {
-	if (sh_user_has_hero(id,gHeroID)  ) {
+	if (sh_get_user_has_hero(id,gHeroID)  ) {
 		reset_camman_user(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
@@ -98,9 +98,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -116,7 +116,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public camman_kd(id){
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 
@@ -170,7 +170,7 @@ public camman_kd(id){
 //----------------------------------------------------------------------------------------------
 public camman_ku(id)
 {
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!(camera_get_camera_disarmer_on(id)||camera_get_camera_armed(id))) {
 		return PLUGIN_HANDLED
 	}
 	if(camera_get_camera_planted(id)&&!sh_get_cooldown_flag(id)){

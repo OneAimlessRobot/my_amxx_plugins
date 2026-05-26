@@ -35,7 +35,7 @@ public sh_client_spawn(id)
 public slayer_loop()
 {
 	for ( new id=1; id< sh_maxplayers()+1; id++ ){
-		if (sh_user_has_hero(id,gHeroID)&&!sh_get_cooldown_flag(id)&&is_user_connected(id)&&is_user_alive(id))
+		if (sh_get_user_has_hero(id,gHeroID)&&!sh_get_cooldown_flag(id)&&is_user_connected(id)&&is_user_alive(id))
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
@@ -63,7 +63,7 @@ public slayer_damage(id)
 
     if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
 
-    if ( sh_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
+    if ( sh_get_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = generate_int(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
 		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2)

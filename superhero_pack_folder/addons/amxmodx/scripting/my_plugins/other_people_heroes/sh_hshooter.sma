@@ -25,7 +25,7 @@ public sh_client_spawn(id)
 
 public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 {
-	if ( sh_user_has_hero(attacker,gHeroID)&& (bodypart == MY_HIT_HEAD) )
+	if ( sh_get_user_has_hero(attacker,gHeroID)&& (bodypart == MY_HIT_HEAD) )
 	{
 		set_user_health(attacker, gStartHealth[attacker])
 	}

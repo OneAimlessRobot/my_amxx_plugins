@@ -83,12 +83,12 @@ new pcvar_extra_lazadmg
 	shSetMaxArmor(gHeroName, "ctrooper_armor")
  }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
 
 	if ( is_user_connected(id) ) {
-		if (sh_user_has_hero(id,gHeroID) ) {
+		if (sh_get_user_has_hero(id,gHeroID) ) {
 			CTrooper_weapons(id)
 		}
 		else {
@@ -110,7 +110,7 @@ public sh_hero_init(id, heroID, mode){
  //----------------------------------------------------------------------------------------------
  public sh_client_spawn(id)
  {
-	if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) && sh_is_active() ) {
 		set_task(0.1, "CTrooper_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
@@ -124,7 +124,7 @@ public sh_hero_init(id, heroID, mode){
  //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
-	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)
@@ -152,8 +152,8 @@ public sh_hero_init(id, heroID, mode){
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
-//sh_user_has_hero(id,gHeroID)
-	new bool:has_hero= sh_user_has_hero(attacker,gHeroID)
+//sh_get_user_has_hero(id,gHeroID)
+	new bool:has_hero= sh_get_user_has_hero(attacker,gHeroID)
 	if ( has_hero && weapon == CTROOPER_LASERGUN_CLASSID && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * cvar_val(float, pcvar_extra_lazadmg) - damage)
 		

@@ -100,16 +100,16 @@ public sh_client_spawn(id)
 		
 		return
 	}
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id)
 		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 
 		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
@@ -123,9 +123,9 @@ public client_disconnected(id){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -142,7 +142,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public flora_kd(id)
 {
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_CONTINUE
 	}
 
@@ -174,7 +174,7 @@ public flora_kd(id)
 public flora_ku(id)
 {
 	
-	if ( !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID) ) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
 		return PLUGIN_HANDLED
 	}
 	
@@ -191,14 +191,14 @@ public flora_ku(id)
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
 	new result= DMG_FWD_PASS
 	if((new_dmg_type==SH_NEW_DMG_FIRE)){
-		if(sh_user_has_hero(victim,gHeroID) ){
+		if(sh_get_user_has_hero(victim,gHeroID) ){
 			damage*=3
 		}
 	}
@@ -208,7 +208,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:b
 public sh_client_death(id)
 {
 if(is_user_connected(id)){
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		reset_flora_user(id)
 	}
 }

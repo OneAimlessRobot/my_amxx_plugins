@@ -70,7 +70,7 @@ public plugin_precache()
 	g_bloodspray 	= engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 }
 
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if(g_heroID != heroID)
 		return
@@ -87,7 +87,7 @@ public sh_hero_init(id, heroID, mode)
 	}
 }
 
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if(g_heroID != heroID || key != SH_KEYDOWN || !is_user_alive(id)
 	|| !g_hasShinobi[id] || !g_ShinobiPowers[id])

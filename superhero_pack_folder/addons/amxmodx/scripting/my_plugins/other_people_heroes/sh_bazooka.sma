@@ -155,9 +155,9 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -171,7 +171,7 @@ public bazooka_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 
 	show_main_menu(id)
 
@@ -310,7 +310,7 @@ public fire_missile(id)
 	if( roundfreeze || !is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	if ( !sh_user_has_hero(id,gHeroID)) {
+	if ( !sh_get_user_has_hero(id,gHeroID)) {
 		client_print(id,print_chat,"[SH](Bazooka) You do not have this hero")
 		return PLUGIN_HANDLED
 	}
@@ -1246,7 +1246,7 @@ public show_main_menu(id) {
 	new n = 0
 	new len = 319
 
-	if(!sh_user_has_hero(id,gHeroID)|| !is_user_alive(id))
+	if(!sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id))
 		return PLUGIN_HANDLED
 
 	n += formatex( menu_body[n],len-n,"\yFire Missile Menu^n\w^n")
@@ -1294,7 +1294,7 @@ public action_main_menu(id,key){
 	using_menu[id] = 1
 	key++
 
-	if(!sh_user_has_hero(id,gHeroID) || !is_user_alive(id)) {
+	if(!sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id)) {
 		using_menu[id] = 0
 		return PLUGIN_HANDLED
 	}

@@ -81,10 +81,10 @@ public plugin_init()
 	shSetShieldRestrict(gHeroName)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 			SuperNoodle_weapons(id)
 	}
@@ -101,7 +101,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		SuperNoodle_weapons(id)
 
 	}
@@ -109,7 +109,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public SuperNoodle_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)  ) {
 		q_barrel_set_q_barrel(id)
 		h_rifle_set_h_rifle(id)
 		arifle_set_arifle(id)
@@ -125,7 +125,7 @@ public SuperNoodle_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
 	if ( !is_user_connected(attacker)||id==attacker ) return PLUGIN_CONTINUE
-	new bool:user_has_hero=bool:sh_user_has_hero(attacker,gHeroID)
+	new bool:user_has_hero=bool:sh_get_user_has_hero(attacker,gHeroID)
 
 	if ( user_has_hero&& weapon == CSW_M3 && is_user_alive(id) ) {
 		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)

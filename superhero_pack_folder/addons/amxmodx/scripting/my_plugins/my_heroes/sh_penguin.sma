@@ -99,7 +99,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || sh_get_cooldown_flag(id) ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || sh_get_cooldown_flag(id) ) return
 
 	new wpnid = read_data(2)
 
@@ -108,17 +108,17 @@ public weaponChange(id)
 	switchmodel(id)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if ( sh_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
 		penguin_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 		sh_unset_cooldown_flag(id)
 		set_task(0.1, "penguin_weapons", id)
 		
@@ -154,7 +154,7 @@ public on_AmmoX(id)
 
 	new iAmmoType = read_data(1)
 
-	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID) ) {
+	if ( iAmmoType == AMMOX_HEGRENADE && sh_get_user_has_hero(id,gHeroID) ) {
 
 		prev_user_hegrenade_count[id] = user_hegrenade_count[id]
 		user_hegrenade_count[id] = read_data(2)

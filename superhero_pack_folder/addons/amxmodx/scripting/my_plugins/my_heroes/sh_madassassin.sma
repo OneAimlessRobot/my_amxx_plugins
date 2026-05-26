@@ -77,10 +77,10 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	new hasPowers = sh_user_has_hero(id, gHeroID)
+	new hasPowers = sh_get_user_has_hero(id, gHeroID)
 
 
 	switch(hasPowers)
@@ -112,7 +112,7 @@ public sh_hero_init(id, heroID, mode){
 #if defined GIVE_WEAPONS
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  )
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)  )
 	{
 		madassassin_weapons(id)
 	}
@@ -120,14 +120,14 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 madassassin_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID)  ) {
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)  ) {
 		sh_give_weapon(id, CSW_AWP)
 	}
 }
 #endif
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) )
 		return
 
 	//weaponID = read_data(2)
@@ -154,7 +154,7 @@ public madassassin_damage(id)
 	if ( !is_user_connected(attacker) ||id==attacker )
 		return HAM_IGNORED
 
-	if (sh_user_has_hero(attacker,gHeroID)  && weapon == CSW_AWP )
+	if (sh_get_user_has_hero(attacker,gHeroID)  && weapon == CSW_AWP )
 	{
 		new damage = read_data(2)
 
@@ -175,7 +175,7 @@ public madassassin_loop()
 
 	for (new id = 1; id < sh_maxplayers()+1; id++)
 	{
-		if ( is_user_alive(id) && sh_user_has_hero(id,gHeroID) )
+		if ( is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 		{
 			shAddHPs(id, healPoints, sh_get_max_hp(id))
 		}

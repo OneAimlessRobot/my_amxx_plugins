@@ -69,13 +69,13 @@ public plugin_cfg(){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	check[id] = 0
 	Swim[id] = false
 	
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 		leviathan_gravity = get_cvar_num("leviathan_gravity")
 		leviathan_swimspeed = get_cvar_num("leviathan_swimspeed")
 		leviathan_othersspeed = get_cvar_num("leviathan_othersspeed")
@@ -83,7 +83,7 @@ public sh_hero_init(id, heroID, mode){
 		leviathan_threshold = get_cvar_float("leviathan_threshold")
 	}
 
-	if (!sh_user_has_hero(id,gHeroID) && FloodOn) remove_flood()
+	if (!sh_get_user_has_hero(id,gHeroID) && FloodOn) remove_flood()
 } 
 
 public sh_client_spawn(id)
@@ -277,7 +277,7 @@ public leviathan_damage(id)
 
 	if (attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id) return PLUGIN_CONTINUE
 
-	if (sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker!=id) {
+	if (sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker!=id) {
 		new extraDamage = floatround(damage * leviathan_underwaterdmg - damage)
 		if (extraDamage>0){
 			if (get_user_health(id)>extraDamage){

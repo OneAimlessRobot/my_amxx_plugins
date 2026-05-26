@@ -113,7 +113,7 @@ public plugin_end(){
 	
 }
 charge_user(id){
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return
 	
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
@@ -144,7 +144,7 @@ public Ham_Think_Post(id) {
 	
 	if(!sh_is_active()) return HAM_IGNORED
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return HAM_IGNORED
 
 	if(Get_BitVar(g_graciete_leaped_mask, id)){
 		new flags = pev(id, pev_flags)
@@ -173,7 +173,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
@@ -224,7 +224,7 @@ public charge_task(id){
 		
 		return
 	}
-	if(!sh_user_has_hero(id,gHeroID)){
+	if(!sh_get_user_has_hero(id,gHeroID)){
 
 		return
 	}

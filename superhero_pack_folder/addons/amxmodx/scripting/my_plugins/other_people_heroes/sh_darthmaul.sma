@@ -81,7 +81,7 @@ public darth_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( sh_user_has_hero(player,gHeroID) ) {
+		if ( sh_get_user_has_hero(player,gHeroID) ) {
 			sh_add_hp(player, healPoints)
 		}
 	}

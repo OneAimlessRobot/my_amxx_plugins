@@ -127,10 +127,10 @@ public loadCVARS()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		
 
@@ -156,7 +156,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 maria_weapons(id)
 {
-	if ( sh_is_active() && is_user_alive(id)&&sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_CONC,5)
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
@@ -199,7 +199,7 @@ bool:heal_teamate(id,i){
 		
 		return false
 	}
-	if(!sh_user_has_hero(id,gHeroID) ){
+	if(!sh_get_user_has_hero(id,gHeroID) ){
 		
 		
 		return false
@@ -231,7 +231,7 @@ if(!is_user_alive(id)){
 
 	return
 }
-if(!sh_user_has_hero(id,gHeroID) ){
+if(!sh_get_user_has_hero(id,gHeroID) ){
 	return
 }
 if(!Get_BitVar(gHealthDrainValveMask,id)){
@@ -268,7 +268,7 @@ if(healed){
 }
 public maria_damage(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(id) ||!sh_user_has_hero(id,gHeroID) ) return
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(id) ||!sh_get_user_has_hero(id,gHeroID) ) return
 	
 	new  Float:damage= float(read_data(2))
 	
@@ -276,7 +276,7 @@ public maria_damage(id)
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!sh_user_has_hero(id,gHeroID)  ||is_user_bot(id))
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID)  ||is_user_bot(id))
 		return FMRES_IGNORED;
 
 	
@@ -306,7 +306,7 @@ public maria_loop(id){
 	if ( !sh_is_active()) return
 
 	for(new i=1;i < sh_maxplayers()+1;i++){
-		if(is_user_alive(i)&&sh_user_has_hero(i,gHeroID)){
+		if(is_user_alive(i)&&sh_get_user_has_hero(i,gHeroID)){
 			update_stats(i)
 			if((get_user_health(i)>=cvar_val(num, pcvar_health_drain_begin_threshold))){
 					Set_BitVar(gHealthDrainValveTimerStartedMask,i)
@@ -322,7 +322,7 @@ public maria_loop(id){
 }
 update_stats(id){
 	
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),cvar_val(float, pcvar_points_radius_pct))),cvar_val(float, pcvar_max_radius));
 		if(!Get_BitVar(gHealthDrainValveMask, id)&&
 				(get_user_health(id)>=cvar_val(num, pcvar_health_drain_begin_threshold))&&
@@ -350,7 +350,7 @@ update_stats(id){
 public sh_client_spawn(id)
 {	
 	if(is_user_alive(id) && sh_is_active()){
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 
 			gNumRivets[id]=cvar_val(num, pcvar_maria_max_rivets)
 			UnSet_BitVar(gHealthDrainValveMask,id);

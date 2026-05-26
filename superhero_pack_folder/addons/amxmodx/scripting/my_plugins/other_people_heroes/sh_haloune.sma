@@ -77,11 +77,11 @@ public plugin_init()
 	shSetMaxSpeed(HeroName, "Haloune_speed", "[0]")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 
-	if(sh_user_has_hero(id,gHeroID))
+	if(sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_alive(id) )
 		{
@@ -101,7 +101,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID) )
+	if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID) )
 	{
 		set_task(0.1, "Haloune_weapons", id)
 
@@ -110,7 +110,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public Haloune_weapons(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	sh_give_weapon(id, CSW_M4A1)
@@ -118,7 +118,7 @@ public Haloune_weapons(id)
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new wpnid = read_data(2)
@@ -143,7 +143,7 @@ public Haloune_damage(id)
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id )
 		return
 
-	if (sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) )
+	if (sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) )
 	{
 		new damage = read_data(2)
 

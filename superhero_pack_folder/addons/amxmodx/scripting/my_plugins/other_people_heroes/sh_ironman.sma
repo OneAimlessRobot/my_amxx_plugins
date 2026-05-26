@@ -57,7 +57,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundJpStop)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 	
@@ -170,7 +170,7 @@ public ironman_loop(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 	

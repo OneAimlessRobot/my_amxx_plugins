@@ -150,10 +150,10 @@ prepare_erica(id){
 	gNumDarts[id] = cvar_val(num, pcvar_num_er_darts)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		prepare_erica(id)
 		Erica_weapons(id)
 		
@@ -186,7 +186,7 @@ public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3]
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	return do_bleed_knife_attack(Victim,Attacker,gHeroID,30,40,sh_user_has_hero(Attacker,gHeroID),_,_,_,1,the_hitpoint)
+	return do_bleed_knife_attack(Victim,Attacker,gHeroID,30,40,sh_get_user_has_hero(Attacker,gHeroID),_,_,_,1,the_hitpoint)
 
 
 	
@@ -195,7 +195,7 @@ public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3]
 public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			Erica_weapons(id)
 			prepare_erica(id)
 		}
@@ -223,7 +223,7 @@ public sh_round_start(){
 
 		if(!is_user_alive(id)) return
 
-		if ( sh_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			if(get_user_maxspeed(id)<g_base_er_speed[id]){
 				set_user_maxspeed(id,g_base_er_speed[id])
 			}
@@ -246,7 +246,7 @@ public sh_round_end(){
 public weaponChange(id)
 {
 	if (!sh_is_active()) return PLUGIN_CONTINUE
-	if(!sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
+	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new wpnid = get_user_weapon(id)
 	if ( g_prevWeapon[id] != wpnid ) {
@@ -267,7 +267,7 @@ public erica_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	if ( !is_user_alive(attacker)|| attacker==id  ) return
 	
-	if(!sh_user_has_hero(attacker,gHeroID) ){
+	if(!sh_get_user_has_hero(attacker,gHeroID) ){
 
 		return
 	}
@@ -284,7 +284,7 @@ public erica_damage(id)
 }
 
 update_stats(id){
-	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id)){
+	if(sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(cvar_val(float, pcvar_speed_speed_er_points_pct),
 						float(g_erica_points[id]))),cvar_val(float, pcvar_max_er_speed)),maxspeed),
@@ -298,7 +298,7 @@ update_stats(id){
 }
 public Erica_weapons(id)
 {
-if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
+if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 	give_custom_grenades(id,GREN_MOLLY,cvar_val(num, pcvar_num_mollies))
 	sh_give_weapon(id, CSW_ELITE,true)
 	
@@ -313,14 +313,14 @@ if ( sh_is_active() && sh_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 }
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	
     if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
         return DMG_FWD_PASS
     }
     if((new_dmg_type==SH_NEW_DMG_FIRE)||(new_dmg_type==SH_NEW_DMG_BLEED)){
-        if((attacker!=victim) && sh_user_has_hero(attacker,gHeroID) ){
+        if((attacker!=victim) && sh_get_user_has_hero(attacker,gHeroID) ){
 			aura(attacker,LineColors[PINK])
 			add_speed_points(attacker,float(damage))
         }
@@ -333,7 +333,7 @@ public sh_client_death(killed,killer)
 
 	static killer_name[128]
 	get_user_name(killer,killer_name,127)
-	if(sh_user_has_hero(killer,gHeroID)&&(killed!=killer)){
+	if(sh_get_user_has_hero(killer,gHeroID)&&(killed!=killer)){
 		
 		g_erica_kills[killer]++;
 		sh_chat_message(0,gHeroID,"%s: WOW! AMAZING, HUH?!",killer_name)

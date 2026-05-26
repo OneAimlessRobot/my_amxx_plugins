@@ -32,7 +32,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public blackpanther_prethink(id)
 {
-	if ( sh_is_active() && is_user_alive(id) &&sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID) ) {
 		set_pev(id, pev_flTimeStepSound, 999)
 	}
 }

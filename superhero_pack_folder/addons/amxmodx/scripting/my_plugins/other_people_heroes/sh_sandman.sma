@@ -57,9 +57,9 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -74,7 +74,7 @@ public sandman_kd(id)
 	if ( !hasRoundStarted() )
 		return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	if ( sh_get_cooldown_flag(id))
@@ -88,7 +88,7 @@ public sandman_kd(id)
 //----------------------------------------------------------------------------------------------
 public quicksand(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new targetid, body
@@ -153,7 +153,7 @@ public sink(params[])
 	new targetid = params[3]
 	new id = params[4]
 
-	if ( sh_is_active() && is_user_connected(id) && sh_user_has_hero(id,gHeroID) && is_user_alive(targetid) && params[5] > 0 )
+	if ( sh_is_active() && is_user_connected(id) && sh_get_user_has_hero(id,gHeroID) && is_user_alive(targetid) && params[5] > 0 )
 	{
 		// Causes this function to repeat until it equals 0
 		--params[5]
@@ -171,7 +171,7 @@ public sink(params[])
 //----------------------------------------------------------------------------------------------
 public sinking_effects(id, targetid)
 {
-	if ( !sh_is_active() || !is_user_connected(id) || !is_user_alive(targetid) || !sh_user_has_hero(id,gHeroID))
+	if ( !sh_is_active() || !is_user_connected(id) || !is_user_alive(targetid) || !sh_get_user_has_hero(id,gHeroID))
 		return
 
 	new targname[32], idname[32]

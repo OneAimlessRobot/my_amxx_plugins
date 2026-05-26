@@ -81,11 +81,11 @@ public jetPackFireEffect(origin[3])
 	message_end()
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	remove_task(id+36485)
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		set_task( get_cvar_float("shock_timer"), "shock_loop", id+36485, "", 0, "b")
 	}
 }
@@ -164,9 +164,9 @@ public shock_loop(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -337,7 +337,7 @@ public do_this(id)
 public sh_client_spawn(id)
 {
 
-  if (!sh_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
+  if (!sh_get_user_has_hero(id,gHeroID)) return PLUGIN_CONTINUE
 
   if (ice[id]) 
   {

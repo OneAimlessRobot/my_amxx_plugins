@@ -181,7 +181,7 @@ public launcher_think(ent){
 public _spores_launch(iPlugin,iParms){
 	
 	new id= get_param(1)
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		return
 	}
@@ -197,7 +197,7 @@ public _launcher_deploy(iPlugin,iParams)
 {
 
 new id= get_param(1)
-if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 	
 	return
 }
@@ -277,7 +277,7 @@ public destroy_player_launcher(id){
 	
 	if(!is_user_connected(id)||! sh_is_active() ) return PLUGIN_HANDLED
 	
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 		reset_player_targets(id)
 		set_player_num_deployed_spores(id,0);
 		set_player_num_launched_spores(id,0);
@@ -303,7 +303,7 @@ public destroy_player_launcher(id){
 
 public sh_client_death(id)
 {
-	if(sh_user_has_hero(id,gHeroID)){
+	if(sh_get_user_has_hero(id,gHeroID)){
 	
 		if(ksun_get_when_reset_spores()&reset_on_death){
 			spores_reset_user(id)

@@ -49,7 +49,7 @@ public sh_client_spawn(id)
         
         return
     }
-    if ( sh_user_has_hero(id,gHeroID) ) {
+    if ( sh_get_user_has_hero(id,gHeroID) ) {
         
         give_custom_grenades(id,GREN_CO2,5)
 
@@ -60,7 +60,7 @@ public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 
 		return gore_fwd_pass
 	}
-	new bool:gored_id_has_tomie = bool:sh_user_has_hero(gored_id,gHeroID)
+	new bool:gored_id_has_tomie = bool:sh_get_user_has_hero(gored_id,gHeroID)
 	new gore_fwd_return_type:gore_result= gored_id_has_tomie?gore_fwd_block:gore_fwd_pass
 	
 	static entlist[33];
@@ -73,7 +73,7 @@ public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 		
 		if(sh_clients_are_same_team(pid,gored_id)||((gored_id==pid)&&gored_id_has_tomie)) continue
 
-		if(sh_user_has_hero(pid,gHeroID)){
+		if(sh_get_user_has_hero(pid,gHeroID)){
 			
 			sh_chat_message(pid,gHeroID,"(reacting to gore): Wooow! Thats so coool... I- I mean-- oh nooo")
 		
@@ -82,13 +82,13 @@ public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 	return gore_result
 
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
 	new bool:headshot = (bodypart==MY_HIT_HEAD)
-	if(sh_user_has_hero(victim,gHeroID) ){
+	if(sh_get_user_has_hero(victim,gHeroID) ){
 		switch(new_dmg_type){
 			
 			case SH_NEW_DMG_FIRE:{

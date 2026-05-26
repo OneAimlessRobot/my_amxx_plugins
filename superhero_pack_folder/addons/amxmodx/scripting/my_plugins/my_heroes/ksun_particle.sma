@@ -167,7 +167,7 @@ public _clean_ksun_spores_from_players(iPlugins,iParam){
 public _check_who_player_is_sporing(iPlugins,iParam){
 	new id=get_param(1);
 	if(is_user_connected(id)){
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 			
 			new username[128];
 			get_user_name(id,username,127);
@@ -194,7 +194,7 @@ public _check_by_whom_player_spored(iPlugins,iParam){
 		server_print("[SH] ksun: this player named %s is being spored by the following players...:^n",username)
 		for(new i=0;i<sh_maxplayers()+1;i++){
 			if(is_user_connected(i)){
-				if(sh_user_has_hero(i,gHeroID)){
+				if(sh_get_user_has_hero(i,gHeroID)){
 					
 					new tgname[128];
 					get_user_name(i, tgname,127);
@@ -224,7 +224,7 @@ public sh_round_end(){
 	return PLUGIN_CONTINUE
 }
 public spawn_spore(id){
-	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){
+	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)){
 	
 		return 0
 	}
@@ -344,7 +344,7 @@ public _dec_times_player_spiked_by_player(iPlugin,iParms){
 public _spore_launch(iPlugins,iParms)
 {
 new id= get_param(1)
-if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)){
+if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)){
 	
 	return
 }

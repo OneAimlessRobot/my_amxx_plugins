@@ -50,10 +50,10 @@ public _graciete_get_hero_id(iPlugin,iParams){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID)){
+	if(sh_get_user_has_hero(id, gHeroID)){
 		
 		shard_cannon_set_shard_cannon(id)
 	}
@@ -68,7 +68,7 @@ public sh_hero_init(id, heroID, mode){
 
 public sh_client_spawn(id){
 	
-	if(sh_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
+	if(sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active()){
 			reset_graciete_user(id)
 			graciete_jet_uncharge_user(id)
 			shard_cannon_set_shard_cannon(id)
@@ -90,7 +90,7 @@ public graciete_damage(id)
 
 	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
 
-	if(sh_user_has_hero(attacker,gHeroID)){
+	if(sh_get_user_has_hero(attacker,gHeroID)){
 		new Float:extraDamage = damage * 2.0- damage
 		if (floatround(extraDamage)>0){
 			switch(weapon){
@@ -120,7 +120,7 @@ public client_disconnected(id){
 }
 public sh_client_death(id)
 {
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		reset_graciete_user(id)
 	}

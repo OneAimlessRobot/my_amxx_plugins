@@ -86,7 +86,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	
 	if ( !Get_BitVar(gIsSearchingMask,id)) return FMRES_IGNORED
 	
-	if ( !sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
+	if ( !sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 	
 	if(sh_get_cooldown_flag(id)){
 		return FMRES_IGNORED
@@ -155,10 +155,10 @@ thor_thunder_damage(attacker, tg){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || sh_is_freezetime() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if ( Get_BitVar(gIsSearchingMask,id) ) return
 
@@ -189,7 +189,7 @@ public thor_search(parm[2])
 	parm[1]--
 
 	// User died or diconnected
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) )
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) )
 	{
 		UnSet_BitVar(gIsSearchingMask,id)
 	}

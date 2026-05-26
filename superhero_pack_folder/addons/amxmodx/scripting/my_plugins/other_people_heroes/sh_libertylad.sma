@@ -78,9 +78,9 @@ sh_unset_cooldown_flag(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -94,7 +94,7 @@ public libertylad_kd(id)
 	{
 	if (hasRoundStarted())
 	{
-	if (is_user_alive(id) && sh_user_has_hero(id,gHeroID))
+	if (is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{
 	if (get_cvar_float("libertylad_duration") > 60.0)
 	{

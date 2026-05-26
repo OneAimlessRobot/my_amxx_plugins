@@ -50,7 +50,7 @@ public plugin_init()
 	set_task(1.0, "tess_loop", _, _, _, "b")
 }
 
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( g_HeroID != heroID ) return
 
@@ -71,10 +71,10 @@ public sh_client_spawn(id)
 	sh_unset_cooldown_flag(id)
 	g_TessTimer[id] = -1
 
-	if (sh_user_has_hero(id,g_HeroID)) tess_endimmunity(id)
+	if (sh_get_user_has_hero(id,g_HeroID)) tess_endimmunity(id)
 }
 
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( g_HeroID != heroID || sh_is_freezetime() || !is_user_alive(id) ) return
 
@@ -93,7 +93,7 @@ public sh_hero_key(id, heroID, key)
 
 public tess_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_BULLET &&sh_user_has_hero(this, g_HeroID)&& g_IsImmune[this] && get_user_weapon(idattacker) != CSW_KNIFE ) {
+	if ( damagebits & DMG_BULLET &&sh_get_user_has_hero(this, g_HeroID)&& g_IsImmune[this] && get_user_weapon(idattacker) != CSW_KNIFE ) {
 		SetHamParamFloat(4, 0.0)
 		return HAM_SUPERCEDE
 	}
@@ -111,7 +111,7 @@ public tess_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( sh_user_has_hero(player,g_HeroID)) {
+		if ( sh_get_user_has_hero(player,g_HeroID)) {
 			immuneTime = g_TessTimer[player]
 			if ( immuneTime > 0 ) {
 				g_TessTimer[player]--
@@ -139,7 +139,7 @@ public sh_client_death(victim)
 
 	g_TessTimer[victim]= -1
 
-	if (sh_user_has_hero(victim,g_HeroID) ) tess_endimmunity(victim)
+	if (sh_get_user_has_hero(victim,g_HeroID) ) tess_endimmunity(victim)
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1043\\ f0\\ fs16 \n\\ par }

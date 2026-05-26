@@ -57,7 +57,7 @@ public plugin_precache()
 	gSpriteWeb = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -73,7 +73,7 @@ public sh_client_spawn(id)
 	if ( gHooked[id] ) spiderman_hook_off(id)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 

@@ -44,7 +44,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundShadowcat)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -69,12 +69,12 @@ public sh_client_spawn(id)
 
 	gShadowcatTimer[id]= -1
 
-	if ( sh_user_has_hero(id,gHeroID) ) {
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		shadowcat_endnoclip(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() || !is_user_alive(id) ) return
 
@@ -113,7 +113,7 @@ public shadowcat_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if ( sh_user_has_hero(player,gHeroID)) {
+		if ( sh_get_user_has_hero(player,gHeroID)) {
 			noclipTime = gShadowcatTimer[player]
 			if ( noclipTime > 0 ) {
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.2, 0.0, 0.0, -1)
@@ -162,7 +162,7 @@ public sh_client_death(victim)
 
 	gShadowcatTimer[victim]= -1
 
-	if (sh_user_has_hero(victim,gHeroID)) {
+	if (sh_get_user_has_hero(victim,gHeroID)) {
 		shadowcat_endnoclip(victim)
 	}
 }

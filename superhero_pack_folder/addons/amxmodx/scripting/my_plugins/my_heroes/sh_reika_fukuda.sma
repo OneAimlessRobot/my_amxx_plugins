@@ -70,7 +70,7 @@ public reika_parry_switch_cmdstart_hook(id, uc_handle)
     if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-    if ( !is_user_alive(id)||!is_user_alive(id)||!sh_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+    if ( !is_user_alive(id)||!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
     static button;
     button= get_uc(uc_handle, UC_Buttons);
@@ -114,7 +114,7 @@ prepare_parry(id){
 
     if(!is_user_connected(id)) return
 
-    if(!sh_user_has_hero(id,gHeroID)) return
+    if(!sh_get_user_has_hero(id,gHeroID)) return
 
     if(!Get_BitVar(reika_is_parrying_mask,id)){
         
@@ -132,7 +132,7 @@ absorb_user(id, Float:the_damage, tg){
 
     if(!is_user_connected(id)) return
 
-    if(!sh_user_has_hero(id,gHeroID)) return
+    if(!sh_get_user_has_hero(id,gHeroID)) return
     
     reika_stored_damage[id]=the_damage
     reika_parried_tg[id]=tg
@@ -172,14 +172,14 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
 
     return HAM_IGNORED
     }
-    if(!sh_user_has_hero(id,gHeroID)&&!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+    if(!sh_get_user_has_hero(id,gHeroID)&&!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 
     if((sh_clients_are_same_team(id,attacker))||(attacker==id)) return HAM_IGNORED
 
     new result= HAM_IGNORED
 
     new weapon=get_user_weapon(attacker)
-    if(sh_user_has_hero(id,gHeroID)){
+    if(sh_get_user_has_hero(id,gHeroID)){
         if(Get_BitVar(reika_is_parrying_mask,id)){
 
             if(weapon==CSW_KNIFE){
@@ -196,7 +196,7 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
         }
     }
 
-    if(sh_user_has_hero(attacker,gHeroID)){
+    if(sh_get_user_has_hero(attacker,gHeroID)){
 
     
         if((weapon==CSW_KNIFE)&&(id==reika_parried_tg[attacker])){
@@ -237,7 +237,7 @@ public sh_client_spawn(id)
         
         return
     }
-    if ( sh_user_has_hero(id,gHeroID) ) {
+    if ( sh_get_user_has_hero(id,gHeroID) ) {
         
         give_custom_grenades(id,GREN_CO2,5)
         unparry_user(id)
@@ -248,7 +248,7 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
 
     unparry_user(id)
@@ -256,9 +256,9 @@ public sh_hero_init(id, heroID, mode){
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -274,7 +274,7 @@ public reika_kd(id)
 
     if ( !is_user_alive(id) ) return
 
-    if(!sh_user_has_hero(id,gHeroID) ) return
+    if(!sh_get_user_has_hero(id,gHeroID) ) return
 
     if(sh_get_cooldown_flag(id)){
 
@@ -306,19 +306,19 @@ public plugin_precache(){
     engfunc(EngFunc_PrecacheSound, reika_parry_equip_sfx)
 
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	
     if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
         return DMG_FWD_PASS
     }
     if(new_dmg_type==SH_NEW_DMG_IVE_STUDIED_THE_BLADE){
-        if(sh_user_has_hero(victim,gHeroID) ){
+        if(sh_get_user_has_hero(victim,gHeroID) ){
             return DMG_FWD_BLOCK
         }
     }
 
-    if(!sh_user_has_hero(victim,gHeroID)&&!sh_user_has_hero(attacker,gHeroID)) return DMG_FWD_PASS
+    if(!sh_get_user_has_hero(victim,gHeroID)&&!sh_get_user_has_hero(attacker,gHeroID)) return DMG_FWD_PASS
 
     if((sh_clients_are_same_team(victim,attacker))||(attacker==victim)) return DMG_FWD_PASS
 
@@ -331,7 +331,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:b
         }
     }
 
-    if(sh_user_has_hero(victim,gHeroID)){
+    if(sh_get_user_has_hero(victim,gHeroID)){
         
         if(Get_BitVar(reika_is_parrying_mask,victim)){
 
@@ -349,7 +349,7 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:b
         }
     }
 
-    if(sh_user_has_hero(attacker,gHeroID)){
+    if(sh_get_user_has_hero(attacker,gHeroID)){
 
         if(is_melee&&(victim==reika_parried_tg[attacker])){
             

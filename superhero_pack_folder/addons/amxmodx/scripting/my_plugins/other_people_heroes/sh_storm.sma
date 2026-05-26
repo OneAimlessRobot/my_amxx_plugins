@@ -49,10 +49,10 @@ new STORM_TASK_ID = 0
 	Fire = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr")
  }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if (sh_user_has_hero(id,gHeroID)) {
+	if (sh_get_user_has_hero(id,gHeroID)) {
 		sh_unset_cooldown_flag(id)
 		gStormTimer[id] = -1
 	}
@@ -62,7 +62,7 @@ public sh_hero_init(id, heroID, mode){
  //----------------------------------------------------------------------------------------------
  public sh_client_death(id)
  {
-	if (sh_user_has_hero(id,gHeroID))
+	if (sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( gStormTimer[id]>0 )
 		{
@@ -82,9 +82,9 @@ return PLUGIN_HANDLED
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -296,7 +296,7 @@ switch(key)
 
 	for ( new id=1; id< sh_maxplayers()+1; id++ )
 	{
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id)  )
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 		{
 			if ( gStormTimer[id]>0 )
 			{

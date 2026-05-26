@@ -46,9 +46,9 @@ public plugin_init()
 	register_forward(FM_EmitSound, "fw_EmitSound");
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroid, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
-	if ( heroid != gHeroID ) return;
+	if ( heroID != gHeroID ) return;
 		
 	switch(mode)
 	{
@@ -66,13 +66,13 @@ public plugin_precache()
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
-	if ( sh_user_has_hero(id,gHeroID) && sh_is_active() )
+	if ( sh_get_user_has_hero(id,gHeroID) && sh_is_active() )
 		gBullets[id] = get_pcvar_num(pcvar_bullets);
 
 //----------------------------------------------------------------------------------------------
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 {
-	if( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || gBullets[id] < 0 )
+	if( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || gBullets[id] < 0 )
 		return FMRES_IGNORED;
 	
  	if( get_user_weapon(id) != CSW_KNIFE )
@@ -114,7 +114,7 @@ public Ham_Weapon_Attack(weaponent)
 
 	if(!is_user_alive(id)) return HAM_IGNORED;
 
-	if(!sh_user_has_hero(id,gHeroID)) return HAM_IGNORED
+	if(!sh_get_user_has_hero(id,gHeroID)) return HAM_IGNORED
 
 	
 	if ( gBullets[id] >= 0 )
@@ -129,7 +129,7 @@ public Ham_Weapon_Attack(weaponent)
 //----------------------------------------------------------------------------------------------
 public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)
 {
-	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID) || !sh_is_active() || gBullets[id] < 0 )
+	if ( !is_user_connected(id) || !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() || gBullets[id] < 0 )
 		return FMRES_IGNORED;
 		
 	if ( sample[0] == 'w' && sample[6] == 's' && sample[8] == 'k' && sample[13] == '_' && sample[14] != 'd' )	//9 sounds dealing with knife, 1 of which not useful

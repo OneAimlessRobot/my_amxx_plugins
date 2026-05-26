@@ -54,12 +54,12 @@
 	register_event("CurWeapon","weaponChange","be","1=1")
  }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	if ( !is_user_alive(id) ) return
 	
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
 
@@ -79,7 +79,7 @@ public sh_hero_init(id, heroID, mode){
  //----------------------------------------------------------------------------------------------
  public sh_client_spawn(id)
  {
-	if ( sh_user_has_hero(id,gHeroID))
+	if ( sh_get_user_has_hero(id,gHeroID))
 	{
 		gArrows[id] = get_cvar_num("garrow_arrows")
 		gLastWeapon[id] = -1  // I think the change Weapon automatically gets called on spawn death too...
@@ -97,7 +97,7 @@ public sh_hero_init(id, heroID, mode){
 
 	if ( attacker < 0 || attacker > SH_MAXSLOTS ||attacker == id) return PLUGIN_CONTINUE
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && gArrows[attacker] >= 0 && is_user_alive(id) )
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_SCOUT && gArrows[attacker] >= 0 && is_user_alive(id) )
 	{
 		new health = get_user_health(id)
 
@@ -194,7 +194,7 @@ public sh_hero_init(id, heroID, mode){
  public garrow_fire(id)
  {
 
-	if ( !sh_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
+	if ( !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
 	new weap = read_data(2)		// id of the weapon
 	new ammo = read_data(3)		// ammo left in clip
@@ -260,7 +260,7 @@ public sh_hero_init(id, heroID, mode){
  //----------------------------------------------------------------------------------------------
  public weaponChange(id)
  {
-	if ( !sh_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)|| !sh_is_active() ) return
 
 	new wpnid = read_data(2)
 	new clip = read_data(3)

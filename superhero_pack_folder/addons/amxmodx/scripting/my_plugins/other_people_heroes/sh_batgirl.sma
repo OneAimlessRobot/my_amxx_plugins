@@ -59,7 +59,7 @@ public plugin_precache()
 	gSpriteHookLine = engfunc(EngFunc_PrecacheModel,"sprites/zbeam4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
 	if ( gHooked[id] ) batgirl_hook_off(id)
@@ -74,9 +74,9 @@ public sh_client_spawn(id)
 
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -93,7 +93,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public batgirl_kd(id)
 {
-	if ( gHooked[id] || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !hasRoundStarted() ) return
+	if ( gHooked[id] || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !hasRoundStarted() ) return
 
 	if ( pass_aim_test(id) )
 	{

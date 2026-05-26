@@ -70,7 +70,7 @@ public plugin_cfg(){
 public on_Knife_Weapon_Change(id)
 {
 	if ( !sh_is_active()) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	new  wpnid = get_user_weapon(id)
 
@@ -90,7 +90,7 @@ public _manual_cloak_check(id){
 	new id= get_param(1)
 
 	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 	g_prev_shinobu_cloaked[id]=0
 	g_shinobu_using_knife[id]= ((get_user_weapon(id)==CSW_KNIFE))
@@ -114,7 +114,7 @@ public shinobu_cloak_conditions(id, uc_handle){
 
 	if(!is_user_alive(id)) return FMRES_IGNORED
 
-	if(!sh_user_has_hero(id,gHeroID)) return FMRES_IGNORED
+	if(!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
 
 	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
@@ -128,7 +128,7 @@ public shinobu_cloak_apply(task_id){
 	if (! sh_is_active()) return
 	for(new id=1;id<sh_maxplayers()+1;id++){
 		if(is_user_alive(id)){
-			if(sh_user_has_hero(id,gHeroID) ){
+			if(sh_get_user_has_hero(id,gHeroID) ){
 				apply_cloak(id)
 			}
 		}
@@ -136,7 +136,7 @@ public shinobu_cloak_apply(task_id){
 }
 apply_cloak(id){
 	
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
 		g_curr_shinobu_cloaked[id]=0
 		g_prev_shinobu_cloaked[id]=0
@@ -163,7 +163,7 @@ public sh_client_spawn(id)
 		return
 	}
 
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		
 		manual_cloak_check(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
@@ -216,7 +216,7 @@ public positionChangeCheck(array[], attacker)
 
 	if(!is_user_alive(attacker) ) return
 
-	if(!sh_user_has_hero(attacker,gHeroID)) return
+	if(!sh_get_user_has_hero(attacker,gHeroID)) return
 
 
 	new tg=array[TELEPORT_TASK_TARGET]
@@ -300,7 +300,7 @@ public _nani_behind_player(iPlugin,iParams){
 public sh_client_death(id){
 	
 	if(is_user_connected(id)&&sh_is_active()){
-		if(sh_user_has_hero(id,gHeroID)){
+		if(sh_get_user_has_hero(id,gHeroID)){
 
 			remove_task(id+TELEPORT_CHECK_TASKID)
 		}

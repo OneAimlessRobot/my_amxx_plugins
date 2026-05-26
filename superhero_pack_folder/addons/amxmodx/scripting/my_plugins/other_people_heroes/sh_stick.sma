@@ -79,7 +79,7 @@ public stick_senseloop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) ) continue
+		if ( !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) continue
 
 		for(new r = 0; r < pnum; r++) {
 			idring = players[r]

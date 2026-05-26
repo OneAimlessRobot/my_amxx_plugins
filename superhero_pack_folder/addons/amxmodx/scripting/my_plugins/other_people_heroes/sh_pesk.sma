@@ -34,9 +34,9 @@ public plugin_precache()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -63,7 +63,7 @@ public pesk_kd(id)
 
 public beamp(id)
 {
-	if ( sh_user_has_hero(id,gHeroID) )
+	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		InBeam[id] = true
 		new parm[1]
@@ -191,7 +191,7 @@ public pesk_loop()
 {
 	for ( new id=1; id< sh_maxplayers()+1; id++ )
 	{
-		if (  sh_user_has_hero(id,gHeroID) && !is_user_alive(id)  )
+		if (  sh_get_user_has_hero(id,gHeroID) && !is_user_alive(id)  )
 		{
 			make_fog(id)
 		}

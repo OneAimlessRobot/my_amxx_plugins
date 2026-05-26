@@ -64,7 +64,7 @@ public sh_client_death(id)
 {
 	if ( !sh_is_active() || !sh_is_inround() ) return
 
-	if ( !is_user_connected(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_connected(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	g_userTeam[id] = cs_get_user_team(id)
 
@@ -105,7 +105,7 @@ public sh_round_end()
 
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
-		if ( sh_user_has_hero(id,gHeroID)) {
+		if ( sh_get_user_has_hero(id,gHeroID)) {
 			// Reset the cooldown on round end, to start fresh for a new round
 			remove_task(id)
 			g_vic15PowerUsed[id] = false
@@ -182,7 +182,7 @@ public vic15_auraloop()
 	get_players(players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			//gClosestDist[id] = 1182
 
 			for (new e = 0; e < pnum; e++) {
@@ -213,7 +213,7 @@ public vic15_ringloop()
 	get_players(players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			//gClosestDist[id] = 1182
 
 			for (new e = 0; e < pnum; e++) {

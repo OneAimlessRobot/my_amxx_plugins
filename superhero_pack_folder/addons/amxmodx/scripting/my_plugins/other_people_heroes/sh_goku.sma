@@ -180,10 +180,10 @@ public plugin_precache()
 	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 	
-	if ( sh_user_has_hero(id,gHeroID)) {
+	if ( sh_get_user_has_hero(id,gHeroID)) {
 		goku_setarmor(id)
 	}
 	//This gets run if they had the power but don't anymore
@@ -218,7 +218,7 @@ public loadCVARS()
 public sh_client_spawn(id)
 {
 
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
 		set_task(0.5, "goku_setarmor", id)
 		g_isSaiyanLevel[id] = 0
@@ -235,9 +235,9 @@ public goku_setarmor(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -257,7 +257,7 @@ public goku_kd(id)
 {
 	if (!sh_is_inround()) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -328,7 +328,7 @@ public goku_ku(id)
 {
 	if ( !sh_is_inround() ) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 
 	// Switch back to previous weapon... Only if power was used...
 	if (g_lastWeapon[id] != CSW_KNIFE) shSwitchWeaponID(id, g_lastWeapon[id])
@@ -727,7 +727,7 @@ public goku_loop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 
 			new userArmor = get_user_armor(id)
 
@@ -829,7 +829,7 @@ public goku_loop()
 //----------------------------------------------------------------------------------------------
 public ssj_boost(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !is_user_alive(id) || !sh_is_inround()) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) || !sh_is_inround()) return
 	if ( !g_isSaiyanLevel[id] ) return
 
 	// Speed Boost
@@ -853,7 +853,7 @@ public ssj_boost(id)
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) || !sh_is_inround()) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !sh_is_inround()) return
 	if ( !g_isSaiyanLevel[id] || sh_get_stun(id) ) return
 
 	new wpnid = read_data(2)
@@ -985,7 +985,7 @@ public powerup_effect(parm[])
 public sh_round_end()
 {
 	for (new id=1; id < sh_maxplayers()+1; id++) {
-		if ( sh_user_has_hero(id,gHeroID)) {
+		if ( sh_get_user_has_hero(id,gHeroID)) {
 			g_isSaiyanLevel[id] = 0
 			sh_reset_max_speed(id)
 			if ( g_powerID[id] > 0 ) {
@@ -997,7 +997,7 @@ public sh_round_end()
 //----------------------------------------------------------------------------------------------
 public client_disconnected(id)
 {
-	if( sh_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
+	if( sh_get_user_has_hero(id,gHeroID) && g_powerID[id] > 0 ) {
 		remove_power(id, g_powerID[id])
 	}
 }

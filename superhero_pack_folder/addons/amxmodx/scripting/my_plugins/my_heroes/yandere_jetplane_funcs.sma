@@ -145,7 +145,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(!is_user_alive(id)||!is_user_alive(attacker)){
 		return
 	}
-	if(!sh_user_has_hero(attacker,gHeroID)){
+	if(!sh_get_user_has_hero(attacker,gHeroID)){
 		return
 	}
 	if(pev_valid(g_jetplane[id])!=2){
@@ -179,7 +179,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 
 	if(!is_user_alive(id)) return
 
-	if(!sh_user_has_hero(id,gHeroID)) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
 
 
 	if(!Get_BitVar(g_jetplane_loaded_mask, id)){
@@ -231,7 +231,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
-	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_user_has_hero(this,gHeroID)) return HAM_IGNORED
+	if(!sh_is_active() || !is_user_connected(this)||!is_user_alive(this)||!sh_get_user_has_hero(this,gHeroID)) return HAM_IGNORED
 	
 	if(!Get_BitVar(g_jetplane_deployed_mask, this)) return HAM_IGNORED
 	
@@ -329,7 +329,7 @@ public jet_deploy_task(parm[],id){
 		
 		return
 	}
-	if(!sh_user_has_hero(attacker,gHeroID)){
+	if(!sh_get_user_has_hero(attacker,gHeroID)){
 		
 		return
 	}
@@ -424,7 +424,7 @@ public FwdTouchWorld( jet, World ) {
 		return
 	}
 	new owner=pev(jet,pev_owner)
-	if(is_user_alive(owner)||!sh_user_has_hero(owner,gHeroID)){
+	if(is_user_alive(owner)||!sh_get_user_has_hero(owner,gHeroID)){
 
 		if((get_entity_velocity(jet)/cvar_val(float, pcvar_jetplane_speed))>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
@@ -468,7 +468,7 @@ public jet_think(ent)
 
 		return
 	}
-	if(!sh_user_has_hero(owner,gHeroID)||!Get_BitVar(g_jetplane_deployed_mask,owner)){
+	if(!sh_get_user_has_hero(owner,gHeroID)||!Get_BitVar(g_jetplane_deployed_mask,owner)){
 
 		return
 	}
@@ -694,7 +694,7 @@ public charge_task(id){
 	
 	}
 	id-=JET_CHARGE_TASKID
-	if(!is_user_alive(id)||!sh_user_has_hero(id,gHeroID)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 	
 		uncharge_user(id)
 		return
@@ -744,7 +744,7 @@ public charge_task(id){
 public sh_round_end(){
 
 	for (new id=1; id < sh_maxplayers()+1; id++) {
-		if ( is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) {
+		if ( is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) {
 			uncharge_user(id)
 			g_jetplane_loaded_mask=0xFFFF
 		}

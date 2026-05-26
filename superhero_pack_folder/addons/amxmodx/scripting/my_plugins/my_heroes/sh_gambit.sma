@@ -100,7 +100,7 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public grenade_throw(id, gid, wid)
 {
-	if(sh_user_has_hero(id,gHeroID) &&!sh_get_cooldown_flag(id)){
+	if(sh_get_user_has_hero(id,gHeroID) &&!sh_get_cooldown_flag(id)){
 	if(wid == CSW_HEGRENADE){
 		gWillHit[id]=(generate_float(0.0,gTotalChance)<1.0)
 		entity_set_int(gid,EV_INT_iuser1,gWillHit[id])
@@ -114,17 +114,17 @@ public grenade_throw(id, gid, wid)
 	}
 } 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id, gHeroID) && is_user_alive(id) ) {
+	if(sh_get_user_has_hero(id, gHeroID) && is_user_alive(id) ) {
 		gambit_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		sh_unset_cooldown_flag(id)
 		set_task(0.1, "gambit_weapons", id)
 		
@@ -133,13 +133,13 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public gambit_weapons(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		sh_give_weapon(id, CSW_HEGRENADE)
 	}
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	new gambit_charged= entity_get_int(idinflictor,EV_INT_iuser1)
 	if ( gambit_charged ) {
 		if ( is_user_alive(id) ) {
@@ -187,7 +187,7 @@ public on_AmmoX(id)
 
 	new iAmmoType = read_data(1)
 
-	if ( iAmmoType == AMMOX_HEGRENADE && sh_user_has_hero(id,gHeroID) ) {
+	if ( iAmmoType == AMMOX_HEGRENADE && sh_get_user_has_hero(id,gHeroID) ) {
 		prev_user_hegrenade_count[id] = user_hegrenade_count[id]
 		user_hegrenade_count[id] = read_data(2)
 		if ( (user_hegrenade_count[id]<prev_user_hegrenade_count[id])) {

@@ -52,9 +52,9 @@ public plugin_init()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -69,7 +69,7 @@ public Forge_kd(id)
 {
 	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id)) {
 		playSoundDenySelect(id)
 		return PLUGIN_HANDLED

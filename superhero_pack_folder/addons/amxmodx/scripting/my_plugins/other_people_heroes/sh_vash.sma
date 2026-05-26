@@ -76,11 +76,11 @@ public plugin_init()
 	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
 	if ( is_user_alive(id) ) {
-		if ( sh_user_has_hero(id,gHeroID)) {
+		if ( sh_get_user_has_hero(id,gHeroID)) {
 			vash_weapons(id)
 		}
 		// This gets run if they had the power but don't anymore
@@ -94,7 +94,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_active() && sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_task(0.1, "vash_weapons", id)
 
 		new clip, ammo, wpnid = get_user_weapon(id, clip, ammo)
@@ -148,7 +148,7 @@ public vash_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
 
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) ) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
 		if (extraDamage > 0){
@@ -167,7 +167,7 @@ public vash_hitzones()
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new hitZone
 			hitZone = generate_int(1, 7)
 			switch(hitZone) {

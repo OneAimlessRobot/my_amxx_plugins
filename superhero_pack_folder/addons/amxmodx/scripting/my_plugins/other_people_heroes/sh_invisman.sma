@@ -42,7 +42,7 @@ public plugin_init()
 	set_task(0.1, "checkButtons", _, _, _, "b")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -96,7 +96,7 @@ public checkButtons()
 	for( new i = 0; i < playerCount; i++ ) {
 		id = players[i]
 
-		if ( !sh_user_has_hero(id,gHeroID) ) continue
+		if ( !sh_get_user_has_hero(id,gHeroID) ) continue
 
 		setVisible = false
 
@@ -159,7 +159,7 @@ public checkButtons()
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(victim,gHeroID)) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(victim,gHeroID)) return
 
 	remInvisibility(victim)
 }

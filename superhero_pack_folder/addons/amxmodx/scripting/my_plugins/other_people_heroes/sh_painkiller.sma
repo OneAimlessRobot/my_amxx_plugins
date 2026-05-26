@@ -50,13 +50,13 @@ public client_authorized(id)
 
 public Painkiller_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( sh_user_has_hero(this,gHeroID)&& ( get_user_health(this) - damage ) <= 0 ) 
+	if ( sh_get_user_has_hero(this,gHeroID)&& ( get_user_health(this) - damage ) <= 0 ) 
 	{
 		Death_Notice(this, idattacker)
 		AttackerInfo[this] = idattacker
 		return HAM_SUPERCEDE
 	}
-	if ( sh_user_has_hero(this,gHeroID) && DeathNotice[this] == true ) 
+	if ( sh_get_user_has_hero(this,gHeroID) && DeathNotice[this] == true ) 
 	{
 		return HAM_SUPERCEDE
 	}

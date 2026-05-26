@@ -37,7 +37,7 @@
 	shCreateHero
 	Or sh_create_hero
  */
-#define client_is_hero_user(%1,%2) (is_user_alive(%1)&&sh_user_has_hero(%1,%2))
+#define client_is_hero_user(%1,%2) (is_user_alive(%1)&&sh_get_user_has_hero(%1,%2))
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 

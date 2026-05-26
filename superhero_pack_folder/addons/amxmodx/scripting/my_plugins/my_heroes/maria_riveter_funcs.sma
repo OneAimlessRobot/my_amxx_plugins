@@ -164,7 +164,7 @@ public Ham_TraceAttackMariaRiveter(id, idattacker, Float:damage, Float:direction
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_user_has_hero(idattacker,gHeroID)){
+	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
 

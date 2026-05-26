@@ -49,7 +49,7 @@ public plugin_end()
 public Player_PreThink(id)
 {
 	if(is_user_alive(id) ){
-		if(sh_user_has_hero(id,gHeroID))
+		if(sh_get_user_has_hero(id,gHeroID))
 		{
 			if((FL_ONGROUND & pev(id, pev_flags)))
 			{
@@ -65,7 +65,7 @@ public Player_PreThink(id)
 public Player_PreThink_Post(id)
 {
 	if(is_user_alive(id) ){
-		if(gRestoreVel && sh_user_has_hero(id,gHeroID))
+		if(gRestoreVel && sh_get_user_has_hero(id,gHeroID))
 		{
 			gRestoreVel = false
 

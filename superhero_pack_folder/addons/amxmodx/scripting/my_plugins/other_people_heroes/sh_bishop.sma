@@ -61,9 +61,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -78,7 +78,7 @@ public bishop_kd(id)
 {
 	if ( !hasRoundStarted() ) return
 
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	// Let them know if they have no energy
 	if ( g_absorbedDamage[id] <= 0 ) {
@@ -93,7 +93,7 @@ public bishop_kd(id)
 public bishop_loop()
 {
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
-		if ( sh_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 			new message[128]
 			formatex(message, 127, "Total Energy Absorbed: %i", g_absorbedDamage[id])
 			set_hudmessage(50, 50, 255, -1.0, 0.10, 0, 1.0, 1.0, 0.0, 0.0)
@@ -111,7 +111,7 @@ public bishop_damage(id)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ) return
 
-	if ( sh_user_has_hero(id,gHeroID)&& attacker != id ) {
+	if ( sh_get_user_has_hero(id,gHeroID)&& attacker != id ) {
 		// Absorb Damage
 		new damageAbsorbed = floatround(get_cvar_float("bishop_absorbmult") * damage)
 		g_absorbedDamage[id] += damageAbsorbed
@@ -125,7 +125,7 @@ public bishop_damage(id)
 		setScreenFlash(id, 255, 90, 102, 10, alphanum)
 	}
 
-	if ( sh_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker != id && g_absorbedDamage[attacker] > 0 ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && attacker != id && g_absorbedDamage[attacker] > 0 ) {
 
 		new weaponName[32]
 		get_weaponname(weapon, weaponName, 31)
@@ -142,7 +142,7 @@ public bishop_damage(id)
 //----------------------------------------------------------------------------------------------
 public release_energy(id)
 {
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	new userAim[3], vicOrigin[3]
 	new FFOn = get_cvar_num("mp_friendlyfire")
@@ -177,7 +177,7 @@ public release_energy(id)
 //----------------------------------------------------------------------------------------------
 public beam_effects(id, userAim[3])
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	new userEyesight[3]
 	get_user_origin(id, userEyesight, 1)

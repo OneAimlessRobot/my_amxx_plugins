@@ -24,7 +24,7 @@ public acc_loop()
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ )
 	{
-		if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) )
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) )
 		{
 			set_user_maxspeed(id, get_user_maxspeed(id)+get_cvar_num("acc_rate"))
 		}

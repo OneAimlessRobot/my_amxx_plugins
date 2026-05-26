@@ -36,7 +36,7 @@ public plugin_init()
 	
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	sh_unset_cooldown_flag(id)
@@ -51,7 +51,7 @@ public plugin_precache()
 public sh_client_spawn(id) 
 {
 	
-	if ( sh_user_has_hero(id,gHeroID) && is_user_alive(id) ) 
+	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) 
 	{
 		
 		new origin[3]
@@ -68,9 +68,9 @@ public sh_client_spawn(id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 
 switch(key)
 {
@@ -89,7 +89,7 @@ public saddam_kd(id)
 	userHide[id][1]=origin[1]
 	userHide[id][2]=origin[2]
 	
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !hasRoundStarted() ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted() ) return
 	
 	if (sh_get_cooldown_flag(id)) 
 	{

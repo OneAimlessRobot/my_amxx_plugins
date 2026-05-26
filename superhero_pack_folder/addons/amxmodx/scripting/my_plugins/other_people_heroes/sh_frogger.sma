@@ -72,7 +72,7 @@ public plugin_init()
 #endif
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -102,7 +102,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 frogger_giveitem(id)
 {
-	if ( sh_is_active() && is_user_alive(id) && sh_user_has_hero(id,gHeroID) && !get_pdata_int(id, m_fLongJump) )
+	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) && !get_pdata_int(id, m_fLongJump) )
 	{
 		set_pdata_int(id, m_fLongJump, 1)
 		engfunc(EngFunc_SetPhysicsKeyValue, id, "slj", "1")
@@ -133,7 +133,7 @@ public ham_Player_Duck_Pre(id)
 //----------------------------------------------------------------------------------------------
 public ham_Player_Jump_Pre(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return HAM_IGNORED
 
 	if ( !get_pdata_int(id, m_fLongJump) || pev(id, pev_waterlevel) >= 2 ) return HAM_IGNORED
 

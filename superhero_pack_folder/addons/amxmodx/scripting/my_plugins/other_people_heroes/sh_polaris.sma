@@ -73,7 +73,7 @@ public find_polaris(parm[])
 
 	// Find a polaris
 	for (new i = 0; i < pnum; i++) {
-		if ( !sh_user_has_hero(players[i],gHeroID)) continue
+		if ( !sh_get_user_has_hero(players[i],gHeroID)) continue
 
 		if( get_entity_distance(players[i], grenadeID) < gRange ) {
 			entity_give_boost(grenadeID, players[i])

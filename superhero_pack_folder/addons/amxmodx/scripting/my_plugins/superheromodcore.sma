@@ -56,7 +56,6 @@ new gBotsEarnXP,gBotsMinLevel,gBotsMaxLevel
 // Player Variables Used by Various Functions
 // Player IDS are base 1 (i.e. 1-32 so we have to diminsion for 33)
 new gPlayerPowers[SH_MAXSLOTS+1][SH_MAXLEVELS+1]      // List of all Powers - Slot 0 is the superpower count
-new gPlayerHasPowerTable[SH_MAXHEROS] = {0, ...}      // List of all Powers - Slot 0 is the superpower count
 new gPlayerBinds[SH_MAXSLOTS+1][SH_MAXBINDPOWERS+1]   // What superpowers are the bind keys bound
 new gNumPlayerCores[SH_MAXSLOTS+1]   // What superpowers are the bind keys bound
 new gPlayerFlags[SH_MAXSLOTS+1]
@@ -185,11 +184,13 @@ new const gTeamName[4][] =  {
 //==============================================================================================
 //----------------------------------------------------------------------------------------------
 public plugin_init()
-{
+{	
 	// Check to make sure this plugin isn't loaded already
 	if ( is_plugin_loaded(SH_CORE_STR) > 0 ) {
 		set_fail_state("You can only load the ^"SuperHero Core^" once, please check your plugins-shero.ini")
 	}
+
+	sh_init_hero_array()
 
 	// Plugin Info
 	my_authored_register_func(SH_CORE_STR, SH_VERSION_STR,"JTP10181/{HOJ}Batman/vittu/AssKicR",true,AUTHOR)
@@ -416,7 +417,6 @@ public plugin_natives()
 	register_native("sh_add_kill_xp", "_sh_add_kill_xp")
 	register_native("sh_get_hero_id", "_sh_get_hero_id")
 	register_native("sh_get_hero_name_from_id", "_sh_get_hero_name_from_id",0)
-	register_native("sh_user_has_hero", "_sh_user_has_hero")
 	register_native("sh_get_player_save_key_on_db","_sh_get_player_save_key_on_db",0)
 	register_native("sh_chat_message", "_sh_chat_message")
 	register_native("sh_debug_message", "_sh_debug_message")
@@ -1011,8 +1011,9 @@ public _sh_get_hero_name_from_id(iPlugin,iParams)
 	set_array(2,truncated_hero_name_buff,sizeof(truncated_hero_name_buff)-1)
 }
 //----------------------------------------------------------------------------------------------
-//native sh_user_has_hero(id, heroIndex)
-public _sh_user_has_hero()
+/*
+//native _sh_get_user_has_hero(id, heroIndex)
+public _sh_get_user_has_hero()
 {
 	new id = get_param(1)
 
@@ -1039,8 +1040,9 @@ bool:playerHasPower(id, heroIndex)
 //----------------------------------------------------------------------------------------------
 playerHasPowerPt2(id, heroIndex)
 {
-	return Get_BitVar(gPlayerHasPowerTable[heroIndex],id)
-}
+	return sh_get_user_has_hero(id,heroIndex)
+}*/
+
 //----------------------------------------------------------------------------------------------
 //native sh_drop_weapon(id, weaponID, bool:remove = false)
 public _sh_drop_weapon()
@@ -1274,7 +1276,7 @@ public _sh_set_hero_shield()
 	gHeroShieldRest[heroIndex] = pRestricted ? true : false
 }
 //----------------------------------------------------------------------------------------------
-bool:initHero(id, heroIndex, mode)
+bool:initHero(id, heroIndex, sh_init_mode:mode)
 {
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
@@ -1288,14 +1290,14 @@ bool:initHero(id, heroIndex, mode)
 	if(the_init_return_value==INIT_FWD_BLOCK){
 
 		mode=SH_HERO_DROP;
-		Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode);
+		sh_set_user_has_hero(id,heroIndex,bool:mode)
 		return false
 	}
 
 	if ( equal(gAnubisHero, "Anubis") ){
 		Assign_BitVar(gHasAnubisMask,id, mode);
 	}
-	Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode)
+	sh_set_user_has_hero(id,heroIndex,bool:mode)
 
 	// Reset Shield Restriction if needed for this hero
 	if ( gHeroShieldRest[heroIndex] ) {
@@ -1685,7 +1687,7 @@ menuSuperPowers(id, menuOffset)
 				thisEnabled = true
 			}
 			// Don't want to present this power if the player already has it!
-			if ( !playerHasPower(id, heroIndex) && (thisEnabled || (!isBot && menuMode > 0)) ) {
+			if ( !sh_get_user_has_hero(id, heroIndex) && (thisEnabled || (!isBot && menuMode > 0)) ) {
 				gPlayerMenuChoices[id][0] = ++count
 				gPlayerMenuChoices[id][count] = heroIndex
 				if ( thisEnabled ) enabled++
@@ -2185,7 +2187,7 @@ public powerKeyDown(id)
 	if (gInPowerDown[id][whichKey]) return PLUGIN_HANDLED
 	gInPowerDown[id][whichKey] = true
 
-	if ( playerHasPower(id, heroIndex) ) {
+	if ( sh_get_user_has_hero(id, heroIndex) ) {
 #if defined SH_BACKCOMPAT
 	 	if ( gEventKeyDown[heroIndex][0] != '^0' ) {
 			server_cmd("%s %d", gEventKeyDown[heroIndex], id )
@@ -2227,7 +2229,7 @@ public powerKeyUp(id)
 	new heroIndex = gPlayerBinds[id][whichKey]
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return PLUGIN_HANDLED
 
-	if ( playerHasPower(id, heroIndex) ) {
+	if ( sh_get_user_has_hero(id, heroIndex) ) {
 #if defined SH_BACKCOMPAT
 	 	if ( gEventKeyUp[heroIndex][0] != '^0' ) {
 			server_cmd("%s %d", gEventKeyUp[heroIndex], id )
@@ -2698,7 +2700,7 @@ public _sh_extra_damage()
 	new wpnDescription[32]
 
 	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_param(4)
-	new mode = get_param(5)
+	new sh_damage_mode:mode = sh_damage_mode:get_param(5)
 	new sh_extra_damage_flags:sh_extra_dmg_flags = sh_extra_damage_flags:get_param(6)
 
 	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN),
@@ -3733,7 +3735,7 @@ showWhoHas(id, say, said[])
 			if ( get_user_team(pid) != team) continue
 			get_user_name(pid, name, charsmax(name))
 			teamName[0] = '^0'
-			if (!playerHasPower(pid, heroIndex)) continue
+			if (!sh_get_user_has_hero(pid, heroIndex)) continue
 			if ( get_user_team(pid) == 1 ) copy(teamName, charsmax(teamName), "T :")
 			else if ( get_user_team(pid) == 2 ) copy(teamName, charsmax(teamName), "CT:")
 			else copy(teamName, charsmax(teamName), "S: ")
@@ -5122,7 +5124,7 @@ memoryTableRead(id, const savekey[])
 {
 	if ( !get_pcvar_num(sv_superheros) ) return false
 
-	static x, p, idLevel, powerCount, heroIndex
+	static x, p, idLevel, powerCount, heroIndex, delayed_p, true_power_count
 
 	for ( x = 1; x < gMemoryTableCount; x++ ) {
 		if ( gMemoryTableKeys[x][0] != '^0' && equal(gMemoryTableKeys[x], savekey) ) {
@@ -5133,12 +5135,24 @@ memoryTableRead(id, const savekey[])
 
 			// Load the Powers
 			gPlayerPowers[id][0] = 0
-			powerCount = gPlayerPowers[id][0] = gMemoryTablePowers[x][0]
-			for ( p = 1; p <= idLevel && p <= powerCount; p++ ) {
-				heroIndex = gPlayerPowers[id][p] = gMemoryTablePowers[x][p]
-				initHero(id, heroIndex, SH_HERO_ADD)
-			}
+			
+			powerCount = gMemoryTablePowers[x][0]
+			
+			true_power_count = powerCount
 
+			for (delayed_p = 1, p = 1; p <= idLevel && p <= powerCount; delayed_p++, p++ ) {
+				heroIndex = gMemoryTablePowers[x][p]
+				
+				new bool:result=initHero(id, heroIndex, SH_HERO_ADD)
+				if(result){
+					delayed_p--
+					true_power_count--
+				}
+				else{
+					gPlayerPowers[id][delayed_p] = heroIndex
+				}
+			}
+			gPlayerPowers[id][0] = true_power_count
 			// Null this out so if the id changed - there won't be multiple copies of this guy in memory
 			if ( id != x ) {
 				gMemoryTableKeys[x][0] = '^0'
@@ -5160,6 +5174,8 @@ public plugin_end()
 
 	// Final cleanup in the saving include
 	saving_end()
+	//erase the array
+	sh_init_hero_array()
 }
 //----------------------------------------------------------------------------------------------
 readINI()

@@ -203,18 +203,23 @@ stock Float:default_stun_speed=SH_DEFAULT_STUN_SPEED;
 // Max player slots
 const SH_MAXSLOTS = 32 //the holy number
 
-// sh_hero_init(id, heroID, mode) modes
-#define SH_HERO_DROP		0	//Hero is dropped
-#define SH_HERO_ADD		1	//Hero is added
-
-// sh_hero_key(id, heroID, key) keys
-#define SH_KEYUP		0	//Power Key is released
-#define SH_KEYDOWN		1	//Power Key is pressed
+// sh_hero_init(id, heroID, sh_init_mode:mode) modes
+enum sh_init_mode{
+	SH_HERO_DROP=0,		//hero is dropped
+	SH_HERO_ADD 		//hero is added
+}
+// sh_hero_key(id, heroID, sh_key_mode:key) keys
+enum sh_key_mode{
+	SH_KEYUP=0,			//Power Key is released
+	SH_KEYDOWN 			//Power Key is pressed
+}
 
 // sh_extra_damage() damage types
-#define SH_DMG_MULT		0	// Multipiler damage, armor will not reduce damage hit points (armor is still reduced)
-#define SH_DMG_NORM		1	// Normal damage, armor will reduce damage hit points
-#define SH_DMG_KILL		2	// Kill damage, instantly kills if damage is possible (Note: godmode can block this)
+enum sh_damage_mode{
+	SH_DMG_MULT=0,			// Multipiler damage, armor will not reduce damage hit points (armor is still reduced)
+	SH_DMG_NORM, 			// Normal damage, armor will reduce damage hit points
+	SH_DMG_KILL				// Kill damage, instantly kills if damage is possible (Note: godmode can block this)
+}
 
 // From HLSDK for sh_screenfade
 #define SH_FFADE_IN		0x0000	// Just here so we don't pass 0 into the function

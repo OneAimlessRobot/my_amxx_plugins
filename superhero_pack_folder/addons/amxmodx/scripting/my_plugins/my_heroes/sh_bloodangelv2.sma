@@ -91,10 +91,10 @@ public loadCVARS()
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode){
+public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_user_has_hero(id,gHeroID) )
+	if(sh_get_user_has_hero(id,gHeroID) )
 	{
 			darkangel_weapons(id)
 	}
@@ -105,7 +105,7 @@ public sh_hero_init(id, heroID, mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if(sh_user_has_hero(id,gHeroID) ){
+	if(sh_get_user_has_hero(id,gHeroID) ){
 		
 		darkangel_weapons(id)
 	}
@@ -113,7 +113,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public darkangel_weapons(id)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)  )
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)  )
 		return
 	
 	sh_give_weapon(id, CSW_M4A1)
@@ -134,7 +134,7 @@ public do_knockback(id,Float:extraDamage){
 //----------------------------------------------------------------------------------------------
 public weapon_change(id)
 {
-	if ( !sh_is_active() || !sh_user_has_hero(id,gHeroID) )
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) )
 		return
 	
 	new wpnid = read_data(2)
@@ -159,7 +159,7 @@ public darkangel_damage(id)
 	
 	if ( (attacker==id)||!is_user_connected(attacker)) return
 	
-	if ( sh_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
+	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
 	{
 		new damage = read_data(2)
 		

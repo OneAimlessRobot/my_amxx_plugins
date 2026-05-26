@@ -76,7 +76,7 @@ public ball_touch_player(Ball, Player ) {
 		entity_get_vector(Ball,EV_VEC_origin,origin)
 		//get pickability status
 		new ball_pickable=entity_get_int(Ball,EV_INT_iuser2)
-		if(sh_user_has_hero(Player,gHeroID)&&(Player==oid)&&ball_pickable&& BALL_RETRIEVE){
+		if(sh_get_user_has_hero(Player,gHeroID)&&(Player==oid)&&ball_pickable&& BALL_RETRIEVE){
 			
 			roberto_set_num_balls(oid,roberto_get_num_balls(oid)+1)
 			sh_chat_message(oid,gHeroID,"Youve picked up your ball back! You now have %d",roberto_get_num_balls(oid))
@@ -137,7 +137,7 @@ public kick_ball(iPlugin,iParams)
 	
 	new id= get_param(1)
 	
-	if(!sh_user_has_hero(id,gHeroID)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)||!is_user_connected(id)) return PLUGIN_HANDLED
 	
 	if(!roberto_get_num_balls(id)){
 		
@@ -213,7 +213,7 @@ public ball_think(ent)
 	}
 
 	new id=pev(ent,pev_iuser1)
-	if ( !is_user_alive(id)||!sh_user_has_hero(id,gHeroID)) {
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) {
 		remove_entity(ent)
 		return
 	}

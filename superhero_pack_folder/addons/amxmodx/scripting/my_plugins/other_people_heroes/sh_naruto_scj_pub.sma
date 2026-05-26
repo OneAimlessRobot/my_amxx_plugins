@@ -207,7 +207,7 @@ public plugin_precache()
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -231,7 +231,7 @@ public naruto_loop()
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
 
-		if (sh_user_has_hero(player,gHeroID) && player_chakra[player] < get_pcvar_num(pCvarMaxChakra) ) {
+		if (sh_get_user_has_hero(player,gHeroID) && player_chakra[player] < get_pcvar_num(pCvarMaxChakra) ) {
 			player_chakra[player] += 1
 		}
 	}
@@ -302,10 +302,10 @@ public botent_clearbools(id)
 	botEnt[id] = 0
 }
 
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || !sh_is_inround() ) return
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
 
 	if ( key == SH_KEYDOWN ) 
 	{
@@ -411,7 +411,7 @@ public client_authorized(id)
 
 public client_disconnected(id) 
 {
-	if(!sh_user_has_hero(id,gHeroID)) return 
+	if(!sh_get_user_has_hero(id,gHeroID)) return 
 
 	if(pev_valid(entWeapon[id]))
 	{
@@ -503,7 +503,7 @@ public FM_Think_hook(ent)
 {
 	for(new i=0;i< sh_maxplayers()+1;i++)
 	{	
-		if(sh_user_has_hero(i,gHeroID)) 
+		if(sh_get_user_has_hero(i,gHeroID)) 
 		{
 			if(ent==botEnt[i])
 			{
@@ -516,7 +516,7 @@ public FM_Think_hook(ent)
 							set_pev(botEnt[i],pev_health, 5000000.0)
 						}
 					}
-					if(!pev_valid(botEnt[i]) && sh_user_has_hero(i,gHeroID)&& ent==botEnt[i])
+					if(!pev_valid(botEnt[i]) && sh_get_user_has_hero(i,gHeroID)&& ent==botEnt[i])
 					{
 						naruto_remove_entity(entWeapon[i])
 						naruto_remove_entity(botEnt[i])

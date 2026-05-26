@@ -120,7 +120,7 @@ public plugin_precache()
 	gSpriteShockwave = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, mode)
+public sh_hero_init(id, heroID, sh_init_mode:mode)
 {
 	if ( gHeroID != heroID ) return
 
@@ -200,7 +200,7 @@ public sh_client_death(victim)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_key(id, heroID, key)
+public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID ) return
 	if ( !sh_is_inround() || !is_user_alive(id) ) return
@@ -244,7 +244,7 @@ public sh_hero_key(id, heroID, key)
 public weapon_change(id)
 {
 	if ( !sh_is_active() ) return
-	if ( !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return
+	if ( !sh_get_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return
 
 	if ( gIsCharging[id] ) {
 		stop_charging(id)
@@ -260,7 +260,7 @@ public weapon_change(id)
 public FM_CmdStart_Pre(id, uc_handle, seed)
 {
 	if ( !sh_is_active() ) return FMRES_IGNORED
-	if ( !sh_is_inround() || !is_user_alive(id) || !sh_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return FMRES_IGNORED
+	if ( !sh_is_inround() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !gHasRadio[id] ) return FMRES_IGNORED
 
 	if ( get_user_weapon(id) != CSW_KNIFE ) return FMRES_IGNORED
 
@@ -768,7 +768,7 @@ remove_target(id)
 public FM_EmitSound_Pre(id, channel, const sample[], Float:volume, Float:attn, flags, pitch)
 {
 	if ( !sh_is_active() ) return FMRES_IGNORED
-	if ( !is_user_alive(id) || !sh_user_has_hero(id,gHeroID)|| !gHasRadio[id] ) return FMRES_IGNORED
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !gHasRadio[id] ) return FMRES_IGNORED
 
 	if ( sample[0] == 'w' && sample[6] == 's' && sample[8] == 'k' && sample[13] == '_' && sample[14] == 'd' ) {
 		engfunc(EngFunc_EmitSound, id, channel, gSoundRadioDraw, VOL_NORM, attn, flags, pitch)

@@ -87,7 +87,7 @@ public burn_task(array[2],id)
 	make_fire(id,30.0)
 
 	
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
+	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 	if(!is_tomie_user){
 		static players[33];
 
@@ -141,7 +141,7 @@ public molotov_damage_vulnerability(id){
 
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(Get_BitVar(gIsBurningMask,victim)){
@@ -218,11 +218,11 @@ stock burn_user(id,attacker){
 	if(Get_BitVar(gIsBurningMask,id)) return
 
 	Set_BitVar(gIsBurningMask,id)
-	new bool:is_tomie_user=bool:sh_user_has_hero(id,gHeroID)
+	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
 	new array[2]
 	array[0] = attacker
-	array[1] = sh_user_has_hero(id,gHeroID)?times_if_tomie_user:0
+	array[1] = sh_get_user_has_hero(id,gHeroID)?times_if_tomie_user:0
 	
 	if(sh_is_user_frozen(id)){
 		sh_unfreeze_user(id)
