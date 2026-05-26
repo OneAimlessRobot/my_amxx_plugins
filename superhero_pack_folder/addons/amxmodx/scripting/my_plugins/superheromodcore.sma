@@ -246,7 +246,7 @@ public plugin_init()
 
 
 	// API - Register a bunch of forwards that heroes can use
-	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_VAL_BYREF)	// id, heroID, mode
+	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
 	fwd_Spawn = CreateMultiForward("sh_client_spawn", ET_IGNORE, FP_CELL, FP_CELL)		// id, newSpawn
@@ -2694,8 +2694,8 @@ public _sh_extra_damage()
 	new mode = get_param(5)
 	new sh_extra_damage_flags:sh_extra_dmg_flags = sh_extra_damage_flags:get_param(6)
 
-	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN)/*,
-		bool:dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);*/
+	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN),
+		bool:dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);
 
 	new Float:dmgOrigin[3]
 	get_array_f(7, dmgOrigin, 3)
@@ -2708,7 +2708,7 @@ public _sh_extra_damage()
 	xmod_get_wpnlogname(custom_wpn_id,wpnDescription,charsmax(wpnDescription))
 
 
-	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3,1)
+	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3)
 
 	new the_dmg_return_value=DMG_FWD_PASS
 	if (!ExecuteForward(fwd_ShDamagePre, 
@@ -2899,7 +2899,7 @@ public _sh_extra_damage()
 		}
 		else if ( FFon ) {
 			hurt = true
-			if ( get_param(8) ) {
+			if ( dmgFFmsg) {
 				new name[32]
 				get_user_name(attacker, name, charsmax(name))
 				client_print(0, print_chat, "%s attacked a teammate", name)

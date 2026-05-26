@@ -67,7 +67,7 @@ public push_incompatibility_pair(hero_a,hero_b){
 	
 	filled_pair_count++
 }
-public safeguard_pair_process(id,heroID,heroID_a,heroID_b,&mode){
+public safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
 
 
 	if(mode==SH_HERO_DROP){
@@ -104,7 +104,7 @@ public safeguard_pair_process(id,heroID,heroID_a,heroID_b,&mode){
 
 	
 }
-public sh_hero_init_pre(id,heroID,&mode){
+public sh_hero_init_pre(id,heroID,mode){
 	new true_return_result = INIT_FWD_PASS
 
 	for(new i=0;i<filled_pair_count;i++){

@@ -107,7 +107,7 @@ forward sh_extra_health_add_pre(&id,&the_health_to_add)
  * @noreturn
  */
 
-forward sh_hero_init_pre(id, heroID, &mode);
+forward sh_hero_init_pre(id, heroID, mode);
 
 forward sh_hero_init(id, heroID, mode);
 

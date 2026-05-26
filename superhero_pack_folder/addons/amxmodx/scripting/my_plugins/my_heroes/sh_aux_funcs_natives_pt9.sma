@@ -36,7 +36,7 @@ public plugin_natives(){
 	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero",0)
 }
 
-public sh_hero_init_pre(id,heroID,&mode){
+public sh_hero_init_pre(id,heroID,mode){
 
 	if(!client_is_within_range(id)) return INIT_FWD_PASS
 
