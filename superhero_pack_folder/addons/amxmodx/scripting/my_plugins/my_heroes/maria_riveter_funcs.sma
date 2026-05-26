@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"

@@ -370,14 +370,15 @@ writeData(x)
 			}
 
 			// (savekey, user's hero number, hero name)
-			/*
 			
+			
+			/*
 			server_print("num heroes: %d^n",numHeroes)
 			server_print("curr hero slot: %d^n",p)
 			server_print("hero id: %d^n",gMemoryTablePowers[x][p])
 			server_print("hero name: %s^n",gSuperHeros[gMemoryTablePowers[x][p]][hero])
-			
 			*/
+			
 			n += formatex(sql[n], charsmax(sql)-n, "('%s','%d','%s')", savekey, p, gSuperHeros[gMemoryTablePowers[x][p]][hero])
 			++count
 

@@ -1274,7 +1274,7 @@ public _sh_set_hero_shield()
 	gHeroShieldRest[heroIndex] = pRestricted ? true : false
 }
 //----------------------------------------------------------------------------------------------
-initHero(id, heroIndex, mode)
+bool:initHero(id, heroIndex, mode)
 {
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
@@ -1283,13 +1283,13 @@ initHero(id, heroIndex, mode)
 	if(!ExecuteForward(fwd_HeroInit_Pre, the_init_return_value, id, heroIndex, mode)){
 
 		server_print("Hero init pre forward execution error!!!")
-		return
+		return false
 	}
 	if(the_init_return_value==INIT_FWD_BLOCK){
 
 		mode=SH_HERO_DROP;
 		Assign_BitVar(gPlayerHasPowerTable[heroIndex],id,mode);
-		return
+		return false
 	}
 
 	if ( equal(gAnubisHero, "Anubis") ){
@@ -1370,7 +1370,7 @@ initHero(id, heroIndex, mode)
 	if(!ExecuteForward(fwd_HeroInit, fwdReturn, id, heroIndex, mode)){
 
 		server_print("Hero init post forward execution error!!!")
-		return
+		return false
 	}
 
 #if defined SH_BACKCOMPAT
@@ -1378,6 +1378,7 @@ initHero(id, heroIndex, mode)
 #endif
 
 	Assign_BitVar(gChangedHeroesMask, id, true_for_macro);
+	return true
 }
 //----------------------------------------------------------------------------------------------
 //native sh_set_hero_hpap(heroID, pcvarHealth, pcvarArmor)
@@ -1701,9 +1702,11 @@ menuSuperPowers(id, menuOffset)
 		gPlayerPowers[id][0] = playerpowercount + 1
 		gPlayerPowers[id][playerpowercount + 1] = heroIndex
 
-		//Init This Hero!
-		initHero(id, heroIndex, SH_HERO_ADD)
-		
+		new bool:result= initHero(id, heroIndex, SH_HERO_ADD)
+		if(!result){
+			return PLUGIN_HANDLED
+
+		}
 		//Don't show menu to bots and wait for next menu call before giving another power
 		return PLUGIN_HANDLED
 	}
@@ -1839,7 +1842,11 @@ public selectedSuperPower(id, key)
 	gPlayerPowers[id][playerpowercount + 1] = heroIndex
 
 	//Init This Hero!
-	initHero(id, heroIndex, SH_HERO_ADD)
+	new bool:result= initHero(id, heroIndex, SH_HERO_ADD)
+	if(!result){
+		return PLUGIN_HANDLED
+
+	}
 	displayPowers(id, true)
 
 	// Show the Menu Again if they don't have enough skills yet!

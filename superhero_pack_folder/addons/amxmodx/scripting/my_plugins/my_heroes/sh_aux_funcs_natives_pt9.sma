@@ -47,20 +47,17 @@ public sh_hero_init_pre(id,heroID,mode){
 
 		return INIT_FWD_PASS
 	}
-
-	if(!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
-		if(is_user_connected(id)){
-			sh_chat_message(id, heroID,"%s: the hero has already been picked too many times! The limit of people using this hero is %d!",
-					sh_pickable_hero_struct_arr[heroID][unable_to_pick_string],
-					sh_pickable_hero_struct_arr[heroID][max_pickable_times])
-		}
-		sh_strip_user_hero(id, heroID)
-		return INIT_FWD_BLOCK
-	}
-
 	if(mode==SH_HERO_ADD){
 
-
+		if(!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
+			if(is_user_connected(id)){
+				sh_chat_message(id, heroID,"%s: the hero has already been picked too many times! The limit of people using this hero is %d!",
+						sh_pickable_hero_struct_arr[heroID][unable_to_pick_string],
+						sh_pickable_hero_struct_arr[heroID][max_pickable_times])
+			}
+			sh_strip_user_hero(id, heroID)
+			return INIT_FWD_BLOCK
+		}
 		new flags_of_player = get_user_flags(id)
 
 		if((flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])){

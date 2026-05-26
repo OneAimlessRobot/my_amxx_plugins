@@ -14,8 +14,8 @@
 #define KOMAK_BLOWN_ENGINE "shmod/komak/engine_down.wav"
 #define KOMAK_FAST_SHOT "shmod/komak/fast_shot.wav"
 
-new BLOW_ENGINE = 0
-new RESET_ON_MISS = 1
+new const BLOW_ENGINE = 1
+new const RESET_ON_MISS = 1
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -118,6 +118,11 @@ public Item_PostFrame_Post(iEnt)
 		return HAM_IGNORED
 	}
 	if (!sh_is_active()||!sh_user_has_hero(id,gHeroID) )return HAM_IGNORED
+
+	if(g_komak_hits[id]<=0){
+		return HAM_IGNORED
+	}
+
 	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
 	return HAM_IGNORED
 } 
@@ -387,6 +392,7 @@ public reset_komak(id){
 		g_komak_gear[id]=1;
 		gCurrFireRatio[id]=cvar_val(float,pcvar_base_fire_ratio);
 		gCurrReloadRatio[id]=cvar_val(float,pcvar_base_reload_ratio);
+		gCurrRecoilRatio[id]=cvar_val(float,pcvar_base_recoil_ratio);
 		Assign_BitVar(LastShotMissed_mask, id, false_for_macro)
 	}
 

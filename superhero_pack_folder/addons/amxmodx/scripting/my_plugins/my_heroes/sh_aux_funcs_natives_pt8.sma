@@ -6,7 +6,7 @@
 #define PLUGIN "Superhero aux natives pt8: safeguard forward tools for shmod"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-#include "maria_riveter_inc/maria_riveter_funcs.inc"
+#include "maria_riveter_inc/maria_general_funcs.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt8.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt8.inc"
@@ -67,7 +67,7 @@ public push_incompatibility_pair(hero_a,hero_b){
 	
 	filled_pair_count++
 }
-public safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
+safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
 
 
 	if(mode==SH_HERO_DROP){
@@ -76,31 +76,32 @@ public safeguard_pair_process(id,heroID,heroID_a,heroID_b,mode){
 	if(!is_user_connected(id)){
 		return INIT_FWD_PASS
 	}
-	new bool:has_b=sh_user_has_hero(id,heroID_b),
-			bool:has_a=sh_user_has_hero(id,heroID_a)
+	new bool:is_a = (heroID==heroID_a),
+			bool:is_b = (heroID==heroID_b)
+
+	if(!is_a && !is_b){
+
+		return INIT_FWD_PASS
+	
+	}
+	new other_hero = is_a ? heroID_b : heroID_a
+	if(!sh_user_has_hero(id,other_hero)){
+
+		return INIT_FWD_PASS
+
+	}
+
 	static name_a[MAX_HERO_NAME_LENGTH],
 			name_b[MAX_HERO_NAME_LENGTH]
 
 	sh_get_hero_name_from_id(heroID_b,name_b)
 	sh_get_hero_name_from_id(heroID_a,name_a)
-
-	sh_chat_message(id,-1,"You cannot use the heroes %s and %s at once!",name_b,name_a)
-
-	if((heroID==heroID_a)&&has_b){
+	
+	sh_chat_message(id,-1,"You cannot use the heroes %s and %s at once!",name_a,name_b)
 		
-		
-		sh_strip_user_hero(id, heroID_a)
-		return INIT_FWD_BLOCK
-		
-	}
-	if((heroID==heroID_b)&&has_a){
-		
-		
-		sh_strip_user_hero(id, heroID_b)
-		return INIT_FWD_BLOCK
-		
-	}
-	return INIT_FWD_PASS
+	sh_strip_user_hero(id, heroID)
+	
+	return INIT_FWD_BLOCK
 
 	
 }

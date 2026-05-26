@@ -62,7 +62,6 @@ enum maria_riveter_anims
 	maria_riveter_anim_shoot3
 }
 
-native maria_get_hero_id();
 native maria_riveter_set_num_rivets(id,value_to_set)
 native maria_riveter_get_num_rivets(id)
 native maria_riveter_dec_num_rivets(id)
