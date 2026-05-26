@@ -2949,10 +2949,10 @@ public _sh_extra_damage()
 			// Damage origin is attacker
 			pev(attacker, pev_origin, dmgOrigin)
 		}
-
+		new dmg_save= floatround(flArmor)
 		// Damage message for showing damage bits only
 		message_begin(MSG_ONE_UNRELIABLE, gmsgDamage, _, victim)
-		write_byte(0)		// dmg_save
+		write_byte(dmg_save)		// dmg_save
 		write_byte(damage_after)	// dmg_take
 		write_long(dmg_type)	// visibleDamageBits
 		engfunc(EngFunc_WriteCoord, dmgOrigin[0])	// damageOrigin.x

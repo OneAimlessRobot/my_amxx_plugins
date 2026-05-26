@@ -1,0 +1,6 @@
+L 05/26/2026 - 00:55:33: Start of error session.
+L 05/26/2026 - 00:55:33: Info (map "de_mirage") (file "addons/amxmodx/logs/error_20260526.log")
+L 05/26/2026 - 00:55:33: [AMXX] Run time error 4 (plugin "superheromodcore.amxx") - debug not enabled!
+L 05/26/2026 - 00:55:33: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 05/26/2026 - 00:56:48: [AMXX] Run time error 4 (plugin "superheromodcore.amxx") - debug not enabled!
+L 05/26/2026 - 00:56:48: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
