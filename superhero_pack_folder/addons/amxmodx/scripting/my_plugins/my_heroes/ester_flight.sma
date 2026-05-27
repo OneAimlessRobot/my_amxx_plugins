@@ -24,7 +24,6 @@ new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_smashed_someone_mask = 0
 new g_smashed_breakable_mask = 0
-new g_is_glowing_mask = 0
 new g_is_desperate_mask = 0
 
 
@@ -265,7 +264,6 @@ remove_user_flight_fx(id){
 	emit_sound(id, CHAN_AUTO, ester_blowup_sounds[curr_player_sound[id]],
 				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	
-	UnSet_BitVar(g_is_glowing_mask, id);
 	UnSet_BitVar(g_flying_mask, id);
 	
 	
@@ -305,7 +303,7 @@ public _ester_set_reborn_mode(iPlugins,iParams){
 	}
 	UnSet_BitVar(g_is_desperate_mask, id)
 }
-public OnCmdStart(id, uc_handle, seed)
+public OnCmdStart(id, uc_handle)
 {	
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
@@ -316,10 +314,9 @@ public OnCmdStart(id, uc_handle, seed)
 	}
 
 	if(sh_get_stun(id)){
-		UnSet_BitVar(g_flying_mask,id)
-		if(Get_BitVar(g_is_glowing_mask,id)){
-			UnSet_BitVar(g_is_glowing_mask,id)
+		if(Get_BitVar(g_flying_mask,id)){
 			remove_user_flight_fx(id)
+			UnSet_BitVar(g_flying_mask,id)
 			
 		}
 		return FMRES_IGNORED;
@@ -350,7 +347,10 @@ public OnCmdStart(id, uc_handle, seed)
 			}
 			UnSet_BitVar(g_smashed_someone_mask,id);
 			UnSet_BitVar(g_smashed_breakable_mask,id);
-			Set_BitVar(g_flying_mask,id)
+			if(!Get_BitVar(g_flying_mask,id)){
+				Set_BitVar(g_flying_mask,id)
+				
+			}
 		}
 		if(generate_int(0, FlameAndSoundRate) <3)
 		{
@@ -380,18 +380,13 @@ public OnCmdStart(id, uc_handle, seed)
 		
 			entity_set_vector(id, EV_VEC_velocity, Velocity)
 		
-			if(!Get_BitVar(g_is_glowing_mask,id)){
-				Set_BitVar(g_is_glowing_mask,id)
-				
-			}
 		}
 		
 	}
 	else{
-		UnSet_BitVar(g_flying_mask,id)
-		if(Get_BitVar(g_is_glowing_mask,id)){
-			UnSet_BitVar(g_is_glowing_mask,id)
+		if(Get_BitVar(g_flying_mask,id)){
 			remove_user_flight_fx(id)
+			UnSet_BitVar(g_flying_mask,id)
 			
 		}
 		

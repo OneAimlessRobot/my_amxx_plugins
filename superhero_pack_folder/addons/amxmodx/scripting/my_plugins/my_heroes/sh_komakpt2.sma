@@ -90,12 +90,14 @@ public plugin_init()
 	//register_forward(FM_TraceLine,"trace_komakery_hit_on_right_arm");
 	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_on_right_arm",0,true)
 	register_ham_hook_multiple(Ham_TraceAttack,
-					full_entity_array_for_trace_attack,
-					length_of_trace_attack_entity_array,
+					full_entity_array_except_player,
+					length_of_trace_attack_entity_array-1,
 					"trace_komakery_hit",
 					1,
 					true)
-						
+	
+	RegisterHam(Ham_TakeDamage, "player", "Komak_hits_increase_rpm",1,true)
+
 	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Pre",_, true, false)
 		
 	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Post",1, true, false)
@@ -226,89 +228,99 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {
 
-	if(damage<=0.0){
-		return
-	}
-
-
 	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_get_user_has_hero(idattacker,gHeroID) ||Get_BitVar(gClutchDown_mask, idattacker) ){
 		
 		return
 	
 	}
 	
-	new tr_handle_thing = create_tr2()
-	if(tr_handle_thing<=0){
+	if(!RESET_ON_MISS){
+
 		return
 	}
-	// it can be any other TR handle (such as one from a TR hook)
-	//EngFunc_TraceLine,	// void ) (const float *v1, const float *v2, int fNoMonsters, edict_t *pentToSkip, TraceResult *ptr);
-	static Float:trace_start_vector[3],
-			Float:trace_end_vector[3],
-			Float:true_trace_end_vector[3]
+		
 
-	entity_get_vector(idattacker,EV_VEC_origin,trace_start_vector)
+	if(!komak_is_top_speed(idattacker)){
 
-	multiply_3d_vector_by_scalar(direction,9999.0,direction)
+		if(!Get_BitVar(LastShotMissed_mask,idattacker)){
+			Assign_BitVar(LastShotMissed_mask, idattacker,true_for_macro)
+			emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
+		}
+		
+		g_komak_hits[idattacker]=max(0,g_komak_hits[idattacker]-1);
+		if(!g_komak_hits[idattacker]){
+			komak_gear_change(idattacker,false)
+		}
+	}
 
-	add_3d_vectors(trace_start_vector,direction,trace_end_vector)
+	stats_komak(idattacker)
+}
 
-	engfunc(EngFunc_TraceLine, trace_start_vector, trace_end_vector, 0,idattacker,tr_handle_thing)
+public Komak_hits_increase_rpm(id, idinflictor, attacker, Float:damage, damagebits){
 
-	get_tr2(tr_handle_thing,TR_vecEndPos, true_trace_end_vector)
 
-	new the_entity = get_tr2(tr_handle_thing, TR_pHit)
 
-	free_tr2(tr_handle_thing)
-
+	if( !sh_is_active() ||!is_user_alive(attacker)||
+				
+				!sh_get_user_has_hero(attacker,gHeroID) ||
+	
+				Get_BitVar(gClutchDown_mask, attacker) ){
+		
+		return HAM_IGNORED
+	
+	}
 	static blown_engine_cooldown;
 	blown_engine_cooldown = cvar_val(num, pcvar_blown_engine_cooldown)
 	
-	new bool:client_hittable_here= (is_user_alive(the_entity)&&!sh_clients_are_same_team(the_entity,idattacker))
-	
-	if(client_hittable_here){
+	new client_hittable_here=is_user_alive(id)
+	if(client_hittable_here&&!sh_clients_are_same_team(id,attacker)&&(id!=attacker)){
 
-		if(g_komak_hits[idattacker]>red_line){
+		new id_weapon_ent=get_pdata_cbase(attacker, m_pActiveItem, XTRA_OFS_PLAYER)
+		new weapon_id=CSW_NONE
+		new bool:this_is_a_special_weapon_damage=entity_is_weapon(id_weapon_ent,_,weapon_id)
+		if(!komak_is_top_speed(attacker)){
+
+			/*
 			
-			if(Get_BitVar(LastShotMissed_mask,idattacker)){
-				Assign_BitVar(LastShotMissed_mask, idattacker,false_for_macro)
+			annoying ass p*netration rifles shit
+			
+			*/
+			this_is_a_special_weapon_damage = bool:(RIFLES_BS & (1<<weapon_id))
+			
+			new increment= ((this_is_a_special_weapon_damage)?2:1)
+
+			g_komak_hits[attacker]=min(g_komak_hits[attacker]+increment, max_rpm);
+		}
+		else{
+
+			return HAM_IGNORED
+		}
+		if(g_komak_hits[attacker]>red_line){
+			
+			if(Get_BitVar(LastShotMissed_mask,attacker)){
+				Assign_BitVar(LastShotMissed_mask, attacker,false_for_macro)
 			}
-			emit_sound(idattacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(idattacker))
+			emit_sound(attacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(attacker))
 		
 		}
-		
-		if(!komak_is_top_speed(idattacker)){
-			g_komak_hits[idattacker]=min(g_komak_hits[idattacker]+1, max_rpm);
+		if(!this_is_a_special_weapon_damage){
+
+			return HAM_IGNORED
+
 		}
-		if((g_komak_hits[idattacker]>=max_rpm)&&BLOW_ENGINE){
 		
-			reset_komak(idattacker)
-			ultimateTimer(idattacker, blown_engine_cooldown * 1.0)
-			gEngineRepairTimer[idattacker]=blown_engine_cooldown
-			sh_chat_message(idattacker,gHeroID,"Blown engine!!!!")
-			emit_sound(idattacker,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
+		if((g_komak_hits[attacker]>=max_rpm)&&BLOW_ENGINE){
+		
+			reset_komak(attacker)
+			ultimateTimer(attacker, blown_engine_cooldown * 1.0)
+			gEngineRepairTimer[attacker]=blown_engine_cooldown
+			sh_chat_message(attacker,gHeroID,"Blown engine!!!!")
+			emit_sound(id_weapon_ent,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		
 			
 		}
 	}
-	else if(RESET_ON_MISS){
-		
-
-		if(!komak_is_top_speed(idattacker)){
-
-			if(!Get_BitVar(LastShotMissed_mask,idattacker)){
-				Assign_BitVar(LastShotMissed_mask, idattacker,true_for_macro)
-				emit_sound(idattacker,CHAN_ITEM,  KOMAK_MISSED_SHOT, 1.0, ATTN_NORM, 0, PITCH_NORM)
-			}
-			
-			g_komak_hits[idattacker]=max(0,g_komak_hits[idattacker]-1);
-			if(!g_komak_hits[idattacker]){
-				komak_gear_change(idattacker,false)
-			}
-		}
-		
-	}
-	stats_komak(idattacker)
+	return HAM_IGNORED
 }
 public komak_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return

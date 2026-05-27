@@ -18,22 +18,25 @@ const default_starting_secret_code =1000
 
 
 
-stock bool:entity_is_weapon(ent, bit_mask_to_check=(GUNS_BIT_SUM|CSW_KNIFE)){
+stock bool:entity_is_weapon(ent, bit_mask_to_check=(GUNS_BIT_SUM|CSW_KNIFE), &weapon_id_to_extract=CSW_NONE){
 
   if(pev_valid(ent)!=PDATA_SAFE){
     return false
   }
 
   static iId; iId = get_pdata_int(ent, m_iId, XO_WEAPON)
-
+  
   if(!cs_is_valid_itemid(iId, true)){
 
     return false
   }
-
+  
   if(!Get_BitVar(bit_mask_to_check,iId)){
     return false
   }
+
+
+  weapon_id_to_extract = iId
 
   return true
 

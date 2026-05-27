@@ -5,6 +5,7 @@
 
 
 #define enum_zero (any:0)
+#define enum_one (any:1)
 
 
 #define Get_BitVar(%1,%2) (%1 & (1 << (%2 & 31)))

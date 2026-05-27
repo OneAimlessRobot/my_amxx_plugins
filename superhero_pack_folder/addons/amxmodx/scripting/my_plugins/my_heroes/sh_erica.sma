@@ -23,16 +23,11 @@ new g_erica_points[SH_MAXSLOTS+1]
 new g_erica_kills[SH_MAXSLOTS+1]
 new Float:g_base_er_speed[SH_MAXSLOTS+1]
 new Float:g_normal_er_speed[SH_MAXSLOTS+1]
-new Float:g_base_er_dmg_mult[SH_MAXSLOTS+1]
-new Float:g_normal_er_dmg_mult[SH_MAXSLOTS+1]
 new Float:g_base_er_radius[SH_MAXSLOTS+1]
 new Float:g_normal_er_radius[SH_MAXSLOTS+1]
 new g_prevWeapon[SH_MAXSLOTS+1]
 
 
-new dmg_source_name_short_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
-new dmg_source_name_log_hype_shot[SAFE_BUFFER_SIZE+1]="hype_shot"
-new custom_dmg_id_hype_shot
 
 //new gHeroLevel
 new pcvar_base_er_points
@@ -44,9 +39,6 @@ new pcvar_base_er_speed
 new pcvar_max_er_speed
 new pcvar_max_er_radius
 new pcvar_base_er_radius
-new pcvar_max_dmg_er_mult
-new pcvar_base_dmg_er_mult
-new pcvar_dmg_mult_er_inc
 new pcvar_num_er_darts
 new pcvar_num_mollies
 
@@ -65,9 +57,6 @@ public plugin_init()
 	pcvar_max_er_radius = register_cvar("erica_max_radius", "1000")
 	pcvar_base_er_points = register_cvar("erica_base_points", "1000")
 	pcvar_max_er_points = register_cvar("erica_max_points", "1000")
-	pcvar_base_dmg_er_mult = register_cvar("erica_base_dmg_mult", "1.0")
-	pcvar_dmg_mult_er_inc = register_cvar("erica_dmg_mult_inc", "1.0")
-	pcvar_max_dmg_er_mult = register_cvar("erica_max_dmg_mult", "6.0")
 	pcvar_base_er_speed = register_cvar("erica_base_speed", "500")
 	pcvar_max_er_speed = register_cvar("erica_max_speed", "1000")
 	pcvar_num_er_darts = register_cvar("erica_num_darts", "100")
@@ -76,12 +65,9 @@ public plugin_init()
 	pcvar_dmg_speed_er_points_pct = register_cvar("erica_dmg_speed_points_pct", "0.1")
 	
 	gHeroID=shCreateHero(gHeroName, "Erica!", "Grab attention by burning and bleeding and get fastaaa!", false, "erica_level" )
-	register_event("Damage", "erica_damage", "b", "2!0")
 	
 	RegisterHam(Ham_TraceAttack,"player","Erica_ham_trace_damage",_,true)
 	
-	custom_dmg_id_hype_shot=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_hype_shot,dmg_source_name_log_hype_shot,0)
-
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,NAVALHA_V_MODEL,NAVALHA_P_MODEL)
 	sh_register_superheromod_weapon_model(gHeroID,CSW_ELITE,TRANQS_V_MODEL,TRANQS_P_MODEL)
 	
@@ -143,9 +129,7 @@ prepare_erica(id){
 	g_erica_points[id] = cvar_val(num, pcvar_base_er_points);
 	g_base_er_speed[id] = cvar_val(float, pcvar_base_er_speed)
 	g_base_er_radius[id] = cvar_val(float, pcvar_base_er_radius)
-	g_base_er_dmg_mult[id] = cvar_val(float, pcvar_base_dmg_er_mult)
 	g_normal_er_radius[id] = cvar_val(float, pcvar_base_er_radius)
-	g_normal_er_dmg_mult[id]=0.0
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id] = cvar_val(num, pcvar_num_er_darts)
 }
@@ -164,9 +148,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		g_erica_kills[id]=0;
 		g_base_er_speed[id]=0.0
 		g_base_er_radius[id]=0.0
-		g_base_er_dmg_mult[id]=0.0
 		g_normal_er_radius[id]=0.0
-		g_normal_er_dmg_mult[id]=0.0
 		g_normal_er_speed[id]=0.0
 		gNumDarts[id]=0
 		if ( is_user_alive(id) ) {
@@ -177,6 +159,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	
 	
 }
+
 public Erica_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
@@ -208,9 +191,7 @@ public client_disconnected(id){
 	g_erica_kills[id]=0;
 	g_base_er_speed[id]=0.0
 	g_base_er_radius[id]=0.0
-	g_base_er_dmg_mult[id]=0.0
 	g_normal_er_radius[id]=0.0
-	g_normal_er_dmg_mult[id]=0.0
 	g_normal_er_speed[id]=0.0
 	gNumDarts[id]=0
 	hook_set_hook(id,0)
@@ -259,29 +240,6 @@ public weaponChange(id)
 
 }
 
-public erica_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	
-	new  Float:damage= float(read_data(2))
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( !is_user_alive(attacker)|| attacker==id  ) return
-	
-	if(!sh_get_user_has_hero(attacker,gHeroID) ){
-
-		return
-	}
-	
-	new Float:extraDamage = damage * g_normal_er_dmg_mult[attacker] - damage
-	if (floatround(extraDamage)>0){
-
-		sh_extra_damage(id,attacker,floatround(extraDamage),
-						my_hitpoint_enum:bodypart,
-						_,_,_,_,
-						SH_NEW_DMG_SUPER_BULLET,
-						custom_dmg_id_hype_shot)
-	}
-}
 
 update_stats(id){
 	if(sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)){
@@ -290,7 +248,6 @@ update_stats(id){
 						float(g_erica_points[id]))),cvar_val(float, pcvar_max_er_speed)),maxspeed),
 		set_user_maxspeed(id,g_normal_er_speed[id])
 		g_normal_er_radius[id]=floatmin(floatadd(g_base_er_radius[id],floatmul(float(g_erica_points[id]),cvar_val(float, pcvar_speed_points_er_radius_pct))),cvar_val(float, pcvar_max_er_radius));
-		g_normal_er_dmg_mult[id]=floatmin(floatadd(g_base_er_dmg_mult[id],floatmul(float(g_erica_kills[id]),cvar_val(float, pcvar_dmg_mult_er_inc))),cvar_val(float, pcvar_max_dmg_er_mult));
 			
 	}
 
@@ -309,7 +266,6 @@ if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 		cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-DART_PISTOL_CLIP_SIZE);
 	}
 	hook_set_hook(id,1)
-	
 }
 }
 

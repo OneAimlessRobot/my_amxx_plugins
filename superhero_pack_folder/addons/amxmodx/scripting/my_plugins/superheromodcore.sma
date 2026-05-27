@@ -24,8 +24,11 @@
 
 new const SH_CORE_STR[] =  "SuperHero Core"
 
+#define SH_DETAILED_DESCRIPTION_SIZE 512
+#define SH_SHORT_DESCRIPTION_SIZE 120
+#define SH_HERO_NAME_SIZE 25
 // Parms Are: Hero, Power Description, Help Info, Needs A Bind?, Level Available At
-enum enumHeros { hero[25], superpower[50], help[128], requiresKeys,isCorePower, availableLevel }
+enum enumHeros { hero[SH_HERO_NAME_SIZE], superpower[SH_SHORT_DESCRIPTION_SIZE], help[SH_DETAILED_DESCRIPTION_SIZE], requiresKeys,isCorePower, availableLevel }
 
 // The Big Array that holds all of the heroes, superpowers, help, and other important info
 new gSuperHeros[SH_MAXHEROS][enumHeros]
@@ -1231,14 +1234,14 @@ public _sh_set_hero_info()
 
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return
 
-	new pPower[50], pHelp[128]
+	new pPower[50], pHelp[SH_DETAILED_DESCRIPTION_SIZE]
 	get_string(2, pPower, charsmax(pPower))		//Short Power Description
 	get_string(3, pHelp, charsmax(pHelp))		//Help Info
 
 	debugMsg(0, 3, "Create Hero-> HeroID: %d - %s - %s", heroIndex, pPower, pHelp)
 
-	copy(gSuperHeros[heroIndex][superpower], 49, pPower)
-	copy(gSuperHeros[heroIndex][help], 127, pHelp)
+	copy(gSuperHeros[heroIndex][superpower], SH_SHORT_DESCRIPTION_SIZE-1, pPower)
+	copy(gSuperHeros[heroIndex][help],  SH_DETAILED_DESCRIPTION_SIZE-1, pHelp)
 }
 //----------------------------------------------------------------------------------------------
 public _sh_set_hero_bind()
@@ -1826,17 +1829,17 @@ public selectedSuperPower(id, key)
 		return PLUGIN_HANDLED
 	}
 
-	new message[256]
+	static message[1024]
 	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
-		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%s",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
+		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%^n",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
 									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 	else {
-		formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s%s^n%s", gPlayerBinds[id][0]+1,gSuperHeros[heroIndex][isCorePower]?"(Core Hero) ":"", gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
+		formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s%s^n%s^n", gPlayerBinds[id][0]+1,gSuperHeros[heroIndex][isCorePower]?"(Core Hero) ":"", gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 
 	// Show the Hero Picked
-	set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 5.0, 0.1, 0.2, -1)
+	set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
 	ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
 
 	// Bind Keys / Set Powers

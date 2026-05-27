@@ -48,9 +48,8 @@ public plugin_init()
 							JAQUEO_COOL_SCOUT_V_MODEL,
 							JAQUEO_COOL_SCOUT_P_MODEL)
 
-	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","Jaqueo_Damage",_,true)
 	
-	// Add your code here...
 }
 public plugin_natives(){
 	
@@ -93,29 +92,39 @@ public jaqueo_drop_weapons(id){
 	sh_drop_weapon(id,CSW_AK47,true)
 	
 }
-public Jaqueo_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
-	
-	if(!sh_is_active() || !client_is_hero_user(idattacker, gHeroID)) return HAM_IGNORED
-	
-	new weapon, bodypart, attacker = get_user_attacker(this, weapon, bodypart)
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==this)||!is_user_connected(attacker)) return HAM_IGNORED
-	
-	if((weapon==CSW_SCOUT)&&sh_get_user_has_hero(idattacker,gHeroID) ){
-		new Float:extraDamage = damage * scout_mult - damage
-		if (floatround(extraDamage)>0){
-			sh_extra_damage(this, idattacker, floatround(extraDamage),
-						my_hitpoint_enum:bodypart,
-						_,_,_,_,
-						SH_NEW_DMG_SUPER_BULLET,
-						custom_dmg_id_jaqueo_scout)
+//----------------------------------------------------------------------------------------------
+public Jaqueo_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
+
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
+
+	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	static weapon;
+	get_user_attacker(Victim, weapon)
+	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+
+	if (!is_user_connected(Attacker)) return HAM_IGNORED
+
+
+	if ( has_hero&& weapon == CSW_SCOUT) {
+		// do extra damage
+		new Float:extraDamage = Damage * scout_mult- Damage
+		if (extraDamage > 0.0){
 			
+			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+											the_hitpoint,
+											_,_,_,_,
+											SH_NEW_DMG_SUPER_BULLET,
+											custom_dmg_id_jaqueo_scout)
 		}
 	}
-	
 	return HAM_IGNORED
-	
-	
-	
 }
 //----------------------------------------------------------------------------------------------
 public loadCVARS()

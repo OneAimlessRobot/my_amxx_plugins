@@ -89,8 +89,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
+		sh_unset_cooldown_flag(id)
 		swat_weapons(id)
 
 	}
@@ -150,10 +150,10 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 		the_hitpoint=MY_HIT_SHIELD
 	}
 
-	if ( has_hero&& weapon == CSW_M4A1 && is_user_alive(Victim) ) {
+	if ( has_hero&& weapon == CSW_M4A1 ) {
 		// do extra damage
 		new Float:extraDamage = Damage * get_cvar_float("swat_m4a1mult") - Damage
-		if (extraDamage > 0){
+		if (extraDamage > 0.0){
 			
 			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
 											the_hitpoint,
@@ -163,9 +163,9 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 		}
 	}
 
-	else if(has_hero && weapon == CSW_KNIFE && is_user_alive(Victim) ){
+	else if(has_hero && weapon == CSW_KNIFE){
 		new Float:extraDamage =  Damage *  get_cvar_float("swat_knifemult") - Damage
-		if(extraDamage > 0){
+		if(extraDamage > 0.0){
 			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
 											the_hitpoint,
 											_,_,_,_,

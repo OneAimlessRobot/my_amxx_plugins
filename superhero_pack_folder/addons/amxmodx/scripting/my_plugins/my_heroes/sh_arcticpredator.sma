@@ -159,7 +159,8 @@ public arcticPredator_loop(id)
 			g_huntTimer[id]--
 			new message[128]
 			formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
-			set_user_rendering(id,kRenderFxGlowShell,0,0,0,10,gAlphaInvis)
+
+			sh_set_rendering(id,0,0,0,gAlphaInvis,kRenderFxGlowShell,kRenderTransColor);
 			client_print(id,print_center,message)
 		}
 		else
@@ -177,7 +178,7 @@ public hunt_endmode(id)
 	if ( gHuntMode[id] == true )
 	{
 		g_huntTimer[id]=0
-		set_user_rendering(id,kRenderFxGlowShell,0,0,0,10,255)
+		sh_set_rendering(id)
 		StopNVG(id)
 		gHuntMode[id] = false
 	}
@@ -352,9 +353,9 @@ public RunRedNVG(id)
 public sh_client_death(id,attacker)
 {
 	g_huntTimer[id] = 0;
-	sh_unset_cooldown_flag(id)
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
+		sh_unset_cooldown_flag(id)
 		BlowUp(id)
 		gHuntMode[id] = false
 	}
@@ -513,6 +514,7 @@ if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[atta
 	
 	// player fades..
 	set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4);
+	
 	
 	// beeeg explody!
 	message_begin(MSG_ALL, SVC_TEMPENTITY)

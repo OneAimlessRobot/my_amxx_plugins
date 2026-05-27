@@ -1,6 +1,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -14,24 +16,26 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new g_flora_field_loaded_mask=0,
+	
+	g_prev_flora_cloaked_mask=0,
+ 	g_curr_flora_cloaked_mask=0,
 
+	g_curr_flora_noclip_mask=0;
 
-stock const  FLORA_HEAL_GLOWING_ON=0
-stock Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
-stock g_flora_field_loaded[SH_MAXSLOTS+1];
-stock g_prev_flora_button[SH_MAXSLOTS+1];
-stock g_curr_flora_button[SH_MAXSLOTS+1];
-stock g_flora_previous_weapon[SH_MAXSLOTS+1]
-stock g_prev_flora_cloaked[SH_MAXSLOTS+1];
-stock g_curr_flora_cloaked[SH_MAXSLOTS+1];
-stock g_flora_num_of_active_fields[SH_MAXSLOTS+1]
-stock g_flora_prev_inside[SH_MAXSLOTS+1]
-stock g_flora_curr_inside[SH_MAXSLOTS+1]
-stock g_flora_curr_charging[SH_MAXSLOTS+1]
-stock flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
-stock flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
-stock sh_custom_color:g_flora_dmg_color[SH_MAXSLOTS+1]
-stock Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
+new const FLORA_HEAL_GLOWING_ON=0
+new Float:g_flora_field_cooldown[SH_MAXSLOTS+1];
+
+new g_prev_flora_button[SH_MAXSLOTS+1];
+new g_curr_flora_button[SH_MAXSLOTS+1];
+new g_flora_num_of_active_fields[SH_MAXSLOTS+1]
+new g_flora_prev_inside[SH_MAXSLOTS+1]
+new g_flora_curr_inside[SH_MAXSLOTS+1]
+new g_flora_curr_charging[SH_MAXSLOTS+1]
+new flora_sheltered_values:g_flora_sheltered_value[SH_MAXSLOTS+1]
+new flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
+new sh_custom_color:g_flora_dmg_color[SH_MAXSLOTS+1]
+new Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
 new gHeroID = -1
 
@@ -85,10 +89,35 @@ public plugin_init()
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
 	FLORA_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
 
+	register_forward(FM_CmdStart, "flora_noclip_control")
+
 	set_task(0.35,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
 
 	register_think(FLORA_FIELD_CLASSNAME, "field_think")
 	init_hud_syncs()
+
+}
+
+public flora_noclip_control(id, uc_handle)
+{	
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
+			!Get_BitVar(g_curr_flora_noclip_mask,id)){
+			return FMRES_IGNORED;
+	}
+	static buttons;
+	buttons = get_uc(uc_handle, UC_Buttons)
+
+	if(buttons & IN_DUCK){
+
+		buttons &= (~IN_DUCK)
+		set_uc(uc_handle,UC_Buttons,buttons)
+		return FMRES_SUPERCEDE
+
+	}
+	return FMRES_IGNORED;
 
 }
 
@@ -127,6 +156,19 @@ public plugin_cfg(){
 								0)
 								
 }
+//this assumes lots of shit
+noclip_flora(id){
+
+	Assign_BitVar(g_curr_flora_noclip_mask,id, true_for_macro)
+	entity_set_int(id,EV_INT_movetype,MOVETYPE_NOCLIP)
+}
+
+unoclip_flora(id){
+
+	Assign_BitVar(g_curr_flora_noclip_mask,id, false_for_macro)
+	entity_set_int(id,EV_INT_movetype,MOVETYPE_WALK)
+}
+
 public _flora_get_user_num_active_fields(iPlugin,iParams){
 	new id=get_param(1)
 	
@@ -165,7 +207,7 @@ public _field_uncharge_user(iPlugin,iParams){
 public _field_loaded(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_flora_field_loaded[id]
+	return Get_BitVar(g_flora_field_loaded_mask,id)
 
 
 }
@@ -210,7 +252,7 @@ public Float:_field_get_user_field_cooldown(iPlugin,iParams){
 public _flora_get_user_is_cloaked(iPlugin,iParams){
 	new id=get_param(1)
 	
-	return g_curr_flora_cloaked[id]
+	return Get_BitVar(g_curr_flora_cloaked_mask,id)
 
 
 }
@@ -254,11 +296,11 @@ public _reset_flora_user(iPlugin,iParams){
 	
 	clear_user_fields(id)
 	uncharge_user(id)
-	g_flora_field_loaded[id]=1;
+	Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 	g_flora_field_cooldown[id]=0.0;
-	g_flora_num_of_active_fields[id]=0
-	g_prev_flora_cloaked[id]=0
-	g_curr_flora_cloaked[id]=0
+	g_flora_num_of_active_fields[id]=0;
+	Assign_BitVar(g_prev_flora_cloaked_mask,id,false_for_macro);
+	Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
 	g_flora_curr_charging[id]=-1
 	g_flora_curr_inside[id]=-1
 	g_flora_prev_inside[id]=-1
@@ -278,9 +320,29 @@ destroy_field(field_id,make_sound=0,planting=0){
 		if(is_user_connected(owner)){
 			if(sh_get_user_has_hero(owner,gHeroID)){
 				if(!planting){
-					flora_dec_user_num_active_fields(owner,1)
+					g_flora_num_of_active_fields[owner]=
+								(g_flora_num_of_active_fields[owner]>0)? (g_flora_num_of_active_fields[owner]-1):0
+
 				}
-				g_curr_flora_cloaked[owner]=0;
+				if(is_user_alive(owner)){
+					if(Get_BitVar(g_curr_flora_noclip_mask,owner)){
+						
+						unoclip_flora(owner)
+						new Float:user_origin[3]
+						entity_get_vector(owner,EV_VEC_origin,user_origin)
+						if(!sh_hull_vacant(owner,user_origin,HULL_HUMAN)&&
+										
+										((g_flora_num_of_active_fields[owner]<=0)||
+										(field_id==g_flora_curr_inside[owner])||
+										(field_id==g_flora_prev_inside[owner]))){
+							
+							sh_chat_message(owner,gHeroID,"You were noclipping and were inside a wall as your last field dies. You die as well")
+							user_kill(owner)
+						}
+
+					}
+				}
+				Assign_BitVar(g_curr_flora_cloaked_mask,owner, false_for_macro);
 				apply_cloak(owner)
 				if(field_id==g_flora_curr_inside[owner]){
 			
@@ -355,20 +417,40 @@ public flora_checks(task_id){
 		
 		if(sh_get_stun(id)) continue
 		
-		if(!g_flora_field_loaded[id]){
+		if(!Get_BitVar(g_flora_field_loaded_mask,id)){
 			
 			continue
 			
 		}
-		
+		if(Get_BitVar(g_curr_flora_noclip_mask,id)){
+			static Float:player_origin[3]
+			new the_ent_we_got_stuck_on = 0
+			entity_get_vector(id,EV_VEC_origin,player_origin)
+			/*
+			she doesnt like free air. free air == stuck for her
+			*/
+			new bool:did_we_get_stuck=sh_hull_vacant(id,player_origin,HULL_HUMAN,the_ent_we_got_stuck_on)
+			if(did_we_get_stuck){
+				unoclip_flora(id)
+			}
+			else if(is_entity_brush(the_ent_we_got_stuck_on)){
+				sh_chat_message(id, gHeroID, "You got stuck on furniture (a brush entity). Die.")
+				user_kill(id)
+				continue
+			}
+			else{
+				engclient_cmd(id, "weapon_knife")
+			}
+		}
 		g_prev_flora_button[id]=g_curr_flora_button[id]
-		g_prev_flora_cloaked[id]=g_curr_flora_cloaked[id]
+		Assign_BitVar(g_prev_flora_cloaked_mask,id,Get_BitVar(g_curr_flora_cloaked_mask,id));
 		new button = entity_get_int(id,EV_INT_button);
 		g_curr_flora_button[id]=button
+		if((!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )||!(button & IN_DUCK ))&&
+					!Get_BitVar(g_curr_flora_noclip_mask,id)){
 		
-		if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )||!(button & IN_DUCK )){
-			g_flora_sheltered_value[id]=flora_sheltered_values:0;
-			g_curr_flora_cloaked[id]=0
+			g_flora_sheltered_value[id]=enum_zero;
+			Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
 			apply_cloak(id)
 			continue
 		
@@ -379,20 +461,35 @@ public flora_checks(task_id){
 		
 		
 		if(g_flora_curr_inside[id]!=field_id){
-			g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>flora_sheltered_values:0?1.0:0.0))
+			g_flora_curr_dmg_mult[id]=((g_flora_sheltered_value[id]>enum_zero?1.0:0.0))
 							*floatpower(
 							cvar_val(float,pcvar_flora_field_heal_mult),float(_:(g_flora_sheltered_value[id]-flora_sheltered_values:1)))
 
 			g_flora_prev_inside[id]=g_flora_curr_inside[id]
 			g_flora_curr_inside[id]=g_flora_sheltered_value[id]<=OUTSIDE?-1:field_id
 		}
-		if(g_flora_sheltered_value[id]>flora_sheltered_values:0){
+		if(g_flora_sheltered_value[id]>enum_zero){
+			if((g_flora_sheltered_value[id]>enum_one)&&
+					(g_curr_flora_button[id] & IN_RELOAD)&&
+					(get_user_weapon(id)==CSW_KNIFE)&&
+					!Get_BitVar(g_curr_flora_noclip_mask,id)){
+					
+
+					new flags= entity_get_int(id,EV_INT_flags)
+					flags&= (~FL_DUCKING)
+					entity_set_int(id,EV_INT_flags,flags)
+
+
+					
+					noclip_flora(id)
+
+			}
 			g_flora_dmg_color[id]=flora_damage_colors[g_flora_sheltered_value[id]]
 			switch(g_flora_sheltered_value[id]){
 				case OUTSIDE:
 				{
-					if(g_prev_flora_cloaked[id]){
-						g_curr_flora_cloaked[id]=0
+					if(Get_BitVar(g_prev_flora_cloaked_mask,id)){
+						Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
 					}
 					apply_cloak(id)
 					continue
@@ -407,8 +504,8 @@ public flora_checks(task_id){
 				
 				}
 			}
-			if(!g_prev_flora_cloaked[id]){
-				g_curr_flora_cloaked[id]=1
+			if(!Get_BitVar(g_prev_flora_cloaked_mask,id)){
+				Assign_BitVar(g_curr_flora_cloaked_mask,id,true_for_macro);
 				apply_cloak(id)
 			}
 		}
@@ -479,14 +576,11 @@ public _form_field(iPlugin,iParams)
 		return
 		
 	}
-	if(!g_flora_field_loaded[id]){
+	if(!Get_BitVar(g_flora_field_loaded_mask,id)){
 		
 		sh_chat_message(id,gHeroID,"Field not loaded")
 		return
 	}
-
-	new weaponID = get_user_weapon(id)
-	g_flora_previous_weapon[id]=weaponID
 
 	
 	new Float: Origin[3],  Ent
@@ -519,8 +613,8 @@ public _form_field(iPlugin,iParams)
 	entity_set_edict(Ent, EV_ENT_owner, id)
 	entity_set_float(Ent,EV_FL_fuser1,0.0)
 	entity_set_origin(Ent,Origin);
-	g_flora_curr_charging[id]=Ent
-	g_flora_field_loaded[id]=0;
+	g_flora_curr_charging[id]=Ent;
+	Assign_BitVar(g_flora_field_loaded_mask,id,false_for_macro);
 	
 	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_FLY) //5 = movetype_fly, No grav, but collides.
 	entity_set_int(Ent,EV_INT_rendermode,kRenderTransAlpha)
@@ -531,6 +625,9 @@ public _form_field(iPlugin,iParams)
 	glow(Ent,LineColors[ORANGE][0],LineColors[ORANGE][1],LineColors[ORANGE][2],100,1)
 	//set deployed status
 	entity_set_int(Ent,EV_INT_iuser1,0)
+
+	emit_sound(Ent, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 	entity_set_float(Ent,EV_FL_nextthink,floatadd(get_gametime(),FLORA_CHARGE_PERIOD))
 }
 public cooldown_update_task(id){
@@ -538,7 +635,7 @@ public cooldown_update_task(id){
 	id-=FLORA_COOLDOWN_TASKID
 	g_flora_field_cooldown[id]=g_flora_field_cooldown[id]-FLORA_CHARGE_PERIOD
 	if(g_flora_field_cooldown[id]<=0.0){
-		g_flora_field_loaded[id]=1
+		Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 	
 	}
 	
@@ -634,19 +731,19 @@ apply_cloak(id){
 	
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
-		g_curr_flora_cloaked[id]=0
-		g_prev_flora_cloaked[id]=0
+		Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
+		Assign_BitVar(g_prev_flora_cloaked_mask,id,false_for_macro);
 		return 
 
 	}
-	if(!(g_curr_flora_cloaked[id]-g_prev_flora_cloaked[id])){
+	if(Get_BitVar(g_curr_flora_cloaked_mask,id)==Get_BitVar(g_prev_flora_cloaked_mask,id)){
 
 		return
 	}
 
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
-	if(g_curr_flora_cloaked[id]){
+	if(Get_BitVar(g_curr_flora_cloaked_mask,id)){
 		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransColor);
 	}
 	else{
@@ -660,7 +757,7 @@ public field_think(ent)
 	if ( pev_valid(ent)!=2 ){
 		
 	
-			return FMRES_IGNORED
+			return
 	
 	}
 	new Float:gametime
@@ -673,8 +770,8 @@ public field_think(ent)
 	new deployed=entity_get_int(ent,EV_INT_iuser1)
 	if(!deployed){
 
-		return charge_iteration(owner,ent)
-		
+		charge_iteration(owner,ent)
+		return
 	}
 	if (entity_get_float(ent,EV_FL_fuser2)<FIELD_ACTIVE_TIME_BUFFER) {
 		if(pev_valid(ent)==2){
@@ -682,7 +779,7 @@ public field_think(ent)
 			
 			destroy_field(ent,1)
 		}
-		return FMRES_IGNORED
+		return
 	}
 	else{//60
 		entity_get_vector(ent, EV_VEC_origin, ent_pos)
@@ -730,35 +827,30 @@ public field_think(ent)
 				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}
-		emit_sound(ent, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))
 		entity_set_float(ent,EV_FL_fuser2,floatsub(entity_get_float(ent,EV_FL_fuser2),FLORA_THINK_PERIOD))
 	
 	}
-	return FMRES_IGNORED
 }
 uncharge_user(id){
 	
 	if(pev_valid(g_flora_curr_charging[id])==2){
 		
+		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		emit_sound(g_flora_curr_charging[id], CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		destroy_field(g_flora_curr_charging[id],0,1)
-		g_flora_field_loaded[id]=1
+		Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 		g_flora_curr_charging[id]=-1;
 	}
-	if (g_flora_previous_weapon[id] != CSW_KNIFE ){
-		shSwitchWeaponID(id, g_flora_previous_weapon[id])
-	}
-	return 0
 	
 	
 	
 }
 
 public load_field(id){
-	id-=FLORA_LOAD_TASKID
+	id-=FLORA_LOAD_TASKID;
 	
-	g_flora_field_loaded[id]=1;	
+	Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 	sh_chat_message(id,gHeroID,"Field loaded");
 	
 	
@@ -769,12 +861,12 @@ public charge_iteration(owner,field_id){
 	
 	if(!is_user_alive(owner)||!sh_get_user_has_hero(owner,gHeroID)){
 		uncharge_user(owner)
-		return FMRES_IGNORED
+		return
 	}
 	
 	if(pev_valid(field_id)!=2) {
 		uncharge_user(owner)
-		return FMRES_IGNORED
+		return
 	}
 	
 	new test_edict=find_next_nearest_flora_field(owner,field_id,0.0)
@@ -782,7 +874,7 @@ public charge_iteration(owner,field_id){
 		sh_sound_deny(owner)
 		sh_chat_message(owner,gHeroID,"This spore is too close to another one of yours! Will not plant.")
 		uncharge_user(owner)
-		return FMRES_IGNORED
+		return
 	}
 	
 	if(!(entity_get_int( owner, EV_INT_flags ) & FL_ONGROUND  )){
@@ -790,7 +882,7 @@ public charge_iteration(owner,field_id){
 		sh_sound_deny(owner)
 		sh_chat_message(owner, gHeroID, "Charging stopped. You cannot charge a field while airborne")
 		uncharge_user(owner)
-		return FMRES_IGNORED
+		return
 		
 	}
 	new Float:vOrigin[3]
@@ -816,15 +908,16 @@ public charge_iteration(owner,field_id){
 	formatex(hud_msg,127,"[SH] flora: Charging... ^n %0.2f percent done",(entity_get_float(field_id,EV_FL_fuser1)/cvar_val(float,pcvar_flora_charge_time))*100.0);
 	client_print(owner,print_center,"%s",hud_msg)
 	
-	emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	if(entity_get_float(field_id,EV_FL_fuser1)>cvar_val(float,pcvar_flora_charge_time)){
 		//set deployed status
+
+		emit_sound(field_id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		entity_set_int(field_id,EV_INT_iuser1,1)
 		field_deploy_task(owner,field_id)
 	}
 	entity_set_float(field_id,EV_FL_nextthink,floatadd(get_gametime(),FLORA_CHARGE_PERIOD))
-	return FMRES_IGNORED
 	
 	
 	

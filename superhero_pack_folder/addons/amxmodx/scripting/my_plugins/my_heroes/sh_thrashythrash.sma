@@ -247,9 +247,9 @@ public thrashy_weapons(id)
 }
 public sh_client_death(id){
 	
-	sh_unset_cooldown_flag(id)
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
+		sh_unset_cooldown_flag(id)
 		BlowUp(id,true)
 	}
 }
