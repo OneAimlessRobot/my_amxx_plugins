@@ -10,8 +10,4 @@
 
 
 native flora_get_hero_id()
-native flora_get_user_num_fields(id)
-native flora_set_user_num_fields(id,value)
-native flora_dec_user_num_fields(id,value)
-native flora_inc_user_num_fields(id,value)
 native flora_get_hero_lvl()

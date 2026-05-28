@@ -8,7 +8,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock dmg_source_array[_:SH_NEW_DMG_MAX_DAMAGES]
+stock dmg_source_array[sh_thrash_brat_dmg_type]
 
 public plugin_init(){
 	
@@ -31,17 +31,17 @@ public _get_weapon_id_for_generic_dmg_source(iPlugins, iParams){
 
 	new sh_thrash_brat_dmg_type:dmg_source=sh_thrash_brat_dmg_type:get_param(1)	
 	
-	if(dmg_source>=SH_NEW_DMG_MAX_DAMAGES || dmg_source < sh_thrash_brat_dmg_type:0){
+	if(dmg_source>=sh_thrash_brat_dmg_type || dmg_source < enum_zero){
 
 		return sh_get_generic_dmg_source_wpn_id()
 	}
-	return dmg_source_array[_:dmg_source]
+	return dmg_source_array[dmg_source]
 	
 }
 
 public _prepare_shero_aux_lib_pt4(iPlugins, iParams){
 	
-	for( new i=0;i<_:SH_NEW_DMG_MAX_DAMAGES;i++){
+	for( new sh_thrash_brat_dmg_type:i=enum_zero;i<sh_thrash_brat_dmg_type;i++){
 		dmg_source_array[i]=sh_log_custom_damage_source(
 								-1,
 								new_dmg_type_names[i],

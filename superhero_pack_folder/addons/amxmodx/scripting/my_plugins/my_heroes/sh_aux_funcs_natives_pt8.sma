@@ -7,6 +7,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
+#include "flora_inc/flora_global.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt8.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt8.inc"
@@ -16,10 +17,13 @@ new gMessageId_curweapon,
 	gMessageId_Armor
 
 new gHeroID_Maria = -1,
-	gHeroID_Shinobu = -1
+	gHeroID_Shinobu = -1,
+	gHeroID_Flora = -1
 
 #define MAX_INCOMPATIBILITY_PAIRS 32
-const curr_num_of_pairs = 1
+
+const curr_num_of_pairs = 2
+
 new filled_pair_count = 0
 enum superhero_incompatibility_pair{
 
@@ -50,8 +54,14 @@ public plugin_cfg(){
 
 	gHeroID_Maria = maria_get_hero_id()
 	gHeroID_Shinobu = shinobu_get_hero_id()
+	gHeroID_Flora = flora_get_hero_id()
 
 	push_incompatibility_pair(gHeroID_Maria,gHeroID_Shinobu)
+
+	/*
+		these two really dont get along
+	*/
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_Shinobu)
 }
 public push_incompatibility_pair(hero_a,hero_b){
 
@@ -119,6 +129,9 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 					mode),
 					true_return_result)
 		
+		if(true_return_result == INIT_FWD_BLOCK){
+			break
+		}
 	}
 
 	return true_return_result

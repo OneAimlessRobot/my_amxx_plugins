@@ -20,7 +20,7 @@
 #define FIELD_DESTROYED "shmod/flora/fields/field_destroy.wav"
 #define FIELD_CHARGING "shmod/flora/fields/field_charging.wav"
 #define FIELD_TELEPORT "shmod/flora/fields/flora_teleport.wav"
-#define FIELD_MDL 
+#define FIELD_DIG_SOUND "ambience/port_suckin1.wav"
 
 
 #define FLORA_HEAL_GLOW_TIME 3.0
@@ -66,3 +66,8 @@ native flora_set_user_num_active_fields(id,value)
 native flora_get_user_is_cloaked(id)
 native flora_get_curr_inside(id)
 native flora_get_prev_inside(id)
+
+native flora_get_user_num_fields(id)
+native flora_set_user_num_fields(id,value)
+native flora_dec_user_num_fields(id,value)
+native flora_inc_user_num_fields(id,value)

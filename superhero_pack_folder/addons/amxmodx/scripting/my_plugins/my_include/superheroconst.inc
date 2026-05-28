@@ -121,10 +121,10 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_BLUNT_TRAUMA,
 	SH_NEW_DMG_FREEZE,
 	SH_NEW_DMG_SUPER_MELEE,
-	SH_NEW_DMG_MAX_DAMAGES
+	SH_NEW_DMG_SUFFOCATION
 
 }
-stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
+stock const new_dmg_type_names[sh_thrash_brat_dmg_type][32]={
 	"SH_Unnamed_Damage",
 	"SH_Energy_Blast",
 	"SH_Drain",
@@ -140,9 +140,10 @@ stock const new_dmg_type_names[_:SH_NEW_DMG_MAX_DAMAGES][32]={
 	"SH_Radiation_Poison",
 	"SH_Blunt_Trauma",
 	"SH_Freeze",
-	"SH_Super_Melee"
+	"SH_Super_Melee",
+	"SH_Suffocation"
 }
-stock const bool:generic_dmg_type_is_melee[_:SH_NEW_DMG_MAX_DAMAGES]={
+stock const bool:generic_dmg_type_is_melee[sh_thrash_brat_dmg_type]={
 	false,
 	false,
 	false,
@@ -158,6 +159,7 @@ stock const bool:generic_dmg_type_is_melee[_:SH_NEW_DMG_MAX_DAMAGES]={
 	false,
 	false,
 	false,
+	true,
 	true,
 }
 //----------------------------------------------------------------------------------------------
