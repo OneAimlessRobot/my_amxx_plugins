@@ -289,7 +289,6 @@ if(num_healed>0){
 	for(new q=0;q<num_healed;q++){
 		new j=playerlist[q]
 		heal_teamate(id,j,hp_to_give)
-
 	}
 	sh_extra_damage(id,id,floatround(hp_to_give*num_healed),
 					_,

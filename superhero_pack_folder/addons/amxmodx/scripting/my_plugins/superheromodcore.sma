@@ -1829,7 +1829,7 @@ public selectedSuperPower(id, key)
 		return PLUGIN_HANDLED
 	}
 
-	static message[1024]
+	new message[1024]
 	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
 		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%^n",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
 									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
@@ -5147,7 +5147,7 @@ memoryTableRead(id, const savekey[])
 				heroIndex = gMemoryTablePowers[x][p]
 				
 				new bool:result=initHero(id, heroIndex, SH_HERO_ADD)
-				if(result){
+				if(!result){
 					delayed_p--
 					true_power_count--
 				}
