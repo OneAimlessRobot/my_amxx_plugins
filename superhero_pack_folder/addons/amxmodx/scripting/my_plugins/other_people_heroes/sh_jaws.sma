@@ -31,9 +31,9 @@ public plugin_init() {
 	register_plugin("SUPERHERO Jaws", "1.01", "K-OS")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	register_cvar("jaws_level", "9" )
-	register_cvar("jaws_cooldown", "90" )
-	register_cvar("jaws_range", "2000")
+	create_cvar("jaws_level", "9" )
+	create_cvar("jaws_cooldown", "90" )
+	create_cvar("jaws_range", "2000")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Summon Jaws", "Jaws will hunt down and eat your enemies", true, "jaws_level")

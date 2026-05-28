@@ -11,7 +11,7 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO Head Shooter", "1.3", "Jelle/timian")
 	
-	new pcvarLevel = register_cvar("hshooter_level", "5")
+	new pcvarLevel = create_cvar("hshooter_level", "5")
 	
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "headshot retores health", "retores your HP to your starting HP if you get a headshot")

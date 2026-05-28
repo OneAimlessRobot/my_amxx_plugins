@@ -6,7 +6,7 @@ stock sv_gravity_pcvar;
 
 stock init_gravity_pcvar(){
 
-	sv_gravity_pcvar=register_cvar("sv_gravity","800")
+	sv_gravity_pcvar=create_cvar("sv_gravity","800")
 
 }
 

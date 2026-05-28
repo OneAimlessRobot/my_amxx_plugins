@@ -33,9 +33,9 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	starting_id_pcvar = register_cvar("ta_starting_slot_id","1000")
+	starting_id_pcvar = create_cvar("ta_starting_slot_id","1000")
 	for(new i=0;i<_:max_task_type;i++){
-		slots_per_task_type_pcvars[i] = register_cvar(default_slots_task_type_strings[i][_:convar_string],default_slots_task_type_strings[i][_:default_value_string])
+		slots_per_task_type_pcvars[i] = create_cvar(default_slots_task_type_strings[i][_:convar_string],default_slots_task_type_strings[i][_:default_value_string])
 	}
 	initialize_default_stuff()
 

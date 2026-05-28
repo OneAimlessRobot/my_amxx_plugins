@@ -23,9 +23,9 @@ public plugin_init()
 {
   register_plugin("SUPERHERO Thing","1.1","Corvae aka TheRaven")
  
-  register_cvar("Thing_level", "5" )
-  register_cvar("Thing_weapon_percent", "0.25" )
-  register_cvar("Thing_knife_percent", "1.00" )
+  create_cvar("Thing_level", "5" )
+  create_cvar("Thing_weapon_percent", "0.25" )
+  create_cvar("Thing_knife_percent", "1.00" )
 
   gHeroID=shCreateHero(gHeroName, "Rock Skin", "Chance to ignore bullets and knife hits.", false, "Thing_level" )
 

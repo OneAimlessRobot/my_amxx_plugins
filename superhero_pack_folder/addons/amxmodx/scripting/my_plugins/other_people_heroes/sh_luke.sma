@@ -19,13 +19,13 @@ public plugin_init()
 	register_plugin("SUPERHERO Luke Skywalker","1.00","AssKicR")
  
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	if (!cvar_exists("luke_level")) register_cvar("luke_level", "0" )
+	if (!cvar_exists("luke_level")) create_cvar("luke_level", "0" )
 	gHeroID=shCreateHero(gHeroName, "Ligthsaber", "Kill Your Enemies With The Mighty Powers Of The Force!", true, "luke_level" )
 	
 
-	if (!cvar_exists("luke_sabertime")) register_cvar("luke_sabertime", "20.0" )
-	if (!cvar_exists("luke_sabermode")) register_cvar("luke_sabermode", "2" ) //1=Only Kills Enemies 2=Kills Enemies And Frienlies
-	if (!cvar_exists("luke_cooldown")) register_cvar("luke_cooldown", "20" )
+	if (!cvar_exists("luke_sabertime")) create_cvar("luke_sabertime", "20.0" )
+	if (!cvar_exists("luke_sabermode")) create_cvar("luke_sabermode", "2" ) //1=Only Kills Enemies 2=Kills Enemies And Frienlies
+	if (!cvar_exists("luke_cooldown")) create_cvar("luke_cooldown", "20" )
 	
 }
 //----------------------------------------------------------------------------------------------

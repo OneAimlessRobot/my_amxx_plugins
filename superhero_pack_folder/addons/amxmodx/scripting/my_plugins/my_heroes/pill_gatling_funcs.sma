@@ -61,7 +61,7 @@ public plugin_init(){
 	register_custom_touchable(PILL_CLASSNAME,"pilula_sexual_penetra_player",player_vector,1)
 
 	register_forward(FM_CmdStart, "CmdStart");
-	register_cvar("yakui_windup_time", "2.0")
+	create_cvar("yakui_windup_time", "2.0")
 	register_think(PILL_CLASSNAME, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 	

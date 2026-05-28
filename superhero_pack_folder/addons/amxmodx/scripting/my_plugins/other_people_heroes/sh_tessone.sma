@@ -37,9 +37,9 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO TESS-One", "1.2", "Xel0z")
 
-	new tessLevel = register_cvar("tessone_level", "5")
-	g_TessAbsorbTime = register_cvar("tessone_absorbtime", "8")
-	g_TessCooldown = register_cvar("tessone_cooldown", "45")
+	new tessLevel = create_cvar("tessone_level", "5")
+	g_TessAbsorbTime = create_cvar("tessone_absorbtime", "8")
+	g_TessCooldown = create_cvar("tessone_cooldown", "45")
 
 	g_HeroID = sh_create_hero(g_HeroName, tessLevel)
 	sh_set_hero_info(g_HeroID, "Absorbs Metal", "Become immune to bullets for X seconds")

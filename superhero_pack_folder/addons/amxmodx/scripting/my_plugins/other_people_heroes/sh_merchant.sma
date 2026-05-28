@@ -105,17 +105,17 @@ new cvar_xpcost, cvar_hpcost, cvar_frcost, cvar_apcost
 public plugin_init(){
 	register_plugin("SHero Merchant",APP_VER,"Werdpad")
 
-	register_cvar("sv_merchant", "1")		//enable cvar
-	//register_cvar("shm_mode", "1")		//plugin mode
+	create_cvar("sv_merchant", "1")		//enable cvar
+	//create_cvar("shm_mode", "1")		//plugin mode
 
-	register_cvar("shm_buyxpamt", "20")		//-----------------------------
-	register_cvar("shm_buyhpamt", "10")		//    amount per purchase
-	register_cvar("shm_buyapamt", "0")		//    evertything defaulted to zero (disabled) except EXP
-	register_cvar("shm_buyframt", "0")		//-----------------------------
-	register_cvar("shm_buyxpcost", "3000")		//-----------------------------
-	register_cvar("shm_buyhpcost", "1600")		//    cost per purchase
-	register_cvar("shm_buyapcost", "1500")		//
-	register_cvar("shm_buyfrcost", "1000")		//-----------------------------
+	create_cvar("shm_buyxpamt", "20")		//-----------------------------
+	create_cvar("shm_buyhpamt", "10")		//    amount per purchase
+	create_cvar("shm_buyapamt", "0")		//    evertything defaulted to zero (disabled) except EXP
+	create_cvar("shm_buyframt", "0")		//-----------------------------
+	create_cvar("shm_buyxpcost", "3000")		//-----------------------------
+	create_cvar("shm_buyhpcost", "1600")		//    cost per purchase
+	create_cvar("shm_buyapcost", "1500")		//
+	create_cvar("shm_buyfrcost", "1000")		//-----------------------------
 
 	register_concmd ("say /buyxp","func_buyxp")
 	register_concmd ("say buyxp","func_buyxp")	// buy exp client commands for chat and console

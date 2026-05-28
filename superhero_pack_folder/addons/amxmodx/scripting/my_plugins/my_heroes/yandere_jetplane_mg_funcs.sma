@@ -34,9 +34,9 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	pcvar_jetplane_mg_ammo = register_cvar("yandere_jetplane_mg_ammo", "5")
-	pcvar_jetplane_mg_dmg = register_cvar("yandere_jetplane_mg_dmg", "5")
-	pcvar_jetplane_mg_bulletspeed = register_cvar("yandere_jetplane_mg_bulletspeed", "5")
+	pcvar_jetplane_mg_ammo = create_cvar("yandere_jetplane_mg_ammo", "5")
+	pcvar_jetplane_mg_dmg = create_cvar("yandere_jetplane_mg_dmg", "5")
+	pcvar_jetplane_mg_bulletspeed = create_cvar("yandere_jetplane_mg_bulletspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
 

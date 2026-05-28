@@ -18,10 +18,10 @@ public plugin_init() {
   // Plugin Info
   register_plugin("SUPERHERO Mirage","1.0","Mydas")
 
-  register_cvar("mirage_level", "3" )
-  register_cvar("mirage_fadetime", "0.5")
-  register_cvar("mirage_invistime", "3")
-  register_cvar("mirage_cooldown", "5")
+  create_cvar("mirage_level", "3" )
+  create_cvar("mirage_fadetime", "0.5")
+  create_cvar("mirage_invistime", "3")
+  create_cvar("mirage_cooldown", "5")
 
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   gHeroID=shCreateHero(gHeroName, "Delusion", "Turn invisible for a short time when someone aims at you", false, "mirage_level" )

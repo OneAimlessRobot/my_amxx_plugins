@@ -13,7 +13,7 @@ public plugin_init()
   register_plugin("SUPERHERO Emperor Palpatine","1.0","FireWalker877")
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-  register_cvar("palpatine_level", "8" )
+  create_cvar("palpatine_level", "8" )
   gHeroID=shCreateHero(gHeroName, "Dark Lord", "Death and Decay!", true, "palpatine_level" )
   
 
@@ -23,16 +23,16 @@ public plugin_init()
   set_task(1.0,"palpatine_loop",0,"",0,"b") //forever loop
   
   // DEFAULT THE CVARS
-  register_cvar("palpatine_cooldown", "45" )
-  register_cvar("palpatine_time", "5" )
-  register_cvar("palpatine_decayradius", "300" )
-  register_cvar("palpatine_decaydamage", "15" )
-  register_cvar("palpatine_instantdamage", "20" )
-  register_cvar("palpatine_deathradius", "300" )
-  register_cvar("palpatine_deathdamage", "25" )
-  register_cvar("palpatine_life", "15")
-  register_cvar("palpatine_noise", "70")
-  register_cvar("palpatine_scroll", "15")
+  create_cvar("palpatine_cooldown", "45" )
+  create_cvar("palpatine_time", "5" )
+  create_cvar("palpatine_decayradius", "300" )
+  create_cvar("palpatine_decaydamage", "15" )
+  create_cvar("palpatine_instantdamage", "20" )
+  create_cvar("palpatine_deathradius", "300" )
+  create_cvar("palpatine_deathdamage", "25" )
+  create_cvar("palpatine_life", "15")
+  create_cvar("palpatine_noise", "70")
+  create_cvar("palpatine_scroll", "15")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

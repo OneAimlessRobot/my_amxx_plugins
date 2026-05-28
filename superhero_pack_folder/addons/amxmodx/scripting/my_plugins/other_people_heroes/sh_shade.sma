@@ -23,7 +23,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Shade","1.0","[SiN]")
 
-	if (!cvar_exists("shade_level")) register_cvar("shade_level", "10" )
+	if (!cvar_exists("shade_level")) create_cvar("shade_level", "10" )
 	gHeroID=shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
 	register_clcmd("ShadePower","make_fog",ADMIN_USER)
 	
@@ -36,12 +36,12 @@ public plugin_init()
 	set_task(1.0,"shade_loop",0,"",0,"b") //forever loop
 	
 	// DEFAULT THE CVARS
-	if (!cvar_exists("shade_cooldown")) register_cvar("shade_cooldown", "0" ) //CoolDown
-	if (!cvar_exists("shade_time")) register_cvar("shade_time", "1" )
-	if ( !cvar_exists("shade_speed") ) register_cvar("shade_speed", "450" )
-	if ( !cvar_exists("shade_summon") ) register_cvar("shade_summon", "0" )
-	if ( !cvar_exists("shade_smoke") ) register_cvar("shade_smoke", "1" )
-	if ( !cvar_exists("shade_ammo") ) register_cvar("shade_ammo", "0" )
+	if (!cvar_exists("shade_cooldown")) create_cvar("shade_cooldown", "0" ) //CoolDown
+	if (!cvar_exists("shade_time")) create_cvar("shade_time", "1" )
+	if ( !cvar_exists("shade_speed") ) create_cvar("shade_speed", "450" )
+	if ( !cvar_exists("shade_summon") ) create_cvar("shade_summon", "0" )
+	if ( !cvar_exists("shade_smoke") ) create_cvar("shade_smoke", "1" )
+	if ( !cvar_exists("shade_ammo") ) create_cvar("shade_ammo", "0" )
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

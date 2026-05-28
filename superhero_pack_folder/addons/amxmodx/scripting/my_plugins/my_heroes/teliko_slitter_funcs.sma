@@ -73,10 +73,10 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	pcvar_slitter_distance = register_cvar("slitter_distance", "2.0")
-	pcvar_slitter_drag_time = register_cvar("slitter_drag_time", "3")
-	pcvar_slitter_drag_speed = register_cvar("slitter_drag_speed", "2.0")
-	pcvar_max_slitter_kills_per_life = register_cvar("max_slits_per_life", "2.0")
+	pcvar_slitter_distance = create_cvar("slitter_distance", "2.0")
+	pcvar_slitter_drag_time = create_cvar("slitter_drag_time", "3")
+	pcvar_slitter_drag_speed = create_cvar("slitter_drag_speed", "2.0")
+	pcvar_max_slitter_kills_per_life = create_cvar("max_slits_per_life", "2.0")
 	RegisterHam(Ham_TraceAttack,"player","Teliko_ham_trace_damage",_,true)
 	register_think(TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME,"slitter_think")
 	register_forward(FM_CmdStart, "CmdStart")

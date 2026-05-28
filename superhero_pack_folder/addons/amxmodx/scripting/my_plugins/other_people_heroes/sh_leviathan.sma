@@ -35,17 +35,17 @@ new bool:gHasLeviathanPowers[SH_MAXSLOTS + 1]
 public plugin_init()
 {
 	register_plugin("SUPERHERO Leviathan", "1.0", "Mydas")
-	register_cvar("leviathan_level", "5")
+	create_cvar("leviathan_level", "5")
 
 	gHeroID=shCreateHero(gHeroName, "Flood (ADMIN LEVEL A)", "Flood the map when you are on low health; then, swim fast and shoot hard; tap forward to swim", false, "leviathan_level") 
 	register_event("CurWeapon", "BulletEffect", "be", "3>0") 
 
-	register_cvar("leviathan_gravity", "200")
-	register_cvar("leviathan_othersspeed", "225")
-	register_cvar("leviathan_swimspeed", "380")
-	register_cvar("leviathan_threshold", "0.3")
-	register_cvar("leviathan_adminflag", "a")
-	register_cvar("leviathan_underwaterdmg", "1.5")
+	create_cvar("leviathan_gravity", "200")
+	create_cvar("leviathan_othersspeed", "225")
+	create_cvar("leviathan_swimspeed", "380")
+	create_cvar("leviathan_threshold", "0.3")
+	create_cvar("leviathan_adminflag", "a")
+	create_cvar("leviathan_underwaterdmg", "1.5")
 	svgravity=get_cvar_num("sv_gravity")
 
 	register_event("Damage", "leviathan_damage", "b", "2!0") 

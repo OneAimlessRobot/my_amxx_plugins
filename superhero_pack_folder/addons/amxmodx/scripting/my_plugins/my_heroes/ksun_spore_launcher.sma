@@ -30,8 +30,8 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spore launcher","1.1",AUTHOR)
 	
-	pcvar_ksun_hold_time = register_cvar("ksun_hold_time", "5.0")
-	pcvar_ksun_launcher_base_health = register_cvar("ksun_launcher_health", "100.0" )
+	pcvar_ksun_hold_time = create_cvar("ksun_hold_time", "5.0")
+	pcvar_ksun_launcher_base_health = create_cvar("ksun_launcher_health", "100.0" )
 	
 	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
 	

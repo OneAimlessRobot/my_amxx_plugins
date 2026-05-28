@@ -15,7 +15,7 @@ new gHeroID
 public plugin_init()
 {
   my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)
-  register_cvar("slayer_level", "6" )
+  create_cvar("slayer_level", "6" )
   gHeroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
   
 
@@ -23,8 +23,8 @@ public plugin_init()
 
   register_event("Damage", "slayer_damage", "b", "2!0")
   
-  register_cvar("slayer_cooldown", "40.0" )
-  register_cvar("slayer_chance", "0.05" )
+  create_cvar("slayer_cooldown", "40.0" )
+  create_cvar("slayer_chance", "0.05" )
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

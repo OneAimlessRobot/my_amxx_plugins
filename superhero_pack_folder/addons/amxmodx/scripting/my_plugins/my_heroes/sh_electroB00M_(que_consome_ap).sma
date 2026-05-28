@@ -22,14 +22,14 @@ public plugin_init()
 	register_plugin("SUPERHERO ElectroB00M","2.0",AUTHOR)
 	
 	// DEFAULT THE CVARS
-	new pcvarLevel = register_cvar("ElectroB00M_level", "20" )
-	pCvarPeriod = register_cvar("ElectroB00M_period", "0.1")
-	pcvarArmor = register_cvar("ElectroB00M_armor", "100")
-	pcvarTimeToStun = register_cvar("ElectroB00M_stuntime", "10")
-	pcvarElectroB00MStunSpeed = register_cvar("ElectroB00M_stunspeed", "100")
-	pCvarPowerCost = register_cvar("ElectroB00M_powercost", "5")
-	pCvarElectroB00MRadius = register_cvar("ElectroB00M_radius", "200" )
-	pCvarElectroB00MDamage = register_cvar("ElectroB00M_teslacoildamage", "30" )
+	new pcvarLevel = create_cvar("ElectroB00M_level", "20" )
+	pCvarPeriod = create_cvar("ElectroB00M_period", "0.1")
+	pcvarArmor = create_cvar("ElectroB00M_armor", "100")
+	pcvarTimeToStun = create_cvar("ElectroB00M_stuntime", "10")
+	pcvarElectroB00MStunSpeed = create_cvar("ElectroB00M_stunspeed", "100")
+	pCvarPowerCost = create_cvar("ElectroB00M_powercost", "5")
+	pCvarElectroB00MRadius = create_cvar("ElectroB00M_radius", "200" )
+	pCvarElectroB00MDamage = create_cvar("ElectroB00M_teslacoildamage", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)

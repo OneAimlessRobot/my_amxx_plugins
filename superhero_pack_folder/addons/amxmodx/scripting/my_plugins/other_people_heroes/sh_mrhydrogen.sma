@@ -49,9 +49,9 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 	public plugin_init()
 	{
 	register_plugin("SUPERHERO Mr. Hydrogen", "1.4", "Zul Rivers")
-	register_cvar("mrhydrogen_level", "0")
-	register_cvar("mrhydrogen_knifemult", "1.10" )
-	register_cvar("mrhydrogen_floattime", "8.0" )
+	create_cvar("mrhydrogen_level", "0")
+	create_cvar("mrhydrogen_knifemult", "1.10" )
+	create_cvar("mrhydrogen_floattime", "8.0" )
 	gHeroID=shCreateHero(gHeroName, "Fill Enemy With Hydrogen Gas", "Boost Knife Damage & Victim Floats When Being Hit By Your Knife", false, "mrhydrogen_level")
 	
 	register_event("Damage", "mrhydrogen_powers", "b", "2!0")

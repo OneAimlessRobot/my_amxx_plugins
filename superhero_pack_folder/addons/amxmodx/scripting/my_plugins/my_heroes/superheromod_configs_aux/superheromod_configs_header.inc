@@ -81,7 +81,7 @@ stock setting_struct_arr[_:MAX_SETTING_IDS][setting_struct]
 stock initialize_settings(){
 
     for(new i=0;i<_:MAX_SETTING_IDS;i++){
-        setting_struct_arr[i][cvar_p]=register_cvar(CVAR_INIT[i][cvar_name],CVAR_INIT[i][default_value])
+        setting_struct_arr[i][cvar_p]=create_cvar(CVAR_INIT[i][cvar_name],CVAR_INIT[i][default_value])
     }
 }
 

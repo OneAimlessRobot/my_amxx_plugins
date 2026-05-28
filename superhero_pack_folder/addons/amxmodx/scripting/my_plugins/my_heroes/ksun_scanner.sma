@@ -32,9 +32,9 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun scanner","1.1",AUTHOR)
-	pcvar_ksun_track_max_radius = register_cvar("ksun_track_max_radius", "2000.0")
-	pcvar_ksun_track_min_radius = register_cvar("ksun_track_min_radius", "500.0")
-	pcvar_ksun_track_traverse_time = register_cvar("ksun_track_traverse_time", "2.0")
+	pcvar_ksun_track_max_radius = create_cvar("ksun_track_max_radius", "2000.0")
+	pcvar_ksun_track_min_radius = create_cvar("ksun_track_min_radius", "500.0")
+	pcvar_ksun_track_traverse_time = create_cvar("ksun_track_traverse_time", "2.0")
 	
 	register_think(SCANNER_CLASSNAME, "scanner_think")
 }

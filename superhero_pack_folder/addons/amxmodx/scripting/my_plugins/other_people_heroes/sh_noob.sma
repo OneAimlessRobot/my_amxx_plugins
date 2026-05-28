@@ -28,9 +28,9 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Noob","1.3","AssKicR")
 
-	register_cvar("noob_level", "0")
-	register_cvar("noob_arrows", "3")
-	register_cvar("noob_getdeagle", "1")
+	create_cvar("noob_level", "0")
+	create_cvar("noob_arrows", "3")
+	create_cvar("noob_getdeagle", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "exploding deagle shots", "U WILL HAVE A DEAGE WITH 3 EXPLODING SHOTS!!", false, "noob_level")

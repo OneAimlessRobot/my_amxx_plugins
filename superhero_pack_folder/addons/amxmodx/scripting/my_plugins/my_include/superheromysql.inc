@@ -66,11 +66,11 @@ new sh_mysql_db, sh_mysql_persistent
 //----------------------------------------------------------------------------------------------
 saving_init()
 {
-	sh_mysql_host = register_cvar("sh_mysql_host", "")
-	sh_mysql_user = register_cvar("sh_mysql_user", "")
-	sh_mysql_pass = register_cvar("sh_mysql_pass", "")
-	sh_mysql_db = register_cvar("sh_mysql_db", "")
-	sh_mysql_persistent = register_cvar("sh_mysql_persistent", "0")
+	sh_mysql_host = create_cvar("sh_mysql_host", "")
+	sh_mysql_user = create_cvar("sh_mysql_user", "")
+	sh_mysql_pass = create_cvar("sh_mysql_pass", "")
+	sh_mysql_db = create_cvar("sh_mysql_db", "")
+	sh_mysql_persistent = create_cvar("sh_mysql_persistent", "0")
 
 	register_concmd("amx_shvaulttosql", "adminCopyVault", ADMIN_RCON, "- Copies vault XP to MySQL, should only be done once.")
 

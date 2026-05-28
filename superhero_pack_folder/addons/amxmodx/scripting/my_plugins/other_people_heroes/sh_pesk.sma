@@ -15,10 +15,10 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO Pesk","1.0","[FTW]-S.W.A.T")
 
-	register_cvar("pesk_level", "2" )
-	register_cvar("pesk_cooldown", "40" )
-	register_cvar("pesk_maxdamage", "300" )
-	register_cvar("pesk_radius", "300" )
+	create_cvar("pesk_level", "2" )
+	create_cvar("pesk_cooldown", "40" )
+	create_cvar("pesk_maxdamage", "300" )
+	create_cvar("pesk_radius", "300" )
 
 	gHeroID=shCreateHero(gHeroName, "Pesk", "Shoot people when your dead", true, "pesk_level" )
 

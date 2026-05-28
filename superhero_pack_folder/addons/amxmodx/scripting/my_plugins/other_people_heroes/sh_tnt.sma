@@ -27,11 +27,11 @@ public plugin_precache() {
 public plugin_init() {
 	register_plugin("SUPERHERO TNT", "1.0", "[x]Rol Sources");
 
-	register_cvar("tnt_level", "1");
-	register_cvar("tnt_damage", "30");
-	register_cvar("tnt_velocity", "200");
-	register_cvar("tnt_mines", "1");
-	register_cvar("tnt_radius", "100");
+	create_cvar("tnt_level", "1");
+	create_cvar("tnt_damage", "30");
+	create_cvar("tnt_velocity", "200");
+	create_cvar("tnt_mines", "1");
+	create_cvar("tnt_radius", "100");
 
 	gHeroID=shCreateHero(gHeroName, "Sploding Mines", "Drop mines to explode those who walk by!", false, "tnt_level");
 

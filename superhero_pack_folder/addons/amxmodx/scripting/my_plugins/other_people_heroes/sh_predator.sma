@@ -46,7 +46,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Predator","1.14.4","norma jean")
 	
-	register_cvar("pred_level", "7")
+	create_cvar("pred_level", "7")
 	gHeroID=shCreateHero(gHeroName, "Invisibility, LaserCannon, Lazer Deagle, SuperClaw", "Invisibility while not shooting, Super Claw, Laser Beam", true, "pred_level")
 	
 	// LASER DEAGLE DAMAGE
@@ -58,9 +58,9 @@ public plugin_init()
 	
 	
 	// Laser
-	register_cvar("pred_laser_ammo", "1")  // total # of shots...
-	register_cvar("pred_laser_burndecals", "1")
-	register_cvar("pred_cooldown", "10" )
+	create_cvar("pred_laser_ammo", "1")  // total # of shots...
+	create_cvar("pred_laser_burndecals", "1")
+	create_cvar("pred_cooldown", "10" )
 	
 	// EXTRA KNIFE DAMAGE
 	register_event("Damage", "pred_damage", "b", "2!0")
@@ -71,10 +71,10 @@ public plugin_init()
 	set_task(0.01,"check_move_buttons",0,"",0,"b") 
 	
 	// DEFAULT THE CVARS
-	register_cvar("pred_clockedmove", "1")
-	register_cvar("pred_knifemult", "10" )
-	if ( !cvar_exists("pred_DLbullets") ) register_cvar("pred_DLbullets", "7")
-	if ( !cvar_exists("pred_getdeagle") ) register_cvar("pred_getdeagle", "0")
+	create_cvar("pred_clockedmove", "1")
+	create_cvar("pred_knifemult", "10" )
+	if ( !cvar_exists("pred_DLbullets") ) create_cvar("pred_DLbullets", "7")
+	if ( !cvar_exists("pred_getdeagle") ) create_cvar("pred_getdeagle", "0")
 	
 }
 //----------------------------------------------------------------------------------------------

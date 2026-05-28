@@ -17,7 +17,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Tomie Yu","1.1",AUTHOR)
 
-	register_cvar("tomie_level", "5" )
+	create_cvar("tomie_level", "5" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Boring, Anime fan", "Fire retardant hair! Drain resistance! You wont spread fire! CO2 lasts longer!", false, "tomie_level")

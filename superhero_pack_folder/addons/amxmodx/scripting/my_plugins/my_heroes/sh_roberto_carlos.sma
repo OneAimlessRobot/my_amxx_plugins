@@ -27,10 +27,10 @@ public plugin_init()
 	register_plugin("SUPERHERO Roberto", "1.0", AUTHOR)
 	
 	
-	register_cvar("roberto_level", "8")
+	create_cvar("roberto_level", "8")
 	
-	pcvar_num_balls = register_cvar("roberto_num_balls", "100")
-	pcvar_ball_cooldown = register_cvar("roberto_ball_cooldown", "1.0")
+	pcvar_num_balls = create_cvar("roberto_num_balls", "100")
+	pcvar_ball_cooldown = create_cvar("roberto_ball_cooldown", "1.0")
 	
 	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
 

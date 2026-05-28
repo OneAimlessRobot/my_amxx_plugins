@@ -75,24 +75,24 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
-	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
-	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
-	pcvar_field_core_radius = register_cvar("flora_field_core_radius" ,"1000.0")
+	pcvar_flora_field_max_active_ammount = create_cvar("flora_field_max_active_ammount", "10" )
+	pcvar_field_cooldown = create_cvar("flora_field_cooldown" ,"9.0" )
+	pcvar_field_radius = create_cvar("flora_field_radius" ,"1000.0")
+	pcvar_field_core_radius = create_cvar("flora_field_core_radius" ,"1000.0")
 	
 	pcvar_bad_resurface_dmg_penalty_max_hp_ratio =
-					register_cvar("flora_bad_resurface_max_hp_penalty_ratio" ,"0.75")
+					create_cvar("flora_bad_resurface_max_hp_penalty_ratio" ,"0.75")
 
-	pcvar_flora_field_time = register_cvar("flora_field_time" ,"30.0" )
-	pcvar_flora_dmg_coeff = register_cvar("flora_dmg_coeff" ,"0.5" )
-	pcvar_flora_field_heal_mult = register_cvar("flora_field_heal_mult" ,"0.5" )
-	pcvar_flora_charge_time = register_cvar("flora_charge_time" ,"30.0" )
-	pcvar_flora_stun_time = register_cvar("flora_stun_time" ,"30.0" )
-	pcvar_flora_teleport_reach_max_distance = register_cvar("flora_teleport_reach_max_distance" ,"1000.0" )
-	pcvar_flora_invis_alpha_max = register_cvar("flora_invis_alpha_max" ,"0.5" )
-	pcvar_flora_invis_alpha_min = register_cvar("flora_invis_alpha_min" ,"0.1" )
-	pcvar_flora_invis_alpha_dec_per_lvl = register_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
-	pcvar_flora_base_stun_speed = register_cvar("flora_base_stun_speed","210.0")
+	pcvar_flora_field_time = create_cvar("flora_field_time" ,"30.0" )
+	pcvar_flora_dmg_coeff = create_cvar("flora_dmg_coeff" ,"0.5" )
+	pcvar_flora_field_heal_mult = create_cvar("flora_field_heal_mult" ,"0.5" )
+	pcvar_flora_charge_time = create_cvar("flora_charge_time" ,"30.0" )
+	pcvar_flora_stun_time = create_cvar("flora_stun_time" ,"30.0" )
+	pcvar_flora_teleport_reach_max_distance = create_cvar("flora_teleport_reach_max_distance" ,"1000.0" )
+	pcvar_flora_invis_alpha_max = create_cvar("flora_invis_alpha_max" ,"0.5" )
+	pcvar_flora_invis_alpha_min = create_cvar("flora_invis_alpha_min" ,"0.1" )
+	pcvar_flora_invis_alpha_dec_per_lvl = create_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
+	pcvar_flora_base_stun_speed = create_cvar("flora_base_stun_speed","210.0")
 
 
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
@@ -168,9 +168,10 @@ public plugin_cfg(){
 }
 //this assumes lots of shit
 noclip_flora(id){
-
 	if(!Get_BitVar(g_prev_flora_noclip_mask,id)){
-		emit_sound(id,CHAN_BODY, FIELD_DIG_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+		emit_sound(id,CHAN_BODY, FIELD_DIG_SOUND, VOL_NORM, ATTN_NONE, 0, 110)
+
 	}
 	Assign_BitVar(g_curr_flora_noclip_mask,id, true_for_macro)
 	entity_set_int(id,EV_INT_movetype,MOVETYPE_NOCLIP)
@@ -585,6 +586,7 @@ public flora_checks(task_id){
 				}
 			}
 			else{
+				emit_sound(id,CHAN_BODY, FIELD_DIG_SOUND, VOL_NORM, ATTN_NONE, 0, 70)
 				engclient_cmd(id, "weapon_knife")
 			}
 		}

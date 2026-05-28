@@ -19,6 +19,8 @@
 
 new gHeroID_shinobu = -1
 
+new shinobu_max_hp = -1
+
 new generic_frag_blast_wpn_id = -1
 
 #define PLUGIN "Superhero aux natives pt3"
@@ -38,6 +40,7 @@ public plugin_cfg(){
 
 	gHeroID_shinobu = shinobu_get_hero_id()
 	generic_frag_blast_wpn_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
+	shinobu_max_hp = shinobu_get_max_hp()
 }
 public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
@@ -363,7 +366,7 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
-	if(sh_get_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_get_max_hp())){
+	if(sh_get_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_max_hp)){
 
 		return false
 	}

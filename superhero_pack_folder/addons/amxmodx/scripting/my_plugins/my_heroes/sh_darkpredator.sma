@@ -50,7 +50,7 @@ public plugin_init()
 {
 	my_authored_register_func("SUPERHERO DarkPredator","1.0","kanu | DarkPredator",true,AUTHOR )
 	
-	register_cvar("darkpred_level", "10" )
+	create_cvar("darkpred_level", "10" )
 	
 	gHeroID=shCreateHero(gHeroName, "Deagle/Invisibility (ADMIN A ONLY)", "Free deagle and invisibility. Plus ESP rings, Predator Armour and Regeneration.", false, "darkpred_level" )
 	sh_register_superheromod_model(gHeroID,
@@ -68,15 +68,15 @@ public plugin_init()
 		
 	
 	// DEFAULT THE CVARS
-	register_cvar("darkpred_armor", "400") 
-	register_cvar("darkpred_alpha", "10")
-	register_cvar("darkpred_delay", "2")
-	register_cvar("darkpred_checkmove", "0")
-	register_cvar("darkpred_healpoints", "4" )
-	register_cvar("darkpred_radius", "900")
-	register_cvar("darkpred_bright", "192")
-	register_cvar("darkpred_bullets", "6")
-	register_cvar("darkpred_adminflag", "a")
+	create_cvar("darkpred_armor", "400") 
+	create_cvar("darkpred_alpha", "10")
+	create_cvar("darkpred_delay", "2")
+	create_cvar("darkpred_checkmove", "0")
+	create_cvar("darkpred_healpoints", "4" )
+	create_cvar("darkpred_radius", "900")
+	create_cvar("darkpred_bright", "192")
+	create_cvar("darkpred_bullets", "6")
+	create_cvar("darkpred_adminflag", "a")
 	
 	// Let Server know about DarkPredators Variables
 	// It is possible that another hero has more hps, less gravity, or more armor

@@ -42,12 +42,12 @@ public plugin_init()
     // Plugin Info
     register_plugin("SUPERHERO Reika Fukuda","1.0",AUTHOR)
 
-    register_cvar("reika_level", "12" )
-    pcvar_reika_explosion_cooldown = register_cvar("reika_explosion_cooldown","30.0")
-    pcvar_reika_explosion_radius = register_cvar("reika_explosion_radius","300.0")
-    pcvar_reika_explosion_force = register_cvar("reika_explosion_force","250.0")
-    pcvar_reika_explosion_damage = register_cvar("reika_explosion_damage","80.0")
-    pcvar_reika_parry_mode_time = register_cvar("reika_parry_mode_time","6.0")
+    create_cvar("reika_level", "12" )
+    pcvar_reika_explosion_cooldown = create_cvar("reika_explosion_cooldown","30.0")
+    pcvar_reika_explosion_radius = create_cvar("reika_explosion_radius","300.0")
+    pcvar_reika_explosion_force = create_cvar("reika_explosion_force","250.0")
+    pcvar_reika_explosion_damage = create_cvar("reika_explosion_damage","80.0")
+    pcvar_reika_parry_mode_time = create_cvar("reika_parry_mode_time","6.0")
 
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!

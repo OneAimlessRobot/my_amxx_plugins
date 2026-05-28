@@ -36,17 +36,17 @@ public plugin_init()
 	register_plugin("SUPERHERO Swat", "1.0", "SRGrty")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	register_cvar("Swat_level", "7")
-	register_cvar("Swat_cooldown", "20.0")
-	register_cvar("Swat_damage", "40")
-	register_cvar("swat_armor", "200")
-	register_cvar("swat_m4a1mult", "1.5")
-	register_cvar("swat_knifemult", "4.0")
-	register_cvar("Swat_velocity", "2000")
-	register_cvar("Swat_force", "500.0")		//cannot get this to function properly.
-	register_cvar("Swat_radius", "400")
-	register_cvar("Swat_obeygravity", "1")	
-	register_cvar("Swat_effects", "4")
+	create_cvar("Swat_level", "7")
+	create_cvar("Swat_cooldown", "20.0")
+	create_cvar("Swat_damage", "40")
+	create_cvar("swat_armor", "200")
+	create_cvar("swat_m4a1mult", "1.5")
+	create_cvar("swat_knifemult", "4.0")
+	create_cvar("Swat_velocity", "2000")
+	create_cvar("Swat_force", "500.0")		//cannot get this to function properly.
+	create_cvar("Swat_radius", "400")
+	create_cvar("Swat_obeygravity", "1")	
+	create_cvar("Swat_effects", "4")
 
 	gHeroID=shCreateHero(gHeroName, "Nuke", "Fires a (most of the time) 1 hit-ko I.C.B.M", true, "Swat_level")
 	sh_register_superheromod_model(gHeroID,

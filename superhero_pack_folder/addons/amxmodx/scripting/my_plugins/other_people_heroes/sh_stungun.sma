@@ -15,10 +15,10 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO Stun Gun", "1.3", "Jelle/Timian")
 	
-	new pcvarLevel = register_cvar("stun_level", "5")
-	pcvarTimeToStun = register_cvar("stun_stuntime", "1")
-	pcvarCooldown = register_cvar("stun_cooldown", "10")
-	pcvarStunSpeed = register_cvar("stun_stunspeed", "100")
+	new pcvarLevel = create_cvar("stun_level", "5")
+	pcvarTimeToStun = create_cvar("stun_stuntime", "1")
+	pcvarCooldown = create_cvar("stun_cooldown", "10")
+	pcvarStunSpeed = create_cvar("stun_stunspeed", "100")
 	
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Stunning shots", "Stun gun slow down enemy on hit")

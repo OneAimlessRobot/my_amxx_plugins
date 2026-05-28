@@ -29,10 +29,10 @@ public plugin_init()
 	register_plugin("SUPERHERO Deva Path", "1.0", "Exploited/Fr33m@n")
 	
 	// DON'T USE THIS FILE TO CHANGE THE CVARS. USE THE SHCONFIG.CFG!
-	new pcvarLevel = register_cvar("deva_level", "10")
-	gPcvarCooldown = register_cvar("deva_cooldown", "8")
-	gPcvarPercentage = register_cvar("deva_percentage", "3")
-	gPcvarDamage = register_cvar("deva_damage", "0")
+	new pcvarLevel = create_cvar("deva_level", "10")
+	gPcvarCooldown = create_cvar("deva_cooldown", "8")
+	gPcvarPercentage = create_cvar("deva_percentage", "3")
+	gPcvarDamage = create_cvar("deva_damage", "0")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)

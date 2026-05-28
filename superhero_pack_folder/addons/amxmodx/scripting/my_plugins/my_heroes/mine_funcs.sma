@@ -32,7 +32,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_cvar("sapper_mine_min_charge_time", "1.0")
+	create_cvar("sapper_mine_min_charge_time", "1.0")
 	register_think(MINE_CLASSNAME, "mine_think")
 
 

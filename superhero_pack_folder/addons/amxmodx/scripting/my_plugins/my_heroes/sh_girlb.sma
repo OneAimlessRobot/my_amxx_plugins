@@ -31,14 +31,14 @@ public plugin_init()
     // Plugin Info
     register_plugin("SUPERHERO GirlB","1.0",AUTHOR)
 
-    register_cvar("girlb_level", "29" )
-    girlb_projectile_ammo_pcvar = register_cvar("girlb_projectile_ammo","30")
-    girlb_projectile_cluster_pcvar = register_cvar("girlb_projectile_cluster","3")
-    girlb_projectile_fire_period_pcvar = register_cvar("girlb_projectile_fire_period","1.5")
-    girlb_projectile_cluster_fire_period_pcvar = register_cvar("girlb_projectile_cluster_fire_period","0.1")
-    girlb_fast_regen_threshold_ammo_frac_pcvar = register_cvar("girlb_fast_regen_threshold_ammo_frac","0.5")
-    girlb_fast_regen_period_frac_pcvar = register_cvar("girlb_fast_regen_period_frac","0.5")
-    girlb_regen_period_pcvar = register_cvar("girlb_regen_period","1.0")
+    create_cvar("girlb_level", "29" )
+    girlb_projectile_ammo_pcvar = create_cvar("girlb_projectile_ammo","30")
+    girlb_projectile_cluster_pcvar = create_cvar("girlb_projectile_cluster","3")
+    girlb_projectile_fire_period_pcvar = create_cvar("girlb_projectile_fire_period","1.5")
+    girlb_projectile_cluster_fire_period_pcvar = create_cvar("girlb_projectile_cluster_fire_period","0.1")
+    girlb_fast_regen_threshold_ammo_frac_pcvar = create_cvar("girlb_fast_regen_threshold_ammo_frac","0.5")
+    girlb_fast_regen_period_frac_pcvar = create_cvar("girlb_fast_regen_period_frac","0.5")
+    girlb_regen_period_pcvar = create_cvar("girlb_regen_period","1.0")
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Ice skater!!", "Fire projectiles to freeze enemies! Skate on ice in the ground where they land (JUMP+FORWARD)!", true, "girlb_level" )

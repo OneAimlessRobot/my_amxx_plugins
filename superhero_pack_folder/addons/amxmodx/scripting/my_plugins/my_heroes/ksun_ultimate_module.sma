@@ -43,12 +43,12 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun supply","1.1",AUTHOR)
-	pcvar_ksun_ultimate_fire_rate_mult = register_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
-	pcvar_ksun_ultimate_reload_rate_mult = register_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
-	pcvar_ksun_dmg_absorption_index = register_cvar("ksun_dmg_absorption_index", "1.0" )
-	pcvar_ksun_supply_capacity = register_cvar("ksun_supply_capacity", "1000" )
-	pcvar_ksun_health_to_supply_ratio = register_cvar("ksun_health_to_supply_ratio","0.25")
-	pcvar_ksun_dmg_mult_super_weapon = register_cvar("ksun_dmg_mult_super_weapon","0.25")
+	pcvar_ksun_ultimate_fire_rate_mult = create_cvar("ksun_ultimate_fire_rate_mult", "3.0" )
+	pcvar_ksun_ultimate_reload_rate_mult = create_cvar("ksun_ultimate_reload_rate_mult", "3.0" )
+	pcvar_ksun_dmg_absorption_index = create_cvar("ksun_dmg_absorption_index", "1.0" )
+	pcvar_ksun_supply_capacity = create_cvar("ksun_supply_capacity", "1000" )
+	pcvar_ksun_health_to_supply_ratio = create_cvar("ksun_health_to_supply_ratio","0.25")
+	pcvar_ksun_dmg_mult_super_weapon = create_cvar("ksun_dmg_mult_super_weapon","0.25")
 
 	RegisterHam(Ham_TraceAttack, "player", "ksun_trace_attack_damage_hook",_,true)
 	

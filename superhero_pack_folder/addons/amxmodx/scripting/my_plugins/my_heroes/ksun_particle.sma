@@ -41,12 +41,12 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin("SUPERHERO ksun spores","1.1",AUTHOR)
-	pcvar_ksun_spore_damage = register_cvar("ksun_spore_damage", "100.0" )
-	pcvar_ksun_spore_speed = register_cvar("ksun_spore_speed", "900.0" )
-	pcvar_particle_follow_time = register_cvar("ksun_follow_time", "5.0")
-	pcvar_ksun_spore_track_detect_distance = register_cvar("ksun_spore_track_detect_dist", "500.0")
-	pcvar_ksun_heal_coeff = register_cvar("ksun_heal_coeff", "0.5" )
-	pcvar_ksun_spore_base_health = register_cvar("ksun_spore_health", "100.0" )
+	pcvar_ksun_spore_damage = create_cvar("ksun_spore_damage", "100.0" )
+	pcvar_ksun_spore_speed = create_cvar("ksun_spore_speed", "900.0" )
+	pcvar_particle_follow_time = create_cvar("ksun_follow_time", "5.0")
+	pcvar_ksun_spore_track_detect_distance = create_cvar("ksun_spore_track_detect_dist", "500.0")
+	pcvar_ksun_heal_coeff = create_cvar("ksun_heal_coeff", "0.5" )
+	pcvar_ksun_spore_base_health = create_cvar("ksun_spore_health", "100.0" )
 	
 	register_entity_as_wall_touchable(SPORE_CLASSNAME,"touch_wall")
 	register_custom_touchable(SPORE_CLASSNAME,"touch_player",player_vector,1)

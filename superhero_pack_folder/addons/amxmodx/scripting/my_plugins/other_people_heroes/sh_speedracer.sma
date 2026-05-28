@@ -23,9 +23,9 @@ new bool:gCanJump[SH_MAXSLOTS+1];
 public plugin_init() {
 	register_plugin("SUPERHERO Speed Racer", "1.0", "Rolnaaba");
 	
-	register_cvar("speed_level", "1");
-	register_cvar("speed_speed", "300");
-	register_cvar("speed_height", "60.0");
+	create_cvar("speed_level", "1");
+	create_cvar("speed_speed", "300");
+	create_cvar("speed_height", "60.0");
 
 	gHeroID=shCreateHero(gHeroName, "Go Speed Racer", "Upgraded Speed and Super Jump!", false, "speed_level");
 

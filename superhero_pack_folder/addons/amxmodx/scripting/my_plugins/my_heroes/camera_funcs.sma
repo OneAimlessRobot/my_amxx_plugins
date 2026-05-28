@@ -43,11 +43,11 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	pcvar_min_charge_time = register_cvar("camman_camera_min_charge_time", "1.0")
-	pcvar_camera_hp = register_cvar("camman_camera_health", "100.0")
-	pcvar_max_camera_charge = register_cvar("camman_camera_charge", "1000.0")
-	pcvar_camman_camera_maxalpha = register_cvar("camman_camera_maxalpha", "100.0")
-	pcvar_camman_camera_minalpha = register_cvar("camman_camera_minalpha", "1000.0")
+	pcvar_min_charge_time = create_cvar("camman_camera_min_charge_time", "1.0")
+	pcvar_camera_hp = create_cvar("camman_camera_health", "100.0")
+	pcvar_max_camera_charge = create_cvar("camman_camera_charge", "1000.0")
+	pcvar_camman_camera_maxalpha = create_cvar("camman_camera_maxalpha", "100.0")
+	pcvar_camman_camera_minalpha = create_cvar("camman_camera_minalpha", "1000.0")
 
 	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")

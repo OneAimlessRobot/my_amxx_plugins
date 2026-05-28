@@ -81,11 +81,11 @@ public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	hook_distance_pcvar=register_cvar("hook_distance", "2.0")
-	max_hook_kills_per_life_pcvar=register_cvar("max_hooks_per_life", "2.0")
-	hook_drag_speed_pcvar=register_cvar("hook_drag_speed", "2.0")
-	hook_drag_time_pcvar=register_cvar("hook_drag_time", "3")
-	gutting_dmg_mult_pcvar=register_cvar("hook_gutting_dmg_mult", "3")
+	hook_distance_pcvar=create_cvar("hook_distance", "2.0")
+	max_hook_kills_per_life_pcvar=create_cvar("max_hooks_per_life", "2.0")
+	hook_drag_speed_pcvar=create_cvar("hook_drag_speed", "2.0")
+	hook_drag_time_pcvar=create_cvar("hook_drag_time", "3")
+	gutting_dmg_mult_pcvar=create_cvar("hook_gutting_dmg_mult", "3")
 	RegisterHam(Ham_TraceAttack,"player","Erica2_ham_trace_damage",_,true)
 	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart")

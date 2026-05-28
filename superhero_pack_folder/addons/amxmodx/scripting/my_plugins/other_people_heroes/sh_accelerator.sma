@@ -8,8 +8,8 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO Accelerator", "1.1", "SRGrty")
 
-	register_cvar("acc_level", "0")
-	register_cvar("acc_rate", "20")
+	create_cvar("acc_level", "0")
+	create_cvar("acc_rate", "20")
 
 	gHeroID=shCreateHero(gHeroName, "Accelerate", "Get Faster Every Second", false, "acc_level")
 

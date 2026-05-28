@@ -34,14 +34,14 @@ public plugin_init()
 	register_plugin("SUPERHERO Forge", "1.0", "SRGrty")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	register_cvar("Forge_level", "7")
-	register_cvar("Forge_cooldown", "20.0")
-	register_cvar("Forge_damage", "40")
-	register_cvar("Forge_velocity", "2000")
-	register_cvar("Forge_force", "500.0")		//cannot get this to function properly.
-	register_cvar("Forge_radius", "400")
-	register_cvar("Forge_obeygravity", "1")	
-	register_cvar("Forge_effects", "4")
+	create_cvar("Forge_level", "7")
+	create_cvar("Forge_cooldown", "20.0")
+	create_cvar("Forge_damage", "40")
+	create_cvar("Forge_velocity", "2000")
+	create_cvar("Forge_force", "500.0")		//cannot get this to function properly.
+	create_cvar("Forge_radius", "400")
+	create_cvar("Forge_obeygravity", "1")	
+	create_cvar("Forge_effects", "4")
 
 	gHeroID=shCreateHero(gHeroName, "Missiles", "Fires Concussion Missiles to blow people up!", true, "Forge_level")
 

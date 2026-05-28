@@ -43,11 +43,11 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	pcvar_jet_velocity = register_cvar("graciete_jet_velocity", "8")
-	pcvar_jet_cooldown = register_cvar("graciete_jet_cooldown", "8")
-	pcvar_jet_max_power = register_cvar("graciete_jet_max_power", "8")
-	pcvar_jet_stomp_grav_mult = register_cvar("graciete_jet_stomp_grav_mult", "8")
-	pcvar_land_explosion_radius = register_cvar("graciete_land_explosion_radius", "8")
+	pcvar_jet_velocity = create_cvar("graciete_jet_velocity", "8")
+	pcvar_jet_cooldown = create_cvar("graciete_jet_cooldown", "8")
+	pcvar_jet_max_power = create_cvar("graciete_jet_max_power", "8")
+	pcvar_jet_stomp_grav_mult = create_cvar("graciete_jet_stomp_grav_mult", "8")
+	pcvar_land_explosion_radius = create_cvar("graciete_land_explosion_radius", "8")
 	
 	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");

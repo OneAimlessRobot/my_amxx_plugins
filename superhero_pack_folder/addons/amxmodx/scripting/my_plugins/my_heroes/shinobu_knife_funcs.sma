@@ -54,7 +54,7 @@ public plugin_init(){
 	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
 
-	pcvar_shinobu_alpha = register_cvar("shinobu_alpha","10")
+	pcvar_shinobu_alpha = create_cvar("shinobu_alpha","10")
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Lower,true,0.0)
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Upper,true,255.0)
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")

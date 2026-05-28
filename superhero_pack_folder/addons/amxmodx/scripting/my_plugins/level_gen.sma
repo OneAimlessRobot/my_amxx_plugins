@@ -8,30 +8,30 @@
 public plugin_init()
 {
 register_plugin( PLUGIN_NAME, VERSION, AUTHOR );
-register_cvar( "level_gen_version", VERSION, FCVAR_SERVER | FCVAR_SPONLY );
+create_cvar( "level_gen_version", VERSION, FCVAR_SERVER | FCVAR_SPONLY );
 
-num_levels_cvar_p         = register_cvar( "level_gen_num_levels"        , "10"   );
-a_val_cvar_p         = register_cvar( "level_gen_a_val"        , "1.0"   );
-b_val_cvar_p   = register_cvar( "level_gen_b_val"  , "1.0"   );
-c_val_cvar_p        = register_cvar( "level_gen_c_val"       , "120.0" );
+num_levels_cvar_p         = create_cvar( "level_gen_num_levels"        , "10"   );
+a_val_cvar_p         = create_cvar( "level_gen_a_val"        , "1.0"   );
+b_val_cvar_p   = create_cvar( "level_gen_b_val"  , "1.0"   );
+c_val_cvar_p        = create_cvar( "level_gen_c_val"       , "120.0" );
 
-d_val_cvar_p         = register_cvar( "level_gen_d_val"        , "1.0"   );
-e_val_cvar_p   = register_cvar( "level_gen_e_val"  , "1.0"   );
-f_val_cvar_p   = register_cvar( "level_gen_f_val"  , "1.0"   );
+d_val_cvar_p         = create_cvar( "level_gen_d_val"        , "1.0"   );
+e_val_cvar_p   = create_cvar( "level_gen_e_val"  , "1.0"   );
+f_val_cvar_p   = create_cvar( "level_gen_f_val"  , "1.0"   );
 
-g_val_cvar_p         = register_cvar( "level_gen_g_val"        , "1.0"   );
-h_val_cvar_p   = register_cvar( "level_gen_h_val"  , "1.0"   );
-i_val_cvar_p   = register_cvar( "level_gen_i_val"  , "1.0"   );
-j_val_cvar_p   = register_cvar( "level_gen_j_val"  , "1.0"   );
-m_val_cvar_p   = register_cvar( "level_gen_m_val"  , "1.0"   );
-n_val_cvar_p   = register_cvar( "level_gen_n_val"  , "1.0"   );
+g_val_cvar_p         = create_cvar( "level_gen_g_val"        , "1.0"   );
+h_val_cvar_p   = create_cvar( "level_gen_h_val"  , "1.0"   );
+i_val_cvar_p   = create_cvar( "level_gen_i_val"  , "1.0"   );
+j_val_cvar_p   = create_cvar( "level_gen_j_val"  , "1.0"   );
+m_val_cvar_p   = create_cvar( "level_gen_m_val"  , "1.0"   );
+n_val_cvar_p   = create_cvar( "level_gen_n_val"  , "1.0"   );
 
-sum_coeff_needed_cvar_p       = register_cvar( "xp_needed_sum_coeff"        , "1.0"   );
+sum_coeff_needed_cvar_p       = create_cvar( "xp_needed_sum_coeff"        , "1.0"   );
 
-sum_coeff_gained_cvar_p       = register_cvar( "xp_gained_sum_coeff"        , "1.0"   );
+sum_coeff_gained_cvar_p       = create_cvar( "xp_gained_sum_coeff"        , "1.0"   );
 
-k_val_cvar_p   = register_cvar( "level_gen_k_val"  , "1.0"   );
-l_val_cvar_p   = register_cvar( "level_gen_l_val"  , "1.0"   );
+k_val_cvar_p   = create_cvar( "level_gen_k_val"  , "1.0"   );
+l_val_cvar_p   = create_cvar( "level_gen_l_val"  , "1.0"   );
 
 register_concmd("level_gen", "level_gen", ADMIN_RCON);
 

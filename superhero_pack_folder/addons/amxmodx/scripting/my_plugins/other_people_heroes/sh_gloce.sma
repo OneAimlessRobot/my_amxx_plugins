@@ -38,14 +38,14 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "fwd_Ham_TakeDamage_post",1,true)
 
 	//Register Cvars
-	register_cvar("gloce_level", "7" )
-	register_cvar("gloce_version", gVERSION, FCVAR_SERVER|FCVAR_SPONLY)
+	create_cvar("gloce_level", "7" )
+	create_cvar("gloce_version", gVERSION, FCVAR_SERVER|FCVAR_SPONLY)
 
-	gloce_glock = register_cvar("gloce_glock", "1")
-	gloce_pct = register_cvar("gloce_percent", "30")
+	gloce_glock = create_cvar("gloce_glock", "1")
+	gloce_pct = create_cvar("gloce_percent", "30")
 
-	gloce_times = register_cvar("gloce_times", "5")
-	gloce_time = register_cvar("gloce_freeze_time", "5")
+	gloce_times = create_cvar("gloce_times", "5")
+	gloce_time = create_cvar("gloce_freeze_time", "5")
 
 	//Create Hero
 	gHeroID=shCreateHero(g_HeroName, "Ice Glock", GLOCE_DSPT, false, "gloce_level")

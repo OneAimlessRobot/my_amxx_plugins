@@ -30,11 +30,11 @@ public plugin_init()
 	register_plugin("SUPERHERO Deagle Sniper", "1.0", "Jelle / Fr33m@n")
 
 	//cvars
-	new pcvarLevel = register_cvar("dassassin_level", "7")
-	new pcvarHealth = register_cvar("dassassin_health", "175")
-	new pcvarArmor = register_cvar("dassassin_armor", "175")
-	new pcvarGravity = register_cvar("dassassin_gravity", "0.3")
-	new pcvarDglmult = register_cvar("dassassin_mult", "3")
+	new pcvarLevel = create_cvar("dassassin_level", "7")
+	new pcvarHealth = create_cvar("dassassin_health", "175")
+	new pcvarArmor = create_cvar("dassassin_armor", "175")
+	new pcvarGravity = create_cvar("dassassin_gravity", "0.3")
+	new pcvarDglmult = create_cvar("dassassin_mult", "3")
 
 	//create hero
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)

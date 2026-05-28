@@ -13,7 +13,7 @@ public plugin_init()
 {
 	register_plugin("SUPERHERO Highlander", "1.4", "blue")
 	
-	new pcvarLevel = register_cvar("highlander_level", "0")
+	new pcvarLevel = create_cvar("highlander_level", "0")
 	
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "You can killable only with headshots.", "You will respawn until you get a headshot.")

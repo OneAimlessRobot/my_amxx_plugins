@@ -20,7 +20,7 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Zenitsu Agatsuma","1.0",AUTHOR)
 	
-	register_cvar("zenitsu_level", "19" )
+	create_cvar("zenitsu_level", "19" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!

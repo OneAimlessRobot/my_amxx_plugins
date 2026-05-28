@@ -33,11 +33,11 @@ public plugin_init()
     register_plugin("SUPERHERO frieza", "1.1", "Gorlag/Batman  /  XxAvalanchexX") 
 
     //THE CVARS 
-    register_cvar("frieza_level", "10") 
-    register_cvar("frieza_damage", "200")  
-    register_cvar("frieza_cooldown", "50") 
-    register_cvar("frieza_diskspeed", "750") 
-    register_cvar("frieza_disklife", "50") 
+    create_cvar("frieza_level", "10") 
+    create_cvar("frieza_damage", "200")  
+    create_cvar("frieza_cooldown", "50") 
+    create_cvar("frieza_diskspeed", "750") 
+    create_cvar("frieza_disklife", "50") 
 
     //THIS LINE MAKES THE HERO SELECTABLE 
     gHeroID=shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 

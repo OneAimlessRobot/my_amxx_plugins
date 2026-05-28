@@ -34,12 +34,12 @@ public plugin_init()
   register_plugin("SUPERHERO Tracker", "1.3", "Kunlock")
   
   //Create the hero
-  register_cvar("tracker_level","9")
-  register_cvar("tracker_scale","8")
-  register_cvar("tracker_bright","255")
-  register_cvar("tracker_maxtargets","0")
-  register_cvar("tracker_timetargeted","0.0")
-  register_cvar("tracker_refreshrate","1.0")
+  create_cvar("tracker_level","9")
+  create_cvar("tracker_scale","8")
+  create_cvar("tracker_bright","255")
+  create_cvar("tracker_maxtargets","0")
+  create_cvar("tracker_timetargeted","0.0")
+  create_cvar("tracker_refreshrate","1.0")
   //Hero Name- Short Description- Long Description- false=Automatic Powers true=KeyDown powers- Hero level
   gHeroID=shCreateHero("Tracker", "Tracks victims", "Shooting enemies tags them so you can track them down", false, "tracker_level" )
   

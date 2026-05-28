@@ -37,7 +37,7 @@ public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	starting_secret_code_pcvar = register_cvar("generator_starting_secret_code","10000")
+	starting_secret_code_pcvar = create_cvar("generator_starting_secret_code","10000")
 	register_ham_for_weapon_bitsum(Ham_Spawn,GUNS_BIT_SUM|CSW_KNIFE,"ham_weapon_spawn",_, true, false)
 
 	initialize_default_stuff()

@@ -67,19 +67,19 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
-	pcvar_jetplane_hp = register_cvar("yandere_jetplane_hp", "5")
-	pcvar_jetplane_cooldown = register_cvar("yandere_jetplane_cooldown", "5")
-	pcvar_jet_init_speed = register_cvar("yandere_jetplane_init_speed", "5")
-	pcvar_jetplane_enable_gravity = register_cvar("yandere_jetplane_enable_gravity", "0")
-	pcvar_jetplane_enable_air_drag = register_cvar("yandere_jetplane_enable_air_drag", "1")
-	pcvar_jetplane_enable_speed_limiter = register_cvar("yandere_jetplane_enable_speed_limiter", "1")
+	pcvar_jetplane_hp = create_cvar("yandere_jetplane_hp", "5")
+	pcvar_jetplane_cooldown = create_cvar("yandere_jetplane_cooldown", "5")
+	pcvar_jet_init_speed = create_cvar("yandere_jetplane_init_speed", "5")
+	pcvar_jetplane_enable_gravity = create_cvar("yandere_jetplane_enable_gravity", "0")
+	pcvar_jetplane_enable_air_drag = create_cvar("yandere_jetplane_enable_air_drag", "1")
+	pcvar_jetplane_enable_speed_limiter = create_cvar("yandere_jetplane_enable_speed_limiter", "1")
 	
-	pcvar_jetplane_speed = register_cvar("yandere_jetplane_speed", "5")
-	pcvar_accelerate_const = register_cvar("yandere_jetplane_accelerate_const", "5")
-	pcvar_brake_const = register_cvar("yandere_jetplane_brake_const", "5")
-	pcvar_turn_inc_const = register_cvar("yandere_jetplane_turn_inc_const","5")
-	pcvar_max_turn_const = register_cvar("yandere_jetplane_max_turn_const","5")
-	pcvar_stabilizer_mushyness = register_cvar("yandere_jetplane_stabilizer_mushyness","0.25");
+	pcvar_jetplane_speed = create_cvar("yandere_jetplane_speed", "5")
+	pcvar_accelerate_const = create_cvar("yandere_jetplane_accelerate_const", "5")
+	pcvar_brake_const = create_cvar("yandere_jetplane_brake_const", "5")
+	pcvar_turn_inc_const = create_cvar("yandere_jetplane_turn_inc_const","5")
+	pcvar_max_turn_const = create_cvar("yandere_jetplane_max_turn_const","5")
+	pcvar_stabilizer_mushyness = create_cvar("yandere_jetplane_stabilizer_mushyness","0.25");
 	
 	hud_sync_jetplane=CreateHudSyncObj()
 	register_think(JETPLANE_FUSELAGE_CLASSNAME, "jet_think")

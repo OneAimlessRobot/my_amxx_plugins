@@ -35,21 +35,21 @@ public plugin_init()
   register_plugin("SUPERHERO Megaman","1.14.4","NOOBology Madskillz")
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-  if (!cvar_exists("Megaman_level")) register_cvar("megaman_level", "10" )
+  if (!cvar_exists("Megaman_level")) create_cvar("megaman_level", "10" )
   gHeroID=shCreateHero(gHeroName, "Photon Cannon", "Blazing Cannon and Megasuit", true, "megaman_level" )
   
   
   
   
   // THE DEFAULT OF THE CVARS
-  register_cvar("megaman_laser_ammo", "100")      // - Ammo that the Photon Cannon has - //Default-  150 //
-  register_cvar("megaman_laser_burndecals", "1")  // - The ammount of PhotonGun Decals - //Default-    1 //
-  register_cvar("megaman_cooldown", "0.02" )      // - The Cooldown time of the Photon - //Default- 0.02 //  
-  register_cvar("megaman_level", "10" )           // - Level to make Megaman Available - //Default-   10 //
-  register_cvar("megaman_gravity", "650" )        // - The JumpingPower Megaman's suit - //Default-  650 //
-  register_cvar("megaman_armor", "600" )          // - The Megasuit's Power of defense - //Default-  600 //
-  register_cvar("megaman_health", "300" )         // - The Power Megaman has to resist - //Default-  300 //
-  register_cvar("megaman_speed", "700" )          // - The Speed/Agility of a Megasuit - //Default-  700 //
+  create_cvar("megaman_laser_ammo", "100")      // - Ammo that the Photon Cannon has - //Default-  150 //
+  create_cvar("megaman_laser_burndecals", "1")  // - The ammount of PhotonGun Decals - //Default-    1 //
+  create_cvar("megaman_cooldown", "0.02" )      // - The Cooldown time of the Photon - //Default- 0.02 //  
+  create_cvar("megaman_level", "10" )           // - Level to make Megaman Available - //Default-   10 //
+  create_cvar("megaman_gravity", "650" )        // - The JumpingPower Megaman's suit - //Default-  650 //
+  create_cvar("megaman_armor", "600" )          // - The Megasuit's Power of defense - //Default-  600 //
+  create_cvar("megaman_health", "300" )         // - The Power Megaman has to resist - //Default-  300 //
+  create_cvar("megaman_speed", "700" )          // - The Speed/Agility of a Megasuit - //Default-  700 //
 }
 //----------------------------------------------------------------------------------------------------------
 public plugin_precache()

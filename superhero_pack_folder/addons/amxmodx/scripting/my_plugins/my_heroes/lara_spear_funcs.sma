@@ -38,8 +38,8 @@ public plugin_init(){
 
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SPEAR_CLASSNAME, "spaar_thaank");
-	register_cvar("lara_spear_max_charge_time", "5.0")
-	register_cvar("lara_spear_min_charge_time", "1.0")
+	create_cvar("lara_spear_max_charge_time", "5.0")
+	create_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
 	SPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
 

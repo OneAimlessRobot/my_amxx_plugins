@@ -22,7 +22,7 @@ public plugin_init()
   register_plugin("SUPERHERO Rom V1","1.0","Freecode & T(+)rget")
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-  register_cvar("rom_level", "0" )
+  create_cvar("rom_level", "0" )
   gHeroID=shCreateHero(gHeroName, "Senses", "Know where the player is", true, "rom_level" )
   
   // LOOP
@@ -30,8 +30,8 @@ public plugin_init()
   set_task(1.0,"rom_loop",0,"",0,"b")
   
   // DEFAULT THE CVARS
-  register_cvar("rom_cooldown", "15" )
-  register_cvar("rom_sensetime","20")
+  create_cvar("rom_cooldown", "15" )
+  create_cvar("rom_sensetime","20")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){

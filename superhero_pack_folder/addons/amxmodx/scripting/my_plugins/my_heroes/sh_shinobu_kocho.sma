@@ -27,8 +27,10 @@ new dmg_source_name_log_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
 new custom_weapon_damage_sharp_poison_kick_id
 
 new pcvar_shinobu_poison_kick_stun_time,
-	pcvar_shinobu_poison_kick_stun_speed,
-	pcvar_shinobu_max_health
+	pcvar_shinobu_poison_kick_stun_speed
+
+static const shinobu_max_health = 90
+
 new gMessageID_Health
 new pcvar_shinobu_cooldown
 new pcvar_shinobu_poison_kick_delay
@@ -42,13 +44,12 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO Shinobu Kocho","1.0",AUTHOR)
 	
-	register_cvar("shinobu_level", "19" )
-	pcvar_shinobu_cooldown = register_cvar("shinobu_cooldown", "10.0" )
-	pcvar_shinobu_max_health = register_cvar("shinobu_max_health", "100" )
-	pcvar_shinobu_poison_kick_delay = register_cvar("shinobu_poison_kick_delay","2.0")
-	pcvar_shinobu_poison_kick_stun_time = register_cvar("shinobu_poison_kick_stun_time", "10.0" )
-	pcvar_shinobu_poison_kick_stun_speed = register_cvar("shinobu_poison_kick_stun_speed", "110.0" )
-	pcvar_shinobu_poison_kick_knockback = register_cvar("shinobu_poison_kick_knockback","1")
+	create_cvar("shinobu_level", "19" )
+	pcvar_shinobu_cooldown = create_cvar("shinobu_cooldown", "10.0" )
+	pcvar_shinobu_poison_kick_delay = create_cvar("shinobu_poison_kick_delay","2.0")
+	pcvar_shinobu_poison_kick_stun_time = create_cvar("shinobu_poison_kick_stun_time", "10.0" )
+	pcvar_shinobu_poison_kick_stun_speed = create_cvar("shinobu_poison_kick_stun_speed", "110.0" )
+	pcvar_shinobu_poison_kick_knockback = create_cvar("shinobu_poison_kick_knockback","1")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -85,7 +86,6 @@ public plugin_natives(){
 	
 }
 
-
 //----------------------------------------------------------------------------------------------
 public shinobu_step_silent(task_id)
 {
@@ -114,7 +114,7 @@ public sh_client_spawn(id)
 	}
 
 	if ( sh_get_user_has_hero(id,gHeroID) ) {
-		new the_health_to_send = min(get_user_health(id),cvar_val(num, pcvar_shinobu_max_health))
+		new the_health_to_send = min(get_user_health(id),shinobu_max_health)
 
 		set_user_health(id, the_health_to_send)
 		
@@ -147,7 +147,7 @@ public Shinobu_Limit_HP(msgid, dest, id)
 
 	static the_resulting_health;
 	the_resulting_health=min(
-					cvar_val(num, pcvar_shinobu_max_health),
+					shinobu_max_health,
 						the_health_to_be_set)
 	
 	set_user_health(id,the_resulting_health)
@@ -188,7 +188,7 @@ public _shinobu_get_hero_id(iPlugins, iParms){
 }
 public _shinobu_get_max_hp(iPlugins, iParms){
 	
-	return cvar_val(num, pcvar_shinobu_max_health)
+	return shinobu_max_health
 	
 }
 public Float:_shinobu_get_cooldown(iPlugins, iParms){
@@ -232,7 +232,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
-		set_user_health(id,min(sh_get_max_hp(id),cvar_val(num, pcvar_shinobu_max_health)))
+		set_user_health(id,min(sh_get_max_hp(id),shinobu_max_health))
 		manual_cloak_check(id)
 	}
 	else{

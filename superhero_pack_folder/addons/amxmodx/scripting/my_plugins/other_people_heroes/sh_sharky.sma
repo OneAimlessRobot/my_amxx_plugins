@@ -21,13 +21,13 @@ public plugin_init()
   register_plugin("SUPERHERO sharky","1.0","sharky")
  
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
-  register_cvar("sharky_level", "9" )
-  register_cvar("sharky_cooldown", "0.0" ) //CoolDown
-  register_cvar("sharky_time", "0.0" ) // Time In confusedMode
-  register_cvar("sharky_speed", "1000" ) //Speed he can run
-  register_cvar("sharky_summon", "0" ) //1=yes 0=no
-  register_cvar("sharky_smoke", "1" ) //1=yes 0=no
-  register_cvar("sharky_ammo", "0" ) //1=always 0=Only in ninjamode
+  create_cvar("sharky_level", "9" )
+  create_cvar("sharky_cooldown", "0.0" ) //CoolDown
+  create_cvar("sharky_time", "0.0" ) // Time In confusedMode
+  create_cvar("sharky_speed", "1000" ) //Speed he can run
+  create_cvar("sharky_summon", "0" ) //1=yes 0=no
+  create_cvar("sharky_smoke", "1" ) //1=yes 0=no
+  create_cvar("sharky_ammo", "0" ) //1=always 0=Only in ninjamode
 
   gHeroID=shCreateHero(gHeroName, "sharky-mode", "make confusing smoke storm,get ALL the gunz", true, "sharky_level")
   register_clcmd("SharkyPower","make_fog",ADMIN_USER)

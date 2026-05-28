@@ -26,11 +26,11 @@ new STORM_TASK_ID = 0
 	// Plugin Info
 	register_plugin("SUPERHERO Storm","0.2","[FTW]-S.W.A.T/Om3g[A]")
 
-	register_cvar("storm_level", "0" )
-	register_cvar("storm_cooldown", "30" )
-	register_cvar("storm_time", "15")
-	register_cvar("storm_radius", "200")
-	register_cvar("storm_maxdamage", "15")
+	create_cvar("storm_level", "0" )
+	create_cvar("storm_cooldown", "30" )
+	create_cvar("storm_time", "15")
+	create_cvar("storm_radius", "200")
+	create_cvar("storm_maxdamage", "15")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Call Thunder", "Storm calls thunder from the sky - beware!", true, "Storm_level" )

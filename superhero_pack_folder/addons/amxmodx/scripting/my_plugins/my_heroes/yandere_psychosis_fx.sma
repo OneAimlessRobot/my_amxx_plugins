@@ -30,11 +30,11 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	pcvar_psychosis_time = register_cvar("yandere_psychosis_time", "5")
-	pcvar_zoom = register_cvar("yandere_psychosis_zoom", "5")
-	pcvar_psychosis_add_ap = register_cvar("yandere_psychosis_add_ap", "5")
-	pcvar_psychosis_dmg_cushion = register_cvar("yandere_psychosis_dmg_cushion", "5")
-	pcvar_psychosis_cooldown = register_cvar("yandere_psychosis_cooldown", "30")
+	pcvar_psychosis_time = create_cvar("yandere_psychosis_time", "5")
+	pcvar_zoom = create_cvar("yandere_psychosis_zoom", "5")
+	pcvar_psychosis_add_ap = create_cvar("yandere_psychosis_add_ap", "5")
+	pcvar_psychosis_dmg_cushion = create_cvar("yandere_psychosis_dmg_cushion", "5")
+	pcvar_psychosis_cooldown = create_cvar("yandere_psychosis_cooldown", "30")
 
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)

@@ -46,17 +46,17 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO ksun","1.1",AUTHOR)
 	
-	register_cvar("ksun_level", "12" )
-	pcvar_cooldown = register_cvar("ksun_cooldown", "10.0" )
-	pcvar_ksun_dmg_paycut = register_cvar("ksun_dmg_paycut", "0.05" )
+	create_cvar("ksun_level", "12" )
+	pcvar_cooldown = create_cvar("ksun_cooldown", "10.0" )
+	pcvar_ksun_dmg_paycut = create_cvar("ksun_dmg_paycut", "0.05" )
 	set_pcvar_bounds(pcvar_ksun_dmg_paycut,CvarBound_Lower,true,MIN_KSUN_PAYCUT)
 	set_pcvar_bounds(pcvar_ksun_dmg_paycut,CvarBound_Upper,true,MAX_KSUN_PAYCUT)
-	pcvar_num_sleep_nades = register_cvar("ksun_num_of_sleep_nades","6")
-	pcvar_ksun_kill_type_broadness_level = register_cvar("ksun_kill_type_broadness_level","0")
-	pcvar_ksun_spores_per_kill = register_cvar("ksun_spores_per_kill","0")
-	pcvar_ksun_spore_m4_mult = register_cvar("ksun_spore_m4_mult","0")
-	pcvar_ksun_when_reset_spores = register_cvar("ksun_when_reset_spores","0")
-	pcvar_ksun_max_victims = register_cvar("ksun_max_victims", "4" )
+	pcvar_num_sleep_nades = create_cvar("ksun_num_of_sleep_nades","6")
+	pcvar_ksun_kill_type_broadness_level = create_cvar("ksun_kill_type_broadness_level","0")
+	pcvar_ksun_spores_per_kill = create_cvar("ksun_spores_per_kill","0")
+	pcvar_ksun_spore_m4_mult = create_cvar("ksun_spore_m4_mult","0")
+	pcvar_ksun_when_reset_spores = create_cvar("ksun_when_reset_spores","0")
+	pcvar_ksun_max_victims = create_cvar("ksun_max_victims", "4" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!

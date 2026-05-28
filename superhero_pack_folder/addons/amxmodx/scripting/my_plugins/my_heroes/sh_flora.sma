@@ -25,9 +25,9 @@ public plugin_init()
 	// Plugin Info
 	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
-	pcvar_gFloraHeroLvl = register_cvar("flora_level", "39" )
-	pcvar_flora_field_start_ammount = register_cvar("flora_field_start_ammount", "10" )
-	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
+	pcvar_gFloraHeroLvl = create_cvar("flora_level", "39" )
+	pcvar_flora_field_start_ammount = create_cvar("flora_field_start_ammount", "10" )
+	pcvar_flora_field_max_active_ammount = create_cvar("flora_field_max_active_ammount", "10" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
