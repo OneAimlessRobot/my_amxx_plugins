@@ -40,6 +40,7 @@ new sh_custom_color:g_flora_dmg_color[SH_MAXSLOTS+1]
 new Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
 new gHeroID = -1
+new gHeroLevel = 0
 
 new generic_suffocation_wpn_id = -1
 new pcvar_field_cooldown
@@ -73,6 +74,7 @@ public plugin_init()
 {
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
+	
 	pcvar_flora_field_max_active_ammount = register_cvar("flora_field_max_active_ammount", "10" )
 	pcvar_field_cooldown = register_cvar("flora_field_cooldown" ,"9.0" )
 	pcvar_field_radius = register_cvar("flora_field_radius" ,"1000.0")
@@ -156,7 +158,7 @@ public plugin_natives(){
 public plugin_cfg(){
 
 	gHeroID = flora_get_hero_id()
-
+	gHeroLevel = flora_get_hero_lvl()
 	field_drain_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_field_drain,
@@ -284,12 +286,11 @@ public _flora_get_prev_inside(iPlugin,iParams){
 Float:get_player_alpha(id){
 	
 	new Float:alphaMult=1.0;
-	new player_lvl,hero_lvl,lvl_diff;
+	new player_lvl,lvl_diff;
 	if(is_user_alive(id)){
 		if(sh_get_user_has_hero(id,gHeroID)){
 			player_lvl=sh_get_user_lvl(id)
-			hero_lvl=flora_get_hero_lvl()
-			lvl_diff=player_lvl-hero_lvl
+			lvl_diff=player_lvl-gHeroLevel
 			alphaMult=floatmax(
 				cvar_val(float, pcvar_flora_invis_alpha_min),
 				cvar_val(float, pcvar_flora_invis_alpha_max)-

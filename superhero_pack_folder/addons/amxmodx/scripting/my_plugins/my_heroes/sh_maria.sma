@@ -40,6 +40,12 @@ new pcvar_health_drain_end_threshold
 new pcvar_begin_open_valve_timer;
 new gHeroID = -1
 
+
+
+new selflessness_weapon_id
+new dmg_source_name_short_selflessness[SAFE_BUFFER_SIZE+1]="selflessness"
+new dmg_source_name_log_selflessness[SAFE_BUFFER_SIZE+1]="selflessness"
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -122,8 +128,16 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
+
+	selflessness_weapon_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_selflessness,
+								dmg_source_name_log_selflessness,
+								0)
+
 	heal_period=get_cvar_float("maria_heal_period")
 	set_task(heal_period, "maria_loop",_,_,_, "b")
+
 }
 
 //----------------------------------------------------------------------------------------------
@@ -181,19 +195,21 @@ public client_disconnected(id){
 	g_base_radius[id]=0.0
 
 }
-calculate_healing(id,Float:values[2]){
+calculate_healing(id,&Float:hp_to_give=0.0,num_of_teamates_around){
 
 new Float: maria_health=float(get_user_health(id))
 new Float:value=heal_period*cvar_val(float, pcvar_base_heal)*
 			cvar_val(float, pcvar_selfless_index)*
 			(float(g_maria_points[id])/float(cvar_val(num, pcvar_max_points)));
-values[1]=maria_health;
-values[0]=(maria_health>value)?value:0.0;
+
+
+hp_to_give = (maria_health>value)?value:0.0;
+hp_to_give = (hp_to_give/(float(num_of_teamates_around)))
 
 }
 
 
-bool:heal_teamate(id,i){
+bool:heal_teamate(id,i,Float:hp_to_give){
 	if(!sh_is_active()||!is_user_alive(i)||!is_user_alive(id)||!hasRoundStarted()){
 		
 		
@@ -204,13 +220,9 @@ bool:heal_teamate(id,i){
 		
 		return false
 	}
-	new Float:values[2]
-	calculate_healing(id,values)
-
-	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,values[0]*
+	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,hp_to_give*
 			cvar_val(float, pcvar_points_heal_coeff),_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
-		sh_extra_damage(id,id,floatround(values[0]))
 		heal_stream(id,i,_,190)
 	}
 	return result
@@ -243,23 +255,52 @@ static entlist[33];
 static Float:client_origin[3]
 entity_get_vector(id,EV_VEC_origin,client_origin)
 new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
-new bool:healed=false;
+
+if(num_found<1){
+
+	return
+}
+
+static bool:healed=false,
+		bool:can_heal=false,
+		num_healed=0,
+		Float:hp_to_give = 0.0
+
+can_heal= float(get_user_health(id))>
+			float(sh_get_max_hp(id))*
+			(1.0-cvar_val(float, pcvar_selfless_index))
+
+if(!can_heal){
+
+	return
+}
+
+calculate_healing(id,hp_to_give,num_found)
+
 for(new p=0;p<num_found;p++){
 	new i=entlist[p]
 	if(!is_user_alive(i)||(i==id)) continue;
 
-	if(!sh_clients_are_same_team(i,id)) continue;
-	
-	if(float(get_user_health(id))>
-			float(sh_get_max_hp(id))*
-			(1.0-cvar_val(float, pcvar_selfless_index))){
-		
-		healed=heal_teamate(id,i)
-		
+	if(get_user_health(i)>=sh_get_max_hp(i)){
+
+		continue
 	}
+
+	if(!sh_clients_are_same_team(i,id)) continue;
+
+	healed=heal_teamate(id,i,hp_to_give)
+	num_healed+=((healed)?1:0)
+
 }
 if(healed){
 
+	sh_extra_damage(id,id,floatround(hp_to_give*num_healed),
+					_,
+					SH_DMG_NORM,
+					_,_,_,
+					SH_NEW_DMG_BLEED,
+					selflessness_weapon_id)
+	
 	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
 	make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
 }

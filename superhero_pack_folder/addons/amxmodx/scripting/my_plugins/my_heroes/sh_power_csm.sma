@@ -112,7 +112,9 @@ power_csm_execute_extract(id){
 
 	sh_extra_damage(id, id, floatround(dmg_to_deal),
 											MY_HIT_STOMACH,
-											_,_,_,_,
+											SH_DMG_NORM,
+											SH_EXTRA_DMG_FLAG_STUN,
+											_,_,
 											SH_NEW_DMG_BLEED,
 											power_csm_drain_wpn_id)
 	
@@ -179,7 +181,9 @@ public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 			
 			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
 											the_hitpoint,
-											_,_,_,_,
+											SH_DMG_NORM,
+											SH_EXTRA_DMG_FLAG_STUN,
+											_,_,
 											SH_NEW_DMG_BLEED,
 											power_csm_bleed_dmg_boost_wpn_id)
 			
