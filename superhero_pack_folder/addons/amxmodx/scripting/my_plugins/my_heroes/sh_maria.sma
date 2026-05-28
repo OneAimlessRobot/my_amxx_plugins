@@ -210,16 +210,7 @@ hp_to_give = (hp_to_give/(float(num_of_teamates_around)))
 
 
 bool:heal_teamate(id,i,Float:hp_to_give){
-	if(!sh_is_active()||!is_user_alive(i)||!is_user_alive(id)||!hasRoundStarted()){
-		
-		
-		return false
-	}
-	if(!sh_get_user_has_hero(id,gHeroID) ){
-		
-		
-		return false
-	}
+	
 	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,hp_to_give*
 			cvar_val(float, pcvar_points_heal_coeff),_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
@@ -251,7 +242,8 @@ if(!Get_BitVar(gHealthDrainValveMask,id)){
 
 	return;
 }
-static entlist[33];
+static entlist[33],
+		playerlist[33];
 static Float:client_origin[3]
 entity_get_vector(id,EV_VEC_origin,client_origin)
 new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
@@ -261,8 +253,7 @@ if(num_found<1){
 	return
 }
 
-static bool:healed=false,
-		bool:can_heal=false,
+new bool:can_heal=false,
 		num_healed=0,
 		Float:hp_to_give = 0.0
 
@@ -275,7 +266,6 @@ if(!can_heal){
 	return
 }
 
-calculate_healing(id,hp_to_give,num_found)
 
 for(new p=0;p<num_found;p++){
 	new i=entlist[p]
@@ -288,12 +278,19 @@ for(new p=0;p<num_found;p++){
 
 	if(!sh_clients_are_same_team(i,id)) continue;
 
-	healed=heal_teamate(id,i,hp_to_give)
-	num_healed+=((healed)?1:0)
+	playerlist[num_healed]=i
+	num_healed++
 
 }
-if(healed){
+if(num_healed>0){
 
+	calculate_healing(id,hp_to_give,num_healed)
+	
+	for(new q=0;q<num_healed;q++){
+		new j=playerlist[q]
+		heal_teamate(id,j,hp_to_give)
+
+	}
 	sh_extra_damage(id,id,floatround(hp_to_give*num_healed),
 					_,
 					SH_DMG_NORM,
@@ -304,8 +301,7 @@ if(healed){
 	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
 	make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
 }
-
-
+	
 }
 public maria_damage(id)
 {
