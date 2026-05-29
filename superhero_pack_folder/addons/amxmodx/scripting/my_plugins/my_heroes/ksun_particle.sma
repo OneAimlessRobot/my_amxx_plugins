@@ -59,21 +59,21 @@ public plugin_natives(){
 	
 	
 	
-	register_native("spore_launch","_spore_launch",0)
-	register_native("get_times_player_spiked_player","_get_times_player_spiked_player",0)
-	register_native("inc_times_player_spiked_player","_inc_times_player_spiked_player",0)
-	register_native("dec_times_player_spiked_player","_dec_times_player_spiked_player",0)
+	register_native("spore_launch","_spore_launch")
+	register_native("get_times_player_spiked_player","_get_times_player_spiked_player")
+	register_native("inc_times_player_spiked_player","_inc_times_player_spiked_player")
+	register_native("dec_times_player_spiked_player","_dec_times_player_spiked_player")
 	
-	register_native("get_times_player_spiked_by_player","_get_times_player_spiked_by_player",0)
-	register_native("inc_times_player_spiked_by_player","_inc_times_player_spiked_by_player",0)
-	register_native("dec_times_player_spiked_by_player","_dec_times_player_spiked_by_player",0)
-	register_native("ksun_heal","_ksun_heal",0)
+	register_native("get_times_player_spiked_by_player","_get_times_player_spiked_by_player")
+	register_native("inc_times_player_spiked_by_player","_inc_times_player_spiked_by_player")
+	register_native("dec_times_player_spiked_by_player","_dec_times_player_spiked_by_player")
+	register_native("ksun_heal","_ksun_heal")
 	
-	register_native("ksun_glisten","_ksun_glisten",0)
+	register_native("ksun_glisten","_ksun_glisten")
 	
-	register_native("clean_ksun_spores_from_players","_clean_ksun_spores_from_players",0)
-	register_native("check_by_whom_player_spored","_check_by_whom_player_spored",0)
-	register_native("check_who_player_is_sporing","_check_who_player_is_sporing",0)
+	register_native("clean_ksun_spores_from_players","_clean_ksun_spores_from_players")
+	register_native("check_by_whom_player_spored","_check_by_whom_player_spored")
+	register_native("check_who_player_is_sporing","_check_who_player_is_sporing")
 	
 	
 	

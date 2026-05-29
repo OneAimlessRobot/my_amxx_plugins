@@ -234,12 +234,12 @@ public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction
 public plugin_natives(){
 
 	
-	register_native("gatling_set_num_pills","_gatling_set_num_pills",0);
-	register_native("gatling_get_num_pills","_gatling_get_num_pills",0);
-	register_native("gatling_dec_num_pills","_gatling_dec_num_pills",0);
+	register_native("gatling_set_num_pills","_gatling_set_num_pills");
+	register_native("gatling_get_num_pills","_gatling_get_num_pills");
+	register_native("gatling_dec_num_pills","_gatling_dec_num_pills");
 
-	register_native("gatling_set_pillgatling","_gatling_set_pillgatling",0);
-	register_native("gatling_get_pillgatling","_gatling_get_pillgatling",0);
+	register_native("gatling_set_pillgatling","_gatling_set_pillgatling");
+	register_native("gatling_get_pillgatling","_gatling_get_pillgatling");
 
 
 }

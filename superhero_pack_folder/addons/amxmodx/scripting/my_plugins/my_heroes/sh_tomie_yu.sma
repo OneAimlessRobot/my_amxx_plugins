@@ -30,7 +30,7 @@ public plugin_init()
 
 public plugin_natives(){
 
-	register_native("tomie_yu_hero_id","_tomie_yu_hero_id",0);
+	register_native("tomie_yu_hero_id","_tomie_yu_hero_id");
 	
 
 	

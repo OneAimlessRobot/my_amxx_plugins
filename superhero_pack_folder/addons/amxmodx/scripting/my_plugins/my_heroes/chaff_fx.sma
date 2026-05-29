@@ -36,9 +36,9 @@ public sh_client_spawn(id)
 
 public plugin_natives(){
 	
-	register_native("sh_chaff_user","_sh_chaff_user",0);
-	register_native("sh_unchaff_user","_sh_unchaff_user",0);
-	register_native("sh_get_user_is_chaffed","_sh_get_user_is_chaffed",0);
+	register_native("sh_chaff_user","_sh_chaff_user");
+	register_native("sh_unchaff_user","_sh_unchaff_user");
+	register_native("sh_get_user_is_chaffed","_sh_get_user_is_chaffed");
 }
 public _sh_get_user_is_chaffed(iPlugin,iParams){
 	new id= get_param(1);

@@ -33,9 +33,9 @@ public sh_client_spawn(id)
 
 public plugin_natives(){
 	
-	register_native("sh_shock_user","_sh_shock_user",0);
-	register_native("sh_unshock_user","_sh_unshock_user",0);
-	register_native("sh_get_user_is_shocked","_sh_get_user_is_shocked",0);
+	register_native("sh_shock_user","_sh_shock_user");
+	register_native("sh_unshock_user","_sh_unshock_user");
+	register_native("sh_get_user_is_shocked","_sh_get_user_is_shocked");
 }
 public _sh_get_user_is_shocked(iPlugin,iParams){
 	new id= get_param(1);

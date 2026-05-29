@@ -28,9 +28,9 @@ public plugin_init()
 
 }
 public plugin_natives(){
-	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id",0)
-	register_native("zenitsu_get_charge_mode_engaged","_zenitsu_get_charge_mode_engaged",0)
-	register_native("zenitsu_set_charge_mode_engaged","_zenitsu_set_charge_mode_engaged",0)
+	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id")
+	register_native("zenitsu_get_charge_mode_engaged","_zenitsu_get_charge_mode_engaged")
+	register_native("zenitsu_set_charge_mode_engaged","_zenitsu_set_charge_mode_engaged")
 	
 	
 	

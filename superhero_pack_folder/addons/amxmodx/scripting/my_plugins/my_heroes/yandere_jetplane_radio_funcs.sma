@@ -46,10 +46,10 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("get_user_jet_scans","_get_user_jet_scans",0);
-	register_native("set_user_jet_scans","_set_user_jet_scans",0);
-	register_native("reset_jet_scans","_reset_jet_scans",0);
-	register_native("reset_user_jet_scans","_reset_user_jet_scans",0);
+	register_native("get_user_jet_scans","_get_user_jet_scans");
+	register_native("set_user_jet_scans","_set_user_jet_scans");
+	register_native("reset_jet_scans","_reset_jet_scans");
+	register_native("reset_user_jet_scans","_reset_user_jet_scans");
 
 }
 public plugin_cfg(){

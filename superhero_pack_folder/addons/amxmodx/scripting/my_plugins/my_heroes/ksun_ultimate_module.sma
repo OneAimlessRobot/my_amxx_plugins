@@ -71,21 +71,21 @@ public plugin_natives(){
 	
 	
 	
-	register_native("ksun_set_player_supply_points","_ksun_set_player_supply_points",0)
-	register_native("ksun_get_player_supply_points","_ksun_get_player_supply_points",0)
+	register_native("ksun_set_player_supply_points","_ksun_set_player_supply_points")
+	register_native("ksun_get_player_supply_points","_ksun_get_player_supply_points")
 	
-	register_native("ksun_dec_player_supply_points","_ksun_dec_player_supply_points",0)
-	register_native("ksun_inc_player_supply_points","_ksun_inc_player_supply_points",0)
+	register_native("ksun_dec_player_supply_points","_ksun_dec_player_supply_points")
+	register_native("ksun_inc_player_supply_points","_ksun_inc_player_supply_points")
 	
-	register_native("ksun_player_is_in_ultimate","_ksun_player_is_in_ultimate",0)
-	
-	
-	register_native("ksun_player_is_ultimate_ready","_ksun_player_is_ultimate_ready",0)
+	register_native("ksun_player_is_in_ultimate","_ksun_player_is_in_ultimate")
 	
 	
-	register_native("ksun_player_engage_ultimate","_ksun_player_engage_ultimate",0)
+	register_native("ksun_player_is_ultimate_ready","_ksun_player_is_ultimate_ready")
 	
-	register_native("ksun_unultimate_user","_ksun_unultimate_user",0)
+	
+	register_native("ksun_player_engage_ultimate","_ksun_player_engage_ultimate")
+	
+	register_native("ksun_unultimate_user","_ksun_unultimate_user")
 	
 }
 public plugin_cfg(){

@@ -31,22 +31,22 @@ public plugin_precache(){
 public plugin_natives(){
 
 
-	register_native("fx_invisible","_fx_invisible",0);
-	register_native("fx_blood","_fx_blood",0);
-	register_native("strip_weapon_for_my_grenade_heroes","_strip_weapon_for_my_grenade_heroes",0);
-	register_native("fx_bleed","_fx_bleed",0);
-	register_native("fx_blood_small","_fx_blood_small",0);
-	register_native("fx_blood_large","_fx_blood_large",0);
-	register_native("fx_gib_explode","_fx_gib_explode",0);
-	register_native("blood_spray","_blood_spray",0);
-	register_native("fx_extra_blood","_fx_extra_blood",0);
-	register_native("fx_headshot","_fx_headshot",0);
-	register_native("anime_kill_fx","_anime_kill_fx",0);
-	register_native("precache_gibs","_precache_gibs",0);
-	register_native("draw_view_cone","_draw_view_cone",0);
-	register_native("gross_kill_gibs_fx","_gross_kill_gibs_fx",0)
-	register_native("precache_native_fx_pt2","_precache_native_fx_pt2",0)
-	register_native("prepare_shero_aux_lib_pt2","_prepare_shero_aux_lib_pt2",0);
+	register_native("fx_invisible","_fx_invisible");
+	register_native("fx_blood","_fx_blood");
+	register_native("strip_weapon_for_my_grenade_heroes","_strip_weapon_for_my_grenade_heroes");
+	register_native("fx_bleed","_fx_bleed");
+	register_native("fx_blood_small","_fx_blood_small");
+	register_native("fx_blood_large","_fx_blood_large");
+	register_native("fx_gib_explode","_fx_gib_explode");
+	register_native("blood_spray","_blood_spray");
+	register_native("fx_extra_blood","_fx_extra_blood");
+	register_native("fx_headshot","_fx_headshot");
+	register_native("anime_kill_fx","_anime_kill_fx");
+	register_native("precache_gibs","_precache_gibs");
+	register_native("draw_view_cone","_draw_view_cone");
+	register_native("gross_kill_gibs_fx","_gross_kill_gibs_fx")
+	register_native("precache_native_fx_pt2","_precache_native_fx_pt2")
+	register_native("prepare_shero_aux_lib_pt2","_prepare_shero_aux_lib_pt2");
 }
 
 

@@ -53,9 +53,9 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("get_user_jet_bombs","_get_user_jet_bombs",0);
-	register_native("set_user_jet_bombs","_set_user_jet_bombs",0);
-	register_native("reset_jet_bombs","_reset_jet_bombs",0);
+	register_native("get_user_jet_bombs","_get_user_jet_bombs");
+	register_native("set_user_jet_bombs","_set_user_jet_bombs");
+	register_native("reset_jet_bombs","_reset_jet_bombs");
 
 }
 public plugin_cfg(){

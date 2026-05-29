@@ -50,10 +50,10 @@ public plugin_init(){
 
 public plugin_natives(){
 
-	register_native("mg_destroy","_mg_destroy",0);
-	register_native("spawn_jetplane_mg","_spawn_jetplane_mg",0);
-	register_native("get_user_jet_shells","_get_user_jet_shells",0);
-	register_native("reset_jet_shells","_reset_jet_shells",0);
+	register_native("mg_destroy","_mg_destroy");
+	register_native("spawn_jetplane_mg","_spawn_jetplane_mg");
+	register_native("get_user_jet_shells","_get_user_jet_shells");
+	register_native("reset_jet_shells","_reset_jet_shells");
 	
 }
 public plugin_cfg(){

@@ -22,8 +22,8 @@ public plugin_init(){
 public plugin_natives(){
 
 
-	register_native("prepare_shero_aux_lib_pt4","_prepare_shero_aux_lib_pt4",0);
-	register_native("get_weapon_id_for_generic_dmg_source","_get_weapon_id_for_generic_dmg_source",0);
+	register_native("prepare_shero_aux_lib_pt4","_prepare_shero_aux_lib_pt4");
+	register_native("get_weapon_id_for_generic_dmg_source","_get_weapon_id_for_generic_dmg_source");
 
 }
 

@@ -68,9 +68,9 @@ public plugin_precache(){
 }
 public plugin_natives(){
 	
-	register_native("sh_molly_user","_sh_molly_user",0);
-	register_native("sh_is_user_burning","_sh_is_user_burning",0);
-	register_native("sh_unmolly_user","_sh_unmolly_user",0);
+	register_native("sh_molly_user","_sh_molly_user");
+	register_native("sh_is_user_burning","_sh_is_user_burning");
+	register_native("sh_unmolly_user","_sh_unmolly_user");
 }
 public burn_task(array[2],id)
 {

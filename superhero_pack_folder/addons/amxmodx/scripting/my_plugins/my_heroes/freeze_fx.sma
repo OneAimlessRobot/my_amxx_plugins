@@ -88,9 +88,9 @@ public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bo
 public plugin_natives(){
 
 
-	register_native("sh_freeze_user","_sh_freeze_user",0)
-	register_native("sh_unfreeze_user","_sh_unfreeze_user",0)
-	register_native("sh_is_user_frozen","_sh_is_user_frozen",0)
+	register_native("sh_freeze_user","_sh_freeze_user")
+	register_native("sh_unfreeze_user","_sh_unfreeze_user")
+	register_native("sh_is_user_frozen","_sh_is_user_frozen")
 }
 
 

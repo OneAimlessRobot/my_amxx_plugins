@@ -40,12 +40,12 @@ public plugin_init(){
 
 public plugin_natives(){
 
-	register_native("gatling_set_num_rockets","_gatling_set_num_rockets",0);
-	register_native("gatling_get_num_rockets","_gatling_get_num_rockets",0);
-	register_native("gatling_dec_num_rockets","_gatling_dec_num_rockets",0);
+	register_native("gatling_set_num_rockets","_gatling_set_num_rockets");
+	register_native("gatling_get_num_rockets","_gatling_get_num_rockets");
+	register_native("gatling_dec_num_rockets","_gatling_dec_num_rockets");
 
-	register_native("gatling_set_rockets","_gatling_set_rockets",0);
-	register_native("gatling_get_rockets","_gatling_get_rockets",0);
+	register_native("gatling_set_rockets","_gatling_set_rockets");
+	register_native("gatling_get_rockets","_gatling_get_rockets");
 	
 	
 }

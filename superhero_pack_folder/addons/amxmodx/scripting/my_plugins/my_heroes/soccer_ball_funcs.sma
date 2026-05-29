@@ -34,7 +34,7 @@ public plugin_init(){
 public plugin_natives(){
 	
 
-	register_native( "kick_the_ball","kick_ball",0)
+	register_native( "kick_the_ball","kick_ball")
 	
 	
 }

@@ -201,8 +201,8 @@ deny_next_reborn(id,bool:is_sillycide=true){
 }
 public plugin_natives(){
 
-	register_native("ester_get_reborn_mode","_ester_get_reborn_mode",0);
-	register_native("ester_set_reborn_mode","_ester_set_reborn_mode",0);
+	register_native("ester_get_reborn_mode","_ester_get_reborn_mode");
+	register_native("ester_set_reborn_mode","_ester_set_reborn_mode");
 	register_native("ester_get_respawn_attempts_remaining","_ester_get_respawn_attempts_remaining");
 	
 }

@@ -58,21 +58,21 @@ public plugin_init(){
 public plugin_natives(){
 	
 	
-	register_native( "clear_cameras","_clear_cameras",0)
-	register_native( "camera_get_camera_loaded","_camera_get_camera_loaded",0)
-	register_native( "user_can_plant_camera","_user_can_plant_camera",0)
-	register_native( "camera_clear_user_camera","_camera_clear_user_camera",0)
-	register_native( "toggle_camera_view","_toggle_camera_view",0)
-	register_native( "camera_get_camera_armed","_camera_get_camera_armed",0)
-	register_native( "camera_get_camera_planted","_camera_get_camera_planted",0)
-	register_native( "camera_charge_camera","_camera_charge_camera",0)
-	register_native( "camera_disarm_camera","_camera_disarm_camera",0)
-	register_native( "camera_get_camera_charging","_camera_get_camera_charging",0)
-	register_native( "camera_get_camera_disarming","_camera_get_camera_disarming",0)
-	register_native( "camera_get_camera_disarmer_on","_camera_get_camera_disarmer_on",0)
-	register_native( "camera_set_camera_disarmer_on","_camera_set_camera_disarmer_on",0)
-	register_native( "camera_set_camera_planting", "_camera_set_camera_planting",0)
-	register_native( "camera_get_camera_planting", "_camera_get_camera_planting",0)
+	register_native( "clear_cameras","_clear_cameras")
+	register_native( "camera_get_camera_loaded","_camera_get_camera_loaded")
+	register_native( "user_can_plant_camera","_user_can_plant_camera")
+	register_native( "camera_clear_user_camera","_camera_clear_user_camera")
+	register_native( "toggle_camera_view","_toggle_camera_view")
+	register_native( "camera_get_camera_armed","_camera_get_camera_armed")
+	register_native( "camera_get_camera_planted","_camera_get_camera_planted")
+	register_native( "camera_charge_camera","_camera_charge_camera")
+	register_native( "camera_disarm_camera","_camera_disarm_camera")
+	register_native( "camera_get_camera_charging","_camera_get_camera_charging")
+	register_native( "camera_get_camera_disarming","_camera_get_camera_disarming")
+	register_native( "camera_get_camera_disarmer_on","_camera_get_camera_disarmer_on")
+	register_native( "camera_set_camera_disarmer_on","_camera_set_camera_disarmer_on")
+	register_native( "camera_set_camera_planting", "_camera_set_camera_planting")
+	register_native( "camera_get_camera_planting", "_camera_get_camera_planting")
 	
 	
 }

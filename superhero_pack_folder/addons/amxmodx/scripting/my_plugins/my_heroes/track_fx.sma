@@ -62,7 +62,7 @@ public plugin_cfg(){
 }
 public plugin_natives(){
 
-	register_native("track_user","_track_user",0);
+	register_native("track_user","_track_user");
 }
 
 public tracked_damage(id)

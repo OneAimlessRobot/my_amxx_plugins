@@ -31,17 +31,17 @@ public plugin_init(){
 public plugin_natives(){
 
 
-	register_native( "gatling_set_needle","_gatling_set_needle",0)
-	register_native( "gatling_get_needle","_gatling_get_needle",0)
-	register_native( "gatling_get_needle_fx","_gatling_get_needle_fx",0)
-	register_native( "gatling_needle_cycle_fx","_gatling_needle_cycle_fx",0)
+	register_native( "gatling_set_needle","_gatling_set_needle")
+	register_native( "gatling_get_needle","_gatling_get_needle")
+	register_native( "gatling_get_needle_fx","_gatling_get_needle_fx")
+	register_native( "gatling_needle_cycle_fx","_gatling_needle_cycle_fx")
 
 }
 public weaponChange(id)
 {
 	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = read_data(2)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
 		entity_set_string(id, EV_SZ_viewmodel, NEEDLE_V_MODEL)
 		if(!sh_get_user_is_asleep(id)){

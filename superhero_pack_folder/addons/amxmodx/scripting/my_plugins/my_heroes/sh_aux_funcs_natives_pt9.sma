@@ -33,7 +33,7 @@ public plugin_init(){
 }
 public plugin_natives(){
 
-	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero",0)
+	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero")
 }
 
 public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
@@ -55,7 +55,6 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 						sh_pickable_hero_struct_arr[heroID][unable_to_pick_string],
 						sh_pickable_hero_struct_arr[heroID][max_pickable_times])
 			}
-			sh_strip_user_hero(id, heroID)
 			return INIT_FWD_BLOCK
 		}
 		new flags_of_player = get_user_flags(id)
@@ -77,7 +76,6 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 				sh_chat_message(id, heroID,"%s: I am afraid to inform you that you do not have the required privileges to pick that hero, you scumbag",
 							sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
 			}
-			sh_strip_user_hero(id, heroID)
 			return INIT_FWD_BLOCK
 		}
 

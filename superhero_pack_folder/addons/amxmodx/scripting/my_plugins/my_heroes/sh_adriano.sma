@@ -3,6 +3,7 @@
 #define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
+#include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -106,6 +107,7 @@ public adriano_weapons(id)
 	if ( sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_SHOCK,4)
 		ethereal_set_ethereal(id)
+		colt_set_colt(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -304,7 +306,7 @@ public weaponChange(id)
 {
 	if (!sh_is_active()) return PLUGIN_CONTINUE
 	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = read_data(2)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
 		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()&&!sh_is_freezetime()){

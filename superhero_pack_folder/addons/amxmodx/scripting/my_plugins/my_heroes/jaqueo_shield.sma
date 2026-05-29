@@ -60,13 +60,13 @@ public Shield_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 }
 public plugin_natives(){
 
-	register_native("reset_jaqueo_user","_reset_jaqueo_user",0);
-	register_native("shield_get_user_shield_cooldown","_shield_get_user_shield_cooldown",0)
-	register_native("shield_uncharge_user","_shield_uncharge_user",0)
-	register_native("shield_charge_user","_shield_charge_user",0)
-	register_native("shield_loaded","_shield_loaded",0)
-	register_native("shield_deployed","_shield_deployed",0)
-	register_native("shield_destroy","_shield_destroy",0)
+	register_native("reset_jaqueo_user","_reset_jaqueo_user");
+	register_native("shield_get_user_shield_cooldown","_shield_get_user_shield_cooldown")
+	register_native("shield_uncharge_user","_shield_uncharge_user")
+	register_native("shield_charge_user","_shield_charge_user")
+	register_native("shield_loaded","_shield_loaded")
+	register_native("shield_deployed","_shield_deployed")
+	register_native("shield_destroy","_shield_destroy")
 
 	
 

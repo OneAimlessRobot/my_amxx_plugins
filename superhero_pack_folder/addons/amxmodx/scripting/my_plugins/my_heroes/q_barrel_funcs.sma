@@ -43,8 +43,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("q_barrel_set_q_barrel","_q_barrel_set_q_barrel",0);
-	register_native("q_barrel_unset_q_barrel","_q_barrel_unset_q_barrel",0);
+	register_native("q_barrel_set_q_barrel","_q_barrel_set_q_barrel");
+	register_native("q_barrel_unset_q_barrel","_q_barrel_unset_q_barrel");
 	
 	
 }
@@ -177,7 +177,10 @@ public Event_CurWeapon(id)
 
 
 public fw_SetModel(entity, model[])
-{
+{	
+
+	ent_check(entity,FMRES_IGNORED)
+
 	static Classname[64]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
 	
@@ -192,8 +195,7 @@ public fw_SetModel(entity, model[])
 		static weapon
 		weapon = fm_get_user_weapon_entity(entity, CSW_QUADBARREL)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED
+		ent_check(weapon,FMRES_IGNORED)
 		
 		if(Get_BitVar(g_Had_QB, id))
 		{

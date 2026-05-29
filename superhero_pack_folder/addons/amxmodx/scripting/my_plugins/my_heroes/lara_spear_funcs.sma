@@ -73,8 +73,8 @@ public spaar_thaank(ent){
 public plugin_natives(){
 
 
-	register_native( "spear_uncharge_spear","_spear_uncharge_spear",0)
-	register_native( "spear_get_user_spear_mode","_spear_get_user_spear_mode",0)
+	register_native( "spear_uncharge_spear","_spear_uncharge_spear")
+	register_native( "spear_get_user_spear_mode","_spear_get_user_spear_mode")
 
 
 }

@@ -51,11 +51,11 @@ public plugin_init()
 
 public plugin_natives(){
 
-	register_native("flora_get_hero_id","_flora_get_hero_id",0);
-	register_native("flora_get_user_num_fields","_flora_get_user_num_fields",0)
-	register_native("flora_set_user_num_fields","_flora_set_user_num_fields",0)
-	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields",0)
-	register_native("flora_get_hero_lvl","_flora_get_hero_lvl",0)
+	register_native("flora_get_hero_id","_flora_get_hero_id");
+	register_native("flora_get_user_num_fields","_flora_get_user_num_fields")
+	register_native("flora_set_user_num_fields","_flora_set_user_num_fields")
+	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields")
+	register_native("flora_get_hero_lvl","_flora_get_hero_lvl")
 	
 
 	

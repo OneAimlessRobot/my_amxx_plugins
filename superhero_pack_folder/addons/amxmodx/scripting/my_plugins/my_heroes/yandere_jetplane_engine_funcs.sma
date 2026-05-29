@@ -49,31 +49,31 @@ public plugin_init()
 
 public plugin_natives(){
 
-	register_native("get_jet_fuel","_get_jet_fuel",0);
-	register_native("get_jet_flying","_get_jet_flying",0);
-	register_native("set_jet_flying","_set_jet_flying",0);
-	register_native("get_jet_engine","_get_jet_engine",0);
-	register_native("set_jet_engine","_set_jet_engine",0);
-	register_native("set_jet_fuel","_set_jet_fuel",0);
-	register_native("reset_jet_fuel","_reset_jet_fuel",0);
-	register_native("get_user_fuel_ammount","_get_user_fuel_ammount",0);
-	register_native("set_user_fuel_ammount","_set_user_fuel_ammount",0);
-	register_native("get_jet_throttle","_get_jet_throttle",0);
-	register_native("set_jet_throttle","_set_jet_throttle",0);
-	register_native("get_jet_airbrakes","_get_jet_airbrakes",0);
-	register_native("set_jet_airbrakes","_set_jet_airbrakes",0);
-	register_native("get_jet_rightflapon","_get_jet_rightflapon",0);
-	register_native("set_jet_rightflapon","_set_jet_rightflapon",0);
-	register_native("get_jet_leftflapon","_get_jet_leftflapon",0);
-	register_native("set_jet_leftflapon","_set_jet_leftflapon",0);
-	register_native("get_jet_downflapon","_get_jet_downflapon",0);
-	register_native("set_jet_downflapon","_set_jet_downflapon",0);
-	register_native("get_jet_upflapon","_get_jet_upflapon",0);
-	register_native("set_jet_upflapon","_set_jet_upflapon",0);
-	register_native("get_jet_left_rollflapon","_get_jet_left_rollflapon",0);
-	register_native("set_jet_left_rollflapon","_set_jet_left_rollflapon",0);
-	register_native("get_jet_right_rollflapon","_get_jet_right_rollflapon",0);
-	register_native("set_jet_right_rollflapon","_set_jet_right_rollflapon",0);
+	register_native("get_jet_fuel","_get_jet_fuel");
+	register_native("get_jet_flying","_get_jet_flying");
+	register_native("set_jet_flying","_set_jet_flying");
+	register_native("get_jet_engine","_get_jet_engine");
+	register_native("set_jet_engine","_set_jet_engine");
+	register_native("set_jet_fuel","_set_jet_fuel");
+	register_native("reset_jet_fuel","_reset_jet_fuel");
+	register_native("get_user_fuel_ammount","_get_user_fuel_ammount");
+	register_native("set_user_fuel_ammount","_set_user_fuel_ammount");
+	register_native("get_jet_throttle","_get_jet_throttle");
+	register_native("set_jet_throttle","_set_jet_throttle");
+	register_native("get_jet_airbrakes","_get_jet_airbrakes");
+	register_native("set_jet_airbrakes","_set_jet_airbrakes");
+	register_native("get_jet_rightflapon","_get_jet_rightflapon");
+	register_native("set_jet_rightflapon","_set_jet_rightflapon");
+	register_native("get_jet_leftflapon","_get_jet_leftflapon");
+	register_native("set_jet_leftflapon","_set_jet_leftflapon");
+	register_native("get_jet_downflapon","_get_jet_downflapon");
+	register_native("set_jet_downflapon","_set_jet_downflapon");
+	register_native("get_jet_upflapon","_get_jet_upflapon");
+	register_native("set_jet_upflapon","_set_jet_upflapon");
+	register_native("get_jet_left_rollflapon","_get_jet_left_rollflapon");
+	register_native("set_jet_left_rollflapon","_set_jet_left_rollflapon");
+	register_native("get_jet_right_rollflapon","_get_jet_right_rollflapon");
+	register_native("set_jet_right_rollflapon","_set_jet_right_rollflapon");
 	
 
 }

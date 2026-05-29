@@ -15,7 +15,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Ester"
@@ -183,7 +182,7 @@ public Hook_BloodColor(id)
 
 public plugin_natives(){
 	
-	register_native("ester_get_hero_id","_ester_get_hero_id",0)
+	register_native("ester_get_hero_id","_ester_get_hero_id")
 	
 	
 	
@@ -280,7 +279,7 @@ public weaponChange(id)
 		
 		return PLUGIN_CONTINUE
 	}
-	new wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
 	if (wpnid == MORALIZER_WEAPON_ID) {
 		if(gGunLastDeployed[id]!=wpnid){
 			if(sh_get_user_effect(id)!=METYLPHENIDATE){

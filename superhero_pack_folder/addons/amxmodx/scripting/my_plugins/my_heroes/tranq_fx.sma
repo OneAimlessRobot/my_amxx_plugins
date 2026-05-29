@@ -91,9 +91,9 @@ public CmdStart(id, uc_handle)
 public plugin_natives(){
 
 
-	register_native("sh_sleep_user","_sh_sleep_user",0);
-	register_native("sh_get_user_is_asleep","_sh_get_user_is_asleep",0);
-	register_native("sh_unsleep_user","_sh_unsleep_user",0);
+	register_native("sh_sleep_user","_sh_sleep_user");
+	register_native("sh_get_user_is_asleep","_sh_get_user_is_asleep");
+	register_native("sh_unsleep_user","_sh_unsleep_user");
 }
 stock sleep_user_switch_weapon(id){
 

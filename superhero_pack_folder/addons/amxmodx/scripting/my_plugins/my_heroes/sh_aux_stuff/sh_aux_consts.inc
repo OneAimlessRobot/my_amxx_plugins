@@ -39,7 +39,6 @@
  */
 #define client_is_hero_user(%1,%2) (is_user_alive(%1)&&sh_get_user_has_hero(%1,%2))
 
-#define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 
 #define cvar_val(%1,%2) get_pcvar_%1(%2)
 
@@ -70,9 +69,6 @@
 
 #define is_weaponid_valid(%1) ((%1>0)&&(%1<=CSW_LAST_WEAPON))
 
-//entity constants
-
-#define PDATA_SAFE  2
 
 //player flags
 

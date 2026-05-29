@@ -41,7 +41,7 @@ public plugin_init()
 }
 public plugin_natives(){
 
-    register_native("fetch_player_config", "_fetch_player_config",0)
+    register_native("fetch_player_config", "_fetch_player_config")
 
 }
 

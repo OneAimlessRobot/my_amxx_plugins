@@ -35,9 +35,9 @@ public sh_client_spawn(id)
 public plugin_natives(){
 	
 	
-	register_native("sh_disrupt_user","_sh_disrupt_user",0);
-	register_native("sh_undisrupt_user","_sh_undisrupt_user",0);
-	register_native("sh_get_user_is_disrupted","_sh_get_user_is_disrupted",0);
+	register_native("sh_disrupt_user","_sh_disrupt_user");
+	register_native("sh_undisrupt_user","_sh_undisrupt_user");
+	register_native("sh_get_user_is_disrupted","_sh_get_user_is_disrupted");
 }
 public disorient_user(array[1],id)
 {

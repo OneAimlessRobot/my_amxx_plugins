@@ -76,10 +76,10 @@ prepare_shero_aux_lib_pt7()
 public plugin_natives(){
 
 
-	register_native("prepare_shero_aux_lib_pt7","_prepare_shero_aux_lib_pt7",0);
-	register_native("sh_play_custom_sound","_sh_play_custom_sound",0);
-	register_native("sh_register_custom_sound","_sh_register_custom_sound",0);
-	register_native("sh_stop_custom_sound","_sh_stop_custom_sound",0);
+	register_native("prepare_shero_aux_lib_pt7","_prepare_shero_aux_lib_pt7");
+	register_native("sh_play_custom_sound","_sh_play_custom_sound");
+	register_native("sh_register_custom_sound","_sh_register_custom_sound");
+	register_native("sh_stop_custom_sound","_sh_stop_custom_sound");
 }
 
 public _prepare_shero_aux_lib_pt7(iPlugins, iParams){

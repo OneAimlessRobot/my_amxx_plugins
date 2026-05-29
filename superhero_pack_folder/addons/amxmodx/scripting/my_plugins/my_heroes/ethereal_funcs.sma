@@ -52,8 +52,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("ethereal_set_ethereal","_ethereal_set_ethereal",0);
-	register_native("ethereal_unset_ethereal","_ethereal_unset_ethereal",0);
+	register_native("ethereal_set_ethereal","_ethereal_set_ethereal");
+	register_native("ethereal_unset_ethereal","_ethereal_unset_ethereal");
 	
 	
 }
@@ -193,8 +193,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 public fw_SetModel(entity, model[])
 {
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
+	ent_check(entity,FMRES_IGNORED)
 	
 	static Classname[32]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
@@ -209,8 +208,9 @@ public fw_SetModel(entity, model[])
 	{
 		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ETHEREAL], entity)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED;
+		
+		ent_check(weapon,FMRES_IGNORED)
+
 		
 		if(Get_BitVar(g_Had_Ethereal, iOwner))
 		{

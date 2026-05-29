@@ -101,11 +101,11 @@ public getFastWeaponAndSpeed(i){
 	if (!sh_get_user_has_hero(i,gHeroID)){
 		return
 	}
-	
+	new wpnid = read_data(2)
 	new Float:currSpeed = get_user_maxspeed(i)
 	
 	if(sh_is_inround()&&(currSpeed>gEscapeSpeed[i])){
-		gFastWeapon[i]=get_user_weapon(i);
+		gFastWeapon[i]=wpnid;
 		gEscapeSpeed[i]=currSpeed
 	}
 	wpn_switch_primitive(i)

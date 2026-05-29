@@ -79,8 +79,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("h_rifle_set_h_rifle","_h_rifle_set_h_rifle",0);
-	register_native("h_rifle_unset_h_rifle","_h_rifle_unset_h_rifle",0);
+	register_native("h_rifle_set_h_rifle","_h_rifle_set_h_rifle");
+	register_native("h_rifle_unset_h_rifle","_h_rifle_unset_h_rifle");
 	
 	
 }
@@ -192,7 +192,8 @@ public Event_CurWeapon(id)
 
 public fw_SetModel(entity, model[])
 {
-	
+	ent_check(entity,FMRES_IGNORED)
+
 	static Classname[64]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
 	
@@ -207,8 +208,7 @@ public fw_SetModel(entity, model[])
 		static weapon
 		weapon = fm_get_user_weapon_entity(entity, CSW_MOSIN)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED
+		ent_check(weapon,FMRES_IGNORED)
 		
 		if(Get_BitVar(g_Had_Mosin, id))
 		{
@@ -434,19 +434,6 @@ public fw_Item_PostFrame( iEnt )
 		}
 	}
 }
-stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
-{
-	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
-	if(!pev_valid(entwpn )){
-		return
-	}
-		
-	set_pdata_float(entwpn, m_flNextPrimaryAttack, TimeIdle, XO_WEAPON)
-	set_pdata_float(entwpn, m_flNextSecondaryAttack, TimeIdle, XO_WEAPON)
-	set_pdata_float(entwpn, m_flTimeWeaponIdle, TimeIdle + 0.5, XO_WEAPON)
-}
-
-stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, m_flNextAttack, NextTime, OFFSET_LINUX_PLAYER)
 
 stock make_bullet(id, Float:Origin[3])
 {

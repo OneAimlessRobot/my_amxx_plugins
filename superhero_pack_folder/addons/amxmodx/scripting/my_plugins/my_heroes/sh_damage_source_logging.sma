@@ -35,8 +35,8 @@ public plugin_init(){
 
 public plugin_natives(){
 
-    register_native("sh_log_custom_damage_source", "_sh_log_custom_damage_source",0)
-    register_native("sh_get_generic_dmg_source_wpn_id", "_sh_get_generic_dmg_source_wpn_id",0)
+    register_native("sh_log_custom_damage_source", "_sh_log_custom_damage_source")
+    register_native("sh_get_generic_dmg_source_wpn_id", "_sh_get_generic_dmg_source_wpn_id")
 
 
 }

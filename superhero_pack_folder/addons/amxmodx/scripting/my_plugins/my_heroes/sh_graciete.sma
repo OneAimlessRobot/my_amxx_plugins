@@ -40,7 +40,7 @@ public plugin_init()
 	// Add your code here...
 }
 public plugin_natives(){
-	register_native("graciete_get_hero_id","_graciete_get_hero_id",0);
+	register_native("graciete_get_hero_id","_graciete_get_hero_id");
 	
 
 }

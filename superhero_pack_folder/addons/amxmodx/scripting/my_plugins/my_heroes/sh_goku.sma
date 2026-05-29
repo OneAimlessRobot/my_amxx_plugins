@@ -1,18 +1,69 @@
+// GOKU! - from Dragon Ball, Z, GT series.
+
+/* CVARS - copy and paste to shconfig.cfg
+
+//Goku
+goku_level 10
+goku_aps 5			//The amount of AP gained per second (Default 5)
+goku_apl 250			//AP amount multiplied by ssjlevel = AP required for each ssjlevel and cost of ssjlevel power use (Default 250)
+goku_hpl 30			//HP amount multiplied by ssjlevel, ex. 30*ssj2 = +60HP (Default 30)
+goku_hpmax 500			//Max HP that can be gained (Default 500)
+goku_speedbase 300		//Initial Speed boost for ssjlevel 1, only sets if you are slower (Default 300)
+goku_speedadd 25		//Speed added to goku_speedbase every next ssjlevel (Default 25)
+goku_damage1 70		//Max Damage for ssjlevel 1 power (Default 70)
+goku_damage2 100		//Max Damage for ssjlevel 2 power (Default 100)
+goku_damage3 175		//Max Damage for ssjlevel 3 power (Default 175)
+goku_damage4 300		//Max Damage for ssjlevel 4 power (Default 300)
+goku_radius1 100		//Max Radius of Damage for ssjlevel 1 power (Default 100)
+goku_radius2 300		//Max Radius of Damage for ssjlevel 2 power (Default 300)
+goku_radius3 700		//Max Radius of Damage for ssjlevel 3 power (Default 700)
+goku_radius4 1500		//Max Radius of Damage for ssjlevel 4 power (Default 1500)
+goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
+
+*/
+
+/*
+* v1.5 - vittu - 11/24/05
+*      - Fixed crash to AMX since it can't register a MSG_ONE_UNRELIABLE message.
+*
+* v1.4 - vittu - 10/24/05
+*      - Cleaned/Changed up code and formatted sounds to smaller file size for release.
+*      - Consolodated cvars and global variables so less are declared. Instead
+*          of individual settings, multipliers of one cvar are now used. Left 
+*          damage and radius cvars of powers for more customization.
+*
+* v1.3 - vittu - 9/10/05
+*      - Added guided kamehameha.
+*
+* v1.2 - vittu - 5/29/05
+*      - Added Health and Speed boost to Saiyan level.
+*      - Increased time of powerup effect.
+*
+* v1.1 - vittu - 5/26/05
+*      - Recoded from scratch but kept basic premise.
+*      - Created entities for power instead of beams.
+*
+*   Hero concept and originally by |RIC|_ALBANIAN.
+*   Entity creation partially based on Bazooka, which is based on Missiles Launcher 3.8.2 by Eric Lidman & jtp10181.
+*
+*   ***Warning: This hero contains many extra files and may cause problems if you are precaching too much.***
+*
+*   Extra sprites and sounds used from Earth's Special Forces a HL mod - http://www.esforces.com/
+*     and some sounds from http://www.esf-world.com/
+*/
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "goku_inc/goku_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIBLES
-new g_heroName[]="Vegetto"
-new gHeroID
-new bool:g_weaponSwitched[SH_MAXSLOTS+1]
+new g_heroName[]="Goku"
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
 new g_powerNum[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
@@ -20,119 +71,131 @@ new g_maxRadius[SH_MAXSLOTS+1]
 new g_maxDamage[SH_MAXSLOTS+1]
 new g_lastWeapon[SH_MAXSLOTS+1]
 new g_prevWeapon[SH_MAXSLOTS+1]
+new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new g_ssjLevel[4]
 new Float:g_ssjSpeed[4]
-stock vegetto_hud_sync
+stock goku_hud_sync
 
-new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailZ
-new g_spriteExplosionG, g_spriteExplosionB, g_spriteExplosionR, g_spriteExplosionO, g_spritePowerUp
+new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailR
+new g_spriteExplosionY, g_spriteExplosionB, g_spriteExplosionR, g_spritePowerUp
+new gHeroID
 
-new vegetto_dmgs_arr[5][sh_extra_damage_struct] = {
+
+new goku_dmgs_arr[5][sh_extra_damage_struct] = {
 	{"", "", -1},
-	{"vegetto_galick_gun", "vegetto_galick_gun", -1},
-	{"vegetto_big_bang_attack", "vegetto_big_bang_attack", -1},
-	{"vegetto_final_flash", "vegetto_final_flash", -1},
-	{"vegetto_death_ball", "vegetto_death_ball", -1}
+	{"goku_ki_blast", "goku_ki_blast", -1},
+	{"goku_kamehameha", "goku_kamehameha", -1},
+	{"goku_super_kamehameha", "goku_super_kamehameha", -1},
+	{"spirit_bomb", "spirit_bomb", -1}
 
 }
+
+
 new pcvar_aps,
-	pcvar_ap_mult,
-	pcvar_hp_mult,
-	pcvar_hp_max,
-	pcvar_speed_base,
-	pcvar_speed_add,
-	pcvar_power_1,
-	pcvar_power_2,
-	pcvar_power_3,
-	pcvar_power_4,
-	pcvar_radius_1,
-	pcvar_radius_2,
-	pcvar_radius_3,
-	pcvar_radius_4,
+	pcvar_apl,
+	pcvar_hpl,
+	pcvar_hpmax,
+	pcvar_speedbase,
+	pcvar_speedadd,
+	pcvar_damage1,
+	pcvar_damage2,
+	pcvar_damage3,
+	pcvar_damage4,
+	pcvar_radius1,
+	pcvar_radius2,
+	pcvar_radius3,
+	pcvar_radius4,
 	pcvar_decals,
 	pcvar_powerup_explode_radius_ssj4
-
-
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
-	// Plugin Info
-	my_authored_register_func("SUPERHERO Vegetto", "0.2", "RIC|_ALBANIAN / 0 / vittu",true,AUTHOR)
+	my_authored_register_func("SUPERHERO Goku","1.5","RIC|_ALBANIAN / 0 / vittu",true,AUTHOR)
 
 	// DO NOT EDIT THIS FILE TO CHANGE CVARS, USE THE SHCONFIG.CFG
-	create_cvar("vegetto_level", "10")
-	pcvar_aps = create_cvar("vegetto_aps", "5")
-	pcvar_ap_mult = create_cvar("vegetto_ap_mult", "250")
-	pcvar_hp_mult = create_cvar("vegetto_hp_mult", "30")
-	pcvar_hp_max = create_cvar("vegetto_hp_max", "500")
-	pcvar_speed_base = create_cvar("vegetto_speed_base", "300")
-	pcvar_speed_add = create_cvar("vegetto_speed_add", "25")
-	pcvar_power_1 = create_cvar("vegetto_power_1", "50")
-	pcvar_power_2 = create_cvar("vegetto_power_2", "80")
-	pcvar_power_3 = create_cvar("vegetto_power_3", "150")
-	pcvar_power_4 = create_cvar("vegetto_power_4", "300")
-	pcvar_radius_1 = create_cvar("vegetto_radius_1", "100")
-	pcvar_radius_2 = create_cvar("vegetto_radius_2", "300")
-	pcvar_radius_3 = create_cvar("vegetto_radius_3", "700")
-	pcvar_radius_4 = create_cvar("vegetto_radius_4", "1500")
-	pcvar_decals = create_cvar("vegetto_decals", "1")
-	pcvar_powerup_explode_radius_ssj4 = create_cvar("vegetto_powerup_explode_radius_ssj4", "300")
+	create_cvar("goku_level", "10")
+	pcvar_aps = create_cvar("goku_aps", "5")
+	pcvar_apl = create_cvar("goku_apl", "250")
+	pcvar_hpl = create_cvar("goku_hpl", "30")
+	pcvar_hpmax = create_cvar("goku_hpmax", "500")
+	pcvar_speedbase = create_cvar("goku_speedbase", "300")
+	pcvar_speedadd = create_cvar("goku_speedadd", "25")
+	pcvar_damage1 = create_cvar("goku_damage1", "50")
+	pcvar_damage2 = create_cvar("goku_damage2", "80")
+	pcvar_damage3 = create_cvar("goku_damage3", "150")
+	pcvar_damage4 = create_cvar("goku_damage4", "300")
+	pcvar_radius1 = create_cvar("goku_radius1", "100")
+	pcvar_radius2 = create_cvar("goku_radius2", "300")
+	pcvar_radius3 = create_cvar("goku_radius3", "700")
+	pcvar_radius4 = create_cvar("goku_radius4", "1500")
+	pcvar_decals = create_cvar("goku_blast_decals", "1")
+	pcvar_powerup_explode_radius_ssj4 = create_cvar("goku_powerup_explode_radius_ssj4", "300")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Void Walker", "Absorb energy through the void and release the void-power in this dimension to create immense destruction!", true, "vegetto_level")
+	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
-	for(new i=1;i<sizeof vegetto_dmgs_arr;i++){
 
-		vegetto_dmgs_arr[i][the_wpn_id] = sh_log_custom_damage_source(gHeroID,
-				vegetto_dmgs_arr[i][short_dmg_name],
-				vegetto_dmgs_arr[i][long_dmg_name],
+	for(new i=1;i<sizeof goku_dmgs_arr;i++){
+
+		goku_dmgs_arr[i][the_wpn_id] = sh_log_custom_damage_source(gHeroID,
+				goku_dmgs_arr[i][short_dmg_name],
+				goku_dmgs_arr[i][long_dmg_name],
 				0)
 	}
 
-	register_entity_as_wall_touchable("vexd_vegetto_power","vegetto_power_touch")
-	register_custom_touchable("vexd_vegetto_power","vegetto_power_touch",player_vector,1)
+	register_entity_as_wall_touchable("vexd_goku_power","goku_power_touch")
+	register_custom_touchable("vexd_goku_power","goku_power_touch",player_vector,1)
 
 	register_event("CurWeapon", "curweapon", "be", "1=1")
-	vegetto_hud_sync=CreateHudSyncObj()
-	
 
+
+	goku_hud_sync=CreateHudSyncObj()
 	// LOOP
-	set_task(1.0, "vegetto_loop", _, _, _, "b")
+	set_task(1.0, "goku_loop", 0, "", 0, "b")
 	init_explosion_defaults()
+}
+
+public plugin_natives(){
+
+	register_native("goku_get_hero_id","_goku_get_hero_id")
+
+}
+public _goku_get_hero_id(iPlugin,iParams){
+
+	return gHeroID
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_galitgun.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_finalflashb.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_bigbang.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegeto_deathball.wav")
-        engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup1.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup2.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup3.wav")
-	engfunc(EngFunc_PrecacheSound,"shmod/vegetto_powerup4.wav")
-        engfunc(EngFunc_PrecacheSound,"player/pl_pain2.wav")
-	engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguna2.spr")
-        engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashcharge.spr")
-	engfunc(EngFunc_PrecacheModel,"sprites/shmod/bigbang.spr")
-        engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathball2.spr")
-	g_spriteTrailY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguntrail2.spr")
-	g_spriteTrailB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashtrail.spr")
-	g_spriteTrailZ = engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathballtrail.spr")
-        g_spriteExplosionG = engfunc(EngFunc_PrecacheModel,"sprites/shmod/gallitguna2.spr")
-	g_spriteExplosionB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/finalflashb.spr")
-	g_spriteExplosionR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/bigbangexp2.spr")
-        g_spriteExplosionO = engfunc(EngFunc_PrecacheModel,"sprites/shmod/deathball2.spr")
-	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/vegetto_powerup4.spr")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_ki_blast.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_kamehameha.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_10x_kamehameha.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_spirit_bomb.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup1.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup2.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup3.wav")
+	engfunc(EngFunc_PrecacheSound,"shmod/goku_powerup4.wav")
+	engfunc(EngFunc_PrecacheSound,"player/pl_pain2.wav")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_ki_blast.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_kamehameha_blue.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_kamehameha_red.spr")
+	engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_spirit_bomb.spr")
+	g_spriteTrailY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_yellow.spr")
+	g_spriteTrailB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_blue.spr")
+	g_spriteTrailR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_trail_red.spr")
+	g_spriteExplosionY = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_yellow.spr")
+	g_spriteExplosionB = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_blue.spr")
+	g_spriteExplosionR = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_exp_red.spr")
+	g_spritePowerUp = engfunc(EngFunc_PrecacheModel,"sprites/shmod/esf_powerup.spr")
 	g_spriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
-
+	
 	if ( sh_get_user_has_hero(id,gHeroID)) {
-		vegetto_setarmor(id)
+		goku_setarmor(id)
 	}
 	//This gets run if they had the power but don't anymore
 	else {
@@ -141,6 +204,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 			remove_power(id, g_powerID[id])
 		}
 	}
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -151,15 +215,15 @@ public plugin_cfg()
 public loadCVARS()
 {
 	// These cvars are checked very often
-	g_armorPts = cvar_val(num, pcvar_aps)
-	g_ssjLevel[0] = cvar_val(num, pcvar_ap_mult)
+	g_armorPts = cvar_val(num,pcvar_aps)
+	g_ssjLevel[0] = cvar_val(num,pcvar_apl)
 	g_ssjLevel[1] = g_ssjLevel[0] * 2
 	g_ssjLevel[2] = g_ssjLevel[0] * 3
 	g_ssjLevel[3] = g_ssjLevel[0] * 4
-	g_ssjSpeed[0] = cvar_val(float, pcvar_speed_base)
-	g_ssjSpeed[1] = g_ssjSpeed[0] + cvar_val(float, pcvar_speed_add)
-	g_ssjSpeed[2] = g_ssjSpeed[1] + cvar_val(float, pcvar_speed_add)
-	g_ssjSpeed[3] = g_ssjSpeed[2] + cvar_val(float, pcvar_speed_add)
+	g_ssjSpeed[0] = cvar_val(float,pcvar_speedbase)
+	g_ssjSpeed[1] = g_ssjSpeed[0] + cvar_val(float,pcvar_speedadd)
+	g_ssjSpeed[2] = g_ssjSpeed[1] + cvar_val(float,pcvar_speedadd)
+	g_ssjSpeed[3] = g_ssjSpeed[2] + cvar_val(float,pcvar_speedadd)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -167,19 +231,20 @@ public sh_client_spawn(id)
 
 	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		// Set armor in x seconds to avoid breaking max ap settings in other heroes
-		set_task(0.5, "vegetto_setarmor", id)
+		set_task(0.5, "goku_setarmor", id)
 		g_isSaiyanLevel[id] = 0
 	}
 }
 //----------------------------------------------------------------------------------------------
-public vegetto_setarmor(id)
+public goku_setarmor(id)
 {
 	if ( is_user_alive(id) ) {
-		// Start a Vegetto off with 100 AP, even if user has more from other heroes
+		// Start a Goku off with 100 AP, even if user has more from other heroes
 		give_item(id, "item_assaultsuit")
 		set_user_armor(id, 100)
 	}
 }
+
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
 {
@@ -188,22 +253,22 @@ if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 switch(key)
 {
 	case SH_KEYDOWN: {
-		vegetto_kd(id)
+		goku_kd(id)
 	}
 	
 	case SH_KEYUP: {
 		
-		vegetto_ku(id)
+		goku_ku(id)
 	}
 }
 }
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
-public vegetto_kd(id)
+public goku_kd(id)
 {
-	if ( !sh_is_inround()) return
+	if (!sh_is_inround()) return
 
-	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	// Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -212,14 +277,14 @@ public vegetto_kd(id)
 
 	if ( userArmor < g_ssjLevel[0] ) {
 		playSoundDenySelect(id)
-		client_print(id, print_chat, "[SH](Vegetto) Not enough Energy")
+		client_print(id, print_chat, "[SH](Goku) Not enough KI/Armor")
 		return
 	}
 
 	// Prevent too many entities, which would cause server problems
 	if( g_powerID[id] ){
 		playSoundDenySelect(id)
-		client_print(id,print_chat,"[SH](Vegetto) You cannot use more than one power at a time.")
+		client_print(id,print_chat,"[SH](Goku) You cannot use more than one power at a time.")
 		return
 	}
 
@@ -232,47 +297,47 @@ public vegetto_kd(id)
 	engclient_cmd(id, "weapon_knife")
 
 	if ( userArmor >= g_ssjLevel[0] && userArmor < g_ssjLevel[1] ) {
-		client_print(id,print_chat,"[SH](Vegetto) Galitgun!")
-		emit_sound(id, CHAN_STATIC, "shmod/vegeto_galitgun.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		client_print(id,print_chat,"[SH](Goku) Ki Blast!")
+		emit_sound(id, CHAN_STATIC, "shmod/goku_ki_blast.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 		set_user_armor(id, userArmor-g_ssjLevel[0])
-		g_maxDamage[id] = cvar_val(num, pcvar_power_1)
-		g_maxRadius[id] = cvar_val(num, pcvar_radius_1)
+		g_maxDamage[id] = cvar_val(num,pcvar_damage1)
+		g_maxRadius[id] = cvar_val(num,pcvar_radius1)
 		g_powerNum[id] = 1
 	}
 	else if ( userArmor >= g_ssjLevel[1] && userArmor < g_ssjLevel[2] ) {
-		client_print(id,print_chat,"[SH](Vegetto) Big Bang!!")
+		client_print(id,print_chat,"[SH](Goku) Kamehameha!!")
 		// Wish this sound was shorter
-		emit_sound(id, CHAN_STATIC, "shmod/vegeto_bigbang.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_STATIC, "shmod/goku_kamehameha.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 		set_user_armor(id, userArmor-g_ssjLevel[1])
-		g_maxDamage[id] = cvar_val(num, pcvar_power_2)
-		g_maxRadius[id] = cvar_val(num, pcvar_radius_2)
+		g_maxDamage[id] = cvar_val(num,pcvar_damage2)
+		g_maxRadius[id] = cvar_val(num,pcvar_radius2)
 		g_powerNum[id] = 2
 	}
 	else if ( userArmor >= g_ssjLevel[2] && userArmor < g_ssjLevel[3] ) {
-		client_print(id,print_chat,"[SH](Vegetto) Final Flash!")
+		client_print(id,print_chat,"[SH](Goku) 10x Kamehameha!!!")
 		// Wish this sound was shorter
-		emit_sound(id, CHAN_STATIC, "shmod/vegeto_finalflashb.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_STATIC, "shmod/goku_10x_kamehameha.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 		set_user_armor(id, userArmor-g_ssjLevel[2])
-		g_maxDamage[id] = cvar_val(num, pcvar_power_3)
-		g_maxRadius[id] = cvar_val(num, pcvar_radius_3)
+		g_maxDamage[id] = cvar_val(num,pcvar_damage3)
+		g_maxRadius[id] = cvar_val(num,pcvar_radius3)
 		g_powerNum[id] = 3
 	}
 	else if ( userArmor >= g_ssjLevel[3] ) {
 
-		client_print(id,print_chat,"[SH](Vegetto) Deathball!!")
-		emit_sound(id, CHAN_STATIC, "shmod/vegeto_deathball.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+		client_print(id,print_chat,"[SH](Goku) Spirit Bomb!!!!")
+		emit_sound(id, CHAN_STATIC, "shmod/goku_spirit_bomb.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 		set_user_armor(id, userArmor-g_ssjLevel[3])
-		g_maxDamage[id] = cvar_val(num, pcvar_power_4)
-		g_maxRadius[id] = cvar_val(num, pcvar_radius_4)
+		g_maxDamage[id] = cvar_val(num,pcvar_damage4)
+		g_maxRadius[id] = cvar_val(num,pcvar_radius4)
 		g_powerNum[id] = 4
 	}
 
 	create_power(id)
 }
 //----------------------------------------------------------------------------------------------
-public vegetto_ku(id)
+public goku_ku(id)
 {
-	if ( !sh_is_inround()) return
+	if ( !sh_is_inround() ) return
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 
@@ -292,31 +357,20 @@ public create_power(id)
 	// Vec Mins/Maxes must be below +-5.0 to make a burndecal
 	switch(g_powerNum[id]){
 		case 1:{
-			entModel = "sprites/shmod/gallitguna2.spr"
-			entScale = 0.60
-			entSpeed = 1800.0
+			entModel = "sprites/shmod/esf_ki_blast.spr"
+			entScale = 0.20
+			entSpeed = 2000.0
 			trailModel = g_spriteTrailY
-			trailLength = 30
-			trailWidth = 3
+			trailLength = 1
+			trailWidth = 2
 		}
 		case 2:{
-			entModel = "sprites/shmod/bigbang.spr"
-			entScale = 0.50
-			entSpeed = 1600.0
-			VecMins[0] = -3.0
-			VecMins[1] = -3.0
-			VecMins[2] = -3.0
-			VecMaxs[0] = 3.0
-			VecMaxs[1] = 3.0
-			VecMaxs[2] = 3.0
-		}
-		case 3:{
-			entModel = "sprites/shmod/finalflashcharge.spr"
-			entScale = 0.25
-			entSpeed = 1200.0
+			entModel = "sprites/shmod/esf_kamehameha_blue.spr"
+			entScale = 1.20
+			entSpeed = 1500.0
 			trailModel = g_spriteTrailB
 			trailLength = 100
-			trailWidth = 17
+			trailWidth = 8
 			VecMins[0] = -2.0
 			VecMins[1] = -2.0
 			VecMins[2] = -2.0
@@ -324,13 +378,24 @@ public create_power(id)
 			VecMaxs[1] = 2.0
 			VecMaxs[2] = 2.0
 		}
-		case 4:{
-			entModel = "sprites/shmod/deathball2.spr"
-			entScale = 0.40
-			entSpeed = 850.0
-			trailModel = g_spriteTrailZ
+		case 3:{
+			entModel = "sprites/shmod/esf_kamehameha_red.spr"
+			entScale = 2.00
+			entSpeed = 1000.0
+			trailModel = g_spriteTrailR
 			trailLength = 100
-			trailWidth = 9
+			trailWidth = 16
+			VecMins[0] = -3.0
+			VecMins[1] = -3.0
+			VecMins[2] = -3.0
+			VecMaxs[0] = 3.0
+			VecMaxs[1] = 3.0
+			VecMaxs[2] = 3.0
+		}
+		case 4:{
+			entModel = "sprites/shmod/esf_spirit_bomb.spr"
+			entScale = 0.70
+			entSpeed = 800.0
 			VecMins[0] = -4.0
 			VecMins[1] = -4.0
 			VecMins[2] = -4.0
@@ -351,13 +416,13 @@ public create_power(id)
 
 	new newEnt = create_entity("info_target")
 	if( newEnt == 0 ) {
-		client_print(id, print_chat, "[SH](Vegetto) Power Creation Failure")
+		client_print(id, print_chat, "[SH](Goku) Power Creation Failure")
 		return
 	}
 
 	g_powerID[id] = newEnt
 
-	entity_set_string(newEnt, EV_SZ_classname, "vexd_vegetto_power")
+	entity_set_string(newEnt, EV_SZ_classname, "vexd_goku_power")
 	entity_set_model(newEnt, entModel)
 
 	entity_set_vector(newEnt, EV_VEC_mins, VecMins)
@@ -397,6 +462,9 @@ public create_power(id)
 	fl_Velocity[2] = (AimVec[2] - vOrigin[2]) * invTime
 
 	entity_set_vector(newEnt, EV_VEC_velocity, fl_Velocity)
+
+	// No trail on Spirit Bomb
+	if ( g_powerNum[id] == 4 ) return
 
 	// Set Trail on entity
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -440,7 +508,7 @@ public guide_kamehameha(args[])
 	if ( !is_valid_ent(ent) ) return
 
 	if ( !is_user_connected(id) ) {
-		vegetto_power_touch(ent,0)
+		goku_power_touch(ent,0)
 		return
 	}
 
@@ -494,36 +562,30 @@ public guide_kamehameha(args[])
 
 	set_task(0.1, "guide_kamehameha", ent, args, 6)
 }
-public vegetto_power_touch(pToucher, pTouched) {
+public goku_power_touch(pToucher, pTouched) {
 
 	if (pToucher <= 0) return
 	if (!is_valid_ent(pToucher)) return
-	
+
 	new id = entity_get_edict(pToucher, EV_ENT_owner)
 	if(!is_user_alive(id)){
 		return
 	}
-	if(!is_valid_ent(g_powerID[id]) ||(g_powerNum[id]<=0)||(g_powerNum[id] > 4)){
+	if(!is_valid_ent(g_powerID[id])){
 		return
 	}
 	new dmgRadius = g_maxRadius[id]
 	new maxDamage = g_maxDamage[id]
 	new Float:fl_vExplodeAt[3]
-	new spriteExp = g_spriteExplosionG
+	new spriteExp = g_spriteExplosionY
 
 	switch(g_powerNum[id]){
-		case 1:{
-			spriteExp = g_spriteExplosionG
-				}
 		case 2:{
-			spriteExp = g_spriteExplosionR
-		}
-		case 3:{
 			spriteExp = g_spriteExplosionB
 		}
-		case 4:{
-			spriteExp = g_spriteExplosionO
-				}
+		case 3:{
+			spriteExp = g_spriteExplosionR
+		}
 	}
 
 	entity_get_vector(pToucher, EV_VEC_origin, fl_vExplodeAt)
@@ -534,18 +596,16 @@ public vegetto_power_touch(pToucher, pTouched) {
 	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 
 
-
 	explosion_custom_entity(pToucher,
 									float(dmgRadius),float(maxDamage),
 									"func_breakable",
 									default_explode_knock_force_magnitude,0)
-
 	// Cause the Damage
 	new vicOrigin[3], Float:dRatio,  distance, damage
 	new players[SH_MAXSLOTS], pnum, vic
 
 	get_players(players, pnum, "a")
-	
+
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
 		if( !is_user_alive(vic) ) continue
@@ -563,19 +623,18 @@ public vegetto_power_touch(pToucher, pTouched) {
 			if ( vic == id ){
 				damage = floatround(damage / 2.0)
 			}
-		
 			sh_extra_damage(vic, id, damage,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
-								vegetto_dmgs_arr[g_powerNum[id]-1][the_wpn_id])
-
-
+								goku_dmgs_arr[g_powerNum[id]][the_wpn_id])
+			
 			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
 
 					new Float:vic_origin_f[3]
 					IVecFVec(vicOrigin,vic_origin_f)
 					gross_kill_gibs_fx(vic,vic_origin_f,fl_vExplodeAt)
 			}
+
 			// Make them feel it
 			sh_screenShake(vic, 10, 10, 10)
 			emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -590,7 +649,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 	}
 
 	// Make some Effects
-	new blastSize = floatround(dmgRadius / 8.0)
+	new blastSize = floatround(dmgRadius / 12.0)
 
 	// Explosion Sprite
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -637,13 +696,13 @@ public vegetto_power_touch(pToucher, pTouched) {
 		write_short(0)			//?
 		write_byte(decal_id)	//decal
 		message_end()
-	
-		remove_entity(pToucher)
-
-		// Reset the Varibles
-		g_powerNum[id] = 0
-		g_powerID[id] = 0
 	}
+
+	remove_entity(pToucher)
+
+	// Reset the Varibles
+	g_powerNum[id] = 0
+	g_powerID[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 public remove_power(id, powerID)
@@ -669,7 +728,7 @@ public remove_power(id, powerID)
 	remove_entity(powerID)
 }
 //----------------------------------------------------------------------------------------------
-public vegetto_loop()
+public goku_loop()
 {
 	if ( !sh_is_active() ||!sh_is_inround()) return
 
@@ -679,7 +738,7 @@ public vegetto_loop()
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
-		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 
 			new userArmor = get_user_armor(id)
 
@@ -699,15 +758,11 @@ public vegetto_loop()
 			// Check armor again after it's been set
 			userArmor = get_user_armor(id)
 
-			
 			if ( userArmor < g_ssjLevel[0] ) {
 				// run it this way so it doesn't check all the elses
 				if ( g_isSaiyanLevel[id] > 0 ) {
 					sh_reset_max_speed(id)
-					set_hudmessage(204, 0, 204, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					show_hudmessage(id, "Vegetto - You are now gathering nether energy")
-
-                                        g_isSaiyanLevel[id] = 0
+					g_isSaiyanLevel[id] = 0
 				}
 			}
 			else if ( userArmor >= g_ssjLevel[0] && userArmor < g_ssjLevel[1] ) {
@@ -719,9 +774,9 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 19)
 
-					set_hudmessage(255, 255, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto")
-					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+					set_hudmessage(255, 255, 100, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
+					ShowSyncHudMsg(id, goku_hud_sync, "Goku - You've turned Super Saiyan")
+					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup1.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 1
 					ssj_boost(id)
@@ -736,9 +791,10 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 39)
 
-					set_hudmessage(255, 165, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 2")
-					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+					set_hudmessage(222, 226, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
+					ShowSyncHudMsg(id, goku_hud_sync, "Goku - You've turned Super Saiyan 2")
+					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup2.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
+
 					g_isSaiyanLevel[id] = 2
 					ssj_boost(id)
 				}
@@ -752,9 +808,9 @@ public vegetto_loop()
 					powerup_effect(parm)
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 59)
 
-					set_hudmessage(255, 210, 110, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 3")
-					emit_sound(id, CHAN_STATIC, "shmod/vegetto_powerup3.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+					set_hudmessage(248, 220, 117, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
+					ShowSyncHudMsg(id, goku_hud_sync,"Goku - You've turned Super Saiyan 3")
+					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup3.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
 
 					g_isSaiyanLevel[id] = 3
 					ssj_boost(id)
@@ -770,9 +826,9 @@ public vegetto_loop()
 					set_task(0.1, "powerup_effect", 0, parm, 2, "a", 79)
 
 					set_hudmessage(196, 0, 0, -1.0, 0.25, 0, 0.25, 3.0, 0.0, 0.0)
-					ShowSyncHudMsg(id,vegetto_hud_sync, "Vegetto - You've turned into Super Vegetto 4")
-					emit_sound(id, CHAN_WEAPON, "shmod/vegetto_powerup4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)         
-        
+					ShowSyncHudMsg(id, goku_hud_sync,"Goku - You've turned Super Saiyan 4")
+					emit_sound(id, CHAN_STATIC, "shmod/goku_powerup4.wav", 0.8, ATTN_NORM, 0, PITCH_NORM)
+
 					g_isSaiyanLevel[id] = 4
 					shake_n_stun(id)
 					ssj_boost(id)
@@ -782,9 +838,9 @@ public vegetto_loop()
 	}
 }
 //----------------------------------------------------------------------------------------------
-public ssj_boost(id){
-	
-	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !sh_is_inround()) return
+public ssj_boost(id)
+{
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) || !sh_is_inround()) return
 	if ( !g_isSaiyanLevel[id] ) return
 
 	// Speed Boost
@@ -795,10 +851,10 @@ public ssj_boost(id){
 
 	// HP boost
 	new userHealth = get_user_health(id)
-	if ( userHealth < cvar_val(num,pcvar_hp_max) ) {
-		new addHP = cvar_val(num,pcvar_hp_mult) * g_isSaiyanLevel[id]
-		if ( userHealth + addHP > cvar_val(num,pcvar_hp_max)) {
-			set_user_health(id, cvar_val(num,pcvar_hp_max) )
+	if ( userHealth < cvar_val(num,pcvar_hpmax)) {
+		new addHP = cvar_val(num,pcvar_hpl) * g_isSaiyanLevel[id]
+		if ( userHealth + addHP > cvar_val(num,pcvar_hpmax)) {
+			set_user_health(id, cvar_val(num,pcvar_hpmax) )
 		}
 		else {
 			set_user_health(id, userHealth + addHP)
@@ -808,7 +864,7 @@ public ssj_boost(id){
 //----------------------------------------------------------------------------------------------
 public curweapon(id)
 {
-	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !sh_is_inround() ) return
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !sh_is_inround()) return
 	if ( !g_isSaiyanLevel[id] || sh_get_stun(id) ) return
 
 	new wpnid = read_data(2)
@@ -837,25 +893,26 @@ public shake_n_stun(id)
 		vic = players[i]
 		if ( !is_user_alive(vic) ) continue
 
+		get_user_origin(vic, vicOrigin)
+
+
 		if ( sh_clients_are_same_team(id,vic) ) continue
 
-		get_user_origin(vic, vicOrigin)
 
 		new distance = get_distance(idOrigin, vicOrigin)
 
-		if ( distance <= cvar_val(num,pcvar_radius_4)) {
+		if ( distance <= cvar_val(num,pcvar_radius4)) {
 			sh_screenShake(vic, 14, 14, 14)
 
 			if ( vic == id ) continue
 			// Let them know why they get shaken and stunned, except the person that leveled
-			new vegettoName[32]
-			get_user_name(id, vegettoName, 31)
+			new gokuName[32]
+			get_user_name(id, gokuName, 31)
 			set_hudmessage(196, 0, 0, -1.0, 0.20, 0, 0.25, 3.0, 0.0, 0.0)
-			ShowSyncHudMsg(vic,vegetto_hud_sync, "Vegetto - %s has turned Super Saiyan 4", vegettoName)
+			ShowSyncHudMsg(id, goku_hud_sync,"Goku - %s has turned Super Saiyan 4", gokuName)
 		}
 	}
-
-	explosion(gHeroID,id,float(cvar_val(num,pcvar_powerup_explode_radius_ssj4)),100.0,default_explode_knock_force_magnitude*1.5,_,1)
+	explosion(gHeroID,id,float(cvar_val(num, pcvar_powerup_explode_radius_ssj4)),100.0,default_explode_knock_force_magnitude*0.25,_,1)
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])
@@ -875,7 +932,6 @@ public powerup_effect(parm[])
 	// Show a powerup to all alive players except the one being powered up.
 	for (new i = 0; i < pnum; i++) {
 		idOthers = players[i]
-		//if ( !is_user_alive(idOthers) || idOthers == id ) continue
 		if ( !is_user_alive(idOthers) ) continue
 
 		get_user_origin(id, Origin)
@@ -940,7 +996,7 @@ public powerup_effect(parm[])
 public sh_round_end()
 {
 	for (new id=1; id < sh_maxplayers()+1; id++) {
-		if ( sh_get_user_has_hero(id,gHeroID) ) {
+		if ( sh_get_user_has_hero(id,gHeroID)) {
 			g_isSaiyanLevel[id] = 0
 			sh_reset_max_speed(id)
 			if ( g_powerID[id] > 0 ) {
@@ -958,5 +1014,5 @@ public client_disconnected(id)
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1033\\ f0\\ fs16 \n\\ par }
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
 */

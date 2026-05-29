@@ -45,15 +45,15 @@ public plugin_init(){
 public plugin_natives(){
 	
 
-	register_native( "mine_get_mine_armed","_mine_get_mine_armed",0)
-	register_native( "mine_set_mine_armed","_mine_set_mine_armed",0)
-	register_native( "mine_uncharge_mine","_mine_uncharge_mine",0)
-	register_native( "mine_charge_mine","_mine_charge_mine",0)
-	register_native( "mine_disarm_mine","_mine_disarm_mine",0)
-	register_native( "mine_undisarm_mine","_mine_undisarm_mine",0)
-	register_native( "mine_get_mine_charging","_mine_get_mine_charging",0)
-	register_native( "mine_get_mine_disarming","_mine_get_mine_disarming",0)
-	register_native( "mine_get_mine_disarmer_on","_mine_get_mine_disarmer_on",0)
+	register_native( "mine_get_mine_armed","_mine_get_mine_armed")
+	register_native( "mine_set_mine_armed","_mine_set_mine_armed")
+	register_native( "mine_uncharge_mine","_mine_uncharge_mine")
+	register_native( "mine_charge_mine","_mine_charge_mine")
+	register_native( "mine_disarm_mine","_mine_disarm_mine")
+	register_native( "mine_undisarm_mine","_mine_undisarm_mine")
+	register_native( "mine_get_mine_charging","_mine_get_mine_charging")
+	register_native( "mine_get_mine_disarming","_mine_get_mine_disarming")
+	register_native( "mine_get_mine_disarmer_on","_mine_get_mine_disarmer_on")
 	
 	
 	

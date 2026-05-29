@@ -138,12 +138,12 @@ public plugin_cfg(){
 public plugin_natives(){
 
 
-	register_native("sh_effect_user","_sh_effect_user",0);
-	register_native("sh_gen_effect","_get_fx_num",0);
-	register_native("sh_get_user_effect","_sh_get_user_effect",0);
-	register_native("sh_effect_user_direct","_sh_effect_user_direct",0);
-	register_native("sh_uneffect_user","_sh_uneffect_user",0);
-	register_native("sh_get_fx_color_name","_sh_get_fx_color_name",0);
+	register_native("sh_effect_user","_sh_effect_user");
+	register_native("sh_gen_effect","_get_fx_num");
+	register_native("sh_get_user_effect","_sh_get_user_effect");
+	register_native("sh_effect_user_direct","_sh_effect_user_direct");
+	register_native("sh_uneffect_user","_sh_uneffect_user");
+	register_native("sh_get_fx_color_name","_sh_get_fx_color_name");
 }
 public plugin_precache(){
 
@@ -652,7 +652,7 @@ public weaponChange(id)
 {
 	if ( (gatling_get_fx_num(id)!=COCAINE)||!sh_is_active()) return
 
-	new wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
 
 	if ( g_last_weapon[id] != wpnid ) {
 		if ((get_user_maxspeed(id) < COCAINE_SPEED)&&!sh_get_stun(id)){

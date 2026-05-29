@@ -48,7 +48,7 @@ public plugin_init()
 public plugin_natives(){
 
 
-	register_native("sh_get_death_scythe_wpn_id","_sh_get_death_scythe_wpn_id",0)
+	register_native("sh_get_death_scythe_wpn_id","_sh_get_death_scythe_wpn_id")
 }
 public _sh_get_death_scythe_wpn_id(iPlugin,iParams){
 
@@ -64,7 +64,7 @@ public weaponChange(id)
 {
 	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = read_data(2)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
 		UnSet_BitVar(gJustResetRenderingMask,id)
 		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)

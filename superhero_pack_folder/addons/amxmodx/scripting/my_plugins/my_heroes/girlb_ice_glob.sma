@@ -218,7 +218,7 @@ public player_on_ice_glob_checks(task_id){
 public plugin_natives(){
 	
 
-	register_native( "launch_ice_glob","_launch_ice_glob",0)
+	register_native( "launch_ice_glob","_launch_ice_glob")
 	
 	
 }

@@ -37,15 +37,15 @@ public plugin_init()
 
 public plugin_natives(){
 
-register_native("sapper_set_num_mines","_sapper_set_num_mines",0)
-register_native("sapper_get_num_mines","_sapper_get_num_mines",0)
+register_native("sapper_set_num_mines","_sapper_set_num_mines")
+register_native("sapper_get_num_mines","_sapper_get_num_mines")
 
-register_native("sapper_dec_num_mines","_sapper_dec_num_mines",0)
+register_native("sapper_dec_num_mines","_sapper_dec_num_mines")
 
 
-register_native("sapper_get_disarmable","_sapper_get_disarmable",0)
+register_native("sapper_get_disarmable","_sapper_get_disarmable")
 
-register_native("sapper_get_hero_id","_sapper_get_hero_id",0)
+register_native("sapper_get_hero_id","_sapper_get_hero_id")
 	
 
 }

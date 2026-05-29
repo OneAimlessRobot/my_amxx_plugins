@@ -120,7 +120,7 @@ public cl_say(id){
 public plugin_natives(){
 
 
-	register_native("prepare_shero_aux_lib_pt6","_prepare_shero_aux_lib_pt6",0);
+	register_native("prepare_shero_aux_lib_pt6","_prepare_shero_aux_lib_pt6");
 }
 
 public _prepare_shero_aux_lib_pt6(iPlugins, iParams){

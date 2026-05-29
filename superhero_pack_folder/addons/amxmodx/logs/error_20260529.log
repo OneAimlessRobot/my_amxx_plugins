@@ -1,0 +1,189 @@
+L 05/29/2026 - 15:39:00: Start of error session.
+L 05/29/2026 - 15:39:00: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 15:39:00: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:39:00: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:39:00: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4853)
+L 05/29/2026 - 15:39:00: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4265)
+L 05/29/2026 - 15:39:00: [AMXX]    [2] superheromodcore.sma::cl_say (line 3380)
+L 05/29/2026 - 15:40:08: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:40:08: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:40:08: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 15:40:08: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 15:40:08: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5184)
+L 05/29/2026 - 15:50:01: Start of error session.
+L 05/29/2026 - 15:50:01: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 15:50:01: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:50:01: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:50:01: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 15:50:01: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 15:50:01: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5184)
+L 05/29/2026 - 15:52:30: Start of error session.
+L 05/29/2026 - 15:52:30: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 15:52:30: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:52:30: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:52:30: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4853)
+L 05/29/2026 - 15:52:30: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4265)
+L 05/29/2026 - 15:52:30: [AMXX]    [2] superheromodcore.sma::cl_say (line 3380)
+L 05/29/2026 - 15:54:33: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:54:33: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:54:33: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 15:54:33: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 15:54:33: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5184)
+L 05/29/2026 - 15:59:24: Start of error session.
+L 05/29/2026 - 15:59:24: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 15:59:24: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 15:59:24: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 15:59:24: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 15:59:24: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 15:59:24: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5190)
+L 05/29/2026 - 16:04:01: Start of error session.
+L 05/29/2026 - 16:04:01: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:04:01: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:04:01: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:04:01: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:04:01: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:04:01: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5190)
+L 05/29/2026 - 16:04:55: Start of error session.
+L 05/29/2026 - 16:04:55: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:04:55: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:04:55: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:04:55: [AMXX]    [0] superheromodcore.sma::initHero (line 1306)
+L 05/29/2026 - 16:04:55: [AMXX]    [1] superheromodcore.sma::memoryTableRead (line 5156)
+L 05/29/2026 - 16:04:55: [AMXX]    [2] superheromodcore.sma::readXP (line 4958)
+L 05/29/2026 - 16:04:55: [AMXX]    [3] superheromodcore.sma::ham_PlayerSpawn_Post (line 1992)
+L 05/29/2026 - 16:05:52: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:05:52: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:05:52: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:05:52: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:07:05: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:07:05: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:07:05: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:07:05: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:07:05: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5190)
+L 05/29/2026 - 16:11:10: Start of error session.
+L 05/29/2026 - 16:11:10: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:11:10: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:11:10: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:11:10: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:11:10: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:11:10: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5190)
+L 05/29/2026 - 16:13:03: Start of error session.
+L 05/29/2026 - 16:13:03: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:13:03: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:13:03: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:13:03: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4853)
+L 05/29/2026 - 16:13:03: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4265)
+L 05/29/2026 - 16:13:03: [AMXX]    [2] superheromodcore.sma::cl_say (line 3380)
+L 05/29/2026 - 16:14:05: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:14:05: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:14:05: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:14:05: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:14:05: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5195)
+L 05/29/2026 - 16:17:03: Start of error session.
+L 05/29/2026 - 16:17:03: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:17:03: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:17:03: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:17:03: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4853)
+L 05/29/2026 - 16:17:03: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4265)
+L 05/29/2026 - 16:17:03: [AMXX]    [2] superheromodcore.sma::cl_say (line 3380)
+L 05/29/2026 - 16:17:08: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:17:08: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:17:08: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:17:08: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:17:08: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5195)
+L 05/29/2026 - 16:35:10: Start of error session.
+L 05/29/2026 - 16:35:10: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:35:10: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:35:10: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:35:10: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:35:10: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:35:10: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5156)
+L 05/29/2026 - 16:37:50: Start of error session.
+L 05/29/2026 - 16:37:50: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:37:50: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:37:50: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:37:50: [AMXX]    [0] superheromodcore.sma::showPlayerSkills (line 3644)
+L 05/29/2026 - 16:37:50: [AMXX]    [1] superheromodcore.sma::cl_say (line 3342)
+L 05/29/2026 - 16:45:22: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:45:22: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:45:22: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:45:22: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:45:22: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5156)
+L 05/29/2026 - 16:51:04: Start of error session.
+L 05/29/2026 - 16:51:04: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:51:04: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:51:04: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:51:04: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:51:04: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:51:04: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5153)
+L 05/29/2026 - 16:54:53: Start of error session.
+L 05/29/2026 - 16:54:53: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 16:54:53: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:54:53: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:54:53: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4830)
+L 05/29/2026 - 16:54:53: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4242)
+L 05/29/2026 - 16:54:53: [AMXX]    [2] superheromodcore.sma::cl_say (line 3358)
+L 05/29/2026 - 16:55:15: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 16:55:15: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 16:55:15: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 16:55:15: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 16:55:15: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5154)
+L 05/29/2026 - 17:00:38: Start of error session.
+L 05/29/2026 - 17:00:38: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:00:38: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:00:38: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:00:38: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:00:38: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:00:38: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5154)
+L 05/29/2026 - 17:02:57: Start of error session.
+L 05/29/2026 - 17:02:57: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:02:57: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:02:57: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:02:57: [AMXX]    [0] superheromodcore.sma::showPlayerSkills (line 3643)
+L 05/29/2026 - 17:02:57: [AMXX]    [1] superheromodcore.sma::showSkillsCon (line 4264)
+L 05/29/2026 - 17:05:38: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:05:38: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:05:38: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:05:38: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:05:38: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5154)
+L 05/29/2026 - 17:13:25: Start of error session.
+L 05/29/2026 - 17:13:25: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:13:25: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:13:25: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:13:25: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:13:25: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:13:25: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5158)
+L 05/29/2026 - 17:15:01: Start of error session.
+L 05/29/2026 - 17:15:01: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:15:01: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:15:01: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:15:01: [AMXX]    [0] superheromodcore.sma::getHeroLevel (line 4837)
+L 05/29/2026 - 17:15:01: [AMXX]    [1] superheromodcore.sma::showHeroes (line 4249)
+L 05/29/2026 - 17:15:01: [AMXX]    [2] superheromodcore.sma::cl_say (line 3358)
+L 05/29/2026 - 17:17:47: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:17:47: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:17:47: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:17:47: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:17:47: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5161)
+L 05/29/2026 - 17:20:57: Start of error session.
+L 05/29/2026 - 17:20:57: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:20:57: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:20:57: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:20:57: [AMXX]    [0] superheromodcore.sma::showPlayerSkills (line 3652)
+L 05/29/2026 - 17:20:57: [AMXX]    [1] superheromodcore.sma::showSkillsCon (line 4283)
+L 05/29/2026 - 17:22:48: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:22:48: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:22:48: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:22:48: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:22:48: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5173)
+L 05/29/2026 - 17:24:15: Start of error session.
+L 05/29/2026 - 17:24:15: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260529.log")
+L 05/29/2026 - 17:24:15: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:24:15: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:24:15: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:24:15: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:25:03: [AMXX] Displaying debug trace (plugin "superheromodcore.amxx", version "1.2.1.0b")
+L 05/29/2026 - 17:25:03: [AMXX] Run time error 4: index out of bounds 
+L 05/29/2026 - 17:25:03: [AMXX]    [0] superheromysql.inc::writeData (line 381)
+L 05/29/2026 - 17:25:03: [AMXX]    [1] superheromysql.inc::memoryTableWrite (line 205)
+L 05/29/2026 - 17:25:03: [AMXX]    [2] superheromodcore.sma::plugin_end (line 5176)

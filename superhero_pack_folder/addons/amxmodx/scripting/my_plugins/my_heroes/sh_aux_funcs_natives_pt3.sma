@@ -52,12 +52,12 @@ public plugin_precache(){
 public plugin_natives(){
 
 
-	register_native("prepare_shero_aux_lib_pt3","_prepare_shero_aux_lib_pt3",0);
-	register_native("explosion","_explosion",0);
-	register_native("explosion_custom_entity","_explosion_custom_entity",0);
-	register_native("sh_damage_display_stock","_sh_damage_display_stock",0)
-	register_native("generic_heal","_generic_heal",0)
-	register_native("superhero_protected_hud_message","_superhero_protected_hud_message",0)
+	register_native("prepare_shero_aux_lib_pt3","_prepare_shero_aux_lib_pt3");
+	register_native("explosion","_explosion");
+	register_native("explosion_custom_entity","_explosion_custom_entity");
+	register_native("sh_damage_display_stock","_sh_damage_display_stock")
+	register_native("generic_heal","_generic_heal")
+	register_native("superhero_protected_hud_message","_superhero_protected_hud_message")
 }
 
 

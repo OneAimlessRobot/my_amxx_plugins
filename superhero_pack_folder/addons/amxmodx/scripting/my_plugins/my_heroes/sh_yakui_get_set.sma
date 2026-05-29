@@ -29,11 +29,11 @@ public plugin_natives(){
 
 
 	
-	register_native("gatling_set_fx_num","_gatling_set_fx_num",0);
-	register_native("gatling_get_fx_num","_gatling_get_fx_num",0);
+	register_native("gatling_set_fx_num","_gatling_set_fx_num");
+	register_native("gatling_get_fx_num","_gatling_get_fx_num");
 	
-	register_native( "make_effect","_make_effect",0)
-	register_native( "sh_get_pill_color","_sh_get_pill_color",0)
+	register_native( "make_effect","_make_effect")
+	register_native( "sh_get_pill_color","_sh_get_pill_color")
 
 }
 

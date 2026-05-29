@@ -86,21 +86,21 @@ public plugin_init()
 public plugin_natives(){
 	
 	
-	register_native("ksun_get_num_available_spores","_ksun_get_num_available_spores",0);
-	register_native("ksun_set_num_available_spores","_ksun_set_num_available_spores",0);
-	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores",0);
-	register_native("ksun_inc_num_available_spores","_ksun_inc_num_available_spores",0);
+	register_native("ksun_get_num_available_spores","_ksun_get_num_available_spores");
+	register_native("ksun_set_num_available_spores","_ksun_set_num_available_spores");
+	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores");
+	register_native("ksun_inc_num_available_spores","_ksun_inc_num_available_spores");
 	
-	register_native("ksun_multi_inc_num_available_spores","_ksun_multi_inc_num_available_spores",0);
-	register_native("ksun_multi_dec_num_available_spores","_ksun_multi_dec_num_available_spores",0);
-	
-	
-	
-	register_native("ksun_get_when_reset_spores","_ksun_get_when_reset_spores",0);
+	register_native("ksun_multi_inc_num_available_spores","_ksun_multi_inc_num_available_spores");
+	register_native("ksun_multi_dec_num_available_spores","_ksun_multi_dec_num_available_spores");
 	
 	
-	register_native("spores_cooldown","_spores_cooldown",0)
-	register_native("spores_ksun_hero_id","_spores_ksun_hero_id",0)
+	
+	register_native("ksun_get_when_reset_spores","_ksun_get_when_reset_spores");
+	
+	
+	register_native("spores_cooldown","_spores_cooldown")
+	register_native("spores_ksun_hero_id","_spores_ksun_hero_id")
 	
 	
 	

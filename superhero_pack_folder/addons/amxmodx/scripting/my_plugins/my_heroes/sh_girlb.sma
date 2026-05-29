@@ -49,11 +49,11 @@ public plugin_init()
 public plugin_natives(){
 	
 	
-	register_native("girlb_dec_num_globs","_girlb_dec_num_globs",0);
-	register_native("girlb_get_num_globs","_girlb_get_num_globs",0);
-	register_native("girlb_set_num_globs","_girlb_set_num_globs",0);
+	register_native("girlb_dec_num_globs","_girlb_dec_num_globs");
+	register_native("girlb_get_num_globs","_girlb_get_num_globs");
+	register_native("girlb_set_num_globs","_girlb_set_num_globs");
 	
-	register_native("girlb_get_hero_id","_girlb_get_hero_id",0);
+	register_native("girlb_get_hero_id","_girlb_get_hero_id");
 	
 	
 }

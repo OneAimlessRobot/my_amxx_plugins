@@ -103,7 +103,7 @@ remove_user_flight_fx(id){
 }
 public plugin_natives(){
 
-	register_native("zenitsu_get_has_touched_player","_zenitsu_get_has_touched_player",0)
+	register_native("zenitsu_get_has_touched_player","_zenitsu_get_has_touched_player")
 	
 }
 public _zenitsu_get_has_touched_player(iPlugin,iParams){

@@ -42,32 +42,32 @@ public plugin_init()
 public plugin_natives(){
 
 	
-	register_native("spawn_scanner","_spawn_scanner",0)
+	register_native("spawn_scanner","_spawn_scanner")
 	
-	register_native("reset_player_targets","_reset_player_targets",0)
+	register_native("reset_player_targets","_reset_player_targets")
 	
-	register_native("get_player_num_victims","_get_player_num_victims",0)
-	register_native("set_player_num_victims","_set_player_num_victims",0)
-	register_native("dec_player_num_victims","_dec_player_num_victims",0)
+	register_native("get_player_num_victims","_get_player_num_victims")
+	register_native("set_player_num_victims","_set_player_num_victims")
+	register_native("dec_player_num_victims","_dec_player_num_victims")
 	
-	register_native("get_player_num_deployed_spores","_get_player_num_deployed_spores",0)
-	register_native("set_player_num_deployed_spores","_set_player_num_deployed_spores",0)
-	register_native("dec_player_num_deployed_spores","_dec_player_num_deployed_spores",0)
+	register_native("get_player_num_deployed_spores","_get_player_num_deployed_spores")
+	register_native("set_player_num_deployed_spores","_set_player_num_deployed_spores")
+	register_native("dec_player_num_deployed_spores","_dec_player_num_deployed_spores")
 	
-	register_native("get_player_num_launched_spores","_get_player_num_launched_spores",0)
-	register_native("set_player_num_launched_spores","_set_player_num_launched_spores",0)
-	register_native("dec_player_num_launched_spores","_dec_player_num_launched_spores",0)
+	register_native("get_player_num_launched_spores","_get_player_num_launched_spores")
+	register_native("set_player_num_launched_spores","_set_player_num_launched_spores")
+	register_native("dec_player_num_launched_spores","_dec_player_num_launched_spores")
 	
 	
-	register_native("get_spore_from_player_spores","_get_spore_from_player_spores",0)
-	register_native("get_target_from_player_targets","_get_target_from_player_targets",0)
+	register_native("get_spore_from_player_spores","_get_spore_from_player_spores")
+	register_native("get_target_from_player_targets","_get_target_from_player_targets")
 	
-	register_native("set_spore_at_player_spores","_set_spore_at_player_spores",0)
-	register_native("set_target_at_player_targets","_set_target_at_player_targets",0)
+	register_native("set_spore_at_player_spores","_set_spore_at_player_spores")
+	register_native("set_target_at_player_targets","_set_target_at_player_targets")
 	
-	register_native("get_scanner_player_tracks_player","_get_scanner_player_tracks_player",0)
-	register_native("set_scanner_player_tracks_player","_set_scanner_player_tracks_player",0)
-	register_native("destroy_player_scanner","_destroy_player_scanner",0)
+	register_native("get_scanner_player_tracks_player","_get_scanner_player_tracks_player")
+	register_native("set_scanner_player_tracks_player","_set_scanner_player_tracks_player")
+	register_native("destroy_player_scanner","_destroy_player_scanner")
 	
 	
 	

@@ -53,13 +53,13 @@ public plugin_init()
 public plugin_natives(){
 
 	
-	register_native("spear_dec_num_spears","_spear_dec_num_spears",0);
-	register_native("spear_get_num_spears","_spear_get_num_spears",0);
-	register_native("spear_set_num_spears","_spear_set_num_spears",0);
+	register_native("spear_dec_num_spears","_spear_dec_num_spears");
+	register_native("spear_get_num_spears","_spear_get_num_spears");
+	register_native("spear_set_num_spears","_spear_set_num_spears");
 	
 	
 	
-	register_native("spear_get_hero_id","_spear_get_hero_id",0);
+	register_native("spear_get_hero_id","_spear_get_hero_id");
 	
 
 }
@@ -138,7 +138,7 @@ public weaponChange(id)
 {
 	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = read_data(2)
 	if (wpnid == CSW_KNIFE) {
 		if(!spear_get_num_spears(id)){
 			entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)

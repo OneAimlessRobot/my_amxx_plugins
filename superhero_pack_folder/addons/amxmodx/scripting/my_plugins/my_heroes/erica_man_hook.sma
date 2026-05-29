@@ -134,7 +134,7 @@ stop_dragging(id,-1)
 public plugin_natives(){
 	
 	
-	register_native( "hook_set_hook","_hook_set_hook",0)
+	register_native( "hook_set_hook","_hook_set_hook")
 	
 }
 stop_dragging(id,target=-1,bool:deduct=false){

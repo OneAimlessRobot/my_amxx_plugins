@@ -31,12 +31,12 @@ public plugin_init()
 
 public plugin_natives(){
 	
-	register_native("camman_set_has_camera","_camman_set_has_camera",0)
-	register_native("camman_get_has_camera","_camman_get_has_camera",0)
+	register_native("camman_set_has_camera","_camman_set_has_camera")
+	register_native("camman_get_has_camera","_camman_get_has_camera")
 	
-	register_native("camman_get_disarmable","_camman_get_disarmable",0)
+	register_native("camman_get_disarmable","_camman_get_disarmable")
 	
-	register_native("camman_get_hero_id","_camman_get_hero_id",0)
+	register_native("camman_get_hero_id","_camman_get_hero_id")
 	
 	
 }

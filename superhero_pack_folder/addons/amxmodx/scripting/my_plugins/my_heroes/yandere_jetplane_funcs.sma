@@ -97,15 +97,15 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("clear_jets","_clear_jets",0);
-	register_native("reset_jet_user","_reset_jet_user",0);
-	register_native("yandere_jet_uncharge_user","_yandere_jet_uncharge_user",0);
-	register_native("yandere_jet_charge_user","_yandere_jet_charge_user",0);
-	register_native("jet_loaded","_jet_loaded",0);
-	register_native("jet_deployed","_jet_deployed",0);
-	register_native("jet_destroy","_jet_destroy",0);
-	register_native("jet_get_user_jet","_jet_get_user_jet",0);
-	register_native("jet_hurt_user_jet","_jet_hurt_user_jet",0);
+	register_native("clear_jets","_clear_jets");
+	register_native("reset_jet_user","_reset_jet_user");
+	register_native("yandere_jet_uncharge_user","_yandere_jet_uncharge_user");
+	register_native("yandere_jet_charge_user","_yandere_jet_charge_user");
+	register_native("jet_loaded","_jet_loaded");
+	register_native("jet_deployed","_jet_deployed");
+	register_native("jet_destroy","_jet_destroy");
+	register_native("jet_get_user_jet","_jet_get_user_jet");
+	register_native("jet_hurt_user_jet","_jet_hurt_user_jet");
 
 	
 }

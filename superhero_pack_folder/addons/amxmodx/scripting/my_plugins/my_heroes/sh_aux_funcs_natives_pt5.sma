@@ -92,7 +92,7 @@ public weaponChange(id)
 	// If user has a shield do not change model, since we don't have one with a shield
 	if ( cs_get_user_shield(id) ) return PLUGIN_CONTINUE
 
-	new wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
 
 	if(gPlayersCurrHeroWpnModelID[id][wpnid]< 0) return PLUGIN_CONTINUE
 	
@@ -153,9 +153,9 @@ public plugin_precache(){
 }
 public plugin_natives(){
 
-	register_native("prepare_shero_aux_lib_pt5","_prepare_shero_aux_lib_pt5",0);
-	register_native("sh_register_superheromod_model","_sh_register_superheromod_model",0)
-	register_native("sh_register_superheromod_weapon_model","_sh_register_superheromod_weapon_model",0)
+	register_native("prepare_shero_aux_lib_pt5","_prepare_shero_aux_lib_pt5");
+	register_native("sh_register_superheromod_model","_sh_register_superheromod_model")
+	register_native("sh_register_superheromod_weapon_model","_sh_register_superheromod_weapon_model")
 }
 
 play_morph_sound(id){

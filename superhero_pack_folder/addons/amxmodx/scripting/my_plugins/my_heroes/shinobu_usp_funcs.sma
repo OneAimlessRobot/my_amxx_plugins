@@ -75,8 +75,8 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 public plugin_natives(){
 
 
-	register_native("shinobu_unweapons","_shinobu_unweapons",0)
-	register_native("shinobu_weapons","_shinobu_weapons",0)
+	register_native("shinobu_unweapons","_shinobu_unweapons")
+	register_native("shinobu_weapons","_shinobu_weapons")
 }
 
 public client_disconnected(id){

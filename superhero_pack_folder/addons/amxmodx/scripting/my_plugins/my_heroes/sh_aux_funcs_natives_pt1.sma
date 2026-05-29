@@ -56,36 +56,36 @@ public plugin_precache(){
 public plugin_natives(){
 
 
-	register_native("trail_custom","_trail_custom",0);
-	register_native("trail","_trail",0);
-	register_native("make_sparks","_make_sparks",0)
-	register_native("random_fire","_random_fire",0);
-	register_native("make_fire","_make_fire",0);
-	register_native("make_shockwave","_make_shockwave",0);
-	register_native("heal_stream","_heal_stream",0);
-	register_native("unfade_screen_user","_unfade_screen_user",0);
-	register_native("fade_screen_user","_fade_screen_user",0);
-	register_native("laser_line","_laser_line",0);
-	register_native("draw_bbox","_draw_bbox",0);
-	register_native("gun_shot_decal","_gun_shot_decal",0);
-	register_native("explode_fx","_explode_fx",0);
-	register_native("directed_spark","_directed_spark",0);
-	register_native("glow","_glow",0);
-	register_native("suck_in_sound","_suck_in_sound",0);
-	register_native("aura","_aura",0);
-	register_native("ammo_hud","_ammo_hud",0);
-	register_native("detect_user","_detect_user",0);
-	register_native("create_fired_shot_disk","_create_fired_shot_disk",0);
-	register_native("draw_aim_vector","_draw_aim_vector",0);
-	register_native("precache_native_fx_pt1","_precache_native_fx_pt1",0)
-	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1",0);
-	register_native("set_render_with_color_const","_set_render_with_color_const",0)
-	register_native("tank_impact_shot_fx","_tank_impact_shot_fx",0)
-	register_native("big_gun_shot_decal","_big_gun_shot_decal",0)
+	register_native("trail_custom","_trail_custom");
+	register_native("trail","_trail");
+	register_native("make_sparks","_make_sparks")
+	register_native("random_fire","_random_fire");
+	register_native("make_fire","_make_fire");
+	register_native("make_shockwave","_make_shockwave");
+	register_native("heal_stream","_heal_stream");
+	register_native("unfade_screen_user","_unfade_screen_user");
+	register_native("fade_screen_user","_fade_screen_user");
+	register_native("laser_line","_laser_line");
+	register_native("draw_bbox","_draw_bbox");
+	register_native("gun_shot_decal","_gun_shot_decal");
+	register_native("explode_fx","_explode_fx");
+	register_native("directed_spark","_directed_spark");
+	register_native("glow","_glow");
+	register_native("suck_in_sound","_suck_in_sound");
+	register_native("aura","_aura");
+	register_native("ammo_hud","_ammo_hud");
+	register_native("detect_user","_detect_user");
+	register_native("create_fired_shot_disk","_create_fired_shot_disk");
+	register_native("draw_aim_vector","_draw_aim_vector");
+	register_native("precache_native_fx_pt1","_precache_native_fx_pt1")
+	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1");
+	register_native("set_render_with_color_const","_set_render_with_color_const")
+	register_native("tank_impact_shot_fx","_tank_impact_shot_fx")
+	register_native("big_gun_shot_decal","_big_gun_shot_decal")
 	
-	register_native("remove_glow_user","_remove_glow_user",0)
+	register_native("remove_glow_user","_remove_glow_user")
 
-	register_native("set_damage_icon","_set_damage_icon",0)
+	register_native("set_damage_icon","_set_damage_icon")
 
 }
 

@@ -72,8 +72,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("d_barrel_set_d_barrel","_d_barrel_set_d_barrel",0);
-	register_native("d_barrel_unset_d_barrel","_d_barrel_unset_d_barrel",0);
+	register_native("d_barrel_set_d_barrel","_d_barrel_set_d_barrel");
+	register_native("d_barrel_unset_d_barrel","_d_barrel_unset_d_barrel");
 	
 	
 }
@@ -255,6 +255,9 @@ public fw_CmdStart(id, uc_handle, seed)
 
 public fw_SetModel(entity, model[])
 {
+
+	ent_check(entity,FMRES_IGNORED)
+
 	static szClassName[33]
 	pev(entity, pev_classname, szClassName, charsmax(szClassName))
 	
@@ -269,8 +272,8 @@ public fw_SetModel(entity, model[])
 		static weapon
 		weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_GATLING], entity)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED
+		
+		ent_check(weapon,FMRES_IGNORED)
 		
 		if(Get_BitVar(g_Had_Volcano, id))
 		{
@@ -405,10 +408,13 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 }
 
 public fw_Item_Deploy_Post(ent)
-{
+{	
+	ent_check(ent,)
+
 	static id; id = fm_cs_get_weapon_ent_owner(ent)
-	if (!pev_valid(id))
+	if(!is_user_alive(id)){
 		return
+	}
 	
 	static weaponid
 	weaponid = cs_get_weapon_id(ent)

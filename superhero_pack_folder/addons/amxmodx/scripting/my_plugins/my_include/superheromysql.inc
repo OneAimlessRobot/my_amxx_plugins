@@ -368,7 +368,6 @@ writeData(x)
 				sql[0] = '^0'
 				n = copy(sql, charsmax(sql), "INSERT INTO `sh_saveskills` VALUES ")
 			}
-
 			// (savekey, user's hero number, hero name)
 			
 			

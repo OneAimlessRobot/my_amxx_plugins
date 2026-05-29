@@ -58,9 +58,9 @@ public plugin_init()
 
 public plugin_natives(){
 
-	register_native("reset_graciete_user","_reset_graciete_user",0);
-	register_native("jet_get_user_power_landing","_jet_get_user_power_landing",0)
-	register_native("graciete_jet_uncharge_user","_graciete_jet_uncharge_user",0)
+	register_native("reset_graciete_user","_reset_graciete_user");
+	register_native("jet_get_user_power_landing","_jet_get_user_power_landing")
+	register_native("graciete_jet_uncharge_user","_graciete_jet_uncharge_user")
 
 	
 

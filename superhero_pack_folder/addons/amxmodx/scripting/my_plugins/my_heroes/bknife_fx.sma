@@ -84,10 +84,10 @@ public sh_client_spawn(id)
 public plugin_natives(){
 
 
-	register_native("sh_bleed_user","_sh_bleed_user",0);
-	register_native("sh_unbleed_user","_sh_unbleed_user",0);
-	register_native("do_bleed_knife_attack","_do_bleed_knife_attack",0)
-	register_native("sh_get_user_is_bleeding","_sh_get_user_is_bleeding",0)
+	register_native("sh_bleed_user","_sh_bleed_user");
+	register_native("sh_unbleed_user","_sh_unbleed_user");
+	register_native("do_bleed_knife_attack","_do_bleed_knife_attack")
+	register_native("sh_get_user_is_bleeding","_sh_get_user_is_bleeding")
 
 }
 public _sh_get_user_is_bleeding(iPlugin,iParam){

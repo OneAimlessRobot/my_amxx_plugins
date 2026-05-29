@@ -138,8 +138,8 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("yandere_get_is_super","_yandere_get_is_super",0);
-	register_native("yandere_get_hero_id","_yandere_get_hero_id",0);
+	register_native("yandere_get_is_super","_yandere_get_is_super");
+	register_native("yandere_get_hero_id","_yandere_get_hero_id");
 
 
 
@@ -757,7 +757,7 @@ public weaponChange(id)
 	if (!sh_is_active()) return
 	if(!sh_get_user_has_hero(id,gHeroID) ) return
 
-	new  wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
 
 	if ( g_prevWeapon[id] != wpnid ) {
 		if ((get_user_maxspeed(id) < gNormalSpeed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()){

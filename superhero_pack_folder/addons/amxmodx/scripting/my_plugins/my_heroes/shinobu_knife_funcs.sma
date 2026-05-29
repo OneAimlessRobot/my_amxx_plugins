@@ -72,16 +72,16 @@ public on_Knife_Weapon_Change(id)
 	if ( !sh_is_active()) return
 	if(!sh_get_user_has_hero(id,gHeroID)) return
 
-	new  wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
 
 	g_shinobu_using_knife[id]=(wpnid == CSW_KNIFE)
 }
 public plugin_natives(){
 
 
-	register_native("nani_behind_player","_nani_behind_player",0)
-	register_native("manual_cloak_check","_manual_cloak_check",0)
-	register_native("uncloak_shinobu","_uncloak_shinobu",0)
+	register_native("nani_behind_player","_nani_behind_player")
+	register_native("manual_cloak_check","_manual_cloak_check")
+	register_native("uncloak_shinobu","_uncloak_shinobu")
 }
 
 

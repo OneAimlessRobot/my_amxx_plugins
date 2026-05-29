@@ -81,12 +81,12 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("maria_riveter_dec_num_rivets","_maria_riveter_dec_num_rivets",0);
-	register_native("maria_riveter_get_num_rivets","_maria_riveter_get_num_rivets",0);
-	register_native("maria_riveter_set_num_rivets","_maria_riveter_set_num_rivets",0);
+	register_native("maria_riveter_dec_num_rivets","_maria_riveter_dec_num_rivets");
+	register_native("maria_riveter_get_num_rivets","_maria_riveter_get_num_rivets");
+	register_native("maria_riveter_set_num_rivets","_maria_riveter_set_num_rivets");
 	
 	
-	register_native("maria_get_hero_id","_maria_get_hero_id",0);
+	register_native("maria_get_hero_id","_maria_get_hero_id");
 	
 
 	

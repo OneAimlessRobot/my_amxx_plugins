@@ -130,7 +130,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 
 public plugin_natives(){
 
-	register_native("arcticpredator_get_hero_id","_arcticpredator_get_hero_id",0)
+	register_native("arcticpredator_get_hero_id","_arcticpredator_get_hero_id")
 
 }
 

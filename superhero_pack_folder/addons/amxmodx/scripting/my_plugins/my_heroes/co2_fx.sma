@@ -41,9 +41,9 @@ public sh_client_spawn(id)
 
 public plugin_natives(){
 	
-	register_native("sh_co2_user","_sh_co2_user",0);
-	register_native("sh_unco2_user","_sh_unco2_user",0);
-	register_native("sh_get_user_is_co2","_sh_get_user_is_co2",0);
+	register_native("sh_co2_user","_sh_co2_user");
+	register_native("sh_unco2_user","_sh_unco2_user");
+	register_native("sh_get_user_is_co2","_sh_get_user_is_co2");
 }
 public _sh_get_user_is_co2(iPlugin,iParams){
 	new id= get_param(1);

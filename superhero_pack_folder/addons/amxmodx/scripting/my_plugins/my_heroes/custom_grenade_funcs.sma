@@ -262,10 +262,10 @@ public plugin_init(){
 
 public plugin_natives(){
 	
-	register_native( "uncharge_custom_nade","_uncharge_custom_nade",0)
-	register_native( "set_custom_grenade_ammo","_set_custom_grenade_ammo",0)
-	register_native( "get_custom_grenade_ammo","_get_custom_grenade_ammo",0)
-	register_native( "give_custom_grenades","_give_custom_grenades",0)
+	register_native( "uncharge_custom_nade","_uncharge_custom_nade")
+	register_native( "set_custom_grenade_ammo","_set_custom_grenade_ammo")
+	register_native( "get_custom_grenade_ammo","_get_custom_grenade_ammo")
+	register_native( "give_custom_grenades","_give_custom_grenades")
 	
 	
 }

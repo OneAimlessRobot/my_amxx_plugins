@@ -91,11 +91,11 @@ public ev_SendAudio(){
 public plugin_natives(){
 	
 	
-	register_native("roberto_dec_num_balls","_roberto_dec_num_balls",0);
-	register_native("roberto_get_num_balls","_roberto_get_num_balls",0);
-	register_native("roberto_set_num_balls","_roberto_set_num_balls",0);
+	register_native("roberto_dec_num_balls","_roberto_dec_num_balls");
+	register_native("roberto_get_num_balls","_roberto_get_num_balls");
+	register_native("roberto_set_num_balls","_roberto_set_num_balls");
 	
-	register_native("roberto_get_hero_id","_roberto_get_hero_id",0);
+	register_native("roberto_get_hero_id","_roberto_get_hero_id");
 	
 	
 }

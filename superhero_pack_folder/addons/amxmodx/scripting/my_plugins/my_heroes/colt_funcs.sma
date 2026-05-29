@@ -1,4 +1,3 @@
-#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include <reapi>
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -50,8 +49,8 @@ public plugin_init()
 public plugin_natives(){
 
 
-	register_native("colt_set_colt","_colt_set_colt",0);
-	register_native("colt_unset_colt","_colt_unset_colt",0);
+	register_native("colt_set_colt","_colt_set_colt");
+	register_native("colt_unset_colt","_colt_unset_colt");
 }
 public _colt_set_colt(iPlugin,iParams){
 	new id= get_param(1)
@@ -71,7 +70,7 @@ public give_m1911a1(player)
 	lastinv_m1911a1(player)
 
 	new pEntity=rg_give_custom_item(player,STRN_FIVESEVEN,GT_APPEND,ID_M1911A1)
-	if(pEntity==-1) return
+	ent_check(pEntity,)
 	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
 	rg_set_iteminfo(pEntity, ItemInfo_iMaxClip, CLIP_M1911A1)

@@ -59,7 +59,7 @@ public ham_weapon_spawn(entity){
 }
 public plugin_natives(){
 
-    register_native("allocate_weapon_secret_code", "_allocate_weapon_secret_code",0)
+    register_native("allocate_weapon_secret_code", "_allocate_weapon_secret_code")
 
 }
 

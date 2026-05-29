@@ -18,6 +18,7 @@
 stock bool:true_for_macro=true,
 	bool:false_for_macro=false
 
+
 /*
 #define Assign_BitVar(%1,%2,%3) ((%1) = ((%3)) ?(%1 | (1 << (%2 & 31))) : (%1 & ~(1 << (%2 & 31))) )
 
@@ -312,3 +313,9 @@ stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 		}
 	}
 }
+
+//entity constants
+
+#define PDATA_SAFE  2
+
+#define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2

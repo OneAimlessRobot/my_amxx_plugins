@@ -50,11 +50,11 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("get_user_jet_rockets","_get_user_jet_rockets",0);
-	register_native("set_user_jet_rockets","_set_user_jet_rockets",0);
-	register_native("reset_jet_rockets","_reset_jet_rockets",0);
-	register_native("law_destroy","_law_destroy",0);
-	register_native("spawn_jetplane_law","_spawn_jetplane_law",0);
+	register_native("get_user_jet_rockets","_get_user_jet_rockets");
+	register_native("set_user_jet_rockets","_set_user_jet_rockets");
+	register_native("reset_jet_rockets","_reset_jet_rockets");
+	register_native("law_destroy","_law_destroy");
+	register_native("spawn_jetplane_law","_spawn_jetplane_law");
 
 }
 public plugin_cfg(){

@@ -133,23 +133,23 @@ public flora_noclip_control(id, uc_handle)
 
 public plugin_natives(){
 
-	register_native("clear_fields","_clear_fields",0);
-	register_native("reset_flora_user","_reset_flora_user",0);
-	register_native("field_get_user_field_cooldown","_field_get_user_field_cooldown",0)
-	register_native("field_uncharge_user","_field_uncharge_user",0)
-	register_native("form_field","_form_field",0)
-	register_native("field_loaded","_field_loaded",0)
-	register_native("clear_user_fields","_clear_user_fields",0)
-	register_native("flora_get_cooldown","_flora_get_cooldown",0)
-	register_native("flora_get_user_num_active_fields","_flora_get_user_num_active_fields",0)
-	register_native("flora_set_user_num_active_fields","_flora_set_user_num_active_fields",0)
-	register_native("flora_dec_user_num_active_fields","_flora_dec_user_num_active_fields",0)
-	register_native("flora_inc_user_num_active_fields","_flora_inc_user_num_active_fields",0)
+	register_native("clear_fields","_clear_fields");
+	register_native("reset_flora_user","_reset_flora_user");
+	register_native("field_get_user_field_cooldown","_field_get_user_field_cooldown")
+	register_native("field_uncharge_user","_field_uncharge_user")
+	register_native("form_field","_form_field")
+	register_native("field_loaded","_field_loaded")
+	register_native("clear_user_fields","_clear_user_fields")
+	register_native("flora_get_cooldown","_flora_get_cooldown")
+	register_native("flora_get_user_num_active_fields","_flora_get_user_num_active_fields")
+	register_native("flora_set_user_num_active_fields","_flora_set_user_num_active_fields")
+	register_native("flora_dec_user_num_active_fields","_flora_dec_user_num_active_fields")
+	register_native("flora_inc_user_num_active_fields","_flora_inc_user_num_active_fields")
 	
 	
-	register_native("flora_get_user_is_cloaked","_flora_get_user_is_cloaked",0)
-	register_native("flora_get_curr_inside","_flora_get_curr_inside",0)
-	register_native("flora_get_prev_inside","_flora_get_prev_inside",0)
+	register_native("flora_get_user_is_cloaked","_flora_get_user_is_cloaked")
+	register_native("flora_get_curr_inside","_flora_get_curr_inside")
+	register_native("flora_get_prev_inside","_flora_get_prev_inside")
 	
 
 	

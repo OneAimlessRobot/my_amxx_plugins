@@ -128,7 +128,7 @@ public weaponChange(id)
 {
 	if ( !sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	new wpnid = read_data(2)
 	if ((wpnid == CSW_KNIFE)&&g_slit_kills[id]) {
 		entity_set_string(id, EV_SZ_viewmodel, SLITTER_V_MODEL)
 	}
@@ -179,7 +179,7 @@ public loadCVARS()
 public plugin_natives(){
 	
 	
-	register_native( "slitter_set_slitter","_slitter_set_slitter",0)
+	register_native( "slitter_set_slitter","_slitter_set_slitter")
 	
 }
 

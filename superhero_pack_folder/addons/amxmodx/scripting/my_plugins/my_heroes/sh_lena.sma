@@ -32,11 +32,11 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("lena_l96_dec_num_bullets","_lena_l96_dec_num_bullets",0);
-	register_native("lena_l96_get_num_bullets","_lena_l96_get_num_bullets",0);
-	register_native("lena_l96_set_num_bullets","_lena_l96_set_num_bullets",0);
+	register_native("lena_l96_dec_num_bullets","_lena_l96_dec_num_bullets");
+	register_native("lena_l96_get_num_bullets","_lena_l96_get_num_bullets");
+	register_native("lena_l96_set_num_bullets","_lena_l96_set_num_bullets");
 	
-	register_native("lena_get_hero_id","_lena_get_hero_id",0);
+	register_native("lena_get_hero_id","_lena_get_hero_id");
 	
 
 	

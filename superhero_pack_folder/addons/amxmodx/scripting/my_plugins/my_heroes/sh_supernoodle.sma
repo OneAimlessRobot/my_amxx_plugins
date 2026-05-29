@@ -15,6 +15,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
 #include "arifle_inc/sh_arifle.inc"
+#include "sliphantom_inc/sliphantom_inc.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
@@ -79,6 +80,16 @@ public plugin_init()
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
 	shSetMaxArmor(gHeroName, "SuperNoodle_armor")
 	shSetShieldRestrict(gHeroName)
+}
+public plugin_natives(){
+
+	register_native("supernoodle_get_hero_id","_supernoodle_get_hero_id")
+
+}
+public _supernoodle_get_hero_id(iPlugins,iParams){
+	
+	return gHeroID
+
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){

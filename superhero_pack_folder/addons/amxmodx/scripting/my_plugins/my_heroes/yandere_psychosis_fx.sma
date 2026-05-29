@@ -76,9 +76,9 @@ public plugin_natives(){
 
 
 	
-	register_native("yandere_get_user_is_psychosis","_yandere_get_user_is_psychosis",0);
-	register_native("yandere_psychosis_user","_yandere_psychosis_user",0);
-	register_native("yandere_unpsychosis_user","_yandere_unpsychosis_user",0);
+	register_native("yandere_get_user_is_psychosis","_yandere_get_user_is_psychosis");
+	register_native("yandere_psychosis_user","_yandere_psychosis_user");
+	register_native("yandere_unpsychosis_user","_yandere_unpsychosis_user");
 
 
 }

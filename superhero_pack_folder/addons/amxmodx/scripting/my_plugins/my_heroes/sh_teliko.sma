@@ -94,7 +94,7 @@ public plugin_cfg(){
 }
 public plugin_natives(){
 
-	register_native("teliko_get_hero_id","_teliko_get_hero_id",0);
+	register_native("teliko_get_hero_id","_teliko_get_hero_id");
 	
 
 }

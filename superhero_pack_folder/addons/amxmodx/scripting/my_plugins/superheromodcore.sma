@@ -143,7 +143,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
 new fwdReturn
-new fwd_HeroInit_Pre, fwd_HeroInit, fwd_HeroKey, fwd_Spawn, fwd_Death
+new fwd_HeroInit, fwd_HeroInit_Pre, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShDamagePost
@@ -249,7 +249,6 @@ public plugin_init()
 	bot_quota = get_cvar_pointer("bot_quota")	// For cz bots to register spawn hook
 
 
-	// API - Register a bunch of forwards that heroes can use
 	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
@@ -1279,23 +1278,10 @@ public _sh_set_hero_shield()
 	gHeroShieldRest[heroIndex] = pRestricted ? true : false
 }
 //----------------------------------------------------------------------------------------------
-bool:initHero(id, heroIndex, sh_init_mode:mode)
+initHero(id, heroIndex, sh_init_mode:mode)
 {
 	// OK to pass this through when mod off... Let's heroes cleanup after themselves
 	// init event is used to let hero know when a player has selected OR deselected a hero's power
-
-	new the_init_return_value=INIT_FWD_PASS
-	if(!ExecuteForward(fwd_HeroInit_Pre, the_init_return_value, id, heroIndex, mode)){
-
-		server_print("Hero init pre forward execution error!!!")
-		return false
-	}
-	if(the_init_return_value==INIT_FWD_BLOCK){
-
-		mode=SH_HERO_DROP;
-		sh_set_user_has_hero(id,heroIndex,bool:mode)
-		return false
-	}
 
 	if ( equal(gAnubisHero, "Anubis") ){
 		Assign_BitVar(gHasAnubisMask,id, mode);
@@ -1375,7 +1361,7 @@ bool:initHero(id, heroIndex, sh_init_mode:mode)
 	if(!ExecuteForward(fwd_HeroInit, fwdReturn, id, heroIndex, mode)){
 
 		server_print("Hero init post forward execution error!!!")
-		return false
+		return
 	}
 
 #if defined SH_BACKCOMPAT
@@ -1383,7 +1369,6 @@ bool:initHero(id, heroIndex, sh_init_mode:mode)
 #endif
 
 	Assign_BitVar(gChangedHeroesMask, id, true_for_macro);
-	return true
 }
 //----------------------------------------------------------------------------------------------
 //native sh_set_hero_hpap(heroID, pcvarHealth, pcvarArmor)
@@ -1702,16 +1687,23 @@ menuSuperPowers(id, menuOffset)
 	if ( isBot && count ) {
 		// Select a random power
 		heroIndex = gPlayerMenuChoices[id][generate_int(1, count)]
+		new fwd_result=INIT_FWD_PASS
+		if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
 
+			server_print("Hero init pre forward execution error!!!")
+			return PLUGIN_HANDLED
+		}
+		if(fwd_result!=INIT_FWD_PASS){
+
+
+			return PLUGIN_HANDLED
+		}
 		// Bind Keys / Set Powers
 		gPlayerPowers[id][0] = playerpowercount + 1
 		gPlayerPowers[id][playerpowercount + 1] = heroIndex
 
-		new bool:result= initHero(id, heroIndex, SH_HERO_ADD)
-		if(!result){
-			return PLUGIN_HANDLED
-
-		}
+		initHero(id, heroIndex, SH_HERO_ADD)
+		
 		//Don't show menu to bots and wait for next menu call before giving another power
 		return PLUGIN_HANDLED
 	}
@@ -1809,7 +1801,17 @@ public selectedSuperPower(id, key)
 
 	// Just a crash check
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return PLUGIN_HANDLED
+	new fwd_result=INIT_FWD_PASS
+	if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
 
+		server_print("Hero init pre forward execution error!!!")
+		return PLUGIN_HANDLED
+	}
+	if(fwd_result!=INIT_FWD_PASS){
+
+
+		return PLUGIN_HANDLED
+	}
 	new heroLevel = getHeroLevel(heroIndex)
 	new MaxBinds = get_pcvar_num(sh_maxbinds)
 	new MaxCores = get_pcvar_num(sh_maxcores)
@@ -1847,11 +1849,8 @@ public selectedSuperPower(id, key)
 	gPlayerPowers[id][playerpowercount + 1] = heroIndex
 
 	//Init This Hero!
-	new bool:result= initHero(id, heroIndex, SH_HERO_ADD)
-	if(!result){
-		return PLUGIN_HANDLED
-
-	}
+	initHero(id, heroIndex, SH_HERO_ADD)
+	
 	displayPowers(id, true)
 
 	// Show the Menu Again if they don't have enough skills yet!
@@ -1860,7 +1859,7 @@ public selectedSuperPower(id, key)
 	return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-clearPower(id, level)
+ clearPower(id, level)
 {
 	new heroIndex = gPlayerPowers[id][level]
 
@@ -3427,16 +3426,30 @@ public _sh_strip_user_hero(iPlugin, iParams){
 	new id= get_param(1),
 		hero_id=get_param(2)
 
+	new heroIndex
 	new playerpowercount = getPowerCount(id)
+	new bool:found=false;
 	for ( new x = 1; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
-		if(hero_id == gPlayerPowers[id][x]){
+		heroIndex = gPlayerPowers[id][x]
+		if ( -1 < heroIndex < gSuperHeroCount ) {
+			if(hero_id == heroIndex){
 
-			
-			clearPower(id, x)
+				
+				clearPower(id, x)
+				found=true
+				break
 
+			}
 		}
 	}
+	server_print("User of id %d... They now have %d heroes!^n",id,gPlayerPowers[id][0])
+		
+	if(found){
+		server_print("They SHOULD drop hero of id %d^n",hero_id)
+		menuSuperPowers(id, gPlayerMenuOffset[id])
+	}
 
+	server_print("User of id %d... They now have %d heroes!^n",id,gPlayerPowers[id][0])
 
 }
 //----------------------------------------------------------------------------------------------
@@ -4264,6 +4277,18 @@ showHeroes(id)
 	show_motd(id, buffer, "Your SuperHero Heroes")
 	return PLUGIN_HANDLED
 }
+/*
+print_player_hero_ids(id){
+
+	new playerpowercount = getPowerCount(id)
+	for ( new x = 1; x <= playerpowercount; x++ ) {
+		new heroIndex = gPlayerPowers[id][x]
+		server_print("user of id %d has hero %d!!!!!!^n",id,heroIndex)
+	}
+
+
+}
+*/
 //----------------------------------------------------------------------------------------------
 public showSkillsCon(id, level, cid)
 {
@@ -5127,7 +5152,7 @@ memoryTableRead(id, const savekey[])
 {
 	if ( !get_pcvar_num(sv_superheros) ) return false
 
-	static x, p, idLevel, powerCount, heroIndex, delayed_p, true_power_count
+	static x, p, idLevel, powerCount, heroIndex, delayed_p, true_power_count, dropped_powers
 
 	for ( x = 1; x < gMemoryTableCount; x++ ) {
 		if ( gMemoryTableKeys[x][0] != '^0' && equal(gMemoryTableKeys[x], savekey) ) {
@@ -5139,23 +5164,35 @@ memoryTableRead(id, const savekey[])
 			// Load the Powers
 			gPlayerPowers[id][0] = 0
 			
-			powerCount = gMemoryTablePowers[x][0]
+			true_power_count = powerCount = gPlayerPowers[id][0] = gMemoryTablePowers[x][0]
 			
-			true_power_count = powerCount
 
-			for (delayed_p = 1, p = 1; p <= idLevel && p <= powerCount; delayed_p++, p++ ) {
-				heroIndex = gMemoryTablePowers[x][p]
-				
-				new bool:result=initHero(id, heroIndex, SH_HERO_ADD)
-				if(!result){
+			for (delayed_p = p = 1; p <= idLevel && p <= powerCount; delayed_p ++,p++ ) {
+				heroIndex =  gMemoryTablePowers[x][p]
+				new fwd_result=INIT_FWD_PASS
+				if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
+
+					server_print("Hero init pre forward execution error!!!")
+					return false
+				}
+				if(fwd_result!=INIT_FWD_PASS){
+					gPlayerPowers[id][delayed_p] = -1
 					delayed_p--
+					dropped_powers++
 					true_power_count--
+					server_print("We just dropped power number %d from player id %d at init!^nThey currently have: %d powers!^nDropped a total of %d for this player...^n",id,heroIndex,true_power_count,dropped_powers)
+
 				}
 				else{
 					gPlayerPowers[id][delayed_p] = heroIndex
+					initHero(id, heroIndex, SH_HERO_ADD)
 				}
+
 			}
-			gPlayerPowers[id][0] = true_power_count
+			
+			gPlayerPowers[id][0] = gMemoryTablePowers[x][0] = true_power_count
+			
+	
 			// Null this out so if the id changed - there won't be multiple copies of this guy in memory
 			if ( id != x ) {
 				gMemoryTableKeys[x][0] = '^0'

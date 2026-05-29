@@ -80,14 +80,14 @@ public plugin_init()
 public plugin_natives(){
 
 	
-	register_native("tranq_dec_num_darts","_tranq_dec_num_darts",0);
-	register_native("tranq_get_num_darts","_tranq_get_num_darts",0);
-	register_native("tranq_set_num_darts","_tranq_set_num_darts",0);
+	register_native("tranq_dec_num_darts","_tranq_dec_num_darts");
+	register_native("tranq_get_num_darts","_tranq_get_num_darts");
+	register_native("tranq_set_num_darts","_tranq_set_num_darts");
 	
 	
-	register_native("tranq_get_hero_id","_tranq_get_hero_id",0);
+	register_native("tranq_get_hero_id","_tranq_get_hero_id");
 	
-	register_native("tranq_get_is_max_points","_tranq_get_is_max_points",0);
+	register_native("tranq_get_is_max_points","_tranq_get_is_max_points");
 	
 
 }
@@ -229,7 +229,8 @@ public weaponChange(id)
 	if (!sh_is_active()) return PLUGIN_CONTINUE
 	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_CONTINUE
 
-	new wpnid = get_user_weapon(id)
+	new wpnid = read_data(2)
+
 	if ( g_prevWeapon[id] != wpnid ) {
 		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()){
 			set_user_maxspeed(id, g_normal_er_speed[id])

@@ -8,20 +8,27 @@
 #include "../my_include/my_author_header.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "flora_inc/flora_global.inc"
+#include "goku_inc/goku_inc.inc"
+#include "ester_inc/ester_global.inc"
+#include "vegetto_inc/vegetto_inc.inc"
+#include "sliphantom_inc/sliphantom_inc.inc"
+#include "special_fx_inc/sh_yakui_get_set.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt10.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt10.inc"
 #include "../my_include/auxiliar_stuff.inc"
-/*
+
 new gHeroID_Maria = -1,
 	gHeroID_Shinobu = -1,
-	gHeroID_Flora = -1*/
+	gHeroID_Flora = -1,
+	gHeroID_Vegetto = -1,
+	gHeroID_Goku = -1,
+	gHeroID_Ester = -1,
+	gHeroID_SuperNoodle = -1,
+	gHeroID_Yakui = -1
 
-new gHeroID_Shinobu = -1
 
 #define MAX_INCOMPATIBILITY_PAIRS 32
-
-const curr_num_of_pairs = 2
 
 new filled_pair_count = 0
 enum superhero_incompatibility_pair{
@@ -31,7 +38,7 @@ enum superhero_incompatibility_pair{
 
 }
 
-new sh_incompatibility_pairs[curr_num_of_pairs][superhero_incompatibility_pair]
+new sh_incompatibility_pairs[MAX_INCOMPATIBILITY_PAIRS][superhero_incompatibility_pair]
 
 new bool:is_hero_bot_pickable[SH_MAXHEROS] = {true, ...}
 
@@ -44,23 +51,45 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	/*
-
 	gHeroID_Maria = maria_get_hero_id()
 	
 	gHeroID_Flora = flora_get_hero_id()
 	
+	gHeroID_Vegetto = vegetto_get_hero_id()
+
+	gHeroID_Goku = goku_get_hero_id()
+
+	gHeroID_Shinobu = shinobu_get_hero_id()
+
+	gHeroID_Ester = ester_get_hero_id()
+
+	gHeroID_SuperNoodle = supernoodle_get_hero_id()
+
+	gHeroID_Yakui = gatling_get_hero_id()
+
 	//these two really dont get along
 	
+	push_incompatibility_pair(gHeroID_Goku,gHeroID_Shinobu)
+
+	push_incompatibility_pair(gHeroID_Ester,gHeroID_Shinobu)
+
 	push_incompatibility_pair(gHeroID_Flora,gHeroID_Shinobu)
+
+	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_Yakui)
+
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_Yakui)
+
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_SuperNoodle)
+
+	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_SuperNoodle)
 
 	push_incompatibility_pair(gHeroID_Maria,gHeroID_Shinobu)
 
-	*/
+	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Shinobu)
+
+	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Goku)
 
 	
-	
-	gHeroID_Shinobu = shinobu_get_hero_id()
 
 	is_hero_bot_pickable[gHeroID_Shinobu] = false
 
@@ -71,7 +100,7 @@ public push_incompatibility_pair(hero_a,hero_b){
 	if((hero_a<0)||(hero_a>SH_MAXHEROS)||(hero_b<0)||(hero_b>SH_MAXHEROS)||(hero_a==hero_b)){
 		return
 	}
-	if(filled_pair_count>=curr_num_of_pairs){
+	if(filled_pair_count>=MAX_INCOMPATIBILITY_PAIRS){
 
 		return
 	}
@@ -109,8 +138,6 @@ safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode:mode){
 	sh_get_hero_name_from_id(heroID_a,name_a)
 	
 	sh_chat_message(id,-1,"You cannot use the heroes %s and %s at once!",name_a,name_b)
-		
-	sh_strip_user_hero(id, heroID)
 	
 	return INIT_FWD_BLOCK
 

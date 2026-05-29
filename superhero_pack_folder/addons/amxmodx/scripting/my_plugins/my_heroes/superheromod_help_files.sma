@@ -148,9 +148,9 @@ public loadCVARS()
 }
 public plugin_natives(){
 
-	register_native("superheromod_help_link_hero","_superheromod_help_link_hero",0);
+	register_native("superheromod_help_link_hero","_superheromod_help_link_hero");
 	
-	register_native("superheromod_help_show_hero_help","_superheromod_help_show_hero_help",0);
+	register_native("superheromod_help_show_hero_help","_superheromod_help_show_hero_help");
 	
 }
 

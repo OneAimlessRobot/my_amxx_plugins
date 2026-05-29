@@ -76,11 +76,11 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("shinobu_get_user_tagged_player","_shinobu_get_user_tagged_player",0)
-	register_native("shinobu_set_user_tagged_player","_shinobu_set_user_tagged_player",0)
-	register_native("shinobu_get_cooldown","_shinobu_get_cooldown",0)
-	register_native("shinobu_get_hero_id","_shinobu_get_hero_id",0)
-	register_native("shinobu_get_max_hp","_shinobu_get_max_hp",0)
+	register_native("shinobu_get_user_tagged_player","_shinobu_get_user_tagged_player")
+	register_native("shinobu_set_user_tagged_player","_shinobu_set_user_tagged_player")
+	register_native("shinobu_get_cooldown","_shinobu_get_cooldown")
+	register_native("shinobu_get_hero_id","_shinobu_get_hero_id")
+	register_native("shinobu_get_max_hp","_shinobu_get_max_hp")
 	
 	
 	

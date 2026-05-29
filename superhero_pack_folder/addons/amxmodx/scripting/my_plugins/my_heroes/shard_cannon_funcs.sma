@@ -55,8 +55,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("shard_cannon_set_shard_cannon","_shard_cannon_set_shard_cannon",0);
-	register_native("shard_cannon_unset_shard_cannon","_shard_cannon_unset_shard_cannon",0);
+	register_native("shard_cannon_set_shard_cannon","_shard_cannon_set_shard_cannon");
+	register_native("shard_cannon_unset_shard_cannon","_shard_cannon_unset_shard_cannon");
 	
 	
 }
@@ -165,8 +165,8 @@ public Event_CurWeapon(id)
 
 public fw_SetModel(entity, model[])
 {
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
+	
+	ent_check(entity,FMRES_IGNORED)
 	
 	static Classname[64]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
@@ -182,8 +182,8 @@ public fw_SetModel(entity, model[])
 		static weapon
 		weapon = fm_get_user_weapon_entity(entity, CSW_SHARD_CANNON)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED
+		
+		ent_check(weapon,FMRES_IGNORED)
 		
 		if(Get_BitVar(g_Had_SHARD_CANNON, id))
 		{

@@ -53,7 +53,7 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id",0);
+	register_native("jaqueo_get_hero_id","_jaqueo_get_hero_id");
 	
 	
 }

@@ -54,8 +54,8 @@ public plugin_natives(){
 	
 	
 
-	register_native("arifle_set_arifle","_arifle_set_arifle",0);
-	register_native("arifle_unset_arifle","_arifle_unset_arifle",0);
+	register_native("arifle_set_arifle","_arifle_set_arifle");
+	register_native("arifle_unset_arifle","_arifle_unset_arifle");
 	
 	
 }
@@ -171,8 +171,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 public fw_SetModel(entity, model[])
 {
 	
-	if(!pev_valid(entity))
-		return FMRES_IGNORED
+	ent_check(entity,FMRES_IGNORED)
 
 	static Classname[32]
 	pev(entity, pev_classname, Classname, sizeof(Classname))
@@ -187,8 +186,8 @@ public fw_SetModel(entity, model[])
 	{
 		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ARIFLE], entity)
 		
-		if(!pev_valid(weapon))
-			return FMRES_IGNORED;
+		
+		ent_check(weapon,FMRES_IGNORED)
 		
 		if(Get_BitVar(g_Had_Arifle, iOwner))
 		{
