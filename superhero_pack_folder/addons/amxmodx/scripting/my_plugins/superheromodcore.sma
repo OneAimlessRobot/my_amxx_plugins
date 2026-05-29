@@ -5152,7 +5152,7 @@ memoryTableRead(id, const savekey[])
 {
 	if ( !get_pcvar_num(sv_superheros) ) return false
 
-	static x, p, idLevel, powerCount, heroIndex, delayed_p, true_power_count, dropped_powers
+	static x, p, idLevel, powerCount, heroIndex
 
 	for ( x = 1; x < gMemoryTableCount; x++ ) {
 		if ( gMemoryTableKeys[x][0] != '^0' && equal(gMemoryTableKeys[x], savekey) ) {
@@ -5164,33 +5164,16 @@ memoryTableRead(id, const savekey[])
 			// Load the Powers
 			gPlayerPowers[id][0] = 0
 			
-			true_power_count = powerCount = gPlayerPowers[id][0] = gMemoryTablePowers[x][0]
+			powerCount = gPlayerPowers[id][0] = gMemoryTablePowers[x][0]
 			
 
-			for (delayed_p = p = 1; p <= idLevel && p <= powerCount; delayed_p ++,p++ ) {
+			for (p = 1; p <= idLevel && p <= powerCount; p++ ) {
 				heroIndex =  gMemoryTablePowers[x][p]
-				new fwd_result=INIT_FWD_PASS
-				if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
-
-					server_print("Hero init pre forward execution error!!!")
-					return false
-				}
-				if(fwd_result!=INIT_FWD_PASS){
-					gPlayerPowers[id][delayed_p] = -1
-					delayed_p--
-					dropped_powers++
-					true_power_count--
-					server_print("We just dropped power number %d from player id %d at init!^nThey currently have: %d powers!^nDropped a total of %d for this player...^n",id,heroIndex,true_power_count,dropped_powers)
-
-				}
-				else{
-					gPlayerPowers[id][delayed_p] = heroIndex
-					initHero(id, heroIndex, SH_HERO_ADD)
-				}
+				gPlayerPowers[id][p] = heroIndex
+				initHero(id, heroIndex, SH_HERO_ADD)
 
 			}
-			
-			gPlayerPowers[id][0] = gMemoryTablePowers[x][0] = true_power_count
+			gPlayerPowers[id][0] = gMemoryTablePowers[x][0] = powerCount
 			
 	
 			// Null this out so if the id changed - there won't be multiple copies of this guy in memory
@@ -5198,7 +5181,6 @@ memoryTableRead(id, const savekey[])
 				gMemoryTableKeys[x][0] = '^0'
 				memoryTableUpdate(id)
 			}
-
 			// Notify that this was found in memory...
 			return true
 		}

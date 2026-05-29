@@ -220,7 +220,7 @@ public _sh_register_superheromod_model(iPlugins, iParams){
 	}
 	new hero_id= get_param(1)
 
-	if (hero_id<0 || hero_id > SH_MAXHEROS){
+	if (hero_id<0 || hero_id >=SH_MAXHEROS){
 
 		return -1
 	}
@@ -258,7 +258,7 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 
 	new hero_id= get_param(1)
 
-	if (hero_id<0 || hero_id > SH_MAXHEROS){
+	if (hero_id<0 || hero_id >=SH_MAXHEROS){
 
 		return -1
 	}

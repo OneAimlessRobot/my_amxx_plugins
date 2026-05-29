@@ -15,6 +15,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "thrashy_thrash_inc/thrashy_thrash_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -36,7 +37,7 @@ new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 new blast_shroom
 new gHeroID;
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
-new a_flags[10]
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -51,19 +52,24 @@ public plugin_init()
 	create_cvar("thrashy_explodeod_maxdamage", "1100" )
 	create_cvar("thrashy_ndynamites", "10")
 	create_cvar("thrashy_cooldown", "2" )
-	create_cvar("thrashy_adminflag", "a")
 	create_cvar("thrashy_akmult", "10.0" )
 	create_cvar("thrashy_speed", "500" )
 	new healthcvar=create_cvar("thrashy_health", "1000" )
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Warrior (Admin acess SLAY)", "Warrior! Explode and crush and kill and THRASH!!!!!!! (supd up ak + explsns on keydown. gl :P!) ", true, "thrashy_level" )
+	
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,1,
+				"STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!!")
+	
 	sh_register_superheromod_model(gHeroID,
 								MODEL_PLAYER,
 								MODEL_PLAYER,
 								"thrash",
 								"You are now the baddest bitch on earth!",
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
+
+	
 	sh_register_superheromod_weapon_model(gHeroID,THRASHER_WEAPON_ID,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -110,11 +116,20 @@ public loadCVARS()
 	xplodeoddmg=get_cvar_num("thrashy_explodeod_maxdamage")
 	ndynamites=get_cvar_num("thrashy_ndynamites")
 	cooldown=get_cvar_num("thrashy_cooldown")
-	get_cvar_string("thrashy_adminflag",a_flags,9)
-	sh_register_admin_only_hero(gHeroID,read_flags(a_flags),MAX_PICKED,
-				"STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!!")
 
 	ak_dmgmult=get_cvar_float("thrashy_akmult")
+}
+public plugin_natives(){
+
+	register_native("thrashy_thrash_get_hero_id","_thrashy_thrash_get_hero_id");
+
+
+
+}
+public _thrashy_thrash_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
+
 }
 public fw_CmdStart( id, uc_handle, seed )
 {	

@@ -27,6 +27,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
+#include "darkpredator_inc/darkpredator_inc.inc"
 
 
 
@@ -40,7 +41,6 @@ new gStillTime[SH_MAXSLOTS+1]
 new gSpriteWhite, gRadius, gBright
 new gHealPoints
 new gHeroID
-new accessLevel[10]
 new gBullets[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]
@@ -53,6 +53,12 @@ public plugin_init()
 	create_cvar("darkpred_level", "10" )
 	
 	gHeroID=shCreateHero(gHeroName, "Deagle/Invisibility (ADMIN A ONLY)", "Free deagle and invisibility. Plus ESP rings, Predator Armour and Regeneration.", false, "darkpred_level" )
+	
+	
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,1,
+			"You are not an admin. No acess was granted")
+
+
 	sh_register_superheromod_model(gHeroID,
 							"models/player/sh_darkpredator/sh_darkpredator.mdl",
 							"models/player/sh_darkpredator/sh_darkpredator.mdl",
@@ -76,7 +82,6 @@ public plugin_init()
 	create_cvar("darkpred_radius", "900")
 	create_cvar("darkpred_bright", "192")
 	create_cvar("darkpred_bullets", "6")
-	create_cvar("darkpred_adminflag", "a")
 	
 	// Let Server know about DarkPredators Variables
 	// It is possible that another hero has more hps, less gravity, or more armor
@@ -103,6 +108,19 @@ public plugin_precache()
 	laser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr") 
 	laser_impact = engfunc(EngFunc_PrecacheModel,"sprites/zerogxplode.spr") 
 	blast_shroom = engfunc(EngFunc_PrecacheModel,"sprites/mushroom.spr")
+}
+
+public plugin_natives(){
+
+	register_native("darkpredator_get_hero_id","_darkpredator_get_hero_id");
+
+
+
+}
+public _darkpredator_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
+
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
@@ -218,10 +236,6 @@ public changeWeapon(id)
 }
 public plugin_cfg(){
 
-
-	get_cvar_string("leviathan_adminflag", accessLevel, 9)
-	sh_register_admin_only_hero(gHeroID,read_flags(accessLevel),MAX_PICKED,
-			"You are not an admin. No acess was granted")
 
 }
 //----------------------------------------------------------------------------------------------

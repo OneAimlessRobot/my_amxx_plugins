@@ -13,6 +13,7 @@ leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/leviathan_inc/leviathan_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
@@ -24,7 +25,6 @@ new lastwpn[SH_MAXSLOTS + 1]
 new lastammo[SH_MAXSLOTS + 1]
 new check[SH_MAXSLOTS + 1]
 new bool:Swim[SH_MAXSLOTS + 1]
-new accessLevel[10]
 new GrenOldOrigin[3]
 new bool:FloodOn=false
 new svgravity, leviathan_gravity, leviathan_swimspeed, leviathan_othersspeed, Float:leviathan_underwaterdmg, Float:leviathan_threshold
@@ -38,13 +38,17 @@ public plugin_init()
 	create_cvar("leviathan_level", "5")
 
 	gHeroID=shCreateHero(gHeroName, "Flood (ADMIN LEVEL A)", "Flood the map when you are on low health; then, swim fast and shoot hard; tap forward to swim", false, "leviathan_level") 
+	
+
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,1,
+			"You are not an admin. No acess was granted")
+
 	register_event("CurWeapon", "BulletEffect", "be", "3>0") 
 
 	create_cvar("leviathan_gravity", "200")
 	create_cvar("leviathan_othersspeed", "225")
 	create_cvar("leviathan_swimspeed", "380")
 	create_cvar("leviathan_threshold", "0.3")
-	create_cvar("leviathan_adminflag", "a")
 	create_cvar("leviathan_underwaterdmg", "1.5")
 	svgravity=get_cvar_num("sv_gravity")
 
@@ -61,11 +65,17 @@ public client_connect(id)
 	check[id] = 0
 	Swim[id] = false
 }
-public plugin_cfg(){
+
+public plugin_natives(){
+
+	register_native("leviathan_get_hero_id","_leviathan_get_hero_id");
 
 
-	get_cvar_string("leviathan_adminflag", accessLevel, 9)
-	sh_register_admin_only_hero(gHeroID,read_flags(accessLevel),3,"You are not an admin. No acess was granted")
+
+}
+public _leviathan_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
 
 }
 //----------------------------------------------------------------------------------------------

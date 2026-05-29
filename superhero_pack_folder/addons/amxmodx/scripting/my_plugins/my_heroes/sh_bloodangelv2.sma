@@ -16,19 +16,17 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "darkangel_inc/darkangel_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
+#include "darkangel_inc/darkangel_inc.inc"
 #include "../my_include/my_author_header.inc"
 
-
-#define MAX_PICKED 3
-#define DARK_TASKID 13213
 // GLOBAL VARIABLES
 new HeroName[] = "Dark angel v2"
 new gHeroID
 new Float: MEGA_DARK_KNOCKBACK
-new a_flags[10]
 new Float:m4dmgmult
 
 
@@ -49,13 +47,15 @@ public plugin_init()
 	create_cvar("darkangel_gravity", "1.0")
 	create_cvar("darkangel_speed", "-1")
 	create_cvar("darkangel_knockback", "2.0")
-	create_cvar("darkangel_adminflag", "a")
-	create_cvar("darkangel_adminflag", "a")
 	create_cvar("darkangel_m4a1mult", "1.3")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Dark Angel m4!", "Get dark angels Powerfull m4! 'MUAHAHAHH FEEL THE WRATH OF MY ANGER!!!! THE MIGHT OF MY POWER!!!!' This is him speaking MAHAHAHAHAAAAAAHHHH!!!!!", false, "darkangel_level")
 	
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,1,
+					"HOW DARE YOU CHALLENGE THE DARK LOOOOOORRDDD!!!! STUPID IDIOT IMBECILE JOCK!")
+
+
 	sh_register_superheromod_weapon_model(gHeroID,CSW_M4A1,"models/shmod/toxic_cat_m4.mdl")
 	
 	custom_dmg_id_darkly_dark_d=sh_log_custom_damage_source(gHeroID,
@@ -81,15 +81,24 @@ public plugin_cfg()
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-	get_cvar_string("darkangel_adminflag",a_flags,9)
 
-	sh_register_admin_only_hero(gHeroID,read_flags(a_flags),MAX_PICKED,
-					"HOW DARE YOU CHALLENGE THE DARK LOOOOOORRDDD!!!! STUPID IDIOT IMBECILE JOCK!")
 	
 	m4dmgmult=get_cvar_float("darkangel_m4a1mult")
 	MEGA_DARK_KNOCKBACK=get_cvar_float("darkangel_knockback")
 }
 
+public plugin_natives(){
+
+	register_native("darkangel_get_hero_id","_darkangel_get_hero_id");
+
+
+
+}
+public _darkangel_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
+
+}
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return

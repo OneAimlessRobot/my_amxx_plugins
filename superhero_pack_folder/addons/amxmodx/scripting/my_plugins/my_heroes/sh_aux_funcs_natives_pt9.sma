@@ -6,10 +6,12 @@
 #define PLUGIN "Superhero aux natives pt9: Admin only hero registratrion!"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+#include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt9.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 
 #define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
+
 
 enum sh_hero_priviledges_enum_struct{
 
@@ -31,6 +33,41 @@ public plugin_init(){
 
 
 }
+
+bool:sh_register_admin_only_hero_primitive(the_hero_id_to_register,
+          admin_flags_required = ADMIN_IMMUNITY,
+          num_pickable_times = -1,
+          const unable_to_pick_msg[STRING_SIZE] = "Unable to pick"){
+
+	
+	if((the_hero_id_to_register<0)||(the_hero_id_to_register>=SH_MAXHEROS)){
+		server_print("Illegal hero id to register as admin only!^nHero id given was: %s^nBut it must be between 0 and %s!!!!!!!!!^n",
+					the_hero_id_to_register,SH_MAXHEROS)
+		return false
+	}
+
+	if(sh_pickable_hero_struct_arr[the_hero_id_to_register][admin_only]){
+
+		server_print("This hero is already admin only!!!!!!^n");
+		return false
+
+	}
+
+	sh_pickable_hero_struct_arr[the_hero_id_to_register][admin_only] = true
+	sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags] = admin_flags_required
+	sh_pickable_hero_struct_arr[the_hero_id_to_register][times_pickable_left] = num_pickable_times
+	sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times] = num_pickable_times
+
+	copy(sh_pickable_hero_struct_arr[the_hero_id_to_register][unable_to_pick_string], STRING_SIZE-1,unable_to_pick_msg)
+
+	server_print("Hero with id %d successfully registered as admin only!^nIt is pickable %d times in total^nAnd its admin flag bitsum is: %d^n",
+				the_hero_id_to_register,
+				sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times],
+				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])
+
+	return true
+}
+
 public plugin_natives(){
 
 	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero")
@@ -48,7 +85,6 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		return INIT_FWD_PASS
 	}
 	if(mode==SH_HERO_ADD){
-
 		if(!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
 			if(is_user_connected(id)){
 				sh_chat_message(id, heroID,"%s: the hero has already been picked too many times! The limit of people using this hero is %d!",
@@ -93,37 +129,21 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	return INIT_FWD_PASS
 
 }
+
 public bool:_sh_register_admin_only_hero(iPlugins, iParams){
 
 	new the_hero_id_to_register = get_param(1),
 		the_flags_to_assign = get_param(2),
 		the_number_of_times_to_allow = get_param(3)
 
+	static pickable_string[STRING_SIZE]
 	
-	if((the_hero_id_to_register<0)||(the_hero_id_to_register>=SH_MAXHEROS)){
-		server_print("Illegal hero id to register as admin only!^nHero id given was: %s^nBut it must be between 0 and %s!!!!!!!!!^n",
-					the_hero_id_to_register,SH_MAXHEROS)
-		return false
-	}
 
-	if(sh_pickable_hero_struct_arr[the_hero_id_to_register][admin_only]){
+	get_string(4, pickable_string, charsmax(pickable_string))
 
-		server_print("This hero is already admin only!!!!!!^n");
-		return false
+	return sh_register_admin_only_hero_primitive(the_hero_id_to_register,
+									the_flags_to_assign,
+									the_number_of_times_to_allow,
+									pickable_string)
 
-	}
-
-	sh_pickable_hero_struct_arr[the_hero_id_to_register][admin_only] = true
-	sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags] = the_flags_to_assign
-	sh_pickable_hero_struct_arr[the_hero_id_to_register][times_pickable_left] = the_number_of_times_to_allow
-	sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times] = the_number_of_times_to_allow
-
-	get_string(4, sh_pickable_hero_struct_arr[the_hero_id_to_register][unable_to_pick_string], STRING_SIZE-1)
-	/*
-	server_print("Hero with id %d successfully registered as admin only!^nIt is pickable 3 times in total^nAnd its admin flag bitsum is: %d^n",
-				the_hero_id_to_register,
-				sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times],
-				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])
-	*/
-	return true
 }

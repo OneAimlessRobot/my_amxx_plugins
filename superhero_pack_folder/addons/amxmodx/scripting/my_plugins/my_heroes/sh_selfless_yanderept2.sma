@@ -17,9 +17,20 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+
+
+stock const yandere_sentences[5][]={
+	"Hiss.... Hiss.... Hiss.... Hiss.....",
+	"Where are you... where... are you...",
+	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",
+	"I hear their voices... I hear them... Then want... they want... red and black",
+	"I want... all your blood. All of it.... and water the graves of my family with it."
+}
+
 
 new gHeroID
 stock hud_sync
@@ -45,6 +56,7 @@ new pcvar_degen_health_extra_threshold
 new pcvar_overheal_hp_max
 new pcvar_trans_time
 new generic_dmg_dark_arts = -1
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -73,6 +85,10 @@ public plugin_init()
 	pcvar_min_players = create_cvar("yandere_min_players", "6")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level",true )
 	
+
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,0,
+				"No access was granted")
+
 
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
@@ -144,16 +160,16 @@ public plugin_natives(){
 
 
 }
+public _yandere_get_hero_id(iPlugin,iParams){
+	
+	return gHeroID
+
+}
 public _yandere_get_is_super(iPlugin,iParams){
 	new id= get_param(1)
 	
 	//return gSuperAngry[id]
 	return Get_BitVar(gSuperAngryMask,id)
-
-}
-public _yandere_get_hero_id(iPlugin,iParams){
-	
-	return gHeroID
 
 }
 
@@ -434,7 +450,6 @@ public loadCVARS()
 degen_iter_period=get_cvar_float("yandere_degen_iter_period")
 generic_dmg_dark_arts = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS)
 
-
 set_task( degen_iter_period, "yandere_sentence_loop", _, _, _, "b")
 
 }
@@ -578,11 +593,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_V_MODEL)
 	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_P_MODEL)
-	for(new i=0;i<sizeof(yandere_shotgun_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound,yandere_shotgun_sounds[i] );
-	
-	}
+
 	
 	
 }

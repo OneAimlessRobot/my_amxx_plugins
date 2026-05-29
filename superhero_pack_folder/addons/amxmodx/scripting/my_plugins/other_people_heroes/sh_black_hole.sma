@@ -14,7 +14,6 @@ black_thinktime 2 //how long victims get to pray to their god
 */
 
 #include "../my_include/superheromod.inc"
-#include "../../include/Vexd_Utilities.inc"
 
 // GLOBAL VARIABLES
 new g_heroName[]="Black Hole"
@@ -57,7 +56,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		// Make sure looop doesn't fire for them
 		gBHTimer = -1
-		black_admincheck(id)
 	}
 	//This gets run if they had the power but don't anymore
 	else if (  gBHTimer >= 0 ) {
@@ -92,8 +90,6 @@ public black_kd(id)
 		playSoundDenySelect(id)
 		return 
 	}
-	
-	black_admincheck(id)
 	
 	gRange = get_cvar_num("black_range")
 	gForce = get_cvar_num("black_force")
@@ -299,17 +295,5 @@ public remove_player(parm[])
 	new id = parm[0]
 	client_print(id, print_center, "Hope your life flashed before your eyes, its time to die")
 	user_kill(id)
-}
-//---------------------------------------------------------------------------------------------------
-public black_admincheck(id)
-{
-	new accessLevel[10]
-
-	get_cvar_string("black_adminflag", accessLevel, 9)
-
-	if ( sh_get_user_has_hero(id,gHeroID) &&  !(get_user_flags(id)&read_flags(accessLevel)) ) {
-		client_print(id, print_chat, "[SH](%s) **Admin Only** You are not authorized to use this hero", g_heroName)
-		client_cmd(id, "say drop %s", g_heroName)
-	}
 }
 //----------------------------------------------------------------------------------------------

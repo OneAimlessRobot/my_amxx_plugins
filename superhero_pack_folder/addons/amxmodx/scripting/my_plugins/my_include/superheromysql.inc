@@ -478,9 +478,19 @@ loadXP(id, const savekey[MAX_PLAYER_SAVE_KEY_LENGTH])
 			SQL_ReadResult(query, 0, heroName, charsmax(heroName))
 			heroIndex = getHeroID(heroName)
 			if ( -1 < heroIndex < gSuperHeroCount && getHeroLevel(heroIndex) <= playerLevel ) {
-				gPlayerPowers[id][0] = ++skills
-				gPlayerPowers[id][skills] = heroIndex
-				initHero(id, heroIndex, SH_HERO_ADD)
+				new fwd_result=INIT_FWD_PASS
+				if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
+
+					server_print("Hero init pre forward execution error!!!")
+					return false
+				}
+				if(fwd_result!=INIT_FWD_BLOCK){
+
+					gPlayerPowers[id][0] = ++skills
+					gPlayerPowers[id][skills] = heroIndex
+					initHero(id, heroIndex, SH_HERO_ADD)
+				}
+				
 			}
 
 			SQL_NextRow(query)

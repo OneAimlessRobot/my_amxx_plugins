@@ -97,7 +97,7 @@ public plugin_cfg(){
 }
 public push_incompatibility_pair(hero_a,hero_b){
 
-	if((hero_a<0)||(hero_a>SH_MAXHEROS)||(hero_b<0)||(hero_b>SH_MAXHEROS)||(hero_a==hero_b)){
+	if((hero_a<0)||(hero_a>=SH_MAXHEROS)||(hero_b<0)||(hero_b>=SH_MAXHEROS)||(hero_a==hero_b)){
 		return
 	}
 	if(filled_pair_count>=MAX_INCOMPATIBILITY_PAIRS){
