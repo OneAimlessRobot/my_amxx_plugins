@@ -55,8 +55,7 @@ stock progressBar(id, seconds)
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
 {
 	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
-	if(!pev_valid(Ent))
-		return
+	ent_check(Ent,)
 
 	set_pdata_int(Ent, m_iShellId, Shell_ModelIndex, XO_WEAPON)
 	set_pdata_float(id, m_flEjectBrass, get_gametime() + Time, XTRA_OFS_PLAYER)
@@ -109,7 +108,7 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
 	iOrigin[2] += generate_int(5, 80);
 
-	if (!pev_valid(ent)) {
+	if (!is_valid_ent(ent)) {
 		return iOrigin[2];
 	}
 

@@ -480,7 +480,7 @@ process_manhook_manslaughter(iAgressor, iVictim)
 {
 	new Float:Origin[3], Float:Origin2[3]
 	//Check to make sure its a valid entity
-	if (!pev_valid(iAgressor)) {
+	if (!is_valid_ent(iAgressor)) {
 		iAgressor = iVictim
 	}
 

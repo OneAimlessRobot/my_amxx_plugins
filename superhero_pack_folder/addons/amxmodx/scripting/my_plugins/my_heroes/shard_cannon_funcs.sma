@@ -141,7 +141,7 @@ public Event_CurWeapon(id)
 	if((CSWID == CSW_SHARD_CANNON && g_Old_Weapon[id] == CSW_SHARD_CANNON) && Get_BitVar(g_Had_SHARD_CANNON, id)) 
 	{
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_SHARD_CANNON)
-		if(!pev_valid(Ent))
+		if(pev_valid(Ent)!=PDATA_SAFE)
 		{
 			g_Old_Weapon[id] = get_user_weapon(id)
 			return
@@ -491,17 +491,6 @@ stock Set_WeaponAnim(id, anim)
 	write_byte(anim)
 	write_byte(pev(id, pev_body))
 	message_end()
-}
-
-stock Set_Weapon_Idle(id, WeaponId ,Float:TimeIdle)
-{
-	static entwpn; entwpn = fm_get_user_weapon_entity(id, WeaponId)
-	if(!pev_valid(entwpn)) 
-		return
-		
-	set_pdata_float(entwpn, 46, TimeIdle, 4)
-	set_pdata_float(entwpn, 47, TimeIdle, 4)
-	set_pdata_float(entwpn, 48, TimeIdle + 0.5, 4)
 }
 
 stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)

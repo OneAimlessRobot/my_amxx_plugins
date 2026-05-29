@@ -205,7 +205,7 @@ new material[128]
 new health[128]	
 new launcher = create_entity( "func_breakable" );
 
-if ( (launcher == 0) || !pev_valid(launcher)||!is_valid_ent(launcher)) {
+if (!is_valid_ent(launcher)) {
 	
 	if(!is_user_bot(id)){
 		client_print(id, print_chat, "[SH](ksun) Launcher Creation Failure")

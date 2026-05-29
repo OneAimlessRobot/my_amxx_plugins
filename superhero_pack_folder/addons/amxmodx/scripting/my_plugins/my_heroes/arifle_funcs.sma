@@ -144,7 +144,7 @@ public Event_CurWeapon(id)
 
 	static Float:Delay, Float:Delay2
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
-	if(!pev_valid(Ent)) return
+	ent_check(Ent,)
 
 	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * A_RIFLE_SPEED
 	Delay2 = get_pdata_float(Ent, m_flNextSecondaryAttack, XO_WEAPON) * A_RIFLE_SPEED
@@ -594,16 +594,4 @@ stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
 	xs_vec_mul_scalar(fAttack, fRate, fAttack)
 	
 	xs_vec_add(fOrigin, fAttack, output)
-}
-
-stock Set_Player_NextAttack(id, CSWID, Float:NextTime)
-{
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSWID)
-	if(!pev_valid(Ent)) return
-	
-	set_pdata_float(id, m_flNextAttack, NextTime, OFFSET_LINUX_PLAYER)
-	
-	set_pdata_float(Ent, m_flNextPrimaryAttack , NextTime, XO_WEAPON)
-	set_pdata_float(Ent, m_flNextSecondaryAttack, NextTime, XO_WEAPON)
-	set_pdata_float(Ent, m_flTimeWeaponIdle, NextTime, XO_WEAPON)
 }

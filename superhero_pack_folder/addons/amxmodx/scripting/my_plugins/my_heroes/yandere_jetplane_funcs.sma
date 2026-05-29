@@ -456,7 +456,7 @@ public FwdTouchWorld( jet, World ) {
 //----------------------------------------------------------------------------------------------
 public jet_think(ent)
 {
-	if ( !pev_valid(ent) ) return
+	if ( !is_valid_ent(ent) ) return
 
 	
 	static Float:gametime,Float:Pos[3]

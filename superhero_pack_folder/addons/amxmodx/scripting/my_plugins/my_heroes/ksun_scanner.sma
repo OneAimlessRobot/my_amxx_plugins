@@ -211,7 +211,7 @@ public _spawn_scanner(iPlugins,iParams){
 	b_orig[1] = float(originplayer[1]);
 	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
 	new scanner = create_entity( "info_target" );
-	if ( (scanner == 0) || !pev_valid(scanner )||!is_valid_ent(scanner )) {
+	if ( !is_valid_ent(scanner )) {
 		
 		if(!is_user_bot(id)){
 			client_print(id, print_chat, "[SH](ksun) Scanner Creation Failure")
@@ -248,7 +248,7 @@ public _get_scanner_player_tracks_player(iPlugins,iParams){
 }
 public scanner_think(scanner){
 	
-	if ( !pev_valid(scanner) || (scanner<=0) ||!is_valid_ent(scanner)) return
+	if ( !is_valid_ent(scanner)) return
 	
 	
 	new id= entity_get_edict(scanner,EV_ENT_owner)

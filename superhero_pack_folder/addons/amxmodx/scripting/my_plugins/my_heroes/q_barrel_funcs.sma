@@ -162,7 +162,7 @@ public Event_CurWeapon(id)
 	if((CSWID == CSW_QUADBARREL && g_OldWeapon[id] == CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
 	{
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-		if(pev_valid(Ent)) 
+		if(pev_valid(Ent)==PDATA_SAFE)
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
 						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * Q_BARREL_SPEED, XO_WEAPON)
@@ -225,9 +225,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
-	if(!pev_valid(Ent)){
-		return FMRES_IGNORED
-	}
+	ent_check(Ent,FMRES_IGNORED)
 	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)

@@ -260,7 +260,7 @@ public _toggle_camera_view(iPlugins,iParams){
 	if(!Get_BitVar(looking_with_camera_mask, id)){
 		new camera_id=user_camera[id]
 		
-		if(!pev_valid(camera_id)){
+		if(!is_valid_ent(camera_id)){
 			
 			sh_chat_message(id,gHeroID,"No available cameras!");
 			UnSet_BitVar(looking_with_camera_mask, id)
@@ -433,7 +433,7 @@ update_camera_aiming(other_ent,cam_id){
 }
 public laser_on_player_think(ent){
 	
-	if ( !ent||!pev_valid(ent)) return
+	if ( !is_valid_ent(ent)) return
 	
 	new owner=pev(ent,pev_euser1)
 	
@@ -460,7 +460,7 @@ public laser_on_player_think(ent){
 //----------------------------------------------------------------------------------------------
 public camera_think(ent)
 {
-	if ( !pev_valid(ent) ) return PLUGIN_CONTINUE
+	if ( !is_valid_ent(ent) ) return PLUGIN_CONTINUE
 	
 	//get phase
 	new phase=pev(ent,pev_iuser2)

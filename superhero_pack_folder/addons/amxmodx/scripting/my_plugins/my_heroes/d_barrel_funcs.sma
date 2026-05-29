@@ -174,7 +174,7 @@ public Event_CurWeapon(id)
 	if((CSWID == CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
 	{
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		if(pev_valid(Ent)) 
+		if(pev_valid(Ent)==PDATA_SAFE) 
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
 						get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON)  * D_BARREL_SPEED, XO_WEAPON)
@@ -201,9 +201,9 @@ public fw_CmdStart(id, uc_handle, seed)
 
 	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-	if(!pev_valid(Ent)){
-		return FMRES_IGNORED
-	}
+	
+	ent_check(Ent,FMRES_IGNORED)
+	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
@@ -214,9 +214,9 @@ public fw_CmdStart(id, uc_handle, seed)
 		set_uc(uc_handle, UC_Buttons, CurButton)
 		
 		static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
-		if(!pev_valid(ent)){
-			return FMRES_IGNORED
-		}
+		
+		ent_check(ent,FMRES_IGNORED)
+
 		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
 		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
 		
@@ -497,8 +497,7 @@ public fw_Item_PostFrame(ent)
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
-	if(!pev_valid(ent))
-		return HAM_IGNORED
+	ent_check(ent,HAM_IGNORED)
 		
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{

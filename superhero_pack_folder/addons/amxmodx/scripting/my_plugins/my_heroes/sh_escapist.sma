@@ -113,7 +113,7 @@ public getFastWeaponAndSpeed(i){
 public fw_Touch(ent,id){
 
 
-	if(!is_user_alive(ent) || !sh_get_user_has_hero(ent,gHeroID)  || !pev_valid(ent)||!is_valid_ent( ent ) )
+	if(!is_user_alive(ent) || !sh_get_user_has_hero(ent,gHeroID) )
 		return
 	
 	entity_get_vector( ent, EV_VEC_origin, g_wallorigin[ ent ] );

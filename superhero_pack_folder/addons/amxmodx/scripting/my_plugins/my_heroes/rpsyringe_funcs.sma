@@ -254,7 +254,7 @@ has_rocket[id] = 0
 
 //----------------------------------------------------------------------------------------------
 remove_missile(missile){
-if(!pev_valid(missile)){
+if(!is_valid_ent(missile)){
 	
 	return PLUGIN_CONTINUE
 }

@@ -4,10 +4,10 @@
 #define sh_arifle_funcs
 
 #define ARIFLE_SECRET_CODE 184128
-#define A_RIFLE_DAMAGE 50
-#define A_RIFLE_CLIP 120
-#define A_RIFLE_RESERVE 100
-#define A_RIFLE_SPEED 1.0
+#define A_RIFLE_DAMAGE 78
+#define A_RIFLE_CLIP 67
+#define A_RIFLE_RESERVE 103
+#define A_RIFLE_SPEED 0.75
 #define A_RIFLE_RECOIL 1.5
 
 #define CSW_ARIFLE CSW_M249

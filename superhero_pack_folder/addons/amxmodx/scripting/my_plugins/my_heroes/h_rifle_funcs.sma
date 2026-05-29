@@ -168,7 +168,7 @@ public Event_CurWeapon(id)
 	if((CSWID == CSW_MOSIN && g_Old_Weapon[id] == CSW_MOSIN) && Get_BitVar(g_Had_Mosin, id)) 
 	{
 		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
-		if(!pev_valid(Ent))
+		if(pev_valid(Ent)!=PDATA_SAFE)
 		{
 			g_Old_Weapon[id] = get_user_weapon(id)
 			return

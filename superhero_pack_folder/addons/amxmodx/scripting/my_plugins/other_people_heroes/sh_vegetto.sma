@@ -503,7 +503,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 	if(!is_user_alive(id)){
 		return
 	}
-	if(!is_valid_ent(g_powerID[id]) ||(g_powerID[id] <=0)||(g_powerNum[id]<=0)||(g_powerID[id] > 4)||(g_powerNum[id] > 4)){
+	if(!is_valid_ent(g_powerID[id]) ||(g_powerNum[id]<=0)||(g_powerNum[id] > 4)){
 		return
 	}
 	new dmgRadius = g_maxRadius[id]
