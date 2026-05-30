@@ -7,11 +7,17 @@ check pawn include for interface
 #ifndef __SH_HERO_ARRAY_H__
 #define __SH_HERO_ARRAY_H__
 
+
+typedef uint32_t state_cell_type_t;
+
+
+#define size_of_state_cell_bits (sizeof(state_cell_type_t)*8)
+
 //We currently support 640 properties
 
 #define SH_MAXHEROS 200
 #define SH_MAX_HERO_PROPERTIES 1280
-#define SH_HERO_PROPERTY_BUCKET_SIZE 32
+#define SH_HERO_PROPERTY_BUCKET_SIZE size_of_state_cell_bits
 #define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/SH_HERO_PROPERTY_BUCKET_SIZE)
 
 
@@ -19,12 +25,14 @@ check pawn include for interface
 
 #define SH_MAXSLOTS 32
 #define SH_MAX_CLIENT_STATES 960
-#define SH_CLIENT_STATE_BUCKET_SIZE 32
+#define SH_CLIENT_STATE_BUCKET_SIZE size_of_state_cell_bits
 #define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/SH_CLIENT_STATE_BUCKET_SIZE)
 
-#define Get_BitVar(a,b) (a & (1 << (b & 31)))
-#define Set_BitVar(a,b) (a |= (1 << (b & 31)))
-#define UnSet_BitVar(a,b) (a &= ~(1 << (b & 31)))
+#define Get_BitVar(a,b) (a & (1 << (b & (size_of_state_cell_bits-1))))
+
+#define Set_BitVar(a,b) (a |= (1 << (b & (size_of_state_cell_bits-1))))
+
+#define UnSet_BitVar(a,b) (a &= ~(1 << (b & (size_of_state_cell_bits-1))))
 
 
 #define Assign_BitVar(a,b,c) ((c) ? Set_BitVar(a,b) : UnSet_BitVar(a,b))
@@ -45,18 +53,18 @@ public:
 	void zero_out_hero_ownership(void);
 	void zero_out_player_masks(void);
 	
-	bool get_id_has_hero( const int32_t& id, const int32_t& the_hero_id);  
-	void set_id_has_hero( const int32_t& id, const int32_t& the_hero_id, const bool& the_value_to_set );
+	bool get_id_has_hero( const state_cell_type_t& id, const state_cell_type_t& the_hero_id);  
+	void set_id_has_hero( const state_cell_type_t& id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set );
 	
 	
-	int32_t get_max_hero_props(void);
-	bool get_hero_bit( const int32_t& the_hero_id,  const int32_t& the_flag_id);
-	void assign_hero_bit( const int32_t& the_hero_id, const int32_t& the_flag_id, const bool& the_polarity_to_set );
+	uint32_t get_max_hero_props(void);
+	bool get_hero_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_flag_id);
+	void assign_hero_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_flag_id, const bool& the_polarity_to_set );
 	
 	
-	int32_t get_max_client_states(void);
-	bool get_id_bit( const int32_t& player_id,  const int32_t& the_effect_flag_id);
-	void assign_id_bit( const int32_t& player_id, const int32_t& the_effect_flag_id, const bool& the_polarity_to_set );
+	uint32_t get_max_client_states(void);
+	bool get_id_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_effect_flag_id);
+	void assign_id_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set );
 	
 	
 };
@@ -111,12 +119,12 @@ inline void HeroArrays::zero_out_hero_ownership(void){
 	#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/SH_HERO_PROPERTY_BUCKET_SIZE)
 	
 */
-inline int32_t HeroArrays::get_max_hero_props(void){
+inline uint32_t HeroArrays::get_max_hero_props(void){
 	
 	return SH_MAX_HERO_PROPERTIES;
 }
 
-inline bool HeroArrays::get_hero_bit( const int32_t& the_hero_id,  const int32_t& the_flag_id)
+inline bool HeroArrays::get_hero_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_flag_id)
 {
 	if( (the_hero_id < 0) || (the_hero_id >= SH_MAXHEROS) ||
 			(the_flag_id < 0) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
@@ -128,7 +136,7 @@ inline bool HeroArrays::get_hero_bit( const int32_t& the_hero_id,  const int32_t
 	return Get_BitVar(this->the_hero_flags[the_hero_id][word], bit);
 }
 
-inline void HeroArrays::assign_hero_bit( const int32_t& the_hero_id, const int32_t& the_flag_id, const bool& the_polarity_to_set )
+inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_flag_id, const bool& the_polarity_to_set )
 {
 	if( (the_hero_id < 0) || (the_hero_id >= SH_MAXHEROS) ||
 			(the_flag_id < 0) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
@@ -153,7 +161,7 @@ inline void HeroArrays::assign_hero_bit( const int32_t& the_hero_id, const int32
 
 
 //Hero ownership
-inline bool HeroArrays::get_id_has_hero( const int32_t& id, const int32_t& the_hero_id)
+inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& id, const state_cell_type_t& the_hero_id)
 {
 	if( (the_hero_id < 0) || (the_hero_id >= SH_MAXHEROS)){
 		return false;
@@ -166,7 +174,7 @@ inline bool HeroArrays::get_id_has_hero( const int32_t& id, const int32_t& the_h
 	return Get_BitVar(this->the_memory[the_hero_id], id);
 }
 
-inline void HeroArrays::set_id_has_hero( const int32_t& id, const int32_t& the_hero_id, const bool& the_value_to_set )
+inline void HeroArrays::set_id_has_hero( const state_cell_type_t& id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set )
 {
 	if( (the_hero_id < 0) || (the_hero_id >= SH_MAXHEROS)){
 		return;
@@ -193,12 +201,12 @@ inline void HeroArrays::set_id_has_hero( const int32_t& id, const int32_t& the_h
 
 */
 
-inline int32_t HeroArrays::get_max_client_states(void){
+inline uint32_t HeroArrays::get_max_client_states(void){
 	
 	return SH_MAX_CLIENT_STATES;
 }
 
-inline bool HeroArrays::get_id_bit( const int32_t& the_player_id,  const int32_t& the_effect_flag_id)
+inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  const state_cell_type_t& the_effect_flag_id)
 {
 	
 	if( (the_player_id <= 0) || (the_player_id > SH_MAXSLOTS)||
@@ -212,7 +220,7 @@ inline bool HeroArrays::get_id_bit( const int32_t& the_player_id,  const int32_t
 	return Get_BitVar(this->the_player_masks[the_player_id][word], bit);
 }
 
-inline void HeroArrays::assign_id_bit( const int32_t& the_player_id, const int32_t& the_effect_flag_id, const bool& the_polarity_to_set )
+inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set )
 {
 	
 	if( (the_player_id <= 0) || (the_player_id > SH_MAXSLOTS)||
