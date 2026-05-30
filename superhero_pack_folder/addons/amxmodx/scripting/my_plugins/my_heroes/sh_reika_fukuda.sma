@@ -50,9 +50,11 @@ public plugin_init()
     pcvar_reika_parry_mode_time = create_cvar("reika_parry_mode_time","6.0")
 
 
+
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate 3-fold! Switch between and trigger them with knife deployed", true, "reika_level" )
 
+    sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 

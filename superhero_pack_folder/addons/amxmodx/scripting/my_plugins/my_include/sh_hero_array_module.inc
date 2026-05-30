@@ -22,7 +22,8 @@ enum hero_property_flags_id {
 	SH_EXPLOSION_POWERS,
 	SH_SLEEP_POWERS,
 	SH_CORE_HERO,
-	SH_INVISIBILITY_HERO
+	SH_INVISIBILITY_HERO,
+	SH_HEALING_HERO
 };
 
 enum player_state_flags_id {
@@ -59,7 +60,8 @@ enum hero_property_flags_id {
 	SH_EXPLOSION_POWERS,
 	SH_SLEEP_POWERS,
 	SH_CORE_HERO,
-	SH_INVISIBILITY_HERO
+	SH_INVISIBILITY_HERO,
+	SH_HEALING_HERO
 };
 
 */
@@ -70,13 +72,15 @@ native sh_assign_hero_bit(heroID, hero_property_flags_id:the_flag_id, bool:the_p
 
 //retrieve the bit of a hero bitsum
 
+
 enum hero_property_flags_id {
 	
 	SH_BLEED_POWERS = 0,
 	SH_EXPLOSION_POWERS,
 	SH_SLEEP_POWERS,
 	SH_CORE_HERO,
-	SH_INVISIBILITY_HERO
+	SH_INVISIBILITY_HERO,
+	SH_HEALING_HERO
 };
 
  */

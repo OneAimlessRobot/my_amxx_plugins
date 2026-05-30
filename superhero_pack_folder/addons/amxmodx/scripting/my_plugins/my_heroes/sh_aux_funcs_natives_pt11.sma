@@ -10,25 +10,31 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
-enum property_counter{
+enum property_bounds{
 
 	property_name[128],
-	max_pickable_count,
-	curr_picked_count,
-	tmp_bias
+	max_pickable_count
 
 
 }
+enum property_counter{
 
-new sh_property_gating_array[hero_property_flags_id][property_counter] =  {
-			{"Bloodthirsty",25,0,0},
-			{"Explosive",3,0,0},
-			{"Dream eater",25,0,0},
-			{"Core hero",25,0,0},
-			{"Invisibility",25,0,0}
+	curr_picked_count,
+	tmp_bias
+}
+
+static const sh_property_gating_array[hero_property_flags_id][property_bounds] =  {
+			{"Bloodthirsty",25},
+			{"Explosive",4},
+			{"Dream eater",25},
+			{"Core hero",25},
+			{"Invisibility",25},
+			{"Healing",25}
 			
 
 }
+
+static sh_player_hero_property_tracker[SH_MAXSLOTS+1][hero_property_flags_id][property_counter];
 
 
 public plugin_init(){
@@ -37,14 +43,15 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
 }
-print_table_state(){
+stock print_table_state(id){
 	server_print("The state of the hero property gating table is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 		
-		server_print("The property number %d (which is named %s)^nHas been:^n - picked: %d times out of a maximum of %d^n",
+		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^n",
 																	i,
 																	sh_property_gating_array[i][property_name],
-																	sh_property_gating_array[i][curr_picked_count],
+																	id,
+																	sh_player_hero_property_tracker[id][i][curr_picked_count],
 																	sh_property_gating_array[i][max_pickable_count])
 
 
@@ -62,11 +69,46 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	if((heroID<0)||(heroID> SH_MAXHEROS)){
 		return INIT_FWD_PASS
 	}
+	if(mode!=SH_HERO_ADD){
+		
+		return INIT_FWD_PASS
+	}
+	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
+
+		if(sh_get_hero_bit(heroID,i)){
+			if(sh_player_hero_property_tracker[id][i][curr_picked_count]
+					>=
+				sh_property_gating_array[i][max_pickable_count]){
+			
+
+				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" property have been picked too many times! %d out of %d times...",
+							sh_property_gating_array[i][property_name],
+							sh_player_hero_property_tracker[id][i][curr_picked_count],
+							sh_property_gating_array[i][max_pickable_count])
+			
+				true_return_result =  INIT_FWD_BLOCK
+				break;
+			}
+		}
+	}
+
+	return true_return_result
+}
+public sh_hero_init(id,heroID, sh_init_mode:mode){
+	
+	if(!client_is_within_range(id)){
+
+		return
+	}
+
+	if((heroID<0)||(heroID> SH_MAXHEROS)){
+		return
+	}
 
 
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 
-		sh_property_gating_array[i][tmp_bias] = 0
+		sh_player_hero_property_tracker[id][i][tmp_bias] = 0
 	}
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 
@@ -75,25 +117,16 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 
 				case SH_HERO_ADD:{
 
-					if(sh_property_gating_array[i][curr_picked_count]
-							>=
+					if(sh_player_hero_property_tracker[id][i][curr_picked_count]
+							<
 						sh_property_gating_array[i][max_pickable_count]){
-					
 
-						sh_chat_message(id,-1,"Heroes with ^"%s^" property have been picked too many times! %d out of %d times...",
-									sh_property_gating_array[i][property_name],
-									sh_property_gating_array[i][curr_picked_count],
-									sh_property_gating_array[i][max_pickable_count])
-					
-						true_return_result =  INIT_FWD_BLOCK
-						break;
-					}
-					else{
-						sh_property_gating_array[i][tmp_bias]++
+						sh_player_hero_property_tracker[id][i][tmp_bias]++
 
-						server_print("A hero with ^"%s^" property has been picked! %d out of %d times...",
+						server_print("Player of id %d has picked a hero with ^"%s^" property has been picked! %d out of %d times...",
+									id,
 									sh_property_gating_array[i][property_name],
-									sh_property_gating_array[i][curr_picked_count]+sh_property_gating_array[i][tmp_bias],
+									sh_player_hero_property_tracker[id][i][curr_picked_count]+sh_player_hero_property_tracker[id][i][tmp_bias],
 									sh_property_gating_array[i][max_pickable_count])
 					
 
@@ -101,9 +134,9 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 				}
 				case SH_HERO_DROP:{
 					
-					if(sh_property_gating_array[i][curr_picked_count]>0){
+					if(sh_player_hero_property_tracker[id][i][curr_picked_count]>0){
 
-						sh_property_gating_array[i][tmp_bias]--
+						sh_player_hero_property_tracker[id][i][tmp_bias]--
 					
 					}
 
@@ -117,8 +150,6 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	}
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 
-		sh_property_gating_array[i][curr_picked_count]+=sh_property_gating_array[i][tmp_bias]
+		sh_player_hero_property_tracker[id][i][curr_picked_count]+=sh_player_hero_property_tracker[id][i][tmp_bias]
 	}
-
-	return true_return_result
 }

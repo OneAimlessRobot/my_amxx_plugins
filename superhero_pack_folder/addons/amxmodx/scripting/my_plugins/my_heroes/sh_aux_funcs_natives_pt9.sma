@@ -57,11 +57,11 @@ bool:sh_register_admin_only_hero_primitive(the_hero_id_to_register,
 	sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times] = num_pickable_times
 
 	copy(sh_pickable_hero_struct_arr[the_hero_id_to_register][unable_to_pick_string], STRING_SIZE-1,unable_to_pick_msg)
-
+	/*
 	server_print("Hero with id %d successfully registered as admin only!^nIt is pickable %d times in total^nAnd its admin flag bitsum is: %d^n",
 				the_hero_id_to_register,
 				sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times],
-				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])
+				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])*/
 
 	return true
 }
@@ -83,14 +83,37 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		return INIT_FWD_PASS
 	}
 	if(mode==SH_HERO_ADD){
-		if(!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
+
+		new flags_of_player = get_user_flags(id)
+
+		if(!(flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])||
+					!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
+
+		
 			if(is_user_connected(id)){
-				sh_chat_message(id, heroID,"%s: the hero has already been picked too many times! The limit of people using this hero is %d!",
-						sh_pickable_hero_struct_arr[heroID][unable_to_pick_string],
-						sh_pickable_hero_struct_arr[heroID][max_pickable_times])
+				sh_chat_message(id, heroID,"%s",sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
 			}
 			return INIT_FWD_BLOCK
 		}
+
+	}
+
+	return INIT_FWD_PASS
+
+}
+
+public sh_hero_init(id,heroID, sh_init_mode:mode){
+
+	if(!client_is_within_range(id)) return
+
+	if((heroID<0)||(heroID>=SH_MAXHEROS)){
+		return
+	}
+	if(!sh_pickable_hero_struct_arr[heroID][admin_only]){
+
+		return
+	}
+	if(mode==SH_HERO_ADD){
 		new flags_of_player = get_user_flags(id)
 
 		if((flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])){
@@ -100,21 +123,10 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 				sh_chat_message(id, heroID,"Have fun with your admin only hero... You nepo parasite")
 			}
 			sh_pickable_hero_struct_arr[heroID][times_pickable_left]--
-
-			return INIT_FWD_PASS
-		}
-		else{
-
-		
-			if(is_user_connected(id)){
-				sh_chat_message(id, heroID,"%s: I am afraid to inform you that you do not have the required privileges to pick that hero, you scumbag",
-							sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
-			}
-			return INIT_FWD_BLOCK
 		}
 
 	}
-	else if(sh_get_user_has_hero(id,heroID)){
+	else{
 
 		
 		if(is_user_connected(id)){
@@ -123,8 +135,6 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		sh_pickable_hero_struct_arr[heroID][times_pickable_left]++
 
 	}
-
-	return INIT_FWD_PASS
 
 }
 

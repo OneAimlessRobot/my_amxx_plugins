@@ -86,7 +86,9 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level",true )
 	
 
-	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,0,
+	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
+
+	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,13,
 				"No access was granted")
 
 
