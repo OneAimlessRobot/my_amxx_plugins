@@ -196,6 +196,10 @@ public plugin_init()
 
 	sh_init_hero_array()
 
+	server_print("We currently support: %d client states in total!^n",sh_max_client_states())
+
+	server_print("We currently support: %d hero properties in total!^n",sh_max_hero_props())
+
 	// Plugin Info
 	my_authored_register_func(SH_CORE_STR, SH_VERSION_STR,"JTP10181/{HOJ}Batman/vittu/AssKicR",true,AUTHOR)
 	create_cvar("SuperHeroMod_Version", SH_VERSION_STR, FCVAR_SERVER|FCVAR_SPONLY)

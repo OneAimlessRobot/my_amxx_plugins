@@ -16,6 +16,7 @@
 no return value
 
 */
+//up to 64 properties can be added in the current version of the library
 enum hero_property_flags_id {
 	
 	SH_BLEED_POWERS = 0,
@@ -23,9 +24,12 @@ enum hero_property_flags_id {
 	SH_SLEEP_POWERS,
 	SH_CORE_HERO,
 	SH_INVISIBILITY_HERO,
-	SH_HEALING_HERO
+	SH_HEALING_HERO,
+	SH_SMALL_HERO,
+	SH_DREAM_EATER_HERO
 };
 
+//up to 64 states can be added in the current version of the library
 enum player_state_flags_id {
 	
 	SH_IS_SLEEPING = 0,
@@ -39,16 +43,6 @@ enum player_state_flags_id {
 
 //hero properties
 
-//Full bitsum get/set
-
-//retrieve full bitsum of hero
-native sh_get_hero_flags(heroID)
-
-//Override full bitsum of hero
-native sh_set_hero_flags(heroID, hero_property_flags_id:the_flag_cell)
-
-
-//single bit ops
 
 /**
 
@@ -149,5 +143,13 @@ native sh_init_id_masks_array()
 
 
 
+
 //Init the lib
 native sh_init_hero_array();
+
+//returns the number of client states that are currently mappable by this version of the library
+native sh_max_client_states()
+
+
+//returns the number of hero properties that are currently mappable by this version of the library
+native sh_max_hero_props()

@@ -90,9 +90,7 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 					!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
 
 		
-			if(is_user_connected(id)){
-				sh_chat_message(id, heroID,"%s",sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
-			}
+			sh_chat_message(id, heroID,"%s",sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
 			return INIT_FWD_BLOCK
 		}
 
@@ -119,9 +117,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 		if((flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])){
 
 
-			if(is_user_connected(id)){
-				sh_chat_message(id, heroID,"Have fun with your admin only hero... You nepo parasite")
-			}
+			sh_chat_message(id, heroID,"Have fun with your admin only hero... You nepo parasite")
 			sh_pickable_hero_struct_arr[heroID][times_pickable_left]--
 		}
 
@@ -129,9 +125,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 	else{
 
 		
-		if(is_user_connected(id)){
-			sh_chat_message(id, heroID,"Wow... it took you some time to learn decency... I am not that disappointed, anymore")
-		}
+		sh_chat_message(id, heroID,"Wow... it took you some time to learn decency... I am not that disappointed, anymore")
 		sh_pickable_hero_struct_arr[heroID][times_pickable_left]++
 
 	}

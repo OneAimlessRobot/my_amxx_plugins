@@ -24,12 +24,14 @@ enum property_counter{
 }
 
 static const sh_property_gating_array[hero_property_flags_id][property_bounds] =  {
-			{"Bloodthirsty",25},
+			{"Blood thirsty",25},
 			{"Explosive",4},
-			{"Dream eater",25},
+			{"Sleep bender",25},
 			{"Core hero",25},
 			{"Invisibility",25},
-			{"Healing",25}
+			{"Healing",25},
+			{"Small",0},
+			{"Dream eater",0}
 			
 
 }
@@ -41,6 +43,7 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
 	
 }
 stock print_table_state(id){
@@ -122,12 +125,6 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 						sh_property_gating_array[i][max_pickable_count]){
 
 						sh_player_hero_property_tracker[id][i][tmp_bias]++
-
-						server_print("Player of id %d has picked a hero with ^"%s^" property has been picked! %d out of %d times...",
-									id,
-									sh_property_gating_array[i][property_name],
-									sh_player_hero_property_tracker[id][i][curr_picked_count]+sh_player_hero_property_tracker[id][i][tmp_bias],
-									sh_property_gating_array[i][max_pickable_count])
 					
 
 					}

@@ -59,6 +59,7 @@ public plugin_init()
 	pcvar_ksun_max_victims = create_cvar("ksun_max_victims", "4" )
  
 	
+	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Spore Launcher", "Launch spores that follow enemies!", true, "ksun_level",true)
 	sh_register_superheromod_model(gHeroID,
@@ -68,6 +69,9 @@ public plugin_init()
 								"ksun: '...'",
 								"ksun: '...'")
 
+
+	sh_assign_hero_bit(gHeroID,SH_DREAM_EATER_HERO, true)
+	
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))

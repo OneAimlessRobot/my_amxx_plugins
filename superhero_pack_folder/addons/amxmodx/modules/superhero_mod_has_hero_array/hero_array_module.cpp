@@ -11,25 +11,6 @@
 HeroArrays the_hero_array;
 //Hero properties
 
-//Total flags get/set
-
-//Override total bitsum of a hero
-static cell AMX_NATIVE_CALL sh_set_hero_flags(AMX *amx,cell *params)
-{
-	the_hero_array.set_hero_flags(params[1], params[2]);
-	return 0;
-}
-
-//retrieve total bitsum of a hero
-static cell AMX_NATIVE_CALL sh_get_hero_flags(AMX *amx,cell *params)
-{
-	return the_hero_array.get_hero_flags(params[1]);
-	return 0;
-}
-
-
-//Single flags get/set
-
 //The second parameter is the bit to retrieve
 static cell AMX_NATIVE_CALL sh_get_hero_bit(AMX *amx,cell *params)
 {
@@ -70,14 +51,6 @@ static cell AMX_NATIVE_CALL sh_assign_id_bit(AMX *amx,cell *params)
 	return 0;
 }
 
-//player flags reset
-
-static cell AMX_NATIVE_CALL sh_init_id_masks_array(AMX *amx,cell *params)
-{	
-	the_hero_array.zero_out_player_masks();
-	return 0;
-}
-
 
 
 
@@ -89,17 +62,39 @@ static cell AMX_NATIVE_CALL sh_init_hero_array(AMX *amx,cell *params)
 	return 0;
 }
 
+//player flags reset
+
+static cell AMX_NATIVE_CALL sh_init_id_masks_array(AMX *amx,cell *params)
+{	
+	the_hero_array.zero_out_player_masks();
+	return 0;
+}
+
+
+//lib limits
+
+static cell AMX_NATIVE_CALL sh_max_hero_props(AMX *amx,cell *params)
+{	
+	return the_hero_array.get_max_hero_props();
+	
+}
+static cell AMX_NATIVE_CALL sh_max_client_states(AMX *amx,cell *params)
+{	
+	return the_hero_array.get_max_client_states();
+	
+}
+
 AMX_NATIVE_INFO sh_array_exports[] = 
 {
-	{ "sh_set_hero_flags", sh_set_hero_flags },
-	{ "sh_get_hero_flags", sh_get_hero_flags },
 	{ "sh_assign_hero_bit", sh_assign_hero_bit },
 	{ "sh_get_hero_bit", sh_get_hero_bit },
+	{ "sh_max_hero_props", sh_max_hero_props },
 	
 	
 	{ "sh_assign_id_bit", sh_assign_id_bit },
 	{ "sh_get_id_bit", sh_get_id_bit },
 	{ "sh_init_id_masks_array", sh_init_id_masks_array },
+	{ "sh_max_client_states", sh_max_client_states },
 	
 	{ "sh_set_user_has_hero", sh_set_user_has_hero },
 	{ "sh_get_user_has_hero", sh_get_user_has_hero },
