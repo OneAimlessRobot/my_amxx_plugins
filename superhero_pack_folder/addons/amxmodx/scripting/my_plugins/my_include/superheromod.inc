@@ -110,10 +110,19 @@ forward sh_extra_health_add_pre(&id,&the_health_to_add)
  * @noreturn
  */
 
-forward sh_hero_init_pre(id, heroID, sh_init_mode:mode);
-
 forward sh_hero_init(id, heroID, sh_init_mode:mode);
 
+/*
+
+Called BEFORE a hero is added or dropped. Returning INIT_FWD_BLOCK will block the hero picking,
+
+But ONLY if mode is equal to SH_HERO ADD
+
+Returning INIT_FWD_BLOCK on mode == SH_HERO_DROP does nothing
+And the original call still happens!
+
+*/
+forward sh_hero_init_pre(id, heroID, sh_init_mode:mode);
 
 /**
  * Called when a +/-power is executed.

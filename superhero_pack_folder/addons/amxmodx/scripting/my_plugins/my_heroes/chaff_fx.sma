@@ -14,7 +14,6 @@
 
 
 new UNCHAFF_TASKID
-new is_chaff_mask=0
 
 public plugin_init(){
 	
@@ -38,17 +37,11 @@ public plugin_natives(){
 	
 	register_native("sh_chaff_user","_sh_chaff_user");
 	register_native("sh_unchaff_user","_sh_unchaff_user");
-	register_native("sh_get_user_is_chaffed","_sh_get_user_is_chaffed");
-}
-public _sh_get_user_is_chaffed(iPlugin,iParams){
-	new id= get_param(1);
-	return Get_BitVar(is_chaff_mask,id)
-
 }
 public _sh_chaff_user(iPlugin,iParams){
 	
 	new user=get_param(1)
-	if(!Get_BitVar(is_chaff_mask,user)){
+	if(!sh_get_id_bit(user, SH_IS_CHAFFED)){
 		chaff_user(user)
 	}
 	
@@ -71,10 +64,10 @@ public unchaff_task(id){
 
 }
 chaff_user(id){
-	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_chaff_mask,id)) return
+	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_CHAFFED)) return
 
 	set_render_with_color_const(id,WHITE,1,50,50,1,_,CHAFF_TIME)
-	Set_BitVar(is_chaff_mask,id)
+	sh_assign_id_bit(id, SH_IS_CHAFFED, true)
 	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_TIME)
 	
 	
@@ -87,9 +80,9 @@ public unchaff_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
-	if(Get_BitVar(is_chaff_mask,id)){
+	if(sh_get_id_bit(id, SH_IS_CHAFFED)){
 		sh_set_rendering(id)
-		UnSet_BitVar(is_chaff_mask,id)
+		sh_assign_id_bit(id, SH_IS_CHAFFED, false)
 	}
 	
 	

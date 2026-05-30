@@ -144,6 +144,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 //Forwards
 new fwdReturn
 new fwd_HeroInit, fwd_HeroInit_Pre, fwd_HeroKey, fwd_Spawn, fwd_Death
+
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShDamagePost
@@ -257,6 +258,8 @@ public plugin_init()
 	fwd_NewRound = CreateMultiForward("sh_round_new", ET_IGNORE)
 	fwd_RoundStart = CreateMultiForward("sh_round_start", ET_IGNORE)
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
+	
+	
 	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
 	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
@@ -1877,7 +1880,12 @@ public selectedSuperPower(id, key)
 	for ( new x = powers + 1; x <= gNumLevels && x <= SH_MAXLEVELS; x++ ) {
 		gPlayerPowers[id][x] = -1
 	}
+	new fwd_result=INIT_FWD_PASS
+	if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_DROP)){
 
+		server_print("Hero init pre forward execution error!!!")
+		return
+	}
 	// Disable this power
 	initHero(id, heroIndex, SH_HERO_DROP)
 
@@ -1928,6 +1936,12 @@ clearAllPowers(id, bool:dispStatusText)
 
 		// Only send drop on heroes user has
 		if ( heroIndex != -1 && userConnected ) {
+			new fwd_result=INIT_FWD_PASS
+			if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_DROP)){
+
+				server_print("Hero init pre forward execution error!!!")
+				return
+			}
 			initHero(id, heroIndex, SH_HERO_DROP)  // Disable this power
 		}
 	}

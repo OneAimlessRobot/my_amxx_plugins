@@ -3,7 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt10: superhero pickability checks"
+#define PLUGIN "Superhero aux natives pt10: superhero pickability checks: incompatibility"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
@@ -150,7 +150,7 @@ public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		return INIT_FWD_PASS
 	}
 
-	if(!is_user_connected(id)){
+	if(!client_is_within_range(id)){
 
 		return INIT_FWD_PASS
 	}

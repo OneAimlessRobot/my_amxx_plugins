@@ -16,7 +16,6 @@
 
 native sh_sleep_user(id,attacker,gHeroID)
 native sh_unsleep_user(id)
-native bool:sh_get_user_is_asleep(id)
 
 
 

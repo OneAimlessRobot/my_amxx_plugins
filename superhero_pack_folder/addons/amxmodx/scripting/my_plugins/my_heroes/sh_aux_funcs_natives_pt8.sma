@@ -13,13 +13,14 @@
 new gMessageId_curweapon,
 	gMessageId_Armor
 
+
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	register_forward(FM_CmdStart, "CmdStart")
-
+	
 	gMessageId_curweapon = get_user_msgid("CurWeapon")
 	gMessageId_Armor = get_user_msgid("Battery")
 	

@@ -121,7 +121,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		return
 	}
 	if(is_user_alive(array[TRACK_TASK_ATTACKER])){
-		if(!sh_get_user_is_chaffed(id)){
+		if(!sh_get_id_bit(id, SH_IS_CHAFFED)){
 			static client_name[128]
 			static origin[3], eorigin[3],att_origin[3]
 			static Float:Pos[3],Float:vEnd[3]

@@ -23,7 +23,6 @@
 
 native sh_molly_user(id,attacker,gHeroID)
 native sh_unmolly_user(id)
-native bool:sh_is_user_burning(id)
 
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

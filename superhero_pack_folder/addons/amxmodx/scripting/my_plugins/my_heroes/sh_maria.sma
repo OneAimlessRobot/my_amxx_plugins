@@ -74,6 +74,9 @@ public plugin_init()
 	pcvar_points_heal_coeff = create_cvar("maria_points_heal_coeff", "4")
 	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level",true )
 	
+
+	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
+	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
 

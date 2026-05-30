@@ -7,7 +7,6 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
-#include "chaff_fx_inc/chaff_fx.inc"
 #include "jetplane_inc/sh_jetplane_radio_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -160,7 +159,7 @@ launch_scan(id){
 			
 			continue
 		}
-		if(!sh_get_user_is_chaffed(pid)){
+		if(!sh_get_id_bit(pid, SH_IS_CHAFFED)){
 			
 			track_user(pid,id,0,0.0,0.5,10.0,PINK)
 		

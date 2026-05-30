@@ -6,7 +6,6 @@
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
 #include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero fx natives pt1"
@@ -997,7 +996,7 @@ public _set_render_with_color_const(iPlugins,iParams){
 		is_sleep=get_param(7),
 		Float:the_glow_timer=get_param_f(8)
 
-	if(is_sleep||(glow_user_hud&&!sh_get_user_is_asleep(id))){
+	if(is_sleep||(glow_user_hud&&!sh_get_id_bit(id,SH_IS_SLEEPING))){
 			sh_screen_fade(id, 0.1, 0.9,
 					LineColors[the_color_const][0],
 					LineColors[the_color_const][1],

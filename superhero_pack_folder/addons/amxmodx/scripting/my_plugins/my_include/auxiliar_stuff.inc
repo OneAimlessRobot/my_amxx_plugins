@@ -318,4 +318,6 @@ stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 
 #define PDATA_SAFE  2
 
+#define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
+
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2

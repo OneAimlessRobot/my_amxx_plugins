@@ -15,7 +15,6 @@
 
 new gHeroID = -1
 new UNCO2_TASKID
-new is_cO2_mask=0
 
 public plugin_init(){
 	
@@ -43,17 +42,11 @@ public plugin_natives(){
 	
 	register_native("sh_co2_user","_sh_co2_user");
 	register_native("sh_unco2_user","_sh_unco2_user");
-	register_native("sh_get_user_is_co2","_sh_get_user_is_co2");
-}
-public _sh_get_user_is_co2(iPlugin,iParams){
-	new id= get_param(1);
-	return Get_BitVar(is_cO2_mask,id)
-
 }
 public _sh_co2_user(iPlugin,iParams){
 	
 	new user=get_param(1)
-	if(!Get_BitVar(is_cO2_mask,user)){
+	if(!sh_get_id_bit(user,SH_IS_CO2)){
 		co2_user(user)
 	}
 	
@@ -76,10 +69,10 @@ public unco2_task(id){
 
 }
 co2_user(id){
-	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_cO2_mask,id)) return
+	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_CO2)) return
 	sh_unmolly_user(id)
 	
-	Set_BitVar(is_cO2_mask,id)
+	sh_assign_id_bit(id,SH_IS_CO2,true)
 
 	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 
@@ -101,10 +94,10 @@ public unco2_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
-	if(Get_BitVar(is_cO2_mask,id)){
+	if(sh_get_id_bit(id,SH_IS_CO2)){
 		sh_set_rendering(id)
-		UnSet_BitVar(is_cO2_mask,id)
 		set_damage_icon(id,0,DMG_ICON_GAS)
+		sh_assign_id_bit(id,SH_IS_CO2,false)
 	}
 	
 	

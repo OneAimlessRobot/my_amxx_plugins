@@ -5,7 +5,6 @@
 
 #define CHAFF_TIME 30.0
 
-native sh_get_user_is_chaffed(id)
 native sh_chaff_user(id)
 native sh_unchaff_user(id)
 

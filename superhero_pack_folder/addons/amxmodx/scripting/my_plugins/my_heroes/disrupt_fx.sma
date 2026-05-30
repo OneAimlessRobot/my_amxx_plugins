@@ -14,7 +14,6 @@
 
 new DISRUPT_TASKID
 new DISORIENT_TASKID
-new gIsDisruptedMask = 0
 public plugin_init(){
 	
 	
@@ -37,7 +36,6 @@ public plugin_natives(){
 	
 	register_native("sh_disrupt_user","_sh_disrupt_user");
 	register_native("sh_undisrupt_user","_sh_undisrupt_user");
-	register_native("sh_get_user_is_disrupted","_sh_get_user_is_disrupted");
 }
 public disorient_user(array[1],id)
 {
@@ -61,14 +59,10 @@ public disorient_user(array[1],id)
 	}
 	return PLUGIN_CONTINUE
 }
-public _sh_get_user_is_disrupted(iPlugin,iParams){
-	new id= get_param(1);
-	return Get_BitVar(gIsDisruptedMask,id)
-}
 public _sh_disrupt_user(iPlugin,iParams){
 	
 	new user=get_param(1)
-	if(!Get_BitVar(gIsDisruptedMask,user)){
+	if(!sh_get_id_bit(user,SH_IS_DISRUPT)){
 		new attacker=get_param(2)
 		new gHeroID=get_param(3)
 		new attacker_name[128]
@@ -125,7 +119,7 @@ public disrupt_task(array[1],id){
 	sh_set_rendering(id, disrupt_color[0], disrupt_color[1], disrupt_color[2], disrupt_color[3],kRenderFxGlowShell, kRenderTransColor)
 	remove_glow_user(id,DISRUPT_PERIOD)
 	
-	if(Get_BitVar(gIsDisruptedMask,id)&&(array[0]<DISRUPT_TIMES)){
+	if(sh_get_id_bit(id,SH_IS_DISRUPT)&&(array[0]<DISRUPT_TIMES)){
 		array[0]++
 		set_task(DISRUPT_PERIOD,"disrupt_task",id+DISRUPT_TASKID,array, sizeof(array))
 	}
@@ -141,7 +135,7 @@ disrupt_user(id){
 	array[0] = 0
 	sh_screen_shake(id,10.0,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),10.0)
 	sh_set_stun(id,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),default_stun_speed)
-	Set_BitVar(gIsDisruptedMask,id)
+	sh_assign_id_bit(id,SH_IS_DISRUPT, true)
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
 	disrupt_task(array,id+DISRUPT_TASKID)
 	disorient_user(array,id+DISORIENT_TASKID)
@@ -153,9 +147,9 @@ public undisrupt_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
-	if(Get_BitVar(gIsDisruptedMask,id)){
+	if(sh_get_id_bit(id,SH_IS_DISRUPT)){
 		sh_set_rendering(id)
-		UnSet_BitVar(gIsDisruptedMask,id)
+		sh_assign_id_bit(id,SH_IS_DISRUPT, false)
 		set_damage_icon(id,0,DMG_ICON_SHOCK)
 		entity_set_int( id, EV_INT_fixangle, 0 );
 	}

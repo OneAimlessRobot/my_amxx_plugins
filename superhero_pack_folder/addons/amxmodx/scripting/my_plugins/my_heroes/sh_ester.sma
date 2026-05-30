@@ -107,6 +107,7 @@ public plugin_init()
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,PAN_V_MODEL,PAN_P_MODEL)
 	
+	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)

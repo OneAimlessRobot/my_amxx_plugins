@@ -22,7 +22,6 @@
 
 stock const disrupt_color[4]={255, 255, 255,200}
 
-native sh_get_user_is_disrupted(id)
 native sh_disrupt_user(id,attacker,gHeroID)
 native sh_undisrupt_user(id)
 

@@ -9,7 +9,6 @@
 
 native sh_freeze_user(id,Float:time,Float:speed)
 native sh_unfreeze_user(id)
-native sh_is_user_frozen(id)
 
 
 

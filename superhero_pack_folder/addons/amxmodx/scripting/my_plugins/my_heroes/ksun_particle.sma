@@ -12,7 +12,6 @@
 #include "ksun_inc/ksun_spore_launcher.inc"
 #include "ksun_inc/ksun_scanner.inc"
 #include "ksun_inc/ksun_ultimate.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 
 new gHeroID = -1
@@ -584,9 +583,11 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	new tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
-	new damage_to_do=sh_get_user_is_asleep(pTouched)?get_user_health(pTouched)*10:
+
+	new bool:remove_godmode=sh_get_id_bit(pTouched, SH_IS_SLEEPING)
+
+	new damage_to_do=remove_godmode?get_user_health(pTouched)*10:
 						floatround(cvar_val(float, pcvar_ksun_spore_damage))
-	new bool:remove_godmode=bool:sh_get_user_is_asleep(pTouched)
 	
 	if(get_user_godmode(pTouched)&&remove_godmode){
 		

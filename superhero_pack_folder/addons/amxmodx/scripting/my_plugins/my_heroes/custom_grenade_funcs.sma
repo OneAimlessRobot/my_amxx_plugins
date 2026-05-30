@@ -316,6 +316,42 @@ public event_curr_grenade(id){
 	curr_user_grenade[id]=sh_grenade_type:0
 	return PLUGIN_CONTINUE
 }
+
+bool:switch_grenade_logic(id,wpn_id){
+	
+	static bool:changed_greande;
+	
+	changed_greande=false;
+
+	static sh_grenade_type:curr;
+			
+	curr=((curr_user_grenade[id]+sh_grenade_type:1)%sh_grenade_type)
+	
+	for(new sh_grenade_type:it=enum_zero; it<sh_grenade_type; it++){
+		
+		
+		if(wpn_id!=sh_grenade_structs_arr[curr][sh_grenade_weapon_classid]||
+					(curr_grenade_ammo[id][curr]<=0)){
+			
+			curr= ((curr+sh_grenade_type:1)%sh_grenade_type)
+			continue
+		}
+		changed_greande=true
+		prev_user_grenade[id]=curr_user_grenade[id]
+		curr_user_grenade[id]=curr
+
+		switch_grenade_animation_on_player(id,
+						cs_grenade_deploy)
+		if(prev_user_grenade[id]>GREN_NONE){
+			grenade_switch_notification(id)
+		}
+		progressBar(id,0)
+		curr_charge[id]=0.0;
+		UnSet_BitVar(sh_grenade_armed_mask,id);
+		break;
+	}
+	return changed_greande;
+}
 //execute inside cmd start only!!
 
 bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
@@ -331,33 +367,7 @@ bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
 		if(!Get_BitVar(grenade_change_button_pressed_mask,id)){
 			Set_BitVar(grenade_change_button_pressed_mask,id)
 
-			static sh_grenade_type:curr;
-			
-			curr=((curr_user_grenade[id]+sh_grenade_type:1)%sh_grenade_type)
-			
-			for(new sh_grenade_type:it=enum_zero; it<sh_grenade_type; it++){
-				
-				
-				if(wpn_id!=sh_grenade_structs_arr[curr][sh_grenade_weapon_classid]||
-							(curr_grenade_ammo[id][curr]<=0)){
-					
-					curr= ((curr+sh_grenade_type:1)%sh_grenade_type)
-					continue
-				}
-				changed_greande=true
-				prev_user_grenade[id]=curr_user_grenade[id]
-				curr_user_grenade[id]=curr
-
-				switch_grenade_animation_on_player(id,
-								cs_grenade_deploy)
-				if(prev_user_grenade[id]>GREN_NONE){
-					grenade_switch_notification(id)
-				}
-				progressBar(id,0)
-				curr_charge[id]=0.0;
-				UnSet_BitVar(sh_grenade_armed_mask,id);
-				break;
-			}
+			changed_greande = switch_grenade_logic(id, wpn_id)
 
 		}
 	}
@@ -587,22 +597,27 @@ velocity_by_aim(id, floatround(
 				Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+
+new the_wpn_gren_id = sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid]
+
+
 curr_grenade_ammo[id][the_type]=max(0,curr_grenade_ammo[id][the_type]-1)
 new prev_vanilla_ammo=
 	cs_get_user_bpammo(id,
-	sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid])
+	the_wpn_gren_id)
 
-cs_set_user_bpammo(id,sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid],
+
+cs_set_user_bpammo(id,the_wpn_gren_id,
 	prev_vanilla_ammo-1)
 
-if(!curr_grenade_ammo[id][the_type])
+if(curr_grenade_ammo[id][the_type]<=0)
 {
 	
 	if(!is_user_bot(id)){
 		client_print(id, print_center, "You are out of %s grenades.",
 								sh_grenade_structs_arr[the_type][sh_grenade_name])
 	}
-	engclient_cmd(id, "weapon_knife")
+	switch_grenade_logic(id, the_wpn_gren_id)
 }
 else{
 	if(!is_user_bot(id)){
@@ -610,9 +625,11 @@ else{
 								get_custom_grenade_ammo(id,the_type),
 								sh_grenade_structs_arr[the_type][sh_grenade_name])
 	}
-	engclient_cmd(id, "weapon_knife")
 
 }
+
+
+engclient_cmd(id, weapon_names_stock_arr[the_wpn_gren_id])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 //set curr grenade touched wall -> 0 as a start

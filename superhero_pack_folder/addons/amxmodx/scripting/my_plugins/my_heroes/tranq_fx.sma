@@ -16,7 +16,6 @@
 stock SLEEP_TASKID,
 		FULLY_WAKE_UP_TASKID
 
-new gIsAsleepMask
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
 public plugin_init(){
 
@@ -39,7 +38,7 @@ public Ham_PlayerPreThink(id)
 		return FMRES_IGNORED
 	}
 
-	if(!Get_BitVar(gIsAsleepMask,id)){
+	if(!sh_get_id_bit(id,SH_IS_SLEEPING)){
 		return FMRES_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
@@ -56,7 +55,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		
 		return FMRES_IGNORED
 	}
-	if(!Get_BitVar(gIsAsleepMask,player)){
+	if(!sh_get_id_bit(player,SH_IS_SLEEPING)){
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem, XTRA_OFS_PLAYER)
@@ -81,7 +80,7 @@ public CmdStart(id, uc_handle)
 	}
 	if (!is_user_alive(id)) return FMRES_IGNORED;
 
-	if ( Get_BitVar(gIsAsleepMask,id)) {
+	if ( sh_get_id_bit(id,SH_IS_SLEEPING)) {
 		set_uc(uc_handle, UC_Buttons, 0);
 		return FMRES_SUPERCEDE
 	}
@@ -92,7 +91,6 @@ public plugin_natives(){
 
 
 	register_native("sh_sleep_user","_sh_sleep_user");
-	register_native("sh_get_user_is_asleep","_sh_get_user_is_asleep");
 	register_native("sh_unsleep_user","_sh_unsleep_user");
 }
 stock sleep_user_switch_weapon(id){
@@ -106,17 +104,10 @@ stock sleep_user_switch_weapon(id){
 	}
 	
 }
-public _sh_get_user_is_asleep(iPlugin,iParams){
-
-	new id=get_param(1)
-	return Get_BitVar(gIsAsleepMask,id)
-
-
-}
 public _sh_sleep_user(iPlugin,iParams){
 
 	new user=get_param(1)
-	if(!Get_BitVar(gIsAsleepMask,user)){
+	if(!sh_get_id_bit(user,SH_IS_SLEEPING)){
 		new attacker=get_param(2)
 		new gHeroID=get_param(3)
 		new attacker_name[128]
@@ -177,7 +168,7 @@ public sleep_task(array[1],id){
 	set_render_with_color_const(id,BLACK,0,_,255,1,1)
 	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
 	remove_glow_user(id,SLEEP_PERIOD)
-	if(Get_BitVar(gIsAsleepMask,id)&&(array[0]<(SLEEP_TIMES))){
+	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]<(SLEEP_TIMES))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
@@ -192,7 +183,7 @@ sleep_user(id,attacker){
 	new array[1]
 	array[0] = 0
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
-	Set_BitVar(gIsAsleepMask,id)
+	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
 	sleep_user_switch_weapon(id)
 	set_damage_icon(id,2,DMG_ICON_CHEM,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
@@ -213,10 +204,10 @@ public fully_wake_up_task(id){
 unsleep_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	
-	if(Get_BitVar(gIsAsleepMask,id)){
+	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sh_set_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_CHEM)
-		UnSet_BitVar(gIsAsleepMask,id)
+		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
 	}
 }
 
@@ -224,7 +215,7 @@ public weaponChange(id)
 {
 	if ( !sh_is_active()) return
 
-	if(Get_BitVar(gIsAsleepMask,id)){
+	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sleep_user_switch_weapon(id)
 	}
 }

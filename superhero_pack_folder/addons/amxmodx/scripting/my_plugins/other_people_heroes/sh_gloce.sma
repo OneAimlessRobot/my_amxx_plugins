@@ -114,12 +114,12 @@ public weapon_event(id)
 	{
 		new weaponid = read_data(2)
 
-		if(sh_is_user_frozen(id) && weaponid != CSW_GLOCK18)
+		if(sh_get_id_bit(id, SH_IS_FROZEN) && weaponid != CSW_GLOCK18)
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 		}
 
-		else if(sh_is_user_frozen(id) && weaponid == CSW_GLOCK18 && sh_get_user_has_hero(id,gHeroID))
+		else if(sh_get_id_bit(id, SH_IS_FROZEN)&& weaponid == CSW_GLOCK18 && sh_get_user_has_hero(id,gHeroID))
 		{
 			set_pev(id, pev_maxspeed, 130.0)
 

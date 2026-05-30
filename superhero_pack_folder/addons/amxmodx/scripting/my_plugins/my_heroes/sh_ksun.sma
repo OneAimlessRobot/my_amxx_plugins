@@ -202,7 +202,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 
 	if(sh_get_user_has_hero(attacker,gHeroID) ){
 		if(weapon==KSUN_WEAPON_ID){
-			if(sh_get_user_is_asleep(id)){
+			if(sh_get_id_bit(id, SH_IS_SLEEPING)){
 			
 				static tger_name[128], vic_name[128]
 				get_user_name(attacker,vic_name,127)

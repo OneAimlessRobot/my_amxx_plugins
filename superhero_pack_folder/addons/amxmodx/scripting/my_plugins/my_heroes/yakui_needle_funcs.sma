@@ -44,7 +44,7 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
 		entity_set_string(id, EV_SZ_viewmodel, NEEDLE_V_MODEL)
-		if(!sh_get_user_is_asleep(id)){
+		if(!sh_get_id_bit(id, SH_IS_SLEEPING)){
 			gatling_needle_cycle_fx(id)
 		}
 	}

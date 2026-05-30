@@ -13,7 +13,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new is_frozen_mask = 0
 new Float:g_fMaxSpeed[SH_MAXSLOTS+1]
 new FREEZE_TASK_ID
 
@@ -34,7 +33,7 @@ public plugin_cfg(){
 public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		if(Get_BitVar(is_frozen_mask,id)){
+		if(sh_get_id_bit(id,SH_IS_FROZEN)){
 			unfreeze_user(id)
 		}
 		g_fMaxSpeed[id] = get_user_maxspeed(id)
@@ -56,7 +55,7 @@ public frozen_damage(id)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 	if ( !is_user_connected(attacker)) return
 	
-	if(Get_BitVar(is_frozen_mask,id)){
+	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
 		if (floatround(extraDamage)>0){
@@ -73,7 +72,7 @@ public frozen_damage(id)
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
-	if(Get_BitVar(is_frozen_mask,victim)){
+	if(sh_get_id_bit(victim, SH_IS_FROZEN)){
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER + damage
 		if (floatround(extraDamage)>0){
 			new_dmg_type=SH_NEW_DMG_BLUNT_TRAUMA
@@ -90,7 +89,6 @@ public plugin_natives(){
 
 	register_native("sh_freeze_user","_sh_freeze_user")
 	register_native("sh_unfreeze_user","_sh_unfreeze_user")
-	register_native("sh_is_user_frozen","_sh_is_user_frozen")
 }
 
 
@@ -99,10 +97,10 @@ public _sh_freeze_user(iPlugins,iParams){
 
 	new id=get_param(1)
 
-	if(!sh_is_active()||!is_user_alive(id)||Get_BitVar(is_frozen_mask,id)) return
+	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_FROZEN)) return
 
 
-	if(sh_get_user_is_asleep(id)){
+	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sh_unsleep_user(id)
 	}
 	if(sh_get_user_is_bleeding(id)){
@@ -148,26 +146,18 @@ public _sh_freeze_user(iPlugins,iParams){
 
 	make_shockwave(origin, 225.0, LineColors[FROZEN_BLUE], 0,2,20,0,255)
 
-	Set_BitVar(is_frozen_mask,id)
-
+	sh_assign_id_bit(id,SH_IS_FROZEN, true)
 	set_task(the_time, "remove_frozen", id+FREEZE_TASK_ID)
-}
-public _sh_is_user_frozen(iPlugin,iParams){
-
-	new id=get_param(1)
-
-	return Get_BitVar(is_frozen_mask,id)
-
 }
 unfreeze_user(id){
 
 	if(!is_user_alive(id)){
 		return
 	}
-	if(Get_BitVar(is_frozen_mask,id))
+	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-		UnSet_BitVar(is_frozen_mask,id)
+		sh_assign_id_bit(id,SH_IS_FROZEN, false)
 	}
 }
 public _sh_unfreeze_user(iPlugin,iParams){
@@ -180,11 +170,10 @@ public remove_frozen(id)
 {	
 	id-=FREEZE_TASK_ID
 
-	if(Get_BitVar(is_frozen_mask,id))
+	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
 
-		UnSet_BitVar(is_frozen_mask,id)
 		sh_set_rendering(id,0, 0, 0, 0,kRenderFxGlowShell, kRenderNormal)
 
 		message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
@@ -197,7 +186,7 @@ public remove_frozen(id)
 		write_byte(100)
 		message_end()
 
-		UnSet_BitVar(is_frozen_mask,id)
+		sh_assign_id_bit(id,SH_IS_FROZEN, false)
 	}
 }
 

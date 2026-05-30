@@ -239,7 +239,7 @@ public bool:player_touch_logic(Glob, Other_Entity){
 				SH_NEW_DMG_FREEZE,
 				generic_dmg_source_freezing)
 
-		if(!sh_is_user_frozen(Other_Entity)){
+		if(!sh_get_id_bit(Other_Entity, SH_IS_FROZEN)){
 			sh_freeze_user(Other_Entity,7.0,130.0)
 		}
 	}
@@ -274,7 +274,7 @@ public FwdTouch( Glob, World ) {
 
 		if( sh_clients_are_same_team(pid,owner_edict)) continue
 		
-		if(!sh_is_user_frozen(pid)){
+		if(!sh_get_id_bit(pid, SH_IS_FROZEN)){
 			sh_freeze_user(pid,7.0,130.0)
 		}
 

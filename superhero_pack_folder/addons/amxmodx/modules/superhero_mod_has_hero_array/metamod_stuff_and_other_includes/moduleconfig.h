@@ -4,7 +4,7 @@
 #define __MODULECONFIG_H__
 
 // Module info
-#define MODULE_NAME "hero_array_module"
+#define MODULE_NAME "hero_arrays_module"
 #define MODULE_VERSION "1.0"
 #define MODULE_AUTHOR "ThrashBrat"
 #define MODULE_URL "lenasattic.ddns.net:11020/webcrookedstuff"

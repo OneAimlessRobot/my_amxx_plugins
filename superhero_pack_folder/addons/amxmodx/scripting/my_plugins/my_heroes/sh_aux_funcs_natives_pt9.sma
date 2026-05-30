@@ -6,11 +6,9 @@
 #define PLUGIN "Superhero aux natives pt9: Admin only hero registratrion!"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-#include "jetplane_inc/sh_yandere_get_set.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt9.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 
-#define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
 
 
 enum sh_hero_priviledges_enum_struct{
