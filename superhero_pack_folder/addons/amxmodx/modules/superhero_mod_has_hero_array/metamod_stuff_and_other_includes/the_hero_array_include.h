@@ -115,7 +115,7 @@ inline void HeroArrays::zero_out_hero_ownership(void){
 	
 	#define SH_MAXHEROS 200
 	#define SH_MAX_HERO_PROPERTIES 1280
-	#define SH_HERO_PROPERTY_BUCKET_SIZE 32
+	#define SH_HERO_PROPERTY_BUCKET_SIZE size_of_state_cell_bits
 	#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/SH_HERO_PROPERTY_BUCKET_SIZE)
 	
 */
@@ -131,7 +131,7 @@ inline bool HeroArrays::get_hero_bit( const state_cell_type_t& the_hero_id,  con
 		return false;
 	}
 	int word = (the_flag_id / SH_HERO_PROPERTY_BUCKET_SIZE),
-		bit = (the_flag_id % SH_HERO_PROPERTY_BUCKET_SIZE);
+		bit = (the_flag_id & (SH_HERO_PROPERTY_BUCKET_SIZE-1));
 	
 	return Get_BitVar(this->the_hero_flags[the_hero_id][word], bit);
 }
@@ -152,7 +152,7 @@ inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, c
 				the_hero_id);*/
 	
 	int word = (the_flag_id / SH_HERO_PROPERTY_BUCKET_SIZE),
-		bit = (the_flag_id % SH_HERO_PROPERTY_BUCKET_SIZE);
+		bit = (the_flag_id & (SH_HERO_PROPERTY_BUCKET_SIZE-1));
 	
 	Assign_BitVar(this->the_hero_flags[the_hero_id][word], bit, the_polarity_to_set);
 }
@@ -195,8 +195,8 @@ inline void HeroArrays::set_id_has_hero( const state_cell_type_t& id, const stat
 	and 32 players in total!
 	
 	#define SH_MAXSLOTS 32
-	#define SH_MAX_CLIENT_STATES 640
-	#define SH_CLIENT_STATE_BUCKET_SIZE 32
+	#define SH_MAX_CLIENT_STATES 960
+	#define SH_CLIENT_STATE_BUCKET_SIZE size_of_state_cell_bits
 	#define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/SH_CLIENT_STATE_BUCKET_SIZE)
 
 */
@@ -215,7 +215,7 @@ inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  con
 	}
 	
 	int word = (the_effect_flag_id / SH_CLIENT_STATE_BUCKET_SIZE),
-		bit = (the_effect_flag_id % SH_CLIENT_STATE_BUCKET_SIZE);
+		bit = (the_effect_flag_id & (SH_CLIENT_STATE_BUCKET_SIZE-1));
 	
 	return Get_BitVar(this->the_player_masks[the_player_id][word], bit);
 }
@@ -229,7 +229,7 @@ inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, c
 	}
 	
 	int word = (the_effect_flag_id / SH_CLIENT_STATE_BUCKET_SIZE),
-		bit = (the_effect_flag_id % SH_CLIENT_STATE_BUCKET_SIZE);
+		bit = (the_effect_flag_id & (SH_CLIENT_STATE_BUCKET_SIZE-1));
 	
 	Assign_BitVar(this->the_player_masks[the_player_id][word], bit, the_polarity_to_set);
 	
