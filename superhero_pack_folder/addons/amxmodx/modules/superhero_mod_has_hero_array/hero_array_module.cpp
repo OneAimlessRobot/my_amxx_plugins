@@ -8,19 +8,35 @@
 #include "./metamod_stuff_and_other_includes/the_hero_array_include.h"
 #include "./metamod_stuff_and_other_includes/amxxmodule.h"
 
+/*
+ * 
+	this stuff rids me of annoying ass warnings in the compiler
+	return_type function(AMX* amx, cell* params)
+	{
+		(void)amx;
+		(void)params;
+		....
+		
+	}
+	to suppress unused parameter warnings
+
+*/
+
 HeroArrays the_hero_array;
 //Hero properties
 
 //The second parameter is the bit to retrieve
 static cell AMX_NATIVE_CALL sh_get_hero_bit(AMX *amx,cell *params)
-{
-	return the_hero_array.get_hero_bit(params[1], params[2]);
+{	
+	(void)amx;
+	return the_hero_array.get_hero_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 //the third parameter assigns the polarity of the bit
 static cell AMX_NATIVE_CALL sh_assign_hero_bit(AMX *amx,cell *params)
 {
-	the_hero_array.assign_hero_bit(params[1], params[2], params[3]);
+	(void)amx;
+	the_hero_array.assign_hero_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2], (state_cell_type_t)params[3]);
 	return 0;
 }
 
@@ -28,12 +44,14 @@ static cell AMX_NATIVE_CALL sh_assign_hero_bit(AMX *amx,cell *params)
 //hero ownership
 static cell AMX_NATIVE_CALL sh_get_user_has_hero(AMX *amx,cell *params)
 {
-	return the_hero_array.get_id_has_hero(params[1], params[2]);
+	(void)amx;
+	return the_hero_array.get_id_has_hero((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 static cell AMX_NATIVE_CALL sh_set_user_has_hero(AMX *amx,cell *params)
 {
-	the_hero_array.set_id_has_hero(params[1], params[2], params[3]);
+	(void)amx;
+	the_hero_array.set_id_has_hero((state_cell_type_t)params[1],(state_cell_type_t) params[2], (state_cell_type_t)params[3]);
 	return 0;
 }
 
@@ -41,13 +59,15 @@ static cell AMX_NATIVE_CALL sh_set_user_has_hero(AMX *amx,cell *params)
 //The second parameter is the bit to retrieve
 static cell AMX_NATIVE_CALL sh_get_id_bit(AMX *amx,cell *params)
 {
-	return the_hero_array.get_id_bit(params[1], params[2]);
+	(void)amx;
+	return the_hero_array.get_id_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 //the third parameter assigns the polarity of the bit
 static cell AMX_NATIVE_CALL sh_assign_id_bit(AMX *amx,cell *params)
 {
-	the_hero_array.assign_id_bit(params[1], params[2], params[3]);
+	(void)amx;
+	the_hero_array.assign_id_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2], (state_cell_type_t)params[3]);
 	return 0;
 }
 
@@ -58,6 +78,8 @@ static cell AMX_NATIVE_CALL sh_assign_id_bit(AMX *amx,cell *params)
 
 static cell AMX_NATIVE_CALL sh_init_hero_array(AMX *amx,cell *params)
 {	
+	(void)amx;
+	(void)params;
 	the_hero_array.zero_it_out();
 	return 0;
 }
@@ -66,6 +88,8 @@ static cell AMX_NATIVE_CALL sh_init_hero_array(AMX *amx,cell *params)
 
 static cell AMX_NATIVE_CALL sh_init_id_masks_array(AMX *amx,cell *params)
 {	
+	(void)amx;
+	(void)params;
 	the_hero_array.zero_out_player_masks();
 	return 0;
 }
@@ -75,12 +99,16 @@ static cell AMX_NATIVE_CALL sh_init_id_masks_array(AMX *amx,cell *params)
 
 static cell AMX_NATIVE_CALL sh_max_hero_props(AMX *amx,cell *params)
 {	
-	return the_hero_array.get_max_hero_props();
+	(void)amx;
+	(void)params;
+	return (int)the_hero_array.get_max_hero_props();
 	
 }
 static cell AMX_NATIVE_CALL sh_max_client_states(AMX *amx,cell *params)
 {	
-	return the_hero_array.get_max_client_states();
+	(void)amx;
+	(void)params;
+	return (int)the_hero_array.get_max_client_states();
 	
 }
 
