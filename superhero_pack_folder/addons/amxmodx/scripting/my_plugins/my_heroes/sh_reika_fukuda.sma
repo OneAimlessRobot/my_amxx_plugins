@@ -241,7 +241,7 @@ public sh_client_spawn(id)
     }
     if ( sh_get_user_has_hero(id,gHeroID) ) {
         
-        give_custom_grenades(id,GREN_CO2,5)
+        give_custom_grenades(id,GREN_CONC,5)
         unparry_user(id)
         sh_unset_cooldown_flag(id)
         sh_end_cooldown(id+SH_COOLDOWN_TASKID)

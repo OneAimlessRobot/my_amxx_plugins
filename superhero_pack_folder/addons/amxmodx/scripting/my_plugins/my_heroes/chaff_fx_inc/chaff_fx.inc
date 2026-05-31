@@ -5,6 +5,8 @@
 
 #define CHAFF_TIME 30.0
 
+#define CHAFF_ALPHA 2
+
 native sh_chaff_user(id)
 native sh_unchaff_user(id)
 

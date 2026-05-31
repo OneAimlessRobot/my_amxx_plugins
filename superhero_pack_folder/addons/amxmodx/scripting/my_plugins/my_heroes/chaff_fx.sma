@@ -66,7 +66,7 @@ public unchaff_task(id){
 chaff_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_CHAFFED)) return
 
-	set_render_with_color_const(id,WHITE,1,50,50,1,_,CHAFF_TIME)
+	set_render_with_color_const(id,WHITE,1,CHAFF_ALPHA,50,1,_,CHAFF_TIME)
 	sh_assign_id_bit(id, SH_IS_CHAFFED, true)
 	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_TIME)
 	
@@ -76,10 +76,11 @@ chaff_user(id){
 	
 	
 }
-public unchaff_user(id){
+unchaff_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
+	remove_task(id+UNCHAFF_TASKID)
 	if(sh_get_id_bit(id, SH_IS_CHAFFED)){
 		sh_set_rendering(id)
 		sh_assign_id_bit(id, SH_IS_CHAFFED, false)

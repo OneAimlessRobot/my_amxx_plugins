@@ -70,8 +70,11 @@ public unco2_task(id){
 }
 co2_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_CO2)) return
-	sh_unmolly_user(id)
 	
+	if(sh_get_id_bit(id,SH_IS_BURNING)){
+		sh_unmolly_user(id)
+	}
+
 	sh_assign_id_bit(id,SH_IS_CO2,true)
 
 	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
@@ -90,10 +93,11 @@ co2_user(id){
 	
 	
 }
-public unco2_user(id){
+unco2_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
+	remove_task(id+UNCO2_TASKID)
 	if(sh_get_id_bit(id,SH_IS_CO2)){
 		sh_set_rendering(id)
 		set_damage_icon(id,0,DMG_ICON_GAS)

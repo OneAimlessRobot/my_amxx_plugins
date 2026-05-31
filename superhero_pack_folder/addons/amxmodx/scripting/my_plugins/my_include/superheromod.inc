@@ -95,7 +95,7 @@ forward sh_extra_damage_fwd_post(
 			sh_thrash_brat_dmg_type:new_dmg_type,
 			custom_wpn_id);
 
-forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type);
+forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type_bonus_id:xp_type);
 
 
 forward sh_extra_health_add_pre(&id,&the_health_to_add)
@@ -964,45 +964,6 @@ the third one sets it to false
 
 #define sh_unset_cooldown_flag(%1) ( UnSet_BitVar( gPlayerInCooldownMask, %1) )
 
-/*
-
-Im gonna try to use this the following way:
-Every time "sh_hero_init" gets called,
-I will set this to the appropriate value
-Id is the player's id (Who the hero picking forward got called on)
-"mode" is whatever the name of the "SH_HERO_ADD/DROP" variable
-is on that handle callback
-By using "Assign_BitVar(gPlayerHasHeroMask, id, mode)"
-Which,
-in practice,
-Avoids calling "sh_get_user_has_hero(id, hero_id)"
-every time.
-
-sh_get_user_has_hero(id,hero_id)
-accesses an array of bitmasks
-(Declared as a global like this: "gPlayerHasHeroMasks[SH_MAXHEROS]= {0, ...}")
-Which gets used like this:
-
-Assign_BitVar(gPlayerHasHeroMasks[hero_id], id, the_boolean_value)
-
-the boolean value is used
-in a ternary operation
-to choose between:
-Set_BitVar(var_mask, id)
-And
-UnSet_BitVar(var_mask, id)
-That's it.
-
-
-And then I simply use the Mask
-instead of calling the native every time!
-Im gonna try to only do this on main modules, for now
-And will leave things like custom weapons
-And ability modules unchanged
-(Which is by using the native)
-
-*/
-stock gPlayerHasHeroMask = 0
 /**
  * Sets a cooldown in a hero.
  *

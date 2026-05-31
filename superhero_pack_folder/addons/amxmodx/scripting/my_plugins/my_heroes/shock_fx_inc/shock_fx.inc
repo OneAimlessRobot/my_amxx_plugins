@@ -11,7 +11,7 @@
 
 #define SHOCK_TIME 30.0
 
-native sh_shock_user(id)
+native sh_shock_user(id,attacker)
 native sh_unshock_user(id)
 
 

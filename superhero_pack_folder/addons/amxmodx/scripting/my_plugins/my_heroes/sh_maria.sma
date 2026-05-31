@@ -181,7 +181,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 maria_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ) {
-		give_custom_grenades(id,GREN_CONC,5)
+		give_custom_grenades(id,GREN_CO2,5)
 		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
 		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
 		if(is_valid_ent(weapon_id)){

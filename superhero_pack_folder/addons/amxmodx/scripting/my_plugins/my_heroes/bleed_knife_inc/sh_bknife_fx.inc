@@ -27,7 +27,6 @@ native do_bleed_knife_attack(id,
           my_hitpoint_enum:hitpoint=MY_HIT_STOMACH);
 
 native sh_unbleed_user(id)
-native sh_get_user_is_bleeding(id)
 
 
 

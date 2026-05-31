@@ -38,7 +38,10 @@ enum player_state_flags_id {
 	SH_IS_DISRUPT,
 	SH_IS_SHOCKED,
 	SH_IS_CO2,
-	SH_IS_FROZEN
+	SH_IS_FROZEN,
+	SH_IS_WET,
+	SH_IS_BLEEDING,
+	SH_IS_PSYCHOSIS
 };
 
 //hero properties

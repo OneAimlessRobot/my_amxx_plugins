@@ -70,7 +70,12 @@ public plugin_init()
 								"ksun: '...'")
 
 
+
 	sh_assign_hero_bit(gHeroID,SH_DREAM_EATER_HERO, true)
+	
+	
+	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
+
 	
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)

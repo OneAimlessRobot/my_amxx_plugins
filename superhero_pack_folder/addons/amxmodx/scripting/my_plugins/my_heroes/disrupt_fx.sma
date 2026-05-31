@@ -143,9 +143,10 @@ disrupt_user(id){
 	
 	
 }
-public undisrupt_user(id){
+undisrupt_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
+
 
 	if(sh_get_id_bit(id,SH_IS_DISRUPT)){
 		sh_set_rendering(id)

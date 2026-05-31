@@ -53,7 +53,7 @@ public plugin_cfg(){
 public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		if(Get_BitVar(gIsPsychosisMask,id)){
+		if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
 			unpsychosis_user(id)
 		}
 	}
@@ -63,7 +63,8 @@ public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==attacker)) return HAM_IGNORED
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
-if(sh_get_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&Get_BitVar(gIsPsychosisMask,id)){
+if(sh_get_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&
+			sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
 	
 	damage=1.0+damage- (damage*
 		cvar_val(float, pcvar_psychosis_dmg_cushion))
@@ -74,19 +75,8 @@ return HAM_IGNORED
 }
 public plugin_natives(){
 
-
-	
-	register_native("yandere_get_user_is_psychosis","_yandere_get_user_is_psychosis");
 	register_native("yandere_psychosis_user","_yandere_psychosis_user");
 	register_native("yandere_unpsychosis_user","_yandere_unpsychosis_user");
-
-
-}
-
-public _yandere_get_user_is_psychosis(iPlugin,iParams){
-	new id= get_param(1)
-	
-	return Get_BitVar(gIsPsychosisMask,id)
 
 
 }
@@ -122,7 +112,9 @@ public Ham_Think_Pre(id) {
 }
 public Player_TakeDamage(id)
 {
-	if ( !sh_is_active() || !yandere_get_is_super(id)||!(Get_BitVar(gIsPsychosisMask,id))||!is_user_alive(id)) return HAM_IGNORED
+	if ( !sh_is_active() || !yandere_get_is_super(id)||
+				!sh_get_id_bit(id,SH_IS_PSYCHOSIS)||
+				!is_user_alive(id)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -136,7 +128,8 @@ public psychosis_leap(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||!yandere_get_user_is_psychosis(id)) return FMRES_IGNORED;
+	if (!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
+			!sh_get_id_bit(id,SH_IS_PSYCHOSIS)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	
@@ -170,7 +163,7 @@ public psychosis_task(id){
 		}
 		return
 	}
-	if(!Get_BitVar(gIsPsychosisMask,id)){
+	if(!sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
 		unpsychosis_user(id)
 		return
 	}
@@ -207,7 +200,7 @@ psychosis_user(id){
 	
 }
 
-public unpsychosis_user(id){
+unpsychosis_user(id){
 	sh_set_rendering(id)
 	psychosis_off(id)
 	
@@ -221,7 +214,7 @@ psychosis_off(id)
 
 // Reset Zoom
 
-UnSet_BitVar(gIsPsychosisMask,id);
+sh_assign_id_bit(id,SH_IS_PSYCHOSIS,false)
 Set_BitVar(g_yandere_leaped_mask,id);
 
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -239,7 +232,7 @@ ultimateTimer(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
 curr_player_pain_sound[id]=generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 UnSet_BitVar(g_yandere_leaped_mask,id);
-Set_BitVar(gIsPsychosisMask,id);
+sh_assign_id_bit(id,SH_IS_PSYCHOSIS,true)
 cs_set_user_armor(id,cs_get_user_armor(id)+cvar_val(num, pcvar_psychosis_add_ap),CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)
 write_byte(cvar_val(num, pcvar_zoom))

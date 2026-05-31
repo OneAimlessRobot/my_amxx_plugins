@@ -37,10 +37,8 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	
-	//sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
+	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
 	
-	sh_register_admin_only_hero(gHeroID,ADMIN_ALL,0,
-				"testing heroes with a server full of chikoi bots is ANNOYING")
 
 
 	custom_dmg_id=sh_log_custom_damage_source(gHeroID,

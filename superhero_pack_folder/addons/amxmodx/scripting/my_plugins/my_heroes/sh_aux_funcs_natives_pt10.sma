@@ -51,6 +51,7 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
+
 	gHeroID_Maria = maria_get_hero_id()
 	
 	gHeroID_Flora = flora_get_hero_id()
@@ -93,6 +94,9 @@ public plugin_cfg(){
 
 	is_hero_bot_pickable[gHeroID_Shinobu] = false
 
+
+	server_print("%s innited!^n",LIBRARY_NAME)
+	
 
 }
 public push_incompatibility_pair(hero_a,hero_b){

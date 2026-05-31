@@ -103,7 +103,7 @@ public _sh_freeze_user(iPlugins,iParams){
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sh_unsleep_user(id)
 	}
-	if(sh_get_user_is_bleeding(id)){
+	if(sh_get_id_bit(id,SH_IS_BLEEDING)){
 		sh_unbleed_user(id)
 	}
 	new Float:the_time=get_param_f(2)

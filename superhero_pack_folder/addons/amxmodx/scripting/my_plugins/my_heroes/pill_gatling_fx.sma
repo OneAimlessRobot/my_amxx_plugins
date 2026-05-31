@@ -199,7 +199,7 @@ public fx_damage(id)
 
 		case POISON:{
 			new Float:extraDamage = damage * POISON_DMG_MULT - damage
-			extraDamage*=(sh_get_user_is_bleeding(id)?2.0:1.0)
+			extraDamage*=((sh_get_id_bit(id,SH_IS_BLEEDING)?2.0:1.0)*(sh_get_id_bit(id,SH_IS_FROZEN)?0.5:1.0))
 			if (floatround(extraDamage)>0){
 		
 				sh_extra_damage(id, attacker, floatround(extraDamage),
@@ -533,7 +533,7 @@ public poison_task(any:array[3],id){
 
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_connected(array[1])) return
 	sh_extra_damage(id,array[1],floatround(float(get_user_health(id))*
-							(POISON_DAMAGE_PCT*((sh_get_user_is_bleeding(id)?2.0:1.0)))),
+							(POISON_DAMAGE_PCT*(((sh_get_id_bit(id,SH_IS_BLEEDING)?2.0:1.0)*(sh_get_id_bit(id,SH_IS_FROZEN)?0.5:1.0))))),
 							_,_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							generic_dmg_poison_id)

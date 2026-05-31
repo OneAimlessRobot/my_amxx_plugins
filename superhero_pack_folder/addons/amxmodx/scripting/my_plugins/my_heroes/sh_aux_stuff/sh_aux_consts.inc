@@ -211,6 +211,7 @@ enum sh_custom_color{
 		BLACK,
 		MAGENTA,
 		FROZEN_BLUE,
+		BABY_BLUE,
 		FX_NONE,
 		FX_KILL,
 		FX_GLOW,
@@ -264,6 +265,7 @@ stock const LineColors[sh_custom_color][3] = {
 	{1,1,1},      //Black
 	{255,0,127},      //Magenta
 	{5, 30, 125}, //Frozen Blue
+	{111, 111, 255}, //Baby Blue
 	{0,0,0}, //fx_none
 	{1, 255, 255}, //fx_cyanide
 	{255, 255, 255}, //fx_glow

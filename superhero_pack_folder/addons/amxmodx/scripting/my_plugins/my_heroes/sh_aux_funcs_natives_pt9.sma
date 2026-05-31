@@ -31,7 +31,12 @@ public plugin_init(){
 
 
 }
+public plugin_cfg(){
 
+
+	server_print("%s innited!^n",LIBRARY_NAME)
+	
+}
 bool:sh_register_admin_only_hero_primitive(the_hero_id_to_register,
           admin_flags_required = ADMIN_IMMUNITY,
           num_pickable_times = -1,

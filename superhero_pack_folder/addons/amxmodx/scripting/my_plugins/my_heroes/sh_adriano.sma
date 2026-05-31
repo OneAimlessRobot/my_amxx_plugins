@@ -105,7 +105,7 @@ public loadCVARS()
 public adriano_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID) ) {
-		give_custom_grenades(id,GREN_SHOCK,4)
+		give_custom_grenades(id,GREN_WET,4)
 		ethereal_set_ethereal(id)
 		colt_set_colt(id)
 	}

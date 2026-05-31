@@ -12,7 +12,6 @@ stock const yandere_pain_sounds[NUM_YANDERE_PAIN_SOUNDS][128]={
 #define PSYCHOSIS_PERIOD 1.0
 #define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
 
-stock gIsPsychosisMask
 stock g_yandere_leaped_mask
 
 stock Float:gPsychosisTime[SH_MAXSLOTS+1]
@@ -21,7 +20,6 @@ stock MsgSetFOV
 
 
 
-native bool:yandere_get_user_is_psychosis(id);
 native yandere_psychosis_user(id);
 native yandere_unpsychosis_user(id);
 

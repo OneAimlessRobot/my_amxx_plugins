@@ -18,6 +18,8 @@
 
 #include "shock_fx_inc/shock_fx.inc"
 
+#include "wet_fx_inc/wet_fx.inc"
+
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
@@ -186,7 +188,19 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.25}
+					0.25},
+
+	{"wet_grenade",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					CSW_FLASHBANG,
+					BABY_BLUE,
+					500.0,
+					3000.0,
+					1.0,
+					5.0,
+					1.5,
+					0.1}
 
 }
 
@@ -881,7 +895,7 @@ gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 			
 		}
 		case GREN_SHOCK:{
-			sh_shock_user(tg)
+			sh_shock_user(tg,attacker)
 		}
 		case GREN_FREEZE:{
 			
@@ -899,6 +913,10 @@ gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 			
 			track_user(tg,attacker,1,0.07,0.5,20.0,
 					sh_grenade_structs_arr[gren_type][grenade_color_num])
+		}
+		case GREN_WET:{
+			
+			sh_wet_user(tg,attacker);
 		}
 	}
 	

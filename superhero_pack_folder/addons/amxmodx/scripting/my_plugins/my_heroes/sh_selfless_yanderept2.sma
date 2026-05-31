@@ -268,7 +268,7 @@ public yandere_sentence_loop(id){
 											floatround((float(user_health)-cvar_val(float, pcvar_psychosis_degen_health_threshold))*
 														degen_iter_period*
 														0.01*
-														(yandere_get_user_is_psychosis(i)?cvar_val(float, pcvar_psychosis_degen_pct):
+														(sh_get_id_bit(i,SH_IS_PSYCHOSIS)?cvar_val(float, pcvar_psychosis_degen_pct):
 															cvar_val(float,pcvar_angry_degen_pct)),floatround_ceil)*
 														(Get_BitVar(gIdleAngryMask,i)?2:1):0
 	
@@ -626,7 +626,8 @@ public yandere_kd(id)
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return
 
 	if(Get_BitVar(gSuperAngryMask,id)){
-		if ( sh_get_cooldown_flag(id)||yandere_get_user_is_psychosis(id) ) {
+		if ( sh_get_cooldown_flag(id)||
+				sh_get_id_bit(id,SH_IS_PSYCHOSIS) ) {
 			
 			if(!is_user_bot(id)){
 				playSoundDenySelect(id)
@@ -732,7 +733,7 @@ killyandere(id,bool:dropping=false){
 			for(new i=0;i< sh_maxplayers()+1;i++){
 				UnSet_BitVar(g_is_cursed_masks[i],id)
 			}
-			if(yandere_get_user_is_psychosis(id)){
+			if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
 				yandere_unpsychosis_user(id)
 			}
 		}
@@ -789,7 +790,7 @@ public weaponChange(id)
 		set_pev(id, pev_weaponmodel2,YANDERE_SHOTGUN_P_MODEL)
 	}
 	else if (wpnid == CSW_KNIFE) {
-		if(yandere_get_user_is_psychosis(id)){
+		if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
 			set_pev(id, pev_viewmodel2,YANDERE_PSYCHO_KNIFE_V_MODEL)
 			set_pev(id, pev_weaponmodel2,YANDERE_PSYCHO_KNIFE_P_MODEL)
 		}

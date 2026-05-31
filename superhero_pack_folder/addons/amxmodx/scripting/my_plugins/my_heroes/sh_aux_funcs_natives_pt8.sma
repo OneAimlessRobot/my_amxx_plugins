@@ -30,6 +30,10 @@ public plugin_init(){
 	register_message(gMessageId_Armor, "on_Battery_msg")
 	
 }
+public plugin_cfg(){
+
+	server_print("%s innited!^n",LIBRARY_NAME)
+}
 //-------
 public on_Battery_msg(msgid, dest, id){
 

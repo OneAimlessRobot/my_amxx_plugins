@@ -30,8 +30,8 @@ static const sh_property_gating_array[hero_property_flags_id][property_bounds] =
 			{"Core hero",25},
 			{"Invisibility",25},
 			{"Healing",25},
-			{"Small",0},
-			{"Dream eater",0}
+			{"Small",25},
+			{"Dream eater",25}
 			
 
 }
@@ -46,6 +46,15 @@ public plugin_init(){
 
 	
 }
+
+
+public plugin_cfg(){
+
+
+	server_print("%s innited!^n",LIBRARY_NAME)
+	
+}
+
 stock print_table_state(id){
 	server_print("The state of the hero property gating table is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){

@@ -25,85 +25,23 @@ enum {
 
 
 }
-enum {
+enum xp_type_bonus_id{
 	XP_KILL_XP=0,
+
 	XP_BOMB_PLANT_XP,
 	XP_BOMB_EXPLODE_XP,
 	XP_BOMB_TARGET_SAVE_XP,
+
 	XP_BOMB_DEFUSE_XP,
 	XP_HOSTAGE_RESCUED_XP,
 	XP_HOSTAGE_ALL_RESCUED_XP,
+
 	XP_VIP_ASSASSINATE_XP,
 	XP_VIP_ESCAPE_XP,
 	XP_VIP_PROTECT_XP
 
 
 }
-stock const xp_extra_earn_strings[XP_VIP_PROTECT_XP+1][]={
-
-	"for killing players",
-	"for planting the bomb",
-	"along with your team for detonating the bomb",
-	"along with your team for saving the bomb target",
-	"for being the bomb defuser",
-	"for rescuing a hostage",
-	"along with your team for rescuing all the hostages",
-	"for killing the vip",
-	"for escaping as the vip",
-	"along with your team for protecting the vip"
-
-
-
-}
-stock const xp_extra_type_strings[XP_VIP_PROTECT_XP+1][]={
-
-	"XP_KILL_XP",
-	"XP_BOMB_PLANT_XP",
-	"XP_BOMB_EXPLODE_XP",
-	"XP_BOMB_TARGET_SAVE_XP",
-	"XP_BOMB_DEFUSE_XP",
-	"XP_HOSTAGE_RESCUED_XP",
-	"XP_HOSTAGE_ALL_RESCUED_XP",
-	"XP_VIP_ASSASSINATE_XP",
-	"XP_VIP_ESCAPE_XP",
-	"XP_VIP_PROTECT_XP"
-
-
-
-}
-stock const Float:xp_extra_type_mults[XP_VIP_PROTECT_XP+1]={
-
-	0.0,
-	10.0,
-	10.0,
-	10.0,
-	10.0,
-	5.0,
-	50.0,
-	3.0,
-	200.0,
-	25.0
-
-
-
-}
-stock const xp_extra_type_bonuses[XP_VIP_PROTECT_XP+1]={
-
-	0,
-	50,
-	10,
-	10,
-	5,
-	25,
-	15,
-	15,
-	30,
-	10
-
-
-
-}
-
 enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_NONE=0,
 	SH_NEW_DMG_ENERGY_BLAST,
@@ -121,47 +59,11 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_BLUNT_TRAUMA,
 	SH_NEW_DMG_FREEZE,
 	SH_NEW_DMG_SUPER_MELEE,
-	SH_NEW_DMG_SUFFOCATION
+	SH_NEW_DMG_SUFFOCATION,
+	SH_NEW_DMG_CLEANSE
 
 }
-stock const new_dmg_type_names[sh_thrash_brat_dmg_type][32]={
-	"SH_Unnamed_Damage",
-	"SH_Energy_Blast",
-	"SH_Drain",
-	"SH_Super_Bullet",
-	"SH_Bleed",
-	"SH_Drug_Poison",
-	"SH_Squashed",
-	"SH_Shock",
-	"SH_Frag_Blast",
-	"xXx_SH_DarkShadowBlade_xXx",
-	"SH_Dark_Arts",
-	"SH_Fire",
-	"SH_Radiation_Poison",
-	"SH_Blunt_Trauma",
-	"SH_Freeze",
-	"SH_Super_Melee",
-	"SH_Suffocation"
-}
-stock const bool:generic_dmg_type_is_melee[sh_thrash_brat_dmg_type]={
-	false,
-	false,
-	false,
-	false,
-	false,
-	false,
-	true,
-	false,
-	false,
-	true,
-	false,
-	false,
-	false,
-	false,
-	false,
-	true,
-	true,
-}
+
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed
 //----------------------------------------------------------------------------------------------
