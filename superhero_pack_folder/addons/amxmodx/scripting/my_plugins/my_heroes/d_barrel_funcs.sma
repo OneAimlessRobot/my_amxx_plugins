@@ -31,10 +31,9 @@ enum
 
 
 new g_Volcano, g_OldWeapon[33]
-new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2], g_ham_bot
+new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2]
 new g_SpecialShot
-// Safety
-new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
+
 
 
 new weapon_secret_code = CSW_GATLING_SECRET_CODE
@@ -107,27 +106,6 @@ public fw_PrecacheEvent_Post(type, const name[])
 		g_gatling_event = get_orig_retval()
 }
 
-public client_putinserver(id)
-{
-	Safety_Connected(id)
-	if(is_user_bot(id) && !g_ham_bot)
-	{
-		g_ham_bot = 1
-		set_task(0.1, "Do_Register_Ham", id)
-	}
-}
-
-public client_disconnected(id)
-{
-	Safety_Disconnected(id)
-}
-
-public Do_Register_Ham(id)
-{
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")	
-	Register_SafetyFuncBot(id)
-}
-
 public Mileage_WeaponGet(id, ItemID)
 {
 	if(ItemID == g_Volcano) get_gatling(id)
@@ -192,10 +170,10 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!is_alive(id)){
+	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
+	if(get_user_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
 		return FMRES_IGNORED
 	}
 
@@ -296,9 +274,9 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 		return HAM_IGNORED
 	}
 
-	if(!is_alive(attacker))
+	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
 	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.0, 7.0))	
@@ -312,9 +290,9 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 		return HAM_IGNORED
 	}
 
-	if(!is_connected(Attacker))
+	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
+	if(get_user_weapon(Attacker) != CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
 		return HAM_IGNORED
 	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
 		return HAM_IGNORED
@@ -360,9 +338,9 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 }
 public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageType)
 {
-	if(!is_alive(attacker))
+	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -381,9 +359,9 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
-	if(!is_alive(id))
+	if(!is_user_alive(id))
 		return FMRES_IGNORED
-	if(get_player_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
+	if(get_user_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
 		return FMRES_IGNORED
 		
 	set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
@@ -393,10 +371,10 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 
 public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
 {
-	if(!is_connected(invoker))
+	if(!is_user_connected(invoker))
 		return FMRES_IGNORED	
 		
-	if(get_player_weapon(invoker) == CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
+	if(get_user_weapon(invoker) == CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		native_playanim(invoker, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
@@ -566,28 +544,6 @@ stock fm_cs_get_weapon_ent_owner(ent)
 	
 	return get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 }
-stock drop_weapons(id, dropwhat)
-{
-	static weapons[32], num, i, weaponid
-	num = 0
-	get_user_weapons(id, weapons, num)
-	
-	const PRIMARY_WEAPONS_BIT_SUM = (1<<CSW_SCOUT)|(1<<CSW_XM1014)|(1<<CSW_MAC10)|(1<<CSW_MAC10)|(1<<CSW_UMP45)|(1<<CSW_SG550)|(1<<CSW_MAC10)|(1<<CSW_FAMAS)|(1<<CSW_AWP)|(1<<CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)|(1<<CSW_SG552)|(1<<CSW_AK47)|(1<<CSW_P90)
-	
-	for (i = 0; i < num; i++)
-	{
-		weaponid = weapons[i]
-		
-		if (dropwhat == 1 && ((1<<weaponid) & PRIMARY_WEAPONS_BIT_SUM))
-		{
-			static wname[32]
-			get_weaponname(weaponid, wname, sizeof wname - 1)
-			engclient_cmd(id, "drop", wname)
-		}
-	}
-}
-
-
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
@@ -694,89 +650,8 @@ stock create_blood(const Float:origin[3])
 }
 
 
-/* ===============================
-------------- SAFETY -------------
-=================================*/
 public Register_SafetyFunc()
 {
 	register_event("CurWeapon", "Safety_CurWeapon", "be", "1=1")
 	
-	RegisterHam(Ham_Spawn, "player", "fw_Safety_Spawn_Post", 1, true)
-	RegisterHam(Ham_Killed, "player", "fw_Safety_Killed_Post", 1, true)
 }
-
-public Register_SafetyFuncBot(id)
-{
-	RegisterHamFromEntity(Ham_Spawn, id, "fw_Safety_Spawn_Post", 1)
-	RegisterHamFromEntity(Ham_Killed, id, "fw_Safety_Killed_Post", 1)
-}
-
-public Safety_Connected(id)
-{
-	Set_BitVar(g_IsConnected, id);
-	UnSet_BitVar(g_IsAlive, id)
-	
-	g_PlayerWeapon[id] = 0
-}
-
-public Safety_Disconnected(id)
-{
-	UnSet_BitVar(g_IsConnected, id);
-	UnSet_BitVar(g_IsAlive, id)
-	
-	g_PlayerWeapon[id] = 0
-}
-
-public Safety_CurWeapon(id)
-{
-		
-	static CSW; CSW = read_data(2)
-	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW
-}
-
-public fw_Safety_Spawn_Post(id)
-{
-	if(!is_user_alive(id))
-		return
-		
-	Set_BitVar(g_IsAlive, id)
-}
-
-public fw_Safety_Killed_Post(id)
-{
-	UnSet_BitVar(g_IsAlive, id)
-}
-
-public is_alive(id)
-{
-	if(!(1 <= id <= 32))
-		return 0
-	if(!Get_BitVar(g_IsConnected, id))
-		return 0
-	if(!Get_BitVar(g_IsAlive, id)) 
-		return 0
-	
-	return 1
-}
-
-public is_connected(id)
-{
-	if(!(1 <= id <= 32))
-		return 0
-	if(!Get_BitVar(g_IsConnected, id))
-		return 0
-	
-	return 1
-}
-
-public get_player_weapon(id)
-{
-	if(!is_alive(id))
-		return 0
-	
-	return g_PlayerWeapon[id]
-}
-
-/* ===============================
---------- End of SAFETY ----------
-=================================*/

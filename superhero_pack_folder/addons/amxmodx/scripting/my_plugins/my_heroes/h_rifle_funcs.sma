@@ -39,11 +39,9 @@ enum
 
 // Main Vars
 new g_Had_Mosin, g_Old_Weapon[33]
-new g_HamBot, g_Event_MS, g_SmokePuff_Id
+new g_Event_MS, g_SmokePuff_Id
 new g_MsgCurWeapon
 
-// Safety
-new g_IsConnected, g_IsAlive, g_PlayerWeapon[33]
 
 new weapon_secret_code = H_RIFLE_SECRET_CODE
 
@@ -51,7 +49,6 @@ new weapon_secret_code = H_RIFLE_SECRET_CODE
 public plugin_init() 
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	Register_SafetyFunc()
 	
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
@@ -103,28 +100,6 @@ public fw_PrecacheEvent_Post(type, const name[])
 {
 	if(equal(OLD_EVENT_H_RIFLE, name))
 		g_Event_MS = get_orig_retval()
-}
-
-public client_putinserver(id)
-{
-	Safety_Connected(id)
-	
-	if(!g_HamBot && is_user_bot(id))
-	{
-		g_HamBot = 1
-		set_task(0.1, "Do_Register_HamBot", id)
-	}
-}
-
-public Do_Register_HamBot(id) 
-{
-	Register_SafetyFuncBot(id)
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack")
-}
-
-public client_disconnected(id)
-{
-	Safety_Disconnected(id)
 }
 
 public _h_rifle_set_h_rifle(iPlugins,iParams){
@@ -229,7 +204,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!is_alive(id))
+	if(!is_user_alive(id))
 		return FMRES_IGNORED
 		
 	static iEnt; iEnt = fm_get_user_weapon_entity(id, get_user_weapon(id))
@@ -254,9 +229,9 @@ public fw_CmdStart(id, uc_handle, seed)
     
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
-	if(!is_alive(id))
+	if(!is_user_alive(id))
 		return FMRES_IGNORED	
-	if(get_player_weapon(id) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, id))
+	if(get_user_weapon(id) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, id))
 		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0)
 	
 	return FMRES_HANDLED
@@ -264,9 +239,9 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 
 public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
 {
-	if (!is_connected(invoker))
+	if (!is_user_connected(invoker))
 		return FMRES_IGNORED		
-	if(get_player_weapon(invoker) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, invoker) && eventid == g_Event_MS)
+	if(get_user_weapon(invoker) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, invoker) && eventid == g_Event_MS)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
@@ -289,9 +264,9 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
-	if(!is_connected(Attacker))
+	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_player_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))
+	if(get_user_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -344,7 +319,7 @@ public fw_Weapon_Reload(iEnt)
 		return HAM_IGNORED;
 	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
-	if(!is_alive(id))
+	if(!is_user_alive(id))
 		return HAM_IGNORED
 	if(!Get_BitVar(g_Had_Mosin, id))
 		return HAM_IGNORED	
@@ -553,89 +528,3 @@ stock PlaySound(id, const sound[])
 	else client_cmd(id, "spk ^"%s^"", sound)
 }
 
-/* ===============================
-------------- SAFETY -------------
-=================================*/
-public Register_SafetyFunc()
-{
-	register_event("CurWeapon", "Safety_CurWeapon", "be", "1=1")
-	
-	RegisterHam(Ham_Spawn, "player", "fw_Safety_Spawn_Post", 1,true)
-	RegisterHam(Ham_Killed, "player", "fw_Safety_Killed_Post", 1,true)
-}
-
-public Register_SafetyFuncBot(id)
-{
-	RegisterHamFromEntity(Ham_Spawn, id, "fw_Safety_Spawn_Post", 1)
-	RegisterHamFromEntity(Ham_Killed, id, "fw_Safety_Killed_Post", 1)
-}
-
-public Safety_Connected(id)
-{
-	Set_BitVar(g_IsConnected, id);
-	UnSet_BitVar(g_IsAlive, id);
-	
-	g_PlayerWeapon[id] = 0
-}
-
-public Safety_Disconnected(id)
-{
-	UnSet_BitVar(g_IsConnected, id);
-	UnSet_BitVar(g_IsAlive, id);
-	
-	g_PlayerWeapon[id] = 0
-}
-
-public Safety_CurWeapon(id)
-{
-		
-	static CSW; CSW = read_data(2)
-	if(g_PlayerWeapon[id] != CSW) g_PlayerWeapon[id] = CSW
-}
-
-public fw_Safety_Spawn_Post(id)
-{
-	if(!is_user_alive(id))
-		return
-		
-	Set_BitVar(g_IsAlive, id)
-}
-
-public fw_Safety_Killed_Post(id)
-{
-	UnSet_BitVar(g_IsAlive, id)
-}
-
-public is_alive(id)
-{
-	if(!(1 <= id <= 32))
-		return 0
-	if(!Get_BitVar(g_IsConnected, id))
-		return 0
-	if(!Get_BitVar(g_IsAlive, id)) 
-		return 0
-		
-	return 1
-}
-
-public is_connected(id)
-{
-	if(!(1 <= id <= 32))
-		return 0
-	if(!Get_BitVar(g_IsConnected, id))
-		return 0
-	
-	return 1
-}
-
-public get_player_weapon(id)
-{
-	if(!is_alive(id))
-		return 0
-	
-	return g_PlayerWeapon[id]
-}
-
-/* ===============================
---------- End of SAFETY ----------
-=================================*/

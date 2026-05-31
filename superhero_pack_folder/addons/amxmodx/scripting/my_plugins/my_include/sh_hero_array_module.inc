@@ -32,7 +32,7 @@ enum hero_property_flags_id {
 //up to 64 states can be added in the current version of the library
 enum player_state_flags_id {
 	
-	SH_IS_SLEEPING = 0,
+	SH_IS_SLEEPING = 53,
 	SH_IS_CHAFFED,
 	SH_IS_BURNING,
 	SH_IS_DISRUPT,

@@ -16,7 +16,7 @@ new const Arifle_Sound[] = "weapons/m60-1.wav"
 
 
 new g_Had_Arifle, g_Arifle_Clip[33], Float:g_Recoil[33][3]
-new g_Event_Arifle, g_SmokePuff_SprId, g_ham_bot
+new g_Event_Arifle, g_SmokePuff_SprId
 new g_Muzzleflash_Ent, g_Muzzleflash
 
 new weapon_secret_code = ARIFLE_SECRET_CODE
@@ -98,19 +98,6 @@ public _arifle_unset_arifle(iPlugins,iParams){
 	new id=get_param(1);
 
 	Remove_Arifle(id)
-}
-public client_putinserver(id)
-{
-	if(!g_ham_bot && is_user_bot(id))
-	{
-		g_ham_bot = 1
-		set_task(0.1, "Do_Register_HamBot", id)
-	}
-}
-
-public Do_Register_HamBot(id)
-{
-	RegisterHamFromEntity(Ham_TraceAttack, id, "fw_TraceAttack_Player")
 }
 
 
@@ -481,29 +468,6 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 
 
-
-// Drop primary/secondary weapons
-stock drop_weapons(id, dropwhat)
-{
-	// Get user weapons
-	static weapons[32], num, i, weaponid
-	num = 0 // reset passed weapons count (bugfix)
-	get_user_weapons(id, weapons, num)
-	
-	// Loop through them and drop primaries or secondaries
-	for (i = 0; i < num; i++)
-	{
-		// Prevent re-indexing the array
-		weaponid = weapons[i]
-		
-		if ((dropwhat == 1 && ((1<<weaponid) & PRIMARY_WEAPONS_BIT_SUM)) || (dropwhat == 2 && ((1<<weaponid) & SECONDARY_WEAPONS_BIT_SUM)))
-		{
-			// Get weapon entity
-			static wname[32]; get_weaponname(weaponid, wname, charsmax(wname))
-			engclient_cmd(id, "drop", wname)
-		}
-	}
-}
 
 stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
 {

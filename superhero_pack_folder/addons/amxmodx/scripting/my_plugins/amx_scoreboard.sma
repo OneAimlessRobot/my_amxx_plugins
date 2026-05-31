@@ -117,28 +117,32 @@ build_player_line(id,team_ordinal,buff[ROW_LENGTH]){
 
     if(!result) return //get rid of annoying warning. this should never return early here
     
-          
+    new is_user_bot_here =  is_user_bot(id)
+    new is_user_godmode_here = get_user_godmode(id)
+    new is_user_hltv_here = is_user_hltv(id)
+    new is_user_alive_here = is_user_alive(id)
+
     if(TEAM_IS_OFF_GAME(team_ordinal)){
 
         formatex(buff,(sizeof buff)-1,PLAYER_LINE_FMT_OFF_GAME,
                                 id,
                                 user_name,
-                                is_user_bot(id)?"BOT":"HUMAN",
+                                is_user_bot_here?"BOT":(is_user_hltv_here?"HLTV":"HUMAN"),
                                 user_authid,
-                                is_user_bot(id)?-1:ping,is_user_bot(id)?-1:loss)
+                                is_user_bot_here?-1:ping,is_user_bot_here?-1:loss)
     }
     else{
 
         formatex(buff,(sizeof buff)-1,PLAYER_LINE_FMT,
                                     id,
                                     user_name,
-        is_user_alive(id)?"ALIVE":"DEAD",get_user_godmode(id)?"GOD":"-",
+        is_user_alive_here?"ALIVE":"DEAD",is_user_godmode_here?(is_user_alive_here?"GOD":"-"):"-",
                                     get_user_health(id),get_user_armor(id),
                                     cs_get_user_money(id),
                                     get_user_frags(id),get_user_deaths(id),
-                                    is_user_bot(id)?"BOT":"HUMAN",
+                                    is_user_bot_here?"BOT":"HUMAN",
                                     user_authid,
-                                    is_user_bot(id)?-1:ping,is_user_bot(id)?-1:loss)           
+                                    is_user_bot_here?-1:ping,is_user_bot_here?-1:loss)           
     }
 }
 public plugin_init(){
