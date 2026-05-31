@@ -4,6 +4,7 @@
 #include "../include/fakemeta.inc"
 #include "../include/cstrike.inc"
 #include "my_include/my_author_header.inc"
+#include "my_include/auxiliar_stuff.inc"
 
 #define PLUGIN "amx scoreboard"
 #define VERSION "1.0.0"
@@ -16,7 +17,7 @@
 #define TEAM_HEADER_FMT_OFF_GAME "Team: %-32.31s^n"
 
 #define ROW_LENGTH 256
-
+#define MAPNAME_LENGTH 90
 #define TEAM_IS_OFF_GAME(%1)  ((%1)>1)
 
 new const CsTeams:team_print_ordering[_:CS_TEAM_SPECTATOR+1]={
@@ -51,6 +52,7 @@ new const CSGameRules_Members:team_scores_consts[_:CS_TEAM_SPECTATOR+1]={
 
 }
 
+new the_mapname[MAPNAME_LENGTH+1]
 new header_buff[ROW_LENGTH],
     off_game_header_buff[ROW_LENGTH]
 
@@ -83,24 +85,27 @@ build_off_game_header(){
                 "ping/loss")
 }
 
-print_team_header(team_ordinal,&CsTeams:stored_team=CsTeams:0){
+print_team_header(team_ordinal,&CsTeams:stored_team=enum_zero,bool:print_if_offgame=true,bool:print_if_ingame=true){
 
     stored_team=team_print_ordering[team_ordinal]
 
     if(TEAM_IS_OFF_GAME(team_ordinal)){
 
-
-        server_print(TEAM_HEADER_FMT_OFF_GAME,
-                            team_names[_:stored_team])
-        
+        if(print_if_offgame){
+            server_print(TEAM_HEADER_FMT_OFF_GAME,
+                                team_names[_:stored_team])
+        }
     }
     else{
-        server_print(TEAM_HEADER_FMT,
+
+        if(print_if_ingame){
+            server_print(TEAM_HEADER_FMT,
                             team_names[_:stored_team],
                             (team_quotas_consts[_:stored_team]==CSGameRules_Members:-1)?-1:
                         get_member_game(team_quotas_consts[_:stored_team]),
                         (team_scores_consts[_:stored_team]==CSGameRules_Members:-1)?-1:
                         get_member_game(team_scores_consts[_:stored_team]))
+        }
     }
 }
 build_player_line(id,team_ordinal,buff[ROW_LENGTH]){
@@ -148,6 +153,7 @@ build_player_line(id,team_ordinal,buff[ROW_LENGTH]){
 public plugin_init(){
 
     register_plugin(PLUGIN, VERSION, AUTHOR);
+    get_mapname(the_mapname,charsmax(the_mapname))
     build_header()
     build_off_game_header()
     register_srvcmd("amx_score", "amx_score")
@@ -156,18 +162,26 @@ public plugin_init(){
 
 public amx_score(){
 
-    server_print("Scoreboard print requested!^nHere is the scoreboard:^n")
+    server_print("Scoreboard print requested!^n^nMapname: %s^n^n",the_mapname)
 
     static player_line[ROW_LENGTH]
 
+    static CsTeams:team=enum_zero;
+
     for(new j=0;j<sizeof team_print_ordering;j++){
         
-        static CsTeams:team=CsTeams:0;
 
-        print_team_header(j,team)
+        print_team_header(j,team,false,true)
         
+    }
+
+    for(new j=0;j<sizeof team_print_ordering;j++){
+        
+        
+        print_team_header(j,team,true,false)
+
         server_print("%s",TEAM_IS_OFF_GAME(j)?off_game_header_buff:header_buff)
-        for(new i=0;i<33;i++){ 
+        for(new i=0;i<MAX_PLAYERS+1;i++){ 
             
             if(!is_user_connected(i)) continue
 
@@ -179,7 +193,5 @@ public amx_score(){
         }
         server_print("^n")
     }
-
-
     return PLUGIN_HANDLED
 }
