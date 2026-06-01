@@ -74,7 +74,7 @@ public plugin_init()
 				dmg_source_name_short_the_pistols,
 				dmg_source_name_log_the_pistols,0)
 	
-	register_event("Damage", "SuperNoodle_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","SuperNoodle_damage",_,true)
 
 	// Let Server know about SuperNoodle's Variable
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
@@ -127,59 +127,61 @@ public SuperNoodle_weapons(id)
 		sh_give_weapon(id, CSW_ELITE)
 	}
 }
+//RegisterHam(Ham_TraceAttack,"player","SuperNoodle_damage",_,true)
 //----------------------------------------------------------------------------------------------
-public SuperNoodle_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
+public SuperNoodle_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+{	
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 
-	if ( !is_user_connected(attacker)||id==attacker ) return PLUGIN_CONTINUE
-	new bool:user_has_hero=bool:sh_get_user_has_hero(attacker,gHeroID)
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
-	if ( user_has_hero&& weapon == CSW_M3 && is_user_alive(id) ) {
-		new extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
-		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart,
-								_,_,_,_,
-								SH_NEW_DMG_SUPER_BULLET,
-								custom_dmg_id_super_shotgun)
+
+
+
+	if ((attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+
+	new weapon = get_user_weapon(attacker)
+	
+	new extraDamage = 1
+	new custom_wpn_to_use = -1;
+
+	switch(weapon){
+		case CSW_M3: {
+			extraDamage = floatround(damage * get_cvar_float("SuperNoodle_dbarrel_mult") - damage)
+			custom_wpn_to_use = custom_dmg_id_super_shotgun
+		}
+		case CSW_SCOUT: {
+			extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
+			custom_wpn_to_use = custom_dmg_id_hunt_rifle
+			
+		}
+		case CSW_M249: {
+			extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
+			custom_wpn_to_use = custom_dmg_id_arifle
+			
+		}
+		case CSW_ELITE:{
+			extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
+			custom_wpn_to_use = custom_dmg_id_the_pistols
+			
+		}
+		default:{
+			return HAM_IGNORED
 		}
 	}
-	else if(user_has_hero && weapon == CSW_SCOUT && is_user_alive(id) ){
-		new extraDamage = floatround(damage * get_cvar_float("supernoodle_scoutmult") - damage)
-		if(extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart,
-								_,_,_,_,
-								SH_NEW_DMG_SUPER_BULLET,
-								custom_dmg_id_hunt_rifle)
-		}
-	}
-	else if(user_has_hero && weapon == CSW_M249 && is_user_alive(id) ){
-		new extraDamage = floatround(damage * get_cvar_float("supernoodle_m249mult") - damage)
-		if(extraDamage > 0){
-
-			sh_extra_damage( id, attacker, extraDamage,
-							my_hitpoint_enum:bodypart,
+	if (extraDamage > 0){
+		sh_extra_damage( id, attacker,extraDamage,
+							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_SUPER_BULLET,
-							custom_dmg_id_arifle)
-		}
+							custom_wpn_to_use)
 	}
-	else if(user_has_hero && weapon == CSW_ELITE && is_user_alive(id) ){
-		new extraDamage = floatround(damage * get_cvar_float("supernoodle_elitemult") - damage)
-		if(extraDamage > 0){
-
-			sh_extra_damage( id, attacker, extraDamage,
-							my_hitpoint_enum:bodypart,
-							_,_,_,_,
-							SH_NEW_DMG_SUPER_BULLET,
-							custom_dmg_id_the_pistols)
-		}
-	}
-	return PLUGIN_CONTINUE
+	return HAM_IGNORED
 }
-//----------------------------------------------------------------------------------------------

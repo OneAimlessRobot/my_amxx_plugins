@@ -126,11 +126,13 @@ public shinobu_cloak_apply(task_id){
 
 
 	if (! sh_is_active()) return
-	for(new id=1;id<sh_maxplayers()+1;id++){
-		if(is_user_alive(id)){
-			if(sh_get_user_has_hero(id,gHeroID) ){
-				apply_cloak(id)
-			}
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if(sh_get_user_has_hero(id,gHeroID) ){
+			apply_cloak(id)
 		}
 	}
 }

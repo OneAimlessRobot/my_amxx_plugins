@@ -149,19 +149,6 @@ public plugin_init()
 	
 }
 
-
-//----------------------------------------------------------------------------------------------
-public ester_step_silent(id)
-{
-	if (! sh_is_active()) return
-	if(is_user_alive(id)){
-		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-			if(sh_get_user_has_hero(id,gHeroID) ){
-				
-			}
-		}
-	}
-}
 ester_collapse(id){
 	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),default_explode_knock_force_magnitude,0)
 	reset_status(id)
@@ -308,19 +295,6 @@ public reset_ester_user_round(id){
 	
 	
 }
-public show_targets(id){
-	
-	static client_name[128];
-	get_user_name(id,client_name,127)
-	client_print(id,print_console,"[SH] %s:^nTHE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM %s!!!!^n^n",gHeroName,client_name)
-	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(Get_BitVar(g_ester_enemies_masks[id],i)&&is_user_alive(i)){
-			get_user_name(i,client_name,127)
-			client_print(id,print_chat,"%s.^n",client_name);
-		}
-	} 
-	
-}
 public update_max_dmg(id){
 	gEsterDmg[id]=(gTimesLeft[id]>0)?min(
 				cvar_val(num,pcvar_max_dmg),
@@ -349,6 +323,7 @@ public Ester_revenge_loop(id)
 {
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 	
+	new the_players[SH_MAXSLOTS], pnum, x
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if ( !is_user_connected(i)) continue
 		
@@ -438,8 +413,12 @@ public Ester_revenge_loop(id)
 		}
 		else if(Get_BitVar(gUnloadingMask,i)){
 			if(enemy_count>0){
-				for ( new x=1; x< sh_maxplayers()+1; x++) 
-				{
+						
+				get_players(the_players, pnum, "a")
+				for (new k = 0; k < pnum; k++) {
+					
+					x = the_players[k]
+
 					if ( is_user_alive(x) && (get_user_team(i)!=get_user_team(x)) && x!=i &&(Get_BitVar(g_ester_enemies_masks[i],x)))
 					{
 						

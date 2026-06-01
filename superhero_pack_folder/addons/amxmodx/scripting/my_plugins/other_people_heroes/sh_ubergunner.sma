@@ -60,7 +60,8 @@ public plugin_init()
 	custom_dmg_id_super_m4=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_super_m4,dmg_source_name_log_super_m4,0)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("Damage", "UberGunner_damage", "b", "2!0")
+	
+	RegisterHam(Ham_TraceAttack,"player","UberGunner_damage",_,true)
 
 	// Let Server know about UberGunner's Variables
 	shSetShieldRestrict(gHeroName)
@@ -115,26 +116,34 @@ public weaponChange(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public UberGunner_damage(id)
-{
-	if (!sh_is_active() || !is_user_alive(id)) return
+public UberGunner_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
+	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1 && is_user_alive(id) ) {
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new weapon = get_user_weapon(Attacker)
+	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+
+	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
+
+	if ( has_hero&& weapon == CSW_M4A1 ) {
 		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("UberGunner_m4a1mult") - damage)
-		if (extraDamage > 0){
-
-			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart ,
+		new Float:extraDamage =((Damage * get_cvar_float("UberGunner_m4a1mult") ) - Damage)
+		if ( extraDamage > 0.0 ){
+			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_m4)
-		
 		}
 	}
+
+	return HAM_IGNORED
 }

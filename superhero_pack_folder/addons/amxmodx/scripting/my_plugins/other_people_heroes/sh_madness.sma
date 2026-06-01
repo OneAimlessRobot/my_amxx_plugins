@@ -54,7 +54,8 @@ public plugin_init()
 				dmg_source_name_log_madness_dual_shotgun,0)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("Damage", "madness_damage", "b", "2!0")
+
+	RegisterHam(Ham_TraceAttack,"player","madness_damage",_,true)
 
 	// Let Server know about Madness's Variable
 	shSetMaxHealth(gHeroName, "madness_health")
@@ -112,30 +113,35 @@ public weaponChange(id)
 		sh_reload_ammo(id)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public madness_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+public madness_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+	
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id) return
-
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M3 && is_user_alive(id) ) {
-		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("madness_m3mult") - damage)
-		if (extraDamage > 0){
-			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart,
+	new Float:extraDamage = damage * get_cvar_float("madness_m3mult") - damage
+	if (floatround(extraDamage)>0){
+		switch(weapon){
+				
+			case CSW_M3:{
+					sh_extra_damage(id,attacker,floatround(extraDamage),
+								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_BLEED,
 								custom_dmg_id_madness_dual_shotgun)
-			sh_bleed_user(id, attacker, BLEED_MINI, gHeroID)
+
+					sh_bleed_user(id, attacker, BLEED_MINI, gHeroID)
+				}
+			}
 		}
-	}
+
+	return HAM_IGNORED;
 }
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang10266\\ f0\\ fs16 \n\\ par }
-*/

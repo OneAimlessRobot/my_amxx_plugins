@@ -276,7 +276,6 @@ public plugin_init(){
 
 public plugin_natives(){
 	
-	register_native( "uncharge_custom_nade","_uncharge_custom_nade")
 	register_native( "set_custom_grenade_ammo","_set_custom_grenade_ammo")
 	register_native( "get_custom_grenade_ammo","_get_custom_grenade_ammo")
 	register_native( "give_custom_grenades","_give_custom_grenades")
@@ -534,12 +533,6 @@ charge_user(id,sh_grenade_type:the_type){
 		parm,
 		sizeof(parm))
 }
-public _uncharge_custom_nade(iPlugin,iParams){
-	new id=get_param(1)
-	UnSet_BitVar(sh_grenade_armed_mask,id)
-	
-	
-}
 public _set_custom_grenade_ammo(iPlugin,iParams){
 	new id=get_param(1)
 	new sh_grenade_type:gren_type= sh_grenade_type:get_param(2)
@@ -646,8 +639,10 @@ else{
 engclient_cmd(id, weapon_names_stock_arr[the_wpn_gren_id])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
+
 //set curr grenade touched wall -> 0 as a start
 //set prev grenade touched wall -> 0 as a start
+
 entity_set_int(Ent,EV_INT_iuser1,0)
 entity_set_int(Ent,EV_INT_iuser2,0)
 entity_set_float(Ent,EV_FL_nextthink,get_gametime()+1.0)
@@ -792,35 +787,30 @@ for(new sh_grenade_type:i=sh_grenade_type:1;i<sh_grenade_type;i++){
 
 
 }
-public sh_client_death(id)
-{
+reset_user_custom_grenades(id){
 	if(!sh_is_active()) return
 
 	if(!is_user_connected(id)) return
 	
 	arrayset(curr_grenade_ammo[id],0,sh_grenade_type)
-	curr_user_grenade[id]=sh_grenade_type:0
-	prev_user_grenade[id]=sh_grenade_type:0
-	for(new sh_grenade_type:i=sh_grenade_type:1;i<sh_grenade_type;i++){
+	
+	curr_user_grenade[id]=enum_zero
+	prev_user_grenade[id]=enum_zero
+
+	for(new sh_grenade_type:i=enum_one;i<sh_grenade_type;i++){
 		
-		uncharge_custom_nade(id,i)
+		UnSet_BitVar(sh_grenade_armed_mask,id)
 		strip_weapon_for_my_grenade_heroes(id,_,
 					sh_grenade_structs_arr[i][sh_grenade_weapon_classid],true)	
 	}
 }
+public sh_client_death(id)
+{
+	reset_user_custom_grenades(id)
+}
 public client_connect(id){
 
-	arrayset(curr_grenade_ammo[id],0,sh_grenade_type)
-	curr_user_grenade[id]=sh_grenade_type:0
-	prev_user_grenade[id]=sh_grenade_type:0
-	for(new sh_grenade_type:i=sh_grenade_type:1;i<sh_grenade_type;i++){
-		
-		uncharge_custom_nade(id,i)
-		strip_weapon_for_my_grenade_heroes(id,_,
-					sh_grenade_structs_arr[i][sh_grenade_weapon_classid],true)	
-	}
-
-	
+	reset_user_custom_grenades(id)
 
 }
 

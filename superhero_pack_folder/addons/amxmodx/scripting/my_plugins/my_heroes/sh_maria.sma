@@ -232,21 +232,6 @@ bool:heal_teamate(id,i,Float:hp_to_give){
 
 maria_heal_loop(id){
 
-if(!sh_is_active()){
-
-	return
-}
-if(!is_user_connected(id)){
-	
-	return
-}
-if(!is_user_alive(id)){
-
-	return
-}
-if(!sh_get_user_has_hero(id,gHeroID) ){
-	return
-}
 if(!Get_BitVar(gHealthDrainValveMask,id)){
 
 
@@ -350,9 +335,14 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 public maria_loop(id){
 
 	if ( !sh_is_active()) return
+	new the_players[SH_MAXSLOTS], pnum, i
 
-	for(new i=1;i < sh_maxplayers()+1;i++){
-		if(is_user_alive(i)&&sh_get_user_has_hero(i,gHeroID)){
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		i = the_players[k]
+
+		if(sh_get_user_has_hero(i,gHeroID)){
 			update_stats(i)
 			if((get_user_health(i)>=cvar_val(num, pcvar_health_drain_begin_threshold))){
 					Set_BitVar(gHealthDrainValveTimerStartedMask,i)

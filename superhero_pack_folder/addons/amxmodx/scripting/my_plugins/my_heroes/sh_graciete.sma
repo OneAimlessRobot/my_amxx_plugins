@@ -35,7 +35,7 @@ public plugin_init()
 								"Graciete ready.",
 								"Mission failed.")
 	
-	register_event("Damage", "graciete_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","graciete_damage",_,true)
 	custom_dmg_id_shard_cannon=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_shard_cannon,
 				dmg_source_name_log_shard_cannon,
@@ -79,39 +79,36 @@ public sh_client_spawn(id){
 
 }
 
-public graciete_damage(id)
-{
-
-
-	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
+public graciete_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	
-
-	new Float:damage = float(read_data(2))
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
+	new weapon = get_user_weapon(attacker)
 	
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
-
-	if(sh_get_user_has_hero(attacker,gHeroID)){
-		new Float:extraDamage = damage * 2.0- damage
-		if (floatround(extraDamage)>0){
-			switch(weapon){
+	new Float:extraDamage = damage * 2.0- damage
+	if (floatround(extraDamage)>0){
+		switch(weapon){
 				
-				case CSW_SHARD_CANNON:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),
-								my_hitpoint_enum:bodypart ,
-								_,_,_,_,
-								SH_NEW_DMG_BLEED,
-								custom_dmg_id_shard_cannon)
+			case CSW_SHARD_CANNON:{
+				sh_extra_damage(id,attacker,floatround(extraDamage),
+							the_hitpoint,
+							_,_,_,_,
+							SH_NEW_DMG_BLEED,
+							custom_dmg_id_shard_cannon)
 								
-					sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
+				sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
 				}
 			}
 		}
-	
-	}
-	return PLUGIN_CONTINUE
+
+	return HAM_IGNORED;
 }
 public client_disconnected(id){
 	

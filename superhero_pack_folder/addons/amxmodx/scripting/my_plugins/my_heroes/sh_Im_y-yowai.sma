@@ -212,21 +212,20 @@ public Yowai_kd(id)
 {
 
 if (sh_is_freezetime() || !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||Get_BitVar(g_yowai_mode_mask,id) ) {
-	return PLUGIN_HANDLED
+	return
 }
 if ( sh_get_user_has_hero(id,gHeroID_chikoi)) {
 	sh_sound_deny(id)
 	sh_chat_message(id,gHeroID,"You have chikoi enabled. Will not enable")
-	return PLUGIN_HANDLED
+	return
 }
 Set_BitVar(g_yowai_mode_mask,id)
 
 sh_chat_message(id,gHeroID,"Activated yowai mode.")
-		
-return PLUGIN_HANDLED
+
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS

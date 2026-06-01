@@ -548,14 +548,16 @@ teamglow_player(id){
 public global_glow_task(id){
 
 	
-	for(new i=0;i< sh_maxplayers()+1;i++){
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
 
-			if(!is_user_alive(i)) continue
+		if(gPlayersCurrHeroModelID[id]<0) continue
+		
 
-			if(gPlayersCurrHeroModelID[i]<0) continue
-			
-
-			teamglow_player(i)
+		teamglow_player(id)
 
 
 

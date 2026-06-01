@@ -43,8 +43,7 @@ public plugin_init()
 	custom_dmg_id_mjolnir_rifle=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_mjolnir_rifle,dmg_source_name_log_mjolnir_rifle,0)
 	
-	// EVENTS
-	register_event("Damage", "masterchief_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","masterchief_damage",_,true)
 
 
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -108,29 +107,33 @@ public weapon_change(id)
 		sh_reload_ammo(id, 2)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public masterchief_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) )
-		return
 
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+public masterchief_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+	
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id)
-		return
-
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_P90 )
+	if( weapon == CSW_P90 )
 	{
 		new damage = read_data(2)
 		// do extra damage
 		new extraDamage = floatround(damage * get_pcvar_float(CvarP90DmgMult) - damage)
 		if ( extraDamage > 0 ){
 			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart,
+								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_mjolnir_rifle)
 		}
 	}
+
+	return HAM_IGNORED;
 }
-//----------------------------------------------------------------------------------------------

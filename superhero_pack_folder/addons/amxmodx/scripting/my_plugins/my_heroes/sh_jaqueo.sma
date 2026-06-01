@@ -105,8 +105,7 @@ public Jaqueo_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Da
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	static weapon;
-	get_user_attacker(Attacker, weapon)
+	new weapon = get_user_weapon(Attacker)
 	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
 
 	if (!is_user_connected(Attacker)) return HAM_IGNORED

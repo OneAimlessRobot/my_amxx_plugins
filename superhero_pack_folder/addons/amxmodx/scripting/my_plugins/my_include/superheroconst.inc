@@ -7,20 +7,23 @@
 #define _sheroconst_included
 
 
-enum {
+enum init_fwd_ret_id{
 	INIT_FWD_PASS=0,
+	INIT_FWD_STOP,
 	INIT_FWD_BLOCK
 
 
 }
-enum {
+enum dmg_fwd_ret_id{
 	DMG_FWD_PASS=0,
+	DMG_FWD_STOP,
 	DMG_FWD_BLOCK
 
 
 }
-enum {
+enum xp_fwd_ret_id{
 	XP_FWD_PASS=0,
+	XP_FWD_STOP,
 	XP_FWD_BLOCK
 
 

@@ -31,7 +31,8 @@ static const sh_property_gating_array[hero_property_flags_id][property_bounds] =
 			{"Invisibility",25},
 			{"Healing",25},
 			{"Small",25},
-			{"Dream eater",25}
+			{"Dream eater",25},
+			{"Annoying hero",25}
 			
 
 }
@@ -70,8 +71,8 @@ stock print_table_state(id){
 	}
 
 }
-public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
-	new true_return_result = INIT_FWD_PASS
+public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
+	new init_fwd_ret_id:true_return_result = INIT_FWD_PASS
 	
 	if(!client_is_within_range(id)){
 

@@ -325,7 +325,13 @@ show_targets(id){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH] (ksun):Targets are:")
-			for(new i=1;i< sh_maxplayers();i++){
+			
+			new the_players[SH_MAXSLOTS], pnum, i		
+			get_players(the_players, pnum, "a")
+			for (new k = 0; k < pnum; k++) {
+				
+				i = the_players[k]
+		
 				if(g_player_tracks_player[id][i]&&is_user_alive(i)){
 					get_user_name(i,client_name,127)
 					client_print(id,print_chat,"- %s",client_name);

@@ -112,10 +112,9 @@ new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2
 new bool:gMapBlockWeapons[31]	//1-30 CSW_ constants
 new bool:gXrtaDmgClientKill
 new gServersMaxPlayers
-new gXrtaDmgWpnName[32]
 new gXrtaDmgAttacker
-new gXrtaDmgBodypart
 new gXtraDmgCustomWpnID
+new gXrtaDmgBodypart
 //new bool:gIsCzero
 new bool:gCZBotRegisterHam
 new bool:gMonsterModRunning
@@ -254,7 +253,7 @@ public plugin_init()
 	bot_quota = get_cvar_pointer("bot_quota")	// For cz bots to register spawn hook
 
 
-	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
+	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_STOP2, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
 	fwd_Spawn = CreateMultiForward("sh_client_spawn", ET_IGNORE, FP_CELL, FP_CELL)		// id, newSpawn
@@ -264,9 +263,9 @@ public plugin_init()
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	
 	
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
-	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_CONTINUE ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
+	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 
 
 #if defined SH_BACKCOMPAT
@@ -1694,7 +1693,7 @@ menuSuperPowers(id, menuOffset)
 	if ( isBot && count ) {
 		// Select a random power
 		heroIndex = gPlayerMenuChoices[id][generate_int(1, count)]
-		new fwd_result=INIT_FWD_PASS
+		new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
 		if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
 
 			server_print("Hero init pre forward execution error!!!")
@@ -1808,7 +1807,7 @@ public selectedSuperPower(id, key)
 
 	// Just a crash check
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return PLUGIN_HANDLED
-	new fwd_result=INIT_FWD_PASS
+	new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
 	if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
 
 		server_print("Hero init pre forward execution error!!!")
@@ -2739,7 +2738,7 @@ public _sh_extra_damage()
 
 	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3)
 
-	new the_dmg_return_value=DMG_FWD_PASS
+	new dmg_fwd_ret_id:the_dmg_return_value=DMG_FWD_PASS
 	if (!ExecuteForward(fwd_ShDamagePre, 
 					the_dmg_return_value, 
 					victim,
@@ -2758,6 +2757,10 @@ public _sh_extra_damage()
 
 	if(the_dmg_return_value==DMG_FWD_BLOCK){
 		return
+	}
+	else if(the_dmg_return_value==DMG_FWD_STOP){
+
+		server_print("They returned DMG_FWD_STOP!!!^n");
 	}
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
@@ -2812,7 +2815,7 @@ public _sh_extra_damage()
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
 			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(attacker, xp_to_add)
-			new the_xp_return_value=XP_FWD_PASS
+			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
@@ -2851,12 +2854,9 @@ public _sh_extra_damage()
 
 
 		gXrtaDmgClientKill = true
-		// Save info to change HUD death message and send forward with correct info
-		copy(gXrtaDmgWpnName, charsmax(gXrtaDmgWpnName), wpnDescription)
-		
+		gXtraDmgCustomWpnID = custom_wpn_id
 		gXrtaDmgAttacker = attacker
 		gXrtaDmgBodypart = bodypart
-		gXtraDmgCustomWpnID = custom_wpn_id
 		// Kill the victim
 		// pev_dmg_inflictor not set becase this will be self even if we did set it
 		
@@ -3093,7 +3093,6 @@ logKill(id, victim, const weaponDescription[32],damage_after,armor_damage,my_hit
 	get_user_team(victim, teamv, charsmax(teamv))
 	get_user_authid(victim, authidv, charsmax(authidv))
 
-	logHit(id, victim, weaponDescription,damage_after, armor_damage,the_hitpart,abused_weapon_id)
 	// Log This Kill
 	if ( id != victim ) {
 		log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
@@ -3104,14 +3103,16 @@ logKill(id, victim, const weaponDescription[32],damage_after,armor_damage,my_hit
 			namea, auserid, authida, teama, weaponDescription)
 	}
 
+	logHit(id, victim, weaponDescription,damage_after, armor_damage,the_hitpart,abused_weapon_id)
+
 }
 //----------------------------------------------------------------------------------------------
 public msg_DeathMsg()
 {
 	// Send out the sh death forwards and change the hud death message for sh_extra_damage kill
 	// Run this even with sh off so forward can still run and clean up what it needs to
-	new attacker, bodypart, custom_wpn_id
-	static wpnDescription[32]
+	new attacker, bodypart
+	new wpnDescription[32]
 
 	if ( !gXrtaDmgClientKill ) {
 		attacker = get_msg_arg_int(1)
@@ -3121,8 +3122,8 @@ public msg_DeathMsg()
 	else {
 		attacker = gXrtaDmgAttacker
 		bodypart = gXrtaDmgBodypart
-		custom_wpn_id = gXtraDmgCustomWpnID
-		copy(wpnDescription, charsmax(wpnDescription), gXrtaDmgWpnName)
+
+		xmod_get_wpnlogname(gXtraDmgCustomWpnID,wpnDescription, charsmax(wpnDescription))
 
 		// Change HUD death message to show extradamage kill correctly
 		set_msg_arg_int(1, ARG_BYTE, attacker)
@@ -3131,7 +3132,7 @@ public msg_DeathMsg()
 	}
 
 	// Send the sh_client_death forward
-	ExecuteForward(fwd_Death, fwdReturn, get_msg_arg_int(2), attacker, my_hitpoint_enum:bodypart, custom_wpn_id)
+	ExecuteForward(fwd_Death, fwdReturn, get_msg_arg_int(2), attacker, my_hitpoint_enum:bodypart, gXtraDmgCustomWpnID)
 }
 //---------------------------------------------------------------------------------------------
 // Must use death event since csx client_death does not catch worldspawn or suicides
@@ -3155,7 +3156,7 @@ public event_DeathMsg()
 			//new headshot = read_data(3)
 			new xp_to_add=( ((read_data(3)) && (hsmult > 1.0)) )?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(killer, xp_to_add)
-			new the_xp_return_value=XP_FWD_PASS
+			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, killer,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
@@ -4664,7 +4665,7 @@ public vip_UserEscape()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_VIP_ESCAPE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
@@ -4684,7 +4685,7 @@ public vip_Assassinated()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
@@ -4707,7 +4708,7 @@ public vip_Escaped()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( ct == gXpBounsVIP || (is_user_alive(ct) && cs_get_user_team(ct) == CS_TEAM_CT) ) {
-			new the_xp_return_value=XP_FWD_PASS
+			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_VIP_PROTECT_XP)){
 				server_print("Sh xp forward execute error.");
 			}		
@@ -4744,7 +4745,7 @@ public host_Rescued()
 	// Give at least 1 xp per hostage even if sh_objectivexp is really low
 	// gNumHostages should never be 0 if this is called so no need to check for div by 0
 	new XPtoGive = max(1, floatround(get_pcvar_float(sh_objectivexp) / gNumHostages))
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
 		server_print("Sh xp forward execute error.");
 	}
@@ -4766,7 +4767,7 @@ public host_AllRescued()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
-		new the_xp_return_value=XP_FWD_PASS
+		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
 			server_print("Sh xp forward execute error.");
 		}
@@ -4806,7 +4807,7 @@ public bomb_planted(planter)
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}
@@ -4833,7 +4834,7 @@ public bomb_defused(defuser)
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ){
 			continue
 		}
-		new the_xp_return_value=XP_FWD_PASS
+		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
@@ -4841,7 +4842,7 @@ public bomb_defused(defuser)
 		chatMessage(ct, _, "Your team got %d XP for a successful bomb defusion", XPtoGive)
 	}
 
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
@@ -4866,7 +4867,7 @@ public bomb_explode(planter, defuser)
 		if ( cs_get_user_team(terrorist) != CS_TEAM_T ){
 			continue
 		}
-		new the_xp_return_value=XP_FWD_PASS
+		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
@@ -4874,7 +4875,7 @@ public bomb_explode(planter, defuser)
 		chatMessage(terrorist, _, "Your team got %d XP for a successful bomb explosion", XPtoGive)
 
 	}
-	new the_xp_return_value=XP_FWD_PASS
+	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
 	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}

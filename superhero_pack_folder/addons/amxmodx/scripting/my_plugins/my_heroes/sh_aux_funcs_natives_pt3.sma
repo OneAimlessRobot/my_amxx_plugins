@@ -18,7 +18,6 @@
 #include "arcticpredator_inc/arcticpredator.inc"
 
 new gHeroID_shinobu = -1
-
 new shinobu_max_hp = -1
 
 new generic_frag_blast_wpn_id = -1
@@ -151,14 +150,13 @@ public _explosion(iPlugins,iParams){
 			continue
 		
 		}
-		sh_screen_shake(pid,10.0,3.0,10.0)
 		if(pid!=owner_id){
 			if(cs_get_user_team(pid)==idTeam){
 				continue
 			}
+			sh_screen_shake(pid,10.0,3.0,10.0)
 		}
 		else if(ignore_owner){
-
 			continue
 		}
 		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)

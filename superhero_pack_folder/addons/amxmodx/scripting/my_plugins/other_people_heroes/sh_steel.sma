@@ -45,7 +45,7 @@ public plugin_init()
 					dmg_source_name_log_super_steel_bullet,
 					0)
 					
-	register_event("Damage", "steel_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","steel_damage",_,true)
 
 	// LOOP
 	set_task(0.1, "steel_loop", 0, "", 0, "b")
@@ -118,22 +118,27 @@ public steel_armorloop()
 		}
 	}
 }
-//----------------------------------------------------------------------------------------------
-public steel_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return
+public steel_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
+	new Float:extraDamage = damage * 2.0
+	if (g_hasSuit[attacker] ) {
 
-	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker && g_hasSuit[attacker] ) {
-
-		sh_extra_damage(id, attacker, damage,
-								my_hitpoint_enum:bodypart
+		sh_extra_damage(id, attacker,floatround( extraDamage ),
+								the_hitpoint
 								,_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_super_steel_bullet)
 	}
+
+	return HAM_IGNORED;
 }
-//----------------------------------------------------------------------------------------------

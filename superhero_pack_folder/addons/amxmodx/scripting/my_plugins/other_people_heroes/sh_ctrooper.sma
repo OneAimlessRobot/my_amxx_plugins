@@ -75,7 +75,8 @@ new pcvar_extra_lazadmg
 					dmg_source_name_log_lazah_guun,0)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("Damage", "CTrooper_damage", "b", "2!0")
+
+	RegisterHam(Ham_TraceAttack,"player","CTrooper_damage",_,true)
 	
 	// Let Server know about Master Chief's Variables
 	shSetShieldRestrict(gHeroName)
@@ -143,29 +144,35 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		sh_give_weapon(id,CTROOPER_LASERGUN_CLASSID)
 	}
  }
- //----------------------------------------------------------------------------------------------
- public CTrooper_damage(id)
- {
-	if (!sh_is_active() || !is_user_alive(id)) return
+//----------------------------------------------------------------------------------------------
+public CTrooper_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ) return
-//sh_get_user_has_hero(id,gHeroID)
-	new bool:has_hero= sh_get_user_has_hero(attacker,gHeroID)
-	if ( has_hero && weapon == CTROOPER_LASERGUN_CLASSID && is_user_alive(id) ) {
-		new extraDamage = floatround(damage * cvar_val(float, pcvar_extra_lazadmg) - damage)
-		
-		if (extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage,
-					my_hitpoint_enum:bodypart,
-					_,_,_,_,
-					SH_NEW_DMG_ENERGY_BLAST,
-					custom_dmg_id_lazah_guun)
+	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new weapon = get_user_weapon(Attacker)
+	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+
+	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
+
+	if ( has_hero&& weapon == CTROOPER_LASERGUN_CLASSID ) {
+		// do extra damage
+		new Float:extraDamage =((Damage *  cvar_val(float, pcvar_extra_lazadmg) ) - Damage)
+		if ( extraDamage > 0.0 ){
+			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+								the_hitpoint,
+								_,_,_,_,
+								SH_NEW_DMG_ENERGY_BLAST,
+								custom_dmg_id_lazah_guun)
 		}
 	}
- }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1030\\ f0\\ fs16 \n\\ par }
-*/
+
+	return HAM_IGNORED
+}

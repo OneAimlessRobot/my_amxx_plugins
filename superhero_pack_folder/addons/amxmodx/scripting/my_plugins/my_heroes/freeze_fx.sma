@@ -69,11 +69,11 @@ public frozen_damage(id)
 	
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(sh_get_id_bit(victim, SH_IS_FROZEN)){
-		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER + damage
+		new Float:extraDamage = float(damage) * FREEZE_DAMAGE_MULTIPLIER + float(damage)
 		if (floatround(extraDamage)>0){
 			new_dmg_type=SH_NEW_DMG_BLUNT_TRAUMA
 			damage=floatround(extraDamage)

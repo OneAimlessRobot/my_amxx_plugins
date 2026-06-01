@@ -74,7 +74,6 @@ public plugin_init()
 	
 
 	register_forward(FM_TraceLine,"fw_traceline");
-	register_event("Damage", "adriano_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -143,9 +142,13 @@ add_speed_points(id,Float:damage,is_up){
 }
 public get_speed_dmg_in_radius(id,Float:damage){
 
-	for(new i=0; i< sh_maxplayers()+1;i++){
+	new the_players[SH_MAXSLOTS], pnum, i		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		i = the_players[k]
 
-		if(!is_user_alive(i)||(i==id)) continue;
+		if((i==id)) continue;
 
 		if(!sh_clients_are_same_team(i,id)) continue;
 
@@ -161,11 +164,10 @@ public get_speed_dmg_in_radius(id,Float:damage){
 }
 public heal_teamate(id,teamate){
 	
-	new client_name[128]
-	get_user_name(teamate,client_name,127)
-	
-	new attacker_name[128]
-	get_user_name(id,attacker_name,127)
+	static client_name[128],
+			attacker_name[128]
+	get_user_name(teamate,client_name,charsmax(client_name))
+	get_user_name(id,attacker_name,charsmax(attacker_name))
 	
 	
 
@@ -184,59 +186,41 @@ public heal_teamate(id,teamate){
 	}
 	
 }
-public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+//TODO
+//Replace all of those trace attacks with take damages
+//As they are screwing with pain killer for some reason
+public trace_adriano(Victim, idinflictor, Attacker, Float:damage, damagebits)
 {	
+
 	if(damage<=0.0){
 		return HAM_IGNORED
 	}
-	
+
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new weapon = get_user_weapon(attacker)
-	
+	new weapon,my_hitpoint_enum:the_hitpoint;
+	get_user_attacker(Victim,weapon,the_hitpoint)
 
-	if( pev_valid(id))
-	{
-		if(is_user_alive(id)&& (weapon==CSW_KNIFE)){
+	switch(weapon){
+		case CSW_ETHEREAL:{
+
+			new Float:extraDamage = damage * 2.0- damage
+			if (floatround(extraDamage)>0){
+				sh_extra_damage(id,attacker,floatround(extraDamage),
+							the_hitpoint,
+							_,_,_,_,
+							SH_NEW_DMG_SHOCK,
+							custom_dmg_id_ethereal)
+			}
+		}
+		case CSW_KNIFE:{
+
 			heal_teamate(attacker,id)
 		}
 	}
-	
+
 	return HAM_IGNORED;
-}
-public adriano_damage(id)
-{
-
-
-	if ( !sh_is_active() || !is_user_alive(id) ) return PLUGIN_CONTINUE
-	
-
-	new Float:damage = float(read_data(2))
-	
-	
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	get_speed_dmg_in_radius(id,damage)
-	
-	
-	if (  (attacker==id) || !is_user_connected(attacker) ) return PLUGIN_CONTINUE
-
-	if(sh_get_user_has_hero(attacker,gHeroID)){
-		new Float:extraDamage = damage * 2.0- damage
-		if (floatround(extraDamage)>0){
-			switch(weapon){
-				case CSW_ETHEREAL:{
-					sh_extra_damage(id,attacker,floatround(extraDamage),
-								my_hitpoint_enum:bodypart ,
-								_,_,_,_,
-								SH_NEW_DMG_SHOCK,
-								custom_dmg_id_ethereal)
-				}
-			}
-		}
-	
-	}
-	return PLUGIN_CONTINUE
 }
 
 public sh_round_start(){

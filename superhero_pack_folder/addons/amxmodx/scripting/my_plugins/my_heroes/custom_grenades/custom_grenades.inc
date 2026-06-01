@@ -24,4 +24,3 @@ enum sh_grenade_type{
 native get_custom_grenade_ammo(id, sh_grenade_type:gren_type)
 native set_custom_grenade_ammo(id, sh_grenade_type:gren_type, value_of_ammo)
 native give_custom_grenades(id, sh_grenade_type:gren_type, value_of_ammo)
-native uncharge_custom_nade(id, sh_grenade_type:gren_type)

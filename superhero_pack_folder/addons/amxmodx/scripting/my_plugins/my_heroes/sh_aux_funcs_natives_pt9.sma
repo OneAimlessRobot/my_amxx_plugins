@@ -76,7 +76,7 @@ public plugin_natives(){
 	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero")
 }
 
-public sh_hero_init_pre(id,heroID, sh_init_mode:mode){
+public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 
 	if(!client_is_within_range(id)) return INIT_FWD_PASS
 

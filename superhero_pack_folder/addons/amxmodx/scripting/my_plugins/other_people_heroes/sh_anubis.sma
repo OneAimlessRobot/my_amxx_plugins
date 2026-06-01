@@ -24,7 +24,6 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 // GLOBAL VARIABLES
 new gHeroID
 new const gHeroName[] = "Anubis"
-new bool:gHasAnubis[SH_MAXSLOTS+1]
 new gmsgSayText
 new gPcvarShowDamage, gPcvarShowChat
 //----------------------------------------------------------------------------------------------
@@ -41,8 +40,6 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Dark Notices", "Nothing Is Secret From You.  Hear Enemies - See Damage")
 
-	RegisterHam(Ham_TakeDamage, "player", "anubis_damage_eyes",_,true)
-	// FORWARD
 	register_forward(FM_Voice_SetClientListening, "_FM_Voice_SetClientListening")
 
 	// Say
@@ -54,19 +51,10 @@ public plugin_init()
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode)
-{
-	if ( gHeroID != heroID ) return
-
-	gHasAnubis[id] = mode ? true : false
-
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public _FM_Voice_SetClientListening(iReceiver, iSender, bool:bListen)
 {
 	// Set listen to all only for this client
-	if ( sh_is_active() && is_user_alive(iReceiver) && gHasAnubis[iReceiver] ) {
+	if ( sh_is_active() && is_user_alive(iReceiver) && sh_get_user_has_hero(iReceiver,gHeroID) ) {
 		engfunc(EngFunc_SetClientListening, iReceiver, iSender, true)
 		forward_return(FMV_CELL, true)
 		return FMRES_SUPERCEDE
@@ -111,7 +99,7 @@ public handle_say(id)
 	for ( new i = 0; i < player_count; i++ ) {
 		user = players[i]
 
-		if ( !gHasAnubis[user] ) continue
+		if ( !sh_get_user_has_hero(user,gHeroID)) continue
 
 		if ( !idAlive || (idSayTeam && idTeam != cs_get_user_team(user)) ) {
 			message_begin(MSG_ONE_UNRELIABLE, gmsgSayText, _, user)
@@ -121,27 +109,14 @@ public handle_say(id)
 		}
 	}
 }
-public anubis_damage_eyes(victim, idinflictor, attacker, Float:damage, damagebits){
-
-	
-	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
-	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
-	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],floatround(damage))
-
-}
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage)
 {
-	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage) ) return
-	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,gHasAnubis[attacker],gHasAnubis[victim],damage)
+	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage)) return
+	
+	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,
+							sh_get_user_has_hero(attacker,gHeroID),
+							sh_get_user_has_hero(victim,gHeroID),
+							damage)
 
 }
-//----------------------------------------------------------------------------------------------
-public client_connect(id)
-{
-	gHasAnubis[id] = false
-}
-//----------------------------------------------------------------------------------------------
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/

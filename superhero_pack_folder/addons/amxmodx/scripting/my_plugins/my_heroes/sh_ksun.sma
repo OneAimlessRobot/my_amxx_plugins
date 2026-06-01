@@ -119,45 +119,45 @@ public plugin_cfg(){
 	gHeroID_chikoi = chikoi_get_hero_id()
 }
 stock covert_spike_damage(id){
-	for(new payer=1;payer< sh_maxplayers()+1;payer++){
-
-			if(!is_user_alive(payer)) continue
+	new the_players[SH_MAXSLOTS], pnum, payer		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		payer = the_players[k]
 			
-			if(sh_clients_are_same_team(payer,id) || (payer==id)) continue
-			
-			new Float:times_spiked_by_me=float(get_times_player_spiked_by_player(payer,id))
-			if((times_spiked_by_me>0.0)){
-				static Float:dmg_to_drain,
-						Float:tmp_it_pct,
-						Float:remaining,
-						Float:tg_health
+		if(sh_clients_are_same_team(payer,id) || (payer==id)) continue
+		
+		new Float:times_spiked_by_me=float(get_times_player_spiked_by_player(payer,id))
+		if((times_spiked_by_me>0.0)){
+			static Float:dmg_to_drain,
+					Float:tmp_it_pct,
+					Float:remaining,
+					Float:tg_health
 
-				tmp_it_pct=cvar_val(float,pcvar_ksun_dmg_paycut)
-				tg_health=float(get_user_health(payer))
-				remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
-				dmg_to_drain = tg_health - remaining
-				
-				sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
-						_,_,_,_,_,
-						SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
-				ksun_heal(id,dmg_to_drain)
-				
-			}
+			tmp_it_pct=cvar_val(float,pcvar_ksun_dmg_paycut)
+			tg_health=float(get_user_health(payer))
+			remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
+			dmg_to_drain = tg_health - remaining
+			
+			sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
+					_,_,_,_,_,
+					SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
+			ksun_heal(id,dmg_to_drain)
+			
 		}
-			
-
+	}
 }
 
 stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 	
 	new CsTeams:att_team=cs_get_user_team(attacker)
-	for(new collector=1;collector< sh_maxplayers()+1;collector++){
-
-		if(!is_user_alive(collector)){
+	
+	new the_players[SH_MAXSLOTS], pnum, collector		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		collector = the_players[k]
 			
-			
-			continue
-		}
 		
 		new CsTeams:collector_team=cs_get_user_team(collector)
 		if(att_team==collector_team){
@@ -496,15 +496,18 @@ public ksun_kd(id)
 public ksun_step_silent(task_id)
 {
 	if (! sh_is_active()) return
-	for(new id=1;id<sh_maxplayers()+1;id++){
-		if(is_user_alive(id)){
-			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-				if(sh_get_user_has_hero(id,gHeroID) ){
-					new alive=0,dead=0
-					sh_get_player_counts(id,1,alive,dead)
-					if((alive<=0)) {
-						entity_set_int(id, EV_INT_flTimeStepSound, 2000)
-					}
+	
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+			if(sh_get_user_has_hero(id,gHeroID) ){
+				new alive=0,dead=0
+				sh_get_player_counts(id,1,alive,dead)
+				if((alive<=0)) {
+					entity_set_int(id, EV_INT_flTimeStepSound, 2000)
 				}
 			}
 		}
@@ -563,7 +566,7 @@ public sh_client_death(id, killer){
 	}
 	
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

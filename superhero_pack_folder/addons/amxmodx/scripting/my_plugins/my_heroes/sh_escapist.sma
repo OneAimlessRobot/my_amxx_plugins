@@ -205,8 +205,13 @@ public escapist_loop(id)
 {	
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	for(new i=0;i< sh_maxplayers()+1;i++){
-		if ( !is_user_alive(i)||!sh_get_user_has_hero(i,gHeroID)){
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+		if ( !sh_get_user_has_hero(id,gHeroID)){
 			
 			continue
 		
@@ -214,15 +219,15 @@ public escapist_loop(id)
 		else
 		{
 			new alpha;
-			if((gPlayerLevel[i]-gHeroLevel)<=0){
+			if((gPlayerLevel[id]-gHeroLevel)<=0){
 				alpha=gMaxAlpha
 				
 			}
 			else{
-				new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[i]-gHeroLevel)
+				new alpharemoval=gAlphaByLvlInc*(gPlayerLevel[id]-gHeroLevel)
 				alpha=max(gMinAlpha,gMaxAlpha-alpharemoval)
 			}
-			Climb(i,alpha)
+			Climb(id,alpha)
 		}
 	}
 }

@@ -55,7 +55,7 @@ public plugin_init()
 	set_task(1.0,"riddick_loop",0,"",0,"b" )
 
 	// EXTRA KNIFE DAMAGE
-	register_event("Damage", "riddick_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","riddick_damage",_,true)
 
 	// Let Server know about Woverines max knife speed
 	shSetMaxSpeed(gHeroName, "riddick_knifespeed", "[29]" )
@@ -74,29 +74,36 @@ public riddick_loop()
 		}
 	}
 }
-//----------------------------------------------------------------------------------------------
-public riddick_damage(id)
-{
-	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
+//RegisterHam(Ham_TraceAttack,"player","riddick_damage",_,true)
+public riddick_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+	
+	if((weapon!=CSW_KNIFE)){
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+		return HAM_IGNORED
+	}
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return PLUGIN_CONTINUE
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) ) {
-		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("riddick_knifemult") - damage)
-		
-		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage,
-						my_hitpoint_enum:bodypart,
+	new Float:extraDamage = damage * get_cvar_float("riddick_knifemult") - damage
+	
+	if (floatround(extraDamage)>0){
+		sh_extra_damage(id, attacker, floatround(extraDamage),
+						the_hitpoint,
 						_,_,_,_,
 						SH_NEW_DMG_SUPER_MELEE,
 						custom_dmg_id_dual_knife)
-		}
 	}
-	return PLUGIN_CONTINUE
+
+	return HAM_IGNORED;
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

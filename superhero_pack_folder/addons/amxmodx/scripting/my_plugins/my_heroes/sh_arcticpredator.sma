@@ -554,8 +554,27 @@ get_user_name(id,name,31)
 shUnglow(id)
 set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_hudmessage(0,"%s has exploded.",name)
+/**
+
+native explosion(hero_id,ent_id,Float:explosion_radius,
+					Float:peak_power,
+					Float:optional_force=0.0,
+					ignore_owner=1,
+					set_stun=0,
+					Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,
+					explosion_sfx_flags:sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
+					sh_custom_color:color_const=WHITE,
+					const custom_sound_sample[128]=crush_stunned,
+					custom_weapon_id=-1);
+
+*/
 explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_predator_self_destroy_id)
 
+explosion(gHeroID,id,
+			cvar_val(float,pcvar_ester_explosion_radius),
+			cvar_val(float,pcvar_ester_explosion_damage)
+			,default_explode_knock_force_magnitude,
+			cvar_val(bool,pcvar_ester_explosion_ignore_user))
 }
 //----------------------------------------------------------------------------------------------
 public Revenge_Tracker(id)

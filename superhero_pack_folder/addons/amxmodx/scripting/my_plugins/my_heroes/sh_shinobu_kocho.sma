@@ -90,15 +90,18 @@ public plugin_natives(){
 public shinobu_step_silent(task_id)
 {
 	if (! sh_is_active()) return
-	for(new id=1;id<sh_maxplayers()+1;id++){
-		if(is_user_alive(id)){
-			if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-				if(sh_get_user_has_hero(id,gHeroID) ){
-					static wpnid
-					wpnid=get_user_weapon(id)
-					if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
-						entity_set_int(id, EV_INT_flTimeStepSound, 2000)
-					}
+	
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+			if(sh_get_user_has_hero(id,gHeroID) ){
+				static wpnid
+				wpnid=get_user_weapon(id)
+				if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
+					entity_set_int(id, EV_INT_flTimeStepSound, 2000)
 				}
 			}
 		}
@@ -395,7 +398,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

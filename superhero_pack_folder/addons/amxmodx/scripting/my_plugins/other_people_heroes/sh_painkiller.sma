@@ -9,6 +9,7 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 */
 
 #include "../my_include/superheromod.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -16,6 +17,7 @@ new const gHeroName[] = "Painkiller"
 new bool:DeathNotice[SH_MAXSLOTS+1]
 new AttackerInfo[SH_MAXSLOTS+1]
 new pCvarSeconds
+new PAINKILLER_TASKID = -1
 
 
 new dmg_source_name_short_painkiller_death[SAFE_BUFFER_SIZE+1]="painkiller"
@@ -33,12 +35,18 @@ public plugin_init()
 
 	// FIRE THE EVENTS TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pCvarLevel)
+	
 	sh_set_hero_info(gHeroID, "Fight Death!", "Once your hp reaches 0, your life will be extended for a limited amount of time with godmode")
+	
+
+	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
 	
 	custom_dmg_id_painkiller_death=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_painkiller_death,
 					dmg_source_name_log_painkiller_death,0)
 	
+	PAINKILLER_TASKID=allocate_typed_task_id(player_task)
+
 	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage",_,true)
 }
 
@@ -48,9 +56,10 @@ public client_authorized(id)
 	AttackerInfo[id] = 0
 }
 
+
 public Painkiller_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( sh_get_user_has_hero(this,gHeroID)&& ( get_user_health(this) - damage ) <= 0 ) 
+	if ( sh_get_user_has_hero(this,gHeroID)&& ( get_user_health(this) - floatround(damage) ) <= 0 ) 
 	{
 		Death_Notice(this, idattacker)
 		AttackerInfo[this] = idattacker
@@ -76,11 +85,14 @@ public Death_Notice(id, attacker)
 	sh_add_hp(id, 256, 256)
 	DeathNotice[id] = true
 	sh_chat_message(id, gHeroID, "%s killed you, you have %.1f seconds to live", killername, get_pcvar_float(pCvarSeconds))
-	set_task(get_pcvar_float(pCvarSeconds), "Painkiller_Death", id)
+	if(!task_exists( id+PAINKILLER_TASKID)){
+		set_task(get_pcvar_float(pCvarSeconds), "Painkiller_Death", id+PAINKILLER_TASKID)
+	}
 }
 
 public Painkiller_Death(id)
-{
+{	
+	id-=PAINKILLER_TASKID
 	if ( DeathNotice[id] == false && is_user_alive(id) ) return
 	
 	new killer = AttackerInfo[id]

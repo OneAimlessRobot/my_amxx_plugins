@@ -60,7 +60,7 @@ enum sh_extra_damage_flags (<<= 1){
 
 }
  */
-forward sh_extra_damage_fwd_pre(
+forward dmg_fwd_ret_id:sh_extra_damage_fwd_pre(
 			&victim, 
 			&attacker, 
 			&damage,
@@ -95,7 +95,7 @@ forward sh_extra_damage_fwd_post(
 			sh_thrash_brat_dmg_type:new_dmg_type,
 			custom_wpn_id);
 
-forward sh_set_user_xp_fwd_pre(&id, &xp, xp_type_bonus_id:xp_type);
+forward xp_fwd_ret_id:sh_set_user_xp_fwd_pre(&id, &xp, xp_type_bonus_id:xp_type);
 
 
 forward sh_extra_health_add_pre(&id,&the_health_to_add)
@@ -122,7 +122,7 @@ Returning INIT_FWD_BLOCK on mode == SH_HERO_DROP does nothing
 And the original call still happens!
 
 */
-forward sh_hero_init_pre(id, heroID, sh_init_mode:mode);
+forward init_fwd_ret_id:sh_hero_init_pre(id, heroID, sh_init_mode:mode);
 
 /**
  * Called when a +/-power is executed.

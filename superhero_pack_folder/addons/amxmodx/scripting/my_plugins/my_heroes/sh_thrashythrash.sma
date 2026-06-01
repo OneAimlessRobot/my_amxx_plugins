@@ -73,7 +73,7 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,THRASHER_WEAPON_ID,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("Damage", "thrashy_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","thrashy_damage",_,true)
 
 
 	register_forward(FM_TraceLine,"fw_traceline");
@@ -268,17 +268,21 @@ public sh_client_death(id){
 		BlowUp(id,true)
 	}
 }
-//-----------------------------------------------------------------------------------------------
-public thrashy_damage(id)
-{
-	if (!sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
+//RegisterHam(Ham_TraceAttack,"player","thrashy_damage",_,true)
+public thrashy_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-	if ( (attacker <= 0 || attacker > SH_MAXSLOTS )|| (attacker==id)||!is_user_connected(attacker)) return PLUGIN_CONTINUE
-
-	if ( sh_get_user_has_hero(attacker,gHeroID)&&weapon == THRASHER_WEAPON_ID && is_user_alive(id)  )
+	if ( weapon == THRASHER_WEAPON_ID )
 	{
 		new health = get_user_health(id)
 
@@ -305,8 +309,8 @@ public thrashy_damage(id)
 
 
 		// do extra damage
-		new extraDamage = floatround(float(damage)*ak_dmgmult-float(damage));
-		sh_extra_damage( id, attacker, extraDamage, my_hitpoint_enum:bodypart )
+		new extraDamage = floatround(damage*ak_dmgmult-damage);
+		sh_extra_damage( id, attacker, extraDamage, the_hitpoint )
 		if(extraDamage>=health){
 			set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 0);
 			// do turn down that awful racket..to be replaced by a blood spurt!
@@ -319,7 +323,8 @@ public thrashy_damage(id)
 
 		}
 	}
-	return PLUGIN_CONTINUE
+
+	return HAM_IGNORED;
 }
 
 //----------------------------------------------------------------------------------------------

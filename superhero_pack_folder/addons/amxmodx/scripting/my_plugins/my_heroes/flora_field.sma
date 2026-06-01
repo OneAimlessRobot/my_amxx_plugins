@@ -443,14 +443,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 							Its an ND friendly institution
 
 							*/
-							if(flora_has_to_die){
-								sh_chat_message(owner, gHeroID, "You had one field left. Im sorry, Flora")
-								unoclip_flora(owner)
-							}
-							else{
-
-								sh_chat_message(owner, gHeroID, "Hey, please go back to a field. You'll suffocate")
-							}
+							sh_chat_message(owner, gHeroID, flora_has_to_die?"You had one field left. Im sorry, Flora":"Hey, please go back to a field. You'll suffocate")
 							flora_damage_code_reduction(owner,1.0/(float(prev_num_active_here)),flora_has_to_die)
 
 						}
@@ -523,8 +516,12 @@ public flora_checks(task_id){
 	if(!sh_is_active()||sh_is_freezetime()) return
 
 
-	for(new id=1;id< sh_maxplayers()+1;id++){
-		if(!is_user_alive(id)) continue
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+		
 
 		if(!sh_get_user_has_hero(id,gHeroID)) continue
 		

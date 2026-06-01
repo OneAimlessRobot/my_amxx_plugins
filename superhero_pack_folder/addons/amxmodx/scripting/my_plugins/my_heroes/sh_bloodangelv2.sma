@@ -65,7 +65,7 @@ public plugin_init()
 	// EVENTS
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-	register_event("Damage", "darkangel_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","darkangel_damage",_,true)
 	// Let Server know about the hero's variables
 	shSetShieldRestrict(HeroName)
 	shSetMaxHealth(HeroName, "darkangel_health")
@@ -158,19 +158,21 @@ public weapon_change(id)
 		sh_reload_ammo(id)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public darkangel_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) )
-		return
+public darkangel_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
 	
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	if ( (attacker==id)||!is_user_connected(attacker)) return
+	new weapon = get_user_weapon(attacker)
 	
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M4A1)
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+
+	if ( weapon == CSW_M4A1)
 	{
-		new damage = read_data(2)
 		
 		// do extra damage
 		//also... it bypasses godmode.
@@ -183,11 +185,13 @@ public darkangel_damage(id)
 		new Float:extraDamage = damage * m4dmgmult - damage
 		if ( extraDamage > 0.0 ){
 			sh_extra_damage(id,attacker,floatround(extraDamage),
-								my_hitpoint_enum:bodypart ,
+								the_hitpoint ,
 								_,_,_,_,
 								SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
 								custom_dmg_id_darkly_dark_d)
 		}
 		do_knockback(id,extraDamage);
 	}
+
+	return HAM_IGNORED;
 }

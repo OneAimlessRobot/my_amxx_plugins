@@ -95,7 +95,8 @@ public plugin_init()
 	#if USE_MODEL
 		register_event("CurWeapon", "weapon_change", "be", "1=1")
 	#endif
-	register_event("Damage", "chucky_damage", "b", "2!0")
+	
+	RegisterHam(Ham_TraceAttack,"player","chucky_damage",_,true)
 
 	// Let Server know about Chucky's Variables
 	shSetMaxSpeed(HeroName, "chucky_knifespeed", "[29]")
@@ -169,35 +170,41 @@ switch_model(id)
 			
 }
 #endif
-//----------------------------------------------------------------------------------------------
-public chucky_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) )
-		return
 
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+//RegisterHam(Ham_TraceAttack,"player","chucky_damage",_,true)
+public chucky_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)||!ChuckyPowerUsed[attacker]) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+	
+	if((weapon!=CSW_KNIFE)){
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id ){
-		return
+		return HAM_IGNORED
 	}
 
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_KNIFE && is_user_alive(id) && ChuckyPowerUsed[attacker] )
-	{
-		new damage = read_data(2)
-		// Do extra damage
-		new extraDamage = floatround(damage * get_pcvar_float(CvarKnifeMult) - damage)
-		
-		HasStabbedWithKnife[attacker]=true
-		switch_model(attacker)
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
-		if ( extraDamage > 0 ){
-			sh_extra_damage(id, attacker, extraDamage,
-						my_hitpoint_enum:bodypart,
-						_,_,_,_,
-						SH_NEW_DMG_DARK_ARTS,
-						custom_dmg_id_super_knife)
-		}
+	new Float:extraDamage = damage * get_pcvar_float(CvarKnifeMult) - damage
+
+	HasStabbedWithKnife[attacker]=true
+	
+	switch_model(attacker)
+	
+	if (floatround(extraDamage)>0){
+		sh_extra_damage(id, attacker, floatround(extraDamage),
+					the_hitpoint,
+					_,_,_,_,
+					SH_NEW_DMG_DARK_ARTS,
+					custom_dmg_id_super_knife)
 	}
+
+	return HAM_IGNORED;
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_death(id)
@@ -331,7 +338,7 @@ public client_connect(id)
 	HasStabbedWithKnife[id] = false
 }
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

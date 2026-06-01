@@ -56,7 +56,7 @@ for(new i=0;i<sizeof player_built_xp_this_round;i++){
 
 }
 
-public sh_set_user_xp_fwd_pre(&id, &xp,xp_type_bonus_id:xp_type){
+public xp_fwd_ret_id:sh_set_user_xp_fwd_pre(&id, &xp,xp_type_bonus_id:xp_type){
 
     if(!sh_is_active()||!is_user_connected(id)){
 

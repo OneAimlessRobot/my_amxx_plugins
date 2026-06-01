@@ -66,7 +66,7 @@ public plugin_init()
 							dmg_source_name_log_revolver,0)
 	
 
-	register_event("Damage", "vash_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack,"player","vash_damage",_,true)
 
 	// HITZONE CHANGING LOOP
 	set_task(1.0, "vash_hitzones", 0, "", 0, "b")
@@ -139,27 +139,36 @@ public vash_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public vash_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return
+public vash_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
 
-	new damage = read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if(Damage<=0.0){
+		return HAM_IGNORED
+	}
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
+	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_DEAGLE && is_user_alive(id) ) {
+
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new weapon = get_user_weapon(Attacker)
+	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+
+	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
+
+	if ( has_hero&& weapon == CSW_DEAGLE ) {
 		// do extra damage
-		new extraDamage = floatround(damage * get_cvar_float("vash_deaglemult") - damage)
-		if (extraDamage > 0){
-			
-			sh_extra_damage( id, attacker, extraDamage,
-								my_hitpoint_enum:bodypart,
+		new Float:extraDamage =((Damage * get_cvar_float("vash_deaglemult")  ) - Damage)
+		if ( extraDamage > 0.0 ){
+			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_dmg_id_revolver)
 		}
 	}
+
+	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public vash_hitzones()

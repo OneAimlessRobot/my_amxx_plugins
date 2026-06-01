@@ -142,8 +142,11 @@ public player_on_ice_glob_checks(task_id){
 	if(!sh_is_active()||sh_is_freezetime()) return
 
 
-	for(new id=1;id< sh_maxplayers()+1;id++){
-		if(!is_user_alive(id)) continue
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
 		
 		if(sh_get_stun(id)) continue
 

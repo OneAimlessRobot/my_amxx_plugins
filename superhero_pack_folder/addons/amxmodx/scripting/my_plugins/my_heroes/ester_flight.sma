@@ -132,8 +132,12 @@ public ester_drain_loop(task_id){
 	static hp,
 			max_hp_to_use,
 			Float:curr_hp_ratio
-	for(new id=1;id<sh_maxplayers()+1;id++){
-
+	
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
 
 		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
 				!Get_BitVar(g_ester_is_reborn_mode_mask,id)){

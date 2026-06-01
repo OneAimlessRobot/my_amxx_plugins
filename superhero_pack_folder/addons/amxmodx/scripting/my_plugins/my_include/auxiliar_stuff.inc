@@ -329,3 +329,13 @@ stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 #define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
+
+/**
+
+
+new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
+         */

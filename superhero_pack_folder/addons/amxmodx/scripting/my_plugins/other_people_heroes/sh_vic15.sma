@@ -40,6 +40,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "15th Sacrament", "Deal damage to enemies merely by standing near them and always come back to life. Be careful of triggered deaths!", false, "vic15_level")
 
+	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
 
 	
 	victim_drain_aura_weapon_id=sh_log_custom_damage_source(

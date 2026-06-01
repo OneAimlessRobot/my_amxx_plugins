@@ -325,10 +325,12 @@ public Komak_hits_increase_rpm(id, idinflictor, attacker, Float:damage, damagebi
 public komak_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	for(new i=1;i< sh_maxplayers()+1;i++){
-		if(!is_user_alive(i)){
-			continue
-		}
+	new the_players[SH_MAXSLOTS], pnum, i		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		i = the_players[k]
+		
 		if(sh_get_user_has_hero(i,gHeroID)){
 		
 			if((gEngineRepairTimer[i]>0)){
@@ -562,7 +564,7 @@ public komak_ku(id)
 }
 
 
-public sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
