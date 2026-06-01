@@ -62,11 +62,11 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	}
 	
 	new pEntity = get_pdata_cbase(player, m_pActiveItem, OFFSET_LINUX_PLAYER)
-	if(is_valid_ent(pEntity)){
+	if(pev_valid(pEntity)==PDATA_SAFE){
 
 		new is_silenced=cs_get_weapon_silen(pEntity)
 		if(!is_silenced){
-			set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
+			set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 			return FMRES_HANDLED
 		}
 	}	

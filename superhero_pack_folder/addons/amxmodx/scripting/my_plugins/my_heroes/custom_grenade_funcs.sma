@@ -82,7 +82,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					3.0},
+					0.5},
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					crush_stunned,
@@ -140,7 +140,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					2.33},
+					0.66},
 
 	{"disrupt_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -887,7 +887,7 @@ gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 		case GREN_MOLLY:{
 			
 			
-			sh_molly_user(tg,attacker,-1)
+			sh_molly_user(tg,attacker)
 		}
 		case GREN_CO2:{
 			

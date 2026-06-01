@@ -6,7 +6,6 @@
 #include "co2_fx_inc/co2_fx.inc"
 #include "tomie_yu_inc/tomie_yu.inc"
 #include "freeze_fx/freeze_fx.inc"
-#include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -19,7 +18,6 @@
 
 new gHeroID = -1
 
-new gHeroID_erica = -1
 stock MOLLY_TASKID,
 		BURN_TASKID_MAIN
 
@@ -42,7 +40,6 @@ public plugin_init(){
 public plugin_cfg(){
 
 	gHeroID = tomie_yu_hero_id()
-	gHeroID_erica = tranq_get_hero_id()
 	custom_dmg_id_fire_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_fire_vuln,
 				dmg_source_name_log_fire_vuln,
@@ -94,7 +91,7 @@ public burn_task(array[2],id)
 
 			if( !is_user_alive(pid) || pid==array[0] || sh_get_id_bit(pid, SH_IS_BURNING)) continue
 			
-			sh_molly_user(pid,array[0],gHeroID_erica)
+			sh_molly_user_fast(pid,array[0])
 			
 		}
 	}
@@ -158,40 +155,25 @@ public _sh_molly_user(iPlugin,iParams){
 	
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	new attacker_name[128]
-	get_user_name(attacker,attacker_name,127)
-	new user_name[128]
-	get_user_name(user,user_name,127)
+	
+	sh_molly_user_fast(user,attacker)
+	
+	
+}
+sh_molly_user_fast(user,attacker){
+
 	if(!sh_get_id_bit(user, SH_IS_CO2)&&!sh_get_id_bit(user, SH_IS_BURNING)){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
-				
-					if(!is_user_bot(user)){
-						sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
-					}
-					
-					if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
-					}
 					burn_user(user,attacker)
 			}
 		}
 		else{
-			
-			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"%s has burned you!!!",attacker_name)
-			}
-			if(!is_user_bot(attacker)){
-				sh_chat_message(attacker,gHeroID,"You burned %s!!!",user_name)
-			}
 			burn_user(user,attacker)
 		}
 	}
-	
-	
-	
 }
+
 public _sh_unmolly_user(iPlugin,iParams){
 	
 	new user=get_param(1)
@@ -204,26 +186,31 @@ public _sh_unmolly_user(iPlugin,iParams){
 	
 }
 
-stock burn_user(id,attacker){
+burn_user(id,attacker){
 
 	if(sh_get_id_bit(id, SH_IS_BURNING)) return
 
-	sh_assign_id_bit(id, SH_IS_BURNING, true)
 	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
 	new array[2]
 	array[0] = attacker
 	array[1] = sh_get_user_has_hero(id,gHeroID)?times_if_tomie_user:0
 	
-	if(sh_get_id_bit(id, SH_IS_BURNING)){
+	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 		sh_unfreeze_user(id)
+		return
 	}
+
 	if(!is_tomie_user){
 		emit_sound(id, CHAN_VOICE, gSoundScream, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
+
+	sh_assign_id_bit(id, SH_IS_BURNING, true)
 	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
-	set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
-	
+	callfunc_begin_i(get_func_id("burn_task"))
+	callfunc_push_array(array, sizeof(array))
+	callfunc_push_int(id+BURN_TASKID_MAIN)
+	callfunc_end()
 	
 }
 

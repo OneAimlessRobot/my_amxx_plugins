@@ -231,12 +231,18 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
-	}	
-	if(get_user_weapon(id) == CSW_SHARD_CANNON && Get_BitVar(g_Had_SHARD_CANNON, id)){
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0)
 	}
-	
-	return FMRES_HANDLED
+	if((get_user_weapon(id) != CSW_SHARD_CANNON)||!Get_BitVar(g_Had_SHARD_CANNON, id)){
+
+		return FMRES_IGNORED
+
+	}
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
 }
 
 public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
@@ -247,7 +253,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
-		Set_WeaponAnim(invoker, ANIME_SHOOT)
+		native_playanim(invoker, ANIME_SHOOT)
 
 		set_pdata_float(invoker, m_flEjectBrass, get_gametime() + 0.75, XTRA_OFS_PLAYER)
 		
@@ -282,7 +288,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
 			
 	make_bullet(Attacker, flEnd)
-	fake_smoke(Attacker, ptr)
+	fake_smoke(Attacker, ptr, g_SmokePuff_Id)
 		
 	SetHamParamFloat(3, float(SHARD_CANNON_DAMAGE))
 		
@@ -302,7 +308,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_viewmodel2, SHARD_CANNON_MODEL_V)
 	set_pev(Id, pev_weaponmodel2, SHARD_CANNON_MODEL_P)
 	
-	Set_WeaponAnim(Id, ANIM_DRAW)
+	native_playanim(Id, ANIM_DRAW)
 	set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 }
 
@@ -387,7 +393,7 @@ public fw_Weapon_Reload(iEnt)
 public fw_Item_PostFrame( iEnt )
 {
 	if(pev_valid(iEnt) != 2){
-		return 
+		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
 
@@ -395,7 +401,7 @@ public fw_Item_PostFrame( iEnt )
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
 	if(get_pdata_int(id, m_flNextAttack, XTRA_OFS_PLAYER) > 0.0)
-		return
+		return HAM_IGNORED
 
 	switch(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) )
 	{
@@ -404,10 +410,10 @@ public fw_Item_PostFrame( iEnt )
 			if(cs_get_weapon_ammo(iEnt) >= SHARD_CANNON_CLIP || cs_get_user_bpammo(id, CSW_SHARD_CANNON) <= 0)
 			{
 				set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
-				return
+				return HAM_IGNORED
 			}
 			
-			Set_WeaponAnim(id, ANIM_START_RELOAD)
+			native_playanim(id, ANIM_START_RELOAD)
 			
 			set_pdata_float(id, m_flNextAttack, 0.75, XTRA_OFS_PLAYER)
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XO_WEAPON)
@@ -421,12 +427,12 @@ public fw_Item_PostFrame( iEnt )
 			if(cs_get_weapon_ammo(iEnt) >= SHARD_CANNON_CLIP || cs_get_user_bpammo(id, CSW_SHARD_CANNON) <= 0)
 			{
 				set_pdata_int(iEnt, m_fInSpecialReload, 4, XO_WEAPON)
-				return
+				return HAM_IGNORED
 			} else {
 				set_pdata_int(iEnt, m_fInSpecialReload, 3, XO_WEAPON)
 			}
 			
-			Set_WeaponAnim(id, ANIM_INSERT)
+			native_playanim(id, ANIM_INSERT)
 
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.25, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.25, XO_WEAPON)
@@ -448,7 +454,7 @@ public fw_Item_PostFrame( iEnt )
 		}
 		case 4: // Stop Reload
 		{
-			Set_WeaponAnim(id, ANIM_AFTER_RELOAD)
+			native_playanim(id, ANIM_AFTER_RELOAD)
 
 			set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XO_WEAPON)
@@ -457,133 +463,7 @@ public fw_Item_PostFrame( iEnt )
 			set_pdata_float(id, m_flNextAttack, 1.5, XTRA_OFS_PLAYER)
 		}
 	}
+	return HAM_IGNORED
 }
 
-stock Set_WeaponAnim(id, anim)
-{
-	set_pev(id, pev_weaponanim, anim)
-	
-	message_begin(MSG_ONE_UNRELIABLE, SVC_WEAPONANIM, {0, 0, 0}, id)
-	write_byte(anim)
-	write_byte(pev(id, pev_body))
-	message_end()
-}
-
-stock Set_Player_NextAttack(id, Float:NextTime) set_pdata_float(id, 83, NextTime, 5)
-stock make_bullet(id, Float:Origin[3])
-{
-	// Find target
-	new decal = random_num(41, 45)
-	const loop_time = 2
-	
-	static Body, Target
-	get_user_aiming(id, Target, Body, 999999)
-	
-	if(is_user_connected(Target))
-		return
-	
-	for(new i = 0; i < loop_time; i++)
-	{
-		// Put decal on "world" (a wall)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_WORLDDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_byte(decal)
-		message_end()
-		
-		// Show sparcles
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_short(id)
-		write_byte(decal)
-		message_end()
-	}
-}
-
-stock fake_smoke(id, trace_result)
-{
-	static Float:vecSrc[3], Float:vecEnd[3], TE_FLAG
-	
-	get_weapon_attachment(id, vecSrc)
-	global_get(glb_v_forward, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 8192.0, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-
-	get_tr2(trace_result, TR_vecEndPos, vecSrc)
-	get_tr2(trace_result, TR_vecPlaneNormal, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 2.5, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-    
-	TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
-	TE_FLAG |= TE_EXPLFLAG_NOSOUND
-	TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
-	
-	engfunc(EngFunc_MessageBegin, MSG_PAS, SVC_TEMPENTITY, vecEnd, 0)
-	write_byte(TE_EXPLOSION)
-	engfunc(EngFunc_WriteCoord, vecEnd[0])
-	engfunc(EngFunc_WriteCoord, vecEnd[1])
-	engfunc(EngFunc_WriteCoord, vecEnd[2] - 10.0)
-	write_short(g_SmokePuff_Id)
-	write_byte(2)
-	write_byte(50)
-	write_byte(TE_FLAG)
-	message_end()
-}
-
-stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
-{ 
-	new Float:vfEnd[3], viEnd[3] 
-	get_user_origin(id, viEnd, 3)  
-	IVecFVec(viEnd, vfEnd) 
-	
-	new Float:fOrigin[3], Float:fAngle[3]
-	
-	pev(id, pev_origin, fOrigin) 
-	pev(id, pev_view_ofs, fAngle)
-	
-	xs_vec_add(fOrigin, fAngle, fOrigin) 
-	
-	new Float:fAttack[3]
-	
-	xs_vec_sub(vfEnd, fOrigin, fAttack)
-	xs_vec_sub(vfEnd, fOrigin, fAttack) 
-	
-	new Float:fRate
-	
-	fRate = fDis / vector_length(fAttack)
-	xs_vec_mul_scalar(fAttack, fRate, fAttack)
-	
-	xs_vec_add(fOrigin, fAttack, output)
-}
-
-stock get_position(ent, Float:forw, Float:right, Float:up, Float:vStart[])
-{
-	static Float:vOrigin[3], Float:vAngle[3], Float:vForward[3], Float:vRight[3], Float:vUp[3]
-	
-	pev(ent, pev_origin, vOrigin)
-	pev(ent, pev_view_ofs,vUp) //for player
-	xs_vec_add(vOrigin,vUp,vOrigin)
-	pev(ent, pev_v_angle, vAngle) // if normal entity ,use pev_angles
-	
-	angle_vector(vAngle,ANGLEVECTOR_FORWARD,vForward) //or use EngFunc_AngleVectors
-	angle_vector(vAngle,ANGLEVECTOR_RIGHT,vRight)
-	angle_vector(vAngle,ANGLEVECTOR_UP,vUp)
-	
-	vStart[0] = vOrigin[0] + vForward[0] * forw + vRight[0] * right + vUp[0] * up
-	vStart[1] = vOrigin[1] + vForward[1] * forw + vRight[1] * right + vUp[1] * up
-	vStart[2] = vOrigin[2] + vForward[2] * forw + vRight[2] * right + vUp[2] * up
-}
-
-stock PlaySound(id, const sound[])
-{
-	if(equal(sound[strlen(sound)-4], ".mp3")) client_cmd(id, "mp3 play ^"sound/%s^"", sound)
-	else client_cmd(id, "spk ^"%s^"", sound)
-}
 

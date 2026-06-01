@@ -145,13 +145,21 @@ public Event_CurWeapon(id)
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
-	if(!is_user_alive(id) || !is_user_connected(id))
-		return FMRES_IGNORED	
-	if(get_user_weapon(id) == CSW_ARIFLE && Get_BitVar(g_Had_Arifle, id)){
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0)
+	if(!is_user_alive(id)){
+		return FMRES_IGNORED
 	}
-	
-	return FMRES_HANDLED
+
+	if((get_user_weapon(id) != CSW_ARIFLE)||!Get_BitVar(g_Had_Arifle, id)){
+
+		return FMRES_IGNORED
+
+	}
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	if(pev_valid(pEntity)==PDATA_SAFE){
+		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
 }
 
 
@@ -531,30 +539,4 @@ stock Make_BulletSmoke(id, TrResult)
 	write_byte(50)
 	write_byte(TE_FLAG)
 	message_end()
-}
-
-stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
-{ 
-	static Float:vfEnd[3], viEnd[3] 
-	get_user_origin(id, viEnd, 3)  
-	IVecFVec(viEnd, vfEnd) 
-	
-	static Float:fOrigin[3], Float:fAngle[3]
-	
-	pev(id, pev_origin, fOrigin) 
-	pev(id, pev_view_ofs, fAngle)
-	
-	xs_vec_add(fOrigin, fAngle, fOrigin) 
-	
-	static Float:fAttack[3]
-	
-	xs_vec_sub(vfEnd, fOrigin, fAttack)
-	xs_vec_sub(vfEnd, fOrigin, fAttack) 
-	
-	static Float:fRate
-	
-	fRate = fDis / vector_length(fAttack)
-	xs_vec_mul_scalar(fAttack, fRate, fAttack)
-	
-	xs_vec_add(fOrigin, fAttack, output)
 }

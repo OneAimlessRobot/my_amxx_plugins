@@ -223,12 +223,21 @@ public fw_CmdStart(id, uc_handle, seed)
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
-	if(!is_user_alive(id))
-		return FMRES_IGNORED	
-	if(get_user_weapon(id) == CSW_QUADBARREL && Get_BitVar(g_Had_QB, id))
-		set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
+	if(!is_user_alive(id)){
+		return FMRES_IGNORED
+	}
 	
-	return FMRES_HANDLED
+	if((get_user_weapon(id) != CSW_QUADBARREL)||!Get_BitVar(g_Had_QB, id)){
+
+		return FMRES_IGNORED
+
+	}
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	if(is_valid_ent(pEntity)){
+		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
 }
 
 public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
@@ -268,7 +277,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	if(is_entity_brush(Ent)){
 		make_bullet(Attacker, flEnd)
 	}
-	fake_smoke(Attacker, ptr)
+	fake_smoke(Attacker, ptr, g_SmokePuff_Id)
 	
 	SetHamParamFloat(3, float(Q_BARREL_DAMAGE) / 6.0)
 
@@ -384,19 +393,19 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 public fw_Item_PostFrame(iEnt)
 {
 	if(pev_valid(iEnt) != 2){
-		return 
+		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
 		
-		return
+		return HAM_IGNORED
 	}
 	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
-		return
+		return HAM_IGNORED
 	}
 	if(!Get_BitVar(g_Had_QB, id)){
-		return
+		return HAM_IGNORED
 	}
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_QUADBARREL)
@@ -430,8 +439,9 @@ public fw_Item_PostFrame(iEnt)
 		write_byte(cs_get_user_bpammo(id, CSW_QUADBARREL))
 		message_end()
 	
-		return
+		return HAM_IGNORED
 	}
+	return HAM_IGNORED
 }
 
 public fw_Weapon_Reload_Post(iEnt)
@@ -465,20 +475,22 @@ public fw_Weapon_Reload_Post(iEnt)
 
 public fw_Weapon_PrimaryAttack(iEnt)
 {
-	if(pev_valid(iEnt) != 2)
-		return 
+	if(pev_valid(iEnt) != 2){
+		return HAM_IGNORED
+	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id)){
-		return
+		return HAM_IGNORED
 	}
 	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
-		return
+		return HAM_IGNORED
 	}
 	if(!Get_BitVar(g_Had_QB, id)){
-		return
+		return HAM_IGNORED
 	}
 		
 	pev(id, pev_punchangle, Recoil[id])
+	return HAM_IGNORED
 }
 
 public fw_Weapon_PrimaryAttack_Post(iEnt)
@@ -520,122 +532,5 @@ public Get_EndOrigin(Float:Start[3], Float:End[3], Float:Result[3], IgnoreEnt)
 	engfunc(EngFunc_TraceLine, Start, End, DONT_IGNORE_MONSTERS, IgnoreEnt, TraceID)
 	
 	get_tr2(TraceID, TR_vecEndPos, Result)
-}
-
-stock make_bullet(id, Float:Origin[3])
-{
-	// Find target
-	new decal = generate_int(41, 45)
-	const loop_time = 2
-	
-	static Body, Target
-	get_user_aiming(id, Target, Body, 999999)
-	
-	if(is_user_connected(Target)){
-		return
-	}
-	for(new i = 0; i < loop_time; i++)
-	{
-		// Put decal on "world" (a wall)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_WORLDDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_byte(decal)
-		message_end()
-		
-		// Show sparcles
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_short(id)
-		write_byte(decal)
-		message_end()
-	}
-}
-
-stock fake_smoke(id, trace_result)
-{
-	static Float:vecSrc[3], Float:vecEnd[3], TE_FLAG
-	
-	get_weapon_attachment(id, vecSrc)
-	global_get(glb_v_forward, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 8192.0, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-
-	get_tr2(trace_result, TR_vecEndPos, vecSrc)
-	get_tr2(trace_result, TR_vecPlaneNormal, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 2.5, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-    
-	TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
-	TE_FLAG |= TE_EXPLFLAG_NOSOUND
-	TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
-	
-	engfunc(EngFunc_MessageBegin, MSG_PAS, SVC_TEMPENTITY, vecEnd, 0)
-	write_byte(TE_EXPLOSION)
-	engfunc(EngFunc_WriteCoord, vecEnd[0])
-	engfunc(EngFunc_WriteCoord, vecEnd[1])
-	engfunc(EngFunc_WriteCoord, vecEnd[2] - 10.0)
-	write_short(g_SmokePuff_Id)
-	write_byte(2)
-	write_byte(50)
-	write_byte(TE_FLAG)
-	message_end()
-}
-
-stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
-{ 
-	new Float:vfEnd[3], viEnd[3] 
-	get_user_origin(id, viEnd, 3)  
-	IVecFVec(viEnd, vfEnd) 
-	
-	new Float:fOrigin[3], Float:fAngle[3]
-	
-	pev(id, pev_origin, fOrigin) 
-	pev(id, pev_view_ofs, fAngle)
-	
-	xs_vec_add(fOrigin, fAngle, fOrigin) 
-	
-	new Float:fAttack[3]
-	
-	xs_vec_sub(vfEnd, fOrigin, fAttack)
-	xs_vec_sub(vfEnd, fOrigin, fAttack) 
-	
-	new Float:fRate
-	
-	fRate = fDis / vector_length(fAttack)
-	xs_vec_mul_scalar(fAttack, fRate, fAttack)
-	
-	xs_vec_add(fOrigin, fAttack, output)
-}
-
-stock get_position(ent, Float:forw, Float:right, Float:up, Float:vStart[])
-{
-	static Float:vOrigin[3], Float:vAngle[3], Float:vForward[3], Float:vRight[3], Float:vUp[3]
-	
-	pev(ent, pev_origin, vOrigin)
-	pev(ent, pev_view_ofs,vUp) //for player
-	xs_vec_add(vOrigin,vUp,vOrigin)
-	pev(ent, pev_v_angle, vAngle) // if normal entity ,use pev_angles
-	
-	angle_vector(vAngle,ANGLEVECTOR_FORWARD,vForward) //or use EngFunc_AngleVectors
-	angle_vector(vAngle,ANGLEVECTOR_RIGHT,vRight)
-	angle_vector(vAngle,ANGLEVECTOR_UP,vUp)
-	
-	vStart[0] = vOrigin[0] + vForward[0] * forw + vRight[0] * right + vUp[0] * up
-	vStart[1] = vOrigin[1] + vForward[1] * forw + vRight[1] * right + vUp[1] * up
-	vStart[2] = vOrigin[2] + vForward[2] * forw + vRight[2] * right + vUp[2] * up
-}
-
-stock PlaySound(id, const sound[])
-{
-	if(equal(sound[strlen(sound)-4], ".mp3")) client_cmd(id, "mp3 play ^"sound/%s^"", sound)
-	else client_cmd(id, "spk ^"%s^"", sound)
 }
 

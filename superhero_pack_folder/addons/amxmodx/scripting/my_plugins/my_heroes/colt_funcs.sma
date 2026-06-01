@@ -205,7 +205,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(!is_user_alive(player)) return FMRES_IGNORED
 	new pEntity = get_member(player, m_pActiveItem)
 	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1){
-		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
+		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 	}
 	return FMRES_HANDLED
 }

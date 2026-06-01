@@ -21,7 +21,7 @@
 #define BURN_TIMES floatround(floatdiv(BURN_TIME,BURN_PERIOD))
 #define MOLLY_PROPAGATE_RADIUS 100.0
 
-native sh_molly_user(id,attacker,gHeroID)
+native sh_molly_user(id,attacker)
 native sh_unmolly_user(id)
 
 

@@ -97,8 +97,12 @@ public _sh_freeze_user(iPlugins,iParams){
 
 	new id=get_param(1)
 
-	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_FROZEN)) return
-
+	if(!sh_is_active()||!is_user_alive(id)||
+				sh_get_id_bit(id, SH_IS_FROZEN)||
+				sh_get_id_bit(id, SH_IS_BURNING)){
+					
+			return
+	}
 
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sh_unsleep_user(id)
@@ -157,22 +161,6 @@ unfreeze_user(id){
 	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-		sh_assign_id_bit(id,SH_IS_FROZEN, false)
-	}
-}
-public _sh_unfreeze_user(iPlugin,iParams){
-
-	new id=get_param(1)
-	unfreeze_user(id)
-	
-}
-public remove_frozen(id)
-{	
-	id-=FREEZE_TASK_ID
-
-	if(sh_get_id_bit(id, SH_IS_FROZEN))
-	{
-		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
 
 		sh_set_rendering(id,0, 0, 0, 0,kRenderFxGlowShell, kRenderNormal)
 
@@ -185,9 +173,22 @@ public remove_frozen(id)
 		write_byte(255)
 		write_byte(100)
 		message_end()
-
 		sh_assign_id_bit(id,SH_IS_FROZEN, false)
+	
 	}
+}
+public _sh_unfreeze_user(iPlugin,iParams){
+
+	new id=get_param(1)
+	unfreeze_user(id)
+	
+}
+public remove_frozen(id)
+{	
+	id-=FREEZE_TASK_ID
+
+	unfreeze_user(id)
+	
 }
 
 public sh_client_death(id)

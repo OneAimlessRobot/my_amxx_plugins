@@ -420,8 +420,8 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
-	if(is_valid_ent(pEntity)){
-		set_cd(cd, CD_flNextAttack, get_gametime()+9999.0)
+	if(pev_valid(pEntity)==PDATA_SAFE){
+		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
 	}
 	return FMRES_IGNORED

@@ -10,7 +10,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
 
-#define PLUGIN "Superhero co2 fx"
+#define PLUGIN "Superhero shock fx"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 

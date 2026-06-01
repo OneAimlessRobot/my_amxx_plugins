@@ -99,7 +99,7 @@ public Item_PostFrame_Post(iEnt)
 	if(pev_valid(iEnt)!=2){
 		return HAM_IGNORED
 	}
-	new id = entity_get_edict(iEnt, EV_ENT_owner);
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}

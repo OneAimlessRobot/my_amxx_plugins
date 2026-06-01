@@ -271,19 +271,24 @@ if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 }
 
 public sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	
-    if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
-        return DMG_FWD_PASS
-    }
-    if((new_dmg_type==SH_NEW_DMG_FIRE)||(new_dmg_type==SH_NEW_DMG_BLEED)){
-        if((attacker!=victim) && sh_get_user_has_hero(attacker,gHeroID) ){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+
+		return DMG_FWD_PASS
+	}
+	if(sh_clients_are_same_team(attacker,victim)||(attacker==victim)){
+
+		return DMG_FWD_PASS
+
+	}
+	if((new_dmg_type==SH_NEW_DMG_FIRE)||(new_dmg_type==SH_NEW_DMG_BLEED)){
+		if(sh_get_user_has_hero(attacker,gHeroID) ){
 			aura(attacker,LineColors[PINK])
 			add_speed_points(attacker,float(damage))
-        }
-    }
+		}
+	}
 
-    return DMG_FWD_PASS
+	return DMG_FWD_PASS
 }
 public sh_client_death(killed,killer)
 {

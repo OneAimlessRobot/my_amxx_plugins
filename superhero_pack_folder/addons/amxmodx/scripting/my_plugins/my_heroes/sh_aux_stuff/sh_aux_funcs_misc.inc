@@ -544,6 +544,104 @@ stock give_ammo(id, silent, CSWID, Max)
 	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
 }
 
+stock PlaySound(id, const sound[])
+{
+	if(equal(sound[strlen(sound)-4], ".mp3")) client_cmd(id, "mp3 play ^"sound/%s^"", sound)
+	else client_cmd(id, "spk ^"%s^"", sound)
+}
+
+stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
+{ 
+	static Float:vfEnd[3], viEnd[3] 
+	get_user_origin(id, viEnd, 3)  
+	IVecFVec(viEnd, vfEnd) 
+	
+	static Float:fOrigin[3], Float:fAngle[3]
+	
+	pev(id, pev_origin, fOrigin) 
+	pev(id, pev_view_ofs, fAngle)
+	
+	xs_vec_add(fOrigin, fAngle, fOrigin) 
+	
+	static Float:fAttack[3]
+	
+	xs_vec_sub(vfEnd, fOrigin, fAttack)
+	xs_vec_sub(vfEnd, fOrigin, fAttack) 
+	
+	static Float:fRate
+	
+	fRate = fDis / vector_length(fAttack)
+	xs_vec_mul_scalar(fAttack, fRate, fAttack)
+	
+	xs_vec_add(fOrigin, fAttack, output)
+}
+
+stock fake_smoke(id, trace_result, sprite_id)
+{
+	static Float:vecSrc[3], Float:vecEnd[3], TE_FLAG
+	
+	get_weapon_attachment(id, vecSrc)
+	global_get(glb_v_forward, vecEnd)
+    
+	xs_vec_mul_scalar(vecEnd, 8192.0, vecEnd)
+	xs_vec_add(vecSrc, vecEnd, vecEnd)
+
+	get_tr2(trace_result, TR_vecEndPos, vecSrc)
+	get_tr2(trace_result, TR_vecPlaneNormal, vecEnd)
+    
+	xs_vec_mul_scalar(vecEnd, 2.5, vecEnd)
+	xs_vec_add(vecSrc, vecEnd, vecEnd)
+    
+	TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
+	TE_FLAG |= TE_EXPLFLAG_NOSOUND
+	TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
+	
+	engfunc(EngFunc_MessageBegin, MSG_PAS, SVC_TEMPENTITY, vecEnd, 0)
+	write_byte(TE_EXPLOSION)
+	engfunc(EngFunc_WriteCoord, vecEnd[0])
+	engfunc(EngFunc_WriteCoord, vecEnd[1])
+	engfunc(EngFunc_WriteCoord, vecEnd[2] - 10.0)
+	write_short(sprite_id)
+	write_byte(2)
+	write_byte(50)
+	write_byte(TE_FLAG)
+	message_end()
+}
+
+stock make_bullet(id, Float:Origin[3])
+{
+	// Find target
+	new decal = random_num(41, 45)
+	const loop_time = 2
+	
+	static Body, Target
+	get_user_aiming(id, Target, Body, 999999)
+	
+	if(is_user_connected(Target))
+		return
+	
+	for(new i = 0; i < loop_time; i++)
+	{
+		// Put decal on "world" (a wall)
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_WORLDDECAL)
+		engfunc(EngFunc_WriteCoord, Origin[0])
+		engfunc(EngFunc_WriteCoord, Origin[1])
+		engfunc(EngFunc_WriteCoord, Origin[2])
+		write_byte(decal)
+		message_end()
+		
+		// Show sparcles
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)
+		engfunc(EngFunc_WriteCoord, Origin[0])
+		engfunc(EngFunc_WriteCoord, Origin[1])
+		engfunc(EngFunc_WriteCoord, Origin[2])
+		write_short(id)
+		write_byte(decal)
+		message_end()
+	}
+}
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

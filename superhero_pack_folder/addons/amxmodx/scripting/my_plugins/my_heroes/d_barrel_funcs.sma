@@ -42,9 +42,6 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	
-	// Safety
-	Register_SafetyFunc()
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
 	register_forward(FM_CmdStart, "fw_CmdStart")
@@ -352,21 +349,29 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 	if(is_entity_brush(ent)){
 		make_bullet(attacker, flEnd)
 	}
-	fake_smoke(attacker, ptr)
+	fake_smoke(attacker, ptr, g_smokepuff_id)
 
 	return HAM_HANDLED
 }
 
 public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 {
-	if(!is_user_alive(id))
+	if(!is_user_alive(id)){
 		return FMRES_IGNORED
-	if(get_user_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id))
+	}
+
+
+	if((get_user_weapon(id) != CSW_GATLING)||!Get_BitVar(g_Had_Volcano, id)){
+
 		return FMRES_IGNORED
-		
-	set_cd(cd_handle, CD_flNextAttack, get_gametime() + 9999.0) 
-	
-	return FMRES_HANDLED
+
+	}
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	if(pev_valid(pEntity)==PDATA_SAFE){
+		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
 }
 
 public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], Float:angles[3], Float:fparam1, Float:fparam2, iParam1, iParam2, bParam1, bParam2)
@@ -544,96 +549,6 @@ stock fm_cs_get_weapon_ent_owner(ent)
 	
 	return get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 }
-stock make_bullet(id, Float:Origin[3])
-{
-	// Find target
-	new decal = generate_int(41, 45)
-	const loop_time = 2
-	
-	static Body, Target
-	get_user_aiming(id, Target, Body, 999999)
-	
-	for(new i = 0; i < loop_time; i++)
-	{
-		// Put decal on "world" (a wall)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_WORLDDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_byte(decal)
-		message_end()
-		
-		// Show sparcles
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_short(id)
-		write_byte(decal)
-		message_end()
-	}
-}
-
-public fake_smoke(id, trace_result)
-{
-	static Float:vecSrc[3], Float:vecEnd[3], TE_FLAG
-	
-	get_weapon_attachment(id, vecSrc)
-	global_get(glb_v_forward, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 8192.0, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-
-	get_tr2(trace_result, TR_vecEndPos, vecSrc)
-	get_tr2(trace_result, TR_vecPlaneNormal, vecEnd)
-    
-	xs_vec_mul_scalar(vecEnd, 2.5, vecEnd)
-	xs_vec_add(vecSrc, vecEnd, vecEnd)
-    
-	TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
-	TE_FLAG |= TE_EXPLFLAG_NOSOUND
-	TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
-	
-	engfunc(EngFunc_MessageBegin, MSG_PAS, SVC_TEMPENTITY, vecEnd, 0)
-	write_byte(TE_EXPLOSION)
-	engfunc(EngFunc_WriteCoord, vecEnd[0])
-	engfunc(EngFunc_WriteCoord, vecEnd[1])
-	engfunc(EngFunc_WriteCoord, vecEnd[2] - 10.0)
-	write_short(g_smokepuff_id)
-	write_byte(2)
-	write_byte(50)
-	write_byte(TE_FLAG)
-	message_end()
-}
-
-stock get_weapon_attachment(id, Float:output[3], Float:fDis = 40.0)
-{ 
-	new Float:vfEnd[3], viEnd[3] 
-	get_user_origin(id, viEnd, 3)  
-	IVecFVec(viEnd, vfEnd) 
-	
-	new Float:fOrigin[3], Float:fAngle[3]
-	
-	pev(id, pev_origin, fOrigin) 
-	pev(id, pev_view_ofs, fAngle)
-	
-	xs_vec_add(fOrigin, fAngle, fOrigin) 
-	
-	new Float:fAttack[3]
-	
-	xs_vec_sub(vfEnd, fOrigin, fAttack)
-	xs_vec_sub(vfEnd, fOrigin, fAttack) 
-	
-	new Float:fRate
-	
-	fRate = fDis / vector_length(fAttack)
-	xs_vec_mul_scalar(fAttack, fRate, fAttack)
-	
-	xs_vec_add(fOrigin, fAttack, output)
-}
-
 stock create_blood(const Float:origin[3])
 {
 	// Show some blood :)
@@ -647,11 +562,4 @@ stock create_blood(const Float:origin[3])
 	write_byte(75)
 	write_byte(5)
 	message_end()
-}
-
-
-public Register_SafetyFunc()
-{
-	register_event("CurWeapon", "Safety_CurWeapon", "be", "1=1")
-	
 }
