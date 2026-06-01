@@ -14,6 +14,9 @@
 #define ETHEREAL_PLAYER_ANIMEXT "carbine"
 #define ETHEREAL_OLDMODEL "models/w_m4a1.mdl"
 
+
+#define ETHEREAL_HUD_SPRITES_NAME "weapon_ethereal"
+
 #define ETHEREAL_V_MODEL "models/shmod/adriano/ethereal/v_ethereal.mdl"
 #define ETHEREAL_P_MODEL "models/shmod/adriano/ethereal/p_ethereal.mdl"
 #define ETHEREAL_W_MODEL "models/shmod/adriano/ethereal/w_ethereal.mdl"

@@ -157,7 +157,15 @@ enum {
 
 
  */
+enum my_weapon_slots{
 
+    MY_SLOT_PRIMARY = 0,
+    MY_SLOT_SECONDARY,
+    MY_SLOT_KNIFE,
+    MY_SLOT_GRENADE,
+    MY_SLOT_C4,
+
+}
 
 #define MUL_TWO(%0,%1)                                                          \
     (                                                                           \

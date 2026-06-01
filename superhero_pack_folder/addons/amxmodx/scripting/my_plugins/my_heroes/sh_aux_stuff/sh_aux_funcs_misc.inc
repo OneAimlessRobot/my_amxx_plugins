@@ -642,6 +642,50 @@ stock make_bullet(id, Float:Origin[3])
 		message_end()
 	}
 }
+/**
+
+	message_begin(MSG_ONE_UNRELIABLE, g_Msg_WeaponList, .player = id)
+	write_string(Get_BitVar(g_Had_Ethereal, id) ? "weapon_ethereal" : "weapon_m4a1")
+	write_byte(4) // PrimaryAmmoID
+	write_byte(90) // PrimaryAmmoMaxAmount
+	write_byte(-1) // SecondaryAmmoID
+	write_byte(-1) // SecondaryAmmoMaxAmount
+	write_byte(0) // SlotID (0...N)
+	write_byte(6) // NumberInSlot (1...N)
+	write_byte(Get_BitVar(g_Had_Ethereal, id) ? CSW_ETHEREAL : CSW_M4A1) // WeaponID
+	write_byte(0) // Flags
+	message_end()
+	
+*/
+/*
+	execute in add to player (Ham_Item_AddToPlayer) post hooks!
+
+	msgid should be a cached value of "get_user_msgid("WeaponList")" if set to a non negative value
+
+*/
+stock send_weapon_list_stock(player,
+			const szName[],
+			ammoid,
+			maxammo,
+			slot,
+			position,
+			id,
+			flag = 0,
+			destination= MSG_ONE,
+			msgid=-1)
+{
+	message_begin(destination, msgid<0?get_user_msgid("WeaponList"):msgid, _, player)
+	write_string(szName)
+	write_byte(ammoid)
+	write_byte(maxammo)
+	write_byte(-1)
+	write_byte(-1)
+	write_byte(slot)
+	write_byte(position)
+	write_byte(id)
+	write_byte(flag)
+	message_end()
+}
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

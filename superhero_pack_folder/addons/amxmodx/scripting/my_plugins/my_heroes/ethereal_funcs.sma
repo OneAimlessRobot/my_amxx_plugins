@@ -13,7 +13,7 @@
 
 new g_Had_Ethereal, g_Ethereal_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Ethereal, g_SmokePuff_SprId, g_Beam_SprID
-new g_Muzzleflash_Ent, g_Muzzleflash
+new g_Muzzleflash_Ent, g_Muzzleflash, g_Msg_WeaponList = -1
 
 new weapon_secret_code = ETHEREAL_SECRET_CODE
 
@@ -45,7 +45,9 @@ public plugin_init()
 
 	weapon_secret_code = allocate_weapon_secret_code()
 
-	register_clcmd(weapon_names_stock_arr[CSW_ETHEREAL], "Hook_Weapon")
+	g_Msg_WeaponList = get_user_msgid("WeaponList")
+
+	register_clcmd("weapon_ethereal", "Hook_Weapon")
 }
 
 public plugin_natives(){
@@ -378,13 +380,28 @@ public fw_Item_Deploy_Post(Ent)
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
 	ent_check(Ent,HAM_IGNORED)
-		
+	if(!is_user_alive(id)){
+
+		return HAM_IGNORED
+	
+	}
+
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Ethereal, id)
 		set_pev(Ent, pev_impulse, 0)
 	
-	}		
+	}
+	send_weapon_list_stock(id,
+				Get_BitVar(g_Had_Ethereal, id) ? ETHEREAL_HUD_SPRITES_NAME:weapon_names_stock_arr[CSW_ETHEREAL],
+				g_ammo_ids_for_weapon_ids[CSW_ETHEREAL],
+				ETHEREAL_RESERVE,
+				_:MY_SLOT_PRIMARY,
+				6,
+				Get_BitVar(g_Had_Ethereal, id) ? CSW_ETHEREAL:CSW_M4A1,
+				0,
+				MSG_ONE,
+				g_Msg_WeaponList)
 
 	return HAM_HANDLED	
 }
