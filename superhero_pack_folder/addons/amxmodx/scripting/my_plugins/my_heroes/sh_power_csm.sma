@@ -146,12 +146,12 @@ public power_csm_kd(id)
 	if ( sh_get_cooldown_flag(id)) {
 		
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 		}
 		return
 	}
 	power_csm_execute_extract(id)
-	ultimateTimer(id, cvar_val(float, pcvar_extract_cooldown) * 1.0 )
+	sh_set_cooldown(id, cvar_val(float, pcvar_extract_cooldown) * 1.0 )
 }
 public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits){
 	

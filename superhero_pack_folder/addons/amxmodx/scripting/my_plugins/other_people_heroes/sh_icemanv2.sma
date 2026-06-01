@@ -108,7 +108,7 @@ public iceman2_loop(id)
 	// OK - We'll make this armor based - but also add armor
 	// So you can run out of fuel, but get it back too
 	if ( gUseFuel != 0 && gFuelCost > userArmor && g_jetPackRunning[id] == 1 ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0
 		set_user_info(id,"JETPACK_RUN","0")
 		client_print(id, print_center, "You ran out of energy.")
@@ -183,7 +183,7 @@ public iceman2_kd(id)
 {
 	if ( !hasRoundStarted() || !is_user_alive(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0
 		set_user_info(id,"JETPACK_RUN","0")
 		return PLUGIN_HANDLED 

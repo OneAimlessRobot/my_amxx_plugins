@@ -99,14 +99,14 @@ switch(key)
 
 	if ( sh_get_cooldown_flag(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	gStormTimer[id]=get_cvar_num("storm_time")+1
 
 	new StormCooldown=get_cvar_num("storm_cooldown")
-	if ( StormCooldown>0 ) ultimateTimer(id, StormCooldown * 1.0 )
+	if ( StormCooldown>0 ) sh_set_cooldown(id, StormCooldown * 1.0 )
 
 	new args[1]
 	args[0] = id 

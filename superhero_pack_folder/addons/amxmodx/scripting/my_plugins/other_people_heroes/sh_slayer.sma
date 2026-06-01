@@ -48,7 +48,7 @@ public slayer_loop()
 				sh_chat_message(id, gHeroID,"You removed %s's godmode!",name)
 				sh_chat_message(aid, gHeroID,"%s removed your godmode!",slayer_name)
 				sh_extra_damage(id, id, get_user_health(id)/2 )
-				ultimateTimer(id, get_cvar_float("slayer_cooldown"))
+				sh_set_cooldown(id, get_cvar_float("slayer_cooldown"))
 				sh_set_cooldown_flag(id)
 			}
 		}

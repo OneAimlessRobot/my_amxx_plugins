@@ -170,7 +170,7 @@ public neo_kd(id)
 	
 	if ( sh_get_cooldown_flag(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED 
 	} 
 	

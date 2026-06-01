@@ -164,12 +164,12 @@ public sapper_kd(id)
 		if(sh_get_cooldown_flag(id)){
 			
 			sh_chat_message(id,gHeroID,"N spammes!!!!")
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			return PLUGIN_HANDLED
 		}
 		if(!sapper_get_num_mines(id)){
 				sh_chat_message(id,gHeroID,"Nao tens mais minas!!!!")
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 				return PLUGIN_HANDLED;
 		
 		}
@@ -223,7 +223,7 @@ public sapper_ku(id)
 			return PLUGIN_HANDLED
 			
 	}
-	ultimateTimer(id, float(cvar_val(num, pcvar_mine_cooldown)))
+	sh_set_cooldown(id, float(cvar_val(num, pcvar_mine_cooldown)))
 	mine_uncharge_mine(id)
 	mine_undisarm_mine(id)
 			

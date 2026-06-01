@@ -221,20 +221,20 @@ public vegetto_kd(id)
 	new userArmor = get_user_armor(id)
 
 	if ( userArmor < g_ssjLevel[0] ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		client_print(id, print_chat, "[SH](Vegetto) Not enough Energy")
 		return
 	}
 
 	// Prevent too many entities, which would cause server problems
 	if( g_powerID[id] ){
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		client_print(id,print_chat,"[SH](Vegetto) You cannot use more than one power at a time.")
 		return
 	}
 
 	// Remember this weapon...
-	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
+	new weaponID = get_user_weapon(id)
 	g_lastWeapon[id] = weaponID
 	g_weaponSwitched[id] = true
 

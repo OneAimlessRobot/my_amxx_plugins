@@ -94,9 +94,9 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public zenitsu_kd(id)
 {	
-	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) ) return
 	
-	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	
 
 	// Let them know they already used their ultimate if they have
@@ -104,21 +104,20 @@ public zenitsu_kd(id)
 	if(Get_BitVar(gChargeModeEngagedMask,id)){
 
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id,gHeroID,"Charge mode already used!");
 		}
-		return PLUGIN_HANDLED
+		return
 	}
 	if(zenitsu_get_has_touched_player(id)){
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id,gHeroID,"You already succeeded in slaying an enemy. Wait for next respawn");
 		}
-		return PLUGIN_HANDLED
+		return
 	}
 	Set_BitVar(gChargeModeEngagedMask,id)
 	sh_sleep_user(id,id,gHeroID)
-	return PLUGIN_HANDLED
 }
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){

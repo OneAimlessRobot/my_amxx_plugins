@@ -79,7 +79,7 @@ public sandman_kd(id)
 
 	if ( sh_get_cooldown_flag(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -102,7 +102,7 @@ public quicksand(id)
 		case 0:
 		{
 			client_print(id, print_center, "[SH](%s) No target found", HeroName)
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			return
 		}
 
@@ -118,20 +118,20 @@ public quicksand(id)
 			if ( PointContents(testOrigin) == -2 )
 			{
 				client_print(id, print_center, "[SH](%s) Target already in Quicksand", HeroName)
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 				return
 			}
 
 			if ( !(entity_get_int(targetid, EV_INT_flags)&FL_ONGROUND) )
 			{
 				client_print(id, print_center, "[SH](%s) Target not on ground", HeroName)
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 				return
 			}
 
 			new Float:cooldown = get_cvar_float("sandman_cooldown")
 			if ( cooldown > 0.0 )
-				ultimateTimer(id, cooldown)
+				sh_set_cooldown(id, cooldown)
 
 			sinking_effects(id, targetid)
 

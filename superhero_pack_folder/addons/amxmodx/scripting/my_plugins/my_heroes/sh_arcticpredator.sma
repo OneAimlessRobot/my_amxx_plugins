@@ -91,6 +91,8 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_event("Damage", "predator_damage", "b", "2!0")
 	
+	register_event("DeathMsg","arctic_predator_death","a");
+
 	register_touch("pred_disc", "player", "touch_event")
 	
 	register_clcmd("nightvision","ToggleNVG")
@@ -196,7 +198,7 @@ switch(key)
 		
 		// Let them know they already used their ultimate if they have
 		if ( sh_get_cooldown_flag(id)) {
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			return
 		}
 
@@ -206,7 +208,7 @@ switch(key)
 		g_huntTimer[id]=get_cvar_num("arcticPredator_huntmode")+1
 		StopNVG(id)
 		ToggleNVG(id)
-		ultimateTimer(id, get_cvar_num("arcticPredator_cooldown") * 1.0)
+		sh_set_cooldown(id, get_cvar_num("arcticPredator_cooldown") * 1.0)
 
 		gHuntMode[id] = true
 		// colussus Messsage
@@ -350,8 +352,13 @@ public RunRedNVG(id)
 	//Darkens it a little
 	setScreenFlash(id, 180, 10, 0, 12, 50)
 }
-public sh_client_death(id,attacker)
-{
+//I need to use this in the case of self destruction mechanics
+public arctic_predator_death()
+{	
+	new id = read_data(1)
+	new attacker = read_data(2)
+
+
 	g_huntTimer[id] = 0;
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
@@ -570,11 +577,6 @@ native explosion(hero_id,ent_id,Float:explosion_radius,
 */
 explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_predator_self_destroy_id)
 
-explosion(gHeroID,id,
-			cvar_val(float,pcvar_ester_explosion_radius),
-			cvar_val(float,pcvar_ester_explosion_damage)
-			,default_explode_knock_force_magnitude,
-			cvar_val(bool,pcvar_ester_explosion_ignore_user))
 }
 //----------------------------------------------------------------------------------------------
 public Revenge_Tracker(id)

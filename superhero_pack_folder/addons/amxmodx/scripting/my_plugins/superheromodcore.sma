@@ -2865,7 +2865,7 @@ public _sh_extra_damage()
 		gXrtaDmgClientKill = false
 
 		// Log the Kill
-		logKill(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,custom_wpn_id)
+		logKill(attacker, victim, wpnDescription,damage_after,bodypart,custom_wpn_id)
 		
 
 		// Make camera turn toward attacker on death, thx Emp`
@@ -3059,12 +3059,12 @@ logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hi
 	armor=get_user_armor(victim)
 
 	if ( (id != victim) ) {
-		log_message("^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+		log_message("[SH_DMG_FEED]: ^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
 			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
 	}
 	else {
-		log_message("^"%s<%d><%s><%s>^" attacked themselves on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+		log_message("[SH_DMG_FEED]: ^"%s<%d><%s><%s>^" attacked themselves on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
 			namea, auserid, authida, teama, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
 	}
@@ -3078,7 +3078,7 @@ public fm_AlertMessage(atype, const msg[])
 	 return gXrtaDmgClientKill ? FMRES_SUPERCEDE : FMRES_IGNORED
 }
 //---------------------------------------------------------------------------------------------
-logKill(id, victim, const weaponDescription[32],damage_after,armor_damage,my_hitpoint_enum:the_hitpart,abused_weapon_id)
+logKill(id, victim, const weaponDescription[32],damage_after,my_hitpoint_enum:the_hitpart,abused_weapon_id)
 {
 	static namea[32], namev[32], authida[32], authidv[32], teama[16], teamv[16]
 
@@ -3095,15 +3095,17 @@ logKill(id, victim, const weaponDescription[32],damage_after,armor_damage,my_hit
 
 	// Log This Kill
 	if ( id != victim ) {
-		log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
+		log_message("[SH_KILL_FEED]: ^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
 			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, weaponDescription)
+
+		custom_weapon_shot(abused_weapon_id, id)
+		custom_weapon_dmg(abused_weapon_id, id, victim, damage_after, _:the_hitpart)
 	}
 	else {
-		log_message("^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
+		log_message("[SH_KILL_FEED]: ^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
 			namea, auserid, authida, teama, weaponDescription)
 	}
 
-	logHit(id, victim, weaponDescription,damage_after, armor_damage,the_hitpart,abused_weapon_id)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -3112,23 +3114,17 @@ public msg_DeathMsg()
 	// Send out the sh death forwards and change the hud death message for sh_extra_damage kill
 	// Run this even with sh off so forward can still run and clean up what it needs to
 	new attacker, bodypart
-	new wpnDescription[32]
 
 	if ( !gXrtaDmgClientKill ) {
 		attacker = get_msg_arg_int(1)
 		bodypart = (get_msg_arg_int(3)?HIT_HEAD:HIT_GENERIC)
-		get_msg_arg_string(4, wpnDescription, charsmax(wpnDescription))
 	}
 	else {
 		attacker = gXrtaDmgAttacker
 		bodypart = gXrtaDmgBodypart
-
-		xmod_get_wpnlogname(gXtraDmgCustomWpnID,wpnDescription, charsmax(wpnDescription))
-
 		// Change HUD death message to show extradamage kill correctly
 		set_msg_arg_int(1, ARG_BYTE, attacker)
 		set_msg_arg_int(3, ARG_BYTE, (bodypart==HIT_HEAD))
-		set_msg_arg_string(4, wpnDescription)
 	}
 
 	// Send the sh_client_death forward

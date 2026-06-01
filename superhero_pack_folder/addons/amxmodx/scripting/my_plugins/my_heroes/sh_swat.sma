@@ -212,14 +212,13 @@ public Swat_kd(id)
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH](S.W.A.T.) Your next I.C.B.M. is not ready yet.")
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 		}
 		return
 	}
 
 	make_beam(id)
-	ultimateTimer(id, get_cvar_float("Swat_cooldown") * 1.0 )
-	return
+	sh_set_cooldown(id, get_cvar_float("Swat_cooldown") * 1.0 )
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

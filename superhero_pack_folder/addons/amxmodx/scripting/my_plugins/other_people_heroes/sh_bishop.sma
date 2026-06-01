@@ -83,7 +83,7 @@ public bishop_kd(id)
 	// Let them know if they have no energy
 	if ( g_absorbedDamage[id] <= 0 ) {
 		client_print(id, print_chat, "[SH](Bishop) You have NO energy left in reserve!")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 

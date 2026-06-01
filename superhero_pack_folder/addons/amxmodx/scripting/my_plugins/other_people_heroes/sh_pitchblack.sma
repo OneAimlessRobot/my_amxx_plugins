@@ -87,12 +87,12 @@ public pitch_kd(id)
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED
 
 	if (sh_get_cooldown_flag(id)|| PitchTimer[id] >= 0) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	PitchTimer[id] = get_cvar_num("pitch_time")
-	ultimateTimer(id, get_cvar_float("pitch_cooldown"))
+	sh_set_cooldown(id, get_cvar_float("pitch_cooldown"))
 
 	if (!lightsOut) {
 		lightsOut = true

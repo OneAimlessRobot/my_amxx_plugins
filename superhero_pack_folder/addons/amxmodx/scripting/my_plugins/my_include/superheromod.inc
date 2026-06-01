@@ -1220,8 +1220,8 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 
 
 
-//stock playSoundDenySelect(id)
-#define playSoundDenySelect sh_sound_deny
+//stock sh_sound_deny(id)
+#define playSoundDeny sh_sound_deny
 
 //stock shAddXP(id, victim, Float:multiplier = 1.0 )
 #define shAddXP sh_add_kill_xp

@@ -88,7 +88,7 @@ public rom_kd(id)
    // Let them know they already used their ultimate if they have 
    if(sh_get_cooldown_flag(id)) 
    { 
-      playSoundDenySelect(id) 
+      sh_sound_deny(id) 
       return PLUGIN_HANDLED 
    } 
 
@@ -96,7 +96,7 @@ public rom_kd(id)
    if(gRomTimer[id] > 0) return PLUGIN_HANDLED 
 
    gRomTimer[id] = get_cvar_num("rom_sensetime") + 1 
-   ultimateTimer(id, get_cvar_num("rom_cooldown") * 1.0)
+   sh_set_cooldown(id, get_cvar_num("rom_cooldown") * 1.0)
    new var = get_cvar_num("rom_sensetime")*10
 
    for(new x = 1; x < sh_maxplayers()+1; x++) 

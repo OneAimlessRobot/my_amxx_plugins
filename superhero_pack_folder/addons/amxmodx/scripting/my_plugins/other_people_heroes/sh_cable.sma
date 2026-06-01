@@ -100,12 +100,12 @@ public cable_kd(id)
 
 	if ( laser_shots[id] <= 0 ) {
 		client_print(id,print_center,"No Laser Gun Bullets Left" )
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
@@ -126,7 +126,7 @@ public cable_ku(id)
 	remove_task(id+25735)
 
 	// Use the ultimate
-	ultimateTimer(id, get_cvar_float("cable_cooldown") )
+	sh_set_cooldown(id, get_cvar_float("cable_cooldown") )
 
 }
 //----------------------------------------------------------------------------------------------
@@ -221,7 +221,7 @@ public fire_laser(id)
 
 	if ( laser_shots[id] <= 0 ) {
 		client_print(id,print_center,"No Laser Gun Bullets Left" )
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 

@@ -85,13 +85,13 @@ public blink_kd(id)
 		blinkAmount[id] = 0
 		formatex(text, 127, "You have no blinks left" )
 		show_hudmessage( id, text)
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	// Let them know they already used their ultimate if they have
 	if (sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
@@ -99,7 +99,7 @@ public blink_kd(id)
 	new wpnid, clip, ammo
 	wpnid = get_user_weapon(id, clip, ammo)
 	if (wpnid == CSW_C4 && entity_get_int(id, EV_INT_button)&IN_ATTACK) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
@@ -110,7 +110,7 @@ public blink_kd(id)
 		show_hudmessage( id, text)
 	}
 
-	ultimateTimer(id, get_cvar_float("blink_cooldown"))
+	sh_set_cooldown(id, get_cvar_float("blink_cooldown"))
 
 	new Float:blinkdelay = get_cvar_float("blink_delay")
 	if (blinkdelay < 0.0) blinkdelay = 0.0
@@ -147,7 +147,7 @@ public blink_teleport(id)
 	wpnid = get_user_weapon(id, clip, ammo)
 	if (wpnid == CSW_C4 && entity_get_int(id, EV_INT_button)&IN_ATTACK) {
 		blinkAmount[id]++
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 

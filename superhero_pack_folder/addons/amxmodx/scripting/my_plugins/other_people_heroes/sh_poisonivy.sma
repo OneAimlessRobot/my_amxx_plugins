@@ -177,7 +177,7 @@ public poisonivy_damage(id)
 
 		// Set a cooldown if there is one until user can poison another player
 		if (get_cvar_float("poisonivy_cooldown") > 0.0){
-			ultimateTimer(attacker, get_cvar_float("poisonivy_cooldown"))
+			sh_set_cooldown(attacker, get_cvar_float("poisonivy_cooldown"))
 		}
 	}
 }

@@ -48,7 +48,7 @@ switch(key)
 public speed_kd(id) {
 	
 	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return;
-	if(!gCanJump[id]) { playSoundDenySelect(id); client_print(id, print_chat, "[SH](Speed Racer) You can only Super-Jump once per round!"); return; }
+	if(!gCanJump[id]) { sh_sound_deny(id); client_print(id, print_chat, "[SH](Speed Racer) You can only Super-Jump once per round!"); return; }
 
 	new Float:velocity[3]
 	pev(id, pev_velocity, velocity);

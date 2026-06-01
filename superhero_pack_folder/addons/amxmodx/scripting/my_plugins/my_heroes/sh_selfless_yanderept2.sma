@@ -638,7 +638,7 @@ public yandere_kd(id)
 				sh_get_id_bit(id,SH_IS_PSYCHOSIS) ) {
 			
 			if(!is_user_bot(id)){
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 				sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
 			}
 			return
@@ -653,7 +653,7 @@ public yandere_kd(id)
 		if(!jet_loaded(id)&&!jet_deployed_here){
 
 			if(!is_user_bot(id)){
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 				sh_chat_message(id, gHeroID, "The jet is not loaded yet!")
 			}
 			return

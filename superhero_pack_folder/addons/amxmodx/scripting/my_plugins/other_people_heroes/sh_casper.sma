@@ -117,7 +117,7 @@ public casper_kd(id)
 	//If the user already has noclip (prob from another hero) cancel this keydown
 	if ( get_user_noclip(id) == 1 || gInGhostMode[id] ) {
 		client_print(id, print_chat, "[SH](Casper) You are already using noclip")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 

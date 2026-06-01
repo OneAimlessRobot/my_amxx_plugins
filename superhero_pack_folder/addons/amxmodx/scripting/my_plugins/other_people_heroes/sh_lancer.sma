@@ -113,7 +113,7 @@ public lancer_kd(id)
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		client_print(id, print_chat, "[SH](Lancer) Charge Failure, you must wait longer")
 		return
 	}
@@ -457,7 +457,7 @@ public torpedo_touch(pToucher, pTouched) {
 
 	remove_entity(pToucher)
 
-	if ( get_cvar_float("lancer_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("lancer_cooldown"))
+	if ( get_cvar_float("lancer_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("lancer_cooldown"))
 
 	// Reset the Varible
 	g_powerID[id] = 0

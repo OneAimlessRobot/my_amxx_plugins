@@ -71,12 +71,12 @@ public Forge_kd(id)
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	make_beam(id)
-	ultimateTimer(id, get_cvar_float("Forge_cooldown") * 1.0 )
+	sh_set_cooldown(id, get_cvar_float("Forge_cooldown") * 1.0 )
 
 	return PLUGIN_HANDLED
 }

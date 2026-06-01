@@ -98,7 +98,7 @@ public frieza_kd(id)
     if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return 
 
     if(sh_get_cooldown_flag(id)){ 
-        playSoundDenySelect(id) 
+        sh_sound_deny(id) 
         return 
     } 
     diskTimer[id] = get_cvar_num("frieza_disklife") //How long the disk can fly
@@ -106,7 +106,7 @@ public frieza_kd(id)
     fire_disk(id) 
 
     if(get_cvar_float("frieza_cooldown") > 0.0) 
-        ultimateTimer(id, get_cvar_float("frieza_cooldown")) //cooldown timer
+        sh_set_cooldown(id, get_cvar_float("frieza_cooldown")) //cooldown timer
 } 
 //---------------------------------------------------------------------------------------- 
 public sh_client_spawn(id) 

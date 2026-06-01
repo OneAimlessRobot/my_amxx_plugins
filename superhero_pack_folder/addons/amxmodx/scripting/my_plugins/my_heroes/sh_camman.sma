@@ -126,14 +126,14 @@ public camman_kd(id){
 				
 				if(!is_user_bot(id)){
 					sh_chat_message(id,gHeroID,"N spammes!!!!")
-					playSoundDenySelect(id)
+					sh_sound_deny(id)
 				}
 				return PLUGIN_HANDLED
 			}
 			if(Get_BitVar(gHasCameraMask,id)){
 				if(!is_user_bot(id)){
 					sh_chat_message(id,gHeroID,"Camera already planted")
-					playSoundDenySelect(id)
+					sh_sound_deny(id)
 				}
 				return PLUGIN_HANDLED;
 				
@@ -175,7 +175,7 @@ public camman_ku(id)
 	}
 	if(camera_get_camera_planted(id)&&!sh_get_cooldown_flag(id)){
 		
-		ultimateTimer(id, float(cvar_val(num, pcvar_camera_cooldown)))
+		sh_set_cooldown(id, float(cvar_val(num, pcvar_camera_cooldown)))
 	}
 	if(camera_get_camera_disarming(id)){
 		if(!is_user_bot(id)){

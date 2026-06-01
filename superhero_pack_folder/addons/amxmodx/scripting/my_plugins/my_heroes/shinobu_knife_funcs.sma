@@ -179,7 +179,7 @@ shinobu_teleport(id,attacker)
 	orient_user(attacker,g_shinobu_dst_angles[attacker],g_shinobu_dst_v_angles[attacker])
 	set_user_origin(attacker,g_shinobu_dst_positions[attacker])
 	
-	ultimateTimer(attacker, shinobu_get_cooldown())
+	sh_set_cooldown(attacker, shinobu_get_cooldown())
 
 	positionChangeTimer(id,attacker)
 	
@@ -250,7 +250,7 @@ public _nani_behind_player(iPlugin,iParams){
 	}
 	if ( sh_get_cooldown_flag(tele_player) ) {
 		if(!is_user_bot(tele_player)){
-			playSoundDenySelect(tele_player)
+			sh_sound_deny(tele_player)
 			sh_chat_message(tele_player,gHeroID,"Teleport canceled. Still on cooldown!");
 		}
 		return

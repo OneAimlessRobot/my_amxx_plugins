@@ -110,7 +110,7 @@ public libertylad_kd(id)
 	{
 	if (get_cvar_float("libertylad_duration") > 0.0)
 	{
-	ultimateTimer(id, get_cvar_float("libertylad_duration"))
+	sh_set_cooldown(id, get_cvar_float("libertylad_duration"))
 	}
 	emit_sound(id, CHAN_BODY, "weapons/rocketfire1.wav", 1.0, ATTN_NORM,0,PITCH_NORM)
 	libertylad_createflare(id)
@@ -118,7 +118,7 @@ public libertylad_kd(id)
 	}
 	else if (sh_get_cooldown_flag(id))
 	{
-	playSoundDenySelect(id)
+	sh_sound_deny(id)
 	client_print(id, print_chat, "[SH](Liberty Lad) Please Wait Until Previous Flare Goes Off")
 	}
 	}

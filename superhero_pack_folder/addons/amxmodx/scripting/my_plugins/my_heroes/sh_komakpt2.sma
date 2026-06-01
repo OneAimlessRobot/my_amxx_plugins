@@ -312,7 +312,7 @@ public Komak_hits_increase_rpm(id, idinflictor, attacker, Float:damage, damagebi
 		if((g_komak_hits[attacker]>=max_rpm)&&BLOW_ENGINE){
 		
 			reset_komak(attacker)
-			ultimateTimer(attacker, blown_engine_cooldown * 1.0)
+			sh_set_cooldown(attacker, blown_engine_cooldown * 1.0)
 			gEngineRepairTimer[attacker]=blown_engine_cooldown
 			sh_chat_message(attacker,gHeroID,"Blown engine!!!!")
 			emit_sound(id_weapon_ent,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -530,7 +530,7 @@ public komak_kd(id)
 
 	if ( sh_get_cooldown_flag(id)) {
 		sh_chat_message(id,gHeroID,"Youve blown the engine! Wait %d more seconds!",gEngineRepairTimer[id])
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 	Assign_BitVar(gClutchDown_mask, id,true_for_macro);
@@ -553,7 +553,7 @@ public komak_ku(id)
 	
 	if(g_komak_hits[id]<red_line){
 		
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	
 	}

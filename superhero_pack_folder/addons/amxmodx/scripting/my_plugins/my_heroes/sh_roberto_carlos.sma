@@ -159,17 +159,17 @@ public roberto_kd(id)
 	if(!gNumBalls[id]){
 		
 		sh_chat_message(id,gHeroID,"Out of balls!!!!")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 	if(sh_get_cooldown_flag(id)){
 		
 		sh_chat_message(id,gHeroID,"Intervalo!!!!")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 	
-	ultimateTimer(id, cvar_val(float, pcvar_ball_cooldown))
+	sh_set_cooldown(id, cvar_val(float, pcvar_ball_cooldown))
 	kick_the_ball(id)
 	
 	return PLUGIN_HANDLED

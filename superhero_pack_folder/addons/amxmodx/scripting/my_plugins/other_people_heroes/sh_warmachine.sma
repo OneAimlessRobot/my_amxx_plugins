@@ -177,7 +177,7 @@ public warmachine_loop(id)
 	// OK - We'll make this armor based - but also add armor
 	// So you can run out of fuel, but get it back too
 	if ( gUseFuel != 0 && gFuelCost > userArmor && gJetPackRunning[id] ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		gJetPackRunning[id] = false
 		set_user_info(id, "JP", "0")
 		emit_sound(id, CHAN_WEAPON, "debris/beamstart11.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)

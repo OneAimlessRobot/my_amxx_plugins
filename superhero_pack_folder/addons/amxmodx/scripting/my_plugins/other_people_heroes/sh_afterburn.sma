@@ -96,12 +96,12 @@ public afterburn_kd(id)
 
 	if ( entity_get_int( id, EV_INT_waterlevel ) == 3 ) {
 		client_print(id,print_chat,"[SH] You cannot use the Flame Thrower while underwater")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -181,7 +181,7 @@ public afterburn_kd(id)
 	set_task(0.1, "te_spray", 0, args, 6, "a", 2)
 	check_burnzone(id, vec, aimvec, speed1, speed2, radius)
 
-	if (get_cvar_float("afterburn_cooldown") > 0.0) ultimateTimer(id, get_cvar_float("afterburn_cooldown"))
+	if (get_cvar_float("afterburn_cooldown") > 0.0) sh_set_cooldown(id, get_cvar_float("afterburn_cooldown"))
 }
 //----------------------------------------------------------------------------------------------
 public te_spray(args[])

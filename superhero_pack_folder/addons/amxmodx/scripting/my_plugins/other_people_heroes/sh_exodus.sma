@@ -110,7 +110,7 @@ public exodus_kd(id)
 	}
 
 	if ( sh_get_cooldown_flag(id) || g_grabTimer[id] >= 0 ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -254,7 +254,7 @@ public release(id)
 {
 	if ( g_grabbedID[id] ) {
 		if ( is_user_alive(id) ) {
-			if (get_cvar_float("exodus_cooldown") > 0.0) ultimateTimer(id, get_cvar_float("exodus_cooldown"))
+			if (get_cvar_float("exodus_cooldown") > 0.0) sh_set_cooldown(id, get_cvar_float("exodus_cooldown"))
 		}
 		if ( is_user_connected(g_grabbedID[id]) ) {
 			sh_reset_min_gravity(g_grabbedID[id])

@@ -63,7 +63,7 @@ public luke_kd(id)
 
 	if ( sh_get_cooldown_flag(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED 
 	}	
 
@@ -91,7 +91,7 @@ public luke_kd(id)
 	ls_stat[id] = 1
 	emit_sound(id,CHAN_ITEM, "ambience/zapmachine.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	sh_set_cooldown_flag(id)
-	ultimateTimer(id, get_cvar_num("luke_sabertime")+get_cvar_num("luke_cooldown") * 1.0)
+	sh_set_cooldown(id, get_cvar_num("luke_sabertime")+get_cvar_num("luke_cooldown") * 1.0)
 
 	return PLUGIN_HANDLED
 }

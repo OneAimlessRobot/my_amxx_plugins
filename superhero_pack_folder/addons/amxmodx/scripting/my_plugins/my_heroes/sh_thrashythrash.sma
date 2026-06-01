@@ -75,6 +75,7 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	RegisterHam(Ham_TraceAttack,"player","thrashy_damage",_,true)
 
+	register_event("DeathMsg","thrash_brat_death","a");
 
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
@@ -185,19 +186,19 @@ switch(key)
 public thrashy_kd(id)
 {
 	if ( !is_user_alive(id) ) 
-		return PLUGIN_HANDLED
+		return
 
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id) || !gThrashyExplosionAmmo[id]) 
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		if ( gThrashyExplosionAmmo[id] ){
 			sh_chat_message( id, gHeroID, "You Have to wait for the cooldown!!!!!! Sry :(" );
 		}
 		else{
 			sh_chat_message( id, gHeroID, "You have no ammo!!! Stoooooooooop you ugly >(((((( (jk I love u queen)!!!!!!!");
 		}
-		return PLUGIN_HANDLED
+		return
 	}
 
 	BlowUp(id,false);
@@ -207,13 +208,13 @@ public thrashy_kd(id)
 	if ( 0 < currAmmount < 5 ){
 		sh_chat_message( id, gHeroID, "You Have %d Dynamites%s Left", currAmmount, currAmmount == 1 ? "" : "s" );
 	}
-	ultimateTimer(id, cooldown * 1.0)
+	sh_set_cooldown(id, cooldown * 1.0)
 
 	
 	// colussus Messsage
 	//  emit_sound(id,CHAN_STATIC, g_colussusSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
 
-	return PLUGIN_HANDLED
+	return
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -260,15 +261,17 @@ public thrashy_weapons(id)
 		sh_give_weapon(id,THRASHER_WEAPON_ID)
 	}
 }
-public sh_client_death(id){
-	
+//I need to use this in the case of self destruction mechanics
+public thrash_brat_death()
+{	
+	new id = read_data(1)
+
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
 		sh_unset_cooldown_flag(id)
 		BlowUp(id,true)
 	}
 }
-//RegisterHam(Ham_TraceAttack,"player","thrashy_damage",_,true)
 public thrashy_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {	
 	if(damage<=0.0){

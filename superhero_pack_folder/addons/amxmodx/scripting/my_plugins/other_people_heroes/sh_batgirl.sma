@@ -100,7 +100,7 @@ public batgirl_kd(id)
 		new hooksleft = gHooksLeft[id]
 
 		if ( hooksleft == 0 ) {
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			return
 		}
 

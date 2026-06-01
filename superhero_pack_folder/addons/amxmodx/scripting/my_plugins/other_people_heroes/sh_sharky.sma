@@ -90,7 +90,7 @@ public sharky_kd(id)
   // Let them know they already used their ultimate if they have
   if ( sh_get_cooldown_flag(id) )
   {
-    playSoundDenySelect(id)
+    sh_sound_deny(id)
     return PLUGIN_HANDLED 
   }
   
@@ -103,7 +103,7 @@ public sharky_kd(id)
   }
   set_user_footsteps(id,1)
   shSetMaxSpeed(gHeroName, "sharky_speed", "[0]" )
-  ultimateTimer(id, get_cvar_num("sharky_cooldown") * 1.0)
+  sh_set_cooldown(id, get_cvar_num("sharky_cooldown") * 1.0)
   gSharkyMode[id]=true
  
   // sharky Messsage 

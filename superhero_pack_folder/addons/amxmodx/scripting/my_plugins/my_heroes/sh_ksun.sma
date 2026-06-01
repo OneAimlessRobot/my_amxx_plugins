@@ -433,7 +433,7 @@ public ksun_kd(id)
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id)) {
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
 		}
 		return PLUGIN_HANDLED
@@ -441,7 +441,7 @@ public ksun_kd(id)
 	else if(spores_busy(id)||ksun_player_is_in_ultimate(id)){
 		
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			if(!ksun_player_is_in_ultimate(id)){
 				sh_chat_message(id,gHeroID,"Some launched spores still busy!");
 			}
@@ -465,7 +465,7 @@ public ksun_kd(id)
 			if(!is_user_bot(id)){
 				client_print(id,print_center,"%s",
 					(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1)?"[SH] ksun:^nKill someone with your M4A1 first":"[SH] ksun:^nKill someone first");
-				playSoundDenySelect(id)
+				sh_sound_deny(id)
 			}
 			return PLUGIN_HANDLED
 		
@@ -486,7 +486,7 @@ public ksun_kd(id)
 		ksun_player_engage_ultimate(id)
 	}
 	
-	ultimateTimer(id, cvar_val(float, pcvar_cooldown))
+	sh_set_cooldown(id, cvar_val(float, pcvar_cooldown))
 	return PLUGIN_HANDLED
 }
 

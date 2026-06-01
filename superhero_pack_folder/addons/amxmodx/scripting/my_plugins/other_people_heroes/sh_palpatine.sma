@@ -98,7 +98,7 @@ public palpatine_kd(id)
   // Let them know they already used their ultimate if they have
   if (sh_get_cooldown_flag(id))
   {
-    playSoundDenySelect(id)
+    sh_sound_deny(id)
     return PLUGIN_HANDLED 
   }  
   
@@ -117,7 +117,7 @@ public palpatine_kd(id)
   new palpatineCooldown=get_cvar_num("palpatine_cooldown")
   new palpatineDeathRadius=get_cvar_num("palpatine_deathradius")
   
-  ultimateTimer(id, palpatineCooldown * 1.0)
+  sh_set_cooldown(id, palpatineCooldown * 1.0)
   g_palpatineTimer[id]=get_cvar_num("palpatine_time")+1
   
   get_user_origin(id,userOrigin)

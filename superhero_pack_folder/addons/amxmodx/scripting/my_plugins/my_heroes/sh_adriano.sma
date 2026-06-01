@@ -186,21 +186,18 @@ public heal_teamate(id,teamate){
 	}
 	
 }
-//TODO
-//Replace all of those trace attacks with take damages
-//As they are screwing with pain killer for some reason
-public trace_adriano(Victim, idinflictor, Attacker, Float:damage, damagebits)
+public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
 {	
-
 	if(damage<=0.0){
 		return HAM_IGNORED
 	}
-
+	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new weapon,my_hitpoint_enum:the_hitpoint;
-	get_user_attacker(Victim,weapon,the_hitpoint)
+	new weapon = get_user_weapon(attacker)
+	
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
 	switch(weapon){
 		case CSW_ETHEREAL:{

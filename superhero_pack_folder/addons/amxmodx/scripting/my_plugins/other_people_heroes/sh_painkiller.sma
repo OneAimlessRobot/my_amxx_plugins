@@ -59,19 +59,47 @@ public client_authorized(id)
 
 public Painkiller_TakeDamage(this, idinflictor, idattacker, Float:damage, damagebits)
 {
-	if ( sh_get_user_has_hero(this,gHeroID)&& ( get_user_health(this) - floatround(damage) ) <= 0 ) 
+	if ( !sh_get_user_has_hero(this,gHeroID) ) 
 	{
+
+		return DMG_FWD_PASS
+	}
+	
+	if (DeathNotice[this] ) 
+	{
+		return HAM_SUPERCEDE
+	}
+	else if((( get_user_health(this) - floatround(damage)  ) <= 0)){
 		Death_Notice(this, idattacker)
 		AttackerInfo[this] = idattacker
 		return HAM_SUPERCEDE
-	}
-	if ( sh_get_user_has_hero(this,gHeroID) && DeathNotice[this] == true ) 
-	{
-		return HAM_SUPERCEDE
+
 	}
 	return HAM_IGNORED
 }
 
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+	
+	if ( !sh_get_user_has_hero(victim,gHeroID) ) 
+	{
+
+		return DMG_FWD_PASS
+	}
+	if(((custom_weapon_id!=custom_dmg_id_painkiller_death))){
+
+		if (DeathNotice[victim] ) 
+		{
+			return DMG_FWD_BLOCK
+		}
+		else if((( get_user_health(victim) - damage ) <= 0)){
+			Death_Notice(victim, attacker)
+			AttackerInfo[victim] = attacker
+			return DMG_FWD_BLOCK
+
+		}
+	}
+	return DMG_FWD_PASS
+}
 public sh_client_spawn(id)
 {
 	DeathNotice[id] = false
@@ -99,7 +127,8 @@ public Painkiller_Death(id)
 	DeathNotice[id] = false
 	
 	if ( is_user_connected(killer) )
-	{
+	{	
+		set_user_godmode(id,0)
 		sh_extra_damage(id, killer, get_user_health(id)+4,
 						MY_HIT_HEAD,
 						_,_,_,_,_,

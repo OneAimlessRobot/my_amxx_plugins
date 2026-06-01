@@ -94,7 +94,7 @@ public cyclone_kd(id)
 
 	if( gCurrentCyclone || sh_get_cooldown_flag(id) ) {
 		client_print(id,print_chat,"[SH](Cyclone) The wind has no energy, let the wind rest first!")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
@@ -105,7 +105,7 @@ public cyclone_kd(id)
 	gForce = get_cvar_num("cyclone_force")
 
 	sh_set_cooldown_flag(id)
-	ultimateTimer(id, float(get_cvar_num("cyclone_cooldown")))
+	sh_set_cooldown(id, float(get_cvar_num("cyclone_cooldown")))
 	
 	gRange = get_cvar_num("cyclone_range")
 

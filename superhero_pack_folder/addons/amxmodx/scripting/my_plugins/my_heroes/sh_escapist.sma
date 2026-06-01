@@ -239,7 +239,7 @@ public escapist_kd(id)
 
 	if ( !hasRoundStarted() || !is_user_alive(id)||!is_user_connected(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 

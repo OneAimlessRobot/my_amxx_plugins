@@ -226,12 +226,12 @@ public fire_laser(id)
   
   if ( laser_shots[id]<=0 ) 
   {  
-    playSoundDenySelect(id)
+    sh_sound_deny(id)
     return
   }
   
   // Use the Ultimate
-  // ultimateTimer(id, get_cvar_float("megaman_cooldown")
+  // sh_set_cooldown(id, get_cvar_float("megaman_cooldown")
   
   // Photon Ammo Left
   laser_shots[id]--  

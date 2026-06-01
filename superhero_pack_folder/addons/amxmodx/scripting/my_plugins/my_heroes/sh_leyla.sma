@@ -161,7 +161,7 @@ public unpoor_teamate(id,teamate,ammount,type_of_trade){
 					cs_set_user_money(id,normal_leyla_money-real_ammount,1)
 				}
 				else{
-					playSoundDenySelect(id)
+					sh_sound_deny(id)
 					
 				}
 			}

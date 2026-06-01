@@ -158,7 +158,7 @@ public triedge_hookOn(id)
     if ( !is_user_alive(id) ) return
 
     if ( g_hooksLeft[id] == 0 ) {
-        playSoundDenySelect(id)
+        sh_sound_deny(id)
         return
     }
 

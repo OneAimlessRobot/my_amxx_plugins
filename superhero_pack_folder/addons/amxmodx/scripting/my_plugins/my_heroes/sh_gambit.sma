@@ -178,7 +178,7 @@ public cooldown(parm[])
 
 	// Cooldown will only be set if user hurts someone with a gambit nade
 	new Float:gambitCooldown = get_cvar_float("gambit_powertimer")
-	if (gambitCooldown > 0.0) ultimateTimer(id, gambitCooldown)
+	if (gambitCooldown > 0.0) sh_set_cooldown(id, gambitCooldown)
 }
 //----------------------------------------------------------------------------------------------
 public on_AmmoX(id)

@@ -50,13 +50,13 @@ public pesk_kd(id)
 	if ( is_user_alive(id) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id))
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 
 	new peskCooldown=get_cvar_num("pesk_cooldown")
 	if ( peskCooldown>0 )
-		ultimateTimer(id, peskCooldown * 1.0 )
+		sh_set_cooldown(id, peskCooldown * 1.0 )
 	beamp(id)
 	return PLUGIN_HANDLED
 }

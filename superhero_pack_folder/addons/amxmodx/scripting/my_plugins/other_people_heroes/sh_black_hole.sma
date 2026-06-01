@@ -82,19 +82,19 @@ public black_kd(id)
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
 
 	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return 
 	}
 	if( gCurrentBH ) {
 		client_print(id,print_chat,"[SH](Black Hole) There is one in use wait till its done")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return 
 	}
 	
 	gRange = get_cvar_num("black_range")
 	gForce = get_cvar_num("black_force")
 	gBHTimer = get_cvar_num("black_time")
-	if (get_cvar_float("black_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("black_cooldown"))
+	if (get_cvar_float("black_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("black_cooldown"))
 	
 	black_create(id)
 	positionChangeTimer(id)

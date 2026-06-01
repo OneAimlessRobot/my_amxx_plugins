@@ -149,7 +149,7 @@ thor_thunder_damage(attacker, tg){
 	if ( is_user_alive(attacker) ) {
 		// Set cooldown if Thor is still alive
 		if (thor_cooldown > 0){
-			ultimateTimer(attacker, float(thor_cooldown))
+			sh_set_cooldown(attacker, float(thor_cooldown))
 		}
 	}
 }

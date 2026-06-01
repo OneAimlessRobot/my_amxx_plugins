@@ -54,7 +54,7 @@ if (sh_get_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id))
 			get_user_aiming(enemy,aid,abody)
 			if (aid==id) {
 				parm[0]=id
-				ultimateTimer(id, get_cvar_num("mirage_cooldown") * 1.0)
+				sh_set_cooldown(id, get_cvar_num("mirage_cooldown") * 1.0)
 				for(i=1; i<=floatround(get_cvar_float("mirage_fadetime")*10); i++) {
 					parm[1]=i
 					set_task(i*0.1,"turn_invis",i*100+id,parm,2)

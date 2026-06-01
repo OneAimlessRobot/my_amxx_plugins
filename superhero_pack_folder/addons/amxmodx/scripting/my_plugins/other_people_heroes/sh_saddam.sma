@@ -93,7 +93,7 @@ public saddam_kd(id)
 	
 	if (sh_get_cooldown_flag(id)) 
 	{
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	
@@ -112,7 +112,7 @@ public saddam_kd(id)
 	
 	set_task( get_cvar_float("saddam_delay") , "saddam_hide", id+520 )
 	
-	ultimateTimer( id, get_cvar_float("saddam_cooldown") )
+	sh_set_cooldown( id, get_cvar_float("saddam_cooldown") )
 }
 //----------------------------------------------------------------------------------------------
 public saddam_hide(id) 

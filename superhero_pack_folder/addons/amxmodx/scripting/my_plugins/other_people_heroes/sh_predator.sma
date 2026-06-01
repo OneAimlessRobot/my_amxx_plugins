@@ -280,12 +280,12 @@ public fire_laser(id)
 	
 	if ( laser_shots[id]<=0 ) 
 	{  
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	
 	// Use the ultimate
-	// ultimateTimer(id, get_cvar_float("pred_cooldown") )
+	// sh_set_cooldown(id, get_cvar_float("pred_cooldown") )
 	
 	// Make sure still on knife
 	new clip,ammo,weaponID=get_user_weapon(id,clip,ammo);

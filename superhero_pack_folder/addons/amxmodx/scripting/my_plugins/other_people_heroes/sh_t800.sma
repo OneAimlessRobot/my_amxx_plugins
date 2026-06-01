@@ -198,14 +198,14 @@ public t800_kd(id)
 	
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id) || gT800Timer[id] > 0 ) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 	
 	if ( is_user_connected(id) && get_user_godmode(id) == 1 ) {
 		
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			client_print(id,print_chat,"[SH](T-800) Error loading you are already in godmode")
 		}
 		return PLUGIN_HANDLED
@@ -216,7 +216,7 @@ public t800_kd(id)
 	set_user_godmode(id,1)
 	t800_morph(id)
 	gKills = get_user_frags(id)
-	ultimateTimer(id, get_cvar_num("t800_cooldown") * 1.0)
+	sh_set_cooldown(id, get_cvar_num("t800_cooldown") * 1.0)
 	
 	new message[128]
 	formatex(message, 127, "You have become a T-800 KILL!")

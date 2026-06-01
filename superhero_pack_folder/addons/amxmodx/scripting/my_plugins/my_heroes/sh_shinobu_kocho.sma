@@ -342,9 +342,9 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public shinobu_kd(id)
 {
-	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
+	if ( !is_user_alive(id) ) return
 	
-	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	
 
 	// Let them know they already used their ultimate if they have
@@ -352,23 +352,22 @@ public shinobu_kd(id)
 	if(g_shinobu_tagged_player[id]<=0){
 
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id,gHeroID,"Tag someone to teleport!");
 		}
-		return PLUGIN_HANDLED
+		return
 	}
 	else if(!is_user_alive(g_shinobu_tagged_player[id])){
 		new tg_is_connected=is_user_connected(g_shinobu_tagged_player[id])
 		if(!is_user_bot(id)){
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id,gHeroID, "Unavailable. They are %s",
 						tg_is_connected?"Not alive! (Try again when they respawn ^^-^^)":"Not connected.");
 		}
-		return PLUGIN_HANDLED
+		return
 	}
 	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,sizeof(shinobu_visiting_sentences)-1)])	
 	shinobu_teleport_init(id)
-	return PLUGIN_HANDLED
 }
 
 public sh_client_death(id,killer)

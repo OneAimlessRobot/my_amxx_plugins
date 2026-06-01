@@ -79,12 +79,12 @@ public jaws_kd(id)
 
 	if(JawsEnt || sh_get_cooldown_flag(id)) {
 		client_print(id,print_chat,"[SH](Jaws) Out for lunch, back in 5 minutes")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 	
 	sh_set_cooldown_flag(id)
-	ultimateTimer(id, float(get_cvar_num("jaws_cooldown")))
+	sh_set_cooldown(id, float(get_cvar_num("jaws_cooldown")))
 
 	jaws_create(id)
 	

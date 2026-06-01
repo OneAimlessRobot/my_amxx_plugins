@@ -254,7 +254,7 @@ public lightnings_shot(id)
 	// If you have no lightnings
 	if(lightnings_shots[id] == 0) {
 		client_print(id, print_center, "You have no lightnings")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
 

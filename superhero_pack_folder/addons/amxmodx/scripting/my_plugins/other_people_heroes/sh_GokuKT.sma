@@ -130,7 +130,7 @@ public gokukt_kd(id)
 	
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	// Make sure they're not in the middle of Kaioken already
@@ -138,7 +138,7 @@ public gokukt_kd(id)
 	
 	GokuKTTimer[id] = get_pcvar_num(goku_time) + 1
 	gokukt_kaiokenmode(id)
-	ultimateTimer(id, get_pcvar_float(goku_cooldown))
+	sh_set_cooldown(id, get_pcvar_float(goku_cooldown))
 }
 //----------------------------------------------------------------------------------------------
 public gokukt_loop()

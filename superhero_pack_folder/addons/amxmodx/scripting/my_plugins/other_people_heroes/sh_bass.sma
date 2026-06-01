@@ -155,12 +155,12 @@ public bass_kd(id)
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Bass Shots Left")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -179,7 +179,7 @@ public bass_ku(id)
 	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
 
 	// Use the ultimate
-	if ( get_cvar_float("bass_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("bass_cooldown"))
+	if ( get_cvar_float("bass_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("bass_cooldown"))
 
 	gLaserFired[id] = false
 }
@@ -194,7 +194,7 @@ public fire_laser(id)
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Bass Shots Left")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 

@@ -98,7 +98,7 @@ public blueblood_damage(id)
 
 			gHasWeapons[id] = true
 		}
-		ultimateTimer(attacker, get_cvar_num("blueblood_cooldown") * 1.0)
+		sh_set_cooldown(attacker, get_cvar_num("blueblood_cooldown") * 1.0)
 	}
 }
 

@@ -228,7 +228,7 @@ message_end()
 psychosis_on(id){
 
 gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
-ultimateTimer(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
+sh_set_cooldown(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
 curr_player_pain_sound[id]=generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 UnSet_BitVar(g_yandere_leaped_mask,id);

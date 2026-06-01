@@ -79,7 +79,7 @@ public plugin_init()
 	
 	register_event("CurWeapon", "weaponChange","be","1=1")
 	
-	RegisterHam(Ham_TakeDamage,"player","veronika_damage",_,true)
+	RegisterHam(Ham_TraceAttack,"player","veronika_damage",_,true)
 	
 	//handle when player presses attack2
 	register_forward(FM_CmdStart, "CmdStart")
@@ -157,27 +157,26 @@ public weaponChange(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public veronika_damage(Victim, idinflictor, Attacker, Float:damage, damagebits)
+public veronika_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {	
 
-	if(damage<=0.0){
+	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
 
 	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
 
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	new weapon,my_hitpoint_enum:the_hitpoint;
-	get_user_attacker(Victim,weapon,the_hitpoint)
-
+	new weapon = get_user_weapon(Attacker)
 	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
 
 	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
 
 	if ( has_hero&& weapon == CSW_AK47 ) {
 		// do extra damage
-		new Float:extraDamage =((damage * get_cvar_float("veronika_akmulti") ) - damage)
+		new Float:extraDamage =((Damage * get_cvar_float("veronika_akmulti") ) - Damage)
 		if ( extraDamage > 0.0 ){
 			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
 								the_hitpoint,

@@ -175,12 +175,12 @@ public drstrange_kd(id)
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Mystical Bolts Left")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -207,7 +207,7 @@ public drstrange_ku(id)
 	if ( !hasRoundStarted() || !gUsingLaser[id] ) return
 
 	// Use the ultimate
-	if ( get_cvar_float("drstrange_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("drstrange_cooldown"))
+	if ( get_cvar_float("drstrange_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("drstrange_cooldown"))
 
 	gUsingLaser[id] = false
 
@@ -225,7 +225,7 @@ public fire_laser(id)
 
 	if ( gLaserShots[id] == 0 ) {
 		client_print(id, print_center, "No Mystical Bolts Left")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 

@@ -260,7 +260,7 @@ public jeremy_kd(id)
 
 if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!is_user_connected(id))
 {
-	playSoundDenySelect(id)
+	sh_sound_deny(id)
 	return 
 }
 else{
@@ -268,35 +268,35 @@ else{
 	
 		
 		sh_chat_message(id,gHeroID,"Someone else is already going back to the past!!!!")
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	
 	}
 	if(Get_BitVar(g_player_cooldown_mask,id)){
 		sh_chat_message(id,gHeroID,"Youre still in cooldown! The cooldown is %0.2f seconds", 
 					cvar_val(float, pcvar_gCooldown))
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	if(gJeremyPowerUsedTimes[id]>=gMaxPerPlayer){
 	
 		
 		sh_chat_message(id,gHeroID,"You have already used this power %d times this game. No more", gJeremyPowerUsedTimes[id] )
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	if(gTeamUseCount[gUserTeam[id]]>=gMaxPerTeam){
 	
 		
 		sh_chat_message(id,gHeroID,"Your team has already used this power %d times this game. No more", gTeamUseCount[gUserTeam[id]] )
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	if(gGameUseCount>=gMaxPerGame){
 	
 		
 		sh_chat_message(id,gHeroID,"The power has already been used %d times this game. No more", gGameUseCount )
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 	return_to_past_now(id)

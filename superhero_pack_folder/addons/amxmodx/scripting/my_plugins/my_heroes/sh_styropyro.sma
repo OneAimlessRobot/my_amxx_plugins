@@ -102,13 +102,13 @@ public styropyro_kd(id)
 		
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "Ran out'a microwaves, back to the shop")
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 		}
 		return
 	}
 
 	if ( sh_get_cooldown_flag(id)) {
-		playSoundDenySelect(id)
+		sh_sound_deny(id)
 		return
 	}
 
@@ -128,7 +128,7 @@ public styropyro_ku(id)
 	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
 
 	// Use the ultimate
-	if ( get_cvar_float("styropyro_cooldown") > 0.0 ) ultimateTimer(id, get_cvar_float("styropyro_cooldown"))
+	if ( get_cvar_float("styropyro_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("styropyro_cooldown"))
 
 	gLaserFired[id] = false
 }
@@ -148,7 +148,7 @@ public fire_laser(id)
 		
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "Ran out'a microwaves, back to the shop")
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 		}
 		return
 	}

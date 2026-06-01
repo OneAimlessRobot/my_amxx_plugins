@@ -398,7 +398,7 @@ public cooldown(parm[])
 
 	// Cooldown will only be set if user hurts someone with a Grenader nade
 	new Float:penguinCooldown = get_cvar_float("penguin_cooldown")
-	if (penguinCooldown > 0.0) ultimateTimer(id, penguinCooldown)
+	if (penguinCooldown > 0.0) sh_set_cooldown(id, penguinCooldown)
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

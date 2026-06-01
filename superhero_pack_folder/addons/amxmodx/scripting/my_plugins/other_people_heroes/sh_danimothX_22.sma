@@ -116,7 +116,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 		if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 	
 		if ( sh_get_cooldown_flag(id)) {
-			playSoundDenySelect(id)
+			sh_sound_deny(id)
 			sh_chat_message(id, gHeroID, "Not Enough Energy..")
 			return
 		}
