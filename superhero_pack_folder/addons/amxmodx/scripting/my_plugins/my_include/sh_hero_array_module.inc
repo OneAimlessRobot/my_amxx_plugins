@@ -85,6 +85,43 @@ enum hero_property_flags_id {
 native sh_get_hero_bit(heroID, hero_property_flags_id:the_flag_id)
 
 
+/**
+
+//The third parameter decides the polarity to set
+
+enum hero_property_flags_id {
+	
+	SH_BLEED_POWERS = 0,
+	SH_EXPLOSION_POWERS,
+	SH_SLEEP_POWERS,
+	SH_CORE_HERO,
+	SH_INVISIBILITY_HERO,
+	SH_HEALING_HERO
+};
+
+*/
+
+native sh_assign_id_prop_bit(player_id, hero_property_flags_id:the_flag_id, bool:the_polarity)
+
+/**
+
+//retrieve the bit of a hero bitsum
+
+
+enum hero_property_flags_id {
+	
+	SH_BLEED_POWERS = 0,
+	SH_EXPLOSION_POWERS,
+	SH_SLEEP_POWERS,
+	SH_CORE_HERO,
+	SH_INVISIBILITY_HERO,
+	SH_HEALING_HERO
+};
+
+ */
+native sh_get_id_prop_bit(player_id, hero_property_flags_id:the_flag_id)
+
+
 //Hero ownership
 /*
 

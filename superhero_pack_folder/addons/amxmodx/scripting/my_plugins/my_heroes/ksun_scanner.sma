@@ -343,12 +343,6 @@ show_targets(id){
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheModel,KSUN_SPORE_MDL)
-	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, LAUNCHER_SCAN_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
 	
 }

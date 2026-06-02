@@ -4,6 +4,9 @@
 #define sh_ksun_global_funcs
 
 
+#define KSUN_WPN_MODEL_V "models/shmod/ksun/ksun_rifle/v_r5rifle.mdl"
+#define KSUN_WPN_MODEL_P "models/shmod/ksun/ksun_rifle/p_r5rifle.mdl"
+
 #define KSUN_PLAYER_MODEL "models/player/ksun/ksun.mdl"
 
 #define KSUN_ULTIMATE_READY_SOUND "ambience/alien_zonerator.wav"

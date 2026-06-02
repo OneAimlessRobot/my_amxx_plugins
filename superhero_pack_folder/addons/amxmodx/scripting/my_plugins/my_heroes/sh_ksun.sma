@@ -69,6 +69,8 @@ public plugin_init()
 								"ksun: '...'",
 								"ksun: '...'")
 
+	sh_register_superheromod_weapon_model(gHeroID,KSUN_WEAPON_ID,KSUN_WPN_MODEL_V,KSUN_WPN_MODEL_P)
+
 
 
 	sh_assign_hero_bit(gHeroID,SH_DREAM_EATER_HERO, true)
@@ -118,8 +120,8 @@ public plugin_cfg(){
 
 	gHeroID_chikoi = chikoi_get_hero_id()
 }
-stock covert_spike_damage(id){
-	new the_players[SH_MAXSLOTS], pnum, payer		
+stock covert_spike_damage(id, &bool:spored_someone = false){
+	new the_players[SH_MAXSLOTS], pnum, payer	
 	get_players(the_players, pnum, "a")
 	for (new k = 0; k < pnum; k++) {
 		
@@ -129,6 +131,7 @@ stock covert_spike_damage(id){
 		
 		new Float:times_spiked_by_me=float(get_times_player_spiked_by_player(payer,id))
 		if((times_spiked_by_me>0.0)){
+			spored_someone= true
 			static Float:dmg_to_drain,
 					Float:tmp_it_pct,
 					Float:remaining,
@@ -148,7 +151,7 @@ stock covert_spike_damage(id){
 	}
 }
 
-stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
+stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_someone = false){
 	
 	new CsTeams:att_team=cs_get_user_team(attacker)
 	
@@ -166,7 +169,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 		}
 		new times_spiked_by_them=get_times_player_spiked_player(collector,attacker)
 		if((times_spiked_by_them>0)){
-			
+			spored_someone = true
 			new Float: pctDmgLost=cvar_val(float,pcvar_ksun_dmg_paycut)*float(times_spiked_by_them)
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
 		
@@ -187,8 +190,10 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1){
 public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+	new bool:spored_someone_covert = false,
+		bool:spored_someone_overt = false
 
-	new clip,ammo,weapon=get_user_weapon(attacker,clip,ammo)
+	new weapon=get_user_weapon(attacker)
 	
 	if (idinflictor != attacker)
 	{
@@ -201,14 +206,17 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	if(sh_get_user_has_hero(id,gHeroID) &&COVERT_ABUSE_ENABLED){
 
 	
-		covert_spike_damage(id)
+		covert_spike_damage(id, spored_someone_covert)
 
 	}
 
 	if((damage>0.0)&&OVERT_ABUSE_ENABLED){
-		overt_spike_damage(attacker,damage,1)
+		overt_spike_damage(attacker,damage,1, spored_someone_overt)
 	}
+	if(spored_someone_overt||spored_someone_covert){
 
+		emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
 	if(sh_get_user_has_hero(attacker,gHeroID) ){
 		if(weapon==KSUN_WEAPON_ID){
 			if(sh_get_id_bit(id, SH_IS_SLEEPING)){
@@ -571,21 +579,32 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	
 		return DMG_FWD_PASS
 	}
+	new bool:spored_someone_covert= false,
+		bool:spored_someone_overt= false
 	new bool:victim_has_hero=sh_get_user_has_hero(victim,gHeroID)
 	if(victim_has_hero&&COVERT_ABUSE_ENABLED){
 
 	
-		covert_spike_damage(victim)
+		covert_spike_damage(victim,spored_someone_covert)
 
 	}
 
 	if((damage>0)&&OVERT_ABUSE_ENABLED){
 		new Float:flDamage=float(damage)
-		overt_spike_damage(attacker,flDamage,0)
+		overt_spike_damage(attacker,flDamage,0,spored_someone_overt)
 		damage=floatround(flDamage)
 	}
 	
 
+	if(spored_someone_overt||spored_someone_covert){
+
+		emit_sound(victim, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
 	
 	return DMG_FWD_PASS
+}
+public plugin_precache(){
+
+	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
+
 }

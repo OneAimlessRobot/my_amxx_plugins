@@ -310,12 +310,8 @@ public ksun_rifle_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 {
 	new bool:the_bool_to_use=bool:Get_BitVar(g_player_in_ultimate_mask, Attacker);
 		
-	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE})
-	
+	generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE})
 
-	if(the_result){
-		emit_sound(Attacker,CHAN_BODY,SPORE_PREPARE_SFX,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
-	}
 }
 public ksun_rifle_fast_shot(entity)
 {

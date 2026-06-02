@@ -286,9 +286,6 @@ public destroy_player_launcher(id){
 		
 		if(is_valid_ent(g_player_launcher[id])){
 			
-			
-			emit_sound(id, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-			emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			remove_entity(g_player_launcher[id])
 			g_player_launcher[id]=0
 		
@@ -316,11 +313,6 @@ public sh_client_death(id)
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,KSUN_SPORE_MDL)
-	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
-	engfunc(EngFunc_PrecacheSound, LAUNCHER_SCAN_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
 	
 }

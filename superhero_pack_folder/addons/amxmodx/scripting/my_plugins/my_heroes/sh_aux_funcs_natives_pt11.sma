@@ -10,6 +10,10 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
+
+stock const player_flags_print[]="sh_print_player_hero_flags"
+
+
 enum property_bounds{
 
 	property_name[128],
@@ -46,6 +50,8 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	
+	register_concmd(player_flags_print,"sh_print_player_hero_flags",ADMIN_IMMUNITY,"param 1: playername")
+
 }
 
 
@@ -70,6 +76,39 @@ stock print_table_state(id){
 
 	}
 
+}
+stock print_player_hero_prop_flags(id){
+	server_print("The state of hero prop flags for this player is:^n^n")
+	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
+		
+		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^nDoes player have the flag? %s^n",
+																	i,
+																	sh_property_gating_array[i][property_name],
+																	id,
+																	sh_player_hero_property_tracker[id][i][curr_picked_count],
+																	sh_property_gating_array[i][max_pickable_count],
+																	sh_get_id_prop_bit(id,i)?"Yes!":"No...")
+
+
+	}
+
+}
+
+public sh_print_player_hero_flags(id,level,cid){
+
+	if (!cmd_access(id,level,cid,1))
+		return PLUGIN_HANDLED
+
+	new arg[32]
+	read_argv(1,arg,31)
+
+	new player = cmd_target(id,arg,2)
+
+	if (!player) return PLUGIN_HANDLED
+
+	print_player_hero_prop_flags(player)
+
+	return PLUGIN_HANDLED
 }
 public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	new init_fwd_ret_id:true_return_result = INIT_FWD_PASS
@@ -133,7 +172,10 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 					if(sh_player_hero_property_tracker[id][i][curr_picked_count]
 							<
 						sh_property_gating_array[i][max_pickable_count]){
-
+						
+						if(sh_player_hero_property_tracker[id][i][curr_picked_count]<=0){
+							sh_assign_id_prop_bit(id,i,true)
+						}
 						sh_player_hero_property_tracker[id][i][tmp_bias]++
 					
 
@@ -142,9 +184,13 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 				case SH_HERO_DROP:{
 					
 					if(sh_player_hero_property_tracker[id][i][curr_picked_count]>0){
+						
+						if((sh_player_hero_property_tracker[id][i][curr_picked_count]-1)==0){
 
+							sh_assign_id_prop_bit(id,i,false)
+						}
 						sh_player_hero_property_tracker[id][i][tmp_bias]--
-					
+
 					}
 
 				}

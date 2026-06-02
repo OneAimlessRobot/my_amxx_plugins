@@ -100,8 +100,6 @@ public plugin_cfg(){
 untrack_spore(spore){
 	if(pev_valid(spore)){
 		new spore_owner= entity_get_edict(spore,EV_ENT_euser1)
-		emit_sound(spore, CHAN_STATIC, SPORE_TRAVEL_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		emit_sound(spore, CHAN_STATIC, SPORE_READY_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		entity_set_float( spore, EV_FL_fuser1, 0.0);
 		new Float:origin[3]
 		entity_get_vector(spore,EV_VEC_origin,origin)
@@ -126,7 +124,6 @@ public bool:_ksun_heal(iPlugins, iParms){
 	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
 	ksun_glisten(id)
 	ksun_inc_player_supply_points(id,new_damage)
-	emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	new Float: new_health=floatadd(mate_health,damage)
 	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
@@ -623,10 +620,7 @@ bump_spore(pToucher)
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,KSUN_SPORE_MDL)
-	engfunc(EngFunc_PrecacheSound, SPORE_PREPARE_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_SEND_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
-	engfunc(EngFunc_PrecacheSound, SPORE_READY_SFX)
 	engfunc(EngFunc_PrecacheSound, SPORE_TRAVEL_SFX)
 	
 }

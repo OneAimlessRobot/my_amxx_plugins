@@ -10,29 +10,30 @@ check pawn include for interface
 
 typedef uint32_t state_cell_type_t;
 
+#define BITS_PER_BYTE 8
 
-#define size_of_state_cell_bits (sizeof(state_cell_type_t)*8)
+#define bucket_size (sizeof(state_cell_type_t)*BITS_PER_BYTE)
 
 //We currently support 640 properties
 
 #define SH_MAXHEROS 200
 #define SH_MAX_HERO_PROPERTIES 1280
-#define SH_HERO_PROPERTY_BUCKET_SIZE size_of_state_cell_bits
-#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/SH_HERO_PROPERTY_BUCKET_SIZE)
+#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/bucket_size)
 
 
 //We currently support 640 client states
 
 #define SH_MAXSLOTS 32
 #define SH_MAX_CLIENT_STATES 960
-#define SH_CLIENT_STATE_BUCKET_SIZE size_of_state_cell_bits
-#define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/SH_CLIENT_STATE_BUCKET_SIZE)
+#define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/bucket_size)
 
-#define Get_BitVar(a,b) (a & (1u << (b & (size_of_state_cell_bits-1))))
+#define SH_NUM_CLIENT_HERO_PROP_BUCKETS (SH_MAX_HERO_PROPERTIES/bucket_size)
 
-#define Set_BitVar(a,b) (a |= (1u << (b & (size_of_state_cell_bits-1))))
+#define Get_BitVar(a,b) (a & (1u << (b & (bucket_size-1))))
 
-#define UnSet_BitVar(a,b) (a &= ~(1u << (b & (size_of_state_cell_bits-1))))
+#define Set_BitVar(a,b) (a |= (1u << (b & (bucket_size-1))))
+
+#define UnSet_BitVar(a,b) (a &= ~(1u << (b & (bucket_size-1))))
 
 
 #define Assign_BitVar(a,b,c) ((c) ? Set_BitVar(a,b) : UnSet_BitVar(a,b))
@@ -43,7 +44,8 @@ class HeroArrays
 protected:
 	state_cell_type_t the_memory[SH_MAXHEROS],
 			the_hero_flags[SH_MAXHEROS][SH_NUM_HERO_BIT_BUCKETS],
-			the_player_masks[SH_MAXSLOTS+1][SH_NUM_CLIENT_STATE_BUCKETS];
+			the_player_masks[SH_MAXSLOTS+1][SH_NUM_CLIENT_STATE_BUCKETS],
+			the_player_prop_masks[SH_MAXSLOTS+1][SH_NUM_CLIENT_HERO_PROP_BUCKETS];
 
 public:
 	HeroArrays(void);
@@ -52,6 +54,7 @@ public:
 	void zero_out_hero_props(void);
 	void zero_out_hero_ownership(void);
 	void zero_out_player_masks(void);
+	void zero_out_player_prop_masks(void);
 	
 	bool get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id);  
 	void set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set );
@@ -66,6 +69,9 @@ public:
 	bool get_id_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_effect_flag_id);
 	void assign_id_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set );
 	
+	bool get_id_prop_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_prop_flag_id);
+	void assign_id_prop_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_prop_flag_id, const bool& the_polarity_to_set );
+	
 	
 };
 inline HeroArrays::HeroArrays(void){
@@ -78,6 +84,7 @@ inline void HeroArrays::zero_it_out(void){
 		this->zero_out_hero_ownership();
 		this->zero_out_hero_props();
 		this->zero_out_player_masks();
+		this->zero_out_player_prop_masks();
 		
 }
 
@@ -96,6 +103,13 @@ inline void HeroArrays::zero_out_player_masks(void){
 		
 }
 
+inline void HeroArrays::zero_out_player_prop_masks(void){
+	
+	printf("The player prop masks have been zeroed out!\n");
+	memset(this->the_player_prop_masks,0, sizeof(this->the_player_prop_masks));
+		
+}
+
 
 inline void HeroArrays::zero_out_hero_ownership(void){
 	
@@ -104,18 +118,6 @@ inline void HeroArrays::zero_out_hero_ownership(void){
 		
 }
 
-
-/**
-	//We currently support 1280 hero properties
-	
-	and 200 heroes in total!
-	
-	#define SH_MAXHEROS 200
-	#define SH_MAX_HERO_PROPERTIES 1280
-	#define SH_HERO_PROPERTY_BUCKET_SIZE size_of_state_cell_bits
-	#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/SH_HERO_PROPERTY_BUCKET_SIZE)
-	
-*/
 inline state_cell_type_t HeroArrays::get_max_hero_props(void){
 	
 	return SH_MAX_HERO_PROPERTIES;
@@ -126,8 +128,8 @@ inline bool HeroArrays::get_hero_bit( const state_cell_type_t& the_hero_id,  con
 	if((the_hero_id >= SH_MAXHEROS) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
 		return false;
 	}
-	state_cell_type_t word = (the_flag_id / SH_HERO_PROPERTY_BUCKET_SIZE),
-		bit = (the_flag_id & (SH_HERO_PROPERTY_BUCKET_SIZE-1));
+	state_cell_type_t word = (the_flag_id / bucket_size),
+		bit = (the_flag_id & (bucket_size-1));
 	
 	return Get_BitVar(this->the_hero_flags[the_hero_id][word], bit);
 }
@@ -137,17 +139,9 @@ inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, c
 	if((the_hero_id >= SH_MAXHEROS) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
 		return;
 	}
-	/*
-	printf("Someone is trying to assign\n"
-				"%s polarity\n"
-				"to property %d\n"
-				"in hero %d!\n",
-				the_polarity_to_set?"Positive":"Negative",
-				the_flag_id,
-				the_hero_id);*/
 	
-	state_cell_type_t word = (the_flag_id / SH_HERO_PROPERTY_BUCKET_SIZE),
-		bit = (the_flag_id & (SH_HERO_PROPERTY_BUCKET_SIZE-1));
+	state_cell_type_t word = (the_flag_id / bucket_size),
+		bit = (the_flag_id & (bucket_size-1));
 	
 	Assign_BitVar(this->the_hero_flags[the_hero_id][word], bit, the_polarity_to_set);
 }
@@ -184,18 +178,6 @@ inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, con
 
 
 //Player effect state
-/**
-	//We currently support 640 client states
-	
-	and 32 players in total!
-	
-	#define SH_MAXSLOTS 32
-	#define SH_MAX_CLIENT_STATES 960
-	#define SH_CLIENT_STATE_BUCKET_SIZE size_of_state_cell_bits
-	#define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/SH_CLIENT_STATE_BUCKET_SIZE)
-
-*/
-
 inline state_cell_type_t HeroArrays::get_max_client_states(void){
 	
 	return SH_MAX_CLIENT_STATES;
@@ -208,8 +190,8 @@ inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  con
 		return false;
 	}
 	
-	state_cell_type_t word = (the_effect_flag_id / SH_CLIENT_STATE_BUCKET_SIZE),
-		bit = (the_effect_flag_id & (SH_CLIENT_STATE_BUCKET_SIZE-1));
+	state_cell_type_t word = (the_effect_flag_id / bucket_size),
+		bit = (the_effect_flag_id & (bucket_size-1));
 	
 	return Get_BitVar(this->the_player_masks[the_player_id][word], bit);
 }
@@ -221,10 +203,36 @@ inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, c
 		return;
 	}
 	
-	state_cell_type_t word = (the_effect_flag_id / SH_CLIENT_STATE_BUCKET_SIZE),
-		bit = (the_effect_flag_id & (SH_CLIENT_STATE_BUCKET_SIZE-1));
+	state_cell_type_t word = (the_effect_flag_id / bucket_size),
+		bit = (the_effect_flag_id & (bucket_size-1));
 	
 	Assign_BitVar(this->the_player_masks[the_player_id][word], bit, the_polarity_to_set);
+	
+}
+inline bool HeroArrays::get_id_prop_bit( const state_cell_type_t& the_player_id,  const state_cell_type_t& the_prop_flag_id)
+{
+	
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_prop_flag_id >= SH_MAX_HERO_PROPERTIES)){
+		return false;
+	}
+	
+	state_cell_type_t word = (the_prop_flag_id / bucket_size),
+		bit = (the_prop_flag_id & (bucket_size-1));
+	
+	return Get_BitVar(this->the_player_prop_masks[the_player_id][word], bit);
+}
+
+inline void HeroArrays::assign_id_prop_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_prop_flag_id, const bool& the_polarity_to_set )
+{
+	
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_prop_flag_id >= SH_MAX_HERO_PROPERTIES)){
+		return;
+	}
+	
+	state_cell_type_t word = (the_prop_flag_id / bucket_size),
+		bit = (the_prop_flag_id & (bucket_size-1));
+	
+	Assign_BitVar(this->the_player_prop_masks[the_player_id][word], bit, the_polarity_to_set);
 	
 }
 
