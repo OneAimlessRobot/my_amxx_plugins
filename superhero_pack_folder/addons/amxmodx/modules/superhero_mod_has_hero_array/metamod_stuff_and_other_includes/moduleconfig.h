@@ -5,7 +5,7 @@
 
 // Module info
 #define MODULE_NAME "hero_arrays_module"
-#define MODULE_VERSION "1.5.5"
+#define MODULE_VERSION "1.5.8"
 #define MODULE_AUTHOR "ThrashBrat"
 #define MODULE_URL "lenasattic.ddns.net:11020/webcrookedstuff"
 #define MODULE_LOGTAG "SH_A_M"

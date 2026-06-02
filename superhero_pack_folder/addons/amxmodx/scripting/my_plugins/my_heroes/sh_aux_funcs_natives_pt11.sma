@@ -62,32 +62,28 @@ public plugin_cfg(){
 	
 }
 
-stock print_table_state(id){
-	server_print("The state of the hero property gating table is:^n^n")
-	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
-		
-		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^n",
-																	i,
-																	sh_property_gating_array[i][property_name],
-																	id,
-																	sh_player_hero_property_tracker[id][i][curr_picked_count],
-																	sh_property_gating_array[i][max_pickable_count])
+public plugin_natives(){
 
+	register_native("sh_get_player_has_hero_prop","_sh_get_player_has_hero_prop")
+}
+public bool:_sh_get_player_has_hero_prop(iPLugin,iParams){
 
-	}
-
+	new id = get_param(1),
+		hero_property_flags_id:hero_prop_id = hero_property_flags_id:get_param(2)
+	
+	return (sh_player_hero_property_tracker[id][hero_prop_id][curr_picked_count] > 0)
 }
 stock print_player_hero_prop_flags(id){
 	server_print("The state of hero prop flags for this player is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 		
-		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^nDoes player have the flag? %s^n",
+		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^nis player this property? %s^n",
 																	i,
 																	sh_property_gating_array[i][property_name],
 																	id,
 																	sh_player_hero_property_tracker[id][i][curr_picked_count],
 																	sh_property_gating_array[i][max_pickable_count],
-																	sh_get_id_prop_bit(id,i)?"Yes!":"No...")
+																	(sh_player_hero_property_tracker[id][i][curr_picked_count] > 0))
 
 
 	}
@@ -173,9 +169,6 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 							<
 						sh_property_gating_array[i][max_pickable_count]){
 						
-						if(sh_player_hero_property_tracker[id][i][curr_picked_count]<=0){
-							sh_assign_id_prop_bit(id,i,true)
-						}
 						sh_player_hero_property_tracker[id][i][tmp_bias]++
 					
 
@@ -185,10 +178,6 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 					
 					if(sh_player_hero_property_tracker[id][i][curr_picked_count]>0){
 						
-						if((sh_player_hero_property_tracker[id][i][curr_picked_count]-1)==0){
-
-							sh_assign_id_prop_bit(id,i,false)
-						}
 						sh_player_hero_property_tracker[id][i][tmp_bias]--
 
 					}
