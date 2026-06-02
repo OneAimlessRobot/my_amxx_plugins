@@ -31,14 +31,14 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ETHEREAL], "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -108,14 +108,14 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_names_stock_arr[CSW_ETHEREAL])
+	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	return PLUGIN_HANDLED
 }
 
 public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)
-	fm_give_item(id, weapon_names_stock_arr[CSW_ETHEREAL])
+	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, ETHEREAL_CLIP)
@@ -204,7 +204,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ETHEREAL_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ETHEREAL], entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -392,16 +392,33 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 		set_pev(Ent, pev_impulse, 0)
 	
 	}
-	send_weapon_list_stock(id,
-				Get_BitVar(g_Had_Ethereal, id) ? ETHEREAL_HUD_SPRITES_NAME:weapon_names_stock_arr[CSW_ETHEREAL],
-				g_ammo_ids_for_weapon_ids[CSW_ETHEREAL],
+	(Get_BitVar(g_Had_Ethereal, id)) ?
+		
+		(send_weapon_list_stock(id,
+				ETHEREAL_HUD_SPRITES_NAME ,
+				weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_ammo_id],
 				ETHEREAL_RESERVE,
 				_:MY_SLOT_PRIMARY,
 				6,
-				Get_BitVar(g_Had_Ethereal, id) ? CSW_ETHEREAL:CSW_M4A1,
+				CSW_ETHEREAL,
 				0,
 				MSG_ONE,
-				g_Msg_WeaponList)
+				g_Msg_WeaponList))
+		
+				:
+		
+		
+		(send_weapon_list_stock(id,
+				(weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name]),
+				weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_ammo_id],
+				ETHEREAL_RESERVE,
+				_:MY_SLOT_PRIMARY,
+				6,
+				CSW_M4A1,
+				0,
+				MSG_ONE,
+				g_Msg_WeaponList))
+
 
 	return HAM_HANDLED	
 }

@@ -38,15 +38,15 @@ public plugin_init(){
 	
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
 
-	RegisterHam(Ham_Weapon_Reload,weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[DART_GUN_WEAPON_CLASSID], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(DART_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)

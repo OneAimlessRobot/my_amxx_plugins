@@ -34,14 +34,14 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_PrimaryAttack_Post", 1,true)
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_Deploy_Post", 1, true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_ARIFLE], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_ARIFLE], "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1, true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -104,7 +104,7 @@ public _arifle_unset_arifle(iPlugins,iParams){
 public Get_Arifle(id)
 {
 	Set_BitVar(g_Had_Arifle, id)
-	fm_give_item(id, weapon_names_stock_arr[CSW_ARIFLE])
+	fm_give_item(id, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name])
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, A_RIFLE_CLIP)
@@ -179,7 +179,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ARIFLE_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_names_stock_arr[CSW_ARIFLE], entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)

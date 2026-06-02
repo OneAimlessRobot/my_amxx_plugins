@@ -61,10 +61,10 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_Deploy_Post", 1,true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_MOSIN], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_MOSIN], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 
@@ -115,7 +115,7 @@ public Get_Mosin(id)
 	
 	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_names_stock_arr[CSW_MOSIN])
+	give_item(id, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)

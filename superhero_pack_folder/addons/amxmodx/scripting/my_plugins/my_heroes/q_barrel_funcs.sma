@@ -61,13 +61,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_names_stock_arr[CSW_QUADBARREL], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 	// Cache
@@ -109,7 +109,7 @@ public Get_QuadBarrel(id)
 	UnSet_BitVar(g_SpecialShot, id);
 	Set_BitVar(g_Had_QB, id);
 	
-	give_item(id, weapon_names_stock_arr[CSW_QUADBARREL])
+	give_item(id, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_QUADBARREL, Q_BARREL_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
@@ -435,7 +435,7 @@ public fw_Item_PostFrame(iEnt)
 		message_end()
 		
 		message_begin(MSG_ONE_UNRELIABLE, g_MsgAmmoX, _, id)
-		write_byte(g_ammo_ids_for_weapon_ids[CSW_QUADBARREL])
+		write_byte(weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_ammo_id])
 		write_byte(cs_get_user_bpammo(id, CSW_QUADBARREL))
 		message_end()
 	

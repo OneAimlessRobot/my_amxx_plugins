@@ -406,7 +406,7 @@ public CmdStart(id, uc_handle)
 		UnSet_BitVar(sh_grenade_armed_mask,id);
 		return FMRES_IGNORED
 	}
-	new ent = find_ent_by_owner(-1, weapon_names_stock_arr[wpn_id], id);
+	new ent = find_ent_by_owner(-1, weapon_data_structs_array[wpn_id][wpn_struct_weapon_name], id);
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);
@@ -636,7 +636,7 @@ else{
 }
 
 
-engclient_cmd(id, weapon_names_stock_arr[the_wpn_gren_id])
+engclient_cmd(id, weapon_data_structs_array[the_wpn_gren_id][wpn_struct_weapon_name])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 

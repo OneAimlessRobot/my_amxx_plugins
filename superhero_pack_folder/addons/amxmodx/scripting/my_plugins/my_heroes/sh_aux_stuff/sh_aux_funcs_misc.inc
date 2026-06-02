@@ -252,8 +252,8 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 		ExecuteHam(Ham_Weapon_PrimaryAttack,Ent)
 	}
 	static Float:Delay,Float:M_Delay
-	Delay =floatdiv(g_fPrimaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)] ,speed)
-	M_Delay =floatdiv(g_fSecondaryAttackDelay[get_pdata_int(Ent, m_iId, XO_WEAPON)]  ,speed)
+	Delay =floatdiv(weapon_data_structs_array[get_pdata_int(Ent, m_iId, XO_WEAPON)][wpn_struct_primary_attack_delay] ,speed)
+	M_Delay =floatdiv(weapon_data_structs_array[get_pdata_int(Ent, m_iId, XO_WEAPON)][wpn_struct_secondary_attack_delay]  ,speed)
 
 	if (Delay > 0.0)
 	{
@@ -280,7 +280,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_pdata_int(iEnt, m_iId, XO_WEAPON)], speed)
+		new Float:fDelay = floatdiv(weapon_data_structs_array[get_pdata_int(iEnt, m_iId, XO_WEAPON)][wpn_struct_reload_delay], speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
 		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}
@@ -293,7 +293,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload) )
 	{
-		new Float:fDelay = floatdiv(g_fReloadDelay[get_member(iEnt, m_iId)], speed)
+		new Float:fDelay = floatdiv(weapon_data_structs_array[get_pdata_int(iEnt, m_iId, XO_WEAPON)][wpn_struct_reload_delay], speed)
 		set_member(id, m_flNextAttack, fDelay)
 		set_member(iEnt, m_flTimeWeaponIdle, fDelay + 0.5)
 	}
@@ -335,9 +335,9 @@ stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const functi
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
-		if ( do_eht && (strlen(weapon_names_stock_arr[wpnId])>0))
+		if ( do_eht && (strlen(weapon_data_structs_array[wpnId][wpn_struct_weapon_name])>0))
 		{
-				RegisterHam(ham_constant, weapon_names_stock_arr[wpnId], function_name, is_it_post,is_it_special_bot) 
+				RegisterHam(ham_constant, weapon_data_structs_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
 		}
 	}
 }
@@ -422,7 +422,7 @@ stock update_ammo(id, csw_id, clip, bpammo)
 	message_end()
 	
 	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("AmmoX"), _, id)
-	write_byte(g_ammo_ids_for_weapon_ids[csw_id])
+	write_byte(weapon_data_structs_array[csw_id][wpn_struct_ammo_id])
 	write_byte(bpammo)
 	message_end()
 }

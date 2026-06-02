@@ -244,38 +244,85 @@ stock const hitzone_names[my_hitpoint_enum][28] = {
 #define CSW_LAST_WEAPON     CSW_P90
 
  */
-stock const weapon_names_stock_arr[CSW_LAST_WEAPON+1][] = {
-    "",
-    "weapon_p228",
-    "",
-    "weapon_scout",
-    "weapon_hegrenade",
-    "weapon_xm1014",
-    "weapon_c4",
-    "weapon_mac10",
-    "weapon_aug",
-    "weapon_smokegrenade",
-    "weapon_elite",
-    "weapon_fiveseven",
-    "weapon_ump45",
-    "weapon_sg550",
-    "weapon_galil",
-    "weapon_famas",
-    "weapon_usp",
-    "weapon_glock18",
-    "weapon_awp",
-    "weapon_mp5navy",
-    "weapon_m249",
-    "weapon_m3",
-    "weapon_m4a1",
-    "weapon_tmp",
-    "weapon_g3sg1",
-    "weapon_flashbang",
-    "weapon_deagle",
-    "weapon_sg552",
-    "weapon_ak47",
-    "weapon_knife",
-    "weapon_p90"
+
+
+enum sh_weapon_data_struct{
+
+	wpn_struct_weapon_name[25],
+	Float:wpn_struct_primary_attack_delay,
+	Float:wpn_struct_secondary_attack_delay,
+	Float:wpn_struct_reload_delay,
+	wpn_struct_max_clip,
+	wpn_struct_ammo_id,
+	wpn_struct_wpn_position,
+	wpn_struct_max_bp_ammo
+
+
+}
+stock const weapon_data_structs_array[CSW_LAST_WEAPON+1][sh_weapon_data_struct] = {
+	
+	{ "", 0.000000, 0.000000, 0.00, -1, 0, -1 },
+
+	{ "weapon_p228", 0.150000, 0.150000, 2.70, 13, 9, 3, 52 },
+
+	{ "", 0.000000, 0.000000, 0.00, -1, 0, 0},
+
+	{ "weapon_scout", 1.250000, 0.300000, 2.00, 10, 2, 9, 90 },
+	
+	{ "weapon_hegrenade", 0.000000, 0.000000, 0.00, 1,  12, 1, 1 },
+
+	{ "weapon_xm1014", 0.250000, 0.250000, 0.55, 7,  5, 12, 32 },
+	
+	{ "weapon_c4", 0.000000, 0.000000, 0.00, 1,  0, 3, 1 },
+	
+	{ "weapon_mac10", 0.070000, 0.070000, 3.15, 30, 6, 13, 100 },
+	
+	{ "weapon_aug", 0.082500, 0.300000, 3.30, 30, 4, 14, 90 },
+	
+	{ "weapon_smokegrenade", 0.000000, 0.000000, 0.00, 1,  13, 3, 1 },
+	
+	{ "weapon_elite", 0.122000, 0.122000, 4.50, 30, 10, 5, 120 },
+	
+	{ "weapon_fiveseven", 0.150000, 0.150000, 2.70, 20, 7, 6, 100 },
+	
+	{ "weapon_ump45", 0.100000, 0.100000, 3.50, 25, 6, 15, 100 },
+
+	{ "weapon_sg550", 0.250000, 0.300000, 3.35, 30, 4, 16, 90 },
+	
+	{ "weapon_galil", 0.087499, 0.087499, 2.45, 35, 4, 17, 90 },
+	
+	{ "weapon_famas", 0.082500, 0.300000, 3.30, 25, 4, 18, 90 },
+	
+	{ "weapon_usp", 0.149999, 3.130000, 2.70, 12, 6, 4, 100 },
+	
+	{ "weapon_glock18", 0.150000, 0.300000, 2.20, 20, 10, 2, 120 },
+	
+	{ "weapon_awp", 1.450000, 0.300000, 2.50, 10, 1, 2, 30 },
+	
+	{ "weapon_mp5navy", 0.075000, 0.075000, 2.63, 30, 10, 7, 120 },
+	
+	{ "weapon_m249", 0.100000, 0.100000, 4.70, 100, 3, 4, 200 },
+	
+	{ "weapon_m3", 0.875000, 0.875000, 0.55, 8,  5, 5, 32 },
+	
+	{ "weapon_m4a1", 0.087499, 2.000000, 3.05, 30, 4, 6, 90 },
+	
+	{ "weapon_tmp", 0.070000, 0.070000, 2.12, 30, 10, 11, 120 },
+	
+	{ "weapon_g3sg1", 0.250000, 0.300000, 3.50, 20, 2, 3, 90 },
+	
+	{ "weapon_flashbang", 0.000000, 0.000000, 0.00, 2,  11, 2, 2 },
+
+	{ "weapon_deagle", 0.225000, 0.225000, 2.20, 7,  8, 1, 35 },
+	
+	{ "weapon_sg552", 0.082500, 0.300000, 3.00, 30, 4, 10, 90 },
+	
+	{ "weapon_ak47", 0.095499, 0.095499, 2.45, 30, 2, 1, 90 },
+
+	{ "weapon_knife", 0.000000, 0.000000, 0.00, -1, 0, 1, -1 },
+
+	{ "weapon_p90", 0.065999, 0.065999, 3.40, 50, 7, 8, 100 }
+
 }
 
 stock list_weapons_in_bitsum(weapon_bitsum,bool:exclude_mode=false){
