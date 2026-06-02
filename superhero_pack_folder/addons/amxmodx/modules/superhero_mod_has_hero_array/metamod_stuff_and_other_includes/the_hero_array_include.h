@@ -84,18 +84,15 @@ inline void HeroArrays::zero_it_out(void){
 inline void HeroArrays::zero_out_hero_props(void){
 	
 	printf("Hero flags array have been zeroed out!\n");
-	for(int i=0;i< SH_MAXHEROS;i++){
-		memset(&this->the_hero_flags[i],0, sizeof(this->the_hero_flags[i]));
-	}
+	memset(this->the_hero_flags,0, sizeof(this->the_hero_flags));
+
 }
 
 
 inline void HeroArrays::zero_out_player_masks(void){
 	
 	printf("The player masks have been zeroed out!\n");
-	for(int i=0;i< SH_MAXSLOTS+1;i++){
-		memset(&this->the_player_masks[i],0, sizeof(this->the_player_masks[i]));
-	}
+	memset(this->the_player_masks,0, sizeof(this->the_player_masks));
 		
 }
 
