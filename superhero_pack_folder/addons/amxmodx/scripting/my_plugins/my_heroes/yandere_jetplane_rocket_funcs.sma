@@ -99,7 +99,7 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	new health[128]	
 	new Float:jetplane_orig[3]
 	pev(jetplane_id,pev_origin,jetplane_orig)
-	new law_id = create_entity( "func_breakable" );
+	new law_id = my_create_entity( "func_breakable" );
 	if(!is_valid_ent(law_id)||(law_id == 0)) {
 		
 		sh_chat_message(id,gHeroID,"LAW failed to spawn")
@@ -188,7 +188,7 @@ vOrigin[0]+=(jetplane_law_max_dims[0]+10.0)
 
 
 new NewEnt
-NewEnt = create_entity("info_target")
+NewEnt = my_create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): rocket failure")
 return PLUGIN_HANDLED
@@ -245,7 +245,7 @@ public rocket_hit(pToucher, pTouched) {
 new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 if((pTouched==jet_get_user_jet(the_owner))){
 
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 	return
 
 }
@@ -266,7 +266,7 @@ explosion_custom_entity(pToucher,
 		"func_breakable",
 		default_explode_knock_force_magnitude,0)
 
-remove_entity(pToucher)
+my_remove_entity(pToucher)
 
 }
 
@@ -358,7 +358,7 @@ public _law_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(law[id])&&law[id]){
-		remove_entity(law[id]);
+		my_remove_entity(law[id]);
 		law[id]=0
 	}
 }

@@ -83,7 +83,7 @@ public ball_touch_player(Ball, Player ) {
 			
 			//set pickability status
 			entity_set_int(Ball,EV_INT_iuser2,false)
-			remove_entity(Ball);
+			my_remove_entity(Ball);
 			return
 			
 		}
@@ -151,7 +151,7 @@ public kick_ball(iPlugin,iParams)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	
 	Origin[2]+=50.0
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 	
 	if (!Ent){
 		sh_chat_message(id,gHeroID,"Ball failure!");
@@ -214,7 +214,7 @@ public ball_think(ent)
 
 	new id=pev(ent,pev_iuser1)
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) {
-		remove_entity(ent)
+		my_remove_entity(ent)
 		return
 	}
 	//get removal timer
@@ -225,7 +225,7 @@ public ball_think(ent)
 	}
 	else{
 
-		remove_entity(ent)
+		my_remove_entity(ent)
 		return
 
 	}

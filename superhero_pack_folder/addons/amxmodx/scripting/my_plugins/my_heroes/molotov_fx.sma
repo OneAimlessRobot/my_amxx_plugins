@@ -89,7 +89,7 @@ public burn_task(array[2],id)
 		for ( new i = 0; i < num_players; i++) {
 			new pid=players[i]
 
-			if( !is_user_alive(pid) || pid==array[0] || sh_get_id_bit(pid, SH_IS_BURNING)) continue
+			if( !is_user_alive(pid) || sh_get_id_bit(pid, SH_IS_BURNING)) continue
 			
 			sh_molly_user_fast(pid,array[0])
 			
@@ -207,10 +207,7 @@ burn_user(id,attacker){
 
 	sh_assign_id_bit(id, SH_IS_BURNING, true)
 	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
-	callfunc_begin_i(get_func_id("burn_task"))
-	callfunc_push_array(array, sizeof(array))
-	callfunc_push_int(id+BURN_TASKID_MAIN)
-	callfunc_end()
+	burn_task(array,id+BURN_TASKID_MAIN)
 	
 }
 

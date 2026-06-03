@@ -80,7 +80,7 @@ public bulette_thinque(ent){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(ent)	
+		my_remove_entity(ent)	
 		return
 	}
 
@@ -338,7 +338,7 @@ entity_get_vector(id, EV_VEC_origin , Origin)
 entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-Ent = create_entity("info_target")
+Ent = my_create_entity("info_target")
 
 if (!Ent){
 	return
@@ -431,7 +431,7 @@ public FwdTouchWorld( bull_et, World ) {
 	
 	if(!is_valid_ent(World)){
 		
-		remove_entity(bull_et)
+		my_remove_entity(bull_et)
 		return
 	}
 	
@@ -452,7 +452,7 @@ public FwdTouchWorld( bull_et, World ) {
 		ExecuteHam(Ham_TakeDamage, World, bull_et, owner, damage, 0);
 
 	} 
-	remove_entity(bull_et)
+	my_remove_entity(bull_et)
 }
 public bulletina_touque_playor(pToucher, pTouched)
 {
@@ -566,7 +566,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	tank_impact_shot_fx(pToucher,origin,9)
 
 
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 	
 }
 public plugin_precache()

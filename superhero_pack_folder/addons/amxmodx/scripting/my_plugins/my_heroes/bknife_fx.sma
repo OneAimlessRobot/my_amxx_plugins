@@ -29,15 +29,14 @@ enum bleed_task_parameter_id{
 	Float:bleed_type_damage_pct,
 	bleed_task_repeats,
 	bleed_task_apply_id,
-	bleed_task_apply_func_name[128],
 	bleed_type_name[128],
 	bleed_type_alphas[bleed_alpha_type]
 }
 stock bleed_task_parameters[fx_bleed_type][bleed_task_parameter_id]={	
-					{-1.0,5.0,0.0,0,-1,"","no bleeding",{0,0}},
-					{1.0,5.0,0.01,0,-1,"bleed_task","mini bleeding",{50,255}},
-					{1.0,5.0,0.04,0,-1,"bleed_task","bleeding",{75,255}},
-					{0.25,5.0,0.04,0,-1,"bleed_task","ultrableeding",{120,255}}
+					{-1.0,5.0,0.0,0,-1,"no bleeding",{0,0}},
+					{1.0,5.0,0.01,0,-1,"mini bleeding",{50,255}},
+					{1.0,5.0,0.04,0,-1,"bleeding",{75,255}},
+					{0.25,5.0,0.04,0,-1,"ultrableeding",{120,255}}
 
 }
 
@@ -176,10 +175,7 @@ bleed_task_user(id,attacker,heal_user,my_hitpoint_enum:hitplace, fx_bleed_type:b
 	array[2] = heal_user
 	array[3] = hitplace
 	array[4] = 0
-	callfunc_begin_i(get_func_id(bleed_task_parameters[bleed_type][bleed_task_apply_func_name]))
-	callfunc_push_array(array,sizeof(array))
-	callfunc_push_int(id+bleed_task_parameters[bleed_type][bleed_task_apply_id])
-	callfunc_end()
+	bleed_task(array,id+bleed_task_parameters[bleed_type][bleed_task_apply_id])
 
 
 
@@ -284,7 +280,7 @@ public bleed_task(any:array[5],id){
 
 		array[4]++
 		set_task(bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],
-					bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_apply_func_name],
+					"bleed_task",
 					id+bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_apply_id],
 					array,
 					sizeof(array))

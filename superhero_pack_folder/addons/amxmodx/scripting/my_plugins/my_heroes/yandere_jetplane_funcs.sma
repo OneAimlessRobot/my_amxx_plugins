@@ -196,7 +196,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	UnSet_BitVar(g_jetplane_armed_mask, id);
 	new material[128]
 	new health[128]	
-	g_jetplane[id] = create_entity( "func_breakable" );
+	g_jetplane[id] = my_create_entity( "func_breakable" );
 	new NewEnt=g_jetplane[id]
 	if(!is_valid_ent(g_jetplane[id])||(g_jetplane[id] <= 0)) {
 		
@@ -226,7 +226,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	entity_set_origin(g_jetplane[id], Origin)
 
 	set_task(cvar_val(float, pcvar_jetplane_cooldown),"load_jet",id+JET_LOAD_TASKID)
-	set_task(JET_CHARGE_PERIOD,"charge_task",id+JET_CHARGE_TASKID)
+	charge_task(id+JET_CHARGE_TASKID)
 	
 }
 public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
@@ -303,13 +303,13 @@ public _reset_jet_user(iPlugin,iParams){
 	UnSet_BitVar(g_jetplane_deployed_mask, id);
 	if(is_valid_ent(g_jetplane[id])){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		remove_entity(g_jetplane[id]);
+		my_remove_entity(g_jetplane[id]);
 		g_jetplane[id]=0;
 	}
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
-		remove_entity(camera[id])
+		my_remove_entity(camera[id])
 		camera[id] = 0
 	}
 	
@@ -353,7 +353,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_scans(jetplane_id)
 	Set_BitVar(g_jetplane_armed_mask, id)
 	sh_chat_message(attacker,gHeroID,"jet armed!");
-	camera[id] = create_entity("info_target")
+	camera[id] = my_create_entity("info_target")
 	new Float:origin[3]
 	new Float:init_speed[3]
 	new Float:angles[3]
@@ -873,13 +873,13 @@ public _jet_destroy(iPlugin,iParams){
 		}
 		mg_destroy(id)
 		law_destroy(id)
-		remove_entity(g_jetplane[id]);
+		my_remove_entity(g_jetplane[id]);
 		g_jetplane[id]=-1;
 	}
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
-		remove_entity(camera[id])
+		my_remove_entity(camera[id])
 		camera[id] = 0
 	}
 	UnSet_BitVar(g_jetplane_deployed_mask,id)
@@ -888,7 +888,7 @@ public _clear_jets(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, JETPLANE_FUSELAGE_CLASSNAME)
 	while(grenada) {
-		remove_entity(grenada)
+		my_remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, JETPLANE_FUSELAGE_CLASSNAME)
 	}
 	

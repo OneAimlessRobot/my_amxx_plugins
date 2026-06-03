@@ -45,8 +45,8 @@ public plugin_init()
 			dmg_source_name_short_lara_spear,
 			dmg_source_name_log_lara_spear,1)
 
-	sh_register_admin_only_hero(gHeroID,ADMIN_ALL,0,
-				"Its under maintenance")
+	/*sh_register_admin_only_hero(gHeroID,ADMIN_ALL,0,
+				"Its under maintenance")*/
 	RegisterHam(Ham_TraceAttack,"player","Lara_ham_trace_damage",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")

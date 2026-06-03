@@ -465,7 +465,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 		
 			}
 		}
-		remove_entity(field_id)
+		my_remove_entity(field_id)
 	}
 	
 }
@@ -737,7 +737,7 @@ public _form_field(iPlugin,iParams)
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	
 	Origin[2]+=50.0
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 	
 	if(pev_valid(Ent)!=2){
 		

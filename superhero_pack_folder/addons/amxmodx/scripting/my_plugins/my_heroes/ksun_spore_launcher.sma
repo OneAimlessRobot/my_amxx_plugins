@@ -203,7 +203,7 @@ if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 }
 new material[128]
 new health[128]	
-new launcher = create_entity( "func_breakable" );
+new launcher = my_create_entity( "func_breakable" );
 
 if (!is_valid_ent(launcher)) {
 	
@@ -286,7 +286,7 @@ public destroy_player_launcher(id){
 		
 		if(is_valid_ent(g_player_launcher[id])){
 			
-			remove_entity(g_player_launcher[id])
+			my_remove_entity(g_player_launcher[id])
 			g_player_launcher[id]=0
 		
 		

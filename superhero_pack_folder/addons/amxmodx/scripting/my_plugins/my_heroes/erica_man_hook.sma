@@ -56,7 +56,7 @@ spawn_erica_hook(id,target){
 	if(is_valid_ent(g_player_hook[id])){
 		return
 	}
-	new erica_hook_to_be_spawned= create_entity("info_target")
+	new erica_hook_to_be_spawned= my_create_entity("info_target")
 	if(!erica_hook_to_be_spawned){
 
 		return
@@ -163,7 +163,7 @@ stop_dragging(id,target=-1,bool:deduct=false){
 		}
 		if(is_valid_ent(g_player_hook[id])){
 
-			remove_entity(g_player_hook[id])
+			my_remove_entity(g_player_hook[id])
 			g_player_hook[id]=-1
 		}
 }

@@ -535,7 +535,7 @@ public remove_camera(pid){
 	camman_set_has_camera(pid,0)
 	if(pev_valid(user_camera[pid])!=2) return
 	
-	remove_entity(user_camera[pid])
+	my_remove_entity(user_camera[pid])
 
 	UnSet_BitVar(looking_with_camera_mask,pid);
 	UnSet_BitVar(camera_armed_mask,pid);
@@ -627,7 +627,7 @@ public _camera_charge_camera(iPlugins,iParams){
 	Set_BitVar(camera_armed_mask,id);
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
-	set_task(CAMERA_CHARGE_PERIOD,"charge_task",id+CAMERA_CHARGE_TASKID)
+	charge_task(id+CAMERA_CHARGE_TASKID)
 	
 	return PLUGIN_HANDLED
 	

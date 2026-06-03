@@ -80,7 +80,7 @@ public rivette_thinque(ent){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(ent)	
+		my_remove_entity(ent)	
 		return
 	}
 
@@ -348,7 +348,7 @@ entity_get_vector(id, EV_VEC_origin , Origin)
 entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-Ent = create_entity("info_target")
+Ent = my_create_entity("info_target")
 
 if (!Ent){
 	return PLUGIN_HANDLED
@@ -448,7 +448,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									"func_breakable",
 									MARIA_PROJECTILE_EXPLODE_FORCE,0)
 	
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 }
 public plugin_precache()
 {

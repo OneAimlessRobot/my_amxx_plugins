@@ -66,7 +66,7 @@ public spaar_thaank(ent){
 	
 	
 
-	remove_entity(ent)
+	my_remove_entity(ent)
 
 
 }
@@ -140,13 +140,6 @@ public CmdStart(id, uc_handle)
 				charge_user(id)
 				
 			}
-			else if((100.0*(curr_charge[id]/max_charge_time))>95.0){
-				
-				lara_spear_decide_func(id)
-				uncharge_user(id)
-				return FMRES_IGNORED
-			}
-			
 		}
 		else if(Get_BitVar(spear_armed_mask,id)){
 			if(curr_charge[id]>=min_charge_time){
@@ -197,7 +190,14 @@ public charge_task(id){
 	client_print(id,print_center,"%s",hud_msg)
 	
 	if(Get_BitVar(spear_armed_mask,id)){
-		set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID)
+		if((100.0*(curr_charge[id]/max_charge_time))>100.0){
+				
+				lara_spear_decide_func(id)
+				uncharge_user(id)
+		}
+		else{	
+			set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID)
+		}
 	}
 	
 
@@ -207,8 +207,7 @@ public charge_task(id){
 }
 charge_user(id){
 	curr_charge[id]=0.0
-	set_task(SPEAR_CHARGE_PERIOD,"charge_task",id+SPEAR_CHARGE_TASKID)
-
+	charge_task(id+SPEAR_CHARGE_TASKID)
 
 
 }
@@ -260,7 +259,7 @@ launch_spear(id)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 
 	if (!Ent) return PLUGIN_HANDLED
 
@@ -347,7 +346,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 		
 			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
-			remove_entity(pToucher);
+			my_remove_entity(pToucher);
 		
 		}
 		else if(pTouched!=oid){

@@ -81,7 +81,7 @@ public FwdTouchWorld( pilula_sexualllllee, World ) {
 	make_sparks(origin);
 	gun_shot_decal(origin);
 	
-	remove_entity(pilula_sexualllllee)
+	my_remove_entity(pilula_sexualllllee)
 }
 
 public fw_WeaponPrimaryAttackPre(entity)
@@ -483,7 +483,7 @@ launch_pill(id)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 
 	if (!Ent) return PLUGIN_HANDLED
 
@@ -542,7 +542,7 @@ public pill_think(ent)
 	
 	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_hero_user(id, gHeroID)) {
-		remove_entity(ent)
+		my_remove_entity(ent)
 		return
 	}
 	new Float:newVelocity[3],Float:velocityVec[ 3 ]
@@ -613,7 +613,7 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 		new fx_id:fx_num=fx_id:entity_get_int(pToucher,EV_INT_iuser3)
 		make_effect(pTouched,id,gHeroID,fx_num,false)
 	}
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 }
 public fwPrecacheEvent(type, const name[]) {
 	for (new i = 0; i < sizeof g_guns_events; ++i) {

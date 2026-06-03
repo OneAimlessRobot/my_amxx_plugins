@@ -140,7 +140,7 @@ vOrigin[2]+=(jetplane_min_dims[2]-50.0)
 
 
 new NewEnt
-NewEnt = create_entity("info_target")
+NewEnt = my_create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): bomb failure")
 return PLUGIN_HANDLED
@@ -195,7 +195,7 @@ if(!is_valid_ent(pToucher)) return
 new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 if((pTouched==jet_get_user_jet(the_owner))){
 
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 	return
 
 }
@@ -215,7 +215,7 @@ explosion_custom_entity(pToucher,
 	"func_breakable",
 	default_explode_knock_force_magnitude,0)
 	
-remove_entity(pToucher)
+my_remove_entity(pToucher)
 
 }
 //----------------------------------------------------------------------------------------------

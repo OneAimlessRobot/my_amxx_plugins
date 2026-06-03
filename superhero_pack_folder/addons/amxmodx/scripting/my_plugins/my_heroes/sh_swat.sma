@@ -262,7 +262,7 @@ public nuke_hit(pToucher, pTouched) {
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 }
 //----------------------------------------------------------------------------------------------
 public make_beam(id)
@@ -273,7 +273,7 @@ public make_beam(id)
 	entity_get_vector(id, EV_VEC_origin, vOrigin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new NewEnt
-	NewEnt = create_entity("info_target")
+	NewEnt = my_create_entity("info_target")
 	if(NewEnt == 0) {
 		
 		if(!is_user_bot(id)){
@@ -426,7 +426,7 @@ remove_missile(id,missile){
 	has_rocket[id] = 0;
 	sh_unset_cooldown_flag(id)
 	attach_view(id,id)
-	remove_entity(missile)
+	my_remove_entity(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------

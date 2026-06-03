@@ -292,6 +292,15 @@ grenade_switch_notification(id){
 			sh_grenade_structs_arr[curr_user_grenade[id]][sh_grenade_name]);
 	}
 }
+
+uncharge_user_primitive(id){
+	if(is_user_connected(id)){
+		progressBar(id,0)
+	}
+
+	curr_charge[id]=0.0;
+	UnSet_BitVar(sh_grenade_armed_mask ,id)
+}
 public event_curr_grenade(id){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE;	
@@ -303,8 +312,7 @@ public event_curr_grenade(id){
 	
 	if(!user_has_grenade){
 		
-		progressBar(id,0)
-		UnSet_BitVar(sh_grenade_armed_mask,id)
+		uncharge_user_primitive(id)
 		return PLUGIN_CONTINUE
 	
 	}
@@ -321,10 +329,7 @@ public event_curr_grenade(id){
 				if(curr_user_grenade[id]!=prev_user_grenade[id]){
 					
 					grenade_switch_notification(id)
-					progressBar(id,0)
-
-					curr_charge[id]=0.0;
-					UnSet_BitVar(sh_grenade_armed_mask ,id)
+					uncharge_user_primitive(id)
 				}
 				return PLUGIN_CONTINUE
 		}
@@ -361,9 +366,7 @@ bool:switch_grenade_logic(id,wpn_id){
 		if(prev_user_grenade[id]>GREN_NONE){
 			grenade_switch_notification(id)
 		}
-		progressBar(id,0)
-		curr_charge[id]=0.0;
-		UnSet_BitVar(sh_grenade_armed_mask,id);
+		uncharge_user_primitive(id)
 		break;
 	}
 	return changed_greande;
@@ -406,7 +409,6 @@ public CmdStart(id, uc_handle)
 	new wpn_id=-1
 	if(!user_has_grenade_on(id,wpn_id)||(gren_type<=GREN_NONE)){
 
-		UnSet_BitVar(sh_grenade_armed_mask,id);
 		return FMRES_IGNORED
 	}
 	new ent = my_find_ent_by_owner(-1, weapon_data_strings_array[wpn_id][wpn_struct_weapon_name], id);
@@ -442,27 +444,19 @@ public CmdStart(id, uc_handle)
 			charge_user(id,gren_type)
 
 		}
-		else if(((100.0*(curr_charge[id]/sh_grenade_structs_arr[gren_type][max_charge_time])))>95.0){
-
-			launch_custom_grenade(id,gren_type)
-			progressBar(id,0)
-
-			curr_charge[id]=0.0;
-			UnSet_BitVar(sh_grenade_armed_mask ,id)
-		}
 	}
 	else if(Get_BitVar(sh_grenade_armed_mask,id)){
 		if((curr_charge[id]>=sh_grenade_structs_arr[gren_type][min_charge_time])){
 			launch_custom_grenade(id,gren_type)
+			
 		}
 		else if(curr_charge[id]>0.0){
+
+			uncharge_user_primitive(id)
 			switch_grenade_animation_on_player(id,
 											cs_grenade_idle)
 		}
-		progressBar(id,0)
 
-		curr_charge[id]=0.0;
-		UnSet_BitVar(sh_grenade_armed_mask ,id)
 	}
 	if(ent){
 
@@ -492,7 +486,7 @@ public sh_round_end(){
 }
 
 public _give_custom_grenades(iPlugin, iParams){
-	/*new id=get_param(1)
+	new id=get_param(1)
 	new sh_grenade_type:gren_type= sh_grenade_type:get_param(2)
 	new grenade_ammount= get_param(3)
 	if ( sh_is_active() && is_user_alive(id)){
@@ -506,7 +500,7 @@ public _give_custom_grenades(iPlugin, iParams){
 		sh_give_weapon(id,sh_grenade_structs_arr[gren_type][sh_grenade_weapon_classid],false)
 		
 		curr_grenade_ammo[id][gren_type]=grenade_ammount
-	}*/
+	}
 
 
 }
@@ -526,14 +520,15 @@ public charge_task(any:param[1],id){
 	if(((wpn_id==sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid])&&
 				curr_user_grenade[id]==the_type)&&
 				Get_BitVar(sh_grenade_armed_mask,id)){
-		set_task(SH_CUSTOM_GRENADE_CHARGE_PERIOD,"charge_task",id+SH_CUSTOM_GRENADE_CHARGE_TASKID,param,sizeof(param))
-	}
-	else{
 
-		progressBar(id,0)
+		if(((100.0*(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])))>100.0){
 
-		curr_charge[id]=0.0;
-		UnSet_BitVar(sh_grenade_armed_mask ,id)
+			launch_custom_grenade(id,the_type)
+
+		}
+		else{
+			set_task(SH_CUSTOM_GRENADE_CHARGE_PERIOD,"charge_task",id+SH_CUSTOM_GRENADE_CHARGE_TASKID,param,sizeof(param))
+		}
 	}
 	
 	
@@ -542,10 +537,7 @@ public charge_task(any:param[1],id){
 charge_user(id,sh_grenade_type:the_type){
 	new parm[1]
 	parm[0]=the_type
-	set_task(SH_CUSTOM_GRENADE_CHARGE_PERIOD,"charge_task",
-		id+SH_CUSTOM_GRENADE_CHARGE_TASKID,
-		parm,
-		sizeof(parm))
+	charge_task(parm,id+SH_CUSTOM_GRENADE_CHARGE_TASKID)
 }
 public _set_custom_grenade_ammo(iPlugin,iParams){
 	new id=get_param(1)
@@ -617,6 +609,9 @@ velocity_by_aim(id, floatround(
 				Velocity)
 
 set_pev(Ent, pev_velocity ,Velocity)
+
+
+uncharge_user_primitive(id)
 
 new the_wpn_gren_id = sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid]
 
@@ -812,10 +807,11 @@ reset_user_custom_grenades(id){
 
 	for(new sh_grenade_type:i=enum_one;i<sh_grenade_type;i++){
 		
-		UnSet_BitVar(sh_grenade_armed_mask,id)
 		strip_weapon_for_my_grenade_heroes(id,_,
 					sh_grenade_structs_arr[i][sh_grenade_weapon_classid],true)	
 	}
+
+	uncharge_user_primitive(id)
 }
 public sh_client_death(id)
 {

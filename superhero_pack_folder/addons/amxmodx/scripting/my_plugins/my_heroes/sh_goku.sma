@@ -414,7 +414,7 @@ public create_power(id)
 	if (g_powerNum[id] == 4) vOrigin[2] += 110
 	else vOrigin[2] += 6
 
-	new newEnt = create_entity("info_target")
+	new newEnt = my_create_entity("info_target")
 	if( newEnt == 0 ) {
 		client_print(id, print_chat, "[SH](Goku) Power Creation Failure")
 		return
@@ -698,7 +698,7 @@ public goku_power_touch(pToucher, pTouched) {
 		message_end()
 	}
 
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 
 	// Reset the Varibles
 	g_powerNum[id] = 0
@@ -725,7 +725,7 @@ public remove_power(id, powerID)
 	g_powerNum[id] = 0
 	g_powerID[id] = 0
 
-	remove_entity(powerID)
+	my_remove_entity(powerID)
 }
 //----------------------------------------------------------------------------------------------
 public goku_loop()

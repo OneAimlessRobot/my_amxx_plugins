@@ -189,7 +189,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
 			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
-			remove_entity(g_player_scanner[id])
+			my_remove_entity(g_player_scanner[id])
 			g_player_scanner[id]=0
 	
 	
@@ -210,7 +210,7 @@ public _spawn_scanner(iPlugins,iParams){
 	b_orig[0] = float(originplayer[0]);
 	b_orig[1] = float(originplayer[1]);
 	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
-	new scanner = create_entity( "info_target" );
+	new scanner = my_create_entity( "info_target" );
 	if ( !is_valid_ent(scanner )) {
 		
 		if(!is_user_bot(id)){

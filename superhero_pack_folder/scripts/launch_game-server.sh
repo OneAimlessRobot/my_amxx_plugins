@@ -10,8 +10,8 @@ unset STEAM_COMPAT_DATA_PATH
 while [ true ]; do
 	rm -rfv "$(pwd)/cstrike/logs"
 	sleep 2
-	taskset -c 0 bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "192.168.0.100" +hostport "27015" +port "27015" +maxplayers "20"
-	#taskset -c 0 bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "127.0.0.1" +hostport "27015" +port "27015" +maxplayers "20"
+	#taskset -c 0 bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "192.168.0.100" +hostport "27015" +port "27015" +maxplayers "20"
+	taskset -c 0 bash ./server.sh -dew -appid 10 -pingboost 2 -noipx -nojoy -console -num_edicts 3072 -zone 8192 -heapsize 131072 -game cstrike +ip "127.0.0.1" +hostport "27015" +port "27015" +maxplayers "20"
 	echo "Game Server crashed at '`date`' - Restarting"
 	echo "Game Server crashed at '`date`' - Restarting" >> crash_timestamps_game-server.log
 	sleep 5

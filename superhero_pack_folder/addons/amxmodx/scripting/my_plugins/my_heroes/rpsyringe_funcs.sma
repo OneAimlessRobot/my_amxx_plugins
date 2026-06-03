@@ -184,7 +184,7 @@ notFloat_vOrigin[2]  =floatround(floatadd( vOrigin[2] , 50.0))
 
 
 new NewEnt
-NewEnt = create_entity("info_target")
+NewEnt = my_create_entity("info_target")
 if(NewEnt == 0) {
 if(!is_user_bot(id)){
 	client_print(id,print_chat,"[SH](Yakui the Maid Mk2): Rocket fail!")
@@ -275,7 +275,7 @@ message_end()
 emit_sound(missile, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 emit_sound(missile, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 emit_sound(missile, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-remove_entity(missile)
+my_remove_entity(missile)
 return PLUGIN_CONTINUE
 }
 

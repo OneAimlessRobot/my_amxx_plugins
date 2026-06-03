@@ -101,7 +101,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	new health[128]	
 	new Float:jetplane_orig[3]
 	pev(jetplane_id,pev_origin,jetplane_orig)
-	new mg_id = create_entity( "func_breakable" );
+	new mg_id = my_create_entity( "func_breakable" );
 	if(!is_valid_ent(mg_id)||(mg_id <= 0)) {
 		
 		sh_chat_message(id,gHeroID,"Mg failed to spawn")
@@ -249,7 +249,7 @@ launch_shell(id)
 	
 	Origin[2]+=(jetplane_mg_max_dims[2]+10.0)
 	
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 	
 	if (!Ent){
 		sh_chat_message(id,gHeroID,"shell failed!");
@@ -315,7 +315,7 @@ public shell_hit_wall(pToucher, pTouched){
 
 	if(!is_valid_ent(pTouched)){
 		
-		remove_entity(pToucher)
+		my_remove_entity(pToucher)
 		return
 	}
 	
@@ -333,7 +333,7 @@ public shell_hit_wall(pToucher, pTouched){
 				0);
 
 	} 
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 
 }
 public shell_hit_player(pToucher, pTouched){
@@ -408,7 +408,7 @@ public shell_hit_player(pToucher, pTouched){
 			
 		}
 	}
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 }
 public shell_hit_jet(pToucher, pTouched)
 {
@@ -418,7 +418,7 @@ public shell_hit_jet(pToucher, pTouched)
 	new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 	if((pTouched==jet_get_user_jet(the_owner))){
 
-		remove_entity(pToucher)
+		my_remove_entity(pToucher)
 		return
 
 	}
@@ -432,7 +432,7 @@ public shell_hit_jet(pToucher, pTouched)
 			jet_hurt_user_jet(jet_owner,the_owner,pToucher,cvar_val(float, pcvar_jetplane_mg_dmg))
 		}
 	}
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 }
 public plugin_precache()
 {
@@ -447,7 +447,7 @@ public _mg_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(user_mg[id])){
-		remove_entity(user_mg[id]);
+		my_remove_entity(user_mg[id]);
 		user_mg[id]=-1;
 	}
 }

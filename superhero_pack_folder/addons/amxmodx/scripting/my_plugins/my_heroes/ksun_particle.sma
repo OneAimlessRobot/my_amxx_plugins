@@ -104,7 +104,7 @@ untrack_spore(spore){
 		new Float:origin[3]
 		entity_get_vector(spore,EV_VEC_origin,origin)
 		make_sparks(origin)
-		remove_entity(spore)
+		my_remove_entity(spore)
 		dec_player_num_victims(spore_owner)
 		ksun_dec_num_available_spores(spore_owner)
 	}
@@ -226,7 +226,7 @@ public spawn_spore(id){
 	}
 	new material[128]
 	new health[128]	
-	new spore = create_entity( "func_breakable" );
+	new spore = my_create_entity( "func_breakable" );
 
 	if (!is_valid_ent(spore)) {
 		client_print(id, print_chat, "[SH](ksun) Spore Creation Failure")

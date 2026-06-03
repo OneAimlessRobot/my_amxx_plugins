@@ -102,7 +102,7 @@ public plant_mine(id){
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
 	
-	new ent = create_entity("info_target");
+	new ent = my_create_entity("info_target");
 	entity_set_string(ent ,EV_SZ_classname, MINE_CLASSNAME);
 	entity_set_edict(ent ,EV_ENT_owner, id);
 	entity_set_int(ent, EV_INT_movetype, MOVETYPE_TOSS);
@@ -171,7 +171,7 @@ public blow_mine_up(ent, id)
 		
 		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
 		
-		remove_entity(ent)
+		my_remove_entity(ent)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ public disarm_task(param[1],id){
 	if(!mine_get_mine_disarming(id)){
 
 		sapper_set_num_mines(id,sapper_get_num_mines(id)+1)
-		remove_entity(param[0]);
+		my_remove_entity(param[0]);
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));
@@ -246,7 +246,7 @@ public _mine_charge_mine(iPlugins,iParams){
 	new id=get_param(1);
 	mine_armed[id]=1
 	curr_charge[id]=0.0
-	set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID)
+	charge_task(id+MINE_CHARGE_TASKID)
 	
 	
 	

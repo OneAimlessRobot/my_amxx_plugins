@@ -229,7 +229,7 @@ public sh_client_spawn(id)
 {
 	new disc = find_ent_by_class(-1, "pred_disc")
 	while(disc) {
-		remove_entity(disc)
+		my_remove_entity(disc)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
 	if ( sh_get_user_has_hero(id,gHeroID) && sh_is_active() ) {
@@ -621,7 +621,7 @@ return FMRES_IGNORED
 public throw_disc(id)
 {
 
-g_discID[id] = create_entity("info_target")
+g_discID[id] = my_create_entity("info_target")
 
 if ( g_discID[id] == 0 ) {
 	client_print(id, print_chat, "[SH](Arctic Predator) Power Creation Failure")
@@ -653,7 +653,7 @@ b_orig[0] = float(aimvec[0]);
 b_orig[1] = float(aimvec[1]);
 b_orig[2] = float(aimvec[2]);
 
-g_discID[id] = create_entity("info_target")
+g_discID[id] = my_create_entity("info_target")
 entity_set_string(g_discID[id], EV_SZ_classname, "pred_disc")
 
 
@@ -726,7 +726,7 @@ if ( is_user_alive(disc_owner) && discThrown[disc_owner] == true ) {
 else {
 	// Remove the seek loop
 	remove_task(disc+1000)
-	remove_entity(disc)
+	my_remove_entity(disc)
 	discThrown[disc_owner] = false
 }
 }
@@ -765,7 +765,7 @@ public touch_event(pToucher, pTouched)  //This is triggered when two entites tou
 {
 if ( pTouched == entity_get_edict(pToucher, EV_ENT_owner) )
 {
-	remove_entity(pToucher)
+	my_remove_entity(pToucher)
 	discThrown[pTouched] = false
 	client_print(pTouched, print_chat, "[SH] Arctic Predator: Disc returned")
 }
