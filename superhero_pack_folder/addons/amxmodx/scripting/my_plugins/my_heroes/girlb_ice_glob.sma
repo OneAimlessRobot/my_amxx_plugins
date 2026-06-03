@@ -67,7 +67,7 @@ public girlb_skating(id, uc_handle, seed)
 	}
 	buttons = get_uc(uc_handle, UC_Buttons)
 	static bool:should_skate,bool:inground;
-	inground=bool:(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )
+	inground=bool:(pev( id, pev_flags ) & FL_ONGROUND  )
 	should_skate=((buttons &IN_JUMP)&&(buttons &IN_FORWARD))&&Get_BitVar(can_skate_mask,id)&&inground
 	new return_result = FMRES_IGNORED
 
@@ -100,14 +100,14 @@ public girlb_skating(id, uc_handle, seed)
 		{
 			static Float:Velocity[3],Float:our_velocity[3]
 			
-			entity_get_vector(id, EV_VEC_velocity,our_velocity)
+			pev(id, pev_velocity, our_velocity)
 
 			velocity_by_aim(id, floatround(GLOB_ICE_SKATE_SPEED), Velocity)
 			
 			Velocity[2]=our_velocity[2]
 
 			
-			entity_set_vector(id, EV_VEC_velocity, Velocity)
+			set_pev(id, pev_velocity, Velocity)
 		
 			if(!Get_BitVar(is_glowing_mask,id)){
 				Set_BitVar(is_glowing_mask,id)
@@ -129,7 +129,7 @@ public girlb_skating(id, uc_handle, seed)
 public sh_client_spawn(id)
 {	
 	if(sh_is_active()&&is_user_alive(id)){
-		g_player_old_friction[id] = entity_get_float(id,EV_FL_friction);
+		pev(id, pev_friction, g_player_old_friction[id]);
 		
 		if(sh_get_user_has_hero(id,gHeroID)){
 			UnSet_BitVar(can_skate_mask,id);
@@ -150,9 +150,9 @@ public player_on_ice_glob_checks(task_id){
 		
 		if(sh_get_stun(id)) continue
 
-		if(!(entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  )){
+		if(!(pev(id, pev_flags ) & FL_ONGROUND  )){
 			
-			entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
+			set_pev(id, pev_friction,g_player_old_friction[id])
 			UnSet_BitVar(can_skate_mask,id)
 			continue
 		
@@ -162,7 +162,7 @@ public player_on_ice_glob_checks(task_id){
 		static entlist[33];
 		static num_found;
 		static Float:curr_player_friction
-		curr_player_friction=entity_get_float(id,EV_FL_friction)
+		pev(id, pev_friction, curr_player_friction)
 		num_found = find_sphere_class(id,GLOB_CLASSNAME,GLOB_RADIUS,entlist,charsmax(entlist))
 		if((num_found>0)){
 
@@ -177,7 +177,7 @@ public player_on_ice_glob_checks(task_id){
 				new field= entlist[fid]
 
 				//check if field landed on ground
-				new bool:has_landed = bool:entity_get_int(field,EV_INT_iuser1)
+				new bool:has_landed = bool:pev(field, pev_iuser1)
 				
 				if(!has_landed){
 
@@ -197,17 +197,17 @@ public player_on_ice_glob_checks(task_id){
 			
 			if(!Get_BitVar(is_skating_mask,id)){
 			
-				entity_set_float(id,EV_FL_friction,curr_player_friction)
+				set_pev(id, pev_friction,curr_player_friction)
 			}
 			else{
 				
 
-				entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
+				set_pev(id, pev_friction,g_player_old_friction[id])
 				
 			}
 		}
 		else{
-			entity_set_float(id,EV_FL_friction,g_player_old_friction[id])
+			set_pev(id, pev_friction,g_player_old_friction[id])
 			
 			if(sh_get_user_has_hero(id,gHeroID)){
 				if(Get_BitVar(can_skate_mask,id)){
@@ -249,16 +249,16 @@ public bool:player_touch_logic(Glob, Other_Entity){
 	return true
 }
 public FwdTouch( Glob, World ) {
-	if(!is_valid_ent(Glob)) return
+	if(!pev_valid(Glob)) return
 
-	if(entity_get_int(Glob,EV_INT_iuser1)){
+	if(pev(Glob, pev_iuser1)){
 
 		return
 	}
-	new owner_edict=entity_get_edict(Glob,EV_ENT_owner)
+	new owner_edict=pev(Glob, pev_owner)
 
 	static Float:glob_origin[3]
-	entity_get_vector(Glob,EV_VEC_origin,glob_origin)
+	pev(Glob, pev_origin,glob_origin)
 
 	static entlist[33];
 	new numfound = find_sphere_class(Glob,"player",
@@ -284,10 +284,9 @@ public FwdTouch( Glob, World ) {
 	}
 	//set it as not landed in the ground until it does
 	//and we just did.
-	entity_set_int(Glob,EV_INT_iuser1, 1)
-	entity_set_int(Glob,EV_INT_movetype, MOVETYPE_TOSS)
+	set_pev(Glob, pev_iuser1, 1)
+	set_pev(Glob, pev_movetype, MOVETYPE_TOSS)
 
-	return
 }
 public player_touch( Glob, Player ) {
 	if(!is_valid_ent(Glob)) return
@@ -308,9 +307,8 @@ public player_touch( Glob, Player ) {
 //----------------------------------------------------------------------------------------------
 public ice_field_think(ent)
 {
-	if(!is_valid_ent(ent)) return
 	
-	if ( pev_valid(ent)!=2 ){
+	if (!pev_valid(ent)){
 		
 	
 			return
@@ -320,13 +318,11 @@ public ice_field_think(ent)
 	static Float:ent_pos[3]
 
 	if (entity_get_float(ent,EV_FL_fuser1)<0.0) {
-		if(pev_valid(ent)==2){
-			remove_entity(ent)
-		}
+		my_remove_entity(ent)
 		return
 	}
 	else{
-		entity_get_vector(ent, EV_VEC_origin, ent_pos)
+		pev(ent, pev_origin, ent_pos)
 		
 		//get landed status to produce shockwave in that case
 		if(entity_get_int(ent,EV_INT_iuser1)){
@@ -359,33 +355,33 @@ public _launch_ice_glob(iPlugin,iParams)
 	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 	new Float: advance[3]
 
-	entity_get_vector(id, EV_VEC_origin , Origin)
-	entity_get_vector(id, EV_VEC_v_angle, vAngle)
+	pev(id, pev_origin , Origin)
+	pev(id, pev_angles, vAngle)
 	
 	velocity_by_aim(id,5,advance)
 
 	add_3d_vectors(Origin,advance,Origin)
 	
-	Ent = create_entity("info_target")
+	Ent = my_create_entity("info_target")
 	
-	if (!is_valid_ent(Ent)){
+	if (!pev_valid(Ent)){
 		sh_chat_message(id,gHeroID,"Glob failure!");
 		return
 	}
 	
-	entity_set_string(  Ent, EV_SZ_classname, GLOB_CLASSNAME );
-	entity_set_int(  Ent , EV_INT_solid, SOLID_TRIGGER );
-	entity_set_int( Ent, EV_INT_movetype, MOVETYPE_FLY );
+	set_pev(  Ent, pev_classname, GLOB_CLASSNAME );
+	set_pev(  Ent , pev_solid, SOLID_TRIGGER );
+	set_pev( Ent, pev_movetype, MOVETYPE_FLY );
 	entity_set_size(  Ent, Float:{ -2.0, -2.0, 0.0 }, Float:{ 2.0, 2.0, 2.0 } );
 	
-	entity_set_float(  Ent, EV_FL_framerate, 0.0 );
-	entity_set_int(  Ent , EV_INT_sequence, 0 );
+	set_pev(  Ent, pev_framerate, 0.0 );
+	set_pev(  Ent , pev_sequence, 0 );
 	
 	
 	entity_set_origin(Ent, Origin)
-	entity_set_vector(Ent, EV_VEC_angles, vAngle)
+	set_pev(Ent, pev_angles, vAngle)
 	
-	entity_set_edict(Ent, EV_ENT_owner, id)
+	set_pev(Ent, pev_owner, id)
 	
 	velocity_by_aim(id, floatround(GLOB_SPEED) , Velocity)
 	

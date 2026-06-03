@@ -36,17 +36,17 @@ public plugin_init(){
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
 	
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)

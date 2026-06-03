@@ -1,0 +1,23 @@
+L 06/03/2026 - 17:18:05: Start of error session.
+L 06/03/2026 - 17:18:05: Info (map "de_dust4ever") (file "addons/amxmodx/logs/error_20260603.log")
+L 06/03/2026 - 17:18:05: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:18:05: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:18:05: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:18:09: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:18:09: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:18:09: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:18:52: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:18:52: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:18:52: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:20:44: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:20:44: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:20:44: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:21:19: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:21:19: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:21:19: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:21:30: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:21:30: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:21:30: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
+L 06/03/2026 - 17:22:36: Function is not present (function "vic15_teleport") (plugin "sh_vic15.amxx")
+L 06/03/2026 - 17:22:36: [AMXX] Run time error 10 (plugin "sh_vic15.amxx") (native "set_task") - debug not enabled!
+L 06/03/2026 - 17:22:36: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).

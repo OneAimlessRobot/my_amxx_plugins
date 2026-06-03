@@ -1,7 +1,9 @@
+#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_FAKEMETA_UTIL
 #define I_WANT_CUSTOM_WEAPONS
+#include <float>
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_shard_cannon.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -34,12 +36,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)	
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 
@@ -91,10 +93,10 @@ public Get_Shard_Cannon(id)
 	
 	Set_BitVar(g_Had_SHARD_CANNON, id)
 	
-	give_item(id,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name])
+	sh_give_weapon(id,  CSW_SHARD_CANNON)
 	cs_set_user_bpammo(id, CSW_SHARD_CANNON, SHARD_CANNON_BPAMMO)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_SHARD_CANNON)
+	static Ent; Ent = get_weapon_ent_of_player(id, CSW_SHARD_CANNON)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, SHARD_CANNON_CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
@@ -116,7 +118,7 @@ public Event_CurWeapon(id)
 	
 	if((CSWID == CSW_SHARD_CANNON && g_Old_Weapon[id] == CSW_SHARD_CANNON) && Get_BitVar(g_Had_SHARD_CANNON, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_SHARD_CANNON)
+		static Ent; Ent = get_weapon_ent_of_player(id, CSW_SHARD_CANNON)
 		if(pev_valid(Ent)!=PDATA_SAFE)
 		{
 			g_Old_Weapon[id] = get_user_weapon(id)
@@ -156,7 +158,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, OLD_W_MODEL))
 	{
 		static weapon
-		weapon = fm_get_user_weapon_entity(entity, CSW_SHARD_CANNON)
+		weapon = get_weapon_ent_of_player(entity, CSW_SHARD_CANNON)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -187,7 +189,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if((get_user_weapon(id) != CSW_SHARD_CANNON) || !Get_BitVar(g_Had_SHARD_CANNON, id)){
 		return FMRES_IGNORED
 	}
-	static iEnt; iEnt = fm_get_user_weapon_entity(id, get_user_weapon(id))
+	static iEnt; iEnt = get_weapon_ent_of_player(id, get_user_weapon(id))
 	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
 	
 	if(PressButton & IN_ATTACK)
@@ -257,7 +259,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 		set_pdata_float(invoker, m_flEjectBrass, get_gametime() + 0.75, XTRA_OFS_PLAYER)
 		
-		static Ent; Ent = fm_get_user_weapon_entity(invoker, CSW_SHARD_CANNON)
+		static Ent; Ent = get_weapon_ent_of_player(invoker, CSW_SHARD_CANNON)
 		set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 		
 		return FMRES_SUPERCEDE

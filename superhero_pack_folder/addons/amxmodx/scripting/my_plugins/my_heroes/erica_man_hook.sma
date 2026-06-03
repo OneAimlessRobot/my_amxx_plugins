@@ -174,9 +174,9 @@ public hook_think(ent)
 
 		return
 	}
-	new id=entity_get_edict(ent,EV_ENT_owner),
-		vic=entity_get_edict(ent,EV_ENT_euser1),
-		times_left=entity_get_int(ent,EV_INT_iuser1)
+	new id=pev(ent,pev_owner),
+		vic=pev(ent,pev_euser1),
+		times_left=pev(ent,pev_iuser1)
 	if (!is_user_alive(id)){
 		stop_dragging(id,vic)
 		return
@@ -356,8 +356,8 @@ public CmdStart(attacker, uc_handle)
 				free_tr2(tr)
 			}
 		}
-		else if(is_valid_ent(g_player_hook[attacker])){
-			new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
+		else if(pev_valid(g_player_hook[attacker])){
+			new target=pev(g_player_hook[attacker],pev_euser1)
 			if(is_user_alive(target)){
 				stop_dragging(attacker,target)
 			}
@@ -377,7 +377,7 @@ new weapon=get_user_weapon(attacker)
 new CsTeams:att_team=cs_get_user_team(attacker)
 if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is_valid_ent(g_player_hook[attacker])){
 	
-	new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
+	new target=pev(g_player_hook[attacker],pev_euser1)
 	if((weapon==CSW_KNIFE)){
 		if((id!=target)||!(is_user_alive(target))){
 
@@ -480,14 +480,14 @@ process_manhook_manslaughter(iAgressor, iVictim)
 {
 	new Float:Origin[3], Float:Origin2[3]
 	//Check to make sure its a valid entity
-	if (!is_valid_ent(iAgressor)) {
+	if (!pev_valid(iAgressor)) {
 		iAgressor = iVictim
 	}
 
 	if (!is_user_connected(iVictim)) return
 
-	entity_get_vector(iVictim,EV_VEC_origin,Origin)
-	entity_get_vector(iAgressor,EV_VEC_origin,Origin2)
+	pev(iVictim,pev_origin,Origin)
+	pev(iAgressor,pev_origin,Origin2)
 
 	gross_kill_gibs_fx(iVictim,Origin,Origin2)
 }

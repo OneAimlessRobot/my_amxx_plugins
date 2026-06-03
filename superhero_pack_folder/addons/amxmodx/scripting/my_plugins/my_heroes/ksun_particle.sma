@@ -264,8 +264,8 @@ public spawn_spore(id){
 
 	float_to_str(SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health),health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue( spore, "material", material );
-	DispatchKeyValue( spore, "health", health );
+	my_set_kvd( spore, "material", material );
+	my_set_kvd( spore, "health", health );
 
 
 	set_pev(spore, pev_health, SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health))

@@ -1,6 +1,3 @@
-// SuperHero Main Include File
-// Version 1.2.0
-
 #if defined _shero_included
   #endinput
 #endif
@@ -24,21 +21,8 @@ enum sh_extra_damage_flags (<<= 1){
 
 }
 
-//Default includes used for shero
 
-#tryinclude "../../include/amxmodx.inc"
-#tryinclude "../../include/amxmisc.inc"
-#tryinclude "../my_include/randomx.inc"
-#tryinclude "../../include/hamsandwich.inc"
-#tryinclude "../../include/fakemeta.inc"
-#tryinclude "../../include/engine.inc"
-#tryinclude "../../include/fun.inc"
-#tryinclude "../../include/csx.inc"
-#tryinclude "../../include/cstrike.inc"
-#tryinclude "../my_include/auxiliar_stuff.inc"
-#tryinclude "../my_include/sh_hero_array_module.inc"
-#tryinclude "../my_include/superheroconst.inc"
-
+#include "../my_include/primitive_includes_for_superhero.inc"
 
 
 #include "../my_heroes/sh_damage_sources_inc/sh_damage_sources_aux_code.inc"

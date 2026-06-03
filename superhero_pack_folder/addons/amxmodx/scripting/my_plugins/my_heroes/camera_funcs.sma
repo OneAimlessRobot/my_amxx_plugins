@@ -1,6 +1,6 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_FAKEMETA_UTIL
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_FAKEMETA_UTIL
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "camera_inc/sh_camman_get_set.inc"
@@ -14,7 +14,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 const m_iFOV = 363;
-new camera_loaded_mask = 0xFFFF
+new camera_loaded_mask = exhausted_bitsum
 new camera_planting_mask = 0
 new camera_armed_mask = 0
 new looking_with_camera_mask = 0
@@ -49,7 +49,7 @@ public plugin_init(){
 	pcvar_camman_camera_maxalpha = create_cvar("camman_camera_maxalpha", "100.0")
 	pcvar_camman_camera_minalpha = create_cvar("camman_camera_minalpha", "1000.0")
 
-	register_think(CAMERA_CLASSNAME, "camera_think")
+	//register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
@@ -260,7 +260,7 @@ public _toggle_camera_view(iPlugins,iParams){
 	if(!Get_BitVar(looking_with_camera_mask, id)){
 		new camera_id=user_camera[id]
 		
-		if(!is_valid_ent(camera_id)){
+		if(!pev_valid(camera_id)){
 			
 			sh_chat_message(id,gHeroID,"No available cameras!");
 			UnSet_BitVar(looking_with_camera_mask, id)
@@ -287,7 +287,7 @@ public _toggle_camera_view(iPlugins,iParams){
 		new Float: cam_health;
 		pev(camera_id,pev_health,cam_health)
 		Set_BitVar(looking_with_camera_mask, id)
-		attach_view(id,camera_id)
+		my_attack_view(id,camera_id)
 		set_pev(camera_id, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 		sh_chat_message(id,gHeroID,"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
 		return
@@ -298,7 +298,7 @@ public _toggle_camera_view(iPlugins,iParams){
 		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
-		attach_view(id,id)
+		my_attack_view(id,id)
 		
 	}
 	
@@ -310,15 +310,15 @@ public plant_camera(id)
 	
 	static material[128]
 	static health[128]	
-	new NewEnt = create_entity( "func_breakable" );
+	new NewEnt = my_create_entity( "func_breakable" );
 	if ( !NewEnt ) return PLUGIN_HANDLED
 	
 	set_pev(NewEnt, pev_classname, CAMERA_CLASSNAME)
 	engfunc(EngFunc_SetModel, NewEnt, CAMERA_WORLD_MDL)
 	float_to_str(cvar_val(float, pcvar_camera_hp)+1000.0,health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue( NewEnt, "material", material );
-	DispatchKeyValue( NewEnt, "health", health );
+	my_set_kvd( NewEnt, "material", material );
+	my_set_kvd( NewEnt, "health", health );
 	
 	
 	set_pev(NewEnt, pev_health, cvar_val(float, pcvar_camera_hp)+1000.0)
@@ -400,9 +400,9 @@ update_camera_aiming(other_ent,cam_id){
 	
 	static Float:angles[3];
 	
-	entity_get_vector(cam_id, EV_VEC_v_angle, angles)
+	pev(cam_id, pev_v_angle, angles)
 	angles[0] = - angles[0]
-	entity_set_vector(cam_id, EV_VEC_v_angle, angles)
+	set_pev(cam_id, pev_v_angle, angles)
 
 	static Float:vOrigin[3],Float: aim_orig[3];
 	
@@ -421,12 +421,12 @@ update_camera_aiming(other_ent,cam_id){
 
 	set_pev(cam_id, pev_vuser1, aim_orig)
 
-	entity_get_vector(other_ent, EV_VEC_v_angle, angles)
+	pev(other_ent, pev_v_angle, angles)
 	angles[0] = - angles[0]
-	entity_set_vector(cam_id, EV_VEC_v_angle, angles)
-	entity_get_vector(other_ent, EV_VEC_angles, angles)
+	set_pev(cam_id, pev_v_angle, angles)
+	pev(other_ent, EV_VEC_angles, angles)
 	angles[0] = - angles[0]
-	entity_set_vector(cam_id, EV_VEC_angles, angles)
+	set_pev(cam_id, pev_angles, angles)
 
 	
 	
@@ -647,7 +647,7 @@ bool:camman_update_planting(id){
 		return false
 		
 	}
-	butnprs = entity_get_int(id, EV_INT_button)
+	butnprs  = pev(id, pev_button)
 	
 	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD||butnprs&IN_USE){
 		
@@ -698,7 +698,7 @@ bool:camman_update_disarming(id){
 		return false
 		
 	}
-	butnprs = entity_get_int(id, EV_INT_button)
+	butnprs  = pev(id, pev_button)
 	
 	if (butnprs&IN_ATTACK || butnprs&IN_ATTACK2 || butnprs&IN_RELOAD){
 		
@@ -792,7 +792,7 @@ public _clear_cameras(iPlugin,iParams){
 	new grenada = find_ent_by_class(-1, CAMERA_CLASSNAME)
 	while(grenada) {
 
-		new owner=entity_get_edict(grenada,EV_ENT_owner)
+		new owner=pev(grenada, pev_owner)
 		remove_camera(owner)
 		grenada = find_ent_by_class(grenada, CAMERA_CLASSNAME)
 	}
@@ -819,7 +819,7 @@ public sh_client_death(id)
 		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
-		attach_view(id,id)
+		my_attack_view(id,id)
 		
 	}
 }

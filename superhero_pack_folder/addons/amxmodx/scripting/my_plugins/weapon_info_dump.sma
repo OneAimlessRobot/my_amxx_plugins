@@ -249,7 +249,7 @@ WeaponInfo(id, i) {
 		ExecuteHam(Ham_Weapon_SecondaryAttack, g_ent)
 		_fire2_period[g_id] = get_pdata_float(g_ent, m_flNextSecondaryAttack, XO_WEAPON)
 		
-		_reload_period[g_id] = g_fReloadDelay[g_id]
+		_reload_period[g_id] = wlt_get_def_rld_delay(g_id)
 	}
 	_cost[g_id] = START_MONEY - cs_get_user_money(id)
 

@@ -1,3 +1,4 @@
+#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_FAKEMETA_UTIL
@@ -17,10 +18,20 @@ new g_Muzzleflash_Ent, g_Muzzleflash, g_Msg_WeaponList = -1
 
 new weapon_secret_code = ETHEREAL_SECRET_CODE
 
+new cached_ammo_id = -1,
+	cached_max_bp_ammo = -1 ,
+	cached_def_pos = -1 
+	
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
+	cached_ammo_id = wlt_get_def_ammo_id(CSW_ETHEREAL)
+
+	cached_max_bp_ammo = wlt_get_def_bp_ammo(CSW_ETHEREAL)
+
+	cached_def_pos = wlt_get_def_pos(CSW_ETHEREAL)
+
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
 	register_forward(FM_UpdateClientData,"fw_UpdateClientData_Post", 1)	
@@ -31,14 +42,14 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -108,14 +119,14 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	engclient_cmd(id, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	return PLUGIN_HANDLED
 }
 
 public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)
-	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	fm_give_item(id, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, ETHEREAL_CLIP)
@@ -123,7 +134,7 @@ public Get_Ethereal(id)
 	// Set BpAmmo
 	cs_set_user_bpammo(id, CSW_ETHEREAL, ETHEREAL_RESERVE)
 	// Update Ammo
-	update_ammo(id, CSW_ETHEREAL, ETHEREAL_CLIP, ETHEREAL_RESERVE)
+	update_ammo(id, CSW_ETHEREAL, ETHEREAL_CLIP, ETHEREAL_RESERVE, cached_ammo_id)
 	
 }
 
@@ -204,7 +215,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ETHEREAL_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -396,10 +407,10 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 		
 		(send_weapon_list_stock(id,
 				ETHEREAL_HUD_SPRITES_NAME ,
-				weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_ammo_id],
+				cached_ammo_id,
 				ETHEREAL_RESERVE,
 				_:MY_SLOT_PRIMARY,
-				6,
+				cached_def_pos,
 				CSW_ETHEREAL,
 				0,
 				MSG_ONE,
@@ -409,11 +420,11 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 		
 		
 		(send_weapon_list_stock(id,
-				(weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name]),
-				weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_ammo_id],
-				ETHEREAL_RESERVE,
+				weapon_data_strings_array[CSW_ETHEREAL][wpn_struct_weapon_name],
+				cached_ammo_id,
+				cached_max_bp_ammo,
 				_:MY_SLOT_PRIMARY,
-				6,
+				cached_def_pos,
 				CSW_M4A1,
 				0,
 				MSG_ONE,

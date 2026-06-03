@@ -18,6 +18,8 @@ new g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id
 
 new weapon_secret_code = QUAD_BARREL_WEAPON_SECRETCODE
 
+new cached_ammo_id = -1
+
 new const WeaponSounds[5][] = 
 {
 	"weapons/qbarrel_shoot.wav",
@@ -50,6 +52,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
+	cached_ammo_id = wlt_get_def_ammo_id(CSW_QUADBARREL)
+	
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
 	register_forward(FM_SetModel, "fw_SetModel")
@@ -61,13 +65,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 	// Cache
@@ -109,7 +113,7 @@ public Get_QuadBarrel(id)
 	UnSet_BitVar(g_SpecialShot, id);
 	Set_BitVar(g_Had_QB, id);
 	
-	give_item(id, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name])
+	give_item(id, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_QUADBARREL, Q_BARREL_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
@@ -435,7 +439,7 @@ public fw_Item_PostFrame(iEnt)
 		message_end()
 		
 		message_begin(MSG_ONE_UNRELIABLE, g_MsgAmmoX, _, id)
-		write_byte(weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_ammo_id])
+		write_byte(cached_ammo_id)
 		write_byte(cs_get_user_bpammo(id, CSW_QUADBARREL))
 		message_end()
 	

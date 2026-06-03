@@ -115,8 +115,8 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	engfunc(EngFunc_SetModel, mg_id , P_MACHINEGUN_MODEL)
 	float_to_str(1250.0,health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue(  mg_id , "material", material );
-	DispatchKeyValue(  mg_id , "health", health );
+	my_set_kvd(  mg_id , "material", material );
+	my_set_kvd(  mg_id , "health", health );
 	set_pev(mg_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(mg_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=255;

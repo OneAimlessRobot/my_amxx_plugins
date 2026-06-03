@@ -246,8 +246,8 @@ public _shield_charge_user(iPlugin, iParams){
 	engfunc(EngFunc_SetModel, NewEnt, shield_mdl)
 	float_to_str(1000.0,health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue( NewEnt, "material", material );
-	DispatchKeyValue( NewEnt, "health", health );
+	my_set_kvd( NewEnt, "material", material );
+	my_set_kvd( NewEnt, "health", health );
 	
 	new Float:fl_vecminsx[3]
 	new Float:fl_vecmaxsx[3]

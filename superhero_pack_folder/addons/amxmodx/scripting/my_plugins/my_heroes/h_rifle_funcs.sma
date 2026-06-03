@@ -1,6 +1,6 @@
+#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_FAKEMETA_UTIL
 #define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
@@ -61,10 +61,10 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 
@@ -115,10 +115,10 @@ public Get_Mosin(id)
 	
 	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name])
+	give_item(id, weapon_data_strings_array[CSW_MOSIN][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
+	static Ent; Ent = get_weapon_ent_of_player(id, CSW_MOSIN)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, H_RIFLE_CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
@@ -140,7 +140,7 @@ public Event_CurWeapon(id)
 	
 	if((CSWID == CSW_MOSIN && g_Old_Weapon[id] == CSW_MOSIN) && Get_BitVar(g_Had_Mosin, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_MOSIN)
+		static Ent; Ent = get_weapon_ent_of_player(id, CSW_MOSIN)
 		if(pev_valid(Ent)!=PDATA_SAFE)
 		{
 			g_Old_Weapon[id] = get_user_weapon(id)
@@ -179,7 +179,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, OLD_W_MODEL_H_RIFLE))
 	{
 		static weapon
-		weapon = fm_get_user_weapon_entity(entity, CSW_MOSIN)
+		weapon = get_weapon_ent_of_player(entity, CSW_MOSIN)
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
@@ -205,7 +205,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id))
 		return FMRES_IGNORED
 		
-	static iEnt; iEnt = fm_get_user_weapon_entity(id, get_user_weapon(id))
+	static iEnt; iEnt = get_weapon_ent_of_player(id, get_user_weapon(id))
 	static PressButton; PressButton = get_uc(uc_handle, UC_Buttons)
 	if(!is_valid_ent(iEnt)||(iEnt<=0)){
 	
@@ -257,7 +257,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 
 		set_pdata_float(invoker, m_flEjectBrass, get_gametime() + 0.75, XO_WEAPON)
 		
-		static Ent; Ent = fm_get_user_weapon_entity(invoker, CSW_MOSIN)
+		static Ent; Ent = get_weapon_ent_of_player(invoker, CSW_MOSIN)
 		set_pdata_int(Ent, m_fInSpecialReload, 0, XO_WEAPON)
 		
 		return FMRES_SUPERCEDE

@@ -113,8 +113,8 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	engfunc(EngFunc_SetModel, law_id , P_ROCKET_LAUNCHER_MODEL)
 	float_to_str(1050.0,health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue(  law_id , "material", material );
-	DispatchKeyValue(  law_id , "health", health );
+	my_set_kvd(  law_id , "material", material );
+	my_set_kvd(  law_id , "health", health );
 	set_pev(law_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(law_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=190;

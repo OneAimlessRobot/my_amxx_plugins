@@ -246,8 +246,8 @@ entity_set_model(launcher, KSUN_SPORE_MDL)
 
 float_to_str(LAUNCHER_DEAD_HP+ cvar_val(float, pcvar_ksun_launcher_base_health),health,127)
 num_to_str(2,material,127)
-DispatchKeyValue( launcher, "material", material );
-DispatchKeyValue( launcher, "health", health );
+my_set_kvd( launcher, "material", material );
+my_set_kvd( launcher, "health", health );
 
 
 set_pev(launcher, pev_health, LAUNCHER_DEAD_HP + cvar_val(float, pcvar_ksun_launcher_base_health))

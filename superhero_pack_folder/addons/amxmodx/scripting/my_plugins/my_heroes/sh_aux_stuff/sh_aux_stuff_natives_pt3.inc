@@ -34,7 +34,7 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 	new Float:fVelocity[3];
 	get_velocity_from_origin( ent, fOrigin, fSpeed, fVelocity )
 
-	entity_set_vector( ent, EV_VEC_velocity, fVelocity );
+	set_pev( ent, pev_velocity, fVelocity );
 
 	return ( 1 );
 }

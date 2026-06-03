@@ -14,6 +14,8 @@ arcticPredator_explode_maxdamage 250
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define AUX_STUFF_GIVE_MACROS
+#include "../my_include/auxiliar_stuff.inc"
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

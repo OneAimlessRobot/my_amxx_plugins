@@ -50,8 +50,7 @@ new pcvar_ester_anti_pussy_engaged
 new Float:g_ester_blow_up_time_left[SH_MAXSLOTS+1]
 new g_ester_respawned_attempts[SH_MAXSLOTS+1]
 new CsTeams:g_which_team_is_user[SH_MAXSLOTS+1]
-new g_saved_coords[SH_MAXSLOTS+1][3]
-new g_last_coords[SH_MAXSLOTS+1][3]
+new Float:g_saved_coords[SH_MAXSLOTS+1][3]
 
 
 new dmg_source_name_short_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
@@ -61,7 +60,6 @@ new ester_flight_drain_wpn_id
 new generic_dmg_source_shock = -1
 new shinobu_max_hp = -1
 new ESTER_REBORN_CALCULATION_LOOP_TASKID,
-		ESTER_REBORN_POSITION_CHECK_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_EXPLOSION_DELAY_TASKID,
 		ESTER_FLIGHT_DRAIN_GLOBAL_TASKID
@@ -101,7 +99,6 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "Ester_DamageReflect",_,true)
 
 	ESTER_REBORN_CALCULATION_LOOP_TASKID=allocate_typed_task_id(player_task)
-	ESTER_REBORN_POSITION_CHECK_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_GLOW_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_EXPLOSION_DELAY_TASKID=allocate_typed_task_id(player_task)
 	ESTER_FLIGHT_DRAIN_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
@@ -293,15 +290,21 @@ public _ester_get_respawn_attempts_remaining(iPlugins,iParams){
 	
 
 }
-public _ester_set_reborn_mode(iPlugins,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
+
+ester_set_reborn_mode_primitive(id,value){
 
 	Assign_BitVar(g_smashed_someone_mask,id,!value);
 	Assign_BitVar(g_smashed_breakable_mask,id,!value);
 	Assign_BitVar(g_ester_is_reborn_mode_mask,id, value);
 	Assign_BitVar(g_is_desperate_mask, id, false_for_macro);
 	Assign_BitVar(g_draining_mask, id, false_for_macro);
+}
+
+public _ester_set_reborn_mode(iPlugins,iParams){
+	new id=get_param(1)
+	new value=get_param(2)
+
+	ester_set_reborn_mode_primitive(id,value)
 }
 public OnCmdStart(id, uc_handle)
 {	
@@ -323,7 +326,7 @@ public OnCmdStart(id, uc_handle)
 	static buttons,oldbuttons; 
 	buttons = get_uc(uc_handle, UC_Buttons)
 	
-	oldbuttons = entity_get_int(id,EV_INT_oldbuttons)
+	oldbuttons = pev(id, pev_oldbuttons)
 	if((buttons & IN_DUCK)&&(buttons &IN_JUMP))
 	{ 
 		if(!(oldbuttons & IN_DUCK)||!(oldbuttons &IN_JUMP)){
@@ -445,7 +448,7 @@ public sh_client_death(id, killer){
 	g_which_team_is_user[id] = cs_get_user_team(id)
 
 	// Save users origin on death
-	get_user_origin(id, g_saved_coords[id])
+	pev(id,pev_origin, g_saved_coords[id])
 	g_saved_coords[id][2] += 60
 
 	// Look for self to raise from dead
@@ -515,7 +518,7 @@ public ester_respawn(parm[2])
 	
 	revival(id)
 	revival(id)
-	ester_set_reborn_mode(id,1)
+	ester_set_reborn_mode_primitive(id,1)
 	curr_player_sound[id]=generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1)
 	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
@@ -523,7 +526,7 @@ public ester_respawn(parm[2])
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
 	// Teleport the player
-	set_user_origin(id, g_saved_coords[id])
+	set_pev(id, pev_origin,g_saved_coords[id])
 
 	positionChangeTimer(id)
 }
@@ -567,7 +570,7 @@ public sh_round_end(){
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
-			ester_set_reborn_mode(id,0)
+			ester_set_reborn_mode_primitive(id,0)
 			ester_remove_statuses(id)
 		}
 	}
@@ -575,26 +578,20 @@ public sh_round_end(){
 //----------------------------------------------------------------------------------------------
 public positionChangeTimer(id)
 {
-	if ( !is_user_alive(id) ) return
-
-	get_user_origin(id, g_last_coords[id])
-	new Float:velocity[3]
-	entity_get_vector(id, EV_VEC_velocity, velocity)
-
-	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
-		// Force a Move (small jump)
-		velocity[0] += 20.0
-		velocity[2] += 100.0
-		entity_set_vector(id, EV_VEC_velocity, velocity)
+	if(!sh_hull_vacant(id,g_saved_coords[id],HULL_HUMAN)){
+		user_kill(id,1)
+		sh_chat_message(id, gHeroID, ESTER_WALL_STUCK_MSG)
+		deny_next_reborn(id)
+		ester_remove_statuses(id)
+		ester_set_reborn_mode_primitive(id,0)
 	}
+	else{
 
-	sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 
-	godmode_render_update(id+ESTER_REBORN_GLOW_TASKID)
+		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 
-	set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,
-			cvar_val(float,pcvar_ester_calculation_time_period)-PRE_RESPAWN_MESSAGE_RELAY) * 0.5,
-			"positionChangeCheck", id+ESTER_REBORN_POSITION_CHECK_TASKID)
+		godmode_render_update(id+ESTER_REBORN_GLOW_TASKID)
+	}
 }
 ester_remove_statuses(id){
 
@@ -605,25 +602,6 @@ ester_remove_statuses(id){
 		remove_user_flight_fx(id)
 	}
 	
-}
-//----------------------------------------------------------------------------------------------
-public positionChangeCheck(id)
-{
-	id -= ESTER_REBORN_POSITION_CHECK_TASKID
-
-	if ( !is_user_alive(id) ) return
-
-	new origin[3]
-	get_user_origin(id, origin)
-
-	// Kill this player if Stuck in Wall!
-	if ( g_last_coords[id][0] == origin[0] && g_last_coords[id][1] == origin[1] && g_last_coords[id][2] == origin[2] && is_user_alive(id) ) {
-		user_kill(id,1)
-		sh_chat_message(id, gHeroID, ESTER_WALL_STUCK_MSG)
-		deny_next_reborn(id)
-		ester_remove_statuses(id)
-		ester_set_reborn_mode(id,0)
-	}
 }
 //----------------------------------------------------------------------------------------------
 public BlowUp(param[1],id)
@@ -681,8 +659,8 @@ public ester_break_shit(pToucher,pTouched){
 
 	static Float:killer_velocity[3],Float:killer_origin[3],Float:killer_speed
 	
-	entity_get_vector(pToucher,EV_VEC_origin,killer_origin)
-	entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+	pev(pToucher, pev_origin,killer_origin)
+	pev(pToucher, pev_velocity,killer_velocity)
 
 	killer_speed=floatmax(1.0,vector_length(killer_velocity))
 
@@ -691,7 +669,7 @@ public ester_break_shit(pToucher,pTouched){
 							"func_breakable",
 							cvar_val(float, pcvar_ester_fly_knock_enemies_force))
 
-	entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+	pev(pToucher, pev_velocity,killer_velocity)
 	multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 	set_velocity_from_origin(pToucher,killer_origin,killer_speed)
 
@@ -740,14 +718,14 @@ sh_set_stun(pToucher,1.0,200.0)
 Set_BitVar(g_smashed_someone_mask, pToucher)
 static Float:killer_velocity[3],Float:killer_origin[3],Float:killer_speed
 
-entity_get_vector(pToucher,EV_VEC_origin,killer_origin)
-entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+pev(pToucher, pev_origin,killer_origin)
+pev(pToucher, pev_velocity,killer_velocity)
 
 killer_speed=floatmax(1.0,vector_length(killer_velocity))
 
 explosion(gHeroID,pToucher,150.0,(0.2*killer_speed),
 		cvar_val(float, pcvar_ester_fly_knock_enemies_force),1)
-entity_get_vector(pToucher,EV_VEC_velocity,killer_velocity)
+pev(pToucher, pev_velocity,killer_velocity)
 multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 set_velocity_from_origin(pToucher,killer_origin,killer_speed)
 

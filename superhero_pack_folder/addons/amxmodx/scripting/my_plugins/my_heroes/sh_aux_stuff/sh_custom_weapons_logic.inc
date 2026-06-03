@@ -26,7 +26,7 @@ stock bool:entity_is_weapon(ent, bit_mask_to_check=(GUNS_BIT_SUM|CSW_KNIFE), &we
 
   static iId; iId = get_pdata_int(ent, m_iId, XO_WEAPON)
   
-  if(!cs_is_valid_itemid(iId, true)){
+  if(!cs_is_valid_itemid(_:iId, true)){
 
     return false
   }

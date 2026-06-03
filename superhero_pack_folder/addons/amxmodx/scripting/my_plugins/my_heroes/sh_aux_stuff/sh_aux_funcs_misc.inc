@@ -71,6 +71,8 @@ stock native_playanim(id,anim)
 	write_byte(pev(id, pev_body))
 	message_end()
 }
+
+#if defined _engine_included
 /**
 only use this at plugin_init forward!!!
 */
@@ -91,6 +93,7 @@ stock register_custom_touchable(const entity_name[], const func_name[], const tg
 		register_touch( entity_name, tg_entities[ i ], func_name );
 	}
 }
+#endif
 
 stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 
@@ -108,7 +111,7 @@ stock ground_z(iOrigin[3], ent, skip = 0, iRecursion = 0) {
 
 	iOrigin[2] += generate_int(5, 80);
 
-	if (!is_valid_ent(ent)) {
+	if (!pev_valid(ent)) {
 		return iOrigin[2];
 	}
 
@@ -252,8 +255,8 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 		ExecuteHam(Ham_Weapon_PrimaryAttack,Ent)
 	}
 	static Float:Delay,Float:M_Delay
-	Delay =floatdiv(weapon_data_structs_array[get_pdata_int(Ent, m_iId, XO_WEAPON)][wpn_struct_primary_attack_delay] ,speed)
-	M_Delay =floatdiv(weapon_data_structs_array[get_pdata_int(Ent, m_iId, XO_WEAPON)][wpn_struct_secondary_attack_delay]  ,speed)
+	Delay =floatdiv(wlt_get_def_prim_atk_delay(get_pdata_int(Ent, m_iId, XO_WEAPON)) ,speed)
+	M_Delay =floatdiv(wlt_get_def_scnd_atk_delay(get_pdata_int(Ent, m_iId, XO_WEAPON))  ,speed)
 
 	if (Delay > 0.0)
 	{
@@ -280,7 +283,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
-		new Float:fDelay = floatdiv(weapon_data_structs_array[get_pdata_int(iEnt, m_iId, XO_WEAPON)][wpn_struct_reload_delay], speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
 		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}
@@ -293,7 +296,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload) )
 	{
-		new Float:fDelay = floatdiv(weapon_data_structs_array[get_pdata_int(iEnt, m_iId, XO_WEAPON)][wpn_struct_reload_delay], speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_member(id, m_flNextAttack, fDelay)
 		set_member(iEnt, m_flTimeWeaponIdle, fDelay + 0.5)
 	}
@@ -335,9 +338,9 @@ stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const functi
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
-		if ( do_eht && (strlen(weapon_data_structs_array[wpnId][wpn_struct_weapon_name])>0))
+		if ( do_eht && (strlen(weapon_data_strings_array[wpnId][wpn_struct_weapon_name])>0))
 		{
-				RegisterHam(ham_constant, weapon_data_structs_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
+				RegisterHam(ham_constant, weapon_data_strings_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
 		}
 	}
 }
@@ -382,10 +385,10 @@ public orient_user(id,Float:angles[3],Float:v_angle[3])
 	if(!is_user_alive(id)){
 		return
 	}
-	entity_set_int( id, EV_INT_fixangle, 0 );
-	entity_set_vector(id, EV_VEC_v_angle,v_angle)
-	entity_set_vector(id, EV_VEC_angles,angles)
-	entity_set_int( id, EV_INT_fixangle, 1 );
+	set_pev( id, pev_fixangle, 0 );
+	set_pev( id, pev_v_angle,v_angle)
+	set_pev( id, pev_angles,angles)
+	set_pev( id, pev_fixangle, 1 );
 
 }
 stock Float:get_entity_velocity(ent){
@@ -410,19 +413,19 @@ stock kill_all_entity_beams(ent_id){
 	}
 }
 
-stock update_ammo(id, csw_id, clip, bpammo)
+stock update_ammo(id, CSW_id, clip, bpammo, ammo_id)
 {
 	if(!is_user_alive(id))
 		return
 		
 	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("CurWeapon"), _, id)
 	write_byte(1)
-	write_byte(csw_id)
+	write_byte(CSW_id)
 	write_byte(clip)
 	message_end()
 	
 	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("AmmoX"), _, id)
-	write_byte(weapon_data_structs_array[csw_id][wpn_struct_ammo_id])
+	write_byte(ammo_id)
 	write_byte(bpammo)
 	message_end()
 }
@@ -472,76 +475,6 @@ stock pick_random_player(GetPlayersFlags:the_wanted_flags){
 
 
 
-}
-stock Give_RealAmmo(id, CSWID)
-{
-	static Amount, Max
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 10; Max = 104;}
-		case CSW_SCOUT: {Amount = 6; Max = 180;}
-		case CSW_XM1014: {Amount = 8; Max = 64;}
-		case CSW_MAC10: {Amount = 16; Max = 200;}
-		case CSW_AUG: {Amount = 6; Max = 180;}
-		case CSW_ELITE: {Amount = 16; Max = 200;}
-		case CSW_FIVESEVEN: {Amount = 4; Max = 200;}
-		case CSW_UMP45: {Amount = 16; Max = 200;}
-		case CSW_SG550: {Amount = 6; Max = 180;}
-		case CSW_GALIL: {Amount = 6; Max = 180;}
-		case CSW_FAMAS: {Amount = 6; Max = 180;}
-		case CSW_USP: {Amount = 18; Max = 200;}
-		case CSW_GLOCK18: {Amount = 16; Max = 200;}
-		case CSW_AWP: {Amount = 6; Max = 60;}
-		case CSW_MP5NAVY: {Amount = 16; Max = 200;}
-		case CSW_M249: {Amount = 4; Max = 200;}
-		case CSW_M3: {Amount = 8; Max = 64;}
-		case CSW_M4A1: {Amount = 7; Max = 180;}
-		case CSW_TMP: {Amount = 7; Max = 200;}
-		case CSW_G3SG1: {Amount = 7; Max = 180;}
-		case CSW_DEAGLE: {Amount = 10; Max = 70;}
-		case CSW_SG552: {Amount = 7; Max = 180;}
-		case CSW_AK47: {Amount = 7; Max = 180;}
-		case CSW_P90: {Amount = 4; Max = 200;}
-		default: {Amount = 3; Max = 200;}
-	}
-
-	for(new i = 0; i < Amount; i++) give_ammo(id, 0, CSWID, Max)
-}
-
-stock give_ammo(id, silent, CSWID, Max)
-{
-	static Amount, Name[32]
-		
-	switch(CSWID)
-	{
-		case CSW_P228: {Amount = 13; formatex(Name, sizeof(Name), "357sig");}
-		case CSW_SCOUT: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_XM1014: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_MAC10: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_AUG: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_ELITE: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_FIVESEVEN: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-		case CSW_UMP45: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_SG550: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_GALIL: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_FAMAS: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_USP: {Amount = 12; formatex(Name, sizeof(Name), "45acp");}
-		case CSW_GLOCK18: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_AWP: {Amount = 10; formatex(Name, sizeof(Name), "338magnum");}
-		case CSW_MP5NAVY: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_M249: {Amount = 30; formatex(Name, sizeof(Name), "556natobox");}
-		case CSW_M3: {Amount = 8; formatex(Name, sizeof(Name), "buckshot");}
-		case CSW_M4A1: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_TMP: {Amount = 30; formatex(Name, sizeof(Name), "9mm");}
-		case CSW_G3SG1: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_DEAGLE: {Amount = 7; formatex(Name, sizeof(Name), "50ae");}
-		case CSW_SG552: {Amount = 30; formatex(Name, sizeof(Name), "556nato");}
-		case CSW_AK47: {Amount = 30; formatex(Name, sizeof(Name), "762nato");}
-		case CSW_P90: {Amount = 50; formatex(Name, sizeof(Name), "57mm");}
-	}
-	
-	if(!silent) emit_sound(id, CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	ExecuteHamB(Ham_GiveAmmo, id, Amount, Name, Max)
 }
 
 stock PlaySound(id, const sound[])

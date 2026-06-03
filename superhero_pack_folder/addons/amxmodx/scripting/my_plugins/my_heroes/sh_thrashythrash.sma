@@ -11,6 +11,7 @@
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#tryinclude "../../include/cstrike.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -204,7 +205,6 @@ public thrashy_kd(id)
 	BlowUp(id,false);
 
 	new currAmmount=--gThrashyExplosionAmmo[id];
-	sh_set_cooldown_flag(id)
 	if ( 0 < currAmmount < 5 ){
 		sh_chat_message( id, gHeroID, "You Have %d Dynamites%s Left", currAmmount, currAmmount == 1 ? "" : "s" );
 	}

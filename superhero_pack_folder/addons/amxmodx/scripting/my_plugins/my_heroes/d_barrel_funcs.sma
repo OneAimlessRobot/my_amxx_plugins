@@ -1,3 +1,4 @@
+#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_FAKEMETA_UTIL
 #define I_WANT_MISC_FUNCS
@@ -38,10 +39,13 @@ new g_SpecialShot
 
 new weapon_secret_code = CSW_GATLING_SECRET_CODE
 
+new cached_ammo_id = -1
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
+	cached_ammo_id = wlt_get_def_ammo_id(CSW_GATLING)
+
 	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
 	
 	register_forward(FM_CmdStart, "fw_CmdStart")
@@ -53,12 +57,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 
 
 	weapon_secret_code = allocate_weapon_secret_code()
@@ -124,7 +128,7 @@ public Mileage_WeaponRemove(id, ItemID)
 public get_gatling(id)
 {
 	Set_BitVar(g_Had_Volcano, id)
-	fm_give_item(id, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name])
+	fm_give_item(id, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name])
 	
 	// Set Clip
 	static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
@@ -240,12 +244,12 @@ public fw_SetModel(entity, model[])
 		return FMRES_IGNORED
 	
 	static id
-	id = entity_get_edict(entity, EV_ENT_owner)
+	id = pev(entity, pev_owner)
 	
 	if(equal(model, DEFAULT_W_MODEL))
 	{
 		static weapon
-		weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], entity)
+		weapon = fm_find_ent_by_owner(-1, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -479,7 +483,7 @@ public fw_Item_PostFrame(ent)
 		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
-		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING))
+		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING),cached_ammo_id)
 	}
 	return HAM_IGNORED
 }

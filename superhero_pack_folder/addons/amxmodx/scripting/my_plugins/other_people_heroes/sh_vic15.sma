@@ -22,8 +22,7 @@ new g_heroName[]="Victim 15/21"
 new gHeroID
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
-new g_savedOrigin[SH_MAXSLOTS+1][3]
-new g_lastPosition[SH_MAXSLOTS+1][3]
+new Float:g_savedOrigin[SH_MAXSLOTS+1][3]
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -70,8 +69,8 @@ public sh_client_death(id)
 	g_userTeam[id] = cs_get_user_team(id)
 
 	// Save users origin on death
-	get_user_origin(id, g_savedOrigin[id])
-	g_savedOrigin[id][2] += 8
+	pev(id, pev_origin, g_savedOrigin[id])
+	g_savedOrigin[id][2] += 8.0
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && !g_vic15PowerUsed[id] ) {
@@ -117,7 +116,7 @@ public sh_round_end()
 public vic15_teleport(id)
 {
 	if(is_user_connected(id)){// Teleport the player
-		set_user_origin(id, g_savedOrigin[id])
+		set_pev(id, pev_origin, g_savedOrigin[id])
 		if (get_user_team(id)==1){
 			give_item(id,"weapon_knife")
 			give_item(id,"weapon_glock18")
@@ -139,34 +138,7 @@ public vic15_teleport(id)
 //----------------------------------------------------------------------------------------------
 public positionChangeTimer(id)
 {
-	if ( !is_user_alive(id) ) return
-
-	get_user_origin(id, g_lastPosition[id])
-
-	new Float:velocity[3]
-	entity_get_vector(id, EV_VEC_velocity, velocity)
-
-	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
-		// Force a Move (small jump)
-		velocity[0] += 20.0
-		velocity[2] += 100.0
-		entity_set_vector(id, EV_VEC_velocity, velocity)
-	}
-
-	set_task(0.4, "positionChangeCheck", id+100)
-}
-//----------------------------------------------------------------------------------------------
-public positionChangeCheck(id)
-{
-	id -= 100
-
-	if ( !is_user_alive(id) ) return
-
-	new origin[3]
-	get_user_origin(id, origin)
-
-	// Kill this player if Stuck in Wall!
-	if ( g_lastPosition[id][0] == origin[0] && g_lastPosition[id][1] == origin[1] && g_lastPosition[id][2] == origin[2] && is_user_alive(id) ) {
+	if(!sh_hull_vacant(id,g_savedOrigin[id],HULL_HUMAN)){
 		user_kill(id, 1)
 		client_print(id, print_chat, "[SH](Victim 15/21) You respawned in a wall")
 	}

@@ -1,20 +1,22 @@
+#define AUX_STUFF_GIVE_WEAPONS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include <reapi>
+
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "colt_inc/sh_colt.inc"
-#include "../my_include/weapons_const.inc"
-#include "../my_include/weapons.inc"
 
 #define PLUGIN "Superhero adriano colt funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
 
-new pPlayer, HookChain:TakeDamage
-
+new pPlayer, HookChain:TakeDamage, g_Msg_WeaponList = -1
 new is_rehlds_avail
 public plugin_precache()
-{
+{	
+
+
 	engfunc(EngFunc_PrecacheSound,SHOOTSOUND);
 	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipin.wav")
 	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipout.wav")
@@ -30,21 +32,33 @@ public plugin_precache()
 	is_rehlds_avail=is_rehlds()
 
 }
+new cached_ammo_id_colt = -1,
+	cached_max_bp_ammo = -1 ,
+	cached_def_pos = -1 
+	
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	RegisterHam(Ham_Item_Deploy, STRN_FIVESEVEN, "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, STRN_FIVESEVEN, "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, STRN_FIVESEVEN, "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, STRN_FIVESEVEN, "fw_WeaponWeaponIdlePost", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, STRN_FIVESEVEN, "fw_ItemAddToPlayerPost", 1,true)
+	cached_ammo_id_colt = wlt_get_def_ammo_id(CSW_FIVESEVEN)
+
+	cached_max_bp_ammo = wlt_get_def_bp_ammo(CSW_FIVESEVEN)
+
+	cached_def_pos = wlt_get_def_pos(CSW_FIVESEVEN)
+
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponWeaponIdlePost", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemAddToPlayerPost", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHookChain(RG_CWeaponBox_SetModel, "rg_CWeaponBoxSetModelPre")
 	TakeDamage = RegisterHookChain(RG_CBasePlayer_TakeDamage, "rg_CBasePlayerTakeDamagePre")
 	DisableHookChain(TakeDamage)
 	register_clcmd("give_m1911a1", "give_m1911a1")
 	register_clcmd(STRN_M1911A1, "lastinv_m1911a1")
+
+	g_Msg_WeaponList = get_user_msgid("WeaponList")
 }
 public plugin_natives(){
 
@@ -69,13 +83,13 @@ public give_m1911a1(player)
 	
 	lastinv_m1911a1(player)
 
-	new pEntity=rg_give_custom_item(player,STRN_FIVESEVEN,GT_APPEND,ID_M1911A1)
+	new pEntity=rg_give_custom_item(player,weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,ID_M1911A1)
 	ent_check(pEntity,)
 	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
 	rg_set_iteminfo(pEntity, ItemInfo_iMaxClip, CLIP_M1911A1)
-	if(get_member(player, m_rgAmmo, AMMOID_FIVESEVEN) < MAXAMMO_M1911A1)
-	set_member_s(player, m_rgAmmo, MAXAMMO_M1911A1, AMMOID_FIVESEVEN)
+	if(get_member(player, m_rgAmmo, cached_ammo_id_colt) < MAXAMMO_M1911A1)
+	set_member_s(player, m_rgAmmo, cached_max_bp_ammo, cached_ammo_id_colt)
 }
 
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])
@@ -96,7 +110,19 @@ public fw_WeaponWeaponIdlePost(entity)
 
 	return HAM_IGNORED
 }	
+/*
 
+stock send_weapon_list_stock(player,
+			const szName[],
+			ammoid,
+			maxammo,
+			slot,
+			position,
+			id,
+			flag = 0,
+			destination= MSG_ONE,
+			msgid=-1)
+*/
 public fw_ItemAddToPlayerPost(entity, id)
 {
 	
@@ -105,10 +131,32 @@ public fw_ItemAddToPlayerPost(entity, id)
 	new iCustom = get_entvar(entity, var_impulse)
 	new is_custom= (iCustom == ID_M1911A1)
 	
-	SendWeaponList(id,is_custom? STRN_M1911A1: STRN_FIVESEVEN,AMMOID_FIVESEVEN,MAXAMMO_FIVESEVEN,
-					SLOT_SECONDARY,
-					POSITION_FIVESEVEN,
-					CSW_FIVESEVEN,MSG_ONE_UNRELIABLE)
+	
+	
+	is_custom?  (send_weapon_list_stock(id,
+					STRN_M1911A1 ,
+					cached_ammo_id_colt,
+					cached_max_bp_ammo,
+					_:MY_SLOT_SECONDARY,
+					cached_def_pos,
+					CSW_FIVESEVEN,
+					0,
+					MSG_ONE,
+					g_Msg_WeaponList))
+		
+				:
+		
+		
+		(send_weapon_list_stock(id,
+				weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name],
+				cached_ammo_id_colt,
+				cached_max_bp_ammo,
+				_:MY_SLOT_SECONDARY,
+				cached_def_pos,
+				CSW_FIVESEVEN,
+				0,
+				MSG_ONE,
+				g_Msg_WeaponList))
 
 
 	return HAM_HANDLED
@@ -129,7 +177,7 @@ public fw_ItemDeployPre(entity)
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_entvar(pPlayer, var_viewmodel, VIEWMODEL)
 	set_entvar(pPlayer, var_weaponmodel, WEAPONMODEL)
-	SendWeaponAnim(pPlayer, get_member(entity, m_Weapon_iClip) ? ANIM_DRAW : ANIM_DRAW_EMPTY)
+	native_playanim(pPlayer, get_member(entity, m_Weapon_iClip) ? ANIM_DRAW : ANIM_DRAW_EMPTY)
 	set_member(pPlayer, m_flNextAttack, 0.9)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 0.9)
 	return HAM_SUPERCEDE
@@ -144,7 +192,13 @@ public fw_WeaponReloadPre(entity)
 	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
 	new iClip = get_member(entity, m_Weapon_iClip)
 	pPlayer = get_member(entity, m_pPlayer)
-	if(iClip >= CLIP_M1911A1 || !get_member(pPlayer, m_rgAmmo, AMMOID_FIVESEVEN)) return HAM_SUPERCEDE
+	
+	if(iClip >= CLIP_M1911A1 || !get_member(pPlayer, m_rgAmmo,
+				cached_ammo_id_colt)){
+
+			return HAM_SUPERCEDE
+	}
+	
 	ExecuteHam(Ham_Weapon_Reload, entity)
 	set_member(pPlayer, m_flNextAttack, 2.23)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 2.23)
@@ -185,25 +239,30 @@ public fw_WeaponPrimaryAttackPre(entity)
 	return HAM_SUPERCEDE
 }
 
-public fm_TraceLinePost(Float:vecStart[3], Float:vecEnd[3], noMonsters, pentToSkip, iTrace)
-{
-	if(noMonsters) return
-	if(!GunshotDecalTrace(iTrace, true)) return
-	get_tr2(iTrace, TR_vecEndPos, vecEnd)
-	get_tr2(iTrace, TR_vecPlaneNormal, vecStart)
-	CreateSmoke(SMOKE_WALLPUFF, vecEnd, vecStart, 0.5, Float:{40.0, 40.0, 40.0})
+
+public fm_PlaybackEventPre(){
+	
+	return FMRES_SUPERCEDE
 }
 
-public fm_PlaybackEventPre() return FMRES_SUPERCEDE
 public lastinv_m1911a1(player){
-	engclient_cmd(player, STRN_FIVESEVEN)
+
+	engclient_cmd(player, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name])
+
 }
-public rg_CBasePlayerTakeDamagePre(victim, inflictor, attacker, Float:flDamage) SetHookChainArg(4, ATYPE_FLOAT, flDamage * 2.0)
+
+public rg_CBasePlayerTakeDamagePre(victim, inflictor, attacker, Float:flDamage){
+
+	SetHookChainArg(4, ATYPE_FLOAT, flDamage * 2.0)
+
+}
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
 {
 	if(!is_user_alive(player)) return FMRES_IGNORED
+	
 	new pEntity = get_member(player, m_pActiveItem)
+
 	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 	}

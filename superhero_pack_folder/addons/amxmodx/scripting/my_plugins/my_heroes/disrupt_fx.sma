@@ -42,17 +42,17 @@ public disorient_user(array[1],id)
 	id-=DISORIENT_TASKID
 	new Float:xAngles[3]
 	new Float:xMoveDir[3]
-	entity_set_int( id, EV_INT_fixangle, 0 );
-	entity_get_vector(id, EV_VEC_angles, xAngles)
-	entity_get_vector(id, EV_VEC_velocity, xMoveDir)
+	set_pev( id, pev_fixangle, 0 );
+	pev(id, pev_angles, xAngles)
+	pev(id, pev_velocity, xMoveDir)
 	new Float:velocity=vector_length(xMoveDir)
 	xAngles[0]-=generate_float(-DISRUPT_AIM_RANDOMNESS,DISRUPT_AIM_RANDOMNESS)
 	xAngles[1]-=generate_float(-DISRUPT_AIM_RANDOMNESS,DISRUPT_AIM_RANDOMNESS)
 	xMoveDir[0]=floatclamp(generate_float(-DISRUPT_MOVE_RANDOMNESS,DISRUPT_MOVE_RANDOMNESS)*xMoveDir[0],-floatmul(velocity,floatsqroot(2.0)/2.0),floatmul(velocity,floatsqroot(2.0)/2.0))
 	xMoveDir[1]=floatclamp(generate_float(-DISRUPT_MOVE_RANDOMNESS,DISRUPT_MOVE_RANDOMNESS)*xMoveDir[1],-floatmul(velocity,floatsqroot(2.0)/2.0),floatmul(velocity,floatsqroot(2.0)/2.0))
-	entity_set_vector(id, EV_VEC_velocity, xMoveDir)
-	entity_set_vector(id, EV_VEC_angles, xAngles)
-	entity_set_int( id, EV_INT_fixangle, 1);
+	set_pev(id, pev_velocity, xMoveDir)
+	set_pev(id, pev_angles, xAngles)
+	set_pev(id, pev_fixangle, 1);
 	if(array[0]<DISORIENT_TIMES){
 		array[0]++
 		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))

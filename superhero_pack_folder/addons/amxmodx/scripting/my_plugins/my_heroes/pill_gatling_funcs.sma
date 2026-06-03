@@ -45,15 +45,15 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post",1,true)
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post",1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "Item_PostFrame_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "Item_PostFrame_Post", 1,true)
 		
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[YAKUI_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
 	

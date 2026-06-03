@@ -206,8 +206,8 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	engfunc(EngFunc_SetModel, NewEnt, JETPLANE_MODEL)
 	float_to_str(1000.0,health,127)
 	num_to_str(2,material,127)
-	DispatchKeyValue( NewEnt, "material", material );
-	DispatchKeyValue( NewEnt, "health", health );
+	my_set_kvd( NewEnt, "material", material );
+	my_set_kvd( NewEnt, "health", health );
 	
 	entity_set_vector(g_jetplane[id], EV_VEC_mins,jetplane_min_dims)
 	entity_set_vector(g_jetplane[id], EV_VEC_maxs,jetplane_max_dims)

@@ -28,7 +28,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[SHINOBU_WEAPON_CLASSID][wpn_struct_weapon_name], "track_shinobu_usp_ammo",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[SHINOBU_WEAPON_CLASSID][wpn_struct_weapon_name], "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	

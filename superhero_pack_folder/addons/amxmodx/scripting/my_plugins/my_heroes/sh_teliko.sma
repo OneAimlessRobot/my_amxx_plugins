@@ -185,7 +185,7 @@ if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-cvar_val(num, pcvar_gHeroLevel)
 	if(level_diff>=cvar_val(num, pcvar_famas_level_diff)){
-		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_structs_array[TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_strings_array[TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);
 		sh_give_weapon(id, TELIKO_RIFLE_CLASSID)
 	}
 	slitter_set_slitter(id,1)

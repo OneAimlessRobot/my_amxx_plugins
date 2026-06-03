@@ -1,3 +1,6 @@
+
+
+
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "custom_grenades/custom_grenades.inc"
@@ -20,7 +23,7 @@
 
 #include "wet_fx_inc/wet_fx.inc"
 
-
+#define I_WANT_ENGINE
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -406,7 +409,7 @@ public CmdStart(id, uc_handle)
 		UnSet_BitVar(sh_grenade_armed_mask,id);
 		return FMRES_IGNORED
 	}
-	new ent = find_ent_by_owner(-1, weapon_data_structs_array[wpn_id][wpn_struct_weapon_name], id);
+	new ent = my_find_ent_by_owner(-1, weapon_data_strings_array[wpn_id][wpn_struct_weapon_name], id);
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);
@@ -443,7 +446,9 @@ public CmdStart(id, uc_handle)
 
 			launch_custom_grenade(id,gren_type)
 			progressBar(id,0)
-			UnSet_BitVar(sh_grenade_armed_mask,id)
+
+			curr_charge[id]=0.0;
+			UnSet_BitVar(sh_grenade_armed_mask ,id)
 		}
 	}
 	else if(Get_BitVar(sh_grenade_armed_mask,id)){
@@ -455,7 +460,9 @@ public CmdStart(id, uc_handle)
 											cs_grenade_idle)
 		}
 		progressBar(id,0)
-		UnSet_BitVar(sh_grenade_armed_mask,id)
+
+		curr_charge[id]=0.0;
+		UnSet_BitVar(sh_grenade_armed_mask ,id)
 	}
 	if(ent){
 
@@ -480,12 +487,12 @@ public CmdStart(id, uc_handle)
 
 public sh_round_end(){
 
-	remove_entity_name(SH_CUSTOM_GRENADE_CLASSNAME)
+	my_remove_entity_name(SH_CUSTOM_GRENADE_CLASSNAME)
 
 }
 
 public _give_custom_grenades(iPlugin, iParams){
-	new id=get_param(1)
+	/*new id=get_param(1)
 	new sh_grenade_type:gren_type= sh_grenade_type:get_param(2)
 	new grenade_ammount= get_param(3)
 	if ( sh_is_active() && is_user_alive(id)){
@@ -499,7 +506,7 @@ public _give_custom_grenades(iPlugin, iParams){
 		sh_give_weapon(id,sh_grenade_structs_arr[gren_type][sh_grenade_weapon_classid],false)
 		
 		curr_grenade_ammo[id][gren_type]=grenade_ammount
-	}
+	}*/
 
 
 }
@@ -520,6 +527,13 @@ public charge_task(any:param[1],id){
 				curr_user_grenade[id]==the_type)&&
 				Get_BitVar(sh_grenade_armed_mask,id)){
 		set_task(SH_CUSTOM_GRENADE_CHARGE_PERIOD,"charge_task",id+SH_CUSTOM_GRENADE_CHARGE_TASKID,param,sizeof(param))
+	}
+	else{
+
+		progressBar(id,0)
+
+		curr_charge[id]=0.0;
+		UnSet_BitVar(sh_grenade_armed_mask ,id)
 	}
 	
 	
@@ -558,35 +572,34 @@ switch_grenade_animation_on_player(id,cs_grenade_throw)
 
 new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
 
-entity_get_vector(id, EV_VEC_origin , Origin)
-entity_get_vector(id, EV_VEC_v_angle, vAngle)
+pev(id,  pev_origin , Origin)
+pev(id,  pev_v_angle, vAngle)
 
 
-Ent = create_entity("info_target")
+Ent = my_create_entity("info_target")
 
 if (!Ent) return
 
-entity_set_string(Ent, EV_SZ_classname,SH_CUSTOM_GRENADE_CLASSNAME)
+set_pev(Ent, pev_classname,SH_CUSTOM_GRENADE_CLASSNAME)
 
-entity_set_model(Ent,
-				sh_grenade_structs_arr[the_type][sh_grenade_modelname])
+my_entity_set_model(Ent, sh_grenade_structs_arr[the_type][sh_grenade_modelname])
 
 
 
 new Float:MinBox[3] = {-1.0, -1.0, -1.0}
 new Float:MaxBox[3] = {1.0, 1.0, 1.0}
-entity_set_vector(Ent, EV_VEC_mins, MinBox)
-entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
+set_pev(Ent, pev_mins, MinBox)
+set_pev(Ent, pev_maxs, MaxBox)
 
 
 Origin[2]+=50.0
-entity_set_origin(Ent, Origin)
-entity_set_vector(Ent, EV_VEC_angles, vAngle)
+my_entity_set_origin(Ent, Origin)
+set_pev(Ent, pev_angles, vAngle)
 
-entity_set_int(Ent, EV_INT_effects, 2)
-entity_set_int(Ent, EV_INT_solid, 1)
-entity_set_int(Ent, EV_INT_movetype, 10)
-entity_set_edict(Ent, EV_ENT_owner, id)
+set_pev(Ent, pev_effects, 2)
+set_pev(Ent, pev_solid, 1)
+set_pev(Ent, pev_movetype, 10)
+set_pev(Ent, pev_owner, id)
 
 /*
 
@@ -596,14 +609,14 @@ Its iuser3!
 
 */
 
-entity_set_int(Ent,EV_INT_iuser3,_:the_type)
+set_pev(Ent, pev_iuser3,_:the_type)
 
 velocity_by_aim(id, floatround(
 				sh_grenade_structs_arr[the_type][sh_grenade_throw_speed]*
 				(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])),
 				Velocity)
 
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+set_pev(Ent, pev_velocity ,Velocity)
 
 new the_wpn_gren_id = sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid]
 
@@ -636,28 +649,28 @@ else{
 }
 
 
-engclient_cmd(id, weapon_data_structs_array[the_wpn_gren_id][wpn_struct_weapon_name])
+engclient_cmd(id, weapon_data_strings_array[the_wpn_gren_id][wpn_struct_weapon_name])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 
 //set curr grenade touched wall -> 0 as a start
 //set prev grenade touched wall -> 0 as a start
 
-entity_set_int(Ent,EV_INT_iuser1,0)
-entity_set_int(Ent,EV_INT_iuser2,0)
-entity_set_float(Ent,EV_FL_nextthink,get_gametime()+1.0)
+set_pev(Ent, pev_iuser1,0)
+set_pev(Ent, pev_iuser2,0)
+set_pev(Ent, pev_nextthink,get_gametime()+1.0)
 }
 
 
 
 public sh_grenade_think(id_grenade){
 
-if ( !is_valid_ent(id_grenade) ) return
+if ( !pev_valid(id_grenade) ) return
 
-new owner=entity_get_edict(id_grenade,EV_ENT_owner);
+new owner=pev(id_grenade, pev_owner);
 
 if(!is_user_connected(owner)){
-	remove_entity(id_grenade)
+	my_remove_entity(id_grenade)
 	return
 }
 static bool:prev_touched_wall,
@@ -665,12 +678,12 @@ static bool:prev_touched_wall,
 		sh_grenade_type:the_type 
 
 //get grenade type!
-the_type = sh_grenade_type:entity_get_int(id_grenade,EV_INT_iuser3)
+the_type = sh_grenade_type:pev(id_grenade, pev_iuser3)
 
 if(the_type<=sh_grenade_type:0){
 
 
-	remove_entity(id_grenade)
+	my_remove_entity(id_grenade)
 	return
 
 }
@@ -678,9 +691,9 @@ if(the_type<=sh_grenade_type:0){
 //get touched wall state of grenade
 
 
-prev_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser2)
-curr_touched_wall = bool:entity_get_int(id_grenade,EV_INT_iuser1)
-entity_set_int(id_grenade,EV_INT_iuser2, _:curr_touched_wall)
+prev_touched_wall = bool:pev(id_grenade, pev_iuser2)
+curr_touched_wall = bool:pev(id_grenade, pev_iuser1)
+set_pev(id_grenade, pev_iuser2, _:curr_touched_wall)
 
 if(!curr_touched_wall){
 
@@ -690,20 +703,20 @@ keep waiting for the flag to be set by the touch hook
 for the fuse to activate
 */
 
-entity_set_float(id_grenade,EV_FL_nextthink,get_gametime()+1.0)
+set_pev(id_grenade, pev_nextthink,get_gametime()+1.0)
 return
 
 
 }
 if(!prev_touched_wall){
 
-	entity_set_float(id_grenade,EV_FL_nextthink,
+	set_pev(id_grenade, pev_nextthink,
 		get_gametime()+sh_grenade_structs_arr[the_type][after_touch_fuse])
 	return
 
 }
 static Float:fl_vExplodeAt[3]
-entity_get_vector(id_grenade, EV_VEC_origin, fl_vExplodeAt)
+pev(id_grenade, pev_origin, fl_vExplodeAt)
 
 big_gun_shot_decal(fl_vExplodeAt,
 			floatround(sh_grenade_structs_arr[the_type][blast_radius]))
@@ -726,7 +739,7 @@ if not we exit early!
 */
 
 if(!result_neutral_fx){
-	remove_entity(id_grenade)
+	my_remove_entity(id_grenade)
 	return
 
 
@@ -746,7 +759,7 @@ for( new i= 0;(i< numfound);i++){
 }
 
 
-remove_entity(id_grenade)
+my_remove_entity(id_grenade)
 
 }
 
@@ -754,18 +767,18 @@ public sh_grenade_touch_things(pToucher, pTouched)
 {
 	
 	
-	if(!is_valid_ent(pToucher)) return PLUGIN_CONTINUE
-	if(!(bool:entity_get_int(pToucher,EV_INT_iuser1))){
+	if(!pev_valid(pToucher)) return PLUGIN_CONTINUE
+	if(!(bool:pev(pToucher, pev_iuser1))){
 
-		entity_set_int(pToucher,EV_INT_iuser1,1)
+		set_pev(pToucher, pev_iuser1,1)
 	}
 	new Float:velocity[3]
-	entity_get_vector(pToucher, EV_VEC_velocity ,velocity)
+	pev(pToucher, pev_velocity ,velocity)
 	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	velocity[0]*=0.5
 	velocity[1]*=0.5
 	velocity[2]*=0.5
-	entity_set_vector(pToucher, EV_VEC_velocity ,velocity)
+	set_pev(pToucher, pev_velocity ,velocity)
 	
 	return PLUGIN_CONTINUE
 }
@@ -816,12 +829,12 @@ public client_connect(id){
 
 default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_origin_of_expolosion[3]){
 
-	if ( !is_valid_ent(grenade_ent) ) return
+	if ( !pev_valid(grenade_ent) ) return
 
-	new owner=entity_get_edict(grenade_ent,EV_ENT_owner);
+	new owner=pev(grenade_ent, pev_owner);
 
 	if(!is_user_connected(owner)){
-		remove_entity(grenade_ent)
+		my_remove_entity(grenade_ent)
 		return
 	}
 

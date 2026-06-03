@@ -83,6 +83,7 @@ public plugin_init()
 	static const custom_vector[][]={"ICBM_missile"}
 	register_custom_touchable("ICBM_missile","nuke_hit",custom_vector,1)
 
+	register_think("ICBM_missile", "fm_Think")
 
 	init_explosion_defaults()
 }
@@ -256,7 +257,7 @@ public nuke_hit(pToucher, pTouched) {
 	if(has_rocket[id] == pToucher)
 	has_rocket[id] = 0
 
-	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude)
+	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude,_,1,_,_,RED)
 	
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -340,7 +341,56 @@ public make_beam(id)
 	trail(NewEnt,RED,10,10)
 	entity_set_float(NewEnt, EV_FL_gravity, 0.25)
 	
+	set_pev(NewEnt, pev_nextthink, get_gametime() + 0.1)
+
 	return PLUGIN_HANDLED
+}
+
+//----------------------------------------------------------------------------------------------
+public fm_Think(ent)
+{
+	if ( !pev_valid(ent) ) return
+	
+	new id = pev(ent, pev_owner)
+
+	if ( !is_user_connected(id) ) {
+		remove_missile(0,ent)
+		return
+	}
+
+	new Float:fl_Origin[3], AimVec[3], Float:fl_EndOrigin[3], Float:fl_Velocity[3], Float:fl_OldVelocity[3]
+	new avgFactor
+	new Float:speed = 2000.0
+
+	get_user_origin(id, AimVec, 3)
+	IVecFVec(AimVec, fl_EndOrigin)
+	pev(ent, pev_origin, fl_Origin)
+
+	if ( speed < 1000.0 )
+		avgFactor = 6
+	else if ( speed < 1500.0 )
+		avgFactor = 4
+	else
+		avgFactor = 2
+
+	sh_get_velocity(fl_Origin, fl_EndOrigin, speed, fl_Velocity)
+
+	pev(ent, pev_velocity, fl_OldVelocity)
+
+	// Make it lag a bit, helps keep movement smooth else would be too erratic
+	new oneless = avgFactor-1
+	fl_Velocity[0] += fl_OldVelocity[0] * oneless
+	fl_Velocity[1] += fl_OldVelocity[1] * oneless
+	fl_Velocity[2] += fl_OldVelocity[2] * oneless
+
+	fl_Velocity[0] /= avgFactor
+	fl_Velocity[1] /= avgFactor
+	fl_Velocity[2] /= avgFactor
+
+	set_pev(ent, pev_velocity, fl_Velocity)
+
+	set_pev(ent, pev_nextthink, get_gametime() + 0.1)
+
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end(){

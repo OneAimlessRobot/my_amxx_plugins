@@ -31,8 +31,7 @@ new g_heroName[]="Phoenix"
 new gHeroID
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
-new g_savedOrigin[SH_MAXSLOTS+1][3]
-new g_lastPosition[SH_MAXSLOTS+1][3]
+new Float:g_savedOrigin[SH_MAXSLOTS+1][3]
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -70,8 +69,8 @@ public sh_client_death(id)
 	g_userTeam[id] = cs_get_user_team(id)
 
 	// Save users origin on death
-	get_user_origin(id, g_savedOrigin[id])
-	g_savedOrigin[id][2] += 8
+	pev(id, pev_origin, g_savedOrigin[id])
+	g_savedOrigin[id][2] += 8.0
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && !g_phoenixPowerUsed[id] ) {
@@ -80,7 +79,7 @@ public sh_client_death(id)
 		// Respawn it faster then Zues, let this power be used before Zues's
 		// never set higher then 1.9 or lower then 0.5
 		//set_task(0.6, "phoenix_respawn", 0, parm, 1)
-		set_task(0.6, "phoenix_respawn", 0, parm, 1)
+		set_task(0.6, "phoenix_respawn", id, parm, 1)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -143,14 +142,14 @@ public enable_phoenix(id)
 public phoenix_teleport(id)
 {
 	// Teleport the player
-	set_user_origin(id, g_savedOrigin[id])
+	set_pev(id, pev_origin, g_savedOrigin[id])
 
 	// Teleport Effects
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 	write_byte(11)					// TE_TELEPORT
-	write_coord(g_savedOrigin[id][0])	// start position
-	write_coord(g_savedOrigin[id][1])
-	write_coord(g_savedOrigin[id][2])
+	write_coord_f(g_savedOrigin[id][0])	// start position
+	write_coord_f(g_savedOrigin[id][1])
+	write_coord_f(g_savedOrigin[id][2])
 	message_end()
 
 	positionChangeTimer(id)
@@ -160,34 +159,7 @@ public phoenix_teleport(id)
 //----------------------------------------------------------------------------------------------
 public positionChangeTimer(id)
 {
-	if ( !is_user_alive(id) ) return
-
-	get_user_origin(id, g_lastPosition[id])
-
-	new Float:velocity[3]
-	entity_get_vector(id, EV_VEC_velocity, velocity)
-
-	if ( velocity[0]==0.0 && velocity[1]==0.0 ) {
-		// Force a Move (small jump)
-		velocity[0] += 20.0
-		velocity[2] += 100.0
-		entity_set_vector(id, EV_VEC_velocity, velocity)
-	}
-
-	set_task(0.4, "positionChangeCheck", id+100)
-}
-//----------------------------------------------------------------------------------------------
-public positionChangeCheck(id)
-{
-	id -= 100
-
-	if ( !is_user_alive(id) ) return
-
-	new origin[3]
-	get_user_origin(id, origin)
-
-	// Kill this player if Stuck in Wall!
-	if ( g_lastPosition[id][0] == origin[0] && g_lastPosition[id][1] == origin[1] && g_lastPosition[id][2] == origin[2] && is_user_alive(id) ) {
+	if(!sh_hull_vacant(id,g_savedOrigin[id],HULL_HUMAN)){
 		user_kill(id, 1)
 		client_print(id, print_chat, "[SH](Phoenix) You were killed for being stuck in a wall")
 	}
