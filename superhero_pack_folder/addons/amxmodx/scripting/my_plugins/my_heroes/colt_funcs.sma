@@ -40,17 +40,17 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	cached_ammo_id_colt = wlt_get_def_ammo_id(CSW_FIVESEVEN)
+	cached_ammo_id_colt = wlt_get_def_ammo_id(MY_CSW_FIVESEVEN)
 
-	cached_max_bp_ammo = wlt_get_def_bp_ammo(CSW_FIVESEVEN)
+	cached_max_bp_ammo = wlt_get_def_bp_ammo(MY_CSW_FIVESEVEN)
 
-	cached_def_pos = wlt_get_def_pos(CSW_FIVESEVEN)
+	cached_def_pos = wlt_get_def_pos(MY_CSW_FIVESEVEN)
 
-	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponWeaponIdlePost", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemAddToPlayerPost", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponWeaponIdlePost", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemAddToPlayerPost", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHookChain(RG_CWeaponBox_SetModel, "rg_CWeaponBoxSetModelPre")
 	TakeDamage = RegisterHookChain(RG_CBasePlayer_TakeDamage, "rg_CBasePlayerTakeDamagePre")
@@ -83,7 +83,7 @@ public give_m1911a1(player)
 	
 	lastinv_m1911a1(player)
 
-	new pEntity=rg_give_custom_item(player,weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,ID_M1911A1)
+	new pEntity=rg_give_custom_item(player,weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,ID_M1911A1)
 	ent_check(pEntity,)
 	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
@@ -139,7 +139,7 @@ public fw_ItemAddToPlayerPost(entity, id)
 					cached_max_bp_ammo,
 					_:MY_SLOT_SECONDARY,
 					cached_def_pos,
-					CSW_FIVESEVEN,
+					MY_CSW_FIVESEVEN,
 					0,
 					MSG_ONE,
 					g_Msg_WeaponList))
@@ -148,12 +148,12 @@ public fw_ItemAddToPlayerPost(entity, id)
 		
 		
 		(send_weapon_list_stock(id,
-				weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name],
+				weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],
 				cached_ammo_id_colt,
 				cached_max_bp_ammo,
 				_:MY_SLOT_SECONDARY,
 				cached_def_pos,
-				CSW_FIVESEVEN,
+				MY_CSW_FIVESEVEN,
 				0,
 				MSG_ONE,
 				g_Msg_WeaponList))
@@ -247,7 +247,7 @@ public fm_PlaybackEventPre(){
 
 public lastinv_m1911a1(player){
 
-	engclient_cmd(player, weapon_data_strings_array[CSW_FIVESEVEN][wpn_struct_weapon_name])
+	engclient_cmd(player, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
 
 }
 

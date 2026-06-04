@@ -58,7 +58,5 @@ stock const ester_sentences[ESTER_NUM_SENTENCES][128]={
 	"You were made to do more than survive the day. Go avenge yourself",
 	"This one must count, now. I wont disappoint myself or them any longer",
 	"Its show time."}
-	
-native ester_get_reborn_mode(id)
-native ester_get_respawn_attempts_remaining(id)
+
 native ester_set_reborn_mode(id,value)

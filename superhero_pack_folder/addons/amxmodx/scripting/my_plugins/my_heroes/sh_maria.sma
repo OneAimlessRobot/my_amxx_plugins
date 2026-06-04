@@ -4,11 +4,11 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "custom_grenades/custom_grenades.inc"
-#include "shinobu_knife/shinobu_general.inc"
 #include "../my_include/my_author_header.inc"
 
 new gHealthDrainValveMask = 0
@@ -40,9 +40,7 @@ new pcvar_health_drain_begin_threshold
 new pcvar_health_drain_end_threshold
 new pcvar_begin_open_valve_timer;
 new gHeroID = -1
-new gHeroID_shinobu = -1
 
-new shinobu_max_hp = -1
 
 new selflessness_weapon_id
 new dmg_source_name_short_selflessness[SAFE_BUFFER_SIZE+1]="selflessness"
@@ -139,10 +137,7 @@ public loadCVARS()
 								dmg_source_name_short_selflessness,
 								dmg_source_name_log_selflessness,
 								0)
-	
-	gHeroID_shinobu = shinobu_get_hero_id()
 
-	shinobu_max_hp = shinobu_get_max_hp()
 
 	heal_period=get_cvar_float("maria_heal_period")
 	
@@ -265,7 +260,11 @@ if(!can_heal){
 for(new p=0;p<num_found;p++){
 	new i=entlist[p]
 	if(!is_user_alive(i)||(i==id)) continue;
-	new max_hp_to_check= (sh_get_user_has_hero(i,gHeroID_shinobu)?shinobu_max_hp:sh_get_max_hp(i))
+
+	new max_hp_to_check= (sh_get_player_has_hero_prop(i,SH_HEALTH_CAP_HERO)?
+					floatround(sh_get_player_healthcap(i)):
+					sh_get_max_hp(i))
+
 	if((get_user_health(i)>=max_hp_to_check)){
 
 		continue

@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -36,7 +37,8 @@ static const sh_property_gating_array[hero_property_flags_id][property_bounds] =
 			{"Healing",25},
 			{"Small",25},
 			{"Dream eater",25},
-			{"Annoying hero",25}
+			{"Annoying hero",25},
+			{"Health cap hero",25}
 			
 
 }
@@ -114,7 +116,7 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		return INIT_FWD_PASS
 	}
 
-	if((heroID<0)||(heroID> SH_MAXHEROS)){
+	if(( heroID < 0 )||(heroID >= SH_MAXHEROS)){
 		return INIT_FWD_PASS
 	}
 	if(mode!=SH_HERO_ADD){
@@ -149,7 +151,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 		return
 	}
 
-	if((heroID<0)||(heroID> SH_MAXHEROS)){
+	if(( heroID < 0 )||(heroID >= SH_MAXHEROS)){
 		return
 	}
 

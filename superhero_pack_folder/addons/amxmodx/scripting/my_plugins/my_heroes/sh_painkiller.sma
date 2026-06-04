@@ -10,6 +10,7 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "painkiller_inc/painkiller_inc.inc"
 
 // GLOBAL VARIABLES
 new gHeroID
@@ -39,7 +40,9 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Fight Death!", "Once your hp reaches 0, your life will be extended for a limited amount of time with godmode")
 	
 
-	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
+	sh_assign_hero_bit(gHeroID, SH_ANNOYING_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 	
 	custom_dmg_id_painkiller_death=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_painkiller_death,
@@ -50,6 +53,16 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "Painkiller_TakeDamage",_,true)
 }
 
+public plugin_natives(){
+
+	register_native("painkiller_get_hero_id","_painkiller_get_hero_id")
+
+}
+public _painkiller_get_hero_id(iPlugins,iParams){
+	
+	return gHeroID
+
+}
 public client_authorized(id)
 {
 	DeathNotice[id] = false

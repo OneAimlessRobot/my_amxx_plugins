@@ -1239,7 +1239,7 @@ public _sh_set_hero_info()
 
 	if ( heroIndex < 0 || heroIndex >= gSuperHeroCount ) return
 
-	new pPower[50], pHelp[SH_DETAILED_DESCRIPTION_SIZE]
+	new pPower[SH_SHORT_DESCRIPTION_SIZE], pHelp[SH_DETAILED_DESCRIPTION_SIZE]
 	get_string(2, pPower, charsmax(pPower))		//Short Power Description
 	get_string(3, pHelp, charsmax(pHelp))		//Help Info
 
@@ -1715,7 +1715,7 @@ menuSuperPowers(id, menuOffset)
 	}
 
 	// show menu super power
-	new message[800]
+	static message[3000]
 	new temp[90]
 	new keys = 0
 
@@ -1837,9 +1837,9 @@ public selectedSuperPower(id, key)
 		return PLUGIN_HANDLED
 	}
 
-	new message[1024]
+	static message[2048]
 	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
-		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%^n",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
+		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n%s^n",gSuperHeros[heroIndex][isCorePower]?" (Core Hero)":"",
 									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 	else {
@@ -3059,12 +3059,12 @@ logHit(id, victim, const weaponDescription[32], damage_after, armor_damage,my_hi
 	armor=get_user_armor(victim)
 
 	if ( (id != victim) ) {
-		log_message("[SH_DMG_FEED]: ^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+		log_message("^"%s<%d><%s><%s>^" attacked ^"%s<%d><%s><%s>^" on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
 			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
 	}
 	else {
-		log_message("[SH_DMG_FEED]: ^"%s<%d><%s><%s>^" attacked themselves on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
+		log_message("^"%s<%d><%s><%s>^" attacked themselves on the ^"%s^" with ^"%s^" (damage ^"%d^") (damage_armor ^"%d^") (health ^"%d^") (armor ^"%d^")",
 			namea, auserid, authida, teama, hitzone_names[bodypart], weaponDescription, damage_after, armor_damage,health,armor )
 	
 	}
@@ -3095,14 +3095,14 @@ logKill(id, victim, const weaponDescription[32],damage_after,my_hitpoint_enum:th
 
 	// Log This Kill
 	if ( id != victim ) {
-		log_message("[SH_KILL_FEED]: ^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
+		log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"%s^"",
 			namea, auserid, authida, teama, namev, get_user_userid(victim), authidv, teamv, weaponDescription)
 
 		custom_weapon_shot(abused_weapon_id, id)
 		custom_weapon_dmg(abused_weapon_id, id, victim, damage_after, _:the_hitpart)
 	}
 	else {
-		log_message("[SH_KILL_FEED]: ^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
+		log_message("^"%s<%d><%s><%s>^" committed suicide with ^"%s^"",
 			namea, auserid, authida, teama, weaponDescription)
 	}
 
@@ -3113,7 +3113,7 @@ public msg_DeathMsg()
 {
 	// Send out the sh death forwards and change the hud death message for sh_extra_damage kill
 	// Run this even with sh off so forward can still run and clean up what it needs to
-	new attacker, bodypart
+	new attacker, bodypart, weaponDescription[32]
 
 	if ( !gXrtaDmgClientKill ) {
 		attacker = get_msg_arg_int(1)
@@ -3125,6 +3125,8 @@ public msg_DeathMsg()
 		// Change HUD death message to show extradamage kill correctly
 		set_msg_arg_int(1, ARG_BYTE, attacker)
 		set_msg_arg_int(3, ARG_BYTE, (bodypart==HIT_HEAD))
+		xmod_get_wpnlogname(gXtraDmgCustomWpnID,weaponDescription, charsmax(weaponDescription))
+		set_msg_arg_string(4,weaponDescription)
 	}
 
 	// Send the sh_client_death forward

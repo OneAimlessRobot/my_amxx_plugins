@@ -11,4 +11,3 @@ native Float:shinobu_get_cooldown()
 
 native shinobu_set_user_tagged_player(id,value=0)
 native shinobu_get_hero_id()
-native shinobu_get_max_hp()

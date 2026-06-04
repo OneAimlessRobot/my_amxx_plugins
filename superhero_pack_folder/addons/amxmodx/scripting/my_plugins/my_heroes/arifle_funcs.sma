@@ -39,14 +39,14 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
-	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1, true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1, true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -109,7 +109,7 @@ public _arifle_unset_arifle(iPlugins,iParams){
 public Get_Arifle(id)
 {
 	Set_BitVar(g_Had_Arifle, id)
-	fm_give_item(id, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name])
+	fm_give_item(id, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name])
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, A_RIFLE_CLIP)
@@ -154,7 +154,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 	}
 
-	if((get_user_weapon(id) != CSW_ARIFLE)||!Get_BitVar(g_Had_Arifle, id)){
+	if((get_user_weapon(id) != _:CSW_ARIFLE)||!Get_BitVar(g_Had_Arifle, id)){
 
 		return FMRES_IGNORED
 
@@ -184,7 +184,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ARIFLE_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_strings_array[CSW_ARIFLE][wpn_struct_weapon_name], entity)
+		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -215,7 +215,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 		return HAM_IGNORED
 	}
 
-	if(get_user_weapon(id) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, id)){
+	if(get_user_weapon(id) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, id)){
 		return HAM_IGNORED
 	}
 	
@@ -431,7 +431,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED	
-	if(get_user_weapon(invoker) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, invoker))
+	if(get_user_weapon(invoker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, invoker))
 		return FMRES_IGNORED
 	if(eventid != g_Event_Arifle)
 		return FMRES_IGNORED
@@ -447,7 +447,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 {
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -471,7 +471,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
 		return HAM_IGNORED
 		
 	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))

@@ -65,13 +65,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 	// Cache
@@ -113,7 +113,7 @@ public Get_QuadBarrel(id)
 	UnSet_BitVar(g_SpecialShot, id);
 	Set_BitVar(g_Had_QB, id);
 	
-	give_item(id, weapon_data_strings_array[CSW_QUADBARREL][wpn_struct_weapon_name])
+	give_item(id, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_QUADBARREL, Q_BARREL_BPAMMO)
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
@@ -136,9 +136,9 @@ public Event_CurWeapon(id)
 {
 	static CSWID; CSWID = read_data(2)
 
-	if((CSWID == CSW_QUADBARREL && g_OldWeapon[id] == CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
+	if((CSWID == _:CSW_QUADBARREL && g_OldWeapon[id] == _:CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
+		static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_QUADBARREL)
 		if(pev_valid(Ent)==PDATA_SAFE)
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
@@ -197,13 +197,13 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if(get_user_weapon(id) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, id)){
+	if(get_user_weapon(id) != _:CSW_QUADBARREL || !Get_BitVar(g_Had_QB, id)){
 		return FMRES_IGNORED
 	}
 		
 	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
+	static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_QUADBARREL)
 	ent_check(Ent,FMRES_IGNORED)
 	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
@@ -231,7 +231,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 	}
 	
-	if((get_user_weapon(id) != CSW_QUADBARREL)||!Get_BitVar(g_Had_QB, id)){
+	if((get_user_weapon(id) != _:CSW_QUADBARREL)||!Get_BitVar(g_Had_QB, id)){
 
 		return FMRES_IGNORED
 
@@ -248,7 +248,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED		
-	if(get_user_weapon(invoker) == CSW_QUADBARREL && Get_BitVar(g_Had_QB, invoker) && eventid == g_Event_QB)
+	if(get_user_weapon(invoker) == _:CSW_QUADBARREL && Get_BitVar(g_Had_QB, invoker) && eventid == g_Event_QB)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
@@ -269,7 +269,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -296,7 +296,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_QUADBARREL || !Get_BitVar(g_Had_QB, Attacker))
 		return HAM_IGNORED
 	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
 		return HAM_IGNORED

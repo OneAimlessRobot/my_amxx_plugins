@@ -95,17 +95,6 @@ native explosion_custom_entity(ent_id,Float:explosion_radius,
 
 native sh_damage_display_stock(hud_msg_sync_vic=-1,hud_msg_sync_att=-1,victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
 
-native bool:generic_heal(hud_msg_sync=-1,
-					id,
-					Float:added_hp,
-					max_hp_to_clamp=-1,
-					color_const=GREEN,
-					user_will_glow=0,
-					Float:glow_remove_timer=1.0,
-					hud_alpha=-1,
-					hud_will_glow=1,
-					make_sound=1,
-					const sound_sample_buff[128]=SPORE_HEAL_SFX)
 
 native superhero_protected_hud_message(hud_msg_sync=-1,
 				id,

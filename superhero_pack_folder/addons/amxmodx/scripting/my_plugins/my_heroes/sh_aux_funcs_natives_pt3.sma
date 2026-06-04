@@ -11,14 +11,13 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "arcticpredator_inc/arcticpredator.inc"
-
-new gHeroID_shinobu = -1
-new shinobu_max_hp = -1
 
 new generic_frag_blast_wpn_id = -1
 
@@ -37,9 +36,7 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	gHeroID_shinobu = shinobu_get_hero_id()
 	generic_frag_blast_wpn_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
-	shinobu_max_hp = shinobu_get_max_hp()
 }
 public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,  crush_stunned)
@@ -55,7 +52,6 @@ public plugin_natives(){
 	register_native("explosion","_explosion");
 	register_native("explosion_custom_entity","_explosion_custom_entity");
 	register_native("sh_damage_display_stock","_sh_damage_display_stock")
-	register_native("generic_heal","_generic_heal")
 	register_native("superhero_protected_hud_message","_superhero_protected_hud_message")
 }
 
@@ -342,53 +338,6 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	
 }
 
-public bool:_generic_heal(iPlugins, iParms){
-	new hud_msg_sync=get_param(1),
-		id= get_param(2),
-		Float:added_hp=get_param_f(3),
-		max_hp_to_clamp=get_param(4),
-		sh_custom_color:color_const=sh_custom_color:get_param(5),
-		user_will_glow=get_param(6),
-		Float:glow_remove_timer=get_param_f(7),
-		hud_alpha=get_param(8),
-		hud_will_glow=get_param(9),
-		make_sound=get_param(10),
-		Float: mate_health=float(get_user_health(id))
-
-	
-	if(mate_health>=sh_get_max_hp(id)){
-		return false
-	
-	}
-	if((max_hp_to_clamp>0)&&((max_hp_to_clamp)<=mate_health)){
-		return false
-	
-	}
-	if(sh_get_user_has_hero(id,gHeroID_shinobu)&&(floatround(mate_health)>=shinobu_max_hp)){
-
-		return false
-	}
-	if(make_sound){
-
-		static sound_sample_string[128]
-
-		get_string(11,sound_sample_string,127)
-		emit_sound(id, CHAN_STATIC, sound_sample_string, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	}
-	new Float: new_health=floatadd(mate_health,added_hp)
-	set_user_health(id,min((max_hp_to_clamp>0)?max_hp_to_clamp:sh_get_max_hp(id),floatround(new_health)))
-	if(user_will_glow>0){
-		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer)
-	}
-	if(hud_msg_sync>0){
-		
-		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", added_hp)
-	
-	}
-	return true
-
-}
 
 public _superhero_protected_hud_message(iPlugin,iParams){
 

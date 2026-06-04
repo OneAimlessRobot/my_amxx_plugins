@@ -57,12 +57,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 
 
 	weapon_secret_code = allocate_weapon_secret_code()
@@ -116,7 +116,7 @@ public Mileage_WeaponRefillAmmo(id, ItemID)
 {
 	if(ItemID == g_Volcano) 
 	{
-		cs_set_user_bpammo(id, CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
+		cs_set_user_bpammo(id, _:CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
 	}
 }
 
@@ -128,14 +128,14 @@ public Mileage_WeaponRemove(id, ItemID)
 public get_gatling(id)
 {
 	Set_BitVar(g_Had_Volcano, id)
-	fm_give_item(id, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name])
+	fm_give_item(id, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name])
 	
 	// Set Clip
-	static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+	static ent; ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
 	if(pev_valid(ent)) cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 	// Set BpAmmo
-	cs_set_user_bpammo(id, CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
+	cs_set_user_bpammo(id, _:CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
 	
 }
 
@@ -150,9 +150,9 @@ public Event_CurWeapon(id)
 	
 	static CSWID; CSWID = read_data(2)
 
-	if((CSWID == CSW_GATLING && g_OldWeapon[id] == CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
+	if((CSWID == _:CSW_GATLING && g_OldWeapon[id] == _:_:CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+		static Ent; Ent = fm_get_user_weapon_entity(id, _:_:CSW_GATLING)
 		if(pev_valid(Ent)==PDATA_SAFE) 
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
@@ -174,12 +174,12 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if(get_user_weapon(id) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
+	if(get_user_weapon(id) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
 		return FMRES_IGNORED
 	}
 
 	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+	static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
 	
 	ent_check(Ent,FMRES_IGNORED)
 	
@@ -192,7 +192,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		CurButton &= ~IN_RELOAD
 		set_uc(uc_handle, UC_Buttons, CurButton)
 		
-		static ent; ent = fm_get_user_weapon_entity(id, CSW_GATLING)
+		static ent; ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
 		
 		ent_check(ent,FMRES_IGNORED)
 
@@ -249,7 +249,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, DEFAULT_W_MODEL))
 	{
 		static weapon
-		weapon = fm_find_ent_by_owner(-1, weapon_data_strings_array[CSW_GATLING][wpn_struct_weapon_name], entity)
+		weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -277,7 +277,7 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 
 	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
 	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.0, 7.0))	
@@ -293,7 +293,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
 		return HAM_IGNORED
 	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
 		return HAM_IGNORED
@@ -341,7 +341,7 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 {
 	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(attacker) != CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -365,7 +365,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	}
 
 
-	if((get_user_weapon(id) != CSW_GATLING)||!Get_BitVar(g_Had_Volcano, id)){
+	if((get_user_weapon(id) != _:CSW_GATLING)||!Get_BitVar(g_Had_Volcano, id)){
 
 		return FMRES_IGNORED
 
@@ -383,7 +383,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(!is_user_connected(invoker))
 		return FMRES_IGNORED	
 		
-	if(get_user_weapon(invoker) == CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
+	if(get_user_weapon(invoker) == _:CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		native_playanim(invoker, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
@@ -406,7 +406,7 @@ public fw_Item_Deploy_Post(ent)
 	static weaponid
 	weaponid = cs_get_weapon_id(ent)
 	
-	if(weaponid != CSW_GATLING)
+	if(weaponid != _:CSW_GATLING)
 		return
 	if(!Get_BitVar(g_Had_Volcano, id))
 		return
@@ -437,7 +437,7 @@ public fw_Weapon_Reload_Post(ent)
 	}
 	if(Get_BitVar(g_Had_Volcano, id))
 	{
-		static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
+		static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, _:CSW_GATLING)
 		
 		if(CurBpAmmo  <= 0)
 			return HAM_IGNORED
@@ -470,7 +470,7 @@ public fw_Item_PostFrame(ent)
 	}
 	if(!Get_BitVar(g_Had_Volcano, id)) return HAM_IGNORED
 
-	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_GATLING)
+	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, _:CSW_GATLING)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = D_BARREL_DEFAULT_CLIP
 
@@ -478,12 +478,12 @@ public fw_Item_PostFrame(ent)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
 		set_pdata_int(ent, m_iClip, iClip + j, XO_WEAPON)
-		cs_set_user_bpammo(id, CSW_GATLING, iBpAmmo-j)
+		cs_set_user_bpammo(id, _:CSW_GATLING, iBpAmmo-j)
 		
 		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
-		update_ammo(id, CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, CSW_GATLING),cached_ammo_id)
+		update_ammo(id, _:CSW_GATLING, cs_get_weapon_ammo(ent), cs_get_user_bpammo(id, _:CSW_GATLING),cached_ammo_id)
 	}
 	return HAM_IGNORED
 }

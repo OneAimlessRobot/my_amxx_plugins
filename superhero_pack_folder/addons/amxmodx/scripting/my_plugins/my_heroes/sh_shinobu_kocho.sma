@@ -1,6 +1,9 @@
+
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#include <amxconst>
+#include <csx>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -10,6 +13,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -29,9 +33,6 @@ new custom_weapon_damage_sharp_poison_kick_id
 new pcvar_shinobu_poison_kick_stun_time,
 	pcvar_shinobu_poison_kick_stun_speed
 
-static const shinobu_max_health = 90
-
-new gMessageID_Health
 new pcvar_shinobu_cooldown
 new pcvar_shinobu_poison_kick_delay
 
@@ -58,9 +59,12 @@ public plugin_init()
 	
 	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage",_, true)
 	
-	gMessageID_Health = get_user_msgid("Health")
 
-	register_message(gMessageID_Health, "Shinobu_Limit_HP")
+	sh_register_hero_healthcap(gHeroID, 90.0)
+
+	sh_assign_hero_bit(gHeroID, SH_ANNOYING_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
@@ -80,7 +84,6 @@ public plugin_natives(){
 	register_native("shinobu_set_user_tagged_player","_shinobu_set_user_tagged_player")
 	register_native("shinobu_get_cooldown","_shinobu_get_cooldown")
 	register_native("shinobu_get_hero_id","_shinobu_get_hero_id")
-	register_native("shinobu_get_max_hp","_shinobu_get_max_hp")
 	
 	
 	
@@ -109,26 +112,6 @@ public shinobu_step_silent(task_id)
 }
 
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	if(!is_user_alive(id)||!sh_is_active()){
-		
-		return
-	}
-
-	if ( sh_get_user_has_hero(id,gHeroID) ) {
-		new the_health_to_send = min(get_user_health(id),shinobu_max_health)
-
-		set_user_health(id, the_health_to_send)
-		
-		message_begin(MSG_ONE_UNRELIABLE, gMessageID_Health, {0,0,0}, id);
-		
-		write_byte(the_health_to_send);
-		
-		message_end();
-	}
-}
-//----------------------------------------------------------------------------------------------
 public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
 	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
@@ -136,29 +119,6 @@ public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebit
 	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
-}
-public Shinobu_Limit_HP(msgid, dest, id)
-{
-	if(!sh_is_active()) return
-
-	if(!is_user_alive(id)) return
-
-	if(!sh_get_user_has_hero(id,gHeroID) ) return
-
-	static the_health_to_be_set
-	the_health_to_be_set = get_msg_arg_int(1)
-
-	static the_resulting_health;
-	the_resulting_health=min(
-					shinobu_max_health,
-						the_health_to_be_set)
-	
-	set_user_health(id,the_resulting_health)
-	
-	if ( the_resulting_health <= 255 ) {
-		set_msg_arg_int(1, ARG_BYTE, the_resulting_health)
-	}
-
 }
 
 public client_disconnected(id){
@@ -187,11 +147,6 @@ public _shinobu_set_user_tagged_player(iPlugin,iParams){
 public _shinobu_get_hero_id(iPlugins, iParms){
 	
 	return gHeroID
-	
-}
-public _shinobu_get_max_hp(iPlugins, iParms){
-	
-	return shinobu_max_health
 	
 }
 public Float:_shinobu_get_cooldown(iPlugins, iParms){
@@ -235,7 +190,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
-		set_user_health(id,min(sh_get_max_hp(id),shinobu_max_health))
 		manual_cloak_check(id)
 	}
 	else{

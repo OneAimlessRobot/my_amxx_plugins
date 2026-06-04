@@ -21,6 +21,7 @@
 #include <cstrike>
 #include <engine>
 #include "my_include/randomx.inc"
+#define AUX_STUFF_GIVE_WEAPONS
 #include "my_include/auxiliar_stuff.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_funcs_misc.inc"
@@ -249,7 +250,7 @@ WeaponInfo(id, i) {
 		ExecuteHam(Ham_Weapon_SecondaryAttack, g_ent)
 		_fire2_period[g_id] = get_pdata_float(g_ent, m_flNextSecondaryAttack, XO_WEAPON)
 		
-		_reload_period[g_id] = wlt_get_def_rld_delay(g_id)
+		_reload_period[g_id] = wlt_get_def_rld_delay(my_weapon_ids:g_id)
 	}
 	_cost[g_id] = START_MONEY - cs_get_user_money(id)
 

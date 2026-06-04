@@ -255,8 +255,8 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 		ExecuteHam(Ham_Weapon_PrimaryAttack,Ent)
 	}
 	static Float:Delay,Float:M_Delay
-	Delay =floatdiv(wlt_get_def_prim_atk_delay(get_pdata_int(Ent, m_iId, XO_WEAPON)) ,speed)
-	M_Delay =floatdiv(wlt_get_def_scnd_atk_delay(get_pdata_int(Ent, m_iId, XO_WEAPON))  ,speed)
+	Delay =floatdiv(wlt_get_def_prim_atk_delay(my_weapon_ids:get_pdata_int(Ent, m_iId, XO_WEAPON)) ,speed)
+	M_Delay =floatdiv(wlt_get_def_scnd_atk_delay(my_weapon_ids:get_pdata_int(Ent, m_iId, XO_WEAPON))  ,speed)
 
 	if (Delay > 0.0)
 	{
@@ -283,7 +283,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
-		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
 		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}
@@ -296,7 +296,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	}
 	if( get_pdata_int(iEnt, m_fInReload) )
 	{
-		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_member(id, m_flNextAttack, fDelay)
 		set_member(iEnt, m_flTimeWeaponIdle, fDelay + 0.5)
 	}
@@ -335,12 +335,12 @@ exclude mode == 0 for include guns outside of the bitsum. 1 to include only thos
 stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true, bool:exclude_mode=false){
 	
 	new bit_sum_to_actually_do = exclude_mode ? (~(weapon_bitsum)): (weapon_bitsum)
-	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
+	for ( new my_weapon_ids:wpnId = MY_CSW_P228; wpnId < my_weapon_ids; wpnId++ )
 	{	
-		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
-		if ( do_eht && (strlen(weapon_data_strings_array[wpnId][wpn_struct_weapon_name])>0))
+		new bool:do_eht= bool:((bit_sum_to_actually_do & (enum_one<<wpnId)))
+		if ( do_eht && (strlen(weapon_data_structs_array[wpnId][wpn_struct_weapon_name])>0))
 		{
-				RegisterHam(ham_constant, weapon_data_strings_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
+				RegisterHam(ham_constant, weapon_data_structs_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
 		}
 	}
 }

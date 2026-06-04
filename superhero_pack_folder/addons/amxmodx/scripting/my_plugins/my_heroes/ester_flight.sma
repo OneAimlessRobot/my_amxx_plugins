@@ -10,7 +10,8 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "shinobu_knife/shinobu_general.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 
 
 
@@ -18,8 +19,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 new gHeroID = -1
-new gHeroID_shinobu = -1
-new g_ester_is_reborn_mode_mask = 0
 new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_draining_mask = 0
@@ -58,7 +57,6 @@ new dmg_source_name_log_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_dra
 new ester_flight_drain_wpn_id
 
 new generic_dmg_source_shock = -1
-new shinobu_max_hp = -1
 new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_EXPLOSION_DELAY_TASKID,
@@ -110,9 +108,6 @@ public plugin_cfg(){
 
 	gHeroID= ester_get_hero_id()
 	
-	gHeroID_shinobu = shinobu_get_hero_id()
-	
-	shinobu_max_hp = shinobu_get_max_hp()
 
 	ester_flight_drain_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -137,7 +132,7 @@ public ester_drain_loop(task_id){
         
 
 		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
-				!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
+				!sh_get_id_bit(id,SH_IS_REBORN)){
 				continue;
 		}
 		if(get_user_godmode(id)){
@@ -148,7 +143,11 @@ public ester_drain_loop(task_id){
 		if(!Get_BitVar(g_draining_mask,id)){
 			continue
 		}
-		max_hp_to_use = (sh_get_user_has_hero(id,gHeroID_shinobu)?shinobu_max_hp:sh_get_max_hp(id))
+		max_hp_to_use = (sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+						floatround(sh_get_player_healthcap(id)):
+						sh_get_max_hp(id))
+		
+
 
 		curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
 		
@@ -203,10 +202,8 @@ deny_next_reborn(id,bool:is_sillycide=true){
 }
 public plugin_natives(){
 
-	register_native("ester_get_reborn_mode","_ester_get_reborn_mode");
 	register_native("ester_set_reborn_mode","_ester_set_reborn_mode");
-	register_native("ester_get_respawn_attempts_remaining","_ester_get_respawn_attempts_remaining");
-	
+
 }
 public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 {
@@ -219,7 +216,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 	if(Get_BitVar(g_flying_mask,id)&&
 		sh_get_user_has_hero(id,gHeroID)&&
-		Get_BitVar(g_ester_is_reborn_mode_mask,id)&&
+		sh_get_id_bit(id,SH_IS_REBORN)&&
 		!Get_BitVar(g_smashed_someone_mask,id)){
 		
 			sh_extra_damage(attacker, id,floatround(
@@ -253,7 +250,7 @@ inc_user_ester_respawn_attempts(id){
 public Ester_Knockback(id)
 {
 	if ( !sh_is_active() ||!is_user_alive(id)|| 
-		!Get_BitVar(g_ester_is_reborn_mode_mask,id)) return HAM_IGNORED
+		!sh_get_id_bit(id,SH_IS_REBORN)) return HAM_IGNORED
 	
 	set_pdata_float(id, fPainShock, 1.0, 5)
 
@@ -274,28 +271,13 @@ remove_user_flight_fx(id){
 	
 	
 }
-public _ester_get_reborn_mode(iPlugins,iParams){
-	new id=get_param(1)
-	
-	return Get_BitVar(g_ester_is_reborn_mode_mask,id);
-
-}
-
-public _ester_get_respawn_attempts_remaining(iPlugins,iParams){
-	
-	new id=get_param(1)
-	
-	return g_ester_respawned_attempts[id]
-	
-	
-
-}
 
 ester_set_reborn_mode_primitive(id,value){
 
+	sh_assign_id_bit(id,SH_IS_REBORN, bool:value)
+
 	Assign_BitVar(g_smashed_someone_mask,id,!value);
 	Assign_BitVar(g_smashed_breakable_mask,id,!value);
-	Assign_BitVar(g_ester_is_reborn_mode_mask,id, value);
 	Assign_BitVar(g_is_desperate_mask, id, false_for_macro);
 	Assign_BitVar(g_draining_mask, id, false_for_macro);
 }
@@ -312,7 +294,7 @@ public OnCmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
-			!Get_BitVar(g_ester_is_reborn_mode_mask,id)){
+			!sh_get_id_bit(id,SH_IS_REBORN)){
 			return FMRES_IGNORED;
 	}
 
@@ -365,8 +347,11 @@ public OnCmdStart(id, uc_handle)
 						Float:flight_speed_if_desperate,
 						max_hp_to_use
 			
-			max_hp_to_use = (sh_get_user_has_hero(id,gHeroID_shinobu)?shinobu_max_hp:sh_get_max_hp(id))
-
+			
+			max_hp_to_use = (sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+						floatround(sh_get_player_healthcap(id)):
+						sh_get_max_hp(id))
+			
 			curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
 			
 			flight_speed_if_desperate = cvar_val(float,pcvar_ester_flyspeed)
@@ -649,7 +634,7 @@ public ester_break_shit(pToucher,pTouched){
 
 	if (!sh_get_user_has_hero(pToucher,gHeroID)||
 							Get_BitVar(g_smashed_breakable_mask,pToucher)||
-							!Get_BitVar(g_ester_is_reborn_mode_mask,pToucher)||
+							!sh_get_id_bit(pToucher,SH_IS_REBORN)||
 							!Get_BitVar(g_flying_mask,pToucher)){
 
 		return
@@ -694,7 +679,7 @@ if (pev_valid(pTouched)<1){
 
 if (!sh_get_user_has_hero(pToucher,gHeroID)||
 						Get_BitVar(g_smashed_someone_mask,pToucher)||
-						!Get_BitVar(g_ester_is_reborn_mode_mask,pToucher)||
+						!sh_get_id_bit(pToucher,SH_IS_REBORN)||
 						!Get_BitVar(g_flying_mask,pToucher)||
 						!cvar_val(bool, pcvar_ester_fly_knock_enemies)){
 

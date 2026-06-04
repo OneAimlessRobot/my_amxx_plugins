@@ -10,7 +10,7 @@
 #define ETHEREAL_SPEED 1.0
 #define ETHEREAL_RECOIL 0.75
 
-#define CSW_ETHEREAL CSW_M4A1
+#define CSW_ETHEREAL MY_CSW_M4A1
 #define ETHEREAL_PLAYER_ANIMEXT "carbine"
 #define ETHEREAL_OLDMODEL "models/w_m4a1.mdl"
 

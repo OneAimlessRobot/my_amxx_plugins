@@ -4,7 +4,7 @@
 #define sh_d_barrel_funcs
 
 
-#define CSW_GATLING CSW_M3
+#define CSW_GATLING MY_CSW_M3
 #define WEAPON_ANIMEXT "shotgun"
 #define DEFAULT_W_MODEL "models/w_m3.mdl"
 #define CSW_GATLING_SECRET_CODE 1942

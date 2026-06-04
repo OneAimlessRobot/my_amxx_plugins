@@ -16,6 +16,7 @@
 #include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"

@@ -257,6 +257,82 @@ stock const weapon_data_structs_array[CSW_LAST_WEAPON+1][sh_weapon_data_struct] 
 
 }
 
+
+
+enum sh_weapon_strings_struct{
+
+	wpn_struct_weapon_name[20],
+	wpn_struct_ammo_name[11]
+
+
+}
+stock const weapon_data_strings_array[CSW_LAST_WEAPON+1][sh_weapon_strings_struct] = {
+	
+	{ "", "" },
+
+	{ "weapon_p228",  "357sig" },
+
+	{ "",  ""},
+
+	{ "weapon_scout", "762nato" },
+	
+	{ "weapon_hegrenade", ""},
+
+	{ "weapon_xm1014","buckshot" },
+	
+	{ "weapon_c4","" },
+	
+	{ "weapon_mac10", "45acp" },
+	
+	{ "weapon_aug", "556nato" },
+	
+	{ "weapon_smokegrenade", "" },
+	
+	{ "weapon_elite", "9mm" },
+	
+	{ "weapon_fiveseven", "57mm" },
+	
+	{ "weapon_ump45", "45acp" },
+
+	{ "weapon_sg550", "556nato" },
+	
+	{ "weapon_galil", "556nato" },
+	
+	{ "weapon_famas", "556nato" },
+	
+	{ "weapon_usp", "45acp" },
+	
+	{ "weapon_glock18", "9mm" },
+	
+	{ "weapon_awp", "338magnum" },
+	
+	{ "weapon_mp5navy", "9mm" },
+	
+	{ "weapon_m249", "556natobox" },
+	
+	{ "weapon_m3", "buckshot" },
+	
+	{ "weapon_m4a1", "556nato" },
+	
+	{ "weapon_tmp", "9mm"},
+	
+	{ "weapon_g3sg1", "762nato"},
+	
+	{ "weapon_flashbang", ""},
+
+	{ "weapon_deagle", "50ae"},
+	
+	{ "weapon_sg552", "556nato"},
+	
+	{ "weapon_ak47", "762nato"},
+
+	{ "weapon_knife", ""},
+
+	{ "weapon_p90", "57mm"}
+
+}
+
+
 enum sh_weapon_data_struct{
 
 	wpn_struct_weapon_name[25],
@@ -338,3 +414,20 @@ stock const weapon_data_structs_array[CSW_LAST_WEAPON+1][sh_weapon_data_struct] 
 
 }
 */
+
+/*
+native wlt_get_def_clip(wpn_id);
+
+native wlt_get_def_bp_ammo(wpn_id);
+
+native wlt_get_def_ammo_id(wpn_id);
+
+native wlt_get_def_pos(wpn_id);
+
+native wlt_get_def_slot(wpn_id);
+
+native Float:wlt_get_def_prim_atk_delay(wpn_id);
+
+native Float:wlt_get_def_scnd_atk_delay(wpn_id);
+
+native Float:wlt_get_def_rld_delay(wpn_id);*/

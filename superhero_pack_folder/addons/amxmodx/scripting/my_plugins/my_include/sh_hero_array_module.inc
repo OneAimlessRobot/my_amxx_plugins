@@ -27,7 +27,9 @@ enum hero_property_flags_id {
 	SH_HEALING_HERO,
 	SH_SMALL_HERO,
 	SH_DREAM_EATER_HERO,
-	SH_ANNOYING_HERO
+	SH_ANNOYING_HERO,
+	SH_HEALTH_CAP_HERO,
+	SH_BOT_RESTRICTED
 };
 
 //up to 64 states can be added in the current version of the library
@@ -43,7 +45,8 @@ enum player_state_flags_id {
 	SH_IS_FROZEN,
 	SH_IS_WET,
 	SH_IS_BLEEDING,
-	SH_IS_PSYCHOSIS
+	SH_IS_PSYCHOSIS,
+	SH_IS_REBORN
 };
 
 //hero properties

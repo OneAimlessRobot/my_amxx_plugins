@@ -36,12 +36,12 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)	
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_strings_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 

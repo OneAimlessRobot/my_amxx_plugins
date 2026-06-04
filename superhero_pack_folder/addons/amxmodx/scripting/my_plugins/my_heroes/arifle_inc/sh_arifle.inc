@@ -10,7 +10,7 @@
 #define A_RIFLE_SPEED 0.75
 #define A_RIFLE_RECOIL 1.5
 
-#define CSW_ARIFLE CSW_M249
+#define CSW_ARIFLE MY_CSW_M249
 #define ARIFLE_PLAYER_ANIMEXT "m249"
 #define ARIFLE_OLDMODEL "models/w_m249.mdl"
 

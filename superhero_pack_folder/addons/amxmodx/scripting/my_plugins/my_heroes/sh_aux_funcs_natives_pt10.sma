@@ -40,7 +40,6 @@ enum superhero_incompatibility_pair{
 
 new sh_incompatibility_pairs[MAX_INCOMPATIBILITY_PAIRS][superhero_incompatibility_pair]
 
-new bool:is_hero_bot_pickable[SH_MAXHEROS] = {true, ...}
 
 public plugin_init(){
 
@@ -89,10 +88,6 @@ public plugin_cfg(){
 	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Shinobu)
 
 	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Goku)
-
-	
-
-	is_hero_bot_pickable[gHeroID_Shinobu] = false
 
 
 	server_print("%s innited!^n",LIBRARY_NAME)
@@ -160,7 +155,7 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	}
 	if(is_user_bot(id)){
 
-		if(!is_hero_bot_pickable[heroID]){
+		if(sh_get_hero_bit(heroID, SH_BOT_RESTRICTED)){
 
 			return INIT_FWD_BLOCK
 		}

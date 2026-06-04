@@ -59,7 +59,6 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/swat_v_knife.mdl","models/shmod/swat_p_knife.mdl")
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	register_event("Damage", "swat_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack,"player","swat_damage",_,true)
 
 	shSetMaxHealth(gHeroName, "swat_health")

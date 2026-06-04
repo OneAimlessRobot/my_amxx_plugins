@@ -333,7 +333,7 @@ public Ester_revenge_loop(id)
 
 		}
 
-		if ( ester_get_reborn_mode(i)){
+		if ( sh_get_id_bit(i,SH_IS_REBORN)){
 			
 			continue
 		}
@@ -719,7 +719,7 @@ public ester_kd(id)
 		}
 		return PLUGIN_HANDLED
 	}
-	if(ester_get_reborn_mode(id)){
+	if(sh_get_id_bit(id,SH_IS_REBORN)){
 
 		sh_chat_message(id,gHeroID,"Youre in reborn mode! You cannot use that");
 		sh_sound_deny(id)
