@@ -237,14 +237,12 @@ public sh_round_start(){
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 {
-	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||is_user_bot(id) )
+	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||is_user_bot(id) ){
 		return FMRES_IGNORED;
+	}
 	
 
-	// get ent looking at
-	static ent
-
-	ent= get_tr2(trace,TR_pHit)
+	new ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something
 	if( pev_valid(ent))

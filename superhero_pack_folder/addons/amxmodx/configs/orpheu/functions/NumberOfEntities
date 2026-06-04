@@ -1,0 +1,8 @@
+{
+    "name": "NumberOfEntities",
+    "library": "engine",
+    "arguments": [],
+    "return": {
+        "type": "int"
+    }
+}

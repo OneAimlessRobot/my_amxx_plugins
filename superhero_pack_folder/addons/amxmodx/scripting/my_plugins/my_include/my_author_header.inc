@@ -6,7 +6,6 @@
 
 #define AUTHOR "ThrashBrat"
 
-
 ///native my_authored_register_func(const plugin_name[], const plugin_ver[], const original_author[], bool:is_modified=false, const new_author[]="")
 
 stock my_authored_register_func(const plugin_name[], const plugin_ver[], const original_author[], bool:is_modified=false, const new_author[]="", const url[]="", const description[]=""){
