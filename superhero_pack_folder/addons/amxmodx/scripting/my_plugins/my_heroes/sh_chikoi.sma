@@ -35,11 +35,15 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Chikoi the maid: Help file","chikoi_the_maid_folder/","chikoi_help_file.html",hero_name_arr)
 
-	RegisterHam(Ham_TakeDamage,"player","chikoi_damage",_,true)
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	
 	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
 	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
+
+	sh_assign_hero_bit(gHeroID, SH_ANTI_FALL_DAMAGE_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_ANTI_GRENADES_HERO, true)
+
 
 	sh_register_hero_healthcap(gHeroID, 5.0)
 	
@@ -74,25 +78,6 @@ dmg_message(id, attacker){
 
 }
 
-public chikoi_damage(id, idinflictor, attacker, Float:damage, damagebits){
-
-	
-if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return HAM_IGNORED
-
-if ( damagebits & DMG_FALL ){
-	return HAM_SUPERCEDE
-}
-
-static inflictor_classname[64];
-
-entity_get_string(idinflictor,EV_SZ_classname,inflictor_classname,63)
-
-if(equal(inflictor_classname,"grenade")){
-
-	return HAM_SUPERCEDE
-}
-return HAM_IGNORED
-}
 
 public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
 

@@ -4,5 +4,5 @@
 #define sh_aux_fx_natives_consts_pt12
 
 
-#define LIBRARY_NAME "Superhero library 12: superhero pickability checks: health cap calculations"
+#define LIBRARY_NAME "Superhero library 12: superhero property enforcing pt1: health caps"
 

@@ -38,11 +38,13 @@ static const sh_property_gating_array[hero_property_flags_id][property_bounds] =
 			{"Small",25},
 			{"Dream eater",25},
 			{"Annoying hero",25},
-			{"Health cap hero",25}
+			{"Health cap hero",25},
+			{"No bots hero",25},
+			{"Anti fall damage hero",25},
+			{"Anti grenades hero",25}
 			
 
 }
-
 static sh_player_hero_property_tracker[SH_MAXSLOTS+1][hero_property_flags_id][property_counter];
 
 

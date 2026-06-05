@@ -57,7 +57,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
 	register_event("Damage","shinobuDamage","b", "2!0")
 	
-	RegisterHam(Ham_TakeDamage,"player","ham_Shinobu_fallDamage",_, true)
 	
 
 	sh_register_hero_healthcap(gHeroID, 90.0)
@@ -65,6 +64,8 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID, SH_ANNOYING_HERO, true)
 
 	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
+
+	sh_assign_hero_bit(gHeroID, SH_ANTI_FALL_DAMAGE_HERO, true)
 
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
@@ -109,16 +110,6 @@ public shinobu_step_silent(task_id)
 			}
 		}
 	}
-}
-
-//----------------------------------------------------------------------------------------------
-public ham_Shinobu_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
-{
-	if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
-
-	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
-
-	return HAM_IGNORED
 }
 
 public client_disconnected(id){

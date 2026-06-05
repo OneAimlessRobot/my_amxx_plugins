@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt12: superhero pickability checks: pt3"
+#define PLUGIN "Superhero aux natives pt12: superhero property enforcing pt1: health caps"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"

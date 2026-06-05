@@ -6,7 +6,8 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_spore_launcher.inc"
@@ -114,19 +115,28 @@ untrack_spore(spore){
 public bool:_ksun_heal(iPlugins, iParms){
 	new id= get_param(1)
 	new Float:damage=get_param_f(2)
+
+	new Float: mate_health;
+	pev(id,pev_health,mate_health)
 	
-	new Float: mate_health=float(get_user_health(id))
-	if(mate_health>=sh_get_max_hp(id)){
+	new max_hp_to_check = min(floatround(sh_get_player_healthcap(id)),sh_get_max_hp(id))
+
+	if(sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)&&
+					floatround(mate_health)>=(max_hp_to_check)){
+		
+		set_param_byref(3,0)
 		return false
-	
 	}
 	damage*=cvar_val(float, pcvar_ksun_heal_coeff)
-	new new_damage= min(floatround(damage), clamp(0,sh_get_max_hp(id)-get_user_health(id)))
+	new new_damage= min(floatround(damage), clamp(0,max_hp_to_check-floatround(mate_health)))
+
+	set_param_byref(3,new_damage)
+	
 	ksun_glisten(id)
 	ksun_inc_player_supply_points(id,new_damage)
 	
-	new Float: new_health=floatadd(mate_health,damage)
-	set_user_health(id,min(sh_get_max_hp(id),floatround(new_health)))
+	new Float: new_health=floatadd(mate_health,float(new_damage))
+	set_user_health(id,min(max_hp_to_check,floatround(new_health)))
 	return true
 
 }

@@ -31,7 +31,7 @@ native dec_times_player_spiked_player(attacker,victim)
 native get_times_player_spiked_by_player(victim,attacker)
 native inc_times_player_spiked_by_player(victim,attacker)
 native dec_times_player_spiked_by_player(victim,attacker)
-native bool:ksun_heal(id, Float:damage)
+native bool:ksun_heal(id, Float:damage, &actual_drain_result = 0)
 
 native clean_ksun_spores_from_players(dying_or_new_round,everyone,player)
 native ksun_glisten(id)

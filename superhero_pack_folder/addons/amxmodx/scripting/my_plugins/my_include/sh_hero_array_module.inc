@@ -29,7 +29,9 @@ enum hero_property_flags_id {
 	SH_DREAM_EATER_HERO,
 	SH_ANNOYING_HERO,
 	SH_HEALTH_CAP_HERO,
-	SH_BOT_RESTRICTED
+	SH_BOT_RESTRICTED,
+	SH_ANTI_FALL_DAMAGE_HERO,
+	SH_ANTI_GRENADES_HERO
 };
 
 //up to 64 states can be added in the current version of the library

@@ -121,7 +121,7 @@ public plugin_cfg(){
 	gHeroID_chikoi = chikoi_get_hero_id()
 }
 stock covert_spike_damage(id, &bool:spored_someone = false){
-	new the_players[SH_MAXSLOTS], pnum, payer	
+	static the_players[SH_MAXSLOTS], pnum, payer	
 	get_players(the_players, pnum, "a")
 	for (new k = 0; k < pnum; k++) {
 		
@@ -141,12 +141,13 @@ stock covert_spike_damage(id, &bool:spored_someone = false){
 			tg_health=float(get_user_health(payer))
 			remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
 			dmg_to_drain = tg_health - remaining
-			
-			sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
-					_,_,_,_,_,
-					SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
-			ksun_heal(id,dmg_to_drain)
-			
+			spored_someone = ksun_heal(id,dmg_to_drain)
+
+			if(spored_someone){
+				sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
+						_,_,_,_,_,
+						SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
+			}
 		}
 	}
 }
@@ -155,7 +156,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 	
 	new CsTeams:att_team=cs_get_user_team(attacker)
 	
-	new the_players[SH_MAXSLOTS], pnum, collector		
+	static the_players[SH_MAXSLOTS], pnum, collector		
 	get_players(the_players, pnum, "a")
 	for (new k = 0; k < pnum; k++) {
 		
@@ -169,12 +170,11 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 		}
 		new times_spiked_by_them=get_times_player_spiked_player(collector,attacker)
 		if((times_spiked_by_them>0)){
-			spored_someone = true
 			new Float: pctDmgLost=cvar_val(float,pcvar_ksun_dmg_paycut)*float(times_spiked_by_them)
 			new Float: dmgSnatched=1.0+(damage*pctDmgLost)
-		
-			ksun_heal(collector,dmgSnatched)
-			new Float:newDamage=damage- dmgSnatched
+			new actual_dmg_done = 0
+			spored_someone = ksun_heal(collector,dmgSnatched, actual_dmg_done)
+			new Float:newDamage=damage- actual_dmg_done
 			if(is_in_ham_hook){
 				SetHamParamFloat(4, newDamage);
 			}
@@ -189,7 +189,15 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 }
 public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return
+
+
+	if((damage<1.0)){
+		
+		return
+
+	}
+
 	new bool:spored_someone_covert = false,
 		bool:spored_someone_overt = false
 
@@ -205,12 +213,11 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 	if(sh_get_user_has_hero(id,gHeroID) &&COVERT_ABUSE_ENABLED){
 
-	
 		covert_spike_damage(id, spored_someone_covert)
 
 	}
 
-	if((damage>0.0)&&OVERT_ABUSE_ENABLED){
+	if(OVERT_ABUSE_ENABLED){
 		overt_spike_damage(attacker,damage,1, spored_someone_overt)
 	}
 	if(spored_someone_overt||spored_someone_covert){
@@ -240,7 +247,6 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 		}
 	
 	}
-	return HAM_IGNORED
 	
 }
 
@@ -544,7 +550,7 @@ public sh_client_death(id, killer){
 		if(sh_get_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
-					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",weapon_data_structs_array[KSUN_WEAPON_ID][wpn_struct_weapon_name])
+					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",weapon_data_structs_array[my_weapon_ids:KSUN_WEAPON_ID][wpn_struct_weapon_name])
 					sh_chat_message(killer,gHeroID,"You got %d spores for your kill!",
 						cvar_val(num, pcvar_ksun_spores_per_kill))
 					ksun_multi_inc_num_available_spores(killer,
@@ -559,7 +565,7 @@ public sh_client_death(id, killer){
 					sh_chat_message(killer,gHeroID,"You got %d extra spores for an %s kill!",
 					((cvar_val(num, pcvar_ksun_spores_per_kill)*
 							cvar_val(num, pcvar_ksun_spore_m4_mult))-
-							cvar_val(num, pcvar_ksun_spores_per_kill)),weapon_data_structs_array[KSUN_WEAPON_ID][wpn_struct_weapon_name])
+							cvar_val(num, pcvar_ksun_spores_per_kill)),weapon_data_structs_array[my_weapon_ids:KSUN_WEAPON_ID][wpn_struct_weapon_name])
 					ksun_multi_inc_num_available_spores(killer,
 					cvar_val(num, pcvar_ksun_spores_per_kill)*
 					cvar_val(num, pcvar_ksun_spore_m4_mult))
