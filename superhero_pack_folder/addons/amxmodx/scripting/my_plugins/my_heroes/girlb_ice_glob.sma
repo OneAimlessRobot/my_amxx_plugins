@@ -308,7 +308,7 @@ public player_touch( Glob, Player ) {
 public ice_field_think(ent)
 {
 	
-	if (!pev_valid(ent)){
+	if (!is_valid_ent(ent)){
 		
 	
 			return
@@ -318,7 +318,7 @@ public ice_field_think(ent)
 	static Float:ent_pos[3]
 
 	if (entity_get_float(ent,EV_FL_fuser1)<0.0) {
-		my_remove_entity(ent)
+		remove_entity(ent)
 		return
 	}
 	else{

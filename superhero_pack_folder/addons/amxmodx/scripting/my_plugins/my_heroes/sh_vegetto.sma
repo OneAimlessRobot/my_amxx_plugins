@@ -649,7 +649,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 		write_byte(decal_id)	//decal
 		message_end()
 	
-		my_remove_entity(pToucher)
+		remove_entity(pToucher)
 
 		// Reset the Varibles
 		g_powerNum[id] = 0
@@ -677,7 +677,7 @@ public remove_power(id, powerID)
 	g_powerNum[id] = 0
 	g_powerID[id] = 0
 
-	my_remove_entity(powerID)
+	remove_entity(powerID)
 }
 //----------------------------------------------------------------------------------------------
 public vegetto_loop()

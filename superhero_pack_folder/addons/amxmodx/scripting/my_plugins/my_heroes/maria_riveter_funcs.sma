@@ -78,13 +78,13 @@ public plugin_cfg(){
 public rivette_thinque(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return
+	if (!is_valid_ent(ent)) return
 	
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!is_user_alive(owner)){
 
-		my_remove_entity(ent)	
+		remove_entity(ent)	
 		return
 	}
 
@@ -453,7 +453,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									MARIA_PROJECTILE_EXPLODE_FORCE,
 									explosion_sfx_show_nothing)
 	
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 }
 public plugin_precache()
 {

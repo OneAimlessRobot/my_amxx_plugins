@@ -481,7 +481,7 @@ public CmdStart(id, uc_handle)
 
 public sh_round_end(){
 
-	my_remove_entity_name(SH_CUSTOM_GRENADE_CLASSNAME)
+	remove_entity_name(SH_CUSTOM_GRENADE_CLASSNAME)
 
 }
 
@@ -644,7 +644,7 @@ else{
 }
 
 
-engclient_cmd(id, weapon_data_structs_array[my_weapon_ids:the_wpn_gren_id][wpn_struct_weapon_name])
+engclient_cmd(id, weapon_data_structs_array[my_weapon_ids:CSW_KNIFE][wpn_struct_weapon_name])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 
@@ -665,7 +665,7 @@ if ( !pev_valid(id_grenade) ) return
 new owner=pev(id_grenade, pev_owner);
 
 if(!is_user_connected(owner)){
-	my_remove_entity(id_grenade)
+	remove_entity(id_grenade)
 	return
 }
 static bool:prev_touched_wall,
@@ -678,7 +678,7 @@ the_type = sh_grenade_type:pev(id_grenade, pev_iuser3)
 if(the_type<=sh_grenade_type:0){
 
 
-	my_remove_entity(id_grenade)
+	remove_entity(id_grenade)
 	return
 
 }
@@ -734,7 +734,7 @@ if not we exit early!
 */
 
 if(!result_neutral_fx){
-	my_remove_entity(id_grenade)
+	remove_entity(id_grenade)
 	return
 
 
@@ -754,7 +754,7 @@ for( new i= 0;(i< numfound);i++){
 }
 
 
-my_remove_entity(id_grenade)
+remove_entity(id_grenade)
 
 }
 
@@ -825,12 +825,12 @@ public client_connect(id){
 
 default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_origin_of_expolosion[3]){
 
-	if ( !pev_valid(grenade_ent) ) return
+	if ( !is_valid_ent(grenade_ent) ) return
 
 	new owner=pev(grenade_ent, pev_owner);
 
 	if(!is_user_connected(owner)){
-		my_remove_entity(grenade_ent)
+		remove_entity(grenade_ent)
 		return
 	}
 

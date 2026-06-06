@@ -206,8 +206,8 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	engfunc(EngFunc_SetModel, NewEnt, JETPLANE_MODEL)
 	float_to_str(1000.0,health,127)
 	num_to_str(2,material,127)
-	my_set_kvd( NewEnt, "material", material );
-	my_set_kvd( NewEnt, "health", health );
+	DispatchKeyValue( NewEnt, "material", material );
+	DispatchKeyValue( NewEnt, "health", health );
 	
 	entity_set_vector(g_jetplane[id], EV_VEC_mins,jetplane_min_dims)
 	entity_set_vector(g_jetplane[id], EV_VEC_maxs,jetplane_max_dims)
@@ -303,13 +303,13 @@ public _reset_jet_user(iPlugin,iParams){
 	UnSet_BitVar(g_jetplane_deployed_mask, id);
 	if(is_valid_ent(g_jetplane[id])){
 		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		my_remove_entity(g_jetplane[id]);
+		remove_entity(g_jetplane[id]);
 		g_jetplane[id]=0;
 	}
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
-		my_remove_entity(camera[id])
+		remove_entity(camera[id])
 		camera[id] = 0
 	}
 	
@@ -875,13 +875,13 @@ public _jet_destroy(iPlugin,iParams){
 		}
 		mg_destroy(id)
 		law_destroy(id)
-		my_remove_entity(g_jetplane[id]);
+		remove_entity(g_jetplane[id]);
 		g_jetplane[id]=-1;
 	}
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
-		my_remove_entity(camera[id])
+		remove_entity(camera[id])
 		camera[id] = 0
 	}
 	UnSet_BitVar(g_jetplane_deployed_mask,id)
@@ -890,7 +890,7 @@ public _clear_jets(iPlugin,iParams){
 	
 	new grenada = find_ent_by_class(-1, JETPLANE_FUSELAGE_CLASSNAME)
 	while(grenada) {
-		my_remove_entity(grenada)
+		remove_entity(grenada)
 		grenada = find_ent_by_class(grenada, JETPLANE_FUSELAGE_CLASSNAME)
 	}
 	

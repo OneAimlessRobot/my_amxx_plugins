@@ -129,8 +129,6 @@ stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 
 #define my_find_ent_by_class(%1,%2) engfunc(EngFunc_FindEntityByString, %1, "classname", %2)
 
-#define my_remove_entity(%1) engfunc(EngFunc_RemoveEntity, %1)
-
 #define my_get_gametime() get_gametime()
 
 #define my_entity_set_model(%1,%2) engfunc(EngFunc_SetModel, %1, %2)

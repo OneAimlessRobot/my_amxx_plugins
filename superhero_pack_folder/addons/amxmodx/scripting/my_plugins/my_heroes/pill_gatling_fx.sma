@@ -19,6 +19,38 @@
 #define PLUGIN "Superhero yakui pt2 pt1"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+#define POISON_DMG_MULT 2.0
+#define POISON_DAMAGE_PCT 0.05
+
+
+#define MORPHINE_DMG_TANK 0.7
+
+
+#define STUN_SPEED 70.0
+
+
+
+#define MORPHINE_HP_ADD 50
+
+
+#define WEED_GRAVITY 0.1
+
+#define METYLPHENIDATE_RECOIL_COEFF 0.2
+
+
+#define COCAINE_SPEED 1000.0
+#define COCAINE_FIRE_RATE_MULT 3.0
+#define COCAINE_RELOAD_RATE_MULT 3.0
+
+
+
+
+#define FOCUS_XPMULT 4.0
+
+
+
 new g_last_weapon[SH_MAXSLOTS+1]
 enum fx_task_parameter_id{
 	Float:fx_task_period,
@@ -125,7 +157,8 @@ custom_dmg_id_cyanide=sh_log_custom_damage_source(-1,
 				dmg_source_name_log_cyanide,
 				0)
 
-RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage", 1,true) 
+RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Pre", _,true) 
+RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true) 
 register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 
@@ -216,7 +249,9 @@ public fx_damage(id)
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
-	new fx_num_att=(gatling_get_fx_num(attacker));
+	new fx_id:fx_num_att=(gatling_get_fx_num(attacker)),
+		fx_id:fx_num_vic=(gatling_get_fx_num(victim));
+
 	switch (fx_num_att){
 		case POISON:{
 			new Float:extraDamage = float(damage) * POISON_DMG_MULT - float(damage)
@@ -229,6 +264,15 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 			new current_xp= sh_get_user_xp(attacker)
 			new new_xp= gained_xp+ current_xp;
 			sh_set_user_xp(attacker,new_xp);
+		}
+	}
+	switch (fx_num_vic){
+		case MORPHINE:{
+			new Float:newDamage = float(damage) - (MORPHINE_DMG_TANK * float(damage))
+			
+			damage= max(0, floatround(newDamage))
+
+		
 		}
 	}
 	return DMG_FWD_PASS
@@ -319,12 +363,43 @@ public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 				(sh_custom_color:{GREEN,GREEN,GREEN}):
 				(sh_custom_color:{PINK,PINK,PINK}))
 }
-public Player_TakeDamage(id)
+public Player_TakeDamage_Post(id, idinflictor, idattacker, Float:damage, damagebits)
 {
- if ( !sh_is_active() || !is_user_alive(id) || !(gatling_get_fx_num(id)==BATH)) return
- 
- set_pdata_float(id, fPainShock, 1.0, 5)
+	if ( !sh_is_active() || !is_user_alive(id)){
+		return
+	}
+	new fx_id:fx_num = (gatling_get_fx_num(id))
+
+	switch(fx_num){
+
+		case BATH:{
+
+			set_pdata_float(id, fPainShock, 1.0, 5)
+		}
+
+
+	}
 } 
+public Player_TakeDamage_Pre(id, idinflictor, idattacker, Float:damage, damagebits)
+{
+	if ( !sh_is_active() || !is_user_alive(id)){
+		return HAM_IGNORED
+	}
+
+	new fx_id:fx_num = (gatling_get_fx_num(id))
+
+	switch(fx_num){
+
+		case MORPHINE:{
+
+			SetHamParamFloat(4,damage - (damage*MORPHINE_DMG_TANK))
+			return HAM_HANDLED
+		}
+
+	}
+	return HAM_IGNORED
+}
+
 public fx_id:_sh_get_user_effect(iPlugins,iParams){
 	
 	new id=get_param(1)

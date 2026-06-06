@@ -105,7 +105,7 @@ untrack_spore(spore){
 		new Float:origin[3]
 		entity_get_vector(spore,EV_VEC_origin,origin)
 		make_sparks(origin)
-		my_remove_entity(spore)
+		remove_entity(spore)
 		dec_player_num_victims(spore_owner)
 		ksun_dec_num_available_spores(spore_owner)
 	}
@@ -274,8 +274,8 @@ public spawn_spore(id){
 
 	float_to_str(SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health),health,127)
 	num_to_str(2,material,127)
-	my_set_kvd( spore, "material", material );
-	my_set_kvd( spore, "health", health );
+	DispatchKeyValue( spore, "material", material );
+	DispatchKeyValue( spore, "health", health );
 
 
 	set_pev(spore, pev_health, SPORE_DEAD_HP+cvar_val(float, pcvar_ksun_spore_base_health))

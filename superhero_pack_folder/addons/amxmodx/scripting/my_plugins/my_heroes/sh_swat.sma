@@ -261,7 +261,7 @@ public nuke_hit(pToucher, pTouched) {
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 }
 //----------------------------------------------------------------------------------------------
 public make_beam(id)
@@ -425,7 +425,7 @@ remove_missile(id,missile){
 	has_rocket[id] = 0;
 	sh_unset_cooldown_flag(id)
 	attach_view(id,id)
-	my_remove_entity(missile)
+	remove_entity(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------

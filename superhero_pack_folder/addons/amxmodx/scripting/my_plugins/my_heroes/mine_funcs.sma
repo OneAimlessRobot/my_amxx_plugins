@@ -157,7 +157,7 @@ public mine_think(mine_id){
 
 public blow_mine_up(ent, id)
 {
-		if(pev_valid(ent)!=2){
+		if(!is_valid_ent(ent)){
 		
 			return;
 		}
@@ -171,7 +171,7 @@ public blow_mine_up(ent, id)
 		
 		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
 		
-		my_remove_entity(ent)
+		remove_entity(ent)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ public disarm_task(param[1],id){
 	if(!mine_get_mine_disarming(id)){
 
 		sapper_set_num_mines(id,sapper_get_num_mines(id)+1)
-		my_remove_entity(param[0]);
+		remove_entity(param[0]);
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));

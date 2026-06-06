@@ -105,6 +105,8 @@ public plugin_cfg(){
 
 	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_ksun)
 
+	push_incompatibility_pair(gHeroID_Ester, gHeroID_ksun)
+
 	
 
 

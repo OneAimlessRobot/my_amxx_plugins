@@ -12,7 +12,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
-#tryinclude "../../include/cstrike.inc"
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -29,7 +29,8 @@
 #define MAX_PICKED 1
 
 // GLOBAL VARIABLES
-#define MODEL_PLAYER "models/player/thrash/thrash.mdl"
+#define MODEL_PLAYER_CT "models/player/thrash/thrash.mdl"
+#define MODEL_PLAYER_T "models/player/thrash/thrashT.mdl"
 #define Model_Weapon_P "models/shmod/thrashteen/p_superak47.mdl"
 #define Model_Weapon_V "models/shmod/thrashteen/v_superak47.mdl"
 new gHeroName[]="Thrashy Thrash"
@@ -65,8 +66,8 @@ public plugin_init()
 				"STOOOOPPPP!!!! YOURE NOT AEDMIN1111111!!!!!")
 	
 	sh_register_superheromod_model(gHeroID,
-								MODEL_PLAYER,
-								MODEL_PLAYER,
+								MODEL_PLAYER_CT,
+								MODEL_PLAYER_T,
 								"thrash",
 								"You are now the baddest bitch on earth!",
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
@@ -265,7 +266,7 @@ public thrashy_weapons(id)
 //I need to use this in the case of self destruction mechanics
 public thrash_brat_death()
 {	
-	new id = read_data(1)
+	new id = read_data(2)
 
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
@@ -282,6 +283,9 @@ public thrashy_damage(id, attacker, Float:damage, Float:direction[3], traceresul
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	
+	if(sh_clients_are_same_team(attacker,id)){
+		return HAM_IGNORED
+	}
 	new weapon = get_user_weapon(attacker)
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
@@ -339,7 +343,6 @@ public BlowUp(id,bool:died)
 			
 			
 	}
-	new Float:dRatio, damage, distanceBetween
 	new damradius;
 	new maxdamage;
 	if(died){
@@ -353,29 +356,11 @@ public BlowUp(id,bool:died)
 		maxdamage= xplodedmg
 	}
 
-	new FFOn = get_cvar_num("mp_friendlyfire")
-	new origin[3], origin1[3]
-	get_user_origin(id,origin)
-
-	explode_fx(origin,xplode_radius) // blowup even if dead
-
-	for(new a = 1; a <= SH_MAXSLOTS; a++) {
-		if( is_user_alive(a) && ( get_user_team(id) != get_user_team(a) || FFOn || (a == id &&died)) ) {
-
-			get_user_origin(a,origin1)
-
-			distanceBetween = get_distance(origin, origin1 )
-			if( distanceBetween < damradius ) {
-				if ( a == id ) {
-					damage = maxdamage * 4
-				}
-				else {
-					dRatio = float(distanceBetween) / float(damradius)
-					damage = maxdamage - floatround( maxdamage * dRatio)
-				}
-				sh_extra_damage(a, id, damage)
-			} // distance
-		} // alive
-	} // loop
+	
+	explosion(gHeroID,id,
+					float(damradius),
+					float(maxdamage),
+					_,1,1)
+	
 	return PLUGIN_CONTINUE;
 }

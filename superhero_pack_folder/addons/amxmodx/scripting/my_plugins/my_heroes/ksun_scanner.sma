@@ -189,7 +189,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
 			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
-			my_remove_entity(g_player_scanner[id])
+			remove_entity(g_player_scanner[id])
 			g_player_scanner[id]=0
 	
 	

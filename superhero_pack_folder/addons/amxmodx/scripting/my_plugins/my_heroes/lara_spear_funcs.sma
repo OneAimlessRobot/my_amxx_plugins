@@ -62,11 +62,11 @@ public FwdTouchWorld( Spaaaaeerr, World ) {
 public spaar_thaank(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return
+	if (!is_valid_ent(ent) ) return
 	
 	
 
-	my_remove_entity(ent)
+	remove_entity(ent)
 
 
 }
@@ -346,7 +346,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 		
 			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
-			my_remove_entity(pToucher);
+			remove_entity(pToucher);
 		
 		}
 		else if(pTouched!=oid){

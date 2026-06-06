@@ -82,18 +82,18 @@ public FwdTouchWorld( dirt, World ) {
 	make_sparks(origin);
 	gun_shot_decal(origin);
 
-	my_remove_entity(dirt)
+	remove_entity(dirt)
 }
 public tranque_thinque(ent){
 
 
-	if ( pev_valid(ent)!=2 ) return
+	if (!is_valid_ent(ent)) return
 
 	new owner=entity_get_edict(ent, EV_ENT_owner)
 
 	if(!is_user_alive(owner)){
 
-		my_remove_entity(ent)
+		remove_entity(ent)
 		return
 	}
 
@@ -476,7 +476,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 		sh_sleep_user(pTouched,oid,gHeroID)
 
 	}
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)

@@ -123,18 +123,19 @@ public bool:_generic_heal(iPlugins, iParms){
 		Float: mate_health=float(get_user_health(id))
 
 	
-	if(mate_health>=sh_get_max_hp(id)){
-		return false
-	
-	}
-	if((max_hp_to_clamp>0)&&((max_hp_to_clamp)<=mate_health)){
-		return false
-	
-	}
-	if(sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)&&
-					floatround(mate_health)>floatround(sh_player_healthcap_table[id])){
+	max_hp_to_clamp = (max_hp_to_clamp > 0) ?(min(max_hp_to_clamp,
+				sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)
+						?
+				floatround(sh_player_healthcap_table[id])
+						:
+					sh_get_max_hp(id)))
+						:
+					sh_get_max_hp(id)
 
+	if(((max_hp_to_clamp)<=mate_health)){
+		
 		return false
+	
 	}
 	if(make_sound){
 
@@ -143,15 +144,18 @@ public bool:_generic_heal(iPlugins, iParms){
 		get_string(11,sound_sample_string,127)
 		emit_sound(id, CHAN_STATIC, sound_sample_string, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
-	new Float: new_health=floatadd(mate_health,added_hp)
-	set_user_health(id,min((max_hp_to_clamp>0)?max_hp_to_clamp:sh_get_max_hp(id),floatround(new_health)))
+	new Float: true_hp_to_add = floatmax(0.0, floatmin(added_hp, float(max_hp_to_clamp) - mate_health))
+	new Float: new_health=floatadd(mate_health,true_hp_to_add)
+	
+	entity_set_float(id,EV_FL_health,new_health)
+
 	if(user_will_glow>0){
 		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer)
 	}
 	if(hud_msg_sync>0){
 		
 		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", added_hp)
+		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", true_hp_to_add)
 	
 	}
 	return true

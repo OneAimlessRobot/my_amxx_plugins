@@ -30,10 +30,3 @@ stock my_find_ent_by_owner(index, const classname[], owner, jghgtype = 0) {
 
 	return ent;
 }
-stock my_remove_entity_name(const classname[]) {
-	new ent = -1, num = 0;
-	while ((ent = my_find_ent_by_class(ent, classname)))
-		num += my_remove_entity(ent);
-
-	return num;
-}

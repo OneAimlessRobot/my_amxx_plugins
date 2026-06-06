@@ -49,7 +49,7 @@ public plugin_init(){
 	pcvar_camman_camera_maxalpha = create_cvar("camman_camera_maxalpha", "100.0")
 	pcvar_camman_camera_minalpha = create_cvar("camman_camera_minalpha", "1000.0")
 
-	//register_think(CAMERA_CLASSNAME, "camera_think")
+	register_think(CAMERA_CLASSNAME, "camera_think")
 	register_forward(FM_CmdStart, "camera_controls")
 	CAMERA_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
@@ -105,7 +105,7 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	
 	}
-	set_pev(this, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
+	entity_set_float(this, EV_FL_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
@@ -127,8 +127,7 @@ public camera_controls(id, uc_handle)
 
 	if(!Get_BitVar(looking_with_camera_mask, id)) return FMRES_IGNORED
 	
-	new Float:zoom;
-	pev(id,pev_fov,zoom)
+	new Float:zoom = entity_get_float(id,EV_FL_fov)
 	
 	
 	new button = get_uc(uc_handle, UC_Buttons);
@@ -138,7 +137,7 @@ public camera_controls(id, uc_handle)
 		button &= ~IN_ATTACK;
 		set_uc(uc_handle, UC_Buttons, button);
 
-		set_pev(id,pev_fov,floatmin( MAX_ZOOM ,zoom+ZOOM_INC))
+		entity_set_float(id,EV_FL_fov,floatmin( MAX_ZOOM ,zoom+ZOOM_INC))
 		set_pdata_int(id, m_iFOV, floatround(floatmin(MAX_ZOOM,zoom+ZOOM_INC)));
 		
 		
@@ -148,7 +147,7 @@ public camera_controls(id, uc_handle)
 		button &= ~IN_ATTACK2;
 		set_uc(uc_handle, UC_Buttons, button);
 		
-		set_pev(id,pev_fov,floatmin(MIN_ZOOM,zoom-ZOOM_INC))
+		entity_set_float(id,EV_FL_fov,floatmin(MIN_ZOOM,zoom-ZOOM_INC))
 		set_pdata_int(id, m_iFOV,floatround(floatmax(MIN_ZOOM,zoom-ZOOM_INC)));
 		
 	}
@@ -284,11 +283,10 @@ public _toggle_camera_view(iPlugins,iParams){
 			UnSet_BitVar(looking_with_camera_mask, id)
 			return
 		}
-		new Float: cam_health;
-		pev(camera_id,pev_health,cam_health)
+		new Float:cam_health = entity_get_float(camera_id,EV_FL_health)
 		Set_BitVar(looking_with_camera_mask, id)
-		my_attack_view(id,camera_id)
-		set_pev(camera_id, pev_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
+		attach_view(id,camera_id)
+		entity_set_float(camera_id, EV_FL_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 		sh_chat_message(id,gHeroID,"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
 		return
 		
@@ -298,7 +296,7 @@ public _toggle_camera_view(iPlugins,iParams){
 		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
-		my_attack_view(id,id)
+		attach_view(id,id)
 		
 	}
 	
@@ -318,8 +316,8 @@ public plant_camera(id)
 	engfunc(EngFunc_SetModel, NewEnt, CAMERA_WORLD_MDL)
 	float_to_str(cvar_val(float, pcvar_camera_hp)+1000.0,health,127)
 	num_to_str(2,material,127)
-	my_set_kvd( NewEnt, "material", material );
-	my_set_kvd( NewEnt, "health", health );
+	DispatchKeyValue( NewEnt, "material", material );
+	DispatchKeyValue( NewEnt, "health", health );
 	
 	
 	set_pev(NewEnt, pev_health, cvar_val(float, pcvar_camera_hp)+1000.0)
@@ -346,7 +344,7 @@ public plant_camera(id)
 	parm[1]=NewEnt
 	
 	camera_charge[id]=cvar_val(float, pcvar_max_camera_charge)
-	set_pev(NewEnt, pev_nextthink, get_gametime() + CAMERA_ARMING_TIME)
+	entity_set_float(NewEnt, EV_FL_nextthink, get_gametime() + CAMERA_ARMING_TIME)
 	return PLUGIN_HANDLED
 }
 set_camera_aiming(other_ent,cam_id){
@@ -425,7 +423,7 @@ update_camera_aiming(other_ent,cam_id){
 	pev(other_ent, pev_v_angle, angles)
 	angles[0] = - angles[0]
 	set_pev(cam_id, pev_v_angle, angles)
-	pev(other_ent, EV_VEC_angles, angles)
+	pev(other_ent, pev_angles, angles)
 	angles[0] = - angles[0]
 	set_pev(cam_id, pev_angles, angles)
 
@@ -468,6 +466,8 @@ public camera_think(ent)
 
 
 	new owner=pev(ent,pev_euser1)
+
+
 	static Float:gametime
 	gametime = get_gametime()
 	switch(phase){
@@ -480,7 +480,7 @@ public camera_think(ent)
 			set_pev(ent,pev_rendermode,kRenderTransAlpha)
 			set_pev(ent,pev_renderfx,kRenderFxGlowShell)
 			new alpha=cvar_val(num, pcvar_camman_camera_maxalpha)
-			set_pev(ent,pev_renderamt,float(alpha))
+			entity_set_float(ent,EV_FL_renderamt,float(alpha))
 			if(!ham_is_here){
 				the_damage_ham_hook=RegisterHam(Ham_TakeDamage,"func_breakable","Camera_Damage",_,true)
 				ham_is_here=1;
@@ -489,29 +489,29 @@ public camera_think(ent)
 				EnableHamForward(the_damage_ham_hook)
 				ham_is_on=1;
 			}
-			if(!is_user_bot(owner)){
-				sh_chat_message(owner,gHeroID,"The camera is armed!");
-			}
+			sh_chat_message(owner,gHeroID,"The camera is armed!");
 			set_pev(ent,pev_iuser2,1)
 
-			set_pev(ent, pev_nextthink, gametime + 1.0)
+			entity_set_float(ent, EV_FL_nextthink, gametime + 1.0)
 		}
 		case 1:{
-
-			new alpha=pev(ent,pev_renderamt)
+			
+			new Float:alpha_f
+			alpha_f = entity_get_float(ent,EV_FL_renderamt)
+			new alpha= floatround(alpha_f)
 			alpha=max(alpha-ALPHA_INC,cvar_val(num, pcvar_camman_camera_minalpha))
-			set_pev(ent,pev_renderamt,float(alpha))
-			if(alpha==cvar_val(num, pcvar_camman_camera_minalpha)){
+			entity_set_float(ent,EV_FL_renderamt,float(alpha))
+			if(alpha<=cvar_val(num, pcvar_camman_camera_minalpha)){
 				
 				set_pev(ent,pev_iuser2,2)
 			}
-			set_pev(ent, pev_nextthink, gametime + 1.0)
+			entity_set_float(ent, EV_FL_nextthink,  gametime + 1.0)
 		}
 		case 2:{
 			static Float:vEnd[3], Float:Pos[3]
 			pev(ent, pev_origin, Pos)
 			pev(ent, pev_vuser1, vEnd)
-			new Float:cameraHealth=float(pev(ent,pev_health))
+			new Float:cameraHealth=entity_get_float(ent,EV_FL_health)
 			new parm[3]
 			parm[1]=ent
 			parm[0]=owner
@@ -524,7 +524,7 @@ public camera_think(ent)
 				camera_charge[owner]=camera_charge[owner]-(1.0/CAMERA_FRAMERATE)
 				laser_on_player_think(ent)
 				update_camera_aiming(owner,ent)
-				set_pev(ent, pev_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
+				entity_set_float(ent, EV_FL_nextthink, gametime + (1.0/CAMERA_FRAMERATE))
 			}
 		}
 	}
@@ -534,9 +534,9 @@ public camera_think(ent)
 public remove_camera(pid){
 	if(!is_user_connected(pid)) return
 	camman_set_has_camera(pid,0)
-	if(pev_valid(user_camera[pid])!=2) return
+	if(!is_valid_ent(user_camera[pid])) return
 	
-	my_remove_entity(user_camera[pid])
+	remove_entity(user_camera[pid])
 
 	UnSet_BitVar(looking_with_camera_mask,pid);
 	UnSet_BitVar(camera_armed_mask,pid);
@@ -820,7 +820,7 @@ public sh_client_death(id)
 		UnSet_BitVar(looking_with_camera_mask, id)
 		set_pev(id,pev_fov,90.0)
 		set_pdata_int(id, m_iFOV,90);
-		my_attack_view(id,id)
+		attach_view(id,id)
 		
 	}
 }

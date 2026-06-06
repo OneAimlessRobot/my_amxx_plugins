@@ -235,7 +235,7 @@ public yakui_kd(id){
 		}
 		case CSW_KNIFE:{
 			if(gatling_get_needle(id)){
-				make_effect(id,id,gHeroID,gatling_get_needle_fx(id),true)
+				make_effect(id,id,gHeroID,gatling_get_needle_fx(id))
 				gatling_needle_cycle_fx(id)
 			}
 

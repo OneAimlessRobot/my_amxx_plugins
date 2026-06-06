@@ -113,8 +113,8 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	engfunc(EngFunc_SetModel, law_id , P_ROCKET_LAUNCHER_MODEL)
 	float_to_str(1050.0,health,127)
 	num_to_str(2,material,127)
-	my_set_kvd(  law_id , "material", material );
-	my_set_kvd(  law_id , "health", health );
+	DispatchKeyValue(  law_id , "material", material );
+	DispatchKeyValue(  law_id , "health", health );
 	set_pev(law_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(law_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=190;
@@ -245,7 +245,7 @@ public rocket_hit(pToucher, pTouched) {
 new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 if((pTouched==jet_get_user_jet(the_owner))){
 
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 	return
 
 }
@@ -268,7 +268,7 @@ explosion_custom_entity(pToucher,
 		default_explode_knock_force_magnitude,
 		explosion_sfx_show_nothing)
 
-my_remove_entity(pToucher)
+remove_entity(pToucher)
 
 }
 
@@ -360,7 +360,7 @@ public _law_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(law[id])&&law[id]){
-		my_remove_entity(law[id]);
+		remove_entity(law[id]);
 		law[id]=0
 	}
 }

@@ -115,8 +115,8 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	engfunc(EngFunc_SetModel, mg_id , P_MACHINEGUN_MODEL)
 	float_to_str(1250.0,health,127)
 	num_to_str(2,material,127)
-	my_set_kvd(  mg_id , "material", material );
-	my_set_kvd(  mg_id , "health", health );
+	DispatchKeyValue(  mg_id , "material", material );
+	DispatchKeyValue(  mg_id , "health", health );
 	set_pev(mg_id,pev_rendermode,kRenderTransAlpha)
 	set_pev(mg_id,pev_renderfx,kRenderFxGlowShell)
 	new alpha=255;
@@ -315,7 +315,7 @@ public shell_hit_wall(pToucher, pTouched){
 
 	if(!is_valid_ent(pTouched)){
 		
-		my_remove_entity(pToucher)
+		remove_entity(pToucher)
 		return
 	}
 	
@@ -333,7 +333,7 @@ public shell_hit_wall(pToucher, pTouched){
 				0);
 
 	} 
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 
 }
 public shell_hit_player(pToucher, pTouched){
@@ -408,7 +408,7 @@ public shell_hit_player(pToucher, pTouched){
 			
 		}
 	}
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 }
 public shell_hit_jet(pToucher, pTouched)
 {
@@ -418,7 +418,7 @@ public shell_hit_jet(pToucher, pTouched)
 	new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 	if((pTouched==jet_get_user_jet(the_owner))){
 
-		my_remove_entity(pToucher)
+		remove_entity(pToucher)
 		return
 
 	}
@@ -432,7 +432,7 @@ public shell_hit_jet(pToucher, pTouched)
 			jet_hurt_user_jet(jet_owner,the_owner,pToucher,cvar_val(float, pcvar_jetplane_mg_dmg))
 		}
 	}
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 }
 public plugin_precache()
 {
@@ -447,7 +447,7 @@ public _mg_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(user_mg[id])){
-		my_remove_entity(user_mg[id]);
+		remove_entity(user_mg[id]);
 		user_mg[id]=-1;
 	}
 }

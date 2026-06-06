@@ -571,7 +571,7 @@ public goku_power_touch(pToucher, pTouched) {
 	if(!is_user_alive(id)){
 		return
 	}
-	if(!is_valid_ent(g_powerID[id])){
+	if(!is_valid_ent(g_powerID[id]) ||(g_powerNum[id]<=0)||(g_powerNum[id] > 4)){
 		return
 	}
 	new dmgRadius = g_maxRadius[id]
@@ -699,7 +699,7 @@ public goku_power_touch(pToucher, pTouched) {
 		message_end()
 	}
 
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 
 	// Reset the Varibles
 	g_powerNum[id] = 0
@@ -726,7 +726,7 @@ public remove_power(id, powerID)
 	g_powerNum[id] = 0
 	g_powerID[id] = 0
 
-	my_remove_entity(powerID)
+	remove_entity(powerID)
 }
 //----------------------------------------------------------------------------------------------
 public goku_loop()

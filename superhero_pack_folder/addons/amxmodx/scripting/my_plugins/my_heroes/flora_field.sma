@@ -465,7 +465,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 		
 			}
 		}
-		my_remove_entity(field_id)
+		remove_entity(field_id)
 	}
 	
 }

@@ -4,35 +4,6 @@
 #define sh_special_fx
 
 
-#define POISON_DMG_MULT 2.0
-#define POISON_DAMAGE_PCT 0.05
-
-
-
-
-
-#define STUN_SPEED 70.0
-
-
-
-#define MORPHINE_HP_ADD 50
-
-
-#define WEED_GRAVITY 0.1
-
-#define METYLPHENIDATE_RECOIL_COEFF 0.2
-
-
-#define COCAINE_SPEED 1000.0
-#define COCAINE_FIRE_RATE_MULT 3.0
-#define COCAINE_RELOAD_RATE_MULT 3.0
-
-
-
-
-#define FOCUS_XPMULT 4.0
-
-
 
 enum fx_id{
 	FX_ID_NONE=0,

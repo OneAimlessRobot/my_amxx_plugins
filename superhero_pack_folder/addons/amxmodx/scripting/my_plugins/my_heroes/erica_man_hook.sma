@@ -163,7 +163,7 @@ stop_dragging(id,target=-1,bool:deduct=false){
 		}
 		if(is_valid_ent(g_player_hook[id])){
 
-			my_remove_entity(g_player_hook[id])
+			remove_entity(g_player_hook[id])
 			g_player_hook[id]=-1
 		}
 }

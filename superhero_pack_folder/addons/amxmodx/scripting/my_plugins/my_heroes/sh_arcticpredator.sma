@@ -230,7 +230,7 @@ public sh_client_spawn(id)
 {
 	new disc = find_ent_by_class(-1, "pred_disc")
 	while(disc) {
-		my_remove_entity(disc)
+		remove_entity(disc)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
 	if ( sh_get_user_has_hero(id,gHeroID) && sh_is_active() ) {
@@ -358,8 +358,8 @@ public RunRedNVG(id)
 //I need to use this in the case of self destruction mechanics
 public arctic_predator_death()
 {	
-	new id = read_data(1)
-	new attacker = read_data(2)
+	new attacker = read_data(1)
+	new id = read_data(2)
 
 
 	g_huntTimer[id] = 0;
@@ -714,7 +714,7 @@ if ( is_user_alive(disc_owner) && discThrown[disc_owner] == true ) {
 else {
 	// Remove the seek loop
 	remove_task(disc+1000)
-	my_remove_entity(disc)
+	remove_entity(disc)
 	discThrown[disc_owner] = false
 }
 }
@@ -753,7 +753,7 @@ public touch_event(pToucher, pTouched)  //This is triggered when two entites tou
 {
 if ( pTouched == entity_get_edict(pToucher, EV_ENT_owner) )
 {
-	my_remove_entity(pToucher)
+	remove_entity(pToucher)
 	discThrown[pTouched] = false
 	client_print(pTouched, print_chat, "[SH] Arctic Predator: Disc returned")
 }

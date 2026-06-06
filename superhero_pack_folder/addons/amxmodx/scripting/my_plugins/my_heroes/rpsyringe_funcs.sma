@@ -275,7 +275,7 @@ message_end()
 emit_sound(missile, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 emit_sound(missile, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 emit_sound(missile, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-my_remove_entity(missile)
+remove_entity(missile)
 return PLUGIN_CONTINUE
 }
 

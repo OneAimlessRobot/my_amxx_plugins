@@ -69,9 +69,14 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 		return false
 	}
 
-	if(cs_is_valid_itemid(weapon_id,true)&&(weapon_id!=CSW_KNIFE)){
+	static iId; iId = get_pdata_int(item, m_iId, XO_WEAPON)
+
+	if((iId==CSW_KNIFE)){
+
+		return false
+	}
+	if(cs_is_valid_itemid(weapon_id,true)){
 		
-		static iId; iId = get_pdata_int(item, m_iId, XO_WEAPON)
 		
 		if(iId!=weapon_id){
 			return false
