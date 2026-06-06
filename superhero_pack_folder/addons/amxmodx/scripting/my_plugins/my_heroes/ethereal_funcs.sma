@@ -58,7 +58,7 @@ public plugin_init()
 
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
 
-	register_clcmd("weapon_ethereal", "Hook_Weapon")
+	register_clcmd(ETHEREAL_HUD_SPRITES_NAME, "Hook_Weapon")
 }
 
 public plugin_natives(){
@@ -119,7 +119,7 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	engclient_cmd(id, ETHEREAL_HUD_SPRITES_NAME)
 	return PLUGIN_HANDLED
 }
 
@@ -391,12 +391,7 @@ public fw_Item_Deploy_Post(Ent)
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
 	ent_check(Ent,HAM_IGNORED)
-	if(!is_user_alive(id)){
-
-		return HAM_IGNORED
 	
-	}
-
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Ethereal, id)
@@ -406,7 +401,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	(Get_BitVar(g_Had_Ethereal, id)) ?
 		
 		(send_weapon_list_stock(id,
-				ETHEREAL_HUD_SPRITES_NAME ,
+				ETHEREAL_HUD_SPRITES_NAME,
 				cached_ammo_id,
 				ETHEREAL_RESERVE,
 				_:MY_SLOT_PRIMARY,

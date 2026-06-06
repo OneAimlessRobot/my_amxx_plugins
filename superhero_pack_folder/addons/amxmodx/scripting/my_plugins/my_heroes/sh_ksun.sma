@@ -13,6 +13,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 
 #define MIN_KSUN_PAYCUT 0.01
 #define MAX_KSUN_PAYCUT 0.6
@@ -68,6 +69,9 @@ public plugin_init()
 								"ksun",
 								"ksun: '...'",
 								"ksun: '...'")
+	
+	sh_register_hero_healthcap(gHeroID, 210.0)
+
 
 	sh_register_superheromod_weapon_model(gHeroID,KSUN_WEAPON_ID,KSUN_WPN_MODEL_V,KSUN_WPN_MODEL_P)
 

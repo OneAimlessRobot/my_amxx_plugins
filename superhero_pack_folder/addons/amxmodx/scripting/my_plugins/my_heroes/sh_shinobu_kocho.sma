@@ -58,7 +58,7 @@ public plugin_init()
 	register_event("Damage","shinobuDamage","b", "2!0")
 	
 	
-
+	
 	sh_register_hero_healthcap(gHeroID, 90.0)
 
 	sh_assign_hero_bit(gHeroID, SH_ANNOYING_HERO, true)
@@ -181,7 +181,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(sh_get_user_has_hero(id,gHeroID) ){
 
 		shinobu_weapons(id)
-		manual_cloak_check(id)
 	}
 	else{
 

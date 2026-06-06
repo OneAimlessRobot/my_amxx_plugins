@@ -103,7 +103,7 @@ stock const hitzone_names[my_hitpoint_enum][28] = {
 
 stock list_hitboxes_in_bitsum(hitbox_bitsum,bool:exclude_mode=false){
 	
-	static count=0
+	new count=0
 	new bit_sum_to_actually_do = exclude_mode ? (~(hitbox_bitsum)): (hitbox_bitsum)
 	for ( new my_hitpoint_enum:hit_point = enum_zero; hit_point < my_hitpoint_enum; hit_point++ )
 	{	

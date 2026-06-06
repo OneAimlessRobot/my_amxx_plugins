@@ -10,7 +10,9 @@
 #include "flora_inc/flora_global.inc"
 #include "goku_inc/goku_inc.inc"
 #include "ester_inc/ester_global.inc"
+#include "chikoi_inc/chikoi_inc.inc"
 #include "vegetto_inc/vegetto_inc.inc"
+#include "ksun_inc/ksun_global.inc"
 #include "sliphantom_inc/sliphantom_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -25,8 +27,11 @@ new gHeroID_Maria = -1,
 	gHeroID_Goku = -1,
 	gHeroID_Ester = -1,
 	gHeroID_SuperNoodle = -1,
-	gHeroID_Yakui = -1
+	gHeroID_Yakui = -1,
+	gHeroID_ksun = -1,
+	gHeroID_Chikoi = -1
 
+#define COMPLAIN_SENTENCE_SIZE 128
 
 #define MAX_INCOMPATIBILITY_PAIRS 32
 
@@ -34,7 +39,8 @@ new filled_pair_count = 0
 enum superhero_incompatibility_pair{
 
 	pair_hero_a,
-	pair_hero_b
+	pair_hero_b,
+	custom_complain_sentence[COMPLAIN_SENTENCE_SIZE+1]
 
 }
 
@@ -67,6 +73,10 @@ public plugin_cfg(){
 
 	gHeroID_Yakui = gatling_get_hero_id()
 
+	gHeroID_ksun = spores_ksun_hero_id()
+
+	gHeroID_Chikoi = chikoi_get_hero_id()
+
 	//these two really dont get along
 	
 	push_incompatibility_pair(gHeroID_Goku,gHeroID_Shinobu)
@@ -89,12 +99,21 @@ public plugin_cfg(){
 
 	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Goku)
 
+	push_incompatibility_pair(gHeroID_ksun, gHeroID_Maria)
+
+	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_Maria)
+
+	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_ksun)
+
+	
+
 
 	server_print("%s innited!^n",LIBRARY_NAME)
 	
 
 }
-public push_incompatibility_pair(hero_a,hero_b){
+push_incompatibility_pair(hero_a,hero_b,const complain_sentence[COMPLAIN_SENTENCE_SIZE+1] = "Incompatible pair of heroes"){
+
 
 	if((hero_a<0)||(hero_a>=SH_MAXHEROS)||(hero_b<0)||(hero_b>=SH_MAXHEROS)||(hero_a==hero_b)){
 		return
@@ -105,10 +124,14 @@ public push_incompatibility_pair(hero_a,hero_b){
 	}
 	sh_incompatibility_pairs[filled_pair_count][pair_hero_a]= hero_a
 	sh_incompatibility_pairs[filled_pair_count][pair_hero_b]= hero_b
+
+	copy(sh_incompatibility_pairs[filled_pair_count][custom_complain_sentence],
+			COMPLAIN_SENTENCE_SIZE,
+			complain_sentence)
 	
 	filled_pair_count++
 }
-init_fwd_ret_id:safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode:mode){
+init_fwd_ret_id:safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode:mode, pair_id){
 
 
 	if(mode==SH_HERO_DROP){
@@ -136,7 +159,9 @@ init_fwd_ret_id:safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode
 	sh_get_hero_name_from_id(heroID_b,name_b)
 	sh_get_hero_name_from_id(heroID_a,name_a)
 	
-	sh_chat_message(id,-1,"You cannot use the heroes %s and %s at once!",name_a,name_b)
+	sh_chat_message(id,-1,"%s: You cannot use the heroes %s and %s at once!",
+			sh_incompatibility_pairs[pair_id][custom_complain_sentence],
+			name_a,name_b)
 	
 	return INIT_FWD_BLOCK
 
@@ -169,7 +194,8 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 					heroID,
 					sh_incompatibility_pairs[i][pair_hero_a],
 					sh_incompatibility_pairs[i][pair_hero_b],
-					mode),
+					mode,
+					i),
 					true_return_result)
 		
 		if(true_return_result == INIT_FWD_BLOCK){

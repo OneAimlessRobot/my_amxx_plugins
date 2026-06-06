@@ -102,7 +102,7 @@ enum {
  */
 stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 	
-	static count=0
+	new count=0
 	new bit_sum_to_actually_do = exclude_mode ? (~(generic_bitsum)): (generic_bitsum)
 	for ( new i=0;i<32;i++)
 	{	

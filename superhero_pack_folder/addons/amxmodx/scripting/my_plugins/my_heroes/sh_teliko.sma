@@ -185,7 +185,7 @@ if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
 	new level_diff=sh_get_user_lvl(id)-cvar_val(num, pcvar_gHeroLevel)
 	if(level_diff>=cvar_val(num, pcvar_famas_level_diff)){
-		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_structs_array[TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_structs_array[my_weapon_ids:TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);
 		sh_give_weapon(id, TELIKO_RIFLE_CLASSID)
 	}
 	slitter_set_slitter(id,1)
@@ -195,28 +195,30 @@ if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-if (sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() &&!hasRoundStarted() ) {
+if (sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	Teliko_weapons(id)
-	reset_teliko_user(id)
-	update_max_bullets(id)
-	give_start_counters(id)
-	if(sound_ct_played&&sound_ct_played){
-		return
-	}
-	new CsTeams:the_team=cs_get_user_team(id)
-	switch(the_team){
-		case CS_TEAM_CT:{
-
-			if(!sound_ct_played){
-				emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
-				sound_ct_played = true
-			}
+	if(!hasRoundStarted()){
+		reset_teliko_user(id)
+		update_max_bullets(id)
+		give_start_counters(id)
+		if(sound_ct_played&&sound_ct_played){
+			return
 		}
-		case CS_TEAM_T:{
-			if(!sound_t_played){
-				emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
-				sound_t_played = true
+		new CsTeams:the_team=cs_get_user_team(id)
+		switch(the_team){
+			case CS_TEAM_CT:{
+
+				if(!sound_ct_played){
+					emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
+					sound_ct_played = true
+				}
+			}
+			case CS_TEAM_T:{
+				if(!sound_t_played){
+					emit_sound(id, CHAN_AUTO, PRE_FIRST_BLOOD_SFX, 1.0, 0.0, 0, PITCH_NORM)
+					sound_t_played = true
+				}
 			}
 		}
 	}

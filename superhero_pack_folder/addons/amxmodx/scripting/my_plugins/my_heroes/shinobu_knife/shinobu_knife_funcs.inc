@@ -80,5 +80,5 @@ stock const shinobu_visiting_sentences[shinobu_visiting_sentences_id][]={
 
 
 native nani_behind_player(tele_player,tg_player,Float: distance_tele_tg=SHINOBU_DEFAULT_TELE_DIST)
-native manual_cloak_check(id)
+
 native uncloak_shinobu(id)

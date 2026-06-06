@@ -34,10 +34,9 @@ new Float:g_shinobu_v_angles[SH_MAXSLOTS+1][3],
 	Float:g_shinobu_dst_v_angles[SH_MAXSLOTS+1][3]
 
 
-new g_shinobu_using_knife[SH_MAXSLOTS+1]
-
-stock g_prev_shinobu_cloaked[SH_MAXSLOTS+1];
-stock g_curr_shinobu_cloaked[SH_MAXSLOTS+1];
+new g_prev_shinobu_cloaked_mask=0,
+ 	g_curr_shinobu_cloaked_mask=0,
+	g_shinobu_using_knife_mask = 0
 
 enum{
 	
@@ -58,7 +57,6 @@ public plugin_init(){
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Lower,true,0.0)
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Upper,true,255.0)
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
-	register_forward(FM_CmdStart, "shinobu_cloak_conditions")
 
     
 	set_task(1.0,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
@@ -74,30 +72,15 @@ public on_Knife_Weapon_Change(id)
 
 	new wpnid = read_data(2)
 
-	g_shinobu_using_knife[id]=(wpnid == CSW_KNIFE)
+	Assign_BitVar(g_shinobu_using_knife_mask, id, (wpnid == CSW_KNIFE))
 }
 public plugin_natives(){
 
 
 	register_native("nani_behind_player","_nani_behind_player")
-	register_native("manual_cloak_check","_manual_cloak_check")
 	register_native("uncloak_shinobu","_uncloak_shinobu")
 }
 
-
-public _manual_cloak_check(id){
-
-	new id= get_param(1)
-
-	if ( !is_user_alive(id)||!sh_is_active()) return
-	if(!sh_get_user_has_hero(id,gHeroID)) return
-
-	g_prev_shinobu_cloaked[id]=0
-	g_shinobu_using_knife[id]= ((get_user_weapon(id)==CSW_KNIFE))
-	new button=pev(id,pev_button)
-	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
-	apply_cloak(id)
-}
 public _uncloak_shinobu(id){
 
 	new id= get_param(1)
@@ -105,22 +88,10 @@ public _uncloak_shinobu(id){
 	if ( !is_user_alive(id)||!sh_is_active()) return
 
 	
-	g_curr_shinobu_cloaked[id]=0
-	g_prev_shinobu_cloaked[id]=1
+	Assign_BitVar(g_curr_shinobu_cloaked_mask, id, false_for_macro);
+	Assign_BitVar(g_prev_shinobu_cloaked_mask, id, true_for_macro);
+
 	apply_cloak(id)
-}
-public shinobu_cloak_conditions(id, uc_handle){
-	
-
-	if(!is_user_alive(id)) return FMRES_IGNORED
-
-	if(!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED
-
-
-	g_prev_shinobu_cloaked[id]=g_curr_shinobu_cloaked[id]
-	new button = get_uc(uc_handle, UC_Buttons)
-	g_curr_shinobu_cloaked[id]=(((button & IN_DUCK ))||g_shinobu_using_knife[id])
-	return FMRES_IGNORED
 }
 public shinobu_cloak_apply(task_id){
 
@@ -132,6 +103,14 @@ public shinobu_cloak_apply(task_id){
 		
 		id = the_players[k]
 		if(sh_get_user_has_hero(id,gHeroID) ){
+
+
+			Assign_BitVar(g_prev_shinobu_cloaked_mask, id, Get_BitVar(g_curr_shinobu_cloaked_mask, id));
+
+			new button = entity_get_int(id, EV_INT_button)
+			
+			Assign_BitVar(g_curr_shinobu_cloaked_mask,id, ((button & IN_DUCK ))||Get_BitVar(g_shinobu_using_knife_mask, id))
+	
 			apply_cloak(id)
 		}
 	}
@@ -140,13 +119,17 @@ apply_cloak(id){
 	
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		
-		g_curr_shinobu_cloaked[id]=0
-		g_prev_shinobu_cloaked[id]=0
-		sh_set_rendering(id)
+		Assign_BitVar(g_curr_shinobu_cloaked_mask,id,false_for_macro);
+		Assign_BitVar(g_prev_shinobu_cloaked_mask,id,false_for_macro);
 		return 
 
 	}
-	if(g_curr_shinobu_cloaked[id]){
+	if(Get_BitVar(g_curr_shinobu_cloaked_mask,id)==Get_BitVar(g_prev_shinobu_cloaked_mask,id)){
+
+		return
+	}
+
+	if(Get_BitVar(g_curr_shinobu_cloaked_mask,id)){
 		
 		sh_set_rendering(id,0,0,0,cvar_val(num, pcvar_shinobu_alpha),kRenderFxGlowShell,kRenderTransColor);
 
@@ -167,7 +150,6 @@ public sh_client_spawn(id)
 
 	if ( sh_get_user_has_hero(id,gHeroID)) {
 		
-		manual_cloak_check(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
 	}
