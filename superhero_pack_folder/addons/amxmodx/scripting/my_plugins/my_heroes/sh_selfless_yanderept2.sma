@@ -1,6 +1,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
@@ -12,8 +13,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
@@ -640,7 +640,6 @@ public yandere_kd(id)
 			
 			if(!is_user_bot(id)){
 				sh_sound_deny(id)
-				sh_chat_message(id,gHeroID,"Youve blown a fuse already! Wait a bit more to blow the next one, at least!")
 			}
 			return
 		}
@@ -655,7 +654,6 @@ public yandere_kd(id)
 
 			if(!is_user_bot(id)){
 				sh_sound_deny(id)
-				sh_chat_message(id, gHeroID, "The jet is not loaded yet!")
 			}
 			return
 			

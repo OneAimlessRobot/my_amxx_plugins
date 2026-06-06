@@ -42,21 +42,25 @@ public plugin_init(){
 	pcvar_xp_distance_mult = create_cvar("lena_xp_distance_mult","4")
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	
+	
+	
+	RegisterHam(Ham_Weapon_Reload,weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 	
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackLenaL96",_,true)
-	
-	RegisterHam(Ham_Weapon_Reload,weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[LENA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
-	
+
 	
 	register_entity_as_wall_touchable(LENA_PROJECTILE_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(LENA_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
+
 
 	register_think(LENA_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_explosion_defaults()
@@ -276,6 +280,8 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 		return HAM_IGNORED
 	}
+	  
+
 	static iClip, iPlaybackEvent
 	iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	if(iClip)
@@ -379,8 +385,8 @@ else{
 randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+
 lena_l96_dec_num_bullets(id)
-sh_chat_message(id, gHeroID,"%d l96 bullets left",lena_l96_get_num_bullets(id))
 
 //bullet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)

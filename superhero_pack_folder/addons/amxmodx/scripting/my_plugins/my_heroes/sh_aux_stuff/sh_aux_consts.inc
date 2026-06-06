@@ -155,12 +155,12 @@ Explosion sfx masks!
 */
 
 enum explosion_sfx_flags (<<= 1){
-	sfx_show_nothing = 0,
-	sfx_show_shockwave = 1,
-	sfx_show_fireball,
-	sfx_show_smoke,
-	sfx_show_burn_decal,
-	sfx_show_custom_sound
+	explosion_sfx_show_nothing = 0,
+	explosion_sfx_show_shockwave = 1,
+	explosion_sfx_show_fireball,
+	explosion_sfx_show_smoke,
+	explosion_sfx_show_burn_decal,
+	explosion_sfx_show_custom_sound
 
 }
 

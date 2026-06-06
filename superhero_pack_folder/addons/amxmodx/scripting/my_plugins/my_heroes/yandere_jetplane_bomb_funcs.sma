@@ -204,16 +204,19 @@ explosion(gHeroID,pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),
 	cvar_val(float, pcvar_jetplane_bomb_dmg),
 	default_explode_knock_force_magnitude)
+	
 explosion_custom_entity(pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),
 	cvar_val(float, pcvar_jetplane_bomb_dmg),
-	JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude,0)
+	JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude,
+	explosion_sfx_show_nothing)
 
 explosion_custom_entity(pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),
 	cvar_val(float, pcvar_jetplane_bomb_dmg),
 	"func_breakable",
-	default_explode_knock_force_magnitude,0)
+	default_explode_knock_force_magnitude,
+	explosion_sfx_show_nothing)
 	
 my_remove_entity(pToucher)
 

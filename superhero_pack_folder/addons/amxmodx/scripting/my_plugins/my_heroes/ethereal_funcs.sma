@@ -19,7 +19,7 @@ new g_Muzzleflash_Ent, g_Muzzleflash, g_Msg_WeaponList = -1
 new weapon_secret_code = ETHEREAL_SECRET_CODE
 
 new cached_ammo_id = -1,
-	cached_max_bp_ammo = -1 ,
+	cached_max_bp_ammo = -1,
 	cached_def_pos = -1 
 	
 public plugin_init()
@@ -119,7 +119,7 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, ETHEREAL_HUD_SPRITES_NAME)
+	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	return PLUGIN_HANDLED
 }
 
@@ -129,7 +129,12 @@ public Get_Ethereal(id)
 	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
-	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, ETHEREAL_CLIP)
+	if(!pev_valid(Ent)){
+		
+		return	
+	}
+
+	cs_set_weapon_ammo(Ent, ETHEREAL_CLIP)
 	
 	// Set BpAmmo
 	cs_set_user_bpammo(id, CSW_ETHEREAL, ETHEREAL_RESERVE)
@@ -379,9 +384,6 @@ public fw_Item_Deploy_Post(Ent)
 	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent){
 		return
 	}
-	if(!Get_BitVar(g_Had_Ethereal, Id))
-		return
-	
 	set_pev(Id, pev_viewmodel2, ETHEREAL_V_MODEL)
 	set_pev(Id, pev_weaponmodel2, ETHEREAL_P_MODEL)
 	
@@ -391,14 +393,19 @@ public fw_Item_Deploy_Post(Ent)
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
 	ent_check(Ent,HAM_IGNORED)
+
+	if(!is_user_alive(id)){
+		return HAM_IGNORED
+	
+	}
 	
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
-	{
+	{	
 		Set_BitVar(g_Had_Ethereal, id)
 		set_pev(Ent, pev_impulse, 0)
 	
 	}
-	(Get_BitVar(g_Had_Ethereal, id)) ?
+	Get_BitVar(g_Had_Ethereal, id) ?
 		
 		(send_weapon_list_stock(id,
 				ETHEREAL_HUD_SPRITES_NAME,
@@ -424,9 +431,8 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 				0,
 				MSG_ONE,
 				g_Msg_WeaponList))
-
-
-	return HAM_HANDLED	
+	
+	return HAM_HANDLED
 }
 
 public fw_Item_PostFrame(ent)

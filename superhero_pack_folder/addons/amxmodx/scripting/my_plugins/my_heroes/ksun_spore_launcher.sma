@@ -84,11 +84,19 @@ public _spores_reset_user(iPlugins, iParms){
 	
 	new id= get_param(1)
 
-	set_player_num_victims(id,0)
-	destroy_player_launcher(id)
-	destroy_player_scanner(id)
+	new bool:reset_spores=bool:get_param(2)
+
+	spores_reset_user_primitive(id,reset_spores)
 	return PLUGIN_HANDLED
 	
+}
+spores_reset_user_primitive(id, bool:reset_spores=true){
+
+	if(reset_spores){
+		set_player_num_victims(id,0)
+	}
+	destroy_player_launcher(id)
+	destroy_player_scanner(id)
 }
 public bool:_spores_busy(iPlugins, iParms){
 	
@@ -138,6 +146,7 @@ public launcher_think(ent){
 			}
 			else{
 				spore_launch(launcher_owner)
+
 				dec_player_num_deployed_spores(launcher_owner)
 			}
 			think_time=DEPLOY_LOOP_PERIOD
@@ -185,7 +194,7 @@ public _spores_launch(iPlugin,iParms){
 		
 		return
 	}
-	spores_reset_user(id)
+	spores_reset_user_primitive(id)
 	spawn_scanner(id)
 	
 	
@@ -298,17 +307,6 @@ public destroy_player_launcher(id){
 
 }
 
-public sh_client_death(id)
-{
-	if(sh_get_user_has_hero(id,gHeroID)){
-	
-		if(ksun_get_when_reset_spores()&reset_on_death){
-			spores_reset_user(id)
-		}
-		
-	}
-	
-}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {

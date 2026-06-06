@@ -192,7 +192,7 @@ public player_on_ice_glob_checks(task_id){
 
 
 			}
-			curr_player_friction = floatclamp(GLOB_MIN_FRICTION,curr_player_friction,g_player_old_friction[id])
+			curr_player_friction = floatclamp(curr_player_friction,GLOB_MIN_FRICTION,g_player_old_friction[id])
 			
 			
 			if(!Get_BitVar(is_skating_mask,id)){

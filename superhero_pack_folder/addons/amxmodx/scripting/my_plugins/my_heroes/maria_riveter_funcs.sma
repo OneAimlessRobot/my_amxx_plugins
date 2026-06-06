@@ -36,17 +36,21 @@ public plugin_init(){
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
 	register_forward(FM_CmdStart, "CmdStart");
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
 	
+	
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	
+	
+	
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
 	
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
@@ -145,7 +149,7 @@ public CmdStart(id, uc_handle)
 			if(!Get_BitVar(mode_selector_was_down_mask,id)){
 				set_uc(uc_handle, UC_Buttons, button);
 				if(!is_user_bot(id)){
-					client_print(id,print_center,"You have %s semi automatic mode",Get_BitVar(semi_automatic_mode_mask, id)?"disengaged":"engaged")
+					client_print(id,print_center,"Riveter: %s",Get_BitVar(semi_automatic_mode_mask, id)?"semi auto":"full auto")
 				}
 				Assign_BitVar(semi_automatic_mode_mask,id,!Get_BitVar(semi_automatic_mode_mask, id))
 
@@ -446,7 +450,8 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 	explosion_custom_entity(pToucher,
 									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
 									"func_breakable",
-									MARIA_PROJECTILE_EXPLODE_FORCE,0)
+									MARIA_PROJECTILE_EXPLODE_FORCE,
+									explosion_sfx_show_nothing)
 	
 	my_remove_entity(pToucher)
 }

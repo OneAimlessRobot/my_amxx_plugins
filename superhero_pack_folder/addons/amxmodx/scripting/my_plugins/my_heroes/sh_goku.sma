@@ -599,7 +599,8 @@ public goku_power_touch(pToucher, pTouched) {
 	explosion_custom_entity(pToucher,
 									float(dmgRadius),float(maxDamage),
 									"func_breakable",
-									default_explode_knock_force_magnitude,0)
+									default_explode_knock_force_magnitude,
+									explosion_sfx_show_nothing)
 	// Cause the Damage
 	new vicOrigin[3], Float:dRatio,  distance, damage
 	new players[SH_MAXSLOTS], pnum, vic

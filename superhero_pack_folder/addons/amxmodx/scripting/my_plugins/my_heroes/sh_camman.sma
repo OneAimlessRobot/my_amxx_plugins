@@ -125,7 +125,6 @@ public camman_kd(id){
 			if(sh_get_cooldown_flag(id)){
 				
 				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"N spammes!!!!")
 					sh_sound_deny(id)
 				}
 				return PLUGIN_HANDLED

@@ -163,7 +163,6 @@ public sapper_kd(id)
 	if(!(mine_id=player_touching_entity_of_some_classname(id,MINE_CLASSNAME))){
 		if(sh_get_cooldown_flag(id)){
 			
-			sh_chat_message(id,gHeroID,"N spammes!!!!")
 			sh_sound_deny(id)
 			return PLUGIN_HANDLED
 		}

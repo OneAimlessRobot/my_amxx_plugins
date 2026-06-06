@@ -26,10 +26,11 @@
  */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -100,13 +101,10 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
  //----------------------------------------------------------------------------------------------
  public ctrooper_laser_gun(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
  {
-	new bool:the_result=generic_weapon_tracer_logic(Attacker,_,CTROOPER_LASERGUN_CLASSID,gHeroID,true,sh_custom_color:{RED,GREEN,GREEN})
+	generic_weapon_tracer_logic(Attacker,_,CTROOPER_LASERGUN_CLASSID,gHeroID,true,sh_custom_color:{RED,GREEN,GREEN},
+				tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound|tracer_sfx_show_glow_aura)
 	
 
-	if(the_result){
-		emit_sound(Attacker,CHAN_BODY,LASER_LINE_DEFAULT_SOUND,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
-		aura(Attacker,LineColors[((cs_get_user_team(Attacker)==CS_TEAM_CT)?GREEN:RED)])
-	}
  }
  //----------------------------------------------------------------------------------------------
  public sh_client_spawn(id)

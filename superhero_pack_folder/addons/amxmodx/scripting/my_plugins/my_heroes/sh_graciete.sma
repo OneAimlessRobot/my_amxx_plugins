@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "colt_inc/sh_shard_cannon.inc"
@@ -88,6 +89,11 @@ public graciete_damage(id, attacker, Float:damage, Float:direction[3], traceresu
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
+
+	if(sh_clients_are_same_team(attacker, id)){
+		return HAM_IGNORED
+	}
+
 	new weapon = get_user_weapon(attacker)
 	
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)

@@ -194,7 +194,7 @@ show_weapon_model_menu_func(id){
 
 	for(new wpn_id=1;wpn_id<sizeof curr_num_models_logged_on_wpn;wpn_id++){
 
-		if(is_weaponid_valid(wpn_id)){
+		if(is_weaponid_valid(wpn_id)&&((GUNS_BIT_SUM|(1<<CSW_KNIFE)) & (1<<wpn_id))){
 
 			
 			item_string[0] = wpn_id

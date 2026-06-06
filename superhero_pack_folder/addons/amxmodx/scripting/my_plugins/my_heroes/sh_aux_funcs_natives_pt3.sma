@@ -12,7 +12,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -127,9 +126,9 @@ public _explosion(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(sfx_mask>sfx_show_nothing){
+	if(sfx_mask>explosion_sfx_show_nothing){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
-		if((sfx_mask & sfx_show_custom_sound)){
+		if((sfx_mask & explosion_sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}
@@ -189,9 +188,9 @@ public _explosion_custom_entity(iPlugins,iParams){
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
-	if(sfx_mask>sfx_show_nothing){
+	if(sfx_mask>explosion_sfx_show_nothing){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
-		if((sfx_mask & sfx_show_custom_sound)){
+		if((sfx_mask & explosion_sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}

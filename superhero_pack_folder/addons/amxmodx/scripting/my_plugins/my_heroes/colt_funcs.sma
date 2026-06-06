@@ -1,5 +1,6 @@
 #define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include <reapi>
 
@@ -13,25 +14,8 @@
 
 new pPlayer, HookChain:TakeDamage, g_Msg_WeaponList = -1
 new is_rehlds_avail
-public plugin_precache()
-{	
 
-
-	engfunc(EngFunc_PrecacheSound,SHOOTSOUND);
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipin.wav")
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipout.wav")
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_slideback.wav")
-	engfunc(EngFunc_PrecacheModel, VIEWMODEL)
-	engfunc(EngFunc_PrecacheModel, WEAPONMODEL)
-	engfunc(EngFunc_PrecacheModel, WORLDMODEL)
-	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud7.spr")
-	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud114.spr")
-	engfunc(EngFunc_PrecacheGeneric, "sprites/weapon_m1911a1.txt")
-
-
-	is_rehlds_avail=is_rehlds()
-
-}
+new weapon_secret_code = ID_M1911A1
 new cached_ammo_id_colt = -1,
 	cached_max_bp_ammo = -1 ,
 	cached_def_pos = -1 
@@ -58,8 +42,33 @@ public plugin_init()
 	register_clcmd("give_m1911a1", "give_m1911a1")
 	register_clcmd(STRN_M1911A1, "lastinv_m1911a1")
 
+
+	weapon_secret_code = allocate_weapon_secret_code()
+
+
 	g_Msg_WeaponList = get_user_msgid("WeaponList")
 }
+
+public plugin_precache()
+{	
+
+
+	engfunc(EngFunc_PrecacheSound,SHOOTSOUND);
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipin.wav")
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipout.wav")
+	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_slideback.wav")
+	engfunc(EngFunc_PrecacheModel, VIEWMODEL)
+	engfunc(EngFunc_PrecacheModel, WEAPONMODEL)
+	engfunc(EngFunc_PrecacheModel, WORLDMODEL)
+	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud7.spr")
+	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud114.spr")
+	engfunc(EngFunc_PrecacheGeneric, "sprites/weapon_m1911a1.txt")
+
+
+	is_rehlds_avail=is_rehlds()
+
+}
+
 public plugin_natives(){
 
 
@@ -83,7 +92,7 @@ public give_m1911a1(player)
 	
 	lastinv_m1911a1(player)
 
-	new pEntity=rg_give_custom_item(player,weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,ID_M1911A1)
+	new pEntity=rg_give_custom_item(player,weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,weapon_secret_code)
 	ent_check(pEntity,)
 	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
@@ -95,8 +104,9 @@ public give_m1911a1(player)
 public rg_CWeaponBoxSetModelPre(entity, const szModelName[])
 {
 	new pEntity = get_member(entity, m_WeaponBox_rgpPlayerItems, PISTOL_SLOT)
-	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1)
-	SetHookChainArg(2, ATYPE_STRING, WORLDMODEL)
+	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == weapon_secret_code){
+		SetHookChainArg(2, ATYPE_STRING, WORLDMODEL)
+	}
 }
 
 public fw_WeaponWeaponIdlePost(entity)
@@ -104,7 +114,7 @@ public fw_WeaponWeaponIdlePost(entity)
 
 	ent_check(entity,HAM_IGNORED)
 
-	if(get_entvar(entity, var_impulse) != ID_M1911A1 || get_member(entity, m_Weapon_flTimeWeaponIdle) > 0.0) return HAM_IGNORED
+	if(get_entvar(entity, var_impulse) != weapon_secret_code || get_member(entity, m_Weapon_flTimeWeaponIdle) > 0.0) return HAM_IGNORED
 	set_entvar(get_member(entity, m_pPlayer), var_weaponanim, ANIM_IDLE_EMPTY)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 99999.0)
 
@@ -128,8 +138,11 @@ public fw_ItemAddToPlayerPost(entity, id)
 	
 	ent_check(entity,HAM_IGNORED)
 
+
+	if(!is_user_alive(id)) return HAM_IGNORED
+	
 	new iCustom = get_entvar(entity, var_impulse)
-	new is_custom= (iCustom == ID_M1911A1)
+	new is_custom= (iCustom == weapon_secret_code)
 	
 	
 	
@@ -158,7 +171,6 @@ public fw_ItemAddToPlayerPost(entity, id)
 				MSG_ONE,
 				g_Msg_WeaponList))
 
-
 	return HAM_HANDLED
 }
 
@@ -167,13 +179,19 @@ public fw_ItemDeployPre(entity)
 	ent_check(entity,HAM_IGNORED)
 
 	pPlayer = get_member(entity, m_pPlayer)
+
+	if(!is_user_alive(pPlayer)){
+		return HAM_IGNORED
+	}
+
 	if(get_member(pPlayer, m_pLastItem) == entity)
 	{
 		set_entvar(pPlayer, var_viewmodel, VIEWMODEL)
 		set_entvar(pPlayer, var_weaponmodel, WEAPONMODEL)
 		return HAM_SUPERCEDE
 	}
-	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
+	if(get_entvar(entity, var_impulse) != weapon_secret_code) return HAM_IGNORED
+
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_entvar(pPlayer, var_viewmodel, VIEWMODEL)
 	set_entvar(pPlayer, var_weaponmodel, WEAPONMODEL)
@@ -189,10 +207,13 @@ public fw_WeaponReloadPre(entity)
 	ent_check(entity,HAM_IGNORED)
 
 
-	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
+	if(get_entvar(entity, var_impulse) != weapon_secret_code) return HAM_IGNORED
 	new iClip = get_member(entity, m_Weapon_iClip)
 	pPlayer = get_member(entity, m_pPlayer)
 	
+	if(!is_user_alive(pPlayer)){
+		return HAM_IGNORED
+	}
 	if(iClip >= CLIP_M1911A1 || !get_member(pPlayer, m_rgAmmo,
 				cached_ammo_id_colt)){
 
@@ -210,7 +231,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 {
 	ent_check(entity,HAM_IGNORED)
 
-	if(get_entvar(entity, var_impulse) != ID_M1911A1) return HAM_IGNORED
+	if(get_entvar(entity, var_impulse) != weapon_secret_code) return HAM_IGNORED
 	if(get_member(entity, m_Weapon_iShotsFired)) return HAM_SUPERCEDE
 	static iClip, iTraceLine, iPlaybackEvent
 	iClip = get_member(entity, m_Weapon_iClip)
@@ -229,6 +250,12 @@ public fw_WeaponPrimaryAttackPre(entity)
 	set_member(entity, m_Weapon_flTimeWeaponIdle, 1.033)
 	set_member(entity, m_Weapon_flNextSecondaryAttack, 99999.0)
 	pPlayer = get_member(entity, m_pPlayer)
+
+	if(!is_user_alive(pPlayer)){
+		
+		return HAM_IGNORED
+	
+	}
 	if(is_rehlds_avail){
 		rg_send_audio(pPlayer, SHOOTSOUND);
 	}
@@ -263,7 +290,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	
 	new pEntity = get_member(player, m_pActiveItem)
 
-	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == ID_M1911A1){
+	if(is_valid_ent(pEntity) && get_entvar(pEntity, var_impulse) == weapon_secret_code){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 	}
 	return FMRES_HANDLED

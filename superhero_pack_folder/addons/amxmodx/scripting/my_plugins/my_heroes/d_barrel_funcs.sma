@@ -490,15 +490,14 @@ public fw_Item_PostFrame(ent)
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
-	ent_check(ent,HAM_IGNORED)
+	ent_check(ent,)
 		
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_Volcano, id)
 		set_pev(ent, pev_impulse, 0)
 	}
-		
-	return HAM_IGNORED
+
 }
 
 public fw_Weapon_PrimaryAttack(ent)

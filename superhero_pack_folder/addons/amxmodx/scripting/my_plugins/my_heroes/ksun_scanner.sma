@@ -279,7 +279,6 @@ public scanner_think(scanner){
 	static entlist[33];
 
 	new  numfound = find_sphere_class(id,"player", entity_get_float(scanner, EV_FL_fuser2) ,entlist, 32);
-	
 	for( new i= 0;(g_player_num_victims[id]<obj_num_of_victims)&&(i< numfound);i++){
 		
 			new pid = entlist[i];
@@ -291,11 +290,17 @@ public scanner_think(scanner){
 				continue
 			}
 			if(!g_player_tracks_player[id][pid]){
+
+				ammo_hud(id, obj_num_of_victims-g_player_num_victims[id],0)
+
 				g_player_tracks_player[id][pid]=true
 				num_deployed_spores[id]++
 				num_launched_spores[id]++
 				g_player_targets[id][num_launched_spores[id]]=pid;
 				g_player_num_victims[id]++
+
+
+				ammo_hud(id, obj_num_of_victims-g_player_num_victims[id],1)
 			}
 		
 	}

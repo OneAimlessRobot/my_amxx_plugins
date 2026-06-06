@@ -303,18 +303,12 @@ public Komak_hits_increase_rpm(id, idinflictor, attacker, Float:damage, damagebi
 			emit_sound(attacker,CHAN_ITEM,  KOMAK_FAST_SHOT, 1.0, ATTN_NORM, 0, komak_pitch(attacker))
 		
 		}
-		if(!this_is_a_special_weapon_damage){
-
-			return HAM_IGNORED
-
-		}
 		
 		if((g_komak_hits[attacker]>=max_rpm)&&BLOW_ENGINE){
 		
 			reset_komak(attacker)
 			sh_set_cooldown(attacker, blown_engine_cooldown * 1.0)
 			gEngineRepairTimer[attacker]=blown_engine_cooldown
-			sh_chat_message(attacker,gHeroID,"Blown engine!!!!")
 			emit_sound(id_weapon_ent,CHAN_ITEM,  KOMAK_BLOWN_ENGINE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		
 			
@@ -415,7 +409,7 @@ Float:get_max_added_recoil_ratio(id){
 
 	
 	return floatmin(cvar_val(float, pcvar_max_recoil_ratio),
-				floatmul(floatmul(gear_ratios[clamp(0,g_komak_gear[id]-1)],
+				floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
 						float(max_rpm)),
 						cvar_val(float, pcvar_recoil_ratio_per_hit)))
 	
@@ -426,7 +420,7 @@ Float:get_max_added_reload_ratio(id){
 	
 	return floatmin(
 		cvar_val(float, pcvar_max_reload_ratio),
-		floatmul(floatmul(gear_ratios[clamp(0,g_komak_gear[id]-1)],
+		floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
 		float(max_rpm)),
 		cvar_val(float, pcvar_reload_ratio_per_hit)))
 	
@@ -436,7 +430,7 @@ Float:get_max_added_fire_ratio(id){
 
 	
 	return floatmin(cvar_val(float, pcvar_max_fire_ratio),
-				floatmul(floatmul(gear_ratios[clamp(0,g_komak_gear[id]-1)],
+				floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
 						float(max_rpm)),
 						cvar_val(float, pcvar_fire_ratio_per_hit)))
 	
@@ -449,7 +443,7 @@ Float:get_added_recoil_ratio(id){
 	
 	new Float:float_hits=float(g_komak_hits[id])
 	
-	return floatmul(float_hits*gear_ratios[clamp(0,g_komak_gear[id]-1)],
+	return floatmul(float_hits*gear_ratios[max(0,g_komak_gear[id]-1)],
 		cvar_val(float, pcvar_recoil_ratio_per_hit))
 	
 
@@ -458,7 +452,7 @@ Float:get_added_reload_ratio(id){
 
 	new Float:float_hits=float(g_komak_hits[id])
 
-	return floatmul(float_hits*gear_ratios[clamp(0,g_komak_gear[id]-1)],
+	return floatmul(float_hits*gear_ratios[max(0,g_komak_gear[id]-1)],
 		cvar_val(float, pcvar_reload_ratio_per_hit))
 	
 
@@ -468,7 +462,7 @@ Float:get_added_fire_ratio(id){
 	
 	new Float:float_hits=float(g_komak_hits[id])
 	
-	return floatmul(float_hits*gear_ratios[clamp(0,g_komak_gear[id]-1)],
+	return floatmul(float_hits*gear_ratios[max(0,g_komak_gear[id]-1)],
 		cvar_val(float, pcvar_fire_ratio_per_hit))
 	
 

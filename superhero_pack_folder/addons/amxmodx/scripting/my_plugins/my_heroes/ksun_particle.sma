@@ -128,7 +128,7 @@ public bool:_ksun_heal(iPlugins, iParms){
 		return false
 	}
 	damage*=cvar_val(float, pcvar_ksun_heal_coeff)
-	new new_damage= min(floatround(damage), clamp(0,max_hp_to_check-floatround(mate_health)))
+	new new_damage= min(floatround(damage), max(0,max_hp_to_check-floatround(mate_health)))
 
 	set_param_byref(3,new_damage)
 	
@@ -175,14 +175,14 @@ public _check_who_player_is_sporing(iPlugins,iParam){
 	if(is_user_connected(id)){
 		if(sh_get_user_has_hero(id,gHeroID)){
 			
-			new username[128];
+			static username[128];
 			get_user_name(id,username,127);
 			server_print("[SH] ksun: this ksun user named %s is sporing the following players...:^n",username)
 			for(new i=0;i<sh_maxplayers()+1;i++){
 				
 				if(is_user_connected(i)){
 					
-					new tgname[128];
+					static tgname[128];
 					get_user_name(i, tgname,127);
 					server_print("[SH] ksun:... %s: %d times!^n",tgname,g_times_player_spiked_player[id][i])
 				}
@@ -195,14 +195,14 @@ public _check_who_player_is_sporing(iPlugins,iParam){
 public _check_by_whom_player_spored(iPlugins,iParam){
 	new id=get_param(1);
 	if(is_user_connected(id)){
-		new username[128];
+		static username[128];
 		get_user_name(id,username,127);
 		server_print("[SH] ksun: this player named %s is being spored by the following players...:^n",username)
 		for(new i=0;i<sh_maxplayers()+1;i++){
 			if(is_user_connected(i)){
 				if(sh_get_user_has_hero(i,gHeroID)){
 					
-					new tgname[128];
+					static tgname[128];
 					get_user_name(i, tgname,127);
 					server_print("[SH] ksun:... ksun user %s: %d times!^n",tgname,g_times_player_spiked_by_player[id][i])
 				}

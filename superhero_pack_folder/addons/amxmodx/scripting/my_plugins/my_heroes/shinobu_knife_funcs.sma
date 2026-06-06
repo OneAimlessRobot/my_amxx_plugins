@@ -233,7 +233,7 @@ public _nani_behind_player(iPlugin,iParams){
 	if ( sh_get_cooldown_flag(tele_player) ) {
 		if(!is_user_bot(tele_player)){
 			sh_sound_deny(tele_player)
-			sh_chat_message(tele_player,gHeroID,"Teleport canceled. Still on cooldown!");
+			sh_chat_message(tele_player,gHeroID,"Teleport canceled. Cooling down!");
 		}
 		return
 	}

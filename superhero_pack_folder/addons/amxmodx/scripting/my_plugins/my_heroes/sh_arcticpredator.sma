@@ -15,6 +15,7 @@ arcticPredator_explode_maxdamage 250
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
 #define AUX_STUFF_GIVE_MACROS
+#define AUX_STUFF_GIVE_HITPOINTS
 #include "../my_include/auxiliar_stuff.inc"
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -563,20 +564,7 @@ get_user_name(id,name,31)
 shUnglow(id)
 set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_hudmessage(0,"%s has exploded.",name)
-/**
 
-native explosion(hero_id,ent_id,Float:explosion_radius,
-					Float:peak_power,
-					Float:optional_force=0.0,
-					ignore_owner=1,
-					set_stun=0,
-					Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,
-					explosion_sfx_flags:sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal),
-					sh_custom_color:color_const=WHITE,
-					const custom_sound_sample[128]=crush_stunned,
-					custom_weapon_id=-1);
-
-*/
 explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_predator_self_destroy_id)
 
 }

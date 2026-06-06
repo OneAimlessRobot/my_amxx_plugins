@@ -1,13 +1,14 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -524,7 +525,9 @@ public ester_damage(id)
 
 public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,true,sh_custom_color:{GREEN,GREEN,GREEN})
+	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,true,sh_custom_color:{GREEN,GREEN,GREEN},
+					tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound)
+
 
 }
 

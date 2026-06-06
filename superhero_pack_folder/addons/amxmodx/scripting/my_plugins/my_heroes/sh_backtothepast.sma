@@ -273,8 +273,6 @@ else{
 	
 	}
 	if(Get_BitVar(g_player_cooldown_mask,id)){
-		sh_chat_message(id,gHeroID,"Youre still in cooldown! The cooldown is %0.2f seconds", 
-					cvar_val(float, pcvar_gCooldown))
 		sh_sound_deny(id)
 		return
 	}

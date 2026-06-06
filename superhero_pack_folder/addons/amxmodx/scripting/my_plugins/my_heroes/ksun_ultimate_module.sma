@@ -5,8 +5,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
@@ -310,7 +309,7 @@ public ksun_rifle_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 {
 	new bool:the_bool_to_use=bool:Get_BitVar(g_player_in_ultimate_mask, Attacker);
 		
-	generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE})
+	generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE},tracer_sfx_show_laser_line|tracer_sfx_show_glow_aura)
 
 }
 public ksun_rifle_fast_shot(entity)

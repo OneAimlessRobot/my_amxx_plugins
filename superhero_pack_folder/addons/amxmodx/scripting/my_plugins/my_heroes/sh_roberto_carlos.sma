@@ -164,7 +164,6 @@ public roberto_kd(id)
 	}
 	if(sh_get_cooldown_flag(id)){
 		
-		sh_chat_message(id,gHeroID,"Intervalo!!!!")
 		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}

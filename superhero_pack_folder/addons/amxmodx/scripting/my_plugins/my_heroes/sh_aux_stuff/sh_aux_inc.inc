@@ -37,12 +37,12 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include "sh_aux_math_funcs_pt1.inc"
 #endif
 
-#if defined I_WANT_MISC_FUNCS
-#include "sh_aux_funcs_misc.inc"
-#endif
-
 #if defined I_WANT_CUSTOM_WEAPONS
 #include "sh_custom_weapons_logic.inc"
+#endif
+
+#if defined I_WANT_MISC_FUNCS
+#include "sh_aux_funcs_misc.inc"
 #endif
 
 

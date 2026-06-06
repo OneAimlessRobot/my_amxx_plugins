@@ -1,12 +1,12 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
-#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "teliko_stuff_inc/sh_slitter_funcs.inc"
 #include "teliko_stuff_inc/sh_teliko_get_set.inc"
 #include "../my_include/my_author_header.inc"

@@ -1,3 +1,5 @@
+#include <amxconst>
+#include <engine>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_consts.inc"
@@ -422,15 +424,16 @@ public _laser_line(iPlugins, iParams){
 		killbeam=get_param(4),
 		sh_custom_color:color_constants[3],
 		for_one=get_param(6),
-		make_sound=get_param(7),
-		sound_sample[128]
+		make_sound=get_param(7)
+
+	static sound_sample[128]
 		
 	if(!is_valid_ent(ent_id)) return
 	
 	get_array_f(2,Pos,3)
 	get_array_f(3,vEnd,3)
 	get_array(5,color_constants,3)
-	get_string(8,sound_sample,127)
+	get_string(8,sound_sample,charsmax(sound_sample))
 	
 	static  colors[3]
 	static owner;
@@ -624,7 +627,7 @@ public _explode_fx(iPlugins, iParams){
 
 	get_array(1,vec1,3)
 
-	if((sfx_mask&sfx_show_shockwave)){
+	if((sfx_mask&explosion_sfx_show_shockwave)){
 		// blast circles
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
 		write_byte( 21 )
@@ -657,7 +660,7 @@ public _explode_fx(iPlugins, iParams){
 		message_end()
 	}
 
-	if((sfx_mask&sfx_show_fireball)){
+	if((sfx_mask&explosion_sfx_show_fireball)){
 		//TE_Explosion
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
 		write_byte( 3 )
@@ -670,7 +673,7 @@ public _explode_fx(iPlugins, iParams){
 		write_byte( 0 ) // byte flags
 		message_end()
 	}
-	if((sfx_mask&sfx_show_smoke)){
+	if((sfx_mask&explosion_sfx_show_smoke)){
 		//Smoke
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
 		write_byte( 5 ) // 5
@@ -682,7 +685,7 @@ public _explode_fx(iPlugins, iParams){
 		write_byte( 10 )  // 10
 		message_end()
 	}
-	if((sfx_mask&sfx_show_burn_decal)){
+	if((sfx_mask&explosion_sfx_show_burn_decal)){
 	
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 		write_byte(TE_GUNSHOTDECAL)		// decal and ricochet sound

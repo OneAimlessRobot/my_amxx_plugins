@@ -12,7 +12,9 @@
 #include "custom_grenades/custom_grenades.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 
 #define MIN_KSUN_PAYCUT 0.01
@@ -25,7 +27,7 @@ new pcvar_ksun_spore_m4_mult
 new pcvar_ksun_dmg_paycut
 new pcvar_num_sleep_nades
 new pcvar_ksun_max_victims
-new pcvar_ksun_when_reset_spores=never_reset;
+new pcvar_ksun_when_reset_spores;
 
 // GLOBAL VARIABLES
 new gHeroName[]="ksun"
@@ -102,19 +104,13 @@ public plugin_natives(){
 	
 	
 	register_native("ksun_get_num_available_spores","_ksun_get_num_available_spores");
-	register_native("ksun_set_num_available_spores","_ksun_set_num_available_spores");
-	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores");
-	register_native("ksun_inc_num_available_spores","_ksun_inc_num_available_spores");
 	
-	register_native("ksun_multi_inc_num_available_spores","_ksun_multi_inc_num_available_spores");
-	register_native("ksun_multi_dec_num_available_spores","_ksun_multi_dec_num_available_spores");
+	register_native("ksun_dec_num_available_spores","_ksun_dec_num_available_spores");
 	
 	
 	
 	register_native("ksun_get_when_reset_spores","_ksun_get_when_reset_spores");
 	
-	
-	register_native("spores_cooldown","_spores_cooldown")
 	register_native("spores_ksun_hero_id","_spores_ksun_hero_id")
 	
 	
@@ -130,9 +126,21 @@ stock covert_spike_damage(id, &bool:spored_someone = false){
 	for (new k = 0; k < pnum; k++) {
 		
 		payer = the_players[k]
-			
+		
 		if(sh_clients_are_same_team(payer,id) || (payer==id)) continue
 		
+		static Float:ksun_health
+		
+		ksun_health = entity_get_float(id,EV_FL_health)
+		new max_hp_to_check = min(floatround(sh_get_player_healthcap(id)),sh_get_max_hp(id))
+
+		if(sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)&&
+						floatround(ksun_health)>=(max_hp_to_check)){
+				
+				continue
+		
+		}
+			
 		new Float:times_spiked_by_me=float(get_times_player_spiked_by_player(payer,id))
 		if((times_spiked_by_me>0.0)){
 			spored_someone= true
@@ -142,15 +150,17 @@ stock covert_spike_damage(id, &bool:spored_someone = false){
 					Float:tg_health
 
 			tmp_it_pct=cvar_val(float,pcvar_ksun_dmg_paycut)
-			tg_health=float(get_user_health(payer))
+			tg_health=entity_get_float(payer,EV_FL_health)
 			remaining = floatmul(tg_health, floatpower(1.0 - tmp_it_pct, times_spiked_by_me))
 			dmg_to_drain = tg_health - remaining
-			spored_someone = ksun_heal(id,dmg_to_drain)
+			new actual_dmg_done = 0
+			spored_someone = ksun_heal(id,dmg_to_drain, actual_dmg_done)
 
 			if(spored_someone){
-				sh_extra_damage(payer,id,floatround(dmg_to_drain,floatround_floor),
+				sh_extra_damage(payer,id,actual_dmg_done,
 						_,_,_,_,_,
-						SH_NEW_DMG_DRAIN,custom_dmg_id_ksun_debt)
+						SH_NEW_DMG_DRAIN,
+						custom_dmg_id_ksun_debt)
 			}
 		}
 	}
@@ -165,7 +175,11 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 	for (new k = 0; k < pnum; k++) {
 		
 		collector = the_players[k]
-			
+		
+		if(!sh_get_user_has_hero(collector,gHeroID)){
+
+			continue
+		}
 		
 		new CsTeams:collector_team=cs_get_user_team(collector)
 		if(att_team==collector_team){
@@ -193,17 +207,19 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 }
 public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return
-
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+	
 
 	if((damage<1.0)){
 		
-		return
+		return HAM_IGNORED
 
 	}
 
 	new bool:spored_someone_covert = false,
-		bool:spored_someone_overt = false
+		bool:spored_someone_overt = false,
+		bool:vic_has_hero = sh_get_user_has_hero(id,gHeroID),
+		bool:att_has_hero = sh_get_user_has_hero(attacker,gHeroID)
 
 	new weapon=get_user_weapon(attacker)
 	
@@ -215,20 +231,20 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	{
 		gWeaponPlayerKilledPlayerWith[attacker][id] = weapon;
 	}
-	if(sh_get_user_has_hero(id,gHeroID) &&COVERT_ABUSE_ENABLED){
+	if(vic_has_hero &&COVERT_ABUSE_ENABLED){
 
 		covert_spike_damage(id, spored_someone_covert)
 
 	}
 
-	if(OVERT_ABUSE_ENABLED){
+	if((attacker!=id)&&OVERT_ABUSE_ENABLED){
 		overt_spike_damage(attacker,damage,1, spored_someone_overt)
 	}
 	if(spored_someone_overt||spored_someone_covert){
 
 		emit_sound(id, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
-	if(sh_get_user_has_hero(attacker,gHeroID) ){
+	if(att_has_hero){
 		if(weapon==KSUN_WEAPON_ID){
 			if(sh_get_id_bit(id, SH_IS_SLEEPING)){
 			
@@ -240,18 +256,15 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 				new CsTeams:att_team=cs_get_user_team(attacker)
 				if(att_team!=payer_team){
 					ksun_inc_player_supply_points(attacker,floatround(damage))
-					if(sh_get_user_has_hero(id,gHeroID) && (ksun_get_player_supply_points(id)>0)){
+					if(vic_has_hero && (ksun_get_player_supply_points(id)>0)){
 						ksun_dec_player_supply_points(id,floatround(damage))
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"You stol-- took back %d supply points rom %s! They now have %d supply points!",floatround(damage),tger_name,ksun_get_player_supply_points(id))
-						}
 					}
 				}
 			}
 		}
 	
 	}
-	
+	return HAM_IGNORED
 }
 
 public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
@@ -296,7 +309,7 @@ public client_disconnected(id){
 	
 	spores_reset_user(id)
 	ksun_unultimate_user(id,_,1)
-	ksun_set_num_available_spores(id,0)
+	gMaxSporesUsable[id] = 0
 	
 	
 }
@@ -319,16 +332,12 @@ public sh_round_end(){
 	
 	}
 	
-	if(ksun_get_when_reset_spores()&reset_on_new_round){
+	if(any:cvar_val(num, pcvar_ksun_when_reset_spores)&reset_on_new_round){
 		arrayset(gMaxSporesUsable,0,SH_MAXSLOTS+1)
 	}
 	return PLUGIN_CONTINUE
 }
-public _ksun_set_num_available_spores(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gMaxSporesUsable[id]=value_to_set;
-}
+
 public _ksun_get_num_available_spores(iPlugin,iParams){
 
 
@@ -337,29 +346,16 @@ public _ksun_get_num_available_spores(iPlugin,iParams){
 
 }
 
-public _ksun_multi_dec_num_available_spores(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	new value= get_param(2)
-	gMaxSporesUsable[id]-= (gMaxSporesUsable[id]>0)? value:0
-
-}
-
-
 public _ksun_get_when_reset_spores(iPlugin,iParams){
 
 	return cvar_val(num, pcvar_ksun_when_reset_spores);
 
 }
-public _ksun_multi_inc_num_available_spores(iPlugin,iParams){
+ksun_multi_inc_num_available_spores_primitive(id,value){
 
-
-	new id= get_param(1)
-	new value= get_param(2)
 	gMaxSporesUsable[id]=((gMaxSporesUsable[id]+value)>=
-			cvar_val(num, pcvar_ksun_max_victims))? 
-				cvar_val(num, pcvar_ksun_max_victims):gMaxSporesUsable[id]+value
+							cvar_val(num, pcvar_ksun_max_victims))? 
+								cvar_val(num, pcvar_ksun_max_victims):gMaxSporesUsable[id]+value
 
 }
 public _ksun_dec_num_available_spores(iPlugin,iParams){
@@ -369,23 +365,9 @@ public _ksun_dec_num_available_spores(iPlugin,iParams){
 	gMaxSporesUsable[id]-= (gMaxSporesUsable[id]>0)? 1:0
 
 }
-public _ksun_inc_num_available_spores(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gMaxSporesUsable[id]=(gMaxSporesUsable[id]>=
-			cvar_val(num, pcvar_ksun_max_victims))? 
-				cvar_val(num, pcvar_ksun_max_victims):gMaxSporesUsable[id]+1
-
-}
 public _spores_ksun_hero_id(iPlugins, iParms){
 
 	return gHeroID
-}
-public Float:_spores_cooldown(iPlugins, iParms){
-	
-	return cvar_val(float, pcvar_cooldown)
-	
 }
 ksun_weapons(id)
 {
@@ -424,7 +406,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	}
 	ksun_unultimate_user(id,_,1)
 	spores_reset_user(id)
-	ksun_set_num_available_spores(id,0)
+	gMaxSporesUsable[id] = 0
 	clean_ksun_spores_from_players(1,0,id);
 }
 
@@ -452,7 +434,6 @@ public ksun_kd(id)
 	if ( sh_get_cooldown_flag(id)) {
 		if(!is_user_bot(id)){
 			sh_sound_deny(id)
-			sh_chat_message(id,gHeroID,"Spore launcher still in cooldown!");
 		}
 		return PLUGIN_HANDLED
 	}
@@ -477,7 +458,7 @@ public ksun_kd(id)
 	}
 	
 	if(!ksun_player_is_ultimate_ready(id)){
-		if(!ksun_get_num_available_spores(id)){
+		if(!gMaxSporesUsable[id]){
 		
 			
 			if(!is_user_bot(id)){
@@ -537,11 +518,17 @@ stock ksun_death_handler(id){
 	if(is_user_connected(id)){
 		if(sh_get_user_has_hero(id,gHeroID) ){
 			ksun_unultimate_user(id,1,0)
-			
-			if(ksun_get_when_reset_spores()&reset_on_death){
-				ksun_set_num_available_spores(id,0)
-				clean_ksun_spores_from_players(1,0,id);
+
+			if(any:cvar_val(num, pcvar_ksun_when_reset_spores)&reset_on_death){
+				ammo_hud(id,gMaxSporesUsable[id],0)
+				
+				gMaxSporesUsable[id] = 0
+
+				spores_reset_user(id)
+				
 			}
+			clean_ksun_spores_from_players(1,0,id);
+
 		}
 		
 	}
@@ -552,40 +539,32 @@ public sh_client_death(id, killer){
 	ksun_death_handler(id)
 	if(is_user_alive(killer)&&is_user_connected(id)){
 		if(sh_get_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
+			ammo_hud(killer,gMaxSporesUsable[killer],0)
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
-					sh_chat_message(killer,gHeroID,"Killed someone with your %s!",weapon_data_structs_array[my_weapon_ids:KSUN_WEAPON_ID][wpn_struct_weapon_name])
-					sh_chat_message(killer,gHeroID,"You got %d spores for your kill!",
-						cvar_val(num, pcvar_ksun_spores_per_kill))
-					ksun_multi_inc_num_available_spores(killer,
-						cvar_val(num, pcvar_ksun_spores_per_kill))
+
+					ksun_multi_inc_num_available_spores_primitive(killer,cvar_val(num, pcvar_ksun_spores_per_kill))
 				}
+			}
+			else if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
+					
+
+					ksun_multi_inc_num_available_spores_primitive(killer,
+											cvar_val(num, pcvar_ksun_spores_per_kill)*
+											cvar_val(num, pcvar_ksun_spore_m4_mult))
+
 			}
 			else{
-				sh_chat_message(killer,gHeroID,"Killed someone")
-				sh_chat_message(killer,gHeroID,"You got %d spores for your kill!",
-					cvar_val(num, pcvar_ksun_spores_per_kill))
-				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
-					sh_chat_message(killer,gHeroID,"You got %d extra spores for an %s kill!",
-					((cvar_val(num, pcvar_ksun_spores_per_kill)*
-							cvar_val(num, pcvar_ksun_spore_m4_mult))-
-							cvar_val(num, pcvar_ksun_spores_per_kill)),weapon_data_structs_array[my_weapon_ids:KSUN_WEAPON_ID][wpn_struct_weapon_name])
-					ksun_multi_inc_num_available_spores(killer,
-					cvar_val(num, pcvar_ksun_spores_per_kill)*
-					cvar_val(num, pcvar_ksun_spore_m4_mult))
-				}
-				else{
-					ksun_multi_inc_num_available_spores(killer,
-					cvar_val(num, pcvar_ksun_spores_per_kill))
-				}
+				ksun_multi_inc_num_available_spores_primitive(killer,cvar_val(num, pcvar_ksun_spores_per_kill))
 			}
+			ammo_hud(killer,gMaxSporesUsable[killer],1)
 		}
 		gWeaponPlayerKilledPlayerWith[killer][id]=0;
 	}
 	
 }
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)|| (damage < 1)){
 	
 		return DMG_FWD_PASS
 	}
@@ -599,7 +578,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 
 	}
 
-	if((damage>0)&&OVERT_ABUSE_ENABLED){
+	if((victim!=attacker)&&OVERT_ABUSE_ENABLED){
 		new Float:flDamage=float(damage)
 		overt_spike_damage(attacker,flDamage,0,spored_someone_overt)
 		damage=floatround(flDamage)

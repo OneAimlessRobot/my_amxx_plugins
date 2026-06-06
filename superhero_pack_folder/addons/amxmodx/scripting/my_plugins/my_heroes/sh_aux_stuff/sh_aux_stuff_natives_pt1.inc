@@ -102,18 +102,21 @@ Explosion sfx masks!
 
 
 enum explosion_sfx_flags (<<= 1){
-	sfx_show_nothing = 0,
-	sfx_show_shockwave = 1,
-	sfx_show_fireball,
-	sfx_show_smoke,
-	sfx_show_burn_decal,
-	sfx_show_custom_sound
+	explosion_sfx_show_nothing = 0,
+	explosion_sfx_show_shockwave = 1,
+	explosion_sfx_show_fireball,
+	explosion_sfx_show_smoke,
+  explosion_sfx_show_burn_decal,
+	explosion_sfx_show_custom_sound
 
 }
 
 */
 native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
-            explosion_sfx_flags:sfx_mask=(sfx_show_shockwave|sfx_show_fireball|sfx_show_smoke|sfx_show_burn_decal))
+            explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+                                            explosion_sfx_show_fireball|
+                                            explosion_sfx_show_smoke|
+                                            explosion_sfx_show_burn_decal))
 
 native directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
 

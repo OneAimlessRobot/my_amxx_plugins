@@ -1,8 +1,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+
 
 
 #define PLUGIN "weapon secret code aux stuff"
@@ -12,6 +15,10 @@
 
 #define WEAPON_SECRET_CODE_GENERATOR_CFG_FILENAME "weapon_identifier.cfg"
 #define WEAPON_SECRET_CODE_GENERATOR_CFG_DIRECTORY "/weapon_identifier"
+
+#define weapon_secret_code_field_in_weapon_entity EV_INT_iuser1
+
+const default_starting_secret_code =1000
 
 
 
@@ -51,15 +58,22 @@ public plugin_init(){
 public ham_weapon_spawn(entity){
 
 	ent_check(entity,HAM_IGNORED)
-
-	entity_set_int(entity,EV_INT_iuser1, -1)
+	if(!entity_get_int(entity,weapon_secret_code_field_in_weapon_entity)){
+		entity_set_int(entity,weapon_secret_code_field_in_weapon_entity, -1)
+	}
 
 	return HAM_IGNORED
 
 }
 public plugin_natives(){
 
+
     register_native("allocate_weapon_secret_code", "_allocate_weapon_secret_code")
+    register_native("entity_is_weapon", "_entity_is_weapon")
+    register_native("remove_weapon_secret_code", "_remove_weapon_secret_code")
+    register_native("get_weapon_secret_code", "_get_weapon_secret_code")
+    register_native("set_weapon_secret_code", "_set_weapon_secret_code")
+	
 
 }
 
@@ -133,8 +147,95 @@ public _allocate_weapon_secret_code(iPlugin,iParams){
 	curr_num_of_custom_weapons++;
 
 	//print_generator_state()
-	
+
 	return prev_task_weapon_id_given;
 
+
+}
+
+public bool:_entity_is_weapon(iPlugin, iParams){
+
+
+	new ent_id = get_param(1),
+		bit_mask_to_check = get_param(2)
+
+
+
+	if(pev_valid(ent_id)!=PDATA_SAFE){
+	return false
+	}
+
+	static iId; iId = get_pdata_int(ent_id, m_iId, XO_WEAPON)
+
+
+	if(!cs_is_valid_itemid(iId, true)){
+
+	return false
+	}
+	
+	set_param_byref(3, iId)
+
+	if(!Get_BitVar(bit_mask_to_check,iId)){
+	return false
+	}
+
+
+	return true
+
+
+
+}
+public _remove_weapon_secret_code(iPlugin, iParams){
+
+	new ent_id = get_param(1),
+		weapon_code_to_check_for = get_param(2)
+
+
+	if(!entity_is_weapon(ent_id)){
+
+	return
+	}
+	static curr_weapon_secret_code = -1
+	curr_weapon_secret_code = entity_get_int(ent_id, weapon_secret_code_field_in_weapon_entity)
+
+	if(curr_weapon_secret_code<0){
+
+	return
+
+	}
+
+	if((weapon_code_to_check_for>=0)){
+	if((curr_weapon_secret_code==weapon_code_to_check_for)){
+		entity_set_int(ent_id, weapon_secret_code_field_in_weapon_entity, -1)
+	}
+	return
+	}
+
+	entity_set_int(ent_id, weapon_secret_code_field_in_weapon_entity, -1)
+
+}
+public _set_weapon_secret_code(iPlugin, iParams){
+
+	new ent_id = get_param(1),
+	weapon_secret_code_to_set = get_param(2)
+
+	if(!entity_is_weapon(ent_id)){
+
+	return
+	}
+
+	entity_set_int(ent_id, weapon_secret_code_field_in_weapon_entity, weapon_secret_code_to_set)
+
+}
+public _get_weapon_secret_code(iPlugin, iParams){
+
+	new ent_id = get_param(1)
+
+	if(!entity_is_weapon(ent_id)){
+
+	return -1
+	}
+
+	return entity_get_int(ent_id, weapon_secret_code_field_in_weapon_entity)
 
 }

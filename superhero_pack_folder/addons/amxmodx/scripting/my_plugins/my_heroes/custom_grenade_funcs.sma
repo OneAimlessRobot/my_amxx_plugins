@@ -411,7 +411,7 @@ public CmdStart(id, uc_handle)
 
 		return FMRES_IGNORED
 	}
-	new ent = my_find_ent_by_owner(-1, weapon_data_structs_array[wpn_id][wpn_struct_weapon_name], id);
+	new ent = my_find_ent_by_owner(-1, weapon_data_structs_array[my_weapon_ids:wpn_id][wpn_struct_weapon_name], id);
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);
@@ -644,7 +644,7 @@ else{
 }
 
 
-engclient_cmd(id, weapon_data_structs_array[the_wpn_gren_id][wpn_struct_weapon_name])
+engclient_cmd(id, weapon_data_structs_array[my_weapon_ids:the_wpn_gren_id][wpn_struct_weapon_name])
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 
@@ -860,7 +860,7 @@ bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origi
 			tank_impact_shot_fx(grenade_ent,the_origin_of_expolosion,
 						floatround(0.04*sh_grenade_structs_arr[gren_type][blast_radius]))
 
-			explosion(-1,grenade_ent,sh_grenade_structs_arr[gren_type][blast_radius],100.0,2000.0,0,1,_,sfx_show_nothing)
+			explosion(-1,grenade_ent,sh_grenade_structs_arr[gren_type][blast_radius],100.0,2000.0,0,1,_,explosion_sfx_show_nothing)
 			return false
 		}
 		default:{

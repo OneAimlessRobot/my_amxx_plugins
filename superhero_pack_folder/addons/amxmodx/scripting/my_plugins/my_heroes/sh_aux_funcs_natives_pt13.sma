@@ -23,6 +23,12 @@ public plugin_init(){
 
 }
 
+public plugin_cfg(){
+
+
+	server_print("%s innited!^n",LIBRARY_NAME)
+	
+}
 
 //----------------------------------------------------------------------------------------------
 public ham_Superhero_Falldamage(this, inflictor, attacker, Float:damage, damagebits)

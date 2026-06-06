@@ -364,6 +364,9 @@ public fw_Item_Deploy_Post(Ent)
 
 public fw_Item_AddToPlayer_Post(ent, id)
 {
+
+	ent_check(ent,)
+	
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
 		Set_BitVar(g_Had_QB, id)

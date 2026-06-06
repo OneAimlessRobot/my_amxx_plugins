@@ -11,11 +11,12 @@
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #tryinclude "../../include/cstrike.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_funcs_misc_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "thrashy_thrash_inc/thrashy_thrash_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"

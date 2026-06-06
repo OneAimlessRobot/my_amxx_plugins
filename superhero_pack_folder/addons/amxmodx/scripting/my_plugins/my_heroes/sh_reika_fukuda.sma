@@ -1,6 +1,8 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#include <amxconst>
+#include <csx>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -290,7 +292,7 @@ public reika_kd(id)
                         cvar_val(float, pcvar_reika_explosion_radius),
                         cvar_val(float, pcvar_reika_explosion_damage),
                         cvar_val(float, pcvar_reika_explosion_force)
-                        ,1,1,_,sfx_show_shockwave)
+                        ,1,1,_,explosion_sfx_show_shockwave)
     
     }
     else{
