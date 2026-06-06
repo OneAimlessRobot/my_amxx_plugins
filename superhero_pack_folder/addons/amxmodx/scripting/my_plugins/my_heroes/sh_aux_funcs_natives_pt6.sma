@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -48,11 +49,8 @@ createHelpMotdFile(const helpMotdFile[]){
 
 
 	fputs(extraHelpFile, "^n^n^nsay /help_of [part of hero name] -^n	Shows you a help page for a particular hero (if available)^n^n^n")
-	fputs(extraHelpFile, "(Console) sh_print_models -^n	Shows you a list of player model ids available^n	Depending on heroes equipped^n^n^n")
-	fputs(extraHelpFile, "(Console) sh_choose_model [model_id] -^n	pick a player model!^n	The only parameter required is the id of it^n^n^n")
-	fputs(extraHelpFile, "(Console) sh_print_weapon_models -^n	Shows you a list of weapon model ids available^n	depending on heroes equipped^n^n")
-	fputs(extraHelpFile, "(Console) sh_choose_weapon_model [weapon_id] [weapon_model_id] -^n	pick a weapon model!^n	Parameters required are:^n	- weapon_id^n	- weapon_model_id^n^n^n")
-
+	fputs(extraHelpFile, "say /skins - show menu for skins depending on heroes equipped. Both weapons and body^n^n^n")
+	
 	fputs(extraHelpFile, "</pre></body></html>")
 
 	fclose(extraHelpFile)

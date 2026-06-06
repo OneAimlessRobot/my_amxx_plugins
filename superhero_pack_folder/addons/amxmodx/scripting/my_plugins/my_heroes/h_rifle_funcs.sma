@@ -61,10 +61,10 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 
@@ -115,7 +115,7 @@ public Get_Mosin(id)
 	
 	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_data_structs_array[CSW_MOSIN][wpn_struct_weapon_name])
+	give_item(id, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name])
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
 	static Ent; Ent = get_weapon_ent_of_player(id, CSW_MOSIN)
@@ -325,10 +325,12 @@ public fw_Weapon_Reload(iEnt)
 		return HAM_IGNORED;
 	}
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
-	if(!is_user_alive(id))
+	if(!is_user_alive(id)){
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Mosin, id))
-		return HAM_IGNORED	
+	}
+	if(!Get_BitVar(g_Had_Mosin, id)){
+		return HAM_IGNORED
+	}
 	
 	set_pdata_int(iEnt, m_fInReload, 0, XO_WEAPON)
 	set_pdata_int(iEnt, m_fInSpecialReload, 1, XO_WEAPON)
@@ -347,6 +349,9 @@ public fw_Item_PostFrame( iEnt )
 		return
 	}
 
+	if(!Get_BitVar(g_Had_Mosin, id)){
+		return
+	}
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_MOSIN)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 

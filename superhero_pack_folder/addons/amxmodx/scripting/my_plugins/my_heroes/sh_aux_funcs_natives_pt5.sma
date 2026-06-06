@@ -16,31 +16,33 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
-new GLOW_TASKID
-#define PLAYER_MODEL_MENU_NAME "Player model menu"
-
-#define CON_PLAYER_MODELS_MENU_CMD "sh_player_model_menu"
-
-#define CON_PLAYER_MODELS_PRINT_CMD "sh_print_models"
-
-#define CON_PLAYER_MODELS_CHOOSE_CMD "sh_choose_model"
-
 
 #define ITEM_STRING_SIZE 50
 
+#define SH_MAX_PLAYER_MODELS 30
+
+#define SH_MAX_WPN_MODELS_PER_WPN 30
+
+#define SAY_CMD_MDOELS "say /skins"
+
+#define MODEL_MENU_NAME "Skins menu"
+
+#define PLAYER_MODEL_MENU_NAME "Player skins menu"
+
+#define CON_PLAYER_MODELS_MENU_CMD "sh_player_model_menu"
+
+
 #define WEAPON_MODEL_MENU_NAME "Weapon model menu"
 
-#define WEAPON_MODEL_SUBMENU_NAME "Weapon model sub menu"
+#define WEAPON_MODEL_SUBMENU_NAME "Weapon skins sub menu"
 
 #define CON_WEAPON_MODELS_MENU_CMD "sh_weapon_model_menu"
 
-#define CON_WEAPON_MODELS_PRINT_CMD "sh_print_weapon_models"
 
-#define CON_WEAPON_MODELS_CHOOSE_CMD "sh_choose_weapon_model"
+new GLOW_TASKID
 
 
 	
-#define SH_MAX_PLAYER_MODELS 30
 
 enum player_model_array_struct{
 
@@ -57,7 +59,6 @@ new curr_num_models_logged=0
 new gPlayersCurrHeroModelID[SH_MAXSLOTS+1]={-1, ...}
 new sh_array_of_player_model_structs[SH_MAX_PLAYER_MODELS+1][player_model_array_struct]
 
-#define SH_MAX_WPN_MODELS_PER_WPN 30
 
 enum wpn_model_array_struct{
 
@@ -90,22 +91,12 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 
-	register_clcmd(CON_PLAYER_MODELS_MENU_CMD, "sh_player_model_menu", ADMIN_ALL, "My first menu")
+	register_clcmd(CON_PLAYER_MODELS_MENU_CMD, "sh_player_model_menu", ADMIN_ALL, PLAYER_MODEL_MENU_NAME)
 
-	register_clcmd(CON_WEAPON_MODELS_MENU_CMD, "sh_weapon_model_menu", ADMIN_ALL, "My first menu")
-
-
-	register_clcmd(CON_PLAYER_MODELS_CHOOSE_CMD, "sh_choose_model",ADMIN_ALL,"Choose a model. The only parameter is the model_id as shown in ^"sh_print_models^"")
-
-	register_clcmd(CON_PLAYER_MODELS_PRINT_CMD, "sh_print_models",ADMIN_ALL,"Print all superhero models available to you")
+	register_clcmd(CON_WEAPON_MODELS_MENU_CMD, "sh_weapon_model_menu", ADMIN_ALL, WEAPON_MODEL_MENU_NAME)
 
 
-
-	register_clcmd(CON_WEAPON_MODELS_CHOOSE_CMD, "sh_choose_weapon_model",ADMIN_ALL,
-						"Choose a weapon model. The first parameter is the weapon id and second is model_id for that weapon as shown in ^"sh_print_weapon_models^"")
-
-	register_clcmd(CON_WEAPON_MODELS_PRINT_CMD, "sh_print_weapon_models",ADMIN_ALL,
-						"Print all superhero weapon models available to you.")
+	register_clcmd(SAY_CMD_MDOELS, "say_for_tha_squines_squiline_squiline",  ADMIN_ALL, "All skins menu")
 
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -118,6 +109,65 @@ public plugin_init(){
 	set_task(GLOBAL_GLOW_TASK_LOOP_PERIOD,"global_glow_task",GLOW_TASKID,_,_,"b")
     
 	
+}
+public say_for_tha_squines_squiline_squiline(id,level,cid){
+
+    if (!cmd_access(id,level,cid,1))
+        return PLUGIN_HANDLED
+
+    if(!is_user_connected(id)){
+        return PLUGIN_HANDLED
+    }
+	
+    show_skin_menus_func(id)
+
+    return PLUGIN_HANDLED
+}
+
+show_skin_menus_func(id){
+
+	new gMenuID = menu_create(MODEL_MENU_NAME, "show_skin_menus_handler")
+	
+	static curr_menu_line_string[128],
+			item_string[1]
+		
+	item_string[0] = 0
+	
+
+	formatex(curr_menu_line_string,charsmax(curr_menu_line_string),
+						"%s",
+						PLAYER_MODEL_MENU_NAME)
+
+	menu_additem(gMenuID,curr_menu_line_string,item_string)
+	
+	item_string[0] = 1
+	
+
+	formatex(curr_menu_line_string,charsmax(curr_menu_line_string),
+						"%s",
+						WEAPON_MODEL_MENU_NAME)
+
+	menu_additem(gMenuID,curr_menu_line_string,item_string)
+	
+	menu_display(id,gMenuID)
+
+}
+public show_skin_menus_handler(id, menu, item){
+
+
+	if(item>=0){
+		
+		static item_string[1],
+		menu_to_put = 0
+		menu_item_getinfo(menu, item, _,item_string,sizeof(item_string))
+		menu_to_put = item_string[0]
+		
+
+		menu_to_put ? (show_weapon_model_menu_func(id)):(show_player_model_menu_func(id))
+		
+	}
+
+
 }
 
 public sh_weapon_model_menu(id,level,cid){
@@ -349,28 +399,6 @@ player_morph_wrapper(id,hero_model_id){
 		if(sh_get_user_has_hero(id,the_hero_id)){
 			sh_player_morph_task(id,hero_model_id)
 		}
-	}
-	return PLUGIN_HANDLED
-}
-public sh_choose_model(id, level, cid)
-{
-	if(!is_user_connected(id)){
-
-		return PLUGIN_HANDLED
-	}
-	new the_argc=read_argc()
-	if (the_argc == 2)
-	{
-		new arg[128]
-		new hero_model_id
-		read_argv(1,arg,charsmax(arg))
-		hero_model_id = str_to_num(arg)
-		return player_morph_wrapper(id,hero_model_id)
-		
-	}
-	else{
-		console_print(id,"Wrong number of arguments? argument count: %d^nNeeded argument count: %d^n",the_argc,2)
-
 	}
 	return PLUGIN_HANDLED
 }
@@ -630,40 +658,6 @@ public _prepare_shero_aux_lib_pt5(iPlugins, iParams){
 	server_print("%s innited!^n",LIBRARY_NAME)
 }
 
-public sh_print_models(id, level, cid)
-{
-
-	if (!cmd_access(id, level, cid, 0)){
-		return PLUGIN_HANDLED
-	}
-	console_print(id,"Available models for you:^n")
-	
-	new counter= 0
-		
-	for(new i=0;i<curr_num_models_logged;i++){
-		
-		
-		new inner_hero_id=sh_array_of_player_model_structs[i][player_model_hero_id]
-		
-		if(sh_get_user_has_hero(id,inner_hero_id)){
-			
-			counter++
-			console_print(id,"Model of id %d:^n",i)
-			
-			static hero_name[MAX_HERO_NAME_LENGTH]
-			
-			sh_get_hero_name_from_id(inner_hero_id,hero_name)
-
-			console_print(id," - - hero name: %s^n",hero_name)
-			console_print(id," - - Model name: %s^n^n",sh_array_of_player_model_structs[i][player_model_morph_string])
-		}
-		
-
-	}
-	console_print(id,"We found a total of:^n%d player models for you to pick.^n^n",counter)
-
-	return PLUGIN_HANDLED
-}
 weapon_model_pick_wrapper(id, wpn_id, wpn_model_id){
 
 	gPlayersCurrHeroWpnModelID[id][wpn_id]=-1
@@ -681,77 +675,6 @@ weapon_model_pick_wrapper(id, wpn_id, wpn_model_id){
 			gPlayersCurrHeroWpnModelID[id][wpn_id]=wpn_model_id
 		}
 	}
-}
-public sh_choose_weapon_model(id, level, cid)
-{
-	if(!is_user_connected(id)){
-
-		return PLUGIN_HANDLED
-	}
-	new the_argc=read_argc()
-	if (the_argc == 3)
-	{
-		new arg[8],arg2[8]
-		new wpn_id
-		new wpn_model_id
-		read_argv(1,arg,charsmax(arg))
-		read_argv(2,arg2,charsmax(arg2))
-		wpn_id = str_to_num(arg)
-		wpn_model_id = str_to_num(arg2)
-		weapon_model_pick_wrapper(id, wpn_id, wpn_model_id)
-		
-	}
-	else{
-		console_print(id,"Wrong number of arguments? argument count: %d^nNeeded argument count: %d^n",the_argc,2)
-
-	}
-	return PLUGIN_HANDLED
-}
-
-public sh_print_weapon_models(id, level, cid)
-{
-
-	if (!cmd_access(id, level, cid, 0)){
-		return PLUGIN_HANDLED
-	}
-
-	console_print(id,"Available weapon models for you:^n")
-	new counter= 0
-	new sub_counter=0
-	for(new wpn_id=1;wpn_id<sizeof curr_num_models_logged_on_wpn;wpn_id++){
-
-		if(is_weaponid_valid(wpn_id)){
-			for(new i=0;i<curr_num_models_logged_on_wpn[wpn_id];i++){
-				
-				
-				new inner_hero_id=sh_array_of_wpn_model_structs[wpn_id][i][wpn_model_hero_id]
-				
-				if(sh_get_user_has_hero(id,inner_hero_id)){
-					
-					static hero_name[MAX_HERO_NAME_LENGTH]
-					
-					sh_get_hero_name_from_id(inner_hero_id,hero_name)
-
-					console_print(id," - - hero name: %s^n",hero_name)
-
-					sub_counter++
-					console_print(id,"Weapon model of id %d for weapon %s (id = %d):^n",i,
-							wlt_get_def_name(my_weapon_ids:wpn_id),
-							wpn_id)	
-				}
-			}
-		}
-		if(sub_counter>0){
-			console_print(id,"We found a total of:^n%d weapon models for you to pick for weapon %s (id = %d).^n^n",sub_counter,
-							wlt_get_def_name(my_weapon_ids:wpn_id),
-							wpn_id)
-			counter+=sub_counter
-			sub_counter=0
-		}
-	}
-	console_print(id,"We found a total of:^n%d weapon models for you to pick in total!^n^n",counter)
-
-	return PLUGIN_HANDLED
 }
 public sh_client_death(id)
 {

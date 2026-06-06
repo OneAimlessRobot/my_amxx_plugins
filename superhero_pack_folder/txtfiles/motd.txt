@@ -41,28 +41,8 @@ bind i +power2
 		(default file will be shown
 		if a specific one does not exist)
 
-console:
-sh_print_models -> show a list
-		of pickable player models
-		avaliable to you
-		based on currently equipped heroes
-
-sh_choose_model [model id] -> pick one model
-		from the model_id values listed
-		by the previous command
-			
-sh_print_weapon_models -> show a list
-		of pickable weapon models
-		avaliable to you
-		based on currently equipped heroes.
-		Weapon IDs and model IDs for each weapon
-		will be shown along with hero name
-
-sh_choose_weapon_model [weapon id] [model id] ->
-		pick model of id [model_id]
-		of weapon [weapon_id]
-		valid values are listed
-		by the previous command
+/skins -> print skins menu depending on heroes equipped
+			both weapons and body
 </pre>
 </body>
 </html>
