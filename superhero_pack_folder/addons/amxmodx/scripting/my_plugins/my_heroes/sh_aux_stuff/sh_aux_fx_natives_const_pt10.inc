@@ -4,5 +4,5 @@
 #define sh_aux_fx_natives_consts_pt10
 
 
-#define LIBRARY_NAME "Superhero library 10: superhero pickability checks: incompatibility"
+#define LIBRARY_NAME "Superhero library 10: superhero pickability checks: individual incompatibility"
 

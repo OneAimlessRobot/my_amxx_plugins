@@ -83,6 +83,10 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Void Walker", "Absorb energy through the void and release the void-power in this dimension to create immense destruction!", true, "vegetto_level")
 
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
+	
+	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
+	
 	for(new i=1;i<sizeof vegetto_dmgs_arr;i++){
 
 		vegetto_dmgs_arr[i][the_wpn_id] = sh_log_custom_damage_source(gHeroID,

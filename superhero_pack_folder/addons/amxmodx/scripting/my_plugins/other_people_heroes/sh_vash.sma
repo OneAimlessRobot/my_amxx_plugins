@@ -65,6 +65,7 @@ public plugin_init()
 							dmg_source_name_short_revolver,
 							dmg_source_name_log_revolver,0)
 	
+	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
 
 	RegisterHam(Ham_TraceAttack,"player","vash_damage",_,true)
 

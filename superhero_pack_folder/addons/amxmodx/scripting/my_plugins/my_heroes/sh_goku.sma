@@ -136,6 +136,11 @@ public plugin_init()
 	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
 
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
+
+
+	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
+	
 	for(new i=1;i<sizeof goku_dmgs_arr;i++){
 
 		goku_dmgs_arr[i][the_wpn_id] = sh_log_custom_damage_source(gHeroID,

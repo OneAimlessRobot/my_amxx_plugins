@@ -38,12 +38,14 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack,"player","chikoi_physical_body",_,true)
 	
 	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
+
 	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
 
 	sh_assign_hero_bit(gHeroID, SH_ANTI_FALL_DAMAGE_HERO, true)
 
 	sh_assign_hero_bit(gHeroID, SH_ANTI_GRENADES_HERO, true)
 
+	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
 
 	sh_register_hero_healthcap(gHeroID, 5.0)
 	

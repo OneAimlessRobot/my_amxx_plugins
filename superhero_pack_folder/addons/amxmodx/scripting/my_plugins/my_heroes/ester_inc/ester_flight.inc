@@ -13,22 +13,26 @@
 #define COLOR_STRONG WHITE
 #define COLOR_WEAK GREEN
 
-#define ESTER_NUM_BLOWUPSOUNDS 9
+#define ESTER_NUM_BLOWUPSOUNDS 11
+
 stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 
 	"shmod/ester/flight/flight_blowup1.wav",
 	"shmod/ester/flight/flight_blowup2.wav",
 	"shmod/ester/flight/flight_blowup3.wav",
 	"shmod/ester/flight/flight_blowup4.wav",
-
 	"shmod/ester/flight/flight_blowup5.wav",
 	"shmod/ester/flight/flight_blowup6.wav",
 	"shmod/ester/flight/amurican_malez.wav",
 	"shmod/ester/flight/end_of_days.wav",
-	
-	"shmod/ester/flight/IT_AINT_THE_END_OF_ME.wav"
+	"shmod/ester/flight/IT_AINT_THE_END_OF_ME.wav",
+	"shmod/ester/flight/This_Fire.wav",
+	"shmod/ester/flight/No_More_Words.wav"
+
 }
+
 stock curr_player_sound[SH_MAXSLOTS+1]
+
 #define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
 
 #define ESTER_RESPAWN_FAIL_MSG "You're done. You get no more chances."

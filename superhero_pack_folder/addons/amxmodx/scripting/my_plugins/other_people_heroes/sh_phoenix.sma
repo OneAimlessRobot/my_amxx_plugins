@@ -47,6 +47,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
 
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 
 
 	init_hud_syncs()

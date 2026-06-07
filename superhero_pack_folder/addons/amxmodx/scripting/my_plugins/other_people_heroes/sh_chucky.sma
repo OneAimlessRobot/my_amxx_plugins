@@ -90,6 +90,7 @@ public plugin_init()
 					dmg_source_name_short_super_knife,
 					dmg_source_name_log_super_knife,1)
 
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 
 	// EVENTS
 	#if USE_MODEL

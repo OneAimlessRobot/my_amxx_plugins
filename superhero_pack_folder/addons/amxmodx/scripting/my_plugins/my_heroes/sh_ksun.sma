@@ -84,6 +84,10 @@ public plugin_init()
 	
 	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
 
+
+	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
+	
+
 	
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)

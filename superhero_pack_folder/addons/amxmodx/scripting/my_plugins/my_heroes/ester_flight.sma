@@ -519,7 +519,7 @@ public godmode_render_update(id){
 	
 	id-=ESTER_REBORN_GLOW_TASKID
 	
-	if(is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)){
+	if(is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)&&sh_get_id_bit(id,SH_IS_REBORN)){
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
@@ -593,7 +593,11 @@ public BlowUp(param[1],id)
 {
 	id-=ESTER_REBORN_EXPLOSION_DELAY_TASKID
 
-	if(!sh_is_freezetime()&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)&&(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)){
+	if(!sh_is_freezetime()&&sh_is_inround()&&is_user_alive(id)&&
+					sh_get_user_has_hero(id,gHeroID)&&
+					(param[0]<ESTER_REBORN_EXPLOSION_NUMBER)&&
+					sh_get_id_bit(id,SH_IS_REBORN)){
+		
 		param[0]++
 		explosion(gHeroID,id,
 			cvar_val(float,pcvar_ester_explosion_radius),

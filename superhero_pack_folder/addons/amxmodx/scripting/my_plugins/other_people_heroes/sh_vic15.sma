@@ -41,7 +41,10 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_ANNOYING_HERO,true);
 
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 	
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
+
 	victim_drain_aura_weapon_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_victim_drain_aura,

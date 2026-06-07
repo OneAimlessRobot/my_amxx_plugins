@@ -76,6 +76,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
 
 
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 
 	register_srvcmd("drstrange_levels", "drstrange_levels")
 	shRegLevels(gHeroName, "drstrange_levels")

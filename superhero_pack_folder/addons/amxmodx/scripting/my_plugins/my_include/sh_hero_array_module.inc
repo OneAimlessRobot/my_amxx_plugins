@@ -31,9 +31,31 @@ enum hero_property_flags_id {
 	SH_HEALTH_CAP_HERO,
 	SH_BOT_RESTRICTED,
 	SH_ANTI_FALL_DAMAGE_HERO,
-	SH_ANTI_GRENADES_HERO
+	SH_ANTI_GRENADES_HERO,
+	SH_HITBOX_MANIP_HERO,
+	SH_RESPAWN_HERO,
 };
 
+
+stock const sh_hero_property_names[hero_property_flags_id][64] =  {
+			"Blood thirsty",
+			"Explosive",
+			"Sleep bender",
+			"Core hero",
+			"Invisibility",
+			"Healing",
+			"Small",
+			"Dream eater",
+			"Annoying hero",
+			"Health cap hero",
+			"No bots hero",
+			"Anti fall damage hero",
+			"Anti grenades hero",
+			"Hitbox manipulating hero",
+			"Respawning hero"
+			
+
+}
 //up to 64 states can be added in the current version of the library
 enum player_state_flags_id {
 	

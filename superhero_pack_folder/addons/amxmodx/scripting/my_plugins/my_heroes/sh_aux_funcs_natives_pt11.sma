@@ -15,36 +15,32 @@
 stock const player_flags_print[]="sh_print_player_hero_flags"
 
 
-enum property_bounds{
-
-	property_name[128],
-	max_pickable_count
-
+static const sh_property_gating_array[hero_property_flags_id] =  {
+			25,
+			4,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25,
+			25
+			
 
 }
+
 enum property_counter{
 
 	curr_picked_count,
 	tmp_bias
 }
 
-static const sh_property_gating_array[hero_property_flags_id][property_bounds] =  {
-			{"Blood thirsty",25},
-			{"Explosive",4},
-			{"Sleep bender",25},
-			{"Core hero",25},
-			{"Invisibility",25},
-			{"Healing",25},
-			{"Small",25},
-			{"Dream eater",25},
-			{"Annoying hero",25},
-			{"Health cap hero",25},
-			{"No bots hero",25},
-			{"Anti fall damage hero",25},
-			{"Anti grenades hero",25}
-			
-
-}
 static sh_player_hero_property_tracker[SH_MAXSLOTS+1][hero_property_flags_id][property_counter];
 
 
@@ -83,10 +79,10 @@ stock print_player_hero_prop_flags(id){
 		
 		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^nis player this property? %s^n",
 																	i,
-																	sh_property_gating_array[i][property_name],
+																	sh_hero_property_names[i],
 																	id,
 																	sh_player_hero_property_tracker[id][i][curr_picked_count],
-																	sh_property_gating_array[i][max_pickable_count],
+																	sh_property_gating_array[i],
 																	(sh_player_hero_property_tracker[id][i][curr_picked_count] > 0))
 
 
@@ -130,13 +126,13 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		if(sh_get_hero_bit(heroID,i)){
 			if(sh_player_hero_property_tracker[id][i][curr_picked_count]
 					>=
-				sh_property_gating_array[i][max_pickable_count]){
+				sh_property_gating_array[i]){
 			
 
 				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" property have been picked too many times! %d out of %d times...",
-							sh_property_gating_array[i][property_name],
+							sh_hero_property_names[i],
 							sh_player_hero_property_tracker[id][i][curr_picked_count],
-							sh_property_gating_array[i][max_pickable_count])
+							sh_property_gating_array[i])
 			
 				true_return_result =  INIT_FWD_BLOCK
 				break;
@@ -171,7 +167,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 
 					if(sh_player_hero_property_tracker[id][i][curr_picked_count]
 							<
-						sh_property_gating_array[i][max_pickable_count]){
+						sh_property_gating_array[i]){
 						
 						sh_player_hero_property_tracker[id][i][tmp_bias]++
 					

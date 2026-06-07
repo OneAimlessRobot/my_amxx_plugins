@@ -99,6 +99,7 @@ public plugin_init()
 	pcvar_moralizing_pan_xp_get_mult = create_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 	
 	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level",true)
+	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/ester/ester.mdl",
 								"models/player/ester/esterT.mdl",
@@ -110,6 +111,12 @@ public plugin_init()
 	
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
+
+	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO, true)
+	
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
