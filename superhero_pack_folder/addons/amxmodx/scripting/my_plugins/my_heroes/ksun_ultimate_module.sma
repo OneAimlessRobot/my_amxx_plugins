@@ -62,7 +62,7 @@ public plugin_init()
 	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
 	
 	
-	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,(1<<KSUN_WEAPON_ID),"Item_PostFrame_Post",1, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,(1<<KSUN_WEAPON_ID),"fw_Weapon_Reload_Post",1, true, false)
 }
 
 public plugin_natives(){
@@ -93,22 +93,27 @@ public plugin_cfg(){
 	custom_dmg_id_r5=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_r5,dmg_source_name_log_r5,0)
 	
 }
-public Item_PostFrame_Post(iEnt)
-{    
-	if(pev_valid(iEnt)!=2){
+
+public fw_Weapon_Reload_Post(ent)
+{
+	
+	if(pev_valid(ent)!=2){
 		return HAM_IGNORED
 	}
-	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+	static id; id = get_pdata_cbase(ent, m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
 	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)||!Get_BitVar(g_player_in_ultimate_mask, id)){
 		return HAM_IGNORED
 	}
-	do_fast_reload(id,iEnt,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
 
-	return HAM_IGNORED
+
+	do_fast_reload(id,ent,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
+	
+	return HAM_HANDLED
 }
+
 public ksun_trace_attack_damage_hook(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 if ( !sh_is_active() || !is_user_alive(Victim) || !is_user_alive(Attacker)) return HAM_IGNORED

@@ -272,33 +272,20 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 
 #if !defined _reapi_included 
 stock do_fast_reload(id,iEnt,Float:speed=1.0){
-	
-	if(!is_user_alive(id)){
-		return
-	}
-	if(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) ){
 
-		return
-
-	}
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
 		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
-		set_pdata_float(iEnt, m_flTimeWeaponIdle, fDelay + 0.5, XO_WEAPON)
 	}
 }
 #else
 stock do_fast_reload(id,iEnt,Float:speed=1.0){
-	
-	if(!is_user_alive(id)){
-		return
-	}
+
 	if( get_pdata_int(iEnt, m_fInReload) )
 	{
 		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
 		set_member(id, m_flNextAttack, fDelay)
-		set_member(iEnt, m_flTimeWeaponIdle, fDelay + 0.5)
 	}
 
 

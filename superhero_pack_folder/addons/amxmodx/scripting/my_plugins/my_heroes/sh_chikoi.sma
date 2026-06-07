@@ -47,6 +47,8 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
 
+	sh_assign_hero_bit(gHeroID,SH_BOT_RESTRICTED, true)
+
 	sh_register_hero_healthcap(gHeroID, 5.0)
 	
 

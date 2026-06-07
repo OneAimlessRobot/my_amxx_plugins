@@ -128,7 +128,8 @@ register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM
 
 
 
-register_ham_for_weapon_bitsum(Ham_Item_PostFrame,FAST_RELOAD_BITSUM,"Item_PostFrame_Post",1, true, true)
+register_ham_for_weapon_bitsum(Ham_Weapon_Reload,FAST_RELOAD_BITSUM,"fw_Weapon_Reload_Post",1, true, true)
+
 
 for(new fx_id:i=GLOW;i<fx_id;i++){
 	
@@ -183,8 +184,11 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,PIERCE_WOUND_SFX)
 
 }
-public Item_PostFrame_Post(iEnt)
-{    
+
+
+public fw_Weapon_Reload_Post(iEnt)
+{
+	
 	if(pev_valid(iEnt)!=2){
 		return HAM_IGNORED
 	}
@@ -192,11 +196,15 @@ public Item_PostFrame_Post(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||(gatling_get_fx_num(id)!=COCAINE))return HAM_IGNORED
-	
+	if (!sh_is_active()||(gatling_get_fx_num(id)!=COCAINE)){
+		return HAM_IGNORED
+	}
+
 	do_fast_reload(id,iEnt,COCAINE_RELOAD_RATE_MULT)
-	return HAM_IGNORED
-} 
+	
+	return HAM_HANDLED
+}
+
 
 public fx_damage(id)
 {

@@ -102,31 +102,33 @@ public plugin_init()
 		
 	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Post",1, true, false)
 
-	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,single_shot_wpns_bs,"Item_PostFrame_Post",1, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,single_shot_wpns_bs,"fw_Weapon_Reload_Post",1, true, false)
 
 	set_task(1.0, "komak_loop",_,_,_, "b")
 }
 
 
-public Item_PostFrame_Post(iEnt)
-{    
+public fw_Weapon_Reload_Post(iEnt)
+{
+	
 	if(pev_valid(iEnt) != 2){
 		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	
 	if(!is_user_alive(id)){
-		
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID) )return HAM_IGNORED
-
+	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID) ){
+		return HAM_IGNORED
+	}
 	if(g_komak_hits[id]<=0){
 		return HAM_IGNORED
 	}
 
 	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
-	return HAM_IGNORED
+	
+	return HAM_HANDLED
 } 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){

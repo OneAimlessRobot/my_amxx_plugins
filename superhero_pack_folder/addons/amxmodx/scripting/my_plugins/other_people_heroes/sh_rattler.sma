@@ -51,6 +51,9 @@ public plugin_init()
 								dmg_source_name_log_rat,
 								0)
 
+	sh_assign_hero_bit(gHeroID,SH_BOT_RESTRICTED, true)
+	
+
 	register_event("Damage", "rattler_damage", "b", "2!0")
 
 	// LEVELS
