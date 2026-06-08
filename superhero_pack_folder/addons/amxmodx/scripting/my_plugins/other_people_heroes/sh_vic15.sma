@@ -73,7 +73,7 @@ public sh_client_death(id)
 
 	// Save users origin on death
 	pev(id, pev_origin, g_savedOrigin[id])
-	g_savedOrigin[id][2] += 60.0
+	g_savedOrigin[id][2] += 10.0
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && !g_vic15PowerUsed[id] ) {

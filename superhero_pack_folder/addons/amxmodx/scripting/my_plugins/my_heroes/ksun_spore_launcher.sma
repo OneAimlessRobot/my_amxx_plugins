@@ -212,7 +212,7 @@ if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 }
 new material[128]
 new health[128]	
-new launcher = my_create_entity( "func_breakable" );
+new launcher = create_entity( "func_breakable" );
 
 if (!is_valid_ent(launcher)) {
 	

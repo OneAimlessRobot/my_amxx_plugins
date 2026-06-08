@@ -1,9 +1,12 @@
  /*
  Version 0.1 posted
  Version 0.2 Fixed by Om3g[A] ( on the original code was some compline errors )
- */ 
+ */
+ 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#include <amxmisc>
+#include <csx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"

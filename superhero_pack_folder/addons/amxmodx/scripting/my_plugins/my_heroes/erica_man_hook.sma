@@ -56,7 +56,7 @@ spawn_erica_hook(id,target){
 	if(is_valid_ent(g_player_hook[id])){
 		return
 	}
-	new erica_hook_to_be_spawned= my_create_entity("info_target")
+	new erica_hook_to_be_spawned= create_entity("info_target")
 	if(!erica_hook_to_be_spawned){
 
 		return

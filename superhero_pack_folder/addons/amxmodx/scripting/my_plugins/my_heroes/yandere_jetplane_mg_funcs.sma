@@ -101,7 +101,7 @@ public _spawn_jetplane_mg(iPlugins,iParams){
 	new health[128]	
 	new Float:jetplane_orig[3]
 	pev(jetplane_id,pev_origin,jetplane_orig)
-	new mg_id = my_create_entity( "func_breakable" );
+	new mg_id = create_entity( "func_breakable" );
 	if(!is_valid_ent(mg_id)||(mg_id <= 0)) {
 		
 		sh_chat_message(id,gHeroID,"Mg failed to spawn")
@@ -249,7 +249,7 @@ launch_shell(id)
 	
 	Origin[2]+=(jetplane_mg_max_dims[2]+10.0)
 	
-	Ent = my_create_entity("info_target")
+	Ent = create_entity("info_target")
 	
 	if (!Ent){
 		sh_chat_message(id,gHeroID,"shell failed!");

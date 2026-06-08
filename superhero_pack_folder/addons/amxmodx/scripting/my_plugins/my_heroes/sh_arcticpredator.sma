@@ -14,9 +14,6 @@ arcticPredator_explode_maxdamage 250
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
-#define AUX_STUFF_GIVE_MACROS
-#define AUX_STUFF_GIVE_HITPOINTS
-#include "../my_include/auxiliar_stuff.inc"
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -615,7 +612,7 @@ return FMRES_IGNORED
 public throw_disc(id)
 {
 
-g_discID[id] = my_create_entity("info_target")
+g_discID[id] = create_entity("info_target")
 
 if ( g_discID[id] == 0 ) {
 	client_print(id, print_chat, "[SH](Arctic Predator) Power Creation Failure")
@@ -647,7 +644,7 @@ b_orig[0] = float(aimvec[0]);
 b_orig[1] = float(aimvec[1]);
 b_orig[2] = float(aimvec[2]);
 
-g_discID[id] = my_create_entity("info_target")
+g_discID[id] = create_entity("info_target")
 entity_set_string(g_discID[id], EV_SZ_classname, "pred_disc")
 
 

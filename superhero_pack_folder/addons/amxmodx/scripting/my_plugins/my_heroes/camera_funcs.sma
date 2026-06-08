@@ -308,7 +308,7 @@ public plant_camera(id)
 	
 	static material[128]
 	static health[128]	
-	new NewEnt = my_create_entity( "func_breakable" );
+	new NewEnt = create_entity( "func_breakable" );
 	
 	if ( !NewEnt ) return PLUGIN_HANDLED
 	

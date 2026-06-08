@@ -19,7 +19,8 @@ breaker_deduct 10
 
 
 
-
+#include <amxconst>
+#include <csx>
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES

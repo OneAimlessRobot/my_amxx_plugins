@@ -27,6 +27,7 @@
 
 #endif
 
+#tryinclude "../../include/engine.inc"
 #tryinclude "../../include/hamsandwich.inc"
 #tryinclude "../../include/fakemeta.inc"
 #tryinclude "../../include/fun.inc"

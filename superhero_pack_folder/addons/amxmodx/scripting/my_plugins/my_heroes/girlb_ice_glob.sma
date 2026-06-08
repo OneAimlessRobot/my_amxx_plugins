@@ -362,7 +362,7 @@ public _launch_ice_glob(iPlugin,iParams)
 
 	add_3d_vectors(Origin,advance,Origin)
 	
-	Ent = my_create_entity("info_target")
+	Ent = create_entity("info_target")
 	
 	if (!pev_valid(Ent)){
 		sh_chat_message(id,gHeroID,"Glob failure!");

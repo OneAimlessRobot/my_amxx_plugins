@@ -272,7 +272,7 @@ public make_beam(id)
 	entity_get_vector(id, EV_VEC_origin, vOrigin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngles)
 	new NewEnt
-	NewEnt = my_create_entity("info_target")
+	NewEnt = create_entity("info_target")
 	if(NewEnt == 0) {
 		
 		if(!is_user_bot(id)){

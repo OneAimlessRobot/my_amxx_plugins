@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
@@ -29,6 +30,8 @@ public plugin_init(){
 	register_entity_as_wall_touchable(BALL_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(BALL_CLASSNAME,"ball_touch_player",player_vector,1)
 	init_explosion_defaults()
+
+	init_gravity_pcvar()
 }
 
 public plugin_natives(){
@@ -62,6 +65,11 @@ public FwdTouchWorld( Ball, World ) {
 		emit_sound( Ball, CHAN_ITEM, BALL_BOUNCE_GROUND, 1.0, ATTN_NORM, 0, PITCH_NORM );
 	}
 	entity_set_int(Ball,EV_INT_iuser2,true)
+	new pickability = entity_get_int(Ball,EV_INT_iuser2)
+	
+	if(!pickability){
+		entity_set_int(Ball,EV_INT_iuser2,true)
+	}
 }
 //
 
@@ -69,7 +77,7 @@ public ball_touch_player(Ball, Player ) {
 
 	if(!is_valid_ent(Ball)) return
 
-	new oid = entity_get_edict(Ball, EV_ENT_owner)
+	new oid = entity_get_edict(Ball, EV_ENT_euser1)
 	if(is_user_alive(Player))
 	{		
 		new Float:origin[3]
@@ -87,7 +95,7 @@ public ball_touch_player(Ball, Player ) {
 			return
 			
 		}
-		else if((Player!=oid)){
+		else if(!sh_clients_are_same_team(Player,oid)&&(Player!=oid)){
 
 			//get "touched someone" boolean
 			new touched_someone=entity_get_int(Ball,EV_INT_iuser3)
@@ -150,8 +158,9 @@ public kick_ball(iPlugin,iParams)
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	
-	Origin[2]+=50.0
-	Ent = my_create_entity("info_target")
+	Origin[2]+=15.0
+
+	Ent = create_entity("info_target")
 	
 	if (!Ent){
 		sh_chat_message(id,gHeroID,"Ball failure!");
@@ -171,8 +180,7 @@ public kick_ball(iPlugin,iParams)
 	entity_set_origin(Ent, Origin)
 	entity_set_vector(Ent, EV_VEC_angles, vAngle)
 	
-	entity_set_edict(Ent, EV_ENT_owner, id)
-	set_pev(Ent,pev_iuser1, id)
+	entity_set_edict(Ent, EV_ENT_euser1, id)
 	drop_to_floor(Ent)
 	velocity_by_aim(id, floatround(BALL_SPEED) , Velocity)
 	
@@ -212,7 +220,7 @@ public ball_think(ent)
 		
 	}
 
-	new id=pev(ent,pev_iuser1)
+	new id=entity_get_edict(ent, EV_ENT_euser1)
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) {
 		remove_entity(ent)
 		return
@@ -269,15 +277,22 @@ public ball_think(ent)
 	// Stupid Check but lets make sure you don't devide by 0
 	if ( !length ) length = 1.0
 	
-	newVelocity[0]= velocityVec[0]*BALL_SPEED/length
-	newVelocity[1] = velocityVec[1]*BALL_SPEED/length
+	newVelocity[0]= velocityVec[0]*(floatmin(BALL_SPEED,length))/length
+	newVelocity[1] = velocityVec[1]*(floatmin(BALL_SPEED,length))/length
 	newVelocity[2]= velocityVec[2]
 	
 	
 	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
 	set_pev(ent, pev_vuser1, newVelocity)
 
+	new parm[2]
+	parm[0] = ent
+	parm[1] = id
+
 	orient_entity_with_move_vector(ent)
+
+
+	projectile_air_drag_update_speed(parm,BALL_DRAG_CONST,BALL_GRAVITY_MULT,BALL_PHYS_UPDATE_TIME)
 
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
 }

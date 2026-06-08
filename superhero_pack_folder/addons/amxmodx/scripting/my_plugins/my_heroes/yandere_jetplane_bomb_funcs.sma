@@ -140,7 +140,7 @@ vOrigin[2]+=(jetplane_min_dims[2]-50.0)
 
 
 new NewEnt
-NewEnt = my_create_entity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): bomb failure")
 return PLUGIN_HANDLED

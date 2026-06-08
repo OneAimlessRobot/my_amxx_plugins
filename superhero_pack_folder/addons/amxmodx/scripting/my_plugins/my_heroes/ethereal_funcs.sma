@@ -342,8 +342,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		xs_vec_add(Push, g_Recoil[id], Push)
 		
 		entity_set_vector(id, EV_VEC_punchangle,Push)
-		
-		Event_CurWeapon(id)
+
 		Set_BitVar(g_Muzzleflash, id)
 	}
 }

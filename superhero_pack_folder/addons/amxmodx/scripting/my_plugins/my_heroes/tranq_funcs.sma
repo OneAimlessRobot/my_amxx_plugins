@@ -339,7 +339,7 @@ launch_dart(id)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-	Ent = my_create_entity("info_target")
+	Ent = create_entity("info_target")
 
 	if (!Ent) return
 

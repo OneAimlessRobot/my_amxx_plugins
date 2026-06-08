@@ -236,7 +236,7 @@ public spawn_spore(id){
 	}
 	new material[128]
 	new health[128]	
-	new spore = my_create_entity( "func_breakable" );
+	new spore = create_entity( "func_breakable" );
 
 	if (!is_valid_ent(spore)) {
 		client_print(id, print_chat, "[SH](ksun) Spore Creation Failure")

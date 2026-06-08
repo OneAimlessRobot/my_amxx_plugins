@@ -434,7 +434,7 @@ public sh_client_death(id, killer){
 
 	// Save users origin on death
 	pev(id,pev_origin, g_saved_coords[id])
-	g_saved_coords[id][2] += 60
+	g_saved_coords[id][2] += 10.0
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && (g_ester_respawned_attempts[id]<

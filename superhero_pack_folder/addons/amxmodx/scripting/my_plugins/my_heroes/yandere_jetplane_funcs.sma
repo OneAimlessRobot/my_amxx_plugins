@@ -196,7 +196,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	UnSet_BitVar(g_jetplane_armed_mask, id);
 	new material[128]
 	new health[128]	
-	g_jetplane[id] = my_create_entity( "func_breakable" );
+	g_jetplane[id] = create_entity( "func_breakable" );
 	new NewEnt=g_jetplane[id]
 	if(!is_valid_ent(g_jetplane[id])||(g_jetplane[id] <= 0)) {
 		
@@ -353,7 +353,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_scans(jetplane_id)
 	Set_BitVar(g_jetplane_armed_mask, id)
 	sh_chat_message(attacker,gHeroID,"jet armed!");
-	camera[id] = my_create_entity("info_target")
+	camera[id] = create_entity("info_target")
 	new Float:origin[3]
 	new Float:init_speed[3]
 	new Float:angles[3]

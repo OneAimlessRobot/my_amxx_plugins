@@ -419,7 +419,7 @@ public create_power(id)
 	if (g_powerNum[id] == 4) vOrigin[2] += 110
 	else vOrigin[2] += 6
 
-	new newEnt = my_create_entity("info_target")
+	new newEnt = create_entity("info_target")
 	if( newEnt == 0 ) {
 		client_print(id, print_chat, "[SH](Goku) Power Creation Failure")
 		return
@@ -736,7 +736,7 @@ public remove_power(id, powerID)
 //----------------------------------------------------------------------------------------------
 public goku_loop()
 {
-	if ( !sh_is_active() ||!sh_is_inround()) return
+	if ( !sh_is_active() ||!sh_is_inround()||sh_is_freezetime()) return
 
 	new players[SH_MAXSLOTS], pnum, id
 

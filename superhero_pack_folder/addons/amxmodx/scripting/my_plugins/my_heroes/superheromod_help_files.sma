@@ -1,3 +1,4 @@
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"

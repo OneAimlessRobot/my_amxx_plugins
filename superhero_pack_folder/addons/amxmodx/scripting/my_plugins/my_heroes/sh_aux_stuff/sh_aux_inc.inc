@@ -20,11 +20,6 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include <fakemeta_util>
 #endif
 
-#define I_WANT_ENGINE
-#if defined I_WANT_ENGINE
-#include <engine>
-#endif
-
 #if defined I_WANT_CONSTANTS
 #include "sh_aux_consts.inc"
 #endif

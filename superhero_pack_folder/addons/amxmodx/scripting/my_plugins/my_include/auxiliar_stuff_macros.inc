@@ -123,7 +123,7 @@ stock list_activated_bits_in_bitsum(generic_bitsum,bool:exclude_mode=false){
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 
-#define my_create_entity(%1) engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, %1))
+#define create_entity(%1) engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, %1))
 
 #define my_find_ent_by_class(%1,%2) engfunc(EngFunc_FindEntityByString, %1, "classname", %2)
 

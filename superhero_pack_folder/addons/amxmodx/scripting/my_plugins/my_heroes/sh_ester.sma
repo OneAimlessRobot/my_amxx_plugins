@@ -331,7 +331,7 @@ public Ester_revenge_loop(id)
 {
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 	
-	new the_players[SH_MAXSLOTS], pnum, x
+	static the_players[SH_MAXSLOTS], pnum, x
 	for(new i=1;i< sh_maxplayers()+1;i++){
 		if ( !is_user_connected(i)) continue
 		

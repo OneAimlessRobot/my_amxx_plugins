@@ -2,7 +2,6 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_ENGINE
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -737,7 +736,7 @@ public _form_field(iPlugin,iParams)
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	
 	Origin[2]+=50.0
-	Ent = my_create_entity("info_target")
+	Ent = create_entity("info_target")
 	
 	if(pev_valid(Ent)!=2){
 		

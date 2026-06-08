@@ -148,10 +148,11 @@ public CmdStart(id, uc_handle)
 			button &= ~IN_ATTACK2;
 			if(!Get_BitVar(mode_selector_was_down_mask,id)){
 				set_uc(uc_handle, UC_Buttons, button);
+				Assign_BitVar(semi_automatic_mode_mask,id,!Get_BitVar(semi_automatic_mode_mask, id))
+
 				if(!is_user_bot(id)){
 					client_print(id,print_center,"Riveter: %s",Get_BitVar(semi_automatic_mode_mask, id)?"semi auto":"full auto")
 				}
-				Assign_BitVar(semi_automatic_mode_mask,id,!Get_BitVar(semi_automatic_mode_mask, id))
 
 			}
 		}
@@ -352,7 +353,7 @@ entity_get_vector(id, EV_VEC_origin , Origin)
 entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-Ent = my_create_entity("info_target")
+Ent = create_entity("info_target")
 
 if (!Ent){
 	return PLUGIN_HANDLED

@@ -4,11 +4,11 @@
 #define sh_arifle_funcs
 
 #define ARIFLE_SECRET_CODE 184128
-#define A_RIFLE_DAMAGE 78
+#define A_RIFLE_DAMAGE 100
 #define A_RIFLE_CLIP 67
 #define A_RIFLE_RESERVE 103
-#define A_RIFLE_SPEED 0.75
-#define A_RIFLE_RECOIL 1.5
+#define A_RIFLE_SPEED 0.5
+#define A_RIFLE_RECOIL 0.86
 
 #define CSW_ARIFLE MY_CSW_M249
 #define ARIFLE_PLAYER_ANIMEXT "m249"

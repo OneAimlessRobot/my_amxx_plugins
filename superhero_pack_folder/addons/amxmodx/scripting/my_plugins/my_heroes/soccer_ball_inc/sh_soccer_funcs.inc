@@ -24,12 +24,22 @@ stock ballbeam[3] = { 20,50,255 }
 
 #define AVG_FACTOR 3
 
-#define BALL_REM_TIME 2.0
+#define BALL_REM_TIME 20.0
 #define BALL_THINK_TIME 0.05
 
-#define BALL_MASS 1.8
 
 #define CURVE_APEX_DIST 500
+
+
+#define BALL_GRAVITY_MULT 0.3
+#define BALL_PHYS_UPDATE_TIME 0.05
+
+#define BALL_MASS 1.8
+#define BALL_CAR 0.2146
+#define BALL_DIAMETER 2.0
+#define BALL_AREA ((BALL_DIAMETER*BALL_DIAMETER)*M_PI)
+#define BALL_AIR_RESISTANCE 0.125
+#define BALL_DRAG_CONST (BALL_AREA*BALL_CAR*BALL_AIR_RESISTANCE)
 
 
 native kick_the_ball(id)

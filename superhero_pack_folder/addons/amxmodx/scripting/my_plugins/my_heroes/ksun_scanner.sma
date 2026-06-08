@@ -210,7 +210,7 @@ public _spawn_scanner(iPlugins,iParams){
 	b_orig[0] = float(originplayer[0]);
 	b_orig[1] = float(originplayer[1]);
 	b_orig[2] = float(originplayer[2]+UNITS_ABOVE);
-	new scanner = my_create_entity( "info_target" );
+	new scanner = create_entity( "info_target" );
 	if ( !is_valid_ent(scanner )) {
 		
 		if(!is_user_bot(id)){

@@ -235,7 +235,7 @@ public _shield_charge_user(iPlugin, iParams){
 	
 	new material[128]
 	new health[128]	
-	g_jaqueo_shield[id] = my_create_entity( "func_breakable" );
+	g_jaqueo_shield[id] = create_entity( "func_breakable" );
 	new NewEnt=g_jaqueo_shield[id]
 	if(!is_valid_ent(g_jaqueo_shield[id])||(g_jaqueo_shield[id] == 0)) {
 		

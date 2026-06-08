@@ -99,7 +99,7 @@ public _spawn_jetplane_law(iPlugins,iParams){
 	new health[128]	
 	new Float:jetplane_orig[3]
 	pev(jetplane_id,pev_origin,jetplane_orig)
-	new law_id = my_create_entity( "func_breakable" );
+	new law_id = create_entity( "func_breakable" );
 	if(!is_valid_ent(law_id)||(law_id == 0)) {
 		
 		sh_chat_message(id,gHeroID,"LAW failed to spawn")
@@ -188,7 +188,7 @@ vOrigin[0]+=(jetplane_law_max_dims[0]+10.0)
 
 
 new NewEnt
-NewEnt = my_create_entity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 client_print(id,print_chat,"[SH](Yandere Mk II): rocket failure")
 return PLUGIN_HANDLED

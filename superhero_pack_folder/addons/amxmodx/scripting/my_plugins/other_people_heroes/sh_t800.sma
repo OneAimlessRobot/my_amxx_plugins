@@ -46,6 +46,8 @@ public plugin_init()
 	register_event("Damage", "t800_damage", "b", "2!0")
 
 	gmsgScreenFade = get_user_msgid("ScreenFade")
+
+	set_task(1.0,"t800_loop",TASKID,_,_,"b")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -84,7 +86,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 			
 			// LOOP
 			switchmodel(id)
-			set_task(1.0,"t800_loop",id+TASKID,"",0,"b")
+			
 		}
 		
 	}
@@ -102,39 +104,46 @@ public sh_client_death(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public t800_loop(id)
+public t800_loop(task_id)
 {
 	
-	id-=TASKID
+
 	if (!sh_is_active()) return
-	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)&& is_user_connected(id)  )  {
-		if ( gT800Timer[id] > 0 ) {
-			gT800Timer[id]--
-			new message[128]
-			formatex(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
-			set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
-			show_hudmessage(id, message)
-			
-			// Make sure still on para
-			new clip,ammo,weaponID = get_user_weapon(id,clip,ammo)
-			if ( weaponID != CSW_M249 ) {
-				sh_give_weapon(id,CSW_M249,true)
+
+	static the_players[SH_MAXSLOTS], pnum, id
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) )  {
+			if ( gT800Timer[id] > 0 ) {
+				gT800Timer[id]--
+				new message[128]
+				formatex(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
+				set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
+				show_hudmessage(id, message)
+				
+				// Make sure still on para
+				new clip,ammo,weaponID = get_user_weapon(id,clip,ammo)
+				if ( weaponID != CSW_M249 ) {
+					sh_give_weapon(id,CSW_M249,true)
+				}
+				
+				message_begin(MSG_ONE,gmsgScreenFade,{0,0,0},id)
+				write_short(15)
+				write_short(15)
+				write_short(12)
+				write_byte(255)
+				write_byte(0)
+				write_byte(0)
+				write_byte(50)
+				message_end()
 			}
-			
-			message_begin(MSG_ONE,gmsgScreenFade,{0,0,0},id)
-			write_short(15)
-			write_short(15)
-			write_short(12)
-			write_byte(255)
-			write_byte(0)
-			write_byte(0)
-			write_byte(50)
-			message_end()
-		}
-		else if ( gT800Timer[id] == 0 ) {
-			
-			gT800Timer[id] = -1
-			t800_endmode(id)
+			else if ( gT800Timer[id] == 0 ) {
+				
+				gT800Timer[id] = -1
+				t800_endmode(id)
+			}
 		}
 	}
 }

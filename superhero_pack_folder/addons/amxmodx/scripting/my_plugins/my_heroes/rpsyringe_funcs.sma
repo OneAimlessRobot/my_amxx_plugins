@@ -184,7 +184,7 @@ notFloat_vOrigin[2]  =floatround(floatadd( vOrigin[2] , 50.0))
 
 
 new NewEnt
-NewEnt = my_create_entity("info_target")
+NewEnt = create_entity("info_target")
 if(NewEnt == 0) {
 if(!is_user_bot(id)){
 	client_print(id,print_chat,"[SH](Yakui the Maid Mk2): Rocket fail!")

@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_QUICK_CHECKS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -41,6 +42,9 @@ public plugin_init(){
 	create_cvar("lara_spear_max_charge_time", "5.0")
 	create_cvar("lara_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
+	
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
+
 	SPEAR_CHARGE_TASKID=allocate_typed_task_id(player_task)
 
 
@@ -49,6 +53,28 @@ public plugin_init(){
 	register_custom_touchable(SPEAR_CLASSNAME,"spaaaaeer_touch_player",player_vector,1)
 
 }
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	
+	if(!is_user_alive(player)){
+		return FMRES_IGNORED
+	}
+
+	if(!sh_get_user_has_hero(player,gHeroID)){
+
+		return FMRES_IGNORED
+	}
+	new weapon = get_user_weapon(player);
+	if(weapon!=CSW_KNIFE){
+		return FMRES_IGNORED
+	}
+
+	if ( !spear_get_num_spears(player)) {
+		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}	
+	return FMRES_IGNORED
+}
 public FwdTouchWorld( Spaaaaeerr, World ) {
 
 	if(!is_valid_ent(Spaaaaeerr)) return
@@ -56,8 +82,12 @@ public FwdTouchWorld( Spaaaaeerr, World ) {
 	emit_sound(Spaaaaeerr, CHAN_WEAPON, SPEAR_HIT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	entity_set_vector(Spaaaaeerr, EV_VEC_velocity ,NULL_VECTOR)
 	//set pickability status
-	entity_set_int(Spaaaaeerr,EV_INT_iuser2,true)
-	entity_set_float( Spaaaaeerr, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
+	new pickability = entity_get_int(Spaaaaeerr,EV_INT_iuser2)
+	
+	if(!pickability){
+		entity_set_int(Spaaaaeerr,EV_INT_iuser2,true)
+		entity_set_float( Spaaaaeerr, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
+	}
 }
 public spaar_thaank(ent){
 
@@ -259,7 +289,7 @@ launch_spear(id)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 
 
-	Ent = my_create_entity("info_target")
+	Ent = create_entity("info_target")
 
 	if (!Ent) return PLUGIN_HANDLED
 
@@ -277,10 +307,11 @@ launch_spear(id)
 	entity_set_vector(Ent, EV_VEC_angles, vAngle)
 
 	entity_set_int(Ent, EV_INT_effects, 2)
-	entity_set_int(Ent, EV_INT_solid, 1)
-	entity_set_int(Ent, EV_INT_movetype, 10)
-	entity_set_edict(Ent, EV_ENT_owner, id)
+	entity_set_int(Ent, EV_INT_solid, SOLID_BBOX)
+	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCE)
 
+	entity_set_edict(Ent,EV_ENT_owner,id)
+	
 	velocity_by_aim(id, floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
 
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
@@ -347,9 +378,15 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 			spear_set_num_spears(oid,spear_get_num_spears(oid)+1)
 			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",spear_get_num_spears(oid))
 			remove_entity(pToucher);
-		
+			return
 		}
-		else if(pTouched!=oid){
+		
+		if(!is_user_alive(oid)){
+
+			return
+		}
+		
+		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)){
 			sh_bleed_user(pTouched,oid,BLEED_NORMAL,gHeroID)
 			explosion(gHeroID,pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
 			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

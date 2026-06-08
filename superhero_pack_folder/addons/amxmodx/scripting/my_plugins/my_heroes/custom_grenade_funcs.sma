@@ -23,7 +23,6 @@
 
 #include "wet_fx_inc/wet_fx.inc"
 
-#define I_WANT_ENGINE
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -568,7 +567,7 @@ pev(id,  pev_origin , Origin)
 pev(id,  pev_v_angle, vAngle)
 
 
-Ent = my_create_entity("info_target")
+Ent = create_entity("info_target")
 
 if (!Ent) return
 

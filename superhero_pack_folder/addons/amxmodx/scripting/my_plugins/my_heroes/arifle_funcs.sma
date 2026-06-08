@@ -249,8 +249,6 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		xs_vec_mul_scalar(Push, A_RIFLE_RECOIL, Push)
 		xs_vec_add(Push, g_Recoil[id], Push)
 		set_pev(id, pev_punchangle, Push)
-		
-		Event_CurWeapon(id)
 	}
 }
 
@@ -460,7 +458,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 
 	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))
 	
-	return HAM_IGNORED
+	return HAM_HANDLED
 }
 
 public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
@@ -476,7 +474,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 		
 	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))
 	
-	return HAM_IGNORED
+	return HAM_HANDLED
 }
 
 

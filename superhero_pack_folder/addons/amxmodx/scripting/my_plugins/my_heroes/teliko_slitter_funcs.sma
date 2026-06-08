@@ -50,7 +50,7 @@ spawn_teliko_slitter(id,target){
 	if(is_valid_ent(g_player_slitter[id])){
 		return
 	}
-	new teliko_hook_to_be_spawned= my_create_entity("info_target")
+	new teliko_hook_to_be_spawned= create_entity("info_target")
 	if(!teliko_hook_to_be_spawned){
 
 		return
