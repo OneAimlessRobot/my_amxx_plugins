@@ -9,6 +9,8 @@ t800_cooldown 30		//Whats the cooldown of T-800 mode
 t800_paramult 5		    //how strong is the para
 
 */
+#include <amxmodx>
+#include <engine>
 
 #include "../my_include/superheromod.inc"
 
@@ -165,9 +167,9 @@ public t800_damage(id)
 	new damage = read_data(2)
 	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS||attacker == id  ) return
+	if ( !is_user_alive(attacker) ||attacker == id  ) return
 	
-	if ( sh_get_user_has_hero(attacker,gHeroID) && weapon == CSW_M249 && is_user_alive(id) ) {
+	if ( sh_get_user_has_hero(attacker,gHeroID) &&( weapon == CSW_M249 )&& (gT800Timer[attacker]>0)) {
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("t800_paramult") - damage)
 		if (extraDamage > 0){

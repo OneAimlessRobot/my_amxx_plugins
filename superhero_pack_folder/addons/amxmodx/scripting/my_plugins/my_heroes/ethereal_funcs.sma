@@ -119,15 +119,16 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	Get_Ethereal(id)
+	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	return PLUGIN_HANDLED
 }
 
 public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)
-	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
 	
+	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+
 	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(!pev_valid(Ent)){
 		
@@ -405,39 +406,31 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 		return HAM_IGNORED
 	
 	}
-	
+
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{	
 		Set_BitVar(g_Had_Ethereal, id)
 		set_pev(Ent, pev_impulse, 0)
 	
 	}
-	Get_BitVar(g_Had_Ethereal, id) ?
-		
-		(send_weapon_list_stock(id,
-				ETHEREAL_HUD_SPRITES_NAME,
-				cached_ammo_id,
-				ETHEREAL_RESERVE,
-				_:MY_SLOT_PRIMARY,
-				cached_def_pos,
-				CSW_ETHEREAL,
-				0,
-				MSG_ONE,
-				g_Msg_WeaponList))
-		
-				:
-		
-		
-		(send_weapon_list_stock(id,
-				weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name],
-				cached_ammo_id,
-				cached_max_bp_ammo,
-				_:MY_SLOT_PRIMARY,
-				cached_def_pos,
-				CSW_M4A1,
-				0,
-				MSG_ONE,
-				g_Msg_WeaponList))
+	static buff_to_use[25]
+
+	(Get_BitVar(g_Had_Ethereal, id)) ? 
+		copy(buff_to_use,charsmax(buff_to_use),  ETHEREAL_HUD_SPRITES_NAME )
+								:
+		copy(buff_to_use,charsmax(buff_to_use), weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	
+
+	send_weapon_list_stock(id,
+			buff_to_use,
+			cached_ammo_id,
+			Get_BitVar(g_Had_Ethereal, id) ? ETHEREAL_RESERVE: cached_max_bp_ammo,
+			_:MY_SLOT_PRIMARY,
+			cached_def_pos,
+			CSW_M4A1,
+			0,
+			MSG_ONE,
+			g_Msg_WeaponList)
 	
 	return HAM_HANDLED
 }

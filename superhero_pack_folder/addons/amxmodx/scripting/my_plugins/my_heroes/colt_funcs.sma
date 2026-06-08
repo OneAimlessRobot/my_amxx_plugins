@@ -82,7 +82,7 @@ public _colt_set_colt(iPlugin,iParams){
 public _colt_unset_colt(iPlugin,iParams){
 	
 	new id= get_param(1)
-	lastinv_m1911a1(id)
+	engclient_cmd(id, "drop", weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
 }
 
 
@@ -145,31 +145,23 @@ public fw_ItemAddToPlayerPost(entity, id)
 	new is_custom= (iCustom == weapon_secret_code)
 	
 	
+	static buff_to_use[25]
+
+	is_custom ? 
+		copy(buff_to_use,charsmax(buff_to_use),  STRN_M1911A1 )
+								:
+		copy(buff_to_use,charsmax(buff_to_use), weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
 	
-	is_custom?  (send_weapon_list_stock(id,
-					STRN_M1911A1 ,
-					cached_ammo_id_colt,
-					cached_max_bp_ammo,
-					_:MY_SLOT_SECONDARY,
-					cached_def_pos,
-					MY_CSW_FIVESEVEN,
-					0,
-					MSG_ONE,
-					g_Msg_WeaponList))
-		
-				:
-		
-		
-		(send_weapon_list_stock(id,
-				weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],
-				cached_ammo_id_colt,
-				cached_max_bp_ammo,
-				_:MY_SLOT_SECONDARY,
-				cached_def_pos,
-				MY_CSW_FIVESEVEN,
-				0,
-				MSG_ONE,
-				g_Msg_WeaponList))
+	send_weapon_list_stock(id,
+			buff_to_use,
+			cached_ammo_id_colt,
+			cached_max_bp_ammo,
+			_:MY_SLOT_SECONDARY,
+			cached_def_pos,
+			MY_CSW_FIVESEVEN,
+			0,
+			MSG_ONE,
+			g_Msg_WeaponList)
 
 	return HAM_HANDLED
 }
@@ -275,7 +267,7 @@ public fm_PlaybackEventPre(){
 public lastinv_m1911a1(player){
 
 	engclient_cmd(player, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
-
+	return PLUGIN_HANDLED
 }
 
 public rg_CBasePlayerTakeDamagePre(victim, inflictor, attacker, Float:flDamage){

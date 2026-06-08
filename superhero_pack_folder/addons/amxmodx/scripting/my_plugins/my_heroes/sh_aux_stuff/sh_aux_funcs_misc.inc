@@ -325,7 +325,7 @@ stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const functi
 	for ( new my_weapon_ids:wpnId = MY_CSW_P228; wpnId < my_weapon_ids; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (enum_one<<wpnId)))
-		if ( do_eht && (strlen(weapon_data_structs_array[wpnId][wpn_struct_weapon_name])>0))
+		if ( do_eht && is_weaponid_valid(_:wpnId))
 		{
 				RegisterHam(ham_constant, weapon_data_structs_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
 		}
@@ -606,15 +606,3 @@ stock send_weapon_list_stock(player,
 	write_byte(flag)
 	message_end()
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
-*/
-
-/*
-this is meant to be used
-exclusively
-in Ham_TraceAttack POST hooks
-(because it has no return type)
-
-*/
-

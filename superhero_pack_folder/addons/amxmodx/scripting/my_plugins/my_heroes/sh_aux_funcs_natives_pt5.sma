@@ -2,6 +2,7 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
 #include <amxmisc>
+#include <reapi>
 #include <newmenus>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -41,8 +42,6 @@
 
 new GLOW_TASKID
 
-
-	
 
 enum player_model_array_struct{
 
@@ -98,7 +97,6 @@ public plugin_init(){
 
 	register_clcmd(SAY_CMD_MDOELS, "say_for_tha_squines_squiline_squiline",  ADMIN_ALL, "All skins menu")
 
-
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	GLOW_TASKID=allocate_typed_task_id(generic_task)
@@ -109,6 +107,11 @@ public plugin_init(){
 	set_task(GLOBAL_GLOW_TASK_LOOP_PERIOD,"global_glow_task",GLOW_TASKID,_,_,"b")
     
 	
+}
+
+public plugin_precache(){
+	
+	engfunc(EngFunc_PrecacheSound, default_morph_state_sound)
 }
 public say_for_tha_squines_squiline_squiline(id,level,cid){
 
@@ -170,6 +173,7 @@ public show_skin_menus_handler(id, menu, item){
 
 }
 
+
 public sh_weapon_model_menu(id,level,cid){
 
     if (!cmd_access(id,level,cid,1))
@@ -191,25 +195,49 @@ show_weapon_model_menu_func(id){
 	static curr_menu_line_string[128],
 			item_string[1]
 		
-
-	for(new wpn_id=1;wpn_id<sizeof curr_num_models_logged_on_wpn;wpn_id++){
+	new bool:should_show_menu = false
+	for(new wpn_id = 1 ;wpn_id<= CSW_LAST_WEAPON;wpn_id++){
 
 		if(is_weaponid_valid(wpn_id)&&((GUNS_BIT_SUM|(1<<CSW_KNIFE)) & (1<<wpn_id))){
-
 			
-			item_string[0] = wpn_id
-			
+			if(user_has_weapon(id,wpn_id)){
+				
+				new i = 0;
+				for(;i<curr_num_models_logged_on_wpn[wpn_id];i++){
+							
+							
+					new inner_hero_id=sh_array_of_wpn_model_structs[wpn_id][i][wpn_model_hero_id]
+					
+					if(sh_get_user_has_hero(id,inner_hero_id)){
+				
+						break;
+					}
+				}
+				
+				if(i >= curr_num_models_logged_on_wpn[wpn_id]){
+					
+					continue;
 
-			formatex(curr_menu_line_string,charsmax(curr_menu_line_string),
-								"%s",
-								wlt_get_fruity_name(my_weapon_ids:wpn_id))
+				}
+				else if(!should_show_menu){
 
-			menu_additem(gMenuID,curr_menu_line_string,item_string)
+					should_show_menu = true
+				}
+
+				item_string[0] = wpn_id
+				
+
+				formatex(curr_menu_line_string,charsmax(curr_menu_line_string),
+									"%s",
+									wlt_get_fruity_name(my_weapon_ids:wpn_id))
+
+				menu_additem(gMenuID,curr_menu_line_string,item_string)
+			}
 		}
 	}
 
 
-	menu_display(id,gMenuID)
+	should_show_menu?menu_display(id,gMenuID):menu_destroy(gMenuID)
 
 }
 show_weapon_model_submenu_func(id,wpn_id){
@@ -452,7 +480,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 
 			}
 		}
-		for(new wpnid=1;wpnid<sizeof curr_num_models_logged_on_wpn;wpnid++){
+		for(new wpnid=1;wpnid<= CSW_LAST_WEAPON;wpnid++){
 
 			if(gPlayersCurrHeroWpnModelID[id][wpnid]>= 0){
 				new wpn_model_id=gPlayersCurrHeroWpnModelID[id][wpnid]
@@ -464,10 +492,6 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 			}
 		}
 	}
-}
-public plugin_precache(){
-
-	engfunc(EngFunc_PrecacheSound, default_morph_state_sound)
 }
 public plugin_natives(){
 

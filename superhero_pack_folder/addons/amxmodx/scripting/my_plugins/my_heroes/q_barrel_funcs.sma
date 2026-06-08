@@ -69,7 +69,7 @@ public plugin_init()
 	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
 	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
 	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1)
+	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1, true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
 	

@@ -4,6 +4,7 @@
 #include "../my_include/superheromod.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
@@ -133,7 +134,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		update_max_bullets(id)
 	}
 	else{
-		sh_drop_weapon(id, TELIKO_SIDEARM_CLASSID, true)
+		colt_unset_colt(id)
 		sh_drop_weapon(id, TELIKO_RIFLE_CLASSID, true)
 		slitter_set_slitter(id,0)
 	}
@@ -182,7 +183,7 @@ Teliko_weapons(id)
 {
 if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 	give_custom_grenades(id,GREN_CHAFF,cvar_val(num, pcvar_num_chaffs))
-	sh_give_weapon(id, TELIKO_SIDEARM_CLASSID)
+	colt_set_colt(id)
 	new level_diff=sh_get_user_lvl(id)-cvar_val(num, pcvar_gHeroLevel)
 	if(level_diff>=cvar_val(num, pcvar_famas_level_diff)){
 		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_structs_array[my_weapon_ids:TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);

@@ -41,6 +41,8 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Yakui the maid: Help file","yakui_folder/","yakui_help_file.html",hero_name_arr)
 	
+	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
+	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yakui/yakui.mdl",
 								"models/player/yakui/yakui.mdl",

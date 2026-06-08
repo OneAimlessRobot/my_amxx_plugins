@@ -4,7 +4,6 @@
 #define I_WANT_QUICK_CHECKS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
-#include "colt_inc/sh_colt.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
@@ -107,7 +106,6 @@ public adriano_weapons(id)
 	if ( sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_WET,4)
 		ethereal_set_ethereal(id)
-		colt_set_colt(id)
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -192,8 +192,6 @@ public sapper_kd(id)
 //----------------------------------------------------------------------------------------------
 public sapper_ku(id)
 {
-	sh_chat_message(id,gHeroID,"Sapper keyup triggered!")
-	
 	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!(mine_get_mine_disarmer_on(id)||mine_get_mine_armed(id))) {
 		return PLUGIN_HANDLED
 	}
