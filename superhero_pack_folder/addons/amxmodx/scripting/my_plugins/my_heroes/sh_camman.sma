@@ -124,16 +124,12 @@ public camman_kd(id){
 		if(user_can_plant_camera(id)){
 			if(sh_get_cooldown_flag(id)){
 				
-				if(!is_user_bot(id)){
-					sh_sound_deny(id)
-				}
+				sh_sound_deny(id)
 				return PLUGIN_HANDLED
 			}
 			if(Get_BitVar(gHasCameraMask,id)){
-				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"Camera already planted")
-					sh_sound_deny(id)
-				}
+				sh_chat_message(id,gHeroID,"Camera already planted")
+				sh_sound_deny(id)
 				return PLUGIN_HANDLED;
 				
 			}
@@ -147,14 +143,11 @@ public camman_kd(id){
 	
 			toggle_camera_view(id)
 	
-	
 		}
 		else{
-			
-			if(!is_user_bot(id)){
-					sh_sound_deny(id)
-					sh_chat_message(id, gHeroID, "You must plant the camera on a wall")
-			}
+
+			sh_sound_deny(id)
+			sh_chat_message(id, gHeroID, "You must plant the camera on a wall")
 		}
 	}
 	else if(cvar_val(bool,pcvar_disarmable)){

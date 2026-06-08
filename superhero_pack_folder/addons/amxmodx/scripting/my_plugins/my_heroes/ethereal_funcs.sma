@@ -119,7 +119,7 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	Get_Ethereal(id)
 	return PLUGIN_HANDLED
 }
 
@@ -374,12 +374,19 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 
 public fw_Item_Deploy_Post(Ent)
 {
-	if(pev_valid(Ent) != 2)
+	if(pev_valid(Ent) != 2){
 		return
+	}
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 
 	if (!is_user_alive(Id)){
 		return
+	}
+
+	if(!Get_BitVar(g_Had_Ethereal, Id))
+	{
+		return
+
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem,OFFSET_LINUX_PLAYER) != Ent){
 		return

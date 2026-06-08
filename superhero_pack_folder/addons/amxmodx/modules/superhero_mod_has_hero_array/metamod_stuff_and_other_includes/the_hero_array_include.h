@@ -43,7 +43,7 @@ class HeroArrays
 protected:
 	state_cell_type_t the_memory[SH_MAXHEROS],
 			the_hero_flags[SH_MAXHEROS][SH_NUM_HERO_BIT_BUCKETS],
-			the_player_masks[SH_MAXSLOTS+1][SH_NUM_CLIENT_STATE_BUCKETS];
+			the_player_masks[SH_MAX_CLIENT_STATES];
 
 public:
 	HeroArrays(void);
@@ -175,10 +175,8 @@ inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  con
 		return false;
 	}
 	
-	state_cell_type_t word = (the_effect_flag_id / bucket_size),
-		bit = (the_effect_flag_id & (bucket_size-1));
 	
-	return Get_BitVar(this->the_player_masks[the_player_id][word], bit);
+	return Get_BitVar(this->the_player_masks[the_effect_flag_id], the_player_id);
 }
 
 inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set )
@@ -187,11 +185,8 @@ inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, c
 	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= SH_MAX_CLIENT_STATES)){
 		return;
 	}
-	
-	state_cell_type_t word = (the_effect_flag_id / bucket_size),
-		bit = (the_effect_flag_id & (bucket_size-1));
-	
-	Assign_BitVar(this->the_player_masks[the_player_id][word], bit, the_polarity_to_set);
+
+	Assign_BitVar(this->the_player_masks[the_effect_flag_id], the_player_id, the_polarity_to_set);
 	
 }
 

@@ -14,8 +14,8 @@
 #include "../my_include/my_author_header.inc"
 
 new gHeroID = -1
-new mine_armed[SH_MAXSLOTS+1]
-new disarmer_on[SH_MAXSLOTS+1]
+new mine_armed_mask = 0
+new disarmer_on_mask = 0
 new Float:curr_charge[SH_MAXSLOTS+1]
 new Float:curr_disarm_charge[SH_MAXSLOTS+1]
 
@@ -75,7 +75,7 @@ public _mine_get_mine_disarming(iPlugins,iParams){
 public _mine_get_mine_armed(iPlugins,iParams){
 
 	new id=get_param(1);
-	return mine_armed[id]
+	return Get_BitVar(mine_armed_mask, id)
 
 
 }
@@ -83,14 +83,14 @@ public _mine_set_mine_armed(iPlugins,iParams){
 
 	new id=get_param(1);
 	new value_to_set=get_param(2)
-	mine_armed[id]=value_to_set
+	Assign_BitVar(mine_armed_mask, id,value_to_set)
 
 
 }
 public _mine_get_mine_disarmer_on(iPlugins,iParams){
 
 	new id=get_param(1);
-	return disarmer_on[id]
+	return Get_BitVar(disarmer_on_mask, id)
 
 
 }
@@ -102,7 +102,10 @@ public plant_mine(id){
 	new Float:origin[3];
 	entity_get_vector(id, EV_VEC_origin, origin);
 	
-	new ent = my_create_entity("info_target");
+	new ent = create_entity("info_target");
+	if(!ent){
+		return
+	}
 	entity_set_string(ent ,EV_SZ_classname, MINE_CLASSNAME);
 	entity_set_edict(ent ,EV_ENT_owner, id);
 	entity_set_int(ent, EV_INT_movetype, MOVETYPE_TOSS);
@@ -116,13 +119,15 @@ public plant_mine(id){
 	glow(ent,1,1,1,120,1)
 	drop_to_floor(ent);
 	sapper_dec_num_mines(id);
+
+	UnSet_BitVar(disarmer_on_mask,id)
 	sh_chat_message(id,gHeroID,"You have %d mines left",sapper_get_num_mines(id));
 	entity_set_float(ent,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 	
 }
 public mine_think(mine_id){
 
-	if ( pev_valid(mine_id)!=2 ){
+	if ( !is_valid_ent(mine_id) ){
 		
 	
 			return
@@ -192,6 +197,12 @@ public loadCVARS()
 
 public disarm_task(param[1],id){
 	id-=MINE_DISARM_TASKID
+
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
+		
+		return
+	}
+	
 	curr_disarm_charge[id]=floatadd(curr_disarm_charge[id],MINE_DISARM_PERIOD)
 	if(!is_user_bot(id)){
 		static hud_msg[128];
@@ -199,6 +210,10 @@ public disarm_task(param[1],id){
 		100.0*(curr_disarm_charge[id]/min_charge_time)
 		);
 		client_print(id,print_center,"%s",hud_msg)
+	}
+
+	if(!Get_BitVar(disarmer_on_mask,id)){
+		return
 	}
 	new bool:result=sapper_update_disarming(id)
 	if(!mine_get_mine_disarming(id)){
@@ -223,19 +238,28 @@ public disarm_task(param[1],id){
 }
 public _mine_undisarm_mine(iPlugin,iParams){
 	new id=get_param(1)
-	disarmer_on[id]=0
+	Assign_BitVar(disarmer_on_mask,id,false_for_macro)
 	
 	
 }
 public _mine_disarm_mine(iPlugins,iParams){
 
 	new id=get_param(1);
+
+	if(task_exists(id+MINE_DISARM_TASKID)){
+		
+		return
+		
+	}
+
 	new mine_id=get_param(2)
-	disarmer_on[id]=1
+	Assign_BitVar(disarmer_on_mask,id, true_for_macro)
 	curr_disarm_charge[id]=0.0
 	new param[1];
 	param[0]=mine_id
-	set_task(MINE_DISARM_PERIOD,"disarm_task",id+MINE_DISARM_TASKID,param, 1)
+
+
+	disarm_task(param,id+MINE_DISARM_TASKID)
 	
 	
 	
@@ -244,8 +268,15 @@ public _mine_disarm_mine(iPlugins,iParams){
 public _mine_charge_mine(iPlugins,iParams){
 
 	new id=get_param(1);
-	mine_armed[id]=1
+	if(task_exists(id+MINE_CHARGE_TASKID)){
+		
+		return
+		
+	}
+	
+	Assign_BitVar(mine_armed_mask,id, true_for_macro)
 	curr_charge[id]=0.0
+
 	charge_task(id+MINE_CHARGE_TASKID)
 	
 	
@@ -345,18 +376,22 @@ return true
 
 }
 public charge_task(id){
+
 	if(!sh_is_active()||sh_is_freezetime()){
-	
-		uncharge_user(id)
+
 		return
 	
 	}
+
 	id-=MINE_CHARGE_TASKID
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 	
 		uncharge_user(id)
 		return
 	
+	}
+	if(!Get_BitVar(mine_armed_mask,id)){
+		return
 	}
 	curr_charge[id]=floatadd(curr_charge[id],MINE_CHARGE_PERIOD)
 	if(!is_user_bot(id)){
@@ -378,6 +413,10 @@ public charge_task(id){
 		set_task(MINE_CHARGE_PERIOD,"charge_task",id+MINE_CHARGE_TASKID)
 	
 	}
+	else{
+
+		uncharge_user(id)
+	}
 	
 	
 	
@@ -393,7 +432,7 @@ public _mine_uncharge_mine(iPlugin,iParams){
 }
 
 uncharge_user(id){
-	mine_armed[id]=0
+	Assign_BitVar(mine_armed_mask,id, false_for_macro)
 	
 	
 }

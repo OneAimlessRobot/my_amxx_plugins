@@ -399,6 +399,10 @@ public fw_Item_PostFrame( iEnt )
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)	
 
+	if(!is_user_alive(id)){
+		
+		return HAM_IGNORED
+	}
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id,CSW_SHARD_CANNON)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 

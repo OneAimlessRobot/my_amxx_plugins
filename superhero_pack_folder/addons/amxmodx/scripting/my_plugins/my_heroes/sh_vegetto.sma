@@ -231,7 +231,7 @@ public vegetto_kd(id)
 	}
 
 	// Prevent too many entities, which would cause server problems
-	if( g_powerID[id] ){
+	if( is_valid_ent(g_powerID[id]) ){
 		sh_sound_deny(id)
 		client_print(id,print_chat,"[SH](Vegetto) You cannot use more than one power at a time.")
 		return
@@ -582,7 +582,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 			sh_extra_damage(vic, id, damage,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
-								vegetto_dmgs_arr[g_powerNum[id]-1][the_wpn_id])
+								vegetto_dmgs_arr[g_powerNum[id]][the_wpn_id])
 
 
 			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
