@@ -13,9 +13,7 @@ t800_paramult 5		    //how strong is the para
 #include <engine>
 
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sliphantom_inc/sliphantom_inc.inc"
 
-new gSuperNoodle_HeroID = -1
 
 #define TASKID 800
 // VARIABLES
@@ -24,7 +22,7 @@ new gHeroID
 new gT800Timer[SH_MAXSLOTS+1]
 new bool:gMorphed[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
-new gKills, gmsgScreenFade
+new gmsgScreenFade
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -53,9 +51,6 @@ public plugin_init()
 
 	set_task(1.0,"t800_loop",TASKID,_,_,"b")
 }
-public plugin_cfg(){
-	gSuperNoodle_HeroID = supernoodle_get_hero_id()
-}
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
@@ -70,11 +65,10 @@ public sh_round_end()
 
 	gPlayerUltimateUsedMask=0
 	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
-	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
-			t800_endmode(id, true)
+			t800_endmode(id)
 		}
 	}
 }
@@ -110,6 +104,12 @@ public sh_client_death(id)
 		t800_endmode(id)
 	}
 }
+public sh_client_spawn(id){
+
+	if (is_user_alive(id) && sh_get_user_has_hero(id,gHeroID)) {
+		sh_drop_weapon(id,CSW_M249, false)
+	}
+}
 //----------------------------------------------------------------------------------------------
 public t800_loop(task_id)
 {
@@ -125,7 +125,7 @@ public t800_loop(task_id)
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) )  {
 			if ( gT800Timer[id] > 0 ) {
 				gT800Timer[id]--
-				new message[128]
+				static message[128]
 				formatex(message, 127, "%d seconds left of being a T-800 hurry up", gT800Timer[id])
 				set_hudmessage(255,0,0,-1.0,0.3,0,1.0,1.0,0.0,0.0)
 				show_hudmessage(id, message)
@@ -233,10 +233,9 @@ public t800_kd(id)
 	sh_give_weapon(id,CSW_M249) 
 	set_user_godmode(id,1)
 	t800_morph(id)
-	gKills = get_user_frags(id)
 	sh_set_cooldown(id, get_cvar_num("t800_cooldown") * 1.0)
 	
-	new message[128]
+	static message[128]
 	formatex(message, 127, "You have become a T-800 KILL!")
 	set_hudmessage(255,0,0,-1.0,0.3,0,0.25,1.0,0.0,0.0)
 	show_hudmessage(id, message)
@@ -257,7 +256,7 @@ public t800_morph(id)
 	gMorphed[id] = true
 }
 //----------------------------------------------------------------------------------------------
-t800_endmode(id, bool:is_ending_round= false)
+t800_endmode(id)
 {
 	//setScreenFlash(id, 0, 0, 0, 1, 0)
 	
@@ -266,36 +265,23 @@ t800_endmode(id, bool:is_ending_round= false)
 		shSwitchWeaponID( id, gLastWeapon[id] )
 	}
 
+	if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+		set_user_godmode(id)
+		sh_screen_fade(id,0.0,0.0,0,0,0,0)
+
+	}
 	if ( gMorphed[id] && is_user_connected(id) ){
 		t800_unmorph(id)
 	}
 
-	if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		set_user_godmode(id)
-		sh_screen_fade(id,0.0,0.0,0,0,0,0)
-		/*
-			this used to cause a crash without the gating
-		*/
-		if(!(sh_get_user_has_hero(id,gSuperNoodle_HeroID) && is_ending_round)){
-			sh_drop_weapon(id,CSW_M249, false)
-		}
-
-	}
 }
 //----------------------------------------------------------------------------------------------
 public t800_unmorph(id)
 {
-	new totalkill = get_user_frags(id) - gKills
-	
+
 	if ( gMorphed[id] ) {
 		set_hudmessage(255, 0, 0, -1.0, 0.45, 2, 0.02, 4.0, 0.01, 0.1)
-		if (totalkill == 1) {
-			show_hudmessage(id,"T-800 Mode has ended, you have killed 1 person")
-		} 
-		else {
-			show_hudmessage(id,"T-800 Mode has ended, you have killed %d people",totalkill)
-		}
-		
+		show_hudmessage(id,"T-800 Mode has ended")
 		
 		#if defined AMXX_VERSION
 		cs_reset_user_model(id)

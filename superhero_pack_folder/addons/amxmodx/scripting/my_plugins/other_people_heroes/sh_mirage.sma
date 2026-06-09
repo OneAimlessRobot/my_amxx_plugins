@@ -34,7 +34,7 @@ public plugin_init() {
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_get_user_has_hero(id,gHeroID)&&is_user_connected(id)&&is_user_alive(id)){
+	if(sh_get_user_has_hero(id,gHeroID)&&is_user_alive(id)){
 		remove_task(id+TASKID)
 		set_task(0.1,"mirage_loop",id+TASKID,"",0,"b")
 	}
@@ -48,7 +48,7 @@ if (sh_get_user_has_hero(id,gHeroID)&&is_user_alive(id)&&is_user_connected(id))
 {
 	for (new enemy=1;enemy< sh_maxplayers()+1;enemy++) 
 	{
-		if (is_user_connected(enemy)&&is_user_alive(enemy) && (get_user_team(enemy)!=get_user_team(id)) && !sh_get_cooldown_flag(id)) 
+		if (is_user_alive(enemy) && (get_user_team(enemy)!=get_user_team(id)) && !sh_get_cooldown_flag(id)) 
 		{
 			new aid,abody
 			get_user_aiming(enemy,aid,abody)
