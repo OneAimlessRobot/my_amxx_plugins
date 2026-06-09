@@ -57,6 +57,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!/Extra Damage for all these/Unlimited Ammo. Extra HP and AP.", false, "SuperNoodle_level")
 
+	sh_assign_hero_bit(gHeroID, SH_M249_HERO, true)
 
 	custom_dmg_id_super_shotgun=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_super_shotgun,

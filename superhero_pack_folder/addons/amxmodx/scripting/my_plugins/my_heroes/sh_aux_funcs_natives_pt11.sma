@@ -30,7 +30,8 @@ static const sh_property_gating_array[hero_property_flags_id] =  {
 			25,
 			25,
 			25,
-			25
+			25,
+			1
 			
 
 }

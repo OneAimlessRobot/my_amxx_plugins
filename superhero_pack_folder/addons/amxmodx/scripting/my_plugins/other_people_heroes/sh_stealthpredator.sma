@@ -40,6 +40,9 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Speed/Revive/Heal/Invisibility/No Footsteps", "Hold Keydown to go Invisible and No Footsteps ", true, "stealth_level")
 	
+	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
+
+	sh_assign_hero_bit(gHeroID,SH_BOT_RESTRICTED, true)
 
 	//EVENTS
 	register_event("CurWeapon", "curweapon", "be", "1=1")

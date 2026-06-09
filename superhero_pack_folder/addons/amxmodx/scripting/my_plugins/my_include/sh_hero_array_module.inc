@@ -34,6 +34,7 @@ enum hero_property_flags_id {
 	SH_ANTI_GRENADES_HERO,
 	SH_HITBOX_MANIP_HERO,
 	SH_RESPAWN_HERO,
+	SH_M249_HERO,
 };
 
 
@@ -52,7 +53,8 @@ stock const sh_hero_property_names[hero_property_flags_id][64] =  {
 			"Anti fall damage hero",
 			"Anti grenades hero",
 			"Hitbox manipulating hero",
-			"Respawning hero"
+			"Respawning hero",
+			"M249 wielding hero"
 			
 
 }

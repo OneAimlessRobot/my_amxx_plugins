@@ -43,6 +43,8 @@ public plugin_init()
 	
 	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 	
+	sh_assign_hero_bit(gHeroID, SH_M249_HERO, true)
+	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yakui/yakui.mdl",
 								"models/player/yakui/yakui.mdl",

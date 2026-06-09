@@ -13,7 +13,9 @@ t800_paramult 5		    //how strong is the para
 #include <engine>
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sliphantom_inc/sliphantom_inc.inc"
 
+new gSuperNoodle_HeroID = -1
 
 #define TASKID 800
 // VARIABLES
@@ -38,6 +40,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Change into a T-800", "Get a giant mini gun and you are indistructable", true, "t800_level")
 	
+
+	sh_assign_hero_bit(gHeroID, SH_M249_HERO, true)
 	
 	// Model Change
 	register_event("CurWeapon","weaponChange","be","1=1")
@@ -48,6 +52,9 @@ public plugin_init()
 	gmsgScreenFade = get_user_msgid("ScreenFade")
 
 	set_task(1.0,"t800_loop",TASKID,_,_,"b")
+}
+public plugin_cfg(){
+	gSuperNoodle_HeroID = supernoodle_get_hero_id()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -67,7 +74,7 @@ public sh_round_end()
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() ) {
-			t800_endmode(id)
+			t800_endmode(id, true)
 		}
 	}
 }
@@ -250,19 +257,28 @@ public t800_morph(id)
 	gMorphed[id] = true
 }
 //----------------------------------------------------------------------------------------------
-public t800_endmode(id)
+t800_endmode(id, bool:is_ending_round= false)
 {
 	//setScreenFlash(id, 0, 0, 0, 1, 0)
 	
 	// Switch back to previous weapon...
-	if ( gLastWeapon[id] != CSW_M249 ) shSwitchWeaponID( id, gLastWeapon[id] )
-	
-	if ( gMorphed[id] && is_user_connected(id) ) t800_unmorph(id)
-	
+	if ( gLastWeapon[id] != CSW_M249 ){
+		shSwitchWeaponID( id, gLastWeapon[id] )
+	}
+
+	if ( gMorphed[id] && is_user_connected(id) ){
+		t800_unmorph(id)
+	}
+
 	if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_godmode(id)
 		sh_screen_fade(id,0.0,0.0,0,0,0,0)
-		sh_drop_weapon(id,CSW_M249, true)   
+		/*
+			this used to cause a crash without the gating
+		*/
+		if(!(sh_get_user_has_hero(id,gSuperNoodle_HeroID) && is_ending_round)){
+			sh_drop_weapon(id,CSW_M249, false)
+		}
 
 	}
 }

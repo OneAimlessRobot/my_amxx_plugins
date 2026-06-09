@@ -158,7 +158,6 @@ public kick_ball(iPlugin,iParams)
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
 	
-	Origin[2]+=15.0
 
 	Ent = create_entity("info_target")
 	
@@ -177,13 +176,17 @@ public kick_ball(iPlugin,iParams)
 	entity_set_int(  Ent , EV_INT_sequence, 0 );
 	
 	
-	entity_set_origin(Ent, Origin)
 	entity_set_vector(Ent, EV_VEC_angles, vAngle)
 	
 	entity_set_edict(Ent, EV_ENT_euser1, id)
 	drop_to_floor(Ent)
 	velocity_by_aim(id, floatround(BALL_SPEED) , Velocity)
-	
+
+	new Float:mini_Velocity[3];
+	multiply_3d_vector_by_scalar(Velocity,1.0/BALL_SPEED,mini_Velocity);
+	multiply_3d_vector_by_scalar(mini_Velocity,30.0,mini_Velocity);
+	add_3d_vectors(Origin,mini_Velocity,Origin);
+	entity_set_origin(Ent, Origin)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 	
 	set_pev(Ent, pev_vuser1, Velocity)
