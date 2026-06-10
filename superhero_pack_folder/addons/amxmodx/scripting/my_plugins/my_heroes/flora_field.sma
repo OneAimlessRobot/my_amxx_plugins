@@ -268,6 +268,7 @@ public _reset_flora_user(iPlugin,iParams){
 	new id= get_param(1),
 		bool:newRound = bool:get_param(2)
 
+	Assign_BitVar(cut_her_some_slack_start_of_round_mask, id, newRound)
 	clear_user_fields(id, newRound)
 	uncharge_user(id)
 	Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);

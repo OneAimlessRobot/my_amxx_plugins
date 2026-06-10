@@ -94,14 +94,14 @@ public _flora_get_hero_id(iPlugin,iParams){
 
 }
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id, bool:newRound)
+public sh_client_spawn(id)
 {
 	if(!is_user_alive(id)||!sh_is_active()){
 		
 		return
 	}
 	if ( sh_get_user_has_hero(id,gHeroID) ) {
-		reset_flora_user(id ,newRound)
+		reset_flora_user(id ,true)
 		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
 }
