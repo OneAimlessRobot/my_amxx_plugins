@@ -67,7 +67,7 @@ stock FLORA_COOLDOWN_TASKID,
 		FLORA_GLOBAL_TASKID
 
 
-new bool:cut_her_some_slack_start_of_round = false
+new cut_her_some_slack_start_of_round_mask = 0
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -131,7 +131,7 @@ public flora_noclip_control(id, uc_handle)
 }
 public sh_round_end(){
 	
-	cut_her_some_slack_start_of_round = true
+	cut_her_some_slack_start_of_round_mask = exhausted_bitsum
 
 }
 public plugin_natives(){
@@ -523,9 +523,9 @@ public flora_checks(task_id){
 			did_we_get_stuck=sh_hull_vacant(id,player_origin,HULL_HUMAN,the_ent_we_got_stuck_on)
 			if(did_we_get_stuck){
 				unoclip_flora(id)
-				if(cut_her_some_slack_start_of_round){
+				if(Get_BitVar(cut_her_some_slack_start_of_round_mask,id)){
 					//the slack has been cut
-					cut_her_some_slack_start_of_round = false
+					Assign_BitVar(cut_her_some_slack_start_of_round_mask,id, false_for_macro)
 					sh_chat_message(id, gHeroID, "We cut you some slack due to being at round start")
 				}
 				else if((g_flora_sheltered_value[id]<=OUTSIDE)){
