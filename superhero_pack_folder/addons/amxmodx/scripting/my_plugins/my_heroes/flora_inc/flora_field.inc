@@ -38,9 +38,7 @@ stock const sh_custom_color:flora_damage_colors[flora_sheltered_values]={
   RED
 
 }
-native clear_fields()
-
-native reset_flora_user(id)
+native reset_flora_user(id, bool:newRound= false)
 
 native Float:field_get_user_field_cooldown(id)
 
@@ -50,22 +48,10 @@ native form_field(id)
 
 native field_loaded(id)
 
-native clear_user_fields(id)
-
-native flora_max_fields()
-
-native Float:flora_get_cooldown()
-
-native is_too_close(id)
-
 native flora_get_user_num_active_fields(id)
 native flora_dec_user_num_active_fields(id,value)
 native flora_inc_user_num_active_fields(id,value)
 native flora_set_user_num_active_fields(id,value)
-
-native flora_get_user_is_cloaked(id)
-native flora_get_curr_inside(id)
-native flora_get_prev_inside(id)
 
 native flora_get_user_num_fields(id)
 native flora_set_user_num_fields(id,value)

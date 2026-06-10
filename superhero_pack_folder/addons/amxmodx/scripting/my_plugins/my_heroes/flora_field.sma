@@ -67,7 +67,7 @@ stock FLORA_COOLDOWN_TASKID,
 		FLORA_GLOBAL_TASKID
 
 
-
+new bool:cut_her_some_slack_start_of_round = false
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -129,27 +129,23 @@ public flora_noclip_control(id, uc_handle)
 	return FMRES_IGNORED;
 
 }
+public sh_round_end(){
+	
+	cut_her_some_slack_start_of_round = true
 
+}
 public plugin_natives(){
 
-	register_native("clear_fields","_clear_fields");
 	register_native("reset_flora_user","_reset_flora_user");
 	register_native("field_get_user_field_cooldown","_field_get_user_field_cooldown")
 	register_native("field_uncharge_user","_field_uncharge_user")
 	register_native("form_field","_form_field")
 	register_native("field_loaded","_field_loaded")
-	register_native("clear_user_fields","_clear_user_fields")
-	register_native("flora_get_cooldown","_flora_get_cooldown")
 	register_native("flora_get_user_num_active_fields","_flora_get_user_num_active_fields")
 	register_native("flora_set_user_num_active_fields","_flora_set_user_num_active_fields")
 	register_native("flora_dec_user_num_active_fields","_flora_dec_user_num_active_fields")
 	register_native("flora_inc_user_num_active_fields","_flora_inc_user_num_active_fields")
-	
-	
-	register_native("flora_get_user_is_cloaked","_flora_get_user_is_cloaked")
-	register_native("flora_get_curr_inside","_flora_get_curr_inside")
-	register_native("flora_get_prev_inside","_flora_get_prev_inside")
-	
+
 
 	
 
@@ -224,18 +220,15 @@ public _field_loaded(iPlugin,iParams){
 
 
 }
-public Float:_flora_get_cooldown(iPlugins, iParams){
+clear_user_fields(id,bool:newRound= false){
 	
-	return cvar_val(float,pcvar_field_cooldown)
-	
-}
-public _clear_user_fields(iPlugin,iParams){
-	
-	new id= get_param(1)
+
 	if(!is_user_connected(id)) return
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME, id);
 	while(grenada) {
-		destroy_field(grenada,1)
+		
+		destroy_field(grenada,1,_, newRound)
+
 		grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME, id);
 	}
 	if(is_user_connected(id)){
@@ -244,42 +237,10 @@ public _clear_user_fields(iPlugin,iParams){
 	}
 	
 }
-public _clear_fields(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, FLORA_FIELD_CLASSNAME)
-	while(grenada) {
-		
-		destroy_field(grenada,1)
-		grenada = find_ent_by_class(grenada,  FLORA_FIELD_CLASSNAME)
-		
-	}
-}
-
 public Float:_field_get_user_field_cooldown(iPlugin,iParams){
 	new id=get_param(1)
 	
 	return g_flora_field_cooldown[id]
-
-
-}
-public _flora_get_user_is_cloaked(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return Get_BitVar(g_curr_flora_cloaked_mask,id)
-
-
-}
-public _flora_get_curr_inside(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return g_flora_curr_inside[id]
-
-
-}
-public _flora_get_prev_inside(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return g_flora_prev_inside[id]
 
 
 }
@@ -304,9 +265,10 @@ Float:get_player_alpha(id){
 }
 public _reset_flora_user(iPlugin,iParams){
 	
-	new id= get_param(1)
-	
-	clear_user_fields(id)
+	new id= get_param(1),
+		bool:newRound = bool:get_param(2)
+
+	clear_user_fields(id, newRound)
 	uncharge_user(id)
 	Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 	g_flora_field_cooldown[id]=0.0;
@@ -370,7 +332,7 @@ flora_damage_code_reduction(id,Float:the_suffocation_health_fraction=1.0, remove
 		SH_NEW_DMG_SUFFOCATION,
 		generic_suffocation_wpn_id)
 }
-destroy_field(field_id,make_sound=0,planting=0){
+destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false){
 
 	if(is_valid_ent(field_id)){
 		new owner=entity_get_edict(field_id,EV_ENT_owner)
@@ -388,7 +350,7 @@ destroy_field(field_id,make_sound=0,planting=0){
 								(g_flora_num_of_active_fields[owner]>0)? (g_flora_num_of_active_fields[owner]-1):0
 
 				}
-				if(is_user_alive(owner)){
+				if(is_user_alive(owner)&&!start_of_round){
 					if(Get_BitVar(g_curr_flora_noclip_mask,owner)){
 						new bool:flora_has_to_die = (prev_num_active_here<=1)
 							
@@ -397,9 +359,6 @@ destroy_field(field_id,make_sound=0,planting=0){
 						new Float:user_origin[3]
 						entity_get_vector(owner,EV_VEC_origin,user_origin)
 						if(!sh_hull_vacant(owner,user_origin,HULL_HUMAN)){
-							
-							sh_chat_message(owner,gHeroID,"You were noclipping and were inside a wall as your last field dies. You die as well")
-							
 							/*
 							
 							wake me up inside
@@ -442,11 +401,12 @@ destroy_field(field_id,make_sound=0,planting=0){
 							Its an ND friendly institution
 
 							*/
+							if(flora_has_to_die){
+								Assign_BitVar(g_curr_flora_noclip_mask, owner, false_for_macro)
+							}
 							sh_chat_message(owner, gHeroID, flora_has_to_die?"You had one field left. Im sorry, Flora":"Hey, please go back to a field. You'll suffocate")
 							flora_damage_code_reduction(owner,1.0/(float(prev_num_active_here)),flora_has_to_die)
-
 						}
-
 					}
 				}
 				if(!Get_BitVar(g_curr_flora_noclip_mask,owner)){
@@ -554,12 +514,21 @@ public flora_checks(task_id){
 			new the_ent_we_got_stuck_on = 0
 			entity_get_vector(id,EV_VEC_origin,player_origin)
 			/*
+
 			she doesnt like free air. free air == stuck for her
+
+			also lets cut her some slack if the round just started
+
 			*/
 			did_we_get_stuck=sh_hull_vacant(id,player_origin,HULL_HUMAN,the_ent_we_got_stuck_on)
 			if(did_we_get_stuck){
 				unoclip_flora(id)
-				if((g_flora_sheltered_value[id]<=OUTSIDE)){
+				if(cut_her_some_slack_start_of_round){
+					//the slack has been cut
+					cut_her_some_slack_start_of_round = false
+					sh_chat_message(id, gHeroID, "We cut you some slack due to being at round start")
+				}
+				else if((g_flora_sheltered_value[id]<=OUTSIDE)){
 					sh_chat_message(id, gHeroID, "You got stuck on furniture. You shall get punished.")
 					
 					new Float:max_distance = cvar_val(float,pcvar_flora_teleport_reach_max_distance),

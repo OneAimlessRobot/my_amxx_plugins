@@ -259,7 +259,12 @@ public escapist_ku(id)
 
 }
 public client_connect(id){
-	gFastWeapon[id]=-1
+	gFastWeapon[id] = -1
+	gEscapeSpeed[id] = 0.0
+}
+public client_disconnected(id){
+	gFastWeapon[id] = -1
+	gEscapeSpeed[id] = 0.0
 }
 //---------------------------------------------------------------------------------------------- 
 public sh_client_spawn(id)
