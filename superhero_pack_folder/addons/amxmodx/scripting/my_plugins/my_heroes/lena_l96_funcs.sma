@@ -462,8 +462,12 @@ public FwdTouchWorld( bull_et, World ) {
 }
 public bulletina_touque_playor(pToucher, pTouched)
 {
-	if(!is_valid_ent(pToucher)) return
-
+	if(!is_valid_ent(pToucher)){
+		return
+	}
+	if(!is_user_alive(pTouched)){
+		return
+	}
 	static Float:bullet_launch_pos[3],
 		Float:origin[3],
 		Float:velocity[3],
@@ -494,6 +498,9 @@ public bulletina_touque_playor(pToucher, pTouched)
 						falloff_coeff)
 
 	owner=entity_get_edict(pToucher,EV_ENT_owner)
+	if(!is_user_alive(owner)){
+		return
+	}
 	the_hitpoint= get_projectile_hit_hitpoint(pToucher,
 										velocity,
 										LENA_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0,

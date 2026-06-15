@@ -1,0 +1,5 @@
+L 06/14/2026 - 18:19:51: Start of error session.
+L 06/14/2026 - 18:19:51: Info (map "cs_assault") (file "addons/amxmodx/logs/error_20260614.log")
+L 06/14/2026 - 18:19:51: [CSTRIKE] Invalid player 8 (not in-game)
+L 06/14/2026 - 18:19:51: [AMXX] Run time error 10 (plugin "lena_l96_funcs.amxx") (native "cs_get_user_team") - debug not enabled!
+L 06/14/2026 - 18:19:51: [AMXX] To enable debug mode, add "debug" after the plugin name in plugins.ini (without quotes).
