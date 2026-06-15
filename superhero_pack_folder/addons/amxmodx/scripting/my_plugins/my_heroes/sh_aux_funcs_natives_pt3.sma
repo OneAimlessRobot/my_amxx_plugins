@@ -136,6 +136,9 @@ public _explosion(iPlugins,iParams){
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
 	new owner_id=((is_user_connected(ent_id))?ent_id:entity_get_edict(ent_id,EV_ENT_owner))
 
+	if(!is_user_connected(owner_id)){
+		return
+	}
 	new CsTeams:idTeam = cs_get_user_team(owner_id)
 		
 	for (new i=0; i < numfound; i++)
