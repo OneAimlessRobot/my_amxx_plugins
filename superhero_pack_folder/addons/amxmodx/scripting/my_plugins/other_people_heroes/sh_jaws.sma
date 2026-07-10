@@ -250,6 +250,10 @@ public jaws_loop()
 		DeathMSG = get_user_msgid("DeathMsg")
 		
 		for(new i=0; i<Pnum; i++) {
+
+			if(!is_user_alive(Players[i])){
+				continue;
+			}
 			Distance = get_entity_distance(Players[i], JawsEnt)
 		
 			if(Distance<100) {
