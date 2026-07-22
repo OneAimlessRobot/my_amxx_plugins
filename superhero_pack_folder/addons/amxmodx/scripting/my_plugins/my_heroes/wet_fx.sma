@@ -122,12 +122,6 @@ unwet_user(id){
 		sh_assign_id_bit(id, SH_IS_WET, false)
 	}
 	
-	if(sh_get_user_has_hero(id, gHeroID_ksun)){
-		if(sh_get_id_bit(id,SH_IS_SHOCKED)){
-			sh_unshock_user(id)
-		}
-	}
-	
 }
 
 public sh_client_death(id)
