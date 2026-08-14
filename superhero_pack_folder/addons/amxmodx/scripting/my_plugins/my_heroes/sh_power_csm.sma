@@ -74,6 +74,7 @@ public plugin_init()
 						"power_tracer_red",
 						1,
 						true)
+	sh_assign_hero_bit(gHeroID, SH_BLEED_POWERS, true);
 
 	RegisterHam(Ham_TraceAttack,"player","Power_Damage",_,true)
 	

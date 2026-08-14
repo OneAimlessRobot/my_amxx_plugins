@@ -29,6 +29,7 @@ public plugin_init()
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
+	sh_assign_hero_bit(gHeroID, SH_BLEED_POWERS, true);
 	sh_set_hero_info(gHeroID, "Vampiric Drain", "Gain HP by attacking players - More HPs per level")
 }
 //----------------------------------------------------------------------------------------------

@@ -8,7 +8,6 @@
 
 #define TOMIE_YU_RADIUS 400.0
 
-// GLOBAL VARIABLES
 new gHeroName[]="Tomie Yu"
 new gHeroID
 //----------------------------------------------------------------------------------------------
@@ -45,15 +44,16 @@ public _tomie_yu_hero_id(iPlugin,iParams){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-    if(!is_user_alive(id)||!sh_is_active()){
-        
-        return
-    }
-    if ( sh_get_user_has_hero(id,gHeroID) ) {
-        
-        give_custom_grenades(id,GREN_CO2,5)
+	if(!is_user_alive(id)||!sh_is_active()){
+		
+		return
+	}
+	if ( sh_get_user_has_hero(id,gHeroID) ) {
+		
+		give_custom_grenades(id,GREN_CO2,5)
+		sh_assign_id_bit(id,SH_IS_FIRE_HEADSHOT_HELMET, true);
 
-    }
+	}
 }
 public sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]){
 	if ( !sh_is_active() || !is_user_connected(gored_id)){
@@ -93,8 +93,17 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 			
 			case SH_NEW_DMG_FIRE:{
 				
-				damage= (headshot?0:floatround(float(damage)*0.5))
+				new bool:has_helmet= sh_get_id_bit(victim,SH_IS_FIRE_HEADSHOT_HELMET);
 
+				damage= (headshot?((_:!has_helmet)*damage)
+							:
+							floatround(float(damage)*0.5));
+				
+				if(has_helmet&&!damage){
+					
+					sh_chat_message(victim,gHeroID,"Fire retardant hair melted from the fire headshot!")
+					sh_assign_id_bit(victim,SH_IS_FIRE_HEADSHOT_HELMET, false);
+				}
 			}
 			case SH_NEW_DMG_DRAIN:{
 				
