@@ -88,7 +88,7 @@ public plugin_init()
 	gHeroID=shCreateHero(HeroName, "Silver Knife & Bullets", "Burn Vampires with your KNIFE or Deal Extra Burning Damage with your MAC10 or USP", false, "blade_level")
 
 
-	sh_register_superheromod_weapon_model(gHeroID,CSW_DEAGLE,gBladeeMac10Model)
+	sh_register_superheromod_weapon_model(gHeroID,CSW_MAC10,gBladeeMac10Model)
 
 	custom_dmg_id_gunburn=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_gunburn,
 				dmg_source_name_log_gunburn,
