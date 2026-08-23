@@ -206,7 +206,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_QUADBARREL)
 	ent_check(Ent,FMRES_IGNORED)
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
 	if(NewButton & IN_ATTACK2)
@@ -236,7 +236,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 
 	}
-	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,XO_PLAYER)
 	if(is_valid_ent(pEntity)){
 		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
@@ -359,7 +359,7 @@ public fw_Item_Deploy_Post(Ent)
 	set_pev(Id, pev_weaponmodel2, Q_BARREL_MODEL_P)
 	
 	native_playanim(Id, ANIM_DRAW)
-	set_pdata_string(Id, (m_szAnimExtention) * 4,  ANIM_EXT, -1 ,  XTRA_OFS_PLAYER * 4)
+	set_pdata_string(Id, (m_szAnimExtention) * 4,  ANIM_EXT, -1 ,  XO_PLAYER * 4)
 }
 
 public fw_Item_AddToPlayer_Post(ent, id)
@@ -384,7 +384,7 @@ public fw_Weapon_WeaponIdle_Post(iEnt)
 	if (!is_user_alive(id)){
 		return
 	}
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
@@ -408,7 +408,7 @@ public fw_Item_PostFrame(iEnt)
 		
 		return HAM_IGNORED
 	}
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != iEnt){
 		return HAM_IGNORED
 	}
 	if(!Get_BitVar(g_Had_QB, id)){
@@ -419,7 +419,7 @@ public fw_Item_PostFrame(iEnt)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = Q_BARREL_CLIP
 
-	if(get_pdata_int(iEnt, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
+	if(get_pdata_int(iEnt, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, XO_PLAYER) <= 0.0)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
 		set_pdata_int(iEnt, m_iClip, iClip + j, XO_WEAPON)
@@ -460,7 +460,7 @@ public fw_Weapon_Reload_Post(iEnt)
 	if (!is_user_alive(id)){
 		return
 	}
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt)
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != iEnt)
 		return
 	if(!Get_BitVar(g_Had_QB, id))
 		return
@@ -470,7 +470,7 @@ public fw_Weapon_Reload_Post(iEnt)
 		return
 
 	set_pdata_int(iEnt, m_fInSpecialReload, 0, XO_WEAPON)
-	set_pdata_float(id, m_flNextAttack, Q_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
+	set_pdata_float(id, m_flNextAttack, Q_BARREL_RELOAD_TIME, XO_PLAYER)
 	set_pdata_float(iEnt, m_flTimeWeaponIdle, Q_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
 	set_pdata_float(iEnt, m_flNextPrimaryAttack, Q_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
 	set_pdata_float(iEnt, m_flNextSecondaryAttack, Q_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
@@ -489,7 +489,7 @@ public fw_Weapon_PrimaryAttack(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != iEnt){
 		return HAM_IGNORED
 	}
 	if(!Get_BitVar(g_Had_QB, id)){
@@ -508,7 +508,7 @@ public fw_Weapon_PrimaryAttack_Post(iEnt)
 	if(!is_user_alive(id)){
 		return
 	}
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != iEnt){
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != iEnt){
 		return
 	}
 	if(!Get_BitVar(g_Had_QB, id)){

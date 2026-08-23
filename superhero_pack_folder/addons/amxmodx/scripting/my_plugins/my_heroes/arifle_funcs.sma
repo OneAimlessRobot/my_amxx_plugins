@@ -159,7 +159,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 
 	}
-	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
@@ -262,7 +262,7 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	if(!is_user_alive(Id)){
 		return
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Arifle, Id))
 		return
@@ -272,7 +272,7 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 		native_playanim(Id, anim_idle)
 		
 		set_pdata_float(Ent, m_flTimeWeaponIdle, 20.0, XO_WEAPON)
-		set_pdata_string(Id, (m_szAnimExtention) * 4, ARIFLE_PLAYER_ANIMEXT, -1 , XTRA_OFS_PLAYER * 4)
+		set_pdata_string(Id, (m_szAnimExtention) * 4, ARIFLE_PLAYER_ANIMEXT, -1 , XO_PLAYER * 4)
 	}
 }
 
@@ -286,7 +286,7 @@ public fw_Item_Deploy_Post(Ent)
 		
 		return
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem, XTRA_OFS_PLAYER) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
 	
 
@@ -355,7 +355,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED	
 	
 
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, CSW_ARIFLE)
 	
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)

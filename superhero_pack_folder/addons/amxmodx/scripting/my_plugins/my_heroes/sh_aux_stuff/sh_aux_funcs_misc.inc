@@ -54,11 +54,11 @@ stock progressBar(id, seconds)
 
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
 {
-	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
+	static Ent; Ent = get_pdata_cbase(id, m_pActiveItem, XO_PLAYER)
 	ent_check(Ent,)
 
 	set_pdata_int(Ent, m_iShellId, Shell_ModelIndex, XO_WEAPON)
-	set_pdata_float(id, m_flEjectBrass, get_gametime() + Time, XTRA_OFS_PLAYER)
+	set_pdata_float(id, m_flEjectBrass, get_gametime() + Time, XO_PLAYER)
 }
 stock native_playanim(id,anim)
 {	
@@ -276,7 +276,7 @@ stock do_fast_reload(id,iEnt,Float:speed=1.0){
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
 		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
-		set_pdata_float(id, m_flNextAttack, fDelay, OFFSET_LINUX_PLAYER)
+		set_pdata_float(id, m_flNextAttack, fDelay, XO_PLAYER)
 	}
 }
 #else

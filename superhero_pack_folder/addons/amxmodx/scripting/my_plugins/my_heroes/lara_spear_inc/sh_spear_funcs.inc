@@ -3,8 +3,6 @@
 #endif
 #define sh_lara_funcs
 
-#include "../my_include/my_author_header.inc"
-
 #define SPEAR_CLASSNAME "spear"
 
 #define SPEAR_RETRIEVE true

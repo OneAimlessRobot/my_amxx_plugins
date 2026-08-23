@@ -11,8 +11,29 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
-
 stock const player_flags_print[]="sh_print_player_hero_flags"
+
+static const sh_hero_property_names[hero_property_flags_id][64] =  {
+			"Blood thirsty",
+			"Explosive",
+			"Sleep bender",
+			"Core hero",
+			"Invisibility",
+			"Healing",
+			"Small",
+			"Dream eater",
+			"Annoying hero",
+			"Health cap hero",
+			"No bots hero",
+			"Anti fall damage hero",
+			"Anti grenades hero",
+			"Hitbox manipulating hero",
+			"Respawning hero",
+			"M249 wielding hero",
+			"TR45H P0W3R5 hero"
+			
+
+}
 
 
 static const sh_property_gating_array[hero_property_flags_id] =  {
@@ -31,7 +52,8 @@ static const sh_property_gating_array[hero_property_flags_id] =  {
 			25,
 			25,
 			25,
-			1
+			1,
+			25
 			
 
 }

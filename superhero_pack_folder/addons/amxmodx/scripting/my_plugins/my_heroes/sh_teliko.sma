@@ -389,9 +389,11 @@ public sh_client_death(id){
 
 public Teliko_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {	
-	if(!is_user_alive(Attacker)){
+	
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
 		return
 	}
+	
 	new bool:the_bool_to_use=((g_counter_bullets[Attacker])>0)
 	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true)
 	

@@ -180,7 +180,7 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, LENA_WEAPON_CLASSID)
 	
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
@@ -261,7 +261,7 @@ public fw_ItemDeployPre(entity)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_pdata_float(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
+	set_pdata_float(pPlayer, m_flNextAttack, LENA_PROJECTILE_DEPLOY_TIME ,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, LENA_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip ,min(LENA_L96_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	set_weapon_secret_code(entity,weapon_secret_code)
@@ -368,7 +368,7 @@ entity_set_edict(Ent, EV_ENT_owner, id)
 
 velocity_by_aim(id, floatround(LENA_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
-new resume_zoom=get_pdata_bool(id,m_bResumeZoom,OFFSET_LINUX_PLAYER*4)
+new resume_zoom=get_pdata_bool(id,m_bResumeZoom,XO_PLAYER*4)
 if(!(resume_zoom)){
 	coeff_to_multiply_with=LENA_PROJECTILE_SHOOT_RANDOMNESS;
 }
@@ -415,7 +415,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if((get_user_weapon(player) != LENA_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED

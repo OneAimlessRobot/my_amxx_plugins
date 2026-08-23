@@ -196,6 +196,7 @@ stock const event_files_elite[NUM_OF_HANDS_IN_A_HUMAN][] = {
 
 #define is_weaponid_valid(%1) ((%1>0)&&(%1<=CSW_LAST_WEAPON)&&(%1!=CSW_GLOCK))
 
+#define wpn_id_in_bs(%1,%2) ((%2 & (1 << %1)))
 
 
 #define wlt_get_fruity_name(%1) (weapon_data_structs_array[%1][wpn_struct_fruity_name])

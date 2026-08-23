@@ -34,29 +34,10 @@ enum hero_property_flags_id {
 	SH_HITBOX_MANIP_HERO,
 	SH_RESPAWN_HERO,
 	SH_M249_HERO,
+	SH_TR45H_HERO,
 };
 
 
-stock const sh_hero_property_names[hero_property_flags_id][64] =  {
-			"Blood thirsty",
-			"Explosive",
-			"Sleep bender",
-			"Core hero",
-			"Invisibility",
-			"Healing",
-			"Small",
-			"Dream eater",
-			"Annoying hero",
-			"Health cap hero",
-			"No bots hero",
-			"Anti fall damage hero",
-			"Anti grenades hero",
-			"Hitbox manipulating hero",
-			"Respawning hero",
-			"M249 wielding hero"
-			
-
-}
 //up to 64 states can be added in the current version of the library
 enum player_state_flags_id {
 	
@@ -72,7 +53,8 @@ enum player_state_flags_id {
 	SH_IS_BLEEDING,
 	SH_IS_PSYCHOSIS,
 	SH_IS_REBORN,
-	SH_IS_FIRE_HEADSHOT_HELMET
+	SH_IS_FIRE_HEADSHOT_HELMET,
+	SH_IS_TR45H_GUN_EQUIPPED
 };
 
 //hero properties

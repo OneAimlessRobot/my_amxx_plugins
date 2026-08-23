@@ -358,7 +358,8 @@ public Ham_Weapon_PrimaryAttack_Post(weapon_ent)
 
 public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if(!is_user_alive(Attacker)){
+	
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
 		return
 	}
 	new fx_id:fx_num_of_owner=gatling_get_fx_num(Attacker)

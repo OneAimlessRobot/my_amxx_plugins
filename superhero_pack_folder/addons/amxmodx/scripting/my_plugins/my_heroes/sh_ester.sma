@@ -532,6 +532,11 @@ public ester_damage(id)
 
 public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
+
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
+		return
+	}
+	
 	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,true,sh_custom_color:{GREEN,GREEN,GREEN},
 					tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound)
 

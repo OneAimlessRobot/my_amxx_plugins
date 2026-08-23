@@ -63,7 +63,7 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 
 		return false
 	}
-	static item; item = get_pdata_cbase(Attacker, m_pActiveItem, XTRA_OFS_PLAYER)
+	static item; item = get_pdata_cbase(Attacker, m_pActiveItem, XO_PLAYER)
 
 	if(pev_valid(item)!=2){
 		return false

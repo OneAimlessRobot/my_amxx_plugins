@@ -85,9 +85,11 @@ public plugin_init()
 
 public power_tracer_red(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if(!is_user_alive(Attacker)){
+	
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
 		return
 	}
+	
 	new bool:the_bool_to_use=((g_power_points[Attacker])>0.0)
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true,sh_custom_color:{RED,RED,RED})
 

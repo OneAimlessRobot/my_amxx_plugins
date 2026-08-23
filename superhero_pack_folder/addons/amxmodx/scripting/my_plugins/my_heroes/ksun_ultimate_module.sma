@@ -312,6 +312,11 @@ public _ksun_player_is_ultimate_ready(iPlugins, iParams){
 
 public ksun_rifle_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
+
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
+		return
+	}
+	
 	new bool:the_bool_to_use=bool:Get_BitVar(g_player_in_ultimate_mask, Attacker);
 		
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,true,sh_custom_color:{PURPLE,PURPLE,PURPLE},tracer_sfx_show_laser_line|tracer_sfx_show_glow_aura)
@@ -344,7 +349,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 		return DMG_FWD_PASS
 	}
 
-	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)){
+	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)&&(new_dmg_type!=SH_NEW_DMG_TR45H_GUN)){
 
 	
 		return DMG_FWD_BLOCK

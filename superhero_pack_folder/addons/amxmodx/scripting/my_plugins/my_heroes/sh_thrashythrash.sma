@@ -234,6 +234,11 @@ public sh_client_spawn(id)
 
 public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {	
+
+	if(!sh_is_active() ||  !is_user_alive(Attacker)){
+		return
+	}
+	
 	generic_weapon_tracer_logic(Attacker,_,THRASHER_WEAPON_ID,gHeroID,true,sh_custom_color:{PINK,PINK,PINK})
 
 }

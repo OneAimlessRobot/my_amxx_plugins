@@ -178,7 +178,7 @@ public Item_PostFrame_Post(iEnt)
 		
 		return
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, YAKUI_WEAPON_CLASSID)
 	
 	static iClip; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
@@ -319,7 +319,7 @@ public CmdStart(id, uc_handle)
 
 	}
 
-	new ent = get_pdata_cbase(id, m_pActiveItem, XTRA_OFS_PLAYER)
+	new ent = get_pdata_cbase(id, m_pActiveItem, XO_PLAYER)
 
 	static buttons;
 	buttons= get_uc(uc_handle, UC_Buttons);
@@ -423,7 +423,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if((get_user_weapon(player) != YAKUI_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
@@ -588,7 +588,7 @@ public fw_ItemDeployPre(entity)
 	}
 
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,OFFSET_LINUX_PLAYER)
+	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, PILL_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(PILLGATLING_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	set_weapon_secret_code(entity,weapon_secret_code)

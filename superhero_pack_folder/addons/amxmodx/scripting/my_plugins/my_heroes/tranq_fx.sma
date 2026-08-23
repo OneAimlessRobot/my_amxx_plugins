@@ -59,7 +59,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(!sh_get_id_bit(player,SH_IS_SLEEPING)){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem, XTRA_OFS_PLAYER)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem, XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED

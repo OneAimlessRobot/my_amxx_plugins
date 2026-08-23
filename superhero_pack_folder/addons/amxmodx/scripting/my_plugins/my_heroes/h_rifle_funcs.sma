@@ -157,7 +157,7 @@ public Event_CurWeapon(id)
 		static Float:TargetTime; TargetTime = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * H_RIFLE_SPEED
 		
 		set_pdata_float(Ent, m_flNextPrimaryAttack, TargetTime, XO_WEAPON)
-		set_pdata_float(id, m_flNextAttack, TargetTime, OFFSET_LINUX_PLAYER)
+		set_pdata_float(id, m_flNextAttack, TargetTime, XO_PLAYER)
 	}
 	
 	g_Old_Weapon[id] = get_user_weapon(id)
@@ -179,7 +179,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, OLD_W_MODEL_H_RIFLE))
 	{
 		static weapon
-		weapon = get_weapon_ent_of_player(entity, CSW_MOSIN)
+		weapon = get_weapon_ent_of_player(id, CSW_MOSIN)
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
@@ -236,7 +236,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 
 	}
-	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
@@ -297,7 +297,7 @@ public fw_Item_Deploy_Post(Ent)
 	if (!is_user_alive(Id)){
 		return
 	}
-	if(get_pdata_cbase(Id, m_pActiveItem, OFFSET_LINUX_PLAYER) != Ent)
+	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
 	if(!Get_BitVar(g_Had_Mosin, Id))
 		return
@@ -357,7 +357,7 @@ public fw_Item_PostFrame( iEnt )
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_MOSIN)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
-	if(get_pdata_int(id, m_flNextAttack, XTRA_OFS_PLAYER) > 0.0)
+	if(get_pdata_int(id, m_flNextAttack, XO_PLAYER) > 0.0)
 		return
 
 	switch(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) )
@@ -372,7 +372,7 @@ public fw_Item_PostFrame( iEnt )
 			
 			native_playanim(id, ANIM_START_RELOAD)
 			
-			set_pdata_float(id, m_flNextAttack, 0.75, XTRA_OFS_PLAYER)
+			set_pdata_float(id, m_flNextAttack, 0.75, XO_PLAYER)
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.75, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.75, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.75, XO_WEAPON)
@@ -395,7 +395,7 @@ public fw_Item_PostFrame( iEnt )
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.45, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.45, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.45, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 0.45, XTRA_OFS_PLAYER)
+			set_pdata_float(id, m_flNextAttack, 0.45, XO_PLAYER)
 		}
 		case 3: // Done Insert
 		{
@@ -406,7 +406,7 @@ public fw_Item_PostFrame( iEnt )
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 0.1, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 0.1, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 0.1, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 0.1, XTRA_OFS_PLAYER)
+			set_pdata_float(id, m_flNextAttack, 0.1, XO_PLAYER)
 			
 			set_pdata_int(iEnt, m_fInSpecialReload, 2, XO_WEAPON)
 		}
@@ -418,7 +418,7 @@ public fw_Item_PostFrame( iEnt )
 			set_pdata_float(iEnt, m_flTimeWeaponIdle, 1.5, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextPrimaryAttack, 1.5, XO_WEAPON)
 			set_pdata_float(iEnt, m_flNextSecondaryAttack, 1.5, XO_WEAPON)
-			set_pdata_float(id, m_flNextAttack, 1.5, XTRA_OFS_PLAYER)
+			set_pdata_float(id, m_flNextAttack, 1.5, XO_PLAYER)
 		}
 	}
 }

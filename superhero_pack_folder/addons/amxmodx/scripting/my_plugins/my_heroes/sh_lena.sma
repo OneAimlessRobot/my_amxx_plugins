@@ -119,3 +119,25 @@ lena_weapons(id)
 		}
 	}
 }
+
+
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+	
+	if ( !sh_is_active() ||  !is_user_connected(victim)){
+	
+		return DMG_FWD_PASS
+	}
+	if(!sh_get_user_has_hero(victim,gHeroID)){
+
+		return DMG_FWD_PASS
+	}
+	if(new_dmg_type==SH_NEW_DMG_TR45H_GUN){
+
+	
+		damage = floatround(float(damage)*0.5)
+
+		sh_chat_message(attacker,gHeroID,"J- Jokes on you! Im [already] trash!")
+	}
+	
+	return DMG_FWD_PASS
+}

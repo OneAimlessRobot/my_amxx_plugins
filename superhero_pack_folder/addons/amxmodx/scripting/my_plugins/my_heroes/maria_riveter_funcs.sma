@@ -191,7 +191,7 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, MARIA_WEAPON_CLASSID)
 	
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
@@ -269,7 +269,7 @@ public fw_ItemDeployPre(entity)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_pdata_float(pPlayer, m_flNextAttack, MARIA_PROJECTILE_DEPLOY_TIME,OFFSET_LINUX_PLAYER)
+	set_pdata_float(pPlayer, m_flNextAttack, MARIA_PROJECTILE_DEPLOY_TIME,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, MARIA_PROJECTILE_DEPLOY_TIME,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(RIVETER_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	set_weapon_secret_code(entity,weapon_secret_code)
@@ -418,7 +418,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if((get_user_weapon(player) != MARIA_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
-	new pEntity =  get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity =  get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED

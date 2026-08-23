@@ -180,7 +180,7 @@ public fw_Item_PostFrame(ent)
 
 		return HAM_IGNORED;
 	}
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static bpammo; bpammo = cs_get_user_bpammo(id, DART_GUN_WEAPON_CLASSID)
 
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
@@ -488,7 +488,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	if(weapon!=DART_GUN_WEAPON_CLASSID){
 		return FMRES_IGNORED
 	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED

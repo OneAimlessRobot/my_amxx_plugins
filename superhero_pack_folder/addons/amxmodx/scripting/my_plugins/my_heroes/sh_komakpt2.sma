@@ -277,7 +277,7 @@ public Komak_hits_increase_rpm(id, idinflictor, attacker, Float:damage, damagebi
 	new client_hittable_here=is_user_alive(id)
 	if(client_hittable_here&&!sh_clients_are_same_team(id,attacker)&&(id!=attacker)){
 
-		new id_weapon_ent=get_pdata_cbase(attacker, m_pActiveItem, XTRA_OFS_PLAYER)
+		new id_weapon_ent=get_pdata_cbase(attacker, m_pActiveItem, XO_PLAYER)
 		new weapon_id=CSW_NONE
 		new bool:this_is_a_special_weapon_damage=entity_is_weapon(id_weapon_ent,_,weapon_id)
 		if(!komak_is_top_speed(attacker)){

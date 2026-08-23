@@ -61,7 +61,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		return FMRES_IGNORED
 	}
 	
-	new pEntity = get_pdata_cbase(player, m_pActiveItem, OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(player, m_pActiveItem, XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 
 		new is_silenced=cs_get_weapon_silen(pEntity)
@@ -230,7 +230,7 @@ public fw_Shut_Shinobu_Usp_Up(id, uc_handle)
 	new button = get_uc(uc_handle, UC_Buttons);
 	if(button & IN_ATTACK)
 	{
-		new weapon_ent = get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER)
+		new weapon_ent = get_pdata_cbase(id, m_pActiveItem, XO_PLAYER)
 		new is_silenced=cs_get_weapon_silen(weapon_ent)
 		if(!is_silenced){
 			button &= ~IN_ATTACK;

@@ -50,8 +50,7 @@
 #if !defined reapi_included 
 	//player offsets
 
-	#define XTRA_OFS_PLAYER	5 // linux offset to be used on pdatas with player entities
-	#define OFFSET_LINUX_PLAYER 5 // linux offset to be used on pdatas with player entities
+	#define XO_PLAYER	5 // linux offset to be used on pdatas with player entities
 
 										//add these offsets in the correct parameter
 
@@ -64,17 +63,17 @@
 	if(iWeaponEntity > 0)
 	{
 		iAmmoType = m_rgAmmo_player_Slot0 + 
-				get_pdata_int(iWeaponEntity, m_iPrimaryAmmoType, XTRA_OFS_WEAPON)
+				get_pdata_int(iWeaponEntity, m_iPrimaryAmmoType, XO_WEAPON)
 		
-		iAmmo = get_pdata_int(iWeaponEntity, m_iClip, XTRA_OFS_WEAPON)
+		iAmmo = get_pdata_int(iWeaponEntity, m_iClip, XO_WEAPON)
 		
-		iMagazine = get_pdata_int(iBotIdentity, iAmmoType, XTRA_OFS_PLAYER)
+		iMagazine = get_pdata_int(iBotIdentity, iAmmoType, XO_PLAYER)
 		
 		give_item(iPlayer, szWeaponName)
 		
-		set_pdata_int(iPlayer, iAmmoType, iMagazine, XTRA_OFS_PLAYER)
+		set_pdata_int(iPlayer, iAmmoType, iMagazine, XO_PLAYER)
 		
-		set_pdata_int(iWeaponEntity, m_iClip, iAmmo, XTRA_OFS_WEAPON)
+		set_pdata_int(iWeaponEntity, m_iClip, iAmmo, XO_WEAPON)
 	}
 
 	*/

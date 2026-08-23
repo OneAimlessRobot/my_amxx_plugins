@@ -183,7 +183,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	
 	ent_check(Ent,FMRES_IGNORED)
 	
-	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 	static Ammo; Ammo = cs_get_weapon_ammo(Ent)
 	
 	
@@ -197,7 +197,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		ent_check(ent,FMRES_IGNORED)
 
 		static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
-		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER)
+		static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
 		
 		if (flNextAttack > 0.0){
 			return FMRES_IGNORED
@@ -370,7 +370,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 
 	}
-	new pEntity = get_pdata_cbase(id, m_pActiveItem,OFFSET_LINUX_PLAYER)
+	new pEntity = get_pdata_cbase(id, m_pActiveItem,XO_PLAYER)
 	if(pev_valid(pEntity)==PDATA_SAFE){
 		set_cd(cd_handle, CD_flNextAttack, get_gametime()+1.0)
 		return FMRES_HANDLED
@@ -443,7 +443,7 @@ public fw_Weapon_Reload_Post(ent)
 			return HAM_IGNORED
 
 		set_pdata_int(ent, m_fInSpecialReload, 0, XO_WEAPON)
-		set_pdata_float(id, m_flNextAttack, D_BARREL_RELOAD_TIME, OFFSET_LINUX_PLAYER)
+		set_pdata_float(id, m_flNextAttack, D_BARREL_RELOAD_TIME, XO_PLAYER)
 		set_pdata_float(ent, m_flTimeWeaponIdle, D_BARREL_RELOAD_TIME + 0.5, XO_WEAPON)
 		set_pdata_float(ent, m_flNextPrimaryAttack, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
 		set_pdata_float(ent, m_flNextSecondaryAttack, D_BARREL_RELOAD_TIME + 0.25, XO_WEAPON)
@@ -474,7 +474,7 @@ public fw_Item_PostFrame(ent)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static iMaxClip ; iMaxClip = D_BARREL_DEFAULT_CLIP
 
-	if(get_pdata_int(ent, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, OFFSET_LINUX_PLAYER) <= 0.0)
+	if(get_pdata_int(ent, m_fInReload, XO_WEAPON) && get_pdata_float(id, m_flNextAttack, XO_PLAYER) <= 0.0)
 	{
 		static j; j = min(iMaxClip - iClip, iBpAmmo)
 		set_pdata_int(ent, m_iClip, iClip + j, XO_WEAPON)
@@ -509,7 +509,7 @@ public fw_Weapon_PrimaryAttack(ent)
 		return
 	}
 
-	if(get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) != ent){
+	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != ent){
 		return
 	}
 	if(!Get_BitVar(g_Had_Volcano, id))

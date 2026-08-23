@@ -17,6 +17,8 @@ enum extra_dmg_description_struct{
 }
 
 stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_description_struct] = {
+	
+	
 	{"SH_Unnamed_Damage",false},
 	{"SH_Energy_Blast",false},
 	{"SH_Drain",false},
@@ -40,7 +42,9 @@ stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_des
 	{"SH_Super_Melee",true},
 	{"SH_Suffocation",true},
 	{"SH_Cleanse",false},
-
+	
+	{"SH_Tr45H_Gun",false}
+	
 
 }
 
