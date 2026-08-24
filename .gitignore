@@ -9,4 +9,5 @@
 *.exe
 *.d
 *.ztmp
+*.bzip2
 .metadata/
