@@ -6,7 +6,7 @@ cd "$SCRIPT_PATH"
 export LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
 
 if [ ! -e "$HOME/.steam/sdk32/steamclient.so" ]; then
-	if [ ! -e "./steamclient.so" ]; then
+	if [ ! -e "$SCRIPT_PATH/steamclient.so" ]; then
 		echo "ERROR: steamclient.so missing"
 		exit 1
 	fi

@@ -23,7 +23,7 @@
         {
             "os"    : "linux",
             "mod"   : "cstrike",
-            "value" : "_Z25ApplyMultiDamage_OrigFuncP9entvars_sS0_"
+            "value" : "_Z16ApplyMultiDamageP9entvars_sS0_"
         }
     ]
 }

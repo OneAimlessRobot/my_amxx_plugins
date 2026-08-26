@@ -13,7 +13,7 @@
         {
             "os"    : "linux",
             "mod"   : "cstrike",
-            "value" : "_Z25ClearMultiDamage_OrigFuncv"
+            "value" : "_Z20ClearMultiDamage_apiv"
         }
     ]
 }
