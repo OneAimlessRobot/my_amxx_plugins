@@ -1,10 +1,12 @@
+
+
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "jvnko_inc/jvnko.inc"
+#include "trash_gun_inc/trash_gun.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
@@ -81,6 +83,7 @@ public jvnko_tracer_red(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 	if(!sh_is_active() ||  !is_user_alive(Attacker)){
 		return
 	}
+
 	new bool:the_bool_to_use=sh_get_id_bit(Attacker,SH_IS_TR45H_GUN_EQUIPPED)
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true,sh_custom_color:{RED,RED,RED})
 
@@ -101,11 +104,15 @@ public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 	if (!is_user_connected(Attacker)) return HAM_IGNORED
 
 	if ( has_hero  && sh_get_id_bit(Attacker,SH_IS_TR45H_GUN_EQUIPPED) && !sh_clients_are_same_team(Attacker,Victim)) {
-		
-		new Float:extraDamage = Damage * cvar_val(float,pcvar_dmg_mult)- Damage
+		new wpn_id= get_user_weapon(Attacker),
+			wpn_ent = get_weapon_ent_of_player(Attacker, wpn_id),
+			Float:the_dmg = deplete_trash_wpn_dmg_reserve(wpn_ent),
+			Float:pre_extraDamage = ( ( Damage * cvar_val(float,pcvar_dmg_mult))- Damage),
+			Float:extraDamage =  floatmax(0.0, floatmin(the_dmg,pre_extraDamage));
 		
 		if (extraDamage > 0.0){
-			
+			deplete_trash_wpn_dmg_reserve(wpn_ent,extraDamage)
+
 			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
 											the_hitpoint,
 											SH_DMG_NORM,
@@ -113,6 +120,7 @@ public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 											_,_,
 											SH_NEW_DMG_TR45H_GUN,
 											JVnk0_tr45h_gun_wpn_id)
+			
 		}
 	}
 	
@@ -120,6 +128,50 @@ public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 	
 	
 	
+}
+public sh_round_new(){
+
+
+	static the_players[SH_MAXSLOTS],
+			pnum,
+			id,
+			the_weapons[32],
+			wpn_num,
+			wpn_item_id,
+			bool:dropped_this_person_weapons
+	
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+		if(!sh_get_user_has_hero(id,gHeroID)){
+
+			continue;
+		}
+
+		dropped_this_person_weapons = false;
+
+		get_user_weapons(id,the_weapons,wpn_num);
+
+
+		for (new j = 0; j < wpn_num; j++) {
+			
+			wpn_item_id = the_weapons[j]
+			
+			if(player_wpn_is_trash_wpn(id,wpn_item_id)){
+
+				sh_drop_weapon(id,wpn_item_id,true)
+				dropped_this_person_weapons = true;
+			}
+
+		}
+		if(dropped_this_person_weapons){
+			sh_chat_message(id,gHeroID,"The round has ended! Your tr45H w34p0n5 have been destroyed")
+		}
+	}
+
+
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)

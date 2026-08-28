@@ -98,11 +98,11 @@ public plugin_init()
 	
 	RegisterHam(Ham_TakeDamage, "player", "Komak_hits_increase_rpm",1,true)
 
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Pre",_, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Pre",_, true, true)
 		
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Post",1, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,GUNS_BIT_SUM,"Komak_Fire_Weapon_Post",1, true, true)
 
-	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,single_shot_wpns_bs,"fw_Weapon_Reload_Post",1, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,single_shot_wpns_bs,"fw_Weapon_Reload_Post",1, true, true)
 
 	set_task(1.0, "komak_loop",_,_,_, "b")
 }

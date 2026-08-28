@@ -317,11 +317,16 @@ stock register_ham_hook_multiple(Ham:the_enum_to_hook,  const tg_entities[][], t
 }
 
 /**
-exclude mode == 0 for include guns outside of the bitsum. 1 to include only those on the bitsum
-*/
-stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true, bool:exclude_mode=false){
 	
-	new bit_sum_to_actually_do = exclude_mode ? (~(weapon_bitsum)): (weapon_bitsum)
+	include bool:
+	- false: only include guns outside of the bitsum. 
+	- true: only include guns on the bitsum
+
+*/
+
+stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true, bool:include_mode=true){
+	
+	new bit_sum_to_actually_do = include_mode ? (weapon_bitsum): (~(weapon_bitsum))
 	for ( new my_weapon_ids:wpnId = MY_CSW_P228; wpnId < my_weapon_ids; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (enum_one<<wpnId)))

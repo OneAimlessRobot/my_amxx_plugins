@@ -57,12 +57,12 @@ public plugin_init()
 						"ksun_rifle_laser",
 						1,
 						true)
-	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,(1<<KSUN_WEAPON_ID),"ksun_rifle_fast_shot",_, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,(1<<KSUN_WEAPON_ID),"ksun_rifle_fast_shot",_, true, true)
 
 	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
 	
 	
-	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,(1<<KSUN_WEAPON_ID),"fw_Weapon_Reload_Post",1, true, false)
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,(1<<KSUN_WEAPON_ID),"fw_Weapon_Reload_Post",1, true, true)
 }
 
 public plugin_natives(){

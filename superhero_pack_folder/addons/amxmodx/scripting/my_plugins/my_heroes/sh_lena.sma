@@ -135,8 +135,6 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 	
 		damage = floatround(float(damage)*0.5)
-
-		sh_chat_message(attacker,gHeroID,"J- Jokes on you! Im [already] trash!")
 	}
 	
 	return DMG_FWD_PASS

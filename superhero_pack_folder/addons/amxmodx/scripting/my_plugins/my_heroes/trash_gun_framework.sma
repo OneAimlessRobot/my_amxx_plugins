@@ -1,10 +1,10 @@
-#define AUX_STUFF_GIVE_WEAPONS
+
+
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "trash_gun_inc/trash_gun.inc"
 
 
 #define PLUGIN "Superhero Extra: (Junko pt.2) Trash Gun Handling"
@@ -13,23 +13,60 @@
 
 
 #define first_weap_owner_ent_field EV_INT_iuser2
+#define trash_weapon_damage_field EV_FL_fuser1
 
-new g_Old_Weapon[SH_MAXSLOTS+1] = {-1, ...}
 
 
-#define GLOBAL_TRASH_GUN_LOOP_TASK_PERIOD   1.0
+//nums
+
+//floats
+new pcvar_tr45h_gun_init_dmg_amt
 
 public plugin_init() 
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
-	register_event("CurWeapon", "Event_CurWeapon", "be", "1=1")
+	pcvar_tr45h_gun_init_dmg_amt = create_cvar("trash_gun_init_dmg_amt", "1500.0")
+
+	set_pcvar_bounds(pcvar_tr45h_gun_init_dmg_amt,CvarBound_Upper,true, 2000.0)
+	set_pcvar_bounds(pcvar_tr45h_gun_init_dmg_amt,CvarBound_Lower,true, 750.0)
+
 	
-	register_ham_for_weapon_bitsum(Ham_Item_AddToPlayer,GUNS_BIT_SUM,"fw_Item_AddToPlayer_Post",1, true)
+	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,GUNS_BIT_SUM, "fw_Item_PostFrame", 1, true, true)
+	
+	register_ham_for_weapon_bitsum(Ham_Item_AddToPlayer,GUNS_BIT_SUM, "fw_Item_AddToPlayer_Post", 0, true, true)
 
 }
+public plugin_natives(){
 
 
+	register_native("player_wpn_is_trash_wpn","_player_wpn_is_trash_wpn")
+	register_native("deplete_trash_wpn_dmg_reserve","_deplete_trash_wpn_dmg_reserve")
+}
+
+public bool:_player_wpn_is_trash_wpn(iPlugins, iParams){
+
+	new pid = get_param(1),
+		wpnid = get_param(2),
+		bool:result; 
+		
+		
+	result = player_wpn_is_trash_wpn_helper(pid, wpnid)
+
+
+	return result
+}
+
+public Float:_deplete_trash_wpn_dmg_reserve(iPlugins, iParams){
+
+
+	new wpn_ent = get_param(1),
+		Float:dmg_to_subtract = get_param_f(2)
+	
+	return deplete_trash_wpn_dmg_reserve_helper(wpn_ent,dmg_to_subtract)
+
+
+}
 public fw_Item_AddToPlayer_Post(Ent, id)
 {
 	ent_check(Ent,)
@@ -41,10 +78,69 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 
 
 		entity_set_int(Ent,first_weap_owner_ent_field,id)
+		entity_set_float(Ent,trash_weapon_damage_field,cvar_val(float,pcvar_tr45h_gun_init_dmg_amt))
 
 	}
 
 }
+Float:deplete_trash_wpn_dmg_reserve_helper(wpn_ent, Float:damage_to_deplete = 0.0){
+
+
+	new Float:curr_dmg_reserve = 0.0,
+		Float:prev_dmg_reserve = 0.0;
+
+	if(!is_valid_ent(wpn_ent)){
+
+		return 0.0
+	}
+	prev_dmg_reserve = entity_get_float(wpn_ent,trash_weapon_damage_field)
+	
+	if(damage_to_deplete > 0.0){
+		curr_dmg_reserve = floatmax(0.0, prev_dmg_reserve-damage_to_deplete)
+
+		entity_set_float(wpn_ent,trash_weapon_damage_field,curr_dmg_reserve)
+	}
+	else{
+		curr_dmg_reserve = prev_dmg_reserve
+
+
+	}
+	
+	return curr_dmg_reserve
+
+}
+bool:player_wpn_is_trash_wpn_helper(pid, wpnid){
+
+	new first_owner = -1;
+
+	if(!is_user_alive(pid)){
+
+
+		return false;
+	}
+
+	if(!wpn_id_in_bs(wpnid,GUNS_BIT_SUM)){
+
+		return false;
+	}
+	if(!user_has_weapon(pid,wpnid)){
+
+
+		return false;
+	}
+	new wpn_ent = get_weapon_ent_of_player(pid, wpnid)
+
+	if(!is_valid_ent(wpn_ent)){
+
+		return false;
+	}
+	first_owner = entity_get_int(wpn_ent,first_weap_owner_ent_field)
+
+	return (first_owner != pid);
+
+
+}
+
 public client_disconnected(disconnected_id){
 
 
@@ -113,37 +209,32 @@ public client_disconnected(disconnected_id){
 
 
 }
-public Event_CurWeapon(id)
+
+
+public fw_Item_PostFrame(ent)
 {
+
+	if(!is_valid_ent(ent)){
+		return HAM_IGNORED
+	}
+	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	
-	static CSWID; CSWID = read_data(2)
-
-	
-
-	new bool:wpn_is_in_bitsum = bool:wpn_id_in_bs(CSWID,GUNS_BIT_SUM);
-
-	if(g_Old_Weapon[id] == CSWID){
+	if(!is_user_alive(id)){
 		
-		return
-	
-	}
-
-	static Ent; Ent = get_weapon_ent_of_player(id, CSWID)
-	
-	if(!is_valid_ent(Ent))
-	{
-		return
+		return HAM_IGNORED
 	}
 
 
-	new first_owner = entity_get_int(Ent,first_weap_owner_ent_field)
+	new first_owner = entity_get_int(ent,first_weap_owner_ent_field)
 	
 	new bool:diff_owner=  (first_owner!=id),
-		bool:first_owner_is_connected = bool:is_user_connected(first_owner);
+		bool:first_owner_is_connected = bool:is_user_connected(first_owner),
+		bool:wpn_has_dmg_left = (deplete_trash_wpn_dmg_reserve_helper(ent)>0.0);
 
-	sh_assign_id_bit(id,SH_IS_TR45H_GUN_EQUIPPED, first_owner_is_connected && wpn_is_in_bitsum && diff_owner)
+	sh_assign_id_bit(id,SH_IS_TR45H_GUN_EQUIPPED, first_owner_is_connected && diff_owner && wpn_has_dmg_left)
 
-	g_Old_Weapon[id] = CSWID
+	return HAM_IGNORED
+
 }
 
 public sh_client_death(id){

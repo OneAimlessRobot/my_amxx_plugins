@@ -115,7 +115,7 @@ public plugin_init(){
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 
-register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true, true)
+register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Post",1, true, false)
 
 register_ham_hook_multiple(Ham_TraceAttack,
 					full_entity_array_for_trace_attack,
@@ -124,11 +124,11 @@ register_ham_hook_multiple(Ham_TraceAttack,
 					1,
 					true)
 
-register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Pre",_, true, true)
+register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_PrimaryAttack_Pre",_, true, false)
 
 
 
-register_ham_for_weapon_bitsum(Ham_Weapon_Reload,FAST_RELOAD_BITSUM,"fw_Weapon_Reload_Post",1, true, true)
+register_ham_for_weapon_bitsum(Ham_Weapon_Reload,FAST_RELOAD_BITSUM,"fw_Weapon_Reload_Post",1, true, false)
 
 
 for(new fx_id:i=GLOW;i<fx_id;i++){
