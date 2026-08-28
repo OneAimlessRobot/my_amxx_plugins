@@ -1,4 +1,5 @@
 #define AUX_STUFF_GIVE_WEAPONS
+#define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
@@ -62,6 +63,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, WORLDMODEL)
 	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud7.spr")
 	engfunc(EngFunc_PrecacheGeneric, "sprites/406/640hud114.spr")
+	force_unmodified(force_exactfile,null_iVector,null_iVector,"sprites/weapon_m1911a1.txt")
 	engfunc(EngFunc_PrecacheGeneric, "sprites/weapon_m1911a1.txt")
 
 

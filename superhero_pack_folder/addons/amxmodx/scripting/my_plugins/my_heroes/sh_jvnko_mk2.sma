@@ -14,7 +14,7 @@
 
 new gHeroID
 
-stock const gHeroName[] = "Jvnko"
+stock const gHeroName[] = "Jvnko Mk. II"
 
 
 

@@ -78,12 +78,19 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheModel, ETHEREAL_W_MODEL)
 	
 	new i
-	for(i = 0; i < sizeof(Ethereal_Sounds); i++)
+	for(i = 0; i < sizeof(Ethereal_Sounds); i++){
 		engfunc(EngFunc_PrecacheSound, Ethereal_Sounds[i])
+	}
+
 	for(i = 0; i < sizeof(Ethereal_Resources); i++)
 	{
-		if(i == 0) engfunc(EngFunc_PrecacheGeneric, Ethereal_Resources[i])
-		else engfunc(EngFunc_PrecacheModel, Ethereal_Resources[i])
+		if(i == 0){
+			force_unmodified(force_exactfile,null_iVector,null_iVector,Ethereal_Resources[i])
+			engfunc(EngFunc_PrecacheGeneric, Ethereal_Resources[i])
+		}
+		else{
+			engfunc(EngFunc_PrecacheModel, Ethereal_Resources[i])
+		}
 	}
 	
 	g_SmokePuff_SprId = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")
