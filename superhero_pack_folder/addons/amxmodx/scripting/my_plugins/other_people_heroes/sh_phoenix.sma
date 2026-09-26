@@ -71,7 +71,7 @@ public sh_client_death(id)
 
 	// Save users origin on death
 	pev(id, pev_origin, g_savedOrigin[id])
-	g_savedOrigin[id][2] += 10.0
+	g_savedOrigin[id][2] += 25.0
 
 	// Look for self to raise from dead
 	if ( !is_user_alive(id) && !g_phoenixPowerUsed[id] ) {
@@ -147,7 +147,7 @@ public phoenix_teleport(id)
 
 	// Teleport Effects
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(11)					// TE_TELEPORT
+	write_byte(TE_TELEPORT)					// TE_TELEPORT
 	write_coord_f(g_savedOrigin[id][0])	// start position
 	write_coord_f(g_savedOrigin[id][1])
 	write_coord_f(g_savedOrigin[id][2])

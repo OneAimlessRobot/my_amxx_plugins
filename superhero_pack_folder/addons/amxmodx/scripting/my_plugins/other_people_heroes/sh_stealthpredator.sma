@@ -88,7 +88,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
 {
-if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
 switch(key)
 {
@@ -105,7 +105,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public stealth_kd(id)
 {
-	if ( !hasRoundStarted() )
+	if ( !hasRoundStarted()  )
 		return
 
 	// Remember this weapon...

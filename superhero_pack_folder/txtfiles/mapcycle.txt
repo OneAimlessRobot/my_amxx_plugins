@@ -14,4 +14,4 @@ cs_italy
 cs_alpin
 de_dust2_2006
 de_cache
-cs_backalley
+starwars
