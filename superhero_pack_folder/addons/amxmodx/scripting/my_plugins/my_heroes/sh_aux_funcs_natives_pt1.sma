@@ -693,7 +693,7 @@ public _explode_fx(iPlugins, iParams){
 		write_coord(vec1[1])
 		write_coord(vec1[2])
 		write_short(0)			// I have no idea what thats supposed to be
-		write_byte(28)			// decal
+		write_byte(g_burnDecalBig[0])			// decal
 		message_end()
 	}
 }
