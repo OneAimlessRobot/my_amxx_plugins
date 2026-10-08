@@ -59,7 +59,7 @@ stock GetWeaponFromSlot( id , iSlot , &iEntity )
 	
 	iEntity = 0;
 		
-	iEntity = get_pdata_cbase( id , m_rgpPlayerItems_Slot0 + iSlot , OFFSET_LINUX_PLAYER );
+	iEntity = get_pdata_cbase( id , m_rgpPlayerItems_Slot0 + iSlot , XO_PLAYER );
 	
 	return ( iEntity > 0 ) ? get_pdata_int( iEntity , m_iId , XO_WEAPON ) : 0;
 }  
@@ -120,7 +120,7 @@ stock ham_strip_user_weapon(id, iCswId, iSlot = 0, bool:bSwitchIfActive = true)
 		iSlot = iWeaponsSlots[iCswId]
 	}
 	
-	iWeapon = get_pdata_cbase(id, m_rgpPlayerItems_Slot0 + iSlot, OFFSET_LINUX_PLAYER)
+	iWeapon = get_pdata_cbase(id, m_rgpPlayerItems_Slot0 + iSlot, XO_PLAYER)
 	while( iWeapon > 0 )
 	{
 		if( get_pdata_int(iWeapon, m_iId, XO_WEAPON) == iCswId )
@@ -131,7 +131,7 @@ stock ham_strip_user_weapon(id, iCswId, iSlot = 0, bool:bSwitchIfActive = true)
 	}
 	if( iWeapon > 0 )
 	{
-		if( bSwitchIfActive && get_pdata_cbase(id, m_pActiveItem, OFFSET_LINUX_PLAYER) == iWeapon )
+		if( bSwitchIfActive && get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) == iWeapon )
 		{
 			ExecuteHamB(Ham_Weapon_RetireWeapon, iWeapon)
 		}

@@ -206,8 +206,8 @@ enum sh_custom_color{
 #define BLOOD_SM_NUM 8
 #define BLOOD_LG_NUM 2
 
-stock blood_large_red[BLOOD_LG_NUM] = {204,205},
-	blood_small_red[BLOOD_SM_NUM] = {190,191,192,193,194,195,196,197}
+stock blood_large_red[BLOOD_LG_NUM] = {201,202},
+	blood_small_red[BLOOD_SM_NUM] = {187,188,189,190,191,192,193,194}
 
 
 stock const burn_decal[5] = {199,200,201,202,203}
