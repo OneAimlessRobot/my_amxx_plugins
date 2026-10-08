@@ -11,7 +11,9 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // Damage Variables
 #define h1_dam 100 //head
@@ -24,8 +26,9 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 new smoke, laser, laser_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gHeroName[]="Cable"
-static const burn_decal[5] = {199,200,201,202,203}
 new gHeroID
+new decal_id
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -39,6 +42,7 @@ public plugin_init()
 	create_cvar("cable_cooldown", "0.02" )
 	create_cvar("cable_mulishot", "0.02" ) //Delay for multishots on holding key down
 
+	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
@@ -133,7 +137,6 @@ public cable_ku(id)
 public laserEffects(id, aimvec[3] )
 {
 	new origin[3]
-	new decal_id = burn_decal[generate_int(0,4)]
 	emit_sound(id,CHAN_ITEM, "shmod/cable_laser.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	get_user_origin(id, origin, 1)
 

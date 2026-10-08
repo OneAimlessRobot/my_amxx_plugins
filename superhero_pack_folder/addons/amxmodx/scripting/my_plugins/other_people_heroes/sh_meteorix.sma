@@ -10,7 +10,10 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 
 */
 
+
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 #define h1_dam 500 // head
 #define h2_dam 250  // body
@@ -27,7 +30,7 @@ new gLastWeapon[SH_MAXSLOTS+1]
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
 // Cvars
 new max_shots, burndecals, Float:shot_mult
-
+new decal_id
 // ----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,6 +43,7 @@ public plugin_init()
 	create_cvar("meteorix_burndecals", "1")
 	create_cvar("meteorix_shotmult", "0.5")
 
+	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
@@ -237,7 +241,7 @@ public lightningEffects(id, aimvec[3])
 		write_coord(aimvec[1])
 		write_coord(aimvec[2])
 		write_short(0) // I have no idea what thats supposed to be
-		write_byte(generate_int(28, 30)) // decal
+		write_byte(decal_id) // decal
 		message_end()
 	}
 

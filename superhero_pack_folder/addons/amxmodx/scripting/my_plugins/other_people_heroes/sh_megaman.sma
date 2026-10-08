@@ -1,4 +1,8 @@
+
+
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // MEGAMAN! = The Ultimate Hero
 
@@ -28,19 +32,21 @@ new laser_shots[33]
 
 new gHeroName[]="Megaman"
 new gHeroID
+new decal_id
 //----------------------------------------------------------------------------------------------------------
 public plugin_init()
 {
   // Plugin Info
   register_plugin("SUPERHERO Megaman","1.14.4","NOOBology Madskillz")
- 
+
   // FIRE THE EVENT TO CREATE THIS SUPERHERO!
   if (!cvar_exists("Megaman_level")) create_cvar("megaman_level", "10" )
   gHeroID=shCreateHero(gHeroName, "Photon Cannon", "Blazing Cannon and Megasuit", true, "megaman_level" )
-  
-  
-  
-  
+
+  decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
+
+
+
   // THE DEFAULT OF THE CVARS
   create_cvar("megaman_laser_ammo", "100")      // - Ammo that the Photon Cannon has - //Default-  150 //
   create_cvar("megaman_laser_burndecals", "1")  // - The ammount of PhotonGun Decals - //Default-    1 //
@@ -129,18 +135,8 @@ public megaman_ku(id)
 //----------------------------------------------------------------------------------------------------------
 public laserEffects(id, aimvec[3] )
 {
-  new choose_decal,decal_id 
-
   emit_sound(id,CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM) 
 
-  choose_decal = generate_int(0,0)
-  switch(choose_decal)
-  { 
-      case 0: decal_id = 28 
-      case 1: decal_id = 103 
-      case 2: decal_id = 198 
-      case 3: decal_id = 199    
-  } 
 
   new origin[3]
   get_user_origin(id, origin, 1)

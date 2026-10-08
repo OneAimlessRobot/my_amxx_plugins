@@ -31,7 +31,9 @@ bass_multishot 0.1			//Delay for multishots on holding key down, set to -1 for o
 *   From original code "Based on dr.doom Hero but added gravity.."
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // Damage Variables
 #define h1_dam 500	// head
@@ -72,6 +74,7 @@ new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser
 new gHeroID
+new decal_id
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -88,7 +91,8 @@ public plugin_init()
 	create_cvar("bass_laser_burndecals", "1")
 	create_cvar("bass_cooldown", "0.0")
 	create_cvar("bass_multishot", "0.1")
-
+	
+	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
 
@@ -311,7 +315,7 @@ public laserEffects(id, aimvec[3])
 		write_coord(aimvec[1])
 		write_coord(aimvec[2])
 		write_short(0)			// I have no idea what thats supposed to be
-		write_byte(28)			// decal
+		write_byte(decal_id)			// decal
 		message_end()
 	}
 

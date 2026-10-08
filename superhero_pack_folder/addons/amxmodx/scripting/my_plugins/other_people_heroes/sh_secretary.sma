@@ -613,7 +613,7 @@ public TraceAll(param[])
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][0])	// decal position (center of texture in world)
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][1])
 		engfunc(EngFunc_WriteCoord, beam_origin[id][i][2])
-		write_byte(gBigShotDecal + generate_int(0, 5))	// decal
+		write_byte(gBigShotDecal + generate_int(0, 4))	// decal
 		message_end()
 	}
 
@@ -714,7 +714,7 @@ public FireIonCannon(id)
 		engfunc(EngFunc_WriteCoord, ion_mid_origin[id][1])
 		engfunc(EngFunc_WriteCoord, ion_mid_origin[id][2])
 		write_short(0)								// entity index???
-		write_byte(gScorchDecal + generate_int(0, 3))		// decal
+		write_byte(gScorchDecal + generate_int(0, 2))		// decal
 		message_end()
 	}
 

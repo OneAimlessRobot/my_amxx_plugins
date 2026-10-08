@@ -33,7 +33,10 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 *   Hero is a rip of Captain America, Cyclops, and Chucky with added AP/Gravity.
 */
 
+
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // Damage Variables
 #define h1_dam 120 //head
@@ -52,7 +55,7 @@ new gLastWeapon[SH_MAXSLOTS+1]
 new gPlayerLevels[SH_MAXSLOTS+1]
 new CsTeams:gUserTeam[SH_MAXSLOTS+1]
 new gSmokeSprite, gLaserSprite
-static const burn_decal[3] = {28, 29, 30}
+new decal_id
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -72,6 +75,7 @@ public plugin_init()
 	create_cvar("drstrange_multishot", "0.20")
 	create_cvar("drstrange_cooldown", "0.0")
 
+	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Mystical Arts", "Mystical Bolts, Mystical Armor, Cloak of Levitation, and Ressurection Stone.", true, "drstrange_level")
 
@@ -272,7 +276,6 @@ public fire_laser(id)
 public laserEffects(id, aimvec[3])
 {
 	new origin[3]
-	new decal_id = burn_decal[generate_int(0,2)]
 	emit_sound(id, CHAN_ITEM, "debris/beamstart7.wav", 0.6, ATTN_NORM, 0, PITCH_NORM)
 
 	get_user_origin(id, origin)

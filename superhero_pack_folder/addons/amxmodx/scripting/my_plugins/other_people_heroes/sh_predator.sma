@@ -1,7 +1,9 @@
-#include <amxmod.inc> 
-#include <amxmisc> 
-#include <xtrafun>
+
+
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+
 
 // Predator - Watch the movie
 
@@ -40,6 +42,7 @@ new lastweap[33]
 #define h4_dam 80  //arm
 #define h6_dam 80  //leg
 
+new decal_id
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -70,6 +73,8 @@ public plugin_init()
 	set_task(0.01,"check_two_buttons",0,"",0,"b") 
 	set_task(0.01,"check_move_buttons",0,"",0,"b") 
 	
+
+	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	// DEFAULT THE CVARS
 	create_cvar("pred_clockedmove", "1")
 	create_cvar("pred_knifemult", "10" )
@@ -184,18 +189,9 @@ public pred_ku(id)
 //----------------------------------------------------------------------------------------------
 public laserEffects(id, aimvec[3] )
 {
-	new choose_decal,decal_id 
 	
 	emit_sound(id,CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM) 
 	
-	choose_decal = generate_int(0,0)
-	switch(choose_decal)
-	{ 
-		case 0: decal_id = 28 
-			case 1: decal_id = 103 
-			case 2: decal_id = 198 
-			case 3: decal_id = 199    
-		} 
 	
 	new origin[3]
 	get_user_origin(id, origin, 1)
@@ -259,7 +255,7 @@ public laserEffects(id, aimvec[3] )
 	{
 		//TE_GUNSHOTDECAL 
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY) 
-		write_byte( 109 ) // decal and ricochet sound 
+		write_byte( TE_GUNSHOTDECAL ) // decal and ricochet sound 
 		write_coord( aimvec[0] ) //pos 
 		write_coord( aimvec[1] ) 
 		write_coord( aimvec[2] ) 
@@ -510,13 +506,13 @@ public pred_DLdamage(id)
 			// diff. team;    $attacker_id gets credited for the kill and $250 and XP.
 			//        $id gets their suicidal -1 frag back. 
 			set_user_frags(attacker_id, get_user_frags(attacker_id)+1) 
-			set_user_money(attacker_id, get_user_money(attacker_id)+150)
+			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)+150)
 			shAddXP(attacker_id, id, 1.0)
 		} 
 		else { 
 			// same team;    $attacker loses a frag and $500 and XP.
 			set_user_frags(attacker_id, get_user_frags(attacker_id)-1) 
-			set_user_money(attacker_id, get_user_money(attacker_id)-500, 0)
+			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)-500, 0)
 			shAddXP(attacker_id, id, -1.0)
 		} 
 		return PLUGIN_CONTINUE 

@@ -430,9 +430,7 @@ public FwdTouchWorld( bull_et, World ) {
 	entity_get_vector(bull_et,EV_VEC_origin,origin);
 
 	emit_sound(bull_et, CHAN_WEAPON, LENA_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	make_sparks(origin);
-	gun_shot_decal(origin);
-
+	
 	tank_impact_shot_fx(bull_et,origin,17)
 	
 	if(!is_valid_ent(World)){

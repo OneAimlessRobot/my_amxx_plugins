@@ -211,8 +211,8 @@ stock blood_large_red[BLOOD_LG_NUM] = {204,205},
 
 
 stock const burn_decal[5] = {199,200,201,202,203}
-stock const g_burnDecal[3] = {28, 29, 30}
-stock const g_burnDecalBig[3] = {46, 47, 48}
+stock const g_burnDecal[3] = {25, 26, 27}
+stock const g_burnDecalBig[3] = {43, 44, 45}
 stock const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
 stock const g_cs_burnDecal[5] = {41, 42, 43, 44, 45}
 

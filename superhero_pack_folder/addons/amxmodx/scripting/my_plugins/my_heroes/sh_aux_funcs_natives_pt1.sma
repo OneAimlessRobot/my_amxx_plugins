@@ -582,10 +582,10 @@ public _big_gun_shot_decal(iPlugins, iParams){
 		new decal_id
 		if ( radius <= 18 ) {
 
-			decal_id = g_burnDecal[generate_int(0,2)]
+			decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 		}
 		else {
-			decal_id = g_burnDecalBig[generate_int(0,2)]
+			decal_id = g_burnDecalBig[generate_int(0,sizeof(g_burnDecalBig)-1)]
 		}
 
 		// Create the burn decal
@@ -606,7 +606,7 @@ public _gun_shot_decal(iPlugins, iParams){
 
 	get_array_f(1,vec,3)
 
-	new decal_id = burn_decal[generate_int(0,4)]
+	new decal_id =  decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( TE_GUNSHOTDECAL ) // decal and ricochet sound
 	write_coord_f( vec[0] ) //pos
@@ -757,10 +757,10 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		new decal_id
 		if ( radius <= 18 ) {
 			
-			decal_id = g_burnDecal[generate_int(0,2)]
+			decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 		}
 		else {
-			decal_id = g_burnDecalBig[generate_int(0,2)]
+			decal_id = g_burnDecalBig[generate_int(0,sizeof(g_burnDecalBig)-1)]
 		}
 
 		// Create the burn decal

@@ -686,16 +686,15 @@ public goku_power_touch(pToucher, pTouched) {
 		// Change burn decal according to blast size
 		new decal_id
 		if ( blastSize <= 18 ) {
-			//radius ~< 216
-			decal_id = g_burnDecal[generate_int(0,2)]
+
+			decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 		}
 		else {
-			decal_id = g_burnDecalBig[generate_int(0,2)]
+			decal_id = g_burnDecalBig[generate_int(0,sizeof(g_burnDecalBig)-1)]
 		}
-
 		// Create the burn decal
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(109)		//TE_GUNSHOTDECAL
+		write_byte(TE_GUNSHOTDECAL)		//TE_GUNSHOTDECAL
 		write_coord(vExplodeAt[0])
 		write_coord(vExplodeAt[1])
 		write_coord(vExplodeAt[2])
