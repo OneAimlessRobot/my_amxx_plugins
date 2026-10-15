@@ -34,9 +34,9 @@ enum bleed_task_parameter_id{
 }
 stock bleed_task_parameters[fx_bleed_type][bleed_task_parameter_id]={	
 					{-1.0,5.0,0.0,0,-1,"no bleeding",{0,0}},
-					{1.0,5.0,0.01,0,-1,"mini bleeding",{50,255}},
-					{1.0,5.0,0.04,0,-1,"bleeding",{75,255}},
-					{0.25,5.0,0.04,0,-1,"ultrableeding",{120,255}}
+					{0.25,5.0,0.05,0,-1,"mini bleeding",{50,255}},
+					{0.25,5.0,0.1,0,-1,"bleeding",{75,255}},
+					{0.25,5.0,0.25,0,-1,"ultrableeding",{120,255}}
 
 }
 
@@ -189,7 +189,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	new gHeroID=get_param(4)
 	new heal_user=get_param(5)
 	new my_hitpoint_enum:hitplace= my_hitpoint_enum:get_param(6)
-	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||sh_get_id_bit(user,SH_IS_BLEEDING)) return
+	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||sh_get_id_bit(user,SH_IS_BLEEDING) || get_user_godmode(user)) return
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)
@@ -237,6 +237,10 @@ public make_bleed_fx(id,my_hitpoint_enum:hitplace){
 
 public bleed_task(any:array[5],id){
 	id-=bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_apply_id]
+	if(!sh_get_id_bit(id,SH_IS_BLEEDING)){
+
+		return;
+	}
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_connected(array[1])){
 		
 

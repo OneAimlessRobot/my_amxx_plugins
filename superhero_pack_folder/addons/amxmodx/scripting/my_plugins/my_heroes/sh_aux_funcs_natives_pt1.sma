@@ -630,7 +630,7 @@ public _explode_fx(iPlugins, iParams){
 	if((sfx_mask&explosion_sfx_show_shockwave)){
 		// blast circles
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( 21 )
+		write_byte( TE_BEAMCYLINDER )
 		write_coord(vec1[0])
 		write_coord(vec1[1])
 		write_coord(vec1[2] + 16)
@@ -649,34 +649,31 @@ public _explode_fx(iPlugins, iParams){
 		write_byte( alpha ) //brightness
 		write_byte( 0 ) // speed
 		message_end()
-		//Explosion2
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
-		write_byte( 12 )
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_byte( radius ) // byte (scale in 0.1's) 188
-		write_byte( 10 ) // byte (framerate)
-		message_end()
 	}
 
 	if((sfx_mask&explosion_sfx_show_fireball)){
+		static TE_FLAG = 0
+
+		TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
+		TE_FLAG |= ((sfx_mask&explosion_sfx_show_custom_sound)?0:TE_EXPLFLAG_NOSOUND)
+		TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
+
 		//TE_Explosion
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( 3 )
+		write_byte( TE_EXPLOSION )
 		write_coord(vec1[0] + generate_int( -100, 100 ))
 		write_coord(vec1[1] + generate_int( -100, 100 ))
 		write_coord(vec1[2]+ generate_int( -50, 50 ))
 		write_short( precached_explosion_sprite1 )
 		write_byte(  radius/9  ) // byte (scale in 0.1's) 188
 		write_byte( 12 ) // byte (framerate)
-		write_byte( 0 ) // byte flags
+		write_byte( TE_FLAG ) // byte flags
 		message_end()
 	}
 	if((sfx_mask&explosion_sfx_show_smoke)){
 		//Smoke
 		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( 5 ) // 5
+		write_byte( TE_SMOKE  ) // 5
 		write_coord(vec1[0] + generate_int( -100, 100 ))
 		write_coord(vec1[1] + generate_int( -100, 100 ))
 		write_coord(vec1[2] + generate_int( -50, 50 ))
@@ -706,7 +703,8 @@ public _directed_spark(iPlugins, iParams){
 		veins=get_param(4),
 		glowing=get_param(5),
 		ramming_pace=get_param(6),
-		sh_custom_color:color_constant = sh_custom_color:get_param(7)
+		sh_custom_color:color_constant = sh_custom_color:get_param(7),
+		life=get_param(8)
 
 	if(!is_valid_ent(init_id)||!is_valid_ent(end_id)) return 
 	emit_sound(init_id, CHAN_ITEM, "weapons/electro5.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -719,7 +717,7 @@ public _directed_spark(iPlugins, iParams){
 	write_short(gSpriteLaser)		// model
 	write_byte( 0 ) 				// starting frame
 	write_byte( 30 )  			// frame rate
-	write_byte( 1)  			// life
+	write_byte( life)  			// life
 	write_byte(girth)  		// line width
 	write_byte(veins)  			// noise amplitude
 	write_byte(LineColors[color_constant][0])				// r, g, b
@@ -740,6 +738,7 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		get_array_f(2,origin,3)
 		new radius=get_param(3)
 		
+		new brightness= get_param(4)
 
 
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -749,7 +748,7 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		write_coord_f(origin[2] + min(1,radius))
 		write_short(precached_explosion_sprite2)
 		write_byte(radius)
-		write_byte(200)
+		write_byte(brightness)
 		message_end()
 		
 		emit_sound(ent, CHAN_WEAPON, EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

@@ -151,7 +151,7 @@ public black_create(id)
 	entity_set_size(black_hole, Float:{-1.5, -1.5, -0.5}, Float:{1.5, 1.5, 0.5})
 	entity_set_int(black_hole, EV_INT_solid, 2)
 	entity_set_int(black_hole, EV_INT_movetype, 6)
-	entity_set_vector(black_hole, EV_VEC_origin, vOrigin)
+	entity_set_origin(black_hole,  vOrigin)
 	
 	new origin[3]
 	get_user_origin(id, origin)

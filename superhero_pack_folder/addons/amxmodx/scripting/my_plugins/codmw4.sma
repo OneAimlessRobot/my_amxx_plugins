@@ -2895,7 +2895,7 @@ public KreirajMedKit(id)
 	entity_set_string(ent, EV_SZ_classname, "MedKit");
 	entity_set_edict(ent, EV_ENT_owner, id);
 	entity_set_int(ent, EV_INT_solid, SOLID_NOT);
-	entity_set_vector(ent, EV_VEC_origin, origin);
+	entity_set_origin(ent,  origin);
 	entity_set_float(ent, EV_FL_ltime, halflife_time() + 7 + 0.1);
 	
 	

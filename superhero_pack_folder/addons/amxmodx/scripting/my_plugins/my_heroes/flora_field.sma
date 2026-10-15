@@ -810,7 +810,7 @@ public apply_teleport(id,field_inside) {
 		new field_id=find_next_nearest_flora_field(id,field_inside,999999.0)
 		if(is_valid_ent(field_id)){
 			entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
-			entity_set_vector( id, EV_VEC_origin, other_field_origin );
+			entity_set_origin( id,  other_field_origin );
 			emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			static entlist[33];
 			new numfound = find_sphere_class(field_id,"player", cvar_val(float,pcvar_field_radius) ,entlist, 32);

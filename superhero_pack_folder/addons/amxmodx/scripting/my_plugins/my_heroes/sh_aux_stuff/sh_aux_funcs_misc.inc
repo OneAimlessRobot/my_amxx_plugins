@@ -217,6 +217,45 @@ stock orient_entity_with_move_vector(ent){
 
 }
 
+/*
+
+	the first parameter is the affected user.
+	
+	(the function is only relevant when said user is alive!)
+
+	the second parameter is the speed to set
+
+	the third parameter decides whether or not we should ignore it
+	if the user is currently stunned or charging a heavy attack (def. false)
+
+	the last parameter should be false if the intention is to slow the user down and true otherwise
+	(def. true)
+
+*/
+
+stock set_user_maxspeed_controlled(id, Float:the_speed_to_set, bool:penetrate_flags=false, bool:want_max_or_min=true){
+
+	if(!is_user_alive(id)){
+		
+		return;
+		
+	}
+	if((sh_get_stun(id)||sh_get_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK))&&!penetrate_flags){
+
+		return
+
+	}
+	new Float:curr_maxspeed= get_user_maxspeed(id);
+
+	new Float:the_true_speed_to_set= (want_max_or_min?
+								floatmax(curr_maxspeed,the_speed_to_set)
+												:
+								floatmin(curr_maxspeed,the_speed_to_set)
+								)
+	
+	set_user_maxspeed(id,the_true_speed_to_set);
+
+}
 stock print_entity_info(id, ent){
 
 	if(!is_user_connected(id)){

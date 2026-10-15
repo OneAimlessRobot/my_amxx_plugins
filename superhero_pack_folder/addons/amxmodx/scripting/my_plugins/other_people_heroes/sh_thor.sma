@@ -225,7 +225,7 @@ public lightning_effect(id, targetid, lineWidth)
 {
 	// Main Lightning
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(8)				//TE_BEAMENTS
+	write_byte(TE_BEAMENTS)				//TE_BEAMENTS
 	write_short(id)			// start entity
 	write_short(targetid)		// entity
 	write_short(g_spriteLightning)	// model
@@ -243,7 +243,7 @@ public lightning_effect(id, targetid, lineWidth)
 
 	// Extra Lightning
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(8)				//TE_BEAMENTS
+	write_byte(TE_BEAMENTS)				//TE_BEAMENTS
 	write_short(id)			// start entity
 	write_short(targetid)		// entity
 	write_short(g_spriteLightning)	// model

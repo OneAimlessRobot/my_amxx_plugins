@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -30,8 +31,9 @@ public acc_loop()
 		
 		id = the_players[k]
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) )
-		{
-			set_user_maxspeed(id, get_user_maxspeed(id)+cvar_val(float,pcvar_accel_rate))
+		{	
+			new Float:maxspeed_to_set=get_user_maxspeed(id)+cvar_val(float,pcvar_accel_rate);
+			set_user_maxspeed_controlled(id,maxspeed_to_set,false,true)
 		}
 	}
 }

@@ -200,7 +200,7 @@ public catwoman_sneak(id)
 	}
 
 	// Move to an enemy spawn and set spawn angle
-	entity_set_vector(id, EV_VEC_origin, spawnOrigin)
+	entity_set_origin(id,  spawnOrigin)
 	entity_set_int(id, EV_INT_fixangle, 1)
 	entity_set_vector(id, EV_VEC_angles, spawnAngle)
 

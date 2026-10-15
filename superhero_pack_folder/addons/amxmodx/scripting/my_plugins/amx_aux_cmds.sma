@@ -9,6 +9,7 @@
 #include "../include/fakemeta.inc"
 #include "../include/cstrike.inc"
 #include "my_include/my_author_header.inc"
+#define AUX_STUFF_GIVE_HITPOINTS
 #include "my_include/auxiliar_stuff.inc"
 #include <orpheu>
 #include <orpheu_stocks>
@@ -302,7 +303,7 @@ public amx_stage_murder(id,level,cid){
             
     }
     new Ent = create_entity("info_target")
-    if (pev_valid(Ent)!=2){
+    if (!is_valid_ent(Ent)){
         console_print(id,"Error while creating killer entity!^n")
         return PLUGIN_HANDLED    
     }
@@ -344,7 +345,7 @@ public amx_stage_assault(id,level,cid){
             
     }
     new Ent = create_entity("info_target")
-    if (pev_valid(Ent)!=2){
+    if (!is_valid_ent(Ent)){
         console_print(id,"Error while creating killer entity!^n")
         return PLUGIN_HANDLED    
     }
@@ -396,7 +397,7 @@ public amx_stage_hit(id,level,cid){
     }
 
     new dmg_entity = create_entity("info_target")
-    if (pev_valid(dmg_entity)!=2){
+    if (!is_valid_ent(dmg_entity)){
         console_print(id,"Error while creating hitter entity!^n")
         return PLUGIN_HANDLED    
     }

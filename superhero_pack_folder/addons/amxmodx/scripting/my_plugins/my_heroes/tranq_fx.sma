@@ -101,7 +101,7 @@ stock sleep_user_switch_weapon(id){
 	new wpnid = read_data(2)
 	if(wpnid!=CSW_KNIFE){
 		sh_switch_weapon(id,CSW_KNIFE)
-		set_user_maxspeed(id,default_stun_speed)
+		set_user_maxspeed_controlled(id,default_stun_speed,true,false)
 	}
 	
 }
@@ -161,6 +161,11 @@ public _sh_unsleep_user(iPlugin,iParams){
 }
 public sleep_task(array[1],id){
 	id-=SLEEP_TASKID
+	if(!sh_get_id_bit(id, SH_IS_SLEEPING)){
+
+		return
+		
+	}
 	if ( !sh_is_active() ||!is_user_alive(id)){
 
 		unsleep_user(id)
@@ -186,7 +191,6 @@ sleep_user(id,attacker){
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
 	sleep_user_switch_weapon(id)
-	set_damage_icon(id,2,DMG_ICON_CHEM,LineColors[WHITE])
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
 	fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -207,7 +211,6 @@ unsleep_user(id){
 	
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		sh_set_rendering(id)
-		set_damage_icon(id,0,DMG_ICON_CHEM)
 		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
 	}
 }

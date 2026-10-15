@@ -109,7 +109,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 		new Float:fOrigin[3]
 		entity_get_vector(id, EV_VEC_origin, fOrigin)
 		fOrigin[2] -= 50
-		entity_set_vector(ent, EV_VEC_origin, fOrigin)
+		entity_set_origin(ent,  fOrigin)
 
 		playback_event(0, id, 26, 0.0, fOrigin, Float:{0.0, 0.0, 0.0}, 0.0, 0.0, 0, 1, 0, 0)
 		emit_sound(ent, CHAN_STATIC, SOUND_SMOKESCREEN, VOL_NORM, ATTN_NORM, 0, PITCH_HIGH)
@@ -411,7 +411,7 @@ public create_shuriken(id)
 		fEntOrigin[0] += fEntVelocity[0]
 		fEntOrigin[1] += fEntVelocity[1]
 
-		entity_set_vector(ent, EV_VEC_origin, fEntOrigin)
+		entity_set_origin(ent,  fEntOrigin)
 
 		velocity_by_aim(id, get_pcvar_num(cvar_shur_speed), fEntVelocity)
 

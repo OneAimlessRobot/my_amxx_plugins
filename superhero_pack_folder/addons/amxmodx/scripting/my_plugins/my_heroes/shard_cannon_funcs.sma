@@ -9,12 +9,16 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
+
+
+new const Shard_Cannon_Sound[] = "weapons/shard_cannon-1.wav"
+
 #define PLUGIN "Superhero adriano shard_cannon"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
 // Main Vars
-new g_Had_SHARD_CANNON, g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
+new g_Had_SHARD_CANNON = 0, g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
 new g_Event_MS, g_SmokePuff_Id
 new g_MsgCurWeapon
 
@@ -65,6 +69,8 @@ public plugin_precache()
 	precache_model(SHARD_CANNON_MODEL_P)
 	precache_model(SHARD_CANNON_MODEL_W)
 	
+	engfunc(EngFunc_PrecacheSound, Shard_Cannon_Sound)
+
 	register_forward(FM_PrecacheEvent, "fw_PrecacheEvent_Post", 1)	
 	
 	g_SmokePuff_Id = engfunc(EngFunc_PrecacheModel, "sprites/wall_puff1.spr")	
@@ -254,6 +260,9 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(get_user_weapon(invoker) == CSW_SHARD_CANNON && Get_BitVar(g_Had_SHARD_CANNON, invoker) && eventid == g_Event_MS)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
+		
+	
+		emit_sound(invoker, CHAN_WEAPON, Shard_Cannon_Sound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 		native_playanim(invoker, ANIME_SHOOT)
 

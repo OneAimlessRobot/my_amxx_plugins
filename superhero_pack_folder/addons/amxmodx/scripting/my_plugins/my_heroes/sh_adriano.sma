@@ -226,9 +226,8 @@ public sh_round_start(){
 		if(!is_user_alive(id)) return
 
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
-			if(get_user_maxspeed(id)<g_base_speed[id]){
-				set_user_maxspeed(id,g_base_speed[id])
-			}
+
+			set_user_maxspeed_controlled(id,g_base_speed[id],false,true)
 		}
 
 	}
@@ -273,7 +272,8 @@ update_stats(id){
 	if(sh_get_user_has_hero(id,gHeroID) ){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
-		set_user_maxspeed(id,g_normal_speed[id])
+		
+		set_user_maxspeed_controlled(id,g_normal_speed[id],false,true)
 		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_adriano_points[id]),speed_points_radius_pct)),max_radius);
 		
 	}
@@ -287,8 +287,8 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 	
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()&&!sh_is_freezetime()){
-			set_user_maxspeed(id, g_normal_speed[id])
+		if ( sh_is_inround()&&!sh_is_freezetime()&&!sh_is_freezetime()){
+			set_user_maxspeed_controlled(id,g_normal_speed[id],false,true)
 		}
 	}
 	g_prevWeapon[id] = wpnid

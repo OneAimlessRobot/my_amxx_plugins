@@ -69,12 +69,13 @@ public plugin_natives(){
 public burn_task(array[2],id)
 {
 	id-=BURN_TASKID_MAIN
+
+	if(!sh_get_id_bit(id, SH_IS_BURNING)){
+		return
+	}
 	
 	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(array[0])){
 		unburn_user(id)
-		return
-	}
-	if(!sh_get_id_bit(id, SH_IS_BURNING)){
 		return
 	}
 	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD)
@@ -105,6 +106,7 @@ public burn_task(array[2],id)
 			generic_dmg_source_fire)
 
 	if(sh_get_id_bit(id, SH_IS_BURNING)&&(array[1]<BURN_TIMES)){
+		set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED],BURN_PERIOD)
 		array[1]++
 		emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
@@ -206,7 +208,7 @@ burn_user(id,attacker){
 	}
 
 	sh_assign_id_bit(id, SH_IS_BURNING, true)
-	set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED])
+	
 	burn_task(array,id+BURN_TASKID_MAIN)
 	
 }
@@ -215,7 +217,6 @@ burn_user(id,attacker){
 unburn_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)||!sh_get_id_bit(id, SH_IS_BURNING)) return
 
-	set_damage_icon(id,0,DMG_ICON_HEAT)
 	emit_sound(id, CHAN_ITEM, gSoundBurning, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	unfade_screen_user(id)
 	sh_assign_id_bit(id, SH_IS_BURNING, false)

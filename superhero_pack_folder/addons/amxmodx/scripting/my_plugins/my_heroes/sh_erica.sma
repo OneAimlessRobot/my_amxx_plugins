@@ -205,9 +205,8 @@ public sh_round_start(){
 		if(!is_user_alive(id)) return
 
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
-			if(get_user_maxspeed(id)<g_base_er_speed[id]){
-				set_user_maxspeed(id,g_base_er_speed[id])
-			}
+			
+			set_user_maxspeed_controlled(id,g_base_er_speed[id],false,true)
 		}
 
 	}
@@ -232,8 +231,8 @@ public weaponChange(id)
 	new wpnid = read_data(2)
 
 	if ( g_prevWeapon[id] != wpnid ) {
-		if ( (get_user_maxspeed(id) < g_normal_er_speed[id])&&!sh_get_stun(id)&&sh_is_inround()&&!sh_is_freezetime()){
-			set_user_maxspeed(id, g_normal_er_speed[id])
+		if ( sh_is_inround()&&!sh_is_freezetime()){
+			set_user_maxspeed_controlled(id,g_normal_er_speed[id],false,true)
 		}
 	}
 	g_prevWeapon[id] = wpnid
@@ -247,7 +246,8 @@ update_stats(id){
 		new Float:maxspeed=get_user_maxspeed(id)
 		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(cvar_val(float, pcvar_speed_speed_er_points_pct),
 						float(g_erica_points[id]))),cvar_val(float, pcvar_max_er_speed)),maxspeed),
-		set_user_maxspeed(id,g_normal_er_speed[id])
+		
+		set_user_maxspeed_controlled(id,g_normal_er_speed[id],false,true)
 		g_normal_er_radius[id]=floatmin(floatadd(g_base_er_radius[id],floatmul(float(g_erica_points[id]),cvar_val(float, pcvar_speed_points_er_radius_pct))),cvar_val(float, pcvar_max_er_radius));
 			
 	}

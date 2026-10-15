@@ -56,6 +56,7 @@
 
 
 	#define fPainShock 108					//player pain shock offset
+	#define m_iHideHUD 361
 	#define m_rgAmmo_player_Slot0  376			//how much ammo does player have in slot 0?
 	/**
 	Example in how to use this:

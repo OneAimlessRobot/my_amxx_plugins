@@ -603,7 +603,7 @@ public jet_think(ent)
 			vOrigin[2]+=40.0
 			vOrigin[0]-=velocity[0]*(CAMERA_DIST/length)
 			entity_set_vector(camera[owner], EV_VEC_angles, v_angle)
-			entity_set_vector(camera[owner], EV_VEC_origin, vOrigin)
+			entity_set_origin(camera[owner],  vOrigin)
 			
 			
 		}

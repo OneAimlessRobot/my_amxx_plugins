@@ -75,7 +75,7 @@ between big decals (Radius>18)
 or small decals (otherwise)
 
 */
-native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18)
+native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18, brightness=200)
 native heal_stream(id, x,
     sh_custom_color:color_index=LTGREEN,alpha=255)
 
@@ -118,7 +118,7 @@ native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
                                             explosion_sfx_show_smoke|
                                             explosion_sfx_show_burn_decal))
 
-native directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
+native directed_spark(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN, life=1)
 
 native glow(id, r, g, b,a, on)
 

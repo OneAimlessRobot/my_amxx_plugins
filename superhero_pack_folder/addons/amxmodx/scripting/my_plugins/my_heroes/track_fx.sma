@@ -120,62 +120,62 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 
 		return
 	}
-	if(is_user_alive(array[TRACK_TASK_ATTACKER])){
-		if(!sh_get_id_bit(id, SH_IS_CHAFFED)){
-			static client_name[128]
-			static origin[3], eorigin[3],att_origin[3]
-			static Float:Pos[3],Float:vEnd[3]
-			new sh_custom_color:color_const=sh_custom_color:array[TRACK_TASK_TRACK_COLOR]
-			get_user_name(id,client_name,127)
-			
-			get_user_origin(id, eorigin)
-			get_user_origin(array[TRACK_TASK_ATTACKER], origin)
-			get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)			
+	static sh_custom_color:color_const;
+	color_const=sh_custom_color:array[TRACK_TASK_TRACK_COLOR]
+	if(!sh_get_id_bit(id, SH_IS_CHAFFED)){
+		/*
+		static client_name[128]
+		get_user_name(id,client_name,127)
+		*/
+		static att_origin[3], eorigin[3],origin[3]
+		static Float:Pos[3],Float:vEnd[3]
+		
+		get_user_origin(id, eorigin)
+		IVecFVec(eorigin,vEnd)
+		new sh_custom_color:color_const_arr[3];
+		arrayset(color_const_arr,color_const,sizeof color_const_arr)
+		if(is_user_alive(array[TRACK_TASK_ATTACKER])){
+
+
+			get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)	
 			
 			detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
-			IVecFVec(origin,Pos)
-			IVecFVec(eorigin,vEnd)
-			new sh_custom_color:color_const_arr[3];
-			arrayset(color_const_arr,color_const,sizeof color_const_arr)
-			
+			IVecFVec(att_origin,Pos)
 			laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
-			for(new i=0;i<array[1];i++){
-				if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
-				
-					continue
-				}
-				get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
-				
-				detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
-				IVecFVec(origin,Pos)
-				laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
-				
-			}
-			sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
-			sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
-			aura(id,LineColors[color_const])
 		}
-		if(array[TRACK_TASK_DO_DAMAGE]){
-			sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(
-									float(get_user_health(id))*
-									Float:array[TRACK_TASK_DAMAGE_HEALTH_PCT]),
-							_,_,_,_,_,
-							SH_NEW_DMG_RADIATION_POISON,
-							generic_dmg_id_radiation_poison)
-		}
-		if(array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS]){
+		for(new i=0;i<array[1];i++){
+			if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
 			
-			array[TRACK_TASK_CURR_IT]++
-			set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
+				continue
+			}
+			get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
+			
+			detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+			IVecFVec(origin,Pos)
+			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
+			
 		}
-		else{
-			sh_uneffect_user(id);
-
-		}
+		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
+		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
+		aura(id,LineColors[color_const])
+	}
+	if(array[TRACK_TASK_DO_DAMAGE]){
+		sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(
+								float(get_user_health(id))*
+								Float:array[TRACK_TASK_DAMAGE_HEALTH_PCT]),
+						_,_,_,_,_,
+						SH_NEW_DMG_RADIATION_POISON,
+						generic_dmg_id_radiation_poison)
+	}
+	if((array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS])){
+		
+		set_damage_icon(id,2,DMG_ICON_RADIATION,LineColors[color_const],Float:array[TRACK_TASK_PERIOD])
+		array[TRACK_TASK_CURR_IT]++
+		set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 	}
 	else{
-
 		sh_uneffect_user(id);
+
 	}
 }
 
@@ -199,7 +199,6 @@ public _track_user(iPlugins, iParams){
 	new player_count;
 	gatling_set_fx_num(id, RADIOACTIVE)
 	
-	set_damage_icon(id,2,DMG_ICON_RADIATION,LineColors[track_color])
 
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)

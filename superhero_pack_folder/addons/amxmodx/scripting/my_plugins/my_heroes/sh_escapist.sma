@@ -85,7 +85,7 @@ wpn_switch_primitive(id){
 	if(sh_is_freezetime()&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)){
 		if(gFastWeapon[id]>0){
 			shSwitchWeaponID(id,gFastWeapon[id])
-			set_user_maxspeed(id,gEscapeSpeed[id])
+			set_user_maxspeed_controlled(id,gEscapeSpeed[id],true,true)
 		}
 		return
 	}
