@@ -1,0 +1,1217 @@
+
+
+Curr num of tasks: 132
+Prev task id given: 33514
+
+Curr task id to give: 33558
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 133
+Prev task id given: 33558
+
+Curr task id to give: 33602
+
+End of task_allocator state printing!!!
+
+Printing crrent allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 134
+Prev task id given: 33602
+
+Curr task id to give: 33646
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 4 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 135
+Prev task id given: 33646
+
+Curr task id to give: 33690
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 16
+Prev task id given: 33690
+
+Curr task id to give: 33734
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 137
+Prev task id given: 33734
+
+Curr task id to give: 33778
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 138
+Prev task id given: 33778
+
+Curr task id to give: 33822
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 139
+Prev task id given: 33822
+
+Curr task id to give: 33866
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 140
+Prev task id given: 3866
+
+Curr task id to give: 33910
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 141
+Prev task id given: 33910
+
+Curr task id to give: 33954
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Stating slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 142
+Prev task id given: 33954
+
+Curr task id to give: 33998
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 lots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 143
+Prev task id given: 33998
+
+Curr task id to give: 34042
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 144
+Prev task id given: 34042
+
+Curr task id togive: 36046
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 145
+Prev task id given: 36046
+
+Curr task id to give: 36090
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (defaut: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 146
+Prev task id given: 36090
+
+Curr task id to give: 36134
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 147
+Prev task id given: 36134
+
+Curr task id to give: 36178
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 148
+Prev task id given: 36178
+
+Curr task id to give: 36222
+
+End of tak_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 149
+Prev task id given: 36222
+
+Curr task id to give: 36266
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined nu slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 150
+Prev task id given: 36266
+
+Curr task id to give: 36310
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 sots (default is 10)
+
+Curr num of tasks: 151
+Prev task id given: 36310
+
+Curr task id to give: 36354
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 152
+Prev task id given: 36354
+
+Curr task id to give: 36398
+
+End of task_allocator state prining!!!
+
+[SH] Successfully Loaded Superhero Config File 
+Cvar "yb_show_avatars" reverted to peaceful value.
+
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4329 SERVER (0 CRC)
+Server # 32
+Couldn't open file overviews/starwars.txt. Using default values for overiew mode.
+Couldn't open file overviews/starwars.txt. Using default values for overiew mode.
+Mr.JaNe dropped
+"sv_maxspeed" changed to "10000"
+THA_GOAT!!!!!!! is joining the Terrorist forceTascaDoZeRepresenta connecteTascaDoZeRepresenta is joining the Counter-Terrorist forceDecentralizedLoveDisorder connectedDecentralizedLoveDisorder is joining the Counter-Terrorist forceFuckMaidcore connectedFuckMaidcore is joining the Terrorist forceputa peluda connectedputa peluda is joining the Terrorist forceSardinhaEBatataCozida connectedSardinhaEBatataCozida is joining the Counter-Terrorist forceMr.JaNe connected[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe is joining the Counter-Terrorist force[SH](Yandere Mk.II)Wow... I feel lighter
+[SH](Yandere Mk.II) Wow... I feel lighter
+[AMXX] Mr.JaNe (STEAM_0:1:77070179) has connected (Georgia).
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+SardinhaEBatataCozida killed puta peluda with awp
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 26.27 damage
+From entity of type: grende
+From attack
+Time Left: 19:49 min. Next Map: de_cbble
+*** SardinhaEBatataCozida killed SATAAAAAANDAGIIIIIIIIII with a headshot from awp ***
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) Jetplane is okay now! Ready for take off!
+Fera nojenta killed DecentralizedLoveDisorder with ak47
+Fera nojenta killed SardinhaEBatataCozida with sh_generic_dmg
+[SH](Yandere Mk.II) JET loaded
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+*** Fera nojenta killed Mr.JaNe with a headshot fro deagle ***
+] rcon yb kickbots
+Bots are removed from server.
+
+DecentralizedLoveDisorder has left the gameFera nojenta (RADIO): Fire in the hole!
+SATAAAAAANDAGIIIIIIIIII has left the gameSardinhaEBatataCozida has left the gameputa peluda has left the gamedevoradora de porra has left the gameesfregona ensebada has left the game[SH](Yandere Mk.II) I feel... heavier
+FuckMaidcore has left the game[SH](Yandere Mk.II) I feel... heavier
+TascaDoZeRepresenta has left the game[SH](Yandere Mk.II) I feel... heaier
+[SH](Yandere Mk.II) I feel... heavier
+Fera nojenta has left the game[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+Mr.JaNe :  how doe jet calls|
+
+THA_GOAT!!!!!!! :  pick yandere
+
+THA_GOAT!!!!!!! :  and press power key down
+
+Mr.JaNe :  and why i can choose just 10 heroes|?
+
+THA_GOAT!!!!!!! :  because I made it that way
+
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+Mr.JaNe :  damn
+
+Mr.JaNe :  cant drive it well :)
+
+THA_GOAT!!!!!!! :  a and d are roll ctrl is brake space is accelerate
+
+Mr.JaNe died
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH] You were given 60 MercXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Mr.JaNe died
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) JET loaded
+[SH] You were given 60 MercyXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe died
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+THA_GOAT!!!!!!! :  entity name is yandere_jet lol
+
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have Idone...
+[SH] You were given 60 MercyXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+THA_GOAT!!!!!!! :  dont crash too hard or it will break
+
+THA_GOAT!!!!!!! killed Mr.JaNe with yandere_bullet
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+THA_GOAT!!!!!!! :  ok no more jet
+
+THA_GOAT!!!!!!! :  sry
+
+Mr.JaNe :  all good just idk how to drive well yet :)
+
+[SH](Yandere Mk.II) jet armed!
+[SH](andere Mk.II) JET loaded
+THA_GOAT!!!!!!! died
+[SH](Yandere Mk.II) Mr.JaNe : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  I did a japan
+
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 69.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere Mk.II) jet armed!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 74.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere MkII) JET loaded
+THA_GOAT!!!!!!! killed Mr.JaNe with sh_generic_dmg
+THA_GOAT!!!!!!! died
+[SH] You killed: Mr.JaNe with: 898 dmg using: sh_generic_dmg
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+*DEAD* Mr.JaNe :  xD
+
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe :  /clearpowesr
+
+THA_GOAT!!!!!!! :  I did another japan
+
+Mr.JaNe :  wow
+
+THA_GOAT!!!!!!! :  *crahes into player with fuckin plane*
+
+*** Mr.JaNe killed THA_GOAT!!!!!!! with a headshot from galil ***
+* Killed by Mr.JaNe with galil @ 8m (75hp, 0ap) >> head: 1 leftarm: 4 rightarm: 1
+* You hit Mr.JaNe 2 time(s), 908 damage >> stomach: 2
+*DEAD* THA_GOAT!!!!!!! :  kill me
+
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  use scanner
+
+Mr.JaNe :  ah
+
+Mr.JaNe :  just t osee names
+
+[SH](Maria) Mr.JaNe shattered you!
+Mr.JaNe killed THA_GOAT!!!!!!! with m3
+[SH](Maria) Mr.JaNe shattered you!* Killed by Mr.JaNe with m3 @ 3m (100hp, 0ap) >> chest: 1 stomach: 2
+* You hit Mr.JaNe 0 time(s), 0 damage >> no hits
+Mr.JaNe killed THA_GOAT!!!!!!! with famas
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+* Killed by Mr.JaNe with famas @ 4m (100hp, 0ap) >> head: 3 chest: 1 leftarm: 4 rightarm: 2
+* You hit Mr.JaNe 0 time(s), 0 damage >> no hits
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  teliko is from metal gear acids
+Mr.JaNe :  not bad
+
+[SH](L96A1) 9 l96 bullets left
+THA_GOAT!!!!!!! killed Mr.JaNe with Lena_s_L96A1
+[SH](L96A1) 8 l96 bullets left
+[SH](L96A1) 7 l96 bullets left
+[SH](L96A1) 6 l96 bullets left
+[SH](L96A1) 5 l96 bullets left
+*** THA_GOAT!!!!!!! killed Mr.JaNe with a headshot from fiveseven ***
+] kill
+THA_GOAT!!!!!!! died
+[SH] You killed: Mr.JaNe with: 81 dmg using: Lena_s_L96A1
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) THA_GOA!!!!!!! : What... have I done...
+THA_GOAT!!!!!!! killed Mr.JaNe with sh_generic_dmg
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Erica Fonseca) You just bled Mr.JaNe!!!
+] rcon amx_shsetlevel jAne 60
+[SH] Client "Mr.JaNe" has been set to level 60
+
+[SH](Shinobu Kocho) heeeeeey~
+[SH] You killed: Mr.JaNe with: 10 dmg using: sh_generic_dmg
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe :  /cam
+
+PLAYER REBORN SUPERHERO [SH] 60LVL | E: set level 60on Mr.JaNe
+THA_GOAT!!!!!!! :  it deosnt shot you lol
+
+*** Mr.JaNe killed THA_GOAT!!!!!!! with a headshot from usp ***
+THA_GOAT!!!!!!! :  loyal friend
+
+Mr.JaNe :  sure
+
+* Killed by Mr.JaNe with usp @ 5m (100hp, 0ap) >> head: 4 chest: 1 stomach: 131 leftarm: 2
+* You hit Mr.JaNe 8 time(s), 105 damage >> stomach: 7 leftleg: 1
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  also I need to make it stronger thats weak as shit hhh
+
+[SH](L96A1) 9 l96 bullets left
+M.JaNe :  lol
+
+[SH](L96A1) 8 l96 bullets left
+Mr.JaNe killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](L96A1) 7 l96 bullets left
+[SH](L96A1) 6 l96 bullets left
+[SH] You were killed by: Mr.JaNe with: 1 dmg using: sh_generic_dmg
+] condump
+console dumped to condump002.txt
+[SH](Yandere Mk.II) Wow... I feel lighter
+] rcon condebug
+condebug enabled
+
+[SH] You were given 60 MercyXP points
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+*** Mr.JaNe kiled THA_GOAT!!!!!!! with a headshot from g3sg1 ***
+* Killed by Mr.JaNe with g3sg1 @ 8m (100hp, 200ap) >> head: 1 stomach: 183 leftarm: 1 rightarm: 1
+* You hit Mr.JaNe 0 time(s), 0 damage >> no hits
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  cmoon give the fella a chance
+
+THA_GOAT!!!!!!! :  clearpowersd
+
+[SH] For help with SuperHero Mod, say: /help
+[SH] All your powers have been cleared successfully
+Mr.JaNe killed THA_GOAT!!!!!!! with sh_generic_dmg
+Mr.aNe :  /cam
+
+[SH] You were killed by: Mr.JaNe with: 400 dmg using: sh_generic_dmg
+[SH] You were given 60 MercyXP points
+[SH](Ester) Hehe...
+[SH](Ester) Maaaaan... you have no enemies yet! Chiiiilll
+[SH](Ester) Maaaaan... you have no enemies yet! Chiiiilll
+[SH](Ester) Maaaaan... you have no enemies yet! Chiiiilll
+[SH](Ester) Maaaaan... you have no enemies yet! Chiiiilll
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Shinbu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Ester) Hehe...
+[SH](Ester) Hehe...
+[SH](Ester) Hehe...
+Mr.JaNe killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Ester) Removed ur college pills!
+[SH](Ester) Hehe...
+[SH](Erica Fonseca) Mr.JaNe has burned you!!!
+THA_GOAT!!!!!!! died
+[SH] You were killed by: Mr.JaNe with: 39 dmg using: sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH] You were given 60 MercyP points
+[SH](Ester) Hehe...
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+THA_GOAT!!!!!!! died
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH] You were given 60 MercyXP points
+[SH](Ester) Hehe...
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been take away!
+[SH] You were given 60 MercyXP points
+[SH](Ester) Hehe...
+] rcon amx_heal @TERRORIST 311213213
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Ester) Hehe...
+Mr.JaNe :  /cam
+
+Mr.JaNe :  /cam
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+THA_GOAT!!!!!!! :  use teliko
+
+THA_GOAT!!!!!!! :  leme show you something it does
+
+Mr.JaNe :  i had 1100 hp some how
+
+[SH](Ester) Hehe...
+Mr.JaNe :  now just 700
+
+THA_GOAT!!!!!!! :  oi
+
+THA_GOAT!!!!!!! :  ?
+
+THA_GOAT!!!!!!! :  maybe you used vegetto?
+
+[SH](Ester) Hehe...
+[SH](Ester) Rmoved ur college pills!
+[SH](Ester) Hehe...
+THA_GOAT!!!!!!! :  or no
+
+[SH](Ester) Hehe...
+Mr.JaNe :  maybe
+
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Ester) Hehe...
+THA_GOAT!!!!!!! :  ok im gonna spawn bots
+
+] rcon yb_quota 10
+
+Mr.JaNe :  100
+
+esfregona ensebada connectedesfregona ensebada is joining the Terrorist forcevelhaca asneirenta connectedvelhaca asneirenta is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forcemandriona dolaro connectedmandriona do laro is joining the Counter-Terrorist forceBlowForBlow connectedBlowForBlow is joining the Counter-Terrorist forcemona amolgada connectedmona amolgada is joining the Terrorist forcetrunfa desgrenhada connectedtrunfa desgrenhada is joining the Counter-Terrorist forceSafada Endiabrada connectedSafada Endiabrada is joining the Terrorist forcebruxa da lixeira connectedbruxa da lixeira is joining the Counter-Terrorist forceRatona Desmamada connectedRatona Desmamada is joiing the Terrorist forceTHA_GOAT!!!!!!! :  can I do it? i need the bathroom <3
+
+Mr.JaNe :  ok 1100
+
+[SH](Vegetto) Mr.JaNe shattered you!
+Mr.JaNe :  sure
+
+[SH](Ester) Mr.JaNe: AYO CHILL, THA_GOAT!!!!!!!!
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+] kill
+THA_GOAT!!!!!! died
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) Hehe...
+[SH](Erica Fonseca) Mr.JaNe has put you to sleep!!!
+[SH](Ester) Removed ur college pills!
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING HUH?!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+PTB: Round ended, checking teams.
+PTB: Can't switch players, need valid target in each team.
+*** Safada Endiabrada killed bruxa da lixeira with a headshot from Smallness ***
+BlowForBlow killed Safada Endiabrada with ak47
+[SH](Ester) Hehe...
+*** mona amolgada killed velhaca asneirenta with a headshot from ak47 ***
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate bruxa da lixeira!
+*** mona amolgada killed Mr.aNe with a headshot from ak47 ***
+Ratona Desmamada killed BlowForBlow with sh_generic_dmg
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Mr.JaNe! KARMA!
+*** mandriona do laro killed mona amolgada with a headshot from awp ***
+*** BlowForBlow killed THA_GOAT!!!!!!! with a headshot from mp5navy ***
+*** BlowForBlow killed mona amolgada with a headshot from mp5navy ***
+mona amolgada killed BlowForBlow with sh_generic_dmg
+*** mndriona do laro killed esfregona ensebada with a headshot from awp ***
+* Killed by BlowForBlow with mp5navy @ 7m (100hp, 150ap) >> head: 1
+* You hit BlowForBlow 0 time(s), 0 damage >> no hits
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from p228 ***
+RoadkillStew killed self with fiveseven
+mandriona do laro killed self with a headshot from awp ***
+trunfa desgrenhada killed self with m249
+bruxa da lixeira killed self with ak47
+RatonaDesmamada killed self with m4a1
+[SH](Ester) Its show time.
+[SH](Ester) 8 attempts to change left
+[SH](Ester) THA_GOAT!!!!!!!! They've been reborn!
+[SH](Ester) Hehe...
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) velhaca asneirenta's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+It's time to choose the nextmap...
+mona amolgada killed BlowForBlow with sh_generic_dmg
+BlowForBlow killed Safada Endiabrada with sh_generic_dmg
+Ratona Desmamada kille BlowForBlow with sh_generic_dmg
+PTB: Round ended, checking teams.
+*** BlowForBlow killed esfregona ensebada with a headshot from sh_generic_dmg ***
+PTB: Can't switch players, need valid target in each team.
+[SH] You were given 60 MercyXP points
+mona amolgada killed BlowForBlow with sh_generic_dmg
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate BlowForBlow!
+bruxa da lixeira klled THA_GOAT!!!!!!! with famas
+Choosing finished. The nextmap will be de_cbble
+mona amolgada (RADIO): Need backup.
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+mona amolgada (RADIO): Need backup.
+* Killed by bruxa da lixeira with famas @ 51m (175hp, 175ap) >> chest: 1 rightleg: 2
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+*** mandriona do laro killed mona amolgada with a headshot from awp ***
+velhaca asneirenta killed RoadkillStew with sh_generic_dmg
+[SH](Ester) Its show time.
+RodkillStew died
+[SH](Ester) 8 attempts to change left
+bruxa da lixeira killed Ratona Desmamada with deagle
+mandriona do laro killed THA_GOAT!!!!!!! with awp
+[SH](Ester) THA_GOAT!!!!!!!! They've been reborn!
+velhaca asneirenta killed Safada Endiabrada with sh_generic_dmg
+mona amolgada (RADIO): Need backup.
+RoadkillStew died
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+* Killed by mandriona do laro with awp @ 53m (671hp, 1600ap) >> stomach: 1
+Safada Endiabrada died
+bruxa da lixeira killed mona aolgada with sh_generic_dmg
+*** velhaca asneirenta killed RoadkillStew with a headshot from ak47 ***
+* You hit mandriona do laro 0 time(s), 0 damage >> no hits
+Safada Endiabrada died
+mandriona do laro killed Ratona Desmamada with awp
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+*** BlowForBlow killed RoadkillStew with a headshot from p90 ***
+*** BlowForlow killed esfregona ensebada with a headshot from p90 ***
+PTB: Round ended, checking teams.
+mona amolgada killed BlowForBlow with sh_generic_dmg
+mona amolgada killed BlowForBlow with sh_generic_dmg
+PTB: Can't switch players, need valid target in each team.
+[SH] You were given 60 MercyXP points
+mona amolgada killed BlowForBlow with sh_generic_dmg
+[SH](Ester) Hehe...
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+velhaca aneirenta killed esfregona ensebada with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+Safada Endiabrada died
+velhaca asneirenta killed mona amolgada with sh_generic_dmg
+velhaca asneirenta killed Ratona Desmamada with ak47
+bruxa da lixeira killed THA_GOAT!!!!!!! with famas
+Ratona Desmamada died
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate BlowForBlow!
+esfregona ensebada died
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+*** RoadkillStw killed velhaca asneirenta with a headshot from scout ***
+velhaca asneirenta killed RoadkillStew with sh_generic_dmg
+* Killed by bruxa da lixeira with famas @ 87m (175hp, 175ap) >> chest: 1 stomach: 2
+Safada Endiabrada died
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+esfregona ensebada died
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Ester) You were made to do more than survive the day. Go avenge yourself
+[SH](Ester) 8 attempts to change left
+[SH](Ester)THA_GOAT!!!!!!!! They've been reborn!
+*** bruxa da lixeira killed esfregona ensebada with a headshot from ak47 ***
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+*** bruxa da lixeira killed THA_GOAT!!!!!!! with a headshot from ak47 ***
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+mandriona do laro killed RoadkillStew with awp
+[SH](Ester) Hehe...
+*** bruxa da lixeira killed Safada ndiabrada with a headshot from ak47 ***
+[SH](Ester) Removed ur college pills!
+[SH](Ester) Hehe...
+* Killed by bruxa da lixeira with ak47 @ 11m (175hp, 175ap) >> head: 1
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+[SH](Ester) Not this time...
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) velhaca asneirenta's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+mona amolgada killed BlowForBlow with sh_generic_dmg
+PTB: Round ended, checkin teams.
+*** mandriona do laro killed Ratona Desmamada with a headshot from awp ***
+mona amolgada killed BlowForBlow with sh_generic_dmg
+mandriona do laro killed Ratona Desmamada with awp
+PTB: Can't switch players, need valid target in each team.
+[SH] You were given 60 MercyXP points
+"mp_chattime" changed to "12.000000"
+Safada Endiabrada killed BlowForBlow with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, BlowForBlow! KARMA!
+Mr.JaNe dropped
+[SH](randmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate BlowForBlow!
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4329 SERVER (0 CRC)
+Server # 33
+"sv_maxspeed" changed to "10000"
+THA_GOAT!!!!!!! is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forcemandriona do laro connectedmandriona do laro is joining the Terrorist forceBlowForBlow connectedBlowForBlow is joining the Counter-Terrorist forceona amolgada connectedmona amolgada is joining the Counter-Terrorist forcetrunfa desgrenhada connectedtrunfa desgrenhada is joining the Terrorist forceSafada Endiabrada connectedSafada Endiabrada is joining the Terrorist forcebruxa da lixeira connectedbruxa da lixeira is joining the Counter-Terrorist forceRatona Desmamada connectedRatona Desmamada is joining the Counter-Terrorist forceType 'amx_langmenu' in the console to display a menu where you can choose your language
+Type 'amx_help' 'amx_searccmd' in the console to see available commands
+velhaca asneirenta killed mandriona do laro with sh_generic_dmg
+Time Left: 19:49 min. Next Map: de_dust
+velhaca asneirenta killed Safada Endiabrada with sh_generic_dmg
+*** bruxa da lixeira killed trunfa desgrenhada with a headshot from m4a1 ***
+velhaca asneirenta killed RoadkillStew with sh_generic_dmg
+*** esfregona ensebada killed bruxa da lixeira with a headshot from ak47 ***
+velhaca asneirenta (RADIO): Fire in the hole!
+[SH](Jaqueo) Shield not deployed. Actin interrupted
+*** esfregona ensebada killed BlowForBlow with a headshot from ak47 ***
+velhaca asneirenta (RADIO): Fire in the hole!
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate bruxa da lixeira!
+BlowForBlow (RADIO): Fire in the hole!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle t spawn! (aka a weapon_famas)
+[SH] You cannot choose more than 5 heroes that require binds
+THA_GOAT!!!!!!! killed esfregona ensebada with sh_generic_dmg
+[SH](Maria) THA_GOAT!!!!!!! was shattered by you!
+[SH](Maria) THA_GOAT!!!!!!! shattered you!
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH] You killed: esfregona ensebada with: 168 dmg using: sh_generic_dmg
+[SH](Mara) esfregona ensebada was shattered by you!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Shinobu Kocho) Parsing tomfoolery files~
+[SH](Marksman) You just bled esfregona ensebada!!!
+THA_GOAT!!!!!!! killed trunfa desgrenhada with sh_generic_dmg
+[SH](Ester) trunfa desgrenhada: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Erica Foseca) You just bled trunfa desgrenhada!!!
+[SH](Shinobu Kocho) Parsing tomfoolery files~
+[SH](Marksman) You just bled trunfa desgrenhada!!!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+*** THA_GOAT!!!!!!! killed trunfa desgrenhada with a headshot from sh_generic_dmg ***
+[SH] You killed: trunfa desgrenhada with: 5 dmg using: sh_generic_dmg
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate trunfa desgrenhada!
+[SH](Shinobu Kocho) I wonder if they feel lnely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shinobu Kocho) Ai, Ai, Ai~
+[SH](Ester) trunfa desgrenhada: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: trunfa desgrenhada with: 66 dmg using: sh_generic_dmg
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+*** BlowForBlw killed RoadkillStew with a headshot from p90 ***
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+*** bruxa da lixeira killed Safada Endiabrada with a headshot fom famas ***
+RoadkillStew killed BlowForBlow with scout
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Safada Endiabrada died
+bruxa da lixeira killed trunfa desgrenhada with sh_generic_dmg
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Safada Endiabrada died
+trunfa desgrenhada died
+[SH](Ester) RoadkillStew's godmode has been taken away!
+Ratona Desmamada killed RoadkillStew with Lena_s_L96A1
+*** mandriona do laro killed Ratona Desmamada with a headshot from m249 ***
+trunf desgrenhada died
+[SH](Maria) THA_GOAT!!!!!!! was shattered by you!
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Maria) THA_GOAT!!!!!!! shattered you!
+RoadkillStew killed Ratona Desmamada with scout
+Safada Endiabrada died
+bruxa da lixeira (RADIO): Fire in the hole!
+velhaca asneirenta killed esfregona ensebada with sh_generic_dmg
+*** BlowForBlow killed trunfa desgrenhada with a headshot from galil ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Ester) RoadkllStew! They've been reborn!
+Safada Endiabrada died
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+bruxa da lixeira killed Safada Endiabrada with famas
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate Ratona Desmamada!
+esfregona ensebada killed mona amolgada with sh_generic_dmg
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Ester) RoadkillStew's godmode has been taken away!
+mandriona do laro killed THA_GOAT!!!!!!! with elite
+[H](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+* Killed by mandriona do laro with elite @ 20m (455hp, 1600ap) >> rightleg: 1
+* You hit mandriona do laro 0 time(s), 0 damage >> no hits
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+Ratona Desmamada killed trunfa desgrenhada with Lena_s_L96A1
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rile at spawn! (aka a weapon_famas)
+esfregona ensebada killed self with elite
+velhaca asneirenta killed self with a headshot from ak47 ***
+RoadkillStew killed self with scout
+mandriona do laro killed self with elite
+trunfa desgrenhada killed self with knife
+Safada Endiabrada killed self with a headshot from knife ***
+bruxa da lixeira killed self with m4a1
+Ratona Desmamada killed self with awp
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Eser) Removing respawning dice rool loop. already alive
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+RoadkillStew killed BlowForBlow with sh_generic_dmg
+*** BlowForBlow killed trunfa desgrenhada with a headshot from p90 ***
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Safada Endiabrada killed BlowForBlow with sh_generic_dmg
+] sats
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.50       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.43       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.44       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.50       0
+BlowForBlow killed Safada Endiabrada with sh_generic_dmg
+] stats 
+CPU   In    Out   Uptime  sers   FPS    Players
+99.90  0.00  0.00      37     0  100.38       0
+*** BlowForBlow killed Safada Endiabrada with a headshot from ak47 ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+] rcon stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+20.00  3.70  4.48     658   392   59.10       1
+
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.00  3.77  4.60     658   392   60.47       1
+
+] rcon stats
+CPU   In    Out   Uptim  Users   FPS    Players
+21.00  3.73  4.53     658   392   59.91       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  3.54  4.17     658   392   57.81       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.40  3.46  4.06     658   392   58.76       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.40  3.40  3.92     658   392   58.16       1
+
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Grandmaster) velhaca asneirenta used cosmc life force to Revive Dead Teammate BlowForBlow!
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.00  4.36  5.45     658   392   58.39       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  4.32  5.53     658   392   57.26       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  4.20  5.30     658   392   58.59       1
+
+] rcon stats
+CPU   In    ut   Uptime  Users   FPS    Players
+20.80  4.27  5.48     658   392   58.50       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.42  5.71     658   392   59.29       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.42  5.79     658   392   59.55       1
+
+*** Ratona Desmamada killed esfregona ensebada with a headshot from famas ***
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.50  4.36  5.70     658   392   57.47       1
+
+] stats 
+CPU   n    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.42       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.43       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.49       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.45       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.39      0
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.60  4.22  5.44     658   392   57.63       1
+
+] rcon stats
+Ratona Desmamada killed RoadkillStew with Lena_s_L96A1
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.23  5.47     658   392   59.31       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  5.00  6.73     658   392   58.46       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  5.48  7.51     658   392   60.48       1
+
+velhaca aseirenta killed trunfa desgrenhada with sh_generic_dmg
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.83  6.37     658   392   58.27       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.60  6.06     658   392   60.46       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.35  5.65     658   392   60.58       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.34  5.62     658   392   60.70       1
+
+[SH](Grandmaser) RoadkillStew used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+Ratona Desmamada (RADIO): Fire in the hole!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+Ratona Desmamada killed esfregona ensebada with sh_generic_dmg
+Ratona Desmamada (RADIO): Fire in the hole!
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg **
+bruxa da lixeira (RADIO): Need backup.
+Ratona Desmamada killed RoadkillStew with sh_generic_dmg
+bruxa da lixeira (RADIO): Fire in the hole!
+[SH](Teliko) Ratona Desmamada hit a MEGA COUNTER on mandriona do laro!!!!
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Teliko) Ratona Desmamada hit a MEGA COUNTER on Safada Endiabrada!!!!
+bruxa da lixeira (RADIO): Need backup.
+bruxa da lixeira (RADIO): Need backup.
+[SH] You were kille by: esfregona ensebada with: 60 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+bruxa da lixeira (RADIO): Need backup.
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg ***
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! S now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) esfregona ensebada shattered you!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH] You were killed by: esfregona ensebada with: 85 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+Ratona Desmamada killed RoadkillStew with sh_generic_dmg
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+bruxa da lixeira (RADIO): Need backu.
+esfregona ensebada killed self with scout
+velhaca asneirenta killed self with a headshot from ak47 ***
+mandriona do laro killed self with m249
+mona amolgada killed self with aug
+trunfa desgrenhada killed self with m249
+Safada Endiabrada killed self with p90
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with deagle
+] condump

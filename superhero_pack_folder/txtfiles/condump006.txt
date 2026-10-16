@@ -1,0 +1,973 @@
+om famas ***
+RoadkillStew killed BlowForBlow with scout
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Safada Endiabrada died
+bruxa da lixeira killed trunfa desgrenhada with sh_generic_dmg
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Safada Endiabrada died
+trunfa desgrenhada died
+[SH](Ester) RoadkillStew's godmode has been taken away!
+Ratona Desmamada killed RoadkillStew with Lena_s_L96A1
+*** mandriona do laro killed Ratona Desmamada with a headshot from m249 ***
+trunf desgrenhada died
+[SH](Maria) THA_GOAT!!!!!!! was shattered by you!
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Maria) THA_GOAT!!!!!!! shattered you!
+RoadkillStew killed Ratona Desmamada with scout
+Safada Endiabrada died
+bruxa da lixeira (RADIO): Fire in the hole!
+velhaca asneirenta killed esfregona ensebada with sh_generic_dmg
+*** BlowForBlow killed trunfa desgrenhada with a headshot from galil ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Ester) RoadkllStew! They've been reborn!
+Safada Endiabrada died
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+bruxa da lixeira killed Safada Endiabrada with famas
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate Ratona Desmamada!
+esfregona ensebada killed mona amolgada with sh_generic_dmg
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Ester) RoadkillStew's godmode has been taken away!
+mandriona do laro killed THA_GOAT!!!!!!! with elite
+[H](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+* Killed by mandriona do laro with elite @ 20m (455hp, 1600ap) >> rightleg: 1
+* You hit mandriona do laro 0 time(s), 0 damage >> no hits
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+Ratona Desmamada killed trunfa desgrenhada with Lena_s_L96A1
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rile at spawn! (aka a weapon_famas)
+esfregona ensebada killed self with elite
+velhaca asneirenta killed self with a headshot from ak47 ***
+RoadkillStew killed self with scout
+mandriona do laro killed self with elite
+trunfa desgrenhada killed self with knife
+Safada Endiabrada killed self with a headshot from knife ***
+bruxa da lixeira killed self with m4a1
+Ratona Desmamada killed self with awp
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Eser) Removing respawning dice rool loop. already alive
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+RoadkillStew killed BlowForBlow with sh_generic_dmg
+*** BlowForBlow killed trunfa desgrenhada with a headshot from p90 ***
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Safada Endiabrada killed BlowForBlow with sh_generic_dmg
+] sats
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.50       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.43       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.44       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.50       0
+BlowForBlow killed Safada Endiabrada with sh_generic_dmg
+] stats 
+CPU   In    Out   Uptime  sers   FPS    Players
+99.90  0.00  0.00      37     0  100.38       0
+*** BlowForBlow killed Safada Endiabrada with a headshot from ak47 ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+] rcon stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+20.00  3.70  4.48     658   392   59.10       1
+
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.00  3.77  4.60     658   392   60.47       1
+
+] rcon stats
+CPU   In    Out   Uptim  Users   FPS    Players
+21.00  3.73  4.53     658   392   59.91       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  3.54  4.17     658   392   57.81       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.40  3.46  4.06     658   392   58.76       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.40  3.40  3.92     658   392   58.16       1
+
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Grandmaster) velhaca asneirenta used cosmc life force to Revive Dead Teammate BlowForBlow!
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.00  4.36  5.45     658   392   58.39       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  4.32  5.53     658   392   57.26       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+20.75  4.20  5.30     658   392   58.59       1
+
+] rcon stats
+CPU   In    ut   Uptime  Users   FPS    Players
+20.80  4.27  5.48     658   392   58.50       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.42  5.71     658   392   59.29       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.42  5.79     658   392   59.55       1
+
+*** Ratona Desmamada killed esfregona ensebada with a headshot from famas ***
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.50  4.36  5.70     658   392   57.47       1
+
+] stats 
+CPU   n    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.42       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.43       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.49       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.45       0
+] stats 
+CPU   In    Out   Uptime  Users   FPS    Players
+99.90  0.00  0.00      37     0  100.39      0
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.60  4.22  5.44     658   392   57.63       1
+
+] rcon stats
+Ratona Desmamada killed RoadkillStew with Lena_s_L96A1
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.23  5.47     658   392   59.31       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  5.00  6.73     658   392   58.46       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  5.48  7.51     658   392   60.48       1
+
+velhaca aseirenta killed trunfa desgrenhada with sh_generic_dmg
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+22.00  4.83  6.37     658   392   58.27       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.60  6.06     658   392   60.46       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.35  5.65     658   392   60.58       1
+
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+21.67  4.34  5.62     658   392   60.70       1
+
+[SH](Grandmaser) RoadkillStew used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+*** bruxa da lixeira killed Safada Endiabrada with a headshot from famas ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+Ratona Desmamada (RADIO): Fire in the hole!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+Ratona Desmamada killed esfregona ensebada with sh_generic_dmg
+Ratona Desmamada (RADIO): Fire in the hole!
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg **
+bruxa da lixeira (RADIO): Need backup.
+Ratona Desmamada killed RoadkillStew with sh_generic_dmg
+bruxa da lixeira (RADIO): Fire in the hole!
+[SH](Teliko) Ratona Desmamada hit a MEGA COUNTER on mandriona do laro!!!!
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Teliko) Ratona Desmamada hit a MEGA COUNTER on Safada Endiabrada!!!!
+bruxa da lixeira (RADIO): Need backup.
+bruxa da lixeira (RADIO): Need backup.
+[SH] You were kille by: esfregona ensebada with: 60 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+bruxa da lixeira (RADIO): Need backup.
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg ***
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! S now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) esfregona ensebada shattered you!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH] You were killed by: esfregona ensebada with: 85 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+Ratona Desmamada killed RoadkillStew with sh_generic_dmg
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+bruxa da lixeira (RADIO): Need backu.
+esfregona ensebada killed self with scout
+velhaca asneirenta killed self with a headshot from ak47 ***
+mandriona do laro killed self with m249
+mona amolgada killed self with aug
+trunfa desgrenhada killed self with m249
+Safada Endiabrada killed self with p90
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with deagle
+] condump
+console dumped to condump003.txt
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+bruxa da lixeira (RADIO): Fire in the hoe!
+mandriona do laro killed BlowForBlow with sh_generic_dmg
+BlowForBlow died
+[SH](Jaqueo) Shield not deployed. Action interrupted
+Safada Endiabrada killed THA_GOAT!!!!!!! with deagle
+[SH](Jaqueo) Shield not deployed. Action interrupted
+THA_GOAT!!!!!!! killed Safada Endiabrada with sh_generic_dmg
+[SH](Grandmaster) velhaca asneirenta used cosmic life force to Revive Dead Teammate BlowForBlow!
+[SH](Maria) Safada Endiabrada was shattered by you!
+* Killed by Safada Endiabrada with deagle @ 5m (36hp, 398ap) >> somach: 3 rightleg: 3
+* You hit Safada Endiabrada 1 time(s), 78 damage >> stomach: 1
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH] ou killed: Safada Endiabrada with: 53 dmg using: sh_generic_dmg
+[SH](Ester) Removing respawning dice rool loop. already alive
+esfregona ensebada killed self with ak47
+velhaca asneirenta killed self with a headshot from ak47 ***
+RoadkillStew killed self with ak47
+mandriona do laro killed self with m249
+mona amolgada killed self with m4a1
+mona amolgada killed trunfa desgrenhada with sh_generic_dmg
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self wit awp
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+BlowForBlow died
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Ester) velhaca asneirenta's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+velhaca asneirenta has left the gameHartemBenArfa connectedHartemBenArfa is joining the Counter-Terrorist forcePTB: Round ended, checking tems.
+PTB: No transfer would improve team balancing.
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Hehe...
+[SH](Jaqueo) Shield loaded
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+BlowForBlow killed RoadkillStew with sh_generic_dmg
+*** Ratona Desmamada killed mandriona do laro with a headshot from sh_generic_dmg ***
+trunfa desgrenhada killed BlowForBlow with sh_generic_dmg
+[SH](Jaqueo) Shield armed!
+*** bruxa da lixeira klled esfregona ensebada with a headshot from p228 ***
+[SH](Jaqueo) Shield died!
+esfregona ensebada died
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate RoadkillStew!
+esfregona ensebada died
+HartemBenArfa killed trunfa desgrenhada with awp
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Ester) Hehe...
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg ***
+[SH](Ester) Removed ur college pills!
+[SH](Ester) THA_GOAT!!!!!!!: ARMA, esfregona ensebada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+bruxa da lixeira killed esfregona ensebada with sh_generic_dmg
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg ***
+HartemBenArfa (RADIO): Fire in the hole!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+*** mona amolgada killed RoadkillStew with a headshot from deagle ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfrgona ensebada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+] condump 
+console dumped to condump004.txt
+[SH](Jaqueo) Shield not deployed. Action interrupted
+*** Ratona Desmamada killed Safada Endiabrada with a headshot from sh_generic_dmg ***
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+*** mona amolgada killed esfregona ensebada with a headshot from m4a1 ***
+trunfa desgrenhada killed THA_GOAT!!!!!!! with sh_generic_dmg
+moa amolgada (RADIO): Need backup.
+[SH](Jaqueo) Shield not deployed. Action interrupted
+mona amolgada (RADIO): Need backup.
+mona amolgada killed RoadkillStew with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH] You were killed by: trunfa desgrenhada with: 165 dmg using: sh_generic_dmg
+[SH](Maria) trunfa desgrenhada shattered you!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Phoenix) You used the hoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respawning dice rool loop. already alive
+THA_GOAT!!!!!!! killed trunfa desgrenhada with sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: trunfa desgrenhada with: 165 dmg using sh_generic_dmg
+[SH](Maria) trunfa desgrenhada was shattered by you!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+Safada Endiabrada killed THA_GOAT!!!!!!! with ak47
+PTB: Round ended, checking teams.
+PTB: Can't transfer player, no valid target in winning team.
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+* Killed by Safada Endiabrada with ak47 @ 40m (150hp, 400ap) >> leftarm: 1
+* You hit Safada Endiabrada 0 time(s), 0 damage >> no hts
+THA_GOAT!!!!!!! died
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+esfregona ensebada killed self with a headshot from scout ***
+RoadkillStew killed self with fiveseven
+mandriona do laro killed self with scout
+mona amolgada killed self with a headshot from m4a1 **
+trunfa desgrenhada killed self with m249
+Safada Endiabrada killed self with ak47
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with awp
+HartemBenArfa killed self with awp
+[SH](Ester) Removing respawning dice rool loop. already alive
+BlowForBlow died
+[SH](Vegetto) mandriona do laro shattered you!
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) oadkillStew's godmode has been taken away!
+PTB: Round ended, checking teams.
+PTB: Can't transfer player, no valid target in winning team.
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Ratona Desmamada (RADIO): Follow Me.
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH] You were killedby: esfregona ensebada with: 60 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+esfregona ensebada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_fama)
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH] You were killed by: esfregona ensebada with: 149 dmg using: sh_generic_dmg
+esfregona ensebada killed Ratona Desmamada with sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+esfregona ensebada killed Ratona Desmamada with sh_generic_dmg
+esfregona ensebada killed self with scout
+RoadkillStew killed self with sg552
+mandriona do laro killed self with ak47
+mona amolgada killed self with a headshot from famas ***
+trunfa desgrenhada klled self with m249
+Safada Endiabrada killed self with famas
+bruxa da lixeira killed self with famas
+HartemBenArfa killed self with m3
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+BlowForBlow died
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+PTB: Round ended, checking teams.
+PTB: Transfering bruxa da lixeira to the Ts
+Ratona Desmamada killed RoadkillStew with sh_generic_dmg
+Ratona Desmamada (RADIO): Follow Me.
+bruxa da lixeira killed THA_GOAT!!!!!!! wit knife
+[SH](Jaqueo) Shield not deployed. Action interrupted
+esfregona ensebada killed Ratona Desmamada with sh_generic_dmg
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate RoadkillStew!
+* Killed by bruxa da lixeira with knife @ 1m (175hp, 175ap) >> rightarm: 1 leftleg: 1
+Ratona Desmamada died
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+esfregona ensebada killed BlowForBlow with sh_generic_dmg
+[SH](Phoenix)You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+esfregona ensebada killed BlowForBlow with sh_generic_dmg
+*** RoadkillStew killed THA_GOAT!!!!!!! with a headshot from m4a1 ***
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH](Shinobu Kocho) Its not hurting... Its acure~
+[SH](Marksman) You just bled bruxa da lixeira!!!
+[SH](Maria) esfregona ensebada was shattered by you!
+* Killed by RoadkillStew with m4a1 @ 4m (100hp, 0ap) >> leftarm: 1
+esfregona ensebada killed self with scout
+RoadkillStew killed self with knife
+mandriona do laro killed self with mp5navy
+mona amolgada killed self with a headshot from m4a1 ***
+trunfa desgrenhada killed self with m249
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with knife
+HartemBenArfa killed self with m3
+* Yo hit RoadkillStew 0 time(s), 0 damage >> no hits
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+PTB: Round ended, checking teams.
+PTB: Transfering mandriona do laro to the CTs
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Jaqueo) Shield not deployed. Action nterrupted
+THA_GOAT!!!!!!! killed esfregona ensebada with sh_generic_dmg
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](ksun) Killed someone
+trunfa desgrenhada has left the gamelover beggar connectedlover beggar is joining the Terrorist force[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH] You killed: esfregona ensebada with: 204 dmg using: sh_generic_dmg
+*** esfregona ensebada killed Ratona Desmamada with a headshot from sh_generi_dmg ***
+Ratona Desmamada died
+[SH](Maria) esfregona ensebada was shattered by you!
+*** esfregona ensebada killed mona amolgada with a headshot from ak47 ***
+mona amolgada killed esfregona ensebada with sh_generic_dmg
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate esfregona ensebada!
+[SH](Teliko) esfregona ensebada hit a MEGA COUNTER on Ratona Desmamada!!!!
+mona amolgada (RADIO): Fire in the hole!
+*** mandriona do laro killed RoadkillStew with a headshot from awp ***
+[SH](Mara) bruxa da lixeira was shattered by you!
+esfregona ensebada died
+[SH](Teliko) esfregona ensebada hit a MEGA COUNTER on mona amolgada!!!!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+*** bruxa da lixeira killed THA_GOAT!!!!!!! with a headshot from deagle ***
+[SH](Maria) bruxa da lixeira was shattered by you!
+mona amolgada (RADIO): Fire in the hole!
+[SH](Maria) bruxa da lixeira was shattered by you!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+* Killed by bruxa da lixeirawith deagle @ 15m (175hp, 175ap) >> stomach: 1
+* You hit bruxa da lixeira 3 time(s), 291 damage >> stomach: 3
+mandriona do laro killed Safada Endiabrada with awp
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+bruxa da lixeira killed THA_GOAT!!!!!!! with deagle
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Eter) RoadkillStew! They've been reborn!
+[SH](Ester) Removing respawning dice rool loop. already alive
+esfregona ensebada died
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+mandriona do laro killed self with hegrenade
+mona amolgada killed self with a headshot from knife ***
+mona amolgada killed Safada Endiabrada with sh_generic_dmg
+bruxa da lixeira killed self with m4a1
+HartemBenArfa killed self with m3
+* Killed by bruxa da lixeira with deagle @ 12m (175hp, 175ap) >> rightarm: 1
+BlowForBlow ied
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) HartemBenArfa's godmode has been taken away!
+PTB: Round ended, checking teams.
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) THA_GOAT!!!!!!! was shattered by yu!
+lover beggar killed BlowForBlow with sh_generic_dmg
+[SH](Maria) THA_GOAT!!!!!!! shattered you!
+BlowForBlow killed Safada Endiabrada with p90
+lover beggar killed BlowForBlow with sh_generic_dmg
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](Maria) lover beggar was shattered by you!
+*** THA_GOAT!!!!!!! killed RoadkillStew with a headshot from ak47 ***
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+lover beggar killed Ratona Desmamada with sh_generic_dmg
+esfregona ensebada killed HA_GOAT!!!!!!! with sh_generic_dmg
+[SH](Grandmaster) esfregona ensebada used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate RoadkillStew!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH] You were killed by: esfregona ensebada with: 163 dmg using: sh_generic_dmg
+[SH](Maria) esfregona ensebada shattered you!
+[SH](Erica Fonseca) THA_GOAT!!!!!!: WOW! AMAZING, HUH?!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Ratona Desmamada killed lover beggar with Lena_s_L96A1
+bruxa da lixeira killed THA_GOAT!!!!!!! with famas
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) esfregona ensebada was shattered by you!
+[SH](Ester) Removing respawning die rool loop. already alive
+THA_GOAT!!!!!!! (RADIO): Cover Me!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by bruxa da lixeira with famas @ 26m (175hp, 175ap) >> leftarm: 2 rightarm: 1
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+mandriona do laro (RADIO): Need backup.
+[SH](Ester) This one must count, now. I wont disappoint myself or them any longer
+[SH](Ester) 8 attempts to change left
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) THA_GOAT!!!!!!!! They've been reborn!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, esfregona ensebada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, mandriona do laro! KARMA!
+esfregona ensebada killed self with a headshot from scout ***
+RoadkillStew killed self with a headshot from scout ***
+mandriona do laro killed self with famas
+mona amolgada killed self with a headshot fro famas ***
+mona amolgada killed Safada Endiabrada with sh_generic_dmg
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with famas
+HartemBenArfa killed self with awp
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, bruxa da lixeira! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Ester) Hehe...
+esfregona ensebada has left the gamerapa rabas connectedrapa raba is joining the Terrorist force[SH](Ester) Removed ur college pills!
+PTB: Round ended, checking teams.
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+BlowForBlow (RADIO): Fire in the hole!
+*** BlowForBlow killed bruxa da lixeira with a headshot from Smallness ***
+*** mona amolgada killed Safada Endiabrada with a headshot from m4a1 ***
+BlowForBlow (RADIO): Fire in the hole!
+[SH](Ester) Hehe...
+[SH](Ester) Removed ur college pills!
+[SH](Ester) TH_GOAT!!!!!!!: KARMA, bruxa da lixeira! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate bruxa da lixeira!
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](Ester) Hehe...
+lover beggar killed THA_GOAT!!!!!!! with m4a1
+[SH](Ester) Removed ur college pills!
+[SH](Shinobu Kocho) I wonder if they feel lonely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shiobu Kocho) heeeeeey~
+* Killed by lover beggar with m4a1 @ 18m (382hp, 1000ap) >> leftarm: 1
+* You hit lover beggar 0 time(s), 0 damage >> no hits
+bruxa da lixeira killed BlowForBlow with sh_generic_dmg
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a fre rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, mandriona do laro! KARMA!
+RoadkillStew killed self with a headshot from m4a1 ***
+mandriona do laro killed self with m4a1
+mona amolgada killed self with a headshot from m4a1 ***
+Safada Endiabrada killed self with a headshot from m249 ***
+bruxa da lixeira killed self with deagle
+Ratona Desmamada killed self wit awp
+HartemBenArfa killed self with m3
+lover beggar killed self with ak47
+rapa rabas killed self with ak47
+BlowForBlow died
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, bruxa da lixeira! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Ester) HartemBenArfa's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+PTB: Round ended, checking teams.
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 evels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+THA_GOAT!!!!!!! killed rapa rabas with sh_generic_dmg
+THA_GOAT!!!!!!! killed RoadkillStew with sh_generic_dmg
+THA_GOAT!!!!!!! died
+Ratona Desmamada (RADIO): Follow Me.
+[SH](Graciete) rapa rabas was shattered by you!
+[SH](Graciete) RoadkillStew was shattered by you!
+[SH](Graciete) lover beggar was shattered by you!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+THA_GOAT!!!!!!! died
+[SH](Teliko) You ae 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate rapa rabas!
+BlowForBlow killed lover beggar with p90
+RoadkillStew killed self with fiveseven
+mandriona do laro kiled self with scout
+mona amolgada killed self with a headshot from famas ***
+Safada Endiabrada killed self with a headshot from m249 ***
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with knife
+HartemBenArfa killed self with awp
+rapa rabas killed self with mp5navy
+BlowForBlow died
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Phoenix) You were killed for being stuck in a wall
+mandriona do laro (RADIO): You Take the Point.
+PTB: Round ended, checking teams.
+RoadkillStew illed THA_GOAT!!!!!!! with m4a1
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by RoadkillStew with m4a1 @ 2m (100hp, 100ap) >> leftarm: 1 rightarm: 1 rightleg: 3
+* You hit RoadkillStew 0 time(s), 0 damage >> no hits
+*** RoadkillStew killed THA_GOAT!!!!!!! with a headshot from m4a1 ***
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 evels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respawning dice rool loop. already alive
+* Killed by RoadkillStew with m4a1 @ 4m (46hp, 107ap) >> stomach: 1 leftarm: 2
+* You hit RoadkillStew 0 time(s), 0 damage >> no hits
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Ester) This one must count, now. I wont disappoint myself o them any longer
+THA_GOAT!!!!!!! killed RoadkillStew with sh_generic_dmg
+[SH](Ester) 8 attempts to change left
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) THA_GOAT!!!!!!!! They've been reborn!
+[SH](Ester) RoadkillStew: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... ot even headshot) from your.... "Moralizing"...
+[SH](Erica Fonseca) You just bled RoadkillStew!!!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 12 dmg using: sh_generic_dmg
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate RoadkillStew!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, mandriona do laro! KARMA!
+[SH](Ester)THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+RoadkillStew killed self with scout
+mandriona do laro killed self with scout
+mona amolgada killed self with a headshot from famas ***
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with hegrenade
+Ratona Desmamada killed self with awp
+HartemBenArfa killed self with m3
+lover beggar killed self with knife
+rapa rabas killed self with p90
+bruxa da lixeira killed THA_GOAT!!!!!!! with grenade
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, bruxa da lixeia! KARMA!
+BlowForBlow died
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) HartemBenArfa's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+PTB: Round ended, checking teams.
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Goku) lover beggar shattered you!
+BowForBlow killed Safada Endiabrada with sh_generic_dmg
+BlowForBlow (RADIO): Fire in the hole!
+mona amolgada (RADIO): Fire in the hole!
+*** mona amolgada killed lover beggar with a headshot from famas ***
+[SH](Ester) lover beggar: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+mona amolgada killed rapa rabas with sh_generic_dmg
+*** mona amolgada killed RoadkillStew with a headshot from famas ***
+[SH](Erca Fonseca) You just bled lover beggar!!!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+*** bruxa da lixeira killed mona amolgada with a headshot from p228 ***
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH](Ester) RoadkillStew! They've been reborn!
+HartemBenArfa killed RoadkillStew with awp
+[SH](Shinobu Kocho) Unavailable. Tagsomeone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+*** bruxa da lixeira killed mandriona do laro with a headshot from deagle ***
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+HartemenArfa (RADIO): Fire in the hole!
+RoadkillStew killed HartemBenArfa with scout
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, mandriona do laro! KARMA!
+[SH](Ester) bruxa da lixeira: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+mona amolgada killed RoadkillStew with sh_generic_dmg
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn
+^-^)
+[SH](Shinobu Koco) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+respawn ^-^)
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+mona amolgada (RADIO): Fire in the hole!
+RoadkillStew killed mona amolgada with sh_generic_dmg
+RoadkillStewkilled HartemBenArfa with scout
+[SH](Ester) RoadkillStew! They've been reborn!
+^-^)
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+Safada Endiabrada killed THA_GOAT!!!!!!! with knife
+[SH](Ester) HartemBenArfa! They've been reborn!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Ester) Safada Endiabrada: OW! What wa that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Erica Fonseca) You just bled Safada Endiabrada!!!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by Safada Endiabrada with knife @ 1m (102hp, 387ap) >>
+THA_GOAT!!!!!!! died
+* You hit Safada Endiabrada 4 time(s), 68 damage >> stomach: 4
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Phoenix) You were killed for being stuck in a wall
+HartemBenArfa killed RoadkillStew with p90
+] condump 
+console dumped to condump005.txt
+Safada Endiabrada killed self with famas
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with knife
+HartemBenArfa killed self with p90
+[SH](Ester) Removing respawning ice rool loop. already alive
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+BlowForBlow died
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Ester) THA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+PTB: Round ended, checking teams.
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels above unlock leel! So now you get a free rifle at spawn! (aka a weapon_famas)
+THA_GOAT!!!!!!! killed rapa rabas with shinobu_poison_kick
+[SH](Ester) rapa rabas: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Erica Fonseca) You just bled rapa rabas!!!
+[SH](Goku) lover beggar shattered you!
+[SH](Shinobu Kocho) Awww, does tummy hurt?
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH] You killed: rapa rabas with: 50 dmg using: shinobu_poison_kick
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate rapa rabas!
+[SH](Shinobu Kocho) Lets go make them feel at home
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shinobu Kocho) Finalizing teleport would have gotten you stuck! Aborting...
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for  bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+*** mandriona do laro killed lover beggar with a headshot from m4a1 ***
+Ratona Desmamada killed rapa rabas with sh_generic_dmg
+*** rapa rabas killed Ratona Desmamada with a headshot from sh_generic_dmg ***
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+*** bruxa da lixeira killed mandriona do laro with a headshot from famas ***
+[SH](Shinobu Kocho) Wait for a bit
+RoadkillStew illed BlowForBlow with sh_generic_dmg
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, mandriona do laro! KARMA!
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Wait for a bit
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+lover beggar killed Ratona Demamada with sh_generic_dmg
+*** BlowForBlow killed RoadkillStew with a headshot from sh_generic_dmg ***
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+RoadkillStew killed BlowForBlow with sh_generic_dmg
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+RoadkillStew killed THA_GOAT!!!!!!! with m4a1
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not live! (Try again when they respawn ^-^)
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by RoadkillStew with m4a1 @ 21m (100hp, 0ap) >> leftarm: 1
+* You hit RoadkillStew 0 time(s), 0 damage >> no hits
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teiko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+[SH](Ester) bruxa da lixeira: OW! What was that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+RoadkillStew killed self with m4a1
+mona amolgad killed self with m4a1
+Safada Endiabrada killed self with famas
+bruxa da lixeira killed self with deagle
+HartemBenArfa killed self with m3
+lover beggar killed self with knife
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn ^-^)
+[SH](Shinobu Kocho) Unavailable. Tag someone else to teleport! They are Not alive! (Try again when they respawn
+^-^)
+mona amolgada (RADIO): Fire in the hole!
+[SH](aqueo) Shield not deployed. Action interrupted
+PTB: Round ended, checking teams.
+[SH](Ester) Moralizing last round has earned you 775 more xp!
+THA_GOAT!!!!!!! killed rapa rabas with knife
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Shinobu Kocho) I wonder if they feel lonely...
+[SH](Shinobu Kocho) Shinobu teleport initted!
+[SH](Shinobu Kocho) heeeeeey~
+[SH](Ester) rapa rabas: OW! Whatwas that for, Ester? (THA_GOAT!!!!!!!)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Erica Fonseca) You just bled rapa rabas!!!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+*** mona amolgada killed rapa rabas with a headshot from famas ***
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Temmate rapa rabas!
+lover beggar killed HartemBenArfa with m4a1
+RoadkillStew killed BlowForBlow with sh_generic_dmg
+mona amolgada killed RoadkillStew with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate rapa rabas!
+RoadkillStew killed BlowForBlow with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+RoadkillStew killed THA_GOAT!!!!!!! with sh_generic_dmg
+mona amolgada (RADIO): Fire in th hole!
+[SH](Ester) RoadkillStew! They've been reborn!
+mona amolgada (RADIO): Fire in the hole!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH] You were killed by: RoadkillStew with: 150 dmg using: sh_generic_dmg
+[SH](Ester) RoadkillStew shattered you!
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+rapa rabas killed THA_GOAT!!!!!!! with mp5navy
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) Yu are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH](Maria) RoadkillStew was shattered by you!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by rapa rabas with mp5navy @ 11m (72hp, 143ap) >> stomach: 1 rightarm: 1
+lover beggar killed mandriona do laro with ak47
+* You hit apa rabas 0 time(s), 0 damage >> no hits
+*** RoadkillStew killed HartemBenArfa with a headshot from ak47 ***
+[SH](Ester) Not this time...
+RoadkillStew killed self with ak47
+mona amolgada killed self with flashbang
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with awp
+lover beggar killed self with hegrenade
+rapa rabas killed self with a headshot from m4a1 ***
+[SH](Ester) Not this time...
+mandriona do laro (RADIO): Need backup.
+[SH](Ester) Not tis time...
+Ratona Desmamada (RADIO): Fire in the hole!
+PTB: Round ended, checking teams.
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+THA_GOAT!!!!!!! died
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+BlowForBlow (RADIO): Fire in the hole!
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest
+easy.
+THA_GOAT!!!!!!! died
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Phoenix) You used the Phoenix pwer to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+BlowForBlow killed lover beggar with p90
+[SH](Phoenix) You were killed for being stuck in a wall
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+RoadkillStew killed self with fiveseven
+madriona do laro killed self with usp
+mona amolgada killed self with awp
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with awp
+HartemBenArfa killed self with a headshot from p90 ***
+lover beggar killed self with p90
+rapa rabas killed self with a headshot from knife ***
+BlowForBlow died
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate lover beggar!
+[SH](Ester) TA_GOAT!!!!!!!'s godmode has been taken away!
+[SH](Ester) HartemBenArfa's godmode has been taken away!
+[SH](Ester) RoadkillStew's godmode has been taken away!
+PTB: Round ended, checking teams.
+*** BlowForBlow killed rapa rabas with a headshot from p90 ***
+"amx_nextmap" changed to "cs_italy"
+Ratona Desmamada (RADIO): Follow Me.
+It's time to choose the nextmap...
+rapa rabas killed BlowForBlow with sh_generic_dmg
+*** lover beggar killed THA_GOAT!!!!!!! with a headshot from m4a1 ***
+THA_GOAT!!!!!!! chose cs_itay
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, rapa rabas! KARMA!
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate rapa rabas!
+Choosing finished. The nextmap will be cs_italy
+* Killed by lover beggar with m4a1 @ 8m (400hp, 1000ap) >> stomach: 1
+* You hit lover beggar 0 time(s), 0 damage >> no hits
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you ge a free rifle at spawn! (aka a weapon_famas)
+rapa rabas has left the gameClara alguidar-na-vrilha connected[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Clara alguidar-na-vrilha is joining the Terrorist forceRatona Desmamada killed Safada Endiabrada with famas
+[SH](Ester) Removing respawning dice rool loop. already alive
+[SH](Maria) lover beggar was shattered by you!
+lover beggar killed THA_GOAT!!!!!!! with grenade
+[SH](Maria) lover beggar as shattered by you!
+[SH](Maria) lover beggar was shattered by you!
+[SH](Maria) lover beggar was shattered by you!
+bruxa da lixeira killed BlowForBlow with sh_generic_dmg
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Safada Endiabrada! KARMA!
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate Safada Endiabrada!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+* Killed by lover beggar with grenade @ 19m (38hp, 1000ap) >> stomach: 1 leftarm: 1
+* You hit lover beggar 4 time(s), 362 daage >> stomach: 4
+[SH](Ester) Not this time...
+RoadkillStew killed self with scout
+mandriona do laro killed self with a headshot from famas ***
+mona amolgada killed self with scout
+Safada Endiabrada killed self with m249
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with famas
+HartemBenArfa killed self with a headshot from m3 ***
+lover beggar killed self with m4a1
+] rcon stats
+CPU   In    Out   Uptime  Users   FPS    Players
+18.00  3.98  4.93     672   396   59.76       1
+
+[SH](Ester Not this time...
+mandriona do laro (RADIO): Need backup.
+[SH](Ester) Not this time...
+mandriona do laro (RADIO): Need backup.
+PTB: Round ended, checking teams.
+[SH](Jaqueo) Shield not deployed. Action interrupted
+THA_GOAT!!!!!!! killed RoadkillStew with sh_generic_dmg
+Ratona Desmamada (RADIO): Follow Me.
+[SH](Jaqueo) Shield not deployed. Action interrupted
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](ksun) Killed somone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 148 dmg using: sh_generic_dmg
+[SH](Maria) RoadkillStew was shattered by you!
+[SH](Maria) bruxa da lixeira was shattered by you!
+THA_GOAT!!!!!!! killed Clara alguidar-na-vrilha with sh_generic_dmg
+[SH](Grandmaster) lover beggar used cosmic life force to Revive Dead Teammate RoadkillStew!
+[SH](Maria) THA_GOAT!!!!!!! was shattered by you!
+[SH](Maria) THA_GOAT!!!!!!! shattred you!
+[SH](Maria) Clara alguidar-na-vrilha was shattered by you!
+[SH](Maria) Clara alguidar-na-vrilha was shattered by you!
+Safada Endiabrada killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) THA_GOAT!!!!!!!: KARMA, Clara alguidar-na-vrilha! KARMA!
+[SH] You killed: Clara alguidar-na-vrilha with: 146 dmg using: sh_generic_dmg
+[SH](Maria) Clara alguidar-na-vrilha was shattered by you!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!! KARMA!
+[SH] You were killed by: Safada Endiabrada with: 15 dmg using: sh_generic_dmg
+[SH](Erica Fonseca) THA_GOAT!!!!!!!: WOW! AMAZING, HUH?!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+bruxa da lixeira killed THA_GOAT!!!!!!! with famas
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Removing respaning dice rool loop. already alive
+[SH](Maria) Safada Endiabrada was shattered by you!
+Safada Endiabrada died
+[SH](Maria) Safada Endiabrada was shattered by you!
+[SH](Ester) RoadkillStew: KARMA, THA_GOAT!!!!!!!! KARMA!
+lover beggar killed BlowForBlow with sh_generic_dmg
+BlowForBlow died
+* Killed by bruxa da lixeira with famas @ 11m (175hp, 175ap) >> rightarm: 2
+* You hit bruxa da lixeira 0 time(s), 0 damage >> no hits
+[SH](Ester) Not this time...
+RoadkillStew killed self with scout
+mandriona do laro killedself with a headshot from glock18 ***
+mona amolgada killed self with scout
+Safada Endiabrada killed self with famas
+bruxa da lixeira killed self with famas
+Ratona Desmamada killed self with awp
+HartemBenArfa killed self with a headshot from m3 ***
+lover beggar killed self with m4a1
+[SH](Ester) Not this time...
+[SH](Ester) Not this time...
+] condump

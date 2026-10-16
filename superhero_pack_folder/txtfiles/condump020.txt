@@ -1,0 +1,745 @@
+engedGenius killed SuperSlut9000 with sh_generic_dmg
+[SH] You were killed by: MentallyChallengedGenius with: 15 dmg using: sh_generic_dmg
+[SH](Grandmaster) SuperSlut9000 used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+MentallyChallengedGenius killed TerezkaBroucku with sh_generic_dmg
+[SH] You were killed by: MentallyChallengedGenius with: 15 dmg using: sh_generic_dmg
+[SH](Grandmaster) AutumnMelancholy used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+MentallyChallengedGenius kiled TerezkaBroucku with sh_generic_dmg
+MentallyChallengedGenius killed SuperSlut9000 with sh_generic_dmg
+[SH] You were killed by: MentallyChallengedGenius with: 15 dmg using: sh_generic_dmg
+[SH](Grandmaster) vassoura desgrenhada used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+MentallyChallengedGenius killed TerezkaBroucku with sh_generic_dmg
+[SH] You were killed by: MentallyChallengedGenius with: 15 dmg using: sh_generic_dmg
+PTB: Round ended, checking teams.
+[SH] You were given 60 MercyXP poits
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0 CRC)
+Server # 13
+TerezkaBroucku is joining the Counter-Terrorist forcepilantra comidinha connectedScoring will not start until both teams have playerspilantra comidinha is joining the Terrorist force"sv_maxspeed" changed to "10000"
+HaulingAss connectedHaulingAss is joining the Terrorist forceMentallyChallengedGenius connectedMentallyChallengedGenius is joining the Counter-Terrorist forceSuperSlut9000 connectedSuperSlut9000 is joining te Counter-Terrorist forceCabeca de boca connectedCabeca de boca is joining the Terrorist forcemarmita poeirenta connectedmarmita poeirenta is joining the Terrorist forceRatazana Tremulenta connectedRatazana Tremulenta is joining the Counter-Terrorist forceAutumnMelancholy connectedAutumnMelancholy is joining the Terrorist forceRainha do curral connectedRainha do curral is joining the Counter-Terrorist forcevassoura desgrenhada connectedvassoura desgrenhada is joining the Terrorist forceType 'am_langmenu' in the console to display a menu where you can choose your language
+[SH](Yakui Mk2) Engaged Rocket propelled syringe mode! MOUSE1 attacks are disabled!
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+*** HaulingAss killed TerezkaBroucku with a headshot from galil ***
+Time Left: 19:48 min. Next Map: de_aztec
+pilantra comidinha killed Rainha do curral with awp
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+Rainha do curral (RADIO): Fire in the hole!
+*** Ratazana Tremuenta killed Cabeca de boca with a headshot from m4a1 ***
+* Killed by HaulingAss with galil @ 15m (100hp, 100ap) >> head: 1 rightarm: 1
+* You hit HaulingAss 0 time(s), 0 damage >> no hits
+*** HaulingAss killed TerezkaBroucku with a headshot from galil ***
+MentallyChallengedGenius killed marmita poeirenta with awp
+] rcon yb killbots
+All bots died...
+
+pilantra comidinha killed self with m249
+HaulingAss killed self with galil
+MentallyChallengedGenius killed self with awp
+SuperSlut9000 killed self with awp
+Rataana Tremulenta killed self with m4a1
+AutumnMelancholy killed self with deagle
+vassoura desgrenhada killed self with ak47
+[SH](Chucky) You used Chucky's Voodoo power to come back to life!
+MentallyChallengedGenius (RADIO): Fire in the hole!
+* Killed by HaulingAss with galil @ 12m (100hp, 100ap) >> head: 1 leftarm: 1
+* You hit HaulingAss 0 time(s), 0 damage >> no hits
+[SH] You were given 60 MercyXP points
+marmita poeirenta killed TerezkaBroucku with sh_generic_dmg
+*** TerezkaBroucku killed marmita poeirenta wth a headshot from Smallness ***
+[SH](Vegetto) marmita poeirenta shattered you!
+[SH](Ester) marmita poeirenta: AYO CHILL, TerezkaBroucku!
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH] You were killed by: marmita poeirenta with: 21 dmg using: sh_generic_dmg
+[SH] You killed: marmita poeirenta with: 1072 dmg using: Smallness
+] rcon yb_freeze_bots 1
+
+[SH](Grandmaster) SuperSlut9000 used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+[SH]Grandmaster) AutumnMelancholy used cosmic life force to Revive Dead Teammate marmita poeirenta!
+[SH](Zenitsu Agatsuma) TerezkaBroucku has put you to sleep!!!
+[SH](Zenitsu Agatsuma) You just put TerezkaBroucku to sleep!!!
+TerezkaBroucku killed self with SH_Radiation_Poison
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest
+easy.
+[SH] You were killed by: TerezkaBroucku with: 56 dmg using: SH_Radiation_Poison
+[SH](Grandmaster) Rainha do curral used osmic life force to Revive Dead Teammate TerezkaBroucku!
+*** TerezkaBroucku killed Cabeca de boca with a headshot from Smallness ***
+[SH](Ester) Cabeca de boca: AYO CHILL, TerezkaBroucku!
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester)wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH] You killed: Cabeca de boca with: 175 dmg using: Smallness
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](Ester) Cabeca de boca: AYO CHILL, TerezkaBroucku!
+*** TerezkaBroucku killed Cabeca de boca with a headshot from Smallness ***
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was suc a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+*** TerezkaBroucku killed Cabeca de boca with a headshot from Smallness ***
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH] You killed: Cabeca de boca with: 175 dmg using: Smllness
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](Ester) Cabeca de boca: AYO CHILL, TerezkaBroucku!
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH] You killed: Cabeca de boca with: 139 dmg using: Smallness
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Ester) abeca de boca: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Ester) Cabeca de boca: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Eser) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Ester) Cabeca de boca: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Ester) Cabeca de boca: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Yakui Mk2) Effect switched! On next swing, you will inect: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH] Could Not Find Power to Drop: est5er
+[SH] Dropped Hero: Ester
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+TerezkaBroucku killed pilantra cmidinha with knife
+pilantra comidinha killed TerezkaBroucku with sh_generic_dmg
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+HaulingAss killed TerezkaBroucku with SH_Drug_Poison
+HaulingAss killed TerezkaBroucku with SH_Drug_Poison
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+] rco yb killbots
+All bots died...
+
+pilantra comidinha killed self with fiveseven
+pilantra comidinha killed MentallyChallengedGenius with sh_generic_dmg
+HaulingAss killed self with ak47
+Cabeca de boca killed self with a headshot from glock18 ***
+AutumnMelancholy killed self with famas
+[SH](Grandmaster) SuperSlut9000 used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+[SH](Shinobu Kocho) Its not hurting... Its a cure~
+SuperSlut9000 died
+marmita poeirenta died
+Ratazana Tremulenta died
+Rainha do curral ied
+vassoura desgrenhada died
+[SH](Shinobu Kocho) HaulingAss has bled you!!!
+[SH](Grandmaster) Rainha do curral used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+[SH](Grandmaster) marmita poeirenta used cosmic life force to Revive Dead Teammate pilantra comidinha!
+[SH](Grandmaster) vassoura desgrenhada used cosmic life force to Revive Dead Teammate HaulingAss!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH] Dropped Hero: Ester
+SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched!On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject:poison fluid
+TerezkaBroucku killed AutumnMelancholy with SH_Drug_Poison
+TerezkaBroucku killed AutumnMelancholy with SH_Drug_Poison
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: AutumnMelancholy with: 40 dmg using: SH_Drug_Poison
+[SH](ksun) Killed someone
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: AutumMelancholy with: 40 dmg using: SH_Drug_Poison
+[SH](Grandmaster) marmita poeirenta used cosmic life force to Revive Dead Teammate AutumnMelancholy!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will nject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+TerezkaBroucku died
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Teliko) You are 33 levels above unlock level! So now you get a fee rifle at spawn! (aka a weapon_famas)
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid
+[SH](Vegetto) marmita poeirenta shattered you!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Chucky) You used Chucky's Voodoo power to come back to life!
+] rcon amx_heal @CT 21211221221
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Yaki Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+TerezkaBroucku killed pilantra comidinha with SH_Radiation_Poison
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you willinject: bath salts fluid
+[SH](ksun) Killed someone
+MentallyChallengedGenius killed AutumnMelancholy with sh_generic_dmg
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: pilantra comidinha with: 56 dmg using: SH_Radiation_Poison
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect sitched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cyanide fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switche! On next swing, you will inject: blindness fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+PTB: Round ended, checking teams.
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUN: AINO_HEAL_ALL_SUCCESS
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Vegetto) marmita poeirenta shattered you!
+[SH](Yaui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) You just bled HaulingAss!!!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will iject: stunner fluid
+TerezkaBroucku killed HaulingAss with SH_Radiation_Poison
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+TerezkaBroucku killed HaulingAss with m3
+[SH] You killed:HaulingAss with: 56 dmg using: SH_Radiation_Poison
+[SH](Grandmaster) marmita poeirenta used cosmic life force to Revive Dead Teammate HaulingAss!
+] rcon amx_heal @TERRORISTS 212112212121
+ML_NOTFOUND: AINO_NO_CLIENTS
+
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+] rcon amx_heal @TERRORIST 21112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](ksun) Killed someone
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](ksun) You got 1 spores for your kill!
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Grandmaster) AutumnMelancholy used cosmic life force to Revive Dead Teammate HaulingAss!
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+TerezkBroucku killed HaulingAss with m3
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](ksun) Killed someone
+TerezkaBroucku killed HaulingAss with m3
+[SH](ksun) You got 1 spores for your kill!
+[SH](Grandmaster) vassoura desgrenhada used cosmic life force to Revive Dead Teamate HaulingAss!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @TERRORIST 2121122121
+[SH](ksun) Killed someone
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](ksun) You got 1 spores for your kill!
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 221122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+PTB: Round ended, checking teams.
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 212112121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcn amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE
+[SH](Vegetto) marmita poeirenta shattered you!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you wil inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) ffect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindnss fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+PTB: Round ended, checking teams.
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels bove unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) Effect switched! On next swig, you will inject: glowstick juice fluid
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Vegetto) marmita poeirenta shattered you!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yaui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect witched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+HaulingAss has left the gamecadela cabecuda connectedcadela cabecuda is joining the Terrorist force[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+] rcon amx_heal @TERRORIST 221122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+PTB: Round ended, checking teams.
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH] You were given 60 MercyXP points
+marmita poeirenta killed TerezkaBroucku with SH_Frag_Blast
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Ykui Mk2) Effect switched! On next swing, you will inject: weed fluid
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH] You were killed by: marmita poeirenta with: 85 dmg using: SH_Frag_Blast
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Vegetto) marmita poeirenta shattered you!
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+] rcon am_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Grandmaster) SuperSlut9000 used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEA_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you ill inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swng, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+PTB: Round ended, checking teams.
+PTB: Switching MentallyChallengedGenius with AutumnMelancholy.
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+[SH](Yakui Mk2)You just bled cadela cabecuda!!!
+[SH](Yakui Mk2) You just bled MentallyChallengedGenius!!!
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) TerezkaBroucku has bled you!!!
+] rcon amx_heal @CT 212112212121
+ML_NOTFOUND: AINO_HEAL_ALL_SUCCESS
+
+[SH](Yakui Mk2) You just bled TerezkaBroucku!!!
+[SH](Yakui Mk2) You just bled SuperSlut9000!!!
+] rcon amx_heal @TERRORIST 2121122121
+ML_NOTFOUND: AINO_HEAL_ALL_SCCESS
+
+[SH](Yakui Mk2) You just bled Cabeca de boca!!!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Maria) Health drain valve opened!
+ML_NOTFOUND: AINO_HEAL_TEAM_CASE2
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cyanide fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swig, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2)Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid
+[SH](Yakui Mk2) Effect switched! On next swing,you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphnidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effct switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, youwill inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner flid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) ffect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next sing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: uranium fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphne fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2 Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: poison fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: cocaine fluid
+[SH](Yakui Mk2) Effect switched! On nxt swing, you will inject: weed fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: morphine fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: blindness fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: glowstick juice fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: meylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: metylphenidate fluid
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: stunner fluid
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+[SH](Yakui Mk2) You just bled cadela cabecuda!!!
+[SH](Yakui Mk2) You just bled MentallyChallengedGenius!!!
+[SH](Yakui Mk2) Engaged Pill shooting gatling mode! 
+[SH](Yakui Mk2) Effect switched! O next swing, you will inject: metylphenidate fluid
+It's time to choose the nextmap...
+[SH] Dropped Hero: Maria
+[SH](Yakui Mk2) Effect switched! On next swing, you will inject: bath salts fluid
+[SH] Dropped Hero: Yakui Mk2
+Choosing finished. The nextmap will be de_aztec
+PTB: Round ended, checking teams.
+[SH] You were given 60 MercyXP points
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+MentallyChallengedGenius killed SuperSlut9000 with sh_generc_dmg
+[SH](Yakui Mk2) You just bled cadela cabecuda!!!
+MentallyChallengedGenius killed SuperSlut9000 with sh_generic_dmg
+[SH](Grandmaster) AutumnMelancholy used cosmic life force to Revive Dead Teammate SuperSlut9000!
+[SH](Yakui Mk2) You just bled pilantra comidinha!!!
+MentallyChallengedGenius killed SuperSlut9000 with sh_generic_dmg
+[SH](Grandmaster) Rainha do curral used cosmic life force to Revive Dead Teammate SuperSlut9000!
+vassoura desgrenhada killed TerezkaBroucku with sh_generic_dmg
+[SH](Yakui Mk2)You just bled pilantra comidinha!!!
+[SH] You were killed by: vassoura desgrenhada with: 15 dmg using: sh_generic_dmg
+"mp_chattime" changed to "12.000000"
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0 CRC)
+Server # 14
+"sv_maxspeed" changed to "10000"
+TerezkaBroucku is joining the Terrorist forceType 'amx_langmenu' in the console to display a menu where you can choose your language
+*** marmita poeirenta killed MentallyChallengedGenius with a headshot from a47 ***
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+*** Ratazana Tremulenta killed AutumnMelancholy with a headshot from ak47 ***
+AutumnMelancholy killed Ratazana Tremulenta with grenade
+*** Cabeca de boca killed marmita poeirenta with a headshot from famas ***
+*** Rainha do curral killed pilantra comidinha with a headshot from m249 ***
+*** Rainha do curral killed pilantra comidinha with a headshot from m249 ***
+vassoura desgrenhada killed Ranha do curral with ak47
+Cabeca de boca killed SuperSlut9000 with grenade
+Cabeca de boca killed vassoura desgrenhada with famas
+*** TerezkaBroucku killed cadela cabecuda with a headshot from Smallness ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](ksun) You got 3 extra spores for an weapon_galil kill!
+[SH](Ester) TerezkaBroucku: KARMA, cadela cabecuda! KARMA!
+[SH] You killed: cadela cabecuda with: 611 dmg using: Smallness
+[SH] Dropped Hero: Yakui Mk2
+Cabeca de boca killed SupeSlut9000 with SH_Frag_Blast
+Cabeca de boca killed Ratazana Tremulenta with SH_Frag_Blast
+*** vassoura desgrenhada killed Cabeca de boca with a headshot from m249 ***
+Cabeca de boca killed Ratazana Tremulenta with SH_Frag_Blast
+Cabeca de boca killed SuperSlut9000 with SH_Frag_Blast
+[SH](Grandmaster) marmita poeirenta used cosmic life force to Revive Dead Teammate SuperSlut9000!
+Rainha do curral killed TerezkaBroucku with sh_generic_dmg
+[SH](Ester) Rainha do curral: OW! What was that for, Ester? (TerezkaBrouku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH](Shinobu Kocho) You just bled Rainha do curral!!!
+AutumnMelancholy killed pilantra comidinha with sh_generic_dmg
+Sabes?
+Um erro categorico 
+que a malta aqui comete?
+E assumir que sou normal
+Que regulo bem,
+Que funciono como deve ser
+Que a
+da tenho
+os fusiveis todos
+de desde que nasci
+
+AutumnMeancholy killed pilantra comidinha with grenade
+[SH] You were killed by: Rainha do curral with: 55 dmg using: sh_generic_dmg
+MentallyChallengedGenius killed TerezkaBroucku with Lena_s_L96A1
+Antes a minha alma so continha mijo e merda.
+agora nao contem nada.
+sinceramente nao sei qual deles e pior
+Adoro o cheiro a p
+dutos de limpeza
+e a lixivia pela manha
+Ajuda a purificar a alma,
+nao concordas?
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH]Grandmaster) vassoura desgrenhada used cosmic life force to Revive Dead Teammate TerezkaBroucku!
+[SH](Shinobu Kocho) I drink this stuff daily~ Is it really that bad?
+[SH](Shinobu Kocho) You just bled Rainha do curral!!!
+[SH] You were killed by: MentallyChallengedGenius with: 162 dmg using: Lena_s_L96A1
+[SH](Ester) This one must count, now. I wont disappoint myself or them any longer
+*** Cabeca de boca killed Ratazana Tremulenta with a headshot from ak47_glauncher ***
+[SH](Ester) 8 attempts to change left
+[H](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) TerezkaBroucku! They've been reborn!
+Cabeca de boca killed SuperSlut9000 with ak47_glauncher
+] rcon yb_freeze_bots 1
+
+[SH](T-800) Error loading you are already in godmode
+[SH](T-800) Error loading you are already in godmode
+[SH](T-800) Error loading you are already in godmode
+[SH]Zenitsu Agatsuma) TerezkaBroucku has put you to sleep!!!
+[SH](Zenitsu Agatsuma) You just put TerezkaBroucku to sleep!!!
+[SH](Ester) SuperSlut9000! They've been reborn!
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](Ester) Youre in reborn mode! You cannot use that
+*** TerezkaBroucku killed Rainha do curral with a headshot from xXx_SH_DarkShadowBlade_xXx ***
+Rainha do curral killed TerezkaBoucku with sh_generic_dmg
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](Ester) Youre in reborn mode! You cannot use that
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You were killed by: Rainha do curral with: 471 dmg using: sh_generic_dmg
+[SH] You killed: Rainha do curral with: 1600 dmg using: xXx_SH_DarkShadowBlade_xXx
+[SH](Grandmaster) AutumnMelancholy used cosmic life force to Revive Dead Teammate Rainha do crral!
+] condump

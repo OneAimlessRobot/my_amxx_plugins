@@ -1,0 +1,754 @@
+one
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+TerezkaBroucku killed Maria chupa-beatas with sh_generic_dmg
+TerezkaBroucku killed Rainha do curral with sh_generic_dmg
+[SH] You killed: fuca deformada with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH(ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+TerezkaBroucku killed Midcore with SH_Frag_Blast
+TerezkaBroucku killed self with SH_Frag_Blast
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+[SH] You killed: Rainha do curral with: 30 dmg using: sh_generic_dmg
+[SH](Ester) No enemies detected as you unloade. Youre done here.
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: Midcore with: 2531 dmg using: SH_Frag_Blast
+[SH](Ester) Midcore was shattered by you!
+[SH] You were killed by: TerezkaBroucku with: 1524 dmg using: SH_Frag_Blast
+[SH](Ester) TerezkaBroucku was shattered by you!
+[SH](Ester) TerezkaBroucku shattered you!
+PTB: Round ended, checking teams.
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Mari) Health drain valve opened!
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0 CRC)
+Server # 2
+TerezkaBroucku is joining the Counter-Terrorist forceFera nojenta connectedFera nojenta is joining the Terrorist forceRainha do curral connectedRainha do curral is joining the Counter-Terrorist forceCumDump connectedCumDump is joining the Terrorist forceFuckMaidcore connectedFuckMaidcore is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forceRaazana Tremulenta connectedRatazana Tremulenta is joining the Terrorist force[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+] rcon yb_freeze_bots 1
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) Health drain valve opened!
+] rcon yb_freeze_bots 0
+
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+] rcon yb_freeze_bots 1
+
+[SH](Ester) aaaaan... you have no enemies yet! Chiiiilll
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+Time Left: 19:47 min. Next Map: de_cbble
+*** TerezkaBroucku killed Midcore with a headshot from sh_generic_dmg ***
+*** TerezkaBroucku killed CumDump with a headshot from sh_generic_dmg ***
+*** TerezkaBroucku killed RoadkillStew with a headshot from sh_generic_dmg ***
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM
+TerezkaBroucku!!!!
+
+fuca deformada.
+Midcor.
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](ksun) Killed someone
+[SH](Ester) TerezkaBroucku: KARMA, Midcore! KARMA!
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: Midcore with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, CumDump! KARMA!
+*** TerezkaBroucku killed fuca deformda with a headshot from sh_generic_dmg ***
+[SH] You killed: CumDump with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+TerezkaBroucku killed Fera nojenta with SH_Frag_Blast
+TerezkaBroucku killed self with SH_Frag_Blast
+[SH] You killed: RoadkillStew with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada KARMA!
+[SH] You killed: fuca deformada with: 30 dmg using: sh_generic_dmg
+[SH](Ester) No enemies detected as you unloaded. Youre done here.
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: Fera nojenta with: 585 dmg using: SH_Frag_Blast
+[SH](Ester) Fera nojenta was shattered by you!
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH] You were killed by: TerezkaBroucku with: 545 dmg using: SH_Frag_Blst
+[SH](Ester) TerezkaBroucku was shattered by you!
+[SH](Ester) TerezkaBroucku shattered you!
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+fuca deformada.
+
+[SH](Eter) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+*** TerezkaBroucku killed fuca deformada with a headshot from sh_generic_dmg ***
+TerezkaBroucku killed Ratazana Tremulenta with SH_Frag_Blast
+TerezkaBroucku killed self with SH_Frag_Blast
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH] You killed: fuca deformadawith: 30 dmg using: sh_generic_dmg
+[SH](Ester) No enemies detected as you unloaded. Youre done here.
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: Ratazana Tremulenta with: 506 dmg using: SH_Frag_Blast
+[SH](Ester) Ratazana Tremulenta was shattered by you!
+[SH] You were killed by: TerezkaBroucku with: 455 dmg using: SH_Frag_Blast
+[SH](Ester) TerezkaBroucku was shattered by you!
+[SH](Ester) TerezkaBroucku shattered you!
+[SH](Teliko) You are 33 levels above unlock level So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) Health drain valve opened!
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0 CRC)
+Server # 3
+"sv_maxspeed" changed to "10000"
+TerezkaBroucku is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forceRatazana Tremulenta connectedRatazana Tremulenta is joining the Counter-Terrorist force] rcon yb_freeze_bots 1
+
+] rcon yb_freeze_bots 0
+
+[SH](Tliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) Maaaaan... you have no enemies yet! Chiiiilll
+] rcon yb_freeze_bots 1
+
+[SH](Maria) Health drain valve opened!
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+Maria chupa-beatas.
+Fe
+Type 'amx_langmenu' in the console to display a meu where you can choose your language
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+Time Left: 19:48 min. Next Map: de_dust
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](Ester) Not enough built up damage! (current: 150 but needs 300.) Resetting damage to do
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0CRC)
+Server # 4
+"sv_maxspeed" changed to "10000"
+Scoring will not start until both teams have playersTerezkaBroucku is joining the Counter-Terrorist forcefuca deformada connectedfuca deformada is joining the Counter-Terrorist forceMaria chupa-beatas connectedMaria chupa-beatas is joining the Terrorist forceMidcore connectedMidcore is joining the Counter-Terrorist force] rcon yb_freeze_bots 1
+
+Fera nojenta connectedFera nojenta is joining the Terrorist forceRainha do curral connectedRainha do cural is joining the Terrorist forceCumDump connectedCumDump is joining the Counter-Terrorist forceFuckMaidcore connectedFuckMaidcore is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forceRatazana Tremulenta connectedRatazana Tremulenta is joining the Terrorist force] rcon yb_freeze_bots 0
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So nw you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) Health drain valve opened!
+TerezkaBroucku killed Maria chupa-beatas with famas
+] rcon yb_freeze_bots 1
+
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+[SH](ksun) Launcher deployed! Launcher id is: 145(145)
+ Launcher phase is: 0
+ Launcher timer is: 0.00
+
+Time Left: 19:49 min. Next Map: cs_assault
+[SH] Ester:
+THE FOLLOWING PLAYERS ILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+Ratazana Tremulenta.
+
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] (ksun):Targets are:
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+Ratazana Tremulenta.
+
+- Ratazana Tremulenta
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](Eter) Not enough built up damage! (current: 150 but needs 300.) Resetting damage to do
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from sh_generic_dmg ***
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+[SH] You killed: Ratazana Tremulent with: 30 dmg using: sh_generic_dmg
+[SH](Ester) No enemies detected as you unloaded. Youre done here.
+[SH](Ester) TerezkaBroucku was shattered by you!
+[SH](Ester) TerezkaBroucku shattered you!
+[SH](Maria) Health drain valve closed.
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4382 SERVER (0 CRC)
+Server # 5
+"sv_maxspeed" changed to "10000"
+fuca deformada connectedfuca deformada is joining the Terrorist forceTerezkaBroucku is joining the Counter-Terrorist forceMaria cupa-beatas connectedMaria chupa-beatas is joining the Terrorist forceMidcore connectedMidcore is joining the Counter-Terrorist forceFera nojenta connectedFera nojenta is joining the Terrorist forceRainha do curral connectedRainha do curral is joining the Terrorist forceCumDump connectedCumDump is joining the Counter-Terrorist forceFuckMaidcore connectedFuckMaidcore is joining the Counter-Terrorist forceRoadkillStew connectedRoadkillStew is joining the Terrorist forceRatazana Tremulenta connecedRatazana Tremulenta is joining the Terrorist force[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Maria) Health drain valve opened!
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+*** Rainha do curral killed Toupeira do esterco with a headshot from galil ***
+Type 'amx_help' 'amx_searchcmd' n the console to see available commands
+Time Left: 19:48 min. Next Map: cs_italy
+*** Fera nojenta killed CumDump with a headshot from m4a1 ***
+CumDump (RADIO): Fire in the hole!
+FuckMaidcore killed Rainha do curral with awp
+CumDump (RADIO): Fire in the hole!
+*** TerezkaBroucku killed RoadkillStew with a headshot from manic_rage ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from famas ***
+[SH] You killed: RoadkillStew wth: 57 dmg using: manic_rage
+[SH](Teliko) TerezkaBroucku hit a MEGA COUNTER on fuca deformada!!!!
+FuckMaidcore killed Fera nojenta with awp
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from SH_Super_Bullet ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) Maria chupa-beatas: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spoes for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 51 dmg using: SH_Super_Bullet
+[SH](Teliko) TerezkaBroucku hit a MEGA COUNTER on Maria chupa-beatas!!!!
+[SH](Ester) fuca deformada: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+TerezkaBroucku killed fuca deformada with the_pan_tm
+[SH](Teliko) TerezkaBroucku hit a MEGA COUNTER on fuc deformada!!!!
+[SH](Ester) wow, Ester that was such a nice... headshot from your.... "Moralizing"...
+[SH](Teliko) Enemy fuca deformada got stunned on MEGA COUNTER #3!
+[SH](Teliko) TerezkaBroucku hit a MEGA COUNTER on fuca deformada!!!!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH] You killed: fuca deformada with: 16 dmg using: the_pan_tm
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your... "Moralizing"...
+] playerskills
+Player Skills:
+
+CT:Toupeira do esterco      (Level 50)(XP = 73279430)
+   | Steel | Squall | UberGunner | Frieza | Vash the Stampede | Anubis |
+   | Yakui Mk2 | Xavier | Spider-Man | Invisible Man |
+CT:Midcore                  (Level 50)(XP = 73770731)
+   | Flora | Maria | Invisible Man | Victim 15/21 | Juggernaut | Clone Trooper |
+   | UberGunner | Squall | Meteorix | Wolverine |
+CT:CumDump                  (Level 50)(XP = 75165299)
+   | Arctic Predator | Thor | Hobgoblin |Gokus Kaioken technic | Victim 15/21 | Goku |
+   | Anubis | Captain America | Flora | Frieza |
+CT:FuckMaidcore             (Level 50)(XP = 73401586)
+   | Gloce | Captain America | Yakui Mk2 | Bass | Camman | Bunny hop |
+   | Dr. Strange | Secretary of Defense | Morpheus | Ricochet |
+CT:TerezkaBroucku           (Level 60)(XP = 146602887)
+   | Teliko | Phoenix | ksun | Ester | Graciete | L96A1 |
+   | Maria | SuperNoodle | Cola Lover | Yandere Mk.II |
+T :fuca deformada           (Level 50)(XP = 73906455)
+   |Painkiller | SuperNoodle | Penguin | Jaqueo | Scorpion | Dr. Strange |
+   | Xavier | Anubis | Master Chief | Naruto Uzumaki |
+T :Maria chupa-beatas       (Level 50)(XP = 73992286)
+   | Invisible Man | Stealth Predator | Escapist | Cola Lover | Dr. Strange | Frieza |
+   | Spider-Man | Tracker | Raak the Breaker | Grandmaster |
+T :Fera nojenta             (Level 50)(XP = 74053838)
+   | Vegetto | Captain America | Veronika | Lara | Xavier | Jaqueo |
+   | Graciete | Camman | Batgirl | Spider-Man |
+T :Rainha docurral         (Level 50)(XP = 74915279)
+   | Bunny hop | Victim 15/21 | Wolverine | Ester | Scorpion | Grandmaster |
+   | ElectroB00M | Cola Lover | Squall | Jeremy |
+T :RoadkillStew             (Level 50)(XP = 74019459)
+   | Victim 15/21 | Xavier | Flora | Steel | Adriano | Grandmaster |
+   | Ester | Polaris | Jaqueo | Bunny hop |
+T :Ratazana Tremulenta      (Level 50)(XP = 75664335)
+   | Rattler | Chikoi the Maid | Casper | Morpheus | Bass | Steel |
+   | Deagle Assassin | Tracker | Penguin | Flora |
+
+** Fera nojenta killed Midcore with a headshot from ak47 ***
+] rcon yb_freeze_bots 1
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Midcore died
+[SH](Ester) Moralizing last round has earned you 7750 more xp!
+Midcore died
+[SH](Maria) Health drain valve opened!
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+Midcoredied
+Midcore died
+Midcore died
+Midcore died
+Midcore died
+landkrabben1 dropped
+Midcore died
+[AMXX] landkrabben1 () has disconnected ().
+] rcon yb_freeze_bots 0
+
+*** Rainha do curral killed Toupeira do esterco with a headshot from mp5navy ***
+*** Rainha do curral killed CumDump with a headshot from mp5navy ***
+fuca deformada killed CumDump with awp
+CumDump killed Rainha do curral with sh_generic_dmg
+[SH](Maria) Ratazana Tremulenta was shattered by you!
+*** Fera nojenta killed Midcore with a headshot from deale ***
+Ratazana Tremulenta killed TerezkaBroucku with deagle
+[SH](Maria) Ratazana Tremulenta was shattered by you!
+[SH](Grandmaster) Maria chupa-beatas used cosmic life force to Revive Dead Teammate Rainha do curral!
+*** fuca deformada killed CumDump with a headshot from deagle ***
+CumDump killed fuca deformada with sh_generic_dmg
+[SH](Maria) Ratazana Tremulenta was shattered by you!
+[SH](Maria) Ratazana Tremulenta was shattered by you!
+[SH](Maria) Health drain valve closed.
+* Killed by Ratazana Tremulentawith deagle @ 6m (200hp, 200ap) >> stomach: 1 rightarm: 2
+Ratazana Tremulenta killed TerezkaBroucku with deagle
+* You hit Ratazana Tremulenta 7 time(s), 627 damage >> head: 1 stomach: 5 leftarm: 1
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Grandmaster) RoadkllStew used cosmic life force to Revive Dead Teammate fuca deformada!
+* Killed by Ratazana Tremulenta with deagle @ 9m (200hp, 200ap) >> stomach: 1 rightarm: 3
+* You hit Ratazana Tremulenta 8 time(s), 674 damage >> head: 1 stomach: 6 leftarm: 1
+[SH](Ester) You were made to do more than survive the day. Go avenge yourself
+[SH](Ester) 8 attempts to change left
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+CumDump killed Fera nojenta with awp
+[SH(Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Rainha do curral killed CumDump with moralizing_ray
+[SH](Ester) TerezkaBroucku! They've been reborn!
+Rainha do curral killed CumDump with awp
+[SH](Maria) Health drain valve opened!
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+fuca deformada.
+
+Maria chupa-beatas.
+
+Ratazana Tremulenta.
+
+[SH](Ester) Maria chupa-beatas was shattered by you!
+[SH](Eser) Maria chupa-beatas: OW! What was that for, Ester? (TerezkaBroucku)?
+[SH](Ester) wow, Ester that was such a nice... (wow... not even headshot) from your.... "Moralizing"...
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+fuca deformada.
+
+Maria chupa-beatas.
+
+Ratazana Tremulenta.
+
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from Smallness ***
+[SH](Ester TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[SH](Ester) Not enough built up damage! (current: 150 but needs 300.) Resetting damage to do
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+*** TerezkaBroucku killed fuca deformada with a headshot from sh_generic_dmg ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerzkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Ratazana Tremulenta with: 38 dmg using: Smallness
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+TerezkaBroucku killed Rainha do curral with SH_Frag_Blast
+TerezkaBroucku killed RoadkillStew with SH_Frag_Blast
+TerezkaBroucku killed self with SH_Frag_Blast
+[SH] You killed: fuca deforada with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+fuca deformada.
+
+Maria chupa-beatas.
+
+Ratazana Tremulenta.
+
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+landkrabben1 connected[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+Requesting tempdecal.wad from server
+[SH](Teliko) You are 33 levels above unlock leel! So now you get a free rifle at spawn! (aka a weapon_famas)
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from Smallness ***
+[SH](Maria) Health drain valve opened!
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+[AMXX] landkrabben1 (STEAM_0:1:38945783) has connected (Denmark).
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from Smallness ***
+[SH](ksun Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+[SH] You killed: Ratazana Tremulenta with: 200 dmg using: Smallness
+*** TerezkaBroucku killed fuca deformada with a headshot from sh_generic_dmg ***
+[SH](Grandmaster) Maria chupa-beatas used cosmic life force to Revive Dead Teammate Ratazana Tremulenta!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+[SH You killed: Ratazana Tremulenta with: 100 dmg using: Smallness
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from Smallness ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH] You killed: fuca deformada with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH](Grandmaster) Rainha do curral used cosmic life force to Revive Dead Teammate Ratazna Tremulenta!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+[SH] You killed: Ratazana Tremulenta with: 100 dmg using: Smallness
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](Ester) No enemies detected as you unloaded. Youre done here.
+[SH](Ester) Fera nojenta wasshattered by you!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH] You killed: Rainha do curral with: 996 dmg using: SH_Frag_Blast
+TerezkaBroucku killed Rainha do curral with SH_Frag_Blast
+TerezkaBroucku killed self with SH_Frag_Blast
+[SH](Ester) Rainha do curral was shattered by you!
+[SH](Ester) You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy.
+[SH] You were killed by: TerezkaBroucku with: 869 dmg using: SH_Frag_Blast
+[SH](Eser) TerezkaBroucku was shattered by you!
+[SH](Ester) TerezkaBroucku shattered you!
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate fuca deformada!
+*** CumDump killed Fera nojenta with a headshot from awp ***
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+Rainha do curral killed Toupeira do esterco with moralizing_ray
+*** Rainha do curral killed Midcore with a headshot from tmp ***
+landkrabben1 is joining the Counter-Terrorist forceMidcore killed RoadkilStew with SH_Frag_Blast
+] rcon say hey hello
+
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+RoadkillStew died
+*** Rainha do curral killed FuckMaidcore with a headshot from moralizing_ray ***
+CumDump killed fuca deformada with sh_generic_dmg
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+RoadkillStew died
+] rcon yb killbots
+All bots died...
+
+Maria chupa-beatas killed self with m4a1Midcore killed self with m249
+Rainha do curral killed self with tmp
+CumDump killed self with deagle
+[SH](Ester) Rainha do curral! They've been reborn!
+[SH](Ester) TerezkaBroucku: KARMA, Fera nojenta! KARMA!
+RoadkillStew died
+] rcon yb killbots
+All bots died...
+
+Maria chupa-beatas killed self with mp5navy
+fuca deformada died
+<REBORN SUPERHERO [SH] 60LVL | EXPERIMENTAL> hey hello
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH](Ester) TerezkaBrouck: KARMA, Maria chupa-beatas! KARMA!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH](Yandere Mk.II) TerezkaBroucku : What... have I done...
+[SH](Yandere Mk.II) TerezkaBroucku: Ok. NOW Im mad!
+PTB: Round ended, checking teams.
+PTB: Switching fuca deformada with Toupeira do esterco.
+] amx_vote
+Usage:  amx_vote <question> <answer#1> <answer#2>
+*** Maria chupa-beatas killed Midcore with a headshot from ak47 ***
+*** Maria chupa-beatas klled FuckMaidcore with a headshot from ak47 ***
+] amx_vote "should I nuke the bots?" "yes" "no"
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+Voting has started...
+PLAYER REBORN SUPERHERO [SH] 60LVL | E: added 9000 XP on landkrabben1
+*** Maria chupa-beatas killed Midcore with a headshot from ak47 ***
+[SH](Maria) Health drain valve opened!
+*** CumDump killed Maria chupa-beatas with a headshot from ak47 ***
+Midcore died
+TerezkaBroucku :  hello
+
+** Ratazana Tremulenta killed landkrabben1 with a headshot from ak47 ***
+Midcore died
+Ratazana Tremulenta killed FuckMaidcore with ak47
+Ratazana Tremulenta killed CumDump with ak47
+] amx_vote "should I nuke the bots" "yes" "no"
+Voting not allowed at this time
+*** Ratazana Tremulenta killed Midcore with a headshot from deagle ***
+CumDump died
+CumDump died
+Ratazana Tremulenta killed Midcore with deagle
+] amx_vote "sorry wrong button. Do you want max lvl my guy" "yes" "no"
+landkrabben1 :  hi
+
+Voting has startd...
+ADMIN TerezkaBroucku: vote custom
+Ratazana Tremulenta killed CumDump with deagle
+landkrabben1 voted for option #2
+Ratazana Tremulenta killed Midcore with deagle
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+*** fuca deformada killed Toupeira do esterco with a headshot from awp ***
+Ratazana Tremulenta killed CumDump with deagle
+CumDump killed Rainha do curral with sh_generic_dmg
+Voting successful (got "1") (needed "1"). The result: should I nuke the bots? - "no"
+ADMIN TerezkaBroucku: voe custom
+landkrabben1 voted for option #2
+Ratazana Tremulenta killed CumDump with deagle
+*** Fera nojenta killed FuckMaidcore with a headshot from sh_generic_dmg ***
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+Fera nojenta killed Midcore with scout
+CumDump died
+CumDump killed Maria chupa-beatas with sh_generic_dmg
+[SH](Grandmaster) RoadkillStew used cosmic life force to Revive Dead Teammate Toupeira do esterco!
+CumDump died
+*** Toupeira do esterco killed Midcore with a headshot from ak47 **
+] amx_vote "is it overwhelming" "yes" "no"
+Voting has started...
+Voting successful (got "1") (needed "1"). The result: sorry wrong button. Do you want max lvl my guy - "no"
+*** Toupeira do esterco killed CumDump with a headshot from ak47 ***
+*** Fera nojenta killed Midcore with a headshot from m4a1 ***
+[SH](Ester) Rainha do curral! They've been reborn!
+Fera nojenta killed FuckMaidcore with m4a1
+*** Toupeira do esterco killed CumDump with a headshot from ak47 ***
+CumDump killed Toupeira do esterco with sh_eneric_dmg
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+fuca deformada (RADIO): Fire in the hole!
+Fera nojenta killed Midcore with deagle
+Ratazana Tremulenta killed fuca deformada with sh_generic_dmg
+ADMIN TerezkaBroucku: vote custom
+*** Ratazana Tremulenta killed FuckMaidcore with a headshot from deagle ***
+fuca deformada (RADIO): Fire in the hole!
+Voting failed (got "0") (needed "1")
+[SH](Ester) TerezkaBroucku: KARMA, fuca deformada! KARMA!
+[SH](Maria) Health drain valve closed.
+[SH](L961) 9 l96 bullets left
+*** TerezkaBroucku killed RoadkillStew with a headshot from Lena_s_L96A1 ***
+[SH](L96A1) 8 l96 bullets left
+[SH](ksun) Killed someone
+*** Rainha do curral killed Midcore with a headshot from usp ***
+[SH](ksun) You got 1 spores for your kill!
+Ratazana Tremulenta killed TerezkaBroucku with ak47
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 533 dmg using: Lena_s_L96A1
+[SH](L96A1) 7 l96 bullets left
+[SH](Ester) RoadkillStew: KARMA, TerezkaBrouku! KARMA!
+* Killed by Ratazana Tremulenta with ak47 @ 13m (200hp, 200ap) >> head: 1 stomach: 1 leftarm: 3 rightarm: 8 rightleg: 1
+RoadkillStew killed TerezkaBroucku with scout
+* You hit Ratazana Tremulenta 16 time(s), 1118 damage >> head: 5 stomach: 9 leftarm: 2
+[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Teliko) You are 33 levels above unlock level! So now you get  free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) RoadkillStew: KARMA, TerezkaBroucku! KARMA!
+* Killed by RoadkillStew with scout @ 15m (100hp, 0ap) >> head: 1 stomach: 1 leftarm: 5 rightarm: 1 leftleg: 1
+* You hit RoadkillStew 7 time(s), 2568 damage >> head: 3 chest: 1 stomach: 3
+RoadkillStew killed CumDump with scout
+] rcon yb killbotsd
+Unknown command: killbotsd
+
+[SH](Ester) You were made to do more than survive the day. Go avenge yourself
+[SH](Ester) 8 attempts to change left
+] rcon yb killbotss
+Uknown command: killbotss
+
+CumDump died
+RoadkillStew killed Midcore with m4a1
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+*** TerezkaBroucku killed RoadkillStew with a headshot from famas ***
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) TerezkaBroucku! They've been reborn!
+CumDump died
+[SH](Maria) Health drain valve opened!
+*** Fera nojenta killed Midcore with a headhot from m4a1 ***
+[SH](Ester) Ratazana Tremulenta was shattered by you!
+[SH](ksun) Killed someone
+*** Ratazana Tremulenta killed Midcore with a headshot from ak47 ***
+[SH](ksun) You got 1 spores for your kill!
+*** Fera nojenta killed CumDump with a headshot from m4a1 ***
+CumDump killed Fera nojenta with sh_generic_dmg
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH](L96A1) 9 l96 bullets left
+[SH](ksun) Launcher deployed! Launcher id is: 368(368)
+ Launcher phase is: 0
+ Launcher timer is: 0.00
+
+** Ratazana Tremulenta killed Midcore with a headshot from deagle ***
+[SH](Ester) Ratazana Tremulenta was shattered by you!
+Ratazana Tremulenta killed CumDump with deagle
+CumDump killed Rainha do curral with sh_generic_dmg
+[SH](Ester) TerezkaBroucku: KARMA, Fera nojenta! KARMA!
+Rainha do curral died
+[SH](Maria) Health drain valve closed.
+[SH] (ksun):Targets are:
+Midcore died
+Maria chupa-beatas killed TerezkaBroucku with knife
+- Maria chupa-beatas
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+[H](Ester) Rainha do curral! They've been reborn!
+Midcore died
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+[SH](Ester) RoadkillStew: KARMA, TerezkaBroucku! KARMA!
+* Killed by Maria chupa-beatas with knife @ 2m (602hp, 130ap) >> stomach: 3 leftarm: 12 rightarm: 6 leftleg: 1 rightleg: 2
+* You hit Maria chupa-beatas 57 time(s), 1713 damage >> head: 45 chest: 1 stomach: 9 leftarm: 1 rightarm: 1
+[SH](Ester) Its show time.
+[SH](Ester) 7 attempts to change left
+[SH](Teliko) You are 33 levels above nlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+*** Midcore killed RoadkillStew with a headshot from usp ***
+Rainha do curral killed Midcore with glock18
+*** CumDump killed Maria chupa-beatas with a headshot from awp ***
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) TerezkaBroucku! They've been reborn!
+[SH](Maria) Health drain valve opened!
+Rainha do curral killed TerezkaBroucku with the_pan_tm
+[SH](Ester) TrezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH](Ester) Rainha do curral: Shut up, TerezkaBroucku.
+[SH](Ester) RoadkillStew: KARMA, TerezkaBroucku! KARMA!
+[SH] You were killed by: Rainha do curral with: 196 dmg using: the_pan_tm
+[SH](Ester) Its show time.
+[SH](Ester) 6 attempts to change left
+[SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+SH](Teliko) You are 33 levels above unlock level! So now you get a free rifle at spawn! (aka a weapon_famas)
+[SH](Ester) TerezkaBroucku! They've been reborn!
+*** TerezkaBroucku killed Ratazana Tremulenta with a headshot from Smallness ***
+[SH](Maria) Health drain valve opened!
+TerezkaBroucku killed RoadkillStew with manic_rage
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Ratazana Tremulenta! KARMA!
+[SH] You killed: Ratazana Tremulenta with: 53 dmg sing: Smallness
+[SH] Ester:
+THE FOLLOWING PLAYERS WILL BE TARGETED BY AN INCOMMING NEUROBLAST FROM TerezkaBroucku!!!!
+
+
+Maria chupa-beatas.
+
+Rainha do curral.
+
+RoadkillStew.
+
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+*** Midcore killed Rainha do curral with a headshot from awp ***
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 30 dmg using: manic_rage
+[SH](Ester) RoadkillStew! They've been reborn!
+*** Rainha do curral killed Midcore wih a headshot from moralizing_ray ***
+Rainha do curral killed CumDump with moralizing_ray
+*** TerezkaBroucku killed RoadkillStew with a headshot from sh_generic_dmg ***
+[SH](Ester) TerezkaBroucku is charging up and about to release a NEUROBLAST!!!!
+[SH](Ester) TerezkaBroucku: Thats it! IM FUCKING TIRED OF THIS SHIT!!!!! You ALL DIE N O W!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+[SH](ksun) Killed someone
+SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, RoadkillStew! KARMA!
+[SH] You killed: RoadkillStew with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Rainha do curral with a headshot from sh_generic_dmg ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot frm sh_generic_dmg ***
+[SH](Ester) RoadkillStew! They've been reborn!
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+[SH] You killed: Rainha do curral with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+Midcore died
+*** TerezkaBroucu killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerekaBroucku: KARMA, Maria chupa-beatas! KARMA!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Rainha do curral with a headshot from sh_generic_dmg ***
+[SH](ksun) Killed someone[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Rainha do curral! KARMA!
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH] You killed: Rainha do curral wih: 30 dmg using: sh_generic_dmg
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+Midcore died
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+*** TerezkaBroucku killed Maria chupa-beatas with a headshot from sh_generic_dmg ***
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 30 dmgusing: sh_generic_dmg
+[SH](Yandere Mk.II) JET loaded
+[SH](ksun) Killed someone
+[SH](ksun) You got 1 spores for your kill!
+[SH](Ester) TerezkaBroucku: KARMA, Maria chupa-beatas! KARMA!
+[SH] You killed: Maria chupa-beatas with: 30 dmg using: sh_generic_dmg
+RoadkillStew killed TerezkaBroucku with SH_Frag_Blast
+[SH](Ester) RoadkillStew shattered you!
+*** CumDump killed RoadkillStew with a headshot from ak47 ***
+[SH](Maria) Health drain valve closed.
+*** Midcore killed Rainha do curral with a headshot from sh_gneric_dmg ***
+[SH](Ester) RoadkillStew: KARMA, TerezkaBroucku! KARMA!
+RoadkillStew killed CumDump with scout
+[SH] You were killed by: RoadkillStew with: 207 dmg using: SH_Frag_Blast
+*** CumDump killed RoadkillStew with a headshot from awp ***
+[SH](Ester) RoadkillStew shattered you!
+Rainha do curral killed CumDump with ak47
+CumDump killed Maria chupa-beatas with sh_generic_dmg
+[SH](Ester) RoadkillStew! They've been reborn!
+*DEAD* TerezkaBroucku :  are respawn heroes annoying? These rounds take ages
+
+*** Cumump killed RoadkillStew with a headshot from usp ***
+Rainha do curral killed CumDump with ak47
+*DEAD* TerezkaBroucku :  and bots are all level 50+
+
+] condump

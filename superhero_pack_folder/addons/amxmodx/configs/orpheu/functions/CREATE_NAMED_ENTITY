@@ -1,0 +1,20 @@
+{
+    "name": "CREATE_NAMED_ENTITY",
+    "library": "mod",
+    "arguments": [
+        {
+            "type": "pointer"
+        }
+    ],
+    "return": {
+        "type": "int"
+    },
+    "identifiers":
+    [
+        {
+            "os"    : "linux",
+            "mod"   : "cstrike",
+            "value" : "_Z19CREATE_NAMED_ENTITY7QString"
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "name": "CountEntities",
+    "library": "mod",
+    "arguments": [
+        {
+            "type": "char *"
+        }
+    ],
+    "return": {
+        "type": "int"
+    },
+    "identifiers":
+    [
+        {
+            "os"    : "linux",
+            "mod"   : "cstrike",
+            "value" : "_Z18UTIL_CountEntitiesPKc"
+        }
+    ]
+    
+}

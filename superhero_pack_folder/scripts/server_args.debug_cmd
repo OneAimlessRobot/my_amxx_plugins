@@ -1,0 +1,6 @@
+
+exec: ./hlds_linux
+
+run $(cat server_args.debug_cmd)
+
+-game cstrike +ip "192.168.0.100" +hostport "27015" +maxplayers "16" +exec "server.cfg"

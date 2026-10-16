@@ -1,0 +1,17 @@
+17.05.2024 17:44 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Tokelian - 121 days) -==- cool
+17.05.2024 17:46 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Mordereca - 172 days) -==- 2112212
+17.05.2024 18:00 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Ninja - 365 days) -==- 12312
+17.05.2024 18:36 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Shredder - 365 days) -==- 1122121
+17.05.2024 18:42 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Wolverine - 365 days) -==- 1221
+17.05.2024 21:15 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Cadet - 212 days) -==- None
+17.05.2024 22:38 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Mechanical Chiken (100) -==- BOT -==- 127.0.0.1 -==- Set levels (2001) -==- 212
+17.05.2024 22:43 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- LeonorTheCynicalBrat (100) -==- BOT -==- 127.0.0.1 -==- Set levels (2001) -==- 1212
+17.05.2024 22:55 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- LeonorTheCynicalBrat (100) -==- BOT -==- 127.0.0.1 -==- Give Class (Mordereca - 122 days) -==- 1212
+17.05.2024 23:02 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- LeonorTheCynicalBrat (100) -==- BOT -==- 127.0.0.1 -==- Give Class (Psikopaktik - 211 days) -==- 1212
+17.05.2024 23:33 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Tomás_Reis (100) -==- BOT -==- 127.0.0.1 -==- Set levels (2001) -==- 121
+18.05.2024 00:05 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- José_Gomes (100) -==- BOT -==- 127.0.0.1 -==- Set levels (2001) -==- 122
+18.05.2024 01:12 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give levels (2001) -==- 1212
+18.05.2024 01:22 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Dimitro_Palha (100) -==- BOT -==- 127.0.0.1 -==- Give levels (2001) -==- 1221
+18.05.2024 01:26 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Ricardo_Nobre (100) -==- BOT -==- 127.0.0.1 -==- Give levels (2001) -==- 1212
+18.05.2024 01:30 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Leandro_Guilherme (100) -==- BOT -==- 127.0.0.1 -==- Give levels (2001) -==- 1212
+18.05.2024 03:34 -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- TastyMedula -==- STEAM_ID_LAN -==- loopback -==- Give Class (Pro Assassin - 121 days) -==- 211

@@ -1,0 +1,49 @@
+[en] -- RedSMURF
+PROP_CHAT_TAG                     = ^4[PROP MANAGER]^1
+PROP_CHAT_LIMIT                   = You've reached the maximum number of Props ^4%d
+PROP_CHAT_NO_PROP                 = There are no Props available
+PROP_CHAT_CREATE_NEW              = ^3%s ^1created
+PROP_CHAT_STATUS_CURRENT          = ^3%s ^1is %L
+PROP_CHAT_STATUS_ALL_SHOW         = All Props are now Shown
+PROP_CHAT_STATUS_ALL_HIDE         = All Props are now Hidden
+PROP_CHAT_STATUS_ALL_DEFAULT      = All Props visibility reset to Default
+PROP_CHAT_REMOVE_CURRENT          = ^3%s ^1removed
+PROP_CHAT_REMOVE_ALL              = All Props removed
+PROP_CHAT_SAVE                    = Prop data saved in ^4%s
+
+PROP_CHAT_SHOWN                   = Shown
+PROP_CHAT_HIDDEN                  = Hidden
+PROP_CHAT_DEFAULT                 = reset to Default
+
+PROP_NAV_NEXT                     = Next
+PROP_NAV_BACK                     = Back
+PROP_ON                           = \y[ON]
+PROP_OFF                          = \r[OFF]
+PROP_SHOWN                        = \y[SHOWN]
+PROP_HIDDEN                       = \r[HIDDEN]
+PROP_DEFAULT                      = \d[DEFAULT]
+
+PROP_MENU_TITLE                   = \dProp - Version \y%s
+PROP_MENU_TITLE_PAGE              = \yPage:\r
+PROP_ROOT_CREATE                  = Create Prop
+PROP_ROOT_REMOVE                  = Remove Prop
+PROP_ROOT_SHOW                    = Visibility settings
+PROP_ROOT_SAVE                    = Save data
+PROP_ROOT_NOCLIP                  = Toggle noclip %L
+PROP_ROOT_GODMODE                 = Toggle godmode %L
+PROP_ROOT_ROTATE                  = Adjust rotation
+
+PROP_SHOW_CURRENT                 = Show Prop >> %s%s %L
+PROP_SHOW_ALL_SHOW                = Show all Props
+PROP_SHOW_ALL_HIDE                = Hide all Props
+PROP_SHOW_ALL_DEFAULT             = Reset-Visibility for all Props
+
+PROP_REMOVE_CURRENT               = Remove Prop >> \y%s
+PROP_REMOVE_ALL                   = Remove all Props
+
+PROP_ROTATE_RIGHT                 = Turn Right
+PROP_ROTATE_LEFT                  = Turn Left
+PROP_ROTATE_UP                    = Turn Up
+PROP_ROTATE_DOWN                  = Turn Down
+PROP_ROTATE_GROUND                = Set on ground >> %L
+PROP_ROTATE_PLACE                 = Place Prop

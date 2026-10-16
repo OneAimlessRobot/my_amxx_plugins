@@ -1,0 +1,2578 @@
+c_task: 10 slots (default is 10)
+
+Curr num of tasks: 47
+Prev task id given: 6254
+
+Curr task id to give: 8258
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 48
+Prev task id given: 8258
+
+Curr task id to give: 8302
+
+End of task_allocator stae printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 49
+Prev task id given: 8302
+
+Curr task id to give: 8346
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task tyes:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 50
+Prev task id given: 8346
+
+Curr task id to give: 8390
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 51
+Prev task id given: 8390
+
+Curr task id to give: 10394
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 52
+Prev task id given: 10394
+
+Curr task id to give: 12398
+
+End of task_allocator state printing!!!
+
+Printing currentallocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 53
+Prev task id given: 12398
+
+Curr task id to give: 12442
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots(default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 54
+Prev task id given: 12442
+
+Curr task id to give: 12486
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 55
+Prev ask id given: 12486
+
+Curr task id to give: 12530
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 56
+Prev task id given: 12530
+
+Curr task id to give: 14534
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocatr stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 57
+Prev task id given: 14534
+
+Curr task id to give: 16538
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entitytask: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 58
+Prev task id given: 16538
+
+Curr task id to give: 16582
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 59
+Prev task id given: 16582
+
+Curr ask id to give: 16626
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 60
+Prev task id given: 16626
+
+Curr task id to give: 16670
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 100 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 61
+Prev task id given: 16670
+
+Curr task id to give: 16714
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default s 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 62
+Prev task id given: 16714
+
+Curr task id to give: 16758
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 63
+Prev task id given: 16758
+
+Curr task id to give: 16802
+
+Endof task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 64
+Prev task id given: 16802
+
+Curr task id to give: 16846
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defind num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 65
+Prev task id given: 16846
+
+Curr task id to give: 18850
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task:10 slots (default is 10)
+
+Curr num of tasks: 66
+Prev task id given: 18850
+
+Curr task id to give: 20854
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 67
+Prev task id given: 20854
+
+Curr task id to give: 20898
+
+End of task_allocator state prnting!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 68
+Prev task id given: 20898
+
+Curr task id to give: 20942
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 69
+Prev task id given: 20942
+
+Curr task id to give: 20986
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+urr num of tasks: 70
+Prev task id given: 20986
+
+Curr task id to give: 21030
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 71
+Prev task id given: 21030
+
+Curr task id to give: 21074
+
+End of task_allocator state printing!!!
+
+Printing currentallocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 72
+Prev task id given: 21074
+
+Curr task id to give: 21118
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots(default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 73
+Prev task id given: 21118
+
+Curr task id to give: 21162
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 74
+Prev ask id given: 21162
+
+Curr task id to give: 21206
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 75
+Prev task id given: 21206
+
+Curr task id to give: 21250
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocatr stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 76
+Prev task id given: 21250
+
+Curr task id to give: 21294
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entit_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 77
+Prev task id given: 21294
+
+Curr task id to give: 21338
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 78
+Prev task id given: 21338
+
+Curr ask id to give: 21382
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 79
+Prev task id given: 21382
+
+Curr task id to give: 21426
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 100 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 80
+Prev task id given: 21426
+
+Curr task id to give: 21470
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (defaultis 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 81
+Prev task id given: 21470
+
+Curr task id to give: 21514
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 82
+Prev task id given: 21514
+
+Curr task id to give: 21558
+
+Endof task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 83
+Prev task id given: 21558
+
+Curr task id to give: 21602
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defind num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 84
+Prev task id given: 21602
+
+Curr task id to give: 21646
+
+End of task_allocator state printing!!!
+
+Ham error value: 1
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 200)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 85
+Prev task id given: 21646
+
+Curr task id to give: 21690
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 86
+Prev task id given: 21690
+
+Curr task id to give: 21734
+
+End of tas_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 87
+Prev task id given: 21734
+
+Curr task id to give: 23738
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num lots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 88
+Prev task id given: 23738
+
+Curr task id to give: 23782
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slos (default is 10)
+
+Curr num of tasks: 89
+Prev task id given: 23782
+
+Curr task id to give: 23826
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 90
+Prev task id given: 23826
+
+Curr task id to give: 23870
+
+End of task_allocator state printing!!
+
+Ham error value: 1
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 91
+Prev task id given: 23870
+
+Curr task id to give: 23914
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots or task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 92
+Prev task id given: 23914
+
+Curr task id to give: 23958
+
+End of task_allocator state printing!!!
+
+Trying to register help file of hero named Chikoi the Maid!!!!
+
+Registered help file of hero named Chikoi the Maid sucessfully!!!!!
+
+[SH] (Hero help files): Hero help title: Chikoi the maid: Help file
+[SH] (Hero help files): Hero help directory ame: addons/amxmodx/configs/shero_help_files/chikoi_the_maid_folder/
+[SH] (Hero help files): Hero help index name: addons/amxmodx/configs/shero_help_files/chikoi_the_maid_folder/chikoi_help_file.html
+[SH] (Hero help files): Hero name: Chikoi the Maid
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Cur num of tasks: 93
+Prev task id given: 23958
+
+Curr task id to give: 25962
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 94
+Prev task id given: 25962
+
+Curr task id to give: 26006
+
+End of task_allocator state printing!!!
+
+Printing current llocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 95
+Prev task id given: 26006
+
+Curr task id to give: 26050
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 96
+Prev task id given: 26050
+
+Curr task id to give: 26094
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 97
+Prev tsk id given: 26094
+
+Curr task id to give: 26138
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 98
+Prev task id given: 26138
+
+Curr task id to give: 26182
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocato stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 99
+Prev task id given: 26182
+
+Curr task id to give: 26226
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_ask: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 100
+Prev task id given: 26226
+
+Curr task id to give: 26270
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 101
+Prev task id given: 26270
+
+Currtask id to give: 26314
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 102
+Prev task id given: 26314
+
+Curr task id to give: 26358
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 103
+Prev task id given: 26358
+
+Curr task id to give: 26402
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (defaut is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 104
+Prev task id given: 26402
+
+Curr task id to give: 26446
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 105
+Prev task id given: 26446
+
+Curr task id to give: 26490
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 106
+Prev task id given: 26490
+
+Curr task id to give: 26534
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 107
+Prev task id given: 26534
+
+Curr task id to give: 26578
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generictask: 10 slots (default is 10)
+
+
+Curr num of tasks: 108
+Prev task id given: 26578
+
+Curr task id to give: 26622
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 109
+Prev task id given: 26622
+
+Curr task id to give: 26666
+
+End of task_allocatorstate printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 110
+Prev task id given: 26666
+
+Curr task id to give: 26710
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for ask types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 111
+Prev task id given: 26710
+
+Curr task id to give: 26754
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (defaut is 10)
+
+Curr num of tasks: 112
+Prev task id given: 26754
+
+Curr task id to give: 26798
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 113
+Prev task id given: 26798
+
+Curr task id to give: 28802
+
+End of task_allocator state printing!!!
+
+Priting current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 114
+Prev task id given: 28802
+
+Curr task id to give: 28846
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_ask: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 115
+Prev task id given: 28846
+
+Curr task id to give: 28890
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of asks: 116
+Prev task id given: 28890
+
+Curr task id to give: 30894
+
+End of task_allocator state printing!!!
+
+maximo de entidades: 2048
+
+Ham error value: 1
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 117
+Prev task id given: 30894
+
+Curr task id to give: 32898
+
+End of task_allocato state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 118
+Prev task id given: 32898
+
+Curr task id to give: 32942
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots fortask types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 119
+Prev task id given: 32942
+
+Curr task id to give: 32986
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (defalt is 10)
+
+Curr num of tasks: 120
+Prev task id given: 32986
+
+Curr task id to give: 33030
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 121
+Prev task id given: 33030
+
+Curr task id to give: 33074
+
+End of task_allocator state printing!!!
+
+Prnting current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 122
+Prev task id given: 33074
+
+Curr task id to give: 33118
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+
+Defined num slots for task types:
+
+0- playe_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 123
+Prev task id given: 33118
+
+Curr task id to give: 33162
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num oftasks: 124
+Prev task id given: 33162
+
+Curr task id to give: 33206
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 125
+Prev task id given: 33206
+
+Curr task id to give: 33250
+
+End of task_allocator state printing!!!
+
+Printing current allocato state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 126
+Prev task id given: 33250
+
+Curr task id to give: 33294
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (defaut is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 127
+Prev task id given: 33294
+
+Curr task id to give: 33338
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 128
+Prev task i given: 33338
+
+Curr task id to give: 33382
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 129
+Prev task id given: 33382
+
+Curr task id to give: 33426
+
+End of task_allocator state printing!!!
+
+No More Custom Weapon Slots!
+
+No More Custom Weaon Slots!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 130
+Prev task id given: 33426
+
+Curr task id to give: 33470
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task tyes:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 131
+Prev task id given: 33470
+
+Curr task id to give: 33514
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10
+
+Curr num of tasks: 132
+Prev task id given: 33514
+
+Curr task id to give: 33558
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 133
+Prev task id given: 33558
+
+Curr task id to give: 33602
+
+End of task_allocator state printing!!!
+
+Printing crrent allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 134
+Prev task id given: 33602
+
+Curr task id to give: 33646
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 4 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 135
+Prev task id given: 33646
+
+Curr task id to give: 33690
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 16
+Prev task id given: 33690
+
+Curr task id to give: 33734
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 137
+Prev task id given: 33734
+
+Curr task id to give: 33778
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 138
+Prev task id given: 33778
+
+Curr task id to give: 33822
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 139
+Prev task id given: 33822
+
+Curr task id to give: 33866
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 140
+Prev task id given: 3866
+
+Curr task id to give: 33910
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 141
+Prev task id given: 33910
+
+Curr task id to give: 33954
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Stating slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 142
+Prev task id given: 33954
+
+Curr task id to give: 33998
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 lots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 143
+Prev task id given: 33998
+
+Curr task id to give: 34042
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+
+Curr num of tasks: 144
+Prev task id given: 34042
+
+Curr task id togive: 36046
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 145
+Prev task id given: 36046
+
+Curr task id to give: 36090
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (defaut: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 146
+Prev task id given: 36090
+
+Curr task id to give: 36134
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 147
+Prev task id given: 36134
+
+Curr task id to give: 36178
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 148
+Prev task id given: 36178
+
+Curr task id to give: 36222
+
+End of tak_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 149
+Prev task id given: 36222
+
+Curr task id to give: 36266
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined nu slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 150
+Prev task id given: 36266
+
+Curr task id to give: 36310
+
+End of task_allocator state printing!!!
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 sots (default is 10)
+
+Curr num of tasks: 151
+Prev task id given: 36310
+
+Curr task id to give: 36354
+
+End of task_allocator state printing!!!
+
+
+Printing current allocator state!!
+
+Allocator stuff:
+Starting slot: 1000 (default: 1000)
+
+
+
+Defined num slots for task types:
+
+0- player_task: 40 slots (default is 40)
+
+1- entity_task: 2000 slots (default is 2000)
+
+2- generic_task: 10 slots (default is 10)
+
+Curr num of tasks: 152
+Prev task id given: 36354
+
+Curr task id to give: 36398
+
+End of task_allocator state prining!!!
+
+[SH] Successfully Loaded Superhero Config File 
+Cvar "yb_show_avatars" reverted to peaceful value.
+
+* Password accepted
+* Privileges set
+* Password accepted
+* Privileges set
+
+BUILD 4329 SERVER (0 CRC)
+Server # 32
+Couldn't open file overviews/starwars.txt. Using default values for overiew mode.
+Couldn't open file overviews/starwars.txt. Using default values for overiew mode.
+Mr.JaNe dropped
+"sv_maxspeed" changed to "10000"
+THA_GOAT!!!!!!! is joining the Terrorist forceTascaDoZeRepresenta connecteTascaDoZeRepresenta is joining the Counter-Terrorist forceDecentralizedLoveDisorder connectedDecentralizedLoveDisorder is joining the Counter-Terrorist forceFuckMaidcore connectedFuckMaidcore is joining the Terrorist forceputa peluda connectedputa peluda is joining the Terrorist forceSardinhaEBatataCozida connectedSardinhaEBatataCozida is joining the Counter-Terrorist forceMr.JaNe connected[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe is joining the Counter-Terrorist force[SH](Yandere Mk.II)Wow... I feel lighter
+[SH](Yandere Mk.II) Wow... I feel lighter
+[AMXX] Mr.JaNe (STEAM_0:1:77070179) has connected (Georgia).
+Type 'amx_langmenu' in the console to display a menu where you can choose your language
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Type 'amx_help' 'amx_searchcmd' in the console to see available commands
+SardinhaEBatataCozida killed puta peluda with awp
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 26.27 damage
+From entity of type: grende
+From attack
+Time Left: 19:49 min. Next Map: de_cbble
+*** SardinhaEBatataCozida killed SATAAAAAANDAGIIIIIIIIII with a headshot from awp ***
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) Jetplane is okay now! Ready for take off!
+Fera nojenta killed DecentralizedLoveDisorder with ak47
+Fera nojenta killed SardinhaEBatataCozida with sh_generic_dmg
+[SH](Yandere Mk.II) JET loaded
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+*** Fera nojenta killed Mr.JaNe with a headshot fro deagle ***
+] rcon yb kickbots
+Bots are removed from server.
+
+DecentralizedLoveDisorder has left the gameFera nojenta (RADIO): Fire in the hole!
+SATAAAAAANDAGIIIIIIIIII has left the gameSardinhaEBatataCozida has left the gameputa peluda has left the gamedevoradora de porra has left the gameesfregona ensebada has left the game[SH](Yandere Mk.II) I feel... heavier
+FuckMaidcore has left the game[SH](Yandere Mk.II) I feel... heavier
+TascaDoZeRepresenta has left the game[SH](Yandere Mk.II) I feel... heaier
+[SH](Yandere Mk.II) I feel... heavier
+Fera nojenta has left the game[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) I feel... heavier
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+Mr.JaNe :  how doe jet calls|
+
+THA_GOAT!!!!!!! :  pick yandere
+
+THA_GOAT!!!!!!! :  and press power key down
+
+Mr.JaNe :  and why i can choose just 10 heroes|?
+
+THA_GOAT!!!!!!! :  because I made it that way
+
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+Mr.JaNe :  damn
+
+Mr.JaNe :  cant drive it well :)
+
+THA_GOAT!!!!!!! :  a and d are roll ctrl is brake space is accelerate
+
+Mr.JaNe died
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH] You were given 60 MercXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Shinobu Kocho) Tag someonme first! Tag someone to teleport!
+Mr.JaNe died
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) JET loaded
+[SH] You were given 60 MercyXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe died
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+THA_GOAT!!!!!!! :  entity name is yandere_jet lol
+
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have Idone...
+[SH] You were given 60 MercyXP points
+[SH](Yandere Mk.II) Wow... I feel lighter
+THA_GOAT!!!!!!! :  dont crash too hard or it will break
+
+THA_GOAT!!!!!!! killed Mr.JaNe with yandere_bullet
+[SH](Yandere Mk.II) jet armed!
+[SH](Yandere Mk.II) JET loaded
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+THA_GOAT!!!!!!! :  ok no more jet
+
+THA_GOAT!!!!!!! :  sry
+
+Mr.JaNe :  all good just idk how to drive well yet :)
+
+[SH](Yandere Mk.II) jet armed!
+[SH](andere Mk.II) JET loaded
+THA_GOAT!!!!!!! died
+[SH](Yandere Mk.II) Mr.JaNe : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  I did a japan
+
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 69.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere Mk.II) jet armed!
+[SH] (Selfless-Yandere_Pt2): Your jet has been damaged!!!
+You received: 74.00 damage
+From entity of type: player
+From attacke
+[SH](Yandere MkII) JET loaded
+THA_GOAT!!!!!!! killed Mr.JaNe with sh_generic_dmg
+THA_GOAT!!!!!!! died
+[SH] You killed: Mr.JaNe with: 898 dmg using: sh_generic_dmg
+[SH](Yandere Mk.II) Mr.JaNe was shattered by you!
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+*DEAD* Mr.JaNe :  xD
+
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) Jet not deployed. Action interrupted
+Mr.JaNe :  /clearpowesr
+
+THA_GOAT!!!!!!! :  I did another japan
+
+Mr.JaNe :  wow
+
+THA_GOAT!!!!!!! :  *crahes into player with fuckin plane*
+
+*** Mr.JaNe killed THA_GOAT!!!!!!! with a headshot from galil ***
+* Killed by Mr.JaNe with galil @ 8m (75hp, 0ap) >> head: 1 leftarm: 4 rightarm: 1
+* You hit Mr.JaNe 2 time(s), 908 damage >> stomach: 2
+*DEAD* THA_GOAT!!!!!!! :  kill me
+
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  use scanner
+
+Mr.JaNe :  ah
+
+Mr.JaNe :  just t osee names
+
+[SH](Maria) Mr.JaNe shattered you!
+Mr.JaNe killed THA_GOAT!!!!!!! with m3
+[SH](Maria) Mr.JaNe shattered you!* Killed by Mr.JaNe with m3 @ 3m (100hp, 0ap) >> chest: 1 stomach: 2
+* You hit Mr.JaNe 0 time(s), 0 damage >> no hits
+Mr.JaNe killed THA_GOAT!!!!!!! with famas
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+* Killed by Mr.JaNe with famas @ 4m (100hp, 0ap) >> head: 3 chest: 1 leftarm: 4 rightarm: 2
+* You hit Mr.JaNe 0 time(s), 0 damage >> no hits
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  teliko is from metal gear acids
+Mr.JaNe :  not bad
+
+[SH](L96A1) 9 l96 bullets left
+THA_GOAT!!!!!!! killed Mr.JaNe with Lena_s_L96A1
+[SH](L96A1) 8 l96 bullets left
+[SH](L96A1) 7 l96 bullets left
+[SH](L96A1) 6 l96 bullets left
+[SH](L96A1) 5 l96 bullets left
+*** THA_GOAT!!!!!!! killed Mr.JaNe with a headshot from fiveseven ***
+] kill
+THA_GOAT!!!!!!! died
+[SH] You killed: Mr.JaNe with: 81 dmg using: Lena_s_L96A1
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Yandere Mk.II) THA_GOA!!!!!!! : What... have I done...
+THA_GOAT!!!!!!! killed Mr.JaNe with sh_generic_dmg
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH](Erica Fonseca) You just bled Mr.JaNe!!!
+] rcon amx_shsetlevel jAne 60
+[SH] Client "Mr.JaNe" has been set to level 60
+
+[SH](Shinobu Kocho) heeeeeey~
+[SH] You killed: Mr.JaNe with: 10 dmg using: sh_generic_dmg
+[SH](Yandere Mk.II) THA_GOAT!!!!!!! : What... have I done...
+[SH](Yandere Mk.II) Wow... I feel lighter
+Mr.JaNe :  /cam
+
+PLAYER REBORN SUPERHERO [SH] 60LVL | E: set level 60on Mr.JaNe
+THA_GOAT!!!!!!! :  it deosnt shot you lol
+
+*** Mr.JaNe killed THA_GOAT!!!!!!! with a headshot from usp ***
+THA_GOAT!!!!!!! :  loyal friend
+
+Mr.JaNe :  sure
+
+* Killed by Mr.JaNe with usp @ 5m (100hp, 0ap) >> head: 4 chest: 1 stomach: 131 leftarm: 2
+* You hit Mr.JaNe 8 time(s), 105 damage >> stomach: 7 leftleg: 1
+[SH](Yandere Mk.II) Wow... I feel lighter
+[SH] You were given 60 MercyXP points
+THA_GOAT!!!!!!! :  also I need to make it stronger thats weak as shit hhh
+
+[SH](L96A1) 9 l96 bullets left
+M.JaNe :  lol
+
+[SH](L96A1) 8 l96 bullets left
+Mr.JaNe killed THA_GOAT!!!!!!! with sh_generic_dmg
+[SH](L96A1) 7 l96 bullets left
+[SH](L96A1) 6 l96 bullets left
+[SH] You were killed by: Mr.JaNe with: 1 dmg using: sh_generic_dmg
+] condump

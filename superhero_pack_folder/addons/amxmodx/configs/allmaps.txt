@@ -1,0 +1,3 @@
+// Maps in this file will show up on say "listmaps" command.
+// If this file does not exist, the plugin will use mapcycle.txt instead.
+// Put all maps that are on your server in this file, even if they are not in your mapcycle

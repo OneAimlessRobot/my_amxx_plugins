@@ -1,0 +1,24 @@
+#if defined sh_teliko_get_set
+  #endinput
+#endif
+#define sh_teliko_get_set
+
+
+#define CHAFF_W_MODEL "models/shmod/lara/spear/w_spear.mdl"
+#define CHAFF_V_MODEL "models/shmod/lara/spear/v_spear.mdl"
+#define CHAFF_P_MODEL "models/shmod/lara/spear/p_spear.mdl"
+#define NOCHAFF_V_MODEL "models/shmod/lara/spear/v_nospear.mdl"
+#define CHAFF_HIT_SFX  "shmod/lara/spear/spear_hit.wav"
+#define CHAFF_THROW_SFX  "shmod/lara/spear/spear_throw.wav"
+#define CHAFF_WOUND_SFX  "shmod/lara/spear/spear_wound.wav"
+#define TELIKO_RIFLE_CLASSID CSW_FAMAS
+
+stock const gHeroName[] = "Teliko"
+
+
+native teliko_get_hero_id()
+
+
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

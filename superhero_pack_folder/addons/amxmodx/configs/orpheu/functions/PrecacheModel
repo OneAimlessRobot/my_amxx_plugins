@@ -1,0 +1,14 @@
+{
+    "name" : "PrecacheModel",
+    "library" : "engine",
+    "arguments" :
+    [
+        {
+            "type" : "char *"
+        }
+    ],
+    "return" :
+    {
+        "type" : "int"
+    }
+}

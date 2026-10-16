@@ -1,0 +1,198 @@
+#define I_WANT_CONSTANTS
+#include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
+#include "soccer_ball_inc/sh_roberto_get_set.inc"
+#include "soccer_ball_inc/sh_soccer_funcs.inc"
+#include "../my_include/my_author_header.inc"
+
+// GLOBAL VARIABLES
+
+new gHeroID
+
+new const gHeroName[] = "Roberto Carlos"
+
+new gNumBalls[SH_MAXSLOTS+1]
+
+new round_win[] = "shmod/roberto_carlos/cheers/round_win.wav"
+new round_lose[] = "shmod/roberto_carlos/cheers/round_lose.wav"
+
+new pcvar_num_balls
+new pcvar_ball_cooldown
+
+
+//----------------------------------------------------------------------------------------------
+public plugin_init()
+{
+	// Plugin Info
+	register_plugin("SUPERHERO Roberto", "1.0", AUTHOR)
+	
+	
+	create_cvar("roberto_level", "8")
+	
+	pcvar_num_balls = create_cvar("roberto_num_balls", "100")
+	pcvar_ball_cooldown = create_cvar("roberto_ball_cooldown", "1.0")
+	
+	gHeroID=shCreateHero(gHeroName, "Roberto carlos!", "take a freekick and kill everybody!", true, "roberto_level" )
+
+	register_event("SendAudio","ev_SendAudio","a","2=%!MRAD_terwin","2=%!MRAD_ctwin","2=%!MRAD_rounddraw");
+	
+	
+	
+}
+public ev_SendAudio(){
+	
+	new sTeam[22];
+	read_data(2,sTeam,charsmax(sTeam));
+	new CsTeams:win_team=CS_TEAM_UNASSIGNED
+	new CsTeams:lose_team=CS_TEAM_UNASSIGNED
+	new CsTeams:player_team=CS_TEAM_UNASSIGNED
+	new bool:playing_win_sound=false
+	new bool:playing_lose_sound=false
+	if(containi(sTeam,"terwin") != -1){
+		
+		win_team=CS_TEAM_T
+		lose_team=CS_TEAM_CT
+		
+		
+	}
+	else if(containi(sTeam,"ctwin") != -1){
+		
+		
+		win_team=CS_TEAM_CT
+		lose_team=CS_TEAM_T
+		
+	}
+	for(new id=1;id< sh_maxplayers()+1;id++){
+		
+		if(sh_get_user_has_hero(id,gHeroID) &&is_user_connected(id)){
+			player_team=cs_get_user_team(id)
+			if(player_team==win_team){
+				if(!playing_win_sound){
+					playing_win_sound=true
+					emit_sound(id, CHAN_VOICE, round_win, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					sh_chat_message(id,gHeroID,"Your team has won!");
+				
+				}
+			
+			}
+			else if(player_team==lose_team){
+				if(!playing_lose_sound){
+					playing_lose_sound=true
+					emit_sound(id, CHAN_VOICE, round_lose, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					sh_chat_message(id,gHeroID,"Your team has lost!");
+				}
+			}
+			
+		}
+	}
+			
+		
+}
+public plugin_natives(){
+	
+	
+	register_native("roberto_dec_num_balls","_roberto_dec_num_balls");
+	register_native("roberto_get_num_balls","_roberto_get_num_balls");
+	register_native("roberto_set_num_balls","_roberto_set_num_balls");
+	
+	register_native("roberto_get_hero_id","_roberto_get_hero_id");
+	
+	
+}
+
+public _roberto_get_hero_id(iPlugin,iParams){
+	return gHeroID
+}
+public _roberto_set_num_balls(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gNumBalls[id]=value_to_set;
+}
+public _roberto_get_num_balls(iPlugin,iParams){
+	
+	
+	new id= get_param(1)
+	return gNumBalls[id]
+	
+}
+
+public _roberto_dec_num_balls(iPlugin,iParams){
+	
+	
+	new id= get_param(1)
+	gNumBalls[id]-= (gNumBalls[id]>0)? 1:0
+	
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, sh_init_mode:mode){
+	if(heroID!=gHeroID) return
+
+	if(sh_get_user_has_hero(id, gHeroID)){
+		gNumBalls[id]=cvar_val(num, pcvar_num_balls)
+		
+	}
+	else{
+		gNumBalls[id]=0
+	}
+	
+	
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, sh_key_mode:key)
+{
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		roberto_kd(id)
+	}
+}
+}
+public roberto_kd(id)
+{
+	
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+
+	if(!gNumBalls[id]){
+		
+		sh_chat_message(id,gHeroID,"Out of balls!!!!")
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+	}
+	if(sh_get_cooldown_flag(id)){
+		
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+	}
+	
+	sh_set_cooldown(id, cvar_val(float, pcvar_ball_cooldown))
+	kick_the_ball(id)
+	
+	return PLUGIN_HANDLED
+}
+//----------------------------------------------------------------------------------------------
+public sh_client_spawn(id)
+{	
+	if(is_user_alive(id) && sh_is_active()){
+		if ( sh_get_user_has_hero(id,gHeroID) ) {
+			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
+			gNumBalls[id] = cvar_val(num, pcvar_num_balls)
+		}
+	}
+	
+}
+public sh_round_end(){
+	
+	remove_entity_name(BALL_CLASSNAME)
+	
+}
+public plugin_precache()
+{
+	engfunc(EngFunc_PrecacheSound,round_win)
+	engfunc(EngFunc_PrecacheSound,round_lose)
+	
+	
+}

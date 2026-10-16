@@ -1,0 +1,6 @@
+; DO NOT TOUCH IF YOU DO NOT KNOW WHAT YOU ARE DOING!
+
+
+// - Expired -
+
+"STEAM_ID_LAN" "17/05/2025" ;TastyMedula

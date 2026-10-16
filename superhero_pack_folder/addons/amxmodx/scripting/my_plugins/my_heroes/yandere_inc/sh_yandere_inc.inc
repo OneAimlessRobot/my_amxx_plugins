@@ -1,0 +1,77 @@
+#if defined sh_yandere_inc
+  #endinput
+#endif
+#define sh_yandere_inc
+
+
+#define YANDERE_WEAPON_CLASSID CSW_XM1014
+#define num_yandere_warcries 2
+stock const YANDERE_WARCRIES[num_yandere_warcries][128]={
+
+  "shmod/yandere/Yanderu_war_cry.wav",
+  "shmod/yandere/MAKKA.wav"
+}
+stock curr_player_sound[SH_MAXSLOTS+1]
+#define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
+#define YANDERE_THELAST "shmod/yandere/Yandere_thelast.wav"
+#define YANDERE_THELAST2 "shmod/yandere/Yandere_thelast2.wav"
+#define YANDERE_THELAST3 "shmod/yandere/Yandere_thelast3.wav"
+#define YANDERE_PAIN "shmod/yandere/Yandere_pain.wav"
+
+#define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
+#define YANDERE_SHOTGUN_P_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
+
+#define YANDERE_KNIFE_V_MODEL "models/shmod/yandere/knife/v_knife.mdl"
+#define YANDERE_KNIFE_P_MODEL "models/shmod/yandere/knife/p_knife.mdl"
+
+#define YANDERE_PSYCHO_KNIFE_V_MODEL "models/shmod/yandere/knife/v_psycho_knife.mdl"
+#define YANDERE_PSYCHO_KNIFE_P_MODEL "models/shmod/yandere/knife/p_psycho_knife.mdl"
+
+
+stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
+    dmg_source_name_log_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avenger",
+    custom_dmg_id_senpai_avenger,
+    
+    dmg_source_name_short_drain[SAFE_BUFFER_SIZE+1]="slowburn",
+    dmg_source_name_log_drain[SAFE_BUFFER_SIZE+1]="slowburn",
+    custom_dmg_id_drain,
+
+
+    dmg_source_name_short_rage[SAFE_BUFFER_SIZE+1]="manic_rage",
+    dmg_source_name_log_rage[SAFE_BUFFER_SIZE+1]="manic_rage",
+    custom_dmg_id_rage
+
+
+#define YANDERE_CYCLE_PERIOD 0.5
+// GLOBAL VARIABLES
+//Replacing with bitmasks...
+
+stock const gHeroName[] = "Yandere Mk.II"
+
+
+stock gSuperAngryMask
+stock gIdleAngryMask
+stock gPlayedSoundMask
+stock g_is_cursed_masks[SH_MAXSLOTS+1]
+stock gTransTimerStartedMask
+
+stock Float:gNormalDmgMult[SH_MAXSLOTS+1]
+stock Float:gNormalSpeed[SH_MAXSLOTS+1]
+stock Float:gBaseSpeed[SH_MAXSLOTS+1]
+stock g_prevWeapon[SH_MAXSLOTS+1]
+stock g_mates_dead[SH_MAXSLOTS+1]
+stock g_mates_alive[SH_MAXSLOTS+1]
+
+stock g_curr_sound[SH_MAXSLOTS+1] = {-1, ...}
+
+stock const sounds[3][]={YANDERE_THELAST,YANDERE_THELAST2,YANDERE_THELAST3}
+
+
+
+
+stock Float:gTransTimer[SH_MAXSLOTS+1]
+
+
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
+*/

@@ -1,0 +1,9 @@
+;Set to 0 if you want unable menu with configuration (passive mode)
+MENU = 1
+;What you want to log
+;a - saving file
+;b - editing BS
+;c - adding BS
+;d - deleted BS
+;e - restoring default BSs
+LOGS = "abcde"

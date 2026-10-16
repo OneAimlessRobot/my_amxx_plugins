@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cstrike MOTD</title>
+<style type="text/css">
+       body {
+            background: #000;
+            margin: 8px;
+            color: #FFB000;
+            font: normal 16px/20px Verdana, Tahoma, sans-serif;
+            font-size: 15px;
+        }
+
+        a {
+            color: #FFF;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #EEE;
+            text-decoration: none;
+        }
+</style>
+</head>
+<body>
+<pre>
+say commands:
+/general_help -> show this again
+
+/help -> superheromod help
+
+note: use lowercase when binding a power to a letter key
+examples:
+bind i +power2
+(use "i", not "I".)
+
+/extra_help -> more superheromod help
+
+/helpof [part of hero name] -> get help about hero
+		(default file will be shown
+		if a specific one does not exist)
+
+/skins -> print skins menu depending on heroes equipped
+			both weapons and body
+</pre>
+</body>
+</html>

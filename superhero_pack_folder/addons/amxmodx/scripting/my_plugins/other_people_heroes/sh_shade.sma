@@ -1,0 +1,277 @@
+#include <amxmod>
+#include <xtrafun>
+#include "../my_include/superheromod.inc"
+
+// shade
+
+// CVARS
+// shade_cooldown
+// shade_time
+// shade_level
+
+
+// VARIABLES
+new gHeroName[]="Shade"
+new gHeroID
+new g_shadeTimer[SH_MAXSLOTS+1]
+new gShadeMode[33]
+new g_shadeSound[]="ambience/sandfall1.wav"
+new smoke
+//----------------------------------------------------------------------------------------------
+public plugin_init()
+{
+	// Plugin Info
+	register_plugin("SUPERHERO Shade","1.0","[SiN]")
+
+	if (!cvar_exists("shade_level")) create_cvar("shade_level", "10" )
+	gHeroID=shCreateHero(gHeroName, "Dust-storm", "Create a dust storm!", true, "shade_level")
+	register_clcmd("ShadePower","make_fog",ADMIN_USER)
+	
+	register_event("CurWeapon","changeWeapon","be","1=1")
+
+
+	// LOOP
+	register_srvcmd("shade_loop", "shade_loop")
+	//  shRegLoop1P0(gHeroName, "shade_loop", "ac" )
+	set_task(1.0,"shade_loop",0,"",0,"b") //forever loop
+	
+	// DEFAULT THE CVARS
+	if (!cvar_exists("shade_cooldown")) create_cvar("shade_cooldown", "0" ) //CoolDown
+	if (!cvar_exists("shade_time")) create_cvar("shade_time", "1" )
+	if ( !cvar_exists("shade_speed") ) create_cvar("shade_speed", "450" )
+	if ( !cvar_exists("shade_summon") ) create_cvar("shade_summon", "0" )
+	if ( !cvar_exists("shade_smoke") ) create_cvar("shade_smoke", "1" )
+	if ( !cvar_exists("shade_ammo") ) create_cvar("shade_ammo", "0" )
+}
+//----------------------------------------------------------------------------------------------
+public plugin_precache()
+{
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	engfunc(EngFunc_PrecacheSound,g_shadeSound)
+}
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, sh_init_mode:mode){
+	if(heroID!=gHeroID) return
+
+	if ( !sh_get_user_has_hero(id,gHeroID) )
+	{
+		shade_endmode(id)
+		g_shadeTimer[id]=0
+	}
+
+}
+//----------------------------------------------------------------------------------------------
+public sh_client_spawn(id)
+{
+	sh_unset_cooldown_flag(id)
+	if ( sh_get_user_has_hero(id,gHeroID)) {
+		shade_gunz(id)
+	}
+	if (g_shadeTimer[id]>0) {
+		shade_endmode(id)
+	}
+	return PLUGIN_HANDLED
+}
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_key(id, heroID, sh_key_mode:key)
+{
+if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
+
+switch(key)
+{
+	case SH_KEYDOWN: {
+		shade_kd(id)
+	}
+}
+}
+//----------------------------------------------------------------------------------------------
+// RESPOND TO KEYDOWN
+public shade_kd(id)
+{
+
+	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
+
+	// Let them know they already used their ultimate if they have
+	if ( sh_get_cooldown_flag(id))
+	{
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+	}
+
+
+	if ( g_shadeTimer[id]>0 ) return PLUGIN_HANDLED
+
+	g_shadeTimer[id]=get_cvar_num("shade_time")+1
+	if (get_cvar_num("shade_smoke")==1){
+		make_fog(id)
+	}
+	set_user_footsteps(id,1)
+	shSetMaxSpeed(gHeroName, "shade_speed", "[0]" )
+	sh_set_cooldown(id, get_cvar_num("shade_cooldown") * 1.0)
+	gShadeMode[id]=true
+
+	// shade Messsage
+	new message[128]
+	formatex(message, 127, "Created a dust-storm!" )
+	set_hudmessage(0,0,255,-1.0,0.3,0,0.25,1.0,0.0,0.0)
+	show_hudmessage(id, message)
+	emit_sound(id,CHAN_STATIC, g_shadeSound, 0.1, ATTN_NORM, 0, PITCH_LOW)
+
+	return PLUGIN_HANDLED
+}
+//----------------------------------------------------------------------------------------------
+public stopSound(id)
+{
+	//new SND_STOP=(1<<5)
+	emit_sound(id,CHAN_STATIC, g_shadeSound, 0.1, ATTN_NORM, SND_STOP, PITCH_LOW)
+}
+//----------------------------------------------------------------------------------------------
+public shade_loop()
+{
+	for ( new id=1; id< sh_maxplayers()+1; id++ )
+	{
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )
+		{
+			if ( g_shadeTimer[id]>0 )
+			{
+				g_shadeTimer[id]--
+				new message[128]
+				formatex(message, 127, "Dust storm created.", g_shadeTimer[id] )
+				set_hudmessage(0,0,255,-1.0,0.3,0,1.0,1.0,0.0,0.0)
+				show_hudmessage( id, message)
+				set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,80)
+			}
+			else
+			{
+				if ( g_shadeTimer[id] == 0 )
+				{
+					g_shadeTimer[id]--
+					shade_endmode(id)
+					stopSound(id)
+				}
+			}
+		}
+	}
+}
+//----------------------------------------------------------------------------------------------
+public shade_endmode(id)
+{
+	stopSound(id)
+	g_shadeTimer[id]=0
+	if ( gShadeMode[id])
+	{
+		// Turn it off
+		set_user_footsteps(id,0)
+		set_user_rendering(id,kRenderFxGlowShell,0,0,0,kRenderTransAlpha,255)
+		gShadeMode[id]=false
+	}
+}
+//----------------------------------------------------------------------------------------------
+public sh_client_death(id)
+{
+	shade_endmode(id)
+	sh_unset_cooldown_flag(id)
+}
+//----------------------------------------------------------------------------------------------
+public fog_this_area(origin[3])
+{
+	message_begin( MSG_BROADCAST,SVC_TEMPENTITY,origin )
+	write_byte( 5 )
+	write_coord( origin[0] + generate_int( -100, 100 ))
+	write_coord( origin[1] + generate_int( -100, 100 ))
+	write_coord( origin[2] + generate_int( -75, 75 ))
+	write_short( smoke )
+	write_byte( 60 )
+	write_byte( 5 )
+	message_end()
+}
+//----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
+public changeWeapon(id)
+{
+	if (get_cvar_num("shade_ammo")==1){
+		if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return PLUGIN_CONTINUE
+	}
+	else{
+		if ( !sh_get_user_has_hero(id,gHeroID)|| !gShadeMode[id] || !sh_is_active() ) return PLUGIN_CONTINUE
+	}
+	new  clip, ammo
+	new wpn_id=get_user_weapon(id, clip, ammo);
+	new wpn[32]
+
+	if ( wpn_id!=CSW_DEAGLE) {
+		engclient_cmd(id,"weapon_deagle")
+	}
+
+	if ( wpn_id==CSW_TMP) {
+
+		// Never Run Out of Ammo!
+		//server_print("STATUS ID=%d CLIP=%d, AMMO=%d WPN=%d", id, clip, ammo, wpn_id)
+		if ( clip == 0 )
+		{
+			//server_print("INVOKING PUNISHER MODE! ID=%d CLIP=%d, AMMO=%d WPN=%d", id, clip, ammo, wpn_id)
+			get_weaponname(wpn_id,wpn,31)
+			//highly recommend droppging weapon - buggy without it!
+			give_item(id,wpn)
+			engclient_cmd(id, wpn )
+			engclient_cmd(id, wpn ) // Checking to see if multple sends helps - sometimes this doesn't work... ;-(
+			engclient_cmd(id, wpn ) // Checking to see if multple sends helps - sometimes this doesn't work... ;-(
+		}
+	}
+
+	return PLUGIN_CONTINUE
+}
+//----------------------------------------------------------------------------------------------
+public shade_gunz(id)
+{
+	sh_give_weapon(id,CSW_DEAGLE)
+	sh_give_item(id,"ammo_7mm")
+	sh_give_item(id,"ammo_7mm")
+}
+//----------------------------------------------------------------------------------------------
+public make_fog(id){
+	if (!sh_get_user_has_hero(id,gHeroID))
+		return PLUGIN_HANDLED
+	if (is_user_alive(id)!=1)
+		return PLUGIN_HANDLED
+	new origin[3]
+	get_user_origin(id,origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	fog_this_area(origin)
+	if (get_cvar_num("shade_summon")==1){
+		summon_shade(id)
+	}
+	return PLUGIN_HANDLED
+}
+//----------------------------------------------------------------------------------------------
+public summon_shade(id)
+{
+	new cmd[128]
+	new team[24]
+	get_user_team(id,team,7)
+
+	if (equal(team, "CT", 1)) {
+		formatex(cmd, 127, "amx_monster hassassin #%i 1 @T", id)
+		server_cmd(cmd)
+	}
+	else {
+		formatex(cmd, 127, "amx_monster hassassin #%i 1 @CT", id)
+		server_cmd(cmd)
+	}
+}
+//----------------------------------------------------------------------------------------------
