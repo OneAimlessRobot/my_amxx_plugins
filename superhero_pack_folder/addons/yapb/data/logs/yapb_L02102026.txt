@@ -1,2 +1,0 @@
-2026-10-02 19:30:24 (INFO): Bot is unable to check network availability. Networking features are disabled.
-2026-10-02 20:28:13 (INFO): Bot is unable to check network availability. Networking features are disabled.

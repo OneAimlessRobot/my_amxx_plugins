@@ -1,6 +1,0 @@
-5
-weapon		640 furien30_weapons/K1ases	0	0	170	45
-weapon_s	640 furien30_weapons/K1ases	0	45	170	45
-ammo		640 furien30_weapons/640hud7x	120	96	24	24
-crosshair	640 crosshairs			24	0	24	24
-autoaim		640 crosshairs			0	72	24	24
