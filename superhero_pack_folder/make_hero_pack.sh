@@ -73,7 +73,8 @@ make_empty_pack_folder(){
 	done
 }
 copy_stuff_to_pack_folder(){
-	cp -rfv "./${script_name}" "./scripts/"
+	cp -rfv "${script_name}" "./scripts/${script_name}"
+	read
 	cp -rfv "./scripts/${script_name}" "${hero_pack_folder_name}"&
 	cp -rfv *.gam "txtfiles"&
 	cp -rfv ../*.sh "scripts"&

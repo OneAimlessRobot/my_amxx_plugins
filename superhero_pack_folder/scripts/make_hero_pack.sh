@@ -7,7 +7,13 @@ script_name="make_hero_pack.sh"
 
 the_dir="/mnt/REBORN/half_life_stuff/Half-Life/cstrike"
 
-backup_script_extension=".tar.xz"
+#use this for xz
+#backup_script_extension=".tar.xz"
+
+#use this for bzip2
+backup_script_extension=".bz2"
+
+github_backup_loc8ion="/mnt/FASTstorage/GithubFAST/my_amxx_plugins"
 
 backup_locations=("/mnt/FASTstorage/GithubFAST/my_amxx_plugins" "/mnt/SUPER_CAVALEIRO/progsBackup" "/mnt/REBORN/FASTERprogs" "/mnt/FASTstorage/FASTprogs")
 
@@ -25,6 +31,11 @@ hero_pack_name="superhero_pack"
 remove_ztmp_files(){
 	
 	rm -rfv $(find "{the_dir}" -name "*.ztmp")	
+
+}
+remove_bzip2_files(){
+	
+	rm -rfv $(find "{the_dir}" -name "*.bz2")	
 
 }
 remove_current_backup_folder_and_archive(){
@@ -77,11 +88,14 @@ copy_stuff_to_pack_folder(){
 	done
 	wait
 	rm -rfv $(find "${hero_pack_folder_name}" -name "*.ztmp")
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.bz2")
 }
 
 pushd $the_dir
 
 remove_ztmp_files
+
+remove_bzip2_files
 
 remove_current_backup_folder_and_archive
 
@@ -89,8 +103,16 @@ make_empty_pack_folder
 
 remove_folder_from_backup_locations
 
+#this one makes it an xz compressed archive.
+#much more compression. but much slower
+#tar -cJvf "${hero_pack_name}${backup_script_extension}" ./"${hero_pack_folder_name}"/*
+
+#this one makes it an bzip2 compressed archive.
+#much less compression. but much faster
 copy_stuff_to_pack_folder
 
-tar -cJvf "${hero_pack_name}${backup_script_extension}" ./"${hero_pack_folder_name}"/*
+tar -cjvf "${hero_pack_name}${backup_script_extension}" "./${hero_pack_folder_name}"
 
 copy_folder_to_backup_locations
+
+pushd "${github_backup_loc8ion}" && bash update*sh && popd
