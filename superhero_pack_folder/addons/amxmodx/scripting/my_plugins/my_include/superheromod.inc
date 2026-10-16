@@ -787,11 +787,22 @@ stock sh_set_rendering(entity, r = 255, g = 255, b = 255, amount = 16, fx = kRen
  * @param maxHealth	The maxium possible health to add up to, set 0 to use max from client's heroes.
  * @return		The amount of health added, 0 on failure.
  */
-stock sh_add_hp(id, hitPoints, maxHealth = 0)
+stock sh_add_hp(id, hitPoints, maxHealth = 0, bool:bypass_props=false)
 {
+	if(!bypass_props && sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
+
+		
+		return 0;
+
+
+	}
 	if ( hitPoints == 0 ) return 0;
 
-	if ( maxHealth == 0 ) maxHealth = sh_get_max_hp(id);
+	if ( maxHealth == 0 ){
+		
+		maxHealth = sh_get_max_hp(id);
+	
+	}
 
 	new currentHealth = get_user_health(id);
 
@@ -1254,14 +1265,6 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 
 //stock shUnglow(id)
 #define shUnglow sh_set_rendering
-
-//stock shAddHPs(id, hitPoints, maxHealth = 100)
-stock shAddHPs(id, hitPoints, maxHealth = 100)
-{
-	if ( !sh_is_active() ) return;
-
-	sh_add_hp(id, hitPoints, maxHealth);
-}
 
 //stock shStun(id, secs)
 stock shStun(id, secs)

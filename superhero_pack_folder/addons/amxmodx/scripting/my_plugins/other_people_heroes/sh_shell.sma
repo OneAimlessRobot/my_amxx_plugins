@@ -9,6 +9,7 @@ shell_healmax 250		//Max # HP shell can heal to
 
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES

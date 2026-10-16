@@ -73,6 +73,8 @@ public plugin_init()
 	custom_dmg_id_ethereal=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ethereal,dmg_source_name_log_ethereal,0)
 	
 
+	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
+	
 	register_forward(FM_TraceLine,"fw_traceline");
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
 

@@ -7,7 +7,7 @@ painkiller_level 0
 painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp reaches 0
 
 */
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "painkiller_inc/painkiller_inc.inc"
@@ -123,7 +123,7 @@ public Death_Notice(id, attacker)
 	new killername[32]
 	get_user_name(attacker, killername, 31)
 	
-	sh_add_hp(id, 256, 256)
+	sh_add_hp(id, 256, 256, true)
 	DeathNotice[id] = true
 	sh_chat_message(id, gHeroID, "%s killed you, you have %.1f seconds to live", killername, get_pcvar_float(pCvarSeconds))
 	if(!task_exists( id+PAINKILLER_TASKID)){

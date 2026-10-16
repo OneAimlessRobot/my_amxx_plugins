@@ -856,7 +856,9 @@ bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origi
 		case GREN_CONC:{
 
 			tank_impact_shot_fx(grenade_ent,the_origin_of_expolosion,
-						floatround(0.04*sh_grenade_structs_arr[gren_type][blast_radius]))
+						floatround(0.04*sh_grenade_structs_arr[gren_type][blast_radius]),
+						255,
+						0.04*sh_grenade_structs_arr[gren_type][blast_radius])
 
 			explosion(-1,grenade_ent,sh_grenade_structs_arr[gren_type][blast_radius],100.0,2000.0,0,1,_,explosion_sfx_show_nothing)
 			return false

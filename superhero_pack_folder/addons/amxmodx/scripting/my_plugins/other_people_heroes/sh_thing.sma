@@ -14,6 +14,7 @@ Thing_weapon_percent 0.25	// Percent chance to ignore bullets
 Thing_knife_percent 1.00	// Percent chance to ignore knife hits (headshots always hit)
 --------------------------------------------------------------------------------------------------*/
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 new gHeroName[]="Thing" 
@@ -43,14 +44,14 @@ public Thing_damage(id)
   new ThingLevel = floatround(get_cvar_float("Thing_weapon_percent") * 100)
   new bool:has_hero= sh_get_user_has_hero(id,gHeroID)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && has_hero&& weapon!=CSW_KNIFE ) {
-    shAddHPs(id, damage, 500 )
+    sh_add_hp(id, damage, 500 )
     set_hudmessage(0, 100, 200, 0.05, 0.60, 1, 0.1, 2.0, 0.1, 0.1)
     show_hudmessage(id, "Bullet bounces off your rock skin.")
   }
   randNum = generate_int(0, 100 )
   ThingLevel = floatround(get_cvar_float("Thing_knife_percent") * 100)
   if ( ThingLevel >= randNum && is_user_alive(id) && id != attacker && has_hero && weapon==CSW_KNIFE && bodypart!=HIT_HEAD ) {
-    shAddHPs(id, damage, 500 )
+    sh_add_hp(id, damage, 500 )
     set_hudmessage(0, 100, 200, 0.05, 0.63, 1, 0.1, 2.0, 0.1, 0.1)
     show_hudmessage(id, "Your rock skin blocks the knife attack.")
   }

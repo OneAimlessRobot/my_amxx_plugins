@@ -22,6 +22,7 @@ gohan_healmax 400		//Max # HP gohan can heal to
 *         can choose how much goten will heal to now
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
@@ -74,7 +75,7 @@ public gohan_loop(id)
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, gHealPoints, gHealAmount)
+			sh_add_hp(id, gHealPoints, gHealAmount)
 		}
 }
 //----------------------------------------------------------------------------------------------

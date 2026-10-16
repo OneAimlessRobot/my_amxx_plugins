@@ -74,6 +74,8 @@ public plugin_init()
 	
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
+
+	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
@@ -227,71 +229,79 @@ bool:heal_teamate(id,i,Float:hp_to_give){
 
 maria_heal_loop(id){
 
-if(!Get_BitVar(gHealthDrainValveMask,id)){
+	if(!Get_BitVar(gHealthDrainValveMask,id)){
 
 
-	return;
-}
-static entlist[33],
-		playerlist[33];
-static Float:client_origin[3]
-entity_get_vector(id,EV_VEC_origin,client_origin)
-new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
+		return;
+	}
+	static entlist[33],
+			playerlist[33];
+	static Float:client_origin[3]
+	entity_get_vector(id,EV_VEC_origin,client_origin)
+	new num_found = find_sphere_class(id,"player", g_normal_radius[id] ,entlist, 32);
 
-if(num_found<1){
+	if(num_found<1){
 
-	return
-}
-
-new bool:can_heal=false,
-		num_healed=0,
-		Float:hp_to_give = 0.0
-
-can_heal= float(get_user_health(id))>
-			float(sh_get_max_hp(id))*
-			(1.0-cvar_val(float, pcvar_selfless_index))
-
-if(!can_heal){
-
-	return
-}
-
-
-for(new p=0;p<num_found;p++){
-	new i=entlist[p]
-	if(!is_user_alive(i)||(i==id)) continue;
-
-	new max_hp_to_check= sh_get_max_hp(i)
-
-	if((get_user_health(i)>=max_hp_to_check)){
-
-		continue
+		return
 	}
 
-	if(!sh_clients_are_same_team(i,id)) continue;
+	new bool:can_heal=false,
+			num_to_be_healed=0,
+			num_healed=0,
+			Float:hp_to_give = 0.0
 
-	playerlist[num_healed]=i
-	num_healed++
+	can_heal= float(get_user_health(id))>
+				float(sh_get_max_hp(id))*
+				(1.0-cvar_val(float, pcvar_selfless_index))
 
-}
-if(num_healed>0){
+	if(!can_heal){
 
-	calculate_healing(id,hp_to_give,num_healed)
-	
-	for(new q=0;q<num_healed;q++){
-		new j=playerlist[q]
-		heal_teamate(id,j,hp_to_give)
+		return
 	}
-	sh_extra_damage(id,id,floatround(hp_to_give*num_healed),
-					_,
-					SH_DMG_NORM,
-					_,_,_,
-					SH_NEW_DMG_BLEED,
-					selflessness_weapon_id)
-	
-	set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
-	make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
-}
+
+
+	for(new p=0;p<num_found;p++){
+		new i=entlist[p]
+		if(!is_user_alive(i)||(i==id)) continue;
+
+		new max_hp_to_check= sh_get_max_hp(i)
+
+		if((get_user_health(i)>=max_hp_to_check)){
+
+			continue
+		}
+
+		if(!sh_clients_are_same_team(i,id)) continue;
+
+		if(sh_get_player_has_hero_prop(i,SH_UNHEALABLE_HERO)){
+		
+			continue;
+		}
+		playerlist[num_to_be_healed]=i
+		num_to_be_healed++
+
+	}
+	if(num_to_be_healed>0){
+
+		calculate_healing(id,hp_to_give,num_to_be_healed)
+		
+		for(new q=0;q<num_to_be_healed;q++){
+			new j=playerlist[q]
+			num_healed+=_:heal_teamate(id,j,hp_to_give)
+		}
+		if(num_healed < 1){
+			return
+		}
+		sh_extra_damage(id,id,floatround(hp_to_give*num_healed),
+						_,
+						SH_DMG_NORM,
+						_,_,_,
+						SH_NEW_DMG_BLEED,
+						selflessness_weapon_id)
+		
+		set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
+		make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
+	}
 	
 }
 public maria_damage(id)

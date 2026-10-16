@@ -36,6 +36,7 @@ madassassin_healpoints 5	//The # of HP healed per second
 
 //------- Do not edit below this point ------//
 #define I_WANT_CONSTANTS
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -177,7 +178,7 @@ public madassassin_loop()
 	{
 		if ( is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 		{
-			shAddHPs(id, healPoints, sh_get_max_hp(id))
+			sh_add_hp(id, healPoints, sh_get_max_hp(id))
 		}
 	}
 }

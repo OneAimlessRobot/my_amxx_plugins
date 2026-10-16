@@ -38,27 +38,14 @@ new curr_num_healthcaps = 0
 new sh_hero_healthcaps[TRUE_MAX_HEALTHCAPS][sh_healthcap_hero_struct]
 
 
-public plugin_init(){
 
+public plugin_init(){
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	sh_init_healthcap_lib(false)
 
-
-}
-
-
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	if(!is_user_alive(id)||!sh_is_active()){
-		
-		return
-	}
-
-	sh_refresh_max_hp(id)
-
+	
 }
 public plugin_cfg(){
 
@@ -114,7 +101,13 @@ public bool:_generic_heal(iPlugins, iParms){
 		make_sound=get_param(10),
 		Float: mate_health=float(get_user_health(id))
 
-	
+	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
+
+		
+		return false;
+
+
+	}
 	max_hp_to_clamp = (max_hp_to_clamp > 0) ?(min(max_hp_to_clamp,
 				sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)
 						?
@@ -228,7 +221,6 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 		recalculate_hp_cap_for_player(id)
 
 	}
-	sh_refresh_max_hp(id)
 	
 
 }

@@ -37,6 +37,7 @@ Version History:
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 

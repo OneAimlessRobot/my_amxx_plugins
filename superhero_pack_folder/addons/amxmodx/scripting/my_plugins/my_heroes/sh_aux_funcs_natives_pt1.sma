@@ -606,7 +606,7 @@ public _gun_shot_decal(iPlugins, iParams){
 
 	get_array_f(1,vec,3)
 
-	new decal_id =  decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
+	new decal_id =  decal_id = g_gunshot_decals_bulletholes[generate_int(0,sizeof(g_gunshot_decals_bulletholes)-1)]
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( TE_GUNSHOTDECAL ) // decal and ricochet sound
 	write_coord_f( vec[0] ) //pos
@@ -743,12 +743,14 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		
 		new brightness= get_param(4)
 
+		new Float:rel_height= get_param_f(5)
+
 
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 		write_byte(TE_SPRITE)
 		write_coord_f(origin[0])
 		write_coord_f(origin[1])
-		write_coord_f(origin[2] + min(1,radius))
+		write_coord_f(origin[2] + rel_height)
 		write_short(precached_explosion_sprite2)
 		write_byte(radius)
 		write_byte(brightness)

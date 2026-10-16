@@ -16,6 +16,12 @@
 no return value
 
 */
+
+
+
+
+
+
 enum hero_property_flags_id {
 	
 	SH_BLEED_POWERS = 0,
@@ -35,6 +41,7 @@ enum hero_property_flags_id {
 	SH_RESPAWN_HERO,
 	SH_M249_HERO,
 	SH_TR45H_HERO,
+	SH_UNHEALABLE_HERO
 };
 
 

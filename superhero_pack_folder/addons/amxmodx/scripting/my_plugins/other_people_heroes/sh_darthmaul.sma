@@ -36,6 +36,7 @@ darth_knifemult 2.70		// multiplier for knife damage...
 
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"

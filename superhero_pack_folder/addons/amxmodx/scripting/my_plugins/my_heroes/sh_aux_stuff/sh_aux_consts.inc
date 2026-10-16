@@ -216,7 +216,7 @@ stock const burn_decal[5] = {199,200,201,202,203}
 stock const g_burnDecal[3] = {25, 26, 27}
 stock const g_burnDecalBig[3] = {43, 44, 45}
 stock const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
-stock const g_cs_burnDecal[5] = {41, 42, 43, 44, 45}
+stock const g_gunshot_decals_bulletholes[5] = {38,39,40,41,42}
 
 
 stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}

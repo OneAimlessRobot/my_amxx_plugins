@@ -75,7 +75,7 @@ between big decals (Radius>18)
 or small decals (otherwise)
 
 */
-native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18, brightness=200)
+native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18, brightness=200, Float:rel_height= 0.0)
 native heal_stream(id, x,
     sh_custom_color:color_index=LTGREEN,alpha=255)
 

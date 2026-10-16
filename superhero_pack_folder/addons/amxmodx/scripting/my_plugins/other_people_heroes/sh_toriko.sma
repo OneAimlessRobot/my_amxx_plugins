@@ -18,6 +18,7 @@ toriko_hpgained 20    // How much health is gained on a streak
 
 
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES

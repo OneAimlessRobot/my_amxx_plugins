@@ -22,6 +22,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 */
 #define I_WANT_CONSTANTS
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -452,7 +453,7 @@ public darkpred_loop()
 		if (  sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )   {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			shAddHPs(id, gHealPoints,sh_get_max_hp(id))
+			sh_add_hp(id, gHealPoints,sh_get_max_hp(id))
 		}
 	}
 }

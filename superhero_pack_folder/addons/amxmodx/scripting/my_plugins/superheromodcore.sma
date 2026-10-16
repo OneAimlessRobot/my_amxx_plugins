@@ -1312,19 +1312,7 @@ initHero(id, heroIndex, sh_init_mode:mode)
 
 	// Reset Hero hp/ap/speed/grav if needed
 	if ( mode == SH_HERO_DROP && is_user_alive(id) ) {
-		//reset all values
-		if ( gHeroMaxHealth[heroIndex] != 0 ) {
-			new newHealth = getMaxHealth(id)
-
-			if ( get_user_health(id) > newHealth ) {
-				// Assume some damage for doing this?
-				// Don't want players picking Superman let's say then removing his power - and trying to keep the HPs
-				// If they do that - feel free to lose some hps
-				// Also - Superman starts with around 150 Person could take some damage (i.e. reduced to 110 )
-				// but then clear powers and start at 100 - like 40 free hps for doing that, trying to avoid exploits
-				set_user_health(id, newHealth - (newHealth / 4) )
-			}
-		}
+		
 
 		if ( gHeroMaxArmor[heroIndex] != 0 ) {
 			new newArmor = getMaxArmor(id)
@@ -1349,7 +1337,21 @@ initHero(id, heroIndex, sh_init_mode:mode)
 		server_print("Hero init post forward execution error!!!")
 		return
 	}
-	
+	if ( is_user_alive(id) ) {
+		//reset all values
+		new newHealth = getMaxHealth(id)
+		if ( (mode == SH_HERO_DROP) && (gHeroMaxHealth[heroIndex] != 0 ) ) {
+
+			if ( get_user_health(id) > newHealth ) {
+				// Assume some damage for doing this?
+				// Don't want players picking Superman let's say then removing his power - and trying to keep the HPs
+				// If they do that - feel free to lose some hps
+				// Also - Superman starts with around 150 Person could take some damage (i.e. reduced to 110 )
+				// but then clear powers and start at 100 - like 40 free hps for doing that, trying to avoid exploits
+				set_user_health(id, newHealth - (newHealth / 4) )
+			}
+		}
+	}
 
 	Assign_BitVar(gChangedHeroesMask, id, true_for_macro);
 }
