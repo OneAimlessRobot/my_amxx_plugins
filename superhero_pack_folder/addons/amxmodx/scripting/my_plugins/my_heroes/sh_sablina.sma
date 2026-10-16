@@ -15,6 +15,9 @@
 // GLOBAL VARIABLES
 
 #define SABLINA_CAN_USE_WPN(%1) (wpn_id_in_bs(%1,single_wpn_bs(CSW_KNIFE)))
+
+#define SABLINA_TASK_PERIOD 0.1
+
 new gHeroID
 
 #define SABLINA_SPIKER_CLASSNAME "sablina_spike"
@@ -23,7 +26,7 @@ new gHeroID
 
 stock const gHeroName[] = "Sablina"
 
-#define STONE_SPIKE_BASE_SIDE_LENGTH 4.0
+#define STONE_SPIKE_BASE_SIDE_LENGTH 64.0
 
 stock const Float:spike_min_dims[3] = {-STONE_SPIKE_BASE_SIDE_LENGTH,-STONE_SPIKE_BASE_SIDE_LENGTH,-STONE_SPIKE_BASE_SIDE_LENGTH},
 			Float:spike_max_dims[3] = {STONE_SPIKE_BASE_SIDE_LENGTH,STONE_SPIKE_BASE_SIDE_LENGTH,STONE_SPIKE_BASE_SIDE_LENGTH}
@@ -37,11 +40,13 @@ new const gSoundRockCrash[128] = "shmod/sablina/rock_crash.wav"
 
 
 new stone_spike_active_mask = 0,
+	stone_spike_out_of_breath = 0,
 	sablina_switched_weapon_mask = 0;
 
 new Float:user_stone_spiker_time[SH_MAXSLOTS+1],
 		user_last_weapon[SH_MAXSLOTS+1],
-		Float:user_last_maxspeed[SH_MAXSLOTS+1]
+		Float:user_last_maxspeed[SH_MAXSLOTS+1],
+		Float:user_health_after_last_strike[SH_MAXSLOTS+1]
 
 new stone_spike_short_name[SAFE_BUFFER_SIZE+1]="stone_spike"
 new stone_spike_long_name[SAFE_BUFFER_SIZE+1]="stone_spike"
@@ -63,7 +68,9 @@ new pcvar_sablina_spike_radius,
 	pcvar_sablina_spike_charge_pct_min,
 	pcvar_sablina_spike_knockback,
 	pcvar_sablina_spike_stun_duration,
-	pcvar_sablina_dmg_frac_hp_cut
+	pcvar_sablina_dmg_frac_hp_cut,
+	pcvar_sablina_rendering_min_alpha,
+	pcvar_sablina_rendering_max_alpha
 
 
 new SH_SABLINA_SPIKE_CHARGE_TASKID
@@ -89,6 +96,9 @@ public plugin_init()
 	//this fraction of the peak dmg from spike will be removed from hp!
 	pcvar_sablina_dmg_frac_hp_cut = create_cvar("sablina_dmg_frac_hp_cut", "0.5")
 
+	pcvar_sablina_rendering_min_alpha = create_cvar("sablina_rendering_min_alpha", "20.0")
+	pcvar_sablina_rendering_max_alpha = create_cvar("sablina_rendering_max_alpha", "200.0")
+
 	
 	set_pcvar_bounds(pcvar_sablina_spike_radius,CvarBound_Lower,true, 100.0)
 	set_pcvar_bounds(pcvar_sablina_spike_dmg,CvarBound_Lower,true, 40.0)
@@ -96,6 +106,16 @@ public plugin_init()
 	set_pcvar_bounds(pcvar_sablina_spike_charge_pct_min,CvarBound_Lower,true, 0.2)
 	set_pcvar_bounds(pcvar_sablina_dmg_frac_hp_cut,CvarBound_Upper,true, 0.9)
 	set_pcvar_bounds(pcvar_sablina_dmg_frac_hp_cut,CvarBound_Lower,true, 0.2)
+
+
+	set_pcvar_bounds(pcvar_sablina_rendering_min_alpha,CvarBound_Upper,true, 100.0)
+	set_pcvar_bounds(pcvar_sablina_rendering_min_alpha,CvarBound_Lower,true, 1.0)
+
+
+	set_pcvar_bounds(pcvar_sablina_rendering_max_alpha,CvarBound_Upper,true, 100.0)
+	set_pcvar_bounds(pcvar_sablina_rendering_max_alpha,CvarBound_Lower,true, 10.0)
+
+
 	
 	RegisterHam(Ham_TraceAttack,"player","sablina_ethereal_body",_,true)
 
@@ -117,9 +137,7 @@ public plugin_init()
 								0)
 
 	register_forward(FM_CmdStart,"fw_Sablina_unnarmed")
-	RegisterHam(Ham_TraceAttack,"player","sablina_untracer",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-	register_event("CurWeapon", "sablina_destroy_guys_on_deploy", "be", "1=1")
 
 	sh_register_hero_healthcap(gHeroID, 130.0)
 
@@ -136,10 +154,55 @@ public plugin_init()
 	SH_SABLINA_SPIKE_CHARGE_TASKID = allocate_typed_task_id(player_task)
 	SH_SABLINA_SPIKE_DIE_TASKID = allocate_typed_task_id(entity_task)
 	
+	set_task( SABLINA_TASK_PERIOD, "sablina_loop", _, _, _, "b")
 	
 	
 }
 
+//----------------------------------------------------------------------------------------------
+public sablina_loop(taskid)
+{	
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+
+	new the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+
+		new Float:the_healthcap = sh_get_player_healthcap(id),
+			Float:the_current_health = 0.0,
+			Float:the_alpha_floated  = 0.0,
+			the_actual_alpha = 0
+		
+		if ( !sh_get_user_has_hero(id,gHeroID)){
+			
+			continue
+		
+		}
+		the_current_health = Get_BitVar(stone_spike_out_of_breath,id) ? user_health_after_last_strike[id] : entity_get_float(id,EV_FL_health)
+		
+		the_alpha_floated = floatmax(
+			
+									floatmin(
+									(255.0 *  (the_current_health/the_healthcap))
+									,
+									cvar_val(float, pcvar_sablina_rendering_max_alpha)
+									)
+									,
+									cvar_val(float, pcvar_sablina_rendering_min_alpha)
+									)
+
+		the_actual_alpha = floatround( the_alpha_floated, floatround_round)
+
+		set_render_with_color_const(id,PURPLE,1,the_actual_alpha,
+							20,
+							_,_,
+							SABLINA_TASK_PERIOD)
+
+	}
+}
 
 public fw_HamPlayerTouchPre( iEntity, iPlayer ) {
 	if( !is_user_alive( iPlayer ) ){
@@ -159,7 +222,7 @@ public fw_HamPlayerTouchPre( iEntity, iPlayer ) {
 }
 
 
-public sablina_destroy_guys_on_deploy(id)
+public sablina_destroy_guns_on_deploy(id)
 {
 	if (!sh_is_active()) return
 	
@@ -172,6 +235,7 @@ public sablina_destroy_guys_on_deploy(id)
 	new wpn_id = read_data(2)
 	if(!SABLINA_CAN_USE_WPN(wpn_id)){
 		sh_drop_weapon(id,wpn_id,false)
+		sh_switch_weapon(id, CSW_KNIFE)
 	}
 	if((wpn_id!=CSW_KNIFE)&&Get_BitVar(stone_spike_active_mask,id)){
 
@@ -211,29 +275,6 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 	return FMRES_IGNORED
 }
 
-public sablina_untracer(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-	if ( !sh_is_active()) return HAM_IGNORED
-	
-	if ( !is_user_alive(idattacker)) {
-		return HAM_IGNORED
-	}
-	if(!sh_get_user_has_hero(idattacker,gHeroID)){
-
-		return HAM_IGNORED
-	}
-	new weapon=get_user_weapon(idattacker)
-	if(!SABLINA_CAN_USE_WPN(weapon)){
-		
-		damage=0.0
-		SetHamParamFloat(3,damage)
-		return HAM_HANDLED
-	}
-	return HAM_IGNORED
-}
 
 public fw_Sablina_unnarmed(id, uc_handle)
 {
@@ -261,33 +302,6 @@ public fw_Sablina_unnarmed(id, uc_handle)
 		}
 		
 	}
-
-	new Float:fwd_movement,
-			Float:side_movement,
-			Float:up_movement
-
-	get_uc(uc_handle, UC_ForwardMove, fwd_movement);
-	get_uc(uc_handle, UC_SideMove, side_movement);
-	get_uc(uc_handle, UC_UpMove, up_movement);
-
-	new full_movement_mask = (IN_MOVELEFT|IN_MOVERIGHT|IN_FORWARD|IN_BACK|IN_LEFT|IN_RIGHT|IN_DUCK|IN_RUN)
-	/*
-	
-		if any one of these is being pressed...
-	
-	
-	*/
-	if(sh_get_cooldown_flag(id)&&(button & full_movement_mask)){
-
-		button &= full_movement_mask
-		set_uc(uc_handle, UC_Buttons, button);
-		set_uc(uc_handle, UC_ForwardMove,fwd_movement*0.0);
-		set_uc(uc_handle, UC_SideMove,side_movement*0.0);
-		set_uc(uc_handle, UC_UpMove,up_movement*0.0);
-		set_user_maxspeed_controlled(id,0.0,true,false)
-		return FMRES_SUPERCEDE
-
-	}
 	return (removed_attack?FMRES_SUPERCEDE:FMRES_IGNORED)
 }
 
@@ -305,6 +319,20 @@ public plugin_precache(){
 	engfunc(EngFunc_PrecacheSound,SPIKE_CHARGING_SOUND)
 	engfunc(EngFunc_PrecacheModel,sablina_rock_spike_mdl_name)
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, sh_init_mode:mode){
+    if(heroID!=gHeroID) return
+
+    if(mode==SH_HERO_ADD){
+
+		sh_chat_message(id,gHeroID,"Warning: Any firearms you carry will get destroyed in the start of the next round")
+		
+		
+	}
+
+}
+
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
 {
@@ -354,6 +382,9 @@ public sablina_ethereal_body(id, attacker, Float:damage, Float:direction[3], tra
 
 		return HAM_IGNORED
 	}
+
+	damage=0.0
+	SetHamParamFloat(3,damage)
 	return HAM_SUPERCEDE
 }
 public increase_dmg_task(id){
@@ -457,7 +488,7 @@ public sablina_ku(id)
 
 		sablina_strike(id)
 
-		sh_set_cooldown(id, cvar_val(float, pcvar_sablina_spike_cooldown) * 1.0 )
+		sh_set_cooldown(id, cvar_val(float, pcvar_sablina_spike_cooldown) * 0.1 )
 	}
 	cancel_sablina_strike(id)
 
@@ -468,7 +499,7 @@ put_object_on_wall_from_aimer(aimer_id,ent_id, Float:in_and_out_vec[3]){
 	static Float:vOrigin[3]
 	pev(aimer_id, pev_origin, vOrigin)
 	
-	static Float:vTraceDirection[3], Float:vTraceEnd[3],  Float:vNormal[3]
+	static Float:vTraceDirection[3], Float:vTraceEnd[3], Float:vTraceResult[3],  Float:vNormal[3]
 	
 	velocity_by_aim(aimer_id, 9999, vTraceDirection)
 	vTraceEnd[0] = vTraceDirection[0] + vOrigin[0]
@@ -477,12 +508,18 @@ put_object_on_wall_from_aimer(aimer_id,ent_id, Float:in_and_out_vec[3]){
 	
 	new Float:fraction, tr = 0
 	engfunc(EngFunc_TraceLine, vOrigin, vTraceEnd, 0, aimer_id, tr)
-	get_tr2(tr, TR_vecEndPos, in_and_out_vec)
+	get_tr2(tr, TR_vecEndPos, vTraceResult)
 	get_tr2(tr, TR_vecPlaneNormal, vNormal)
 	get_tr2(tr, TR_flFraction, fraction)
 
 	free_tr2(tr)
 	
+	//distance that the camera will be placed away from the wall
+	new Float:walldist=STONE_SPIKE_BASE_SIDE_LENGTH
+	in_and_out_vec[0] = vTraceResult[0] + (vNormal[0] * walldist)
+	in_and_out_vec[1] = vTraceResult[1] + (vNormal[1] * walldist)
+	in_and_out_vec[2] = vTraceResult[2] + (vNormal[2] * walldist)
+
 	engfunc(EngFunc_SetOrigin, ent_id, in_and_out_vec)
 	entity_set_vector(ent_id,EV_VEC_vuser2,in_and_out_vec)
 	
@@ -561,8 +598,11 @@ public sablina_spike_think(ent_id){
 					sablina_stone_spike_recoil_wpn_id)
 
 	client_print(owner_id,print_console,"Attack dimensions:^ndamagae: %0.2f^nradius: %0.2f^n",the_damage,the_radius)
-
-	set_task(SABLINA_STONE_SPIKE_DIE_DELAY,"sablina_stone_spike_die_delayed",ent_id+SH_SABLINA_SPIKE_DIE_TASKID)
+	Assign_BitVar(stone_spike_out_of_breath,owner_id,true_for_macro)
+	user_health_after_last_strike[owner_id] = entity_get_float(owner_id,EV_FL_health)
+	new the_array[1]
+	the_array[0] = owner_id
+	set_task(SABLINA_STONE_SPIKE_DIE_DELAY,"sablina_stone_spike_die_delayed",ent_id+SH_SABLINA_SPIKE_DIE_TASKID,the_array,1)
 	
 	return PLUGIN_CONTINUE
 
@@ -596,12 +636,20 @@ sablina_strike(id){
 	
 
 }
-public sablina_stone_spike_die_delayed(ent_id){
+public sablina_stone_spike_die_delayed(parms[1],ent_id){
 
 	ent_id-=SH_SABLINA_SPIKE_DIE_TASKID
 
 	if(is_valid_ent(ent_id)){
+		if(is_user_alive(parms[0])){
+			
+			Assign_BitVar(stone_spike_out_of_breath,parms[0],false_for_macro)
+			
+		}
+		if(is_user_connected(parms[0])){
 
+			user_health_after_last_strike[parms[0]] = 0.0
+		}
 		draw_bbox(ent_id,1)
 		remove_entity(ent_id)
 
@@ -615,7 +663,6 @@ public _sablina_get_hero_id(iPlugins, iParams){
 
 }
 
-
 public sh_round_new(){
 
 
@@ -623,6 +670,44 @@ public sh_round_new(){
 	remove_entity_name(SABLINA_SPIKER_CLASSNAME)
 
 
+	static the_players[SH_MAXSLOTS],
+			pnum,
+			id,
+			the_weapons[32],
+			wpn_num,
+			wpn_item_id,
+			bool:dropped_this_person_weapons
+	
+	get_players(the_players, pnum, "a")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+		if(!sh_get_user_has_hero(id,gHeroID)){
+
+			continue;
+		}
+
+		dropped_this_person_weapons = false;
+
+		get_user_weapons(id,the_weapons,wpn_num);
+
+
+		for (new j = 0; j < wpn_num; j++) {
+			
+			wpn_item_id = the_weapons[j]
+			
+			if(!SABLINA_CAN_USE_WPN(wpn_item_id)){
+
+				sh_drop_weapon(id,wpn_item_id,true)
+				dropped_this_person_weapons = true;
+			}
+
+		}
+		if(dropped_this_person_weapons){
+			sh_chat_message(id,gHeroID,"The round has ended! %s cannot use any weapons so they got destroyed", gHeroName)
+		}
+	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
