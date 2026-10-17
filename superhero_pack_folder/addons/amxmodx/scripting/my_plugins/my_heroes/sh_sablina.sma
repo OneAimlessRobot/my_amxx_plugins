@@ -9,6 +9,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sablina_inc/sablina.inc"
 #include "../my_include/my_author_header.inc"
@@ -190,6 +191,13 @@ public plugin_init()
 
 	gHeroID=shCreateHero(gHeroName, "Stone probe!", "Summon stone spikes to damage your enemies! Become ethereal, too", true, "sablina_level" )
 	
+
+	sh_register_superheromod_model(gHeroID,
+								"models/player/sablina/sablina.mdl",
+								"models/player/sablina/sablina.mdl",
+								"sablina",
+								"Please give up, sir! Your efforts are irrelevant, okay?",
+								"Oh well... Do as you wish")
 
 	sh_set_hero_grav(gHeroID, pcvar_sablina_gravity)
 
@@ -744,11 +752,15 @@ public sablina_spike_think(ent_id){
 	sh_set_cooldown(owner_id, the_cooldown)
 
 
+	/*
+	
 	client_print(owner_id,print_console,"Attack dimensions:^ndamage: %0.2f^nradius: %0.2f^nCooldown: %0.2f^nLoading time: %0.2f^n",
 							the_damage,
 							the_radius,
 							the_cooldown,
 							user_charge_time_curr_strike[owner_id])
+
+	*/
 	
 	Assign_BitVar(stone_spike_out_of_breath,owner_id,true_for_macro)
 	user_health_after_last_strike[owner_id] = entity_get_float(owner_id,EV_FL_health)

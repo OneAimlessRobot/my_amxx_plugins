@@ -59,6 +59,8 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "goku_inc/goku_inc.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -135,6 +137,13 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
+	sh_register_superheromod_model(gHeroID,
+								"models/player/goku/goku.mdl",
+								"models/player/goku/goku.mdl",
+								"goku",
+								"They look really strong! But Im ready",
+								"N- Nooo...! NNgghn..")
+	
 
 	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 
@@ -853,7 +862,14 @@ public ssj_boost(id)
 	if ( get_user_maxspeed(id) < g_ssjSpeed[speedNum] && !sh_get_stun(id)) {
 		set_user_maxspeed(id, g_ssjSpeed[speedNum])
 	}
+	
+	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
 
+		
+		return;
+
+
+	}
 	// HP boost
 	new userHealth = get_user_health(id)
 	if ( userHealth < cvar_val(num,pcvar_hpmax)) {

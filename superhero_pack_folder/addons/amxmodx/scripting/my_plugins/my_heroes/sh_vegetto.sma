@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "vegetto_inc/vegetto_inc.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -807,6 +808,13 @@ public ssj_boost(id){
 		set_user_maxspeed(id, g_ssjSpeed[speedNum])
 	}
 
+	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
+
+		
+		return;
+
+
+	}
 	// HP boost
 	new userHealth = get_user_health(id)
 	if ( userHealth < cvar_val(num,pcvar_hp_max) ) {

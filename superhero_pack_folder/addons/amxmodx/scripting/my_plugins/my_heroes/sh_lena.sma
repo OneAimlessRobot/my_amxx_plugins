@@ -4,6 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "lena_inc/sh_lena_l96_include.inc"
 #include "lena_inc/sh_lena_general_include.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -29,6 +30,13 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "L96A1", "become Lena de Verias! Get her A.W.P.!", false, "lena_level")
 
+	sh_register_superheromod_model(gHeroID,
+								"models/player/L96/L96.mdl",
+								"models/player/L96/L96T.mdl",
+								"L96",
+								"Our leaders lie but not my eyes",
+								"I was just another one")
+	
 }
 public plugin_natives(){
 
