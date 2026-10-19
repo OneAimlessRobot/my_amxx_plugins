@@ -113,14 +113,15 @@
 #define MONITOR_GODMODE
 #define MONITOR_SPEC
 #define MONITOR_ALPHA
-
 /************* Do Not Edit Below Here **************/
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "../my_include/my_author_header.inc"
 
 #if defined MONITOR_HP || defined MONITOR_SPEC
@@ -256,7 +257,13 @@ public monitor_think(ent)
 					#if defined MONITOR_HP || defined MONITOR_AP || defined MONITOR_GRAVITY || defined MONITOR_SPEED || defined MONITOR_GODMODE
 						len = 0
 						#if defined MONITOR_HP
-							len += formatex(temp, charsmax(temp), "HP %d/%d", UserHealth[id],sh_get_max_hp(id))
+
+							len += (sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+									formatex(temp, charsmax(temp), "HP %d/%d (Cap: %d)", UserHealth[id],sh_get_max_hp(id),
+												floatround(sh_get_player_healthcap(id),floatround_round))
+											:
+									formatex(temp, charsmax(temp), "HP %d/%d", UserHealth[id],sh_get_max_hp(id)))
+									
 						#endif
 
 						#if defined MONITOR_AP
@@ -335,6 +342,23 @@ public monitor_think(ent)
 						}
 
 						set_hudmessage(255, 255, 255, 0.018, 0.9, 2, 0.05, 0.1, 0.01, 3.0)
+
+						sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d/%d (Cap: %d) |  Armor: %d/%d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
+												specPlayerLevel,
+												ServerMaxLevel,
+												sh_get_user_xp(specPlayer),
+												temp,
+												UserHealth[specPlayer],sh_get_max_hp(specPlayer),
+												floatround(sh_get_player_healthcap(specPlayer),floatround_round),
+												UserArmor[specPlayer],sh_get_max_ap(specPlayer),
+												floatround(gravity*100.0),
+												floatround(vector_length(velocity)),
+												sh_get_player_cloak_pct(specPlayer))
+
+												:
+
+
 						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d/%d  |  Armor: %d/%d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
 												specPlayerLevel,
 												ServerMaxLevel,

@@ -53,14 +53,11 @@ public dracula_suckblood(attacker, damage)
 		// Add some HP back!
 		new giveHPs = floatround(damage * get_pcvar_float(gPcvarPctPerLev) * sh_get_user_lvl(attacker))
 
-		// Get this here so it doesn't have to be called in sh_add_hp again
-		new maxHPs = sh_get_max_hp(attacker)
-
-		if ( get_user_health(attacker) < maxHPs && giveHPs > 0 )
+		if ( giveHPs > 0 )
 		{
 			new alphanum = clamp((damage * 2), 40, 200)
 			sh_screen_fade(attacker, 0.5, 0.25, 255, 10, 10, alphanum) //Red Screen Flash
-			sh_add_hp(attacker, giveHPs, maxHPs)
+			sh_add_hp(attacker, giveHPs)
 		}
 	}
 }

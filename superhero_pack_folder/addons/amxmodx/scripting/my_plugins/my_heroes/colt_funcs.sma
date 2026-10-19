@@ -13,7 +13,6 @@
 
 
 new pPlayer, HookChain:TakeDamage, g_Msg_WeaponList = -1
-new is_rehlds_avail
 
 new weapon_secret_code = ID_M1911A1
 new cached_ammo_id_colt = -1,
@@ -54,9 +53,6 @@ public plugin_precache()
 
 
 	engfunc(EngFunc_PrecacheSound,SHOOTSOUND);
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipin.wav")
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_clipout.wav")
-	engfunc(EngFunc_PrecacheSound, "weapons/406/coltm1911a1_slideback.wav")
 	engfunc(EngFunc_PrecacheModel, VIEWMODEL)
 	engfunc(EngFunc_PrecacheModel, WEAPONMODEL)
 	engfunc(EngFunc_PrecacheModel, WORLDMODEL)
@@ -65,8 +61,6 @@ public plugin_precache()
 	force_unmodified(force_exactfile,{0,0,0},{0,0,0},"sprites/weapon_m1911a1.txt")
 	engfunc(EngFunc_PrecacheGeneric, "sprites/weapon_m1911a1.txt")
 
-
-	is_rehlds_avail=is_rehlds()
 
 }
 
@@ -249,12 +243,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 	
 	}
-	if(is_rehlds_avail){
-		rg_send_audio(pPlayer, SHOOTSOUND);
-	}
-	else{
-		emit_sound(pPlayer, CHAN_WEAPON, SHOOTSOUND, 1.0, 0.0, 0, PITCH_NORM)
-	}
+	emit_sound(pPlayer, CHAN_WEAPON, SHOOTSOUND, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	set_entvar(pPlayer, var_weaponanim, iClip == 1 ? ANIM_SHOOT_EMPTY : iClip & 1 ? ANIM_SHOOT1 : ANIM_SHOOT2)
 	return HAM_SUPERCEDE
 }

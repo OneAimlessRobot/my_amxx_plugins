@@ -63,7 +63,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	}
 	else{
 
-		shard_cannon_set_shard_cannon(id)
+		shard_cannon_unset_shard_cannon(id)
 		
 	}
 	reset_graciete_user(id)

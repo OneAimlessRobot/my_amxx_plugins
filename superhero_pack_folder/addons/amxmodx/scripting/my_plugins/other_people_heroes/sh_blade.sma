@@ -50,6 +50,7 @@ blade_gunburndmg 3	//Amount of damage per burn from gun burn (Default 3)
 
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -310,7 +311,7 @@ public knifeburn(args[])
 					SH_NEW_DMG_FIRE,
 					custom_dmg_id_gunburn)
 		else
-			set_user_health(id, hpAfterDmg)
+			sh_set_hp(id, hpAfterDmg)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -366,7 +367,7 @@ public gunburn(args[])
 					SH_NEW_DMG_FIRE,
 					custom_dmg_id_gunburn)
 		else
-			set_user_health(id, hpAfterDmg)
+			sh_set_hp(id, hpAfterDmg)
 	}
 }
 //----------------------------------------------------------------------------------------------

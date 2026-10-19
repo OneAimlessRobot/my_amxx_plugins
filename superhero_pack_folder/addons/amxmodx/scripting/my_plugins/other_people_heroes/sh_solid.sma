@@ -11,6 +11,7 @@ solid_ration_health 50		// How many health you have per ration?
 
 */
 #define I_WANT_CONSTANTS
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -182,7 +183,7 @@ public solid_kd(id)
 	}
 	else
 	{
-		set_user_health(id, newHealth)
+		sh_set_hp(id, newHealth)
 		if(Rations[id] != -1)
 		{
 			Rations[id]--

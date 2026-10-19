@@ -56,6 +56,22 @@ static cell AMX_NATIVE_CALL sh_set_user_has_hero(AMX *amx,cell *params)
 }
 
 
+
+//hero projectile weapon bits
+static cell AMX_NATIVE_CALL sh_get_hero_projectile_weapon_bit(AMX *amx,cell *params)
+{
+	(void)amx;
+	return the_hero_array.get_hero_projectile_weapon_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
+}
+
+static cell AMX_NATIVE_CALL sh_assign_hero_projectile_weapon_bit(AMX *amx,cell *params)
+{
+	(void)amx;
+	the_hero_array.assign_hero_projectile_weapon_bit((state_cell_type_t)params[1],(state_cell_type_t) params[2], (state_cell_type_t)params[3]);
+	return 0;
+}
+
+
 //The second parameter is the bit to retrieve
 static cell AMX_NATIVE_CALL sh_get_id_bit(AMX *amx,cell *params)
 {
@@ -76,23 +92,27 @@ static cell AMX_NATIVE_CALL sh_assign_id_bit(AMX *amx,cell *params)
 
 //lib initialization
 
-static cell AMX_NATIVE_CALL sh_init_hero_array(AMX *amx,cell *params)
+/*
+
+	first parameter is num of heroes,
+
+	second parameter is number of hero properties
+
+	third parameter is number of client states
+
+*/
+
+static cell AMX_NATIVE_CALL sh_init_hero_array_lib(AMX *amx,cell *params)
 {	
 	(void)amx;
-	(void)params;
 	the_hero_array.zero_it_out();
+	
+	the_hero_array.init_hero_array_sizes((state_cell_type_t)params[1],
+											(state_cell_type_t)params[2],
+											(state_cell_type_t)params[3]);
 	return 0;
 }
 
-//player flags reset
-
-static cell AMX_NATIVE_CALL sh_init_id_masks_array(AMX *amx,cell *params)
-{	
-	(void)amx;
-	(void)params;
-	the_hero_array.zero_out_player_masks();
-	return 0;
-}
 
 //lib limits
 
@@ -110,24 +130,36 @@ static cell AMX_NATIVE_CALL sh_max_client_states(AMX *amx,cell *params)
 	return (int)the_hero_array.get_max_client_states();
 	
 }
+static cell AMX_NATIVE_CALL sh_maxhero_capacity(AMX *amx,cell *params)
+{	
+	(void)amx;
+	(void)params;
+	return (int)the_hero_array.get_max_heroes();
+	
+}
 
 AMX_NATIVE_INFO sh_array_exports[] = 
 {
 	{ "sh_assign_hero_bit", sh_assign_hero_bit },
 	{ "sh_get_hero_bit", sh_get_hero_bit },
 	{ "sh_max_hero_props", sh_max_hero_props },
+	{ "sh_maxhero_capacity", sh_maxhero_capacity },
 
 	
 	
 	{ "sh_assign_id_bit", sh_assign_id_bit },
 	{ "sh_get_id_bit", sh_get_id_bit },
-	
-	{ "sh_init_id_masks_array", sh_init_id_masks_array },
+
 	{ "sh_max_client_states", sh_max_client_states },
 	
 	{ "sh_set_user_has_hero", sh_set_user_has_hero },
 	{ "sh_get_user_has_hero", sh_get_user_has_hero },
-	{ "sh_init_hero_array", sh_init_hero_array },
+	
+	
+	{ "sh_get_hero_projectile_weapon_bit", sh_get_hero_projectile_weapon_bit },
+	{ "sh_assign_hero_projectile_weapon_bit", sh_assign_hero_projectile_weapon_bit },
+	
+	{ "sh_init_hero_array_lib", sh_init_hero_array_lib },
 	{ NULL, NULL }
 };
 

@@ -12,6 +12,7 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Steel"
@@ -127,6 +128,8 @@ public steel_damage(id, attacker, Float:damage, Float:direction[3], traceresult,
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
+
+	weapon_gating_macro_code_snippet(attacker,get_user_weapon(attacker),return,HAM_IGNORED)
 	
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 

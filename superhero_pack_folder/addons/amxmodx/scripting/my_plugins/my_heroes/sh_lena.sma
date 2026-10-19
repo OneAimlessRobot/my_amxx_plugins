@@ -37,6 +37,8 @@ public plugin_init()
 								"Our leaders lie but not my eyes",
 								"I was just another one")
 	
+	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:LENA_WEAPON_CLASSID,true)
+	
 }
 public plugin_natives(){
 

@@ -23,6 +23,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -112,7 +113,7 @@ public phoenix_respawn(parm[])
 	shGlow(id, 248, 20, 25)
 	set_task(3.0, "phoenix_unglow", 0, parm, 1)
 
-	set_user_health(id, 75)
+	sh_set_hp(id, 75)
 	phoenix_teleport(id)
 }
 //----------------------------------------------------------------------------------------------

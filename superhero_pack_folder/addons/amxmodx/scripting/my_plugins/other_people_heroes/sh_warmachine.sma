@@ -32,6 +32,7 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 */
 
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="War Machine"
@@ -270,6 +271,9 @@ public warmachine_damage(id)
 	new weaponid, bodypart, attacker = get_user_attacker(id, weaponid, bodypart)
 
 	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
+
+
+	weapon_gating_macro_code_snippet(attacker,weaponid,return,)
 
 	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
 		new weaponName[32]

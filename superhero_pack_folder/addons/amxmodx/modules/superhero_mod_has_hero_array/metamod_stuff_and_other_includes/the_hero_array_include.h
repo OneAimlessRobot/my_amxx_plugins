@@ -14,25 +14,27 @@ typedef uint32_t state_cell_type_t;
 
 #define bucket_size (sizeof(state_cell_type_t)*BITS_PER_BYTE)
 
+#define NUM_WEAPONS (bucket_size-1) //Bucket size is equal to 32
+
 //We currently support 640 properties
 
-#define SH_MAXHEROS 200
-#define SH_MAX_HERO_PROPERTIES 1280
-#define SH_NUM_HERO_BIT_BUCKETS (SH_MAX_HERO_PROPERTIES/bucket_size)
+#define SH_MAX_HEROES_FINAL 1000
+#define SH_MAX_HERO_PROPERTIES_FINAL 12800
 
 
 //We currently support 640 client states
 
-#define SH_MAXSLOTS 32
-#define SH_MAX_CLIENT_STATES 960
-#define SH_NUM_CLIENT_STATE_BUCKETS (SH_MAX_CLIENT_STATES/bucket_size)
+#define SH_MAXSLOTS 32 //FIXED!
+#define SH_MAX_CLIENT_STATES_FINAL 960
 
+#define min(a,b) ((a < b)? a: b)
+#define max(a,b) ((a > b)? a: b)
 
-#define Get_BitVar(a,b) (a & (1u << (b & (bucket_size-1))))
+#define Get_BitVar(a,b) (a & ((state_cell_type_t)1 << (b & (bucket_size-1))))
 
-#define Set_BitVar(a,b) (a |= (1u << (b & (bucket_size-1))))
+#define Set_BitVar(a,b) (a |= ((state_cell_type_t)1 << (b & (bucket_size-1))))
 
-#define UnSet_BitVar(a,b) (a &= ~(1u << (b & (bucket_size-1))))
+#define UnSet_BitVar(a,b) (a &= ~((state_cell_type_t)1 << (b & (bucket_size-1))))
 
 
 #define Assign_BitVar(a,b,c) ((c) ? Set_BitVar(a,b) : UnSet_BitVar(a,b))
@@ -41,9 +43,20 @@ typedef uint32_t state_cell_type_t;
 class HeroArrays
 {
 protected:
-	state_cell_type_t the_memory[SH_MAXHEROS],
-						the_player_masks[SH_MAX_CLIENT_STATES],
-				the_hero_flags[SH_MAXHEROS][SH_NUM_HERO_BIT_BUCKETS];
+	state_cell_type_t 
+					
+					//bounds
+					SH_MAXHEROS,
+					SH_MAX_HERO_PROPERTIES,
+					SH_MAX_CLIENT_STATES,
+					
+					//arrays
+					the_memory[SH_MAX_HEROES_FINAL],
+					the_player_masks[SH_MAX_CLIENT_STATES_FINAL],
+					the_hero_projectile_weapons[SH_MAX_HEROES_FINAL];
+	
+	bool the_hero_flags[SH_MAX_HEROES_FINAL][SH_MAX_HERO_PROPERTIES_FINAL];
+	
 
 public:
 	HeroArrays(void);
@@ -52,7 +65,12 @@ public:
 	void zero_out_hero_props(void);
 	void zero_out_hero_ownership(void);
 	void zero_out_player_masks(void);
-	
+	void zero_out_hero_projectile_weapon_masks(void);
+	void init_hero_array_sizes(state_cell_type_t num_of_heroes_for_init,
+							state_cell_type_t num_of_hero_props_to_init,
+							state_cell_type_t num_of_client_states_to_init
+							);
+	void init_hero_array_sizes(void);
 	bool get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id);  
 	void set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set );
 	
@@ -62,16 +80,63 @@ public:
 	void assign_hero_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_flag_id, const bool& the_polarity_to_set );
 	
 	
+	bool get_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_weapon_id);
+	void assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const bool& the_value_to_set );
+	
+	
 	state_cell_type_t get_max_client_states(void);
 	bool get_id_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_effect_flag_id);
 	void assign_id_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set );
 
+
+	state_cell_type_t get_max_heroes(void);
 };
 inline HeroArrays::HeroArrays(void){
 	printf("The hero module has been initted!\n");
 	this->zero_it_out();
+	
 }
-
+inline void HeroArrays::init_hero_array_sizes(state_cell_type_t num_of_heroes_for_init,
+											state_cell_type_t num_of_hero_props_to_init,
+											state_cell_type_t num_of_client_states_to_init
+											){
+	this->SH_MAXHEROS=max(1,min(num_of_heroes_for_init,SH_MAX_HEROES_FINAL));
+	if(this->SH_MAXHEROS==1){
+		
+		this->SH_MAXHEROS=SH_MAX_HEROES_FINAL;
+	}
+	if(this->SH_MAXHEROS==SH_MAX_HEROES_FINAL){
+		printf("The number of heroes cannot exceed %d or be less than 0!\n"
+				"The arrays have been clamped to accomodate the max ammount (%d)\n",
+				SH_MAX_HEROES_FINAL,
+				this->SH_MAXHEROS);
+				
+	}
+	this->SH_MAX_HERO_PROPERTIES=max(1,min(num_of_hero_props_to_init,SH_MAX_HERO_PROPERTIES_FINAL));
+	if(this->SH_MAX_HERO_PROPERTIES==1){
+		
+		this->SH_MAX_HERO_PROPERTIES=SH_MAX_HERO_PROPERTIES_FINAL;
+	}
+	if(this->SH_MAX_HERO_PROPERTIES==SH_MAX_HERO_PROPERTIES_FINAL){
+		printf("The number of hero properties cannot exceed %d or be less than 0!\n"
+				"The arrays have been clamped to accomodate the max ammount (%d)\n",
+				SH_MAX_HERO_PROPERTIES_FINAL,
+				this->SH_MAX_HERO_PROPERTIES);
+				
+	}
+	this->SH_MAX_CLIENT_STATES=max(1,min(num_of_client_states_to_init,SH_MAX_CLIENT_STATES_FINAL));
+	if(this->SH_MAX_CLIENT_STATES==1){
+		
+		this->SH_MAX_CLIENT_STATES=SH_MAX_CLIENT_STATES_FINAL;
+	}
+	if(this->SH_MAX_CLIENT_STATES==SH_MAX_CLIENT_STATES_FINAL){
+		printf("The number of client states cannot exceed %d or be less than 0!\n"
+				"The arrays have been clamped to accomodate the max ammount (%d)\n",
+				SH_MAX_CLIENT_STATES_FINAL,
+				this->SH_MAX_CLIENT_STATES);
+				
+	}
+}
 inline void HeroArrays::zero_it_out(void){
 		
 		this->zero_out_hero_ownership();
@@ -87,6 +152,13 @@ inline void HeroArrays::zero_out_hero_props(void){
 
 }
 
+inline void HeroArrays::zero_out_hero_projectile_weapon_masks(void){
+	
+	
+	printf("Hero projectile weapon flags have been zeroed out!\n");
+	memset(this->the_hero_projectile_weapons,0, sizeof(this->the_hero_projectile_weapons));
+	
+}
 
 inline void HeroArrays::zero_out_player_masks(void){
 	
@@ -105,30 +177,30 @@ inline void HeroArrays::zero_out_hero_ownership(void){
 
 inline state_cell_type_t HeroArrays::get_max_hero_props(void){
 	
-	return SH_MAX_HERO_PROPERTIES;
+	return this->SH_MAX_HERO_PROPERTIES;
+}
+
+inline state_cell_type_t HeroArrays::get_max_heroes(void){
+	
+	return this->SH_MAXHEROS;
 }
 
 inline bool HeroArrays::get_hero_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_flag_id)
 {
-	if((the_hero_id >= SH_MAXHEROS) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
+	if((the_hero_id >= this->SH_MAXHEROS) || (the_flag_id >= this->SH_MAX_HERO_PROPERTIES)){
 		return false;
 	}
-	state_cell_type_t word = (the_flag_id / bucket_size),
-		bit = (the_flag_id % bucket_size);
 	
-	return Get_BitVar(this->the_hero_flags[the_hero_id][word], bit);
+	return this->the_hero_flags[the_hero_id][the_flag_id];
 }
 
 inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_flag_id, const bool& the_polarity_to_set )
 {
-	if((the_hero_id >= SH_MAXHEROS) || (the_flag_id >= SH_MAX_HERO_PROPERTIES)){
+	if((the_hero_id >= this->SH_MAXHEROS) || (the_flag_id >= this->SH_MAX_HERO_PROPERTIES)){
 		return;
 	}
 	
-	state_cell_type_t word = (the_flag_id / bucket_size),
-		bit = (the_flag_id % bucket_size);
-	
-	Assign_BitVar(this->the_hero_flags[the_hero_id][word], bit, the_polarity_to_set);
+	this->the_hero_flags[the_hero_id][the_flag_id]=the_polarity_to_set;
 }
 
 
@@ -137,7 +209,7 @@ inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, c
 //Hero ownership
 inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id)
 {
-	if((the_hero_id >= SH_MAXHEROS)){
+	if((the_hero_id >= this->SH_MAXHEROS)){
 		return false;
 	} 
 	
@@ -150,7 +222,7 @@ inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& player_id, con
 
 inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set )
 {
-	if( (the_hero_id >= SH_MAXHEROS)){
+	if( (the_hero_id >= this->SH_MAXHEROS)){
 		return;
 	}
 	
@@ -161,11 +233,37 @@ inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, con
 	Assign_BitVar(this->the_memory[the_hero_id], player_id, the_value_to_set);
 }
 
+//Hero projectile weapon state
+inline bool HeroArrays::get_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id)
+{
+	if((the_hero_id >= this->SH_MAXHEROS)){
+		return false;
+	} 
+	
+	if( !the_weapon_id || (the_weapon_id > NUM_WEAPONS)){
+		return false;
+	
+	}
+	return Get_BitVar(this->the_hero_projectile_weapons[the_hero_id], the_weapon_id);
+}
+
+inline void HeroArrays::assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const bool& the_value_to_set )
+{
+	if( (the_hero_id >= this->SH_MAXHEROS)){
+		return;
+	}
+	
+	if( !the_weapon_id || (the_weapon_id > NUM_WEAPONS)){
+		return;
+	
+	}
+	Assign_BitVar(this->the_hero_projectile_weapons[the_hero_id], the_weapon_id, the_value_to_set);
+}
 
 //Player effect state
 inline state_cell_type_t HeroArrays::get_max_client_states(void){
 	
-	return SH_MAX_CLIENT_STATES;
+	return this->SH_MAX_CLIENT_STATES;
 }
 
 inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  const state_cell_type_t& the_effect_flag_id)
@@ -182,7 +280,7 @@ inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  con
 inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set )
 {
 	
-	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= SH_MAX_CLIENT_STATES)){
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= this->SH_MAX_CLIENT_STATES)){
 		return;
 	}
 

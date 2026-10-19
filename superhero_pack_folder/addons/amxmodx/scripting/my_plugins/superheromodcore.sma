@@ -186,7 +186,7 @@ public plugin_init()
 		set_fail_state("You can only load the ^"SuperHero Core^" once, please check your plugins-shero.ini")
 	}
 
-	sh_init_hero_array()
+	sh_init_hero_array_lib(SH_MAXHEROS)
 
 	server_print("We currently support: %d client states in total!^n",sh_max_client_states())
 
@@ -5195,7 +5195,7 @@ public plugin_end()
 	// Final cleanup in the saving include
 	saving_end()
 	//erase the array
-	sh_init_hero_array()
+	sh_init_hero_array_lib(SH_MAXHEROS)
 }
 //----------------------------------------------------------------------------------------------
 readINI()

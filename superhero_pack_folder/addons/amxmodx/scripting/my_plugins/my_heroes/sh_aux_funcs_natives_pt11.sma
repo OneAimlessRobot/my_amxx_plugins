@@ -114,7 +114,7 @@ stock print_player_hero_prop_flags(id){
 																	id,
 																	sh_player_hero_property_tracker[id][i][curr_picked_count],
 																	sh_property_gating_array[i],
-																	(sh_player_hero_property_tracker[id][i][curr_picked_count] > 0))
+																	(sh_player_hero_property_tracker[id][i][curr_picked_count] > 0)?"Yes!":"No..")
 
 
 	}
@@ -160,7 +160,7 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 				sh_property_gating_array[i]){
 			
 
-				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" property have been picked too many times! %d out of %d times...",
+				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" too many times! %d out of %d times...",
 							sh_hero_property_names[i],
 							sh_player_hero_property_tracker[id][i][curr_picked_count],
 							sh_property_gating_array[i])

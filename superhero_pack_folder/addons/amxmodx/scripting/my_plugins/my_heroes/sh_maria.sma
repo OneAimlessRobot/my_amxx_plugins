@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "custom_grenades/custom_grenades.inc"
@@ -81,6 +82,8 @@ public plugin_init()
 	register_event("Damage", "maria_damage", "b", "2!0")
 
 	init_hud_syncs()
+
+	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:MARIA_WEAPON_CLASSID,true)
 }
 public plugin_natives(){
 

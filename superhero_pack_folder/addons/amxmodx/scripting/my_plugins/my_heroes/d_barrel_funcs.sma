@@ -6,6 +6,7 @@
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 
 #define PLUGIN "Superhero Snoodle d_barrel funcs"
@@ -343,6 +344,8 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 		return HAM_IGNORED	
 	if(get_user_weapon(attacker) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
 		return HAM_IGNORED
+
+	
 		
 	static Float:flEnd[3], Float:vecPlane[3]
 

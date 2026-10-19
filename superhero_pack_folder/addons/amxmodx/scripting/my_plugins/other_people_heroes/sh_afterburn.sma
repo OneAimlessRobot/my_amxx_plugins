@@ -24,6 +24,7 @@ afterburn_burndmg 5		//How much damage each burn does
 * (takes 5.5 secs until damage can be caused again)
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
@@ -320,7 +321,7 @@ public on_fire(args[])
 		sh_extra_damage(id, killer, damage)
 	}
 	else {
-		set_user_health(id, health - damage)
+		sh_set_hp(id, health - damage)
 
 		//let them know who is hurting them with a flame
 		new attackerName[32]

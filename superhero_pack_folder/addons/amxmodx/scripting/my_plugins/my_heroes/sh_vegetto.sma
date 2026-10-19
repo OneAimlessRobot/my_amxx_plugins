@@ -1,15 +1,22 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "vegetto_inc/vegetto_inc.inc"
 #include "../my_include/my_author_header.inc"
+
+/*
+
+	make it so that every kind of goku blast is guideable.
+	comment to restrict to levels 2 and 3's blasts
+
+*/
+#define ALWAYS_GUIDEABLE
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"
@@ -426,7 +433,9 @@ public create_power(id)
 	write_byte(255)	// brightness
 	message_end()
 
-	if ( g_powerNum[id] == 2 || g_powerNum[id] == 3 ) {
+	#if ! defined ALWAYS_GUIDEABLE
+	if ( g_powerNum[id] == 2 || g_powerNum[id] == 3  ) {
+	#endif
 		new iNewVelocity[3], args[6]
 		iNewVelocity[0] = floatround(fl_Velocity[0])
 		iNewVelocity[1] = floatround(fl_Velocity[1])
@@ -441,7 +450,10 @@ public create_power(id)
 		args[5] = iNewVelocity[2]
 
 		set_task(0.1, "guide_kamehameha", newEnt, args, 6)
+	
+	#if ! defined ALWAYS_GUIDEABLE
 	}
+	#endif
 }
 //----------------------------------------------------------------------------------------------
 public guide_kamehameha(args[])
@@ -470,13 +482,31 @@ public guide_kamehameha(args[])
 	origin[1] = floatround(fl_origin[1])
 	origin[2] = floatround(fl_origin[2])
 
-	if ( g_powerNum[id] == 2 )
-	avgFactor = 3
-	else if ( g_powerNum[id] == 3 )
-	avgFactor = 6
-	// stupid check but why not
-	else
-	avgFactor = 8
+	switch (g_powerNum[id]){
+
+		case 1:{
+
+
+			avgFactor = 1
+		}
+		case 2:{
+
+
+			avgFactor = 3
+		}
+		case 3:{
+
+
+			avgFactor = 6
+		}
+		default:{
+
+
+			avgFactor = 8
+		}
+
+
+	}
 
 	new velocityVec[3], length
 
@@ -817,14 +847,11 @@ public ssj_boost(id){
 	}
 	// HP boost
 	new userHealth = get_user_health(id)
-	if ( userHealth < cvar_val(num,pcvar_hp_max) ) {
+	if ( userHealth < cvar_val(num,pcvar_hp_max)) {
 		new addHP = cvar_val(num,pcvar_hp_mult) * g_isSaiyanLevel[id]
-		if ( userHealth + addHP > cvar_val(num,pcvar_hp_max)) {
-			set_user_health(id, cvar_val(num,pcvar_hp_max) )
-		}
-		else {
-			set_user_health(id, userHealth + addHP)
-		}
+		new the_hp_cap_to_apply = cvar_val(num,pcvar_hp_max)
+		sh_add_hp(id,addHP,the_hp_cap_to_apply)
+		
 	}
 }
 //----------------------------------------------------------------------------------------------

@@ -129,7 +129,7 @@ public heal_loop()
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.
-			sh_add_hp(id, HealPoints, sh_get_max_hp(id))
+			sh_add_hp(id, HealPoints)
 		}
 	}
 }

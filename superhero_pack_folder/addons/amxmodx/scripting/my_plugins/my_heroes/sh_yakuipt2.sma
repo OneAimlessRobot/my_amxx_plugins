@@ -54,6 +54,9 @@ public plugin_init()
 
 	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
+
+	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:YAKUI_WEAPON_CLASSID,true)
+
 	register_event("CurWeapon", "weaponChange","be","1=1")
 
 }

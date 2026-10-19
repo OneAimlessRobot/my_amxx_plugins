@@ -27,12 +27,6 @@ enum
 #define WORLDMODEL "models/shmod/adriano/colt/w_m1911a1.mdl"
 
 #define SHOOTSOUND "weapons/adriano/colt/deagle-1.wav"
-stock const colt_sounds[6][]={"weapons/adriano/colt/deagle-1.wav",
-"weapons/adriano/colt/deagle-2.wav",
-"weapons/adriano/colt/m1911_clipin.wav",
-"weapons/adriano/colt/m1911_clipout.wav",
-"weapons/adriano/colt/m1911_slideback.wav",
-"weapons/adriano/colt/m1911_sliderelease.wav"}
 
 native colt_set_colt(id)
 native colt_unset_colt(id)

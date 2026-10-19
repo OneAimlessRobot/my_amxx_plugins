@@ -192,19 +192,25 @@ enum player_state_flags_id {
 native sh_assign_id_bit(player_id, player_state_flags_id:the_flag_id, bool:the_polarity)
 
 
-//retrieve the bit of a hero bitsum
-native sh_init_id_masks_array()
+native bool:sh_get_hero_projectile_weapon_bit(the_hero_id, my_weapon_ids:the_weapon_id)
+
+
+native sh_assign_hero_projectile_weapon_bit(the_hero_id, my_weapon_ids:the_weapon_id, bool:the_polarity)
 
 
 
 
 
 //Init the lib
-native sh_init_hero_array();
+//leaving a parameter at zero automatically initializes it at the maximum value within the library
+native sh_init_hero_array_lib(max_heros=0, max_hero_props=0, max_client_states=0);
 
-//returns the number of client states that are currently mappable by this version of the library
+//returns the number of client states that are currently mappable by this instance of the library
 native sh_max_client_states()
 
 
-//returns the number of hero properties that are currently mappable by this version of the library
+//returns the number of hero properties that are currently mappable by this instance of the library
 native sh_max_hero_props()
+
+//returns the number of heroes that are currently mappable by this instance of the library
+native sh_maxhero_capacity()

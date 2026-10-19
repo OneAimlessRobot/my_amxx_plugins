@@ -495,8 +495,6 @@ public pred_DLdamage(id)
 		log_message("^"%s<%d><%s><%s>^" killed ^"%s<%d><%s><%s>^" with ^"Predator Laser Deagle^"", 
 		namea,get_user_userid(attacker_id),authida,teama,namev,get_user_userid(id),authidv,teamv)          
 		
-		/* set_user_health(id, 0) */ 
-		
 		// team check! 
 		get_user_team(attacker_id, attacker_team, 1) 
 		get_user_team(id, victim_team, 1) 

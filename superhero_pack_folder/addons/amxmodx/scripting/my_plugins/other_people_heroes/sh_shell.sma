@@ -89,8 +89,8 @@ public shell_weapons(id){
 public sh_client_spawn(id)
 {
 	if ( sh_get_user_has_hero(id,gHeroID)) {
-		new gHealthMax = ( gHealAmount - (sh_get_user_lvl(id)* get_cvar_num("shell_hpperlev")) )
-		set_user_health(id, gHealthMax)
+		new gOurHealthMax = ( gHealAmount - (sh_get_user_lvl(id)* get_cvar_num("shell_hpperlev")) )
+		sh_set_hp(id, gOurHealthMax,gOurHealthMax)
 		shell_weapons(id)
 	}
 }
@@ -100,9 +100,9 @@ public shell_loop()
 {
 	if ( !sh_is_active() || !hasRoundStarted() ) return
 	for(new id=1;id< sh_maxplayers()+1;id++){
-		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {	
-			new gHealMax = ( gHealAmount - (sh_get_user_lvl(id)* get_cvar_num("shell_hpperlev")) )
-			sh_add_hp(id, gHealPoints, gHealMax)
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
+			new gOurHealthMax = ( gHealAmount - (sh_get_user_lvl(id)* get_cvar_num("shell_hpperlev")) )
+			sh_add_hp(id, gHealPoints, gOurHealthMax)
 		}
 	}
 }

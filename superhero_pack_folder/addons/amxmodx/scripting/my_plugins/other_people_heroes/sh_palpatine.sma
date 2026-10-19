@@ -1,3 +1,5 @@
+
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 
@@ -271,7 +273,7 @@ public palpatine_death(x, id)
 //  sh_extra_damage( x, id, palpatineDeathDamage, "Palpatine Death" )
   new enemyHealth=get_user_health(x)
   new newHP=enemyHealth-palpatineDeathDamage
-  set_user_health(x, newHP)
+  sh_set_hp(x, newHP)
   return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------
@@ -290,7 +292,7 @@ public palpatine_decay(eid, id)
   new enemyHealth=get_user_health(eid)
   new newHP=enemyHealth-palpatineDecayDamage
   lightning_effect(id, eid, 2)
-  set_user_health(eid, newHP)
+  sh_set_hp(eid, newHP)
   return PLUGIN_HANDLED
 }
 //----------------------------------------------------------------------------------------------

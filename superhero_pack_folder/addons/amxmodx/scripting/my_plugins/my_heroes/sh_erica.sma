@@ -73,6 +73,7 @@ public plugin_init()
 	
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:DART_GUN_WEAPON_CLASSID,true)
 	
 	
 }

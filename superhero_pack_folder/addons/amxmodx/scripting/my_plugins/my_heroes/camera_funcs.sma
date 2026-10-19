@@ -285,6 +285,8 @@ public _toggle_camera_view(iPlugins,iParams){
 		}
 		new Float:cam_health = entity_get_float(camera_id,EV_FL_health)
 		Set_BitVar(looking_with_camera_mask, id)
+		set_camera_aiming(camera_id,id,false)
+		update_camera_aiming(id,camera_id)
 		attach_view(id,camera_id)
 		entity_set_float(camera_id, EV_FL_nextthink, get_gametime() + (1.0/CAMERA_FRAMERATE))
 		sh_chat_message(id,gHeroID,"Health: %0.2f Charge: %0.2f",cam_health,battery_pct);
@@ -347,7 +349,7 @@ public plant_camera(id)
 	entity_set_float(NewEnt, EV_FL_nextthink, get_gametime() + CAMERA_ARMING_TIME)
 	return PLUGIN_HANDLED
 }
-set_camera_aiming(other_ent,cam_id){
+set_camera_aiming(other_ent,cam_id,bool:change_origin=true){
 	
 	
 	static Float:vOrigin[3]
@@ -369,14 +371,19 @@ set_camera_aiming(other_ent,cam_id){
 	free_tr2(tr)
 	
 	static Float:vNewOrigin[3], Float:vEntAngles[3]
-	//distance that the camera will be placed away from the wall
-	new Float:walldist=HALF_CAMERA_SIZE
-	vNewOrigin[0] = vTraceResult[0] + (vNormal[0] * walldist)
-	vNewOrigin[1] = vTraceResult[1] + (vNormal[1] * walldist)
-	vNewOrigin[2] = vTraceResult[2] + (vNormal[2] * walldist)
-	engfunc(EngFunc_SetOrigin, cam_id, vNewOrigin)
-	
-	
+	if(change_origin){
+		//distance that the camera will be placed away from the wall
+		new Float:walldist=HALF_CAMERA_SIZE
+		vNewOrigin[0] = vTraceResult[0] + (vNormal[0] * walldist)
+		vNewOrigin[1] = vTraceResult[1] + (vNormal[1] * walldist)
+		vNewOrigin[2] = vTraceResult[2] + (vNormal[2] * walldist)
+		engfunc(EngFunc_SetOrigin, cam_id, vNewOrigin)
+	}
+	else{
+
+		pev(cam_id, pev_origin, vNewOrigin)
+
+	}
 	vector_to_angle(vNormal, vEntAngles)
 	set_pev(cam_id, pev_angles, vEntAngles)
 	

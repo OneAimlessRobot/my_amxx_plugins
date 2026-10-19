@@ -796,6 +796,16 @@ stock sh_add_hp(id, hitPoints, maxHealth = 0, bool:bypass_props=false)
 
 
 	}
+
+	
+	if(!bypass_props && sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)){
+
+		
+		maxHealth = 0;
+
+
+	}
+	
 	if ( hitPoints == 0 ) return 0;
 
 	if ( maxHealth == 0 ){
@@ -814,6 +824,38 @@ stock sh_add_hp(id, hitPoints, maxHealth = 0, bool:bypass_props=false)
 	}
 	
 	return 0;
+}
+/**
+ * Add to client's current health, up to a max limit.
+ *
+ * @param id		The index of the client.
+ * @param hitPoints	The amount of health to add.
+ * @param maxHealth	The maxium possible health to add up to, set 0 to use max from client's heroes.
+ * @return		The amount of health added, 0 on failure.
+ */
+stock sh_set_hp(id, hitPoints, maxHealth = 0, bool:bypass_props=false)
+{
+	
+	if(!bypass_props && sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)){
+
+		
+		maxHealth = 0;
+
+
+	}
+	if ( hitPoints == 0 ) return 0;
+
+	if ( maxHealth == 0 ){
+		
+		maxHealth = sh_get_max_hp(id);
+	
+	}
+
+
+	new newHealth = min(( hitPoints), maxHealth);
+	
+	set_user_health(id, newHealth)
+	return newHealth;
 }
 
 /**

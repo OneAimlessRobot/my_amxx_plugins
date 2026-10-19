@@ -50,6 +50,7 @@ gokukt_armor 1000 // How much armor does goku have in kaioken mode
 gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
@@ -171,7 +172,7 @@ public end_kaioken(id)
 		reset_speed[id] = false
 	}
 	if ( reset_health[id] ) {
-		set_user_health(id, set_health)
+		sh_set_hp(id, set_health)
 		reset_health[id] = false
 	}
 	if ( reset_armor[id] ) {
@@ -193,7 +194,7 @@ public gokukt_kaiokenmode(id)
 		}
 		
 		if ( get_pcvar_num(goku_hp) > get_user_health(id) ) {
-			set_user_health(id, get_pcvar_num(goku_hp));
+			sh_set_hp(id, get_pcvar_num(goku_hp),get_pcvar_num(goku_hp),true);
 			reset_health[id] = true
 		}
 		

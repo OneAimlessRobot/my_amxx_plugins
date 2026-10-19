@@ -78,6 +78,8 @@
 #include <amxmodx>
 #include <cstrike>
 #include <fun>
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "../my_include/superheromod.inc"
 
 
 #define APP_VER "1.21b"
@@ -157,10 +159,10 @@ public func_enable(id)
 		set_cvar_num("sv_merchant", 1)
 		get_user_name(id,name,32)
 		
-		console_print(0, "[SHM APP_VER] %s :ENABLED", name)
+		console_print(0, "[SHM %s] %s :ENABLED",APP_VER,  name)
 	}
 	else{
-		client_print(id,print_chat,"[SHM APP_VER] You dont not have access to this command.")
+		client_print(id,print_chat,"[SHM %s] You dont not have access to this command.",APP_VER)
 	}
 
 	return PLUGIN_CONTINUE
@@ -180,10 +182,10 @@ public func_disable(id)
 		set_cvar_num("sv_merchant", 0)
 		get_user_name(id,name,32)
 		
-		console_print(0, "[SHM APP_VER] %s :DISABLED", name)
+		console_print(0, "[SHM %s] %s :DISABLED",APP_VER,  name)
 	}
 	else{
-		client_print(id,print_chat,"[SHM APP_VER] You dont not have access to this command.")
+		client_print(id,print_chat,"[SHM %s] You dont not have access to this command.",APP_VER)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -206,7 +208,7 @@ public func_buyxp(id)
 	xpp	= 0
 
 	if( cvar_xp < 1 ){	//check if buyxp is disabled
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, buying experience is disabled.")
+		client_print(id,print_chat,"[SHM %s] Sorry, buying experience is disabled.",APP_VER)
 		return PLUGIN_CONTINUE
 	}
 
@@ -219,7 +221,7 @@ public func_buyxp(id)
 
 	//check to see if user has enough cash
 	if( money < cvar_xpcost ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. You need at least $%d to buy exp", name, cvar_xpcost )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. You need at least $%d to buy exp",APP_VER, name, cvar_xpcost )
 		return PLUGIN_CONTINUE
 	}
 
@@ -228,7 +230,7 @@ public func_buyxp(id)
 	xpcost = numbuys * cvar_xpcost		//calculate the cost of the above amount of exp
 
 	//conduct transaction
-	console_print(0, "[SHM APP_VER] %s PURCHASED %d XP : COST %d", name, xpp, xpcost)
+	console_print(0, "[SHM %s] %s PURCHASED %d XP : COST %d",APP_VER,  name, xpp, xpcost)
 
 	cs_set_user_money(  id, (money - xpcost) ,1 )				//subtract money from buys
 	server_cmd("amx_shaddxp ^"%s^" %d", authid, xpp)			//add exp for buys
@@ -255,7 +257,7 @@ public func_buyhp(id)
 	cvar_hpcost = get_cvar_num("shm_buyhpcost")
 
 	if( cvar_hp < 1 ){	//check if buyhp is disabled
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, buying health is disabled.")
+		client_print(id,print_chat,"[SHM %s] Sorry, buying health is disabled.",APP_VER)
 		return PLUGIN_CONTINUE
 	}
 
@@ -268,18 +270,18 @@ public func_buyhp(id)
 	get_user_name(id,name,32)
 
 	if( !is_user_alive(id) ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. Dead players may not purchase life.", name )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. Dead players may not purchase life.",APP_VER,  name )
 		return PLUGIN_CONTINUE
 	}
 
 	//check to see if user has enough cash
 	if( money < cvar_hpcost ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. You need at least $%d to buy hp", name, cvar_hpcost )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. You need at least $%d to buy hp",APP_VER,  name, cvar_hpcost )
 		return PLUGIN_CONTINUE
 	}
 
 	if( userlife == (HP_MAX) ){
-		client_print(id,print_chat,"[SHM APP_VER]  You are at the max amount of life." )
+		client_print(id,print_chat,"[SHM %s]  You are at the max amount of life.",APP_VER )
 		return PLUGIN_CONTINUE
 	}
 	cs_set_user_money(  id, (money - cvar_hpcost) ,1 )			//subtract money from buys
@@ -288,14 +290,14 @@ public func_buyhp(id)
 	}
 
 	new newlife = userlife + cvar_hp
+
 	if( newlife > HP_MAX )
 		newlife=999
 
-	set_user_health(id, newlife)
+	newlife=sh_set_hp(id, newlife)
+	console_print(0, "[SHM %s] %s PURCHASED %d HP : COST %d",APP_VER, name, cvar_hp, cvar_hpcost)
 
-	console_print(0, "[SHM APP_VER] %s PURCHASED %d HP : COST %d", name, cvar_hp, cvar_hpcost)
-
-	client_print(id,print_chat,"[SHM APP_VER] You have purchased hp. Your new HP is %d", newlife)
+	client_print(id,print_chat,"[SHM %s] You have purchased hp. Your new HP is %d", APP_VER,newlife)
 	//server_cmd("amx_tsay red [SH][SHM APP_VER] %s has purchased %d life.^nTo buy life say buyhp", name, cvar_hp)
 
 	return PLUGIN_CONTINUE
@@ -323,7 +325,7 @@ public func_buyfr(id)
 	// CHECK SECTION.
 
 	if( cvar_fr < 1 ){	//check if buyfr is disabled
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, buying frags is disabled.")
+		client_print(id,print_chat,"[SHM %s] Sorry, buying frags is disabled.",APP_VER)
 		return PLUGIN_CONTINUE
 	}
 
@@ -332,7 +334,7 @@ public func_buyfr(id)
 
 	//check to see if user has enough cash
 	if( money < cvar_frcost ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. You need at least $%d to buy frags", name, cvar_frcost )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. You need at least $%d to buy frags",APP_VER,  name, cvar_frcost )
 		return PLUGIN_CONTINUE
 	}
 
@@ -347,11 +349,11 @@ public func_buyfr(id)
 	new newfrags = frags + cvar_fr
 
 	if( newfrags > MAX_FRAGS ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s another frag purchase would put you over the limit.", name )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s another frag purchase would put you over the limit.", APP_VER, name )
 	}
 	else{
-		client_print(id,print_chat,"[SHM APP_VER] You have purchased %d frag(s)", cvar_fr)
-		console_print(0, "[SHM APP_VER] %s PURCHASED %d FRAG(S) : COST %d", name, cvar_fr, cvar_frcost)
+		client_print(id,print_chat,"[SHM %s] You have purchased %d frag(s)",APP_VER,  cvar_fr)
+		console_print(0, "[SHM %s] %s PURCHASED %d FRAG(S) : COST %d", APP_VER, name, cvar_fr, cvar_frcost)
 		set_user_frags(id, newfrags)
 		//server_cmd("amx_tsay green [SH][SHM APP_VER] %s has purchased %d frags. To buy frags say buyfr", name, cvar_fr)
 	}
@@ -376,7 +378,7 @@ public func_buyap(id)
 		return PLUGIN_CONTINUE
 
 	if( cvar_ap < 1 ){	//check if buyap is disabled
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, buying armor is disabled.")
+		client_print(id,print_chat,"[SHM %s] Sorry, buying armor is disabled.",APP_VER)
 		return PLUGIN_CONTINUE
 	}
 
@@ -386,19 +388,19 @@ public func_buyap(id)
 	get_user_name(id,name,32)
 
 	if( !is_user_alive(id) ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. Dead players may not purchase armor", name )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. Dead players may not purchase armor", APP_VER, name )
 		return PLUGIN_CONTINUE
 	}
 
 	//check to see if user has enough cash
 	if( money < cvar_apcost ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. You need at least $%d to buy exp", name, cvar_apcost )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. You need at least $%d to buy exp", APP_VER, name, cvar_apcost )
 		return PLUGIN_CONTINUE
 	}
 
 	//check to see if it would exceed the AP_MAX which also prevents crashes
 	if( armor+cvar_ap > AP_MAX ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. You cannot purchase anymore armor.", name )
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. You cannot purchase anymore armor.", APP_VER, name )
 		return PLUGIN_CONTINUE
 	}
 
@@ -408,7 +410,7 @@ public func_buyap(id)
 	cs_set_user_money(  id, (money - cvar_apcost) ,1 )				//subtract money from buys
 	set_user_armor(id, newarmor)
 
-	console_print(0, "[SHM APP_VER] %s PURCHASED %d ARMOR : COST %d", name, cvar_ap, cvar_apcost)
+	console_print(0, "[SHM %s] %s PURCHASED %d ARMOR : COST %d", APP_VER, name, cvar_ap, cvar_apcost)
 
 	//server_cmd("amx_csay blue [SH][SHM APP_VER] %s has purchased %d armor.^nTo buy exp say buyap", name, cvar_ap)
 	
@@ -426,8 +428,8 @@ public CHECK_BUY(id)
 
 	//check to see if mechant plugin is enabled
 	if ( get_cvar_num("sv_merchant") != 1 ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. The SH merchant is disabled.", name)
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: SH Merchant is disabled")
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. The SH merchant is disabled.",APP_VER,  name)
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: SH Merchant is disabled", APP_VER)
 		return CHECK_BAD
 	}
 
@@ -435,26 +437,26 @@ public CHECK_BUY(id)
 	//check to make sure specs arent whording money and buying
 	//also prevents problems incase users are buying life/armor or if they are revived from the spec team
 	if( (get_user_team(id) != TEAM_T) && (get_user_team(id) != TEAM_CT) ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. Spectators may not make purchases.", name )
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: user in spec")
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. Spectators may not make purchases.",APP_VER,  name )
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: user in spec",APP_VER)
 		return CHECK_BAD
 	}
 
 
 	//check for invalid IDs
 	if( id < 1 || id > 32 ){
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: Invalid player ID")
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: Invalid player ID",APP_VER)
 		return CHECK_BAD
 	}
 	if( is_user_bot(id) != 0 ){
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: User appears to be a bot")
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: User appears to be a bot",APP_VER)
 		return CHECK_BAD
 	}
 
 
 	//check if SHmod is disabled
 	if( get_cvar_num("sv_superheros") != 1 ){
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: SHero mod is disabled")
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: SHero mod is disabled",APP_VER)
 		return CHECK_BAD
 	}
 
@@ -479,15 +481,15 @@ public CHECK_BUY(id)
 	//disable when loading a map
 	new time_elasped = (get_cvar_num("mp_timelimit") * 60) - get_timeleft() 
 	if( time_elasped < 60 ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. Please wait until 1 minute after a map change to purchase.", name )
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: map just changed")
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. Please wait until 1 minute after a map change to purchase.", APP_VER, name )
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: map just changed",APP_VER)
 		return CHECK_BAD	
 	}
 
 	//disable just before a map change
 	if( get_timeleft() < MAP_TIMELEFT ){
-		client_print(id,print_chat,"[SHM APP_VER] Sorry, %s. It is too close to the end of the map to purchase.", name )
-		console_print(0, "[SHM APP_VER] CHECK_BUY() failed for reason: map change imminent")
+		client_print(id,print_chat,"[SHM %s] Sorry, %s. It is too close to the end of the map to purchase.",APP_VER,  name )
+		console_print(0, "[SHM %s] CHECK_BUY() failed for reason: map change imminent",APP_VER)
 		return CHECK_BAD
 	}
 

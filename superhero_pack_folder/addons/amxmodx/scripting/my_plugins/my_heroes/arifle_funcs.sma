@@ -6,6 +6,7 @@
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 
 #define PLUGIN "Superhero super noodle m60"
@@ -445,9 +446,12 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 {
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker)){
 		return HAM_IGNORED
-		
+	}
+
+	weapon_gating_macro_code_snippet(Attacker,CSW_ARIFLE,return,HAM_IGNORED)
+	
 	static Float:flEnd[3], Float:vecPlane[3]
 		
 	get_tr2(Ptr, TR_vecEndPos, flEnd)
@@ -471,7 +475,9 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 		return HAM_IGNORED	
 	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
 		return HAM_IGNORED
-		
+	
+	weapon_gating_macro_code_snippet(Attacker,CSW_ARIFLE,return,HAM_IGNORED)
+	
 	SetHamParamFloat(3, float(A_RIFLE_DAMAGE))
 	
 	return HAM_HANDLED

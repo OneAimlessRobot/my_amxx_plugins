@@ -8,6 +8,7 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 #define KOMAK_MISSED_SHOT "shmod/komak/missed_shot.wav"
 #define KOMAK_GEAR_UP "shmod/komak/gear_up.wav"
@@ -209,6 +210,8 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 		return HAM_IGNORED
 	}
 
+	weapon_gating_macro_code_snippet(idattacker,get_user_weapon(idattacker),return,HAM_IGNORED)
+
 	new return_result=HAM_IGNORED;
 	new client_is_hittable_here=is_user_alive(this)
 	if(client_is_hittable_here){
@@ -240,7 +243,9 @@ public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], tr
 
 		return
 	}
-		
+	
+
+	weapon_gating_macro_code_snippet(idattacker,get_user_weapon(idattacker),return,)
 
 	if(!komak_is_top_speed(idattacker)){
 

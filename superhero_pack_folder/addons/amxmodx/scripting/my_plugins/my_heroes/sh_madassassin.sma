@@ -37,6 +37,7 @@ madassassin_healpoints 5	//The # of HP healed per second
 //------- Do not edit below this point ------//
 #define I_WANT_CONSTANTS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -157,6 +158,8 @@ public madassassin_damage(id)
 
 	if (sh_get_user_has_hero(attacker,gHeroID)  && weapon == CSW_AWP )
 	{
+
+		weapon_gating_macro_code_snippet(attacker,CSW_AWP,return,HAM_IGNORED)
 		new damage = read_data(2)
 
 		// do extra damage
@@ -178,7 +181,7 @@ public madassassin_loop()
 	{
 		if ( is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) )
 		{
-			sh_add_hp(id, healPoints, sh_get_max_hp(id))
+			sh_add_hp(id, healPoints)
 		}
 	}
 }

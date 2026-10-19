@@ -59,13 +59,13 @@ public sh_client_death(victim, attacker, my_hitpoint_enum:bodypart)
 		{			
 			gKillCount[attacker] = 0
 			
-			sh_add_hp(attacker, get_pcvar_num(pCvarGain), true)
+			sh_add_hp(attacker, get_pcvar_num(pCvarGain))
 		}
 		else if ( gKillCount[attacker] <= get_pcvar_num(pCvarKills) && (bodypart==MY_HIT_HEAD) )
 		{
 			gKillCount[attacker] = 0
 
-			sh_add_hp(attacker, get_pcvar_num(pCvarGain) * 2, true)
+			sh_add_hp(attacker, get_pcvar_num(pCvarGain) * 2)
 		}
 		
 		gKillCount[victim] = 0

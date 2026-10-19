@@ -655,7 +655,7 @@ public _explode_fx(iPlugins, iParams){
 		static TE_FLAG = 0
 
 		TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
-		TE_FLAG |= ((sfx_mask&explosion_sfx_show_custom_sound)?0:TE_EXPLFLAG_NOSOUND)
+		TE_FLAG |= ((sfx_mask&explosion_sfx_show_custom_sound)?TE_EXPLFLAG_NOSOUND:0)
 		TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
 
 		//TE_Explosion
@@ -745,6 +745,14 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 
 		new Float:rel_height= get_param_f(5)
 
+		new bool:show_burndecal = bool:get_param(6)
+
+		new bool:make_custom_sound = bool:get_param(7)
+		
+
+		new custom_sound_sample[128]
+
+		
 
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 		write_byte(TE_SPRITE)
@@ -755,9 +763,16 @@ public _tank_impact_shot_fx(iPlugin,iParms){
 		write_byte(radius)
 		write_byte(brightness)
 		message_end()
-		
-		emit_sound(ent, CHAN_WEAPON, EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		if(make_custom_sound){
+			get_string(8,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
+
+		}
+		emit_sound(ent, CHAN_WEAPON,make_custom_sound?custom_sound_sample:EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		if(!show_burndecal){
+
+			return
+		}
 		new decal_id
 		if ( radius <= 18 ) {
 			

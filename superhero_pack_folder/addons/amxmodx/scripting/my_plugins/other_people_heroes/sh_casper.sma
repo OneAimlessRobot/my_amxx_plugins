@@ -21,6 +21,7 @@ casper_stuckcheck 1		//Kill user if stuck in wall/ground after noclip, 0=no 1=ye
 *   Hero Created by BLU3 V1Z10N & maybe
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
@@ -140,7 +141,7 @@ public casper_setghost(id)
 	// and only change hp/ap if they have more then max for ghost mode
 	gUserHealth[id] = get_user_health(id)
 	if ( gUserHealth[id] > gGhostHealth[id] ) {
-		set_user_health(id, gGhostHealth[id])
+		sh_set_hp(id, gGhostHealth[id])
 	}
 
 	gUserArmor[id] = get_user_armor(id)
@@ -174,7 +175,7 @@ public casper_loop(id)
 
 	// Preven regen past cvar HP in Ghost Mode
 	if ( get_user_health(id) > gCasperHealth ) {
-		set_user_health(id, gCasperHealth)
+		sh_set_hp(id, gCasperHealth)
 	}
 
 	// Preven regen past cvar AP in Ghost Mode
@@ -216,7 +217,7 @@ public casper_removeghost(id)
 			if ( gGhostHealth[id] > gCasperHealth ) {
 				gGhostHealth[id] = gCasperHealth
 			}
-			set_user_health(id, gUserHealth[id])
+			sh_set_hp(id, gUserHealth[id])
 		}
 
 		// reset users AP and save Ghost Mode AP

@@ -28,13 +28,16 @@ new gHeroID
 
 stock const gHeroName[] = "Sablina"
 
-stock const Float:spike_min_dims[3] = {-100.0 ,-100.0 , 0.0},
-			Float:spike_max_dims[3] = {100.0,80.0,500.0}
+stock const Float:spike_min_dims[3] = {-8.0 ,-8.0 , 0.0},
+			Float:spike_max_dims[3] = {8.0,8.0,40.0}
 
 new const sablina_rock_spike_mdl_name[] = "models/shmod/sablina/rockgibs/rockgibs.mdl"
 
 
-new const gSoundRockCrash[128] = "shmod/sablina/rock_crash.wav"
+new const gRockCrashSounds[3][128] = {"shmod/sablina/sablina_light_attack.wav",
+											"shmod/sablina/sablina_heavy_attack.wav",
+											"shmod/sablina/sablina_attack_hit.wav"}
+
 #define SPIKE_CHARGING_SOUND "shmod/flora/fields/field_charging.wav"
 
 
@@ -251,7 +254,11 @@ public on_Weapon_Change(id)
 	}
 
 }
+Float:get_sablina_health_ratio(Float:the_current, Float:the_cap){
 
+	return floatclamp(( the_current/ the_cap),0.1,0.99)
+
+}
 Float:calculate_sablina_charge_time(id){
 
 	return (cvar_val(float, pcvar_sablina_spike_charge_time_min)
@@ -261,8 +268,7 @@ Float:calculate_sablina_charge_time(id){
 	((cvar_val(float, pcvar_sablina_spike_charge_time_max) - cvar_val(float, pcvar_sablina_spike_charge_time_min))
 		
 						*
-					( entity_get_float(id, EV_FL_health)  / float(sh_get_max_hp(id)))
-						))
+					get_sablina_health_ratio(entity_get_float(id, EV_FL_health),float(sh_get_max_hp(id)))))
 
 }
 Float:calculate_sablina_cooldown_time(id){
@@ -275,7 +281,7 @@ Float:calculate_sablina_cooldown_time(id){
 				((cvar_val(float, pcvar_sablina_spike_max_cooldown) - cvar_val(float, pcvar_sablina_spike_min_cooldown) )
 					
 									*
-							( entity_get_float(id, EV_FL_health)  / float(sh_get_max_hp(id)))))
+					get_sablina_health_ratio(entity_get_float(id, EV_FL_health),float(sh_get_max_hp(id)))))
 }
 //----------------------------------------------------------------------------------------------
 public sablina_loop(taskid)
@@ -310,7 +316,7 @@ public sablina_loop(taskid)
 				((cvar_val(float, pcvar_sablina_rendering_max_alpha) - cvar_val(float, pcvar_sablina_rendering_min_alpha))
 					
 									*
-						(the_current_health/the_healthcap))
+					get_sablina_health_ratio(the_current_health,the_healthcap))
 
 
 
@@ -407,7 +413,11 @@ public plugin_natives(){
 public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheModel, sablina_rock_spike_mdl_name)
-	engfunc(EngFunc_PrecacheSound,gSoundRockCrash)
+	for( new i =0; i< sizeof(gRockCrashSounds);i++){
+
+		engfunc(EngFunc_PrecacheSound,gRockCrashSounds[i])
+	
+	}
 	engfunc(EngFunc_PrecacheSound,SPIKE_CHARGING_SOUND)
 }
 
@@ -669,7 +679,7 @@ public sablina_spike_think(ent_id){
 
 	curr_hp =  entity_get_float(owner_id,EV_FL_health);
 
-	hp_pct = (curr_hp / floatmax(1.0, float(sh_get_max_hp(owner_id)))) 
+	hp_pct = get_sablina_health_ratio(curr_hp , floatmax(1.0, float(sh_get_max_hp(owner_id))))
 
 	the_drain = floatmin(charge_pct , cvar_val(float,pcvar_sablina_dmg_frac_hp_max_cut)) * curr_hp
 	
@@ -720,6 +730,7 @@ public sablina_spike_think(ent_id){
 			continue
 		
 		}
+		emit_sound(pid,CHAN_BODY,gRockCrashSounds[2],VOL_NORM,ATTN_NORM,0,PITCH_NORM)
 		directed_spark(ent_id,pid,10,1,200,20,WHITE,5,0)
 		sh_set_stun(pid,the_stun_duration,50.0)
 	}
@@ -727,12 +738,18 @@ public sablina_spike_think(ent_id){
 	new Float:aim_orig[3]
 	entity_get_vector(ent_id, EV_VEC_vuser2,aim_orig)
 
+	new Float:sound_choosing_pct = (the_damage - cvar_val(float, pcvar_sablina_spike_min_dmg))
+											/
+									(cvar_val(float, pcvar_sablina_spike_max_dmg) - cvar_val(float, pcvar_sablina_spike_min_dmg))
+
+
+
 	tank_impact_shot_fx(ent_id,aim_orig,
-				floatround(0.04*the_radius),255,50.0)
+				floatround(0.1*the_radius),255,75.0,false,true,gRockCrashSounds[floatround(sound_choosing_pct,floatround_round)])
 	
 	explosion(gHeroID,ent_id,the_radius,the_damage,0.0,1,1,_,
-				explosion_sfx_show_shockwave|explosion_sfx_show_custom_sound|explosion_sfx_show_smoke,
-										LAVENDER,gSoundRockCrash,stone_spike_wpn_id)
+				explosion_sfx_show_shockwave|explosion_sfx_show_smoke,
+										LAVENDER,_,stone_spike_wpn_id)
 
 	explosion_custom_entity(ent_id,
 							the_radius,

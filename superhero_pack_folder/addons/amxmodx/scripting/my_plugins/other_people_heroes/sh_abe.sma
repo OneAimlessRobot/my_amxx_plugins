@@ -7,6 +7,7 @@ abe_level 10
 
 */
 
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
 new gHeroName[] = "Abe"
@@ -118,7 +119,7 @@ public abe_kd(id)
 
 			// Give armor, health, gravity and money to Abe
 			set_user_armor(id, armor)
-			set_user_health(id, health)
+			sh_set_hp(id, health)
 			set_user_gravity(id, gravity)
 			cs_set_user_money(id, money, 0)
 
