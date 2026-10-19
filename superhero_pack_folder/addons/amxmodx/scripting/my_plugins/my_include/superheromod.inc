@@ -984,11 +984,11 @@ stock sh_get_velocity(const Float:initial[3], const Float:final[3], Float:speed,
 //	   the hero itself must reset the gPlayerInCooldown variable to false.
 
 /**
- * Global variable for cooldown status.
+ * Global variable for hero id, in case it is needed
  *
  * @noreturn
  */
-stock gPlayerInCooldownMask = 0
+stock gHeroID
 /**
 
 Cooldown mask!
@@ -997,11 +997,11 @@ the first of these 3 macros retrieves its truth value
 The second macro sets it to true
 the third one sets it to false
  */
-#define sh_get_cooldown_flag(%1) ( Get_BitVar( gPlayerInCooldownMask, %1) )
+#define sh_get_cooldown_flag(%1) ( sh_get_id_hero_cooldown_bit(gHeroID,  server_slot_idx:%1) )
 
-#define sh_set_cooldown_flag(%1) ( Set_BitVar( gPlayerInCooldownMask, %1) )
+#define sh_set_cooldown_flag(%1) ( sh_set_id_hero_cooldown_bit(gHeroID,  server_slot_idx:%1, true) )
 
-#define sh_unset_cooldown_flag(%1) ( UnSet_BitVar( gPlayerInCooldownMask, %1) )
+#define sh_unset_cooldown_flag(%1) ( sh_set_id_hero_cooldown_bit(gHeroID, server_slot_idx:%1, false) )
 
 /**
  * Sets a cooldown in a hero.

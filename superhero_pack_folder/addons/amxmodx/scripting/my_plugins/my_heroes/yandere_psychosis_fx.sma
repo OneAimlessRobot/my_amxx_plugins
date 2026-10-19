@@ -11,7 +11,6 @@
 
 stock curr_player_pain_sound[SH_MAXSLOTS+1]
 
-new gHeroID = -1
 
 #define PLUGIN "Superhero psychosis fx"
 #define VERSION "1.0.0"

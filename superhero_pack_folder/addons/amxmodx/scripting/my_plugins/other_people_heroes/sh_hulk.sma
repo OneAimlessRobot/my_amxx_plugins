@@ -14,7 +14,7 @@ hulk_stunspeed 70		//Speed of stunned players
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "The Hulk"
 new gPcvarRadius, gPcvarCooldown, gPcvarStunTime, gPcvarStunSpeed
 

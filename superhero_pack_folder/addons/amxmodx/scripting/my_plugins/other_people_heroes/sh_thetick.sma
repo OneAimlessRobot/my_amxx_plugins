@@ -24,7 +24,6 @@ thetick_level 0
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new HeroID
 new bool:isCzero
 new bool:czBotRegisterHam
 new serversMaxPlayers
@@ -39,8 +38,8 @@ public plugin_init()
 	new pcvarLevel = create_cvar("thetick_level", "0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	HeroID = sh_create_hero("The Tick", pcvarLevel)
-	sh_set_hero_info(HeroID, "No Fall Damage", "SPOOOON! Take no damage from falling")
+	gHeroID = sh_create_hero("The Tick", pcvarLevel)
+	sh_set_hero_info(gHeroID, "No Fall Damage", "SPOOOON! Take no damage from falling")
 
 	RegisterHam(Ham_TakeDamage, "player", "ham_TakeDamage",_,true)
 
@@ -54,7 +53,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public ham_TakeDamage(this, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,HeroID) ) return HAM_SUPERCEDE
+	if ( damagebits & DMG_FALL && sh_get_user_has_hero(this,gHeroID) ) return HAM_SUPERCEDE
 
 	return HAM_IGNORED
 }

@@ -19,7 +19,7 @@ deva_damage 0 // How much damage should the slaps do? default = 0 (Damage is app
 
 #include "../my_include/superheromod.inc"
 
-new gHeroID
+
 new gHeroName[] = "Deva Path"
 new gPcvarCooldown, gPcvarPercentage, gPcvarDamage
 //----------------------------------------------------------------

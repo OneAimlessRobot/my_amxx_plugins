@@ -16,7 +16,6 @@
 #include "../my_include/my_author_header.inc"
 
 
-new gHeroID = -1
 new gNumPills[SH_MAXSLOTS+1]
 new gatling_action:g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]

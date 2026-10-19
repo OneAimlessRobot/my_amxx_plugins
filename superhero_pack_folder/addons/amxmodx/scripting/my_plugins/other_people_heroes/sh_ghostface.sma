@@ -47,7 +47,7 @@ ghostface_healpoints 5		//The # of HP healed per second, Default 5
 
 // GLOBAL VARIABLES
 new HeroName[] = "Ghostface (Scream)"
-new gHeroID
+
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints
 

@@ -9,7 +9,7 @@
 // VARIABLES
 
 new gHeroName[]="Luke Skywalker"
-new gHeroID
+
 new saber 
 new ls_stat[33]
 //----------------------------------------------------------------------------------------------

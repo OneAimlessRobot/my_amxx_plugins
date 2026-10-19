@@ -33,7 +33,7 @@ new gGhostHealth[SH_MAXSLOTS+1]
 new gGhostArmor[SH_MAXSLOTS+1]
 new g_lastPosition[SH_MAXSLOTS+1][3]
 new gCasperHealth, gCasperArmor
-new gHeroID
+
 //-------------------------------------------------------------------------------------------------
 public plugin_init()
 {

@@ -13,7 +13,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = -1
 new mine_armed_mask = 0
 new disarmer_on_mask = 0
 new Float:curr_charge[SH_MAXSLOTS+1]

@@ -38,7 +38,6 @@ new flora_sheltered_values:g_flora_prev_sheltered_value[SH_MAXSLOTS+1]
 new sh_custom_color:g_flora_dmg_color[SH_MAXSLOTS+1]
 new Float:g_flora_curr_dmg_mult[SH_MAXSLOTS+1]
 
-new gHeroID = -1
 new gHeroLevel = 0
 
 new generic_suffocation_wpn_id = -1

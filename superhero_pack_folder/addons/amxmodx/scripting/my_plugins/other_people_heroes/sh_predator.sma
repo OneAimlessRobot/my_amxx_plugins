@@ -21,7 +21,7 @@ new spr_blast_shroom
 
 // VARIABLES
 new gHeroName[]="Predator"
-new gHeroID
+
 new gLastWeapon[SH_MAXSLOTS+1]
 new gDLaserFired[33] = 0
 new gDLLastWeapon[33]=0

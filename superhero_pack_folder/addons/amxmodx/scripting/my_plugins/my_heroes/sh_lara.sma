@@ -11,7 +11,7 @@
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Lara"
 new gNumSpears[SH_MAXSLOTS+1]
 

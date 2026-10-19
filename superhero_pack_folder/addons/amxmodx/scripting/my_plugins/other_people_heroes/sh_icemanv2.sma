@@ -15,7 +15,7 @@ iceman2_armor 100			//How much armor does ironman start with?
 #include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gHeroName[]="Ice Man"
 new g_jetPackRunning[SH_MAXSLOTS+1]
 new g_endLocation[SH_MAXSLOTS+1][3]

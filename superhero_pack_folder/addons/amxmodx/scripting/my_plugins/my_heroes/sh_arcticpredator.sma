@@ -49,7 +49,7 @@ new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
 new g_spriteBlood, g_spriteBldSpray
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

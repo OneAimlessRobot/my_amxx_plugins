@@ -110,7 +110,7 @@ public _sh_sleep_user(iPlugin,iParams){
 	new user=get_param(1)
 	if(!sh_get_id_bit(user,SH_IS_SLEEPING)){
 		new attacker=get_param(2)
-		new gHeroID=get_param(3)
+		new heroID=get_param(3)
 		new attacker_name[128]
 		get_user_name(attacker,attacker_name,127)
 		new user_name[128]
@@ -120,21 +120,21 @@ public _sh_sleep_user(iPlugin,iParams){
 
 				
 				if(!is_user_bot(user)){
-					sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
+					sh_chat_message(user,heroID,"%s has put you to sleep!!!",attacker_name)
 				}
 				if(!is_user_bot(attacker)){
-					sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+					sh_chat_message(attacker,heroID,"You just put %s to sleep!!!",user_name)
 				}
 				sleep_user(user,attacker)
 			}
 		}
 		else{
 			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"%s has put you to sleep!!!",attacker_name)
+				sh_chat_message(user,heroID,"%s has put you to sleep!!!",attacker_name)
 			}
 			
 			if(!is_user_bot(attacker)){
-				sh_chat_message(attacker,gHeroID,"You just put %s to sleep!!!",user_name)
+				sh_chat_message(attacker,heroID,"You just put %s to sleep!!!",user_name)
 			}
 			sleep_user(user,attacker)
 		}

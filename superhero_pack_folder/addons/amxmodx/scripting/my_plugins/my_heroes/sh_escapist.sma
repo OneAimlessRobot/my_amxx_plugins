@@ -31,7 +31,7 @@ new gPlayerLevel[SH_MAXSLOTS+1],gHeroLevel,gMaxAlpha,gAlphaByLvlInc,gMinAlpha,gM
 	gLvlsForFullMastery
 new Float:gEscapeSpeed[SH_MAXSLOTS+1] = {0.0, ...}
 new gFastWeapon[SH_MAXSLOTS+1] = {-1, ...}
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

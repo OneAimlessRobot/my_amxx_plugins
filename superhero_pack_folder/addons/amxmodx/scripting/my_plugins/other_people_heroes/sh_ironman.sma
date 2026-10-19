@@ -16,7 +16,7 @@ ironman_fuelcost 1		//How much armor does it cost per firing, set 0 to not use a
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Iron Man"
 new bool:gRegenAllowed[SH_MAXSLOTS+1]
 new bool:gJetPackRunning[SH_MAXSLOTS+1]

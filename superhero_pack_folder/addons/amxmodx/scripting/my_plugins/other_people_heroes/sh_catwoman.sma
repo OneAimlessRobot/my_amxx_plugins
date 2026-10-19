@@ -51,7 +51,7 @@ new catround[SH_MAXSLOTS+1]
 new spawnEntString[2][] = {"info_player_deathmatch", "info_player_start"}
 new CTSkins[4][10] = {"sas", "gsg9", "urban", "gign"}
 new TSkins[4][10] = {"arctic", "leet", "guerilla", "terror"}
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

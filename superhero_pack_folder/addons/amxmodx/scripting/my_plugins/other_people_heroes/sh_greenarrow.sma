@@ -17,7 +17,7 @@
  // VARIABLES
  new gHeroName[]="Green Arrow"
 
- new gHeroID
+ 
  new gArrows[SH_MAXSLOTS+1]
  // Test
  new gLastWeapon[SH_MAXSLOTS+1]

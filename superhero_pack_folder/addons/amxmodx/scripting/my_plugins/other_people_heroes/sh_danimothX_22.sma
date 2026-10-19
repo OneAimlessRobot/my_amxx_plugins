@@ -30,7 +30,7 @@
 #define BLUE 255
 
 // VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Danimoth X"
 new bool:is_frozen[SH_MAXSLOTS+1]
 new gIsInvisible[SH_MAXSLOTS+1]

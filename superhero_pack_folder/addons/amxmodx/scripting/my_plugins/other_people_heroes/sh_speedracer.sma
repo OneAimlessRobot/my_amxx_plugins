@@ -17,7 +17,7 @@ speed_hight 60.0	//how high can he jump?!
 #include "../my_include/superheromod.inc"
 
 new gHeroName[] = "Speed Racer";
-new gHeroID
+
 new bool:gCanJump[SH_MAXSLOTS+1];
 
 public plugin_init() {

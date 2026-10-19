@@ -38,7 +38,7 @@ new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
 new blast_shroom
-new gHeroID;
+
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
 
 //----------------------------------------------------------------------------------------------

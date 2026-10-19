@@ -15,7 +15,7 @@ shell_healmax 250		//Max # HP shell can heal to
 // GLOBAL VARIABLES
 #define TASKID 5556
 new gHeroName[]="Shell"
-new gHeroID
+
 new gHealPoints, gHealAmount
 new gHasPNinety
 //----------------------------------------------------------------------------------------------

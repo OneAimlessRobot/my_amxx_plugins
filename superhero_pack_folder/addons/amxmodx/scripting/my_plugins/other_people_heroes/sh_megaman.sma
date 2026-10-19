@@ -31,7 +31,7 @@ new laser_shots[33]
 // Megaman is an awesome superhero that has a megasuit of ultimate powers!
 
 new gHeroName[]="Megaman"
-new gHeroID
+
 new decal_id
 //----------------------------------------------------------------------------------------------------------
 public plugin_init()

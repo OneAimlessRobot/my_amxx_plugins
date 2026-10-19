@@ -17,7 +17,7 @@
 #define reika_parry_equip_sfx "shmod/reika/parry_on_sound.wav"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gHeroName[]="Reika Fukuda"
 new reika_is_parrying_mask = 0
 new mode_change_button_pressed_mask = 0

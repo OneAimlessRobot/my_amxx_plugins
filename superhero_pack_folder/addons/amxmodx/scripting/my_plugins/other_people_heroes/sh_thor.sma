@@ -26,7 +26,7 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 
 // GLOBAL VARIABLES
 new g_heroName[]="Thor"
-new gHeroID
+
 new g_spriteLightning
 
 new gIsSearchingMask

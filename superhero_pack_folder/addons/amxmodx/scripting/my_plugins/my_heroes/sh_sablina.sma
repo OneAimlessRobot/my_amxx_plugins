@@ -20,7 +20,6 @@
 
 #define SABLINA_TASK_PERIOD 0.5
 
-new gHeroID
 
 #define SABLINA_SPIKER_CLASSNAME "sablina_spike"
 #define SABLINA_STONE_SPIKE_TICK_LENGTH_SECS 0.5
@@ -423,14 +422,19 @@ public plugin_precache(){
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
-    if(heroID!=gHeroID) return
+	if(heroID!=gHeroID) return
 
-    if(mode==SH_HERO_ADD){
+	if(mode==SH_HERO_ADD){
 
 		sh_chat_message(id,gHeroID,"Warning: Any firearms you carry will get destroyed in the start of the next round")
-		
-		
+
+
 	}
+
+	cancel_sablina_strike(id)
+
+
+	Assign_BitVar(stone_spike_out_of_breath,id,false_for_macro)
 
 }
 
@@ -828,17 +832,14 @@ sablina_strike(id){
 public sablina_stone_spike_die_delayed(parms[1],ent_id){
 
 	ent_id-=SH_SABLINA_SPIKE_DIE_TASKID
-
+	if(client_is_within_range(parms[0])){
+			
+		Assign_BitVar(stone_spike_out_of_breath,parms[0],false_for_macro)
+		user_health_after_last_strike[parms[0]] = 0.0
+		
+	}
 	if(is_valid_ent(ent_id)){
-		if(is_user_alive(parms[0])){
-			
-			Assign_BitVar(stone_spike_out_of_breath,parms[0],false_for_macro)
-			
-		}
-		if(is_user_connected(parms[0])){
-
-			user_health_after_last_strike[parms[0]] = 0.0
-		}
+		
 		remove_entity(ent_id)
 
 	}
@@ -853,7 +854,7 @@ public _sablina_get_hero_id(iPlugins, iParams){
 
 public sh_round_new(){
 
-
+	stone_spike_out_of_breath = 0
 	stone_spike_active_mask = 0;
 	remove_entity_name(SABLINA_SPIKER_CLASSNAME)
 
@@ -913,7 +914,8 @@ public sh_client_spawn(id)
 
 			sh_unset_cooldown_flag(id)
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
-			Assign_BitVar(stone_spike_active_mask,id,false_for_macro)
+			Assign_BitVar(stone_spike_active_mask,id,false_for_macro);
+			Assign_BitVar(stone_spike_out_of_breath,id,false_for_macro)
 		}
 	}
 	
@@ -925,7 +927,8 @@ public sh_client_death(id)
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
 
-			Assign_BitVar(stone_spike_active_mask,id,false_for_macro)
+			Assign_BitVar(stone_spike_active_mask,id,false_for_macro);
+			Assign_BitVar(stone_spike_out_of_breath,id,false_for_macro)
 		}
 	}
 	
@@ -945,33 +948,6 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
 	switch(new_dmg_type){
 
-		/*
-
-			she is immune to some damage types
-			regardless of where it comes from
-			And immune to others
-			ONLY
-			if NOT self inflicted
-			She cannot suffocate, clense or damage herself with any conventional super bullet
-			but she can get auto-damaged (damaged from herself)
-			by drain damage
-			(her gimmick special move "Drains" her)
-			
-			this hero is still kind of complicated and conflicted in my head
-			I want to make cleaner eventually.
-
-			
-
-		*/
-		/*
-			TODO: I still dont know
-
-			at
-
-			friday 16 october 2026 10:01:39 WEST
-
-			how Im going to make her stone spike look visually cooler
-		*/
 
 		case SH_NEW_DMG_BLEED,
 					SH_NEW_DMG_DRAIN:{

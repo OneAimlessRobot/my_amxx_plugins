@@ -20,7 +20,7 @@
 
 // GLOBAL VARIBLES
 new g_heroName[]="Vegetto"
-new gHeroID
+
 new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
 new g_powerNum[SH_MAXSLOTS+1]

@@ -14,7 +14,7 @@ aquaman_bubbledamage 10			//How much damage each bubble does
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Aquaman"
 new bool:gIsBubbling[SH_MAXSLOTS+1]
 new gSpriteBubble

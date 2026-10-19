@@ -13,7 +13,7 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 #include "painkiller_inc/painkiller_inc.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Painkiller"
 new bool:DeathNotice[SH_MAXSLOTS+1]
 new AttackerInfo[SH_MAXSLOTS+1]

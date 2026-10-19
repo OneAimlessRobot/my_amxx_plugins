@@ -18,7 +18,7 @@ t800_paramult 5		    //how strong is the para
 #define TASKID 800
 // VARIABLES
 new gHeroName[]="T-800"
-new gHeroID
+
 new gT800Timer[SH_MAXSLOTS+1]
 new bool:gMorphed[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -63,7 +63,6 @@ public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 
-	gPlayerUltimateUsedMask=0
 	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		

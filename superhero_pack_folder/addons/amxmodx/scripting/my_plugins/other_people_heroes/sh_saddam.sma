@@ -13,7 +13,7 @@ saddam_wait 5 // Time while in your hole def=5
 
 // VARIABLES
 new gHeroName[]="Saddam Hussein" 
-new gHeroID
+
 new bool:gHasSpawnPoint[SH_MAXSLOTS+1]
 new userSpawn[SH_MAXSLOTS+1][3]
 new userHide[SH_MAXSLOTS+1][3]

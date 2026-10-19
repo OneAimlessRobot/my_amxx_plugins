@@ -294,6 +294,7 @@ enum
 /**
  * Used by the traceresult()
  */
+
 enum
 {
 	TR_AllSolid,       // (int) if true, plane is not valid

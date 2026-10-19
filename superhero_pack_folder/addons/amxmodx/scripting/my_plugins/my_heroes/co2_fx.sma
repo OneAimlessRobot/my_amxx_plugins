@@ -13,7 +13,6 @@
 #include "../my_include/my_author_header.inc"
 
 
-new gHeroID = -1
 new UNCO2_TASKID
 
 public plugin_init(){

@@ -16,7 +16,7 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 
 // GLOBAL VARIABLES
 new gHeroName[]="Steel"
-new gHeroID
+
 new bool:g_hasSuit[SH_MAXSLOTS+1]
 new pcvarg_hpSetSuit
 

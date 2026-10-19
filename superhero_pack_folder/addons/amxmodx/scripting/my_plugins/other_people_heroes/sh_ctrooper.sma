@@ -37,7 +37,7 @@
 #define CTROOPER_LASERGUN_CLASSID CSW_AK47 
 // GLOBAL VARIABLES
 new gHeroName[]="Clone Trooper"
-new gHeroID
+
 
 new dmg_source_name_short_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"
 new dmg_source_name_log_lazah_guun[SAFE_BUFFER_SIZE+1]="lazah_guun"

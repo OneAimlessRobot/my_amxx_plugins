@@ -41,7 +41,7 @@ new gIsInvisible[SH_MAXSLOTS+1]
 new gStillTime[SH_MAXSLOTS+1]
 new gSpriteWhite, gRadius, gBright
 new gHealPoints
-new gHeroID
+
 new gBullets[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gLastClipCount[SH_MAXSLOTS+1]

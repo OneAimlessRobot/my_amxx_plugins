@@ -6,7 +6,7 @@
 
 // GLOBAL VARIABLES
 new HeroName[] = "Master Chief"
-new gHeroID
+
 new CvarP90DmgMult
 
 #define Model_V_P90 "models/shmod/masterchief_v_p90.mdl"

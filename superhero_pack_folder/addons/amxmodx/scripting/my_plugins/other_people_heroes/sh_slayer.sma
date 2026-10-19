@@ -11,7 +11,7 @@ slayer_chance 0.05 - chance of assassination
 */
 new gHeroName[]="Slayer"
 
-new gHeroID
+
 public plugin_init()
 {
   my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)

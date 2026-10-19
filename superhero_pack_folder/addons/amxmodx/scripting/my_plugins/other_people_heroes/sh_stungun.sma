@@ -2,7 +2,7 @@
 
 #include "../my_include/superheromod.inc"
 
-new gHeroID
+
 new const gHeroName[] = "Stun Gun"
 new bool:gHasStunned[SH_MAXSLOTS+1]
 

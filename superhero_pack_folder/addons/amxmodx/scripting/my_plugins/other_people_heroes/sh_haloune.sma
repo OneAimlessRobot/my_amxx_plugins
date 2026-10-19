@@ -29,7 +29,7 @@ sv_maxspeed 500
 
 // GLOBAL VARIABLES
 new HeroName[] = "Haloune Tsurgi"
-new gHeroID
+
 new CvarM4A1DmgMult
 
 

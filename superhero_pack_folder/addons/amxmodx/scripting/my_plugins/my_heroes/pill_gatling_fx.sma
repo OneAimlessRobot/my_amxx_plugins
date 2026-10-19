@@ -500,14 +500,14 @@ public fx_id:_sh_effect_user_direct(iPlugin,iParams){
 
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new gHeroID=get_param(3)
+	new heroID=get_param(3)
 	new fx_id:fx_num=fx_id:get_param(4)
 	if(fx_num==KILL){
 
 		if(user==attacker){
 			new attacker_name[128]
 			get_user_name(attacker,attacker_name,127)
-			sh_chat_message(0,gHeroID,"%s: Dont worry guys! Momma Yakui has everything under control... what doesnt kill me can only... *thud*",attacker_name)
+			sh_chat_message(0,heroID,"%s: Dont worry guys! Momma Yakui has everything under control... what doesnt kill me can only... *thud*",attacker_name)
 		
 		}
 		kill_user(user,attacker)
@@ -524,7 +524,7 @@ public fx_id:_sh_effect_user_direct(iPlugin,iParams){
 			}
 			case COCAINE:{
 				
-				sh_bleed_user(user,attacker,BLEED_MINI,gHeroID,0)
+				sh_bleed_user(user,attacker,BLEED_MINI,heroID,0)
 			
 			}
 
@@ -543,8 +543,8 @@ public fx_id:_sh_effect_user(iPlugin,iParams){
 	new fx_id:fx_num=sh_gen_effect()
 	new user=get_param(1)
 	new attacker=get_param(2)
-	new gHeroID=get_param(3)
-	sh_effect_user_direct(user,attacker,gHeroID,fx_num)
+	new heroID=get_param(3)
+	sh_effect_user_direct(user,attacker,heroID,fx_num)
 	return fx_num;
 
 

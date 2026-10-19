@@ -39,7 +39,7 @@ enum {
 }
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Secretary of Defense"
 new bool:gHasRadio[SH_MAXSLOTS+1]
 new gLastModelKnife[SH_MAXSLOTS+1][64]

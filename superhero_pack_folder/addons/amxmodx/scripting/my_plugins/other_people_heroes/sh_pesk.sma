@@ -6,7 +6,7 @@
 
 
 new gHeroName[]="Pesk"
-new gHeroID
+
 new Beam,Fire
 new bool:InBeam[33] = false
 new smoke

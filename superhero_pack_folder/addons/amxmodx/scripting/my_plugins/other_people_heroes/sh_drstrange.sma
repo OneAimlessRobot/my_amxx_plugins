@@ -46,7 +46,7 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 #define h6_dam 40  //leg
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gHeroName[]="Dr. Strange"
 new bool:gDrStrangeReviveUsed[SH_MAXSLOTS+1]
 new bool:gUsingLaser[SH_MAXSLOTS+1]

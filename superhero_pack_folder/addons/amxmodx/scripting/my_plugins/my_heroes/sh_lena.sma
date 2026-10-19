@@ -13,7 +13,7 @@
 
 // GLOBAL VARIABLES
 new gHeroName[] = "L96A1"
-new gHeroID;
+
 new gNumBullets[SH_MAXSLOTS+1]
 new lena_max_bullets
 

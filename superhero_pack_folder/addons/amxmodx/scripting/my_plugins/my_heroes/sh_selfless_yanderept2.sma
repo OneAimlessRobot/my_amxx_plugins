@@ -33,7 +33,7 @@ stock const yandere_sentences[5][]={
 }
 
 
-new gHeroID
+
 stock hud_sync
 new Float:degen_iter_period
 

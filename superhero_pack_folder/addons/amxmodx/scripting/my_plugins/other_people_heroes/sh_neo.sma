@@ -23,7 +23,7 @@ neo_toggle 0		//Def=0
 
 // GLOBAL VARIABLES
 new gHeroName[]="Neo"
-new gHeroID
+
 #define TE_USERNEO	127
 
 //Flying Ability

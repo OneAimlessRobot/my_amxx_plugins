@@ -38,7 +38,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 #define vash_v_deagle_model "models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
 new gHeroName[]="Vash the Stampede"
-new gHeroID
+
 
 
 new dmg_source_name_short_revolver[SAFE_BUFFER_SIZE+1]="vash_revolver"

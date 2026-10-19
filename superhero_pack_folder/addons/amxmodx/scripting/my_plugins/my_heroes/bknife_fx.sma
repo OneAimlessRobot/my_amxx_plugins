@@ -186,7 +186,7 @@ public _sh_bleed_user(iPlugin,iParams){
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new fx_bleed_type:bleed_type=fx_bleed_type:get_param(3)
-	new gHeroID=get_param(4)
+	new heroID=get_param(4)
 	new heal_user=get_param(5)
 	new my_hitpoint_enum:hitplace= my_hitpoint_enum:get_param(6)
 	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||sh_get_id_bit(user,SH_IS_BLEEDING) || get_user_godmode(user)) return
@@ -197,17 +197,17 @@ public _sh_bleed_user(iPlugin,iParams){
 	get_user_name(user,user_name,127)
 		
 	if(!is_user_bot(user)){
-		sh_chat_message(user,gHeroID,"%s has bled you!!!",attacker_name)
+		sh_chat_message(user,heroID,"%s has bled you!!!",attacker_name)
 	}
 	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,gHeroID,"You just bled %s!!!",user_name)
+		sh_chat_message(attacker,heroID,"You just bled %s!!!",user_name)
 	
 	}
 	emit_sound(user, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	sh_assign_id_bit(user,SH_IS_BLEEDING,true)
 	if(bleed_type==BLEED_ULTRA){
 
-		sh_chat_message(attacker,gHeroID,"Ultra bleeding!!!")
+		sh_chat_message(attacker,heroID,"Ultra bleeding!!!")
 	}
 	bleed_task_user(user,attacker,heal_user, hitplace,bleed_type)
 

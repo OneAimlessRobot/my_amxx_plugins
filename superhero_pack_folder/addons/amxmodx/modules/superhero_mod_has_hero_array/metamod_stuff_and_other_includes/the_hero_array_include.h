@@ -51,7 +51,8 @@ protected:
 					SH_MAX_CLIENT_STATES,
 					
 					//arrays
-					the_memory[SH_MAX_HEROES_FINAL],
+					ownership_memory[SH_MAX_HEROES_FINAL],
+					cooldown_memory[SH_MAX_HEROES_FINAL],
 					the_player_masks[SH_MAX_CLIENT_STATES_FINAL],
 					the_hero_projectile_weapons[SH_MAX_HEROES_FINAL];
 	
@@ -66,6 +67,8 @@ public:
 	void zero_out_hero_ownership(void);
 	void zero_out_player_masks(void);
 	void zero_out_hero_projectile_weapon_masks(void);
+	void zero_out_id_hero_cooldown_masks(void);
+	
 	void init_hero_array_sizes(state_cell_type_t num_of_heroes_for_init,
 							state_cell_type_t num_of_hero_props_to_init,
 							state_cell_type_t num_of_client_states_to_init
@@ -73,6 +76,10 @@ public:
 	void init_hero_array_sizes(void);
 	bool get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id);  
 	void set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set );
+	
+	
+	bool get_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id);  
+	void set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const bool& the_value_to_set );
 	
 	
 	state_cell_type_t get_max_hero_props(void);
@@ -143,6 +150,7 @@ inline void HeroArrays::zero_it_out(void){
 		this->zero_out_hero_props();
 		this->zero_out_player_masks();
 		this->zero_out_hero_projectile_weapon_masks();
+		this->zero_out_id_hero_cooldown_masks();
 		
 }
 
@@ -150,6 +158,12 @@ inline void HeroArrays::zero_out_hero_props(void){
 	
 	printf("Hero flags array have been zeroed out!\n");
 	memset(this->the_hero_flags,0, sizeof(this->the_hero_flags));
+
+}
+inline void HeroArrays::zero_out_id_hero_cooldown_masks(void){
+	
+	printf("Id hero cooldown flags array has been zeroed out!\n");
+	memset(this->cooldown_memory,0, sizeof(this->cooldown_memory));
 
 }
 
@@ -172,7 +186,7 @@ inline void HeroArrays::zero_out_player_masks(void){
 inline void HeroArrays::zero_out_hero_ownership(void){
 	
 	printf("Hero array has been zeroed out!\n");
-	memset(this->the_memory,0, sizeof(the_memory));
+	memset(this->ownership_memory,0, sizeof(ownership_memory));
 		
 }
 
@@ -206,7 +220,6 @@ inline void HeroArrays::assign_hero_bit( const state_cell_type_t& the_hero_id, c
 
 
 
-
 //Hero ownership
 inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id)
 {
@@ -218,7 +231,7 @@ inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& player_id, con
 		return false;
 	
 	}
-	return Get_BitVar(this->the_memory[the_hero_id], player_id);
+	return Get_BitVar(this->ownership_memory[the_hero_id], player_id);
 }
 
 inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set )
@@ -231,7 +244,34 @@ inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, con
 		return;
 	
 	}
-	Assign_BitVar(this->the_memory[the_hero_id], player_id, the_value_to_set);
+	Assign_BitVar(this->ownership_memory[the_hero_id], player_id, the_value_to_set);
+}
+
+//Hero ownership
+inline bool HeroArrays::get_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id)
+{
+	if((hero_id >= this->SH_MAXHEROS)){
+		return false;
+	} 
+	
+	if( !the_player_id || (the_player_id > SH_MAXSLOTS)){
+		return false;
+	
+	}
+	return Get_BitVar(this->cooldown_memory[hero_id], the_player_id);
+}
+
+inline void HeroArrays::set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const bool& the_value_to_set )
+{
+	if( (hero_id >= this->SH_MAXHEROS)){
+		return;
+	}
+	
+	if( !the_player_id || (the_player_id > SH_MAXSLOTS)){
+		return;
+	
+	}
+	Assign_BitVar(this->cooldown_memory[hero_id], the_player_id, the_value_to_set);
 }
 
 //Hero projectile weapon state

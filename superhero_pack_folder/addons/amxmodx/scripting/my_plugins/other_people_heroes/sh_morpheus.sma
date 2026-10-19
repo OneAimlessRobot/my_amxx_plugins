@@ -30,7 +30,7 @@ morpheus_mp5mult 2.0		//Damage multiplyer for his MP5
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Morpheus"
 
 #define gModelMP5 "models/shmod/morpheus_mp5.mdl"

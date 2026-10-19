@@ -15,7 +15,6 @@
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
 
-new gHeroID = -1
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
 

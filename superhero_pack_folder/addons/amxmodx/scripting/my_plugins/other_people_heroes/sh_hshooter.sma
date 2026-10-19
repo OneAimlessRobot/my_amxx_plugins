@@ -3,7 +3,7 @@
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
-new gHeroID
+
 new const gHeroName[] = "Head Shooter"
 new gStartHealth[SH_MAXSLOTS+1]
 

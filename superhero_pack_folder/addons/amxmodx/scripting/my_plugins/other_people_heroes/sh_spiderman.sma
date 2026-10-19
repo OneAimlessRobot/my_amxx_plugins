@@ -18,7 +18,7 @@ spiderman_maxhooks 60		//Max ammout of hooks allowed (-1 is an unlimited ammount
 #define HOOKBEAMLIFE  100
 #define HOOK_DELTA_T  0.1  // units per second
 
-new gHeroID
+
 new const gHeroName[] = "Spider-Man"
 new bool:gHooked[SH_MAXSLOTS+1]
 new gHookLocation[SH_MAXSLOTS+1][3]

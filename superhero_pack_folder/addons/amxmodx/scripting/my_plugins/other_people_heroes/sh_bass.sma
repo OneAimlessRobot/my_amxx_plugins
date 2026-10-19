@@ -73,7 +73,7 @@ new gHeroName[]="Bass"
 new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser
-new gHeroID
+
 new decal_id
 //----------------------------------------------------------------------------------------------
 public plugin_init()

@@ -17,7 +17,7 @@ pitch_cooldown 60			//Seconds till next available use of power
 
 // GLOBAL VARIABLES
 new gHeroName[]="Pitch Black"
-new gHeroID
+
 new PitchTimer[SH_MAXSLOTS+1]
 new bool:NightVisionUse[SH_MAXSLOTS+1]
 new bool:lightsOut = false

@@ -12,7 +12,7 @@
 new gHeroName[]="Zenitsu Agatsuma"
 new gChargeModeEngagedMask = 0
 
-new gHeroID
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

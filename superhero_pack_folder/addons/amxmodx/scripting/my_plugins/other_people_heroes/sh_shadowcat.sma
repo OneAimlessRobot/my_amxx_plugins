@@ -13,7 +13,7 @@ shadowcat_cliptime 6		//# of seconds Shadowcat has in noclip mode.
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Shadowcat"
 new gShadowcatTimer[SH_MAXSLOTS+1]
 new const gSoundShadowcat[] = "ambience/alien_zonerator.wav"

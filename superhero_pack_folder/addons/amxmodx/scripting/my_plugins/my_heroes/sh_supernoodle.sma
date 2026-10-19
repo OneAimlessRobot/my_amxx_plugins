@@ -20,7 +20,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 
 // GLOBAL VARIABLES
 new gHeroName[]="SuperNoodle"
-new gHeroID
+
 
 
 new dmg_source_name_short_super_shotgun[SAFE_BUFFER_SIZE+1]="4arrel"

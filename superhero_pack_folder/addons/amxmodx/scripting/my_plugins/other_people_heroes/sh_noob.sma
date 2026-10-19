@@ -9,7 +9,7 @@
 
 // VARIABLES
 new gHeroName[]="Noob"
-new gHeroID
+
 new gArrowsFired[33] = 0
 // Test
 new gLastWeapon[33]=0

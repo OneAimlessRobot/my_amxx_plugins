@@ -47,7 +47,7 @@ new custom_dmg_id_poison_ivy_drain
 
 // GLOBAL VARIABLES
 new gHeroName[]="Poison Ivy"
-new gHeroID
+
 new gIsPoisonedMask[SH_MAXSLOTS+1] = {0, ...}
 new gPoisonDamage[SH_MAXSLOTS+1]
 new gmsgDamage, gmsgIcon

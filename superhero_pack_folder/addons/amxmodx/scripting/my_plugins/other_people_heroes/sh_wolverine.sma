@@ -26,7 +26,7 @@ wolv_knifemult 1.35			//Multiplier for knife damage
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Wolverine"
 new gPcvarHealPoints
 

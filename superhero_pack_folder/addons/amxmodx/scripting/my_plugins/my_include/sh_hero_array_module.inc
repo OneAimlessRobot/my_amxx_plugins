@@ -140,6 +140,22 @@ no return value
 */
 native sh_set_user_has_hero(id, the_hero_id, bool:the_value_to_set)
 
+//Hero cooldown
+/*
+
+bool
+ 
+ 
+*/
+native bool:sh_get_id_hero_cooldown_bit(hero_id, the_player_id)
+/*
+
+no return value
+ 
+*/
+native sh_set_id_hero_cooldown_bit(hero_id, the_player_id, bool:the_value_to_set)
+
+
 
 /*
 
@@ -214,3 +230,7 @@ native sh_max_hero_props()
 
 //returns the number of heroes that are currently mappable by this instance of the library
 native sh_maxhero_capacity()
+
+
+//to be used by the superhero core
+native sh_zero_out_cooldown_memory();

@@ -15,7 +15,7 @@ stock const debug_hud_mode= false
 new gHeroName[]="Flora"
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
 new pcvar_gFloraHeroLvl
-new gHeroID
+
 
 new pcvar_flora_field_start_ammount,
 	pcvar_flora_field_max_active_ammount

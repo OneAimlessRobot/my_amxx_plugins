@@ -5,7 +5,7 @@
 
 
 // VARIABLES
-new gHeroID
+
 new generic_dmg_shock
 new gHeroName[]="ElectroB00M"
 new gSpriteLightning

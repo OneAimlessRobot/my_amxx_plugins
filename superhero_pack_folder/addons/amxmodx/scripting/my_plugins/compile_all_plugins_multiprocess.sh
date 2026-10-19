@@ -1,5 +1,7 @@
 #! /bin/bash
-num_of_divs=5
+num_of_divs=10
+
+max_jobs=3
 
 is_even=0
 
@@ -131,7 +133,10 @@ function compile_plugins_in_range(){
 	echo "Compiling plugins from index $init to $((end-1))"
 
 	for ((i=init; i<=end; i++)); do
-        compile_plugin "$(get_non_ext_source_name "${plugin_arr[i]}")"
+        compile_plugin "$(get_non_ext_source_name "${plugin_arr[i]}")"&
+		while [ "$(jobs -rp | wc -l)" -ge "$max_jobs" ]; do
+			wait -n
+		done
 	done
 
 	
@@ -145,6 +150,6 @@ make_div_data
 print_divs
 
 for ((i=1; i<=num_of_divs; i++)); do
-	((compile_plugins_in_range "${div_data[$((i-1))]}" "${div_data[i]}") > "output$i.txt")&
+	((compile_plugins_in_range "${div_data[$((i-1))]}" "${div_data[i]}") > "output$i.txt")
 done
 wait

@@ -29,7 +29,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 new g_heroName[]="Phoenix"
-new gHeroID
+
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new Float:g_savedOrigin[SH_MAXSLOTS+1][3]

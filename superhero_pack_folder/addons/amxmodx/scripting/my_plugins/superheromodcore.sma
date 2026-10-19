@@ -1957,7 +1957,8 @@ public ham_PlayerSpawn_Post(id)
 		Assign_BitVar(gReadXPNextRoundMask, id, false_for_macro);
 	}
 	//Cancel the ultimate timer task on any new spawn
-	//It is up to the hero to set the variable back to false
+	sh_zero_out_cooldown_memory()
+
 	remove_task(id+SH_COOLDOWN_TASKID, 1)		// 1 = look outside this plugin
 
 	//Sets the stun and god timers back to normal
@@ -5194,8 +5195,7 @@ public plugin_end()
 
 	// Final cleanup in the saving include
 	saving_end()
-	//erase the array
-	sh_init_hero_array_lib(SH_MAXHEROS)
+	
 }
 //----------------------------------------------------------------------------------------------
 readINI()

@@ -21,7 +21,7 @@
 new gHeroName[]="Blue Blood"
 new gHasWeapons[SH_MAXSLOTS+1]
 new gSpriteLightning
-new gHeroID
+
 
 // WEAPONS
 #define giveTotal 27

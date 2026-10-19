@@ -24,7 +24,7 @@ demoman_minehealth 80		// health of mines (determines how many shots blow them u
 #define MINE_THINK 0.05
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Demolition Man"
 new bool:gBombPlanted
 new gPlayerMines[SH_MAXSLOTS+1][MAX_MINES]

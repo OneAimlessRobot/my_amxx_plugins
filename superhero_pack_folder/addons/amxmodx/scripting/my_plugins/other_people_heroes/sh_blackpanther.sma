@@ -11,7 +11,7 @@ blackpanther_level 0
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Black Panther"
 //----------------------------------------------------------------------------------------------
 public plugin_init()

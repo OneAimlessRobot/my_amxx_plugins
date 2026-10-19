@@ -26,7 +26,7 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 new smoke, laser, laser_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
 new gHeroName[]="Cable"
-new gHeroID
+
 new decal_id
 
 //----------------------------------------------------------------------------------------------

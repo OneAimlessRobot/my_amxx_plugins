@@ -55,7 +55,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 
 // GLOBAL VARIABLES
 new HeroName[] = "Gokus Kaioken technic"
-new gHeroID
+
 new GokuKTTimer[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]

@@ -43,7 +43,7 @@ Version History:
 
 // GLOBAL VARIABLES
 new g_heroName[]="Tri-Edge"
-new gHeroID
+
 new bool:Falling[SH_MAXSLOTS+1]
 new g_hooked[SH_MAXSLOTS+1]
 new g_hooksLeft[SH_MAXSLOTS+1]

@@ -44,7 +44,7 @@ hawk_freewpn 1		//Free Aug if CT / Sig if T [def=1]
 
 // GLOBAL VARIABLES
 new g_heroName[]="Hawkeye"
-new gHeroID
+
 new g_bodyPart[7] = {
 	HEAD,
 	CHEST,

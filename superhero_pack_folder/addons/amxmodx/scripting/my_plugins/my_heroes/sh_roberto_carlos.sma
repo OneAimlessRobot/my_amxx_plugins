@@ -7,7 +7,7 @@
 
 // GLOBAL VARIABLES
 
-new gHeroID
+
 
 new const gHeroName[] = "Roberto Carlos"
 

@@ -33,7 +33,7 @@ new white, gSpriteLightning
 new gRange, gForce
 new bool:gPlayersOnly
 new players[SH_MAXSLOTS], pnum
-new gHeroID 
+ 
 public plugin_init()
 {
 	// Plugin Info

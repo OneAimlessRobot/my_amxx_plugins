@@ -12,7 +12,7 @@ insptequila_level 0
 
 // GLOBAL VARIABLES
 new HeroName[] = "Inspector Tequila"
-new gHeroID
+
 
 // Temp lookup table (from csdm), will be in next sh version
 new weapon_slot[] = {

@@ -16,7 +16,7 @@ new gHealthDrainValveMask = 0
 new gHealthDrainValveTimerStartedMask = 0
 
 // GLOBAL VARIABLES
-//new gHeroID
+
 new const gHeroName[] = "Maria"
 new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
@@ -40,7 +40,7 @@ new pcvar_maria_alpha
 new pcvar_health_drain_begin_threshold
 new pcvar_health_drain_end_threshold
 new pcvar_begin_open_valve_timer;
-new gHeroID = -1
+
 
 
 new selflessness_weapon_id

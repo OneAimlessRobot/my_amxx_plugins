@@ -13,7 +13,7 @@ kamikaze_maxdamage 125			//Maximum damage to deal to a player
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Kamikaze"
 new gFuseTime[SH_MAXSLOTS+1]
 new const gSoundCountdown[] = "buttons/blip2.wav"

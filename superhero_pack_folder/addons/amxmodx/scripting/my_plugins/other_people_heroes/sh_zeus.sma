@@ -21,7 +21,7 @@ zeus_workinside 0		//Allow zeus to work inside buidings and so on
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Zeus"
 new bool:gIsInvisible[SH_MAXSLOTS+1]
 new gBurnDecal

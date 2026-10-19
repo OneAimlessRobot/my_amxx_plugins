@@ -14,7 +14,7 @@ goblin_grenadetimer 10		//How many second delay for new grenade
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[]= "Hobgoblin"
 new bool:gBlockGiveTask[SH_MAXSLOTS+1]
 new gPcvarGrenadeTimer

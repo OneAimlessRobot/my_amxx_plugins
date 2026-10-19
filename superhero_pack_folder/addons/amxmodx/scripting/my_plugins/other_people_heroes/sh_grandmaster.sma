@@ -13,7 +13,7 @@ gmaster_cooldown 600		//# of seconds for Grandmaster cooldown
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Grandmaster"
 new const gSoundGmaster[] = "ambience/port_suckin1.wav"
 new gPcvarCooldown

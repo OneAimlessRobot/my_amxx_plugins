@@ -41,7 +41,7 @@ new HeroName[] = "Alien"
 new AlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV
 new CvarKnifeMult, CvarZoomVision, CvarTint, CvarAlphaValue, CvarMode
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

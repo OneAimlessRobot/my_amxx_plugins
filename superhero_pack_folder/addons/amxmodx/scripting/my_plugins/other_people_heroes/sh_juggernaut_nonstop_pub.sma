@@ -10,7 +10,7 @@ juggernaut_level 2
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Juggernaut"
 new bool:gRestoreVel
 new Float:vecVel[3]

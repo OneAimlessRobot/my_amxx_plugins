@@ -12,7 +12,7 @@ dazzler_cooldown 15		//# of seconds before Dazzler can flash
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Dazzler"
 new const gSoundFlash[] = "debris/beamstart15.wav"
 new gSprite[4]

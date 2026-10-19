@@ -20,7 +20,7 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIBLES
-new gHeroID
+
 new g_heroName[]="BEA-03 Lancer"
 new bool:g_usingPower[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]

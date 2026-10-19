@@ -32,7 +32,7 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 
 new MARKSMAN_TASKID
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Marksman"
 
 new gLastWeapon[SH_MAXSLOTS+1]

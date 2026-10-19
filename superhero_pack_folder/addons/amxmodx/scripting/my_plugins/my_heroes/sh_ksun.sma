@@ -33,7 +33,7 @@ new pcvar_ksun_when_reset_spores;
 new gHeroName[]="ksun"
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
-new gHeroID
+
 new gHeroID_chikoi = -1
 
 

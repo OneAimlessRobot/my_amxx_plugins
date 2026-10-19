@@ -25,7 +25,7 @@ Version History:
 //Global Variables
 
 new gHeroName[]="Rattler"
-new gHeroID
+
 new gSpriteLightning
 
 new rat_wpn_id

@@ -5,7 +5,7 @@ highlander_level 0
 
 #include "../my_include/superheromod.inc"
 
-new gHeroID
+
 new const gHeroName[] = "Highlander"
 
 //-------------------------------------------------------------

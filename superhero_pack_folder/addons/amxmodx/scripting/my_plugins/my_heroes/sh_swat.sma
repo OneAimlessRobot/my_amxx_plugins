@@ -27,7 +27,7 @@ new dmg_source_name_log_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
 
 new gHeroName[]="S.W.A.T."
 new has_rocket[33]
-new gHeroID
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

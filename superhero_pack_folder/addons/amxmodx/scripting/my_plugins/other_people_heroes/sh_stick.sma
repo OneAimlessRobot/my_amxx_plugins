@@ -34,7 +34,7 @@ stick_enemyonly 0		//0=rings on all players 1=rings on enemy only
 
 // GLOBAL VARIABLES
 new gHeroName[]="Stick"
-new gHeroID
+
 new gSpriteWhite, gRadius, gBright
 //----------------------------------------------------------------------------------------------
 public plugin_init()

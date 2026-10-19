@@ -29,7 +29,7 @@ new g_normal_ptr[SH_MAXSLOTS+1]
 new bool:g_czero = false
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Ricochet"
 new gPcvarExtraDmg
 new gPcvarShowRebound

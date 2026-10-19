@@ -45,7 +45,7 @@ madassassin_healpoints 5	//The # of HP healed per second
 // GLOBAL VARIABLES
 new HeroName[] = "Mad Assassin"
 new CvarAwpDmgMult, CvarHealPoints
-new gHeroID
+
 #define Model_V_Awp "models/shmod/madassassin_v_awp.mdl"
 #define Model_P_Awp "models/shmod/madassassin_p_awp.mdl"
 

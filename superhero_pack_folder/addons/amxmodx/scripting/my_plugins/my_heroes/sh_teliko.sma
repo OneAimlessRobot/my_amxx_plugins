@@ -21,7 +21,7 @@
 #define famas_g2_v_model "models/shmod/teliko/teliko_famas/v_famas.mdl"
 #define famas_g2_p_model "models/shmod/teliko/teliko_famas/p_famas.mdl"
 
-new gHeroID
+
 
 // GLOBAL VARIABLES
 new gNumChaffs[SH_MAXSLOTS+1]

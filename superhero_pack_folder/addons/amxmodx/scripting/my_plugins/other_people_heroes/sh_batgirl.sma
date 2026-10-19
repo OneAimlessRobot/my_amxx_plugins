@@ -29,7 +29,7 @@ new gSpriteHookLine
 new const gSoundHook[] = "weapons/xbow_hit2.wav"
 new gPcvarMoveAcc, gPcvarReelSpeed, gPcvarHookStyle, gPcvarHookSky
 new gPcvarTeamColored, gPcvarMaxHooks, gPcvarSvGravity
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

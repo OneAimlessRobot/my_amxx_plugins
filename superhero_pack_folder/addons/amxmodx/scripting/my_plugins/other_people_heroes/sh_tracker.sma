@@ -22,7 +22,7 @@ tracker_refreshrate 1.0 //Ammount of time between showings of the target sprite 
 1.3 - Changed the sprite again, reduced the distance between wall and sprite, sprite no longer obscures the view of the target
 
 */
-new gHeroID
+
 new spriteTarget
 new isTaggedMask[SH_MAXSLOTS+1] = {0, ...}
 new Float:timeLeft[SH_MAXSLOTS+1][SH_MAXSLOTS+1]

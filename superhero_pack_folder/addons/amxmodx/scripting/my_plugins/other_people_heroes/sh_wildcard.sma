@@ -20,7 +20,7 @@ wildcard_damage 20		//Damage AK47 burst fire does
 #define sg_start_reload   5    // --| Shotgun start reload sequence.
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Wildcard"
 new const gEntAKBurst[] = "akBurst"
 new const gModelShell[] = "models/rshell_big.mdl"

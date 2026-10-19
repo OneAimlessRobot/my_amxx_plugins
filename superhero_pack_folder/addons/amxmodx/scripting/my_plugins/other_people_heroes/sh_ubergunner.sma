@@ -22,7 +22,7 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 
 // GLOBAL VARIABLES
 new gHeroName[]="UberGunner"
-new gHeroID
+
 
 new dmg_source_name_short_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"
 new dmg_source_name_log_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"

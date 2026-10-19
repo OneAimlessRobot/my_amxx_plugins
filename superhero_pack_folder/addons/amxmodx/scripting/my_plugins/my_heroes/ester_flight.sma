@@ -18,7 +18,6 @@
 #define PLUGIN "Superhero ester flight funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-new gHeroID = -1
 new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_draining_mask = 0

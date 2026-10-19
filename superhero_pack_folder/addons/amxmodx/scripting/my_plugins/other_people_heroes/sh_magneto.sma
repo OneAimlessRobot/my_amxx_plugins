@@ -13,7 +13,7 @@ magneto_giveglock 1				//Give the poor victim a glock?
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Magneto"
 new const gSoundDisarm[] = "ambience/deadsignal1.wav"
 new gSpriteLightning

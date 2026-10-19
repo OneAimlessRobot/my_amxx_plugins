@@ -25,7 +25,7 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 #include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 // GLOBAL VARIABLES
 new gHeroName[]="Madness"
-new gHeroID
+
 
 
 new dmg_source_name_short_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"

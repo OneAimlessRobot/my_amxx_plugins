@@ -42,7 +42,7 @@ darth_knifemult 2.70		// multiplier for knife damage...
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gPcvarHealPoints
 
 #define gModelKnifeV "models/shmod/darthmaul_knife.mdl"

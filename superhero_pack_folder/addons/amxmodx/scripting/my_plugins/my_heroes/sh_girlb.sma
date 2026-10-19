@@ -11,7 +11,7 @@
 #include "custom_grenades/custom_grenades.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gHeroName[]="Girl B"
 new gNumGlobs[SH_MAXSLOTS+1] = {0, ...}
 new girlb_held_down_mask = 0

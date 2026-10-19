@@ -28,7 +28,7 @@ sandman_cooldown 20		//Seconds before you can use quicksand again (Default 20)
 
 // GLOBAL VARIABLES
 new HeroName[]="Sandman"
-new gHeroID
+
 new MSGSetFOV
 //----------------------------------------------------------------------------------------------
 public plugin_init()

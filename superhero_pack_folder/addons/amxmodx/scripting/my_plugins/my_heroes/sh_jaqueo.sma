@@ -7,7 +7,7 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-new gHeroID
+
 new const gHeroName[] = "Jaqueo"
 
 new dmg_source_name_short_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"

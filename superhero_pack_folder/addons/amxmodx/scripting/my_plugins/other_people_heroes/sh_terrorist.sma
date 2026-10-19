@@ -12,7 +12,7 @@ terrorist_level 0
 
 // GLOBAL VARIABLES
 new gHeroName[]="Terrorist"
-new gHeroID
+
 new bool:can_plant
 new gCurrentWeapon[SH_MAXSLOTS+1]
 new planter

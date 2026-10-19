@@ -37,7 +37,7 @@ SuperAlien_knifemode 0	//1-knife only can't change weapons, 0-SuperAlien Vision 
 
 // GLOBAL VARIABLES
 new HeroName[] = "SuperAlien"
-new gHeroID
+
 new SuperAlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV
 new CvarKnifeMult, CvarZoomVision, CvarTint, CvarAlphaValue, CvarMode

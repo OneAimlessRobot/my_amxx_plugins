@@ -44,7 +44,6 @@ pcvar_jetplane_enable_gravity,
 pcvar_jetplane_enable_air_drag,
 pcvar_jetplane_enable_speed_limiter;
 
-new gHeroID = -1
 
 new pcvar_jetplane_speed,
 pcvar_accelerate_const,

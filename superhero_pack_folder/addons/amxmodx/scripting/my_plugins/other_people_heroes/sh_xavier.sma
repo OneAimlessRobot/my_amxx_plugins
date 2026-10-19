@@ -14,7 +14,7 @@ xavier_refreshtimer 5.0			//How often do the trails refresh
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Xavier"
 new gSpriteLaserBeam
 new gPcvarTrailLength, gPcvarShowTeam, gPcvarShowEnemy, gPcvarRefreshTimer

@@ -11,7 +11,7 @@
 
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Grim Reaper pt2"
 new gJustResetRenderingMask = 0 
 new gScytheSwings[SH_MAXSLOTS+1]

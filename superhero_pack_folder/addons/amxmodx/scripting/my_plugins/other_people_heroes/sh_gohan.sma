@@ -29,7 +29,7 @@ gohan_healmax 400		//Max # HP gohan can heal to
 #define TASKID 100000
 new gHeroName[]="Gohan"
 new gHealPoints, gHealAmount
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

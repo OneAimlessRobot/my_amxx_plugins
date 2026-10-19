@@ -10,7 +10,7 @@
 
 new gNumMines[SH_MAXSLOTS+1]
 
-new gHeroID
+
 
 new pcvar_num_mines
 new pcvar_disarmable

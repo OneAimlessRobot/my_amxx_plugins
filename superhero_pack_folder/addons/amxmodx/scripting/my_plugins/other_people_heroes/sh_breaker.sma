@@ -24,7 +24,7 @@ breaker_deduct 10
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new pCvarChance, pCvarDeduct
 //----------------------------------------------------------------------------------------------
 public plugin_init()

@@ -12,7 +12,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = -1
 
 new g_jaqueo_shield_cooldown[SH_MAXSLOTS+1];
 new g_jaqueo_shield_loaded[SH_MAXSLOTS+1];

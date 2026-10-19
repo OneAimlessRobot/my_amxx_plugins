@@ -10,7 +10,7 @@
 
 // GLOBAL VARIABLES
 new gHeroName[]="Mirage"
-new gHeroID
+
 
 #define TASKID 10000
 

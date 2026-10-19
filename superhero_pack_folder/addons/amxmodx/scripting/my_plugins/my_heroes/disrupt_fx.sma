@@ -64,7 +64,7 @@ public _sh_disrupt_user(iPlugin,iParams){
 	new user=get_param(1)
 	if(!sh_get_id_bit(user,SH_IS_DISRUPT)){
 		new attacker=get_param(2)
-		new gHeroID=get_param(3)
+		new heroID=get_param(3)
 		new attacker_name[128]
 		get_user_name(attacker,attacker_name,127)
 		new user_name[128]
@@ -73,11 +73,11 @@ public _sh_disrupt_user(iPlugin,iParams){
 			if(CAN_SELF_DISRUPT&&user){
 				
 				if(!is_user_bot(user)){
-					sh_chat_message(user,gHeroID,"%s has disrupted you!!!",attacker_name)
+					sh_chat_message(user,heroID,"%s has disrupted you!!!",attacker_name)
 				}
 				
 				if(!is_user_bot(attacker)){
-					sh_chat_message(attacker,gHeroID,"You disrupted %s!!!",user_name)
+					sh_chat_message(attacker,heroID,"You disrupted %s!!!",user_name)
 				}
 				disrupt_user(user)
 			}
@@ -85,11 +85,11 @@ public _sh_disrupt_user(iPlugin,iParams){
 		else{
 
 			if(!is_user_bot(user)){
-				sh_chat_message(user,gHeroID,"%s has disrupted you!!!",attacker_name)
+				sh_chat_message(user,heroID,"%s has disrupted you!!!",attacker_name)
 			}
 			
 			if(!is_user_bot(attacker)){
-				sh_chat_message(attacker,gHeroID,"You disrupted %s!!!",user_name)
+				sh_chat_message(attacker,heroID,"You disrupted %s!!!",user_name)
 			}
 			disrupt_user(user)
 		}

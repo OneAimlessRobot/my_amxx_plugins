@@ -65,7 +65,7 @@ new bool:ChuckyPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:UserTeam[SH_MAXSLOTS+1]
 new bool:BombPlanted
 new CvarCooldown, CvarKnifeMult
-new gHeroID
+
 
 
 new dmg_source_name_short_super_knife[SAFE_BUFFER_SIZE+1]="super_knife"

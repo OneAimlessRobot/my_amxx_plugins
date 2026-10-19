@@ -20,7 +20,6 @@ pcvar_jetplane_law_rocketspeed,
 pcvar_jetplane_law_dmg,
 pcvar_jetplane_law_ammo;
 
-new gHeroID = -1
 
 new law[SH_MAXSLOTS+1]
 

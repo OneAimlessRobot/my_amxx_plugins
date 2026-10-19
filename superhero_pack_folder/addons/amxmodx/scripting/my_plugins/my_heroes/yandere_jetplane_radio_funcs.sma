@@ -18,7 +18,6 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new gHeroID = -1
 
 new scan_loaded[SH_MAXSLOTS+1]
 

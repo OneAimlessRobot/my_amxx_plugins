@@ -12,7 +12,7 @@
 
 // VARIABLES
 new gHeroName[]="Rom"
-new gHeroID
+
 new beam
 new gRomTimer[SH_MAXSLOTS+1]
 //----------------------------------------------------------------------------------------------

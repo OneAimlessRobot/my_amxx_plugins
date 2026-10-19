@@ -26,7 +26,7 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new g_heroName[]="Exodus"
 new bool:g_inSearch[SH_MAXSLOTS+1]
 new g_grabbedID[SH_MAXSLOTS+1]

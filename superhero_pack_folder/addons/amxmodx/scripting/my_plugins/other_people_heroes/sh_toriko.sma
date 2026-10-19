@@ -22,7 +22,7 @@ toriko_hpgained 20    // How much health is gained on a streak
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Toriko"
 new gKillCount[SH_MAXSLOTS+1]
 new pCvarKills, pCvarGain

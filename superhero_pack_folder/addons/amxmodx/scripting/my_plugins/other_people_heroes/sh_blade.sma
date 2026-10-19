@@ -66,7 +66,7 @@ new dmg_source_name_short_gunburn[SAFE_BUFFER_SIZE+1]="gunburn"
 new dmg_source_name_log_gunburn[SAFE_BUFFER_SIZE+1]="gunburn"
 new custom_dmg_id_gunburn
 
-new gHeroID
+
 new bool:InKnifeBurn[SH_MAXSLOTS+1]
 new bool:InGunBurn[SH_MAXSLOTS+1]
 new SpriteSmoke, SpriteFire

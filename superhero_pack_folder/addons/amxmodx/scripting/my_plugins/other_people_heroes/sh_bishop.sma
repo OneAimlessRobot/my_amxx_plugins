@@ -26,7 +26,7 @@ bishop_blastmult 2.50	//Energy absorbed X this cvar = damage that Energy Blast d
 new g_heroName[]="Bishop"
 new g_absorbedDamage[SH_MAXSLOTS+1]
 new g_spriteLaser, g_spriteExplosion
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

@@ -21,7 +21,7 @@ batman_armor 125		//defualt 125
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Batman"
 new gCurrentWeapon[SH_MAXSLOTS+1]
 new gmsgSetFOV

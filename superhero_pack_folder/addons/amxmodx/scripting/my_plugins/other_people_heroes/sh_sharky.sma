@@ -9,7 +9,7 @@
 
 // VARIABLES
 new gHeroName[]="sharky's-confusion"
-new gHeroID
+
 new g_sharkyTimer[SH_MAXSLOTS+1]
 new gSharkyMode[33]
 new g_sharkySound[]="ambience/alien_zonerator.wav"

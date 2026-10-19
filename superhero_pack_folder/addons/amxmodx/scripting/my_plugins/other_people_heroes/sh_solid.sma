@@ -18,7 +18,7 @@ solid_ration_health 50		// How many health you have per ration?
 
 
 new gHeroName[] = "Solid Snake"
-new gHeroID
+
 new gMaxHealth[SH_MAXSLOTS+1]
 new Rations[SH_MAXSLOTS+1]
 // CVARS

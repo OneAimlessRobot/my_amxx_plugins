@@ -14,7 +14,7 @@ polaris_range 300		// How close the grenades have to be before polaris reacts
 
 // GLOBAL VARIABLES
 new gHeroName[]="Polaris"
-new gHeroID
+
 new gSpriteLightning
 new gRange, gBoost
 

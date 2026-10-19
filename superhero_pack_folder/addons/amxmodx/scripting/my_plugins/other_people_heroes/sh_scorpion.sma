@@ -7,7 +7,7 @@
 
 // GLOBAL VARIABLES
 new g_heroName[]="Scorpion"
-new gHeroID
+
 new bool:g_knifeFight[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new bool:g_inKnifeFight[SH_MAXSLOTS+1]
 new g_hooked[SH_MAXSLOTS+1]

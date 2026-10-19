@@ -85,7 +85,7 @@ new radar_batt[SH_MAXSLOTS+1]
 
 new gHeroName[]="Bazooka"
 
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

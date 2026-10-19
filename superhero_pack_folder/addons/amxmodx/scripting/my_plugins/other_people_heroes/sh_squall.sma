@@ -19,7 +19,7 @@ squall_bullets 7
 #define gunsound "weapons/deagle-1.wav"
 
 // GLOBAL VARIABLES
-new gHeroID;
+
 new gBullets[SH_MAXSLOTS+1];
 //pcvars
 new pcvar_bullets;

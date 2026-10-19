@@ -15,7 +15,7 @@
 
  // GLOBAL VARIABLES
  new gHeroName[]="Storm"
- new gHeroID
+ 
  new gStormTimer[SH_MAXSLOTS+1]
  new lightning,Fire
 

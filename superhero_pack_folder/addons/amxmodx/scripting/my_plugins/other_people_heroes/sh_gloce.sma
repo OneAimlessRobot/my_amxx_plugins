@@ -23,7 +23,7 @@ new gloce_time
 
 
 new g_HeroName[] = "Gloce"
-new gHeroID
+
 
 new times_id[SH_MAXSLOTS+1]
 

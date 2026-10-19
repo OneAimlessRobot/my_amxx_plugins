@@ -553,20 +553,6 @@ enum {
 	FM_ServerPrint
 };
 
-enum TraceResult
-{
-	TR_AllSolid,		// int
-	TR_StartSolid,		// int
-	TR_InOpen,			// int
-	TR_InWater,			// int
-	TR_flFraction,		// float
-	TR_vecEndPos,		// float array[3]
-	TR_flPlaneDist,		// float
-	TR_vecPlaneNormal,	// float array[3]
-	TR_pHit,			// int (edict_t*)
-	TR_iHitgroup,		// int
-};
-
 enum KeyValueData
 {
 	KV_ClassName,		// string
@@ -790,4 +776,18 @@ enum BaseFieldType
 	BASEFIELD_VECTOR,
 	BASEFIELD_ENTITY,
 	BASEFIELD_STRING,
+};
+
+enum TraceResult
+{
+	TR_AllSolid,		// int
+	TR_StartSolid,		// int
+	TR_InOpen,			// int
+	TR_InWater,			// int
+	TR_flFraction,		// float
+	TR_vecEndPos,		// float array[3]
+	TR_flPlaneDist,		// float
+	TR_vecPlaneNormal,	// float array[3]
+	TR_pHit,			// int (edict_t*)
+	TR_iHitgroup,		// int
 };

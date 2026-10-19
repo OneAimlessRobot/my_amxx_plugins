@@ -24,7 +24,7 @@ stock SHINOBU_POISON_KICK_DELAYED_TASKID,
 // GLOBAL VARIABLES
 new gHeroName[]="Shinobu Kocho"
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
-new gHeroID
+
 new dmg_source_name_short_poison_kick[SAFE_BUFFER_SIZE+1]="poison_kick"
 new dmg_source_name_log_poison_kick[SAFE_BUFFER_SIZE+1]="shinobu_poison_kick"
 new custom_weapon_damage_sharp_poison_kick_id

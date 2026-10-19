@@ -17,7 +17,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Ester"
 new generic_dmg_shock = -1
 

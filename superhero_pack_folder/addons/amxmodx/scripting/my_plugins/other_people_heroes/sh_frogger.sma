@@ -38,7 +38,7 @@ frogger_level 0
 #define m_fLongJump 356
 
 // GLOBAL VARIABLES
-new gHeroID
+
 
 #define m_fLongJump 356
 

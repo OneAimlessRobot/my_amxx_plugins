@@ -4,7 +4,7 @@
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new gHeroName[] = "Accelerator"
-new gHeroID
+
 new pcvar_accel_rate
 //----------------------------------------------------------------------------------------------
 public plugin_init()

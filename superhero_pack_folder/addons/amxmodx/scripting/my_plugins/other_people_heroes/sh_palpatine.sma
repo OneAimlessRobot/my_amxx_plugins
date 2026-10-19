@@ -7,7 +7,7 @@
 new gHeroName[]="Emperor Palpatine"
 new g_palpatineTimer[SH_MAXSLOTS+1]
 new gSpriteLightning
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

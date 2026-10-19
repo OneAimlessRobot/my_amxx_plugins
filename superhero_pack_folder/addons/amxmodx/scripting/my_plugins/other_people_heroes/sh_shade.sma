@@ -12,7 +12,7 @@
 
 // VARIABLES
 new gHeroName[]="Shade"
-new gHeroID
+
 new g_shadeTimer[SH_MAXSLOTS+1]
 new gShadeMode[33]
 new g_shadeSound[]="ambience/sandfall1.wav"

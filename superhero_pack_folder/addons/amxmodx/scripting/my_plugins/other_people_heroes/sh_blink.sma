@@ -20,7 +20,7 @@ new checkCount[SH_MAXSLOTS+1]
 new blinkSpot[SH_MAXSLOTS+1][3]
 new origBlinkSpot[SH_MAXSLOTS+1][3]
 new g_lastPosition[SH_MAXSLOTS+1][3]
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

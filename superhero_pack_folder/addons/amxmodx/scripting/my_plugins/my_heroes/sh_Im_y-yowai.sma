@@ -22,7 +22,7 @@ new custom_dmg_id_thanks
 #define YOWAI_PLAYER_MODEL "models/player/yowai/yowai.mdl"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new gHeroID_chikoi = -1
 
 new const gHeroName[] = "Yowai"

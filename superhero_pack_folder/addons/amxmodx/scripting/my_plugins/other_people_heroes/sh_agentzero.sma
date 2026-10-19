@@ -26,7 +26,7 @@ agentz_level 5
 
 
 // GLOBAL VARIABLES
-new gHeroID
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

@@ -18,7 +18,6 @@
 
 #define ERICA_HOOK_DUMMY_ENTITY_CLASSNAME "erica_hook"
 
-new gHeroID = -1
 stock hook_on_mask = 0
 stock g_player_hook[SH_MAXSLOTS+1]
 stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}

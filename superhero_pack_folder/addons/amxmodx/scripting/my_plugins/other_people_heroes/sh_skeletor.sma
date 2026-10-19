@@ -16,7 +16,7 @@ skeletor_maxsnarks 10			// maximum amount of snarks to spawn on a player
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Skeletor"
 new gPlayerPosition[SH_MAXSLOTS+1][3]  // keeps track of last known origin
 new gMoveTimer[SH_MAXSLOTS+1]          // incremented if player didn't move far enough

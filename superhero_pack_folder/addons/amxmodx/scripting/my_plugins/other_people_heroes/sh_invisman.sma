@@ -14,7 +14,7 @@ invisman_checkonground 0	//Must player be on ground to be invisible (Default 0 =
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Invisible Man"
 new gIsInvisible[SH_MAXSLOTS+1]
 new Float:gStillTime[SH_MAXSLOTS+1]

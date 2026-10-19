@@ -21,7 +21,7 @@ new gBHTimer, gCurrentBH
 new ppl[SH_MAXSLOTS], pnum
 new gRange, gForce
 new g_lastPosition[SH_MAXSLOTS+1][3]
-new gHeroID
+
 //-------------------------------------------------------------------------------------------------
 public plugin_init()
 {

@@ -42,7 +42,7 @@ new custom_dmg_id_grenade
 #define VERONIKA_GRENADE_SPEED 1250
 new g_ammo[33]
 new g_m203_loaded[33]
-new gHeroID
+
 //sprites
 new m_iTrail
 new xplode

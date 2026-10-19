@@ -25,7 +25,7 @@ new const lDamage[7] = {
 }
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Cyclops"
 new bool:gUsingLaser[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]

@@ -17,7 +17,7 @@ new Target = 0
 new GoreHP = 200
 new Float:CircularMotion = 0.0
 new Float:LastFind, Float:Hunting
-new gHeroID
+
 
 #if defined DEBUG
 new TestEnt[5] = 0

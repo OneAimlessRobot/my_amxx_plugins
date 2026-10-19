@@ -16,7 +16,7 @@ dsniper_mult 4
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
-new gHeroID
+
 new gHeroName[] = "Deagle Assassin"
 new bool:gHasZoom[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]

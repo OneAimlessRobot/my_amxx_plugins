@@ -16,7 +16,7 @@ shock_armor 250			//Armor Starts with (def=250)
 
 // GLOBAL VARIABLES
 new gHeroName[]="Static Shock"
-new gHeroID
+
 new g_jetPackRunning[SH_MAXSLOTS+1]
 new g_endLocation[SH_MAXSLOTS+1][3]
 new g_spriteFire

@@ -21,7 +21,7 @@ frieza_disklife 50
 #include "../my_include/superheromod.inc"
 
 new gHeroName[] = "Frieza"
-new gHeroID
+
 new diskTimer[SH_MAXSLOTS+1] 
 //This variable will represent the disk being made. 
 new disk[SH_MAXSLOTS+1]

@@ -20,7 +20,7 @@ leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 #include "../my_include/my_author_header.inc"
 
 new bubbleSprite
-new gHeroID
+
 new lastwpn[SH_MAXSLOTS + 1]
 new lastammo[SH_MAXSLOTS + 1]
 new check[SH_MAXSLOTS + 1]

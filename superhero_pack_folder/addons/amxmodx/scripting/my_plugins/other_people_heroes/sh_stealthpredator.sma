@@ -19,7 +19,7 @@ stealth_speed 600			//Running Speed (default=600)
 
 // GLOBAL VARIABLES
 new gHeroName[]="Stealth Predator"
-new gHeroID
+
 new CsTeams:gUserTeam[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
 new g_lastWeapon[SH_MAXSLOTS+1]

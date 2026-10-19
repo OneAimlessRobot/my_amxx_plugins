@@ -36,7 +36,7 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 
 // GLOBAL VARIABLES
 new gHeroName[]="War Machine"
-new gHeroID
+
 new bool:gJetPackRunning[SH_MAXSLOTS+1]
 new bool:gRegenAllowed[SH_MAXSLOTS+1]
 new gSpriteFire

@@ -22,7 +22,7 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Anubis"
 new gmsgSayText
 new gPcvarShowDamage, gPcvarShowChat

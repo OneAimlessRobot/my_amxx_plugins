@@ -40,7 +40,7 @@ new gHeroName[]="Penguin"
 
 new Float:gNadeSpeed
 new gSpriteTrail
-new gHeroID
+
 
 new dmg_source_name_short_penguin[SAFE_BUFFER_SIZE+1]="hominh_he"
 new dmg_source_name_log_penguin[SAFE_BUFFER_SIZE+1]="homing_grenade"

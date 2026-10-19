@@ -40,7 +40,7 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 new gHeroName[]="Gambit"
 new bool:gWillHit[SH_MAXSLOTS+1]
 new gGrenTrail
-new gHeroID;
+
 new Float:gTotalChance
 new const HEGRENADE_MODEL[] = "models/w_hegrenade.mdl"
 new pcvar_dmg_mult

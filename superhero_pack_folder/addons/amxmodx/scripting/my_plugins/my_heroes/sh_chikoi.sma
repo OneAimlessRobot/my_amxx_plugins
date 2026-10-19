@@ -16,7 +16,7 @@ stock chikoi_death_sounds[CHIKOI_NUM_DEATH_SOUNDS][]={
 }
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Chikoi the Maid"
 new custom_dmg_id=0;
 

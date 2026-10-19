@@ -17,7 +17,7 @@ bomberman_maxdamage 100		//Maximum Damage to deal		(def=100)
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Bomberman"
 new gBombEntity[SH_MAXSLOTS+1]
 new gBombAmmo[SH_MAXSLOTS+1]

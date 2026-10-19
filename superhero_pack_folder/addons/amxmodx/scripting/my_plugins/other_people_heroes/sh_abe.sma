@@ -14,7 +14,7 @@ new gHeroName[] = "Abe"
 new bool:AbePowerUsed[SH_MAXSLOTS+1]
 new gMorphed[SH_MAXSLOTS+1]
 new LightSprite
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

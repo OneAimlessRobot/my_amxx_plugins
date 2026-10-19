@@ -4,7 +4,6 @@
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
 
-new gHeroID = -1
 
 #define AMMO_TYPE_45ACP 6
 #define START_MAX_AMMO 0

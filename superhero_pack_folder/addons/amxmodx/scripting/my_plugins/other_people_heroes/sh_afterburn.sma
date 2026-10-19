@@ -31,7 +31,7 @@ afterburn_burndmg 5		//How much damage each burn does
 new gHeroName[]="AfterBurn"
 new gIsBurning[SH_MAXSLOTS+1]
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

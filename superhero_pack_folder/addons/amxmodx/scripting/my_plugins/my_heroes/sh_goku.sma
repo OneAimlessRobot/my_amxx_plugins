@@ -91,7 +91,7 @@ stock goku_hud_sync
 
 new g_armorPts, g_spriteSmoke, g_spriteTrailY, g_spriteTrailB, g_spriteTrailR
 new g_spriteExplosionY, g_spriteExplosionB, g_spriteExplosionR, g_spritePowerUp
-new gHeroID
+
 
 
 new goku_dmgs_arr[5][sh_extra_damage_struct] = {

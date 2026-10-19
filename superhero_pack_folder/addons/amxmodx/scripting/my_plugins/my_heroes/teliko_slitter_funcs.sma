@@ -16,7 +16,6 @@
 
 
 #define TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME "teliko_slitter"
-new gHeroID = -1
 new gHeroID_erica = -1
 new slitter_on_mask = 0
 new g_player_slitter[SH_MAXSLOTS + 1]

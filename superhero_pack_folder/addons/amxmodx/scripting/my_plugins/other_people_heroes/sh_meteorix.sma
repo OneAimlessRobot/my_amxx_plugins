@@ -22,7 +22,7 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 #define h6_dam 90  // leg
 
 new gHeroName[]="Meteorix"
-new gHeroID
+
 new bool:MeteorixPowerUsed[SH_MAXSLOTS+1]
 new lightnings_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]

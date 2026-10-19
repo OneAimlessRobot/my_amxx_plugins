@@ -16,7 +16,7 @@ kenshin_knifemult 3.0		//Multiplier for knife damage (Default 3.0)
 
 // GLOBAL VARIABLES
 new g_heroName[]="Kenshin"
-new gHeroID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

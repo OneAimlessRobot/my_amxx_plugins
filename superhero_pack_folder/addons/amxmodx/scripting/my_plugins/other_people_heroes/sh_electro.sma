@@ -25,7 +25,7 @@ electro_jumpradius 500		//Radius to search for a lightning jump (Default 500)
 #define LINE_WIDTH 80
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new bool:gLightningHit[SH_MAXSLOTS+1]
 new bool:gIsSearching[SH_MAXSLOTS+1]
 new const gSoundSearch[] = "turret/tu_ping.wav"

@@ -19,7 +19,7 @@ new dmg_source_name_short_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_au
 new dmg_source_name_log_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
 
 new g_heroName[]="Victim 15/21"
-new gHeroID
+
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new Float:g_savedOrigin[SH_MAXSLOTS+1][3]

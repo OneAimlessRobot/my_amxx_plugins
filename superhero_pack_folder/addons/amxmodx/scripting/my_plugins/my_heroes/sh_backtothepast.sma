@@ -22,7 +22,7 @@ new gJeremyPowerUsedTimes[SH_MAXSLOTS+1] = {0, ...},
 new g_player_cooldown_mask = 0
 
 new gUserTeam[ SH_MAXSLOTS+1 ]
-new gHeroID
+
 new gTeamUseCount[3]
 new gGameUseCount,
 	gMaxPerPlayer,

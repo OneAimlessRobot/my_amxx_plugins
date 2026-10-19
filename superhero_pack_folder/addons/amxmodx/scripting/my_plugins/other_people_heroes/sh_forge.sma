@@ -24,7 +24,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new gHeroName[]="Forge"
-new gHeroID
+
 
 new beam, sprite1, sprite2, sprite3
 //----------------------------------------------------------------------------------------------

@@ -40,7 +40,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 	new gHeroName[] = "Liberty Lad"
 	new Float: LibertyLadFlareOrigin[3]
 	new flareentity
-	new gHeroID
+	
 //--------------------------------------------------------------------------------------------------
 // PLUGIN INITIALS
 //--------------------------------------------------------------------------------------------------

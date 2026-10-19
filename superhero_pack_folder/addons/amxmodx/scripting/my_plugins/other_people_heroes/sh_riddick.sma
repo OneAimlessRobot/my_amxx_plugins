@@ -23,7 +23,7 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 
 // GLOBAL VARIABLES
 new gHeroName[]="Riddick"
-new gHeroID
+
 new gHealPoints
 
 

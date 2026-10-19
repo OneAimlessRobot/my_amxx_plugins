@@ -15,7 +15,7 @@
 // GLOBAL VARIABLES
 
 
-new gHeroID
+
 new const gHeroName[] = "Yakui Mk2"
 
 new mode_change_button_pressed_mask = 0

@@ -10,7 +10,7 @@
 #include "../my_include/my_author_header.inc"
 // GLOBAL VARIABLES
 
-new gHeroID
+
 
 stock const gHeroName[] = "Power (CSM)"
 

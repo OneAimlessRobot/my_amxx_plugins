@@ -13,7 +13,7 @@ htorch_burndamage 10		//How much damage each burn does
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroID
+
 new const gHeroName[] = "Human Torch"
 new bool:gIsBurning[SH_MAXSLOTS+1]
 new const gSoundBurning[] = "ambience/burning1.wav"
