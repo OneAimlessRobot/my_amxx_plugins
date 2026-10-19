@@ -10,7 +10,7 @@
 #define MODULE_URL "lenasattic.ddns.net:11020/webcrookedstuff"
 #define MODULE_LOGTAG "SH_A_M"
 // If you want the module not to be reloaded on mapchange, remove / comment out the next line
-#define MODULE_RELOAD_ON_MAPCHANGE
+//#define MODULE_RELOAD_ON_MAPCHANGE
 
 #ifdef __DATE__
 #define MODULE_DATE __DATE__

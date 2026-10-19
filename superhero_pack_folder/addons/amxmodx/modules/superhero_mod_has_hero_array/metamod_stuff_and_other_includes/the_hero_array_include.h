@@ -142,6 +142,7 @@ inline void HeroArrays::zero_it_out(void){
 		this->zero_out_hero_ownership();
 		this->zero_out_hero_props();
 		this->zero_out_player_masks();
+		this->zero_out_hero_projectile_weapon_masks();
 		
 }
 
