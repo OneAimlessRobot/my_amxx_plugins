@@ -48,13 +48,13 @@ public plugin_precache()
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if  (heroID!=gHeroID) return
 	
+	sh_unset_cooldown_flag(id)
 	sh_client_spawn(id,false)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
 	remove_task(id)
-	sh_unset_cooldown_flag(id)
 	blinkAmount[id] = get_cvar_num("blink_amount")
 }
 

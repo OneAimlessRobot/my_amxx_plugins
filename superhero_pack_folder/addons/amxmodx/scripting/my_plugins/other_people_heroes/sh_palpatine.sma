@@ -67,10 +67,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-  sh_unset_cooldown_flag(id)
-  if (sh_get_user_has_hero(id,gHeroID)) {
-    sh_unset_cooldown_flag(id)
-  }
   g_palpatineTimer[id]=0
   return PLUGIN_HANDLED
 }

@@ -73,7 +73,6 @@ public sh_client_death(id)
 public sh_client_spawn(id)
 {
 	laser_shots[id] = get_cvar_num("cable_laser_ammo")
-	sh_unset_cooldown_flag(id)
 
 }
 

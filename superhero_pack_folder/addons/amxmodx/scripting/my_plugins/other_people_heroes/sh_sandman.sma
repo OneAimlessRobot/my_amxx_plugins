@@ -51,10 +51,8 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( task_exists(id) )
-		remove_task(id)
+	remove_task(id)
 
-	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)

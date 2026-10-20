@@ -43,11 +43,6 @@ public plugin_precache()
 	precache_sound(gSoundFlash)
 }
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	sh_unset_cooldown_flag(id)
-}
-//----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
 {
 	if ( gHeroID != heroID || key != SH_KEYDOWN || sh_is_freezetime() ) return

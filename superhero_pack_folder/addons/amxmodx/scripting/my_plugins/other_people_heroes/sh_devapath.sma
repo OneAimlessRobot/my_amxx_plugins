@@ -39,10 +39,6 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Manipulate Gravity", "Six Paths of Pain, The Deva Path - Manipulate the Gravity of your attackers/victims.")
 }
 
-public sh_client_spawn(id)
-{
-	sh_unset_cooldown_flag(id)
-}
 //----------------------------------------------------------------
 public client_damage ( attacker, victim, damage, wpnindex, hitplace, TA )
 {

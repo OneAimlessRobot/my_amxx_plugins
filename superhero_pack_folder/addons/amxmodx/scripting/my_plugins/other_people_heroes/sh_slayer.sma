@@ -26,11 +26,7 @@ public plugin_init()
   create_cvar("slayer_cooldown", "40.0" )
   create_cvar("slayer_chance", "0.05" )
 }
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-  sh_unset_cooldown_flag(id)
-}
+
 //----------------------------------------------------------------------------------------------
 public slayer_loop()
 {

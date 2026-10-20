@@ -68,7 +68,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode)
 
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	g_TessTimer[id] = -1
 
 	if (sh_get_user_has_hero(id,g_HeroID)) tess_endimmunity(id)
@@ -135,7 +134,6 @@ tess_endimmunity(id)
 
 public sh_client_death(victim)
 {
-	sh_unset_cooldown_flag(victim)
 
 	g_TessTimer[victim]= -1
 

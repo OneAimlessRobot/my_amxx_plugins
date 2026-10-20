@@ -40,10 +40,8 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	if ( sh_is_freezetime() ) {
-		sh_unset_cooldown_flag(id)
-	}
-	else {
+	
+	if(!sh_is_freezetime()) {
 		// dead Grandmaster's loose their revive power...
 		sh_set_cooldown_flag(id)
 	}

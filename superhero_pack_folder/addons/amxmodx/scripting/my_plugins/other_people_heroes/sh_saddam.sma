@@ -62,7 +62,6 @@ public sh_client_spawn(id)
 		userSpawn[id][1]=origin[1]
 		userSpawn[id][2]=origin[2]
 		
-		sh_unset_cooldown_flag(id)
 		gHasSpawnPoint[id]=true
 	}
 }

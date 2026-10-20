@@ -911,9 +911,6 @@ public sh_client_spawn(id)
 	if(sh_is_active()){
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
-
-			sh_unset_cooldown_flag(id)
-			sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 			Assign_BitVar(stone_spike_active_mask,id,false_for_macro);
 			Assign_BitVar(stone_spike_out_of_breath,id,false_for_macro)
 		}

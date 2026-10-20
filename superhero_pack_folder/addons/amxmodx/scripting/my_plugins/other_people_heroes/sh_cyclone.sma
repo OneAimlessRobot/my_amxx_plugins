@@ -71,7 +71,6 @@ public sh_client_spawn(id)
 {
 	gCycloneTimer = 0
 	gCurrentCyclone = 0;
-	sh_unset_cooldown_flag(id)
 }
 
 //----------------------------------------------------------------------------------------------

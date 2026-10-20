@@ -125,7 +125,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
-		sh_unset_cooldown_flag(id)
 		set_task(0.1, "gambit_weapons", id)
 		
 	}

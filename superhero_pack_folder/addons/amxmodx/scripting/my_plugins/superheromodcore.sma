@@ -1956,8 +1956,18 @@ public ham_PlayerSpawn_Post(id)
 	if ( !gLongTermXP ){
 		Assign_BitVar(gReadXPNextRoundMask, id, false_for_macro);
 	}
-	//Cancel the ultimate timer task on any new spawn
-	sh_zero_out_cooldown_memory()
+	/*
+
+		responsibility exists for a reason
+
+		the heroes themselves should clear their cooldown flags on spawn if they wish to do so
+
+		removing task cannot clear those flags
+
+		ok fuck it
+		lets run this monstrocity here	 
+	*/
+	sh_set_one_client_cooldown_bit_for_all_heroes(id, false)
 
 	remove_task(id+SH_COOLDOWN_TASKID, 1)		// 1 = look outside this plugin
 

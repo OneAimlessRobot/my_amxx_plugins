@@ -80,8 +80,7 @@ public sh_client_spawn(id)
 {
   if ( !hasRoundStarted() )
   {
-    laser_shots[id] = get_cvar_num("megaman_laser_ammo") 
-    sh_unset_cooldown_flag(id)
+    laser_shots[id] = get_cvar_num("megaman_laser_ammo")
   }
   return PLUGIN_HANDLED
 }

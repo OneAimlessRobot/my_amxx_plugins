@@ -74,7 +74,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 public sh_client_spawn(id)
 {
 libertylad_removeflare(flareentity)
-sh_unset_cooldown_flag(id)
+
 }
 
 //----------------------------------------------------------------------------------------------

@@ -107,12 +107,7 @@ public frieza_kd(id)
 
     if(get_cvar_float("frieza_cooldown") > 0.0) 
         sh_set_cooldown(id, get_cvar_float("frieza_cooldown")) //cooldown timer
-} 
-//---------------------------------------------------------------------------------------- 
-public sh_client_spawn(id) 
-{ 
-    sh_unset_cooldown_flag(id)  //Makes you able to use power again 
-} 
+}
 //---------------------------------------------------------------------------------------- 
 public sh_client_death(id)  //triggered everytime someone dies
 {

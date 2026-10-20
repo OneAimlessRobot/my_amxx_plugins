@@ -115,7 +115,6 @@ public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
 		remove_task(id)
-		sh_unset_cooldown_flag(id)
 		gUsingLaser[id] = false
 	}
 }

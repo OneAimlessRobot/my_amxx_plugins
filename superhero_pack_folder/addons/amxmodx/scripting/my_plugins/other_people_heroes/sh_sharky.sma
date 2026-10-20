@@ -59,7 +59,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-  sh_unset_cooldown_flag(id)
+  
   if ( sh_get_user_has_hero(id,gHeroID) ) {
   sharky_gunz(id)
     }
@@ -166,7 +166,7 @@ public sharky_endmode(id)
 public sh_client_death(id)
 {
   sharky_endmode(id)
-  sh_unset_cooldown_flag(id)
+  
 }
 //----------------------------------------------------------------------------------------------
 public changeWeapon(id)

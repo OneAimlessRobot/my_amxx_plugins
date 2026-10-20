@@ -58,7 +58,6 @@ public sh_client_spawn(id)
 	new parm[1]
 	parm[0]=id
 	gArrowsFired[id] = 0;
-	sh_unset_cooldown_flag(id)
 	gLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 
 	if (sh_get_user_has_hero(id,gHeroID)&& get_cvar_num("noob_getdeagle")==1) {

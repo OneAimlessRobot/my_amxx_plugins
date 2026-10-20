@@ -55,7 +55,6 @@ public plugin_precache() {
 
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	jaws_destroy()
 }
 

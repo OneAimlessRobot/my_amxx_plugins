@@ -86,7 +86,6 @@ public sh_client_spawn(id)
 
 	gLaserShots[id] = get_pcvar_num(gPcvarLaserAmmo);
 
-	sh_unset_cooldown_flag(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim)

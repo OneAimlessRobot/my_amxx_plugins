@@ -37,12 +37,7 @@ public plugin_precache()
 
 	return PLUGIN_CONTINUE 
 }
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	sh_unset_cooldown_flag(id)
-	return PLUGIN_HANDLED
-}
+
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)

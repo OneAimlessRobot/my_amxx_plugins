@@ -56,7 +56,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 
 	if ( gMorphed[id] ) {
 		cs_reset_user_model(id)

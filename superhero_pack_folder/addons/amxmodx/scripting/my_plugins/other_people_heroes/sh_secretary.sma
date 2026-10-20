@@ -161,7 +161,7 @@ public sh_client_spawn(id)
 		gHasRadio[id] = false
 	}
 	gIsCharging[id] = false;
-	sh_unset_cooldown_flag(id)
+	
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end()

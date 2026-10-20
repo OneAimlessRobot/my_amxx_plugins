@@ -56,8 +56,7 @@ public sh_client_spawn(id)
 {
 	remove_task(id)
 	gMoveTimer[id] = 0;
-	sh_unset_cooldown_flag(id)
-
+	
 	get_user_origin(id, gPlayerPosition[id])
 }
 //----------------------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ public plugin_precache()
 public sh_round_end()
 {
 	if ( !sh_is_active() ) return
-
+	
 	arrayset(gT800Timer,-1,SH_MAXSLOTS+1)
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		
@@ -97,7 +97,6 @@ public sh_client_death(id)
 	
 	if(!is_user_connected(id)) return
 	
-	sh_unset_cooldown_flag(id)
 	gT800Timer[id]= -1
 	if (sh_get_user_has_hero(id,gHeroID)) {
 		t800_endmode(id)

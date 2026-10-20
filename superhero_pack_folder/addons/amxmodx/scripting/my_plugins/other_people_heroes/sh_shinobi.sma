@@ -129,7 +129,7 @@ public sh_client_spawn(id)
 	while((shurikens = find_ent_by_class(shurikens, "shuriken")))
 		remove_entity(shurikens)
 
-	sh_unset_cooldown_flag(id)
+
 }
 
 public Event_Damage(id)

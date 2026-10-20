@@ -108,7 +108,6 @@ public sh_client_spawn(id)
 
 	if (!sh_is_active()) return
 
-	sh_unset_cooldown_flag(id)
 }
 
 public plugin_precache()

@@ -72,7 +72,6 @@ public sh_client_spawn(id)
 {
 	if ( g_inSearch[id] ) release(id)
 
-	sh_unset_cooldown_flag(id)
 
 	g_grabTimer[id] = -1
 }

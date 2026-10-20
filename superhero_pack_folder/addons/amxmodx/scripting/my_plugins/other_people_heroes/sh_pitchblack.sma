@@ -116,7 +116,6 @@ public sh_round_end()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	PitchTimer[id] = -1
 
 	if (NightVisionUse[id]) StopNVG(id)
@@ -141,7 +140,6 @@ public sh_client_death(id)
 
 	if (PitchTimer[id] > 0) {
 		PitchTimer[id] = -1;
-		sh_unset_cooldown_flag(id)
 		numOfPB -= 1
 		StopNVG(id)
 

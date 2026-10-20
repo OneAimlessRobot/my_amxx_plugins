@@ -63,7 +63,6 @@ public plugin_precache()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	gIsSearching[id] = false
 	gLightningHit[id] = false
 

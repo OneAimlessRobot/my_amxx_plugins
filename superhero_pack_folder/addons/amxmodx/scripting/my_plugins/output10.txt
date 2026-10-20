@@ -1,0 +1,1 @@
+Compiling plugins from index 10 to -1

@@ -41,11 +41,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundDisarm)
 	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 }
-//----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
-{
-	sh_unset_cooldown_flag(id)
-}
+
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex)
 {

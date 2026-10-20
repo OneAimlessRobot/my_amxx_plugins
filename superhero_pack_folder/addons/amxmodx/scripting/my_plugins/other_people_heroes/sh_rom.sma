@@ -48,7 +48,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-  sh_unset_cooldown_flag(id)
   message_begin(MSG_ONE, SVC_TEMPENTITY, {0,0,0}, id) 
   write_byte(99) // TE_KILLBEAM 
   write_short(id) 

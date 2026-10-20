@@ -200,7 +200,6 @@ public black_loop()
 //-------------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
 	gBHTimer = -1
 	gCurrentBH = 0
 	black_endmode(id)

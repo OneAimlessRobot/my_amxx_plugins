@@ -63,7 +63,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
+	
 	if ( sh_get_user_has_hero(id,gHeroID)) {
 		shade_gunz(id)
 	}
@@ -171,7 +171,7 @@ public shade_endmode(id)
 public sh_client_death(id)
 {
 	shade_endmode(id)
-	sh_unset_cooldown_flag(id)
+	
 }
 //----------------------------------------------------------------------------------------------
 public fog_this_area(origin[3])

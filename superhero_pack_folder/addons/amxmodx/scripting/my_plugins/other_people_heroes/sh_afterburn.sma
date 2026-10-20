@@ -66,9 +66,6 @@ public sh_client_spawn(id)
 
 	stopFireSound(id)
 
-	if ( sh_get_user_has_hero(id,gHeroID)) {
-		sh_unset_cooldown_flag(id)
-	}
 }
 
 //----------------------------------------------------------------------------------------------

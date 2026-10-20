@@ -90,7 +90,6 @@ public plugin_init()
 public sh_client_spawn(id)
 {
 	if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID)  && is_user_alive(id) ) {
-		sh_unset_cooldown_flag(id)
 		swat_weapons(id)
 
 	}
@@ -423,7 +422,6 @@ remove_missile(id,missile){
 	emit_sound(missile, CHAN_WEAPON, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	has_rocket[id] = 0;
-	sh_unset_cooldown_flag(id)
 	attach_view(id,id)
 	remove_entity(missile)
 	return PLUGIN_CONTINUE

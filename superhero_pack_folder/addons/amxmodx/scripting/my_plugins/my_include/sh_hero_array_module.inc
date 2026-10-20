@@ -156,7 +156,35 @@ no return value
 native sh_set_id_hero_cooldown_bit(hero_id, the_player_id, bool:the_value_to_set)
 
 
+/*
+	when called,
+	for the hero id given,
+	every player's cooldown flag
+	(for that hero id)
+	will be set to some value!
+	Recommended
+	ONLY
+	on map start
+	and at most on round change
+	NEVER on client spawn
 
+*/
+native sh_set_one_hero_cooldown_bits(hero_id, bool:the_value_to_set)
+
+
+
+/*
+	it does what it is told
+	but it is horrid and slow
+	not recommended.
+	It clears the cooldown of one client
+	for all of its heroes.
+	Useful
+	But the memory layout of the native makes it slow
+	Not recommended
+
+*/
+native sh_set_one_client_cooldown_bit_for_all_heroes(the_player_id, bool:the_value_to_set)
 /*
 
 //retrieve the bit of a hero bitsum

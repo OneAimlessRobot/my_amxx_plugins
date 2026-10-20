@@ -121,11 +121,9 @@ public sh_client_spawn(id)
 	{
 		laser_shots[id] = get_cvar_num("pred_laser_ammo")
 		set_user_rendering(id,kRenderGlow,0,128,0,kRenderFxNone,255)
-		sh_unset_cooldown_flag(id)
 	}
 	
 	gDLaserFired[id] = 0;
-	sh_unset_cooldown_flag(id)
 	gDLLastWeapon[id]=-1  // I think the change Weapon automatically gets called on spawn death too...
 	
 	if (sh_get_user_has_hero(id,gHeroID) && get_cvar_num("pred_getdeagle")==1) {

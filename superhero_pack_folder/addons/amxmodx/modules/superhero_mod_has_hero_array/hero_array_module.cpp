@@ -29,7 +29,7 @@ HeroArrays the_hero_array;
 static cell AMX_NATIVE_CALL sh_get_hero_bit(AMX *amx,cell *params)
 {	
 	(void)amx;
-	return the_hero_array.get_hero_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
+	return the_hero_array.get_hero_bit((state_cell_type_t)params[1], (bool)params[2]);
 }
 
 //the third parameter assigns the polarity of the bit
@@ -60,13 +60,27 @@ static cell AMX_NATIVE_CALL sh_set_user_has_hero(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL sh_get_id_hero_cooldown_bit(AMX *amx,cell *params)
 {
 	(void)amx;
-	return the_hero_array.get_id_hero_cooldown_bit((state_cell_type_t)params[2], (state_cell_type_t)params[1]);
+	return the_hero_array.get_id_hero_cooldown_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 static cell AMX_NATIVE_CALL sh_set_id_hero_cooldown_bit(AMX *amx,cell *params)
 {
 	(void)amx;
-	the_hero_array.set_id_hero_cooldown_bit((state_cell_type_t)params[2],(state_cell_type_t) params[1], (state_cell_type_t)params[3]);
+	the_hero_array.set_id_hero_cooldown_bit((state_cell_type_t)params[1],(state_cell_type_t) params[2], (state_cell_type_t)params[3]);
+	return 0;
+}
+
+
+static cell AMX_NATIVE_CALL sh_set_one_hero_cooldown_bits(AMX *amx,cell *params)
+{
+	(void)amx;
+	the_hero_array.set_one_hero_cooldown_bits((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
+	return 0;
+}
+static cell AMX_NATIVE_CALL sh_set_one_client_cooldown_bit_for_all_heroes(AMX *amx,cell *params)
+{
+	(void)amx;
+	the_hero_array.set_one_client_cooldown_bit_for_all_heroes((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 	return 0;
 }
 
@@ -131,6 +145,7 @@ static cell AMX_NATIVE_CALL sh_init_hero_array_lib(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL sh_zero_out_cooldown_memory(AMX *amx,cell *params)
 {	
 	(void)amx;
+	(void)params;
 	the_hero_array.zero_out_id_hero_cooldown_masks();
 	return 0;
 }
@@ -180,6 +195,10 @@ AMX_NATIVE_INFO sh_array_exports[] =
 	{ "sh_set_id_hero_cooldown_bit", sh_set_id_hero_cooldown_bit },
 	{ "sh_get_id_hero_cooldown_bit", sh_get_id_hero_cooldown_bit },
 	
+	
+	{"sh_set_one_hero_cooldown_bits", sh_set_one_hero_cooldown_bits },
+	
+	{"sh_set_one_client_cooldown_bit_for_all_heroes", sh_set_one_client_cooldown_bit_for_all_heroes },
 	
 	{ "sh_zero_out_cooldown_memory", sh_zero_out_cooldown_memory },
 	

@@ -80,6 +80,9 @@ public:
 	
 	bool get_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id);  
 	void set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const bool& the_value_to_set );
+	void set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const bool& the_value_to_set);
+	
+	void set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const bool& the_value_to_set);
 	
 	
 	state_cell_type_t get_max_hero_props(void);
@@ -182,7 +185,6 @@ inline void HeroArrays::zero_out_player_masks(void){
 		
 }
 
-
 inline void HeroArrays::zero_out_hero_ownership(void){
 	
 	printf("Hero array has been zeroed out!\n");
@@ -247,7 +249,7 @@ inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, con
 	Assign_BitVar(this->ownership_memory[the_hero_id], player_id, the_value_to_set);
 }
 
-//Hero ownership
+//Hero cooldown bits
 inline bool HeroArrays::get_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id)
 {
 	if((hero_id >= this->SH_MAXHEROS)){
@@ -273,7 +275,29 @@ inline void HeroArrays::set_id_hero_cooldown_bit( const state_cell_type_t& hero_
 	}
 	Assign_BitVar(this->cooldown_memory[hero_id], the_player_id, the_value_to_set);
 }
+inline void HeroArrays::set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const bool& the_value_to_set)
+{
+	if( (hero_id >= this->SH_MAXHEROS)){
+		return;
+	}
+	this->cooldown_memory[hero_id] = the_value_to_set?0xFFFF:0;
+}
 
+inline void HeroArrays::set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const bool& the_value_to_set)
+{
+	if( !the_player_id || (the_player_id > SH_MAXSLOTS)){
+		return;
+	
+	}
+	for ( state_cell_type_t i = 0; i < this->SH_MAXHEROS;i++){
+	
+		Assign_BitVar(this->cooldown_memory[i], the_player_id, the_value_to_set);
+	
+	}
+
+}
+
+	
 //Hero projectile weapon state
 inline bool HeroArrays::get_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id)
 {

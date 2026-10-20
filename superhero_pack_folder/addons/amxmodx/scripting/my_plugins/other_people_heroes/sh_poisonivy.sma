@@ -104,7 +104,6 @@ public sh_client_spawn(id)
 
 		if( sh_get_user_has_hero(id,gHeroID)) {
 
-			sh_unset_cooldown_flag(id)
 
 			// Set damage amount per user
 			if ( get_cvar_num("poisonivy_xpbased") ) {

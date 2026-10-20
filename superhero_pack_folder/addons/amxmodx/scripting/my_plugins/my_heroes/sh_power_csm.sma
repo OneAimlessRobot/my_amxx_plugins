@@ -207,7 +207,6 @@ public sh_client_spawn(id)
 	if(sh_is_active()&&is_user_alive(id)){
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
-			sh_unset_cooldown_flag(id)
 			power_weapons(id)
 			prepare_power_csm(id)
 		}

@@ -250,7 +250,6 @@ public sh_round_start()
 
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id);
 	aimtargetfound[id] = false
 	player_chakra[id] = 0
 	

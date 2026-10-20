@@ -237,7 +237,6 @@ public sh_client_spawn(id)
 		disc = find_ent_by_class(disc, "pred_disc")
 	}
 	if ( sh_get_user_has_hero(id,gHeroID) && sh_is_active() ) {
-		sh_unset_cooldown_flag(id)
 		discThrown[id] = false
 		arcpredator_weapons(id)
 		g_huntTimer[id] = 0
@@ -368,7 +367,6 @@ public arctic_predator_death()
 	g_huntTimer[id] = 0;
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
-		sh_unset_cooldown_flag(id)
 		BlowUp(id)
 		gHuntMode[id] = false
 	}

@@ -225,7 +225,6 @@ public sh_client_spawn(id)
 	if (is_user_alive(id) && sh_is_active() ) {
 
 		if(sh_get_user_has_hero(id,gHeroID) ){
-			sh_unset_cooldown_flag(id)
 			gThrashyExplosionAmmo[id]=ndynamites
 			thrashy_weapons(id)
 		}
@@ -275,7 +274,6 @@ public thrash_brat_death()
 
 	if ( sh_get_user_has_hero(id,gHeroID) )
 	{
-		sh_unset_cooldown_flag(id)
 		BlowUp(id,true)
 	}
 }

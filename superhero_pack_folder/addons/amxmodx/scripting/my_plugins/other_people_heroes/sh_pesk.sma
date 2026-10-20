@@ -156,12 +156,6 @@ public pbeamon(id)
 	client_print(id,print_chat,"PESKY YOU.")
 }
 
-public sh_client_spawn(id)
-{
-	sh_unset_cooldown_flag(id)
-	return PLUGIN_HANDLED
-}
-
 public AssRadiusDamage(id,origin[3])
 {
 	new distanceBetween

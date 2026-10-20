@@ -65,7 +65,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-	sh_unset_cooldown_flag(id)
+	
 
 	gShadowcatTimer[id]= -1
 
@@ -158,7 +158,6 @@ shadowcat_endnoclip(id)
 //----------------------------------------------------------------------------------------------
 public sh_client_death(victim)
 {
-	sh_unset_cooldown_flag(victim)
 
 	gShadowcatTimer[victim]= -1
 
