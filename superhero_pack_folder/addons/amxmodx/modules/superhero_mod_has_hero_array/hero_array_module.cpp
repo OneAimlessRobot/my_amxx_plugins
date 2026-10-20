@@ -29,7 +29,22 @@ HeroArrays the_hero_array;
 static cell AMX_NATIVE_CALL sh_get_hero_bit(AMX *amx,cell *params)
 {	
 	(void)amx;
-	return the_hero_array.get_hero_bit((state_cell_type_t)params[1], (bool)params[2]);
+	//for the love of everything that is holy
+	//even if in the class header file
+	//the last parameter is defined as a bool
+	//do NOT cast this as a bool
+	//Or the thing will not catch all the bits
+	//and it will not work.
+	//just be glad that these things do not get used
+	//to drive or manage databases.
+	//this is all volatile
+	//because I set the last argument to a bool
+	//you know what?
+	//im gonna do one better
+	//Im gonna define those parameters as state_cell_type_t
+	//its better for everyone involved
+	//i dont care
+	return the_hero_array.get_hero_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 //the third parameter assigns the polarity of the bit

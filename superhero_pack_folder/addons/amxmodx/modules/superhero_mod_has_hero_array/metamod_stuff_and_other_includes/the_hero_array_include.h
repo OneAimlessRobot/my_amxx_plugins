@@ -75,14 +75,14 @@ public:
 							);
 	void init_hero_array_sizes(void);
 	bool get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id);  
-	void set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set );
+	void set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const state_cell_type_t& the_value_to_set );
 	
 	
 	bool get_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id);  
-	void set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const bool& the_value_to_set );
-	void set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const bool& the_value_to_set);
+	void set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const state_cell_type_t& the_value_to_set );
+	void set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const state_cell_type_t& the_value_to_set);
 	
-	void set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const bool& the_value_to_set);
+	void set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const state_cell_type_t& the_value_to_set);
 	
 	
 	state_cell_type_t get_max_hero_props(void);
@@ -91,12 +91,12 @@ public:
 	
 	
 	bool get_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_weapon_id);
-	void assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const bool& the_value_to_set );
+	void assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const state_cell_type_t& the_value_to_set );
 	
 	
 	state_cell_type_t get_max_client_states(void);
 	bool get_id_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_effect_flag_id);
-	void assign_id_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set );
+	void assign_id_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_effect_flag_id, const state_cell_type_t& the_polarity_to_set );
 
 
 	state_cell_type_t get_max_heroes(void);
@@ -236,7 +236,7 @@ inline bool HeroArrays::get_id_has_hero( const state_cell_type_t& player_id, con
 	return Get_BitVar(this->ownership_memory[the_hero_id], player_id);
 }
 
-inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const bool& the_value_to_set )
+inline void HeroArrays::set_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id, const state_cell_type_t& the_value_to_set )
 {
 	if( (the_hero_id >= this->SH_MAXHEROS)){
 		return;
@@ -263,7 +263,7 @@ inline bool HeroArrays::get_id_hero_cooldown_bit( const state_cell_type_t& hero_
 	return Get_BitVar(this->cooldown_memory[hero_id], the_player_id);
 }
 
-inline void HeroArrays::set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const bool& the_value_to_set )
+inline void HeroArrays::set_id_hero_cooldown_bit( const state_cell_type_t& hero_id, const state_cell_type_t& the_player_id, const state_cell_type_t& the_value_to_set )
 {
 	if( (hero_id >= this->SH_MAXHEROS)){
 		return;
@@ -275,7 +275,7 @@ inline void HeroArrays::set_id_hero_cooldown_bit( const state_cell_type_t& hero_
 	}
 	Assign_BitVar(this->cooldown_memory[hero_id], the_player_id, the_value_to_set);
 }
-inline void HeroArrays::set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const bool& the_value_to_set)
+inline void HeroArrays::set_one_hero_cooldown_bits( const state_cell_type_t& hero_id, const state_cell_type_t& the_value_to_set)
 {
 	if( (hero_id >= this->SH_MAXHEROS)){
 		return;
@@ -283,7 +283,7 @@ inline void HeroArrays::set_one_hero_cooldown_bits( const state_cell_type_t& her
 	this->cooldown_memory[hero_id] = the_value_to_set?0xFFFF:0;
 }
 
-inline void HeroArrays::set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const bool& the_value_to_set)
+inline void HeroArrays::set_one_client_cooldown_bit_for_all_heroes( const state_cell_type_t& the_player_id, const state_cell_type_t& the_value_to_set)
 {
 	if( !the_player_id || (the_player_id > SH_MAXSLOTS)){
 		return;
@@ -312,7 +312,7 @@ inline bool HeroArrays::get_hero_projectile_weapon_bit( const state_cell_type_t&
 	return Get_BitVar(this->the_hero_projectile_weapons[the_hero_id], the_weapon_id);
 }
 
-inline void HeroArrays::assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const bool& the_value_to_set )
+inline void HeroArrays::assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const state_cell_type_t& the_value_to_set )
 {
 	if( (the_hero_id >= this->SH_MAXHEROS)){
 		return;
@@ -342,7 +342,7 @@ inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  con
 	return Get_BitVar(this->the_player_masks[the_effect_flag_id], the_player_id);
 }
 
-inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_effect_flag_id, const bool& the_polarity_to_set )
+inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_effect_flag_id, const state_cell_type_t& the_polarity_to_set )
 {
 	
 	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= this->SH_MAX_CLIENT_STATES)){
