@@ -6,6 +6,7 @@
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
 #define PLUGIN "Superhero tranq fx"
@@ -171,9 +172,8 @@ public sleep_task(array[1],id){
 		unsleep_user(id)
 		return
 	}
-	set_render_with_color_const(id,BLACK,0,_,255,1,1)
-	set_render_with_color_const(id,WHITE,1,255,-1,0,0)
-	remove_glow_user(id,SLEEP_PERIOD)
+	set_render_with_color_const(id,BLACK,0,_,255,1,1,_,_,_,PRIO_RENDER_DELETE_ASLEEP)
+	set_render_with_color_const(id,WHITE,1,255,-1,0,0,SLEEP_PERIOD,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]<(SLEEP_TIMES))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
@@ -210,7 +210,7 @@ unsleep_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_DELETE_ASLEEP,_,kRenderNormal)
 		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
 	}
 }

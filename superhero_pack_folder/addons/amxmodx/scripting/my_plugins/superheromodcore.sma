@@ -21,6 +21,7 @@
 #include "my_include/superheromod.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "my_include/my_author_header.inc"
 
@@ -3285,7 +3286,7 @@ timerAll()
 				case 0: {
 					gPlayerGodTimer[id] = -1
 					set_user_godmode(id, 0)
-					sh_set_rendering(id)
+					remove_glow_user(id,PRIO_RENDER_GODMODE,16,kRenderNormal)
 				}
 				default: {
 					gPlayerGodTimer[id]--
@@ -3345,7 +3346,8 @@ public _sh_set_godmode()
 
 	if ( howLong > gPlayerGodTimer[id] ) {
 		debugMsg(id, 5, "Has God Mode for %f seconds", howLong)
-		sh_set_rendering(id, 0, 0, 128, 16, kRenderFxGlowShell)	// Remove the godmode glow, make heroes set it??
+
+		set_render_with_color_const(id,GODMODE_BLUE,1,16,_,0,1,howLong,_,_, kRenderNormal,PRIO_RENDER_GODMODE)
 		set_user_godmode(id, 1)
 		gPlayerGodTimer[id] = floatround(howLong)
 	}

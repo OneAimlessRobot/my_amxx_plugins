@@ -151,7 +151,8 @@ enum server_slot_idx
   PLAYER_29_SLOT,
   PLAYER_30_SLOT,
   PLAYER_31_SLOT,
-  PLAYER_32_SLOT
+  PLAYER_32_SLOT,
+  PLAYER_33_SLOT
 
 }
 //entity constants

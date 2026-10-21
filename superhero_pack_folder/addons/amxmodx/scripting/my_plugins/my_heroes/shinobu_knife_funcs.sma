@@ -9,6 +9,7 @@
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_knife_funcs.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 #define PLUGIN "Shinobu knife funcs"
 #define VERSION "1.0.0"
@@ -129,12 +130,12 @@ apply_cloak(id){
 
 	if(Get_BitVar(g_curr_shinobu_cloaked_mask,id)){
 		
-		sh_set_rendering(id,0,0,0,cvar_val(num, pcvar_shinobu_alpha),kRenderFxGlowShell,kRenderTransColor);
+		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}
 	else{
 		
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,cvar_val(num, pcvar_shinobu_alpha),_,_,gHeroID)
 	}
 }
 
@@ -148,7 +149,6 @@ public sh_client_spawn(id)
 
 	if ( sh_get_user_has_hero(id,gHeroID)) {
 		
-		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 		remove_task(id+TELEPORT_CHECK_TASKID)
 	}
 }

@@ -9,6 +9,7 @@
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -228,10 +229,7 @@ stock ester_weapons(id){
 }
 
 reset_status(id){
-	
-	if(is_user_connected(id)){
-		sh_set_rendering(id)
-	}
+
 	UnSet_BitVar(gFinishedMask,id)
 	damage_to_do[id]=0
 	gBuiltUpXp[id]=0;

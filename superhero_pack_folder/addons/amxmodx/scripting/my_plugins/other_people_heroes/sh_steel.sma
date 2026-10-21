@@ -9,9 +9,11 @@ steel_aps 3			//Amount of Armor regenerated per second when suit is on (def 3)
 steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 
 */
+
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
@@ -61,7 +63,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	// This gets run if they had the power but don't anymore
 	if ( !sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 		set_user_hitzones(0, id, 255)
-		shUnglow(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ public steel_loop()
 			else {
 				// Only need to set it once, if they have the suit
 				if ( g_hasSuit[id] ) {
-					shUnglow(id)
+					remove_glow_user(id, PRIO_RENDER_POWERUP,16,kRenderNormal,_,gHeroID)
 					client_print(id, print_chat, "[SH](%s) Battle Suit removed you no longer need it", gHeroName)
 					set_user_hitzones(0, id, 255)
 					g_hasSuit[id] = false
@@ -107,7 +108,7 @@ public steel_armorloop()
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {
 			// Set glow here since it's called less
-			shGlow(id, 35, 40, 50)
+			set_render_with_color_const(id,STEEL_GREY,1,16,_,0,1,1.0,_,kRenderFxGlowShell, kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
 
 			new userArmor = get_user_armor(id)
 			if ( userArmor < get_cvar_num("steel_maxaps") ) {

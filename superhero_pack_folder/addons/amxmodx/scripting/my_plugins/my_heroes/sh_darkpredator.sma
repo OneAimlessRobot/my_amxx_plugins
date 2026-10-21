@@ -25,6 +25,7 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
@@ -154,22 +155,27 @@ public sh_client_spawn(id)
 public setInvisibility(id, alpha)
 {
 	
-	if (alpha < 125) {
-		set_user_rendering(id,kRenderFxGlowShell,1,1,1,kRenderTransAlpha,alpha)
-	}
-	else {
-		set_user_rendering(id,kRenderFxNone,0,0,0,kRenderTransAlpha,alpha)
-	}
+	set_render_with_color_const(id,INVIS,1,alpha,_,0,_,0.1,_,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+
 }
 //----------------------------------------------------------------------------------------------
 public remInvisibility(id)
 {
-	gStillTime[id] = -1
 	
 	if (gIsInvisible[id] > 0) {
-		shUnglow(id)
+		
+		new sysTime = get_systime()
+		new delay = get_cvar_num("darkpred_delay")
+		new alpha = get_cvar_num("darkpred_alpha")
+		new Float:prcnt =  float(sysTime - gStillTime[id]) / float(delay)
+		alpha = floatround(255 - ((255 - alpha) * prcnt) )
+		
+		remove_glow_user(id, PRIO_RENDER_INVISIBILITY,alpha,_,_,gHeroID)
+				
 		client_print(id,print_center,"[SH]DarkPredator: You are no longer cloaked")
+	
 	}
+	gStillTime[id] = -1
 	
 	gIsInvisible[id] = 0
 }

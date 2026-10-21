@@ -21,8 +21,12 @@ casper_stuckcheck 1		//Kill user if stuck in wall/ground after noclip, 0=no 1=ye
 *   Hero Created by BLU3 V1Z10N & maybe
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include <amxmodx>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Casper"
@@ -134,7 +138,10 @@ public casper_setghost(id)
 	set_user_noclip(id, 1)
 
 	// Set invisible first then loop it
-	set_user_rendering(id, kRenderFxGlowShell, 1, 1, 1, kRenderTransAlpha, 1)
+	set_render_with_color_const(id,INVIS,1,0,
+						0,
+						_,_,
+						1.0,0,_,_,PRIO_RENDER_INVISIBILITY)
 	set_task(1.0, "casper_loop", id, "", 0, "b")
 
 	// Save users current hp/ap to be set back when exiting ghost mode
@@ -171,7 +178,10 @@ public casper_loop(id)
 {
 	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
-	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
+	set_render_with_color_const(id,INVIS,1,0,
+						0,
+						_,_,
+						1.0,0,_,_,PRIO_RENDER_INVISIBILITY)
 
 	// Preven regen past cvar HP in Ghost Mode
 	if ( get_user_health(id) > gCasperHealth ) {
@@ -206,7 +216,7 @@ public casper_removeghost(id)
 		}
 	}
 
-	sh_set_rendering(id)
+	remove_glow_user(id, PRIO_RENDER_INVISIBILITY,0)
 
 	if ( is_user_alive(id) && gInGhostMode[id] && hasRoundStarted() ) {
 

@@ -7,7 +7,7 @@
 #define PLUGIN "Superhero aux natives pt12: superhero property enforcing pt1: health caps"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
@@ -109,10 +109,6 @@ public bool:_generic_heal(iPlugins, iParms){
 
 	}
 	max_hp_to_clamp = (max_hp_to_clamp > 0) ?(min(max_hp_to_clamp,
-				sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)
-						?
-				floatround(sh_player_healthcap_table[id])
-						:
 					sh_get_max_hp(id)))
 						:
 					sh_get_max_hp(id)
@@ -134,8 +130,8 @@ public bool:_generic_heal(iPlugins, iParms){
 	
 	entity_set_float(id,EV_FL_health,new_health)
 
-	if(user_will_glow>0){
-		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer)
+	if((user_will_glow>0)&&(true_hp_to_add>0.0)){
+		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	}
 	if(hud_msg_sync>0){
 		

@@ -1305,8 +1305,6 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 //stock shOwnsWeapon(id, weaponName[])
 #define shOwnsWeapon(%1, %2) user_has_weapon(%1, get_weaponid(%2))
 
-//stock shUnglow(id)
-#define shUnglow sh_set_rendering
 
 //stock shStun(id, secs)
 stock shStun(id, secs)
@@ -1325,13 +1323,6 @@ stock debugMessage(const message[], id = 0, level = 1)
 {
 	sh_debug_message(id, level, message);
 }
-
-//stock shGlow(id, r, g, b)
-stock shGlow(id, r, g, b)
-{
-	sh_set_rendering(id, r, g, b, 16,kRenderFxGlowShell);
-}
-
 //stock sh_setScreenFlash(id, red, green, blue, decisecs, alpha)
 //stock setScreenFlash(id, red, green, blue, decisecs, alpha)
 #define sh_setScreenFlash setScreenFlash

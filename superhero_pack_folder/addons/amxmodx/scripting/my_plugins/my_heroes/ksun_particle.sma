@@ -7,6 +7,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
@@ -143,7 +144,7 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	new id= get_param(1)
 	
-	set_render_with_color_const(id,PURPLE,1,180,100,1,0,KSUN_HEAL_GLOW_TIME)
+	set_render_with_color_const(id,PURPLE,1,180,100,1,0,KSUN_HEAL_GLOW_TIME,_,_, kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	static arr[3]
 	arr[0]=LineColors[PURPLE][0]
 	arr[1]=LineColors[PURPLE][1]

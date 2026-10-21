@@ -9,6 +9,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "freeze_fx/freeze_fx.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -254,7 +255,7 @@ public bleed_task(any:array[5],id){
 	set_render_with_color_const(id,RED,1,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][render_alpha],
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
 							_,_,
-							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period])
+							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
 							
 	if(array[2]){
 		generic_heal(heal_hp_hud_msg_sync,
@@ -270,7 +271,7 @@ public bleed_task(any:array[5],id){
 		set_render_with_color_const(array[1],RED,0,_,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
 							1,
 							_,
-							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period])
+							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	}
 	make_bleed_fx(id,array[3])
 	sh_extra_damage(id,array[1],
@@ -299,7 +300,7 @@ unbleed_user(id){
 
 	if ( !sh_is_active() || !is_user_connected(id) ||!sh_get_id_bit(id,SH_IS_BLEEDING)) return
 	
-	sh_set_rendering(id)
+	remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal)
 	sh_assign_id_bit(id,SH_IS_BLEEDING,false)
 
 

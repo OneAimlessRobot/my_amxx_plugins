@@ -14,6 +14,7 @@
 #define VERSION "1.0.0"
 #define GLOBAL_GLOW_TASK_LOOP_PERIOD 1.0
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
@@ -547,7 +548,7 @@ sh_player_unmorph_task(id,take_away_model=1)
 		cs_reset_user_model(id)
 		if(sh_get_player_cloak_pct(id)<=0){
 
-			sh_set_rendering(id)
+			remove_glow_user(id,PRIO_RENDER_PASSIVE,kRenderNormal)
 		}
 		play_morph_sound(id)
 		gPlayersCurrHeroModelID[id]=(take_away_model?-1:gPlayersCurrHeroModelID[id])
@@ -737,11 +738,11 @@ teamglow_player(id){
 		
 		case CS_TEAM_T:{
 
-			sh_set_rendering(id, 255, 0, 0, 50,kRenderFxGlowShell);
+			set_render_with_color_const(id,RED,1,50,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 		}
 		case CS_TEAM_CT:{
 
-			sh_set_rendering(id, 0, 0, 255, 50,kRenderFxGlowShell);
+			set_render_with_color_const(id,BLUE,1,50,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 
 		}
 

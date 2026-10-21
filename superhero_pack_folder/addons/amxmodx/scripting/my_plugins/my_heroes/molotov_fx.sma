@@ -1,6 +1,5 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
-
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "co2_fx_inc/co2_fx.inc"
@@ -9,6 +8,7 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -77,7 +77,8 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
-	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD)
+	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD,_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
+		
 	make_fire(id,30.0)
 
 	

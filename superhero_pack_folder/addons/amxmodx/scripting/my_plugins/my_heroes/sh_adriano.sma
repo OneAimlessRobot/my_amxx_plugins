@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 #include "custom_grenades/custom_grenades.inc"
 

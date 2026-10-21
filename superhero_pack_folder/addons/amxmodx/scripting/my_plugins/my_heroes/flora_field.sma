@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
@@ -855,11 +856,11 @@ apply_cloak(id){
 	new Float:alpha_to_use=get_player_alpha(id)
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
 	if(Get_BitVar(g_curr_flora_cloaked_mask,id)){
-		sh_set_rendering(id,0,0,0,alpha_value_to_use,kRenderFxGlowShell,kRenderTransColor);
+		set_render_with_color_const(id,INVIS,1,alpha_value_to_use,_,0,_,_,0,_,_,PRIO_RENDER_INVISIBILITY)
 	}
 	else{
 		
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,alpha_value_to_use)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -907,7 +908,7 @@ public field_think(ent)
 			}
 			if(!is_user_alive(pid)){
 				if(is_user_connected(pid)){
-					set_render_with_color_const(pid,INVIS,1,10,_,0)
+					set_render_with_color_const(pid,INVIS,1,10,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
 				}
 				
 				continue
@@ -933,7 +934,7 @@ public field_think(ent)
 				
 				}
 				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1,_,
-								cvar_val(float,pcvar_flora_stun_time))
+								cvar_val(float,pcvar_flora_stun_time),0,_,_,PRIO_RENDER_INFORMATIVE)
 				set_damage_icon(pid,2,DMG_ICON_BIO,LineColors[g_flora_dmg_color[owner]],1.0)
 				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}

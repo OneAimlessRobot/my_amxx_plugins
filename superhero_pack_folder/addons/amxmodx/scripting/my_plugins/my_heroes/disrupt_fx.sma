@@ -3,6 +3,7 @@
 #include "../my_include/superheromod.inc"
 #include "disrupt_fx_inc/disrupt_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 
@@ -116,8 +117,8 @@ public disrupt_task(array[1],id){
 		undisrupt_user(id)
 		return
 	}
-	sh_set_rendering(id, disrupt_color[0], disrupt_color[1], disrupt_color[2], disrupt_color[3],kRenderFxGlowShell, kRenderTransColor)
-	remove_glow_user(id,DISRUPT_PERIOD)
+	
+	set_render_with_color_const(id,WHITE,1,200,_,0,_,DISRUPT_PERIOD,0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	
 	if(sh_get_id_bit(id,SH_IS_DISRUPT)&&(array[0]<DISRUPT_TIMES)){
 		array[0]++
@@ -149,7 +150,7 @@ undisrupt_user(id){
 
 
 	if(sh_get_id_bit(id,SH_IS_DISRUPT)){
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal)
 		sh_assign_id_bit(id,SH_IS_DISRUPT, false)
 		set_damage_icon(id,0,DMG_ICON_SHOCK)
 		entity_set_int( id, EV_INT_fixangle, 0 );

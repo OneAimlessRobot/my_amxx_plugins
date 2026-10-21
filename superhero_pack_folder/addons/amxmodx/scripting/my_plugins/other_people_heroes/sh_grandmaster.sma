@@ -10,7 +10,10 @@ gmaster_cooldown 600		//# of seconds for Grandmaster cooldown
 
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 
@@ -96,14 +99,8 @@ public gmaster_respawn(parm[])
 
 	emit_sound(dead, CHAN_STATIC, gSoundGmaster, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-	sh_set_rendering(dead, 255, 255, 0, 16, kRenderFxGlowShell)
-
-	set_task(3.0, "gmaster_unglow", dead)
-}
-//----------------------------------------------------------------------------------------------
-public gmaster_unglow(id)
-{
-	sh_set_rendering(id)
+	set_render_with_color_const(dead,GRANDMASTER_YELLOW,1,16,_,0,1,3.0,_,_, kRenderNormal,PRIO_RENDER_INFORMATIVE)
+			
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

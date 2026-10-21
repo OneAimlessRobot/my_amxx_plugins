@@ -50,8 +50,12 @@ gokukt_armor 1000 // How much armor does goku have in kaioken mode
 gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include <amxmodx>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Gokus Kaioken technic"
@@ -147,7 +151,10 @@ public gokukt_loop()
 		if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
 			if ( GokuKTTimer[id] > 0 ) {
 				GokuKTTimer[id]--
-				shGlow(id,255,0,0)
+				set_render_with_color_const(id,RED,1,255,
+						_,
+						0,_,
+						0.0,0,_,kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0)
 				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id])
 			}
@@ -178,7 +185,6 @@ public end_kaioken(id)
 		set_user_armor(id, set_armor)
 		reset_armor[id] = false
 	}
-	sh_set_rendering(id)
 }
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)

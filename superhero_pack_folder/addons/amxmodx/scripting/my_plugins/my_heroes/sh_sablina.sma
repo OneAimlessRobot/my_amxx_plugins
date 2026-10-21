@@ -10,6 +10,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sablina_inc/sablina.inc"
 #include "../my_include/my_author_header.inc"
@@ -18,7 +19,7 @@
 #define THE_BITSUM_TO_EXCLUDE ( single_wpn_bs( CSW_KNIFE ) | single_wpn_bs (CSW_C4 ) )
 #define SABLINA_CAN_USE_WPN(%1) (wpn_id_in_bs( (%1) , THE_BITSUM_TO_EXCLUDE ))
 
-#define SABLINA_TASK_PERIOD 0.5
+#define SABLINA_TASK_PERIOD 1.0
 
 
 #define SABLINA_SPIKER_CLASSNAME "sablina_spike"
@@ -325,7 +326,7 @@ public sablina_loop(taskid)
 		set_render_with_color_const(id,LAVENDER,1,the_actual_alpha,
 							20,
 							_,_,
-							SABLINA_TASK_PERIOD,0)
+							SABLINA_TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}
 }

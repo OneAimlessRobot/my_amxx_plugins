@@ -23,7 +23,10 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 *   Based on Jedi Force Grab plugin by SpaceDude.
 */
 
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 
@@ -220,7 +223,8 @@ public set_grabbed(id, targetid)
 	set_user_gravity(targetid, 0.00001)
 
 	lightning_effect(id, targetid)
-	shGlow(targetid, 200, 187, 0)
+	
+	set_render_with_color_const(targetid,EXODUS_YELLOW,1,16,_,0,1,0.1,_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
 
 	get_user_name(targetid, vicName, 31)
 	get_user_name(id, idName, 31)
@@ -257,7 +261,7 @@ public release(id)
 		}
 		if ( is_user_connected(g_grabbedID[id]) ) {
 			sh_reset_min_gravity(g_grabbedID[id])
-			sh_set_rendering(g_grabbedID[id])
+			remove_glow_user(g_grabbedID[id],PRIO_RENDER_EFFECT_ACTIVE)
 		}
 		g_grabbedID[id] = 0
 		g_grabTimer[id] = -1

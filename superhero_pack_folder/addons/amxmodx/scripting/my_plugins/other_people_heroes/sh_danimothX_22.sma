@@ -22,8 +22,10 @@
 **
 **		  
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 #define RED 50
 #define GREEN 100
@@ -225,7 +227,7 @@ public DanimothDeCloak(id)
 			
 			distanceBetween = get_distance(origin, origin1 )
 			if( distanceBetween > get_pcvar_num(pCvarCloakRadius) ){
-				shUnglow(team)
+				remove_glow_user(team, PRIO_RENDER_INVISIBILITY,get_pcvar_num(pCvarCloakPercent),kRenderNormal,_,gHeroID)
 				client_print(team,print_center,"[SH]Danimoth: You are De-cloaked")
 				gIsInvisible[team] = 0
 			}
@@ -237,12 +239,9 @@ public DanimothInvisibility(team, alpha)
 {
 	client_print(team,print_center,"[SH]Danimoth: You are near Danimoth and now invisible")
 
-	if (alpha < 125) {
-		set_user_rendering(team,kRenderFxGlowShell,8,8,8,kRenderTransAlpha,alpha)
-	}
-	else {
-		set_user_rendering(team,kRenderFxNone,0,0,0,kRenderTransAlpha,alpha)
-	}
+
+	set_render_with_color_const(team,INVISIBLE_MAN_GREY,1,alpha,_,0,_,_,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+
 }
 //----------------------------------------------------------------------------------------------
 public DanimothStasisField(target)

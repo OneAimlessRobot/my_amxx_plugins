@@ -6,6 +6,7 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
@@ -131,9 +132,8 @@ public _sh_freeze_user(iPlugins,iParams){
 	entity_get_vector(id,EV_VEC_origin, origin)
 
 	set_pev(id, pev_maxspeed, 130.0)
-	sh_set_rendering(id, 30, 125, 255, 0, kRenderFxGlowShell, kRenderNormal)
-
-	remove_glow_user(id,the_time)
+	set_render_with_color_const(id,FROZEN_BLUE,1,50,50,1,_,
+							the_time,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 
 	emit_sound(id, CHAN_WEAPON, FROZEN_SFX, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
@@ -161,8 +161,8 @@ unfreeze_user(id){
 	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
 		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
-
-		sh_set_rendering(id,0, 0, 0, 0,kRenderFxGlowShell, kRenderNormal)
+		
+		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal);
 
 		message_begin(MSG_ONE, get_user_msgid("ScreenFade"), {0,0,0}, id)
 		write_short(1<<10)

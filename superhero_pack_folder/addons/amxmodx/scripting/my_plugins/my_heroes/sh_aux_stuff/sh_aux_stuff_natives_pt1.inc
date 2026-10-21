@@ -20,7 +20,6 @@ enum damage_icon_types{
 native ammo_hud(id,number,sw)
 
 
-native remove_glow_user(id,Float:delay)
 
 native precache_native_fx_pt1()
 native prepare_shero_aux_lib_pt1()
@@ -125,11 +124,6 @@ native glow(id, r, g, b,a, on)
 native suck_in_sound(ent_id,make_sound)
 
 
-native aura(id,const color[3]={255,255,255},life=3,decay=1)
-
-native detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0})
-
-
 native draw_aim_vector(id,sh_custom_color:color_vector_indices[3]={CUSTOM,CUSTOM,CUSTOM});
 
 /**
@@ -138,6 +132,3 @@ false for disk
 
 */
 native create_fired_shot_disk(Float:Pos[3],ent,bool:torus_or_disk=true)
-
-native set_render_with_color_const(id,sh_custom_color:the_color_num,glow_on_user=1,alpha=-1,the_hud_alpha=-1,glow_user_hud=1,is_sleep=0,
-    Float:unglow_timer=0.0, set_aura_glow = 1)

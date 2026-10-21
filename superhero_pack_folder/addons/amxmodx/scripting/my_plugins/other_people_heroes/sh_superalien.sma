@@ -33,7 +33,12 @@ SuperAlien_knifemode 0	//1-knife only can't change weapons, 0-SuperAlien Vision 
 *
 */
 
+
+#define I_WANT_CONSTANTS
+#include <amxmodx>
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "SuperAlien"
@@ -151,6 +156,10 @@ SuperAlien_vision_on(id)
 		// Set once before loop task
 		setScreenFlash(id, 0, 200, 0, 13, get_pcvar_num(CvarTint))
 		set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(CvarAlphaValue))
+		set_render_with_color_const(id,INVIS,1,get_pcvar_num(CvarAlphaValue),
+							0,
+							_,_,
+							1.0,0,_,_,PRIO_RENDER_INVISIBILITY)
 
 		// Loop to make sure their screen stays green and they stay invisible
 		set_task(1.0, "SuperAlien_loop", id, "", 0, "b")

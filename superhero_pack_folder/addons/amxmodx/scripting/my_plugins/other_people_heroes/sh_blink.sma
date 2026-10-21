@@ -9,8 +9,10 @@ blink_delay 1.5			//Delay time before the teleport occurs
 blink_delaystuck 0			//Is the user stuck in place during the delay?
 
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
 // GLOBAL VARIABLES
@@ -128,16 +130,11 @@ public blink_kd(id)
 	new flashtime = floatround(blinkdelay * 10)
 	if (flashtime > 12) flashtime = 12
 	if (flashtime < 8) flashtime = 8
-
-	shGlow(id, 219, 112, 147)
-	setScreenFlash(id, 219, 112, 147, flashtime, 60)
+						
+	set_render_with_color_const(id,BLINK_PINK,1,16,60,1,1,float(flashtime),_,_,kRenderNormal,PRIO_RENDER_POWERUP)
 	set_task(blinkdelay,"blink_teleport", id)
 
 	return PLUGIN_HANDLED
-}
-//----------------------------------------------------------------------------------------------
-public blink_unglow(id) {
-	shUnglow(id)
 }
 //----------------------------------------------------------------------------------------------
 public blink_teleport(id)
@@ -211,7 +208,6 @@ public positionChangeCheck(id)
 		}
 		return
 	}
-	set_task(1.0, "blink_unglow", id)
 }
 //----------------------------------------------------------------------------------------------
 public blink_movecheck(id, mX, mY, mZ)

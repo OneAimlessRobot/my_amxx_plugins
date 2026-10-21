@@ -1,5 +1,7 @@
-
+#define I_WANT_CONSTANTS
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
@@ -152,7 +154,7 @@ switch(key)
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil on")
 		}
-		set_user_rendering(id,kRenderFxGlowShell, 184, 105, 255, kRenderTransAlpha,255)
+		set_render_with_color_const(id,ELELCTROBOOM_VIOLET,1,255,100,1,0,get_pcvar_float(pCvarPeriod),_,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	}
 	
 	case SH_KEYUP: {
@@ -167,7 +169,7 @@ switch(key)
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil off")
 		}
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INFORMATIVE,_,kRenderNormal)
 	}
 }
 }

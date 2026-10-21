@@ -19,6 +19,7 @@ arcticPredator_explode_maxdamage 250
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "arcticpredator_inc/arcticpredator.inc"
@@ -168,7 +169,7 @@ public arcticPredator_loop(id)
 			new message[128]
 			formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
 
-			sh_set_rendering(id,0,0,0,gAlphaInvis,kRenderFxGlowShell,kRenderTransColor);
+			set_render_with_color_const(id,INVIS,1,gAlphaInvis,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
 			client_print(id,print_center,message)
 		}
 		else
@@ -186,7 +187,7 @@ public hunt_endmode(id)
 	if ( gHuntMode[id] == true )
 	{
 		g_huntTimer[id]=0
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,gAlphaInvis)
 		StopNVG(id)
 		gHuntMode[id] = false
 	}
@@ -562,7 +563,7 @@ new maxdamage = get_cvar_num("arcticPredator_explode_maxdamage")
 
 new name[32]
 get_user_name(id,name,31)
-shUnglow(id)
+sh_set_rendering(id)
 set_hudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 show_hudmessage(0,"%s has exploded.",name)
 

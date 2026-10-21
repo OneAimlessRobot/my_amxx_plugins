@@ -7,6 +7,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "custom_grenades/custom_grenades.inc"
@@ -302,7 +303,7 @@ maria_heal_loop(id){
 						SH_NEW_DMG_BLEED,
 						selflessness_weapon_id)
 		
-		set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period)
+		set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 		make_shockwave(client_origin,g_normal_radius[id],LineColors[LTGREEN],1,3,2,20,40)
 	}
 	

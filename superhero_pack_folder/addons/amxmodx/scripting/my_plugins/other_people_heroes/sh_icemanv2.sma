@@ -12,7 +12,10 @@ iceman2_armor 100			//How much armor does ironman start with?
 
 */
 
-#include "../my_include/superheromod.inc" 
+#define I_WANT_CONSTANTS
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 
@@ -257,7 +260,7 @@ public removeMark(id)
 		remove_entity(ice[id])
 		ice[id] = 0
 		
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_POWERUP)
    }
 	return PLUGIN_HANDLED
 }
@@ -314,8 +317,8 @@ public make_trail(id,origin2[3])
 	write_byte(3000) 
 	message_end()
 
-	set_user_rendering(id,kRenderFxGlowShell,50,50,250, kRenderNormal, 16)
-	
+	set_render_with_color_const(id,ICEMAN_BLUE,1,16,_,0,1,0.0,_,kRenderFxGlowShell, kRenderNormal,PRIO_RENDER_POWERUP)
+			
 	return PLUGIN_CONTINUE
 }
 //-----------------------------------------------------------------------------------------------
@@ -341,7 +344,6 @@ public sh_client_spawn(id)
 		ice[id] = 0
 		g_jetPackRunning[id] = 0
 		set_user_info(id,"JETPACK_RUN","0")
-		sh_set_rendering(id)
   }
   return PLUGIN_CONTINUE
 }

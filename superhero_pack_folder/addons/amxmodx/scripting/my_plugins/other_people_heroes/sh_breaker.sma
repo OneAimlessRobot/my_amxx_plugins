@@ -21,7 +21,10 @@ breaker_deduct 10
 
 #include <amxconst>
 #include <csx>
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 
@@ -65,18 +68,10 @@ public client_damage(attacker, victim, damage, wpnindex)
 		}
 		if (slot == 1 || slot == 2) 
 		{     
-			cs_set_user_armor (victim, max(armor - get_pcvar_num(pCvarDeduct), 0), armortype) 
+			cs_set_user_armor (victim, max(armor - get_pcvar_num(pCvarDeduct), 0), armortype)
 			
-			sh_set_rendering(victim, 0, 255, 255, 50, kRenderFxGlowShell, kRenderTransColor) 
+			set_render_with_color_const(victim,BREAKER_BLUE,1,50,_,0,1,1.0,_,_, kRenderNormal,PRIO_RENDER_POWERUP)
 			
-			set_task(1.0, "remove_rendering", victim) 
 		}
 	} 
-}  
-//------------------------------------------------------------------------------------------------
-public remove_rendering(victim)
-{
-	if ( !is_user_connected(victim)) return 
-	
-	sh_set_rendering(victim)
 }

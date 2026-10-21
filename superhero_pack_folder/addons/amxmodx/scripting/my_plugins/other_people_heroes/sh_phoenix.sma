@@ -25,6 +25,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
@@ -110,17 +111,10 @@ public phoenix_respawn(parm[])
 
 	emit_sound(id, CHAN_STATIC, "ambience/3dmeagle.wav", 0.6, ATTN_NORM, 0, PITCH_NORM)
 
-	shGlow(id, 248, 20, 25)
-	set_task(3.0, "phoenix_unglow", 0, parm, 1)
-
+	set_render_with_color_const(id,PHOENIX_RED,1,16,_,0,1,3.0,_,_, kRenderNormal,PRIO_RENDER_POWERUP)
+	
 	sh_set_hp(id, 75)
 	phoenix_teleport(id)
-}
-//----------------------------------------------------------------------------------------------
-public phoenix_unglow(parm[])
-{
-	new id = parm[0]
-	shUnglow(id)
 }
 //----------------------------------------------------------------------------------------------
 public sh_round_end()
@@ -177,7 +171,7 @@ public BlowUp(id)
 
 	new name[32]
 	get_user_name(id,name,31)
-	shUnglow(id)
+	remove_glow_user(id, PRIO_RENDER_POWERUP,16,kRenderNormal,_,gHeroID)
 	set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
 	show_dhudmessage(0,"%s has exploded.",name)
 	explosion(gHeroID,id,float(dmgRadius),float(maxDamage),_,1,_,_,_,RED)

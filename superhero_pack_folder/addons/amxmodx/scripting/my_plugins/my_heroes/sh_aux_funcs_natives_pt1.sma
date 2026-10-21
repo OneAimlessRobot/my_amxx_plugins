@@ -6,8 +6,6 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
-#include "sh_aux_stuff/sh_aux_quick_checks.inc"
-#include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
 
 
 #define PLUGIN "Superhero fx natives pt1"
@@ -29,8 +27,7 @@ new const damage_icon_strings_arr[damage_icon_types][]={
 	"item_battery"
 }
 
-new REMOVE_GLOW_TASKID,
-	REMOVE_DAMAGE_ICON_TASKID
+new REMOVE_DAMAGE_ICON_TASKID
 
 
 
@@ -45,8 +42,6 @@ public plugin_init(){
 	prepare_shero_aux_lib_pt1()
 
 	REMOVE_DAMAGE_ICON_TASKID=allocate_typed_task_id(player_task)
-
-	REMOVE_GLOW_TASKID=allocate_typed_task_id(entity_task)
 
 }
 public plugin_precache(){
@@ -73,18 +68,14 @@ public plugin_natives(){
 	register_native("directed_spark","_directed_spark");
 	register_native("glow","_glow");
 	register_native("suck_in_sound","_suck_in_sound");
-	register_native("aura","_aura");
 	register_native("ammo_hud","_ammo_hud");
-	register_native("detect_user","_detect_user");
 	register_native("create_fired_shot_disk","_create_fired_shot_disk");
 	register_native("draw_aim_vector","_draw_aim_vector");
 	register_native("precache_native_fx_pt1","_precache_native_fx_pt1")
 	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1");
-	register_native("set_render_with_color_const","_set_render_with_color_const")
 	register_native("tank_impact_shot_fx","_tank_impact_shot_fx")
 	register_native("big_gun_shot_decal","_big_gun_shot_decal")
 	
-	register_native("remove_glow_user","_remove_glow_user")
 
 	register_native("set_damage_icon","_set_damage_icon")
 
@@ -894,32 +885,6 @@ public _suck_in_sound(iPlugins, iParams){
 	return PLUGIN_CONTINUE
 }
 
-public _aura(iPlugins, iParams){
-	new id= get_param(1);
-
-	if ( !is_user_connected(id) ) return
-	new color[3]
-	get_array(2,color,3)
-	new life=get_param(3)
-	new decay= get_param(4)
-
-	new origin[3]
-
-	get_user_origin(id, origin, 1)
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(27)
-	write_coord(origin[0])	//pos
-	write_coord(origin[1])
-	write_coord(origin[2])
-	write_byte(15)
-	write_byte(color[0])			// r, g, b
-	write_byte(color[1])		// r, g, b
-	write_byte(color[2])			// r, g, b
-	write_byte(life)			// life
-	write_byte(decay)			// decay
-	message_end()
-
-}
 
 public _set_damage_icon(iPlugins, iParams){
 
@@ -957,36 +922,6 @@ public _set_damage_icon(iPlugins, iParams){
 	}
 }
 
-/*
-
-native detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0})
-
- */
-public _detect_user(iPlugins, iParams){
-
-	new id= get_param(1)
-	new enemy= get_param(2)
-
-
-	if(!is_valid_ent(id)||!is_valid_ent(enemy)) return 
-
-	new Float:origin[3]
-	get_array_f(3,origin,3)
-
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-	write_byte(1)
-	write_byte(enemy)
-	write_coord_f(origin[0])
-	write_coord_f(origin[1])
-	write_coord_f(origin[2])
-	message_end()
-
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
-	write_byte(enemy)
-	message_end()
-
-
-}
 public _draw_aim_vector(iPlugin,iParams){
 	new id=get_param(1)
 
@@ -1001,67 +936,6 @@ public _draw_aim_vector(iPlugin,iParams){
 	IVecFVec(vec1,fvec1)
 	IVecFVec(vec2,fvec2)
 	laser_line(id,fvec1, fvec2,true,color_vector_indices,false)
-
-}
-public _set_render_with_color_const(iPlugins,iParams){
-	new id=get_param(1)
-
-	if(!is_valid_ent(id)){
-		return 
-	}
-
-	new sh_custom_color:the_color_const=sh_custom_color:get_param(2),
-		glow_on_user=get_param(3),
-		alpha=get_param(4),
-		the_hud_alpha=get_param(5),
-		glow_user_hud=get_param(6),
-		is_sleep=get_param(7),
-		Float:the_glow_timer=get_param_f(8),
-		set_aura_glow=get_param(9)
-
-	if(is_sleep||(glow_user_hud&&!sh_get_id_bit(id,SH_IS_SLEEPING))){
-			sh_screen_fade(id, 0.1, 0.9,
-					LineColors[the_color_const][0],
-					LineColors[the_color_const][1],
-					LineColors[the_color_const][2],
-					(the_hud_alpha<0)?50:the_hud_alpha)
-	}
-	if(glow_on_user){
-		sh_set_rendering(id,
-						LineColors[the_color_const][0],
-						LineColors[the_color_const][1],
-						LineColors[the_color_const][2],
-						(alpha<0)?255:alpha,
-						kRenderFxGlowShell,
-						kRenderTransColor)
-		if(set_aura_glow){
-			aura(id,LineColors[the_color_const])
-		}
-	}
-	if((the_glow_timer>0.1)&&glow_on_user){
-
-		if(task_exists(id+REMOVE_GLOW_TASKID)){
-			remove_task(id+REMOVE_GLOW_TASKID)
-		}
-		remove_glow_user(id,the_glow_timer)
-	}
-}
-
-public _remove_glow_user(iPlugin,iParams){
-	new id=get_param(1)
-	new Float:delay=get_param_f(2)
-
-	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
-				
-
-}
-public remove_glow_task(id){
-
-id-=REMOVE_GLOW_TASKID
-if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
-	return
-}
-sh_set_rendering(id)
 
 }
 unset_damage_icon(id, the_icon_to_remove, Float:delay=1.0){

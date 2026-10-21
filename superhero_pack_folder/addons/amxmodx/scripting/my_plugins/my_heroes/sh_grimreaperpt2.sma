@@ -5,6 +5,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "grim_reaper_inc/grim_reaper_inc.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
 #define GRIM_SWING_SFX "shmod/Grimpt2/Stolen1.wav"
@@ -68,11 +69,12 @@ public weaponChange(id)
 	if (wpnid == CSW_KNIFE &&gScytheSwings[id]){
 		UnSet_BitVar(gJustResetRenderingMask,id)
 		entity_set_string(id, EV_SZ_viewmodel, gModelScythe)
-		sh_set_rendering(id, 50, 8, 8, 255,kRenderFxGlowShell, kRenderTransColor)
+		set_render_with_color_const(id,GRIM_REAPER_GLOW,1,255,_,0,_,
+							2.0,_,_,_,PRIO_RENDER_INFORMATIVE)
 	}
 	else if(!Get_BitVar(gJustResetRenderingMask,id)){
 		Set_BitVar(gJustResetRenderingMask,id)
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INFORMATIVE,_,kRenderNormal)
 	}
 	return PLUGIN_CONTINUE
 

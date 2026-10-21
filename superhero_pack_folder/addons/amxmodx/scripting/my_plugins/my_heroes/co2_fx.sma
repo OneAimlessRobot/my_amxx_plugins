@@ -6,6 +6,7 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
 #define PLUGIN "Superhero co2 fx"
@@ -81,7 +82,7 @@ co2_user(id){
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
 	
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,_,
-							CO2_TIME*time_to_apply_mult)
+							CO2_TIME*time_to_apply_mult,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	
 	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[LTGREEN],
 							CO2_TIME*time_to_apply_mult)
@@ -98,7 +99,7 @@ unco2_user(id){
 
 	remove_task(id+UNCO2_TASKID)
 	if(sh_get_id_bit(id,SH_IS_CO2)){
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal)
 		set_damage_icon(id,0,DMG_ICON_GAS)
 		sh_assign_id_bit(id,SH_IS_CO2,false)
 	}

@@ -1,5 +1,5 @@
 #! /bin/bash
-num_of_divs=10
+num_of_divs=3
 
 max_jobs=3
 
@@ -138,6 +138,7 @@ function compile_plugins_in_range(){
 			wait -n
 		done
 	done
+	wait
 
 	
 }

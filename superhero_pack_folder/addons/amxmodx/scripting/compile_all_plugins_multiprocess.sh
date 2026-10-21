@@ -138,6 +138,7 @@ function compile_plugins_in_range(){
 			wait -n
 		done
 	done
+	wait
 
 	
 }

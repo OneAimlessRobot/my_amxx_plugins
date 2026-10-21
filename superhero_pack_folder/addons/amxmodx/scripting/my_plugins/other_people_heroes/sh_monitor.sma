@@ -343,7 +343,7 @@ public monitor_think(ent)
 
 						set_hudmessage(255, 255, 255, 0.018, 0.9, 2, 0.05, 0.1, 0.01, 3.0)
 
-						sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+						sh_get_player_has_hero_prop(specPlayer,SH_HEALTH_CAP_HERO)?
 						ShowSyncHudMsg(id, MonitorHudSync, "[SH] Level: %d/%d  |  XP: %d%s^nHealth: %d/%d (Cap: %d) |  Armor: %d/%d^nGravity: %d%%  |  Speed: %d | Cloak: %d ",
 												specPlayerLevel,
 												ServerMaxLevel,

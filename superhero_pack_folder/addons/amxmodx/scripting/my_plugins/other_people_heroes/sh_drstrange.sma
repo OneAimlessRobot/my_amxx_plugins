@@ -37,6 +37,7 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // Damage Variables
 #define h1_dam 120 //head
@@ -407,14 +408,7 @@ public drstrange_respawn(parm[])
 
 	emit_sound(id, CHAN_STATIC, "doors/aliendoor3.wav", 0.6, ATTN_NORM, 0, PITCH_LOW)
 
-	shGlow(id, 0, 240, 100)
-	set_task(3.0, "drstrange_unglow", 0, parm, 1)
-}
-//----------------------------------------------------------------------------------------------
-public drstrange_unglow(parm[])
-{
-	new id = parm[0]
-	shUnglow(id)
+	set_render_with_color_const(id,DR_STRANGE_GREEN,1,16,_,0,1,3.0,_,_, kRenderNormal,PRIO_RENDER_POWERUP)
 }
 //----------------------------------------------------------------------------------------------
 public enableDrStrange(id)

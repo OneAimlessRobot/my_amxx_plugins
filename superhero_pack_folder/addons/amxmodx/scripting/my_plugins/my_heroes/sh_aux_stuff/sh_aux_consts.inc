@@ -164,7 +164,21 @@ enum explosion_sfx_flags (<<= 1){
 
 }
 
+// this list includes the alphas that are meant to be applied
 
+// chucky blue 75, 75, 255 16 
+// grandmaster yellow 255, 255, 0, 16,
+// blink pink 219, 112, 147 16
+// breaker blue 0 255, 255, 50
+// dr strange green 0, 240, 100 16
+// exodus yellow 200, 187, 0 16
+// phoenix red 248, 20, 25 16
+// steel grey 35, 40, 50 16
+// iceman blue 50,50,250 16
+// static shock blue 50,50,250 16
+// invisible man grey 8, 8, 8
+// palpatine purple 175,0,255 25
+// godmode blue 0, 0, 128 16
 
 //Colors To Pick From
 enum sh_custom_color{
@@ -185,6 +199,21 @@ enum sh_custom_color{
 		FROZEN_BLUE,
 		BABY_BLUE,
 		LAVENDER,
+		GRIM_REAPER_GLOW,
+		ELELCTROBOOM_VIOLET,
+		CHUCKY_BLUE,
+		GRANDMASTER_YELLOW,
+		BLINK_PINK,
+		BREAKER_BLUE,
+		DR_STRANGE_GREEN,
+		EXODUS_YELLOW,
+		PHOENIX_RED,
+		STEEL_GREY,
+		ICEMAN_BLUE,
+		STATIC_SHOCK_BLUE,
+		INVISIBLE_MAN_GREY,
+		PALPATINE_PURPLE,
+		GODMODE_BLUE,
 		FX_NONE,
 		FX_KILL,
 		FX_GLOW,
@@ -199,27 +228,6 @@ enum sh_custom_color{
 		FX_BATH,
 }
 
-
-
-#define BLOOD_COLOR_RED		247
-#define BLOOD_COLOR_YELLOW	195
-#define BLOOD_STREAM_RED	70
-#define BLOOD_STREAM_YELLOW	60
-#define BLOOD_SM_NUM 8
-#define BLOOD_LG_NUM 2
-
-stock blood_large_red[BLOOD_LG_NUM] = {201,202},
-	blood_small_red[BLOOD_SM_NUM] = {187,188,189,190,191,192,193,194}
-
-
-stock const burn_decal[5] = {199,200,201,202,203}
-stock const g_burnDecal[3] = {25, 26, 27}
-stock const g_burnDecalBig[3] = {43, 44, 45}
-stock const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
-stock const g_gunshot_decals_bulletholes[5] = {38,39,40,41,42}
-
-
-stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
 
 //Color definitions
 stock const LineColors[sh_custom_color][3] = {
@@ -240,6 +248,21 @@ stock const LineColors[sh_custom_color][3] = {
 	{5, 30, 125}, //Frozen Blue
 	{111, 111, 255}, //Baby Blue
 	{139, 122, 158}, //Lavender
+	{50, 8, 8}, //grim reaper glow
+	{184, 105, 255}, //electroboom violet
+	{75, 75, 255 }, // chucky blue
+	{255, 255, 0}, // grandmaster yellow 
+	{219, 112, 147}, // blink pink
+	{0, 255, 255 }, // Breaker blue
+	{0, 240, 100 }, // dr strange green
+	{200, 187, 0 }, // exodus yellow
+	{248, 20, 25 }, // Phoenix red
+	{35, 40, 50 }, // Steel grey
+	{50, 50, 250 }, // iceman blue
+	{50, 50, 250 }, // static shock blue
+	{8, 8, 8 }, // invisible man grey
+	{175,0,255 }, // palpatine purple
+	{0, 0, 128 }, // godmode blue
 	{0,0,0}, //fx_none
 	{1, 255, 255}, //fx_cyanide
 	{255, 255, 255}, //fx_glow
@@ -253,6 +276,30 @@ stock const LineColors[sh_custom_color][3] = {
 	{50, 50, 50},  //fx_metylphenidate
 	{179, 66, 5} //fx_bath
 }
+
+#define BLOOD_COLOR_RED		247
+#define BLOOD_COLOR_YELLOW	195
+#define BLOOD_STREAM_RED	70
+#define BLOOD_STREAM_YELLOW	60
+#define BLOOD_SM_NUM 8
+#define BLOOD_LG_NUM 2
+
+
+//Decal numbers
+
+stock blood_large_red[BLOOD_LG_NUM] = {201,202},
+	blood_small_red[BLOOD_SM_NUM] = {187,188,189,190,191,192,193,194}
+
+
+stock const burn_decal[5] = {199,200,201,202,203}
+stock const g_burnDecal[3] = {25, 26, 27}
+stock const g_burnDecalBig[3] = {43, 44, 45}
+stock const g_czero_burnDecal[5] = {53, 54, 55, 56, 57}
+stock const g_gunshot_decals_bulletholes[5] = {38,39,40,41,42}
+
+
+stock Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
+
 
 stock const player_vector[][]={"player"},
 			breakable_vector[][]={"func_breakable"},

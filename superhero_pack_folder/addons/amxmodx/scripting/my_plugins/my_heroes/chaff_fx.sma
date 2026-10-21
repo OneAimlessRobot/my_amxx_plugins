@@ -1,8 +1,7 @@
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "chaff_fx_inc/chaff_fx.inc"
-#include "tomie_yu_inc/tomie_yu.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -66,7 +65,7 @@ public unchaff_task(id){
 chaff_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_CHAFFED)) return
 
-	set_render_with_color_const(id,WHITE,1,CHAFF_ALPHA,50,1,_,CHAFF_TIME)
+	set_render_with_color_const(id,WHITE,1,CHAFF_ALPHA,15,1,_,CHAFF_TIME,_,_,_,PRIO_RENDER_INVISIBILITY)
 	sh_assign_id_bit(id, SH_IS_CHAFFED, true)
 	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_TIME)
 	
@@ -82,7 +81,7 @@ unchaff_user(id){
 
 	remove_task(id+UNCHAFF_TASKID)
 	if(sh_get_id_bit(id, SH_IS_CHAFFED)){
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,CHAFF_ALPHA)
 		sh_assign_id_bit(id, SH_IS_CHAFFED, false)
 	}
 	

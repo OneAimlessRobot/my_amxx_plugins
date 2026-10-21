@@ -10,6 +10,7 @@
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -109,6 +110,27 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	return DMG_FWD_PASS
 }
 
+detect_user(id,enemy,Float:origin[3]={0.0,0.0,0.0}){
+
+
+
+	if(!is_valid_ent(id)||!is_valid_ent(enemy)) return 
+
+
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
+	write_byte(1)
+	write_byte(enemy)
+	write_coord_f(origin[0])
+	write_coord_f(origin[1])
+	write_coord_f(origin[2])
+	message_end()
+
+	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
+	write_byte(enemy)
+	message_end()
+
+
+}
 public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	id-=RADIOACTIVE_TASK_ID
 	if(!is_user_alive(id)){
@@ -155,9 +177,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
 			
 		}
-		sh_set_rendering(id, LineColors[color_const][0],  LineColors[color_const][1], LineColors[color_const][2], 255,kRenderFxGlowShell, kRenderTransColor)
-		sh_screen_fade(id, 0.1, 0.9, LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2],  50)
-		aura(id,LineColors[color_const])
+		set_render_with_color_const(id,color_const,1,255,-1,0,0,_,_,_,PRIO_RENDER_INVISIBILITY)
 	}
 	if(array[TRACK_TASK_DO_DAMAGE]){
 		sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(

@@ -22,4 +22,4 @@ Stack/heap size:      16384 bytes
 Total requirements:   49664 bytes
 
 Done.
-Could not locate output file ../../plugins/codmw4_levels.amx (compile failed).
+Done.

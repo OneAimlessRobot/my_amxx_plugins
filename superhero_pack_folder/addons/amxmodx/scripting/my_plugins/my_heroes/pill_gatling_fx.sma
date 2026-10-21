@@ -10,6 +10,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -441,7 +442,7 @@ fx_task_user(id,attacker,fx_id:fx_num){
 	
 	if(strlen_of_init_task_func_name>0){
 		
-		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_num),_,_,_,fx_task_parameters[fx_num][fx_task_will_glow_user_screen])
+		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_num),_,_,_,fx_task_parameters[fx_num][fx_task_will_glow_user_screen],_,fx_task_parameters[fx_num][fx_task_period],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 		
 	
 		callfunc_begin_i(get_func_id(fx_task_parameters[fx_num][fx_task_apply_func_name]))
@@ -456,7 +457,8 @@ task_cycle(array[3],id){
 
 	if((array[2]<fx_task_parameters[fx_id:array[0]][fx_task_repeats])&&is_user_alive(id)&&sh_is_inround()&&(gatling_get_fx_num(id)==fx_id:array[0])){
 
-		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_id:array[0]),_,_,_,fx_task_parameters[fx_id:array[0]][fx_task_will_glow_user_screen])
+		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_id:array[0]),_,_,_,fx_task_parameters[fx_id:array[0]][fx_task_will_glow_user_screen],_,fx_task_parameters[fx_id:array[0]][fx_task_period],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+		
 		
 		if(((fx_task_parameters[fx_id:array[0]][fx_task_status_icon])>=enum_zero)){
 			
@@ -591,7 +593,7 @@ stun_user(id){
 
 	
 	if ( !sh_is_active() ||!is_user_alive(id)) return
-	set_render_with_color_const(id, FX_COLOR_OFFSET(STUN),_,_,_,fx_task_parameters[STUN][fx_task_will_glow_user_screen])
+	set_render_with_color_const(id, FX_COLOR_OFFSET(STUN),_,_,_,fx_task_parameters[STUN][fx_task_will_glow_user_screen],_,fx_task_parameters[STUN][fx_task_time],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	sh_set_stun(id, fx_task_parameters[STUN][fx_task_time], STUN_SPEED)
 	sh_screen_shake(id, 16.0, fx_task_parameters[STUN][fx_task_time], 2.0)
 
@@ -601,7 +603,7 @@ stun_user(id){
 public blind_task(any:array[3],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !sh_is_active() ||!is_user_alive(id)) return
-	set_render_with_color_const(id,FX_COLOR_OFFSET(array[0]),0,_,255,1)
+	set_render_with_color_const(id,FX_COLOR_OFFSET(array[0]),0,_,255,fx_task_parameters[STUN][fx_task_will_glow_user_screen],_,fx_task_parameters[STUN][fx_task_time],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	task_cycle(array,id)
 }
 
@@ -683,7 +685,7 @@ public uncocaine_task(array[3],id){
 uneffect_user_primitive(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	new fx_id:the_fx_id=gatling_get_fx_num(id)
-	sh_set_rendering(id)
+	remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal);
 	
 	new bool:will_remove_task
 				=

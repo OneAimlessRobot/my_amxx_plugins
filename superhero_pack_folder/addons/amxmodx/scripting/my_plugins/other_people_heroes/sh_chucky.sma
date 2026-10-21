@@ -51,10 +51,11 @@ chucky_knifespeed 720    //User speed when knife is out
 
 //------- Do not edit below this point ------//
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_CONSTANTS
 
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -280,19 +281,8 @@ public chucky_respawn(parm[])
 
 	emit_sound(id, CHAN_STATIC, "nihilanth/nil_comes.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
-	shGlow(id, 75, 75, 255)
-	set_task(3.0, "chucky_unglow", 0, parm, 1)
+	set_render_with_color_const(id,CHUCKY_BLUE,1,16,_,0,1,3.0,_,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	
-}
-//----------------------------------------------------------------------------------------------
-public chucky_unglow(parm[])
-{
-	new id = parm[0]
-	
-	if ( !is_user_connected(id) )
-		return
-
-	shUnglow(id)
 }
 //----------------------------------------------------------------------------------------------
 public bomb_planted(id)

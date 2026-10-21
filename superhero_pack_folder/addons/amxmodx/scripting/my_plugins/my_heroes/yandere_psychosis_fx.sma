@@ -4,7 +4,7 @@
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
@@ -154,7 +154,7 @@ public psychosis_task(id){
 	id-=YANDERE_PSYCHOSIS_TASKID
 
 	gPsychosisTime[id]-=1.0
-	set_render_with_color_const(id, PINK,1,255,_,0,_,1.0)
+	set_render_with_color_const(id, PINK,1,255,_,0,_,1.0,_,_,_,PRIO_RENDER_POWERUP)
 	aura(id,LineColors[PINK])
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
 		if(is_user_connected(id)){
@@ -200,7 +200,7 @@ psychosis_user(id){
 }
 
 unpsychosis_user(id){
-	sh_set_rendering(id)
+	remove_glow_user(id,PRIO_RENDER_POWERUP)
 	psychosis_off(id)
 	
 	

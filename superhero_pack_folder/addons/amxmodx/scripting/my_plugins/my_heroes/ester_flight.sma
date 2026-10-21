@@ -11,7 +11,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
 
@@ -520,8 +520,8 @@ public godmode_render_update(id){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
 		}
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
-		sh_set_rendering(id,255,255,255,255, kRenderFxGlowShell,kRenderTransColor)
-		remove_glow_user(id,FLIGHT_GODMODE_THINK_TIME)
+		set_render_with_color_const(id,WHITE,1,40,_,0,_,FLIGHT_GODMODE_THINK_TIME,1,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+		
 		if(g_ester_blow_up_time_left[id]>0.0){
 			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
 		}

@@ -1,9 +1,9 @@
 #define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "shock_fx_inc/shock_fx.inc"
 #include "wet_fx_inc/wet_fx.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -92,7 +92,7 @@ shock_user(id,attacker){
 	}
 	sh_set_stun(id,SHOCK_TIME,180.0)
 
-	set_render_with_color_const(id,LTBLUE,1,50,50,1,1,SHOCK_TIME)
+	set_render_with_color_const(id,LTBLUE,1,50,50,1,1,SHOCK_TIME,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 
 
 	sh_assign_id_bit(id,SH_IS_SHOCKED,true)
@@ -123,7 +123,7 @@ unshock_user(id){
 
 	remove_task(id+UNSHOCK_TASKID)
 	if(sh_get_id_bit(id,SH_IS_SHOCKED)){
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal)
 		set_damage_icon(id,0,DMG_ICON_SHOCK)
 		sh_assign_id_bit(id,SH_IS_SHOCKED,false)
 	}

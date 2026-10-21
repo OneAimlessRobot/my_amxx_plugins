@@ -4,6 +4,7 @@
 #define I_WANT_MISC_FUNCS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
@@ -82,7 +83,6 @@ public plugin_precache()
 public sh_client_spawn(id)
 {
 	g_usingPower[id] = false
-	set_user_rendering(id)
 	set_user_footsteps(id, 0)
 }
 
@@ -117,7 +117,10 @@ public stealth_kd(id)
 	engclient_cmd(id, "weapon_knife")
 
 	//R, G, B
-	set_user_rendering(id, kRenderFxGlowShell, 55, 55, 55, kRenderTransAlpha)
+	set_render_with_color_const(id,INVIS,1,0,
+						0,
+						_,_,
+						_,0,_,_,PRIO_RENDER_INVISIBILITY)
 	gHealPoints = false
 	g_usingPower[id] = true
 	set_user_footsteps(id, 1)
@@ -147,7 +150,7 @@ public stealth_ku(id)
 		// Switch back to previous weapon...
 		if ( g_lastWeapon[id] != CSW_KNIFE ) shSwitchWeaponID(id, g_lastWeapon[id])
 
-		set_user_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,0)
 		set_user_footsteps(id, 0)
 		
 		superhero_protected_hud_message(superhero_hud_msg_sync,id, "Normal Mode")

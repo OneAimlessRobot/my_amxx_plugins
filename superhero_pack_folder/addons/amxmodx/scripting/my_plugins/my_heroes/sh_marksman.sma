@@ -28,6 +28,7 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 
 new MARKSMAN_TASKID
@@ -215,7 +216,7 @@ public Crouch(id,alpha) {
 		return FMRES_IGNORED;
 	}
 	if( !(entity_get_int( iPlayer, EV_INT_flags ) & FL_ONGROUND  )){
-		sh_set_rendering(iPlayer);
+		remove_glow_user(iPlayer,PRIO_RENDER_INVISIBILITY,alpha)
 		return FMRES_IGNORED;
 	
 	
@@ -226,10 +227,10 @@ public Crouch(id,alpha) {
 	iButton = entity_get_int( iPlayer, EV_INT_button );
 	
 	if( ( iButton & IN_DUCK ) ) {
-		sh_set_rendering(iPlayer,0,0,0,alpha,kRenderFxGlowShell,kRenderTransColor);
+		set_render_with_color_const(id,INVIS,1,alpha,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
 	}
 	else{
-		sh_set_rendering(iPlayer);
+		remove_glow_user(iPlayer,PRIO_RENDER_INVISIBILITY,alpha)
 		
 	}
 	

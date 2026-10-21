@@ -15,6 +15,7 @@ shock_armor 250			//Armor Starts with (def=250)
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -148,12 +149,12 @@ public Climb(id,alpha) {
 		
 		entity_set_vector( id, EV_VEC_velocity, fVelocity );
 		
-		sh_set_rendering(id,0,0,0,alpha,kRenderFxGlowShell,kRenderTransColor);
+		set_render_with_color_const(id,INVIS,1,alpha,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
 		
 	}
 	else if (g_was_cloaked[id]){
 		g_is_cloaked[id]=0
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,alpha)
 	}
 }
 //----------------------------------------------------------------------------------------------
