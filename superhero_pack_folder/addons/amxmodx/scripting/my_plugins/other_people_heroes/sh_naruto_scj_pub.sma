@@ -139,8 +139,10 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 		- alpha testing
 		- created
 */
-
+#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include <chr_engine>
 #include <fakemeta_util>
 
@@ -185,14 +187,39 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Shadow Clone Jutsu", "Summon a shadow clone which follows you and shoots down any nearby enemies with his gun, press keydown again to use the rasengan")
 	sh_set_hero_bind(gHeroID)
 	
-	
+	precache_extra_models();
 	// LOOP
 	set_task(1.0, "naruto_loop", _, _, _, "b")
 	
 	// Register Thinks
 	register_forward(FM_Think,"FM_Think_hook")
 }
+precache_extra_models(){
 
+	new num_of_custom_player_models = sh_get_number_of_registered_player_models()
+	new model_name_array_ct[STRING_SIZE],
+		model_name_array_t[STRING_SIZE]
+
+	for( new i = 0; i<num_of_custom_player_models; i++){
+
+		sh_get_player_superhero_player_model_from_model_id(i, model_name_array_ct, model_name_array_t)
+
+
+
+		engfunc(EngFunc_PrecacheModel,model_name_array_ct)
+		server_print("Naruto precaches %s!^n",model_name_array_ct)
+
+		if(strncmp(model_name_array_ct,model_name_array_t,charsmax(model_name_array_ct))){
+
+			
+			engfunc(EngFunc_PrecacheModel,model_name_array_t)
+			server_print("Naruto precaches %s!^n",model_name_array_t)
+
+		}
+
+	}
+
+}
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,"models/shmod/t800_minigun.mdl")
@@ -205,6 +232,7 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,"shmod/naruto/narutoclone.wav")
 	gSpriteCircle = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/wall_puff4.spr")
+	
 }
 
 public sh_hero_init(id, heroID, sh_init_mode:mode)
@@ -441,9 +469,13 @@ public shadowclone(id)
 	botEnt[id] = engfunc(EngFunc_CreateNamedEntity,engfunc(EngFunc_AllocString,"info_target"))
 	set_pev(botEnt[id],pev_classname,"npc_shadowclone")
 
+	
 	new model[32],modelchange[128]
-	get_user_info(id,"model",model,31)
-	formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
+	if(sh_get_player_superhero_player_model(id,modelchange)<0){ //no custom model found. nothing was done to the buffer
+		
+		get_user_info(id,"model",model,31)
+		formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
+	}
 	sh_chat_message(id, gHeroID, "Your shadow clone has arrived")
 	engfunc(EngFunc_SetModel,botEnt[id],modelchange)
 	//This will make it so that the ent appears in front of the user	

@@ -499,8 +499,83 @@ public plugin_natives(){
 	register_native("prepare_shero_aux_lib_pt5","_prepare_shero_aux_lib_pt5");
 	register_native("sh_register_superheromod_model","_sh_register_superheromod_model")
 	register_native("sh_register_superheromod_weapon_model","_sh_register_superheromod_weapon_model")
+	register_native("sh_get_number_of_registered_player_models","_sh_get_number_of_registered_player_models")
+	register_native("sh_get_player_superhero_player_model" , "_sh_get_player_superhero_player_model")
+	register_native("sh_get_player_superhero_player_model_from_model_id" , "_sh_get_player_superhero_player_model_from_model_id")
+
+
 }
 
+
+
+public _sh_get_number_of_registered_player_models(iPlugins, iParams){
+
+	return curr_num_models_logged
+}
+
+
+public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
+
+	new model_id=get_param(1);
+
+	new ct_hero_mode_name_array[STRING_SIZE],
+		t_hero_mode_name_array[STRING_SIZE]
+
+
+
+
+	new result = -1;
+
+	if((model_id>=0)&&(model_id<SH_MAX_PLAYER_MODELS)){
+
+		result = model_id;
+		
+		set_string(2,sh_array_of_player_model_structs[result][player_model_ct_file_path],
+										charsmax(ct_hero_mode_name_array)) // they are the same size
+		set_string(3,sh_array_of_player_model_structs[result][player_model_t_file_path],
+										charsmax(t_hero_mode_name_array)) // they are the same size
+
+	}
+	else {
+
+		ct_hero_mode_name_array[0]=0
+		t_hero_mode_name_array[0]=0
+		set_string(2,ct_hero_mode_name_array,charsmax(ct_hero_mode_name_array))
+		set_string(3,t_hero_mode_name_array,charsmax(t_hero_mode_name_array))
+
+	}
+
+	return result
+}
+
+
+public _sh_get_player_superhero_player_model(iPlugins, iParams){
+
+	new id=get_param(1);
+
+	new hero_mode_name_array[STRING_SIZE]
+
+
+	new result = -1;
+
+	if(gPlayersCurrHeroModelID[id]<0){
+
+		hero_mode_name_array[0]=0
+		set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
+	}
+	else if(is_user_alive(id)){
+
+		result = gPlayersCurrHeroModelID[id];
+		new CsTeams:the_team = cs_get_user_team(id)
+		set_string(2,sh_array_of_player_model_structs[result][(the_team==CS_TEAM_CT)?player_model_ct_file_path:player_model_t_file_path],
+										charsmax(hero_mode_name_array)) // they are the same size
+
+	}
+
+	return result;
+
+
+}
 play_morph_sound(id){
 
 	if(!is_user_connected(id)) return
@@ -711,6 +786,7 @@ public sh_client_death(id)
 public client_connect(id){
 
 	arrayset(gPlayersCurrHeroWpnModelID[id],-1,sizeof gPlayersCurrHeroWpnModelID[])
+	gPlayersCurrHeroModelID[id] = -1
 
 }
 public sh_client_spawn(id){

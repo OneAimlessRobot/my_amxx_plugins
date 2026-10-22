@@ -154,7 +154,7 @@ public gokukt_loop()
 				set_render_with_color_const(id,RED,1,255,
 						_,
 						0,_,
-						0.0,0,_,kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
+						1.0,0,_,kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0)
 				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id])
 			}
