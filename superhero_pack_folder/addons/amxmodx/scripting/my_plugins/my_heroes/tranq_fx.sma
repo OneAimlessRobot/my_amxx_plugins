@@ -172,8 +172,8 @@ public sleep_task(array[1],id){
 		unsleep_user(id)
 		return
 	}
-	set_render_with_color_const(id,BLACK,0,_,255,1,1,_,_,_,PRIO_RENDER_DELETE_ASLEEP)
-	set_render_with_color_const(id,WHITE,1,255,-1,0,0,SLEEP_PERIOD,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
+	set_render_with_color_const(id,BLACK,1,255,255,1,1,SLEEP_PERIOD,_,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
+
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]<(SLEEP_TIMES))){
 		array[0]++
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
@@ -192,9 +192,9 @@ sleep_user(id,attacker){
 	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
 	sleep_user_switch_weapon(id)
 	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
-	fade_screen_user(id)
+	//fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
+	sleep_task(array,id+SLEEP_TASKID)
 
 
 
@@ -210,7 +210,7 @@ unsleep_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
-		remove_glow_user(id,PRIO_RENDER_DELETE_ASLEEP,_,kRenderNormal)
+		remove_glow_user(id,PRIO_RENDER_DELETE_ASLEEP,255,kRenderNormal)
 		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
 	}
 }

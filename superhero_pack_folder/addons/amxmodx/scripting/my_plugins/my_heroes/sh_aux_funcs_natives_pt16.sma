@@ -168,16 +168,12 @@ public client_disconnected(id){
 
 
 }
-public _aura(iPlugins, iParams){
-	new id= get_param(1);
-
+aura_aux(id,const color[3]={255,255,255},life=3,decay=1){
+	
 	if ( !is_user_connected(id) ) return
-	new color[3]
-	get_array(2,color,3)
-	new life=get_param(3)
-	new decay= get_param(4)
 
 	new origin[3]
+
 
 	get_user_origin(id, origin, 1)
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -192,6 +188,16 @@ public _aura(iPlugins, iParams){
 	write_byte(life)			// life
 	write_byte(decay)			// decay
 	message_end()
+
+}
+public _aura(iPlugins, iParams){
+	new id= get_param(1);
+	new color[3]
+	get_array(2,color,3)
+	new life=get_param(3)
+	new decay= get_param(4)
+	
+	aura_aux(id,color,life,decay)
 
 }
 public _set_render_with_color_const(iPlugins,iParams){
@@ -227,9 +233,6 @@ public _set_render_with_color_const(iPlugins,iParams){
 
 		new bool:is_valid_client = bool:is_user_alive(id);
 		
-		if(task_exists(id+REMOVE_GLOW_TASKID)&&client_is_within_range(id)){
-			remove_task(id+REMOVE_GLOW_TASKID)
-		}
 
 		if(DEBUG_MODE){
 		
@@ -248,21 +251,24 @@ public _set_render_with_color_const(iPlugins,iParams){
 		
 		}
 		
-		if(is_valid_client){
-
+		if(DEBUG_MODE){
+			sh_chat_message(id,heroID,"We are about to try to change glow! The target glow type is: %s",render_priority_names[the_priority])
+		}
+		if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
+			
 			if(DEBUG_MODE){
-				sh_chat_message(id,heroID,"We are about to try to change glow! The target glow type is: %s",render_priority_names[the_priority])
+				sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
+				sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
 			}
-			if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
-				
-				if(DEBUG_MODE){
-					sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
-					sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
-				}
-				return;
+			return;
 
 
-			}
+		}
+
+		if(task_exists(id+REMOVE_GLOW_TASKID)&&client_is_within_range(id)){
+			remove_task(id+REMOVE_GLOW_TASKID)
+		}
+		if(is_valid_client){
 
 			if(DEBUG_MODE){
 					
@@ -305,27 +311,21 @@ public _set_render_with_color_const(iPlugins,iParams){
 						rendering_fx,
 						rendering_mode)
 		if((the_priority!=PRIO_RENDER_INVISIBILITY)&&set_aura_glow){
-			aura(id,LineColors[the_color_const])
+			aura_aux(id,LineColors[the_color_const])
 		}
 		if((the_glow_timer>0.1)){
 			
-			remove_glow_user(id,the_priority,alpha,rendering_mode,the_glow_timer,heroID)
+			remove_glow_user_aux(id,the_priority,alpha,rendering_mode,the_glow_timer,heroID)
 		}
 
 	}
 }
-
-public _remove_glow_user(iPlugin,iParams){
-	new id=get_param(1)
-	new rendering_priority_consts:the_priority = rendering_priority_consts:get_param(2)
-	
-	if(!client_is_within_range(id)){
-
-		return
-	}
-
-	new gating_alpha= get_param(3)
-	new heroID = get_param(6)
+remove_glow_user_aux(id,
+                  rendering_priority_consts:the_priority = PRIO_RENDER_NONE,
+                  gating_alpha = 255,
+                  the_rendering_mode_obtained = kRenderTransColor,
+                  Float:delay = 0.0,
+                  heroID = -1){
 
 	if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
 		
@@ -333,9 +333,11 @@ public _remove_glow_user(iPlugin,iParams){
 
 		return
 	}
-	new the_rendering_mode_obtained = get_param(4)
 
+	if(!client_is_within_range(id)){
 
+		return
+	}
 	if((the_priority==PRIO_RENDER_INVISIBILITY)&&(player_rendering_priorities_array[server_slot_idx:id]==PRIO_RENDER_INVISIBILITY)){
 
 		new gating_invis_pct = ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(the_rendering_mode_obtained, float(gating_alpha)),
@@ -353,7 +355,6 @@ public _remove_glow_user(iPlugin,iParams){
 		}
 
 	}
-	new Float:delay=get_param_f(5)
 
 
 
@@ -364,6 +365,31 @@ public _remove_glow_user(iPlugin,iParams){
 		return;
 	}
 	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
+
+
+
+}
+public _remove_glow_user(iPlugin,iParams){
+
+
+
+	new id=get_param(1)
+	new rendering_priority_consts:the_priority = rendering_priority_consts:get_param(2)
+	
+
+	new gating_alpha= get_param(3)
+	new heroID = get_param(6)
+
+	new the_rendering_mode_obtained = get_param(4)
+
+	new Float:delay=get_param_f(5)
+
+	remove_glow_user_aux(id,
+				the_priority,
+                gating_alpha,
+                the_rendering_mode_obtained,
+                delay,
+                heroID);
 				
 
 }

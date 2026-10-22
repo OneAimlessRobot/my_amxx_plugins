@@ -177,7 +177,7 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
 			
 		}
-		set_render_with_color_const(id,color_const,1,255,-1,0,0,_,_,_,PRIO_RENDER_INVISIBILITY)
+		set_render_with_color_const(id,color_const,1,80,-1,80,_,Float:array[TRACK_TASK_PERIOD],_,_,kRenderNormal,PRIO_RENDER_DELETE_INVISIBILITY)
 	}
 	if(array[TRACK_TASK_DO_DAMAGE]){
 		sh_extra_damage(id,array[TRACK_TASK_ATTACKER],floatround(

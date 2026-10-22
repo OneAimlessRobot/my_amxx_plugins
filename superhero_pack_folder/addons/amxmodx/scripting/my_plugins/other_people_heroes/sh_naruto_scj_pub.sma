@@ -197,23 +197,30 @@ public plugin_init()
 precache_extra_models(){
 
 	new num_of_custom_player_models = sh_get_number_of_registered_player_models()
-	new model_name_array_ct[STRING_SIZE],
-		model_name_array_t[STRING_SIZE]
+	new model_name[STRING_SIZE],
+		model_file_path[STRING_SIZE]
 
 	for( new i = 0; i<num_of_custom_player_models; i++){
 
-		sh_get_player_superhero_player_model_from_model_id(i, model_name_array_ct, model_name_array_t)
+		new result = sh_get_player_superhero_player_model_from_model_id(i, model_name)
 
+		if(result<0){
 
+			continue
+		}
 
-		engfunc(EngFunc_PrecacheModel,model_name_array_ct)
-		server_print("Naruto precaches %s!^n",model_name_array_ct)
+		formatex(model_file_path,127,"models/player/%s/%s.mdl",model_name,model_name)
+		
+		engfunc(EngFunc_PrecacheModel,model_file_path)
+		server_print("Naruto precaches %s!^n",model_file_path)
 
-		if(strncmp(model_name_array_ct,model_name_array_t,charsmax(model_name_array_ct))){
+		formatex(model_file_path,127,"models/player/%s/%sT.mdl",model_name,model_name) // it becoems the path of the T model
+
+		if(file_exists(model_file_path)){
 
 			
-			engfunc(EngFunc_PrecacheModel,model_name_array_t)
-			server_print("Naruto precaches %s!^n",model_name_array_t)
+			engfunc(EngFunc_PrecacheModel,model_file_path)
+			server_print("Naruto precaches %s!^n",model_file_path)
 
 		}
 
@@ -470,12 +477,12 @@ public shadowclone(id)
 	set_pev(botEnt[id],pev_classname,"npc_shadowclone")
 
 	
-	new model[32],modelchange[128]
-	if(sh_get_player_superhero_player_model(id,modelchange)<0){ //no custom model found. nothing was done to the buffer
+	new model[128],modelchange[128]
+	if(sh_get_player_superhero_player_model(id,model)<0){ //no custom model found. nothing was done to the buffer
 		
-		get_user_info(id,"model",model,31)
-		formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
+		get_user_info(id,"model",model,127)
 	}
+	formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
 	sh_chat_message(id, gHeroID, "Your shadow clone has arrived")
 	engfunc(EngFunc_SetModel,botEnt[id],modelchange)
 	//This will make it so that the ent appears in front of the user	

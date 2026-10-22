@@ -64,34 +64,37 @@ enum fx_task_parameter_id{
 	fx_name[128],
 	fx_on_remove_string[128],
 	fx_task_will_glow_user_screen,
-	damage_icon_types:fx_task_status_icon
+	damage_icon_types:fx_task_status_icon,
+	rendering_priority_consts:effect_render_priority,
+	render_mode,
+	render_ammount
 }
 
 stock fx_task_parameters[fx_id][fx_task_parameter_id]={	
-					{-1.0,5.0,0.0,-1,-1,"","","no drug","We have removed nothing!",0,damage_icon_types:-1},
+					{-1.0,5.0,0.0,-1,-1,"","","no drug","We have removed nothing!",0,damage_icon_types:-1,PRIO_RENDER_NONE, kRenderNormal,0},
 
 					
-					{-1.0,5.0,1.0,-1,-1,"","","cyanide","We have removed nothing! You should be dead...",0,damage_icon_types:-1},
+					{-1.0,5.0,1.0,-1,-1,"","","cyanide","We have removed nothing! You should be dead...",0,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,0},
 					
-					{1.0,2.0,20.0,-1,-1,"this_shite_do_nothin","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1},
+					{1.0,2.0,20.0,-1,-1,"this_shite_do_nothin","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,255},
 					
-					{0.5,4.0,30.0,-1,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON},
+					{0.5,4.0,30.0,-1,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{9.0,9.0,40.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN},
+					{9.0,9.0,40.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{1.0,5.0,50.0,1,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,damage_icon_types:-1},
+					{1.0,5.0,50.0,1,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,0},
 					
-					{1.0,10.0,60.0,-1,-1,"morphine_task","uneffect_task_generic","morphine","Removed ur heals!",1,DMG_ICON_HEALTH},
+					{1.0,10.0,60.0,-1,-1,"morphine_task","uneffect_task_generic","morphine","Removed ur heals!",1,DMG_ICON_HEALTH,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{1.0,7.0,71.0,-1,-1,"weed_task","unweed_task","weed","Removed ur weed!",0,DMG_ICON_LONGJUMP},
+					{1.0,7.0,71.0,-1,-1,"weed_task","unweed_task","weed","Removed ur weed!",0,DMG_ICON_LONGJUMP,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{1.0,9.0,79.0,-1,-1,"cocaine_task","uncocaine_task","cocaine","Removed ur 80s!",1,DMG_ICON_POISON},
+					{1.0,9.0,79.0,-1,-1,"cocaine_task","uncocaine_task","cocaine","Removed ur 80s!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal},
 					
-					{0.5,10.0,85.0,-1,-1,"blind_task","uneffect_task_generic","blindness","Removed ur blindess!",1,damage_icon_types:-1},
+					{0.5,10.0,85.0,-1,-1,"blind_task","uneffect_task_generic","blindness","Removed ur blindess!",1,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,255},
 					
-					{20.0,20.0,90.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","metylphenidate","Removed ur college pills!",0,DMG_ICON_SHOCK},
+					{20.0,20.0,90.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","metylphenidate","Removed ur college pills!",0,DMG_ICON_SHOCK,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{20.0,20.0,100.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","bath salts","Removed ur spicy college pills!",0,DMG_ICON_ARMOR}
+					{20.0,20.0,100.0,1,-1,"this_shite_do_nothin","uneffect_task_generic","bath salts","Removed ur spicy college pills!",0,DMG_ICON_ARMOR,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16}
 
 }
 
@@ -442,7 +445,11 @@ fx_task_user(id,attacker,fx_id:fx_num){
 	
 	if(strlen_of_init_task_func_name>0){
 		
-		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_num),_,_,_,fx_task_parameters[fx_num][fx_task_will_glow_user_screen],_,fx_task_parameters[fx_num][fx_task_period],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_num),_,
+					fx_task_parameters[fx_num][render_ammount],_,
+					fx_task_parameters[fx_num][fx_task_will_glow_user_screen],_,fx_task_parameters[fx_num][fx_task_period],0,_,
+					fx_task_parameters[fx_num][render_mode],
+					fx_task_parameters[fx_num][effect_render_priority])
 		
 	
 		callfunc_begin_i(get_func_id(fx_task_parameters[fx_num][fx_task_apply_func_name]))
@@ -457,7 +464,11 @@ task_cycle(array[3],id){
 
 	if((array[2]<fx_task_parameters[fx_id:array[0]][fx_task_repeats])&&is_user_alive(id)&&sh_is_inround()&&(gatling_get_fx_num(id)==fx_id:array[0])){
 
-		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_id:array[0]),_,_,_,fx_task_parameters[fx_id:array[0]][fx_task_will_glow_user_screen],_,fx_task_parameters[fx_id:array[0]][fx_task_period],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+		set_render_with_color_const(id,FX_COLOR_OFFSET(fx_id:array[0]),_,
+						fx_task_parameters[fx_id:array[0]][render_ammount],_,fx_task_parameters[fx_id:array[0]][fx_task_will_glow_user_screen],_,
+						fx_task_parameters[fx_id:array[0]][fx_task_period],0,_,
+						fx_task_parameters[fx_id:array[0]][render_mode],
+						fx_task_parameters[fx_id:array[0]][effect_render_priority])
 		
 		
 		if(((fx_task_parameters[fx_id:array[0]][fx_task_status_icon])>=enum_zero)){
@@ -593,7 +604,12 @@ stun_user(id){
 
 	
 	if ( !sh_is_active() ||!is_user_alive(id)) return
-	set_render_with_color_const(id, FX_COLOR_OFFSET(STUN),_,_,_,fx_task_parameters[STUN][fx_task_will_glow_user_screen],_,fx_task_parameters[STUN][fx_task_time],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(id, FX_COLOR_OFFSET(STUN),_,
+					fx_task_parameters[STUN][render_ammount],_,fx_task_parameters[STUN][fx_task_will_glow_user_screen],_,
+					fx_task_parameters[STUN][fx_task_time],0,_,
+					fx_task_parameters[STUN][render_mode],
+					fx_task_parameters[STUN][effect_render_priority])
+
 	sh_set_stun(id, fx_task_parameters[STUN][fx_task_time], STUN_SPEED)
 	sh_screen_shake(id, 16.0, fx_task_parameters[STUN][fx_task_time], 2.0)
 
@@ -603,7 +619,14 @@ stun_user(id){
 public blind_task(any:array[3],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !sh_is_active() ||!is_user_alive(id)) return
-	set_render_with_color_const(id,FX_COLOR_OFFSET(array[0]),0,_,255,fx_task_parameters[STUN][fx_task_will_glow_user_screen],_,fx_task_parameters[STUN][fx_task_time],0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(id,FX_COLOR_OFFSET(array[0]),0,_,
+				255,fx_task_parameters[BLIND][fx_task_will_glow_user_screen],_,
+				fx_task_parameters[BLIND][fx_task_time],
+				0,_,
+				fx_task_parameters[BLIND][render_mode],
+				fx_task_parameters[BLIND][effect_render_priority])
+	
+	
 	task_cycle(array,id)
 }
 
@@ -685,7 +708,10 @@ public uncocaine_task(array[3],id){
 uneffect_user_primitive(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	new fx_id:the_fx_id=gatling_get_fx_num(id)
-	remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal);
+	
+	remove_glow_user(id,fx_task_parameters[the_fx_id][effect_render_priority],
+				fx_task_parameters[the_fx_id][render_ammount],
+				fx_task_parameters[the_fx_id][render_mode]);
 	
 	new bool:will_remove_task
 				=

@@ -50,7 +50,7 @@ native remove_glow_user(id,
                   removed_alpha = 255,
                   the_default_mode = kRenderTransColor,
                   Float:delay = 0.0,
-                  gHeroID = -1)
+                  heroID = -1)
 
 
 

@@ -513,14 +513,7 @@ public _sh_get_number_of_registered_player_models(iPlugins, iParams){
 	return curr_num_models_logged
 }
 
-
-public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
-
-	new model_id=get_param(1);
-
-	new ct_hero_mode_name_array[STRING_SIZE],
-		t_hero_mode_name_array[STRING_SIZE]
-
+sh_get_player_superhero_player_model_from_model_id_aux(model_id=-1, hero_model_name_array[STRING_SIZE]=""){
 
 
 
@@ -530,18 +523,13 @@ public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
 
 		result = model_id;
 		
-		set_string(2,sh_array_of_player_model_structs[result][player_model_ct_file_path],
-										charsmax(ct_hero_mode_name_array)) // they are the same size
-		set_string(3,sh_array_of_player_model_structs[result][player_model_t_file_path],
-										charsmax(t_hero_mode_name_array)) // they are the same size
+		copy(hero_model_name_array,charsmax(hero_model_name_array),sh_array_of_player_model_structs[result][player_model_morph_string])
+
 
 	}
 	else {
 
-		ct_hero_mode_name_array[0]=0
-		t_hero_mode_name_array[0]=0
-		set_string(2,ct_hero_mode_name_array,charsmax(ct_hero_mode_name_array))
-		set_string(3,t_hero_mode_name_array,charsmax(t_hero_mode_name_array))
+		hero_model_name_array[0]=0
 
 	}
 
@@ -549,28 +537,37 @@ public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
 }
 
 
+
+public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
+
+	new model_id=get_param(1);
+
+	new result = -1;
+	
+	new hero_mode_name_array[STRING_SIZE]
+	
+	result = sh_get_player_superhero_player_model_from_model_id_aux(model_id, hero_mode_name_array)
+
+	set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
+
+	return result;
+}
+
 public _sh_get_player_superhero_player_model(iPlugins, iParams){
 
 	new id=get_param(1);
 
-	new hero_mode_name_array[STRING_SIZE]
-
-
 	new result = -1;
 
-	if(gPlayersCurrHeroModelID[id]<0){
+	if(!client_is_within_range(id)){
 
-		hero_mode_name_array[0]=0
-		set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
+		return result;
 	}
-	else if(is_user_alive(id)){
+	new hero_mode_name_array[STRING_SIZE]
+	
+	result = sh_get_player_superhero_player_model_from_model_id_aux(gPlayersCurrHeroModelID[id], hero_mode_name_array)
 
-		result = gPlayersCurrHeroModelID[id];
-		new CsTeams:the_team = cs_get_user_team(id)
-		set_string(2,sh_array_of_player_model_structs[result][(the_team==CS_TEAM_CT)?player_model_ct_file_path:player_model_t_file_path],
-										charsmax(hero_mode_name_array)) // they are the same size
-
-	}
+	set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
 
 	return result;
 

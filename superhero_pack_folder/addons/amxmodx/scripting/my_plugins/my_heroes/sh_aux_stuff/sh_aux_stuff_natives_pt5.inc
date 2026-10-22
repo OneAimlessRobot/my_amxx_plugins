@@ -25,6 +25,6 @@ native sh_register_superheromod_weapon_model(gHeroID,
                                               bool:ignore_p_model_if_empty=true)
 
 
-native sh_get_player_superhero_player_model(id, curr_filename[STRING_SIZE])
+native sh_get_player_superhero_player_model(id, model_name[STRING_SIZE])
 native sh_get_number_of_registered_player_models()
-native sh_get_player_superhero_player_model_from_model_id(model_id, ct_filename[STRING_SIZE], t_filename[STRING_SIZE])
+native sh_get_player_superhero_player_model_from_model_id(model_id, model_name[STRING_SIZE])
