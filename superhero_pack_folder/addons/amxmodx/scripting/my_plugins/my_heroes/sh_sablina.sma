@@ -189,8 +189,8 @@ public plugin_init()
 	
 	RegisterHam(Ham_TraceAttack,"player","sablina_ethereal_body",_,true)
 
-	RegisterHam( Ham_Touch, "armoury_entity", "fw_HamPlayerTouchPre" );
-	RegisterHam( Ham_Touch, "weaponbox", "fw_HamPlayerTouchPre" );
+	RegisterHam( Ham_Touch, "armoury_entity", "fw_HamPlayerTouchPre", _,true);
+	RegisterHam( Ham_Touch, "weaponbox", "fw_HamPlayerTouchPre" ,_,true);
 
 	gHeroID=shCreateHero(gHeroName, "Stone probe!", "Summon stone spikes to damage your enemies! Become ethereal, too", true, "sablina_level" )
 	
