@@ -80,7 +80,7 @@ public plugin_natives(){
 	register_native("uncloak_shinobu","_uncloak_shinobu")
 }
 
-public _uncloak_shinobu(id){
+public _uncloak_shinobu(iPlugins, iParams){
 
 	new id= get_param(1)
 
@@ -236,14 +236,14 @@ public _nani_behind_player(iPlugin,iParams){
 		return
 	}
 
-	arrayset(g_shinobu_dst_positions[tele_player],0,sizeof g_shinobu_dst_positions)
-	arrayset(g_shinobu_positions[tele_player],0,sizeof g_shinobu_positions)
+	arrayset(g_shinobu_dst_positions[tele_player],0,sizeof g_shinobu_dst_positions[])
+	arrayset(g_shinobu_positions[tele_player],0,sizeof g_shinobu_positions[])
 
-	arrayset(g_shinobu_dst_angles[tele_player],0.0,sizeof g_shinobu_dst_angles)
-	arrayset(g_shinobu_angles[tele_player],0.0,sizeof g_shinobu_angles)
+	arrayset(g_shinobu_dst_angles[tele_player],0.0,sizeof g_shinobu_dst_angles[])
+	arrayset(g_shinobu_angles[tele_player],0.0,sizeof g_shinobu_angles[])
 
-	arrayset(g_shinobu_dst_v_angles[tele_player],0.0,sizeof g_shinobu_dst_v_angles)
-	arrayset(g_shinobu_v_angles[tele_player],0.0,sizeof g_shinobu_v_angles)
+	arrayset(g_shinobu_dst_v_angles[tele_player],0.0,sizeof g_shinobu_dst_v_angles[])
+	arrayset(g_shinobu_v_angles[tele_player],0.0,sizeof g_shinobu_v_angles[])
 
 	new Float: tg_player_aiming[3];
 	new Float:tg_player_curr_origin[3]
