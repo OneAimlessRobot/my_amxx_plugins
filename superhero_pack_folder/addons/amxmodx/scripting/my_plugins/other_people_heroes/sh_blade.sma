@@ -203,6 +203,8 @@ public blade_damage(id, attacker, Float:damage, Float:direction[3], traceresult,
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)|| !sh_get_player_has_hero_prop(id, SH_BLEED_POWERS)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
+	if(sh_clients_are_same_team(attacker, id)) return HAM_IGNORED
+
 	new weapon = get_user_weapon(attacker)
 	
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
