@@ -478,10 +478,7 @@ public shadowclone(id)
 
 	
 	new model[128],modelchange[128]
-	if(sh_get_player_superhero_player_model(id,model)<0){ //no custom model found. nothing was done to the buffer
-		
-		get_user_info(id,"model",model,127)
-	}
+	get_user_info(id,"model",model,127)
 	formatex(modelchange,127,"models/player/%s/%s.mdl",model,model)
 	sh_chat_message(id, gHeroID, "Your shadow clone has arrived")
 	engfunc(EngFunc_SetModel,botEnt[id],modelchange)

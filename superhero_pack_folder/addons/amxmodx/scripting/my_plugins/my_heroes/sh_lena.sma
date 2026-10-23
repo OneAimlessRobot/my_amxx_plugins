@@ -34,7 +34,7 @@ public plugin_init()
 								"models/player/L96/L96.mdl",
 								"models/player/L96/L96T.mdl",
 								"L96",
-								"Our leaders lie but not my eyes",
+								"Our leaders tell lies but not my eyes",
 								"I was just another one")
 	
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:LENA_WEAPON_CLASSID,true)
