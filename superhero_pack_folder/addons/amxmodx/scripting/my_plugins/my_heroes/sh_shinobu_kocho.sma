@@ -66,6 +66,8 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID, SH_ANTI_FALL_DAMAGE_HERO, true)
 
+	sh_assign_hero_bit(gHeroID, SH_PARASITE_HERO_I_HATE_THEM, true)
+
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
 	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP=allocate_typed_task_id(generic_task)

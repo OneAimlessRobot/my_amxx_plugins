@@ -9,6 +9,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -37,8 +38,7 @@ public plugin_init(){
 
 }
 public plugin_cfg(){
-
-	gHeroID = tomie_yu_hero_id()
+	
 	custom_dmg_id_fire_vuln=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_fire_vuln,
 				dmg_source_name_log_fire_vuln,
@@ -82,7 +82,7 @@ public burn_task(array[2],id)
 	make_fire(id,30.0)
 
 	
-	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
+	new bool:is_tomie_user=sh_get_player_has_hero_prop(id, SH_FIRE_RETARDANT_HERO)
 	if(!is_tomie_user){
 		static players[33];
 
@@ -192,11 +192,11 @@ burn_user(id,attacker){
 
 	if(sh_get_id_bit(id, SH_IS_BURNING)) return
 
-	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
+	new bool:is_tomie_user = sh_get_player_has_hero_prop(id, SH_FIRE_RETARDANT_HERO)
 	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
 	new array[2]
 	array[0] = attacker
-	array[1] = sh_get_user_has_hero(id,gHeroID)?times_if_tomie_user:0
+	array[1] = is_tomie_user?times_if_tomie_user:0
 	
 	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 		sh_unfreeze_user(id)

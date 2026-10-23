@@ -5,6 +5,10 @@
 
 #define CHAFF_TIME 30.0
 
+#define CHAFF_PERIOD 2.0
+
+#define CHAFF_TIMES (CHAFF_TIME/CHAFF_PERIOD)
+
 #define CHAFF_ALPHA 2
 
 native sh_chaff_user(id)

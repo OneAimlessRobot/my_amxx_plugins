@@ -21,6 +21,9 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Boring, Anime fan", "Fire retardant hair! Drain resistance! You wont spread fire! CO2 lasts longer!", false, "tomie_level")
 
+
+	sh_assign_hero_bit(gHeroID, SH_FIRE_RETARDANT_HERO, true)
+
 }
 
 

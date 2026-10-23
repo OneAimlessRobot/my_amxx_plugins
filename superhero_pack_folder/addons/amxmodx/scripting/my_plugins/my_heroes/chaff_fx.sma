@@ -12,13 +12,13 @@
 #include "../my_include/my_author_header.inc"
 
 
-new UNCHAFF_TASKID
+new CHAFF_TASKID
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	UNCHAFF_TASKID=allocate_typed_task_id(player_task)
+	CHAFF_TASKID=allocate_typed_task_id(player_task)
 
 }
 
@@ -56,32 +56,58 @@ public _sh_unchaff_user(iPlugin,iParams){
 	
 	
 }
-public unchaff_task(id){
-	id-=UNCHAFF_TASKID
-
-	unchaff_user(id)
-
-}
 chaff_user(id){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_CHAFFED)) return
 
-	set_render_with_color_const(id,WHITE,1,CHAFF_ALPHA,15,1,_,CHAFF_TIME,_,_,_,PRIO_RENDER_INVISIBILITY)
+
+
 	sh_assign_id_bit(id, SH_IS_CHAFFED, true)
-	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_TIME)
 	
 	
-	set_task(CHAFF_TIME,"unchaff_task",id+UNCHAFF_TASKID)
+	new param[1]
+
+	param[0] = floatround(CHAFF_TIMES) 
+	
+	
+	chaff_task(param,id+CHAFF_TASKID)
 	
 	
 	
+}
+
+public chaff_task(array[1], id){
+
+	id-=CHAFF_TASKID
+
+
+	if(!sh_is_active()||!is_user_alive(id)){
+		
+		return
+	
+	}
+	else if(!sh_get_id_bit(id, SH_IS_CHAFFED)||!array[0]){
+
+		unchaff_user(id)
+	}
+	else{
+		
+		array[0]--
+
+		set_render_with_color_const(id,WHITE,1,CHAFF_ALPHA,15,1,_,CHAFF_PERIOD,_,_,_,PRIO_RENDER_DELETE_INVISIBILITY)
+		
+	
+		set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_PERIOD)
+	
+		set_task(CHAFF_PERIOD,"chaff_task",id+CHAFF_TASKID,array,1)
+
+	}
+
 }
 unchaff_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return
 
-	remove_task(id+UNCHAFF_TASKID)
 	if(sh_get_id_bit(id, SH_IS_CHAFFED)){
-		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,CHAFF_ALPHA)
 		sh_assign_id_bit(id, SH_IS_CHAFFED, false)
 	}
 	

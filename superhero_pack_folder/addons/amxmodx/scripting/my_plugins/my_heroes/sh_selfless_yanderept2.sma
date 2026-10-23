@@ -89,7 +89,7 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
-	sh_assign_hero_bit(gHeroID,hero_property_flags_id:53, true)
+	sh_assign_hero_bit(gHeroID,SH_YANDERE_HERO, true)
 
 	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,13,
 				"No access was granted")

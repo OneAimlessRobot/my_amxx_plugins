@@ -3,11 +3,11 @@
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "wet_fx_inc/wet_fx.inc"
 #include "shock_fx_inc/shock_fx.inc"
-#include "ksun_inc/ksun_global.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
@@ -17,7 +17,6 @@
 
 
 new UNWET_TASKID = -1
-new gHeroID_ksun = -1
 new generic_dmg_source_cleanse = -1
 public plugin_init(){
 	
@@ -28,7 +27,6 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	gHeroID_ksun = spores_ksun_hero_id()
 	generic_dmg_source_cleanse = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_CLEANSE)
 	
 	
@@ -80,7 +78,7 @@ wet_user(id,attacker){
 
 	
 	
-	if(sh_get_user_has_hero(id, gHeroID_ksun)){
+	if(sh_get_player_has_hero_prop(id,SH_PARASITE_HERO_I_HATE_THEM)){
 
 		sh_extra_damage(id,attacker,
 						floatround(CLEAN_THE_WITCH_BLEACH_HER_MELT_THE_SLUG_WITH_CLOROX),

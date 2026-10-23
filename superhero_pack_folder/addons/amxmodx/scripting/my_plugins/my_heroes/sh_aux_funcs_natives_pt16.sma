@@ -220,18 +220,23 @@ public _set_render_with_color_const(iPlugins,iParams){
 		rendering_priority_consts:the_priority = rendering_priority_consts:get_param(12),
 		heroID = get_param(13)
 
+	new bool:is_valid_client = bool:is_user_alive(id);
+	if(glow_user_hud&&is_valid_client){
+		
+		if((sh_get_id_bit(id,SH_IS_SLEEPING)&&is_sleep)||!sh_get_id_bit(id,SH_IS_SLEEPING)){
 
-	if(is_sleep||(glow_user_hud&&!sh_get_id_bit(id,SH_IS_SLEEPING))){
 			sh_screen_fade(id, 0.1, 0.9,
-					LineColors[the_color_const][0],
-					LineColors[the_color_const][1],
-					LineColors[the_color_const][2],
-					(the_hud_alpha<0)?50:the_hud_alpha)
+				LineColors[the_color_const][0],
+				LineColors[the_color_const][1],
+				LineColors[the_color_const][2],
+				(the_hud_alpha<0)?50:the_hud_alpha)
+
+		}
 	}
+	
 	if(glow_on_user){
 
 
-		new bool:is_valid_client = bool:is_user_alive(id);
 		
 
 		if(DEBUG_MODE){

@@ -12,6 +12,10 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+
+
+
 new const damage_icon_strings_arr[damage_icon_types][]={
 	"dmg_poison",
 	"dmg_rad",
@@ -27,7 +31,26 @@ new const damage_icon_strings_arr[damage_icon_types][]={
 	"item_battery"
 }
 
-new REMOVE_DAMAGE_ICON_TASKID
+
+
+
+
+
+new damage_icon_taskids_arr[damage_icon_types]={
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1,
+	-1
+
+}
 
 
 
@@ -41,8 +64,11 @@ public plugin_init(){
 	gMsgID_Status_icon = get_user_msgid("StatusIcon")
 	prepare_shero_aux_lib_pt1()
 
-	REMOVE_DAMAGE_ICON_TASKID=allocate_typed_task_id(player_task)
+	for(new damage_icon_types:i = enum_zero; i < damage_icon_types; i++){
 
+		damage_icon_taskids_arr[i] = allocate_typed_task_id(player_task)
+
+	}
 }
 public plugin_precache(){
 
@@ -913,9 +939,9 @@ public _set_damage_icon(iPlugins, iParams){
 	
 	if((the_remove_timer>0.1)&&(hide_show_or_flash>0)){
 		
-		if(task_exists(id+REMOVE_DAMAGE_ICON_TASKID)){
+		if(task_exists(id+damage_icon_taskids_arr[the_icon_type_to_show])){
 
-			remove_task(id+REMOVE_DAMAGE_ICON_TASKID)
+			remove_task(id+damage_icon_taskids_arr[the_icon_type_to_show])
 		}
 		
 		unset_damage_icon(id,the_icon_type_to_show,the_remove_timer)
@@ -938,26 +964,28 @@ public _draw_aim_vector(iPlugin,iParams){
 	laser_line(id,fvec1, fvec2,true,color_vector_indices,false)
 
 }
-unset_damage_icon(id, the_icon_to_remove, Float:delay=1.0){
+unset_damage_icon(id, damage_icon_types:the_icon_to_remove, Float:delay=1.0){
 
 	if(!is_user_connected(id)) return
 
 	new parm[1]
-	parm[0]=the_icon_to_remove
-	set_task(delay,"remove_damage_icon_task",id+REMOVE_DAMAGE_ICON_TASKID,
+	parm[0]=damage_icon_types:the_icon_to_remove
+	set_task(delay,"remove_damage_icon_task",id+damage_icon_taskids_arr[the_icon_to_remove],
 				parm,
 				sizeof(parm))
 
 }
 public remove_damage_icon_task(array[],id){
 
-	id-=REMOVE_DAMAGE_ICON_TASKID
+	new damage_icon_types:the_icon_to_remove = damage_icon_types:array[0]
+
+	id-=damage_icon_taskids_arr[the_icon_to_remove]
 	
 	if(!is_user_connected(id)) return
 
 	message_begin(MSG_ONE, gMsgID_Status_icon, {0,0,0}, id)
 	write_byte(0)				// status (0=hide, 1=show, 2=flash)
-	write_string(damage_icon_strings_arr[damage_icon_types:array[0]])	// sprite name
+	write_string(damage_icon_strings_arr[the_icon_to_remove])	// sprite name
 	write_byte(0)		// red
 	write_byte(0)	// green
 	write_byte(0)		// blue

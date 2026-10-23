@@ -79,13 +79,15 @@ public plugin_init()
 
 
 
-	sh_assign_hero_bit(gHeroID,SH_DREAM_EATER_HERO, true)
+	sh_assign_hero_bit(gHeroID, SH_DREAM_EATER_HERO, true)
 	
 	
-	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO,true);
+	sh_assign_hero_bit(gHeroID, SH_SMALL_HERO,true);
 
 
-	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
+	sh_assign_hero_bit(gHeroID, SH_HITBOX_MANIP_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_PARASITE_HERO_I_HATE_THEM, true)
 	
 
 	

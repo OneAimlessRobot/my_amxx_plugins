@@ -31,7 +31,10 @@ static const sh_hero_property_names[hero_property_flags_id][64] =  {
 			"Respawning hero",
 			"M249 wielding hero",
 			"TR45H P0W3R5 hero",
-			"Unhealable hero"
+			"Unhealable hero",
+			"Parasite hero I hate them",
+			"Yandere hero",
+			"Fire retardant hero"
 			
 
 }
@@ -61,6 +64,9 @@ static const sh_property_gating_array[hero_property_flags_id] =  {
 			25,
 			1,
 			25,
+			25,
+			25,
+			5,
 			25
 			
 
