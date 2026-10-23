@@ -74,7 +74,7 @@ public reika_parry_switch_cmdstart_hook(id, uc_handle)
     if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-    if ( !is_user_alive(id)||!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
+    if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
     static button;
     button= get_uc(uc_handle, UC_Buttons);
