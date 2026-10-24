@@ -4,4 +4,6 @@
 #define sh_aux_fx_natives_consts_pt4
 
 
+#if !defined LIBRARY_NAME
 #define LIBRARY_NAME "Superhero library 4: default damage types"
+#endif

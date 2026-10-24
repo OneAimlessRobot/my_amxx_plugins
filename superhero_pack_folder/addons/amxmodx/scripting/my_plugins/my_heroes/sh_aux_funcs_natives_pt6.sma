@@ -8,6 +8,11 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt6.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt9.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt10.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt11.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt12.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt17.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
 
@@ -50,6 +55,27 @@ createHelpMotdFile(const helpMotdFile[]){
 
 	fputs(extraHelpFile, "^n^n^nsay /help_of [part of hero name] -^n	Shows you a help page for a particular hero (if available)^n^n^n")
 	fputs(extraHelpFile, "say /skins - show menu for skins depending on heroes equipped. Both weapons and body^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_properties_descriptions_print)
+	fputs(extraHelpFile, " - shows a list of descriptions for all hero properties registered^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_properties_print)
+	fputs(extraHelpFile, " - shows a list hero properties that a hero is currently registered with^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, player_flags_print)
+	fputs(extraHelpFile, " - shows a list of hero properties a player currently has (due to equipped heroes)^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, admin_compatibility_print)
+	fputs(extraHelpFile, " - shows a list of admin/limited server pick heroes^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_incompatible_pairs_print)
+	fputs(extraHelpFile, " - shows a list of the incompatible hero pairs registered in the server^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_healthcaps_print)
+	fputs(extraHelpFile, " - shows a list of health capped heroes registered in the server^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, check_map_restricted_heroes)
+	fputs(extraHelpFile, " - shows a list of heroes along with maps that they cannot be picked on!^n^n^n")
 	
 	fputs(extraHelpFile, "</pre></body></html>")
 

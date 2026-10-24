@@ -86,12 +86,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	}
 }
 //----------------------------------------------------------------------------------------------
-public plugin_precache()
-{
-	engfunc(EngFunc_PrecacheModel,"models/player/Neo/Neo.mdl")
-	return PLUGIN_CONTINUE 
-}
-//----------------------------------------------------------------------------------------------
 public make_neo(id)
 {
 	new weap = read_data(2)   // id of the weapon

@@ -290,7 +290,7 @@ public reika_kd(id)
                         cvar_val(float, pcvar_reika_explosion_radius),
                         cvar_val(float, pcvar_reika_explosion_damage),
                         cvar_val(float, pcvar_reika_explosion_force)
-                        ,1,1,_,explosion_sfx_show_shockwave)
+                        ,1,1)
     
     }
     else{

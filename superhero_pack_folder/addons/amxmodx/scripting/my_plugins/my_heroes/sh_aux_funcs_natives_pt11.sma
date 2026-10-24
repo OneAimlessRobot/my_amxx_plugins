@@ -11,31 +11,56 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
-stock const player_flags_print[]="sh_print_player_hero_flags"
+enum hero_property_struct{
+	name[64],
+	description[100]
 
-static const sh_hero_property_names[hero_property_flags_id][64] =  {
-			"Blood thirsty",
-			"Explosive",
-			"Sleep bender",
-			"Core hero",
-			"Invisibility",
-			"Healing",
-			"Small",
-			"Dream eater",
-			"Annoying hero",
-			"Health cap hero",
-			"No bots hero",
-			"Anti fall damage hero",
-			"Anti grenades hero",
-			"Hitbox manipulating hero",
-			"Respawning hero",
-			"M249 wielding hero",
-			"TR45H P0W3R5 hero",
-			"Unhealable hero",
-			"Parasite hero I hate them",
-			"Yandere hero",
-			"Fire retardant hero",
-			"Radio detector hero"
+}
+static const sh_hero_property_structs_array[hero_property_flags_id][hero_property_struct] =  {
+			{"Blood thirsty", "Heroes that manipulate blood!"},
+			
+			{"Explosive", "Heroes that create explosions"},
+
+			{"Sleep bender", "Heroes that can put players to sleep"},
+			
+			{"Core hero", "Complex heroes with loads of features"},
+			
+			{"Invisibility", "Heroes that can become invisible"},
+			
+			{"Healing", "Heroes that heal players"},
+			
+			{"Small", "Heroes with tiny size"},
+			
+			{"Dream eater", "Heroes that feed on your dreams"},
+			
+			{"Annoying hero", "Heroes that are annoying"},
+			
+			{"Health cap hero", "Heroes that have a healthcap"},
+			
+			{"No bots hero", "Heroes unable to be picked by bots"},
+			
+			{"Anti fall damage hero", "Heroes that do not take damage from falling"},
+			
+			{"Anti grenades hero", "Heroes that do not take damage from vanilla HE grenades"},
+			
+			{"Hitbox manipulating hero", "Heroes that can manipulate their own hitbox"},
+			
+			{"Respawning hero", "Heroes that respawn after dying"},
+			
+			{"M249 wielding hero", "Heroes that wield the M249"},
+			
+			{"TR45H P0W3R5 hero", "Heroes that can recycle weapons"},
+			
+			{"Unhealable hero", "Heroes that may not recover health"},
+			
+			{"Parasite hero I hate them", "I hate these heroes"},
+			
+			{"Yandere hero", "Heroes with too much passion"},
+			
+			{"Fire retardant hero", "Heroes with fire resistance"},
+			
+			{"Radio detector hero", "Heroes that can detect radioactivity"}
+			
 			
 
 }
@@ -89,7 +114,14 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	
-	register_concmd(player_flags_print,"sh_print_player_hero_flags",ADMIN_IMMUNITY,"param 1: playername")
+	register_concmd(player_flags_print,player_flags_print,ADMIN_ALL,"param 1: playername")
+
+	
+	register_concmd(hero_properties_print,hero_properties_print,ADMIN_ALL,"param 1: part of hero name")
+
+
+	register_concmd(hero_properties_descriptions_print,hero_properties_descriptions_print,ADMIN_ALL)
+
 
 }
 
@@ -112,17 +144,47 @@ public bool:_sh_get_player_has_hero_prop(iPLugin,iParams){
 	
 	return (sh_player_hero_property_tracker[id][hero_prop_id][curr_picked_count] > 0)
 }
-stock print_player_hero_prop_flags(id){
-	server_print("The state of hero prop flags for this player is:^n^n")
+
+stock sh_hero_properties_descriptions_print_aux(id){
+	console_print(id,"The state of hero prop flags for this player is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 		
-		server_print("The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^nis player this property? %s^n",
+		console_print(id,"The property number %d (which is named %s) is described as:^n",
 																	i,
-																	sh_hero_property_names[i],
-																	id,
-																	sh_player_hero_property_tracker[id][i][curr_picked_count],
-																	sh_property_gating_array[i],
-																	(sh_player_hero_property_tracker[id][i][curr_picked_count] > 0)?"Yes!":"No..")
+																	sh_hero_property_structs_array[i][name])
+		
+		console_print(id,"^"Marked on ^"^"%s^"^n",sh_hero_property_structs_array[i][description])
+
+
+	}
+
+}
+public sh_hero_properties_descriptions_print(id,level,cid){
+
+	if (!cmd_access(id,level,cid,0))
+		return PLUGIN_HANDLED
+
+	
+	sh_hero_properties_descriptions_print_aux(id)
+
+	return PLUGIN_HANDLED
+
+}
+
+stock sh_print_player_hero_flags_aux(id, player_target){
+	console_print(id,"The state of hero prop flags for this player is:^n^n")
+	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
+		
+		console_print(id,"The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^n",
+						i,
+						sh_hero_property_structs_array[i][name],
+						player_target,
+						sh_player_hero_property_tracker[player_target][i][curr_picked_count],
+						sh_property_gating_array[i])
+
+
+		console_print(id,"is player this property? %s^n",
+						(sh_player_hero_property_tracker[player_target][i][curr_picked_count] > 0)?"Yes!":"No..")
 
 
 	}
@@ -141,10 +203,53 @@ public sh_print_player_hero_flags(id,level,cid){
 
 	if (!player) return PLUGIN_HANDLED
 
-	print_player_hero_prop_flags(player)
+	sh_print_player_hero_flags_aux(id, player)
 
 	return PLUGIN_HANDLED
 }
+stock sh_print_hero_property_flags_aux(id, hero_name_partial[MAX_HERO_NAME_LENGTH]){
+
+	
+	new hero_id = sh_match_string_with_hero_name(id, hero_name_partial)
+	
+	if(hero_id<0){
+
+		return
+	}
+	
+	console_print(id,"The properties that %s has are:^n^n",hero_name_partial)
+	
+	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
+
+
+		if(!sh_get_hero_bit(hero_id,i)){
+
+				continue;
+
+		}
+
+		console_print(id,"The property number %d (which is named %s)^nPlayers can only have %d heroes with this property!^n",
+																	i,
+																	sh_hero_property_structs_array[i][name],
+																	sh_property_gating_array[i])
+
+
+	}
+
+}
+public sh_print_hero_property_flags(id,level,cid){
+
+	if (!cmd_access(id,level,cid,1))
+		return PLUGIN_HANDLED
+
+	new arg[MAX_HERO_NAME_LENGTH]
+	read_argv(1,arg, charsmax(arg))
+
+	sh_print_hero_property_flags_aux(id, arg)
+
+	return PLUGIN_HANDLED
+}
+
 public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	new init_fwd_ret_id:true_return_result = INIT_FWD_PASS
 	
@@ -152,7 +257,6 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 
 		return INIT_FWD_PASS
 	}
-
 	if(( heroID < 0 )||(heroID >= SH_MAXHEROS)){
 		return INIT_FWD_PASS
 	}
@@ -168,10 +272,13 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 				sh_property_gating_array[i]){
 			
 
-				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" too many times! %d out of %d times...",
-							sh_hero_property_names[i],
+				sh_chat_message(id,-1,"[SH hero property manager] You have picked heroes with ^"%s^" too many times! %d out of %d times...",
+							sh_hero_property_structs_array[i][name],
 							sh_player_hero_property_tracker[id][i][curr_picked_count],
 							sh_property_gating_array[i])
+
+				sh_chat_message(id,-1,"[SH hero property manager] type ^"%s <part of hero name>^" to check hero properties for a specific hero",
+							hero_properties_print)
 			
 				true_return_result =  INIT_FWD_BLOCK
 				break;

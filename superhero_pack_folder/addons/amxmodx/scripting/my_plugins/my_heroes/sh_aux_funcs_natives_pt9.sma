@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -8,7 +9,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt9.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
-
 
 
 enum sh_hero_priviledges_enum_struct{
@@ -28,6 +28,7 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	register_concmd(admin_compatibility_print,admin_compatibility_print,ADMIN_ALL)
 
 
 }
@@ -62,15 +63,45 @@ bool:sh_register_admin_only_hero_primitive(the_hero_id_to_register,
 	sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times] = num_pickable_times
 
 	copy(sh_pickable_hero_struct_arr[the_hero_id_to_register][unable_to_pick_string], STRING_SIZE-1,unable_to_pick_msg)
-	/*
-	server_print("Hero with id %d successfully registered as admin only!^nIt is pickable %d times in total^nAnd its admin flag bitsum is: %d^n",
-				the_hero_id_to_register,
-				sh_pickable_hero_struct_arr[the_hero_id_to_register][max_pickable_times],
-				sh_pickable_hero_struct_arr[the_hero_id_to_register][required_user_flags])*/
 
 	return true
 }
 
+stock sh_admin_compatibility_print_aux(id){
+
+	static hero_name[MAX_HERO_NAME_LENGTH]
+
+	console_print(id,"The admin only heroes registered on this server are:^n")
+	
+	for(new i=0;i<SH_MAXHEROS;i++){
+		
+		if(!sh_pickable_hero_struct_arr[i][admin_only]){
+			continue
+
+		}
+
+		sh_get_hero_name_from_id(i,hero_name)
+
+		console_print(id,"^"%s^" is registered!^nIt is pickable %d times in total^nAnd its admin flag bitsum is: %d^n",
+				hero_name,
+				sh_pickable_hero_struct_arr[i][max_pickable_times],
+				sh_pickable_hero_struct_arr[i][required_user_flags])
+		
+		
+		
+	}
+
+}
+public sh_admin_compatibility_print(id,level,cid){
+
+	if (!cmd_access(id,level,cid,0))
+		return PLUGIN_HANDLED
+
+	
+	sh_admin_compatibility_print_aux(id)
+
+	return PLUGIN_HANDLED
+}
 public plugin_natives(){
 
 	register_native("sh_register_admin_only_hero","_sh_register_admin_only_hero")
@@ -96,6 +127,9 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 
 		
 			sh_chat_message(id, heroID,"%s",sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
+			sh_chat_message(id, heroID,"[SH admin only and server-limited hero picking manager] Type %s in the console to get a list of all admin heroes",admin_compatibility_print)
+			
+
 			return INIT_FWD_BLOCK
 		}
 

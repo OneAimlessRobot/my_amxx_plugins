@@ -142,11 +142,6 @@ public show_hero_help(id, const said[])
 	superheromod_help_show_hero_help(id, heroIndex)
 }
 //----------------------------------------------------------------------------------------------
-public loadCVARS()
-{
-/*ester_flyspeed=get_cvar_float("ester_flyspeed");
-*/
-}
 public plugin_natives(){
 
 	register_native("superheromod_help_link_hero","_superheromod_help_link_hero");

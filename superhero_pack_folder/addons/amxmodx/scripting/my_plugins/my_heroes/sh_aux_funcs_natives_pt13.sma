@@ -7,8 +7,8 @@
 #define PLUGIN "Superhero aux natives pt13: superhero property enforcing pt2: damage gating"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt13.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
 

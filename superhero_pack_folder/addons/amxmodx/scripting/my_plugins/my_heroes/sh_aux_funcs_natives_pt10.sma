@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -8,6 +9,7 @@
 #include "../my_include/my_author_header.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "flora_inc/flora_global.inc"
+#include "sablina_inc/sablina.inc"
 #include "goku_inc/goku_inc.inc"
 #include "ester_inc/ester_global.inc"
 #include "chikoi_inc/chikoi_inc.inc"
@@ -29,11 +31,13 @@ new gHeroID_Maria = -1,
 	gHeroID_SuperNoodle = -1,
 	gHeroID_Yakui = -1,
 	gHeroID_ksun = -1,
-	gHeroID_Chikoi = -1
+	gHeroID_Chikoi = -1,
+	gHeroID_Sablina = -1
 
 #define COMPLAIN_SENTENCE_SIZE 128
 
 #define MAX_INCOMPATIBILITY_PAIRS 32
+
 
 new filled_pair_count = 0
 enum superhero_incompatibility_pair{
@@ -51,6 +55,7 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	register_concmd(hero_incompatible_pairs_print,hero_incompatible_pairs_print,ADMIN_ALL)
 
 	
 }
@@ -77,35 +82,39 @@ public plugin_cfg(){
 
 	gHeroID_Chikoi = chikoi_get_hero_id()
 
+	gHeroID_Sablina = sablina_get_hero_id()
+
 	//these two really dont get along
 	
-	push_incompatibility_pair(gHeroID_Goku,gHeroID_Shinobu)
+	push_incompatibility_pair(gHeroID_Goku,gHeroID_Shinobu, "Goku: ^"I dont fw parasites^"")
 
-	push_incompatibility_pair(gHeroID_Ester,gHeroID_Shinobu)
+	push_incompatibility_pair(gHeroID_Ester,gHeroID_Shinobu, "Ester: ^"I dont fw parasites^"")
 
-	push_incompatibility_pair(gHeroID_Flora,gHeroID_Shinobu)
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_Shinobu, "Flora: ^"I dont fw parasites^"")
 
-	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_Yakui)
+	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_Yakui, "Yakui: ^"I dont fw parasites^"")
 
-	push_incompatibility_pair(gHeroID_Flora,gHeroID_Yakui)
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_Yakui, "Flora: ^"(She creeps me out!)^"")
 
-	push_incompatibility_pair(gHeroID_Flora,gHeroID_SuperNoodle)
+	push_incompatibility_pair(gHeroID_Flora,gHeroID_SuperNoodle, "Flora: ^"Too loud... too many explosions^"")
 
-	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_SuperNoodle)
+	push_incompatibility_pair(gHeroID_Shinobu,gHeroID_SuperNoodle, "Sliphantom: ^"I dont fw parasites^"")
 
-	push_incompatibility_pair(gHeroID_Maria,gHeroID_Shinobu)
+	push_incompatibility_pair(gHeroID_Maria,gHeroID_Shinobu, "Maria: ^"I DONT FUCK WITH PARASITES!^"")
 
-	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Shinobu)
+	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Shinobu, "Vegetto: ^"No...^"")
 
-	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Goku)
+	push_incompatibility_pair(gHeroID_Vegetto,gHeroID_Goku, "Both: ^"A warrior FIGHTS ALONE!^"")
 
-	push_incompatibility_pair(gHeroID_ksun, gHeroID_Maria)
+	push_incompatibility_pair(gHeroID_ksun, gHeroID_Maria, "Maria: ^"I dont fw parasites^" ksun: ^"So stuck up...^"")
 
-	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_Maria)
+	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_Maria, "Maria: ^"She is strange...^"")
 
-	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_ksun)
+	push_incompatibility_pair(gHeroID_Chikoi, gHeroID_ksun, "ksun: ^"She is strange...^"")
 
-	push_incompatibility_pair(gHeroID_Ester, gHeroID_ksun)
+	push_incompatibility_pair(gHeroID_Ester, gHeroID_ksun, "Both: ^"NO! FUCK THAT BITCH...^"")
+
+	push_incompatibility_pair(gHeroID_Sablina, gHeroID_Maria, "Maria: ^"She is waaaay too lax. I dont trust her...^"")
 
 	
 
@@ -114,6 +123,52 @@ public plugin_cfg(){
 	
 
 }
+
+stock hero_incompatible_pairs_print_aux(id){
+
+	static name_a[MAX_HERO_NAME_LENGTH],
+			name_b[MAX_HERO_NAME_LENGTH]
+
+	console_print(id,"The Incompatibility pairs registered in this server are:^n")
+	if(!filled_pair_count){
+
+
+		console_print(id,"None are registered!^n")
+		return
+	}
+	for(new i=0;i<filled_pair_count;i++){
+
+		sh_get_hero_name_from_id(sh_incompatibility_pairs[i][pair_hero_b],name_b)
+		sh_get_hero_name_from_id(sh_incompatibility_pairs[i][pair_hero_a],name_a)
+		
+
+		console_print(id,"Pair number %d^n",i)
+		console_print(id,"- ^"%s^" is NOT compatible with %s!^nReason: ^"",name_a, name_b)
+		if(strlen(sh_incompatibility_pairs[i][custom_complain_sentence])>0){
+
+			console_print(id,"%s^"^n",sh_incompatibility_pairs[i][custom_complain_sentence])
+
+		}
+		else{
+
+
+			console_print(id,"No reason specified^"^n")
+		}
+		
+	}
+
+}
+public sh_hero_incompatible_pairs_print(id,level,cid){
+
+	if (!cmd_access(id,level,cid,0))
+		return PLUGIN_HANDLED
+
+	
+	hero_incompatible_pairs_print_aux(id)
+
+	return PLUGIN_HANDLED
+}
+
 push_incompatibility_pair(hero_a,hero_b,const complain_sentence[COMPLAIN_SENTENCE_SIZE+1] = "Incompatible pair of heroes"){
 
 
@@ -161,10 +216,18 @@ init_fwd_ret_id:safeguard_pair_process(id,heroID,heroID_a,heroID_b, sh_init_mode
 	sh_get_hero_name_from_id(heroID_b,name_b)
 	sh_get_hero_name_from_id(heroID_a,name_a)
 	
-	sh_chat_message(id,-1,"%s: You cannot use the heroes %s and %s at once!",
-			sh_incompatibility_pairs[pair_id][custom_complain_sentence],
+	sh_chat_message(id,-1,"[SH hero incompatibility pairs manager] ^"%s^"",
+			sh_incompatibility_pairs[pair_id][custom_complain_sentence])
+
+
+	sh_chat_message(id,-1,"[SH hero incompatibility pairs manager] You cannot use the heroes %s and %s at once!",
 			name_a,name_b)
 	
+	sh_chat_message(id,-1,"[SH hero incompatibility pairs manager] type ^"%s^" in the console",hero_incompatible_pairs_print)
+	
+	sh_chat_message(id,-1,"To check the incompatibility pairs registered in the server")
+
+
 	return INIT_FWD_BLOCK
 
 	

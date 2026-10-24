@@ -9,4 +9,25 @@ say /help_of [part of hero name] -
 say /skins - show menu for skins depending on heroes equipped. Both weapons and body
 
 
+(console) sh_hero_properties_descriptions_print - shows a list of descriptions for all hero properties registered
+
+
+(console) sh_print_hero_property_flags - shows a list hero properties that a hero is currently registered with
+
+
+(console) sh_print_player_hero_flags - shows a list of hero properties a player currently has (due to equipped heroes)
+
+
+(console) sh_admin_compatibility_print - shows a list of admin/limited server pick heroes
+
+
+(console) sh_hero_incompatible_pairs_print - shows a list of the incompatible hero pairs registered in the server
+
+
+(console) sh_hero_healthcaps_print - shows a list of health capped heroes registered in the server
+
+
+(console) sh_check_map_restricted_heroes - shows a list of heroes along with maps that they cannot be picked on!
+
+
 </pre></body></html>

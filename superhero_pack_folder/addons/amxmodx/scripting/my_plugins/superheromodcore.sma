@@ -392,6 +392,7 @@ public plugin_natives()
 
 	register_native("sh_create_hero", "_sh_create_hero")
 	register_native("sh_set_hero_info", "_sh_set_hero_info")
+	register_native("sh_match_string_with_hero_name", "_sh_match_string_with_hero_name")
 	register_native("sh_set_hero_bind", "_sh_set_hero_bind")
 	register_native("sh_set_hero_core", "_sh_set_hero_core")
 	register_native("sh_set_hero_shield", "_sh_set_hero_shield")
@@ -1005,39 +1006,6 @@ public _sh_get_hero_name_from_id(iPlugin,iParams)
 	copy(truncated_hero_name_buff,sizeof(gSuperHeros[][hero])-1,gSuperHeros[hero_id][hero])
 	set_array(2,truncated_hero_name_buff,sizeof(truncated_hero_name_buff)-1)
 }
-//----------------------------------------------------------------------------------------------
-/*
-//native _sh_get_user_has_hero(id, heroIndex)
-public _sh_get_user_has_hero()
-{
-	new id = get_param(1)
-
-	//stupid check - but checking prevents crashes
-	if ( id < 1 || id > gServersMaxPlayers ) return 0
-
-	new heroIndex = get_param(2)
-
-	if ( -1 < heroIndex < gSuperHeroCount ) {
-		return playerHasPowerPt2(id, heroIndex)
-	}
-
-	return 0
-}
-//----------------------------------------------------------------------------------------------
-bool:playerHasPower(id, heroIndex)
-{
-	new playerpowercount = getPowerCount(id)
-	for ( new x = 1; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
-		if ( gPlayerPowers[id][x] == heroIndex ) return true
-	}
-	return false
-}
-//----------------------------------------------------------------------------------------------
-playerHasPowerPt2(id, heroIndex)
-{
-	return sh_get_user_has_hero(id,heroIndex)
-}*/
-
 //----------------------------------------------------------------------------------------------
 //native sh_drop_weapon(id, weaponID, bool:remove = false)
 public _sh_drop_weapon()
@@ -3723,6 +3691,36 @@ showPlayerSkills(id, say, said[])
 	else {
 		console_print(id, "")
 	}
+}
+public _sh_match_string_with_hero_name(iPlugins, iParams){
+
+
+	if ( !get_pcvar_num(sv_superheros) ) return -1
+
+	new id_who_sent_command = get_param(1)
+	new the_string_to_match[MAX_HERO_NAME_LENGTH]
+
+	get_string(2,the_string_to_match,charsmax(the_string_to_match))
+
+
+	new heroIndex = -1
+
+	for ( new i = 0; i < gSuperHeroCount; i++ ) {
+		if ( containi(gSuperHeros[i][hero], the_string_to_match) != -1 ) {
+			heroIndex = i
+			break
+		}
+	}
+
+	if ( heroIndex < 0 ) {
+		console_print(id_who_sent_command, "[SH] Could not find a hero that matches: %s", the_string_to_match)
+		return -1
+	}
+
+	set_string(2,gSuperHeros[heroIndex][hero],SH_HERO_NAME_SIZE-1)
+
+	return heroIndex;
+
 }
 //----------------------------------------------------------------------------------------------
 showWhoHas(id, say, said[])

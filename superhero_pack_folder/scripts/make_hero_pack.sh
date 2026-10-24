@@ -89,6 +89,10 @@ copy_stuff_to_pack_folder(){
 	wait
 	rm -rfv $(find "${hero_pack_folder_name}" -name "*.ztmp")
 	rm -rfv $(find "${hero_pack_folder_name}" -name "*.bz2")
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.prc")
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.vis")
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.pmx")
+	rm -rfv $(find "${hero_pack_folder_name}" -name "*.log")
 }
 
 pushd $the_dir

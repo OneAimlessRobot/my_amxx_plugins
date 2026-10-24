@@ -267,6 +267,13 @@ native sh_get_max_ap(id);
 
 native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
 
+// it retrieves a hero id for a partial match (the first one). Optionally,
+// if succeeded, also sets the passeed to match to the exact hero name
+// otherwise, the string does not change and -1 is returned
+// id is the person who wants to know
+
+native sh_match_string_with_hero_name(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
+
 native Float:sh_get_max_force_knockback_explosion()
 native Float:sh_get_default_explode_owner_ignore_frac()
 native Float:sh_get_default_stun_speed()

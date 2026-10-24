@@ -4,5 +4,6 @@
 #define sh_aux_fx_natives_consts_pt7
 
 
+#if !defined LIBRARY_NAME
 #define LIBRARY_NAME "Superhero library 7: shero sound tools"
-
+#endif

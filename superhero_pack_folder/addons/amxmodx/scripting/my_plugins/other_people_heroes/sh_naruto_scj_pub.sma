@@ -143,6 +143,7 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
 #include <chr_engine>
 #include <fakemeta_util>
 
@@ -186,6 +187,8 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Shadow Clone Jutsu", "Summon a shadow clone which follows you and shoots down any nearby enemies with his gun, press keydown again to use the rasengan")
 	sh_set_hero_bind(gHeroID)
+
+	sh_register_map_restricted_superhero(gHeroID,"cache","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
 	
 	precache_extra_models();
 	// LOOP
@@ -214,15 +217,17 @@ precache_extra_models(){
 		engfunc(EngFunc_PrecacheModel,model_file_path)
 		server_print("Naruto precaches %s!^n",model_file_path)
 
-		formatex(model_file_path,127,"models/player/%s/%sT.mdl",model_name,model_name) // it becoems the path of the T model
 
+		/*
+		formatex(model_file_path,127,"models/player/%s/%sT.mdl",model_name,model_name) // it becoems the path of the T model
 		if(file_exists(model_file_path)){
 
 			
-			engfunc(EngFunc_PrecacheModel,model_file_path)
+			engfunc(EngFunc_PrecacheGeneric,model_file_path)
 			server_print("Naruto precaches %s!^n",model_file_path)
 
 		}
+		*/
 
 	}
 

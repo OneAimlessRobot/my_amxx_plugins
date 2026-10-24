@@ -7,11 +7,12 @@
 #define PLUGIN "Superhero aux natives pt12: superhero property enforcing pt1: health caps"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
+
 
 static bool:lib_initted = false;
 
@@ -45,7 +46,42 @@ public plugin_init(){
 
 	sh_init_healthcap_lib(false)
 
+	register_concmd(hero_healthcaps_print,hero_healthcaps_print,ADMIN_ALL)
+
 	
+}
+stock hero_healthcaps_print_aux(id){
+
+	static hero_name[MAX_HERO_NAME_LENGTH]
+
+	console_print(id,"The hero health caps registered in this server are:^n")
+	if(!curr_num_healthcaps){
+
+
+		console_print(id,"None are registered!^n")
+		return
+	}
+	for(new i=0;i<curr_num_healthcaps;i++){
+
+		sh_get_hero_name_from_id(sh_hero_healthcaps[i][hero_id_to_use],hero_name)
+		
+
+		console_print(id,"Cap number %d^n",i)
+		console_print(id,"- If you equip %s you will be capped to at most %0.2f health!^n",hero_name, sh_hero_healthcaps[i][hp_in_the_struct])
+		
+		
+	}
+
+}
+public sh_hero_healthcaps_print(id,level,cid){
+
+	if (!cmd_access(id,level,cid,0))
+		return PLUGIN_HANDLED
+
+	
+	hero_healthcaps_print_aux(id)
+
+	return PLUGIN_HANDLED
 }
 public plugin_cfg(){
 
