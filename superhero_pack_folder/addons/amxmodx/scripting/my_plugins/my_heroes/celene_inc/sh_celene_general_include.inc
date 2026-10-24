@@ -9,7 +9,7 @@ stock const Model_P_Awp[] = "models/shmod/madassassin_p_awp.mdl"
 
 #define CHUNK_SIZE 127
 #define LENA_NUM_POEMS 3
-stock const lena_poems[LENA_NUM_POEMS][]={
+stock const celene_poems[LENA_NUM_POEMS][]={
 	"Bros sabem quem e que sou quando vou internada p'hospital?^nSou a princesa mansa^nDe bata suja^nVestido braquelio,^nFantasmagorico^nResidence do palacio ^nDe luz fluorescente branca^n",
 	"Antes a minha alma so continha mijo e merda.^nagora nao contem nada.^nsinceramente nao sei qual deles e pior^nAdoro o cheiro a produtos de limpeza^ne a lixivia pela manha^nAjuda a purificar a alma,^nnao concordas?^n",
 	"Sabes?^nUm erro categorico ^nque a malta aqui comete?^nE assumir que sou normal^nQue regulo bem,^nQue funciono como deve ser^nQue ainda tenho^nos fusiveis todos^nde desde que nasci^n",

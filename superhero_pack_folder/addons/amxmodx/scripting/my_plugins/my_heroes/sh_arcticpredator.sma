@@ -50,6 +50,7 @@ new bool:discThrown[SH_MAXSLOTS+1]
 new killer[SH_MAXSLOTS+1]
 new bool:gHuntMode[SH_MAXSLOTS+1]
 new g_spriteBlood, g_spriteBldSpray
+new ArcticPred_Revenge_HudSync
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -116,6 +117,8 @@ public plugin_init()
 	TASKID_NVG = allocate_typed_task_id(player_task)
 
 	init_explosion_defaults()
+
+	ArcticPred_Revenge_HudSync = CreateHudSyncObj()
 }
 
 //----------------------------------------------------------------------------------------------
@@ -589,8 +592,8 @@ if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(
 	
 	new messagethree[128]
 	formatex(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
-	set_dhudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
-	show_dhudmessage( id, messagethree)
+	set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
+	ShowSyncHudMsg( id,ArcticPred_Revenge_HudSync, messagethree)
 }
 }
 //----------------------------------------------------------------------------------------------
