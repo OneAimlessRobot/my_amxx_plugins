@@ -34,7 +34,8 @@ static const sh_hero_property_names[hero_property_flags_id][64] =  {
 			"Unhealable hero",
 			"Parasite hero I hate them",
 			"Yandere hero",
-			"Fire retardant hero"
+			"Fire retardant hero",
+			"Radio detector hero"
 			
 
 }
@@ -67,6 +68,7 @@ static const sh_property_gating_array[hero_property_flags_id] =  {
 			25,
 			25,
 			5,
+			25,
 			25
 			
 

@@ -11,6 +11,7 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
@@ -33,6 +34,7 @@ enum{
 	TRACK_TASK_PERIOD,
 	TRACK_TASK_CURR_IT,
 	TRACK_TASK_NUM_ITS,
+	TRACK_DETECTORS_ONLY,
 	NUM_INIT_TRACK_PARAMS
 
 
@@ -144,7 +146,10 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 	}
 	static sh_custom_color:color_const;
 	color_const=sh_custom_color:array[TRACK_TASK_TRACK_COLOR]
+	new bool:detectors_only = false;
+	detectors_only= bool:array[TRACK_DETECTORS_ONLY]
 	if(!sh_get_id_bit(id, SH_IS_CHAFFED)){
+
 		/*
 		static client_name[128]
 		get_user_name(id,client_name,127)
@@ -158,23 +163,30 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 		arrayset(color_const_arr,color_const,sizeof color_const_arr)
 		if(is_user_alive(array[TRACK_TASK_ATTACKER])){
 
+			if(((sh_get_player_has_hero_prop(array[TRACK_TASK_ATTACKER],SH_RADIO_DETECTOR_HERO)) && detectors_only)||!detectors_only){
 
-			get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)	
-			
-			detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
-			IVecFVec(att_origin,Pos)
-			laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
+				get_user_origin(array[TRACK_TASK_ATTACKER], att_origin)	
+				
+				detect_user(array[TRACK_TASK_ATTACKER],id,vEnd);
+				IVecFVec(att_origin,Pos)
+				laser_line(array[TRACK_TASK_ATTACKER],Pos,vEnd,true,color_const_arr,true)
+
+			}
 		}
 		for(new i=0;i<array[1];i++){
 			if(!is_user_alive(array[i+NUM_INIT_TRACK_PARAMS])){
 			
 				continue
 			}
-			get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
-			
-			detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
-			IVecFVec(origin,Pos)
-			laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
+
+			if(((sh_get_player_has_hero_prop(array[i+NUM_INIT_TRACK_PARAMS],SH_RADIO_DETECTOR_HERO)) && detectors_only)||!detectors_only){
+
+				get_user_origin(array[i+NUM_INIT_TRACK_PARAMS], origin)
+				
+				detect_user(array[i+NUM_INIT_TRACK_PARAMS],id,vEnd);
+				IVecFVec(origin,Pos)
+				laser_line(array[i+NUM_INIT_TRACK_PARAMS],Pos,vEnd,true,color_const_arr,true)
+			}
 			
 		}
 		set_render_with_color_const(id,color_const,1,80,-1,80,_,Float:array[TRACK_TASK_PERIOD],_,_,kRenderNormal,PRIO_RENDER_DELETE_INVISIBILITY)
@@ -208,7 +220,8 @@ public _track_user(iPlugins, iParams){
 		Float:damage_health_pct=get_param_f(4),
 		Float:period=get_param_f(5),
 		Float:time=get_param_f(6),
-		sh_custom_color:track_color=sh_custom_color:get_param(7)
+		sh_custom_color:track_color=sh_custom_color:get_param(7),
+		bool:detectors_only=bool:get_param(8)
 
 	
 	if(!is_user_connected(id)||!is_user_connected(attacker)) return 
@@ -232,6 +245,7 @@ public _track_user(iPlugins, iParams){
 	array[TRACK_TASK_CURR_IT] = 0
 	array[TRACK_TASK_NUM_ITS] = radioactive_times
 	array[TRACK_TASK_PERIOD] = period
+	array[TRACK_DETECTORS_ONLY] = detectors_only
 	for(new i=0;i<player_count;i++){
 		
 		if(is_user_alive(players[i])){

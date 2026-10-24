@@ -655,7 +655,7 @@ public radioactive_task(array[3],id){
 						RADIOACTIVE_DAMAGE_HEALTH_PCT,
 						fx_task_parameters[fx_id:array[0]][fx_task_period],
 						fx_task_parameters[fx_id:array[0]][fx_task_time],
-						FX_COLOR_OFFSET(fx_id:array[0]))
+						FX_COLOR_OFFSET(fx_id:array[0]),true)
 }
 public morphine_task(any:array[3],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]

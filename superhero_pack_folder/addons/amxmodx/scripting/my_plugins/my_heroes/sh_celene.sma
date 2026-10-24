@@ -38,6 +38,7 @@ public plugin_init()
 								"D'culpa...")
 	
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:CELENE_WEAPON_CLASSID,true)
+	sh_assign_hero_bit(gHeroID, SH_RADIO_DETECTOR_HERO,true)
 	
 }
 public plugin_natives(){

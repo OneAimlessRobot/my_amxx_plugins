@@ -13,5 +13,4 @@ cs_militia
 cs_italy
 cs_alpin
 de_dust2_2006
-de_cache
 starwars
