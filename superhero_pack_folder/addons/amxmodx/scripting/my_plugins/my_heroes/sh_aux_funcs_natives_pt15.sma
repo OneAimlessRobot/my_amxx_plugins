@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt15: superhero pickability checks: pt3"
+#define PLUGIN "SH_AuxFun15: proj. wpn gating"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/auxiliar_stuff.inc"

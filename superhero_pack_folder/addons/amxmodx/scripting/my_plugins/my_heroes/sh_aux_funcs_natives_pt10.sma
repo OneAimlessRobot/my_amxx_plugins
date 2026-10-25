@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt10: superhero pickability checks: individual incompatibility"
+#define PLUGIN "SH_AuxFun10: pairwise restricting"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"

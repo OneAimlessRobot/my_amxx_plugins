@@ -147,6 +147,7 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 #include <chr_engine>
 #include <fakemeta_util>
 
+new const DEBUG_MODE = 0
 // GLOBAL VARIABLES
 
 new const gHeroName[] = "Naruto Uzumaki"
@@ -215,8 +216,11 @@ precache_extra_models(){
 		formatex(model_file_path,127,"models/player/%s/%s.mdl",model_name,model_name)
 		
 		engfunc(EngFunc_PrecacheModel,model_file_path)
-		server_print("Naruto precaches %s!^n",model_file_path)
 
+
+		if(DEBUG_MODE){
+			server_print("Naruto precaches %s!^n",model_file_path)
+		}
 
 		/*
 		formatex(model_file_path,127,"models/player/%s/%sT.mdl",model_name,model_name) // it becoems the path of the T model

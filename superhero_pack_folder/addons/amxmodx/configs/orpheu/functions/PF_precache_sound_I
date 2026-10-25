@@ -1,0 +1,25 @@
+{
+    "name": "PF_precache_sound_I",
+    
+    "arguments": [
+        {
+            "type": "char *"
+        }
+    ],
+    "return": {
+        "type": "int"
+    },
+    "library"    : "engine",
+    "identifiers": [
+        {
+            "os": "windows",
+            "mod": "cstrike",
+            "value": ["*"]
+        }
+        {
+            "os": "linux",
+            "mod": "cstrike",
+            "value": "_Z19PF_precache_sound_IPKc"
+        }
+    ]
+}

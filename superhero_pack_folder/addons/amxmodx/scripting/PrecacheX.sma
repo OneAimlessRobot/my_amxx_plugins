@@ -313,7 +313,8 @@ public plugin_precache( )
 	register_forward( FM_PrecacheSound, "fw_PrecacheSound" ) 
 	register_forward( FM_PrecacheModel, "fw_PrecacheModel_Post", 1 ) 
 	register_forward( FM_PrecacheSound, "fw_PrecacheSound_Post", 1 ) 
-} 
+}
+
 
 public fw_PrecacheModel( const Model[ ] ) 
 { 

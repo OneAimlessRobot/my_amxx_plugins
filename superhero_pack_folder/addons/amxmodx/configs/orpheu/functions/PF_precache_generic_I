@@ -1,0 +1,25 @@
+{
+    "name": "PF_precache_generic_I",
+    
+    "arguments": [
+        {
+            "type": "char *"
+        }
+    ],
+    "return": {
+        "type": "int"
+    },
+    "library"    : "engine",
+    "identifiers": [
+        {
+            "os": "windows",
+            "mod": "cstrike",
+            "value": ["*"]
+        },
+        {
+            "os": "linux",
+            "mod": "cstrike",
+            "value": "_Z21PF_precache_generic_IPKc"
+        }
+    ]
+}

@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt11: superhero pickability checks: pt2"
+#define PLUGIN "SH_AuxFun11: property gating"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt11.inc"

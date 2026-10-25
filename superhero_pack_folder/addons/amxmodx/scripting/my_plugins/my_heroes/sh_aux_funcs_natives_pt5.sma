@@ -10,7 +10,7 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt5.inc"
 
 
-#define PLUGIN "Superhero aux natives pt5: hero player/weapon  model morph registering"
+#define PLUGIN "SH_AuxFun5: player/wpn mdl REG"
 #define VERSION "1.0.0"
 #define GLOBAL_GLOW_TASK_LOOP_PERIOD 1.0
 #include "../my_include/my_author_header.inc"

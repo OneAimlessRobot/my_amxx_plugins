@@ -23,7 +23,7 @@ enum hero_map_restriction_struct{
 new hero_map_restriction_structs_array[MAX_HERO_MAP_RESTRICTIONS][hero_map_restriction_struct]
 
 
-#define PLUGIN LIBRARY_NAME
+#define PLUGIN "SH_AuxFun17: mapwise restricting"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 

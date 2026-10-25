@@ -20,7 +20,7 @@
 
 new generic_frag_blast_wpn_id = -1
 
-#define PLUGIN "Superhero aux natives pt3"
+#define PLUGIN "SH_AuxFun3: explosion mngr"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 

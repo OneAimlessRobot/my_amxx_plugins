@@ -7,7 +7,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
-#define PLUGIN LIBRARY_NAME
+#define PLUGIN "SH_AuxFun16: invis mngr"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 

@@ -4,7 +4,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
-#define PLUGIN "Superhero aux natives pt4: generic damage source registering"
+#define PLUGIN "SH_AuxFun4: generic DMG REG"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 

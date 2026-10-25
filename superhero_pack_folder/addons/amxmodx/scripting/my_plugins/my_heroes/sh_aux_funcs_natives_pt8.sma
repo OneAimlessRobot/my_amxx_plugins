@@ -3,7 +3,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
-#define PLUGIN "Superhero aux natives pt8: safeguard forward tools for shmod"
+#define PLUGIN "SH_AuxFun8: safeguard fwds & hooks"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt8.inc"
