@@ -12,7 +12,7 @@
 #include "my_include/my_author_header.inc"
 
 
-#define THE_TOTAL_DIR_LENGTH 100
+#define THE_TOTAL_DIR_LENGTH 80
 
 
 new const DEBUG_MODE = 0
@@ -62,8 +62,7 @@ new file_paths_for_files[files_to_use][file_handling_struct] = {
 	{0, 0, false, "", "precached_events_list.txt", "", "event", 0, FM_PrecacheEvent, "fw_precache_event", 1, 0, "", ""}
 }
 
-new Array:arrays_for_files[files_to_use]
-
+new Trie:tries_for_files[files_to_use]
 
 setup_precache_files_env(){
 	// Set Up Config Files
@@ -85,10 +84,10 @@ setup_precache_files_env(){
 			server_print("The %s file path is: ^"%s^"^n",file_paths_for_files[i][file_struct_name],file_paths_for_files[i][the_file_path])
 		}
 		
-		if(arrays_for_files[i] == enum_zero){
+		if(tries_for_files[i] == enum_zero){
 
 			
-			arrays_for_files[i]= ArrayCreate(THE_TOTAL_DIR_LENGTH, 1)
+			tries_for_files[i]= TrieCreate()
 
 		}
 	
@@ -152,16 +151,17 @@ public plugin_cfg(){
 
 			fclose(file_paths_for_files[i][file_ptr])
 		}
-		
-		for( new files_to_use:i = enum_zero; i< files_to_use; i++){
+		if(!file_paths_for_files[i][is_orpheu] ){
+			unregister_forward(file_paths_for_files[i][FM_Constant],
+							file_paths_for_files[i][the_forward_id],
+							file_paths_for_files[i][is_post])
 			
-			if(!file_paths_for_files[i][is_orpheu] ){
-				unregister_forward(file_paths_for_files[i][FM_Constant],
-								file_paths_for_files[i][the_forward_id],
-								file_paths_for_files[i][is_post])
-				
-				file_paths_for_files[i][the_forward_id] = 0
-			}
+			file_paths_for_files[i][the_forward_id] = 0
+		}
+		if(tries_for_files[i]){
+
+			TrieDestroy(tries_for_files[i])
+			tries_for_files[i] = enum_zero
 		}
 
 	}
@@ -200,26 +200,30 @@ bool:precache_resource_handling_arrays( const Resource[ ], files_to_use:the_file
 
 	
 	new bool:Precached = false
-	
-	for( new i = 0; i < ArraySize( arrays_for_files[the_file_to_use_here]); i++ ) 
-	{ 
-		ArrayGetString( arrays_for_files[the_file_to_use_here],
-							i,
-					file_paths_for_files[the_file_to_use_here][temp_buff],
-					THE_TOTAL_DIR_LENGTH )
+	new TrieIter:the_iter = TrieIterCreate(tries_for_files[the_file_to_use_here])
+	while(!TrieIterEnded(the_iter)){
+		TrieIterGetString(the_iter,file_paths_for_files[the_file_to_use_here][temp_buff],THE_TOTAL_DIR_LENGTH)
 
 
 		if( equal( file_paths_for_files[the_file_to_use_here][temp_buff] , Resource ) ){
 		
 			Precached = true; break;
 		
-		} 
+		}
+
+		TrieIterNext(the_iter)
 	} 
 	
+	
+	TrieIterDestroy(the_iter)
+
+
 	if( !Precached ){
 		
-		ArrayPushString( arrays_for_files[the_file_to_use_here],
-											Resource )
+		new the_key[10]
+		formatex(the_key,charsmax(the_key),"%s",file_paths_for_files[the_file_to_use_here][curr_num_resources])
+
+		TrieSetString( tries_for_files[the_file_to_use_here], the_key, Resource)
 
 		file_paths_for_files[the_file_to_use_here][curr_num_resources]++
 	}
@@ -250,6 +254,8 @@ precache_resource_handling_post( const Resource[ ], files_to_use:the_file_to_use
 											:
 								file_paths_for_files[the_file_to_use_here][file_ptr]))
 	
+	file_paths_for_files[the_file_to_use_here][tried_opening] = true
+	
 	/*
 
 	if(!file_paths_for_files[the_file_to_use_here][tried_opening]){
@@ -261,7 +267,8 @@ precache_resource_handling_post( const Resource[ ], files_to_use:the_file_to_use
 		file_paths_for_files[the_file_to_use_here][tried_opening] = true
 
 	}
-		*/
+	
+	*/
 
 
 	if(DEBUG_MODE){
