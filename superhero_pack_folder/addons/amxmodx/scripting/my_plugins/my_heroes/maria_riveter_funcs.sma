@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_CUSTOM_COLORS
@@ -32,7 +31,6 @@ new maria_riveter_wpn_id
 new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 new dmg_source_name_log_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 
-new weapon_secret_code = -1
 public plugin_init(){
 	
 
@@ -62,8 +60,6 @@ public plugin_init(){
 	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
 
 	init_gravity_pcvar()
-
-	weapon_secret_code = allocate_weapon_secret_code()
 
 
 }
@@ -269,14 +265,12 @@ public fw_ItemDeployPre(entity)
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
-		remove_weapon_secret_code(entity,weapon_secret_code)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(pPlayer, m_flNextAttack, MARIA_PROJECTILE_DEPLOY_TIME,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, MARIA_PROJECTILE_DEPLOY_TIME,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(RIVETER_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
-	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 

@@ -164,8 +164,15 @@ public Komak_Fire_Weapon_Pre(entity)
 	if(g_komak_hits[id]<=0){
 		return HAM_IGNORED
 	}
-	entity_get_vector(id, EV_VEC_punchangle,komakeria_recoil_vector[id])
+
+	if(sh_get_player_has_hero_projectile_weapon(id,my_weapon_ids:get_pdata_int(entity, m_iId, XO_WEAPON))){
 		
+		return HAM_IGNORED
+
+
+	}
+	entity_get_vector(id, EV_VEC_punchangle,komakeria_recoil_vector[id])
+	
 	return do_fast_shot(entity,gCurrFireRatio[id])
 
 }

@@ -1,6 +1,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
 
 #include "../my_include/superheromod.inc"
 #include "zenitsu_inc/zenitsu_charge_funcs.inc"
@@ -138,7 +141,7 @@ public zenitsu_charge(id, uc_handle, seed)
 			emit_sound(id, CHAN_AUTO, FLIGHT_IGNITION, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 			get_uc(uc_handle,UC_ViewAngles,g_zenitsu_curr_charge_look_direction[id])
 		}
-		if(generate_int(0, FlameAndSoundRate) <3)
+		if(generate_int(0, 5) <3)
 		{
 			static Float:Velocity[3]
 			velocity_by_aim(id, floatround(ZENITSU_CHARGE_SPEED), Velocity)

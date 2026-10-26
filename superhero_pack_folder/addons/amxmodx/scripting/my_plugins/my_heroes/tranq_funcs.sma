@@ -2,7 +2,6 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_RESOURCE_ALIASES
@@ -33,7 +32,6 @@ new super_dart_weapon_id
 new dmg_source_name_short_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
 new dmg_source_name_log_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
 
-new weapon_secret_code = -1
 public plugin_init(){
 
 
@@ -61,8 +59,6 @@ public plugin_init(){
 	register_think(DART_CLASSNAME, "tranque_thinque")
 
 	init_gravity_pcvar()
-
-	weapon_secret_code = allocate_weapon_secret_code()
 
 
 }
@@ -261,14 +257,12 @@ public fw_ItemDeployPre(entity)
 	static pPlayer; pPlayer =get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
 	if(!client_is_hero_user(pPlayer, gHeroID)){
-		remove_weapon_secret_code(entity,weapon_secret_code)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(entity, m_flNextPrimaryAttack, DART_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_float(entity, m_flTimeWeaponIdle, DART_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(DART_PISTOL_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
-	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 

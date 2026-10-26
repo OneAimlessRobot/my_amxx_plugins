@@ -10,6 +10,7 @@
 new gHeroName[]="Zenitsu Agatsuma"
 new gChargeModeEngagedMask = 0
 
+new pcvar_after_spawn_cooldown
 
 
 //----------------------------------------------------------------------------------------------
@@ -19,10 +20,11 @@ public plugin_init()
 	register_plugin("SUPERHERO Zenitsu Agatsuma","1.0",AUTHOR)
 	
 	create_cvar("zenitsu_level", "19" )
+	pcvar_after_spawn_cooldown = create_cvar("zenitsu_after_spawn_cooldown", "20.0" )
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Thunder Hashira", "When all that is left is you...", true, "shinobu_level" )
+	gHeroID=shCreateHero(gHeroName, "Thunder Hashira", "When all that is left is you...", true, "zenitsu_level" )
 
 }
 public plugin_natives(){
@@ -65,8 +67,10 @@ public sh_client_spawn(id)
 	}
 
 	if ( sh_get_user_has_hero(id,gHeroID) ) {
-		
+		new Float:cooldown_secs=cvar_val(float,pcvar_after_spawn_cooldown)
 		UnSet_BitVar(gChargeModeEngagedMask,id)
+		sh_set_cooldown(id, cooldown_secs)
+		sh_chat_message(id,gHeroID,"You are on cooldown for %0.2f seconds after spawning!",cooldown_secs)
 
 	}
 }
@@ -96,7 +100,13 @@ public zenitsu_kd(id)
 	
 	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	
+	if(sh_get_cooldown_flag(id)){
 
+		if(!is_user_bot(id)){
+			sh_sound_deny(id)
+		}
+		return
+	}
 	// Let them know they already used their ultimate if they have
 	
 	if(Get_BitVar(gChargeModeEngagedMask,id)){

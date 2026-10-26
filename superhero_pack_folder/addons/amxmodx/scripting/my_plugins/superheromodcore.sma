@@ -1743,7 +1743,7 @@ public selectedSuperPower(id, key)
 
 	static message[2048]
 	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
-		formatex(message, charsmax(message), "AUTOMATIC POWER%s: %s^n",
+		formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
 									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
 	}
 	else {

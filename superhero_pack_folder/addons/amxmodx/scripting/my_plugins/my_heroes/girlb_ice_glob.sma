@@ -99,7 +99,7 @@ public girlb_skating(id, uc_handle, seed)
 			emit_sound(id, CHAN_WEAPON,FROZEN_SFX,
 					VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
-		if(generate_int(0, 10) <3)
+		if(generate_int(0, 5) <3)
 		{
 			static Float:Velocity[3],Float:our_velocity[3]
 			

@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_PDATA_ALIASES
@@ -40,8 +39,6 @@ new g_guns_eventids_bitsum = 0
 new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmod/yakui/hw_spinup.wav", "shmod/yakui/hw_spindown.wav"}
 
 
-new weapon_secret_code = -1
-
 new Float:windup_time
 new const g_guns_events[][] = {"events/m249.sc"}
 public plugin_init(){
@@ -73,8 +70,6 @@ public plugin_init(){
 
 	register_think(PILL_CLASSNAME, "pill_think")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
-	
-	weapon_secret_code = allocate_weapon_secret_code()
 
 }
 
@@ -588,7 +583,6 @@ public fw_ItemDeployPre(entity)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, pPlayer)){
 		
-		remove_weapon_secret_code(entity,weapon_secret_code)
 		return HAM_IGNORED
 	}
 
@@ -596,7 +590,6 @@ public fw_ItemDeployPre(entity)
 	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, PILL_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip,min(PILLGATLING_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
-	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 

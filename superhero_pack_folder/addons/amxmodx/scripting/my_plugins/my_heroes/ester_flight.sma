@@ -338,7 +338,7 @@ public OnCmdStart(id, uc_handle)
 			}
 			Set_BitVar(g_draining_mask,id)
 		}
-		if(generate_int(0, 10) <3)
+		if(generate_int(0, 5) <3)
 		{
 			static Float:Velocity[3]
 

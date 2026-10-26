@@ -26,8 +26,6 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
-#define I_WANT_PDATA_ALIASES
-#define I_WANT_ENTITY_VECTORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -174,7 +172,7 @@ public BlowUp(id)
 	new name[32]
 	get_user_name(id,name,31)
 	remove_glow_user(id, PRIO_RENDER_POWERUP,16,kRenderNormal,_,gHeroID)
-	set_hudmessage(48, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+	set_hudmessage(192, 80, 100, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1,-1,200)
 	ShowSyncHudMsg(0,gPhoenixHudSync,"%s was Re-Born using the power of the Phoenix!",name)
 	explosion(gHeroID,id,float(dmgRadius),float(maxDamage),_,1,_,_,_,RED)
 

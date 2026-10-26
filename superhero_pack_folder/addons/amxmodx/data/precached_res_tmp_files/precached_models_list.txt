@@ -266,9 +266,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-sprites/flare1.spr
+models/metalplategibs_green.mdl
+models/woodgibs.mdl
 models/glassgibs.mdl
-models/metalplategibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl

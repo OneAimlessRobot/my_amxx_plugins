@@ -1,7 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
@@ -35,8 +34,6 @@ new wpn_name_for_future_lookup[50];
 new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="Salomé"
 new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Salomé's L96"
 new custom_dmg_id_l96
-
-new weapon_secret_code = -1
 //new HamHook:TakeDamage
 public plugin_init(){
 	
@@ -70,8 +67,7 @@ public plugin_init(){
 
 	register_think(SALOME_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_gravity_pcvar()
-
-	weapon_secret_code = allocate_weapon_secret_code()
+	init_poem_delims()
 
 }
 public plugin_cfg(){
@@ -261,15 +257,12 @@ public fw_ItemDeployPre(entity)
 	
 	if(!client_is_hero_user(pPlayer, gHeroID)){
 		
-		remove_weapon_secret_code(entity,weapon_secret_code)
-		
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(pPlayer, m_flNextAttack, SALOME_PROJECTILE_DEPLOY_TIME ,XO_PLAYER)
 	set_pdata_float(entity, m_flTimeWeaponIdle, SALOME_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
 	set_pdata_int(entity, m_iClip ,min(SALOME_L96_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
-	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
 
@@ -537,7 +530,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 		sh_set_user_xp(owner,floatround(distance)*(headshot?
 				cvar_val(num, pcvar_dmg_headshot_mult):1)*
 				cvar_val(num, pcvar_xp_distance_mult),true);
-		new random_number=generate_int(0,_:poem_idx-1)
+		new random_number=generate_int(0,num_detected_poems-1)
 		
 		if(!is_user_bot(pTouched)){
 			send_poem_function(pTouched, poem_idx:random_number);

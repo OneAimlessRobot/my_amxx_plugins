@@ -15,6 +15,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
@@ -307,6 +308,13 @@ public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
 	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(owner)){
 		return HAM_IGNORED
+	}
+
+	if(sh_get_player_has_hero_projectile_weapon(owner,my_weapon_ids:get_pdata_int(weapon_ent, m_iId, XO_WEAPON))){
+		
+		return HAM_IGNORED
+
+
 	}
 	new fx_id:fx_num_of_owner=gatling_get_fx_num(owner)
 	switch(fx_num_of_owner){

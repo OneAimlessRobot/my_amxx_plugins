@@ -11,6 +11,7 @@
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "ksun_inc/ksun_global.inc"
 #include "ksun_inc/ksun_particle.inc"
 #include "ksun_inc/ksun_ultimate.inc"
@@ -341,7 +342,12 @@ public ksun_rifle_fast_shot(entity)
 	if(!Get_BitVar(g_player_in_ultimate_mask, id)){
 		return HAM_IGNORED
 	}
+	if(sh_get_player_has_hero_projectile_weapon(id,my_weapon_ids:KSUN_WEAPON_ID)){
+		
+		return HAM_IGNORED
 
+
+	}
 	return do_fast_shot(entity,cvar_val(float, pcvar_ksun_ultimate_fire_rate_mult))
 
 }
